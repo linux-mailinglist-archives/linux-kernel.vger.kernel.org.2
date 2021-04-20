@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F282B36562D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4C83656F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhDTKbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhDTKbl (ORCPT
+        id S231673AbhDTK5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:57:50 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:2136 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231535AbhDTK5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:31:41 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFDDC06174A;
-        Tue, 20 Apr 2021 03:31:09 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso4376643pjs.2;
-        Tue, 20 Apr 2021 03:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/pqYuVEVyGbD6G0F1pZ44n9k5T8+DxwsVUEl0nbUlzY=;
-        b=CLuIQV3Y8s6+hQPyfVqZjKRQSWv4edE2G80ngVVS2KepQJxuGxmHKOupqe+zlcv+r1
-         WTUqW9wKOXA35EUu+KBkJWPP+98Bb7RiW4DDgaBWi+QRVtPNirUrKWUQhkRBye50CQI6
-         6+AZj+H/Px35O1aPrUdO1np2iDLXHL0/x0rGM0CJNdvAg9C6RO8WAYmRvgZM6lJs2nTv
-         VTSRL62xUOuPRnYjN7NUG2yONGjDb6VSVbLHQxEn17usUG0SsZxTtWiaVKBijV/I71rZ
-         y7mcVkCUvNUEM+0MHtt+zotBfkZikqrQXScQUzQg/fnVJUkAji0p4HCeeR2P7qmrZXn6
-         l/lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/pqYuVEVyGbD6G0F1pZ44n9k5T8+DxwsVUEl0nbUlzY=;
-        b=f4GRMLD2KEsBHfgKEbpN3fuvxhoKfxv0EZoXWjBNuJHYog+dWl7Ue9lBoRbYRZ0S7y
-         rw814zR9FkvS26OSbSFGThdUavwH+gt3X+yWgioXeMlEyzcbS2CwJppUEDRxQp1IM0/R
-         hkx1F5q+MvIVmhOhVMLyj3mrMVws7YCZXz7yvJ+50TfzceP16QZFPOQsMR05dEHnu3AP
-         cppdBRfYefB9sWgAK0mCXzsqfg1/ruj0P7if40NDGSt6f2tTq+jwvSWJyGrP8epGAT0l
-         GeGA7Mw3ATAdeVEyWNX3r72SB3o+m7aChjjO4kbEMcPbydlmR+P7Meqm7nOgYn0z9XY9
-         KHzQ==
-X-Gm-Message-State: AOAM531f74UKku2aXI1i/+u+menpQgGLdb3I8Nhiz9oXtawo4UlQdmdC
-        NHE/IHRtm888JyQkGoKSlnI=
-X-Google-Smtp-Source: ABdhPJxDVxa6g+YmrGIK8MbCSiDDyPrdR0uHwCh1Sh3ieT7yQHuwN/8fXHfTghJZfe9TDmaWOHA87Q==
-X-Received: by 2002:a17:902:8347:b029:e7:4a2d:6589 with SMTP id z7-20020a1709028347b02900e74a2d6589mr28700859pln.64.1618914668673;
-        Tue, 20 Apr 2021 03:31:08 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id g23sm16593764pfu.189.2021.04.20.03.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 03:31:07 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 13:30:51 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tue, 20 Apr 2021 06:57:47 -0400
+X-Greylist: delayed 1747 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 06:57:47 EDT
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KARIRk031344;
+        Tue, 20 Apr 2021 10:28:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=CBC0ziPweSVN+s576SbWo6o6RPOr+hWP6QgYWwVJdhc=;
+ b=m42z1RaUhhvl+HnWHNt/YeF7dHLlr9NgCJSFcLpVEY/Lvi9yNq7luAIX5OEvc8Q7onvh
+ WftN37mj6rbCfkMskYdz8kc/Jn/OG0abTEMvuMHJZBW5mhiDYeCRpuxPBrsoDHH6TJNN
+ x0LsF635NNDIBcXRbukPIGbxIsA+WnrHou1lHiW4kWN0lqq+0NCTwAucKbhZNXmuXAOY
+ dJRvQKomFbHq9G5DjhLwR/DJIfcI6G9DIL2mYwWgFTFiuBdjW+6r6a68GYHmW/GUSDE1
+ Jb4YfCZ4mraXTDhAnOsHyP/pc0D2NCcxEAZd55qpB14LNRQNOWE7FWP8b17TyiyQw0KE yQ== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 381tw0g0u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:28:00 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13KARxA3009216;
+        Tue, 20 Apr 2021 10:27:59 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 3809esdbpt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:27:59 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13KARxL0009161;
+        Tue, 20 Apr 2021 10:27:59 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 3809esdbns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:27:59 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13KARtpk017675;
+        Tue, 20 Apr 2021 10:27:56 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 20 Apr 2021 10:27:55 +0000
+Date:   Tue, 20 Apr 2021 13:27:47 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "'Mauro Carvalho Chehab'" <mchehab@kernel.org>,
+        Ashish Kalra <eashishkalra@gmail.com>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Arvid.Brodin@xdin.com" <Arvid.Brodin@xdin.com>,
-        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "ivan.khoronzhuk@linaro.org" <ivan.khoronzhuk@linaro.org>,
-        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
-        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        Po Liu <po.liu@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>
-Subject: Re: [EXT] Re: [net-next] net: dsa: felix: disable always guard band
- bit for TAS config
-Message-ID: <20210420103051.iikzsbf7khm27r7s@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210419123825.oicleie44ms6zcve@skbuf>
- <DB8PR04MB5785E8D0499961D6C046092AF0489@DB8PR04MB5785.eurprd04.prod.outlook.com>
- <20210420082632.3fy4y3ftkhwrj7nm@skbuf>
- <AM6PR04MB5782BC6E45B98FDFBFB2EB1CF0489@AM6PR04MB5782.eurprd04.prod.outlook.com>
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Subject: Re: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
+Message-ID: <20210420102747.GB1981@kadam>
+References: <20210417153627.GA50228@ashish-NUC8i5BEH>
+ <20210417205613.5c1aac74@coco.lan>
+ <509f019decae433cab6cb367cdfa6fa9@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM6PR04MB5782BC6E45B98FDFBFB2EB1CF0489@AM6PR04MB5782.eurprd04.prod.outlook.com>
+In-Reply-To: <509f019decae433cab6cb367cdfa6fa9@AcuMS.aculab.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: ajAyLqlxgs9JqJzgjE3NUwOO8J1tKu7X
+X-Proofpoint-ORIG-GUID: ajAyLqlxgs9JqJzgjE3NUwOO8J1tKu7X
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:28:45AM +0000, Xiaoliang Yang wrote:
-> Hi Vladimir,
+On Sat, Apr 17, 2021 at 09:31:32PM +0000, David Laight wrote:
+> From: Mauro Carvalho Chehab
+> > Sent: 17 April 2021 19:56
+> > 
+> > Em Sat, 17 Apr 2021 21:06:27 +0530
+> > Ashish Kalra <eashishkalra@gmail.com> escreveu:
+> > 
+> > > Upon running sparse, "warning: dubious: !x | !y" is brought to notice
+> > > for this file.  Logical and bitwise OR are basically the same in this
+> > > context so it doesn't cause a runtime bug.  But let's change it to
+> > > logical OR to make it cleaner and silence the Sparse warning.
 > 
-> On Tue, Apr 20, 2021 at 16:27:10AM +0800, Vladimir Oltean wrote:
-> >
-> > On Tue, Apr 20, 2021 at 03:06:40AM +0000, Xiaoliang Yang wrote:
-> >> Hi Vladimir.
-> >>
-> >> On Mon, Apr 19, 2021 at 20:38PM +0800, Vladimir Oltean wrote:
-> >> >
-> >> >What is a scheduled queue? When time-aware scheduling is enabled on 
-> >> >the port, why are some queues scheduled and some not?
-> >>
-> >> The felix vsc9959 device can set SCH_TRAFFIC_QUEUES field bits to 
-> >> define which queue is scheduled. Only the set queues serves schedule 
-> >> traffic. In this driver we set all 8 queues to be scheduled in 
-> >> default, so all the traffic are schedule queues to schedule queue.
-> >
-> > I understand this, what I don't really understand is the distinction
-> > that the switch makes between 'scheduled' and 'non-scheduled'
-> > traffic.  What else does this distinction affect, apart from the
-> > guard bands added implicitly here? The tc-taprio qdisc has no notion
-> > of 'scheduled' queues, all queues are 'scheduled'. Do we ever need
-> > to set the scheduled queues mask to something other than 0xff? If
-> > so, when and why?
+> The old code is very likely to by slightly more efficient.
 > 
-> Yes, it seems only affect the guard band. If disabling always guard
-> band bit, we can use SCH_TRAFFIC_QUEUES to determine which queue is
-> non-scheduled queue. Only the non-scheduled queue traffic will reserve
-> the guard band. But tc-taprio qdisc cannot set scheduled or
-> non-scheduled queue now. Adding this feature can be discussed in
-> future. 
+> It may not matter here, but it might in a really hot path.
 > 
-> It is not reasonable to add guardband in each queue traffic in
-> default, so I disable the always guard band bit for TAS config.
+> Since !x | !y and !x || !y always have the same value
+> why is sparse complaining at all.
+> 
 
-Ok, if true, then it makes sense to disable ALWAYS_GUARD_BAND_SCH_Q.
+Smatch doesn't warn about | vs || if both sides are true/false.  But
+I've occasionally asked people if they were trying to do a fast path
+optimization but it's always just a typo.
+
+regards,
+dan carpenter
+
