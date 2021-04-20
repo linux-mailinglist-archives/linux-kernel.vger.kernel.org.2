@@ -2,154 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586B5365A0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCAD365A1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhDTN1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:27:44 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:40301 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231422AbhDTN1l (ORCPT
+        id S232459AbhDTN3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:29:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59292 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232303AbhDTN3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:27:41 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B835C580BEA;
-        Tue, 20 Apr 2021 09:27:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 20 Apr 2021 09:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=lf7gZahL/CrZJJ2BAIN/GfdWHpC
-        6k25LB28HnVyHJ24=; b=aHQfJNIfJMDDuMBwwETqMm4922gp0e/0stzqSx4sZ3a
-        IW/AXnYDor/sb7PJZUeLsh0hk1r/KweQzQ+ApWidEl+B3/Xmha+0W9pAo9u1j+cg
-        dcRhxdR7YWlBSEX4JReNIwAI516wHYAWR5Ptl8CoLF+DgteWFNHYYqbf1wRwZJR1
-        dUG0RK8IDki0UdgtLOZR99rVu+bzoeAJZwshtHU9RcSALBJhzwAjbBG7o0sDg69s
-        f4NfTgmKsHEz+qBwSOH1MlMnUfhI9/p1dL1vspP0rszctc5Gppw3Ee6FlZ4S9+On
-        PHQjr/SvyCSoVw6MMIe+zrwu6/Q2BYX3ziLcLDbTqoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=lf7gZa
-        hL/CrZJJ2BAIN/GfdWHpC6k25LB28HnVyHJ24=; b=XmAEdqb6EucLwKqbzKynCg
-        cg9Q9fwpCfia6QU3+NiczikPeGSoWr46j/b5WIsQKYxhx33RwgUVGNEI+mymmuaA
-        U33jD/mzsYdjEsAyNn0TzKoloP9+EKd/qSpIgmkq8863ose7rOvSWv/fia1RbHRi
-        5C0LDhxC8k4xjQkBQBv71wv7I67qy/eWAtI74XDsDjJF/xG7G7O9B1uWca56F8Ku
-        hWUfMgCouZhK/N1ZXZOR8XfQBRp8frBVILhsIpYvxvLStykD8I9cdEz7OOyq8sDo
-        Yz+eTLx2TnihH9ciCy6jHkMs/YKaFr4e+YHOgINrNUEgw8jxMILco0nJcIMmVMaA
-        ==
-X-ME-Sender: <xms:qtZ-YAVw4ljvfvo2dUZjFRnIVyR3mpKTUBNuF687kA0Iut8KEXVmpA>
-    <xme:qtZ-YEixH0wxP7D6QplvBF7C3e9meCxIUB_c67TigAll-66DLMRmGHfUeyQ4LVxaM
-    oOZ2-guyatM76ZiJnQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtiedgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttderjeenucfhrhhomhepuegvnhcu
-    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
-    gvrhhnpeevffdtteetgfdttdekueefgedttddtueeugeekgeetffeuteffjeduieehhfek
-    tdenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
-X-ME-Proxy: <xmx:qtZ-YBQhSmKY4hV3Pap0xsiUJFtijExxgBD_z2uCW9SJepXlYK0r1w>
-    <xmx:qtZ-YHH6YgtJ1Ijsz_FRSmUETK39ukNGUbYIcuUiqLatxoXh9BdYJw>
-    <xmx:qtZ-YJkxUbN7oyPxjrX-m6JjFAK1ExOYhLg7SFsA8dVspAGs9-6TPA>
-    <xmx:rdZ-YITUwajNWGhgAXvAupjvtkXNSARTHax81wgO1ND1A0-YQjeMfQ>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C81FB240057;
-        Tue, 20 Apr 2021 09:27:06 -0400 (EDT)
-Date:   Tue, 20 Apr 2021 09:27:05 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     linux-crypto@vger.kernel.org, dhowells@redhat.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vt@altlinux.org,
-        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v3 18/18] keyctl_pkey: Add pkey parameters saltlen and
- mgfhash for PSS
-Message-ID: <YH7WqfjNo33vI0VM@erythro>
-References: <20210420114124.9684-1-varad.gautam@suse.com>
- <20210420114124.9684-19-varad.gautam@suse.com>
+        Tue, 20 Apr 2021 09:29:34 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KD47xG166663;
+        Tue, 20 Apr 2021 09:28:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=r7qXV4Ucbak5vgyd7ROLcIVKBZPYTemDw/ykiqY6SYg=;
+ b=rPwYaU9qq29kTTv0X6zWH+Y9QoAMMR0r066osBDtHrVhZOYmI9YInWAOQ/heN4U1jksZ
+ P6nrQ47gkG3vD1J0wFYkrV2iqUGVA5SkDHNnXKeA7nfYj3wuYwVf1qby0QapVz59LSxF
+ PhK/2/kDgm3LSaspO1FoGmtFbeNbrT10viQlZ/MsS3Zm6BS79kRvTa1uuficT/8p5SOf
+ UxC4pdex+SKH5QcWFLfR3DOTsrZ+Mw+4/iz+JUDojr2v1sLxGemMCDPpHf+OpmL34ZqX
+ QxsxUmF0n55SOkaBzgzvZRsRH1qa/IebOfOACABu8ZikMuRL/2zvH6BbZOg4Pcp6s2/K fA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 381y7x9dvp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 09:28:09 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13KD49if166797;
+        Tue, 20 Apr 2021 09:28:09 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 381y7x9dtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 09:28:09 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13KDR9YH006552;
+        Tue, 20 Apr 2021 13:28:06 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 37yqa88xvx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 13:28:06 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13KDReOM28508444
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 13:27:40 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5ED9F4C050;
+        Tue, 20 Apr 2021 13:28:03 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA5B34C044;
+        Tue, 20 Apr 2021 13:27:58 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.82.136])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 20 Apr 2021 13:27:58 +0000 (GMT)
+Date:   Tue, 20 Apr 2021 16:27:56 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 1/2] secretmem/gup: don't check if page is secretmem
+ without reference
+Message-ID: <YH7W3MBR+XdyxlA7@linux.ibm.com>
+References: <20210420131611.8259-1-rppt@kernel.org>
+ <20210420131611.8259-2-rppt@kernel.org>
+ <95b7fa81-f72e-c63f-0456-4c25dee8a5eb@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420114124.9684-19-varad.gautam@suse.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <95b7fa81-f72e-c63f-0456-4c25dee8a5eb@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: umV0ysjUL103wxbfICo-4xhYTSyDzIUb
+X-Proofpoint-ORIG-GUID: dTV5P955knNPQLGIoMCHqafXwNzdKxMI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-20_06:2021-04-20,2021-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ mlxscore=0 mlxlogscore=682 bulkscore=0 suspectscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104200098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 13:41:23 +0200, Varad Gautam wrote:
-> keyctl pkey_* operations accept enc and hash parameters at present.
-> RSASSA-PSS signatures also require passing in the signature salt
-> length and the mgf hash function.
+On Tue, Apr 20, 2021 at 03:19:56PM +0200, David Hildenbrand wrote:
+> On 20.04.21 15:16, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > The check in gup_pte_range() whether a page belongs to a secretmem mapping
+> > is performed before grabbing the page reference.
+> > 
+> > To avoid potential race move the check after try_grab_compound_head().
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >   mm/gup.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index c3a17b189064..4b58c016e949 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -2080,13 +2080,13 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+> >   		VM_BUG_ON(!pfn_valid(pte_pfn(pte)));
+> >   		page = pte_page(pte);
+> > -		if (page_is_secretmem(page))
+> > -			goto pte_unmap;
+> > -
+> >   		head = try_grab_compound_head(page, 1, flags);
+> >   		if (!head)
+> >   			goto pte_unmap;
+> > +		if (page_is_secretmem(page))
+> > +			goto pte_unmap;
+> > +
 > 
-> Add parameters:
-> - 'saltlen' to feed in salt length of a PSS signature.
-> - 'mgfhash' to feed in the hash function used for MGF.
+> Looking at the hunk below, I wonder if you're missing a put_compound_head().
+
+Hmm, yes.
+ 
+> (also, I'd do if unlikely(page_is_secretmem()) but that's a different
+> discussion)
+
+I don't mind, actually. I don't think there would be massive secretmem
+usage soon.
+
+> >   		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
+> >   			put_compound_head(head, 1, flags);
+> >   			goto pte_unmap;
+> > 
 > 
-> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-> CC: Jarkko Sakkinen <jarkko@kernel.org>
-> CC: Ben Boeckel <me@benboeckel.net>
-> ---
-> v3: Rename slen to saltlen, update Documentation/security/keys/core.rst.
 > 
->  Documentation/security/keys/core.rst     | 14 +++++++++++++-
->  crypto/asymmetric_keys/asymmetric_type.c |  2 ++
->  include/linux/keyctl.h                   |  2 ++
->  security/keys/keyctl_pkey.c              | 13 +++++++++++++
->  4 files changed, 30 insertions(+), 1 deletion(-)
+> -- 
+> Thanks,
 > 
-> diff --git a/Documentation/security/keys/core.rst b/Documentation/security/keys/core.rst
-> index b3ed5c581034c..4bd774c56899e 100644
-> --- a/Documentation/security/keys/core.rst
-> +++ b/Documentation/security/keys/core.rst
-> @@ -1022,6 +1022,15 @@ The keyctl syscall functions are:
->  			which hash function was used, the hash function can be
->  			specified with this, eg. "hash=sha256".
->  
-> +	``mgfhash=<algo>`` In case of "RSASSA-PSS" ("enc=pss"), this specifies
-> +			the hash function used with the Mask Generation Function
-> +			to generate a signature, eg. "mgfhash=sha256". Supported
-> +			hashes are: sha1, sha224, sha256, sha384, and sha512.
-> +
-> +	``saltlen=<salt_length>`` In case of "RSASSA-PSS" ("enc=pss"), this
-> +			specifies the salt length as a u16, used to generate a
-                                                ^
+> David / dhildenb
+> 
 
-This feels like it is missing a comma at the designated location (after
-`length` if the whitespace gets mangled).
-
-> +			signature. Eg. "saltlen=32".
-> +
->       The ``__spare[]`` space in the parameter block must be set to 0.  This is
->       intended, amongst other things, to allow the passing of passphrases
->       required to unlock a key.
-> @@ -1700,6 +1709,8 @@ The structure has a number of fields, some of which are mandatory:
->  			__u32	in2_len;
->  		};
->  		enum kernel_pkey_operation op : 8;
-> +		__u16		salt_len;
-> +		const char	*mgf_hash_algo;
->  	};
->  
->       This includes the key to be used; a string indicating the encoding to use
-> @@ -1707,7 +1718,8 @@ The structure has a number of fields, some of which are mandatory:
->       RSASSA-PKCS1-v1.5 or RSAES-PKCS1-v1.5 encoding or "raw" if no encoding);
->       the name of the hash algorithm used to generate the data for a signature
->       (if appropriate); the sizes of the input and output (or second input)
-> -     buffers; and the ID of the operation to be performed.
-> +     buffers; the ID of the operation to be performed; salt length to be used
-> +     in case of RSASSA-PSS; and hash algorithm used with MGF for RSASSA-PSS.
->  
->       For a given operation ID, the input and output buffers are used as
->       follows::
-
-Thanks for the docs, they look good to me overall. Other than the comma:
-
-    Acked-by: Ben Boeckel <mathstuf@gmail.com>
-
---Ben
+-- 
+Sincerely yours,
+Mike.
