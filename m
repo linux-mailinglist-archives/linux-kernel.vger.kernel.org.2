@@ -2,78 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C04365019
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9BF365047
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbhDTCGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:06:25 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:60999 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229534AbhDTCGX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:06:23 -0400
-X-UUID: a621cc90d6e44dd98733707a5bf2256c-20210420
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Z09ggkvCRJiJ4/N9vlMDVPDlpKZyre12NKJNa+h4uZw=;
-        b=el27YFigHbltheeF4/OrPPrBwGB/2mHaIOAp+PXxxgVwIwshaC+8F2fLog3fC3+dmQCMX7EyKm+58C8AYmUb45XQO84O5L5U/yEorDJvd8tJkOn/DHmhouO+WbN6CfSW7kGufDz/ySduHg1FBDIHofn4NGgElDwv01qVdnZqcYE=;
-X-UUID: a621cc90d6e44dd98733707a5bf2256c-20210420
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 127489997; Tue, 20 Apr 2021 10:05:44 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr
- 2021 10:05:39 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Apr 2021 10:05:38 +0800
-Message-ID: <1618884338.29460.3.camel@mhfsdcap03>
-Subject: Re: [v9,0/7] PCI: mediatek: Add new generation controller support
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <youlin.pei@mediatek.com>,
-        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
-        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
-        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>,
-        Krzysztof Wilczyski <kw@linux.com>,
-        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Date:   Tue, 20 Apr 2021 10:05:38 +0800
-In-Reply-To: <20210419104432.GA2427@lpieralisi>
-References: <20210324030510.29177-1-jianjun.wang@mediatek.com>
-         <20210416192100.GA2745484@bjorn-Precision-5520>
-         <20210419104432.GA2427@lpieralisi>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S233440AbhDTCT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:19:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:41829 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229463AbhDTCT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 22:19:26 -0400
+IronPort-SDR: V8bSz+ECam3rMNF+Eg93IERy62i8VoYdEa91rqZ82KuXOlA57Aad7W/nvOb737WKYaltcP35Ns
+ PT2JOd5mm2tw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="193305761"
+X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
+   d="scan'208";a="193305761"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 19:18:55 -0700
+IronPort-SDR: fj3nSR0UD0M+1ZmhfSfTPFQayhH08zsxu5MyYhCrQgQEfLxxYiko6p5L+7/2ovmkyzaVaw/6FT
+ LJTZBxoOLAMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
+   d="scan'208";a="426737090"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by orsmga008.jf.intel.com with ESMTP; 19 Apr 2021 19:18:50 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [PATCH v3 02/12] iommu: Add iommu_split_block interface
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210413085457.25400-1-zhukeqian1@huawei.com>
+ <20210413085457.25400-3-zhukeqian1@huawei.com>
+ <fb350f27-be8b-80bf-1ce8-e7e8aba26f02@linux.intel.com>
+ <491da550-dc54-42e6-ac91-13d411575fad@huawei.com>
+ <bc2da48b-f4f7-5a46-2696-2c412a83d190@linux.intel.com>
+ <ac966fbc-7bc6-9d88-e53e-bcd92d536fdb@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <3c34baf1-6a57-5666-38a2-0c9d6188b8b8@linux.intel.com>
+Date:   Tue, 20 Apr 2021 10:09:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: B45CF740E0F6667A28FE967807155FA258A3BB8BAE458FD2526271E6569C26AC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <ac966fbc-7bc6-9d88-e53e-bcd92d536fdb@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA0LTE5IGF0IDExOjQ0ICswMTAwLCBMb3JlbnpvIFBpZXJhbGlzaSB3cm90
-ZToNCj4gT24gRnJpLCBBcHIgMTYsIDIwMjEgYXQgMDI6MjE6MDBQTSAtMDUwMCwgQmpvcm4gSGVs
-Z2FhcyB3cm90ZToNCj4gPiBPbiBXZWQsIE1hciAyNCwgMjAyMSBhdCAxMTowNTowM0FNICswODAw
-LCBKaWFuanVuIFdhbmcgd3JvdGU6DQo+ID4gPiBUaGVzZSBzZXJpZXMgcGF0Y2hlcyBhZGQgcGNp
-ZS1tZWRpYXRlay1nZW4zLmMgYW5kIGR0LWJpbmRpbmdzIGZpbGUgdG8NCj4gPiA+IHN1cHBvcnQg
-bmV3IGdlbmVyYXRpb24gUENJZSBjb250cm9sbGVyLg0KPiA+IA0KPiA+IEluY2lkZW50YWw6IGI0
-IGRvZXNuJ3Qgd29yayBvbiB0aGlzIHRocmVhZCwgSSBzdXNwZWN0IGJlY2F1c2UgdGhlDQo+ID4g
-dXN1YWwgc3ViamVjdCBsaW5lIGZvcm1hdCBpczoNCj4gPiANCj4gPiAgIFtQQVRDSCB2OSA5Lzdd
-DQo+ID4gDQo+ID4gaW5zdGVhZCBvZjoNCj4gPiANCj4gPiAgIFt2OSwwLzddDQo+ID4gDQo+ID4g
-Rm9yIGI0IGluZm8sIHNlZSBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vdXRpbHMvYjQv
-YjQuZ2l0L3RyZWUvUkVBRE1FLnJzdA0KPiANCj4gSmlhbmp1biB3aWxsIHVwZGF0ZSB0aGUgc2Vy
-aWVzIGFjY29yZGluZ2x5IChhbmQgcGxlYXNlIGFkZCB0byB2MTAgdGhlDQo+IHJldmlldyB0YWdz
-IHlvdSByZWNlaXZlZC4NCj4gDQo+IExvcmVuem8NCg0KWWVzLCBJIHdpbGwgdXBkYXRlIHRoaXMg
-c2VyaWVzIGluIHYxMCB0byBmaXggdGhlIHN1YmplY3QgbGluZSBmb3JtYXQgYW5kDQp1c2UgRVhQ
-T1JUX1NZTUJPTF9HUEwoKSwgdGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLg0KDQpUaGFua3MuDQoN
-Cg==
+Hi Keqian,
 
+On 4/20/21 9:25 AM, Keqian Zhu wrote:
+> Hi Baolu,
+> 
+> On 2021/4/19 21:33, Lu Baolu wrote:
+>> Hi Keqian,
+>>
+>> On 2021/4/19 17:32, Keqian Zhu wrote:
+>>>>> +EXPORT_SYMBOL_GPL(iommu_split_block);
+>>>> Do you really have any consumers of this interface other than the dirty
+>>>> bit tracking? If not, I don't suggest to make this as a generic IOMMU
+>>>> interface.
+>>>>
+>>>> There is an implicit requirement for such interfaces. The
+>>>> iommu_map/unmap(iova, size) shouldn't be called at the same time.
+>>>> Currently there's no such sanity check in the iommu core. A poorly
+>>>> written driver could mess up the kernel by misusing this interface.
+>>> Yes, I don't think up a scenario except dirty tracking.
+>>>
+>>> Indeed, we'd better not make them as a generic interface.
+>>>
+>>> Do you have any suggestion that underlying iommu drivers can share these code but
+>>> not make it as a generic iommu interface?
+>>>
+>>> I have a not so good idea. Make the "split" interfaces as a static function, and
+>>> transfer the function pointer to start_dirty_log. But it looks weird and inflexible.
+>>
+>> I understand splitting/merging super pages is an optimization, but not a
+>> functional requirement. So is it possible to let the vendor iommu driver
+>> decide whether splitting super pages when starting dirty bit tracking
+>> and the opposite operation during when stopping it? The requirement for
+> Right. If I understand you correct, actually that is what this series does.
+
+I mean to say no generic APIs, jut do it by the iommu subsystem itself.
+It's totally transparent to the upper level, just like what map() does.
+The upper layer doesn't care about either super page or small page is
+in use when do a mapping, right?
+
+If you want to consolidate some code, how about putting them in
+start/stop_tracking()?
+
+Best regards,
+baolu
+
+> We realized split/merge in IOMMU core layer, but don't force vendor driver to use it.
+> 
+> The problem is that when we expose these interfaces to vendor IOMMU driver, will also
+> expose them to upper driver.
+> 
+>> upper layer is that starting/stopping dirty bit tracking and
+>> mapping/unmapping are mutually exclusive.
+> OK, I will explicitly add the hints. Thanks.
+> 
+> Thanks,
+> Keqian
+>>
+>>>
+>>> On the other hand, if a driver calls map/unmap with split/merge at the same time,
+>>> it's a bug of driver, it should follow the rule.
+>>>
+>>
+>> Best regards,
+>> baolu
+>> .
+>>
