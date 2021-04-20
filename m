@@ -2,206 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8364365B51
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8638B365B5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhDTOjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:39:40 -0400
-Received: from mail-il1-f171.google.com ([209.85.166.171]:42687 "EHLO
-        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhDTOji (ORCPT
+        id S232777AbhDTOlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232851AbhDTOky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:39:38 -0400
-Received: by mail-il1-f171.google.com with SMTP id c4so5669315ilq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:39:07 -0700 (PDT)
+        Tue, 20 Apr 2021 10:40:54 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62C9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:40:20 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id w23so42847509ejb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:40:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wDWQCx2ZEYEZtk8z9074r5Idvp5NdDJI3fzKNITaGfU=;
+        b=jzoF00kY1Vgahjz/TfGq1cVrvyuUV1nxAd7/YCD5nnlFsdPMgwdDtbSczU6/eEr3es
+         FRyyzqTN0O52sjEzgrPl9xzt33ZpQugABpEq5o6zI5Oky2ednpQ8QvGq2uhPkfbQDski
+         A65/+GeTR8z3mO+jFgV3Nr/s3N1ze0KhA7h3d4kiI2LJFNE2/QBmFq+rV5qWYbI2ZOxa
+         fP6ma4bBKg3y8qTgtr4Dpm1PNbG9/u4FcpncYL/86t/ynoKbpfPYC49s8CmU5KkaeVZp
+         +jKsj87jiiDQoRnjv/6AQ+afWFAkYDjK59/zRPt2IOIcShUE3ZlmRqrYDCinBvKHczNg
+         rpyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=78qdlKaXI5c/gSLjMnYAG5j/XtzAnKAkFt6jrSWobTY=;
-        b=sSc0d8kZB3KD1Cle4/01auORLNfCIOMpvE3RV1TH+uWOVQhqy2r3Ixry/yrwVJQLrT
-         QSi9qszCt//6vK8gmPezO8sdE+H7cav6DZu53y9eTo+l4sNh5LtR3y8UJ7sUk/TDyLtW
-         y+M4X18mXCBQ7TDLtBbNTndCeu7ZJQ/x9ZwWjbEjoC1qEM9fLUn9ponw8oATdxLRrQhw
-         QGW1V8AGsyQmhjLGwORSnlSXbQRg6UAJLoyvXG/9kwaDOazarCGZxTH8fzPcqCzb8l62
-         n5P0vhnws0RoiiqK+iUr2sGsis2CQ3h05o3kFHErYU4ziPW+eWASDswC7afjNVSaP1xo
-         /j1A==
-X-Gm-Message-State: AOAM532cnj+ygClho0TUx+Vx9l9A5CsvnvNMwinOpgnrH0uPxFix70iY
-        zmmnkNQK1FeLXw+VJygscCMzLM450W4=
-X-Google-Smtp-Source: ABdhPJwE0P8x78EkGHi9DtTb/pP1avcbuKkIaMy3rapRcfs05mICBMGpo7yqu5PV0J4ml7b1NLgkGA==
-X-Received: by 2002:a05:6e02:dea:: with SMTP id m10mr22189841ilj.112.1618929547061;
-        Tue, 20 Apr 2021 07:39:07 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id e6sm8691965iom.2.2021.04.20.07.39.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 07:39:06 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 14:39:04 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] percpu: partial chunk depopulation
-Message-ID: <YH7niMfDo3AzF7lG@google.com>
-References: <20210419225047.3415425-1-dennis@kernel.org>
- <YH4KzmddTHWx9Gih@google.com>
- <8a1fa15c-3373-6357-2a2e-4a2b8b3bfb06@linux.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wDWQCx2ZEYEZtk8z9074r5Idvp5NdDJI3fzKNITaGfU=;
+        b=fD7TnwD27wDPvvFyK1QGMku4VHGUb23oZJb3lo8GY4Ji+8YfcE56EfTyHhmlnia2uP
+         3kFAT4Tlexf1JQcU2LWb9Su/8reZ+G5qkGgXPN0FkgzIpP1HGAryttGZRCvi/WwveRox
+         ZWxbhvLI2jvxve0XX0YjAn0wKlTo1HrP7gqcnnHqnvupk9c4kGfmKsWOlfNLEDC0+F2Z
+         QSEiMdROmDCWnW4ImP9YrPji6NP74VjgSp8HdnJ92ENroepndSkg42YmSuSctASv6Qwr
+         jupcfEbplJaPat0blz10K4CwX0Lr0kbSKMk71vzqtz97XQHWbdkfPV525DXco/dbOU7E
+         lwpA==
+X-Gm-Message-State: AOAM531pphKd+pa+jHJ60ycOT56yY9p3UJUWM1rewdUeXJ+6eH39GX4n
+        6fSkVL3GqF3ks4bO1yMZyrH24eV/WtQQ9GHibIQwiA==
+X-Google-Smtp-Source: ABdhPJwvQeOER6Ge1OQ1HxeS2VdoudW6xuPXPcMfX+yfnqgel8Ee0RyfbzZd+nvpOOgqXt5rAEXDaMlqbilsNxbkNhs=
+X-Received: by 2002:a17:906:1c8f:: with SMTP id g15mr27599057ejh.20.1618929619246;
+ Tue, 20 Apr 2021 07:40:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a1fa15c-3373-6357-2a2e-4a2b8b3bfb06@linux.ibm.com>
+References: <20210419184455.2987243-1-lrizzo@google.com> <20210419191712.GB26214@worktop.programming.kicks-ass.net>
+ <CAMOZA0JxwQFfA=acfr255xcR85ztv-URwaQQFHR6RrLk-cPbvg@mail.gmail.com>
+ <YH6bV9W4lgIl4Fry@hirez.programming.kicks-ass.net> <CAMOZA0J4q2XSmhxB_uc-Q2mOA=K_FcvZqy3G+8ME=QMicOF=Lg@mail.gmail.com>
+ <YH7XlxfvrdM1+oCe@hirez.programming.kicks-ass.net>
+In-Reply-To: <YH7XlxfvrdM1+oCe@hirez.programming.kicks-ass.net>
+From:   Luigi Rizzo <lrizzo@google.com>
+Date:   Tue, 20 Apr 2021 16:40:07 +0200
+Message-ID: <CAMOZA0LxPLW2juGq2kZgrTT31L+rTq2LaAD17omGC++VHDOX2w@mail.gmail.com>
+Subject: Re: [PATCH] smp: add a best_effort version of smp_call_function_many()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, axboe@kernel.dk,
+        paulmck@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 04:37:02PM +0530, Pratik Sampat wrote:
-> 
-> On 20/04/21 4:27 am, Dennis Zhou wrote:
-> > On Mon, Apr 19, 2021 at 10:50:43PM +0000, Dennis Zhou wrote:
-> > > Hello,
-> > > 
-> > > This series is a continuation of Roman's series in [1]. It aims to solve
-> > > chunks holding onto free pages by adding a reclaim process to the percpu
-> > > balance work item.
-> > > 
-> > > The main difference is that the nr_empty_pop_pages is now managed at
-> > > time of isolation instead of intermixed. This helps with deciding which
-> > > chunks to free instead of having to interleave returning chunks to
-> > > active duty.
-> > > 
-> > > The allocation priority is as follows:
-> > >    1) appropriate chunk slot increasing until fit
-> > >    2) sidelined chunks
-> > >    3) full free chunks
-> > > 
-> > > The last slot for to_depopulate is never used for allocations.
-> > > 
-> > > A big thanks to Roman for initiating the work and being available for
-> > > iterating on these ideas.
-> > > 
-> > > This patchset contains the following 4 patches:
-> > >    0001-percpu-factor-out-pcpu_check_block_hint.patch
-> > >    0002-percpu-use-pcpu_free_slot-instead-of-pcpu_nr_slots-1.patch
-> > >    0003-percpu-implement-partial-chunk-depopulation.patch
-> > >    0004-percpu-use-reclaim-threshold-instead-of-running-for-.patch
-> > > 
-> > > 0001 and 0002 are clean ups. 0003 implement partial chunk depopulation
-> > > initially from Roman. 0004 adds a reclaim threshold so we do not need to
-> > > schedule for every page freed.
-> > > 
-> > > This series is on top of percpu$for-5.14 67c2669d69fb.
-> > > 
-> > > diffstats below:
-> > > 
-> > > Dennis Zhou (2):
-> > >    percpu: use pcpu_free_slot instead of pcpu_nr_slots - 1
-> > >    percpu: use reclaim threshold instead of running for every page
-> > > 
-> > > Roman Gushchin (2):
-> > >    percpu: factor out pcpu_check_block_hint()
-> > >    percpu: implement partial chunk depopulation
-> > > 
-> > >   mm/percpu-internal.h |   5 +
-> > >   mm/percpu-km.c       |   5 +
-> > >   mm/percpu-stats.c    |  20 ++--
-> > >   mm/percpu-vm.c       |  30 ++++++
-> > >   mm/percpu.c          | 252 ++++++++++++++++++++++++++++++++++++++-----
-> > >   5 files changed, 278 insertions(+), 34 deletions(-)
-> > > 
-> > > Thanks,
-> > > Dennis
-> > Hello Pratik,
-> > 
-> > Do you mind testing this series again on POWER9? The base is available
-> > here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git/log/?h=for-5.14
-> > 
-> > Thanks,
-> > Dennis
-> 
-> Hello Dennis, I have tested this patchset on POWER9.
-> 
-> I have tried variations of the percpu_test in the top level and nested cgroups
-> creation as the test with 1000:10 didn't show any benefits.
+On Tue, Apr 20, 2021 at 3:33 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Apr 20, 2021 at 12:41:08PM +0200, Luigi Rizzo wrote:
+> > On Tue, Apr 20, 2021 at 11:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
+...
+> > My case too requires that the request is eventually handled, but with
+> > this non-blocking IPI the caller has a better option than blocking:
+> > it can either retry the multicast IPI at a later time if conditions allow,
+> > or it can post a dedicated CSD (with the advantage that being my
+> > requests idempotent, if the CSD is locked there is no need to retry
+> > because it means the handler has not started yet).
+> >
+> > In fact, if we had the option to use dedicated CSDs for multicast IPI,
+> > we wouldn't even need to retry because we'd know that the posted CSD
+> > is for our call back and not someone else's.
+>
+> What are you doing that CSD contention is such a problem?
 
-This is most likely because the 1 in every 11 still pins every page
-while 1 in 50 does not. Can you try the patch below on top? I think it
-may show slightly better perf as well. If it doesn't I'll just drop it.
+Basically what I said in a previous email: send a targeted interrupt to a
+subset of the CPUs (large enough that the multicast IPI makes sense) so
+they can start doing some work that has been posted for them.
+Not too different from RFS, in a way.
 
-> 
-> The following example shows more consistent benefits with the de-allocation
-> strategy.
-> Outer: 1000
-> Inner: 50
-> # ./percpu_test.sh
-> Percpu:             6912 kB
-> Percpu:           532736 kB
-> Percpu:           278784 kB
-> 
-> I believe it could be a result of bulk freeing within "free_unref_page_commit",
-> where pages are only free'd if pcp->count >= pcp->high. As POWER has a larger
-> page size it would end up creating lesser number of pages but with the
-> effects of fragmentation.
+The sender doesn't need (or want, obviously) to block, but occasional
+O(100+us) stalls were clearly visible, and trivial to reproduce in tests
+(e.g. when the process on the target CPU runs getrusage() and has
+a very large number of threads, even if idle ones).
 
-This is unrelated to per cpu pages in slab/slub. Percpu is a separate
-memory allocator.
+Even the _cond() version is not a sufficient to avoid the stall:
+I could in principle use the callback to skip CPUs for which I
+have a request posted and not processed yet, but if the csd
+is in use by another pending IPI I have no alternative but spin.
 
-> 
-> Having said that, the patchset and its behavior does look good to me.
-
-Thanks, can I throw the following on the appropriate patches? In the
-future it's good to be explicit about this because some prefer to credit
-different emails.
-
-Tested-by: Pratik Sampat <psampat@linux.ibm.com>
-
-Thanks,
-Dennis
-
-The following may do a little better on power9:
----
-From a1464c4d5900cca68fd95b935178d72bb74837d5 Mon Sep 17 00:00:00 2001
-From: Dennis Zhou <dennis@kernel.org>
-Date: Tue, 20 Apr 2021 14:25:20 +0000
-Subject: [PATCH] percpu: convert free page float to bytes
-
-The percpu memory allocator keeps around a minimum number of free pages
-to ensure we can satisfy atomic allocations. However, we've always kept
-this number in terms of pages. On certain architectures like arm and
-powerpc, the default page size could be 64k instead of 4k. So, start
-with a target number of free bytes and then convert to pages.
-
-Signed-off-by: Dennis Zhou <dennis@kernel.org>
----
- mm/percpu.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/mm/percpu.c b/mm/percpu.c
-index ba13e683d022..287fe3091244 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -80,6 +80,7 @@
- #include <linux/mutex.h>
- #include <linux/percpu.h>
- #include <linux/pfn.h>
-+#include <linux/sizes.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/vmalloc.h>
-@@ -107,11 +108,12 @@
- /* chunks in slots below this are subject to being sidelined on failed alloc */
- #define PCPU_SLOT_FAIL_THRESHOLD	3
- 
--#define PCPU_EMPTY_POP_PAGES_LOW	2
--#define PCPU_EMPTY_POP_PAGES_HIGH	4
-+#define PCPU_EMPTY_POP_PAGES_LOW	(max_t(int, (SZ_8K) / PAGE_SIZE, 1))
-+#define PCPU_EMPTY_POP_PAGES_HIGH	(max_t(int, (SZ_16K) / PAGE_SIZE, \
-+					       PCPU_EMPTY_POP_PAGES_LOW + 1))
- 
- /* only schedule reclaim if there are at least N empty pop pages sidelined */
--#define PCPU_EMPTY_POP_RECLAIM_THRESHOLD	4
-+#define PCPU_EMPTY_POP_RECLAIM_THRESHOLD	(PCPU_EMPTY_POP_PAGES_HIGH)
- 
- #ifdef CONFIG_SMP
- /* default addr <-> pcpu_ptr mapping, override in asm/percpu.h if necessary */
--- 
-2.31.1.368.gbe11c130af-goog
-
+cheers
+luigi
