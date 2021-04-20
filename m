@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4793D365AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D2F365AA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhDTN5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:57:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49844 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232253AbhDTN5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:57:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618927028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lvmyWLVNyKpzZxwVe1+/Riv3KeBC0cRALAmWFhQu6O4=;
-        b=Ybue4AT2OizHnD22Drd25oWnK7r4f4A/RlWeUbitxckHG/CS+Z6n08YglYyTcCvDl/qWMk
-        GVCHakE16znkWrab0ao5hsiWgilzl99Tz/P1eqYLRoeiWSq8CiUeix6tEB3NyQP6X1kzAT
-        6PwkuRBVUTCEp+xqOO3xw8LY6k0S7Lg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 414FBB061;
-        Tue, 20 Apr 2021 13:57:08 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 15:57:07 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
- memory accounting
-Message-ID: <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
-References: <20210420121354.1160437-1-rppt@kernel.org>
- <20210420132430.GB3596236@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420132430.GB3596236@casper.infradead.org>
+        id S232448AbhDTN7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:59:17 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:36765 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhDTN7P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:59:15 -0400
+Received: by mail-oi1-f173.google.com with SMTP id v6so11197037oiv.3;
+        Tue, 20 Apr 2021 06:58:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Kl/HdC6UYvnDbbF4wYRMMSs2xIVc93NKIkmpe2ylv/Y=;
+        b=tSS70KtEO61nEHubzz8/EPxvkUv60OzEqiNLYHXEsBXzWexN0kDnBtqjqTPjy+KdJm
+         pH8vmBtaX1fs8akUf9lMGQH+sc4yc0ieI+Jdo3NTG0pc9eHw7PQx63ltbDUViZLB3ivi
+         lcPyxxa5VDAvju1vKnpppgHpWzdtZl19Vv+VsOsEqFaMH93i56qVv7IN19eeWn5ESbxi
+         zlrTfklnRa5heJqJ4AsjkMaTTBmgdxstLKgey7XAL9kCE8gi/zlscbiNyfE7xGaaID4O
+         Aj+m1S2UGFAykcSbKuEYoPpmd1H9nDsqilcpMbJ2JpvEDwKATSO78suKOMjQoff7Ex4W
+         n/yw==
+X-Gm-Message-State: AOAM532bzHIzoVjdnDQS9r7k9RazEO4Gh1183XmKjUVCCX3x6RoFY94v
+        DLLFDBLMOacqLlWKk2kVtw==
+X-Google-Smtp-Source: ABdhPJw25ncs9k0AEknxek2E28DfrCDHuZPo05s3wKLawuoCrO9ETCuf/42fREidw6vw5JWxLvmu2Q==
+X-Received: by 2002:aca:3684:: with SMTP id d126mr3137121oia.129.1618927123047;
+        Tue, 20 Apr 2021 06:58:43 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 104sm660466oti.52.2021.04.20.06.58.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 06:58:42 -0700 (PDT)
+Received: (nullmailer pid 3235335 invoked by uid 1000);
+        Tue, 20 Apr 2021 13:58:41 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     robh+dt@kernel.org, tejas.patel@xilinx.com,
+        michal.simek@xilinx.com, rajan.vaja@xilinx.com,
+        linux-arm-kernel@lists.infradead.org, amit.sunil.dhamne@xilinx.com,
+        dragan.cvetic@xilinx.com, derek.kiernan@xilinx.com,
+        jolly.shah@xilinx.com, git@xilinx.com, chinnikishore369@gmail.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210420081153.17020-5-nava.manne@xilinx.com>
+References: <20210420081153.17020-1-nava.manne@xilinx.com> <20210420081153.17020-5-nava.manne@xilinx.com>
+Subject: Re: [PATCH 4/5] misc: doc: Add binding doc for the zynqmp afi config driver
+Date:   Tue, 20 Apr 2021 08:58:41 -0500
+Message-Id: <1618927121.480164.3235334.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 14:24:30, Matthew Wilcox wrote:
-> On Tue, Apr 20, 2021 at 03:13:54PM +0300, Mike Rapoport wrote:
-> > Add a paragraph that explains that it may happen that the counters in
-> > /proc/meminfo do not add up to the overall memory usage.
+On Tue, 20 Apr 2021 13:41:52 +0530, Nava kishore Manne wrote:
+> This patch adds the binding document for the zynqmp afi
+> config driver.
 > 
-> ... that is, the sum may be lower because memory is allocated for other
-> purposes that is not reported here, right?
-
-yes. Many direct page allocator users are not accounted in any of the
-existing counters.
-
-> Is it ever possible for it to be higher?  Maybe due to a race when
-> sampling the counters?
-
-Yes likely possible. You will never get an atomic snapshot of all
-counters.
-
-> >  Provides information about distribution and utilization of memory.  This
-> > -varies by architecture and compile options.  The following is from a
-> > -16GB PIII, which has highmem enabled.  You may not have all of these fields.
-> > +varies by architecture and compile options. Please note that it may happen
-> > +that the memory accounted here does not add up to the overall memory usage
-> > +and the difference for some workloads can be substantial. In many cases there
-> > +are other means to find out additional memory using subsystem specific
-> > +interfaces, for instance /proc/net/sockstat for TCP memory allocations.
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> ---
+>  .../bindings/misc/xlnx,zynqmp-afi-fpga.yaml   | 136 ++++++++++++++++++
+>  1 file changed, 136 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml
 > 
-> How about just:
-> 
-> +varies by architecture and compile options.  The memory reported here
-> +may not add up to the overall memory usage and the difference for some
-> +workloads can be substantial. [...]
-> 
-> But I'd like to be a bit more explicit about the reason, hence my question
-> above to be sure I understand.
-> 
-> 
-> It's also not entirely clear which of the fields in meminfo can be
-> usefully summed.  VmallocTotal is larger than MemTotal, for example.
 
-Yes. Many/Most counters cannot be simply sumed up. A trivial example would be
-Active/Inactive is a sum of both anona and file. Mlocked will be
-accounted in LRU pages and Unevictable. MemAvailable is not really a
-counter... 
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Usual memory consumption is usually something like LRU pages + Slab
-memory + kernel stack + vmalloc used + pcp.
+yamllint warnings/errors:
 
-> But I know that KernelStack is allocated through vmalloc these days,
-> and I don't know whether VmallocUsed includes KernelStack or whether I
-> can sum them.  Similarly, is Mlocked a subset of Unevictable?
-> 
-> There is some attempt at explaining how these numbers fit together, but
-> it's outdated, and doesn't include Mlocked, Unevictable or KernelStack
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.example.dt.yaml:0:0: /example-0/firmware/zynqmp-firmware: failed to match any schema with compatible: ['xlnx,zynqmp-firmware']
+Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.example.dt.yaml:0:0: /example-0/firmware/zynqmp-firmware/afi: failed to match any schema with compatible: ['xlnx,afi-fpga']
 
-Agreed there is a lot of tribal knowledge or even misconceptions flying
-around and it will take much more work to put everything into shape.
-This is only one tiny step forward.
--- 
-Michal Hocko
-SUSE Labs
+See https://patchwork.ozlabs.org/patch/1468230
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
