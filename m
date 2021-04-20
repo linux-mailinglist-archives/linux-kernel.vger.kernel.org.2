@@ -2,148 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED1F365739
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482C136573C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhDTLMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 07:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231655AbhDTLMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A23961354;
-        Tue, 20 Apr 2021 11:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618917089;
-        bh=BNW3MtqZ8adN3h4rDrUM0FUx8nm3g6xveqFpE6MpLT8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z6cwQmEMiqsPtZpZYvgil/xeEI1AHtTvR+BRd5BC+kiOusnWAHv4WejvSFlJ2PkpW
-         QW8Yez6c8Hlwvp8WkEeOVSDJwUEwfYw8+ltM9pocZwZ+OLDesqPIlkhfvhu9vni/NE
-         MFmJa0kQlFoyBekJK9qCdPp0TPZJukIWhr+Z7BUXPKgjN4mFkOHyTkD3OjaBqe82YQ
-         1SufCIMMIu4FmAvZ0C0ETVM9mrFCYdU8HGXhqRA3p3FN2zoXSIOdQSEQIQCUx2yrZn
-         wGw2oVv6JOWIZbbBhjigi63PoFp4QHU4uJFVhS+2SK2lbUvC6Ou72UwdKpOJVTlsO6
-         u4WspBHPuVTlg==
-Date:   Tue, 20 Apr 2021 16:41:25 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Tom Zanussi <tom.zanussi@linux.intel.com>
-Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
-        kan.liang@linux.intel.com, dave.jiang@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] dmaengine: idxd: Add IDXD performance monitor
- support
-Message-ID: <YH623ULPRbdi1ker@vkoul-mobl.Dlink>
-References: <cover.1617467772.git.zanussi@kernel.org>
- <d38a8b3a5d087f1df918fa98627938ef0c898208.1617467772.git.zanussi@kernel.org>
+        id S231948AbhDTLMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 07:12:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231922AbhDTLMN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:12:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618917101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8LUAbMij+bq8BEclnHrdbDTYNJ89Yzaa7j+6TnR+vVg=;
+        b=jUacsOb2ERP451UoHuWFwQ7fU/uKPP4dmue0/LmvnW0G2/oBA1dm7M65ediDpYErmJGNbl
+        1potvp+RWerdMSQ/fe8MCnDHBj6xyR5qociRfJOx+nQz6zFk0sJFXQi8MsE5exQx8tLiUk
+        Uetbvl8wLTfcqWey3wZV7tKoDPIWwBQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-wErAbLGeNVKEeRi9aTU0ow-1; Tue, 20 Apr 2021 07:11:34 -0400
+X-MC-Unique: wErAbLGeNVKEeRi9aTU0ow-1
+Received: by mail-ej1-f72.google.com with SMTP id o25-20020a1709061d59b029037c94676df5so4647504ejh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 04:11:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8LUAbMij+bq8BEclnHrdbDTYNJ89Yzaa7j+6TnR+vVg=;
+        b=SfWUwiSuBaANynBq6tagmMn1JaIkZJ/wdo16g3l+QMV9ukRw3jNhD0LpnsJ9hGV2nq
+         3hlWJtST9StsVMpMvD4jSTSXq/LK5+BL0jrLGY1IXq1Y99cM3zVrMHZYGXVfpgKkB8QP
+         8DxTtGZ3gjvjYFXh78uI9pGzDVfhl+2VvweTR6liqU9azdirHWBSWSbLmMyDrOPCk42Q
+         ivlhUQQkQEoj/zvcUj1KqgW0ruiCy0jb9EW4ogfzTPRGL/LwGXWQX/PBWe3soas5epSW
+         KFk/wzFdvrZUaDM2OgBhl0DJb6rneGMManl9leL9JPEax7jYzYzwWtcHGJrhC894Y6Vb
+         CDHA==
+X-Gm-Message-State: AOAM530UBoYMtVvp1+u4697MkOulLvJEfIt3D27395mZiRftvg2Qy6Bq
+        2EJuHE1d4ZNRPd1uDBvFMDY/L96//3/VM6CsEx9LtPwazqdgEsqK9mQoeIZrDJUnvIhrA+hGCpA
+        4GyqX9IItxUjl1wb31Bd31P+H
+X-Received: by 2002:a05:6402:1a:: with SMTP id d26mr31573510edu.99.1618917093347;
+        Tue, 20 Apr 2021 04:11:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQLuC6VFZ1zOtaePYOk4wTLVahIrKYRZErwJqWp0EoHPUsPWs+uYjaDj5GKzrEA5HicabF2g==
+X-Received: by 2002:a05:6402:1a:: with SMTP id d26mr31573477edu.99.1618917093083;
+        Tue, 20 Apr 2021 04:11:33 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dc24sm6047099ejb.123.2021.04.20.04.11.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 04:11:32 -0700 (PDT)
+Subject: Re: [PATCH v13 00/12] Add AMD SEV guest live migration support
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com
+References: <cover.1618498113.git.ashish.kalra@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <65ebdd0c-3224-742b-d0dd-5003309d1d62@redhat.com>
+Date:   Tue, 20 Apr 2021 13:11:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d38a8b3a5d087f1df918fa98627938ef0c898208.1617467772.git.zanussi@kernel.org>
+In-Reply-To: <cover.1618498113.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-04-21, 11:45, Tom Zanussi wrote:
+On 15/04/21 17:52, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> The series add support for AMD SEV guest live migration commands. To protect the
+> confidentiality of an SEV protected guest memory while in transit we need to
+> use the SEV commands defined in SEV API spec [1].
+> 
+> SEV guest VMs have the concept of private and shared memory. Private memory
+> is encrypted with the guest-specific key, while shared memory may be encrypted
+> with hypervisor key. The commands provided by the SEV FW are meant to be used
+> for the private memory only. The patch series introduces a new hypercall.
+> The guest OS can use this hypercall to notify the page encryption status.
+> If the page is encrypted with guest specific-key then we use SEV command during
+> the migration. If page is not encrypted then fallback to default.
+> 
+> The patch uses the KVM_EXIT_HYPERCALL exitcode and hypercall to
+> userspace exit functionality as a common interface from the guest back to the
+> VMM and passing on the guest shared/unencrypted page information to the
+> userspace VMM/Qemu. Qemu can consult this information during migration to know
+> whether the page is encrypted.
+> 
+> This section descibes how the SEV live migration feature is negotiated
+> between the host and guest, the host indicates this feature support via
+> KVM_FEATURE_CPUID. The guest firmware (OVMF) detects this feature and
+> sets a UEFI enviroment variable indicating OVMF support for live
+> migration, the guest kernel also detects the host support for this
+> feature via cpuid and in case of an EFI boot verifies if OVMF also
+> supports this feature by getting the UEFI enviroment variable and if it
+> set then enables live migration feature on host by writing to a custom
+> MSR, if not booted under EFI, then it simply enables the feature by
+> again writing to the custom MSR. The MSR is also handled by the
+> userspace VMM/Qemu.
+> 
+> A branch containing these patches is available here:
+> https://github.com/AMDESE/linux/tree/sev-migration-v13
+> 
+> [1] https://developer.amd.com/wp-content/resources/55766.PDF
 
-> +config INTEL_IDXD_PERFMON
-> +	bool "Intel Data Accelerators performance monitor support"
-> +	depends on INTEL_IDXD
-> +	default y
+I have queued patches 1-6.
 
-default y..?
+For patches 8 and 10 I will post my own version based on my review and 
+feedback.
 
->  /* IDXD software descriptor */
-> @@ -369,4 +399,19 @@ int idxd_cdev_get_major(struct idxd_device *idxd);
->  int idxd_wq_add_cdev(struct idxd_wq *wq);
->  void idxd_wq_del_cdev(struct idxd_wq *wq);
->  
-> +/* perfmon */
-> +#ifdef CONFIG_INTEL_IDXD_PERFMON
+For guest patches, please repost separately so that x86 maintainers will 
+notice them and ack them.
 
-maybe use IS_ENABLED()
+Paolo
 
-> @@ -556,6 +562,8 @@ static int __init idxd_init_module(void)
->  	for (i = 0; i < IDXD_TYPE_MAX; i++)
->  		idr_init(&idxd_idrs[i]);
->  
-> +	perfmon_init();
-> +
->  	err = idxd_register_bus_type();
->  	if (err < 0)
->  		return err;
-> @@ -589,5 +597,6 @@ static void __exit idxd_exit_module(void)
->  	pci_unregister_driver(&idxd_pci_driver);
->  	idxd_cdev_remove();
->  	idxd_unregister_bus_type();
-> +	perfmon_exit();
+> Changes since v12:
+> - Reset page encryption status during early boot instead of just
+>    before the kexec to avoid SMP races during kvm_pv_guest_cpu_reboot().
+> - Remove incorrect log message in case of non-EFI boot and implicit
+>    enabling of SEV live migration feature.
+> 
+> Changes since v11:
+> - Clean up and remove kvm_x86_ops callback for page_enc_status_hc and
+>    instead add a new per-VM flag to support/enable the page encryption
+>    status hypercall.
+> - Remove KVM_EXIT_DMA_SHARE/KVM_EXIT_DMA_UNSHARE exitcodes and instead
+>    use the KVM_EXIT_HYPERCALL exitcode for page encryption status
+>    hypercall to userspace functionality.
+> 
+> Changes since v10:
+> - Adds new KVM_EXIT_DMA_SHARE/KVM_EXIT_DMA_UNSHARE hypercall to
+>    userspace exit functionality as a common interface from the guest back to the
+>    KVM and passing on the guest shared/unencrypted region information to the
+>    userspace VMM/Qemu. KVM/host kernel does not maintain the guest shared
+>    memory regions information anymore.
+> - Remove implicit enabling of SEV live migration feature for an SEV
+>    guest, now this is explicitly in control of the userspace VMM/Qemu.
+> - Custom MSR handling is also now moved into userspace VMM/Qemu.
+> - As KVM does not maintain the guest shared memory region information
+>    anymore, sev_dbg_crypt() cannot bypass unencrypted guest memory
+>    regions without support from userspace VMM/Qemu.
+> 
+> Changes since v9:
+> - Transitioning from page encryption bitmap to the shared pages list
+>    to keep track of guest's shared/unencrypted memory regions.
+> - Move back to marking the complete _bss_decrypted section as
+>    decrypted in the shared pages list.
+> - Invoke a new function check_kvm_sev_migration() via kvm_init_platform()
+>    for guest to query for host-side support for SEV live migration
+>    and to enable the SEV live migration feature, to avoid
+>    #ifdefs in code
+> - Rename MSR_KVM_SEV_LIVE_MIG_EN to MSR_KVM_SEV_LIVE_MIGRATION.
+> - Invoke a new function handle_unencrypted_region() from
+>    sev_dbg_crypt() to bypass unencrypted guest memory regions.
+> 
+> Changes since v8:
+> - Rebasing to kvm next branch.
+> - Fixed and added comments as per review feedback on v8 patches.
+> - Removed implicitly enabling live migration for incoming VMs in
+>    in KVM_SET_PAGE_ENC_BITMAP, it is now done via KVM_SET_MSR ioctl.
+> - Adds support for bypassing unencrypted guest memory regions for
+>    DBG_DECRYPT API calls, guest memory region encryption status in
+>    sev_dbg_decrypt() is referenced using the page encryption bitmap.
+> 
+> Changes since v7:
+> - Removed the hypervisor specific hypercall/paravirt callback for
+>    SEV live migration and moved back to calling kvm_sev_hypercall3
+>    directly.
+> - Fix build errors as
+>    Reported-by: kbuild test robot <lkp@intel.com>, specifically fixed
+>    build error when CONFIG_HYPERVISOR_GUEST=y and
+>    CONFIG_AMD_MEM_ENCRYPT=n.
+> - Implicitly enabled live migration for incoming VM(s) to handle
+>    A->B->C->... VM migrations.
+> - Fixed Documentation as per comments on v6 patches.
+> - Fixed error return path in sev_send_update_data() as per comments
+>    on v6 patches.
+> 
+> Changes since v6:
+> - Rebasing to mainline and refactoring to the new split SVM
+>    infrastructre.
+> - Move to static allocation of the unified Page Encryption bitmap
+>    instead of the dynamic resizing of the bitmap, the static allocation
+>    is done implicitly by extending kvm_arch_commit_memory_region() callack
+>    to add svm specific x86_ops which can read the userspace provided memory
+>    region/memslots and calculate the amount of guest RAM managed by the KVM
+>    and grow the bitmap.
+> - Fixed KVM_SET_PAGE_ENC_BITMAP ioctl to set the whole bitmap instead
+>    of simply clearing specific bits.
+> - Removed KVM_PAGE_ENC_BITMAP_RESET ioctl, which is now performed using
+>    KVM_SET_PAGE_ENC_BITMAP.
+> - Extended guest support for enabling Live Migration feature by adding a
+>    check for UEFI environment variable indicating OVMF support for Live
+>    Migration feature and additionally checking for KVM capability for the
+>    same feature. If not booted under EFI, then we simply check for KVM
+>    capability.
+> - Add hypervisor specific hypercall for SEV live migration by adding
+>    a new paravirt callback as part of x86_hyper_runtime.
+>    (x86 hypervisor specific runtime callbacks)
+> - Moving MSR handling for MSR_KVM_SEV_LIVE_MIG_EN into svm/sev code
+>    and adding check for SEV live migration enabled by guest in the
+>    KVM_GET_PAGE_ENC_BITMAP ioctl.
+> - Instead of the complete __bss_decrypted section, only specific variables
+>    such as hv_clock_boot and wall_clock are marked as decrypted in the
+>    page encryption bitmap
+> 
+> Changes since v5:
+> - Fix build errors as
+>    Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> Changes since v4:
+> - Host support has been added to extend KVM capabilities/feature bits to
+>    include a new KVM_FEATURE_SEV_LIVE_MIGRATION, which the guest can
+>    query for host-side support for SEV live migration and a new custom MSR
+>    MSR_KVM_SEV_LIVE_MIG_EN is added for guest to enable the SEV live
+>    migration feature.
+> - Ensure that _bss_decrypted section is marked as decrypted in the
+>    page encryption bitmap.
+> - Fixing KVM_GET_PAGE_ENC_BITMAP ioctl to return the correct bitmap
+>    as per the number of pages being requested by the user. Ensure that
+>    we only copy bmap->num_pages bytes in the userspace buffer, if
+>    bmap->num_pages is not byte aligned we read the trailing bits
+>    from the userspace and copy those bits as is. This fixes guest
+>    page(s) corruption issues observed after migration completion.
+> - Add kexec support for SEV Live Migration to reset the host's
+>    page encryption bitmap related to kernel specific page encryption
+>    status settings before we load a new kernel by kexec. We cannot
+>    reset the complete page encryption bitmap here as we need to
+>    retain the UEFI/OVMF firmware specific settings.
+> 
+> Changes since v3:
+> - Rebasing to mainline and testing.
+> - Adding a new KVM_PAGE_ENC_BITMAP_RESET ioctl, which resets the
+>    page encryption bitmap on a guest reboot event.
+> - Adding a more reliable sanity check for GPA range being passed to
+>    the hypercall to ensure that guest MMIO ranges are also marked
+>    in the page encryption bitmap.
+> 
+> Changes since v2:
+>   - reset the page encryption bitmap on vcpu reboot
+> 
+> Changes since v1:
+>   - Add support to share the page encryption between the source and target
+>     machine.
+>   - Fix review feedbacks from Tom Lendacky.
+>   - Add check to limit the session blob length.
+>   - Update KVM_GET_PAGE_ENC_BITMAP icotl to use the base_gfn instead of
+>     the memory slot when querying the bitmap.
+> 
+> Ashish Kalra (4):
+>    KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
+>    KVM: x86: Introduce new KVM_FEATURE_SEV_LIVE_MIGRATION feature &
+>      Custom MSR.
+>    EFI: Introduce the new AMD Memory Encryption GUID.
+>    x86/kvm: Add guest support for detecting and enabling SEV Live
+>      Migration feature.
+> 
+> Brijesh Singh (8):
+>    KVM: SVM: Add KVM_SEV SEND_START command
+>    KVM: SVM: Add KVM_SEND_UPDATE_DATA command
+>    KVM: SVM: Add KVM_SEV_SEND_FINISH command
+>    KVM: SVM: Add support for KVM_SEV_RECEIVE_START command
+>    KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command
+>    KVM: SVM: Add KVM_SEV_RECEIVE_FINISH command
+>    KVM: x86: Add AMD SEV specific Hypercall3
+>    mm: x86: Invoke hypercall when page encryption status is changed
+> 
+>   .../virt/kvm/amd-memory-encryption.rst        | 120 +++++
+>   Documentation/virt/kvm/cpuid.rst              |   5 +
+>   Documentation/virt/kvm/hypercalls.rst         |  15 +
+>   Documentation/virt/kvm/msr.rst                |  12 +
+>   arch/x86/include/asm/kvm_host.h               |   2 +
+>   arch/x86/include/asm/kvm_para.h               |  12 +
+>   arch/x86/include/asm/mem_encrypt.h            |   8 +
+>   arch/x86/include/asm/paravirt.h               |  10 +
+>   arch/x86/include/asm/paravirt_types.h         |   2 +
+>   arch/x86/include/uapi/asm/kvm_para.h          |   4 +
+>   arch/x86/kernel/kvm.c                         |  55 +++
+>   arch/x86/kernel/paravirt.c                    |   1 +
+>   arch/x86/kvm/cpuid.c                          |   3 +-
+>   arch/x86/kvm/svm/sev.c                        | 454 ++++++++++++++++++
+>   arch/x86/kvm/x86.c                            |  29 ++
+>   arch/x86/mm/mem_encrypt.c                     | 121 ++++-
+>   arch/x86/mm/pat/set_memory.c                  |   7 +
+>   include/linux/efi.h                           |   1 +
+>   include/linux/psp-sev.h                       |   8 +-
+>   include/uapi/linux/kvm.h                      |  39 ++
+>   include/uapi/linux/kvm_para.h                 |   1 +
+>   21 files changed, 903 insertions(+), 6 deletions(-)
+> 
 
-Ideally would make sense to add perfmon module first and then add use in
-idxd..
-
-> +static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
-> +			    char *buf);
-> +
-> +static cpumask_t		perfmon_dsa_cpu_mask;
-> +static bool			cpuhp_set_up;
-> +static enum cpuhp_state		cpuhp_slot;
-> +
-> +static DEVICE_ATTR_RO(cpumask);
-
-Pls document these new attributes added
-
-> +static int perfmon_collect_events(struct idxd_pmu *idxd_pmu,
-> +				  struct perf_event *leader,
-> +				  bool dogrp)
-
-dogrp..?
-
-> +static int perfmon_validate_group(struct idxd_pmu *pmu,
-> +				  struct perf_event *event)
-> +{
-> +	struct perf_event *leader = event->group_leader;
-> +	struct idxd_pmu *fake_pmu;
-> +	int i, ret = 0, n;
-> +
-> +	fake_pmu = kzalloc(sizeof(*fake_pmu), GFP_KERNEL);
-> +	if (!fake_pmu)
-> +		return -ENOMEM;
-> +
-> +	fake_pmu->pmu.name = pmu->pmu.name;
-> +	fake_pmu->n_counters = pmu->n_counters;
-> +
-> +	n = perfmon_collect_events(fake_pmu, leader, true);
-> +	if (n < 0) {
-> +		ret = n;
-> +		goto out;
-> +	}
-> +
-> +	fake_pmu->n_events = n;
-> +	n = perfmon_collect_events(fake_pmu, event, false);
-> +	if (n < 0) {
-> +		ret = n;
-> +		goto out;
-> +	}
-> +
-> +	fake_pmu->n_events = n;
-> +
-> +	for (i = 0; i < n; i++) {
-> +		int idx;
-
-lets move it to top of the function please
-
-> +static inline u64 perfmon_pmu_read_counter(struct perf_event *event)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	struct idxd_device *idxd;
-> +	int cntr = hwc->idx;
-> +	u64 cntrdata;
-> +
-> +	idxd = event_to_idxd(event);
-> +
-> +	cntrdata = ioread64(CNTRDATA_REG(idxd, cntr));
-> +
-> +	return cntrdata;
-
-return ioread64() ?
--- 
-~Vinod
