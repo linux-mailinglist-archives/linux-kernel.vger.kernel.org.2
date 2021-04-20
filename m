@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5882E366091
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E70366094
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhDTUDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:03:23 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:35574 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbhDTUDW (ORCPT
+        id S233829AbhDTUEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:04:23 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:52755 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S233660AbhDTUEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:03:22 -0400
-Received: by mail-oi1-f173.google.com with SMTP id e25so10210135oii.2;
-        Tue, 20 Apr 2021 13:02:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KjD4lXtva/+btnljL9bkUIKj0w5NavTEnen058f6CYg=;
-        b=FwFN0OQwKjwGjgtCZ2g0D/uu/VUsmDzV9vzUvFrWf9fZjjNrGjKEU3bhsOI6eBoFQP
-         dsg6j2b1juxqNTMLOkFI2Je7/0A065Oo3jNaghEnAT0TDok9bkyo4MTopgQI5ug/qxHZ
-         skV7oXxyWSdDZHqtxkCaK+s7SNyosGQI92sHeOgqDk+G7t7Hr1JWaWNJ/ERwsiuYFgVV
-         Sz8Ms3iba0DYDZM8eJPcmOtyC7UViOkPF8GSEMLNImKzoAmU/6bnFKyOQgfOqg6xwF2+
-         /FRqgelRpD4wCW/kxJ4jHDkznviZK2u/A6b3r+MXispB+YloiTd0fJgdRN8KWSdHm0iA
-         nPkQ==
-X-Gm-Message-State: AOAM531eEpJWNtcmwyiaCTzMryGFyZdekZkQ9/Njj0TC8Oj3iqazLAEc
-        hkxncQF3mJBJuM5Ng21KJg==
-X-Google-Smtp-Source: ABdhPJxsU17fvzON9fb6P8t7ei/fmSZiVxJF23/q6NmCKy9c1HHOB/zC0Uq2cgzpTjxZzey78BhuzA==
-X-Received: by 2002:a05:6808:b3b:: with SMTP id t27mr4236059oij.131.1618948970562;
-        Tue, 20 Apr 2021 13:02:50 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s3sm14508ool.36.2021.04.20.13.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 13:02:47 -0700 (PDT)
-Received: (nullmailer pid 3719999 invoked by uid 1000);
-        Tue, 20 Apr 2021 20:02:46 -0000
-Date:   Tue, 20 Apr 2021 15:02:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] dt-bindings: serial: Add label property for pl011
-Message-ID: <20210420200246.GA3717650@robh.at.kernel.org>
-References: <20210415073105.3687-1-thunder.leizhen@huawei.com>
+        Tue, 20 Apr 2021 16:04:22 -0400
+Received: (qmail 186097 invoked by uid 1000); 20 Apr 2021 16:03:49 -0400
+Date:   Tue, 20 Apr 2021 16:03:49 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     chris.chiu@canonical.com
+Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: Add reset-resume quirk for WD19's Realtek Hub
+Message-ID: <20210420200349.GB185805@rowland.harvard.edu>
+References: <20210420174651.6202-1-chris.chiu@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210415073105.3687-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210420174651.6202-1-chris.chiu@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:31:05PM +0800, Zhen Lei wrote:
-> When there is more than one pl011 serial port present, the label property
-> allows a custom name to be used for briefly describe the usage or position
-> of each serial port.
+On Wed, Apr 21, 2021 at 01:46:51AM +0800, chris.chiu@canonical.com wrote:
+> From: Chris Chiu <chris.chiu@canonical.com>
 > 
-> Without this "label" property, many dtbs_check warnings similar to the
-> following are reported:
-> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
-> serial@ffd74000: Additional properties are not allowed ('label' was unexpected)
->         From schema: Documentation/devicetree/bindings/serial/pl011.yaml
-
-I think this should go into serial.yaml instead.
-
+> Realtek Hub (0bda:5487) in Dell Dock WD19 sometimes fails to work
+> after the system resumes from suspend with remote wakeup enabled
+> device connected:
+> [ 1947.640907] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+> [ 1947.641208] usb 5-2.3-port5: cannot disable (err = -71)
+> [ 1947.641401] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+> [ 1947.641450] usb 5-2.3-port4: cannot reset (err = -71)
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Information of this hub:
+> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 10 Spd=480  MxCh= 5
+> D:  Ver= 2.10 Cls=09(hub  ) Sub=00 Prot=02 MxPS=64 #Cfgs=  1
+> P:  Vendor=0bda ProdID=5487 Rev= 1.47
+> S:  Manufacturer=Dell Inc.
+> S:  Product=Dell dock
+> C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
+> I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=01 Driver=hub
+> E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+> I:* If#= 0 Alt= 1 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=02 Driver=hub
+> E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+> 
+> The failure results from the ETIMEDOUT by chance when turning on
+> the suspend feature for the specified port of the hub. The port
+> seems to be in an unknown state so the hub_activate during resume
+> fails the hub_port_status, then the hub will fail to work.
+> 
+> The quirky hub needs the reset-resume quirk to function correctly.
+> 
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 > ---
->  Documentation/devicetree/bindings/serial/pl011.yaml | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/usb/core/quirks.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/serial/pl011.yaml b/Documentation/devicetree/bindings/serial/pl011.yaml
-> index 1f8e9f2644b6b80..303c7746423f503 100644
-> --- a/Documentation/devicetree/bindings/serial/pl011.yaml
-> +++ b/Documentation/devicetree/bindings/serial/pl011.yaml
-> @@ -34,6 +34,9 @@ properties:
->    reg:
->      maxItems: 1
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 76ac5d6555ae..4e2483e34250 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -406,6 +406,7 @@ static const struct usb_device_id usb_quirk_list[] = {
 >  
-> +  label:
-> +    maxItems: 1
-
-label is always a single string and so 'maxItems' is always 1. Just 
-need:
-
-label: true
-
-> +
->    interrupts:
->      maxItems: 1
+>  	/* Realtek hub in Dell WD19 (Type-C) */
+>  	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
+> +	{ USB_DEVICE(0x0bda, 0x5487), .driver_info = USB_QUIRK_RESET_RESUME },
 >  
-> -- 
-> 2.26.0.106.g9fadedd
-> 
-> 
+>  	/* Generic RTL8153 based ethernet adapters */
+>  	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
