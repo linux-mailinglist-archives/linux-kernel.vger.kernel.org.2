@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F33365B75
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E84365B7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhDTOu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbhDTOuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:50:23 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B981C06174A;
-        Tue, 20 Apr 2021 07:49:51 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYrh8-006oXm-Sg; Tue, 20 Apr 2021 14:49:43 +0000
-Date:   Tue, 20 Apr 2021 14:49:42 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH 2/3] nios2: Cleanup deprecated function strlen_user
-Message-ID: <YH7qBjuC4UIfwE8X@zeniv-ca.linux.org.uk>
-References: <1618925829-90071-1-git-send-email-guoren@kernel.org>
- <1618925829-90071-2-git-send-email-guoren@kernel.org>
- <CAK8P3a1aNDomNiX7W1USWnmdw1VR21ALX7NvJYGW9LBO+jvA4A@mail.gmail.com>
+        id S232304AbhDTOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231682AbhDTOwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:52:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F3F6613C9;
+        Tue, 20 Apr 2021 14:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618930319;
+        bh=JpMF49XQzCztEq9qBMVVUAhpIKrxlZMr9gtph/RDnns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DFmiGYcWMxauOWy6nBp2DbEzQ4/Xd2/5MxCZjp7sIXR8Jy8f/RuJuQIEcZUjdnBy5
+         cDcWJizyqC0jjXKNVsGTb7Mrxm0DoRe/ADAdMPTwOOfOeWUUhZvp/DX5Mwup7+I9zT
+         LVn6zAFbBX+s4dCDXHAn2uRg0r6gx5zZYrsRkseFAeMVqeYd775KFeLnYGUELNtooA
+         DVGWt6hWJSLO4/2adeHw2m4ibJQ7BcEvtGY4Bb0zqU6Xp0JZwndJvbYM70qvAEr6kb
+         qHiYsPq0vGLpoRO/OzM1zKg8EpbKOCU8r501caYB5funvMAHPHuAeewYToxShXs20D
+         L4woI7RPg/MzQ==
+Date:   Tue, 20 Apr 2021 17:51:51 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
+ memory accounting
+Message-ID: <YH7qhwhbLt0yT3Zy@kernel.org>
+References: <20210420121354.1160437-1-rppt@kernel.org>
+ <20210420132430.GB3596236@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1aNDomNiX7W1USWnmdw1VR21ALX7NvJYGW9LBO+jvA4A@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210420132430.GB3596236@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 04:32:33PM +0200, Arnd Bergmann wrote:
-> On Tue, Apr 20, 2021 at 3:37 PM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > $ grep strlen_user * -r
-> > arch/csky/include/asm/uaccess.h:#define strlen_user(str) strnlen_user(str, 32767)
-> > arch/csky/lib/usercopy.c: * strlen_user: - Get the size of a string in user space.
-> > arch/ia64/lib/strlen.S: // Please note that in the case of strlen() as opposed to strlen_user()
-> > arch/mips/lib/strnlen_user.S: *  make strlen_user and strnlen_user access the first few KSEG0
-> > arch/nds32/include/asm/uaccess.h:extern __must_check long strlen_user(const char __user * str);
-> > arch/nios2/include/asm/uaccess.h:extern __must_check long strlen_user(const char __user *str);
-> > arch/riscv/include/asm/uaccess.h:extern long __must_check strlen_user(const char __user *str);
-> > kernel/trace/trace_probe_tmpl.h:static nokprobe_inline int fetch_store_strlen_user(unsigned long addr);
-> > kernel/trace/trace_probe_tmpl.h:                        ret += fetch_store_strlen_user(val + code->offset);
-> > kernel/trace/trace_uprobe.c:fetch_store_strlen_user(unsigned long addr)
-> > kernel/trace/trace_kprobe.c:fetch_store_strlen_user(unsigned long addr)
-> > kernel/trace/trace_kprobe.c:            return fetch_store_strlen_user(addr);
+On Tue, Apr 20, 2021 at 02:24:30PM +0100, Matthew Wilcox wrote:
+> On Tue, Apr 20, 2021 at 03:13:54PM +0300, Mike Rapoport wrote:
+> > Add a paragraph that explains that it may happen that the counters in
+> > /proc/meminfo do not add up to the overall memory usage.
 > 
-> I would suggest using "grep strlen_user * -rw", to let the whole-word match
-> filter out the irrelevant ones for the changelog.
+> ... that is, the sum may be lower because memory is allocated for other
+> purposes that is not reported here, right?
 > 
-> > See grep result, nobody uses it.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
+> Is it ever possible for it to be higher?  Maybe due to a race when
+> sampling the counters?
 > 
-> All three patches
+> >  Provides information about distribution and utilization of memory.  This
+> > -varies by architecture and compile options.  The following is from a
+> > -16GB PIII, which has highmem enabled.  You may not have all of these fields.
+> > +varies by architecture and compile options. Please note that it may happen
+> > +that the memory accounted here does not add up to the overall memory usage
+> > +and the difference for some workloads can be substantial. In many cases there
+> > +are other means to find out additional memory using subsystem specific
+> > +interfaces, for instance /proc/net/sockstat for TCP memory allocations.
 > 
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> How about just:
 > 
-> Do you want me to pick them up in the asm-generic tree?
+> +varies by architecture and compile options.  The memory reported here
+> +may not add up to the overall memory usage and the difference for some
+> +workloads can be substantial. [...]
 
-Might make sense to check -next from time to time...  See
-a0d8d552783b "whack-a-mole: kill strlen_user() (again)" in there
+I like this. I also for adding a sentence about overlap in the counters:
+
++varies by architecture and compile options.  Some of the counters reported
++here overlap.  The memory reported by the non overlapping counters may not
++add up to the overall memory usage and the difference for some workloads
+can be substantial. [...]
+ 
+> But I'd like to be a bit more explicit about the reason, hence my question
+> above to be sure I understand.
+> 
+> It's also not entirely clear which of the fields in meminfo can be
+> usefully summed.  VmallocTotal is larger than MemTotal, for example.
+> But I know that KernelStack is allocated through vmalloc these days,
+> and I don't know whether VmallocUsed includes KernelStack or whether I
+> can sum them.  Similarly, is Mlocked a subset of Unevictable?
+> 
+> There is some attempt at explaining how these numbers fit together, but
+> it's outdated, and doesn't include Mlocked, Unevictable or KernelStack
+
+Fixing the outdated docs and adding more detailed explanation is obviously
+welcome, but it's beyond the scope of the current patch.
+
+-- 
+Sincerely yours,
+Mike.
