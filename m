@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73355365BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FB8365BF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbhDTPPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:15:49 -0400
-Received: from mail.efficios.com ([167.114.26.124]:35252 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhDTPPn (ORCPT
+        id S232831AbhDTPPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232827AbhDTPPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:15:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 032EA2FFB10;
-        Tue, 20 Apr 2021 11:15:12 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id YViuQ0V-iCvr; Tue, 20 Apr 2021 11:15:11 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id F11EF2FF6E7;
-        Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com F11EF2FF6E7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618931711;
-        bh=9jmTl63ejRoEGDH7Iz+Ejiz0VcBL3V+jrgoAm8jUmpY=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=M63n3KlXl3yXGgfWiE6tYiU7C9+neliWTS0XbarLUcH3O3nD6dAMSVuNebxkoNwfI
-         1xqfRU+hzVCGA9JKUKeG3DEr0I17KPId7k4GxpTTHirjf4l1YNoQWRY4vpE6VAtepN
-         igjzrrrN5gXFVSkp8YJ1+uCsod7RWesdEN6K2KfKHXuipYecU8HeLSUm5QocXLayG5
-         yuEjNfyz2aco/yk01zBjm/L8ypHseinDYKSM1pnsz78lpfksLLGucnCtjUxd+njoC1
-         o0141zWmCo8MQDTnskeZHmmiw3XITCtx60RlWuqQCjMBelllSfPNJKj9UP2lAuw75Z
-         6AG7Z48qbwwDA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NgK35Tnf0dea; Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id E09AA2FF8AA;
-        Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
-Date:   Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        fweisbec <fweisbec@gmail.com>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@elte.hu>, chris <chris@chris-wilson.co.uk>,
-        yuanhan liu <yuanhan.liu@linux.intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Message-ID: <1672102317.2266.1618931710794.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210420105511.65490e8d@gandalf.local.home>
-References: <1299622684.20306.77.camel@gandalf.stny.rr.com> <20130814233228.778f25d0@gandalf.local.home> <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com> <20210419181111.5eb582e8@gandalf.local.home> <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com> <20210420085532.4062b15e@gandalf.local.home> <1154727029.2004.1618925367044.JavaMail.zimbra@efficios.com> <20210420105511.65490e8d@gandalf.local.home>
-Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
+        Tue, 20 Apr 2021 11:15:50 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B15CC06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:15:19 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id h15so8083135pfv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bNKIqnXkyL+JfbeWwfxjgd5azutsQnp8ujJlCwSaCHo=;
+        b=H9F+EblcGz+9H76S+arhhkkcMnKceI8+aSVxwg7QtiFwoOx0JMb/gxbE7dSgQWsq9j
+         mUjdwunF1mIqshiNP6mQW5YwNXxvRrBMysX/Db+li1z6i3OAchDKY5EkdgX5NXzyEg/0
+         LOobFv0GGDgOHtUUWtRiNqxgfBydecLWb7g/X7XtR5Wm+CmZeqkP9iEci1GkfKV/QNlk
+         riXNd4yg1EbNcIb8RTuWp3vPjk2Y64p88jThd7KMJYW7px4Ypisa+cVq44Vi4EWVux3/
+         P9n77R+Tli6AnASbT/lPkdydy8ZbOtOQIBvgipZnmD1QQdxezvKZX29Gm0dR5o2rSu3c
+         qcpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bNKIqnXkyL+JfbeWwfxjgd5azutsQnp8ujJlCwSaCHo=;
+        b=TgP2GBr1xOMpRgqFxD7OQr39dI42xsguYGdj9E+aGT01TrSwLMf/SL6x0LR3zeW2fl
+         NsvXPqZuflO4AMEvddE+V9qFTS4teGStppywAp5Bx1A3iUXmbjWu6pHLhL8fnaX7IWRQ
+         mBCGxI2GrxzlaWC7rV0FbzUhK4HTDgzskPnSV+U+s7Fr8Kg5SJGi4TfJWYXpWVeDCsQb
+         Hf1ddnRwICTTg6uf6BrZUvRLQIzULkiJPh859USeCvhUu8hOKBi4/SthSiE1ZTnE32bP
+         H1jWaA8rgAodcTXRk/KphWrF7mEmSeCfY4GB3i1fnTBluMtYmCZZbs/dPNsXSU/jBTr7
+         kh2A==
+X-Gm-Message-State: AOAM5334W3kBNEv4yOs8+r51NcpaHNpNW4QgEW2eJrcvOCWlQuxUmj60
+        JkVHZnMn+NFqJEcyfC3QBLO4Rw==
+X-Google-Smtp-Source: ABdhPJyPheSzXmcXK6A30hh4eYXQ1mTgRGNBXHytx9xlHLYb4BHlhPSq6Fd2Es52Wj5pAJ+xIy2axw==
+X-Received: by 2002:a63:789:: with SMTP id 131mr1392167pgh.297.1618931718810;
+        Tue, 20 Apr 2021 08:15:18 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id z17sm2834735pjn.47.2021.04.20.08.15.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 08:15:18 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 15:15:14 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
+Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
+Message-ID: <YH7wAh0t+eQ5n1M2@google.com>
+References: <20210420112006.741541-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: tracing: Enable tracepoints via module parameters
-Thread-Index: r4NP/v2czuZt4JWbk4RSvFnbBsSZqw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420112006.741541-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 20, 2021, at 10:55 AM, rostedt rostedt@goodmis.org wrote:
+On Tue, Apr 20, 2021, Paolo Bonzini wrote:
+> From 547d4d4edcd05fdfac6ce650d65db1d42bcd2807 Mon Sep 17 00:00:00 2001
+> From: Paolo Bonzini <pbonzini@redhat.com>
+> Date: Tue, 20 Apr 2021 05:49:11 -0400
+> Subject: [PATCH 1/3] KVM: SEV: mask CPUID[0x8000001F].eax according to
+>  supported features
 
-> On Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Your mailer is obviously a bit wonky, took me a while to find this patch :-)
+ 
+> Do not return the SEV-ES bit from KVM_GET_SUPPORTED_CPUID unless
+> the corresponding module parameter is 1, and clear the memory encryption
+> leaf completely if SEV is disabled.
+
+Impeccable timing, I was planning on refreshing my SEV cleanup series[*] today.
+There's going to be an annoying conflict with the svm_set_cpu_caps() change
+(see below), any objecting to folding your unintentional feedback into my series?
+
+[*] https://lkml.kernel.org/r/20210306015905.186698-1-seanjc@google.com
+
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/cpuid.c   | 5 ++++-
+>  arch/x86/kvm/cpuid.h   | 1 +
+>  arch/x86/kvm/svm/svm.c | 7 +++++++
+>  3 files changed, 12 insertions(+), 1 deletion(-)
 > 
->> ----- On Apr 20, 2021, at 8:55 AM, rostedt rostedt@goodmis.org wrote:
->> [...]
->> > 
->> > Would adding automatic module parameters be an issue? That is, you can add
->> > in the insmod command line a parameter that will enable tracepoints. We
->> > could have a way to even see them from the modinfo. I think I had that
->> > working once, and it wasn't really that hard to do.
->> 
->> There is one thing we should consider here in terms of namespacing: those module
->> command line parameters should be specific to each tracer (e.g. ftrace, perf,
->> ebpf).
->> 
->> LTTng for instance already tackles early module load tracing in a different
->> way: users can enable instrumentation of yet-to-be loaded kernel modules. So
->> it would not make sense in that scheme to have module load parameters.
->> 
->> It's a different trade-off in terms of error reporting though: for instance,
->> LTTng won't report an error if a user does a typo when entering an event name.
->> 
->> So I think those command line parameters should be tracer-specific, do you agree
->> ?
-> 
-> 
-> No, I do not agree. I would like to make it consistent with the kernel
-> command line. As you can put in: "trace_event=sched_switch" and the
-> sched_switch trace point will be enable (for the tracefs directory) on boot
-> up. The same should be for modules as well.
-> 
-> It shouldn't affect LTTng, as you already have a way to enable them as they
-> get loaded.
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 2ae061586677..d791d1f093ab 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -944,8 +944,11 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+>  		break;
+>  	/* Support memory encryption cpuid if host supports it */
+>  	case 0x8000001F:
+> -		if (!boot_cpu_has(X86_FEATURE_SEV))
+> +		if (!kvm_cpu_cap_has(X86_FEATURE_SEV)) {
+>  			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
+> +			break;
+> +		}
+> +		cpuid_entry_override(entry, CPUID_8000_001F_EAX);
 
-That sounds fine. So that would be within the "trace_event" (and not tracepoint)
-namespace for module load parameters as well ?
+I find this easier to read:
 
-Thanks,
+		if (!kvm_cpu_cap_has(X86_FEATURE_SEV))
+			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
+		else
+			cpuid_entry_override(entry, CPUID_8000_001F_EAX);
 
-Mathieu
+>  		break;
+>  	/*Add support for Centaur's CPUID instruction*/
+>  	case 0xC0000000:
+> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> index 888e88b42e8d..e873a60a4830 100644
+> --- a/arch/x86/kvm/cpuid.h
+> +++ b/arch/x86/kvm/cpuid.h
+> @@ -99,6 +99,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
+>  	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
+>  	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
+>  	[CPUID_12_EAX]        = {0x00000012, 0, CPUID_EAX},
+> +	[CPUID_8000_001F_EAX] = {0x8000001F, 0, CPUID_EAX},
+>  };
+>  
+>  /*
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index cd8c333ed2dc..acdb8457289e 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -923,6 +923,13 @@ static __init void svm_set_cpu_caps(void)
+>  	if (boot_cpu_has(X86_FEATURE_LS_CFG_SSBD) ||
+>  	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
+>  		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
+> +
+> +	/* CPUID 0x8000001F */
+> +	if (sev) {
+> +		kvm_cpu_cap_set(X86_FEATURE_SEV);
+> +		if (sev_es)
+> +			kvm_cpu_cap_set(X86_FEATURE_SEV_ES);
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Gah, I completely spaced on the module params in my series, which is more
+problematic than normal because it also moves "sev" and "sev_es" to sev.c.  The
+easy solution is to add sev_set_cpu_caps().
+
+On the other, this misses SME_COHERENT.  I also think it makes sense to call
+kvm_cpu_cap_mask() for the leaf, even if it's just to crush KVM's caps to zero.
+However, because of SME_COHERENT and other potential bits in the future, I think
+I prefer starting with the bits carried over from boot_cpu_data.  E.g.
+
+	kvm_cpu_cap_mask(CPUID_8000_001F_EAX,
+		0 /* SME */ | F(SEV) | 0 /* VM_PAGE_FLUSH */ | F(SEV_ES) |
+		F(SME_COHERENT));
+
+and (with renamed module params):
+
+	if (sev_enabled)
+		kvm_cpu_cap_clear(X86_FEATURE_SEV);
+	if (sev_es_enabled)
+		kvm_cpu_cap_clear(X86_FEATURE_SEV_ES);
+
+> +	}
+>  }
+>  
+>  static __init int svm_hardware_setup(void)
