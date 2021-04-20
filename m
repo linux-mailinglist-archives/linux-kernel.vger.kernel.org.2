@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4361D365044
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB31365042
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233599AbhDTCRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:17:03 -0400
-Received: from mailout.easymail.ca ([64.68.200.34]:49378 "EHLO
-        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhDTCRC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:17:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id 0967E21018;
-        Tue, 20 Apr 2021 02:16:31 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo06-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo06-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EpoJT5jIQmuC; Tue, 20 Apr 2021 02:16:30 +0000 (UTC)
-Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        by mailout.easymail.ca (Postfix) with ESMTPA id A521E20D9B;
-        Tue, 20 Apr 2021 02:16:22 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id 2B1393EF41;
-        Mon, 19 Apr 2021 20:16:21 -0600 (MDT)
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Ondrej Zary <linux@zary.sk>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
- <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org>
- <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk>
- <202104182221.21533.linux@zary.sk>
- <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
- <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk>
-From:   Khalid Aziz <khalid@gonehiking.org>
-Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
- Y2021
-Message-ID: <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org>
-Date:   Mon, 19 Apr 2021 20:16:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233354AbhDTCRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:17:01 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42222 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229534AbhDTCRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 22:17:00 -0400
+Received: from [10.130.0.193] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxU+B4OX5ga8oKAA--.18176S3;
+        Tue, 20 Apr 2021 10:16:26 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Fix cmdline "mem=" parameter parsing
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1618829425-11873-1-git-send-email-tangyouling@loongson.cn>
+ <5d4d31aa-7fe5-bf8d-1d77-a1605f0c2793@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jinyang He <hejinyang@loongson.cn>
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <3e8be714-6017-b0c7-9c71-7464d9b2b793@loongson.cn>
+Date:   Tue, 20 Apr 2021 10:16:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <5d4d31aa-7fe5-bf8d-1d77-a1605f0c2793@flygoat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9CxU+B4OX5ga8oKAA--.18176S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFWkur1UXFy7ArW3ur15urg_yoW8Cr4xpw
+        4UCa4Fka1qgr9Fg3W0y395uw1rJas5GFWxJF47Zwn5A3WqqF1xJF1FqF15uFyIvrW7K3WI
+        qa4j9ryUuan7ZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
+        73UjIFyTuYvjfUnhFxUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 10:01 AM, Maciej W. Rozycki wrote:
-> On Mon, 19 Apr 2021, Khalid Aziz wrote:
-> 
->> On 4/18/21 2:21 PM, Ondrej Zary wrote:
->>>
->>> Found the 3000763 document here:
->>> https://doc.lagout.org/science/0_Computer Science/0_Computer History/old-hardware/buslogic/3000763_PCI_EISA_Wide_SCSI_Tech_Ref_Dec94.pdf
->>>
->>> There's also 3002593 there:
->>> https://doc.lagout.org/science/0_Computer Science/0_Computer History/old-hardware/buslogic/
->>>
+Hi, Jiaxun
+
+On 04/20/2021 09:05 AM, Jiaxun Yang wrote:
+>
+> 在 2021/4/19 18:50, Youling Tang 写道:
+>> This problem may only occur on NUMA platforms. When machine start 
+>> with the
+>> "mem=" parameter on Loongson64, it cannot boot. When parsing the "mem="
+>> parameter, first remove all RAM, and then add memory through 
+>> memblock_add(),
+>> which causes the newly added memory to be located on MAX_NUMNODES.
 >>
->> Thanks!!!
-> 
->  Ondrej: Thanks a lot indeed!  These documents seem to have the essential 
-> interface details all covered, except for Fast-20 SCSI adapters, which I 
-> guess are a minor modification from the software's point of view.
-> 
->  Khalid: I have skimmed over these documents and I infer 24-bit addressing 
-> can be verified with any MultiMaster adapter, including ones that do have 
-> 32-bit addressing implemented, by using the legacy Initialize Mailbox HBA 
-> command.  That could be used to stop Christoph's recent changes for older 
-> adapter support removal and replace them with proper fixes for whatever 
-> has become broken.  Is that something you'd be willing as the driver's 
-> maintainer to look into, or shall I?
-> 
+>> The solution is to add the current "mem=" parameter range to the 
+>> memory area
+>> of the corresponding node, instead of adding all of it to the 
+>> MAX_NUMNODES
+>> node area. Get the node number corresponding to the "mem=" parameter 
+>> range
+>> through pa_to_nid(), and then add it to the corresponding node through
+>> memblock_add_node().
+>>
+>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> ---
+>>   arch/mips/kernel/setup.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+>> index 279be01..b86e241 100644
+>> --- a/arch/mips/kernel/setup.c
+>> +++ b/arch/mips/kernel/setup.c
+>> @@ -359,7 +359,7 @@ static int __init early_parse_mem(char *p)
+>>       if (*p == '@')
+>>           start = memparse(p + 1, &p);
+>>   -    memblock_add(start, size);
+>> +    memblock_add_node(start, size, pa_to_nid(start));
+>
+> pa_to_nid is not available for all platforms.
+>
+Thanks for your correction.
 
-Hi Maciej,
+pa_to_nid() only has actual definitions in mach-ip27 and mach-loongson64 
+(only
+for NUMA platform).
 
-Do you mean use OpCode 01 (INITIALIZE MAILBOX) to set a 24-bit address
-for mailbox in place of OpCode 81? Verifying the change would be a
-challenge. Do you have an old adapter to test it with? If you do, go
-ahead and make the changes. I will be happy to review. I have only a
-BT-757 adapter.
+In arch/mips/include/asm/mmzone.h:
+#ifndef pa_to_nid
+#define pa_to_nid(addr) 0
+#endif
+
+So only need #include <asm/mmzone.h> to solve the "error: implicit 
+declaration
+of function'pa_to_nid'" compilation error.
 
 Thanks,
-Khalid
+Youling
+>
+> Thanks.
+>
+> - Jiaxun
+>
+>>         return 0;
+>>   }
+
