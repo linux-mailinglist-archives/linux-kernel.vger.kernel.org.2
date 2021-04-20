@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79568365BEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73355365BF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbhDTPOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:14:00 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:54893 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230260AbhDTPN4 (ORCPT
+        id S232815AbhDTPPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:15:49 -0400
+Received: from mail.efficios.com ([167.114.26.124]:35252 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhDTPPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:13:56 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id Ys3vl5TJaXsivYs3ylst79; Tue, 20 Apr 2021 17:13:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618931603; bh=3C0exdyZaQiSGldksQpZfnPH4H6n3fld0R4rJ3LKuto=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=faFGkgmY+B8OeIIURy0DFsuAbHMupaVe/9aNrM6VvIbe/W57NLoMWWSMESk5QY8Mv
-         n6tLBR4pyo0o91lIGrn6sNl2wmwznlxE830j3WOD2ZfPootYrQ6IRQKP/VtAIl1ytH
-         tLKU4eu62zu42AMFf8fe6XzdBOyF+afxCtaDmzt/mlWZJJWLnOEY1rUWO4QNtp4Mec
-         npKbjyUmVTp0Hp3A15qu/8EDhxNQ5DFdXCP92YdkBt/lBhWs/fAwbLxE/9NyyPADYl
-         MdiH7nRqCaGbMTQ/QfFG1OD+JyUnocoiNtNTkk4/9F0bsfYjzjysfhBmP+JidXVYI8
-         rRKYhktmGtP0A==
-Subject: Re: [PATCH 0/2] drm/bridge: dw-hdmi: disable loading of DW-HDMI CEC
- sub-driver
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     jernej.skrabec@siol.net, jonas@kwiboo.se,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        robert.foss@linaro.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210416092737.1971876-1-narmstrong@baylibre.com>
- <YHlfqJIlUh7eytty@pendragon.ideasonboard.com>
- <96b9e144-0791-4c19-3e3c-b0e9efb86138@baylibre.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <cbea511c-5d5c-8c59-f91f-fedc8eec1e39@xs4all.nl>
-Date:   Tue, 20 Apr 2021 17:13:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Tue, 20 Apr 2021 11:15:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 032EA2FFB10;
+        Tue, 20 Apr 2021 11:15:12 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id YViuQ0V-iCvr; Tue, 20 Apr 2021 11:15:11 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id F11EF2FF6E7;
+        Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com F11EF2FF6E7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618931711;
+        bh=9jmTl63ejRoEGDH7Iz+Ejiz0VcBL3V+jrgoAm8jUmpY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=M63n3KlXl3yXGgfWiE6tYiU7C9+neliWTS0XbarLUcH3O3nD6dAMSVuNebxkoNwfI
+         1xqfRU+hzVCGA9JKUKeG3DEr0I17KPId7k4GxpTTHirjf4l1YNoQWRY4vpE6VAtepN
+         igjzrrrN5gXFVSkp8YJ1+uCsod7RWesdEN6K2KfKHXuipYecU8HeLSUm5QocXLayG5
+         yuEjNfyz2aco/yk01zBjm/L8ypHseinDYKSM1pnsz78lpfksLLGucnCtjUxd+njoC1
+         o0141zWmCo8MQDTnskeZHmmiw3XITCtx60RlWuqQCjMBelllSfPNJKj9UP2lAuw75Z
+         6AG7Z48qbwwDA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NgK35Tnf0dea; Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id E09AA2FF8AA;
+        Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
+Date:   Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        fweisbec <fweisbec@gmail.com>, Jessica Yu <jeyu@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@elte.hu>, chris <chris@chris-wilson.co.uk>,
+        yuanhan liu <yuanhan.liu@linux.intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Message-ID: <1672102317.2266.1618931710794.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210420105511.65490e8d@gandalf.local.home>
+References: <1299622684.20306.77.camel@gandalf.stny.rr.com> <20130814233228.778f25d0@gandalf.local.home> <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com> <20210419181111.5eb582e8@gandalf.local.home> <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com> <20210420085532.4062b15e@gandalf.local.home> <1154727029.2004.1618925367044.JavaMail.zimbra@efficios.com> <20210420105511.65490e8d@gandalf.local.home>
+Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
 MIME-Version: 1.0
-In-Reply-To: <96b9e144-0791-4c19-3e3c-b0e9efb86138@baylibre.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDW8hEuWfrPrGvMc0olaEqO/1NZZ2yQB6WunaYVqq8MMrH5Sc3f2aTH42A3BAjZZ79UDFNJG6FEQbmiNEveAXU3jrDh9BPb7rKQsNBZlxBJ8G9LkTDpz
- qxD/6CMKaS6Mod/qRe9vKOOIJ0qV7CLLV9nRS4hIecITZIXQXzbDAlVTCwWTqHMCorEplxuE+o/YBuut6nfaMaa3Ijr5cKzPw6kVDFlBvZNyPxmRhGZQxrDD
- lbnmm4/1h7S6WfPi9kBv4XRwTHRmUUsfEvn1n1x31yag5ccdCETr3Mu11F844QoH7Hz9pZ9wJL57yz6y41Ka0ZRq+bj2Wspex/50krDYACnhAjPyU5Urmtjo
- +lusK7ss2EGSSUnMMynnA9PjXZfNZZo1Y8DpEMmCV6OVxRhhWm2kwStujrbXHcMLFNrrLNmvGJgJIAnhdi9X54VlwkATGdoQUB7XzhATvxXrj2qFPLhowZCr
- VTzjeVy+XJaKyFVHeN2b+67qyM+FfTCKZWdvDaO7ypk6d4e2gqPC34T4vMA=
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: tracing: Enable tracepoints via module parameters
+Thread-Index: r4NP/v2czuZt4JWbk4RSvFnbBsSZqw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 13:38, Neil Armstrong wrote:
-> On 16/04/2021 11:58, Laurent Pinchart wrote:
->> Hi Neil,
->>
->> On Fri, Apr 16, 2021 at 11:27:35AM +0200, Neil Armstrong wrote:
->>> This adds DW-HDMI driver a glue option to disable loading of the CEC sub-driver.
->>>
->>> On some SoCs, the CEC functionality is enabled in the IP config bits, but the
->>> CEC bus is non-functional like on Amlogic SoCs, where the CEC config bit is set
->>> but the DW-HDMI CEC signal is not connected to a physical pin, leading to some
->>> confusion when the DW-HDMI CEC controller can't communicate on the bus.
->>
->> If we can't trust the CEC config bit, would it be better to not use it
->> at all, and instead let each platform glue logic tell whether to enable
->> CEC or not ?
-> 
-> Actually, the CEC config bit is right, the HW exists and should be functional, but
-> this bit doesn't tell if the CEC signal is connected to something.
-> 
-> This lies in the IP integration, like other bits under the "amlogic,meson-*-dw-hdmi"
-> umbrella.
-> 
-> The first attempt was by Hans using DT, but adding a property in DT for a vendor
-> specific compatible doesn't make sense. Another idea would be to describe the
-> CEC signal endpoint like we do for video signal, but I think this is out of scope and
-> this solution is much simpler and straightforward, and it's more an exception than
-> a general use case to solve.
+----- On Apr 20, 2021, at 10:55 AM, rostedt rostedt@goodmis.org wrote:
 
-While a DT property might not make sense in this particular case, I still
-believe that it is a perfectly valid approach in general: whether or not
-the CEC pin is connected is at the hardware level decision, it is not
-something that software can detect. If the designer of the board didn't
-connect it, then the only place you can define that is in the device tree.
-
-Anyway, for meson I am fine with this solution. At least it prevents creating
-a non-functioning cec device. So for this series:
-
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-
-Regards,
-
-	Hans
-
+> On Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
-> Neil
+>> ----- On Apr 20, 2021, at 8:55 AM, rostedt rostedt@goodmis.org wrote:
+>> [...]
+>> > 
+>> > Would adding automatic module parameters be an issue? That is, you can add
+>> > in the insmod command line a parameter that will enable tracepoints. We
+>> > could have a way to even see them from the modinfo. I think I had that
+>> > working once, and it wasn't really that hard to do.
+>> 
+>> There is one thing we should consider here in terms of namespacing: those module
+>> command line parameters should be specific to each tracer (e.g. ftrace, perf,
+>> ebpf).
+>> 
+>> LTTng for instance already tackles early module load tracing in a different
+>> way: users can enable instrumentation of yet-to-be loaded kernel modules. So
+>> it would not make sense in that scheme to have module load parameters.
+>> 
+>> It's a different trade-off in terms of error reporting though: for instance,
+>> LTTng won't report an error if a user does a typo when entering an event name.
+>> 
+>> So I think those command line parameters should be tracer-specific, do you agree
+>> ?
 > 
->>
->>> Jernej Skrabec (1):
->>>   drm/bridge/synopsys: dw-hdmi: Add an option to suppress loading CEC
->>>     driver
->>>
->>> Neil Armstrong (1):
->>>   drm/meson: dw-hdmi: disable DW-HDMI CEC sub-driver
->>>
->>>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 2 +-
->>>  drivers/gpu/drm/meson/meson_dw_hdmi.c     | 1 +
->>>  include/drm/bridge/dw_hdmi.h              | 2 ++
->>>  3 files changed, 4 insertions(+), 1 deletion(-)
->>>
->>
 > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> No, I do not agree. I would like to make it consistent with the kernel
+> command line. As you can put in: "trace_event=sched_switch" and the
+> sched_switch trace point will be enable (for the tracefs directory) on boot
+> up. The same should be for modules as well.
 > 
+> It shouldn't affect LTTng, as you already have a way to enable them as they
+> get loaded.
 
+That sounds fine. So that would be within the "trace_event" (and not tracepoint)
+namespace for module load parameters as well ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
