@@ -2,201 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9128F365B9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C88365B70
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhDTO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:59:27 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:39260 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232851AbhDTO70 (ORCPT
+        id S232597AbhDTOtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:49:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231758AbhDTOtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:59:26 -0400
-X-Greylist: delayed 645 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 10:59:26 EDT
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KEi2c9005513;
-        Tue, 20 Apr 2021 14:48:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=Tz6qW1raDB1F+VtKk+4GqHSkfQFhla9YJKZdIMNLYwc=;
- b=ebz9aKKPqbI3Q5f1fJKzsRssOGNHPdU0SWyS1CVbwbZc8un8ylYdsp8k/yeYiQ+EdTm2
- EZofiXO+KnsmbTYutixTeuqMPg+looX0IY1uYQkb1t4JPacPiltUbVx0VqPh2wlnRIiI
- UhDUiib0Fy2hJNhOftb81ovVFMvYp2w7RG1xhkPB/mF4MC3iOZDtK+Q1ZdgRh+9JTjBs
- Steia5H6I+g2ORUt8GwR0Ay4M3/58bkxDHHPsO6eDUNxCMFsYZUUJTHPfwXst2ECYGlq
- +uPYCaBzNSNe/pH4FohnZD/vhQq2I7SJk43Ezdutl69T/BcuQ0midleAcyZ8WSyZ//mj IA== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 381dum88j1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 14:48:08 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13KEjcI1120531;
-        Tue, 20 Apr 2021 14:48:07 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2049.outbound.protection.outlook.com [104.47.73.49])
-        by userp3030.oracle.com with ESMTP id 3809ky4quh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 14:48:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LFCBOZYtC/mhuiqSreOYJZGA/68NIREa1okzdVfghQPkwwE/5aJNj2CtrPz9DYBrvY40dC/x2ngAl4cEN3s9AqEhApaT+7rtseoqqoyxw/EwRZm3RDdo/XXVLlm+PYtlZcQrEWPIeP0XZMdVCGQJC9gvKX+XuGtGkta00n2tSy0OmgqgNJp9WDq7SpnT3uq0NHpZ6EbCsNgRNFch0dpCM6Cza+AbcFl+x8uDISx1He1DgLidjP51bzbB275G8BqZl0UOGDfSDWOZafQ7dSOut6jcHYnWGuM+ffCNLIRenulrOnAGeqFzGtg4+bVVRj9ij+UzDJoRi+2WXfGmCz67kQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tz6qW1raDB1F+VtKk+4GqHSkfQFhla9YJKZdIMNLYwc=;
- b=D7mV0XEvC13PECRfgoCQ1KS9m9aGouvcI7+uOfq90dFaY2raPBgqOZSR11IYx3LbtEAs5E6VNwo7YjBqtsGGlm6TgmHp0UqUwEihNkrNESnit6SH/r+Gy+8nNts1vUo1k5WfYMNXdLik3HuL37GPgtGImOpZhRgCKr2IcO8oef8qt4LgAgTxn9nCFEY9CQVasy+1I1+cZ0mlcIUBcIslpVZKQztOTNvDb5guDTSE/6CHUp51YaLCVoqRbuZ2yVp3xtjHLZ1GAcUb0zYe5svSuA5NVckhVnLN6tgAkOHHJqi7dgNXNosQ/5oa+J5SIvlSJw4Z1xqlh4LI5ZlcyNEDLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tz6qW1raDB1F+VtKk+4GqHSkfQFhla9YJKZdIMNLYwc=;
- b=beG4cii9P3nPzcG1bLVnzlwmOWqCxa89TKy9KHl5AHmlp1xRnmLofzHBRXnJuPo0gjILfjX0FvgrrIzPoscfPeVVopNCPgBJCUT6AgyhAGypFSg/09Zxpdly/VZiaXr//Y3OfmQcKdUSDH2mMGfm7OQ+eOasJmFnDvP3KliF1fo=
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com (2603:10b6:805:d4::19)
- by SA2PR10MB4811.namprd10.prod.outlook.com (2603:10b6:806:11f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Tue, 20 Apr
- 2021 14:48:05 +0000
-Received: from SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::20c7:193:d737:7ab1]) by SN6PR10MB2943.namprd10.prod.outlook.com
- ([fe80::20c7:193:d737:7ab1%4]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 14:48:05 +0000
-From:   Himanshu Madhani <himanshu.madhani@oracle.com>
-To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-CC:     Martin Petersen <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: target: target_core_pr.c: Fix tabspace error
-Thread-Topic: [PATCH] drivers: target: target_core_pr.c: Fix tabspace error
-Thread-Index: AQHXNeDAM9i24DGLBUSFRVEPonOnXKq9fJWA
-Date:   Tue, 20 Apr 2021 14:48:05 +0000
-Message-ID: <1A81A74B-DCA1-482C-8444-EAD143D432F7@oracle.com>
-References: <20210420122846.gjh6pmzz2w37tqc5@kewl-virtual-machine>
-In-Reply-To: <20210420122846.gjh6pmzz2w37tqc5@kewl-virtual-machine>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [70.114.128.235]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4cccc33f-c977-43ea-eb49-08d9040b4e62
-x-ms-traffictypediagnostic: SA2PR10MB4811:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR10MB481176735AD9678DD866837FE6489@SA2PR10MB4811.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:198;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yBwADwKsWbxQRMbuWcQqeBcIa5LbN7t4+Gk/z5ImEE0UsSvkm+HKUGKolbQJzIdYclhxDj5xk7iLxCgD1h117yUMLLZrzvU9IFJ9Na75235GMGqvZdd2FuAa+eHlQWu5kcAGyVTcKLKZeMF6uL1wEvzTDLmnIl7427RnmJJlEcrEJMwF2ZeAgBMaYuto82f30xPvOmIp99HDQA+krjPCOE8ZOEYXCsOjh68obwPbcfrze4umOzwlYjy4v3qaMSwKFryxIqWwDyvNl5qoZazfmJAPUiJWho+ciDgJn5KDuBF2grGjLItflxL81EEI8lY+E4sAoNzqGeVRdSn9F5oTdasmnR+WdG+n9OedORhivY8f6e/Spvf0Jlh5uQ9QvM1zIlbkrztsJdgg/kXuqcp6HpXZwgC4fD5qcwFHFDeaaQ/mM4y/GNj5LxKxOtDFwFEFyDAe624JFvJWsk05WpLMKUuHSsW574IaohcG2WsivuPps6gzDhaxhXlTZgBgzu76BnrM6RsAOJsENP8FSbEZyTNA9nAB1iNWrtMZVkclSFB3IJ850r8EArWTqk3lF1Z6syOeCE16hw8Viv1FhrXcHFykfHi7JOLXPjDipfRHbV2Vll9nr8BbXTmjU33Yb3LG7cneqv9dZiQDMIp7Q2RLjDUXnj5PT2/Tw9YCHHMXD4k=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB2943.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(366004)(39860400002)(376002)(136003)(6506007)(91956017)(6916009)(8676002)(66946007)(44832011)(33656002)(66556008)(53546011)(122000001)(66476007)(2616005)(8936002)(66446008)(71200400001)(26005)(36756003)(76116006)(64756008)(4326008)(38100700002)(316002)(83380400001)(478600001)(54906003)(6486002)(186003)(5660300002)(2906002)(6512007)(86362001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?GSmDBhtO1hJhvtbmkyz5BiylT0TCWeBsRQxZFiioPcwZYY+20YVIsfQ64Rij?=
- =?us-ascii?Q?lCHUkrLs86bLBRm8fWmirDD05cNNxJbokcpLmdqEaJUqqcE+0+ulGHpWXy2e?=
- =?us-ascii?Q?m0iMBB+LQUxdyhTp91G5m1nmEB8VUWQngWkFpgXQ/jlkFliDyxRTPF29wFGk?=
- =?us-ascii?Q?SY1PH1RTD1SqDZGhtVMbSqzdx3yJDiIS40CMQLeGZrbFP6CeNnOo3yJfTD/7?=
- =?us-ascii?Q?FmNBF5DE9QYpSm88cvaE/UFHKoWeL9ujpXrXgbWbBK772yypl7ZVzPDYxSv9?=
- =?us-ascii?Q?eYu5HbzBTBTrqObQmS8c8gb2HRvltbYyDFE2DwBzoT8JA/I2T6i3zotbWQNv?=
- =?us-ascii?Q?HJNgU/oj4pbrMoTssBOllKz2qsx8J3s8Y4JjYb/9DluhsCzvn1YXx21QU3yQ?=
- =?us-ascii?Q?HmL88hBOhgbi9lZV/S9kgwpAm/HjnSUbzqGAa2fzXOMLEEC4htA8vQPiHU3E?=
- =?us-ascii?Q?XSLp6KvIZcsbYdDfcdYWTIDiNS5mgjjSje5CximA/hgWWKFHg/y/JnOqNiai?=
- =?us-ascii?Q?ezeJfcyeK/+Y7IikFFMMFLGoklYXuaeLhfacQet2quZYx0GWJuqBWIASVQw8?=
- =?us-ascii?Q?9R4TdvJ3LxY9C8/pyndJ5PwK5V5zLQhjK3om0IPfeKLJyEWg1r80J5NiYeW+?=
- =?us-ascii?Q?OKlWxdISBEWlXeF/E18G8fs8slWAFCjbv9HIzHx8CmsgcOcMpJ3F+7XwpGeM?=
- =?us-ascii?Q?C9xHJ1d5/uSUzAGTReImqNeZRIdxbcCCINMBpMM//n7jgjAINyfrn591T9YL?=
- =?us-ascii?Q?fF9qldV3d7Upl7yDT7xmijMC04NYxrnKZUMIWZIhKuZjbrJ1DwnMAIXv1Lmk?=
- =?us-ascii?Q?G6RXr53RxDIm0Lh9AmWtbYRrgwkLjYEYAz/6QTsCjSnMnlyaIikEABTq9HqM?=
- =?us-ascii?Q?/yGNr9tuUCEFfIeo0HxBD1evrs1WmU1giZB1nRX8fjYU9qqZpBhA5Fk9SKX0?=
- =?us-ascii?Q?4X7LSIHomcg1YlNRrBwlQtwaaknX3oTyG5DIeygV9/QpIpLEOV1/GDECt+5n?=
- =?us-ascii?Q?779jkQSB6x3ApvtTzsAzjUKECrlRWv+nWDHIfrqTOCiJZRGO5EytkQn+UtEf?=
- =?us-ascii?Q?OjwMT+ikS5plpIM+IMhSuDQoSBd4Ejc80rUXgfRdkrO1ZmMkpjmBWMLDj723?=
- =?us-ascii?Q?EegrzLlDVDAMIW4sVl2Ixv2fMeZXIoUK+tWyQBk1xibAgIVYDSm5+/iyOH/L?=
- =?us-ascii?Q?fo6+TrmBc7erUVu7HQCLCZtSlT6ufKlxtFNGlr+GgmAh0k/+vYzIC7u53Blm?=
- =?us-ascii?Q?PipEXww2qoHvFwSXLzyRk4JqwVySPXklqkWgk+tLQS4CoKKsPNVVAmxk8Uwh?=
- =?us-ascii?Q?+iiHWGsq0ybl22dHLATff3hbUTkqmeGLSmvU/cQqZdhoww=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <957043EB1B554648862D99B90B1A11DA@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 20 Apr 2021 10:49:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618930119;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z3pGrxDQTrsahWqPF4BATAsWy195XHZCR8bZtF3h1SQ=;
+        b=XjcrTSbokiv1tJR8TRW7yWAX6kbouUcgpW4j4IeaAro2pRkCZ1MqwDFzQ0/TPtMH+rcbhs
+        H1J2luemBmT3BH3HH9JdSoCHEZv2X8dKes4TJdT9RfnhgQNg7rSuAvsT6NQ9L+LTL9arow
+        0PXsg/gBSP6sQOEhnxfvXk4lSJIbma0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-tjQ0A6PlPxK9Y_GmiyzWEA-1; Tue, 20 Apr 2021 10:48:34 -0400
+X-MC-Unique: tjQ0A6PlPxK9Y_GmiyzWEA-1
+Received: by mail-wr1-f70.google.com with SMTP id 91-20020adf82e40000b0290106e67e7bfcso8220473wrc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:48:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Z3pGrxDQTrsahWqPF4BATAsWy195XHZCR8bZtF3h1SQ=;
+        b=hShtgwMrPdzYsqh7PbHL3cn/SdQDKcsm3W+gjT/gtFbcor0o1ILcKD+r7nKtiTq0Os
+         pYjtSkau58RyMkxAw06kmQSPrNMVDL4/lcIUXIa4LHyiCER8v7e/LFZL8W7Pfr2XGWBw
+         kxyRA8wYqnsImOVTqLDLv2C1aZ+Apsr4NLYMWL1EW4p0li/D5xp+VncNd0YK0JBoF94/
+         lHtl+Ujl2cPZawE4E0AMDW/tm6Qu19RMaNkdEG3TdDRyur2u6zfyg3bw39ivP2WG7MD0
+         rGAXTM3xuGK4mcDIYWXVbgN0yO/ah7qlrcLSVzIOCQdLR0s2pglBi3J4APaIEaXKQDGp
+         AE4A==
+X-Gm-Message-State: AOAM530lbTuJymCbkKex34cIc+viJO4lr/LkrWWaeglkryO0T2RDyTNk
+        DEhlop72ik9HeIXN6aRRWwsc4+WzZ3moBSx54ikuH4rvJ6EY01LEc4TnGPhgo0pQ/5c+oOfp5Qv
+        sQf7Cmvk88pAHMTYMtis0djfZ
+X-Received: by 2002:a1c:4045:: with SMTP id n66mr4768352wma.94.1618930113339;
+        Tue, 20 Apr 2021 07:48:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDFDQA67mvm5ZD4QmmSNpkuMV2HU0SQ4C2NsHoCUD5jbAOYnb9XnMmP/yrEe6VIwTuBA8ZZw==
+X-Received: by 2002:a1c:4045:: with SMTP id n66mr4768331wma.94.1618930113148;
+        Tue, 20 Apr 2021 07:48:33 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff2390a.dip0.t-ipconnect.de. [79.242.57.10])
+        by smtp.gmail.com with ESMTPSA id l14sm16944556wrv.94.2021.04.20.07.48.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 07:48:32 -0700 (PDT)
+Subject: Re: [PATCH v5 3/3] kernel/resource: Fix locking in
+ request_free_mem_region
+To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
+        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
+        jglisse@redhat.com, bsingharora@gmail.com, smuchun@gmail.com
+References: <20210419070109.4780-1-apopple@nvidia.com>
+ <20210419070109.4780-3-apopple@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <9edc40ae-daf9-90ef-fac6-824b5ae00e30@redhat.com>
+Date:   Tue, 20 Apr 2021 16:48:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB2943.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cccc33f-c977-43ea-eb49-08d9040b4e62
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 14:48:05.5204
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z3QZRqMw2f3Yn9n3/7YRM67J2+9LUq/XPVMCjxIoU+iYRzdHn6PMYmLGD7mtSvBgGUMhUPUQtdLuHZCvItQER1BHbWqJ5UkJbroyWsTDLVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4811
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9960 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
- mlxscore=0 suspectscore=0 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104200111
-X-Proofpoint-ORIG-GUID: AJf_ScCZLXMpWMai4lc5gPZAT5CiwOUW
-X-Proofpoint-GUID: AJf_ScCZLXMpWMai4lc5gPZAT5CiwOUW
+In-Reply-To: <20210419070109.4780-3-apopple@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Apr 20, 2021, at 7:28 AM, Shubhankar Kuranagatti <shubhankarvk@gmail.c=
-om> wrote:
->=20
-> Tabs have been used to replace spaces.
-> This is done to maintain code uniformity.
->=20
-> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+On 19.04.21 09:01, Alistair Popple wrote:
+> request_free_mem_region() is used to find an empty range of physical
+> addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
+> over the range of possible addresses using region_intersects() to see if
+> the range is free before calling request_mem_region() to allocate the
+> region.
+> 
+> However the resource_lock is dropped between these two calls meaning by the
+> time request_mem_region() is called in request_free_mem_region() another
+> thread may have already reserved the requested region. This results in
+> unexpected failures and a message in the kernel log from hitting this
+> condition:
+> 
+>          /*
+>           * mm/hmm.c reserves physical addresses which then
+>           * become unavailable to other users.  Conflicts are
+>           * not expected.  Warn to aid debugging if encountered.
+>           */
+>          if (conflict->desc == IORES_DESC_DEVICE_PRIVATE_MEMORY) {
+>                  pr_warn("Unaddressable device %s %pR conflicts with %pR",
+>                          conflict->name, conflict, res);
+> 
+> These unexpected failures can be corrected by holding resource_lock across
+> the two calls. This also requires memory allocation to be performed prior
+> to taking the lock.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
 > ---
-> drivers/target/target_core_pr.c | 24 ++++++++++++------------
-> 1 file changed, 12 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core=
-_pr.c
-> index d4cc43afe05b..6538b2be1634 100644
-> --- a/drivers/target/target_core_pr.c
-> +++ b/drivers/target/target_core_pr.c
-> @@ -539,18 +539,18 @@ static int core_scsi3_pr_seq_non_holder(struct se_c=
-md *cmd, u32 pr_reg_type,
-> 			return 0;
-> 		}
->        } else if (we && registered_nexus) {
-> -               /*
-> -                * Reads are allowed for Write Exclusive locks
-> -                * from all registrants.
-> -                */
-> -               if (cmd->data_direction =3D=3D DMA_FROM_DEVICE) {
-> -                       pr_debug("Allowing READ CDB: 0x%02x for %s"
-> -                               " reservation\n", cdb[0],
-> -                               core_scsi3_pr_dump_type(pr_reg_type));
-> -
-> -                       return 0;
-> -               }
-> -	}
-> +		/*
-> +		 * Reads are allowed for Write Exclusive locks
-> +		 * from all registrants.
-> +		 */
-> +		if (cmd->data_direction =3D=3D DMA_FROM_DEVICE) {
-> +			pr_debug("Allowing READ CDB: 0x%02x for %s"
-> +					" reservation\n", cdb[0],
-> +					core_scsi3_pr_dump_type(pr_reg_type));
+>   kernel/resource.c | 45 ++++++++++++++++++++++++++++++++++++++-------
+>   1 file changed, 38 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 75f8da722497..e8468e867495 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -1801,25 +1801,56 @@ static struct resource *__request_free_mem_region(struct device *dev,
+>   {
+>   	resource_size_t end, addr;
+>   	struct resource *res;
+> +	struct region_devres *dr = NULL;
+>   
+>   	size = ALIGN(size, 1UL << PA_SECTION_SHIFT);
+>   	end = min_t(unsigned long, base->end, (1UL << MAX_PHYSMEM_BITS) - 1);
+>   	addr = end - size + 1UL;
+>   
+> +	res = alloc_resource(GFP_KERNEL);
+> +	if (!res)
+> +		return ERR_PTR(-ENOMEM);
 > +
-> +			return 0;
+> +	if (dev) {
+> +		dr = devres_alloc(devm_region_release,
+> +				sizeof(struct region_devres), GFP_KERNEL);
+> +		if (!dr) {
+> +			free_resource(res);
+> +			return ERR_PTR(-ENOMEM);
 > +		}
+> +	}
+> +
+> +	write_lock(&resource_lock);
+>   	for (; addr > size && addr >= base->start; addr -= size) {
+> -		if (region_intersects(addr, size, 0, IORES_DESC_NONE) !=
+> +		if (__region_intersects(addr, size, 0, IORES_DESC_NONE) !=
+>   				REGION_DISJOINT)
+>   			continue;
+>   
+> -		if (dev)
+> -			res = devm_request_mem_region(dev, addr, size, name);
+> -		else
+> -			res = request_mem_region(addr, size, name);
+> -		if (!res)
+> -			return ERR_PTR(-ENOMEM);
+> +		if (!__request_region_locked(res, &iomem_resource, addr, size,
+> +						name, 0))
+> +			break;
+> +
+> +		if (dev) {
+> +			dr->parent = &iomem_resource;
+> +			dr->start = addr;
+> +			dr->n = size;
+> +			devres_add(dev, dr);
 > +		}
+> +
+>   		res->desc = IORES_DESC_DEVICE_PRIVATE_MEMORY;
+> +		write_unlock(&resource_lock);
+> +
+> +		/*
+> +		 * A driver is claiming this region so revoke any mappings.
+> +		 */
+> +		revoke_iomem(res);
+>   		return res;
+>   	}
+> +	write_unlock(&resource_lock);
+> +
+> +	free_resource(res);
+> +	if (dr)
+> +		devres_free(dr);
+>   
+>   	return ERR_PTR(-ERANGE);
+>   }
+> 
 
-this last one has one too many tab.
+LGTM
 
-> 	pr_debug("%s Conflict for %sregistered nexus %s CDB: 0x%2x"
-> 		" for %s reservation\n", transport_dump_cmd_direction(cmd),
-> 		(registered_nexus) ? "" : "un",
-> --=20
-> 2.17.1
->=20
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
---
-Himanshu Madhani	 Oracle Linux Engineering
+-- 
+Thanks,
+
+David / dhildenb
 
