@@ -2,178 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522F5365618
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C28836561B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbhDTKYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:24:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231473AbhDTKYV (ORCPT
+        id S231583AbhDTKZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhDTKZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:24:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618914229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b7a+2NIHct7ey/wtfhecbqVWOV2x5OoBwHuqA9oFCX0=;
-        b=XIGscTCSkpkE7hak/7hH7wpclhsG7GZ5QgfQgUG3bqg10mxdbWmh+08PTrv9AMFz+M0phZ
-        fpSrmPXbPg/QQJ47xcJYaBJ0zsLKeyUcNxYRuBpnQhZRoUan3vR5rNYSf6USgcMbrJGw/Q
-        q0pgUSyT819zAY3wW0DidD5wRZVOWFQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-cXFioYEyN02HXgocc0E-Cg-1; Tue, 20 Apr 2021 06:23:47 -0400
-X-MC-Unique: cXFioYEyN02HXgocc0E-Cg-1
-Received: by mail-ed1-f69.google.com with SMTP id i18-20020aa7c7120000b02903853032ef71so3924584edq.22
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 03:23:47 -0700 (PDT)
+        Tue, 20 Apr 2021 06:25:14 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95846C06174A;
+        Tue, 20 Apr 2021 03:24:40 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id mh2so35908324ejb.8;
+        Tue, 20 Apr 2021 03:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iDi8cUbiyndOqXYkEBTxg8CyIbOjMD0ycEy+x60xpsw=;
+        b=roQeYFmx2/icGD6lUKMbke4T1HvYGH1yyx5REXyF+rwL+KV/sRbiHhLPwydnKtaa/G
+         KeVBfpvYns1GKX1IsuCTdfS4uaFzyFP0mwYAWoW4rqKgf6K5BtNm3GkhWUFM7vndYvle
+         rt2MefYLMF4K8GpKHs244d1OE1NGarkBLo8hnOr+l5j9zJ/OmeohyXo+HJS/upqwOyiZ
+         we2+9j/V/6enS3qdXCPpv5O/lyJe6whuTejnhfMYkUquXgOp+8jQ6lAwBstl2s7k4RPx
+         Kz8yJVv4sG3wL2/YJPvl22nNrh/HG8qeAmGxyf4iSStVjr2TkT+GUB3sR/9swBM5BXOJ
+         5VbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=b7a+2NIHct7ey/wtfhecbqVWOV2x5OoBwHuqA9oFCX0=;
-        b=GjLgzOlxHpsbbwYFap2Mi2OVESuMk53IaCuTrWFg2t5FXI148VkFJp9Z1onHOLpKKG
-         Vkcmp3Z4oj3ABCkrQ2cLtDC6knJDteJDYn18i6j3GXJ85yCoSgi76spwyLkppLAy6yFo
-         iq7f7LvWXzL7PO+mQSkh/Vn8ZhUbaM0Fy2DG1eQbzwurViWLOv7sN2j8JeS2k4h+HC1o
-         o/6n6+Iu/gw4UYxfafYjqP6i3pJ4A7DjQ0IoDHb+hhMgBqpa67goy16fqldasFpfg+6a
-         JUsU3d/QEgdcuQpa++7xdW1K/eiGFeG6CKZdk35VN5B8u2Sq+BBhqeYB09VnE12clNkP
-         mL2g==
-X-Gm-Message-State: AOAM532c4YMpzDHR/tQaPV2cbDdMC7oKOEs3X73Ju3WUatIZskjLr7BR
-        Z3ogI0CI8z1LJDbdYCXbpN7i9YWwI1XRXlYXESlUYqPidTb+hVI7vb8HYDAaMywTxD9CS+iYx+j
-        kK8Mits3wOkJ6UrRT6RZcnS5q
-X-Received: by 2002:a17:907:2151:: with SMTP id rk17mr26644958ejb.203.1618914226686;
-        Tue, 20 Apr 2021 03:23:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzodp7RMnFhaEX9D/NoF30lFskpxX7NtEUD3yP5k2w2nOq60l9HMWrqSyGFWJM4H4SbP3QJkA==
-X-Received: by 2002:a17:907:2151:: with SMTP id rk17mr26644944ejb.203.1618914226491;
-        Tue, 20 Apr 2021 03:23:46 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f20sm9015003ejw.36.2021.04.20.03.23.44
+        bh=iDi8cUbiyndOqXYkEBTxg8CyIbOjMD0ycEy+x60xpsw=;
+        b=KmOM0xAerjm44lsnFDHG87uBfgXfOdX2zu6/hUtZg9YU7XTHSrG0UrNRKq+0lI4NX0
+         bDoau11+N0ElAVQW1LGcO+BgZCX4PVAon2Bb1ULpcRwy29sdHkv+4nRJycunkm/4a3Oi
+         U+FTUhPizORHyuqnOTXdKStl+rLchn9VR6jU8eJOaOviGuiusRTZMFdcuzoHmkx/Y/ej
+         nSkfwKugZOvSya7xwaJ32q/ePLY9nbrqjSSjpknJ7Xha/HzwiqcV5r0UeNxLIx1ZHqCH
+         6gAjvwXn/XgY8JpXjqrAvYP7UQnV/BlH4UoPjmqpdD1uuPtt5nxQZB51U8CdmRqt6qgq
+         SZIw==
+X-Gm-Message-State: AOAM530ThWOp3bkuCBAvLGyLMPEwSJtV1rPyUGdWbbHKoENKIL8DC+2d
+        wR+zoJLrspvzaSFXXOCjoO+gnld/eLQ=
+X-Google-Smtp-Source: ABdhPJwv7sEOGcS4T4d7yVxSjB+KHHDSNOEyOEcNORPWzZwaI2xwQnNKXS/ajg8NGQ5NgwEogrWhnw==
+X-Received: by 2002:a17:907:9485:: with SMTP id dm5mr26830144ejc.194.1618914279049;
+        Tue, 20 Apr 2021 03:24:39 -0700 (PDT)
+Received: from [10.18.0.21] ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id e11sm12362807ejn.100.2021.04.20.03.24.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 03:23:45 -0700 (PDT)
-Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
- delivering interrupt
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
- <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
- <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
- <YH2wnl05UBqVhcHr@google.com>
- <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
- <CANRm+CwQ266j6wTxqFZtGhp_HfQZ7Y_e843hzROqNUxf9BcaFA@mail.gmail.com>
- <CANRm+CyHX-_vQLck1a9wpCv8a-YnnemEWm+zVv4eWYby5gdAeg@mail.gmail.com>
- <b2fca9a5-9b2b-b8f2-0d1e-fc8b9d9b5659@redhat.com>
- <CANRm+Czysw6z1u+fbsRF3JUyiJc0jErVATusar_Vj8CcSBy5LQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e1d07b55-1539-ed33-911c-713403d776b3@redhat.com>
-Date:   Tue, 20 Apr 2021 12:23:44 +0200
+        Tue, 20 Apr 2021 03:24:38 -0700 (PDT)
+Subject: Re: [PATCH] platform/surface: aggregator: fix a bit test
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <YH6UUhJhGk3mk13b@mwanda>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <7352fbf8-6773-99e6-1baa-3daea8523bc7@gmail.com>
+Date:   Tue, 20 Apr 2021 12:24:37 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <CANRm+Czysw6z1u+fbsRF3JUyiJc0jErVATusar_Vj8CcSBy5LQ@mail.gmail.com>
+In-Reply-To: <YH6UUhJhGk3mk13b@mwanda>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 10:48, Wanpeng Li wrote:
->> I was thinking of something simpler:
->>
->> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->> index 9b8e30dd5b9b..455c648f9adc 100644
->> --- a/virt/kvm/kvm_main.c
->> +++ b/virt/kvm/kvm_main.c
->> @@ -3198,10 +3198,9 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
->>    {
->>          struct kvm *kvm = me->kvm;
->>          struct kvm_vcpu *vcpu;
->> -       int last_boosted_vcpu = me->kvm->last_boosted_vcpu;
->>          int yielded = 0;
->>          int try = 3;
->> -       int pass;
->> +       int pass, num_passes = 1;
->>          int i;
->>
->>          kvm_vcpu_set_in_spin_loop(me, true);
->> @@ -3212,13 +3211,14 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
->>           * VCPU is holding the lock that we need and will release it.
->>           * We approximate round-robin by starting at the last boosted VCPU.
->>           */
->> -       for (pass = 0; pass < 2 && !yielded && try; pass++) {
->> -               kvm_for_each_vcpu(i, vcpu, kvm) {
->> -                       if (!pass && i <= last_boosted_vcpu) {
->> -                               i = last_boosted_vcpu;
->> -                               continue;
->> -                       } else if (pass && i > last_boosted_vcpu)
->> -                               break;
->> +       for (pass = 0; pass < num_passes; pass++) {
->> +               int idx = me->kvm->last_boosted_vcpu;
->> +               int n = atomic_read(&kvm->online_vcpus);
->> +               for (i = 0; i < n; i++, idx++) {
->> +                       if (idx == n)
->> +                               idx = 0;
->> +
->> +                       vcpu = kvm_get_vcpu(kvm, idx);
->>                          if (!READ_ONCE(vcpu->ready))
->>                                  continue;
->>                          if (vcpu == me)
->> @@ -3226,23 +3226,36 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
->>                          if (rcuwait_active(&vcpu->wait) &&
->>                              !vcpu_dy_runnable(vcpu))
->>                                  continue;
->> -                       if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
->> -                               !kvm_arch_vcpu_in_kernel(vcpu))
->> -                               continue;
->>                          if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
->>                                  continue;
->>
->> +                       if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
->> +                           !kvm_arch_vcpu_in_kernel(vcpu)) {
->> +                           /*
->> +                            * A vCPU running in userspace can get to kernel mode via
->> +                            * an interrupt.  That's a worse choice than a CPU already
->> +                            * in kernel mode so only do it on a second pass.
->> +                            */
->> +                           if (!vcpu_dy_runnable(vcpu))
->> +                                   continue;
->> +                           if (pass == 0) {
->> +                                   num_passes = 2;
->> +                                   continue;
->> +                           }
->> +                       }
->> +
->>                          yielded = kvm_vcpu_yield_to(vcpu);
->>                          if (yielded > 0) {
->>                                  kvm->last_boosted_vcpu = i;
->> -                               break;
->> +                               goto done;
->>                          } else if (yielded < 0) {
->>                                  try--;
->>                                  if (!try)
->> -                                       break;
->> +                                       goto done;
->>                          }
->>                  }
->>          }
->> +done:
+On 4/20/21 10:44 AM, Dan Carpenter wrote:
+> The "funcs" variable is a u64.  If "func" is more than 31 then the
+> BIT() shift will wrap instead of testing the high bits.
 > 
-> We just tested the above post against 96 vCPUs VM in an over-subscribe
-> scenario, the score of pbzip2 fluctuated drastically. Sometimes it is
-> worse than vanilla, but the average improvement is around 2.2%. The
-> new version of my post is around 9.3%，the origial posted patch is
-> around 10% which is totally as expected since now both IPI receivers
-> in user-mode and lock-waiters are second class citizens.
+> Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Fair enough.  Of the two patches you posted I prefer the original, so 
-I'll go with that one.
+Thanks!
 
-Paolo
+Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 
+> ---
+>   drivers/platform/surface/aggregator/controller.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/surface/aggregator/controller.c b/drivers/platform/surface/aggregator/controller.c
+> index 00e38284885a..69e86cd599d3 100644
+> --- a/drivers/platform/surface/aggregator/controller.c
+> +++ b/drivers/platform/surface/aggregator/controller.c
+> @@ -1040,7 +1040,7 @@ static int ssam_dsm_load_u32(acpi_handle handle, u64 funcs, u64 func, u32 *ret)
+>   	union acpi_object *obj;
+>   	u64 val;
+>   
+> -	if (!(funcs & BIT(func)))
+> +	if (!(funcs & BIT_ULL(func)))
+>   		return 0; /* Not supported, leave *ret at its default value */
+>   
+>   	obj = acpi_evaluate_dsm_typed(handle, &SSAM_SSH_DSM_GUID,
+> 
