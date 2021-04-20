@@ -2,68 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF5336500E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2C8365015
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbhDTCAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:00:22 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30085 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhDTCAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:00:21 -0400
-IronPort-SDR: 59E1uVoB9z/0HEL4cbwnaDI0/IGO2FKxgccl0ymz5u4PCwR4+h8ZsnCFLJ/eokhV1nePzax2xm
- fQQsBNi1FcYw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195541832"
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="195541832"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 18:59:50 -0700
-IronPort-SDR: ftmXhnYEFk2x+ACtl8Op7mLBGHcxaCOv0Us0O3Vp5K0UUXkxaRXAHmYPe1y4El8Gy44CQxp1Ul
- 0DuHOU/R73rQ==
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="426730850"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 18:59:48 -0700
-Date:   Tue, 20 Apr 2021 10:03:36 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Terry Bowman <terry.bowman@amd.com>
-Cc:     lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bp@suse.de, calvin.walton@kepstin.ca,
-        wei.huang2@amd.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <20210420020336.GA386151@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
+        id S233350AbhDTCDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhDTCDj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 22:03:39 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EB9C06174A;
+        Mon, 19 Apr 2021 19:03:03 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id j3so17905256qvs.1;
+        Mon, 19 Apr 2021 19:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=fHhMp1izLsGzJ/KHQOE6VnVJl5ZHajURFxKM6P2mHok=;
+        b=C0S3+dtiWhekGRCm+71p/U4cmNShTOFOOyDn9hkvzfDLTZM+KS0Vd1fg7YyzBinztT
+         gjVzasMXfxI0d8Ug91Y1x5xAsLkdMnXTn0ikhRVfMf1AeydNUWCPefRaYuceRvfX1GYl
+         p9NFNk9Nn5MMrTV0ckVIJK1UvOZzweHkQqV+W5VtxIT0kqdKBT0MpEIQV6ARdAOvkZtM
+         yBexaTMs22OBcucNzFB9Rv0xv5BzKWiMk97ZgW8ZnKWXoSV/qoV5tgB/dEbskEj7RRlk
+         HhOqLeaokxleDTpTdOeizJScvOrN4xAv8M9yemkAIY1rwt/zeSD716tcbS7Dlxo5rpMR
+         vx+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=fHhMp1izLsGzJ/KHQOE6VnVJl5ZHajURFxKM6P2mHok=;
+        b=RqXEYpxFbIUFPbb6VEvbX8J/OR3fMvVDIHiHYwFe47S8j6gbZftFxhsxCnnzaGhOte
+         blKHGciI5xqQvO6/Rh4YaYMVg9qeN9/9UPacWu4WiRP5BTu1vN2CH52u0O7nXlsn/RM1
+         Nr/qMxSRMqTc2Fz8QZQUwo7Ec7bId4pvUp1MiOYB6jTD2ikBrjIdx91ssdVUvY2H8J9g
+         pSxP6TddjcfPdjHsBBJD9G+LpxouC/kzIuhEwdcTA8sonUYVvnC7watmYWfLzH0sjfa+
+         Y0e7Kw8Sw/2sevu93UTmcxwHxufuPxmW21y+8J9zGFJm76RPceZDIanF6rpkSO2UFNKH
+         rjKA==
+X-Gm-Message-State: AOAM533Vtw1Y/5iMRbH19f51Z0ux7+P7D9RJrrrfCT8a7NXLZxc+/2Ss
+        DlwPlv6iGNZXO3mTTpo36emwTfEaoFM=
+X-Google-Smtp-Source: ABdhPJxZ2VJ3svnFSsoxgK/eD1pa/4UxgkQsYwnbL8HHMGvLd/1M6htGOoqlrCctiyPnMtMuosi5ig==
+X-Received: by 2002:a05:6214:4ac:: with SMTP id w12mr20049754qvz.40.1618884182429;
+        Mon, 19 Apr 2021 19:03:02 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
+        by smtp.gmail.com with ESMTPSA id c29sm3543001qtv.93.2021.04.19.19.02.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 19:03:01 -0700 (PDT)
+Message-ID: <b56b8a5c8f02a2afea9554ebf16a423c182a9fc3.camel@gmail.com>
+Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
+ 64-bit memory addresses
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Date:   Mon, 19 Apr 2021 23:02:58 -0300
+In-Reply-To: <CAL_JsqK83MFqZ4yCz+i7sunpXFmi+vvjCSxVmcCh1YG=mOxY9A@mail.gmail.com>
+References: <20210415180050.373791-1-leobras.c@gmail.com>
+         <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
+         <7b089cd48b90f2445c7cb80da1ce8638607c46fc.camel@gmail.com>
+         <CAL_Jsq+m6CkGj_NYGvwxoKwoQ4PkEu6hfGdMTT3i4APoHSkNeg@mail.gmail.com>
+         <b875ef1778e17a87ee1f4b71d26f2782831b1d07.camel@gmail.com>
+         <CAL_JsqK83MFqZ4yCz+i7sunpXFmi+vvjCSxVmcCh1YG=mOxY9A@mail.gmail.com>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419195812.147710-1-terry.bowman@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 02:58:12PM -0500, Terry Bowman wrote:
-> Turbostat fails to correctly collect and display RAPL summary information
-> on Family 17h and 19h AMD processors. Running turbostat on these processors
-> returns immediately. If turbostat is working correctly then RAPL summary
-> data is displayed until the user provided command completes. If a command
-> is not provided by the user then turbostat is designed to continuously
-> display RAPL information until interrupted.
+On Mon, 2021-04-19 at 20:39 -0500, Rob Herring wrote:
+> On Mon, Apr 19, 2021 at 7:35 PM Leonardo Bras <leobras.c@gmail.com> wrote:
+> > 
+> > On Mon, 2021-04-19 at 10:44 -0500, Rob Herring wrote:
+> > > On Fri, Apr 16, 2021 at 3:58 PM Leonardo Bras <leobras.c@gmail.com> wrote:
+> > > > 
+> > > > Hello Rob, thanks for this feedback!
+> > > > 
+> > > > On Thu, 2021-04-15 at 13:59 -0500, Rob Herring wrote:
+> > > > > +PPC and PCI lists
+> > > > > 
+> > > > > On Thu, Apr 15, 2021 at 1:01 PM Leonardo Bras <leobras.c@gmail.com> wrote:
+> > > > > > 
+> > > > > > Many other resource flag parsers already add this flag when the input
+> > > > > > has bits 24 & 25 set, so update this one to do the same.
+> > > > > 
+> > > > > Many others? Looks like sparc and powerpc to me.
+> > > > > 
+> > > > 
+> > > > s390 also does that, but it look like it comes from a device-tree.
+> > > 
+> > > I'm only looking at DT based platforms, and s390 doesn't use DT.
+> > 
+> > Correct.
+> > Sorry, I somehow write above the opposite of what I was thinking.
+> > 
+> > > 
+> > > > > Those would be the
+> > > > > ones I worry about breaking. Sparc doesn't use of/address.c so it's
+> > > > > fine. Powerpc version of the flags code was only fixed in 2019, so I
+> > > > > don't think powerpc will care either.
+> > > > 
+> > > > In powerpc I reach this function with this stack, while configuring a
+> > > > virtio-net device for a qemu/KVM pseries guest:
+> > > > 
+> > > > pci_process_bridge_OF_ranges+0xac/0x2d4
+> > > > pSeries_discover_phbs+0xc4/0x158
+> > > > discover_phbs+0x40/0x60
+> > > > do_one_initcall+0x60/0x2d0
+> > > > kernel_init_freeable+0x308/0x3a8
+> > > > kernel_init+0x2c/0x168
+> > > > ret_from_kernel_thread+0x5c/0x70
+> > > > 
+> > > > For this, both MMIO32 and MMIO64 resources will have flags 0x200.
+> > > 
+> > > Oh good, powerpc has 2 possible flags parsing functions. So in the
+> > > above path, do we need to set PCI_BASE_ADDRESS_MEM_TYPE_64?
+> > > 
+> > > Does pci_parse_of_flags() get called in your case?
+> > > 
+> > 
+> > It's called in some cases, but not for the device I am debugging
+> > (virtio-net pci@800000020000000).
+> > 
+> > For the above device, here is an expanded stack trace:
+> > 
+> > of_bus_pci_get_flags() (from parser->bus->get_flags())
+> > of_pci_range_parser_one() (from macro for_each_of_pci_range)
+> > pci_process_bridge_OF_ranges+0xac/0x2d4
+> > pSeries_discover_phbs+0xc4/0x158
+> > discover_phbs+0x40/0x60
+> > do_one_initcall+0x60/0x2d0
+> > kernel_init_freeable+0x308/0x3a8
+> > kernel_init+0x2c/0x168
+> > ret_from_kernel_thread+0x5c/0x70
+> > 
+> > For other devices, I could also see the following stack trace:
+> > ## device ethernet@8
+> > 
+> > pci_parse_of_flags()
+> > of_create_pci_dev+0x7f0/0xa40
+> > __of_scan_bus+0x248/0x320
+> > pcibios_scan_phb+0x370/0x3b0
+> > pcibios_init+0x8c/0x12c
+> > do_one_initcall+0x60/0x2d0
+> > kernel_init_freeable+0x308/0x3a8
+> > kernel_init+0x2c/0x168
+> > ret_from_kernel_thread+0x5c/0x70
+> > 
+> > Devices that get parsed with of_bus_pci_get_flags() appears first at
+> > dmesg (around 0.015s in my test), while devices that get parsed by
+> > pci_parse_of_flags() appears later (0.025s in my test).
+> > 
+> > I am not really used to this code, but having the term "discover phbs"
+> > in the first trace and the term "scan phb" in the second, makes me
+> > wonder if the first trace is seen on devices that are seen/described in
+> > the device-tree and the second trace is seen in devices not present in
+> > the device-tree and found scanning pci bus.
 > 
-> The issue is due to offset_to_idx() and idx_to_offset() missing support for
-> AMD MSR addresses/offsets. offset_to_idx()'s switch statement is missing
-> cases for AMD MSRs and idx_to_offset() does not include a path to return
-> AMD MSR(s) for any idx.
+> That was my guess as well. I think on pSeries that most PCI devices
+> are in the DT whereas on Arm and other flattened DT (non OpenFirmware)
+> platforms PCI devices are not in DT.
 > 
-> The solution is add AMD MSR support to offset_to_idx() and idx_to_offset().
-> These functions are split-out and renamed along architecture vendor lines
-> for supporting both AMD and Intel MSRs.
-> 
-> Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
-Thanks for fixing, Terry, and previously there was a patch for this from Bas Nieuwenhuizen:
-https://lkml.org/lkml/2021/3/12/682
-and it is expected to have been merged in Len's branch already.
 
-thanks,
-Chenyu
+It makes sense to me. 
+
+>  Of course, for virtio devices,
+> they would not be in DT in either case.
+
+I don't get this part... in pseries it looks like virtio devices can be
+in device-tree.
+
+Oh, I think I get it... this pci@800000020000000 looks like a bus
+(described in device-tree, so discovered), and then the devices are
+inside it, getting scanned.
+
+The virtio device gets the correct flags (from pci_parse_of_flags), but
+the bus (pci@800000020000000) does not seem to get it correctly,
+because it comes from of_bus_pci_get_flags() which makes sense
+according to the name of the function.
+
+(see lspci bellow, output without patch)
+
+
+00:08.0 Ethernet controller: Red Hat, Inc. Virtio network device (rev
+01)
+        Subsystem: Red Hat, Inc. Device 1100
+        Device tree node:
+/sys/firmware/devicetree/base/pci@800000020000000/ethernet@8
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR+ FastB2B- DisINTx+
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 0
+        Interrupt: pin A routed to IRQ 19
+        IOMMU group: 0
+        Region 1: Memory at 200080020000 (32-bit, non-prefetchable)
+[size=4K]
+        Region 4: Memory at 210000010000 (64-bit, prefetchable)
+[size=16K]
+        Expansion ROM at 200080040000 [disabled] [size=256K]
+        Capabilities: [98] MSI-X: Enable+ Count=3 Masked-
+                Vector table: BAR=1 offset=00000000
+                PBA: BAR=1 offset=00000800
+        Capabilities: [84] Vendor Specific Information: VirtIO:
+<unknown>
+                BAR=0 offset=00000000 size=00000000
+        Capabilities: [70] Vendor Specific Information: VirtIO: Notify
+                BAR=4 offset=00003000 size=00001000 multiplier=00000004
+        Capabilities: [60] Vendor Specific Information: VirtIO:
+DeviceCfg
+                BAR=4 offset=00002000 size=00001000
+        Capabilities: [50] Vendor Specific Information: VirtIO: ISR
+                BAR=4 offset=00001000 size=00001000
+        Capabilities: [40] Vendor Specific Information: VirtIO:
+CommonCfg
+                BAR=4 offset=00000000 size=00001000
+        Kernel driver in use: virtio-pci
+
+
+> 
+> > > > > I noticed both sparc and powerpc set PCI_BASE_ADDRESS_MEM_TYPE_64 in
+> > > > > the flags. AFAICT, that's not set anywhere outside of arch code. So
+> > > > > never for riscv, arm and arm64 at least. That leads me to
+> > > > > pci_std_update_resource() which is where the PCI code sets BARs and
+> > > > > just copies the flags in PCI_BASE_ADDRESS_MEM_MASK ignoring
+> > > > > IORESOURCE_* flags. So it seems like 64-bit is still not handled and
+> > > > > neither is prefetch.
+> > > > > 
+> > > > 
+> > > > I am not sure if you mean here:
+> > > > a) it's ok to add IORESOURCE_MEM_64 here, because it does not affect
+> > > > anything else, or
+> > > > b) it should be using PCI_BASE_ADDRESS_MEM_TYPE_64
+> > > > (or IORESOURCE_MEM_64 | PCI_BASE_ADDRESS_MEM_TYPE_64) instead, since
+> > > > it's how it's added in powerpc/sparc, and else there is no point.
+> > > 
+> > > I'm wondering if a) is incomplete and PCI_BASE_ADDRESS_MEM_TYPE_64
+> > > also needs to be set. The question is ultimately are BARs getting set
+> > > correctly for 64-bit? It looks to me like they aren't.
+> > 
+> > I am not used to these terms, does BAR means 'Base Address Register'?
+> 
+> Yes. Standard PCI thing.
+
+Nice :)
+
+> 
+> > If so, those are the addresses stored in pci->phb->mem_resources[i] and
+> > pci->phb->mem_offset[i], printed from enable_ddw() (which takes place a
+> > lot after discovering the device (0.17s in my run)).
+> > 
+> > resource #1 pci@800000020000000: start=0x200080000000
+> > end=0x2000ffffffff flags=0x200 desc=0x0 offset=0x200000000000
+> > resource #2 pci@800000020000000: start=0x210000000000
+> > end=0x21ffffffffff flags=0x200 desc=0x0 offset=0x0
+> > 
+> > The message above was printed without this patch.
+> > With the patch, the flags for memory resource #2 gets ORed with
+> > 0x00100000.
+> 
+> Right, as expected.
+> 
+> > Is it enough to know if BARs are correctly set for 64-bit?
+> 
+> No, because AFAICT, bit 2 in the BAR would not be set.
+> 
+> > If it's not, how can I check?
+> 
+> Can you try 'lspci -vv' and look at the 'Region X:' lines which will
+> say 32 or 64-bit. I *think* that should reflect what actually got
+> written into the BARs.
+
+As seen in the lspci from above comment:
+Region 1: Memory at 200080020000 (32-bit, non-prefetchable) [size=4K]
+Region 4: Memory at 210000010000 (64-bit, prefetchable) [size=16K]
+
+So it seems to be getting configured properly.
+
+I think the point here is bus resources not getting the MEM_64 flag,
+but device resources getting it correctly. Is that supposed to happen?
+
+> 
+> Rob
+
+Thanks Rob!
+
+Leonardo Bras
+
