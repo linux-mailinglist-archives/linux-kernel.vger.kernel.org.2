@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B729D365B14
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F61365B08
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhDTOVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:21:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:35762 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231422AbhDTOVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:21:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 150CD1478;
-        Tue, 20 Apr 2021 07:21:20 -0700 (PDT)
-Received: from [10.57.27.211] (unknown [10.57.27.211])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D20CA3F792;
-        Tue, 20 Apr 2021 07:21:18 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
- devices when temp is low
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210419084536.25000-1-lukasz.luba@arm.com>
- <20210419084536.25000-3-lukasz.luba@arm.com>
- <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <55943d6f-0f72-215d-1dd4-bf3996092df7@arm.com>
-Date:   Tue, 20 Apr 2021 15:21:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232691AbhDTOR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:17:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17017 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232473AbhDTOR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:17:56 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FPlzt1N1qzNwrp;
+        Tue, 20 Apr 2021 22:14:18 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 20 Apr 2021
+ 22:17:11 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <jack@suse.cz>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v2] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+Date:   Tue, 20 Apr 2021 22:25:18 +0800
+Message-ID: <20210420142518.1573012-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+We got follow bug_on when run fsstress with injecting IO fault:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-On 4/20/21 2:30 PM, Daniel Lezcano wrote:
-> On 19/04/2021 10:45, Lukasz Luba wrote:
+If call ext4_ext_insert_extent failed but new extent already inserted, we just
+update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+cause bug on when cache extent.
+If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+Maybe there will lead to block leak, but it can be fixed by fsck later.
 
-[snip]
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/extents.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
->> -		instance->cdev->updated = false;
->> +		if (update)
->> +			instance->cdev->updated = false;
->> +
->>   		mutex_unlock(&instance->cdev->lock);
->> -		(instance->cdev);
->> +
->> +		if (update)
->> +			thermal_cdev_update(instance->cdev);
-> 
-> This cdev update has something bad IMHO. It is protected by a mutex but
-> the 'updated' field is left unprotected before calling
-> thermal_cdev_update().
-> 
-> It is not the fault of this code but how the cooling device are updated
-> and how it interacts with the thermal instances.
-> 
-> IMO, part of the core code needs to revisited.
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..6161db9c17c9 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3245,8 +3245,11 @@ static int ext4_split_extent_at(handle_t *handle,
+ 		err = ext4_zeroout_es(inode, &zero_ex);
+ 
+ 		goto out;
+-	} else if (err)
++	} else if (err == -EROFS) {
++		return err;
++	} else {
+ 		goto fix_extent_len;
++	}
+ 
+ out:
+ 	ext4_ext_show_leaf(inode, path);
+-- 
+2.25.4
 
-I agree, but please check my comments below.
-
-> 
-> This change tight a bit more the knot.
-> 
-> Would it make sense to you if we create a function eg.
-> __thermal_cdev_update()
-
-I'm not sure if I assume it right that the function would only have the:
-list_for_each_entry(instance, &cdev->thermal_instances, cdev_node)
-
-loop from the thermal_cdev_update(). But if it has only this loop then
-it's too little.
-
-> 
-> And then we have:
-> 
-> void thermal_cdev_update(struct thermal_cooling_device *cdev)
-> {
->          mutex_lock(&cdev->lock);
->          /* cooling device is updated*/
->          if (cdev->updated) {
->                  mutex_unlock(&cdev->lock);
->                  return;
->          }
-> 
-> 	__thermal_cdev_update(cdev);
-> 
->          thermal_cdev_set_cur_state(cdev, target);
-
-Here we are actually setting the 'target' state via:
-cdev->ops->set_cur_state(cdev, target)
-
-then we notify, then updating stats.
-
-> 
->          cdev->updated = true;
->          mutex_unlock(&cdev->lock);
->          trace_cdev_update(cdev, target);
-
-Also this trace is something that I'm using in my tests...
-
->          dev_dbg(&cdev->device, "set to state %lu\n", target);
-> }
-> 
-> And in this file we do instead:
-> 
-> -		instance->cdev->updated = false;
-> +		if (update)
-> +			__thermal_cdev_update(instance->cdev);
->    		mutex_unlock(&instance->cdev->lock);
-> -		thermal_cdev_update(instance->cdev);
-
-Without the line above, we are not un-throttling the devices.
-
-Regards,
-Lukasz
