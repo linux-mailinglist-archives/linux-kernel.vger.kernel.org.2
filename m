@@ -2,102 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81980365E99
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A83365E9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhDTRaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S233391AbhDTRbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhDTRaX (ORCPT
+        with ESMTP id S233245AbhDTRbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:30:23 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AE5C06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:29:52 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id f11-20020a17090a638bb02901524d3a3d48so233496pjj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:29:52 -0700 (PDT)
+        Tue, 20 Apr 2021 13:31:21 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF866C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:30:49 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id h19so1180818vsa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oHhObtzZUMwUL0LGBYnUP2PdgBkn1gCTVPbp4qMchG4=;
-        b=YScpteqoqCLz2Eu+NTR3fLnysuCLD0EMwVENM3M1OUKcSsSnzqJcHaNC4pfaNry8tw
-         RPWH7MrHzN59I3/0KGYanyTHJAzmj2yiQtwZwDgHuRJfBEpZNi3im67N4vuRuH2YMwAh
-         wSkveHOydiGEs4NcfcUJdwx69c4CsvCe+uqI4=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G58TS9A9yYeMoSb17LgKAY3Blh89gTINhGV0E3IpGQE=;
+        b=et2aicPqhBqREOY0dNhnVIpeKAqBqwCzKXvIfzgrBt6P66Jgo/2+oQEWI+6gyewphg
+         VbhS+bw5RzxtJErHdYEL/G5C3BA7I4UJ6eL5VYd1XnMcLFOCvxA4QaOg5G/PfVgj9nY0
+         lHTQOuBQKTK9gNs7yf2oHGIdtU/z3Wkt5iEJk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oHhObtzZUMwUL0LGBYnUP2PdgBkn1gCTVPbp4qMchG4=;
-        b=EKMww3Pb4sAhvam9Dha6FqPcO6j3ucQLQwcoQ67QfCrH1yttfH3WqGh3Rvehc1Y+D4
-         o/3ShoTsrCjgstu59+VyYapgNmZ8va9PInYM97MW5Rp2QcGCy8CvAecQS7QEBpgB0OdE
-         Yo1dUL+JqwBvcw2r2TxZYv4WldAWDfCgnQNuDjq7pMYp6TzA0cNP67Bg61lujPdYagwj
-         nSJ5V9e8x37PmVmPsPlGJRHa/RGfvivVKaIdt7EsHaJI35sUQl0/T4NF7dviyxXV/kxM
-         VFd8EdFTx2Bwt197TtK22OHZmF3VzuNglG+BwBIJEPSD0fOQrec6k3LGrZ4P2aWcPIGU
-         qlUA==
-X-Gm-Message-State: AOAM533iAC3ShPKpk/aA48CSxqJ6qwTObpvo14gCOKYa5QzbSgccbWk5
-        kpMIhHXIN2BcJM8xhZpVkCwTBQ==
-X-Google-Smtp-Source: ABdhPJxEe1OhULxbGxmNL1UjWRteTSkCWq9GXRDRscjlFfY5QPkDI7MHsA7OpxA3teahomRVWUToQg==
-X-Received: by 2002:a17:90a:7897:: with SMTP id x23mr6106182pjk.133.1618939791774;
-        Tue, 20 Apr 2021 10:29:51 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
-        by smtp.gmail.com with UTF8SMTPSA id q3sm3025116pja.37.2021.04.20.10.29.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 10:29:51 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 10:29:50 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [RESEND PATCH V3 4/5] arm64: dts: qcom: pmk8350: Add PMIC
- peripherals for pmk8350
-Message-ID: <YH8PjqhZtiNhNv8h@google.com>
-References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
- <1618398783-7834-3-git-send-email-skakit@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G58TS9A9yYeMoSb17LgKAY3Blh89gTINhGV0E3IpGQE=;
+        b=llF5d2Gwl1KFNrWeQ1RNdJcfqZdElLsZi4Cb6tdWXRMOkVI9Y/NM6huh1Aimr0LqKT
+         FwR6dyvmEWHQrowcYCEyMScPxqwp95PP5ZYOstpk9n8odmBzgFNwmXXbeKtIS0dc1kdC
+         Nf9AvrMgdH6brtsWMh/AizGlEm4cDRtysqEecVJFVdn3ieitZ+DN5Rnmy5PHme4Zi8Yf
+         R5A681vMfqhsohwOZCkbzqb9gF2vsUxqrdL6YbtCZel89r/IquW2Aov82UZEx/Xqp2u1
+         v//l8YmeWA4gyeJWK95u75JPeo3kDC5IzRjy0IlEUKcKAn+4rQ11h7obFlqH4XyrvSQo
+         56ew==
+X-Gm-Message-State: AOAM531aV8ljbCksP1xcfNvTr4WNSMAptt5laxC8TAgMg+oRvC/Wq3k9
+        h7+IzF1Setk2a3vxN3pQgbSrcz+dDzncxNciov+3GQ==
+X-Google-Smtp-Source: ABdhPJwXS7FiUTSlDWt0dHxHZ5655bX8hkIGHT1fDhHkNqF1vZ+XhhN+pVaz/0zkCxHB6ILJZd90Q4uuCj/sRoEmvgk=
+X-Received: by 2002:a67:c98b:: with SMTP id y11mr21793715vsk.2.1618939848572;
+ Tue, 20 Apr 2021 10:30:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1618398783-7834-3-git-send-email-skakit@codeaurora.org>
+References: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com> <20210420091309.GH3@paasikivi.fi.intel.com>
+In-Reply-To: <20210420091309.GH3@paasikivi.fi.intel.com>
+From:   Grant Grundler <grundler@chromium.org>
+Date:   Tue, 20 Apr 2021 17:30:37 +0000
+Message-ID: <CANEJEGunDJ-Q3vP5ABVgtQqg2vmNye6g+i7arZKxZOUdJOJaQQ@mail.gmail.com>
+Subject: Re: [RESEND v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Bingbu Cao <bingbu.cao@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        will@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Rajat Jain <rajatja@google.com>,
+        Grant Grundler <grundler@chromium.org>, tfiga@chromium.org,
+        senozhatsky@chromium.org, andriy.shevchenko@linux.intel.com,
+        bingbu.cao@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 04:43:00PM +0530, satya priya wrote:
+On Tue, Apr 20, 2021 at 11:02 AM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Bingbu,
+>
+> Thanks for the patch.
+>
+> On Tue, Apr 20, 2021 at 10:48:33AM +0800, Bingbu Cao wrote:
+> > Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
+> > The IPU driver allocates its own page table that is not mapped
+> > via the DMA, and thus the Intel IOMMU driver blocks access giving
+> > this error:
+>
+> The page table should be mapped to the possible IOMMU using the DMA API.
 
-> Subject: arm64: dts: qcom: pmk8350: Add PMIC peripherals for pmk8350
+I've made the same "observation": this patch is intentionally enables
+using "intel_iommu=on" (IIRC) to strictly enforce "all" DMA
+transactions (except the ones we explicitly allow to identity map).
 
-nit: why 'PMIC peripherals', are these peripherals somehow specific
-to PMICs?
+The question is: Is the security of IPU MMU the same as the system
+IOMMU for the few devices behind the IPU MMU?
 
-> Add PON, RTC and other PMIC infra modules support for PMK8350.
+If not, then we (Chrome OS) require child devices to be "mapped"
+twice: once in IPU MMU and again in the system IOMMU. I believe
+dma_ops can be nested though I can't confidently point at examples
+(IDE drivers maybe?)  This adds some latency to each DMA transaction -
+decades ago I've measured roughly 5% on Itanium and PA-RISC systems
+from HP. Perhaps Intel can measure this penatly on current HW they are
+shipping.
 
-nit: it seems somewhat arbitrary to specifically mention PON and RTC,
-and then treat the ADC and the thermal monitor as 'others'. You could
-just spell them out too.
+If yes, then I think the IPU driver just needs to be consistent about
+it's use of DMA API for it's own house keeping: Either use DMA API for
+all IPU DMA operations or use it for none. This is the current plan
+for Chrome OS (I didn't make this decision and wasn't party to the
+discussion).
 
-> 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 55 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 54 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/pmk8350.dtsi b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-> index 1530b8f..bbd9fa7 100644
-> --- a/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-> @@ -3,6 +3,12 @@
->   * Copyright (c) 2021, Linaro Limited
->   */
->  
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
-> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+The IPU driver requires it's child devices to use DMA API and provides
+the dma_ops table for those devices - this use of dma_ops is seperate
+from IPU page tables and other host memory transactions to manage the
+IPU MMU page tables.
 
-the includes of the constants for the other PMICs seems to be an
-remainder from older vesions, which included nodes for the on die
-temperatures of these PMICs.
+CAVEAT: I'm not an expert in IPU driver - I've been reviewing Intel
+IPU code for chromium.org inclusion here:
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2787723
+I have no illusions that I'm going to be an expert after staring at
+28k lines of code less than 10h.
+
+> > DMAR: DRHD: handling fault status reg 3
+> > DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
+> >       fault addr 76406000 [fault reason 06] PTE Read access is not set
+> >
+> > As IPU is not an external facing device which is not risky, so use
+> > IOMMU passthrough mode for Intel IPUs.
+>
+> I think a factor here is that the page tables aren't accessible by the IPU
+> firmware.
+
+Correct. At least not accessible through the system IOMMU. This is why
+Intel prefers the IPU to bypass the system IOMMU.
+
+cheers,
+grant
+
+>
+> >
+> > Fixes: 26f5689592e2 ("media: staging/intel-ipu3: mmu: Implement driver")
+> > Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+> > ---
+> >  drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >
+> > diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> > index ee0932307d64..7e2fbdae467e 100644
+> > --- a/drivers/iommu/intel/iommu.c
+> > +++ b/drivers/iommu/intel/iommu.c
+> > @@ -55,6 +55,12 @@
+> >  #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
+> >  #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
+> >  #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
+> > +#define IS_INTEL_IPU(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL && \
+> > +                         ((pdev)->device == 0x9a19 ||                \
+> > +                          (pdev)->device == 0x9a39 ||                \
+> > +                          (pdev)->device == 0x4e19 ||                \
+> > +                          (pdev)->device == 0x465d ||                \
+> > +                          (pdev)->device == 0x1919))
+> >  #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
+> >
+> >  #define IOAPIC_RANGE_START   (0xfee00000)
+> > @@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
+> >  EXPORT_SYMBOL_GPL(intel_iommu_enabled);
+> >
+> >  static int dmar_map_gfx = 1;
+> > +static int dmar_map_ipu = 1;
+>
+> This works as long as there's only one IPU. Same for graphics. But I guess
+> this can be reworked in the future if the presumption changes.
+>
+> >  static int dmar_forcedac;
+> >  static int intel_iommu_strict;
+> >  static int intel_iommu_superpage = 1;
+> > @@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
+> >
+> >  #define IDENTMAP_GFX         2
+> >  #define IDENTMAP_AZALIA              4
+> > +#define IDENTMAP_IPU         8
+> >
+> >  int intel_iommu_gfx_mapped;
+> >  EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
+> > @@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
+> >
+> >               if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
+> >                       return IOMMU_DOMAIN_IDENTITY;
+> > +
+> > +             if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_INTEL_IPU(pdev))
+> > +                     return IOMMU_DOMAIN_IDENTITY;
+> >       }
+> >
+> >       return 0;
+> > @@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
+> >       if (!dmar_map_gfx)
+> >               iommu_identity_mapping |= IDENTMAP_GFX;
+> >
+> > +     if (!dmar_map_ipu)
+> > +             iommu_identity_mapping |= IDENTMAP_IPU;
+> > +
+> >       check_tylersburg_isoch();
+> >
+> >       ret = si_domain_init(hw_pass_through);
+> > @@ -5622,6 +5636,18 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
+> >       dmar_map_gfx = 0;
+> >  }
+> >
+> > +static void quirk_iommu_ipu(struct pci_dev *dev)
+> > +{
+> > +     if (!IS_INTEL_IPU(dev))
+> > +             return;
+> > +
+> > +     if (risky_device(dev))
+> > +             return;
+> > +
+> > +     pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
+> > +     dmar_map_ipu = 0;
+> > +}
+> > +
+> >  /* G4x/GM45 integrated gfx dmar support is totally busted. */
+> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
+> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
+> > @@ -5657,6 +5683,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
+> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
+> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
+> >
+> > +/* disable IPU dmar support */
+> > +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_ANY_ID, quirk_iommu_ipu);
+> > +
+> >  static void quirk_iommu_rwbf(struct pci_dev *dev)
+> >  {
+> >       if (risky_device(dev))
+>
+> --
+> Kind regards,
+>
+> Sakari Ailus
