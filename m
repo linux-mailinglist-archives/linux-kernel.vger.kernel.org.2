@@ -2,300 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230D3366033
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB1936603D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbhDTTaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 15:30:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42981 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233617AbhDTTah (ORCPT
+        id S233708AbhDTTca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 15:32:30 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:27197 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233544AbhDTTc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:30:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618947005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=w5XVtHm0sjziHGpUa8Tg5ksFOCNPU9PgehoM46k2zqU=;
-        b=gDZHCWJSGgVhiP2k2H9PTdxMSELvM2CLJoBrUHJfY4B+BjYiZGRLIKUiiQVsqhADKc3jD7
-        A/I456JpR0GVWVakaVc50UB/q5RNuf9iATIobL4TSHR3bJRjXrvS6M3C7PgJcPCVuZXxFN
-        s98qnBO6rgzE/TwXFp3Vpldbnjb5664=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-EMC3x77yOYiHaBVVXpUAhA-1; Tue, 20 Apr 2021 15:30:00 -0400
-X-MC-Unique: EMC3x77yOYiHaBVVXpUAhA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25EA41009627;
-        Tue, 20 Apr 2021 19:29:58 +0000 (UTC)
-Received: from llong.com (ovpn-114-123.rdu2.redhat.com [10.10.114.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 10EF2610F3;
-        Tue, 20 Apr 2021 19:29:51 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH-next v5 4/4] mm/memcg: Optimize user context object stock access
-Date:   Tue, 20 Apr 2021 15:29:07 -0400
-Message-Id: <20210420192907.30880-5-longman@redhat.com>
-In-Reply-To: <20210420192907.30880-1-longman@redhat.com>
-References: <20210420192907.30880-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 20 Apr 2021 15:32:28 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d34 with ME
+        id v7Xu2400321Fzsu037XufV; Tue, 20 Apr 2021 21:31:55 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 20 Apr 2021 21:31:55 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     lgirdwood@gmail.com, broonie@kernel.org,
+        ckeepax@opensource.cirrus.com
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] regulator: Avoid a double 'of_node_get' in 'regulator_of_get_init_node()'
+Date:   Tue, 20 Apr 2021 21:31:51 +0200
+Message-Id: <a79f0068812b89ff412d572a1171f22109c24132.1618947049.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most kmem_cache_alloc() calls are from user context. With instrumentation
-enabled, the measured amount of kmem_cache_alloc() calls from non-task
-context was about 0.01% of the total.
+'for_each_available_child_of_node()' already performs an 'of_node_get()'
+on child, so there is no need to perform another one before returning.
+Otherwise, a double 'get' is performed and a resource may never be
+released.
 
-The irq disable/enable sequence used in this case to access content
-from object stock is slow.  To optimize for user context access, there
-are now two sets of object stocks (in the new obj_stock structure)
-for task context and interrupt context access respectively.
-
-The task context object stock can be accessed after disabling preemption
-which is cheap in non-preempt kernel. The interrupt context object stock
-can only be accessed after disabling interrupt. User context code can
-access interrupt object stock, but not vice versa.
-
-The downside of this change is that there are more data stored in local
-object stocks and not reflected in the charge counter and the vmstat
-arrays.  However, this is a small price to pay for better performance.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Fixes: 925c85e21ed8 ("regulator: Factor out location of init data OF node")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- mm/memcontrol.c | 94 +++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 68 insertions(+), 26 deletions(-)
+Untested, speculative patch
+---
+ drivers/regulator/of_regulator.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2f87d0b05092..c79b9837cb85 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -782,6 +782,10 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
- 	rcu_read_unlock();
- }
+diff --git a/drivers/regulator/of_regulator.c b/drivers/regulator/of_regulator.c
+index 564f928eb1db..49f6c05fee34 100644
+--- a/drivers/regulator/of_regulator.c
++++ b/drivers/regulator/of_regulator.c
+@@ -422,7 +422,11 @@ device_node *regulator_of_get_init_node(struct device *dev,
  
-+/*
-+ * mod_objcg_mlstate() may be called with irq enabled, so
-+ * mod_memcg_lruvec_state() should be used.
-+ */
- static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
- 				     struct pglist_data *pgdat,
- 				     enum node_stat_item idx, int nr)
-@@ -792,7 +796,7 @@ static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
- 	rcu_read_lock();
- 	memcg = obj_cgroup_memcg(objcg);
- 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
--	__mod_memcg_lruvec_state(lruvec, idx, nr);
-+	mod_memcg_lruvec_state(lruvec, idx, nr);
- 	rcu_read_unlock();
- }
- 
-@@ -2054,17 +2058,23 @@ void unlock_page_memcg(struct page *page)
- }
- EXPORT_SYMBOL(unlock_page_memcg);
- 
--struct memcg_stock_pcp {
--	struct mem_cgroup *cached; /* this never be root cgroup */
--	unsigned int nr_pages;
--
-+struct obj_stock {
- #ifdef CONFIG_MEMCG_KMEM
- 	struct obj_cgroup *cached_objcg;
- 	struct pglist_data *cached_pgdat;
- 	unsigned int nr_bytes;
- 	int nr_slab_reclaimable_b;
- 	int nr_slab_unreclaimable_b;
-+#else
-+	int dummy[0];
- #endif
-+};
-+
-+struct memcg_stock_pcp {
-+	struct mem_cgroup *cached; /* this never be root cgroup */
-+	unsigned int nr_pages;
-+	struct obj_stock task_obj;
-+	struct obj_stock irq_obj;
- 
- 	struct work_struct work;
- 	unsigned long flags;
-@@ -2074,12 +2084,12 @@ static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
- static DEFINE_MUTEX(percpu_charge_mutex);
- 
- #ifdef CONFIG_MEMCG_KMEM
--static void drain_obj_stock(struct memcg_stock_pcp *stock);
-+static void drain_obj_stock(struct obj_stock *stock);
- static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- 				     struct mem_cgroup *root_memcg);
- 
- #else
--static inline void drain_obj_stock(struct memcg_stock_pcp *stock)
-+static inline void drain_obj_stock(struct obj_stock *stock)
- {
- }
- static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-@@ -2089,6 +2099,40 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- }
- #endif
- 
-+/*
-+ * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
-+ * sequence used in this case to access content from object stock is slow.
-+ * To optimize for user context access, there are now two object stocks for
-+ * task context and interrupt context access respectively.
-+ *
-+ * The task context object stock can be accessed by disabling preemption only
-+ * which is cheap in non-preempt kernel. The interrupt context object stock
-+ * can only be accessed after disabling interrupt. User context code can
-+ * access interrupt object stock, but not vice versa.
-+ */
-+static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
-+{
-+	struct memcg_stock_pcp *stock;
-+
-+	if (likely(in_task())) {
-+		preempt_disable();
-+		stock = this_cpu_ptr(&memcg_stock);
-+		return &stock->task_obj;
-+	} else {
-+		local_irq_save(*pflags);
-+		stock = this_cpu_ptr(&memcg_stock);
-+		return &stock->irq_obj;
-+	}
-+}
-+
-+static inline void put_obj_stock(unsigned long flags)
-+{
-+	if (likely(in_task()))
-+		preempt_enable();
-+	else
-+		local_irq_restore(flags);
-+}
-+
- /**
-  * consume_stock: Try to consume stocked charge on this cpu.
-  * @memcg: memcg to consume from.
-@@ -2155,7 +2199,9 @@ static void drain_local_stock(struct work_struct *dummy)
- 	local_irq_save(flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
--	drain_obj_stock(stock);
-+	drain_obj_stock(&stock->irq_obj);
-+	if (in_task())
-+		drain_obj_stock(&stock->task_obj);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
- 
-@@ -3015,13 +3061,10 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
- void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 		     enum node_stat_item idx, int nr)
- {
--	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
-+	struct obj_stock *stock = get_obj_stock(&flags);
- 	int *bytes;
- 
--	local_irq_save(flags);
--	stock = this_cpu_ptr(&memcg_stock);
--
- 	/*
- 	 * Save vmstat data in stock and skip vmstat array update unless
- 	 * accumulating over a page of vmstat data or when pgdat or idx
-@@ -3066,29 +3109,26 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 	if (nr)
- 		mod_objcg_mlstate(objcg, pgdat, idx, nr);
- 
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- {
--	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
-+	struct obj_stock *stock = get_obj_stock(&flags);
- 	bool ret = false;
- 
--	local_irq_save(flags);
--
--	stock = this_cpu_ptr(&memcg_stock);
- 	if (objcg == stock->cached_objcg && stock->nr_bytes >= nr_bytes) {
- 		stock->nr_bytes -= nr_bytes;
- 		ret = true;
+ 		if (!strcmp(desc->of_match, name)) {
+ 			of_node_put(search);
+-			return of_node_get(child);
++			/*
++			 * 'of_node_get(child)' is already performed by the
++			 * for_each loop.
++			 */
++			return child;
+ 		}
  	}
  
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- 
- 	return ret;
- }
- 
--static void drain_obj_stock(struct memcg_stock_pcp *stock)
-+static void drain_obj_stock(struct obj_stock *stock)
- {
- 	struct obj_cgroup *old = stock->cached_objcg;
- 
-@@ -3144,8 +3184,13 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- {
- 	struct mem_cgroup *memcg;
- 
--	if (stock->cached_objcg) {
--		memcg = obj_cgroup_memcg(stock->cached_objcg);
-+	if (in_task() && stock->task_obj.cached_objcg) {
-+		memcg = obj_cgroup_memcg(stock->task_obj.cached_objcg);
-+		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
-+			return true;
-+	}
-+	if (stock->irq_obj.cached_objcg) {
-+		memcg = obj_cgroup_memcg(stock->irq_obj.cached_objcg);
- 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
- 			return true;
- 	}
-@@ -3156,13 +3201,10 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 			     bool overfill)
- {
--	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
-+	struct obj_stock *stock = get_obj_stock(&flags);
- 	unsigned int nr_pages = 0;
- 
--	local_irq_save(flags);
--
--	stock = this_cpu_ptr(&memcg_stock);
- 	if (stock->cached_objcg != objcg) { /* reset if necessary */
- 		drain_obj_stock(stock);
- 		obj_cgroup_get(objcg);
-@@ -3177,7 +3219,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
- 		stock->nr_bytes &= (PAGE_SIZE - 1);
- 	}
- 
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- 
- 	if (nr_pages)
- 		obj_cgroup_uncharge_pages(objcg, nr_pages);
 -- 
-2.18.1
+2.27.0
 
