@@ -2,266 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998903652D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA03B3652EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhDTHGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhDTHGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:06:33 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C5BC06174A;
-        Tue, 20 Apr 2021 00:06:02 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id CFF7F223;
-        Tue, 20 Apr 2021 00:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1618902362;
-        bh=g0xLinUXHY30s/oSJ/gr2qZ3DH90CdyHZFWyIo6gA5c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TlihSUxoYq+83iUyF9adfBlVqncR1YrbhzvCjP8uSHU1zCDV09Ta4hciJFhLn988J
-         AyQDUNc6CQ8KIRqBGX21F4m7Ys7F+hdFTIyi+wVOoEgL7Ay6X8qpCT64I8Ig/86AN2
-         2V1PygUsN/RU6nmP3zbuhB6XsFbd4vlcqHhoGRJw=
-Date:   Tue, 20 Apr 2021 02:06:00 -0500
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: Enabling pmbus power control
-Message-ID: <YH59WOg0iKbz1d0l@hatter.bewilderbeest.net>
-References: <20210330112254.GB4976@sirena.org.uk>
- <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
- <20210330174221.GJ4976@sirena.org.uk>
- <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
- <20210330180200.GK4976@sirena.org.uk>
- <20210330193810.GA235990@roeck-us.net>
- <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
- <20210420033648.GA227111@roeck-us.net>
- <YH5rky8nA4nKAVdg@hatter.bewilderbeest.net>
- <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
+        id S230318AbhDTHIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229843AbhDTHIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:08:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E8B261220;
+        Tue, 20 Apr 2021 07:08:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618902493;
+        bh=DOW/KsRt5H6t1Pgz46XK8iIY+rilYGODWaTzp+KKVBg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bGeMIcK4oyaw9PKWK4LZfywrca9QFox2DwtXtJf3Rpcw/1K0zEYwkxTvdm9Wy2p/k
+         6FGb/yaJGmnEbuwRVwyZQkwjZldF6m9tFCT+KATXFY8IrIR886CLL8liQSNzWyh2yw
+         iJSJjHp3Z+yxDM9fPgaOfcQdSbHoO+TCqiHV+U8+DlXk0kyo+sveadEsfFEWKESyT3
+         JVcLzmur1EbwKBuEBrxveDtDEWusqRL4P/EY4pV14VHKqTqzeLRn2qWiYT9IAC9QW1
+         bErddbD2N2wX+mbwamKuFEVf0NAPJ+BT3maEQ6dNvAXY5/xnZvWRUHB1OYwLit78CN
+         d989R9HQVE2fA==
+Received: by mail-wm1-f49.google.com with SMTP id y204so18099109wmg.2;
+        Tue, 20 Apr 2021 00:08:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533Qqa5ol86S8ezf9zHdovf6eLUUl4dmm3NXOBrf0cc0ineN5Cby
+        jP7z2BR+9sRQYcp1k/O77a/Y1XxIZcHV6dWXzsA=
+X-Google-Smtp-Source: ABdhPJzw8YTyu5KshxUEZlu3irZnfAegvQ8VILMGpH1RGSIFiQhsKgjG1gjcqz1I3fFsHj1Q1aLjZg7NWbZtj6Nq3DE=
+X-Received: by 2002:a7b:c14a:: with SMTP id z10mr2758133wmi.75.1618902491684;
+ Tue, 20 Apr 2021 00:08:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
+References: <20210416230724.2519198-1-willy@infradead.org> <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org> <9f99b0a0-f1c1-f3b0-5f84-3a4bfc711725@synopsys.com>
+ <20210420031029.GI2531743@casper.infradead.org>
+In-Reply-To: <20210420031029.GI2531743@casper.infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 20 Apr 2021 09:07:55 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0KUwf1Z0bHiUaHC2nHztevkxg5_FBSzHddNeSsBayWUA@mail.gmail.com>
+Message-ID: <CAK8P3a0KUwf1Z0bHiUaHC2nHztevkxg5_FBSzHddNeSsBayWUA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "hch@lst.de" <hch@lst.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 01:00:25AM CDT, Guenter Roeck wrote:
->On 4/19/21 10:50 PM, Zev Weiss wrote:
->[ ... ]
+On Tue, Apr 20, 2021 at 5:10 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
->> I had a glance at the enclosure driver; it looks pretty geared toward SES-like things (drivers/scsi/ses.c being its only usage I can see in the kernel at the moment) and while it could perhaps be pressed into working for this it seems like it would probably drag in a fair amount of boilerplate and result in a somewhat gratuitously confusing driver arrangement (calling the things involved in the cases we're looking at "enclosures" seems like a bit of a stretch).
->>
->> As an alternative, would something like the patch below be more along the lines of what you're suggesting?  And if so, would it make sense to generalize it into something like 'pmbus-switch.c' and add a PMBUS_HAVE_POWERSWITCH functionality bit or similar in the pmbus code instead of hardcoding it for only LM25066 support?
->>
->>
+> On Tue, Apr 20, 2021 at 02:48:17AM +0000, Vineet Gupta wrote:
+> > > 32-bit architectures which expect 8-byte alignment for 8-byte integers
+> > > and need 64-bit DMA addresses (arc, arm, mips, ppc) had their struct
+> > > page inadvertently expanded in 2019.
+> >
+> > FWIW, ARC doesn't require 8 byte alignment for 8 byte integers. This is
+> > only needed for 8-byte atomics due to the requirements of LLOCKD/SCOND
+> > instructions.
 >
->No. Don't access pmbus functions from outside drivers/hwmon/pmbus.
->
->I used to be opposed to function export restrictions (aka export namespaces),
->but you are making a good case that we need to introduce them for pmbus
->functions.
->
->Guenter
+> Ah, like x86?  OK, great, I'll drop your arch from the list of
+> affected.  Thanks!
 
-Okay -- I figured that was likely to be frowned upon, but the 
-alternative seemed to be effectively duplicating non-trivial chunks of 
-the pmbus code.  However, upon realizing that the LM25066 doesn't 
-actually require any of the paging work the generic pmbus code provides, 
-I suppose it can actually be done with a simple smbus read & write.  
-Does this version look better?
+I mistakenly assumed that i386 and m68k were the only supported
+architectures with 32-bit alignment on u64. I checked it now and found
 
+$ for i in /home/arnd/cross/x86_64/gcc-10.1.0-nolibc/*/bin/*-gcc ; do
+echo `echo 'int a = __alignof__(long long);' | $i -xc - -Wall -S -o- |
+grep -A1 a: | tail -n 1 | cut -f 3 -d\   `
+${i#/home/arnd/cross/x86_64/gcc-10.1.0-nolibc/*/bin/} ; done
+8 aarch64-linux-gcc
+8 alpha-linux-gcc
+4 arc-linux-gcc
+8 arm-linux-gnueabi-gcc
+8 c6x-elf-gcc
+4 csky-linux-gcc
+4 h8300-linux-gcc
+8 hppa-linux-gcc
+8 hppa64-linux-gcc
+8 i386-linux-gcc
+8 ia64-linux-gcc
+2 m68k-linux-gcc
+4 microblaze-linux-gcc
+8 mips-linux-gcc
+8 mips64-linux-gcc
+8 nds32le-linux-gcc
+4 nios2-linux-gcc
+4 or1k-linux-gcc
+8 powerpc-linux-gcc
+8 powerpc64-linux-gcc
+8 riscv32-linux-gcc
+8 riscv64-linux-gcc
+8 s390-linux-gcc
+4 sh2-linux-gcc
+4 sh4-linux-gcc
+8 sparc-linux-gcc
+8 sparc64-linux-gcc
+8 x86_64-linux-gcc
+8 xtensa-linux-gcc
 
-Zev
+which means that half the 32-bit architectures do this. This may
+cause more problems when arc and/or microblaze want to support
+64-bit kernels and compat mode in the future on their latest hardware,
+as that means duplicating the x86 specific hacks we have for compat.
 
+What is alignof(u64) on 64-bit arc?
 
- From 1662e1c59c498ad6b208e6ab450bd467d71def34 Mon Sep 17 00:00:00 2001
-From: Zev Weiss <zev@bewilderbeest.net>
-Date: Wed, 31 Mar 2021 01:58:35 -0500
-Subject: [PATCH] misc: add lm25066-switch driver
-
-This driver allows an lm25066 to be switched on and off from userspace
-via sysfs.
-
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
-  drivers/misc/Kconfig          |   7 ++
-  drivers/misc/Makefile         |   1 +
-  drivers/misc/lm25066-switch.c | 126 ++++++++++++++++++++++++++++++++++
-  3 files changed, 134 insertions(+)
-  create mode 100644 drivers/misc/lm25066-switch.c
-
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index f532c59bb59b..384b6022ec15 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -445,6 +445,13 @@ config HISI_HIKEY_USB
-  	  switching between the dual-role USB-C port and the USB-A host ports
-  	  using only one USB controller.
-  
-+config LM25066_SWITCH
-+	tristate "LM25066 power switch support"
-+	depends on OF && SENSORS_LM25066
-+	help
-+	  This driver augments LM25066 hwmon support with power switch
-+	  functionality controllable from userspace via sysfs.
-+
-  source "drivers/misc/c2port/Kconfig"
-  source "drivers/misc/eeprom/Kconfig"
-  source "drivers/misc/cb710/Kconfig"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 99b6f15a3c70..c948510d0cc9 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -56,3 +56,4 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
-  obj-$(CONFIG_UACCE)		+= uacce/
-  obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
-  obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
-+obj-$(CONFIG_LM25066_SWITCH)	+= lm25066-switch.o
-diff --git a/drivers/misc/lm25066-switch.c b/drivers/misc/lm25066-switch.c
-new file mode 100644
-index 000000000000..9adc67c320f9
---- /dev/null
-+++ b/drivers/misc/lm25066-switch.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This module provides a thin wrapper around the lm25066 hwmon driver that
-+ * additionally exposes a userspace-controllable on/off power switch via
-+ * sysfs.
-+ *
-+ * Author: Zev Weiss <zweiss@equinix.com>
-+ *
-+ * Copyright (C) 2021 Equinix Services, Inc.
-+ */
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/i2c.h>
-+#include <linux/platform_device.h>
-+
-+/*
-+ * The relevant PMBus command and data values for controlling the LM25066
-+ * power state.  Because it's not a paged device we skip the usual paging
-+ * business other PMBus devices might require.
-+ */
-+#define CMD_OPERATION 0x01
-+#define OPERATION_ON 0x80
-+#define OPERATION_OFF 0x00
-+
-+static ssize_t switch_show_state(struct device *dev, struct device_attribute *attr,
-+                                 char *buf)
-+{
-+	struct i2c_client *pmic = dev_get_drvdata(dev);
-+	ssize_t ret = i2c_smbus_read_byte_data(pmic, CMD_OPERATION);
-+	if (ret < 0)
-+		return ret;
-+
-+	return sysfs_emit(buf, "%s\n", (ret & OPERATION_ON) ? "on" : "off");
-+}
-+
-+static ssize_t switch_set_state(struct device *dev, struct device_attribute *attr,
-+                                const char *buf, size_t count)
-+{
-+	int status;
-+	u8 value;
-+	struct i2c_client *pmic = dev_get_drvdata(dev);
-+	if (sysfs_streq(buf, "on"))
-+		value = OPERATION_ON;
-+	else if (sysfs_streq(buf, "off"))
-+		value = OPERATION_OFF;
-+	else
-+		return -EINVAL;
-+	status = i2c_smbus_write_byte_data(pmic, CMD_OPERATION, value);
-+	return status ? : count;
-+}
-+
-+static DEVICE_ATTR(state, 0644, switch_show_state, switch_set_state);
-+
-+static struct attribute *attributes[] = {
-+	&dev_attr_state.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group attr_group = {
-+	.attrs = attributes,
-+};
-+
-+static int lm25066_switch_probe(struct platform_device *pdev)
-+{
-+	int status;
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *pmic_np;
-+	struct i2c_client *pmic;
-+
-+	pmic_np = of_parse_phandle(np, "pmic", 0);
-+	if (!pmic_np) {
-+		dev_err(&pdev->dev, "Cannot parse lm25066-switch pmic\n");
-+		return -ENODEV;
-+	}
-+
-+	if (!of_device_is_compatible(pmic_np, "lm25066")) {
-+		dev_err(&pdev->dev, "lm25066-switch pmic not lm25066 compatible");
-+		status = -ENODEV;
-+		goto out;
-+	}
-+
-+	pmic = of_find_i2c_device_by_node(pmic_np);
-+	if (!pmic) {
-+		status = -EPROBE_DEFER;
-+		goto out;
-+	}
-+
-+	platform_set_drvdata(pdev, pmic);
-+
-+	status = sysfs_create_group(&pdev->dev.kobj, &attr_group);
-+
-+out:
-+	of_node_put(pmic_np);
-+	return status;
-+}
-+
-+static int lm25066_switch_remove(struct platform_device *pdev)
-+{
-+	struct i2c_client *pmic = platform_get_drvdata(pdev);
-+
-+	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
-+	put_device(&pmic->dev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id lm25066_switch_table[] = {
-+	{ .compatible = "lm25066-switch" },
-+	{ },
-+};
-+
-+static struct platform_driver lm25066_switch_driver = {
-+	.driver = {
-+		.name = "lm25066-switch",
-+		.of_match_table = lm25066_switch_table,
-+	},
-+	.probe = lm25066_switch_probe,
-+	.remove = lm25066_switch_remove,
-+};
-+
-+module_platform_driver(lm25066_switch_driver);
-+
-+MODULE_AUTHOR("Zev Weiss <zweiss@equinix.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("LM25066 power-switch driver");
--- 
-2.31.1
-
-
+      Arnd
