@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37720365E57
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78249365E5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhDTRQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:16:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50872 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbhDTRQt (ORCPT
+        id S233466AbhDTRRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233294AbhDTRRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:16:49 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lYtyw-00060S-P3; Tue, 20 Apr 2021 17:16:14 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: davinci_emac: Fix incorrect masking of tx and rx error channel
-Date:   Tue, 20 Apr 2021 18:16:14 +0100
-Message-Id: <20210420171614.385721-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 20 Apr 2021 13:17:08 -0400
+X-Greylist: delayed 4936 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 20 Apr 2021 10:16:36 PDT
+Received: from mxout1.routing.net (mxout1.routing.net [IPv6:2a03:2900:1:a::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F345C06174A;
+        Tue, 20 Apr 2021 10:16:36 -0700 (PDT)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout1.routing.net (Postfix) with ESMTP id 6B5283FE33;
+        Tue, 20 Apr 2021 17:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1618938994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=of1hyRAmkUxYfFb6DiwQtokusN7zzKLSP6s9xK0+XcU=;
+        b=H6MS+7gvc0xflGa2AqdWz1BNuOeChc7asm4MShGgd+vd35WW2Tt+g0vKdA5oGR+Qmyrasd
+        Cbz730AcNaLngxSx7fk9Hhlxm/v2JsVaGFuCzp9NBhHkBdu7mmJ9biC/HyimEHWlCPUDM8
+        TPsQHUjJTaf4LKF0/vADfyFUlfMIDK0=
+Received: from localhost.localdomain (fttx-pool-80.245.77.151.bambit.de [80.245.77.151])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 815F3100396;
+        Tue, 20 Apr 2021 17:16:33 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] thermal: mediatek: add sensors-support
+Date:   Tue, 20 Apr 2021 19:16:25 +0200
+Message-Id: <20210420171625.133860-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Mail-ID: dd281ef3-14fe-49a8-a0ae-7fed3d2a241c
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Frank Wunderlich <frank-w@public-files.de>
 
-The bit-masks used for the TXERRCH and RXERRCH (tx and rx error channels)
-are incorrect and always lead to a zero result. The mask values are
-currently the incorrect post-right shifted values, fix this by setting
-them to the currect values.
+add HWMON-support to mediateks thermal driver to allow lm-sensors
+userspace tools read soc temperature
 
-(I double checked these against the TMS320TCI6482 data sheet, section
-5.30, page 127 to ensure I had the correct mask values for the TXERRCH
-and RXERRCH fields in the MACSTATUS register).
-
-Addresses-Coverity: ("Operands don't affect result")
-Fixes: a6286ee630f6 ("net: Add TI DaVinci EMAC driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 ---
- drivers/net/ethernet/ti/davinci_emac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v3: drop no_hwmon
+v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
+---
+ drivers/thermal/mtk_thermal.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index 57450b174fc4..fb5eca688af9 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -183,11 +183,11 @@ static const char emac_version_string[] = "TI DaVinci EMAC Linux v6.1";
- /* EMAC mac_status register */
- #define EMAC_MACSTATUS_TXERRCODE_MASK	(0xF00000)
- #define EMAC_MACSTATUS_TXERRCODE_SHIFT	(20)
--#define EMAC_MACSTATUS_TXERRCH_MASK	(0x7)
-+#define EMAC_MACSTATUS_TXERRCH_MASK	(0x70000)
- #define EMAC_MACSTATUS_TXERRCH_SHIFT	(16)
- #define EMAC_MACSTATUS_RXERRCODE_MASK	(0xF000)
- #define EMAC_MACSTATUS_RXERRCODE_SHIFT	(12)
--#define EMAC_MACSTATUS_RXERRCH_MASK	(0x7)
-+#define EMAC_MACSTATUS_RXERRCH_MASK	(0x700)
- #define EMAC_MACSTATUS_RXERRCH_SHIFT	(8)
+diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+index 149c6d7fd5a0..32be8a715c7d 100644
+--- a/drivers/thermal/mtk_thermal.c
++++ b/drivers/thermal/mtk_thermal.c
+@@ -23,6 +23,8 @@
+ #include <linux/reset.h>
+ #include <linux/types.h>
  
- /* EMAC RX register masks */
++#include "thermal_hwmon.h"
++
+ /* AUXADC Registers */
+ #define AUXADC_CON1_SET_V	0x008
+ #define AUXADC_CON1_CLR_V	0x00c
+@@ -1087,6 +1089,11 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+ 		goto err_disable_clk_peri_therm;
+ 	}
+ 
++	tzdev->tzp->no_hwmon = false;
++	ret = devm_thermal_add_hwmon_sysfs(tzdev);
++	if (ret)
++		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
++
+ 	return 0;
+ 
+ err_disable_clk_peri_therm:
 -- 
-2.30.2
+2.25.1
 
