@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C5B36557B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8201365599
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhDTJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:34:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25668 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230429AbhDTJer (ORCPT
+        id S231495AbhDTJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhDTJjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:34:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618911255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HR9PGFeuseuv+4p0efVgdR4ZvWDR0WWeCLxvhuktGw8=;
-        b=RDx/XDB48pjHJzSqYv+bdY95dViPBnmwOM4bVD3C6NFbCJnZaeCbrq6TbUrjSney5DaPpw
-        uvfokhh/er6zIUkJmsykLmk1kyyQVtj3dCUe794YZcYrelIHOBgNQYdJFbZer3yfuIRElC
-        cUVmTXPR3iNqTJDN5hbgOBYH0VWqQ0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-SJp_Z5AbNziPaAD3TyvAdw-1; Tue, 20 Apr 2021 05:34:13 -0400
-X-MC-Unique: SJp_Z5AbNziPaAD3TyvAdw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5736107ACCA;
-        Tue, 20 Apr 2021 09:34:12 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6152710016FE;
-        Tue, 20 Apr 2021 09:34:12 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH] KVM: x86: document behavior of measurement ioctls with len==0
-Date:   Tue, 20 Apr 2021 05:34:11 -0400
-Message-Id: <20210420093411.1498840-1-pbonzini@redhat.com>
+        Tue, 20 Apr 2021 05:39:46 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E638CC06174A;
+        Tue, 20 Apr 2021 02:39:15 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id c4so4964028ilq.9;
+        Tue, 20 Apr 2021 02:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Jv5XlEMdRtVgenqiZFyWIe5z8G9lvh79SljGhJQ5iIM=;
+        b=H1nzBXQp6OjNHpXgu51le5wMfd2pwcAFiJP0R+kp5IrQmMCiqKK2i4wp4uvNwA8mkC
+         1i7NbMpztGGoUmqQoAA9rP+9NWJvSWy/SektYHoF9qYltXVWOYX/rxOmuxSVTgkV3WoW
+         qkXEW67a+ypUFeFuVOeNhs33INPBiFM4NmkkvRs+O1FKTEmUg83ZGF3rlb9EpYSF4AO0
+         xm/6BqFwFgd/I6pmu1iFGIkEeB5Iyli+6K4kOH4qtpju+4JkOEFbd2Agk7rUFekhIfwe
+         +82a5WBdZ61OBO21WqOsNVCMi3blttOJUs3g2yu+JxkISD6FqZ5Od67qtYP3oYTaVEQn
+         5h5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Jv5XlEMdRtVgenqiZFyWIe5z8G9lvh79SljGhJQ5iIM=;
+        b=NvS3t6rADmP8dJQdL273tQTWaUpXvXhVp5Rj7hZGFRRRU2125R2Q0Dih9xhLga5AYb
+         ykkd1rwW0LXIEk9ASg0Adr2NoyWuSDxU9ylPTLSLUvSmDW8W6xbdvk5TtU7m2/HjiiRd
+         P+2hOEltNZOehNe905VpIm7vhVZA/KAnfevCLOanz74I1MfOMex3xU+SFmZyIxaB2MwA
+         15Hhz1+4HHI086iBeqQTkoOQHYAcCllYZpsjkjDVaaILj6Wtawr9ujbgNpb7+4VgVDpO
+         PhCFlRC0b7lOgbHrU9V+gFVKDgBJJOl7kTLCPUYfEKTYmNzzW7Kl/Hu74ZxEq0gaV9ai
+         VVpA==
+X-Gm-Message-State: AOAM530rPrM8lmVGM/Hb55+brY+rWaFmYpwRgZWPArfWkmlrWfraKkGl
+        21Cd7q9Xm4pCBtOAP5+KtQ2GKqUUR35xH0Psl9ow7Hm1vKE=
+X-Google-Smtp-Source: ABdhPJzBwwnQt1AiH7nyI9wz4liUzDDs9HQBAr7UqNPeVpKHVHWQUgcdY6OYQnSV6wAZpbYPcHG8gWn8IwNlbBOiVr8=
+X-Received: by 2002:a92:c78a:: with SMTP id c10mr21311323ilk.64.1618911555324;
+ Tue, 20 Apr 2021 02:39:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 20 Apr 2021 11:39:04 +0200
+Message-ID: <CAKXUXMyNf4xCF2mWr878MKDa0-8svaiR5GToQyoEVM4FbmfJ8w@mail.gmail.com>
+Subject: Invalid License ID: GPL-3.0 for arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-spdx@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- Documentation/virt/kvm/amd-memory-encryption.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
+Dear Qing,
 
-diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-index 469a6308765b..34ce2d1fcb89 100644
---- a/Documentation/virt/kvm/amd-memory-encryption.rst
-+++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-@@ -148,6 +148,9 @@ measurement. Since the guest owner knows the initial contents of the guest at
- boot, the measurement can be verified by comparing it to what the guest owner
- expects.
- 
-+If len is zero on entry, the measurement blob length is written to len and
-+uaddr is unused.
-+
- Parameters (in): struct  kvm_sev_launch_measure
- 
- Returns: 0 on success, -negative on error
-@@ -271,6 +274,9 @@ report containing the SHA-256 digest of the guest memory and VMSA passed through
- commands and signed with the PEK. The digest returned by the command should match the digest
- used by the guest owner with the KVM_SEV_LAUNCH_MEASURE.
- 
-+If len is zero on entry, the measurement blob length is written to len and
-+uaddr is unused.
-+
- Parameters (in): struct kvm_sev_attestation
- 
- Returns: 0 on success, -negative on error
--- 
-2.26.2
+./scripts/spdxcheck.py reports:
 
+arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi: 1:28 Invalid
+License ID: GPL-3.0
+
+You have contributed this file with commit b1a792601f26 ("MIPS:
+Loongson64: DeviceTree for Loongson-2K1000") to the current
+linux-next.
+
+Do you intend to contribute this under this non-default license
+(GPL-3.0) for the kernel project or did you simply mean the default
+license GPL-2.0?
+
+Best regards,
+
+Lukas
