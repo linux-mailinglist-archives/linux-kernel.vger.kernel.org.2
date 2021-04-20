@@ -2,83 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AF9365AEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD30365AF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhDTOKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbhDTOKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:10:47 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8359AC06174A;
-        Tue, 20 Apr 2021 07:10:16 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id p67so20686496pfp.10;
-        Tue, 20 Apr 2021 07:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8zukqXhtvNEllv/hGl2ya5yc48tmrYIRWx5ZeIc3rcM=;
-        b=Sf1X2kdFWDaCcWS2w4twhoI6na8jvjUQPUI9XJ8dbozgPhmvI2CJtHyh1kJ0NdQ08N
-         dccnWzM/cFSUZbKPhYUoComMVzkV9A8hXsF9aYcCWOO1IH0HRIuC4N2TdRk+LcUtMJII
-         le8nt5VLNvcpr9Eqib0GL1rdjFMaboDl17PWgDTeF6Bq3pbESdW3EhrSWvaLvJmwQKyz
-         8R2IFa6bWTwvV21FFXhuqHWFkHlnyXq7LcE434jsUQA6N4q7aELX7ywjJtCTOCgX3ExP
-         DPMf9CoalAW34BKWh0e/kxpFYB6A5v2xmzw0zZBbjNVN80ZZ5Ute337OM5S61OtRzmkc
-         0qcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8zukqXhtvNEllv/hGl2ya5yc48tmrYIRWx5ZeIc3rcM=;
-        b=sxGDV6ayFmXSdXgJHO/dhGbtPRqsMVtGR+Fx23f4dUb/HW/LKdYvweyGkkdJGpUdPw
-         V92+6P21IuBMdGy8X20leM3WD/+cOH7oTaT/2GHkjolgwl0MTDmYoKjfdxA1wCQL+O/X
-         gnvCzGKzp/3d99BqN/FoB2pWg8oGLtQ+YMeHX8RSkBFwNVv5Jo0MuOmom8Bpjv3XcJSc
-         N621YQtkCdOGfle4QhAajIEgTjiwdooImT3yx6fOLiCoc7I6jXOC/6t9eQAqRtFlN33y
-         IOZgskzR589RrBDRNmj+wP9bBCbH8DsV42UIfAJk+v/OruLf+yLnEnYef1WZlYLeuYHe
-         hDfg==
-X-Gm-Message-State: AOAM530Q2AaGlWHG//YC9kOkvB0Fwv1/bKWNOkxUkOtXpZJobsISrx1X
-        3Cwm0Ltg1f/O4CkSh7sib2E=
-X-Google-Smtp-Source: ABdhPJwa0niW02MXZGILXnN/iUHq4R2X8YqgNBbPOoJAx6Zdg6B6wYkPeKMpckpjG8j0mHohVusnZQ==
-X-Received: by 2002:a62:a515:0:b029:263:214f:27ff with SMTP id v21-20020a62a5150000b0290263214f27ffmr4660367pfm.4.1618927816018;
-        Tue, 20 Apr 2021 07:10:16 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id jz8sm2703759pjb.11.2021.04.20.07.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 07:10:15 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 07:10:13 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Jianyong Wu <jianyong.wu@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH] ptp: Don't print an error if ptp_kvm is not supported
-Message-ID: <20210420141013.GB1261@hoboy.vegasvil.org>
-References: <20210420132419.1318148-1-jonathanh@nvidia.com>
+        id S232637AbhDTOMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231758AbhDTOMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:12:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B62A613B0;
+        Tue, 20 Apr 2021 14:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618927905;
+        bh=eYUfvlEmAaMRZ4eabJHaLpmEHUVXJM07EUXVkS0fcMc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eBZZRV3BaVe0Hn+f1x9PmBS1VrODWyuE3wJA4XAKNbTqPVZBt+R+cqUEBpNS5MSI1
+         vf6V589GVFFuQMQs1C/h3kctLjFlQnfLniXZPOgqtNryodfW606iSV9oEpRB24JZqm
+         SeQznOIy2Yi6U6LhsYtVR46cnqDDl5Rvd1bDhS6r8H69b/3IZhfH5cKmuOAPzcle/Z
+         ivGhJYtA5Q2wvSlLighj87Xl/tR5KYVZX0D0wTBWcwqFQi8DKS+UWuWixjd+6k2xHn
+         vT+j2NRQBmcBH7M7YL0NmWOC0Y7Txn+FPMEpNR5MD8MmN36L+aZ5fPR4j+aU/ktK2B
+         u6XZjPXfJHKzg==
+Date:   Tue, 20 Apr 2021 10:11:44 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH AUTOSEL 5.4 13/14] gcov: clang: fix clang-11+ build
+Message-ID: <YH7hIK+7ujuJaClU@sashalap>
+References: <20210419204454.6601-1-sashal@kernel.org>
+ <20210419204454.6601-13-sashal@kernel.org>
+ <74494183e65ef549fc5596f314db43a8e792d2ff.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210420132419.1318148-1-jonathanh@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <74494183e65ef549fc5596f314db43a8e792d2ff.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 02:24:19PM +0100, Jon Hunter wrote:
-> Commit 300bb1fe7671 ("ptp: arm/arm64: Enable ptp_kvm for arm/arm64")
-> enable ptp_kvm support for ARM platforms and for any ARM platform that
-> does not support this, the following error message is displayed ...
-> 
->  ERR KERN fail to initialize ptp_kvm
-> 
-> For platforms that do not support ptp_kvm this error is a bit misleading
-> and so fix this by only printing this message if the error returned by
-> kvm_arch_ptp_init() is not -EOPNOTSUPP. Note that -EOPNOTSUPP is only
-> returned by ARM platforms today if ptp_kvm is not supported.
-> 
-> Fixes: 300bb1fe7671 ("ptp: arm/arm64: Enable ptp_kvm for arm/arm64")
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+On Tue, Apr 20, 2021 at 09:01:19AM +0200, Johannes Berg wrote:
+>On Mon, 2021-04-19 at 20:44 +0000, Sasha Levin wrote:
+>> From: Johannes Berg <johannes.berg@intel.com>
+>>
+>> [ Upstream commit 04c53de57cb6435738961dace8b1b71d3ecd3c39 ]
+>>
+>> With clang-11+, the code is broken due to my kvmalloc() conversion
+>> (which predated the clang-11 support code) leaving one vmalloc() in
+>> place.  Fix that.
+>
+>This patch might *apply* on 5.4 (and the other kernels you selected it
+>for), but then I'm pretty sure it'll be broken, unless you also applied
+>the various patches this was actually fixing (my kvmalloc conversion,
+>and the clang-11 support).
+>
+>Also, Linus has (correctly) reverted this patch from mainline, it
+>shouldn't have gone there in the first place, probably really should be
+>squashed into my kvmalloc conversion patch that's in -mm now.
+>
+>Sorry if I didn't make that clear enough at the time.
+>
+>
+>In any case, please drop this patch from all stable trees.
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+Will do, thanks!
+
+-- 
+Thanks,
+Sasha
