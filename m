@@ -2,370 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638B13656E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137523656EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhDTKxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:53:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45236 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231483AbhDTKxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:53:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618915981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S231558AbhDTK4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:56:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231251AbhDTK4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:56:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618916164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=S27AwgKlv+iaMTT9DUQIVOBnDUO++jFCerhn1E2ub9I=;
-        b=W8/SYmorXwzQ7no5e6QVNd7vt/RJu8sXCa+e/XEEIElz0UJE2fmBgo4j1SwJGne3O3K0pR
-        q+ZMAYYkpt7swplpbW7OYWFv6gByNcUbdPofHfo9xWy9DhzV8Fa70zieoAPVRXQxH8Kfcz
-        8ITUcgKHcdRrkQ7B6xbQH2zUd7KVzRo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-JA63_alFNj6kDsDJYOFi8Q-1; Tue, 20 Apr 2021 06:53:00 -0400
-X-MC-Unique: JA63_alFNj6kDsDJYOFi8Q-1
-Received: by mail-ed1-f70.google.com with SMTP id f9-20020a50fe090000b02903839889635cso10920910edt.14
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 03:52:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S27AwgKlv+iaMTT9DUQIVOBnDUO++jFCerhn1E2ub9I=;
-        b=clzcURAK8uQ4hJKPJgpLDznN14gRqC2dPe+Gjh7vWZrk6LtrvH3Dvu3IGVKI19yLVD
-         5U5y/7kkWiTG6KdXJd2KTvZ+aXVokwl53oIxxN+lIMNHfmnoH7t9v/oko8EcWouQvqL1
-         okLVKKsd7M+pVsW02w3gP6fwVuUYw32WDvM0X9wJdZjKrGjO0fio/q/C75u7gh/cBAkR
-         3InakErMPCxI70QTbBc5TavKfbzGD9qu4CG+WF8qhU21PuANa8sG3/OB9oTg4Ux7UMJm
-         90i7djFX41fzKhbhCDwbkXQ3yPBYKV/BWxizIPzzSe2zzz+3PKJ+1oUU9Hr4ytQI9sE/
-         enaw==
-X-Gm-Message-State: AOAM533VB9KpeaNOaBT8WZzP+Jnx0icrrRCSkk50SdVnADFd3YKPw4rs
-        iAB25WLSaQsiHrQSN0VmJeXopfrInUc+ER5bxYovMxjZ19nvmc8bAwqhIbesSmgGA6dewj5s/cw
-        cw9W6ZtyqbYA2h/igLY1gXa6w
-X-Received: by 2002:a17:907:7051:: with SMTP id ws17mr27034387ejb.498.1618915978982;
-        Tue, 20 Apr 2021 03:52:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnAg4Y/B7vNqk/lIdyUrklowjyBOdLGuy6H/Q+NJlu7PWdgLsntyBDOwwNTeJbdATZVY+h5A==
-X-Received: by 2002:a17:907:7051:: with SMTP id ws17mr27034361ejb.498.1618915978718;
-        Tue, 20 Apr 2021 03:52:58 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g11sm15883017edt.35.2021.04.20.03.52.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 03:52:58 -0700 (PDT)
-Subject: Re: [PATCH v13 12/12] x86/kvm: Add guest support for detecting and
- enabling SEV Live Migration feature.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com,
-        kexec@lists.infradead.org
-References: <cover.1618498113.git.ashish.kalra@amd.com>
- <ffd67dbc1ae6d3505d844e65928a7248ebaebdcc.1618498113.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a5694bf9-a02c-9169-dbaa-fecd8587d52a@redhat.com>
-Date:   Tue, 20 Apr 2021 12:52:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=UaBj6JM1q84ZgKwNPCxbgcsLt80d6OrryYvcPRF3ptY=;
+        b=oCR+ievQ5QchRFIEnDSmzIG53jj9+vdpQiWMdqgsDILK3/Sk0AVzBOzrHpYYmi/Vx/kPJb
+        WrTJtyzscckUH610cm1SLM88hf5IPRjeRXhD3G3IL63LF+FWDKnv+BhrPa1Ie24DdIftr1
+        gY+ozer/QsiWG6vSu+Iy6DGz1m6cYw4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3572FAF0F;
+        Tue, 20 Apr 2021 10:56:04 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 12:56:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 4/8] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YH6zQ1Dty9kJFkuk@dhcp22.suse.cz>
+References: <20210416112411.9826-1-osalvador@suse.de>
+ <20210416112411.9826-5-osalvador@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <ffd67dbc1ae6d3505d844e65928a7248ebaebdcc.1618498113.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416112411.9826-5-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/21 18:01, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
+On Fri 16-04-21 13:24:07, Oscar Salvador wrote:
+> Physical memory hotadd has to allocate a memmap (struct page array) for
+> the newly added memory section. Currently, alloc_pages_node() is used
+> for those allocations.
 > 
-> The guest support for detecting and enabling SEV Live migration
-> feature uses the following logic :
-> 
->   - kvm_init_plaform() invokes check_kvm_sev_migration() which
->     checks if its booted under the EFI
-> 
->     - If not EFI,
-> 
->       i) check for the KVM_FEATURE_CPUID
-> 
->       ii) if CPUID reports that migration is supported, issue a wrmsrl()
->           to enable the SEV live migration support
-> 
->     - If EFI,
-> 
->       i) check for the KVM_FEATURE_CPUID
-> 
->       ii) If CPUID reports that migration is supported, read the UEFI variable which
->           indicates OVMF support for live migration
-> 
->       iii) the variable indicates live migration is supported, issue a wrmsrl() to
->            enable the SEV live migration support
-> 
-> The EFI live migration check is done using a late_initcall() callback.
-> 
-> Also, ensure that _bss_decrypted section is marked as decrypted in the
-> shared pages list.
-> 
-> Also adds kexec support for SEV Live Migration.
-> 
-> Reset the host's shared pages list related to kernel
-> specific page encryption status settings before we load a
-> new kernel by kexec. We cannot reset the complete
-> shared pages list here as we need to retain the
-> UEFI/OVMF firmware specific settings.
-> 
-> The host's shared pages list is maintained for the
-> guest to keep track of all unencrypted guest memory regions,
-> therefore we need to explicitly mark all shared pages as
-> encrypted again before rebooting into the new guest kernel.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> This has some disadvantages:
+>  a) an existing memory is consumed for that purpose
+>     (eg: ~2MB per 128MB memory section on x86_64)
 
-Boris, this one needs an ACK as well.
+I would extend this slightly. This can even lead to extreme cases where
+system goes OOM because the physically hotplugged memory depletes the
+available memory before it is onlined.
 
-Paolo
+>  b) if the whole node is movable then we have off-node struct pages
+>     which has performance drawbacks.
+>  c) It might be there are no PMD_ALIGNED chunks so memmap array gets
+>     populated with base pages.
+> 
+> This can be improved when CONFIG_SPARSEMEM_VMEMMAP is enabled.
+> 
+> Vmemap page tables can map arbitrary memory.
+> That means that we can simply use the beginning of each memory section and
+> map struct pages there.
 
+Again this can be confusing because this is not what is really happening
+in practice because we are going to have a multisection memory block
+where all sections will be backed by a common reserved space rather than
+per section sparse space. I would go with
+
+"
+Vmemap page tables can map arbitrary memory. That means that we can
+reserve a part of the physically hotadded memory to back vmemmap page
+tables. This implementation uses the beggining of the hotplugged memory
+for that purpose.
+"
+
+> struct pages which back the allocated space then just need to be treated
+> carefully.
+> 
+> Implementation wise we will reuse vmem_altmap infrastructure to override
+> the default allocator used by __populate_section_memmap.
+> Part of the implementation also relies on memory_block structure gaining
+> a new field which specifies the number of vmemmap_pages at the beginning.
+> This patch also introduces the following functions:
+
+There is quite a large leap from __populate_section_memmap to the
+memory_block that deserves explaining to not lose all the subtle things
+discussed in the past. I think it should be made clear why all the fuzz.
+I would structure it as follows:
+"
+There are some non-obiously things to consider though.  Vmemmap
+pages are allocated/freed during the memory hotplug events
+(add_memory_resource, try_remove_memory) when the memory is
+added/removed. This means that the reserved physical range is not online
+yet it is used. The most obvious side effect is that pfn_to_online_page
+returns NULL for those pfns. The current design expects that this
+should be OK as the hotplugged memory is considered a garbage until it
+is onlined. For example hibernation wouldn't save the content of those
+vmmemmaps into the image so it wouldn't be restored on resume but this
+should be OK as there no real content to recover anyway while metadata
+is reachable from other data structures (e.g. vmemmap page tables).
+
+The reserved space is therefore (de)initialized during the {on,off}line
+events (mhp_{de}init_memmap_on_memory). That is done by extracting page
+allocator independent initialization from the regular onlining path.
+The primary reason to handle the reserved space outside of {on,off}line_pages
+is to make each initialization specific to the purpose rather than
+special case them in a single function.
+
+> Adjusting of present_pages is done at the end once we know that online_pages()
+> succedeed.
+> 
+> On offline, memory_block_offline() needs to unaccount vmemmap pages from
+> present_pages() before calling offline_pages().
+> This is necessary because offline_pages() tears down some structures based
+> on the fact whether the node or the zone become empty.
+> If offline_pages() fails, we account back vmemmap pages.
+> If it succeeds, we call mhp_deinit_memmap_on_memory().
+> 
+> Hot-remove:
+> 
+>  We need to be careful when removing memory, as adding and
+>  removing memory needs to be done with the same granularity.
+>  To check that this assumption is not violated, we check the
+>  memory range we want to remove and if a) any memory block has
+>  vmemmap pages and b) the range spans more than a single memory
+>  block, we scream out loud and refuse to proceed.
+> 
+>  If all is good and the range was using memmap on memory (aka vmemmap pages),
+>  we construct an altmap structure so free_hugepage_table does the right
+>  thing and calls vmem_altmap_free instead of free_pagetable.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 > ---
->   arch/x86/include/asm/mem_encrypt.h |  8 ++++
->   arch/x86/kernel/kvm.c              | 55 +++++++++++++++++++++++++
->   arch/x86/mm/mem_encrypt.c          | 64 ++++++++++++++++++++++++++++++
->   3 files changed, 127 insertions(+)
+>  drivers/base/memory.c          |  71 ++++++++++++++++--
+>  include/linux/memory.h         |   8 ++-
+>  include/linux/memory_hotplug.h |  15 +++-
+>  include/linux/memremap.h       |   2 +-
+>  include/linux/mmzone.h         |   7 +-
+>  mm/Kconfig                     |   5 ++
+>  mm/memory_hotplug.c            | 159 ++++++++++++++++++++++++++++++++++++++---
+>  mm/sparse.c                    |   2 -
+>  8 files changed, 247 insertions(+), 22 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-> index 31c4df123aa0..19b77f3a62dc 100644
-> --- a/arch/x86/include/asm/mem_encrypt.h
-> +++ b/arch/x86/include/asm/mem_encrypt.h
-> @@ -21,6 +21,7 @@
->   extern u64 sme_me_mask;
->   extern u64 sev_status;
->   extern bool sev_enabled;
-> +extern bool sev_live_migration_enabled;
->   
->   void sme_encrypt_execute(unsigned long encrypted_kernel_vaddr,
->   			 unsigned long decrypted_kernel_vaddr,
-> @@ -44,8 +45,11 @@ void __init sme_enable(struct boot_params *bp);
->   
->   int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long size);
->   int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size);
-> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages,
-> +					    bool enc);
->   
->   void __init mem_encrypt_free_decrypted_mem(void);
-> +void __init check_kvm_sev_migration(void);
->   
->   /* Architecture __weak replacement functions */
->   void __init mem_encrypt_init(void);
-> @@ -60,6 +64,7 @@ bool sev_es_active(void);
->   #else	/* !CONFIG_AMD_MEM_ENCRYPT */
->   
->   #define sme_me_mask	0ULL
-> +#define sev_live_migration_enabled	false
->   
->   static inline void __init sme_early_encrypt(resource_size_t paddr,
->   					    unsigned long size) { }
-> @@ -84,8 +89,11 @@ static inline int __init
->   early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0; }
->   static inline int __init
->   early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { return 0; }
-> +static inline void __init
-> +early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool enc) {}
->   
->   static inline void mem_encrypt_free_decrypted_mem(void) { }
-> +static inline void check_kvm_sev_migration(void) { }
->   
->   #define __bss_decrypted
->   
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 78bb0fae3982..94ef16d263a7 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -26,6 +26,7 @@
->   #include <linux/kprobes.h>
->   #include <linux/nmi.h>
->   #include <linux/swait.h>
-> +#include <linux/efi.h>
->   #include <asm/timer.h>
->   #include <asm/cpu.h>
->   #include <asm/traps.h>
-> @@ -429,6 +430,59 @@ static inline void __set_percpu_decrypted(void *ptr, unsigned long size)
->   	early_set_memory_decrypted((unsigned long) ptr, size);
->   }
->   
-> +static int __init setup_kvm_sev_migration(void)
-> +{
-> +	efi_char16_t efi_sev_live_migration_enabled[] = L"SevLiveMigrationEnabled";
-> +	efi_guid_t efi_variable_guid = MEM_ENCRYPT_GUID;
-> +	efi_status_t status;
-> +	unsigned long size;
-> +	bool enabled;
+> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> index f209925a5d4e..2e2b2f654f0a 100644
+> --- a/drivers/base/memory.c
+> +++ b/drivers/base/memory.c
+> @@ -173,16 +173,72 @@ static int memory_block_online(struct memory_block *mem)
+>  {
+>  	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
+>  	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
+> +	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
+> +	struct zone *zone;
+> +	int ret;
+> +
+> +	zone = zone_for_pfn_range(mem->online_type, mem->nid, start_pfn, nr_pages);
 > +
 > +	/*
-> +	 * check_kvm_sev_migration() invoked via kvm_init_platform() before
-> +	 * this callback would have setup the indicator that live migration
-> +	 * feature is supported/enabled.
-> +	 */
-> +	if (!sev_live_migration_enabled)
-> +		return 0;
-> +
-> +	if (!efi_enabled(EFI_BOOT))
-> +		return 0;
-> +
-> +	if (!efi_enabled(EFI_RUNTIME_SERVICES)) {
-> +		pr_info("%s : EFI runtime services are not enabled\n", __func__);
-> +		return 0;
-> +	}
-> +
-> +	size = sizeof(enabled);
-> +
-> +	/* Get variable contents into buffer */
-> +	status = efi.get_variable(efi_sev_live_migration_enabled,
-> +				  &efi_variable_guid, NULL, &size, &enabled);
-> +
-> +	if (status == EFI_NOT_FOUND) {
-> +		pr_info("%s : EFI live migration variable not found\n", __func__);
-> +		return 0;
-> +	}
-> +
-> +	if (status != EFI_SUCCESS) {
-> +		pr_info("%s : EFI variable retrieval failed\n", __func__);
-> +		return 0;
-> +	}
-> +
-> +	if (enabled == 0) {
-> +		pr_info("%s: live migration disabled in EFI\n", __func__);
-> +		return 0;
-> +	}
-> +
-> +	pr_info("%s : live migration enabled in EFI\n", __func__);
-> +	wrmsrl(MSR_KVM_SEV_LIVE_MIGRATION, KVM_SEV_LIVE_MIGRATION_ENABLED);
-> +
-> +	return true;
-> +}
-> +
-> +late_initcall(setup_kvm_sev_migration);
-> +
->   /*
->    * Iterate through all possible CPUs and map the memory region pointed
->    * by apf_reason, steal_time and kvm_apic_eoi as decrypted at once.
-> @@ -747,6 +801,7 @@ static bool __init kvm_msi_ext_dest_id(void)
->   
->   static void __init kvm_init_platform(void)
->   {
-> +	check_kvm_sev_migration();
->   	kvmclock_init();
->   	x86_platform.apic_post_init = kvm_apic_init;
->   }
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index fae9ccbd0da7..382d1d4f00f5 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -20,6 +20,7 @@
->   #include <linux/bitops.h>
->   #include <linux/dma-mapping.h>
->   #include <linux/kvm_para.h>
-> +#include <linux/efi.h>
->   
->   #include <asm/tlbflush.h>
->   #include <asm/fixmap.h>
-> @@ -31,6 +32,7 @@
->   #include <asm/msr.h>
->   #include <asm/cmdline.h>
->   #include <asm/kvm_para.h>
-> +#include <asm/e820/api.h>
->   
->   #include "mm_internal.h"
->   
-> @@ -48,6 +50,8 @@ EXPORT_SYMBOL_GPL(sev_enable_key);
->   
->   bool sev_enabled __section(".data");
->   
-> +bool sev_live_migration_enabled __section(".data");
-> +
->   /* Buffer used for early in-place encryption by BSP, no locking needed */
->   static char sme_early_buffer[PAGE_SIZE] __initdata __aligned(PAGE_SIZE);
->   
-> @@ -237,6 +241,9 @@ static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
->   	unsigned long sz = npages << PAGE_SHIFT;
->   	unsigned long vaddr_end, vaddr_next;
->   
-> +	if (!sev_live_migration_enabled)
-> +		return;
-> +
->   	vaddr_end = vaddr + sz;
->   
->   	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
-> @@ -407,6 +414,12 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
->   	return early_set_memory_enc_dec(vaddr, size, true);
->   }
->   
-> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages,
-> +					bool enc)
-> +{
-> +	set_memory_enc_dec_hypercall(vaddr, npages, enc);
-> +}
-> +
->   /*
->    * SME and SEV are very similar but they are not the same, so there are
->    * times that the kernel will need to distinguish between SME and SEV. The
-> @@ -462,6 +475,57 @@ bool force_dma_unencrypted(struct device *dev)
->   	return false;
->   }
->   
-> +void __init check_kvm_sev_migration(void)
-> +{
-> +	if (sev_active() &&
-> +	    kvm_para_has_feature(KVM_FEATURE_SEV_LIVE_MIGRATION)) {
-> +		unsigned long nr_pages;
-> +		int i;
-> +
-> +		pr_info("KVM enable live migration\n");
-> +		WRITE_ONCE(sev_live_migration_enabled, true);
-> +
-> +		/*
-> +		 * Reset the host's shared pages list related to kernel
-> +		 * specific page encryption status settings before we load a
-> +		 * new kernel by kexec. Reset the page encryption status
-> +		 * during early boot intead of just before kexec to avoid SMP
-> +		 * races during kvm_pv_guest_cpu_reboot().
-> +		 * NOTE: We cannot reset the complete shared pages list
-> +		 * here as we need to retain the UEFI/OVMF firmware
-> +		 * specific settings.
-> +		 */
-> +
-> +		for (i = 0; i < e820_table->nr_entries; i++) {
-> +			struct e820_entry *entry = &e820_table->entries[i];
-> +
-> +			if (entry->type != E820_TYPE_RAM)
-> +				continue;
-> +
-> +			nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
-> +
-> +			kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS, entry->addr,
-> +					   nr_pages, 1);
-> +		}
-> +
-> +		/*
-> +		 * Ensure that _bss_decrypted section is marked as decrypted in the
-> +		 * shared pages list.
-> +		 */
-> +		nr_pages = DIV_ROUND_UP(__end_bss_decrypted - __start_bss_decrypted,
-> +					PAGE_SIZE);
-> +		early_set_mem_enc_dec_hypercall((unsigned long)__start_bss_decrypted,
-> +						nr_pages, 0);
-> +
-> +		/*
-> +		 * If not booted using EFI, enable Live migration support.
-> +		 */
-> +		if (!efi_enabled(EFI_BOOT))
-> +			wrmsrl(MSR_KVM_SEV_LIVE_MIGRATION,
-> +			       KVM_SEV_LIVE_MIGRATION_ENABLED);
-> +	}
-> +}
-> +
->   void __init mem_encrypt_free_decrypted_mem(void)
->   {
->   	unsigned long vaddr, vaddr_end, npages;
-> 
+> +	 * Although vmemmap pages have a different lifecycle than the pages
+> +	 * they describe (they remain until the memory is unplugged), doing
+> +	 * their initialization and accounting at memory onlining/offlining
+> +	 * stage simplifies things a lot.
 
+"simplify things a lot" is not really helpful to people reading the
+code. It would be much better to state reasons here. I would go with
+	 * stage helps to keep accounting easier to follow - e.g.
+	 * vmemmaps belong to the same zone as the onlined memory.
+> +	 */
+> +	if (nr_vmemmap_pages) {
+> +		ret = mhp_init_memmap_on_memory(start_pfn, nr_vmemmap_pages, zone);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = online_pages(start_pfn + nr_vmemmap_pages,
+> +			   nr_pages - nr_vmemmap_pages, zone);
+> +	if (ret) {
+> +		if (nr_vmemmap_pages)
+> +			mhp_deinit_memmap_on_memory(start_pfn, nr_vmemmap_pages);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Account once onlining succeeded. If the zone was unpopulated, it is
+> +	 * now already properly populated.
+> +	 */
+> +	if (nr_vmemmap_pages)
+> +		adjust_present_page_count(zone, nr_vmemmap_pages);
+>  
+> -	return online_pages(start_pfn, nr_pages, mem->online_type, mem->nid);
+> +	return ret;
+>  }
+[...]
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index d05056b3c173..5ef626926449 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -42,6 +42,8 @@
+>  #include "internal.h"
+>  #include "shuffle.h"
+>  
+> +static bool memmap_on_memory;
+> +
+>  /*
+>   * online_page_callback contains pointer to current page onlining function.
+>   * Initially it is generic_online_page(). If it is required it could be
+> @@ -641,7 +643,12 @@ EXPORT_SYMBOL_GPL(generic_online_page);
+>  static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
+>  {
+>  	const unsigned long end_pfn = start_pfn + nr_pages;
+> -	unsigned long pfn;
+> +	unsigned long pfn = start_pfn;
+> +
+> +	while (!IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES)) {
+> +		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
+> +		pfn += pageblock_nr_pages;
+> +	}
+
+I believe we do not need to check for nr_pages as the actual operation
+will never run out of range in practice but the code is more subtle than
+necessary. Using two different iteration styles is also hurting the code
+readability. I would go with the following
+	for (pfn = start_pfn; pfn < end_pfn; ) {
+		unsigned long order = min(MAX_ORDER - 1UL, __ffs(pfn));
+
+		while (start + (1UL << order) > end_pfn)
+                        order--;
+		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
+		pfn += 1 << order;
+	}
+
+which is what __free_pages_memory does already.
+
+>  
+>  	/*
+>  	 * Online the pages in MAX_ORDER - 1 aligned chunks. The callback might
+> @@ -649,7 +656,7 @@ static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
+>  	 * later). We account all pages as being online and belonging to this
+>  	 * zone ("present").
+>  	 */
+> -	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
+> +	for (; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
+>  		(*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
+>  
+>  	/* mark all involved sections as online */
+[...]
+> @@ -1848,6 +1964,31 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
+>  	if (rc)
+>  		return rc;
+>  
+> +	/*
+> +	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
+> +	 * the same granularity it was added - a single memory block.
+> +	 */
+> +	if (memmap_on_memory) {
+> +		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
+> +						      get_nr_vmemmap_pages_cb);
+> +		if (nr_vmemmap_pages) {
+> +			if (size != memory_block_size_bytes()) {
+> +				pr_warn("Refuse to remove %#llx - %#llx,"
+> +					"wrong granularity\n",
+> +					start, start + size);
+> +				return -EINVAL;
+> +			}
+> +
+> +			/*
+> +			 * Let remove_pmd_table->free_hugepage_table do the
+> +			 * right thing if we used vmem_altmap when hot-adding
+> +			 * the range.
+> +			 */
+> +			mhp_altmap.alloc = nr_vmemmap_pages;
+> +			altmap = &mhp_altmap;
+> +		}
+> +	}
+> +
+>  	/* remove memmap entry */
+>  	firmware_map_remove(start, start + size, "System RAM");
+
+I have to say I still dislike this and I would just wrap it inside out
+and do the operation from within walk_memory_blocks but I will not
+insist.
+-- 
+Michal Hocko
+SUSE Labs
