@@ -2,186 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55958365904
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6207A365907
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhDTMf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhDTMfz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:35:55 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399F2C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:35:24 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id c4so5329988ilq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P28NEtKGrus7iCaFCDC+6w2lb8tH4ieeIEUK4kLrfXA=;
-        b=QUv3+aqdlb4XRlG2GHw2B7TtkI+RBPjYu48aRrXyeXSOeTB/xIK7PRY6O9vwaf8kjl
-         sfA9jHF6RIE8zwKMnxa4KmwTJEen+6ffB7+wrfJTNy4TdHayPirM7JmsSUeCJEcBX/F5
-         iyu8j/hX+HGCfkBj5k0nW0Zdi7tElpM3qELkE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P28NEtKGrus7iCaFCDC+6w2lb8tH4ieeIEUK4kLrfXA=;
-        b=U3T2XNsgbDEWUPXniqXBD5XoD4oekD0QcOhFNKFk91xMPfeu7/FhNxMv3kHe7p3nOD
-         1hHFeXEVVP1mVDJj1p/ANsXt1Kbv9H1lSrGWZ5T4Ymq9SeNitJCUyJlkoUb1C9DT+SHT
-         zPdvVjuhCLwpxtjFt1k98yEiwogHtUfq3PfU9chlxBddpFCSw7G7u/qt1a7fnAC+1HyQ
-         K6vMASoJqpL7fS2sdXJDfsqKKqogvzUo88O3yVRrtHmkQUyUUv1YzdnjyqoKkX9TcFHl
-         IKFdHE0/9hAlJeVbBcUK61L/fr+/KreoJe4qx/uWWQuThj4o/A2hcaFnwTOTQVbfkkUe
-         OQWg==
-X-Gm-Message-State: AOAM531fjZfAgaSMs+tmb+IvDN1+Q62rETnmukfMdCiTnaJr5Jirzx2L
-        P+hXmJF1vOJf0EVaG/bx1haVFxdgMwNZX9gxmm9vCw==
-X-Google-Smtp-Source: ABdhPJy8y2m9CJbWLpXZPnSWRCgBF77zu21Iz5jz1+Fy6R3Q2JDmfvbxC0YDCG/XMsmCDR3Ms1zsgJc3/ZTA3feuK5I=
-X-Received: by 2002:a05:6e02:5a2:: with SMTP id k2mr22150327ils.177.1618922123638;
- Tue, 20 Apr 2021 05:35:23 -0700 (PDT)
+        id S232144AbhDTMgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:36:14 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43892 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231590AbhDTMgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:36:12 -0400
+IronPort-SDR: xEqThQUN6nlb5dhoG/5TKM7vE9wm1jOkrNDwf3un3aaLpiRTzN1noMvlbuhFaZMcEF47V1NNTF
+ 8WvSsfVsCGVA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195524251"
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="195524251"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 05:35:41 -0700
+IronPort-SDR: nrb8/kN/VgVNhge7JJDIMnEyQiCNmn128axcyv3DT0Gz9w3vqYSuUdCVK0wAEBTKOVd72LmwsS
+ uCmGT6zaTPHw==
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="463098466"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 05:35:39 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1lYpbN-005jqH-7X; Tue, 20 Apr 2021 15:35:37 +0300
+Date:   Tue, 20 Apr 2021 15:35:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Tree for Apr 20
+Message-ID: <YH7KmRQV2oD7fooj@smile.fi.intel.com>
+References: <20210420194718.4a4a0e8f@canb.auug.org.au>
+ <YH7C6xP5HsHYuobO@smile.fi.intel.com>
+ <YH7G235DGG6bEDTF@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-3-revest@chromium.org>
- <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 20 Apr 2021 14:35:12 +0200
-Message-ID: <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH7G235DGG6bEDTF@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:54 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 19, 2021 at 05:52:39PM +0200, Florent Revest wrote:
-> > This type provides the guarantee that an argument is going to be a const
-> > pointer to somewhere in a read-only map value. It also checks that this
-> > pointer is followed by a zero character before the end of the map value.
-> >
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  include/linux/bpf.h   |  1 +
-> >  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 42 insertions(+)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 77d1d8c65b81..c160526fc8bf 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -309,6 +309,7 @@ enum bpf_arg_type {
-> >       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
-> >       ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
-> >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
-> > +     ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> >       __BPF_ARG_TYPE_MAX,
-> >  };
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 852541a435ef..5f46dd6f3383 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -4787,6 +4787,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
-> >  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
-> >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
-> >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
-> > +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
-> >
-> >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> >       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
-> > @@ -4817,6 +4818,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> >       [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
-> >       [ARG_PTR_TO_FUNC]               = &func_ptr_types,
-> >       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
-> > +     [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
-> >  };
-> >
-> >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > @@ -5067,6 +5069,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> >               if (err)
-> >                       return err;
-> >               err = check_ptr_alignment(env, reg, 0, size, true);
-> > +     } else if (arg_type == ARG_PTR_TO_CONST_STR) {
-> > +             struct bpf_map *map = reg->map_ptr;
-> > +             int map_off;
-> > +             u64 map_addr;
-> > +             char *str_ptr;
-> > +
-> > +             if (reg->type != PTR_TO_MAP_VALUE || !map ||
->
-> I think the 'type' check is redundant,
-> since check_reg_type() did it via compatible_reg_types.
-> If so it's probably better to remove it here ?
->
-> '!map' looks unnecessary. Can it ever happen? If yes, it's a verifier bug.
-> For example in check_mem_access() we just deref reg->map_ptr without checking
-> which, I think, is correct.
+On Tue, Apr 20, 2021 at 03:19:39PM +0300, Andy Shevchenko wrote:
+> On Tue, Apr 20, 2021 at 03:02:51PM +0300, Andy Shevchenko wrote:
+> > On Tue, Apr 20, 2021 at 07:47:18PM +1000, Stephen Rothwell wrote:
 
-I agree with all of the above. I only thought it's better to be safe
-than sorry but if you'd like I could follow up with a patch that
-removes some checks?
+...
 
-> > +                 !bpf_map_is_rdonly(map)) {
->
-> This check is needed, of course.
->
-> > +                     verbose(env, "R%d does not point to a readonly map'\n", regno);
-> > +                     return -EACCES;
-> > +             }
-> > +
-> > +             if (!tnum_is_const(reg->var_off)) {
-> > +                     verbose(env, "R%d is not a constant address'\n", regno);
-> > +                     return -EACCES;
-> > +             }
-> > +
-> > +             if (!map->ops->map_direct_value_addr) {
-> > +                     verbose(env, "no direct value access support for this map type\n");
-> > +                     return -EACCES;
-> > +             }
-> > +
-> > +             err = check_map_access(env, regno, reg->off,
-> > +                                    map->value_size - reg->off, false);
-> > +             if (err)
-> > +                     return err;
-> > +
-> > +             map_off = reg->off + reg->var_off.value;
-> > +             err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
-> > +             if (err) {
->
-> since the code checks it here the same check in check_bpf_snprintf_call() should
-> probably do:
->  if (err) {
->    verbose("verifier bug\n");
->    return -EFAULT;
->  }
->
-> instead of just "return err;"
-> ?
+> > I have full of build warnings / errors in x86 and iommu
 
-Sure, does not hurt. I can also follow up with a patch unless if you
-prefer doing it yourself.
+Found the culprit -- it was uncleaned stuff from the other build in the source
+tree. So, it was only me who experienced that :-)
 
-> > +                     verbose(env, "direct value access on string failed\n");
->
-> I think the message doesn't tell users much, but they probably should never
-> see it unless they try to do lookup from readonly array with
-> more than one element.
-> So I guess it's fine to keep this one as-is. Just flagging.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Ack
 
-> Anyway the whole set looks great, so I've applied to bpf-next.
-> Thanks!
-
-Thank you :D
