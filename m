@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858AC365E05
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B25365E14
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhDTRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232767AbhDTRAg (ORCPT
+        id S233282AbhDTRCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:02:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50059 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232879AbhDTRCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:00:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68ED3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=TI4itBKQrnK7N1+JRagb2I2ih0zdOQqO0BJD+m1+J+E=; b=Efg3zCDE1rabqGaoQ6dxC/sGNP
-        JSg7HrYEToXqF82hOhGoqKSsocoaloP9I/2h37JrEE3hJoq2KHJ4n30eFYrH66f0MDRbODNy9//1R
-        n/GRxRCB0AK9Anck2IJkpeGZt625cWN2Bw1b8jgdDJqRbGarGlEa1ykjeLlG8wF88gz2Jy/AT7psA
-        0qhRwXxiHZBlRwiuyUbYhvS3v2xBHMTWs5/kB8/gklgpz+xkngrFvsAkuX7M05CeM63cK02JQ5Orf
-        TDnlQ1VOFvUC/YKgethsrqU2a88xlebs0rvNW8PaXUAnraEQXbUkNLXsV6zDByjUQ/etlzasHMeHr
-        cEB/U2ig==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYtid-00FPkL-Ia; Tue, 20 Apr 2021 16:59:42 +0000
-Subject: Re: (.text.ks8851_probe_common+0x370): undefined reference to
- `__this_module'
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, Marek Vasut <marex@denx.de>,
-        Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-References: <202102221437.vHlLwHmG-lkp@intel.com>
- <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
- <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <75670aaa-9904-a331-40c1-f1d8a2f92d30@infradead.org>
-Date:   Tue, 20 Apr 2021 09:59:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 20 Apr 2021 13:02:05 -0400
+Received: from mail-ej1-f72.google.com ([209.85.218.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lYtkg-0004Rs-TZ
+        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 17:01:31 +0000
+Received: by mail-ej1-f72.google.com with SMTP id r14-20020a1709062cceb0290373a80b4002so5026042ejr.20
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:01:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CHsQSEUOmORiTB8Zkf0mC2OREpdRoRDZ4OLN4iMgWKc=;
+        b=qdAm2nnEALvYzGR8YgKUxmNu91yKGsdGUVcEVIaEz1Gq60lxtse876Quz3uuamAtUI
+         at3MSeDiOoQHi9mtQRGxVxwmTCCHxC3cGOBvZTvbXpyptDwC690UvU2DkFLKs2Pg32QG
+         b+q52x7XdzBbt9gwlev9uaDJz8bvG2N8Pvu5Cp+A+KXMdwGqIlKcvxC9TtnHzAqRM7Vo
+         Vra2y4023B7GQ2tdRIE/kBhRiXA7fy4HV7DAg41IN9gzbFndYY/lU+ruqc1lRLEEtrrO
+         oJcER4SB/1idX7tmEwcP6rcfkl9GikDHZvToNaKon7jnPPmymqiKqOHQsQdE/VAGfWoD
+         mW6A==
+X-Gm-Message-State: AOAM530VPpP+ycUfoDaLVFqIQRYGtu6q0/x/RjtLIZECnT4cbisSpCYU
+        CzMSHVX8ijiDFPpi1pGkL2c+WclCCO33RxJMNJgisH5AsV/oRI2QHBabWnempMJFr1SsPe8NWbE
+        VU+H1hfcIRBUR8IHZrd3bN4ExP8EuqbXztNTGHmrpLw==
+X-Received: by 2002:a17:906:b353:: with SMTP id cd19mr28801326ejb.253.1618938090418;
+        Tue, 20 Apr 2021 10:01:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWCjFUTB+i+AWDnumgO9r4qpi2r6FWXN4Xy3B0T5zjsqdLAfvrora74Xl3gg1bViJWFcX6bQ==
+X-Received: by 2002:a17:906:b353:: with SMTP id cd19mr28801300ejb.253.1618938090234;
+        Tue, 20 Apr 2021 10:01:30 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
+        by smtp.gmail.com with ESMTPSA id x7sm16334441eds.67.2021.04.20.10.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 10:01:29 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: [PATCH 0/9] mfd/rtc/regulator: Drop board file support for Samsung PMIC
+Date:   Tue, 20 Apr 2021 19:01:09 +0200
+Message-Id: <20210420170118.12788-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 12:38 AM, Arnd Bergmann wrote:
-> On Wed, Feb 24, 2021 at 3:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 2/21/21 10:12 PM, kernel test robot wrote:
->>> Hi Marek,
->>>
->>> FYI, the error/warning still remains.
->>>
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   31caf8b2a847214be856f843e251fc2ed2cd1075
->>> commit: ef3631220d2b3d8d14cf64464760505baa60d6ac net: ks8851: Register MDIO bus and the internal PHY
->>> date:   7 weeks ago
->>> config: parisc-randconfig-r034-20210222 (attached as .config)
->>> compiler: hppa-linux-gcc (GCC) 9.3.0
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef3631220d2b3d8d14cf64464760505baa60d6ac
->>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout ef3631220d2b3d8d14cf64464760505baa60d6ac
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>     hppa-linux-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
->>>>> (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
->>>>> hppa-linux-ld: (.text.ks8851_probe_common+0x374): undefined reference to `__this_module'
->>
->> Hey Arnd-
->>
->> I wanted to see if you had any ideas about this problem.
->>
->> CONFIG_KS8851=y
->> CONFIG_KS8851_MLL=m
->>
->> The problem is that 2 drivers share some common code, but in one case
->> the shared code is builtin and for the other driver it is a loadable
->> module. The common code is first built as builtin, so it does not have
->> the "__this_module" symbol.
-> 
-> This is the patch I sent for it:
-> 
-> https://lore.kernel.org/lkml/20210125121937.3900988-1-arnd@kernel.org/T/#u
+Hi,
 
-It would be nice to have some patch merged. :)
+The Samsung PMIC drivers since long time are used only on devicetree
+platforms (Samsung Exynos) and there are no users with board files.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Drop the support for board files entirely and depend on OF for matching.
 
-thanks.
+This makes the code smaller and simpler.
+
+Dependencies
+============
+The MFD pieces are rebased on my previous sec-core dirver changes:
+mfd: sec: Simplify getting of_device_id match data
+https://lore.kernel.org/linux-samsung-soc/20210420113929.278082-1-krzysztof.kozlowski@canonical.com/T/#t
+
+Applying - can be independent
+=============================
+The last RTC and regulator patches can be picked up independently via
+regulator and rtc trees.  There are no board files currently, so the
+code in these drivers is basically dead code and feature-bisection is
+preserved.
+
+Best regards,
+Krzysztof
+
+
+Krzysztof Kozlowski (9):
+  mfd: sec: Drop support for board files and require devicetree
+  mfd: sec: Remove unused cfg_pmic_irq in platform data
+  mfd: sec: Remove unused device_type in platform data
+  mfd: sec: Remove unused irq_base in platform data
+  mfd: sec: Enable wakeup from suspend via devicetree property
+  mfd: sec: Remove unused platform data members
+  rtc: s5m: Remove reference to parent's device pdata
+  regulator: s2mpa01: Drop initialization via platform data
+  regulator: s2mps11: Drop initialization via platform data
+
+ drivers/mfd/Kconfig              |  1 +
+ drivers/mfd/sec-core.c           | 64 +++++---------------------------
+ drivers/mfd/sec-irq.c            |  4 +-
+ drivers/regulator/s2mpa01.c      |  4 --
+ drivers/regulator/s2mps11.c      | 22 +----------
+ drivers/rtc/rtc-s5m.c            |  6 ---
+ include/linux/mfd/samsung/core.h | 33 ----------------
+ 7 files changed, 14 insertions(+), 120 deletions(-)
+
 -- 
-~Randy
+2.25.1
 
