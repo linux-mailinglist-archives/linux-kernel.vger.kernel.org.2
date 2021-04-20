@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEAF3662A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0793662A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbhDTXyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 19:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S234479AbhDTX5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 19:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233992AbhDTXyj (ORCPT
+        with ESMTP id S234290AbhDTX5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 19:54:39 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE30C06174A;
-        Tue, 20 Apr 2021 16:54:07 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id u80so7148049oia.0;
-        Tue, 20 Apr 2021 16:54:07 -0700 (PDT)
+        Tue, 20 Apr 2021 19:57:10 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654CCC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:56:38 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so32326538otf.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=6XeojVc4nyUM/MQvlUlo6lItw91qVr2k9CimuPL8jlQ=;
-        b=Ct4dRSFyUsi54UAOvvZIvEg4fPzL45AZTUMb/sdsjtCErpl/mHQMGI5QiTZU/GyRrq
-         abRyZtIlu9qx60U1Ft1bOqICI7TkI492gsrG30ZR4nVWcIUiNPIWc8gLfLvXSxh0+s+7
-         CUZV1m+DyeJrjQn478NNPrfYKOIFY9K9/aDJzrMYYswwi2jErFXkq+NRnbJAOZq0tgiq
-         s+iP5nxz/CvYSqrTYOsmj8mbuB4LBBYWAVWBM0T4dG21A/r0ljBAg8jbjQbBBJe7yX51
-         D72F9W9HUdC21PN7s0uMs/Yuvy19IiCM31gTWKHOywbcM27eU5ZBXgPBbFvS0AWdOxRj
-         CXVA==
+        bh=sdH2eLsN/T4FPLAS3vSHNhFsKsAJGVwX3hswXoseQrs=;
+        b=T8DM8LMHHxNR+xL04MypQHCUOpnUSxwcsohbH7C/xAssA3/Ocj27flU8eKIZflClpR
+         PWM1gsP2J2KzBuR2NdX+i0DQVZbVpqkshYGm1sZ+K7eQxGO216DRSMP2CAKZDxASKpKg
+         kMNkzemaBhRD4shnYdjNmKclUKvrdirMd+J3Zcgna/cWH14zIhCzfdbJuIezF/v0Q91/
+         qIFZ8scZQLDFr8lcyq5r3WHTH1wg99Dd9oY0Na2LARByiHBVOYezuPO5Elt+n+Fn4ptB
+         uvGDlJdDXFRW60fRUxGJniIBIhFdArXbKuHloNbOW2IZBR+Q71HowjOwrYduKV2BrzOl
+         HSKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6XeojVc4nyUM/MQvlUlo6lItw91qVr2k9CimuPL8jlQ=;
-        b=YQCp3utblKoholj2OuZCGJ6X9iDV+s4nq7NMKglKuv1N51eBbnaTK5d4y9/2aL7b+7
-         pmT6JEbmMuv3XspsFIPpsSpFsVRIMqkj9pNDU3w8Fu310q2GlGzU/tZwR/Dx4yfxjYHK
-         iT6b5OdlusaAWD3SIZtIFRC7SnSatUSEO85sZTKTn6/Dx7Pga5O4jgMJ9NbjnkLiDwHv
-         v8HFeyv4GPBI8RRhzZySLmiCtuxsBJHaGOFsbsoRfJnd+fQdZDTxX18k02fRIsp+ZSQk
-         7FWDj1wZlsGnye4D5j5oTCOLrMpAoNXJgFT6FxNco33uFjMpOILkMugt8IxtuUhJ2KqN
-         1kxg==
-X-Gm-Message-State: AOAM530sdDjiwkTBmv6oucW1N/dkxKX0ZLFVp/nimrMp00vRVTwWsT9j
-        9a36uZog991BUdRl8lO/3oTaHlG7L1n13QOmXDE=
-X-Google-Smtp-Source: ABdhPJxk1HdpfsnIkAez4V3KMV5UFoxztuT1Gwv0FNgu63EJQOuxbUXCCc2R2DYBsi9R8QOsf/YqzPKQuzS/Bn6QgOM=
-X-Received: by 2002:aca:c08a:: with SMTP id q132mr4689757oif.5.1618962846514;
- Tue, 20 Apr 2021 16:54:06 -0700 (PDT)
+        bh=sdH2eLsN/T4FPLAS3vSHNhFsKsAJGVwX3hswXoseQrs=;
+        b=TAgfwB/NQfB2aCUJnbiuE2aRXLfE2XXL0xtdYAYu5+a2fylqGnlpdp9kr4+SMUJxWA
+         PT3Dqy9ioZ2+2h/LKgCKMaMJRIa6e23PHCwGw1YRaJU1A3GXreGPjaTYzZVuxWs0VUW4
+         aYtzxn76ZiWEmwz/C30ZPw89sbI3KphelabsGXpMmqOn6Wv1oC1hX14atTNwBHmt5C1f
+         CRSmpFjdjftccrtgFH6qSzHB9awI9dYTT/p99rvQXh733d+o6GCuPSgrPITChcEIEupN
+         2zdJv//y74+JUQd3Vacd3PIpnpAD9Tm7f0Xjjy01Eo7BqmKLZYWIxTB0V16tZ7xoMFzL
+         5U3A==
+X-Gm-Message-State: AOAM531HEu0osa/HpVpcvRcBOtgVPqb5UQMy/taWCgqoR7AfaOFrwCoB
+        n90eV7/QkknRqCMREn+fG2htf+fDt77afaAgc/8=
+X-Google-Smtp-Source: ABdhPJzGm4OklrZh8TLIZOWNex83qTUhrLP0gk1wujZgV3tbg0zGCwXxN0idchvfqSfFWqD+Dx0mTXqsCFioQfyVYAc=
+X-Received: by 2002:a05:6830:15d3:: with SMTP id j19mr11441916otr.23.1618962997888;
+ Tue, 20 Apr 2021 16:56:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-27-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-27-lee.jones@linaro.org>
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-26-lee.jones@linaro.org> <a368fff1-88a8-1515-6bac-5fe51eb0e059@amd.com>
+In-Reply-To: <a368fff1-88a8-1515-6bac-5fe51eb0e059@amd.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 20 Apr 2021 19:53:55 -0400
-Message-ID: <CADnq5_N71QW79-MnbeUGrMSrSM7UnESz_4vKteOr_3z1obPM3w@mail.gmail.com>
-Subject: Re: [PATCH 26/40] drm/amd/amdgpu/amdgpu_device: Remove unused
- variable 'r'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
+Date:   Tue, 20 Apr 2021 19:56:26 -0400
+Message-ID: <CADnq5_NO1gOWVg_n6UjZSw52J7M44P35RAVNFOeR7tLLZEA41g@mail.gmail.com>
+Subject: Re: [PATCH 25/40] drm/radeon/radeon_device: Provide function name in
+ kernel-doc header
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -73,64 +70,45 @@ Applied.  Thanks!
 
 Alex
 
-On Fri, Apr 16, 2021 at 10:38 AM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Apr 16, 2021 at 11:51 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> Am 16.04.21 um 16:37 schrieb Lee Jones:
+> > Fixes the following W=3D1 kernel build warning(s):
+> >
+> >   drivers/gpu/drm/radeon/radeon_device.c:1101: warning: This comment st=
+arts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-gu=
+ide/kernel-doc.rst
+> >
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 >
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function =E2=80=98amdgpu_=
-device_suspend=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:3733:6: warning: variable =E2=
-=80=98r=E2=80=99 set but not used [-Wunused-but-set-variable]
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 >
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
-/amd/amdgpu/amdgpu_device.c
-> index b4ad1c055c702..eef54b265ffdd 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@ -3730,7 +3730,6 @@ void amdgpu_device_fini(struct amdgpu_device *adev)
->  int amdgpu_device_suspend(struct drm_device *dev, bool fbcon)
->  {
->         struct amdgpu_device *adev =3D drm_to_adev(dev);
-> -       int r;
->
->         if (dev->switch_power_state =3D=3D DRM_SWITCH_POWER_OFF)
->                 return 0;
-> @@ -3745,7 +3744,7 @@ int amdgpu_device_suspend(struct drm_device *dev, b=
-ool fbcon)
->
->         amdgpu_ras_suspend(adev);
->
-> -       r =3D amdgpu_device_ip_suspend_phase1(adev);
-> +       amdgpu_device_ip_suspend_phase1(adev);
->
->         if (!adev->in_s0ix)
->                 amdgpu_amdkfd_suspend(adev, adev->in_runpm);
-> @@ -3755,7 +3754,7 @@ int amdgpu_device_suspend(struct drm_device *dev, b=
-ool fbcon)
->
->         amdgpu_fence_driver_suspend(adev);
->
-> -       r =3D amdgpu_device_ip_suspend_phase2(adev);
-> +       amdgpu_device_ip_suspend_phase2(adev);
->         /* evict remaining vram memory
->          * This second call to evict vram is to evict the gart page table
->          * using the CPU.
-> --
-> 2.27.0
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_device.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/r=
+adeon/radeon_device.c
+> > index cc445c4cba2e3..46eea01950cb1 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_device.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_device.c
+> > @@ -1098,7 +1098,8 @@ static bool radeon_check_pot_argument(int arg)
+> >   }
+> >
+> >   /**
+> > - * Determine a sensible default GART size according to ASIC family.
+> > + * radeon_gart_size_auto - Determine a sensible default GART size
+> > + *                         according to ASIC family.
+> >    *
+> >    * @family: ASIC family name
+> >    */
 >
 > _______________________________________________
 > dri-devel mailing list
