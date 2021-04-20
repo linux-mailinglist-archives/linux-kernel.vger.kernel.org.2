@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E84365B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DB3365B7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhDTOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231682AbhDTOwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:52:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F3F6613C9;
-        Tue, 20 Apr 2021 14:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618930319;
-        bh=JpMF49XQzCztEq9qBMVVUAhpIKrxlZMr9gtph/RDnns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DFmiGYcWMxauOWy6nBp2DbEzQ4/Xd2/5MxCZjp7sIXR8Jy8f/RuJuQIEcZUjdnBy5
-         cDcWJizyqC0jjXKNVsGTb7Mrxm0DoRe/ADAdMPTwOOfOeWUUhZvp/DX5Mwup7+I9zT
-         LVn6zAFbBX+s4dCDXHAn2uRg0r6gx5zZYrsRkseFAeMVqeYd775KFeLnYGUELNtooA
-         DVGWt6hWJSLO4/2adeHw2m4ibJQ7BcEvtGY4Bb0zqU6Xp0JZwndJvbYM70qvAEr6kb
-         qHiYsPq0vGLpoRO/OzM1zKg8EpbKOCU8r501caYB5funvMAHPHuAeewYToxShXs20D
-         L4woI7RPg/MzQ==
-Date:   Tue, 20 Apr 2021 17:51:51 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
- memory accounting
-Message-ID: <YH7qhwhbLt0yT3Zy@kernel.org>
-References: <20210420121354.1160437-1-rppt@kernel.org>
- <20210420132430.GB3596236@casper.infradead.org>
+        id S232813AbhDTOwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:52:50 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:52177 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232854AbhDTOwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:52:47 -0400
+Received: by mail-il1-f200.google.com with SMTP id i2-20020a056e021b02b029018159d70cffso3137170ilv.18
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:52:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=QhCHHHO6esEyxdvbhPlAkd4NZMZ3k4BD9aLA5JVL9JE=;
+        b=PPr3+ZU1RDOFFmRdqGsS9ESMJUS9m5Noa+MTBZpDvrx3oRGKJuc+NyGk+T6kOeyihy
+         uqoe9Y+Nqg7RKQmggzi+stWfzorYLFdlSHIYO8JEoe9D9+C+BMJL6+BEEGx/jAXH+y/z
+         scHs23p5Frqw+kM6IvQZxoobdW0uOJlI8G12FiHBVfpjd2jw/KZuPnoFco8OU4TXiGRW
+         ARZolcXYWv6EmwZetejqVJQhTfcXwbxI+baovLL/uUzWS2MAzY1TzXZ2deyr9rB7JfCU
+         g4ZsRd8nTcsHO2EtzLepezB1ApUnlPElKo3nsejtoLwgv4KOle9uRa6/G3L2W3yRFV8x
+         SlCw==
+X-Gm-Message-State: AOAM533aKuB2o25BRGhWsJ4LQT65Ttpui1PxNE2PUFMziv3+ZESaIYm9
+        7IGBdmwXulB7fcWw/F0P/8i9EbRpx9DNyjTZE94S52uI1sX9
+X-Google-Smtp-Source: ABdhPJxs+6ziCOg7dflQScDlVwIb8+Exv/+1ZhJlc1sae+ZE7hC3RYj4Hf0sCKlqZrYP90RpyAtjBsj3/2qLQLx05jHfsQIj5rin
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420132430.GB3596236@casper.infradead.org>
+X-Received: by 2002:a02:cac9:: with SMTP id f9mr21466694jap.85.1618930335491;
+ Tue, 20 Apr 2021 07:52:15 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 07:52:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000090295d05c068970e@google.com>
+Subject: [syzbot] WARNING in atp_close (2)
+From:   syzbot <syzbot+e03dc56b8ee7ec4b4dfd@syzkaller.appspotmail.com>
+To:     dmitry.torokhov@gmail.com, gustavoars@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 02:24:30PM +0100, Matthew Wilcox wrote:
-> On Tue, Apr 20, 2021 at 03:13:54PM +0300, Mike Rapoport wrote:
-> > Add a paragraph that explains that it may happen that the counters in
-> > /proc/meminfo do not add up to the overall memory usage.
-> 
-> ... that is, the sum may be lower because memory is allocated for other
-> purposes that is not reported here, right?
-> 
-> Is it ever possible for it to be higher?  Maybe due to a race when
-> sampling the counters?
-> 
-> >  Provides information about distribution and utilization of memory.  This
-> > -varies by architecture and compile options.  The following is from a
-> > -16GB PIII, which has highmem enabled.  You may not have all of these fields.
-> > +varies by architecture and compile options. Please note that it may happen
-> > +that the memory accounted here does not add up to the overall memory usage
-> > +and the difference for some workloads can be substantial. In many cases there
-> > +are other means to find out additional memory using subsystem specific
-> > +interfaces, for instance /proc/net/sockstat for TCP memory allocations.
-> 
-> How about just:
-> 
-> +varies by architecture and compile options.  The memory reported here
-> +may not add up to the overall memory usage and the difference for some
-> +workloads can be substantial. [...]
+Hello,
 
-I like this. I also for adding a sentence about overlap in the counters:
+syzbot found the following issue on:
 
-+varies by architecture and compile options.  Some of the counters reported
-+here overlap.  The memory reported by the non overlapping counters may not
-+add up to the overall memory usage and the difference for some workloads
-can be substantial. [...]
- 
-> But I'd like to be a bit more explicit about the reason, hence my question
-> above to be sure I understand.
-> 
-> It's also not entirely clear which of the fields in meminfo can be
-> usefully summed.  VmallocTotal is larger than MemTotal, for example.
-> But I know that KernelStack is allocated through vmalloc these days,
-> and I don't know whether VmallocUsed includes KernelStack or whether I
-> can sum them.  Similarly, is Mlocked a subset of Unevictable?
-> 
-> There is some attempt at explaining how these numbers fit together, but
-> it's outdated, and doesn't include Mlocked, Unevictable or KernelStack
+HEAD commit:    1216f02e Add linux-next specific files for 20210415
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=137dbb9ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3491b04113499f81
+dashboard link: https://syzkaller.appspot.com/bug?extid=e03dc56b8ee7ec4b4dfd
 
-Fixing the outdated docs and adding more detailed explanation is obviously
-welcome, but it's beyond the scope of the current patch.
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-Sincerely yours,
-Mike.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e03dc56b8ee7ec4b4dfd@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 18911 at kernel/workqueue.c:3043 __flush_work+0x8f4/0xad0 kernel/workqueue.c:3043
+Modules linked in:
+CPU: 1 PID: 18911 Comm: syz-executor.2 Not tainted 5.12.0-rc7-next-20210415-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__flush_work+0x8f4/0xad0 kernel/workqueue.c:3043
+Code: e3 08 48 0f ba 28 03 48 8b 95 70 fe ff ff 81 cb e0 01 00 00 e9 7e fa ff ff e8 68 4e 29 00 0f 0b e9 2e fc ff ff e8 5c 4e 29 00 <0f> 0b 45 31 f6 e9 1f fc ff ff e8 0d 0b 6e 00 e9 07 fb ff ff e8 43
+RSP: 0018:ffffc90001a7fb48 EFLAGS: 00010212
+RAX: 000000000000f9f3 RBX: dffffc0000000000 RCX: ffffc9000daae000
+RDX: 0000000000040000 RSI: ffffffff814b29e4 RDI: 0000000000000003
+RBP: ffffc90001a7fcd8 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff814b2196 R11: 0000000000000000 R12: 0000000000000001
+R13: 1ffff9200034ff9e R14: 0000000000000001 R15: ffff88801d9d1c80
+FS:  00007f53abfa1700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002f16708 CR3: 000000001e366000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3139
+ atp_close+0x5e/0xa0 drivers/input/mouse/appletouch.c:812
+ input_close_device+0x156/0x1f0 drivers/input/input.c:687
+ evdev_close_device drivers/input/evdev.c:414 [inline]
+ evdev_release+0x34c/0x410 drivers/input/evdev.c:456
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x272/0x280 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x419544
+Code: 84 00 00 00 00 00 44 89 54 24 0c e8 96 f9 ff ff 44 8b 54 24 0c 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 c8 f9 ff ff 8b 44
+RSP: 002b:00007f53abfa0cc0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffea RBX: 6666666666666667 RCX: 0000000000419544
+RDX: 0000000000024200 RSI: 00007f53abfa0d60 RDI: 00000000ffffff9c
+RBP: 00007f53abfa0d60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000024200
+R13: 00007ffdda3a06af R14: 00007f53abfa1300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
