@@ -2,122 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20494366084
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03703660A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhDTT77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 15:59:59 -0400
-Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:28448
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233541AbhDTT7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:59:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NdL1ja8l86QjuDRxEQsN8Wra0tXpwOTdyCogCxk1WLie47xiioAOORCmxMGumvLq2i4TXIvQdeDwIjD8dj/SRKZfHBSeBBkOJlu7ZiPkRthwOux7BpfLhGFsJLzOHJ8igIPl1VmM0Vkx5QnXWyZg3Py3d5qCLbIEWa15TsrXn+65WsLYpR1t1igFG+RgVBtIMQGOag3vfjnJcRjNPwp72ul96OR01lDb0RWEvRYivyr3SN0jCeMDeiph9G0Kevv/ThqmvEpBXMk750ZMHTR0pb+pLutQihkOqk5hTUf7IkaApQ2ErAbsDCM3PWJ5j5IERHVJGrocsFmJdK79WRXX6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mCFnvihvy4PqCslWTicUqgoNbYWEWlzQaDuLvx0tPQ=;
- b=Y9hKhYlHCPdAlFQBbekzitY4cpWMzKYo+dKMEBmvB8d9s443j1vz2QwWyLyGn3noNOrOdyafHc7T7jcwCASi43NtWblKIQImlFuLYVUU2ylQ7VsZPBpCcuSKMTS+qjtHCbgmxhmnHyGXRkG0l8yzRODwGSElvwtVIL3JT/Klwqcap6ABFosH4k8hv8q6os/6WJoh2GfKaJU7hi8De/n4NOnwLXztiiq8pprb+pid0aiqu+fxLKc2Obt/GmnAB8o8tjFfp88Y2y+0IZfeyMP2R4AAz3+MzSo/AcoVC9ngECgOUhyIgR7nKYTHYwluAS3ZyaFA0OCbD7fkDWoJXnKLcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9mCFnvihvy4PqCslWTicUqgoNbYWEWlzQaDuLvx0tPQ=;
- b=gbeVLVjMyhhmxTs4+AWBwsfM7irqsxk7vAFn5rDI2I3AIN25/KnYfeuKvVz0qwTGk9RYTClid+gVTDXKYl474WJhOTkPs36Fgbnz2moieZdMUSrcMbgb0nBJ2Dnhpf0lh5BtJNAqPxbA7VAqwypGcIOn6O8sWY5mbs77fjgXaPsswtNZ/wO1yxCJc5zOq4Gc9Y5QFwLtghwIddv3lS7wvJ3ujs/nHVtMsPKRmfggAaaME6+XCT8X7or1p5RB+ayWi6sYoq2ShkJDeZUcVgOheGhrGLJg/fbMSHLhauxER7xgjriHPrToEvWvmxf9OWZ7px3BmSQLbDjS1T7mfdSmkw==
-Authentication-Results: wanadoo.fr; dkim=none (message not signed)
- header.d=none;wanadoo.fr; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Tue, 20 Apr
- 2021 19:59:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 19:59:16 +0000
-Date:   Tue, 20 Apr 2021 16:59:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     yishaih@nvidia.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx4: remove an unused variable
-Message-ID: <20210420195914.GA2193837@nvidia.com>
-References: <413dc6e2ea9d85bda1131bbd6a730b7620839eab.1618932283.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <413dc6e2ea9d85bda1131bbd6a730b7620839eab.1618932283.git.christophe.jaillet@wanadoo.fr>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL0PR0102CA0061.prod.exchangelabs.com
- (2603:10b6:208:25::38) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233858AbhDTUMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:12:41 -0400
+Received: from mx2.unformed.ru ([91.219.49.66]:45989 "EHLO mx2.unformed.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233544AbhDTUMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:12:39 -0400
+X-Greylist: delayed 1727 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 16:12:38 EDT
+Received: from dotty.home.arpa ([10.3.14.10]:55754)
+        by filet.unformed.ru with esmtp (Exim 4.92)
+        (envelope-from <mon@unformed.ru>)
+        id 1lYwH4-00030I-0s; Tue, 20 Apr 2021 21:43:06 +0200
+Received: from [10.3.14.66] (port=52178 helo=phobos.home.arpa.)
+        by dotty.home.arpa with esmtp (Exim 4.92)
+        (envelope-from <mon@unformed.ru>)
+        id 1lYwH3-0001x3-Ua; Tue, 20 Apr 2021 21:43:05 +0200
+From:   Yury Vostrikov <mon@unformed.ru>
+Cc:     mon@unformed.ru,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: sfc: Fix kernel panic introduced by commit 044588b96372 ("sfc: define inner/outer csum offload TXQ types")
+Date:   Tue, 20 Apr 2021 21:42:03 +0200
+Message-Id: <20210420194203.24759-1-mon@unformed.ru>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0061.prod.exchangelabs.com (2603:10b6:208:25::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 19:59:16 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lYwWh-009Cjh-0B; Tue, 20 Apr 2021 16:59:15 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b931d4c0-7fab-42b4-fc29-08d90436c71f
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3212:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3212E3A6CD92F1741573E83EC2489@DM6PR12MB3212.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:350;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oFAwhXEZZDUiQevdV0+VEnm9gYOv8CZoPugvPuBL07AdTs0OPkZzKDGMtpx+0GzjilGRw2Z/qV/QA4+YqADakhpaLu7Te2kpUZsAlECe68Ld/tfPY+reaDEhd8ZXc1ADwq4/y88ZNvMw842r78bvrbDdG02l4j4XqdvRLvEba+NopHWWey+RWlNRGShedbE1gZTQ/nujsqgG2A3Otpa/vxXW1LEsF6Nf8CIfzksZ67GVndM5JaX/zAkLleNzA45lKP+IffqBINq34q+qKyxILqSWei8+Umbg4rFT4Wb4P2H3fgPVMkIwVL0fOs0xgtazVJZbokEB0gMkv0aOBNEviY7OzKkwJ+V9+zmY4s2BgvSaHGjclrxi78UHv1v9iKvVXXMOgiKgeBCm7zMbVIs9Lh2CSVuv6muugs0+5zvQV+tRuulwjZo3eWPEEhZ9C2Y7G9YsRSdXHPchsEkaJM3WSVxL3jF97zJbn3aIYh6XZrd09Wv1lyGnKl6MXgTMHzKcN9nbEzez/KMP5ATJthny9UDlnN5Rlo3mqvxzuTUMUMtfwOlv2iQawrWucHIBxDhHau7namzFgRpLXe3ZckPswcOtLLIjHyl77bnQ/op4Oik=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(136003)(346002)(83380400001)(26005)(426003)(38100700002)(8676002)(5660300002)(66556008)(9786002)(9746002)(36756003)(8936002)(2906002)(2616005)(86362001)(4744005)(66946007)(1076003)(66476007)(316002)(33656002)(6916009)(4326008)(186003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nn1hv2rKqQ6LZchWrQl63+hefyZYKuJE4A5Qi3rWx8tMU2tH1g29ZaZaUlS4?=
- =?us-ascii?Q?d0JiBRUMQfx/rq4s+oqz7awjq1Jxzyg/5Mt4UQxFERQQ4r7NXVLhK9rTwe8c?=
- =?us-ascii?Q?D94PBA8gZe8DTx0GkGOv7vH9C/95BQ12EpFQoA8IiDjuUt8bqHPjBBR7Mg9T?=
- =?us-ascii?Q?lhs/RZpNgGXGABossUr/e1xfdTzFf3A2J4T7RMNxPAdHmqFYdohCoxlugFeE?=
- =?us-ascii?Q?ffp5fMsRy4p0jGz09jfYxuQpOgqWsdfiwb9rUDE9VYGkk8OiVhvBcWrNonRt?=
- =?us-ascii?Q?XAbS0Vsw3269qtolkJf/RwXVuPe/tVJkDSuvlKcr4+298W6GvDFtLVEaynaS?=
- =?us-ascii?Q?xR4u3fXH1xpmo6nkQdDEfs8s3cJmV9YhUEBto1ttFK1yMVEziAvhe7gV2rSv?=
- =?us-ascii?Q?EJLB2IYp50vnsExoMtk7axdjbFWF9VgmJV7X4zxDjJLLIPjaSLa97cEazRPg?=
- =?us-ascii?Q?L1u3KtwSKrXvKssdz/c3yYNPntJNc3hrL0XTl0zoMY3D13C2bjhoXrAq+0Mx?=
- =?us-ascii?Q?JUpx4rHP3YwEGOvddX2zpOvgNkPf8yirrKOIalWuR4bsiOq0+cHaDqn5QCHu?=
- =?us-ascii?Q?NwFaKwh498/1pcGWWqXMQWSaeTzFJzCSNB5qwWpMLszfs/waZFf9KCL+P5wG?=
- =?us-ascii?Q?l5YQoyjA920ZoN5WkRcWwf84kvHEWnm7pyWwTU6CagI9gi/kRAJH+ZXuhnvJ?=
- =?us-ascii?Q?i859RBzZawTh0pGqpmNeGA+JDDowb0GmqbcPLkc9j6Qu/7yZbxS7hi2hjWRr?=
- =?us-ascii?Q?+k1s0JKX0lEX3FVAohcK9IztXq0n1ERE7deAlJ1/4y1xd72q4+LUbEU1xx4x?=
- =?us-ascii?Q?rTpWpYtugf5xnPsOKlrI5wuVneyeIkA7d4S4YrnFuLM4WctDFyUVKt6MmQcl?=
- =?us-ascii?Q?yb1fazGvBLJhnURqX8GgWNm1b08ynLvVcZR8o41CVjZMPmwu76a4wlFNOGBH?=
- =?us-ascii?Q?zTpqZN3Cr3SqK44EGrnILzZMiQDOZTkwh7pp9ra1a2RXIoU7KInixlmBwUjN?=
- =?us-ascii?Q?Q4cvRsoWuSPI3zoP28aWsvrJfK61lfVkstQMyILmYJXuwKw+TIsKsQpAxJfM?=
- =?us-ascii?Q?x/Ww9RYAIzH/yruqV3HgahDshcuvCgcppyzF57Gq7t7BNN0i992mlKHquQAJ?=
- =?us-ascii?Q?ke8TkGjdkHlNA521aW1nxH6XCxv6DOwuAMzfyCSAcPNvnlEen8xH/zK0Nos9?=
- =?us-ascii?Q?WtVOaStUopx3h2/UGkxgAsb2VuPFADdXyt2OK42K4bSXiAY+3kT2RjDXyqPm?=
- =?us-ascii?Q?q9YCd1YnzxWod4TyMvnUR/ZJELOAowPb3vaiH+hS62PPj0uKnrjZjYVh+V25?=
- =?us-ascii?Q?vnkkj3rfODaVsDsufkUG88iAXyY+nZecQ9mTbhuDcZ6CcA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b931d4c0-7fab-42b4-fc29-08d90436c71f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 19:59:16.8361
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uSbbT1HsfJ/8lHPDY51DuNEUUp3VZIDuBz0ph7qkcXNge5RfbGxXPVj1jS40U/DW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3212
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 05:28:33PM +0200, Christophe JAILLET wrote:
-> 'in6' is unused. It is just declared and filled-in.
-> It can be removed.
-> 
-> This is a left over from commit 5ea8bbfc4929
-> ("mlx4: Implement IP based gids support for RoCE/SRIOV")
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/infiniband/hw/mlx4/qp.c | 3 ---
->  1 file changed, 3 deletions(-)
+NIC has EFX_MAX_CHANNELS channels:
+struct efx_nic {
+	[...]
+	struct efx_channel *channel[EFX_MAX_CHANNELS];
+	[...]
+}
 
-Applied to for-next, thanks
+Each channel has EFX_MAX_TXQ_PER_CHANNEL TX queues; There a reverse
+mapping from type to TX queue, holding at most EFX_TXQ_TYPES
+entries. This mapping is a bitset mapping because EFX_TXQ_TYPE_* is
+defined as non-overlapping bit enum:
 
-Jason
+struct efx_channel {
+	[...]
+	struct efx_tx_queue tx_queue[EFX_MAX_TXQ_PER_CHANNEL];
+	struct efx_tx_queue *tx_queue_by_type[EFX_TXQ_TYPES];
+	[...]
+}
+
+Because channels and queues are enumerated in-order in
+efx_set_channels(), it is possible to get tx_queue be calling
+
+efx_get_tx_queue(efx, qid / EFX_MAX_TXQ_PER_CHANNEL,
+                      qid % EFX_MAX_TXQ_PER_CHANNEL);
+
+This uses qid / EFX_MAX_TXQ_PER_CHANNEL as index inside
+efx_nic->channels[] and qid % EFX_MAX_TXQ_PER_CHANNEL as index inside
+channel->tx_queue_be_type[].
+
+Indexing into bitset mapping with modulo operation seems to oversight
+from the previous refactoring. Comments of other call sites also
+indicate that the second argument is indeed queue->label (which is an
+index into channel->tx_queue[]), not queue->type. It also looks like
+that some callers do need indexing by type, though.
+
+However, because the sizes of tx_queue[] and tx_queue_by_type[] are
+equal, and every single slot in both arrays is not equal to NULL, no
+crash occurs.
+
+commit 044588b96372 ("sfc: define inner/outer csum offload TXQ types")
+add additional TXQ_TYPE and bumps size of tx_queue_by_type to 8
+elements. Some of its members are NULL now. During interface shutdown,
+tx_queues are flushed; this, in turn, results in a callback to
+efx_farch_handle_tx_flush_done, which then tries to use
+qid % EFX_MAX_TXQ_PER_CHANNEL as queue->type, gets NULL back, and
+crashes.
+
+Address this by adding efx_get_tx_queue_by_type() and updating
+relevant callers.
+
+Signed-off-by: Yury Vostrikov <mon@unformed.ru>
+---
+ drivers/net/ethernet/sfc/net_driver.h | 21 ++++++++++++++++++---
+ drivers/net/ethernet/sfc/ptp.c        |  2 +-
+ drivers/net/ethernet/sfc/tx.c         |  2 +-
+ 3 files changed, 20 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/sfc/net_driver.h b/drivers/net/ethernet/sfc/net_driver.h
+index 9f7dfdf708cf..4ab0fe21a3a6 100644
+--- a/drivers/net/ethernet/sfc/net_driver.h
++++ b/drivers/net/ethernet/sfc/net_driver.h
+@@ -1533,18 +1533,33 @@ static inline unsigned int efx_channel_num_tx_queues(struct efx_channel *channel
+ }
+ 
+ static inline struct efx_tx_queue *
+-efx_channel_get_tx_queue(struct efx_channel *channel, unsigned int type)
++efx_channel_get_tx_queue_by_type(struct efx_channel *channel, unsigned int type)
+ {
+ 	EFX_WARN_ON_ONCE_PARANOID(type >= EFX_TXQ_TYPES);
+ 	return channel->tx_queue_by_type[type];
+ }
+ 
+ static inline struct efx_tx_queue *
+-efx_get_tx_queue(struct efx_nic *efx, unsigned int index, unsigned int type)
++efx_get_tx_queue_by_type(struct efx_nic *efx, unsigned int index, unsigned int type)
+ {
+ 	struct efx_channel *channel = efx_get_tx_channel(efx, index);
+ 
+-	return efx_channel_get_tx_queue(channel, type);
++	return efx_channel_get_tx_queue_by_type(channel, type);
++}
++
++static inline struct efx_tx_queue *
++efx_channel_get_tx_queue(struct efx_channel *channel, unsigned int label)
++{
++	EFX_WARN_ON_ONCE_PARANOID(label >= EFX_MAX_TXQ_PER_CHANNEL);
++	return &channel->tx_queue[label];
++}
++
++static inline struct efx_tx_queue *
++efx_get_tx_queue(struct efx_nic *efx, unsigned int index, unsigned int label)
++{
++	struct efx_channel *channel = efx_get_tx_channel(efx, index);
++
++	return efx_channel_get_tx_queue(channel, label);
+ }
+ 
+ /* Iterate over all TX queues belonging to a channel */
+diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
+index a39c5143b386..7de19d22dadc 100644
+--- a/drivers/net/ethernet/sfc/ptp.c
++++ b/drivers/net/ethernet/sfc/ptp.c
+@@ -1091,7 +1091,7 @@ static void efx_ptp_xmit_skb_queue(struct efx_nic *efx, struct sk_buff *skb)
+ 	u8 type = efx_tx_csum_type_skb(skb);
+ 	struct efx_tx_queue *tx_queue;
+ 
+-	tx_queue = efx_channel_get_tx_queue(ptp_data->channel, type);
++	tx_queue = efx_channel_get_tx_queue_by_type(ptp_data->channel, type);
+ 	if (tx_queue && tx_queue->timestamping) {
+ 		efx_enqueue_skb(tx_queue, skb);
+ 	} else {
+diff --git a/drivers/net/ethernet/sfc/tx.c b/drivers/net/ethernet/sfc/tx.c
+index 1665529a7271..18742db2990d 100644
+--- a/drivers/net/ethernet/sfc/tx.c
++++ b/drivers/net/ethernet/sfc/tx.c
+@@ -533,7 +533,7 @@ netdev_tx_t efx_hard_start_xmit(struct sk_buff *skb,
+ 		return efx_ptp_tx(efx, skb);
+ 	}
+ 
+-	tx_queue = efx_get_tx_queue(efx, index, type);
++	tx_queue = efx_get_tx_queue_by_type(efx, index, type);
+ 	if (WARN_ON_ONCE(!tx_queue)) {
+ 		/* We don't have a TXQ of the right type.
+ 		 * This should never happen, as we don't advertise offload
+-- 
+2.20.1
+
