@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A6E365CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4C4365CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhDTPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:52:20 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40108 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232916AbhDTPwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:52:16 -0400
-IronPort-SDR: 30qJNd0AG1jjNlOhig5zZCoHYhB4hd7w+VyGSNXcyMwldJuOh4VB+hZuqyAxTQ9TxNOce240fK
- N0a9hybgImjg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="280860104"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="280860104"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 08:50:54 -0700
-IronPort-SDR: UWv3gxP9GGiLx+9PMo6a2uIMejjMXkv1kpYqX/ZV0uYKxD7h91qOQbIVyNT2ocI/mCPItsxKJY
- BaTjF5OJBIHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="445564292"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Apr 2021 08:50:51 -0700
-Subject: Re: [PATCH] perf auxtrace: Fix potential null pointer dereference
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        id S233056AbhDTQAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232303AbhDTQAh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:00:37 -0400
+Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA79BC06174A;
+        Tue, 20 Apr 2021 09:00:05 -0700 (PDT)
+Received: from mxout1.routing.net (unknown [192.168.10.81])
+        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 34AC32C4D4;
+        Tue, 20 Apr 2021 15:54:22 +0000 (UTC)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout1.routing.net (Postfix) with ESMTP id 7B6583FE0A;
+        Tue, 20 Apr 2021 15:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1618934057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kQYv4OtNr6e//YkMopHLbwWlrJMzWOHnE8M1UCzYfGU=;
+        b=NFmpEG8uJGS8FmvRAXIb9Ilqih45UNHL7PMvflMewmrdAAN+fveZC0qe0TIkbKNKjHreuX
+        uySf7rYOuumh3KADGmogaJ1lkRutiRxOE8XN8e3xbgWhNvGayANhpv1Hg/TpczHP778rGR
+        mqS+7i9INHrirEqcbbZOCS7aNyB/FKE=
+Received: from localhost.localdomain (fttx-pool-80.245.77.151.bambit.de [80.245.77.151])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 88927100396;
+        Tue, 20 Apr 2021 15:54:16 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20210420151554.2031768-1-leo.yan@linaro.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <22a1f6b4-0e4f-72df-2873-b4098a6c73dc@intel.com>
-Date:   Tue, 20 Apr 2021 18:51:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: [PATCH v2] thermal: mediatek: add sensors-support
+Date:   Tue, 20 Apr 2021 17:54:10 +0200
+Message-Id: <20210420155410.132141-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210420151554.2031768-1-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Mail-ID: a26884df-a290-43e7-8bcd-1a1379261d7e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 6:15 pm, Leo Yan wrote:
-> In the function auxtrace_parse_snapshot_options(), the callback pointer
-> "itr->parse_snapshot_options" can be NULL if it has not been set during
-> the AUX record initialization.  This can cause tool crashing if the
-> callback pointer "itr->parse_snapshot_options" is dereferenced without
-> performing NULL check.
-> 
-> Add a NULL check for the pointer "itr->parse_snapshot_options" before
-> invoke the callback.
-> 
-> Fixes: d20031bb63dd ("perf tools: Add AUX area tracing Snapshot Mode")
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+From: Frank Wunderlich <frank-w@public-files.de>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+add HWMON-support to mediateks thermal driver to allow lm-sensors
+userspace tools read soc temperature
 
-> ---
->  tools/perf/util/auxtrace.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index 953f4afacd3b..320b47f133d3 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -638,7 +638,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
->  		break;
->  	}
->  
-> -	if (itr)
-> +	if (itr && itr->parse_snapshot_options)
->  		return itr->parse_snapshot_options(itr, opts, str);
->  
->  	pr_err("No AUX area tracing to snapshot\n");
-> 
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+---
+v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
+---
+ drivers/thermal/mtk_thermal.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+index 149c6d7fd5a0..32be8a715c7d 100644
+--- a/drivers/thermal/mtk_thermal.c
++++ b/drivers/thermal/mtk_thermal.c
+@@ -23,6 +23,8 @@
+ #include <linux/reset.h>
+ #include <linux/types.h>
+ 
++#include "thermal_hwmon.h"
++
+ /* AUXADC Registers */
+ #define AUXADC_CON1_SET_V	0x008
+ #define AUXADC_CON1_CLR_V	0x00c
+@@ -1087,6 +1089,11 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+ 		goto err_disable_clk_peri_therm;
+ 	}
+ 
++	tzdev->tzp->no_hwmon = false;
++	ret = devm_thermal_add_hwmon_sysfs(tzdev);
++	if (ret)
++		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
++
+ 	return 0;
+ 
+ err_disable_clk_peri_therm:
+-- 
+2.25.1
 
