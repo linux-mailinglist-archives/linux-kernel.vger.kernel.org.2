@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4277A365A15
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3007D365A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhDTN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:29:28 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17381 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbhDTN3Z (ORCPT
+        id S232483AbhDTNaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:30:00 -0400
+Received: from mail.efficios.com ([167.114.26.124]:33372 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232295AbhDTN37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:29:25 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FPkxC5smhzlYGg;
-        Tue, 20 Apr 2021 21:26:55 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 20 Apr 2021 21:28:47 +0800
-Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
- <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
- <20210415220137.GA1672608@nvidia.com>
- <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
- <20210419123314.GT1370958@nvidia.com>
- <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
- <20210420125957.GA1370958@nvidia.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <b0fadb89-e875-5a0d-016e-29e54d26726e@huawei.com>
-Date:   Tue, 20 Apr 2021 21:28:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 20 Apr 2021 09:29:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A740D2FE916;
+        Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 3m9Gwf_gMSRu; Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 37A4F2FED9B;
+        Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 37A4F2FED9B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618925367;
+        bh=QsxHLQuZ6/NmxdwKl3bSdvfvXYh8C1ZBM9eOhl6zdvc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=W13i74aXhgRV/poLcJPrRQkcqPt2WSqaN0cI+vQiU5C9DMd4vWvKN8rO9lEmZl6gi
+         8tnGknzEh8o3FYv3mssQtpK2AhjCCGuxLYqOcsfr3GKvwX53Wc59s0cV9NFXl6NraV
+         cfsm8VBVNtBH5L6w/wtR0g1Et0jmLyXNu1j5y84u83tGE0N4zWjF5ZRX+z1kIV3Uwm
+         MX4qUntdQAnGa/N2vjVaIPMXkNISOWp+tvvKWsCVjf9cyEIPrppnOEpR5v1Wj2ybXj
+         rWU5hYzqcLjGdQWrrpNuz5rsOpUOSOXl9MNi5VELORBIa3rDqhPl8LJBWIgleOYtvI
+         qpMkn09ksCaKg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id cwFy8b8gn99W; Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 255132FED21;
+        Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+Date:   Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        fweisbec <fweisbec@gmail.com>, Jessica Yu <jeyu@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@elte.hu>, chris@chris-wilson.co.uk,
+        yuanhan liu <yuanhan.liu@linux.intel.com>,
+        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>
+Message-ID: <1154727029.2004.1618925367044.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210420085532.4062b15e@gandalf.local.home>
+References: <1299622684.20306.77.camel@gandalf.stny.rr.com> <20130813111442.632f3421@gandalf.local.home> <87siybk8yl.fsf@rustcorp.com.au> <20130814233228.778f25d0@gandalf.local.home> <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com> <20210419181111.5eb582e8@gandalf.local.home> <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com> <20210420085532.4062b15e@gandalf.local.home>
+Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
 MIME-Version: 1.0
-In-Reply-To: <20210420125957.GA1370958@nvidia.com>
-Content-Type: text/plain; charset="gbk"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: tracing: Enable tracepoints via module parameters
+Thread-Index: sM+iKvNdasbLkp1rglxClIfh9BgdaA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/20 20:59, Jason Gunthorpe wrote:
-> On Tue, Apr 20, 2021 at 08:50:12PM +0800, liulongfang wrote:
->> On 2021/4/19 20:33, Jason Gunthorpe wrote:
->>> On Mon, Apr 19, 2021 at 08:24:40PM +0800, liulongfang wrote:
->>>
->>>>> I'm also confused how this works securely at all, as a general rule a
->>>>> VFIO PCI driver cannot access the MMIO memory of the function it is
->>>>> planning to assign to the guest. There is a lot of danger that the
->>>>> guest could access that MMIO space one way or another.
->>>>
->>>> VF's MMIO memory is divided into two parts, one is the guest part,
->>>> and the other is the live migration part. They do not affect each other,
->>>> so there is no security problem.
->>>
->>> AFAIK there are several scenarios where a guest can access this MMIO
->>> memory using DMA even if it is not mapped into the guest for CPU
->>> access.
->>>
->> The hardware divides VF's MMIO memory into two parts. The live migration
->> driver in the host uses the live migration part, and the device driver in
->> the guest uses the guest part. They obtain the address of VF's MMIO memory
->> in their respective drivers, although these two parts The memory is
->> continuous on the hardware device, but due to the needs of the drive function,
->> they will not perform operations on another part of the memory, and the
->> device hardware also independently responds to the operation commands of
->> the two parts.
+----- On Apr 20, 2021, at 8:55 AM, rostedt rostedt@goodmis.org wrote:
+[...]
 > 
-> It doesn't matter, the memory is still under the same PCI BDF and VFIO
-> supports scenarios where devices in the same IOMMU group are not
-> isolated from each other.
-> 
-> This is why the granual of isolation is a PCI BDF - VFIO directly
-> blocks kernel drivers from attaching to PCI BDFs that are not
-> completely isolated from VFIO BDF.
-> 
-> Bypassing this prevention and attaching a kernel driver directly to
-> the same BDF being exposed to the guest breaks that isolation model.
-> 
->> So, I still don't understand what the security risk you are talking about is,
->> and what do you think the security design should look like?
->> Can you elaborate on it?
-> 
-> Each security domain must have its own PCI BDF.
-> 
-The basic unit to perform the live migration function is the VF, and the basic
-function of the VF is the business function of the device. If the live migration
-function and the business function are completely separated, and they are bound
-to their respective VFs, it will result in the ability to execute the business
-in the guest A functional VF cannot perform live migration, and a VF with a live
-migration function cannot perform business functions in the guest.
+> Would adding automatic module parameters be an issue? That is, you can add
+> in the insmod command line a parameter that will enable tracepoints. We
+> could have a way to even see them from the modinfo. I think I had that
+> working once, and it wasn't really that hard to do.
 
-In fact, the scenario that requires live migration is to migrate its business
-functions to the VFs of other hosts when the VF's business functions are heavily
-loaded.
-This usage scenario itself requires that the VF needs to have these two functions
-at the same time.
+There is one thing we should consider here in terms of namespacing: those module
+command line parameters should be specific to each tracer (e.g. ftrace, perf, ebpf).
 
-> The migration control registers must be on a different VF from the VF
-> being plugged into a guest and the two VFs have to be in different
-> IOMMU groups to ensure they are isolated from each other.
-> 
-> Jason
-> .
-> 
+LTTng for instance already tackles early module load tracing in a different
+way: users can enable instrumentation of yet-to-be loaded kernel modules. So
+it would not make sense in that scheme to have module load parameters.
 
-Thanks.
-Longfang.
+It's a different trade-off in terms of error reporting though: for instance,
+LTTng won't report an error if a user does a typo when entering an event name.
+
+So I think those command line parameters should be tracer-specific, do you agree ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
