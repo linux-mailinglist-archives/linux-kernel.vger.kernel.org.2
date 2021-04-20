@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C83365BF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A65365BF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhDTPQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S232892AbhDTPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhDTPQh (ORCPT
+        with ESMTP id S231391AbhDTPRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:16:37 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5C0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:16:06 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so20619662pjv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:16:06 -0700 (PDT)
+        Tue, 20 Apr 2021 11:17:09 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E017C06174A;
+        Tue, 20 Apr 2021 08:16:38 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id a4so38029219wrr.2;
+        Tue, 20 Apr 2021 08:16:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p+G9I0twdQ25gtNDzTS0vvubZNpcCb4yzAAC9B7XO08=;
-        b=aVtd2WJozOwrhWmRHVYpvwf0WF70utvUycTTCVf9m+QkZi+huf3sziTEqkz2LQtEfx
-         GJUqOcTvvEqdLcATaoF3wu5t5FfKyqQO7UHuKKQ6cw2OSCYQOLZtf+pXBkhe+Hi2lAxQ
-         34llZVzxhqidPIQfrkl+OWFPW00X8jX2g8pWFNKOhZEN7Cl7x/wvC/DLPrD7ZAwRhzIj
-         mRNWbxmppJtovmNSR8wSfNtH0Pg698x6Fq/fMC+xtMXBNdkzPh3dOPNUBPuQDENom3LW
-         9SnActI/E1zHJbMEKWuVlb0czaYUJMlMH21WB22elXUUhb4SJWe/lC7JF/sdus+VC0rE
-         jXjA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mgB0zcGWFNH/Q/FVhfin+obpUYcpRcl494fttRvC2kc=;
+        b=BWTmydHs3Izqqn+cHtKSrjGm9O5nH41FX27Drc7tweu2Kla4Qj27OmTuxqTqBxCpjt
+         5WIxSB9LXmQc7oHREnynz3T4N6gAmx9Lw8yDIesjzyjRtz8sQaaBdZ+f4BZWPXdTJpbL
+         jhVYEeEHPnS0xF2vkW4SKW5i2SISppDdDPKrxPu71T9mc39bqe6z0fhl6S5evf8rkwZa
+         sz25ETkot/D7nHS2yefY9TkBigDJxKhQ9xqhStnwtNWQDpM9lnZLNsni5Sg9o+KYoQvy
+         PQhn4gJrKZvDSUIXjn3Odk3wKKYjqykpYjNd17b6u/LJSOTA6ntoCCta9x66QnWPU4Cj
+         Lzag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p+G9I0twdQ25gtNDzTS0vvubZNpcCb4yzAAC9B7XO08=;
-        b=RUjujZPuXvdT+zyzrg4x+hOMAwgc5MtEG8AWY6A6WyYaMzrEaKjzN+9oq9WInS1PfR
-         ziUeTuHlMRmrGgv5CYVFBJf5AXP/kpwdQZPS/QakVPLPvZyErW0TnVObcwjgf3CcsDvC
-         BYX4p6u9wIaW4uW351Lgx7J5EkbinzdMSlNMzla5FcWGQAqjQDJTdksmSli1hp14Ks9z
-         G4WYLDWRYTsb2K57AlfK+zNDdqkZ5PCUv4ZWsecmoqj74RN8ac5txm7qyoW83NkNXMNZ
-         ylIdKIGSYGCG+VyocBMC+FOBkPSEBtEfKO+N0Pkp3vU3KV1L1UA7yOvI/VG7Qhq6aC+8
-         /nQA==
-X-Gm-Message-State: AOAM532zYy4GyjbSG71R+aLdsVQ3s84ouKxjdo5z14JpjUhGEQwiWmds
-        hJPvXcbQUvvEjNZPl7Ir+xFbdw==
-X-Google-Smtp-Source: ABdhPJyCODabRkMDM3er0M3Lq37OMWExHbMXfffEvpiTk6nQH/WJYqKv8iVWbtAWHl9TTGQhJxefAA==
-X-Received: by 2002:a17:90a:670a:: with SMTP id n10mr5536990pjj.176.1618931765726;
-        Tue, 20 Apr 2021 08:16:05 -0700 (PDT)
-Received: from localhost ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id a129sm2913849pfa.36.2021.04.20.08.16.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mgB0zcGWFNH/Q/FVhfin+obpUYcpRcl494fttRvC2kc=;
+        b=dEoNDorsgCcDStGoww5EKU3zxTBnZZ48jCw37u6pOsdJwtntA1TB7QFfBEHIGb0Ou2
+         F/S1WVbl0p/S9NBAxQmQ93aTcFCclL3XyT4kGaD0T0jMniI6LDW9EjWKnjYPSCE/0MFi
+         vrn2kFPKX5iWYx9H3aGhcKvIxQ+2TrDfF0aqQfZYvlpeAI9seNPa1RHrDTanlTaoKSL0
+         7sz87C5GqBedSvfFlOWpb514D0wvIhJGCnrmVs/AsJL8EbJiPM5lzTTvugNE6Vt08UV0
+         Ad48MjVqb4x+lUGQOfap2YqU6hVHUT8Z85ISv+BNB/iKW2QVznQrB42MyYy82pObDe5W
+         jzBA==
+X-Gm-Message-State: AOAM533ZVzWm/hNA/s8PtO6hmih0UXpsI5ofHdBu3a22jax6Y7vdqFtD
+        G7//DfoiAqFdjYw8pXoXlYvaCYmZGgqX7A==
+X-Google-Smtp-Source: ABdhPJwpZe9twxVd5/Re4ELKgGEOdxkzHuBDhuUHrH4/PvlSj3nCn9tnG6VEZy6oXnkvlnA1kXJX5Q==
+X-Received: by 2002:a05:6000:1ac7:: with SMTP id i7mr21610164wry.9.1618931797115;
+        Tue, 20 Apr 2021 08:16:37 -0700 (PDT)
+Received: from localhost.localdomain ([197.240.34.190])
+        by smtp.gmail.com with ESMTPSA id a8sm30983776wrh.91.2021.04.20.08.16.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 08:16:04 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH] perf auxtrace: Fix potential null pointer dereference
-Date:   Tue, 20 Apr 2021 23:15:53 +0800
-Message-Id: <20210420151554.2031768-1-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 20 Apr 2021 08:16:36 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v3] fs/btrfs: Fix uninitialized variable
+Date:   Tue, 20 Apr 2021 16:16:26 +0100
+Message-Id: <20210420151626.6045-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function auxtrace_parse_snapshot_options(), the callback pointer
-"itr->parse_snapshot_options" can be NULL if it has not been set during
-the AUX record initialization.  This can cause tool crashing if the
-callback pointer "itr->parse_snapshot_options" is dereferenced without
-performing NULL check.
+As reported by the Coverity static analysis.
+The variable zone is not initialized which
+may causes a failed assertion.
 
-Add a NULL check for the pointer "itr->parse_snapshot_options" before
-invoke the callback.
-
-Fixes: d20031bb63dd ("perf tools: Add AUX area tracing Snapshot Mode")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Addresses-Coverity: ("Uninitialized variables")
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
 ---
- tools/perf/util/auxtrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3: catch default as an assertion failure
+as proposed by David Sterba.
+---
+ fs/btrfs/zoned.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 953f4afacd3b..320b47f133d3 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -638,7 +638,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
- 		break;
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 70b23a0d03b1..432509f4b3ac 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+ 	case 0: zone = 0; break;
+ 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+ 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
++	default:
++		ASSERT(zone);
++		break;
  	}
  
--	if (itr)
-+	if (itr && itr->parse_snapshot_options)
- 		return itr->parse_snapshot_options(itr, opts, str);
- 
- 	pr_err("No AUX area tracing to snapshot\n");
+ 	ASSERT(zone <= U32_MAX);
 -- 
-2.25.1
+2.17.1
 
