@@ -2,128 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F643652C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188C23652D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhDTHDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:03:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59932 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhDTHDj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:03:39 -0400
-Received: from mail-ej1-f72.google.com ([209.85.218.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYkPb-00063L-PW
-        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 07:03:07 +0000
-Received: by mail-ej1-f72.google.com with SMTP id o25-20020a1709061d59b029037c94676df5so4416726ejh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:03:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+vF0KMe3QpB0Xi+B5gK5lpQVIB9Jaks3cx/F2luyNe4=;
-        b=JDDduY0C2bOPaT0SFgaObjn7JMaULH0+xmnqhttePhC3TeaBEmHmCPktzGkAA7itRc
-         JbBs1Gv8EbpPpwVgC1QZpTbmCTaM0HHf0yCvq07kqNuLtSj//A103/xywzUeXPmg1EdK
-         oBbt6gbsr9x2sU4eHQ1yXwp8pKNkQDiNwrhcWZzABrOeY5iZhose49rrmg875VPlIj+Q
-         i6IsCUbt7sETKqSfhYuLCEQyQOi9HX2mRAUamhBoy4L+3+Zx0Nambw44PLNTIMBZiozq
-         ar9cxdcx0YEKX0dAPjgdre2qFDvCZX2wT01iuXPznkg3o28YeUyetgNa62daYyObJA55
-         9uOA==
-X-Gm-Message-State: AOAM530ko9zojqQb9Geo5JK+HnrZEUwg26sewr4DtpXuEIvFyCcliR2n
-        qS+bo/oePszkzNgSHqmOeUG1mwCJxNDZ8uiDwH6SJ+aGD4tfDhbXuvJQmt3GdB/4umATbmsYH3+
-        Xv2sDQkctoxYlrtIpAMKL0zoYjj3B2kp6jn6V5BWOwQ==
-X-Received: by 2002:a17:906:b118:: with SMTP id u24mr26032608ejy.331.1618902187416;
-        Tue, 20 Apr 2021 00:03:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7JDxbo9Pv1X6zFkKyXBs1akihteUXUJX7v7Lo6wVceYKwdXjZHEu7LyuxSHPp24+F8ynZoQ==
-X-Received: by 2002:a17:906:b118:: with SMTP id u24mr26032590ejy.331.1618902187211;
-        Tue, 20 Apr 2021 00:03:07 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id ku8sm11906848ejc.111.2021.04.20.00.03.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 00:03:06 -0700 (PDT)
-Subject: Re: [PATCH 5/7] mfd: sec: Simplify getting of_device_id match data
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        patches@opensource.cirrus.com
-References: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
- <CGME20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d@eucas1p2.samsung.com>
- <20210419081726.67867-5-krzysztof.kozlowski@canonical.com>
- <64fb91ae-c754-fb25-0ef7-17b2f1b8a1e4@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <4a5e80c0-653e-a4d6-630e-0d75e3779f6d@canonical.com>
-Date:   Tue, 20 Apr 2021 09:03:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230249AbhDTHF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:05:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47392 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230018AbhDTHFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:05:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618902294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S28F6Esk+D8dcXxbzF3+5LdtdDhDVFkM7q+K8PcVcuA=;
+        b=lPuVJltq9PaXSJxcyrY5c4MEe/mGjPi4zdRny/TzzxMqNPSwyDX8Tg+rckvKD8F+d4z1nW
+        5UFeIbGPKb2dVa8v2gnpzYTAI64GxxFnFVivgpMzhaVX8VHlLvaHb7sTWa6oNG9pbDdWP8
+        HGI8DPlQu+mFoOyQgJT/icH5D4fefb0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D7550B137;
+        Tue, 20 Apr 2021 07:04:53 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 09:04:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
+        adobriyan@gmail.com, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
+        neilb@suse.de, samitolvanen@google.com, rppt@kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, willy@infradead.org
+Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
+Message-ID: <YH59E15ztpTTUKqS@dhcp22.suse.cz>
+References: <20210417104032.5521-1-peter.enderborg@sony.com>
+ <YH10s/7MjxBBsjVL@dhcp22.suse.cz>
+ <c3f0da9c-d127-5edf-dd21-50fd5298acef@sony.com>
+ <YH2a9YfRBlfNnF+u@dhcp22.suse.cz>
+ <23aa041b-0e7c-6f82-5655-836899973d66@sony.com>
+ <d70efba0-c63d-b55a-c234-eb6d82ae813f@amd.com>
+ <YH2ru642wYfqK5ne@dhcp22.suse.cz>
+ <07ed1421-89f8-8845-b254-21730207c185@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <64fb91ae-c754-fb25-0ef7-17b2f1b8a1e4@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <07ed1421-89f8-8845-b254-21730207c185@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 07:25, Marek Szyprowski wrote:
+On Mon 19-04-21 18:37:13, Christian König wrote:
+> Am 19.04.21 um 18:11 schrieb Michal Hocko:
+[...]
+> > The question is not whether it is NUMA aware but whether it is useful to
+> > know per-numa data for the purpose the counter is supposed to serve.
 > 
-> On 19.04.2021 10:17, Krzysztof Kozlowski wrote:
->> Use of_device_get_match_data() to make the code slightly smaller.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>   drivers/mfd/sec-core.c | 9 +++------
->>   1 file changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
->> index 8d55992da19e..3126c39f3203 100644
->> --- a/drivers/mfd/sec-core.c
->> +++ b/drivers/mfd/sec-core.c
->> @@ -10,6 +10,7 @@
->>   #include <linux/slab.h>
->>   #include <linux/i2c.h>
->>   #include <linux/of.h>
->> +#include <linux/of_device.h>
->>   #include <linux/of_irq.h>
->>   #include <linux/interrupt.h>
->>   #include <linux/pm_runtime.h>
->> @@ -324,12 +325,8 @@ static inline unsigned long sec_i2c_get_driver_data(struct i2c_client *i2c,
->>   						const struct i2c_device_id *id)
->>   {
->>   #ifdef CONFIG_OF
->> -	if (i2c->dev.of_node) {
->> -		const struct of_device_id *match;
->> -
->> -		match = of_match_node(sec_dt_match, i2c->dev.of_node);
->> -		return (unsigned long)match->data;
->> -	}
->> +	if (i2c->dev.of_node)
->> +		return (unsigned long)of_device_get_match_data(&i2c->dev);
->>   #endif
-> 
-> Does it make any sense to keep the #ifdef CONFIG_OF after this change?
+> No, not at all. The pages of a single DMA-buf could even be from different
+> NUMA nodes if the exporting driver decides that this is somehow useful.
 
-Good point, it was only to hide usage of of_device_id table.
+As the use of the counter hasn't been explained yet I can only
+speculate. One thing that I can imagine to be useful is to fill gaps in
+our accounting. It is quite often that the memroy accounted in
+/proc/meminfo (or oom report) doesn't add up to the overall memory
+usage. In some workloads the workload can be huge! In many cases there
+are other means to find out additional memory by a subsystem specific
+interfaces (e.g. networking buffers). I do assume that dma-buf is just
+one of those and the counter can fill the said gap at least partially
+for some workloads. That is definitely useful.
 
-> I would also skip (i2c->dev.of_node) check, because 
-> of_device_get_match_data() already does that (although indirectly).
+What I am trying to bring up with NUMA side is that the same problem can
+happen on per-node basis. Let's say that some user consumes unexpectedly
+large amount of dma-buf on a certain node. This can lead to observable
+performance impact on anybody on allocating from that node and even
+worse cause an OOM for node bound consumers. How do I find out that it
+was dma-buf that has caused the problem?
 
-First, the enum sec_device_type would need to be changed so it starts
-from 1, not 0. It's because the value returned by this function is later
-assigned to that enum and there is no way currently to differentiate
-between NULL and S5M8767X.
-
-Second, it wouldn't make the code smaller;
-
-unsigned long data;
-data = of_device_get_match_data(&i2c->dev);
-if (data)
-	return data;
-
-Best regards,
-Krzysztof
+See where I am heading?
+-- 
+Michal Hocko
+SUSE Labs
