@@ -2,173 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BDC365571
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C5B36557B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhDTJcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:32:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23049 "EHLO
+        id S231331AbhDTJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:34:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25668 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229729AbhDTJca (ORCPT
+        by vger.kernel.org with ESMTP id S230429AbhDTJer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:32:30 -0400
+        Tue, 20 Apr 2021 05:34:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618911118;
+        s=mimecast20190719; t=1618911255;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=18C/p49aePuANugYrk1JFsP03OKBgzLm8htKV+f/SOM=;
-        b=OLFXTo5WUsFgSF+81woMWAFyPq9AQatzj5uyIPLfk8PcfcBYkvCytqG5dTTLJ3lpDK0+AJ
-        6bz5v3gDBtNEKBH7EjCLvqBjia3843uM97lgq/aeBVqHbtrHAEMHM62ue5cu+4YqkBKT33
-        EUlsP8jDzKjqQXPFaKHXgsVz8Xd7L0I=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-vTGn_hWfMk2DtkeHR6fzyQ-1; Tue, 20 Apr 2021 05:31:56 -0400
-X-MC-Unique: vTGn_hWfMk2DtkeHR6fzyQ-1
-Received: by mail-ej1-f71.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso4562225ejt.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:31:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=18C/p49aePuANugYrk1JFsP03OKBgzLm8htKV+f/SOM=;
-        b=J3ZrIoK5Di1my5pioDzg8ohHT3adFqtuGyPY4vhH2vV2LAz4+jD/kKeQih+xIoWx0g
-         4o5cE7xve1c6Y8qb5+dkbq5TMIbLOrlB8edY4eJz8BXCbzA6MSKn83ZohsyQ1Ei6o/cP
-         4MHXcKz+dkVTq9J/MwHxOKsIQA9L7Og+cynSQ2ysAL0rQzseiSWWQl2cANaF+fIjqq+8
-         K8IC3KxflmNPHHeaZCr63K4IRkRqQv5fvZgS6jvcrIgM5Mdep8ysAvfRfeccbD6YPvPO
-         T3VnsRUWd8DmV0I1We4JkgoXh1rM9EhHaRlPTFPSqyCDOUF6tkyEnXnMmov1QO6goqt5
-         t80g==
-X-Gm-Message-State: AOAM531RKcfZ6CLKpGZSSRiCmmWow3zCgaCrEIv4HIDurnmWgBBTNSqS
-        FazlLJREtIYWqWZqvBS4RYlvbJiQArV296YtsNe6g7gZFXcld+wCVtNLS9PjmhOqte+czYIhnlP
-        uVx0NGjEPLWffx6ipx+vYAYGd
-X-Received: by 2002:aa7:c456:: with SMTP id n22mr30101153edr.255.1618911115744;
-        Tue, 20 Apr 2021 02:31:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUeQq/g5WwZUbmm4yqZa8is7EVp2d+iPwnDabIxtMc72bPSvFrQpjzcIDj+MnBLsIiMdFLbA==
-X-Received: by 2002:aa7:c456:: with SMTP id n22mr30101141edr.255.1618911115583;
-        Tue, 20 Apr 2021 02:31:55 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id bh14sm12070314ejb.104.2021.04.20.02.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 02:31:55 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        decui@microsoft.com
-Subject: Re: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 1/1] Drivers:
- hv: vmbus: Increase wait time for VMbus unload
-In-Reply-To: <1618894089-126662-1-git-send-email-mikelley@microsoft.com>
-References: <1618894089-126662-1-git-send-email-mikelley@microsoft.com>
-Date:   Tue, 20 Apr 2021 11:31:54 +0200
-Message-ID: <87tuo1i9o5.fsf@vitty.brq.redhat.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HR9PGFeuseuv+4p0efVgdR4ZvWDR0WWeCLxvhuktGw8=;
+        b=RDx/XDB48pjHJzSqYv+bdY95dViPBnmwOM4bVD3C6NFbCJnZaeCbrq6TbUrjSney5DaPpw
+        uvfokhh/er6zIUkJmsykLmk1kyyQVtj3dCUe794YZcYrelIHOBgNQYdJFbZer3yfuIRElC
+        cUVmTXPR3iNqTJDN5hbgOBYH0VWqQ0w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-SJp_Z5AbNziPaAD3TyvAdw-1; Tue, 20 Apr 2021 05:34:13 -0400
+X-MC-Unique: SJp_Z5AbNziPaAD3TyvAdw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5736107ACCA;
+        Tue, 20 Apr 2021 09:34:12 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6152710016FE;
+        Tue, 20 Apr 2021 09:34:12 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Brijesh Singh <brijesh.singh@amd.com>
+Subject: [PATCH] KVM: x86: document behavior of measurement ioctls with len==0
+Date:   Tue, 20 Apr 2021 05:34:11 -0400
+Message-Id: <20210420093411.1498840-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Kelley <mikelley@microsoft.com> writes:
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ Documentation/virt/kvm/amd-memory-encryption.rst | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> When running in Azure, disks may be connected to a Linux VM with
-> read/write caching enabled. If a VM panics and issues a VMbus
-> UNLOAD request to Hyper-V, the response is delayed until all dirty
-> data in the disk cache is flushed.  In extreme cases, this flushing
-> can take 10's of seconds, depending on the disk speed and the amount
-> of dirty data. If kdump is configured for the VM, the current 10 second
-> timeout in vmbus_wait_for_unload() may be exceeded, and the UNLOAD
-> complete message may arrive well after the kdump kernel is already
-> running, causing problems.  Note that no problem occurs if kdump is
-> not enabled because Hyper-V waits for the cache flush before doing
-> a reboot through the BIOS/UEFI code.
->
-> Fix this problem by increasing the timeout in vmbus_wait_for_unload()
-> to 100 seconds. Also output periodic messages so that if anyone is
-> watching the serial console, they won't think the VM is completely
-> hung.
->
-> Fixes: 911e1987efc8 ("Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload")
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> ---
->
-> Changed in v2: Fixed silly error in the argument to mdelay()
->
-> ---
->  drivers/hv/channel_mgmt.c | 30 +++++++++++++++++++++++++-----
->  1 file changed, 25 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-> index f3cf4af..ef4685c 100644
-> --- a/drivers/hv/channel_mgmt.c
-> +++ b/drivers/hv/channel_mgmt.c
-> @@ -755,6 +755,12 @@ static void init_vp_index(struct vmbus_channel *channel)
->  	free_cpumask_var(available_mask);
->  }
->  
-> +#define UNLOAD_DELAY_UNIT_MS	10		/* 10 milliseconds */
-> +#define UNLOAD_WAIT_MS		(100*1000)	/* 100 seconds */
-> +#define UNLOAD_WAIT_LOOPS	(UNLOAD_WAIT_MS/UNLOAD_DELAY_UNIT_MS)
-> +#define UNLOAD_MSG_MS		(5*1000)	/* Every 5 seconds */
-> +#define UNLOAD_MSG_LOOPS	(UNLOAD_MSG_MS/UNLOAD_DELAY_UNIT_MS)
-> +
->  static void vmbus_wait_for_unload(void)
->  {
->  	int cpu;
-> @@ -772,12 +778,17 @@ static void vmbus_wait_for_unload(void)
->  	 * vmbus_connection.unload_event. If not, the last thing we can do is
->  	 * read message pages for all CPUs directly.
->  	 *
-> -	 * Wait no more than 10 seconds so that the panic path can't get
-> -	 * hung forever in case the response message isn't seen.
-> +	 * Wait up to 100 seconds since an Azure host must writeback any dirty
-> +	 * data in its disk cache before the VMbus UNLOAD request will
-> +	 * complete. This flushing has been empirically observed to take up
-> +	 * to 50 seconds in cases with a lot of dirty data, so allow additional
-> +	 * leeway and for inaccuracies in mdelay(). But eventually time out so
-> +	 * that the panic path can't get hung forever in case the response
-> +	 * message isn't seen.
-
-I vaguely remember debugging cases when CHANNELMSG_UNLOAD_RESPONSE never
-arrives, it was kind of pointless to proceed to kexec as attempts to
-reconnect Vmbus devices were failing (no devices were offered after
-CHANNELMSG_REQUESTOFFERS AFAIR). Would it maybe make sense to just do
-emergency reboot instead of proceeding to kexec when this happens? Just
-wondering.
-
->  	 */
-> -	for (i = 0; i < 1000; i++) {
-> +	for (i = 1; i <= UNLOAD_WAIT_LOOPS; i++) {
->  		if (completion_done(&vmbus_connection.unload_event))
-> -			break;
-> +			goto completed;
->  
->  		for_each_online_cpu(cpu) {
->  			struct hv_per_cpu_context *hv_cpu
-> @@ -800,9 +811,18 @@ static void vmbus_wait_for_unload(void)
->  			vmbus_signal_eom(msg, message_type);
->  		}
->  
-> -		mdelay(10);
-> +		/*
-> +		 * Give a notice periodically so someone watching the
-> +		 * serial output won't think it is completely hung.
-> +		 */
-> +		if (!(i % UNLOAD_MSG_LOOPS))
-> +			pr_notice("Waiting for VMBus UNLOAD to complete\n");
-> +
-> +		mdelay(UNLOAD_DELAY_UNIT_MS);
->  	}
-> +	pr_err("Continuing even though VMBus UNLOAD did not complete\n");
->  
-> +completed:
->  	/*
->  	 * We're crashing and already got the UNLOAD_RESPONSE, cleanup all
->  	 * maybe-pending messages on all CPUs to be able to receive new
-
-This is definitely an improvement,
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
+diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+index 469a6308765b..34ce2d1fcb89 100644
+--- a/Documentation/virt/kvm/amd-memory-encryption.rst
++++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+@@ -148,6 +148,9 @@ measurement. Since the guest owner knows the initial contents of the guest at
+ boot, the measurement can be verified by comparing it to what the guest owner
+ expects.
+ 
++If len is zero on entry, the measurement blob length is written to len and
++uaddr is unused.
++
+ Parameters (in): struct  kvm_sev_launch_measure
+ 
+ Returns: 0 on success, -negative on error
+@@ -271,6 +274,9 @@ report containing the SHA-256 digest of the guest memory and VMSA passed through
+ commands and signed with the PEK. The digest returned by the command should match the digest
+ used by the guest owner with the KVM_SEV_LAUNCH_MEASURE.
+ 
++If len is zero on entry, the measurement blob length is written to len and
++uaddr is unused.
++
+ Parameters (in): struct kvm_sev_attestation
+ 
+ Returns: 0 on success, -negative on error
 -- 
-Vitaly
+2.26.2
 
