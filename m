@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E1E365121
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581FD365124
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhDTDvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhDTDu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:50:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 289DC6100B;
-        Tue, 20 Apr 2021 03:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618890628;
-        bh=4VHQO/2Y5QQ2o1qMGFqr4wyOmnZip6mdpmq22Di4o1c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LldPUIP/tlfnAgepSvDsITxKLbtbs42Z6TtiCBo6fVGRmvFBkc036zw5NoQY8xABm
-         A6CxHTMN2CSKAk1atUzN551OAYKrykA2cMPuDfx2uRLPU2mYOyPQkQZ8tA9702IZlc
-         KeWlbaUXz3P3VFH3qFIYnIlV/zNAS7iUxElzDZkfyJj3Pij2kDn139Mjmx455RVeqE
-         3xMC8bPrc0FHtXYu7eMLhPI1++nRYxc5FR69lfynJNPLVnyVVGnUfjEGvvec4axoaw
-         +gw9ONYY1/Vqlcdbz+v+NK/oCQSpZXihv5jRCRP/4Lfhg72QSKMu8pnXhojc+iFyzv
-         n8d4+VRcnp+Pw==
-Received: by mail-ej1-f54.google.com with SMTP id x12so35349846ejc.1;
-        Mon, 19 Apr 2021 20:50:28 -0700 (PDT)
-X-Gm-Message-State: AOAM5316h72zhOYS4mdk5epbrdbiFSDLwA3OVvuvpotcYUjVyc54yYwA
-        UVBwgebVhrXiHmoTNTPDIKbG59Q2CWG7Q6gXOoA=
-X-Google-Smtp-Source: ABdhPJw4O1TlT/Leyw9rMnpP0rTdXgO2SLoIAzcJZ2GEZJnq8QVTyUazhJiBAF3L9Nu9CLYdwqmNjSgGsgo/F4wmIKo=
-X-Received: by 2002:a17:906:fb81:: with SMTP id lr1mr24077340ejb.62.1618890626699;
- Mon, 19 Apr 2021 20:50:26 -0700 (PDT)
+        id S229686AbhDTDye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:54:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49378 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhDTDyd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 23:54:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618890842; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=9PYAsr16mLZxuGI6W1iWLt3mn8BKMbEgQzzE4aMKm4Q=; b=haW/xuLzo+L+dFsWhTSnUOPAqseb2bqvC3xkzTHXS5t8Xhtga5KFkCfUrFZtl4A2Iq6j6QK/
+ hjwtWPo0KL39U6C+Yw43tPlb1eE5OdNSIhdVfxjx2ZA55aXz4qLZpoe5mgB9GPR5Q5ViyODd
+ MXlPhYVWPqZFo1Q1kHp9UtmjyJU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 607e504be0e9c9a6b64b8c1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 03:53:47
+ GMT
+Sender: bqiang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6B5F1C4338A; Tue, 20 Apr 2021 03:53:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from z230.qca.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bqiang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E5ABAC433D3;
+        Tue, 20 Apr 2021 03:53:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E5ABAC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bqiang@codeaurora.org
+From:   Baochen Qiang <bqiang@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Subject: [PATCH] mhi: add MHI_STATE_M2 to resume success criteria
+Date:   Tue, 20 Apr 2021 11:53:39 +0800
+Message-Id: <20210420035339.282963-1-bqiang@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210413055702.27535-1-zhiyong.tao@mediatek.com> <20210413055702.27535-5-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210413055702.27535-5-zhiyong.tao@mediatek.com>
-From:   Sean Wang <sean.wang@kernel.org>
-Date:   Mon, 19 Apr 2021 20:50:15 -0700
-X-Gmail-Original-Message-ID: <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
-Message-ID: <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] pinctrl: add rsel setting on MT8195
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com,
-        =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?= 
-        <eddie.huang@mediatek.com>, jg_poxu@mediatek.com,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        =?UTF-8?B?U2VhbiBXYW5nICjnjovlv5fkupgp?= <sean.wang@mediatek.com>,
-        seiya.wang@mediatek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:57 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
+During system resume, mhi driver triggers M3->M0 transition and then waits
+for target device to enter M0 state. Once done, the device queues a state
+change event into ctrl event ring and notify mhi dirver by raising an
+interrupt, where a tasklet is scheduled to process this event. In most cases,
+the taklet is served timely and wait operation succeeds.
 
-<snip>
-> @@ -176,6 +180,12 @@ static int mtk_pinconf_get(struct pinctrl_dev *pctldev,
->                 else
->                         err = -ENOTSUPP;
->                 break;
-> +       case MTK_PIN_CONFIG_RSEL:
-> +               if (hw->soc->rsel_get)
-> +                       err = hw->soc->rsel_get(hw, desc, &ret);
-> +               else
-> +                       err = -EOPNOTSUPP;
+However, there are cases where CPU is busy and can not serve this tasklet
+for some time. Once delay goes long enough, the device moves itself to M1
+state and also interrupts mhi driver after inserting a new state change
+event to ctrl ring. Later CPU finally has time to process the ring, however
+there are two events in it now:
+	1. for M3->M0 event, which is processed first as queued first,
+	   tasklet handler updates device state to M0 and wakes up the task,
+	   i.e., the mhi driver.
+	2. for M0->M1 event, which is processed later, tasklet handler
+	   triggers M1->M2 transition and updates device state to M2 directly,
+	   then wakes up the mhi driver(if still sleeping on this wait queue).
+Note that although mhi driver has been woken up while processing the first
+event, it may still has no chance to run before the second event is processed.
+In other words, mhi driver has to keep waiting till timeout cause the M0 state
+has been missed.
 
-I think that should want to be -ENOTSUPP to align other occurrences.
+kernel log here:
+...
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
+Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
+...
 
-> +               break;
->         default:
->                 err = -ENOTSUPP;
->         }
-> @@ -295,6 +305,12 @@ static int mtk_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
->                 else
->                         err = -ENOTSUPP;
->                 break;
-> +       case MTK_PIN_CONFIG_RSEL:
-> +               if (hw->soc->rsel_set)
-> +                       err = hw->soc->rsel_set(hw, desc, arg);
-> +               else
-> +                       err = -EOPNOTSUPP;
+Fix this issue by simply adding M2 as a valid state for resume.
 
-Ditto
+Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
 
-> +               break;
->         default:
->                 err = -ENOTSUPP;
->         }
-> --
-> 2.18.0
->
+Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
+---
+ drivers/bus/mhi/core/pm.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index ce73cfa63cb3..ca5f2feed9d5 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -900,6 +900,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
+ 
+ 	ret = wait_event_timeout(mhi_cntrl->state_event,
+ 				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
++				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
+ 				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+ 				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
+ 
+-- 
+2.25.1
+
