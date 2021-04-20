@@ -2,149 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844E7365439
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1363F36542A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhDTIgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:36:00 -0400
-Received: from 2.mo51.mail-out.ovh.net ([178.33.255.19]:40756 "EHLO
-        2.mo51.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhDTIf6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:35:58 -0400
-X-Greylist: delayed 3603 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 04:35:58 EDT
-Received: from mxplan5.mail.ovh.net (unknown [10.108.1.72])
-        by mo51.mail-out.ovh.net (Postfix) with ESMTPS id DD7D0282FA1;
-        Tue, 20 Apr 2021 09:19:26 +0200 (CEST)
-Received: from kaod.org (37.59.142.106) by DAG8EX1.mxp5.local (172.16.2.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 20 Apr
- 2021 09:19:26 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-106R006e0384a78-5e6d-4b83-a0a2-258cc1ae5f18,
-                    F8484F3EE3345E552A9359E6756AA457A7210C68) smtp.auth=groug@kaod.org
-X-OVh-ClientIp: 78.197.208.248
-Date:   Tue, 20 Apr 2021 09:19:25 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-CC:     <linux-fsdevel@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <jack@suse.cz>, <willy@infradead.org>, <linux-nvdimm@lists.01.org>,
-        <miklos@szeredi.hu>, <linux-kernel@vger.kernel.org>,
-        <virtio-fs@redhat.com>
-Subject: Re: [Virtio-fs] [PATCH v3 1/3] dax: Add an enum for specifying dax
- wakup mode
-Message-ID: <20210420091925.08054e8b@bahia.lan>
-In-Reply-To: <20210419213636.1514816-2-vgoyal@redhat.com>
-References: <20210419213636.1514816-1-vgoyal@redhat.com>
-        <20210419213636.1514816-2-vgoyal@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S230346AbhDTIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:32:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhDTIcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:32:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C246C60FE3;
+        Tue, 20 Apr 2021 08:31:32 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 10:31:29 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3.3)
+Message-ID: <20210420083129.exyn7ptahx2fg72e@wittgenstein>
+References: <20210416045851.GA13811@mail.hallyn.com>
+ <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com>
+ <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com>
+ <20210419122514.GA20598@mail.hallyn.com>
+ <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
+ <20210420034208.GA2830@mail.hallyn.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.106]
-X-ClientProxiedBy: DAG9EX2.mxp5.local (172.16.2.82) To DAG8EX1.mxp5.local
- (172.16.2.71)
-X-Ovh-Tracer-GUID: 4fd4651b-4865-4921-847a-6cdede9f3c7e
-X-Ovh-Tracer-Id: 9258837884391430447
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddthedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgihesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepfedutdeijeejveehkeeileetgfelteekteehtedtieefffevhffflefftdefleejnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehvihhrthhiohdqfhhssehrvgguhhgrthdrtghomh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210420034208.GA2830@mail.hallyn.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 17:36:34 -0400
-Vivek Goyal <vgoyal@redhat.com> wrote:
-
-> Dan mentioned that he is not very fond of passing around a boolean true/false
-> to specify if only next waiter should be woken up or all waiters should be
-> woken up. He instead prefers that we introduce an enum and make it very
-> explicity at the callsite itself. Easier to read code.
+On Mon, Apr 19, 2021 at 10:42:08PM -0500, Serge Hallyn wrote:
+> On Mon, Apr 19, 2021 at 06:09:11PM +0200, Christian Brauner wrote:
+> > On Mon, Apr 19, 2021 at 07:25:14AM -0500, Serge Hallyn wrote:
+> > > cap_setfcap is required to create file capabilities.
+> > > 
+> > > Since 8db6c34f1dbc ("Introduce v3 namespaced file capabilities"), a
+> > > process running as uid 0 but without cap_setfcap is able to work around
+> > > this as follows: unshare a new user namespace which maps parent uid 0
+> > > into the child namespace.  While this task will not have new
+> > > capabilities against the parent namespace, there is a loophole due to
+> > > the way namespaced file capabilities are represented as xattrs.  File
+> > > capabilities valid in userns 1 are distinguished from file capabilities
+> > > valid in userns 2 by the kuid which underlies uid 0.  Therefore the
+> > > restricted root process can unshare a new self-mapping namespace, add a
+> > > namespaced file capability onto a file, then use that file capability in
+> > > the parent namespace.
+> > > 
+> > > To prevent that, do not allow mapping parent uid 0 if the process which
+> > > opened the uid_map file does not have CAP_SETFCAP, which is the capability
+> > > for setting file capabilities.
+> > > 
+> > > As a further wrinkle:  a task can unshare its user namespace, then
+> > > open its uid_map file itself, and map (only) its own uid.  In this
+> > > case we do not have the credential from before unshare,  which was
+> > > potentially more restricted.  So, when creating a user namespace, we
+> > > record whether the creator had CAP_SETFCAP.  Then we can use that
+> > > during map_write().
+> > > 
+> > > With this patch:
+> > > 
+> > > 1. Unprivileged user can still unshare -Ur
+> > > 
+> > > ubuntu@caps:~$ unshare -Ur
+> > > root@caps:~# logout
+> > > 
+> > > 2. Root user can still unshare -Ur
+> > > 
+> > > ubuntu@caps:~$ sudo bash
+> > > root@caps:/home/ubuntu# unshare -Ur
+> > > root@caps:/home/ubuntu# logout
+> > > 
+> > > 3. Root user without CAP_SETFCAP cannot unshare -Ur:
+> > > 
+> > > root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
+> > > root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
+> > > unable to set CAP_SETFCAP effective capability: Operation not permitted
+> > > root@caps:/home/ubuntu# unshare -Ur
+> > > unshare: write failed /proc/self/uid_map: Operation not permitted
+> > > 
+> > > Note: an alternative solution would be to allow uid 0 mappings by
+> > > processes without CAP_SETFCAP, but to prevent such a namespace from
+> > > writing any file capabilities.  This approach can be seen here:
+> > >     https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
+> > > 
+> > 
+> > Ah, can you link to the previous fix and its revert, please? I think
+> > that was mentioned in the formerly private thread as well but we forgot:
+> > 
+> > commit 95ebabde382c371572297915b104e55403674e73
+> > Author: Eric W. Biederman <ebiederm@xmission.com>
+> > Date:   Thu Dec 17 09:42:00 2020 -0600
+> > 
+> >     capabilities: Don't allow writing ambiguous v3 file capabilities
+> > 
+> > commit 3b0c2d3eaa83da259d7726192cf55a137769012f
+> > Author: Eric W. Biederman <ebiederm@xmission.com>
+> > Date:   Fri Mar 12 15:07:09 2021 -0600
+> > 
+> >     Revert 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
 > 
-> This patch should not introduce any change of behavior.
+> Sure.
 > 
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
+> Is there a tag for that kind of thing or do I just mention it at the end
+> of the description?
 
-Reviewed-by: Greg Kurz <groug@kaod.org>
+In this case it might make sense to just have a little paragraph that
+explains the regression. How do you feel about adding?:
 
->  fs/dax.c | 23 +++++++++++++++++------
->  1 file changed, 17 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index b3d27fdc6775..00978d0838b1 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
->  	struct exceptional_entry_key key;
->  };
->  
-> +/**
-> + * enum dax_entry_wake_mode: waitqueue wakeup toggle
-> + * @WAKE_NEXT: entry was not mutated
-> + * @WAKE_ALL: entry was invalidated, or resized
-> + */
-> +enum dax_entry_wake_mode {
-> +	WAKE_NEXT,
-> +	WAKE_ALL,
-> +};
-> +
->  static wait_queue_head_t *dax_entry_waitqueue(struct xa_state *xas,
->  		void *entry, struct exceptional_entry_key *key)
->  {
-> @@ -182,7 +192,8 @@ static int wake_exceptional_entry_func(wait_queue_entry_t *wait,
->   * The important information it's conveying is whether the entry at
->   * this index used to be a PMD entry.
->   */
-> -static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
-> +static void dax_wake_entry(struct xa_state *xas, void *entry,
-> +			   enum dax_entry_wake_mode mode)
->  {
->  	struct exceptional_entry_key key;
->  	wait_queue_head_t *wq;
-> @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
->  	 * must be in the waitqueue and the following check will see them.
->  	 */
->  	if (waitqueue_active(wq))
-> -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
-> +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
->  }
->  
->  /*
-> @@ -268,7 +279,7 @@ static void put_unlocked_entry(struct xa_state *xas, void *entry)
->  {
->  	/* If we were the only waiter woken, wake the next one */
->  	if (entry && !dax_is_conflict(entry))
-> -		dax_wake_entry(xas, entry, false);
-> +		dax_wake_entry(xas, entry, WAKE_NEXT);
->  }
->  
->  /*
-> @@ -286,7 +297,7 @@ static void dax_unlock_entry(struct xa_state *xas, void *entry)
->  	old = xas_store(xas, entry);
->  	xas_unlock_irq(xas);
->  	BUG_ON(!dax_is_locked(old));
-> -	dax_wake_entry(xas, entry, false);
-> +	dax_wake_entry(xas, entry, WAKE_NEXT);
->  }
->  
->  /*
-> @@ -524,7 +535,7 @@ static void *grab_mapping_entry(struct xa_state *xas,
->  
->  		dax_disassociate_entry(entry, mapping, false);
->  		xas_store(xas, NULL);	/* undo the PMD join */
-> -		dax_wake_entry(xas, entry, true);
-> +		dax_wake_entry(xas, entry, WAKE_ALL);
->  		mapping->nrexceptional--;
->  		entry = NULL;
->  		xas_set(xas, index);
-> @@ -937,7 +948,7 @@ static int dax_writeback_one(struct xa_state *xas, struct dax_device *dax_dev,
->  	xas_lock_irq(xas);
->  	xas_store(xas, entry);
->  	xas_clear_mark(xas, PAGECACHE_TAG_DIRTY);
-> -	dax_wake_entry(xas, entry, false);
-> +	dax_wake_entry(xas, entry, WAKE_NEXT);
->  
->  	trace_dax_writeback_one(mapping->host, index, count);
->  	return ret;
-
+  Commit 95ebabde382 ("capabilities: Don't allow writing ambiguous v3 file
+  capabilities") tried to fix the issue by preventing v3 fscaps to be
+  written to disk when the root uid would map to the same uid in nested
+  user namespaces. This led to regressions for various workloads. For
+  example, see [1]. Ultimately this is a valid use-case we have to support
+  meaning we had to revert this change in 3b0c2d3eaa83 ("Revert
+  95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file
+  capabilities")").
+  
+  [1]: https://github.com/containers/buildah/issues/3071
