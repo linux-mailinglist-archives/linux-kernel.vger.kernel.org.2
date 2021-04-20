@@ -2,184 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DF4365C1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE20B365C1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbhDTPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhDTPZG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:25:06 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E89C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:24:34 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id w186so15892062wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:24:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GFSKpzQJQZPhNu8hc1kWWJ/QfS/c4/ErGH6wh4S9JqQ=;
-        b=c0uSuoro9RcMeNl9/7Sh1xd0t6JoGVZQPMZWB2Y7Kh1sTaYkJiijNfH584cPOdaryd
-         zMTeMDdLgrQyiiaa2R4fYfD03bEN9FcYmtvIt2eIj+YJZvPa0syKLmnGcYectMJUkeTN
-         rIorpbXSw6gFn2h2ww86hFmewVsB96Tac5LfH5g/bNYbb+zN8M4iVyQqu82U17RijPDe
-         KhoKai9cMHQxR+zpiQ1TmX5/zhBcDyJTx5EDAWzHYV2/XWA9B67QqShb4bNduOsXpJXF
-         jO3vSqrpNgnBryyyg9mFz024Za+BuzVQRnH3LjU0yVGou3+3SgoOwKsHQVaO/Kyz0NwK
-         aE4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GFSKpzQJQZPhNu8hc1kWWJ/QfS/c4/ErGH6wh4S9JqQ=;
-        b=EhcjqdNGNNQTzdpwZxeLdFOthg4WkewpgK4V6Duc5f1q8pVDHjhfYWLmHi4HaidYTA
-         J8d1QkIqaF431G0FQ/uPXTxs8j1y6LujKSf5y6ltUA1sHyElwzHktPaoN1o2V4E6YbIK
-         Vy51DZ8VCp93umdhv94kxFAq6f5wy8rzewDVBUYSjJ/DnJnLUa9U9dVG75AIVnHH6h+G
-         CEcb/fPWg9pcskmhCWlTDD2XdBMqZ2lhg7EQrb0VeTwIEDzJBcfgWB4looo585gql2xh
-         BHFnIphjQHUzxm6GXpOL9Kvm33IoIgaCB9tufuXGWUxHSuqb/XJA07iuW1ub3LPr5zSD
-         EKcw==
-X-Gm-Message-State: AOAM5311nh1qn7g64XZRKsUgoXYuq9t2prx5KJMAlf1zxsR7vairrhTB
-        osnHlI0pTdn1JyFLW1KYbeVJhA==
-X-Google-Smtp-Source: ABdhPJwHRvUm6Zw5aHm17c2DLLyhHdn2PLZW1y0wMiOT4sTXYwG+4oNwlyCAePBefA8RJiX1DAbHiw==
-X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr3560868wmq.117.1618932273101;
-        Tue, 20 Apr 2021 08:24:33 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
-        by smtp.googlemail.com with ESMTPSA id o1sm29459651wrw.95.2021.04.20.08.24.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 08:24:32 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
- devices when temp is low
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210419084536.25000-1-lukasz.luba@arm.com>
- <20210419084536.25000-3-lukasz.luba@arm.com>
- <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
- <55943d6f-0f72-215d-1dd4-bf3996092df7@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <91411c9c-d78e-8ba6-1cd3-da6879bc5ceb@linaro.org>
-Date:   Tue, 20 Apr 2021 17:24:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232952AbhDTPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:25:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232910AbhDTPZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:25:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 982F161264;
+        Tue, 20 Apr 2021 15:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618932310;
+        bh=MAjswkG1d6uIfyIvGoPH2JcXnT5VvPujn7l2uT7Uvj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XWMQKAMU43ygxwHm/tIVp+WpJQapUl0Kd60x6HPlbDjcKHnf74tigDwWzGVjUZtAA
+         tSdT+jZGx+d3ZPsKLu+jqBEA39bKT+7+0vr0dhyxEZGCpGlPxkgZ97678lO8WgGG4d
+         QgW3tLOkl5mV+MxGBxxN5j8RAFrxIUGHaYegouiIHqIGoy34Dvfl8diR65SAtnm2sr
+         Lmm/xaDLwYIOcOCnrqMkGqhYpZmIddlqTjCcrJUYJP4M5Cr95OivNBA3jWrHSClyG2
+         NlCodhM9dvGtr9D03VRf+IlIRcvRBQbVUFXaCEmYNLH08BeSOZ5UALddCrzzC0+Eer
+         T0ouGAFTRdlJA==
+Date:   Tue, 20 Apr 2021 18:25:01 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 2/4] memblock: update initialization of reserved pages
+Message-ID: <YH7yTahcTVy31Uxk@kernel.org>
+References: <20210420090925.7457-1-rppt@kernel.org>
+ <20210420090925.7457-3-rppt@kernel.org>
+ <ed8f10a0-9b68-1d12-0305-90fd378af6b9@redhat.com>
+ <YH7tL77Z9UzTAFca@kernel.org>
+ <45a7e13d-3e44-3b94-a253-2df72649a83d@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <55943d6f-0f72-215d-1dd4-bf3996092df7@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45a7e13d-3e44-3b94-a253-2df72649a83d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 16:21, Lukasz Luba wrote:
-> Hi Daniel,
+On Tue, Apr 20, 2021 at 05:18:55PM +0200, David Hildenbrand wrote:
+> On 20.04.21 17:03, Mike Rapoport wrote:
+> > On Tue, Apr 20, 2021 at 03:56:28PM +0200, David Hildenbrand wrote:
+> > > On 20.04.21 11:09, Mike Rapoport wrote:
+> > > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > > 
+> > > > The struct pages representing a reserved memory region are initialized
+> > > > using reserve_bootmem_range() function. This function is called for each
+> > > > reserved region just before the memory is freed from memblock to the buddy
+> > > > page allocator.
+> > > > 
+> > > > The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+> > > > values set by the memory map initialization which makes it necessary to
+> > > > have a special treatment for such pages in pfn_valid() and
+> > > > pfn_valid_within().
+> > > 
+> > > Just a general question while thinking about it:
+> > > 
+> > > Would we right now initialize the memmap of these pages already via
+> > > memmap_init_zone()->memmap_init_range()? (IOW, not marking the
+> > > PageReserved?)
+> > 
+> > Yep. These pages are part of memblock.memory so they are initialized in
+> > memmap_init_zone()->memmap_init_range() to the default values.
+> > 
 > 
-> On 4/20/21 2:30 PM, Daniel Lezcano wrote:
->> On 19/04/2021 10:45, Lukasz Luba wrote:
-> 
-> [snip]
-> 
->>> -        instance->cdev->updated = false;
->>> +        if (update)
->>> +            instance->cdev->updated = false;
->>> +
->>>           mutex_unlock(&instance->cdev->lock);
->>> -        (instance->cdev);
->>> +
->>> +        if (update)
->>> +            thermal_cdev_update(instance->cdev);
->>
->> This cdev update has something bad IMHO. It is protected by a mutex but
->> the 'updated' field is left unprotected before calling
->> thermal_cdev_update().
->>
->> It is not the fault of this code but how the cooling device are updated
->> and how it interacts with the thermal instances.
->>
->> IMO, part of the core code needs to revisited.
-> 
-> I agree, but please check my comments below.
-> 
->>
->> This change tight a bit more the knot.
->>
->> Would it make sense to you if we create a function eg.
->> __thermal_cdev_update()
-> 
-> I'm not sure if I assume it right that the function would only have the:
-> list_for_each_entry(instance, &cdev->thermal_instances, cdev_node)
-> 
-> loop from the thermal_cdev_update(). But if it has only this loop then
-> it's too little.
-> 
->>
->> And then we have:
->>
->> void thermal_cdev_update(struct thermal_cooling_device *cdev)
->> {
->>          mutex_lock(&cdev->lock);
->>          /* cooling device is updated*/
->>          if (cdev->updated) {
->>                  mutex_unlock(&cdev->lock);
->>                  return;
->>          }
->>
->>     __thermal_cdev_update(cdev);
->>
->>          thermal_cdev_set_cur_state(cdev, target);
-> 
-> Here we are actually setting the 'target' state via:
-> cdev->ops->set_cur_state(cdev, target)
-> 
-> then we notify, then updating stats.
-> 
->>
->>          cdev->updated = true;
->>          mutex_unlock(&cdev->lock);
->>          trace_cdev_update(cdev, target);
-> 
-> Also this trace is something that I'm using in my tests...
+> So instead of fully initializing them again, we mostly would only have to
+> set PageReserved(). Not sure how big that memory usually is -- IOW, if we
+> really care about optimizing the double-init.
 
-Yeah, I noticed right after sending the comments. All that should be
-moved in the lockless function.
+IIUC, these are small areas reserved by the firmware, like e.g. ACPI
+tables.
 
-So this function becomes:
-
-void thermal_cdev_update(struct thermal_cooling_device *cdev)
-{
-	mutex_lock(&cdev->lock);
-	if (!cdev->updated) {
-		__thermal_cdev_update(cdev);
-		cdev->updated = true;
-	}
-	mutex_unlock(&cdev->lock);
-
-	dev_dbg(&cdev->device, "set to state %lu\n", target);
-}
-
-We end up with the trace_cdev_update(cdev, target) inside the mutex
-section but that should be fine.
-
->>          dev_dbg(&cdev->device, "set to state %lu\n", target);
->> }
->>
->> And in this file we do instead:
->>
->> -        instance->cdev->updated = false;
->> +        if (update)
->> +            __thermal_cdev_update(instance->cdev);
->>            mutex_unlock(&instance->cdev->lock);
->> -        thermal_cdev_update(instance->cdev);
-> 
-> Without the line above, we are not un-throttling the devices.
-
-Is it still true with the amended function thermal_cdev_update() ?
-
+@Ard, am I right?
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Sincerely yours,
+Mike.
