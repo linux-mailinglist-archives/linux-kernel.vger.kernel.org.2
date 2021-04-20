@@ -2,123 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832343652B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27BC3652BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhDTHBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:01:44 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:35384 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhDTHBm (ORCPT
+        id S230291AbhDTHCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhDTHB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:01:42 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 62C10D1792;
-        Tue, 20 Apr 2021 15:00:55 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P1751T140588898838272S1618902053720262_;
-        Tue, 20 Apr 2021 15:00:55 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <589c6610ad5b49d8d0e2a298788d901b>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tsbogend@alpha.franken.de
-X-RCPT-COUNT: 17
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tsbogend@alpha.franken.de, jiaxun.yang@flygoat.com,
-        chenhuacai@kernel.org, viro@zeniv.linux.org.uk, morbo@google.com
-Cc:     paul@crapouillou.net, alobakin@pm.me, suxingxing@loongson.cn,
-        tangyouling@loongson.cn, yangtiezhu@loongson.cn,
-        ralf@linux-mips.org, nathan@kernel.org, masahiroy@kernel.org,
-        keescook@chromium.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH v3] MIPS: Makefile: Replace -pg with CC_FLAGS_FTRACE
-Date:   Tue, 20 Apr 2021 15:00:52 +0800
-Message-Id: <20210420070052.25593-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 20 Apr 2021 03:01:56 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C312C06174A;
+        Tue, 20 Apr 2021 00:01:24 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1lYkNs-00EAPs-Ov; Tue, 20 Apr 2021 09:01:21 +0200
+Message-ID: <74494183e65ef549fc5596f314db43a8e792d2ff.camel@sipsolutions.net>
+Subject: Re: [PATCH AUTOSEL 5.4 13/14] gcov: clang: fix clang-11+ build
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Sasha Levin <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Date:   Tue, 20 Apr 2021 09:01:19 +0200
+In-Reply-To: <20210419204454.6601-13-sashal@kernel.org>
+References: <20210419204454.6601-1-sashal@kernel.org>
+         <20210419204454.6601-13-sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch replaces the "open-coded" -pg compile flag with a CC_FLAGS_FTRACE
-makefile variable which architectures can override if a different option
-should be used for code generation.
+On Mon, 2021-04-19 at 20:44 +0000, Sasha Levin wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> [ Upstream commit 04c53de57cb6435738961dace8b1b71d3ecd3c39 ]
+> 
+> With clang-11+, the code is broken due to my kvmalloc() conversion
+> (which predated the clang-11 support code) leaving one vmalloc() in
+> place.  Fix that.
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
-v3:Modify the description for the patch.
- arch/mips/boot/compressed/Makefile | 2 +-
- arch/mips/kernel/Makefile          | 8 ++++----
- arch/mips/vdso/Makefile            | 4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
+This patch might *apply* on 5.4 (and the other kernels you selected it
+for), but then I'm pretty sure it'll be broken, unless you also applied
+the various patches this was actually fixing (my kvmalloc conversion,
+and the clang-11 support).
 
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index f93f72bcba97..e4b7839293e1 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -18,7 +18,7 @@ include $(srctree)/arch/mips/Kbuild.platforms
- BOOT_HEAP_SIZE := 0x400000
- 
- # Disable Function Tracer
--KBUILD_CFLAGS := $(filter-out -pg, $(KBUILD_CFLAGS))
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE), $(KBUILD_CFLAGS))
- 
- KBUILD_CFLAGS := $(filter-out -fstack-protector, $(KBUILD_CFLAGS))
- 
-diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
-index b4a57f1de772..814b3da30501 100644
---- a/arch/mips/kernel/Makefile
-+++ b/arch/mips/kernel/Makefile
-@@ -17,10 +17,10 @@ obj-y		+= cpu-probe.o
- endif
- 
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_ftrace.o = -pg
--CFLAGS_REMOVE_early_printk.o = -pg
--CFLAGS_REMOVE_perf_event.o = -pg
--CFLAGS_REMOVE_perf_event_mipsxx.o = -pg
-+CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_early_printk.o =  $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_perf_event_mipsxx.o = $(CC_FLAGS_FTRACE)
- endif
- 
- obj-$(CONFIG_CEVT_BCM1480)	+= cevt-bcm1480.o
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 2131d3fd7333..1b2ea34c3d3b 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -46,7 +46,7 @@ CFLAGS_vgettimeofday-o32.o = -include $(srctree)/$(src)/config-n32-o32-env.c -in
- CFLAGS_vgettimeofday-n32.o = -include $(srctree)/$(src)/config-n32-o32-env.c -include $(c-gettimeofday-y)
- endif
- 
--CFLAGS_REMOVE_vgettimeofday.o = -pg
-+CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
- 
- ifdef CONFIG_MIPS_DISABLE_VDSO
-   ifndef CONFIG_MIPS_LD_CAN_LINK_VDSO
-@@ -60,7 +60,7 @@ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
- 	$(filter -E%,$(KBUILD_CFLAGS)) -nostdlib -shared \
- 	-G 0 --eh-frame-hdr --hash-style=sysv --build-id=sha1 -T
- 
--CFLAGS_REMOVE_vdso.o = -pg
-+CFLAGS_REMOVE_vdso.o = $(CC_FLAGS_FTRACE)
- 
- GCOV_PROFILE := n
- UBSAN_SANITIZE := n
--- 
-2.20.1
+Also, Linus has (correctly) reverted this patch from mainline, it
+shouldn't have gone there in the first place, probably really should be
+squashed into my kvmalloc conversion patch that's in -mm now.
+
+Sorry if I didn't make that clear enough at the time.
 
 
+In any case, please drop this patch from all stable trees.
+
+johannes
 
