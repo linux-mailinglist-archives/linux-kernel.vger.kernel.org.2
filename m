@@ -2,228 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A83365E9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A925D365EA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbhDTRbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhDTRbV (ORCPT
+        id S233464AbhDTRbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:31:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60045 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233245AbhDTRbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:31:21 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF866C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:30:49 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id h19so1180818vsa.10
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G58TS9A9yYeMoSb17LgKAY3Blh89gTINhGV0E3IpGQE=;
-        b=et2aicPqhBqREOY0dNhnVIpeKAqBqwCzKXvIfzgrBt6P66Jgo/2+oQEWI+6gyewphg
-         VbhS+bw5RzxtJErHdYEL/G5C3BA7I4UJ6eL5VYd1XnMcLFOCvxA4QaOg5G/PfVgj9nY0
-         lHTQOuBQKTK9gNs7yf2oHGIdtU/z3Wkt5iEJk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G58TS9A9yYeMoSb17LgKAY3Blh89gTINhGV0E3IpGQE=;
-        b=llF5d2Gwl1KFNrWeQ1RNdJcfqZdElLsZi4Cb6tdWXRMOkVI9Y/NM6huh1Aimr0LqKT
-         FwR6dyvmEWHQrowcYCEyMScPxqwp95PP5ZYOstpk9n8odmBzgFNwmXXbeKtIS0dc1kdC
-         Nf9AvrMgdH6brtsWMh/AizGlEm4cDRtysqEecVJFVdn3ieitZ+DN5Rnmy5PHme4Zi8Yf
-         R5A681vMfqhsohwOZCkbzqb9gF2vsUxqrdL6YbtCZel89r/IquW2Aov82UZEx/Xqp2u1
-         v//l8YmeWA4gyeJWK95u75JPeo3kDC5IzRjy0IlEUKcKAn+4rQ11h7obFlqH4XyrvSQo
-         56ew==
-X-Gm-Message-State: AOAM531aV8ljbCksP1xcfNvTr4WNSMAptt5laxC8TAgMg+oRvC/Wq3k9
-        h7+IzF1Setk2a3vxN3pQgbSrcz+dDzncxNciov+3GQ==
-X-Google-Smtp-Source: ABdhPJwXS7FiUTSlDWt0dHxHZ5655bX8hkIGHT1fDhHkNqF1vZ+XhhN+pVaz/0zkCxHB6ILJZd90Q4uuCj/sRoEmvgk=
-X-Received: by 2002:a67:c98b:: with SMTP id y11mr21793715vsk.2.1618939848572;
- Tue, 20 Apr 2021 10:30:48 -0700 (PDT)
+        Tue, 20 Apr 2021 13:31:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618939878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yJlADHgs7Bom5f1A4SK34buquQwkXhXunioAr86hCSE=;
+        b=Rz+15CtjZwFT9/QS7bKEkaSRnDUvhaXdRUdrhPvL7oKB4LrmyTG7A3BxqOTGLTLD3RLvs2
+        hfnziycyE+2dgbaB2hcsmUcGoGtALpaE42E4B1g0i4hffZ4Y0WI/M4PL3ehQDeQ2pqleIU
+        2wJBScwQ225UzK05nj0iP8eH9frpKpU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-RgOl3XuNP9aaBg8wVYBhQA-1; Tue, 20 Apr 2021 13:30:47 -0400
+X-MC-Unique: RgOl3XuNP9aaBg8wVYBhQA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B72A18189C8;
+        Tue, 20 Apr 2021 17:30:45 +0000 (UTC)
+Received: from krava (unknown [10.40.196.37])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0F9DC5D9C0;
+        Tue, 20 Apr 2021 17:30:43 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 19:30:43 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Song Liu <song@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v3 3/4] perf-stat: introduce config
+ stat.bpf-counter-events
+Message-ID: <YH8Pw4m0w6DuuEXo@krava>
+References: <20210416221325.2373497-1-song@kernel.org>
+ <20210416221325.2373497-4-song@kernel.org>
+ <CAM9d7ciVj+d=Bgqmwu+v9mA1CGTbtr8pfXzgNKJs0Nh3BJtt8A@mail.gmail.com>
+ <71CC9E29-ECBD-47DB-AE85-1477BF54C45D@fb.com>
 MIME-Version: 1.0
-References: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com> <20210420091309.GH3@paasikivi.fi.intel.com>
-In-Reply-To: <20210420091309.GH3@paasikivi.fi.intel.com>
-From:   Grant Grundler <grundler@chromium.org>
-Date:   Tue, 20 Apr 2021 17:30:37 +0000
-Message-ID: <CANEJEGunDJ-Q3vP5ABVgtQqg2vmNye6g+i7arZKxZOUdJOJaQQ@mail.gmail.com>
-Subject: Re: [RESEND v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Bingbu Cao <bingbu.cao@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        will@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Rajat Jain <rajatja@google.com>,
-        Grant Grundler <grundler@chromium.org>, tfiga@chromium.org,
-        senozhatsky@chromium.org, andriy.shevchenko@linux.intel.com,
-        bingbu.cao@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71CC9E29-ECBD-47DB-AE85-1477BF54C45D@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 11:02 AM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Bingbu,
->
-> Thanks for the patch.
->
-> On Tue, Apr 20, 2021 at 10:48:33AM +0800, Bingbu Cao wrote:
-> > Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
-> > The IPU driver allocates its own page table that is not mapped
-> > via the DMA, and thus the Intel IOMMU driver blocks access giving
-> > this error:
->
-> The page table should be mapped to the possible IOMMU using the DMA API.
+On Mon, Apr 19, 2021 at 08:26:02PM +0000, Song Liu wrote:
+> 
+> 
+> > On Apr 17, 2021, at 9:45 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+> > 
+> > Hi Song,
+> > 
+> > On Sat, Apr 17, 2021 at 7:13 AM Song Liu <song@kernel.org> wrote:
+> >> 
+> >> Currently, to use BPF to aggregate perf event counters, the user uses
+> >> --bpf-counters option. Enable "use bpf by default" events with a config
+> >> option, stat.bpf-counter-events. Events with name in the option will use
+> >> BPF.
+> >> 
+> >> This also enables mixed BPF event and regular event in the same sesssion.
+> >> For example:
+> >> 
+> >>   perf config stat.bpf-counter-events=instructions
+> >>   perf stat -e instructions,cs
+> >> 
+> >> The second command will use BPF for "instructions" but not "cs".
+> >> 
+> >> Signed-off-by: Song Liu <song@kernel.org>
+> >> ---
+> >> @@ -535,12 +549,13 @@ static int enable_counters(void)
+> >>        struct evsel *evsel;
+> >>        int err;
+> >> 
+> >> -       if (target__has_bpf(&target)) {
+> >> -               evlist__for_each_entry(evsel_list, evsel) {
+> >> -                       err = bpf_counter__enable(evsel);
+> >> -                       if (err)
+> >> -                               return err;
+> >> -               }
+> >> +       evlist__for_each_entry(evsel_list, evsel) {
+> >> +               if (!evsel__is_bpf(evsel))
+> >> +                       continue;
+> >> +
+> >> +               err = bpf_counter__enable(evsel);
+> >> +               if (err)
+> >> +                       return err;
+> > 
+> > I just realized it doesn't have a disable counterpart.
+> 
+> I guess it is not really necessary for perf-stat? It is probably good
+> to have it though. How about we do it in a follow up patch?
 
-I've made the same "observation": this patch is intentionally enables
-using "intel_iommu=on" (IIRC) to strictly enforce "all" DMA
-transactions (except the ones we explicitly allow to identity map).
+good catch, should it at least do:
+  evsel->follower_skel->bss->enabled = 0;
 
-The question is: Is the security of IPU MMU the same as the system
-IOMMU for the few devices behind the IPU MMU?
+because then the follower goes down only with perf process, right?
+still doing the counts till the end..?
 
-If not, then we (Chrome OS) require child devices to be "mapped"
-twice: once in IPU MMU and again in the system IOMMU. I believe
-dma_ops can be nested though I can't confidently point at examples
-(IDE drivers maybe?)  This adds some latency to each DMA transaction -
-decades ago I've measured roughly 5% on Itanium and PA-RISC systems
-from HP. Perhaps Intel can measure this penatly on current HW they are
-shipping.
+also while checking on that I realized we open the counters
+in separate path for this in bperf_reload_leader_program by
+calling evsel__open_per_cpu.. and we're missing all the
+fallback code and setup from create_perf_stat_counter
 
-If yes, then I think the IPU driver just needs to be consistent about
-it's use of DMA API for it's own house keeping: Either use DMA API for
-all IPU DMA operations or use it for none. This is the current plan
-for Chrome OS (I didn't make this decision and wasn't party to the
-discussion).
+I think we should at least call create_perf_stat_counter,
+and also propagate error value if it fails
 
-The IPU driver requires it's child devices to use DMA API and provides
-the dma_ops table for those devices - this use of dma_ops is seperate
-from IPU page tables and other host memory transactions to manage the
-IPU MMU page tables.
+jirka
 
-CAVEAT: I'm not an expert in IPU driver - I've been reviewing Intel
-IPU code for chromium.org inclusion here:
-https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2787723
-I have no illusions that I'm going to be an expert after staring at
-28k lines of code less than 10h.
+> 
+> [...]
+> 
+> >> +       if (!evsel__bpf_counter_events)
+> >> +               return false;
+> >> +
+> >> +       ptr = strstr(evsel__bpf_counter_events, name);
+> >> +       name_len = strlen(name);
+> >> +
+> >> +       /* check name matches a full token in evsel__bpf_counter_events */
+> >> +       match = (ptr != NULL) &&
+> >> +               ((ptr == evsel__bpf_counter_events) || (*(ptr - 1) == ',')) &&
+> >> +               ((*(ptr + name_len) == ',') || (*(ptr + name_len) == '\0'));
+> > 
+> > I'm not sure we have an event name which is a substring of another.
+> > Maybe it can retry if it fails to match.
+> 
+> We have ref-cycles and cycles. And some raw events may be substring of others?
+> 
+> Thanks,
+> Song
+> 
+> [...]
+> 
 
-> > DMAR: DRHD: handling fault status reg 3
-> > DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
-> >       fault addr 76406000 [fault reason 06] PTE Read access is not set
-> >
-> > As IPU is not an external facing device which is not risky, so use
-> > IOMMU passthrough mode for Intel IPUs.
->
-> I think a factor here is that the page tables aren't accessible by the IPU
-> firmware.
-
-Correct. At least not accessible through the system IOMMU. This is why
-Intel prefers the IPU to bypass the system IOMMU.
-
-cheers,
-grant
-
->
-> >
-> > Fixes: 26f5689592e2 ("media: staging/intel-ipu3: mmu: Implement driver")
-> > Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
-> > ---
-> >  drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
-> >  1 file changed, 29 insertions(+)
-> >
-> > diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> > index ee0932307d64..7e2fbdae467e 100644
-> > --- a/drivers/iommu/intel/iommu.c
-> > +++ b/drivers/iommu/intel/iommu.c
-> > @@ -55,6 +55,12 @@
-> >  #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
-> >  #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
-> >  #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
-> > +#define IS_INTEL_IPU(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL && \
-> > +                         ((pdev)->device == 0x9a19 ||                \
-> > +                          (pdev)->device == 0x9a39 ||                \
-> > +                          (pdev)->device == 0x4e19 ||                \
-> > +                          (pdev)->device == 0x465d ||                \
-> > +                          (pdev)->device == 0x1919))
-> >  #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
-> >
-> >  #define IOAPIC_RANGE_START   (0xfee00000)
-> > @@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
-> >  EXPORT_SYMBOL_GPL(intel_iommu_enabled);
-> >
-> >  static int dmar_map_gfx = 1;
-> > +static int dmar_map_ipu = 1;
->
-> This works as long as there's only one IPU. Same for graphics. But I guess
-> this can be reworked in the future if the presumption changes.
->
-> >  static int dmar_forcedac;
-> >  static int intel_iommu_strict;
-> >  static int intel_iommu_superpage = 1;
-> > @@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
-> >
-> >  #define IDENTMAP_GFX         2
-> >  #define IDENTMAP_AZALIA              4
-> > +#define IDENTMAP_IPU         8
-> >
-> >  int intel_iommu_gfx_mapped;
-> >  EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
-> > @@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
-> >
-> >               if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
-> >                       return IOMMU_DOMAIN_IDENTITY;
-> > +
-> > +             if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_INTEL_IPU(pdev))
-> > +                     return IOMMU_DOMAIN_IDENTITY;
-> >       }
-> >
-> >       return 0;
-> > @@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
-> >       if (!dmar_map_gfx)
-> >               iommu_identity_mapping |= IDENTMAP_GFX;
-> >
-> > +     if (!dmar_map_ipu)
-> > +             iommu_identity_mapping |= IDENTMAP_IPU;
-> > +
-> >       check_tylersburg_isoch();
-> >
-> >       ret = si_domain_init(hw_pass_through);
-> > @@ -5622,6 +5636,18 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
-> >       dmar_map_gfx = 0;
-> >  }
-> >
-> > +static void quirk_iommu_ipu(struct pci_dev *dev)
-> > +{
-> > +     if (!IS_INTEL_IPU(dev))
-> > +             return;
-> > +
-> > +     if (risky_device(dev))
-> > +             return;
-> > +
-> > +     pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
-> > +     dmar_map_ipu = 0;
-> > +}
-> > +
-> >  /* G4x/GM45 integrated gfx dmar support is totally busted. */
-> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
-> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
-> > @@ -5657,6 +5683,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
-> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
-> >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
-> >
-> > +/* disable IPU dmar support */
-> > +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_ANY_ID, quirk_iommu_ipu);
-> > +
-> >  static void quirk_iommu_rwbf(struct pci_dev *dev)
-> >  {
-> >       if (risky_device(dev))
->
-> --
-> Kind regards,
->
-> Sakari Ailus
