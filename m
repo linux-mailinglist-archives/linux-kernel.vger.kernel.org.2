@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D32A366171
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50DB366170
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbhDTVQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 17:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbhDTVQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 17:16:35 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA59C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:16:02 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 93550891B0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:15:58 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1618953358;
-        bh=9omGUyfXcvpuUaCvkBfHVzT27eX8S17+TXf6uVSRmZg=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=sRPFGNr8HiKr2/0dHEtZ/w/emOstKPoP1Wd2bJVEvTYSKmNAfbusbaFakLuT/UxdX
-         jVy1KTyehXC5w4r5I2AshLV2tdZAN74yMpyJ9cQEOjPmu0JeHMCBCbfwVw+9Pkobf8
-         UJoNsR2l+0fRADTy7IukE+7g0E2n3Dywts5JSQ6kNdMkBDSv9WyUmOgFLeVJQV7OMC
-         JZcg/Q8TOPKudGM7l2xRnDLc0Y13XWHK2ezq8iEJJzJYyqJMmasWLxpmpHtjJMkgF5
-         bo0DvuNUabu7fjgIH1wxZVEKZPIhRUx6LJjAdYZIa0mhQsk8vwS0eStAPHN2/xqHd2
-         e0ZF47UI43Oxg==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B607f448e0001>; Wed, 21 Apr 2021 09:15:58 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Apr 2021 09:15:58 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.015; Wed, 21 Apr 2021 09:15:58 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Michael Ellerman" <mpe@ellerman.id.au>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH v2 2/2] powerpc/legacy_serial: Use early_ioremap()
-Thread-Topic: [PATCH v2 2/2] powerpc/legacy_serial: Use early_ioremap()
-Thread-Index: AQHXNem1uXmzjIM2eke3vtj53qg6QKq9H7eA
-Date:   Tue, 20 Apr 2021 21:15:57 +0000
-Message-ID: <cb216c3f-1d88-b440-a43b-3a3fd9762c03@alliedtelesis.co.nz>
-References: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
- <103ed8ee9e5973c958ec1da2d0b0764f69395d01.1618925560.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <103ed8ee9e5973c958ec1da2d0b0764f69395d01.1618925560.git.christophe.leroy@csgroup.eu>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5782ED46DA861E449C07ED8E340E25B5@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S234123AbhDTVQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 17:16:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233882AbhDTVQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 17:16:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F4D761076;
+        Tue, 20 Apr 2021 21:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618953356;
+        bh=An5dy6CsC1BMaoFOvaAgr9a1mexHuCaV5SCWxfkFBkQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Fgj5CNdXiZ3UzLmLoq7lTDRz0fQ3dE7NUQUNbuZGcRBBX/az/+2IHD4/rLKd26jUD
+         /AhyV4w1lMRXXjTMDDgYvRBVWPNssm5usY09j559RiYUsngHNXJpQRKO92lw+AmECY
+         4Oi5KiJJPCWX8LOf4tPAjYX8CsBXgU6V9O8N+bUMQQ47xl+77v3fA9PKN0e8ER9ybJ
+         CRc4uYsHSW9d1Zmg0PmhTKfCSbicjiYMtDr1kISsnskZrFszvtalrYd3rz8qLfr7vl
+         /CI2Od7Nc7HxeoUgSoqYf9FED5/CrA7qazr4B/rTG7pXVZ2ZdPMsESpEYFig7/6+uU
+         5j5cTK9VPq7rg==
+Date:   Tue, 20 Apr 2021 16:16:15 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2][next] afs: Fix fall-through warnings for Clang
+Message-ID: <20210420211615.GA51432@embeddedor>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=1UX6Do5GAAAA:8 a=nTHcy9k6DAHznPSci4YA:9 a=QEXdDO2ut3YA:10 a=Et2XPkok5AAZYJIKzHr1:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2hyaXN0b3BoZSwNCg0KT24gMjEvMDQvMjEgMTozMiBhbSwgQ2hyaXN0b3BoZSBMZXJveSB3
-cm90ZToNCj4gRnJvbTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjLXMuZnI+
-DQo+DQo+IFsgICAgMC4wMDAwMDBdIGlvcmVtYXAoKSBjYWxsZWQgZWFybHkgZnJvbSBmaW5kX2xl
-Z2FjeV9zZXJpYWxfcG9ydHMrMHgzY2MvMHg0NzQuIFVzZSBlYXJseV9pb3JlbWFwKCkgaW5zdGVh
-ZA0KPg0KPiBmaW5kX2xlZ2FjeV9zZXJpYWxfcG9ydHMoKSBpcyBjYWxsZWQgZWFybHkgZnJvbSBz
-ZXR1cF9hcmNoKCksIGJlZm9yZQ0KPiBwYWdpbmdfaW5pdCgpLiB2bWFsbG9jIGlzIG5vdCBhdmFp
-bGFibGUgeWV0LCBpb3JlbWFwIHNob3VsZG4ndCBiZQ0KPiB1c2VkIHRoYXQgZWFybHkuDQo+DQo+
-IFVzZSBlYXJseV9pb3JlbWFwKCkgYW5kIHN3aXRjaCB0byBhIHJlZ3VsYXIgaW9yZW1hcCgpIGxh
-dGVyLg0KPg0KPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGhlIExlcm95IDxjaHJpc3RvcGhlLmxl
-cm95QGMtcy5mcj4NCj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3Bo
-ZS5sZXJveUBjc2dyb3VwLmV1Pg0KPiAtLS0NCg0KSSBnYXZlIGl0IGEgc3BpbiBvbiBteSBUMjA4
-MFJEQi4gVGhlIGVycm9yIG1lc3NhZ2UgaXMgZ29uZSBhbmQgSSBzdGlsbCANCmdldCBjb25zb2xl
-IG91dHB1dC4NCg0KVGVzdGVkLWJ5OiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGll
-ZHRlbGVzaXMuY28ubno+DQoNCj4gICBhcmNoL3Bvd2VycGMva2VybmVsL2xlZ2FjeV9zZXJpYWwu
-YyB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tDQo+ICAgMSBmaWxlIGNoYW5nZWQs
-IDI5IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9hcmNo
-L3Bvd2VycGMva2VybmVsL2xlZ2FjeV9zZXJpYWwuYyBiL2FyY2gvcG93ZXJwYy9rZXJuZWwvbGVn
-YWN5X3NlcmlhbC5jDQo+IGluZGV4IGYwNjFlMDZlOWY1MS4uOGIyYzFhODU1M2EwIDEwMDY0NA0K
-PiAtLS0gYS9hcmNoL3Bvd2VycGMva2VybmVsL2xlZ2FjeV9zZXJpYWwuYw0KPiArKysgYi9hcmNo
-L3Bvd2VycGMva2VybmVsL2xlZ2FjeV9zZXJpYWwuYw0KPiBAQCAtMTUsNiArMTUsNyBAQA0KPiAg
-ICNpbmNsdWRlIDxhc20vdWRiZy5oPg0KPiAgICNpbmNsdWRlIDxhc20vcGNpLWJyaWRnZS5oPg0K
-PiAgICNpbmNsdWRlIDxhc20vcHBjLXBjaS5oPg0KPiArI2luY2x1ZGUgPGFzbS9lYXJseV9pb3Jl
-bWFwLmg+DQo+ICAgDQo+ICAgI3VuZGVmIERFQlVHDQo+ICAgDQo+IEBAIC0zNCw2ICszNSw3IEBA
-IHN0YXRpYyBzdHJ1Y3QgbGVnYWN5X3NlcmlhbF9pbmZvIHsNCj4gICAJdW5zaWduZWQgaW50CQkJ
-Y2xvY2s7DQo+ICAgCWludAkJCQlpcnFfY2hlY2tfcGFyZW50Ow0KPiAgIAlwaHlzX2FkZHJfdAkJ
-CXRhZGRyOw0KPiArCXZvaWQgX19pb21lbQkJCSplYXJseV9hZGRyOw0KPiAgIH0gbGVnYWN5X3Nl
-cmlhbF9pbmZvc1tNQVhfTEVHQUNZX1NFUklBTF9QT1JUU107DQo+ICAgDQo+ICAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbGVnYWN5X3NlcmlhbF9wYXJlbnRzW10gX19pbml0Y29u
-c3QgPSB7DQo+IEBAIC0zMjUsMTcgKzMyNywxNiBAQCBzdGF0aWMgdm9pZCBfX2luaXQgc2V0dXBf
-bGVnYWN5X3NlcmlhbF9jb25zb2xlKGludCBjb25zb2xlKQ0KPiAgIHsNCj4gICAJc3RydWN0IGxl
-Z2FjeV9zZXJpYWxfaW5mbyAqaW5mbyA9ICZsZWdhY3lfc2VyaWFsX2luZm9zW2NvbnNvbGVdOw0K
-PiAgIAlzdHJ1Y3QgcGxhdF9zZXJpYWw4MjUwX3BvcnQgKnBvcnQgPSAmbGVnYWN5X3NlcmlhbF9w
-b3J0c1tjb25zb2xlXTsNCj4gLQl2b2lkIF9faW9tZW0gKmFkZHI7DQo+ICAgCXVuc2lnbmVkIGlu
-dCBzdHJpZGU7DQo+ICAgDQo+ICAgCXN0cmlkZSA9IDEgPDwgcG9ydC0+cmVnc2hpZnQ7DQo+ICAg
-DQo+ICAgCS8qIENoZWNrIGlmIGEgdHJhbnNsYXRlZCBNTUlPIGFkZHJlc3MgaGFzIGJlZW4gZm91
-bmQgKi8NCj4gICAJaWYgKGluZm8tPnRhZGRyKSB7DQo+IC0JCWFkZHIgPSBpb3JlbWFwKGluZm8t
-PnRhZGRyLCAweDEwMDApOw0KPiAtCQlpZiAoYWRkciA9PSBOVUxMKQ0KPiArCQlpbmZvLT5lYXJs
-eV9hZGRyID0gZWFybHlfaW9yZW1hcChpbmZvLT50YWRkciwgMHgxMDAwKTsNCj4gKwkJaWYgKGlu
-Zm8tPmVhcmx5X2FkZHIgPT0gTlVMTCkNCj4gICAJCQlyZXR1cm47DQo+IC0JCXVkYmdfdWFydF9p
-bml0X21taW8oYWRkciwgc3RyaWRlKTsNCj4gKwkJdWRiZ191YXJ0X2luaXRfbW1pbyhpbmZvLT5l
-YXJseV9hZGRyLCBzdHJpZGUpOw0KPiAgIAl9IGVsc2Ugew0KPiAgIAkJLyogQ2hlY2sgaWYgaXQn
-cyBQSU8gYW5kIHdlIHN1cHBvcnQgdW50cmFuc2xhdGVkIFBJTyAqLw0KPiAgIAkJaWYgKHBvcnQt
-PmlvdHlwZSA9PSBVUElPX1BPUlQgJiYgaXNhX2lvX3NwZWNpYWwpDQo+IEBAIC0zNTMsNiArMzU0
-LDMwIEBAIHN0YXRpYyB2b2lkIF9faW5pdCBzZXR1cF9sZWdhY3lfc2VyaWFsX2NvbnNvbGUoaW50
-IGNvbnNvbGUpDQo+ICAgCXVkYmdfdWFydF9zZXR1cChpbmZvLT5zcGVlZCwgaW5mby0+Y2xvY2sp
-Ow0KPiAgIH0NCj4gICANCj4gK3N0YXRpYyBpbnQgX19pbml0IGlvcmVtYXBfbGVnYWN5X3Nlcmlh
-bF9jb25zb2xlKHZvaWQpDQo+ICt7DQo+ICsJc3RydWN0IGxlZ2FjeV9zZXJpYWxfaW5mbyAqaW5m
-byA9ICZsZWdhY3lfc2VyaWFsX2luZm9zW2xlZ2FjeV9zZXJpYWxfY29uc29sZV07DQo+ICsJc3Ry
-dWN0IHBsYXRfc2VyaWFsODI1MF9wb3J0ICpwb3J0ID0gJmxlZ2FjeV9zZXJpYWxfcG9ydHNbbGVn
-YWN5X3NlcmlhbF9jb25zb2xlXTsNCj4gKwl2b2lkIF9faW9tZW0gKnZhZGRyOw0KPiArDQo+ICsJ
-aWYgKGxlZ2FjeV9zZXJpYWxfY29uc29sZSA8IDApDQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJ
-aWYgKCFpbmZvLT5lYXJseV9hZGRyKQ0KPiArCQlyZXR1cm4gMDsNCj4gKw0KPiArCXZhZGRyID0g
-aW9yZW1hcChpbmZvLT50YWRkciwgMHgxMDAwKTsNCj4gKwlpZiAoV0FSTl9PTighdmFkZHIpKQ0K
-PiArCQlyZXR1cm4gLUVOT01FTTsNCj4gKw0KPiArCXVkYmdfdWFydF9pbml0X21taW8odmFkZHIs
-IDEgPDwgcG9ydC0+cmVnc2hpZnQpOw0KPiArCWVhcmx5X2lvdW5tYXAoaW5mby0+ZWFybHlfYWRk
-ciwgMHgxMDAwKTsNCj4gKwlpbmZvLT5lYXJseV9hZGRyID0gTlVMTDsNCj4gKw0KPiArCXJldHVy
-biAwOw0KPiArfQ0KPiArZWFybHlfaW5pdGNhbGwoaW9yZW1hcF9sZWdhY3lfc2VyaWFsX2NvbnNv
-bGUpOw0KPiArDQo+ICAgLyoNCj4gICAgKiBUaGlzIGlzIGNhbGxlZCB2ZXJ5IGVhcmx5LCBhcyBw
-YXJ0IG9mIHNldHVwX3N5c3RlbSgpIG9yIGV2ZW50dWFsbHkNCj4gICAgKiBzZXR1cF9hcmNoKCks
-IGJhc2ljYWxseSBiZWZvcmUgYW55dGhpbmcgZWxzZSBpbiB0aGlzIGZpbGUuIFRoaXMgZnVuY3Rp
-b24=
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple fallthrough pseudo-keywords
+in places where the code is intended to fall through to the next
+case.
+
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Place blank line after the fallthrough markings, not before.
+   Link: https://lore.kernel.org/linux-hardening/748935.1606147853@warthog.procyon.org.uk/
+
+ fs/afs/cmservice.c | 5 +++++
+ fs/afs/fsclient.c  | 4 ++++
+ fs/afs/vlclient.c  | 1 +
+ 3 files changed, 10 insertions(+)
+
+diff --git a/fs/afs/cmservice.c b/fs/afs/cmservice.c
+index a4e9e6e07e93..d3c6bb22c5f4 100644
+--- a/fs/afs/cmservice.c
++++ b/fs/afs/cmservice.c
+@@ -322,6 +322,8 @@ static int afs_deliver_cb_callback(struct afs_call *call)
+ 			return ret;
+ 
+ 		call->unmarshall++;
++		fallthrough;
++
+ 	case 5:
+ 		break;
+ 	}
+@@ -418,6 +420,7 @@ static int afs_deliver_cb_init_call_back_state3(struct afs_call *call)
+ 			r->node[loop] = ntohl(b[loop + 5]);
+ 
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 2:
+ 		break;
+@@ -530,6 +533,7 @@ static int afs_deliver_cb_probe_uuid(struct afs_call *call)
+ 			r->node[loop] = ntohl(b[loop + 5]);
+ 
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 2:
+ 		break;
+@@ -663,6 +667,7 @@ static int afs_deliver_yfs_cb_callback(struct afs_call *call)
+ 
+ 		afs_extract_to_tmp(call);
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 3:
+ 		break;
+diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
+index 2f695a260442..dd3f45d906d2 100644
+--- a/fs/afs/fsclient.c
++++ b/fs/afs/fsclient.c
+@@ -388,6 +388,7 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
+ 		req->file_size = vp->scb.status.size;
+ 
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 5:
+ 		break;
+@@ -1408,6 +1409,7 @@ static int afs_deliver_fs_get_volume_status(struct afs_call *call)
+ 		_debug("motd '%s'", p);
+ 
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 8:
+ 		break;
+@@ -1845,6 +1847,7 @@ static int afs_deliver_fs_inline_bulk_status(struct afs_call *call)
+ 		xdr_decode_AFSVolSync(&bp, &op->volsync);
+ 
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 6:
+ 		break;
+@@ -1979,6 +1982,7 @@ static int afs_deliver_fs_fetch_acl(struct afs_call *call)
+ 		xdr_decode_AFSVolSync(&bp, &op->volsync);
+ 
+ 		call->unmarshall++;
++		fallthrough;
+ 
+ 	case 4:
+ 		break;
+diff --git a/fs/afs/vlclient.c b/fs/afs/vlclient.c
+index dc9327332f06..00fca3c66ba6 100644
+--- a/fs/afs/vlclient.c
++++ b/fs/afs/vlclient.c
+@@ -593,6 +593,7 @@ static int afs_deliver_yfsvl_get_endpoints(struct afs_call *call)
+ 		if (ret < 0)
+ 			return ret;
+ 		call->unmarshall = 6;
++		fallthrough;
+ 
+ 	case 6:
+ 		break;
+-- 
+2.27.0
+
