@@ -2,56 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E1C3652C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF593652CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhDTHD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S230389AbhDTHDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhDTHDZ (ORCPT
+        with ESMTP id S230340AbhDTHDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:03:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7417C06174A;
-        Tue, 20 Apr 2021 00:02:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8Oihx25ixLmgK896s6BkBU4Zy4ZTSxg7BY07q9IT2hQ=; b=hFqirIfh+nlo9lCAUemEoOwmcU
-        ZMdFNj8RgdzR2qM5APmrrVtR2OeTcERwNN38u6nFxezVx5GJo/xAtYA7HD2DxH0kqehLO52bXBwLe
-        4/yxCWMoy1FXMYDGSBjvTS3E9tGAd58v9GOpMqgE+YHl2Vwv1VS5Gu+Zq+IQHvZlk/l2dqxTnG4FG
-        MHw2JbqYRC17ffhqd08MnBFxZTB/JNwajHFljefrZWjdnheFvlycOhNYNrNFZHVPMf0UJTWMTKfYK
-        P8u11hg1IsH0zaSL1KL7F3EnxipCucT9Xw4ZAr0PB8sF+LfvSOvdTbzuzkN4XE+OubYIRqGoz37Mw
-        Jw7zA3AA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYkO1-00Eplv-KX; Tue, 20 Apr 2021 07:01:54 +0000
-Date:   Tue, 20 Apr 2021 08:01:29 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Enrico Granata <egranata@google.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
-        stefanha@redhat.com, axboe@kernel.dk,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] virtio_blk: Add support for lifetime feature
-Message-ID: <20210420070129.GA3534874@infradead.org>
-References: <20210416194709.155497-1-egranata@google.com>
+        Tue, 20 Apr 2021 03:03:46 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14877C06174A;
+        Tue, 20 Apr 2021 00:03:14 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p8so16080971iol.11;
+        Tue, 20 Apr 2021 00:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jEWvtlBhIntnzhav5G5MrselwR0xAfYI2wk8gXVRC+A=;
+        b=ITeWcJSLe+GZk2elPX/TFR4u8+f72MTLMZoVVux4r4bBu5U3RkELxIdD87uv5JlBaS
+         JKvzG76O2lZ1BVbKDTwPyn+Pjp7a5OI79E0dC3VFpsEpzPVOCm5xhtZxjbXVVLnjHoWQ
+         F59FpSPugJfmjOW1kV0Y0tl7+org4RhWIjO2r3rQI7H7Vv4S7OxAO2FQ4nkC82nJMGlp
+         hU1H/35BaDkyhAsWN5+WZwDaJXuBvEhA+GE97qt7Tbz9hkQmXNtWxBW57CIKjY1yyu6l
+         r2oW/27RXFyDhKNh1+iJjSSQrxMo2njYnCS7VgMFeqkA9jaP6ZMWqM24R4B2EY+3YBTl
+         6MxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jEWvtlBhIntnzhav5G5MrselwR0xAfYI2wk8gXVRC+A=;
+        b=jaAJy6ifjRaAWiByTZ4Nha5jIlh9vUgtkr3z5EOpc2HGLoiRSYYNJPbWmvX7Zpn65u
+         reYiGsEtePeBB/Z1GxeJnacAswssRQCZ+Nw4ANDWKeVPasTDN88Ka+MzSM47oAwVOj9f
+         KoAQpyzpClbEtvs48+nqqBuH58lB3S7L8mFzGzQhuuMcq6unFwcuqdjiKEM2qa31qISC
+         DXgh1z5KwnC9cIKUGtzmfzY0iWHz1pwFsdL9BsEJXDKDKGwCatHKSy4EU+dNvq83iZp8
+         pnceqY7jEudpW8gUlGmiPF+49TNv9GwFQpQ6LWPd0fwaFxnS/wksvzxeksoPCSLvySnc
+         jjmA==
+X-Gm-Message-State: AOAM532T92T1o60FTFQCKGSRJb2W9qxX75rcmDj2ZcuIOyQapOxKl9zB
+        tpQulvdj4DoJK5Rd76PN6jqdemqLnl9zqf27smE=
+X-Google-Smtp-Source: ABdhPJzZkII1CqYKC7eld4JUICmDx78+DDe9rH1IidbIfouyiSkMp4gyT3A60Ty7ZzopOP7+Ia/aqjFzaGBEHUdbdnY=
+X-Received: by 2002:a6b:5907:: with SMTP id n7mr7562820iob.3.1618902193574;
+ Tue, 20 Apr 2021 00:03:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416194709.155497-1-egranata@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <1618459535-8141-1-git-send-email-dillon.minfei@gmail.com>
+ <1618459535-8141-5-git-send-email-dillon.minfei@gmail.com>
+ <CAL9mu0LmZO38CvmRfBMvgJm6310eMY64tgTRw8kWKCPuGJReoA@mail.gmail.com> <CA+Eumj4M5k50Vv+5tzsY943yp2CVvXFxnf-W0nBf=Bj5M-1AQg@mail.gmail.com>
+In-Reply-To: <CA+Eumj4M5k50Vv+5tzsY943yp2CVvXFxnf-W0nBf=Bj5M-1AQg@mail.gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Tue, 20 Apr 2021 15:02:37 +0800
+Message-ID: <CAL9mu0+8RekaDTBEaJaK4ZFAbpcZfd3gJQ3=fmmY05n-SkEvPg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}()
+ to set xvclk on/off
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        krzk@kernel.org, linux@rempel-privat.de, s.riedmueller@phytec.de,
+        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
+        arnd@arndb.de, olof@lixom.net,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        festevam@gmail.com, prabhakar.csengg@gmail.com, mchehab@kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-imx@nxp.com, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just to despit my 2 cents again:  I think the way this is specified
-in the virtio spec is actively harmful and we should not suport it in
-Linux.
+On Tue, Apr 20, 2021 at 2:52 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On Tue, 20 Apr 2021 at 08:46, dillon min <dillon.minfei@gmail.com> wrote:
+> >
+> > Hi All,
+> >
+> > Just a gentle ping, hope some expert could take a look, thanks.
+>
+> Don't ping people after 5 days. It's not gentle.
+Got it, thanks for reminding me.
 
-If others override me we at least need to require a detailed
-documentation of these fields as the virto spec does not provide it.
-
-Please also do not add pointless over 80 character lines, and follow
-the one value per sysfs file rule.
+Best regards,
+Dillon
+>
+> Best regards,
+> Krzysztof
