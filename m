@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55BB365613
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEB4365615
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhDTKXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbhDTKW4 (ORCPT
+        id S231566AbhDTKXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:23:04 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33774 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231536AbhDTKXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:22:56 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F12C06174A;
-        Tue, 20 Apr 2021 03:22:25 -0700 (PDT)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id A1E2E22249;
-        Tue, 20 Apr 2021 12:22:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1618914141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VXJRy9VzNsHT9ZmGp3xAw1tC+n20lg5dvIivLVfnwRY=;
-        b=q7NG8HRIdNbiyrn/dEJEJDRSw2slKBPuzfLRMs3ewyHrVaVx3hEuxsKClDw/j4cLJKZAbl
-        4eKkQ0bCAtKxxkYUFJs+4VSSmCwd7BcM0zQ38ivwJulzKyQZNBDH7cOQqosdItwImbMbpL
-        K45Mg4G0cYXO0rCgpqDG0EUvGVCE6dY=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Bauer <mail@david-bauer.net>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH net-next] net: phy: at803x: fix probe error if copper page is selected
-Date:   Tue, 20 Apr 2021 12:22:08 +0200
-Message-Id: <20210420102208.5834-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Tue, 20 Apr 2021 06:23:02 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13KAK9h8058776;
+        Tue, 20 Apr 2021 10:22:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=bPuzElpjiOo1zRjSEnYwkdbLNwWPB/1sGrCY1L0+/nk=;
+ b=SK2yp54Mm5hj2vNEO49W79IuvChvxXimdFLZNUAZotP5gRPO/oBaVGdbMQo+1bcmhin6
+ 1xp0K8AH2//Q0Kmcxl90woLQ34FEqIwCfMx1loyveBMLcOjGiZYZVeUbB0J8mB7EJAgx
+ 42To4eMxdLW9hQFwMO68k32g88pZNaFYM0bgTaocjT8krFc4/R6jb40ojrqEnuRggZ+s
+ CSTOdkQRsakWK8qHU8oqzf2aTZkLhUL88Yu+NuRThnQ/+HzviHk2TpsMjwMmqKYUBFmp
+ jq9gK9nnrbcqOW7lwqBGSqPj5IDakFgpzNmoL69op9HyV+0NZWO3kpnKZgQzJjmcvWUJ lA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 37yveaea4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:22:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13KAKmrr022570;
+        Tue, 20 Apr 2021 10:22:23 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3809kxskwy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:22:23 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13KAMN7r027505;
+        Tue, 20 Apr 2021 10:22:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3809kxskwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:22:23 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13KAMLKX021192;
+        Tue, 20 Apr 2021 10:22:21 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 20 Apr 2021 03:22:21 -0700
+Date:   Tue, 20 Apr 2021 13:22:14 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210420102214.GA1981@kadam>
+References: <20210417153616.25056-1-khaledromdhani216@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: apFXcdx82eJ5clMeWqsNsBlKtdoJAoHu
+X-Proofpoint-ORIG-GUID: apFXcdx82eJ5clMeWqsNsBlKtdoJAoHu
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104200079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit c329e5afb42f ("net: phy: at803x: select correct page on
-config init") selects the copper page during probe. This fails if the
-copper page was already selected. In this case, the value of the copper
-page (which is 1) is propagated through phy_restore_page() and is
-finally returned for at803x_probe(). Fix it, by just using the
-at803x_page_write() directly.
+On Sat, Apr 17, 2021 at 04:36:16PM +0100, Khaled ROMDHANI wrote:
+> As reported by the Coverity static analysis.
+> The variable zone is not initialized which
+> may causes a failed assertion.
+> 
+> Addresses-Coverity: ("Uninitialized variables")
+> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> ---
+> v2: add a default case as proposed by David Sterba
+> ---
+>  fs/btrfs/zoned.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index eeb3ebe11d7a..82527308d165 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+>  	case 0: zone = 0; break;
+>  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+>  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
 
-Also in case of an error, the regulator is not disabled and leads to a
-WARN_ON() when the probe fails. This couldn't happen before, because
-at803x_parse_dt() was the last call in at803x_probe(). It is hard to
-see, that the parse_dt() actually enables the regulator. Thus move the
-regulator_enable() to the probe function and undo it in case of an
-error.
+It took me a while to spot these break statements.
 
-Fixes: c329e5afb42f ("net: phy: at803x: select correct page on config init")
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/net/phy/at803x.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+> +	default:
+> +		zone = 0;
+> +	break;
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index e0f56850edc5..5bec200f2132 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -554,10 +554,6 @@ static int at803x_parse_dt(struct phy_device *phydev)
- 			phydev_err(phydev, "failed to get VDDIO regulator\n");
- 			return PTR_ERR(priv->vddio);
- 		}
--
--		ret = regulator_enable(priv->vddio);
--		if (ret < 0)
--			return ret;
- 	}
- 
- 	return 0;
-@@ -579,15 +575,28 @@ static int at803x_probe(struct phy_device *phydev)
- 	if (ret)
- 		return ret;
- 
-+	if (priv->vddio) {
-+		ret = regulator_enable(priv->vddio);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	/* Some bootloaders leave the fiber page selected.
- 	 * Switch to the copper page, as otherwise we read
- 	 * the PHY capabilities from the fiber side.
- 	 */
- 	if (at803x_match_phy_id(phydev, ATH8031_PHY_ID)) {
--		ret = phy_select_page(phydev, AT803X_PAGE_COPPER);
--		ret = phy_restore_page(phydev, AT803X_PAGE_COPPER, ret);
-+		ret = at803x_write_page(phydev, AT803X_PAGE_COPPER);
-+		if (ret)
-+			goto err;
- 	}
- 
-+	return 0;
-+
-+err:
-+	if (priv->vddio)
-+		regulator_disable(priv->vddio);
-+
- 	return ret;
- }
- 
--- 
-2.20.1
+This break needs to be indented one more tab.
 
+>  	}
+>  
+>  	ASSERT(zone <= U32_MAX);
+
+regards,
+dan carpenter
