@@ -2,100 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393BC3654E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA043654E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhDTJKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:10:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36818 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230395AbhDTJKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:10:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618909804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yjmwGXL95hrOTOiLoePNgjzr/aVIaC4rCsRgjXD+Ih4=;
-        b=rQ4aiKfXozvbbX71hOvvbdh7Ca0q/3X063CDyFWMK+pX/uTOoCfeJ1dw6CL3KPUaYJJDBc
-        xqg1B2H+sdQpK7GMFOqEDDuQWY3xyMmL+J/cjxDv9doDSJJbPAEuDgtxfXdJQ2Yf7BltJa
-        R5NG9pJ01TsoDmtQyJJsZG3VQ7WBR8I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 876CAAEE6;
-        Tue, 20 Apr 2021 09:10:04 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 11:10:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] docs: proc.rst: meminfo: briefly describe gaps in memory
- accounting
-Message-ID: <YH6aa8WJotXh8F+b@dhcp22.suse.cz>
-References: <20210420085105.1156640-1-rppt@kernel.org>
+        id S231295AbhDTJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:10:46 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42278 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhDTJKn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 05:10:43 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 34F941F4270E
+Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
+ register
+To:     Lucas Stach <l.stach@pengutronix.de>, ezequiel@collabora.com,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, kernel@collabora.com, cphealy@gmail.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
+ <20210407073534.376722-4-benjamin.gaignard@collabora.com>
+ <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
+ <ffe9b3f5-94f5-453e-73f0-4b42d0454b63@collabora.com>
+ <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <36008691-d075-203d-0cac-2a012773ea34@collabora.com>
+Date:   Tue, 20 Apr 2021 11:10:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420085105.1156640-1-rppt@kernel.org>
+In-Reply-To: <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 11:51:05, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
 
-Some trivial changelog would be better than nothing.
+Le 16/04/2021 à 17:14, Lucas Stach a écrit :
+> Am Freitag, dem 16.04.2021 um 15:08 +0200 schrieb Benjamin Gaignard:
+>> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
+>>> Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
+>>>> In order to be able to share the control hardware block between
+>>>> VPUs use a syscon instead a ioremap it in the driver.
+>>>> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+>>>> phandle is not found look at 'ctrl' reg-name.
+>>>> With the method it becomes useless to provide a list of register
+>>>> names so remove it.
+>>> Sorry for putting a spoke in the wheel after many iterations of the
+>>> series.
+>>>
+>>> We just discussed a way forward on how to handle the clocks and resets
+>>> provided by the blkctl block on i.MX8MM and later and it seems there is
+>>> a consensus on trying to provide virtual power domains from a blkctl
+>>> driver, controlling clocks and resets for the devices in the power
+>>> domain. I would like to avoid introducing yet another way of handling
+>>> the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
+>>> what we are planning to do on the later chip generations.
+>>>
+>>> CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
+>>> virtual power domain thing a shot.
+>> That could replace the 3 first patches and Dt patche of this series
+>> but that will not impact the hevc part, so I wonder if pure hevc patches
+>> could be merged anyway ?
+>> They are reviewed and don't depend of how the ctrl block is managed.
+> I'm not really in a position to give any informed opinion about that
+> hvec patches, as I only skimmed them, but I don't see any reason to
+> delay patches 04-11 from this series until the i.MX8M platform issues
+> are sorted. AFAICS those things are totally orthogonal.
 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Hi Hans,
+What do you think about this proposal to split this series ?
+Get hevc part merged could allow me to continue to add features
+like scaling lists, compressed reference buffers and 10-bit supports.
 
-But I do agree that this is a useful information to have in the
-documentation. Having networking counters as an example is helpful as
-well. I am not familiar with those myself much and I do remember there
-is much to it than just sockstat. It would be great to consult this with
-some networking expert and extend the documentation for that case which
-tends to be quite common AFAIK.
+Regards,
+Benjamin
 
-Anyway this is already an improvement and a step into the right
-direction.
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-one nit below
-> ---
->  Documentation/filesystems/proc.rst | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 48fbfc336ebf..bf245151645b 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -929,8 +929,15 @@ meminfo
->  ~~~~~~~
->  
->  Provides information about distribution and utilization of memory.  This
-> -varies by architecture and compile options.  The following is from a
-> -16GB PIII, which has highmem enabled.  You may not have all of these fields.
-> +varies by architecture and compile options. Please note that is may happen
-
-that it may happen
-
-> +that the memory accounted here does not add up to the overall memory usage
-> +and the difference for some workloads can be substantial. In many cases
-> +there are other means to find out additional memory using subsystem
-> +specific interfaces, for instance /proc/net/sockstat for networking
-> +buffers.
-> +
-> +The following is from a 16GB PIII, which has highmem enabled.
-> +You may not have all of these fields.
->  
->  ::
->  
-> -- 
-> 2.29.2
-
--- 
-Michal Hocko
-SUSE Labs
+>
+> Regards,
+> Lucas
+>
+>>> Regards,
+>>> Lucas
+>>>
+>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>>> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+>>>> ---
+>>>> version 9:
+>>>>    - Corrections in commit message
+>>>>
+>>>> version 7:
+>>>>    - Add Philipp reviewed-by tag.
+>>>>    - Change syscon phandle name.
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> version 5:
+>>>>    - use syscon instead of VPU reset driver.
+>>>>    - if DT doesn't provide syscon keep backward compatibilty by using
+>>>>      'ctrl' reg-name.
+>>>>
+>>>>    drivers/staging/media/hantro/hantro.h       |  5 +-
+>>>>    drivers/staging/media/hantro/imx8m_vpu_hw.c | 52 ++++++++++++---------
+>>>>    2 files changed, 34 insertions(+), 23 deletions(-)
+>>>>
+>>>> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+>>>> index 6c1b888abe75..37b9ce04bd4e 100644
+>>>> --- a/drivers/staging/media/hantro/hantro.h
+>>>> +++ b/drivers/staging/media/hantro/hantro.h
+>>>> @@ -13,6 +13,7 @@
+>>>>    #define HANTRO_H_
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    #include <linux/platform_device.h>
+>>>> +#include <linux/regmap.h>
+>>>>    #include <linux/videodev2.h>
+>>>>    #include <linux/wait.h>
+>>>>    #include <linux/clk.h>
+>>>> @@ -167,7 +168,7 @@ hantro_vdev_to_func(struct video_device *vdev)
+>>>>     * @reg_bases:		Mapped addresses of VPU registers.
+>>>>     * @enc_base:		Mapped address of VPU encoder register for convenience.
+>>>>     * @dec_base:		Mapped address of VPU decoder register for convenience.
+>>>> - * @ctrl_base:		Mapped address of VPU control block.
+>>>> + * @ctrl_base:		Regmap of VPU control block.
+>>>>     * @vpu_mutex:		Mutex to synchronize V4L2 calls.
+>>>>     * @irqlock:		Spinlock to synchronize access to data structures
+>>>>     *			shared with interrupt handlers.
+>>>> @@ -186,7 +187,7 @@ struct hantro_dev {
+>>>>    	void __iomem **reg_bases;
+>>>>    	void __iomem *enc_base;
+>>>>    	void __iomem *dec_base;
+>>>> -	void __iomem *ctrl_base;
+>>>> +	struct regmap *ctrl_base;
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    	struct mutex vpu_mutex;	/* video_device lock */
+>>>>    	spinlock_t irqlock;
+>>>> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>>>> index c222de075ef4..8d0c3425234b 100644
+>>>> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>>>> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+>>>> @@ -7,6 +7,7 @@
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    #include <linux/clk.h>
+>>>>    #include <linux/delay.h>
+>>>> +#include <linux/mfd/syscon.h>
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    #include "hantro.h"
+>>>>    #include "hantro_jpeg.h"
+>>>> @@ -24,30 +25,28 @@
+>>>>    #define CTRL_G1_PP_FUSE		0x0c
+>>>>    #define CTRL_G2_DEC_FUSE	0x10
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> +static const struct regmap_config ctrl_regmap_ctrl = {
+>>>> +	.reg_bits = 32,
+>>>> +	.val_bits = 32,
+>>>> +	.reg_stride = 0x14,
+>>>> +};
+>>>> +
+>>>>    static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
+>>>>    {
+>>>> -	u32 val;
+>>>> -
+>>>>    	/* Assert */
+>>>> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+>>>> -	val &= ~reset_bits;
+>>>> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+>>>> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET, reset_bits, 0);
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    	udelay(2);
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    	/* Release */
+>>>> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+>>>> -	val |= reset_bits;
+>>>> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+>>>> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET,
+>>>> +			   reset_bits, reset_bits);
+>>>>    }
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
+>>>>    {
+>>>> -	u32 val;
+>>>> -
+>>>> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+>>>> -	val |= clock_bits;
+>>>> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+>>>> +	regmap_update_bits(vpu->ctrl_base, CTRL_CLOCK_ENABLE,
+>>>> +			   clock_bits, clock_bits);
+>>>>    }
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+>>>> @@ -64,9 +63,9 @@ static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+>>>>    	imx8m_clk_enable(vpu, CLOCK_G1 | CLOCK_G2);
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    	/* Set values of the fuse registers */
+>>>> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_DEC_FUSE);
+>>>> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_PP_FUSE);
+>>>> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G2_DEC_FUSE);
+>>>> +	regmap_write(vpu->ctrl_base, CTRL_G1_DEC_FUSE, 0xffffffff);
+>>>> +	regmap_write(vpu->ctrl_base, CTRL_G1_PP_FUSE, 0xffffffff);
+>>>> +	regmap_write(vpu->ctrl_base, CTRL_G2_DEC_FUSE, 0xffffffff);
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    	clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> @@ -150,8 +149,22 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
+>>>>    {
+>>>> -	vpu->dec_base = vpu->reg_bases[0];
+>>>> -	vpu->ctrl_base = vpu->reg_bases[vpu->variant->num_regs - 1];
+>>>> +	struct device_node *np = vpu->dev->of_node;
+>>>> +
+>>>> +	vpu->ctrl_base = syscon_regmap_lookup_by_phandle(np, "nxp,imx8m-vpu-ctrl");
+>>>> +	if (IS_ERR(vpu->ctrl_base)) {
+>>>> +		struct resource *res;
+>>>> +		void __iomem *ctrl;
+>>>> +
+>>>> +		res = platform_get_resource_byname(vpu->pdev, IORESOURCE_MEM, "ctrl");
+>>>> +		ctrl = devm_ioremap_resource(vpu->dev, res);
+>>>> +		if (IS_ERR(ctrl))
+>>>> +			return PTR_ERR(ctrl);
+>>>> +
+>>>> +		vpu->ctrl_base = devm_regmap_init_mmio(vpu->dev, ctrl, &ctrl_regmap_ctrl);
+>>>> +		if (IS_ERR(vpu->ctrl_base))
+>>>> +			return PTR_ERR(vpu->ctrl_base);
+>>>> +	}
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    	return 0;
+>>>>    }
+>>>> @@ -198,7 +211,6 @@ static const struct hantro_irq imx8mq_irqs[] = {
+>>>>    };
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
+>>>> -static const char * const imx8mq_reg_names[] = { "g1", "g2", "ctrl" };
+>>>>    
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>    const struct hantro_variant imx8mq_vpu_variant = {
+>>>>    	.dec_fmts = imx8m_vpu_dec_fmts,
+>>>> @@ -215,6 +227,4 @@ const struct hantro_variant imx8mq_vpu_variant = {
+>>>>    	.num_irqs = ARRAY_SIZE(imx8mq_irqs),
+>>>>    	.clk_names = imx8mq_clk_names,
+>>>>    	.num_clocks = ARRAY_SIZE(imx8mq_clk_names),
+>>>> -	.reg_names = imx8mq_reg_names,
+>>>> -	.num_regs = ARRAY_SIZE(imx8mq_reg_names)
+>>>>    };
+>>>
+>
+>
