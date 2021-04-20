@@ -2,159 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF07365990
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5D63659A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbhDTNM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:12:27 -0400
-Received: from mga09.intel.com ([134.134.136.24]:40627 "EHLO mga09.intel.com"
+        id S232231AbhDTNQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:16:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:34694 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232197AbhDTNMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:12:25 -0400
-IronPort-SDR: JPr5pjSstdXwC4OUIxfhdeZB1awBcBDArASyTNAeCXYkWCj11smrj/MTFUG6kVymOyxe4qFwIP
- l/ZoQtHA7rFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195616720"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="195616720"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:11:54 -0700
-IronPort-SDR: rEkL+YshqyHjU36iExYVoiBAhkKaHFNZYcoQ0NSHs3ysYaB+t9B7KsbzIwggPGtRZPju85ONbY
- kaUI4LYC5qVw==
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="420404669"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:11:51 -0700
-Date:   Tue, 20 Apr 2021 21:15:41 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        calvin.walton@kepstin.ca, wei.huang2@amd.com, aros@gmx.com,
-        yu.c.chen@intel.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <20210420131541.GA388877@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop>
- <20210420080701.GA2326@zn.tnic>
+        id S231422AbhDTNQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:16:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CB311478;
+        Tue, 20 Apr 2021 06:16:09 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CAF53F792;
+        Tue, 20 Apr 2021 06:16:08 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 14:16:05 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        kernel-team@android.com, Jon Hunter <jonathanh@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH] PCI: tegra: Restore MSI enable state on resume
+Message-ID: <20210420131605.GB5734@lpieralisi>
+References: <20210420130526.531138-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210420080701.GA2326@zn.tnic>
+In-Reply-To: <20210420130526.531138-1-maz@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:07:01AM +0200, Borislav Petkov wrote:
-> On Tue, Apr 20, 2021 at 10:03:36AM +0800, Chen Yu wrote:
-> > On Mon, Apr 19, 2021 at 02:58:12PM -0500, Terry Bowman wrote:
-> > > Turbostat fails to correctly collect and display RAPL summary information
-> > > on Family 17h and 19h AMD processors. Running turbostat on these processors
-> > > returns immediately. If turbostat is working correctly then RAPL summary
-> > > data is displayed until the user provided command completes. If a command
-> > > is not provided by the user then turbostat is designed to continuously
-> > > display RAPL information until interrupted.
-> > > 
-> > > The issue is due to offset_to_idx() and idx_to_offset() missing support for
-> > > AMD MSR addresses/offsets. offset_to_idx()'s switch statement is missing
-> > > cases for AMD MSRs and idx_to_offset() does not include a path to return
-> > > AMD MSR(s) for any idx.
-> > > 
-> > > The solution is add AMD MSR support to offset_to_idx() and idx_to_offset().
-> > > These functions are split-out and renamed along architecture vendor lines
-> > > for supporting both AMD and Intel MSRs.
-> > > 
-> > > Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-> > > Signed-off-by: Terry Bowman <terry.bowman@amd.com>
-> > Thanks for fixing, Terry, and previously there was a patch for this from Bas Nieuwenhuizen:
-> > https://lkml.org/lkml/2021/3/12/682
-> > and it is expected to have been merged in Len's branch already.
+On Tue, Apr 20, 2021 at 02:05:26PM +0100, Marc Zyngier wrote:
+> When going into suspend, the Tegra MSI controller loses its
+> state. Restore the MSI allocation on resume so that PCI devices
+> are usable again.
 > 
-> Expected?
-> 
-> So is it or is it not?
->
-This patch was sent to Len and it is not in public repo yet. He is preparing for a new
-release of turbostat as merge window is approaching.
-> And can you folks agree on a patch already and give it to Artem for
-> testing (CCed) because he's triggering it too:
-> 
-> https://bugzilla.kernel.org/show_bug.cgi?id=212357
-> 
-Okay. I would vote for the the patch from Bas as it was a combined work from two
-authors and tested by several AMD users. But let me paste it here too for Artem to
-see if this also works for him:
+> Reported-by: Jon Hunter <jonathanh@nvidia.com>
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> Fixes: 973a28677e39 ("PCI: tegra: Convert to MSI domains")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> ---
+>  drivers/pci/controller/pci-tegra.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 
+Squashed with the Fixes: commit, updated my pci/msi branch with it
+and pushed out.
 
-From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00 2001
-From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-Date: Fri, 12 Mar 2021 21:27:40 +0800
-Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
+Thanks,
+Lorenzo
 
-It was reported that on Zen+ system turbostat started exiting,
-which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
-offset_to_idx wasn't returning a non-negative index.
-
-This patch combined the modification from Bingsong Si and
-Bas Nieuwenhuizen and addd the MSR to the index system as alternative for
-MSR_PKG_ENERGY_STATUS.
-
-Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-Reported-by: youling257 <youling257@gmail.com>
-Tested-by: youling257 <youling257@gmail.com>
-Tested-by: sibingsong <owen.si@ucloud.cn>
-Tested-by: Kurt Garloff <kurt@garloff.de>
-Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- tools/power/x86/turbostat/turbostat.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index a7c4f0772e53..a7c965734fdf 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -297,7 +297,10 @@ int idx_to_offset(int idx)
- 
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
--		offset = MSR_PKG_ENERGY_STATUS;
-+		if (do_rapl & RAPL_AMD_F17H)
-+			offset = MSR_PKG_ENERGY_STAT;
-+		else
-+			offset = MSR_PKG_ENERGY_STATUS;
- 		break;
- 	case IDX_DRAM_ENERGY:
- 		offset = MSR_DRAM_ENERGY_STATUS;
-@@ -326,6 +329,7 @@ int offset_to_idx(int offset)
- 
- 	switch (offset) {
- 	case MSR_PKG_ENERGY_STATUS:
-+	case MSR_PKG_ENERGY_STAT:
- 		idx = IDX_PKG_ENERGY;
- 		break;
- 	case MSR_DRAM_ENERGY_STATUS:
-@@ -353,7 +357,7 @@ int idx_valid(int idx)
- {
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
--		return do_rapl & RAPL_PKG;
-+		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
- 	case IDX_DRAM_ENERGY:
- 		return do_rapl & RAPL_DRAM;
- 	case IDX_PP0_ENERGY:
--- 
-2.25.1
-
-
-thanks,
-Chenyu
-
-> Thx.
-> 
+> diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
+> index eaba7b2fab4a..507b23d43ad1 100644
+> --- a/drivers/pci/controller/pci-tegra.c
+> +++ b/drivers/pci/controller/pci-tegra.c
+> @@ -1802,13 +1802,19 @@ static void tegra_pcie_enable_msi(struct tegra_pcie *pcie)
+>  {
+>  	const struct tegra_pcie_soc *soc = pcie->soc;
+>  	struct tegra_msi *msi = &pcie->msi;
+> -	u32 reg;
+> +	u32 reg, msi_state[INT_PCI_MSI_NR / 32];
+> +	int i;
+>  
+>  	afi_writel(pcie, msi->phys >> soc->msi_base_shift, AFI_MSI_FPCI_BAR_ST);
+>  	afi_writel(pcie, msi->phys, AFI_MSI_AXI_BAR_ST);
+>  	/* this register is in 4K increments */
+>  	afi_writel(pcie, 1, AFI_MSI_BAR_SZ);
+>  
+> +	/* Restore the MSI allocation state */
+> +	bitmap_to_arr32(msi_state, msi->used, INT_PCI_MSI_NR);
+> +	for (i = 0; i < ARRAY_SIZE(msi_state); i++)
+> +		afi_writel(pcie, msi_state[i], AFI_MSI_EN_VEC(i));
+> +
+>  	/* and unmask the MSI interrupt */
+>  	reg = afi_readl(pcie, AFI_INTR_MASK);
+>  	reg |= AFI_INTR_MASK_MSI_MASK;
 > -- 
-> Regards/Gruss,
->     Boris.
+> 2.30.2
 > 
-> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
