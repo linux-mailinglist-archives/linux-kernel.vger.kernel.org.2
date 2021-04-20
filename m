@@ -2,118 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2930E3651C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C5F3651CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhDTFTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 01:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhDTFTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 01:19:14 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B093C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 22:18:42 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id e2so14716593plh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 22:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=73AAcxdshwVHBh5SM/Wh/8tNFMypchVB46zj9Wl6Tpo=;
-        b=AEe+OnFJmpMQ2eaKh5qExivHBVzJAoN9mx/uHr8Z4TzuN16v7pDgroD8PE5y8+ONC7
-         55AixR19RdBV3W8PsLWpCiLGnJqnWJfsndx6l4IJicFoMlVsI6Hmx8ldr7R5LGDRnx+H
-         QBpFlgdl8ecXWFpol1dbW0BpDAHa5XRl8BwhmrFFdBQeSlm5tfjLHpZEJmfpo1XOp13v
-         GsBiH1hzy7HCmDBGxd/rJL0R+VpZoYp4L9ls9L3cSTO7+x62oiNZ/PcR7d0y4gXrHm6b
-         IcmkGTGgkcZfIQ4ZlGnImTVRMCemi6ZOn8CZCJA47SRM9+xsvO72PyUtHa2q7SvtQtk2
-         ywcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=73AAcxdshwVHBh5SM/Wh/8tNFMypchVB46zj9Wl6Tpo=;
-        b=r7VzNr7E6z81S19dFZCbOF92sT3idzsPOv0hn/TmXuXmhBTpAAR+uaRZtoTW4dmimu
-         Kc04+dGb530gpXvoiweRMSOiqSLM2KvUIKEIgTf6Vp/QYlngr2iFnhhPYpvb/LGVieHJ
-         92P1Npr95pu86bZI+CaTobJI2L+kaW8iUCDd0UrAB6jI+j5c1iONckfp9UAUfIUmDvKc
-         GI29gQUlqJMYf8d77wkgCR4IqvKNM+mOuDDRbIJ8YEnligbxFTC0ZN0KreVmONTLVr+4
-         6zotLkmmCpeC4Puz8/GtsCqeGzGRfdJSNbm6GD465cNZWXFzokSyY+7GP0p1pWrivBOa
-         jn7w==
-X-Gm-Message-State: AOAM533t7mjjIPWmZJJqgAOLHTQSKAVLD2B3MAS1DtntdpQw77kg0yKz
-        yen3ChmuTqHZhJS5qtlkXDPtog==
-X-Google-Smtp-Source: ABdhPJy//9ofYwNeDVmogiXfm/F9Svow7vj/jXnh2HHYWuXUt4HyHTuZZYDmjzQ1+zcpxiKChTbB5A==
-X-Received: by 2002:a17:902:be02:b029:e6:bb0d:6c1e with SMTP id r2-20020a170902be02b02900e6bb0d6c1emr26915647pls.77.1618895922211;
-        Mon, 19 Apr 2021 22:18:42 -0700 (PDT)
-Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
-        by smtp.gmail.com with UTF8SMTPSA id w21sm1063751pjy.21.2021.04.19.22.18.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 22:18:41 -0700 (PDT)
-Message-ID: <58b28a98-37aa-055f-5dec-d8c0005c9519@ozlabs.ru>
-Date:   Tue, 20 Apr 2021 15:18:36 +1000
+        id S229732AbhDTFWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 01:22:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:47414 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229523AbhDTFWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 01:22:45 -0400
+Received: from [10.130.0.193] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax7cj+ZH5ghuAKAA--.14700S3;
+        Tue, 20 Apr 2021 13:22:07 +0800 (CST)
+Subject: Re: [PATCH] mips: kdump: Crash kernel should be able to see old
+ memories
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1618829807-12522-1-git-send-email-tangyouling@loongson.cn>
+ <bd5b70cf-cfdf-0a4a-dfb5-08e030864138@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huacai Chen <chenhuacai@kernel.org>
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <a04a736e-4f64-0491-165c-2544bb178d73@loongson.cn>
+Date:   Tue, 20 Apr 2021 13:22:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
- Thunderbird/88.0
-Subject: Re: [PATCH 1/1] powerpc/pseries/iommu: Fix window size for direct
- mapping with pmem
-Content-Language: en-US
-To:     Leonardo Bras <leobras.c@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210420045404.438735-1-leobras.c@gmail.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <20210420045404.438735-1-leobras.c@gmail.com>
+In-Reply-To: <bd5b70cf-cfdf-0a4a-dfb5-08e030864138@flygoat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Ax7cj+ZH5ghuAKAA--.14700S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4kAw45Cr4kCw43ur4DJwb_yoW8ur4kpr
+        WxJa4Ykr48GF1I9a4Iyw15uryfZa1kArWYganrGrW5ArnFyw1xGryFqFn09FyIvryfKFyv
+        qFZYva4I9ayvyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
+        c2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+        9x07j2-erUUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Jiaxun
 
+On 04/20/2021 09:11 AM, Jiaxun Yang wrote:
+>
+> 在 2021/4/19 18:56, Youling Tang 写道:
+>> From: Huacai Chen <chenhc@lemote.com>
+>>
+>> kexec-tools use mem=X@Y to pass usable memories to crash kernel, but in
+>> commit a94e4f24ec836c8984f83959 ("MIPS: init: Drop boot_mem_map") all
+>> BIOS passed memories are removed by early_parse_mem(). I think this is
+>> reasonable for a normal kernel but not for a crash kernel, because a
+>> crash kernel should be able to see all old memories, even though it is
+>> not supposed to use them.
+>>
+>> Fixes: a94e4f24ec836c8984f83959 ("MIPS: init: Drop boot_mem_map")
+>> Signed-off-by: Huacai Chen <chenhuacai@kernel.org>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> ---
+>>   arch/mips/kernel/setup.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+>> index b86e241..ac90d3b 100644
+>> --- a/arch/mips/kernel/setup.c
+>> +++ b/arch/mips/kernel/setup.c
+>> @@ -351,8 +351,10 @@ static int __init early_parse_mem(char *p)
+>>        */
+>>       if (usermem == 0) {
+>>           usermem = 1;
+>> +#ifndef CONFIG_CRASH_DUMP
+>
+> Why depend on a config instead of a runtime variable?
+>
+If not depend on config, we can determine whether the command line contains
+the "elfcorehdr=" parameter, because the "mem=" and "elfcorhdr=" parameters
+are automatically added in kexec-tools. So if there is an "elfcorehdr="
+parameter in the command line, it means that the currently running kernel
+is a capture kernel, and the memblock_remove() operation is not called.
 
-On 20/04/2021 14:54, Leonardo Bras wrote:
-> As of today, if the DDW is big enough to fit (1 << MAX_PHYSMEM_BITS) it's
-> possible to use direct DMA mapping even with pmem region.
-> 
-> But, if that happens, the window size (len) is set to
-> (MAX_PHYSMEM_BITS - page_shift) instead of MAX_PHYSMEM_BITS, causing a
-> pagesize times smaller DDW to be created, being insufficient for correct
-> usage.
-> 
-> Fix this so the correct window size is used in this case.
+The revised patch is as follows:
+         if (usermem == 0) {
+                 usermem = 1;
+-               memblock_remove(memblock_start_of_DRAM(),
+-                       memblock_end_of_DRAM() - memblock_start_of_DRAM());
++               if (!strstr(boot_command_line, "elfcorehdr")) {
++                       memblock_remove(memblock_start_of_DRAM(),
++                               memblock_end_of_DRAM() - 
+memblock_start_of_DRAM());
++               }
 
-Good find indeed.
+Do you think it is feasible?
+> Btw as you are fixing my commit please keep me CCed.
+Sorry, I will add your CCed.
 
-afaict this does not create a huge problem though as 
-query.largest_available_block is always smaller than (MAX_PHYSMEM_BITS - 
-page_shift) where it matters (phyp).
+Thanks,
+Youling
+>
+> Thanks.
+>
+>
+> - Jiaxun
+>
 
-
-Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-
-
-> Fixes: bf6e2d562bbc4("powerpc/dma: Fallback to dma_ops when persistent memory present")
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> ---
->   arch/powerpc/platforms/pseries/iommu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> index 9fc5217f0c8e..836cbbe0ecc5 100644
-> --- a/arch/powerpc/platforms/pseries/iommu.c
-> +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -1229,7 +1229,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
->   	if (pmem_present) {
->   		if (query.largest_available_block >=
->   		    (1ULL << (MAX_PHYSMEM_BITS - page_shift)))
-> -			len = MAX_PHYSMEM_BITS - page_shift;
-> +			len = MAX_PHYSMEM_BITS;
->   		else
->   			dev_info(&dev->dev, "Skipping ibm,pmemory");
->   	}
-> 
-
--- 
-Alexey
