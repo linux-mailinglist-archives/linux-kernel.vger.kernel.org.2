@@ -2,242 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0AC364FD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F05364FD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhDTB0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 21:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhDTB0f (ORCPT
+        id S229586AbhDTBa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 21:30:27 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:56785 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhDTBa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:26:35 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32595C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:26:05 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id r20so6017447ejo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v433RIgrg2kQQRI72xpOryqD9ZucPbQbhmAZVvLs6dA=;
-        b=Wu2EEDpZHaYgPXWGrauzCxSPMzPN23CWLddOUY108yebHLnFrDOxqE7t7t0cL8laUX
-         0tGj7IHn9qeu43zTeKT+gMCCPLHGnMg30f0SiCu7Rch5ZPybGTfW3jdfAsqjhBqYKrZ+
-         nVFnJh3h8+4Cm1tRefpfDNf5HeyfSUBc5QVSiLIEaPunUFxZ2FumMcLtd/rfESQKZkqN
-         5TF/ek+vUYlspsTjkyj556afYFqvWE3RKkQp5UdslpMkdzD5JE6xhfFJySMs1+G9pjhb
-         OAgjpiPAQw2DJq9D5VYjz4sGnOZO3TQ56P9elo1jQ3X53cAyz0oacKR6cKj3/5l6yyEW
-         otEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v433RIgrg2kQQRI72xpOryqD9ZucPbQbhmAZVvLs6dA=;
-        b=IoYi48I6FymbDwKk9V1jaL3N4wzV6vCV2ZmxPbqrCmsqa8Qgl6XGfCJ+xOHpoELDYC
-         7msBhC5V9kD726G3+st47eQPPWxohLrWNJDR22qRyX0sYnkLLDK+3it2qFWC77WQguWe
-         DA3GVxR+wg86ojK7BC2vUx0IklSei/Tafk2qnK9VPgMVceo8BB/4/9/TxoYwcHNa/4kr
-         MAw0OEeMsILcuFv4eMUudbwWK7uLnT5qvdRsIr//StRPx0t/3HBBakaizVVMxS7foft/
-         o2aozaZkNsOT4G2YcP8fEWJ8NFB9sidvlPfDMHfw3aVZnYflpw477oRdnQTV2EoQmuLx
-         gbHg==
-X-Gm-Message-State: AOAM530W+158THBlSgRzw4v5w52AJ8sCsZIYljuFVFr07gHnhXSb06Ce
-        V6ozD8F1YqKF5pMUOCSbMOQv814GZ1jCZ4Rbbc9EmA==
-X-Google-Smtp-Source: ABdhPJw8HBXsl1Qu6bw+vp+DAGkKJWebB2F1KgoLCfeEY2M4sQaZur4YAK1zONi3wxVtB7k/vk6sa9BkdOcDizESSWg=
-X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr8408011ejf.341.1618881963818;
- Mon, 19 Apr 2021 18:26:03 -0700 (PDT)
+        Mon, 19 Apr 2021 21:30:26 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 0EB92201;
+        Mon, 19 Apr 2021 18:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1618882195;
+        bh=VYFjr4t6oLyIYU+i/nAjqHq3YLqqBQtAhM9VQ/YS1AA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l4wAXrXhwoIxeq5kVB76AKWaujQnTA8uS4p76sHL6WAf7Nfp3ANPEJKNjSPln6Wka
+         lOgwoqrezgtjOUFYdzCyqtNaPe3W4YCIm/B8jNSTPJ9ca04Yosen8oUmv1Yzmxt3w3
+         MdeOTOMLiRRvqCsggPGFJkCy0trSVgDrhNf/z4Uc=
+Date:   Mon, 19 Apr 2021 20:29:53 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
+References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
+ <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
+ <20210330112254.GB4976@sirena.org.uk>
+ <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
+ <20210330174221.GJ4976@sirena.org.uk>
+ <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
+ <20210330180200.GK4976@sirena.org.uk>
+ <20210330193810.GA235990@roeck-us.net>
 MIME-Version: 1.0
-References: <1299622684.20306.77.camel@gandalf.stny.rr.com>
- <877hc64klm.fsf@rustcorp.com.au> <20130813111442.632f3421@gandalf.local.home>
- <87siybk8yl.fsf@rustcorp.com.au> <20130814233228.778f25d0@gandalf.local.home>
- <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com> <20210419181111.5eb582e8@gandalf.local.home>
-In-Reply-To: <20210419181111.5eb582e8@gandalf.local.home>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 19 Apr 2021 18:25:54 -0700
-Message-ID: <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com>
-Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@elte.hu" <mingo@elte.hu>,
-        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
-        "yuanhan.liu@linux.intel.com" <yuanhan.liu@linux.intel.com>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210330193810.GA235990@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 3:11 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Mar 30, 2021 at 02:38:10PM CDT, Guenter Roeck wrote:
+>On Tue, Mar 30, 2021 at 07:02:00PM +0100, Mark Brown wrote:
+>> On Tue, Mar 30, 2021 at 12:56:56PM -0500, Zev Weiss wrote:
+>>
+>> > Okay, to expand a bit on the description in my initial message -- we've
+>> > got a single chassis with multiple server boards and a single manager board
+>> > that handles, among other things, power control for the servers.
+>> > The manager board has one LM25066 for each attached server, which acts as
+>> > the "power switch" for that server.  There thus really isn't any driver to
+>> > speak of for the downstream device.
+>>
+>> This sounds like you need a driver representing those server boards (or
+>> the slots they plug into perhaps) that represents everything about those
+>> boards to userspace, including power switching.  I don't see why you
+>> wouldn't have a driver for that - it's a thing that physically exists
+>> and clearly has some software control, and you'd presumably also expect
+>> to represent some labelling about the slot as well.
 >
-> On Mon, 19 Apr 2021 21:54:13 +0000
-> "Williams, Dan J" <dan.j.williams@intel.com> wrote:
+>Absolutely agree.
 >
-> > [ drop Rusty, add Jessica and Emmanuel ]
->
-> Probably could have kept Jessica on as she's the module maintainer.
+>Thanks,
+>Guenter
 
-Oh, you misread, I swapped out Rusty for Jessica on the Cc.
+Hi Guenter, Mark,
 
->
-> >
-> > On Wed, 2013-08-14 at 23:32 -0400, Steven Rostedt wrote:
-> > > On Thu, 15 Aug 2013 11:32:10 +0930
->
-> Wow, this is coming back from the dead! No thread rests in peace!
+I wanted to return to this to try to explain why structuring the kernel 
+support for this in a way that's specific to the device behind the PMIC 
+seems like an awkward fit to me, and ultimately kind of artificial.
 
-No one can escape the all seeing eye of lore, and it makes it so easy
-to reply to ancient stuff. I thought it useful to kick the zombie
-because this thread is the first thing that comes up in the Google
-search of:
+In the system I described, the manager board with the LM25066 devices is 
+its own little self-contained BMC system running its own Linux kernel 
+(though "BMC" is perhaps a slightly misleading term because there's no 
+host system that it manages).  The PMICs are really the only relevant 
+connection it has to the servers it controls power for -- they have 
+their own dedicated local BMCs on board as well doing all the usual BMC 
+tasks.  A hypothetical dedicated driver for this on the manager board 
+wouldn't have any other hardware to touch aside from the pmbus interface 
+of the LM25066 itself, so calling it a server board driver seems pretty 
+arbitrary -- and in fact the same system also has another LM25066 that 
+controls the power supply to the chassis cooling fans (a totally 
+different downstream device, but one that would be equally well-served 
+by the same software).
 
-"enable tracepoint at module load"
+More recently, another system has entered the picture for us that might 
+illustrate it more starkly -- the Delta Open19 power shelf [0] supported 
+by a recent code release from LinkedIn [1].  This is a rackmount power 
+supply with fifty outputs, each independently switchable via an LM25066 
+attached to an on-board BMC-style management controller (though again, 
+no host system involved).  We (Equinix Metal) are interested in porting 
+a modern OpenBMC to it to replace the dated, crufty, 
+pre-Linux-Foundation version of OpenBMC it currently runs (as found in 
+the linked repo).  The exact nature of the devices powered by its 
+outputs is well outside the scope of the firmware running on that 
+controller (it could be any arbitrary thing that runs on 12VDC), but we 
+still want to be able to both (a) retrieve per-output 
+voltage/current/power readings as provided by the existing LM25066 hwmon 
+support, and (b) control the on/off state of those outputs from 
+userspace.
 
->
-> > > Rusty Russell <rusty@rustcorp.com.au> wrote:
-> > >
-> > > > Steven Rostedt <rostedt@goodmis.org> writes:
-> > > > > But the thing about this that bothers me is that there's no way
-> > > > > to say,
-> > > > > "Enable all tracepoints in this module on load". I would like a
-> > > > > way to
-> > > > > do that, but I don't know of a way to do that without modifying
-> > > > > the
-> > > > > module code. Have any ideas? Basically, I would love to have:
-> > > > >
-> > > > > insmod foo tracepoints=all
-> > > > >
-> > > > > or something and have all tracepoints enabled.
-> > > >
-> > > > "without modifying the module code"?  Why?  The code isn't that
-> > > > scary,
-> > > > and this seems useful.
-> > >
-> > > I'm not afraid of the code, I'm afraid of you ;-) I hear you have
-> > > killer puppies.
-> > >
-> > >
-> > > OK, then when I get some time, I may cook something up.
->
->
-> "when I get some time" HAHAHAHAHAHAH!!!!  That was what? 8 years ago!
+Given the array of possible use-cases, an approach of adding 
+power-switch functionality to the existing LM25066 support seems like 
+the most obvious way to support this, so I'm hoping to see if I can get 
+some idea of what an acceptable implementation of that might look like.  
 
-free time coming up... any day now.
 
->
-> > >
-> > > Thanks,
-> > >
-> > > -- Steve
-> >
-> > Revive an old thread...
->
-> I'll say!
->
-> >
-> > Steven, did you ever end up with a solution to the "enable tracing at
-> > module load" problem?
->
-> For tracepoints, no. For function tracing, yes!
->
-> >
-> > I see some people getting admonished to use ftrace over dev_dbg() [1],
-> > but one of the features that keeps dev_dbg() proliferating is its
-> > generic "$mod_name.dyndbg=" module parameter support for selective
-> > debug enabling at boot / module-load.
-> >
-> > It would be useful to be able to do
-> > /sys/kernel/debug/dynamic_debug/control enabling for tracepoints, but
-> > also module::function_name patterns for "got here" style debugging. I'd
-> > be happy to help with this, but wanted to understand where you left
-> > things.
-> >
-> > [1]: https://lore.kernel.org/linux-wireless/YHRFy3aq%2FgB7Vde6@kroah.com/
->
-> I don't think I did anything with trace events, I'll have to dig deeper.
-> But today you have this:
->
->  # cd /sys/kernel/tracing
->
->  # rmmod bridge
->
->  # echo ':mod:bridge' > set_ftrace_filter
->
->  # cat set_ftrace_filter
-> :mod:bridge
->
->  # echo function > current_tracer
->
->  # cat trace
-> # tracer: function
-> #
-> # entries-in-buffer/entries-written: 0/0   #P:8
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| /     delay
-> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> #              | |         |   ||||      |         |
->
->  # modprobe bridge
->
->  # cat set_ftrace_filter
-> br_switchdev_event [bridge]
-> br_device_event [bridge]
-> br_net_exit [bridge]
-> br_boolopt_get [bridge]
-> br_boolopt_multi_get [bridge]
-> br_opt_toggle [bridge]
-> br_boolopt_toggle [bridge]
-> br_boolopt_multi_toggle [bridge]
-> br_dev_set_multicast_list [bridge]
-> br_get_link_ksettings [bridge]
-> [..]
->
->  # cat trace
-> # tracer: function
-> #
-> # entries-in-buffer/entries-written: 10/10   #P:8
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| /     delay
-> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> #              | |         |   ||||      |         |
->         modprobe-2364    [006] .... 12929.869510: br_init <-do_one_initcall
->         modprobe-2364    [006] .... 12929.869513: br_fdb_init <-br_init
->         modprobe-2364    [006] .... 12929.869522: br_device_event <-call_netdevice_register_net_notifiers
->         modprobe-2364    [006] .... 12929.869522: br_device_event <-call_netdevice_register_net_notifiers
->         modprobe-2364    [006] .... 12929.869522: br_device_event <-call_netdevice_register_net_notifiers
->         modprobe-2364    [006] .... 12929.869522: br_device_event <-call_netdevice_register_net_notifiers
->         modprobe-2364    [006] .... 12929.869523: br_device_event <-call_netdevice_register_net_notifiers
->         modprobe-2364    [006] .... 12929.869523: br_device_event <-call_netdevice_register_net_notifiers
->         modprobe-2364    [006] .... 12929.869524: br_netlink_init <-br_init
->         modprobe-2364    [006] .... 12929.869524: br_mdb_init <-br_netlink_init
->
->
-> So yes, function tracing now allows setting a filter to trace only the
-> functions for a given module, and if that module is not yet loaded, it
-> stores the filter until it is.
+Thanks,
+Zev
 
-Ah, thanks for the pointer. So if I wanted to convert a kernel command like:
+[0] https://www.open19.org/marketplace/delta-16kw-power-shelf/
+[1] https://github.com/linkedin/o19-bmc-firmware/tree/master/meta-openbmc/meta-linkedin/meta-deltapower
 
-libnvdimm.dyndbg
-
-...it would be something like:
-
-ftrace=function ftrace_filter=:mod:libnvdimm
-
-...and then "cat /sys/kernel/tracing/trace" instead of "dmesg" to
-retrieve... assuming only "got here" style debug was being attempted.
-
-> To do something similar for tracepoints, I think we still need to add it as
-> a module parameter.
-
-The dev_dbg() filter language is attractive, it's too bad
-trace_printk() has such a high runtime cost as combining dynamic-debug
-and tracing would seem to be a panacea.
