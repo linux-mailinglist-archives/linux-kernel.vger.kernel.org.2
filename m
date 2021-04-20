@@ -2,116 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5BF36603F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDEA366043
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhDTTdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 15:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S233693AbhDTThn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 15:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233544AbhDTTdY (ORCPT
+        with ESMTP id S233541AbhDTThh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:33:24 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A587BC06174A;
-        Tue, 20 Apr 2021 12:32:52 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id i12so9065606qke.3;
-        Tue, 20 Apr 2021 12:32:52 -0700 (PDT)
+        Tue, 20 Apr 2021 15:37:37 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AE6C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 12:37:05 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id c195so44357541ybf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 12:37:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+SxMgumr24PRznk/dw2CQAvRlHHtf2Bm9jyWKNq7r2U=;
-        b=tXFpeh2kvp8PPMCJjFV0Ko5/Zf56vNqWdARCa2gbOjxq5Hb4geDXZiXFOqK8PUBSL+
-         mz+NP+2E5PKTYzsTsYkQwV1riQMIJgYDp3uYRo75rgDCs5qo20xxKeKSjGx527n8pON3
-         fzKKBWLam9WkgZhTt0yaRgiQkQkd/tySAUkND3xHWxJDkuVJzM7+/V503E2CE4aDeFv8
-         gx3ZmP6Jnx2uzaNEuO5pD8HWcIDO0kfQL6lZ5w4L+gRjyxX2MGqLTCuTEewhle6gy0QV
-         w+IyILdqvPzS+BYN70+rCDorHf6ZiKGdF6mNtMQTN5xvZUB6JrGePgYog+cUpXyDYYdI
-         TE6Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SzjYTJVYGK1cUYkBfmKqZ45DGnjAWx/7ND0PEQ2w/K8=;
+        b=GXKxY0AvNG2k78o1KudjUBrSM82uqefXrpum6p/8y5k2c+FLa1pwBlahcJ1dZdwcUx
+         L0lSRS5XlyQCPUEbQT26fLNqS9RaEw/tm37CwYA/5raBP1MnfEXAFz2nfs+GFS+gHGz9
+         vEMzxYKLAj311WmpK45+Mg9v7BgAiYRKthc8fMdkoxPCPU0QFUme6VVFLJgiRJjqyTJW
+         MbqaKG8k7BOM45gPxl10nrl7UGatbd0uvX8a4lT5yKksuz9CvSZQ3tlkPQwkHJjRFZVd
+         5wVaEpjxISkFFydI5ljxrOv9lKzhuC8x/bcPM71v57ysdANsstnes+f3a9SY9lecmLCf
+         nhMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+SxMgumr24PRznk/dw2CQAvRlHHtf2Bm9jyWKNq7r2U=;
-        b=s5um6eosDUBLLKfYz59YQL3rv3wJaDdL7SnHyxIA8a4aLiFtSqYafzRS2J89+nnEUL
-         eiAVBptydWIfJ3W3HSgL1tXp8YLaFfml7INKMA6W+c6tv6W7Slzv4bPMqiWGNQJgBKe7
-         AF9NzOTS8bU8dD3K8clablrwudwdB9OPuuwEUwvgj2rjwZFqn92nH8hJkjzbOolfpcy7
-         pHSr40Jqy7dAoo6P8bp1zzWK+3GTZQMBmKRsF8eANqXj5eI12r6AGJDcJe3B6HEvduas
-         feh68fHlcZucJuUnX434vufbdNKD8cWXIVwPPE1/tFS9BXUm9EYqqbB6/yFC4I53eURu
-         o+kw==
-X-Gm-Message-State: AOAM531RO1DaSPEqbh03Qzd6AfxqYWHBjN4fD1pHrAirjTpPtYPbqmAh
-        bUPYl2FwpXiEuao5ncfMzwc=
-X-Google-Smtp-Source: ABdhPJxOXz6kQ5QWRK8Nhz0L1WsC2GU2HHhVMn/9pslWTIRT6dkBOzzNxHOBecAxh8oYa3FWPowLGg==
-X-Received: by 2002:a37:8906:: with SMTP id l6mr632740qkd.198.1618947171788;
-        Tue, 20 Apr 2021 12:32:51 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id t21sm15515qkj.32.2021.04.20.12.32.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 12:32:51 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 12:32:50 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 1/2] bitmap_parse: support 'all' semantics
-Message-ID: <20210420193250.GA61766@yury-ThinkPad>
-References: <20210420000131.21038-1-yury.norov@gmail.com>
- <20210420000131.21038-2-yury.norov@gmail.com>
- <YH6qUDJmUflEmper@smile.fi.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SzjYTJVYGK1cUYkBfmKqZ45DGnjAWx/7ND0PEQ2w/K8=;
+        b=fOsbEgKBV2LDEMEzMnb0j8nb173HjdMMCwkKnbiKR7bcpngoPAzOsLF5MwbPdtT7GH
+         hQyk1IwncygMjaOSpJQqqeWf/eS/dSIHPE4jK3HZPdVbW4Z+GxsWHWTvf6NM3e9i8eQt
+         ZtqJ72lPbpSV6HakboZj/GRwWJGjH7fz4Fo1z0w0jXtwf7VmuBPNelCEeXLM0s7LQudm
+         +ia5hUf8/hRvlPakneywCvESxvNUSMctr4Xq1ZjWlP+iukVezQhJ5pUG1sP+c4BeanqI
+         IerGcpBW4Fb0dspnk1D3jEwQ7ZI7xB5r1XCKnfMEcEC7DFel+mHExun7qtno92J42DPQ
+         Gvmg==
+X-Gm-Message-State: AOAM532hZCfKzYEZOhBVJPMOX93/YjmRrY+k8m47cPx12CjjcEK6aoDp
+        G8LLCgAEqIX0ucrOdvCmDu3WiGZnTrw+B759o37chQ==
+X-Google-Smtp-Source: ABdhPJy7JZrzNPVHBSzUCtqNpNPEaLdEsKlzmcj/jpMQ5bVhImpdmkc9pm6SgT0A7tsq8nad3v3phmCEW6braBpcTbU=
+X-Received: by 2002:a5b:7c5:: with SMTP id t5mr27168111ybq.190.1618947424907;
+ Tue, 20 Apr 2021 12:37:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH6qUDJmUflEmper@smile.fi.intel.com>
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
+In-Reply-To: <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 20 Apr 2021 12:36:54 -0700
+Message-ID: <CAJuCfpGWdghXpSr9OaoWEdXwLq_qES=Pxg9BojqJ2N+Wx9NwFQ@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 01:17:52PM +0300, Andy Shevchenko wrote:
-> On Mon, Apr 19, 2021 at 05:01:30PM -0700, Yury Norov wrote:
-> > RCU code supports an 'all' group as a special case when parsing
-> > rcu_nocbs parameter. This patch moves the 'all' support to the core
-> > bitmap_parse code, so that all bitmap users can enjoy this extension.
-> > 
-> > Moving 'all' parsing to a bitmap_parse level, also allows users to
-> > pass patterns together with 'all' in regular group:pattern format
-> 
-> ...
-> 
-> >  	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
-> >  	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
-> >  
-> > +	{0,	  "all",		&exp1[8 * step], 32, 0},
-> > +	{0,	  "0, 1, all,  ",	&exp1[8 * step], 32, 0},
-> > +	{0,	  "all:1/2",		&exp1[4 * step], 32, 0},
-> > +	{0,	  "ALL:1/2",		&exp1[4 * step], 32, 0},
-> 
-> > +	{-EINVAL, "al", NULL, 8, 0},
-> > +	{-EINVAL, "alll", NULL, 8, 0},
-> > +
-> 
-> Looking at the below hunk it seems like the two above should be actually placed
-> there.
-> 
-> >  	{-EINVAL, "-1",	NULL, 8, 0},
-> >  	{-EINVAL, "-0",	NULL, 8, 0},
-> >  	{-EINVAL, "10-1", NULL, 8, 0},
-> > @@ -384,7 +391,6 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
-> >  	{-EINVAL, "a-31:10/1", NULL, 8, 0},
-> >  	{-EINVAL, "0-31:a/1", NULL, 8, 0},
-> >  	{-EINVAL, "0-\n", NULL, 8, 0},
-> > -
-> 
-> Otherwise this change doesn't belong to the series.
+Hi Folks,
 
-My bad, I'll fix it in v2.
+On Tue, Apr 20, 2021 at 12:18 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Mon, Apr 19, 2021 at 06:44:02PM -0700, Shakeel Butt wrote:
+> > Proposal: Provide memory guarantees to userspace oom-killer.
+> >
+> > Background:
+> >
+> > Issues with kernel oom-killer:
+> > 1. Very conservative and prefer to reclaim. Applications can suffer
+> > for a long time.
+> > 2. Borrows the context of the allocator which can be resource limited
+> > (low sched priority or limited CPU quota).
+> > 3. Serialized by global lock.
+> > 4. Very simplistic oom victim selection policy.
+> >
+> > These issues are resolved through userspace oom-killer by:
+> > 1. Ability to monitor arbitrary metrics (PSI, vmstat, memcg stats) to
+> > early detect suffering.
+> > 2. Independent process context which can be given dedicated CPU quota
+> > and high scheduling priority.
+> > 3. Can be more aggressive as required.
+> > 4. Can implement sophisticated business logic/policies.
+> >
+> > Android's LMKD and Facebook's oomd are the prime examples of userspace
+> > oom-killers. One of the biggest challenges for userspace oom-killers
+> > is to potentially function under intense memory pressure and are prone
+> > to getting stuck in memory reclaim themselves. Current userspace
+> > oom-killers aim to avoid this situation by preallocating user memory
+> > and protecting themselves from global reclaim by either mlocking or
+> > memory.min. However a new allocation from userspace oom-killer can
+> > still get stuck in the reclaim and policy rich oom-killer do trigger
+> > new allocations through syscalls or even heap.
+> >
+> > Our attempt of userspace oom-killer faces similar challenges.
+> > Particularly at the tail on the very highly utilized machines we have
+> > observed userspace oom-killer spectacularly failing in many possible
+> > ways in the direct reclaim. We have seen oom-killer stuck in direct
+> > reclaim throttling, stuck in reclaim and allocations from interrupts
+> > keep stealing reclaimed memory. We have even observed systems where
+> > all the processes were stuck in throttle_direct_reclaim() and only
+> > kswapd was running and the interrupts kept stealing the memory
+> > reclaimed by kswapd.
+> >
+> > To reliably solve this problem, we need to give guaranteed memory to
+> > the userspace oom-killer. At the moment we are contemplating between
+> > the following options and I would like to get some feedback.
+> >
+> > 1. prctl(PF_MEMALLOC)
+> >
+> > The idea is to give userspace oom-killer (just one thread which is
+> > finding the appropriate victims and will be sending SIGKILLs) access
+> > to MEMALLOC reserves. Most of the time the preallocation, mlock and
+> > memory.min will be good enough but for rare occasions, when the
+> > userspace oom-killer needs to allocate, the PF_MEMALLOC flag will
+> > protect it from reclaim and let the allocation dip into the memory
+> > reserves.
+> >
+> > The misuse of this feature would be risky but it can be limited to
+> > privileged applications. Userspace oom-killer is the only appropriate
+> > user of this feature. This option is simple to implement.
+>
+> Hello Shakeel!
+>
+> If ordinary PAGE_SIZE and smaller kernel allocations start to fail,
+> the system is already in a relatively bad shape. Arguably the userspace
+> OOM killer should kick in earlier, it's already a bit too late.
+
+I tend to agree here. This is how we are trying to avoid issues with
+such severe memory shortages - by tuning the killer a bit more
+aggressively. But a more reliable mechanism would definitely be an
+improvement.
+
+> Allowing to use reserves just pushes this even further, so we're risking
+> the kernel stability for no good reason.
+>
+> But I agree that throttling the oom daemon in direct reclaim makes no sense.
+> I wonder if we can introduce a per-task flag which will exclude the task from
+> throttling, but instead all (large) allocations will just fail under a
+> significant memory pressure more easily. In this case if there is a significant
+> memory shortage the oom daemon will not be fully functional (will get -ENOMEM
+> for an attempt to read some stats, for example), but still will be able to kill
+> some processes and make the forward progress.
+
+This sounds like a good idea to me.
+
+> But maybe it can be done in userspace too: by splitting the daemon into
+> a core- and extended part and avoid doing anything behind bare minimum
+> in the core part.
+>
+> >
+> > 2. Mempool
+> >
+> > The idea is to preallocate mempool with a given amount of memory for
+> > userspace oom-killer. Preferably this will be per-thread and
+> > oom-killer can preallocate mempool for its specific threads. The core
+> > page allocator can check before going to the reclaim path if the task
+> > has private access to the mempool and return page from it if yes.
+> >
+> > This option would be more complicated than the previous option as the
+> > lifecycle of the page from the mempool would be more sophisticated.
+> > Additionally the current mempool does not handle higher order pages
+> > and we might need to extend it to allow such allocations. Though this
+> > feature might have more use-cases and it would be less risky than the
+> > previous option.
+>
+> It looks like an over-kill for the oom daemon protection, but if there
+> are other good use cases, maybe it's a good feature to have.
+>
+> >
+> > Another idea I had was to use kthread based oom-killer and provide the
+> > policies through eBPF program. Though I am not sure how to make it
+> > monitor arbitrary metrics and if that can be done without any
+> > allocations.
+>
+> To start this effort it would be nice to understand what metrics various
+> oom daemons use and how easy is to gather them from the bpf side. I like
+> this idea long-term, but not sure if it has been settled down enough.
+> I imagine it will require a fair amount of work on the bpf side, so we
+> need a good understanding of features we need.
+
+For a reference, on Android, where we do not really use memcgs,
+low-memory-killer reads global data from meminfo, vmstat, zoneinfo
+procfs nodes.
+Thanks,
+Suren.
+
+>
+> Thanks!
