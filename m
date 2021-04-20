@@ -2,156 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F72636599F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF07365990
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhDTNP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhDTNPz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:15:55 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6086CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:15:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FPkgp73Lkz9tlB;
-        Tue, 20 Apr 2021 23:15:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618924519;
-        bh=UI0o3Fd/uLM07Bexdon7KWXa2iOf9VNOAMVICkVRMOA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=k2bus5awbaMgVM0Ns6wKbxineVVY2j79KhrIvn74R1fA7QXHOG7MZiUtSLeY1NpF9
-         pEJTQvp5tDNN74LoICIwNbIhw7YrKRlO9ev37YKmiLwowDUoGWG6ogRN82qVU1S7qY
-         JqfJDtpsbubG0TfDqzpXgac7CQq2jTPHO5XVvtAzNz+aaNu0iW2GGr8mYoAGrAX3Bc
-         wSFlRM+bohB+xjJQX041uxKVOp/4XhFCIknd/o5xjpk6iukabU3Bq6LF+jwn7BYtQc
-         uWFI+pSAm07Xdv1lkWq0XvrC7y0yGMBoFxCPEYC1iQbYIV9VjXbXtbJ8XP9eLCVBNd
-         wu14uXGQlZ9+A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
-In-Reply-To: <1f337b4c-940e-110c-d0a2-2ad95cfb2dc8@csgroup.eu>
-References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
- <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
- <20210418174648.GN26583@gate.crashing.org>
- <bf119bfe-7db1-e7f3-d837-f910635eeebb@infradead.org>
- <87sg3mct3x.fsf@mpe.ellerman.id.au>
- <bd83b06d-ed36-e600-e988-c1e0014fb9cf@infradead.org>
- <1f337b4c-940e-110c-d0a2-2ad95cfb2dc8@csgroup.eu>
-Date:   Tue, 20 Apr 2021 23:15:14 +1000
-Message-ID: <871rb5cd25.fsf@mpe.ellerman.id.au>
+        id S232254AbhDTNM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:12:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:40627 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232197AbhDTNMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:12:25 -0400
+IronPort-SDR: JPr5pjSstdXwC4OUIxfhdeZB1awBcBDArASyTNAeCXYkWCj11smrj/MTFUG6kVymOyxe4qFwIP
+ l/ZoQtHA7rFA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195616720"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="195616720"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:11:54 -0700
+IronPort-SDR: rEkL+YshqyHjU36iExYVoiBAhkKaHFNZYcoQ0NSHs3ysYaB+t9B7KsbzIwggPGtRZPju85ONbY
+ kaUI4LYC5qVw==
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="420404669"
+Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:11:51 -0700
+Date:   Tue, 20 Apr 2021 21:15:41 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        calvin.walton@kepstin.ca, wei.huang2@amd.com, aros@gmx.com,
+        yu.c.chen@intel.com
+Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
+ AMD processors
+Message-ID: <20210420131541.GA388877@chenyu-desktop>
+References: <20210419195812.147710-1-terry.bowman@amd.com>
+ <20210420020336.GA386151@chenyu-desktop>
+ <20210420080701.GA2326@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210420080701.GA2326@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 19/04/2021 =C3=A0 23:39, Randy Dunlap a =C3=A9crit=C2=A0:
->> On 4/19/21 6:16 AM, Michael Ellerman wrote:
->>> Randy Dunlap <rdunlap@infradead.org> writes:
->>=20
->>>> Sure.  I'll post them later today.
->>>> They keep FPU and ALTIVEC as independent (build) features.
->>>
->>> Those patches look OK.
->>>
->>> But I don't think it makes sense to support that configuration, FPU=3Dn
->>> ALTVEC=3Dy. No one is ever going to make a CPU like that. We have enough
->>> testing surface due to configuration options, without adding artificial
->>> combinations that no one is ever going to use.
->>>
->>> IMHO :)
->>>
->>> So I'd rather we just make ALTIVEC depend on FPU.
->>=20
->> That's rather simple. See below.
->> I'm doing a bunch of randconfig builds with it now.
->>=20
->> ---
->> From: Randy Dunlap <rdunlap@infradead.org>
->> Subject: [PATCH] powerpc: make ALTIVEC depend PPC_FPU
->>=20
->> On a kernel config with ALTIVEC=3Dy and PPC_FPU not set/enabled,
->> there are build errors:
->>=20
->> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of f=
-unction 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
->>             enable_kernel_fp();
->> ../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
->> ../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of functi=
-on 'put_vr' [-Werror=3Dimplicit-function-declaration]
->>    637 |   put_vr(rn, &u.v);
->>        |   ^~~~~~
->> ../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
->> ../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of functi=
-on 'get_vr'; did you mean 'get_oc'? [-Werror=3Dimplicit-function-declaratio=
-n]
->>    660 |   get_vr(rn, &u.v);
->>        |   ^~~~~~
->>=20
->> In theory ALTIVEC is independent of PPC_FPU but in practice nobody
->> is going to build such a machine, so make ALTIVEC require PPC_FPU
->> by depending on PPC_FPU.
->>=20
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
->> Cc: Segher Boessenkool <segher@kernel.crashing.org>
->> Cc: lkp@intel.com
->> ---
->>   arch/powerpc/platforms/86xx/Kconfig    |    1 +
->>   arch/powerpc/platforms/Kconfig.cputype |    2 ++
->>   2 files changed, 3 insertions(+)
->>=20
->> --- linux-next-20210416.orig/arch/powerpc/platforms/86xx/Kconfig
->> +++ linux-next-20210416/arch/powerpc/platforms/86xx/Kconfig
->> @@ -4,6 +4,7 @@ menuconfig PPC_86xx
->>   	bool "86xx-based boards"
->>   	depends on PPC_BOOK3S_32
->>   	select FSL_SOC
->> +	select PPC_FPU
->>   	select ALTIVEC
->>   	help
->>   	  The Freescale E600 SoCs have 74xx cores.
->> --- linux-next-20210416.orig/arch/powerpc/platforms/Kconfig.cputype
->> +++ linux-next-20210416/arch/powerpc/platforms/Kconfig.cputype
->> @@ -186,6 +186,7 @@ config E300C3_CPU
->>   config G4_CPU
->>   	bool "G4 (74xx)"
->>   	depends on PPC_BOOK3S_32
->> +	select PPC_FPU
->>   	select ALTIVEC
->>=20=20=20
->>   endchoice
->> @@ -309,6 +310,7 @@ config PHYS_64BIT
->>=20=20=20
->>   config ALTIVEC
->>   	bool "AltiVec Support"
->> +	depends on PPC_FPU
+On Tue, Apr 20, 2021 at 10:07:01AM +0200, Borislav Petkov wrote:
+> On Tue, Apr 20, 2021 at 10:03:36AM +0800, Chen Yu wrote:
+> > On Mon, Apr 19, 2021 at 02:58:12PM -0500, Terry Bowman wrote:
+> > > Turbostat fails to correctly collect and display RAPL summary information
+> > > on Family 17h and 19h AMD processors. Running turbostat on these processors
+> > > returns immediately. If turbostat is working correctly then RAPL summary
+> > > data is displayed until the user provided command completes. If a command
+> > > is not provided by the user then turbostat is designed to continuously
+> > > display RAPL information until interrupted.
+> > > 
+> > > The issue is due to offset_to_idx() and idx_to_offset() missing support for
+> > > AMD MSR addresses/offsets. offset_to_idx()'s switch statement is missing
+> > > cases for AMD MSRs and idx_to_offset() does not include a path to return
+> > > AMD MSR(s) for any idx.
+> > > 
+> > > The solution is add AMD MSR support to offset_to_idx() and idx_to_offset().
+> > > These functions are split-out and renamed along architecture vendor lines
+> > > for supporting both AMD and Intel MSRs.
+> > > 
+> > > Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
+> > > Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+> > Thanks for fixing, Terry, and previously there was a patch for this from Bas Nieuwenhuizen:
+> > https://lkml.org/lkml/2021/3/12/682
+> > and it is expected to have been merged in Len's branch already.
+> 
+> Expected?
+> 
+> So is it or is it not?
 >
-> Shouldn't we do it the other way round ? In extenso make ALTIVEC select P=
-PC_FPU and avoid the two=20
-> selects that are above ?
+This patch was sent to Len and it is not in public repo yet. He is preparing for a new
+release of turbostat as merge window is approaching.
+> And can you folks agree on a patch already and give it to Artem for
+> testing (CCed) because he's triggering it too:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=212357
+> 
+Okay. I would vote for the the patch from Bas as it was a combined work from two
+authors and tested by several AMD users. But let me paste it here too for Artem to
+see if this also works for him:
 
-Yes, ALTIVEC should select PPC_FPU.
 
-The latter is (generally) not user selectable, so there's no issue with
-selecting it, whereas the reverse is not true.
+From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00 2001
+From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Date: Fri, 12 Mar 2021 21:27:40 +0800
+Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
 
-For 64-bit Book3S I think we could just always enable ALTIVEC these
-days. It's only Power5 that doesn't have it, and essentially no one is
-running mainline on those AFAIK. But that can be done separately.
+It was reported that on Zen+ system turbostat started exiting,
+which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
+offset_to_idx wasn't returning a non-negative index.
 
-cheers
+This patch combined the modification from Bingsong Si and
+Bas Nieuwenhuizen and addd the MSR to the index system as alternative for
+MSR_PKG_ENERGY_STATUS.
+
+Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
+Reported-by: youling257 <youling257@gmail.com>
+Tested-by: youling257 <youling257@gmail.com>
+Tested-by: sibingsong <owen.si@ucloud.cn>
+Tested-by: Kurt Garloff <kurt@garloff.de>
+Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index a7c4f0772e53..a7c965734fdf 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -297,7 +297,10 @@ int idx_to_offset(int idx)
+ 
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		offset = MSR_PKG_ENERGY_STATUS;
++		if (do_rapl & RAPL_AMD_F17H)
++			offset = MSR_PKG_ENERGY_STAT;
++		else
++			offset = MSR_PKG_ENERGY_STATUS;
+ 		break;
+ 	case IDX_DRAM_ENERGY:
+ 		offset = MSR_DRAM_ENERGY_STATUS;
+@@ -326,6 +329,7 @@ int offset_to_idx(int offset)
+ 
+ 	switch (offset) {
+ 	case MSR_PKG_ENERGY_STATUS:
++	case MSR_PKG_ENERGY_STAT:
+ 		idx = IDX_PKG_ENERGY;
+ 		break;
+ 	case MSR_DRAM_ENERGY_STATUS:
+@@ -353,7 +357,7 @@ int idx_valid(int idx)
+ {
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		return do_rapl & RAPL_PKG;
++		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
+ 	case IDX_DRAM_ENERGY:
+ 		return do_rapl & RAPL_DRAM;
+ 	case IDX_PP0_ENERGY:
+-- 
+2.25.1
+
+
+thanks,
+Chenyu
+
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
