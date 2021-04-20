@@ -2,65 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5893365994
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F5136599A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhDTNMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:12:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52398 "EHLO mx2.suse.de"
+        id S232197AbhDTNOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:14:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhDTNMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:12:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618924334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vykaM9tEUkeV2xKObiXIhcw191WRtCqc+lXXd12ZJPc=;
-        b=QuT3uYFy6+F+ujFCMb8AcOqOw4g+MbeHpFir5leS0ICaMCKOk+Po3wtSNBLPoDv7diIP9W
-        4YLZERO3q3I5xBbXL3ZrezFJLasYEy2hO3lwgwopX6jYHmO4fieBKBtrIbNm2ZFzTfKswE
-        QzNP6R1vlI5MfHRITEySf4d8edS1j/Q=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7676FAF65;
-        Tue, 20 Apr 2021 13:12:14 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 15:12:13 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
- memory accounting
-Message-ID: <YH7TLRgKLwp73oWG@dhcp22.suse.cz>
-References: <20210420121354.1160437-1-rppt@kernel.org>
- <YH7HNHJLZyQKqmir@kernel.org>
+        id S231313AbhDTNOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:14:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCB21613C3;
+        Tue, 20 Apr 2021 13:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618924428;
+        bh=5ngbTZUuRjFnbOZ5YDzcHl+LD9EANqvUFI4zXthVZ3c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Gz/e+o12WxLzV3ekArfmfo20J6qj9dTLaUY7ZAg9u1OIEnukYqc1aVsHHI1iQAial
+         ankcIIu9pN7y/rdVRjeGM15yDzPl8KS+yS9IKmPy2DwHMiexBerA755IlnTX48DlPq
+         2UjytdFvLT50E37InemU1Tu22R/7YkV3NIzF3ECpC51idKLDWOCt6qtpzza4OfTSpk
+         v7MVDHBS+ObZj1zgVF+IcNM8QeC+T37Q5HzLa6TkZTMzpY8eWVyLE7iyOmNxDlBXi1
+         AvDg3kzJXs26eovH0qTnGOrpkxZc8j+6TSeiLV3mM/O8by7LXLhOkPAKGm8VL/Ffro
+         gj/zsalLiNdQQ==
+Received: by mail-qk1-f175.google.com with SMTP id t17so10731737qkg.4;
+        Tue, 20 Apr 2021 06:13:48 -0700 (PDT)
+X-Gm-Message-State: AOAM53158r6agaca+BqPW276xAIaRBZuzR6bQmvjesiUO9gz25s+WZ29
+        9EhqdUTT/IStDzEKte/vULYQQHdu8Lndsdgd5Q==
+X-Google-Smtp-Source: ABdhPJwjtWC1cE3ElIyzvn6w+ghuEwSU5cAamZB/FX4d8iNqmT6pm4fi4UvG2KW0N9SXxdsqQeBiuQpdEII07+6JSdE=
+X-Received: by 2002:a05:620a:1409:: with SMTP id d9mr814132qkj.464.1618924427919;
+ Tue, 20 Apr 2021 06:13:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH7HNHJLZyQKqmir@kernel.org>
+References: <20210325090026.8843-1-kishon@ti.com> <20210325090026.8843-2-kishon@ti.com>
+ <20210325233812.GA1943834@robh.at.kernel.org> <985bd950-7bdf-d9b5-0a89-c05a56739c68@ti.com>
+In-Reply-To: <985bd950-7bdf-d9b5-0a89-c05a56739c68@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 20 Apr 2021 08:13:36 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ+LLLxOgb_cXNKSzYToWArnPESHDRKjaezn1bh2yBMFA@mail.gmail.com>
+Message-ID: <CAL_JsqJ+LLLxOgb_cXNKSzYToWArnPESHDRKjaezn1bh2yBMFA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: PCI: ti,am65: Add PCIe host mode
+ dt-bindings for TI's AM65 SoC
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, PCI <linux-pci@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 15:21:08, Mike Rapoport wrote:
-> On Tue, Apr 20, 2021 at 03:13:54PM +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Add a paragraph that explains that it may happen that the counters in
-> > /proc/meminfo do not add up to the overall memory usage.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Ooops, forgot to add Michal's Ack, sorry.
+On Tue, Mar 30, 2021 at 4:29 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 26/03/21 5:08 am, Rob Herring wrote:
+> > On Thu, Mar 25, 2021 at 02:30:21PM +0530, Kishon Vijay Abraham I wrote:
+> >> Add PCIe host mode dt-bindings for TI's AM65 SoC.
+> >>
+> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >> ---
+> >>  .../bindings/pci/ti,am65-pci-host.yaml        | 111 ++++++++++++++++++
+> >>  1 file changed, 111 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> >> new file mode 100644
+> >> index 000000000000..b77e492886fa
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> >> @@ -0,0 +1,111 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-host.yaml#"
+> >> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> >> +
+> >> +title: TI AM65 PCI Host
+> >> +
+> >> +maintainers:
+> >> +  - Kishon Vijay Abraham I <kishon@ti.com>
+> >> +
+> >> +allOf:
+> >> +  - $ref: /schemas/pci/pci-bus.yaml#
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - ti,am654-pcie-rc
+> >> +
+> >> +  reg:
+> >> +    maxItems: 4
+> >> +
+> >> +  reg-names:
+> >> +    items:
+> >> +      - const: app
+> >> +      - const: dbics
+> >
+> > Please use 'dbi' like everyone else if this isn't shared with the other
+> > TI DW PCI bindings.
+>
+> I'm just converting existing binding in pci-keystone.txt to yaml.
+> Documentation/devicetree/bindings/pci/pci-keystone.txt
+>
+> Device tree for AM65 is also already in the upstream kernel.
+>
+> I can try to remove the am65 specific part from pci-keystone.txt
 
-Let's make it more explicit
-Acked-by: Michal Hocko <mhocko@suse.com>
+Can you remove pci-keystone.txt entirely. That's what 'converting' means.
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Rob
