@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8638B365B5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC75365B62
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhDTOlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        id S232731AbhDTOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhDTOky (ORCPT
+        with ESMTP id S232304AbhDTOms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:40:54 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62C9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:40:20 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id w23so42847509ejb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:40:20 -0700 (PDT)
+        Tue, 20 Apr 2021 10:42:48 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E813AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:42:16 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id s5so30752897qkj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:42:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wDWQCx2ZEYEZtk8z9074r5Idvp5NdDJI3fzKNITaGfU=;
-        b=jzoF00kY1Vgahjz/TfGq1cVrvyuUV1nxAd7/YCD5nnlFsdPMgwdDtbSczU6/eEr3es
-         FRyyzqTN0O52sjEzgrPl9xzt33ZpQugABpEq5o6zI5Oky2ednpQ8QvGq2uhPkfbQDski
-         A65/+GeTR8z3mO+jFgV3Nr/s3N1ze0KhA7h3d4kiI2LJFNE2/QBmFq+rV5qWYbI2ZOxa
-         fP6ma4bBKg3y8qTgtr4Dpm1PNbG9/u4FcpncYL/86t/ynoKbpfPYC49s8CmU5KkaeVZp
-         +jKsj87jiiDQoRnjv/6AQ+afWFAkYDjK59/zRPt2IOIcShUE3ZlmRqrYDCinBvKHczNg
-         rpyg==
+        d=kepstin.ca; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=JP+ANeZGsccJBmVoGo/R3MoTa5r6RLwf9o2mfl/oBZ8=;
+        b=COOJenwoW6uh0/Vq0jN5GTwm1bTMt4rdcgNhpEGTAHhrcnFTGCWvI3UtNLIwTap5Oq
+         3NJbypfQIG2Xm1C2yHEKa/jJl4EaBtWa3lgUbYkwroZRR0NaS43fRKwEvDVVXEESfQQz
+         xTlubm552SfeYZ28MeqxsGbbuhz2R0UHKJHJU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wDWQCx2ZEYEZtk8z9074r5Idvp5NdDJI3fzKNITaGfU=;
-        b=fD7TnwD27wDPvvFyK1QGMku4VHGUb23oZJb3lo8GY4Ji+8YfcE56EfTyHhmlnia2uP
-         3kFAT4Tlexf1JQcU2LWb9Su/8reZ+G5qkGgXPN0FkgzIpP1HGAryttGZRCvi/WwveRox
-         ZWxbhvLI2jvxve0XX0YjAn0wKlTo1HrP7gqcnnHqnvupk9c4kGfmKsWOlfNLEDC0+F2Z
-         QSEiMdROmDCWnW4ImP9YrPji6NP74VjgSp8HdnJ92ENroepndSkg42YmSuSctASv6Qwr
-         jupcfEbplJaPat0blz10K4CwX0Lr0kbSKMk71vzqtz97XQHWbdkfPV525DXco/dbOU7E
-         lwpA==
-X-Gm-Message-State: AOAM531pphKd+pa+jHJ60ycOT56yY9p3UJUWM1rewdUeXJ+6eH39GX4n
-        6fSkVL3GqF3ks4bO1yMZyrH24eV/WtQQ9GHibIQwiA==
-X-Google-Smtp-Source: ABdhPJwvQeOER6Ge1OQ1HxeS2VdoudW6xuPXPcMfX+yfnqgel8Ee0RyfbzZd+nvpOOgqXt5rAEXDaMlqbilsNxbkNhs=
-X-Received: by 2002:a17:906:1c8f:: with SMTP id g15mr27599057ejh.20.1618929619246;
- Tue, 20 Apr 2021 07:40:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419184455.2987243-1-lrizzo@google.com> <20210419191712.GB26214@worktop.programming.kicks-ass.net>
- <CAMOZA0JxwQFfA=acfr255xcR85ztv-URwaQQFHR6RrLk-cPbvg@mail.gmail.com>
- <YH6bV9W4lgIl4Fry@hirez.programming.kicks-ass.net> <CAMOZA0J4q2XSmhxB_uc-Q2mOA=K_FcvZqy3G+8ME=QMicOF=Lg@mail.gmail.com>
- <YH7XlxfvrdM1+oCe@hirez.programming.kicks-ass.net>
-In-Reply-To: <YH7XlxfvrdM1+oCe@hirez.programming.kicks-ass.net>
-From:   Luigi Rizzo <lrizzo@google.com>
-Date:   Tue, 20 Apr 2021 16:40:07 +0200
-Message-ID: <CAMOZA0LxPLW2juGq2kZgrTT31L+rTq2LaAD17omGC++VHDOX2w@mail.gmail.com>
-Subject: Re: [PATCH] smp: add a best_effort version of smp_call_function_many()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, axboe@kernel.dk,
-        paulmck@kernel.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=JP+ANeZGsccJBmVoGo/R3MoTa5r6RLwf9o2mfl/oBZ8=;
+        b=IC7WeItbnKTaVC6ugIl4kSaDp+2j8Lvt8Wx0jd1Wa2yHkS/g66JQt9d7eN3a9vsIAd
+         /IYxJtPHXE+Nd3kenAFMAv0beKRAnzfarNCfp83KBbVbJFWz2XspclWgVHbE9jAgdoBb
+         kUMJ+Fb4ZmRN2J2CF9kX97TrtACnC5ollgnt3TrNwXiLoIvu1/5/QWBf/euiCoefoscC
+         YY4iwd9zhjlv2Pu950J0m+qfki/0QGR0PNKJwaNAeu9GBNfGZUvpHWPyPQ+PPs91ed1o
+         Vw+5yM3xtOW8Aircxgp8hZoVhxEbJ2OXs/Ig3ZfanG/5WJ+YkwKEBxlfA2su+4y+Rz/u
+         LwYA==
+X-Gm-Message-State: AOAM531OV0Ze1TXsTkE+8zGEIMZVluAW5Px91QQt2kN2ssd7cUuCgBMt
+        y3zJy1A+YcTboQ3hZYbsR4MVbg==
+X-Google-Smtp-Source: ABdhPJzH5l6jQWUBOv0JJzlNg3WbGpqgIqRjvadTeAryOnar6niI9K3UG0bw9u4jkyfRcWaq1bwobw==
+X-Received: by 2002:a05:620a:e1a:: with SMTP id y26mr18058355qkm.280.1618929736067;
+        Tue, 20 Apr 2021 07:42:16 -0700 (PDT)
+Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
+        by smtp.gmail.com with ESMTPSA id p21sm10223024qkp.92.2021.04.20.07.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 07:42:12 -0700 (PDT)
+Message-ID: <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
+Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection
+ on AMD processors
+From:   Calvin Walton <calvin.walton@kepstin.ca>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
+        lenb@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
+        rui.zhang@intel.com
+Date:   Tue, 20 Apr 2021 10:42:09 -0400
+In-Reply-To: <20210420143754.GA390118@chenyu-desktop>
+References: <20210419195812.147710-1-terry.bowman@amd.com>
+         <20210420020336.GA386151@chenyu-desktop> <20210420080701.GA2326@zn.tnic>
+         <20210420131541.GA388877@chenyu-desktop>
+         <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
+         <20210420143754.GA390118@chenyu-desktop>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 3:33 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Apr 20, 2021 at 12:41:08PM +0200, Luigi Rizzo wrote:
-> > On Tue, Apr 20, 2021 at 11:14 AM Peter Zijlstra <peterz@infradead.org> wrote:
-...
-> > My case too requires that the request is eventually handled, but with
-> > this non-blocking IPI the caller has a better option than blocking:
-> > it can either retry the multicast IPI at a later time if conditions allow,
-> > or it can post a dedicated CSD (with the advantage that being my
-> > requests idempotent, if the CSD is locked there is no need to retry
-> > because it means the handler has not started yet).
-> >
-> > In fact, if we had the option to use dedicated CSDs for multicast IPI,
-> > we wouldn't even need to retry because we'd know that the posted CSD
-> > is for our call back and not someone else's.
->
-> What are you doing that CSD contention is such a problem?
+On Tue, 2021-04-20 at 22:37 +0800, Chen Yu wrote:
+> On Tue, Apr 20, 2021 at 09:28:06AM -0400, Calvin Walton wrote:
+> > This patch has the same issue I noticed with the initial revision
+> > of
+> > Terry's patch - the idx_to_offset function returns type int (32-bit
+> > signed), but MSR_PKG_ENERGY_STAT is greater than INT_MAX (or
+> > rather,
+> > would be interpreted as a negative number)
+> > 
+> > The end result is, as far as I can tell, that it hits the if
+> > (offset <
+> > 0) check in update_msr_sum() resulting in the timer callback for
+> > updating the stat in the background when long durations are used to
+> > not
+> > happen.
+> > 
+> > For short durations it still works fine since the background update
+> > isn't used.
+> > 
+> Ah, got it, nice catch. How about an incremental patch based on Bas'
+> one
+> to fix this 'overflow' issue? Would converting offset_to_idx(),
+> idx_to_offset() and
+> update_msr_sum() to use off_t instead of int be enough? Do you or
+> Terry have interest
+> to cook that patch? For Terry's version, I'm not sure if spliting
+> the code into different CPU vendor would benefit in the future,
+> except
+> that we would have plenty of new MSRs to be introduced in the future.
 
-Basically what I said in a previous email: send a targeted interrupt to a
-subset of the CPUs (large enough that the multicast IPI makes sense) so
-they can start doing some work that has been posted for them.
-Not too different from RFS, in a way.
+Yes, I believe updating the offset_to_idx(), idx_to_offset(), and
+update_msr_sum() functions is sufficient. I can do the incremental
+patch for that this evening if nobody beats me to it :)
 
-The sender doesn't need (or want, obviously) to block, but occasional
-O(100+us) stalls were clearly visible, and trivial to reproduce in tests
-(e.g. when the process on the target CPU runs getrusage() and has
-a very large number of threads, even if idle ones).
+-- 
+Calvin Walton <calvin.walton@kepstin.ca>
 
-Even the _cond() version is not a sufficient to avoid the stall:
-I could in principle use the callback to skip CPUs for which I
-have a request posted and not processed yet, but if the csd
-is in use by another pending IPI I have no alternative but spin.
-
-cheers
-luigi
