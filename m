@@ -2,134 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C4E365E2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20CD365E30
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhDTRDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:03:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50180 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233385AbhDTRD1 (ORCPT
+        id S233189AbhDTRHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232913AbhDTRHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:03:27 -0400
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYtm2-0004eY-HO
-        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 17:02:54 +0000
-Received: by mail-ej1-f71.google.com with SMTP id bx15-20020a170906a1cfb029037415131f28so5072966ejb.18
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:02:54 -0700 (PDT)
+        Tue, 20 Apr 2021 13:07:12 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D411C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:06:39 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id e5so9752344wrg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=w4puqZlCjEVgTM6gNpPaQUNAEdM5uE2S+cE3Q3nkYsc=;
+        b=r8sXmNBiOSRBf34r6zlXlbaKlZty6hEdAKb9VgV5rjRXEsP+fwzI1NMDRDOGWjcy9b
+         z9MPys5vSDQ9KFbbp28iuqeGSOGQp0TWgff3cHeQmdVvbMk1SCjef8TmDnAvK8OqxMNr
+         iJTQNm7vzjFxfNoaAWHikcJ1dQuLE6ta+HaSrDSrA27NqD5tk8Nt6DFSW+W4il/QUqdY
+         wFGuIA8lQ9CRODk8YVbyaeKrvPOELlI9FY+kWP/y2DmMBz20yHg61bkuKlPRn1PRHDek
+         kfYq6ZRpvvSvJAdQPNouGRnl2aqGmieYf94//R876ZlaM2APNtkvXA/zFH2UuFzCL97z
+         pzLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NmkwtcSUIB+GcQFfaJ8p9bZLIwyyfL6wMEQEOKgutFA=;
-        b=nwe/G3o54LhKdWEz2VhlYtHwdWbso/bxbaLeWsDpN5zjJY2y08ESd5dwaB5Cyypj64
-         9DHHCNPR/H9jcb60e5BP4aT/9ZeG1FSDIXwyCulE7BMUU8uTgTUsspLC3Oc78SLeCqJV
-         ZXsoTmWDsQblTdaWOLIfO9TvaZq0yeb80BCp7gu/kOdx6qh/4Rru9satYTEg6SoVcUpZ
-         PDbfKqlmf4zk/flbxWAp2kjriPE57x9T94X74n/aY7PIIxvUxzOnN/Yf/+RF2Z+VxGJ4
-         CejCdM8JxpPaJpXX5BAzgAV2B6iNrat+jwXD6v7zFB6OilKAAMy9lPd4A1L9auDf4sWU
-         e7yQ==
-X-Gm-Message-State: AOAM531KB84tqJcBgqqx69QhmkLWzYrd2cRbR1jRVoJ9kzH8GQZTuehj
-        yrcogGkmbDd2eOoPfym3d++mPrpn5SnyBmTd3ucGhnwHN0pKHZGYkL2gLl2LtRsW9AVbGQQaw+x
-        iR2DIflPeogmiFtsSpU3ULUb3Xg2547akD/kyHfHUDQ==
-X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr33224696edb.325.1618938174083;
-        Tue, 20 Apr 2021 10:02:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdl79swpGzRKj/jpsHaqW6VwyUBf+m6mj1RkKyPHba49ZLDGdZ6WYjKjU75zRSIcsrZk10vA==
-X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr33224668edb.325.1618938173929;
-        Tue, 20 Apr 2021 10:02:53 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id s20sm16590714edu.93.2021.04.20.10.02.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 10:02:53 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 9/9] regulator: s2mps11: Drop initialization via platform data
-Date:   Tue, 20 Apr 2021 19:02:44 +0200
-Message-Id: <20210420170244.13467-5-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210420170244.13467-1-krzysztof.kozlowski@canonical.com>
-References: <20210420170118.12788-1-krzysztof.kozlowski@canonical.com>
- <20210420170244.13467-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w4puqZlCjEVgTM6gNpPaQUNAEdM5uE2S+cE3Q3nkYsc=;
+        b=DPORUNQa+0a6CsoGg/yFRS6OG9fmW/cD97M7WR6P783J0uvXiaEst+j+XogsI8B8E7
+         pRkan8KNqpQCY2mqkgVLYsxjRlWF5q4tjTk5dVN4nKVk8hEDrvBzy0vrsQfLjMlDq2Yi
+         WUSSFImdXopzuFMEbSJOKdK6QRLoOkQ2V4oc6Z0uPlVgbEMOtXpeC47/wqOrrfnEk6iu
+         RSk7W0mHfS9OYIcdrz8QkgsmyywJlRoZVelxYHaOstnoix0phOImxkPsHogz61s9y4wr
+         oFcDW9e3RFV9aQ9HEm+a7H5oINp+d6KZC0RY5Un2Gf+U8T6+TRnw5KGsNduBBdqk8a+t
+         6PnA==
+X-Gm-Message-State: AOAM532QLjQU9IS2EJZL8MQkGaukZt8CC9q0eUdVMtyuu8DiomlkHlRg
+        kaXnpSRFG10NCWX4XS+PpypMaoBtjGA+0sgB
+X-Google-Smtp-Source: ABdhPJwC4KWyM00E2bI8Fa/45JxKpliIW1TQwZbNPE5p/V99lkVz6F4RPTMzvDQKNEg4Uu7pkLiSAg==
+X-Received: by 2002:adf:a40c:: with SMTP id d12mr21389263wra.91.1618938398032;
+        Tue, 20 Apr 2021 10:06:38 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
+        by smtp.googlemail.com with ESMTPSA id y125sm3916431wmc.40.2021.04.20.10.06.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 10:06:37 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] thermal: ti-soc-thermal: Remove duplicated header
+ file inclusion
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        linux-pm <linux-pm@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210406091912.2583-1-thunder.leizhen@huawei.com>
+ <20210406091912.2583-2-thunder.leizhen@huawei.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f31ac615-fde6-f26b-5f97-479aaa638860@linaro.org>
+Date:   Tue, 20 Apr 2021 19:06:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210406091912.2583-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-None of the platforms with S2MPS11 use board files, so any
-initialization via platform data can be safely removed.
+On 06/04/2021 11:19, Zhen Lei wrote:
+> Delete one of the header files <linux/of_device.h> that are included
+> twice, all included header files are then rearranged alphabetically.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/regulator/s2mps11.c | 22 ++--------------------
- 1 file changed, 2 insertions(+), 20 deletions(-)
+The duplicate header file inclusion has been already fixed in a previous
+patch.
 
-diff --git a/drivers/regulator/s2mps11.c b/drivers/regulator/s2mps11.c
-index 33cf84bce05a..ebc67e3ddd4f 100644
---- a/drivers/regulator/s2mps11.c
-+++ b/drivers/regulator/s2mps11.c
-@@ -1120,7 +1120,6 @@ static const struct regulator_desc s2mpu02_regulators[] = {
- static int s2mps11_pmic_probe(struct platform_device *pdev)
- {
- 	struct sec_pmic_dev *iodev = dev_get_drvdata(pdev->dev.parent);
--	struct sec_platform_data *pdata = NULL;
- 	struct of_regulator_match *rdata = NULL;
- 	struct regulator_config config = { };
- 	struct s2mps11_info *s2mps11;
-@@ -1171,17 +1170,6 @@ static int s2mps11_pmic_probe(struct platform_device *pdev)
- 	if (!s2mps11->ext_control_gpiod)
- 		return -ENOMEM;
- 
--	if (!iodev->dev->of_node) {
--		if (iodev->pdata) {
--			pdata = iodev->pdata;
--			goto common_reg;
--		} else {
--			dev_err(pdev->dev.parent,
--				"Platform data or DT node not supplied\n");
--			return -ENODEV;
--		}
--	}
--
- 	rdata = kcalloc(rdev_num, sizeof(*rdata), GFP_KERNEL);
- 	if (!rdata)
- 		return -ENOMEM;
-@@ -1193,7 +1181,6 @@ static int s2mps11_pmic_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto out;
- 
--common_reg:
- 	platform_set_drvdata(pdev, s2mps11);
- 
- 	config.dev = &pdev->dev;
-@@ -1202,13 +1189,8 @@ static int s2mps11_pmic_probe(struct platform_device *pdev)
- 	for (i = 0; i < rdev_num; i++) {
- 		struct regulator_dev *regulator;
- 
--		if (pdata) {
--			config.init_data = pdata->regulators[i].initdata;
--			config.of_node = pdata->regulators[i].reg_node;
--		} else {
--			config.init_data = rdata[i].init_data;
--			config.of_node = rdata[i].of_node;
--		}
-+		config.init_data = rdata[i].init_data;
-+		config.of_node = rdata[i].of_node;
- 		config.ena_gpiod = s2mps11->ext_control_gpiod[i];
- 		/*
- 		 * Hand the GPIO descriptor management over to the regulator
+Applied this patch by massaging the changelog accordingly and fixing the
+conflict.
+
+Thanks
+
+  -- Daniel
+
 -- 
-2.25.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
