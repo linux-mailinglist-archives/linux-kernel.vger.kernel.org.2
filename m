@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C633653EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0063653F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhDTIVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbhDTIVR (ORCPT
+        id S231124AbhDTIVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:21:55 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:53232 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230395AbhDTIVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:21:17 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E175C06174A;
-        Tue, 20 Apr 2021 01:20:44 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id y3so7680756eds.5;
-        Tue, 20 Apr 2021 01:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bpUVM6DLGPNfVadjMrY94cpXZGTdruG63Wzesfn55es=;
-        b=RaNBkPjah7sMGOsN5eQAC5h9N0FeHARo/mtafE743B/oBuKn06NLSSj5EbjlvuPtJp
-         uUbB4/JI2BrPIiE7r5NqMD0jGB3/7ZlJPw4z5zGhKrhd+85zmMe+V+t69nXxFJSXMqiY
-         q3kPySV08rcS5iPJwGVwkb0Dd2cASsmER/od4eMSzJH1canAHTwtRtJM1vPIZ1Z9zcCV
-         0jXYkLI8r0p0n48gNQ3M0XPlos+jxozwZ9bQQ7prHjO04eakSB+SFW8KdjdxWCjb4jQ/
-         kfZXCzM+vTC8shl65zN4IbZZEOc1aHl/x3WWNVEdrElzDdoGHcHHdWZpUZ8v7iKzEts6
-         EiJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bpUVM6DLGPNfVadjMrY94cpXZGTdruG63Wzesfn55es=;
-        b=AhkzacmCHDWUczeDL855FNTOMASEpTZwc3y3fmzIjRX4yE5uOMGD86AW7KQXSNhO0W
-         zMNl5Y6FHNmR65/Xi/oHuV6DkA/Cfv2/7/mLEFRYlgabH5HEhe7GOrH3qjON1Ysg2Gre
-         FnNPanQh12LYpAYt3mc3x/4gwRtAUVAJWdiLMxRWc4M8/qXxR8r1VidB5h5sP08C1ReR
-         XYuNdGhnETaYJAQj1bC6IuWkOObmiV6zX3vNwJNSC/qmGz7rJ5LmApvVQzf1z1jtw3hU
-         ahNlOl5KvW3mDDLiu//YdCv3Mb+0Q8Yopk74PvmaEunQl8mfWNoywK1ZYJpmvNRB5hvs
-         CODA==
-X-Gm-Message-State: AOAM5316OyVTQ9o6AqgGPFfReKc0Z4JA+jDipZSpi0/PzX3gryKmr7OF
-        I/1d3cDLsUumCecbtiNH87k=
-X-Google-Smtp-Source: ABdhPJyY1xR1JA81jnOLYKmFXQQhdiH1ydyHrrj8Jdb7eJaUMTvU73MFe1QiUZ7Yp3OEiljNBnGi8w==
-X-Received: by 2002:a05:6402:350e:: with SMTP id b14mr1115170edd.307.1618906843215;
-        Tue, 20 Apr 2021 01:20:43 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id gn19sm11673126ejc.68.2021.04.20.01.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 01:20:42 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 11:20:41 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     "Y.b. Lu" <yangbo.lu@nxp.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [net-next 3/3] net: mscc: ocelot: support PTP Sync one-step
- timestamping
-Message-ID: <20210420082041.tcthzr6ubtdk6ztf@skbuf>
-References: <20210416123655.42783-1-yangbo.lu@nxp.com>
- <20210416123655.42783-4-yangbo.lu@nxp.com>
- <20210418094609.xijzcg6g6zfcxucp@skbuf>
- <AM7PR04MB6885B46EB5C55BD1B92DD746F8489@AM7PR04MB6885.eurprd04.prod.outlook.com>
+        Tue, 20 Apr 2021 04:21:49 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13K8GZBI003437;
+        Tue, 20 Apr 2021 10:21:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=YIJWK1DioMqVNMN2mgvx7hJC/xORUjRf1dKW+3jmUkE=;
+ b=Z88n7214ixOvq27HT8AqBaLYm4ezyi/TWZ1Aull1esAzb4SkdF7pe+0E19l9VD6380uy
+ X7bO9ToqQIsEqVi6LaysOOR5dP+RSa5Q4h/8UiWO3f0KACL+IcUWdr48sX7ZDpJAoCfC
+ /MtN18g4IHgZREDIIl6nhxbcL2muWgYImn3vTZmD39E4Eu7ng8fk23pqDFnVFnqCQzez
+ PyZs+9x1q0r1Oc6QlgAcDkkZeEXHRper4k+vIefK4vWjVljKBPbIvzrfu+CBSUFKHjzX
+ 4XN+GrkDhTs1BF/1Pn8DOKwlpGXggVOIZ+4FzEfcRaFbl4/JQItzhtb2xzuIdA5Z1/Do lQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 381jn8tdjp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 10:21:08 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3FD1710002A;
+        Tue, 20 Apr 2021 10:21:07 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2ADFC22F7B2;
+        Tue, 20 Apr 2021 10:21:07 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 10:21:06
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>,
+        <patrice.chotard@foss.st.com>
+Subject: spi: stm32-qspi: Fix compilation warning in ARM64
+Date:   Tue, 20 Apr 2021 10:21:03 +0200
+Message-ID: <20210420082103.1693-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM7PR04MB6885B46EB5C55BD1B92DD746F8489@AM7PR04MB6885.eurprd04.prod.outlook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-20_02:2021-04-19,2021-04-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 07:33:39AM +0000, Y.b. Lu wrote:
-> > > +	/* For two-step timestamp, retrieve ptp_cmd in DSA_SKB_CB_PRIV
-> > > +	 * and timestamp ID in clone->cb[0].
-> > > +	 * For one-step timestamp, retrieve ptp_cmd in DSA_SKB_CB_PRIV.
-> > > +	 */
-> > > +	u8 *ptp_cmd = DSA_SKB_CB_PRIV(skb);
-> >
-> > This is fine in the sense that it works, but please consider creating something
-> > similar to sja1105:
-> >
-> > struct ocelot_skb_cb {
-> > 	u8 ptp_cmd; /* For both one-step and two-step timestamping */
-> > 	u8 ts_id; /* Only for two-step timestamping */ };
-> >
-> > #define OCELOT_SKB_CB(skb) \
-> > 	((struct ocelot_skb_cb *)DSA_SKB_CB_PRIV(skb))
-> >
-> > And then access as OCELOT_SKB_CB(skb)->ptp_cmd,
-> > OCELOT_SKB_CB(clone)->ts_id.
-> >
-> > and put a comment to explain that this is done in order to have common code
-> > between Felix DSA and Ocelot switchdev. Basically Ocelot will not use the first
-> > 8 bytes of skb->cb, but there's enough space for this to not make any
-> > difference. The original skb will hold only ptp_cmd, the clone will only hold
-> > ts_id, but it helps to have the same structure in place.
-> >
-> > If you create this ocelot_skb_cb structure, I expect the comment above to be
-> > fairly redundant, you can consider removing it.
-> >
->
-> You're right to define the structure.
-> Considering patch #1, move skb cloning to drivers, and populate DSA_SKB_CB(skb)->clone if needs to do so (per suggestion).
-> Can we totally drop dsa_skb_cb in dsa core? The only usage of it is holding a skb clone pointer, for only felix and sja1105.
-> Actually we can move such pointer in <device>_skb_cb, instead of reserving the space of skb for any drivers.
->
-> Do you think so?
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-The trouble with skb->cb is that it isn't zero-initialized. But somebody
-needs to initialize the clone pointer to NULL, otherwise you don't know
-if this is a valid pointer or not. Because dsa_skb_tx_timestamp() is
-called before p->xmit(), the driver has no way to initialize the clone
-pointer by itself. So this was done directly from dsa_slave_xmit(), and
-not from any driver-specific hook. So this is why there is a
-DSA_SKB_CB(skb)->clone and not SJA1105_SKB_CB(skb)->clone. The
-alternative would be to memset(skb->cb, 0, 48) which is a bit
-sub-optimal because it initializes more than it needs. Alternatively, it
-might be possible to introduce a new property in struct dsa_device_ops
-which holds sizeof(struct sja1105_skb_cb), and the generic code will
-only zero-initialize this number of bytes.
-I don't know, if you can get it to work in a way that does not incur a
-noticeable performance penalty, I'm okay with whatever you come up with.
+This fixes warnings detected when compiling in ARM64.
+Introduced by 'commit 18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")'
+
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+---
+ drivers/spi/spi-stm32-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index e2a99f054551..02691c1603d9 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -478,7 +478,7 @@ static ssize_t stm32_qspi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+ 	 * all needed transfer information into struct spi_mem_op
+ 	 */
+ 	memcpy(&op, &desc->info.op_tmpl, sizeof(struct spi_mem_op));
+-	dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
++	dev_dbg(qspi->dev, "%s len = 0x%lx offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
+ 
+ 	op.data.nbytes = len;
+ 	op.addr.val = desc->info.offset + offs;
+-- 
+2.17.1
+
