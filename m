@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F385D365C06
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682C8365C09
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhDTPTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        id S232823AbhDTPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbhDTPTk (ORCPT
+        with ESMTP id S232303AbhDTPU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:19:40 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745F9C06174A;
-        Tue, 20 Apr 2021 08:19:07 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 1925421B;
-        Tue, 20 Apr 2021 08:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1618931946;
-        bh=oQsjsO0Yl4yjifxeL/OMKHJvvkUd/jcIQKwEeqW7BDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rgqiz1wtPfW54DSKSL8gCSziB2bmtE2CHeyGWJk1RuLk7ibMPtNNu7Bt2PHu3+c8Z
-         ZOuCiZcBM/zHQK256DVdxfxB5ykkIbES9HH5dRcI1T4STN3KcU/1oPvc69wQVO3pFg
-         ndAZyKi+o0BH+U87lPpQNYnVXAJubvSV0sr06DyE=
-Date:   Tue, 20 Apr 2021 10:19:04 -0500
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: Enabling pmbus power control
-Message-ID: <YH7w6HUtBSCZRWq4@hatter.bewilderbeest.net>
-References: <20210330174221.GJ4976@sirena.org.uk>
- <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
- <20210330180200.GK4976@sirena.org.uk>
- <20210330193810.GA235990@roeck-us.net>
- <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
- <20210420033648.GA227111@roeck-us.net>
- <YH5rky8nA4nKAVdg@hatter.bewilderbeest.net>
- <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
- <YH59WOg0iKbz1d0l@hatter.bewilderbeest.net>
- <fe111c8a-9588-dbfb-624a-29bb3a5efe13@roeck-us.net>
+        Tue, 20 Apr 2021 11:20:26 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23238C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:19:55 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id x7so37991996wrw.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=22YXfrzIvJI/e0g2j0aYDyGRkNGq51wKgMJOLCS1QVw=;
+        b=O61+oMWcADefXaQH2XclZbsr8Gd7B9uLWxTfxX0HtcSO9lbF4+LkcGS0iIhDDh61be
+         Z8oPcqd/CUqGkbr9KwpjSNpjMGm9Xc9TriI8pehb0SW2S0TRqn7erkeJjTFBS4cJlqxK
+         pNcKkTRE71jn+HJrb/nPm0hoGEYJCLsuAiHH/YaP+MkVtO3NIaBt7M7c9eHfnGImLqMt
+         Czv9TFOQgwdHlwcGkvbyaQfCPC0PDwBZ3Rb1aB7i8jO+QreDfqaM/DyI3kEtduKOeWfL
+         AYh174xTlv8ExB69UMRkOBXLMhtyswnGm4rADX5Tlo9naPUH15Taa8l1N2KngHJMV5px
+         R4ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=22YXfrzIvJI/e0g2j0aYDyGRkNGq51wKgMJOLCS1QVw=;
+        b=JrTolzZFsUC2164GupqLE8wJzoMMG7EPFFB/F+a4j2YrC5gW7LFOh63+RC1FfIWmaj
+         mWqPwELy282Uioydvtnu9UsRJJDmsO5dSH2kYnQo0J/BKelJx/GyH6w5qbP1D6kD5gXR
+         Rx2L3bwOYWfAiqQD8D3ltWOJIxEwnvwqwwb1RckTvZUMYu3RhHvA+02sZ1skbM3GCqJI
+         dB2BmxmkD/1lIwJOtEHg52AEoqya73/l4idaQdu2+8Ll7yRtikq+u36sI2FlASfquKjp
+         Ej7t1aBg5IPC1soyo4zbWpohxizUhHYRal3jhuzVot5JXUNeJJ2YvHAIYdKjiZlnCCVh
+         7ihw==
+X-Gm-Message-State: AOAM530hD0dhC1YjDAlSpWhWvou/s/Ds+pzbwIqLrFaoJX9dTa550EQu
+        EAYcaaegH3f1eeroHDClxG5k+UGLnOvBzsor
+X-Google-Smtp-Source: ABdhPJyYBtbYLuNyS+ppFk55wLeiEgofP4BmVUU7O9xG8j+pYW7WvxoWIH4KP4AuNd0cwIk7oMLsug==
+X-Received: by 2002:a05:6000:178c:: with SMTP id e12mr21440298wrg.42.1618931993723;
+        Tue, 20 Apr 2021 08:19:53 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:b4:316d:263e:1360? ([2a01:e0a:90c:e290:b4:316d:263e:1360])
+        by smtp.gmail.com with ESMTPSA id h10sm13764777wrt.40.2021.04.20.08.19.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 08:19:53 -0700 (PDT)
+Subject: Re: [PATCH 0/2] drm/bridge: dw-hdmi: disable loading of DW-HDMI CEC
+ sub-driver
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     jernej.skrabec@siol.net, jonas@kwiboo.se,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        robert.foss@linaro.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210416092737.1971876-1-narmstrong@baylibre.com>
+ <YHlfqJIlUh7eytty@pendragon.ideasonboard.com>
+ <96b9e144-0791-4c19-3e3c-b0e9efb86138@baylibre.com>
+ <cbea511c-5d5c-8c59-f91f-fedc8eec1e39@xs4all.nl>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <0821533b-9e6a-237e-3845-741e82de4ed9@baylibre.com>
+Date:   Tue, 20 Apr 2021 17:19:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fe111c8a-9588-dbfb-624a-29bb3a5efe13@roeck-us.net>
+In-Reply-To: <cbea511c-5d5c-8c59-f91f-fedc8eec1e39@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 05:52:16AM CDT, Guenter Roeck wrote:
->On 4/20/21 12:06 AM, Zev Weiss wrote:
->> On Tue, Apr 20, 2021 at 01:00:25AM CDT, Guenter Roeck wrote:
->>> On 4/19/21 10:50 PM, Zev Weiss wrote:
->>> [ ... ]
+On 20/04/2021 17:13, Hans Verkuil wrote:
+> On 16/04/2021 13:38, Neil Armstrong wrote:
+>> On 16/04/2021 11:58, Laurent Pinchart wrote:
+>>> Hi Neil,
 >>>
->>>> I had a glance at the enclosure driver; it looks pretty geared toward SES-like things (drivers/scsi/ses.c being its only usage I can see in the kernel at the moment) and while it could perhaps be pressed into working for this it seems like it would probably drag in a fair amount of boilerplate and result in a somewhat gratuitously confusing driver arrangement (calling the things involved in the cases we're looking at "enclosures" seems like a bit of a stretch).
+>>> On Fri, Apr 16, 2021 at 11:27:35AM +0200, Neil Armstrong wrote:
+>>>> This adds DW-HDMI driver a glue option to disable loading of the CEC sub-driver.
 >>>>
->>>> As an alternative, would something like the patch below be more along the lines of what you're suggesting?  And if so, would it make sense to generalize it into something like 'pmbus-switch.c' and add a PMBUS_HAVE_POWERSWITCH functionality bit or similar in the pmbus code instead of hardcoding it for only LM25066 support?
->>>>
->>>>
+>>>> On some SoCs, the CEC functionality is enabled in the IP config bits, but the
+>>>> CEC bus is non-functional like on Amlogic SoCs, where the CEC config bit is set
+>>>> but the DW-HDMI CEC signal is not connected to a physical pin, leading to some
+>>>> confusion when the DW-HDMI CEC controller can't communicate on the bus.
 >>>
->>> No. Don't access pmbus functions from outside drivers/hwmon/pmbus.
->>>
->>> I used to be opposed to function export restrictions (aka export namespaces),
->>> but you are making a good case that we need to introduce them for pmbus
->>> functions.
->>>
->>> Guenter
+>>> If we can't trust the CEC config bit, would it be better to not use it
+>>> at all, and instead let each platform glue logic tell whether to enable
+>>> CEC or not ?
 >>
->> Okay -- I figured that was likely to be frowned upon, but the alternative seemed to be effectively duplicating non-trivial chunks of the pmbus code.  However, upon realizing that the LM25066 doesn't actually require any of the paging work the generic pmbus code provides, I suppose it can actually be done with a simple smbus read & write.  Does this version look better?
+>> Actually, the CEC config bit is right, the HW exists and should be functional, but
+>> this bit doesn't tell if the CEC signal is connected to something.
 >>
->
->It is just getting worse and worse. You are re-implementing regulator
->support for the lm25066. The correct solution would be to implement
->regulator support in the lm25066 and use it from the secondary driver
->(which should be chip independent).
->
->Guenter
->
+>> This lies in the IP integration, like other bits under the "amlogic,meson-*-dw-hdmi"
+>> umbrella.
+>>
+>> The first attempt was by Hans using DT, but adding a property in DT for a vendor
+>> specific compatible doesn't make sense. Another idea would be to describe the
+>> CEC signal endpoint like we do for video signal, but I think this is out of scope and
+>> this solution is much simpler and straightforward, and it's more an exception than
+>> a general use case to solve.
+> 
+> While a DT property might not make sense in this particular case, I still
+> believe that it is a perfectly valid approach in general: whether or not
+> the CEC pin is connected is at the hardware level decision, it is not
+> something that software can detect. If the designer of the board didn't
+> connect it, then the only place you can define that is in the device tree.
 
-Implementing it by way of regulator support seems like it would make 
-sense, but that in turn sounds like it would then end up just being a 
-reimplementation of REGULATOR_USERSPACE_CONSUMER, which (unless there 
-was some more subtle distinction that I missed) Mark already told me in 
-no uncertain terms is not the way to go.  So I hope I could be forgiven 
-for feeling a bit stuck here.
+Agreed, we need to define a smart way to declare CEC bus relationship in DT, the side
+effect would be to handle this particular case.
 
-Mark, do you have any further input on what a viable approach might look 
-like?
-
+> 
+> Anyway, for meson I am fine with this solution. At least it prevents creating
+> a non-functioning cec device. So for this series:
+> 
+> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
 Thanks,
-Zev
+
+Applying this serie to drm-misc-next
+
+Neil
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>> Neil
+>>
+>>>
+>>>> Jernej Skrabec (1):
+>>>>   drm/bridge/synopsys: dw-hdmi: Add an option to suppress loading CEC
+>>>>     driver
+>>>>
+>>>> Neil Armstrong (1):
+>>>>   drm/meson: dw-hdmi: disable DW-HDMI CEC sub-driver
+>>>>
+>>>>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 2 +-
+>>>>  drivers/gpu/drm/meson/meson_dw_hdmi.c     | 1 +
+>>>>  include/drm/bridge/dw_hdmi.h              | 2 ++
+>>>>  3 files changed, 4 insertions(+), 1 deletion(-)
+>>>>
+>>>
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>
+> 
 
