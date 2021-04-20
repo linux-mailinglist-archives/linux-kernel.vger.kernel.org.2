@@ -2,131 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1363F36542A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2371B36542D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhDTIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhDTIcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:32:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C246C60FE3;
-        Tue, 20 Apr 2021 08:31:32 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 10:31:29 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Andrew G. Morgan" <morgan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3.3)
-Message-ID: <20210420083129.exyn7ptahx2fg72e@wittgenstein>
-References: <20210416045851.GA13811@mail.hallyn.com>
- <20210416150501.zam55gschpn2w56i@wittgenstein>
- <20210416213453.GA29094@mail.hallyn.com>
- <20210417021945.GA687@mail.hallyn.com>
- <20210417200434.GA17430@mail.hallyn.com>
- <20210419122514.GA20598@mail.hallyn.com>
- <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
- <20210420034208.GA2830@mail.hallyn.com>
+        id S230359AbhDTIdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:33:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhDTIdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:33:20 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E02DC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:32:48 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id d16-20020a4a3c100000b02901f0590a614eso509071ooa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q1T8M/4Hes3NzluLQXBUJj6LcT4nx2E+5/+ymNCi9rc=;
+        b=ednZnGG6fwzO6JD8Iu0xjnPY9PBOnCxmbRtJXT5RpgtoGAE21UQyh6whya2/H0Yo4q
+         NRqYrxQL1FGM+4oaNfUzQv/K0iLxeorhv1irOU7PwJqZHfeF6lmQLSzXgALQJZpPutfb
+         MBYvAn1iOUQmRdcugUOAX0DN/kiZuOBrnD4jbarZ3NaAHVXk+snwzBDuNT6dxvYRXqOT
+         CEVDB+YVnvTTiFUkk5kNNb2yN7ANz4m7tdxSk+Hu/ZG2RFVBWzVJRBBcqBq0woNjCuIj
+         apNPLT3YzRHIxQeyjuSulaUzuTqT4SdC2Zg/j/EQLzHQt/sIhnXN2evYU3NVRNpFryLY
+         QAyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q1T8M/4Hes3NzluLQXBUJj6LcT4nx2E+5/+ymNCi9rc=;
+        b=bXlHKSY9lxJzyls//bfkr7hbg1IkZfyjwf6BfzDFJk9XTjggNEXVJeEkdLmTkObuC9
+         XJ2Qm2J8p2DZ9puvFdkk8zO0bcWc9cwyTLJ7rMsdrULYxe4ep8BMCFw4Fg5/WpnqBD7T
+         EwLRxEB9eFv5ok5BraSrHuTFPVGAa5pKdzwcbHz1WJ6VUNi653/ni9FH+PLUMNfRrMFY
+         PlN/JGIvi7b8gI5zWxwPLZaZxqqO0yhmhF4L1h3YW7dNOlfoHMeaI4793Rxlk25ouBy6
+         IDLcAC7yznZ/ZMvExqXTLZeXpTM2ddneSR4IHIoxslPMw13mdW3l4c/2ZIG13LG6kUxV
+         Q5Jg==
+X-Gm-Message-State: AOAM5305EvQJtqTVISSCFsxVCEecslhMI3Jte9YiPbkJzpvSSfYKheUT
+        MHkTqUf4ojljoY0TGp8gPZ1FOjzwMqqguKn7QuKzeA==
+X-Google-Smtp-Source: ABdhPJzx0AqbEbHfxy4WRTGw1GawrenTKJY7KmD+6guym0U5AIFEhAhHoBBVpomiPa0aA5zba/krjXiksupaaF95ezg=
+X-Received: by 2002:a4a:e153:: with SMTP id p19mr16412764oot.52.1618907567900;
+ Tue, 20 Apr 2021 01:32:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210420034208.GA2830@mail.hallyn.com>
+References: <20210416222518.15801-1-nm@ti.com>
+In-Reply-To: <20210416222518.15801-1-nm@ti.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Tue, 20 Apr 2021 10:32:37 +0200
+Message-ID: <CAHUa44GZenrwVWRZW6BKB8cktfXvktJ4OCF0AgPKanYGV01m5g@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: arm: firmware: Convert linaro,optee-tz to
+ json schema
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:42:08PM -0500, Serge Hallyn wrote:
-> On Mon, Apr 19, 2021 at 06:09:11PM +0200, Christian Brauner wrote:
-> > On Mon, Apr 19, 2021 at 07:25:14AM -0500, Serge Hallyn wrote:
-> > > cap_setfcap is required to create file capabilities.
-> > > 
-> > > Since 8db6c34f1dbc ("Introduce v3 namespaced file capabilities"), a
-> > > process running as uid 0 but without cap_setfcap is able to work around
-> > > this as follows: unshare a new user namespace which maps parent uid 0
-> > > into the child namespace.  While this task will not have new
-> > > capabilities against the parent namespace, there is a loophole due to
-> > > the way namespaced file capabilities are represented as xattrs.  File
-> > > capabilities valid in userns 1 are distinguished from file capabilities
-> > > valid in userns 2 by the kuid which underlies uid 0.  Therefore the
-> > > restricted root process can unshare a new self-mapping namespace, add a
-> > > namespaced file capability onto a file, then use that file capability in
-> > > the parent namespace.
-> > > 
-> > > To prevent that, do not allow mapping parent uid 0 if the process which
-> > > opened the uid_map file does not have CAP_SETFCAP, which is the capability
-> > > for setting file capabilities.
-> > > 
-> > > As a further wrinkle:  a task can unshare its user namespace, then
-> > > open its uid_map file itself, and map (only) its own uid.  In this
-> > > case we do not have the credential from before unshare,  which was
-> > > potentially more restricted.  So, when creating a user namespace, we
-> > > record whether the creator had CAP_SETFCAP.  Then we can use that
-> > > during map_write().
-> > > 
-> > > With this patch:
-> > > 
-> > > 1. Unprivileged user can still unshare -Ur
-> > > 
-> > > ubuntu@caps:~$ unshare -Ur
-> > > root@caps:~# logout
-> > > 
-> > > 2. Root user can still unshare -Ur
-> > > 
-> > > ubuntu@caps:~$ sudo bash
-> > > root@caps:/home/ubuntu# unshare -Ur
-> > > root@caps:/home/ubuntu# logout
-> > > 
-> > > 3. Root user without CAP_SETFCAP cannot unshare -Ur:
-> > > 
-> > > root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
-> > > root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
-> > > unable to set CAP_SETFCAP effective capability: Operation not permitted
-> > > root@caps:/home/ubuntu# unshare -Ur
-> > > unshare: write failed /proc/self/uid_map: Operation not permitted
-> > > 
-> > > Note: an alternative solution would be to allow uid 0 mappings by
-> > > processes without CAP_SETFCAP, but to prevent such a namespace from
-> > > writing any file capabilities.  This approach can be seen here:
-> > >     https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
-> > > 
-> > 
-> > Ah, can you link to the previous fix and its revert, please? I think
-> > that was mentioned in the formerly private thread as well but we forgot:
-> > 
-> > commit 95ebabde382c371572297915b104e55403674e73
-> > Author: Eric W. Biederman <ebiederm@xmission.com>
-> > Date:   Thu Dec 17 09:42:00 2020 -0600
-> > 
-> >     capabilities: Don't allow writing ambiguous v3 file capabilities
-> > 
-> > commit 3b0c2d3eaa83da259d7726192cf55a137769012f
-> > Author: Eric W. Biederman <ebiederm@xmission.com>
-> > Date:   Fri Mar 12 15:07:09 2021 -0600
-> > 
-> >     Revert 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
-> 
-> Sure.
-> 
-> Is there a tag for that kind of thing or do I just mention it at the end
-> of the description?
+On Sat, Apr 17, 2021 at 12:25 AM Nishanth Menon <nm@ti.com> wrote:
+>
+> Convert linaro,optee-tz to json schema format for better documentation
+> and error checks.
+>
+> NOTE:
+> 1. This change does introduce a stricter naming convention for
+>    optee nodes.
+> 2. We do have false positive checkpatch warning with this patch:
+>    "DT binding docs and includes should be a separate patch"
+>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+>  .../bindings/arm/firmware/linaro,optee-tz.txt | 31 ----------
+>  .../arm/firmware/linaro,optee-tz.yaml         | 62 +++++++++++++++++++
+>  2 files changed, 62 insertions(+), 31 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
+> deleted file mode 100644
+> index d38834c67dff..000000000000
+> --- a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
+> +++ /dev/null
+> @@ -1,31 +0,0 @@
+> -OP-TEE Device Tree Bindings
+> -
+> -OP-TEE is a piece of software using hardware features to provide a Trusted
+> -Execution Environment. The security can be provided with ARM TrustZone, but
+> -also by virtualization or a separate chip.
+> -
+> -We're using "linaro" as the first part of the compatible property for
+> -the reference implementation maintained by Linaro.
+> -
+> -* OP-TEE based on ARM TrustZone required properties:
+> -
+> -- compatible     : should contain "linaro,optee-tz"
+> -
+> -- method         : The method of calling the OP-TEE Trusted OS. Permitted
+> -                   values are:
+> -
+> -                   "smc" : SMC #0, with the register assignments specified
+> -                          in drivers/tee/optee/optee_smc.h
+> -
+> -                   "hvc" : HVC #0, with the register assignments specified
+> -                          in drivers/tee/optee/optee_smc.h
+> -
+> -
+> -
+> -Example:
+> -       firmware {
+> -               optee {
+> -                       compatible = "linaro,optee-tz";
+> -                       method = "smc";
+> -               };
+> -       };
+> diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
+> new file mode 100644
+> index 000000000000..6513b5ac8b2c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/firmware/linaro,optee-tz.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 
-In this case it might make sense to just have a little paragraph that
-explains the regression. How do you feel about adding?:
+Are these links supposed to work?
 
-  Commit 95ebabde382 ("capabilities: Don't allow writing ambiguous v3 file
-  capabilities") tried to fix the issue by preventing v3 fscaps to be
-  written to disk when the root uid would map to the same uid in nested
-  user namespaces. This led to regressions for various workloads. For
-  example, see [1]. Ultimately this is a valid use-case we have to support
-  meaning we had to revert this change in 3b0c2d3eaa83 ("Revert
-  95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file
-  capabilities")").
-  
-  [1]: https://github.com/containers/buildah/issues/3071
+Thanks,
+Jens
+
+
+> +
+> +title: OP-TEE Device Tree Bindings
+> +
+> +maintainers:
+> +  - Jens Wiklander <jens.wiklander@linaro.org>
+> +
+> +description: |
+> +  OP-TEE is a piece of software using hardware features to provide a Trusted
+> +  Execution Environment. The security can be provided with ARM TrustZone, but
+> +  also by virtualization or a separate chip.
+> +
+> +  We're using "linaro" as the first part of the compatible property for
+> +  the reference implementation maintained by Linaro.
+> +
+> +properties:
+> +  $nodename:
+> +    const: 'optee'
+> +
+> +  compatible:
+> +    const: linaro,optee-tz
+> +
+> +  method:
+> +    description: The method of calling the OP-TEE Trusted OS.
+> +    oneOf:
+> +      - description: |
+> +          SMC #0, with the register assignments specified
+> +          in drivers/tee/optee/optee_smc.h
+> +        items:
+> +          - const: smc
+> +      - description: |
+> +          HVC #0, with the register assignments specified
+> +          in drivers/tee/optee/optee_smc.h
+> +        items:
+> +          - const: hvc
+> +
+> +required:
+> +  - compatible
+> +  - method
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    firmware  {
+> +        optee  {
+> +            compatible = "linaro,optee-tz";
+> +            method = "smc";
+> +        };
+> +    };
+> +
+> +  - |
+> +    firmware  {
+> +        optee  {
+> +            compatible = "linaro,optee-tz";
+> +            method = "hvc";
+> +        };
+> +    };
+> --
+> 2.31.0
+>
