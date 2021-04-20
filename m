@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD42365C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D858365C3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhDTP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:29:25 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:57767 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233033AbhDTP3U (ORCPT
+        id S232841AbhDTPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:31:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232504AbhDTPbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:29:20 -0400
-Received: (qmail 174910 invoked by uid 1000); 20 Apr 2021 11:28:48 -0400
-Date:   Tue, 20 Apr 2021 11:28:48 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chris Chiu <chris.chiu@canonical.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
-        hadess@hadess.net, linux-usb@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's
- Realtek Hub
-Message-ID: <20210420152848.GC170810@rowland.harvard.edu>
-References: <20210415114856.4555-1-chris.chiu@canonical.com>
- <YHgyP8tGNM1Wi5dJ@kroah.com>
- <CABTNMG0MuaSkWZhiTwtWjPTg5WZ-Vdt9Ju9-RzBke9JjCBJo8Q@mail.gmail.com>
- <20210415184637.GA15445@rowland.harvard.edu>
- <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
- <20210416153932.GD42403@rowland.harvard.edu>
- <CABTNMG25qPvVu7+EsvEgaUsU_v6jKkSKCaU5VR8CiX3oLQ4VFg@mail.gmail.com>
- <20210419141921.GA133494@rowland.harvard.edu>
- <CABTNMG0hnfXH8yqd6Zbk3EiZtg4JUpJomn180NHUyAdgZjL7pA@mail.gmail.com>
+        Tue, 20 Apr 2021 11:31:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618932653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RBBsrjmHRDP21lnXRazBH5eMtCC8CXeVM/g8RMCBPvM=;
+        b=SQCWukSSFfevkr4c3gIgTUZzTC0WgUpdGirFsKz0TFYGdecF3jRJzINVOnDgEE+d+9c2U1
+        KgvzXsQNMfDkJSKXR94hSV/2Z2xAPVm8K/LATmNgNhC1AKax24Tiy5a3cYVn+DvsFq9oqB
+        LDZ7tQsIGqrX1BQYWnmnr3V+LrgEp2I=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-CJC402btNvuPGwtWyHIVAQ-1; Tue, 20 Apr 2021 11:30:51 -0400
+X-MC-Unique: CJC402btNvuPGwtWyHIVAQ-1
+Received: by mail-ed1-f72.google.com with SMTP id z3-20020a05640240c3b029037fb0c2bd3bso13431960edb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:30:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RBBsrjmHRDP21lnXRazBH5eMtCC8CXeVM/g8RMCBPvM=;
+        b=fyUzrlwnGmcSQjg/1c9ZsR9H1F141XVws7kFZ8sQUSUaPDAq7owRRkYPozL/oF5Kx4
+         bvxEM6VR1y3By99/bpVk5MCUemURdhhW7Y0rWn1rJdzCtvV74wOz7bV78FyG2EXMI+4b
+         UlvdlEFijNZVRE3+QGytJCJF73KN1STqRKv7OTWLEeXbwMm6anIkvVu6vbI7zUQVQgKH
+         FeQtX5iH71yfRVFma3vlls57JzUc7jHVztMLVTVGtQVQK87A47fpfJ53yPxF7Hj9onhn
+         +o9VvIJhHNUamCb8sI5T2mdZj3sLSeYW7zVn6vyIYBFGSh6/HWqNBI0WJTxCdOZtAcq1
+         EZiQ==
+X-Gm-Message-State: AOAM532fK4v0+JlOLWR2b8FIIiQy2JrEKQwDNE7QDcRbVO1AATfVWJ/e
+        6VZ87LCCOV+Kw6TmOxQAkgK7X8kdW5j273a5ZbUYBvwdaJ3gFhRgBhuEwR2nDeDlzjYFA4GJqWl
+        jLTZdvHNSfIh0gKr7k5jb5Adb
+X-Received: by 2002:a05:6402:134f:: with SMTP id y15mr15446457edw.259.1618932650227;
+        Tue, 20 Apr 2021 08:30:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuVHu6/YIHf26jz/l5PBJO5dia9L05ZHer0be0n8fwzCxg/hUL9LLA7M5dpD9wD7isJaO0ng==
+X-Received: by 2002:a05:6402:134f:: with SMTP id y15mr15446440edw.259.1618932650105;
+        Tue, 20 Apr 2021 08:30:50 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id h19sm12796131ejc.94.2021.04.20.08.30.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 08:30:49 -0700 (PDT)
+Subject: Re: [PATCH] platform/surface: aggregator: fix a bit test
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <YH6UUhJhGk3mk13b@mwanda>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <abec80a7-6fee-1105-e219-21fcd88f9949@redhat.com>
+Date:   Tue, 20 Apr 2021 17:30:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABTNMG0hnfXH8yqd6Zbk3EiZtg4JUpJomn180NHUyAdgZjL7pA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YH6UUhJhGk3mk13b@mwanda>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:14:56PM +0800, Chris Chiu wrote:
-> On Mon, Apr 19, 2021 at 10:19 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Mon, Apr 19, 2021 at 01:11:38AM -0400, Chris Chiu wrote:
-> > > Sorry that I didn't make myself clear. I found that if I applied RESET_RESUME
-> > > quirk on the problematic hub, the Set-Port-Feature(suspend) timeout error
-> > > disappeared. SInce the timeout is not happening for each suspend by default,
-> > > I suspect maybe reset-resume take everything back to clean state for the hub
-> > > and the Set-Port-Feature(suspend) can be taken care of w/o problems.
-> >
-> > Okay, that's a good solution for system suspend.
-> >
-> > > I didn't like RESET_RESUME because runtime PM would not work on the quirked
-> > > device.
-> >
-> > A more interesting question is whether it will work for devices plugged
-> > into the hub.  Even though the hub won't be runtime suspended, the
-> > things attached to it might be.
-> >
-> > >  But if the Set-Port-Feature(suspend) can't be handled and
-> > > skipped, I can't
-> > > expect the runtime PM to work for all devices connected to the hub either.
-> > > Is that right? If what I proposed in the patch can not get better
-> > > result than existing
-> > > quirk, I think using the RESET_RESUME would be a better option. Any suggestions?
-> >
-> > Try the RESET_RESUME quirk and see how well it works with runtime
-> > suspend.
-> >
-> > Alan Stern
+Hi,
+
+On 4/20/21 10:44 AM, Dan Carpenter wrote:
+> The "funcs" variable is a u64.  If "func" is more than 31 then the
+> BIT() shift will wrap instead of testing the high bits.
 > 
-> [  453.064346] usb 3-4: finish reset-resume
-> [  453.192387] usb 3-4: reset high-speed USB device number 2 using xhci_hcd
-> [  453.339916] usb 3-4: USB quirks for this device: 2
+> Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Here 3-4 is problematic RealTek hub, right?
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-> Seems that even w/ the RESET_RESUME enabled, the connected device still
-> can runtime suspend/resume. That's acceptable to me. I'll send the patch
-> with the reset-resume quirk later.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+> ---
+>  drivers/platform/surface/aggregator/controller.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [  626.081068] usb 3-4.3.1: usb auto-suspend, wakeup 0
-> [  632.552071] usb 3-4.3.1: usb auto-resume
-> [  632.617467] usb 3-4.3.1: Waited 0ms for CONNECT
-> [  632.617471] usb 3-4.3.1: finish resume
+> diff --git a/drivers/platform/surface/aggregator/controller.c b/drivers/platform/surface/aggregator/controller.c
+> index 00e38284885a..69e86cd599d3 100644
+> --- a/drivers/platform/surface/aggregator/controller.c
+> +++ b/drivers/platform/surface/aggregator/controller.c
+> @@ -1040,7 +1040,7 @@ static int ssam_dsm_load_u32(acpi_handle handle, u64 funcs, u64 func, u32 *ret)
+>  	union acpi_object *obj;
+>  	u64 val;
+>  
+> -	if (!(funcs & BIT(func)))
+> +	if (!(funcs & BIT_ULL(func)))
+>  		return 0; /* Not supported, leave *ret at its default value */
+>  
+>  	obj = acpi_evaluate_dsm_typed(handle, &SSAM_SSH_DSM_GUID,
+> 
 
-Then 3-4.3 is another hub plugged into the Realtek hub, and 3-4.3.1 (the 
-device being suspended and resumed) is plugged into that other hub.
-
-I'm concerned about devices that are plugged directly into the Realtek 
-hub.  For example, did you try allowing the 3-4.3 hub in the experiment 
-above to suspend and resume?
-
-Alan Stern
