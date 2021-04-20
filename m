@@ -2,319 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1637C36623F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 00:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B36E366248
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 00:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbhDTWnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 18:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhDTWno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 18:43:44 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5152C06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 15:43:10 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so32189364otf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 15:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cqcr/bWRc5duDemxdRvUOo4OnGCAh1SF+Fi9sGC5Wd8=;
-        b=s/ZBszYfUDnLnbfPXzdmgOC0AnAVPWMWphCCaPB1wr9OtDId6AXBjvncMUDxH8+wsX
-         0OBlqVfrd2e1MFxKryblRftDWNJxbCT4oV7oK3gnxp130xBwTnpYSh2wIZXWcTfJl+6z
-         QVj4hT/U7jZceybRfsE6Gs8SXLsydBXiNxAFKdebxgtG0Ei7zOC1AgbLSZAd0+xn0p1l
-         N1GRfnmYbReeGEAUp33wNbxTgxdMH04yXetwt2wbkK7imPuSQCqjZPE/JomkwarYg4f2
-         kEcBq5B6+Wc8W8+f0m+LNHvt3LBakGCAis5XUuASYDennQkK1eJ5u/9DpZ7MuLS1wGpI
-         SjzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cqcr/bWRc5duDemxdRvUOo4OnGCAh1SF+Fi9sGC5Wd8=;
-        b=YykN88QAYpwrH5sFwKaqr0weJoUFpNfAWSblHas8FsRAmexAa2esTYrTHVuzKDHLLC
-         IVMIB94IMWzaUEMccnNqrlQWkvXhqHjkyqpiM6If8Mygz53TUdxMn1lz3rg/9DSccn5v
-         osBq1OF7rNMU+9uThlBJ+UzSbrMy772aCKcoaQfxQN0D39RcjEMVCsYI2ylFH0OfV/pf
-         4IWknHhHCtwfp2mmebiDKF0uLBESXhVSiZp+zG086IP1mQUABAmMjF+8HAa+qpiKfOq1
-         g1CwfUigueTebhiE0QHSOL8E3lMPPAyiZBhW7XEaAImlq+a92WuJ/iX2LXztEygEeNnI
-         YNTg==
-X-Gm-Message-State: AOAM533iDxuXKwABLhLE0Zr16/0KYZKx9kYRs0TYoYQdcOh/l5310/sM
-        hx0qKhqbwT1bYeo5kmOF3T9RjR6YtzfzJDmyAdVgyw==
-X-Google-Smtp-Source: ABdhPJxc1y/ArO9egd3/6TtiuTmSK2IwV7rDHhybzOh2XJYXOQNfi1TbFBDuA0XUWQhviP0KWfhokSZPMKh1FAlqeD4=
-X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr16170709otn.233.1618958589742;
- Tue, 20 Apr 2021 15:43:09 -0700 (PDT)
+        id S234310AbhDTWtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 18:49:10 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29045 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234240AbhDTWtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 18:49:09 -0400
+IronPort-SDR: dtFsizd3Zl3659MWFVHq78r/DaHBo1T9ojnodewFf+11M5OK8YIJ8qwxBaMDC/EYhU/YDfeLJC
+ RvxQmJz610ag==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="182736888"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="182736888"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 15:48:36 -0700
+IronPort-SDR: 6fYhIG1hCLT2TWpmWXXNOlFVQK+234kGHYTHWvzDDsZhPhdw01dn/qijD3LPVKDlrpbfa7kfaP
+ IicIvVCCxsZg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="391292255"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Apr 2021 15:48:36 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 20 Apr 2021 15:48:32 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Tue, 20 Apr 2021 15:48:32 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 20 Apr 2021 15:48:31 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OdEgp6kL7V9RtxTynwnncTR/utVPE71sbt+PYGDwWNYX8kkE7SYtFvfJeU794Y9OSROesqzC6f8BFbQBTJwmGGyUemAprUtBcZJcvCJJqV7A0x7TYGxuoSdY4e8tBe80MzG6FjH7qlZGlGGOrjTIIEf/IG9/QF7Hy7VHFsuZFvwIftXhl7mg8oaW7aDv+kUZpzLJ1qyuj+tFJnC7b3P91fILbNacfbPxesnDcTqhtCcGNQ2JUGPW9uCD2aJ82qwF7UHYeyL3PjIM5wD+yKjGOCyk9w8EB6jCAlUSt8WhCUvcwtZJslUnqdscxsVyKbjOqLVxZVimQbLyuKgxtfj0Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y8mdvAtb6oOlv8oWSoKcS+qmXG2smb5ODJVvJzxHyB8=;
+ b=g233RXQqKRs87pYeDHW3ZooIIXicqiA3h2DaTErxXtQpd7WYcbi8/09q+UYgR0tjIHjdpeN2qYV4/e9xZa3hb+SAO4m9x/t6E/+MHM7jMvWZKOuRk/xAu+ndCdQ25SQnKRLZTMKIgAZ9Ahvq3DQ8vBubVEOGm4IdpAmX+uZ8muUjyf4cEpFvLUboSo4cshbbco8k117cNdONGoPTHM/nhYfROSuu/GZMQbefqX1vj9+GTn7H/vG1D+4fmIA2p1tPSubYMviUJGflzecs7eD79ncKUWvOfhAzxe7URLW1smkVGYKOVZ6LtuSjEGH2ET2xVjZrp9D3bucQmao3bt/LNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y8mdvAtb6oOlv8oWSoKcS+qmXG2smb5ODJVvJzxHyB8=;
+ b=Ah/xB5nXltJHN9gxoHrzJUcyRZnEkKqZ3Zj15S0KpbAky9FSYodY/GzPbN4uRwkMwYDtS/vHaPE/cEuA52ku2U05ZfsecVce6AhoB8cP7Oyp2Bcv9pXwtaHhF0JD6hLEMMd6FKK7fGJTPSEffu3BT6snm6C2N+4g/yYTarJgXdk=
+Received: from SN6PR11MB3229.namprd11.prod.outlook.com (2603:10b6:805:ba::28)
+ by SA2PR11MB4844.namprd11.prod.outlook.com (2603:10b6:806:f9::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
+ 2021 22:48:29 +0000
+Received: from SN6PR11MB3229.namprd11.prod.outlook.com
+ ([fe80::7ca2:37ff:9cbd:c87c]) by SN6PR11MB3229.namprd11.prod.outlook.com
+ ([fe80::7ca2:37ff:9cbd:c87c%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 22:48:29 +0000
+From:   "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+To:     "liwei.song@windriver.com" <liwei.song@windriver.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ice: set the value of global config lock timeout longer
+Thread-Topic: [PATCH] ice: set the value of global config lock timeout longer
+Thread-Index: AQHXNP7PFMlVALdkmU2CbzZRHsc87Kq+BJEA
+Date:   Tue, 20 Apr 2021 22:48:29 +0000
+Message-ID: <7d85412de58342e4469efdfdc6196925ce770993.camel@intel.com>
+References: <20210419093106.6487-1-liwei.song@windriver.com>
+In-Reply-To: <20210419093106.6487-1-liwei.song@windriver.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5 (3.28.5-3.fc28) 
+authentication-results: windriver.com; dkim=none (message not signed)
+ header.d=none;windriver.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.136.204]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 37451901-c149-4d67-8a9f-08d9044e6abc
+x-ms-traffictypediagnostic: SA2PR11MB4844:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA2PR11MB484426DE3A9530824A504DE3C6489@SA2PR11MB4844.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7W4LjlWg3bR2ou+j9Jd49KZnUMXyaIM/pdJ3zkL8amjqPedqoo5c6tFkFLJ8ErY6JmodXuCSp+W4UB+pgXrhJNJGy4exmcyvgLCZdmbERBToS2Id0QkXlMHcQSTum8EALJpxby/U9DtGd/lmUqqakYiEgRWmelVGzRM36xeVHriqgElt826LPTPJuzghgdNcKSia8oOFlNy5CJ19JbG7QM7ijhnZ1WCVaANMbQgv1sTOF1I9/iLfb/R+P4YZLHUA4oXGBvOjUraRVQpsHDiIbzfWkMhJNePDk1kmUKSPr+UFfuUy/2EedUGPinwzkld2kDgDHNnpiD91NTjnHa+u2y3pDApAUtAFaEqN8NoyZGOg5wjPw1URcfy7DHgYoxACQDDnl3EEtcpAlmeroOB3zmtguTN4B8ioHN/QaetQcnY8C+Up32ify+NTn+Ec9sIreijysKZTwDUz8JFxj3ZzYgpBZ3rzfx1N1A9xrUXMMzBnQ81xtoDpiXSUTj9gFzY9KApJWsXQN1XzsG3NPInPKgctP4u2UEp/X2NZaOIxHih893GI52jUbCCvLt/ouFNrabwf3HAEc0zNElBiLuernXqGayiS2pEslAljYiPsGzzvWS7SQsluYWyJI1bErFiToAujJk28iLuWKgRvgWx6slMHvuYYspvHSz7Ns2xYISG2O4lOnNqkyvGp9sUMdyEU
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3229.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(376002)(366004)(396003)(8676002)(66556008)(6636002)(8936002)(66446008)(83380400001)(110136005)(2906002)(5660300002)(71200400001)(36756003)(76116006)(4326008)(66476007)(26005)(54906003)(6486002)(64756008)(186003)(91956017)(66946007)(478600001)(38100700002)(122000001)(6506007)(316002)(86362001)(2616005)(6512007)(99106002)(148743002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cmdKeFBtM1VMUldnTFZROUVwRjcrNFQzQXRWZUNLdzVpYSsxc1JxSVZ5NWJO?=
+ =?utf-8?B?RzJBYkE5MmNINFNNMmdrbi9UQnpLQlZkdnUzSzlFWFdvaG9TNjJZTG1pdHp1?=
+ =?utf-8?B?QjFzSGpsd2dVRll2M1NwdlcvSmFxS0Q0TEhWYlpKUFNnUlgvSSs2MzVqTGhV?=
+ =?utf-8?B?Rk9QKzVYa3E1ZVFyOTIzMklrRjZUMWpxZzNyZ2JYcFRPNkd3djIyYXQveXNn?=
+ =?utf-8?B?SjB5M0hGWnlJWFdUSFZVQ21WRlhVN3FHY1dmczFhQlJQbHcxbVBWUkhOOWdv?=
+ =?utf-8?B?RGI2ZUhtNHoyTDRhNXRGdHBob2swOGpLRlB3d0YvL3BtTEVxTlpDaGI3MVlo?=
+ =?utf-8?B?NWZyNVBVbnRrWHRLODl1RSs3UE5Nb2diSFpRWlIrdkxSTmRVU3VtSko5eWFu?=
+ =?utf-8?B?OEN1a3FLTzRIbnBrc25CeGJCc1NNbU9yTFV5cktUTHFKK2ZBT3BIQ1kwSmdo?=
+ =?utf-8?B?amhVRS9Hak8wUWhkT01NaTJuRnllM1Z4RmhqNmNQbVNVYnh0RWMvVStrRzZ4?=
+ =?utf-8?B?WFBqcnJUZndSL2dYTDVoWWdDK3F3c2JpWXpVUTE4NEFHUGEvdlZtQ2NGcFkx?=
+ =?utf-8?B?bDJkRHdCSzJVV08xRWxBV1BtczFrSzg4b3c2N2lOQ2VCcmZGbEhCb2xyM0FP?=
+ =?utf-8?B?aVd0TnVFTUo0Nm1QVUEvM2lBWXZWY1BYTW9Ga0R6TjhDZnZ1Y0F2VEUxYXdO?=
+ =?utf-8?B?MDlzSkptQ1Y3R0ZWQklVSHZERGlpYVovNDhtMlVLd05GRXNtcHM0L1JrL1JS?=
+ =?utf-8?B?RXBIQmptbzhXb0NBSm5WKzhEN2VCRXhlK1Rvam9DYkROWUtBaVVqL2l2aVpX?=
+ =?utf-8?B?M1hyUnc1NUNRZFhJYjYreUdYbVVxcjBQY3lyNWRVQTRmU2JYSmorS2NnZHZN?=
+ =?utf-8?B?d2tyY0VLL3M4Vlo5a3drRUEzUndQREZiUWFmMG5HUk1NcXFyZU1xbm1pSEhP?=
+ =?utf-8?B?eW50dE5QL3R4VFJHbGtpUzVBZERuWkMvVkpsT3dHSW5uYklaVXB0Q0VVVzdp?=
+ =?utf-8?B?Zm1vcVhqWlpXbVd6UDJsQXczek1PT0tmZUVnQXZPejVWSTNXV2xsTlJUS2hW?=
+ =?utf-8?B?K1NzTk1OY3hqdmY1RzgxN3ZvM1hyRmd4NUtsRU5Xc3VoMmNJYm9NL1ZDSEdP?=
+ =?utf-8?B?TWtQNHVlc3hMN0dEUHdmTXdLMkRiZkY1Z0xwV2ZWaFY2THR6NzQyNVJSVm51?=
+ =?utf-8?B?QkVjZHVxaXVTRG1QajZVR21kV2JRWnJXOXRqRFZyWlVKQUtNaUMxaEo2bXN1?=
+ =?utf-8?B?N25rQU5kVm9rSHhTbW40UmIxb2ZmaDFtUWk3eC9kUmlIRUZpSEQyRDZsdis3?=
+ =?utf-8?B?ZG9EU09LMzgvb3dYbWJ5bkJIVmdBamlBOWp0blo1NXVlQ3o4UEQvcXNvK0ZS?=
+ =?utf-8?B?UWlHR20wSWVHWVRXNGsyMUVhWkN6SHdpVVEra3p0NVpnV21RQ29JR3Zwamc3?=
+ =?utf-8?B?WnEzOUptN3hBS1NmUm9OODZhaURDak0vMkY2R1czS3ZidDVueE5mVExCRWp4?=
+ =?utf-8?B?Z1NyelNLSDU0dkZKYzBZTXRVTnNrUFRrb3V0WW1LNlJEdkhtUkg3b0ZxL3Zt?=
+ =?utf-8?B?V3Ntemh4cFpWSG5naFczV1VuV0o5Yks1VXJJSDFLdVRMZWRVZFhucldKdWM1?=
+ =?utf-8?B?U0tLMnRsR24rUkFDSzd3bG5xZWRwbWpQakxXSWZyYTA5N1pXeGNlNGJhZTB6?=
+ =?utf-8?B?aGc0M3lZa200cEFGTzljNllKOUpYeEh0VUJ4eGFPbzhXVGNETjlJSnZpcU5D?=
+ =?utf-8?B?QWFhMVU3bG9EMit5enkvTVQwY1hsQk9CblFnTHFaUXF4ZjI2bUUxL2FYL0hI?=
+ =?utf-8?B?Zyt3dFlwb0VoTWRWVVV6QT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <25BE68EA9848824398FBBA46A9B43822@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210408103605.1676875-1-elver@google.com> <CGME20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8@eucas1p1.samsung.com>
- <20210408103605.1676875-6-elver@google.com> <1fbf3429-42e5-0959-9a5c-91de80f02b6a@samsung.com>
-In-Reply-To: <1fbf3429-42e5-0959-9a5c-91de80f02b6a@samsung.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 21 Apr 2021 00:42:58 +0200
-Message-ID: <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
-Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and si_perf
- to siginfo
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3229.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37451901-c149-4d67-8a9f-08d9044e6abc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 22:48:29.3707
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OBOGLSEt2b5/8HwFAIjkfUM9rTAtSgRNr+DKXEYReSN6p6I7HXRgWw9og0TWwvctYYEOmgB7BEPUArOtdY3kTis0vHO0DU55+s2FhtEObAg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4844
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 at 23:26, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->
-> Hi Marco,
->
-> On 08.04.2021 12:36, Marco Elver wrote:
-> > Introduces the TRAP_PERF si_code, and associated siginfo_t field
-> > si_perf. These will be used by the perf event subsystem to send signals
-> > (if requested) to the task where an event occurred.
-> >
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-> > Acked-by: Arnd Bergmann <arnd@arndb.de> # asm-generic
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> This patch landed in linux-next as commit fb6cc127e0b6 ("signal:
-> Introduce TRAP_PERF si_code and si_perf to siginfo"). It causes
-> regression on my test systems (arm 32bit and 64bit). Most systems fails
-> to boot in the given time frame. I've observed that there is a timeout
-> waiting for udev to populate /dev and then also during the network
-> interfaces configuration. Reverting this commit, together with
-> 97ba62b27867 ("perf: Add support for SIGTRAP on perf events") to let it
-> compile, on top of next-20210420 fixes the issue.
-
-Thanks, this is weird for sure and nothing in particular stands out.
-
-I have questions:
--- Can you please share your config?
--- Also, can you share how you run this? Can it be reproduced in qemu?
--- How did you derive this patch to be at fault? Why not just
-97ba62b27867, given you also need to revert it?
-
-If you are unsure which patch exactly it is, can you try just
-reverting 97ba62b27867 and see what happens?
-
-Thanks,
--- Marco
-
-> > ---
-> >   arch/m68k/kernel/signal.c          |  3 +++
-> >   arch/x86/kernel/signal_compat.c    |  5 ++++-
-> >   fs/signalfd.c                      |  4 ++++
-> >   include/linux/compat.h             |  2 ++
-> >   include/linux/signal.h             |  1 +
-> >   include/uapi/asm-generic/siginfo.h |  6 +++++-
-> >   include/uapi/linux/signalfd.h      |  4 +++-
-> >   kernel/signal.c                    | 11 +++++++++++
-> >   8 files changed, 33 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-> > index 349570f16a78..a4b7ee1df211 100644
-> > --- a/arch/m68k/kernel/signal.c
-> > +++ b/arch/m68k/kernel/signal.c
-> > @@ -622,6 +622,9 @@ static inline void siginfo_build_tests(void)
-> >       /* _sigfault._addr_pkey */
-> >       BUILD_BUG_ON(offsetof(siginfo_t, si_pkey) != 0x12);
-> >
-> > +     /* _sigfault._perf */
-> > +     BUILD_BUG_ON(offsetof(siginfo_t, si_perf) != 0x10);
-> > +
-> >       /* _sigpoll */
-> >       BUILD_BUG_ON(offsetof(siginfo_t, si_band)   != 0x0c);
-> >       BUILD_BUG_ON(offsetof(siginfo_t, si_fd)     != 0x10);
-> > diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
-> > index a5330ff498f0..0e5d0a7e203b 100644
-> > --- a/arch/x86/kernel/signal_compat.c
-> > +++ b/arch/x86/kernel/signal_compat.c
-> > @@ -29,7 +29,7 @@ static inline void signal_compat_build_tests(void)
-> >       BUILD_BUG_ON(NSIGFPE  != 15);
-> >       BUILD_BUG_ON(NSIGSEGV != 9);
-> >       BUILD_BUG_ON(NSIGBUS  != 5);
-> > -     BUILD_BUG_ON(NSIGTRAP != 5);
-> > +     BUILD_BUG_ON(NSIGTRAP != 6);
-> >       BUILD_BUG_ON(NSIGCHLD != 6);
-> >       BUILD_BUG_ON(NSIGSYS  != 2);
-> >
-> > @@ -138,6 +138,9 @@ static inline void signal_compat_build_tests(void)
-> >       BUILD_BUG_ON(offsetof(siginfo_t, si_pkey) != 0x20);
-> >       BUILD_BUG_ON(offsetof(compat_siginfo_t, si_pkey) != 0x14);
-> >
-> > +     BUILD_BUG_ON(offsetof(siginfo_t, si_perf) != 0x18);
-> > +     BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf) != 0x10);
-> > +
-> >       CHECK_CSI_OFFSET(_sigpoll);
-> >       CHECK_CSI_SIZE  (_sigpoll, 2*sizeof(int));
-> >       CHECK_SI_SIZE   (_sigpoll, 4*sizeof(int));
-> > diff --git a/fs/signalfd.c b/fs/signalfd.c
-> > index 456046e15873..040a1142915f 100644
-> > --- a/fs/signalfd.c
-> > +++ b/fs/signalfd.c
-> > @@ -134,6 +134,10 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
-> >   #endif
-> >               new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
-> >               break;
-> > +     case SIL_PERF_EVENT:
-> > +             new.ssi_addr = (long) kinfo->si_addr;
-> > +             new.ssi_perf = kinfo->si_perf;
-> > +             break;
-> >       case SIL_CHLD:
-> >               new.ssi_pid    = kinfo->si_pid;
-> >               new.ssi_uid    = kinfo->si_uid;
-> > diff --git a/include/linux/compat.h b/include/linux/compat.h
-> > index 6e65be753603..c8821d966812 100644
-> > --- a/include/linux/compat.h
-> > +++ b/include/linux/compat.h
-> > @@ -236,6 +236,8 @@ typedef struct compat_siginfo {
-> >                                       char _dummy_pkey[__COMPAT_ADDR_BND_PKEY_PAD];
-> >                                       u32 _pkey;
-> >                               } _addr_pkey;
-> > +                             /* used when si_code=TRAP_PERF */
-> > +                             compat_u64 _perf;
-> >                       };
-> >               } _sigfault;
-> >
-> > diff --git a/include/linux/signal.h b/include/linux/signal.h
-> > index 205526c4003a..1e98548d7cf6 100644
-> > --- a/include/linux/signal.h
-> > +++ b/include/linux/signal.h
-> > @@ -43,6 +43,7 @@ enum siginfo_layout {
-> >       SIL_FAULT_MCEERR,
-> >       SIL_FAULT_BNDERR,
-> >       SIL_FAULT_PKUERR,
-> > +     SIL_PERF_EVENT,
-> >       SIL_CHLD,
-> >       SIL_RT,
-> >       SIL_SYS,
-> > diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> > index d2597000407a..d0bb9125c853 100644
-> > --- a/include/uapi/asm-generic/siginfo.h
-> > +++ b/include/uapi/asm-generic/siginfo.h
-> > @@ -91,6 +91,8 @@ union __sifields {
-> >                               char _dummy_pkey[__ADDR_BND_PKEY_PAD];
-> >                               __u32 _pkey;
-> >                       } _addr_pkey;
-> > +                     /* used when si_code=TRAP_PERF */
-> > +                     __u64 _perf;
-> >               };
-> >       } _sigfault;
-> >
-> > @@ -155,6 +157,7 @@ typedef struct siginfo {
-> >   #define si_lower    _sifields._sigfault._addr_bnd._lower
-> >   #define si_upper    _sifields._sigfault._addr_bnd._upper
-> >   #define si_pkey             _sifields._sigfault._addr_pkey._pkey
-> > +#define si_perf              _sifields._sigfault._perf
-> >   #define si_band             _sifields._sigpoll._band
-> >   #define si_fd               _sifields._sigpoll._fd
-> >   #define si_call_addr        _sifields._sigsys._call_addr
-> > @@ -253,7 +256,8 @@ typedef struct siginfo {
-> >   #define TRAP_BRANCH     3   /* process taken branch trap */
-> >   #define TRAP_HWBKPT     4   /* hardware breakpoint/watchpoint */
-> >   #define TRAP_UNK    5       /* undiagnosed trap */
-> > -#define NSIGTRAP     5
-> > +#define TRAP_PERF    6       /* perf event with sigtrap=1 */
-> > +#define NSIGTRAP     6
-> >
-> >   /*
-> >    * There is an additional set of SIGTRAP si_codes used by ptrace
-> > diff --git a/include/uapi/linux/signalfd.h b/include/uapi/linux/signalfd.h
-> > index 83429a05b698..7e333042c7e3 100644
-> > --- a/include/uapi/linux/signalfd.h
-> > +++ b/include/uapi/linux/signalfd.h
-> > @@ -39,6 +39,8 @@ struct signalfd_siginfo {
-> >       __s32 ssi_syscall;
-> >       __u64 ssi_call_addr;
-> >       __u32 ssi_arch;
-> > +     __u32 __pad3;
-> > +     __u64 ssi_perf;
-> >
-> >       /*
-> >        * Pad strcture to 128 bytes. Remember to update the
-> > @@ -49,7 +51,7 @@ struct signalfd_siginfo {
-> >        * comes out of a read(2) and we really don't want to have
-> >        * a compat on read(2).
-> >        */
-> > -     __u8 __pad[28];
-> > +     __u8 __pad[16];
-> >   };
-> >
-> >
-> > diff --git a/kernel/signal.c b/kernel/signal.c
-> > index f2718350bf4b..7061e4957650 100644
-> > --- a/kernel/signal.c
-> > +++ b/kernel/signal.c
-> > @@ -1199,6 +1199,7 @@ static inline bool has_si_pid_and_uid(struct kernel_siginfo *info)
-> >       case SIL_FAULT_MCEERR:
-> >       case SIL_FAULT_BNDERR:
-> >       case SIL_FAULT_PKUERR:
-> > +     case SIL_PERF_EVENT:
-> >       case SIL_SYS:
-> >               ret = false;
-> >               break;
-> > @@ -2531,6 +2532,7 @@ static void hide_si_addr_tag_bits(struct ksignal *ksig)
-> >       case SIL_FAULT_MCEERR:
-> >       case SIL_FAULT_BNDERR:
-> >       case SIL_FAULT_PKUERR:
-> > +     case SIL_PERF_EVENT:
-> >               ksig->info.si_addr = arch_untagged_si_addr(
-> >                       ksig->info.si_addr, ksig->sig, ksig->info.si_code);
-> >               break;
-> > @@ -3341,6 +3343,10 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
-> >   #endif
-> >               to->si_pkey = from->si_pkey;
-> >               break;
-> > +     case SIL_PERF_EVENT:
-> > +             to->si_addr = ptr_to_compat(from->si_addr);
-> > +             to->si_perf = from->si_perf;
-> > +             break;
-> >       case SIL_CHLD:
-> >               to->si_pid = from->si_pid;
-> >               to->si_uid = from->si_uid;
-> > @@ -3421,6 +3427,10 @@ static int post_copy_siginfo_from_user32(kernel_siginfo_t *to,
-> >   #endif
-> >               to->si_pkey = from->si_pkey;
-> >               break;
-> > +     case SIL_PERF_EVENT:
-> > +             to->si_addr = compat_ptr(from->si_addr);
-> > +             to->si_perf = from->si_perf;
-> > +             break;
-> >       case SIL_CHLD:
-> >               to->si_pid    = from->si_pid;
-> >               to->si_uid    = from->si_uid;
-> > @@ -4601,6 +4611,7 @@ static inline void siginfo_buildtime_checks(void)
-> >       CHECK_OFFSET(si_lower);
-> >       CHECK_OFFSET(si_upper);
-> >       CHECK_OFFSET(si_pkey);
-> > +     CHECK_OFFSET(si_perf);
-> >
-> >       /* sigpoll */
-> >       CHECK_OFFSET(si_band);
->
-> Best regards
-> --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
->
+T24gTW9uLCAyMDIxLTA0LTE5IGF0IDE3OjMxICswODAwLCBMaXdlaSBTb25nIHdyb3RlOg0KPiBJ
+dCBtYXkgbmVlZCBob2xkIEdsb2JhbCBDb25maWcgTG9jayBhIGxvbmdlciB0aW1lIHdoZW4gZG93
+bmxvYWQgRERQDQo+IHBhY2thZ2UgZmlsZSwgZXh0ZW5kIHRoZSB0aW1lb3V0IHZhbHVlIHRvIDUw
+MDBtcyB0byBlbnN1cmUgdGhhdA0KPiBkb3dubG9hZCBjYW4gYmUgZmluaXNoZWQgYmVmb3JlIG90
+aGVyIEFRIGNvbW1hbmQgZ290IHRpbWUgdG8gcnVuLA0KPiB0aGlzIHdpbGwgZml4IHRoZSBpc3N1
+ZSBiZWxvdyB3aGVuIHByb2JlIHRoZSBkZXZpY2UsIDUwMDBtcyBpcyBhIHRlc3QNCj4gdmFsdWUg
+dGhhdCB3b3JrIHdpdGggYm90aCBCYWNrcGxhbmUgYW5kIEJyZWFrb3V0Q2FibGUgTlZNIGltYWdl
+Og0KPiANCj4gaWNlIDAwMDA6ZjQ6MDAuMDogVlNJIDEyIGZhaWxlZCBsYW4gcXVldWUgY29uZmln
+LCBlcnJvciBJQ0VfRVJSX0NGRw0KPiBpY2UgMDAwMDpmNDowMC4wOiBGYWlsZWQgdG8gZGVsZXRl
+IFZTSSAxMiBpbiBGVyAtIGVycm9yOg0KPiBJQ0VfRVJSX0FRX1RJTUVPVVQNCj4gaWNlIDAwMDA6
+ZjQ6MDAuMDogcHJvYmUgZmFpbGVkIGR1ZSB0byBzZXR1cCBQRiBzd2l0Y2g6IC0xMg0KPiBpY2U6
+IHByb2JlIG9mIDAwMDA6ZjQ6MDAuMCBmYWlsZWQgd2l0aCBlcnJvciAtMTINCg0KSGkgTGl3ZWks
+DQoNCldlIGhhdmVuJ3QgZW5jb3VudGVyZWQgdGhpcyBpc3N1ZSBiZWZvcmUuIENhbiB5b3UgcHJv
+dmlkZSBzb21lIG1vcmUNCmluZm8gb24geW91ciBzZXR1cCBvciBob3cgeW91J3JlIGNvbWluZyBh
+Y3Jvc3MgdGhpcyBpc3N1ZT8NCg0KUGVyaGFwcywgbHNwY2kgb3V0cHV0IGFuZCBzb21lIG1vcmUg
+b2YgdGhlIGRtZXNnIGxvZz8gV2UnZCBsaWtlIHRvIHRyeQ0KdG8gcmVwcm9kdWNlIHRoaXMgc28g
+d2UgY2FuIGludmVzaXRnYXRlIGl0IGZ1cnRoZXIuDQoNClRoYW5rcywNClRvbnkNCg0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBMaXdlaSBTb25nIDxsaXdlaS5zb25nQHdpbmRyaXZlci5jb20+DQo+IC0tLQ0K
+PiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWNlL2ljZV90eXBlLmggfCAyICstDQo+ICAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNlX3R5cGUuaA0KPiBiL2Ry
+aXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ljZS9pY2VfdHlwZS5oDQo+IGluZGV4IDI2NjAzNmI3
+YTQ5YS4uOGE5MGM0N2UzMzdkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9p
+bnRlbC9pY2UvaWNlX3R5cGUuaA0KPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9p
+Y2UvaWNlX3R5cGUuaA0KPiBAQCAtNjMsNyArNjMsNyBAQCBlbnVtIGljZV9hcV9yZXNfaWRzIHsN
+Cj4gIC8qIEZXIHVwZGF0ZSB0aW1lb3V0IGRlZmluaXRpb25zIGFyZSBpbiBtaWxsaXNlY29uZHMg
+Ki8NCj4gICNkZWZpbmUgSUNFX05WTV9USU1FT1VUCQkJMTgwMDAwDQo+ICAjZGVmaW5lIElDRV9D
+SEFOR0VfTE9DS19USU1FT1VUCQkxMDAwDQo+IC0jZGVmaW5lIElDRV9HTE9CQUxfQ0ZHX0xPQ0tf
+VElNRU9VVAkzMDAwDQo+ICsjZGVmaW5lIElDRV9HTE9CQUxfQ0ZHX0xPQ0tfVElNRU9VVAk1MDAw
+DQo+ICANCj4gIGVudW0gaWNlX2FxX3Jlc19hY2Nlc3NfdHlwZSB7DQo+ICAJSUNFX1JFU19SRUFE
+ID0gMSwNCg==
