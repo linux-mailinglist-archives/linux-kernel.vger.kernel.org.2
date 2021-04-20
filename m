@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D363656CE
+	by mail.lfdr.de (Postfix) with ESMTP id A33483656CF
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhDTKtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:49:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52044 "EHLO
+        id S234563AbhDTKtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:49:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52042 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbhDTKri (ORCPT
+        with ESMTP id S232050AbhDTKri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Apr 2021 06:47:38 -0400
 Date:   Tue, 20 Apr 2021 10:47:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618915624;
+        s=2020; t=1618915623;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lPJrxA+ZG2bWHgWSKvKZqwD3vozoq2KRih2R2H7OiNs=;
-        b=pLc42bV+6M1HpGpZlZSEAEnc/utYdWm0NDjLfnuAzQigxqOpzeV4VEhiJxTl3IErFOh7Fd
-        ZoDBVdzsscU+N1gmJC9+xK+PCMapj43MZjm8hUVXaDhw6whNYeBxa6DUrKNr88HXRQnIqQ
-        K/cuKFmBAH+QpUoUy7O0vSfotyFb2FhZNOvc2Vs1sWmagkrmzv2JnsSwwtsYvw6QUc43ku
-        brR6e1QksSc4sdD+NmwOu2LvfgtEpKLmc3u7CHGj48Na/5avVwjoDXd76cvfJvHahnmT9o
-        wV55BnkC2IuwWNs8D22HnNWMPCwos6O+NxicWW7iUeYJEgJJxwUqhIVZSrmqeQ==
+        bh=hO3L9oBlV/YbeXsS3BIE38EZYP4UchV8LdZugC9akI8=;
+        b=o9XI3KvqkfbpkQuRPXVc98vAaO9hlP5+3dKTuGnMYPl+aqBbdS/mrO3OTG9I8LqtmLIteP
+        yNEAC+A1+HI9a0zTZRYd3+WwxblB319PTeOGGyIHbwif9+UCbV1Ldodll4+JrCcKypY8/8
+        TD8LpSgHAyWyPjpyCKp4sX8KMgi0PEx5lQdx0iDB69RicVN2rbhvVugf7Vly3/OwTwnd1F
+        y/Ba4wn2th6MsLq8TGn6/txWFwESb4j47lrByIIibYM6SWdL6RDn5Mu0FQ3BhoeJmebm+M
+        rU8MVfV1EZsz0DCLotBCKkAgJjfY+uZ5qVhItEUlsZEySs7doKaUFr56lqKeXQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618915624;
+        s=2020e; t=1618915623;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lPJrxA+ZG2bWHgWSKvKZqwD3vozoq2KRih2R2H7OiNs=;
-        b=VidWT83a9LSmI/NkSWfHWM1lKG/CjuW11Jr+2+X0c/o+3WhvtKCTLL5P9liiMCZwxqcYp3
-        x8+5M8KyTObUAeAA==
+        bh=hO3L9oBlV/YbeXsS3BIE38EZYP4UchV8LdZugC9akI8=;
+        b=0I35IxTUX6s25NkwjqcQ9QvNMq7ypPU0vGym3bBjbYohNR7rM7Ldrez63lOWouqZ/qqqFm
+        /Z4Han5MxvwpE2Bg==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/crypto/camellia-aesni-avx2: Unconditionally
- allocate stack buffer
+Subject: [tip: objtool/core] x86/crypto/crc32c-pcl-intel: Standardize jump table
 Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Ard Biesheuvel <ardb@kernel.org>,
         Sami Tolvanen <samitolvanen@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Herbert Xu <herbert@gondor.apana.org.au>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <85ac96613ee5784b6239c18d3f68b1f3c509caa3.1614182415.git.jpoimboe@redhat.com>
-References: <85ac96613ee5784b6239c18d3f68b1f3c509caa3.1614182415.git.jpoimboe@redhat.com>
+In-Reply-To: <5357a039def90b8ef6b5874ef12cda008ecf18ba.1614182415.git.jpoimboe@redhat.com>
+References: <5357a039def90b8ef6b5874ef12cda008ecf18ba.1614182415.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Message-ID: <161891562341.29796.17081283860565906101.tip-bot2@tip-bot2>
+Message-ID: <161891562305.29796.4322115593109629466.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,20 +61,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     dabe5167a3cbb4bf16b20c0e5b6497513e2e3a08
-Gitweb:        https://git.kernel.org/tip/dabe5167a3cbb4bf16b20c0e5b6497513e2e3a08
+Commit-ID:     2b02ed55482a1c5c310a7f53707292fcf1601e7a
+Gitweb:        https://git.kernel.org/tip/2b02ed55482a1c5c310a7f53707292fcf1601e7a
 Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Wed, 24 Feb 2021 10:29:18 -06:00
+AuthorDate:    Wed, 24 Feb 2021 10:29:19 -06:00
 Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
 CommitterDate: Mon, 19 Apr 2021 12:36:34 -05:00
 
-x86/crypto/camellia-aesni-avx2: Unconditionally allocate stack buffer
+x86/crypto/crc32c-pcl-intel: Standardize jump table
 
-A conditional stack allocation violates traditional unwinding
-requirements when a single instruction can have differing stack layouts.
+Simplify the jump table code so that it resembles a compiler-generated
+table.
 
-There's no benefit in allocating the stack buffer conditionally.  Just
-do it unconditionally.
+This enables ORC unwinding by allowing objtool to follow all the
+potential code paths.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Tested-by: Ard Biesheuvel <ardb@kernel.org>
@@ -83,52 +82,33 @@ Acked-by: Ard Biesheuvel <ardb@kernel.org>
 Tested-by: Sami Tolvanen <samitolvanen@google.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-Link: https://lore.kernel.org/r/85ac96613ee5784b6239c18d3f68b1f3c509caa3.1614182415.git.jpoimboe@redhat.com
+Link: https://lore.kernel.org/r/5357a039def90b8ef6b5874ef12cda008ecf18ba.1614182415.git.jpoimboe@redhat.com
 ---
- arch/x86/crypto/camellia-aesni-avx2-asm_64.S | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/x86/crypto/crc32c-pcl-intel-asm_64.S | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/crypto/camellia-aesni-avx2-asm_64.S b/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
-index 782e971..706f708 100644
---- a/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
-+++ b/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
-@@ -990,6 +990,7 @@ SYM_FUNC_START(camellia_cbc_dec_32way)
- 	 *	%rdx: src (32 blocks)
- 	 */
- 	FRAME_BEGIN
-+	subq $(16 * 32), %rsp;
+diff --git a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
+index 884dc76..ac1f303 100644
+--- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
++++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
+@@ -53,7 +53,7 @@
+ .endm
  
- 	vzeroupper;
+ .macro JMPTBL_ENTRY i
+-.word crc_\i - crc_array
++.quad crc_\i
+ .endm
  
-@@ -1002,7 +1003,6 @@ SYM_FUNC_START(camellia_cbc_dec_32way)
- 		     %ymm8, %ymm9, %ymm10, %ymm11, %ymm12, %ymm13, %ymm14,
- 		     %ymm15, %rdx, (key_table)(CTX, %r8, 8));
+ .macro JNC_LESS_THAN j
+@@ -168,10 +168,7 @@ continue_block:
+ 	xor     crc2, crc2
  
--	movq %rsp, %r10;
- 	cmpq %rsi, %rdx;
- 	je .Lcbc_dec_use_stack;
+ 	## branch into array
+-	lea	jump_table(%rip), %bufp
+-	movzwq  (%bufp, %rax, 2), len
+-	lea	crc_array(%rip), %bufp
+-	lea     (%bufp, len, 1), %bufp
++	mov	jump_table(,%rax,8), %bufp
+ 	JMP_NOSPEC bufp
  
-@@ -1015,7 +1015,6 @@ SYM_FUNC_START(camellia_cbc_dec_32way)
- 	 * dst still in-use (because dst == src), so use stack for temporary
- 	 * storage.
- 	 */
--	subq $(16 * 32), %rsp;
- 	movq %rsp, %rax;
- 
- .Lcbc_dec_continue:
-@@ -1025,7 +1024,6 @@ SYM_FUNC_START(camellia_cbc_dec_32way)
- 	vpxor %ymm7, %ymm7, %ymm7;
- 	vinserti128 $1, (%rdx), %ymm7, %ymm7;
- 	vpxor (%rax), %ymm7, %ymm7;
--	movq %r10, %rsp;
- 	vpxor (0 * 32 + 16)(%rdx), %ymm6, %ymm6;
- 	vpxor (1 * 32 + 16)(%rdx), %ymm5, %ymm5;
- 	vpxor (2 * 32 + 16)(%rdx), %ymm4, %ymm4;
-@@ -1047,6 +1045,7 @@ SYM_FUNC_START(camellia_cbc_dec_32way)
- 
- 	vzeroupper;
- 
-+	addq $(16 * 32), %rsp;
- 	FRAME_END
- 	ret;
- SYM_FUNC_END(camellia_cbc_dec_32way)
+ 	################################################################
