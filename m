@@ -2,106 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E35365B40
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D9E365B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbhDTOeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:34:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:23488 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232726AbhDTOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:34:42 -0400
-IronPort-SDR: u/xTcM59UOxfwD9sNITotDI+HDMaJ7HJDee/RIRkBcqejatidNblW5eZyPTP/Yf7K7i/9k/iIs
- NCD104AnuHig==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="256828751"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="256828751"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 07:34:07 -0700
-IronPort-SDR: K1o0zalZ4cUXSadw15kHqkPsEOweDsAyOLNmONKLvsyQGW4QshShaIiSN1A62YxMGRSPIDDg42
- +Prwi9xynI+Q==
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="420457564"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 07:34:03 -0700
-Date:   Tue, 20 Apr 2021 22:37:54 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Calvin Walton <calvin.walton@kepstin.ca>
-Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
-        lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
-        rui.zhang@intel.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <20210420143754.GA390118@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop>
- <20210420080701.GA2326@zn.tnic>
- <20210420131541.GA388877@chenyu-desktop>
- <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
+        id S232849AbhDTOkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232504AbhDTOk2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:40:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE80C06174A;
+        Tue, 20 Apr 2021 07:39:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JdFnlCKsPAkRgtWeQVKwem1FA1yZRVTt5cXvtYatp2Y=; b=gsSKE/y4OtsBGW0P+XDa6g5Ykj
+        IXgIWd5IQmkJC4SIOTiLkPZ7CPRcONM+B4Ml7M+jjLVIM8/keo7CZCFoH9NpkQ8pHEM8/NMCPQKKm
+        fMljFdwE/liyCFkZx/p7RYvXK9fMY4QUOlpPkg5w0HiAmeHcB3d3cPlIA1w36VQ4ZvGfRmqvNWlsZ
+        5dKha4TjqnWLTmxXtvAYyQVFfiz6e7a9tzNQsEsMXuj7DXTx+QIZ5iuhT2NXNVqea2zAHusrVzMSi
+        y4+s3BirRckeNm3u0ptiBAhEQibKjHoipYyOISezT4MhPGqBh7FvXS9A+5GGh+2YUbTgLmLodJfdP
+        qwKllvTQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYrWA-00FH6e-Om; Tue, 20 Apr 2021 14:38:48 +0000
+Date:   Tue, 20 Apr 2021 15:38:22 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     guoren@kernel.org
+Cc:     arnd@arndb.de, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH 1/3] nds32: Cleanup deprecated function strlen_user
+Message-ID: <20210420143822.GA3640266@infradead.org>
+References: <1618925829-90071-1-git-send-email-guoren@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
+In-Reply-To: <1618925829-90071-1-git-send-email-guoren@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 09:28:06AM -0400, Calvin Walton wrote:
-> On Tue, 2021-04-20 at 21:15 +0800, Chen Yu wrote:
-> > 
-> > Okay. I would vote for the the patch from Bas as it was a combined
-> > work from two
-> > authors and tested by several AMD users. But let me paste it here too
-> > for Artem to
-> > see if this also works for him:
-> > 
-> > 
-> > From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00
-> > 2001
-> > From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-> > Date: Fri, 12 Mar 2021 21:27:40 +0800
-> > Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen
-> > CPUs
-> > 
-> > 
-> > @@ -297,7 +297,10 @@ int idx_to_offset(int idx)
-> >  
-> >         switch (idx) {
-> >         case IDX_PKG_ENERGY:
-> > -               offset = MSR_PKG_ENERGY_STATUS;
-> > +               if (do_rapl & RAPL_AMD_F17H)
-> > +                       offset = MSR_PKG_ENERGY_STAT;
-> > +               else
-> > +                       offset = MSR_PKG_ENERGY_STATUS;
-> >                 break;
-> >         case IDX_DRAM_ENERGY:
-> >                 offset = MSR_DRAM_ENERGY_STATUS;
-> 
-> This patch has the same issue I noticed with the initial revision of
-> Terry's patch - the idx_to_offset function returns type int (32-bit
-> signed), but MSR_PKG_ENERGY_STAT is greater than INT_MAX (or rather,
-> would be interpreted as a negative number)
-> 
-> The end result is, as far as I can tell, that it hits the if (offset <
-> 0) check in update_msr_sum() resulting in the timer callback for
-> updating the stat in the background when long durations are used to not
-> happen.
-> 
-> For short durations it still works fine since the background update
-> isn't used.
-> 
-Ah, got it, nice catch. How about an incremental patch based on Bas' one
-to fix this 'overflow' issue? Would converting offset_to_idx(), idx_to_offset() and
-update_msr_sum() to use off_t instead of int be enough? Do you or Terry have interest
-to cook that patch? For Terry's version, I'm not sure if spliting
-the code into different CPU vendor would benefit in the future, except
-that we would have plenty of new MSRs to be introduced in the future.
-
-thanks,
-Chenyu
-> 
-> -- 
-> Calvin Walton <calvin.walton@kepstin.ca>
-> 
+Can you also clean up the reference to strlen_user in the comments
+in the ia64 and mips code, please?
