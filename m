@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921373660A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B583660AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhDTULs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:11:48 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.219]:14508 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233863AbhDTULq (ORCPT
+        id S233885AbhDTUMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:12:54 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:34164 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233869AbhDTUMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:11:46 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 6133EA923A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 15:10:48 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id YwhsldhN71cHeYwhsllUkw; Tue, 20 Apr 2021 15:10:48 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CkRrAR3rCpK4uliJ7LJ71iNQodpgSH1kYlP/RKhfhGo=; b=Ueb+udY2kyoTD5pHw4Y8wqYIni
-        nIQy8U6Ne3ALQYgfy/x0h1iEGgKxTEWlmbOT/CI/7GCpn6hu14Wa0b+PoORM7ZKHKKggosQA+Ip9l
-        CcmjjD4Wp+ApERE6f8OCqMO5l/xH92PHIlJReKlxuC+TL06N/NOvLkkOoVVV/4KIslHMQhAgFUI0j
-        taGG9CVVtPFUlvBTNxstk+vwd3dEcbymBOM0ye//KqaG0NHaY/JrVYYi6inJJMadKIFkqfUelRjs3
-        mkHzi4B1oT9bPCPX2CzNlq3seQW0Xo1CtEzEya8CQuieGZxSrRpUAphnfejKyT5oOuOSBp+7GH7Ie
-        qG+8DPuw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48952 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lYwho-002gkB-S1; Tue, 20 Apr 2021 15:10:44 -0500
-Subject: Re: [PATCH RESEND][next] net: netrom: Fix fall-through warnings for
- Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305092210.GA139864@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <5047001a-e5a8-ec64-0dc7-662e7cb0d100@embeddedor.com>
-Date:   Tue, 20 Apr 2021 15:11:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 20 Apr 2021 16:12:52 -0400
+Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id 9EB00E8098F;
+        Tue, 20 Apr 2021 22:12:15 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 2A6EE1604AE; Tue, 20 Apr 2021 22:12:15 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 22:12:15 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca Boccassi <bluca@debian.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        Javier Gonz?lez <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH -next 1/5] block: add disk sequence number
+Message-ID: <YH81n34d2G3C4Re+@gardel-login>
+References: <20210315200242.67355-1-mcroce@linux.microsoft.com>
+ <20210315200242.67355-2-mcroce@linux.microsoft.com>
+ <20210315201824.GB2577561@casper.infradead.org>
+ <20210316141326.GA37773@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210305092210.GA139864@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lYwho-002gkB-S1
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48952
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 67
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210316141326.GA37773@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Di, 16.03.21 14:13, Christoph Hellwig (hch@infradead.org) wrote:
 
-Friendly ping: who can take this, please?
+> On Mon, Mar 15, 2021 at 08:18:24PM +0000, Matthew Wilcox wrote:
+> > On Mon, Mar 15, 2021 at 09:02:38PM +0100, Matteo Croce wrote:
+> > > From: Matteo Croce <mcroce@microsoft.com>
+> > >
+> > > Add a sequence number to the disk devices. This number is put in the
+> > > uevent so userspace can correlate events when a driver reuses a device,
+> > > like the loop one.
+> >
+> > Should this be documented as monotonically increasing?  I think this
+> > is actually a media identifier.  Consider (if you will) a floppy disc.
+> > Back when such things were common, it was possible with personal computers
+> > of the era to have multiple floppy discs "in play" and be prompted to
+> > insert them as needed.  So shouldn't it be possible to support something
+> > similar here -- you're really removing the media from the loop device.
+> > With a monotonically increasing number, you're always destroying the
+> > media when you remove it, but in principle, it should be possible to
+> > reinsert the same media and have the same media identifier number.
+>
+> And we have some decent infrastructure related to media changes,
+> grep for disk_events.  I think this needs to plug into that
+> infrastructure instead of duplicating it.
 
-Thanks
---
-Gustavo
+I'd argue this makes sense in one way only, i.e. that whenever the
+media_change event is seen the seqnum is implicitly bumped.
 
-On 3/5/21 03:22, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding multiple break statements instead of
-> letting the code fall through to the next case.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  net/netrom/nr_route.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/net/netrom/nr_route.c b/net/netrom/nr_route.c
-> index 78da5eab252a..de9821b6a62a 100644
-> --- a/net/netrom/nr_route.c
-> +++ b/net/netrom/nr_route.c
-> @@ -266,6 +266,7 @@ static int __must_check nr_add_node(ax25_address *nr, const char *mnemonic,
->  		fallthrough;
->  	case 2:
->  		re_sort_routes(nr_node, 0, 1);
-> +		break;
->  	case 1:
->  		break;
->  	}
-> @@ -359,6 +360,7 @@ static int nr_del_node(ax25_address *callsign, ax25_address *neighbour, struct n
->  					fallthrough;
->  				case 1:
->  					nr_node->routes[1] = nr_node->routes[2];
-> +					break;
->  				case 2:
->  					break;
->  				}
-> @@ -482,6 +484,7 @@ static int nr_dec_obs(void)
->  					fallthrough;
->  				case 1:
->  					s->routes[1] = s->routes[2];
-> +					break;
->  				case 2:
->  					break;
->  				}
-> @@ -529,6 +532,7 @@ void nr_rt_device_down(struct net_device *dev)
->  							fallthrough;
->  						case 1:
->  							t->routes[1] = t->routes[2];
-> +							break;
->  						case 2:
->  							break;
->  						}
-> 
+I am pretty sure though that loopback devices shouldn't synthesize
+media_change events themselves though. There's quite a difference I
+would argue between a real media change event caused by external
+effect (i.e. humans/hw buttons/sensors) to loop device reuse, which is
+exclusively triggered by internal events (i.e. local code). Moreover I
+think the loopback subsystem should manage the seqnum on its own,
+since it ideally would return the assigned seqnum immediately from the
+attachment ioctl, i.e. it shouldn't just be a side-effect of
+attachment, but a part of it, if you follow what I mean.
+
+Does that make sense?
+
+Matteo, would it make sense to extend your patch set to bump the
+seqnum implicitly on media_change for devices that implement that?
+
+Lennart
