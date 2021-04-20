@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89F7365EBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0665365EC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhDTRoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
+        id S233407AbhDTRpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDTRoA (ORCPT
+        with ESMTP id S231549AbhDTRpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:44:00 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756FDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:43:28 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id j12so21070601edy.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:43:28 -0700 (PDT)
+        Tue, 20 Apr 2021 13:45:03 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5240FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:44:32 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id g184-20020a3784c10000b02902e385de9adaso7289683qkd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0r7+oPVQUGjxLf8FALe8TJW9eBm5+3uLrgjVhTfye+4=;
-        b=BSG5H33CgJoTATLJlnioz9ao30qBfE7WRCscMQdJBhyGJMHRruINfUieQJIIXsD6Kt
-         vFO96MKEBJrKKDSnjPwCn2LyIrczEC3lxRXb1dJoSrObxjuGrysHSWbOzCNw/uj61dQr
-         FKAAyWQYVuuQiA+PYNgFoY2XmXy8vxiSXufXQb1JCNMmI8I75XQdeuZSzZob+Dw6elqT
-         7gWqS62LucKyEwGTWhY23SYyrwm3sfFfz+yzxHm72SxZDrp/U6Nb+RuwvOlmeqosRtox
-         0SbfU0cpDhcoBbKSH1+8lWUmElWozKwVVCdDw5oPG8BTB2icPGeMNW+fF3MoSJ5k+OIT
-         DZbQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ukVJrdVkOwq7s65WfCu+IbNVo5nWb4FRanDkk1R0eWU=;
+        b=B4z6VFCCM34wI/dNHB8iNWAJcaRKrLelv4wRdC6nR6+18Fdqq+xeEZEKz0SFB29iKt
+         n4DxtrHy8yjB6Zhc38+bl8oPM41/9cUSz/BsuKQrdyfVQLZz0JkTA5KWExJT96tMv1zQ
+         xTe5QGuLb92+STIasSkOOF2C1Zr3t+JZi+aVRqFoZltJu0/QaG7aDv0NtfoL+DlWr7aZ
+         taYpGnd0hogrtfSkyITT/smMjkl0HMOuC37DR/M4yfXbfvE2IQer/mus9hqQrXCVoPJr
+         q8hF2QtzbiU2gS/2XheJCfFRQ2tFtsE5XcLbQkvuP8imfggoS4Vu0dNQ/rb+0ufbSyFe
+         RP8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0r7+oPVQUGjxLf8FALe8TJW9eBm5+3uLrgjVhTfye+4=;
-        b=eccuSG5xbPrEt9Gm5cY/enc+CnQBpjMptUSZQSQGfjyBw65kFOGbtbDyjBRulO0xEk
-         o3vCMMb5m+wwKB9zeaFOXsocN1FsSQnHsmiYQy2kO+qFELwyQMqp/MdtgMehA7i+kOVB
-         t9FltQNOTU1hLjJBVFP+2Y2RLAAdJvADUbX9c5kqAKlKV5Wvo7Z+Ph7eSDWptnBF9lLb
-         ivcCIW9fGtDdAI1VM/QFtKtUPdE3EZeVa+Hdi7ROQOXTAG79TvlGKK0t8t3KswnUrfh9
-         YzUyBvXywNd6FvHjHTMFiF/ZVqejln8dV4dNHNu+lMIPW4NJBbhxCX7hq7GWfSNUGNgu
-         6bog==
-X-Gm-Message-State: AOAM533TDVDYFbQyOBOroaLt7YbaEKvDkb11RxkhV8NV5TmYrCda86lJ
-        YJptI1T/6iZEYFbkX2CVSSk=
-X-Google-Smtp-Source: ABdhPJwYKW2Za0LBbQ/9FSC6HH15TKXSedEhRXOqcIC+7cERpjoJhxBd+TLdg2To7pSt6opp2MrFqA==
-X-Received: by 2002:a05:6402:646:: with SMTP id u6mr33526522edx.74.1618940607098;
-        Tue, 20 Apr 2021 10:43:27 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id l9sm12919257ejz.96.2021.04.20.10.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 10:43:25 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Tue, 20 Apr 2021 19:43:24 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     butt3rflyh4ck <butterflyhuangxx@gmail.com>, jaegeuk@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix to avoid out-of-bounds memory access
-Message-ID: <YH8SvK+OLSKAEYpJ@eldamar.lan>
-References: <20210322114730.71103-1-yuchao0@huawei.com>
- <CAFcO6XMak8GSRqQbZ3nPdGvV_eM6DL0+P0z1X2y0G9hkrccaCg@mail.gmail.com>
- <beff8953-d91a-c677-f50a-3aba27c15dde@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <beff8953-d91a-c677-f50a-3aba27c15dde@huawei.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ukVJrdVkOwq7s65WfCu+IbNVo5nWb4FRanDkk1R0eWU=;
+        b=MRf1bKhpZREA2lo75Vf61NO13/PE+OiI/Zq9QnIZ5JYusCg6u9in4YR9A2ARBg2XEJ
+         VSh/6LTlLP3Z2AWP3z2ooGCw+lyR+KNSaSzdaNhM34q0BCyiw3GK3MG8RIRCIK5u5URp
+         8x6OyXm7NPFUfGYuu2wVhPLLXiHG6K0ovdt5eV/XtmaRY8hhhDEhVenATq/CbwOD7Gb3
+         4LriOSASqJFwEiQidCsNy6hLWGBzdCDSc7HSeFC8TtptZGyuQ3iNB/rLnFik9Vu8dpW6
+         h/r6RUkoxuzgq1A/zG0gmb6fRVDTQrpfy35AcyCy/sjZSuLVlcPFF+QTxfIP1G62kdZ9
+         EZOw==
+X-Gm-Message-State: AOAM530xrfhycCW7YwlYsY3V+q9oyERiP3f2tuSwS9uNUl003cAJp7mW
+        FXrzrdR8n2/sSWV0AIm28hAuDshrJsIMtJB8CO0=
+X-Google-Smtp-Source: ABdhPJwvkXHKfOKDXv7TdZP/XC53bbL67xijoP5ppU23m/8I1MNeirN/r6yWOhHwD85KJE5gfUAMaZOQ/MM8J7rgQ+o=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:38ea:3e39:6c20:3a35])
+ (user=ndesaulniers job=sendgmr) by 2002:ad4:58e9:: with SMTP id
+ di9mr4388482qvb.23.1618940671450; Tue, 20 Apr 2021 10:44:31 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:44:25 -0700
+Message-Id: <20210420174427.230228-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH v3] arm64: vdso32: drop -no-integrated-as flag
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     vincenzo.frascino@arm.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Clang can assemble these files just fine; this is a relic from the top
+level Makefile conditionally adding this. We no longer need --prefix,
+--gcc-toolchain, or -Qunused-arguments flags either with this change, so
+remove those too.
 
-On Tue, Mar 23, 2021 at 02:43:29PM +0800, Chao Yu wrote:
-> Hi butt3rflyh4ck,
-> 
-> On 2021/3/23 13:48, butt3rflyh4ck wrote:
-> > Hi, I have tested the patch on 5.12.0-rc4+, it seems to fix the problem.
-> 
-> Thanks for helping to test this patch.
+To test building:
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+  CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 LLVM_IAS=1 \
+  defconfig arch/arm64/kernel/vdso32/
 
-Was this patch applied? I do not see it in mainline (unless
-miss-checked).
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+---
+Changes V2 -> V3:
+* Pick up reviewed by tags.
 
-Regards,
-Salvatore
+Changes V1 -> V2:
+* Remove --prefix, --gcc-toolchain, COMPAT_GCC_TOOLCHAIN, and
+  COMPAT_GCC_TOOLCHAIN_DIR as per Nathan.
+* Credit Nathan with Suggested-by tag.
+* Remove -Qunused-arguments.
+* Update commit message.
+
+ arch/arm64/kernel/vdso32/Makefile | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index 789ad420f16b..3dba0c4f8f42 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -10,15 +10,7 @@ include $(srctree)/lib/vdso/Makefile
+ 
+ # Same as cc-*option, but using CC_COMPAT instead of CC
+ ifeq ($(CONFIG_CC_IS_CLANG), y)
+-COMPAT_GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE_COMPAT)elfedit))
+-COMPAT_GCC_TOOLCHAIN := $(realpath $(COMPAT_GCC_TOOLCHAIN_DIR)/..)
+-
+ CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+-CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE_COMPAT))
+-CC_COMPAT_CLANG_FLAGS += -no-integrated-as -Qunused-arguments
+-ifneq ($(COMPAT_GCC_TOOLCHAIN),)
+-CC_COMPAT_CLANG_FLAGS += --gcc-toolchain=$(COMPAT_GCC_TOOLCHAIN)
+-endif
+ 
+ CC_COMPAT ?= $(CC)
+ CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
+-- 
+2.31.1.368.gbe11c130af-goog
+
