@@ -2,96 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC15A3659F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586B5365A0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhDTN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:27:01 -0400
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:51975 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230479AbhDTN07 (ORCPT
+        id S232571AbhDTN1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:27:44 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:40301 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231422AbhDTN1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:26:59 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id YqOVlY6oT8K3KYqOZlznDf; Tue, 20 Apr 2021 15:26:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618925187; bh=50zN6jHkPuxp9L3ujyX5x9OPv5AguVws8p9ZJjv94uE=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=bZjKvnrCl5IcPPunwd2kjHL/ymYberZ92eiIsNmtfxMa/zHp4+rh+bRsUhq8VBqt/
-         MN7hGMT9FgSC6Xzy5q5lp/Vcx/sgdOXEhopUiKnyGx/dCTdkbN/4orjGBVu9AAEFJW
-         iDNypSJXqUAQbWFI7brukNzBlGubTumjRSIFrdB82x7htbKVkMkY4nkjzhe83uKwM1
-         dVZGtAXKcXJXBbZsfM2m67IjDOHG99k9JJ//16XdhdA+CgpRHs1fcZ52slW1eQXdcK
-         02RJMBIAnz4GR0UmyJ70A3cnl7+szvaICGdkyCuI9WLbrCtsqxyRITEdrmZ641fGgB
-         m0bt1oKatexhg==
-Subject: Re: [PATCH 5/6] staging: media: atomisp: fix CamelCase variable
- naming
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Deepak R Varma <mh12gx2825@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <cover.1618859059.git.drv@mailo.com>
- <17478627f128cdafed389b64ecf389d319295dd4.1618859059.git.drv@mailo.com>
- <20210420083902.GB1411@agape.jhs>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <7f678812-29d3-5f14-c8de-ea2d97861973@xs4all.nl>
-Date:   Tue, 20 Apr 2021 15:26:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Tue, 20 Apr 2021 09:27:41 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B835C580BEA;
+        Tue, 20 Apr 2021 09:27:09 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 20 Apr 2021 09:27:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=lf7gZahL/CrZJJ2BAIN/GfdWHpC
+        6k25LB28HnVyHJ24=; b=aHQfJNIfJMDDuMBwwETqMm4922gp0e/0stzqSx4sZ3a
+        IW/AXnYDor/sb7PJZUeLsh0hk1r/KweQzQ+ApWidEl+B3/Xmha+0W9pAo9u1j+cg
+        dcRhxdR7YWlBSEX4JReNIwAI516wHYAWR5Ptl8CoLF+DgteWFNHYYqbf1wRwZJR1
+        dUG0RK8IDki0UdgtLOZR99rVu+bzoeAJZwshtHU9RcSALBJhzwAjbBG7o0sDg69s
+        f4NfTgmKsHEz+qBwSOH1MlMnUfhI9/p1dL1vspP0rszctc5Gppw3Ee6FlZ4S9+On
+        PHQjr/SvyCSoVw6MMIe+zrwu6/Q2BYX3ziLcLDbTqoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=lf7gZa
+        hL/CrZJJ2BAIN/GfdWHpC6k25LB28HnVyHJ24=; b=XmAEdqb6EucLwKqbzKynCg
+        cg9Q9fwpCfia6QU3+NiczikPeGSoWr46j/b5WIsQKYxhx33RwgUVGNEI+mymmuaA
+        U33jD/mzsYdjEsAyNn0TzKoloP9+EKd/qSpIgmkq8863ose7rOvSWv/fia1RbHRi
+        5C0LDhxC8k4xjQkBQBv71wv7I67qy/eWAtI74XDsDjJF/xG7G7O9B1uWca56F8Ku
+        hWUfMgCouZhK/N1ZXZOR8XfQBRp8frBVILhsIpYvxvLStykD8I9cdEz7OOyq8sDo
+        Yz+eTLx2TnihH9ciCy6jHkMs/YKaFr4e+YHOgINrNUEgw8jxMILco0nJcIMmVMaA
+        ==
+X-ME-Sender: <xms:qtZ-YAVw4ljvfvo2dUZjFRnIVyR3mpKTUBNuF687kA0Iut8KEXVmpA>
+    <xme:qtZ-YEixH0wxP7D6QplvBF7C3e9meCxIUB_c67TigAll-66DLMRmGHfUeyQ4LVxaM
+    oOZ2-guyatM76ZiJnQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtiedgieeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttderjeenucfhrhhomhepuegvnhcu
+    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
+    gvrhhnpeevffdtteetgfdttdekueefgedttddtueeugeekgeetffeuteffjeduieehhfek
+    tdenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
+X-ME-Proxy: <xmx:qtZ-YBQhSmKY4hV3Pap0xsiUJFtijExxgBD_z2uCW9SJepXlYK0r1w>
+    <xmx:qtZ-YHH6YgtJ1Ijsz_FRSmUETK39ukNGUbYIcuUiqLatxoXh9BdYJw>
+    <xmx:qtZ-YJkxUbN7oyPxjrX-m6JjFAK1ExOYhLg7SFsA8dVspAGs9-6TPA>
+    <xmx:rdZ-YITUwajNWGhgAXvAupjvtkXNSARTHax81wgO1ND1A0-YQjeMfQ>
+Received: from localhost (unknown [24.169.20.255])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C81FB240057;
+        Tue, 20 Apr 2021 09:27:06 -0400 (EDT)
+Date:   Tue, 20 Apr 2021 09:27:05 -0400
+From:   Ben Boeckel <me@benboeckel.net>
+To:     Varad Gautam <varad.gautam@suse.com>
+Cc:     linux-crypto@vger.kernel.org, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vt@altlinux.org,
+        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v3 18/18] keyctl_pkey: Add pkey parameters saltlen and
+ mgfhash for PSS
+Message-ID: <YH7WqfjNo33vI0VM@erythro>
+References: <20210420114124.9684-1-varad.gautam@suse.com>
+ <20210420114124.9684-19-varad.gautam@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210420083902.GB1411@agape.jhs>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfGwSi1uTK6RqZ5fdE3zUIGapjb9gu7G8wIHdOvB6tf9S34sjU+VM4iFGJZu+DHJbhI+Vs11G3euX+wWUPS4n3Aqe26MBfzxDEobncoX3ltjcd/DzyXSs
- BiZw9NMuxU3vIfW4d5kQnAm7YbP097SDrzECZDNhDTzIKqPk2mVg6DBg84EB6IeER2ObT4LDV0lHfMQN0eom02QBlvWoFiJwS0lDQCCgmGxHsp7SxCctQTn4
- bAE/uvlI02sRaMJfgu+CKMQlvdLSbhe/c54ebZT7/PO6R5iPHavyjxPs3aN0kox1gbWxxit3XO98h1pDaj3cUrha0yDn3P6dPxS9d6bVGeukGOBGWdKWUDdy
- copcLoXoD/DABApWWSVRRm3T7LBe/fnfCDwge8yRk3LVzQ0zVTOoW3D9qADSsZDQWmDigs2ScIMgI7lcbWfdXq5gy2XdwuCYNBO4n8QaxTFyJK96cUA=
+Content-Disposition: inline
+In-Reply-To: <20210420114124.9684-19-varad.gautam@suse.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 10:39, Fabio Aiuto wrote:
-> Hi,
+On Tue, Apr 20, 2021 at 13:41:23 +0200, Varad Gautam wrote:
+> keyctl pkey_* operations accept enc and hash parameters at present.
+> RSASSA-PSS signatures also require passing in the signature salt
+> length and the mgf hash function.
 > 
-> On Tue, Apr 20, 2021 at 12:45:57AM +0530, Deepak R Varma wrote:
->> Mixed case variable names are discouraged and they result in checkpatch
->> script "Avoid CamelCase" warnings. Replace such CamelCase variable names
->> by lower case strings according to the coding style guidelines.
->>
->> Signed-off-by: Deepak R Varma <drv@mailo.com>
->> ---
->>  .../media/atomisp/i2c/atomisp-mt9m114.c       | 62 +++++++++----------
->>  1 file changed, 31 insertions(+), 31 deletions(-)
->>
->> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
->> index 160bb58ce708..e63906a69e30 100644
->> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
->> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
->> @@ -999,10 +999,10 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
->>  	struct mt9m114_device *dev = to_mt9m114_sensor(sd);
->>  	int ret = 0;
->>  	unsigned int coarse_integration = 0;
->> -	unsigned int FLines = 0;
->> -	unsigned int FrameLengthLines = 0; /* ExposureTime.FrameLengthLines; */
->> -	unsigned int AnalogGain, DigitalGain;
->> -	u32 AnalogGainToWrite = 0;
->> +	unsigned int f_lines = 0;
->> +	unsigned int frame_len_lines = 0; /* ExposureTime.FrameLengthLines; */
->> +	unsigned int analog_gain, digital_gain;
->> +	u32 analog_gain_to_write = 0;
->>
+> Add parameters:
+> - 'saltlen' to feed in salt length of a PSS signature.
+> - 'mgfhash' to feed in the hash function used for MGF.
 > 
-> this patch is made of multiple logical changes, i.e. more than one
-> variable at a time are renamed. Maybe this should be split in
-> one patch per variable name.
+> Signed-off-by: Varad Gautam <varad.gautam@suse.com>
+> CC: Jarkko Sakkinen <jarkko@kernel.org>
+> CC: Ben Boeckel <me@benboeckel.net>
+> ---
+> v3: Rename slen to saltlen, update Documentation/security/keys/core.rst.
+> 
+>  Documentation/security/keys/core.rst     | 14 +++++++++++++-
+>  crypto/asymmetric_keys/asymmetric_type.c |  2 ++
+>  include/linux/keyctl.h                   |  2 ++
+>  security/keys/keyctl_pkey.c              | 13 +++++++++++++
+>  4 files changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/security/keys/core.rst b/Documentation/security/keys/core.rst
+> index b3ed5c581034c..4bd774c56899e 100644
+> --- a/Documentation/security/keys/core.rst
+> +++ b/Documentation/security/keys/core.rst
+> @@ -1022,6 +1022,15 @@ The keyctl syscall functions are:
+>  			which hash function was used, the hash function can be
+>  			specified with this, eg. "hash=sha256".
+>  
+> +	``mgfhash=<algo>`` In case of "RSASSA-PSS" ("enc=pss"), this specifies
+> +			the hash function used with the Mask Generation Function
+> +			to generate a signature, eg. "mgfhash=sha256". Supported
+> +			hashes are: sha1, sha224, sha256, sha384, and sha512.
+> +
+> +	``saltlen=<salt_length>`` In case of "RSASSA-PSS" ("enc=pss"), this
+> +			specifies the salt length as a u16, used to generate a
+                                                ^
 
-I'm OK with this, it's pretty readable and obvious what is going on.
+This feels like it is missing a comma at the designated location (after
+`length` if the whitespace gets mangled).
 
-Regards,
+> +			signature. Eg. "saltlen=32".
+> +
+>       The ``__spare[]`` space in the parameter block must be set to 0.  This is
+>       intended, amongst other things, to allow the passing of passphrases
+>       required to unlock a key.
+> @@ -1700,6 +1709,8 @@ The structure has a number of fields, some of which are mandatory:
+>  			__u32	in2_len;
+>  		};
+>  		enum kernel_pkey_operation op : 8;
+> +		__u16		salt_len;
+> +		const char	*mgf_hash_algo;
+>  	};
+>  
+>       This includes the key to be used; a string indicating the encoding to use
+> @@ -1707,7 +1718,8 @@ The structure has a number of fields, some of which are mandatory:
+>       RSASSA-PKCS1-v1.5 or RSAES-PKCS1-v1.5 encoding or "raw" if no encoding);
+>       the name of the hash algorithm used to generate the data for a signature
+>       (if appropriate); the sizes of the input and output (or second input)
+> -     buffers; and the ID of the operation to be performed.
+> +     buffers; the ID of the operation to be performed; salt length to be used
+> +     in case of RSASSA-PSS; and hash algorithm used with MGF for RSASSA-PSS.
+>  
+>       For a given operation ID, the input and output buffers are used as
+>       follows::
 
-	Hans
+Thanks for the docs, they look good to me overall. Other than the comma:
+
+    Acked-by: Ben Boeckel <mathstuf@gmail.com>
+
+--Ben
