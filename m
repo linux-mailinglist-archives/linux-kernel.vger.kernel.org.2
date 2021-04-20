@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8383D3656EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6387B3656F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbhDTK5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:57:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45330 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231251AbhDTK53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:57:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618916217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VOuahTcAZ+eTi+aJO0XhJlpQiupGdAnfYul0ZSkVy94=;
-        b=d5rNRkxL7q65Lj2+Q0PEqSn83XZA7eeFvKG4e9/ZNOUzu3ce8lQrqhB7VgKsp24OjTSPOf
-        XDdCFZuD+kUB1mwc9vXtROYZKZq/+V2OS8bBm9N9JE9IfFKgbpZrfVh33bEgAGJWcj+hxb
-        OLmAmkcF62biRGhbS3WVYm9qO6hlf0A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA666AD77;
-        Tue, 20 Apr 2021 10:56:57 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 12:56:57 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 7/8] x86/Kconfig: Introduce
- ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-Message-ID: <YH6zeWm5ZSd8JRoA@dhcp22.suse.cz>
-References: <20210416112411.9826-1-osalvador@suse.de>
- <20210416112411.9826-8-osalvador@suse.de>
+        id S231739AbhDTK5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:57:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37705 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231669AbhDTK5u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:57:50 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lYo4E-0002ku-71; Tue, 20 Apr 2021 10:57:18 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tty: synclink_gt: remove redundant initialization of variable count
+Date:   Tue, 20 Apr 2021 11:57:18 +0100
+Message-Id: <20210420105718.377086-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416112411.9826-8-osalvador@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16-04-21 13:24:10, Oscar Salvador wrote:
-> Enable x86_64 platform to use the MHP_MEMMAP_ON_MEMORY feature.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+The variable count is being initialized with a value that is
+never read and it is being updated later with a new value.  The
+initialization is redundant and can be removed.
 
-> ---
->  arch/x86/Kconfig | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 2792879d398e..9f0211df1746 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2433,6 +2433,9 @@ config ARCH_ENABLE_MEMORY_HOTREMOVE
->  	def_bool y
->  	depends on MEMORY_HOTPLUG
->  
-> +config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-> +	def_bool y
-> +
->  config USE_PERCPU_NUMA_NODE_ID
->  	def_bool y
->  	depends on NUMA
-> -- 
-> 2.16.3
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/tty/synclink_gt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
+index 994618618466..5523cf7bd1c2 100644
+--- a/drivers/tty/synclink_gt.c
++++ b/drivers/tty/synclink_gt.c
+@@ -4958,7 +4958,7 @@ static int loopback_test(struct slgt_info *info)
+ #define TESTFRAMESIZE 20
+ 
+ 	unsigned long timeout;
+-	u16 count = TESTFRAMESIZE;
++	u16 count;
+ 	unsigned char buf[TESTFRAMESIZE];
+ 	int rc = -ENODEV;
+ 	unsigned long flags;
 -- 
-Michal Hocko
-SUSE Labs
+2.30.2
+
