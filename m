@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02D4366054
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17E836605B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbhDTTjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 15:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbhDTTjU (ORCPT
+        id S233748AbhDTTlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 15:41:24 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:43638 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233541AbhDTTlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:39:20 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A1BC06174A;
-        Tue, 20 Apr 2021 12:38:48 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id q4so1207251qtn.5;
-        Tue, 20 Apr 2021 12:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VnARtP+uP1DchxUYKI/5VcNMJQIOlS/yRqSiMEZtvXs=;
-        b=gwBN8QKDOZbIX5Xw/3NQFidpiuNssHneim4IycyV9/mPUC0tGy93UFvFItssSptJBZ
-         mBGiskvSZCxJjPMKtaFLexvc+XIcy/5VuzA1GeyQE9KFNOH6fBEQe9YhlscprGOh7XeD
-         YJwy7GnzZIUQ66LFgPKwywVwVsEaYiqnoDwRHX6aSEj1mKKN88aGUPYIz8q9YxhENuOx
-         24z+FTyq0SrHfUd0Dyq9NujbrYKxXPZiBIIe/9f5/ectNRSKebjD56UZVSKlFt/OMERG
-         +adsY7QVWKTjYaaQYSgNyHU/bzlO7+Me7zqpo0k8m+ZBS18UJlQBkDWmdFoywcC+Tigj
-         PPPg==
+        Tue, 20 Apr 2021 15:41:23 -0400
+Received: by mail-wm1-f49.google.com with SMTP id p10-20020a1c544a0000b02901387e17700fso1742424wmi.2;
+        Tue, 20 Apr 2021 12:40:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VnARtP+uP1DchxUYKI/5VcNMJQIOlS/yRqSiMEZtvXs=;
-        b=KrequED5RjvGOhhg4S6056pPofX6oGWeK3xDFaAPg15PGxpvzv8HNlZeWWGgT6TkX/
-         cZB2Mr4wBKeB1P0nH1YLYTHfQMRnboSAYga1Ot40fyZA5T5HCIF/XnWfDIotxdfw+aiL
-         8O6oFVX4YgsECHmbTbUlJYlHil9rrSDpH6CMLAgAQ8bouSX0H7hs4I3CzP/0YZvF3IkR
-         w8DCU2bNAjzYrYIUX66AxvBlU9JuA1oW6Ag2gp4bejg6fbne+95Djk0Pef2M8W9UQp2z
-         65FCAj3Zzlj0RtrjR60uPKJJO56LZkFMtmg9dzAaZbrnxkbdbork4rTksmFAP6BCRUOD
-         K3bQ==
-X-Gm-Message-State: AOAM533+UwCem6+jQcB8oc+DWyf/xEj6TIB4IOXhLg9Hw1RFCYom2CTL
-        88xAbAmtYWKCPIFRDrAiUvR0BfKzFc4=
-X-Google-Smtp-Source: ABdhPJy7CkrW8SNRn4LAWJ2HO6RCjd9DHJZesyG6EfmDwFWVOF96advIZN4W2gll4lWBWphHWJ8ELA==
-X-Received: by 2002:ac8:78b:: with SMTP id l11mr9571993qth.321.1618947527395;
-        Tue, 20 Apr 2021 12:38:47 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id j9sm1117853qtl.12.2021.04.20.12.38.46
+        bh=sMMGdr7JEy8BvSwLQ/yZhzlMoyLP4uO6JbljwCQU/Ko=;
+        b=Pcm/ZBmiyLYzF7T3yiuB8ehfgFUIlmg7JZ16tTxx7RRG0HmwnTwSfwPyM+69nsPGl/
+         3gG+LoeVN0WKYhFSkIX539H34QFA5122GJB3Y4YN3cRwiAKkqfuyfIQl/bj1lJKfdFwE
+         IhThTyN5fT/09muV7ebgm0H6bEYHMdKOSHy8BzFz7vCPCqmXQE6a46htXNqTu/5kFz6y
+         JEUuhdoan4FkGGMToo0lK6fXnFlZSnhkO80Fsm7itz3dL9YtIGiYWiLXwAWFhWgxY1KL
+         g0JjK80KATEomO0vx7RNDSh9JcxE5PiT3HLXFj1T6VKzDQbmTwDPd02upSCF83y2dQX/
+         YPpQ==
+X-Gm-Message-State: AOAM533SX8Rj1vYyaZCH+SZqptbZeHkx92deFzFIOongY3FczQ2MZok4
+        QWY1VW+pTxYUbZ/NbN7lhdU=
+X-Google-Smtp-Source: ABdhPJwciRmccZteNoTyAX/OGxC7Q0+otjZy0r0z0nEF5ncJBvXScb7WzxcbkSbrWKEDMKVpw0v+8A==
+X-Received: by 2002:a05:600c:3217:: with SMTP id r23mr6022499wmp.98.1618947651004;
+        Tue, 20 Apr 2021 12:40:51 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u2sm5487183wmm.5.2021.04.20.12.40.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 12:38:47 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 12:38:46 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] rcu/tree_plugin: don't handle the case of 'all' CPU
- range
-Message-ID: <20210420193846.GB61766@yury-ThinkPad>
-References: <20210420000131.21038-1-yury.norov@gmail.com>
- <20210420000131.21038-3-yury.norov@gmail.com>
- <YH6qgHH1RtBCHxEy@smile.fi.intel.com>
+        Tue, 20 Apr 2021 12:40:50 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 19:40:49 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH v2] Drivers: hv: vmbus: Initialize unload_event statically
+Message-ID: <20210420194049.vsmax7bseebb324x@liuwe-devbox-debian-v2>
+References: <20210420014350.2002-1-parri.andrea@gmail.com>
+ <MWHPR21MB15934822FAFFFD4D3FA369BAD7489@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YH6qgHH1RtBCHxEy@smile.fi.intel.com>
+In-Reply-To: <MWHPR21MB15934822FAFFFD4D3FA369BAD7489@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 01:18:40PM +0300, Andy Shevchenko wrote:
-> On Mon, Apr 19, 2021 at 05:01:31PM -0700, Yury Norov wrote:
-> > The 'all' semantics is now supported by the bitmap_parselist() so we can
-> > drop supporting it as a special case in RCU code. This patch does not
-> > add any functional changes for existing users.
+On Tue, Apr 20, 2021 at 04:50:56AM +0000, Michael Kelley wrote:
+> From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Monday, April 19, 2021 6:44 PM
+> > 
+> > If a malicious or compromised Hyper-V sends a spurious message of type
+> > CHANNELMSG_UNLOAD_RESPONSE, the function vmbus_unload_response() will
+> > call complete() on an uninitialized event, and cause an oops.
+> > 
+> > Reported-by: Michael Kelley <mikelley@microsoft.com>
+> > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > ---
+> > Changes since v1[1]:
+> >   - add inline comment in vmbus_unload_response()
+> > 
+> > [1] https://lore.kernel.org/linux-hyperv/20210416143932.16512-1-parri.andrea@gmail.com/
+> > 
+> >  drivers/hv/channel_mgmt.c | 7 ++++++-
+> >  drivers/hv/connection.c   | 2 ++
+> >  2 files changed, 8 insertions(+), 1 deletion(-)
+> > 
 > 
-> > -	if (!strcasecmp(str, "all"))		/* legacy: use "0-N" instead */
-> 
-> Perhaps move comment as well to new location.
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-I actually wanted to remove this comment. The reason is that 'all' is
-verbose, clear and proven to be useful for at least RCU. In v2 I'll
-mention it explicitly in commit comment.
+Applied to hyperv-next. Thanks.
