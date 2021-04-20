@@ -2,106 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FD53662B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124E63662B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbhDUAAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 20:00:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:55062 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234223AbhDUAAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 20:00:35 -0400
-IronPort-SDR: iDD+iTuin04fcB6CUd7CUwAV7hUNs1Kien+MtAVOfvkw80rnwSPmrRbke2WE9dUh082lPcwRu5
- 9FvqtmC/QRsA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="256927568"
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="256927568"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 16:59:05 -0700
-IronPort-SDR: jUkior5xQyrz6qh/VtxpNir9WsdC3JKwD1Fc6OM5K0kJi+Q3EpQP3Nc5/ScCFF8lDkFdcU5yD7
- C+tc9vfKMU7g==
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="427278339"
-Received: from jjagger-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.197.239])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 16:59:04 -0700
-Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper
- functions
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
- <c015093fdbc8e6a5aa9fc43f78fec8d9c38295c7.1616801167.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com>
- <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
- <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
- <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
- <CAPcyv4hmA=V+wQA7JsvBNYnm+dHkRZtJSSxSZM8b2Xwnjq2kWQ@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <8aebc35e-f1ff-e70d-2f44-54d17f6fe555@linux.intel.com>
-Date:   Tue, 20 Apr 2021 16:59:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234477AbhDUAAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 20:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234223AbhDUAAS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 20:00:18 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17D8C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:59:46 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so8846110oop.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SxR++HmNMtsFaPjPoWGP3yCDilrISVYh6Idyrh/hrQc=;
+        b=L+daVzwAV3O2jG3d8KotJCsora66UrQgGpdGHwBkaGI8yj52YKK0u07pbL9YvlIg+J
+         oWG6Pk4ENP6bMkQhEFUpUgnxQ9bDe+B5v5fCJqTG4p98vUij6+7as8RZxPV595xQ4CcB
+         VnVcAYnthE5I3eGeFy4cP9XpWgL5mvlBRwo9lfdIu3qLPs8Lcf5Tzvf5unZXwiDlR+QR
+         9VLFLmvIcLdib3m9erqIheKWPA5NcEHyv8Oh5XU7toYOoCk5ji56oiiAwuLQZhI8o/24
+         aG2PAe4cpE05aWfYAj3oVkxMFZpsC9ItAp/czFBmcTJBK9CKnShST28wqTY2SXj3NDrc
+         ge9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SxR++HmNMtsFaPjPoWGP3yCDilrISVYh6Idyrh/hrQc=;
+        b=BvpT9OKHp/jk+/EgoMCVfBUgDAcvj6gn4IbdKH5lVqVM76t4Gbsij+/sDI0WzSgplx
+         4idxCEA/NkXIGbUzzFeQIqoQyoMCciFwrKCClA9eApAh9b9VsEB1NeBpn3SDEQ8ppxyN
+         BpUkbMCOBkcgOM4MscNYei8yeeibI0kDCkPQHjOta8odao6qPhUJqWZI8PIcv4DoCdqm
+         o627EzhhOYs/llZf+znjEy2Y2Kl1jQRRb9GCW1rTAyErJ/mO6X4M/IK3lHh+LMTzos4E
+         BLMLxMMUyDKpi+jRLxvnKmjqD1bUYrYuyuB0g294CBCmK66ro/0Yvz3GlOj5iLd5S4yE
+         e2jA==
+X-Gm-Message-State: AOAM532+se1+R8p1o8TQ9sAAsftcnYMSU7K1cyoggUogVgpf4l0l4PIO
+        Z5DtD+DKUEuKZPI2073wq/2Wg7jYfAMOOyi+54Y=
+X-Google-Smtp-Source: ABdhPJzl+deAHpDoxg3MeSz0QbS8aVCVRzHVR2KPghP8gR1TmN2eLRRbC5EaE1urYpXG0jTZl3S325GT9aiaEjqcP/4=
+X-Received: by 2002:a4a:800d:: with SMTP id x13mr18900158oof.61.1618963186047;
+ Tue, 20 Apr 2021 16:59:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hmA=V+wQA7JsvBNYnm+dHkRZtJSSxSZM8b2Xwnjq2kWQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-32-lee.jones@linaro.org> <2029fbcf-8d2b-7a85-edd2-481a571ae43d@amd.com>
+In-Reply-To: <2029fbcf-8d2b-7a85-edd2-481a571ae43d@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 20 Apr 2021 19:59:35 -0400
+Message-ID: <CADnq5_N5_poFcOpQzV+Ae22rwD0PG3kq0O3q10gmbb7=fNpEyA@mail.gmail.com>
+Subject: Re: [PATCH 31/40] drm/amd/amdgpu/amdgpu_gart: Correct a couple of
+ function names in the docs
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  thanks!
 
+Alex
 
-On 4/20/21 4:53 PM, Dan Williams wrote:
-> On Tue, Apr 20, 2021 at 4:12 PM Kuppuswamy, Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> [..]
->>>>> Also, do you *REALLY* need to do this from assembly?  Can't it be done
->>>>> in the C wrapper?
->>>> Its common for all use cases of TDVMCALL (vendor specific, in/out, etc).
->>>> so added
->>>> it here.
->>>
-> 
-> Can I ask a favor?
-> 
-> Please put a line break between quoted lines and your reply.
-
-will do
-
-> 
->>> That's not a good reason.  You could just as easily have a C wrapper
->>> which all uses of TDVMCALL go through.
-> 
-> ...because this runs together when reading otherwise.
-> 
->> Any reason for not preferring it in assembly code?
->> Also, using wrapper will add more complication for in/out instruction
->> substitution use case. please check the use case in following patch.
->> https://github.com/intel/tdx/commit/1b73f60aa5bb93554f3b15cd786a9b10b53c1543
-> 
-> This commit still has open coded assembly for the TDVMCALL? I thought
-> we talked about it being unified with the common definition, or has
-> this patch not been reworked with that feedback yet? I expect there is
-> no performance reason why in/out need to get their own custom coded
-> TDVMCALL implementation. It should also be the case the failure should
-> behave the same as native in/out failure i.e. all ones on read
-> failure, and silent drops on write failure.
-> 
-
-That link is for older version. My next version addresses your review
-comments (re-uses TDVMCALL() function). Although the patch is ready, I am
-waiting to fix other review comments before sending the next version. I
-have just shared that link to explain about the use case.
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+On Fri, Apr 16, 2021 at 11:53 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 16.04.21 um 16:37 schrieb Lee Jones:
+> > Fixes the following W=3D1 kernel build warning(s):
+> >
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c:73: warning: expecting proto=
+type for amdgpu_dummy_page_init(). Prototype was for amdgpu_gart_dummy_page=
+_init() instead
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c:96: warning: expecting proto=
+type for amdgpu_dummy_page_fini(). Prototype was for amdgpu_gart_dummy_page=
+_fini() instead
+> >
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Nirmoy Das <nirmoy.das@amd.com>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_gart.c
+> > index c5a9a4fb10d2b..5562b5c90c032 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
+> > @@ -60,7 +60,7 @@
+> >    */
+> >
+> >   /**
+> > - * amdgpu_dummy_page_init - init dummy page used by the driver
+> > + * amdgpu_gart_dummy_page_init - init dummy page used by the driver
+> >    *
+> >    * @adev: amdgpu_device pointer
+> >    *
+> > @@ -86,7 +86,7 @@ static int amdgpu_gart_dummy_page_init(struct amdgpu_=
+device *adev)
+> >   }
+> >
+> >   /**
+> > - * amdgpu_dummy_page_fini - free dummy page used by the driver
+> > + * amdgpu_gart_dummy_page_fini - free dummy page used by the driver
+> >    *
+> >    * @adev: amdgpu_device pointer
+> >    *
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
