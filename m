@@ -2,195 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3593652F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60443652F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhDTHNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:13:12 -0400
-Received: from mga06.intel.com ([134.134.136.31]:54470 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhDTHNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:13:10 -0400
-IronPort-SDR: 5cd6EnKQJCS1Hwh1LE+w7NgB/H5t3XwbjiTAINkkhW7r+p1I2Uh2nZSL/E/0t4k1HRJW+QGaG3
- kWUVWJ4Gg5fg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="256769166"
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="256769166"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 00:12:20 -0700
-IronPort-SDR: eAI8uNPMR8KYvWnE4rWo6p/N34HKarrh7obNBamTGygsTSZpiO8pl2f7XFo/f1oAhMUKwpL1d0
- IOH5jzwQ5Rjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="400903475"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 20 Apr 2021 00:12:19 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lYkYU-0002DW-BD; Tue, 20 Apr 2021 07:12:18 +0000
-Date:   Tue, 20 Apr 2021 15:11:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.04.18a] BUILD SUCCESS
- 17f853c36ee2041e962c75dc96cca3baeb87c1aa
-Message-ID: <607e7e9a.yE9WAICIeTrwSm5C%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230340AbhDTHNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:13:21 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:35364 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhDTHNT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:13:19 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210420071246euoutp02f88d822d6e1e9c721d9feee0994bccdd~3f308QLWh1297612976euoutp02O
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:12:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210420071246euoutp02f88d822d6e1e9c721d9feee0994bccdd~3f308QLWh1297612976euoutp02O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1618902766;
+        bh=6/ode3L3/A42+gj9Tr6+Vj0CwCQnr2m2tOHTvgfwuqs=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=jSYb1LuhFkSHYVMLwK3kZ5SxALe8r3AlwvM8PylIO1dGobSqIafl2r7p+2ZgA23yD
+         YZX31NylxSp29vhM6bccm42P4MvAjWzptwiayRn0B0kIyp8re4MFlzk2O1rGvNOLpL
+         KJMCilCpU6Ge1ucl6vjOvSk8przifteVAM3B1+EI=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210420071246eucas1p18393ce6ead01059b3f7b33be0c132f27~3f30qnw1V2161121611eucas1p1T;
+        Tue, 20 Apr 2021 07:12:46 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id C9.51.09452.EEE7E706; Tue, 20
+        Apr 2021 08:12:46 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210420071246eucas1p1b54469b5d5b0940d46908563156195e3~3f30LWN200622906229eucas1p14;
+        Tue, 20 Apr 2021 07:12:46 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210420071246eusmtrp295d215ffb16b7745fdbe34c8cc189a2b~3f30Kniee2977129771eusmtrp2F;
+        Tue, 20 Apr 2021 07:12:46 +0000 (GMT)
+X-AuditID: cbfec7f2-ab7ff700000024ec-3b-607e7eeef8c3
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 42.2A.08705.DEE7E706; Tue, 20
+        Apr 2021 08:12:45 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210420071245eusmtip1cc9e8770bc060ad3f8bd860925a954d9~3f3zm4ppi1973019730eusmtip1H;
+        Tue, 20 Apr 2021 07:12:45 +0000 (GMT)
+Subject: Re: [PATCH 5/7] mfd: sec: Simplify getting of_device_id match data
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        patches@opensource.cirrus.com
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <a65318f6-1465-a35c-a987-8b833311ef3a@samsung.com>
+Date:   Tue, 20 Apr 2021 09:12:45 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <4a5e80c0-653e-a4d6-630e-0d75e3779f6d@canonical.com>
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djP87rv6uoSDHa9kbXYOGM9q8XGtz+Y
+        LO5/PcpocXnXHDaL2Uv6WSxmnN/HZPH5/X5Wi72tF5kt9l/xcuD0+PZ1EovHrIZeNo8Vn/Q9
+        7lzbw+Yxfc5/Ro++LasYPT5vkgtgj+KySUnNySxLLdK3S+DKmDfNt+CoYMXZSSYNjCv4uhg5
+        OSQETCTaTr5n7GLk4hASWMEo8WbrXRaQhJDAF0aJ//u5IBKfGSX6301mg+k4sHMZC0RiOVCi
+        u4sdwvnIKPGj+wxQFQeHsIC3xItedZC4iMAHJoklZ+azg3SzCRhKdL3tAqvhFbCTeL3XBiTM
+        IqAqsXbXPlYQW1QgSeLmpf/MIDavgKDEyZlPwC7iFHCUaLz3BOwIZgF5ie1v5zBD2OISt57M
+        ZwLZJSHwhkOie8ISFohLXSQ+rtjICGELS7w6voUdwpaR+L8TpqGZUeLhubXsEE4Po8TlphlQ
+        HdYSd879AruUWUBTYv0ufYiwo8TO/RAPSAjwSdx4KwhxBJ/EpG3TmSHCvBIdbUIQ1WoSs46v
+        g1t78MIlZgjbQ2L248lsExgVZyF5cxaS12YheW0Wwg0LGFlWMYqnlhbnpqcWG+allusVJ+YW
+        l+al6yXn525iBKao0/+Of9rBOPfVR71DjEwcjIcYJTiYlUR479fWJAjxpiRWVqUW5ccXleak
+        Fh9ilOZgURLnXTV7TbyQQHpiSWp2ampBahFMlomDU6qBibtwrd36dxX7jGv/JDlu2yP169IO
+        wSsJHlMVPxRcnfNFRSZ1f9ePgBWX7/LsWuhxtWQTa5ur2/wTtr+P7Z3fyJv0f29OxONjr4Kf
+        XP+gs//QY6Y1tfseLzy2JLbY7cuvd50/sldv+X6ufkda3d3ZTtnvS5uOH1r4+f6ZKpNtrG+e
+        uT1o/JeplZkTHdjZ9apyRVzw3JshQdv+LDuy0nHT9fUOB+YuPpfi/rrcevka63aHEysrvm14
+        K23QGP3b9EVM7rXp0y8bbDjYnlURceDd1mTH1hlp0dzhSuoaswX2J0kf2SPM7afNf41p2aLq
+        NdIde0NP8pk0b7GRvOjKdGwB1x2D+A2Vto9yPucHLuB1PVqlxFKckWioxVxUnAgAe8c82MAD
+        AAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrEIsWRmVeSWpSXmKPExsVy+t/xu7rv6uoSDPYLW2ycsZ7VYuPbH0wW
+        978eZbS4vGsOm8XsJf0sFjPO72Oy+Px+P6vF3taLzBb7r3g5cHp8+zqJxWNWQy+bx4pP+h53
+        ru1h85g+5z+jR9+WVYwenzfJBbBH6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZ
+        mSrp29mkpOZklqUW6dsl6GXMm+ZbcFSw4uwkkwbGFXxdjJwcEgImEgd2LmPpYuTiEBJYyihx
+        9OgjZoiEjMTJaQ2sELawxJ9rXWwQRe8ZJXZO2s3excjBISzgLfGiVx2kRkTgE5PE5o4ciJrD
+        TBIHOy6wgyTYBAwlut6CNHNw8ArYSbzeawMSZhFQlVi7ax/YfFGBJIl7l1eC7eUVEJQ4OfMJ
+        C4jNKeAo0XjvCRuIzSxgJjFv80NmCFteYvvbOVC2uMStJ/OZJjAKzkLSPgtJyywkLbOQtCxg
+        ZFnFKJJaWpybnltsqFecmFtcmpeul5yfu4kRGHnbjv3cvINx3quPeocYmTgYDzFKcDArifDe
+        r61JEOJNSaysSi3Kjy8qzUktPsRoCvTPRGYp0eR8YOznlcQbmhmYGpqYWRqYWpoZK4nzbp27
+        Jl5IID2xJDU7NbUgtQimj4mDU6qBaaZtgKjoa9YzKZuyLxnumiZ1MvX2yy9Lzj5Ij1qz+6TV
+        UcsJl59P2Hn8eH3rvT/MhvUPRKfkTHFc9f3pkk2SHpO+cM9+ov2qTPj2vCYt25sVx+zutl3S
+        qvHaafNzImd553u+wBdXtsq+uKmjIzzvyc1m83+3DnHMUXjaH5s2R9oo/fDJI+d9Hkf35h5g
+        y4zgeHN6rsGhD5q5i+Yv2FL0IM2/qkijKXf25x8tHx/6qzacPnDFYI5Zqp2JUu6hU51/j0iv
+        fS+epjnh5VumiwXxWwsNC5lP/VwZ3xSvXdz7vZ6d88TVN06/4jaYVk5ffV7gZfND/k0+td9k
+        ePm2uqTcXcDGmCWi2hxlxGcgkmX2cLoSS3FGoqEWc1FxIgCrZA2mRQMAAA==
+X-CMS-MailID: 20210420071246eucas1p1b54469b5d5b0940d46908563156195e3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d
+References: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
+        <CGME20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d@eucas1p2.samsung.com>
+        <20210419081726.67867-5-krzysztof.kozlowski@canonical.com>
+        <64fb91ae-c754-fb25-0ef7-17b2f1b8a1e4@samsung.com>
+        <4a5e80c0-653e-a4d6-630e-0d75e3779f6d@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.18a
-branch HEAD: 17f853c36ee2041e962c75dc96cca3baeb87c1aa  srcu: Early test SRCU polling start
+On 20.04.2021 09:03, Krzysztof Kozlowski wrote:
+> On 20/04/2021 07:25, Marek Szyprowski wrote:
+>> On 19.04.2021 10:17, Krzysztof Kozlowski wrote:
+>>> Use of_device_get_match_data() to make the code slightly smaller.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>> ---
+>>>    drivers/mfd/sec-core.c | 9 +++------
+>>>    1 file changed, 3 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
+>>> index 8d55992da19e..3126c39f3203 100644
+>>> --- a/drivers/mfd/sec-core.c
+>>> +++ b/drivers/mfd/sec-core.c
+>>> @@ -10,6 +10,7 @@
+>>>    #include <linux/slab.h>
+>>>    #include <linux/i2c.h>
+>>>    #include <linux/of.h>
+>>> +#include <linux/of_device.h>
+>>>    #include <linux/of_irq.h>
+>>>    #include <linux/interrupt.h>
+>>>    #include <linux/pm_runtime.h>
+>>> @@ -324,12 +325,8 @@ static inline unsigned long sec_i2c_get_driver_data(struct i2c_client *i2c,
+>>>    						const struct i2c_device_id *id)
+>>>    {
+>>>    #ifdef CONFIG_OF
+>>> -	if (i2c->dev.of_node) {
+>>> -		const struct of_device_id *match;
+>>> -
+>>> -		match = of_match_node(sec_dt_match, i2c->dev.of_node);
+>>> -		return (unsigned long)match->data;
+>>> -	}
+>>> +	if (i2c->dev.of_node)
+>>> +		return (unsigned long)of_device_get_match_data(&i2c->dev);
+>>>    #endif
+>> Does it make any sense to keep the #ifdef CONFIG_OF after this change?
+> Good point, it was only to hide usage of of_device_id table.
+>
+>> I would also skip (i2c->dev.of_node) check, because
+>> of_device_get_match_data() already does that (although indirectly).
+> First, the enum sec_device_type would need to be changed so it starts
+> from 1, not 0. It's because the value returned by this function is later
+> assigned to that enum and there is no way currently to differentiate
+> between NULL and S5M8767X.
+>
+> Second, it wouldn't make the code smaller;
+>
+> unsigned long data;
+> data = of_device_get_match_data(&i2c->dev);
+> if (data)
+> 	return data;
 
-elapsed time: 722m
+Then maybe one should go further and remove legacy, non-of based 
+initialization, because it is not used at all. This will simplify it 
+even more.
 
-configs tested: 133
-configs skipped: 4
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-powerpc                     mpc5200_defconfig
-m68k                          atari_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     kmeter1_defconfig
-openrisc                 simple_smp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                           xway_defconfig
-sh                             espt_defconfig
-sparc64                          alldefconfig
-powerpc                   motionpro_defconfig
-sh                         ap325rxa_defconfig
-nds32                             allnoconfig
-mips                      pic32mzda_defconfig
-sh                          rsk7203_defconfig
-powerpc                 mpc8272_ads_defconfig
-mips                          rb532_defconfig
-sh                        edosk7705_defconfig
-sh                           se7750_defconfig
-sh                         apsh4a3a_defconfig
-sparc                       sparc32_defconfig
-um                               alldefconfig
-m68k                        m5272c3_defconfig
-m68k                          hp300_defconfig
-m68k                       m5275evb_defconfig
-mips                          ath79_defconfig
-mips                   sb1250_swarm_defconfig
-um                                allnoconfig
-powerpc                      ep88xc_defconfig
-powerpc                    socrates_defconfig
-sparc                       sparc64_defconfig
-arm                        magician_defconfig
-m68k                            mac_defconfig
-alpha                            alldefconfig
-arm                            lart_defconfig
-powerpc                          g5_defconfig
-powerpc                      bamboo_defconfig
-mips                        nlm_xlr_defconfig
-arm                         hackkit_defconfig
-powerpc                     ep8248e_defconfig
-xtensa                       common_defconfig
-h8300                               defconfig
-arm                       multi_v4t_defconfig
-ia64                      gensparse_defconfig
-arm                        multi_v7_defconfig
-arm                          imote2_defconfig
-ia64                             allmodconfig
-powerpc                 xes_mpc85xx_defconfig
-ia64                                defconfig
-powerpc                      katmai_defconfig
-sh                         ecovec24_defconfig
-sh                          rsk7201_defconfig
-parisc                           alldefconfig
-powerpc                       holly_defconfig
-sh                        sh7785lcr_defconfig
-m68k                          multi_defconfig
-i386                                defconfig
-nios2                         3c120_defconfig
-sh                          landisk_defconfig
-arm                          pcm027_defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210419
-x86_64               randconfig-a001-20210419
-x86_64               randconfig-a005-20210419
-x86_64               randconfig-a002-20210419
-x86_64               randconfig-a006-20210419
-x86_64               randconfig-a004-20210419
-i386                 randconfig-a003-20210419
-i386                 randconfig-a001-20210419
-i386                 randconfig-a006-20210419
-i386                 randconfig-a005-20210419
-i386                 randconfig-a004-20210419
-i386                 randconfig-a002-20210419
-i386                 randconfig-a015-20210419
-i386                 randconfig-a013-20210419
-i386                 randconfig-a014-20210419
-i386                 randconfig-a016-20210419
-i386                 randconfig-a012-20210419
-i386                 randconfig-a011-20210419
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a014-20210419
-x86_64               randconfig-a015-20210419
-x86_64               randconfig-a013-20210419
-x86_64               randconfig-a011-20210419
-x86_64               randconfig-a012-20210419
-x86_64               randconfig-a016-20210419
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
