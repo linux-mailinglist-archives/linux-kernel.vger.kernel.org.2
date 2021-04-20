@@ -2,146 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36C4364FF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C9A364FFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhDTBor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 21:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhDTBoq (ORCPT
+        id S233301AbhDTBp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 21:45:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3948 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhDTBp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:44:46 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D94C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i10so23125299lfe.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=bezKEnQ/LitrlU1FItFHrI7Y2YVJfuRBU3xne3s9Vgk=;
-        b=Bu/zPqRGatAudfvgMRtfHORM5ajt+SWWeYSwfUAXy2SBpqh4GIe4jQ5SDAyT0yAjKT
-         SU7AcAeynquuZ7f/VQ6aJC/djUIvdySL3/6Zdr5d9ul/NcQqMBi511EhmnE56lzaycL3
-         Z4yORcyHVSRgclUahRtaTQ2P2Rn3PvmFq9IUEWSM3ng3i3jKMLLiFbl69dgg6YSSIkKF
-         tcib5o4ww7pm/IFycc1+sK68dSCNeq4DroDY+3SGSSce/Kqq6g8M01NIEbT4OktgkiQc
-         HfQG6g/+fe2m5nioirOe3Va1SawyYnbuXSDJUD7TYpJ7f1o8UrRECj6x2lxm42EWGDME
-         rVpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=bezKEnQ/LitrlU1FItFHrI7Y2YVJfuRBU3xne3s9Vgk=;
-        b=dC2+BNyGTNTrKSSbkzjPga/JkrBY+sY/RROjpB6lXbd7R5Hu0mNAE38lM8JVxULIIV
-         lZH7HHFJ5dKIlxl46EFZGySgZ1UNB+/+OlrYzUfOZQYcJ3Ki/uah50S5M/bMJxGJSKoV
-         1WFDFeA1ZwOOWUG19cwJS//UD0q20ypVafQji61z5K2Vdj80LqvebM+S2b0XkFLE6O6s
-         daGNgKKkzkHi8AclGqzDxU1XAKehAfT54t2xk7PKOS0zKgL5RGvuu9M8uLD7AOOIF6zR
-         3ERzzwJDBsyu+QyXFUtb1q4n5JHESVdXs+j7Essp+Sat72V8QYJZdnEAs5d8d5hMPl1B
-         wWVA==
-X-Gm-Message-State: AOAM533dFXFD9OOuOYOyTfXwCCXbnT5GQpGl2s0teGs1rrKZt+Tfdi7A
-        z1yd9vliAsL5Z7vi8W90gH4Vc/PHF2Vthg2gqI7cIQ==
-X-Google-Smtp-Source: ABdhPJyhnBg1I+7NiPaJ33vTWY5b8W0D2ApPWLMGgZCQfXgMaQ2nptq5VKIekwtNkE7jtgOkxv3YzGxUSzOrSba8vrw=
-X-Received: by 2002:ac2:58ee:: with SMTP id v14mr13888531lfo.83.1618883053836;
- Mon, 19 Apr 2021 18:44:13 -0700 (PDT)
+        Mon, 19 Apr 2021 21:45:57 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FPRK31DPMz5sFL;
+        Tue, 20 Apr 2021 09:43:03 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 20 Apr 2021 09:45:24 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 20 Apr
+ 2021 09:45:24 +0800
+Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
+ qdisc
+To:     Michal Kubecek <mkubecek@suse.cz>
+CC:     Juergen Gross <jgross@suse.com>, Jiri Kosina <jikos@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <olteanv@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
+        <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>
+References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
+ <20210418225956.a6ot6xox4eq6cvv5@lion.mk-sys.cz>
+ <a50daff3-c716-f11c-4dfa-c5c1f85a9e12@huawei.com>
+ <20210419145724.wx6wriaxobo6uruu@lion.mk-sys.cz>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <181cdef1-3596-1b74-0fc5-1ced1203a9a5@huawei.com>
+Date:   Tue, 20 Apr 2021 09:45:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 19 Apr 2021 18:44:02 -0700
-Message-ID: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
-Subject: [RFC] memory reserve for userspace oom-killer
-To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     Greg Thelen <gthelen@google.com>,
-        Dragos Sbirlea <dragoss@google.com>,
-        Priya Duraisamy <padmapriyad@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210419145724.wx6wriaxobo6uruu@lion.mk-sys.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Proposal: Provide memory guarantees to userspace oom-killer.
+On 2021/4/19 22:57, Michal Kubecek wrote:
+> On Mon, Apr 19, 2021 at 10:04:27AM +0800, Yunsheng Lin wrote:
+>>>
+>>> I tried this patch o top of 5.12-rc7 with real devices. I used two
+>>> machines with 10Gb/s Intel ixgbe NICs, sender has 16 CPUs (2 8-core CPUs
+>>> with HT disabled) and 16 Rx/Tx queues, receiver has 48 CPUs (2 12-core
+>>> CPUs with HT enabled) and 48 Rx/Tx queues. With multiple TCP streams on
+>>> a saturated ethernet, the CPU consumption grows quite a lot:
+>>>
+>>>     threads     unpatched 5.12-rc7    5.12-rc7 + v3   
+>>>       1               25.6%               30.6%
+>>>       8               73.1%              241.4%
+>>>     128              132.2%             1012.0%
+>>>
+>>> (The values are normalized to one core, i.e. 100% corresponds to one
+>>> fully used logical CPU.) I didn't perform a full statistical evaluation
+>>> but the growth is way beyond any statistical fluctuation with one
+>>> exception: 8-thread test of patched kernel showed values from 155.5% to
+>>> 311.4%. Closer look shows that most of the CPU time was spent in softirq
+>>> and running top in parallel with the test confirms that there are
+>>> multiple ksofirqd threads running at 100% CPU. I had similar problem
+>>> with earlier versions of my patch (work in progress, I still need to
+>>> check some corner cases and write commit message explaining the logic)
+>>
+>> Great, if there is a better idea, maybe share the core idea first so
+>> that we both can work on the that?
+> 
+> I'm not sure if it's really better but to minimize the false positives
+> and unnecessary calls to __netif_schedule(), I replaced q->seqlock with
+> an atomic combination of a "running" flag (which corresponds to current
+> seqlock being locked) and a "drainers" count (number of other threads
+> going to clean up the qdisc queue). This way we could keep track of them
+> and get reliable information if another thread is going to run a cleanup
+> after we leave the qdisc_run() critical section (so that there is no
+> need to schedule).
 
-Background:
+It seems you are trying to match the skb enqueuing with the calling of
+__qdisc_run() here, which is not reliable when considering the dequeue
+batching, see try_bulk_dequeue_skb() or try_bulk_dequeue_skb_slow() in
+dequeue_skb().
 
-Issues with kernel oom-killer:
-1. Very conservative and prefer to reclaim. Applications can suffer
-for a long time.
-2. Borrows the context of the allocator which can be resource limited
-(low sched priority or limited CPU quota).
-3. Serialized by global lock.
-4. Very simplistic oom victim selection policy.
+> 
+>>> The biggest problem IMHO is that the loop in __qdisc_run() may finish
+>>> without rescheduling not only when the qdisc queue is empty but also
+>>> when the corresponding device Tx queue is stopped which devices tend to
+>>> do whenever they cannot send any more packets out. Thus whenever
+>>> __QDISC_STATE_NEED_RESCHEDULE is set with device queue stopped or
+>>> frozen, we keep rescheduling the queue cleanup without any chance to
+>>> progress or clear __QDISC_STATE_NEED_RESCHEDULE. For this to happen, all
+>>> we need is another thready to fail the first spin_trylock() while device
+>>> queue is stopped and qdisc queue not empty.
+>>
+>> Yes, We could just return false before doing the second spin_trylock() if
+>> the netdev queue corresponding qdisc is stopped, and when the netdev queue
+>> is restarted, __netif_schedule() is called again, see netif_tx_wake_queue().
+>>
+>> Maybe add a sch_qdisc_stopped() function and do the testting in qdisc_run_begin:
+>>
+>> if (dont_retry || sch_qdisc_stopped())
+>> 	return false;
+>>
+>> bool sch_qdisc_stopped(struct Qdisc *q)
+>> {
+>> 	const struct netdev_queue *txq = q->dev_queue;
+>>
+>> 	if (!netif_xmit_frozen_or_stopped(txq))
+>> 		return true;
+>>
+>> 	reture false;
+>> }
+>>
+>> At least for qdisc with TCQ_F_ONETXQUEUE flags set is doable?
+> 
+> Either this or you can do the check in qdisc_run_end() - when the device
+> queue is stopped or frozen, there is no need to schedule as we know it's
+> going to be done when the flag is cleared again (and we cannot do
+> anything until then anyway).
+> 
+>>> Another part of the problem may be that to avoid the race, the logic is
+>>> too pessimistic: consider e.g. (dotted lines show "barriers" where
+>>> ordering is important):
+>>>
+>>>     CPU A                            CPU B
+>>>     spin_trylock() succeeds
+>>>                                      pfifo_fast_enqueue()
+>>>     ..................................................................
+>>>     skb_array empty, exit loop
+>>>                                      first spin_trylock() fails
+>>>                                      set __QDISC_STATE_NEED_RESCHEDULE
+>>>                                      second spin_trylock() fails
+>>>     ..................................................................
+>>>     spin_unlock()
+>>>     call __netif_schedule()
+>>>
+>>> When we switch the order of spin_lock() on CPU A and second
+>>> spin_trylock() on CPU B (but keep setting __QDISC_STATE_NEED_RESCHEDULE
+>>> before CPU A tests it), we end up scheduling a queue cleanup even if
+>>> there is already one running. And either of these is quite realistic.
+>>
+>> But I am not sure it is a good thing or bad thing when the above happen,
+>> because it may be able to enable the tx batching?
+> 
+> In either of the two scenarios, we call __netif_schedule() to schedule
+> a cleanup which does not do anything useful. In first, the qdics queue
+> is empty so that either the scheduled cleanup finds it empty or there
+> will be some new packets which would have their own cleanup. In second,
+> scheduling a cleanup will not prevent the other thread from doing its
+> own cleanup it already started.
 
-These issues are resolved through userspace oom-killer by:
-1. Ability to monitor arbitrary metrics (PSI, vmstat, memcg stats) to
-early detect suffering.
-2. Independent process context which can be given dedicated CPU quota
-and high scheduling priority.
-3. Can be more aggressive as required.
-4. Can implement sophisticated business logic/policies.
+The main idea is that a thread（holding q->seqlock）to do the dequeuing
+as much as possible while other threads are enqueuing skb, which seems
+possible to avoid the above case?
 
-Android's LMKD and Facebook's oomd are the prime examples of userspace
-oom-killers. One of the biggest challenges for userspace oom-killers
-is to potentially function under intense memory pressure and are prone
-to getting stuck in memory reclaim themselves. Current userspace
-oom-killers aim to avoid this situation by preallocating user memory
-and protecting themselves from global reclaim by either mlocking or
-memory.min. However a new allocation from userspace oom-killer can
-still get stuck in the reclaim and policy rich oom-killer do trigger
-new allocations through syscalls or even heap.
+> 
+>>>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+>>>> index 44991ea..4953430 100644
+>>>> --- a/net/sched/sch_generic.c
+>>>> +++ b/net/sched/sch_generic.c
+>>>> @@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>>>>  {
+>>>>  	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+>>>>  	struct sk_buff *skb = NULL;
+>>>> +	bool need_retry = true;
+>>>>  	int band;
+>>>>  
+>>>> +retry:
+>>>>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>>>>  		struct skb_array *q = band2list(priv, band);
+>>>>  
+>>>> @@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>>>>  	}
+>>>>  	if (likely(skb)) {
+>>>>  		qdisc_update_stats_at_dequeue(qdisc, skb);
+>>>> +	} else if (need_retry &&
+>>>> +		   test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
+>>>> +				      &qdisc->state)) {
+>>>> +		/* do another enqueuing after clearing the flag to
+>>>> +		 * avoid calling __netif_schedule().
+>>>> +		 */
+>>>> +		smp_mb__after_atomic();
+>>>> +		need_retry = false;
+>>>> +
+>>>> +		goto retry;
+>>>>  	} else {
+>>>>  		WRITE_ONCE(qdisc->empty, true);
+>>>>  	}i
+>>>
+>>> Does the retry really provide significant improvement? IIUC it only
+>>> helps if all of enqueue, first spin_trylock() failure and setting the
+>>> __QDISC_STATE_NEED_RESCHEDULE flag happen between us finding the
+>>> skb_array empty and checking the flag. If enqueue happens before we
+>>> check the array (and flag is set before the check), the retry is
+>>> useless. If the flag is set after we check it, we don't catch it (no
+>>> matter if the enqueue happened before or after we found skb_array
+>>> empty).
+>>
+>> In odrder to avoid doing the "set_bit(__QDISC_STATE_MISSED, &qdisc->state)"
+>> as much as possible, the __QDISC_STATE_NEED_RESCHEDULE need to be set as
+>> as much as possible, so only clear __QDISC_STATE_NEED_RESCHEDULE when the
+>> queue is empty.
+> 
+> This is what I'm worried about. We are trying to address a race
+> condition which is extremely rare so we should avoid adding too much
+> overhead to the normal use.
+> 
+>> And it has about 5% performance improvement.
+> 
+> OK then. It thought that it would do an unnecessary dequeue retry much
+> more often than prevent an unnecessary __netif_schedule() but I did not
+> run any special benchmark to check.
 
-Our attempt of userspace oom-killer faces similar challenges.
-Particularly at the tail on the very highly utilized machines we have
-observed userspace oom-killer spectacularly failing in many possible
-ways in the direct reclaim. We have seen oom-killer stuck in direct
-reclaim throttling, stuck in reclaim and allocations from interrupts
-keep stealing reclaimed memory. We have even observed systems where
-all the processes were stuck in throttle_direct_reclaim() and only
-kswapd was running and the interrupts kept stealing the memory
-reclaimed by kswapd.
+When netdev tx queue is not stopped:
+1. if __QDISC_STATE_NEED_RESCHEDULE is set and there is a lot of skb to be
+   dequeued, it is likely that __netif_schedule() is already called in
+   __qdisc_run(), so the __netif_schedule() called in qdisc_run_end() is
+   no-op.
 
-To reliably solve this problem, we need to give guaranteed memory to
-the userspace oom-killer. At the moment we are contemplating between
-the following options and I would like to get some feedback.
+2. if __QDISC_STATE_NEED_RESCHEDULE is set during the data race this patch is
+   trying to fix, then we do need to call __netif_schedule().
 
-1. prctl(PF_MEMALLOC)
+3. otherwise the __QDISC_STATE_NEED_RESCHEDULE is cleared in test_and_clear()
+   added in pfifo_fast_dequeue().
 
-The idea is to give userspace oom-killer (just one thread which is
-finding the appropriate victims and will be sending SIGKILLs) access
-to MEMALLOC reserves. Most of the time the preallocation, mlock and
-memory.min will be good enough but for rare occasions, when the
-userspace oom-killer needs to allocate, the PF_MEMALLOC flag will
-protect it from reclaim and let the allocation dip into the memory
-reserves.
+The main point here is to delay clearing __QDISC_STATE_NEED_RESCHEDULE bit
+as much as possible so that the set_bit() and second spin_trylock() is
+avoided.
 
-The misuse of this feature would be risky but it can be limited to
-privileged applications. Userspace oom-killer is the only appropriate
-user of this feature. This option is simple to implement.
+> 
+> Michal
+> 
+> .
+> 
 
-2. Mempool
-
-The idea is to preallocate mempool with a given amount of memory for
-userspace oom-killer. Preferably this will be per-thread and
-oom-killer can preallocate mempool for its specific threads. The core
-page allocator can check before going to the reclaim path if the task
-has private access to the mempool and return page from it if yes.
-
-This option would be more complicated than the previous option as the
-lifecycle of the page from the mempool would be more sophisticated.
-Additionally the current mempool does not handle higher order pages
-and we might need to extend it to allow such allocations. Though this
-feature might have more use-cases and it would be less risky than the
-previous option.
-
-Another idea I had was to use kthread based oom-killer and provide the
-policies through eBPF program. Though I am not sure how to make it
-monitor arbitrary metrics and if that can be done without any
-allocations.
-
-Please do provide feedback on these approaches.
-
-thanks,
-Shakeel
