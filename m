@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0EF365E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81980365E99
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhDTR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:26:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:7203 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233141AbhDTR0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:26:43 -0400
-IronPort-SDR: Z+ATFwTB2/uOA9KSEKyIkixCiTTK53IKSHdMWoAjJuPWTRQeAQef6VegYK6PwrTLNhcmYLzcxz
- sdZ4nvrlNFmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195107727"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="195107727"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 10:26:11 -0700
-IronPort-SDR: KNMRWjGS+12WxeI0yq5GQZwuxcu3JyTCGaepSnAqDMAukITru09Lfa8hUwE23W+FpwAJM3Eeps
- O5p3Lq2ib4Hw==
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="420544380"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 10:26:11 -0700
-From:   matthew.gerlach@linux.intel.com
-To:     hao.wu@intel.com, trix@redhat.com, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
-        russell.h.weight@intel.com, mdf@kernel.org
-Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH] fpga: dfl: pci: gracefully handle misconfigured port entries
-Date:   Tue, 20 Apr 2021 10:27:40 -0700
-Message-Id: <20210420172740.707259-1-matthew.gerlach@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S233362AbhDTRaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233245AbhDTRaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:30:23 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AE5C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:29:52 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id f11-20020a17090a638bb02901524d3a3d48so233496pjj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oHhObtzZUMwUL0LGBYnUP2PdgBkn1gCTVPbp4qMchG4=;
+        b=YScpteqoqCLz2Eu+NTR3fLnysuCLD0EMwVENM3M1OUKcSsSnzqJcHaNC4pfaNry8tw
+         RPWH7MrHzN59I3/0KGYanyTHJAzmj2yiQtwZwDgHuRJfBEpZNi3im67N4vuRuH2YMwAh
+         wSkveHOydiGEs4NcfcUJdwx69c4CsvCe+uqI4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oHhObtzZUMwUL0LGBYnUP2PdgBkn1gCTVPbp4qMchG4=;
+        b=EKMww3Pb4sAhvam9Dha6FqPcO6j3ucQLQwcoQ67QfCrH1yttfH3WqGh3Rvehc1Y+D4
+         o/3ShoTsrCjgstu59+VyYapgNmZ8va9PInYM97MW5Rp2QcGCy8CvAecQS7QEBpgB0OdE
+         Yo1dUL+JqwBvcw2r2TxZYv4WldAWDfCgnQNuDjq7pMYp6TzA0cNP67Bg61lujPdYagwj
+         nSJ5V9e8x37PmVmPsPlGJRHa/RGfvivVKaIdt7EsHaJI35sUQl0/T4NF7dviyxXV/kxM
+         VFd8EdFTx2Bwt197TtK22OHZmF3VzuNglG+BwBIJEPSD0fOQrec6k3LGrZ4P2aWcPIGU
+         qlUA==
+X-Gm-Message-State: AOAM533iAC3ShPKpk/aA48CSxqJ6qwTObpvo14gCOKYa5QzbSgccbWk5
+        kpMIhHXIN2BcJM8xhZpVkCwTBQ==
+X-Google-Smtp-Source: ABdhPJxEe1OhULxbGxmNL1UjWRteTSkCWq9GXRDRscjlFfY5QPkDI7MHsA7OpxA3teahomRVWUToQg==
+X-Received: by 2002:a17:90a:7897:: with SMTP id x23mr6106182pjk.133.1618939791774;
+        Tue, 20 Apr 2021 10:29:51 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
+        by smtp.gmail.com with UTF8SMTPSA id q3sm3025116pja.37.2021.04.20.10.29.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 10:29:51 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:29:50 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V3 4/5] arm64: dts: qcom: pmk8350: Add PMIC
+ peripherals for pmk8350
+Message-ID: <YH8PjqhZtiNhNv8h@google.com>
+References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
+ <1618398783-7834-3-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1618398783-7834-3-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Wed, Apr 14, 2021 at 04:43:00PM +0530, satya priya wrote:
 
-Gracefully ignore misconfigured port entries encountered in
-incorrect FPGA images.
+> Subject: arm64: dts: qcom: pmk8350: Add PMIC peripherals for pmk8350
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
----
- drivers/fpga/dfl-pci.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+nit: why 'PMIC peripherals', are these peripherals somehow specific
+to PMICs?
 
-diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-index b44523e..660d3b6 100644
---- a/drivers/fpga/dfl-pci.c
-+++ b/drivers/fpga/dfl-pci.c
-@@ -212,6 +212,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
- 	int port_num, bar, i, ret = 0;
- 	resource_size_t start, len;
- 	void __iomem *base;
-+	int bars = 0;
- 	u32 offset;
- 	u64 v;
- 
-@@ -228,6 +229,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
- 	if (dfl_feature_is_fme(base)) {
- 		start = pci_resource_start(pcidev, 0);
- 		len = pci_resource_len(pcidev, 0);
-+		bars |= BIT(0);
- 
- 		dfl_fpga_enum_info_add_dfl(info, start, len);
- 
-@@ -253,9 +255,21 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
- 			 */
- 			bar = FIELD_GET(FME_PORT_OFST_BAR_ID, v);
- 			offset = FIELD_GET(FME_PORT_OFST_DFH_OFST, v);
-+			if (bars & BIT(bar)) {
-+				dev_warn(&pcidev->dev, "skipping bad port BAR %d\n", bar);
-+				continue;
-+			}
-+
- 			start = pci_resource_start(pcidev, bar) + offset;
--			len = pci_resource_len(pcidev, bar) - offset;
-+			len = pci_resource_len(pcidev, bar);
-+			if (offset >= len) {
-+				dev_warn(&pcidev->dev, "bad port offset %u >= %pa\n",
-+					 offset, &len);
-+				continue;
-+			}
- 
-+			len -= offset;
-+			bars |= BIT(bar);
- 			dfl_fpga_enum_info_add_dfl(info, start, len);
- 		}
- 	} else if (dfl_feature_is_port(base)) {
--- 
-1.8.3.1
+> Add PON, RTC and other PMIC infra modules support for PMK8350.
 
+nit: it seems somewhat arbitrary to specifically mention PON and RTC,
+and then treat the ADC and the thermal monitor as 'others'. You could
+just spell them out too.
+
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 55 ++++++++++++++++++++++++++++++++++-
+>  1 file changed, 54 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pmk8350.dtsi b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+> index 1530b8f..bbd9fa7 100644
+> --- a/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
+> @@ -3,6 +3,12 @@
+>   * Copyright (c) 2021, Linaro Limited
+>   */
+>  
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
+> +#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
+
+the includes of the constants for the other PMICs seems to be an
+remainder from older vesions, which included nodes for the on die
+temperatures of these PMICs.
