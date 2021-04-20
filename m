@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05743365882
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02AE365887
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbhDTMGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:06:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232229AbhDTMGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:06:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30048613BC;
-        Tue, 20 Apr 2021 12:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618920335;
-        bh=ZiHFBNeowD0y96Ybd6GgNVVH0YPOMIokIMnSawx/I6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ePV/HMcc9f+LS5cg6VomboUm0NIv23uuSuBV9Kyhx2lTKXBHLpSKoEhvIFhxDp+Yt
-         Hh1r41ld6x7JhzOCD8/sbZU9XNF73DKBbhRWkNbrV7awJjFmJ4zylLyWdkf8mq/gT+
-         GVeQsVuNAHwoKnDMbcJ6d8svbs17BCkp/hZ1uy1U71jksL/vcG5/wVQiqWFUQ19qND
-         Vq0cG5e2EJZBFjU+W7Y80NJN7Qdn+j5koh5J00yDa/THlbihu7HOAVbxMT3yotDoVQ
-         GPD4Cgdxp2sBL0doAvtv5GEn7E/jT93K6HAX49T/0bBqhlE8ji8VcEheiAtYCfwdh5
-         oOir6xzbVz4Qw==
-Date:   Tue, 20 Apr 2021 15:05:27 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] docs: proc.rst: meminfo: briefly describe gaps in memory
- accounting
-Message-ID: <YH7Dh3eF+GyVxNGg@kernel.org>
-References: <20210420085105.1156640-1-rppt@kernel.org>
- <YH6aa8WJotXh8F+b@dhcp22.suse.cz>
+        id S232335AbhDTMHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231929AbhDTMHP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:07:15 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA919C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:06:43 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id bx20so43619547edb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x9c3r13HPylppoMPao4ledc3mbYWLGl4YkdEgW4VZvA=;
+        b=Ek0bA+l5MzxGUC/5g7l67MICM4Uh7CjRfjjdhE9VBxIoPsksBobOlUj1JSFtCu6uEv
+         pE5sceaIYjsIQNK8fyzIEz+2jCQtoGdU0A1SAAsCfUKWkPG0CGLyqyiSHsVDlYhBxwm0
+         +ll6w1U7w1L1Z+qKeF3iPJr1RsBZYbKzMgoiI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x9c3r13HPylppoMPao4ledc3mbYWLGl4YkdEgW4VZvA=;
+        b=hHH1+GA+OOFHgFzxkXaIks51D4Ezv4AuS5j7iQHGGbKxUie3JadOSN7STljHsCglKX
+         ntiV5W7BtrcaRJ3gx12ojSXphAKlCWMEWfCnwkmu86PPi9vn6JvXwxV7GbXekXOkLI08
+         GZtXRJ6SNGJVetf2mxaK+8YCwgpSEdwyL74CHdgoXtOX6726vvsa6AqlxHBww04gVrm6
+         Fn1XVaxDtU+s+kluRyYIL/IvAN9by6HFz35pkJ5EW/0ld1YzZDt+CRrnBGcfPpfwn614
+         OHRLUGJeKWLOSrLcS9jCPHM453rW62wUUROO15s9Ud+hBQNExXdpaLWZ+fo5xafsQ5iq
+         p3yA==
+X-Gm-Message-State: AOAM533nfTTkUjiJiKWqAklg2lgRL+B40mWtDZFiQVSXqHa3SWRlH/y6
+        WkCTClpGqFIeYoUpNY6ztfSHCg==
+X-Google-Smtp-Source: ABdhPJzDMI1SxSR+7L9SKSloUbd8WrblJjsRu0Cg1QtdYfJSIJzmvkefnMruL+WbZ5Q8SoSrOP9AHA==
+X-Received: by 2002:a05:6402:2807:: with SMTP id h7mr31548676ede.217.1618920402614;
+        Tue, 20 Apr 2021 05:06:42 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id q25sm15615644edt.51.2021.04.20.05.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 05:06:42 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Kay Sievers <kay.sievers@vrfy.org>,
+        Greg Kroah-Hartman <gregkh@suse.de>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: admin-guide: update description for kernel.hotplug sysctl
+Date:   Tue, 20 Apr 2021 14:06:38 +0200
+Message-Id: <20210420120638.1104016-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH6aa8WJotXh8F+b@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 11:10:03AM +0200, Michal Hocko wrote:
-> On Tue 20-04-21 11:51:05, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Some trivial changelog would be better than nothing.
+It's been a few releases since this defaulted to /sbin/hotplug. Update
+the text, and include pointers to the two CONFIG_UEVENT_HELPER{,_PATH}
+config knobs whose help text could provide more info, but also hint
+that the user probably doesn't need to care at all.
+
+Fixes: 7934779a69f1 ("Driver-Core: disable /sbin/hotplug by default")
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ Documentation/admin-guide/sysctl/kernel.rst | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 1d56a6b73a4e..c24f57f2c782 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -333,7 +333,12 @@ hotplug
+ =======
  
-oh, sure.
-
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> But I do agree that this is a useful information to have in the
-> documentation. Having networking counters as an example is helpful as
-> well. I am not familiar with those myself much and I do remember there
-> is much to it than just sockstat. It would be great to consult this with
-> some networking expert and extend the documentation for that case which
-> tends to be quite common AFAIK.
+ Path for the hotplug policy agent.
+-Default value is "``/sbin/hotplug``".
++Default value is ``CONFIG_UEVENT_HELPER_PATH``, which in turn defaults
++to the empty string.
++
++This file only exists when ``CONFIG_UEVENT_HELPER`` is enabled. Most
++modern systems rely exclusively on the netlink-based uevent source and
++don't need this.
  
-I've found a citation from one of Eric Dumazet's emails [1], and used that
-instead:
-
-... subsystem specific interfaces, for instance /proc/net/sockstat for TCP
-memory allocations
-
-[1] https://lore.kernel.org/lkml/CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com
-
-> Anyway this is already an improvement and a step into the right
-> direction.
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> one nit below
-> > ---
-> >  Documentation/filesystems/proc.rst | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> > index 48fbfc336ebf..bf245151645b 100644
-> > --- a/Documentation/filesystems/proc.rst
-> > +++ b/Documentation/filesystems/proc.rst
-> > @@ -929,8 +929,15 @@ meminfo
-> >  ~~~~~~~
-> >  
-> >  Provides information about distribution and utilization of memory.  This
-> > -varies by architecture and compile options.  The following is from a
-> > -16GB PIII, which has highmem enabled.  You may not have all of these fields.
-> > +varies by architecture and compile options. Please note that is may happen
-> 
-> that it may happen
-
-Right.
  
-> > +that the memory accounted here does not add up to the overall memory usage
-> > +and the difference for some workloads can be substantial. In many cases
-> > +there are other means to find out additional memory using subsystem
-> > +specific interfaces, for instance /proc/net/sockstat for networking
-> > +buffers.
-> > +
-> > +The following is from a 16GB PIII, which has highmem enabled.
-> > +You may not have all of these fields.
-> >  
-> >  ::
-> >  
-> > -- 
-> > 2.29.2
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
-
+ hung_task_all_cpu_backtrace
 -- 
-Sincerely yours,
-Mike.
+2.29.2
+
