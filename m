@@ -2,125 +2,900 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489A2365F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E94365F35
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhDTS2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:28:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58442 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233513AbhDTS2j (ORCPT
+        id S233506AbhDTS3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:29:22 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:34322 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233518AbhDTS3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:28:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618943287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rt/t+I/KtcZ1bXATJ8JrmYabWuJFiLedZQY+lkzmzzc=;
-        b=CpfmGmizcXJcUzDNySa1winMtKbqdqqmz8rZt6UK+6aMxd4W4keogO/803wsMS0/7TsFEx
-        H6eftKtmM+Slvf1lBxImFwOhc30j2AsSJbdMNTGxEtx0G06pOIKf3tcH45z8U4dZYMIZPO
-        1n1ibAQNoD0c7EF0IkfzJFA3QQj/MbI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-zZt0hFhrPd-hd7hLzEQYDQ-1; Tue, 20 Apr 2021 14:27:54 -0400
-X-MC-Unique: zZt0hFhrPd-hd7hLzEQYDQ-1
-Received: by mail-ed1-f70.google.com with SMTP id t11-20020aa7d4cb0000b0290382e868be07so13572266edr.20
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:27:54 -0700 (PDT)
+        Tue, 20 Apr 2021 14:29:02 -0400
+Received: by mail-ot1-f54.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so36667077otn.1;
+        Tue, 20 Apr 2021 11:28:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rt/t+I/KtcZ1bXATJ8JrmYabWuJFiLedZQY+lkzmzzc=;
-        b=s5mxy12RTmVNnFw39Ioyi4xEDd2LR+kcSpRG6obJFRODdAJ8PiBmMeOpLyqcpATnah
-         LMZF0Hi3Zpam1SQ/dPRPS4bQZPfPiE5dUTDxpnU0cZtMGKEuEhO5O412NIRd6bS/b+Bo
-         G2/nr/nEHdn5iJhqB1vNT9oGh/vOTsucsFdE1nwLbvsren8flZUXxPAjL7bVTXPEGgYW
-         pddSssMBV+rMOHwTS4KMGOCzr26EZZIyQz6Tw7OrXq1ltjfMq+cjUV/EKF20Gs3LEBGr
-         lDMp4eA0uXOa08Q7YX1Ur5s+oMzJehOy3NOs1kWNMrI57K3d+qdLmC7TG5245oAuvTfO
-         l+Ww==
-X-Gm-Message-State: AOAM530bvsUNy++iJsVd3Whg5RuL0SfyitUPSLVB7G8noGJu1XBpELYk
-        nWnjA9/0K6MVqR9ZdFQAbJIufKfoIgOekWXRfxgQDJqxS/TN10IT4bTZa4roXlUM8haVbQkWZaV
-        WgHgbbvjXgIiwEc9EaQ0DCKqN
-X-Received: by 2002:a17:907:3ac1:: with SMTP id fi1mr28976532ejc.139.1618943272712;
-        Tue, 20 Apr 2021 11:27:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxEdOZkYCgIf/rLx/m6BBXcl0kUNchsFF0jNoefPiJKHN2UivzWKjaJQk29HdPJtEGSlDj93A==
-X-Received: by 2002:a17:907:3ac1:: with SMTP id fi1mr28976513ejc.139.1618943272489;
-        Tue, 20 Apr 2021 11:27:52 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id li16sm13295075ejb.101.2021.04.20.11.27.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 11:27:51 -0700 (PDT)
-Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
-        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
-References: <20210420112006.741541-1-pbonzini@redhat.com>
- <YH7wAh0t+eQ5n1M2@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2b1f1764-bcb0-096a-8d44-aee94f2c85f3@redhat.com>
-Date:   Tue, 20 Apr 2021 20:27:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dlq/HOWEsc2M1ywYfeAz69cTHl1BvDK86qzO5HH9Ydw=;
+        b=jLOFPfl80LwyMeQaBYSroev5Qc4KymWzalmjNFZCFAqOUt6lsB1EDdXZEWtdBhshfd
+         IjQSLwDmaZeAzPR4T3qNEKUrrxCIg9IXz3a6H+al57TjqC0HZRRpMXDa/NOWnOWI9bvA
+         PqEEmYMucM5hZ3TvbFh7EbLaTthGnUvI7yQSi+feF3PF6/1cT3uPM26mW+mViqo6QR2X
+         TynoRE7AhjtQOXs8xUkwg03oehqww7wuAM5CoP4X2gD52KIc7eEAIsvw35TxXjthXCOi
+         Cv/lRpM0CNHULkq2qGDY2BLu2ctQO6U58Qga//5OtbJlSESt8Z+RI8PN4a2grAgxSaUA
+         /xnw==
+X-Gm-Message-State: AOAM531xo8IBsv1cX5sS7oWcBolQuIrRxJsQA6qEmOXx9F5StI87866i
+        9Zoebx7WJx7G4zHacLphrw==
+X-Google-Smtp-Source: ABdhPJxujCW2TIzcv+eE3tj0XrA7nup/kEDqyvLT2/OMKXzP7/JweER9QJFiqrWjS6CApCDh0dn8gA==
+X-Received: by 2002:a05:6830:4d9:: with SMTP id s25mr19965363otd.100.1618943309827;
+        Tue, 20 Apr 2021 11:28:29 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h80sm586116oib.18.2021.04.20.11.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 11:28:29 -0700 (PDT)
+Received: (nullmailer pid 3594361 invoked by uid 1000);
+        Tue, 20 Apr 2021 18:28:27 -0000
+Date:   Tue, 20 Apr 2021 13:28:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Po-Kai Chi <pk.chi@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, wsd_upstream@mediatek.com,
+        CC Hwang <cc.hwang@mediatek.com>
+Subject: Re: [PATCH v2 2/4] memory: mediatek: add DRAM controller driver
+Message-ID: <20210420182827.GA3439758@robh.at.kernel.org>
+References: <1618565538-6972-1-git-send-email-pk.chi@mediatek.com>
+ <1618565538-6972-3-git-send-email-pk.chi@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <YH7wAh0t+eQ5n1M2@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618565538-6972-3-git-send-email-pk.chi@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 17:15, Sean Christopherson wrote:
-> On Tue, Apr 20, 2021, Paolo Bonzini wrote:
->> Do not return the SEV-ES bit from KVM_GET_SUPPORTED_CPUID unless
->> the corresponding module parameter is 1, and clear the memory encryption
->> leaf completely if SEV is disabled.
+On Fri, Apr 16, 2021 at 05:32:16PM +0800, Po-Kai Chi wrote:
+> MediaTek DRAM controller (DRAMC) driver provides cross-platform features
+> as below:
 > 
-> Impeccable timing, I was planning on refreshing my SEV cleanup series[*] today.
-> There's going to be an annoying conflict with the svm_set_cpu_caps() change
-> (see below), any objecting to folding your unintentional feedback into my series?
+> 1. provide APIs for low power feature queries
+> 2. create sysfs to pass the DRAM information to user-space
 
-That's fine of course.
+I'm hesistant with having both DT and sysfs vendor specific memory 
+properties. I think we need something common here.
 
->> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
->> index 888e88b42e8d..e873a60a4830 100644
->> --- a/arch/x86/kvm/cpuid.h
->> +++ b/arch/x86/kvm/cpuid.h
->> @@ -99,6 +99,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
->>   	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
->>   	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
->>   	[CPUID_12_EAX]        = {0x00000012, 0, CPUID_EAX},
->> +	[CPUID_8000_001F_EAX] = {0x8000001F, 0, CPUID_EAX},
->>   };
->>   
->>   /*
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index cd8c333ed2dc..acdb8457289e 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -923,6 +923,13 @@ static __init void svm_set_cpu_caps(void)
->>   	if (boot_cpu_has(X86_FEATURE_LS_CFG_SSBD) ||
->>   	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
->>   		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
->> +
->> +	/* CPUID 0x8000001F */
->> +	if (sev) {
->> +		kvm_cpu_cap_set(X86_FEATURE_SEV);
->> +		if (sev_es)
->> +			kvm_cpu_cap_set(X86_FEATURE_SEV_ES);
 > 
-> Gah, I completely spaced on the module params in my series, which is more
-> problematic than normal because it also moves "sev" and "sev_es" to sev.c.  The
-> easy solution is to add sev_set_cpu_caps().
+> Signed-off-by: Po-Kai Chi <pk.chi@mediatek.com>
+> ---
+>  drivers/memory/Kconfig              |    1 +
+>  drivers/memory/Makefile             |    1 +
+>  drivers/memory/mediatek/Kconfig     |    9 +
+>  drivers/memory/mediatek/Makefile    |    3 +
+>  drivers/memory/mediatek/mtk-dramc.c |  711 +++++++++++++++++++++++++++++++++++
+>  include/memory/mediatek/dramc.h     |   18 +
+>  6 files changed, 743 insertions(+)
+>  create mode 100644 drivers/memory/mediatek/Kconfig
+>  create mode 100644 drivers/memory/mediatek/Makefile
+>  create mode 100644 drivers/memory/mediatek/mtk-dramc.c
+>  create mode 100644 include/memory/mediatek/dramc.h
+> 
+> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> index 72c0df1..056e906 100644
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -225,6 +225,7 @@ config STM32_FMC2_EBI
+>  	  devices (like SRAM, ethernet adapters, FPGAs, LCD displays, ...) on
+>  	  SOCs containing the FMC2 External Bus Interface.
+>  
+> +source "drivers/memory/mediatek/Kconfig"
+>  source "drivers/memory/samsung/Kconfig"
+>  source "drivers/memory/tegra/Kconfig"
+>  
+> diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
+> index bc7663e..cd4f8cf 100644
+> --- a/drivers/memory/Makefile
+> +++ b/drivers/memory/Makefile
+> @@ -25,6 +25,7 @@ obj-$(CONFIG_PL353_SMC)		+= pl353-smc.o
+>  obj-$(CONFIG_RENESAS_RPCIF)	+= renesas-rpc-if.o
+>  obj-$(CONFIG_STM32_FMC2_EBI)	+= stm32-fmc2-ebi.o
+>  
+> +obj-$(CONFIG_MTK_DRAMC)		+= mediatek/
+>  obj-$(CONFIG_SAMSUNG_MC)	+= samsung/
+>  obj-$(CONFIG_TEGRA_MC)		+= tegra/
+>  obj-$(CONFIG_TI_EMIF_SRAM)	+= ti-emif-sram.o
+> diff --git a/drivers/memory/mediatek/Kconfig b/drivers/memory/mediatek/Kconfig
+> new file mode 100644
+> index 0000000..a1618b0
+> --- /dev/null
+> +++ b/drivers/memory/mediatek/Kconfig
+> @@ -0,0 +1,9 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +config MTK_DRAMC
+> +	tristate "MediaTek DRAMC driver"
+> +	help
+> +	  This selects the MediaTek(R) DRAMC driver.
+> +	  Provide the API for DRAMC low power scenario, and the interface
+> +	  for reporting DRAM information, e.g. DRAM mode register (MR) for
+> +	  DRAM vendor ID, temperature, and density.
+> diff --git a/drivers/memory/mediatek/Makefile b/drivers/memory/mediatek/Makefile
+> new file mode 100644
+> index 0000000..632be48
+> --- /dev/null
+> +++ b/drivers/memory/mediatek/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +obj-$(CONFIG_MTK_DRAMC)	+= mtk-dramc.o
+> diff --git a/drivers/memory/mediatek/mtk-dramc.c b/drivers/memory/mediatek/mtk-dramc.c
+> new file mode 100644
+> index 0000000..155b3b7
+> --- /dev/null
+> +++ b/drivers/memory/mediatek/mtk-dramc.c
+> @@ -0,0 +1,711 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/printk.h>
+> +#include <linux/slab.h>
+> +#include <linux/io.h>
+> +#include <memory/mediatek/dramc.h>
+> +
+> +#define DRAMC_DRV_NAME	"mtk-dramc"
+> +
+> +struct mr_info_t {
+> +	unsigned int mr_index;
+> +	unsigned int mr_value;
+> +};
+> +
+> +/*
+> + * struct reg_ctrl_t - to describe the bits required in a register
+> + * @offset: register address offset from a base
+> + * @mask: bitmask of the target bits
+> + * @shift: starting bit of the target bits
+> + */
+> +struct reg_ctrl_t {
+> +	unsigned int offset;
+> +	unsigned int mask;
+> +	unsigned int shift;
+> +};
+> +
+> +struct fmeter_dev_t {
+> +	unsigned int crystal_freq;
+> +	unsigned int shu_of;
+> +	struct reg_ctrl_t shu_lv;
+> +	struct reg_ctrl_t pll_id;
+> +	struct reg_ctrl_t pll_md[2];
+> +	struct reg_ctrl_t sdmpcw[2];
+> +	struct reg_ctrl_t prediv[2];
+> +	struct reg_ctrl_t posdiv[2];
+> +	struct reg_ctrl_t ckdiv4[2];
+> +	struct reg_ctrl_t cldiv2[2];
+> +	struct reg_ctrl_t fbksel[2];
+> +	struct reg_ctrl_t dqopen[2];
+> +};
+> +
+> +struct mr4_dev_t {
+> +	struct reg_ctrl_t mr4_rg;
+> +};
+> +
+> +struct dramc_dev_t {
+> +	unsigned int dram_type;
+> +	unsigned int support_channel_cnt;
+> +	unsigned int channel_cnt;
+> +	unsigned int rank_cnt;
+> +	unsigned int mr_cnt;
+> +	unsigned int freq_cnt;
+> +	unsigned int *rank_size;
+> +	unsigned int *freq_step;
+> +	struct mr_info_t *mr_info_ptr;
+> +	void __iomem **dramc_chn_base_ao;
+> +	void __iomem **dramc_chn_base_nao;
+> +	void __iomem **ddrphy_chn_base_ao;
+> +	void *mr4_dev_ptr;
+> +	void *fmeter_dev_ptr;
+> +};
+> +
+> +enum DRAM_TYPE {
+> +	TYPE_NONE = 0,
+> +	TYPE_DDR1,
+> +	TYPE_LPDDR2,
+> +	TYPE_LPDDR3,
+> +	TYPE_PCDDR3,
+> +	TYPE_LPDDR4,
+> +	TYPE_LPDDR4X,
+> +	TYPE_LPDDR4P
+> +};
 
-Sounds good.
+This doesn't appear to be used.
 
-Paolo
+> +
+> +static const struct fmeter_dev_t fmeter_v0_mt6779_t = {
+> +	.crystal_freq = 52,
+> +	.shu_of = 0x500,
+> +	.shu_lv = { .offset = 0x00e4, .mask = 0x00000006, .shift = 1 },
+> +	.pll_id = { .offset = 0x0510, .mask = 0x80000000, .shift = 31 },
+> +	.pll_md = {
+> +		{ .offset = 0x0d84, .mask = 0x00000100, .shift = 8 },
+> +		{ .offset = 0x0d84, .mask = 0x00000100, .shift = 8 },
+> +	},
+> +	.sdmpcw = {
+> +		{ .offset = 0x0d9c, .mask = 0xffff0000, .shift = 16 },
+> +		{ .offset = 0x0d94, .mask = 0xffff0000, .shift = 16 },
+> +	},
+> +	.prediv = {
+> +		{ .offset = 0x0da8, .mask = 0x000c0000, .shift = 18 },
+> +		{ .offset = 0x0da0, .mask = 0x000c0000, .shift = 18 },
+> +	},
+> +	.posdiv = {
+> +		{ .offset = 0x0da8, .mask = 0x00000007, .shift = 0 },
+> +		{ .offset = 0x0da0, .mask = 0x00000007, .shift = 0 },
+> +	},
+> +	.ckdiv4 = {
+> +		{ .offset = 0x0d18, .mask = 0x08000000, .shift = 27 },
+> +		{ .offset = 0x0d18, .mask = 0x08000000, .shift = 27 },
+> +	},
+> +	.cldiv2 = {
+> +		{ .offset = 0x0c38, .mask = 0x80000000, .shift = 31 },
+> +		{ .offset = 0x0c38, .mask = 0x80000000, .shift = 31 },
+> +	},
+> +};
+> +
+> +static const struct mr4_dev_t mr4_v1_mt6779_t = {
+> +	.mr4_rg = { .offset = 0x0090, .mask = 0x0000ffff, .shift = 0 },
+> +};
+> +
+> +struct mtk_dramc_compatible {
+> +	const struct fmeter_dev_t *fmeter;
+> +	const struct mr4_dev_t *mr4;
+> +};
+> +
+> +static const struct mtk_dramc_compatible mt6779_compat = {
+> +	.fmeter = &fmeter_v0_mt6779_t,
+> +	.mr4 = &mr4_v1_mt6779_t,
+> +};
+> +
+> +static const struct of_device_id mtk_dramc_of_ids[] = {
+> +	{ .compatible = "mediatek,mt6779-dramc", .data = &mt6779_compat },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, mtk_dramc_of_ids);
+> +
+> +/*
+> + * mtk_dramc_get_drvdata_by_ids - get the dramc driver data
+> + *
+> + * Return the dramc driver data
+> + */
+> +static struct dramc_dev_t *mtk_dramc_get_drvdata_by_ids(void)
+> +{
+> +	struct device_node *np;
+> +	struct platform_device *dramc_pdev;
+> +
+> +	np = of_find_matching_node_and_match(NULL, mtk_dramc_of_ids, NULL);
+> +	dramc_pdev = of_find_device_by_node(np);
+> +
+> +	if (!dramc_pdev)
+> +		return NULL;
+> +
+> +	return (struct dramc_dev_t *)platform_get_drvdata(dramc_pdev);
+> +}
+> +
+> +static ssize_t mr_show(struct device_driver *driver, char *buf)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +	struct mr_info_t *mr_info_ptr;
+> +	unsigned int i;
+> +	ssize_t ret;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	mr_info_ptr = dramc_dev_ptr->mr_info_ptr;
+> +
+> +	for (ret = 0, i = 0; i < dramc_dev_ptr->mr_cnt; i++) {
+> +		ret += snprintf(buf + ret, PAGE_SIZE - ret,
+> +				"mr%d: 0x%x\n",
 
+The file name is 'mr' and what you read should be just the value.
+
+Also, sysfs files require documentation too.
+
+> +				mr_info_ptr[i].mr_index,
+> +				mr_info_ptr[i].mr_value);
+> +		if (ret >= PAGE_SIZE)
+> +			return strlen(buf);
+> +	}
+> +
+> +	return strlen(buf);
+> +}
+> +
+> +static ssize_t mr4_show(struct device_driver *driver, char *buf)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +	unsigned int i;
+> +	ssize_t ret;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	for (ret = 0, i = 0; i < dramc_dev_ptr->channel_cnt; i++) {
+> +		ret += snprintf(buf + ret, PAGE_SIZE - ret,
+> +				"mr4: ch%d 0x%x\n",
+
+Same issues here.
+
+> +				i, mtk_dramc_get_mr4(i));
+> +		if (ret >= PAGE_SIZE)
+> +			return strlen(buf);
+> +	}
+> +
+> +	return strlen(buf);
+> +}
+> +
+> +static ssize_t dram_data_rate_show(struct device_driver *driver, char *buf)
+> +{
+> +	return snprintf(buf, PAGE_SIZE, "DRAM data rate = %d\n",
+> +			mtk_dramc_get_data_rate());
+
+And here.
+
+> +}
+> +
+> +static DRIVER_ATTR_RO(mr);
+> +static DRIVER_ATTR_RO(mr4);
+> +static DRIVER_ATTR_RO(dram_data_rate);
+
+A driver attr would be global. Shouldn't these be device attr's which 
+are per instance.
+
+You should also be using attribute groups.
+
+> +
+> +static int dramc_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *dramc_node = pdev->dev.of_node;
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +	const struct mtk_dramc_compatible *dev_comp;
+> +	struct resource *res;
+> +	unsigned int i, size;
+> +	int ret;
+> +
+> +	pr_info("%s: module probe.\n", __func__);
+> +
+> +	dramc_dev_ptr = devm_kmalloc(&pdev->dev,
+
+Probably want to use devm_kzalloc instead.
+
+> +				     sizeof(struct dramc_dev_t),
+> +				     GFP_KERNEL);
+> +
+> +	dev_comp =
+> +		(struct mtk_dramc_compatible *)
+> +			of_device_get_match_data(&pdev->dev);
+> +
+> +	if (!dramc_dev_ptr)
+> +		return -ENOMEM;
+> +
+> +	ret = of_property_read_u32(dramc_node,
+> +				   "mediatek,dram-type",
+> +				   &dramc_dev_ptr->dram_type);
+> +	if (ret) {
+> +		pr_info("%s: get dram_type fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_read_u32(dramc_node,
+> +				   "mediatek,support-channel-cnt",
+> +				   &dramc_dev_ptr->support_channel_cnt);
+> +	if (ret) {
+> +		pr_info("%s: get support_channel_cnt fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_read_u32(dramc_node,
+> +				   "mediatek,channel-cnt",
+> +				   &dramc_dev_ptr->channel_cnt);
+> +	if (ret) {
+> +		pr_info("%s: get channel_cnt fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_read_u32(dramc_node,
+> +				   "mediatek,rank-cnt",
+> +				   &dramc_dev_ptr->rank_cnt);
+> +	if (ret) {
+> +		pr_info("%s: get rank_cnt fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_read_u32(dramc_node,
+> +				   "mediatek,mr-cnt",
+> +				   &dramc_dev_ptr->mr_cnt);
+> +	if (ret) {
+> +		pr_info("%s: get mr_cnt fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_read_u32(dramc_node,
+> +				   "mediatek,freq-cnt",
+> +				   &dramc_dev_ptr->freq_cnt);
+> +	if (ret) {
+> +		pr_info("%s: get freq_cnt fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dramc_dev_ptr->mr4_dev_ptr = (void *)dev_comp->mr4;
+> +
+> +	pr_info("%s: %s(%d),%s(%d),%s(%d),%s(%d),%s(%d),%s(%d),%s(%s)\n",
+> +		__func__,
+> +		"dram_type", dramc_dev_ptr->dram_type,
+> +		"support_channel_cnt", dramc_dev_ptr->support_channel_cnt,
+> +		"channel_cnt", dramc_dev_ptr->channel_cnt,
+> +		"rank_cnt", dramc_dev_ptr->rank_cnt,
+> +		"mr_cnt", dramc_dev_ptr->mr_cnt,
+> +		"freq_cnt", dramc_dev_ptr->freq_cnt,
+> +		"mr4", (dramc_dev_ptr->mr4_dev_ptr) ? "true" : "false");
+
+Why do you need this? It's already in DT which is readable from 
+userspace.
+
+> +
+> +	size = sizeof(unsigned int) * dramc_dev_ptr->rank_cnt;
+> +	dramc_dev_ptr->rank_size = devm_kmalloc(&pdev->dev, size, GFP_KERNEL);
+> +	if (!(dramc_dev_ptr->rank_size))
+> +		return -ENOMEM;
+> +	ret = of_property_read_u32_array(dramc_node,
+> +					 "mediatek,rank-size",
+> +					 dramc_dev_ptr->rank_size,
+> +					 dramc_dev_ptr->rank_cnt);
+> +	if (ret) {
+> +		pr_info("%s: get rank_size fail\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (dramc_dev_ptr->mr_cnt) {
+> +		size = sizeof(struct mr_info_t) * dramc_dev_ptr->mr_cnt;
+> +		dramc_dev_ptr->mr_info_ptr = devm_kmalloc(&pdev->dev,
+> +							  size,
+> +							  GFP_KERNEL);
+> +		if (!(dramc_dev_ptr->mr_info_ptr))
+> +			return -ENOMEM;
+> +		ret =
+> +		    of_property_read_u32_array(dramc_node,
+> +					       "mediatek,mr",
+> +					       (unsigned int *)dramc_dev_ptr->mr_info_ptr,
+> +					       size >> 2);
+> +		if (ret) {
+> +			pr_info("%s: get mr_info fail\n", __func__);
+> +			return -EINVAL;
+> +		}
+> +		for (i = 0; i < dramc_dev_ptr->mr_cnt; i++)
+> +			pr_info("%s: mr%d(%x)\n", __func__,
+> +				dramc_dev_ptr->mr_info_ptr[i].mr_index,
+> +				dramc_dev_ptr->mr_info_ptr[i].mr_value);
+> +	}
+> +
+> +	if (dramc_dev_ptr->freq_cnt) {
+> +		size = sizeof(unsigned int) * dramc_dev_ptr->freq_cnt * 2;
+> +		dramc_dev_ptr->freq_step =
+> +			devm_kmalloc(&pdev->dev, size, GFP_KERNEL);
+> +		if (!(dramc_dev_ptr->freq_step))
+> +			return -ENOMEM;
+> +		ret = of_property_read_u32_array(dramc_node,
+> +						 "mediatek,freq-step",
+> +						 dramc_dev_ptr->freq_step,
+> +						 dramc_dev_ptr->freq_cnt * 2);
+> +		if (ret) {
+> +			pr_info("%s: get freq_step fail\n", __func__);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	size = sizeof(phys_addr_t) * dramc_dev_ptr->support_channel_cnt;
+> +	dramc_dev_ptr->dramc_chn_base_ao = devm_kmalloc(&pdev->dev,
+> +							size, GFP_KERNEL);
+> +	if (!(dramc_dev_ptr->dramc_chn_base_ao))
+> +		return -ENOMEM;
+> +	dramc_dev_ptr->dramc_chn_base_nao = devm_kmalloc(&pdev->dev,
+> +							 size, GFP_KERNEL);
+> +	if (!(dramc_dev_ptr->dramc_chn_base_nao))
+> +		return -ENOMEM;
+> +	dramc_dev_ptr->ddrphy_chn_base_ao = devm_kmalloc(&pdev->dev,
+> +							 size, GFP_KERNEL);
+> +	if (!(dramc_dev_ptr->ddrphy_chn_base_ao))
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < dramc_dev_ptr->support_channel_cnt; i++) {
+> +		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+> +		dramc_dev_ptr->dramc_chn_base_ao[i] =
+> +			devm_ioremap_resource(&pdev->dev, res);
+> +		if (IS_ERR(dramc_dev_ptr->dramc_chn_base_ao[i])) {
+> +			pr_info("%s: unable to map ch%d DRAMC AO base\n",
+> +				__func__, i);
+> +			return -EINVAL;
+> +		}
+> +
+> +		res = platform_get_resource(pdev, IORESOURCE_MEM,
+> +					    i + dramc_dev_ptr->support_channel_cnt);
+> +		dramc_dev_ptr->dramc_chn_base_nao[i] =
+> +			devm_ioremap_resource(&pdev->dev, res);
+> +		if (IS_ERR(dramc_dev_ptr->dramc_chn_base_nao[i])) {
+> +			pr_info("%s: unable to map ch%d DRAMC NAO base\n",
+> +				__func__, i);
+> +			return -EINVAL;
+> +		}
+> +
+> +		res = platform_get_resource(pdev, IORESOURCE_MEM,
+> +					    i + dramc_dev_ptr->support_channel_cnt * 2);
+> +		dramc_dev_ptr->ddrphy_chn_base_ao[i] =
+> +			devm_ioremap_resource(&pdev->dev, res);
+> +		if (IS_ERR(dramc_dev_ptr->ddrphy_chn_base_ao[i])) {
+> +			pr_info("%s: unable to map ch%d DDRPHY AO base\n",
+> +				__func__, i);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	dramc_dev_ptr->fmeter_dev_ptr = (void *)dev_comp->fmeter;
+> +
+> +	ret = driver_create_file(pdev->dev.driver,
+> +				 &driver_attr_dram_data_rate);
+> +	if (ret) {
+> +		pr_info("%s: fail to create dram_data_rate sysfs\n", __func__);
+> +		return ret;
+> +	}
+> +
+> +	ret = driver_create_file(pdev->dev.driver,
+> +				 &driver_attr_mr);
+> +	if (ret) {
+> +		pr_info("%s: fail to create mr sysfs\n", __func__);
+> +		return ret;
+> +	}
+> +
+> +	if (dramc_dev_ptr->mr4_dev_ptr) {
+> +		ret = driver_create_file(pdev->dev.driver,
+> +					 &driver_attr_mr4);
+> +		if (ret) {
+> +			pr_info("%s: fail to create mr4 sysfs\n", __func__);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	platform_set_drvdata(pdev, dramc_dev_ptr);
+> +	pr_info("%s: DRAM data type = %d\n", __func__,
+> +		mtk_dramc_get_ddr_type());
+> +
+> +	pr_info("%s: DRAM data clock rate = %d\n", __func__,
+> +		mtk_dramc_get_data_rate());
+> +
+> +	return ret;
+> +}
+> +
+> +/*
+> + * mtk_dramc_get_steps_freq - get the data clock rate of target DVFS step
+> + * @step: the step index of DVFS
+> + *
+> + * Return the DRAM spec data clock rate (MHz)
+> + */
+> +int mtk_dramc_get_steps_freq(unsigned int step)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return -ENODEV;
+> +
+> +	if (step < dramc_dev_ptr->freq_cnt)
+> +		return dramc_dev_ptr->freq_step[step * 2 + 1];
+> +
+> +	return -EINVAL;
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_steps_freq);
+> +
+> +/*
+> + * decode_freq - decode the spec data clock rate
+> + * @vco_freq: real data clock rate
+> + *
+> + * Return the DRAM spec data clock rate (MHz)
+> + */
+> +static unsigned int decode_freq(unsigned int vco_freq)
+> +{
+> +	int i;
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	for (i = 0; i < dramc_dev_ptr->freq_cnt * 2; i += 2)
+> +		if (vco_freq == dramc_dev_ptr->freq_step[i])
+> +			return dramc_dev_ptr->freq_step[i + 1];
+> +
+> +	return vco_freq;
+> +}
+> +
+> +static unsigned int fmeter_v0(struct dramc_dev_t *dramc_dev_ptr)
+> +{
+> +	struct fmeter_dev_t *fmeter_dev_ptr =
+> +		(struct fmeter_dev_t *)dramc_dev_ptr->fmeter_dev_ptr;
+> +	unsigned int shu_lv_val;
+> +	unsigned int pll_id_val;
+> +	unsigned int pll_md_val;
+> +	unsigned int sdmpcw_val;
+> +	unsigned int prediv_val;
+> +	unsigned int posdiv_val;
+> +	unsigned int ckdiv4_val;
+> +	unsigned int cldiv2_val;
+> +	unsigned int offset;
+> +	unsigned int vco_freq;
+> +
+> +	shu_lv_val = (readl(dramc_dev_ptr->dramc_chn_base_ao[0] +
+> +		fmeter_dev_ptr->shu_lv.offset) &
+> +		fmeter_dev_ptr->shu_lv.mask) >>
+> +		fmeter_dev_ptr->shu_lv.shift;
+> +
+> +	pll_id_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] +
+> +		fmeter_dev_ptr->pll_id.offset) &
+> +		fmeter_dev_ptr->pll_id.mask) >>
+> +		fmeter_dev_ptr->pll_id.shift;
+> +
+> +	offset = fmeter_dev_ptr->pll_md[pll_id_val].offset +
+> +		fmeter_dev_ptr->shu_of * shu_lv_val;
+> +	pll_md_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] + offset) &
+> +		fmeter_dev_ptr->pll_md[pll_id_val].mask) >>
+> +		fmeter_dev_ptr->pll_md[pll_id_val].shift;
+> +
+> +	offset = fmeter_dev_ptr->sdmpcw[pll_id_val].offset +
+> +		fmeter_dev_ptr->shu_of * shu_lv_val;
+> +	sdmpcw_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] + offset) &
+> +		fmeter_dev_ptr->sdmpcw[pll_id_val].mask) >>
+> +		fmeter_dev_ptr->sdmpcw[pll_id_val].shift;
+> +
+> +	offset = fmeter_dev_ptr->prediv[pll_id_val].offset +
+> +		fmeter_dev_ptr->shu_of * shu_lv_val;
+> +	prediv_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] + offset) &
+> +		fmeter_dev_ptr->prediv[pll_id_val].mask) >>
+> +		fmeter_dev_ptr->prediv[pll_id_val].shift;
+> +
+> +	offset = fmeter_dev_ptr->posdiv[pll_id_val].offset +
+> +		fmeter_dev_ptr->shu_of * shu_lv_val;
+> +	posdiv_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] + offset) &
+> +		fmeter_dev_ptr->posdiv[pll_id_val].mask) >>
+> +		fmeter_dev_ptr->posdiv[pll_id_val].shift;
+> +
+> +	offset = fmeter_dev_ptr->ckdiv4[pll_id_val].offset +
+> +		fmeter_dev_ptr->shu_of * shu_lv_val;
+> +	ckdiv4_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] + offset) &
+> +		fmeter_dev_ptr->ckdiv4[pll_id_val].mask) >>
+> +		fmeter_dev_ptr->ckdiv4[pll_id_val].shift;
+> +
+> +	offset = fmeter_dev_ptr->cldiv2[pll_id_val].offset +
+> +		fmeter_dev_ptr->shu_of * shu_lv_val;
+> +	cldiv2_val = (readl(dramc_dev_ptr->ddrphy_chn_base_ao[0] + offset) &
+> +		fmeter_dev_ptr->cldiv2[pll_id_val].mask) >>
+> +		fmeter_dev_ptr->cldiv2[pll_id_val].shift;
+> +
+> +	vco_freq = ((fmeter_dev_ptr->crystal_freq >> prediv_val) *
+> +		(sdmpcw_val >> 8)) >>
+> +		posdiv_val >> ckdiv4_val >> pll_md_val >> cldiv2_val;
+> +
+> +	return decode_freq(vco_freq);
+> +}
+> +
+> +/*
+> + * mtk_dramc_get_data_rate - calculate DRAM data rate
+> + *
+> + * Return DRAM data rate (MB/s)
+> + */
+> +unsigned int mtk_dramc_get_data_rate(void)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +	struct fmeter_dev_t *fmeter_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	fmeter_dev_ptr = (struct fmeter_dev_t *)dramc_dev_ptr->fmeter_dev_ptr;
+> +	if (!fmeter_dev_ptr)
+> +		return 0;
+> +
+> +	return fmeter_v0(dramc_dev_ptr);
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_data_rate);
+> +
+> +static unsigned int mr4_v1(struct dramc_dev_t *dramc_dev_ptr, unsigned int ch)
+> +{
+> +	struct mr4_dev_t *mr4_dev_ptr =
+> +		(struct mr4_dev_t *)dramc_dev_ptr->mr4_dev_ptr;
+> +
+> +	return (readl(dramc_dev_ptr->dramc_chn_base_nao[ch] +
+> +		mr4_dev_ptr->mr4_rg.offset) & mr4_dev_ptr->mr4_rg.mask) >>
+> +		mr4_dev_ptr->mr4_rg.shift;
+> +}
+> +
+> +/*
+> + * mtk_dramc_get_mr4 - get the DRAM MR4 value of specific DRAM channel
+> + * @ch:	the channel index
+> + *
+> + * Return the MR4 value
+> + */
+> +unsigned int mtk_dramc_get_mr4(unsigned int ch)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +	struct mr4_dev_t *mr4_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	mr4_dev_ptr = (struct mr4_dev_t *)dramc_dev_ptr->mr4_dev_ptr;
+> +	if (!mr4_dev_ptr)
+> +		return 0;
+> +
+> +	if (ch >= dramc_dev_ptr->channel_cnt)
+> +		return 0;
+> +
+> +	return mr4_v1(dramc_dev_ptr, ch);
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_mr4);
+> +
+> +/*
+> + * mtk_dramc_get_ddr_type - get DRAM type
+> + *
+> + * Return the DRAM type
+> + */
+> +unsigned int mtk_dramc_get_ddr_type(void)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	return dramc_dev_ptr->dram_type;
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_ddr_type);
+> +
+> +/*
+> + * mtk_dramc_get_channel_count - get DRAM channel count
+> + *
+> + * Return the DRAM channel count
+> + */
+> +unsigned int mtk_dramc_get_channel_count(void)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	return dramc_dev_ptr->channel_cnt;
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_channel_count);
+> +
+> +/*
+> + * mtk_dramc_get_rank_count - get DRAM rank count
+> + *
+> + * Return the DRAM rank count
+> + */
+> +unsigned int mtk_dramc_get_rank_count(void)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	return dramc_dev_ptr->rank_cnt;
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_rank_count);
+> +
+> +/*
+> + * mtk_dramc_get_rank_size - get size of DRAM rank
+> + *
+> + * Return the size of specific DRAM rank
+> + */
+> +unsigned int mtk_dramc_get_rank_size(unsigned int rank)
+> +{
+> +	struct dramc_dev_t *dramc_dev_ptr;
+> +
+> +	dramc_dev_ptr = mtk_dramc_get_drvdata_by_ids();
+> +
+> +	if (!dramc_dev_ptr)
+> +		return 0;
+> +
+> +	if (rank < dramc_dev_ptr->rank_cnt)
+> +		return dramc_dev_ptr->rank_size[rank];
+> +	else
+> +		return 0;
+> +}
+> +EXPORT_SYMBOL(mtk_dramc_get_rank_size);
+> +
+> +static int dramc_remove(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver dramc_drv = {
+> +	.probe = dramc_probe,
+> +	.remove = dramc_remove,
+> +	.driver = {
+> +		.name = DRAMC_DRV_NAME,
+> +		.owner = THIS_MODULE,
+> +		.of_match_table = mtk_dramc_of_ids,
+> +	},
+> +};
+> +
+> +static int __init dramc_drv_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = platform_driver_register(&dramc_drv);
+> +	if (ret) {
+> +		pr_info("%s: init fail, ret 0x%x\n", __func__, ret);
+> +		return ret;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void __exit dramc_drv_exit(void)
+> +{
+> +	platform_driver_unregister(&dramc_drv);
+> +}
+> +
+> +module_init(dramc_drv_init);
+> +module_exit(dramc_drv_exit);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DESCRIPTION("MediaTek DRAMC Driver");
+> +MODULE_AUTHOR("Po-Kai Chi <pk.chi@mediatek.com>");
+> diff --git a/include/memory/mediatek/dramc.h b/include/memory/mediatek/dramc.h
+> new file mode 100644
+> index 0000000..c8d200f
+> --- /dev/null
+> +++ b/include/memory/mediatek/dramc.h
+> @@ -0,0 +1,18 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
+> +
+> +#ifndef __DRAMC_H__
+> +#define __DRAMC_H__
+> +
+> +int mtk_dramc_get_steps_freq(unsigned int step);
+> +unsigned int mtk_dramc_get_ddr_type(void);
+> +unsigned int mtk_dramc_get_data_rate(void);
+> +unsigned int mtk_dramc_get_mr4(unsigned int ch);
+> +unsigned int mtk_dramc_get_channel_count(void);
+> +unsigned int mtk_dramc_get_rank_count(void);
+> +unsigned int mtk_dramc_get_rank_size(unsigned int rk);
+> +
+> +#endif /* __DRAMC_H__ */
+> +
+> -- 
+> 1.7.9.5
+> 
