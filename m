@@ -2,190 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A435C365309
+	by mail.lfdr.de (Postfix) with ESMTP id F00AE36530A
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhDTHRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230424AbhDTHRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230405AbhDTHRC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Apr 2021 03:17:02 -0400
-Received: from mga14.intel.com ([192.55.52.115]:19038 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhDTHRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:17:01 -0400
-IronPort-SDR: EbWkSYwj7Hl00wX+gSw7vRof7/gwVzF6PcjDM2JENEl15Vk8iPaarxCNmquZlOQDtKS+dZq0C9
- XrvEBfkbaEeg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195014614"
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="195014614"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 00:16:30 -0700
-IronPort-SDR: jnyeXfQYB5btCoAnbM6CI19DdZC2uYOLHK9R9+F3XDbp0EzOlso/Ob09L42UKvk/c0wPike/1I
- Q4R1njQE8kdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="420298347"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Apr 2021 00:16:26 -0700
-Date:   Tue, 20 Apr 2021 15:16:25 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v4 03/13] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <20210420071625.GB48282@shbuild999.sh.intel.com>
-References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
- <1615952410-36895-4-git-send-email-feng.tang@intel.com>
- <YHblLevoUZ6+AvVZ@dhcp22.suse.cz>
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6618C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:16:31 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 82so41861392yby.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Kxjx9EglJu/i2yXAJiG5a0dDRD+vWw/juQXHHGbooHc=;
+        b=aOyaRYrHBjvKMWpcUUnEoGJToX6uhACDpMASNNl03JduIT54PS115MyFMjhIAnklnr
+         Ai4tajWCJZar/XqUavrP1tqas/224WwbT0RksrCuSdOSBl9KdWWlD9vyPnvvZlyIJeU1
+         nufKQCX3rYQMK/h2WGSh+QqbuQoVwjwM/8NOAI1y6luLncsbXs3BPXxFHMQQ22LhpsqD
+         jyU7dQV+5MuXFBITwetZ1KHZ9L94Zw18Zq4aO6XutDeWXUVLK0/mrPORuvmrkBSdL4Ez
+         qSrySCeK/F/Fj3oxxupMwVzwlqlPwRGHHXMT1Ov9eDZW3MQBneyYPLKsq5S9Kqs/BPN1
+         tvRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Kxjx9EglJu/i2yXAJiG5a0dDRD+vWw/juQXHHGbooHc=;
+        b=C1C8SDT4e26AqIxq8zY1gmWdjNMeyxW6Lzc+FqLRXCToMVGR266CoZsd2k82PwOQN4
+         ut3WxWddhanXqpVglJz3VS2kiGzEc7NzNwahtq6NlBHcTryBQ2YHL90iyYWr6K1YNnO0
+         d/7+tsfgWFdHki5dnJWre7UNok482d+dXCFXZf4FRTwpv4kV7vAss7E7LXVBFDKIeTda
+         Evh/70+Pe6w8SzDlUVWMOToRC2M+vwOwoLc3XkdTegERBYTsexutW6uWykKV38jOT8RR
+         C8UfES1RhftXh8gh0qUlVT9SPq0f3gqbuZeG5nSV0OpUApjtuMbA0DdN8is562Gi57h+
+         NTew==
+X-Gm-Message-State: AOAM5316lb1Z9nFa7V7Eo/DrSAGkr1FsebdrOaEiOmT42dOlwLkdywo3
+        84ViC9bh1YJsWGPElD2wFDt2Q/Qq6zMCQt6lGiY=
+X-Google-Smtp-Source: ABdhPJyLv/k1bRRW9qCLsZr8C6gYlbzZaR+B2gqD+YugM1EZ6SPTkBxxVLc3MzsJTo0MxX0ZF/dBu0V1LjB07geDJF0=
+X-Received: by 2002:a25:81c9:: with SMTP id n9mr8733118ybm.72.1618902991124;
+ Tue, 20 Apr 2021 00:16:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHblLevoUZ6+AvVZ@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Received: by 2002:a05:7010:393:b029:a9:feb8:d1c8 with HTTP; Tue, 20 Apr 2021
+ 00:16:30 -0700 (PDT)
+Reply-To: nwillsolicitor@aol.com
+From:   BARRISTER MARK WILLIAMS <mwillsolicitor@gmail.com>
+Date:   Mon, 19 Apr 2021 20:16:30 -1100
+Message-ID: <CAJNkA6jJCcqbn3Jbgpyi=QfqsJOwg2B5-8xiVtf8FTbRcgP8Fw@mail.gmail.com>
+Subject: CALL ME NOW OK
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 02:50:53PM +0200, Michal Hocko wrote:
-> On Wed 17-03-21 11:40:00, Feng Tang wrote:
-> > From: Dave Hansen <dave.hansen@linux.intel.com>
-> > 
-> > MPOL_PREFERRED honors only a single node set in the nodemask.  Add the
-> > bare define for a new mode which will allow more than one.
-> > 
-> > The patch does all the plumbing without actually adding the new policy
-> > type.
-> > 
-> > v2:
-> > Plumb most MPOL_PREFERRED_MANY without exposing UAPI (Ben)
-> > Fixes for checkpatch (Ben)
-> > 
-> > Link: https://lore.kernel.org/r/20200630212517.308045-4-ben.widawsky@intel.com
-> > Co-developed-by: Ben Widawsky <ben.widawsky@intel.com>
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > ---
-> >  mm/mempolicy.c | 46 ++++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 40 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > index 2b1e0e4..1228d8e 100644
-> > --- a/mm/mempolicy.c
-> > +++ b/mm/mempolicy.c
-> > @@ -31,6 +31,9 @@
-> >   *                but useful to set in a VMA when you have a non default
-> >   *                process policy.
-> >   *
-> > + * preferred many Try a set of nodes first before normal fallback. This is
-> > + *                similar to preferred without the special case.
-> > + *
-> >   * default        Allocate on the local node first, or when on a VMA
-> >   *                use the process policy. This is what Linux always did
-> >   *		  in a NUMA aware kernel and still does by, ahem, default.
-> > @@ -105,6 +108,8 @@
-> >  
-> >  #include "internal.h"
-> >  
-> > +#define MPOL_PREFERRED_MANY MPOL_MAX
-> > +
-> >  /* Internal flags */
-> >  #define MPOL_MF_DISCONTIG_OK (MPOL_MF_INTERNAL << 0)	/* Skip checks for continuous vmas */
-> >  #define MPOL_MF_INVERT (MPOL_MF_INTERNAL << 1)		/* Invert check for nodemask */
-> > @@ -175,7 +180,7 @@ struct mempolicy *get_task_policy(struct task_struct *p)
-> >  static const struct mempolicy_operations {
-> >  	int (*create)(struct mempolicy *pol, const nodemask_t *nodes);
-> >  	void (*rebind)(struct mempolicy *pol, const nodemask_t *nodes);
-> > -} mpol_ops[MPOL_MAX];
-> > +} mpol_ops[MPOL_MAX + 1];
-> >  
-> >  static inline int mpol_store_user_nodemask(const struct mempolicy *pol)
-> >  {
-> > @@ -415,7 +420,7 @@ void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new)
-> >  	mmap_write_unlock(mm);
-> >  }
-> >  
-> > -static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
-> > +static const struct mempolicy_operations mpol_ops[MPOL_MAX + 1] = {
-> >  	[MPOL_DEFAULT] = {
-> >  		.rebind = mpol_rebind_default,
-> >  	},
-> > @@ -432,6 +437,10 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
-> >  		.rebind = mpol_rebind_nodemask,
-> >  	},
-> >  	/* [MPOL_LOCAL] - see mpol_new() */
-> > +	[MPOL_PREFERRED_MANY] = {
-> > +		.create = NULL,
-> > +		.rebind = NULL,
-> > +	},
-> >  };
-> 
-> I do get that you wanted to keep MPOL_PREFERRED_MANY unaccessible for
-> the userspace but wouldn't it be much easier to simply check in two
-> syscall entries rather than playing thise MAX+1 games which make the
-> review more complicated than necessary?
+ATTN / DEAREST ONE
 
-I will check this way, and currently the user input paramter
-handling are quite complex.
+MY NAME IS BARRISTER MARK WILLIAMS FROM BENIN REPUBLIC, A LEGAL
+ADVISER TO LATE KING, MAXWELL  OONIIFE   A TRADITIONAL  RULER AND ROAD
+CONTRACTOR  WHO DIED EARLIER THIS YEAR AFTER A BRIEF ILLNESS.  HE LOST
+HIS WIFE TO A PLANE CRASH FEW YEARS A GO, SO HE WAS SURVIVED BY HIS
+ONLY CHILD VICTOR OONIIFE
+ BEFORE THE DEATH OF MY CLIENT FEBRUARY THIS YEAR, HE REVEALED TO ME
+THAT HE  LEFT THE TOTAL SUM OF US $45.5 MILLION WITH A PRIVATE
+SECURITY COMPANY FOR SAFE KEEPING .AND ADVICE ME TO  MAKE CLAIMS OF
+THE MONEY AND HANDOVER THE AMOUNT TO HIS ONLY CHILD  .VICTOR OONIIFE
+RIGHT NOW VICTOR HAVE DECIDED TO RELOCATE WITH THE  MONEY TO YOUR
+COUNTRY  DUE TO THE DANGEROUS SITUATIONS AROUND HIM  HERE AND YOUR
+URGENT ,SINCERE ASSISTANCE IS NEEDED TO HELP HIM RECEIVE THE MONEY IN
+YOUR COUNTRY FOR INVESTMENT AND ALSO HELP HIM  CONTINUE WITH HIS
+STUDIES UNDER YOUR CARE.  HE HAS AGREED TO GIVE YOU 10% OF THE TOTAL
+MONEY AS YOUR PERCENTAGE FOR HELPING HIM
+ PLEASE UPON THE RECEIPT OF THIS EMAIL, DON=E2=80=99T HESITATE TO FORWARD T=
+O
+ME YOUR INFORMATION'S SUCH AS:
+1) YOUR FULL NAMES AND ADDRESS
+2) YOUR DIRECT TELEPHONE NUMBER
+3) YOUR OCCUPATIONS
+4) COPY OF YOUR ID CARD OR DRIVERS LICENSE
+ONCE I RECEIVED YOUR INFORMATION AS STATED ABOVE, I WILL CONCLUDE ALL
+ARRANGEMENT WITH THE CONCERNED SECURITY COMPANY FOR DELIVERY OF THE
+TRUNK SEALED BOX CONTAINING THE $45.5MILLION TO YOUR DOOR STEP IN YOUR
+COUNTRY THROUGH THEIR DIPLOMATIC MEANS OF SHIPMENT. IMMEDIATELY AFTER
+SENDING YOUR INFORMATION'S TO ME, MAKE SURE YOU CALL ME ON MY DIRECT
+TELEPHONE NUMBER + 229 91 26 95 28 TO KEEP ME INFORM.  I AM WAITING TO
+HEAR FROM YOU
 
-Also the sanity check in kernel_mbind() and kernel_set_mempolicy()
-are almost identical, which can be unified.
-
-> >  
-> >  static int migrate_page_add(struct page *page, struct list_head *pagelist,
-> > @@ -924,6 +933,9 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
-> >  	case MPOL_INTERLEAVE:
-> >  		*nodes = p->v.nodes;
-> >  		break;
-> > +	case MPOL_PREFERRED_MANY:
-> > +		*nodes = p->v.preferred_nodes;
-> > +		break;
-> >  	case MPOL_PREFERRED:
-> >  		if (!(p->flags & MPOL_F_LOCAL))
-> >  			*nodes = p->v.preferred_nodes;
-> 
-> Why those two do a slightly different thing? Is this because unlike
-> MPOL_PREFERRED it can never have MPOL_F_LOCAL cleared? If that is the
-> case I would still stick the two together and use the same code for
-> both to make the code easier to follow. Now that both use the same
-> nodemask it should really be just about syscall inputs sanitization and
-> to keep the original behavior for MPOL_PREFERRED.
-> 
-> [...]
-
-Our intention is to make MPOL_PREFERRED_MANY be similar to
-MPOL_PREFERRED, except it perfers multiple nodes. So will try to
-achieve this in following version.
-
-Also for MPOL_LOCAL and MPOL_PREFERRED, current code logic is
-turning 'MPOL_LOCAL' to 'MPOL_PREFERRED' with MPOL_F_LOCAL set.
-I don't understand why not use the other way around, that
-turning MPOL_PREFERRED with empty nodemask to MPOL_LOCAL, which
-looks more logical.
-
-Thanks,
-Feng
-
-> > @@ -2072,6 +2087,9 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
-> >  	task_lock(current);
-> >  	mempolicy = current->mempolicy;
-> >  	switch (mempolicy->mode) {
-> > +	case MPOL_PREFERRED_MANY:
-> > +		*mask = mempolicy->v.preferred_nodes;
-> > +		break;
-> >  	case MPOL_PREFERRED:
-> >  		if (mempolicy->flags & MPOL_F_LOCAL)
-> >  			nid = numa_node_id();
-> 
-> Same here
+SINCERELY
+BARRISTER MARK WILLIAMS ESQ
+MARK WILLIAMS CHAMBERS
+RUE DE COMMERCE CARRE 30040 JERICHO COTONOU BENIN
+TELFAX: +229 21 21 00 3 / DIRECT MOBILE: +229 91 26 95 28
