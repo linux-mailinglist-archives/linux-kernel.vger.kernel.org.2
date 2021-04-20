@@ -2,187 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619303652AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA583652B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhDTG5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:57:50 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12313 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhDTG5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:57:49 -0400
-IronPort-SDR: Cd1ScbYY4CO+TxV9mYpSnVaL59odkx6ea68ZOVh64v4rW3NzuZ4LN8z2j1zqS0A7WbpP/mcE6c
- xHR0pcuW0zsA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195569210"
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="gz'50?scan'50,208,50";a="195569210"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 23:57:18 -0700
-IronPort-SDR: AxYnYwz4kbgGat0JIYIWMGO11LEBBxT/7+VAnQDSUhepwDAkjFNLTlmE5R0BLc/+ruWmSzTUpX
- tNu9CHRx5Jhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="gz'50?scan'50,208,50";a="383975930"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 19 Apr 2021 23:57:16 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lYkJw-0002D0-7b; Tue, 20 Apr 2021 06:57:16 +0000
-Date:   Tue, 20 Apr 2021 14:56:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: kernel/rcu/tasks.h:1031:6: warning: no previous prototype for
- 'show_rcu_tasks_gp_kthreads'
-Message-ID: <202104201428.oLpgo4lI-lkp@intel.com>
+        id S230244AbhDTHBY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Apr 2021 03:01:24 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:49460 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhDTHBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:01:21 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13K70f862022777, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13K70f862022777
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 20 Apr 2021 15:00:41 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 20 Apr 2021 15:00:40 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 20 Apr 2021 15:00:39 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74]) by
+ RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74%5]) with mapi id
+ 15.01.2106.013; Tue, 20 Apr 2021 15:00:39 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH net-next 4/6] r8152: support new chips
+Thread-Topic: [PATCH net-next 4/6] r8152: support new chips
+Thread-Index: AQHXMpdaTtc3dnJiRE+pHF9mj571x6q3Ka6AgAXMWPA=
+Date:   Tue, 20 Apr 2021 07:00:39 +0000
+Message-ID: <0de9842749db4718b8f45a0f2fff7967@realtek.com>
+References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
+        <1394712342-15778-354-Taiwan-albertk@realtek.com>
+ <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.203]
+x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/4/19_=3F=3F_11:43:00?=
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/20/2021 02:53:45
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163215 [Apr 19 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/20/2021 02:57:00
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?us-ascii?Q?Clean,_bases:_2021/4/20_=3F=3F_04:46:00?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/20/2021 06:45:29
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163221 [Apr 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/20/2021 06:47:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jakub Kicinski <kuba@kernel.org>
+> Sent: Saturday, April 17, 2021 5:50 AM
+> > +	switch (tp->version) {
+> > +	case RTL_VER_10:
+> > +		data = ocp_reg_read(tp, 0xad40);
+> > +		data &= ~0x3ff;
+> > +		data |= BIT(7) | BIT(2);
+> > +		ocp_reg_write(tp, 0xad40, data);
+> > +
+> > +		data = ocp_reg_read(tp, 0xad4e);
+> > +		data |= BIT(4);
+> > +		ocp_reg_write(tp, 0xad4e, data);
+> > +		data = ocp_reg_read(tp, 0xad16);
+> > +		data &= ~0x3ff;
+> > +		data |= 0x6;
+> > +		ocp_reg_write(tp, 0xad16, data);
+> > +		data = ocp_reg_read(tp, 0xad32);
+> > +		data &= ~0x3f;
+> > +		data |= 6;
+> > +		ocp_reg_write(tp, 0xad32, data);
+> > +		data = ocp_reg_read(tp, 0xac08);
+> > +		data &= ~(BIT(12) | BIT(8));
+> > +		ocp_reg_write(tp, 0xac08, data);
+> > +		data = ocp_reg_read(tp, 0xac8a);
+> > +		data |= BIT(12) | BIT(13) | BIT(14);
+> > +		data &= ~BIT(15);
+> > +		ocp_reg_write(tp, 0xac8a, data);
+> > +		data = ocp_reg_read(tp, 0xad18);
+> > +		data |= BIT(10);
+> > +		ocp_reg_write(tp, 0xad18, data);
+> > +		data = ocp_reg_read(tp, 0xad1a);
+> > +		data |= 0x3ff;
+> > +		ocp_reg_write(tp, 0xad1a, data);
+> > +		data = ocp_reg_read(tp, 0xad1c);
+> > +		data |= 0x3ff;
+> > +		ocp_reg_write(tp, 0xad1c, data);
+> > +
+> > +		data = sram_read(tp, 0x80ea);
+> > +		data &= ~0xff00;
+> > +		data |= 0xc400;
+> > +		sram_write(tp, 0x80ea, data);
+> > +		data = sram_read(tp, 0x80eb);
+> > +		data &= ~0x0700;
+> > +		data |= 0x0300;
+> > +		sram_write(tp, 0x80eb, data);
+> > +		data = sram_read(tp, 0x80f8);
+> > +		data &= ~0xff00;
+> > +		data |= 0x1c00;
+> > +		sram_write(tp, 0x80f8, data);
+> > +		data = sram_read(tp, 0x80f1);
+> > +		data &= ~0xff00;
+> > +		data |= 0x3000;
+> > +		sram_write(tp, 0x80f1, data);
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+These are the parameters of PHY.
+Some are used for speed down about power saving.
+And some are used for performance.
 
-Hi Paul,
+> > +	switch (tp->version) {
+> > +	case RTL_VER_12:
+> > +		ocp_reg_write(tp, 0xbf86, 0x9000);
+> > +		data = ocp_reg_read(tp, 0xc402);
+> > +		data |= BIT(10);
+> > +		ocp_reg_write(tp, 0xc402, data);
+> > +		data &= ~BIT(10);
+> > +		ocp_reg_write(tp, 0xc402, data);
+> > +		ocp_reg_write(tp, 0xbd86, 0x1010);
+> > +		ocp_reg_write(tp, 0xbd88, 0x1010);
+> > +		data = ocp_reg_read(tp, 0xbd4e);
+> > +		data &= ~(BIT(10) | BIT(11));
+> > +		data |= BIT(11);
+> > +		ocp_reg_write(tp, 0xbd4e, data);
+> > +		data = ocp_reg_read(tp, 0xbf46);
+> > +		data &= ~0xf00;
+> > +		data |= 0x700;
+> > +		ocp_reg_write(tp, 0xbf46, data);
 
-FYI, the error/warning still remains.
+These are used to adjust the clock of GPHY.
+It influences the linking.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7af08140979a6e7e12b78c93b8625c8d25b084e2
-commit: e21408ceec2de5be418efa39feb1e2c00f824a72 rcu-tasks: Add RCU tasks to rcutorture writer stall output
-date:   12 months ago
-config: h8300-allnoconfig (attached as .config)
-compiler: h8300-linux-gcc (GCC) 9.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e21408ceec2de5be418efa39feb1e2c00f824a72
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout e21408ceec2de5be418efa39feb1e2c00f824a72
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=h8300 
+> > +	data = r8153_phy_status(tp, 0);
+> > +	switch (data) {
+> > +	case PHY_STAT_EXT_INIT:
+> > +		rtl8152_apply_firmware(tp, true);
+> > +
+> > +		data = ocp_reg_read(tp, 0xa466);
+> > +		data &= ~BIT(0);
+> > +		ocp_reg_write(tp, 0xa466, data);
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+These let the PHY exit PHY_STAT_EXT_INIT state.
 
-All warnings (new ones prefixed by >>):
+> What are all these magic constants? :(
 
-   In file included from kernel/rcu/update.c:587:
->> kernel/rcu/tasks.h:1031:6: warning: no previous prototype for 'show_rcu_tasks_gp_kthreads' [-Wmissing-prototypes]
-    1031 | void show_rcu_tasks_gp_kthreads(void) {}
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+I think it is difficult for me to make all magic values meaningful.
+The PHY setting is very complex. Only PHY engineers know
+what are the settings mean.
 
+> > @@ -6878,7 +8942,11 @@ static int rtl8152_probe(struct usb_interface
+> *intf,
+> >  	set_ethernet_addr(tp);
+> >
+> >  	usb_set_intfdata(intf, tp);
+> > -	netif_napi_add(netdev, &tp->napi, r8152_poll, RTL8152_NAPI_WEIGHT);
+> > +
+> > +	if (tp->support_2500full)
+> > +		netif_napi_add(netdev, &tp->napi, r8152_poll, 256);
+> 
+> why 256? We have 100G+ drivers all using 64 what's special here?
+> 
+> > +	else
+> > +		netif_napi_add(netdev, &tp->napi, r8152_poll, 64);
 
-vim +/show_rcu_tasks_gp_kthreads +1031 kernel/rcu/tasks.h
+We test 2.5G Ethernet on some embedded platform.
+And we find 64 is not large enough, and the performance
+couldn't reach 2.5 G bits/s.
 
-  1028	
-  1029	#else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-  1030	static inline void rcu_tasks_bootup_oddness(void) {}
-> 1031	void show_rcu_tasks_gp_kthreads(void) {}
+Best Regards,
+Hayes
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-Rnp224OUXqcI/wF69yTcuEEAAA==
-
---RnlQjJ0d97Da+TV1--
