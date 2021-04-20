@@ -2,117 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A483661A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02A73661AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhDTVdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 17:33:38 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29508 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233724AbhDTVdg (ORCPT
+        id S234143AbhDTVfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 17:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233991AbhDTVe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 17:33:36 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KL3YH9056808;
-        Tue, 20 Apr 2021 17:32:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=mt9sy6k0dtVEyWThU2tyxcLEqeiSQ9M65Pmrr4XgxOM=;
- b=CCJCw6ZvBV/YoNW6PpR9r4GIU6LpOJB+25LrXib10Mv84caSCDYXOR6C1khn0OfHygT1
- LBHAWk3LCP8AdiozQlFj3SY3y9fOcU9VgaHBDZh+IW14EQ94sBoeq5eXpc4Bn170NEBp
- F1uyVpF4xSsCyJGPXRot9nFjz5RzuIaNPpJtq1r9Qh5JI2DGTWR8PXKwJ1qLfEHnpkRi
- 9r1d80jlQ+uB4suX/BTY1vYvOq/ei+uboOE0Dl0jtrP6IopM89O2kEvNeJ7Yq2ABYsOz
- Hz6bU9YL9xpCeB/F9orcTP791APVG3J5XC2renAtVMqOPV/5Ms/DlNB6OfiMBX3YwHOe 3g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3823qgn7wj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 17:32:42 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13KL3qMN058089;
-        Tue, 20 Apr 2021 17:32:41 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3823qgn7w3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 17:32:41 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13KLSx42022245;
-        Tue, 20 Apr 2021 21:32:39 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 37ypxh92nn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 21:32:39 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13KLWbdN27722158
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 21:32:37 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C92AA404D;
-        Tue, 20 Apr 2021 21:32:37 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A047CA4040;
-        Tue, 20 Apr 2021 21:32:34 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.121.1])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Apr 2021 21:32:34 +0000 (GMT)
-Message-ID: <079454b4147b6ca054129490cd256c948ea08cc1.camel@linux.ibm.com>
-Subject: Re: [PATCH 010/141] ima: Fix fall-through warnings for Clang
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Date:   Tue, 20 Apr 2021 17:32:33 -0400
-In-Reply-To: <77650781-7088-21b7-aa8e-8e5fbf81920e@embeddedor.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
-         <ae416f97079da13568026228d930e9e59118cc4c.1605896059.git.gustavoars@kernel.org>
-         <77650781-7088-21b7-aa8e-8e5fbf81920e@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AfdWPR04Znax-0yFUCd8E65glb8rgAtG
-X-Proofpoint-GUID: H9__Ijr0eubhGQoZwle13wsIgSOTA68_
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 20 Apr 2021 17:34:58 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAE7C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:34:26 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id p2so12234785pgh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2yE8kTk841ejuF3BACNMemckuItLoT/RFM/AFi9IzVY=;
+        b=IJDhsKYg7bxQFqbeGjxoWGBsPBlAe9nr0P7lTGoMq9SRqzq8ZxGHrJUbTGt345fel2
+         JDyGx4+fK3a4PCLou8Aen4n4NUQr6T/yy3SuToR/mngozGoxOl3OsQRrrxZnQMVwwQ9p
+         WuvV4zcPK57fVUg7RLwwb3Ai08FHz9zZIlEfQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2yE8kTk841ejuF3BACNMemckuItLoT/RFM/AFi9IzVY=;
+        b=JoP7ciMz5OWMX3M0tp+vFMCr+vxEVdofcwJcW+XTE40FHRNy7tof8WTv8BZIb4lAa0
+         91kxgccw8/ud0NmgJ6qI6uVR7sKFEiUZsgaZPu6n77qoD3O+pMOjbZvPV8ewcMRRTqft
+         dGRiKwHaO01PudQu5JYJF2DCRBENrIBWToI9evdoqt3BYEp6euNUGZfCRgMP8NCiZK4N
+         zzqo0rwxYZPFNsPvfnT6as5+/orpxqkysai68LbG/cyryCs8a2r8cgRQRMi2kNcqcCu2
+         73uHgTAoaEaq0clsBS7htI/cdzx5kcfB2lqGqMqNjspJVe0QZaOGNIpjDA04lD64PNfe
+         VIsQ==
+X-Gm-Message-State: AOAM530Htb0RmddjUy6Ixb4sQ39XNts2S+3qUtYQVosuBG6lt/HPNoct
+        dd9jICjxoxKwT/A5FIlu3x/fieoSyKdaHg==
+X-Google-Smtp-Source: ABdhPJzt4UJh1RthY4MFuN+8l5giWESxXFV5VQHHp33sWNvVLi3KThGDSCAY/eO1QPSI96D8JOkCrA==
+X-Received: by 2002:a17:90a:db87:: with SMTP id h7mr7177753pjv.36.1618954466350;
+        Tue, 20 Apr 2021 14:34:26 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:b1f0:79e0:c1ca:fd1])
+        by smtp.gmail.com with UTF8SMTPSA id z18sm21512pfa.39.2021.04.20.14.34.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 14:34:26 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 14:34:25 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Taniya Das <tdas@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] arm64: dts: qcom: sc7280: Add cpufreq hw node
+Message-ID: <YH9I4cKZk87KHFUa@google.com>
+References: <1618020280-5470-1-git-send-email-tdas@codeaurora.org>
+ <1618020280-5470-2-git-send-email-tdas@codeaurora.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-20_11:2021-04-20,2021-04-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 bulkscore=0
- adultscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104200146
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1618020280-5470-2-git-send-email-tdas@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gustavo,
-
-On Tue, 2021-04-20 at 15:28 -0500, Gustavo A. R. Silva wrote:
-> Hi all,
+On Sat, Apr 10, 2021 at 07:34:39AM +0530, Taniya Das wrote:
+> Add cpufreq HW device node to scale 4-Silver/3-Gold/1-Gold+
+> cores on SC7280 SoCs.
 > 
-> Friendly ping: who can take this, please?
+> Signed-off-by: Taniya Das <tdas@codeaurora.org>
 
-Thank you for the reminder.
-
-> 
-> On 11/20/20 12:25, Gustavo A. R. Silva wrote:
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> > warnings by explicitly adding multiple break statements instead of just
-> > letting the code fall through to the next case.
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Applied to 
-git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git 
-next-integrity
-
-thanks,
-
-Mimi
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
