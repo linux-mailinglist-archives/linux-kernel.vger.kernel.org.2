@@ -2,103 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457613651F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9A53651FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhDTFyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 01:54:35 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:50509 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhDTFyc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 01:54:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1618898042; x=1650434042;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZvCgV9eVozx0O2riMmwZl8ZdBJ84xKKq5cbsop8x1Ws=;
-  b=C1JDFUbMafufuOcPaHUVdGRsnbNMEobYf5MPZozGQCsroKwrugGR4VK0
-   VE0LZDBeOrNNTQYjvN9k0PFx32qIGZaOThiqHoxlReKUGLsQVdpJfHZgc
-   NufGOpIPvsaDXDhlPNZeZHqD3cf7e4Je7h4YHovTVshV/P+ka9GgpkoqG
-   HHxAWk1oyqDZHCGN4KI+UL5DILmCys6IGmN1GXRq4je8VaeTRGNlkI256
-   N9WckJkfJRHtqB2l2R/u0OiQwXacMb+H9fOcBIQMcDqpc4S90IQmoLD1O
-   f8XMTnRN0QKEVQT8H9S+RVuEuQQfYNcKZQgBOLX/skXbbpIcCkPZJkbFR
-   w==;
-IronPort-SDR: rvOgPxmw97kUcWLv//lQt5Wz4qtQg2DP1WCNflEX9s5dfbjJxNnQ113nmF0DjNZAc1OD813msJ
- 8eWMhzkbLpyR3cbiFr/5AfdmVbWwWTppPjV9KNV5R1vKSNgh0KlBKayIDNAVj3Moas/46AzITB
- qonUOd34Ls22nLrt4/TSxIswoxYfupwuxGxAQVcyl9UZ+ZpVvCX3vYbU4qoVUJ3QbRS7Nb16dg
- l9Xn4Q1bazmvNFnCEsr08UTDpcQrnvr3iySbi0DWosdr0k2ALDxhNthRHBUELGTZWrmxHv/BUy
- KTw=
-X-IronPort-AV: E=Sophos;i="5.82,236,1613404800"; 
-   d="scan'208";a="166063859"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Apr 2021 13:54:01 +0800
-IronPort-SDR: TC1piOpen1fkFj8UXC2tZt/YKuA1/szdPzK9Vw9ZKxP7YrYJE3glnF2f48VlKoL/x5mSeO+wuZ
- j19Env1vpS52FW2A+n2Ag8Ah792QEWTogSXNFZYFmtMFONajxjguGvr0/W0kF8N/jwAiJ7sCxC
- oE552T3z1sb1aFLRmURtev3nsD+nArXgqj/MRely//Ri+l/YYde6cbuHOutx+1MKmh13luh498
- 4WBQRQazODfllOeYS/Nwk4GBgOY49YRC3pN+1Dwe92HwmBNfKy5P5lUHlL61Km4Phx0e6AcXgv
- 1F4MgREPp6vY7AMM5j6WNG9R
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 22:34:41 -0700
-IronPort-SDR: brC9mzmUaNmjcemcaXfMYkx3U9LhKqXystImI44IstD23P/GMQk6tROmxcUCtRQyuhA7aSf1wX
- a0Lq0rEUs2763lrxvgJJT5d5p9EjLR4Gt1zwG1sOCJHhchmtdsGgkeaLYmZv9366wcsoYdm6/D
- lWtJBaW9PCo/Gqa1/GEb2tOflz3OyuSnGTTHGjqQg95qsgoLgvOrjXwLnBVca2UTa2YdEVz4lh
- o0+FONwCXMCuobyJ/8rLnpD0lQ2YnXECCaqcsATT7G33R0NwbSpQoEFCG9qlwqt/TfeaK9frcW
- 7yk=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip01.wdc.com with ESMTP; 19 Apr 2021 22:53:59 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-kernel@vger.kernel.org, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v3 2/2] mmc: block: Update ext_csd.cache_ctrl if it was written
-Date:   Tue, 20 Apr 2021 08:53:06 +0300
-Message-Id: <20210420055306.4858-3-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210420055306.4858-1-avri.altman@wdc.com>
-References: <20210420055306.4858-1-avri.altman@wdc.com>
+        id S229916AbhDTF44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 01:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhDTF4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 01:56:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67D3A613AB;
+        Tue, 20 Apr 2021 05:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618898183;
+        bh=AoItUNHEmXnc+WhY2vv+SDiIYZaBYyxKKaEUuXAKOnc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yLRHRao1YeRo1rP34FLTq5Is/ZFLkWDWN7ziGMV42m6yUr9uorGazd96OODAevqDc
+         Zy+74225py/5k41YW2OiG0SJx+qR07nqmxOOwVFAKSNf5AD+EADJXM7cuaTZCzUczv
+         rST2Q3jy3oulKqsudlwEGMhwNbfv/6/dBO2EdG8Q=
+Date:   Tue, 20 Apr 2021 07:56:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YH5tAqLr965MNZyW@kroah.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com>
+ <20210416161444.GA10484@1wt.eu>
+ <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
+ <20210416173717.GA10846@1wt.eu>
+ <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cache function can be turned ON and OFF by writing to the CACHE_CTRL
-byte (EXT_CSD byte [33]).  However,  card->ext_csd.cache_ctrl is only
-set on init if cache size > 0.
+On Mon, Apr 19, 2021 at 05:24:33PM -0700, Nick Desaulniers wrote:
+> On Fri, Apr 16, 2021 at 10:39 AM Willy Tarreau <w@1wt.eu> wrote:
+> >
+> > resources usage, I'm really not convinced at all it's suited for
+> > low-level development. I understand the interest of the experiment
+> > to help the language evolve into that direction, but I fear that
+> > the kernel will soon be as bloated and insecure as a browser, and
+> > that's really not to please me.
+> 
+> Dunno, I don't think the introduction of Rust made Firefox _more_ insecure.
+> https://wiki.mozilla.org/Oxidation#Within_Firefox
+> 
+> I pray no executives ever see Dmitry Vyukov's 2019 Linux Plumbers Conf
+> talk "Reflections on kernel quality, development process and testing."
+> https://www.youtube.com/watch?v=iAfrrNdl2f4
+> or his 2018 Linux Security Summit talk "Syzbot and the Tale of
+> Thousand Kernel Bugs" https://www.youtube.com/watch?v=qrBVXxZDVQY
+> (and they're just fuzzing the syscall interface and USB devices.
+> Imagine once folks can more easily craft malformed bluetooth and wifi
+> packets.)
+> 
+> I'd imagine the first term that comes to mind for them might be
+> "liability."  They are quite sensitive to these vulnerabilities with
+> silly names, logos, and websites.  There are many of us that believe
+> an incremental approach of introducing a memory safe language to our
+> existing infrastructure at the very least to attempt to improve the
+> quality of drivers for those that choose to use such tools is a better
+> approach.
 
-Fix that by explicitly setting ext_csd.cache_ctrl on ext-csd write.
+I would LOVE it if some "executives" would see the above presentations,
+because then they would maybe actually fund developers to fix bugs and
+maintain the kernel code, instead of only allowing them to add new
+features.
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/mmc/core/block.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Seriously, that's the real problem, that Dmitry's work has exposed, the
+lack of people allowed to do this type of bugfixing and maintenance on
+company time, for something that the company relies on, is a huge issue.
+"executives" feel that they are willing to fund the initial work and
+then "throw it over the wall to the community" once it is merged, and
+then they can forget about it as "the community" will maintain it for
+them for free.  And that's a lie, as Dmitry's work shows.
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 5b6501fc9fb7..8b07ed5e08de 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -572,6 +572,18 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 		main_md->part_curr = value & EXT_CSD_PART_CONFIG_ACC_MASK;
- 	}
- 
-+	/*
-+	 * Make sure to update CACHE_CTRL in case it was changed. The cache
-+	 * will get turned back on if the card is re-initialized, e.g.
-+	 * suspend/resume or hw reset in recovery.
-+	 */
-+	if ((MMC_EXTRACT_INDEX_FROM_ARG(cmd.arg) == EXT_CSD_CACHE_CTRL) &&
-+	    (cmd.opcode == MMC_SWITCH)) {
-+		u8 value = MMC_EXTRACT_VALUE_FROM_ARG(cmd.arg) & 1;
-+
-+		card->ext_csd.cache_ctrl = value;
-+	}
-+
- 	/*
- 	 * According to the SD specs, some commands require a delay after
- 	 * issuing the command.
--- 
-2.25.1
+The world creates new use cases and testing ability all the time, which
+exposes bugs that have been around in old code.  Once the bugs are fixed
+in that layer of code, the next layer down can finally be tested and
+then look, more corner cases of issues.
 
+Rewriting the kernel in another language is not going to fix the
+majority of the issues that fuzzing finds here automagically, as that
+work has exposed us to things like fault-injection and malicious USB
+packets that no language would have saved us from "automatically".  All
+of those code paths deal with "unsafe" data that doesn't magically
+become "safe" because we switch languages.
+
+And over time, what we have determined is "safe" has changed!  People
+forget that only a few years ago have we decided that the kernel now has
+to protect userspace programs from malicious hardware.  That's a major
+shift in thinking, now data that we used to blindly trust can not be
+trusted at all.  And "executives" want us to fix all of those issues for
+free, when really it's a major design shift for loads of kernel
+subsystems to handle this new threat model.
+
+So yes, please spread that talk around.  Maybe then will we actually get
+funding and support to FIX the bugs that those tools test.  Right now,
+the primary fixer of those findings are _INTERNS_ as that's all
+companies are willing to fund to fix this type of thing.
+
+And don't get me started on the inability for "executives" to fund other
+parts of Linux that they rely on, because they want "other companies" to
+do it instead.  The tragedy-of-the-commons is a real threat to Linux,
+and always has been...
+
+thanks,
+
+greg k-h
