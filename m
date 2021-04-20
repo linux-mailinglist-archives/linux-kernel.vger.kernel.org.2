@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0D53661C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF893661C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbhDTVvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 17:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S234287AbhDTVvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 17:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234221AbhDTVup (ORCPT
+        with ESMTP id S234192AbhDTVuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 17:50:45 -0400
+        Tue, 20 Apr 2021 17:50:46 -0400
 Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D17CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:13 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id y1so4780715plg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20101C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:14 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id u7so18620158plr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ThM+lz6jsS3ZEXtls72L3mRvVuWcXx5lk52kSqNPD+U=;
-        b=FhnZNw8N8fWqEYVZm/AVBrlcAGUTphgrm9PvL/4T5AFWSmmoOP41v373jHCB/eWjqn
-         aEzf4iBeqfUac5cVngmWQ3fV48tqGViHIfy5Zf4T5AnkhKQm3wkixDcO4vjBnzk6ghNA
-         twSVPoridN98UNPwWD51+NRnQD9mcj3ltbqVY=
+        bh=SFxY7ZINiVkfJBwgddI5IfRF8IJdmESMPQk7SWg6uGA=;
+        b=M9pIfIFluB5GPh2oNFPYn+52ZMZjIoFjjRK+nRByHKY5GxBWxzU5uI2OthKleL/DDd
+         +Kc5xfRQg+h8rVFE2W61MM+D9MfTBIMvgOysWXuSMm+2aklFE5yIUyubQjG16emalSvM
+         8f3bsA6HJLJyiN8znbIlQ9DvFuG1Yh2HXSAgc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ThM+lz6jsS3ZEXtls72L3mRvVuWcXx5lk52kSqNPD+U=;
-        b=UyhClu7jUhHcGW533MUF11vFl/wiG7D9BeXJy1EpJpv+Cia2WgjwnhPi2i7dPvhmy6
-         AIq5ehLeYzsjOkemSZN9yBZ8XhNTBnN4YRoUuZZHWITi2lZVco49eK83jqqD8rcimosq
-         XDPo8sIFq2pl81PDSAnbT2dAYsoCsjfIHHxuy0wos4UVf2IHTSisjLAoyCrLtCzwnuwW
-         +TyEqMbXB1ty0M/pQtYe5bxw1v4gA8TTxf+c5w2UEYDHj2ZPFdMNiNwwins8ULu1uVe2
-         L0q0mkoC8OygTCsnCWSRoipgZBNJJrTbsoAWgFvLDX5AZFoMXshbSK/D3Pep+ExAiX2S
-         AODw==
-X-Gm-Message-State: AOAM533RgrPorPrRHffjUXPXc05+AFkIrgY0tQZwwXTeCgTmdoePYEOc
-        nK6tRCYkP+9bi3GAQrMx2jSEGQ==
-X-Google-Smtp-Source: ABdhPJy8F9kCW2PGi5aTdvBidC7YrQbwO4Um4lENPoyvYLUtVoqCOzwo8MaMjs6BdNp/vHL4iGTI3g==
-X-Received: by 2002:a17:902:ee8a:b029:eb:6d3:1431 with SMTP id a10-20020a170902ee8ab02900eb06d31431mr30874940pld.60.1618955413056;
+        bh=SFxY7ZINiVkfJBwgddI5IfRF8IJdmESMPQk7SWg6uGA=;
+        b=L8d+RWa0TE3rOixyqXy/FpFKIquuI3S8/9oo3cjsl3pFYZeyDfwVODfUvnrHt0vrzu
+         TdfKaDECH7DQTuWU2bRga16WKVi2caTx2uL1+usJmzkEmfWavy1ITYZYIEznSfXm7i5S
+         kcTlxSwLUyHsuB39rQC8EirnuWcBDMh9RUn6kAhkQ/sK77LFRrUyshrL0La2bmEq9XXX
+         2s4bVhSD5GoLp9kPVJqItTQPkSu77ywxiIvujRSRCAajiBN6tXcBB/bG7/iyVO6ViJhj
+         l1vnOdFLO7czuSe/s0kYJnpJa378/NdHHJD4MCWXa7pq6JgKf2ufDcE/mZ7cYUQoFYvY
+         4OIQ==
+X-Gm-Message-State: AOAM533jPc7/dPLeRP+G89Cg7CbYw/crR6YnJ6JImJtMhYfz0y/dbILb
+        r+mXat2efcQz9fUy8oxmWKjrEKmo+hMBew==
+X-Google-Smtp-Source: ABdhPJx9In58E5J8Vpu625IbmqgXx31vHpgeWWQmZOeYJVUnjSV2CcyNbXL8rHw8H2pX57h/Ts8zJw==
+X-Received: by 2002:a17:902:7043:b029:ec:939f:c9e5 with SMTP id h3-20020a1709027043b02900ec939fc9e5mr17924699plt.64.1618955413739;
         Tue, 20 Apr 2021 14:50:13 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:bf8b:4b8b:2315:3719])
-        by smtp.gmail.com with ESMTPSA id c21sm31481pfo.91.2021.04.20.14.50.12
+        by smtp.gmail.com with ESMTPSA id c21sm31481pfo.91.2021.04.20.14.50.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 14:50:12 -0700 (PDT)
+        Tue, 20 Apr 2021 14:50:13 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Jessica Yu <jeyu@kernel.org>,
         Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH v5 10/13] scripts/decode_stacktrace.sh: Indicate 'auto' can be used for base path
-Date:   Tue, 20 Apr 2021 14:50:00 -0700
-Message-Id: <20210420215003.3510247-11-swboyd@chromium.org>
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: [PATCH v5 11/13] buildid: Mark some arguments const
+Date:   Tue, 20 Apr 2021 14:50:01 -0700
+Message-Id: <20210420215003.3510247-12-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 In-Reply-To: <20210420215003.3510247-1-swboyd@chromium.org>
 References: <20210420215003.3510247-1-swboyd@chromium.org>
@@ -66,38 +64,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "auto" to the usage message so that it's a little clearer that you
-can pass "auto" as the second argument. When passing "auto" the script
-tries to find the base path automatically instead of requiring it be
-passed on the commandline. Also use [<variable>] to indicate the
-variable argument and that it is optional so that we can differentiate
-from the literal "auto" that should be passed.
+These arguments are never modified so they can be marked const to
+indicate as such.
 
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Jessica Yu <jeyu@kernel.org>
 Cc: Evan Green <evgreen@chromium.org>
 Cc: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc: Sasha Levin <sashal@kernel.org>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- scripts/decode_stacktrace.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/buildid.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index 20b5af1ebe5e..5fbad61fe490 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
-@@ -5,7 +5,7 @@
- 
- usage() {
- 	echo "Usage:"
--	echo "	$0 -r <release> | <vmlinux> [base path] [modules path]"
-+	echo "	$0 -r <release> | <vmlinux> [<base path>|auto] [<modules path>]"
+diff --git a/lib/buildid.c b/lib/buildid.c
+index 530dbd1f6bbe..a7edab4914e6 100644
+--- a/lib/buildid.c
++++ b/lib/buildid.c
+@@ -48,10 +48,10 @@ static int parse_build_id_buf(unsigned char *build_id,
+ 	return -EINVAL;
  }
  
- if [[ $1 == "-r" ]] ; then
+-static inline int parse_build_id(void *page_addr,
++static inline int parse_build_id(const void *page_addr,
+ 				 unsigned char *build_id,
+ 				 __u32 *size,
+-				 void *note_start,
++				 const void *note_start,
+ 				 Elf32_Word note_size)
+ {
+ 	/* check for overflow */
+@@ -66,7 +66,7 @@ static inline int parse_build_id(void *page_addr,
+ }
+ 
+ /* Parse build ID from 32-bit ELF */
+-static int get_build_id_32(void *page_addr, unsigned char *build_id,
++static int get_build_id_32(const void *page_addr, unsigned char *build_id,
+ 			   __u32 *size)
+ {
+ 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)page_addr;
+@@ -91,7 +91,7 @@ static int get_build_id_32(void *page_addr, unsigned char *build_id,
+ }
+ 
+ /* Parse build ID from 64-bit ELF */
+-static int get_build_id_64(void *page_addr, unsigned char *build_id,
++static int get_build_id_64(const void *page_addr, unsigned char *build_id,
+ 			   __u32 *size)
+ {
+ 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)page_addr;
 -- 
 https://chromeos.dev
 
