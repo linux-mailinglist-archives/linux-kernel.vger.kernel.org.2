@@ -2,188 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1208D365330
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416A1365339
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhDTHX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:23:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43246 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229471AbhDTHX2 (ORCPT
+        id S229532AbhDTHZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:25:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60290 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhDTHZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:23:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618903376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iOjPfwXb4OBqjnrtphdyCIjJaLUOZwAgc5HsS5Qcaz4=;
-        b=RXPO/zWmQvcXEL1Aob8gMY9ohcoZXIM6JTQn+tDka+axltg93wf3Hz5sg5Wqtf8uTXiO/i
-        GSCiTQSmgpCrIuEnBRRR+wK3b9Ujia77jY4T4fWX+Mw5RHwPt9WhE+Gk9u1ZWLi8KSBfg2
-        vggzYdksWeJzDtS05Yz8B+VspryW8+U=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-SGZ9kiXQMryl9xOEIJBbOA-1; Tue, 20 Apr 2021 03:22:55 -0400
-X-MC-Unique: SGZ9kiXQMryl9xOEIJBbOA-1
-Received: by mail-ej1-f71.google.com with SMTP id r17-20020a1709069591b029037cf6a4a56dso4454127ejx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:22:55 -0700 (PDT)
+        Tue, 20 Apr 2021 03:25:33 -0400
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lYkkn-000721-Qp
+        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 07:25:01 +0000
+Received: by mail-ed1-f72.google.com with SMTP id i18-20020aa7c7120000b02903853032ef71so3683581edq.22
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:25:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iOjPfwXb4OBqjnrtphdyCIjJaLUOZwAgc5HsS5Qcaz4=;
-        b=V1lcH6cphCihXhpiuKH4ikmxAwSghbaMKesmm+HyDsLCDQQKCsZ8U1aIXXRcUQwdmg
-         VGyqbU5Mz7q+i8yL0PoKnzS+BO1wqt295R7Dclj9PVs8FUcCaS2RQaYo23wuHRmPMQcy
-         nuQMIU2BXd1f4ZkncLv9Vmbd1PjmnqxtDe1gN8yAhrRC7KK8d65Xd8/4gQOhABluHkoh
-         DvxZvJYTp8jnMNZ4J9pXeD/ZWyci8tq+NFrvDlLCU3TUoCdASxEgK66JrWFvpS4HK4mT
-         3ytmisYWbFLio5tl8wx5W93pb94IfQ3SeZzV0uzNrzI+NjPen6KWphhxZx8mlMAHSRjW
-         poLA==
-X-Gm-Message-State: AOAM533N1oKSWsQxD8MyFctymI0rsgkmNNwdIYDG7qaxj+KafJo0FC+f
-        Zc24/vb0aos9MdAkDHqfNDOtIIM/L5k4EoEIJGOQQpX9lX1E9rng36yhWeNdF3dOmqGdDCUM66Y
-        4fhAJWTM065YXsC5ravbOCyNc
-X-Received: by 2002:a17:906:c1c5:: with SMTP id bw5mr4745272ejb.510.1618903374226;
-        Tue, 20 Apr 2021 00:22:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2QJROIdRPM2hmECvsC+4FwFOAwe2nIQpMN/ME3nb0Np6MQ8btKb9/VyXKn+NHnIEEkgpirQ==
-X-Received: by 2002:a17:906:c1c5:: with SMTP id bw5mr4745246ejb.510.1618903373975;
-        Tue, 20 Apr 2021 00:22:53 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p4sm14795453edr.43.2021.04.20.00.22.52
+        bh=QlkzODqs3de/2r7bFY21pvtdX8g0owN/7v3UKLodqFM=;
+        b=uJ4J8HBkEiT1zbBOAvSNKrkb8z64Pj9xOvB0YMITHJYr0rJRqviV9UNg2XA2dc70Qa
+         osavi0Vatmlp+WYbncji+EPh1xw0Couu12TlrzP4xGBHOZ65HG0Uk/kHkVjDNpUm/h+M
+         QR35KA/6TpgQtLiU2kjl7PiQJ9Eliv6XrgscofdTQCsZgKQPWUdz+Q3tSn0/Ey9Tqd+l
+         wqCkTaM/rJrqTX4nreIZ4C2ldjyGWOgPPdki7UjbnBT25Gw00ePO+vhhwPA9YGiDYP/Q
+         xLJp/3KAq7+kmZYV4n/iP+/cSnYtiYCai3KDMtQqFnq3wZxLpMXMhXRaShwOYFyf7o1H
+         ZGUQ==
+X-Gm-Message-State: AOAM531YotREj7YS5n2cXVEKUmFjlSF1B5nqpwaiStCuNwejtYqlfR6A
+        /nKroH1fMDHBIZ7JHEpNo43e+Dqe73t85tCpKgUo07xrH+MP5dwE+DlQDca+c3qL0I6cais96aC
+        2LzO1Ae65ToGr7onOo2ONg+BnIi1JMG9Ws4Q7DrFxlA==
+X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr30143963edb.329.1618903501148;
+        Tue, 20 Apr 2021 00:25:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxR0xQR3SxmpcZ02bhOq0nxAtZaxu1UiEvZpH8gjyloyiAJbhjG9+cavdaccyCaffHvyXDN5g==
+X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr30143954edb.329.1618903501005;
+        Tue, 20 Apr 2021 00:25:01 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
+        by smtp.gmail.com with ESMTPSA id ca1sm15147826edb.76.2021.04.20.00.25.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 00:22:53 -0700 (PDT)
-Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
- delivering interrupt
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
- <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
- <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
- <YH2wnl05UBqVhcHr@google.com>
- <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
- <CANRm+CwQ266j6wTxqFZtGhp_HfQZ7Y_e843hzROqNUxf9BcaFA@mail.gmail.com>
- <CANRm+CyHX-_vQLck1a9wpCv8a-YnnemEWm+zVv4eWYby5gdAeg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b2fca9a5-9b2b-b8f2-0d1e-fc8b9d9b5659@redhat.com>
-Date:   Tue, 20 Apr 2021 09:22:51 +0200
+        Tue, 20 Apr 2021 00:25:00 -0700 (PDT)
+Subject: Re: [PATCH 5/7] mfd: sec: Simplify getting of_device_id match data
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        patches@opensource.cirrus.com
+References: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
+ <CGME20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d@eucas1p2.samsung.com>
+ <20210419081726.67867-5-krzysztof.kozlowski@canonical.com>
+ <64fb91ae-c754-fb25-0ef7-17b2f1b8a1e4@samsung.com>
+ <4a5e80c0-653e-a4d6-630e-0d75e3779f6d@canonical.com>
+ <a65318f6-1465-a35c-a987-8b833311ef3a@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <cb24912d-1d5d-089b-2cfa-d0c3c3a8b2b6@canonical.com>
+Date:   Tue, 20 Apr 2021 09:25:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CANRm+CyHX-_vQLck1a9wpCv8a-YnnemEWm+zVv4eWYby5gdAeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <a65318f6-1465-a35c-a987-8b833311ef3a@samsung.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 08:08, Wanpeng Li wrote:
-> On Tue, 20 Apr 2021 at 14:02, Wanpeng Li <kernellwp@gmail.com> wrote:
->>
->> On Tue, 20 Apr 2021 at 00:59, Paolo Bonzini <pbonzini@redhat.com> wrote:
->>>
->>> On 19/04/21 18:32, Sean Christopherson wrote:
->>>> If false positives are a big concern, what about adding another pass to the loop
->>>> and only yielding to usermode vCPUs with interrupts in the second full pass?
->>>> I.e. give vCPUs that are already in kernel mode priority, and only yield to
->>>> handle an interrupt if there are no vCPUs in kernel mode.
+On 20/04/2021 09:12, Marek Szyprowski wrote:
+> On 20.04.2021 09:03, Krzysztof Kozlowski wrote:
+>> On 20/04/2021 07:25, Marek Szyprowski wrote:
+>>> On 19.04.2021 10:17, Krzysztof Kozlowski wrote:
+>>>> Use of_device_get_match_data() to make the code slightly smaller.
 >>>>
->>>> kvm_arch_dy_runnable() pulls in pv_unhalted, which seems like a good thing.
->>>
->>> pv_unhalted won't help if you're waiting for a kernel spinlock though,
->>> would it?  Doing two passes (or looking for a "best" candidate that
->>> prefers kernel mode vCPUs to user mode vCPUs waiting for an interrupt)
->>> seems like the best choice overall.
+>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>>> ---
+>>>>    drivers/mfd/sec-core.c | 9 +++------
+>>>>    1 file changed, 3 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
+>>>> index 8d55992da19e..3126c39f3203 100644
+>>>> --- a/drivers/mfd/sec-core.c
+>>>> +++ b/drivers/mfd/sec-core.c
+>>>> @@ -10,6 +10,7 @@
+>>>>    #include <linux/slab.h>
+>>>>    #include <linux/i2c.h>
+>>>>    #include <linux/of.h>
+>>>> +#include <linux/of_device.h>
+>>>>    #include <linux/of_irq.h>
+>>>>    #include <linux/interrupt.h>
+>>>>    #include <linux/pm_runtime.h>
+>>>> @@ -324,12 +325,8 @@ static inline unsigned long sec_i2c_get_driver_data(struct i2c_client *i2c,
+>>>>    						const struct i2c_device_id *id)
+>>>>    {
+>>>>    #ifdef CONFIG_OF
+>>>> -	if (i2c->dev.of_node) {
+>>>> -		const struct of_device_id *match;
+>>>> -
+>>>> -		match = of_match_node(sec_dt_match, i2c->dev.of_node);
+>>>> -		return (unsigned long)match->data;
+>>>> -	}
+>>>> +	if (i2c->dev.of_node)
+>>>> +		return (unsigned long)of_device_get_match_data(&i2c->dev);
+>>>>    #endif
+>>> Does it make any sense to keep the #ifdef CONFIG_OF after this change?
+>> Good point, it was only to hide usage of of_device_id table.
 >>
->> How about something like this:
+>>> I would also skip (i2c->dev.of_node) check, because
+>>> of_device_get_match_data() already does that (although indirectly).
+>> First, the enum sec_device_type would need to be changed so it starts
+>> from 1, not 0. It's because the value returned by this function is later
+>> assigned to that enum and there is no way currently to differentiate
+>> between NULL and S5M8767X.
+>>
+>> Second, it wouldn't make the code smaller;
+>>
+>> unsigned long data;
+>> data = of_device_get_match_data(&i2c->dev);
+>> if (data)
+>> 	return data;
+> 
+> Then maybe one should go further and remove legacy, non-of based 
+> initialization, because it is not used at all. This will simplify it 
+> even more.
 
-I was thinking of something simpler:
+Indeed maybe it's the time to get rid of board-file support...
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 9b8e30dd5b9b..455c648f9adc 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3198,10 +3198,9 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
-  {
-  	struct kvm *kvm = me->kvm;
-  	struct kvm_vcpu *vcpu;
--	int last_boosted_vcpu = me->kvm->last_boosted_vcpu;
-  	int yielded = 0;
-  	int try = 3;
--	int pass;
-+	int pass, num_passes = 1;
-  	int i;
-  
-  	kvm_vcpu_set_in_spin_loop(me, true);
-@@ -3212,13 +3211,14 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
-  	 * VCPU is holding the lock that we need and will release it.
-  	 * We approximate round-robin by starting at the last boosted VCPU.
-  	 */
--	for (pass = 0; pass < 2 && !yielded && try; pass++) {
--		kvm_for_each_vcpu(i, vcpu, kvm) {
--			if (!pass && i <= last_boosted_vcpu) {
--				i = last_boosted_vcpu;
--				continue;
--			} else if (pass && i > last_boosted_vcpu)
--				break;
-+	for (pass = 0; pass < num_passes; pass++) {
-+		int idx = me->kvm->last_boosted_vcpu;
-+		int n = atomic_read(&kvm->online_vcpus);
-+		for (i = 0; i < n; i++, idx++) {
-+			if (idx == n)
-+				idx = 0;
-+
-+			vcpu = kvm_get_vcpu(kvm, idx);
-  			if (!READ_ONCE(vcpu->ready))
-  				continue;
-  			if (vcpu == me)
-@@ -3226,23 +3226,36 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
-  			if (rcuwait_active(&vcpu->wait) &&
-  			    !vcpu_dy_runnable(vcpu))
-  				continue;
--			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
--				!kvm_arch_vcpu_in_kernel(vcpu))
--				continue;
-  			if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
-  				continue;
-  
-+			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
-+			    !kvm_arch_vcpu_in_kernel(vcpu)) {
-+			    /*
-+			     * A vCPU running in userspace can get to kernel mode via
-+			     * an interrupt.  That's a worse choice than a CPU already
-+			     * in kernel mode so only do it on a second pass.
-+			     */
-+			    if (!vcpu_dy_runnable(vcpu))
-+				    continue;
-+			    if (pass == 0) {
-+				    num_passes = 2;
-+				    continue;
-+			    }
-+			}
-+
-  			yielded = kvm_vcpu_yield_to(vcpu);
-  			if (yielded > 0) {
-  				kvm->last_boosted_vcpu = i;
--				break;
-+				goto done;
-  			} else if (yielded < 0) {
-  				try--;
-  				if (!try)
--					break;
-+					goto done;
-  			}
-  		}
-  	}
-+done:
-  	kvm_vcpu_set_in_spin_loop(me, false);
-  
-  	/* Ensure vcpu is not eligible during next spinloop */
+Thanks for the feedback!
 
-Paolo
-
+Best regards,
+Krzysztof
