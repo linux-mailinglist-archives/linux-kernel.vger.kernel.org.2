@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5574F365EA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8FA365EAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhDTRdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S233352AbhDTReq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbhDTRcy (ORCPT
+        with ESMTP id S232913AbhDTRep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:32:54 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E7AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:32:22 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id g5so52781523ejx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:32:22 -0700 (PDT)
+        Tue, 20 Apr 2021 13:34:45 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658CAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:34:13 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id d27so5849633lfv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linuxfoundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8gplG+9IWvQuoNRL+JXMPE+0PdJp+Z/VjGIXtau6h+I=;
-        b=h11A4XqVQ5m+6C611s/dtODxxzHe4778dEl548tUa84MqdLN/1XV7WK1IMzUSSN9Od
-         VnvgJdVbSHQ/ImL9hfmZeA/wPSbzQWrsgOeMqo4LrMFTgKVLQXo/kssnETIoiOSNqXF2
-         +9CKxEzjfMwY19mG4Z7SY4V9KjsQEt4vbNotk2uwPu8nZYZW2of5Fu6ATNssl2Jl+ADN
-         KprCeg0geSqGm1BuM/VAe8s2otgrvGsf50x9RNc8/FX5fX/n4m1wYTTYc3OgXUnis36k
-         6JhVjFqzN1QdwciBjvJBIkgOj6l410ZvUVqd9RdJqPWewVChWgInz7coHNkFB8O18R2f
-         UZ1Q==
+        bh=uM3oKrFolkHhfKMBW4x9Y9WVeNa3u7FgDSkg2cxr0ck=;
+        b=M8aXFP35uK44/1z3q9Pty+eFhAK40fEVO/ejJbUeAVk1do4zhUh7mMSe0GzuW6p0M5
+         SdoTJAcwUH63ljVRjl8KZXgsaPVJVJ0ViZFJKxOo6VlC9RzyEk6n7z1hPfqnjp/FXlzh
+         ukEXTFv+VS6kPazjRyDcyp/N1NZOl9cEdT7vo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8gplG+9IWvQuoNRL+JXMPE+0PdJp+Z/VjGIXtau6h+I=;
-        b=oCRM5auO/ncqsa2Pd9RpQWfuQsBj37QUwRYz72ge0MOWpnEZYs9ZIyoOaTTqgVITyC
-         kB1vkRusZiNDFBLXSVG6JGCREPmgrHY2bN83l7TTHaIk6saMVoOyCg9VUM2sBtfdJneX
-         0p8VjRA3Qt10khcFK3OAWoOjcQI5HC5r/Ed4ZhoQ3xPHggzQzkLqW0Mq6FVTsw0Dgxfh
-         XPGfL63lSbdLbJdlQGXFjngaB1MPkDu0v/qMpY/gKjByCnCjEEO0O6PkDEOEaH9jsk+V
-         YCvStds+okChrviKgiFh65/cG0UBB/O1mHUgS8Ewxml+2Lx2kbebKbQRRGeK+RPNdYBs
-         tvcw==
-X-Gm-Message-State: AOAM530Efrg11zi8f8eXZA4joz1j+542BKhtl7t5Q3hzqB6k9iNPIRUu
-        RB7dNJnTRMsHwM1DiEdcipmujwf5fMDlAMAqc8sUjA==
-X-Google-Smtp-Source: ABdhPJzOn7y5okWAFlw0xW1bqDHcjSKKZ3FzjRQhbt0MYpvhmlpKo3RbVc4qKURwgiYCMCk8hFP4aX57tXHPp1o0sM8=
-X-Received: by 2002:a17:906:4e51:: with SMTP id g17mr14564426ejw.18.1618939941345;
- Tue, 20 Apr 2021 10:32:21 -0700 (PDT)
+        bh=uM3oKrFolkHhfKMBW4x9Y9WVeNa3u7FgDSkg2cxr0ck=;
+        b=Yx/n82iTDbkyh+CJ8gaVvAI/RWGaWO9d6mjoESysllnd7Jmol5I3fG8pb7Mufl8Byb
+         AohDH97d46ubKHT4VESH+RGo2Ln+aAv9imO+15irT5+yVyjPHkuZjV3bQ//hDrS2BbEl
+         7qqaccQ9i1wLbQVmKIZ5SuEbtrkNlicoY0gfI8qQW+PH5Em9XgDpR6ZIdX7qgrDpLxOg
+         fr7PkCArvXtVh9bFzRyCwXLk4abJClQlrZr44NrYYxnMtuBVcrc4mMNXnsg1Rsr0Tm2P
+         UZw0FTW+v8qzY71sdW3gO5HYb07vFJhZrh6pgtawR4XJzY3DhgnLcueeJhBa1+TQymmQ
+         4iOg==
+X-Gm-Message-State: AOAM533BfNuxv6GFfIT3FMgMS5b/W+gofSeaCJ0T/grof50fexz+vycr
+        0ap9Rkf7KhqOqePT22SbPQ5+j9wKPYw7E+I4
+X-Google-Smtp-Source: ABdhPJy9SPtyMOcfurah75cYaB2JMCFYCCrIDp85NEH6sVpn1/4dl/ek8RaLPecXpjiAqMC+MStxQA==
+X-Received: by 2002:ac2:47ee:: with SMTP id b14mr9554688lfp.409.1618940051566;
+        Tue, 20 Apr 2021 10:34:11 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id l24sm1885986lfc.23.2021.04.20.10.34.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 10:34:10 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id b38so3352708ljf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:34:10 -0700 (PDT)
+X-Received: by 2002:a2e:b6c6:: with SMTP id m6mr15361256ljo.411.1618940050087;
+ Tue, 20 Apr 2021 10:34:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYskw4f8GDnn+YngdXihFGs5vP5EekDNqECY7XKTd9cbRg@mail.gmail.com>
- <CANn89iKKXcuczM9XUbg3ntLUFMLdaJCO5ojNJ+UT4kaTVKuE+g@mail.gmail.com>
-In-Reply-To: <CANn89iKKXcuczM9XUbg3ntLUFMLdaJCO5ojNJ+UT4kaTVKuE+g@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Apr 2021 23:02:10 +0530
-Message-ID: <CA+G9fYusGV=Qn45EvHU34VS=dkUh0DUPZkCffm=25tz+4_f3Yw@mail.gmail.com>
-Subject: Re: BUG: KASAN: use-after-free in page_to_skb.isra.0+0x300/0x418
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alan Bennett <alan.bennett@linaro.org>
+References: <20210416045851.GA13811@mail.hallyn.com> <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com> <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com> <20210419122514.GA20598@mail.hallyn.com>
+ <20210419160911.5pguvpj7kfuj6rnr@wittgenstein> <20210420034208.GA2830@mail.hallyn.com>
+ <20210420083129.exyn7ptahx2fg72e@wittgenstein> <20210420134334.GA11582@mail.hallyn.com>
+ <20210420164707.lzrpynsii3kqe2tm@wittgenstein>
+In-Reply-To: <20210420164707.lzrpynsii3kqe2tm@wittgenstein>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Tue, 20 Apr 2021 10:33:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj3M87k8QKb5jn+SxK8u74_aEEE7ZsuvVY84usCAJEWrA@mail.gmail.com>
+Message-ID: <CAHk-=wj3M87k8QKb5jn+SxK8u74_aEEE7ZsuvVY84usCAJEWrA@mail.gmail.com>
+Subject: Re: [PATCH v3.4] capabilities: require CAP_SETFCAP to map uid 0
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Security Officers <security@kernel.org>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 at 19:47, Eric Dumazet <edumazet@google.com> wrote:
+On Tue, Apr 20, 2021 at 9:47 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
 >
-> On Tue, Apr 20, 2021 at 3:45 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > Following kernel BUG reported on qemu-arm64 running linux next 20210420
-> > the config is enabled with KASAN.
-> >
-> > steps to reproduce:
-> > ----------------------------
-> > - Build the arm64 kernel with KASAN enabled.
-> > - boot it with below command and you will notice
-> >  /usr/bin/qemu-system-aarch64 -cpu host -machine virt,accel=kvm
-> > -nographic -net nic,model=virtio,macaddr=BA:DD:AD:CC:09:10 -net tap -m
-> > 1024 -monitor none -kernel kernel/Image.gz --append "console=ttyAMA0
-> > root=/dev/vda rw" -hda
-> > rootfs/rpb-console-image-lkft-juno-20210414125244-133.rootfs.ext4 -m
-> > 4096 -smp 4 -nographic
-> >
-> >
-> > crash log:
-> > -------------
-> >
->
-> This is the fifth report, have you tried the proposed fix ?
->
-> https://patchwork.kernel.org/project/netdevbpf/patch/20210420094341.3259328-1-eric.dumazet@gmail.com/
+> If there's no objections then Linus can probably just pick up the single
+> patch here directly:
 
-I have tested your patch now and the reported issue got fixed.
+I'm ok with that assuming I don't hear any last-minute concerns..
 
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+I'll plan on appling it later today, so anybody with concerns please
+holler quickly.
 
-Tested log link,
-https://lkft.validation.linaro.org/scheduler/job/2555544#L208
+I don't want to leave it to much later in the week, and I may or may
+not be functional tomorrow (getting my second vaccine shot, some
+people react more strongly to it, so I'm leaving the possibility open
+of not getting out of bed ;)
 
-- Naresh
+             Linus
