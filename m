@@ -2,150 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5254366117
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEA6366120
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhDTUqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbhDTUqM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:46:12 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2012C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:45:40 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id k73so38314888ybf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:45:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PNWJnV/ujY0AN1/v5JQQqbaoBjz2BczeakSAfc9G65g=;
-        b=JmEmQ1D+ODdrwKrwWj0YOP+LdHOd9roC5YmCZ8iKaY3ySqcDx0cyMmAqAhs/BIRer6
-         BIQmhHuLIogDg6jE8hRR5+acsut5b7DmJpk+M5Qin+dohrtDco+FYLHIEkwizYIH/VFy
-         7D4d5O+++U+8bGRQyY5k43091qfq5t52c8+9ZTvJDCLpnV8ustet3YMp9JlpLMzGbOnS
-         6GnulHbJ/xDnCAqs384JsNg8cWUSggU16lLY4ZRORY1CP3y6YJR0W8IBvdIkXyI4yzdh
-         zB2aeQokQEWsIdHTTscKaUGSuRDZKZXeNygQU37BPp3OYOjI9bxeSioqZBOa6FN9hyKi
-         8/lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PNWJnV/ujY0AN1/v5JQQqbaoBjz2BczeakSAfc9G65g=;
-        b=NenZ9sJ3dEZ0k/5mc0iUGAX1IRAyUUhqU8vt4xvxRwvv+bvNPP4iP141XtEB+/pnbS
-         epKrIY+RutDJfHJMJngtmpWx+N778onJIS7Koo7DkjMfn13IqV+0wmy1n7cq/7hjq2JZ
-         oD6V5gSOdsZ+LTPwcKAryQ2ST6geFgsxlNwU5y2UtKhbVneA3eor7WJT3m/NXW7h0Lyp
-         QEDFgtvSfHivotKWdCqarB5dZ/f01U/XuXeUAxRFIcnkUVbb8XtV1pqCPK8qfeeryCAz
-         tqS+MUAyozPjuexH2k5x5AtXlArYKuKNBO23VnGZQed/L/74y8MnegH6UoFv+QIAOB4N
-         Kefw==
-X-Gm-Message-State: AOAM533e0WAeO59Ngm7JIt0wwU2oeXfyQiWqQQpjfYE0iYC5kYBAUeg/
-        +jMDAfkZ6JZuntIJftctK9S23lHZCpoyhp6S2IorRw==
-X-Google-Smtp-Source: ABdhPJxvErDAeKN7gNVUK8lP+l8e8YgAeqaZVPcPX0mn5e8XJ3uublln/uslQceWPqApgq7S+ag3pSG/4f3jJ0cavaA=
-X-Received: by 2002:a25:7085:: with SMTP id l127mr27992640ybc.293.1618951539670;
- Tue, 20 Apr 2021 13:45:39 -0700 (PDT)
+        id S234045AbhDTUs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:48:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36194 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233769AbhDTUs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:48:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 33D1CB4FA;
+        Tue, 20 Apr 2021 20:48:23 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] irqchip: Add support for IDT 79rc3243x interrupt controller
+Date:   Tue, 20 Apr 2021 22:48:19 +0200
+Message-Id: <20210420204821.39396-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-3-samitolvanen@google.com> <20210420194747.3snxvaaa4amfnbah@treble>
-In-Reply-To: <20210420194747.3snxvaaa4amfnbah@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 20 Apr 2021 13:45:28 -0700
-Message-ID: <CABCJKufE2_z0SGhsbgu-Wu+L5TRhOktQO4wHgJg04RYcvoxAAA@mail.gmail.com>
-Subject: Re: [PATCH 02/15] objtool: Add CONFIG_CFI_CLANG support
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:48 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Fri, Apr 16, 2021 at 01:38:31PM -0700, Sami Tolvanen wrote:
-> > +static int fix_cfi_relocs(const struct elf *elf)
-> > +{
-> > +     struct section *sec, *tmpsec;
-> > +     struct reloc *reloc, *tmpreloc;
-> > +
-> > +     list_for_each_entry_safe(sec, tmpsec, &elf->sections, list) {
-> > +             list_for_each_entry_safe(reloc, tmpreloc, &sec->reloc_list, list) {
->
-> These loops don't remove structs from the lists, so are the "safe"
-> iterators really needed?
->
-> > +                     struct symbol *sym;
-> > +                     struct reloc *func_reloc;
-> > +
-> > +                     /*
-> > +                      * CONFIG_CFI_CLANG replaces function relocations to refer
-> > +                      * to an intermediate jump table. Undo the conversion so
-> > +                      * objtool can make sense of things.
-> > +                      */
->
-> I think this comment could be clearer if it were placed above the
-> function.
->
-> > +                     if (!reloc->sym->sec->cfi_jt)
-> > +                             continue;
-> > +
-> > +                     if (reloc->sym->type == STT_SECTION)
-> > +                             sym = find_func_by_offset(reloc->sym->sec,
-> > +                                                       reloc->addend);
-> > +                     else
-> > +                             sym = reloc->sym;
-> > +
-> > +                     if (!sym || !sym->sec)
-> > +                             continue;
->
-> This should be a fatal error, it probably means something's gone wrong
-> with the reading of the jump table.
->
-> > +
-> > +                     /*
-> > +                      * The jump table immediately jumps to the actual function,
-> > +                      * so look up the relocation there.
-> > +                      */
-> > +                     func_reloc = find_reloc_by_dest_range(elf, sym->sec, sym->offset, 5);
->
-> The jump instruction's reloc is always at offset 1, so this can maybe be
-> optimized to:
->
->                         func_reloc = find_reloc_by_dest(elf, sym->sec, sym->offset+1);
->
-> though of course that will probably break (future) arm64 objtool.  Maybe
-> an arch-specific offset from the start of the insn would be good.
->
-> > +                     if (!func_reloc || !func_reloc->sym)
-> > +                             continue;
->
-> This should also be an error.
->
-> > +
-> > +                     reloc->sym = func_reloc->sym;
->
-> I think we should also do 'reloc->addend = 0', because of the
-> STT_SECTION case:
->
->   0000000000000025  0000259e0000000b R_X86_64_32S           0000000000000000 .text..L.cfi.jumptable.8047 + 8
->
-> which then translates to
->
->   0000000000000009  0000063200000004 R_X86_64_PLT32         0000000000000000 x2apic_prepare_cpu - 4
->
-> so the original addend of '8' is no longer valid.  Copying the '-4'
-> wouldn't be right either, because that only applies to a PLT32 text
-> reloc.  A '0' should be appropriate for the 32S data reloc.
->
-> This addend might not actually be read by any code, so it may not
-> currently be an actual bug, but better safe than sorry.
+IDT 79rc3243x SoCs have rather simple interrupt controllers connected
+to the MIPS CPU interrupt lines. Each of them has room for up to
+32 interrupts.
 
-Thank you for taking a look, Josh!  I'll fix these in the next version.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ drivers/irqchip/Kconfig        |   5 ++
+ drivers/irqchip/Makefile       |   1 +
+ drivers/irqchip/irq-idt3243x.c | 124 +++++++++++++++++++++++++++++++++
+ 3 files changed, 130 insertions(+)
+ create mode 100644 drivers/irqchip/irq-idt3243x.c
 
-Sami
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index e74fa206240a..55562b36bf3c 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -586,4 +586,9 @@ config MST_IRQ
+ 	help
+ 	  Support MStar Interrupt Controller.
+ 
++config IRQ_IDT3243X
++	bool
++	select GENERIC_IRQ_CHIP
++	select IRQ_DOMAIN
++
+ endmenu
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index c59b95a0532c..341891443eec 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
+ obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
+ obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
+ obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
++obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
+diff --git a/drivers/irqchip/irq-idt3243x.c b/drivers/irqchip/irq-idt3243x.c
+new file mode 100644
+index 000000000000..61caf21ef46c
+--- /dev/null
++++ b/drivers/irqchip/irq-idt3243x.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for IDT/Renesas 79RC3243x Interrupt Controller.
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqchip.h>
++#include <linux/irqchip/chained_irq.h>
++#include <linux/irqdomain.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++
++#define IDT_PIC_NR_IRQS		32
++
++#define IDT_PIC_IRQ_PEND		0x00
++#define IDT_PIC_IRQ_MASK		0x08
++
++struct idt_pic_data {
++	void __iomem *base;
++	struct irq_domain *irq_domain;
++	struct irq_chip_generic *gc;
++};
++
++static void idt_irq_dispatch(struct irq_desc *desc)
++{
++	struct idt_pic_data *idtpic = irq_desc_get_handler_data(desc);
++	struct irq_chip *host_chip = irq_desc_get_chip(desc);
++	u32 pending, hwirq, virq;
++
++	chained_irq_enter(host_chip, desc);
++
++	pending = irq_reg_readl(idtpic->gc, IDT_PIC_IRQ_PEND);
++	pending &= ~idtpic->gc->mask_cache;
++	while (pending) {
++		hwirq = __fls(pending);
++		virq = irq_linear_revmap(idtpic->irq_domain, hwirq);
++		if (virq)
++			generic_handle_irq(virq);
++		pending &= ~(1 << hwirq);
++	}
++
++	chained_irq_exit(host_chip, desc);
++}
++
++static int idt_pic_init(struct device_node *of_node, struct device_node *parent)
++{
++	struct irq_domain *domain;
++	struct idt_pic_data *idtpic;
++	struct irq_chip_generic *gc;
++	struct irq_chip_type *ct;
++	unsigned int parent_irq;
++	int ret = 0;
++
++	idtpic = kzalloc(sizeof(*idtpic), GFP_KERNEL);
++	if (!idtpic) {
++		ret = -ENOMEM;
++		goto out_err;
++	}
++
++	parent_irq = irq_of_parse_and_map(of_node, 0);
++	if (!parent_irq) {
++		pr_err("Failed to map parent IRQ!\n");
++		ret = -EINVAL;
++		goto out_free;
++	}
++
++	idtpic->base = of_iomap(of_node, 0);
++	if (!idtpic->base) {
++		pr_err("Failed to map base address!\n");
++		ret = -ENOMEM;
++		goto out_unmap_irq;
++	}
++
++	domain = irq_domain_add_linear(of_node, IDT_PIC_NR_IRQS,
++				       &irq_generic_chip_ops, NULL);
++	if (!domain) {
++		pr_err("Failed to add irqdomain!\n");
++		ret = -ENOMEM;
++		goto out_iounmap;
++	}
++	idtpic->irq_domain = domain;
++
++	ret = irq_alloc_domain_generic_chips(domain, 32, 1, "IDTPIC",
++					     handle_level_irq, 0,
++					     IRQ_NOPROBE | IRQ_LEVEL, 0);
++	if (ret)
++		goto out_domain_remove;
++
++	gc = irq_get_domain_generic_chip(domain, 0);
++	gc->reg_base = idtpic->base;
++	gc->private = idtpic;
++
++	ct = gc->chip_types;
++	ct->regs.mask = IDT_PIC_IRQ_MASK;
++	ct->chip.irq_mask = irq_gc_mask_set_bit;
++	ct->chip.irq_unmask = irq_gc_mask_clr_bit;
++	idtpic->gc = gc;
++
++	/* Mask interrupts. */
++	writel(0xffffffff, idtpic->base + IDT_PIC_IRQ_MASK);
++	gc->mask_cache = 0xffffffff;
++
++	irq_set_chained_handler_and_data(parent_irq,
++					 idt_irq_dispatch, idtpic);
++
++	return 0;
++
++out_domain_remove:
++	irq_domain_remove(domain);
++out_iounmap:
++	iounmap(idtpic->base);
++out_unmap_irq:
++	irq_dispose_mapping(parent_irq);
++out_free:
++	kfree(idtpic);
++out_err:
++	pr_err("Failed to initialize! (errno = %d)\n", ret);
++	return ret;
++}
++
++IRQCHIP_DECLARE(idt_pic, "idt,3243x-pic", idt_pic_init);
+-- 
+2.29.2
+
