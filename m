@@ -2,122 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EBB365EE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81992365EE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhDTSBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:01:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54324 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDTSBQ (ORCPT
+        id S233502AbhDTSCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:02:16 -0400
+Received: from angie.orcam.me.uk ([157.25.102.26]:39210 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhDTSCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:01:16 -0400
-Date:   Tue, 20 Apr 2021 18:00:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618941643;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lB8Nr79VQcJ0XrHrhfDkVzK+uESNxrArLq8LgVXCQZA=;
-        b=RQcZ0rm//xb+p/bl3ShgqGDi3NZOkeOHrzPie4dW/92IewBMuU1/QT04BoT+0NPPx71KoO
-        0VHMTq4Vq3VfnyV/tSEfu2meMhSO1nVghr1TvU3wLNoKc2fER2m3pFkGgSSXrYn/FJJeK6
-        iKSJxvcKyMQA2lXjgboLPEVdg+d35aWjkUnTfsFvfIHSaV5Np0a2+s68/pRNLcLjGAmjZG
-        l9S2zIoUINT58uUwvPyg0BCu/aOEm4c8JMg9JjcwL0KTkaqemELvxAKAIVjlQ5bMAM0Jj5
-        8VJNsixlTKjNzvzG3Yq7so+97FsqXjZOjen8neq8Oa6lT2zgnUKLAiXlbMg7sw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618941643;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lB8Nr79VQcJ0XrHrhfDkVzK+uESNxrArLq8LgVXCQZA=;
-        b=PtRb2w84N4arpBl578nhmM7gr3ka08KQpgrmm3kJEAcrzv57DP82SmaGAgKWHKpOr/sD2u
-        486kia52A4X2HfBw==
-From:   "tip-bot2 for Mike Galbraith" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/crash: Fix crash_setup_memmap_entries()
- out-of-bounds access
-Cc:     Mike Galbraith <efault@gmx.de>, Borislav Petkov <bp@suse.de>,
-        Dave Young <dyoung@redhat.com>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
-References: <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
+        Tue, 20 Apr 2021 14:02:15 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 2A6F992009C; Tue, 20 Apr 2021 20:01:42 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2786292009B;
+        Tue, 20 Apr 2021 20:01:42 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 20:01:42 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Khalid Aziz <khalid@gonehiking.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] Bring the BusLogic host bus adapter driver up to
+ Y2021
+Message-ID: <alpine.DEB.2.21.2104201934280.44318@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Message-ID: <161894164234.29796.8745971840518585404.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi,
 
-Commit-ID:     5849cdf8c120e3979c57d34be55b92d90a77a47e
-Gitweb:        https://git.kernel.org/tip/5849cdf8c120e3979c57d34be55b92d90a77a47e
-Author:        Mike Galbraith <efault@gmx.de>
-AuthorDate:    Fri, 16 Apr 2021 14:02:07 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 20 Apr 2021 17:32:46 +02:00
+ This is v2 of the series with 2/5 updated to use `vscnprintf' rather than 
+`vsnprintf'.  No other changes.
 
-x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
+ So we are here owing to Christoph's recent ISA bounce buffering sweep: 
+<https://lore.kernel.org/linux-scsi/20210331073001.46776-1-hch@lst.de/T/#m981284e74e93216626a0728ce1601ca18fca92e8> 
+which has prompted me to verify the current version of Linux with my old 
+server, which has been long equipped with venerable Linux 2.6.18 and which 
+I now have available for general experimenting, and the BusLogic BT-958 
+PCI SCSI host bus adapter the server has used for 20-something years now.  
+This revealed numerous issues with the BusLogic driver.
 
-Commit in Fixes: added support for kexec-ing a kernel on panic using a
-new system call. As part of it, it does prepare a memory map for the new
-kernel.
+ Firstly (1/5) it has suffered from some bitrot and messages produced have 
+become messy from the lack of update for proper `pr_cont' support.
 
-However, while doing so, it wrongly accesses memory it has not
-allocated: it accesses the first element of the cmem->ranges[] array in
-memmap_exclude_ranges() but it has not allocated the memory for it in
-crash_setup_memmap_entries(). As KASAN reports:
+ Secondly (2/5) there has been a potential buffer overrun/stack corruption 
+security issue from using an unbounded `vsprintf' call.
 
-  BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
-  Write of size 8 at addr ffffc90000426008 by task kexec/1187
+ Thirdly (3/5) it has become obvious the BusLogic driver would have been 
+non-functional, should I have upgraded the kernel, at least with this 
+configuration for some 8 years now, and the underlying cause has been a 
+long-known issue with the MultiMaster firmware I have dealt with already, 
+back in 2003.  To put it short the firmware cannot cope with commands that 
+request an allocation length exceeding the length of actual data returned.
 
-  (gdb) list *crash_setup_memmap_entries+0x17e
-  0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
-  317                                      unsigned long long mend)
-  318     {
-  319             unsigned long start, end;
-  320
-  321             cmem->ranges[0].start = mstart;
-  322             cmem->ranges[0].end = mend;
-  323             cmem->nr_ranges = 1;
-  324
-  325             /* Exclude elf header region */
-  326             start = image->arch.elf_load_addr;
-  (gdb)
+ I have originally observed it with a LOG SENSE command in the course of 
+investigating why smartmontools bring the system to a death, and worked it 
+around: <https://sourceforge.net/p/smartmontools/mailman/message/4993087/> 
+by issuing the command twice, first just to obtain the allocation length 
+required.  As it turns out we need a similar workaround in the kernel now.
 
-Make sure the ranges array becomes a single element allocated.
+ But in the course of investigating this issue I have discovered there is 
+a second bottom to it and hence I have prepared follow-up changes (4-5/5) 
+to address problems with our handling of Vital Product Data INQUIRY pages.
 
- [ bp: Write a proper commit message. ]
+ See individual change descriptions for further details.
 
-Fixes: dd5f726076cc ("kexec: support for kexec on panic using new system call")
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Dave Young <dyoung@redhat.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de
----
- arch/x86/kernel/crash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Questions, comments, concerns?  Otherwise please apply.
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index a8f3af2..b1deacb 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
- 	struct crash_memmap_data cmd;
- 	struct crash_mem *cmem;
- 
--	cmem = vzalloc(sizeof(struct crash_mem));
-+	cmem = vzalloc(struct_size(cmem, ranges, 1));
- 	if (!cmem)
- 		return -ENOMEM;
- 
+  Maciej
