@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE442365F79
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2932D365F85
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbhDTSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:35:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233587AbhDTSey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:34:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3055361002;
-        Tue, 20 Apr 2021 18:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618943662;
-        bh=em6cx2HBxMwbhr6KaCllMTUwubhy8v8uRwj/RBaSigs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=a+7/zfIUj3cUkwkz8a8LdV1bB3rMoS404I/qpQ6nWScZNcmnHWVJYDsgiyHbs/yAc
-         4T/oS7l7fNHWbir/e8V3oFJ0zBgVCkrsqKHBmgqjoa0B9DW1Kvv6u/UrfEWgUcfk2w
-         qSwmoatNxQkeOC+CDgHJgHYxmIBRpcjh3j8ZA60gMvQIvbO6B2DZgipb1n+33+00JG
-         VwcWkpdoNK6olKESeBIvP208KaIEyBOaBP7PrwHkRyJV60aforGAmeV3/rWfgRKgXG
-         nwb0wp0IPHW0fT1F9y4l2HLlbUqIAoGlzlokPDGTm2lLMy9RAJjTIzPMexHYdd7bqt
-         +5Gr54GLIMtsA==
-Date:   Tue, 20 Apr 2021 11:34:20 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH net-next 4/6] r8152: support new chips
-Message-ID: <20210420113420.79d7c65a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <0de9842749db4718b8f45a0f2fff7967@realtek.com>
-References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
-        <1394712342-15778-354-Taiwan-albertk@realtek.com>
-        <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <0de9842749db4718b8f45a0f2fff7967@realtek.com>
+        id S233670AbhDTSgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233725AbhDTSfQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 14:35:16 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C822C06138C
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:34:43 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z1so44135977ybf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vAOrCoyYrv8Lm0v4fykeO9V9jTibRdCXXAxqwXvAZpc=;
+        b=HIrW8WT9mQHKJPBllBIAPKsWTumJ72st8Jhlxb6coBcFIu5v/yFCGicz6Q8YQEUT67
+         vSml9cuPKhRqmq5HoBnwhjiHH6ITsUwzRbbSkdFTqFq0gN4EGVHYC8V57xNy64C6imdg
+         z+DfqClwcZi4OhLXdzHT66ZnHqQbBSllmLDiiFuAhNyF/1O8xsWLI1Sq3FDFiglz8H1o
+         Bl/p9NK1TYdhX1ievcaXEmGZkNEs9GeWKQUPlItFkTa1i3lr7D+G5rQnHK8gHPQ7fSH+
+         Obn8aljmS1elPoWlrh8ysIFsTK5M4QYBsLrmGbm/Z2TGwFcn2WRHZAM/cUXbLBa2Cj8L
+         DSoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vAOrCoyYrv8Lm0v4fykeO9V9jTibRdCXXAxqwXvAZpc=;
+        b=U/6OuQqSXQVzj2FKALRm3bgOFSLId6qNh4tKW0CMYF92bmQRiAVOoCS8/HK0HV/gc2
+         aufgp0+N/EiGx3qPzaNOfQjLIoey7SZheyz+92ihHEtGhJI+RB+RlZlE1yGmVR1+1x/5
+         KYnyA2Th5YzXsqJIM8Hn1NMABNyDUsKm61Z3cyM3/HrtN9uOMK96CjqEJdQgsqghrqWq
+         gaJwHIBfvmI8AR8LIA1C6WB0+T3YmaRWFxzrOqRM18/n7O7b/O6nzB/wLLBWu7MwXj1/
+         yx+WGb+sfi1wBI0US+G6sQ8H2UII796Ddd6SXVyrZ6t8D5QnBsoT8aGkm7xKsZAm0Qm1
+         aWWQ==
+X-Gm-Message-State: AOAM5323f8gZimyORfIjp1J/vELiMmDTV7JvA2S/U8j41voT4Mf4OqoO
+        qeclud/v01BC8FdHW+xq0H1X46VWkvWZSdz5VBQ=
+X-Google-Smtp-Source: ABdhPJykLsBh8EHrMaEKAoX89i+Ci+kFzS5mmksxZ77n8wDBxEcllYxdWRrmBdR2azGDdx5qcyePBN1W8KkuCA1plKg=
+X-Received: by 2002:a25:690d:: with SMTP id e13mr26615947ybc.90.1618943682929;
+ Tue, 20 Apr 2021 11:34:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210322114730.71103-1-yuchao0@huawei.com> <CAFcO6XMak8GSRqQbZ3nPdGvV_eM6DL0+P0z1X2y0G9hkrccaCg@mail.gmail.com>
+ <beff8953-d91a-c677-f50a-3aba27c15dde@huawei.com> <YH8SvK+OLSKAEYpJ@eldamar.lan>
+ <YH8dJQCJm7iqsC+a@google.com>
+In-Reply-To: <YH8dJQCJm7iqsC+a@google.com>
+From:   butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Date:   Wed, 21 Apr 2021 02:34:32 +0800
+Message-ID: <CAFcO6XPM4hrHTh6-DKO8TOCYTsHW-n8QWJywvbvnhTECQTbZeQ@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix to avoid out-of-bounds memory access
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        Chao Yu <yuchao0@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 07:00:39 +0000 Hayes Wang wrote:
-> > > @@ -6878,7 +8942,11 @@ static int rtl8152_probe(struct usb_interface *intf,  
-> > >  	set_ethernet_addr(tp);
+Cool, thanks!
+
+Regards,
+ butt3rflyh4ck.
+
+On Wed, Apr 21, 2021 at 2:27 AM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+>
+> Hi,
+>
+> On 04/20, Salvatore Bonaccorso wrote:
+> > Hi,
+> >
+> > On Tue, Mar 23, 2021 at 02:43:29PM +0800, Chao Yu wrote:
+> > > Hi butt3rflyh4ck,
 > > >
-> > >  	usb_set_intfdata(intf, tp);
-> > > -	netif_napi_add(netdev, &tp->napi, r8152_poll, RTL8152_NAPI_WEIGHT);
-> > > +
-> > > +	if (tp->support_2500full)
-> > > +		netif_napi_add(netdev, &tp->napi, r8152_poll, 256);  
-> > 
-> > why 256? We have 100G+ drivers all using 64 what's special here?
-> >   
-> > > +	else
-> > > +		netif_napi_add(netdev, &tp->napi, r8152_poll, 64);  
-> 
-> We test 2.5G Ethernet on some embedded platform.
-> And we find 64 is not large enough, and the performance
-> couldn't reach 2.5 G bits/s.
-
-Did you manage to identify what the cause is?
-
-NAPI will keep calling your driver if the budget was exhausted, the
-only difference between 64 and 256 should be the setup cost of the
-driver's internal loop. And perhaps more frequent GRO flush - what's
-the CONFIG_HZ set to?
-
+> > > On 2021/3/23 13:48, butt3rflyh4ck wrote:
+> > > > Hi, I have tested the patch on 5.12.0-rc4+, it seems to fix the problem.
+> > >
+> > > Thanks for helping to test this patch.
+> >
+> > Was this patch applied? I do not see it in mainline (unless
+> > miss-checked).
+>
+> Not yet. Queue for next merge window.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=b862676e371715456c9dade7990c8004996d0d9e
+>
+> >
+> > Regards,
+> > Salvatore
