@@ -2,203 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9708D36595B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92801365959
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhDTM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:58:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:34304 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232026AbhDTM6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:58:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8C241478;
-        Tue, 20 Apr 2021 05:57:36 -0700 (PDT)
-Received: from e120189.arm.com (unknown [10.57.57.251])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 62DBF3F792;
-        Tue, 20 Apr 2021 05:57:33 -0700 (PDT)
-From:   Pierre.Gondois@arm.com
-To:     linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com
-Cc:     Lukasz.Luba@arm.com, Vincent.Donnefort@arm.com,
-        dietmar.eggemann@arm.com, qais.yousef@arm.com,
-        Pierre Gondois <Pierre.Gondois@arm.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        qperret@qperret.net
-Subject: [PATCH] sched/fair: Fix negative energy delta in find_energy_efficient_cpu()
-Date:   Tue, 20 Apr 2021 13:56:04 +0100
-Message-Id: <20210420125604.15796-1-Pierre.Gondois@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S231393AbhDTM5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231313AbhDTM5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:57:20 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52F4C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:56:48 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id d27so4463188lfv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=XPMepYIfCdHU7wP4/eNHGm+W5avu0eYuBbOITBTjPeM=;
+        b=CRIe8YE7uHnZHPvTjONlKjfx1NsBiENiobwMK33tUP5kWnG0eBD8O8bZlGegFmcQIX
+         miz3TiF+CzJbdoZGjWrMfvaNFGI5S4DBgIPFR9hSNSJa3eiMc1767SbXEFw3kTylDnw7
+         oZ6piyM25a8Oj2S/LfmmQVxInQFEcv+UX2wCXSuDSPL6SmM/Ts6ouF8OmJKc0N7Bl9A5
+         UsABkMW+kQRdtFIM4I1Dr/9R/WBlqqyPfxaCXSTYYucIaPbJUrUoH1gIMlJlINRZY/NJ
+         nLWwuBhGwaBl5cOEioDgTfOfIJvqR5854R/kRJIS2jHVqWTqOZoARyC0fRHLOT2GPUh9
+         NqGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=XPMepYIfCdHU7wP4/eNHGm+W5avu0eYuBbOITBTjPeM=;
+        b=Z15dN+g9n7c9+WtHBtiO0M2Gxclze4PEznnKSrvAz/VoUf1pmoav4cddgq6a5+7c/l
+         xOOtQCegrqI1jGNQvNXn07qOHskQPRVJS1zivQHr79+sivNuW+TKLQ0bXNFL7lNStrmS
+         CvC6TU06aoTUPyDTTPfZgn02VMQkEmuUvYYji56H1QMQtKz4bUG3W2ZEXcjfRf+20eT6
+         tR3Y0khypQMLj975mbr8OKIY3qjKTFKxLezLgQX088Qj4a2S7z1tT1AMKavVI8Ar+5ME
+         bkK2cQ6MjPOLOdI7Vqs9hkK2rGVLyQZq+qpfx2Inst0/4gOdijBl6A8fCCgcY8LSaH4C
+         boyA==
+X-Gm-Message-State: AOAM532R14IJWxyZ2lC0Va+oN1SQcqWsMqGfQC+FRDwvJGCPjPA+Jvdc
+        bCq4FQfx5fwDusJUbnAtOyVEf2KtLTP3NMnBnjI8wnK7sTJShQ==
+X-Google-Smtp-Source: ABdhPJxt0GHfRur9fbeKyd3gCEzrVm/dOo3A+FixtIJnnzYF/W/MLUojDXqmTMZsnz0UuGrc8+RUHfcsg58OBwGLHVE=
+X-Received: by 2002:ac2:4a91:: with SMTP id l17mr15614171lfp.397.1618923407122;
+ Tue, 20 Apr 2021 05:56:47 -0700 (PDT)
+MIME-Version: 1.0
+From:   Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date:   Tue, 20 Apr 2021 18:26:35 +0530
+Message-ID: <CABPxzYKjxW+P_cMLmZgtQN7nbCB3zzksYQWpChC70tbVb6VJCA@mail.gmail.com>
+Subject: Module versioning + Missing CRC in symvers + export tracepoints
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre Gondois <Pierre.Gondois@arm.com>
+Hi,
 
-find_energy_efficient_cpu() (feec()) searches the best energy CPU
-to place a task on. To do so, compute_energy() estimates the energy
-impact of placing the task on a CPU, based on CPU and task utilization
-signals.
+I am seeing an issue of no CRC being generated in the Module.symvers for a
+driver module even when CONFIG_MODVERSIONS Is enabled, this causes
+modpost warnings about missing versioning.
 
-Utilization signals can be concurrently updated while evaluating a
-perf_domain. In some cases, this leads to having a 'negative delta',
-i.e. placing the task in the perf_domain is seen as an energy gain.
-Thus, any further energy comparison is biased.
+The module in questions only exports tracepoint related symbols (as
+struct tracepoint is
+part of the module CRC), I have seen this with other modules also e.g.
+iwlwifi with CONFIG_MODVERSIONS.
 
-In case of a 'negative delta', return prev_cpu since:
-1. a 'negative delta' happens in less than 0.5% of feec() calls,
-   on a Juno with 6 CPUs (4 little, 2 big)
-2. it is unlikely to have two consecutive 'negative delta' for
-   a task, so if the first call fails, feec() will correctly
-   place the task in the next feec() call
-3. EAS current behavior tends to select prev_cpu if the task
-   doesn't raise the OPP of its current perf_domain. prev_cpu
-   is EAS's generic decision
-4. prev_cpu should be preferred to returning an error code.
-   In the latter case, select_idle_sibling() would do the placement,
-   selecting a big (and not energy efficient) CPU. As 3., the task
-   would potentially reside on the big CPU for a long time
+Though I am trying on 5.12.-rc2, also, seeing this issue with older kernels with
+CONFIG_MODVERSIONS enabled e.g. 4.15.0, Below are a couple of snippets
+to demonstrate the issue.
 
-The patch also:
-a. groups the compute_energy() calls to lower the chances of having
-   concurrent updates in between the calls
-b. skips the base_energy_pd computation if no CPU is available in a
-   perf_domain
+modpost warnings
+===============
 
-Fixes: eb92692b2544d sched/fair: Speed-up energy-aware wake-up
-Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
-Suggested-by: Xuewen Yan <xuewen.yan@unisoc.com>
-Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
----
- kernel/sched/fair.c | 69 +++++++++++++++++++++++++--------------------
- 1 file changed, 39 insertions(+), 30 deletions(-)
+WARNING: modpost: EXPORT symbol "__tracepoint_iwlwifi_dev_ucode_event"
+[drivers/net/wireless/intel/iwlwifi//iwlwifi.ko] version generation
+failed, symbol will not be versioned.
+WARNING: modpost: EXPORT symbol "iwl_remove_notification"
+[drivers/net/wireless/intel/iwlwifi//iwlwifi.ko] version generation
+failed, symbol will not be versioned.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0dba0ebc3657..577482aa8919 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6594,8 +6594,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- {
- 	unsigned long prev_delta = ULONG_MAX, best_delta = ULONG_MAX;
- 	struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
-+	int cpu, best_energy_cpu = prev_cpu, target = -1;
- 	unsigned long cpu_cap, util, base_energy = 0;
--	int cpu, best_energy_cpu = prev_cpu;
- 	struct sched_domain *sd;
- 	struct perf_domain *pd;
- 
-@@ -6614,19 +6614,18 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 	if (!sd)
- 		goto fail;
- 
-+	target = prev_cpu;
-+
- 	sync_entity_load_avg(&p->se);
- 	if (!task_util_est(p))
--		goto unlock;
-+		goto fail;
- 
- 	for (; pd; pd = pd->next) {
- 		unsigned long cur_delta, spare_cap, max_spare_cap = 0;
-+		bool compute_prev_delta = false;
- 		unsigned long base_energy_pd;
- 		int max_spare_cap_cpu = -1;
- 
--		/* Compute the 'base' energy of the pd, without @p */
--		base_energy_pd = compute_energy(p, -1, pd);
--		base_energy += base_energy_pd;
--
- 		for_each_cpu_and(cpu, perf_domain_span(pd), sched_domain_span(sd)) {
- 			if (!cpumask_test_cpu(cpu, p->cpus_ptr))
- 				continue;
-@@ -6647,26 +6646,41 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 			if (!fits_capacity(util, cpu_cap))
- 				continue;
- 
--			/* Always use prev_cpu as a candidate. */
- 			if (cpu == prev_cpu) {
--				prev_delta = compute_energy(p, prev_cpu, pd);
--				prev_delta -= base_energy_pd;
--				best_delta = min(best_delta, prev_delta);
--			}
--
--			/*
--			 * Find the CPU with the maximum spare capacity in
--			 * the performance domain
--			 */
--			if (spare_cap > max_spare_cap) {
-+				/* Always use prev_cpu as a candidate. */
-+				compute_prev_delta = true;
-+			} else if (spare_cap > max_spare_cap) {
-+				/*
-+				 * Find the CPU with the maximum spare capacity
-+				 * in the performance domain.
-+				 */
- 				max_spare_cap = spare_cap;
- 				max_spare_cap_cpu = cpu;
- 			}
- 		}
- 
-+		if (max_spare_cap_cpu < 0 && !compute_prev_delta)
-+			continue;
-+
-+		/* Compute the 'base' energy of the pd, without @p */
-+		base_energy_pd = compute_energy(p, -1, pd);
-+		base_energy += base_energy_pd;
-+
-+		if (compute_prev_delta) {
-+			prev_delta = compute_energy(p, prev_cpu, pd);
-+			/* Prevent negative deltas and select prev_cpu */
-+			if (prev_delta < base_energy_pd)
-+				goto fail;
-+			prev_delta -= base_energy_pd;
-+			best_delta = min(best_delta, prev_delta);
-+		}
-+
- 		/* Evaluate the energy impact of using this CPU. */
--		if (max_spare_cap_cpu >= 0 && max_spare_cap_cpu != prev_cpu) {
-+		if (max_spare_cap_cpu >= 0) {
- 			cur_delta = compute_energy(p, max_spare_cap_cpu, pd);
-+			/* Prevent negative deltas and select prev_cpu */
-+			if (cur_delta < base_energy_pd)
-+				goto fail;
- 			cur_delta -= base_energy_pd;
- 			if (cur_delta < best_delta) {
- 				best_delta = cur_delta;
-@@ -6674,25 +6688,20 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 			}
- 		}
- 	}
--unlock:
--	rcu_read_unlock();
- 
- 	/*
--	 * Pick the best CPU if prev_cpu cannot be used, or if it saves at
--	 * least 6% of the energy used by prev_cpu.
-+	 * Pick the best CPU if:
-+	 *  - prev_cpu cannot be used, or
-+	 *  - it saves at least 6% of the energy used by prev_cpu
- 	 */
--	if (prev_delta == ULONG_MAX)
--		return best_energy_cpu;
--
--	if ((prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
--		return best_energy_cpu;
--
--	return prev_cpu;
-+	if ((prev_delta == ULONG_MAX) ||
-+		(prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-+		target = best_energy_cpu;
- 
- fail:
- 	rcu_read_unlock();
- 
--	return -1;
-+	return target;
- }
- 
- /*
--- 
-2.17.1
 
+Module.symvers (after modpost)
+==============
+0x00000000      iwl_remove_notification
+drivers/net/wireless/intel/iwlwifi//iwlwifi     EXPORT_SYMBOL_GPL
+0x00000000      __tracepoint_iwlwifi_dev_ucode_event
+drivers/net/wireless/intel/iwlwifi//iwlwifi     EXPORT_SYMBOL
+
+Any ideas?
