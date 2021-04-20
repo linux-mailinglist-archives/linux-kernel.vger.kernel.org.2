@@ -2,84 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188C23652D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998903652D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhDTHF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:05:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47392 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhDTHFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:05:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618902294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S28F6Esk+D8dcXxbzF3+5LdtdDhDVFkM7q+K8PcVcuA=;
-        b=lPuVJltq9PaXSJxcyrY5c4MEe/mGjPi4zdRny/TzzxMqNPSwyDX8Tg+rckvKD8F+d4z1nW
-        5UFeIbGPKb2dVa8v2gnpzYTAI64GxxFnFVivgpMzhaVX8VHlLvaHb7sTWa6oNG9pbDdWP8
-        HGI8DPlQu+mFoOyQgJT/icH5D4fefb0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7550B137;
-        Tue, 20 Apr 2021 07:04:53 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 09:04:51 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        neilb@suse.de, samitolvanen@google.com, rppt@kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, willy@infradead.org
-Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <YH59E15ztpTTUKqS@dhcp22.suse.cz>
-References: <20210417104032.5521-1-peter.enderborg@sony.com>
- <YH10s/7MjxBBsjVL@dhcp22.suse.cz>
- <c3f0da9c-d127-5edf-dd21-50fd5298acef@sony.com>
- <YH2a9YfRBlfNnF+u@dhcp22.suse.cz>
- <23aa041b-0e7c-6f82-5655-836899973d66@sony.com>
- <d70efba0-c63d-b55a-c234-eb6d82ae813f@amd.com>
- <YH2ru642wYfqK5ne@dhcp22.suse.cz>
- <07ed1421-89f8-8845-b254-21730207c185@amd.com>
+        id S230281AbhDTHGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhDTHGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:06:33 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C5BC06174A;
+        Tue, 20 Apr 2021 00:06:02 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id CFF7F223;
+        Tue, 20 Apr 2021 00:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1618902362;
+        bh=g0xLinUXHY30s/oSJ/gr2qZ3DH90CdyHZFWyIo6gA5c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TlihSUxoYq+83iUyF9adfBlVqncR1YrbhzvCjP8uSHU1zCDV09Ta4hciJFhLn988J
+         AyQDUNc6CQ8KIRqBGX21F4m7Ys7F+hdFTIyi+wVOoEgL7Ay6X8qpCT64I8Ig/86AN2
+         2V1PygUsN/RU6nmP3zbuhB6XsFbd4vlcqHhoGRJw=
+Date:   Tue, 20 Apr 2021 02:06:00 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <YH59WOg0iKbz1d0l@hatter.bewilderbeest.net>
+References: <20210330112254.GB4976@sirena.org.uk>
+ <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
+ <20210330174221.GJ4976@sirena.org.uk>
+ <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
+ <20210330180200.GK4976@sirena.org.uk>
+ <20210330193810.GA235990@roeck-us.net>
+ <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
+ <20210420033648.GA227111@roeck-us.net>
+ <YH5rky8nA4nKAVdg@hatter.bewilderbeest.net>
+ <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <07ed1421-89f8-8845-b254-21730207c185@amd.com>
+In-Reply-To: <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19-04-21 18:37:13, Christian König wrote:
-> Am 19.04.21 um 18:11 schrieb Michal Hocko:
-[...]
-> > The question is not whether it is NUMA aware but whether it is useful to
-> > know per-numa data for the purpose the counter is supposed to serve.
-> 
-> No, not at all. The pages of a single DMA-buf could even be from different
-> NUMA nodes if the exporting driver decides that this is somehow useful.
+On Tue, Apr 20, 2021 at 01:00:25AM CDT, Guenter Roeck wrote:
+>On 4/19/21 10:50 PM, Zev Weiss wrote:
+>[ ... ]
+>
+>> I had a glance at the enclosure driver; it looks pretty geared toward SES-like things (drivers/scsi/ses.c being its only usage I can see in the kernel at the moment) and while it could perhaps be pressed into working for this it seems like it would probably drag in a fair amount of boilerplate and result in a somewhat gratuitously confusing driver arrangement (calling the things involved in the cases we're looking at "enclosures" seems like a bit of a stretch).
+>>
+>> As an alternative, would something like the patch below be more along the lines of what you're suggesting?  And if so, would it make sense to generalize it into something like 'pmbus-switch.c' and add a PMBUS_HAVE_POWERSWITCH functionality bit or similar in the pmbus code instead of hardcoding it for only LM25066 support?
+>>
+>>
+>
+>No. Don't access pmbus functions from outside drivers/hwmon/pmbus.
+>
+>I used to be opposed to function export restrictions (aka export namespaces),
+>but you are making a good case that we need to introduce them for pmbus
+>functions.
+>
+>Guenter
 
-As the use of the counter hasn't been explained yet I can only
-speculate. One thing that I can imagine to be useful is to fill gaps in
-our accounting. It is quite often that the memroy accounted in
-/proc/meminfo (or oom report) doesn't add up to the overall memory
-usage. In some workloads the workload can be huge! In many cases there
-are other means to find out additional memory by a subsystem specific
-interfaces (e.g. networking buffers). I do assume that dma-buf is just
-one of those and the counter can fill the said gap at least partially
-for some workloads. That is definitely useful.
+Okay -- I figured that was likely to be frowned upon, but the 
+alternative seemed to be effectively duplicating non-trivial chunks of 
+the pmbus code.  However, upon realizing that the LM25066 doesn't 
+actually require any of the paging work the generic pmbus code provides, 
+I suppose it can actually be done with a simple smbus read & write.  
+Does this version look better?
 
-What I am trying to bring up with NUMA side is that the same problem can
-happen on per-node basis. Let's say that some user consumes unexpectedly
-large amount of dma-buf on a certain node. This can lead to observable
-performance impact on anybody on allocating from that node and even
-worse cause an OOM for node bound consumers. How do I find out that it
-was dma-buf that has caused the problem?
 
-See where I am heading?
+Zev
+
+
+ From 1662e1c59c498ad6b208e6ab450bd467d71def34 Mon Sep 17 00:00:00 2001
+From: Zev Weiss <zev@bewilderbeest.net>
+Date: Wed, 31 Mar 2021 01:58:35 -0500
+Subject: [PATCH] misc: add lm25066-switch driver
+
+This driver allows an lm25066 to be switched on and off from userspace
+via sysfs.
+
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
+  drivers/misc/Kconfig          |   7 ++
+  drivers/misc/Makefile         |   1 +
+  drivers/misc/lm25066-switch.c | 126 ++++++++++++++++++++++++++++++++++
+  3 files changed, 134 insertions(+)
+  create mode 100644 drivers/misc/lm25066-switch.c
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index f532c59bb59b..384b6022ec15 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -445,6 +445,13 @@ config HISI_HIKEY_USB
+  	  switching between the dual-role USB-C port and the USB-A host ports
+  	  using only one USB controller.
+  
++config LM25066_SWITCH
++	tristate "LM25066 power switch support"
++	depends on OF && SENSORS_LM25066
++	help
++	  This driver augments LM25066 hwmon support with power switch
++	  functionality controllable from userspace via sysfs.
++
+  source "drivers/misc/c2port/Kconfig"
+  source "drivers/misc/eeprom/Kconfig"
+  source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 99b6f15a3c70..c948510d0cc9 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -56,3 +56,4 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+  obj-$(CONFIG_UACCE)		+= uacce/
+  obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+  obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
++obj-$(CONFIG_LM25066_SWITCH)	+= lm25066-switch.o
+diff --git a/drivers/misc/lm25066-switch.c b/drivers/misc/lm25066-switch.c
+new file mode 100644
+index 000000000000..9adc67c320f9
+--- /dev/null
++++ b/drivers/misc/lm25066-switch.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * This module provides a thin wrapper around the lm25066 hwmon driver that
++ * additionally exposes a userspace-controllable on/off power switch via
++ * sysfs.
++ *
++ * Author: Zev Weiss <zweiss@equinix.com>
++ *
++ * Copyright (C) 2021 Equinix Services, Inc.
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++
++/*
++ * The relevant PMBus command and data values for controlling the LM25066
++ * power state.  Because it's not a paged device we skip the usual paging
++ * business other PMBus devices might require.
++ */
++#define CMD_OPERATION 0x01
++#define OPERATION_ON 0x80
++#define OPERATION_OFF 0x00
++
++static ssize_t switch_show_state(struct device *dev, struct device_attribute *attr,
++                                 char *buf)
++{
++	struct i2c_client *pmic = dev_get_drvdata(dev);
++	ssize_t ret = i2c_smbus_read_byte_data(pmic, CMD_OPERATION);
++	if (ret < 0)
++		return ret;
++
++	return sysfs_emit(buf, "%s\n", (ret & OPERATION_ON) ? "on" : "off");
++}
++
++static ssize_t switch_set_state(struct device *dev, struct device_attribute *attr,
++                                const char *buf, size_t count)
++{
++	int status;
++	u8 value;
++	struct i2c_client *pmic = dev_get_drvdata(dev);
++	if (sysfs_streq(buf, "on"))
++		value = OPERATION_ON;
++	else if (sysfs_streq(buf, "off"))
++		value = OPERATION_OFF;
++	else
++		return -EINVAL;
++	status = i2c_smbus_write_byte_data(pmic, CMD_OPERATION, value);
++	return status ? : count;
++}
++
++static DEVICE_ATTR(state, 0644, switch_show_state, switch_set_state);
++
++static struct attribute *attributes[] = {
++	&dev_attr_state.attr,
++	NULL,
++};
++
++static const struct attribute_group attr_group = {
++	.attrs = attributes,
++};
++
++static int lm25066_switch_probe(struct platform_device *pdev)
++{
++	int status;
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *pmic_np;
++	struct i2c_client *pmic;
++
++	pmic_np = of_parse_phandle(np, "pmic", 0);
++	if (!pmic_np) {
++		dev_err(&pdev->dev, "Cannot parse lm25066-switch pmic\n");
++		return -ENODEV;
++	}
++
++	if (!of_device_is_compatible(pmic_np, "lm25066")) {
++		dev_err(&pdev->dev, "lm25066-switch pmic not lm25066 compatible");
++		status = -ENODEV;
++		goto out;
++	}
++
++	pmic = of_find_i2c_device_by_node(pmic_np);
++	if (!pmic) {
++		status = -EPROBE_DEFER;
++		goto out;
++	}
++
++	platform_set_drvdata(pdev, pmic);
++
++	status = sysfs_create_group(&pdev->dev.kobj, &attr_group);
++
++out:
++	of_node_put(pmic_np);
++	return status;
++}
++
++static int lm25066_switch_remove(struct platform_device *pdev)
++{
++	struct i2c_client *pmic = platform_get_drvdata(pdev);
++
++	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
++	put_device(&pmic->dev);
++
++	return 0;
++}
++
++static const struct of_device_id lm25066_switch_table[] = {
++	{ .compatible = "lm25066-switch" },
++	{ },
++};
++
++static struct platform_driver lm25066_switch_driver = {
++	.driver = {
++		.name = "lm25066-switch",
++		.of_match_table = lm25066_switch_table,
++	},
++	.probe = lm25066_switch_probe,
++	.remove = lm25066_switch_remove,
++};
++
++module_platform_driver(lm25066_switch_driver);
++
++MODULE_AUTHOR("Zev Weiss <zweiss@equinix.com>");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("LM25066 power-switch driver");
 -- 
-Michal Hocko
-SUSE Labs
+2.31.1
+
+
