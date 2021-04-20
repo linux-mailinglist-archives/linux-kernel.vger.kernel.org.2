@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C96365E02
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858AC365E05
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhDTQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:59:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31318 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233288AbhDTQ7O (ORCPT
+        id S233214AbhDTRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232767AbhDTRAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:59:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618937922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T7OnI4g7y/j0j8gjLvALAW+SBNaqStqVNvhZwF+q8fQ=;
-        b=X9dfAbFpw8hFy5Qw7bKTXT2gydl120EpLpRmNtaEKnojhqWog4KJvo84qMu39mWlppYOSU
-        bPBxnSMlwr+z5AZrpZy0QPXZVKcGSOzlLaWdpd5xj1qm6iiksX9Z3PaLbK5TPAcDR4vun8
-        4xs9nWMUM5r56o2MiWiG4B9uNjxStm8=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-9ggozBhEOzWEwU0HE3ZJrg-1; Tue, 20 Apr 2021 12:58:37 -0400
-X-MC-Unique: 9ggozBhEOzWEwU0HE3ZJrg-1
-Received: by mail-qt1-f200.google.com with SMTP id s4-20020ac85cc40000b02901b59d9c0986so8689619qta.19
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 09:58:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T7OnI4g7y/j0j8gjLvALAW+SBNaqStqVNvhZwF+q8fQ=;
-        b=isiNNyrg4LnPZUo/GlAEwF5cTnaoI/sf2gaMyEnqca0qqp1xF6tt+tPTyjZp+RjmqB
-         H6RLQBrlekQHKaG3clxXSg7dvPnjgWAo6G3S0SYlK4p9faA34RKYe6+PJDRasEP4OfKf
-         l7yoo7SCi9BDWiypfhF+vO08Dt7UftnxSNn7s0EGx6LB337aIENr+P8pA8HVzIoIaN4j
-         2dU5pe9pgfNLG2hMALZHW+v34Sa4Sz1iOQM2+yeYP6Ffgxf0tcFN5dFzLseOEproV9ba
-         PoITRoVag3XG9YbWR5ahQKATbkKWczAs+zpk+pkpe6CwqITiFeFRK3BBgPySQ2dcu+0o
-         Z7Mw==
-X-Gm-Message-State: AOAM530i2/fgs8zVSkc671HcCIhvg2P1rhZREaqjt9BXS38/u1aGNMIQ
-        njgRMCeYOaVdJw0yhqlMroInTHsu25PhJgPaxqF0I3A47bZAZerueUsS7fpUkXbQD/dMj3jJQJb
-        V3uZSXbeeKOQCgyloZ1Kobg7C
-X-Received: by 2002:a0c:f546:: with SMTP id p6mr2800294qvm.6.1618937917006;
-        Tue, 20 Apr 2021 09:58:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4vGLU180G23sXR7ipr4r0p+fP/T/k9RjNGzudGX4h5CRoFZSDKgPckbD3RgJpc83I6Xw8fQ==
-X-Received: by 2002:a0c:f546:: with SMTP id p6mr2800271qvm.6.1618937916731;
-        Tue, 20 Apr 2021 09:58:36 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id b4sm12604291qkf.64.2021.04.20.09.58.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 09:58:36 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 12:58:34 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] KVM: selftests: Always run vCPU thread with blocked
- SIG_IPI
-Message-ID: <20210420165834.GC4440@xz-x1>
-References: <20210420081614.684787-1-pbonzini@redhat.com>
- <20210420143739.GA4440@xz-x1>
- <20210420153223.GB4440@xz-x1>
- <84c52ebe-58a2-6188-270e-c86409e44fa3@redhat.com>
+        Tue, 20 Apr 2021 13:00:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68ED3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=TI4itBKQrnK7N1+JRagb2I2ih0zdOQqO0BJD+m1+J+E=; b=Efg3zCDE1rabqGaoQ6dxC/sGNP
+        JSg7HrYEToXqF82hOhGoqKSsocoaloP9I/2h37JrEE3hJoq2KHJ4n30eFYrH66f0MDRbODNy9//1R
+        n/GRxRCB0AK9Anck2IJkpeGZt625cWN2Bw1b8jgdDJqRbGarGlEa1ykjeLlG8wF88gz2Jy/AT7psA
+        0qhRwXxiHZBlRwiuyUbYhvS3v2xBHMTWs5/kB8/gklgpz+xkngrFvsAkuX7M05CeM63cK02JQ5Orf
+        TDnlQ1VOFvUC/YKgethsrqU2a88xlebs0rvNW8PaXUAnraEQXbUkNLXsV6zDByjUQ/etlzasHMeHr
+        cEB/U2ig==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYtid-00FPkL-Ia; Tue, 20 Apr 2021 16:59:42 +0000
+Subject: Re: (.text.ks8851_probe_common+0x370): undefined reference to
+ `__this_module'
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, Marek Vasut <marex@denx.de>,
+        Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <202102221437.vHlLwHmG-lkp@intel.com>
+ <33c7cb1f-b6c0-24bf-0e6c-23d5472e4c29@infradead.org>
+ <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <75670aaa-9904-a331-40c1-f1d8a2f92d30@infradead.org>
+Date:   Tue, 20 Apr 2021 09:59:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a1zfwJs3=mhvTGpLLak1Lqq6N-4N+zHrh-4KMRE75HP8w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <84c52ebe-58a2-6188-270e-c86409e44fa3@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 06:24:50PM +0200, Paolo Bonzini wrote:
-> On 20/04/21 17:32, Peter Xu wrote:
-> > On Tue, Apr 20, 2021 at 10:37:39AM -0400, Peter Xu wrote:
-> > > On Tue, Apr 20, 2021 at 04:16:14AM -0400, Paolo Bonzini wrote:
-> > > > The main thread could start to send SIG_IPI at any time, even before signal
-> > > > blocked on vcpu thread.  Therefore, start the vcpu thread with the signal
-> > > > blocked.
-> > > > 
-> > > > Without this patch, on very busy cores the dirty_log_test could fail directly
-> > > > on receiving a SIGUSR1 without a handler (when vcpu runs far slower than main).
-> > > > 
-> > > > Reported-by: Peter Xu <peterx@redhat.com>
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > > 
-> > > Yes, indeed better! :)
-> > > 
-> > > Reviewed-by: Peter Xu <peterx@redhat.com>
-> > 
-> > I just remembered one thing: this will avoid program quits, but still we'll get
-> > the signal missing.
+On 2/24/21 12:38 AM, Arnd Bergmann wrote:
+> On Wed, Feb 24, 2021 at 3:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 2/21/21 10:12 PM, kernel test robot wrote:
+>>> Hi Marek,
+>>>
+>>> FYI, the error/warning still remains.
+>>>
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>> head:   31caf8b2a847214be856f843e251fc2ed2cd1075
+>>> commit: ef3631220d2b3d8d14cf64464760505baa60d6ac net: ks8851: Register MDIO bus and the internal PHY
+>>> date:   7 weeks ago
+>>> config: parisc-randconfig-r034-20210222 (attached as .config)
+>>> compiler: hppa-linux-gcc (GCC) 9.3.0
+>>> reproduce (this is a W=1 build):
+>>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef3631220d2b3d8d14cf64464760505baa60d6ac
+>>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>          git fetch --no-tags linus master
+>>>          git checkout ef3631220d2b3d8d14cf64464760505baa60d6ac
+>>>          # save the attached .config to linux build tree
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> All errors (new ones prefixed by >>):
+>>>
+>>>     hppa-linux-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
+>>>>> (.text.ks8851_probe_common+0x370): undefined reference to `__this_module'
+>>>>> hppa-linux-ld: (.text.ks8851_probe_common+0x374): undefined reference to `__this_module'
+>>
+>> Hey Arnd-
+>>
+>> I wanted to see if you had any ideas about this problem.
+>>
+>> CONFIG_KS8851=y
+>> CONFIG_KS8851_MLL=m
+>>
+>> The problem is that 2 drivers share some common code, but in one case
+>> the shared code is builtin and for the other driver it is a loadable
+>> module. The common code is first built as builtin, so it does not have
+>> the "__this_module" symbol.
 > 
-> In what sense the signal will be missing?  As long as the thread exists, the
-> signal will be accepted (but not delivered because it is blocked); it will
-> then be delivered on the first KVM_RUN.
+> This is the patch I sent for it:
+> 
+> https://lore.kernel.org/lkml/20210125121937.3900988-1-arnd@kernel.org/T/#u
 
-Ah right..  Thanks,
+It would be nice to have some patch merged. :)
 
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+thanks.
 -- 
-Peter Xu
+~Randy
 
