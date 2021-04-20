@@ -2,246 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5F23653ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2433653C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhDTIVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:21:42 -0400
-Received: from mail-dm6nam11on2084.outbound.protection.outlook.com ([40.107.223.84]:57344
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230447AbhDTIVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:21:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iPvSqCDpGcmL0vOmpq/HXMNm4eN6Rhp05z1IzRWcT1U9o8/zyWIzU8ExO6H82VJ+rGNl1JGxaBHMASaluX/Xt2cEkmLbu9sqo8MzBnzL4i5/7hDF3pN+EuEogZuNlIBwk6B03ctSbzYl/zi9/3HE5yYpO5Qqzvw1jypKLFXvUxKGbgsP2t9CbgXnHnS9BNuH9ZDqu7xIPbNlOi0JxXszLkrpXRNKEEigZ7yWD/UgHngllmdOGSGP8vYqHOIIlaUDQQ9eXBrohWlcQ8JjQ4X1RBuDJGvLIo8+H5Ussyrfx0dP5xQqpTKMI8z4K8WYTPVuBXk6/4qDl/72DDcdZwxkXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9iz7qZwjmAjO1+o1W4zvqheQ5KcIloDRS1jjrhDAlAE=;
- b=XxqRcVK7b3q02Di/BByxj7CyF1IZvh9zIoSdWMS9SbK2pzB5E60saoWVPa5MMeCVeQ7nNc/H74aAmUNzppXYXDG90Q/8V/Bq3C1RZr2EaUmvOpZES92yTTcswFbJZCI88HZAiyP7GKg0L0UR93k3cGVp/mLoWCfFbsviNMeuPPXdMErLQjMTWP6z2QAW9HiKj5+ZtRbX8o5MkP37qorJqdQga8gn1CjTt5xUm+Z2lFkbgIvZqWjg8t/yUNBrpPGdS1LoBAMpYtD/qzh4wsRDH84vCprQUGqlkemHyqfzBZL/GQpEXSjnP928qvY7Y5e7b82bUMgJpVIvVl8qBFNrxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9iz7qZwjmAjO1+o1W4zvqheQ5KcIloDRS1jjrhDAlAE=;
- b=bewFryfzOr9+po0aq8OOVOy7mVyswU1MrjlsenKmQYTjLgM96hX1Nc5/R/MH2W/DgIIlOHp5AfP+dQizwiB2O715CVqtsZrrUZiq74eAlmI/CjY2kAeAd+6LoMcGbuCTZdjLWrph31mvoXGBp4EdOx8svV1VLxIyYF01vYBLDH0=
-Received: from BL0PR03CA0013.namprd03.prod.outlook.com (2603:10b6:208:2d::26)
- by DM6PR02MB5963.namprd02.prod.outlook.com (2603:10b6:5:150::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.21; Tue, 20 Apr
- 2021 08:20:52 +0000
-Received: from BL2NAM02FT038.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:2d:cafe::e6) by BL0PR03CA0013.outlook.office365.com
- (2603:10b6:208:2d::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend
- Transport; Tue, 20 Apr 2021 08:20:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT038.mail.protection.outlook.com (10.152.77.25) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4042.19 via Frontend Transport; Tue, 20 Apr 2021 08:20:52 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 20 Apr 2021 01:20:42 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Tue, 20 Apr 2021 01:20:42 -0700
-Envelope-to: git@xilinx.com,
- robh+dt@kernel.org,
- arnd@arndb.de,
- gregkh@linuxfoundation.org,
- devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- chinnikishore369@gmail.com
-Received: from [10.140.6.60] (port=45276 helo=xhdnavam40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <nava.manne@xilinx.com>)
-        id 1lYlcd-0007C5-R8; Tue, 20 Apr 2021 01:20:40 -0700
-From:   Nava kishore Manne <nava.manne@xilinx.com>
-To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>,
-        <derek.kiernan@xilinx.com>, <dragan.cvetic@xilinx.com>,
-        <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <nava.manne@xilinx.com>, <rajan.vaja@xilinx.com>,
-        <jolly.shah@xilinx.com>, <tejas.patel@xilinx.com>,
-        <amit.sunil.dhamne@xilinx.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <chinnikishore369@gmail.com>,
-        <git@xilinx.com>
-Subject: [PATCH 5/5] misc: zynqmp: Add afi config driver
-Date:   Tue, 20 Apr 2021 13:41:53 +0530
-Message-ID: <20210420081153.17020-6-nava.manne@xilinx.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210420081153.17020-1-nava.manne@xilinx.com>
-References: <20210420081153.17020-1-nava.manne@xilinx.com>
+        id S229985AbhDTINM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:13:12 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33201 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhDTINL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:13:11 -0400
+Received: from mail-lj1-f200.google.com ([209.85.208.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lYlUs-0001f4-V3
+        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 08:12:39 +0000
+Received: by mail-lj1-f200.google.com with SMTP id i10-20020a2e808a0000b02900bdf90c5ca7so7109591ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:12:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IV9Eebskso7YyD0zMzspoNTbhY3LJpAmQOuTJ1c9y40=;
+        b=FdEshr8ACeNLbsj3jowUlOYxEc92Lw9rDksLo3pMroBoXQZRELVADnmvnbxYoFzzmZ
+         JutucusxC3SWZHfXSiimjHLI62gG0S65Mysd63DVnmmM9vwSb87ZFVZjB9BUu3QUtKsO
+         9zAFxEp9b9mxIUg5ZWQKcFz+wuykXfUtfKxwUl7YcH739T34re5HsR2Qeq6TQZJZOgdb
+         xDkbWLU2Gi/nmiy4IL56wMi67vQcnNOxZQt3TTkIhkk+7Ajs3loEgIS28UaOMvs8AFUR
+         cD/e7NfkJT13//kabRKL7gJ9Hjfhjw2CHrEwTvv9NXIgk+MSQx2AqvF6mmQZUYst9A+b
+         KETA==
+X-Gm-Message-State: AOAM531ak70ERa84yJ27UIyqgw0duwn7x1sjnfyHSNbwCxQGe/BHlgY4
+        rwdJ3e7PvCGEU9xWqLJVNDAtca/MYzPoXSbed3eAZtpg1XpW8VUa3liVvRoj1sbKBxMu62lU82D
+        vrsvay8ex3Y9AOap8R5fIebEJ+yesMc7gE2v4M/5DKlfJlsAO402XIvfptg==
+X-Received: by 2002:ac2:5f1b:: with SMTP id 27mr14782461lfq.425.1618906358348;
+        Tue, 20 Apr 2021 01:12:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGj+Hlh1J4/cwN5jCaEklO5slca58XNB7qVuci1XVRA8XrEJfTHTIictY7IK+d0qKQHdTKXplsFsdyezE44Ec=
+X-Received: by 2002:ac2:5f1b:: with SMTP id 27mr14782427lfq.425.1618906357768;
+ Tue, 20 Apr 2021 01:12:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a4bb4f4f-6122-4067-b44c-08d903d53688
-X-MS-TrafficTypeDiagnostic: DM6PR02MB5963:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB59633BEFA5E9816552F7042EC2489@DM6PR02MB5963.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ewVTw1SMrIy+SgwfOx/jDd2AAZCqY3VhQM3JixlgNmqSnEQ18ARHSLdYiDCm0IhbEoCggbhFdaVqW0+JG8Thnq59xdfoP8p8sINuYcPZ+/0GSHnACKT9kBBPjMN7RUGb/Pl+RwU+Qgc/5ba5xTHnfGZCpqrwU+CpC7BoJn8OTVzTYr/02OqXx42GRnDah80B8naanIWkzUGdiPbL49+xNTCc8jcCfOfwiN0E9xQbDv+MA97wI1ExAxdnIf2y5Sum/6qgZ309+tRmYRBV/8+KA2QADAKj1puHdVyDW6/JxEi4RQrwNU/hwLy9jTS9dqbRF352dXOKeMUY3q+xtTGPE46NdiDFEqN2pPQU5D/Ak1S1HD8z0wvq1MQIpSiFKQZZ+fRK2Dc5zHjYnsX4W3KjVaPNEbINmCT6sEg3WiiDZCOO3T3/sJZRKyVWaHqsk6OKxlXlIhfGk/42fO5FFCP+FBsIpOjNbWCuyhfwhkkMKedLj+cqBGZV/IkYaWLENlEnPgu5pPTr4UHtvQXITkmF04VEAUzJ9hiRxskvofMqpyDK3+J1jSU9+S3sHQCHVc/jy7rnG7OePGxvg1z/K3/4sPt71PM+R25HL1kAydjj+jOLrI1n0/MH9v5AgEgmxjyUixABvoi2jQcyMC3EGetkcByd/ORDWWIoyos3hwEkddY9hzUf8rKgqmg/qlp4UBYtbPI5W3iJrT52S4v2xwVi3lnxBPD857mo6+KWhJqR77ShqbGCwmTF3vI3pjH60JGR
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(39860400002)(346002)(36840700001)(46966006)(47076005)(82740400003)(2906002)(7636003)(82310400003)(70206006)(9786002)(8676002)(5660300002)(26005)(83380400001)(356005)(8936002)(2616005)(70586007)(36756003)(426003)(6636002)(7696005)(478600001)(36906005)(110136005)(186003)(6666004)(921005)(316002)(336012)(1076003)(36860700001)(102446001)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 08:20:52.6002
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4bb4f4f-6122-4067-b44c-08d903d53688
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT038.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5963
+References: <20210415102224.2764054-1-sudeep.holla@arm.com> <20210420075332.t56dlpppb6bnpjzd@bogus>
+In-Reply-To: <20210420075332.t56dlpppb6bnpjzd@bogus>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Tue, 20 Apr 2021 16:12:26 +0800
+Message-ID: <CAAd53p6zti5rmJ5LjW3WbYsSGBs5CgBuOztHv-nvMObGBh7Q+A@mail.gmail.com>
+Subject: Re: [PATCH] efifb: Fix runtime pm calls for non PCI efifb device
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Peter Jones <pjones@redhat.com>,
+        "open list:EFIFB FRAMEBUFFER DRIVER" <linux-fbdev@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds zynqmp afi config driver.This is useful for
-the configuration of the PS-PL interface on Zynq US+ MPSoC
-platform.
+Hi Sudeep,
 
-Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
----
- drivers/misc/Kconfig      | 11 ++++++
- drivers/misc/Makefile     |  1 +
- drivers/misc/zynqmp-afi.c | 83 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 95 insertions(+)
- create mode 100644 drivers/misc/zynqmp-afi.c
+On Tue, Apr 20, 2021 at 3:53 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> Gentle Ping! There is boot failure because of this issue with linux-next
+> on few arm platforms with non PCIe efifb. Please review and get the fix
+> merged ASAP so the testing on these platforms can continue with linux-next.
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 877b43b3377d..d1ea1eeb3ac1 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -456,6 +456,17 @@ config ZYNQ_AFI
- 	  between PS and PL, the AXI port data path should be configured
- 	  with the proper Bus-width values
- 
-+config ZYNQMP_AFI
-+        tristate "Xilinx ZYNQMP AFI support"
-+        help
-+	  ZynqMP AFI driver support for writing to the AFI registers for
-+	  configuring PS_PL Bus-width. Xilinx Zynq US+ MPSoC connect the
-+	  PS to the programmable logic (PL) through the AXI port. This AXI
-+	  port helps to establish the data path between the PS and PL.
-+	  In-order to establish the proper communication path between
-+	  PS and PL, the AXI port data path should be configured with
-+	  the proper Bus-width values
-+
- source "drivers/misc/c2port/Kconfig"
- source "drivers/misc/eeprom/Kconfig"
- source "drivers/misc/cb710/Kconfig"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index e9b03843100f..54bd0edc511e 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -57,3 +57,4 @@ obj-$(CONFIG_UACCE)		+= uacce/
- obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
- obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
- obj-$(CONFIG_ZYNQ_AFI)		+= zynq-afi.o
-+obj-$(CONFIG_ZYNQMP_AFI)	+= zynqmp-afi.o
-diff --git a/drivers/misc/zynqmp-afi.c b/drivers/misc/zynqmp-afi.c
-new file mode 100644
-index 000000000000..a318652576d2
---- /dev/null
-+++ b/drivers/misc/zynqmp-afi.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Xilinx FPGA AFI bridge.
-+ * Copyright (c) 2018-2021 Xilinx Inc.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/firmware/xlnx-zynqmp.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+/**
-+ * struct zynqmp_afi_fpga - AFI register description
-+ * @value: value to be written to the register
-+ * @regid: Register id for the register to be written
-+ */
-+struct zynqmp_afi_fpga {
-+	u32 value;
-+	u32 regid;
-+};
-+
-+static int zynqmp_afi_fpga_probe(struct platform_device *pdev)
-+{
-+	struct zynqmp_afi_fpga *zynqmp_afi_fpga;
-+	struct device_node *np = pdev->dev.of_node;
-+	int i, entries, ret;
-+	u32 reg, val;
-+
-+	zynqmp_afi_fpga = devm_kzalloc(&pdev->dev,
-+				       sizeof(*zynqmp_afi_fpga), GFP_KERNEL);
-+	if (!zynqmp_afi_fpga)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, zynqmp_afi_fpga);
-+
-+	entries = of_property_count_u32_elems(np, "config-afi");
-+	if (!entries || (entries % 2)) {
-+		dev_err(&pdev->dev, "Invalid number of registers\n");
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < entries / 2; i++) {
-+		ret = of_property_read_u32_index(np, "config-afi", i * 2, &reg);
-+		if (ret) {
-+			dev_err(&pdev->dev, "failed to read register\n");
-+			return -EINVAL;
-+		}
-+		ret = of_property_read_u32_index(np, "config-afi", i * 2 + 1,
-+						 &val);
-+		if (ret) {
-+			dev_err(&pdev->dev, "failed to read value\n");
-+			return -EINVAL;
-+		}
-+		ret = zynqmp_pm_afi(reg, val);
-+		if (ret < 0) {
-+			dev_err(&pdev->dev, "AFI register write error %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static const struct of_device_id zynqmp_afi_fpga_ids[] = {
-+	{ .compatible = "xlnx,zynqmp-afi-fpga" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, zynqmp_afi_fpga_ids);
-+
-+static struct platform_driver zynqmp_afi_fpga_driver = {
-+	.driver = {
-+		.name = "zynqmp-afi-fpga",
-+		.of_match_table = zynqmp_afi_fpga_ids,
-+	},
-+	.probe = zynqmp_afi_fpga_probe,
-+};
-+module_platform_driver(zynqmp_afi_fpga_driver);
-+
-+MODULE_DESCRIPTION("ZYNQMP FPGA afi module");
-+MODULE_AUTHOR("Nava kishore Manne <nava.manne@xilinx.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.18.0
+It was merged in drm-tip as d510c88cfbb2 ("efifb: Check efifb_pci_dev
+before using it").
 
+Kai-Heng
+
+>
+> On Thu, Apr 15, 2021 at 11:22:24AM +0100, Sudeep Holla wrote:
+> > Commit a6c0fd3d5a8b ("efifb: Ensure graphics device for efifb stays at PCI D0")
+> > added runtime pm calls to probe and remove routines to ensure the PCI
+> > device for efifb stays in D0 state. However not ever efifb is based on
+> > PCI device and efifb_pci_dev can be NULL if that is the case.
+> >
+> > In such cases, we will get a boot splat like below due to NULL dereference:
+> > -->8
+> >  Console: switching to colour frame buffer device 240x67
+> >  fb0: EFI VGA frame buffer device
+> >  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000270
+> >  Mem abort info:
+> >    ESR = 0x96000004
+> >    EC = 0x25: DABT (current EL), IL = 32 bits
+> >    SET = 0, FnV = 0
+> >    EA = 0, S1PTW = 0
+> >  Data abort info:
+> >    ISV = 0, ISS = 0x00000004
+> >    CM = 0, WnR = 0
+> >  [0000000000000270] user address but active_mm is swapper
+> >  Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> >  Modules linked in:
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc7-next-20210413 #1
+> >  Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform
+> >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+> >  pc : pm_runtime_drop_link+0x12c/0x338
+> >  lr : efifb_probe+0x7bc/0x7f0
+> >  Call trace:
+> >   pm_runtime_drop_link+0x12c/0x338
+> >   efifb_probe+0x7bc/0x7f0
+> >   platform_probe+0x68/0xd8
+> >   really_probe+0xe4/0x3a8
+> >   driver_probe_device+0x64/0xc8
+> >   device_driver_attach+0x74/0x80
+> >   __driver_attach+0x64/0xf0
+> >   bus_for_each_dev+0x70/0xc0
+> >   driver_attach+0x24/0x30
+> >   bus_add_driver+0x150/0x1f8
+> >   driver_register+0x64/0x120
+> >   __platform_driver_register+0x28/0x38
+> >   efifb_driver_init+0x1c/0x28
+> >   do_one_initcall+0x48/0x2b0
+> >   kernel_init_freeable+0x1e8/0x258
+> >   kernel_init+0x14/0x118
+> >   ret_from_fork+0x10/0x30
+> >  Code: 88027c01 35ffffa2 17fff706 f9800051 (885f7c40)
+> >  ---[ end trace 17d8da630bf8ff77 ]---
+> >  Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> > -->8
+> >
+> > Fix the issue by checking for non-NULL efifb_pci_dev before dereferencing
+> > for runtime pm calls in probe and remove routines.
+> >
+> > Fixes: a6c0fd3d5a8b ("efifb: Ensure graphics device for efifb stays at PCI D0")
+> > Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > Cc: Peter Jones <pjones@redhat.com>
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  drivers/video/fbdev/efifb.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
+> > index f58a545b3bf3..8ea8f079cde2 100644
+> > --- a/drivers/video/fbdev/efifb.c
+> > +++ b/drivers/video/fbdev/efifb.c
+> > @@ -575,7 +575,8 @@ static int efifb_probe(struct platform_device *dev)
+> >               goto err_fb_dealoc;
+> >       }
+> >       fb_info(info, "%s frame buffer device\n", info->fix.id);
+> > -     pm_runtime_get_sync(&efifb_pci_dev->dev);
+> > +     if (efifb_pci_dev)
+> > +             pm_runtime_get_sync(&efifb_pci_dev->dev);
+> >       return 0;
+> >
+> >  err_fb_dealoc:
+> > @@ -602,7 +603,8 @@ static int efifb_remove(struct platform_device *pdev)
+> >       unregister_framebuffer(info);
+> >       sysfs_remove_groups(&pdev->dev.kobj, efifb_groups);
+> >       framebuffer_release(info);
+> > -     pm_runtime_put(&efifb_pci_dev->dev);
+> > +     if (efifb_pci_dev)
+> > +             pm_runtime_put(&efifb_pci_dev->dev);
+> >
+> >       return 0;
+> >  }
+> > --
+> > 2.25.1
+> >
+>
+> --
+> Regards,
+> Sudeep
