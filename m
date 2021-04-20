@@ -2,97 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4034365225
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0F736522B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhDTGRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:17:04 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51902 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhDTGRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:17:00 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13K6GDgI030948;
-        Tue, 20 Apr 2021 08:16:13 +0200
-Date:   Tue, 20 Apr 2021 08:16:13 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210420061613.GA30890@1wt.eu>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <20210416173717.GA10846@1wt.eu>
- <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
- <YH5tAqLr965MNZyW@kroah.com>
+        id S230037AbhDTGSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 02:18:16 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:56414 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229577AbhDTGSQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 02:18:16 -0400
+X-UUID: e64997969f214ffe9c8521d07650a47c-20210420
+X-UUID: e64997969f214ffe9c8521d07650a47c-20210420
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1752252126; Tue, 20 Apr 2021 14:17:40 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 20 Apr 2021 14:17:39 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 20 Apr 2021 14:17:38 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>,
+        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
+        <anson.chuang@mediatek.com>, Krzysztof Wilczyski <kw@linux.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH v10 0/7] PCI: mediatek: Add new generation controller support
+Date:   Tue, 20 Apr 2021 14:17:16 +0800
+Message-ID: <20210420061723.989-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH5tAqLr965MNZyW@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 07:56:18AM +0200, Greg Kroah-Hartman wrote:
-> I would LOVE it if some "executives" would see the above presentations,
-> because then they would maybe actually fund developers to fix bugs and
-> maintain the kernel code, instead of only allowing them to add new
-> features.
-> 
-> Seriously, that's the real problem, that Dmitry's work has exposed, the
-> lack of people allowed to do this type of bugfixing and maintenance on
-> company time, for something that the company relies on, is a huge issue.
-> "executives" feel that they are willing to fund the initial work and
-> then "throw it over the wall to the community" once it is merged, and
-> then they can forget about it as "the community" will maintain it for
-> them for free.  And that's a lie, as Dmitry's work shows.
+From: mtk15901 <jianjun.wang@mediatek.com>
 
-That's sadly the eternal situation, and I'm suspecting that software
-development and maintenance is not identified as a requirement for a
-large number of hardware vendors, especially on the consumer side where
-margins are lower. A contractor is paid to develop a driver, *sometimes*
-to try to mainline it (and the later they engage with the community, the
-longer it takes in round trips), and once the code finally gets merged,
-all the initial budget is depleted and no more software work will be
-done.
+These series patches add pcie-mediatek-gen3.c and dt-bindings file to
+support new generation PCIe controller.
 
-Worse, we could imagine kicking unmaintained drivers faster off the
-tree, but that would actually help these unscrupulous vendors by
-forcing their customers to switch to the new model :-/  And most of
-them wouldn't care either if their contributions were refused based
-on their track record of not maintaining their code, since they often
-see this as a convenience to please their customers and not something
-they need (after all, relying on a bogus and vulnerable BSP has never
-prevented from selling a device, quite the opposite).
+Changes in v10:
+1. Fix the subject line format in commit message;
+2. Use EXPORT_SYMBOL_GPL() to export pci_pio_to_address().
 
-In short, there is a parallel universe where running highly bogus and
-vulnerable out-of-tree code seems like the norm and where there is no
-sort of care for what is mainlined as it's possibly just made to look
-"cool".
+Changes in v9:
+1. Use mtk_pcie_parse_port() to get the hw resources;
+2. Remove unnecessary logs;
+3. Add local IRQ enable status save/restore instead of
+   the enable/disable callbacks;
+4. Fix typos.
 
-We also need to recognize that it's expectable that some vendors are
-not willing to engage on supporting a driver for a decade if they
-expect their device to last 5 years only, and maybe we should make
-some rules clear about mainlining drivers and what to expect for
-users (in which case the end of support would be clear and nobody
-would be surprised if the driver is removed at the end of its
-maintenance, barring a switch to a community maintainer).
+Changes in v8:
+1. Add irq_clock to protect IRQ register access;
+2. Mask all INTx interrupt when startup port;
+3. Remove activate/deactivate callbacks from bottom_domain_ops;
+4. Add unmask/mask callbacks in mtk_msi_bottom_irq_chip;
+5. Add property information for reg-names.
 
-Just my two cents,
-Willy
+Changes in v7:
+1. Split the driver patch to core PCIe, INTx, MSI and PM patches;
+2. Reshape MSI init and handle flow,
+   use msi_bottom_domain to cover all sets;
+3. Replace readl/writel with their relaxed version;
+4. Add MSI description in binding document;
+5. Add pl_250m clock in binding document.
+
+Changes in v6:
+1. Export pci_pio_to_address() to support compiling as kernel module;
+2. Replace usleep_range(100 * 1000, 120 * 1000) with msleep(100);
+3. Replace dev_notice with dev_err;
+4. Fix MSI get hwirq flow;
+5. Fix warning for possible recursive locking in mtk_pcie_set_affinity.
+
+Changes in v5:
+1. Remove unused macros
+2. Modify the config read/write callbacks, set the config byte field
+   in TLP header and use pci_generic_config_read32/write32
+   to access the config space
+3. Fix the settings of translation window, both MEM and IO regions
+   works properly
+4. Fix typos
+
+Changes in v4:
+1. Fix PCIe power up/down flow
+2. Use "mac" and "phy" for reset names
+3. Add clock names
+4. Fix the variables type
+
+Changes in v3:
+1. Remove standard property in binding document
+2. Return error number when get_optional* API throws an error
+3. Use the bulk clk APIs
+
+Changes in v2:
+1. Fix the typo of dt-bindings patch
+2. Remove the unnecessary properties in binding document
+3. dispos the irq mappings of msi top domain when irq teardown
+
+Jianjun Wang (7):
+  dt-bindings: PCI: mediatek-gen3: Add YAML schema
+  PCI: Export pci_pio_to_address() for module use
+  PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+  PCI: mediatek-gen3: Add INTx support
+  PCI: mediatek-gen3: Add MSI support
+  PCI: mediatek-gen3: Add system PM support
+  MAINTAINERS: Add Jianjun Wang as MediaTek PCI co-maintainer
+
+ .../bindings/pci/mediatek-pcie-gen3.yaml      |  181 +++
+ MAINTAINERS                                   |    1 +
+ drivers/pci/controller/Kconfig                |   13 +
+ drivers/pci/controller/Makefile               |    1 +
+ drivers/pci/controller/pcie-mediatek-gen3.c   | 1025 +++++++++++++++++
+ drivers/pci/pci.c                             |    1 +
+ 6 files changed, 1222 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+ create mode 100644 drivers/pci/controller/pcie-mediatek-gen3.c
+
+-- 
+2.25.1
+
