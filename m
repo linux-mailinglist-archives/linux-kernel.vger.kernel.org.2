@@ -2,149 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965BF3650B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90EF3650B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhDTDNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhDTDNS (ORCPT
+        id S229748AbhDTDPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:15:48 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:37799 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhDTDPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:13:18 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61F9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:12:47 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id f70so224377vke.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:12:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wq9WQE+gjf5AOz3ht7nqU8rHSrKU7bFASKr3ai0X3g4=;
-        b=LJbIXe45welW3xxiczHvMlvgbVeALo8yB1tAzl62otfFsrByGtRz3jy+K0RluqgbGo
-         ux7R/fySUZGbWpxN5S/wws2AWzjc3tjJXkvppX7Rv7NNIQHm/NouPnHtdJ5IxWr5pPT7
-         SVVOrnCvV1kLfjJ0WEIdtQmhHx4JAC+i8FCexXUZ+v/xXPiL7B4DsFN+8C5/5pmdEUcb
-         fcMfvqRgnIljr0EHQ7zs1+EmrqTe4cele2sTmt6qU3d0nDu0zSQZhHxyZjaSt8uVkSfO
-         M6uS3BpuCKJ3ured9uev7cTbDIeQyx362aofSD0Bw7ifKyn0bomFMuc+U5vnfjZTVdP1
-         EBIQ==
+        Mon, 19 Apr 2021 23:15:45 -0400
+Received: by mail-ot1-f44.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso20536042otm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:15:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wq9WQE+gjf5AOz3ht7nqU8rHSrKU7bFASKr3ai0X3g4=;
-        b=DE37BagS1lWDEkByJBVEEFAK1XzkQPyrFriqBC6FDtZCAh3sxtYQVh5Xgb0dNLzZLu
-         +ekkrH8VHgieGxiM83M2dqyZv8ExqnmzvkODqLNHa9eZVH0YLowA9GA9C3WTIlSAaFa1
-         LzMs9KlEAA1GIbP5oTQBsGPjhw5GHKbf4WpV94t31z24TjZJl3RHmHopWpF2UApwTE+N
-         Sg1VlR1u/s5fNf+1aXSwc7Wm1duZni49fVkrP5ULwvq90Yq+xODYdGEM4aLVIAebPGf0
-         rqR/8pbMtH2wueUdQane1IwpxlU429SHaijLnVEw4R5F0bTNR83EgA58oXJismliezP2
-         jp4w==
-X-Gm-Message-State: AOAM5310fvpoXsNY6aE8e9XuPYfQDr8feQgXPX9j0519zeSybELcTHLU
-        XlGHQBKPtT+JGpygR75Ol9C7apunCabvF6cNW2KEzg==
-X-Google-Smtp-Source: ABdhPJyKHpgyTCZK1BXTy1JWwBlaLx8+vOpK/Tsa6L492YiM2QXGXRpg7IJ8BjzIQYFD/1n1s6sMMAzadQyT4UMasa8=
-X-Received: by 2002:a1f:5504:: with SMTP id j4mr17787360vkb.7.1618888366522;
- Mon, 19 Apr 2021 20:12:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4VEETDXPqBgPZUU+Jc1UmJM7E+FtoTdgHKBL94zcgp4=;
+        b=A9/3UNM+TbAZhsupItAik7SzFiCfhB19G5wuLTgin/Ovl1lbY2fT8aP5vwBYGM7ECZ
+         +wfwHTgc5jfQHTQUq+koiBeE0eqvOALBEqqPL1wVSW9I5QnZrtn/j2ktWlufeBog/DMo
+         IgxFiz+uJXz0fmvgmelLqIci1KADxi10kOCB2ssi+3rorbdjmQxL+FvCbtQ482ioNDU8
+         CgxkmrPnFVZLMh8gHl238GV2/T1qGiCRKb3d0uoqmDe6uvdOBh/tAXCpRXX76kCEsgtD
+         GNiaP7mIoFVqCQnBtFK6qeZOBR3lQZ+TDPpf6idfGrSZgnvlxdbv2bWDrJvPSV3Z4KkO
+         S6Pw==
+X-Gm-Message-State: AOAM531RpvAZFgAg91bkrXu/TdpYFDzPZ7CaZjODaPOhQYju9rNqg5sb
+        iSCefJWblcxxT8lKh5oJLg==
+X-Google-Smtp-Source: ABdhPJwCOJqrLE+mLWWh6jLRFFZFpIF+Q5lGlqSVEQbJ9uTINQi+fwn/HxXWcJnU0LzxwM451n31cg==
+X-Received: by 2002:a05:6830:237c:: with SMTP id r28mr17468924oth.130.1618888513640;
+        Mon, 19 Apr 2021 20:15:13 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id g16sm2347896oof.43.2021.04.19.20.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 20:15:13 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/9] arm64 userspace counter access support
+Date:   Mon, 19 Apr 2021 22:15:02 -0500
+Message-Id: <20210420031511.2348977-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
- <YHXRWoVIYLL4rYG9@kroah.com> <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
- <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Mon, 19 Apr 2021 20:12:34 -0700
-Message-ID: <CANP3RGcX11RS=rwbem7+5it+Zu072sd15pHHFHjCFkXk11qrgw@mail.gmail.com>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Lorenzo Colitti <lorenzo@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>, mikael.beckius@windriver.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 9:47 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Wed, Apr 14 2021 at 11:49, Lorenzo Colitti wrote:
-> > On Wed, Apr 14, 2021 at 2:14 AM Greg KH <gregkh@linuxfoundation.org> wr=
-ote:
-> >> To give context, the commit is now 46eb1701c046 ("hrtimer: Update
-> >> softirq_expires_next correctly after __hrtimer_get_next_event()") and =
-is
-> >> attached below.
-> >>
-> >> The f_ncm.c driver is doing a lot of calls to hrtimer_start() with mod=
-e
-> >> HRTIMER_MODE_REL_SOFT for I think every packet it gets.  If that shoul=
-d
-> >> not be happening, we can easily fix it but I guess no one has actually
-> >> had fast USB devices that noticed this until now :)
-> >
-> > AIUI the purpose of this timer is to support packet aggregation. USB
-> > transfers are relatively expensive/high latency. 6 Gbps is 500k
-> > 1500-byte packets per second, or one every 2us. So f_ncm buffers as
-> > many packets as will fit into 16k (usually, 10 1500-byte packets), and
-> > only initiates a USB transfer when those packets have arrived. That
-> > ends up doing only one transfer every 20us. It sets a 300us timer to
-> > ensure that if the 10 packets haven't arrived, it still sends out
-> > whatever it has when the timer fires. The timer is set/updated on
-> > every packet buffered by ncm.
-> >
-> > Is this somehow much more expensive in 5.10.24 than it was before?
-> > Even if this driver is somehow "holding it wrong", might there not be
-> > other workloads that have a similar problem? What about regressions on
-> > those workloads?
->
-> Let's put the question of whether this hrtimer usage is sensible or not
-> aside for now.
->
-> I stared at the change for a while and did some experiments to recreate
-> the problem, but that didn't get me anywhere.
->
-> Could you please do the following?
->
-> Enable tracing and enable the following tracepoints:
->
->     timers/hrtimer_cancel
->     timers/hrtimer_start
->     timers/hrtimer_expire_entry
->     irq/softirq_raise
->     irq/softirq_enter
->     irq/softirq_exit
->
-> and function tracing filtered on ncm_wrap_ntb() and
-> package_for_tx() only (to reduce the noise).
->
-> Run the test on a kernels with and without that commit and collect trace
-> data for both.
->
-> That should give me a pretty clear picture what's going on.
+Hi all,
 
-Lorenzo is trying to get the traces you asked for, or rather he=E2=80=99s
-trying to get confirmation he can post them.
+Another version of arm64 userspace counter access support. I sent out
+the libperf bits separately and those are now applied (Thanks!), so this
+is just the arm64 bits.
 
-Our initial observation of these results seems to suggest that
-updating the timer (hrtimer_start, which seems to also call
-hrtimer_cancel) takes twice as long as it used to.
 
-My gut feeling is that softirq_activated is usually false, and the old
-code in such a case calls just __hrtimer_get_next_event(,
-HRTIMER_ACTIVE_ALL).  While the new code will first call
-__hrtimer_get_next_event(, HRTIMER_ACTIVE_SOFT) and then
-__hrtimer_get_next_event(, HRTIMER_ACTIVE_HARD)
+This originally resurrected Raphael's series[1] to enable userspace counter
+access on arm64. My previous versions are here[2][3][4][5][6][7]. A git
+branch is here[8].
 
-Perhaps __hrtimer_get_next_event() should return both soft and hard
-event times in one function call?
-Or perhaps hrtimer_start should not call hrtimer_cancel?
 
-We've also been looking at the f_ncm driver itself, and trying to
-reduce the number of hrtimer_cancel/start calls.
-It's pretty easy to reduce this by a factor of 10x (we=E2=80=99re not yet 1=
-00%
-certain this is race free), which does drastically improve
-performance.
-However, it still only takes the regression from 60% to 20%.
+Changes in v7:
+ - Handling of dirty counter leakage and reworking of context switch and
+   user access enabling. The .sched_task hook and undef instruction handler
+   are now utilized. (Patch 3)
+ - Add a userspace disable switch like x86. (Patch 5)
 
-- Maciej
+Changes in v6:
+ - Reworking of the handling of 64-bit counters and user access. There's
+   a new config1 flag to request user access. This takes priority over
+   the 64-bit flag and the user will get the maximum size the h/w
+   supports without chaining.
+ - The libperf evsel mmap struct is stored in its own xyarray
+ - New tests for user 64-bit and 32-bit counters
+ - Rebase to v5.12-rc2
+
+Changes in v5:
+ - Limit enabling/disabling access to CPUs associated with the PMU
+   (supported_cpus) and with the mm_struct matching current->active_mm.
+   The x86 method of using mm_cpumask doesn't work for arm64 as it is not
+   updated.
+ - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
+ - Create an mmap for every event in an evsel. This results in some changes
+   to the libperf mmap API from the last version.
+ - Rebase to v5.11-rc2
+
+Changes in v4:
+ - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
+   The onus is on userspace to pin itself to a homogeneous subset of CPUs
+   and avoid any aborts on heterogeneous systems, so the hook is not needed.
+ - Make perf_evsel__mmap() take pages rather than bytes for size
+ - Fix building arm64 heterogeneous test.
+
+Changes in v3:
+ - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
+ - Added verbose prints for tests
+ - Split adding perf_evsel__mmap() to separate patch
+
+The following changes to the arm64 support have been made compared to
+Raphael's last version:
+
+The major change is support for heterogeneous systems with some
+restrictions. Specifically, userspace must pin itself to like CPUs, open
+a specific PMU by type, and use h/w specific events. The tests have been
+reworked to demonstrate this.
+
+Chained events are not supported. The problem with supporting chained
+events was there's no way to distinguish between a chained event and a
+native 64-bit counter. We could add some flag, but do self monitoring
+processes really need that? Native 64-bit counters are supported if the
+PMU h/w has support. As there's already an explicit ABI to request 64-bit
+counters, userspace can request 64-bit counters and if user
+access is not enabled, then it must retry with 32-bit counters.
+
+Prior versions broke the build on arm32 (surprisingly never caught by
+0-day). As a result, event_mapped and event_unmapped implementations have
+been moved into the arm64 code.
+
+There was a bug in that pmc_width was not set in the user page. The tests
+now check for this.
+
+The documentation has been converted to rST. I've added sections on
+chained events and heterogeneous.
+
+The tests have been expanded to test the cycle counter access.
+
+Rob
+
+[1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
+[2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
+[3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
+[4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
+[5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
+[6] https://lore.kernel.org/r/20210114020605.3943992-1-robh@kernel.org/
+[7] https://lore.kernel.org/r/20210311000837.3630499-1-robh@kernel.org/
+[8] git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git user-perf-event-v7
+
+Raphael Gault (4):
+  arm64: Restrict undef hook for cpufeature registers
+  arm64: pmu: Add function implementation to update event index in
+    userpage
+  arm64: perf: Enable PMU counter direct access for perf event
+  Documentation: arm64: Document PMU counters access from userspace
+
+Rob Herring (5):
+  drivers/perf: arm_pmu: Export the per_cpu cpu_armpmu
+  arm64: perf: Add userspace counter access disable switch
+  libperf: Add arm64 support to perf_mmap__read_self()
+  perf: arm64: Add test for userspace counter access on heterogeneous
+    systems
+  perf: arm64: Add tests for 32-bit and 64-bit counter size userspace
+    access
+
+ Documentation/arm64/perf.rst               |  67 +++++-
+ arch/arm64/include/asm/mmu.h               |   5 +
+ arch/arm64/kernel/cpufeature.c             |   4 +-
+ arch/arm64/kernel/perf_event.c             | 254 ++++++++++++++++++++-
+ drivers/perf/arm_pmu.c                     |   2 +-
+ include/linux/perf/arm_pmu.h               |  14 +-
+ tools/lib/perf/mmap.c                      |  98 ++++++++
+ tools/lib/perf/tests/test-evsel.c          |   2 +-
+ tools/perf/arch/arm64/include/arch-tests.h |  12 +
+ tools/perf/arch/arm64/tests/Build          |   1 +
+ tools/perf/arch/arm64/tests/arch-tests.c   |  12 +
+ tools/perf/arch/arm64/tests/user-events.c  | 215 +++++++++++++++++
+ 12 files changed, 672 insertions(+), 14 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/tests/user-events.c
+
+--
+2.27.0
