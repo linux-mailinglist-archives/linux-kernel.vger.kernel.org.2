@@ -2,176 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5774365D70
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E622365D72
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhDTQfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:35:42 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5058 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232174AbhDTQfi (ORCPT
+        id S233161AbhDTQgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:36:00 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:36706 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232767AbhDTQfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:35:38 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KGWjaR054835;
-        Tue, 20 Apr 2021 12:34:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IUtg0+4hWG5aS4RdGjsF1QVfg9KN8/bnOyB7liaM+LA=;
- b=SHdkrw1YQAfZoQTnXIIQApXlXQsYGaGTRZvXsxS5U2YuBjZB1MrQW7yzPh/evZ0Y+uLm
- VBDtcjW2BpA7p/y/iaXgirbHgtKGEob/1t5pGDlvyjhisZbNpnOfuSQZQEBGOMwzixda
- InGR9TsIbyDuvQVVmzKDOIT7y8hL6a/bpATMFAjPoM4G080KDzGel03VrcnTkXsD47n1
- JPv/9Tyl/JgEP4+VdAlT8X6+Ezl34YjzxmnpgVyOI/9CER5sQUNOtxSQXe2p8DmrvgUf
- KXg1WCy+GHBAM/n9xMYT6hngTbE9/RGMxxyScswZybJMkWK2vYVdaFXoBBfFuQ12Xumj Gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3821xw9e7u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 12:34:41 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13KGYcX7061685;
-        Tue, 20 Apr 2021 12:34:40 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3821xw9e74-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 12:34:40 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13KGBPU8003601;
-        Tue, 20 Apr 2021 16:34:38 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 37yqa890mn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 16:34:38 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13KGYZYj39780702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 16:34:35 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 449A911C050;
-        Tue, 20 Apr 2021 16:34:35 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0473A11C058;
-        Tue, 20 Apr 2021 16:34:35 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.78.35])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Apr 2021 16:34:34 +0000 (GMT)
-Subject: Re: [PATCH v4] pseries: prevent free CPU ids to be reused on another
- node
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        nathanl@linux.ibm.com, Nick Piggin <npiggin@gmail.com>
-Cc:     cheloha@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210407153808.59993-1-ldufour@linux.ibm.com>
-Message-ID: <b815f9a6-e4da-8c8e-f207-71c6d122fc40@linux.ibm.com>
-Date:   Tue, 20 Apr 2021 18:34:34 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        Tue, 20 Apr 2021 12:35:51 -0400
+Received: by mail-io1-f69.google.com with SMTP id w9-20020a5d9cc90000b02903f3bb50c3b9so792253iow.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 09:35:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MwT/es4Aiemxjx9cez/WLSegZn+lxPOHsKmbpZuVDbQ=;
+        b=AwwIHKNcVM1+e4gadp93HX3cG4nauUYMFnmXRCp81VT1PAWaZNLKgBSWJ3b5zPyloC
+         oI+eVbJGZlG+/hU8ql+cnGlp1SNxCaZY7viKyjDvN58qjmzRirTwQunWn4xgRShN4110
+         M5JpzGGfq3auCRclrkt1LQtu3K9jJn52zHiN3aIjJ7zqllmbNSMSJmHrYeIMD04G0BTq
+         jSyVO1nb2v9g3+zz9XTTe/bRtLnJTWkJfNCR8b2h+ViycxdoEsxnHYjePRKAJvAOIf3C
+         z+YoJJqdLc6vDiJANJKfYyMm3Wdnhl5IZ7cLMQWTlslLwhY1HKTK+PhnmvfBFav0fyxy
+         D5JA==
+X-Gm-Message-State: AOAM531h0WnlUjccx3omHy5wRi9L+FjU6kPDpmRwz1JA1cMECOl5wmId
+        GhxLTR3Or8sCzy39B1vqNlDXywydJdYpE7vRBTWULBkr8Sh0
+X-Google-Smtp-Source: ABdhPJzyYZHJ4Zfiy37SXj/KQYA0d11lPLktOmGoYYdbml584MG/dH9+ptSpcGQCfe+6rxOER02zFzTSoaRi76Dlgyv+BRZBIedR
 MIME-Version: 1.0
-In-Reply-To: <20210407153808.59993-1-ldufour@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: F4yx6vVpFunm0IIjudqWc0V-AfvlKYUE
-X-Proofpoint-ORIG-GUID: XYPXZI_9I2pnhPVzSL9MH0_oBQwktKVL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-20_07:2021-04-20,2021-04-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104200117
+X-Received: by 2002:a92:ca06:: with SMTP id j6mr23606325ils.234.1618936519371;
+ Tue, 20 Apr 2021 09:35:19 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 09:35:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000026b33a05c06a088d@google.com>
+Subject: [syzbot] KASAN: use-after-free Write in ext4_put_super
+From:   syzbot <syzbot+2c925312fddc3493aff7@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 07/04/2021 à 17:38, Laurent Dufour a écrit :
-> When a CPU is hot added, the CPU ids are taken from the available mask from
-> the lower possible set. If that set of values was previously used for CPU
-> attached to a different node, this seems to application like if these CPUs
-> have migrated from a node to another one which is not expected in real
-> life.
-> 
-> To prevent this, it is needed to record the CPU ids used for each node and
-> to not reuse them on another node. However, to prevent CPU hot plug to
-> fail, in the case the CPU ids is starved on a node, the capability to reuse
-> other nodes’ free CPU ids is kept. A warning is displayed in such a case
-> to warn the user.
-> 
-> A new CPU bit mask (node_recorded_ids_map) is introduced for each possible
-> node. It is populated with the CPU onlined at boot time, and then when a
-> CPU is hot plug to a node. The bits in that mask remain when the CPU is hot
-> unplugged, to remind this CPU ids have been used for this node.
-> 
-> The effect of this patch can be seen by removing and adding CPUs using the
-> Qemu monitor. In the following case, the first CPU from the node 2 is
-> removed, then the first one from the node 1 is removed too. Later, the
-> first CPU of the node 2 is added back. Without that patch, the kernel will
-> numbered these CPUs using the first CPU ids available which are the ones
-> freed when removing the second CPU of the node 0. This leads to the CPU ids
-> 16-23 to move from the node 1 to the node 2. With the patch applied, the
-> CPU ids 32-39 are used since they are the lowest free ones which have not
-> been used on another node.
-> 
-> At boot time:
-> [root@vm40 ~]# numactl -H | grep cpus
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-> node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-> node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-> 
-> Vanilla kernel, after the CPU hot unplug/plug operations:
-> [root@vm40 ~]# numactl -H | grep cpus
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-> node 1 cpus: 24 25 26 27 28 29 30 31
-> node 2 cpus: 16 17 18 19 20 21 22 23 40 41 42 43 44 45 46 47
-> 
-> Patched kernel, after the CPU hot unplug/plug operations:
-> [root@vm40 ~]# numactl -H | grep cpus
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
-> node 1 cpus: 24 25 26 27 28 29 30 31
-> node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-> 
-> Changes since V3, addressing Nathan's comment:
->   - Rename the local variable named 'nid' into 'assigned_node'
-> Changes since V2, addressing Nathan's comments:
->   - Remove the retry feature
->   - Reduce the number of local variables (removing 'i')
->   - Add comment about the cpu_add_remove_lock protecting the added CPU mask.
-> Changes since V1 (no functional changes):
->   - update the test's output in the commit's description
->   - node_recorded_ids_map should be static
-> 
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Hello,
 
-I did further LPM tests with this patch applied and not allowing fall back 
-reusing free ids of another node is too strong.
+syzbot found the following issue on:
 
-This is easy to hit that limitation when a LPAR is running at the maximum number 
-of CPU it is configured for and when a LPAR migration leads to new node activation.
+HEAD commit:    2f7b98d1 Merge tag 'drm-fixes-2021-04-16' of git://anongit..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14299cb6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=398c4d0fe6f66e68
+dashboard link: https://syzkaller.appspot.com/bug?extid=2c925312fddc3493aff7
 
-For instance, consider a dedicated LPAR configured with a max of 32 CPUs (4 
-cores SMT 8). At boot time, cpu_possible_mask is filled with CPU ids 0-31 in 
-smp_setup_cpu_maps() by reading the DT property "/rtas/ibm,lrdr-capacity", so 
-the higher CPU id for this LPAR is 31.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Departure box:
-	node 0 : CPU 0-31
-Arrival box:
-	node 0 : CPU 0-15
-	node 1 : CPU 16-31 << need to reuse ids from node 0
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2c925312fddc3493aff7@syzkaller.appspotmail.com
 
-Visualizing the CPU ids would have a big impact as it is used in several places 
-in the kernel as to index linear table.
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: use-after-free in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: use-after-free in get_task_struct include/linux/sched/task.h:104 [inline]
+BUG: KASAN: use-after-free in kthread_stop+0x90/0x720 kernel/kthread.c:616
+Write of size 4 at addr ffff8880655f1c68 by task syz-executor.0/8403
 
-But in the case the LPAR is migratable (DT property "ibm,migratable-partition" 
-is present), we may set the higher CPU ids to NR_CPUS (usually 2048), to limit 
-the case where CPU id has to be reused on a different node. Doing this will have 
-impact on some data allocation done in the kernel when the size is based on 
-num_possible_cpus.
+CPU: 1 PID: 8403 Comm: syz-executor.0 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:180 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ get_task_struct include/linux/sched/task.h:104 [inline]
+ kthread_stop+0x90/0x720 kernel/kthread.c:616
+ ext4_put_super+0x926/0x10c0 fs/ext4/super.c:1248
+ generic_shutdown_super+0x144/0x370 fs/super.c:464
+ kill_block_super+0x97/0xf0 fs/super.c:1394
+ deactivate_locked_super+0x94/0x160 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3a3/0x530 fs/namespace.c:1136
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4678b7
+Code: ff d0 48 89 c7 b8 3c 00 00 00 0f 05 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdd26bfbf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000004678b7
+RDX: 00007ffdd26bfccb RSI: 0000000000000002 RDI: 00007ffdd26bfcc0
+RBP: 00007ffdd26bfcc0 R08: 00000000ffffffff R09: 00007ffdd26bfa90
+R10: 00000000026228e3 R11: 0000000000000246 R12: 00000000004bebb2
+R13: 00007ffdd26c0d90 R14: 0000000002622810 R15: 00007ffdd26c0dd0
 
-Any better idea?
+Allocated by task 2:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ __kasan_slab_alloc+0x75/0x90 mm/kasan/common.c:460
+ kasan_slab_alloc include/linux/kasan.h:223 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ kmem_cache_alloc_node+0x164/0x3b0 mm/slub.c:2943
+ alloc_task_struct_node kernel/fork.c:170 [inline]
+ dup_task_struct kernel/fork.c:860 [inline]
+ copy_process+0x613/0x71a0 kernel/fork.c:1948
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2500
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2552
+ create_kthread kernel/kthread.c:315 [inline]
+ kthreadd+0x52a/0x790 kernel/kthread.c:658
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Thanks,
-Laurent.
+Freed by task 12218:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kmem_cache_free+0x8a/0x740 mm/slub.c:3177
+ __put_task_struct+0x267/0x3f0 kernel/fork.c:742
+ put_task_struct include/linux/sched/task.h:113 [inline]
+ delayed_put_task_struct+0x1f6/0x340 kernel/exit.c:173
+ rcu_do_batch kernel/rcu/tree.c:2559 [inline]
+ rcu_core+0x74a/0x12f0 kernel/rcu/tree.c:2794
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
 
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
+ context_switch kernel/sched/core.c:4325 [inline]
+ __schedule+0x919/0x21b0 kernel/sched/core.c:5073
+ schedule+0xcf/0x270 kernel/sched/core.c:5152
+ freezable_schedule include/linux/freezer.h:172 [inline]
+ futex_wait_queue_me+0x2a7/0x570 kernel/futex.c:2606
+ futex_wait+0x1db/0x5f0 kernel/futex.c:2708
+ do_futex+0x15d/0x1710 kernel/futex.c:3734
+ __do_sys_futex+0x2a2/0x470 kernel/futex.c:3797
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:179
+ release_task+0xc99/0x1680 kernel/exit.c:225
+ wait_task_zombie kernel/exit.c:1107 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1334
+ do_wait_thread kernel/exit.c:1397 [inline]
+ do_wait+0x376/0xa00 kernel/exit.c:1468
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1630
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff8880655f1c40
+ which belongs to the cache task_struct of size 6976
+The buggy address is located 40 bytes inside of
+ 6976-byte region [ffff8880655f1c40, ffff8880655f3780)
+The buggy address belongs to the page:
+page:ffffea0001957c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x655f0
+head:ffffea0001957c00 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 0000000000000000 0000000200000001 ffff888140005000
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880655f1b00: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880655f1b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff8880655f1c00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+                                                          ^
+ ffff8880655f1c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880655f1d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
