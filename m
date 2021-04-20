@@ -2,108 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EE136611B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4363660F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhDTUs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:48:28 -0400
-Received: from gateway20.websitewelcome.com ([192.185.65.13]:44780 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233750AbhDTUsZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:48:25 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 5E54D40110EF5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 15:16:18 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id YwxrlH7TVL7DmYwxrlPBsk; Tue, 20 Apr 2021 15:27:19 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZMqih+LZ+Av7eWmhGE/uwhisMT5HdTzF9c2GPKwl398=; b=J4Y3r8ufEYOysJToJOl3gjCpb9
-        6y8X4qjt7672duhl/OX4KoYr1Sz2dw5TJJq7RKhONAU0agR5qHNZJkBMgNNQXqybxNzpex2mZXVS/
-        jmI5qlXwyUmtRNcUfk0whzZOlCm8MobpaWE9PP2/kqRZr3iw6I8jaAp4lfC/I+A/yXenSqLmJ8ORq
-        z5pNAfCgR+AVgRTDM6dP2qIH5FO0aOnuMxMd1BhNJ/dO/6PfRWim/VAzqZv1I/BpAR9drp1oBnOcx
-        NSjQB95pLeOJgoWMb4birDGDde8cvdhBPpmavFEEvMapwLJpO/pjdWghX4yWtt/zk50ArWJP/gVbH
-        b5Un7SnQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49058 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lYwxo-0037wH-M0; Tue, 20 Apr 2021 15:27:16 -0500
-Subject: Re: [PATCH RESEND][next] bnxt_en: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210305095024.GA141398@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <55348913-84be-5149-e43f-7982ecd73c40@embeddedor.com>
-Date:   Tue, 20 Apr 2021 15:27:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233978AbhDTUeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:34:00 -0400
+Received: from elvis.franken.de ([193.175.24.41]:33872 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233660AbhDTUd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:33:59 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lYx3m-00062P-00; Tue, 20 Apr 2021 22:33:26 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 25FC6C06A8; Tue, 20 Apr 2021 22:28:03 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 22:28:03 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqchip: Add support for IDT 79rc3243x interrupt
+ controller
+Message-ID: <20210420202803.GA16142@alpha.franken.de>
+References: <20210420123441.24179-1-tsbogend@alpha.franken.de>
+ <a8ca9b028f454ec6deca6387742c2713@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210305095024.GA141398@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lYwxo-0037wH-M0
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49058
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 191
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a8ca9b028f454ec6deca6387742c2713@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-Friendly ping: who can take this, please?
-
-Thanks
---
-Gustavo
-
-On 3/5/21 03:50, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a break statement instead of just letting the code
-> fall through to the next case.
+On Tue, Apr 20, 2021 at 06:34:59PM +0100, Marc Zyngier wrote:
+> On 2021-04-20 13:34, Thomas Bogendoerfer wrote:
+> > IDT 79rc3243x SoCs have rather simple interrupt controllers connected
+> > to the MIPS CPU interrupt lines. Each of them has room for up to
+> > 32 interrupts.
+> > 
+> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> index b53a0d87371a..a34810750058 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> @@ -2158,6 +2158,7 @@ static int bnxt_hwrm_handler(struct bnxt *bp, struct tx_cmp *txcmp)
->  	case CMPL_BASE_TYPE_HWRM_ASYNC_EVENT:
->  		bnxt_async_event_process(bp,
->  					 (struct hwrm_async_event_cmpl *)txcmp);
-> +		break;
->  
->  	default:
->  		break;
-> 
+> Is there a DT binding for this irqchip? The code looks fine, but
+> it'd be good if the binding was merged at the same time as the driver.
+
+I'll write one and send a v2.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
