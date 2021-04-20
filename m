@@ -2,60 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910FE365EAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B08365EB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhDTRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:35:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232913AbhDTRfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:35:33 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA7F6613C4;
-        Tue, 20 Apr 2021 17:35:01 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lYuH5-008Xpj-OZ; Tue, 20 Apr 2021 18:34:59 +0100
+        id S233436AbhDTRfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233385AbhDTRfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:35:37 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664A8C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:35:06 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 31so11619460pgn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a2W73sd2yxxQCYocYMHbjauS8qK/S4n/8biF3Czb61s=;
+        b=ZTi8lQXkohwqmC29GwhjbmJ3fgfts/2hlLHrYeTeE2kijr6ZJ+QQJDcFiJX+jPLpNq
+         EJsRWvS6QTzszfjhsNAXWgjhRDkVfH2BbvAVkT7/yv6jLOpeuXDhNwLCjXCQEuJoAYit
+         /ZZDd/CHpTDVOlK8f/ePcQja/8jQcY3D6IjYSbo681irVgRXAWTDnyrEfcfRrpAdpxVL
+         s6FiO8dybvTzmpFiakDC9JDn5tiLs3KZTg1zdP2cR7eO1Z6LDm5K2BGn4AkSMOqsj7U4
+         WwAbCaP2t2Ezu6uIq+dQI+hWx7CCrUKh7RnyvKGkgnWejQTXEGER5xSdAGhEMM/EEiYk
+         Dxtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a2W73sd2yxxQCYocYMHbjauS8qK/S4n/8biF3Czb61s=;
+        b=cQGodMkYttmvXUIXGukAHDu2I9HvQiZtyHqaU75NrsWwVcUh1NUhzpchoTV2LBGi4M
+         A0dl5T5DxULlpOsg8njvowABhYk0xVcNZ6jC1nr4vcYmJSg8re+GvBiqp3ZcWGhlmf6f
+         z724ZI50qhJfhPLfPosV8ovsxWwRzbdiThCrvXLvz0er3qz6QrG5M+m9/bu9UiyTtWfA
+         fxdyXIqVOGJxRVfBOg3M5bqcr+QEQowfK1mdqeXExbY5XS1K+suBYvIL6OHQFaShWLZG
+         nCPag+SysEphIp9DzIi9Kjjngbw5LyWn8RJYXPe/uT3NwmIbgl5Y+0ml6/v0/QsHLr0d
+         aT2g==
+X-Gm-Message-State: AOAM533YMsi+vhMsydIzTIekKcn8aulbR5XZh/sMVn1uN6HlCwIUvu00
+        OHUJi8LJhuGqM4QIwT8xWimv2g==
+X-Google-Smtp-Source: ABdhPJzKwujVdehN88nuh23ZlSgAVSv2ghf+hC00oBN27+FxwNqz+KtAuBVKJmbeej78ZyLlfpChbw==
+X-Received: by 2002:a63:4c63:: with SMTP id m35mr17575043pgl.105.1618940105773;
+        Tue, 20 Apr 2021 10:35:05 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id j7sm15514487pfd.129.2021.04.20.10.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 10:35:05 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 17:35:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] KVM: nVMX: Sync L2 guest CET states between L1/L2
+Message-ID: <YH8QxRhX4iJFS6+D@google.com>
+References: <20210409064345.31497-1-weijiang.yang@intel.com>
+ <20210409064345.31497-2-weijiang.yang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Apr 2021 18:34:59 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqchip: Add support for IDT 79rc3243x interrupt
- controller
-In-Reply-To: <20210420123441.24179-1-tsbogend@alpha.franken.de>
-References: <20210420123441.24179-1-tsbogend@alpha.franken.de>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <a8ca9b028f454ec6deca6387742c2713@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: tsbogend@alpha.franken.de, tglx@linutronix.de, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409064345.31497-2-weijiang.yang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-20 13:34, Thomas Bogendoerfer wrote:
-> IDT 79rc3243x SoCs have rather simple interrupt controllers connected
-> to the MIPS CPU interrupt lines. Each of them has room for up to
-> 32 interrupts.
+On Fri, Apr 09, 2021, Yang Weijiang wrote:
+> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
+> read/write them and after they're changed. If CET guest entry-load bit is not
+> set by L1 guest, migrate them to L2 manaully.
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Opportunistically remove one blank line in previous patch.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/cpuid.c      |  1 -
+>  arch/x86/kvm/vmx/nested.c | 30 ++++++++++++++++++++++++++++++
+>  arch/x86/kvm/vmx/vmx.h    |  3 +++
+>  3 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index d191de769093..8692f53b8cd0 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>  		}
+>  		vcpu->arch.guest_supported_xss =
+>  			(((u64)best->edx << 32) | best->ecx) & supported_xss;
+> -
+>  	} else {
+>  		vcpu->arch.guest_supported_xss = 0;
+>  	}
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 9728efd529a1..87beb1c034e1 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2516,6 +2516,13 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
+>  
+>  	set_cr4_guest_host_mask(vmx);
+> +
+> +	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
+> +	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
+> +	}
+>  }
+>  
+>  /*
+> @@ -2556,6 +2563,15 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>  	if (kvm_mpx_supported() && (!vmx->nested.nested_run_pending ||
+>  	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS)))
+>  		vmcs_write64(GUEST_BNDCFGS, vmx->nested.vmcs01_guest_bndcfgs);
+> +
+> +	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
+> +	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE))) {
+> +		vmcs_writel(GUEST_SSP, vmx->nested.vmcs01_guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmx->nested.vmcs01_guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE,
+> +			    vmx->nested.vmcs01_guest_ssp_tbl);
+> +	}
+> +
+>  	vmx_set_rflags(vcpu, vmcs12->guest_rflags);
+>  
+>  	/* EXCEPTION_BITMAP and CR0_GUEST_HOST_MASK should basically be the
+> @@ -3375,6 +3391,11 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+>  	if (kvm_mpx_supported() &&
+>  		!(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>  		vmx->nested.vmcs01_guest_bndcfgs = vmcs_read64(GUEST_BNDCFGS);
+> +	if (kvm_cet_supported() && !vmx->nested.nested_run_pending) {
 
-Is there a DT binding for this irqchip? The code looks fine, but
-it'd be good if the binding was merged at the same time as the driver.
+This needs to be:
 
-Thanks,
+	if (kvm_cet_supported() && (!vmx->nested.nested_run_pending ||
+	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)))
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+otherwise the vmcs01_* members will be stale when emulating VM-Enter with
+vcmc12.vm_entry_controls.LOAD_CET_STATE=0.
+
+> +		vmx->nested.vmcs01_guest_ssp = vmcs_readl(GUEST_SSP);
+> +		vmx->nested.vmcs01_guest_s_cet = vmcs_readl(GUEST_S_CET);
+> +		vmx->nested.vmcs01_guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+> +	}
