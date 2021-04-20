@@ -2,147 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A925D365EA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71FE365EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhDTRbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:31:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60045 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233245AbhDTRbv (ORCPT
+        id S233453AbhDTRbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233410AbhDTRbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:31:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618939878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yJlADHgs7Bom5f1A4SK34buquQwkXhXunioAr86hCSE=;
-        b=Rz+15CtjZwFT9/QS7bKEkaSRnDUvhaXdRUdrhPvL7oKB4LrmyTG7A3BxqOTGLTLD3RLvs2
-        hfnziycyE+2dgbaB2hcsmUcGoGtALpaE42E4B1g0i4hffZ4Y0WI/M4PL3ehQDeQ2pqleIU
-        2wJBScwQ225UzK05nj0iP8eH9frpKpU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-RgOl3XuNP9aaBg8wVYBhQA-1; Tue, 20 Apr 2021 13:30:47 -0400
-X-MC-Unique: RgOl3XuNP9aaBg8wVYBhQA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B72A18189C8;
-        Tue, 20 Apr 2021 17:30:45 +0000 (UTC)
-Received: from krava (unknown [10.40.196.37])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0F9DC5D9C0;
-        Tue, 20 Apr 2021 17:30:43 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 19:30:43 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Song Liu <song@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v3 3/4] perf-stat: introduce config
- stat.bpf-counter-events
-Message-ID: <YH8Pw4m0w6DuuEXo@krava>
-References: <20210416221325.2373497-1-song@kernel.org>
- <20210416221325.2373497-4-song@kernel.org>
- <CAM9d7ciVj+d=Bgqmwu+v9mA1CGTbtr8pfXzgNKJs0Nh3BJtt8A@mail.gmail.com>
- <71CC9E29-ECBD-47DB-AE85-1477BF54C45D@fb.com>
+        Tue, 20 Apr 2021 13:31:44 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B37C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:31:13 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso15728860pjg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+cZwMLVh428J9ba7XrLjwfORQpUM04LO/nF0EZ5hFTM=;
+        b=r3IoxZ9jZlolZSo+i+0Vq2IufeBoUFpDuDR0L20PtvSGfrMJCT1GOYZYxupM2WgI4k
+         TAXWysLXlofqhYqa9y//84RLacBcIRCRd7KGhjVQtf1Ww3ni4EVqn/qhXTdAKt/i2fX8
+         D/H8XkRVTeApI4Us7+5ZyslL5n8+XX5CPeFCOqRi4/f6L9y9/y2zEuzHLERFXqpKW/Zp
+         Nlmf9nWy0TDPNTvtTAkBOSep6FqmYLRFo+M1QfCkmA4sBRTtaM5BVlHu2+8NPAgObC9/
+         bNoO3f27ONNmN+Tkm2cYq7s/dXEAcBqIM5o+DyxYQspQDSzk1UGJA5kf7kFpnxAmKA2z
+         /ZUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+cZwMLVh428J9ba7XrLjwfORQpUM04LO/nF0EZ5hFTM=;
+        b=oizVX/wzld6tEp+XCPFlRdRuLFFRotKMXt9D1oyYelnVVjswiretSawLLbypXBwG4O
+         T7HLpzi+aHLkjS0sCHUaji1BrNoHDxvSJhi4nZw1Z8kLmoMPZh9IT7i/S9L1JwQDVaHz
+         TMw9dmMBs1CpaVIZ3Q1rbKFpM2Vs9M1ETPQTacL6lNDid2QxCdc2l4vxBlgEUHqhxmIe
+         1+DV7xtFDCXNMkPE+9fXMRa2DWFTTczitji5RoqI8BGll6XtG5hzJVNgXGlVtBpDcKlx
+         PsCM7GyPwitsV4WH1T8L5MeRd5xF+U36ciY0BKhmTtU/FCfA0pLKoceQB3RGIzNPmmTG
+         emYg==
+X-Gm-Message-State: AOAM532VUTHi382z5FUtLlN94+99yLbUDtXyApiRid5P/f7sTh301YLs
+        3ES0WovcC/OctTxj6c+tQF4ygg==
+X-Google-Smtp-Source: ABdhPJwrZR8nItfvVcawfuMxX3jUZ9FHCHMKKeXULvPy9U5vVnTz853le/MVQhnw6J6XjwZz8CeD/g==
+X-Received: by 2002:a17:90a:7566:: with SMTP id q93mr6024441pjk.103.1618939872429;
+        Tue, 20 Apr 2021 10:31:12 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x18sm8007016pfp.57.2021.04.20.10.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 10:31:11 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 17:31:07 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
+Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
+Message-ID: <YH8P26OibEfxvJAu@google.com>
+References: <20210420112006.741541-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71CC9E29-ECBD-47DB-AE85-1477BF54C45D@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210420112006.741541-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 08:26:02PM +0000, Song Liu wrote:
+On Tue, Apr 20, 2021, Paolo Bonzini wrote:
+> From ef78673f78e3f2eedc498c1fbf9271146caa83cb Mon Sep 17 00:00:00 2001
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> Date: Thu, 15 Apr 2021 15:57:02 +0000
+> Subject: [PATCH 2/3] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
 > 
+> This hypercall is used by the SEV guest to notify a change in the page
+> encryption status to the hypervisor. The hypercall should be invoked
+> only when the encryption attribute is changed from encrypted -> decrypted
+> and vice versa. By default all guest pages are considered encrypted.
 > 
-> > On Apr 17, 2021, at 9:45 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> > 
-> > Hi Song,
-> > 
-> > On Sat, Apr 17, 2021 at 7:13 AM Song Liu <song@kernel.org> wrote:
-> >> 
-> >> Currently, to use BPF to aggregate perf event counters, the user uses
-> >> --bpf-counters option. Enable "use bpf by default" events with a config
-> >> option, stat.bpf-counter-events. Events with name in the option will use
-> >> BPF.
-> >> 
-> >> This also enables mixed BPF event and regular event in the same sesssion.
-> >> For example:
-> >> 
-> >>   perf config stat.bpf-counter-events=instructions
-> >>   perf stat -e instructions,cs
-> >> 
-> >> The second command will use BPF for "instructions" but not "cs".
-> >> 
-> >> Signed-off-by: Song Liu <song@kernel.org>
-> >> ---
-> >> @@ -535,12 +549,13 @@ static int enable_counters(void)
-> >>        struct evsel *evsel;
-> >>        int err;
-> >> 
-> >> -       if (target__has_bpf(&target)) {
-> >> -               evlist__for_each_entry(evsel_list, evsel) {
-> >> -                       err = bpf_counter__enable(evsel);
-> >> -                       if (err)
-> >> -                               return err;
-> >> -               }
-> >> +       evlist__for_each_entry(evsel_list, evsel) {
-> >> +               if (!evsel__is_bpf(evsel))
-> >> +                       continue;
-> >> +
-> >> +               err = bpf_counter__enable(evsel);
-> >> +               if (err)
-> >> +                       return err;
-> > 
-> > I just realized it doesn't have a disable counterpart.
-> 
-> I guess it is not really necessary for perf-stat? It is probably good
-> to have it though. How about we do it in a follow up patch?
+> The hypercall exits to userspace to manage the guest shared regions and
+> integrate with the userspace VMM's migration code.
 
-good catch, should it at least do:
-  evsel->follower_skel->bss->enabled = 0;
+...
 
-because then the follower goes down only with perf process, right?
-still doing the counts till the end..?
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index fd4a84911355..2bc353d1f356 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6766,3 +6766,14 @@ they will get passed on to user space. So user space still has to have
+>  an implementation for these despite the in kernel acceleration.
+>  
+>  This capability is always enabled.
+> +
+> +8.32 KVM_CAP_EXIT_HYPERCALL
+> +---------------------------
+> +
+> +:Capability: KVM_CAP_EXIT_HYPERCALL
+> +:Architectures: x86
+> +:Type: vm
+> +
+> +This capability, if enabled, will cause KVM to exit to userspace
+> +with KVM_EXIT_HYPERCALL exit reason to process some hypercalls.
+> +Right now, the only such hypercall is KVM_HC_PAGE_ENC_STATUS.
+> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
+> index cf62162d4be2..c9378d163b5a 100644
+> --- a/Documentation/virt/kvm/cpuid.rst
+> +++ b/Documentation/virt/kvm/cpuid.rst
+> @@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
+>                                                 before using extended destination
+>                                                 ID bits in MSI address bits 11-5.
+>  
+> +KVM_FEATURE_HC_PAGE_ENC_STATUS     16          guest checks this feature bit before
+> +                                               using the page encryption state
+> +                                               hypercall to notify the page state
+> +                                               change
 
-also while checking on that I realized we open the counters
-in separate path for this in bperf_reload_leader_program by
-calling evsel__open_per_cpu.. and we're missing all the
-fallback code and setup from create_perf_stat_counter
+...
 
-I think we should at least call create_perf_stat_counter,
-and also propagate error value if it fails
+>  int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>  {
+>  	unsigned long nr, a0, a1, a2, a3, ret;
+> @@ -8334,6 +8346,28 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>  		kvm_sched_yield(vcpu, a0);
+>  		ret = 0;
+>  		break;
+> +	case KVM_HC_PAGE_ENC_STATUS: {
+> +		u64 gpa = a0, npages = a1, enc = a2;
+> +
+> +		ret = -KVM_ENOSYS;
+> +		if (!vcpu->kvm->arch.hypercall_exit_enabled)
 
-jirka
+I don't follow, why does the hypercall need to be gated by a capability?  What
+would break if this were changed to?
 
-> 
-> [...]
-> 
-> >> +       if (!evsel__bpf_counter_events)
-> >> +               return false;
-> >> +
-> >> +       ptr = strstr(evsel__bpf_counter_events, name);
-> >> +       name_len = strlen(name);
-> >> +
-> >> +       /* check name matches a full token in evsel__bpf_counter_events */
-> >> +       match = (ptr != NULL) &&
-> >> +               ((ptr == evsel__bpf_counter_events) || (*(ptr - 1) == ',')) &&
-> >> +               ((*(ptr + name_len) == ',') || (*(ptr + name_len) == '\0'));
-> > 
-> > I'm not sure we have an event name which is a substring of another.
-> > Maybe it can retry if it fails to match.
-> 
-> We have ref-cycles and cycles. And some raw events may be substring of others?
-> 
-> Thanks,
-> Song
-> 
-> [...]
-> 
+		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
 
+> +			break;
+> +
+> +		if (!PAGE_ALIGNED(gpa) || !npages ||
+> +		    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa)) {
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
+> +		vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
+> +		vcpu->run->hypercall.args[0]  = gpa;
+> +		vcpu->run->hypercall.args[1]  = npages;
+> +		vcpu->run->hypercall.args[2]  = enc;
+> +		vcpu->run->hypercall.longmode = op_64_bit;
+> +		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
+> +		return 0;
+> +	}
+>  	default:
+>  		ret = -KVM_ENOSYS;
+>  		break;
+
+...
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 590cc811c99a..d696a9f13e33 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3258,6 +3258,14 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		vcpu->arch.msr_kvm_poll_control = data;
+>  		break;
+>  
+> +	case MSR_KVM_MIGRATION_CONTROL:
+> +		if (data & ~KVM_PAGE_ENC_STATUS_UPTODATE)
+> +			return 1;
+> +
+> +		if (data && !guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
+
+Why let the guest write '0'?  Letting the guest do WRMSR but not RDMSR is
+bizarre.
+
+> +			return 1;
+> +		break;
+> +
+>  	case MSR_IA32_MCG_CTL:
+>  	case MSR_IA32_MCG_STATUS:
+>  	case MSR_IA32_MC0_CTL ... MSR_IA32_MCx_CTL(KVM_MAX_MCE_BANKS) - 1:
+> @@ -3549,6 +3557,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
+>  			return 1;
+>  
+> +		msr_info->data = 0;
+> +		break;
+> +	case MSR_KVM_MIGRATION_CONTROL:
+> +		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
+> +			return 1;
+> +
+>  		msr_info->data = 0;
+>  		break;
+>  	case MSR_KVM_STEAL_TIME:
+> -- 
+> 2.26.2
+> 
