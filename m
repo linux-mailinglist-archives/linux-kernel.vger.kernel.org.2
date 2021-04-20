@@ -2,118 +2,966 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C5A365436
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEF8365438
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbhDTIfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        id S230499AbhDTIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbhDTIfB (ORCPT
+        with ESMTP id S230379AbhDTIf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:35:01 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E861C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:34:30 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 82so42077706yby.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:34:30 -0700 (PDT)
+        Tue, 20 Apr 2021 04:35:26 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43749C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:34:54 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so7353749wmi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CIbDsjSlYNB39lAkXiBh+yh6lGzuFfE+K2GAXvRSiyI=;
-        b=UagKz1Qmdu7Q2jsw/lr+lek9ORY3WucgUMgJTMbmlQ2U0hscD+E4At1sbrujKdRowD
-         7X3trQLGkBQm2N1wrZnxzZvdp6NbB4Ox/984N8iDCwFYV1nL7ZjkMFT1GIPCoiQnzB2d
-         uJk5/6mVWzJHMjDW72KFUaJ0B+ZoQFuIcJbfidbR1x9QqTe5AHXogeUhZ4Y+KG0OdU+K
-         PhYQ7QqVcH6G8SfLM9vRvjUc/Q9X5cjuIf5xav//VhU1YzPGMMFOwOrIl02TZ786Kdqe
-         QPPU3xBMhotzf7RhfN/AMqz1JwhJJ0SZmCcpo/GXj24abZ9gSRgcXiSp78h91/loFVjl
-         Dpzg==
+        bh=ZjcKTzhkvV/Q9golDJqzzdo6xtdcFkD6S5hio/pmezQ=;
+        b=n4KNXbXHZHgi9o/f2s4xeMio+X7l0EYABT+e6VPtJczXBTfiFsA5Q3tqFpEHaCMKb2
+         XLqOZyhDdMmKnZLLPyA3YaDvw0H3Eu4UXl2g2ngH9w+oR/FOUI8XhMXKF3YS1tvi7pi2
+         W02GipmnMxlrmxykj5Ixeo4i6Xc1fDH0QLOt2xEUbfgRVoBYvZbCM0nRC+MSacf0X1Y1
+         XV2bxBeAgHYu6S/MldSuwJkeaBdFsj9LO10Q3pStEXmADJsIBLsqz3dfA4DSV+icxV5I
+         Kw+HjHMcShv0MdSHisMNmrHW/4RgSarI8gcv5Dn5AFQfEexb281T16WHuRTJoxAMt/jZ
+         rv8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CIbDsjSlYNB39lAkXiBh+yh6lGzuFfE+K2GAXvRSiyI=;
-        b=ooD+iVH0drC3jQJErkphA4t9r6IAy+uFXkA9umIWWScCjebOqfR8Q6hnvzo0b647Gd
-         QxIe7dBn7qtXos8RBo5YBh659/9mhO6B9zMFYryqYUOK9NALtEbkaKfdH/cVxor98gc3
-         EVWiqoJJgSvjlpfQLuHbAH81T4ZzOFmi4VIu5y8oTFKncyXoEqpEYiomJ9q6TCMIDUzQ
-         5nKQkRWb3aieAR1DJthjad6EgZo4ORyPSBt3oNEAWeSF23XjDCAoOwb0MFIJBxfiaLdc
-         +++eGEivBCz19DQAemGI9ww8bwemM2A5gA+O/9THk399bHSbAMc/ll9eLsMFH5IyBl/s
-         t4cg==
-X-Gm-Message-State: AOAM531aZxElP0FpV29pMIgRPKADERHIC3gNTqfZ6WVqF+PpRuftg/OX
-        gz+2TfPs1nGbwQSXoayhNQZBnm7xqNc2HFOsqWj11w==
-X-Google-Smtp-Source: ABdhPJyfIpao9HMJFv/llAEFc3oqElsajPNf7GfYDz0tkJQWODL4BNlANI60ZRFNj43qwv4kk+DN8u5uVwrD70ZjjRg=
-X-Received: by 2002:a25:7650:: with SMTP id r77mr24388590ybc.446.1618907669051;
- Tue, 20 Apr 2021 01:34:29 -0700 (PDT)
+        bh=ZjcKTzhkvV/Q9golDJqzzdo6xtdcFkD6S5hio/pmezQ=;
+        b=K6eLRj67nS7dE3bjpFgFeOKKeuilkuv/pf2GKvXQPi7qRucMaCXDZzDYjLCPtq4Cwx
+         XN89/ouzfnzEnHZpy++TbPTFi8Nx1Hdr/ScEh90aLjI8cnsCVug6pAhwaAMkl2YcyzIg
+         R3wkSZuPIWY5D0jGjHffR1H6AatXqNhkH0s79NTYCdRRJsquXiHw/25DCJSfj3tkskdK
+         iSFxfRwPQsH2zAberOOt60kqOIfKK9PAtC/xdSHrMJaNdrY6myjG4Yhsd6Hd4s6QLYk9
+         PuPkaNpNETNozKXAYgjWwzhb+LKyK+C8NRZsdL97z1fRUw3OtfDj0/B0M1mbqixuQOPd
+         ld2g==
+X-Gm-Message-State: AOAM5311iIOgUIy/JxHbVdxEH188b0k4UDJNCbHTC5s4h5y+6mVD/TUG
+        occoAwuSD1oM8kKk+YqjlO/MG4dJcuP42zHzexPv0w==
+X-Google-Smtp-Source: ABdhPJxbMya/BXplKmP5rmwoMoVvg18FMbcI6CEoUqkSSLR7p1SxZ+HcgSBeA/EW/kzFr5FBtevmuIRv5hjKuWB3bgo=
+X-Received: by 2002:a05:600c:358b:: with SMTP id p11mr3208291wmq.143.1618907692557;
+ Tue, 20 Apr 2021 01:34:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210420075406.64105-1-acelan.kao@canonical.com>
-In-Reply-To: <20210420075406.64105-1-acelan.kao@canonical.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 20 Apr 2021 10:34:17 +0200
-Message-ID: <CANn89iJLSmtBNoDo8QJ6a0MzsHjdLB0Pf=cs9e4g8Y6-KuFiMQ@mail.gmail.com>
-Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
-To:     AceLan Kao <acelan.kao@canonical.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210413155337.644993-1-namhyung@kernel.org> <20210413155337.644993-2-namhyung@kernel.org>
+ <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
+In-Reply-To: <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Tue, 20 Apr 2021 01:34:40 -0700
+Message-ID: <CABPqkBTncWfeFWY=kYXTAr3gRjpyFVL-YJN4K1YOPpHO35PHBw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 9:54 AM AceLan Kao <acelan.kao@canonical.com> wrote:
->
-> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
->
-> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
-> __dev_open() it calls pm_runtime_resume() to resume devices, and in
-> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
-> again. That leads to a recursive lock.
->
-> It should leave the devices' resume function to decide if they need to
-> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
-> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
->
->
+Hi Peter,
 
-Hi Acelan
+On Thu, Apr 15, 2021 at 7:51 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Apr 13, 2021 at 08:53:36AM -0700, Namhyung Kim wrote:
+> > As we can run many jobs (in container) on a big machine, we want to
+> > measure each job's performance during the run.  To do that, the
+> > perf_event can be associated to a cgroup to measure it only.
+> >
+> > However such cgroup events need to be opened separately and it causes
+> > significant overhead in event multiplexing during the context switch
+> > as well as resource consumption like in file descriptors and memory
+> > footprint.
+> >
+> > As a cgroup event is basically a cpu event, we can share a single cpu
+> > event for multiple cgroups.  All we need is a separate counter (and
+> > two timing variables) for each cgroup.  I added a hash table to map
+> > from cgroup id to the attached cgroups.
+> >
+> > With this change, the cpu event needs to calculate a delta of event
+> > counter values when the cgroups of current and the next task are
+> > different.  And it attributes the delta to the current task's cgroup.
+> >
+> > This patch adds two new ioctl commands to perf_event for light-weight
+>
+> git grep "This patch" Documentation/
+>
+> > cgroup event counting (i.e. perf stat).
+> >
+> >  * PERF_EVENT_IOC_ATTACH_CGROUP - it takes a buffer consists of a
+> >      64-bit array to attach given cgroups.  The first element is a
+> >      number of cgroups in the buffer, and the rest is a list of cgroup
+> >      ids to add a cgroup info to the given event.
+>
+> WTH is a cgroup-id? The syscall takes a fd to the path, why have two
+> different ways?
+>
+> >  * PERF_EVENT_IOC_READ_CGROUP - it takes a buffer consists of a 64-bit
+> >      array to get the event counter values.  The first element is size
+> >      of the array in byte, and the second element is a cgroup id to
+> >      read.  The rest is to save the counter value and timings.
+>
+> :-(
+>
+> So basically you're doing a whole seconds cgroup interface, one that
+> violates the one counter per file premise and lives off of ioctl()s.
+>
+> *IF* we're going to do something like this, I feel we should explore the
+> whole vector-per-fd concept before proceeding. Can we make it less yuck
+> (less special ioctl() and more regular file ops. Can we apply the
+> concept to more things?
+>
+> The second patch extends the ioctl() to be more read() like, instead of
+> doing the sane things and extending read() by adding PERF_FORMAT_VECTOR
+> or whatever. In fact, this whole second ioctl() doesn't make sense to
+> have if we do indeed want to do vector-per-fd.
+>
+> Also, I suppose you can already fake this, by having a
+> SW_CGROUP_SWITCHES (sorry, I though I picked those up, done now) event
+> with PERF_SAMPLE_READ|PERF_SAMPLE_CGROUP and PERF_FORMAT_GROUP in a
+> group with a bunch of events. Then the buffer will fill with the values
+> you use here.
+>
+> Yes, I suppose it has higher overhead, but you get the data you want
+> without having to do terrible things like this.
+>
+The sampling approach will certainly incur more overhead and be at
+risk of losing the ability to
+reconstruct the total counter per-cgroup, unless  you set the period
+for SW_CGROUP_SWITCHES to
+1. But then, you run the risk of losing samples if the buffer is full
+or sampling is throtlled.
+In some scenarios, we believe the number of context switches between
+cgroup could be quite high (>> 1000/s).
+And on top you would have to add the processing of the samples to
+extract the counts per cgroup. That would require
+a synthesis on cgroup on perf record and some post-processing on perf
+report. We are interested in using the data live
+to make some policy decisions, so a counting approach with perf stat
+will always be best.
 
-When was the bugg added ?
-Please add a Fixes: tag
+The fundamental problem Namhyung is trying to solve is the following:
 
-By doing so, you give more chances for reviewers to understand why the
-fix is not risky,
-and help stable teams work.
+num_fds = num_cpus x num_events x num_cgroups
+
+On an 256-CPU AMD server running 200 cgroups with 6 events/cgroup (as
+an example):
+
+num_fds = 256 x 200 x 6 = 307,200 fds (with all the kernel memory
+associated with them).
+On each CPU, that implies: 200 x 6 = 1200 events to schedule and 6 to
+find on each cgroup switch
+
+This does not scale for us:
+   - run against the fd limit, but also memory consumption in the
+kernel per struct file, struct inode, struct perf_event ....
+   - number of events per-cpu is still also large
+   - require event scheduling on cgroup switches, even with RB-tree
+improvements, still heavy
+   - require event scheduling even if measuring the same events across
+all cgroups
+
+One factor in that equation above needs to disappear. The one counter
+per file descriptor is respected with
+Nahmyung's patch because he is operating a plain per-cpu mode. What
+changes is just how and where the
+count is accumulated in perf_events. The resulting programming on the
+hardware is the same as before.
+
+What is needed is a way to accumulate counts per-cgroup without
+incurring all this overhead. That will
+inevitably introduce another way of specifying cgroups. The current
+mode offers maximum flexibility.
+You can specify any event per-cgroup. Cgroup events are programmed
+independently of each other. The approach
+proposed by Namhyung still allows for that, but provides an
+optimization for the common case where all events are the
+same across all cgroups because in that case you only create: num_fds
+= num_cpus x num_events. The advantage is that
+you eliminate a lot of the overhead listed above. In particular the
+fds and the context switch scheduling, now you only have
+to compute a delta and store in a hash table.
+
+As you point out, the difficulty is how to express the cgroups of
+interest and how to read the counts back.
+I agree that the ioctl() is not ideal for the latter. For the former,
+if you do not want ioctl() then you would have to overload
+perf_event_open() with a vector of cgroup fd, for instance. As for the
+read, you could, as you suggest, use
+the read syscall if you want to read all the cgroups at once using a
+new read_format. I don't have a problem with that.
+As for cgroup-id vs. cgroup-fd, I think you make a fair point about
+consistency with the existing approach. I don't have a problem
+with that either
 
 Thanks.
 
-> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
-> ---
->  net/core/dev.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+
 >
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 1f79b9aa9a3f..427cbc80d1e5 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -1537,8 +1537,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
 >
->         if (!netif_device_present(dev)) {
->                 /* may be detached because parent is runtime-suspended */
-> -               if (dev->dev.parent)
-> +               if (dev->dev.parent) {
-> +                       rtnl_unlock();
->                         pm_runtime_resume(dev->dev.parent);
-> +                       rtnl_lock();
-> +               }
->                 if (!netif_device_present(dev))
->                         return -ENODEV;
->         }
-> --
-> 2.25.1
 >
+> Lots of random comments below.
+>
+> > This attaches all cgroups in a single syscall and I didn't add the
+> > DETACH command deliberately to make the implementation simple.  The
+> > attached cgroup nodes would be deleted when the file descriptor of the
+> > perf_event is closed.
+> >
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Reported-by: kernel test robot <lkp@intel.com>
+>
+> What, the whole thing?
+>
+> > Acked-by: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  include/linux/perf_event.h      |  22 ++
+> >  include/uapi/linux/perf_event.h |   2 +
+> >  kernel/events/core.c            | 480 ++++++++++++++++++++++++++++++--
+> >  3 files changed, 477 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > index 3f7f89ea5e51..4b03cbadf4a0 100644
+> > --- a/include/linux/perf_event.h
+> > +++ b/include/linux/perf_event.h
+> > @@ -771,6 +771,19 @@ struct perf_event {
+> >
+> >  #ifdef CONFIG_CGROUP_PERF
+> >       struct perf_cgroup              *cgrp; /* cgroup event is attach to */
+> > +
+> > +     /* to share an event for multiple cgroups */
+> > +     struct hlist_head               *cgrp_node_hash;
+> > +     struct perf_cgroup_node         *cgrp_node_entries;
+> > +     int                             nr_cgrp_nodes;
+> > +     int                             cgrp_node_hash_bits;
+> > +
+> > +     struct list_head                cgrp_node_entry;
+>
+> Not related to perf_cgroup_node below, afaict the name is just plain
+> wrong.
+>
+> > +
+> > +     /* snapshot of previous reading (for perf_cgroup_node below) */
+> > +     u64                             cgrp_node_count;
+> > +     u64                             cgrp_node_time_enabled;
+> > +     u64                             cgrp_node_time_running;
+> >  #endif
+> >
+> >  #ifdef CONFIG_SECURITY
+> > @@ -780,6 +793,13 @@ struct perf_event {
+> >  #endif /* CONFIG_PERF_EVENTS */
+> >  };
+> >
+> > +struct perf_cgroup_node {
+> > +     struct hlist_node               node;
+> > +     u64                             id;
+> > +     u64                             count;
+> > +     u64                             time_enabled;
+> > +     u64                             time_running;
+> > +} ____cacheline_aligned;
+> >
+> >  struct perf_event_groups {
+> >       struct rb_root  tree;
+> > @@ -843,6 +863,8 @@ struct perf_event_context {
+> >       int                             pin_count;
+> >  #ifdef CONFIG_CGROUP_PERF
+> >       int                             nr_cgroups;      /* cgroup evts */
+> > +     struct list_head                cgrp_node_list;
+>
+> AFAICT this is actually a list of events, not a list of cgroup_node
+> thingies, hence the name is wrong.
+>
+> > +     struct list_head                cgrp_ctx_entry;
+> >  #endif
+> >       void                            *task_ctx_data; /* pmu specific data */
+> >       struct rcu_head                 rcu_head;
+> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> > index ad15e40d7f5d..06bc7ab13616 100644
+> > --- a/include/uapi/linux/perf_event.h
+> > +++ b/include/uapi/linux/perf_event.h
+> > @@ -479,6 +479,8 @@ struct perf_event_query_bpf {
+> >  #define PERF_EVENT_IOC_PAUSE_OUTPUT          _IOW('$', 9, __u32)
+> >  #define PERF_EVENT_IOC_QUERY_BPF             _IOWR('$', 10, struct perf_event_query_bpf *)
+> >  #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES     _IOW('$', 11, struct perf_event_attr *)
+> > +#define PERF_EVENT_IOC_ATTACH_CGROUP         _IOW('$', 12, __u64 *)
+> > +#define PERF_EVENT_IOC_READ_CGROUP           _IOWR('$', 13, __u64 *)
+> >
+> >  enum perf_event_ioc_flags {
+> >       PERF_IOC_FLAG_GROUP             = 1U << 0,
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index f07943183041..bcf51c0b7855 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -379,6 +379,7 @@ enum event_type_t {
+> >   * perf_cgroup_events: >0 per-cpu cgroup events exist on this cpu
+> >   */
+> >
+> > +static void perf_sched_enable(void);
+> >  static void perf_sched_delayed(struct work_struct *work);
+> >  DEFINE_STATIC_KEY_FALSE(perf_sched_events);
+> >  static DECLARE_DELAYED_WORK(perf_sched_work, perf_sched_delayed);
+> > @@ -2124,6 +2125,323 @@ static int perf_get_aux_event(struct perf_event *event,
+> >       return 1;
+> >  }
+> >
+> > +#ifdef CONFIG_CGROUP_PERF
+> > +static DEFINE_PER_CPU(struct list_head, cgroup_ctx_list);
+> > +
+> > +static bool event_can_attach_cgroup(struct perf_event *event)
+> > +{
+> > +     if (is_sampling_event(event))
+> > +             return false;
+> > +     if (event->attach_state & PERF_ATTACH_TASK)
+> > +             return false;
+> > +     if (is_cgroup_event(event))
+> > +             return false;
+>
+> Why? You could be doing a subtree.
+>
+> > +
+> > +     return true;
+> > +}
+> > +
+> > +static bool event_has_cgroup_node(struct perf_event *event)
+> > +{
+> > +     return event->nr_cgrp_nodes > 0;
+> > +}
+> > +
+> > +static struct perf_cgroup_node *
+> > +find_cgroup_node(struct perf_event *event, u64 cgrp_id)
+> > +{
+> > +     struct perf_cgroup_node *cgrp_node;
+> > +     int key = hash_64(cgrp_id, event->cgrp_node_hash_bits);
+> > +
+> > +     hlist_for_each_entry(cgrp_node, &event->cgrp_node_hash[key], node) {
+> > +             if (cgrp_node->id == cgrp_id)
+> > +                     return cgrp_node;
+> > +     }
+> > +
+> > +     return NULL;
+> > +}
+> > +
+> > +static void perf_update_cgroup_node(struct perf_event *event, struct cgroup *cgrp)
+> > +{
+> > +     u64 delta_count, delta_time_enabled, delta_time_running;
+> > +     int i;
+> > +
+> > +     if (event->cgrp_node_count == 0)
+> > +             goto out;
+> > +
+> > +     delta_count = local64_read(&event->count) - event->cgrp_node_count;
+> > +     delta_time_enabled = event->total_time_enabled - event->cgrp_node_time_enabled;
+> > +     delta_time_running = event->total_time_running - event->cgrp_node_time_running;
+> > +
+> > +     /* account delta to all ancestor cgroups */
+> > +     for (i = 0; i <= cgrp->level; i++) {
+> > +             struct perf_cgroup_node *node;
+> > +
+> > +             node = find_cgroup_node(event, cgrp->ancestor_ids[i]);
+> > +             if (node) {
+> > +                     node->count += delta_count;
+> > +                     node->time_enabled += delta_time_enabled;
+> > +                     node->time_running += delta_time_running;
+> > +             }
+> > +     }
+> > +
+> > +out:
+> > +     event->cgrp_node_count = local64_read(&event->count);
+> > +     event->cgrp_node_time_enabled = event->total_time_enabled;
+> > +     event->cgrp_node_time_running = event->total_time_running;
+>
+> This is wrong; there's no guarantee these are the same values you read
+> at the begin, IOW you could be loosing events.
+>
+> > +}
+> > +
+> > +static void update_cgroup_node(struct perf_event *event, struct cgroup *cgrp)
+> > +{
+> > +     if (event->state == PERF_EVENT_STATE_ACTIVE)
+> > +             event->pmu->read(event);
+> > +
+> > +     perf_event_update_time(event);
+> > +     perf_update_cgroup_node(event, cgrp);
+> > +}
+> > +
+> > +/* this is called from context switch */
+> > +static void update_cgroup_node_events(struct perf_event_context *ctx,
+> > +                                   struct cgroup *cgrp)
+> > +{
+> > +     struct perf_event *event;
+> > +
+> > +     lockdep_assert_held(&ctx->lock);
+> > +
+> > +     if (ctx->is_active & EVENT_TIME)
+> > +             update_context_time(ctx);
+> > +
+> > +     list_for_each_entry(event, &ctx->cgrp_node_list, cgrp_node_entry)
+> > +             update_cgroup_node(event, cgrp);
+> > +}
+> > +
+> > +static void cgroup_node_sched_out(struct task_struct *task)
+>
+> Naming seems confused.
+>
+> > +{
+> > +     struct list_head *cgrp_ctx_list = this_cpu_ptr(&cgroup_ctx_list);
+> > +     struct perf_cgroup *cgrp = perf_cgroup_from_task(task, NULL);
+> > +     struct perf_event_context *ctx;
+> > +
+> > +     list_for_each_entry(ctx, cgrp_ctx_list, cgrp_ctx_entry) {
+> > +             raw_spin_lock(&ctx->lock);
+> > +             update_cgroup_node_events(ctx, cgrp->css.cgroup);
+> > +             raw_spin_unlock(&ctx->lock);
+> > +     }
+> > +}
+> > +
+> > +/* these are called from the when an event is enabled/disabled */
+>
+> That sentence needs help.
+>
+> > +static void perf_add_cgrp_node_list(struct perf_event *event,
+> > +                                 struct perf_event_context *ctx)
+> > +{
+> > +     struct list_head *cgrp_ctx_list = this_cpu_ptr(&cgroup_ctx_list);
+> > +     struct perf_cgroup *cgrp = perf_cgroup_from_task(current, ctx);
+> > +     bool is_first;
+> > +
+> > +     lockdep_assert_irqs_disabled();
+> > +     lockdep_assert_held(&ctx->lock);
+>
+> The latter very much implies the former, no?
+>
+> > +
+> > +     is_first = list_empty(&ctx->cgrp_node_list);
+> > +     list_add_tail(&event->cgrp_node_entry, &ctx->cgrp_node_list);
+>
+> See the naming being daft.
+>
+> > +
+> > +     if (is_first)
+> > +             list_add_tail(&ctx->cgrp_ctx_entry, cgrp_ctx_list);
+>
+> While here it actually makes sense.
+>
+> > +
+> > +     update_cgroup_node(event, cgrp->css.cgroup);
+> > +}
+> > +
+> > +static void perf_del_cgrp_node_list(struct perf_event *event,
+> > +                                 struct perf_event_context *ctx)
+> > +{
+> > +     struct perf_cgroup *cgrp = perf_cgroup_from_task(current, ctx);
+> > +
+> > +     lockdep_assert_irqs_disabled();
+> > +     lockdep_assert_held(&ctx->lock);
+> > +
+> > +     update_cgroup_node(event, cgrp->css.cgroup);
+> > +     /* to refresh delta when it's enabled */
+> > +     event->cgrp_node_count = 0;
+> > +
+> > +     list_del(&event->cgrp_node_entry);
+> > +
+> > +     if (list_empty(&ctx->cgrp_node_list))
+> > +             list_del(&ctx->cgrp_ctx_entry);
+> > +}
+> > +
+> > +static void perf_attach_cgroup_node(struct perf_event *event,
+> > +                                 struct perf_cpu_context *cpuctx,
+> > +                                 struct perf_event_context *ctx,
+> > +                                 void *data)
+> > +{
+> > +     if (ctx->is_active & EVENT_TIME)
+> > +             update_context_time(ctx);
+> > +
+> > +     perf_add_cgrp_node_list(event, ctx);
+> > +}
+> > +
+> > +#define MIN_CGRP_NODE_HASH  4
+> > +#define MAX_CGRP_NODE_HASH  (4 * 1024)
+>
+> So today you think 200 cgroups is sane, tomorrow you'll complain 4k
+> cgroups is not enough.
+>
+> > +
+> > +/* this is called from ioctl */
+> > +static int perf_event_attach_cgroup_node(struct perf_event *event, u64 nr_cgrps,
+> > +                                      u64 *cgroup_ids)
+> > +{
+> > +     struct perf_cgroup_node *cgrp_node;
+> > +     struct perf_event_context *ctx = event->ctx;
+> > +     struct hlist_head *cgrp_node_hash;
+> > +     int node = (event->cpu >= 0) ? cpu_to_node(event->cpu) : -1;
+>
+> How many more copies of that do we need?
+>
+> > +     unsigned long flags;
+> > +     bool is_first = true;
+> > +     bool enabled;
+> > +     int i, nr_hash;
+> > +     int hash_bits;
+> > +
+> > +     if (nr_cgrps < MIN_CGRP_NODE_HASH)
+> > +             nr_hash = MIN_CGRP_NODE_HASH;
+> > +     else
+> > +             nr_hash = roundup_pow_of_two(nr_cgrps);
+> > +     hash_bits = ilog2(nr_hash);
+>
+> That's like the complicated version of:
+>
+>         hash_bits = 1 + ilog2(max(MIN_CGRP_NODE_HASH, nr_cgrps) - 1);
+>
+> ?
+>
+> > +
+> > +     cgrp_node_hash = kcalloc_node(nr_hash, sizeof(*cgrp_node_hash),
+> > +                                   GFP_KERNEL, node);
+> > +     if (cgrp_node_hash == NULL)
+> > +             return -ENOMEM;
+> > +
+> > +     cgrp_node = kcalloc_node(nr_cgrps, sizeof(*cgrp_node), GFP_KERNEL, node);
+> > +     if (cgrp_node == NULL) {
+> > +             kfree(cgrp_node_hash);
+> > +             return -ENOMEM;
+> > +     }
+> > +
+> > +     for (i = 0; i < (int)nr_cgrps; i++) {
+> > +             int key = hash_64(cgroup_ids[i], hash_bits);
+> > +
+> > +             cgrp_node[i].id = cgroup_ids[i];
+> > +             hlist_add_head(&cgrp_node[i].node, &cgrp_node_hash[key]);
+> > +     }
+> > +
+> > +     raw_spin_lock_irqsave(&ctx->lock, flags);
+> > +
+> > +     enabled = event->state >= PERF_EVENT_STATE_INACTIVE;
+> > +
+> > +     if (event->nr_cgrp_nodes != 0) {
+> > +             kfree(event->cgrp_node_hash);
+> > +             kfree(event->cgrp_node_entries);
+> > +             is_first = false;
+> > +     }
+>
+> So if we already had cgroups attached, we just plunk whatever state we
+> had, without re-hashing? That's hardly sane semantics for something
+> called 'attach'.
+>
+> And if you want this behaviour, then you should probably also accept
+> nr_cgrps==0, but you don't do that either.
+>
+> > +
+> > +     event->cgrp_node_hash = cgrp_node_hash;
+> > +     event->cgrp_node_entries = cgrp_node;
+> > +     event->cgrp_node_hash_bits = hash_bits;
+> > +     event->nr_cgrp_nodes = nr_cgrps;
+> > +
+> > +     raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> > +
+> > +     if (is_first && enabled)
+> > +             event_function_call(event, perf_attach_cgroup_node, NULL);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void perf_event_destroy_cgroup_nodes(struct perf_event *event)
+> > +{
+> > +     struct perf_event_context *ctx = event->ctx;
+> > +     unsigned long flags;
+> > +
+> > +     raw_spin_lock_irqsave(&ctx->lock, flags);
+> > +
+> > +     if (event_has_cgroup_node(event)) {
+> > +             if (!atomic_add_unless(&perf_sched_count, -1, 1))
+> > +                     schedule_delayed_work(&perf_sched_work, HZ);
+> > +     }
+>
+> Below you extract perf_sched_enable(), so this is somewhat inconsistent
+> for not being perf_sched_disable() I'm thinking.
+>
+> Also, the placement seems weird, do you really want this under
+> ctx->lock?
+>
+> > +
+> > +     kfree(event->cgrp_node_hash);
+> > +     kfree(event->cgrp_node_entries);
+> > +     event->nr_cgrp_nodes = 0;
+> > +
+> > +     raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> > +}
+> > +
+> > +static int perf_event_read(struct perf_event *event, bool group);
+> > +
+> > +static void __perf_read_cgroup_node(struct perf_event *event)
+> > +{
+> > +     struct perf_cgroup *cgrp;
+> > +
+> > +     if (event_has_cgroup_node(event)) {
+> > +             cgrp = perf_cgroup_from_task(current, NULL);
+> > +             perf_update_cgroup_node(event, cgrp->css.cgroup);
+> > +     }
+> > +}
+> > +
+> > +static int perf_event_read_cgroup_node(struct perf_event *event, u64 read_size,
+> > +                                    u64 cgrp_id, char __user *buf)
+> > +{
+> > +     struct perf_cgroup_node *cgrp;
+> > +     struct perf_event_context *ctx = event->ctx;
+> > +     unsigned long flags;
+> > +     u64 read_format = event->attr.read_format;
+> > +     u64 values[4];
+> > +     int n = 0;
+> > +
+> > +     /* update event count and times (possibly run on other cpu) */
+> > +     (void)perf_event_read(event, false);
+> > +
+> > +     raw_spin_lock_irqsave(&ctx->lock, flags);
+> > +
+> > +     cgrp = find_cgroup_node(event, cgrp_id);
+> > +     if (cgrp == NULL) {
+> > +             raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> > +             return -ENOENT;
+> > +     }
+> > +
+> > +     values[n++] = cgrp->count;
+> > +     if (read_format & PERF_FORMAT_TOTAL_TIME_ENABLED)
+> > +             values[n++] = cgrp->time_enabled;
+> > +     if (read_format & PERF_FORMAT_TOTAL_TIME_RUNNING)
+> > +             values[n++] = cgrp->time_running;
+> > +     if (read_format & PERF_FORMAT_ID)
+> > +             values[n++] = primary_event_id(event);
+> > +
+> > +     raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> > +
+> > +     if (copy_to_user(buf, values, n * sizeof(u64)))
+> > +             return -EFAULT;
+> > +
+> > +     return n * sizeof(u64);
+> > +}
+> > +#else  /* !CONFIG_CGROUP_PERF */
+> > +static inline bool event_can_attach_cgroup(struct perf_event *event)
+> > +{
+> > +     return false;
+> > +}
+> > +
+> > +static inline bool event_has_cgroup_node(struct perf_event *event)
+> > +{
+> > +     return false;
+> > +}
+> > +
+> > +static inline void cgroup_node_sched_out(struct task_struct *task) {}
+> > +
+> > +static inline void perf_add_cgrp_node_list(struct perf_event *event,
+> > +                                        struct perf_event_context *ctx) {}
+> > +static inline void perf_del_cgrp_node_list(struct perf_event *event,
+> > +                                        struct perf_event_context *ctx) {}
+> > +
+> > +#define MAX_CGRP_NODE_HASH  1
+> > +static inline int perf_event_attach_cgroup_node(struct perf_event *event,
+> > +                                             u64 nr_cgrps, u64 *cgrp_ids)
+> > +{
+> > +     return -ENODEV;
+> > +}
+> > +
+> > +static inline void perf_event_destroy_cgroup_nodes(struct perf_event *event) {}
+> > +static inline  void __perf_read_cgroup_node(struct perf_event *event) {}
+> > +
+> > +static inline int perf_event_read_cgroup_node(struct perf_event *event,
+> > +                                           u64 read_size, u64 cgrp_id,
+> > +                                           char __user *buf)
+> > +{
+> > +     return -EINVAL;
+> > +}
+> > +#endif  /* CONFIG_CGROUP_PERF */
+> > +
+> >  static inline struct list_head *get_event_list(struct perf_event *event)
+> >  {
+> >       struct perf_event_context *ctx = event->ctx;
+> > @@ -2407,6 +2725,7 @@ static void __perf_event_disable(struct perf_event *event,
+> >
+> >       perf_event_set_state(event, PERF_EVENT_STATE_OFF);
+> >       perf_cgroup_event_disable(event, ctx);
+> > +     perf_del_cgrp_node_list(event, ctx);
+> >  }
+> >
+> >  /*
+> > @@ -2946,6 +3265,7 @@ static void __perf_event_enable(struct perf_event *event,
+> >
+> >       perf_event_set_state(event, PERF_EVENT_STATE_INACTIVE);
+> >       perf_cgroup_event_enable(event, ctx);
+> > +     perf_add_cgrp_node_list(event, ctx);
+> >
+> >       if (!ctx->is_active)
+> >               return;
+> > @@ -3568,6 +3888,13 @@ void __perf_event_task_sched_out(struct task_struct *task,
+> >        */
+> >       if (atomic_read(this_cpu_ptr(&perf_cgroup_events)))
+> >               perf_cgroup_sched_out(task, next);
+> > +
+> > +#ifdef CONFIG_CGROUP_PERF
+> > +     if (!list_empty(this_cpu_ptr(&cgroup_ctx_list)) &&
+> > +         perf_cgroup_from_task(task, NULL) !=
+> > +         perf_cgroup_from_task(next, NULL))
+> > +             cgroup_node_sched_out(task);
+> > +#endif
+>
+> Please, fold this into that one cgroup branch you already have here.
+> Don't pullute things further.
+>
+> >  }
+> >
+> >  /*
+> > @@ -4268,6 +4595,7 @@ static void __perf_event_read(void *info)
+> >
+> >       if (!data->group) {
+> >               pmu->read(event);
+> > +             __perf_read_cgroup_node(event);
+> >               data->ret = 0;
+> >               goto unlock;
+> >       }
+> > @@ -4283,6 +4611,7 @@ static void __perf_event_read(void *info)
+> >                        * sibling could be on different (eg: software) PMU.
+> >                        */
+> >                       sub->pmu->read(sub);
+> > +                     __perf_read_cgroup_node(sub);
+> >               }
+> >       }
+> >
+>
+> Why though; nothing here looks at the new cgroup state.
+>
+> > @@ -4462,6 +4791,10 @@ static void __perf_event_init_context(struct perf_event_context *ctx)
+> >       INIT_LIST_HEAD(&ctx->pinned_active);
+> >       INIT_LIST_HEAD(&ctx->flexible_active);
+> >       refcount_set(&ctx->refcount, 1);
+> > +#ifdef CONFIG_CGROUP_PERF
+> > +     INIT_LIST_HEAD(&ctx->cgrp_ctx_entry);
+> > +     INIT_LIST_HEAD(&ctx->cgrp_node_list);
+> > +#endif
+> >  }
+> >
+> >  static struct perf_event_context *
+> > @@ -4851,6 +5184,8 @@ static void _free_event(struct perf_event *event)
+> >       if (is_cgroup_event(event))
+> >               perf_detach_cgroup(event);
+> >
+> > +     perf_event_destroy_cgroup_nodes(event);
+> > +
+> >       if (!event->parent) {
+> >               if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
+> >                       put_callchain_buffers();
+> > @@ -5571,6 +5906,58 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
+> >
+> >               return perf_event_modify_attr(event,  &new_attr);
+> >       }
+> > +
+> > +     case PERF_EVENT_IOC_ATTACH_CGROUP: {
+> > +             u64 nr_cgrps;
+> > +             u64 *cgrp_buf;
+> > +             size_t cgrp_bufsz;
+> > +             int ret;
+> > +
+> > +             if (!event_can_attach_cgroup(event))
+> > +                     return -EINVAL;
+> > +
+> > +             if (copy_from_user(&nr_cgrps, (u64 __user *)arg,
+> > +                                sizeof(nr_cgrps)))
+> > +                     return -EFAULT;
+> > +
+> > +             if (nr_cgrps == 0 || nr_cgrps > MAX_CGRP_NODE_HASH)
+> > +                     return -EINVAL;
+> > +
+> > +             cgrp_bufsz = nr_cgrps * sizeof(*cgrp_buf);
+> > +
+> > +             cgrp_buf = kmalloc(cgrp_bufsz, GFP_KERNEL);
+> > +             if (cgrp_buf == NULL)
+> > +                     return -ENOMEM;
+> > +
+> > +             if (copy_from_user(cgrp_buf, (u64 __user *)(arg + 8),
+> > +                                cgrp_bufsz)) {
+> > +                     kfree(cgrp_buf);
+> > +                     return -EFAULT;
+> > +             }
+> > +
+> > +             ret = perf_event_attach_cgroup_node(event, nr_cgrps, cgrp_buf);
+> > +
+> > +             kfree(cgrp_buf);
+> > +             return ret;
+> > +     }
+> > +
+> > +     case PERF_EVENT_IOC_READ_CGROUP: {
+> > +             u64 read_size, cgrp_id;
+> > +
+> > +             if (!event_can_attach_cgroup(event))
+> > +                     return -EINVAL;
+> > +
+> > +             if (copy_from_user(&read_size, (u64 __user *)arg,
+> > +                                sizeof(read_size)))
+> > +                     return -EFAULT;
+> > +             if (copy_from_user(&cgrp_id, (u64 __user *)(arg + 8),
+> > +                                sizeof(cgrp_id)))
+> > +                     return -EFAULT;
+> > +
+> > +             return perf_event_read_cgroup_node(event, read_size, cgrp_id,
+> > +                                                (char __user *)(arg + 16));
+> > +     }
+> > +
+> >       default:
+> >               return -ENOTTY;
+> >       }
+> > @@ -5583,10 +5970,39 @@ static long _perf_ioctl(struct perf_event *event, unsigned int cmd, unsigned lon
+> >       return 0;
+> >  }
+> >
+> > +static void perf_sched_enable(void)
+> > +{
+> > +     /*
+> > +      * We need the mutex here because static_branch_enable()
+> > +      * must complete *before* the perf_sched_count increment
+> > +      * becomes visible.
+> > +      */
+> > +     if (atomic_inc_not_zero(&perf_sched_count))
+> > +             return;
+> > +
+> > +     mutex_lock(&perf_sched_mutex);
+> > +     if (!atomic_read(&perf_sched_count)) {
+> > +             static_branch_enable(&perf_sched_events);
+> > +             /*
+> > +              * Guarantee that all CPUs observe they key change and
+> > +              * call the perf scheduling hooks before proceeding to
+> > +              * install events that need them.
+> > +              */
+> > +             synchronize_rcu();
+> > +     }
+> > +     /*
+> > +      * Now that we have waited for the sync_sched(), allow further
+> > +      * increments to by-pass the mutex.
+> > +      */
+> > +     atomic_inc(&perf_sched_count);
+> > +     mutex_unlock(&perf_sched_mutex);
+> > +}
+>
+> Per the above, this is missing perf_sched_disable(). Also, this should
+> probably be a separate patch then.
+>
+> > +
+> >  static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> >  {
+> >       struct perf_event *event = file->private_data;
+> >       struct perf_event_context *ctx;
+> > +     bool do_sched_enable = false;
+> >       long ret;
+> >
+> >       /* Treat ioctl like writes as it is likely a mutating operation. */
+> > @@ -5595,9 +6011,19 @@ static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> >               return ret;
+> >
+> >       ctx = perf_event_ctx_lock(event);
+> > +     /* ATTACH_CGROUP requires context switch callback */
+> > +     if (cmd == PERF_EVENT_IOC_ATTACH_CGROUP && !event_has_cgroup_node(event))
+> > +             do_sched_enable = true;
+> >       ret = _perf_ioctl(event, cmd, arg);
+> >       perf_event_ctx_unlock(event, ctx);
+> >
+> > +     /*
+> > +      * Due to the circular lock dependency, it cannot call
+> > +      * static_branch_enable() under the ctx->mutex.
+> > +      */
+> > +     if (do_sched_enable && ret >= 0)
+> > +             perf_sched_enable();
+> > +
+> >       return ret;
+> >  }
+>
+> Hurmph... not much choice there I suppose.
+>
+> > @@ -11240,33 +11666,8 @@ static void account_event(struct perf_event *event)
+> >       if (event->attr.text_poke)
+> >               atomic_inc(&nr_text_poke_events);
+> >
+> > -     if (inc) {
+> > -             /*
+> > -              * We need the mutex here because static_branch_enable()
+> > -              * must complete *before* the perf_sched_count increment
+> > -              * becomes visible.
+> > -              */
+> > -             if (atomic_inc_not_zero(&perf_sched_count))
+> > -                     goto enabled;
+> > -
+> > -             mutex_lock(&perf_sched_mutex);
+> > -             if (!atomic_read(&perf_sched_count)) {
+> > -                     static_branch_enable(&perf_sched_events);
+> > -                     /*
+> > -                      * Guarantee that all CPUs observe they key change and
+> > -                      * call the perf scheduling hooks before proceeding to
+> > -                      * install events that need them.
+> > -                      */
+> > -                     synchronize_rcu();
+> > -             }
+> > -             /*
+> > -              * Now that we have waited for the sync_sched(), allow further
+> > -              * increments to by-pass the mutex.
+> > -              */
+> > -             atomic_inc(&perf_sched_count);
+> > -             mutex_unlock(&perf_sched_mutex);
+> > -     }
+> > -enabled:
+> > +     if (inc)
+> > +             perf_sched_enable();
+> >
+> >       account_event_cpu(event, event->cpu);
+> >
+> > @@ -13008,6 +13409,7 @@ static void __init perf_event_init_all_cpus(void)
+> >
+> >  #ifdef CONFIG_CGROUP_PERF
+> >               INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
+> > +             INIT_LIST_HEAD(&per_cpu(cgroup_ctx_list, cpu));
+> >  #endif
+> >               INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
+> >       }
+> > @@ -13218,6 +13620,29 @@ static int perf_cgroup_css_online(struct cgroup_subsys_state *css)
+> >       return 0;
+> >  }
+> >
+> > +static int __perf_cgroup_update_node(void *info)
+> > +{
+> > +     struct task_struct *task = info;
+> > +
+> > +     rcu_read_lock();
+> > +     cgroup_node_sched_out(task);
+> > +     rcu_read_unlock();
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/* update cgroup counter BEFORE task's cgroup is changed */
+> > +static int perf_cgroup_can_attach(struct cgroup_taskset *tset)
+> > +{
+> > +     struct task_struct *task;
+> > +     struct cgroup_subsys_state *css;
+> > +
+> > +     cgroup_taskset_for_each(task, css, tset)
+> > +             task_function_call(task, __perf_cgroup_update_node, task);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int __perf_cgroup_move(void *info)
+> >  {
+> >       struct task_struct *task = info;
+> > @@ -13240,6 +13665,7 @@ struct cgroup_subsys perf_event_cgrp_subsys = {
+> >       .css_alloc      = perf_cgroup_css_alloc,
+> >       .css_free       = perf_cgroup_css_free,
+> >       .css_online     = perf_cgroup_css_online,
+> > +     .can_attach     = perf_cgroup_can_attach,
+> >       .attach         = perf_cgroup_attach,
+> >       /*
+> >        * Implicitly enable on dfl hierarchy so that perf events can
