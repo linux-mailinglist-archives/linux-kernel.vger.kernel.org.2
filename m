@@ -2,107 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC75365B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AC1365B64
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhDTOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbhDTOms (ORCPT
+        id S232718AbhDTOoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:44:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231758AbhDTOoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:42:48 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E813AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:42:16 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id s5so30752897qkj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:42:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kepstin.ca; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=JP+ANeZGsccJBmVoGo/R3MoTa5r6RLwf9o2mfl/oBZ8=;
-        b=COOJenwoW6uh0/Vq0jN5GTwm1bTMt4rdcgNhpEGTAHhrcnFTGCWvI3UtNLIwTap5Oq
-         3NJbypfQIG2Xm1C2yHEKa/jJl4EaBtWa3lgUbYkwroZRR0NaS43fRKwEvDVVXEESfQQz
-         xTlubm552SfeYZ28MeqxsGbbuhz2R0UHKJHJU=
+        Tue, 20 Apr 2021 10:44:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618929823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=suIGX8gxDAa1NnElSORJBHL/+yMG1ICjZh8iApb4hRQ=;
+        b=JoCJZO/iq7ysWqjYMEAS4F3n/avRPETV5fuXhPzx64f/MlIv9hZUU+w80aNDW84c5ziM/7
+        A+BmP+gK9hqcknrdw2hieYeFaucudMc54K+drl0C7q+00t2Tb1ah1d2WvRSht2xh7697vf
+        NNEENh3hiWeDRWR3yaqlVqY8xRogjAM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-SuYUx5quMl2oVFNGcZAn9g-1; Tue, 20 Apr 2021 10:43:39 -0400
+X-MC-Unique: SuYUx5quMl2oVFNGcZAn9g-1
+Received: by mail-ej1-f69.google.com with SMTP id r17-20020a1709069591b029037cf6a4a56dso4901579ejx.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:43:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=JP+ANeZGsccJBmVoGo/R3MoTa5r6RLwf9o2mfl/oBZ8=;
-        b=IC7WeItbnKTaVC6ugIl4kSaDp+2j8Lvt8Wx0jd1Wa2yHkS/g66JQt9d7eN3a9vsIAd
-         /IYxJtPHXE+Nd3kenAFMAv0beKRAnzfarNCfp83KBbVbJFWz2XspclWgVHbE9jAgdoBb
-         kUMJ+Fb4ZmRN2J2CF9kX97TrtACnC5ollgnt3TrNwXiLoIvu1/5/QWBf/euiCoefoscC
-         YY4iwd9zhjlv2Pu950J0m+qfki/0QGR0PNKJwaNAeu9GBNfGZUvpHWPyPQ+PPs91ed1o
-         Vw+5yM3xtOW8Aircxgp8hZoVhxEbJ2OXs/Ig3ZfanG/5WJ+YkwKEBxlfA2su+4y+Rz/u
-         LwYA==
-X-Gm-Message-State: AOAM531OV0Ze1TXsTkE+8zGEIMZVluAW5Px91QQt2kN2ssd7cUuCgBMt
-        y3zJy1A+YcTboQ3hZYbsR4MVbg==
-X-Google-Smtp-Source: ABdhPJzH5l6jQWUBOv0JJzlNg3WbGpqgIqRjvadTeAryOnar6niI9K3UG0bw9u4jkyfRcWaq1bwobw==
-X-Received: by 2002:a05:620a:e1a:: with SMTP id y26mr18058355qkm.280.1618929736067;
-        Tue, 20 Apr 2021 07:42:16 -0700 (PDT)
-Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
-        by smtp.gmail.com with ESMTPSA id p21sm10223024qkp.92.2021.04.20.07.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 07:42:12 -0700 (PDT)
-Message-ID: <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection
- on AMD processors
-From:   Calvin Walton <calvin.walton@kepstin.ca>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
-        lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
-        rui.zhang@intel.com
-Date:   Tue, 20 Apr 2021 10:42:09 -0400
-In-Reply-To: <20210420143754.GA390118@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
-         <20210420020336.GA386151@chenyu-desktop> <20210420080701.GA2326@zn.tnic>
-         <20210420131541.GA388877@chenyu-desktop>
-         <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
-         <20210420143754.GA390118@chenyu-desktop>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=suIGX8gxDAa1NnElSORJBHL/+yMG1ICjZh8iApb4hRQ=;
+        b=fXOlfNOXH1ts6c34WZU3nLFlzcsEFWuZ44z+dDIT3IpVilVWszN7g0S4RFRQ9v5Cnc
+         P7WT5x4ULcCVmMw4VthAryY1Yz6CfJXid7SEhVnnJa+AUo15YpH/feXw9knrloQLUXwQ
+         Rg38JASsj7KlD9wXSQm3bmiHAg4cTKOBfy1CEMH+DWboHOErPk9UhVpBWK683z9mas4b
+         S9vgT5cd4RWZh9tpFY3fB2E/7Pp/mv5DdspToFRR1MwlkP8Aj+2L3+dVxJGb03X6K42K
+         3/DNNLdCqkKwcpRuxv/R/0Vs3CZDQAtVq2GWrD0J9XnCxRTrF8SK7pk9GPvnU5o3B1XH
+         MYOA==
+X-Gm-Message-State: AOAM532LXRS8nq6hFgGfQZX7vsgdAdhdC8UZstoeAK/HDfV++oje4gHc
+        i0/abnFp9Rn7HekdPiZpw6a2MjS/CHOiNeFBJI9CFSJk6yPu+OHrQiV9/Gi4U0QejdClrngFgwp
+        wlW+wUz4wP03sWmIndT775pZ5
+X-Received: by 2002:aa7:cb4c:: with SMTP id w12mr32367868edt.181.1618929818002;
+        Tue, 20 Apr 2021 07:43:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycKxTX6uIvzg4SlHy5vEivTK5R28RJSkXNygI/D6/70trVtgRV/7yyyDFHnPHVinXCN//pAA==
+X-Received: by 2002:aa7:cb4c:: with SMTP id w12mr32367855edt.181.1618929817824;
+        Tue, 20 Apr 2021 07:43:37 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff2390a.dip0.t-ipconnect.de. [79.242.57.10])
+        by smtp.gmail.com with ESMTPSA id x20sm3359873edd.58.2021.04.20.07.43.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 07:43:37 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] kernel/resource: Refactor __request_region to
+ allow external locking
+To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
+        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
+        jglisse@redhat.com, bsingharora@gmail.com, smuchun@gmail.com
+References: <20210419070109.4780-1-apopple@nvidia.com>
+ <20210419070109.4780-2-apopple@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <935515a6-7f9e-5622-36f8-3205f0cc0690@redhat.com>
+Date:   Tue, 20 Apr 2021 16:43:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210419070109.4780-2-apopple@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-04-20 at 22:37 +0800, Chen Yu wrote:
-> On Tue, Apr 20, 2021 at 09:28:06AM -0400, Calvin Walton wrote:
-> > This patch has the same issue I noticed with the initial revision
-> > of
-> > Terry's patch - the idx_to_offset function returns type int (32-bit
-> > signed), but MSR_PKG_ENERGY_STAT is greater than INT_MAX (or
-> > rather,
-> > would be interpreted as a negative number)
-> > 
-> > The end result is, as far as I can tell, that it hits the if
-> > (offset <
-> > 0) check in update_msr_sum() resulting in the timer callback for
-> > updating the stat in the background when long durations are used to
-> > not
-> > happen.
-> > 
-> > For short durations it still works fine since the background update
-> > isn't used.
-> > 
-> Ah, got it, nice catch. How about an incremental patch based on Bas'
-> one
-> to fix this 'overflow' issue? Would converting offset_to_idx(),
-> idx_to_offset() and
-> update_msr_sum() to use off_t instead of int be enough? Do you or
-> Terry have interest
-> to cook that patch? For Terry's version, I'm not sure if spliting
-> the code into different CPU vendor would benefit in the future,
-> except
-> that we would have plenty of new MSRs to be introduced in the future.
+On 19.04.21 09:01, Alistair Popple wrote:
+> Refactor the portion of __request_region() done whilst holding the
+> resource_lock into a separate function to allow callers to hold the
+> lock.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> ---
+>   kernel/resource.c | 52 +++++++++++++++++++++++++++++------------------
+>   1 file changed, 32 insertions(+), 20 deletions(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 736768587d2d..75f8da722497 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -1181,31 +1181,16 @@ struct address_space *iomem_get_mapping(void)
+>   	return smp_load_acquire(&iomem_inode)->i_mapping;
+>   }
+>   
+> -/**
+> - * __request_region - create a new busy resource region
+> - * @parent: parent resource descriptor
+> - * @start: resource start address
+> - * @n: resource region size
+> - * @name: reserving caller's ID string
+> - * @flags: IO resource flags
+> - */
+> -struct resource * __request_region(struct resource *parent,
+> +static int __request_region_locked(struct resource *res, struct resource *parent,
+>   				   resource_size_t start, resource_size_t n,
+>   				   const char *name, int flags)
+>   {
+>   	DECLARE_WAITQUEUE(wait, current);
+> -	struct resource *res = alloc_resource(GFP_KERNEL);
+> -	struct resource *orig_parent = parent;
+> -
+> -	if (!res)
+> -		return NULL;
+>   
+>   	res->name = name;
+>   	res->start = start;
+>   	res->end = start + n - 1;
+>   
+> -	write_lock(&resource_lock);
+> -
+>   	for (;;) {
+>   		struct resource *conflict;
+>   
+> @@ -1241,13 +1226,40 @@ struct resource * __request_region(struct resource *parent,
+>   			continue;
+>   		}
+>   		/* Uhhuh, that didn't work out.. */
+> -		free_resource(res);
+> -		res = NULL;
+> -		break;
+> +		return -EBUSY;
+>   	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * __request_region - create a new busy resource region
+> + * @parent: parent resource descriptor
+> + * @start: resource start address
+> + * @n: resource region size
+> + * @name: reserving caller's ID string
+> + * @flags: IO resource flags
+> + */
+> +struct resource *__request_region(struct resource *parent,
+> +				  resource_size_t start, resource_size_t n,
+> +				  const char *name, int flags)
+> +{
+> +	struct resource *res = alloc_resource(GFP_KERNEL);
+> +	int ret;
+> +
+> +	if (!res)
+> +		return NULL;
+> +
+> +	write_lock(&resource_lock);
+> +	ret = __request_region_locked(res, parent, start, n, name, flags);
+>   	write_unlock(&resource_lock);
+>   
+> -	if (res && orig_parent == &iomem_resource)
+> +	if (ret) {
+> +		free_resource(res);
+> +		return NULL;
+> +	}
+> +
+> +	if (parent == &iomem_resource)
+>   		revoke_iomem(res);
 
-Yes, I believe updating the offset_to_idx(), idx_to_offset(), and
-update_msr_sum() functions is sufficient. I can do the incremental
-patch for that this evening if nobody beats me to it :)
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Calvin Walton <calvin.walton@kepstin.ca>
+Thanks,
+
+David / dhildenb
 
