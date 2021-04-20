@@ -2,165 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BB9365971
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F08F36597C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhDTNCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56350 "EHLO mail.kernel.org"
+        id S232019AbhDTNGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:06:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232091AbhDTNB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:01:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9EC613D0;
-        Tue, 20 Apr 2021 13:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618923686;
-        bh=rtORbGc3mPMhlArrUrjghPvRhVtKXaf7d9TRrasS6l0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VMumAygSE2Ss89tpuyftaMuLsWVlHbuUiOCbE8Ai7UM5E6RsNHIG9Vf4xtaC5qwKr
-         O/qTpB4pkucmnZ3hez0dd3jHy+B2ziZ24j2pdzihRTrnG631AEEeFTonndrokzneRV
-         fAlejQkAack3j+VindxNlgBzaFt6E33gc8tfDylJhzkcXhrUMNnxV+lZ6QtSmdN5EQ
-         +1QNhVUNNq7EWbL1+0+jlludkTmVA2DTA/EPQmmN7+A2XDrkH6E/Edh5Is/S5zN1UY
-         Dm+m093pRdDh3yhZFuuV6lxhG7ADpLJlcxGCBoTiokyTGU3rhh236EaQmxjuveju2R
-         kvvrKuGcEAYbA==
-Received: by mail-qk1-f178.google.com with SMTP id u20so6964803qku.10;
-        Tue, 20 Apr 2021 06:01:26 -0700 (PDT)
-X-Gm-Message-State: AOAM532WT6gnQe63xUoGePZXcK7WyX/GXoJ7+pOe0StbObSIXubVf7A+
-        EbKcqHzZXqEzJFsLhyOuPFlscIl7Po8e5aATzQ==
-X-Google-Smtp-Source: ABdhPJytCtVfQJCSrxQnJlrByY2ajWXURyVePKmlcnaE97mOqQU4IvcMx9ee78uVQZawM9qyCusf98X4PqudjDjJq+I=
-X-Received: by 2002:ae9:f819:: with SMTP id x25mr9783240qkh.68.1618923685847;
- Tue, 20 Apr 2021 06:01:25 -0700 (PDT)
+        id S230408AbhDTNGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:06:05 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68D7C613B4;
+        Tue, 20 Apr 2021 13:05:31 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lYq4H-008Ugk-7V; Tue, 20 Apr 2021 14:05:29 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Cc:     kernel-team@android.com, Jon Hunter <jonathanh@nvidia.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH] PCI: tegra: Restore MSI enable state on resume
+Date:   Tue, 20 Apr 2021 14:05:26 +0100
+Message-Id: <20210420130526.531138-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210126011759.1605641-1-drinkcat@chromium.org> <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
-In-Reply-To: <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 20 Apr 2021 08:01:13 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+gWm+94zF1XN2KiRYgAZewiDkCk5B5bhLB=M+-HbD=fA@mail.gmail.com>
-Message-ID: <CAL_Jsq+gWm+94zF1XN2KiRYgAZewiDkCk5B5bhLB=M+-HbD=fA@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Fei Shao <fshao@chromium.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, kernel-team@android.com, jonathanh@nvidia.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com, thierry.reding@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 7:18 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> Define a compatible string for the Mali Bifrost GPU found in
-> Mediatek's MT8183 SoCs.
->
-> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> ---
->
-> Changes in v11:
->  - binding: power-domain-names not power-domainS-names
->
-> Changes in v10:
->  - Fix the binding to make sure sram-supply property can be provided.
->
-> Changes in v9: None
-> Changes in v8: None
-> Changes in v7: None
-> Changes in v6:
->  - Rebased, actually tested with recent mesa driver.
->
-> Changes in v5:
->  - Rename "2d" power domain to "core2"
->
-> Changes in v4:
->  - Add power-domain-names description
->    (kept Alyssa's reviewed-by as the change is minor)
->
-> Changes in v3: None
-> Changes in v2: None
->
->  .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
->  1 file changed, 28 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
-> index 184492162e7e..3e758f88e2cd 100644
-> --- a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
-> +++ b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
-> @@ -17,6 +17,7 @@ properties:
->      items:
->        - enum:
->            - amlogic,meson-g12a-mali
-> +          - mediatek,mt8183-mali
->            - realtek,rtd1619-mali
->            - rockchip,px30-mali
->        - const: arm,mali-bifrost # Mali Bifrost GPU model/revision is fully discoverable
-> @@ -41,6 +42,8 @@ properties:
->
->    mali-supply: true
->
-> +  sram-supply: true
-> +
->    operating-points-v2: true
->
->    power-domains:
-> @@ -87,6 +90,31 @@ allOf:
->      then:
->        required:
->          - resets
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: mediatek,mt8183-mali
-> +    then:
-> +      properties:
-> +        power-domains:
-> +          description:
-> +            List of phandle and PM domain specifier as documented in
-> +            Documentation/devicetree/bindings/power/power_domain.txt
-> +          minItems: 3
-> +          maxItems: 3
+When going into suspend, the Tegra MSI controller loses its
+state. Restore the MSI allocation on resume so that PCI devices
+are usable again.
 
-This won't work because the top level schema restricts this to 1. The
-top level needs to say:
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Fixes: 973a28677e39 ("PCI: tegra: Convert to MSI domains")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+---
+ drivers/pci/controller/pci-tegra.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-power-domains:
-  minItems: 1
-  maxItems: 3
+diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
+index eaba7b2fab4a..507b23d43ad1 100644
+--- a/drivers/pci/controller/pci-tegra.c
++++ b/drivers/pci/controller/pci-tegra.c
+@@ -1802,13 +1802,19 @@ static void tegra_pcie_enable_msi(struct tegra_pcie *pcie)
+ {
+ 	const struct tegra_pcie_soc *soc = pcie->soc;
+ 	struct tegra_msi *msi = &pcie->msi;
+-	u32 reg;
++	u32 reg, msi_state[INT_PCI_MSI_NR / 32];
++	int i;
+ 
+ 	afi_writel(pcie, msi->phys >> soc->msi_base_shift, AFI_MSI_FPCI_BAR_ST);
+ 	afi_writel(pcie, msi->phys, AFI_MSI_AXI_BAR_ST);
+ 	/* this register is in 4K increments */
+ 	afi_writel(pcie, 1, AFI_MSI_BAR_SZ);
+ 
++	/* Restore the MSI allocation state */
++	bitmap_to_arr32(msi_state, msi->used, INT_PCI_MSI_NR);
++	for (i = 0; i < ARRAY_SIZE(msi_state); i++)
++		afi_writel(pcie, msi_state[i], AFI_MSI_EN_VEC(i));
++
+ 	/* and unmask the MSI interrupt */
+ 	reg = afi_readl(pcie, AFI_INTR_MASK);
+ 	reg |= AFI_INTR_MASK_MSI_MASK;
+-- 
+2.30.2
 
-And you need just 'minItems: 3' here and 'maxItems: 1' in the else clause.
-
-And drop the description. That's every 'power-domains' property.
-
-> +        power-domain-names:
-> +          items:
-> +            - const: core0
-> +            - const: core1
-> +            - const: core2
-
-Blank line
-
-> +      required:
-> +        - sram-supply
-> +        - power-domains
-> +        - power-domain-names
-> +    else:
-> +      properties:
-> +        sram-supply: false
->
->  examples:
->    - |
-> --
-> 2.30.0.280.ga3ce27912f-goog
->
