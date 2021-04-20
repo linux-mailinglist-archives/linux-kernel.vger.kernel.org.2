@@ -2,217 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42CA365205
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF5436520C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhDTGCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhDTGCu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:02:50 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D508C061763;
-        Mon, 19 Apr 2021 23:02:19 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id o13-20020a9d404d0000b029028e0a0ae6b4so15806744oti.10;
-        Mon, 19 Apr 2021 23:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qt0lRKLsgtImiEowN6MCoMr9lqUeJDBLHkuJ/55/e98=;
-        b=joOeOfH7NiOFE/0XKIgGIHJgPnQwYp23K21ed17iU7dg50T0fzNgQoIPWDNC3AlzQt
-         lpSfy7m0ySvWg6PgQ9+Ag+PgkQARd+NQzBqgEMJTlZ5/l14220zPT23lvjwP78MuNn3Z
-         zm4c4ZB2yhdIYDL8ErVMvrMlmLIZ9qj8dZcFgZeBR+Syzt32EM5yWU+RLdh3rkVXxFW8
-         cZvW5nQTzeWGQsKs4pkH6ky0jnYeXbM2CnPhT+8Urkvwfx3Skd2hijerYL01xSciB9mk
-         DP5BiOWb/Si6hbrZ0Z9Il9XvlkN3mmBnWYLbTexDSxZEBxnrxOHPP1P5cDhU1AD4MmaB
-         I+AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qt0lRKLsgtImiEowN6MCoMr9lqUeJDBLHkuJ/55/e98=;
-        b=j49Eqner5saUvUcgm5tLEHIsxBqkaJgezxVlujBsAny7uM+iTsuYZTj1p/4a8Oy1/s
-         H5D+kZIbI+JDB6+1dlMS24muk5+aklhwlm9OJpW7dHsmfO+Uyai1euofhqCbVH8XccOW
-         nCj3O3tbqKkukYo6fNityTYunwJQmxD9VXByhJKPDpso8oOcHEDK/AlEwbpU59kzs1xe
-         b0H6NNSZYQLd6vXJTVHeXkSh2bv3/MDVD7x5Aiz8NP94taaGC3nDVfOa7OxxNkuHAaDy
-         FjJ9hKjI5fn694l9F9Aeorh7OJZ0N0WS19gsFTSLpf4HDozP4LBEQQpzXBKZbvbFDOrm
-         0BQQ==
-X-Gm-Message-State: AOAM530D6YSMujS/GSXMQ+Ntc9lcgEZ+yIw2TCgvY0g0H22m9z8E4zZZ
-        8omYfKzUGD25Kjndqn/cSD9ReSTLX2HniVhmyt4=
-X-Google-Smtp-Source: ABdhPJy01S4bz+i/MSJiFM5wCIrqx6K4wHikx4zZZdKnntZ3F+W92lJPzs7GAnZVvyFP/Gtnc5QJ/i1cxdGJUzHkw90=
-X-Received: by 2002:a9d:7cc7:: with SMTP id r7mr6838781otn.254.1618898538926;
- Mon, 19 Apr 2021 23:02:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
- <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com> <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
- <YH2wnl05UBqVhcHr@google.com> <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
-In-Reply-To: <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 20 Apr 2021 14:02:07 +0800
-Message-ID: <CANRm+CwQ266j6wTxqFZtGhp_HfQZ7Y_e843hzROqNUxf9BcaFA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
- delivering interrupt
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        id S230027AbhDTGGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 02:06:03 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51290 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhDTGF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 02:05:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618898727; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Rc+spuxWFt0VeXDrYpNi6jp5Fae5FKeXb3Jt/fw9MNk=; b=WH/7aAEUKYS4Qyud7nWJokDsM2cz9Mx8vAfZD0OCq1ozHBwylpHOLo7yMKNIW9261TKhrG6Z
+ BQUwYxRnMf411eWCZiGkhOWED5KkV0ngBXhPEmN7hIhGSNor5Y+4BlIWhzpzsgZythW82+l2
+ FQdtB9qpIU7mP7CF019YU2JyN+4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 607e6f1c215b831afbe9c9ea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 06:05:16
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3E98C4360C; Tue, 20 Apr 2021 06:05:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77B0DC433F1;
+        Tue, 20 Apr 2021 06:05:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 77B0DC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 0/2] iommu/arm-smmu-qcom: Add SC7280 support
+Date:   Tue, 20 Apr 2021 11:34:55 +0530
+Message-Id: <cover.1618898456.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 at 00:59, Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 19/04/21 18:32, Sean Christopherson wrote:
-> > If false positives are a big concern, what about adding another pass to the loop
-> > and only yielding to usermode vCPUs with interrupts in the second full pass?
-> > I.e. give vCPUs that are already in kernel mode priority, and only yield to
-> > handle an interrupt if there are no vCPUs in kernel mode.
-> >
-> > kvm_arch_dy_runnable() pulls in pv_unhalted, which seems like a good thing.
->
-> pv_unhalted won't help if you're waiting for a kernel spinlock though,
-> would it?  Doing two passes (or looking for a "best" candidate that
-> prefers kernel mode vCPUs to user mode vCPUs waiting for an interrupt)
-> seems like the best choice overall.
+Patch 1 adds the sc7280 smmu compatible.
+Patch 2 moves the adreno smmu check before apss smmu to enable
+adreno smmu specific implementation.
 
-How about something like this:
+Note that dt-binding for sc7280 is already merged.
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 6b4dd95..8ba50be 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -325,10 +325,12 @@ struct kvm_vcpu {
-      * Cpu relax intercept or pause loop exit optimization
-      * in_spin_loop: set when a vcpu does a pause loop exit
-      *  or cpu relax intercepted.
-+     * pending_interrupt: set when a vcpu waiting for an interrupt
-      * dy_eligible: indicates whether vcpu is eligible for directed yield.
-      */
-     struct {
-         bool in_spin_loop;
-+        bool pending_interrupt;
-         bool dy_eligible;
-     } spin_loop;
- #endif
-@@ -1427,6 +1429,12 @@ static inline void
-kvm_vcpu_set_in_spin_loop(struct kvm_vcpu *vcpu, bool val)
- {
-     vcpu->spin_loop.in_spin_loop = val;
- }
-+
-+static inline void kvm_vcpu_set_pending_interrupt(struct kvm_vcpu
-*vcpu, bool val)
-+{
-+    vcpu->spin_loop.pending__interrupt = val;
-+}
-+
- static inline void kvm_vcpu_set_dy_eligible(struct kvm_vcpu *vcpu, bool val)
- {
-     vcpu->spin_loop.dy_eligible = val;
-@@ -1438,6 +1446,10 @@ static inline void
-kvm_vcpu_set_in_spin_loop(struct kvm_vcpu *vcpu, bool val)
- {
- }
+Changes in v3:
+ * Collect acks and reviews
+ * Rebase on top of for-joerg/arm-smmu/updates
 
-+static inline void kvm_vcpu_set_pending_interrupt(struct kvm_vcpu
-*vcpu, bool val)
-+{
-+}
-+
- static inline void kvm_vcpu_set_dy_eligible(struct kvm_vcpu *vcpu, bool val)
- {
- }
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 529cff1..42e0255 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -410,6 +410,7 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu,
-struct kvm *kvm, unsigned id)
-     INIT_LIST_HEAD(&vcpu->blocked_vcpu_list);
+Changes in v2:
+ * Add a comment to make sure this order is not changed in future (Jordan)
 
-     kvm_vcpu_set_in_spin_loop(vcpu, false);
-+    kvm_vcpu_set_pending_interrupt(vcpu, false);
-     kvm_vcpu_set_dy_eligible(vcpu, false);
-     vcpu->preempted = false;
-     vcpu->ready = false;
-@@ -3079,14 +3080,17 @@ EXPORT_SYMBOL_GPL(kvm_vcpu_yield_to);
-  * Helper that checks whether a VCPU is eligible for directed yield.
-  * Most eligible candidate to yield is decided by following heuristics:
-  *
-- *  (a) VCPU which has not done pl-exit or cpu relax intercepted recently
-- *  (preempted lock holder), indicated by @in_spin_loop.
-- *  Set at the beginning and cleared at the end of interception/PLE handler.
-+ *  (a) VCPU which has not done pl-exit or cpu relax intercepted and is not
-+ *  waiting for an interrupt recently (preempted lock holder). The former
-+ *  one is indicated by @in_spin_loop, set at the beginning and cleared at
-+ *  the end of interception/PLE handler. The later one is indicated by
-+ *  @pending_interrupt, set when interrupt is delivering and cleared at
-+ *  the end of directed yield.
-  *
-- *  (b) VCPU which has done pl-exit/ cpu relax intercepted but did not get
-- *  chance last time (mostly it has become eligible now since we have probably
-- *  yielded to lockholder in last iteration. This is done by toggling
-- *  @dy_eligible each time a VCPU checked for eligibility.)
-+ *  (b) VCPU which has done pl-exit/ cpu relax intercepted or is waiting for
-+ *  interrupt but did not get chance last time (mostly it has become eligible
-+ *  now since we have probably yielded to lockholder in last iteration. This
-+ *  is done by toggling @dy_eligible each time a VCPU checked for eligibility.)
-  *
-  *  Yielding to a recently pl-exited/cpu relax intercepted VCPU before yielding
-  *  to preempted lock-holder could result in wrong VCPU selection and CPU
-@@ -3102,10 +3106,10 @@ static bool
-kvm_vcpu_eligible_for_directed_yield(struct kvm_vcpu *vcpu)
- #ifdef CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT
-     bool eligible;
+Sai Prakash Ranjan (2):
+  iommu/arm-smmu-qcom: Add SC7280 SMMU compatible
+  iommu/arm-smmu-qcom: Move the adreno smmu specific impl earlier
 
--    eligible = !vcpu->spin_loop.in_spin_loop ||
-+    eligible = !(vcpu->spin_loop.in_spin_loop ||
-vcpu->spin_loop.has_interrupt) ||
-             vcpu->spin_loop.dy_eligible;
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
--    if (vcpu->spin_loop.in_spin_loop)
-+    if (vcpu->spin_loop.in_spin_loop || vcpu->spin_loop.has_interrupt)
-         kvm_vcpu_set_dy_eligible(vcpu, !vcpu->spin_loop.dy_eligible);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-     return eligible;
-@@ -3137,6 +3141,16 @@ static bool vcpu_dy_runnable(struct kvm_vcpu *vcpu)
-     return false;
- }
-
-+static bool kvm_has_interrupt_delivery(struct kvm_vcpu *vcpu)
-+{
-+    if (vcpu_dy_runnable(vcpu)) {
-+        kvm_vcpu_set_pending_interrupt(vcpu, true);
-+        return true;
-+    }
-+
-+    return false;
-+}
-+
- void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
- {
-     struct kvm *kvm = me->kvm;
-@@ -3170,6 +3184,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool
-yield_to_kernel_mode)
-                 !vcpu_dy_runnable(vcpu))
-                 continue;
-             if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
-+                !kvm_has_interrupt_delivery(vcpu) &&
-                 !kvm_arch_vcpu_in_kernel(vcpu))
-                 continue;
-             if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
-@@ -3177,6 +3192,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool
-yield_to_kernel_mode)
-
-             yielded = kvm_vcpu_yield_to(vcpu);
-             if (yielded > 0) {
-+                kvm_vcpu_set_pending_interrupt(vcpu, false);
-                 kvm->last_boosted_vcpu = i;
-                 break;
-             } else if (yielded < 0) {
