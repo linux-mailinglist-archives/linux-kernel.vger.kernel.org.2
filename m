@@ -2,158 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0713365369
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA2C36536F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhDTHlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:41:32 -0400
-Received: from mail-eopbgr20055.outbound.protection.outlook.com ([40.107.2.55]:54914
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229485AbhDTHla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:41:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IIo8WuIBDViaWHyJUu4K/QpBE+AfXOOKcPUf0gjWYDvF0ehZffwBQF9oQwIjmziYRkfJPxo3czfBQYslDXNvFuiNXR7wHm3JhHeyRtAxvjwfVaHXnKvH9Ffijgvc8l/3TkQ1ozlffcAAVsKgKHq77m03HTndFQzwZcKVEuPInT0nodzAT/NY6SaCd+5b2UBtzzc8sSadCnbnL/OeOMq9LODL2+BORPxmUjMtR9Bd/sA+akz1seB9Xind0wZXK2G8JheLNflk5XKSAewxe+ukSjnqwwg8EWwl6GZLyeVpeNhhwRczSv2p7/mEQ0zzzD9Xd1vpmlC3rbKiRzCwwu/SHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J5T195rgK9IVIabmFEBbAf8kKq7vk5cJZvVqvwBoHUE=;
- b=i4WafDbcpyU+NEP2XNOGMDjJWU++NCqf42cltIqcDY7JG+HU4zlzovEIhxq74cet7m8ie5w0rpsedZ7FP0u0b2HzuPY9x6wxZic0ULEkWBdMvKUzt2qAYqOaX9xFtaE+2ej6Vjj8InSrVFNuEbk0IIhaIzmN0rcXvGsr5K/zkEcAqxpIFsDUx4VXnj80SewKJahb+mZrpQ0qwA3vEHeEXxAeLW6asoGq1dL0GYK8YyzWnTjSQQXen4z0XxPee17iSQdhHka2OAVKXB4TPh8cLrHGCH5zAMAF0gox6/L4VcnhwDBEB1E/jWJ4/JiOi4KLAGji3d/R/r7tDKUd/FcUXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J5T195rgK9IVIabmFEBbAf8kKq7vk5cJZvVqvwBoHUE=;
- b=AfzeWIIQrbYDw9HkKYZCI+e/tXEO7NeBnoXLQ7DhtY+V9BzaaqatfXn/msy4hhsGD9A8MeVazz9RuUH2I9qsGeBHymVVoNbgrlVqwBiH0zqpIk+s3YIVF3nNNgoEqgahHg4wp9iEUGO/tvvamdpKEK6DD8fT6E2aG8SbXCCJ5us=
-Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
- by AM6PR04MB4200.eurprd04.prod.outlook.com (2603:10a6:209:4f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
- 2021 07:40:56 +0000
-Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
- ([fe80::358e:fb22:2f7c:2777]) by AM7PR04MB6885.eurprd04.prod.outlook.com
- ([fe80::358e:fb22:2f7c:2777%3]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 07:40:56 +0000
-From:   "Y.b. Lu" <yangbo.lu@nxp.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [net-next 1/3] net: dsa: optimize tx timestamp request handling
-Thread-Topic: [net-next 1/3] net: dsa: optimize tx timestamp request handling
-Thread-Index: AQHXMrxTcFa/yb7c402hVeJWcQQ266q6Y1GAgAKoCNA=
-Date:   Tue, 20 Apr 2021 07:40:56 +0000
-Message-ID: <AM7PR04MB68857C8DBF0D5ED26998ABA7F8489@AM7PR04MB6885.eurprd04.prod.outlook.com>
-References: <20210416123655.42783-1-yangbo.lu@nxp.com>
- <20210416123655.42783-2-yangbo.lu@nxp.com>
- <20210418150623.GA24506@hoboy.vegasvil.org>
-In-Reply-To: <20210418150623.GA24506@hoboy.vegasvil.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6a724bf4-199a-43f3-754c-08d903cfa288
-x-ms-traffictypediagnostic: AM6PR04MB4200:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB4200FC021C173A21CE5182BAF8489@AM6PR04MB4200.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yZxFlf3TBKxH0asIfMxo8VF/n9Ps3QxTjv+2NT1A4qH0Jdbt16UHzB+ZH01SXFSFNC9uhwRGWdpj0XmKG1eqTZabjU4NneKGrlrI4GX/DYiNh7KJGAWhCjpj374Nf/iUbRve3T42tcVefyy/yaWs+iwBwtq4e/sAhWPbfjwjltOgUVCJQYUFwCdLUbesXtDEDWf/aCveU76OalF4xP7oHZfd/ydgg+jv5fIGU0bkPtFhLpCWeQ82k8hOGXuxdv9b81XE/AFezb9XX08A6tsA2dyqZnVohMw9mHq/ILo9J3W4n6FIKLNhj2cvw0vD1FOyCRHO9NnLNT0mVZ//jLp4BDHxf9yffVzzymbvE9jcs9AsvKugCRoA8CYf8FMMWklgKNTr8719pjRuJ5Jowkzfvg1pSHuqgqEv3QGgf6JaRzFILaTfniSXTvvL8MQRm6FaimjdeShWR7ddvsAu7nkeQ5PjnvzdC0dLyjmQO0bivsPvOhFrQccxQPNJe4fABVjVq8QGGd/L4McHsDtWA2U/nhlC+4jt0gEtXz9V41OsGLbalkbvDlI33Jnre5GDHz6bOM41gQnbSwOxFugEUlzwyFSyhhW4MvdmdgDKU7Owp1U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(33656002)(2906002)(64756008)(122000001)(9686003)(26005)(38100700002)(76116006)(55016002)(52536014)(53546011)(83380400001)(71200400001)(8676002)(4326008)(7696005)(498600001)(7416002)(186003)(6916009)(8936002)(54906003)(5660300002)(66476007)(66946007)(66446008)(6506007)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?SVRPblRoSi80Q2pOYWxnYmNIaXBESU9HSEh1VDN2MDBobk5LaW5XTDA4MUNZ?=
- =?gb2312?B?eXE4TlB2bXNwQjYwS3BkUXF2SDg3R3QzYm9aaWs2azV6eFNuQ0VmSlpxaXBZ?=
- =?gb2312?B?RzJLclVJbXh2bCtROWM3c2dOWngxTkxnZ0hnaWFtNGlFK0wreUdHT1FaaEdD?=
- =?gb2312?B?OTdpWUhkMXJPOWVsMlVHVXZPdUtpZEgzc2YyaGxBMjU0SytoYVFMZUZIZHB5?=
- =?gb2312?B?c2FHYXcvNDFVNXZNY0J6SFgrWkhXbmtiWlRqWHBieHhudzc3dVRhSWJPVk5H?=
- =?gb2312?B?djBKdGJsQVArbXptM1g5Y01oV0RsYlVFYWhVeG9iNWl3TE12N1VyaFIzWi9F?=
- =?gb2312?B?eXJZMWZkWWRuOXlTaGtTQ011dmQ5dG8yQVRNRWx0cnhUaUNka1hNbGVoeEM0?=
- =?gb2312?B?azV2eVpTaEZWU3V2S0s0Z3pkTW5waWhJMjlGM1pZOEV3aDJZUkNUaFpSVVY4?=
- =?gb2312?B?WllXc2Q1Q2lSdE9FM3pXM21peENwOElwNVA4TFA1cVJqQ09vL0dWY1RzcSt5?=
- =?gb2312?B?akx1dmZ5NFZSKy9ibEtxK3IrTTNadllIMTNLL3QrVHM4OFV0L2JxbXdoeXFj?=
- =?gb2312?B?WGl4eVVIQmp4K2hXbHNkcXlwVXlhQlowTi9Ba1pDcnpYQW5yaHpOYzUwMnpB?=
- =?gb2312?B?dmJpSWRTQUFZcHM3VkJzR1kvcTVHZU15S252aHZ5YjJUSFF5R0thU1BCTDEz?=
- =?gb2312?B?M0gzRGNBQ3d3WDJncDNaSWVkSkFmalYraEdkelhmeEl5UlZTbHlmTEI0QWw5?=
- =?gb2312?B?RnNkTFMyalo0b3l3cmdxT2FvUEJHSFE4Um4zV0NyL0Yvb1Q3aHdzcTBPNzli?=
- =?gb2312?B?YU1QUENTazVsSHdpVDdYeVpqR0Z2N2ZqTEgvS3lKUFFGcUwycHdEdEdpUmk0?=
- =?gb2312?B?RWsvaTZxblF1MSt2bTZFNlRaMmhFdnZ4b2l2ZEpxcDQvY2dHTGNqKzJWU25w?=
- =?gb2312?B?eStnd1FnRnpoYnpyU3JOZFEweTFkcFBMa3NIY1loSW1jb2pieS9rRVAwTjBp?=
- =?gb2312?B?SEpyK291U29PWkhiSzFFelVZRitWdjZBOXdQV24rUzVKbUpFUlVPQVIxd1hI?=
- =?gb2312?B?cDk1SlE2UGdLRUVVNERtUmVjRDhNM3lzU1JDSGRUeGRHbThIQVpEM2J6OGM5?=
- =?gb2312?B?UUFlc3A0akErRTl2cmgyMUxTSzRwa0orTjhuclNwSXpCTXpwZkxnc3ZnWWtS?=
- =?gb2312?B?Q0IxWnA0RUFLOE9HSWk0MnhyNGZYbkI0bTB5bmUveWZJdjFyaWMwK1o1VUZZ?=
- =?gb2312?B?cG01cE05UWY5ZlozeFR2TjhWdCt3SjhmOVc1amhRek5NZVpSYTAyVVQ0RWtz?=
- =?gb2312?B?OVQxQ3FNSTdxQitQbzU0VlVaMnl4eFZ0c2g3aXJPWWhzNEJoNC9PR0NkNXB4?=
- =?gb2312?B?VlBHWHFKejRuQXU2WmxJRGtiYTJOUk0wWEZZOHQxYzlVL2pJL2g1NG84QmM3?=
- =?gb2312?B?SDNCcU5iYnZ4UTltbURETG0vd3pnYldVT0NpYUtlM2ptN21kN0ZIdGR2M1ZE?=
- =?gb2312?B?Yit4M0Vhb0c2MHlTUDhRNlJ0d3B6YkNVSjl5bmFUbTE3M2lrejRuWTNLUzlE?=
- =?gb2312?B?eGxNaVBmdnA0dGJiN2RkNlIvMVAvWTN2elphWnF1Ly9mL3ZoKzdIU1k2T09p?=
- =?gb2312?B?Q1hmRDFCcGljZERUb1ZpSSsxdkswNFZUdld6WE92LzRIR0J0aEpYSmladkxK?=
- =?gb2312?B?aE45Y1hpenZCVmxnWGJLZTZIN1BzeTRoMHl4UTdmYVBHc0E1V2o0QXZlaXg5?=
- =?gb2312?Q?zkX/CY0aljmfhHZ5LgVTD+ChIwJKmSBqBpdqq4A?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S229779AbhDTHmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:42:38 -0400
+Received: from mga17.intel.com ([192.55.52.151]:21110 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229471AbhDTHmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:42:36 -0400
+IronPort-SDR: 0JiMYGbegb0EzC2jbahOQsGwpY89gWqSehfmkDpbEp7Wx23MUuGW37aBQaV3TFxNlQ79sAdt4v
+ X8PwhzSMgFnQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="175569116"
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="175569116"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 00:42:05 -0700
+IronPort-SDR: 630eycZorH3K8PN4kq3rhhrk9E4j2rPjNnDU6tsH/ECPJJuZQCjRasfUswTdXrRAyZCb5RXNvR
+ nmxqLdK//Ofw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="420306465"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 20 Apr 2021 00:41:55 -0700
+Subject: Re: [PATCH v20 1/2] scsi: ufs: Enable power management for wlun
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Hu <huyue2@yulong.com>,
+        Bart van Assche <bvanassche@acm.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1618600985.git.asutoshd@codeaurora.org>
+ <d660b8d4e1fb192810abd09a8ff0ef4d9f6b96cd.1618600985.git.asutoshd@codeaurora.org>
+ <fdadd467-b613-d800-18c5-be064396fd10@intel.com>
+ <07e3ea07-e1c3-7b8c-e398-8b008f873e6d@codeaurora.org>
+ <90809796-1c32-3709-13d3-65e4d5c387cc@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <1bc4a73e-b22a-6bad-2583-3a0ffa979414@intel.com>
+Date:   Tue, 20 Apr 2021 10:42:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a724bf4-199a-43f3-754c-08d903cfa288
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 07:40:56.7799
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +Z2cMWb35Focd/evl4iCWym0laIjjDYA/NFtLHdvpkd90ku5X6hV0pdygIDqANzWkzL9VT169CiJ5uIkoL4gKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4200
+In-Reply-To: <90809796-1c32-3709-13d3-65e4d5c387cc@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBSaWNoYXJkIENvY2hyYW4gPHJp
-Y2hhcmRjb2NocmFuQGdtYWlsLmNvbT4NCj4gU2VudDogMjAyMcTqNNTCMTjI1SAyMzowNg0KPiBU
-bzogWS5iLiBMdSA8eWFuZ2JvLmx1QG54cC5jb20+DQo+IENjOiBuZXRkZXZAdmdlci5rZXJuZWwu
-b3JnOyBWbGFkaW1pciBPbHRlYW4gPHZsYWRpbWlyLm9sdGVhbkBueHAuY29tPjsNCj4gRGF2aWQg
-UyAuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViIEtpY2luc2tpIDxrdWJhQGtl
-cm5lbC5vcmc+Ow0KPiBKb25hdGhhbiBDb3JiZXQgPGNvcmJldEBsd24ubmV0PjsgS3VydCBLYW56
-ZW5iYWNoIDxrdXJ0QGxpbnV0cm9uaXguZGU+Ow0KPiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4u
-Y2g+OyBWaXZpZW4gRGlkZWxvdCA8dml2aWVuLmRpZGVsb3RAZ21haWwuY29tPjsNCj4gRmxvcmlh
-biBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+OyBDbGF1ZGl1IE1hbm9pbA0KPiA8Y2xh
-dWRpdS5tYW5vaWxAbnhwLmNvbT47IEFsZXhhbmRyZSBCZWxsb25pDQo+IDxhbGV4YW5kcmUuYmVs
-bG9uaUBib290bGluLmNvbT47IFVOR0xpbnV4RHJpdmVyQG1pY3JvY2hpcC5jb207DQo+IGxpbnV4
-LWRvY0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
-amVjdDogUmU6IFtuZXQtbmV4dCAxLzNdIG5ldDogZHNhOiBvcHRpbWl6ZSB0eCB0aW1lc3RhbXAg
-cmVxdWVzdCBoYW5kbGluZw0KPiANCj4gT24gRnJpLCBBcHIgMTYsIDIwMjEgYXQgMDg6MzY6NTNQ
-TSArMDgwMCwgWWFuZ2JvIEx1IHdyb3RlOg0KPiA+IE9wdGltaXphdGlvbiBjb3VsZCBiZSBkb25l
-IG9uIGRzYV9za2JfdHhfdGltZXN0YW1wKCksIGFuZCBkc2EgZGV2aWNlDQo+ID4gZHJpdmVycyBz
-aG91bGQgYWRhcHQgdG8gaXQuDQo+ID4NCj4gPiAtIENoZWNrIFNLQlRYX0hXX1RTVEFNUCByZXF1
-ZXN0IGZsYWcgYXQgdGhlIHZlcnkgYmVnaW5uaW5nLCBpbnN0ZWFkIG9mIGluDQo+ID4gICBwb3J0
-X3R4dHN0YW1wLCBzbyB0aGF0IG1vc3Qgc2ticyBub3QgcmVxdWlyaW5nIHR4IHRpbWVzdGFtcCBq
-dXN0IHJldHVybi4NCj4gPg0KPiA+IC0gTm8gbG9uZ2VyIHRvIGlkZW50aWZ5IFBUUCBwYWNrZXRz
-LCBhbmQgbGltaXQgdHggdGltZXN0YW1waW5nIG9ubHkgZm9yIFBUUA0KPiA+ICAgcGFja2V0cy4g
-SWYgZGV2aWNlIGRyaXZlciBsaWtlcywgbGV0IGRldmljZSBkcml2ZXIgZG8uDQo+ID4NCj4gPiAt
-IEl0IGlzIGEgd2FzdGUgdG8gY2xvbmUgc2tiIGRpcmVjdGx5IGluIGRzYV9za2JfdHhfdGltZXN0
-YW1wKCkuDQo+ID4gICBGb3Igb25lLXN0ZXAgdGltZXN0YW1waW5nLCBhIGNsb25lIGlzIG5vdCBu
-ZWVkZWQuIEZvciBhbnkgZmFpbHVyZSBvZg0KPiA+ICAgcG9ydF90eHRzdGFtcCAodGhpcyBtYXkg
-dXN1YWxseSBoYXBwZW4pLCB0aGUgc2tiIGNsb25lIGhhcyB0byBiZSBmcmVlZC4NCj4gPiAgIFNv
-IHB1dCBza2IgY2xvbmluZyBpbnRvIHBvcnRfdHh0c3RhbXAgd2hlcmUgaXQgcmVhbGx5IG5lZWRz
-Lg0KPiANCj4gVGhpcyBwYXRjaCBjaGFuZ2VzIHRocmVlIHRoaW5ncyBeXl4gYXQgb25jZS4gIFRo
-ZXNlIGFyZSBBRkFJQ1QgaW5kZXBlbmRlbnQNCj4gY2hhbmdlcywgYW5kIHNvIHBsZWFzZSBicmVh
-ayB0aGlzIG9uZSBwYXRjaCBpbnRvIHRocmVlIGZvciBlYXNpZXIgcmV2aWV3Lg0KDQpXaWxsIHNw
-bGl0IGl0IGluIG5leHQgdmVyc2lvbi4gVGhhbmsgeW91Lg0KDQo+IA0KPiBUaGFua3MsDQo+IFJp
-Y2hhcmQNCg==
+On 20/04/21 7:15 am, Adrian Hunter wrote:
+> On 20/04/21 12:53 am, Asutosh Das (asd) wrote:
+>> On 4/19/2021 11:37 AM, Adrian Hunter wrote:
+>>> On 16/04/21 10:49 pm, Asutosh Das wrote:
+>>>>
+>>>> Co-developed-by: Can Guo <cang@codeaurora.org>
+>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>>>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>>>> ---
+>>>
+>>> I came across 3 issues while testing.  See comments below.
+>>>
+>> Hi Adrian
+>> Thanks for the comments.
+>>> <SNIP>
+>>>
+>>>> @@ -5794,7 +5839,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>>>>       if (ufshcd_is_clkscaling_supported(hba))
+>>>>           ufshcd_clk_scaling_suspend(hba, false);
+>>>>       ufshcd_clear_ua_wluns(hba);
+>>>
+>>> ufshcd_clear_ua_wluns() deadlocks trying to clear UFS_UPIU_RPMB_WLUN
+>>> if sdev_rpmb is suspended and sdev_ufs_device is suspending.
+>>> e.g. ufshcd_wl_suspend() is waiting on host_sem while ufshcd_err_handler()
+>>> is running, at which point sdev_rpmb has already suspended.
+>>>
+>> Umm, I didn't understand this deadlock.
+>> When you say, sdev_rpmb is suspended, does it mean runtime_suspended?
+>> sdev_ufs_device is suspending - this can't be runtime_suspending, while ufshcd_err_handling_unprepare is running.
+>>
+>> If you've a call-stack of this deadlock, please can you share it with me. I'll also try to reproduce this.
+> 
+> Yes it is system suspend. sdev_rpmb has suspended, sdev_ufs_device is waiting on host_sem.
+> ufshcd_err_handler() holds host_sem. ufshcd_clear_ua_wlun(UFS_UPIU_RPMB_WLUN) gets stuck.
+> I will get some call-stacks.
+
+Here are the call stacks
+
+[   34.094321] Workqueue: ufs_eh_wq_0 ufshcd_err_handler
+[   34.094788] Call Trace:
+[   34.095281]  __schedule+0x275/0x6c0
+[   34.095743]  schedule+0x41/0xa0
+[   34.096240]  blk_queue_enter+0x10d/0x230
+[   34.096693]  ? wait_woken+0x70/0x70
+[   34.097167]  blk_mq_alloc_request+0x53/0xc0
+[   34.097610]  blk_get_request+0x1e/0x60
+[   34.098053]  __scsi_execute+0x3c/0x260
+[   34.098529]  ufshcd_clear_ua_wlun.cold+0xa6/0x14b
+[   34.098977]  ufshcd_clear_ua_wluns.part.0+0x4d/0x92
+[   34.099456]  ufshcd_err_handler+0x97a/0x9ff
+[   34.099902]  process_one_work+0x1cc/0x360
+[   34.100384]  worker_thread+0x45/0x3b0
+[   34.100851]  ? process_one_work+0x360/0x360
+[   34.101308]  kthread+0xf6/0x130
+[   34.101728]  ? kthread_park+0x80/0x80
+[   34.102186]  ret_from_fork+0x1f/0x30
+
+[   34.640751] task:kworker/u10:9   state:D stack:14528 pid:  255 ppid:     2 flags:0x00004000
+[   34.641253] Workqueue: events_unbound async_run_entry_fn
+[   34.641722] Call Trace:
+[   34.642217]  __schedule+0x275/0x6c0
+[   34.642683]  schedule+0x41/0xa0
+[   34.643179]  schedule_timeout+0x18b/0x290
+[   34.643645]  ? del_timer_sync+0x30/0x30
+[   34.644131]  __down_timeout+0x6b/0xc0
+[   34.644568]  ? ufshcd_clkscale_enable_show+0x20/0x20
+[   34.645014]  ? async_schedule_node_domain+0x17d/0x190
+[   34.645496]  down_timeout+0x42/0x50
+[   34.645947]  ufshcd_wl_suspend+0x79/0xa0
+[   34.646432]  ? scmd_printk+0x100/0x100
+[   34.646917]  scsi_bus_suspend_common+0x56/0xc0
+[   34.647405]  ? scsi_bus_freeze+0x10/0x10
+[   34.647858]  dpm_run_callback+0x45/0x110
+[   34.648347]  __device_suspend+0x117/0x460
+[   34.648788]  async_suspend+0x16/0x90
+[   34.649251]  async_run_entry_fn+0x26/0x110
+[   34.649676]  process_one_work+0x1cc/0x360
+[   34.650137]  worker_thread+0x45/0x3b0
+[   34.650563]  ? process_one_work+0x360/0x360
+[   34.650994]  kthread+0xf6/0x130
+[   34.651455]  ? kthread_park+0x80/0x80
+[   34.651882]  ret_from_fork+0x1f/0x30
+
+
+
+> 
+>>
+>> I'll address the other comments in the next version.
+>>
+>>
+>> Thank you!
+>>
+>>>> -    pm_runtime_put(hba->dev);
+>>>> +    ufshcd_rpm_put(hba);
+>>>>   }
+>>>
+>>> <SNIP>
+>>>
+>>>> +void ufshcd_resume_complete(struct device *dev)
+>>>> +{
+>>
+> 
+
