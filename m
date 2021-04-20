@@ -2,295 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D8A366235
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 00:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4B7366229
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 00:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbhDTWis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 18:38:48 -0400
-Received: from mga03.intel.com ([134.134.136.65]:30302 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhDTWir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 18:38:47 -0400
-IronPort-SDR: qSMY22Mxr4nND16A28uEKaukbzfQamJIMug5MAxJOQWmop1Wqz4FpIcFqzxtuQEsgdkk1VVnVT
- +GOUIPFKtRPQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195631505"
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="195631505"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 15:38:15 -0700
-IronPort-SDR: /navj6QFuhctaFTWuK1jXg6jSVC6BI4tm3O9kdUMAeWOQP1N9nTDSueN+TzaSHCdpE1kSj2iNL
- DVoFcgIQObZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="463334584"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga001.jf.intel.com with ESMTP; 20 Apr 2021 15:38:15 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, acme@kernel.org, mark.rutland@arm.com,
-        luto@amacapital.net, eranian@google.com, namhyung@kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V5] perf/x86: Reset the dirty counter to prevent the leak for an RDPMC task
-Date:   Tue, 20 Apr 2021 15:30:42 -0700
-Message-Id: <1618957842-103858-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S234299AbhDTWcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 18:32:16 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2893 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhDTWcN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 18:32:13 -0400
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FPys56N8Nz68BVB;
+        Wed, 21 Apr 2021 06:24:09 +0800 (CST)
+Received: from lhreml718-chm.china.huawei.com (10.201.108.69) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Apr 2021 00:31:39 +0200
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml718-chm.china.huawei.com (10.201.108.69) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 20 Apr 2021 23:31:38 +0100
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Wed, 21 Apr 2021 06:31:36 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+CC:     "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: RE: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for x86
+Thread-Topic: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for
+ x86
+Thread-Index: AQHXNhNyntgmOcGglU+2M2SQGIS0vaq993vQ
+Date:   Tue, 20 Apr 2021 22:31:36 +0000
+Message-ID: <28ce8c4b8fc347ed9565a2ccac44a39b@hisilicon.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+ <20210319041618.14316-5-song.bao.hua@hisilicon.com>
+ <110234d1-22ce-8a9a-eabb-c15ac29a5dcd@linux.intel.com>
+ <67cc380019fd40d88d7a493b6cbc0852@hisilicon.com>
+ <422b5d06-ec0e-f064-32fe-15df5b2957dd@linux.intel.com>
+In-Reply-To: <422b5d06-ec0e-f064-32fe-15df5b2957dd@linux.intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.57]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
-
-The counter value of a perf task may leak to another RDPMC task.
-For example, a perf stat task as below is running on CPU 0.
-
-    perf stat -e 'branches,cycles' -- taskset -c 0 ./workload
-
-In the meantime, an RDPMC task, which is also running on CPU 0, may read
-the GP counters periodically. (The RDPMC task creates a fixed event,
-but read four GP counters.)
-
-    $ taskset -c 0 ./rdpmc_read_all_counters
-    index 0x0 value 0x8001e5970f99
-    index 0x1 value 0x8005d750edb6
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-    index 0x0 value 0x8002358e48a5
-    index 0x1 value 0x8006bd1e3bc9
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-It is a potential security issue. Once the attacker knows what the other
-thread is counting. The PerfMon counter can be used as a side-channel to
-attack cryptosystems.
-
-The counter value of the perf stat task leaks to the RDPMC task because
-perf never clears the counter when it's stopped.
-
-Two methods were considered to address the issue.
-- Unconditionally reset the counter in x86_pmu_del(). It can bring extra
-  overhead even when there is no RDPMC task running.
-- Only reset the un-assigned dirty counters when the RDPMC task is
-  scheduled in. The method is implemented here.
-
-The dirty counter is a counter, on which the assigned event has been
-deleted, but the counter is not reset. To track the dirty counters,
-add a 'dirty' variable in the struct cpu_hw_events.
-
-The current code doesn't reset the counter when the assigned event is
-deleted. Set the corresponding bit in the 'dirty' variable in
-x86_pmu_del(), if the RDPMC feature is available on the system.
-
-The security issue can only be found with an RDPMC task. The event for
-an RDPMC task requires the mmap buffer. This can be used to detect an
-RDPMC task. Once the event is detected in the event_mapped(), enable
-sched_task(), which is invoked in each context switch. Add a check in
-the sched_task() to clear the dirty counters, when the RDPMC task is
-scheduled in. Only the current un-assigned dirty counters are reset,
-bacuase the RDPMC assigned dirty counters will be updated soon.
-
-The RDPMC instruction is also supported on the older platforms. Add
-sched_task() for the core_pmu. The core_pmu doesn't support large PEBS
-and LBR callstack, the intel_pmu_pebs/lbr_sched_task() will be ignored.
-
-The RDPMC is not Intel-only feature. Add the dirty counters clear code
-in the X86 generic code.
-
-After applying the patch,
-
-        $ taskset -c 0 ./rdpmc_read_all_counters
-        index 0x0 value 0x0
-        index 0x1 value 0x0
-        index 0x2 value 0x0
-        index 0x3 value 0x0
-
-        index 0x0 value 0x0
-        index 0x1 value 0x0
-        index 0x2 value 0x0
-        index 0x3 value 0x0
-
-Performance
-
-The performance of a context switch only be impacted when there are two
-or more perf users and one of the users must be an RDPMC user. In other
-cases, there is no performance impact.
-
-The worst-case occurs when there are two users: the RDPMC user only
-applies one counter; while the other user applies all available
-counters. When the RDPMC task is scheduled in, all the counters, other
-than the RDPMC assigned one, have to be reset.
-
-Here is the test result for the worst-case.
-
-The test is implemented on an Ice Lake platform, which has 8 GP
-counters and 3 fixed counters (Not include SLOTS counter).
-
-The lat_ctx is used to measure the context switching time.
-
-    lat_ctx -s 128K -N 1000 processes 2
-
-I instrument the lat_ctx to open all 8 GP counters and 3 fixed
-counters for one task. The other task opens a fixed counter and enable
-RDPMC.
-
-Without the patch:
-The context switch time is 4.97 us
-
-With the patch:
-The context switch time is 5.16 us
-
-There is ~4% performance drop for the context switching time in the
-worst-case.
-
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
-Changes since V4:
-- Fix the warning with CONFIG_DEBUG_PREEMPT=y
-  Disable the interrupts and preemption around perf_sched_cb_inc/dec()
-  to protect the sched_cb_list. I don't think we touch the area in NMI.
-  Disabling the interrupts should be good enough to protect the cpuctx.
-  We don't need perf_ctx_lock().
-
-Changes since V3:
-- Fix warnings reported by kernel test robot <lkp@intel.com>
-- Move bitmap_empty() check after clearing assigned counters.
-  It should be very likely that the cpuc->dirty is non-empty.
-  Move it after the clearing can skip the for_each_set_bit() and
-  bitmap_zero().
-
-The V2 can be found here.
-https://lore.kernel.org/lkml/20200821195754.20159-3-kan.liang@linux.intel.com/
-
-Changes since V2:
-- Unconditionally set cpuc->dirty. The worst case for an RDPMC task is
-  that we may have to clear all counters for the first time in
-  x86_pmu_event_mapped. After that, the sched_task() will clear/update
-  the 'dirty'. Only the real 'dirty' counters are clear. For a non-RDPMC
-  task, it's harmless to unconditionally set the cpuc->dirty.
-- Remove the !is_sampling_event() check
-- Move the code into X86 generic file, because RDPMC is not a Intel-only
-  feature.
-
-Changes since V1:
-- Drop the old method, which unconditionally reset the counter in
-  x86_pmu_del().
-  Only reset the dirty counters when a RDPMC task is sheduled in.
----
- arch/x86/events/core.c       | 55 ++++++++++++++++++++++++++++++++++++++++++++
- arch/x86/events/perf_event.h |  1 +
- 2 files changed, 56 insertions(+)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index dd9f3c2..45630beed 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1585,6 +1585,8 @@ static void x86_pmu_del(struct perf_event *event, int flags)
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		goto do_del;
- 
-+	__set_bit(event->hw.idx, cpuc->dirty);
-+
- 	/*
- 	 * Not a TXN, therefore cleanup properly.
- 	 */
-@@ -2304,12 +2306,50 @@ static int x86_pmu_event_init(struct perf_event *event)
- 	return err;
- }
- 
-+static void x86_pmu_clear_dirty_counters(void)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	int i;
-+
-+	 /* Don't need to clear the assigned counter. */
-+	for (i = 0; i < cpuc->n_events; i++)
-+		__clear_bit(cpuc->assign[i], cpuc->dirty);
-+
-+	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
-+		return;
-+
-+	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
-+		/* Metrics and fake events don't have corresponding HW counters. */
-+		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
-+			continue;
-+		else if (i >= INTEL_PMC_IDX_FIXED)
-+			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
-+		else
-+			wrmsrl(x86_pmu_event_addr(i), 0);
-+	}
-+
-+	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
-+}
-+
- static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
- {
-+	unsigned long flags;
-+
- 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
- 		return;
- 
- 	/*
-+	 * Enable sched_task() for the RDPMC task,
-+	 * and clear the existing dirty counters.
-+	 */
-+	if (x86_pmu.sched_task && event->hw.target) {
-+		local_irq_save(flags);
-+		perf_sched_cb_inc(event->ctx->pmu);
-+		x86_pmu_clear_dirty_counters();
-+		local_irq_restore(flags);
-+	}
-+
-+	/*
- 	 * This function relies on not being called concurrently in two
- 	 * tasks in the same mm.  Otherwise one task could observe
- 	 * perf_rdpmc_allowed > 1 and return all the way back to
-@@ -2327,10 +2367,17 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
- 
- static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
- {
-+	unsigned long flags;
- 
- 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
- 		return;
- 
-+	if (x86_pmu.sched_task && event->hw.target) {
-+		local_irq_save(flags);
-+		perf_sched_cb_dec(event->ctx->pmu);
-+		local_irq_restore(flags);
-+	}
-+
- 	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
- 		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
- }
-@@ -2436,6 +2483,14 @@ static const struct attribute_group *x86_pmu_attr_groups[] = {
- static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
- {
- 	static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
-+
-+	/*
-+	 * If a new task has the RDPMC enabled, clear the dirty counters
-+	 * to prevent the potential leak.
-+	 */
-+	if (sched_in && ctx && READ_ONCE(x86_pmu.attr_rdpmc) &&
-+	    current->mm && atomic_read(&current->mm->context.perf_rdpmc_allowed))
-+		x86_pmu_clear_dirty_counters();
- }
- 
- static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 54a340e..e855f20 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -228,6 +228,7 @@ struct cpu_hw_events {
- 	 */
- 	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
- 	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
-+	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
- 	int			enabled;
- 
- 	int			n_events; /* the # of events in the below arrays */
--- 
-2.7.4
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVGltIENoZW4gW21haWx0
+bzp0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCBBcHJpbCAy
+MSwgMjAyMSA2OjMyIEFNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxzb25nLmJh
+by5odWFAaGlzaWxpY29uLmNvbT47DQo+IGNhdGFsaW4ubWFyaW5hc0Bhcm0uY29tOyB3aWxsQGtl
+cm5lbC5vcmc7IHJqd0Byand5c29ja2kubmV0Ow0KPiB2aW5jZW50Lmd1aXR0b3RAbGluYXJvLm9y
+ZzsgYnBAYWxpZW44LmRlOyB0Z2x4QGxpbnV0cm9uaXguZGU7DQo+IG1pbmdvQHJlZGhhdC5jb207
+IGxlbmJAa2VybmVsLm9yZzsgcGV0ZXJ6QGluZnJhZGVhZC5vcmc7DQo+IGRpZXRtYXIuZWdnZW1h
+bm5AYXJtLmNvbTsgcm9zdGVkdEBnb29kbWlzLm9yZzsgYnNlZ2FsbEBnb29nbGUuY29tOw0KPiBt
+Z29ybWFuQHN1c2UuZGUNCj4gQ2M6IG1zeXMubWl6dW1hQGdtYWlsLmNvbTsgdmFsZW50aW4uc2No
+bmVpZGVyQGFybS5jb207DQo+IGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyBKb25hdGhhbiBD
+YW1lcm9uIDxqb25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+Ow0KPiBqdXJpLmxlbGxpQHJlZGhh
+dC5jb207IG1hcmsucnV0bGFuZEBhcm0uY29tOyBzdWRlZXAuaG9sbGFAYXJtLmNvbTsNCj4gYXVi
+cmV5LmxpQGxpbnV4LmludGVsLmNvbTsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
+b3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hY3BpQHZnZXIua2Vy
+bmVsLm9yZzsgeDg2QGtlcm5lbC5vcmc7DQo+IHh1d2VpIChPKSA8eHV3ZWk1QGh1YXdlaS5jb20+
+OyBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPjsNCj4gZ3VvZG9uZy54dUBs
+aW5hcm8ub3JnOyB5YW5neWljb25nIDx5YW5neWljb25nQGh1YXdlaS5jb20+OyBMaWd1b3podSAo
+S2VubmV0aCkNCj4gPGxpZ3Vvemh1QGhpc2lsaWNvbi5jb20+OyBsaW51eGFybUBvcGVuZXVsZXIu
+b3JnOyBocGFAenl0b3IuY29tDQo+IFN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIHY1IDQvNF0gc2No
+ZWR1bGVyOiBBZGQgY2x1c3RlciBzY2hlZHVsZXIgbGV2ZWwgZm9yIHg4Ng0KPiANCj4gDQo+IA0K
+PiBPbiAzLzIzLzIxIDQ6MjEgUE0sIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgd3JvdGU6DQo+
+IA0KPiA+Pg0KPiA+PiBPbiAzLzE4LzIxIDk6MTYgUE0sIEJhcnJ5IFNvbmcgd3JvdGU6DQo+ID4+
+PiBGcm9tOiBUaW0gQ2hlbiA8dGltLmMuY2hlbkBsaW51eC5pbnRlbC5jb20+DQo+ID4+Pg0KPiA+
+Pj4gVGhlcmUgYXJlIHg4NiBDUFUgYXJjaGl0ZWN0dXJlcyAoZS5nLiBKYWNvYnN2aWxsZSkgd2hl
+cmUgTDIgY2FoY2UNCj4gPj4+IGlzIHNoYXJlZCBhbW9uZyBhIGNsdXN0ZXIgb2YgY29yZXMgaW5z
+dGVhZCBvZiBiZWluZyBleGNsdXNpdmUNCj4gPj4+IHRvIG9uZSBzaW5nbGUgY29yZS4NCj4gPj4+
+DQo+ID4+PiBUbyBwcmV2ZW50IG92ZXJzdWJzY3JpcHRpb24gb2YgTDIgY2FjaGUsIGxvYWQgc2hv
+dWxkIGJlDQo+ID4+PiBiYWxhbmNlZCBiZXR3ZWVuIHN1Y2ggTDIgY2x1c3RlcnMsIGVzcGVjaWFs
+bHkgZm9yIHRhc2tzIHdpdGgNCj4gPj4+IG5vIHNoYXJlZCBkYXRhLg0KPiA+Pj4NCj4gPj4+IEFs
+c28gd2l0aCBjbHVzdGVyIHNjaGVkdWxpbmcgcG9saWN5IHdoZXJlIHRhc2tzIGFyZSB3b2tlbiB1
+cA0KPiA+Pj4gaW4gdGhlIHNhbWUgTDIgY2x1c3Rlciwgd2Ugd2lsbCBiZW5lZml0IGZyb20ga2Vl
+cGluZyB0YXNrcw0KPiA+Pj4gcmVsYXRlZCB0byBlYWNoIG90aGVyIGFuZCBsaWtlbHkgc2hhcmlu
+ZyBkYXRhIGluIHRoZSBzYW1lIEwyDQo+ID4+PiBjbHVzdGVyLg0KPiA+Pj4NCj4gPj4+IEFkZCBD
+UFUgbWFza3Mgb2YgQ1BVcyBzaGFyaW5nIHRoZSBMMiBjYWNoZSBzbyB3ZSBjYW4gYnVpbGQgc3Vj
+aA0KPiA+Pj4gTDIgY2x1c3RlciBzY2hlZHVsZXIgZG9tYWluLg0KPiA+Pj4NCj4gPj4+IFNpZ25l
+ZC1vZmYtYnk6IFRpbSBDaGVuIDx0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbT4NCj4gPj4+IFNp
+Z25lZC1vZmYtYnk6IEJhcnJ5IFNvbmcgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KPiA+
+Pg0KPiA+Pg0KPiA+PiBCYXJyeSwNCj4gPj4NCj4gPj4gQ2FuIHlvdSBhbHNvIGFkZCB0aGlzIGNo
+dW5rIHRvIHRoZSBwYXRjaC4NCj4gPj4gVGhhbmtzLg0KPiA+DQo+ID4gU3VyZSwgVGltLCBUaGFu
+a3MuIEknbGwgcHV0IHRoYXQgaW50byBwYXRjaCA0LzQgaW4gdjYuDQo+ID4NCj4gDQo+IEJhcnJ5
+LA0KPiANCj4gVGhpcyBjaHVuayB3aWxsIGFsc28gbmVlZCB0byBiZSBhZGRlZCB0byByZXR1cm4g
+Y2x1c3RlciBpZCBmb3IgeDg2Lg0KPiBQbGVhc2UgYWRkIGl0IGluIHlvdXIgbmV4dCByZXYuDQoN
+Clllcy4gVGhhbmtzLiBJJ2xsIHB1dCB0aGlzIGluIGVpdGhlciBSRkMgdjcgb3IgUGF0Y2ggdjEu
+DQoNCkZvciBzcHJlYWRpbmcgcGF0aCwgdGhpbmdzIGFyZSBtdWNoIGVhc2llciwgdGhvdWdoIHBh
+Y2tpbmcgcGF0aCBpcyANCnF1aXRlIHRyaWNreS4gQnV0IEl0IHNlZW1zIFJGQyB2NiBoYXMgYmVl
+biBxdWl0ZSBjbG9zZSB0byB3aGF0IHdlIHdhbnQNCnRvIGFjaGlldmUgdG8gcGFjayByZWxhdGVk
+IHRhc2tzIGJ5IHNjYW5uaW5nIGNsdXN0ZXIgZm9yIHRhc2tzIHdpdGhpbg0Kc2FtZSBOVU1BOg0K
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIxMDQyMDAwMTg0NC45MTE2LTEtc29uZy5i
+YW8uaHVhQGhpc2lsaWNvbi5jb20vDQoNCklmIGNvdXBsZXMgaGF2ZSBiZWVuIGFscmVhZHkgaW4g
+c2FtZSBMTEMobnVtYSksIHNjYW5uaW5nIGNsdXN0ZXJzIHdpbGwNCmdhdGhlciB0aGVtIGZ1cnRo
+ZXIuIElmIHRoZXkgYXJlIHJ1bm5pbmcgaW4gZGlmZmVyZW50IE5VTUEgbm9kZXMsIHRoZQ0Kb3Jp
+Z2luYWwgc2Nhbm5pbmcgTExDIHdpbGwgbW92ZSB0aGVtIHRvIHRoZSBzYW1lIG5vZGUsIGFmdGVy
+IHRoYXQsDQpzY2FubmluZyBjbHVzdGVyIG1pZ2h0IHB1dCB0aGVtIGNsb3NlciB0byBlYWNoIG90
+aGVyLg0KDQppdCBzZWVtcyBpdCBpcyBraW5kIG9mIHRoZSB0d28tbGV2ZWwgcGFja2luZyBEaWV0
+bWFyIGhhcyBzdWdnZXN0ZWQuDQoNClNvIHBlcmhhcHMgd2Ugd29uJ3QgaGF2ZSBSRkMgdjcsIEkg
+d2lsbCBwcm9iYWJseSBzZW5kIHBhdGNoIHYxIGFmdGVyd2FyZHMuDQoNCj4gDQo+IFRoYW5rcy4N
+Cj4gDQo+IFRpbQ0KPiANCj4gLS0tDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvaW5jbHVk
+ZS9hc20vdG9wb2xvZ3kuaA0KPiBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3RvcG9sb2d5LmgNCj4g
+aW5kZXggODAwZmE0OGM5ZmNkLi4yNTQ4ZDgyNGYxMDMgMTAwNjQ0DQo+IC0tLSBhL2FyY2gveDg2
+L2luY2x1ZGUvYXNtL3RvcG9sb2d5LmgNCj4gKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vdG9w
+b2xvZ3kuaA0KPiBAQCAtMTA5LDYgKzEwOSw3IEBAIGV4dGVybiBjb25zdCBzdHJ1Y3QgY3B1bWFz
+ayAqY3B1X2NsdXN0ZXJncm91cF9tYXNrKGludCBjcHUpOw0KPiAgI2RlZmluZSB0b3BvbG9neV9w
+aHlzaWNhbF9wYWNrYWdlX2lkKGNwdSkJKGNwdV9kYXRhKGNwdSkucGh5c19wcm9jX2lkKQ0KPiAg
+I2RlZmluZSB0b3BvbG9neV9sb2dpY2FsX2RpZV9pZChjcHUpCQkoY3B1X2RhdGEoY3B1KS5sb2dp
+Y2FsX2RpZV9pZCkNCj4gICNkZWZpbmUgdG9wb2xvZ3lfZGllX2lkKGNwdSkJCQkoY3B1X2RhdGEo
+Y3B1KS5jcHVfZGllX2lkKQ0KPiArI2RlZmluZSB0b3BvbG9neV9jbHVzdGVyX2lkKGNwdSkJCShw
+ZXJfY3B1KGNwdV9sMmNfaWQsIGNwdSkpDQo+ICAjZGVmaW5lIHRvcG9sb2d5X2NvcmVfaWQoY3B1
+KQkJCShjcHVfZGF0YShjcHUpLmNwdV9jb3JlX2lkKQ0KPiANCj4gIGV4dGVybiB1bnNpZ25lZCBp
+bnQgX19tYXhfZGllX3Blcl9wYWNrYWdlOw0KDQpUaGFua3MNCkJhcnJ5DQoNCg==
