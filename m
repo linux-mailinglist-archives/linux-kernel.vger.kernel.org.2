@@ -2,335 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940FD36548F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E839E365493
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhDTIuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:50:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230168AbhDTIup (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:50:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618908614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eNIbX5EAXb6hcc5613svpGxssGl3UvQl0x7wbRQve7Q=;
-        b=bh1NONa4qa6wtX4tSPBh61HRUDsO05ab8ayjLqZckLN5/VaskEwd7J2ivIVwwS2H3m3a4S
-        xV0uHbtsvGHCdak6EBf0tIlcF87pX6YbMd17VewVNMoGpzVNHR7qP9K5TzIKubAE//qicy
-        13EIGHjW5toaencOUukF/5UVaqWNCeA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-iX_5lb8ON0uzbiCtPPiEyg-1; Tue, 20 Apr 2021 04:50:12 -0400
-X-MC-Unique: iX_5lb8ON0uzbiCtPPiEyg-1
-Received: by mail-ej1-f70.google.com with SMTP id r17-20020a1709069591b029037cf6a4a56dso4543942ejx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:50:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eNIbX5EAXb6hcc5613svpGxssGl3UvQl0x7wbRQve7Q=;
-        b=WFaogOvGFDhYRE/lA8WGHM7Xe/D5H9iMfnIIOX17KjwM/qdrEDjhcJaJ3fPGkwIij+
-         2YERAcGx8wg6Gqzk/T09mNy/SzzOJv365l55B10BxqpTDr0adsA3ozIRPjb+QVcguDTw
-         r3lvDiPsb2g9nQ3Y3VjaPnTXLeCjIPe8eylm3urE0gQqt1ncLmBnZqdrrcAo6uH+fhTr
-         vj2j4eBIJmQg6X4mFhJYfEkFdlIbyr36cHGMZlJPDkhLuve6PaI9oQsLvLA1Gj/56/ZI
-         Fp1We26FVBQgcpNRuo2pHPWtNLZPPYKcVr0FbeoGlq5Wo/oh70W1lHLWeU5e3ZrMFKKD
-         G/bw==
-X-Gm-Message-State: AOAM530Hpmccd6u3bp9eWBTGJnaveevbKoXqGeYfAcpP0VFnueA0pcX0
-        DN0YQ+8dxNrtrjiMY4gbr1kaV9o8k5u6GTt1wvZLIx+YzKu4f+7K/NkWAsSKGdvL0F+8qFVK+zH
-        e2itrSg1u1cQa9ehL9HyIt/Wg
-X-Received: by 2002:a17:906:154f:: with SMTP id c15mr26621326ejd.142.1618908611055;
-        Tue, 20 Apr 2021 01:50:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtPni1TTl2iNx0aHJJVCtC2EXpya5BNfC5SY/JaZ5J1kNGm/qdNwEzEly0iJ9tvVAStRFKRw==
-X-Received: by 2002:a17:906:154f:: with SMTP id c15mr26621305ejd.142.1618908610865;
-        Tue, 20 Apr 2021 01:50:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h9sm10494985ejf.10.2021.04.20.01.50.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 01:50:10 -0700 (PDT)
-Subject: Re: [PATCH v13 01/12] KVM: SVM: Add KVM_SEV SEND_START command
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1618498113.git.ashish.kalra@amd.com>
- <2f1686d0164e0f1b3d6a41d620408393e0a48376.1618498113.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4b368b32-0c6b-a7bf-be24-e641a0955c80@redhat.com>
-Date:   Tue, 20 Apr 2021 10:50:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <2f1686d0164e0f1b3d6a41d620408393e0a48376.1618498113.git.ashish.kalra@amd.com>
+        id S231210AbhDTIvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:51:14 -0400
+Received: from mail-db8eur05on2059.outbound.protection.outlook.com ([40.107.20.59]:41664
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230168AbhDTIvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:51:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DOgFgFlGAwZhTduBbZacmD+YoGWTnHg6ZY/ccsv4MF7tVwWHFWwqXAwlgC9/gADsC6cH2up/xJeshrot0vDbBTFU4gX+52jD2yhT5gzOE9uMRHrNOsW9Y+AcPw1eenWgQXxOyZF5CjOYnxe0kQxLtnXh4xM2vz3XW069dL33Jn+C7Mnv8+Hw8S3Un42zob6viZ4tz5EdosRK8EkVk6cL+w4sNgHdbnb9h0wt9DO3vfYkfObrCEp2ajyDTsvULemSIvWxksagz9THpC+dKtTpZW36DzTMCpdACGZuiNiuC94QjBxWqlE/MTYcswhTCBOztPfWfZYRZXRgcsb76fHsqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QE0wEbJH0OkVRVaIcrDZzZjwu7FHjokmgO2050PQJ9A=;
+ b=HQDoXFrkvnlafuB0AjQrfc17EkwlzaNqQ/yaq7SrRS3zmDaxmTtHi99Ut439PDHJhUuF6NCMG681qn7ccH+giMuxjevHGP/iBHnvpRDwUJniypyFb3fInFekw2MyFivbi0wA+8jgcf0QxEUTKykz2mmxRBNiS8APzj/rxdmhWdceaGa61dHGcuY03PU5OrPkSQbSoCKN07jvxS8qrv6Y06IPyOKmTgPBH5bL01WoHAbpwUHEQJ0rReJhui8iMZwNZNnRjyLizUCpGs3lepBFjN8bPFvC9n2atxhBZvo8+HAaqqr9pudHd0Pnovj70q3lcbG6r4nG7V2QqrfITPrw6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
+ dkim=pass header.d=vaisala.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QE0wEbJH0OkVRVaIcrDZzZjwu7FHjokmgO2050PQJ9A=;
+ b=T5nJ5fJO6tSz05XvwnqQRu34PtQB28eO2aGzYQBONuA8Y7UzsiHfpNTl5h0KaKeij7UK9vZjKyW8XsMm5WvxaQySqDCg2zJwAJkSFo5z0DMV9b6nSoDqfk2ROQVQ0JLV4OhKBVi6MkuY1XedAYQzROq0SG/qEhCGHygKl2eyLqkMifFttyC/IlstnUZysRlA8BCZLeE36HXr5rZeZ5bQrNWD2Q05kGNdGvQ0jJb/oI4af638mR+o6ALQr1GPda5kyI+LFHhvlLcNUq+SdKNxdPHmKyqeIwaNnj3nWBt7IusI6rHaERRcQKHH5tN91o2jC4/hdYCrJNQhXlk/uiHNrQ==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=vaisala.com;
+Received: from VI1PR0602MB3568.eurprd06.prod.outlook.com
+ (2603:10a6:803:10::31) by VI1PR06MB6800.eurprd06.prod.outlook.com
+ (2603:10a6:800:18c::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
+ 2021 08:50:40 +0000
+Received: from VI1PR0602MB3568.eurprd06.prod.outlook.com
+ ([fe80::c471:1848:5f45:95a4]) by VI1PR0602MB3568.eurprd06.prod.outlook.com
+ ([fe80::c471:1848:5f45:95a4%7]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 08:50:40 +0000
+Subject: Re: [PATCH v3 2/2] iio: accel: Add driver for Murata SCA3300
+ accelerometer
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210419132159.4450-1-tomas.melin@vaisala.com>
+ <20210419132159.4450-3-tomas.melin@vaisala.com>
+ <CAHp75VdApCk_Ydt2W_WWJ_wme4d1ocrrnvo+TjZcQ62RG6uOUA@mail.gmail.com>
+From:   Tomas Melin <tomas.melin@vaisala.com>
+Message-ID: <bea4dc56-b860-431c-a820-a482ce87743c@vaisala.com>
+Date:   Tue, 20 Apr 2021 11:50:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+In-Reply-To: <CAHp75VdApCk_Ydt2W_WWJ_wme4d1ocrrnvo+TjZcQ62RG6uOUA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [85.156.166.106]
+X-ClientProxiedBy: HE1P195CA0005.EURP195.PROD.OUTLOOK.COM (2603:10a6:3:fd::15)
+ To VI1PR0602MB3568.eurprd06.prod.outlook.com (2603:10a6:803:10::31)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.242.132] (85.156.166.106) by HE1P195CA0005.EURP195.PROD.OUTLOOK.COM (2603:10a6:3:fd::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 08:50:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5834f194-f502-4fce-fec1-08d903d95fa4
+X-MS-TrafficTypeDiagnostic: VI1PR06MB6800:
+X-Microsoft-Antispam-PRVS: <VI1PR06MB6800514ACBBE439C12FD8671FD489@VI1PR06MB6800.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AaIhEIrQn37/Cz8FtLko+PcW8lLAsDtaYPTbhnbsoc3App172uGt3pdwsjPsmTZQ8ga+Dc9MggvkC8+dLaRPz+nNxn7ZXbRnDqsHdbInM9MvKgfzUzS8o0pjDQOmzjWivyfomRebxRnPfLshkdPuHnFFnfrFipgx5whlZPXhC19vJr1RDXW9/IZkVPiABCc8jCgTsExBIjXf0hBM70UADKg66cnaUnBQ3BjoZkDdJngmopLxE5WTMJJzE1J4hMfAmc+4s3Nbc1mm4aezrw6gxx9zqBw4wZycORUO4o48TTXOnYsbl5t03aE5vNvU3MDAaJUONw1FNErROhOi/c8TV2IqAMtU3vhPlHldo36Vq7K5K4m/UgFaQf1g8l7vgfLAey9Bm8ZBi9gwXvekWyjc1czXaDJv92cjno3ocwRaCzy8k094n4oG140LRF2s3KyKoau7c7rKEePxfl+hmkFx1EODeJAFUAXpLv5Fa0IpEGpY3c23grwluDYTaM+CnoWm7R/TRzPScqVlla1g062tXzhnk+w0sv5Wj+WLN0wX/xBBQEJ2SCwcORRji6s3aCzEM6qa9fT5N2RzPoZeIV8AHQQfRggYLusXsHGBRkDgL7I10ZPTapgpQg9Tk0cnJTl0fR2Br3u3rrgLwubImWi4n/wTzRbszjzyLk6RTNihacSEa0iBFrmC12A8Emb2VxrJ+VQaMheCvPo4+UjMOPNtUbmjehVk8N9NGRLcRlUiHIN5jnxUkuT5IC8IyS93mgxz06EoRe96hw9jGknQOU3TyxET4EtJd+A1jjuAZam2XGU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0602MB3568.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(366004)(346002)(136003)(396003)(26005)(54906003)(16526019)(5660300002)(8676002)(956004)(186003)(2906002)(6916009)(16576012)(86362001)(316002)(4326008)(31696002)(45080400002)(66556008)(53546011)(8936002)(478600001)(2616005)(66476007)(966005)(66946007)(44832011)(31686004)(6486002)(38350700002)(36756003)(38100700002)(52116002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MGJsejlDb21Sd08wdW5BSktPRnNBUElZVFhkbkc5eVJWa1Jtb2s4SHJMZzdz?=
+ =?utf-8?B?dEZPbHlsVHJVQ2sxRDdqUVIvaVUyelp1NXMyVzRhVlhzT2RRbVRhNnkzdGE4?=
+ =?utf-8?B?ajIvTHh4ZmxWcy9TUUlOSzNNYVBMMGZlcG4xR0tDOWRnWnM1ZXFhUzhwSSt2?=
+ =?utf-8?B?NlNnc1dXdnVabG8xa1RTcWpGZW1ZNUhFRzhNK0VvS2E1YWpMMHVxS2dIM01Y?=
+ =?utf-8?B?VE1GZXRlRkJ3dGp1R25LRWZuMTdDV1hUOU9FS0FRR2drb0w3RzVKZ3lYcy82?=
+ =?utf-8?B?Y3BGQmprVmFCWFRDR1B1V1VUU1c3TjVjUlp6N0dla3psTHRwQ051ZTNLanZq?=
+ =?utf-8?B?K2UxM2o1NVFGWG16dTRFSFE3c0dmR04rczVlOWpzZlRObFhvbWlLTzZzdHVm?=
+ =?utf-8?B?RUxoNnhKY0UzMEdoVS9wZUt2ejU1TzZhS3VzcHBaU2pBaXBKUStZeitxQ1NO?=
+ =?utf-8?B?d1RGd1c1SXJzYVhBcWpEaW44RW1RWmtzbEJpaGw5NG1jbHJOeHpNT21Pd093?=
+ =?utf-8?B?MlpKYlZZTDZ4Zy8zS0RQamJrcU9pNjY4VlFFSWllMDdGZmVxNVpNaExySTcv?=
+ =?utf-8?B?cGRhRys4cGsyV3FYK0N6WVU0a2U0R1ZyNGR2a0h0QzczT1RGei9IMnBoWWdj?=
+ =?utf-8?B?bVpmYUQ2STA0d1pZNmFVMXpNZ2c2RU82L1VLSkh5OXdPckd1Rkw1SGJURFUy?=
+ =?utf-8?B?Z1F0MmRHcnJkbHlMZXdGTmJua2phTXBsWjk3SXU3aHpBamNEZURTVzl1YmU2?=
+ =?utf-8?B?R3ZzY2lDTnJqWFN2a0RNL0pXVXZ1Q2ZWeVJNYkVBMkFhbzI2eW5NUW9ka3Bx?=
+ =?utf-8?B?MmtGdDdsZ1BMUTlnTXdvbVl1Rzcra3pNU002M3JEcnhoSzVicldxcStQbHkx?=
+ =?utf-8?B?MUNlUDYzN3BoeGc2MUxkaG1XVXdmQ3pEOWc2REdpTWZ5c2pwVXIzV3psNFF1?=
+ =?utf-8?B?elY1VGZNdDBhWW9ZbWo1LzJFOU1rM1pwQ3oycllVUUdKMWV6d2dIMFlHVWdV?=
+ =?utf-8?B?QklBMXFvc2RIY0ZpaXY4ZXNBTDhEMk4xT1VpNEI4TTBTK0J4TlZVdmEwbW1v?=
+ =?utf-8?B?TUZua2kxcTFsK2pFOXJzQ3hvcnNqTUxzYzJjdEpIeERDR0lRQ3ZNVG1IMkcv?=
+ =?utf-8?B?QTdEWmlXakx5NHY5Tnc1cUZrQVl4bDIzdTJoM3UzUE1US2RsUmhwbGVjS25Q?=
+ =?utf-8?B?SlBkZW9CdTl1bUkweUdtbXBrTHVHNndrdUIwSXRoWjJJQ0NxZnpxMHFVWjNr?=
+ =?utf-8?B?MHV2L3dZcTB5cDVMVHBQanpZM1c0TEFxMmlablBsK01KN2FuL0djeFFoc09R?=
+ =?utf-8?B?b1RyYW9BaDJ5UmdodlVVbnp1MXk2aUppWU1tWkhoNFBwV0xpVU54cjBiM0J0?=
+ =?utf-8?B?d1NFVUZiYVdEZUNmRkZDeFo5a1ZqQnAyRnA2Z05oSVRkcXBsb1NqZittTmto?=
+ =?utf-8?B?YWlMM0MxWms4NjA4OU9lZytWYkxDdGdPa3ppdEsyRmpESm5uVUFlL29yUDBz?=
+ =?utf-8?B?VWhZYWsxTlZHa3NpS3Jiamd5SXlMdnQ5RWJVVHlYOTJNUDcxZDJXU1EvYk9L?=
+ =?utf-8?B?Rkk1Vk9XN0RoOEtncWFPS29iUGI5WFFsNWQ2Vm1WQjFneVFhSFZpZUN4QXNK?=
+ =?utf-8?B?Y01mWWY1YVhpWW1WOHlQVjJhVGhHZnZkSDByemtqQVlpWTBERVpFZzZOZGIy?=
+ =?utf-8?B?amxmWmJJRTAxK2V4T1NTS01BVmEveTZSQjBiVDdqTlJXdlJwMlNZS1JFUngx?=
+ =?utf-8?Q?HWM7xrz0Fj0dQ68WeW2+fYuXHuFNqLuFlcKa6Qv?=
+X-OriginatorOrg: vaisala.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5834f194-f502-4fce-fec1-08d903d95fa4
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0602MB3568.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 08:50:39.8720
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h6JtVOHxin3tX8nA6XkJVATvHPROxxAhmK0Uz3Tu+PXIyto0Qgmq8Up2uexaItEzexbW1CRIdIZ6yNKzNi8oTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR06MB6800
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/21 17:53, Ashish Kalra wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> The command is used to create an outgoing SEV guest encryption context.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Steve Rutherford <srutherford@google.com>
-> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->   .../virt/kvm/amd-memory-encryption.rst        |  27 ++++
->   arch/x86/kvm/svm/sev.c                        | 125 ++++++++++++++++++
->   include/linux/psp-sev.h                       |   8 +-
->   include/uapi/linux/kvm.h                      |  12 ++
->   4 files changed, 168 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-> index 469a6308765b..ac799dd7a618 100644
-> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
-> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-> @@ -284,6 +284,33 @@ Returns: 0 on success, -negative on error
->                   __u32 len;
->           };
->   
-> +10. KVM_SEV_SEND_START
-> +----------------------
-> +
-> +The KVM_SEV_SEND_START command can be used by the hypervisor to create an
-> +outgoing guest encryption context.
-> +
-> +Parameters (in): struct kvm_sev_send_start
-> +
-> +Returns: 0 on success, -negative on error
-> +
-> +::
-> +        struct kvm_sev_send_start {
-> +                __u32 policy;                 /* guest policy */
-> +
-> +                __u64 pdh_cert_uaddr;         /* platform Diffie-Hellman certificate */
-> +                __u32 pdh_cert_len;
-> +
-> +                __u64 plat_certs_uaddr;        /* platform certificate chain */
-> +                __u32 plat_certs_len;
-> +
-> +                __u64 amd_certs_uaddr;        /* AMD certificate */
-> +                __u32 amd_certs_len;
-> +
-> +                __u64 session_uaddr;          /* Guest session information */
-> +                __u32 session_len;
-> +        };
-> +
->   References
->   ==========
->   
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 874ea309279f..2b65900c05d6 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1110,6 +1110,128 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
->   	return ret;
->   }
->   
-> +/* Userspace wants to query session length. */
-> +static int
-> +__sev_send_start_query_session_length(struct kvm *kvm, struct kvm_sev_cmd *argp,
-> +				      struct kvm_sev_send_start *params)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_data_send_start *data;
-> +	int ret;
-> +
-> +	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
-> +	if (data == NULL)
-> +		return -ENOMEM;
-> +
-> +	data->handle = sev->handle;
-> +	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, data, &argp->error);
+Hi Andy,
 
-This is missing an "if (ret < 0)" (and this time I'm pretty sure it's 
-indeed the case :)), otherwise you miss for example the EBADF return 
-code if the SEV file descriptor is closed or reused.  Same for 
-KVM_SEND_UPDATE_DATA.  Also, the length==0 case is not documented.
+Thanks for further comments, see some answers/questions below.
 
-Paolo
+thanks,
 
-> +	params->session_len = data->session_len;
-> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, params,
-> +				sizeof(struct kvm_sev_send_start)))
-> +		ret = -EFAULT;
-> +
-> +	kfree(data);
-> +	return ret;
-> +}
-> +
-> +static int sev_send_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct sev_data_send_start *data;
-> +	struct kvm_sev_send_start params;
-> +	void *amd_certs, *session_data;
-> +	void *pdh_cert, *plat_certs;
-> +	int ret;
-> +
-> +	if (!sev_guest(kvm))
-> +		return -ENOTTY;
-> +
-> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
-> +				sizeof(struct kvm_sev_send_start)))
-> +		return -EFAULT;
-> +
-> +	/* if session_len is zero, userspace wants to query the session length */
-> +	if (!params.session_len)
-> +		return __sev_send_start_query_session_length(kvm, argp,
-> +				&params);
-> +
-> +	/* some sanity checks */
-> +	if (!params.pdh_cert_uaddr || !params.pdh_cert_len ||
-> +	    !params.session_uaddr || params.session_len > SEV_FW_BLOB_MAX_SIZE)
-> +		return -EINVAL;
-> +
-> +	/* allocate the memory to hold the session data blob */
-> +	session_data = kmalloc(params.session_len, GFP_KERNEL_ACCOUNT);
-> +	if (!session_data)
-> +		return -ENOMEM;
-> +
-> +	/* copy the certificate blobs from userspace */
-> +	pdh_cert = psp_copy_user_blob(params.pdh_cert_uaddr,
-> +				params.pdh_cert_len);
-> +	if (IS_ERR(pdh_cert)) {
-> +		ret = PTR_ERR(pdh_cert);
-> +		goto e_free_session;
-> +	}
-> +
-> +	plat_certs = psp_copy_user_blob(params.plat_certs_uaddr,
-> +				params.plat_certs_len);
-> +	if (IS_ERR(plat_certs)) {
-> +		ret = PTR_ERR(plat_certs);
-> +		goto e_free_pdh;
-> +	}
-> +
-> +	amd_certs = psp_copy_user_blob(params.amd_certs_uaddr,
-> +				params.amd_certs_len);
-> +	if (IS_ERR(amd_certs)) {
-> +		ret = PTR_ERR(amd_certs);
-> +		goto e_free_plat_cert;
-> +	}
-> +
-> +	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
-> +	if (data == NULL) {
-> +		ret = -ENOMEM;
-> +		goto e_free_amd_cert;
-> +	}
-> +
-> +	/* populate the FW SEND_START field with system physical address */
-> +	data->pdh_cert_address = __psp_pa(pdh_cert);
-> +	data->pdh_cert_len = params.pdh_cert_len;
-> +	data->plat_certs_address = __psp_pa(plat_certs);
-> +	data->plat_certs_len = params.plat_certs_len;
-> +	data->amd_certs_address = __psp_pa(amd_certs);
-> +	data->amd_certs_len = params.amd_certs_len;
-> +	data->session_address = __psp_pa(session_data);
-> +	data->session_len = params.session_len;
-> +	data->handle = sev->handle;
-> +
-> +	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, data, &argp->error);
-> +
-> +	if (!ret && copy_to_user((void __user *)(uintptr_t)params.session_uaddr,
-> +			session_data, params.session_len)) {
-> +		ret = -EFAULT;
-> +		goto e_free;
-> +	}
-> +
-> +	params.policy = data->policy;
-> +	params.session_len = data->session_len;
-> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params,
-> +				sizeof(struct kvm_sev_send_start)))
-> +		ret = -EFAULT;
-> +
-> +e_free:
-> +	kfree(data);
-> +e_free_amd_cert:
-> +	kfree(amd_certs);
-> +e_free_plat_cert:
-> +	kfree(plat_certs);
-> +e_free_pdh:
-> +	kfree(pdh_cert);
-> +e_free_session:
-> +	kfree(session_data);
-> +	return ret;
-> +}
-> +
->   int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->   {
->   	struct kvm_sev_cmd sev_cmd;
-> @@ -1163,6 +1285,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->   	case KVM_SEV_GET_ATTESTATION_REPORT:
->   		r = sev_get_attestation_report(kvm, &sev_cmd);
->   		break;
-> +	case KVM_SEV_SEND_START:
-> +		r = sev_send_start(kvm, &sev_cmd);
-> +		break;
->   	default:
->   		r = -EINVAL;
->   		goto out;
-> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
-> index b801ead1e2bb..73da511b9423 100644
-> --- a/include/linux/psp-sev.h
-> +++ b/include/linux/psp-sev.h
-> @@ -326,11 +326,11 @@ struct sev_data_send_start {
->   	u64 pdh_cert_address;			/* In */
->   	u32 pdh_cert_len;			/* In */
->   	u32 reserved1;
-> -	u64 plat_cert_address;			/* In */
-> -	u32 plat_cert_len;			/* In */
-> +	u64 plat_certs_address;			/* In */
-> +	u32 plat_certs_len;			/* In */
->   	u32 reserved2;
-> -	u64 amd_cert_address;			/* In */
-> -	u32 amd_cert_len;			/* In */
-> +	u64 amd_certs_address;			/* In */
-> +	u32 amd_certs_len;			/* In */
->   	u32 reserved3;
->   	u64 session_address;			/* In */
->   	u32 session_len;			/* In/Out */
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index f6afee209620..ac53ad2e7271 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1729,6 +1729,18 @@ struct kvm_sev_attestation_report {
->   	__u32 len;
->   };
->   
-> +struct kvm_sev_send_start {
-> +	__u32 policy;
-> +	__u64 pdh_cert_uaddr;
-> +	__u32 pdh_cert_len;
-> +	__u64 plat_certs_uaddr;
-> +	__u32 plat_certs_len;
-> +	__u64 amd_certs_uaddr;
-> +	__u32 amd_certs_len;
-> +	__u64 session_uaddr;
-> +	__u32 session_len;
-> +};
-> +
->   #define KVM_DEV_ASSIGN_ENABLE_IOMMU	(1 << 0)
->   #define KVM_DEV_ASSIGN_PCI_2_3		(1 << 1)
->   #define KVM_DEV_ASSIGN_MASK_INTX	(1 << 2)
-> 
+Tomas
 
+
+On 4/19/21 4:55 PM, Andy Shevchenko wrote:
+> On Mon, Apr 19, 2021 at 4:26 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+>
+> Thanks for an update, it's getting better! My comments below.
+>
+>> Add initial support for Murata SCA3300 3-axis industrial
+>> accelerometer with digital SPI interface. This device also
+>> provides a temperature measurement.
+> First of all, you forgot Cc reviewer(s).
+
+Ok, thanks for pointing this out, will add you as cc next round.
+
+
+>
+>> Datasheet: https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.murata.com%2Fen-global%2Fproducts%2Fsensor%2Faccel%2Fsca3300&amp;data=04%7C01%7Ctomas.melin%40vaisala.com%7C5259ef3cd4b645f3a7d208d9033acdc5%7C6d7393e041f54c2e9b124c2be5da5c57%7C0%7C0%7C637544373362508656%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=BZue5RQjrHWtRzEOGZAw1Avb35QKLYu0ZOnXbyj9EE8%3D&amp;reserved=0
+> No blank line in the tag block.
+>
+>> Signed-off-by: Tomas Melin <tomas.melin@vaisala.com>
+>
+> ...
+>
+>> +/*
+>> + * Copyright (c) 2021 Vaisala Oyj. All rights reserved.
+>> + */
+> One line.
+
+Opted for adding Description line to this header, thus planning to keep 
+as multi line.
+
+
+>
+> ...
+>
+>> +#define SCA3300_MASK_STATUS    GENMASK(8, 0)
+>> +#define SCA3300_MASK_RS_STATUS GENMASK(1, 0)
+> This feels like an orphan. Shouldn't you move it closer to the group
+> of corresponding register / etc definition?
+
+Tried to group these in alphabetical order, but IIUC preference would be 
+towards grouping
+
+according to how they are used? Would this be clearer and acceptable?
+
+1)
+
+/* Device mode register */
+#define SCA3300_REG_MODE    0xd
+#define SCA3300_VALUE_SW_RESET    0x20
+
+/* Last register in map */
+#define SCA3300_REG_SELBANK    0x1f
+
+/* Device status and related mask */
+#define SCA3300_REG_STATUS    0x6
+#define SCA3300_MASK_STATUS    GENMASK(8, 0)
+
+/* Device ID */
+#define SCA3300_REG_WHOAMI    0x10
+#define SCA3300_VALUE_DEVICE_ID    0x51
+
+/* Device return status and mask */
+#define SCA3300_VALUE_RS_ERROR    0x3
+#define SCA3300_MASK_RS_STATUS    GENMASK(1, 0)
+
+or then only adjusting current sorting with comments, like:
+
+2)
+
+/* Register mask values */
+#define SCA3300_MASK_STATUS    GENMASK(8, 0)
+#define SCA3300_MASK_RS_STATUS    GENMASK(1, 0)
+
+/* Register index values */
+#define SCA3300_REG_MODE    0xd
+#define SCA3300_REG_SELBANK    0x1f
+#define SCA3300_REG_STATUS    0x6
+#define SCA3300_REG_WHOAMI    0x10
+
+/* Register read/write values */
+#define SCA3300_VALUE_DEVICE_ID    0x51
+#define SCA3300_VALUE_RS_ERROR    0x3
+#define SCA3300_VALUE_SW_RESET    0x20
+
+
+>
+>> +#define SCA3300_REG_MODE       0xd
+>> +#define SCA3300_REG_SELBANK    0x1f
+>> +#define SCA3300_REG_STATUS     0x6
+>> +#define SCA3300_REG_WHOAMI     0x10
+>> +
+>> +#define SCA3300_VALUE_DEVICE_ID        0x51
+>> +#define SCA3300_VALUE_RS_ERROR 0x3
+>> +#define SCA3300_VALUE_SW_RESET 0x20
+> As above it doesn't shed a light for the relationship between
+> registers and these fields (?). I.o.w the names w/o properly grouped
+> (and probably commented) are confusing.
+>
+> ...
+>
+>> +/**
+>> + * struct sca3300_data - device data
+>> + * @spi: SPI device structure
+>> + * @lock: Data buffer lock
+>> + * @txbuf: Transmit buffer
+>> + * @rxbuf: Receive buffer
+> Are the buffers subject to DMA? Shouldn't they have the proper alignment?
+Good point, I will add alignment.
+>
+>> + * @scan: Triggered buffer. Four channel 16-bit data + 64-bit timestamp
+>> + */
+>> +struct sca3300_data {
+>> +       struct spi_device *spi;
+>> +       struct mutex lock;
+>> +       u8 txbuf[4];
+>> +       u8 rxbuf[4];
+>> +       struct {
+>> +               s16 channels[4];
+>> +               s64 ts __aligned(sizeof(s64));
+>> +       } scan;
+>> +};
+> ...
+>
+>> +       struct spi_delay delay = {.value = 10, .unit = SPI_DELAY_UNIT_USECS};
+> Missed space.
+>
+> ...
+>
+>> +       sca_data->txbuf[0] = 0x0 | (SCA3300_REG_STATUS << 2);
+> Seems you ignored my comment. What is this 0x0? What is the meaning of it?
+> Same for all the rest magic numbers in the code.
+
+Sorry, not ignored but will remove this redundant 0x0 for next round.
+
+>
+>> +       /*
+>> +        * return status error is cleared after reading status register once,
+>> +        * expect EINVAL here
+> /*
+>   * Fix the style of all your multi-line comments.
+>   * You may follow this example.
+>   */
+Ok, will captialize sentence and add punctuation.
+>> +        */
+>> +       if (ret != -EINVAL) {
+>> +               dev_err(&sca_data->spi->dev,
+>> +                       "error reading device status: %d\n", ret);
+>> +               return ret;
+>> +       }
+>> +
+>> +       dev_err(&sca_data->spi->dev, "device status: 0x%lx\n",
+>> +               (val & SCA3300_MASK_STATUS));
+> Too many parentheses.
+>
+>> +       return 0;
+>> +}
+> ...
+>
+>> +static irqreturn_t sca3300_trigger_handler(int irq, void *p)
+>> +{
+>> +       struct iio_poll_func *pf = p;
+>> +       struct iio_dev *indio_dev = pf->indio_dev;
+>> +       struct sca3300_data *data = iio_priv(indio_dev);
+>> +       int bit, ret, val, i = 0;
+>> +
+>> +       for_each_set_bit(bit, indio_dev->active_scan_mask,
+>> +                        indio_dev->masklength) {
+>> +               ret = sca3300_read_reg(data, sca3300_channels[bit].address,
+>> +                                      &val);
+>> +               if (ret) {
+>> +                       dev_err(&data->spi->dev,
+>> +                               "failed to read register, error: %d\n", ret);
+>> +                       goto out;
+> Does it mean interrupt is handled in this case?
+> Perhaps a comment why it's okay to consider so?
+
+IRQ_HANDLED seemed more correct than IRQ_NONE. Or did You have some 
+other option in mind?
+
+How about something like:
+
+     /* handled with errors */
+
+     goto out;
+
+
+>
+>> +               }
+>> +               data->scan.channels[i++] = val;
+>> +       }
+>> +
+>> +       iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+>> +                                          iio_get_time_ns(indio_dev));
+>> +out:
+>> +       iio_trigger_notify_done(indio_dev->trig);
+>> +
+>> +       return IRQ_HANDLED;
+>> +}
+>
