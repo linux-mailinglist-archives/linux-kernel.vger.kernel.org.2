@@ -2,68 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049E336591A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C52365928
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhDTMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:40:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40884 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhDTMk0 (ORCPT
+        id S232066AbhDTMmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:42:05 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:43741 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231590AbhDTMmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:40:26 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lYpfV-0000pB-NU; Tue, 20 Apr 2021 12:39:53 +0000
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: phy: nxp-c45: add driver for tja1103
-Message-ID: <1ed4dfc4-3561-47d1-ad1f-507f67ed03f0@canonical.com>
-Date:   Tue, 20 Apr 2021 13:39:53 +0100
+        Tue, 20 Apr 2021 08:42:01 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id YpgzlXqG48K3KYph2lzdcz; Tue, 20 Apr 2021 14:41:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1618922488; bh=LmpPnPkn3X5VabNM+R3RACjye7cXzYGW2T06bu5PJOk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=n1KlLas/k8Ebog/po1csc3m+nORAZ3CBYWh7BZIl+OR0aJrCDMcFEwDFYftt+7cg/
+         2Y2nw7fQmj7+VXokr5Fi7sOwcQNbHN2vNj6ulwP0pLgvluMpRPiT1/mqL29tUkhSpB
+         FRwlnPJUQZiDpRccP/YTdJ76WWXUv46Ut758oLZKlJtNcg8LoCx57jCkpBB2x3wck8
+         6MtrV3+xjuf4GvDBN032IH9Tkdt4xbj7z9tD/+H8LcOu4VEZ5g3+1yBUMNsyoqxhkU
+         y6S5NY3Ul5whKry7TBs2fb7lnaEx21uVw8a4E1RiCxxwRAJWY/SUZmfW52aCcbckT/
+         VpYQhFcB8oe0Q==
+Subject: Re: [PATCH v2] staging: media: atomisp: pci: Change line break to
+ avoid an open parenthesis at the end of the line
+To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+References: <20210415170819.GA17534@focaruja>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <fd8eb0f1-aab4-17d8-f590-3e574799c9f5@xs4all.nl>
+Date:   Tue, 20 Apr 2021 14:41:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <20210415170819.GA17534@focaruja>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJ+6TMWQZxkOW4WJICtb/CBRSGKDps49iYq/fH2/dS8SOcQjxwOncdgX0YfG0KSRgNNjBbbmYoz/Lzfs8wf8R3Dndf+foDpsLNdL+yHb6CYw5uixsER7
+ XvKZUNSw/hRLlCHq1axRttZzRL/NJ9ArAu082BsIDoCwTj6XHwj8wzZHCVU1a+zb+8X3Ti9e/yJB/gPPg1BlfGRjWt5MhWAGEyR45eV8Lirk1QIDQdCoz5H5
+ SqPUbAoSniEjRTcxu70VAfBpWkARgkHtTjDDduuoUQjR+6m/FwgNdvJppHQhVxwScCQazYlW/cwLg7vcORUAupf1zsW3/LvpeDBAq0bQvJgkzj84FnuhdDnh
+ cvRowUQmylFXQ0zkmDyq1h5DaYzcMKNlNnnKiHxX5FqI2njH6noqmI6wASmVrHYQuuxySMWV+olkTe3OZezwTpdk40h8X+0nIOD9N/HxZ+qJjXgQenbMXYAI
+ 6gfacz9j85iKKlUQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 15/04/2021 19:08, Aline Santana Cordeiro wrote:
+> Change line break to avoid an open parenthesis at the end of the line.
+> It consequently removed spaces at the start of the subsequent line.
+> Both issues detected by checkpatch.pl.
+> 
+> Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+> ---
+> 
+> Changes since v1:
+>  - Keep the * with the function return type 
+>    instead of left it with the function name
+> 
+>  drivers/staging/media/atomisp/pci/atomisp_cmd.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.h b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> index 1c0d464..e2b36fa 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> @@ -75,8 +75,8 @@ void atomisp_wdt(struct timer_list *t);
+>  void atomisp_setup_flash(struct atomisp_sub_device *asd);
+>  irqreturn_t atomisp_isr(int irq, void *dev);
+>  irqreturn_t atomisp_isr_thread(int irq, void *isp_ptr);
+> -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
+> -    u32 mbus_code);
+> +const struct atomisp_format_bridge*
 
-Static analysis with Coverity on linux-next has found a potential issue
-in drivers/net/phy/nxp-c45-tja11xx.c, function nxp_c45_get_phase_shift.
-The analysis by Coverity is as follows:
+Keep the space before the *!
 
-350 static u64 nxp_c45_get_phase_shift(u64 phase_offset_raw)
-351 {
-352        /* The delay in degree phase is 73.8 + phase_offset_raw * 0.9.
-353         * To avoid floating point operations we'll multiply by 10
-354         * and get 1 decimal point precision.
-355         */
-356        phase_offset_raw *= 10;
+Regards,
 
-Operands don't affect result (CONSTANT_EXPRESSION_RESULT)
-result_independent_of_operands: phase_offset_raw is always assigned 0.
+	Hans
 
-Did you intend to negate the value of phase_offset_raw instead of
-assigning it 0? This occurs as the value assigned by "-".
+> +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+>  bool atomisp_is_mbuscode_raw(uint32_t code);
+>  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
+>  			   const struct ia_css_frame *frame, u32 *p_pgnr);
+> @@ -381,9 +381,9 @@ enum mipi_port_id __get_mipi_port(struct atomisp_device *isp,
+>  
+>  bool atomisp_is_vf_pipe(struct atomisp_video_pipe *pipe);
+>  
+> -void atomisp_apply_css_parameters(
+> -    struct atomisp_sub_device *asd,
+> -    struct atomisp_css_params *css_param);
+> +void atomisp_apply_css_parameters(struct atomisp_sub_device *asd,
+> +				  struct atomisp_css_params *css_param);
+> +
+>  void atomisp_free_css_parameters(struct atomisp_css_params *css_param);
+>  
+>  void atomisp_handle_parameter_and_buffer(struct atomisp_video_pipe *pipe);
+> 
 
-357        phase_offset_raw -= phase_offset_raw;
-358        return div_u64(phase_offset_raw, 9);
-359 }
-
-phase_offset_raw -= phase_offset_raw results in phase_offset_raw being
-zero, I don't think that was the intent.
-
-Colin
