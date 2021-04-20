@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B6136565C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9C6365645
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhDTKmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:42:02 -0400
-Received: from mga07.intel.com ([134.134.136.100]:37280 "EHLO mga07.intel.com"
+        id S231629AbhDTKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:36:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58584 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231616AbhDTKmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:42:00 -0400
-IronPort-SDR: 6kAnX2Oqq601rIVnshvdyJGrPfbF+Tx9vQTQ+WkiwYTcfppmjRiKbLMjch4aKx2v5kMCCTGrXL
- ae6BaBxz1thw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="259439880"
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="259439880"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 03:41:28 -0700
-IronPort-SDR: zBEE34l19qdqr83AHGBhxQffq+4JvC3ZbYqCOiE4ip4c669xO6weWyCL0VUIfhoj5vmAZi7aFB
- akOfFPKkyhLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="523757927"
-Received: from ipu5-build.bj.intel.com (HELO [10.238.232.202]) ([10.238.232.202])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Apr 2021 03:41:24 -0700
-Subject: Re: [RESEND v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
-        dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
-        grundler@chromium.org, tfiga@chromium.org,
-        senozhatsky@chromium.org, sakari.ailus@linux.intel.com
-References: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com>
- <YH6q+FCTQheO6FHi@smile.fi.intel.com>
-From:   Bingbu Cao <bingbu.cao@linux.intel.com>
-Message-ID: <c9a0fc75-8b7b-e0ae-572e-8ca030a04537@linux.intel.com>
-Date:   Tue, 20 Apr 2021 18:34:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231388AbhDTKgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:36:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AE038AFC8;
+        Tue, 20 Apr 2021 10:35:38 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 12:35:33 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
+        david@redhat.com, naoya.horiguchi@nec.com,
+        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v20 8/9] mm: memory_hotplug: disable memmap_on_memory
+ when hugetlb_free_vmemmap enabled
+Message-ID: <YH6udU5rKmDcx5dY@localhost.localdomain>
+References: <20210415084005.25049-1-songmuchun@bytedance.com>
+ <20210415084005.25049-9-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <YH6q+FCTQheO6FHi@smile.fi.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415084005.25049-9-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy,
+On Thu, Apr 15, 2021 at 04:40:04PM +0800, Muchun Song wrote:
+>  bool mhp_supports_memmap_on_memory(unsigned long size)
+>  {
+> +	bool supported;
+>  	unsigned long nr_vmemmap_pages = size / PAGE_SIZE;
+>  	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
+>  	unsigned long remaining_size = size - vmemmap_size;
+> @@ -1011,11 +1012,18 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
+>  	 *	 altmap as an alternative source of memory, and we do not exactly
+>  	 *	 populate a single PMD.
+>  	 */
+> -	return memmap_on_memory &&
+> -	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+> -	       size == memory_block_size_bytes() &&
+> -	       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
+> -	       IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
+> +	supported = memmap_on_memory &&
+> +		    IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+> +		    size == memory_block_size_bytes() &&
+> +		    IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
+> +		    IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
+> +
+> +	if (supported && is_hugetlb_free_vmemmap_enabled()) {
+> +		pr_info("Cannot enable memory_hotplug.memmap_on_memory, it is not compatible with hugetlb_free_vmemmap\n");
+> +		supported = false;
+> +	}
 
-On 4/20/21 6:20 PM, Andy Shevchenko wrote:
-> On Tue, Apr 20, 2021 at 10:48:33AM +0800, Bingbu Cao wrote:
->> Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
->> The IPU driver allocates its own page table that is not mapped
->> via the DMA, and thus the Intel IOMMU driver blocks access giving
->> this error:
->>
->> DMAR: DRHD: handling fault status reg 3
->> DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
->>       fault addr 76406000 [fault reason 06] PTE Read access is not set
->>
->> As IPU is not an external facing device which is not risky, so use
->> IOMMU passthrough mode for Intel IPUs.
->>
->> Fixes: 26f5689592e2 ("media: staging/intel-ipu3: mmu: Implement driver")
->> Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
->> ---
->>  drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
-> 
-> This misses the changelog from v1 followed by the explanation why resent.
-> 
-I noticed there was a typo in the recipient list:
-stable.vger.kernel.org -> stable@vger.kernel.org
+I would not print anything and rather have
 
-no code change for resent.
+return memmap_on_memory &&
+       !is_hugetlb_free_vmemmap_enabled &&
+       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+       size == memory_block_size_bytes() &&
+       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
+       IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
+
+Documentation/admin-guide/kernel-parameters.txt already provides an
+explanation on memory_hotplug.memmap_on_memory parameter that states
+that the feature cannot be enabled when using hugetlb-vmemmap
+optimization.
+
+Users can always check whether the feature is enabled via
+/sys/modules/memory_hotplug/parameters/memmap_on_memory.
+
+Also, I did not check if it is, but if not, the fact about hugetlb-vmemmmap vs
+hotplug-vmemmap should also be called out in the hugetlb-vmemmap kernel
+parameter.
+
+Thanks
 
 -- 
-Best regards,
-Bingbu Cao
+Oscar Salvador
+SUSE L3
