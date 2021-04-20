@@ -2,136 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A38365F4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C88365F54
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233534AbhDTScT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:32:19 -0400
-Received: from mga17.intel.com ([192.55.52.151]:10300 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233381AbhDTScR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:32:17 -0400
-IronPort-SDR: Ur1in0XaMSYybqyUAYOstIldPbrkjKlf2Kjj9IsUfmMQTISbZPJkfMNl4oK6CFSvnvsS4Tqohd
- zfM9LckAbslw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="175670165"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="175670165"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 11:31:45 -0700
-IronPort-SDR: nI6XlCRoQqyX9gVpSOBF3qh4q1h3IJIBuTQNtvecQ++HW1wKk1jlLPR3I/IZgycW99ThL2Hsw5
- c7CHtZTjtZcQ==
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="427099403"
-Received: from schen9-mobl.amr.corp.intel.com ([10.212.244.102])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 11:31:44 -0700
-Subject: Re: [RFC PATCH v5 4/4] scheduler: Add cluster scheduler level for x86
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>
-Cc:     "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
- <20210319041618.14316-5-song.bao.hua@hisilicon.com>
- <110234d1-22ce-8a9a-eabb-c15ac29a5dcd@linux.intel.com>
- <67cc380019fd40d88d7a493b6cbc0852@hisilicon.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <422b5d06-ec0e-f064-32fe-15df5b2957dd@linux.intel.com>
-Date:   Tue, 20 Apr 2021 11:31:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S233549AbhDTSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233092AbhDTSef (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 14:34:35 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D195C06174A;
+        Tue, 20 Apr 2021 11:34:01 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id k17so6790078edr.7;
+        Tue, 20 Apr 2021 11:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ud/6nSIADQgMKFdabHKRuxpt1Sau0GLHCd2R3Rgi9YE=;
+        b=bPWP+3ZvPg7ZAPNIUrM0PjfoMkB9Y0bUv9jUN1M8740heuI5kMokhH5nnFi0v9EhZA
+         QVZKG6wgbN6m3jWeTn6QvXmfhC1IdXJ82z7tUnq+NPAGeT6HuHhHAJ3LSPp2cTU/zFZL
+         hL/cNupO87WjPFRutzdICBe4RFKGjLY3+4zY6V4mEFsPxgoLULTCs16HByELRUmGCccT
+         5CMRAO0kmX3QaRlujORxqKrLXuOgs68shxigeEGZ3hXqLVSKPEqSTGMXcWaqiROBdg8M
+         pld3ITU2iPgqA4QxWt1+Y6IEA44RSF1fdJgOchc9C9DWyjutt0thIaE6pOkmob/7oG0Z
+         GwGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ud/6nSIADQgMKFdabHKRuxpt1Sau0GLHCd2R3Rgi9YE=;
+        b=QJuWTd8ckm6VMeltayVnce3zCjzElRwbbueAE2qENaiF7s7PVgEjU8ZH8k06mdSb6u
+         +syv4X09I8HKbt1qgZehTwnPZOp5hgiXkXR/8bGIXmyG0xBsAP0rVkuxC06BIrn81se6
+         VXwZq81KJVu6ThbinT2NbueboLLZYgQxmZLXt2G0wFjsIgrzOQBvZ1D3yJdUSeiAwabx
+         U7vTWnppioaQ/FziINV++HwVyloqHnEFw6gttGV+WWzpVDUmqnNwKMdgY9CnNL/3kcRG
+         YJOYfXSIpK9VyfYuThUqzf08AzTIW8gawkM2RVhfH5E1ObRRS9Zl71vD09OaRIZXhRkG
+         ia/Q==
+X-Gm-Message-State: AOAM532KMuQIdKUcW95NGJx/zy4GaXfqQ9jzi1j/586WUnYgnvVzAAYr
+        lVgBb75s2awhOAqpxiPdToeX6ixq4z+lRg==
+X-Google-Smtp-Source: ABdhPJxhZ1DrtIpGJ+PZfKA2B8kcWuAnGmU6GpUP0v0W0NLIFD32fD35qcfp3T5XZXP4jY7MrWPy1A==
+X-Received: by 2002:a05:6402:51d0:: with SMTP id r16mr30518669edd.52.1618943640016;
+        Tue, 20 Apr 2021 11:34:00 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id n10sm13357141ejg.124.2021.04.20.11.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 11:33:59 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [thermal PATCH v15 0/9] Add support for ipq8064 tsens
+Date:   Tue, 20 Apr 2021 20:33:34 +0200
+Message-Id: <20210420183343.2272-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <67cc380019fd40d88d7a493b6cbc0852@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset convert msm8960 to reg_filed, use int_common instead 
+of a custom function and fix wrong tsens get_temp function for msm8960.
+Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+to be registered as a gcc child as the tsens regs on this platform are
+shared with the controller.
+This is based on work and code here
+https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
 
+This series has already been approved but the "kernel test robot" reported
+some bisect error.
 
-On 3/23/21 4:21 PM, Song Bao Hua (Barry Song) wrote:
+v15:
+* Fix bisect error reported by bot (add feat define in the VER_0 patch)
+* Fix static slope table (offset -350 instead of -200 to have a more accurate temp)
+v14:
+* Fix warning reported by Dan Carpenter
+v13:
+* Simple reword
+v12:
+* Even more fix reported by Thara
+v11:
+* Address comments from Thara (thx)
+v10:
+* Fix wrong tsens init for ver_0 (crit_trips needs to be set in tsens_register)
+v9:
+* Fix warning from Documentation bot
+v8:
+* Drop MIN and MAX THRESH and use CRIT_THRESH instead
+* Fix broken documentation patch
+v7:
+* Rework calibrate function to use get_temp_common
+* Fix wrong required in the Documentation for ipq8064
+* Fix hardware bug in sensor enable function
+v6:
+* Fix spelling error (can't find the problem with variable misallignment)
+* Rework big if-else
+* Remove extra comments
+* Add description about different interrupts
+v5:
+* Conver driver to use reg_fiedl
+* Use init_common 
+* Drop custom set_trip and set_interrupt
+* Use common set_trip and set_interrupt
+* Fix bad get_temp function
+* Add missing hardcoded slope
+v4:
+* Fix compilation error and warning reported by the bot
+v3:
+* Change driver to register as child instead of use phandle
+v2:
+* Fix dt-bindings problems
 
->>
->> On 3/18/21 9:16 PM, Barry Song wrote:
->>> From: Tim Chen <tim.c.chen@linux.intel.com>
->>>
->>> There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce
->>> is shared among a cluster of cores instead of being exclusive
->>> to one single core.
->>>
->>> To prevent oversubscription of L2 cache, load should be
->>> balanced between such L2 clusters, especially for tasks with
->>> no shared data.
->>>
->>> Also with cluster scheduling policy where tasks are woken up
->>> in the same L2 cluster, we will benefit from keeping tasks
->>> related to each other and likely sharing data in the same L2
->>> cluster.
->>>
->>> Add CPU masks of CPUs sharing the L2 cache so we can build such
->>> L2 cluster scheduler domain.
->>>
->>> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
->>> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
->>
->>
->> Barry,
->>
->> Can you also add this chunk to the patch.
->> Thanks.
-> 
-> Sure, Tim, Thanks. I'll put that into patch 4/4 in v6.
-> 
+Ansuel Smith (9):
+  drivers: thermal: tsens: Don't hardcode sensor slope
+  drivers: thermal: tsens: Convert msm8960 to reg_field
+  drivers: thermal: tsens: Add VER_0 tsens version
+  drivers: thermal: tsens: Use init_common for msm8960
+  drivers: thermal: tsens: Fix bug in sensor enable for msm8960
+  drivers: thermal: tsens: Replace custom 8960 apis with generic apis
+  drivers: thermal: tsens: Drop unused define for msm8960
+  drivers: thermal: tsens: Add support for ipq8064-tsens
+  dt-bindings: thermal: tsens: Document ipq8064 bindings
 
-Barry,
+ .../bindings/thermal/qcom-tsens.yaml          |  56 ++++-
+ drivers/thermal/qcom/tsens-8960.c             | 235 +++++++++---------
+ drivers/thermal/qcom/tsens.c                  | 156 +++++++++---
+ drivers/thermal/qcom/tsens.h                  |   4 +-
+ 4 files changed, 293 insertions(+), 158 deletions(-)
 
-This chunk will also need to be added to return cluster id for x86.
-Please add it in your next rev.
+-- 
+2.30.2
 
-Thanks.
-
-Tim
-
----
-
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index 800fa48c9fcd..2548d824f103 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -109,6 +109,7 @@ extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- #define topology_physical_package_id(cpu)	(cpu_data(cpu).phys_proc_id)
- #define topology_logical_die_id(cpu)		(cpu_data(cpu).logical_die_id)
- #define topology_die_id(cpu)			(cpu_data(cpu).cpu_die_id)
-+#define topology_cluster_id(cpu)		(per_cpu(cpu_l2c_id, cpu))
- #define topology_core_id(cpu)			(cpu_data(cpu).cpu_core_id)
- 
- extern unsigned int __max_die_per_package;
