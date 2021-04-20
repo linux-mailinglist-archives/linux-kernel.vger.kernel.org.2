@@ -2,70 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C7F36560F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55BB365613
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhDTKWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:22:37 -0400
-Received: from mga03.intel.com ([134.134.136.65]:34809 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230264AbhDTKWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:22:36 -0400
-IronPort-SDR: KzGZND0pyRSqeUuaOiFQ5W5SSJlo9Cueve3IvLAd6AxoEYJEBYMwh6O91MczocXPm/HYkxD2bN
- 0F4P0smBo4zA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195508885"
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="195508885"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 03:22:04 -0700
-IronPort-SDR: yirMUWERDYce0xR6aBQqunuWlhSFnIXRlQU5SjyFCuQxBxKWw0hY0vuU+H7C/KWlycCWW6xAKN
- GJqlhKnS51Ow==
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="463066320"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 03:22:01 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lYnW2-005iGd-0V; Tue, 20 Apr 2021 13:21:58 +0300
-Date:   Tue, 20 Apr 2021 13:21:57 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bingbu Cao <bingbu.cao@intel.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
-        dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
-        grundler@chromium.org, tfiga@chromium.org,
-        senozhatsky@chromium.org, sakari.ailus@linux.intel.com,
-        bingbu.cao@linux.intel.com
-Subject: Re: [RESEND v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
-Message-ID: <YH6rRUXyNdC6DDzQ@smile.fi.intel.com>
-References: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com>
+        id S231534AbhDTKXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230264AbhDTKW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:22:56 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F12C06174A;
+        Tue, 20 Apr 2021 03:22:25 -0700 (PDT)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id A1E2E22249;
+        Tue, 20 Apr 2021 12:22:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1618914141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VXJRy9VzNsHT9ZmGp3xAw1tC+n20lg5dvIivLVfnwRY=;
+        b=q7NG8HRIdNbiyrn/dEJEJDRSw2slKBPuzfLRMs3ewyHrVaVx3hEuxsKClDw/j4cLJKZAbl
+        4eKkQ0bCAtKxxkYUFJs+4VSSmCwd7BcM0zQ38ivwJulzKyQZNBDH7cOQqosdItwImbMbpL
+        K45Mg4G0cYXO0rCgpqDG0EUvGVCE6dY=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Bauer <mail@david-bauer.net>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next] net: phy: at803x: fix probe error if copper page is selected
+Date:   Tue, 20 Apr 2021 12:22:08 +0200
+Message-Id: <20210420102208.5834-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:48:33AM +0800, Bingbu Cao wrote:
-> Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
-> The IPU driver allocates its own page table that is not mapped
-> via the DMA, and thus the Intel IOMMU driver blocks access giving
-> this error:
-> 
-> DMAR: DRHD: handling fault status reg 3
-> DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
->       fault addr 76406000 [fault reason 06] PTE Read access is not set
-> 
-> As IPU is not an external facing device which is not risky, so use
-> IOMMU passthrough mode for Intel IPUs.
+The commit c329e5afb42f ("net: phy: at803x: select correct page on
+config init") selects the copper page during probe. This fails if the
+copper page was already selected. In this case, the value of the copper
+page (which is 1) is propagated through phy_restore_page() and is
+finally returned for at803x_probe(). Fix it, by just using the
+at803x_page_write() directly.
 
-I'm wondering if IPU MMU should be described properly in the DMAR table.
+Also in case of an error, the regulator is not disabled and leads to a
+WARN_ON() when the probe fails. This couldn't happen before, because
+at803x_parse_dt() was the last call in at803x_probe(). It is hard to
+see, that the parse_dt() actually enables the regulator. Thus move the
+regulator_enable() to the probe function and undo it in case of an
+error.
 
+Fixes: c329e5afb42f ("net: phy: at803x: select correct page on config init")
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ drivers/net/phy/at803x.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+index e0f56850edc5..5bec200f2132 100644
+--- a/drivers/net/phy/at803x.c
++++ b/drivers/net/phy/at803x.c
+@@ -554,10 +554,6 @@ static int at803x_parse_dt(struct phy_device *phydev)
+ 			phydev_err(phydev, "failed to get VDDIO regulator\n");
+ 			return PTR_ERR(priv->vddio);
+ 		}
+-
+-		ret = regulator_enable(priv->vddio);
+-		if (ret < 0)
+-			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -579,15 +575,28 @@ static int at803x_probe(struct phy_device *phydev)
+ 	if (ret)
+ 		return ret;
+ 
++	if (priv->vddio) {
++		ret = regulator_enable(priv->vddio);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	/* Some bootloaders leave the fiber page selected.
+ 	 * Switch to the copper page, as otherwise we read
+ 	 * the PHY capabilities from the fiber side.
+ 	 */
+ 	if (at803x_match_phy_id(phydev, ATH8031_PHY_ID)) {
+-		ret = phy_select_page(phydev, AT803X_PAGE_COPPER);
+-		ret = phy_restore_page(phydev, AT803X_PAGE_COPPER, ret);
++		ret = at803x_write_page(phydev, AT803X_PAGE_COPPER);
++		if (ret)
++			goto err;
+ 	}
+ 
++	return 0;
++
++err:
++	if (priv->vddio)
++		regulator_disable(priv->vddio);
++
+ 	return ret;
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.20.1
 
