@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB24D365421
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95246365423
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhDTIal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:30:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57554 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhDTIaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:30:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618907407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gc2OYO7Gop4pXOyn2eMOrNhPvb4JX9AiP/LihACJjrQ=;
-        b=BCNcFuuvbhFnjxTxkMtniV6iWAWam2IqyWerccUoN/HC6fZYKEpWY2rM4gXw/GDh0DIDxX
-        7LkSj6Fje6422drCh/GTOBK9zvwW19pEVV9/TN8slkM9hK3/2AmLZN+j3iji2Ohk0CsFvB
-        ZDwJHGFz/U5maxLX/pucXx1QLqZm9no=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D66A1AE38;
-        Tue, 20 Apr 2021 08:30:06 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 10:30:06 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter Enderborg <peter.enderborg@sony.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, NeilBrown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Feng Tang <feng.tang@intel.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 0/2 V6]Add dma-buf counter
-Message-ID: <YH6RDgoJTPWsULDs@dhcp22.suse.cz>
-References: <20210420082220.7402-1-peter.enderborg@sony.com>
+        id S230486AbhDTIap convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Apr 2021 04:30:45 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28887 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230447AbhDTIao (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:30:44 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-271-NKPQNoYbP8uEJWWfFkVBNA-1; Tue, 20 Apr 2021 09:30:09 +0100
+X-MC-Unique: NKPQNoYbP8uEJWWfFkVBNA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 09:30:07 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 20 Apr 2021 09:30:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'H. Peter Anvin'" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Kbuild Mailing List" <linux-kbuild@vger.kernel.org>
+Subject: RE: [PATCH 0/3] x86 disk image and modules initramfs generation
+Thread-Topic: [PATCH 0/3] x86 disk image and modules initramfs generation
+Thread-Index: AQHXNXA3hW9Bgwsx/EekG3uw9oZ0YKq9EYRw
+Date:   Tue, 20 Apr 2021 08:30:07 +0000
+Message-ID: <75fc46bae17f4fa4958f5ad7d49d9244@AcuMS.aculab.com>
+References: <20210419230252.1583169-1-hpa@zytor.com>
+In-Reply-To: <20210419230252.1583169-1-hpa@zytor.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420082220.7402-1-peter.enderborg@sony.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 10:22:18, Peter Enderborg wrote:
-> The dma-buf counter is a metric for mapped memory used by it's clients.
-> It is a shared buffer that is typically used for interprocess communication
-> or process to hardware communication. In android we used to have ION,. but
-> it is now replaced with dma-buf. ION had some overview metrics that was similar.
+From: H. Peter Anvin
+> Sent: 20 April 2021 00:03
+> 
+> When compiling on a different machine than the runtime target,
+> including but not limited to simulators, it is rather handy to be able
+> to produce a bootable image. The scripts for that in x86 are
+> relatively old, and assume a BIOS system.
 
-The discussion around the previous version is still not over and as it
-seems your proposed approach is not really viable. So please do not send
-new versions until that is sorted out.
+I've given up and copied the kernel tree onto all my test systems.
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+I needed something like 'make modules_install' and 'make install'
+that would generated a directory tree that could be copied (scp -r)
+onto the target system.
+
+But the script to run 'update-grub' is all intwined in the commands.
+
+You also don't get a copy of the headers.
+Even for the local system (as root) you just get a symlink into
+the source tree.
+This causes a problem trying to build 'out of tree' modules
+after updating the kernel source tree (but not rebulding).
+
+I can (and do) write 'horrid' makefiles (gmake and nmake)
+but this seemed to need more refactoring that I wanted to do.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
