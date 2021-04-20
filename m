@@ -2,217 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26823654A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ABB3654A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhDTIyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        id S230494AbhDTIyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhDTIyq (ORCPT
+        with ESMTP id S230168AbhDTIyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:54:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7659CC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fC3z/VNYzfvgFcsYoZ4hESVWGdq32x1mddKeb644MsA=; b=k3SElTyynH4i3R2XyOBFitSqm7
-        f0xZW3xWeL18WFocZK51UaE7Xqmg3Km1G3hI/7YdszCxTCbj3MvJefsBdHQdQl48HyRlqV/WLGiQl
-        cnNA3qwHxrN2BHkPZqnNWZh0ZM6xthLAeMfZEq3TZbQvrNxTGAp8CJ6p16qfttmjrQexeGHxNhRmD
-        TEp0aGLit0PHHtlNQtu11nbYtUqzZglAoqkGfZ9tt3ue5M2GUAJdKrYn+2zxcSv3W2NPWqpq+x4/e
-        f+tgDofdUjWyNNjDDDz1jPvOLytJRmEMm/0OA2pLmX0JJ3QnCALuJuu3qLnYkq7BIa2waClzlNQg6
-        eNvioPrg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYm6q-00EwaO-II; Tue, 20 Apr 2021 08:51:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D489F30013E;
-        Tue, 20 Apr 2021 10:51:49 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BBCC82BDD7C7C; Tue, 20 Apr 2021 10:51:49 +0200 (CEST)
-Date:   Tue, 20 Apr 2021 10:51:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     syzbot <syzbot+9362b31a2e0cad8b749d@syzkaller.appspotmail.com>,
-        bp@alien8.de, dwmw@amazon.co.uk, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [syzbot] WARNING in kthread_is_per_cpu
-Message-ID: <YH6WJc825C4P0FCK@hirez.programming.kicks-ass.net>
-References: <000000000000a61f7705c050e601@google.com>
- <87im4ilddh.mognet@arm.com>
- <20210419184553.GA26214@worktop.programming.kicks-ass.net>
- <874kg2kpwd.mognet@arm.com>
+        Tue, 20 Apr 2021 04:54:06 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0807C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:53:34 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id g5so50376094ejx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vfvESN/gBp6lSDsc53ylG47pXzs7CkRT+8vTU5ER8fE=;
+        b=UVt3Jj+giddEw1gXzvvJgW7GH2rByotrzjsklb3TMUhTakV6N9PIyk8XwIMDRXdCwe
+         4bT8kJ8t3ClZYZLyYZxAIvAdGx1RObZlIeHOj5LMS5ydh3mipINJjX0euIENiUBv3Nsx
+         onodR7A4PMIZJ/Xdaq3xHvVKK+z3BcrI3sg+8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=vfvESN/gBp6lSDsc53ylG47pXzs7CkRT+8vTU5ER8fE=;
+        b=Z+K2+qLNQ03SUGC991Cgs7I1wOx3W/RUt//yIKRm92kQ+yN1gBPTS+Fjv2R6vLgGZq
+         h2q2gDYIrOzzPSb3zA/wTc/F5ULJLFX6f3yCbZsPudbPJ38LTBq89lFk5O+gb/Dw4z84
+         0jSTzs5X9iJQ/Qcm/GmOEhKzuWltD3hMTcQZH8rDX+TVlj6TKD6+47J2BR41pNU8tY/H
+         O209G5CROSEG2T2qN3j8CHmQWYfzrJFZCf4xs2urBPbK2HLoOH9ILaZ8P/hDNru1GysI
+         yYoYvdgJo9wMnRpAlFbQVXlto3HsZJuJqxsnwvpHfJww8qu96KpvYBP0CHiZBwk/o3fx
+         tPrg==
+X-Gm-Message-State: AOAM530IaBP7+tzaFRHm5UVyPeAvYluKE1uBx86pURuUJhXeiQyZfeDR
+        dw2/2o0H0xn6izFlRmrJ5GiEHA==
+X-Google-Smtp-Source: ABdhPJyATYz5gFThajrn+vAZ03jRTZbYI/wOtEqW7s6k/cmJat7HnnMVoyPrPmMo5dE9s+QZv34IjQ==
+X-Received: by 2002:a17:907:c0b:: with SMTP id ga11mr25987809ejc.545.1618908813188;
+        Tue, 20 Apr 2021 01:53:33 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id lj21sm11937012ejb.74.2021.04.20.01.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 01:53:32 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:53:30 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 27/40] drm/ttm/ttm_device: Demote kernel-doc abuses
+Message-ID: <YH6Wiuy/Vw1Et4Kn@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-28-lee.jones@linaro.org>
+ <e5d30ac1-3037-0101-0e1a-9df6a8580c70@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <874kg2kpwd.mognet@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e5d30ac1-3037-0101-0e1a-9df6a8580c70@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 08:58:26PM +0100, Valentin Schneider wrote:
-
-> Looks about right, IIUC the key being:
+On Fri, Apr 16, 2021 at 05:32:52PM +0200, Christian König wrote:
+> Am 16.04.21 um 16:37 schrieb Lee Jones:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >   drivers/gpu/drm/ttm/ttm_device.c:42: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
+> >   drivers/gpu/drm/ttm/ttm_device.c:42: warning: expecting prototype for ttm_global_mutex(). Prototype was for DEFINE_MUTEX() instead
+> >   drivers/gpu/drm/ttm/ttm_device.c:112: warning: Function parameter or member 'ctx' not described in 'ttm_global_swapout'
+> >   drivers/gpu/drm/ttm/ttm_device.c:112: warning: Function parameter or member 'gfp_flags' not described in 'ttm_global_swapout'
+> >   drivers/gpu/drm/ttm/ttm_device.c:112: warning: expecting prototype for A buffer object shrink method that tries to swap out the first(). Prototype was for ttm_global_swapout() instead
+> > 
+> > Cc: Christian Koenig <christian.koenig@amd.com>
+> > Cc: Huang Rui <ray.huang@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
->   p->flags & PF_KTHREAD + p->set_child_tid => the struct kthread is
->   persistent
+> Reviewed-by: Christian König <christian.koenig@amd.com>
+
+Can you pls also land all the patches you reviewed from Lee into
+drm-misc-next? Just so they wont' get lost. Will all head in for 5.14.
+-Daniel
 > 
->   p->flags & PF_KTHREAD => you may or may not have a struct kthread (see
->   kernel/umh.c kernel_thread() uses). PF_KTHREAD isn't even guaranteed to
->   persist (begin_new_exec()), which seems to be what the syzbot hit.
+> > ---
+> >   drivers/gpu/drm/ttm/ttm_device.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
+> > index 9b787b3caeb50..a8bec8358350d 100644
+> > --- a/drivers/gpu/drm/ttm/ttm_device.c
+> > +++ b/drivers/gpu/drm/ttm/ttm_device.c
+> > @@ -36,7 +36,7 @@
+> >   #include "ttm_module.h"
+> > -/**
+> > +/*
+> >    * ttm_global_mutex - protecting the global state
+> >    */
+> >   DEFINE_MUTEX(ttm_global_mutex);
+> > @@ -104,7 +104,7 @@ static int ttm_global_init(void)
+> >   	return ret;
+> >   }
+> > -/**
+> > +/*
+> >    * A buffer object shrink method that tries to swap out the first
+> >    * buffer object on the global::swap_lru list.
+> >    */
+> 
 
-Ack, that's nicely put.
-
-> While we're at it, does free_kthread_struct() want the __to_kthread()
-> treatment as well? The other to_kthread() callsites looked like they only
-> made sense with a "proper" kthread anyway.
-
-I think free_kthread_struct() is ok, because a task at that point in its
-lifetime cannot be also doing exec().
-
-kthread_func() is another 'fun' trainwreck waiting to happen -- luckily
-the only caller uses current, still let me go fix it.
-
-kthread_probe_data() relies on PF_WQ_WORKER implying PF_KTHREAD but
-otherwise seems very fragile too.
-
-Something like so then?
-
----
-Subject: kthread: Fix PF_KTHREAD vs to_kthread() race
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Tue Apr 20 10:18:17 CEST 2021
-
-The kthread_is_per_cpu() construct relies on only being called on
-PF_KTHREAD tasks (per the WARN in to_kthread). This gives rise to the
-following usage pattern:
-
-	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
-
-However, as reported by syzcaller, this is broken. The scenario is:
-
-	CPU0				CPU1 (running p)
-
-	(p->flags & PF_KTHREAD) // true
-
-					begin_new_exec()
-					  me->flags &= ~(PF_KTHREAD|...);
-	kthread_is_per_cpu(p)
-	  to_kthread(p)
-	    WARN(!(p->flags & PF_KTHREAD) <-- *SPLAT*
-
-Introduce __to_kthread() that omits the WARN and is sure to check both
-values.
-
-Use this to remove the problematic pattern for kthread_is_per_cpu()
-and fix a number of other kthread_*() functions that have similar
-issues but are currently not used in ways that would expose the
-problem.
-
-Notably kthread_func() is only ever called on 'current', while
-kthread_probe_data() is only used for PF_WQ_WORKER, which implies the
-task is from kthread_create*().
-
-Fixes: ac687e6e8c26 ("kthread: Extract KTHREAD_IS_PER_CPU")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/kthread.c    |   33 +++++++++++++++++++++++++++------
- kernel/sched/core.c |    2 +-
- kernel/sched/fair.c |    2 +-
- 3 files changed, 29 insertions(+), 8 deletions(-)
-
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -84,6 +84,25 @@ static inline struct kthread *to_kthread
- 	return (__force void *)k->set_child_tid;
- }
- 
-+/*
-+ * Variant of to_kthread() that doesn't assume @p is a kthread.
-+ *
-+ * Per construction; when:
-+ *
-+ *   (p->flags & PF_KTHREAD) && p->set_child_tid
-+ *
-+ * the task is both a kthread and struct kthread is persistent. However
-+ * PF_KTHREAD on it's own is not, kernel_thread() can exec() (See umh.c and
-+ * begin_new_exec()).
-+ */
-+static inline struct kthread *__to_kthread(struct task_struct *p)
-+{
-+	void *kthread = (__force void *)p->set_child_tid;
-+	if (kthread && !(p->flags & PF_KTHREAD))
-+		kthread = NULL;
-+	return kthread;
-+}
-+
- void free_kthread_struct(struct task_struct *k)
- {
- 	struct kthread *kthread;
-@@ -168,8 +187,9 @@ EXPORT_SYMBOL_GPL(kthread_freezable_shou
-  */
- void *kthread_func(struct task_struct *task)
- {
--	if (task->flags & PF_KTHREAD)
--		return to_kthread(task)->threadfn;
-+	struct kthread *kthread = __to_kthread(task);
-+	if (kthread)
-+		return kthread->threadfn;
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(kthread_func);
-@@ -199,10 +219,11 @@ EXPORT_SYMBOL_GPL(kthread_data);
-  */
- void *kthread_probe_data(struct task_struct *task)
- {
--	struct kthread *kthread = to_kthread(task);
-+	struct kthread *kthread = __to_kthread(task);
- 	void *data = NULL;
- 
--	copy_from_kernel_nofault(&data, &kthread->data, sizeof(data));
-+	if (kthread)
-+		copy_from_kernel_nofault(&data, &kthread->data, sizeof(data));
- 	return data;
- }
- 
-@@ -514,9 +535,9 @@ void kthread_set_per_cpu(struct task_str
- 	set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
- }
- 
--bool kthread_is_per_cpu(struct task_struct *k)
-+bool kthread_is_per_cpu(struct task_struct *p)
- {
--	struct kthread *kthread = to_kthread(k);
-+	struct kthread *kthread = __to_kthread(p);
- 	if (!kthread)
- 		return false;
- 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8505,7 +8505,7 @@ static void balance_push(struct rq *rq)
- 	 * histerical raisins.
- 	 */
- 	if (rq->idle == push_task ||
--	    ((push_task->flags & PF_KTHREAD) && kthread_is_per_cpu(push_task)) ||
-+	    kthread_is_per_cpu(push_task) ||
- 	    is_migration_disabled(push_task)) {
- 
- 		/*
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7619,7 +7619,7 @@ int can_migrate_task(struct task_struct
- 		return 0;
- 
- 	/* Disregard pcpu kthreads; they are where they need to be. */
--	if ((p->flags & PF_KTHREAD) && kthread_is_per_cpu(p))
-+	if (kthread_is_per_cpu(p))
- 		return 0;
- 
- 	if (!cpumask_test_cpu(env->dst_cpu, p->cpus_ptr)) {
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
