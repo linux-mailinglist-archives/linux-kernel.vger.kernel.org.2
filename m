@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBD4365516
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393BC3654E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhDTJPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55662 "EHLO mail.kernel.org"
+        id S231299AbhDTJKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:10:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36818 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231271AbhDTJPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:15:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22648613B0;
-        Tue, 20 Apr 2021 09:14:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618910076;
-        bh=e0Fi9wjwVAjNSoqCvZhmS1czaKaDc65hVPR9ELVVAAQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Euqs6IieJbshhUUBT6OyccubGx6rWYF7fAdoO7YS4gqcu25nHwH/s5T8jEXwbI1ew
-         FT4bHjYLmhV4tQQfkw0bNn79NX9FLrmKNWW7YfXCBYX1tLaA6WDR0zK1zJMMOH/qcT
-         lA0vOAiTkSutrf5UXcCESLOS/4t3Z+ZXMkH8JKoS8BtCMGxVL6bZtX4gLdxjgDB+6i
-         TW5n3Gy0FCLwIo5On1LyxJb+NINkT7p/Jm1Dz7+FR9fLlRhK8mpn4xb0sFWpUeqI94
-         JIkR9HRM2fygHx3Pkap3+jPV/+vRj1JZpREeE/IUfYWisdwHP7nm9aHbMrMFDp09x+
-         N1MmqU9faxbow==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v1 4/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
-Date:   Tue, 20 Apr 2021 12:09:25 +0300
-Message-Id: <20210420090925.7457-5-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210420090925.7457-1-rppt@kernel.org>
-References: <20210420090925.7457-1-rppt@kernel.org>
+        id S230395AbhDTJKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 05:10:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618909804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yjmwGXL95hrOTOiLoePNgjzr/aVIaC4rCsRgjXD+Ih4=;
+        b=rQ4aiKfXozvbbX71hOvvbdh7Ca0q/3X063CDyFWMK+pX/uTOoCfeJ1dw6CL3KPUaYJJDBc
+        xqg1B2H+sdQpK7GMFOqEDDuQWY3xyMmL+J/cjxDv9doDSJJbPAEuDgtxfXdJQ2Yf7BltJa
+        R5NG9pJ01TsoDmtQyJJsZG3VQ7WBR8I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 876CAAEE6;
+        Tue, 20 Apr 2021 09:10:04 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 11:10:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] docs: proc.rst: meminfo: briefly describe gaps in memory
+ accounting
+Message-ID: <YH6aa8WJotXh8F+b@dhcp22.suse.cz>
+References: <20210420085105.1156640-1-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420085105.1156640-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue 20-04-21 11:51:05, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 
-The arm64's version of pfn_valid() differs from the generic because of two
-reasons:
+Some trivial changelog would be better than nothing.
 
-* Parts of the memory map are freed during boot. This makes it necessary to
-  verify that there is actual physical memory that corresponds to a pfn
-  which is done by querying memblock.
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-* There are NOMAP memory regions. These regions are not mapped in the
-  linear map and until the previous commit the struct pages representing
-  these areas had default values.
+But I do agree that this is a useful information to have in the
+documentation. Having networking counters as an example is helpful as
+well. I am not familiar with those myself much and I do remember there
+is much to it than just sockstat. It would be great to consult this with
+some networking expert and extend the documentation for that case which
+tends to be quite common AFAIK.
 
-As the consequence of absence of the special treatment of NOMAP regions in
-the memory map it was necessary to use memblock_is_map_memory() in
-pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
-generic mm functionality would not treat a NOMAP page as a normal page.
+Anyway this is already an improvement and a step into the right
+direction.
 
-Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
-the rest of core mm will treat them as unusable memory and thus
-pfn_valid_within() is no longer required at all and can be disabled by
-removing CONFIG_HOLES_IN_ZONE on arm64.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-pfn_valid() can be slightly simplified by replacing
-memblock_is_map_memory() with memblock_is_memory().
+one nit below
+> ---
+>  Documentation/filesystems/proc.rst | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 48fbfc336ebf..bf245151645b 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -929,8 +929,15 @@ meminfo
+>  ~~~~~~~
+>  
+>  Provides information about distribution and utilization of memory.  This
+> -varies by architecture and compile options.  The following is from a
+> -16GB PIII, which has highmem enabled.  You may not have all of these fields.
+> +varies by architecture and compile options. Please note that is may happen
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/arm64/Kconfig   | 3 ---
- arch/arm64/mm/init.c | 4 ++--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+that it may happen
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..58e439046d05 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1040,9 +1040,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	def_bool y
- 	depends on NUMA
- 
--config HOLES_IN_ZONE
--	def_bool y
--
- source "kernel/Kconfig.hz"
- 
- config ARCH_SPARSEMEM_ENABLE
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index c54e329aca15..370f33765b64 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -243,7 +243,7 @@ int pfn_valid(unsigned long pfn)
- 
- 	/*
- 	 * ZONE_DEVICE memory does not have the memblock entries.
--	 * memblock_is_map_memory() check for ZONE_DEVICE based
-+	 * memblock_is_memory() check for ZONE_DEVICE based
- 	 * addresses will always fail. Even the normal hotplugged
- 	 * memory will never have MEMBLOCK_NOMAP flag set in their
- 	 * memblock entries. Skip memblock search for all non early
-@@ -254,7 +254,7 @@ int pfn_valid(unsigned long pfn)
- 		return pfn_section_valid(ms, pfn);
- }
- #endif
--	return memblock_is_map_memory(addr);
-+	return memblock_is_memory(addr);
- }
- EXPORT_SYMBOL(pfn_valid);
- 
+> +that the memory accounted here does not add up to the overall memory usage
+> +and the difference for some workloads can be substantial. In many cases
+> +there are other means to find out additional memory using subsystem
+> +specific interfaces, for instance /proc/net/sockstat for networking
+> +buffers.
+> +
+> +The following is from a 16GB PIII, which has highmem enabled.
+> +You may not have all of these fields.
+>  
+>  ::
+>  
+> -- 
+> 2.29.2
+
 -- 
-2.28.0
-
+Michal Hocko
+SUSE Labs
