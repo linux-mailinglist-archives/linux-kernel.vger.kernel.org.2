@@ -2,247 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577CA365E74
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0EF365E8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhDTRZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:25:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:39428 "EHLO foss.arm.com"
+        id S233444AbhDTR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:26:46 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7203 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233281AbhDTRZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:25:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9262911D4;
-        Tue, 20 Apr 2021 10:25:21 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01BE43F73B;
-        Tue, 20 Apr 2021 10:25:18 -0700 (PDT)
-Subject: Re: [PATCH] sched/fair: Fix negative energy delta in
- find_energy_efficient_cpu()
-To:     Pierre.Gondois@arm.com, linux-kernel@vger.kernel.org,
-        xuewen.yan@unisoc.com
-Cc:     Lukasz.Luba@arm.com, Vincent.Donnefort@arm.com,
-        qais.yousef@arm.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, qperret@qperret.net
-References: <20210420125604.15796-1-Pierre.Gondois@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <cef37a82-75a8-f51e-522f-57f9a0d1750d@arm.com>
-Date:   Tue, 20 Apr 2021 19:25:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233141AbhDTR0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:26:43 -0400
+IronPort-SDR: Z+ATFwTB2/uOA9KSEKyIkixCiTTK53IKSHdMWoAjJuPWTRQeAQef6VegYK6PwrTLNhcmYLzcxz
+ sdZ4nvrlNFmw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195107727"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="195107727"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 10:26:11 -0700
+IronPort-SDR: KNMRWjGS+12WxeI0yq5GQZwuxcu3JyTCGaepSnAqDMAukITru09Lfa8hUwE23W+FpwAJM3Eeps
+ O5p3Lq2ib4Hw==
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="420544380"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 10:26:11 -0700
+From:   matthew.gerlach@linux.intel.com
+To:     hao.wu@intel.com, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
+        russell.h.weight@intel.com, mdf@kernel.org
+Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: [PATCH] fpga: dfl: pci: gracefully handle misconfigured port entries
+Date:   Tue, 20 Apr 2021 10:27:40 -0700
+Message-Id: <20210420172740.707259-1-matthew.gerlach@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210420125604.15796-1-Pierre.Gondois@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 14:56, Pierre.Gondois@arm.com wrote:
-> From: Pierre Gondois <Pierre.Gondois@arm.com>
-> 
-> find_energy_efficient_cpu() (feec()) searches the best energy CPU
-> to place a task on. To do so, compute_energy() estimates the energy
-> impact of placing the task on a CPU, based on CPU and task utilization
-> signals.
-> 
-> Utilization signals can be concurrently updated while evaluating a
-> perf_domain. In some cases, this leads to having a 'negative delta',
-> i.e. placing the task in the perf_domain is seen as an energy gain.
-> Thus, any further energy comparison is biased.
-> 
-> In case of a 'negative delta', return prev_cpu since:
-> 1. a 'negative delta' happens in less than 0.5% of feec() calls,
->    on a Juno with 6 CPUs (4 little, 2 big)
-> 2. it is unlikely to have two consecutive 'negative delta' for
->    a task, so if the first call fails, feec() will correctly
->    place the task in the next feec() call
-> 3. EAS current behavior tends to select prev_cpu if the task
->    doesn't raise the OPP of its current perf_domain. prev_cpu
->    is EAS's generic decision
-> 4. prev_cpu should be preferred to returning an error code.
->    In the latter case, select_idle_sibling() would do the placement,
->    selecting a big (and not energy efficient) CPU. As 3., the task
->    would potentially reside on the big CPU for a long time
-> 
-> The patch also:
-> a. groups the compute_energy() calls to lower the chances of having
->    concurrent updates in between the calls
-> b. skips the base_energy_pd computation if no CPU is available in a
->    perf_domain
+From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-Did you run some tests to make sure you didn't regress on energy
-consumption? You could run EAS' Energy tests w/ and w/o the patch
-depicted in:
+Gracefully ignore misconfigured port entries encountered in
+incorrect FPGA images.
 
-https://lkml.kernel.org/r/20181203095628.11858-1-quentin.perret@arm.com
+Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+---
+ drivers/fpga/dfl-pci.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-> Fixes: eb92692b2544d sched/fair: Speed-up energy-aware wake-up
-> Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Suggested-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
-> ---
->  kernel/sched/fair.c | 69 +++++++++++++++++++++++++--------------------
->  1 file changed, 39 insertions(+), 30 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 0dba0ebc3657..577482aa8919 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6594,8 +6594,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  {
->  	unsigned long prev_delta = ULONG_MAX, best_delta = ULONG_MAX;
->  	struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
-> +	int cpu, best_energy_cpu = prev_cpu, target = -1;
->  	unsigned long cpu_cap, util, base_energy = 0;
-> -	int cpu, best_energy_cpu = prev_cpu;
->  	struct sched_domain *sd;
->  	struct perf_domain *pd;
->  
-> @@ -6614,19 +6614,18 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  	if (!sd)
->  		goto fail;
->  
-> +	target = prev_cpu;
-> +
->  	sync_entity_load_avg(&p->se);
->  	if (!task_util_est(p))
-> -		goto unlock;
-> +		goto fail;
->  
->  	for (; pd; pd = pd->next) {
->  		unsigned long cur_delta, spare_cap, max_spare_cap = 0;
-> +		bool compute_prev_delta = false;
->  		unsigned long base_energy_pd;
->  		int max_spare_cap_cpu = -1;
->  
-> -		/* Compute the 'base' energy of the pd, without @p */
-> -		base_energy_pd = compute_energy(p, -1, pd);
-> -		base_energy += base_energy_pd;
-> -
->  		for_each_cpu_and(cpu, perf_domain_span(pd), sched_domain_span(sd)) {
->  			if (!cpumask_test_cpu(cpu, p->cpus_ptr))
->  				continue;
-> @@ -6647,26 +6646,41 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			if (!fits_capacity(util, cpu_cap))
->  				continue;
->  
-> -			/* Always use prev_cpu as a candidate. */
->  			if (cpu == prev_cpu) {
-> -				prev_delta = compute_energy(p, prev_cpu, pd);
-> -				prev_delta -= base_energy_pd;
-> -				best_delta = min(best_delta, prev_delta);
-> -			}
-> -
-> -			/*
-> -			 * Find the CPU with the maximum spare capacity in
-> -			 * the performance domain
-> -			 */
-> -			if (spare_cap > max_spare_cap) {
-> +				/* Always use prev_cpu as a candidate. */
-> +				compute_prev_delta = true;
-> +			} else if (spare_cap > max_spare_cap) {
-> +				/*
-> +				 * Find the CPU with the maximum spare capacity
-> +				 * in the performance domain.
-> +				 */
->  				max_spare_cap = spare_cap;
->  				max_spare_cap_cpu = cpu;
->  			}
->  		}
->  
-> +		if (max_spare_cap_cpu < 0 && !compute_prev_delta)
-> +			continue;
-> +
-> +		/* Compute the 'base' energy of the pd, without @p */
-> +		base_energy_pd = compute_energy(p, -1, pd);
-> +		base_energy += base_energy_pd;
-
-
-Maybe add a comment
-
-                /* Evaluate the energy impact of using prev_cpu. */
-
-To be in sync with the if condition further below.
-
-> +		if (compute_prev_delta) {
-> +			prev_delta = compute_energy(p, prev_cpu, pd);
-> +			/* Prevent negative deltas and select prev_cpu */
-
-Not sure if this comment helps in understanding the code. We don't
-comment that we return prev_cpu if !task_util_est(p) or we're not
-entering the `Pick the best CPU ...` condition.
-
-> +			if (prev_delta < base_energy_pd)
-> +				goto fail;
-> +			prev_delta -= base_energy_pd;
-> +			best_delta = min(best_delta, prev_delta);
-> +		}
-> +
->  		/* Evaluate the energy impact of using this CPU. */
-
-better
-
-   	    /* Evaluate the energy impact of using max_spare_cap_cpu. */
-
-since `this` has lost its context.
-
-> -		if (max_spare_cap_cpu >= 0 && max_spare_cap_cpu != prev_cpu) {
-> +		if (max_spare_cap_cpu >= 0) {
->  			cur_delta = compute_energy(p, max_spare_cap_cpu, pd);
-> +			/* Prevent negative deltas and select prev_cpu */
-
-Not sure if this comment helps in understanding the code.
-
-> +			if (cur_delta < base_energy_pd)
-> +				goto fail;
->  			cur_delta -= base_energy_pd;
->  			if (cur_delta < best_delta) {
->  				best_delta = cur_delta;
-> @@ -6674,25 +6688,20 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->  			}
->  		}
->  	}
-> -unlock:
-> -	rcu_read_unlock();
-
-You don't close the RCU read-side critical section here anymore but
-include the following if condition as well. Don't we always want to
-close them as quick as possible? We could still return target (prev_cpu)
-after the if condition below ...
-
->  
->  	/*
-> -	 * Pick the best CPU if prev_cpu cannot be used, or if it saves at
-> -	 * least 6% of the energy used by prev_cpu.
-> +	 * Pick the best CPU if:
-> +	 *  - prev_cpu cannot be used, or
-> +	 *  - it saves at least 6% of the energy used by prev_cpu
->  	 */
-
-Why changing the layout of this comment?
-
-> -	if (prev_delta == ULONG_MAX)
-> -		return best_energy_cpu;
-> -
-> -	if ((prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-> -		return best_energy_cpu;
-> -
-> -	return prev_cpu;
-> +	if ((prev_delta == ULONG_MAX) ||
-> +		(prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
-> +		target = best_energy_cpu;
->  
->  fail:
->  	rcu_read_unlock();
->  
-> -	return -1;
-> +	return target;
->  }
->  
->  /*
-> 
+diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+index b44523e..660d3b6 100644
+--- a/drivers/fpga/dfl-pci.c
++++ b/drivers/fpga/dfl-pci.c
+@@ -212,6 +212,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
+ 	int port_num, bar, i, ret = 0;
+ 	resource_size_t start, len;
+ 	void __iomem *base;
++	int bars = 0;
+ 	u32 offset;
+ 	u64 v;
+ 
+@@ -228,6 +229,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
+ 	if (dfl_feature_is_fme(base)) {
+ 		start = pci_resource_start(pcidev, 0);
+ 		len = pci_resource_len(pcidev, 0);
++		bars |= BIT(0);
+ 
+ 		dfl_fpga_enum_info_add_dfl(info, start, len);
+ 
+@@ -253,9 +255,21 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
+ 			 */
+ 			bar = FIELD_GET(FME_PORT_OFST_BAR_ID, v);
+ 			offset = FIELD_GET(FME_PORT_OFST_DFH_OFST, v);
++			if (bars & BIT(bar)) {
++				dev_warn(&pcidev->dev, "skipping bad port BAR %d\n", bar);
++				continue;
++			}
++
+ 			start = pci_resource_start(pcidev, bar) + offset;
+-			len = pci_resource_len(pcidev, bar) - offset;
++			len = pci_resource_len(pcidev, bar);
++			if (offset >= len) {
++				dev_warn(&pcidev->dev, "bad port offset %u >= %pa\n",
++					 offset, &len);
++				continue;
++			}
+ 
++			len -= offset;
++			bars |= BIT(bar);
+ 			dfl_fpga_enum_info_add_dfl(info, start, len);
+ 		}
+ 	} else if (dfl_feature_is_port(base)) {
+-- 
+1.8.3.1
 
