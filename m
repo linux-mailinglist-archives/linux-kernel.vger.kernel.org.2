@@ -2,129 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9255A365138
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 06:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F5D36513F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 06:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhDTEP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 00:15:56 -0400
-Received: from mga07.intel.com ([134.134.136.100]:57516 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229594AbhDTEPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 00:15:52 -0400
-IronPort-SDR: yKZ0xjNLquz34LfCYWwfZ788qQnTaafP5DdJy7QBveY6WfJX+pqQYB+0SftJ+0oYdwXp+d8iU5
- hq2DrkL7raDg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="259396549"
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="259396549"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 21:15:16 -0700
-IronPort-SDR: 6rAbk6FueexjTrFKkwcckZGJwZ+VFfmCi4dOdTEvAZsYOeRXNbxB+x28s3fHPtKOddNihST939
- DqZQceaPM7zg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
-   d="scan'208";a="420249358"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Apr 2021 21:15:09 -0700
-Subject: Re: [PATCH v20 1/2] scsi: ufs: Enable power management for wlun
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Bart van Assche <bvanassche@acm.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1618600985.git.asutoshd@codeaurora.org>
- <d660b8d4e1fb192810abd09a8ff0ef4d9f6b96cd.1618600985.git.asutoshd@codeaurora.org>
- <fdadd467-b613-d800-18c5-be064396fd10@intel.com>
- <07e3ea07-e1c3-7b8c-e398-8b008f873e6d@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <90809796-1c32-3709-13d3-65e4d5c387cc@intel.com>
-Date:   Tue, 20 Apr 2021 07:15:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229566AbhDTET4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 00:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhDTETt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 00:19:49 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B98C06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 21:18:38 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id e7so27134750wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 21:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SjWEZ1zxdmBRj9KcJNahO8i2TB9ZNFWY/gcI2Oi4MqQ=;
+        b=zqRNucjDdX3DN0XU/uZOKhk1gQCfti9NkXWNmKs0zxE5Ss4HjHjFIrPYXOBdnMlU7M
+         50DnQ/WyK/ILA4Tzs+ycleoOv88GPJNG/8GZCO+qVnRJ/jzjhBnEXiW1J2dIectUdooE
+         wRtBpyKG6VuHChMOwuAE0kBzSRbxz5uhe8FjnfeqCnyJQC0RzhZBKxegFxKMZQRCkqzs
+         jww90znjCKy9iq575YD2G4aK4RC9tsEY7UOIU8KcDgTDMYiPIu4IF47c+7TThl7Q4NUj
+         wwzBcQxCqaMn+zT2EmDf/ZLFJj7qXYAOpbUV/ahGQ8hA0OgV//AZfNJnXeluZOUseLlX
+         uwxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SjWEZ1zxdmBRj9KcJNahO8i2TB9ZNFWY/gcI2Oi4MqQ=;
+        b=LQ/btsqkCY7e/cvNqVDU3Lgtjq2yogQ9Zwdsu/dQgjLbtt7I6IIp9tQx9zV1dGrPPM
+         cGZ2WH3bUF5g/A6vskKou/EfGrirLPLFpsz0WE1fLCLFITUL8xe8N/nLlPpP8Cntu3cU
+         gpd6f3ONVa2TTygpIRpDVWObqRkkiDSfb6g8kP9cigukn1oswLS85wnGMaxnwH+Ui46A
+         gFCc8s+w7DnApO6MRl8hl/deQ58K5UZT4+bDlIwTC6y4Q6dsUD7zpe5iTYho1RBrswyP
+         rVJ6FiPnVTYyPM3hUEP58rVLKSOkzB46NFYwOYZnhYOin4HD7Cb5DO5g1J0gtIFVx2RK
+         BNug==
+X-Gm-Message-State: AOAM531eJjAfeaKzBAQFJbpw+pF+ZDp/Z5V5cFcZycDsrWqwE2PHFX22
+        cmyQSHaPfb6JeNf8XNFf3C8+oCwz6fImPTEJd3qauQ==
+X-Google-Smtp-Source: ABdhPJywH6zNS+S9+aPYlLnH0UPE/gKZS9rjo3+N55w1r1s4RZCqJ8v1oZokj44lytbNf+NhzRcwKUvE36LHj44/WDs=
+X-Received: by 2002:adf:ce12:: with SMTP id p18mr18078880wrn.144.1618892317302;
+ Mon, 19 Apr 2021 21:18:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <07e3ea07-e1c3-7b8c-e398-8b008f873e6d@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210417172159.32085-1-alex@ghiti.fr>
+In-Reply-To: <20210417172159.32085-1-alex@ghiti.fr>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 20 Apr 2021 09:48:26 +0530
+Message-ID: <CAAhSdy23jRTp3VoBpnH8B79eSSmuw8qMEYrXyh-02ccWT3O5QQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fix 32b kernel caused by 64b kernel mapping moving
+ outside linear mapping
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        kasan-dev@googlegroups.com,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 12:53 am, Asutosh Das (asd) wrote:
-> On 4/19/2021 11:37 AM, Adrian Hunter wrote:
->> On 16/04/21 10:49 pm, Asutosh Das wrote:
->>>
->>> Co-developed-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>> ---
->>
->> I came across 3 issues while testing.  See comments below.
->>
-> Hi Adrian
-> Thanks for the comments.
->> <SNIP>
->>
->>> @@ -5794,7 +5839,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->>>       if (ufshcd_is_clkscaling_supported(hba))
->>>           ufshcd_clk_scaling_suspend(hba, false);
->>>       ufshcd_clear_ua_wluns(hba);
->>
->> ufshcd_clear_ua_wluns() deadlocks trying to clear UFS_UPIU_RPMB_WLUN
->> if sdev_rpmb is suspended and sdev_ufs_device is suspending.
->> e.g. ufshcd_wl_suspend() is waiting on host_sem while ufshcd_err_handler()
->> is running, at which point sdev_rpmb has already suspended.
->>
-> Umm, I didn't understand this deadlock.
-> When you say, sdev_rpmb is suspended, does it mean runtime_suspended?
-> sdev_ufs_device is suspending - this can't be runtime_suspending, while ufshcd_err_handling_unprepare is running.
-> 
-> If you've a call-stack of this deadlock, please can you share it with me. I'll also try to reproduce this.
+On Sat, Apr 17, 2021 at 10:52 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>
+> Fix multiple leftovers when moving the kernel mapping outside the linear
+> mapping for 64b kernel that left the 32b kernel unusable.
+>
+> Fixes: 4b67f48da707 ("riscv: Move kernel mapping outside of linear mapping")
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 
-Yes it is system suspend. sdev_rpmb has suspended, sdev_ufs_device is waiting on host_sem.
-ufshcd_err_handler() holds host_sem. ufshcd_clear_ua_wlun(UFS_UPIU_RPMB_WLUN) gets stuck.
-I will get some call-stacks.
+Quite a few #ifdef but I don't see any better way at the moment. Maybe we can
+clean this later. Otherwise looks good to me.
 
-> 
-> I'll address the other comments in the next version.
-> 
-> 
-> Thank you!
-> 
->>> -    pm_runtime_put(hba->dev);
->>> +    ufshcd_rpm_put(hba);
->>>   }
->>
->> <SNIP>
->>
->>> +void ufshcd_resume_complete(struct device *dev)
->>> +{
-> 
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
+Regards,
+Anup
+
+> ---
+>  arch/riscv/include/asm/page.h    |  9 +++++++++
+>  arch/riscv/include/asm/pgtable.h | 16 ++++++++++++----
+>  arch/riscv/mm/init.c             | 25 ++++++++++++++++++++++++-
+>  3 files changed, 45 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index 22cfb2be60dc..f64b61296c0c 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -90,15 +90,20 @@ typedef struct page *pgtable_t;
+>
+>  #ifdef CONFIG_MMU
+>  extern unsigned long va_pa_offset;
+> +#ifdef CONFIG_64BIT
+>  extern unsigned long va_kernel_pa_offset;
+> +#endif
+>  extern unsigned long pfn_base;
+>  #define ARCH_PFN_OFFSET                (pfn_base)
+>  #else
+>  #define va_pa_offset           0
+> +#ifdef CONFIG_64BIT
+>  #define va_kernel_pa_offset    0
+> +#endif
+>  #define ARCH_PFN_OFFSET                (PAGE_OFFSET >> PAGE_SHIFT)
+>  #endif /* CONFIG_MMU */
+>
+> +#ifdef CONFIG_64BIT
+>  extern unsigned long kernel_virt_addr;
+>
+>  #define linear_mapping_pa_to_va(x)     ((void *)((unsigned long)(x) + va_pa_offset))
+> @@ -112,6 +117,10 @@ extern unsigned long kernel_virt_addr;
+>         (_x < kernel_virt_addr) ?                                               \
+>                 linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);      \
+>         })
+> +#else
+> +#define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + va_pa_offset))
+> +#define __va_to_pa_nodebug(x)  ((unsigned long)(x) - va_pa_offset)
+> +#endif
+>
+>  #ifdef CONFIG_DEBUG_VIRTUAL
+>  extern phys_addr_t __virt_to_phys(unsigned long x);
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 80e63a93e903..5afda75cc2c3 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -16,19 +16,27 @@
+>  #else
+>
+>  #define ADDRESS_SPACE_END      (UL(-1))
+> -/*
+> - * Leave 2GB for kernel and BPF at the end of the address space
+> - */
+> +
+> +#ifdef CONFIG_64BIT
+> +/* Leave 2GB for kernel and BPF at the end of the address space */
+>  #define KERNEL_LINK_ADDR       (ADDRESS_SPACE_END - SZ_2G + 1)
+> +#else
+> +#define KERNEL_LINK_ADDR       PAGE_OFFSET
+> +#endif
+>
+>  #define VMALLOC_SIZE     (KERN_VIRT_SIZE >> 1)
+>  #define VMALLOC_END      (PAGE_OFFSET - 1)
+>  #define VMALLOC_START    (PAGE_OFFSET - VMALLOC_SIZE)
+>
+> -/* KASLR should leave at least 128MB for BPF after the kernel */
+>  #define BPF_JIT_REGION_SIZE    (SZ_128M)
+> +#ifdef CONFIG_64BIT
+> +/* KASLR should leave at least 128MB for BPF after the kernel */
+>  #define BPF_JIT_REGION_START   PFN_ALIGN((unsigned long)&_end)
+>  #define BPF_JIT_REGION_END     (BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+> +#else
+> +#define BPF_JIT_REGION_START   (PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+> +#define BPF_JIT_REGION_END     (VMALLOC_END)
+> +#endif
+>
+>  /* Modules always live before the kernel */
+>  #ifdef CONFIG_64BIT
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 093f3a96ecfc..dc9b988e0778 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -91,8 +91,10 @@ static void print_vm_layout(void)
+>                   (unsigned long)VMALLOC_END);
+>         print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
+>                   (unsigned long)high_memory);
+> +#ifdef CONFIG_64BIT
+>         print_mlm("kernel", (unsigned long)KERNEL_LINK_ADDR,
+>                   (unsigned long)ADDRESS_SPACE_END);
+> +#endif
+>  }
+>  #else
+>  static void print_vm_layout(void) { }
+> @@ -165,9 +167,11 @@ static struct pt_alloc_ops pt_ops;
+>  /* Offset between linear mapping virtual address and kernel load address */
+>  unsigned long va_pa_offset;
+>  EXPORT_SYMBOL(va_pa_offset);
+> +#ifdef CONFIG_64BIT
+>  /* Offset between kernel mapping virtual address and kernel load address */
+>  unsigned long va_kernel_pa_offset;
+>  EXPORT_SYMBOL(va_kernel_pa_offset);
+> +#endif
+>  unsigned long pfn_base;
+>  EXPORT_SYMBOL(pfn_base);
+>
+> @@ -410,7 +414,9 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>         load_sz = (uintptr_t)(&_end) - load_pa;
+>
+>         va_pa_offset = PAGE_OFFSET - load_pa;
+> +#ifdef CONFIG_64BIT
+>         va_kernel_pa_offset = kernel_virt_addr - load_pa;
+> +#endif
+>
+>         pfn_base = PFN_DOWN(load_pa);
+>
+> @@ -469,12 +475,16 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>                            pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
+>         dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
+>  #else /* CONFIG_BUILTIN_DTB */
+> +#ifdef CONFIG_64BIT
+>         /*
+>          * __va can't be used since it would return a linear mapping address
+>          * whereas dtb_early_va will be used before setup_vm_final installs
+>          * the linear mapping.
+>          */
+>         dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
+> +#else
+> +       dtb_early_va = __va(dtb_pa);
+> +#endif /* CONFIG_64BIT */
+>  #endif /* CONFIG_BUILTIN_DTB */
+>  #else
+>  #ifndef CONFIG_BUILTIN_DTB
+> @@ -486,7 +496,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>                            pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
+>         dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
+>  #else /* CONFIG_BUILTIN_DTB */
+> +#ifdef CONFIG_64BIT
+>         dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
+> +#else
+> +       dtb_early_va = __va(dtb_pa);
+> +#endif /* CONFIG_64BIT */
+>  #endif /* CONFIG_BUILTIN_DTB */
+>  #endif
+>         dtb_early_pa = dtb_pa;
+> @@ -571,12 +585,21 @@ static void __init setup_vm_final(void)
+>                 for (pa = start; pa < end; pa += map_size) {
+>                         va = (uintptr_t)__va(pa);
+>                         create_pgd_mapping(swapper_pg_dir, va, pa,
+> -                                          map_size, PAGE_KERNEL);
+> +                                          map_size,
+> +#ifdef CONFIG_64BIT
+> +                                          PAGE_KERNEL
+> +#else
+> +                                          PAGE_KERNEL_EXEC
+> +#endif
+> +                                       );
+> +
+>                 }
+>         }
+>
+> +#ifdef CONFIG_64BIT
+>         /* Map the kernel */
+>         create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+> +#endif
+>
+>         /* Clear fixmap PTE and PMD mappings */
+>         clear_fixmap(FIX_PTE);
+> --
+> 2.20.1
+>
