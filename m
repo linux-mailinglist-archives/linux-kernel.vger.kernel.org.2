@@ -2,103 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6C3365FDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECDD365FE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233655AbhDTS6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        id S233665AbhDTS7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233498AbhDTS6v (ORCPT
+        with ESMTP id S233694AbhDTS7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:58:51 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6A1C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:58:19 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id y32so27274033pga.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Dumd2r/K9Sw9nYE5iGaCSFQrfi8eJyI9jzR8OFcyNs0=;
-        b=dhQ8hD6pdHTFPDLk9tAbpzz+y4UMGx6CPFX86yiePUSSBEE3NFEbBE/hD0ROuKdOE9
-         HL63eLqLVhAUXCmcPaO9sqM8UPwPiQp4fgTeNMdwodgyzWO/9ZCvR+mVXAdNroxx3KNh
-         Nh+wzjyJ8X9Qx8HnXgar+kCHXFDgehw+HTZz4sa0vSymZLr85ck3s5AG8cymPJYWArrz
-         zrKgoWUadXKyc/RE25qqDO5MhYW0fZ0TT6DANnx3nZ7tBhikQUoWDmZOreRLiOcyyL/0
-         h0T5vkUN/SI1XehWa0ZvnQ2z/mSUFpNtECwydXbxeisDETW51Vr7Tg95dYTJ4NE9JcNV
-         7HjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dumd2r/K9Sw9nYE5iGaCSFQrfi8eJyI9jzR8OFcyNs0=;
-        b=hQg0v+YhqU5XZCiw13olfqHlILevKkYXoQhKKtUhkKYvDrflMhhU0eSWrx2VtZGoax
-         SWshz/1mfPm4TybRDPb6dADrridcIjI1Te0McEfKrB+48iOrK/WKiHBKo9VomwonqT7v
-         XQDwVW+gUoIPc7ijJCaSbK3D9F37p08cJwfvjNZBL0jONXgl+igAq/OMN+p3goWIcjmd
-         scRrt9pSVJbXGFsJqGg9s5tKMBbCqfIeJAUa7csD67RbGRvymf+JdsO9oaRIGHfPfA5e
-         8nJAE97TLHW2U+amqKCxraNBLmb0QgSIIzPi6tHeb6hqOsN32abo1V6fxDNxg7l2xAgP
-         tgkg==
-X-Gm-Message-State: AOAM531+mBaXhUc6C4Vi5/C8ZAvh8DBMfwREMBObuq+6xeDD4Owvrx8b
-        kF2N2htcSFkj83hkdHkRdqXEKw==
-X-Google-Smtp-Source: ABdhPJwRsI+tawjouWGAzyH6SSv5oqWGKBHPEcwrsMPDjT/MQchsA48YHJEmLsRissgp7NjOoAV/Sw==
-X-Received: by 2002:a05:6a00:248f:b029:244:7ae0:ba2c with SMTP id c15-20020a056a00248fb02902447ae0ba2cmr26783242pfv.49.1618945098917;
-        Tue, 20 Apr 2021 11:58:18 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id gz11sm2288762pjb.34.2021.04.20.11.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 11:58:18 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 18:58:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, srutherford@google.com, joro@8bytes.org,
-        brijesh.singh@amd.com, thomas.lendacky@amd.com,
-        venu.busireddy@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org
-Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
-Message-ID: <YH8kRs8KGmLaJ6EN@google.com>
-References: <20210420112006.741541-1-pbonzini@redhat.com>
- <YH8P26OibEfxvJAu@google.com>
- <20210420181124.GA12798@ashkalra_ubuntu_server>
- <YH8gKcxE+dfulftQ@google.com>
+        Tue, 20 Apr 2021 14:59:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3359C06174A;
+        Tue, 20 Apr 2021 11:58:39 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e5200ad6c103155f7ad28.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5200:ad6c:1031:55f7:ad28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9897B1EC0322;
+        Tue, 20 Apr 2021 20:58:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618945117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=eITA0Gyu+0MY4Tcql3Xys6zbYoe0FiwXlEaeC94pd0E=;
+        b=q3TEz+tJ5nVL0PJ7LXhwVWdJOLVHH0xVK6YdjNdOaEwFw0yaZGPi5T8EwIE+4CAXJ4BOcd
+        pKGkyl+edENBA/GMu+yTJswrhLy9+J7bKyZiU1A6ifvGNm/PJP+4CJKi7/N6YkpYHszRKX
+        zuUWJ+lkwJ9Y1bsJczvUHgdaTxFsS2k=
+Date:   Tue, 20 Apr 2021 20:58:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Steven Zhou <lullaby2005@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Liang Zhou <zhoul110@chinatelecom.cn>
+Subject: Re: [PATCH] docs: fix the invalid vt-d spec location
+Message-ID: <20210420185840.GJ5029@zn.tnic>
+References: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn>
+ <20210418165953.GA1206@zn.tnic>
+ <CAEtkB+7CsTJYHNTEYotrJ4qEXSBTU4S8OJ+0zc5F0cMy1sk51w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YH8gKcxE+dfulftQ@google.com>
+In-Reply-To: <CAEtkB+7CsTJYHNTEYotrJ4qEXSBTU4S8OJ+0zc5F0cMy1sk51w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021, Sean Christopherson wrote:
-> On Tue, Apr 20, 2021, Ashish Kalra wrote:
-> > On Tue, Apr 20, 2021 at 05:31:07PM +0000, Sean Christopherson wrote:
-> > > On Tue, Apr 20, 2021, Paolo Bonzini wrote:
-> > > > +	case KVM_HC_PAGE_ENC_STATUS: {
-> > > > +		u64 gpa = a0, npages = a1, enc = a2;
-> > > > +
-> > > > +		ret = -KVM_ENOSYS;
-> > > > +		if (!vcpu->kvm->arch.hypercall_exit_enabled)
-> > > 
-> > > I don't follow, why does the hypercall need to be gated by a capability?  What
-> > > would break if this were changed to?
-> > > 
-> > > 		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
-> > > 
-> > 
-> > But, the above indicates host support for page_enc_status_hc, so we want
-> > to ensure that host supports and has enabled support for the hypercall
-> > exit, i.e., hypercall has been enabled.
-> 
-> I still don't see how parroting back KVM_GET_SUPPORTED_CPUID, i.e. "unintentionally"
-> setting KVM_FEATURE_HC_PAGE_ENC_STATUS, would break anything.  Sure, the guest
-> does unnecessary hypercalls, but they're eaten by KVM.  On the flip side, gating
-> the hypercall on the capability, and especially only the capability, creates
-> weird scenarios where the guest can observe KVM_FEATURE_HC_PAGE_ENC_STATUS=1
-> but fail the hypercall.  Those would be fairly clearcut VMM bugs, but at the
-> same time KVM is essentially going out of its way to manufacture the problem.
+On Mon, Apr 19, 2021 at 04:05:12PM +0800, Steven Zhou wrote:
+> Do you have any other suggestion about the link location please ?
 
-Doh, I was thinking of the MSR behavior, not the hypercall.  I'll respond to
-Paolo's mail, I have one more hail mary idea.
+Yeah, I'm working on it. We need to come up with a proper solution for
+all those docs but it'll take time...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
