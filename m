@@ -2,122 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BC03660E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C853660E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhDTU2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:28:14 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.89]:23658 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233764AbhDTU2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:28:11 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 623A8400C775B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 15:27:39 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id YwyBlOcgNMGeEYwyBllFC6; Tue, 20 Apr 2021 15:27:39 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=tx5snhU3r7ZxxPo+QKrbHdn/tSplnVEsmvWKh2OnMcE=; b=jIjFNaMX9gnup8YvgCoemgSlT5
-        U/Mt1F0O0qCWC2Q+L+avKAEdl87qXCoJiQf+UwxhUtcLqTljyhM5ihhb6f89oLrsSWLkYySeD/85S
-        kjZXzqcgbMEooDCtyUhsPlltcQ4MSuA9ZNG5L1yCjViD5aWLOK2hiICIdLTtonnnUMJVVqWqlYPLT
-        3N2RndHYZYfqLD7L3jC170bC/k1xmcDvAz0vZ7agDtZ2DtfWLFPaI4SlwEfOWrnIodVtJqQ84+4Yw
-        q1XAXum0+Xd2M96QAyvXEwtN88VeYVBCsbbJbtga78sHTdkbyMkGeLaChLYDqqLf+Lefn3hoa+3H0
-        /RJsCTuQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49060 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lYwy7-0038Rn-QV; Tue, 20 Apr 2021 15:27:35 -0500
-Subject: Re: [PATCH RESEND][next] qlcnic: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Shahed Shaikh <shshaikh@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305091735.GA139591@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <9502f47c-4e5c-2406-9cc7-708c90899c9d@embeddedor.com>
-Date:   Tue, 20 Apr 2021 15:27:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233923AbhDTU2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:28:47 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59450 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233801AbhDTU2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:28:45 -0400
+Received: from zn.tnic (p200300ec2f0e5200ad6c103155f7ad28.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5200:ad6c:1031:55f7:ad28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD0721EC04A6;
+        Tue, 20 Apr 2021 22:28:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618950492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0UCi4quETiMG1+QcsYsCXvrF/c0+jnokLMWbAR4d9RY=;
+        b=enwJ0gF61TCy69SQQ303M+KVE3IuhiU8POfp/uap9HvNW8KL/FGoT8xLIKM+J2uqhh3zMY
+        nooC6gbTTLSqH1KEkJmT/oRKcPAWvCskBKdFFjT6ZP1k2B1Q17dRLh61QIk0bnA4ESnDrY
+        4mobSOvLWWMR5RpwB/RJmVGPji/LqVk=
+Date:   Tue, 20 Apr 2021 22:28:09 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, srutherford@google.com,
+        seanjc@google.com, venu.busireddy@oracle.com, brijesh.singh@amd.com
+Subject: Re: [PATCH v13 00/12] Add AMD SEV guest live migration support
+Message-ID: <20210420202809.GK5029@zn.tnic>
+References: <cover.1618498113.git.ashish.kalra@amd.com>
+ <65ebdd0c-3224-742b-d0dd-5003309d1d62@redhat.com>
+ <20210420185139.GI5029@zn.tnic>
+ <4deae424-85c1-57a7-3952-23d1d65e30ab@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210305091735.GA139591@embeddedor>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lYwy7-0038Rn-QV
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49060
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 200
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Disposition: inline
+In-Reply-To: <4deae424-85c1-57a7-3952-23d1d65e30ab@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Apr 20, 2021 at 09:08:26PM +0200, Paolo Bonzini wrote:
+> Yup, for now it's all at kvm/queue and it will land in kvm/next tomorrow
+> (hopefully).  The guest interface patches in KVM are very near the top.
 
-Friendly ping: who can take this, please?
+Thx, I'll have a look tomorrow.
 
-Thanks
---
-Gustavo
+-- 
+Regards/Gruss,
+    Boris.
 
-On 3/5/21 03:17, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
-> warnings by explicitly adding a break and a goto statements instead of
-> just letting the code fall through to the next case.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c   | 1 +
->  drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-> index bdf15d2a6431..af4c516a9e7c 100644
-> --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-> +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-> @@ -1390,6 +1390,7 @@ static int qlcnic_process_rcv_ring(struct qlcnic_host_sds_ring *sds_ring, int ma
->  			break;
->  		case QLCNIC_RESPONSE_DESC:
->  			qlcnic_handle_fw_message(desc_cnt, consumer, sds_ring);
-> +			goto skip;
->  		default:
->  			goto skip;
->  		}
-> diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-> index 96b947fde646..8966f1bcda77 100644
-> --- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-> +++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-> @@ -3455,6 +3455,7 @@ qlcnic_fwinit_work(struct work_struct *work)
->  			adapter->fw_wait_cnt = 0;
->  			return;
->  		}
-> +		break;
->  	case QLCNIC_DEV_FAILED:
->  		break;
->  	default:
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
