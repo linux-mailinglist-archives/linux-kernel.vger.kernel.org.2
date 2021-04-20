@@ -2,93 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8422E3651E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9261D3651E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhDTFqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 01:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        id S229869AbhDTFur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 01:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhDTFqf (ORCPT
+        with ESMTP id S229523AbhDTFup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 01:46:35 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D5EC06174A;
-        Mon, 19 Apr 2021 22:46:03 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id w23so40590498ejb.9;
-        Mon, 19 Apr 2021 22:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=fXjwTDCI0JfAHocBzWWyLFaiapoMwBLjcCP3SLFYBAk=;
-        b=MnPb9ImWv0p0rgMN2zYifNQWHmjZOaByAYPAptzLn1ZqIziA9jpBwxd1EIPMlOzkAy
-         8K2i+D3JXK99sIX2yLjyFgQaVdBE8KoeHpQtMz1to32aIRbKohDS6bSsZcY/Ag+/Vd3W
-         xwbL5Hqp3L+zx4LOKKe3cx7Q+AWAWoIaMVubhDxB7f/OxRc2eNyqUnxXrhhlN6cCYJB2
-         4rrO8MuAIUsViCaMxiMGLPDiLma+jOb4o+mV6Bk+CGl09I2lZFbN9M+tjqM70gZmTRv8
-         +QERKuH+uMjI4A+rlZm9an1n76gBSC724dzenMRZ/a4y9o1pgM4jnhAVgd/vfhMABicw
-         0Dog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=fXjwTDCI0JfAHocBzWWyLFaiapoMwBLjcCP3SLFYBAk=;
-        b=K4jlSL4V8Wfs4pUcEpPasulQNYh7v+aIS08ASz0QTWDEunS4stO13x7KDGEHvNXPLx
-         Lx8k7eYqZWOcMEKLpWRNOvdt87OcELFB6x4HUgLvQBioWz7Qf7C2s6X9Fw3iXhC9/kdr
-         4YsmNWINr4+5Qxz6yavjDo552e24vYq59rgvyW49vWvgINVPbVDz1kk3FYTENmPcBHbL
-         rtgcAQpTP+rCDO9e1EERtgF0OKdF6MvKz75R1FMFHkSYbSb3OMlG2zuK2J8CTcdkULP0
-         E2CsneMxuKY1k29NI3l5l5pyLFIAkuCDp4tC9lcb+g351jkUnX0KBmTKlKAelldg7/mk
-         ZNow==
-X-Gm-Message-State: AOAM5306Y30994fTkvwFE2PbtDnQyUU/RuPEDC4zJp6NZCGnb3P6x6ra
-        Sw4Y+zd6GsqM8/aGLiIQjsiiC76KS17iLD10Yew=
-X-Google-Smtp-Source: ABdhPJzZVVvcLcQBCrcXCpxFFRsa2x8dmRxGSnS3BFksjvKkD6gg8o/KoDb1pac+U+5DAAB7aFNOYVyrLzoz7al1YRo=
-X-Received: by 2002:a17:906:37c9:: with SMTP id o9mr25241115ejc.285.1618897561979;
- Mon, 19 Apr 2021 22:46:01 -0700 (PDT)
+        Tue, 20 Apr 2021 01:50:45 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4801BC06174A;
+        Mon, 19 Apr 2021 22:50:14 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 23C1B1D2;
+        Mon, 19 Apr 2021 22:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1618897813;
+        bh=piKGRFQQ1+WMq7lkA3F/USBJvd80lNz4YwCXkXdkzgc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CjAFdpdsxM2Ja4itF9J7Tb9EMQkfwHp5CPXzF7E+EA+Rc3V0IYi0JruZoL187OiJ4
+         tXuKr3xDi80b3CB2s97Uwh9NgxcRDmddC8Czo1ghYQ6yS0iTAwIXk3+4NvLvu0Do5Z
+         T4l81ESl3HT1ahhrJvJmDJA6dj1J4GkkjVLPwNQk=
+Date:   Tue, 20 Apr 2021 00:50:11 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <YH5rky8nA4nKAVdg@hatter.bewilderbeest.net>
+References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
+ <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
+ <20210330112254.GB4976@sirena.org.uk>
+ <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
+ <20210330174221.GJ4976@sirena.org.uk>
+ <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
+ <20210330180200.GK4976@sirena.org.uk>
+ <20210330193810.GA235990@roeck-us.net>
+ <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
+ <20210420033648.GA227111@roeck-us.net>
 MIME-Version: 1.0
-From:   Shivank Garg <shivankgarg98@gmail.com>
-Date:   Tue, 20 Apr 2021 11:15:45 +0530
-Message-ID: <CAOVCmzH4XEGMGgOpvnLU7_qW93cNit4yvb6kOV2BZNZH_8POJg@mail.gmail.com>
-Subject: Doubt regarding memory allocation in KVM
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210420033648.GA227111@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-I'm learning about qemu KVM, looking into code and experimenting on
-it. I have the following doubts regarding it, I would be grateful if
-you help me to get some idea on them.
+On Mon, Apr 19, 2021 at 10:36:48PM CDT, Guenter Roeck wrote:
+>On Mon, Apr 19, 2021 at 08:29:53PM -0500, Zev Weiss wrote:
+>> On Tue, Mar 30, 2021 at 02:38:10PM CDT, Guenter Roeck wrote:
+>> > On Tue, Mar 30, 2021 at 07:02:00PM +0100, Mark Brown wrote:
+>> > > On Tue, Mar 30, 2021 at 12:56:56PM -0500, Zev Weiss wrote:
+>> > >
+>> > > > Okay, to expand a bit on the description in my initial message -- we've
+>> > > > got a single chassis with multiple server boards and a single manager board
+>> > > > that handles, among other things, power control for the servers.
+>> > > > The manager board has one LM25066 for each attached server, which acts as
+>> > > > the "power switch" for that server.  There thus really isn't any driver to
+>> > > > speak of for the downstream device.
+>> > >
+>> > > This sounds like you need a driver representing those server boards (or
+>> > > the slots they plug into perhaps) that represents everything about those
+>> > > boards to userspace, including power switching.  I don't see why you
+>> > > wouldn't have a driver for that - it's a thing that physically exists
+>> > > and clearly has some software control, and you'd presumably also expect
+>> > > to represent some labelling about the slot as well.
+>> >
+>> > Absolutely agree.
+>> >
+>> > Thanks,
+>> > Guenter
+>>
+>> Hi Guenter, Mark,
+>>
+>> I wanted to return to this to try to explain why structuring the kernel
+>> support for this in a way that's specific to the device behind the PMIC
+>> seems like an awkward fit to me, and ultimately kind of artificial.
+>>
+>> In the system I described, the manager board with the LM25066 devices is its
+>> own little self-contained BMC system running its own Linux kernel (though
+>> "BMC" is perhaps a slightly misleading term because there's no host system
+>> that it manages).  The PMICs are really the only relevant connection it has
+>> to the servers it controls power for -- they have their own dedicated local
+>> BMCs on board as well doing all the usual BMC tasks.  A hypothetical
+>> dedicated driver for this on the manager board wouldn't have any other
+>> hardware to touch aside from the pmbus interface of the LM25066 itself, so
+>> calling it a server board driver seems pretty arbitrary -- and in fact the
+>> same system also has another LM25066 that controls the power supply to the
+>> chassis cooling fans (a totally different downstream device, but one that
+>> would be equally well-served by the same software).
+>>
+>> More recently, another system has entered the picture for us that might
+>> illustrate it more starkly -- the Delta Open19 power shelf [0] supported by
+>> a recent code release from LinkedIn [1].  This is a rackmount power supply
+>
+>All I can see is that this code is a mess.
+>
+>> with fifty outputs, each independently switchable via an LM25066 attached to
+>> an on-board BMC-style management controller (though again, no host system
+>> involved).  We (Equinix Metal) are interested in porting a modern OpenBMC to
+>> it to replace the dated, crufty, pre-Linux-Foundation version of OpenBMC it
+>> currently runs (as found in the linked repo).  The exact nature of the
+>> devices powered by its outputs is well outside the scope of the firmware
+>> running on that controller (it could be any arbitrary thing that runs on
+>> 12VDC), but we still want to be able to both (a) retrieve per-output
+>> voltage/current/power readings as provided by the existing LM25066 hwmon
+>> support, and (b) control the on/off state of those outputs from userspace.
+>>
+>> Given the array of possible use-cases, an approach of adding power-switch
+>> functionality to the existing LM25066 support seems like the most obvious
+>> way to support this, so I'm hoping to see if I can get some idea of what an
+>> acceptable implementation of that might look like.
+>>
+>
+>Sorry, that is simply a no-go for the LM25066 driver. I mentioned it before,
+>and it is still true: The hwmon subsystem is not in the business of power
+>control.
+>
+>Have you looked into enclosures (drivers/misc/enclosure.c) ? Maybe that
+>or something similar could be used for your purposes.
+>
+>Thanks,
+>Guenter
 
-1. I observe that KVM allocates memory to guests when it needs it but
-doesn't take it back (except for ballooning case).
-Also, the Qemu/KVM process does not free the memory even when the
-guest is rebooted. In this case,  Does the Guest VM get access to
-memory already pre-filled with some garbage from the previous run??
-(Since the host would allocate zeroed pages to guests the first time
-it requests but after that it's up to guests). Can it be a security
-issue?
+I had a glance at the enclosure driver; it looks pretty geared toward 
+SES-like things (drivers/scsi/ses.c being its only usage I can see in 
+the kernel at the moment) and while it could perhaps be pressed into 
+working for this it seems like it would probably drag in a fair amount 
+of boilerplate and result in a somewhat gratuitously confusing driver 
+arrangement (calling the things involved in the cases we're looking at 
+"enclosures" seems like a bit of a stretch).
 
-2. How does the KVM know if GPFN (guest physical frame number) is
-backed by an actual machine frame number in host? If not mapped, then
-it faults in the host and allocates a physical frame for guests in the
-host. (kvm_mmu_page_fault)
+As an alternative, would something like the patch below be more along 
+the lines of what you're suggesting?  And if so, would it make sense to 
+generalize it into something like 'pmbus-switch.c' and add a 
+PMBUS_HAVE_POWERSWITCH functionality bit or similar in the pmbus code 
+instead of hardcoding it for only LM25066 support?
 
-3. How/where can I access the GPFNs in the host? Is "gfn_t gfn = gpa
->> PAGE_SHIFT" and "gpa_t cr2_or_gpa" in the KVM page fault handler,
-x86 is the same as GPFN. (that is can I use pfn_to_page in guest VM to
-access the struct page in Guest)
 
-Thank You.
 
-Best Regards,
-Shivank Garg
-M.Tech Student,
-IIT Kanpur
+Thanks,
+Zev
+
+
+ From f4c0a3637371d69a414b6fb882497d22e5de3ba0 Mon Sep 17 00:00:00 2001
+From: Zev Weiss <zev@bewilderbeest.net>
+Date: Wed, 31 Mar 2021 01:58:35 -0500
+Subject: [PATCH] misc: add lm25066-switch driver
+
+This driver allows an lm25066 to be switched on and off from userspace
+via sysfs.
+
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
+  drivers/misc/Kconfig          |   7 ++
+  drivers/misc/Makefile         |   1 +
+  drivers/misc/lm25066-switch.c | 120 ++++++++++++++++++++++++++++++++++
+  3 files changed, 128 insertions(+)
+  create mode 100644 drivers/misc/lm25066-switch.c
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index f532c59bb59b..384b6022ec15 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -445,6 +445,13 @@ config HISI_HIKEY_USB
+  	  switching between the dual-role USB-C port and the USB-A host ports
+  	  using only one USB controller.
+  
++config LM25066_SWITCH
++	tristate "LM25066 power switch support"
++	depends on OF && SENSORS_LM25066
++	help
++	  This driver augments LM25066 hwmon support with power switch
++	  functionality controllable from userspace via sysfs.
++
+  source "drivers/misc/c2port/Kconfig"
+  source "drivers/misc/eeprom/Kconfig"
+  source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 99b6f15a3c70..c948510d0cc9 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -56,3 +56,4 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+  obj-$(CONFIG_UACCE)		+= uacce/
+  obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+  obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
++obj-$(CONFIG_LM25066_SWITCH)	+= lm25066-switch.o
+diff --git a/drivers/misc/lm25066-switch.c b/drivers/misc/lm25066-switch.c
+new file mode 100644
+index 000000000000..85f3677dc277
+--- /dev/null
++++ b/drivers/misc/lm25066-switch.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * This module provides a thin wrapper around the lm25066 hwmon driver that
++ * additionally exposes a userspace-controllable on/off power switch via
++ * sysfs.
++ *
++ * Author: Zev Weiss <zweiss@equinix.com>
++ *
++ * Copyright (C) 2021 Equinix Services, Inc.
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++
++#include "../hwmon/pmbus/pmbus.h"
++
++static ssize_t switch_show_state(struct device *dev, struct device_attribute *attr,
++                                 char *buf)
++{
++	struct i2c_client *pmic = dev_get_drvdata(dev);
++	ssize_t ret = pmbus_read_byte_data(pmic, 0, PMBUS_OPERATION);
++	if (ret < 0)
++		return ret;
++
++	return sysfs_emit(buf, "%s\n",
++	                  (ret & PB_OPERATION_CONTROL_ON) ? "on" : "off");
++}
++
++static ssize_t switch_set_state(struct device *dev, struct device_attribute *attr,
++                                const char *buf, size_t count)
++{
++	int state, status;
++	struct i2c_client *pmic = dev_get_drvdata(dev);
++	if (sysfs_streq(buf, "on"))
++		state = PB_OPERATION_CONTROL_ON;
++	else if (sysfs_streq(buf, "off"))
++		state = 0;
++	else
++		return -EINVAL;
++	status = pmbus_update_byte_data(pmic, 0, PMBUS_OPERATION,
++	                                PB_OPERATION_CONTROL_ON, state);
++	return status ? : count;
++}
++
++static DEVICE_ATTR(state, 0644, switch_show_state, switch_set_state);
++
++static struct attribute *attributes[] = {
++	&dev_attr_state.attr,
++	NULL,
++};
++
++static const struct attribute_group attr_group = {
++	.attrs = attributes,
++};
++
++static int lm25066_switch_probe(struct platform_device *pdev)
++{
++	int status;
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *pmic_np;
++	struct i2c_client *pmic;
++
++	pmic_np = of_parse_phandle(np, "pmic", 0);
++	if (!pmic_np) {
++		dev_err(&pdev->dev, "Cannot parse lm25066-switch pmic\n");
++		return -ENODEV;
++	}
++
++	if (!of_device_is_compatible(pmic_np, "lm25066")) {
++		dev_err(&pdev->dev, "lm25066-switch pmic not lm25066 compatible");
++		status = -ENODEV;
++		goto out;
++	}
++
++	pmic = of_find_i2c_device_by_node(pmic_np);
++	if (!pmic) {
++		status = -EPROBE_DEFER;
++		goto out;
++	}
++
++	platform_set_drvdata(pdev, pmic);
++
++	status = sysfs_create_group(&pdev->dev.kobj, &attr_group);
++
++out:
++	of_node_put(pmic_np);
++	return status;
++}
++
++static int lm25066_switch_remove(struct platform_device *pdev)
++{
++	struct i2c_client *pmic = platform_get_drvdata(pdev);
++
++	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
++	put_device(&pmic->dev);
++
++	return 0;
++}
++
++static const struct of_device_id lm25066_switch_table[] = {
++	{ .compatible = "lm25066-switch" },
++	{ },
++};
++
++static struct platform_driver lm25066_switch_driver = {
++	.driver = {
++		.name = "lm25066-switch",
++		.of_match_table = lm25066_switch_table,
++	},
++	.probe = lm25066_switch_probe,
++	.remove = lm25066_switch_remove,
++};
++
++module_platform_driver(lm25066_switch_driver);
++
++MODULE_AUTHOR("Zev Weiss <zweiss@equinix.com>");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("LM25066 power-switch driver");
+-- 
+2.31.1
+
+
