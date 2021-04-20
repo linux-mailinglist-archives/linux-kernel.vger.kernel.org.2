@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617A63656D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB553656D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232381AbhDTKtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S232361AbhDTKuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbhDTKrv (ORCPT
+        with ESMTP id S231954AbhDTKsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:47:51 -0400
+        Tue, 20 Apr 2021 06:48:13 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184D7C061346;
-        Tue, 20 Apr 2021 03:47:05 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 10:47:02 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B23C06138D;
+        Tue, 20 Apr 2021 03:47:21 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:47:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618915623;
+        s=2020; t=1618915624;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UugSVNX0e8jJ4jT/12zpWDdPmS/9Gl6S2nC8uNTAOqk=;
-        b=bNXyQlqNhXzTKB5TA8Ku6bY3Mjzs/39bS93AOdIPuiItZg0zQSJyXAHULNG1Nnti/fSLOM
-        YrLqbk2zodTm9JayLVC0WgLDohEkPa/yqQYbeqCrJZlJYD+Aua83GEgYi3wSA/A1ifjKgj
-        MEaXBMOPlT2OMcgQ7vQky3/VgJ1cG4ozKvuN6z6Kg+t0VnxLrfk3GeIBXiXmcQWriQQOlX
-        3LrxOc5+VEtRCztpiDuMH/KBfG5vm0gwkn92547c0+inhtPcOTGK3ZolumNxvgyhPD1hKW
-        G0iQlVCRwc1E9k1J96v7Sy+KKR2YOb1KvWvnnDnmXoAPT3jTJ8mmJwOwZZHylA==
+        bh=0VJMoMpM+tcqCpfsVlqnaTo2QaPtCB8+Cy00uCz0vak=;
+        b=JxR8WNGaIL9s3rqZO9V39iJarTJ2WgY30JLkRXzQsNnlLNu9U/O77qVpxPUxoSq7B1lzOT
+        xgHZZfeFpDewLyeewSmP2f8CAfnjOZEr1nfGTbSOU6CCFoWHGFLDJgg1lNoRbkPwN6Vypk
+        sHS/cMxPXFw17B9q0NV8iSdZL5cDIGj/oSHtZSczOweuVKrqMXXMuZo8Zm6TPBYKXM8yMZ
+        TnsknaR6WGgWS6hmeGssVwEsBpfuj2tM2RKkEKpjeMiDYmD58AxTrxv2/XUKufo6UuxVnM
+        /1G83Hn7AnSC22Pikz5+8cqbZAb/g8CpuT5LxHGEAhBp9cIq4Jbyv1Hy/NPYmw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618915623;
+        s=2020e; t=1618915624;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UugSVNX0e8jJ4jT/12zpWDdPmS/9Gl6S2nC8uNTAOqk=;
-        b=J/jO3SmeMsl6EqGYuQR3S3CiyXlHeUbGZdUB/ElDUsGMHxx9aErMTC6zWl7xPTm39kSYsu
-        xMwjrTSx34vSldDA==
+        bh=0VJMoMpM+tcqCpfsVlqnaTo2QaPtCB8+Cy00uCz0vak=;
+        b=7FA9EMbE0WBsbRgUepUwNY4d9ccOfPcw88aGgthc6ldJ7ONlrYJcxWgu8L1Mknad+JWwlx
+        pAsWym2wskBnJ2Cw==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/crypto/sha_ni: Standardize stack alignment prologue
+Subject: [tip: objtool/core] x86/crypto/aesni-intel_avx: Standardize stack
+ alignment prologue
 Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Ard Biesheuvel <ardb@kernel.org>,
         Sami Tolvanen <samitolvanen@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Herbert Xu <herbert@gondor.apana.org.au>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <5033e1a79867dff1b18e1b4d0783c38897d3f223.1614182415.git.jpoimboe@redhat.com>
-References: <5033e1a79867dff1b18e1b4d0783c38897d3f223.1614182415.git.jpoimboe@redhat.com>
+In-Reply-To: <02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com>
+References: <02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Message-ID: <161891562266.29796.10383658274850231155.tip-bot2@tip-bot2>
+Message-ID: <161891562376.29796.433962525526224746.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -64,17 +65,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     35a0067d2c02a7c35466db5f207b7b9265de84d9
-Gitweb:        https://git.kernel.org/tip/35a0067d2c02a7c35466db5f207b7b9265de84d9
+Commit-ID:     e163be86fff3deec70f63330fc43fedf892c9aee
+Gitweb:        https://git.kernel.org/tip/e163be86fff3deec70f63330fc43fedf892c9aee
 Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Wed, 24 Feb 2021 10:29:20 -06:00
+AuthorDate:    Wed, 24 Feb 2021 10:29:17 -06:00
 Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
-CommitterDate: Mon, 19 Apr 2021 12:36:35 -05:00
+CommitterDate: Mon, 19 Apr 2021 12:36:34 -05:00
 
-x86/crypto/sha_ni: Standardize stack alignment prologue
+x86/crypto/aesni-intel_avx: Standardize stack alignment prologue
 
-Use a more standard prologue for saving the stack pointer before
-realigning the stack.
+Use RBP instead of R14 for saving the old stack pointer before
+realignment.  This resembles what compilers normally do.
 
 This enables ORC unwinding by allowing objtool to understand the stack
 realignment.
@@ -85,41 +86,39 @@ Acked-by: Ard Biesheuvel <ardb@kernel.org>
 Tested-by: Sami Tolvanen <samitolvanen@google.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-Link: https://lore.kernel.org/r/5033e1a79867dff1b18e1b4d0783c38897d3f223.1614182415.git.jpoimboe@redhat.com
+Link: https://lore.kernel.org/r/02d00a0903a0959f4787e186e2a07d271e1f63d4.1614182415.git.jpoimboe@redhat.com
 ---
- arch/x86/crypto/sha1_ni_asm.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/crypto/aesni-intel_avx-x86_64.S | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/crypto/sha1_ni_asm.S b/arch/x86/crypto/sha1_ni_asm.S
-index 11efe3a..5d8415f 100644
---- a/arch/x86/crypto/sha1_ni_asm.S
-+++ b/arch/x86/crypto/sha1_ni_asm.S
-@@ -59,8 +59,6 @@
- #define DATA_PTR	%rsi	/* 2nd arg */
- #define NUM_BLKS	%rdx	/* 3rd arg */
+diff --git a/arch/x86/crypto/aesni-intel_avx-x86_64.S b/arch/x86/crypto/aesni-intel_avx-x86_64.S
+index 188f184..98e3552 100644
+--- a/arch/x86/crypto/aesni-intel_avx-x86_64.S
++++ b/arch/x86/crypto/aesni-intel_avx-x86_64.S
+@@ -251,22 +251,20 @@ VARIABLE_OFFSET = 16*8
+ .macro FUNC_SAVE
+         push    %r12
+         push    %r13
+-        push    %r14
+         push    %r15
  
--#define RSPSAVE		%rax
+-        mov     %rsp, %r14
 -
- /* gcc conversion */
- #define FRAME_SIZE	32	/* space for 2x16 bytes */
+-
++	push	%rbp
++	mov	%rsp, %rbp
  
-@@ -96,7 +94,8 @@
- .text
- .align 32
- SYM_FUNC_START(sha1_ni_transform)
--	mov		%rsp, RSPSAVE
-+	push		%rbp
-+	mov		%rsp, %rbp
- 	sub		$FRAME_SIZE, %rsp
- 	and		$~0xF, %rsp
+         sub     $VARIABLE_OFFSET, %rsp
+         and     $~63, %rsp                    # align rsp to 64 bytes
+ .endm
  
-@@ -288,7 +287,8 @@ SYM_FUNC_START(sha1_ni_transform)
- 	pextrd		$3, E0, 1*16(DIGEST_PTR)
+ .macro FUNC_RESTORE
+-        mov     %r14, %rsp
++        mov     %rbp, %rsp
++	pop	%rbp
  
- .Ldone_hash:
--	mov		RSPSAVE, %rsp
-+	mov		%rbp, %rsp
-+	pop		%rbp
- 
- 	ret
- SYM_FUNC_END(sha1_ni_transform)
+         pop     %r15
+-        pop     %r14
+         pop     %r13
+         pop     %r12
+ .endm
