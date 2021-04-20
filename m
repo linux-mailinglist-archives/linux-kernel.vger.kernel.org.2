@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E2536531E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C21365323
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhDTHVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhDTHVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:21:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAC9860C40;
-        Tue, 20 Apr 2021 07:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618903252;
-        bh=Ciqp0HqfGZibJ89pF/L2lKK2JBtAZcO03tptwL0YyAs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WZsQW3+Qm5LDVOpORw7z9UfDvMeJX1isMcl3sFgRXUSbDjLVZNniqkwH5+f5dsI1q
-         LYfLhR1QyH6E+SIlzEDS5Q6+l1ccISlQ32/NcssVRZpoiHcFlJonoqWMfXuy2xYeVE
-         v2gMsTtZHxpnK3A4vyIyx2+PKOo/Vx31Y/rALlPrzYVumKOUUb8HmPEJF63f2uB4E1
-         JVuMvvGp/guaaRRvG9vfxDN5C54CmcI8UoaRlUeTDtbQCT7Rpn4AF0aQgcE04pJVEH
-         dWkd09ghtV6zXu5Exf9UBe+fDUks1vRvM3LpuuLUiBec4qWWR0bVMiTgvERaRXSLbu
-         hufBhTUWwNMjw==
-Date:   Tue, 20 Apr 2021 10:20:43 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        neilb@suse.de, samitolvanen@google.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, willy@infradead.org
-Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <YH6Ayy1fWGGWMU+q@kernel.org>
-References: <20210417104032.5521-1-peter.enderborg@sony.com>
- <YH10s/7MjxBBsjVL@dhcp22.suse.cz>
- <c3f0da9c-d127-5edf-dd21-50fd5298acef@sony.com>
- <YH2a9YfRBlfNnF+u@dhcp22.suse.cz>
- <23aa041b-0e7c-6f82-5655-836899973d66@sony.com>
- <d70efba0-c63d-b55a-c234-eb6d82ae813f@amd.com>
- <YH2ru642wYfqK5ne@dhcp22.suse.cz>
- <07ed1421-89f8-8845-b254-21730207c185@amd.com>
- <YH59E15ztpTTUKqS@dhcp22.suse.cz>
+        id S230435AbhDTHWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhDTHV5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:21:57 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAC5C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:21:25 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id sd23so48053325ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Fdo4mE/+cjJuC72UnytwwUxZcVyYzOvI58iBPYYyS4o=;
+        b=JDcuGmSnwgEFOWi0Hol09StsvZpHTO8W+O/Gz5MCGTk1hrnPT23hDPfAyBVwJSNZpt
+         czBoQS5EsqxfrGVAbix+Te7AGsP7UXhIx8YFBmygfQto+b48SP2efSg7JWmJOpyukexr
+         FTsu8EMSbjXVSgncFtnRCeoktgRoY0XVLaFrk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Fdo4mE/+cjJuC72UnytwwUxZcVyYzOvI58iBPYYyS4o=;
+        b=T98CAdmTMWqOwioSYgn62GFuRL/bZeaaMr/gSmzKuqRPREi7QeMRx+jH1JoKr4cBvn
+         3l+rHbVCGbBJjdOa464+v6bLyxg6Jpr/hzdNG8b13yG7L0rLX++tmOo58Jqamn5TXKVR
+         ev+Y5KnrT9Wi0gMLvCPcfuF+aXw0z2CmGt7GOn96IQvsZXuR8YrUUQe0h+4HXRC10hlq
+         YVK5IOYdHSBjdwVKIWAD1/TMKoDuh9ngJ89WKVrBUbKxXZsn7m6g6LkpvRUITEN7AGB/
+         IEbn1gf3f97H94CSMd/5t+NvKcry7vNdYPmvGj/Luum4bFdwwRqLPE+nWP2dCQqMS05h
+         tcSA==
+X-Gm-Message-State: AOAM530W9yAyucGz+qVq+oKD/UiSP9L3VU8Mwp9Xi5syZBvVuc2BOEio
+        D5zboeVojo58lVijjPu4bXCePg==
+X-Google-Smtp-Source: ABdhPJwk6gzZ2A5irFuyneT8BrQdebb3nmjVkes+GHHyVGt7Uear5nG59XVGsiWotx3n47m/ELrbzA==
+X-Received: by 2002:a17:906:4d10:: with SMTP id r16mr25604487eju.169.1618903284093;
+        Tue, 20 Apr 2021 00:21:24 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id p3sm11836507ejd.65.2021.04.20.00.21.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 00:21:23 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>, brouer@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        ilias.apalodimas@linaro.org, mcroce@linux.microsoft.com,
+        grygorii.strashko@ti.com, arnd@kernel.org, hch@lst.de,
+        linux-snps-arc@lists.infradead.org, mhocko@kernel.org,
+        mgorman@suse.de
+References: <20210416230724.2519198-1-willy@infradead.org>
+ <20210416230724.2519198-2-willy@infradead.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <d0c32751-0a12-1f7f-4f6a-b1f6535a6b6e@rasmusvillemoes.dk>
+Date:   Tue, 20 Apr 2021 09:21:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YH59E15ztpTTUKqS@dhcp22.suse.cz>
+In-Reply-To: <20210416230724.2519198-2-willy@infradead.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 09:04:51AM +0200, Michal Hocko wrote:
-> On Mon 19-04-21 18:37:13, Christian König wrote:
-> > Am 19.04.21 um 18:11 schrieb Michal Hocko:
-> [...]
-> > > The question is not whether it is NUMA aware but whether it is useful to
-> > > know per-numa data for the purpose the counter is supposed to serve.
-> > 
-> > No, not at all. The pages of a single DMA-buf could even be from different
-> > NUMA nodes if the exporting driver decides that this is somehow useful.
+On 17/04/2021 01.07, Matthew Wilcox (Oracle) wrote:
+> 32-bit architectures which expect 8-byte alignment for 8-byte integers
+> and need 64-bit DMA addresses (arc, arm, mips, ppc) had their struct
+> page inadvertently expanded in 2019.  When the dma_addr_t was added,
+> it forced the alignment of the union to 8 bytes, which inserted a 4 byte
+> gap between 'flags' and the union.
 > 
-> As the use of the counter hasn't been explained yet I can only
-> speculate. One thing that I can imagine to be useful is to fill gaps in
-> our accounting. It is quite often that the memroy accounted in
-> /proc/meminfo (or oom report) doesn't add up to the overall memory
-> usage. In some workloads the workload can be huge! In many cases there
-> are other means to find out additional memory by a subsystem specific
-> interfaces (e.g. networking buffers). I do assume that dma-buf is just
-> one of those and the counter can fill the said gap at least partially
-> for some workloads. That is definitely useful.
-
-A bit off-topic.
-
-Michal, I think it would have been nice to have an explanation like above
-in Documentation/proc/meminfo, what do you say?
- 
-> What I am trying to bring up with NUMA side is that the same problem can
-> happen on per-node basis. Let's say that some user consumes unexpectedly
-> large amount of dma-buf on a certain node. This can lead to observable
-> performance impact on anybody on allocating from that node and even
-> worse cause an OOM for node bound consumers. How do I find out that it
-> was dma-buf that has caused the problem?
+> Fix this by storing the dma_addr_t in one or two adjacent unsigned longs.
+> This restores the alignment to that of an unsigned long, and also fixes a
+> potential problem where (on a big endian platform), the bit used to denote
+> PageTail could inadvertently get set, and a racing get_user_pages_fast()
+> could dereference a bogus compound_head().
 > 
-> See where I am heading?
+> Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/linux/mm_types.h |  4 ++--
+>  include/net/page_pool.h  | 12 +++++++++++-
+>  net/core/page_pool.c     | 12 +++++++-----
+>  3 files changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 6613b26a8894..5aacc1c10a45 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -97,10 +97,10 @@ struct page {
+>  		};
+>  		struct {	/* page_pool used by netstack */
+>  			/**
+> -			 * @dma_addr: might require a 64-bit value even on
+> +			 * @dma_addr: might require a 64-bit value on
+>  			 * 32-bit architectures.
+>  			 */
+> -			dma_addr_t dma_addr;
+> +			unsigned long dma_addr[2];
 
--- 
-Sincerely yours,
-Mike.
+Shouldn't that member get another name (_dma_addr?) to be sure the
+buildbots catch every possible (ab)user and get them turned into the new
+accessors? Sure, page->dma_addr is now "pointer to unsigned long"
+instead of "dma_addr_t", but who knows if there's a
+"(long)page->dma_addr" somewhere?
+
+Rasmus
