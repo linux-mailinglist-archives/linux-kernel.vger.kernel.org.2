@@ -2,236 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A78365296
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBC436529D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhDTGvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhDTGvl (ORCPT
+        id S230142AbhDTGwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 02:52:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32658 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229577AbhDTGwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:51:41 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72DBC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 23:51:08 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id n2so56571310ejy.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 23:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Rf8NoCNyQhxA+jFGuotZJTkTTnHted05N8zdOxD/kz8=;
-        b=vn1SMO+fIUUiYE9x6F+/tj8Jdktm2COOztnoUaK3LvCHgirzXzI067bXhullRL8KWm
-         gPRFeUV2Uq9vQAKQuXbbgWlVWmvDzC50expAYGxVVNTQhElr1DcLg/lp3hSMA0/iZwWx
-         ZbI5ue1msLQRUDmfvTBg2+Pf4sB+9fKPgUeJszn/dEhKAt8Uc9/cttkL+pslERz8ed/p
-         CQfmLRdZKG0XHsycHBzlB+kVa0LnVVxZHN598j4KlACEQ7PFAVt9a660ymvUgJVaT1JT
-         +n9FKCMQ5sT9AwrfSY14XAaSWLS0HiT77dG9lxtxtRDMaTFTmXbHQoIbZ1qWMWg0/jbh
-         9G5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Rf8NoCNyQhxA+jFGuotZJTkTTnHted05N8zdOxD/kz8=;
-        b=s5pYHB07bZIRbZrxbcY9TRBxxL/XY6uHu7AH/EBOsdCIb6OgMVuhsD5R4ezGwLQoHB
-         dCO0Nlv582EyVtHlkKsyDCRKQPAgLAxter70uQt4gV1lg1sLbObOIpuVKRjYjOnMFrWz
-         s3+9ROFh2cI63bVVYHC/gBTeX7Ff7TmU2vde9T6C/T9qR3vVqX+quQ29nG5xJvnGLYJp
-         kVdYR6rEJ51Lljzl7+L/bMKG39MAbj5dgyEUVdAUOnUPXNq1iMAagYTcWP7Rp4cpzfnG
-         CJeMNhgf0jbFgLC2wFyTfadbC8InB+D2/GblM4ymbhlOHhL1DTXLdBuUGln81rR/SoGT
-         tljg==
-X-Gm-Message-State: AOAM532p96TpiUPTWVPwWHW2fScdcpru68H8hf6KBSHHeE71TD7x/7sK
-        0R47sIHmdlMjOAIUEEiLAIv/g43RgW6Ix/L6fs/ADw==
-X-Google-Smtp-Source: ABdhPJwfkX4BqvCpzLc+FdcmccaFof2cotp8scQwu8bfHuohWlN0qBQpAMq+Hqb4WnUKMytybqHYZJcFUAN2vxZ43H0=
-X-Received: by 2002:a17:906:f155:: with SMTP id gw21mr25376736ejb.170.1618901467370;
- Mon, 19 Apr 2021 23:51:07 -0700 (PDT)
+        Tue, 20 Apr 2021 02:52:49 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13K6YNCh057057;
+        Tue, 20 Apr 2021 02:51:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Aq0EqwwhBdEA9PLlFVdx4k5MFXzHdCnxje89AZeWel8=;
+ b=M+wYIL5og5MPwMyNlsW3FM6XoXCd1+u+q5S7Ow41BXlPgc8pCkxQDw7mt9zulOCgl1wk
+ IgUhIvobg254TK2a0Q4P4JhNSi2+07eCRAZQZehZEJXV/d0wYHsVOy9BuVrfuXszSIoM
+ PnSAk7Hh37lvuGsDkcVHsxsCcRrZEtYYQh2XZkLb5bGD6h54rPNISZJ7f+/1uxH2z4nY
+ Haa5zLcAmVgRT+Y+uU7Gth//IitBDjQW/H1HinT9GMd3woKnEve5K4LMZDjnSILIvoKM
+ CVyQ5VO3WOkoUaC3trzJFNkNEXCOe3LTOM8AIFCwfhn3JK04Y05zCBv4s2FmbFrzDIOA 0Q== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 381qreb26f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 02:51:46 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13K6ifKJ002427;
+        Tue, 20 Apr 2021 06:51:44 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 37yqa88tmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 06:51:44 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13K6pgiw31457642
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 06:51:42 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1DBC511C058;
+        Tue, 20 Apr 2021 06:51:42 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59E1F11C04C;
+        Tue, 20 Apr 2021 06:51:41 +0000 (GMT)
+Received: from localhost (unknown [9.85.73.109])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Apr 2021 06:51:41 +0000 (GMT)
+Date:   Tue, 20 Apr 2021 12:21:39 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH v1 2/2] powerpc: Enable OPTPROBES on PPC32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <e1723a06c5a26398ff03cb669ec99de2516045a9.1617701875.git.christophe.leroy@csgroup.eu>
+        <28730d147adeaa6c2d0c98d0aa9e17e9e4bd043a.1617701875.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <28730d147adeaa6c2d0c98d0aa9e17e9e4bd043a.1617701875.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <20210419130527.791982064@linuxfoundation.org>
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Apr 2021 12:20:56 +0530
-Message-ID: <CA+G9fYsxkGznoT_kqkzWe0fW7_zzWbpY6CFuwwFatGWpexVpwA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1618900760.son2fwciv1.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DlUI9WWvk8UzPSz_h9wQs6cua1lmYW8P
+X-Proofpoint-ORIG-GUID: DlUI9WWvk8UzPSz_h9wQs6cua1lmYW8P
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-20_01:2021-04-19,2021-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0 adultscore=0
+ clxscore=1011 priorityscore=1501 impostorscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104200051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 at 18:49, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.32 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.32-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Christophe Leroy wrote:
+> For that, create a 32 bits version of patch_imm64_load_insns()
+> and create a patch_imm_load_insns() which calls
+> patch_imm32_load_insns() on PPC32 and patch_imm64_load_insns()
+> on PPC64.
+>=20
+> Adapt optprobes_head.S for PPC32. Use PPC_LL/PPC_STL macros instead
+> of raw ld/std, opt out things linked to paca and use stmw/lmw to
+> save/restore registers.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/Kconfig                 |  2 +-
+>  arch/powerpc/kernel/optprobes.c      | 24 +++++++++++++--
+>  arch/powerpc/kernel/optprobes_head.S | 46 +++++++++++++++++++---------
+>  3 files changed, 53 insertions(+), 19 deletions(-)
 
+Thanks for adding support for ppc32. It is good to see that it works=20
+without too many changes.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+>=20
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index c1344c05226c..49b538e54efb 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -227,7 +227,7 @@ config PPC
+>  	select HAVE_MOD_ARCH_SPECIFIC
+>  	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+>  	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
+> -	select HAVE_OPTPROBES			if PPC64
+> +	select HAVE_OPTPROBES
+>  	select HAVE_PERF_EVENTS
+>  	select HAVE_PERF_EVENTS_NMI		if PPC64
+>  	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS=
+_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+> diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optpro=
+bes.c
+> index 58fdb9f66e0f..cdf87086fa33 100644
+> --- a/arch/powerpc/kernel/optprobes.c
+> +++ b/arch/powerpc/kernel/optprobes.c
+> @@ -141,11 +141,21 @@ void arch_remove_optimized_kprobe(struct optimized_=
+kprobe *op)
+>  	}
+>  }
+>=20
+> +static void patch_imm32_load_insns(unsigned long val, int reg, kprobe_op=
+code_t *addr)
+> +{
+> +	patch_instruction((struct ppc_inst *)addr,
+> +			  ppc_inst(PPC_RAW_LIS(reg, IMM_H(val))));
+> +	addr++;
+> +
+> +	patch_instruction((struct ppc_inst *)addr,
+> +			  ppc_inst(PPC_RAW_ORI(reg, reg, IMM_L(val))));
+> +}
+> +
+>  /*
+>   * Generate instructions to load provided immediate 64-bit value
+>   * to register 'reg' and patch these instructions at 'addr'.
+>   */
+> -static void patch_imm64_load_insns(unsigned long val, int reg, kprobe_op=
+code_t *addr)
+> +static void patch_imm64_load_insns(unsigned long long val, int reg, kpro=
+be_opcode_t *addr)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Do you really need this?
 
-## Build
-* kernel: 5.10.32-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: bcedd92af6e5899132429d20a9322b12afec2188
-* git describe: v5.10.31-104-gbcedd92af6e5
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.31-104-gbcedd92af6e5
+>  {
+>  	/* lis reg,(op)@highest */
+>  	patch_instruction((struct ppc_inst *)addr,
+> @@ -177,6 +187,14 @@ static void patch_imm64_load_insns(unsigned long val=
+, int reg, kprobe_opcode_t *
+>  				   ___PPC_RS(reg) | (val & 0xffff)));
+>  }
+>=20
+> +static void patch_imm_load_insns(unsigned long val, int reg, kprobe_opco=
+de_t *addr)
+> +{
+> +	if (IS_ENABLED(CONFIG_PPC64))
+> +		patch_imm64_load_insns(val, reg, addr);
+> +	else
+> +		patch_imm32_load_insns(val, reg, addr);
+> +}
+> +
+>  int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kp=
+robe *p)
+>  {
+>  	struct ppc_inst branch_op_callback, branch_emulate_step, temp;
+> @@ -230,7 +248,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kp=
+robe *op, struct kprobe *p)
+>  	 * Fixup the template with instructions to:
+>  	 * 1. load the address of the actual probepoint
+>  	 */
+> -	patch_imm64_load_insns((unsigned long)op, 3, buff + TMPL_OP_IDX);
+> +	patch_imm_load_insns((unsigned long)op, 3, buff + TMPL_OP_IDX);
+>=20
+>  	/*
+>  	 * 2. branch to optimized_callback() and emulate_step()
+> @@ -264,7 +282,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kp=
+robe *op, struct kprobe *p)
+>  	 * 3. load instruction to be emulated into relevant register, and
+>  	 */
+>  	temp =3D ppc_inst_read((struct ppc_inst *)p->ainsn.insn);
+> -	patch_imm64_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX=
+);
+> +	patch_imm_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX);
+>=20
+>  	/*
+>  	 * 4. branch back from trampoline
+> diff --git a/arch/powerpc/kernel/optprobes_head.S b/arch/powerpc/kernel/o=
+ptprobes_head.S
+> index ff8ba4d3824d..49f31e554573 100644
+> --- a/arch/powerpc/kernel/optprobes_head.S
+> +++ b/arch/powerpc/kernel/optprobes_head.S
+> @@ -30,39 +30,47 @@ optinsn_slot:
+>  	.global optprobe_template_entry
+>  optprobe_template_entry:
+>  	/* Create an in-memory pt_regs */
+> -	stdu	r1,-INT_FRAME_SIZE(r1)
+> +	PPC_STLU	r1,-INT_FRAME_SIZE(r1)
+>  	SAVE_GPR(0,r1)
+>  	/* Save the previous SP into stack */
+>  	addi	r0,r1,INT_FRAME_SIZE
+> -	std	r0,GPR1(r1)
+> +	PPC_STL	r0,GPR1(r1)
+> +#ifdef CONFIG_PPC64
+>  	SAVE_10GPRS(2,r1)
+>  	SAVE_10GPRS(12,r1)
+>  	SAVE_10GPRS(22,r1)
+> +#else
+> +	stmw	r2, GPR2(r1)
+> +#endif
+>  	/* Save SPRS */
+>  	mfmsr	r5
+> -	std	r5,_MSR(r1)
+> +	PPC_STL	r5,_MSR(r1)
+>  	li	r5,0x700
+> -	std	r5,_TRAP(r1)
+> +	PPC_STL	r5,_TRAP(r1)
+>  	li	r5,0
+> -	std	r5,ORIG_GPR3(r1)
+> -	std	r5,RESULT(r1)
+> +	PPC_STL	r5,ORIG_GPR3(r1)
+> +	PPC_STL	r5,RESULT(r1)
+>  	mfctr	r5
+> -	std	r5,_CTR(r1)
+> +	PPC_STL	r5,_CTR(r1)
+>  	mflr	r5
+> -	std	r5,_LINK(r1)
+> +	PPC_STL	r5,_LINK(r1)
+>  	mfspr	r5,SPRN_XER
+> -	std	r5,_XER(r1)
+> +	PPC_STL	r5,_XER(r1)
+>  	mfcr	r5
+> -	std	r5,_CCR(r1)
+> +	PPC_STL	r5,_CCR(r1)
+> +#ifdef CONFIG_PPC64
+>  	lbz     r5,PACAIRQSOFTMASK(r13)
+>  	std     r5,SOFTE(r1)
+> +#endif
+>=20
+>  	/*
+>  	 * We may get here from a module, so load the kernel TOC in r2.
+>  	 * The original TOC gets restored when pt_regs is restored
+>  	 * further below.
+>  	 */
+> +#ifdef CONFIG_PPC64
+>  	ld	r2,PACATOC(r13)
+> +#endif
 
-## No regressions (compared to v5.10.31-56-g86a799ba8d60)
+Are the ISA and ABI documents for ppc32 available publicly? I would have=20
+thought that the TOC issues apply to ppc32 as well, but want to=20
+understand why this isn't a problem there.
 
-## No fixes (compared to v5.10.31-56-g86a799ba8d60)
+>=20
+>  	.global optprobe_template_op_address
+>  optprobe_template_op_address:
+> @@ -72,9 +80,11 @@ optprobe_template_op_address:
+>  	 */
+>  	nop
+>  	nop
+> +#ifdef CONFIG_PPC64
+>  	nop
+>  	nop
+>  	nop
+> +#endif
+>  	/* 2. pt_regs pointer in r4 */
+>  	addi	r4,r1,STACK_FRAME_OVERHEAD
+>=20
+> @@ -94,9 +104,11 @@ optprobe_template_insn:
+>  	/* 2, Pass instruction to be emulated in r4 */
+>  	nop
+>  	nop
+> +#ifdef CONFIG_PPC64
+>  	nop
+>  	nop
+>  	nop
+> +#endif
 
-## Test result summary
- total: 69955, pass: 58611, fail: 1787, skip: 9326, xfail: 231,
+It would be nice to put these behind a macro so as to avoid these #ifdef=20
+blocks here, as well as with the register save/restore sequence.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
+- Naveen
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
