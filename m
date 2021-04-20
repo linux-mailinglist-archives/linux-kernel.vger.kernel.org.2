@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A70D36540D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F30E365419
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhDTI1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhDTI1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:27:07 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC34C06174A;
-        Tue, 20 Apr 2021 01:26:36 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id r20so7202444ejo.11;
-        Tue, 20 Apr 2021 01:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Puq3uu3VM/r/ZxcT7seTw3qGPFeA4IvkP0YTU1D5aKE=;
-        b=gzl7k+XbQmlzNoSuTvdfgSphFfJQRLenPJ0Gj2kYZM3qsXk2SmTxzFU3l8iI5+YQtJ
-         ggtHbqiyxPNa4RodTUd6mL5HKj0q9KZunxHCC/LozOR6f0pW1HhXMFFJ3wHH8UhvumMd
-         uTM6slNqTEKc/EM+GqsTvX2/Q+o3xfoSbs4J2ApLBk+PSzxJXt/cTXI6TMLremdsQRhD
-         lTOUoijcNXuu9p2eexQ4N5u1kwwZE/rBt2BA10FXC2dzWBSzxAyXxcIdG1eyAhKE4SOC
-         bRYI6fbhUGwatFofWo72FV8fnMGitsB3BnS7XJRN7T0WSB4EELGJeqFe5/PpMuSYqqRq
-         1wFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Puq3uu3VM/r/ZxcT7seTw3qGPFeA4IvkP0YTU1D5aKE=;
-        b=ax/d9WnLDtwMIKA1Ns2UXhxzkl3NbiL3tjaFm7o441xn7OinHuAlrVyW5VZS7xuJL4
-         uOI44FIsSm+9tQVzuWgpNP+a1YNai7wkdRmAcfCHa/UMWmyjZjX9gtPX44eOJXaE2+6z
-         oVVSNHRNuHjvj/IR5PV4NrjJDdTGSqljs6N9WhQAahs6kzIrA6JhpiPEjMjeN4GQijFf
-         wuj6vgGDtXe7ACI/tPLs2OvdETfxJcbEMeRWeuZNiXIxk7ELLTWJBVPy5CYrKvTuC0mm
-         p0hIkb0EYDUkldRaQsS1Opd+7VQUDO7Vix8bCatN3HYIggIUoFl0aW3esEbYJ2Sn0G+c
-         G6BQ==
-X-Gm-Message-State: AOAM532/fiy3tiWunFEGmtkJFY7HgTWRnZpma9HMPy2uq0KO9FwZ+/R+
-        VsNO5neNENXsIp8Rf2Rtfls=
-X-Google-Smtp-Source: ABdhPJyrhCRacWIpY3ASRomiG1UZ70YRI8DByoUoShUYc23am8NJiaWB5VeU3Iv6sR2x3QOVVPOWEg==
-X-Received: by 2002:a17:906:f9da:: with SMTP id lj26mr25630986ejb.98.1618907194807;
-        Tue, 20 Apr 2021 01:26:34 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id i8sm5780615edu.64.2021.04.20.01.26.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 01:26:34 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 11:26:32 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Arvid.Brodin@xdin.com" <Arvid.Brodin@xdin.com>,
-        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "vishal@chelsio.com" <vishal@chelsio.com>,
-        "saeedm@mellanox.com" <saeedm@mellanox.com>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "ivan.khoronzhuk@linaro.org" <ivan.khoronzhuk@linaro.org>,
-        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
-        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        Po Liu <po.liu@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Leo Li <leoyang.li@nxp.com>
-Subject: Re: [EXT] Re: [net-next] net: dsa: felix: disable always guard band
- bit for TAS config
-Message-ID: <20210420082632.3fy4y3ftkhwrj7nm@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210419123825.oicleie44ms6zcve@skbuf>
- <DB8PR04MB5785E8D0499961D6C046092AF0489@DB8PR04MB5785.eurprd04.prod.outlook.com>
+        id S230326AbhDTI3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:29:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57058 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229551AbhDTI3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:29:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618907326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mr0hIV45HZyfj36zbs5xzzipJ3KnBhIuZDQPVZgMTZE=;
+        b=dq/bpuXT3bF+hCrpYPqZY1xwAOCOUjyiFqC5wk/ykrf87PD9oZXdJAfr+mfXakUrhNKeMt
+        36N6tLpRSUQgs/pHahy7NAI1Ycx70QdxQ5+BettDyKUFcQEONkPD3i0F94AIfqxmBSm7Kl
+        iAZWSVV+28ze1kQL3raW38q8lpiC7EQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8BA77ADDC;
+        Tue, 20 Apr 2021 08:28:46 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 10:28:45 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
+        adobriyan@gmail.com, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
+        neilb@suse.de, samitolvanen@google.com, rppt@kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, willy@infradead.org
+Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
+Message-ID: <YH6QvSuz3hITr2iH@dhcp22.suse.cz>
+References: <c3f0da9c-d127-5edf-dd21-50fd5298acef@sony.com>
+ <YH2a9YfRBlfNnF+u@dhcp22.suse.cz>
+ <23aa041b-0e7c-6f82-5655-836899973d66@sony.com>
+ <d70efba0-c63d-b55a-c234-eb6d82ae813f@amd.com>
+ <YH2ru642wYfqK5ne@dhcp22.suse.cz>
+ <07ed1421-89f8-8845-b254-21730207c185@amd.com>
+ <YH59E15ztpTTUKqS@dhcp22.suse.cz>
+ <b89c84da-65d2-35df-7249-ea8edc0bee9b@amd.com>
+ <YH6GyThr2mPrM6h5@dhcp22.suse.cz>
+ <2d0e3c44-832b-f297-90da-e2c3280eff32@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <DB8PR04MB5785E8D0499961D6C046092AF0489@DB8PR04MB5785.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2d0e3c44-832b-f297-90da-e2c3280eff32@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:06:40AM +0000, Xiaoliang Yang wrote:
-> Hi Vladimir.
+On Tue 20-04-21 10:00:07, Christian König wrote:
+> Am 20.04.21 um 09:46 schrieb Michal Hocko:
+> > On Tue 20-04-21 09:32:14, Christian König wrote:
+> > > Am 20.04.21 um 09:04 schrieb Michal Hocko:
+> > > > On Mon 19-04-21 18:37:13, Christian König wrote:
+> > > > > Am 19.04.21 um 18:11 schrieb Michal Hocko:
+> > [...]
+> > > > What I am trying to bring up with NUMA side is that the same problem can
+> > > > happen on per-node basis. Let's say that some user consumes unexpectedly
+> > > > large amount of dma-buf on a certain node. This can lead to observable
+> > > > performance impact on anybody on allocating from that node and even
+> > > > worse cause an OOM for node bound consumers. How do I find out that it
+> > > > was dma-buf that has caused the problem?
+> > > Yes, that is the direction my thinking goes as well, but also even further.
+> > > 
+> > > See DMA-buf is also used to share device local memory between processes as
+> > > well. In other words VRAM on graphics hardware.
+> > > 
+> > > On my test system here I have 32GB of system memory and 16GB of VRAM. I can
+> > > use DMA-buf to allocate that 16GB of VRAM quite easily which then shows up
+> > > under /proc/meminfo as used memory.
+> > This is something that would be really interesting in the changelog. I
+> > mean the expected and extreme memory consumption of this memory. Ideally
+> > with some hints on what to do when the number is really high (e.g. mount
+> > debugfs and have a look here and there to check whether this is just too
+> > many users or an unexpected pattern to be reported).
+> > 
+> > > But that isn't really system memory at all, it's just allocated device
+> > > memory.
+> > OK, that was not really clear to me. So this is not really accounted to
+> > MemTotal?
 > 
-> On Mon, Apr 19, 2021 at 20:38PM +0800, Vladimir Oltean wrote:
-> >
-> >What is a scheduled queue? When time-aware scheduling is enabled on
-> >the port, why are some queues scheduled and some not?
+> It depends. In a lot of embedded systems you only have system memory and in
+> this case that value here is indeed really useful.
 > 
-> The felix vsc9959 device can set SCH_TRAFFIC_QUEUES field bits to
-> define which queue is scheduled. Only the set queues serves schedule
-> traffic. In this driver we set all 8 queues to be scheduled in
-> default, so all the traffic are schedule queues to schedule queue.
+> > If that is really the case then reporting it into the oom
+> > report is completely pointless and I am not even sure /proc/meminfo is
+> > the right interface either. It would just add more confusion I am
+> > afraid.
+> 
+> I kind of agree. As I said a DMA-buf could be backed by system memory or
+> device memory.
+> 
+> In the case when it is backed by system memory it does make sense to report
+> this in an OOM dump.
+> 
+> But only the exporting driver knows what the DMA-buf handle represents, the
+> framework just provides the common ground for inter driver communication.
 
-I understand this, what I don't really understand is the distinction
-that the switch makes between 'scheduled' and 'non-scheduled' traffic.
-What else does this distinction affect, apart from the guard bands added
-implicitly here? The tc-taprio qdisc has no notion of 'scheduled'
-queues, all queues are 'scheduled'. Do we ever need to set the scheduled
-queues mask to something other than 0xff? If so, when and why?
+Then those drivers need to account for meminfo/oom report purposes.
+
+> > > > See where I am heading?
+> > > Yeah, totally. Thanks for pointing this out.
+> > > 
+> > > Suggestions how to handle that?
+> > As I've pointed out in previous reply we do have an API to account per
+> > node memory but now that you have brought up that this is not something
+> > we account as a regular memory then this doesn't really fit into that
+> > model. But maybe I am just confused.
+> 
+> Well does that API also has a counter for memory used by device drivers?
+
+I think that "memory used by device drivers" is immaterial. The only
+important thing is to account that memory where it makes sense. So for
+RAM based allocations to report them via meminfo and find other way to
+report device memory allocations.
+-- 
+Michal Hocko
+SUSE Labs
