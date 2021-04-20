@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1631A365D7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BE2365D85
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbhDTQg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:36:29 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:45380 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbhDTQgX (ORCPT
+        id S233090AbhDTQlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:41:06 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:38829 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232174AbhDTQk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:36:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id 9585443518;
-        Tue, 20 Apr 2021 18:35:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id dvDkY5oeBRVH; Tue, 20 Apr 2021 18:35:46 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id 15C744351D;
-        Tue, 20 Apr 2021 18:35:43 +0200 (CEST)
-From:   Jiri Prchal <jiri.prchal@aksignal.cz>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH v3 4/4] nvmem: eeprom: at25: export FRAM serial num
-Date:   Tue, 20 Apr 2021 18:35:34 +0200
-Message-Id: <20210420163534.37752-5-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210420163534.37752-1-jiri.prchal@aksignal.cz>
-References: <20210420163534.37752-1-jiri.prchal@aksignal.cz>
+        Tue, 20 Apr 2021 12:40:58 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 3AEA51D2;
+        Tue, 20 Apr 2021 09:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1618936826;
+        bh=Tch6zNZ8+bLnr2ibPN+rNcWbhq3cKgA9oHN3Hx5qr1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sg9s9zHlsm+Q8pGm8h9JKhSGH2xykFRjB3oQUlEX/OlaCK7Nnpwcq702pnveukIlQ
+         S3Q9AmEMx7oPGW5WpJeK7VUpSK2+Eu+OCxM81w0HMyC3ZP0tTvrj1gUV/4aq5zt4e3
+         gXzKPI0d1SnBnSeErn/JRKZ9kywAfJD5sW+6tDTw=
+Date:   Tue, 20 Apr 2021 11:40:24 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: Enabling pmbus power control
+Message-ID: <YH8D+LWxWPqnFd2h@hatter.bewilderbeest.net>
+References: <20210330180200.GK4976@sirena.org.uk>
+ <20210330193810.GA235990@roeck-us.net>
+ <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
+ <20210420033648.GA227111@roeck-us.net>
+ <YH5rky8nA4nKAVdg@hatter.bewilderbeest.net>
+ <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
+ <YH59WOg0iKbz1d0l@hatter.bewilderbeest.net>
+ <fe111c8a-9588-dbfb-624a-29bb3a5efe13@roeck-us.net>
+ <YH7w6HUtBSCZRWq4@hatter.bewilderbeest.net>
+ <20210420161317.GE6073@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210420161317.GE6073@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This exports serial number of FRAM in sysfs file named "sernum".
-Formatted in hex, each byte separated by space.
-Example:
-$ cat /sys/class/spi_master/spi0/spi0.0/sernum
-a4 36 44 f2 ae 6c 00 00
+On Tue, Apr 20, 2021 at 11:13:18AM CDT, Mark Brown wrote:
+>On Tue, Apr 20, 2021 at 10:19:04AM -0500, Zev Weiss wrote:
+>
+>> Mark, do you have any further input on what a viable approach might look
+>> like?
+>
+>I already suggested writing a driver or drivers that represent the
+>hardware you have, that advice remains.  It's hard to follow what you
+>were trying to say with your long mail earlier today but it seems like
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
- drivers/misc/eeprom/at25.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+That email was an attempt to explain why writing a driver for the 
+specific hardware devices we're powering seems like a poor fit to me.  
+To summarize:
 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index 4f6e983c278b..b2cffeb3af2c 100644
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -38,6 +38,7 @@ struct at25_data {
- 	struct nvmem_config	nvmem_config;
- 	struct nvmem_device	*nvmem;
- 	int has_sernum;
-+	char *sernum;
- };
- 
- #define	AT25_WREN	0x06		/* latch the write enable */
-@@ -172,6 +173,19 @@ static int fm25_aux_read(struct at25_data *at25, char *buf, uint8_t command,
- 	return status;
- }
- 
-+static ssize_t sernum_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct at25_data *at25;
-+	int i;
-+
-+	at25 = dev_get_drvdata(dev);
-+	for (i = 0; i < FM25_SN_LEN; i++)
-+		buf += sprintf(buf, "%02x ", at25->sernum[i]);
-+	sprintf(--buf, "\n");
-+	return (3 * i);
-+}
-+static DEVICE_ATTR_RO(sernum);
-+
- static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- {
- 	struct at25_data *at25 = priv;
-@@ -427,8 +441,13 @@ static int at25_probe(struct spi_device *spi)
- 		else
- 			at25->chip.flags |= EE_ADDR2;
- 
--		if (id[8])
-+		if (id[8]) {
- 			at25->has_sernum = 1;
-+			at25->sernum = kzalloc(FM25_SN_LEN, GFP_KERNEL);
-+			if (!at25->sernum)
-+				return -ENOMEM;
-+			fm25_aux_read(at25, at25->sernum, FM25_RDSN, FM25_SN_LEN);
-+		}
- 		else
- 			at25->has_sernum = 0;
- 
-@@ -467,6 +486,13 @@ static int at25_probe(struct spi_device *spi)
- 	if (IS_ERR(at25->nvmem))
- 		return PTR_ERR(at25->nvmem);
- 
-+	/* Export the FM25 serial number */
-+	if (at25->has_sernum) {
-+		err = device_create_file(&spi->dev, &dev_attr_sernum);
-+		if (err)
-+			return err;
-+	}
-+
- 	dev_info(&spi->dev, "%d %s %s %s%s, pagesize %u\n",
- 		 (chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
- 		 (chip.byte_len < 1024) ? "Byte" : "KByte",
--- 
-2.25.1
+  - There's a wide variety of different devices potentially behind an 
+    LM25066.
+
+  - A hypothetical driver for any one of them would be completely 
+    non-specific to that device and functionally identical to a driver 
+    for any other, because the only hardware it would actually be 
+    touching is the LM25066, and in ways that are again completely 
+    non-specific to anything but the LM25066 itself.
+
+>you basically don't want to use any abstraction or framework, but that's
+>not really suitable for upstream integration
+
+I'm not at all opposed to using a abstractions or frameworks (I'd very 
+much like to do so in fact).  The problem is that I've thus far been 
+unable to determine exactly what the appropriate one is.
+
+>other hardware that looks similar to the end user should look similar 
+>in the kernel too.
+
+Agreed -- hence my disinclination to write drivers artificially specific 
+to whatever is behind the LM25066.  What it looks like to the end user, 
+and I'd hope evetually the kernel as well, is a simple power switch and 
+nothing more.
+
+
+Zev
 
