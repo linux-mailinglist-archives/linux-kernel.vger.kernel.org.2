@@ -2,255 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3561C36596C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27B636595F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhDTNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:00:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55220 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232019AbhDTNAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:00:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618923608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=NQHj+Z0RSmuYblhHzrwE/j5Df/lULRXDHiHNLCKu+2E=;
-        b=CHn4E+KWcYBolID7/rCpEBQQkf2u4zT4vR8u0pEFODe7lqXE15SmE0wtL+yIH5RHWqbn2z
-        mgKslv3tAypTl4AloGbgK9EyvZFtVHI2R5LuBTmqehKAVRQwEIg1JFSxqXG6/qWM2oKDAw
-        swHZ0rrzPz5JyO1ZGl96ewQdFZIcZ64=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-MdRiD_5FNh-KFiNXGFYVFw-1; Tue, 20 Apr 2021 09:00:04 -0400
-X-MC-Unique: MdRiD_5FNh-KFiNXGFYVFw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60BBF193578F;
-        Tue, 20 Apr 2021 12:57:45 +0000 (UTC)
-Received: from crecklin.bos.com (unknown [10.10.115.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C76855D9CA;
-        Tue, 20 Apr 2021 12:57:40 +0000 (UTC)
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-To:     ebiggers@kernel.org, ardb@kernel.org, simo@redhat.com,
-        rafael@kernel.org, decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1 v10] x86/power use crc32 instead of md5 for hibernation e820 integrity check
-Date:   Tue, 20 Apr 2021 08:57:39 -0400
-Message-Id: <20210420125739.29353-1-crecklin@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S232206AbhDTM6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:58:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231718AbhDTM6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:58:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A4A613C3;
+        Tue, 20 Apr 2021 12:57:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618923481;
+        bh=pj7iH5/7ryvKV0103e/WzDqoTVMCnCeOsU1aueXSSWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AELGbPakwwA189udgGAWTMEERvHJSzMiJJ6zXc+pUHeHypJdz0V2fLe+BD1bzM3Nx
+         u9j/1K2l5BkbehD9ogeiYm7EMiRtZo3pybYvM6cZGY5LcQAnHIi9VRZ7v8vxG+stQK
+         GZ2TdxDIffeM0R+97tZrgAqWdhdoTu45VU5HxgOq9PfOoGh0glAUuurDI2Bad4nDOo
+         KZECeDYreSNaGkVAIyk8uMOKfQSmqol2Tr19JuTT7Jw0eQB08RumVkZeFP3Qz2yLts
+         SHCbpptQUT2ALWZS3QX0qSFE7JldhhO5+xK9SIm7k9tZyQCR2vjrXrovnnIkVMTz5M
+         Ap+IrrXFwGzUw==
+Date:   Tue, 20 Apr 2021 15:57:52 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 1/4] include/linux/mmzone.h: add documentation for
+ pfn_valid()
+Message-ID: <YH7P0J4+1erJK7v5@kernel.org>
+References: <20210420090925.7457-1-rppt@kernel.org>
+ <20210420090925.7457-2-rppt@kernel.org>
+ <f900f889-f059-7d48-dfc7-145c8cd54cf6@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f900f889-f059-7d48-dfc7-145c8cd54cf6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hibernation fails on a system in fips mode because md5 is used for the e820
-integrity check and is not available. Use crc32 instead.
+On Tue, Apr 20, 2021 at 11:22:53AM +0200, David Hildenbrand wrote:
+> On 20.04.21 11:09, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > Add comment describing the semantics of pfn_valid() that clarifies that
+> > pfn_valid() only checks for availability of a memory map entry (i.e. struct
+> > page) for a PFN rather than availability of usable memory backing that PFN.
+> > 
+> > The most "generic" version of pfn_valid() used by the configurations with
+> > SPARSEMEM enabled resides in include/linux/mmzone.h so this is the most
+> > suitable place for documentation about semantics of pfn_valid().
+> > 
+> > Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >   include/linux/mmzone.h | 11 +++++++++++
+> >   1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index 47946cec7584..961f0eeefb62 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -1410,6 +1410,17 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+> >   #endif
+> >   #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+> > +/**
+> > + * pfn_valid - check if there is a valid memory map entry for a PFN
+> > + * @pfn: the page frame number to check
+> > + *
+> > + * Check if there is a valid memory map entry aka struct page for the @pfn.
+> > + * Note, that availability of the memory map entry does not imply that
+> > + * there is actual usable memory at that @pfn. The struct page may
+> > + * represent a hole or an unusable page frame.
+> > + *
+> > + * Return: 1 for PFNs that have memory map entries and 0 otherwise
+> > + */
+> >   static inline int pfn_valid(unsigned long pfn)
+> >   {
+> >   	struct mem_section *ms;
+> > 
+> 
+> I'd rephrase all "there is a valid memory map" to "there is a memory map"
+> and add "pfn_valid() does to indicate whether the memory map as actually
+> initialized -- see pfn_to_online_page()."
+> 
+> pfn_valid() means that we can do a pfn_to_page() and don't get a fault when
+> accessing the "struct page". It doesn't state anything about the content.
 
-The check is intended to detect whether the E820 memory map provided
-by the firmware after cold boot unexpectedly differs from the one that
-was in use when the hibernation image was created. In this case, the
-hibernation image cannot be restored, as it may cover memory regions
-that are no longer available to the OS.
+Well, I mean valid in the sense you can access the struct page :)
+How about:
 
-A non-cryptographic checksum such as CRC-32 is sufficient to detect such
-inadvertent deviations.
+/**
+ * pfn_valid - check if there is a memory map entry for a PFN
+ * @pfn: the page frame number to check
+ *
+ * Check if there is a memory map entry aka struct page for the @pfn and it
+ * is safe to access that struct page; the struct page state may be
+ * uninitialized -- see pfn_to_online_page().
+ *
+ * Note, that availability of the memory map entry does not imply that
+ * there is actual usable memory at that @pfn. The struct page may
+ * represent a hole or an unusable page frame.
+ *
+ * Return: 1 for PFNs that have memory map entries and 0 otherwise.
+ */
 
-Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map by md5 digest")
-
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Tested-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-
-Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
----
-v1 -> v2
-   bump up RESTORE_MAGIC
-v2 -> v3
-   move embelishment from cover letter to commit comments (no code change)
-v3 -> v4
-   add note to comments that md5 isn't used for encryption here.
-v4 -> v5
-   reword comment per Simo's suggestion
-v5 -> v6
-   use wording from Eric Biggers, use crc32_le instead of crc32 from crypto
-	framework (crc32_le is in the core API and removes need for #defines)
-v6 -> v7
-   reword with input from Eric/Ard/Simo, code changed per Eric's feedback
-v7 -> v8
-   More feedback per Eric -
-   change 'Suspend' to 'Hibernation' in commit comments, rename e820_digest to
-   e820_checksum and change it to an unsigned long. rename get_e820_md5 to
-   compute_e820_crc32 and have it return the checksum value instead of writing
-   it into a user supplied buffer, get rid of hibernation_e820_save in favor of
-   calling compute_e820_crc32 directly, likewise, get rid of
-   hibernation_e820_mismatch in favor of comparing e820_checksum to the return
-   value of compute_e820_crc32()
-v8 -> v9
-   Make comment for compute_e820_crc32 more kerneldoc friendly. Also update
-   comment about the e820 firmware table in arch/x86/kernel/e820.c since it
-   also referred to MD5 and hibernation.
-v9 -> v10
-   Don't line wrap Fixes: line, add Reviewed-by lines from Eric and Dexuan and
-   Tested-by line from Dexuan. No code changed.
-
- arch/x86/kernel/e820.c     |  4 +-
- arch/x86/power/hibernate.c | 89 ++++++--------------------------------
- 2 files changed, 16 insertions(+), 77 deletions(-)
-
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index 22aad412f965..629c4994f165 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -31,8 +31,8 @@
-  *       - inform the user about the firmware's notion of memory layout
-  *         via /sys/firmware/memmap
-  *
-- *       - the hibernation code uses it to generate a kernel-independent MD5
-- *         fingerprint of the physical memory layout of a system.
-+ *       - the hibernation code uses it to generate a kernel-independent CRC32
-+ *         checksum of the physical memory layout of a system.
-  *
-  * - 'e820_table_kexec': a slightly modified (by the kernel) firmware version
-  *   passed to us by the bootloader - the major difference between
-diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-index cd3914fc9f3d..e94e0050a583 100644
---- a/arch/x86/power/hibernate.c
-+++ b/arch/x86/power/hibernate.c
-@@ -13,8 +13,8 @@
- #include <linux/kdebug.h>
- #include <linux/cpu.h>
- #include <linux/pgtable.h>
--
--#include <crypto/hash.h>
-+#include <linux/types.h>
-+#include <linux/crc32.h>
- 
- #include <asm/e820/api.h>
- #include <asm/init.h>
-@@ -54,95 +54,33 @@ int pfn_is_nosave(unsigned long pfn)
- 	return pfn >= nosave_begin_pfn && pfn < nosave_end_pfn;
- }
- 
--
--#define MD5_DIGEST_SIZE 16
--
- struct restore_data_record {
- 	unsigned long jump_address;
- 	unsigned long jump_address_phys;
- 	unsigned long cr3;
- 	unsigned long magic;
--	u8 e820_digest[MD5_DIGEST_SIZE];
-+	unsigned long e820_checksum;
- };
- 
--#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
- /**
-- * get_e820_md5 - calculate md5 according to given e820 table
-+ * compute_e820_crc32 - calculate crc32 of a given e820 table
-  *
-  * @table: the e820 table to be calculated
-- * @buf: the md5 result to be stored to
-+ *
-+ * Return: the resulting checksum
-  */
--static int get_e820_md5(struct e820_table *table, void *buf)
-+static inline u32 compute_e820_crc32(struct e820_table *table)
- {
--	struct crypto_shash *tfm;
--	struct shash_desc *desc;
--	int size;
--	int ret = 0;
--
--	tfm = crypto_alloc_shash("md5", 0, 0);
--	if (IS_ERR(tfm))
--		return -ENOMEM;
--
--	desc = kmalloc(sizeof(struct shash_desc) + crypto_shash_descsize(tfm),
--		       GFP_KERNEL);
--	if (!desc) {
--		ret = -ENOMEM;
--		goto free_tfm;
--	}
--
--	desc->tfm = tfm;
--
--	size = offsetof(struct e820_table, entries) +
-+	int size = offsetof(struct e820_table, entries) +
- 		sizeof(struct e820_entry) * table->nr_entries;
- 
--	if (crypto_shash_digest(desc, (u8 *)table, size, buf))
--		ret = -EINVAL;
--
--	kfree_sensitive(desc);
--
--free_tfm:
--	crypto_free_shash(tfm);
--	return ret;
--}
--
--static int hibernation_e820_save(void *buf)
--{
--	return get_e820_md5(e820_table_firmware, buf);
--}
--
--static bool hibernation_e820_mismatch(void *buf)
--{
--	int ret;
--	u8 result[MD5_DIGEST_SIZE];
--
--	memset(result, 0, MD5_DIGEST_SIZE);
--	/* If there is no digest in suspend kernel, let it go. */
--	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
--		return false;
--
--	ret = get_e820_md5(e820_table_firmware, result);
--	if (ret)
--		return true;
--
--	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
--}
--#else
--static int hibernation_e820_save(void *buf)
--{
--	return 0;
--}
--
--static bool hibernation_e820_mismatch(void *buf)
--{
--	/* If md5 is not builtin for restore kernel, let it go. */
--	return false;
-+	return ~crc32_le(~0, (unsigned char const *)table, size);
- }
--#endif
- 
- #ifdef CONFIG_X86_64
--#define RESTORE_MAGIC	0x23456789ABCDEF01UL
-+#define RESTORE_MAGIC	0x23456789ABCDEF02UL
- #else
--#define RESTORE_MAGIC	0x12345678UL
-+#define RESTORE_MAGIC	0x12345679UL
- #endif
- 
- /**
-@@ -179,7 +117,8 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
- 	 */
- 	rdr->cr3 = restore_cr3 & ~CR3_PCID_MASK;
- 
--	return hibernation_e820_save(rdr->e820_digest);
-+	rdr->e820_checksum = compute_e820_crc32(e820_table_firmware);
-+	return 0;
- }
- 
- /**
-@@ -200,7 +139,7 @@ int arch_hibernation_header_restore(void *addr)
- 	jump_address_phys = rdr->jump_address_phys;
- 	restore_cr3 = rdr->cr3;
- 
--	if (hibernation_e820_mismatch(rdr->e820_digest)) {
-+	if (rdr->e820_checksum != compute_e820_crc32(e820_table_firmware)) {
- 		pr_crit("Hibernate inconsistent memory map detected!\n");
- 		return -ENODEV;
- 	}
 -- 
-2.18.1
-
+Sincerely yours,
+Mike.
