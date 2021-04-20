@@ -2,219 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3673659E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0163659E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhDTNVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231526AbhDTNVh (ORCPT
+        id S232235AbhDTNX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:23:27 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:36059 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231769AbhDTNX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:21:37 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F428C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:21:05 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id m16so27953264qtx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:21:05 -0700 (PDT)
+        Tue, 20 Apr 2021 09:23:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618924981; x=1650460981;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=mD7e1Sok/EpNCUZuSCvTmrS/4K65HEedTp/Vv2SAHTA=;
+  b=rZybl/jZ5JiUuiOiXUkVxtRGKqc0MKNI0+jlEUSMoS3G3OudJ4ntoudw
+   7pQMcEiXePUQtv7cOdJX1/+m5FrJi2d9pxQED3EEOAuIWnRyuSeleinQl
+   EY6KbCHIL1FHKg4HTxxR67jTcixw1rSDfQ7CWWve6UQT84puLLE6njceu
+   tX+1vPY40nTS7IWQ8GgtMK2NBLl13G3nEe1mrOj1kfjOt8zZ+Ulfo4/2P
+   RgtvoT7G3GhiJoc6MzX2oRmtO0CCl9gdAy4bnfjukgrYqfGf/R6F96JBw
+   QWyQwRe71CMoN3A3AG+ad4lWC4nzj1uMDmVK2K+IRYTXcx0FDydzvuHAw
+   Q==;
+IronPort-SDR: HrHnlN3ncmRFTsN2YByUyJvD5bhzgF32Wov1aZ3oaCGJGIM7sv+i2IyR18Z4lM7rG4eRxlFc/W
+ sjNv6EoLGFKkbqKAKaag8qc2kSkOg3aaCwvMYNMByssR64oh1K5Epg2H2au96pqjgxdw0Q4GTY
+ zSeM9/JIMuuhdBMXR4IE/5Qa5D/fSbozQhXczQboAUe8rmOD+oONtlOURsvL1niEyOOZqJvhYg
+ POPF4HvgqPNNmCNf5evjXHPM/F45yA07MrKDLpoTJR+f1Ej2HKE1xxeQPXusWLCYC5rS0kw/re
+ onU=
+X-IronPort-AV: E=Sophos;i="5.82,237,1613404800"; 
+   d="scan'208";a="269470382"
+Received: from mail-sn1nam04lp2057.outbound.protection.outlook.com (HELO NAM04-SN1-obe.outbound.protection.outlook.com) ([104.47.44.57])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Apr 2021 21:23:00 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VXOjKrAH86nouUSnkXc4Cl+9bIDFpKhj/DimpWkLPfG4p4YJTTNI/zNlBR6TtVAbKxc+EpT2uyG27buPR1T5DLP6obIfQvWKeDAb4K5m2bLYW5cwHQ9S/wUQiXySDWmatoeeZew8CrVa1spx0SdsbxBNr1X5WkMRApXpu76VZOC3MgJsiyjjLTl6wkijs4aZLG5/n296VfgqhKiu5zbErQQwHo6WbWiDSzqBdQlOxm3/zkipk0/BJur5+Z12CBVLfqU745Y2MpHmby0WHQQ4lNIOBVg7cpbOshc2dZZ5QojZ+ISrJ5aNdPV/lk8d+HgUNJ9CXFMTJbkNWHY2ggAxLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mD7e1Sok/EpNCUZuSCvTmrS/4K65HEedTp/Vv2SAHTA=;
+ b=VlaA7pi8ZBbfn5hD3u4/sM+X9bjzcdJ3V2MpXW//dYJDZjPQMptGJSLg71DVOb/oJA0gx1GVZ5doH/5MmKdxo8pbLp40i42zOWV91D6KgVpO3sj7dapVIeqr6Fgh8VvfnZbgbqoUoFGBH/cDUJRmSVJjQVlfogN3hYJUGYJ5WQiLu2Sl1ooBKW1d4/Qtr8FOOek2yijQAiU0GRLzYcJOZJe6yJDR30EQNpDGf+FLt6A8MPkFv1qNcAtxmhsHH3Ncz688ljmrsD+vqtm5lYG+W7qhfUkqJfJERhKDzQgikQHW9NyxLjoN6ngNqE+zw/17CgugkHoXpb1ez38Be4wlSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:references:in-reply-to:mime-version:thread-index:date
-         :message-id:subject:to:cc;
-        bh=lcg8d1PC77f/cxBaj4rJNOd2+9alxBLI/ogFkLACJAU=;
-        b=Sua0BebkkUy3kCFmagM1DRdUVxn4LsgxsKJK3PeYxGXYmS8P9pEWXx+R3h8WKHzmGm
-         QxfGGM0uPtce4sodKA88FwYIxhO1EPveSEcH0tACdGQPNMqTDN/jbj9ATzlxk18z7ajp
-         +Jo0AHm19BeaFJVk/Xpj9Gq7vUhbAAYIbVHkg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:references:in-reply-to:mime-version
-         :thread-index:date:message-id:subject:to:cc;
-        bh=lcg8d1PC77f/cxBaj4rJNOd2+9alxBLI/ogFkLACJAU=;
-        b=O+9nlEjhWap3ROFEeHMoV5tNKZWtZiNQZsmMP8Zt+ds2ldWa2b2sLI4XTcp1dD7KTp
-         WTpp7IfKzHlRoXrL/IQT8GTDmwOLUAYDgWv057eH5sfmAXkgosVfFGWqvEzaRQVJK5gi
-         poKGWpcQkugzUZ50F8fUmsjYBgSqHWt7M8mT2oaBHxYpwAL0imj+mwlgsIT1ZNKtiKfv
-         VntEiY8Itd42JdBGGJYvVT/zrnSDiIz2GEf4ngPs6evXCHmBBJPIWF8D8JYHgWrjGzG8
-         KCRJf5HFJEceSIm/p2kp9dTf0wb4Ba1Lt1qXWVlY93DU9XThOOML3C3kcxBiB15/sM5d
-         s+yg==
-X-Gm-Message-State: AOAM5335W3+hA5rB5CCqASD8jYu9iE1W4pHiUK82MDLt2MjDM5BjX3Jy
-        YhZv0gNYML1a1jrDCT4u054aXs+Ue+RiGeAJ7y586Q==
-X-Google-Smtp-Source: ABdhPJziFdyqNh0H/mlBVvxfPeftckS6vfx/lG71D+X3PrSsYVC1WYKHOp2ICVgs1JGgJ7EosclLbJU5wmqilFeuzQs=
-X-Received: by 2002:ac8:5d88:: with SMTP id d8mr17012278qtx.387.1618924864631;
- Tue, 20 Apr 2021 06:21:04 -0700 (PDT)
-From:   Kashyap Desai <kashyap.desai@broadcom.com>
-References: <CABTNMG0C7_1xYvgethtdPNTBLAfQEy5xu7q-MG=BbpqF2TwY5A@mail.gmail.com>
-In-Reply-To: <CABTNMG0C7_1xYvgethtdPNTBLAfQEy5xu7q-MG=BbpqF2TwY5A@mail.gmail.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mD7e1Sok/EpNCUZuSCvTmrS/4K65HEedTp/Vv2SAHTA=;
+ b=vwp06LQST1QkJAnQOgV+aVqGajWKG0pMoo35XqR6qKFVBI9gZuY1YOkW5st2UUWie6IIARGagqv9uPs+74dHoXNE2ERXUDYqPHdqvEbdkT57azt1dAt45WpAcZWO4R/LIFMiaqPsgwFS3f3A1EXiftHdNjMCqq9SzNyj+Llk/Pw=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB6140.namprd04.prod.outlook.com (2603:10b6:5:12c::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4042.18; Tue, 20 Apr 2021 13:22:52 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 13:22:52 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Brendan Peter <bpeter@lytx.com>
+Subject: RE: [PATCH v3 1/2] mmc: block: Issue flush only if allowed
+Thread-Topic: [PATCH v3 1/2] mmc: block: Issue flush only if allowed
+Thread-Index: AQHXNamO4qwHFqGV5UGPU5sSHCBzdqq9QwQAgAAh/7A=
+Date:   Tue, 20 Apr 2021 13:22:52 +0000
+Message-ID: <DM6PR04MB6575DE38D3B919171549A1D0FC489@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210420055306.4858-1-avri.altman@wdc.com>
+ <20210420055306.4858-2-avri.altman@wdc.com>
+ <a55b7fe7-0d84-a9a6-8f64-6f1632cffcc4@intel.com>
+In-Reply-To: <a55b7fe7-0d84-a9a6-8f64-6f1632cffcc4@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 41034b1a-347f-42f4-714e-08d903ff6704
+x-ms-traffictypediagnostic: DM6PR04MB6140:
+x-microsoft-antispam-prvs: <DM6PR04MB61407904BD1224DF380DA2F0FC489@DM6PR04MB6140.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L2ssCy6cCmKSlDCpvD79mqFOouf3Yi/DRtCLE91PGtrGqxdxiPYuK7KsUgPQvCRgE0Ce/QEwQ9NI7FS4vl/VD9/fhvr3sqOyoKMDzCjDNhPP+3vI2ep1AOc9vGtIlHo5TEjEBGwqUuc6CS6wZ41QYZj0KMhEd6o3sTpUD9MjmAhqmZZkSytztft+TwK4fcD/32aifyQMJ+bdRQImXFSN6KcpKxJRYx7XpzEREatheawRKUac1+KvT84zjalsCgLva2mzN0n4KBvQs5O0vFyGXE2nTrt2x2bemtmwav5f06Nz9QV/MAaOsIMpgj411DkFhQYbWWqr/CZU7UVxv4tcu4M5jqFJ/j3+M7QmNV83kHYiUDFfbMOaLsreiIYEZaDvnDuVG/ccR/vSKES3Pva9GMbpp6zcnxCa4j3NXEf2Z+0OULsjzYWSCdSra3qJSpmdzhRReGEpCsOw7gOBIhjSoiWX/frobQTnf2jdi4cu0490q2rghtT7nk6sjsFynF+igrSeOx2gwFS34jlQnzyoRtAlIlSuw3XgvluXi4/koGFhZmwThQD/dKNhyZF7avDXRvVymPaSSILUUKR9ftPRVvztUGOcWCwzUMqIobO0znA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(136003)(376002)(366004)(346002)(71200400001)(26005)(66556008)(64756008)(186003)(66446008)(83380400001)(33656002)(316002)(478600001)(2906002)(8676002)(7696005)(38100700002)(76116006)(4326008)(86362001)(110136005)(52536014)(122000001)(66946007)(55016002)(6506007)(5660300002)(8936002)(9686003)(53546011)(54906003)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?bjVaSFhIc2lqZVNhb1cybUxHa2dVUEhOSVRvYUlKTGM4Nit1WkhDOVJHa1ZV?=
+ =?utf-8?B?NlNvd2phUW5nd0xoZ2h5V2lROWVLMmhoZFlhZmV5K1g0ZDg4RE9lOHBleUI1?=
+ =?utf-8?B?Q1lrY1hYZE02NkVnd0pybEJETUs5ajVnTWZRSUJRZTZTRnhLOUk3MjQxQ2Vp?=
+ =?utf-8?B?SGhCbFZ0TXArTUlGbTI2a1VqSHpmWEEyaHBhcG1VQWhTM29aNWVwZW5EWld6?=
+ =?utf-8?B?Rm54MjNjaVBTZjRKdlBBVzIyOFJzQVhhM2taTVA5QklxbTJCaGZici84ZzFN?=
+ =?utf-8?B?NlBGTUpiSldUa0pXTTZCRXBMTnhsemlJQ1FiZWtjcU9aY1ZKM1NlN25yckJR?=
+ =?utf-8?B?cEIwVTl4bzE1YTVVTHhDRG02RDU0ZE5lcG9nTE5kTnJWdk9vangrM2VidE13?=
+ =?utf-8?B?dFgvVk9tWVh1UHlzT3pWay8vTU1XclVEUm5YL0t4SE9TUVl2L1doNzFtYysr?=
+ =?utf-8?B?K3ZETTRaVkt1aTVWVFE4dHNROWh3WEZWY2p6ZHNZY0R5U2N1ZVNISHE2RVdq?=
+ =?utf-8?B?WlVMVzJFdGtYM0VEVk1CUFFnNXdDcTBjbjlRU1FBbmoxSmJrQkpJaHhHRS9W?=
+ =?utf-8?B?eDhacEZpNmNlSG5Id0hSZWx1cjFrR3JvcjRhQ1JBNUJvN2lGZFdMNkw3TUtt?=
+ =?utf-8?B?VDh5bGl0ZFdOZTVBekw3V09RTWZxVjF1Ry9HNjhId2puajRVVGhaa2ExUlpx?=
+ =?utf-8?B?Mzc0SXVPekxBMDJRemVjTDdmRjVLaVU3MUxqMHhPRGNIamU1U2REMjBpTjl4?=
+ =?utf-8?B?eFkwNFQ4NVg0RWIzMERMWUp1SnZ4QXYwWlZwN1VlSnZjdXN5eUdGS0ZCUG1r?=
+ =?utf-8?B?OHpuMDl0a1JiY2dVZzk1VlZzd2N5UlBFUHE4Q2w5S0l4TWxYTXRHa0V5NjdV?=
+ =?utf-8?B?ZGFKZ3M0aW15OURvRWxCRmNqZU5KNUlJbURKMFFpQlVwQk0zZWZqbnJ6aTFa?=
+ =?utf-8?B?c1VGbHhwdmdZVis1NHk0RlNlbEhGODY4ZkcxR1ZvcTZkK2ZCdnlmeU95K3RE?=
+ =?utf-8?B?OEV0RHBaMFhoSEcyY1VLSTVXYXpYaUZEZEhPd1RueGFkSTB1TDlGeCtzak1m?=
+ =?utf-8?B?SXJkT1V4d1h3WDFQZDBTeStmaGFzelowVGZsWnpRTXFGT0Y2c2lFTUN2T1pW?=
+ =?utf-8?B?ckhjR0xWbGxZYmhWSHk5OE9Rblo4YWZYbzRpRk1OYUN6SVRLWndqWEVhcDBy?=
+ =?utf-8?B?SGt6REpEWXMxeGZ5YVF1TElLSWM5cExPR1FvWGY0amw3SXV5RCtxUVZLQUc3?=
+ =?utf-8?B?enJ2S0QzQTRkTDNscWhiOTJPc1E0QzhKcHlyejNBaG1ZOTI0MkpiRnlqVmwy?=
+ =?utf-8?B?dDdXUkhZSVczT1V1QXFidExxWlNvS0hYWG03dHNWS0ZqWDFqVU5GbzJ3VDVk?=
+ =?utf-8?B?Y2hMK1dpRCt5R1dtTDI1Z3BBeFVkWWVTQWhnRkFnUkNUSWxraitsam0xYUk5?=
+ =?utf-8?B?QUwwWlVMZ043VHFYWnNuQ090c2J4UUprWWUrNE9xTzU5c3F3RmVqeDIzbE9i?=
+ =?utf-8?B?ZGVSRGt3c3gxb2FhOEpvQkV2NTZpZ3QwRitQbTZNVW1BN0tpRXlSNUphZHNF?=
+ =?utf-8?B?MTFNYlVOTThpcW1CKzFQNHU1V3E5dGYrNVkvZnFxTldhTFdKWjRUZHkrcXln?=
+ =?utf-8?B?SVhTMmd0blpyVXZvbklrbU9JY1hQckNUMFY3OEZIc1BZbkpQUmtVRUVaWWlE?=
+ =?utf-8?B?Z3VyQXViay8wVFQxUXFRa2pmWUxTd0pWN1FwMys5WUZkTXcvWkJOY1lBUnlj?=
+ =?utf-8?Q?bLcpN3e1V0YSz9im95IxqfqQhlWlhGFdCAvZ2oI?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQHysWeFDpgDusIJflHyzZiT0NMu0qqGbA7g
-Date:   Tue, 20 Apr 2021 18:51:02 +0530
-Message-ID: <edbdf635a1f23dfa5d09c7ff8377bc11@mail.gmail.com>
-Subject: RE: Broadcom 9460 raid card takes too long at system resuming
-To:     Chris Chiu <chris.chiu@canonical.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan Srikanteshwara 
-        <shivasharan.srikanteshwara@broadcom.com>,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>
-Cc:     linux-scsi@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007efaab05c0675193"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41034b1a-347f-42f4-714e-08d903ff6704
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 13:22:52.8458
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EwL3XaX7q0NhPjyww3yyqI9rCyKsr7UiWu6wYdTzaKNt4iVExhJhwvsh0Xy2iqB/E4qvfcV+hnWfBxvJPpS3sA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000007efaab05c0675193
-Content-Type: text/plain; charset="UTF-8"
-
-Hi Chris -
-
-Most likely behavior you explained is associated with how much time FW takes
-to be activated.
-In case of actual init from fresh boot, FW is already started running once
-system is powered on, and user may not be aware of it.
-By the time OS boot reach driver load from fresh boot, there was enough time
-spend in system bring up.This is not true in case of resume (Hibernation.).
-
-Kashyap
-
-> -----Original Message-----
-> From: Chris Chiu [mailto:chris.chiu@canonical.com]
-> Sent: Monday, April 19, 2021 3:45 PM
-> To: kashyap.desai@broadcom.com; sumit.saxena@broadcom.com;
-> shivasharan.srikanteshwara@broadcom.com;
-> megaraidlinux.pdl@broadcom.com
-> Cc: linux-scsi@vger.kernel.org; Linux Kernel
-> <linux-kernel@vger.kernel.org>
-> Subject: Broadcom 9460 raid card takes too long at system resuming
->
-> Hi,
->     We found that the Broadcom 9460 RAID card will take ~40 seconds in
-> megasas_resume. It is mainly waiting for the FW to come to ready state,
-> please refer to the following kernel log. The FW version is
-> "megasas: 07.714.04.00-rc1". It seems that the
-> megasas_transition_to_ready() loop costs ~40 seconds in megasas_resume.
-> However, the same megasas_transition_to_ready() function only takes a few
-> milliseconds to complete in megasas_init_fw(). The .read_fw_status_reg
-> maps
-> to megasas_read_fw_status_reg_fusion. I tried to add
-> pci_enable_device_mem() and pci_set_master before
-> megasas_transition_to_ready() in megasas_resume() but it makes no
-> difference.
->
-> I don't really know what makes the difference between driver probe and
-> resume. The lspci information of the raid controller is here
-> https://gist.github.com/mschiu77/e74ec084cc925643add845fa4dc31ab6.
-> Any suggestions about what I can do to find out the cause? Thanks.
->
-> [   62.357688] megaraid_sas 0000:45:00.0: megasas_resume is called
-> [   62.357719] megaraid_sas 0000:45:00.0: Waiting for FW to come to ready
-> state
-> [  104.382571] megaraid_sas 0000:45:00.0: FW now in Ready state [
-> 104.382576] megaraid_sas 0000:45:00.0: 63 bit DMA mask and 63 bit
-> consistent mask [  104.383350] megaraid_sas 0000:45:00.0:
-> requested/available msix 33/33 [  104.383669] megaraid_sas 0000:45:00.0:
-> Performance mode :Latency
-> [  104.383671] megaraid_sas 0000:45:00.0: FW supports sync cache        :
-> Yes
-> [  104.383677] megaraid_sas 0000:45:00.0: megasas_disable_intr_fusion is
-> called outbound_intr_mask:0x40000009 [  104.550570] megaraid_sas
-> 0000:45:00.0: FW provided
-> supportMaxExtLDs: 1       max_lds: 64
-> [  104.550574] megaraid_sas 0000:45:00.0: controller type       :
-> MR(4096MB)
-> [  104.550575] megaraid_sas 0000:45:00.0: Online Controller Reset(OCR)
->  : Enabled
-> [  104.550577] megaraid_sas 0000:45:00.0: Secure JBOD support   : Yes
-> [  104.550579] megaraid_sas 0000:45:00.0: NVMe passthru support : Yes [
-> 104.550581] megaraid_sas 0000:45:00.0: FW provided TM
-> TaskAbort/Reset timeout        : 6 secs/60 secs
-> [  104.550583] megaraid_sas 0000:45:00.0: JBOD sequence map support     :
-> Yes
-> [  104.550585] megaraid_sas 0000:45:00.0: PCI Lane Margining support    :
-> No
-> [  104.550999] megaraid_sas 0000:45:00.0: megasas_enable_intr_fusion is
-> called outbound_intr_mask:0x40000000
->
-> Chris
-
---0000000000007efaab05c0675193
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-P3lSxcw4Cg90iKHqfpwLnGNc9AGXHMxUCukpnAHRlivljilKHMx1ymb180BLmtF+ZLm6KrFLQWzB
-4KeiUOMtKM13wJrQubqTeZgB1XA+89jeLYlxagVsMyksdwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUkTOZp9jXE3yPj4ieKeDT
-OiNyCtswDQYJKoZIhvcNAQELBQADggEBABG1KCh7cLjStywh4S37nKE1eE8KPyAxDzQCkhxYLBVj
-gnnhaLmEOayEucPAsM1hCRAm/vR3RQ27lMXBGveCHaq9RZkzTjGSbzr8adOGK3CluPrasNf5StX3
-GSk4HwCapA39BDUrhnc/qG5vHwLrgA1jwAvSy8e/vn4F4h+KPrPoFNd1OnCafedbuiEXTqTkn5Rk
-vZ2AOTcSbxvmyKBMb/iu1vn7AAoui0d8GYCPoz8shf2iWMSUXVYJAMrtRHVJr47J5jlopF5F2ghC
-MzNfx6QsmJhYiRByd8L9sUOjp/DMgkC6H93PyYpYMiBGapgNf6UMsLg/1kx5DATNwhPAJbkxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxwO04DXOeYbZtr
-4mAwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDfWsS9LGH0ee4Opq38MIgnxKEMk
-p113Qw3oNEO8Nj7OMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDQyMDEzMjEwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBHcCfzX5hyepwMFJUUIGTmM5xPfuRBRm9KUWlJ85BqG/eQ
-DZv9RkLpDxXLcPuf//c2H5oYiZEzYqLM+ZvvTIyxrtLtIzftFIsd5YX4LzJy3vvUvyPhJXiWLZRo
-7ilInZMUSVUT+xCobEfiQNfmcS95jJO20C+YEZqi/9i8gPcExa2ZFUR6aHacUt8CF0996oxlFU4m
-sCuKW+tSvDYSPU/XNVIM4S/vV0MMu+oX4fZ8+44WPbUdv73FyChBuhLb1uemsFouTB6DNmg4mdrZ
-+wXmVCdaQu4XeI1JAt5bz0Ggvle+bQUn9PMXZNa+RBXN/mv7MUWY7Y4cFkK1enetop1m
---0000000000007efaab05c0675193--
+IA0KPiBPbiAyMC8wNC8yMSA4OjUzIGFtLCBBdnJpIEFsdG1hbiB3cm90ZToNCj4gPiBUaGUgY2Fj
+aGUgbWF5IGJlIGZsdXNoZWQgdG8gdGhlIG5vbnZvbGF0aWxlIHN0b3JhZ2UgYnkgd3JpdGluZyB0
+bw0KPiA+IEZMVVNIX0NBQ0hFIGJ5dGUgKEVYVF9DU0QgYnl0ZSBbMzJdKS4gV2hlbiBpbiBjb21t
+YW5kIHF1ZXVlaW5nIG1vZGUsDQo+IHRoZQ0KPiA+IGNhY2hlIG1heSBiZSBmbHVzaGVkIGJ5IGlz
+c3VpbmcgYSBDTURRX1RBU0tfIERFVl9NR01UIChDTUQ0OCkgd2l0aCBhDQo+ID4gRkxVU0hfQ0FD
+SEUgb3AtY29kZS4gIEVpdGhlciB3YXksIHZlcmlmeSB0aGF0IFRoZSBjYWNoZSBmdW5jdGlvbiBp
+cw0KPiA+IHR1cm5lZCBPTiBiZWZvcmUgZG9pbmcgc28uDQo+ID4NCj4gPiBmaXhlczogMWU4ZTU1
+YjY3MDMwIChtbWM6IGJsb2NrOiBBZGQgQ1FFIHN1cHBvcnQpDQo+ID4NCj4gPiBSZXBvcnRlZC1i
+eTogQnJlbmRhbiBQZXRlciA8YnBldGVyQGx5dHguY29tPg0KPiA+IFRlc3RlZC1ieTogQnJlbmRh
+biBQZXRlciA8YnBldGVyQGx5dHguY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEF2cmkgQWx0bWFu
+IDxhdnJpLmFsdG1hbkB3ZGMuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL21tYy9jb3JlL2Js
+b2NrLmMgICB8IDcgKysrKysrKw0KPiA+ICBkcml2ZXJzL21tYy9jb3JlL21tYy5jICAgICB8IDIg
+Ky0NCj4gPiAgZHJpdmVycy9tbWMvY29yZS9tbWNfb3BzLmggfCA1ICsrKysrDQo+ID4gIDMgZmls
+ZXMgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbW1jL2NvcmUvYmxvY2suYyBiL2RyaXZlcnMvbW1jL2NvcmUvYmxv
+Y2suYw0KPiA+IGluZGV4IDhiZmQ0ZDk1YjM4Ni4uNWI2NTAxZmM5ZmI3IDEwMDY0NA0KPiA+IC0t
+LSBhL2RyaXZlcnMvbW1jL2NvcmUvYmxvY2suYw0KPiA+ICsrKyBiL2RyaXZlcnMvbW1jL2NvcmUv
+YmxvY2suYw0KPiA+IEBAIC0xNDc2LDYgKzE0NzYsMTEgQEAgc3RhdGljIGludCBtbWNfYmxrX2Nx
+ZV9pc3N1ZV9mbHVzaChzdHJ1Y3QNCj4gbW1jX3F1ZXVlICptcSwgc3RydWN0IHJlcXVlc3QgKnJl
+cSkNCj4gPiAgICAgICBzdHJ1Y3QgbW1jX3F1ZXVlX3JlcSAqbXFycSA9IHJlcV90b19tbWNfcXVl
+dWVfcmVxKHJlcSk7DQo+ID4gICAgICAgc3RydWN0IG1tY19yZXF1ZXN0ICptcnEgPSBtbWNfYmxr
+X2NxZV9wcmVwX2RjbWQobXFycSwgcmVxKTsNCj4gPg0KPiA+ICsgICAgIGlmIChtbWNfY2FyZF9t
+bWMobXEtPmNhcmQpICYmICFtbWNfZmx1c2hfYWxsb3dlZChtcS0+Y2FyZCkpIHsNCj4gPiArICAg
+ICAgICAgICAgIGJsa19tcV9lbmRfcmVxdWVzdChyZXEsIEJMS19TVFNfT0spOw0KPiA+ICsgICAg
+ICAgICAgICAgcmV0dXJuIC1FUEVSTTsNCj4gPiArICAgICB9DQo+ID4gKw0KPiA+ICAgICAgIG1y
+cS0+Y21kLT5vcGNvZGUgPSBNTUNfU1dJVENIOw0KPiA+ICAgICAgIG1ycS0+Y21kLT5hcmcgPSAo
+TU1DX1NXSVRDSF9NT0RFX1dSSVRFX0JZVEUgPDwgMjQpIHwNCj4gPiAgICAgICAgICAgICAgICAg
+ICAgICAgKEVYVF9DU0RfRkxVU0hfQ0FDSEUgPDwgMTYpIHwNCj4gPiBAQCAtMjIyNiw2ICsyMjMx
+LDggQEAgZW51bSBtbWNfaXNzdWVkIG1tY19ibGtfbXFfaXNzdWVfcnEoc3RydWN0DQo+IG1tY19x
+dWV1ZSAqbXEsIHN0cnVjdCByZXF1ZXN0ICpyZXEpDQo+ID4gICAgICAgICAgICAgICBzd2l0Y2gg
+KHJlcV9vcChyZXEpKSB7DQo+ID4gICAgICAgICAgICAgICBjYXNlIFJFUV9PUF9GTFVTSDoNCj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgcmV0ID0gbW1jX2Jsa19jcWVfaXNzdWVfZmx1c2gobXEs
+IHJlcSk7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgIGlmIChyZXQgPT0gLUVQRVJNKQ0KPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBNTUNfUkVRX0ZJTklTSEVEOw0K
+PiANCj4gVXNpbmcgYW4gZXJyb3IgY29kZSBmb3IgdGhpcyBjYXNlIHNlZW1zIGEgbGl0dGxlIGZy
+YWdpbGUuDQo+IA0KPiBIb3cgYWJvdXQgc29tZXRoaW5nIGxpa2U6DQo+IA0KPiAgICAgICAgICAg
+ICAgICAgY2FzZSBSRVFfT1BfRkxVU0g6DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlmICht
+bWNfYmxrX2NhY2hlX2Rpc2FibGVkKG1xLT5jYXJkKSkgew0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIGJsa19tcV9lbmRfcmVxdWVzdChyZXEsIEJMS19TVFNfT0spOw0KPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBNTUNfUkVRX0ZJTklTSEVEOw0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICB9DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldCA9
+IG1tY19ibGtfY3FlX2lzc3VlX2ZsdXNoKG1xLCByZXEpOw0KPiANCj4gDQo+IHN0YXRpYyBib29s
+IG1tY19ibGtfY2FjaGVfZGlzYWJsZWQoc3RydWN0IG1tY19jYXJkICpjYXJkKQ0KPiB7DQo+ICAg
+ICAgICAgcmV0dXJuIG1tY19jYXJkX21tYyhtcS0+Y2FyZCkgJiYgIW1tY19mbHVzaF9hbGxvd2Vk
+KGNhcmQpOw0KPiB9DQpEb25lLg0KDQpUaGFua3MsDQpBdnJpDQo=
