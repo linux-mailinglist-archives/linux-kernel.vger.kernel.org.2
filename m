@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C923653D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA35B3653D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhDTIR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:17:26 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2887 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhDTIRZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:17:25 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FPbxB3wz9z6yhbT;
-        Tue, 20 Apr 2021 16:11:26 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Apr 2021 10:16:51 +0200
-Received: from [10.47.91.165] (10.47.91.165) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 20 Apr
- 2021 09:16:51 +0100
-Subject: Re: [PATCH] scsi: core: Cap initial sdev queue depth at
- shost.can_queue
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kashyap.desai@broadcom.com>, <dgilbert@interlog.com>
-References: <1618848384-204144-1-git-send-email-john.garry@huawei.com>
- <YH4aIECa/J/1uS5S@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <bba5f248-523d-0def-1a3e-bafeb2b7633f@huawei.com>
-Date:   Tue, 20 Apr 2021 09:14:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S230035AbhDTIO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:14:58 -0400
+Received: from mga14.intel.com ([192.55.52.115]:24307 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhDTIO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:14:57 -0400
+IronPort-SDR: V+jqhMYR8N4lmIp+LH/R/2umng7G/eaDGHF+AjHA7StJ+Dezjo+XBv4lpd7C1HBRJsiDMLeykh
+ qaGGPBdNCSJQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195022993"
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="195022993"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 01:14:26 -0700
+IronPort-SDR: Cxj7ganx+nV90yPpMiVWE6qtl6+EMVAiGF6UykeJoDtukenFRfrSPjRTDSrKPkZSKpGF2Cna0F
+ F6uvu7cEBDBQ==
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="426831797"
+Received: from karunatx-mobl.gar.corp.intel.com (HELO localhost) ([10.252.35.249])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 01:14:21 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Rajeev Nandan <rajeevny@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     mkrishn@codeaurora.org, Rajeev Nandan <rajeevny@codeaurora.org>,
+        linux-kernel@vger.kernel.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, hoegsberg@chromium.org,
+        Lyude Paul <lyude@redhat.com>,
+        "Lankhorst\, Maarten" <maarten.lankhorst@intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [v1 0/3] drm: Add support for backlight control of eDP panel on ti-sn65dsi86 bridge
+In-Reply-To: <1618418390-15055-1-git-send-email-rajeevny@codeaurora.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1618418390-15055-1-git-send-email-rajeevny@codeaurora.org>
+Date:   Tue, 20 Apr 2021 11:14:18 +0300
+Message-ID: <871rb5bcf9.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YH4aIECa/J/1uS5S@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.91.165]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 01:02, Ming Lei wrote:
-> On Tue, Apr 20, 2021 at 12:06:24AM +0800, John Garry wrote:
->> Function sdev_store_queue_depth() enforces that the sdev queue depth cannot
->> exceed shost.can_queue.
->>
->> However, the LLDD may still set cmd_per_lun > can_queue, which leads to an
->> initial sdev queue depth greater than can_queue.
->>
->> Stop this happened by capping initial sdev queue depth at can_queue.
->>
->> Signed-off-by: John Garry <john.garry@huawei.com>
->> ---
->> Topic originally discussed at:
->> https://lore.kernel.org/linux-scsi/85dec8eb-8eab-c7d6-b0fb-5622747c5499@interlog.com/T/#m5663d0cac657d843b93d0c9a2374f98fc04384b9
->>
->> Last idea there was to error/warn in scsi_add_host() for cmd_per_lun >
-> 
 
-Hi Ming,
+Cc: Lyude and drm-misc maintainers
 
-> No, that isn't my suggestion.
+On Wed, 14 Apr 2021, Rajeev Nandan <rajeevny@codeaurora.org> wrote:
+> The backlight level of an eDP panel can be controlled through the AUX
+> channel using DPCD registers of the panel.
+>
+> The capability for the Source device to adjust backlight characteristics
+> within the panel, using the Sink device DPCD registers is indicated by
+> the TCON_BACKLIGHT_ADJUSTMENT_CAPABLE bit in the EDP_GENERAL_CAPABILITY_1
+> register (DPCD Address 701h, bit0). In this configuration, the eDP TCON
+> receives the backlight level information from the host, through the AUX
+> channel.
 
-Right, it was what I mentioned.
+i915 has had this capability for some years now, and work is in progress
+to extract the DP AUX backlight code to drm core as helpers [1]. There's
+much more to it than what's proposed here. Adding incompatible DP AUX
+code at this point would be a pretty bad outcome.
 
-> 
->> can_queue. However, such a shost driver could still configure the sdev
->> queue depth to be sound value at .slave_configure callback, so now thinking
->> the orig patch better.
-> 
-> As I mentioned last time, why can't we fix ->cmd_per_lun in
-> scsi_add_host() using .can_queue?
-> 
+For example, we can't tie backlight device register to DP AUX backlight,
+because there are modes where *both* the eDP PWM pin based backlight
+control and DP AUX backlight control are used *simultaneously*. The
+backlight device register needs to be in code that is aware of both.
 
-I would rather not change the values which are provided from the driver. 
-I would rather take the original values and try to use them in a sane way.
+Granted, it was a mistake way back when to add this in i915 only, and it
+should've been lifted to drm much earlier. It would've been done by
+Lyude by now, but people were not happy about not using drm device based
+logging. And that has unfortunately lead to a pretty massive prep series
+[2].
 
-I have not seen other places where driver shost config values are 
-modified by the core code.
+Please look into the code added to drm helpers in [1], and see how that
+would work for you.
 
-Thanks,
-John
+
+BR,
+Jani.
+
+
+[1] http://lore.kernel.org/r/20210205234515.1216538-1-lyude@redhat.com
+[2] http://lore.kernel.org/r/20210419225523.184856-1-lyude@redhat.com
+
+
+>
+> The changes in this patch series do the following:
+> - Add drm_dp_aux_backlight_ APIs to support backlight control using DPCD
+>   registers on the DisplayPort AUX channel.
+>   The current version only supports backlight brightness control by the
+>   EDP_BACKLIGHT_BRIGHTNESS_MSB/LSB registers (DPCD Addresses 722h-723h).
+> - Add support for backlight control of the eDP panel connected to the
+>   ti-sn65dsi86 bridge.
+>
+> Rajeev Nandan (3):
+>   drm/dp: Add DisplayPort aux backlight control support
+>   dt-bindings: drm/bridge: ti-sn65dsi86: Document use-aux-backlight
+>   drm/bridge: ti-sn65dsi86: Add DisplayPort aux backlight support
+>
+>  .../bindings/display/bridge/ti,sn65dsi86.yaml      |   8 +
+>  drivers/gpu/drm/Kconfig                            |   8 +
+>  drivers/gpu/drm/Makefile                           |   1 +
+>  drivers/gpu/drm/bridge/Kconfig                     |   1 +
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c              |  26 +++
+>  drivers/gpu/drm/drm_dp_aux_backlight.c             | 191 +++++++++++++++++++++
+>  include/drm/drm_dp_aux_backlight.h                 |  29 ++++
+>  7 files changed, 264 insertions(+)
+>  create mode 100644 drivers/gpu/drm/drm_dp_aux_backlight.c
+>  create mode 100644 include/drm/drm_dp_aux_backlight.h
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
