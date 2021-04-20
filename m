@@ -2,106 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3228F365953
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9708D36595B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhDTM4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:56:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54368 "EHLO mail.kernel.org"
+        id S232164AbhDTM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:58:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:34304 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231393AbhDTM4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:56:06 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4C6E613C8;
-        Tue, 20 Apr 2021 12:55:33 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 08:55:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@elte.hu" <mingo@elte.hu>,
-        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
-        "yuanhan.liu@linux.intel.com" <yuanhan.liu@linux.intel.com>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>
-Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
-Message-ID: <20210420085532.4062b15e@gandalf.local.home>
-In-Reply-To: <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com>
-References: <1299622684.20306.77.camel@gandalf.stny.rr.com>
-        <877hc64klm.fsf@rustcorp.com.au>
-        <20130813111442.632f3421@gandalf.local.home>
-        <87siybk8yl.fsf@rustcorp.com.au>
-        <20130814233228.778f25d0@gandalf.local.home>
-        <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com>
-        <20210419181111.5eb582e8@gandalf.local.home>
-        <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232026AbhDTM6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:58:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8C241478;
+        Tue, 20 Apr 2021 05:57:36 -0700 (PDT)
+Received: from e120189.arm.com (unknown [10.57.57.251])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 62DBF3F792;
+        Tue, 20 Apr 2021 05:57:33 -0700 (PDT)
+From:   Pierre.Gondois@arm.com
+To:     linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com
+Cc:     Lukasz.Luba@arm.com, Vincent.Donnefort@arm.com,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com,
+        Pierre Gondois <Pierre.Gondois@arm.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        qperret@qperret.net
+Subject: [PATCH] sched/fair: Fix negative energy delta in find_energy_efficient_cpu()
+Date:   Tue, 20 Apr 2021 13:56:04 +0100
+Message-Id: <20210420125604.15796-1-Pierre.Gondois@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 18:25:54 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
+From: Pierre Gondois <Pierre.Gondois@arm.com>
 
-> On Mon, Apr 19, 2021 at 3:11 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Mon, 19 Apr 2021 21:54:13 +0000
-> > "Williams, Dan J" <dan.j.williams@intel.com> wrote:
-> >  
-> > > [ drop Rusty, add Jessica and Emmanuel ]  
-> >
-> > Probably could have kept Jessica on as she's the module maintainer.  
-> 
-> Oh, you misread, I swapped out Rusty for Jessica on the Cc.
+find_energy_efficient_cpu() (feec()) searches the best energy CPU
+to place a task on. To do so, compute_energy() estimates the energy
+impact of placing the task on a CPU, based on CPU and task utilization
+signals.
 
-Ah, I read that as "Rusty and Jessica".
+Utilization signals can be concurrently updated while evaluating a
+perf_domain. In some cases, this leads to having a 'negative delta',
+i.e. placing the task in the perf_domain is seen as an energy gain.
+Thus, any further energy comparison is biased.
 
+In case of a 'negative delta', return prev_cpu since:
+1. a 'negative delta' happens in less than 0.5% of feec() calls,
+   on a Juno with 6 CPUs (4 little, 2 big)
+2. it is unlikely to have two consecutive 'negative delta' for
+   a task, so if the first call fails, feec() will correctly
+   place the task in the next feec() call
+3. EAS current behavior tends to select prev_cpu if the task
+   doesn't raise the OPP of its current perf_domain. prev_cpu
+   is EAS's generic decision
+4. prev_cpu should be preferred to returning an error code.
+   In the latter case, select_idle_sibling() would do the placement,
+   selecting a big (and not energy efficient) CPU. As 3., the task
+   would potentially reside on the big CPU for a long time
 
+The patch also:
+a. groups the compute_energy() calls to lower the chances of having
+   concurrent updates in between the calls
+b. skips the base_energy_pd computation if no CPU is available in a
+   perf_domain
 
-> > So yes, function tracing now allows setting a filter to trace only the
-> > functions for a given module, and if that module is not yet loaded, it
-> > stores the filter until it is.  
-> 
-> Ah, thanks for the pointer. So if I wanted to convert a kernel command like:
-> 
-> libnvdimm.dyndbg
-> 
-> ...it would be something like:
-> 
-> ftrace=function ftrace_filter=:mod:libnvdimm
+Fixes: eb92692b2544d sched/fair: Speed-up energy-aware wake-up
+Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Suggested-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
+---
+ kernel/sched/fair.c | 69 +++++++++++++++++++++++++--------------------
+ 1 file changed, 39 insertions(+), 30 deletions(-)
 
-Hmm, that may not work, but if it doesn't, it would be trivial to add it.
-
-> 
-> ...and then "cat /sys/kernel/tracing/trace" instead of "dmesg" to
-> retrieve... assuming only "got here" style debug was being attempted.
-> 
-> > To do something similar for tracepoints, I think we still need to add it as
-> > a module parameter.  
-> 
-> The dev_dbg() filter language is attractive, it's too bad
-
-Not sure what you mean by that. What filter language. Tracepoints do have a
-pretty good filtering too.
-
-
-> trace_printk() has such a high runtime cost as combining dynamic-debug
-> and tracing would seem to be a panacea.
-
-trace_printk() has a high runtime cost? Besides that it's not allowed on
-production code (see nasty banner), it is made to be extremely fast.
-Although, it does do sprintf() work.
-
-Would adding automatic module parameters be an issue? That is, you can add
-in the insmod command line a parameter that will enable tracepoints. We
-could have a way to even see them from the modinfo. I think I had that
-working once, and it wasn't really that hard to do.
-
--- Steve
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 0dba0ebc3657..577482aa8919 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6594,8 +6594,8 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ {
+ 	unsigned long prev_delta = ULONG_MAX, best_delta = ULONG_MAX;
+ 	struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
++	int cpu, best_energy_cpu = prev_cpu, target = -1;
+ 	unsigned long cpu_cap, util, base_energy = 0;
+-	int cpu, best_energy_cpu = prev_cpu;
+ 	struct sched_domain *sd;
+ 	struct perf_domain *pd;
+ 
+@@ -6614,19 +6614,18 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 	if (!sd)
+ 		goto fail;
+ 
++	target = prev_cpu;
++
+ 	sync_entity_load_avg(&p->se);
+ 	if (!task_util_est(p))
+-		goto unlock;
++		goto fail;
+ 
+ 	for (; pd; pd = pd->next) {
+ 		unsigned long cur_delta, spare_cap, max_spare_cap = 0;
++		bool compute_prev_delta = false;
+ 		unsigned long base_energy_pd;
+ 		int max_spare_cap_cpu = -1;
+ 
+-		/* Compute the 'base' energy of the pd, without @p */
+-		base_energy_pd = compute_energy(p, -1, pd);
+-		base_energy += base_energy_pd;
+-
+ 		for_each_cpu_and(cpu, perf_domain_span(pd), sched_domain_span(sd)) {
+ 			if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+ 				continue;
+@@ -6647,26 +6646,41 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 			if (!fits_capacity(util, cpu_cap))
+ 				continue;
+ 
+-			/* Always use prev_cpu as a candidate. */
+ 			if (cpu == prev_cpu) {
+-				prev_delta = compute_energy(p, prev_cpu, pd);
+-				prev_delta -= base_energy_pd;
+-				best_delta = min(best_delta, prev_delta);
+-			}
+-
+-			/*
+-			 * Find the CPU with the maximum spare capacity in
+-			 * the performance domain
+-			 */
+-			if (spare_cap > max_spare_cap) {
++				/* Always use prev_cpu as a candidate. */
++				compute_prev_delta = true;
++			} else if (spare_cap > max_spare_cap) {
++				/*
++				 * Find the CPU with the maximum spare capacity
++				 * in the performance domain.
++				 */
+ 				max_spare_cap = spare_cap;
+ 				max_spare_cap_cpu = cpu;
+ 			}
+ 		}
+ 
++		if (max_spare_cap_cpu < 0 && !compute_prev_delta)
++			continue;
++
++		/* Compute the 'base' energy of the pd, without @p */
++		base_energy_pd = compute_energy(p, -1, pd);
++		base_energy += base_energy_pd;
++
++		if (compute_prev_delta) {
++			prev_delta = compute_energy(p, prev_cpu, pd);
++			/* Prevent negative deltas and select prev_cpu */
++			if (prev_delta < base_energy_pd)
++				goto fail;
++			prev_delta -= base_energy_pd;
++			best_delta = min(best_delta, prev_delta);
++		}
++
+ 		/* Evaluate the energy impact of using this CPU. */
+-		if (max_spare_cap_cpu >= 0 && max_spare_cap_cpu != prev_cpu) {
++		if (max_spare_cap_cpu >= 0) {
+ 			cur_delta = compute_energy(p, max_spare_cap_cpu, pd);
++			/* Prevent negative deltas and select prev_cpu */
++			if (cur_delta < base_energy_pd)
++				goto fail;
+ 			cur_delta -= base_energy_pd;
+ 			if (cur_delta < best_delta) {
+ 				best_delta = cur_delta;
+@@ -6674,25 +6688,20 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 			}
+ 		}
+ 	}
+-unlock:
+-	rcu_read_unlock();
+ 
+ 	/*
+-	 * Pick the best CPU if prev_cpu cannot be used, or if it saves at
+-	 * least 6% of the energy used by prev_cpu.
++	 * Pick the best CPU if:
++	 *  - prev_cpu cannot be used, or
++	 *  - it saves at least 6% of the energy used by prev_cpu
+ 	 */
+-	if (prev_delta == ULONG_MAX)
+-		return best_energy_cpu;
+-
+-	if ((prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
+-		return best_energy_cpu;
+-
+-	return prev_cpu;
++	if ((prev_delta == ULONG_MAX) ||
++		(prev_delta - best_delta) > ((prev_delta + base_energy) >> 4))
++		target = best_energy_cpu;
+ 
+ fail:
+ 	rcu_read_unlock();
+ 
+-	return -1;
++	return target;
+ }
+ 
+ /*
+-- 
+2.17.1
 
