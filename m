@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824DF365E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D16365E50
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhDTRQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:16:57 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3722 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233384AbhDTRQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:16:51 -0400
-IronPort-SDR: lLbvsdnGu/mr5ZaHRGLoKwpmAR0q0abgxvF1eXrWexVaS79e4UsZLiq1JgHznGlF24Dptt0ikF
- C/m9xsT+x75g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="175654744"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="175654744"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 10:15:59 -0700
-IronPort-SDR: JC2WjAdARMdudZdAfhpx7XMTWO8cD03xYrjszBdStg1Wd0hKtTkRRastDdOANUv1J27aWCnny6
- tVUJXyhQZEIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="420540926"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Apr 2021 10:15:59 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 20 Apr 2021 10:15:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 20 Apr 2021 10:15:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Tue, 20 Apr 2021 10:15:58 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jue Wang <juew@google.com>
-CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        "yaoaili@kingsoft.com" <yaoaili@kingsoft.com>
-Subject: RE: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Thread-Topic: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Thread-Index: AQHXNYlKy8Wo/vG6R0yHUmvh3EYC7Kq9jeAAgACBdAD//5UC0A==
-Date:   Tue, 20 Apr 2021 17:15:58 +0000
-Message-ID: <e79166a5455c4dfb8bffcf2a6926f773@intel.com>
-References: <CAPcxDJ5gH9XvZ1bMsRqqU8bTpGLsz75+pWMnj52b-nMZHKhdtQ@mail.gmail.com>
- <20210420154730.GA577592@agluck-desk2.amr.corp.intel.com>
- <CAPcxDJ6bPH4TSO44RpPSU2EqjmBaWOf88JMfYKdiFYe755Dzug@mail.gmail.com>
-In-Reply-To: <CAPcxDJ6bPH4TSO44RpPSU2EqjmBaWOf88JMfYKdiFYe755Dzug@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233328AbhDTRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233245AbhDTRQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:16:36 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA33DC06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:16:04 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id e2so15724461plh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:16:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=irTmuEe2pRr0Rl3uOVQJ+XhzXrvVBN56ZxLdfK0T+Z8=;
+        b=SCqmMaRSS1gGfkcJyngj89CG845AhRXkGK2F88BZk5KT1u/+c8BoliHPu42RtXIaml
+         8iugl8CuYxLqemFK5aOFf5DZYEjC+eiO5TfkbqxtZxDATPZ+aYB+W14vHXDVKGgQE/P7
+         wXRpK+/sPm8NdC1J6Hd0yPwtPFDMMpRQnxGFw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=irTmuEe2pRr0Rl3uOVQJ+XhzXrvVBN56ZxLdfK0T+Z8=;
+        b=Ey3Daj5p8Bpp3W/RIuwyllaCba/69kLsBBDZWS5oFzFmcrMOx6k4JJtLAjS8bBFlrE
+         U2sipk8fOrxsjFrykN77JcsmyyEOdd804er6bNjilejbvppdsC1YT0TOwK10BVm1l+5O
+         E5ilLMZt2ygTxCKgQXbIdC2xaDT0ysmU9gTTaZJPmno1OPRtt1n+xgYQUii/gkp/f1v6
+         A+1cJ5dPwwWYaaSFgrgnSc18CgWjQGF3h2ocf3QxA1cCy0vMt+m6BOqUjdMRJzEVHWZC
+         jZ6ALeCJi72sG4MpddCSGBb9o+JGudpvKBgFHgUploukxRzcgWZV/5ekxSiR2h075sY5
+         Tz6w==
+X-Gm-Message-State: AOAM533puyhrLhCmk1LiMhdJOYlzPnEH5CTTbwNf+IvB6fhDvaTQI8Mf
+        B18EQwi+IxsSsPw9InYZrlEamA==
+X-Google-Smtp-Source: ABdhPJzFEFl6Idin15/xKtXbEuWZIi6Nr1FUejohVJutVMscIDnw3HwfW6EcMFACHdsyzlselUTI3Q==
+X-Received: by 2002:a17:90b:3646:: with SMTP id nh6mr6049573pjb.119.1618938964244;
+        Tue, 20 Apr 2021 10:16:04 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
+        by smtp.gmail.com with UTF8SMTPSA id a4sm10234479pff.140.2021.04.20.10.16.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 10:16:03 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:16:02 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V3 3/5] arm64: dts: qcom: pmr735a: Add temp-alarm
+ support
+Message-ID: <YH8MUkYJdZbkuXt/@google.com>
+References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
+ <1618398783-7834-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1618398783-7834-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJIG1lYW50IGluIHRoaXMgY2FzZSAocmFjaW5nIHRvIGFjY2VzcyB0aGUgc2FtZSBwb2lzb25l
-ZCBwYWdlcyksIHRoZQ0KPiBwYWdlIG1hcHBpbmcgc2hvdWxkIGhhdmUgYmVlbiByZW1vdmVkIGJ5
-IGFuZCB0aGUgaHdwb2lzb24gc3dhcCBwdGUNCj4gaW5zdGFsbGVkIGJ5IHRoZSB3aW5uZXIgdGhy
-ZWFkPw0KDQpNeSAibXV0ZXgiIHBhdGNoIHRoYXQgSG9yaWd1Y2hpLXNhbiBoYXMgaW5jbHVkZWQg
-aGlzIHN1bW1hcnkgc2VyaWVzIHNob3VsZA0KbWFrZSB0aGlzIGhhcHBlbiBpbiBtb3N0IGNhc2Vz
-LiBPbmx5IHByb2JsZW0gaXMgaWYgdGhlIGZpcnN0IHRocmVhZCBydW5zIGludG8gc29tZQ0KZXJy
-b3IgYW5kIGRvZXMgbm90IGNvbXBsZXRlIHVubWFwcGluZyB0aGUgcG9pc29uIHBhZ2UgZnJvbSBh
-bGwgb3RoZXIgdGFza3MuDQoNClNvIHRoZSBiYWNrdXAgcGxhbiBpcyB0byBzY2FuIHRoZSBwYWdl
-IHRhYmxlcy4NCg0KPj4gV2VsbCwgSSBkaWQgdHJ5IGEgcGF0Y2ggdGhhdCByZW1vdmVkICphbGwq
-IHVzZXIgbWFwcGluZ3MgKHN3aXRjaGVkIENSMyB0bw0KPj4gc3dhcHBlcl9wZ2RpcikgYW5kIHJl
-dHVybmVkIHRvIHVzZXIuIFRoZW4gaGF2ZSB0aGUgcmVzdWx0aW5nIHBhZ2UgZmF1bHQNCj4+IHJl
-cG9ydCB0aGUgYWRkcmVzcy4gQnV0IHRoYXQgZGlkbid0IHdvcmsgdmVyeSB3ZWxsLg0KPiBDdXJp
-b3VzIHdoYXQgZGlkbid0IHdvcmsgd2VsbCBpbiB0aGlzIGNhc2U/IDotKQ0KDQpBbmR5IEx1dG9t
-aXJza2kgd2Fzbid0IGhhcHB5IHdpdGggdGhlIGFwcHJvYWNoLiBJdCB3YXMgc3BlY2lmaWNhbGx5
-DQp0byBjb3ZlciB0aGUgImtlcm5lbCBhY2Nlc3NlcyBwb2lzb24gbW9yZSB0aGFuIG9uY2UgZnJv
-bSBnZXRfdXNlcigpIi4NCg0KSXQgZG9lc24ndCBnZW5lcmFsaXplIHRvIHRoZSBjYXNlIHdoZXJl
-IHRoZSB1c2VyIGFjY2Vzc2VkIHRoZSBwb2lzb24gKGJlY2F1c2UNCnlvdSdsbCBqdXN0IHRha2Ug
-dGhlICNQRiBvbiB0aGUgaW5zdHJ1Y3Rpb24gZmV0Y2ggLi4uIGV2ZXJ5dGhpbmcgaXMgdW5tYXBw
-ZWQgLi4uDQppbnN0ZWFkIG9mIG9uIHRoZSBvcmlnaW5hbCBkYXRhIGFjY2VzcykuDQoNCi1Ub255
-DQoNCg==
+On Wed, Apr 14, 2021 at 04:43:01PM +0530, satya priya wrote:
+> Add temp-alarm node for PMR735A pmic and also modify gpio
+> node to add gpio ranges and "qcom,spmi-gpio" compatible.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
