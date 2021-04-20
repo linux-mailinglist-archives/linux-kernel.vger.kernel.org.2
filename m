@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8781365006
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A236D36500B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhDTBz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 21:55:28 -0400
-Received: from m176151.mail.qiye.163.com ([59.111.176.151]:9009 "EHLO
-        m176151.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhDTBz2 (ORCPT
+        id S233156AbhDTB7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 21:59:43 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44014 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229711AbhDTB7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:55:28 -0400
-Received: from vivo.com (wm-11.qy.internal [127.0.0.1])
-        by m176151.mail.qiye.163.com (Hmail) with ESMTP id C2DEB48456E;
-        Tue, 20 Apr 2021 09:54:55 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AA2A4wAIDqypc6Mea5E07Kq1.3.1618883695772.Hmail.wanjiabing@vivo.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gbGlibnZkaW1tLmg6IFJlbW92ZSBkdXBsaWNhdGUgc3RydWN0IGRlY2xhcmF0aW9u?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <20210419160411.GG1904484@iweiny-DESK2.sc.intel.com>
+        Mon, 19 Apr 2021 21:59:39 -0400
+Received: by mail-il1-f197.google.com with SMTP id l7-20020a9229070000b0290164314f61f5so12694678ilg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:59:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=MO02XUl0aoNqpo6dX9XnX5kbdgf0uyAoe+pFwP29OxQ=;
+        b=FohW4RvOtYP3OwW//pXT3fLTBciAquKHHWiAbBhC+IVpXvz/uRWhhci/NXAzvKaSkQ
+         BNBXJ36/hdeTm5T72Y5GU2RKNOKiZSdBA3S0l+hPN1ZFeczmM8IaYLQltjrSNXpKkp8W
+         HHCk4oJSb8+OdahqqbVjy818iAsUc0AuabEFaaV81MsDctNJXGO/xL6knkE9qQeLos5X
+         J5XAb0HNP4H+8PAXdxsCk6SznMt/VZ3J9kQ8cGWwwUw8pCOVmOpcEAyjPHvZzQ1/WB9b
+         j5tegA9jkH9lZf0vggGEB4wAVJfSxI8BvOX/WVV0fn1n7/TtjvaYMcrOdvB4ngrqDzmr
+         n5ww==
+X-Gm-Message-State: AOAM531m82auf8YFiUtWVpzwEgTBQze9Xlu8NiGxR1949Ie5/8obfcCm
+        Iw3w6zzhksl+ihDC9jmDveX02vd1bWfnv+hVf5romieGUWaI
+X-Google-Smtp-Source: ABdhPJxR/C8PUCJjyQd7eoEyHWPFP1jUdDoLAa204hiUEjw39du4ftvrUV/MoG9WvgZGYb0t4ysOzShuy5VHKjCvnZZ16CUTyU3v
 MIME-Version: 1.0
-Received: from wanjiabing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 20 Apr 2021 09:54:55 +0800 (GMT+08:00)
-From:   Jiabing Wan <wanjiabing@vivo.com>
-Date:   Tue, 20 Apr 2021 09:54:55 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0oaH1ZIQhhMTUJKQxkeTkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JQk1NT0xNSElLN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Okk6Tww6Mj8KAgsYTTYeGk4#S0wwCkpVSFVKTUpDQ0NITUJNSkpKVTMWGhIXVQwaFRESGhkS
-        FRw7DRINFFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSVlXWQgBWUFITENCNwY+
-X-HM-Tid: 0a78ecfcd4ba93b5kuwsc2deb48456e
+X-Received: by 2002:a92:6a0b:: with SMTP id f11mr19749909ilc.211.1618883948355;
+ Mon, 19 Apr 2021 18:59:08 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 18:59:08 -0700
+In-Reply-To: <02616552-d7c2-a3ea-a03d-a93d15023662@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000aca64205c05dcab3@google.com>
+Subject: Re: [syzbot] INFO: task hung in __io_uring_cancel
+From:   syzbot <syzbot+47fc00967b06a3019bd2@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IAo+T24gTW9uLCBBcHIgMTksIDIwMjEgYXQgMDc6Mjc6MjVQTSArMDgwMCwgV2FuIEppYWJpbmcg
-d3JvdGU6Pj4gc3RydWN0IGRldmljZSBpcyBkZWNsYXJlZCBhdCAxMzNyZCBsaW5lLgo+PiBUaGUg
-ZGVjbGFyYXRpb24gaGVyZSBpcyB1bm5lY2Vzc2FyeS4gUmVtb3ZlIGl0Lgo+PiAKPj4gU2lnbmVk
-LW9mZi1ieTogV2FuIEppYWJpbmcgPHdhbmppYWJpbmdAdml2by5jb20+Cj4+IC0tLQo+PiAgaW5j
-bHVkZS9saW51eC9saWJudmRpbW0uaCB8IDEgLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRp
-b24oLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2xpYm52ZGltbS5oIGIvaW5j
-bHVkZS9saW51eC9saWJudmRpbW0uaAo+PiBpbmRleCAwMWYyNTFiNmUzNmMuLjg5YjY5ZTY0NWFj
-NyAxMDA2NDQKPj4gLS0tIGEvaW5jbHVkZS9saW51eC9saWJudmRpbW0uaAo+PiArKysgYi9pbmNs
-dWRlL2xpbnV4L2xpYm52ZGltbS5oCj4+IEBAIC0xNDEsNyArMTQxLDYgQEAgc3RhdGljIGlubGlu
-ZSB2b2lkIF9faW9tZW0gKmRldm1fbnZkaW1tX2lvcmVtYXAoc3RydWN0IGRldmljZSAqZGV2LAo+
-PiAgCj4+ICBzdHJ1Y3QgbnZkaW1tX2J1czsKPj4gIHN0cnVjdCBtb2R1bGU7Cj4+IC1zdHJ1Y3Qg
-ZGV2aWNlOwo+PiAgc3RydWN0IG5kX2Jsa19yZWdpb247Cj4KPldoYXQgaXMgdGhlIGNvZGluZyBz
-dHlsZSBwcmVmZXJlbmNlIGZvciBwcmUtZGVjbGFyYXRpb25zIGxpa2UgdGhpcz8gIFNob3VsZAo+
-dGhleSBiZSBwbGFjZWQgYXQgdGhlIHRvcCBvZiB0aGUgZmlsZT8KPgo+VGhlIHBhdGNoIGlzIHJl
-YXNvbmFibGUgYnV0IGlmIHRoZSBpbnRlbnQgaXMgdG8gZGVjbGFyZSByaWdodCBiZWZvcmUgdXNl
-IGZvcgo+Y2xhcml0eSwgYm90aCBkZXZtX252ZGltbV9tZW1yZW1hcCgpIGFuZCBuZF9ibGtfcmVn
-aW9uX2Rlc2MoKSB1c2Ugc3RydWN0Cj5kZXZpY2UuICBTbyBwZXJoYXBzIHRoaXMgZHVwbGljYXRl
-IGlzIG9uIHB1cnBvc2U/Cj4KPklyYQoKT0ssIG15IHNjcmlwdCBqdXN0IGNhdGNoIHRoaXMgZHVw
-bGljYXRlLgpBbmQgSSB3aWxsIHJlcG9ydCB0aGUgZHVwbGljYXRlIGlmIHRoZXJlIGlzIG5vIE1B
-Q1JPIGRlcGVuZGVuY2UuCkJ1dCBJIGhhZG4ndCB0aG91Z2h0IG9mIHdoZXRoZXIgdGhlIGR1cGxp
-Y2F0ZSBpcyBhIHByb21wdCBvbiBwdXJwb3NlLgpTb3JyeS4KClRoYW5rcyBmb3IgeW91ciByZXBs
-eS4KV2FuIEppYWJpbmcKCj4+ICBzdHJ1Y3QgbmRfYmxrX3JlZ2lvbl9kZXNjIHsKPj4gIAlpbnQg
-KCplbmFibGUpKHN0cnVjdCBudmRpbW1fYnVzICpudmRpbW1fYnVzLCBzdHJ1Y3QgZGV2aWNlICpk
-ZXYpOwo+PiAtLSAKPj4gMi4yNS4xCj4+IAoNCg0K
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: null-ptr-deref Write in io_uring_cancel_sqpoll
+
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: null-ptr-deref in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+BUG: KASAN: null-ptr-deref in io_uring_cancel_sqpoll+0x150/0x310 fs/io_uring.c:8930
+Write of size 4 at addr 0000000000000114 by task iou-sqp-31588/31596
+
+CPU: 0 PID: 31596 Comm: iou-sqp-31588 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ __kasan_report mm/kasan/report.c:403 [inline]
+ kasan_report.cold+0x5f/0xd8 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:180 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+ io_uring_cancel_sqpoll+0x150/0x310 fs/io_uring.c:8930
+ io_sq_thread+0x47e/0x1310 fs/io_uring.c:6873
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 31596 Comm: iou-sqp-31588 Tainted: G    B             5.12.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ panic+0x306/0x73d kernel/panic.c:231
+ end_report mm/kasan/report.c:102 [inline]
+ end_report.cold+0x5a/0x5a mm/kasan/report.c:88
+ __kasan_report mm/kasan/report.c:406 [inline]
+ kasan_report.cold+0x6a/0xd8 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:180 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+ io_uring_cancel_sqpoll+0x150/0x310 fs/io_uring.c:8930
+ io_sq_thread+0x47e/0x1310 fs/io_uring.c:6873
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+Tested on:
+
+commit:         734551df io_uring: fix shared sqpoll cancellation hangs
+git tree:       git://git.kernel.dk/linux-block for-5.13/io_uring
+console output: https://syzkaller.appspot.com/x/log.txt?x=175fec6dd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=601d16d8cd22e315
+dashboard link: https://syzkaller.appspot.com/bug?extid=47fc00967b06a3019bd2
+compiler:       
+
