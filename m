@@ -2,333 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC6036625C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71886366260
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbhDTXHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 19:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36392 "EHLO mail.kernel.org"
+        id S234346AbhDTXNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 19:13:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:30686 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhDTXHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 19:07:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FFE461410;
-        Tue, 20 Apr 2021 23:06:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618959993;
-        bh=8Kox6kjHjGbpPGfy41ExliX6H3o2ftxzdZjhqy+R0aM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bQLgQcUR0DHz+khz5sZ10851KIA0hshTp0xgIutzOICHJartMf8mn+haa6y61D8gY
-         aC4/7LImq++TIhSSdqk06sk1ejk10RzXsz1/UEyN2KRBnxL0Mcr6Xf1wwRV+wdQFbd
-         SM5EPt3OD30f54c0JggEryru+vHZczL1t7sgAJMIb3BLAr34JTjvBDoY+nuImBcsgD
-         wPCa77CXMmit5I+3yLTkodsmNaTS3kut/GXCf8Egunoj5OGPDFUjpgtzjGmnSZ5zpw
-         3pTXefdrXSLatAHWXFeCCin8w+IMnPGKE51k0aVX33Tufdk3Tf/1WE3+ELwZy0+iPP
-         q/cjHhrgiEXbw==
-Date:   Tue, 20 Apr 2021 18:06:52 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] xfs: Fix fall-through warnings for Clang
-Message-ID: <20210420230652.GA70650@embeddedor>
+        id S233964AbhDTXNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 19:13:02 -0400
+IronPort-SDR: ma7k7HFne186rg/IgQyY52hVg7iGWIZH+qD4a0Ee+hlqlsSoGpQfxivBjNzenRAerUGwiZdePH
+ GEnxa72X9xtw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="182740946"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="182740946"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 16:12:29 -0700
+IronPort-SDR: cMYr2kc8hiDuvhb4lHJOyxMMMT1gI2jN6yt7/wcJ8y2VkfWv7DK11C6nje/wpscs63OGy/PR26
+ PmZgZ87wQZDQ==
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="427240482"
+Received: from jjagger-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.197.239])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 16:12:29 -0700
+Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper
+ functions
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
+ <c015093fdbc8e6a5aa9fc43f78fec8d9c38295c7.1616801167.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com>
+ <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
+ <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
+Date:   Tue, 20 Apr 2021 16:12:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix
-the following warnings by replacing /* fall through */ comments,
-and its variants, with the new pseudo-keyword macro fallthrough:
 
-fs/xfs/libxfs/xfs_alloc.c:3167:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/libxfs/xfs_da_btree.c:286:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/libxfs/xfs_ag_resv.c:346:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/libxfs/xfs_ag_resv.c:388:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_bmap_util.c:246:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_export.c:88:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_export.c:96:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_file.c:867:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_ioctl.c:562:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_ioctl.c:1548:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_iomap.c:1040:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_inode.c:852:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_log.c:2627:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/xfs_trans_buf.c:298:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/bmap.c:275:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/btree.c:48:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/common.c:85:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/common.c:138:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/common.c:698:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/dabtree.c:51:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-fs/xfs/scrub/repair.c:951:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
 
-Notice that Clang doesn't recognize /* fall through */ comments as
-implicit fall-through markings, so in order to globally enable
--Wimplicit-fallthrough for Clang, these comments need to be
-replaced with fallthrough; in the whole codebase.
+On 4/20/21 12:59 PM, Dave Hansen wrote:
+> On 4/20/21 12:20 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>>> approach is, it adds a few extra instructions for every
+>>>> TDCALL use case when compared to distributed checks. Although
+>>>> it's a bit less efficient, it's worth it to make the code more
+>>>> readable.
+>>>
+>>> What's a "distributed check"?
+>>
+>> It should be "distributed TDVMCALL/TDCALL inline assembly calls"
+> 
+> It's still not clear to what that refers.
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/xfs/libxfs/xfs_ag_resv.c  | 4 ++--
- fs/xfs/libxfs/xfs_alloc.c    | 2 +-
- fs/xfs/libxfs/xfs_da_btree.c | 2 +-
- fs/xfs/scrub/bmap.c          | 2 +-
- fs/xfs/scrub/btree.c         | 2 +-
- fs/xfs/scrub/common.c        | 6 +++---
- fs/xfs/scrub/dabtree.c       | 2 +-
- fs/xfs/scrub/repair.c        | 2 +-
- fs/xfs/xfs_bmap_util.c       | 2 +-
- fs/xfs/xfs_export.c          | 4 ++--
- fs/xfs/xfs_file.c            | 2 +-
- fs/xfs/xfs_inode.c           | 2 +-
- fs/xfs/xfs_ioctl.c           | 4 ++--
- fs/xfs/xfs_iomap.c           | 2 +-
- fs/xfs/xfs_trans_buf.c       | 2 +-
- 15 files changed, 20 insertions(+), 20 deletions(-)
+I am just comparing the performance cost of using generic TDCALL()/TDVMCALL()
+function implementation with "usage specific" (GetQuote,MapGPA, HLT,etc) custom
+TDCALL()/TDVMCALL() inline assembly implementation.
+> 
+>>> This also doesn't talk at all about why this approach was chosen versus
+>>> inline assembly.  You're going to be asked "why not use inline asm?"
+>> "To make the core more readable and less error prone." I have added this
+>> info in above paragraph. Do you think we need more argument to
+>> justify our approach?
+> 
+> Yes, you need much more justification.  That's pretty generic and
+> non-specific.
+readability is one of the main motivation for not choosing inline
+assembly. Since number of lines of instructions (with comments) are over
+70, using inline assembly made it hard to read. Another reason is, since we
+are using many registers (R8-R15, R[A-D]X)) in TDVMCAL/TDCALL operation, we are
+not sure whether some older compiler can follow our specified inline assembly
+constraints.
+> 
+>>>> +    /*
+>>>> +     * Expose R10 - R15, i.e. all GPRs that may be used by TDVMCALLs
+>>>> +     * defined in the GHCI.  Note, RAX and RCX are consumed, but
+>>>> only by
+>>>> +     * TDX-Module and so don't need to be listed in the mask.
+>>>> +     */
+>>>
+>>> "GCHI" is out of the blue here.  So is "TDX-Module".  There needs to be
+>>> more context.
+>> ok. will add it. Do you want GHCI spec reference with section id here?
+> 
+> Absolutely not.  I dislike all of the section references as-is.  Doesn't
+> a comment like this say what you said above and also add context?
+> 
+> 	Expose every register currently used in the
+> 	guest-to-host communication interface (GHCI).
+ok.
+> 
+>>>> +    movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
+>>>> +
+>>>> +    tdcall
+>>>> +
+>>>> +    /* Panic if TDCALL reports failure. */
+>>>> +    test %rax, %rax
+>>>> +    jnz 2f
+>>>
+>>> Why panic?
+>> As per spec, TDCALL should never fail. Note that it has nothing to do
+>> with TDVMCALL function specific failure (which is reported via R10).
+> 
+> You've introduced two concepts here, without differentiating them.  You
+> need to work to differentiate these two kinds of failure somewhere.  You
+> can't simply refer to both as "failure".
+will clarify it. I have assumed that once the user reads the spec, its easier
+to understand.
+> 
+>>> Also, do you *REALLY* need to do this from assembly?  Can't it be done
+>>> in the C wrapper?
+>> Its common for all use cases of TDVMCALL (vendor specific, in/out, etc).
+>> so added
+>> it here.
+> 
+> That's not a good reason.  You could just as easily have a C wrapper
+> which all uses of TDVMCALL go through.
+Any reason for not preferring it in assembly code?
+Also, using wrapper will add more complication for in/out instruction
+substitution use case. please check the use case in following patch.
+https://github.com/intel/tdx/commit/1b73f60aa5bb93554f3b15cd786a9b10b53c1543
+> 
+>>>> +    /* Propagate TDVMCALL success/failure to return value. */
+>>>> +    mov %r10, %rax
+>>>
+>>> You just said it panic's on failure.  How can this propagate failure?
+>> we use panic for TDCALL failure. But, R10 content used to identify
+>> whether given
+>> TDVMCALL function operation is successful or not.
+> 
+> As I said above, please endeavor to differentiate the two classes of
+> failures.
+> 
+> Also, if the spec is violated, do you *REALLY* want to blow up the whole
+> world with a panic?  I guess you can argue that it could have been
+> something security-related that failed.  But, either way, you owe a
+> description of why panic'ing is a good idea, not just blindly deferring
+> to "the spec says this can't happen".
+ok. will add some comments justifying our case.
+> 
+>>>> +    xor %r10d, %r10d
+>>>> +    xor %r11d, %r11d
+>>>> +    xor %r12d, %r12d
+>>>> +    xor %r13d, %r13d
+>>>> +    xor %r14d, %r14d
+>>>> +    xor %r15d, %r15d
+>>>> +
+>>>> +    pop %r12
+>>>> +    pop %r13
+>>>> +    pop %r14
+>>>> +    pop %r15
+>>>> +
+>>>> +    FRAME_END
+>>>> +    ret
+>>>> +2:
+>>>> +    ud2
+>>>> +.endm
+>>>> +
+>>>> +SYM_FUNC_START(__tdvmcall)
+>>>> +    xor %r10, %r10
+>>>> +    tdvmcall_core
+>>>> +SYM_FUNC_END(__tdvmcall)
+>>>> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+>>>> index 0d00dd50a6ff..1147e7e765d6 100644
+>>>> --- a/arch/x86/kernel/tdx.c
+>>>> +++ b/arch/x86/kernel/tdx.c
+>>>> @@ -3,6 +3,36 @@
+>>>>      #include <asm/tdx.h>
+>>>>    +/*
+>>>> + * Wrapper for the common case with standard output value (R10).
+>>>> + */
+>>>
+>>> ... and oddly enough there is no explicit mention of R10 anywhere.  Why?
+>> For Guest to Host call -> R10 holds TDCALL function id (which is 0 for
+>> TDVMCALL). so
+>> we don't need special argument.
+>> After TDVMCALL execution, R10 value is returned via RAX.
+> 
+> OK... so this is how it works.  But why mention R10 in the comment?  Why
+> is *THAT* worth mentioning?
+its not needed. will remove it.
+> 
+>>>> +static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
+>>>> +{
+>>>> +    u64 err;
+>>>> +
+>>>> +    err = __tdvmcall(fn, r12, r13, r14, r15, NULL);
+>>>> +
+>>>> +    WARN_ON(err);
+>>>> +
+>>>> +    return err;
+>>>> +}
+>>>
+>>> Are there really *ZERO* reasons for a TDVMCALL to return an error?
+>> No. Its useful for debugging TDVMCALL failures.
+>>> Won't this let a malicious VMM spew endless warnings into the guest
+>>> console?
+>> As per GHCI spec, R10 will hold error code details which can be used to
+>> determine
+>> the type of TDVMCALL failure.
+> 
+> I would encourage you to stop citing the GCCI spec.  In all of these
+> conversations, you seem to rely on it without considering the underlying
+> reasons.  The fact that R10 is the error code is 100% irrelevant for
+> this conversation.
+> 
+> It's also entirely possible that the host would have bugs, or forget to
+> clear a bit somewhere, even if the spec says, "don't do it".
+> 
+>> More warnings at-least show that we are working
+>> with malicious VMM.
+> 
+> That argument does not hold water for me.
+> 
+> You can argue that a counter can be kept, or that a WARN_ON_ONCE() is
+> appropriate, or that a printk_ratelimited() is nice.  But, allowing an
+> untrusted software component to write unlimited warnings to the kernel
+> console is utterly nonsensical.
+> 
+> By the same argument, any userspace exploit attempts could spew warnings
+> to the console also so that we can tell we are working with malicious
+> userspace.
+In our case, we will get WARN() output only if guest triggers TDCALL()/TDVMCALL()
+right? So getting WARN() message for failure of guest triggered call is
+justifiable right?
+> 
+>>>> +/*
+>>>> + * Wrapper for the semi-common case where we need single output
+>>>> value (R11).
+>>>> + */
+>>>> +static inline u64 tdvmcall_out_r11(u64 fn, u64 r12, u64 r13, u64
+>>>> r14, u64 r15)
+>>>> +{
+>>>> +
+>>>> +    struct tdvmcall_output out = {0};
+>>>> +    u64 err;
+>>>> +
+>>>> +    err = __tdvmcall(fn, r12, r13, r14, r15, &out);
+>>>> +
+>>>> +    WARN_ON(err);
+>>>> +
+>>>> +    return out.r11;
+>>>> +}
+>>>> +
+>>>
+>>> But you introduced __tdvmcall and __tdcall assembly functions.  Why
+>>> aren't both of them used?
+>> This patch just adds helper functions. Its used by other patches in the
+>> series. __tdvmcall is used in this patch because we need to add more
+>> wrappers for it.
+> 
+> That needs to be mentioned in the changelog at least.
+ok will do it.
+> 
 
-diff --git a/fs/xfs/libxfs/xfs_ag_resv.c b/fs/xfs/libxfs/xfs_ag_resv.c
-index 6c5f8d10589c..8c3c99a9bf83 100644
---- a/fs/xfs/libxfs/xfs_ag_resv.c
-+++ b/fs/xfs/libxfs/xfs_ag_resv.c
-@@ -342,7 +342,7 @@ xfs_ag_resv_alloc_extent(
- 		break;
- 	default:
- 		ASSERT(0);
--		/* fall through */
-+		fallthrough;
- 	case XFS_AG_RESV_NONE:
- 		field = args->wasdel ? XFS_TRANS_SB_RES_FDBLOCKS :
- 				       XFS_TRANS_SB_FDBLOCKS;
-@@ -384,7 +384,7 @@ xfs_ag_resv_free_extent(
- 		break;
- 	default:
- 		ASSERT(0);
--		/* fall through */
-+		fallthrough;
- 	case XFS_AG_RESV_NONE:
- 		xfs_trans_mod_sb(tp, XFS_TRANS_SB_FDBLOCKS, (int64_t)len);
- 		return;
-diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
-index aaa19101bb2a..9eabdeeec492 100644
---- a/fs/xfs/libxfs/xfs_alloc.c
-+++ b/fs/xfs/libxfs/xfs_alloc.c
-@@ -3163,7 +3163,7 @@ xfs_alloc_vextent(
- 		}
- 		args->agbno = XFS_FSB_TO_AGBNO(mp, args->fsbno);
- 		args->type = XFS_ALLOCTYPE_NEAR_BNO;
--		/* FALLTHROUGH */
-+		fallthrough;
- 	case XFS_ALLOCTYPE_FIRST_AG:
- 		/*
- 		 * Rotate through the allocation groups looking for a winner.
-diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-index 83ac9771bfb5..747ec77912c3 100644
---- a/fs/xfs/libxfs/xfs_da_btree.c
-+++ b/fs/xfs/libxfs/xfs_da_btree.c
-@@ -282,7 +282,7 @@ xfs_da3_node_read_verify(
- 						__this_address);
- 				break;
- 			}
--			/* fall through */
-+			fallthrough;
- 		case XFS_DA_NODE_MAGIC:
- 			fa = xfs_da3_node_verify(bp);
- 			if (fa)
-diff --git a/fs/xfs/scrub/bmap.c b/fs/xfs/scrub/bmap.c
-index b5ebf1d1b4db..77d5c4a0f09f 100644
---- a/fs/xfs/scrub/bmap.c
-+++ b/fs/xfs/scrub/bmap.c
-@@ -271,7 +271,7 @@ xchk_bmap_iextent_xref(
- 	case XFS_DATA_FORK:
- 		if (xfs_is_reflink_inode(info->sc->ip))
- 			break;
--		/* fall through */
-+		fallthrough;
- 	case XFS_ATTR_FORK:
- 		xchk_xref_is_not_shared(info->sc, agbno,
- 				irec->br_blockcount);
-diff --git a/fs/xfs/scrub/btree.c b/fs/xfs/scrub/btree.c
-index a94bd8122c60..bd1172358964 100644
---- a/fs/xfs/scrub/btree.c
-+++ b/fs/xfs/scrub/btree.c
-@@ -44,7 +44,7 @@ __xchk_btree_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= errflag;
- 		*error = 0;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		if (cur->bc_flags & XFS_BTREE_ROOT_IN_INODE)
- 			trace_xchk_ifork_btree_op_error(sc, cur, level,
-diff --git a/fs/xfs/scrub/common.c b/fs/xfs/scrub/common.c
-index aa874607618a..ce9a44ea6948 100644
---- a/fs/xfs/scrub/common.c
-+++ b/fs/xfs/scrub/common.c
-@@ -81,7 +81,7 @@ __xchk_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= errflag;
- 		*error = 0;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		trace_xchk_op_error(sc, agno, bno, *error,
- 				ret_ip);
-@@ -134,7 +134,7 @@ __xchk_fblock_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= errflag;
- 		*error = 0;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		trace_xchk_file_op_error(sc, whichfork, offset, *error,
- 				ret_ip);
-@@ -694,7 +694,7 @@ xchk_get_inode(
- 		if (error)
- 			return -ENOENT;
- 		error = -EFSCORRUPTED;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		trace_xchk_op_error(sc,
- 				XFS_INO_TO_AGNO(mp, sc->sm->sm_ino),
-diff --git a/fs/xfs/scrub/dabtree.c b/fs/xfs/scrub/dabtree.c
-index 653f3280e1c1..9f0dbb47c82c 100644
---- a/fs/xfs/scrub/dabtree.c
-+++ b/fs/xfs/scrub/dabtree.c
-@@ -47,7 +47,7 @@ xchk_da_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= XFS_SCRUB_OFLAG_CORRUPT;
- 		*error = 0;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		trace_xchk_file_op_error(sc, ds->dargs.whichfork,
- 				xfs_dir2_da_to_db(ds->dargs.geo,
-diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
-index c2857d854c83..b8202dd08939 100644
---- a/fs/xfs/scrub/repair.c
-+++ b/fs/xfs/scrub/repair.c
-@@ -947,7 +947,7 @@ xrep_ino_dqattach(
- 			xrep_force_quotacheck(sc, XFS_DQTYPE_GROUP);
- 		if (XFS_IS_PQUOTA_ON(sc->mp) && !sc->ip->i_pdquot)
- 			xrep_force_quotacheck(sc, XFS_DQTYPE_PROJ);
--		/* fall through */
-+		fallthrough;
- 	case -ESRCH:
- 		error = 0;
- 		break;
-diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-index a5e9d7d34023..cc628475f9b6 100644
---- a/fs/xfs/xfs_bmap_util.c
-+++ b/fs/xfs/xfs_bmap_util.c
-@@ -242,7 +242,7 @@ xfs_bmap_count_blocks(
- 		 */
- 		*count += btblocks - 1;
- 
--		/* fall through */
-+		fallthrough;
- 	case XFS_DINODE_FMT_EXTENTS:
- 		*nextents = xfs_bmap_count_leaves(ifp, count);
- 		break;
-diff --git a/fs/xfs/xfs_export.c b/fs/xfs/xfs_export.c
-index 465fd9e048d4..1da59bdff245 100644
---- a/fs/xfs/xfs_export.c
-+++ b/fs/xfs/xfs_export.c
-@@ -84,7 +84,7 @@ xfs_fs_encode_fh(
- 	case FILEID_INO32_GEN_PARENT:
- 		fid->i32.parent_ino = XFS_I(parent)->i_ino;
- 		fid->i32.parent_gen = parent->i_generation;
--		/*FALLTHRU*/
-+		fallthrough;
- 	case FILEID_INO32_GEN:
- 		fid->i32.ino = XFS_I(inode)->i_ino;
- 		fid->i32.gen = inode->i_generation;
-@@ -92,7 +92,7 @@ xfs_fs_encode_fh(
- 	case FILEID_INO32_GEN_PARENT | XFS_FILEID_TYPE_64FLAG:
- 		fid64->parent_ino = XFS_I(parent)->i_ino;
- 		fid64->parent_gen = parent->i_generation;
--		/*FALLTHRU*/
-+		fallthrough;
- 	case FILEID_INO32_GEN | XFS_FILEID_TYPE_64FLAG:
- 		fid64->ino = XFS_I(inode)->i_ino;
- 		fid64->gen = inode->i_generation;
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 396ef36dcd0a..3c0749ab9e40 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -863,7 +863,7 @@ xfs_break_layouts(
- 			error = xfs_break_dax_layouts(inode, &retry);
- 			if (error || retry)
- 				break;
--			/* fall through */
-+			fallthrough;
- 		case BREAK_WRITE:
- 			error = xfs_break_leased_layouts(inode, iolock, &retry);
- 			break;
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 0369eb22c1bb..f2846997c3a8 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -848,7 +848,7 @@ xfs_init_new_inode(
- 			xfs_inode_inherit_flags(ip, pip);
- 		if (pip && (pip->i_diflags2 & XFS_DIFLAG2_ANY))
- 			xfs_inode_inherit_flags2(ip, pip);
--		/* FALLTHROUGH */
-+		fallthrough;
- 	case S_IFLNK:
- 		ip->i_df.if_format = XFS_DINODE_FMT_EXTENTS;
- 		ip->i_df.if_bytes = 0;
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index 3925bfcb2365..c4dc6c72ac37 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -558,7 +558,7 @@ xfs_ioc_attrmulti_one(
- 	case ATTR_OP_REMOVE:
- 		value = NULL;
- 		*len = 0;
--		/* fall through */
-+		fallthrough;
- 	case ATTR_OP_SET:
- 		error = mnt_want_write_file(parfilp);
- 		if (error)
-@@ -1544,7 +1544,7 @@ xfs_ioc_getbmap(
- 	switch (cmd) {
- 	case XFS_IOC_GETBMAPA:
- 		bmx.bmv_iflags = BMV_IF_ATTRFORK;
--		/*FALLTHRU*/
-+		fallthrough;
- 	case XFS_IOC_GETBMAP:
- 		/* struct getbmap is a strict subset of struct getbmapx. */
- 		recsize = sizeof(struct getbmap);
-diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-index d154f42e2dc6..d8cd2583dedb 100644
---- a/fs/xfs/xfs_iomap.c
-+++ b/fs/xfs/xfs_iomap.c
-@@ -1036,7 +1036,7 @@ xfs_buffered_write_iomap_begin(
- 			prealloc_blocks = 0;
- 			goto retry;
- 		}
--		/*FALLTHRU*/
-+		fallthrough;
- 	default:
- 		goto out_unlock;
- 	}
-diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
-index 9aced0a00003..d11d032da0b4 100644
---- a/fs/xfs/xfs_trans_buf.c
-+++ b/fs/xfs/xfs_trans_buf.c
-@@ -294,7 +294,7 @@ xfs_trans_read_buf_map(
- 	default:
- 		if (tp && (tp->t_flags & XFS_TRANS_DIRTY))
- 			xfs_force_shutdown(tp->t_mountp, SHUTDOWN_META_IO_ERROR);
--		/* fall through */
-+		fallthrough;
- 	case -ENOMEM:
- 	case -EAGAIN:
- 		return error;
 -- 
-2.27.0
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
