@@ -2,149 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F353656F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E9E365706
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhDTLAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 07:00:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48439 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231423AbhDTK75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:59:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618916366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=T/UowxEhrgES9Z8e890ShmFG6Jnrs7CSOo/ni1CNTGY=;
-        b=SbTOQMJoK1s/jO1+doA5xsDbRhpGyiSLrON6QNDPyL93eSMUZPXG8a/ICmlnzXmw6pqnqO
-        Ih18pfdIHBOVIlz3ztQWJlLdS0n/LUR3IfW5aDcBflKw1gKp98RhN7ntFQ33IL2HiiN2j+
-        3bWrqCsXF8ztBiYTEsPqynMtGSBplrI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-27crLentM5Wiw6DBkRVYuw-1; Tue, 20 Apr 2021 06:59:24 -0400
-X-MC-Unique: 27crLentM5Wiw6DBkRVYuw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75814107ACC7;
-        Tue, 20 Apr 2021 10:59:23 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35B5063BAF;
-        Tue, 20 Apr 2021 10:59:23 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
-Date:   Tue, 20 Apr 2021 06:59:22 -0400
-Message-Id: <20210420105922.730705-1-pbonzini@redhat.com>
+        id S231770AbhDTLCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 07:02:46 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7594 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231393AbhDTLCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:02:43 -0400
+IronPort-SDR: 5gZ32iMOfFGv/YMtnfc4oUHjvCtClv2YQBBKHedqL7NI80/OX6Dl6hxglVzIiGhcvtxngAw8f2
+ oBJe/qR8Hpow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="256799128"
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="256799128"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 04:02:10 -0700
+IronPort-SDR: SfbMSfrbmDeoAoFxkyFsFFfzKzEx81WFjQoAVZJKo6/3QealsjUg7D5+x26/+2Dk91uspeeOXH
+ meq+32GNYf4Q==
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="534453026"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 04:02:06 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 791ED228CE;
+        Tue, 20 Apr 2021 12:13:09 +0300 (EEST)
+Date:   Tue, 20 Apr 2021 12:13:09 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Bingbu Cao <bingbu.cao@intel.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org,
+        dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
+        grundler@chromium.org, tfiga@chromium.org,
+        senozhatsky@chromium.org, andriy.shevchenko@linux.intel.com,
+        bingbu.cao@linux.intel.com
+Subject: Re: [RESEND v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
+Message-ID: <20210420091309.GH3@paasikivi.fi.intel.com>
+References: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new MSR that can be used to communicate whether the page
-encryption status bitmap is up to date and therefore whether live
-migration of an encrypted guest is possible.
+Hi Bingbu,
 
-The MSR should be processed by userspace if it is going to live
-migrate the guest; the default implementation does nothing.
+Thanks for the patch.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- Documentation/virt/kvm/cpuid.rst     |  3 ++-
- Documentation/virt/kvm/msr.rst       | 10 ++++++++++
- arch/x86/include/uapi/asm/kvm_para.h |  3 +++
- arch/x86/kvm/x86.c                   | 14 ++++++++++++++
- 4 files changed, 29 insertions(+), 1 deletion(-)
+On Tue, Apr 20, 2021 at 10:48:33AM +0800, Bingbu Cao wrote:
+> Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
+> The IPU driver allocates its own page table that is not mapped
+> via the DMA, and thus the Intel IOMMU driver blocks access giving
+> this error:
 
-diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-index c9378d163b5a..15923857de56 100644
---- a/Documentation/virt/kvm/cpuid.rst
-+++ b/Documentation/virt/kvm/cpuid.rst
-@@ -99,7 +99,8 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
- KVM_FEATURE_HC_PAGE_ENC_STATUS     16          guest checks this feature bit before
-                                                using the page encryption state
-                                                hypercall to notify the page state
--                                               change
-+                                               change, and before setting bit 0 of
-+                                               MSR_KVM_MIGRATION_CONTROL
- 
- KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
-                                                per-cpu warps are expected in
-diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-index e37a14c323d2..691d718df60a 100644
---- a/Documentation/virt/kvm/msr.rst
-+++ b/Documentation/virt/kvm/msr.rst
-@@ -376,3 +376,13 @@ data:
- 	write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
- 	and check if there are more notifications pending. The MSR is available
- 	if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
-+
-+MSR_KVM_MIGRATION_CONTROL:
-+        0x4b564d08
-+
-+data:
-+        If the guest is running with encrypted memory and it is communicating
-+        page encryption status to the host using the ``KVM_HC_PAGE_ENC_STATUS``
-+        hypercall, it can set bit 0 in this MSR to allow live migration of
-+        the guest.  The bit can be set if KVM_FEATURE_HC_PAGE_ENC_STATUS is
-+        present in CPUID.
-diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-index be49956b603f..c5ee419775d8 100644
---- a/arch/x86/include/uapi/asm/kvm_para.h
-+++ b/arch/x86/include/uapi/asm/kvm_para.h
-@@ -55,6 +55,7 @@
- #define MSR_KVM_POLL_CONTROL	0x4b564d05
- #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
- #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
-+#define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
- 
- struct kvm_steal_time {
- 	__u64 steal;
-@@ -91,6 +92,8 @@ struct kvm_clock_pairing {
- /* MSR_KVM_ASYNC_PF_INT */
- #define KVM_ASYNC_PF_VEC_MASK			GENMASK(7, 0)
- 
-+/* MSR_KVM_MIGRATION_CONTROL */
-+#define KVM_PAGE_ENC_STATUS_UPTODATE		(1 << 0)
- 
- /* Operations for KVM_HC_MMU_OP */
- #define KVM_MMU_OP_WRITE_PTE            1
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 36d302009fd8..efb98be3338d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3258,6 +3258,14 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		vcpu->arch.msr_kvm_poll_control = data;
- 		break;
- 
-+	case MSR_KVM_MIGRATION_CONTROL:
-+		if (data & ~KVM_PAGE_ENC_STATUS_UPTODATE)
-+			return 1;
-+
-+		if (data && !guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
-+			return 1;
-+		break;
-+
- 	case MSR_IA32_MCG_CTL:
- 	case MSR_IA32_MCG_STATUS:
- 	case MSR_IA32_MC0_CTL ... MSR_IA32_MCx_CTL(KVM_MAX_MCE_BANKS) - 1:
-@@ -3549,6 +3557,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
- 			return 1;
- 
-+		msr_info->data = 0;
-+		break;
-+	case MSR_KVM_MIGRATION_CONTROL:
-+		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
-+			return 1;
-+
- 		msr_info->data = 0;
- 		break;
- 	case MSR_KVM_STEAL_TIME:
+The page table should be mapped to the possible IOMMU using the DMA API.
+
+> 
+> DMAR: DRHD: handling fault status reg 3
+> DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
+>       fault addr 76406000 [fault reason 06] PTE Read access is not set
+> 
+> As IPU is not an external facing device which is not risky, so use
+> IOMMU passthrough mode for Intel IPUs.
+
+I think a factor here is that the page tables aren't accessible by the IPU
+firmware.
+
+> 
+> Fixes: 26f5689592e2 ("media: staging/intel-ipu3: mmu: Implement driver")
+> Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+> ---
+>  drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index ee0932307d64..7e2fbdae467e 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -55,6 +55,12 @@
+>  #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
+>  #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
+>  #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
+> +#define IS_INTEL_IPU(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL &&	\
+> +			    ((pdev)->device == 0x9a19 ||		\
+> +			     (pdev)->device == 0x9a39 ||		\
+> +			     (pdev)->device == 0x4e19 ||		\
+> +			     (pdev)->device == 0x465d ||		\
+> +			     (pdev)->device == 0x1919))
+>  #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
+>  
+>  #define IOAPIC_RANGE_START	(0xfee00000)
+> @@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
+>  EXPORT_SYMBOL_GPL(intel_iommu_enabled);
+>  
+>  static int dmar_map_gfx = 1;
+> +static int dmar_map_ipu = 1;
+
+This works as long as there's only one IPU. Same for graphics. But I guess
+this can be reworked in the future if the presumption changes.
+
+>  static int dmar_forcedac;
+>  static int intel_iommu_strict;
+>  static int intel_iommu_superpage = 1;
+> @@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
+>  
+>  #define IDENTMAP_GFX		2
+>  #define IDENTMAP_AZALIA		4
+> +#define IDENTMAP_IPU		8
+>  
+>  int intel_iommu_gfx_mapped;
+>  EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
+> @@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
+>  
+>  		if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
+>  			return IOMMU_DOMAIN_IDENTITY;
+> +
+> +		if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_INTEL_IPU(pdev))
+> +			return IOMMU_DOMAIN_IDENTITY;
+>  	}
+>  
+>  	return 0;
+> @@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
+>  	if (!dmar_map_gfx)
+>  		iommu_identity_mapping |= IDENTMAP_GFX;
+>  
+> +	if (!dmar_map_ipu)
+> +		iommu_identity_mapping |= IDENTMAP_IPU;
+> +
+>  	check_tylersburg_isoch();
+>  
+>  	ret = si_domain_init(hw_pass_through);
+> @@ -5622,6 +5636,18 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
+>  	dmar_map_gfx = 0;
+>  }
+>  
+> +static void quirk_iommu_ipu(struct pci_dev *dev)
+> +{
+> +	if (!IS_INTEL_IPU(dev))
+> +		return;
+> +
+> +	if (risky_device(dev))
+> +		return;
+> +
+> +	pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
+> +	dmar_map_ipu = 0;
+> +}
+> +
+>  /* G4x/GM45 integrated gfx dmar support is totally busted. */
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
+> @@ -5657,6 +5683,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
+>  
+> +/* disable IPU dmar support */
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_ANY_ID, quirk_iommu_ipu);
+> +
+>  static void quirk_iommu_rwbf(struct pci_dev *dev)
+>  {
+>  	if (risky_device(dev))
+
 -- 
-2.26.2
+Kind regards,
 
+Sakari Ailus
