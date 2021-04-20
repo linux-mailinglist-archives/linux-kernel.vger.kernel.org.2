@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E5B36581D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0A8365826
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhDTLxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 07:53:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhDTLxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:53:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B4A6613BC;
-        Tue, 20 Apr 2021 11:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618919561;
-        bh=lLkO2/PkO+bhgVGsPzjcfwOkNWdX1bKmFUUP9AKrk3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OipHbKnYeUn8mSFmquef9HjnEZLVmvx3TNs9yqZmXi/SpT1FKUrAdlQDDYigznhJj
-         82nhesndHJF+I20ktltRDKvCXARhYYPIpIYpY31f3h6pweHK0ir4a6oURBE7vMYN9A
-         R9J6cM0KhDGrMM5puM23cu3KM3UhVYwW8eOCEa0OV61xJlnxzLDdouFYS/2nyqZvsv
-         Enx8/783XySF4OuGqyNx3qDEmd8LsGlHdYXwxdmqGXW+6Prnxbwg43XSHLGAM6lgE3
-         SagaZuH8fdcfl9LsMSAa+MNp3kPAp3dhJdKDDwseXH9rzot0FSjdkfukjRQpSKdHnY
-         Tap2Mp7Xn3XFA==
-Date:   Tue, 20 Apr 2021 14:52:26 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Peter.Enderborg@sony.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        mhocko@suse.com, neilb@suse.de, samitolvanen@google.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, willy@infradead.org
-Subject: Re: [PATCH v5] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <YH7AeqqNyNnY0Zi3@kernel.org>
-References: <20210417163835.25064-1-peter.enderborg@sony.com>
- <YH6Xv00ddYfMA3Lg@phenom.ffwll.local>
- <176e7e71-59b7-b288-9483-10e0f42a7a3f@sony.com>
- <YH6h16hviixphaHV@kernel.org>
- <b57a33a3-a5ed-c122-e5b9-c7e7c4dae35f@sony.com>
+        id S231688AbhDTLzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 07:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230118AbhDTLy6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:54:58 -0400
+Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff8a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2A1C06174A;
+        Tue, 20 Apr 2021 04:54:27 -0700 (PDT)
+Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
+        by postout2.mail.lrz.de (Postfix) with ESMTP id 4FPhtQ2z71zyWJ;
+        Tue, 20 Apr 2021 13:54:22 +0200 (CEST)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        in-reply-to:content-disposition:content-type:content-type
+        :mime-version:references:message-id:subject:subject:from:from
+        :date:date:received:received; s=postout; t=1618919662; bh=op7Di6
+        PHNRtoWWFnBrYz80x4rQ07mSfH2KKSChuJOpI=; b=aFEKF9M6KD4szR6Jbe7NsH
+        enHV62FGNACS55M6Ekq2rIGU9Nhjt7f91JaqbPifJGwpeLBAQ8u1YBtqwqodkZLe
+        gNYTLaJ1N4BhglcL5DfzolVeJkJPj7ZFlyJk4sfvlVMQ2giG21adsXY202rhdJ5M
+        vRMoLMD6cqZYi9v11tquWRt3MRiHpWCEbsLZhyGps1hngRsyCb0Z8PWal8ExVryI
+        VFaeIaOQPZUPQPdrCpmtLPOFTGXgpAWCU6vOL7Ot0/rGLaTazkvIpotRaGo258HC
+        TirstppHz1bfm1r0UzAeVSYbLFbjhsWDLL4x1ol5GNBb62D/NN8rvcLp2swDUHuw
+        ==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -2.876
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.876 tagged_above=-999 required=5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
+        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
+        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
+        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
+        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
+        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
+        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
+        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
+        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
+        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
+        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
+        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
+        LRZ_URL_HTTP_SINGLE=0.001, LRZ_URL_PLAIN_SINGLE=0.001]
+        autolearn=no autolearn_force=no
+Received: from postout2.mail.lrz.de ([127.0.0.1])
+        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id NoDwh_ccxypF; Tue, 20 Apr 2021 13:54:22 +0200 (CEST)
+Received: from yaviniv.e18.physik.tu-muenchen.de (yaviniv.e18.physik.tu-muenchen.de [10.152.72.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4FPhtM4VgMzyWF;
+        Tue, 20 Apr 2021 13:54:19 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 13:54:15 +0200
+From:   Andrei Rabusov <a.rabusov@tum.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
+Message-ID: <YH7A5zclP6USkEpY@yaviniv.e18.physik.tu-muenchen.de>
+References: <20210419130527.791982064@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b57a33a3-a5ed-c122-e5b9-c7e7c4dae35f@sony.com>
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:45:21AM +0000, Peter.Enderborg@sony.com wrote:
-> On 4/20/21 11:41 AM, Mike Rapoport wrote:
-> > Hello Peter,
-> >
-> > On Tue, Apr 20, 2021 at 09:26:00AM +0000, Peter.Enderborg@sony.com wrote:
-> >> On 4/20/21 10:58 AM, Daniel Vetter wrote:
-> >>> On Sat, Apr 17, 2021 at 06:38:35PM +0200, Peter Enderborg wrote:
-> >>>> This adds a total used dma-buf memory. Details
-> >>>> can be found in debugfs, however it is not for everyone
-> >>>> and not always available. dma-buf are indirect allocated by
-> >>>> userspace. So with this value we can monitor and detect
-> >>>> userspace applications that have problems.
-> >>>>
-> >>>> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> >>> So there have been tons of discussions around how to track dma-buf and
-> >>> why, and I really need to understand the use-cass here first I think. proc
-> >>> uapi is as much forever as anything else, and depending what you're doing
-> >>> this doesn't make any sense at all:
-> >>>
-> >>> - on most linux systems dma-buf are only instantiated for shared buffer.
-> >>>   So there this gives you a fairly meaningless number and not anything
-> >>>   reflecting gpu memory usage at all.
-> >>>
-> >>> - on Android all buffers are allocated through dma-buf afaik. But there
-> >>>   we've recently had some discussions about how exactly we should track
-> >>>   all this, and the conclusion was that most of this should be solved by
-> >>>   cgroups long term. So if this is for Android, then I don't think adding
-> >>>   random quick stop-gaps to upstream is a good idea (because it's a pretty
-> >>>   long list of patches that have come up on this).
-> >>>
-> >>> So what is this for?
-> >> For the overview. dma-buf today only have debugfs for info. Debugfs
-> >> is not allowed by google to use in andoid. So this aggregate the information
-> >> so we can get information on what going on on the system. 
-> >  
-> > Can you send an example debugfs output to see what data are we talking
-> > about?
+On Mon, Apr 19, 2021 at 03:05:11PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.32 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Sure. This is on a idle system. Im not sure why you need it.The problem is partly that debugfs is
-> not accessable on a commercial device.
-
-I wanted to see what kind of information is there, but I didn't think it's
-that long :)
- 
-> Dma-buf Objects:
-> size        flags       mode        count       exp_name        buf name    ino    
-> 00032768    00000002    00080007    00000002    ion-system-1006-allocator-servi    dmabuf17728    07400825    dmabuf17728
->     Attached Devices:
-> Total 0 devices attached
+> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
+> Anything received after that time might be too late.
 > 
-> 11083776    00000002    00080007    00000003    ion-system-1006-allocator-servi    dmabuf17727    07400824    dmabuf17727
->     Attached Devices:
->     ae00000.qcom,mdss_mdp:qcom,smmu_sde_unsec_cb
-> Total 1 devices attached
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.32-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> 00032768    00000002    00080007    00000002    ion-system-1006-allocator-servi    dmabuf17726    07400823    dmabuf17726
->     Attached Devices:
-> Total 0 devices attached
+> thanks,
 > 
-> 11083776    00000002    00080007    00000002    ion-system-1006-allocator-servi    dmabuf17725    07400822    dmabuf17725
->     Attached Devices:
->     ae00000.qcom,mdss_mdp:qcom,smmu_sde_unsec_cb
-> Total 1 devices attached
+> greg k-h
 
-...
+On my i686 (gcc 10.3) I found no issues with the new rc
 
-> Total 654 objects, 744144896 bytes
- 
-Isn't the size from the first column also available in fdinfo?
+Selftest results [ok/not ok]: [1435/81]
 
-Is there anything that prevents monitoring those?
-
--- 
-Sincerely yours,
-Mike.
+Tested-by: Andrei Rabusov <a.rabusov@tum.de>
