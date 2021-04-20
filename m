@@ -2,164 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902D5365425
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844E7365439
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhDTIa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:30:56 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3342 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhDTIaz (ORCPT
+        id S231131AbhDTIgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:36:00 -0400
+Received: from 2.mo51.mail-out.ovh.net ([178.33.255.19]:40756 "EHLO
+        2.mo51.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229874AbhDTIf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:30:55 -0400
-Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FPcGg3sCZz14JV1;
-        Tue, 20 Apr 2021 16:26:35 +0800 (CST)
-Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
- DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 20 Apr 2021 16:30:21 +0800
-Received: from [10.174.187.161] (10.174.187.161) by
- dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 20 Apr 2021 16:30:20 +0800
-Subject: Re: [PATCH v5 10/16] KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE
- when PEBS is enabled
-To:     Like Xu <like.xu@linux.intel.com>, <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20210415032016.166201-1-like.xu@linux.intel.com>
- <20210415032016.166201-11-like.xu@linux.intel.com>
-CC:     <andi@firstfloor.org>, <kan.liang@linux.intel.com>,
-        <wei.w.wang@intel.com>, <eranian@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, <kvm@vger.kernel.org>,
-        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>
-From:   Liuxiangdong <liuxiangdong5@huawei.com>
-Message-ID: <607E911C.4090706@huawei.com>
-Date:   Tue, 20 Apr 2021 16:30:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Tue, 20 Apr 2021 04:35:58 -0400
+X-Greylist: delayed 3603 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 04:35:58 EDT
+Received: from mxplan5.mail.ovh.net (unknown [10.108.1.72])
+        by mo51.mail-out.ovh.net (Postfix) with ESMTPS id DD7D0282FA1;
+        Tue, 20 Apr 2021 09:19:26 +0200 (CEST)
+Received: from kaod.org (37.59.142.106) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 20 Apr
+ 2021 09:19:26 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-106R006e0384a78-5e6d-4b83-a0a2-258cc1ae5f18,
+                    F8484F3EE3345E552A9359E6756AA457A7210C68) smtp.auth=groug@kaod.org
+X-OVh-ClientIp: 78.197.208.248
+Date:   Tue, 20 Apr 2021 09:19:25 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Vivek Goyal <vgoyal@redhat.com>
+CC:     <linux-fsdevel@vger.kernel.org>, <dan.j.williams@intel.com>,
+        <jack@suse.cz>, <willy@infradead.org>, <linux-nvdimm@lists.01.org>,
+        <miklos@szeredi.hu>, <linux-kernel@vger.kernel.org>,
+        <virtio-fs@redhat.com>
+Subject: Re: [Virtio-fs] [PATCH v3 1/3] dax: Add an enum for specifying dax
+ wakup mode
+Message-ID: <20210420091925.08054e8b@bahia.lan>
+In-Reply-To: <20210419213636.1514816-2-vgoyal@redhat.com>
+References: <20210419213636.1514816-1-vgoyal@redhat.com>
+        <20210419213636.1514816-2-vgoyal@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210415032016.166201-11-like.xu@linux.intel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.161]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggpeml500013.china.huawei.com (7.185.36.41)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [37.59.142.106]
+X-ClientProxiedBy: DAG9EX2.mxp5.local (172.16.2.82) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: 4fd4651b-4865-4921-847a-6cdede9f3c7e
+X-Ovh-Tracer-Id: 9258837884391430447
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddthedguddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgfgihesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepfedutdeijeejveehkeeileetgfelteekteehtedtieefffevhffflefftdefleejnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehvihhrthhiohdqfhhssehrvgguhhgrthdrtghomh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 19 Apr 2021 17:36:34 -0400
+Vivek Goyal <vgoyal@redhat.com> wrote:
 
-
-On 2021/4/15 11:20, Like Xu wrote:
-> The bit 12 represents "Processor Event Based Sampling Unavailable (RO)" :
-> 	1 = PEBS is not supported.
-> 	0 = PEBS is supported.
->
-> A write to this PEBS_UNAVL available bit will bring #GP(0) when guest PEBS
-> is enabled. Some PEBS drivers in guest may care about this bit.
->
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Dan mentioned that he is not very fond of passing around a boolean true/false
+> to specify if only next waiter should be woken up or all waiters should be
+> woken up. He instead prefers that we introduce an enum and make it very
+> explicity at the callsite itself. Easier to read code.
+> 
+> This patch should not introduce any change of behavior.
+> 
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 > ---
->   arch/x86/kvm/vmx/pmu_intel.c | 2 ++
->   arch/x86/kvm/x86.c           | 4 ++++
->   2 files changed, 6 insertions(+)
->
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index 58f32a55cc2e..c846d3eef7a7 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -588,6 +588,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->   		bitmap_set(pmu->all_valid_pmc_idx, INTEL_PMC_IDX_FIXED_VLBR, 1);
->   
->   	if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
-> +		vcpu->arch.ia32_misc_enable_msr &= ~MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
->   		if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_BASELINE) {
->   			pmu->pebs_enable_mask = ~pmu->global_ctrl;
->   			pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
-> @@ -597,6 +598,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->   			}
->   			pmu->pebs_data_cfg_mask = ~0xff00000full;
->   		} else {
-> +			vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
->   			pmu->pebs_enable_mask =
->   				~((1ull << pmu->nr_arch_gp_counters) - 1);
->   		}
 
-I guess what we want is
+Reviewed-by: Greg Kurz <groug@kaod.org>
 
-         if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
-                 vcpu->arch.ia32_misc_enable_msr &= 
-~MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
-                 if (vcpu->arch.perf_capabilities & 
-PERF_CAP_PEBS_BASELINE) {
-                         pmu->pebs_enable_mask = ~pmu->global_ctrl;
-                         pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
-                         for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
-                                 pmu->fixed_ctr_ctrl_mask &=
-                                         ~(1ULL << (INTEL_PMC_IDX_FIXED 
-+ i * 4));
-                         }
-                         pmu->pebs_data_cfg_mask = ~0xff00000full;
-                 } else {
-                         pmu->pebs_enable_mask =
-                                 ~((1ull << pmu->nr_arch_gp_counters) - 1);
-                 }
-         } else {
-                 vcpu->arch.ia32_misc_enable_msr |= 
-MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
-                 vcpu->arch.perf_capabilities &= ~PERF_CAP_PEBS_MASK;
-         }
-
-
-But here is
-
-         if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
-                 vcpu->arch.ia32_misc_enable_msr &= 
-~MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
-                 if (vcpu->arch.perf_capabilities & 
-PERF_CAP_PEBS_BASELINE) {
-                         pmu->pebs_enable_mask = ~pmu->global_ctrl;
-                         pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
-                         for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
-                                 pmu->fixed_ctr_ctrl_mask &=
-                                         ~(1ULL << (INTEL_PMC_IDX_FIXED 
-+ i * 4));
-                         }
-                         pmu->pebs_data_cfg_mask = ~0xff00000full;
-                 } else {
-                         vcpu->arch.ia32_misc_enable_msr |= 
-MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
-                         pmu->pebs_enable_mask =
-                                 ~((1ull << pmu->nr_arch_gp_counters) - 1);
-                 }
-         } else {
-                 vcpu->arch.perf_capabilities &= ~PERF_CAP_PEBS_MASK;
-         }
-
-
-Wrong else branch?
-
-
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 1a64e816e06d..ed38f1dada63 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3126,6 +3126,10 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		break;
->   	case MSR_IA32_MISC_ENABLE:
->   		data &= ~MSR_IA32_MISC_ENABLE_EMON;
-> +		if (!msr_info->host_initiated &&
-> +		    (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) &&
-> +		    (data & MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL))
-> +			return 1;
->   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
->   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) & MSR_IA32_MISC_ENABLE_MWAIT)) {
->   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+>  fs/dax.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index b3d27fdc6775..00978d0838b1 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
+>  	struct exceptional_entry_key key;
+>  };
+>  
+> +/**
+> + * enum dax_entry_wake_mode: waitqueue wakeup toggle
+> + * @WAKE_NEXT: entry was not mutated
+> + * @WAKE_ALL: entry was invalidated, or resized
+> + */
+> +enum dax_entry_wake_mode {
+> +	WAKE_NEXT,
+> +	WAKE_ALL,
+> +};
+> +
+>  static wait_queue_head_t *dax_entry_waitqueue(struct xa_state *xas,
+>  		void *entry, struct exceptional_entry_key *key)
+>  {
+> @@ -182,7 +192,8 @@ static int wake_exceptional_entry_func(wait_queue_entry_t *wait,
+>   * The important information it's conveying is whether the entry at
+>   * this index used to be a PMD entry.
+>   */
+> -static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
+> +static void dax_wake_entry(struct xa_state *xas, void *entry,
+> +			   enum dax_entry_wake_mode mode)
+>  {
+>  	struct exceptional_entry_key key;
+>  	wait_queue_head_t *wq;
+> @@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
+>  	 * must be in the waitqueue and the following check will see them.
+>  	 */
+>  	if (waitqueue_active(wq))
+> -		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
+> +		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
+>  }
+>  
+>  /*
+> @@ -268,7 +279,7 @@ static void put_unlocked_entry(struct xa_state *xas, void *entry)
+>  {
+>  	/* If we were the only waiter woken, wake the next one */
+>  	if (entry && !dax_is_conflict(entry))
+> -		dax_wake_entry(xas, entry, false);
+> +		dax_wake_entry(xas, entry, WAKE_NEXT);
+>  }
+>  
+>  /*
+> @@ -286,7 +297,7 @@ static void dax_unlock_entry(struct xa_state *xas, void *entry)
+>  	old = xas_store(xas, entry);
+>  	xas_unlock_irq(xas);
+>  	BUG_ON(!dax_is_locked(old));
+> -	dax_wake_entry(xas, entry, false);
+> +	dax_wake_entry(xas, entry, WAKE_NEXT);
+>  }
+>  
+>  /*
+> @@ -524,7 +535,7 @@ static void *grab_mapping_entry(struct xa_state *xas,
+>  
+>  		dax_disassociate_entry(entry, mapping, false);
+>  		xas_store(xas, NULL);	/* undo the PMD join */
+> -		dax_wake_entry(xas, entry, true);
+> +		dax_wake_entry(xas, entry, WAKE_ALL);
+>  		mapping->nrexceptional--;
+>  		entry = NULL;
+>  		xas_set(xas, index);
+> @@ -937,7 +948,7 @@ static int dax_writeback_one(struct xa_state *xas, struct dax_device *dax_dev,
+>  	xas_lock_irq(xas);
+>  	xas_store(xas, entry);
+>  	xas_clear_mark(xas, PAGECACHE_TAG_DIRTY);
+> -	dax_wake_entry(xas, entry, false);
+> +	dax_wake_entry(xas, entry, WAKE_NEXT);
+>  
+>  	trace_dax_writeback_one(mapping->host, index, count);
+>  	return ret;
 
