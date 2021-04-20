@@ -2,133 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83400365DF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4781365DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbhDTQzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:55:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49950 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232767AbhDTQzd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:55:33 -0400
-Received: from mail-ot1-f72.google.com ([209.85.210.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lYteP-0003pn-3G
-        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 16:55:01 +0000
-Received: by mail-ot1-f72.google.com with SMTP id h22-20020a9d6f960000b029029e185197c1so1820911otq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 09:55:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n++Oew9D1ON0+YhUSGRk9qScTAC0hur2GzZ6XD9RR8w=;
-        b=ScVs53MKtULzedMOnznLvzPAQHDSr0KbzRyOc4mSStCNRG9g5Zo9gCnKxXX57+P48w
-         NXMDpvzHfuJMSQPMjCiGqJ2OQBLEU7/m1qJyqTHo6IYuYKJUmOOjo5Grzg8dc22VMkvO
-         nKL4eS+MVFFPyrXiqlSqxOgzUwj8QtVbovTo7mlRh/OQK23S4O0BGHfz8TQ/CwwLl6W5
-         WsV/rsFW/M4kRGbpN4vgGnjEZhzo3lr4tSE7e0o8yxn3lIYiKmSp0L6Z1nzqPGL7RoSy
-         QBNoEykq6epPd5FQ/xWgAaWhFdvdoZXEnC79ICE+8tIDKU741gEr2CoCHTlvdQIgFHGR
-         pmWw==
-X-Gm-Message-State: AOAM533y7Tr1wEvehEEebOOLBUpWfCUKwky+iX3dpcp5yw1BZoQH+ubS
-        XG8PyaYy9a0ioVEZI0T4bCurOWSOJVkGvE6AOn1gzAO9WPEtYsjlJR90x2XdTMLrIVDgc1WpA45
-        lqEK3g5J7cCTWqnmIUXYRwkfiEsNLd11ExyvyeDSpuFc86dxIVis/4xGiXg==
-X-Received: by 2002:a9d:7ad7:: with SMTP id m23mr13985835otn.347.1618937699944;
-        Tue, 20 Apr 2021 09:54:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzy/q01C83/Q77gJZTPSeVzIZcftn9kMkGeldA4Ls+qTYxPcdCqawe5S2H8ErjY+SrOOcJwWxSYawdUDMBpb2g=
-X-Received: by 2002:a9d:7ad7:: with SMTP id m23mr13985821otn.347.1618937699626;
- Tue, 20 Apr 2021 09:54:59 -0700 (PDT)
+        id S232993AbhDTQ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:59:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47326 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232473AbhDTQ64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:58:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 315D7AE5C;
+        Tue, 20 Apr 2021 16:58:24 +0000 (UTC)
+Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
+To:     glittao@gmail.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210414163434.4376-1-glittao@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <5eb31e87-f928-9a5a-c937-be748ac3bafa@suse.cz>
+Date:   Tue, 20 Apr 2021 18:58:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210415114856.4555-1-chris.chiu@canonical.com>
- <YHgyP8tGNM1Wi5dJ@kroah.com> <CABTNMG0MuaSkWZhiTwtWjPTg5WZ-Vdt9Ju9-RzBke9JjCBJo8Q@mail.gmail.com>
- <20210415184637.GA15445@rowland.harvard.edu> <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
- <20210416153932.GD42403@rowland.harvard.edu> <CABTNMG25qPvVu7+EsvEgaUsU_v6jKkSKCaU5VR8CiX3oLQ4VFg@mail.gmail.com>
- <20210419141921.GA133494@rowland.harvard.edu> <CABTNMG0hnfXH8yqd6Zbk3EiZtg4JUpJomn180NHUyAdgZjL7pA@mail.gmail.com>
- <20210420152848.GC170810@rowland.harvard.edu>
-In-Reply-To: <20210420152848.GC170810@rowland.harvard.edu>
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Wed, 21 Apr 2021 00:54:48 +0800
-Message-ID: <CABTNMG0ye+APQA-vMpyfDhSOWdKtXD5BT=gBYYNXmfa_fiFfuA@mail.gmail.com>
-Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek Hub
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
-        hadess@hadess.net, linux-usb@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210414163434.4376-1-glittao@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 11:28 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Tue, Apr 20, 2021 at 03:14:56PM +0800, Chris Chiu wrote:
-> > On Mon, Apr 19, 2021 at 10:19 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >
-> > > On Mon, Apr 19, 2021 at 01:11:38AM -0400, Chris Chiu wrote:
-> > > > Sorry that I didn't make myself clear. I found that if I applied RESET_RESUME
-> > > > quirk on the problematic hub, the Set-Port-Feature(suspend) timeout error
-> > > > disappeared. SInce the timeout is not happening for each suspend by default,
-> > > > I suspect maybe reset-resume take everything back to clean state for the hub
-> > > > and the Set-Port-Feature(suspend) can be taken care of w/o problems.
-> > >
-> > > Okay, that's a good solution for system suspend.
-> > >
-> > > > I didn't like RESET_RESUME because runtime PM would not work on the quirked
-> > > > device.
-> > >
-> > > A more interesting question is whether it will work for devices plugged
-> > > into the hub.  Even though the hub won't be runtime suspended, the
-> > > things attached to it might be.
-> > >
-> > > >  But if the Set-Port-Feature(suspend) can't be handled and
-> > > > skipped, I can't
-> > > > expect the runtime PM to work for all devices connected to the hub either.
-> > > > Is that right? If what I proposed in the patch can not get better
-> > > > result than existing
-> > > > quirk, I think using the RESET_RESUME would be a better option. Any suggestions?
-> > >
-> > > Try the RESET_RESUME quirk and see how well it works with runtime
-> > > suspend.
-> > >
-> > > Alan Stern
-> >
-> > [  453.064346] usb 3-4: finish reset-resume
-> > [  453.192387] usb 3-4: reset high-speed USB device number 2 using xhci_hcd
-> > [  453.339916] usb 3-4: USB quirks for this device: 2
->
-> Here 3-4 is problematic RealTek hub, right?
-Yes.
+On 4/14/21 6:34 PM, glittao@gmail.com wrote:
+> From: Oliver Glitta <glittao@gmail.com>
+> 
+> Many stack traces are similar so there are many similar arrays.
+> Stackdepot saves each unique stack only once.
+> 
+> Replace field addrs in struct track with depot_stack_handle_t handle.
+> Use stackdepot to save stack trace.
+> 
+> The benefits are smaller memory overhead and possibility to aggregate
+> per-cache statistics in the future using the stackdepot handle
+> instead of matching stacks manually.
+> 
+> Signed-off-by: Oliver Glitta <glittao@gmail.com>
 
->
-> > Seems that even w/ the RESET_RESUME enabled, the connected device still
-> > can runtime suspend/resume. That's acceptable to me. I'll send the patch
-> > with the reset-resume quirk later.
-> >
-> > [  626.081068] usb 3-4.3.1: usb auto-suspend, wakeup 0
-> > [  632.552071] usb 3-4.3.1: usb auto-resume
-> > [  632.617467] usb 3-4.3.1: Waited 0ms for CONNECT
-> > [  632.617471] usb 3-4.3.1: finish resume
->
-> Then 3-4.3 is another hub plugged into the Realtek hub, and 3-4.3.1 (the
-> device being suspended and resumed) is plugged into that other hub.
->
-> I'm concerned about devices that are plugged directly into the Realtek
-> hub.  For example, did you try allowing the 3-4.3 hub in the experiment
-> above to suspend and resume?
->
-> Alan Stern
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-The WD19 dock has 2 hubs 0bda:5487 (USB3.0) and 0bda:0487 (superspeed).
-There're 5 exposed USB ports (3 Type A + 2 Type C). Lower speed ports
-connect to a sub-hub (3-4.3) of the problematic hub (3-4).
+(again with a disclaimer that I'm the advisor of Oliver's student project)
 
-The other ports such as HDMI/DisplayPort, Gigabit Ethernet and Type C ports
-are connected to 0bda:0478. So I can't connect any USB devices directly to hub
-3-4. I'm only certain that the direct child (3-4.3) of the hub
-0bda:5487 can't runtime
-suspend. But what really matters to me is that all connected devices
-(3-4.3.x) can
-runtime suspend.
+> ---
+>  init/Kconfig |  1 +
+>  mm/slub.c    | 79 ++++++++++++++++++++++++++++++++--------------------
+>  2 files changed, 50 insertions(+), 30 deletions(-)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 37a17853433a..a4ed2daa6c41 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1891,6 +1891,7 @@ config SLUB_DEBUG
+>  	default y
+>  	bool "Enable SLUB debugging support" if EXPERT
+>  	depends on SLUB && SYSFS
+> +	select STACKDEPOT if STACKTRACE_SUPPORT
+>  	help
+>  	  SLUB has extensive debug support features. Disabling these can
+>  	  result in significant savings in code size. This also disables
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 9c0e26ddf300..4b18499726eb 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/prefetch.h>
+>  #include <linux/memcontrol.h>
+>  #include <linux/random.h>
+> +#include <linux/stackdepot.h>
+>  
+>  #include <trace/events/kmem.h>
+>  
+> @@ -203,8 +204,8 @@ static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
+>  #define TRACK_ADDRS_COUNT 16
+>  struct track {
+>  	unsigned long addr;	/* Called from address */
+> -#ifdef CONFIG_STACKTRACE
+> -	unsigned long addrs[TRACK_ADDRS_COUNT];	/* Called from address */
+> +#ifdef CONFIG_STACKDEPOT
+> +	depot_stack_handle_t handle;
+>  #endif
+>  	int cpu;		/* Was running on cpu */
+>  	int pid;		/* Pid context */
+> @@ -581,22 +582,27 @@ static struct track *get_track(struct kmem_cache *s, void *object,
+>  	return kasan_reset_tag(p + alloc);
+>  }
+>  
+> +#ifdef CONFIG_STACKDEPOT
+> +static depot_stack_handle_t save_stack_trace(gfp_t flags)
+> +{
+> +	unsigned long entries[TRACK_ADDRS_COUNT];
+> +	depot_stack_handle_t handle;
+> +	unsigned int nr_entries;
+> +
+> +	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 4);
+> +	handle = stack_depot_save(entries, nr_entries, flags);
+> +	return handle;
+> +}
+> +#endif
+> +
+>  static void set_track(struct kmem_cache *s, void *object,
+>  			enum track_item alloc, unsigned long addr)
+>  {
+>  	struct track *p = get_track(s, object, alloc);
+>  
+>  	if (addr) {
+> -#ifdef CONFIG_STACKTRACE
+> -		unsigned int nr_entries;
+> -
+> -		metadata_access_enable();
+> -		nr_entries = stack_trace_save(kasan_reset_tag(p->addrs),
+> -					      TRACK_ADDRS_COUNT, 3);
+> -		metadata_access_disable();
+> -
+> -		if (nr_entries < TRACK_ADDRS_COUNT)
+> -			p->addrs[nr_entries] = 0;
+> +#ifdef CONFIG_STACKDEPOT
+> +		p->handle = save_stack_trace(GFP_KERNEL);
+>  #endif
+>  		p->addr = addr;
+>  		p->cpu = smp_processor_id();
+> @@ -623,14 +629,19 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
+>  
+>  	pr_err("%s in %pS age=%lu cpu=%u pid=%d\n",
+>  	       s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
+> -#ifdef CONFIG_STACKTRACE
+> +#ifdef CONFIG_STACKDEPOT
+>  	{
+> -		int i;
+> -		for (i = 0; i < TRACK_ADDRS_COUNT; i++)
+> -			if (t->addrs[i])
+> -				pr_err("\t%pS\n", (void *)t->addrs[i]);
+> -			else
+> -				break;
+> +		depot_stack_handle_t handle;
+> +		unsigned long *entries;
+> +		unsigned int nr_entries;
+> +
+> +		handle = READ_ONCE(t->handle);
+> +		if (!handle) {
+> +			pr_err("object allocation/free stack trace missing\n");
+> +		} else {
+> +			nr_entries = stack_depot_fetch(handle, &entries);
+> +			stack_trace_print(entries, nr_entries, 0);
+> +		}
+>  	}
+>  #endif
+>  }
+> @@ -4017,18 +4028,26 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
+>  	objp = fixup_red_left(s, objp);
+>  	trackp = get_track(s, objp, TRACK_ALLOC);
+>  	kpp->kp_ret = (void *)trackp->addr;
+> -#ifdef CONFIG_STACKTRACE
+> -	for (i = 0; i < KS_ADDRS_COUNT && i < TRACK_ADDRS_COUNT; i++) {
+> -		kpp->kp_stack[i] = (void *)trackp->addrs[i];
+> -		if (!kpp->kp_stack[i])
+> -			break;
+> -	}
+> +#ifdef CONFIG_STACKDEPOT
+> +	{
+> +		depot_stack_handle_t handle;
+> +		unsigned long *entries;
+> +		unsigned int nr_entries;
+>  
+> -	trackp = get_track(s, objp, TRACK_FREE);
+> -	for (i = 0; i < KS_ADDRS_COUNT && i < TRACK_ADDRS_COUNT; i++) {
+> -		kpp->kp_free_stack[i] = (void *)trackp->addrs[i];
+> -		if (!kpp->kp_free_stack[i])
+> -			break;
+> +		handle = READ_ONCE(trackp->handle);
+> +		if (handle) {
+> +			nr_entries = stack_depot_fetch(handle, &entries);
+> +			for (i = 0; i < KS_ADDRS_COUNT && i < nr_entries; i++)
+> +				kpp->kp_stack[i] = (void *)entries[i];
+> +		}
+> +
+> +		trackp = get_track(s, objp, TRACK_FREE);
+> +		handle = READ_ONCE(trackp->handle);
+> +		if (handle) {
+> +			nr_entries = stack_depot_fetch(handle, &entries);
+> +			for (i = 0; i < KS_ADDRS_COUNT && i < nr_entries; i++)
+> +				kpp->kp_free_stack[i] = (void *)entries[i];
+> +		}
+>  	}
+>  #endif
+>  #endif
+> 
 
-Chris
