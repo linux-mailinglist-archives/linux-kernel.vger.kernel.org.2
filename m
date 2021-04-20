@@ -2,81 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8201365599
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD3A36559C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhDTJjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229878AbhDTJjq (ORCPT
+        id S231325AbhDTJk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:40:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229937AbhDTJk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:39:46 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E638CC06174A;
-        Tue, 20 Apr 2021 02:39:15 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id c4so4964028ilq.9;
-        Tue, 20 Apr 2021 02:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Jv5XlEMdRtVgenqiZFyWIe5z8G9lvh79SljGhJQ5iIM=;
-        b=H1nzBXQp6OjNHpXgu51le5wMfd2pwcAFiJP0R+kp5IrQmMCiqKK2i4wp4uvNwA8mkC
-         1i7NbMpztGGoUmqQoAA9rP+9NWJvSWy/SektYHoF9qYltXVWOYX/rxOmuxSVTgkV3WoW
-         qkXEW67a+ypUFeFuVOeNhs33INPBiFM4NmkkvRs+O1FKTEmUg83ZGF3rlb9EpYSF4AO0
-         xm/6BqFwFgd/I6pmu1iFGIkEeB5Iyli+6K4kOH4qtpju+4JkOEFbd2Agk7rUFekhIfwe
-         +82a5WBdZ61OBO21WqOsNVCMi3blttOJUs3g2yu+JxkISD6FqZ5Od67qtYP3oYTaVEQn
-         5h5Q==
+        Tue, 20 Apr 2021 05:40:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618911624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7sWRozUdZOTDSWH44pqId+a7eHo5mZxw3UWB7bjXCJI=;
+        b=Bvx1TkWgtqoit79hVMtFryhGzRtpOSwLiv/pUWisjY7TYIFJKMZeRUBNlSNejWVwxj+Por
+        8L70EDru6LEbQJOqNQRxWq05SgEI5jKXqI48RlTVVD9IUcMZixrOFF9eUG+mRaWhFq19zV
+        YfCEPt0iwVukoaN6mTRv6L4BHOIR0Qk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-GrXrrxpNPcakBufc7ij9HQ-1; Tue, 20 Apr 2021 05:39:19 -0400
+X-MC-Unique: GrXrrxpNPcakBufc7ij9HQ-1
+Received: by mail-ej1-f72.google.com with SMTP id ji8-20020a1709079808b029037c921a9ea0so4554034ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:39:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Jv5XlEMdRtVgenqiZFyWIe5z8G9lvh79SljGhJQ5iIM=;
-        b=NvS3t6rADmP8dJQdL273tQTWaUpXvXhVp5Rj7hZGFRRRU2125R2Q0Dih9xhLga5AYb
-         ykkd1rwW0LXIEk9ASg0Adr2NoyWuSDxU9ylPTLSLUvSmDW8W6xbdvk5TtU7m2/HjiiRd
-         P+2hOEltNZOehNe905VpIm7vhVZA/KAnfevCLOanz74I1MfOMex3xU+SFmZyIxaB2MwA
-         15Hhz1+4HHI086iBeqQTkoOQHYAcCllYZpsjkjDVaaILj6Wtawr9ujbgNpb7+4VgVDpO
-         PhCFlRC0b7lOgbHrU9V+gFVKDgBJJOl7kTLCPUYfEKTYmNzzW7Kl/Hu74ZxEq0gaV9ai
-         VVpA==
-X-Gm-Message-State: AOAM530rPrM8lmVGM/Hb55+brY+rWaFmYpwRgZWPArfWkmlrWfraKkGl
-        21Cd7q9Xm4pCBtOAP5+KtQ2GKqUUR35xH0Psl9ow7Hm1vKE=
-X-Google-Smtp-Source: ABdhPJzBwwnQt1AiH7nyI9wz4liUzDDs9HQBAr7UqNPeVpKHVHWQUgcdY6OYQnSV6wAZpbYPcHG8gWn8IwNlbBOiVr8=
-X-Received: by 2002:a92:c78a:: with SMTP id c10mr21311323ilk.64.1618911555324;
- Tue, 20 Apr 2021 02:39:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7sWRozUdZOTDSWH44pqId+a7eHo5mZxw3UWB7bjXCJI=;
+        b=TS0CPGZJCQeJj0rMjEcCD6yb1HL6WHY7JbbXJ8gdgrSpd2VW3n6UHkUz4z3flsRaSx
+         NKOnpo20cJALh1eXj2O1GouU0CtynNVpecQXUkFe5nJTuyTz2+b1fxbyVGxIDJ15QKKd
+         LawGrpOIC4eXyQKOondIphUKSSzQeG/fk3yRSqmlxkAwNdbv+DZCn94Sdi9unNHEo6cV
+         ob+eO9t0pIiSz8dhIUMRucK94OUJH5uu5A1HVopIn5q7NU0+H6hwTFGLaMV7fWm12rYc
+         IwfhhCHNYBU2IVVvFfsqLGCAQsHlvxXMBQovsRIgmRcrkklhQjkA4aVRAO9OyZTZnodc
+         DYMw==
+X-Gm-Message-State: AOAM530sbA+SntrLPgTha9TY4olx3ul4Z6DCr0R3znHJ6TuxEl3HfS2i
+        3URNMbyabVhHIWhr6hqqlKfgbEgx+U3S5cA+Fd48EYrDFi0xyORgyK2QhzKSZ9fa3GK0nlKVgsA
+        NHjWSiBW24Lv5q0/fMQeUh6QJ
+X-Received: by 2002:aa7:d85a:: with SMTP id f26mr19697543eds.305.1618911558274;
+        Tue, 20 Apr 2021 02:39:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEmxJ2tCRr0SWSOMB8OVKhoPXgyNNIywNQY/un8EStcgKNNZOrvJF2rM2tTEb/g9xrL+QMog==
+X-Received: by 2002:aa7:d85a:: with SMTP id f26mr19697511eds.305.1618911558108;
+        Tue, 20 Apr 2021 02:39:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t17sm3662738edv.3.2021.04.20.02.39.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 02:39:17 -0700 (PDT)
+Subject: Re: [PATCH v13 09/12] mm: x86: Invoke hypercall when page encryption
+ status is changed
+To:     Ashish Kalra <Ashish.Kalra@amd.com>, bp@suse.de
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com
+References: <cover.1618498113.git.ashish.kalra@amd.com>
+ <f2340642c5b8d597a099285194fca8d05c9843bd.1618498113.git.ashish.kalra@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <faf98f6d-3f7a-978b-5705-614e4e692bfb@redhat.com>
+Date:   Tue, 20 Apr 2021 11:39:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 20 Apr 2021 11:39:04 +0200
-Message-ID: <CAKXUXMyNf4xCF2mWr878MKDa0-8svaiR5GToQyoEVM4FbmfJ8w@mail.gmail.com>
-Subject: Invalid License ID: GPL-3.0 for arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-spdx@vger.kernel.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f2340642c5b8d597a099285194fca8d05c9843bd.1618498113.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Qing,
+On 15/04/21 17:57, Ashish Kalra wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> Invoke a hypercall when a memory region is changed from encrypted ->
+> decrypted and vice versa. Hypervisor needs to know the page encryption
+> status during the guest migration.
 
-./scripts/spdxcheck.py reports:
+Boris, can you ack this patch?
 
-arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi: 1:28 Invalid
-License ID: GPL-3.0
+Paolo
 
-You have contributed this file with commit b1a792601f26 ("MIPS:
-Loongson64: DeviceTree for Loongson-2K1000") to the current
-linux-next.
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Reviewed-by: Steve Rutherford <srutherford@google.com>
+> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>   arch/x86/include/asm/paravirt.h       | 10 +++++
+>   arch/x86/include/asm/paravirt_types.h |  2 +
+>   arch/x86/kernel/paravirt.c            |  1 +
+>   arch/x86/mm/mem_encrypt.c             | 57 ++++++++++++++++++++++++++-
+>   arch/x86/mm/pat/set_memory.c          |  7 ++++
+>   5 files changed, 76 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+> index 4abf110e2243..efaa3e628967 100644
+> --- a/arch/x86/include/asm/paravirt.h
+> +++ b/arch/x86/include/asm/paravirt.h
+> @@ -84,6 +84,12 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
+>   	PVOP_VCALL1(mmu.exit_mmap, mm);
+>   }
+>   
+> +static inline void page_encryption_changed(unsigned long vaddr, int npages,
+> +						bool enc)
+> +{
+> +	PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
+> +}
+> +
+>   #ifdef CONFIG_PARAVIRT_XXL
+>   static inline void load_sp0(unsigned long sp0)
+>   {
+> @@ -799,6 +805,10 @@ static inline void paravirt_arch_dup_mmap(struct mm_struct *oldmm,
+>   static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
+>   {
+>   }
+> +
+> +static inline void page_encryption_changed(unsigned long vaddr, int npages, bool enc)
+> +{
+> +}
+>   #endif
+>   #endif /* __ASSEMBLY__ */
+>   #endif /* _ASM_X86_PARAVIRT_H */
+> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+> index de87087d3bde..69ef9c207b38 100644
+> --- a/arch/x86/include/asm/paravirt_types.h
+> +++ b/arch/x86/include/asm/paravirt_types.h
+> @@ -195,6 +195,8 @@ struct pv_mmu_ops {
+>   
+>   	/* Hook for intercepting the destruction of an mm_struct. */
+>   	void (*exit_mmap)(struct mm_struct *mm);
+> +	void (*page_encryption_changed)(unsigned long vaddr, int npages,
+> +					bool enc);
+>   
+>   #ifdef CONFIG_PARAVIRT_XXL
+>   	struct paravirt_callee_save read_cr2;
+> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+> index c60222ab8ab9..9f206e192f6b 100644
+> --- a/arch/x86/kernel/paravirt.c
+> +++ b/arch/x86/kernel/paravirt.c
+> @@ -335,6 +335,7 @@ struct paravirt_patch_template pv_ops = {
+>   			(void (*)(struct mmu_gather *, void *))tlb_remove_page,
+>   
+>   	.mmu.exit_mmap		= paravirt_nop,
+> +	.mmu.page_encryption_changed	= paravirt_nop,
+>   
+>   #ifdef CONFIG_PARAVIRT_XXL
+>   	.mmu.read_cr2		= __PV_IS_CALLEE_SAVE(native_read_cr2),
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index ae78cef79980..fae9ccbd0da7 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -19,6 +19,7 @@
+>   #include <linux/kernel.h>
+>   #include <linux/bitops.h>
+>   #include <linux/dma-mapping.h>
+> +#include <linux/kvm_para.h>
+>   
+>   #include <asm/tlbflush.h>
+>   #include <asm/fixmap.h>
+> @@ -29,6 +30,7 @@
+>   #include <asm/processor-flags.h>
+>   #include <asm/msr.h>
+>   #include <asm/cmdline.h>
+> +#include <asm/kvm_para.h>
+>   
+>   #include "mm_internal.h"
+>   
+> @@ -229,6 +231,47 @@ void __init sev_setup_arch(void)
+>   	swiotlb_adjust_size(size);
+>   }
+>   
+> +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
+> +					bool enc)
+> +{
+> +	unsigned long sz = npages << PAGE_SHIFT;
+> +	unsigned long vaddr_end, vaddr_next;
+> +
+> +	vaddr_end = vaddr + sz;
+> +
+> +	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
+> +		int psize, pmask, level;
+> +		unsigned long pfn;
+> +		pte_t *kpte;
+> +
+> +		kpte = lookup_address(vaddr, &level);
+> +		if (!kpte || pte_none(*kpte))
+> +			return;
+> +
+> +		switch (level) {
+> +		case PG_LEVEL_4K:
+> +			pfn = pte_pfn(*kpte);
+> +			break;
+> +		case PG_LEVEL_2M:
+> +			pfn = pmd_pfn(*(pmd_t *)kpte);
+> +			break;
+> +		case PG_LEVEL_1G:
+> +			pfn = pud_pfn(*(pud_t *)kpte);
+> +			break;
+> +		default:
+> +			return;
+> +		}
+> +
+> +		psize = page_level_size(level);
+> +		pmask = page_level_mask(level);
+> +
+> +		kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
+> +				   pfn << PAGE_SHIFT, psize >> PAGE_SHIFT, enc);
+> +
+> +		vaddr_next = (vaddr & pmask) + psize;
+> +	}
+> +}
+> +
+>   static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
+>   {
+>   	pgprot_t old_prot, new_prot;
+> @@ -286,12 +329,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
+>   static int __init early_set_memory_enc_dec(unsigned long vaddr,
+>   					   unsigned long size, bool enc)
+>   {
+> -	unsigned long vaddr_end, vaddr_next;
+> +	unsigned long vaddr_end, vaddr_next, start;
+>   	unsigned long psize, pmask;
+>   	int split_page_size_mask;
+>   	int level, ret;
+>   	pte_t *kpte;
+>   
+> +	start = vaddr;
+>   	vaddr_next = vaddr;
+>   	vaddr_end = vaddr + size;
+>   
+> @@ -346,6 +390,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
+>   
+>   	ret = 0;
+>   
+> +	set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
+> +					enc);
+>   out:
+>   	__flush_tlb_all();
+>   	return ret;
+> @@ -481,6 +527,15 @@ void __init mem_encrypt_init(void)
+>   	if (sev_active() && !sev_es_active())
+>   		static_branch_enable(&sev_enable_key);
+>   
+> +#ifdef CONFIG_PARAVIRT
+> +	/*
+> +	 * With SEV, we need to make a hypercall when page encryption state is
+> +	 * changed.
+> +	 */
+> +	if (sev_active())
+> +		pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
+> +#endif
+> +
+>   	print_mem_encrypt_feature_info();
+>   }
+>   
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index 16f878c26667..3576b583ac65 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -27,6 +27,7 @@
+>   #include <asm/proto.h>
+>   #include <asm/memtype.h>
+>   #include <asm/set_memory.h>
+> +#include <asm/paravirt.h>
+>   
+>   #include "../mm_internal.h"
+>   
+> @@ -2012,6 +2013,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+>   	 */
+>   	cpa_flush(&cpa, 0);
+>   
+> +	/* Notify hypervisor that a given memory range is mapped encrypted
+> +	 * or decrypted. The hypervisor will use this information during the
+> +	 * VM migration.
+> +	 */
+> +	page_encryption_changed(addr, numpages, enc);
+> +
+>   	return ret;
+>   }
+>   
+> 
 
-Do you intend to contribute this under this non-default license
-(GPL-3.0) for the kernel project or did you simply mean the default
-license GPL-2.0?
-
-Best regards,
-
-Lukas
