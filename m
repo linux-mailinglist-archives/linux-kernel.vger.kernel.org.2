@@ -2,188 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73B0365ACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F243A365AD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhDTOG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:06:56 -0400
-Received: from mout.gmx.net ([212.227.17.21]:50115 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232473AbhDTOGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:06:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618927567;
-        bh=/g1FtlevdHeTmhJUD/4gwA54JJzrpd4wSzl/1j3/RQM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ZjwhifnciEYc53kj3KbQaO5HAGlQLsGqFwFRtAFCsLw9CneqliwFRzzAhuma2Oqsz
-         eylHtLqEHO/ddmqdodOBS4oGcL+PTszUSrEqTM+hbIi9z7jSm787qb+BKt2NjUtYuL
-         DkOOULSaKUoJ6bZnQpet960sfsabTxvIBd1O/kfE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.1.252] ([92.255.135.33]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAwXh-1lO9e32nd3-00BIWF; Tue, 20
- Apr 2021 16:06:06 +0200
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-To:     Chen Yu <yu.c.chen@intel.com>, Borislav Petkov <bp@suse.de>
-Cc:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        calvin.walton@kepstin.ca, wei.huang2@amd.com
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop> <20210420080701.GA2326@zn.tnic>
- <20210420131541.GA388877@chenyu-desktop>
-From:   "Artem S. Tashkinov" <aros@gmx.com>
-Message-ID: <a5637148-7a21-e4e1-a4e7-c470bbb3bfe0@gmx.com>
-Date:   Tue, 20 Apr 2021 14:06:04 +0000
+        id S232362AbhDTOIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:08:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27669 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231422AbhDTOIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:08:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618927679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDVmsZT82WF5IHvcZJyjG++DF0zOp7ksAtsJgyQLwio=;
+        b=U7VfFL41Ij7PkorZC+d7NRKA6WKzS5UPxK+cwIOL31rMqOySUKTK5w92roTguFjebk6TLz
+        PDE48KfxhGAHHMNqQN6xxeVhMm5g4MrvarZB0a9scmkmLAxMGfzF5fvvACBB6l15VP7fjU
+        MT0FJJKY6TK5afGgZ5J+0MuyyMvUVPk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-FFI1ZFkEOM-9NLC_RwObjg-1; Tue, 20 Apr 2021 10:07:55 -0400
+X-MC-Unique: FFI1ZFkEOM-9NLC_RwObjg-1
+Received: by mail-ed1-f71.google.com with SMTP id t11-20020aa7d4cb0000b0290382e868be07so13172572edr.20
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:07:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jDVmsZT82WF5IHvcZJyjG++DF0zOp7ksAtsJgyQLwio=;
+        b=WE0t5Jtzo+chKkGxxGgW4ToEQKO8E0rNqBuJa/kkwODAEzWyAGi4u3NKDI9BHPuC5m
+         uODJ+c0yd2+XHcSUJozgZ0nyPSKPHdgZuWhoowg7a876OMzTV8X/8YGMUgvdLajZZM1V
+         W9gH1PF4tQvkoARx5ZgfLDNoc0G1PEwVmtHzN5sJqwGc4B+o1iuKThrSyjNzhwNlXUoi
+         ttsgScCjgLXlCpg/1p7y7dJhCS0pzCR63PaWSQG61NkkKFD2QHdbi9gwinecaxu6+yX6
+         3uu6VUxVBqTF4QAW5xTTSH9qy6SrX7fBNZ860+raBkxySThXV9VqmKb5jmVk1ITCOks1
+         tqJQ==
+X-Gm-Message-State: AOAM532u3UK2i38MIZvYmh+RHat9XxS8vinfH9UIJm+mZPaWdPRyD351
+        Hpd0KMv72HO9bOI8kPTOX5jh+Hh8C1ptolwqaVOZQRrTKSzYS2hXxJbR8NGDblrnpdDWUFDMrl5
+        o/Wgbvsb9zlxWNqNVGzXpQ6bo
+X-Received: by 2002:a05:6402:278d:: with SMTP id b13mr32202748ede.34.1618927673702;
+        Tue, 20 Apr 2021 07:07:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsIyaH/fgrNE9cx6DPFnsc2ZoUIN4T+efZ+L0gcuhnjAJpXVjXgEYOrwxoSGCxE6PwPWOSAw==
+X-Received: by 2002:a05:6402:278d:: with SMTP id b13mr32202719ede.34.1618927673473;
+        Tue, 20 Apr 2021 07:07:53 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id d1sm15235952ede.31.2021.04.20.07.07.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 07:07:52 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] KVM: selftests: Sync data verify of dirty logging
+ with guest sync
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Andrew Jones <drjones@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210417143602.215059-1-peterx@redhat.com>
+ <20210417143602.215059-2-peterx@redhat.com> <20210418124351.GW4440@xz-x1>
+ <60b0c96c-161d-676d-c30a-a7ffeccab417@redhat.com>
+ <20210420131041.GZ4440@xz-x1>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e110673a-8422-bdff-4336-bdb486842d39@redhat.com>
+Date:   Tue, 20 Apr 2021 16:07:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210420131541.GA388877@chenyu-desktop>
+In-Reply-To: <20210420131041.GZ4440@xz-x1>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PlZr8/Llvn3WOZlKjQff9crOs58R16i0wLmavSQVfixKfcMU6g/
- WIGo8fjsBWGEBk0hjxNLDvjX9gBwFwhEU5ZInOiHSVyGZC0wxpUF2S0QYSGnQMLC2c2J7In
- gwqVyxqBzIXxtF3AuXuFk8TaF+wC2rxfoj1ynqNtgThF1nhyNUyXSjtx7cRvuKfJ6GKcwx/
- 9Cfb2PmZx/i3cAnq68Ulw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iCXZzRyq6xo=:tEr6lA3vL6ZqLk5tgpi045
- jskD73l2WvZdJk1oH6cOLd8nmXN80b/Qe91fuE2KDR+hTW4hd8ALGb14N+ad567a0Ik9eGjmm
- jMebAIdz0DGKdB1gNqCVNSnme6pDxQwmgb+KLJChpJZskkoWnZseI01MzXYhM123szmsW3R95
- KXG94tcfhoZ3zaQYChkz7SlV7y1UMQYXzvKtUJuB6w2g8E5WWVBhA75ftENmdkQdG3I4q98qh
- e/dOb1EFVLyFsgXwMn8+Z5KpMo4w3NSFNuWPorPSTq3v1NMuRaAVY58y7FhuT/x5jRI4bfKg3
- 71zO6SH+8ecxV4ICk3+NODzWDMzcgrPaFaeRF/P9Zfj/cCrTOps8mZzLsjIaYn9n0cIUO2j5e
- /WX2bLnLXXGIPypG2/9oAcpatYW4geHauprYklM1HCs9DICdGtCr5PqTbm2gudbgbLBc2nyrp
- 0PVVqvE+CEQULe24C9+ohXKDiK3A5w08kBrevcdv6LYcf1hF/8Ilh/wsUXQCzaCnByGlTDk6q
- kn2rOS2hLfircYMUsW46Pejlo15PyXvg+WznR00P/ptHC30lRLcHCsoY7c5B0gY7P6e7HXER5
- MGZcuiLiJW+Vr9ulwHuRfXnZMFVx/RGyyvG+/3Niofj0Kfho6BdWfygrE7Z2nuJqG39p7URtQ
- Nj9tnZD+ntQh/H3GGAS9ZxZetQ3kBssVLoczyR/u7A8YDqTK+NoJR21QmcBRgBDDzR6OL6cBt
- 02W8XAnXjxGtnQkiaGE0XvA3OWPCT8STquZpmztDiK1UZCEhyczTyqjanYlTKM1dWJggT8YZb
- 1Q6B5QnmFV5ZH9YG05IIo6xArlxAp7MmGbEW1NG0rgZHIRYyTzxKQyQYNlqdR7Ax4QJmPh9GM
- NDUudDDkHUDPYqioFSjB68jBb6TX3DfKrQo7/xWzGwBjq7tkZQLV55G76du5lGii63OzFGU8H
- uaJTTUo0qIkN1vi2cCFdQT5LchxZeAWG9wqYkor1W/RGGfwZQJ2IrNBlUvjEnj19eW3xwlFxY
- GcaqUlqnl47BWNrhmbXZXN9Oaukf9P//S2k+PL8qFlMa+ATVH/SMglsTg7w1juKpuXEVmaDcb
- 4arsLph3GSuyPyouLkMjoum9LOn5CaFxW7vSiORDktEP8LhjMWvysVA/pLGj50GKW6CVVeG6e
- Qm0zxjoN3QpOv0EzdLxf/LAiTpp+qf7aog6IH4PLXURGcjKFMNTb67zUJqzks7tsPN/ig=
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/21 1:15 PM, Chen Yu wrote:
-> On Tue, Apr 20, 2021 at 10:07:01AM +0200, Borislav Petkov wrote:
->> On Tue, Apr 20, 2021 at 10:03:36AM +0800, Chen Yu wrote:
->>> On Mon, Apr 19, 2021 at 02:58:12PM -0500, Terry Bowman wrote:
->>>> Turbostat fails to correctly collect and display RAPL summary informa=
-tion
->>>> on Family 17h and 19h AMD processors. Running turbostat on these proc=
-essors
->>>> returns immediately. If turbostat is working correctly then RAPL summ=
-ary
->>>> data is displayed until the user provided command completes. If a com=
-mand
->>>> is not provided by the user then turbostat is designed to continuousl=
-y
->>>> display RAPL information until interrupted.
->>>>
->>>> The issue is due to offset_to_idx() and idx_to_offset() missing suppo=
-rt for
->>>> AMD MSR addresses/offsets. offset_to_idx()'s switch statement is miss=
-ing
->>>> cases for AMD MSRs and idx_to_offset() does not include a path to ret=
-urn
->>>> AMD MSR(s) for any idx.
->>>>
->>>> The solution is add AMD MSR support to offset_to_idx() and idx_to_off=
-set().
->>>> These functions are split-out and renamed along architecture vendor l=
-ines
->>>> for supporting both AMD and Intel MSRs.
->>>>
->>>> Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL d=
-isplay")
->>>> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
->>> Thanks for fixing, Terry, and previously there was a patch for this fr=
-om Bas Nieuwenhuizen:
->>> https://lkml.org/lkml/2021/3/12/682
->>> and it is expected to have been merged in Len's branch already.
+On 20/04/21 15:10, Peter Xu wrote:
+> On Tue, Apr 20, 2021 at 10:07:16AM +0200, Paolo Bonzini wrote:
+>> On 18/04/21 14:43, Peter Xu wrote:
+>>> ----8<-----
+>>> diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+>>> index 25230e799bc4..d3050d1c2cd0 100644
+>>> --- a/tools/testing/selftests/kvm/dirty_log_test.c
+>>> +++ b/tools/testing/selftests/kvm/dirty_log_test.c
+>>> @@ -377,7 +377,7 @@ static void dirty_ring_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+>>>           /* A ucall-sync or ring-full event is allowed */
+>>>           if (get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC) {
+>>>                   /* We should allow this to continue */
+>>> -               ;
+>>> +               vcpu_handle_sync_stop();
+>>>           } else if (run->exit_reason == KVM_EXIT_DIRTY_RING_FULL ||
+>>>                      (ret == -1 && err == EINTR)) {
+>>>                   /* Update the flag first before pause */
+>>> ----8<-----
+>>>
+>>> That's my intention when I introduce vcpu_handle_sync_stop(), but forgot to
+>>> add...
 >>
->> Expected?
+>> And possibly even this (untested though):
 >>
->> So is it or is it not?
+>> diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+>> index ffa4e2791926..918954f01cef 100644
+>> --- a/tools/testing/selftests/kvm/dirty_log_test.c
+>> +++ b/tools/testing/selftests/kvm/dirty_log_test.c
+>> @@ -383,6 +383,7 @@ static void dirty_ring_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+>>   		/* Update the flag first before pause */
+>>   		WRITE_ONCE(dirty_ring_vcpu_ring_full,
+>>   			   run->exit_reason == KVM_EXIT_DIRTY_RING_FULL);
+>> +		atomic_set(&vcpu_sync_stop_requested, false);
+>>   		sem_post(&sem_vcpu_stop);
+>>   		pr_info("vcpu stops because %s...\n",
+>>   			dirty_ring_vcpu_ring_full ?
+>> @@ -804,8 +805,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>>   		 * the flush of the last page, and since we handle the last
+>>   		 * page specially verification will succeed anyway.
+>>   		 */
+>> -		assert(host_log_mode == LOG_MODE_DIRTY_RING ||
+>> -		       atomic_read(&vcpu_sync_stop_requested) == false);
+>> +		assert(atomic_read(&vcpu_sync_stop_requested) == false);
+>>   		vm_dirty_log_verify(mode, bmap);
+>>   		sem_post(&sem_vcpu_cont);
 >>
-> This patch was sent to Len and it is not in public repo yet. He is prepa=
-ring for a new
-> release of turbostat as merge window is approaching.
->> And can you folks agree on a patch already and give it to Artem for
->> testing (CCed) because he's triggering it too:
->>
->> https://bugzilla.kernel.org/show_bug.cgi?id=3D212357
->>
-> Okay. I would vote for the the patch from Bas as it was a combined work =
-from two
-> authors and tested by several AMD users. But let me paste it here too fo=
-r Artem to
-> see if this also works for him:
->
->
->  From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00 2001
-> From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-> Date: Fri, 12 Mar 2021 21:27:40 +0800
-> Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
->
-> It was reported that on Zen+ system turbostat started exiting,
-> which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
-> offset_to_idx wasn't returning a non-negative index.
->
-> This patch combined the modification from Bingsong Si and
-> Bas Nieuwenhuizen and addd the MSR to the index system as alternative fo=
-r
-> MSR_PKG_ENERGY_STATUS.
->
-> Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL disp=
-lay")
-> Reported-by: youling257 <youling257@gmail.com>
-> Tested-by: youling257 <youling257@gmail.com>
-> Tested-by: sibingsong <owen.si@ucloud.cn>
-> Tested-by: Kurt Garloff <kurt@garloff.de>
-> Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
->   tools/power/x86/turbostat/turbostat.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/tur=
-bostat/turbostat.c
-> index a7c4f0772e53..a7c965734fdf 100644
-> --- a/tools/power/x86/turbostat/turbostat.c
-> +++ b/tools/power/x86/turbostat/turbostat.c
-> @@ -297,7 +297,10 @@ int idx_to_offset(int idx)
->
->   	switch (idx) {
->   	case IDX_PKG_ENERGY:
-> -		offset =3D MSR_PKG_ENERGY_STATUS;
-> +		if (do_rapl & RAPL_AMD_F17H)
-> +			offset =3D MSR_PKG_ENERGY_STAT;
-> +		else
-> +			offset =3D MSR_PKG_ENERGY_STATUS;
->   		break;
->   	case IDX_DRAM_ENERGY:
->   		offset =3D MSR_DRAM_ENERGY_STATUS;
-> @@ -326,6 +329,7 @@ int offset_to_idx(int offset)
->
->   	switch (offset) {
->   	case MSR_PKG_ENERGY_STATUS:
-> +	case MSR_PKG_ENERGY_STAT:
->   		idx =3D IDX_PKG_ENERGY;
->   		break;
->   	case MSR_DRAM_ENERGY_STATUS:
-> @@ -353,7 +357,7 @@ int idx_valid(int idx)
->   {
->   	switch (idx) {
->   	case IDX_PKG_ENERGY:
-> -		return do_rapl & RAPL_PKG;
-> +		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
->   	case IDX_DRAM_ENERGY:
->   		return do_rapl & RAPL_DRAM;
->   	case IDX_PP0_ENERGY:
->
+>> You can submit all these as a separate patch.
+> 
+> But it could race, then?
+> 
+>          main thread                 vcpu thread
+>          -----------                 -----------
+>                                    ring full
+>                                      vcpu_sync_stop_requested=0
+>                                      sem_post(&sem_vcpu_stop)
+>       vcpu_sync_stop_requested=1
+>       sem_wait(&sem_vcpu_stop)
+>       assert(vcpu_sync_stop_requested==0)   <----
 
-The patch works for me.
+Yes, it could indeed.
 
-Tested-by: Artem S. Tashkinov <aros@gmx.com>
+Thanks,
+
+Paolo
+
