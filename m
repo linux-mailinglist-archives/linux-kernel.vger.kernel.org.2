@@ -2,247 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FB036540F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A70D36540D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhDTI1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S230384AbhDTI1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhDTI1L (ORCPT
+        with ESMTP id S229543AbhDTI1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:27:11 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C2BC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:26:40 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id m13so38167489oiw.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:26:40 -0700 (PDT)
+        Tue, 20 Apr 2021 04:27:07 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC34C06174A;
+        Tue, 20 Apr 2021 01:26:36 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id r20so7202444ejo.11;
+        Tue, 20 Apr 2021 01:26:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=25CrNnJfupDuDkhDpTH6FQ9OCQRJmgGhTqglddUZ5D0=;
-        b=SzOs5BPHVO0k2VWujRAoL9dMKOeqM2G5EaMxcumnoMHULTaMysn7ynzNeATTvXRg5u
-         Y/2wI5HBEnJktVlaEsB4+wJlWdbkhDnRMY3sZr1flbrTYmC+fyL4NttmjCw0eMO18ee4
-         kpobfekJiZNOZvE+Kdu2I9r6mimwUujI7cJh8lRwg/0qZ3qEZRxjfVkIQSsyzX1cWoxy
-         MfsV+87dUYHcsVrjzV7sjp7A5zOVKsdalowjLT7z4QlwO3lYnjwKy6hsQoPvqZXutWlM
-         VT7VKJMfxAtylCx1Fy+8L8vz/riz2ftf5mM9vryyNB2UDM5gzZSHlOlbvkhs8JSqR0pE
-         AXUw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Puq3uu3VM/r/ZxcT7seTw3qGPFeA4IvkP0YTU1D5aKE=;
+        b=gzl7k+XbQmlzNoSuTvdfgSphFfJQRLenPJ0Gj2kYZM3qsXk2SmTxzFU3l8iI5+YQtJ
+         ggtHbqiyxPNa4RodTUd6mL5HKj0q9KZunxHCC/LozOR6f0pW1HhXMFFJ3wHH8UhvumMd
+         uTM6slNqTEKc/EM+GqsTvX2/Q+o3xfoSbs4J2ApLBk+PSzxJXt/cTXI6TMLremdsQRhD
+         lTOUoijcNXuu9p2eexQ4N5u1kwwZE/rBt2BA10FXC2dzWBSzxAyXxcIdG1eyAhKE4SOC
+         bRYI6fbhUGwatFofWo72FV8fnMGitsB3BnS7XJRN7T0WSB4EELGJeqFe5/PpMuSYqqRq
+         1wFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=25CrNnJfupDuDkhDpTH6FQ9OCQRJmgGhTqglddUZ5D0=;
-        b=F/jHx+Tod2A6WDUaA1CPKxmU0fu/wN8/JxeYFmYWYul5yd4hxWVZ6t8wnGSnp2umjY
-         1aVoAYFvXRqc9TUInubOcxOiPo1Jcp5cJBe2kSzYDAJu+hrmvlKBejiF2oGW0Hmj7O4B
-         MScA4wotLY6LiSliCERGlmx7br4hVC1AHXzQDqLy57kn1Ucyjo3F6iBy5A1XW44wpW0X
-         4MCkRd6eGHhFG+iaLBOF89R3U1zBG/U8xk1szwGQkIsyKg1YMRAtzfP7QWEv0d0Q3esw
-         UDxiljuVBh/2YpcThsDZ8av6Qj0QvWeJ9z4thUc4icdOrtIHtvGIcTPv16EzuXFCZBEy
-         hQIw==
-X-Gm-Message-State: AOAM530PVBd9e7WK1uMWjc5sPjPB5V+jOx5SI/uQFBTkZZE/GN46I7s6
-        er30V+mKRwxgqAodhktQoik/Q21DMYRuuZUFDwyJVw==
-X-Google-Smtp-Source: ABdhPJwZ7lbMR2tJlHZiVxH72CVZU1yZkzdYpJNAzP6BDgbeyU9DqDxEu4XX3K0/bMRmNMmr2LFTNLESwbhGB+oD634=
-X-Received: by 2002:aca:ed50:: with SMTP id l77mr2258020oih.13.1618907199970;
- Tue, 20 Apr 2021 01:26:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Puq3uu3VM/r/ZxcT7seTw3qGPFeA4IvkP0YTU1D5aKE=;
+        b=ax/d9WnLDtwMIKA1Ns2UXhxzkl3NbiL3tjaFm7o441xn7OinHuAlrVyW5VZS7xuJL4
+         uOI44FIsSm+9tQVzuWgpNP+a1YNai7wkdRmAcfCHa/UMWmyjZjX9gtPX44eOJXaE2+6z
+         oVVSNHRNuHjvj/IR5PV4NrjJDdTGSqljs6N9WhQAahs6kzIrA6JhpiPEjMjeN4GQijFf
+         wuj6vgGDtXe7ACI/tPLs2OvdETfxJcbEMeRWeuZNiXIxk7ELLTWJBVPy5CYrKvTuC0mm
+         p0hIkb0EYDUkldRaQsS1Opd+7VQUDO7Vix8bCatN3HYIggIUoFl0aW3esEbYJ2Sn0G+c
+         G6BQ==
+X-Gm-Message-State: AOAM532/fiy3tiWunFEGmtkJFY7HgTWRnZpma9HMPy2uq0KO9FwZ+/R+
+        VsNO5neNENXsIp8Rf2Rtfls=
+X-Google-Smtp-Source: ABdhPJyrhCRacWIpY3ASRomiG1UZ70YRI8DByoUoShUYc23am8NJiaWB5VeU3Iv6sR2x3QOVVPOWEg==
+X-Received: by 2002:a17:906:f9da:: with SMTP id lj26mr25630986ejb.98.1618907194807;
+        Tue, 20 Apr 2021 01:26:34 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id i8sm5780615edu.64.2021.04.20.01.26.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 01:26:34 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 11:26:32 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Arvid.Brodin@xdin.com" <Arvid.Brodin@xdin.com>,
+        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "ivan.khoronzhuk@linaro.org" <ivan.khoronzhuk@linaro.org>,
+        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
+        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
+        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
+        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        Po Liu <po.liu@nxp.com>, Mingkai Hu <mingkai.hu@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Leo Li <leoyang.li@nxp.com>
+Subject: Re: [EXT] Re: [net-next] net: dsa: felix: disable always guard band
+ bit for TAS config
+Message-ID: <20210420082632.3fy4y3ftkhwrj7nm@skbuf>
+References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+ <20210419123825.oicleie44ms6zcve@skbuf>
+ <DB8PR04MB5785E8D0499961D6C046092AF0489@DB8PR04MB5785.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210419130523.802169214@linuxfoundation.org>
-In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 20 Apr 2021 13:56:28 +0530
-Message-ID: <CA+G9fYuVJ4cvkBaRxL2Mm0BJvAEqge9TdBRyA=LdVwX8bfYX7Q@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/73] 5.4.114-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DB8PR04MB5785E8D0499961D6C046092AF0489@DB8PR04MB5785.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 at 18:50, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.114 release.
-> There are 73 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.114-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Apr 20, 2021 at 03:06:40AM +0000, Xiaoliang Yang wrote:
+> Hi Vladimir.
+> 
+> On Mon, Apr 19, 2021 at 20:38PM +0800, Vladimir Oltean wrote:
+> >
+> >What is a scheduled queue? When time-aware scheduling is enabled on
+> >the port, why are some queues scheduled and some not?
+> 
+> The felix vsc9959 device can set SCH_TRAFFIC_QUEUES field bits to
+> define which queue is scheduled. Only the set queues serves schedule
+> traffic. In this driver we set all 8 queues to be scheduled in
+> default, so all the traffic are schedule queues to schedule queue.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-
-The following kernel crash reported on arm64 hikey device running stable-rc
-5.4.114-rc1 kernel and testing LTP thp04 test case.
-but not reproducible. please find more details in the below link,
-So this is not considered as real regression.
-
-thp04: page allocation failure: order:0,
-mode:0x400dc0(GFP_KERNEL_ACCOUNT|__GFP_ZERO), nodemask=3D(null)
-Unable to handle kernel paging request at virtual address 0000000000001540
-,cpuset=3D/,mems_allowed=3D0
-Unable to handle kernel paging request at virtual address 0000000000001540
-
-https://lore.kernel.org/stable/CA+G9fYtujdEqdGE_3dDpAecLMAmUfwZEm5EmPEGTNdL=
-QgXtYYw@mail.gmail.com/T/#u
-
-## Build
-* kernel: 5.4.114-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: c509b45704fd663fc59405e98d29d7f06eaae4b5
-* git describe: v5.4.113-74-gc509b45704fd
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-13-74-gc509b45704fd
-
-## No regressions (compared to v5.4.113-49-g56028094045b)
-
-## No fixes (compared to v5.4.113-49-g56028094045b)
-
-## Test result summary
- total: 64147, pass: 53600, fail: 638, skip: 9689, xfail: 220,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 191 total, 191 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 25 total, 25 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+I understand this, what I don't really understand is the distinction
+that the switch makes between 'scheduled' and 'non-scheduled' traffic.
+What else does this distinction affect, apart from the guard bands added
+implicitly here? The tc-taprio qdisc has no notion of 'scheduled'
+queues, all queues are 'scheduled'. Do we ever need to set the scheduled
+queues mask to something other than 0xff? If so, when and why?
