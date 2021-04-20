@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316B2365C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39213365CA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhDTPrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233116AbhDTPrD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:47:03 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768BFC06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:46:31 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id c17so25839677pfn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c8ssYGouwaSQxS4XvnAPrHZNGOh02XxZ6Rmplg6qhmE=;
-        b=WjtM64E8tq5y3tsNgJD8zpjHOkD0+lTSBFiFcPBuTqRUG15VZ6PgXhq2ZR69a37Y4r
-         W7yax5Y5dc/hcVfA1IHTDWVS/4FiU7/G8oc6lOV0eV8rDifWA1LeDphkkW/SuVG6cXGO
-         VUouDPaFSnQqowsNCP+ytJ5sJnOfeRN0anlJs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c8ssYGouwaSQxS4XvnAPrHZNGOh02XxZ6Rmplg6qhmE=;
-        b=FD/rax67o/FzEp9rqHZIDJlNlg+1BEW3TW+49DkR+8xGSdzW7i/6q7XvNPCAykX6eA
-         DdhxOp6jXnzkNz4wxYHwUKaGXwuIVkb+0kEmwmPOY8v5Pm9vZMs1SOE902ti3Dfr9EPc
-         uXHlcBiOkEECWJyqwj5BPdZGpRGXeuIX4ppaBl+cfxkslxaEapkq/eRUOMDgJHQEVUT1
-         DQKeQm2lzx030xrTuMWIGuVHe4psWBGESXpi88Xb6TjPrJaQrb6743+nUZ/a+z4GaXvu
-         FLd5gRwERbnIg8QAWoXdvv6cpkuG/TTdsIQ3WVFLUSfJ6ypkv8e5SdGKVOQJ5aWiuN/1
-         Tx3A==
-X-Gm-Message-State: AOAM530ISkK5eGpluB2W3pJ4sg8+a0YLDxv3txOi82uo9WSePo88tQdA
-        /yMp7FZRc/XCT64G3p4R+niUYQ==
-X-Google-Smtp-Source: ABdhPJy6gy7LAnUoij0pvKq6YQ3cakdNrlN8b9JOHux4pmSWQsdyD+DrID/+VNIQjFqOiwzQTyczDA==
-X-Received: by 2002:a63:1316:: with SMTP id i22mr17206048pgl.419.1618933591048;
-        Tue, 20 Apr 2021 08:46:31 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
-        by smtp.gmail.com with UTF8SMTPSA id n85sm1593685pfd.170.2021.04.20.08.46.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 08:46:30 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 08:46:29 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V3 2/5] arm64: dts: qcom: pm8350c: Add temp-alarm support
-Message-ID: <YH73VU+mSHodeTSf@google.com>
-References: <1618389266-5990-1-git-send-email-skakit@codeaurora.org>
- <1618389266-5990-3-git-send-email-skakit@codeaurora.org>
+        id S233017AbhDTPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:49:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:34178 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232504AbhDTPts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:49:48 -0400
+IronPort-SDR: bU48S0RrUvJcDLVtv9EVqhiBxKf/8bcetaNgPxzam3Hb+ROEZ7BxVScNRc6luhw4C8eZemtutz
+ OZ7eUYd5lBrw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="216140635"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="216140635"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 08:47:33 -0700
+IronPort-SDR: 3yWPQ97nJMs3J79JWj/qOc42O12pgrF77tfk72lUoKm5vBC6hK/t87dDAu9apgNncbsONx1W5G
+ ez1juHxoRvYA==
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="463164595"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 08:47:32 -0700
+Date:   Tue, 20 Apr 2021 08:47:30 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Jue Wang <juew@google.com>
+Cc:     nao.horiguchi@gmail.com, akpm@linux-foundation.org, bp@alien8.de,
+        david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        luto@kernel.org, naoya.horiguchi@nec.com, osalvador@suse.de,
+        yaoaili@kingsoft.com
+Subject: Re: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
+ error virtual address
+Message-ID: <20210420154730.GA577592@agluck-desk2.amr.corp.intel.com>
+References: <CAPcxDJ5gH9XvZ1bMsRqqU8bTpGLsz75+pWMnj52b-nMZHKhdtQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1618389266-5990-3-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <CAPcxDJ5gH9XvZ1bMsRqqU8bTpGLsz75+pWMnj52b-nMZHKhdtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 02:04:23PM +0530, satya priya wrote:
-> Add temp-alarm node for PM8350C pmic and also modify gpio
-> node to add gpio ranges and "qcom,spmi-gpio" compatible.
+On Mon, Apr 19, 2021 at 07:03:01PM -0700, Jue Wang wrote:
+> On Tue, 13 Apr 2021 07:43:20 +0900, Naoya Horiguchi wrote:
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
+> > This patch suggests to do page table walk to find the error virtual
+> > address.  If we find multiple virtual addresses in walking, we now can't
+> > determine which one is correct, so we fall back to sending SIGBUS in
+> > kill_me_maybe() without error info as we do now.  This corner case needs
+> > to be solved in the future.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> index 2b9b75e..e1b75ae 100644
-> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> @@ -13,13 +13,43 @@
->  		#address-cells = <1>;
->  		#size-cells = <0>;
->  
-> +		pm8350c_temp_alarm: temp-alarm@a00 {
-> +			compatible = "qcom,spmi-temp-alarm";
-> +			reg = <0xa00>;
-> +			interrupts = <0x2 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
-> +			#thermal-sensor-cells = <0>;
-> +		};
-> +
->  		pm8350c_gpios: gpio@8800 {
-> -			compatible = "qcom,pm8350c-gpio";
-> +			compatible = "qcom,pm8350c-gpio", "qcom,spmi-gpio";
->  			reg = <0x8800>;
->  			gpio-controller;
-> +			gpio-ranges = <&pm8350c_gpios 0 0 9>;
+> Instead of walking the page tables, I wonder what about the following idea:
+> 
+> When failing to get vaddr, memory_failure just ensures the mapping is removed
+> and an hwpoisoned swap pte is put in place; or the original page is flagged with
+> PG_HWPOISONED and kept in the radix tree (e.g., for SHMEM THP).
 
-a separate patch for this would probably be preferable, but I guess it's ok
+To remove the mapping, you need to know the virtual address :-)
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Well, I did try a patch that removed *all* user mappings (switched CR3 to
+swapper_pgdir) and returned to user. Then have the resulting page fault
+report the address. But that didn't work very well.
+
+> NOTE: no SIGBUS is sent to user space.
+> 
+> Then do_machine_check just returns to user space to resume execution, the
+> re-execution will result in a #PF and should land to the exact page fault
+> handling code that generates a SIGBUS with the precise vaddr info:
+
+That's how SRAO (and other races) are supposed to work.
+
+-Tony
