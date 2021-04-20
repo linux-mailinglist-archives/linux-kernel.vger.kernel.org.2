@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DF6365C57
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9D5365C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233013AbhDTPkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:40:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31949 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232174AbhDTPkI (ORCPT
+        id S232985AbhDTPlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232871AbhDTPlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:40:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618933177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v0hTcWbX3BCC9ZUFjKu3oL9Qk+b2NyA6y6oL3gT9PjE=;
-        b=i9+BoiwH/zxsQGCCi0ZLVeTk4bMJIdRqPxfQq4GMt9LTENnSgixcvSBle8H45U8FrThuNf
-        6SDJ9ywnN2EsVk/Rlyye1wul6TCNWhk6m61AUrofYfF6OXXrs9klz63c1XXFNE9g6M0U/y
-        aJkAFQZaF1wsh3GfwfWl7gK3xJb58+g=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-EXBTrGR5O9erS5ZO7dFgVQ-1; Tue, 20 Apr 2021 11:39:35 -0400
-X-MC-Unique: EXBTrGR5O9erS5ZO7dFgVQ-1
-Received: by mail-qk1-f198.google.com with SMTP id n18-20020a05620a1532b02902e4141f2fd8so781037qkk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:39:35 -0700 (PDT)
+        Tue, 20 Apr 2021 11:41:51 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0022DC06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:41:17 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id t22so19562545ply.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:41:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RftfUOzx6cuYVUbwyHqCRiPh7HztqAU4DiiO5zyA3ug=;
+        b=fsVuqnPUMW3p/omuF7n1o4se+xOnZjrzVPiRse/XOC7wqPl2IbqcuN+ck/bjnmuuMz
+         yksubT3cxv+iKgqnJk7WilF5ckB52ofvx7nRgJlokICnawZH83nVUJ42GqSJ2XWAKCSU
+         VjImonYgA4W9Ecy29FUhtSqAWu5wFdtMsP+q8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v0hTcWbX3BCC9ZUFjKu3oL9Qk+b2NyA6y6oL3gT9PjE=;
-        b=RB2U+42uSKtUwSce0zdgUfWuCt80YklP8/ttQelprwyIGJHNXASyWioXNE97oA0gyd
-         eHIHdpgF5x4a+r2Qyp+3K3ZyzgZE7gIlb4lyaqSZmjOjsdHVU3kFIsrYcZrOUA4eetsS
-         wUCWmyzWqhUnkHCqxhIQUqxpzwv9QKueN4QuPvfyu9eGRmCexsYKvdpQ5rvgVgwJENXG
-         kJWNEc+Ig+1Lau7Pt5DYSNlVnSk1kZlbYXux/WAXgU9wrfKmVZdhothscUIxl9IgMsUW
-         IdGAi7PqUL8MhTbjQRXYlZX8Bl/MF5eNAucU+BXu51lIeM1s8a+aU2qBNQtGK2vGSzEV
-         xlvA==
-X-Gm-Message-State: AOAM531u5LBj71Dijg9OhLJMCensAuVNCWeJeKoSxI7WRIVAbj701sSG
-        djP9ZwHn4cZoQoOcLoYcIyOyLbnlyxARX7JCqQ4214hCitGkda8CFX2r3p57kt/W64f4fSG+l+L
-        tSXEDR1krETkrfUaLKunt71nr
-X-Received: by 2002:ac8:6703:: with SMTP id e3mr2290916qtp.247.1618933174875;
-        Tue, 20 Apr 2021 08:39:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyn0RU8rrRtvS0aT44DO1pxylQ0/+NBEAMy1jGC/Bhuc46/VKsZuFkoMeQ5x5S9cCioVtWTXw==
-X-Received: by 2002:ac8:6703:: with SMTP id e3mr2290900qtp.247.1618933174663;
-        Tue, 20 Apr 2021 08:39:34 -0700 (PDT)
-Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id f12sm11633325qtq.84.2021.04.20.08.39.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 08:39:34 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, peterx@redhat.com,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v4 2/2] KVM: selftests: Wait for vcpu thread before signal setup
-Date:   Tue, 20 Apr 2021 11:39:29 -0400
-Message-Id: <20210420153929.482810-3-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210420153929.482810-1-peterx@redhat.com>
-References: <20210420153929.482810-1-peterx@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RftfUOzx6cuYVUbwyHqCRiPh7HztqAU4DiiO5zyA3ug=;
+        b=MHdQ4YZol1swPhQnUHIALQuzeTc3xoZTyALJ/j3EJXuMghKOUcJ0OsiOTJptfjEoiz
+         tQVcHZE0KqvClivEE4zXloCqh6lSViqEm4f7BQOsT3tBQ8vezURxgImHvF2ASEGBxtkL
+         8ODt3CMPwWmyTHPrUdwEF5TmyEMY1GkAP85rxhuPPELl8KNzJkVnC+zGz5TcUISTOVVm
+         9krhqMNoLcHaZm5XyYMgW0FR1ShZaDg1epRWEp7CkfNqJBWkoNXaAiiU1ZkRxbL19x9E
+         mHF4or28EarJwLT92kFQcriv+WRsBgDi/X4voJfUNF8SX5ItFibg4gBAfHqPjZix4tVM
+         SyYA==
+X-Gm-Message-State: AOAM531rt3S0ialzYqCZwYEqYNaG+mRjhhP1oKpXOzQ7Yud7kfqwVB8B
+        TYPzbUv88vY9JHJaLmQRgo9OmKNlldONFg==
+X-Google-Smtp-Source: ABdhPJyWJPfsuWZo7IEr8dHnuW0/nVwSsCN/bl7cQL44qRDfQmhRVvVzLKpaT1eUJ/ohOgU3tpWf8A==
+X-Received: by 2002:a17:90a:cb85:: with SMTP id a5mr5831006pju.124.1618933277027;
+        Tue, 20 Apr 2021 08:41:17 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
+        by smtp.gmail.com with UTF8SMTPSA id w6sm2544287pfj.85.2021.04.20.08.41.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 08:41:16 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 08:41:15 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V3 1/5] arm64: dts: qcom: pm7325: Add pm7325 base dts file
+Message-ID: <YH72G/Jj7LunQzLu@google.com>
+References: <1618389266-5990-1-git-send-email-skakit@codeaurora.org>
+ <1618389266-5990-2-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1618389266-5990-2-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main thread could start to send SIG_IPI at any time, even before signal
-blocked on vcpu thread.  Reuse the sem_vcpu_stop to sync on that, so when
-SIG_IPI is sent the signal will always land correctly as an -EINTR.
+On Wed, Apr 14, 2021 at 02:04:22PM +0530, satya priya wrote:
+> Add base DTS file for pm7325 along with GPIOs and temp-alarm nodes.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
 
-Without this patch, on very busy cores the dirty_log_test could fail directly
-on receiving a SIG_USR1 without a handler (when vcpu runs far slower than main).
-
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/kvm/dirty_log_test.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index fc87e2f11d3d..d3050d1c2cd0 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -534,6 +534,12 @@ static void *vcpu_worker(void *data)
- 	sigemptyset(sigset);
- 	sigaddset(sigset, SIG_IPI);
- 
-+	/*
-+	 * Tell the main thread that signals are setup already; let's borrow
-+	 * sem_vcpu_stop even if it's not for it.
-+	 */
-+	sem_post(&sem_vcpu_stop);
-+
- 	guest_array = addr_gva2hva(vm, (vm_vaddr_t)random_array);
- 
- 	while (!READ_ONCE(host_quit)) {
-@@ -785,6 +791,8 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 
- 	pthread_create(&vcpu_thread, NULL, vcpu_worker, vm);
- 
-+	sem_wait_until(&sem_vcpu_stop);
-+
- 	while (iteration < p->iterations) {
- 		/* Give the vcpu thread some time to dirty some pages */
- 		usleep(p->interval * 1000);
--- 
-2.26.2
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
