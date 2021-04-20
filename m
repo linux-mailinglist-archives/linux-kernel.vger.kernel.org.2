@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98CF366218
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 00:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6A536621A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 00:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbhDTWOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 18:14:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26392 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234224AbhDTWOC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 18:14:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618956809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QHpVgVIqlHGDvRlPmlmnlx8k/YvIdZkYRQ1Z0QDjGXc=;
-        b=MSt5uXSh9TNrrFPs8+czcFVLDysoaHqmjiBLXhXY6afni/qndaC16CD4zN7X+YcI8LB6iU
-        SwWVbeXtPu090n7E52eTN7Lz3AbqB9l4wIsVkJrgEXnpn6fqSVewYOyfmS+/K4jG7h6l5h
-        g9ZEYAK6CqiKnOxtyda5vGod1f0h2Z4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-JaoNB8FAPZm9Kx7iOtOj5g-1; Tue, 20 Apr 2021 18:13:24 -0400
-X-MC-Unique: JaoNB8FAPZm9Kx7iOtOj5g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3AF983DAA3;
-        Tue, 20 Apr 2021 22:13:23 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AFEF519D9B;
-        Tue, 20 Apr 2021 22:13:23 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 18:13:23 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alasdair Kergon <agk@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 077/141] dm raid: Fix fall-through warnings for Clang
-Message-ID: <20210420221322.GA16676@redhat.com>
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <d17978db8a2bae019d2c858a51e9f6abf8ea8947.1605896059.git.gustavoars@kernel.org>
- <02133499-e619-77e6-7ec0-79a238258f81@embeddedor.com>
+        id S234208AbhDTWPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 18:15:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:27632 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233769AbhDTWPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 18:15:32 -0400
+IronPort-SDR: urnx51ylNsxiLYT+yC3ToWfOpS4hgEN7ko+MwJoCw+FAlq7FCKdgFW95YnLa/I27QSqPtCiKa+
+ OoWwvrc308MQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="175708010"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="175708010"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 15:15:00 -0700
+IronPort-SDR: h5wDSolB1w+ZMJoTm6jNfO5q3L+qDyiVW84omVYgSbY2LgKuXFDX2IA3Vuwgji24q2OG3eziGe
+ E8uVwYIQ74TA==
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="617134670"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 15:14:59 -0700
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 9CBBB6363;
+        Tue, 20 Apr 2021 15:14:59 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 15:14:59 -0700
+From:   mark gross <mgross@linux.intel.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     mgross@linux.intel.com, Rob Herring <robh@kernel.org>,
+        markgross@kernel.org, "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de,
+        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, Peng Fan <peng.fan@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Devicetree List <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC
+ driver
+Message-ID: <20210420221459.GA108315@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-5-mgross@linux.intel.com>
+ <20210305210140.GA622142@robh.at.kernel.org>
+ <20210308202008.GA138795@linux.intel.com>
+ <CABb+yY3kRj2F1ao9A1_+ve5dZm0Q=tThJyu-cVo-cqMjZ+uQ2g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <02133499-e619-77e6-7ec0-79a238258f81@embeddedor.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CABb+yY3kRj2F1ao9A1_+ve5dZm0Q=tThJyu-cVo-cqMjZ+uQ2g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20 2021 at  4:15pm -0400,
-Gustavo A. R. Silva <gustavo@embeddedor.com> wrote:
+On Mon, Apr 12, 2021 at 04:24:41PM -0500, Jassi Brar wrote:
+> On Mon, Mar 8, 2021 at 2:20 PM mark gross <mgross@linux.intel.com> wrote:
+> >
+> > On Fri, Mar 05, 2021 at 03:01:40PM -0600, Rob Herring wrote:
+> > > On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
+> > > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > > >
+> > > > Add DT binding documentation for the Intel Keem Bay IPC driver, which
+> > >
+> > > Bindings are for h/w blocks, not drivers. From a binding perspective, I
+> > > don't really care what the driver architecture for some OS looks like. I
+> > > continue to not understand what this h/w looks like. A block diagram
+> > > would help as would understanding what blocks have multiple clients
+> > > (mailboxes and xlink in particular).
+> > I'm working to gather this info.
+> >
+> Do I pick the mailbox related patches (and which ones exactly) ?
 
-> Hi all,
-> 
-> Friendly ping: who can take this, please?
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> On 11/20/20 12:35, Gustavo A. R. Silva wrote:
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> > by explicitly adding a break statement instead of letting the code fall
-> > through to the next case.
-> > 
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> >  drivers/md/dm-raid.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-> > index 9c1f7c4de65b..e98af0b9d00c 100644
-> > --- a/drivers/md/dm-raid.c
-> > +++ b/drivers/md/dm-raid.c
-> > @@ -1854,6 +1854,7 @@ static int rs_check_takeover(struct raid_set *rs)
-> >  		    ((mddev->layout == ALGORITHM_PARITY_N && mddev->new_layout == ALGORITHM_PARITY_N) ||
-> >  		     __within_range(mddev->new_layout, ALGORITHM_LEFT_ASYMMETRIC, ALGORITHM_RIGHT_SYMMETRIC)))
-> >  			return 0;
-> > +		break;
-> >  
-> >  	default:
-> >  		break;
-> > 
-> 
+v6-0002-dt-bindings-mailbox-Add-Intel-VPU-IPC-mailbox-bin.patch
+and 
+v6-0003-mailbox-vpu-ipc-mailbox-Add-support-for-Intel-VPU.patch
 
-I've picked it up for 5.13, thanks.
-
-Mike
+--mark
 
