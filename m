@@ -2,151 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7853366183
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FDE366187
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhDTVXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 17:23:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42646 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233896AbhDTVXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 17:23:44 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13KLIfZ2026732;
-        Tue, 20 Apr 2021 14:23:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=YhzHs1rNvoZ1SdNM8kpaSIqZ5briovzT1eA53Rxx0GM=;
- b=F1jQ/snnp5L/WK6HqJFA9PLkiRpDOT2YuA3U3chRoz2w1ysy8M/VVvx0HdnIFn6E/A6v
- sni1/5LIZrMF9LJ+8S5f1dIzczfoYPI9QakDy7f7N7omiyl8bVXGrB5FM1beiciXZR4A
- KaG4Q3rwD50KZCsEP5ke5AuIuWzC0QEIwqc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 38191g991b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 20 Apr 2021 14:23:09 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Apr 2021 14:23:08 -0700
+        id S234164AbhDTVYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 17:24:45 -0400
+Received: from mail-eopbgr770120.outbound.protection.outlook.com ([40.107.77.120]:45540
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234159AbhDTVYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 17:24:43 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F7O4H08LgkxEO0f0rgOh8hjD31Puj7WovYS+NDuyF+6b3DML45K+tRzmYopfuzK5A2OQPnKEzQULLBHwoVLhQA/3Nc89qrS77aEwqLuNd/myH/J5A/qirLH73fHbHMVAJNqEALDVvvjScoMHtvtcHIfzPPtwR4YFBS4ZxphJHQIFQ+0hOVCeEAKQ+w3yW/dbrQdqy+Nv6CF2aIr0DXgTfJ0ySY4p+wv6qMSi9dF6TUziM1XFsmYxWSIkpAUKG/KCpGvp+Y3hXUSCgBwvOsE23n375Ag46BF84nyPIj1Ux/hPKC4ORcd4WmpXGBvijCuqWHsd66+WfnWMoUbrFRr6Sg==
+ b=GD5XE//Bxz6ANjQwCh0fEAdMY4DPo/tbecaU6LOjcnSvw4ln4I0nDo1XDjnusS/Lqa7ukN8DTqkLmabf+GYy+PB1lB5I4S1wf7kJb8hhIfxeAjDrC8g5va2paDXKsQxrz8+DSt9jrh6gGXvQmpmcWc+kLdDm+SlFo1kY4RQybCF0KO6UcKuS0rXs/mgHSWBGvAfqnCDIUPMQu+c3XjO+m7YvWA8eADBP3ep15GQlX3FoubXLYMW5SEs13mNwXX/PNswTzLOxACrmmZa3H9v7a2rS0/29SHuJlotDidSY5M4fPTZfnHbzmbw8ktJTPJTzhrhdaK6/Euw4h88fNgCUvA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YhzHs1rNvoZ1SdNM8kpaSIqZ5briovzT1eA53Rxx0GM=;
- b=g2lczvM+sPR6gH3Laysrj0VfSSwPngMvQMbYPRzja7m9lUpkkd58CGgNUgThyjTIPTBV2+/rA4aINOm/z13KPdr4pmSWzu7lfIYL+6fNTAcZMFlQtGtqGwCFWmqUha4DkokMkSUqCqqdsGolUh6tfIAcg5QMnnqdR/NXm25PimoE3FnwX+zZPsjFPDP6pRaf7f+X6sLilAkl+rE5PWDrca88EX3nuK9dvIcxoWTTV1qjynto0wjyL5Chf3kj9l0jIhBt62ML1wVBmaYePxGAbUFd1YGh7HoNtrlivYM67y8JzsXKu6O82rV/NvTedAVUm9VsTz4xUkYV3PFJzkFuYw==
+ bh=IDzpzvGN6WWWIqKye5pRlYDwrTlYMWvCeRK6jStM0O8=;
+ b=U03zDngaEi3utdN4i74ZXRkj+ORSAH/pSNZ/fiK72EP7Z+0G1akbxJfhVq70DT0PePysTgGvPsRbEhjmmEik/o12qVZRELUAA6XFjBcSwmKDfC2ZOlRpP+Hnx2XXX+mfnF5Ug2c6DriKKyPd3QoxJ+FkmjkT70qWRMF1bhIcc78h4KRtJeZkPU598LKwJmUytzsmNV71uGzkM691N5azO5UtXIP4F7kX+8F7R55CiHQPsgBBzmcXWXtAKn/Jw7RRBc/eYb77KRtx5kqmrsNWO0Ad+FA1q/W6T5M18/h32yaSRMJq90697rAzKk+XMeXHkFsPpSkcGSNgujm1KiWNPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4647.namprd15.prod.outlook.com (2603:10b6:a03:37c::5) with
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IDzpzvGN6WWWIqKye5pRlYDwrTlYMWvCeRK6jStM0O8=;
+ b=iajveSFsLUzdfeMikCQouHUEFcY3xn6XAdjoQU7SNJvKacx2SnAuDcEHUTObTbpXwkPifA/f3u1RcBOBzNlgfOjTwv7voXvEAdAk9S4N7uuhrLQCLJfp7TsJyscVPmNtkPS7Dnoe34MGKsuyBwAWQ+fgy9PHOj/uRFDS1bRwDhU=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MWHPR21MB0765.namprd21.prod.outlook.com (2603:10b6:300:76::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
- 2021 21:23:07 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 21:23:07 +0000
-Date:   Tue, 20 Apr 2021 14:23:03 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Dennis Zhou <dennis@kernel.org>
-CC:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] percpu: use reclaim threshold instead of running for
- every page
-Message-ID: <YH9GN/EbGE5yf+CO@carbon.dhcp.thefacebook.com>
-References: <20210419225047.3415425-1-dennis@kernel.org>
- <20210419225047.3415425-5-dennis@kernel.org>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.15; Tue, 20 Apr
+ 2021 21:23:53 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f%5]) with mapi id 15.20.4087.015; Tue, 20 Apr 2021
+ 21:23:53 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     vkuznets <vkuznets@redhat.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: RE: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 1/1] Drivers: hv:
+ vmbus: Increase wait time for VMbus unload
+Thread-Topic: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 1/1] Drivers:
+ hv: vmbus: Increase wait time for VMbus unload
+Thread-Index: AQHXNaBuLy1LL9sLv0KzHhyYBrtnaaq9JL8AgADDvaA=
+Date:   Tue, 20 Apr 2021 21:23:53 +0000
+Message-ID: <MWHPR21MB15937990D10174A63E65F579D7489@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1618894089-126662-1-git-send-email-mikelley@microsoft.com>
+ <87tuo1i9o5.fsf@vitty.brq.redhat.com>
+In-Reply-To: <87tuo1i9o5.fsf@vitty.brq.redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b6cef386-6085-4b51-863b-964f0422d527;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-20T21:12:29Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fd083d24-5066-433e-8dfe-08d904429962
+x-ms-traffictypediagnostic: MWHPR21MB0765:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MWHPR21MB0765393E50D014187AA6179FD7489@MWHPR21MB0765.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KI5oOp9Y9aZOIOc7lb4u8Dygnvlnp89oXxy4fu+dGUCS0ZC3/TIWhI/2/A1u2xIAI3pjkOwnlMM5v6YJE7KWKu2VijrNVDOvsMtDCZt34d7hmmhCqfNRjQoXhcIefcp/dAq1l2cYNHVPAeIoesp2cAGfmaiR00diFIB0eol2E/WtdhSJUhUyb35BSbZNKcpIJhsZUS0edUWy+BVniC2VNLxQCwxcVvCxobhYXMSJWxnGDJCElLLJLWsMkNkRKKSYIZEJaOIaMMHkzeN/SeGrXgljj5PQnwH83zh7i3OLzcy8GRAXDvNwiQWtyqZ/E1Tbpq5ARqEn0QDBldHA9eSn7/SawhvAgcblzs/nz/7DarR7rYSVVTeTzMC5Lk/eSh97MXfBn2digmR+QjhEmpuHE9H4qUNv2TU3S4By/PZOxcawZkZDGRWBCoUfvA+wzYGL0UlQCtrvFolYtzSt1CQal4+HYUdC86nJdu+9cSHboaXxxfs2cER9j56zrzyJ4WnilnLGGdBXQnNcMVfZh26R8bE9SzuhzUEfe4fMAv9LlNdoILuQtLYdJcO8i5cVToVZWfOar68QOUMNr065+0ibsmFUk3M/C5EM1hh5TYllJXvFiMcVAI64Q2W2rqgkTqElgvl0rgBgOCl/wIVmKvqo0Vq1afGzuK8W9ylAOf6z6WY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(66946007)(66476007)(66446008)(76116006)(54906003)(66556008)(10290500003)(82960400001)(7696005)(6506007)(64756008)(33656002)(316002)(52536014)(186003)(8936002)(26005)(8676002)(71200400001)(2906002)(86362001)(122000001)(15650500001)(38100700002)(6916009)(9686003)(55016002)(83380400001)(107886003)(478600001)(8990500004)(82950400001)(4326008)(184083001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?1HJTgLARKzjJ1GIENetd8QwkRY13xL/UZYrbf4RnGOhYNDYCIeY+sTKzjgTx?=
+ =?us-ascii?Q?mdLPhalGhOdGfdjRXxRuUMCv245uohO+KKA5qQw9fO4093pjPuhQ601boR0A?=
+ =?us-ascii?Q?OI2Ped+ItAskC6BrTsYth0VgJr3yS7Y0mhoS3hGsrgjbO22D7vXW0+nOClR0?=
+ =?us-ascii?Q?e1PUH1QMUuixzjrfnay+IbfLe/rKwelnkQ5xxMhwdnOOsDJ6/Frse4xABlUe?=
+ =?us-ascii?Q?JxAmj6zGmBbkIirIWZ48uwzkXCjIaBL/FEAukcBQmRvPi2mFg4JGh9tek3Sg?=
+ =?us-ascii?Q?vwBIU3p3KnJwQmPm1nAt9Pe0rdhG5aWpTSh/aIkkUIAGc9L21bCbaLGbxOsZ?=
+ =?us-ascii?Q?FCUqVAQNJj13WNsHGkVDE+F6iC4haNsuvtEet7MDDSnVyGWQaWdjg/xVirOp?=
+ =?us-ascii?Q?1BYELsd5fs4gF5x9MyDzWn41NjYCr8z3TNOW64lVcyE7R0Di/y6DO39rwmWW?=
+ =?us-ascii?Q?XQpMTqG4xV+Joe/41RMi+ioyxuTPa5Tfa0152Jv48tnJEQbe3T5rr4VJ44AM?=
+ =?us-ascii?Q?Me37P6UgLf8q7ABLYkyYPnlE9hSlZK1xwOtaSbsb4C9ulZ2mY+fhWxro0DcW?=
+ =?us-ascii?Q?m+DRaJqnMrD6rK+ppUwO6Yi2Y95vOVIaaxaxWfvS/2iCBfo3tUqJVEl56IIe?=
+ =?us-ascii?Q?pe97XsKxF5z5GebMjaM+NrNLKgckJdd0pK1MgO0W09LphVC6ExPmCBoMI/v2?=
+ =?us-ascii?Q?yv0WOQlX/TvgGCu/DA5VlEgY4SjZtr8emlkALQ6iN3JMs6O1UMAh77yVsT5p?=
+ =?us-ascii?Q?IPn/eeZue8A8h2PngGFmlfqNWGDM+IphBseURQRz9srFGInb63X9uqfMAGjl?=
+ =?us-ascii?Q?5TVAMd4Aj/0v4EQqEGlELleAfb04ICcNcRVNjCWwvuxrrXQTIEP7SojUCxJv?=
+ =?us-ascii?Q?/Q9jWz/JXbwQ6apqKS55Ino/7zvgixsFwq+aA0H9CmXjrsVfue40+sci3bIo?=
+ =?us-ascii?Q?K6OtOVnM+BkREmUrGvGB1WhOLjAmjIB1lyHH/FRN3TMj0d5jgkQBy9KdLW07?=
+ =?us-ascii?Q?xVV/Kvi0VtYouq0DckkFJf3h36oC9DycpKR+E10q79jmbQdcehRQoKDImkPQ?=
+ =?us-ascii?Q?j5fDKSIQRhMqyC44Ah+FINZb7nipyDysvbJCO1uvvcIryjgpbExya80iN2ZH?=
+ =?us-ascii?Q?BNAPSXSZBJIcg0bCPpVFpskgDy8cFGgXGj90rIcDoGAEA/K3iTMd9KlmPWe4?=
+ =?us-ascii?Q?Ld2B0X4WKNluqXOvMidIkNJxwfrtaSarqGG2yq/sQaTc4NG8tIILTir5HSfE?=
+ =?us-ascii?Q?agl+MoZ+EalJFlf2IEZY+O98DP/JqYPD+w5RfW06k94ZVn2Pc5Q8r5SkGGCx?=
+ =?us-ascii?Q?HEqSg7/+aJuaxoUdBZnOqSSe?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210419225047.3415425-5-dennis@kernel.org>
-X-Originating-IP: [2620:10d:c090:400::5:3ae2]
-X-ClientProxiedBy: MWHPR11CA0033.namprd11.prod.outlook.com
- (2603:10b6:300:115::19) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:3ae2) by MWHPR11CA0033.namprd11.prod.outlook.com (2603:10b6:300:115::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Tue, 20 Apr 2021 21:23:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f22a65f-eb0f-46bc-337c-08d904427d8e
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4647:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4647905F7B2EB311E0AF2B17BE489@SJ0PR15MB4647.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e85WMYKvke4d2AnIvNmYRKbk2Qae6FnStcj2izmOWDtoFYlLtyzd1I0ahTxGb2qT4ZGCCmVYfXc6xw7bshKJH7OHfbCNp0cVcGxmsvRfFHvLnqJ8wYjqbKZQ8sCjg3VpdwBznaQtwEOn0flowKx27hU043Y5pUGlu+/jE6H7h/TY6JSQ4bGk9mwGdN4AZusFMebFOpxXp+uF3+huuiLg8dQrAS4V2WEoNZNQMKQW7XD/DW0r1Ipj1kZ94NJTksLLf9xqOMu0JIaj+OJlD7TTlQcEXyC2IZGnumz0R4VzGpVNe3xh0LadDyq4SWVFeFH/zYuV8RkwHZ4+JYytm963Dw44JGc12eGDqKFcTpjVY2GapOGYjYuqiNvHNlA+vEJYEGDkJdJmFUB+DtPj7sEEiUfmbpezYtATW0LH70T4Y9BM6GhiEjr6A0touNF3jfCcja80lD7QDTHeaAjgaWqA1qXFfNUltKm3gioaeXSIfU5XuSu2V1URncaQzs+ljlhLXegz7G0JegVTMLkPldIQ1ap0LWI7SEL/rrwfWKwWJUzOhb/fAZrIAOkfw6m2bmRuBliJnsxKmtzKb6NmCpZTv2OupgNZuXIyAdZasQytg5A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(136003)(396003)(376002)(346002)(66556008)(9686003)(4744005)(8936002)(66946007)(52116002)(8676002)(6916009)(6666004)(66476007)(86362001)(7696005)(38100700002)(316002)(4326008)(2906002)(16526019)(186003)(6506007)(54906003)(478600001)(55016002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?06vSF4UR1r2yoft/IHskNhljT9aMtbwNid9KrC/9IJI1CpZ0aD7mTGIoJ/Wj?=
- =?us-ascii?Q?XuaXJHLP8X0RpcpYDFJ97oLo9Pg0iQJEINkd8nTyjosB51Msd3Ny7cSxkKJn?=
- =?us-ascii?Q?tqf+SDzjnoG8GuvYAMmcusU34QKjin5Rj5x9pg6mWyLC/Sd2FL0JO7UrCsyX?=
- =?us-ascii?Q?LPL7ET7kKADkJ+uie/qeKgcj+o/9/RHGhCxkpzlpGYeqmukZBNbCVE4QX0t1?=
- =?us-ascii?Q?XVuerbSWVNttn76ELODV+C8dfu3OuwQLj8bM+FgTBCbuE8WwdIcbfHTfOP/M?=
- =?us-ascii?Q?FVKmWe1/MwTfAix8pesnKsFbiL3L3zSeQ7THz4rw+zXRmiReDsXdCRQmqU9M?=
- =?us-ascii?Q?97jVT5zJmBu6vXp3NMPVS1X/L1nPmbuxyW2EynC1USyJsLd9QsDnCRmNa3b9?=
- =?us-ascii?Q?8Yo7GAPB1EC//qz93aYo27undcRO+U1adpY/ekMdSdXiV1L4WnJn0L7IBc7b?=
- =?us-ascii?Q?8YZGU2zDCHj8ri26NDw+jpPsWxs8w3cEdPzvws5W1xvsMVoWckzA3w+tSWPs?=
- =?us-ascii?Q?EtWmJqtaBEanAsGy3v3VoonRTihPc9Pl7iP6dhlz2vYBwnw9DM1GeSYOdtBo?=
- =?us-ascii?Q?mvM1PFx7AePr3dV2TcgvMILA7Kb/WWCsU03b+BrvQeV2cUCZSUMrWNlZ0BjM?=
- =?us-ascii?Q?RaKjPafWYAAehVKoaLf3OZhuKqOeAzimE1SQ/P6/KiQr3BoeTRl8RGXNP+XT?=
- =?us-ascii?Q?P1fzrwYJVSv/A5FVcKAY52gfXgp3VDauly3AxzIQGBdd2w26ATQDJXVWAzch?=
- =?us-ascii?Q?TObEJDqYSi/gTEq8tqOL4tH1SVrTErd9Ndn0K/ka4eKVML2knf+7qGOZwo63?=
- =?us-ascii?Q?tGmZQVb2ww+gYcUOUa1VUU70wETc6Ih+lexlIRQ0h5fDmatd5azg4uStaMeI?=
- =?us-ascii?Q?zBSum0XBmT9xNo6bgrarHnOV3pgYcBPN1nsxhtAF7RBq0VquXWKEMLwhcoFn?=
- =?us-ascii?Q?7U4gljZR++JaaJDzxO0zeY3irQ9YB2m2+f8rAE5cw1hSOaPPqlKKicN/wl0O?=
- =?us-ascii?Q?jAYuvzRtY9j/k7HEzqQR+muqqZ5iD1OpN/8CHDyuV59wrr8RgoYLZXxyKRjy?=
- =?us-ascii?Q?BdzPnBAfbEiEJMyI7pxey41hJcBYVbDUSNl4EeryD7CjXihIFluqDsI0hyE6?=
- =?us-ascii?Q?mXU6XXsaCpAI0VdQe8DuCpixeBObuJw+yFKLAyXYeUrQv+EMDehtyZw9Kggy?=
- =?us-ascii?Q?pBqar+EBV25N0QiGtPVM+cwfsNDLL/yT/EybTzqzzmpq+5p6uRbp8uK3tw+D?=
- =?us-ascii?Q?2AtTKKQejV3gHZ5c8n9GCou7cLXKLR6PZVgEQf0de8/fqzY3q8PAiVVJ09iw?=
- =?us-ascii?Q?rkUijmLiR2is9HUcrrLBmJHGw8zjOPCP2PSndnRd5wZdDA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f22a65f-eb0f-46bc-337c-08d904427d8e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 21:23:07.2528
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd083d24-5066-433e-8dfe-08d904429962
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 21:23:53.6112
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OnHvKBTzFxdWs2To8enqymPnPTa0R4tc1XvtekzYHYF3gu5/9rXJCK+218o38eft
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4647
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: _Sgu8OfqvlxFFjHuCHvWxKg37o7ZaBvf
-X-Proofpoint-ORIG-GUID: _Sgu8OfqvlxFFjHuCHvWxKg37o7ZaBvf
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-20_11:2021-04-20,2021-04-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=974 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104200148
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nzJeL82LoQ+C8TRFuea9SamU3cQY9lC55IgrpntIJ+D3FyPW5lxOdK40E4sUy9dqepfIsdK16QNo4Zm6cLx2L89rBuh5siukcj2C2p7POhw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0765
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:50:47PM +0000, Dennis Zhou wrote:
-> The last patch implements reclaim by adding 2 additional lists where a
-> chunk's lifecycle is:
->   active_slot -> to_depopulate_slot -> sidelined_slot
-> 
-> This worked great because we're able to nicely converge paths into
-> isolation. However, it's a bit aggressive to run for every free page.
-> Let's accumulate a few free pages before we do this. To do this, the new
-> lifecycle is:
->   active_slot -> sidelined_slot -> to_depopulate_slot -> sidelined_slot
-> 
-> The transition from sidelined_slot -> to_depopulate_slot occurs on a
-> threshold instead of before where it directly went to the
-> to_depopulate_slot. pcpu_nr_isolated_empty_pop_pages[] is introduced to
-> aid with this.
-> 
-> Suggested-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Dennis Zhou <dennis@kernel.org>
+From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Tuesday, April 20, 2021 =
+2:32 AM
+>=20
+> Michael Kelley <mikelley@microsoft.com> writes:
+>=20
+> > When running in Azure, disks may be connected to a Linux VM with
+> > read/write caching enabled. If a VM panics and issues a VMbus
+> > UNLOAD request to Hyper-V, the response is delayed until all dirty
+> > data in the disk cache is flushed.  In extreme cases, this flushing
+> > can take 10's of seconds, depending on the disk speed and the amount
+> > of dirty data. If kdump is configured for the VM, the current 10 second
+> > timeout in vmbus_wait_for_unload() may be exceeded, and the UNLOAD
+> > complete message may arrive well after the kdump kernel is already
+> > running, causing problems.  Note that no problem occurs if kdump is
+> > not enabled because Hyper-V waits for the cache flush before doing
+> > a reboot through the BIOS/UEFI code.
+> >
+> > Fix this problem by increasing the timeout in vmbus_wait_for_unload()
+> > to 100 seconds. Also output periodic messages so that if anyone is
+> > watching the serial console, they won't think the VM is completely
+> > hung.
+> >
+> > Fixes: 911e1987efc8 ("Drivers: hv: vmbus: Add timeout to vmbus_wait_for=
+_unload")
+> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> > ---
+> >
+> > Changed in v2: Fixed silly error in the argument to mdelay()
+> >
+> > ---
+> >  drivers/hv/channel_mgmt.c | 30 +++++++++++++++++++++++++-----
+> >  1 file changed, 25 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> > index f3cf4af..ef4685c 100644
+> > --- a/drivers/hv/channel_mgmt.c
+> > +++ b/drivers/hv/channel_mgmt.c
+> > @@ -755,6 +755,12 @@ static void init_vp_index(struct vmbus_channel *ch=
+annel)
+> >  	free_cpumask_var(available_mask);
+> >  }
+> >
+> > +#define UNLOAD_DELAY_UNIT_MS	10		/* 10 milliseconds */
+> > +#define UNLOAD_WAIT_MS		(100*1000)	/* 100 seconds */
+> > +#define UNLOAD_WAIT_LOOPS	(UNLOAD_WAIT_MS/UNLOAD_DELAY_UNIT_MS)
+> > +#define UNLOAD_MSG_MS		(5*1000)	/* Every 5 seconds */
+> > +#define UNLOAD_MSG_LOOPS	(UNLOAD_MSG_MS/UNLOAD_DELAY_UNIT_MS)
+> > +
+> >  static void vmbus_wait_for_unload(void)
+> >  {
+> >  	int cpu;
+> > @@ -772,12 +778,17 @@ static void vmbus_wait_for_unload(void)
+> >  	 * vmbus_connection.unload_event. If not, the last thing we can do is
+> >  	 * read message pages for all CPUs directly.
+> >  	 *
+> > -	 * Wait no more than 10 seconds so that the panic path can't get
+> > -	 * hung forever in case the response message isn't seen.
+> > +	 * Wait up to 100 seconds since an Azure host must writeback any dirt=
+y
+> > +	 * data in its disk cache before the VMbus UNLOAD request will
+> > +	 * complete. This flushing has been empirically observed to take up
+> > +	 * to 50 seconds in cases with a lot of dirty data, so allow addition=
+al
+> > +	 * leeway and for inaccuracies in mdelay(). But eventually time out s=
+o
+> > +	 * that the panic path can't get hung forever in case the response
+> > +	 * message isn't seen.
+>=20
+> I vaguely remember debugging cases when CHANNELMSG_UNLOAD_RESPONSE never
+> arrives, it was kind of pointless to proceed to kexec as attempts to
+> reconnect Vmbus devices were failing (no devices were offered after
+> CHANNELMSG_REQUESTOFFERS AFAIR). Would it maybe make sense to just do
+> emergency reboot instead of proceeding to kexec when this happens? Just
+> wondering.
+>=20
 
-Acked-by: Roman Gushchin <guro@fb.com>
+Yes, I think there have been (and maybe still are) situations where we don'=
+t
+ever get the UNLOAD response.  But there have been bugs fixed in Hyper-V
+that I think make that less likely.  There's also an unfixed (and maybe not=
+ fixable)
+problem when not operating in STIMER Direct Mode, where an old-style
+timer message can block the UNLOAD response message.  But as the world
+moves forward to later kernel versions that use STIMER Direct Mode, that
+also becomes less likely.   So my inclination is to let execution continue =
+on
+the normal execution path, even if the UNLOAD response message isn't
+received.  Maybe we just didn't wait quite long enough (even at 100 seconds=
+).
+It's a judgment call, and it's not clear to me that doing an emergency rebo=
+ot
+is really any better.
 
-Thanks, Dennis!
+As background work for this patch, we also discovered another bug in Hyper-=
+V.
+If the kdump kernel runs and does a VMbus INITIATE_CONTACT while the
+UNLOAD is still in progress, the Hyper-V code is supposed to wait for the U=
+NLOAD
+to complete, and then commence the VMbus version negotiation.  But it
+doesn't do that -- it finally sends the UNLOAD response, but never does the
+version negotiation, so the kdump kernel hangs forever.  The Hyper-V team
+plans to fix this, and hopefully we'll get a patch deployed in Azure, which
+will eliminate one more scenario where the kdump kernel doesn't succeed.
+
+Michael
+
+> >  	 */
+> > -	for (i =3D 0; i < 1000; i++) {
+> > +	for (i =3D 1; i <=3D UNLOAD_WAIT_LOOPS; i++) {
+> >  		if (completion_done(&vmbus_connection.unload_event))
+> > -			break;
+> > +			goto completed;
+> >
+> >  		for_each_online_cpu(cpu) {
+> >  			struct hv_per_cpu_context *hv_cpu
+> > @@ -800,9 +811,18 @@ static void vmbus_wait_for_unload(void)
+> >  			vmbus_signal_eom(msg, message_type);
+> >  		}
+> >
+> > -		mdelay(10);
+> > +		/*
+> > +		 * Give a notice periodically so someone watching the
+> > +		 * serial output won't think it is completely hung.
+> > +		 */
+> > +		if (!(i % UNLOAD_MSG_LOOPS))
+> > +			pr_notice("Waiting for VMBus UNLOAD to complete\n");
+> > +
+> > +		mdelay(UNLOAD_DELAY_UNIT_MS);
+> >  	}
+> > +	pr_err("Continuing even though VMBus UNLOAD did not complete\n");
+> >
+> > +completed:
+> >  	/*
+> >  	 * We're crashing and already got the UNLOAD_RESPONSE, cleanup all
+> >  	 * maybe-pending messages on all CPUs to be able to receive new
+>=20
+> This is definitely an improvement,
+>=20
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>=20
+> --
+> Vitaly
+
