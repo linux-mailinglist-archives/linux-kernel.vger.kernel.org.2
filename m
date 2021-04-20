@@ -2,140 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD7E365A30
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165E8365A3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhDTNdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:33:36 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:40693 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232601AbhDTNdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:33:22 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FPl402GBrz9vBL3;
-        Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id CdJ_Rbk7WgIU; Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPl401SmBz9vBKm;
-        Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 905058B7ED;
-        Tue, 20 Apr 2021 15:32:49 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1E2egr5WWqn7; Tue, 20 Apr 2021 15:32:49 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 47FDF8B807;
-        Tue, 20 Apr 2021 15:32:49 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 28B6B6770B; Tue, 20 Apr 2021 13:32:49 +0000 (UTC)
-Message-Id: <103ed8ee9e5973c958ec1da2d0b0764f69395d01.1618925560.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
-References: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 2/2] powerpc/legacy_serial: Use early_ioremap()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        chris.packham@alliedtelesis.co.nz
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 20 Apr 2021 13:32:49 +0000 (UTC)
+        id S232592AbhDTNfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232628AbhDTNeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:34:24 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6F6C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:33:53 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id b17so32040572ilh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xgfc7mO4E1wXWUmekqC8sEt5bIbUy15Zn+YoHQva8NI=;
+        b=PYyvqtFzdzRakpUOqbunR4I7/Lj/8HDyE7lqd9tAm0PNx6Uh1yOIHCDmuaqBR1ViP4
+         mmStHq4YHDIb9iNLpswctc4T/0gjz0QMypKb9sh/woNGTQHvzByI8qY89af1f2aYk6+S
+         wieFezmrOmmKh35TaWQ/tU2N5mVDzf8HRzVYk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xgfc7mO4E1wXWUmekqC8sEt5bIbUy15Zn+YoHQva8NI=;
+        b=BgoFlRp1csws15Ei4534ryGsA9+MS29lkcYdEd5im8nEBYJgg83L6ytrtCy9nSrJlV
+         QZwXbsEGD76qO9esgaWq24rfCJ1ajYLA7bqSbxPUrbKFMeCGtpzQEn+yNLBxZXLjb3fZ
+         uItPdmIPnl6jiLhJN33u+QVC2mqVwksvPWxGp2B9Jadsx6zAB6w+Cn9X3wN+6Pc7HnOu
+         d78WXI3hqbqrvf5ofI0V0iZW+rZmKDrdO1NF0ys0n0rNOY0UuE4PIxJCXh5StIvWvyhn
+         T2N+zpDZRqNViDF+NqpM2yAD6I6nt5gpqsnqO3SOndqQCTgT8o+/Lcu5pLmEbS/K29ny
+         vpWA==
+X-Gm-Message-State: AOAM530WXu6g/JMmDUV+it13L4N/nbPSUYYFbvHZ1VDwx7+b/DdUzuY2
+        zT59Usk7bvxsjxl3Mka3g1VemOihYlBv5bOSm2fFVg==
+X-Google-Smtp-Source: ABdhPJy6RgMFJUk30o3Bp+6VqEWzChzCOkzvaHDVug4JPECZShpDcemglkoDMMwZ/VXKrU9wV09fLSo20xOiZ0XVnHs=
+X-Received: by 2002:a92:d684:: with SMTP id p4mr22468413iln.150.1618925632435;
+ Tue, 20 Apr 2021 06:33:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210414172916.2689361-1-hsinyi@chromium.org> <20210414172916.2689361-5-hsinyi@chromium.org>
+ <CAMpxmJUGxUPYC9NEnJDHYq7Nu=akP5GTpU0ts9htf1vELhK15Q@mail.gmail.com>
+In-Reply-To: <CAMpxmJUGxUPYC9NEnJDHYq7Nu=akP5GTpU0ts9htf1vELhK15Q@mail.gmail.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Tue, 20 Apr 2021 21:33:25 +0800
+Message-ID: <CAJMQK-huKTYepZ+xCZDG01RBGB5Tu4ic=Hs03=remLii0WBTaQ@mail.gmail.com>
+Subject: Re: [PATCH v19 4/6] misc: eeprom: at24: check suspend status before
+ disable regulator
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Qii Wang <qii.wang@mediatek.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+On Fri, Apr 16, 2021 at 10:09 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+>
+> On Wed, Apr 14, 2021 at 7:29 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> >
+> > cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
+> > regulator in runtime suspend. If runtime suspend is called before
+> > regulator disable, it will results in regulator unbalanced disabling.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>
+> Please add the Fixes tag.
+>
 
-[    0.000000] ioremap() called early from find_legacy_serial_ports+0x3cc/0x474. Use early_ioremap() instead
+Hi,
 
-find_legacy_serial_ports() is called early from setup_arch(), before
-paging_init(). vmalloc is not available yet, ioremap shouldn't be
-used that early.
+I resend the patch with the fix tag separately since other patches in
+this series are not changed.
 
-Use early_ioremap() and switch to a regular ioremap() later.
+https://patchwork.ozlabs.org/project/linux-i2c/patch/20210420133050.377209-1-hsinyi@chromium.org/
 
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/legacy_serial.c | 33 +++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+Thanks
 
-diff --git a/arch/powerpc/kernel/legacy_serial.c b/arch/powerpc/kernel/legacy_serial.c
-index f061e06e9f51..8b2c1a8553a0 100644
---- a/arch/powerpc/kernel/legacy_serial.c
-+++ b/arch/powerpc/kernel/legacy_serial.c
-@@ -15,6 +15,7 @@
- #include <asm/udbg.h>
- #include <asm/pci-bridge.h>
- #include <asm/ppc-pci.h>
-+#include <asm/early_ioremap.h>
- 
- #undef DEBUG
- 
-@@ -34,6 +35,7 @@ static struct legacy_serial_info {
- 	unsigned int			clock;
- 	int				irq_check_parent;
- 	phys_addr_t			taddr;
-+	void __iomem			*early_addr;
- } legacy_serial_infos[MAX_LEGACY_SERIAL_PORTS];
- 
- static const struct of_device_id legacy_serial_parents[] __initconst = {
-@@ -325,17 +327,16 @@ static void __init setup_legacy_serial_console(int console)
- {
- 	struct legacy_serial_info *info = &legacy_serial_infos[console];
- 	struct plat_serial8250_port *port = &legacy_serial_ports[console];
--	void __iomem *addr;
- 	unsigned int stride;
- 
- 	stride = 1 << port->regshift;
- 
- 	/* Check if a translated MMIO address has been found */
- 	if (info->taddr) {
--		addr = ioremap(info->taddr, 0x1000);
--		if (addr == NULL)
-+		info->early_addr = early_ioremap(info->taddr, 0x1000);
-+		if (info->early_addr == NULL)
- 			return;
--		udbg_uart_init_mmio(addr, stride);
-+		udbg_uart_init_mmio(info->early_addr, stride);
- 	} else {
- 		/* Check if it's PIO and we support untranslated PIO */
- 		if (port->iotype == UPIO_PORT && isa_io_special)
-@@ -353,6 +354,30 @@ static void __init setup_legacy_serial_console(int console)
- 	udbg_uart_setup(info->speed, info->clock);
- }
- 
-+static int __init ioremap_legacy_serial_console(void)
-+{
-+	struct legacy_serial_info *info = &legacy_serial_infos[legacy_serial_console];
-+	struct plat_serial8250_port *port = &legacy_serial_ports[legacy_serial_console];
-+	void __iomem *vaddr;
-+
-+	if (legacy_serial_console < 0)
-+		return 0;
-+
-+	if (!info->early_addr)
-+		return 0;
-+
-+	vaddr = ioremap(info->taddr, 0x1000);
-+	if (WARN_ON(!vaddr))
-+		return -ENOMEM;
-+
-+	udbg_uart_init_mmio(vaddr, 1 << port->regshift);
-+	early_iounmap(info->early_addr, 0x1000);
-+	info->early_addr = NULL;
-+
-+	return 0;
-+}
-+early_initcall(ioremap_legacy_serial_console);
-+
- /*
-  * This is called very early, as part of setup_system() or eventually
-  * setup_arch(), basically before anything else in this file. This function
--- 
-2.25.0
-
+> > ---
+> >  drivers/misc/eeprom/at24.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> > index 926408b41270..7a6f01ace78a 100644
+> > --- a/drivers/misc/eeprom/at24.c
+> > +++ b/drivers/misc/eeprom/at24.c
+> > @@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client *client)
+> >         at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+> >         if (IS_ERR(at24->nvmem)) {
+> >                 pm_runtime_disable(dev);
+> > -               regulator_disable(at24->vcc_reg);
+> > +               if (!pm_runtime_status_suspended(dev))
+> > +                       regulator_disable(at24->vcc_reg);
+> >                 return PTR_ERR(at24->nvmem);
+> >         }
+> >
+> > @@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client *client)
+> >         err = at24_read(at24, 0, &test_byte, 1);
+> >         if (err) {
+> >                 pm_runtime_disable(dev);
+> > -               regulator_disable(at24->vcc_reg);
+> > +               if (!pm_runtime_status_suspended(dev))
+> > +                       regulator_disable(at24->vcc_reg);
+> >                 return -ENODEV;
+> >         }
+> >
+> > --
+> > 2.31.1.295.g9ea45b61b8-goog
+> >
+>
+> Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
