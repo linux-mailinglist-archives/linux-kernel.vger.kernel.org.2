@@ -2,142 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F43365389
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11082365393
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbhDTHvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:51:53 -0400
-Received: from mail-eopbgr1410053.outbound.protection.outlook.com ([40.107.141.53]:46028
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229475AbhDTHvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:51:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R5SqT0ETY1qeGsmztrJn055bxZKf5eedhVed+1SMhKQwH7YZaupU6cDYqX2wYhpGXBtOugmREpPpiJuesfvV7D7r7j23vmT2RLQg6Z+bEXbPgXE07X8wGsTcXqMk/tHWBA1gLYSGJODwNqa11Pjkdsi7RWCHP/a6dweAy2k48Zks4DVqoNRp+YOkOc5IfQLrfV/atLZRrv3jBnnnZFeDBuGjdpe9u7hrmkuHVkR1F/u9gzXztpnzsWuLDfYZff2f+fi4s47JOchpZOqlgf0f4acYQnqEwgMVij91fAxWrcITHs/b2WoGUcBLtz6BrlIcumBGX4sxasa/vuHi37t5ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zFEWREvh+FVf+6zHGD0PXcTlpTLiuVRFqDynkSBOwQM=;
- b=d9UZ09g+CyA7zoKstX9au9Tc6OgRdYMhKsjxNgx7gWINVdwkWUaQoqg1ohYinAoJAPI59peFbOO8C/wa7yErPRXWRo9k8b5/JPUfGH9WHOhnJGJ3ZjUrU71HHYbirAkojBrFXfoH4sI6BSlTl76OR8CrDnXIBLmqRsdHzMsmQ6sReA8+2HFdHV6WKuxHFwkj9FbDRwzyCMR0VPlFam2OOD55WRKMX4sHOAIRMsl/qSJYry8mpcL53navyhvYZ+mo8FhHM6XbDylFNRSwaIldF6wDKCxWNWFNvN2e3JpYeNYW6P1ydfqnnXZFBFFbrB/lXYNBIZFK0RU/E2indevUtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zFEWREvh+FVf+6zHGD0PXcTlpTLiuVRFqDynkSBOwQM=;
- b=gsVxCOEk9Joz7czMIp1aikiCLLoo7y5Tg5Aqv/PNNcW+HhnYVyT0nOKEGOpR1KV2uUGj6OdITZwjdcAUG0xn3cICyDAhUuWKPgf1T/sD3E+nmK0uF/RkFcxhkp9Rrd6juDm17iuIFWXBsvJBrwVnSfCAyPMpGV5UqiHnmDcD8FI=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TYBPR01MB5344.jpnprd01.prod.outlook.com (2603:1096:404:802f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
- 2021 07:51:19 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 07:51:19 +0000
-From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>
-To:     Jue Wang <juew@google.com>
-CC:     "nao.horiguchi@gmail.com" <nao.horiguchi@gmail.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "david@redhat.com" <david@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "yaoaili@kingsoft.com" <yaoaili@kingsoft.com>
-Subject: Re: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Thread-Topic: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Thread-Index: AQHXNYdoX4FIkyH7hUy4oJlfZBfW8aq9CNUA
-Date:   Tue, 20 Apr 2021 07:51:19 +0000
-Message-ID: <20210420075118.GB24451@hori.linux.bs1.fc.nec.co.jp>
-References: <CAPcxDJ6OAd=qdfxoTQ4cp5vQ6_+phWqX8gJfec48XyAZybBpsw@mail.gmail.com>
-In-Reply-To: <CAPcxDJ6OAd=qdfxoTQ4cp5vQ6_+phWqX8gJfec48XyAZybBpsw@mail.gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=nec.com;
-x-originating-ip: [165.225.110.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ee5fc4c2-cff6-4a7a-9976-08d903d115a9
-x-ms-traffictypediagnostic: TYBPR01MB5344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYBPR01MB53442EFC564B5F8AF6F92399E7489@TYBPR01MB5344.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Pu8pnG7Me7nqB38zEt1573Kedw9DGEGpM8EsD5BefwQwBGx4Tnymd+Ov8jVob5GMG2D6omIkvsKtaS4GFHqaG+E/kfuhzx9qAFZuHxOoEtCq3ByKSaPNBQ5TzBNudImzY0MPBHbbDL9+lNaKhX91vO+SkBIRBdLDwvJH6rI1vRvUYLSQut+vTNs2YLnFcqFnwS8PSNM1600zhryr/cUAjMXj6Fd33E12+tUzM88ukNtbhULrZUfFvK2SCP5jlloQg6Y+IkTX5GzKpoK78GX8cgBLonwU5il1QV9868wiUTWoRAL8mrVRQl5a2rZWR1HVg+Uj1hePDIwxCdNdkC9lSCFAXngwmAhy0K4RqcuZmIZTSWD9wQ/+3peCoXlZ8FkzF4kkVds2peptcerkoEycFNZ4+dv7dKWM5/BGqURFHRREKQS840ahTH5TQ5pVK5YEd3XF7SUoLcacHAOdGLzg9W74EY8tbBAGczTu2qmMn7ewBNdKhWYTtxGTZnUtJuLhySD6yyOJEtwTi7USCyO/hN9Ams+35EL5Gpoydvss5CLVY4jDRfAHuFDUFGpavLINBLJsXzrTk30BejcKKwgwkTdLUIMoyqa8JEydSmpnGNIK+YjAETpzZnT1TZ5v3HO3accD3LonPwWJ3/u4YIy6MA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(396003)(376002)(122000001)(8936002)(83380400001)(6506007)(1076003)(86362001)(6512007)(7416002)(9686003)(54906003)(38100700002)(316002)(4326008)(2906002)(76116006)(85182001)(55236004)(26005)(64756008)(66556008)(66946007)(66476007)(6486002)(71200400001)(4744005)(478600001)(66446008)(8676002)(5660300002)(186003)(6916009)(33656002)(37363001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?MlFYT1FxMW1wOUkwYkZNd2RZSmJTVDdlQnE1MVVtMWVLaFkySHNaTHhqb1d6?=
- =?utf-8?B?bnQ1YldkNDZKOTNxek5qdzhsbTJ0UUZzdHN6QURiZUdZRUs5bnUyOEZEWnJE?=
- =?utf-8?B?Z3RJQTUxbm5oY2xKREorb25RMkZDbmJqYndueHprZWx5YTNFa2FMWlI1TjRx?=
- =?utf-8?B?L3IzZUFsWUV0ZTBmbDBEckVuL0VqdjZRMkM4TnUvWTR4UDdOYXVJR0NvMkt5?=
- =?utf-8?B?ZnBoSkVLakNxajZ0dmY1QjIwVDhOZHAvQkoycy8rdWM3bjNUZWI1TDZsNUFU?=
- =?utf-8?B?dFR6MkFubmh3SVpheTVXcnNTM01jdXhRenhzbTRmM09XSVMzUndybHV3WTZx?=
- =?utf-8?B?dWRJemt0M2hjRHRRc3hCamZHNm1yQVY2V0lzTHc3eVlsSkhhbVBnbUdiazVY?=
- =?utf-8?B?dlUvUDJYL1VmY3VUOExTYmwzNGJVUkN3UVZESGZlNTNrSjdOZGFIaHlXWDRi?=
- =?utf-8?B?WWtjS3ZjL3RzaTV0YWtNN09mbXZCMXc5WXFpc2ZkZjJ1OHVLM3A0TU1OYjgz?=
- =?utf-8?B?OVJjV2lDNndhdUZxYnRnbVlnQ29WUDZXaFpwMndVaTY5RGpROXZZN0Q5ZXFD?=
- =?utf-8?B?MnN0LzdCaGhqc0RvNE9ZUHZBNEUzUjNxRmpNMEw5R2JHVkNUZ0J2SWFUR1lR?=
- =?utf-8?B?aEY2bk1tdzJHYlJLbjZJN0J1MkN4aDRLSVRsV0ZqT24wbHNGeUREZUgvTmlG?=
- =?utf-8?B?dlJqd1EvYVNsTVZIWEk1d2o5SkFwVEIvM3pCekgvbFF0U2I0OU1HQ01nbFhR?=
- =?utf-8?B?NzJ0c0tZYm14U1FHY2FsNENydm1jcTUyelV0Tm5pS214NEtjTUU0NURPU2ha?=
- =?utf-8?B?VzcydmNKalNCQlRtNnNybFViVUYxbjNRODlCTE8rdk5qVVEzbzZ6eERWU0Ft?=
- =?utf-8?B?eFFHKzZSUm1hSWx1T29aNWhGVU1tSS82VktHTUZBcUNkU0VQT2Y4S1hTbGk1?=
- =?utf-8?B?TjRqaU00U21pd2FyZnpJQXRmYTBvSWxUOXNqNWJKcmt3VkU2b1R0dXRndjRx?=
- =?utf-8?B?NHN4ZEtBRmZ0YXlMK1JTNms0NE5tOENYZzMydkpBVjVyUFQwKzJpLzF2Y0Ri?=
- =?utf-8?B?T09hMnFRaWRURlRMNDRpUDZCTGM4YmdnMUtVUGF5VVBEeE9pNWY2WHliL0dK?=
- =?utf-8?B?MFZJNjUyM0lFOEt4V1BiMGZZUTBaRFp1YXV5WmZOdHZGMHdHZjFnMUFqcEI1?=
- =?utf-8?B?ajdSNmFBRndIVm5MOW5ybHZxYVhVaitudEFNNGlkUlZ2VHdVRk1TZkxTTm11?=
- =?utf-8?B?Q1NvNnFaUkRGUWxMUk5vUUJURHlyUlBmN1ZjTzB6R2tWa0Nra0F6S3FCUnBp?=
- =?utf-8?B?N0VVRXZJRHdtY1J3c0VWdENrT3BkeE9lMHRNejFJNENPOG5NcE5hT0Zpck5i?=
- =?utf-8?B?Njl5WWxKMmZoY1c1dDlNU3BOQ1Yyd1N3QTFPd2Y3Wm1rNFRBTUl0UkZ2NU5N?=
- =?utf-8?B?MSsxZCszcnprb2gydkdTMVVZNWoyakY2cFdGV0tkeTF4RFg1SWpyc29nMmlC?=
- =?utf-8?B?czFVSDR6bGY4TFovRW1lU1oycmtqTUxhV1lHcFdkNEY1YlkzelZ4TWx6M1cx?=
- =?utf-8?B?OHViUEVjWFhoOVZOK2RvNDRMSGFxdnVYZHAxdlh0RjhVRmx6OXFwTkNyVjNh?=
- =?utf-8?B?b2RFZzVOZ1lYVE1EdjhpaW1IZmNpNGxJUE9jZ2JwdG9KNjJVNjR3cHJBUUdr?=
- =?utf-8?B?Y2g2NzRoOHladzVFQzJIZmp0bm5jYlhyT0d2VUR0NlF3OUhNd1QzM3dkOU9r?=
- =?utf-8?B?ZG9UaUkzalV2S2RBVTZzZnZSRDZSMWMwM1hwVzRweENRRzY5aVI3MDJIL1Ft?=
- =?utf-8?B?VUVEdTRvK2lQL0F1WE0rUT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A09A701AA764B64EBFE07073A1400108@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S229619AbhDTHyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:54:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:58014 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229552AbhDTHyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 03:54:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BA771435;
+        Tue, 20 Apr 2021 00:53:39 -0700 (PDT)
+Received: from bogus (unknown [10.57.52.142])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F2973F85F;
+        Tue, 20 Apr 2021 00:53:38 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 08:53:32 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Peter Jones <pjones@redhat.com>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] efifb: Fix runtime pm calls for non PCI efifb device
+Message-ID: <20210420075332.t56dlpppb6bnpjzd@bogus>
+References: <20210415102224.2764054-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee5fc4c2-cff6-4a7a-9976-08d903d115a9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 07:51:19.5121
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: G4/wuiPsEXX/dRAqxkZp/je+pVG90PspDW34gucZy4Hdaso+l17OfeBRI+2c0y1MpyKHdmvgLCcXmEQobyrKaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5344
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415102224.2764054-1-sudeep.holla@arm.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCBBcHIgMTksIDIwMjEgYXQgMDY6NDk6MTVQTSAtMDcwMCwgSnVlIFdhbmcgd3JvdGU6
-DQo+IE9uIFR1ZSwgMTMgQXByIDIwMjEgMDc6NDM6MjAgKzA5MDAsIE5hb3lhIEhvcmlndWNoaSB3
-cm90ZToNCj4gLi4uDQo+ID4gKyAqIFRoaXMgZnVuY3Rpb24gaXMgaW50ZW5kZWQgdG8gaGFuZGxl
-ICJBY3Rpb24gUmVxdWlyZWQiIE1DRXMgb24gYWxyZWFkeQ0KPiA+ICsgKiBoYXJkd2FyZSBwb2lz
-b25lZCBwYWdlcy4gVGhleSBjb3VsZCBoYXBwZW4sIGZvciBleGFtcGxlLCB3aGVuDQo+ID4gKyAq
-IG1lbW9yeV9mYWlsdXJlKCkgZmFpbGVkIHRvIHVubWFwIHRoZSBlcnJvciBwYWdlIGF0IHRoZSBm
-aXJzdCBjYWxsLCBvcg0KPiA+ICsgKiB3aGVuIG11bHRpcGxlIEFjdGlvbiBPcHRpb25hbCBNQ0Ug
-ZXZlbnRzIHJhY2VzIG9uIGRpZmZlcmVudCBDUFVzIHdpdGgNCj4gPiArICogTG9jYWwgTUNFIGVu
-YWJsZWQuDQo+IA0KPiArVG9ueSBMdWNrDQo+IA0KPiBIZXkgVG9ueSwgSSB0aG91Z2h0IFNSQU8g
-TUNFcyBhcmUgYnJvYWRjYXN0ZWQgdG8gYWxsIGNvcmVzIGluIHRoZSBzeXN0ZW0NCj4gYXMgdGhl
-eSBjb21lIHdpdGhvdXQgYW4gZXhlY3V0aW9uIGNvbnRleHQsIGlzIGl0IGNvcnJlY3Q/DQo+IA0K
-PiBJZiBZZXMsIE5hb3lhLCBJIHRoaW5rIHdlIG1pZ2h0IHdhbnQgdG8gcmVtb3ZlIHRoZSBjb21t
-ZW50cyBhYm91dCB0aGUNCj4gIm11bHRpcGxlIEFjdGlvbiBPcHRpb25hbCBNQ0UgcmFjaW5nIiBw
-YXJ0Lg0KDQpIaSBKdWUsDQoNCkkganVzdCB3cm90ZSBhIG1pc3Rha2UgYW5kIEkgbWVhbnQgIndo
-ZW4gbXVsdGlwbGUgQWN0aW9uIFJlcXVpcmVkIE1DRSBldmVudHMgcmFjZXMgLi4uIi4NClNvcnJ5
-IGFuZCB0aGFuayB5b3UgZm9yIGZpbmRpbmcgaXQuICBUaGlzIHdpbGwgYmUgZml4ZWQgaW4gdGhl
-IGxhdGVyIHZlcnNpb25zLg0KDQpUaGFua3MsDQpOYW95YSBIb3JpZ3VjaGk=
+Gentle Ping! There is boot failure because of this issue with linux-next
+on few arm platforms with non PCIe efifb. Please review and get the fix
+merged ASAP so the testing on these platforms can continue with linux-next.
+
+On Thu, Apr 15, 2021 at 11:22:24AM +0100, Sudeep Holla wrote:
+> Commit a6c0fd3d5a8b ("efifb: Ensure graphics device for efifb stays at PCI D0")
+> added runtime pm calls to probe and remove routines to ensure the PCI
+> device for efifb stays in D0 state. However not ever efifb is based on
+> PCI device and efifb_pci_dev can be NULL if that is the case.
+>
+> In such cases, we will get a boot splat like below due to NULL dereference:
+> -->8
+>  Console: switching to colour frame buffer device 240x67
+>  fb0: EFI VGA frame buffer device
+>  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000270
+>  Mem abort info:
+>    ESR = 0x96000004
+>    EC = 0x25: DABT (current EL), IL = 32 bits
+>    SET = 0, FnV = 0
+>    EA = 0, S1PTW = 0
+>  Data abort info:
+>    ISV = 0, ISS = 0x00000004
+>    CM = 0, WnR = 0
+>  [0000000000000270] user address but active_mm is swapper
+>  Internal error: Oops: 96000004 [#1] PREEMPT SMP
+>  Modules linked in:
+>  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc7-next-20210413 #1
+>  Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform
+>  pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+>  pc : pm_runtime_drop_link+0x12c/0x338
+>  lr : efifb_probe+0x7bc/0x7f0
+>  Call trace:
+>   pm_runtime_drop_link+0x12c/0x338
+>   efifb_probe+0x7bc/0x7f0
+>   platform_probe+0x68/0xd8
+>   really_probe+0xe4/0x3a8
+>   driver_probe_device+0x64/0xc8
+>   device_driver_attach+0x74/0x80
+>   __driver_attach+0x64/0xf0
+>   bus_for_each_dev+0x70/0xc0
+>   driver_attach+0x24/0x30
+>   bus_add_driver+0x150/0x1f8
+>   driver_register+0x64/0x120
+>   __platform_driver_register+0x28/0x38
+>   efifb_driver_init+0x1c/0x28
+>   do_one_initcall+0x48/0x2b0
+>   kernel_init_freeable+0x1e8/0x258
+>   kernel_init+0x14/0x118
+>   ret_from_fork+0x10/0x30
+>  Code: 88027c01 35ffffa2 17fff706 f9800051 (885f7c40)
+>  ---[ end trace 17d8da630bf8ff77 ]---
+>  Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> -->8
+>
+> Fix the issue by checking for non-NULL efifb_pci_dev before dereferencing
+> for runtime pm calls in probe and remove routines.
+>
+> Fixes: a6c0fd3d5a8b ("efifb: Ensure graphics device for efifb stays at PCI D0")
+> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Peter Jones <pjones@redhat.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/video/fbdev/efifb.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
+> index f58a545b3bf3..8ea8f079cde2 100644
+> --- a/drivers/video/fbdev/efifb.c
+> +++ b/drivers/video/fbdev/efifb.c
+> @@ -575,7 +575,8 @@ static int efifb_probe(struct platform_device *dev)
+>  		goto err_fb_dealoc;
+>  	}
+>  	fb_info(info, "%s frame buffer device\n", info->fix.id);
+> -	pm_runtime_get_sync(&efifb_pci_dev->dev);
+> +	if (efifb_pci_dev)
+> +		pm_runtime_get_sync(&efifb_pci_dev->dev);
+>  	return 0;
+>
+>  err_fb_dealoc:
+> @@ -602,7 +603,8 @@ static int efifb_remove(struct platform_device *pdev)
+>  	unregister_framebuffer(info);
+>  	sysfs_remove_groups(&pdev->dev.kobj, efifb_groups);
+>  	framebuffer_release(info);
+> -	pm_runtime_put(&efifb_pci_dev->dev);
+> +	if (efifb_pci_dev)
+> +		pm_runtime_put(&efifb_pci_dev->dev);
+>
+>  	return 0;
+>  }
+> --
+> 2.25.1
+>
+
+--
+Regards,
+Sudeep
