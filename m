@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E3F365F0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D23B365F11
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhDTSNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbhDTSNu (ORCPT
+        id S233495AbhDTSOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:14:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47144 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232879AbhDTSOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:13:50 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABF8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:13:18 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id n2so59645967ejy.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=nvYFjNJGmHgAWjON/xjeZZGkptTrI+q+RvIm7dqQFfw=;
-        b=EYxY7vtLiHVVmCgR+vXaiL/ryAZaakWpKzjC9BoczkxP7mU297GvaLpxVdOWN0zodl
-         4HZrqw1EeYkzyhmdZMv+elFntRNxIWN+66KvMGATSfDLMn4BaHHppyOgawjy8HXhDtps
-         etI+EenwabyutXsJCMjx/DdB7J+ybz+f+4pvKbVubVVdufzVaPRp4BBqQnAsfXG3rCCT
-         2lQU/CNL6GBHclGx5Zn3U23ysSvL16MBsM4igq63zhkVZfpVJuB04fzuTxqAS11PPa4+
-         sZE/zLrRVrgPZYSKtTKpdDGMwqxeWvXQ8QLJOWd5qPtaS78cC0KAhhOGxi+Wl3PGx2HV
-         9Q+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nvYFjNJGmHgAWjON/xjeZZGkptTrI+q+RvIm7dqQFfw=;
-        b=NEmxjQu/W/uUNmrJBycBElC/vLgoNlGhC4LznuiDTdVjfZK+jY4cFbMmUBi50jLrWq
-         EKbgqSnoGdcKYCBTdzYguS/xrDrlrNGcb4Oy+ofCQLp+3nZvPoh/U8T8gEl2G8pmBJnl
-         C9zhlA63fzpDHH4bH+HBHezZrwMRRHS90s52WAABqG5t3Jq/EQOPzflYs8X+EZv5jTZ9
-         uXOh/QT5wOaFBix3npuTsObHPLP+DG04D8sBbVy3907+5hlnKN0+FM3ZdkgTlMMAlTqN
-         Whi4Cd65R8CNo1SwjktmjrSDieOdCPyC1EMtq2PCrK3m+LvRytp408Mt95j1gqpYzf4F
-         sdPg==
-X-Gm-Message-State: AOAM530FdKyrcpp75EQusKcRVuFxwi3Nae9qXHZ1m3xk1Sfwdc8PmtXM
-        WWMuVCJvPkZmPa0HVlrnz0YrXs3DUnsmmPc5n1Y=
-X-Google-Smtp-Source: ABdhPJyMtJAU/3tRd+EprZ27FXkRtRb+vdoel/xTzRGhMUWsFjapKqXNxvDEgNqxKktvQW7CCY83Y3Pe7aly4PJa95s=
-X-Received: by 2002:a17:906:953:: with SMTP id j19mr29287422ejd.56.1618942397443;
- Tue, 20 Apr 2021 11:13:17 -0700 (PDT)
+        Tue, 20 Apr 2021 14:14:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618942459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xVywtcdWzkrND0c18LWsccBuX85KB1TX7A+WSDqF8ww=;
+        b=HrpX1btowMTUM/VG8Mcff+2Y34Nq9ipIdTt0Vpw9sNFHghTvvYq7oLHyWh8QizOHCGLeF3
+        4Fxmw/ZaO68uEP2PhE+SZBX0flwH+eQi5ZNPKTljpc/nZcEuF/rDLpKIebRcc/A4azEH3l
+        4SdchM8djo0rt+ctZxRneGxsaQ7cYos=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-gZ-L1CbPNe6IEJoEIVvKAg-1; Tue, 20 Apr 2021 14:14:17 -0400
+X-MC-Unique: gZ-L1CbPNe6IEJoEIVvKAg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 989E9802B56;
+        Tue, 20 Apr 2021 18:14:15 +0000 (UTC)
+Received: from treble (ovpn-115-229.rdu2.redhat.com [10.10.115.229])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6B9C560C5F;
+        Tue, 20 Apr 2021 18:14:14 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 13:14:12 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 01/15] objtool: Find a destination for jumps beyond the
+ section end
+Message-ID: <20210420181412.3g5dsyhggxnvif7k@treble>
+References: <20210416203844.3803177-1-samitolvanen@google.com>
+ <20210416203844.3803177-2-samitolvanen@google.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:ac5:0:0:0:0 with HTTP; Tue, 20 Apr 2021 11:13:16
- -0700 (PDT)
-Reply-To: hajundoyun1@gmail.com
-From:   Hajun Doyun <chris.g3v@gmail.com>
-Date:   Tue, 20 Apr 2021 18:13:16 +0000
-Message-ID: <CABzcbwKAA+cUS+OqcX6s_agp8VU5GD1n0Hc=kF5874iKmiDb5A@mail.gmail.com>
-Subject: Regards
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210416203844.3803177-2-samitolvanen@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I=E2=80=99m Hajun Doyun from South Korea, I refer to seek your collaboratio=
-n
-in a joint business partnership venture in your country as my
-investment manager with the Escrow fund amounted the total sum of
-($22,000,000) twenty two million dollars.
+On Fri, Apr 16, 2021 at 01:38:30PM -0700, Sami Tolvanen wrote:
+> With -ffunction-sections, Clang can generate a jump beyond the end of
+> a section when the section ends in an unreachable instruction.
 
-Kindly revert back to me for further negotiation.
+Why?  Can you show an example?
 
-Regards
-Hajun Doyun
+-- 
+Josh
+
