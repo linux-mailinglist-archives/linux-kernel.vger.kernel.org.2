@@ -2,190 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB52D36526B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C28365270
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhDTGhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:37:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:30396 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhDTGhN (ORCPT
+        id S230133AbhDTGlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 02:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhDTGla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:37:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618900603; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=gF2N9F5JrCVqmJS3xEbcufJab97Iq2avZ9Jdu5gpc7I=;
- b=c6L3ZwCaL+HHgrIjwjPVNOBIrn3LiY/o43A0EUgI3Wi6Xf/9ZXcmduNaxIivWDcWBVYx+cow
- aOMiTMmwjL5hFN8sKrlK2JAVV7DPlyUfh2ED8gXRV/7FJ1GVJyH8zp2LzZ4D2lluwlEDCdTT
- bIFM2CMPWIaB5ZqFiOCyk7sT0YE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 607e7679febcffa80f1b4dcb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 06:36:41
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6885EC4338A; Tue, 20 Apr 2021 06:36:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71C7EC433F1;
-        Tue, 20 Apr 2021 06:36:40 +0000 (UTC)
+        Tue, 20 Apr 2021 02:41:30 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000B9C06174A;
+        Mon, 19 Apr 2021 23:40:59 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id g16so2271428plq.3;
+        Mon, 19 Apr 2021 23:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7+QGbNN4XGQqzSpMblrh9U55SNG2B814LfT0acp5AwI=;
+        b=LK1jsnU6kPomI5mAvI8dytkhIYftLbm6EhSajQDbNelizA0oFFyaZfRJMHC31I2xlu
+         aPnuvtOr9apvUKqILCE6CjYixsjwaWcT1mVk0gPGLiH/rPRKEqyibLlZ+BwZW2QIO5NU
+         EIpq4cjwd/G6lYxhMTyanWKNRkh3HB9Ll7NMcE/UxbMk5tC96k6BkjAZtZs0HB5ryCI1
+         E0pofN4AwbEbP8n0pWHXt6qUxcbCdWpjjUg7H+Nl8SrwDexqy4jIXjYAU7I3qynfPA7a
+         11GbbfYFxAD6kgfsCgISwYwgN4Sh3ByZFYhif/HiEWP/d+ouTG/RCbDtkLemi/Jg6sw7
+         g9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7+QGbNN4XGQqzSpMblrh9U55SNG2B814LfT0acp5AwI=;
+        b=Encoy+ZRQ2kRLEymnB/3QzX/U+yfJyfHcuPrlMVJPCYkFHhSRaxu5rjfPs7nD4RYZi
+         8R5zC2a1mq6875qxfvwmfrn2BQ+78HPYcynw5tN4qQR8A4CbV66c9K37SrTuULXJnfbl
+         K7Vq6FTMUDvOkxTCSLh1w0PWLJVit3vrdxsYVkuhTyRkz7Is9+peVbnfHeGeefPhofwD
+         Is0ZUKmE221B0Y2UtH+NDcw1tzC+MtJe1qjz8/eU5iDPzuNB31OfhFW3S8MDhn7upW2R
+         B5VueQB+Gr7S5xbDk+mWBM6bJF8iR4O5v46paYz2FLyoQknmQbP+EPSxBqbPpqqVKZtN
+         qYJw==
+X-Gm-Message-State: AOAM532qRZH6YGLmzzqrgyT6MIt4izIKaBikeJ9zMNLi8lLvU52zSz/M
+        at8tiaHG8Hp8PZWJT+A9jDsoq5WCn6eCTThG
+X-Google-Smtp-Source: ABdhPJyNVCJoe8kwWM/hHm4TT66sJhmmc38ZfQNv3ISufm//f1HtvghsAPix86SmKkFBguK8c/F0cQ==
+X-Received: by 2002:a17:902:9685:b029:e9:abc1:7226 with SMTP id n5-20020a1709029685b02900e9abc17226mr27665255plp.64.1618900859030;
+        Mon, 19 Apr 2021 23:40:59 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id z62sm690956pfb.110.2021.04.19.23.40.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 23:40:58 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] MIPS: pci-legacy: revert "use generic pci_enable_resources"
+Date:   Mon, 19 Apr 2021 23:39:43 -0700
+Message-Id: <20210420063942.7041-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210420052319.GA162457@roeck-us.net>
+References: <20210420052319.GA162457@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Apr 2021 12:06:40 +0530
-From:   schowdhu@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Felipe Balbi <balbi@kernel.org>, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
-Subject: Re: [PATCH V3 2/4] soc: qcom: dcc:Add driver support for Data Capture
- and Compare unit(DCC)
-In-Reply-To: <20210419143225.GO1538589@yoga>
-References: <cover.1618387606.git.schowdhu@codeaurora.org>
- <59b2e83d5d0f435112f6ae266612ff91c85b120f.1618387606.git.schowdhu@codeaurora.org>
- <87k0p4njni.fsf@kernel.org>
- <ffc2076e7145af0099bab8ef37611556@codeaurora.org>
- <20210419143225.GO1538589@yoga>
-Message-ID: <f9b28acabea8836b713cab2e0de53542@codeaurora.org>
-X-Sender: schowdhu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-19 20:02, Bjorn Andersson wrote:
-> On Mon 19 Apr 05:32 CDT 2021, schowdhu@codeaurora.org wrote:
-> 
->> On 2021-04-15 12:01, Felipe Balbi wrote:
->> > Hi,
->> >
->> > Souradeep Chowdhury <schowdhu@codeaurora.org> writes:
->> > > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
->> > > index ad675a6..e7f0ccb 100644
->> > > --- a/drivers/soc/qcom/Makefile
->> > > +++ b/drivers/soc/qcom/Makefile
->> > > @@ -1,19 +1,22 @@
->> > >  # SPDX-License-Identifier: GPL-2.0
->> > >  CFLAGS_rpmh-rsc.o := -I$(src)
->> > >  obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
->> > > -obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
->> > > +obj-$(CONFIG_QCOM_APR) += apr.o
->> > >  obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
->> > >  obj-$(CONFIG_QCOM_CPR)		+= cpr.o
->> > > +obj-$(CONFIG_QCOM_DCC) += dcc.o
->> > > +obj-$(CONFIG_QCOM_GENI_SE) +=   qcom-geni-se.o
->> > >  obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
->> > > +obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) += kryo-l2-accessors.o
->> > > +obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
->> > >  obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
->> > >  obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
->> > >  obj-$(CONFIG_QCOM_PDR_HELPERS)	+= pdr_interface.o
->> > >  obj-$(CONFIG_QCOM_QMI_HELPERS)	+= qmi_helpers.o
->> > > -qmi_helpers-y	+= qmi_encdec.o qmi_interface.o
->> > >  obj-$(CONFIG_QCOM_RMTFS_MEM)	+= rmtfs_mem.o
->> > >  obj-$(CONFIG_QCOM_RPMH)		+= qcom_rpmh.o
->> > > -qcom_rpmh-y			+= rpmh-rsc.o
->> > > -qcom_rpmh-y			+= rpmh.o
->> > > +obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
->> > > +obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
->> > >  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
->> > >  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
->> > >  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
->> > > @@ -21,8 +24,6 @@ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
->> > >  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
->> > >  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
->> > >  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
->> > > -obj-$(CONFIG_QCOM_APR) += apr.o
->> > > -obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
->> > > -obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
->> > > -obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
->> > > -obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
->> > > +qmi_helpers-y   += qmi_encdec.o qmi_interface.o
->> > > +qcom_rpmh-y                     += rpmh-rsc.o
->> > > +qcom_rpmh-y                     += rpmh.o
->> >
->> > why so many changes?
->> 
->> This has been accidentally sorted based on the config names. Will be 
->> fixing
->> this in next version of the patch.
->> 
->> >
->> > > diff --git a/drivers/soc/qcom/dcc.c b/drivers/soc/qcom/dcc.c
->> > > new file mode 100644
->> > > index 0000000..fcd5580
->> > > --- /dev/null
->> > > +++ b/drivers/soc/qcom/dcc.c
->> > > @@ -0,0 +1,1539 @@
->> > > +// SPDX-License-Identifier: GPL-2.0-only
->> > > +/*
->> > > + * Copyright (c) 2015-2021, The Linux Foundation. All rights
->> > > reserved.
->> > > + */
->> > > +
->> > > +#include <linux/bitfield.h>
->> > > +#include <linux/bitops.h>
->> > > +#include <linux/cdev.h>
->> > > +#include <linux/delay.h>
->> > > +#include <linux/fs.h>
->> > > +#include <linux/io.h>
->> > > +#include <linux/iopoll.h>
->> > > +#include <linux/module.h>
->> > > +#include <linux/of.h>
->> > > +#include <linux/of_device.h>
->> > > +#include <linux/platform_device.h>
->> > > +#include <linux/slab.h>
->> > > +#include <linux/uaccess.h>
->> > > +
->> > > +
->> >
->> > one blank line is enough
->> 
->> Ack
->> 
->> >
->> > > +#define TIMEOUT_US		100
->> > > +
->> > > +#define dcc_writel(drvdata, val, off)					\
->> > > +	writel((val), drvdata->base + dcc_offset_conv(drvdata, off))
->> > > +#define dcc_readl(drvdata, off)						\
->> > > +	readl(drvdata->base + dcc_offset_conv(drvdata, off))
->> > > +
->> > > +#define dcc_sram_readl(drvdata, off)					\
->> > > +	readl(drvdata->ram_base + off)
->> >
->> > this would be probably be better as static inlines.
->> 
->> These are simple read and write operations used in the driver
->> which just calls the generic writel and readl function.
->> That's why macros have been used here to lesson the overhead
->> of an extra function call.
-> 
-> The compiler will realize that your static dcc_sram_readl() is cheaper
-> to inline than call and do so for you. So you can expect that there's 
-> no
-> difference in the output from the compiler, and if there is then the
-> compiler knows something that you're overlooking.
+This mostly reverts commit 99bca615d895 ("MIPS: pci-legacy: use generic
+pci_enable_resources"). Fixes regressions such as:
+  ata_piix 0000:00:0a.1: can't enable device: BAR 0 [io  0x01f0-0x01f7] not
+	claimed
+  ata_piix: probe of 0000:00:0a.1 failed with error -22
 
-Ack. Will go for static inline here.
+The only changes from the strict revert are to fix checkpatch errors:
+  ERROR: spaces required around that '=' (ctx:VxV)
+  #33: FILE: arch/mips/pci/pci-legacy.c:252:
+  +	for (idx=0; idx < PCI_NUM_RESOURCES; idx++) {
+ 	        ^
 
-> 
-> Regards,
-> Bjorn
+  ERROR: do not use assignment in if condition
+  #67: FILE: arch/mips/pci/pci-legacy.c:284:
+  +	if ((err = pcibios_enable_resources(dev, mask)) < 0)
+
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+---
+Guenter, sorry about this - let's just revert this for now to minimize
+turmoil to the legacy PCI code. Obviously, this needs more testing
+before applying. Thanks for your report!
+
+ arch/mips/pci/pci-legacy.c | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+index c24226ea0a6e..468722c8a5c6 100644
+--- a/arch/mips/pci/pci-legacy.c
++++ b/arch/mips/pci/pci-legacy.c
+@@ -241,9 +241,45 @@ static int __init pcibios_init(void)
+ 
+ subsys_initcall(pcibios_init);
+ 
++static int pcibios_enable_resources(struct pci_dev *dev, int mask)
++{
++	u16 cmd, old_cmd;
++	int idx;
++	struct resource *r;
++
++	pci_read_config_word(dev, PCI_COMMAND, &cmd);
++	old_cmd = cmd;
++	for (idx = 0; idx < PCI_NUM_RESOURCES; idx++) {
++		/* Only set up the requested stuff */
++		if (!(mask & (1<<idx)))
++			continue;
++
++		r = &dev->resource[idx];
++		if (!(r->flags & (IORESOURCE_IO | IORESOURCE_MEM)))
++			continue;
++		if ((idx == PCI_ROM_RESOURCE) &&
++				(!(r->flags & IORESOURCE_ROM_ENABLE)))
++			continue;
++		if (!r->start && r->end) {
++			pci_err(dev,
++				"can't enable device: resource collisions\n");
++			return -EINVAL;
++		}
++		if (r->flags & IORESOURCE_IO)
++			cmd |= PCI_COMMAND_IO;
++		if (r->flags & IORESOURCE_MEM)
++			cmd |= PCI_COMMAND_MEMORY;
++	}
++	if (cmd != old_cmd) {
++		pci_info(dev, "enabling device (%04x -> %04x)\n", old_cmd, cmd);
++		pci_write_config_word(dev, PCI_COMMAND, cmd);
++	}
++	return 0;
++}
++
+ int pcibios_enable_device(struct pci_dev *dev, int mask)
+ {
+-	int err = pci_enable_resources(dev, mask);
++	int err = pcibios_enable_resources(dev, mask);
+ 
+ 	if (err < 0)
+ 		return err;
+-- 
+2.31.1
+
