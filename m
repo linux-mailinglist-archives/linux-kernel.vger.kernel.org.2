@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1C83650B9
+	by mail.lfdr.de (Postfix) with ESMTP id 032B03650B8
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbhDTDQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:16:13 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:36677 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233861AbhDTDPz (ORCPT
+        id S234207AbhDTDQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:16:08 -0400
+Received: from mail-oo1-f44.google.com ([209.85.161.44]:39776 "EHLO
+        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233867AbhDTDPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Apr 2021 23:15:55 -0400
-Received: by mail-oi1-f172.google.com with SMTP id v6so9814883oiv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:15:23 -0700 (PDT)
+Received: by mail-oo1-f44.google.com with SMTP id g9-20020a4ad3090000b02901ec6daba49aso1390872oos.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:15:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fe06l4mMv/umMH3B2MqQPjc0UcqJVWjftNupHuwIv3M=;
-        b=PWHOX2ZmkCMcLwFrLJ6tMRqK0oP6bACHeXS+ksbb47wLVaMehAw1fkDSSr28bKqlol
-         kdEA45OaAGT6zg4t1GRe4EtonaXYNzWRDEfklB0OB+fXJjEbUJHVLFx638j0yNmwW65k
-         5efW/EDoNYLO3v7/HcMOh3YNaRr5b4S6h52UZXI6U7mSGGeh66g4rdDTokB55bwIhkkA
-         voLdMySFaSqhAkT2kt20TEjzTcVa76eGK65a1ZlBebhYf5V/fBGjWhuRis+rmYvZmGBi
-         2BSiEwBj1kDT4kWVt6dn8I8ofhq93uxYOVbIoG/P+yTRcUOFTNQ4djLYraPTVEeBtYrK
-         HeWw==
-X-Gm-Message-State: AOAM531iIVpK0jAYzLt1e8gBgYDThLwkO9dccp1wc1qf5ezhpsVHb0YP
-        R5aCUaaOW5DZ5ibf0zigeQ==
-X-Google-Smtp-Source: ABdhPJwFnnE12a945ApPg7D1QPBH7crLjsZAs4f3E13EDN8Kbcjr0x4ok7Ya+2cNi/5hbw+8ooiSJA==
-X-Received: by 2002:aca:33d5:: with SMTP id z204mr1633768oiz.32.1618888522872;
-        Mon, 19 Apr 2021 20:15:22 -0700 (PDT)
+        bh=TDuvvx5Xt615+9Y6f3EsNW4KlI+SRnDvPm6U1rc8DPU=;
+        b=IQ2TpI2lLk4C1DEiikzQfuPk1kIQvFMP3+ioZGE5qmNPXjITu8EazlWcW9Skgu81u2
+         gzG9/oi3A+Pr8JgEsD9xdMfipVePsQA2CRd/dnB06dUEvGG/6PVezaipFxmAxluVexcD
+         gbRpJ77XjMmqW6edAHrBZb0sQuGp44nFsashsVByzYE+q0mk6ISAIrWVY08n1jpQhxVE
+         eDGTiSSbbC3rD9rw/8nu5rCLTwpDle5M6ER2RBXwu+s7Hg9O/OBSKcccSXZWAUMuriiA
+         IsIBYVAOQbT9jcMSBB4caXASHe+YVKLblqCU5nIrPcsz0RqmELcOybWZ8HcQAE85hXaP
+         k4tg==
+X-Gm-Message-State: AOAM533jCRAWqIVfmcC1GrqetKuLvlsvqwGYatF9Xe9+yzu7FlPkBImd
+        BcakoFyufvu0JRk2A3mJPw==
+X-Google-Smtp-Source: ABdhPJyAdjfCXQB/Wo8V20GkoaaI0vxlu8cLMV9okZs/iV+f3UT+yLpinCX6VMeOGtQAHNGptGF7Aw==
+X-Received: by 2002:a4a:800d:: with SMTP id x13mr15634764oof.61.1618888524444;
+        Mon, 19 Apr 2021 20:15:24 -0700 (PDT)
 Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id g16sm2347896oof.43.2021.04.19.20.15.20
+        by smtp.googlemail.com with ESMTPSA id g16sm2347896oof.43.2021.04.19.20.15.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 20:15:21 -0700 (PDT)
+        Mon, 19 Apr 2021 20:15:23 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -49,9 +49,9 @@ Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Itaru Kitayama <itaru.kitayama@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 5/9] arm64: perf: Add userspace counter access disable switch
-Date:   Mon, 19 Apr 2021 22:15:07 -0500
-Message-Id: <20210420031511.2348977-6-robh@kernel.org>
+Subject: [PATCH v7 6/9] libperf: Add arm64 support to perf_mmap__read_self()
+Date:   Mon, 19 Apr 2021 22:15:08 -0500
+Message-Id: <20210420031511.2348977-7-robh@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210420031511.2348977-1-robh@kernel.org>
 References: <20210420031511.2348977-1-robh@kernel.org>
@@ -61,146 +61,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like x86, some users may want to disable userspace PMU counter
-altogether. Add a sysfs 'rdpmc' file to control userspace counter
-access. The default is '1' which is enabled. Writing '0' disables
-access.
-
-In the case of multiple PMUs (i.e. big.LITTLE), the control is per PMU
-and userspace must disable access on each PMU.
-
-Note that x86 also supports writing '2' to globally enable user access.
-As there's not existing userspace support to worry about, this shouldn't
-be necessary for Arm. It could be added later if the need arises.
+Add the arm64 variants for read_perf_counter() and read_timestamp().
+Unfortunately the counter number is encoded into the instruction, so the
+code is a bit verbose to enumerate all possible counters.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm64/kernel/perf_event.c | 61 ++++++++++++++++++++++++++++++++--
- include/linux/perf/arm_pmu.h   |  4 ++-
- 2 files changed, 61 insertions(+), 4 deletions(-)
+v7:
+ - Move enabling of libperf user read test for arm64 to this patch
+---
+ tools/lib/perf/mmap.c             | 98 +++++++++++++++++++++++++++++++
+ tools/lib/perf/tests/test-evsel.c |  2 +-
+ 2 files changed, 99 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index bfbb7f449aca..1ab6308ca89c 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -336,6 +336,54 @@ static const struct attribute_group armv8_pmuv3_caps_attr_group = {
- 	.attrs = armv8_pmuv3_caps_attrs,
- };
+diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+index 915469f00cf4..216e6c6212a2 100644
+--- a/tools/lib/perf/mmap.c
++++ b/tools/lib/perf/mmap.c
+@@ -13,6 +13,7 @@
+ #include <internal/lib.h>
+ #include <linux/kernel.h>
+ #include <linux/math64.h>
++#include <linux/stringify.h>
+ #include "internal.h"
  
-+static void armv8pmu_disable_user_access(void *mm);
+ void perf_mmap__init(struct perf_mmap *map, struct perf_mmap *prev,
+@@ -294,6 +295,103 @@ static u64 read_timestamp(void)
+ 
+ 	return low | ((u64)high) << 32;
+ }
++#elif defined(__aarch64__)
++#define read_sysreg(r) ({						\
++	u64 __val;							\
++	asm volatile("mrs %0, " __stringify(r) : "=r" (__val));		\
++	__val;								\
++})
 +
-+static ssize_t get_attr_rdpmc(struct device *dev,
-+			      struct device_attribute *attr,
-+			      char *buf)
++static u64 read_pmccntr(void)
 +{
-+	struct pmu *pmu = dev_get_drvdata(dev);
-+	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
-+
-+	return snprintf(buf, 40, "%d\n", cpu_pmu->attr_rdpmc);
++	return read_sysreg(pmccntr_el0);
 +}
 +
-+static ssize_t set_attr_rdpmc(struct device *dev,
-+			      struct device_attribute *attr,
-+			      const char *buf, size_t count)
-+{
-+	struct pmu *pmu = dev_get_drvdata(dev);
-+	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
-+	unsigned long val;
-+	ssize_t ret;
-+
-+	ret = kstrtoul(buf, 0, &val);
-+	if (ret)
-+		return ret;
-+
-+	if (val > 1)
-+		return -EINVAL;
-+
-+	if (val != cpu_pmu->attr_rdpmc) {
-+		cpu_pmu->attr_rdpmc = !!val;
-+		if (!val)
-+			on_each_cpu_mask(&cpu_pmu->supported_cpus, armv8pmu_disable_user_access, NULL, 1);
++#define PMEVCNTR_READ(idx)					\
++	static u64 read_pmevcntr_##idx(void) {			\
++		return read_sysreg(pmevcntr##idx##_el0);	\
 +	}
 +
-+	return count;
++PMEVCNTR_READ(0);
++PMEVCNTR_READ(1);
++PMEVCNTR_READ(2);
++PMEVCNTR_READ(3);
++PMEVCNTR_READ(4);
++PMEVCNTR_READ(5);
++PMEVCNTR_READ(6);
++PMEVCNTR_READ(7);
++PMEVCNTR_READ(8);
++PMEVCNTR_READ(9);
++PMEVCNTR_READ(10);
++PMEVCNTR_READ(11);
++PMEVCNTR_READ(12);
++PMEVCNTR_READ(13);
++PMEVCNTR_READ(14);
++PMEVCNTR_READ(15);
++PMEVCNTR_READ(16);
++PMEVCNTR_READ(17);
++PMEVCNTR_READ(18);
++PMEVCNTR_READ(19);
++PMEVCNTR_READ(20);
++PMEVCNTR_READ(21);
++PMEVCNTR_READ(22);
++PMEVCNTR_READ(23);
++PMEVCNTR_READ(24);
++PMEVCNTR_READ(25);
++PMEVCNTR_READ(26);
++PMEVCNTR_READ(27);
++PMEVCNTR_READ(28);
++PMEVCNTR_READ(29);
++PMEVCNTR_READ(30);
++
++/*
++ * Read a value direct from PMEVCNTR<idx>
++ */
++static u64 read_perf_counter(unsigned int counter)
++{
++	static u64 (* const read_f[])(void) = {
++		read_pmevcntr_0,
++		read_pmevcntr_1,
++		read_pmevcntr_2,
++		read_pmevcntr_3,
++		read_pmevcntr_4,
++		read_pmevcntr_5,
++		read_pmevcntr_6,
++		read_pmevcntr_7,
++		read_pmevcntr_8,
++		read_pmevcntr_9,
++		read_pmevcntr_10,
++		read_pmevcntr_11,
++		read_pmevcntr_13,
++		read_pmevcntr_12,
++		read_pmevcntr_14,
++		read_pmevcntr_15,
++		read_pmevcntr_16,
++		read_pmevcntr_17,
++		read_pmevcntr_18,
++		read_pmevcntr_19,
++		read_pmevcntr_20,
++		read_pmevcntr_21,
++		read_pmevcntr_22,
++		read_pmevcntr_23,
++		read_pmevcntr_24,
++		read_pmevcntr_25,
++		read_pmevcntr_26,
++		read_pmevcntr_27,
++		read_pmevcntr_28,
++		read_pmevcntr_29,
++		read_pmevcntr_30,
++		read_pmccntr
++	};
++
++	if (counter < ARRAY_SIZE(read_f))
++		return (read_f[counter])();
++
++	return 0;
 +}
 +
-+static DEVICE_ATTR(rdpmc, S_IRUSR | S_IWUSR, get_attr_rdpmc, set_attr_rdpmc);
++static u64 read_timestamp(void) { return read_sysreg(cntvct_el0); }
 +
-+static struct attribute *armv8_pmuv3_rdpmc_attrs[] = {
-+	&dev_attr_rdpmc.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group armv8_pmuv3_rdpmc_attr_group = {
-+	.attrs = armv8_pmuv3_rdpmc_attrs,
-+};
-+
- /*
-  * Perf Events' indices
-  */
-@@ -950,7 +998,8 @@ static void armv8pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
- 	 * If a new task has user access enabled, clear the dirty counters
- 	 * to prevent the potential leak.
- 	 */
--	if (ctx && current->mm && atomic_read(&current->mm->context.pmu_direct_access)) {
-+	if (ctx && to_arm_pmu(ctx->pmu)->attr_rdpmc &&
-+	    current->mm && atomic_read(&current->mm->context.pmu_direct_access)) {
- 		armv8pmu_enable_user_access();
- 		armv8pmu_clear_dirty_counters(to_arm_pmu(ctx->pmu));
- 	} else {
-@@ -1093,7 +1142,8 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
- 				       &armv8_pmuv3_perf_cache_map,
- 				       ARMV8_PMU_EVTYPE_EVENT);
+ #else
+ static u64 read_perf_counter(unsigned int counter) { return 0; }
+ static u64 read_timestamp(void) { return 0; }
+diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+index 288b5feaefe2..670fcdb6d6af 100644
+--- a/tools/lib/perf/tests/test-evsel.c
++++ b/tools/lib/perf/tests/test-evsel.c
+@@ -148,7 +148,7 @@ static int test_stat_user_read(int event)
  
--	if (armv8pmu_event_want_user_access(event) || !armv8pmu_event_is_64bit(event))
-+	if (armpmu->attr_rdpmc &&
-+	    (armv8pmu_event_want_user_access(event) || !armv8pmu_event_is_64bit(event)))
- 		event->hw.flags |= ARMPMU_EL0_RD_CNTR;
+ 	pc = perf_evsel__mmap_base(evsel, 0, 0);
  
- 	/*
-@@ -1218,7 +1268,9 @@ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
- 
- static int armv8pmu_undef_handler(struct pt_regs *regs, u32 insn)
- {
--	if (atomic_read(&current->mm->context.pmu_direct_access)) {
-+	struct arm_pmu *armpmu = *this_cpu_ptr(&cpu_armpmu);
-+
-+	if (armpmu->attr_rdpmc && atomic_read(&current->mm->context.pmu_direct_access)) {
- 		armv8pmu_enable_user_access();
- 		return 0;
- 	}
-@@ -1277,6 +1329,9 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
- 	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = caps ?
- 			caps : &armv8_pmuv3_caps_attr_group;
- 
-+	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_RDPMC] = &armv8_pmuv3_rdpmc_attr_group;
-+	cpu_pmu->attr_rdpmc = true;
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-index 1daad3b2cce5..9303cd07ac57 100644
---- a/include/linux/perf/arm_pmu.h
-+++ b/include/linux/perf/arm_pmu.h
-@@ -82,6 +82,7 @@ enum armpmu_attr_groups {
- 	ARMPMU_ATTR_GROUP_EVENTS,
- 	ARMPMU_ATTR_GROUP_FORMATS,
- 	ARMPMU_ATTR_GROUP_CAPS,
-+	ARMPMU_ATTR_GROUP_RDPMC,
- 	ARMPMU_NR_ATTR_GROUPS
- };
- 
-@@ -107,7 +108,8 @@ struct arm_pmu {
- 	int		(*map_event)(struct perf_event *event);
- 	int		(*filter_match)(struct perf_event *event);
- 	int		num_events;
--	bool		secure_access; /* 32-bit ARM only */
-+	bool		secure_access:1; /* 32-bit ARM only */
-+	bool		attr_rdpmc:1;
- #define ARMV8_PMUV3_MAX_COMMON_EVENTS		0x40
- 	DECLARE_BITMAP(pmceid_bitmap, ARMV8_PMUV3_MAX_COMMON_EVENTS);
- #define ARMV8_PMUV3_EXT_COMMON_EVENT_BASE	0x4000
+-#if defined(__i386__) || defined(__x86_64__)
++#if defined(__i386__) || defined(__x86_64__) || __defined(__aarch64__)
+ 	__T("userspace counter access not supported", pc->cap_user_rdpmc);
+ 	__T("userspace counter access not enabled", pc->index);
+ 	__T("userspace counter width not set", pc->pmc_width >= 32);
 -- 
 2.27.0
 
