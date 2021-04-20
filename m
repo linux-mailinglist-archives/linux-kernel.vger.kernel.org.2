@@ -2,165 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37367365758
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0A436575E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhDTLR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 07:17:27 -0400
-Received: from mail-dm6nam11on2084.outbound.protection.outlook.com ([40.107.223.84]:25601
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230290AbhDTLR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:17:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XyyQ0qyGdV19BSOW7jQes7cxPoekmkH2WFzwu3aC7R+lCYpv+vKc97wfkfMM70G/mL4E8MNSWOZvojRQCQ4lGoSh2cG12yvJe5V0gnkTLw4o6ttoMOJ2ImLlJv69lpwOIbCwylNxiiMbvKy1ukmILWoPEmilQ4JHWa96xHSEI+XRlvCfNJSdV+/xlhDeL8cUGhEgP4Hq+XLkWwA9dW8FeuF7w4+oX9pT0L/WOKMcResH6PCKWJ8/Bb5ylb4HXyCVV0p7xuOUlwbz5jBTLkvSj7vNpbTiS82x6GWwK5rHGQ69nwQtnH+aVn3i+2Ok5is4dAE6rvNf5GLnvIAKQnOP7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hgv0wgZ/MlAwgGBvRPdj2nU1jOPL4COrBo4iaxOdH+w=;
- b=cKV55njXU8sd6jTGl5BRD/3Kf3qhaRXwXSX5YDHNbnUrNS3kSs+urncrvI5WVieShdhN/e9ajatZe2HXXo+eqSaDimuPZDg0SAEHqOANP3wadLQuuS0BtoyE0IiPGX73NmBrwOf4Pnc27tE9MbvoHuj4Aoin+77X1F3aenIG4iobtZB5vzCNsGtMAi6E8LgatdhQ1vLWrjZYKVRwDxo7rKGSdO9cLeTIQQ1zoNaNR94OXDnAJFUep864kDxOYHdiUdbXM8oH0yfrdCJavdl+17hqh5pOronIlEz+YV25rLPnwpM6lyv6+3imaiFDqoBiSekeLivF+2WIsb0jtHhRJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hgv0wgZ/MlAwgGBvRPdj2nU1jOPL4COrBo4iaxOdH+w=;
- b=nzSAq0zt3IRQJ3GbturcMvGgFPm8ZfUnKgyb3cTgmhGsC21T0yahpn/ideXsmshSdburoGUVrtqeiF3PcIY8cPHBwKPu/k2FAjA7QhVKIBkZ8LzPde5NjiIixcoFDVvFq2uzM/LgYX7xhbBLkehrgJLqzZzJsJOZfmiX8/1O9EdXXJiTkiV8Z4Zm5SC8MlJKwM+tIGoOv4R3ghSload5wMJMBHCWLxIuRnvFVLTPilGEd5j6aaOMTr2ks4F3cS8OGNrO7kV9W+KnB3VGIrogv++7aGMloZw31t2gBhbzQk3hw6obWVz63pVZ4IaYm9Og3yWYX2Of/Zm8dAuGVXYxiQ==
-Received: from MW4PR03CA0042.namprd03.prod.outlook.com (2603:10b6:303:8e::17)
- by MWHPR12MB1501.namprd12.prod.outlook.com (2603:10b6:301:f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Tue, 20 Apr
- 2021 11:16:53 +0000
-Received: from CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:8e:cafe::53) by MW4PR03CA0042.outlook.office365.com
- (2603:10b6:303:8e::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend
- Transport; Tue, 20 Apr 2021 11:16:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT011.mail.protection.outlook.com (10.13.175.186) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 11:16:51 +0000
-Received: from [10.26.49.10] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr
- 2021 11:16:50 +0000
-Subject: Re: [PATCH v3 1/3] tracing: Show real address for trace event
- arguments
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <160277369795.29307.6792451054602907237.stgit@devnote2>
- <160277370703.29307.5134475491761971203.stgit@devnote2>
- <9835d9f1-8d3a-3440-c53f-516c2606ad07@nvidia.com>
- <20210419142229.3ff31384@gandalf.local.home>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <b5425a21-cc6d-e9a7-1408-3db12192a3a2@nvidia.com>
-Date:   Tue, 20 Apr 2021 12:16:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231545AbhDTLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 07:20:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40047 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230290AbhDTLUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:20:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618917612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tyZposn6UrVgl3kX+dZoOBqzz3tb6Zptt4NBxTo0Y80=;
+        b=MFLCnLaDdvbIa67fIe3TuuxLfyEFO+6GauA5TaiV+LDLL0JR4G7pYVSCGQp/qBh1rgjZqR
+        TsNY7jNkWR7FuCfUp+Zj6TMQJMwtbeWFQMtCO97GtlRsf+W1dJ3xfaH8exoMDmW1j8eqsb
+        oo3E+THkGU3e4WRoLFVdAKwP5+hppqI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-XqYVblC6MlaLTDs9A8mytA-1; Tue, 20 Apr 2021 07:20:10 -0400
+X-MC-Unique: XqYVblC6MlaLTDs9A8mytA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D52E1006C80;
+        Tue, 20 Apr 2021 11:20:08 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ED9505D9C0;
+        Tue, 20 Apr 2021 11:20:06 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com, srutherford@google.com, joro@8bytes.org,
+        brijesh.singh@amd.com, thomas.lendacky@amd.com,
+        venu.busireddy@oracle.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
+Subject: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
+Date:   Tue, 20 Apr 2021 07:20:06 -0400
+Message-Id: <20210420112006.741541-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210419142229.3ff31384@gandalf.local.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7e0cf68a-188a-4135-d62f-08d903edcc3d
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1501:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1501DD61410AB35649731BA3D9489@MWHPR12MB1501.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vN0LXkOypksXRbYWu/d0bQG3q73plQjleObuajreeR6L5dinv+5gunj2CDHSDCdO2SI2/AO7BTS7T7g+GK+slcx+F+g0SIEMzigakQmfpRD/KO0UKt4dBpgWsSkICKVCa4v6yOBOukBTAAK9VMFsIVvRPoCPWlzyXF8ldKOT8uqsoFYhLt4OljLHBRCnXbVLGQyu+PriYmi2zZ4s+Q/vOw8+obGJX/dO5N6IIqAGSTd/4UrL1nhZyfrVQsaQFn7wl2F+6Sjs/BCpu9A5+cynj29AoX/7fdSuiF37SLREPjV76jgUOn1W5QHdp7MUCH89tKijFJcUx8T74gfHh/zVSBeLgm1CMiOTIdA1RYALAg5d96iOmnqGkJ9hyafWOR+Iah+0mjTGNOtXpTHmati4cVRmeVgNBh8EbiioEQXxArrfdNfND/At6zC/o1Tk6ZORvffjEsyFebg/uRPQzZEw92z+a6ZVNqf6A2QjB2mU6BeBDf0eFWRmQQ3oHaLqw473wj4KmN7fx6F2y5YnHfXZf0jXwFeTzjQDUMlOlRpTKj0tSQoD++0t3DHn6gtPn9RX64A5bxez2Sw5+WCKn8/vbWF4SkFmNtF+SqMbabPvB6CjooJiR9kPiHqagR9+wvxxtMUW8Zy1ttmJ46vALZWvmpT/NlPGQGziZHXabMWcSlD27u+7WGGUTJBr17T8mLJ8
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(136003)(36840700001)(46966006)(82740400003)(36906005)(316002)(31696002)(82310400003)(8936002)(2906002)(86362001)(16576012)(4326008)(36860700001)(36756003)(8676002)(5660300002)(6916009)(70206006)(26005)(31686004)(70586007)(336012)(186003)(53546011)(54906003)(16526019)(7636003)(47076005)(356005)(6666004)(83380400001)(426003)(478600001)(2616005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 11:16:51.7213
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e0cf68a-188a-4135-d62f-08d903edcc3d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1501
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a reviewed version of the guest interface (hypercall+MSR)
+for SEV live migration.  The differences lie mostly in the API
+for userspace.  In particular:
 
-On 19/04/2021 19:22, Steven Rostedt wrote:
-> On Mon, 19 Apr 2021 14:08:14 +0100
-> Jon Hunter <jonathanh@nvidia.com> wrote:
-> 
->> I have encountered the following crash on a couple of our ARM64 Jetson
->> platforms and bisect is pointing to this change. The crash I am seeing
->> is on boot when I am directing the trace prints to the console by adding
->> 'tp_printk trace_event="cpu_frequency,cpu_frequency_limits"' to the
->> kernel command line and enabling CONFIG_BOOTTIME_TRACING. Reverting this
->> change does fix the problem. Let me know if you have any thoughts.
-> 
-> Thanks for the report. I was able to reproduce this on x86 as well.
-> 
-> It's the tp_printk that's the problem. Does this fix it for you?
-> 
-> -- Steve
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 66a4ad93b5e9..f1ce4be7a499 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -3580,7 +3580,11 @@ static char *trace_iter_expand_format(struct trace_iterator *iter)
->  {
->  	char *tmp;
->  
-> -	if (iter->fmt == static_fmt_buf)
-> +	/*
-> +	 * iter->tr is NULL when used with tp_printk, which makes
-> +	 * this get called where it is not safe to call krealloc().
-> +	 */
-> +	if (!iter->tr || iter->fmt == static_fmt_buf)
->  		return NULL;
->  
->  	tmp = krealloc(iter->fmt, iter->fmt_size + STATIC_FMT_BUF_SIZE,
-> @@ -3799,7 +3803,7 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
->  	if (WARN_ON_ONCE(!fmt))
->  		return fmt;
->  
-> -	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
-> +	if (!iter->tr || iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
->  		return fmt;
->  
->  	p = fmt;
-> @@ -9931,7 +9935,7 @@ void __init early_trace_init(void)
->  {
->  	if (tracepoint_printk) {
->  		tracepoint_print_iter =
-> -			kmalloc(sizeof(*tracepoint_print_iter), GFP_KERNEL);
-> +			kzalloc(sizeof(*tracepoint_print_iter), GFP_KERNEL);
->  		if (MEM_FAIL(!tracepoint_print_iter,
->  			     "Failed to allocate trace iterator\n"))
->  			tracepoint_printk = 0;
-> 
+- the CPUID feature is not exposed in KVM_GET_SUPPORTED_CPUID
 
+- the hypercall must be enabled manually with KVM_ENABLE_CAP
 
-Yes that works for me thanks!
+- the MSR has sensible behavior if not filtered (reads as zero,
+  writes must leave undefined bits as zero or they #GP)
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Patch 1 is an unrelated cleanup, that was made moot by not
+exposing the bit in KVM_GET_SUPPORTED_CPUID.
 
-Cheers!
-Jon
+Paolo
+
+Ashish Kalra (1):
+  KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
+
+Paolo Bonzini (2):
+  KVM: SEV: mask CPUID[0x8000001F].eax according to supported features
+  KVM: x86: add MSR_KVM_MIGRATION_CONTROL
+
+ Documentation/virt/kvm/api.rst        | 11 ++++++
+ Documentation/virt/kvm/cpuid.rst      |  6 ++++
+ Documentation/virt/kvm/hypercalls.rst | 15 +++++++++
+ Documentation/virt/kvm/msr.rst        | 10 ++++++
+ arch/x86/include/asm/kvm_host.h       |  2 ++
+ arch/x86/include/uapi/asm/kvm_para.h  |  4 +++
+ arch/x86/kvm/cpuid.c                  |  5 ++-
+ arch/x86/kvm/cpuid.h                  |  1 +
+ arch/x86/kvm/svm/svm.c                |  7 ++++
+ arch/x86/kvm/x86.c                    | 48 +++++++++++++++++++++++++++
+ include/uapi/linux/kvm.h              |  1 +
+ include/uapi/linux/kvm_para.h         |  1 +
+ 12 files changed, 110 insertions(+), 1 deletion(-)
 
 -- 
-nvpublic
+2.26.2
+
+From 547d4d4edcd05fdfac6ce650d65db1d42bcd2807 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 20 Apr 2021 05:49:11 -0400
+Subject: [PATCH 1/3] KVM: SEV: mask CPUID[0x8000001F].eax according to
+ supported features
+
+Do not return the SEV-ES bit from KVM_GET_SUPPORTED_CPUID unless
+the corresponding module parameter is 1, and clear the memory encryption
+leaf completely if SEV is disabled.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/cpuid.c   | 5 ++++-
+ arch/x86/kvm/cpuid.h   | 1 +
+ arch/x86/kvm/svm/svm.c | 7 +++++++
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 2ae061586677..d791d1f093ab 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -944,8 +944,11 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 		break;
+ 	/* Support memory encryption cpuid if host supports it */
+ 	case 0x8000001F:
+-		if (!boot_cpu_has(X86_FEATURE_SEV))
++		if (!kvm_cpu_cap_has(X86_FEATURE_SEV)) {
+ 			entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
++			break;
++		}
++		cpuid_entry_override(entry, CPUID_8000_001F_EAX);
+ 		break;
+ 	/*Add support for Centaur's CPUID instruction*/
+ 	case 0xC0000000:
+diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+index 888e88b42e8d..e873a60a4830 100644
+--- a/arch/x86/kvm/cpuid.h
++++ b/arch/x86/kvm/cpuid.h
+@@ -99,6 +99,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
+ 	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
+ 	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
+ 	[CPUID_12_EAX]        = {0x00000012, 0, CPUID_EAX},
++	[CPUID_8000_001F_EAX] = {0x8000001F, 0, CPUID_EAX},
+ };
+ 
+ /*
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index cd8c333ed2dc..acdb8457289e 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -923,6 +923,13 @@ static __init void svm_set_cpu_caps(void)
+ 	if (boot_cpu_has(X86_FEATURE_LS_CFG_SSBD) ||
+ 	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
+ 		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
++
++	/* CPUID 0x8000001F */
++	if (sev) {
++		kvm_cpu_cap_set(X86_FEATURE_SEV);
++		if (sev_es)
++			kvm_cpu_cap_set(X86_FEATURE_SEV_ES);
++	}
+ }
+ 
+ static __init int svm_hardware_setup(void)
+-- 
+2.26.2
+
+
+From ef78673f78e3f2eedc498c1fbf9271146caa83cb Mon Sep 17 00:00:00 2001
+From: Ashish Kalra <ashish.kalra@amd.com>
+Date: Thu, 15 Apr 2021 15:57:02 +0000
+Subject: [PATCH 2/3] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
+
+This hypercall is used by the SEV guest to notify a change in the page
+encryption status to the hypervisor. The hypercall should be invoked
+only when the encryption attribute is changed from encrypted -> decrypted
+and vice versa. By default all guest pages are considered encrypted.
+
+The hypercall exits to userspace to manage the guest shared regions and
+integrate with the userspace VMM's migration code.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: x86@kernel.org
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Steve Rutherford <srutherford@google.com>
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <93d7f2c2888315adc48905722574d89699edde33.1618498113.git.ashish.kalra@amd.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ Documentation/virt/kvm/api.rst        | 11 +++++++++
+ Documentation/virt/kvm/cpuid.rst      |  5 ++++
+ Documentation/virt/kvm/hypercalls.rst | 15 ++++++++++++
+ arch/x86/include/asm/kvm_host.h       |  2 ++
+ arch/x86/include/uapi/asm/kvm_para.h  |  1 +
+ arch/x86/kvm/x86.c                    | 34 +++++++++++++++++++++++++++
+ include/uapi/linux/kvm.h              |  1 +
+ include/uapi/linux/kvm_para.h         |  1 +
+ 8 files changed, 70 insertions(+)
+
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index fd4a84911355..2bc353d1f356 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -6766,3 +6766,14 @@ they will get passed on to user space. So user space still has to have
+ an implementation for these despite the in kernel acceleration.
+ 
+ This capability is always enabled.
++
++8.32 KVM_CAP_EXIT_HYPERCALL
++---------------------------
++
++:Capability: KVM_CAP_EXIT_HYPERCALL
++:Architectures: x86
++:Type: vm
++
++This capability, if enabled, will cause KVM to exit to userspace
++with KVM_EXIT_HYPERCALL exit reason to process some hypercalls.
++Right now, the only such hypercall is KVM_HC_PAGE_ENC_STATUS.
+diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
+index cf62162d4be2..c9378d163b5a 100644
+--- a/Documentation/virt/kvm/cpuid.rst
++++ b/Documentation/virt/kvm/cpuid.rst
+@@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
+                                                before using extended destination
+                                                ID bits in MSI address bits 11-5.
+ 
++KVM_FEATURE_HC_PAGE_ENC_STATUS     16          guest checks this feature bit before
++                                               using the page encryption state
++                                               hypercall to notify the page state
++                                               change
++
+ KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
+                                                per-cpu warps are expected in
+                                                kvmclock
+diff --git a/Documentation/virt/kvm/hypercalls.rst b/Documentation/virt/kvm/hypercalls.rst
+index ed4fddd364ea..234ed5188aef 100644
+--- a/Documentation/virt/kvm/hypercalls.rst
++++ b/Documentation/virt/kvm/hypercalls.rst
+@@ -169,3 +169,18 @@ a0: destination APIC ID
+ 
+ :Usage example: When sending a call-function IPI-many to vCPUs, yield if
+ 	        any of the IPI target vCPUs was preempted.
++
++
++8. KVM_HC_PAGE_ENC_STATUS
++-------------------------
++:Architecture: x86
++:Status: active
++:Purpose: Notify the encryption status changes in guest page table (SEV guest)
++
++a0: the guest physical address of the start page
++a1: the number of pages
++a2: page encryption status
++
++   Where:
++	* 1: Page is encrypted
++	* 0: Page is decrypted
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 6e195f7df4f0..45cb09543b56 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1047,6 +1047,8 @@ struct kvm_arch {
+ 
+ 	bool bus_lock_detection_enabled;
+ 
++	bool hypercall_exit_enabled;
++
+ 	/* Guest can access the SGX PROVISIONKEY. */
+ 	bool sgx_provisioning_allowed;
+ 
+diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+index 950afebfba88..be49956b603f 100644
+--- a/arch/x86/include/uapi/asm/kvm_para.h
++++ b/arch/x86/include/uapi/asm/kvm_para.h
+@@ -33,6 +33,7 @@
+ #define KVM_FEATURE_PV_SCHED_YIELD	13
+ #define KVM_FEATURE_ASYNC_PF_INT	14
+ #define KVM_FEATURE_MSI_EXT_DEST_ID	15
++#define KVM_FEATURE_HC_PAGE_ENC_STATUS	16
+ 
+ #define KVM_HINTS_REALTIME      0
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index c9ba6f2d9bcd..590cc811c99a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3809,6 +3809,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 	case KVM_CAP_SGX_ATTRIBUTE:
+ #endif
+ 	case KVM_CAP_VM_COPY_ENC_CONTEXT_FROM:
++	case KVM_CAP_EXIT_HYPERCALL:
+ 		r = 1;
+ 		break;
+ 	case KVM_CAP_SET_GUEST_DEBUG2:
+@@ -5413,6 +5414,10 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+ 		break;
+ 	}
+ #endif
++	case KVM_CAP_EXIT_HYPERCALL:
++		kvm->arch.hypercall_exit_enabled = cap->args[0];
++		r = 0;
++		break;
+ 	case KVM_CAP_VM_COPY_ENC_CONTEXT_FROM:
+ 		r = -EINVAL;
+ 		if (kvm_x86_ops.vm_copy_enc_context_from)
+@@ -8269,6 +8274,13 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
+ 	return;
+ }
+ 
++static int complete_hypercall_exit(struct kvm_vcpu *vcpu)
++{
++	kvm_rax_write(vcpu, vcpu->run->hypercall.ret);
++	++vcpu->stat.hypercalls;
++	return kvm_skip_emulated_instruction(vcpu);
++}
++
+ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+ {
+ 	unsigned long nr, a0, a1, a2, a3, ret;
+@@ -8334,6 +8346,28 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+ 		kvm_sched_yield(vcpu, a0);
+ 		ret = 0;
+ 		break;
++	case KVM_HC_PAGE_ENC_STATUS: {
++		u64 gpa = a0, npages = a1, enc = a2;
++
++		ret = -KVM_ENOSYS;
++		if (!vcpu->kvm->arch.hypercall_exit_enabled)
++			break;
++
++		if (!PAGE_ALIGNED(gpa) || !npages ||
++		    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa)) {
++			ret = -EINVAL;
++			break;
++		}
++
++		vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
++		vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
++		vcpu->run->hypercall.args[0]  = gpa;
++		vcpu->run->hypercall.args[1]  = npages;
++		vcpu->run->hypercall.args[2]  = enc;
++		vcpu->run->hypercall.longmode = op_64_bit;
++		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
++		return 0;
++	}
+ 	default:
+ 		ret = -KVM_ENOSYS;
+ 		break;
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index d76533498543..7dc1c217704f 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -1081,6 +1081,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_SET_GUEST_DEBUG2 195
+ #define KVM_CAP_SGX_ATTRIBUTE 196
+ #define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
++#define KVM_CAP_EXIT_HYPERCALL 198
+ 
+ #ifdef KVM_CAP_IRQ_ROUTING
+ 
+diff --git a/include/uapi/linux/kvm_para.h b/include/uapi/linux/kvm_para.h
+index 8b86609849b9..847b83b75dc8 100644
+--- a/include/uapi/linux/kvm_para.h
++++ b/include/uapi/linux/kvm_para.h
+@@ -29,6 +29,7 @@
+ #define KVM_HC_CLOCK_PAIRING		9
+ #define KVM_HC_SEND_IPI		10
+ #define KVM_HC_SCHED_YIELD		11
++#define KVM_HC_PAGE_ENC_STATUS		12
+ 
+ /*
+  * hypercalls use architecture specific
+-- 
+2.26.2
+
+
+From b9109a4be9c33eb09658003d135abe77da4bbaa1 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 20 Apr 2021 06:50:21 -0400
+Subject: [PATCH 3/3] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
+
+Add a new MSR that can be used to communicate whether the page
+encryption status bitmap is up to date and therefore whether live
+migration of an encrypted guest is possible.
+
+The MSR should be processed by userspace if it is going to live
+migrate the guest; the default implementation does nothing.
+
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ Documentation/virt/kvm/cpuid.rst     |  3 ++-
+ Documentation/virt/kvm/msr.rst       | 10 ++++++++++
+ arch/x86/include/uapi/asm/kvm_para.h |  3 +++
+ arch/x86/kvm/x86.c                   | 14 ++++++++++++++
+ 4 files changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
+index c9378d163b5a..15923857de56 100644
+--- a/Documentation/virt/kvm/cpuid.rst
++++ b/Documentation/virt/kvm/cpuid.rst
+@@ -99,7 +99,8 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
+ KVM_FEATURE_HC_PAGE_ENC_STATUS     16          guest checks this feature bit before
+                                                using the page encryption state
+                                                hypercall to notify the page state
+-                                               change
++                                               change, and before setting bit 0 of
++                                               MSR_KVM_MIGRATION_CONTROL
+ 
+ KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
+                                                per-cpu warps are expected in
+diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
+index e37a14c323d2..691d718df60a 100644
+--- a/Documentation/virt/kvm/msr.rst
++++ b/Documentation/virt/kvm/msr.rst
+@@ -376,3 +376,13 @@ data:
+ 	write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
+ 	and check if there are more notifications pending. The MSR is available
+ 	if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
++
++MSR_KVM_MIGRATION_CONTROL:
++        0x4b564d08
++
++data:
++        If the guest is running with encrypted memory and it is communicating
++        page encryption status to the host using the ``KVM_HC_PAGE_ENC_STATUS``
++        hypercall, it can set bit 0 in this MSR to allow live migration of
++        the guest.  The bit can be set if KVM_FEATURE_HC_PAGE_ENC_STATUS is
++        present in CPUID.
+diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+index be49956b603f..c5ee419775d8 100644
+--- a/arch/x86/include/uapi/asm/kvm_para.h
++++ b/arch/x86/include/uapi/asm/kvm_para.h
+@@ -55,6 +55,7 @@
+ #define MSR_KVM_POLL_CONTROL	0x4b564d05
+ #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
+ #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
++#define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
+ 
+ struct kvm_steal_time {
+ 	__u64 steal;
+@@ -91,6 +92,8 @@ struct kvm_clock_pairing {
+ /* MSR_KVM_ASYNC_PF_INT */
+ #define KVM_ASYNC_PF_VEC_MASK			GENMASK(7, 0)
+ 
++/* MSR_KVM_MIGRATION_CONTROL */
++#define KVM_PAGE_ENC_STATUS_UPTODATE		(1 << 0)
+ 
+ /* Operations for KVM_HC_MMU_OP */
+ #define KVM_MMU_OP_WRITE_PTE            1
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 590cc811c99a..d696a9f13e33 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3258,6 +3258,14 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		vcpu->arch.msr_kvm_poll_control = data;
+ 		break;
+ 
++	case MSR_KVM_MIGRATION_CONTROL:
++		if (data & ~KVM_PAGE_ENC_STATUS_UPTODATE)
++			return 1;
++
++		if (data && !guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
++			return 1;
++		break;
++
+ 	case MSR_IA32_MCG_CTL:
+ 	case MSR_IA32_MCG_STATUS:
+ 	case MSR_IA32_MC0_CTL ... MSR_IA32_MCx_CTL(KVM_MAX_MCE_BANKS) - 1:
+@@ -3549,6 +3557,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
+ 			return 1;
+ 
++		msr_info->data = 0;
++		break;
++	case MSR_KVM_MIGRATION_CONTROL:
++		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
++			return 1;
++
+ 		msr_info->data = 0;
+ 		break;
+ 	case MSR_KVM_STEAL_TIME:
+-- 
+2.26.2
+
