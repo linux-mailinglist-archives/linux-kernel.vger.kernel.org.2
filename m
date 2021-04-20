@@ -2,202 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2283D36628A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD2736628F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhDTXj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 19:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
+        id S234460AbhDTXlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 19:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234437AbhDTXjZ (ORCPT
+        with ESMTP id S234446AbhDTXlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 19:39:25 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6680AC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:38:53 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id m12so7237143pgr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:38:53 -0700 (PDT)
+        Tue, 20 Apr 2021 19:41:05 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00126C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:40:32 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id v123so33418353ioe.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=rUEcOAL+JdYx7iw/rsaYqBg6P/fDtNoMJwsAvdMr4k8=;
-        b=ZtpSHHCa3/J8Q01BlM9ud01JiqjG6VpT4jrLH7nfoh0ZpIi8KROK+UzYFdOnAHv64Y
-         CPOB9aO3tqTwU+EzkIGARznb+Fck3IRcGC/40Qx1xaqQSg93VSjQwgwG6CVyaSvLvI7Q
-         I9dscI7B21TE96Aa8oufyl1VbcaTs4vfL2n5k=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fgWXnAm5K+neiT/gTZszeD6IV/HEAXXB0Ki6E/5iwoE=;
+        b=Shv3OSWuEO9YdF2qaRdYXt8oe6JJgdn4ON977AMM1rMFMnWw4wt/6k1m68jLY6nLs/
+         nofYo+WYIITrUPi06juLCcHiHemO0TVH1kIZXwyzSMhRi/6O319n/0ruHXD1Jpx1wRKC
+         +6XK3PdmkQ7OG4KIuKmChjojNecLzUFegO0x0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=rUEcOAL+JdYx7iw/rsaYqBg6P/fDtNoMJwsAvdMr4k8=;
-        b=Uis/XQfjwHX+7HhE246Y6UqyOVIiQW30oJazGHZs6STLvojEsC4fE9M1rLDw+SLz73
-         2CIBIByzgnLNorVNmdDRUHLMuVUg7JMOX3+jLG7MqAu1Pl5lEsumsUwTVc9QU2Er8hQx
-         juGO/vO50AUcpj/yBxw/Br7ohuxcK9QD9Q/MATWJNrUbvUPWX69HIfcfa4Tt9ESe0nbt
-         t+RWFiqP5FiY6onmzaMFrSutgu1bfuG2Mazpd0J3x+2n3BvBRnDGMlGfQ+rJRdhCxAve
-         g8jtk6+5oVGE2fKNbo4cDd12o4CeTMW33wRIJoKpMAvllSssBwxoJ4d3bsN5yPlmQTYV
-         dHFA==
-X-Gm-Message-State: AOAM530IXd+GYFyzzxbRHMftHo+NyZ+JHQd64vhUGEFFL1Tp19Z9dIwi
-        vlX+22jvEuxIB2IMj0yBOE88BA==
-X-Google-Smtp-Source: ABdhPJwaJs4WZDLFNWzbOxVCZx4k6HAurBhLbnuarykRH3zTa6CzwurH2yeUCrWudlUlo0Eph/iupQ==
-X-Received: by 2002:a17:90a:9509:: with SMTP id t9mr7754936pjo.3.1618961932968;
-        Tue, 20 Apr 2021 16:38:52 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:bf8b:4b8b:2315:3719])
-        by smtp.gmail.com with ESMTPSA id r3sm111567pfl.159.2021.04.20.16.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 16:38:52 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fgWXnAm5K+neiT/gTZszeD6IV/HEAXXB0Ki6E/5iwoE=;
+        b=XRNkQAc7pLeH0AwdIvJIaIpLStN3PaXYKO8gn9mTk1c8W61QL3RET4bcqd+j7DXOgA
+         jQeVgU38AlG7NBqHJDzZXO7+iZ+1wpmH0dCELwPRFTqWDVi2Odsvg3Bi//Rytaeqgf99
+         oaAi2LXDQcXEJXl9CJGiB+J6FsLcDPleMrCCZB+DEdhvfbWhTyei3ziEE2S6tJ7IQD1F
+         Qu+M1K9gp2mWL93HZxbuR77QDpkLjjcKN4P3Q9ECxwtxP8XvhgzrcxWHKQ93lj87SfCj
+         VBbIr+pte8pSkilVl9uhX24207FUcnTuAbkU9/ziqqH1R1yioHdViXxqWc8ErcVwic9x
+         nGyw==
+X-Gm-Message-State: AOAM5336fvwC10dq3SSzYNr1vW8Cz5dibDKpf8oiTcwA4Vf81HZasZyw
+        mHJ4pbnl/xpDqRG8/zkgN2VK4gNhSE1nqw==
+X-Google-Smtp-Source: ABdhPJwXSPUsZwcpCGfMhLrRjcZz7pUJKDN7e2coIvECoJ+GsaW10kjQ6DLyKuEQ7KHsmuf6k/ioOg==
+X-Received: by 2002:a6b:b48e:: with SMTP id d136mr11453669iof.47.1618962032076;
+        Tue, 20 Apr 2021 16:40:32 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 1sm181125ilz.11.2021.04.20.16.40.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 16:40:31 -0700 (PDT)
+Subject: Re: [PATCH v3] Documentation: dev-tools: Add Testing Overview
+To:     David Gow <davidgow@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-doc@vger.kernel.org,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210415054036.581117-1-davidgow@google.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <2a35b57e-3261-8ebe-d9f3-66b3dedff756@linuxfoundation.org>
+Date:   Tue, 20 Apr 2021 17:40:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1618594731-556-1-git-send-email-khsieh@codeaurora.org>
-References: <1618594731-556-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH v3 3/3] drm/msm/dp: check main link status before start aux read
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Tue, 20 Apr 2021 16:38:50 -0700
-Message-ID: <161896193053.46595.7590816467281538002@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210415054036.581117-1-davidgow@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-04-16 10:38:51)
-> Maybe when the cable is disconnected the DP phy should be shutdown and
-> some bit in the phy could effectively "cut off" the aux channel and then
-> NAKs would start coming through here in the DP controller I/O register
-> space. This patch have DP aux channel read/write to return NAK immediately
-> if DP controller connection status is in unplugged state.
->=20
-> Changes in V3:
-> -- check core_initialized before handle irq_hpd
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+On 4/14/21 11:40 PM, David Gow wrote:
+> The kernel now has a number of testing and debugging tools, and we've
+> seen a bit of confusion about what the differences between them are.
+> 
+> Add a basic documentation outlining the testing tools, when to use each,
+> and how they interact.
+> 
+> This is a pretty quick overview rather than the idealised "kernel
+> testing guide" that'd probably be optimal, but given the number of times
+> questions like "When do you use KUnit and when do you use Kselftest?"
+> are being asked, it seemed worth at least having something. Hopefully
+> this can form the basis for more detailed documentation later.
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+> Reviewed-by: Daniel Latypov <dlatypov@google.com>
 > ---
->  drivers/gpu/drm/msm/dp/dp_aux.c     |  5 +++++
->  drivers/gpu/drm/msm/dp/dp_display.c | 14 ++++++++++----
->  drivers/gpu/drm/msm/dp/dp_link.c    | 20 +++++++++++++++-----
->  3 files changed, 30 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_=
-aux.c
-> index 7c22bfe..fae3806 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> @@ -343,6 +343,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp=
-_aux,
-> =20
->         mutex_lock(&aux->mutex);
-> =20
-> +       if (!dp_catalog_link_is_connected(aux->catalog)) {
-> +               ret =3D -ETIMEDOUT;
-> +               goto unlock_exit;
-> +       }
+> 
+> Thanks again. Assuming no-one has any objections, I think this is good
+> to go.
+> 
+> -- David
+> 
+> Changes since v2:
+> https://lore.kernel.org/linux-kselftest/20210414081428.337494-1-davidgow@google.com/
+> - A few typo fixes (Thanks Daniel)
+> - Reworded description of dynamic analysis tools.
+> - Updated dev-tools index page to not use ':doc:' syntax, but to provide
+>    a path instead.
+> - Added Marco and Daniel's Reviewed-by tags.
+> 
+> Changes since v1:
+> https://lore.kernel.org/linux-kselftest/20210410070529.4113432-1-davidgow@google.com/
+> - Note KUnit's speed and that one should provide selftests for syscalls
+> - Mention lockdep as a Dynamic Analysis Tool
+> - Refer to "Dynamic Analysis Tools" instead of "Sanitizers"
+> - A number of minor formatting tweaks and rewordings for clarity
+> 
+>   Documentation/dev-tools/index.rst            |   4 +
+>   Documentation/dev-tools/testing-overview.rst | 117 +++++++++++++++++++
+>   2 files changed, 121 insertions(+)
+>   create mode 100644 Documentation/dev-tools/testing-overview.rst
+> 
+> diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
+> index 1b1cf4f5c9d9..929d916ffd4c 100644
+> --- a/Documentation/dev-tools/index.rst
+> +++ b/Documentation/dev-tools/index.rst
+> @@ -7,6 +7,9 @@ be used to work on the kernel. For now, the documents have been pulled
+>   together without any significant effort to integrate them into a coherent
+>   whole; patches welcome!
+>   
+> +A brief overview of testing-specific tools can be found in
+> +Documentation/dev-tools/testing-overview.rst
 > +
-
-This still makes me concerned. Any possibility to not do this and have
-the phy cut the connection off and have this transfer timeout
-immediately?
-
->         aux->native =3D msg->request & (DP_AUX_NATIVE_WRITE & DP_AUX_NATI=
-VE_READ);
-> =20
->         /* Ignore address only message */
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
-/dp_display.c
-> index 1784e11..db3f45e 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -571,7 +571,7 @@ static int dp_hpd_plug_handle(struct dp_display_priva=
-te *dp, u32 data)
->                 dp->hpd_state =3D ST_DISCONNECTED;
-> =20
->                 if (ret =3D=3D -ECONNRESET) { /* cable unplugged */
-> -                       dp->core_initialized =3D false;
-> +                       DRM_ERROR("dongle unplugged =3D %d\n", ret);
-
-Is this a debug message?
-
->                 }
-> =20
->         } else {
-> @@ -711,9 +711,15 @@ static int dp_irq_hpd_handle(struct dp_display_priva=
-te *dp, u32 data)
->                 return 0;
->         }
-> =20
-> -       ret =3D dp_display_usbpd_attention_cb(&dp->pdev->dev);
-> -       if (ret =3D=3D -ECONNRESET) { /* cable unplugged */
-> -               dp->core_initialized =3D false;
-> +       /*
-> +        * dp core (ahb/aux clks) must be initialized before
-> +        * irq_hpd be handled
-> +        */
-> +       if (dp->core_initialized) {
-> +               ret =3D dp_display_usbpd_attention_cb(&dp->pdev->dev);
-> +               if (ret =3D=3D -ECONNRESET) { /* cable unplugged */
-> +                       DRM_ERROR("dongle unplugged =3D %d\n", ret);
-
-Another debug message?
-
-> +               }
->         }
-> =20
->         mutex_unlock(&dp->event_mutex);
-> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp=
-_link.c
-> index be986da..53ecae6 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_link.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
-> @@ -737,18 +737,25 @@ static int dp_link_parse_sink_count(struct dp_link =
-*dp_link)
->         return 0;
->  }
-> =20
-> -static void dp_link_parse_sink_status_field(struct dp_link_private *link)
-> +static int dp_link_parse_sink_status_field(struct dp_link_private *link)
->  {
->         int len =3D 0;
-> =20
->         link->prev_sink_count =3D link->dp_link.sink_count;
-> -       dp_link_parse_sink_count(&link->dp_link);
-> +       len =3D dp_link_parse_sink_count(&link->dp_link);
-> +       if (len < 0) {
-> +               DRM_ERROR("DP parse sink count failed\n");
-> +               return len;
-> +       }
-> =20
->         len =3D drm_dp_dpcd_read_link_status(link->aux,
->                 link->link_status);
-> -       if (len < DP_LINK_STATUS_SIZE)
-> +       if (len < DP_LINK_STATUS_SIZE) {
->                 DRM_ERROR("DP link status read failed\n");
-> -       dp_link_parse_request(link);
-> +               return len;
-> +       }
+>   .. class:: toc-title
+>   
+>   	   Table of contents
+> @@ -14,6 +17,7 @@ whole; patches welcome!
+>   .. toctree::
+>      :maxdepth: 2
+>   
+> +   testing-overview
+>      coccinelle
+>      sparse
+>      kcov
+> diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation/dev-tools/testing-overview.rst
+> new file mode 100644
+> index 000000000000..b5b46709969c
+> --- /dev/null
+> +++ b/Documentation/dev-tools/testing-overview.rst
+> @@ -0,0 +1,117 @@
+> +.. SPDX-License-Identifier: GPL-2.0
 > +
-> +       return dp_link_parse_request(link);
->  }
-> =20
->  /**
-> @@ -1032,7 +1039,10 @@ int dp_link_process_request(struct dp_link *dp_lin=
-k)
-> =20
->         dp_link_reset_data(link);
-> =20
-> -       dp_link_parse_sink_status_field(link);
-> +       ret =3D dp_link_parse_sink_status_field(link);
-> +       if (ret) {
-> +               return ret;
-> +       }
-> =20
->         if (link->request.test_requested =3D=3D DP_TEST_LINK_EDID_READ) {
->                 dp_link->sink_request |=3D DP_TEST_LINK_EDID_READ;
-> --=20
+> +====================
+> +Kernel Testing Guide
+> +====================
+> +
+> +
+> +There are a number of different tools for testing the Linux kernel, so knowing
+> +when to use each of them can be a challenge. This document provides a rough
+> +overview of their differences, and how they fit together.
+> +
+> +
+> +Writing and Running Tests
+> +=========================
+> +
+> +The bulk of kernel tests are written using either the kselftest or KUnit
+> +frameworks. These both provide infrastructure to help make running tests and
+> +groups of tests easier, as well as providing helpers to aid in writing new
+> +tests.
+> +
+> +If you're looking to verify the behaviour of the Kernel — particularly specific
+> +parts of the kernel — then you'll want to use KUnit or kselftest.
+> +
+> +
+> +The Difference Between KUnit and kselftest
+> +------------------------------------------
+> +
+> +KUnit (Documentation/dev-tools/kunit/index.rst) is an entirely in-kernel system
+> +for "white box" testing: because test code is part of the kernel, it can access
+> +internal structures and functions which aren't exposed to userspace.
+> +
+> +KUnit tests therefore are best written against small, self-contained parts
+> +of the kernel, which can be tested in isolation. This aligns well with the
+> +concept of 'unit' testing.
+> +
+> +For example, a KUnit test might test an individual kernel function (or even a
+> +single codepath through a function, such as an error handling case), rather
+> +than a feature as a whole.
+> +
+> +This also makes KUnit tests very fast to build and run, allowing them to be
+> +run frequently as part of the development process.
+> +
+> +There is a KUnit test style guide which may give further pointers in
+> +Documentation/dev-tools/kunit/style.rst
+> +
+> +
+> +kselftest (Documentation/dev-tools/kselftest.rst), on the other hand, is
+> +largely implemented in userspace, and tests are normal userspace scripts or
+> +programs.
+> +
+> +This makes it easier to write more complicated tests, or tests which need to
+> +manipulate the overall system state more (e.g., spawning processes, etc.).
+> +However, it's not possible to call kernel functions directly from kselftest.
+> +This means that only kernel functionality which is exposed to userspace somehow
+> +(e.g. by a syscall, device, filesystem, etc.) can be tested with kselftest.  To
+> +work around this, some tests include a companion kernel module which exposes
+> +more information or functionality. If a test runs mostly or entirely within the
+> +kernel, however,  KUnit may be the more appropriate tool.
+> +
+> +kselftest is therefore suited well to tests of whole features, as these will
+> +expose an interface to userspace, which can be tested, but not implementation
+> +details. This aligns well with 'system' or 'end-to-end' testing.
+> +
+> +For example, all new system calls should be accompanied by kselftest tests.
+> +
+> +Code Coverage Tools
+> +===================
+> +
+> +The Linux Kernel supports two different code coverage measurement tools. These
+> +can be used to verify that a test is executing particular functions or lines
+> +of code. This is useful for determining how much of the kernel is being tested,
+> +and for finding corner-cases which are not covered by the appropriate test.
+> +
+> +:doc:`gcov` is GCC's coverage testing tool, which can be used with the kernel
+> +to get global or per-module coverage. Unlike KCOV, it does not record per-task
+> +coverage. Coverage data can be read from debugfs, and interpreted using the
+> +usual gcov tooling.
+> +
+> +:doc:`kcov` is a feature which can be built in to the kernel to allow
+> +capturing coverage on a per-task level. It's therefore useful for fuzzing and
+> +other situations where information about code executed during, for example, a
+> +single syscall is useful.
+> +
+> +
+> +Dynamic Analysis Tools
+> +======================
+> +
+> +The kernel also supports a number of dynamic analysis tools, which attempt to
+> +detect classes of issues when they occur in a running kernel. These typically
+> +each look for a different class of bugs, such as invalid memory accesses,
+> +concurrency issues such as data races, or other undefined behaviour like
+> +integer overflows.
+> +
+> +Some of these tools are listed below:
+> +
+> +* kmemleak detects possible memory leaks. See
+> +  Documentation/dev-tools/kmemleak.rst
+> +* KASAN detects invalid memory accesses such as out-of-bounds and
+> +  use-after-free errors. See Documentation/dev-tools/kasan.rst
+> +* UBSAN detects behaviour that is undefined by the C standard, like integer
+> +  overflows. See Documentation/dev-tools/ubsan.rst
+> +* KCSAN detects data races. See Documentation/dev-tools/kcsan.rst
+> +* KFENCE is a low-overhead detector of memory issues, which is much faster than
+> +  KASAN and can be used in production. See Documentation/dev-tools/kfence.rst
+> +* lockdep is a locking correctness validator. See
+> +  Documentation/locking/lockdep-design.rst
+> +* There are several other pieces of debug instrumentation in the kernel, many
+> +  of which can be found in lib/Kconfig.debug
+> +
+> +These tools tend to test the kernel as a whole, and do not "pass" like
+> +kselftest or KUnit tests. They can be combined with KUnit or kselftest by
+> +running tests on a kernel with these tools enabled: you can then be sure
+> +that none of these errors are occurring during the test.
+> +
+> +Some of these tools integrate with KUnit or kselftest and will
+> +automatically fail tests if an issue is detected.
+> +
+> 
 
-Can you split this part off into another patch? It seems to stand on its
-own as it makes the code more robust to transfer errors in the sink
-parsing code.
+Thank for you writing this much needed document.
+
+Looks great. How about adding a section for Static analysis tools?
+A mention coccicheck scripts and mention of smatch?
+
+thanks,
+-- Shuah
+
