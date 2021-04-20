@@ -2,285 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FA4365096
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED71365083
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhDTCxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:53:38 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:51489 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhDTCxg (ORCPT
+        id S233647AbhDTCu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhDTCuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:53:36 -0400
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210420025304epoutp02cb0702ac48c8c97ee71ef4900ba01d96~3cVEdf1Jj1431714317epoutp02N
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:53:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210420025304epoutp02cb0702ac48c8c97ee71ef4900ba01d96~3cVEdf1Jj1431714317epoutp02N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618887184;
-        bh=Fp/0nc/PyyIZ2plCf1MobAAmjIp1zIjpOhmUIT5HL0E=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=ury1zp0nYtGkon3jN+ziBRRpiXxVKsHLdVi8rp2vS6WwA9W5RH09UpZaa0Hk74aQv
-         Pl4VzBFMuI52FVrZHa49jlo5UkRdPNIJ6emxd/1EvlY/e1v85ULxYMoA5857XR/EUS
-         oYynkg3FOqvURkRnDceWCj+9lFs7AQhFpnm3o3sc=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20210420025303epcas3p2ff9cdfd8053f051d3cd8fa96d1ec887b~3cVD3K_3S2946829468epcas3p2E;
-        Tue, 20 Apr 2021 02:53:03 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
-        (Postfix) with ESMTP id 4FPSsq43d1z4x9Q0; Tue, 20 Apr 2021 02:53:03 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: Add batched WB buffer flush
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1381713434.61618887183562.JavaMail.epsvc@epcpadp4>
-Date:   Tue, 20 Apr 2021 11:50:12 +0900
-X-CMS-MailID: 20210420025012epcms2p4a850fa0017e7a152ec5e5f89350d66b9
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210420025012epcms2p4a850fa0017e7a152ec5e5f89350d66b9
-References: <CGME20210420025012epcms2p4a850fa0017e7a152ec5e5f89350d66b9@epcms2p4>
+        Mon, 19 Apr 2021 22:50:55 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38AC0C06174A;
+        Mon, 19 Apr 2021 19:50:24 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 9483392009C; Tue, 20 Apr 2021 04:50:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 8D69C92009B;
+        Tue, 20 Apr 2021 04:50:22 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 04:50:22 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
+Message-ID: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, WriteBooster (WB) buffer is always flushed during hibern8. However,
-this is inefficient because data in the WB buffer can be invalid due to
-spatial locality of IO workload.
-If the WB buffer flush is flushed in a batched manner, the amount of data
-migration and power consumption can be reduced because the overwritten data
-of the WB buffer may be invalid due to spatial locality.
+Hi,
 
-This patch supports batched flush of WB buffer. When batched flush is enabled,
-fWriteBoosterBufferFlushDuringHibernate is set only when
-b_rpm_dev_flush_capable is true during runtime suspend. When the device is
-resumed, fWriteBoosterBufferFlushDuringHibernate is cleared to stop flush
-during hibern8.
+ As Huacai has recently discovered the MIPS backend for `do_div' has been 
+broken and inadvertently disabled with commit c21004cd5b4c ("MIPS: Rewrite 
+<asm/div64.h> to work with gcc 4.4.0.").  As it is code I have originally 
+written myself and Huacai had issues bringing it back to life leading to a 
+request to discard it even I have decided to step in.
 
-Co-developed-by: Keoseong Park <keosung.park@samsung.com>
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  9 ++++
- drivers/scsi/ufs/ufs-sysfs.c               | 50 ++++++++++++++++++++++
- drivers/scsi/ufs/ufshcd.c                  | 14 ++++--
- drivers/scsi/ufs/ufshcd.h                  |  2 +
- 4 files changed, 71 insertions(+), 4 deletions(-)
+ In the end I have fixed the code and measured its performance to be ~100% 
+better on average than our generic code.  I have decided it would be worth 
+having the test module I have prepared for correctness evaluation as well 
+as benchmarking, so I have included it with the series, also so that I can 
+refer to the results easily.
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index d1bc23cb6a9d..b67b8449e840 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1172,3 +1172,12 @@ Description:	This node is used to set or display whether UFS WriteBooster is
- 		(if the platform supports UFSHCD_CAP_CLK_SCALING). For a
- 		platform that doesn't support UFSHCD_CAP_CLK_SCALING, we can
- 		disable/enable WriteBooster through this sysfs node.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/wb_batched_flush
-+Date:		April 2021
-+Contact:	Daejun Park <daejun7.park@samsung.com>
-+Description:	This entry shows whether batch flushing of UFS WriteBooster
-+		buffers is enabled. Writing 1 to this entry allows the device to flush
-+		the WriteBooster buffer only when it needs to perform a buffer flush
-+		during runtime suspend. Writing 0 to this entry allows the device to
-+		flush the WriteBooster buffer during link hibernation.
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index d7c3cff9662f..943ac12e59c6 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -253,6 +253,54 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
- 	return res < 0 ? res : count;
- }
- 
-+
-+static ssize_t wb_batched_flush_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", hba->vps->wb_batched_flush);
-+}
-+
-+static ssize_t wb_batched_flush_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t count)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+	unsigned int wb_batched_flush;
-+	ssize_t res;
-+
-+	if (!ufshcd_is_wb_allowed(hba)) {
-+		dev_warn(dev, "To control WB through wb_batched_flush is not allowed!\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (kstrtouint(buf, 0, &wb_batched_flush))
-+		return -EINVAL;
-+
-+	if (wb_batched_flush != 0 && wb_batched_flush != 1)
-+		return -EINVAL;
-+
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_user_access_allowed(hba)) {
-+		res = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (wb_batched_flush == hba->vps->wb_batched_flush)
-+		goto out;
-+
-+	pm_runtime_get_sync(hba->dev);
-+	res = ufshcd_wb_toggle_flush_during_h8(hba, !wb_batched_flush);
-+	pm_runtime_put_sync(hba->dev);
-+	if (!res)
-+		hba->vps->wb_batched_flush = wb_batched_flush;
-+
-+out:
-+	up(&hba->host_sem);
-+	return res < 0 ? res : count;
-+}
-+
- static DEVICE_ATTR_RW(rpm_lvl);
- static DEVICE_ATTR_RO(rpm_target_dev_state);
- static DEVICE_ATTR_RO(rpm_target_link_state);
-@@ -261,6 +309,7 @@ static DEVICE_ATTR_RO(spm_target_dev_state);
- static DEVICE_ATTR_RO(spm_target_link_state);
- static DEVICE_ATTR_RW(auto_hibern8);
- static DEVICE_ATTR_RW(wb_on);
-+static DEVICE_ATTR_RW(wb_batched_flush);
- 
- static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
- 	&dev_attr_rpm_lvl.attr,
-@@ -271,6 +320,7 @@ static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
- 	&dev_attr_spm_target_link_state.attr,
- 	&dev_attr_auto_hibern8.attr,
- 	&dev_attr_wb_on.attr,
-+	&dev_attr_wb_batched_flush.attr,
- 	NULL
- };
- 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 0625da7a42ee..e11dc578a17c 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -244,7 +244,6 @@ static int ufshcd_setup_vreg(struct ufs_hba *hba, bool on);
- static inline int ufshcd_config_vreg_hpm(struct ufs_hba *hba,
- 					 struct ufs_vreg *vreg);
- static int ufshcd_try_to_abort_task(struct ufs_hba *hba, int tag);
--static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
- static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable);
- static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba);
- static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba);
-@@ -277,7 +276,8 @@ static inline void ufshcd_wb_config(struct ufs_hba *hba)
- 
- 	ufshcd_wb_toggle(hba, true);
- 
--	ufshcd_wb_toggle_flush_during_h8(hba, true);
-+	ufshcd_wb_toggle_flush_during_h8(hba, !hba->vps->wb_batched_flush);
-+
- 	if (!(hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL))
- 		ufshcd_wb_toggle_flush(hba, true);
- }
-@@ -5472,7 +5472,7 @@ int ufshcd_wb_toggle(struct ufs_hba *hba, bool enable)
- 	return ret;
- }
- 
--static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
-+int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
- {
- 	int ret;
- 
-@@ -5481,10 +5481,12 @@ static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
- 	if (ret) {
- 		dev_err(hba->dev, "%s: WB-Buf Flush during H8 %s failed: %d\n",
- 			__func__, set ? "enable" : "disable", ret);
--		return;
-+		return ret;
- 	}
- 	dev_dbg(hba->dev, "%s WB-Buf Flush during H8 %s\n",
- 			__func__, set ? "enabled" : "disabled");
-+
-+	return ret;
- }
- 
- static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable)
-@@ -8745,6 +8747,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
- 			if (ret)
- 				goto enable_gating;
-+		} else if (hba->vps->wb_batched_flush) {
-+			ufshcd_wb_toggle_flush_during_h8(hba, true);
- 		}
- 	}
- 
-@@ -8925,6 +8929,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	ufshcd_auto_hibern8_enable(hba);
- 
- 	if (hba->dev_info.b_rpm_dev_flush_capable) {
-+		if (hba->vps->wb_batched_flush)
-+			ufshcd_wb_toggle_flush_during_h8(hba, false);
- 		hba->dev_info.b_rpm_dev_flush_capable = false;
- 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
- 	}
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 5eb66a8debc7..049f3f08506c 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -643,6 +643,7 @@ struct ufs_hba_variant_params {
- 	struct devfreq_simple_ondemand_data ondemand_data;
- 	u16 hba_enable_delay_us;
- 	u32 wb_flush_threshold;
-+	bool wb_batched_flush;
- };
- 
- /**
-@@ -1105,6 +1106,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
- 			     enum query_opcode desc_op);
- 
- int ufshcd_wb_toggle(struct ufs_hba *hba, bool enable);
-+int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
- 
- /* Wrapper functions for safely calling variant operations */
- static inline const char *ufshcd_get_var_name(struct ufs_hba *hba)
--- 
-2.25.1
+ In the end I have included four patches on this occasion: 1/4 is the test 
+module, 2/4 is an inline documentation fix/clarification for the `do_div' 
+wrapper, 3/4 enables the MIPS `__div64_32' backend and 4/4 adds a small 
+performance improvement to it.
 
+ I have investigated a fifth change as a potential improvement where I 
+replaced the call to `do_div64_32' with a DIVU instruction for cases where 
+the high part of the intermediate divident is zero, but it has turned out 
+to regress performance a little, so I have discarded it.
 
+ Also a follow-up change might be worth having to reduce the code size and 
+place `__div64_32' out of line for CC_OPTIMIZE_FOR_SIZE configurations, 
+but I have not fully prepared such a change at this time.  I did use the 
+WIP form I have for performance evaluation however; see the figures quoted 
+with 4/4.
+
+ These changes have been verified with a DECstation system with an R3400 
+MIPS I processor @40MHz and a MTI Malta system with a 5Kc MIPS64 processor 
+@160MHz.
+
+ See individual change descriptions and any additional discussions for
+further details.
+
+ Questions, comments or concerns?  Otherwise please apply.
+
+  Maciej
