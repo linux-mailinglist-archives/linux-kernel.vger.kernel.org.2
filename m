@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CF53659D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C0F3659DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhDTNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:20:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230408AbhDTNUg (ORCPT
+        id S232292AbhDTNV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231526AbhDTNV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:20:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618924804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QYX7/AuHi6hgPHf6tRYqK2+HrNaM+fnSnNKD7KzrRzs=;
-        b=PsIxidk2VL1Haws0VepSOhtQixvPqgXe2QYnKFTXvZAH+iWJCoIcPLgLTP/LaCj1UkoPIk
-        PLiOCG6hG5mW6DWKWr5VeiNK2ajRr6/Z6OgSSl/qpvMlPC9SpBNqAsLpRwXvb8H5RsICJD
-        HvcrE5nlRkLGt8LsN0TieLuc+ZZXCkA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-71yXg2dgMxG_2hIoFl2FKw-1; Tue, 20 Apr 2021 09:20:00 -0400
-X-MC-Unique: 71yXg2dgMxG_2hIoFl2FKw-1
-Received: by mail-wr1-f70.google.com with SMTP id j16-20020adfd2100000b02901022328749eso10846218wrh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:20:00 -0700 (PDT)
+        Tue, 20 Apr 2021 09:21:28 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDD7C06174A;
+        Tue, 20 Apr 2021 06:20:56 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id y5-20020a05600c3645b0290132b13aaa3bso8222616wmq.1;
+        Tue, 20 Apr 2021 06:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=J3e7kbQq5St6RlbDyul6tsPbXu/C51Diuoyxp5D86fI=;
+        b=mZOPjGwS2tguLvoeL+qTDW5wKf9rE9LMBM1LVvNmR+ds9MDU0oFHCssoeniGZP0qWo
+         2C/aSFWRkTFyK7788JV7TtpVM8tfpyayIl+b5QqxLC2z4AzWpVEUgGRYFFrBeym1AfAS
+         1/R002DwbLOfYzINdcZfhHZOelwOFzjJ0MK1/oPYBMkJLx5LKyDHN66OKAxPHS03zh7G
+         5mzyr4f8Q+s6VuVjDpblj+OXrZ6yycJQWz58nx7qJiQWOUZ/7c5DgvHG3QO9O4GdtDEs
+         +6ESIRpPLSw8/eVSJXNPRxZ08u3T/Dx9jD+eujtj0ftilVf/95dGwx1oRxXB8BMNund1
+         WBkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QYX7/AuHi6hgPHf6tRYqK2+HrNaM+fnSnNKD7KzrRzs=;
-        b=FIVe4z9RzStlEC/1f3WWaLLqpWSKakJxfX9u4g9SJO36QXxGfyL7V2aIHkbe/uFsrs
-         it/Y5SMI8pRj9l1bgC9FwPAALHSIQHMZTjAm61EkhI11fxpF9jvIj49buTIWIbHni2B4
-         rlAscUXVnyaFMzuSL9RgXqlytOSTH9COnaxcqR6msniEAGnIiJYsTbHxiCa217Bgzq0l
-         Ybn+Fw2J0H16H4DrR/CUhYo6o+h0kjrRGVGl4c/gQQ2Xu/0eBFCgy7Z23aUYwZPfSvqo
-         IwPkz5/OkpCQEmX3A1J+lv15GQjMaUEYRjpeMsmy3GVTeTbetdj7TSnEMV4dDMnzwxbD
-         Dtjg==
-X-Gm-Message-State: AOAM531ThMYYO9Q1DrBt0DHzquFzG0zpprMe0a6aSXR2WlPzwGV/ZamY
-        y9oqVhz2Ep2oCcWXdJ3f+Hh8etqbSBFu7va6cLAQIWzcaTdU6G9H5qvG16q9ZVqhPm2I70KgDsl
-        fpZGuK804HhjMcmj8k29tLcwe
-X-Received: by 2002:a05:6000:128f:: with SMTP id f15mr20916779wrx.19.1618924799172;
-        Tue, 20 Apr 2021 06:19:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfOGjRv02X/zmH7pcY7EIgqs8w+z5KR0gU0RfoaYN+dlGesRC5fI0lFDDiwZRbvB39JmbKYA==
-X-Received: by 2002:a05:6000:128f:: with SMTP id f15mr20916761wrx.19.1618924798995;
-        Tue, 20 Apr 2021 06:19:58 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff2390a.dip0.t-ipconnect.de. [79.242.57.10])
-        by smtp.gmail.com with ESMTPSA id f6sm3291518wmf.28.2021.04.20.06.19.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 06:19:58 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] secretmem/gup: don't check if page is secretmem
- without reference
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210420131611.8259-1-rppt@kernel.org>
- <20210420131611.8259-2-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <95b7fa81-f72e-c63f-0456-4c25dee8a5eb@redhat.com>
-Date:   Tue, 20 Apr 2021 15:19:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=J3e7kbQq5St6RlbDyul6tsPbXu/C51Diuoyxp5D86fI=;
+        b=X4vkox7F8Y5h8g/5eJFU6HXv6bs2VCnZio0ZHjMI/ONsO+r6rW4FafgHaWjE7UQdwU
+         Ze968rCGBOgu14sgJ3O2Q4PYde80zciUidJk600iTo44lSnSrklBigpyui2YRgo38S7S
+         YZLIixISkMt2PCj71GbgjMXDpaLrp4fLGFVynZxpHMgVSoWgolssTfsTVL90/VR7A6/m
+         x4ALEyIC+9XEqFoaD+wPxECWFbBpWwXFY4DBZ2RpTK9dmbAy8PpYMYAD7IR7XQxOLUXM
+         +7+J1UFnixTUKS+B22cG2OyZ1XH6+0wHdyLA0Sis+dv5vc4ZWn8wLf/r1xviEDlPacvV
+         2xCQ==
+X-Gm-Message-State: AOAM5300ENTTt8eGYbLlBNtM6z5QZTuChn7aB55gDlPcTnv6Sin2dSSt
+        kBqm20qKAH4bFCkuilMfiOFdHfMkSHFJnA==
+X-Google-Smtp-Source: ABdhPJwWQykuNw2FTMz3ac8RTLG/HRENz8kxWRcXJ50uj7xKxZKZp0TkI1HnHitzb6eA9JgHc+TwXQ==
+X-Received: by 2002:a05:600c:ac2:: with SMTP id c2mr4660442wmr.23.1618924855647;
+        Tue, 20 Apr 2021 06:20:55 -0700 (PDT)
+Received: from ard0534 ([197.240.34.190])
+        by smtp.gmail.com with ESMTPSA id l4sm27696668wrx.24.2021.04.20.06.20.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 20 Apr 2021 06:20:55 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 14:20:51 +0100
+From:   Khaled Romdhani <khaledromdhani216@gmail.com>
+To:     David Sterba <dsterba@suse.cz>, clm@fb.com, josef@toxicpanda.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, khaledromdhani216@gmail.com
+Subject: Re: [PATCH v2] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210420132051.GA3433@ard0534>
+References: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+ <20210419173225.GT7604@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210420131611.8259-2-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419173225.GT7604@twin.jikos.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.04.21 15:16, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Apr 19, 2021 at 07:32:25PM +0200, David Sterba wrote:
+> On Sat, Apr 17, 2021 at 04:36:16PM +0100, Khaled ROMDHANI wrote:
+> > As reported by the Coverity static analysis.
+> > The variable zone is not initialized which
+> > may causes a failed assertion.
+> > 
+> > Addresses-Coverity: ("Uninitialized variables")
+> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> > ---
+> > v2: add a default case as proposed by David Sterba
+> > ---
+> >  fs/btrfs/zoned.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> > index eeb3ebe11d7a..82527308d165 100644
+> > --- a/fs/btrfs/zoned.c
+> > +++ b/fs/btrfs/zoned.c
+> > @@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+> >  	case 0: zone = 0; break;
+> >  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+> >  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+> > +	default:
+> > +		zone = 0;
 > 
-> The check in gup_pte_range() whether a page belongs to a secretmem mapping
-> is performed before grabbing the page reference.
-> 
-> To avoid potential race move the check after try_grab_compound_head().
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   mm/gup.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index c3a17b189064..4b58c016e949 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -2080,13 +2080,13 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
->   		VM_BUG_ON(!pfn_valid(pte_pfn(pte)));
->   		page = pte_page(pte);
->   
-> -		if (page_is_secretmem(page))
-> -			goto pte_unmap;
-> -
->   		head = try_grab_compound_head(page, 1, flags);
->   		if (!head)
->   			goto pte_unmap;
->   
-> +		if (page_is_secretmem(page))
-> +			goto pte_unmap;
-> +
+> Well yeah but this is not a valid case at all, we'd rather catch that as
+> an assertion failure than letting is silently continue.
 
-Looking at the hunk below, I wonder if you're missing a put_compound_head().
-
-(also, I'd do if unlikely(page_is_secretmem()) but that's a different 
-discussion)
-
->   		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
->   			put_compound_head(head, 1, flags);
->   			goto pte_unmap;
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+So, as all callers pass valid value. It would be
+better to catch that as an assertion failure.
