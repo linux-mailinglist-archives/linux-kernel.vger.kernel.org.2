@@ -2,410 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF723653C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188933653E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhDTILy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhDTILu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:11:50 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E02C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:11:16 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id u187so108342wmb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:11:16 -0700 (PDT)
+        id S230188AbhDTIU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:20:57 -0400
+Received: from mail-mw2nam12on2043.outbound.protection.outlook.com ([40.107.244.43]:50848
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229551AbhDTIUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:20:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kl632t1dMbvhD6rIsvwBwzYf7bMtnfWUf5ExG7m/xxDVl7Dxe6t2dbdEXV0qJud8V8FMANAThrCuzMy83rEyc1vlJGLKWBk1PXwYBc4wUd0muKNDdxDK+wP5RFZrOPfK34azlUCF0AZvXoxlKKeow9YHhPYFIG4Ry+2RaBMUeC7L5T2h6027NU61pzYDGLQxLa04X1tCIt7eV0QnrXFFXqQxzqPVQpgl0OQVrNOl4dkgf0JlKpXSMlX/WNd75uw+9koWGQVHnMP70j4xyzetve/85iCVm5iKt05fmluoioPoDlHvBpd81cHmyRFUES+JJDm2VR+/n5Mb6yk13zqiTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c/Jppvj2S3GbKTMPTaG94EVZ9G0H4CqvfTJ8A1c18xQ=;
+ b=UGbaiVvU08+F0RJHNWOb4HxaF9Q1nEnFjt0oB+m41ZZdjcWqbJw6G9odfWInrXixHtVDgI3J/F6xnVRG2qNuHAOf2gsKtAxD02PhkECQr9VGdS6ISPAVDVYCiuf94kuqDPjNoG3V1JvZhtraGuCByZhTK2c/J4phreiM7y5AGvaHmz0LBZOlopfJISprMGOQ8ufUv06AG+PRa7UrSh2gZsory2CUIALYkxJmI9BS3o4oOiVyFTg5pPSZk6LswlcGbLvx7wzEAjUnjHzsebYMUUqY+OuJACQMkgm/T76RmSql96OJDAI3MaTBKSqfiUr1Ay5lgRgd8ix50U4GiuT41w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=aOgsxsyFkixaOEX4Ox5Or9kKZNDyZdWkucXEJ1ql0+o=;
-        b=a8bPGXcPIvg448ZNoLAgeZPKTkqmVeqEEmJQ9/hC6hTvZZIq2Hc9kuVGY27Uq9VWFh
-         98sw+D7bme/H+7IftmI+TSeP3JHQ72LiP2rY2HnjEySmdyVaR0MtPFoFVhWUEl8DEfK7
-         DmHmWwAxDhrGIfQkS4ryhQEg1WFdMLjqGvb3KVNPClvLqGYW7C9LF/E3pPIdcCfHT9m8
-         Yqb3m5pM9bMJHFj53vqpc7Mkrfgg+x4jfg8O8g+wntIdcrs0NpudEv1//qACKLC5V8BV
-         ecQDFblwklsyYrirN4vFuFne/msnNgtWXQ8nMz+ioUIixXMKB2jEzGDSlvdo9+WO4HXS
-         8Jbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aOgsxsyFkixaOEX4Ox5Or9kKZNDyZdWkucXEJ1ql0+o=;
-        b=StThKJLy5amde6FXV88fNe0FcSgzAm0ZlBGTpWqdkfs8BSIhCBntQUnpnYW755TUN7
-         YwDLQh+4o4FuV2Jqrc72gPXwP96N4g2o7vfV4w5upwAodpI2WcroqdqoxdkX/eFpqYJq
-         VG4VSANNNYEcB1seeEdDu76ToIc9vcMeZsxJn43OokQ85mshxLmbRq3KvzZ9pMozgi2m
-         /LnKn5LwE/v56ZHQ7TheiKGNCzB7kqB7khKGMEUVg7M8Ib3QQAJft+yYaFtNHEwpGgts
-         yLjaTYsRcAYQQ3xXVty0S+FIjjAO+ZyPkBLRR6vFQjplHh3BV9XC9T8Y0k3GNnfVbgc+
-         IsNQ==
-X-Gm-Message-State: AOAM533Iwg/4Tb//iygbyExYSr0+sIeDMAzhpSDxh9TzStFEQ2v3mjJe
-        Kp+w2x655sVT8VOFy5DiKdvXcg==
-X-Google-Smtp-Source: ABdhPJzPdAc/n37zRPsv5fH0kCLXe32AuerB0HH0gRpic7zt91WdCVK+qchJhy5nXDIVkFExCIV8SA==
-X-Received: by 2002:a7b:c303:: with SMTP id k3mr3196252wmj.100.1618906275445;
-        Tue, 20 Apr 2021 01:11:15 -0700 (PDT)
-Received: from MacBook-Pro.local ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id 66sm2756529wmb.36.2021.04.20.01.11.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 01:11:14 -0700 (PDT)
-Subject: Re: [2/3] interconnect: qcom: Add EPSS L3 support on SC7280
-To:     Odelu Kukatla <okukatla@codeaurora.org>,
-        bjorn.andersson@linaro.org, evgreen@google.com,
-        Andy Gross <agross@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     sboyd@kernel.org, ilina@codeaurora.org, seansw@qti.qualcomm.com,
-        sibis@codeaurora.org, elder@linaro.org,
-        linux-arm-msm-owner@vger.kernel.org
-References: <1618556290-28303-1-git-send-email-okukatla@codeaurora.org>
- <1618556290-28303-3-git-send-email-okukatla@codeaurora.org>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <3a4460f3-3416-16f0-8e21-45e8b7a3a0ad@linaro.org>
-Date:   Tue, 20 Apr 2021 11:11:13 +0300
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c/Jppvj2S3GbKTMPTaG94EVZ9G0H4CqvfTJ8A1c18xQ=;
+ b=QKF4SRIsZzqFgYczosiLY58QWzNbSvFxla4XbLrqRL+ccrabow8wBwE6jzDgnk1yN7IFyMH1JNa6IWyvYH+iSPTzYt/l+GZEuA2WB8JIGC3rRJPgtpH4aSkm8Q3Mb7Aye/w0BHEbJYGmVv0IHNYIAzoM/bZuNhZMYimKj3eMmUE=
+Received: from CY4PR18CA0069.namprd18.prod.outlook.com (2603:10b6:903:13f::31)
+ by BL0PR02MB4369.namprd02.prod.outlook.com (2603:10b6:208:4f::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Tue, 20 Apr
+ 2021 08:20:21 +0000
+Received: from CY1NAM02FT026.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:13f:cafe::a7) by CY4PR18CA0069.outlook.office365.com
+ (2603:10b6:903:13f::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend
+ Transport; Tue, 20 Apr 2021 08:20:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT026.mail.protection.outlook.com (10.152.75.157) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4042.19 via Frontend Transport; Tue, 20 Apr 2021 08:20:21 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 20 Apr 2021 01:20:20 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2106.2 via Frontend Transport; Tue, 20 Apr 2021 01:20:20 -0700
+Envelope-to: git@xilinx.com,
+ robh+dt@kernel.org,
+ arnd@arndb.de,
+ gregkh@linuxfoundation.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ chinnikishore369@gmail.com
+Received: from [10.140.6.60] (port=45276 helo=xhdnavam40.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <nava.manne@xilinx.com>)
+        id 1lYlcI-0007C5-ME; Tue, 20 Apr 2021 01:20:19 -0700
+From:   Nava kishore Manne <nava.manne@xilinx.com>
+To:     <robh+dt@kernel.org>, <michal.simek@xilinx.com>,
+        <derek.kiernan@xilinx.com>, <dragan.cvetic@xilinx.com>,
+        <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <nava.manne@xilinx.com>, <rajan.vaja@xilinx.com>,
+        <jolly.shah@xilinx.com>, <tejas.patel@xilinx.com>,
+        <amit.sunil.dhamne@xilinx.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <chinnikishore369@gmail.com>,
+        <git@xilinx.com>
+Subject: [PATCH 0/5]misc: Add afi config drivers support.
+Date:   Tue, 20 Apr 2021 13:41:48 +0530
+Message-ID: <20210420081153.17020-1-nava.manne@xilinx.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <1618556290-28303-3-git-send-email-okukatla@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f123e882-76b8-4ca8-7ef7-08d903d523a6
+X-MS-TrafficTypeDiagnostic: BL0PR02MB4369:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB43690A412F492B8EAA6BC435C2489@BL0PR02MB4369.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tb6014mi8ItvqGkF3SLKe0JOamZmaQ6pG6ZRwVeyJ4Na4ub7vPFXhMRyvExQtY1KIK2DYOkjRWAXDfXmaJewwOrBwJWGZcYynGBre9k0f3UpHEIn+ejswSi333230gVjMmbutA0/Fwi1+7ns66TvURjPDejEkiYbjAPBJs6ieahePAVevspH/P0eKV6KAR61Qz4DAp39YwW7EY+LTMAyb3937sV1Ee5PyIO6bav8U2bSF2dHdWrrpo9nbKY0TFgAJ2Ufba4cUAAwMapBj8bMAPeKlUL8GW5pmZ8fks1XLhBNMoVDbGD5bwUc3SNouSgs0dnMTffY4gxMVc8eeX2RIqmwnR5Wb/pKAqLzuVvXdpU+zq8utMDg8L2bu3NhjM8Ei9zQgXBYsXtfKGcp20xXgj824ndh1k8DNmhHeZzM/NZdBz/BWoeUJG9lNM8lfU5zCwlRuqJC3pCP+O/dDSOY38oTIqDaf+bitvm+iqHW/gBniKwh5prOWr9OpLVr8uY0vq2vrH7XWXC1t+dPugnzjuUE3B/T3hIILACBQ0TyRp9Th1OA/loGig2fK7gpbF0Z33sIU26NfvYlRiAQmeTVlWll29VzywtjfRUkZUxVwDpiDPQd+oaTr4JuAcL7OwmX8guqb7+L/s7pdX84sF27VLL5UXooXQJfUaeSJdXzPdXw0Fq5ECl8tu2Hivl/kdEzxxzuXeaHgJRz2fK9kli2kFj2RwwncyMRYyVTXrbNtiVXDH/vB5YNjoKzKGVf9xML
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(346002)(46966006)(36840700001)(6636002)(478600001)(2616005)(82740400003)(336012)(110136005)(26005)(8676002)(83380400001)(356005)(36906005)(8936002)(9786002)(426003)(921005)(186003)(7696005)(70586007)(36860700001)(36756003)(1076003)(82310400003)(47076005)(70206006)(6666004)(2906002)(7636003)(316002)(5660300002)(102446001)(2101003)(83996005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 08:20:21.0027
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f123e882-76b8-4ca8-7ef7-08d903d523a6
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT026.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4369
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Odelu,
+Xilinx SoC platforms (Zynq and ZynqMP) connect the PS to the
+programmable logic (PL) through the AXI port.This AXI port helps
+to establish the data path between the PS and PL. In-order to
+establish to proper communication data path between PS and PL
+the AXI port data path should be configured with the proper
+Bus-width values
 
-On 16.04.21 9:58, Odelu Kukatla wrote:
-> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
-> SC7280 SoCs.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
-> ---
->   drivers/interconnect/qcom/osm-l3.c             | 124 +++++++++++++++++++------
->   drivers/interconnect/qcom/sc7280.h             |  10 ++
->   include/dt-bindings/interconnect/qcom,osm-l3.h |  10 +-
->   3 files changed, 114 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-> index 695f287..3403e09 100644
-> --- a/drivers/interconnect/qcom/osm-l3.c
-> +++ b/drivers/interconnect/qcom/osm-l3.c
-> @@ -15,6 +15,7 @@
->   #include <dt-bindings/interconnect/qcom,osm-l3.h>
->   
->   #include "sc7180.h"
-> +#include "sc7280.h"
->   #include "sdm845.h"
->   #include "sm8150.h"
->   #include "sm8250.h"
-> @@ -32,17 +33,24 @@
->   
->   /* EPSS Register offsets */
->   #define EPSS_LUT_ROW_SIZE		4
-> +#define EPSS_REG_L3_VOTE		0x90
->   #define EPSS_REG_FREQ_LUT		0x100
->   #define EPSS_REG_PERF_STATE		0x320
-> +#define EPSS_CORE_OFFSET		0x4
-> +#define EPSS_L3_VOTE_REG(base, cpu)\
-> +			((base + EPSS_REG_L3_VOTE) +\
-> +			(cpu * EPSS_CORE_OFFSET))
+This patch series Adds afi config drivers support to handle the
+PS-PL AXI port bus-width configurations.
 
-Nit: Please add parenthesis around "base" and "cpu" to avoid
-any potential precedence issues.
+Nava kishore Manne (5):
+  misc: doc: Add binding doc for the afi config driver
+  misc: zynq: Add afi config driver
+  firmware: xilinx: Add afi ioctl support
+  misc: doc: Add binding doc for the zynqmp afi config driver
+  misc: zynqmp: Add afi config driver
 
->   
-> -#define OSM_L3_MAX_LINKS		1
-> +#define L3_DOMAIN_CNT		4
-> +#define L3_MAX_LINKS		9
->   
->   #define to_qcom_provider(_provider) \
->   	container_of(_provider, struct qcom_osm_l3_icc_provider, provider)
->   
->   struct qcom_osm_l3_icc_provider {
-> -	void __iomem *base;
-> +	void __iomem *domain_base[L3_DOMAIN_CNT];
->   	unsigned int max_state;
-> +	bool per_core_dcvs;
->   	unsigned int reg_perf_state;
->   	unsigned long lut_tables[LUT_MAX_ENTRIES];
->   	struct icc_provider provider;
-> @@ -58,31 +66,36 @@ struct qcom_osm_l3_icc_provider {
->    */
->   struct qcom_icc_node {
->   	const char *name;
-> -	u16 links[OSM_L3_MAX_LINKS];
-> +	u16 links[L3_MAX_LINKS];
->   	u16 id;
->   	u16 num_links;
->   	u16 buswidth;
-> +	u16 domain;
-> +	int cpu;
+ .../bindings/misc/xlnx,zynq-afi-fpga.yaml     |  47 ++++++
+ .../bindings/misc/xlnx,zynqmp-afi-fpga.yaml   | 136 ++++++++++++++++++
+ drivers/firmware/xilinx/zynqmp.c              |  13 ++
+ drivers/misc/Kconfig                          |  22 +++
+ drivers/misc/Makefile                         |   2 +
+ drivers/misc/zynq-afi.c                       |  81 +++++++++++
+ drivers/misc/zynqmp-afi.c                     |  83 +++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |   7 +
+ 8 files changed, 391 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/xlnx,zynq-afi-fpga.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml
+ create mode 100644 drivers/misc/zynq-afi.c
+ create mode 100644 drivers/misc/zynqmp-afi.c
 
-Please describe these in the kerneldoc. Adding a kerneldoc for
-qcom_osm_l3_icc_provider would be also nice.
+-- 
+2.18.0
 
->   };
->   
->   struct qcom_icc_desc {
->   	const struct qcom_icc_node **nodes;
->   	size_t num_nodes;
-> +	bool per_core_dcvs;
->   	unsigned int lut_row_size;
->   	unsigned int reg_freq_lut;
->   	unsigned int reg_perf_state;
->   };
->   
-> -#define DEFINE_QNODE(_name, _id, _buswidth, ...)			\
-> -	static const struct qcom_icc_node _name = {			\
-> -		.name = #_name,						\
-> -		.id = _id,						\
-> -		.buswidth = _buswidth,					\
-> -		.num_links = ARRAY_SIZE(((int[]){ __VA_ARGS__ })),	\
-> -		.links = { __VA_ARGS__ },				\
-> +#define DEFINE_QNODE(_name, _id, _buswidth, _domain, _cpu, ...)			\
-> +	static const struct qcom_icc_node _name = {				\
-> +		.name = #_name,							\
-> +		.id = _id,							\
-> +		.buswidth = _buswidth,						\
-> +		.domain = _domain,						\
-> +		.cpu = _cpu,						\
-> +		.num_links = ARRAY_SIZE(((int[]){ __VA_ARGS__ })),		\
-> +		.links = { __VA_ARGS__ },					\
->   	}
->   
-> -DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, SDM845_SLAVE_OSM_L3);
-> -DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16);
-> +DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, 0, 0, SDM845_SLAVE_OSM_L3);
-> +DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16, 0, 0);
->   
->   static const struct qcom_icc_node *sdm845_osm_l3_nodes[] = {
->   	[MASTER_OSM_L3_APPS] = &sdm845_osm_apps_l3,
-> @@ -97,8 +110,8 @@ static const struct qcom_icc_desc sdm845_icc_osm_l3 = {
->   	.reg_perf_state = OSM_REG_PERF_STATE,
->   };
->   
-> -DEFINE_QNODE(sc7180_osm_apps_l3, SC7180_MASTER_OSM_L3_APPS, 16, SC7180_SLAVE_OSM_L3);
-> -DEFINE_QNODE(sc7180_osm_l3, SC7180_SLAVE_OSM_L3, 16);
-> +DEFINE_QNODE(sc7180_osm_apps_l3, SC7180_MASTER_OSM_L3_APPS, 16, 0, 0, SC7180_SLAVE_OSM_L3);
-> +DEFINE_QNODE(sc7180_osm_l3, SC7180_SLAVE_OSM_L3, 16, 0, 0);
->   
->   static const struct qcom_icc_node *sc7180_osm_l3_nodes[] = {
->   	[MASTER_OSM_L3_APPS] = &sc7180_osm_apps_l3,
-> @@ -113,8 +126,8 @@ static const struct qcom_icc_desc sc7180_icc_osm_l3 = {
->   	.reg_perf_state = OSM_REG_PERF_STATE,
->   };
->   
-> -DEFINE_QNODE(sm8150_osm_apps_l3, SM8150_MASTER_OSM_L3_APPS, 32, SM8150_SLAVE_OSM_L3);
-> -DEFINE_QNODE(sm8150_osm_l3, SM8150_SLAVE_OSM_L3, 32);
-> +DEFINE_QNODE(sm8150_osm_apps_l3, SM8150_MASTER_OSM_L3_APPS, 32, 0, 0, SM8150_SLAVE_OSM_L3);
-> +DEFINE_QNODE(sm8150_osm_l3, SM8150_SLAVE_OSM_L3, 32, 0, 0);
->   
->   static const struct qcom_icc_node *sm8150_osm_l3_nodes[] = {
->   	[MASTER_OSM_L3_APPS] = &sm8150_osm_apps_l3,
-> @@ -129,8 +142,8 @@ static const struct qcom_icc_desc sm8150_icc_osm_l3 = {
->   	.reg_perf_state = OSM_REG_PERF_STATE,
->   };
->   
-> -DEFINE_QNODE(sm8250_epss_apps_l3, SM8250_MASTER_EPSS_L3_APPS, 32, SM8250_SLAVE_EPSS_L3);
-> -DEFINE_QNODE(sm8250_epss_l3, SM8250_SLAVE_EPSS_L3, 32);
-> +DEFINE_QNODE(sm8250_epss_apps_l3, SM8250_MASTER_EPSS_L3_APPS, 32, 0, 0, SM8250_SLAVE_EPSS_L3);
-> +DEFINE_QNODE(sm8250_epss_l3, SM8250_SLAVE_EPSS_L3, 32, 0, 0);
->   
->   static const struct qcom_icc_node *sm8250_epss_l3_nodes[] = {
->   	[MASTER_EPSS_L3_APPS] = &sm8250_epss_apps_l3,
-> @@ -145,6 +158,39 @@ static const struct qcom_icc_desc sm8250_icc_epss_l3 = {
->   	.reg_perf_state = EPSS_REG_PERF_STATE,
->   };
->   
-> +DEFINE_QNODE(sc7280_epss_apps_l3, SC7280_MASTER_EPSS_L3_APPS, 32, 0, 0, SC7280_SLAVE_EPSS_L3_SHARED, SC7280_SLAVE_EPSS_L3_CPU0, SC7280_SLAVE_EPSS_L3_CPU1, SC7280_SLAVE_EPSS_L3_CPU2, SC7280_SLAVE_EPSS_L3_CPU3, SC7280_SLAVE_EPSS_L3_CPU4, SC7280_SLAVE_EPSS_L3_CPU5, SC7280_SLAVE_EPSS_L3_CPU6, SC7280_SLAVE_EPSS_L3_CPU7);
-> +DEFINE_QNODE(sc7280_epss_l3_shared, SC7280_SLAVE_EPSS_L3_SHARED, 32, 0, 0);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu0, SC7280_SLAVE_EPSS_L3_CPU0, 32, 1, 0);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu1, SC7280_SLAVE_EPSS_L3_CPU1, 32, 1, 1);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu2, SC7280_SLAVE_EPSS_L3_CPU2, 32, 1, 2);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu3, SC7280_SLAVE_EPSS_L3_CPU3, 32, 1, 3);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu4, SC7280_SLAVE_EPSS_L3_CPU4, 32, 2, 0);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu5, SC7280_SLAVE_EPSS_L3_CPU5, 32, 2, 1);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu6, SC7280_SLAVE_EPSS_L3_CPU6, 32, 2, 2);
-> +DEFINE_QNODE(sc7280_epss_l3_cpu7, SC7280_SLAVE_EPSS_L3_CPU7, 32, 3, 0);
-> +
-> +static const struct qcom_icc_node *sc7280_epss_l3_nodes[] = {
-> +	[MASTER_EPSS_L3_APPS] = &sc7280_epss_apps_l3,
-> +	[SLAVE_EPSS_L3_SHARED] = &sc7280_epss_l3_shared,
-> +	[SLAVE_EPSS_L3_CPU0] = &sc7280_epss_l3_cpu0,
-> +	[SLAVE_EPSS_L3_CPU1] = &sc7280_epss_l3_cpu1,
-> +	[SLAVE_EPSS_L3_CPU2] = &sc7280_epss_l3_cpu2,
-> +	[SLAVE_EPSS_L3_CPU3] = &sc7280_epss_l3_cpu3,
-> +	[SLAVE_EPSS_L3_CPU4] = &sc7280_epss_l3_cpu4,
-> +	[SLAVE_EPSS_L3_CPU5] = &sc7280_epss_l3_cpu5,
-> +	[SLAVE_EPSS_L3_CPU6] = &sc7280_epss_l3_cpu6,
-> +	[SLAVE_EPSS_L3_CPU7] = &sc7280_epss_l3_cpu7,
-> +};
-> +
-> +static const struct qcom_icc_desc sc7280_icc_epss_l3 = {
-> +	.nodes = sc7280_epss_l3_nodes,
-> +	.num_nodes = ARRAY_SIZE(sc7280_epss_l3_nodes),
-> +	.per_core_dcvs = true,
-> +	.lut_row_size = EPSS_LUT_ROW_SIZE,
-> +	.reg_freq_lut = EPSS_REG_FREQ_LUT,
-> +	.reg_perf_state = EPSS_REG_PERF_STATE,
-> +};
-> +
->   static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
->   {
->   	struct qcom_osm_l3_icc_provider *qp;
-> @@ -156,13 +202,18 @@ static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
->   	u32 agg_avg = 0;
->   	u64 rate;
->   
-> -	qn = src->data;
-> +	qn = dst->data;
->   	provider = src->provider;
-
-dst->provider? To keep it symmetric maybe? I am expecting that src
-and dst are the same provider?
-
->   	qp = to_qcom_provider(provider);
->   
-> -	list_for_each_entry(n, &provider->nodes, node_list)
-> -		provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
-> -				    &agg_avg, &agg_peak);
-> +	/* Skip aggregation when per core l3 scaling is enabled */
-> +	if (qp->per_core_dcvs) {
-> +		agg_peak = dst->peak_bw;
-> +	} else {
-> +		list_for_each_entry(n, &provider->nodes, node_list)
-> +			provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
-> +						&agg_avg, &agg_peak);
-> +	}
->   
->   	rate = max(agg_avg, agg_peak);
->   	rate = icc_units_to_bps(rate);
-> @@ -173,7 +224,10 @@ static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
->   			break;
->   	}
->   
-> -	writel_relaxed(index, qp->base + qp->reg_perf_state);
-> +	if (qp->per_core_dcvs)
-> +		writel_relaxed(index, EPSS_L3_VOTE_REG(qp->domain_base[qn->domain], qn->cpu));
-> +	else
-> +		writel_relaxed(index, qp->domain_base[qn->domain] + qp->reg_perf_state);
->   
->   	return 0;
->   }
-> @@ -194,11 +248,12 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   	const struct qcom_icc_desc *desc;
->   	struct icc_onecell_data *data;
->   	struct icc_provider *provider;
-> +	struct property *prop;
->   	const struct qcom_icc_node **qnodes;
->   	struct icc_node *node;
->   	size_t num_nodes;
->   	struct clk *clk;
-> -	int ret;
-> +	int ret, index, domain_count;
->   
->   	clk = clk_get(&pdev->dev, "xo");
->   	if (IS_ERR(clk))
-> @@ -218,12 +273,21 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   	if (!qp)
->   		return -ENOMEM;
->   
-> -	qp->base = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(qp->base))
-> -		return PTR_ERR(qp->base);
-> +	prop = of_find_property(pdev->dev.of_node, "reg", NULL);
-> +	if (!prop)
-> +		return -EINVAL;
-> +	domain_count = prop->length / (4 * sizeof(prop->length));
-> +	if(!domain_count)
-
-Please add a space before opening the parenthesis.
-
-> +		return -EINVAL;
-> +
-> +	for (index = 0; index < domain_count ; index++) {
-> +		qp->domain_base[index] = devm_platform_ioremap_resource(pdev, index);
-> +		if (IS_ERR(qp->domain_base[index]))
-> +			return PTR_ERR(qp->domain_base[index]);
-> +	}
->   
->   	/* HW should be in enabled state to proceed */
-> -	if (!(readl_relaxed(qp->base + REG_ENABLE) & 0x1)) {
-> +	if (!(readl_relaxed(qp->domain_base[0] + REG_ENABLE) & 0x1)) {
->   		dev_err(&pdev->dev, "error hardware not enabled\n");
->   		return -ENODEV;
->   	}
-> @@ -235,7 +299,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   	qp->reg_perf_state = desc->reg_perf_state;
->   
->   	for (i = 0; i < LUT_MAX_ENTRIES; i++) {
-> -		info = readl_relaxed(qp->base + desc->reg_freq_lut +
-> +		info = readl_relaxed(qp->domain_base[0] + desc->reg_freq_lut +
->   				     i * desc->lut_row_size);
->   		src = FIELD_GET(LUT_SRC, info);
->   		lval = FIELD_GET(LUT_L_VAL, info);
-> @@ -254,6 +318,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   		prev_freq = freq;
->   	}
->   	qp->max_state = i;
-> +	qp->per_core_dcvs = desc->per_core_dcvs;
->   
->   	qnodes = desc->nodes;
->   	num_nodes = desc->num_nodes;
-> @@ -309,6 +374,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->   
->   static const struct of_device_id osm_l3_of_match[] = {
->   	{ .compatible = "qcom,sc7180-osm-l3", .data = &sc7180_icc_osm_l3 },
-> +	{ .compatible = "qcom,sc7280-epss-l3", .data = &sc7280_icc_epss_l3 },
->   	{ .compatible = "qcom,sdm845-osm-l3", .data = &sdm845_icc_osm_l3 },
->   	{ .compatible = "qcom,sm8150-osm-l3", .data = &sm8150_icc_osm_l3 },
->   	{ .compatible = "qcom,sm8250-epss-l3", .data = &sm8250_icc_epss_l3 },
-> diff --git a/drivers/interconnect/qcom/sc7280.h b/drivers/interconnect/qcom/sc7280.h
-> index 66ac6ee..6d323ba 100644
-> --- a/drivers/interconnect/qcom/sc7280.h
-> +++ b/drivers/interconnect/qcom/sc7280.h
-> @@ -148,5 +148,15 @@
->   #define SC7280_SLAVE_PCIE_1			137
->   #define SC7280_SLAVE_QDSS_STM			138
->   #define SC7280_SLAVE_TCU			139
-> +#define SC7280_MASTER_EPSS_L3_APPS			140
-> +#define SC7280_SLAVE_EPSS_L3_SHARED			141
-> +#define SC7280_SLAVE_EPSS_L3_CPU0			142
-> +#define SC7280_SLAVE_EPSS_L3_CPU1			143
-> +#define SC7280_SLAVE_EPSS_L3_CPU2			144
-> +#define SC7280_SLAVE_EPSS_L3_CPU3			145
-> +#define SC7280_SLAVE_EPSS_L3_CPU4			146
-> +#define SC7280_SLAVE_EPSS_L3_CPU5			147
-> +#define SC7280_SLAVE_EPSS_L3_CPU6			148
-> +#define SC7280_SLAVE_EPSS_L3_CPU7			149
->   
->   #endif
-> diff --git a/include/dt-bindings/interconnect/qcom,osm-l3.h b/include/dt-bindings/interconnect/qcom,osm-l3.h
-> index 61ef649..99534a5 100644
-> --- a/include/dt-bindings/interconnect/qcom,osm-l3.h
-> +++ b/include/dt-bindings/interconnect/qcom,osm-l3.h
-> @@ -1,6 +1,6 @@
->   /* SPDX-License-Identifier: GPL-2.0 */
->   /*
-> - * Copyright (C) 2019 The Linux Foundation. All rights reserved.
-> + * Copyright (C) 2019, 2021 The Linux Foundation. All rights reserved.
->    */
->   
->   #ifndef __DT_BINDINGS_INTERCONNECT_QCOM_OSM_L3_H
-> @@ -11,5 +11,13 @@
->   
->   #define MASTER_EPSS_L3_APPS	0
->   #define SLAVE_EPSS_L3_SHARED	1
-> +#define SLAVE_EPSS_L3_CPU0	2
-> +#define SLAVE_EPSS_L3_CPU1	3
-> +#define SLAVE_EPSS_L3_CPU2	4
-> +#define SLAVE_EPSS_L3_CPU3	5
-> +#define SLAVE_EPSS_L3_CPU4	6
-> +#define SLAVE_EPSS_L3_CPU5	7
-> +#define SLAVE_EPSS_L3_CPU6	8
-> +#define SLAVE_EPSS_L3_CPU7	9
-
-This hunk should be part of the dt-bindings patch.
-
-Thanks,
-Georgi
