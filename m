@@ -2,273 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FE3365AB3
+	by mail.lfdr.de (Postfix) with ESMTP id BD411365AB5
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhDTOCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:02:50 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:9462 "EHLO pegase1.c-s.fr"
+        id S232601AbhDTODB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:03:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28162 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232253AbhDTOCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:02:41 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FPljq00Qvz9v0F0;
-        Tue, 20 Apr 2021 16:02:07 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id YAB-mwaOpcIn; Tue, 20 Apr 2021 16:02:06 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPljp6KxFz9v0Dw;
-        Tue, 20 Apr 2021 16:02:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 42B0D8B807;
-        Tue, 20 Apr 2021 16:02:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id fR6DYh36rDtq; Tue, 20 Apr 2021 16:02:08 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D3D3E8B7ED;
-        Tue, 20 Apr 2021 16:02:07 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5209067A48; Tue, 20 Apr 2021 14:02:07 +0000 (UTC)
-Message-Id: <bad58c66859b2a475c0ad516b53164ae3b4853cd.1618927318.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <22cadf29620664b600b82026d2a72b8b23351777.1618927318.git.christophe.leroy@csgroup.eu>
-References: <22cadf29620664b600b82026d2a72b8b23351777.1618927318.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 2/2] powerpc: Enable OPTPROBES on PPC32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        naveen.n.rao@linux.vnet.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 20 Apr 2021 14:02:07 +0000 (UTC)
+        id S232084AbhDTOC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:02:56 -0400
+IronPort-SDR: yPWiq2Ch54vflu0twO1++Njofd48FzmkgmjBiQYpJRUH4fEU5KtClulX03NNeSeH026Kz+N/I1
+ N/fNWzfMdZlA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="183002489"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="183002489"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 07:02:23 -0700
+IronPort-SDR: rmuYi02cPO8DIqxg9EH3EnvOlzTJGHrHUHSq1yqb9uEr5iave4FLzf9rHZkUSRkxlyouh9nFvr
+ M/rLvosxxovw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="445520075"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Apr 2021 07:02:21 -0700
+Subject: Re: [PATCH v4 1/2] mmc: block: Issue flush only if allowed
+To:     Avri Altman <avri.altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Brendan Peter <bpeter@lytx.com>
+References: <20210420134641.57343-1-avri.altman@wdc.com>
+ <20210420134641.57343-2-avri.altman@wdc.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d583dc7e-b9c7-7288-ef7d-23ce7e9a7fc9@intel.com>
+Date:   Tue, 20 Apr 2021 17:02:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210420134641.57343-2-avri.altman@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For that, create a 32 bits version of patch_imm64_load_insns()
-and create a patch_imm_load_insns() which calls
-patch_imm32_load_insns() on PPC32 and patch_imm64_load_insns()
-on PPC64.
+On 20/04/21 4:46 pm, Avri Altman wrote:
+> The cache may be flushed to the nonvolatile storage by writing to
+> FLUSH_CACHE byte (EXT_CSD byte [32]). When in command queueing mode, the
+> cache may be flushed by issuing a CMDQ_TASK_ DEV_MGMT (CMD48) with a
+> FLUSH_CACHE op-code.  Either way, verify that The cache function is
+> turned ON before doing so.
+> 
+> fixes: 1e8e55b67030 (mmc: block: Add CQE support)
+> 
+> Reported-by: Brendan Peter <bpeter@lytx.com>
+> Tested-by: Brendan Peter <bpeter@lytx.com>
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
 
-Adapt optprobes_head.S for PPC32. Use PPC_LL/PPC_STL macros instead
-of raw ld/std, opt out things linked to paca and use stmw/lmw to
-save/restore registers.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Comments from Naveen.
----
- arch/powerpc/Kconfig                 |  2 +-
- arch/powerpc/kernel/optprobes.c      | 24 ++++++++--
- arch/powerpc/kernel/optprobes_head.S | 65 +++++++++++++++-------------
- 3 files changed, 56 insertions(+), 35 deletions(-)
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 475d77a6ebbe..d2e31a578e26 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -229,7 +229,7 @@ config PPC
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
- 	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
--	select HAVE_OPTPROBES			if PPC64
-+	select HAVE_OPTPROBES
- 	select HAVE_PERF_EVENTS
- 	select HAVE_PERF_EVENTS_NMI		if PPC64
- 	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
-diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
-index 58fdb9f66e0f..cdf87086fa33 100644
---- a/arch/powerpc/kernel/optprobes.c
-+++ b/arch/powerpc/kernel/optprobes.c
-@@ -141,11 +141,21 @@ void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
- 	}
- }
- 
-+static void patch_imm32_load_insns(unsigned long val, int reg, kprobe_opcode_t *addr)
-+{
-+	patch_instruction((struct ppc_inst *)addr,
-+			  ppc_inst(PPC_RAW_LIS(reg, IMM_H(val))));
-+	addr++;
-+
-+	patch_instruction((struct ppc_inst *)addr,
-+			  ppc_inst(PPC_RAW_ORI(reg, reg, IMM_L(val))));
-+}
-+
- /*
-  * Generate instructions to load provided immediate 64-bit value
-  * to register 'reg' and patch these instructions at 'addr'.
-  */
--static void patch_imm64_load_insns(unsigned long val, int reg, kprobe_opcode_t *addr)
-+static void patch_imm64_load_insns(unsigned long long val, int reg, kprobe_opcode_t *addr)
- {
- 	/* lis reg,(op)@highest */
- 	patch_instruction((struct ppc_inst *)addr,
-@@ -177,6 +187,14 @@ static void patch_imm64_load_insns(unsigned long val, int reg, kprobe_opcode_t *
- 				   ___PPC_RS(reg) | (val & 0xffff)));
- }
- 
-+static void patch_imm_load_insns(unsigned long val, int reg, kprobe_opcode_t *addr)
-+{
-+	if (IS_ENABLED(CONFIG_PPC64))
-+		patch_imm64_load_insns(val, reg, addr);
-+	else
-+		patch_imm32_load_insns(val, reg, addr);
-+}
-+
- int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
- {
- 	struct ppc_inst branch_op_callback, branch_emulate_step, temp;
-@@ -230,7 +248,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
- 	 * Fixup the template with instructions to:
- 	 * 1. load the address of the actual probepoint
- 	 */
--	patch_imm64_load_insns((unsigned long)op, 3, buff + TMPL_OP_IDX);
-+	patch_imm_load_insns((unsigned long)op, 3, buff + TMPL_OP_IDX);
- 
- 	/*
- 	 * 2. branch to optimized_callback() and emulate_step()
-@@ -264,7 +282,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
- 	 * 3. load instruction to be emulated into relevant register, and
- 	 */
- 	temp = ppc_inst_read((struct ppc_inst *)p->ainsn.insn);
--	patch_imm64_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX);
-+	patch_imm_load_insns(ppc_inst_as_ulong(temp), 4, buff + TMPL_INSN_IDX);
- 
- 	/*
- 	 * 4. branch back from trampoline
-diff --git a/arch/powerpc/kernel/optprobes_head.S b/arch/powerpc/kernel/optprobes_head.S
-index ff8ba4d3824d..19ea3312403c 100644
---- a/arch/powerpc/kernel/optprobes_head.S
-+++ b/arch/powerpc/kernel/optprobes_head.S
-@@ -9,6 +9,16 @@
- #include <asm/ptrace.h>
- #include <asm/asm-offsets.h>
- 
-+#ifdef CONFIG_PPC64
-+#define SAVE_30GPRS(base) SAVE_10GPRS(2,base); SAVE_10GPRS(12,base); SAVE_10GPRS(22,base)
-+#define REST_30GPRS(base) REST_10GPRS(2,base); REST_10GPRS(12,base); REST_10GPRS(22,base)
-+#define TEMPLATE_FOR_IMM_LOAD_INSNS	nop; nop; nop; nop; nop
-+#else
-+#define SAVE_30GPRS(base) stmw	r2, GPR2(base)
-+#define REST_30GPRS(base) lmw	r2, GPR2(base)
-+#define TEMPLATE_FOR_IMM_LOAD_INSNS	nop; nop; nop
-+#endif
-+
- #define	OPT_SLOT_SIZE	65536
- 
- 	.balign	4
-@@ -30,39 +40,41 @@ optinsn_slot:
- 	.global optprobe_template_entry
- optprobe_template_entry:
- 	/* Create an in-memory pt_regs */
--	stdu	r1,-INT_FRAME_SIZE(r1)
-+	PPC_STLU	r1,-INT_FRAME_SIZE(r1)
- 	SAVE_GPR(0,r1)
- 	/* Save the previous SP into stack */
- 	addi	r0,r1,INT_FRAME_SIZE
--	std	r0,GPR1(r1)
--	SAVE_10GPRS(2,r1)
--	SAVE_10GPRS(12,r1)
--	SAVE_10GPRS(22,r1)
-+	PPC_STL	r0,GPR1(r1)
-+	SAVE_30GPRS(r1)
- 	/* Save SPRS */
- 	mfmsr	r5
--	std	r5,_MSR(r1)
-+	PPC_STL	r5,_MSR(r1)
- 	li	r5,0x700
--	std	r5,_TRAP(r1)
-+	PPC_STL	r5,_TRAP(r1)
- 	li	r5,0
--	std	r5,ORIG_GPR3(r1)
--	std	r5,RESULT(r1)
-+	PPC_STL	r5,ORIG_GPR3(r1)
-+	PPC_STL	r5,RESULT(r1)
- 	mfctr	r5
--	std	r5,_CTR(r1)
-+	PPC_STL	r5,_CTR(r1)
- 	mflr	r5
--	std	r5,_LINK(r1)
-+	PPC_STL	r5,_LINK(r1)
- 	mfspr	r5,SPRN_XER
--	std	r5,_XER(r1)
-+	PPC_STL	r5,_XER(r1)
- 	mfcr	r5
--	std	r5,_CCR(r1)
-+	PPC_STL	r5,_CCR(r1)
-+#ifdef CONFIG_PPC64
- 	lbz     r5,PACAIRQSOFTMASK(r13)
- 	std     r5,SOFTE(r1)
-+#endif
- 
- 	/*
- 	 * We may get here from a module, so load the kernel TOC in r2.
- 	 * The original TOC gets restored when pt_regs is restored
- 	 * further below.
- 	 */
-+#ifdef CONFIG_PPC64
- 	ld	r2,PACATOC(r13)
-+#endif
- 
- 	.global optprobe_template_op_address
- optprobe_template_op_address:
-@@ -70,11 +82,8 @@ optprobe_template_op_address:
- 	 * Parameters to optimized_callback():
- 	 * 1. optimized_kprobe structure in r3
- 	 */
--	nop
--	nop
--	nop
--	nop
--	nop
-+	TEMPLATE_FOR_IMM_LOAD_INSNS
-+
- 	/* 2. pt_regs pointer in r4 */
- 	addi	r4,r1,STACK_FRAME_OVERHEAD
- 
-@@ -92,11 +101,7 @@ optprobe_template_call_handler:
- 	.global optprobe_template_insn
- optprobe_template_insn:
- 	/* 2, Pass instruction to be emulated in r4 */
--	nop
--	nop
--	nop
--	nop
--	nop
-+	TEMPLATE_FOR_IMM_LOAD_INSNS
- 
- 	.global optprobe_template_call_emulate
- optprobe_template_call_emulate:
-@@ -107,20 +112,18 @@ optprobe_template_call_emulate:
- 	 * All done.
- 	 * Now, restore the registers...
- 	 */
--	ld	r5,_MSR(r1)
-+	PPC_LL	r5,_MSR(r1)
- 	mtmsr	r5
--	ld	r5,_CTR(r1)
-+	PPC_LL	r5,_CTR(r1)
- 	mtctr	r5
--	ld	r5,_LINK(r1)
-+	PPC_LL	r5,_LINK(r1)
- 	mtlr	r5
--	ld	r5,_XER(r1)
-+	PPC_LL	r5,_XER(r1)
- 	mtxer	r5
--	ld	r5,_CCR(r1)
-+	PPC_LL	r5,_CCR(r1)
- 	mtcr	r5
- 	REST_GPR(0,r1)
--	REST_10GPRS(2,r1)
--	REST_10GPRS(12,r1)
--	REST_10GPRS(22,r1)
-+	REST_30GPRS(r1)
- 	/* Restore the previous SP */
- 	addi	r1,r1,INT_FRAME_SIZE
- 
--- 
-2.25.0
+> ---
+>  drivers/mmc/core/block.c   | 9 +++++++++
+>  drivers/mmc/core/mmc.c     | 2 +-
+>  drivers/mmc/core/mmc_ops.h | 5 +++++
+>  3 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 8bfd4d95b386..24e1ecbdd510 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2186,6 +2186,11 @@ static int mmc_blk_wait_for_idle(struct mmc_queue *mq, struct mmc_host *host)
+>  	return mmc_blk_rw_wait(mq, NULL);
+>  }
+>  
+> +static bool mmc_blk_cache_disabled(struct mmc_card *card)
+> +{
+> +	return mmc_card_mmc(card) && !mmc_flush_allowed(card);
+> +}
+> +
+>  enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+>  {
+>  	struct mmc_blk_data *md = mq->blkdata;
+> @@ -2225,6 +2230,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+>  	case MMC_ISSUE_ASYNC:
+>  		switch (req_op(req)) {
+>  		case REQ_OP_FLUSH:
+> +			if (mmc_blk_cache_disabled(mq->card)) {
+> +				blk_mq_end_request(req, BLK_STS_OK);
+> +				return MMC_REQ_FINISHED;
+> +			}
+>  			ret = mmc_blk_cqe_issue_flush(mq, req);
+>  			break;
+>  		case REQ_OP_READ:
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> index 9ad4aa537867..e3da62ffcb5e 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -2037,7 +2037,7 @@ static int _mmc_flush_cache(struct mmc_card *card)
+>  {
+>  	int err = 0;
+>  
+> -	if (card->ext_csd.cache_size > 0 && card->ext_csd.cache_ctrl & 1) {
+> +	if (mmc_flush_allowed(card)) {
+>  		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+>  				 EXT_CSD_FLUSH_CACHE, 1,
+>  				 CACHE_FLUSH_TIMEOUT_MS);
+> diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+> index 5782fdf4e8e9..2682bf66708a 100644
+> --- a/drivers/mmc/core/mmc_ops.h
+> +++ b/drivers/mmc/core/mmc_ops.h
+> @@ -19,6 +19,11 @@ enum mmc_busy_cmd {
+>  struct mmc_host;
+>  struct mmc_card;
+>  
+> +static inline bool mmc_flush_allowed(struct mmc_card *card)
+> +{
+> +	return card->ext_csd.cache_size > 0 && card->ext_csd.cache_ctrl & 1;
+> +}
+> +
+>  int mmc_select_card(struct mmc_card *card);
+>  int mmc_deselect_cards(struct mmc_host *host);
+>  int mmc_set_dsr(struct mmc_host *host);
+> 
 
