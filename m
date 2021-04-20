@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B6F365DA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67376365DA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhDTQoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232473AbhDTQoP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:44:15 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1ECC06174A;
-        Tue, 20 Apr 2021 09:43:42 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id r7so26331854wrm.1;
-        Tue, 20 Apr 2021 09:43:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LpVz5RmpwtqItSVESt1PTOxzEM6O2cxGwpOaIWTZdzU=;
-        b=NlRKRpEIay2vRk/+cunFLLCQczYArdIYpVXduxEYEXSq8GL2Lv5cZUqZShkgCrdj9Y
-         AwhvMFSYeK0wUwep5OtkM6CIURtWoNS6jfS6WIeoz4op7VOvnjr4eSlkQd0Ot/6L15Rz
-         hXOnCunkC+kbD1sQE5Gz8szSCu0wWTn0jfAJ4rQ+nz4/OdicJMVSgSC1g1Q3NWsVnMVE
-         awUyiHHXzUPz+H3S+A2yuVeAIE/6sgEDBAHbfk/qtSgYkRKAggN+Kf8Fd13xq8U5y3Fr
-         8VK+jYwiBirFFoOB1kp84M0eEDl5fOaHqsoQU6IWPA71aofE65Fi7kD3FivpXVXAlmYF
-         zHbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LpVz5RmpwtqItSVESt1PTOxzEM6O2cxGwpOaIWTZdzU=;
-        b=S2Pbz09wkZefCBmzti8poL2rNc1F+j+A6lFDP/kkD2vwkAiZznIg7h+AYZ0YtStPUH
-         knXnUUsEd8xrP2PuPXrFQtbubuJiajv31uZPY1MTWyvY5XIT7ru6v83zUVrouyBmkyQY
-         D8uQv5NWlp1EYW3t6jQ3Pm5m+KIAAiSQxPguhBcCFx1aMHvVy1i7/mJlN2lIVvtd3REY
-         l04OI809Zja02Ghno9DRYvYgVvuqgZ81fTnHN40/mVoWotekbEXaYg95ugfb4U0qzJTT
-         NnOSApoc0iATiqvfjQzbIphLfPyj6Pfx+F2vsNzSzwIQbOWsjcMBW+7NltYpFky/dArV
-         AdOg==
-X-Gm-Message-State: AOAM532C1hjgKKWjl2QM0TfN59i2dEuhRXG/+Lw+5m8XYVP+RJL9KyOu
-        GiJYKxc+wNMZA6/4pGEAeCWSGU53Qjo=
-X-Google-Smtp-Source: ABdhPJzx47XUjPjSlcDso/iy62dphANI1REQIx62gYqRtRNBWPiHHh9l/5tlWHnUUqLFNTY4IjnOWg==
-X-Received: by 2002:adf:f38e:: with SMTP id m14mr21229678wro.34.1618937020346;
-        Tue, 20 Apr 2021 09:43:40 -0700 (PDT)
-Received: from [192.168.1.102] ([37.164.106.63])
-        by smtp.gmail.com with ESMTPSA id m2sm3571453wmq.15.2021.04.20.09.43.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 09:43:39 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210420154140.80034-1-kuniyu@amazon.co.jp>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <67fb2df2-3703-4ce9-62d0-ba15435c5a0b@gmail.com>
-Date:   Tue, 20 Apr 2021 18:43:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233220AbhDTQoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:44:46 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43728 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232504AbhDTQoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:44:44 -0400
+IronPort-SDR: +uMUa0AbBr1Y2cR1OOgMa0eb/mk966i1j3Yg3Xi4LSDCqbqO0RYcVKEpvIN60TkEaENgoDKaII
+ y2P2mdW2rWKw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="183034461"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="183034461"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 09:44:12 -0700
+IronPort-SDR: 4FEJkK2qsvZ7J1racoP3GUaZUgoB/YJlN4bSwseSYhTP5f379QjJrMiMxrRnGh6/OGOFB8cNBz
+ kSCOi0RFwFTg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="454900279"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 20 Apr 2021 09:44:10 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id E0792BB; Tue, 20 Apr 2021 19:44:27 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/2] spi: Allow to have all native CSs in use along with GPIOs
+Date:   Tue, 20 Apr 2021 19:44:24 +0300
+Message-Id: <20210420164425.40287-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210420154140.80034-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit 7d93aecdb58d ("spi: Add generic support for unused native cs
+with cs-gpios") excludes the valid case for the controllers that doesn't
+need to switch native CS in order to perform the transfer, i.e. when
 
+  0		native
+  ...		...
+  <n> - 1	native
+  <n>		GPIO
+  <n> + 1	GPIO
+  ...		...
 
-On 4/20/21 5:41 PM, Kuniyuki Iwashima wrote:
-> The SO_REUSEPORT option allows sockets to listen on the same port and to
-> accept connections evenly. However, there is a defect in the current
-> implementation [1]. When a SYN packet is received, the connection is tied
-> to a listening socket. Accordingly, when the listener is closed, in-flight
-> requests during the three-way handshake and child sockets in the accept
-> queue are dropped even if other listeners on the same port could accept
-> such connections.
-> 
-> This situation can happen when various server management tools restart
-> server (such as nginx) processes. For instance, when we change nginx
-> configurations and restart it, it spins up new workers that respect the new
-> configuration and closes all listeners on the old workers, resulting in the
-> in-flight ACK of 3WHS is responded by RST.
-> 
-> The SO_REUSEPORT option is excellent to improve scalability.
+where <n> defines maximum of native CSs supported by the controller.
 
-This was before the SYN processing was made lockless.
+To allow this, bail out from spi_get_gpio_descs() conditionally for
+the controllers which explicitly marked with SPI_MASTER_GPIO_SS.
 
-I really wonder if we still need SO_REUSEPORT for TCP ?
+Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: no changes
+ drivers/spi/spi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Eventually a new accept() system call where different threads
-can express how they want to choose the children sockets would
-be less invasive.
-
-Instead of having many listeners, have one listener and eventually multiple
-accept queues to improve scalability of accept() phase.
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 36c46feab6d4..9c3730a9f7d5 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2610,8 +2610,9 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
+ 	}
+ 
+ 	ctlr->unused_native_cs = ffz(native_cs_mask);
+-	if (num_cs_gpios && ctlr->max_native_cs &&
+-	    ctlr->unused_native_cs >= ctlr->max_native_cs) {
++
++	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
++	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
+ 		dev_err(dev, "No unused native chip select available\n");
+ 		return -EINVAL;
+ 	}
+-- 
+2.30.2
 
