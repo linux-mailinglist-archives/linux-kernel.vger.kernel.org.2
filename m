@@ -2,80 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3451365E32
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB94365E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhDTRHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:07:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232913AbhDTRHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB4FF613AE;
-        Tue, 20 Apr 2021 17:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618938431;
-        bh=GE4+p/0+TSRy9zrXwA+A3hbFODGJvMZhR/Foyysj8Xk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HFxLz7aoFzH0dK6/RmYz4uKvPbOqqsrjZrNLFT0IJFHa0MGYHmSLVuRUkf6NJfcp2
-         xKYJ31miuYE07A0VOVwkFofARekVV5uPsH53TlwnCvLpvAGTuCz47Qo3Dk0Qb6kBqO
-         bEjzYiW24Lt7yrxTk8OtCnQkT/PyQdDy0OsDNNWgJbU6LB0Z5T+8vi7ZwOYLMzR4K0
-         Jw+g+vqjjmzGPjUzQmz8qO/yeUSA1YZnuxjVNDIUrl/m4/mtN9qOEfyPFy7lsvnZ3o
-         me17wq+dO+YMneqYiukxrKqXKJOdGLshp5NDe0HQxB6Je8dtVvJ11HL0YJTctGz0HH
-         rf4sI5yfBAR4w==
-Date:   Tue, 20 Apr 2021 12:07:08 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Rajat Jain <rajatja@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, rajatxjain@gmail.com
-Subject: Re: [PATCH] pci: Rename pci_dev->untrusted to pci_dev->external
-Message-ID: <20210420170708.GA2813156@bjorn-Precision-5520>
+        id S233315AbhDTRKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232473AbhDTRKl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:10:41 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176F9C06174A;
+        Tue, 20 Apr 2021 10:10:10 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 071357274; Tue, 20 Apr 2021 13:10:09 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 071357274
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1618938609;
+        bh=G1/bkGfCnN9BPCT+BTU7MH0Yx34TK2JeYk5pORVadAI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KXISL/jW2QvgORlWjBxAsoDlR0c7cjzlxQQCTF8hnO7vcZli+avWDUiFkhADSppri
+         yZn0yt6Q2pubbQ5DcOS71LH6AzDXbvA1WS/bK2rkwQZTHsS36e/8mipekMJVC1EutB
+         DXqZZk5ui9yYhopMKJ4eyomdzY7QRdECGcu+DJuU=
+Date:   Tue, 20 Apr 2021 13:10:08 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <20210420171008.GB4017@fieldses.org>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420061006.GA3523612@infradead.org>
+In-Reply-To: <YH5/i7OvsjSmqADv@kroah.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 07:10:06AM +0100, Christoph Hellwig wrote:
-> On Mon, Apr 19, 2021 at 05:30:49PM -0700, Rajat Jain wrote:
-> > The current flag name "untrusted" is not correct as it is populated
-> > using the firmware property "external-facing" for the parent ports. In
-> > other words, the firmware only says which ports are external facing, so
-> > the field really identifies the devices as external (vs internal).
-> > 
-> > Only field renaming. No functional change intended.
+On Tue, Apr 20, 2021 at 09:15:23AM +0200, Greg KH wrote:
+> If you look at the code, this is impossible to have happen.
 > 
-> I don't think this is a good idea.  First the field should have been
-> added to the generic struct device as requested multiple times before.
+> Please stop submitting known-invalid patches.  Your professor is playing
+> around with the review process in order to achieve a paper in some
+> strange and bizarre way.
+> 
+> This is not ok, it is wasting our time, and we will have to report this,
+> AGAIN, to your university...
 
-Fair point.  There isn't anything PCI-specific about this idea.  The
-ACPI "ExternalFacingPort" and DT "external-facing" are currently only
-defined for PCI devices, but could be applied elsewhere.
+What's the story here?
 
-> Right now this requires horrible hacks in the IOMMU code to get at the
-> pci_dev, and also doesn't scale to various other potential users.
-
-Agreed, this is definitely suboptimal.  Do you have other users in
-mind?  Maybe they could help inform the plan.
-
-> Second the untrusted is objectively a better name.  Because untrusted
-> is how we treat the device, which is what mattes.  External is just
-> how we come to that conclusion.
-
-The decision to treat "external" as being "untrusted" is a little bit
-of policy that the PCI core really doesn't care about, so I think it
-does make some sense to let the places that *do* care decide what to
-trust based on "external" and possibly other factors, e.g., whether
-the device is a BMC or processes untrusted data, etc.
-
-But I guess it makes sense to wait until we have a better motivation
-before renaming it, since we don't gain any functionality here.
-
-Bjorn
+--b.
