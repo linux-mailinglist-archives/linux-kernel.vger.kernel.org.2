@@ -2,167 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03703660A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C51036608B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbhDTUMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:12:41 -0400
-Received: from mx2.unformed.ru ([91.219.49.66]:45989 "EHLO mx2.unformed.ru"
+        id S233791AbhDTUC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:02:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:42066 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233544AbhDTUMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:12:39 -0400
-X-Greylist: delayed 1727 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 16:12:38 EDT
-Received: from dotty.home.arpa ([10.3.14.10]:55754)
-        by filet.unformed.ru with esmtp (Exim 4.92)
-        (envelope-from <mon@unformed.ru>)
-        id 1lYwH4-00030I-0s; Tue, 20 Apr 2021 21:43:06 +0200
-Received: from [10.3.14.66] (port=52178 helo=phobos.home.arpa.)
-        by dotty.home.arpa with esmtp (Exim 4.92)
-        (envelope-from <mon@unformed.ru>)
-        id 1lYwH3-0001x3-Ua; Tue, 20 Apr 2021 21:43:05 +0200
-From:   Yury Vostrikov <mon@unformed.ru>
-Cc:     mon@unformed.ru,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: sfc: Fix kernel panic introduced by commit 044588b96372 ("sfc: define inner/outer csum offload TXQ types")
-Date:   Tue, 20 Apr 2021 21:42:03 +0200
-Message-Id: <20210420194203.24759-1-mon@unformed.ru>
-X-Mailer: git-send-email 2.20.1
+        id S233751AbhDTUC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:02:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CEDB106F;
+        Tue, 20 Apr 2021 13:01:54 -0700 (PDT)
+Received: from [10.57.29.84] (unknown [10.57.29.84])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD1CC3F73B;
+        Tue, 20 Apr 2021 13:01:52 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
+ devices when temp is low
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        amitk@kernel.org, rui.zhang@intel.com
+References: <20210419084536.25000-1-lukasz.luba@arm.com>
+ <20210419084536.25000-3-lukasz.luba@arm.com>
+ <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
+ <55943d6f-0f72-215d-1dd4-bf3996092df7@arm.com>
+ <91411c9c-d78e-8ba6-1cd3-da6879bc5ceb@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <0fc57590-cc7c-9e04-16bc-13b7b787ad2f@arm.com>
+Date:   Tue, 20 Apr 2021 21:01:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <91411c9c-d78e-8ba6-1cd3-da6879bc5ceb@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NIC has EFX_MAX_CHANNELS channels:
-struct efx_nic {
-	[...]
-	struct efx_channel *channel[EFX_MAX_CHANNELS];
-	[...]
-}
 
-Each channel has EFX_MAX_TXQ_PER_CHANNEL TX queues; There a reverse
-mapping from type to TX queue, holding at most EFX_TXQ_TYPES
-entries. This mapping is a bitset mapping because EFX_TXQ_TYPE_* is
-defined as non-overlapping bit enum:
 
-struct efx_channel {
-	[...]
-	struct efx_tx_queue tx_queue[EFX_MAX_TXQ_PER_CHANNEL];
-	struct efx_tx_queue *tx_queue_by_type[EFX_TXQ_TYPES];
-	[...]
-}
+On 4/20/21 4:24 PM, Daniel Lezcano wrote:
+> On 20/04/2021 16:21, Lukasz Luba wrote:
+>> Hi Daniel,
+>>
+>> On 4/20/21 2:30 PM, Daniel Lezcano wrote:
+>>> On 19/04/2021 10:45, Lukasz Luba wrote:
+>>
+>> [snip]
+>>
+>>>> -        instance->cdev->updated = false;
+>>>> +        if (update)
+>>>> +            instance->cdev->updated = false;
+>>>> +
+>>>>            mutex_unlock(&instance->cdev->lock);
+>>>> -        (instance->cdev);
+>>>> +
+>>>> +        if (update)
+>>>> +            thermal_cdev_update(instance->cdev);
+>>>
+>>> This cdev update has something bad IMHO. It is protected by a mutex but
+>>> the 'updated' field is left unprotected before calling
+>>> thermal_cdev_update().
+>>>
+>>> It is not the fault of this code but how the cooling device are updated
+>>> and how it interacts with the thermal instances.
+>>>
+>>> IMO, part of the core code needs to revisited.
+>>
+>> I agree, but please check my comments below.
+>>
+>>>
+>>> This change tight a bit more the knot.
+>>>
+>>> Would it make sense to you if we create a function eg.
+>>> __thermal_cdev_update()
+>>
+>> I'm not sure if I assume it right that the function would only have the:
+>> list_for_each_entry(instance, &cdev->thermal_instances, cdev_node)
+>>
+>> loop from the thermal_cdev_update(). But if it has only this loop then
+>> it's too little.
+>>
+>>>
+>>> And then we have:
+>>>
+>>> void thermal_cdev_update(struct thermal_cooling_device *cdev)
+>>> {
+>>>           mutex_lock(&cdev->lock);
+>>>           /* cooling device is updated*/
+>>>           if (cdev->updated) {
+>>>                   mutex_unlock(&cdev->lock);
+>>>                   return;
+>>>           }
+>>>
+>>>      __thermal_cdev_update(cdev);
+>>>
+>>>           thermal_cdev_set_cur_state(cdev, target);
+>>
+>> Here we are actually setting the 'target' state via:
+>> cdev->ops->set_cur_state(cdev, target)
+>>
+>> then we notify, then updating stats.
+>>
+>>>
+>>>           cdev->updated = true;
+>>>           mutex_unlock(&cdev->lock);
+>>>           trace_cdev_update(cdev, target);
+>>
+>> Also this trace is something that I'm using in my tests...
+> 
+> Yeah, I noticed right after sending the comments. All that should be
+> moved in the lockless function.
 
-Because channels and queues are enumerated in-order in
-efx_set_channels(), it is possible to get tx_queue be calling
+Agree
 
-efx_get_tx_queue(efx, qid / EFX_MAX_TXQ_PER_CHANNEL,
-                      qid % EFX_MAX_TXQ_PER_CHANNEL);
+> 
+> So this function becomes:
+> 
+> void thermal_cdev_update(struct thermal_cooling_device *cdev)
+> {
+> 	mutex_lock(&cdev->lock);
+> 	if (!cdev->updated) {
+> 		__thermal_cdev_update(cdev);
+> 		cdev->updated = true;
+> 	}
+> 	mutex_unlock(&cdev->lock);
+> 
+> 	dev_dbg(&cdev->device, "set to state %lu\n", target);
+> }
+> 
+> We end up with the trace_cdev_update(cdev, target) inside the mutex
+> section but that should be fine.
 
-This uses qid / EFX_MAX_TXQ_PER_CHANNEL as index inside
-efx_nic->channels[] and qid % EFX_MAX_TXQ_PER_CHANNEL as index inside
-channel->tx_queue_be_type[].
+True, this shouldn't be an issue.
 
-Indexing into bitset mapping with modulo operation seems to oversight
-from the previous refactoring. Comments of other call sites also
-indicate that the second argument is indeed queue->label (which is an
-index into channel->tx_queue[]), not queue->type. It also looks like
-that some callers do need indexing by type, though.
+> 
+>>>           dev_dbg(&cdev->device, "set to state %lu\n", target);
+>>> }
+>>>
+>>> And in this file we do instead:
+>>>
+>>> -        instance->cdev->updated = false;
+>>> +        if (update)
+>>> +            __thermal_cdev_update(instance->cdev);
+>>>             mutex_unlock(&instance->cdev->lock);
+>>> -        thermal_cdev_update(instance->cdev);
+>>
+>> Without the line above, we are not un-throttling the devices.
+> 
+> Is it still true with the amended function thermal_cdev_update() ?
+> 
+> 
 
-However, because the sizes of tx_queue[] and tx_queue_by_type[] are
-equal, and every single slot in both arrays is not equal to NULL, no
-crash occurs.
-
-commit 044588b96372 ("sfc: define inner/outer csum offload TXQ types")
-add additional TXQ_TYPE and bumps size of tx_queue_by_type to 8
-elements. Some of its members are NULL now. During interface shutdown,
-tx_queues are flushed; this, in turn, results in a callback to
-efx_farch_handle_tx_flush_done, which then tries to use
-qid % EFX_MAX_TXQ_PER_CHANNEL as queue->type, gets NULL back, and
-crashes.
-
-Address this by adding efx_get_tx_queue_by_type() and updating
-relevant callers.
-
-Signed-off-by: Yury Vostrikov <mon@unformed.ru>
----
- drivers/net/ethernet/sfc/net_driver.h | 21 ++++++++++++++++++---
- drivers/net/ethernet/sfc/ptp.c        |  2 +-
- drivers/net/ethernet/sfc/tx.c         |  2 +-
- 3 files changed, 20 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/sfc/net_driver.h b/drivers/net/ethernet/sfc/net_driver.h
-index 9f7dfdf708cf..4ab0fe21a3a6 100644
---- a/drivers/net/ethernet/sfc/net_driver.h
-+++ b/drivers/net/ethernet/sfc/net_driver.h
-@@ -1533,18 +1533,33 @@ static inline unsigned int efx_channel_num_tx_queues(struct efx_channel *channel
- }
- 
- static inline struct efx_tx_queue *
--efx_channel_get_tx_queue(struct efx_channel *channel, unsigned int type)
-+efx_channel_get_tx_queue_by_type(struct efx_channel *channel, unsigned int type)
- {
- 	EFX_WARN_ON_ONCE_PARANOID(type >= EFX_TXQ_TYPES);
- 	return channel->tx_queue_by_type[type];
- }
- 
- static inline struct efx_tx_queue *
--efx_get_tx_queue(struct efx_nic *efx, unsigned int index, unsigned int type)
-+efx_get_tx_queue_by_type(struct efx_nic *efx, unsigned int index, unsigned int type)
- {
- 	struct efx_channel *channel = efx_get_tx_channel(efx, index);
- 
--	return efx_channel_get_tx_queue(channel, type);
-+	return efx_channel_get_tx_queue_by_type(channel, type);
-+}
-+
-+static inline struct efx_tx_queue *
-+efx_channel_get_tx_queue(struct efx_channel *channel, unsigned int label)
-+{
-+	EFX_WARN_ON_ONCE_PARANOID(label >= EFX_MAX_TXQ_PER_CHANNEL);
-+	return &channel->tx_queue[label];
-+}
-+
-+static inline struct efx_tx_queue *
-+efx_get_tx_queue(struct efx_nic *efx, unsigned int index, unsigned int label)
-+{
-+	struct efx_channel *channel = efx_get_tx_channel(efx, index);
-+
-+	return efx_channel_get_tx_queue(channel, label);
- }
- 
- /* Iterate over all TX queues belonging to a channel */
-diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
-index a39c5143b386..7de19d22dadc 100644
---- a/drivers/net/ethernet/sfc/ptp.c
-+++ b/drivers/net/ethernet/sfc/ptp.c
-@@ -1091,7 +1091,7 @@ static void efx_ptp_xmit_skb_queue(struct efx_nic *efx, struct sk_buff *skb)
- 	u8 type = efx_tx_csum_type_skb(skb);
- 	struct efx_tx_queue *tx_queue;
- 
--	tx_queue = efx_channel_get_tx_queue(ptp_data->channel, type);
-+	tx_queue = efx_channel_get_tx_queue_by_type(ptp_data->channel, type);
- 	if (tx_queue && tx_queue->timestamping) {
- 		efx_enqueue_skb(tx_queue, skb);
- 	} else {
-diff --git a/drivers/net/ethernet/sfc/tx.c b/drivers/net/ethernet/sfc/tx.c
-index 1665529a7271..18742db2990d 100644
---- a/drivers/net/ethernet/sfc/tx.c
-+++ b/drivers/net/ethernet/sfc/tx.c
-@@ -533,7 +533,7 @@ netdev_tx_t efx_hard_start_xmit(struct sk_buff *skb,
- 		return efx_ptp_tx(efx, skb);
- 	}
- 
--	tx_queue = efx_get_tx_queue(efx, index, type);
-+	tx_queue = efx_get_tx_queue_by_type(efx, index, type);
- 	if (WARN_ON_ONCE(!tx_queue)) {
- 		/* We don't have a TXQ of the right type.
- 		 * This should never happen, as we don't advertise offload
--- 
-2.20.1
-
+That new approach should work. I can test your patch with this new
+functions and re-base my work on top of it.
+Or you like me to write such patch and send it?
