@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823EC365ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F075A365AC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbhDTOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:05:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55012 "EHLO mx2.suse.de"
+        id S232399AbhDTOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:05:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55310 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230408AbhDTOE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:04:58 -0400
+        id S232359AbhDTOFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:05:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618927506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N6JmTAHOdm3EBKzZL5WzHZUZAVTtx4LYm8/9OAbOF4I=;
+        b=ew4B6zpLgm7CnWgrZy5ZalklxOHOI4v6mQdTC0jd8h5GfQImJbMaPOEGLsGl7ig/z9vbMu
+        bESXKgEeT55ecoIIJ7whzdn0Q1nLOkLEWmvDf1fqwPTwAaFFS5KgerwM/fCj4bGcBUbez3
+        tmxzrHozEeNEGp+/qGyPBaZrJ/el3J8=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 10E2BAD8A;
-        Tue, 20 Apr 2021 14:04:26 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ata: pata_rb532: Add OF support and make COMPILE_TESTable
-Date:   Tue, 20 Apr 2021 16:04:21 +0200
-Message-Id: <20210420140422.88253-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        by mx2.suse.de (Postfix) with ESMTP id BAF81B061;
+        Tue, 20 Apr 2021 14:05:06 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 16:05:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
+ memory accounting
+Message-ID: <YH7fkblsuxbHlUZn@dhcp22.suse.cz>
+References: <20210420121354.1160437-1-rppt@kernel.org>
+ <20210420132430.GB3596236@casper.infradead.org>
+ <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add OF support for switching RB532 do device tree possible. By removing
-the not needed asm/mach-rc32434/rb.h include the driver could be
-compile tested now.
+On Tue 20-04-21 15:57:08, Michal Hocko wrote:
+[...]
+> Usual memory consumption is usually something like LRU pages + Slab
+> memory + kernel stack + vmalloc used + pcp.
+> 
+> > But I know that KernelStack is allocated through vmalloc these days,
+> > and I don't know whether VmallocUsed includes KernelStack or whether I
+> > can sum them.  Similarly, is Mlocked a subset of Unevictable?
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- drivers/ata/Kconfig         |  2 +-
- drivers/ata/pata_rb532_cf.c | 11 +++++++++--
- 2 files changed, 10 insertions(+), 3 deletions(-)
+Forgot to reply to these two. Yes they do. So if we want to be precise
+then you have to check the stack allocation configuration. There are
+just so many traps lurking here. Something you get used to over time
+but this is certainly far far away from an ideal state. What else we can
+expect from an ad hoc approach to providing data to userspace that was
+historically applied to this and many other proc interfaces. We are
+trying to be strict for some time but some mistakes are simply hard to
+fix up (e.g. accounting shmem as a page cache to name some more).
 
-diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
-index 030cb32da980..53f40f92e4eb 100644
---- a/drivers/ata/Kconfig
-+++ b/drivers/ata/Kconfig
-@@ -1139,7 +1139,7 @@ config PATA_QDI
- 
- config PATA_RB532
- 	tristate "RouterBoard 532 PATA CompactFlash support"
--	depends on MIKROTIK_RB532
-+	depends on MIKROTIK_RB532 || COMPILE_TEST
- 	help
- 	  This option enables support for the RouterBoard 532
- 	  PATA CompactFlash controller.
-diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
-index 479c4b29b856..93d839ab9654 100644
---- a/drivers/ata/pata_rb532_cf.c
-+++ b/drivers/ata/pata_rb532_cf.c
-@@ -28,8 +28,6 @@
- #include <linux/libata.h>
- #include <scsi/scsi_host.h>
- 
--#include <asm/mach-rc32434/rb.h>
--
- #define DRV_NAME	"pata-rb532-cf"
- #define DRV_VERSION	"0.1.0"
- #define DRV_DESC	"PATA driver for RouterBOARD 532 Compact Flash"
-@@ -164,11 +162,20 @@ static int rb532_pata_driver_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id pata_rb532_match[] = {
-+	{ .compatible = "mikrotik,rb532-pata", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pata_rb532_match);
-+#endif
-+
- static struct platform_driver rb532_pata_platform_driver = {
- 	.probe		= rb532_pata_driver_probe,
- 	.remove		= rb532_pata_driver_remove,
- 	.driver	 = {
- 		.name   = DRV_NAME,
-+		.of_match_table = of_match_ptr(pata_rb532_match),
- 	},
- };
- 
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
