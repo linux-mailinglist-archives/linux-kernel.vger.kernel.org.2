@@ -2,109 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AF8365267
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB52D36526B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhDTGf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhDTGfs (ORCPT
+        id S230135AbhDTGhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 02:37:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:30396 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229985AbhDTGhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:35:48 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17179C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 23:35:16 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id j7so16495184pgi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 23:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fossix-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=7/qJ+cWoLN2A/P8WkshNqGRepxTOeMXYyCN2UuSNZCM=;
-        b=jdj4MjgWpF34rkrJSdiyReLgxfoxC7wvQbYHqk2uCdrupaAQ5ie7nx5dLbMkD5r66M
-         eTIemT1H6xc97dYEODsbf4M5W192Bxw3tO5T6GpPMKEuRlgb0bKMEdxIzjVbddIviyl1
-         7BPdu0ERl5CUaQU5A2E95CN21V3Rsd98UCNF1pBLoYyZ9yluhxjc3kmwZq1P6kBtYBJp
-         qFSZw8i5hvT9JVUefGGx4n5Lx2JAx7+67oP7PTEDIMDlU0G6EEHQSnpgkVQDXCYfGMUa
-         /Qf895uwty2KlqrtlgB9953Z5JtVIQuj0QTQd9iDHoqexj/HtzZzPPXcZRE7il8M1U0e
-         ++KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=7/qJ+cWoLN2A/P8WkshNqGRepxTOeMXYyCN2UuSNZCM=;
-        b=cUampJgWj1EB6peqtIR33HjgiJu27B94A5AO3CIi7DHBq4I1N4miao7C0nPNK5lw1C
-         yF8ucn9QzzkCMo8QdrwODZKYhZ905cYnH8ROXqYCXsl/D/fCNmbuHCLyLZ8Fw5OcQ8Hr
-         ED1POCVtzGrTlT+rFj+FCYGFwRMa/zu8W5L2rYWt1ZO1jdQMwHhUm0rugF2St+XvlU7G
-         zlc98+y4kUbfOw4PCpvUdTsbZCXSA1m2SB80yJJn+qwlar4Xiugcy8nslOyXKK86Ja8f
-         fJnFzOceSsJTvTMbAm6C3fJj2TWhO7eSBgichxhZOoDW/3Lue+LnudosqC5pVf5xvJfv
-         U46Q==
-X-Gm-Message-State: AOAM532TMtXF3gkvPcFoXYSb2l31+hfdSPRvoKyd8XvTGdHBWRQanXVQ
-        zyB9zqlEtQrNo8z+3rw1FKdmTg==
-X-Google-Smtp-Source: ABdhPJyB7+uL61SnopVxjLZEHqrP4CokPtaLTSzBN/xx8opJvyhg4vc8W+MeBl/M+6FrIzoA3gw83Q==
-X-Received: by 2002:a62:170e:0:b029:1fa:7161:fd71 with SMTP id 14-20020a62170e0000b02901fa7161fd71mr23040906pfx.35.1618900515537;
-        Mon, 19 Apr 2021 23:35:15 -0700 (PDT)
-Received: from localhost ([103.21.79.4])
-        by smtp.gmail.com with ESMTPSA id y29sm13989232pfq.29.2021.04.19.23.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 23:35:15 -0700 (PDT)
-From:   Santosh Sivaraj <santosh@fossix.org>
-To:     Zou Wei <zou_wei@huawei.com>, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, ira.weiny@intel.com
-Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        Zou Wei <zou_wei@huawei.com>
-Subject: Re: [PATCH -next] tools/testing/nvdimm: Make symbol
- '__nfit_test_ioremap' static
-In-Reply-To: <1617779451-81730-1-git-send-email-zou_wei@huawei.com>
-References: <1617779451-81730-1-git-send-email-zou_wei@huawei.com>
-Date:   Tue, 20 Apr 2021 12:05:11 +0530
-Message-ID: <87h7k1zco0.fsf@fossix.org>
+        Tue, 20 Apr 2021 02:37:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618900603; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=gF2N9F5JrCVqmJS3xEbcufJab97Iq2avZ9Jdu5gpc7I=;
+ b=c6L3ZwCaL+HHgrIjwjPVNOBIrn3LiY/o43A0EUgI3Wi6Xf/9ZXcmduNaxIivWDcWBVYx+cow
+ aOMiTMmwjL5hFN8sKrlK2JAVV7DPlyUfh2ED8gXRV/7FJ1GVJyH8zp2LzZ4D2lluwlEDCdTT
+ bIFM2CMPWIaB5ZqFiOCyk7sT0YE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 607e7679febcffa80f1b4dcb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 06:36:41
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6885EC4338A; Tue, 20 Apr 2021 06:36:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71C7EC433F1;
+        Tue, 20 Apr 2021 06:36:40 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Apr 2021 12:06:40 +0530
+From:   schowdhu@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Felipe Balbi <balbi@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V3 2/4] soc: qcom: dcc:Add driver support for Data Capture
+ and Compare unit(DCC)
+In-Reply-To: <20210419143225.GO1538589@yoga>
+References: <cover.1618387606.git.schowdhu@codeaurora.org>
+ <59b2e83d5d0f435112f6ae266612ff91c85b120f.1618387606.git.schowdhu@codeaurora.org>
+ <87k0p4njni.fsf@kernel.org>
+ <ffc2076e7145af0099bab8ef37611556@codeaurora.org>
+ <20210419143225.GO1538589@yoga>
+Message-ID: <f9b28acabea8836b713cab2e0de53542@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-04-19 20:02, Bjorn Andersson wrote:
+> On Mon 19 Apr 05:32 CDT 2021, schowdhu@codeaurora.org wrote:
+> 
+>> On 2021-04-15 12:01, Felipe Balbi wrote:
+>> > Hi,
+>> >
+>> > Souradeep Chowdhury <schowdhu@codeaurora.org> writes:
+>> > > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+>> > > index ad675a6..e7f0ccb 100644
+>> > > --- a/drivers/soc/qcom/Makefile
+>> > > +++ b/drivers/soc/qcom/Makefile
+>> > > @@ -1,19 +1,22 @@
+>> > >  # SPDX-License-Identifier: GPL-2.0
+>> > >  CFLAGS_rpmh-rsc.o := -I$(src)
+>> > >  obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
+>> > > -obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
+>> > > +obj-$(CONFIG_QCOM_APR) += apr.o
+>> > >  obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
+>> > >  obj-$(CONFIG_QCOM_CPR)		+= cpr.o
+>> > > +obj-$(CONFIG_QCOM_DCC) += dcc.o
+>> > > +obj-$(CONFIG_QCOM_GENI_SE) +=   qcom-geni-se.o
+>> > >  obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
+>> > > +obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) += kryo-l2-accessors.o
+>> > > +obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+>> > >  obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
+>> > >  obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
+>> > >  obj-$(CONFIG_QCOM_PDR_HELPERS)	+= pdr_interface.o
+>> > >  obj-$(CONFIG_QCOM_QMI_HELPERS)	+= qmi_helpers.o
+>> > > -qmi_helpers-y	+= qmi_encdec.o qmi_interface.o
+>> > >  obj-$(CONFIG_QCOM_RMTFS_MEM)	+= rmtfs_mem.o
+>> > >  obj-$(CONFIG_QCOM_RPMH)		+= qcom_rpmh.o
+>> > > -qcom_rpmh-y			+= rpmh-rsc.o
+>> > > -qcom_rpmh-y			+= rpmh.o
+>> > > +obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
+>> > > +obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
+>> > >  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
+>> > >  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+>> > >  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>> > > @@ -21,8 +24,6 @@ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>> > >  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+>> > >  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
+>> > >  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+>> > > -obj-$(CONFIG_QCOM_APR) += apr.o
+>> > > -obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+>> > > -obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
+>> > > -obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
+>> > > -obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
+>> > > +qmi_helpers-y   += qmi_encdec.o qmi_interface.o
+>> > > +qcom_rpmh-y                     += rpmh-rsc.o
+>> > > +qcom_rpmh-y                     += rpmh.o
+>> >
+>> > why so many changes?
+>> 
+>> This has been accidentally sorted based on the config names. Will be 
+>> fixing
+>> this in next version of the patch.
+>> 
+>> >
+>> > > diff --git a/drivers/soc/qcom/dcc.c b/drivers/soc/qcom/dcc.c
+>> > > new file mode 100644
+>> > > index 0000000..fcd5580
+>> > > --- /dev/null
+>> > > +++ b/drivers/soc/qcom/dcc.c
+>> > > @@ -0,0 +1,1539 @@
+>> > > +// SPDX-License-Identifier: GPL-2.0-only
+>> > > +/*
+>> > > + * Copyright (c) 2015-2021, The Linux Foundation. All rights
+>> > > reserved.
+>> > > + */
+>> > > +
+>> > > +#include <linux/bitfield.h>
+>> > > +#include <linux/bitops.h>
+>> > > +#include <linux/cdev.h>
+>> > > +#include <linux/delay.h>
+>> > > +#include <linux/fs.h>
+>> > > +#include <linux/io.h>
+>> > > +#include <linux/iopoll.h>
+>> > > +#include <linux/module.h>
+>> > > +#include <linux/of.h>
+>> > > +#include <linux/of_device.h>
+>> > > +#include <linux/platform_device.h>
+>> > > +#include <linux/slab.h>
+>> > > +#include <linux/uaccess.h>
+>> > > +
+>> > > +
+>> >
+>> > one blank line is enough
+>> 
+>> Ack
+>> 
+>> >
+>> > > +#define TIMEOUT_US		100
+>> > > +
+>> > > +#define dcc_writel(drvdata, val, off)					\
+>> > > +	writel((val), drvdata->base + dcc_offset_conv(drvdata, off))
+>> > > +#define dcc_readl(drvdata, off)						\
+>> > > +	readl(drvdata->base + dcc_offset_conv(drvdata, off))
+>> > > +
+>> > > +#define dcc_sram_readl(drvdata, off)					\
+>> > > +	readl(drvdata->ram_base + off)
+>> >
+>> > this would be probably be better as static inlines.
+>> 
+>> These are simple read and write operations used in the driver
+>> which just calls the generic writel and readl function.
+>> That's why macros have been used here to lesson the overhead
+>> of an extra function call.
+> 
+> The compiler will realize that your static dcc_sram_readl() is cheaper
+> to inline than call and do so for you. So you can expect that there's 
+> no
+> difference in the output from the compiler, and if there is then the
+> compiler knows something that you're overlooking.
 
-Hi Zou,
+Ack. Will go for static inline here.
 
-Zou Wei <zou_wei@huawei.com> writes:
-
-> The sparse tool complains as follows:
->
-> tools/testing/nvdimm/test/iomap.c:65:14: warning:
->  symbol '__nfit_test_ioremap' was not declared. Should it be static?
->
-> This symbol is not used outside of security.c, so this
-
-s/security.c/iomap.c/
-
-Thanks,
-Santosh
-
-> commit marks it static.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  tools/testing/nvdimm/test/iomap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/nvdimm/test/iomap.c b/tools/testing/nvdimm/test/iomap.c
-> index c62d372..ed563bd 100644
-> --- a/tools/testing/nvdimm/test/iomap.c
-> +++ b/tools/testing/nvdimm/test/iomap.c
-> @@ -62,7 +62,7 @@ struct nfit_test_resource *get_nfit_res(resource_size_t resource)
->  }
->  EXPORT_SYMBOL(get_nfit_res);
->  
-> -void __iomem *__nfit_test_ioremap(resource_size_t offset, unsigned long size,
-> +static void __iomem *__nfit_test_ioremap(resource_size_t offset, unsigned long size,
->  		void __iomem *(*fallback_fn)(resource_size_t, unsigned long))
->  {
->  	struct nfit_test_resource *nfit_res = get_nfit_res(offset);
-> -- 
-> 2.6.2
-> _______________________________________________
-> Linux-nvdimm mailing list -- linux-nvdimm@lists.01.org
-> To unsubscribe send an email to linux-nvdimm-leave@lists.01.org
+> 
+> Regards,
+> Bjorn
