@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5D63659A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2173659A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhDTNQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:16:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:34694 "EHLO foss.arm.com"
+        id S232343AbhDTNRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231422AbhDTNQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:16:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CB311478;
-        Tue, 20 Apr 2021 06:16:09 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2CAF53F792;
-        Tue, 20 Apr 2021 06:16:08 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 14:16:05 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        kernel-team@android.com, Jon Hunter <jonathanh@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] PCI: tegra: Restore MSI enable state on resume
-Message-ID: <20210420131605.GB5734@lpieralisi>
-References: <20210420130526.531138-1-maz@kernel.org>
+        id S231422AbhDTNQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:16:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB92561155;
+        Tue, 20 Apr 2021 13:16:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618924588;
+        bh=qhR1fpCqAsT1S7eszhL+8DGn+IohPdIv6ZmfP8rMA54=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KUF557NhH5l1t2K0OYATzazaNCSAUMl7v8OSvEA6BB3++H9JFEiE0m47Qe20TLsyA
+         Mg+bE3SvdjK4KbC0KDgBwkghXH1+SdNl7XPGJXfOGWL6rieURUdgwykpH/YpDMQBPG
+         rKBgMRdJAVDnOl31RwFKVeNmayE39KOv5tA+vfGakvNDvdEpQ+NJsJgelSxLbVraWI
+         bPMda19jc0MXqs60Xcjv5yfm6A6g9IJPG8oGUJGNTfLxnnkT0YtwmG/da8/HHsmN7t
+         JmXlm7VjlV/79DJvWlsaprQDngcrZLv3QMmwPhKSGYJzeKATbw0tpP/7J7LXi7vTV1
+         xuJcRy9ZW0OEg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH v2 0/2] secretmem: optimize page_is_secretmem()
+Date:   Tue, 20 Apr 2021 16:16:07 +0300
+Message-Id: <20210420131611.8259-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420130526.531138-1-maz@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 02:05:26PM +0100, Marc Zyngier wrote:
-> When going into suspend, the Tegra MSI controller loses its
-> state. Restore the MSI allocation on resume so that PCI devices
-> are usable again.
-> 
-> Reported-by: Jon Hunter <jonathanh@nvidia.com>
-> Tested-by: Jon Hunter <jonathanh@nvidia.com>
-> Fixes: 973a28677e39 ("PCI: tegra: Convert to MSI domains")
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> ---
->  drivers/pci/controller/pci-tegra.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Squashed with the Fixes: commit, updated my pci/msi branch with it
-and pushed out.
+Hi,
 
-Thanks,
-Lorenzo
+This is an updated version of page_is_secretmem() changes.
+This is based on v5.12-rc7-mmots-2021-04-15-16-28.
 
-> diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
-> index eaba7b2fab4a..507b23d43ad1 100644
-> --- a/drivers/pci/controller/pci-tegra.c
-> +++ b/drivers/pci/controller/pci-tegra.c
-> @@ -1802,13 +1802,19 @@ static void tegra_pcie_enable_msi(struct tegra_pcie *pcie)
->  {
->  	const struct tegra_pcie_soc *soc = pcie->soc;
->  	struct tegra_msi *msi = &pcie->msi;
-> -	u32 reg;
-> +	u32 reg, msi_state[INT_PCI_MSI_NR / 32];
-> +	int i;
->  
->  	afi_writel(pcie, msi->phys >> soc->msi_base_shift, AFI_MSI_FPCI_BAR_ST);
->  	afi_writel(pcie, msi->phys, AFI_MSI_AXI_BAR_ST);
->  	/* this register is in 4K increments */
->  	afi_writel(pcie, 1, AFI_MSI_BAR_SZ);
->  
-> +	/* Restore the MSI allocation state */
-> +	bitmap_to_arr32(msi_state, msi->used, INT_PCI_MSI_NR);
-> +	for (i = 0; i < ARRAY_SIZE(msi_state); i++)
-> +		afi_writel(pcie, msi_state[i], AFI_MSI_EN_VEC(i));
-> +
->  	/* and unmask the MSI interrupt */
->  	reg = afi_readl(pcie, AFI_INTR_MASK);
->  	reg |= AFI_INTR_MASK_MSI_MASK;
-> -- 
-> 2.30.2
-> 
+@Andrew, please let me know if you'd like me to rebase it differently or
+resend the entire set.
+
+v2:
+* move the check for secretmem page in gup_pte_range after we get a
+  reference to the page, per Matthew.
+
+Mike Rapoport (2):
+  secretmem/gup: don't check if page is secretmem without reference
+  secretmem: optimize page_is_secretmem()
+
+ include/linux/secretmem.h | 26 +++++++++++++++++++++++++-
+ mm/gup.c                  |  6 +++---
+ mm/secretmem.c            | 12 +-----------
+ 3 files changed, 29 insertions(+), 15 deletions(-)
+
+-- 
+2.28.0
+
