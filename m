@@ -2,87 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E773658BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6113658CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhDTMOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44402 "EHLO mail.kernel.org"
+        id S231944AbhDTMUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:20:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:15119 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhDTMOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:14:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 009ED613BF;
-        Tue, 20 Apr 2021 12:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618920844;
-        bh=L7f/Gd26ZNsxEmOWfRaBX+6S4MgGX4ZRI+QwZTF83kY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YAOW8mxenTWUNH8njZ7HYm0J2ny0f+JeEiq6RxZXCKJGjI+h+hCrw6hnHFCVkxfyo
-         ksWQkGwoE9CjlOOgngDgRXzfMnPM6MQMHNExAG2zH/Wk8ZUmcaF4xysD3SR3/brk0A
-         CkzVrwmi28DAUUYu31KOOaU172+NDkc/0TZlkDDn7rfGln25ccfYWiDd0PdFS5xd1f
-         Yvwtsgf063Jf/FjUcD4eazthTSPEPuaCp7XPmB1QTo3rcm5xRL4vhyC7c7U2P2A8rt
-         WudBYSV0fCgJK+qO7HKPokijKRnLAbNeVOinIUHuBwK7+2LfD6K1Ir298XH0X2HNgH
-         Xo4xXeU67j7Jw==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in memory accounting
-Date:   Tue, 20 Apr 2021 15:13:54 +0300
-Message-Id: <20210420121354.1160437-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231251AbhDTMUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:20:14 -0400
+IronPort-SDR: ZlUKICTjTjHstzouJe+jOXsVt+77ldJBDPFmuohBJJcynrvzstLTFy2hwyRwS2S8fM/RmmqB3x
+ +N6S7mlq6IQw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="216083815"
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="216083815"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 05:19:43 -0700
+IronPort-SDR: O1Zz5z8jehjU1oUQZ+/0Fd5w1s/oldNIhISRT9R2awv83yoAafe5BpQxCbC0LIPp1V7KFvyjEV
+ 2/xYJcKSJ0nw==
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="400978238"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 05:19:42 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1lYpLv-005jfW-A8; Tue, 20 Apr 2021 15:19:39 +0300
+Date:   Tue, 20 Apr 2021 15:19:39 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Tree for Apr 20
+Message-ID: <YH7G235DGG6bEDTF@smile.fi.intel.com>
+References: <20210420194718.4a4a0e8f@canb.auug.org.au>
+ <YH7C6xP5HsHYuobO@smile.fi.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YH7C6xP5HsHYuobO@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue, Apr 20, 2021 at 03:02:51PM +0300, Andy Shevchenko wrote:
+> On Tue, Apr 20, 2021 at 07:47:18PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20210419:
+> > 
+> > The powerpc tree lost its build failure.
+> > 
+> > The ftrace tree gained a conflict against the bpf-next tree.
+> > 
+> > Non-merge commits (relative to Linus' tree): 12917
+> >  11294 files changed, 619161 insertions(+), 276245 deletions(-)
+> > 
+> > ----------------------------------------------------------------------------
+> > 
+> > I have created today's linux-next tree at
+> > git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> > (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+> > are tracking the linux-next tree using git, you should not use "git pull"
+> > to do so as that will try to merge the new linux-next release with the
+> > old one.  You should use "git fetch" and checkout or reset to the new
+> > master.
+> > 
+> > You can see which trees have been included by looking in the Next/Trees
+> > file in the source.  There are also quilt-import.log and merge.log
+> > files in the Next directory.  Between each merge, the tree was built
+> > with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
+> > multi_v7_defconfig for arm and a native build of tools/perf. After
+> > the final fixups (if any), I do an x86_64 modules_install followed by
+> > builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
+> > ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
+> > and sparc64 defconfig and htmldocs. And finally, a simple boot test
+> > of the powerpc pseries_le_defconfig kernel in qemu (with and without
+> > kvm enabled).
+> > 
+> > Below is a summary of the state of the merge.
+> > 
+> > I am currently merging 340 trees (counting Linus' and 89 trees of bug
+> > fix patches pending for the current merge release).
+> > 
+> > Stats about the size of the tree over time can be seen at
+> > http://neuling.org/linux-next-size.html .
+> > 
+> > Status of my local build tests will be at
+> > http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+> > advice about cross compilers/configs that work, we are always open to add
+> > more builds.
+> > 
+> > Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+> > Gortmaker for triage and bug fixes.
+> 
+> I have full of build warnings / errors in x86 and iommu
+> 
+> X86:
+> 
+> arch/x86/include/asm/string_64.h:14:14: warning: conflicting types for built-in function ‘memcpy’; expected ‘void *(void *, const void *, long unsigned int)’ [-Wbuiltin-declaration-mismatch]
+>    14 | extern void *memcpy(void *to, const void *from, size_t len);
+>       |              ^~~~~~
+> arch/x86/include/asm/string_64.h:7:1: note: ‘memcpy’ is declared in header ‘<string.h>’
+>     6 | #include <linux/jump_label.h>
+>   +++ |+#include <string.h>
+> 
+> And so on for standard string function definitions.
+> 
+> IOMMU:
+> 
+> drivers/iommu/amd/io_pgtable.c: In function ‘v1_alloc_pgtable’:
+> drivers/iommu/amd/io_pgtable.c:551:32: error: assignment to ‘size_t (*)(struct io_pgtable_ops *, long unsigned int,  size_t,  struct iommu_iotlb_gather *)’ {aka ‘unsigned int (*)(struct io_pgtable_ops *, long unsigned int,  unsigned int,  struct iommu_iotlb_gather *)’} from incompatible pointer type ‘long unsigned int (*)(struct io_pgtable_ops *, long unsigned int,  size_t,  struct iommu_iotlb_gather *)’ {aka ‘long unsigned int (*)(struct io_pgtable_ops *, long unsigned int,  unsigned int,  struct iommu_iotlb_gather *)’} [-Werror=incompatible-pointer-types]
+>   551 |  pgtable->iop.ops.unmap        = iommu_v1_unmap_page;
+>       |                                ^
+> cc1: some warnings being treated as errors
+> 
+> Is it only me?
 
-Add a paragraph that explains that it may happen that the counters in
-/proc/meminfo do not add up to the overall memory usage.
+Okay, there is another bug and it seems compiler related:
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
-v2:
-* Add brief changelog
-* Fix typo
-* Update example about network memory usage according to Eric's comment at
+net/socket.c:2320:3: note: in expansion of macro ‘BUILD_BUG_ON’
+ 2320 |   BUILD_BUG_ON(sizeof(struct cmsghdr) !=
+      |   ^~~~~~~~~~~~
 
-https://lore.kernel.org/lkml/CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com
+% gcc --version
+gcc (Debian 10.2.1-6) 10.2.1 20210110
+Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-v1: Link: https://lore.kernel.org/lkml/20210420085105.1156640-1-rppt@kernel.org
-
- Documentation/filesystems/proc.rst | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 48fbfc336ebf..8c77a491c436 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -929,8 +929,14 @@ meminfo
- ~~~~~~~
- 
- Provides information about distribution and utilization of memory.  This
--varies by architecture and compile options.  The following is from a
--16GB PIII, which has highmem enabled.  You may not have all of these fields.
-+varies by architecture and compile options. Please note that it may happen
-+that the memory accounted here does not add up to the overall memory usage
-+and the difference for some workloads can be substantial. In many cases there
-+are other means to find out additional memory using subsystem specific
-+interfaces, for instance /proc/net/sockstat for TCP memory allocations.
-+
-+The following is from a 16GB PIII, which has highmem enabled.
-+You may not have all of these fields.
- 
- ::
- 
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
