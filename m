@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C112A365E4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7EB365E48
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhDTROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbhDTROd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233212AbhDTROd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 20 Apr 2021 13:14:33 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83424C06138A;
-        Tue, 20 Apr 2021 10:14:00 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id gq23-20020a17090b1057b0290151869af68bso1120687pjb.4;
-        Tue, 20 Apr 2021 10:14:00 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhDTROb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:14:31 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE39DC06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:13:59 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso15702258pjg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:13:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=R77m3F4i97NmmSVEA2bHSKCUsR1Gzu1DZmrx8rSZmnc=;
-        b=VTRmmMAeH0YYoi+oBilo2Q4iN7ayI7LLhuBDsXA19erQB/nuBWQoLBc/VvIdfMH6sq
-         dYS+sGWq+SrsopNpTBQk6bmsyrBAVLHhasYd8138OzFC59/yxnpBRcauLnl5FuPnoWEg
-         XlsOD4/BpODTMOPdUymrVBRLNGZ/ss50LcWoln06ie/czZ6O2vHz0nYw4DJ0PiDUM5ur
-         JW/Pb74D0CpdlW26QDI3YAunE4sAJWjcAHYj8laTUOhX/Ya6nleroFxhm3L5xDyZIaE4
-         HfQeFrt2FrjP5r35I+frqiSocSIfjDTnVv6exrFhGYqcqvaAoCifzLte2/mtMmSkFbMS
-         hOUQ==
+        bh=5Rx/7pSrdOTjrqYhkD0rnBzZE6qiwPWA0fsq/Ig+gAU=;
+        b=qElD0nGptQO4d5U4icvmkxRPze4zkw8T5nITuq2CJ3NAoim/A7H2VCs5KmyfYmgVjP
+         Qjlyxn+oTHT03jlEabF8sslzpFRPgJXF0q6cH08Ng0Zs75M4LQMwZEB7yQqEArBSQjn7
+         QcBPdULWeGd1CKL/pSbMqc8wY6FAbX529h9WVfl1EVkevAj09dxJnXWAdAiFQUwJwLS1
+         YVasQwzrAVDDd4tA9/FJkEfqnGnn39XrbMdFSJRAthEl+IX6pDtcp7sfvPeZ6fF/EwmB
+         RXRA0hYu3q0HHarA1T7KQmIaZ91C+cbPKmPvxggjX5ElNLx4bawB9VUzKF5TuKb5/Wtm
+         fhUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=R77m3F4i97NmmSVEA2bHSKCUsR1Gzu1DZmrx8rSZmnc=;
-        b=LBEzQ/GEKd0oO9NtUVrM1UNWYZR+/RaVo6TNZRYt95U2CIRyL+iAo4qO7UFDKf191/
-         Uz9JWqsOBpyefqtz7r3nTf6K3CH+ynTUvXkImXsJLD0cmAKO4FGf8tOsLk4+l+/jhVI/
-         y7oJe301C4RFZ0dTqbYT0lhlEcBI7Bjcv7g1mPdIJhk3A/K5Asocri0UPIE84MpeLGJp
-         H2L7kfAHSjGjtNchBxBTS2GWsSI1LAVvldls/ORE0Wu4RKFh1NKfobcu2UhtZglfY3tk
-         /A8hDx5ywtKDYnccukIm+ViE50RBSz6dbBN4pAkFRpxMPQ9SbITjvM+1BGJ+RMthg0yT
-         kVfw==
-X-Gm-Message-State: AOAM532C8PgNcHW/jpM1CQvkiV2mnKSMoUMJSObb3JdOteE1PY4aUnWE
-        QGmxJTaywrTxAQHqBiTTRU0=
-X-Google-Smtp-Source: ABdhPJwYvfjmiYSQNfFp90LExzPEpgTLbSxxIMHwlXcbNKHtrHWWMDps1TqvHUb31ReFBoCNXf+XjA==
-X-Received: by 2002:a17:90a:c788:: with SMTP id gn8mr5736725pjb.60.1618938840091;
-        Tue, 20 Apr 2021 10:14:00 -0700 (PDT)
-Received: from localhost ([103.241.225.98])
-        by smtp.gmail.com with ESMTPSA id h11sm3035281pjs.52.2021.04.20.10.13.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=5Rx/7pSrdOTjrqYhkD0rnBzZE6qiwPWA0fsq/Ig+gAU=;
+        b=Am/JFgwo4bqBx0Sb6ufioNkktmJUrxLslj9VtpENADgwrji/UOdnZFhuOtADiT+6+o
+         acns/xrSEvSRGAgY/UbMfSrfeiym9+q/OoVoyyAof+/b6pA5GRvdRSKzqCWwNqBgrGCr
+         SbGnDzi9+aZqX+SB/lCXWtbE0Er2XrL5OWaA/PsUqnrZsLPTZJwsrVNrbRSm5ArE+bES
+         +5Zlqem4tV2BAYE3iII8DTK3q+QAh0bAfaSFYAueDlTdLOUfgPqpnS1rXOHCC9BwI63l
+         AVKMTg4MaF0rRnmrCbrKHBiSviz2ujr4s0Tots0iB5o1OAbVo1rYHfmewwqMdVGwu/7X
+         A8aQ==
+X-Gm-Message-State: AOAM530q1XQwW58JuxjfBVn1uhhZV1AQ39OSQyiPZwD5M56CYSd1T83i
+        RWrkj7kU5U96AOsOKQXLaqOGsA==
+X-Google-Smtp-Source: ABdhPJxFoch6bgHpPlK19OfXQhArjeTBWax5ZS4JHCVF4ImqcGbfNd87Wsh3hWG62bOhbKqRAG72qw==
+X-Received: by 2002:a17:902:9a0a:b029:e6:bf00:8a36 with SMTP id v10-20020a1709029a0ab02900e6bf008a36mr30106258plp.51.1618938839090;
         Tue, 20 Apr 2021 10:13:59 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 22:43:53 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id d18sm2871703pjx.46.2021.04.20.10.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 10:13:58 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 17:13:54 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] staging: media: atomisp: use printk with KERN
- facility level
-Message-ID: <20210420171353.GA193332@localhost>
-References: <cover.1618859059.git.drv@mailo.com>
- <4947abeebc2cecca43137675519a2fb48577d3e5.1618859059.git.drv@mailo.com>
- <20210420083522.GA1411@agape.jhs>
+Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
+Message-ID: <YH8L0ihIzL6UB6qD@google.com>
+References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
+ <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
+ <YHnJtvXdrZE+AfM3@google.com>
+ <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
+ <YH2pam5b837wFM3z@google.com>
+ <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
+ <YH3HWeOXFiCTZN4y@google.com>
+ <20210419185354.v3rgandtrel7bzjj@box>
+ <YH3jaf5ThzLZdY4K@google.com>
+ <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420083522.GA1411@agape.jhs>
+In-Reply-To: <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:35:23AM +0200, Fabio Aiuto wrote:
-> Hi Deepak,
-> 
-> On Tue, Apr 20, 2021 at 12:46:40AM +0530, Deepak R Varma wrote:
-> > printk() without KERN_<LEVEL> facility is flagged by checkpatch as a
-> > warning. It is better to use pr_info() which comes with an
-> > inbuilt KERN_INFO level.
+On Tue, Apr 20, 2021, Kirill A. Shutemov wrote:
+> On Mon, Apr 19, 2021 at 08:09:13PM +0000, Sean Christopherson wrote:
+> > On Mon, Apr 19, 2021, Kirill A. Shutemov wrote:
+> > > The critical question is whether we ever need to translate hva->pfn after
+> > > the page is added to the guest private memory. I believe we do, but I
+> > > never checked. And that's the reason we need to keep hwpoison entries
+> > > around, which encode pfn.
 > > 
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > ---
-> >  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > As proposed in the TDX RFC, KVM would "need" the hva->pfn translation if the
+> > guest private EPT entry was zapped, e.g. by NUMA balancing (which will fail on
+> > the backend).  But in that case, KVM still has the original PFN, the "new"
+> > translation becomes a sanity check to make sure that the zapped translation
+> > wasn't moved unexpectedly.
 > > 
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > index b572551f1a0d..a0f3c5c32f94 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > @@ -1020,7 +1020,7 @@ static int gc0310_set_fmt(struct v4l2_subdev *sd,
-> >  		return -EINVAL;
-> >  	}
-> >  
-> > -	printk("%s: before gc0310_write_reg_array %s\n", __func__,
-> > +	pr_info("%s: before gc0310_write_reg_array %s\n", __func__,
-> >  	       gc0310_res[dev->fmt_idx].desc);
+> > Regardless, I don't see what that has to do with kvm_pfn_map.  At some point,
+> > gup() has to fault in the page or look at the host PTE value.  For the latter,
+> > at least on x86, we can throw info into the PTE itself to tag it as guest-only.
+> > No matter what implementation we settle on, I think we've failed if we end up in
+> > a situation where the primary MMU has pages it doesn't know are guest-only.
 > 
-> in a driver is best recommended to replace a raw printk call
-> with a dev_*() log. Check few lines above here to see
-> how it is done.
+> I try to understand if it's a problem if KVM sees a guest-only PTE, but
+> it's for other VM. Like two VM's try to use the same tmpfs file as guest
+> memory. We cannot insert the pfn into two TD/SEV guest at once, but can it
+> cause other problems? I'm not sure.
 
-Hello Fabio,
-thank you for the feedback. Should I resubmit this patch with additional
-printk() / pr_info() replacement by dev_*()? OR send in a new patch with
-this change? Just want to make sure I am not including more than one
-change type in the patch.
+For TDX and SNP, "firmware" will prevent assigning the same PFN to multiple VMs.
 
-deepak.
+For SEV and SEV-ES, the PSP (what I'm calling "firmware") will not prevent
+assigning the same page to multiple guests.  But the failure mode in that case,
+assuming the guests have different ASIDs, is limited to corruption of the guest.
 
-> 
-> 
-> >  	ret = startup(sd);
-> >  	if (ret) {
-> > -- 
-> > 2.25.1
-> > 
-> > 
-> 
-> 
-> thank you,
-> 
-> fabio
+On the other hand, for SEV/SEV-ES it's not invalid to assign the same ASID to
+multiple guests (there's an in-flight patch to do exactly that[*]), and sharing
+PFNs between guests with the same ASID would also be valid.  In other words, if
+we want to enforce PFN association in the kernel, I think the association should
+be per-ASID, not per-KVM guest.
+
+So, I don't think we _need_ to rely on the TDX/SNP behavior, but if leveraging
+firmware to handle those checks means avoiding additional complexity in the
+kernel, then I think it's worth leaning on firmware even if it means SEV/SEV-ES
+don't enjoy the same level of robustness.
+
+[*] https://lkml.kernel.org/r/20210408223214.2582277-1-natet@google.com
