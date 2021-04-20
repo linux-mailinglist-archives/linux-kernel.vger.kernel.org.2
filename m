@@ -2,74 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209C2365885
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D14D365853
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhDTMHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhDTMHB (ORCPT
+        id S231968AbhDTMEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:04:48 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:35421 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230118AbhDTMEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:07:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD96C06174A;
-        Tue, 20 Apr 2021 05:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xYzD95OKA5ENyepa0XjcyYKTLHpDMzNXh5eqp/f42yQ=; b=OV04XzyNdjZ+hXo40rUDDreOqJ
-        mOHWE7RZ69yNJkAK9W1kGjXgL9S2T1Y7zlQ/ONWctzfImP0UUcFaqZo2auK8DoPxC0bc6Zh98pi84
-        NzK824I1F/d1K3OocowDvmMv0w4O45Cpsj8Kp08NzbsXZ/Q2aYOLYXJ5375fJbH0nVj6mdfQAQ+Yb
-        DydA1Qb41vyWz5vL07Jqh+faTcWOMCjB1hNHh0BYFXjU340/028m5CQYpWpyrg7NEo9kSqSj5DjI3
-        stxODaDBWQMVzBzvPuut+UuZdV8v56tRFFxFvi7eJmxRMbnrN0p8Kq6qR6U3FulHUXAns1LPwRI+3
-        qG0U16mw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYp6N-00F826-Jq; Tue, 20 Apr 2021 12:03:43 +0000
-Date:   Tue, 20 Apr 2021 13:03:35 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     rafael@kernel.org, gregkh@linuxfoundation.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, bvanassche@acm.org,
-        jeyu@kernel.org, ebiederm@xmission.com, mchehab@kernel.org,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        kernel@tuxforce.de, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Chinner <david@fromorbit.com>
-Subject: Re: [RFC v2 1/6] fs: provide unlocked helper for freeze_super()
-Message-ID: <20210420120335.GA3604224@infradead.org>
-References: <20210417001026.23858-1-mcgrof@kernel.org>
- <20210417001026.23858-2-mcgrof@kernel.org>
+        Tue, 20 Apr 2021 08:04:46 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Yp6wlXcgL8K3KYp6zlzVd5; Tue, 20 Apr 2021 14:04:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1618920253; bh=hOjRdcVj/vhC8QEJJK2RYHYHr0CLQHqjNWi1pVmSYoA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=fAPcB6T9UvBNirxHTMGn2rs0Rehy/FF3+NYIYI8wmk2pkMSpWBKuOicdnnYA922S7
+         RTfZ4cH+c0uNOHIZC/54UEX6jTJjiY0xVB6lXWCLXIYJSmGF0Fyu97UGTvvE1sHjrr
+         XZDf5XPFyl2ZN0H+Tpi0+RqN72kHLve/BcxBSEefg/N+urHtM3C3SQCoua1lKD0AgX
+         bI+JeayI4U/Wtv0ebtQfP7VLt2YavfSMJOBRUn7fSXpbQuUwsHfDVSSTpzJ6ZAKfzR
+         tE/8y76g+cOWGx4V639I9TVLBnbpk8mLXw+zznxkSNv3YB0mxhJAfAd1ddvnxfyW4/
+         ZvHaGKr9vv8cQ==
+Subject: Re: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
+To:     Ashish Kalra <eashishkalra@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210417153627.GA50228@ashish-NUC8i5BEH>
+ <20210417205613.5c1aac74@coco.lan> <20210418012648.GA4821@ashish-NUC8i5BEH>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <5abf96ba-b73f-005f-f489-81c6e3a57648@xs4all.nl>
+Date:   Tue, 20 Apr 2021 14:04:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417001026.23858-2-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210418012648.GA4821@ashish-NUC8i5BEH>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfCeDK+lIdYygSjSbwF3EraPHGthWBShAeXh/SHt0WbKm2m9F0LVGg2KktfY9PnncxcIPo5bQ/KhijIl50OKsO6rMgwQHUf/kbpoHmMNuRWeuPPiSHvY9
+ ZRK48KJNCB+vSkr6Yo1TMgUjL5dhyxNCsAYsth61/Yf1HqKSj57PcdcQc4GD1Vr2q+Ig8CL6iwpFdFSpsz0u5g9Ua+lo30bxOV4gdxs1COPsRhYQVPH1hbRe
+ 0FR7lq4R+SUDfes9sVxblffz45fKlHE711XuBukD9LIEjfPO691IguUK7JMMGNqyT+s/ApoN8vkeo724vgI/xiAmmpy3ic6WEJ9n6HNHqbEn4c/t0lOie/XY
+ NxbAQwM7ie2+BPRhnLgQ3LFsry8ng6SCNAx3taeOsZyWP9A2x7S5VX98q9hBcuN5dAzh7fDK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:10:21AM +0000, Luis Chamberlain wrote:
-> freeze_super() holds a write lock, however we wish to also enable
-> callers which already hold the write lock. To do this provide a helper
-> and make freeze_super() use it. This way, all that freeze_super() does
-> now is lock handling and active count management.
+Hi Ashish,
 
-Can we take a step back and think about this a bit more?
+On 18/04/2021 03:26, Ashish Kalra wrote:
+> On Sat, Apr 17, 2021 at 08:56:13PM +0200, Mauro Carvalho Chehab wrote:
+>> Em Sat, 17 Apr 2021 21:06:27 +0530
+>> Ashish Kalra <eashishkalra@gmail.com> escreveu:
+>>
+>>> Upon running sparse, "warning: dubious: !x | !y" is brought to notice
+>>> for this file.  Logical and bitwise OR are basically the same in this
+>>> context so it doesn't cause a runtime bug.  But let's change it to
+>>> logical OR to make it cleaner and silence the Sparse warning.
+>>>
+>>> Signed-off-by: Ashish Kalra <eashishkalra@gmail.com>
+>>> ---
+>>>  .../media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c    | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
+>>> index 358cb7d2cd4c..3b850bb2d39d 100644
+>>> --- a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
+>>> +++ b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
+>>> @@ -58,7 +58,7 @@ sh_css_vf_downscale_log2(
+>>>  	unsigned int ds_log2 = 0;
+>>>  	unsigned int out_width;
+>>>  
+>>> -	if ((!out_info) | (!vf_info))
+>>> +	if ((!out_info) || (!vf_info))
+>>
+>>
+>> While here, please get rid of the unneeded parenthesis:
+>>
+>> 	if (!out_info || !vf_info)
+>>
+>>
+>>>  		return -EINVAL;
+>>>  
+>>>  	out_width = out_info->res.width;
+>>
+>>
+>>
+>> Thanks,
+>> Mauro
+> Updated Patch as per your feedback
 
-freeze_super() has three callers:
+Please don't post patches as an attachment. Just post it inline as you did the
+first time, but with Subject prefix [PATCHv2].
 
- 1) freeze_bdev
- 2) ioctl_fsfreeze
- 3) freeze_store (in gfs2)
+Thanks!
 
-The first gets its reference from get_active_super, and is the only
-caller of get_active_super.  So IMHO we should just not drop the lock
-in get_active_super and directly call the unlocked version.
-
-The other two really should just call grab_super to get an active
-reference and s_umount.
-
-In other words: I don't think we need both variants, just move the
-locking and s_active acquisition out of free_super.  Same for the
-thaw side.
+	Hans
