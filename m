@@ -2,359 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA043654E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CBB3654EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhDTJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:10:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42278 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhDTJKn (ORCPT
+        id S231349AbhDTJK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:10:58 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:48867 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231355AbhDTJKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:10:43 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id 34F941F4270E
-Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-To:     Lucas Stach <l.stach@pengutronix.de>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, kernel@collabora.com, cphealy@gmail.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
- <20210407073534.376722-4-benjamin.gaignard@collabora.com>
- <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
- <ffe9b3f5-94f5-453e-73f0-4b42d0454b63@collabora.com>
- <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <36008691-d075-203d-0cac-2a012773ea34@collabora.com>
-Date:   Tue, 20 Apr 2021 11:10:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 20 Apr 2021 05:10:53 -0400
+Received: by mail-io1-f71.google.com with SMTP id v18-20020a5ed7120000b02903f36dccaebcso196779iom.15
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:10:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=cHaECdR/PzBVqswMCXkUzvIeCdFIMb9MUAccEcA9938=;
+        b=BSfBvFbhmoUHiFrOr9zeqqPxe6ZUvuG1CbWRlQWTTctcQqLDi0IRY1wYfVGLj7gBco
+         +bGqiMrXIk4KTMT44a4YlbEoz35FgpLLkmVRAdPNO8nkKrh8XUOGDpm2Pbb3rFlQnUJQ
+         2NbqJR2L/jBsg0GUK+KIkhQVYfYpjTHhE1BrlQi+IOpMC/QlbzO3I01TVLjnAvT4hCSN
+         JIq29DWM4jqYcTWxE2XyByPfLYk3T3o0U+10p18UyYJOy5HrpouJImqgbPmmDchZoDe0
+         NLEuvCM9bXEVAeXTALvtRLpGOUAStO+wx23tgVhmLiacXrcZWr9Sk1NRyx335m7XzII5
+         wudg==
+X-Gm-Message-State: AOAM5331R7IeibRZSrb7LUUUNl9R+9Ttj9Anw2j/6Q5loirTUsRM685F
+        42dw+QBS2ASDvkZtDS7RdlRAQE+4OfrhP6TkCoI5J8N9i6FG
+X-Google-Smtp-Source: ABdhPJx+K570iApRg80ZCmYOdfiMH0D2QraVHcAhcwa9AL4YHw6x5uq09HzDwOdQitfJEJTSD+/AISuSvgJcbiMnCwRK2uirX2m8
 MIME-Version: 1.0
-In-Reply-To: <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a5e:8a47:: with SMTP id o7mr973626iom.57.1618909822180;
+ Tue, 20 Apr 2021 02:10:22 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 02:10:22 -0700
+In-Reply-To: <00000000000057102e058e722bba@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dfe1bc05c063d0fa@google.com>
+Subject: Re: [syzbot] INFO: task hung in perf_event_free_task
+From:   syzbot <syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com>
+To:     acme@kernel.org, acme@redhat.com,
+        alexander.shishkin@linux.intel.com, andrii@kernel.org,
+        ast@kernel.org, bpf@vger.kernel.org, cobranza@ingcoecuador.com,
+        daniel@iogearbox.net, eranian@google.com, john.fastabend@gmail.com,
+        jolsa@redhat.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        mingo@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, torvalds@linux-foundation.org,
+        vincent.weaver@maine.edu, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
-Le 16/04/2021 à 17:14, Lucas Stach a écrit :
-> Am Freitag, dem 16.04.2021 um 15:08 +0200 schrieb Benjamin Gaignard:
->> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
->>> Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
->>>> In order to be able to share the control hardware block between
->>>> VPUs use a syscon instead a ioremap it in the driver.
->>>> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
->>>> phandle is not found look at 'ctrl' reg-name.
->>>> With the method it becomes useless to provide a list of register
->>>> names so remove it.
->>> Sorry for putting a spoke in the wheel after many iterations of the
->>> series.
->>>
->>> We just discussed a way forward on how to handle the clocks and resets
->>> provided by the blkctl block on i.MX8MM and later and it seems there is
->>> a consensus on trying to provide virtual power domains from a blkctl
->>> driver, controlling clocks and resets for the devices in the power
->>> domain. I would like to avoid introducing yet another way of handling
->>> the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
->>> what we are planning to do on the later chip generations.
->>>
->>> CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
->>> virtual power domain thing a shot.
->> That could replace the 3 first patches and Dt patche of this series
->> but that will not impact the hevc part, so I wonder if pure hevc patches
->> could be merged anyway ?
->> They are reviewed and don't depend of how the ctrl block is managed.
-> I'm not really in a position to give any informed opinion about that
-> hvec patches, as I only skimmed them, but I don't see any reason to
-> delay patches 04-11 from this series until the i.MX8M platform issues
-> are sorted. AFAICS those things are totally orthogonal.
+HEAD commit:    7af08140 Revert "gcov: clang: fix clang-11+ build"
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15416871d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+dashboard link: https://syzkaller.appspot.com/bug?extid=7692cea7450c97fa2a0a
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145c9ffed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12de31ded00000
 
-Hi Hans,
-What do you think about this proposal to split this series ?
-Get hevc part merged could allow me to continue to add features
-like scaling lists, compressed reference buffers and 10-bit supports.
+The issue was bisected to:
 
-Regards,
-Benjamin
+commit 1cf8dfe8a661f0462925df943140e9f6d1ea5233
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Sat Jul 13 09:21:25 2019 +0000
 
->
-> Regards,
-> Lucas
->
->>> Regards,
->>> Lucas
->>>
->>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>>> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
->>>> ---
->>>> version 9:
->>>>    - Corrections in commit message
->>>>
->>>> version 7:
->>>>    - Add Philipp reviewed-by tag.
->>>>    - Change syscon phandle name.
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> version 5:
->>>>    - use syscon instead of VPU reset driver.
->>>>    - if DT doesn't provide syscon keep backward compatibilty by using
->>>>      'ctrl' reg-name.
->>>>
->>>>    drivers/staging/media/hantro/hantro.h       |  5 +-
->>>>    drivers/staging/media/hantro/imx8m_vpu_hw.c | 52 ++++++++++++---------
->>>>    2 files changed, 34 insertions(+), 23 deletions(-)
->>>>
->>>> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
->>>> index 6c1b888abe75..37b9ce04bd4e 100644
->>>> --- a/drivers/staging/media/hantro/hantro.h
->>>> +++ b/drivers/staging/media/hantro/hantro.h
->>>> @@ -13,6 +13,7 @@
->>>>    #define HANTRO_H_
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    #include <linux/platform_device.h>
->>>> +#include <linux/regmap.h>
->>>>    #include <linux/videodev2.h>
->>>>    #include <linux/wait.h>
->>>>    #include <linux/clk.h>
->>>> @@ -167,7 +168,7 @@ hantro_vdev_to_func(struct video_device *vdev)
->>>>     * @reg_bases:		Mapped addresses of VPU registers.
->>>>     * @enc_base:		Mapped address of VPU encoder register for convenience.
->>>>     * @dec_base:		Mapped address of VPU decoder register for convenience.
->>>> - * @ctrl_base:		Mapped address of VPU control block.
->>>> + * @ctrl_base:		Regmap of VPU control block.
->>>>     * @vpu_mutex:		Mutex to synchronize V4L2 calls.
->>>>     * @irqlock:		Spinlock to synchronize access to data structures
->>>>     *			shared with interrupt handlers.
->>>> @@ -186,7 +187,7 @@ struct hantro_dev {
->>>>    	void __iomem **reg_bases;
->>>>    	void __iomem *enc_base;
->>>>    	void __iomem *dec_base;
->>>> -	void __iomem *ctrl_base;
->>>> +	struct regmap *ctrl_base;
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    	struct mutex vpu_mutex;	/* video_device lock */
->>>>    	spinlock_t irqlock;
->>>> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
->>>> index c222de075ef4..8d0c3425234b 100644
->>>> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
->>>> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
->>>> @@ -7,6 +7,7 @@
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    #include <linux/clk.h>
->>>>    #include <linux/delay.h>
->>>> +#include <linux/mfd/syscon.h>
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    #include "hantro.h"
->>>>    #include "hantro_jpeg.h"
->>>> @@ -24,30 +25,28 @@
->>>>    #define CTRL_G1_PP_FUSE		0x0c
->>>>    #define CTRL_G2_DEC_FUSE	0x10
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> +static const struct regmap_config ctrl_regmap_ctrl = {
->>>> +	.reg_bits = 32,
->>>> +	.val_bits = 32,
->>>> +	.reg_stride = 0x14,
->>>> +};
->>>> +
->>>>    static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
->>>>    {
->>>> -	u32 val;
->>>> -
->>>>    	/* Assert */
->>>> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
->>>> -	val &= ~reset_bits;
->>>> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
->>>> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET, reset_bits, 0);
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    	udelay(2);
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    	/* Release */
->>>> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
->>>> -	val |= reset_bits;
->>>> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
->>>> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET,
->>>> +			   reset_bits, reset_bits);
->>>>    }
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
->>>>    {
->>>> -	u32 val;
->>>> -
->>>> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
->>>> -	val |= clock_bits;
->>>> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
->>>> +	regmap_update_bits(vpu->ctrl_base, CTRL_CLOCK_ENABLE,
->>>> +			   clock_bits, clock_bits);
->>>>    }
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    static int imx8mq_runtime_resume(struct hantro_dev *vpu)
->>>> @@ -64,9 +63,9 @@ static int imx8mq_runtime_resume(struct hantro_dev *vpu)
->>>>    	imx8m_clk_enable(vpu, CLOCK_G1 | CLOCK_G2);
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    	/* Set values of the fuse registers */
->>>> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_DEC_FUSE);
->>>> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_PP_FUSE);
->>>> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G2_DEC_FUSE);
->>>> +	regmap_write(vpu->ctrl_base, CTRL_G1_DEC_FUSE, 0xffffffff);
->>>> +	regmap_write(vpu->ctrl_base, CTRL_G1_PP_FUSE, 0xffffffff);
->>>> +	regmap_write(vpu->ctrl_base, CTRL_G2_DEC_FUSE, 0xffffffff);
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    	clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> @@ -150,8 +149,22 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
->>>>    {
->>>> -	vpu->dec_base = vpu->reg_bases[0];
->>>> -	vpu->ctrl_base = vpu->reg_bases[vpu->variant->num_regs - 1];
->>>> +	struct device_node *np = vpu->dev->of_node;
->>>> +
->>>> +	vpu->ctrl_base = syscon_regmap_lookup_by_phandle(np, "nxp,imx8m-vpu-ctrl");
->>>> +	if (IS_ERR(vpu->ctrl_base)) {
->>>> +		struct resource *res;
->>>> +		void __iomem *ctrl;
->>>> +
->>>> +		res = platform_get_resource_byname(vpu->pdev, IORESOURCE_MEM, "ctrl");
->>>> +		ctrl = devm_ioremap_resource(vpu->dev, res);
->>>> +		if (IS_ERR(ctrl))
->>>> +			return PTR_ERR(ctrl);
->>>> +
->>>> +		vpu->ctrl_base = devm_regmap_init_mmio(vpu->dev, ctrl, &ctrl_regmap_ctrl);
->>>> +		if (IS_ERR(vpu->ctrl_base))
->>>> +			return PTR_ERR(vpu->ctrl_base);
->>>> +	}
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    	return 0;
->>>>    }
->>>> @@ -198,7 +211,6 @@ static const struct hantro_irq imx8mq_irqs[] = {
->>>>    };
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    static const char * const imx8mq_clk_names[] = { "g1", "g2", "bus" };
->>>> -static const char * const imx8mq_reg_names[] = { "g1", "g2", "ctrl" };
->>>>    
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>    const struct hantro_variant imx8mq_vpu_variant = {
->>>>    	.dec_fmts = imx8m_vpu_dec_fmts,
->>>> @@ -215,6 +227,4 @@ const struct hantro_variant imx8mq_vpu_variant = {
->>>>    	.num_irqs = ARRAY_SIZE(imx8mq_irqs),
->>>>    	.clk_names = imx8mq_clk_names,
->>>>    	.num_clocks = ARRAY_SIZE(imx8mq_clk_names),
->>>> -	.reg_names = imx8mq_reg_names,
->>>> -	.num_regs = ARRAY_SIZE(imx8mq_reg_names)
->>>>    };
->>>
->
->
+    perf/core: Fix race between close() and fork()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1523f40c600000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1723f40c600000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1323f40c600000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com
+Fixes: 1cf8dfe8a661 ("perf/core: Fix race between close() and fork()")
+
+INFO: task syz-executor890:6628 blocked for more than 143 seconds.
+      Not tainted 5.12.0-rc8-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor890 state:D stack:25968 pid: 6628 ppid:  8391 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4322 [inline]
+ __schedule+0xa4d/0xf80 kernel/sched/core.c:5073
+ schedule+0x14b/0x200 kernel/sched/core.c:5152
+ perf_event_free_task+0x575/0x6a0 kernel/events/core.c:12623
+ copy_process+0x418f/0x57e0 kernel/fork.c:2376
+ kernel_clone+0x21a/0x7d0 kernel/fork.c:2500
+ __do_sys_clone kernel/fork.c:2617 [inline]
+ __se_sys_clone kernel/fork.c:2601 [inline]
+ __x64_sys_clone+0x236/0x2b0 kernel/fork.c:2601
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x44b6e9
+RSP: 002b:00007fd6c1512208 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 00000000004d7288 RCX: 000000000044b6e9
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000022086605
+RBP: 00000000004d7280 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004d728c
+R13: 00007ffc3bab65ef R14: 00007fd6c1512300 R15: 0000000000022000
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1623:
+ #0: ffffffff8cd10280 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30 arch/x86/pci/mmconfig_64.c:151
+2 locks held by systemd-journal/4819:
+1 lock held by in:imklog/8079:
+ #0: ffff8880163265f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x24e/0x2f0 fs/file.c:974
+2 locks held by syz-executor890/6495:
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1623 Comm: khungtaskd Not tainted 5.12.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x202/0x31e lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x16c/0x190 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x191/0x2f0 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xcfb/0xd40 kernel/hung_task.c:294
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 6495 Comm: syz-executor890 Not tainted 5.12.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:orc_find arch/x86/kernel/unwind_orc.c:155 [inline]
+RIP: 0010:unwind_next_frame+0x184/0x1f90 arch/x86/kernel/unwind_orc.c:443
+Code: 89 7c 24 70 0f 84 1a 01 00 00 48 c7 c0 00 00 00 81 49 39 c4 0f 82 16 01 00 00 48 c7 c0 52 83 e0 89 49 39 c4 0f 83 06 01 00 00 <48> c7 c0 00 00 00 81 4c 89 e5 48 29 c5 48 c1 ed 08 48 c7 c0 e8 8d
+RSP: 0000:ffffc9000dd5f720 EFLAGS: 00000087
+RAX: ffffffff89e08352 RBX: ffffc9000dd5f828 RCX: ffffffff9031ab03
+RDX: ffffc9000dd5fc20 RSI: ffffffff814e6de0 RDI: 0000000000000001
+RBP: ffffc9000dd5f815 R08: 0000000000000003 R09: ffffc9000dd5f8b0
+R10: fffff52001babf08 R11: 0000000000000000 R12: ffffffff814e6ddf
+R13: ffffc9000dd5f7e0 R14: dffffc0000000000 R15: 1ffff92001babf02
+FS:  00007fd6c1512700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000022000 CR3: 0000000034d8b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ arch_stack_walk+0xb2/0xe0 arch/x86/kernel/stacktrace.c:25
+ stack_trace_save+0x104/0x1e0 kernel/stacktrace.c:121
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ __kasan_slab_alloc+0x8f/0xc0 mm/kasan/common.c:460
+ kasan_slab_alloc include/linux/kasan.h:223 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ slab_alloc mm/slub.c:2915 [inline]
+ kmem_cache_alloc+0x1c3/0x350 mm/slub.c:2920
+ __sigqueue_alloc+0x2c2/0x490 kernel/signal.c:435
+ __send_signal+0x210/0xe50 kernel/signal.c:1116
+ force_sig_info_to_task+0x2a4/0x3f0 kernel/signal.c:1334
+ force_sig_fault_to_task kernel/signal.c:1673 [inline]
+ force_sig_fault+0x11e/0x1c0 kernel/signal.c:1680
+ __bad_area_nosemaphore+0x390/0x570 arch/x86/mm/fault.c:840
+ handle_page_fault arch/x86/mm/fault.c:1475 [inline]
+ exc_page_fault+0xa1/0x1e0 arch/x86/mm/fault.c:1531
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
+RIP: 0033:0x22000
+Code: Unable to access opcode bytes at RIP 0x21fd6.
+RSP: 002b:00007fd6c1512220 EFLAGS: 00010206
+RAX: ffffffffffffffff RBX: 00000000004d7288 RCX: ffffffffffffffbc
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000000
+RBP: 00000000004d7280 R08: 0000000000000000 R09: 00007fd6c1512300
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00000000004d728c
+R13: 00007ffc3bab65ef R14: 00007fd6c1512300 R15: 0000000000022000
+
