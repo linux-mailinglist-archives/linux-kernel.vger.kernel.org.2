@@ -2,182 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096BA3650DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC7C3650E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhDTD32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhDTD3Y (ORCPT
+        id S229773AbhDTDba convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 23:31:30 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2886 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhDTDb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:29:24 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10933C06174A;
-        Mon, 19 Apr 2021 20:28:54 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j4so19800989lfp.0;
-        Mon, 19 Apr 2021 20:28:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sjA5c4MI/V/Us5khupc3zlEWJtPk9Lba1kHWIn9xqrM=;
-        b=aZSJaNW84mZRYAHIY5t88erflreGTdYjaH3FYtF1qHJPn6VWs0jryZT46tcKmPEGha
-         /og/FC8vcGojrzKljv51Y7lWbKJNsViPSNua0KzzWTeHQBaA77mtr8NCMQ4THd2QTzcC
-         W4NX+bAwjkGszUu3wkPlccw0aoYiZjMS+T4JTPsVHoVH+R4TOOISLvGTXFbJ16T+Dgur
-         kbNEKiwtz58pU2SAt4AjUcSxyUGvQb0yQueu6ghHyatn+Cc/mNZXXrnsQvXgxCwKXuNp
-         sZTyXkoz02r+DOAERoaXyqJHUX8rL4MjlDqKs+1CuVe940UruGYC9kE+b/nNTgV9xhkG
-         purg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sjA5c4MI/V/Us5khupc3zlEWJtPk9Lba1kHWIn9xqrM=;
-        b=LgJPb5MBlEKi1REqgkAuvdlJjsp0gQpZhNPuzFcdyfII3Wkdw2WUL93Hhz5Yp/9s/z
-         Zg3K4GmkMz47pxCriTVhhLFa+EON2SMq/RUwepb7LMM7I0nyTU2HjfRMS/O5k2DUF7h6
-         dYKaMX88np5drCkQ3VCx9WuUfiml+evx0IN99nW0ssu3Vb9/aYOurM+c3WnyiX1Lyejn
-         q7uNJZm6MC/WC35f4g+0UdSpmrkh4zRUSH+bmQZU1DEIARkeRedC9zVo5cTd52D9b2Hz
-         8Lg8v95BMLJEnyFKvMm+eBXFz/WhbJ0o918UxMIpL4vwo2eI8q+SZCX0nZ1SqGGk/LrS
-         Exkw==
-X-Gm-Message-State: AOAM530Nb75ftxe060+0oeBb+vVmav6/Y7uUN3xTz1ok6Q2Z0C9FT6Bl
-        CF9Mupz/vZH60+Tz8lPd7DAow43Kjj+6XiluqSo=
-X-Google-Smtp-Source: ABdhPJxtNTC6hNyk2mAr0jYIRtC3Pnw65n4y2IU2BFaZPz0SzJ5eF0gkFi6YsfR4xYcNBc9nZPkqaJatjNPZ02gYJpQ=
-X-Received: by 2002:ac2:510d:: with SMTP id q13mr13835296lfb.75.1618889332453;
- Mon, 19 Apr 2021 20:28:52 -0700 (PDT)
+        Mon, 19 Apr 2021 23:31:29 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FPTbH46gdz70gKj;
+        Tue, 20 Apr 2021 11:25:31 +0800 (CST)
+Received: from lhreml717-chm.china.huawei.com (10.201.108.68) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Apr 2021 05:30:56 +0200
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 20 Apr 2021 04:30:55 +0100
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Tue, 20 Apr 2021 11:30:53 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+CC:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+Subject: RE: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within a
+ die
+Thread-Topic: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within a
+ die
+Thread-Index: AQHXHHeQcl1lHq1u7kWPO6cWrdJxq6qKVPyAgACJR5D//6lPAIAAByuAgDJgJ6A=
+Date:   Tue, 20 Apr 2021 03:30:53 +0000
+Message-ID: <57660c1863194dd58e441fce9d5d1580@hisilicon.com>
+References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
+ <20210319041618.14316-2-song.bao.hua@hisilicon.com>
+ <YFRGIedW1fUlnmi+@kroah.com> <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
+ <20210319093616.00001879@Huawei.com> <YFR2kwakbcGiI37w@kroah.com>
+In-Reply-To: <YFR2kwakbcGiI37w@kroah.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.79]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com> <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com> <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
-In-Reply-To: <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 19 Apr 2021 20:28:41 -0700
-Message-ID: <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 1:16 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 16/04/2021 =C3=A0 01:49, Alexei Starovoitov a =C3=A9crit :
-> > On Thu, Apr 15, 2021 at 8:41 AM Quentin Monnet <quentin@isovalent.com> =
-wrote:
-> >>
-> >> 2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
-> >>> On 4/15/21 11:32 AM, Jianlin Lv wrote:
-> >>>> For debugging JITs, dumping the JITed image to kernel log is discour=
-aged,
-> >>>> "bpftool prog dump jited" is much better way to examine JITed dumps.
-> >>>> This patch get rid of the code related to bpf_jit_enable=3D2 mode an=
-d
-> >>>> update the proc handler of bpf_jit_enable, also added auxiliary
-> >>>> information to explain how to use bpf_jit_disasm tool after this cha=
-nge.
-> >>>>
-> >>>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> >>
-> >> Hello,
-> >>
-> >> For what it's worth, I have already seen people dump the JIT image in
-> >> kernel logs in Qemu VMs running with just a busybox, not for kernel
-> >> development, but in a context where buiding/using bpftool was not
-> >> possible.
-> >
-> > If building/using bpftool is not possible then majority of selftests wo=
-n't
-> > be exercised. I don't think such environment is suitable for any kind
-> > of bpf development. Much so for JIT debugging.
-> > While bpf_jit_enable=3D2 is nothing but the debugging tool for JIT deve=
-lopers.
-> > I'd rather nuke that code instead of carrying it from kernel to kernel.
-> >
->
-> When I implemented JIT for PPC32, it was extremely helpfull.
->
-> As far as I understand, for the time being bpftool is not usable in my en=
-vironment because it
-> doesn't support cross compilation when the target's endianess differs fro=
-m the building host
-> endianess, see discussion at
-> https://lore.kernel.org/bpf/21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.=
-eu/
->
-> That's right that selftests can't be exercised because they don't build.
->
-> The question might be candid as I didn't investigate much about the repla=
-cement of "bpf_jit_enable=3D2
-> debugging mode" by bpftool, how do we use bpftool exactly for that ? Espe=
-cially when using the BPF
-> test module ?
 
-the kernel developers can add any amount of printk and dumps to debug
-their code,
-but such debugging aid should not be part of the production kernel.
-That sysctl was two things at once: debugging tool for kernel devs and
-introspection for users.
-bpftool jit dump solves the 2nd part. It provides JIT introspection to user=
-s.
-Debugging of the kernel can be done with any amount of auxiliary code
-including calling print_hex_dump() during jiting.
+
+> -----Original Message-----
+> From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> Sent: Friday, March 19, 2021 11:02 PM
+> To: Jonathan Cameron <jonathan.cameron@huawei.com>
+> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
+> rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
+> tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
+> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com;
+> juri.lelli@redhat.com; mark.rutland@arm.com; sudeep.holla@arm.com;
+> aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; x86@kernel.org;
+> xuwei (O) <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; hpa@zytor.com
+> Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
+> a die
+> 
+> On Fri, Mar 19, 2021 at 09:36:16AM +0000, Jonathan Cameron wrote:
+> > On Fri, 19 Mar 2021 06:57:08 +0000
+> > "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
+> >
+> > > > -----Original Message-----
+> > > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > > > Sent: Friday, March 19, 2021 7:35 PM
+> > > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > > Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com;
+> will@kernel.org;
+> > > > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
+> > > > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org;
+> peterz@infradead.org;
+> > > > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+> > > > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com;
+> Jonathan
+> > > > Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
+> > > > mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
+> > > > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> > > > linux-acpi@vger.kernel.org; x86@kernel.org; xuwei (O)
+> <xuwei5@huawei.com>;
+> > > > Zengtao (B) <prime.zeng@hisilicon.com>; guodong.xu@linaro.org;
+> yangyicong
+> > > > <yangyicong@huawei.com>; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
+> > > > linuxarm@openeuler.org; hpa@zytor.com
+> > > > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
+> > > > a die
+> > > >
+> > > > On Fri, Mar 19, 2021 at 05:16:15PM +1300, Barry Song wrote:
+> > > > > diff --git a/Documentation/admin-guide/cputopology.rst
+> > > > b/Documentation/admin-guide/cputopology.rst
+> > > > > index b90dafc..f9d3745 100644
+> > > > > --- a/Documentation/admin-guide/cputopology.rst
+> > > > > +++ b/Documentation/admin-guide/cputopology.rst
+> > > > > @@ -24,6 +24,12 @@ core_id:
+> > > > >  	identifier (rather than the kernel's).  The actual value is
+> > > > >  	architecture and platform dependent.
+> > > > >
+> > > > > +cluster_id:
+> > > > > +
+> > > > > +	the Cluster ID of cpuX.  Typically it is the hardware platform's
+> > > > > +	identifier (rather than the kernel's).  The actual value is
+> > > > > +	architecture and platform dependent.
+> > > > > +
+> > > > >  book_id:
+> > > > >
+> > > > >  	the book ID of cpuX. Typically it is the hardware platform's
+> > > > > @@ -56,6 +62,14 @@ package_cpus_list:
+> > > > >  	human-readable list of CPUs sharing the same physical_package_id.
+> > > > >  	(deprecated name: "core_siblings_list")
+> > > > >
+> > > > > +cluster_cpus:
+> > > > > +
+> > > > > +	internal kernel map of CPUs within the same cluster.
+> > > > > +
+> > > > > +cluster_cpus_list:
+> > > > > +
+> > > > > +	human-readable list of CPUs within the same cluster.
+> > > > > +
+> > > > >  die_cpus:
+> > > > >
+> > > > >  	internal kernel map of CPUs within the same die.
+> > > >
+> > > > Why are these sysfs files in this file, and not in a Documentation/ABI/
+> > > > file which can be correctly parsed and shown to userspace?
+> > >
+> > > Well. Those ABIs have been there for much a long time. It is like:
+> > >
+> > > [root@ceph1 topology]# ls
+> > > core_id  core_siblings  core_siblings_list  physical_package_id
+> thread_siblings  thread_siblings_list
+> > > [root@ceph1 topology]# pwd
+> > > /sys/devices/system/cpu/cpu100/topology
+> > > [root@ceph1 topology]# cat core_siblings_list
+> > > 64-127
+> > > [root@ceph1 topology]#
+> > >
+> > > >
+> > > > Any chance you can fix that up here as well?
+> > >
+> > > Yes. we will send a separate patch to address this, which won't
+> > > be in this patchset. This patchset will base on that one.
+> > >
+> > > >
+> > > > Also note that "list" is not something that goes in sysfs, sysfs is "one
+> > > > value per file", and a list is not "one value".  How do you prevent
+> > > > overflowing the buffer of the sysfs file if you have a "list"?
+> > > >
+> > >
+> > > At a glance, the list is using "-" rather than a real list
+> > > [root@ceph1 topology]# cat core_siblings_list
+> > > 64-127
+> > >
+> > > Anyway, I will take a look if it has any chance to overflow.
+> >
+> > It could in theory be alternate CPUs as comma separated list.
+> > So it's would get interesting around 500-1000 cpus (guessing).
+> >
+> > Hopefully no one has that crazy a cpu numbering scheme but it's possible
+> > (note that cluster is fine for this, but I guess it might eventually
+> > happen for core-siblings list (cpus within a package).
+> >
+> > Shouldn't crash or anything like that but might terminate early.
+> 
+> We have a broken sysfs api already for listing LED numbers that has had
+> to be worked around in the past, please do not create a new one with
+> that same problem, we should learn from them :)
+
+Another place I am seeing a cpu list is in numa topology:
+/sys/devices/system/node/nodex/cpulist.
+
+But the code has a BUILD_BUG_ON to guard the pagebuf:
+
+static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
+{
+	ssize_t n;
+	cpumask_var_t mask;
+	struct node *node_dev = to_node(dev);
+
+	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
+	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
+
+	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+		return 0;
+
+	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
+	n = cpumap_print_to_pagebuf(list, buf, mask);
+	free_cpumask_var(mask);
+
+	return n;
+}
+
+For lists in cpu topology, I haven't seen this while I believe we need it.
+Or am I missing something?
+
+> 
+> thanks,
+> 
+> greg k-h
+
+Thanks
+Barry
+
