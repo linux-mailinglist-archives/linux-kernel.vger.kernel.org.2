@@ -2,146 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9774365099
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FA4365096
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhDTC4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:56:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44248 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhDTC4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:56:08 -0400
-IronPort-SDR: edVZBTkDAL8hrKhLzk5bV0ia7wFsQHyxCR9rr3MN+mvkaELGeqM+cRdUSq2PGEzg0+kMxh3/qe
- C8xR2nOHuX0g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="193308685"
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="193308685"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 19:55:37 -0700
-IronPort-SDR: CAJVH2FbCBXOeh6Kk14yftkJhGYblD+fDKdZFAavVfQs8qrSKUvF5hKBHiy3H9PwQ/ci15O3Iu
- SZ1MWQiQOfqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="400848296"
-Received: from ipu5-build.bj.intel.com ([10.238.232.202])
-  by orsmga002.jf.intel.com with ESMTP; 19 Apr 2021 19:55:32 -0700
-From:   Bingbu Cao <bingbu.cao@intel.com>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
-        grundler@chromium.org, tfiga@chromium.org,
-        senozhatsky@chromium.org, sakari.ailus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, bingbu.cao@intel.com,
-        bingbu.cao@linux.intel.com
-Subject: [RESEND v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
-Date:   Tue, 20 Apr 2021 10:48:33 +0800
-Message-Id: <1618886913-6594-1-git-send-email-bingbu.cao@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S229634AbhDTCxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:53:38 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:51489 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhDTCxg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 22:53:36 -0400
+Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210420025304epoutp02cb0702ac48c8c97ee71ef4900ba01d96~3cVEdf1Jj1431714317epoutp02N
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:53:04 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210420025304epoutp02cb0702ac48c8c97ee71ef4900ba01d96~3cVEdf1Jj1431714317epoutp02N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1618887184;
+        bh=Fp/0nc/PyyIZ2plCf1MobAAmjIp1zIjpOhmUIT5HL0E=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=ury1zp0nYtGkon3jN+ziBRRpiXxVKsHLdVi8rp2vS6WwA9W5RH09UpZaa0Hk74aQv
+         Pl4VzBFMuI52FVrZHa49jlo5UkRdPNIJ6emxd/1EvlY/e1v85ULxYMoA5857XR/EUS
+         oYynkg3FOqvURkRnDceWCj+9lFs7AQhFpnm3o3sc=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
+        20210420025303epcas3p2ff9cdfd8053f051d3cd8fa96d1ec887b~3cVD3K_3S2946829468epcas3p2E;
+        Tue, 20 Apr 2021 02:53:03 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4FPSsq43d1z4x9Q0; Tue, 20 Apr 2021 02:53:03 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: [PATCH] scsi: ufs: Add batched WB buffer flush
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        "satyat@google.com" <satyat@google.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1381713434.61618887183562.JavaMail.epsvc@epcpadp4>
+Date:   Tue, 20 Apr 2021 11:50:12 +0900
+X-CMS-MailID: 20210420025012epcms2p4a850fa0017e7a152ec5e5f89350d66b9
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210420025012epcms2p4a850fa0017e7a152ec5e5f89350d66b9
+References: <CGME20210420025012epcms2p4a850fa0017e7a152ec5e5f89350d66b9@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
-The IPU driver allocates its own page table that is not mapped
-via the DMA, and thus the Intel IOMMU driver blocks access giving
-this error:
+Currently, WriteBooster (WB) buffer is always flushed during hibern8. However,
+this is inefficient because data in the WB buffer can be invalid due to
+spatial locality of IO workload.
+If the WB buffer flush is flushed in a batched manner, the amount of data
+migration and power consumption can be reduced because the overwritten data
+of the WB buffer may be invalid due to spatial locality.
 
-DMAR: DRHD: handling fault status reg 3
-DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
-      fault addr 76406000 [fault reason 06] PTE Read access is not set
+This patch supports batched flush of WB buffer. When batched flush is enabled,
+fWriteBoosterBufferFlushDuringHibernate is set only when
+b_rpm_dev_flush_capable is true during runtime suspend. When the device is
+resumed, fWriteBoosterBufferFlushDuringHibernate is cleared to stop flush
+during hibern8.
 
-As IPU is not an external facing device which is not risky, so use
-IOMMU passthrough mode for Intel IPUs.
-
-Fixes: 26f5689592e2 ("media: staging/intel-ipu3: mmu: Implement driver")
-Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+Co-developed-by: Keoseong Park <keosung.park@samsung.com>
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 ---
- drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ Documentation/ABI/testing/sysfs-driver-ufs |  9 ++++
+ drivers/scsi/ufs/ufs-sysfs.c               | 50 ++++++++++++++++++++++
+ drivers/scsi/ufs/ufshcd.c                  | 14 ++++--
+ drivers/scsi/ufs/ufshcd.h                  |  2 +
+ 4 files changed, 71 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index ee0932307d64..7e2fbdae467e 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -55,6 +55,12 @@
- #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
- #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
- #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
-+#define IS_INTEL_IPU(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL &&	\
-+			    ((pdev)->device == 0x9a19 ||		\
-+			     (pdev)->device == 0x9a39 ||		\
-+			     (pdev)->device == 0x4e19 ||		\
-+			     (pdev)->device == 0x465d ||		\
-+			     (pdev)->device == 0x1919))
- #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
- 
- #define IOAPIC_RANGE_START	(0xfee00000)
-@@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
- EXPORT_SYMBOL_GPL(intel_iommu_enabled);
- 
- static int dmar_map_gfx = 1;
-+static int dmar_map_ipu = 1;
- static int dmar_forcedac;
- static int intel_iommu_strict;
- static int intel_iommu_superpage = 1;
-@@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
- 
- #define IDENTMAP_GFX		2
- #define IDENTMAP_AZALIA		4
-+#define IDENTMAP_IPU		8
- 
- int intel_iommu_gfx_mapped;
- EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
-@@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
- 
- 		if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
- 			return IOMMU_DOMAIN_IDENTITY;
+diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+index d1bc23cb6a9d..b67b8449e840 100644
+--- a/Documentation/ABI/testing/sysfs-driver-ufs
++++ b/Documentation/ABI/testing/sysfs-driver-ufs
+@@ -1172,3 +1172,12 @@ Description:	This node is used to set or display whether UFS WriteBooster is
+ 		(if the platform supports UFSHCD_CAP_CLK_SCALING). For a
+ 		platform that doesn't support UFSHCD_CAP_CLK_SCALING, we can
+ 		disable/enable WriteBooster through this sysfs node.
 +
-+		if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_INTEL_IPU(pdev))
-+			return IOMMU_DOMAIN_IDENTITY;
- 	}
- 
- 	return 0;
-@@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
- 	if (!dmar_map_gfx)
- 		iommu_identity_mapping |= IDENTMAP_GFX;
- 
-+	if (!dmar_map_ipu)
-+		iommu_identity_mapping |= IDENTMAP_IPU;
-+
- 	check_tylersburg_isoch();
- 
- 	ret = si_domain_init(hw_pass_through);
-@@ -5622,6 +5636,18 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
- 	dmar_map_gfx = 0;
++What:		/sys/bus/platform/drivers/ufshcd/*/wb_batched_flush
++Date:		April 2021
++Contact:	Daejun Park <daejun7.park@samsung.com>
++Description:	This entry shows whether batch flushing of UFS WriteBooster
++		buffers is enabled. Writing 1 to this entry allows the device to flush
++		the WriteBooster buffer only when it needs to perform a buffer flush
++		during runtime suspend. Writing 0 to this entry allows the device to
++		flush the WriteBooster buffer during link hibernation.
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index d7c3cff9662f..943ac12e59c6 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -253,6 +253,54 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
+ 	return res < 0 ? res : count;
  }
  
-+static void quirk_iommu_ipu(struct pci_dev *dev)
++
++static ssize_t wb_batched_flush_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
 +{
-+	if (!IS_INTEL_IPU(dev))
-+		return;
++	struct ufs_hba *hba = dev_get_drvdata(dev);
 +
-+	if (risky_device(dev))
-+		return;
-+
-+	pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
-+	dmar_map_ipu = 0;
++	return sysfs_emit(buf, "%d\n", hba->vps->wb_batched_flush);
 +}
 +
- /* G4x/GM45 integrated gfx dmar support is totally busted. */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
-@@ -5657,6 +5683,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
- 
-+/* disable IPU dmar support */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_ANY_ID, quirk_iommu_ipu);
++static ssize_t wb_batched_flush_store(struct device *dev,
++				      struct device_attribute *attr,
++				      const char *buf, size_t count)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	unsigned int wb_batched_flush;
++	ssize_t res;
 +
- static void quirk_iommu_rwbf(struct pci_dev *dev)
++	if (!ufshcd_is_wb_allowed(hba)) {
++		dev_warn(dev, "To control WB through wb_batched_flush is not allowed!\n");
++		return -EOPNOTSUPP;
++	}
++
++	if (kstrtouint(buf, 0, &wb_batched_flush))
++		return -EINVAL;
++
++	if (wb_batched_flush != 0 && wb_batched_flush != 1)
++		return -EINVAL;
++
++	down(&hba->host_sem);
++	if (!ufshcd_is_user_access_allowed(hba)) {
++		res = -EBUSY;
++		goto out;
++	}
++
++	if (wb_batched_flush == hba->vps->wb_batched_flush)
++		goto out;
++
++	pm_runtime_get_sync(hba->dev);
++	res = ufshcd_wb_toggle_flush_during_h8(hba, !wb_batched_flush);
++	pm_runtime_put_sync(hba->dev);
++	if (!res)
++		hba->vps->wb_batched_flush = wb_batched_flush;
++
++out:
++	up(&hba->host_sem);
++	return res < 0 ? res : count;
++}
++
+ static DEVICE_ATTR_RW(rpm_lvl);
+ static DEVICE_ATTR_RO(rpm_target_dev_state);
+ static DEVICE_ATTR_RO(rpm_target_link_state);
+@@ -261,6 +309,7 @@ static DEVICE_ATTR_RO(spm_target_dev_state);
+ static DEVICE_ATTR_RO(spm_target_link_state);
+ static DEVICE_ATTR_RW(auto_hibern8);
+ static DEVICE_ATTR_RW(wb_on);
++static DEVICE_ATTR_RW(wb_batched_flush);
+ 
+ static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
+ 	&dev_attr_rpm_lvl.attr,
+@@ -271,6 +320,7 @@ static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
+ 	&dev_attr_spm_target_link_state.attr,
+ 	&dev_attr_auto_hibern8.attr,
+ 	&dev_attr_wb_on.attr,
++	&dev_attr_wb_batched_flush.attr,
+ 	NULL
+ };
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 0625da7a42ee..e11dc578a17c 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -244,7 +244,6 @@ static int ufshcd_setup_vreg(struct ufs_hba *hba, bool on);
+ static inline int ufshcd_config_vreg_hpm(struct ufs_hba *hba,
+ 					 struct ufs_vreg *vreg);
+ static int ufshcd_try_to_abort_task(struct ufs_hba *hba, int tag);
+-static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
+ static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable);
+ static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba);
+ static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba);
+@@ -277,7 +276,8 @@ static inline void ufshcd_wb_config(struct ufs_hba *hba)
+ 
+ 	ufshcd_wb_toggle(hba, true);
+ 
+-	ufshcd_wb_toggle_flush_during_h8(hba, true);
++	ufshcd_wb_toggle_flush_during_h8(hba, !hba->vps->wb_batched_flush);
++
+ 	if (!(hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL))
+ 		ufshcd_wb_toggle_flush(hba, true);
+ }
+@@ -5472,7 +5472,7 @@ int ufshcd_wb_toggle(struct ufs_hba *hba, bool enable)
+ 	return ret;
+ }
+ 
+-static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
++int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
  {
- 	if (risky_device(dev))
+ 	int ret;
+ 
+@@ -5481,10 +5481,12 @@ static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
+ 	if (ret) {
+ 		dev_err(hba->dev, "%s: WB-Buf Flush during H8 %s failed: %d\n",
+ 			__func__, set ? "enable" : "disable", ret);
+-		return;
++		return ret;
+ 	}
+ 	dev_dbg(hba->dev, "%s WB-Buf Flush during H8 %s\n",
+ 			__func__, set ? "enabled" : "disabled");
++
++	return ret;
+ }
+ 
+ static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable)
+@@ -8745,6 +8747,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
+ 			if (ret)
+ 				goto enable_gating;
++		} else if (hba->vps->wb_batched_flush) {
++			ufshcd_wb_toggle_flush_during_h8(hba, true);
+ 		}
+ 	}
+ 
+@@ -8925,6 +8929,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_auto_hibern8_enable(hba);
+ 
+ 	if (hba->dev_info.b_rpm_dev_flush_capable) {
++		if (hba->vps->wb_batched_flush)
++			ufshcd_wb_toggle_flush_during_h8(hba, false);
+ 		hba->dev_info.b_rpm_dev_flush_capable = false;
+ 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+ 	}
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 5eb66a8debc7..049f3f08506c 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -643,6 +643,7 @@ struct ufs_hba_variant_params {
+ 	struct devfreq_simple_ondemand_data ondemand_data;
+ 	u16 hba_enable_delay_us;
+ 	u32 wb_flush_threshold;
++	bool wb_batched_flush;
+ };
+ 
+ /**
+@@ -1105,6 +1106,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
+ 			     enum query_opcode desc_op);
+ 
+ int ufshcd_wb_toggle(struct ufs_hba *hba, bool enable);
++int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
+ 
+ /* Wrapper functions for safely calling variant operations */
+ static inline const char *ufshcd_get_var_name(struct ufs_hba *hba)
 -- 
-2.7.4
+2.25.1
+
 
