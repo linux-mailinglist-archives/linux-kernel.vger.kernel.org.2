@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A330365E21
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC87365E26
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbhDTRDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:03:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50135 "EHLO
+        id S233397AbhDTRD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:03:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50155 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233285AbhDTRDV (ORCPT
+        with ESMTP id S233379AbhDTRDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:03:21 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        Tue, 20 Apr 2021 13:03:25 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYtlw-0004bX-TB
-        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 17:02:48 +0000
-Received: by mail-ed1-f69.google.com with SMTP id r14-20020a50d68e0000b0290385504d6e4eso3544567edi.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:02:48 -0700 (PDT)
+        id 1lYtm0-0004dC-68
+        for linux-kernel@vger.kernel.org; Tue, 20 Apr 2021 17:02:52 +0000
+Received: by mail-ed1-f71.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so11713419eds.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:02:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Rjka4Njemna1OOKJdcZeeFwVYEY/9hgKuOFFKuvjSYE=;
-        b=TYnfl/8O7SlissfAmDGfV9MN4TZOvxOudM0G6k1swVa0jDXvXQ/egl6Ig+O6Fdk4Cp
-         vImfRcRbsnxQt0RpDnKRnRmiCAK0CDA9HKyI4nt5aepQI4kbfBuMDb/A+ke2JNlELwvc
-         U9taDbRgLCUKCgwqaOam9OYE22F1OeBI0hat49/L9kybjyv5WS6DyjdxJt4HFMfA8bd6
-         9vo+GgSw/zGda9nYC3pStqaI2XdRQ6uAUZ4XhGCy9dbxCMCA8IYklDC0POcjSQcS0DAX
-         jXFk2O3P4A9EKPfNXEUKcY30RBjv3uvc72UWHLiAcKurfVO+rccrCID+a03mC8ECI3uM
-         W2nA==
-X-Gm-Message-State: AOAM531EeahWaXxXnwr2/bNUja62FtmY2y5qgEcFZWhV0ONSe8DdtdGM
-        umSqHgnKPZio1GLh/45JP9fONOFry8+jjFrmQrlD/PlKzF2a1EK87GWBHRmPe3A32W6dEkyjiJR
-        Ht8uNmKyFSpmMaj4QHAtzFVXG7sN/0h7yq+1QGATCkA==
-X-Received: by 2002:a17:907:33cb:: with SMTP id zk11mr29272731ejb.231.1618938168644;
-        Tue, 20 Apr 2021 10:02:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEptLquhZ2/QqZ4X/5o6u/BOlY7S9w9blCK0zCE6EhdECvGDYJS8VhGVzjFSaiOFlOBW2WUw==
-X-Received: by 2002:a17:907:33cb:: with SMTP id zk11mr29272709ejb.231.1618938168470;
-        Tue, 20 Apr 2021 10:02:48 -0700 (PDT)
+        bh=CZHnNFNaMNa8a85SBpXammff3rvFDkP+H98gsBQ8d3o=;
+        b=gFiGwLEj4SZAEL4m1X/kGKdOtHT4BmeXnpoiLfJ4y4HoNwkv82vpVLjVwNG8CqtZGV
+         MBmswBT2b6Wh6yhSXMlbEC3ihojH6lLKx/MRTJEVR9j/KYmxZixliYNkIBwArP/V37d0
+         NDjpaHmudbFLYUM+39N0lWr3S1gMuiyAgynfBew+ZAQCgmONndGUUodICQuZIMdY2LgE
+         NXmJVwZig2SNFL2JhmDZdRO516yq4PXALofPbtJzFVe2Nc8FcPiuI02IVpGIHWNSSzeJ
+         Ki2fRxNiHVK/LpzzDv5ShNQYcJO8pLxxn1A7fLOowQXn0SjsLFYRp11MPcqN2IJ0uQHQ
+         SuqA==
+X-Gm-Message-State: AOAM532crMmdvmtZaHcfn9DR43euRqup1/17xIFfvJONENWL9dI/mxXq
+        gMClUXhtPEjL5hiEk2UiOW3+XIHA2tGwTHR1ovzkfIYYlbfo/oOjdkRFS/P8t7GgQ7S/rVZgh13
+        gyBaCn01SdZitLSCg8p7MVRnARycRbxPsKxcHvsRIZQ==
+X-Received: by 2002:a17:906:4913:: with SMTP id b19mr28867172ejq.439.1618938170533;
+        Tue, 20 Apr 2021 10:02:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOLsxZKglCAv77mKXcTh7j9A7OdejF9kWYftWrwmpV/d4re5KZPtRxzK5D7Kz9pjhQCLFxOg==
+X-Received: by 2002:a17:906:4913:: with SMTP id b19mr28867163ejq.439.1618938170410;
+        Tue, 20 Apr 2021 10:02:50 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id s20sm16590714edu.93.2021.04.20.10.02.47
+        by smtp.gmail.com with ESMTPSA id s20sm16590714edu.93.2021.04.20.10.02.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 10:02:48 -0700 (PDT)
+        Tue, 20 Apr 2021 10:02:49 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -55,9 +55,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         linux-rtc@vger.kernel.org
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 6/9] mfd: sec: Remove unused platform data members
-Date:   Tue, 20 Apr 2021 19:02:41 +0200
-Message-Id: <20210420170244.13467-2-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 7/9] rtc: s5m: Remove reference to parent's device pdata
+Date:   Tue, 20 Apr 2021 19:02:42 +0200
+Message-Id: <20210420170244.13467-3-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210420170244.13467-1-krzysztof.kozlowski@canonical.com>
 References: <20210420170118.12788-1-krzysztof.kozlowski@canonical.com>
@@ -68,67 +68,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Samsung PMIC drivers for early chipsets like S5M8767 stored quite a
-lot in platform data (struct sec_platform_data).  The s5m8767 regulator
-driver currently references only some of its fields.  Newer regulator
-drivers (e.g. s2mps11) use even less platform data fields.
-
-Clean up the structure to reduce memory footprint and source code size.
+The S5M RTC driver does not use parent's device (sec-core PMIC driver)
+platform data so there is no need to check for it.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- include/linux/mfd/samsung/core.h | 25 -------------------------
- 1 file changed, 25 deletions(-)
+ drivers/rtc/rtc-s5m.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/include/linux/mfd/samsung/core.h b/include/linux/mfd/samsung/core.h
-index b0d049a56d16..f92fe090473d 100644
---- a/include/linux/mfd/samsung/core.h
-+++ b/include/linux/mfd/samsung/core.h
-@@ -80,8 +80,6 @@ struct sec_platform_data {
- 	struct sec_opmode_data		*opmode;
- 	int				num_regulators;
+diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+index 80b66f16db89..038269a6b08c 100644
+--- a/drivers/rtc/rtc-s5m.c
++++ b/drivers/rtc/rtc-s5m.c
+@@ -713,16 +713,10 @@ static int s5m8767_rtc_init_reg(struct s5m_rtc_info *info)
+ static int s5m_rtc_probe(struct platform_device *pdev)
+ {
+ 	struct sec_pmic_dev *s5m87xx = dev_get_drvdata(pdev->dev.parent);
+-	struct sec_platform_data *pdata = s5m87xx->pdata;
+ 	struct s5m_rtc_info *info;
+ 	const struct regmap_config *regmap_cfg;
+ 	int ret, alarm_irq;
  
--	bool				buck_voltage_lock;
+-	if (!pdata) {
+-		dev_err(pdev->dev.parent, "Platform data not supplied\n");
+-		return -ENODEV;
+-	}
 -
- 	int				buck_gpios[3];
- 	int				buck_ds[3];
- 	unsigned int			buck2_voltage[8];
-@@ -91,35 +89,12 @@ struct sec_platform_data {
- 	unsigned int			buck4_voltage[8];
- 	bool				buck4_gpiodvs;
- 
--	int				buck_set1;
--	int				buck_set2;
--	int				buck_set3;
--	int				buck2_enable;
--	int				buck3_enable;
--	int				buck4_enable;
- 	int				buck_default_idx;
--	int				buck2_default_idx;
--	int				buck3_default_idx;
--	int				buck4_default_idx;
--
- 	int				buck_ramp_delay;
- 
--	int				buck2_ramp_delay;
--	int				buck34_ramp_delay;
--	int				buck5_ramp_delay;
--	int				buck16_ramp_delay;
--	int				buck7810_ramp_delay;
--	int				buck9_ramp_delay;
--	int				buck24_ramp_delay;
--	int				buck3_ramp_delay;
--	int				buck7_ramp_delay;
--	int				buck8910_ramp_delay;
--
--	bool				buck1_ramp_enable;
- 	bool				buck2_ramp_enable;
- 	bool				buck3_ramp_enable;
- 	bool				buck4_ramp_enable;
--	bool				buck6_ramp_enable;
- 
- 	int				buck2_init;
- 	int				buck3_init;
+ 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (!info)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
