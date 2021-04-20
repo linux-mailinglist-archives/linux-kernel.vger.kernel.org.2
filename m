@@ -2,185 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED5D3660B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C673660BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233855AbhDTUPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        id S233806AbhDTURU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233751AbhDTUPD (ORCPT
+        with ESMTP id S233548AbhDTURT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:15:03 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444D6C06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:14:31 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id c195so44486192ybf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:14:31 -0700 (PDT)
+        Tue, 20 Apr 2021 16:17:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971DAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:16:47 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id q2so2076476pfk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mWvsYx7IzA9GfPTPmUcRLPUp1HCGUIZAXpCS/2LWJYw=;
-        b=qRBop6uajhYMowB9AXqHDztVfTiCiqT++oepEeiC48vFhRAcU5LSIRHcwfYT6NYauq
-         LTwmT9uX5LEJ/sJwDNDCgBTtMSRNIeAdCxKUfDl/tQRqwAZC0ztbLPpJgheyJt+NZ9so
-         +NqTrcoSEYR3RWqmNdcs4IHrQLyBJuYWcI+WKxRtbhBPetjcm41tow/4HHlnC2qy061z
-         XTmsi6VYo655p4rYUVymlsZ6Eq8LfT5DzWbIqMzJIGjssJz5zlondDt8xlRv1TsHgDbc
-         0aPaVXj8asBjnjgaoKee+PmnjH9kHWHSsvLrHjAbDJA7gToKPadE0h3GLfpOizcsUUp0
-         ZTBA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=baguO7314vCrN8/3Lvu6Ck0/6YUj93gK/SeIRlHPkHY=;
+        b=VDk6YLqqHBjXELr908Vy3WBsu/P3T1SUqT+ZE+rHFrt/R8+YWT9gMDUBRfkEmzdvrH
+         n2heHViq5NBoovkpWFoJ9szOnoaDxi0rQNrCxGxXw+go42e2mkquPT5Kn1c7hw/UZGAK
+         SHxReazCEAgCJd3ktuLdhBRBu5hNh4DOGBm+1lIe0NjGPMbcR3KZQ0w/f8nrgB+CX5Uz
+         wItuzAE2l0q92ZY28tv0EmYCx4IIh8LSjN8Xrz7J8Wg9OTlhyUTGoTonMJLfygkOTxxl
+         JiloQ2+INXgN+FVI5Bc65zkU3dsdO9rQc4jouA3KmoeAT339FhlBhZmIyKqljJqnbQDt
+         fDeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mWvsYx7IzA9GfPTPmUcRLPUp1HCGUIZAXpCS/2LWJYw=;
-        b=RwpHBhk5N/lcTp5fWrtGBNoz0SiNSZTeIAExQH4izM1W0emy7dbVnV4/7cDxolqX+x
-         4Rfw2fnD4UUuGy4bAT412EJmDqU6PBoUj4emeVaI4vJiczFecCTMmJ306LbqFRPxreUi
-         ruWReT12WZnB4FvQ4rgU/cOOPQuEZPIeIVekUiCB7T4ShKAEcnd5hGnP7quazJvDgY5I
-         VaYRqBsnh7T6O8PDz90wOPCDHv8XYgJN3gSpdFIKkeOJaekmAEhtX5wur4kin8+WeeIE
-         n+l+B3B843X+wOJGbxVUhQL7I79g9TCDSAhlv6x1ijRqzej3dy7269VqHVlCimWiL6Km
-         eB2Q==
-X-Gm-Message-State: AOAM5325iLDm8QkEH5OwXZ+Ct71RGj05SpimIpC/g/Q/oNttmgmTQEfS
-        gIFOuvdHqkrB8FJSPE0S3X39w7Qp5Qe9/23S+En66g==
-X-Google-Smtp-Source: ABdhPJw2vBj+tqkve0bKkIOUuRE5iUgwXY9JWUju+TRFeedSda5f9+5dA+C4VDJ10Q85wMvBXqE9SaTQ4sCau98cfEU=
-X-Received: by 2002:a25:aac3:: with SMTP id t61mr26366634ybi.405.1618949670166;
- Tue, 20 Apr 2021 13:14:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=baguO7314vCrN8/3Lvu6Ck0/6YUj93gK/SeIRlHPkHY=;
+        b=TncF0FKlxbED+EAzFE438RjxKBLCdp1AfWSYfrOTWOkZPwjnfh+wh9b+NhW/Yko/pd
+         DZVy02/P8+/yPzxLtyxzs2iGVxXvTVAVP783M4lKaHiPK7woaNBC/1OmF+Xy1x9xn63w
+         MV/T/plBsMc96qE58T37NlCRTVyb9dZHG6faeA08PG7tk9PgG7LzcbiLgHsXuHAmZN/m
+         Lc9vbpS2HgxJL7vThBc2fy04wFB3AqV+xXqyhRwFjz4nlDbIwW6uIqDcl5JcCCHkwl2b
+         YUCQspmSgJ1+sdVn/pYbFdGRneef3e1CS3gXs8h/fmogF4J8NkJVhQGqOx6bw9eYnqpk
+         iEuw==
+X-Gm-Message-State: AOAM533jYjtmyjUGdfxh6yzobnzlMgH2YPXpMFvgxmDHyE8BrCB/NrjN
+        iY2pcSUHgTmEoRaowjUXui4Cjg==
+X-Google-Smtp-Source: ABdhPJzHP5mB0IkvpDfWhhTGznEdghO0p6TOY9+Gmafh1xpRpiI1fIGjEWEv/6LcbyNjpPa6ucTahw==
+X-Received: by 2002:a17:90b:1955:: with SMTP id nk21mr7031347pjb.198.1618949806996;
+        Tue, 20 Apr 2021 13:16:46 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id k15sm16500650pfi.0.2021.04.20.13.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 13:16:46 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 20:16:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
+Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
+Message-ID: <YH82qgTLCKUoSyNa@google.com>
+References: <20210420112006.741541-1-pbonzini@redhat.com>
+ <YH8P26OibEfxvJAu@google.com>
+ <05129de6-c8d9-de94-89e7-6257197433ef@redhat.com>
+ <YH8lMTMzfD7KugRg@google.com>
 MIME-Version: 1.0
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
- <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
- <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org> <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
- <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
- <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org> <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
- <32096a375966e1fcc149016df012c445@codeaurora.org>
-In-Reply-To: <32096a375966e1fcc149016df012c445@codeaurora.org>
-From:   Doug Anderson <dianders@google.com>
-Date:   Tue, 20 Apr 2021 13:14:18 -0700
-Message-ID: <CAD=FV=U0zEDi1Xn3OmVFA3h3maVWS_o2FXOW9qDEzTf1Moja=A@mail.gmail.com>
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Odelu Kukatla <okukatla@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH8lMTMzfD7KugRg@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Apr 20, 2021, Sean Christopherson wrote:
+> On Tue, Apr 20, 2021, Paolo Bonzini wrote:
+> > On 20/04/21 19:31, Sean Christopherson wrote:
+> > > > +	case KVM_HC_PAGE_ENC_STATUS: {
+> > > > +		u64 gpa = a0, npages = a1, enc = a2;
+> > > > +
+> > > > +		ret = -KVM_ENOSYS;
+> > > > +		if (!vcpu->kvm->arch.hypercall_exit_enabled)
+> > > 
+> > > I don't follow, why does the hypercall need to be gated by a capability?  What
+> > > would break if this were changed to?
+> > > 
+> > > 		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
+> > 
+> > The problem is that it's valid to take KVM_GET_SUPPORTED_CPUID and send it
+> > unmodified to KVM_SET_CPUID2.  For this reason, features that are
+> > conditional on other ioctls, or that require some kind of userspace support,
+> > must not be in KVM_GET_SUPPORTED_CPUID.  For example:
+> > 
+> > - TSC_DEADLINE because it is only implemented after KVM_CREATE_IRQCHIP (or
+> > after KVM_ENABLE_CAP of KVM_CAP_IRQCHIP_SPLIT)
+> > 
+> > - MONITOR only makes sense if userspace enables KVM_CAP_X86_DISABLE_EXITS
+> > 
+> > X2APIC is reported even though it shouldn't be.  Too late to fix that, I
+> > think.
+> > 
+> > In this particular case, if userspace sets the bit in CPUID2 but doesn't
+> > handle KVM_EXIT_HYPERCALL, the guest will probably trigger some kind of
+> > assertion failure as soon as it invokes the HC_PAGE_ENC_STATUS hypercall.
+> 
+> Gah, I was thinking of the MSR behavior and forgot that the hypercall exiting
+> behavior intentionally doesn't require extra filtering.
+> 
+> It's also worth noting that guest_pv_has() is particularly useless since it
+> will unconditionally return true for older VMMs that dont' enable
+> KVM_CAP_ENFORCE_PV_FEATURE_CPUID.
+> 
+> Bummer.
 
-On Tue, Apr 20, 2021 at 10:21 AM <sbhanu@codeaurora.org> wrote:
->
-> On 2021-04-15 01:55, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
-> >>
-> >> >> >>> +                                       required-opps =
-> >> >> >>> <&rpmhpd_opp_low_svs>;
-> >> >> >>> +                                       opp-peak-kBps = <1200000
-> >> >> >>> 76000>;
-> >> >> >>> +                                       opp-avg-kBps = <1200000
-> >> >> >>> 50000>;
-> >> >> >> Why are the kBps numbers so vastly different than the ones on sc7180
-> >> >> >> for the same OPP point. That implies:
-> >> >> >>
-> >> >> >> a) sc7180 is wrong.
-> >> >> >>
-> >> >> >> b) This patch is wrong.
-> >> >> >>
-> >> >> >> c) The numbers are essentially random and don't really matter.
-> >> >> >>
-> >> >> >> Can you identify which of a), b), or c) is correct, or propose an
-> >> >> >> alternate explanation of the difference?
-> >> >> >>
-> >> >>
-> >> >> We calculated bus votes values for both sc7180 and sc7280 with ICB
-> >> >> tool,
-> >> >> above mentioned values we got for sc7280.
-> >> >
-> >> > I don't know what an ICB tool is. Please clarify.
-> >> >
-> >> > Also: just because a tool spits out numbers that doesn't mean it's
-> >> > correct. Presumably the tool could be wrong or incorrectly configured.
-> >> > We need to understand why these numbers are different.
-> >> >
-> >> we checked with ICB tool team on this they conformed as Rennell &
-> >> Kodiak
-> >> are different chipsets,
-> >> we might see delta in ib/ab values due to delta in scaling factors.
-> >
-> > ...but these numbers are in kbps, aren't they? As I understand it
-> > these aren't supposed to be random numbers spit out by a tool but are
-> > supposed to be understandable by how much bandwidth an IP block (like
-> > MMC) needs from the busses it's connected to. Since the MMC IP block
-> > on sc7180 and sc7280 is roughly the same there shouldn't be a big
-> > difference in numbers.
-> >
-> > Something smells wrong.
-> >
-> > Adding a few people who understand interconnects better than I do,
-> > though.
-> >
->
-> ICB team has re-checked the Rennell ICB tool and they confirmed that
-> some configs were wrong in Rennell ICB tool and they corrected it.With
-> the new updated Rennell ICB tool below are the values :
->
->
-> Rennell LC:(Sc7180)
->
-> opp-384000000 {
->               opp-hz = /bits/ 64 <384000000>;
->               required-opps = <&rpmhpd_opp_nom>;
->               opp-peak-kBps = <5400000 490000>;
->               opp-avg-kBps = <6600000 300000>;
-> };
->
->
-> And now, these values are near to Kodaik LC values:
->
-> Kodaik LC:(SC7280)
->
-> opp-384000000 {
->             opp-hz = /bits/ 64 <384000000>;
->             required-opps = <&rpmhpd_opp_nom>;
->             opp-peak-kBps = <5400000 399000>;
->             opp-avg-kBps = <6000000 300000>;
-> };
+Oh!  Almost forgot my hail mary idea.  Instead of a new capability, can we
+reject the hypercall if userspace has _not_ set KVM_CAP_ENFORCE_PV_FEATURE_CPUID?
 
-This still isn't making sense to me.
-
-* sc7180 and sc7280 are running at the same speed. I'm glad the
-numbers are closer now, but I would have thought they'd be exactly the
-same.
-
-* Aren't these supposed to be sensible? This is eMMC that does max
-transfer rates of 400 megabytes / second to the external device. You
-have bandwidths listed here of 5,400,000 kBps = 5,400,000 kilobytes /
-second = 5400 megabytes / second. I can imagine there being some
-overhead where an internal bus might need to be faster but that seems
-excessive. This is 13.5x!
-
-* I can't see how it can make sense that "average" values are higher
-than "peak" values.
-
-It still feels like there's a misconfiguration somewhere.
-
--Doug
+			if (vcpu->arch.pv_cpuid.enforce &&
+			    !guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS)
+				break;
