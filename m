@@ -2,221 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C05436506F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22491365080
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhDTCnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhDTCm7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:42:59 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD2CC06174A;
-        Mon, 19 Apr 2021 19:42:28 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id u15so10297156plf.10;
-        Mon, 19 Apr 2021 19:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vgiP4tU1wMC+CJHD44H3YeER60YK9xQvr6oaVCV9rsk=;
-        b=QtuEPPD86//F655qiNYQxqN77KSntpKAIoqm+zg7u8dEv59YucwUoWk50Ycz9UEOIU
-         35qPSGeWHH20Wi9d7+zUVBzXypizz061qNme/S0Xq1AFJYbnck8Zm/yTzXYnPNny+Q3e
-         DwNy6oK+gTWVt35aPEaGxhrYGHrCC5VApEuxlca0RBK7WUmsPytYN7EDJ9s4quA06rYm
-         W1pHE3bFU3KqpuzgnsT2TyH6fbu+3wbPNGRh98lsVBEWkIp8bNnypiOwbtaO46qXfUPQ
-         exgB6eMBvn7+P7vk3U0K3t4idUUwL2Lve3/4NW8JSRzDswwzCJEVeLb/iz5DhfDJe0um
-         WdFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vgiP4tU1wMC+CJHD44H3YeER60YK9xQvr6oaVCV9rsk=;
-        b=mQBGkoULsnySTB2tVCgenlHiGywQFbsKkIpd+tsTMMyl91np2Hwkir537IIfd9eYbk
-         9TujV7Necnw6EBLXXIJ6Y1elR93ZHH3oCgsltM8vvO4VOUrW2XtIvzK43UfKh2xV949M
-         q4QbDMREwhoqTkjWfjm280mwtmfKbW4XPiVlVBMH0Lin6P+IeKiNAZ6dbtK/VhbU72Y6
-         kai1La/A6oM7OUQHGboJUnY/dDLI4V/F9382vKjbQ5dk/B/dhp9op2AP19X4E0BXCOrC
-         CPM4sdzAO4oh0Hv2kiERjvppVtRkAdOQXlILgXpxa23n/ZwfvAUg8/DD9mTD1bN/aOm2
-         mMRA==
-X-Gm-Message-State: AOAM531SkPA0cM/qVc5aW4hxZZmknWIUOdjzKL+rk7rICsDS+YgzmjvX
-        9H1EONCO8evyS7GUGnbFsgw=
-X-Google-Smtp-Source: ABdhPJynt95tAQkz/zKdCFlqeduCsz1O5bigcmXEvuBhGdtCg+rJ3gupItvL6kCVf0/q8AYmGmPNrA==
-X-Received: by 2002:a17:90a:b398:: with SMTP id e24mr2417117pjr.141.1618886547546;
-        Mon, 19 Apr 2021 19:42:27 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id 14sm13524425pfi.145.2021.04.19.19.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 19:42:27 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        John Crispin <john@phrozen.org>
-Subject: [PATCH] dt-bindings: net: mediatek/ralink: remove unused bindings
-Date:   Mon, 19 Apr 2021 19:42:22 -0700
-Message-Id: <20210420024222.101615-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229680AbhDTCuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:50:11 -0400
+Received: from mga05.intel.com ([192.55.52.43]:64046 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhDTCuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 22:50:10 -0400
+IronPort-SDR: 0UlayDdUJWfk2YeLyjMNpR1kfzId1HhLio17rBpFch6WvYKNsYe9NlfCO7mKMPTqCyl9ujf40O
+ ehyRgiR6rpzA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="280758686"
+X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
+   d="scan'208";a="280758686"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 19:49:39 -0700
+IronPort-SDR: rTnn6ycqI0aiWmbkDOqGJ7/a9qIe/xFdKLSNYge8jfGYHa47etVRhbcqrizoDTs9ywOI3wpqGF
+ hc1GlQ7pYg9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
+   d="scan'208";a="523636963"
+Received: from ipu5-build.bj.intel.com ([10.238.232.202])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Apr 2021 19:49:35 -0700
+From:   Bingbu Cao <bingbu.cao@intel.com>
+To:     linux-kernel@vger.kernel.org,
+        stable.vger.kernel.org@vger.kernel.org, linux-pci@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
+        grundler@chromium.org, tfiga@chromium.org,
+        senozhatsky@chromium.org, sakari.ailus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, bingbu.cao@intel.com,
+        bingbu.cao@linux.intel.com
+Subject: [PATCH v2] iommu/vt-d: Use passthrough mode for the Intel IPUs
+Date:   Tue, 20 Apr 2021 10:42:36 +0800
+Message-Id: <1618886556-6412-1-git-send-email-bingbu.cao@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert commit 663148e48a66 ("Documentation: DT: net: add docs for
-ralink/mediatek SoC ethernet binding")
+Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
+The IPU driver allocates its own page table that is not mapped
+via the DMA, and thus the Intel IOMMU driver blocks access giving
+this error:
 
-No in-tree drivers use the compatible strings present in these bindings,
-and some have been superseded by DSA-capable mtk_eth_soc driver, so
-remove these obsolete bindings.
+DMAR: DRHD: handling fault status reg 3
+DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
+      fault addr 76406000 [fault reason 06] PTE Read access is not set
 
-Cc: John Crispin <john@phrozen.org>
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+As IPU is not an external facing device which is not risky, so use
+IOMMU passthrough mode for Intel IPUs.
+
+Fixes: 26f5689592e2 ("media: staging/intel-ipu3: mmu: Implement driver")
+Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
 ---
- .../bindings/net/mediatek,mt7620-gsw.txt      | 24 --------
- .../bindings/net/ralink,rt2880-net.txt        | 59 -------------------
- .../bindings/net/ralink,rt3050-esw.txt        | 30 ----------
- 3 files changed, 113 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt
- delete mode 100644 Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
- delete mode 100644 Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt
+Changes since v1:
+ - Use IPU PCI DID value instead of macros to align with others
+ - Check IPU PCI device ID in quirk
 
-diff --git a/Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt b/Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt
-deleted file mode 100644
-index 358fed2fab43..000000000000
---- a/Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt
-+++ /dev/null
-@@ -1,24 +0,0 @@
--Mediatek Gigabit Switch
--=======================
--
--The mediatek gigabit switch can be found on Mediatek SoCs (mt7620, mt7621).
--
--Required properties:
--- compatible: Should be "mediatek,mt7620-gsw" or "mediatek,mt7621-gsw"
--- reg: Address and length of the register set for the device
--- interrupts: Should contain the gigabit switches interrupt
--- resets: Should contain the gigabit switches resets
--- reset-names: Should contain the reset names "gsw"
--
--Example:
--
--gsw@10110000 {
--	compatible = "ralink,mt7620-gsw";
--	reg = <0x10110000 8000>;
--
--	resets = <&rstctrl 23>;
--	reset-names = "gsw";
--
--	interrupt-parent = <&intc>;
--	interrupts = <17>;
--};
-diff --git a/Documentation/devicetree/bindings/net/ralink,rt2880-net.txt b/Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
-deleted file mode 100644
-index 9fe1a0a22e44..000000000000
---- a/Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
-+++ /dev/null
-@@ -1,59 +0,0 @@
--Ralink Frame Engine Ethernet controller
--=======================================
--
--The Ralink frame engine ethernet controller can be found on Ralink and
--Mediatek SoCs (RT288x, RT3x5x, RT366x, RT388x, rt5350, mt7620, mt7621, mt76x8).
--
--Depending on the SoC, there is a number of ports connected to the CPU port
--directly and/or via a (gigabit-)switch.
--
--* Ethernet controller node
--
--Required properties:
--- compatible: Should be one of "ralink,rt2880-eth", "ralink,rt3050-eth",
--  "ralink,rt3050-eth", "ralink,rt3883-eth", "ralink,rt5350-eth",
--  "mediatek,mt7620-eth", "mediatek,mt7621-eth"
--- reg: Address and length of the register set for the device
--- interrupts: Should contain the frame engines interrupt
--- resets: Should contain the frame engines resets
--- reset-names: Should contain the reset names "fe". If a switch is present
--  "esw" is also required.
--
--
--* Ethernet port node
--
--Required properties:
--- compatible: Should be "ralink,eth-port"
--- reg: The number of the physical port
--- phy-handle: reference to the node describing the phy
--
--Example:
--
--mdio-bus {
--	...
--	phy0: ethernet-phy@0 {
--		phy-mode = "mii";
--		reg = <0>;
--	};
--};
--
--ethernet@400000 {
--	compatible = "ralink,rt2880-eth";
--	reg = <0x00400000 10000>;
--
--	#address-cells = <1>;
--	#size-cells = <0>;
--
--	resets = <&rstctrl 18>;
--	reset-names = "fe";
--
--	interrupt-parent = <&cpuintc>;
--	interrupts = <5>;
--
--	port@0 {
--		compatible = "ralink,eth-port";
--		reg = <0>;
--		phy-handle = <&phy0>;
--	};
--
--};
-diff --git a/Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt b/Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt
-deleted file mode 100644
-index 87e315856efa..000000000000
---- a/Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--Ralink Fast Ethernet Embedded Switch
--====================================
--
--The ralink fast ethernet embedded switch can be found on Ralink and Mediatek
--SoCs (RT3x5x, RT5350, MT76x8).
--
--Required properties:
--- compatible: Should be "ralink,rt3050-esw"
--- reg: Address and length of the register set for the device
--- interrupts: Should contain the embedded switches interrupt
--- resets: Should contain the embedded switches resets
--- reset-names: Should contain the reset names "esw"
--
--Optional properties:
--- ralink,portmap: can be used to choose if the default switch setup is
--  llllw or wllll
--- ralink,led_polarity: override the active high/low settings of the leds
--
--Example:
--
--esw@10110000 {
--	compatible = "ralink,rt3050-esw";
--	reg = <0x10110000 8000>;
--
--	resets = <&rstctrl 23>;
--	reset-names = "esw";
--
--	interrupt-parent = <&intc>;
--	interrupts = <17>;
--};
+---
+ drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index ee0932307d64..7e2fbdae467e 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -55,6 +55,12 @@
+ #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
+ #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
+ #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
++#define IS_INTEL_IPU(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL &&	\
++			    ((pdev)->device == 0x9a19 ||		\
++			     (pdev)->device == 0x9a39 ||		\
++			     (pdev)->device == 0x4e19 ||		\
++			     (pdev)->device == 0x465d ||		\
++			     (pdev)->device == 0x1919))
+ #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
+ 
+ #define IOAPIC_RANGE_START	(0xfee00000)
+@@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
+ EXPORT_SYMBOL_GPL(intel_iommu_enabled);
+ 
+ static int dmar_map_gfx = 1;
++static int dmar_map_ipu = 1;
+ static int dmar_forcedac;
+ static int intel_iommu_strict;
+ static int intel_iommu_superpage = 1;
+@@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
+ 
+ #define IDENTMAP_GFX		2
+ #define IDENTMAP_AZALIA		4
++#define IDENTMAP_IPU		8
+ 
+ int intel_iommu_gfx_mapped;
+ EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
+@@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
+ 
+ 		if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
+ 			return IOMMU_DOMAIN_IDENTITY;
++
++		if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_INTEL_IPU(pdev))
++			return IOMMU_DOMAIN_IDENTITY;
+ 	}
+ 
+ 	return 0;
+@@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
+ 	if (!dmar_map_gfx)
+ 		iommu_identity_mapping |= IDENTMAP_GFX;
+ 
++	if (!dmar_map_ipu)
++		iommu_identity_mapping |= IDENTMAP_IPU;
++
+ 	check_tylersburg_isoch();
+ 
+ 	ret = si_domain_init(hw_pass_through);
+@@ -5622,6 +5636,18 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
+ 	dmar_map_gfx = 0;
+ }
+ 
++static void quirk_iommu_ipu(struct pci_dev *dev)
++{
++	if (!IS_INTEL_IPU(dev))
++		return;
++
++	if (risky_device(dev))
++		return;
++
++	pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
++	dmar_map_ipu = 0;
++}
++
+ /* G4x/GM45 integrated gfx dmar support is totally busted. */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
+@@ -5657,6 +5683,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
+ 
++/* disable IPU dmar support */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_ANY_ID, quirk_iommu_ipu);
++
+ static void quirk_iommu_rwbf(struct pci_dev *dev)
+ {
+ 	if (risky_device(dev))
 -- 
-2.31.1
+2.7.4
 
