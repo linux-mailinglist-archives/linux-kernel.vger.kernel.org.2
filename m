@@ -2,160 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C51036608B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5882E366091
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbhDTUC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:02:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:42066 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233751AbhDTUC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:02:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CEDB106F;
-        Tue, 20 Apr 2021 13:01:54 -0700 (PDT)
-Received: from [10.57.29.84] (unknown [10.57.29.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD1CC3F73B;
-        Tue, 20 Apr 2021 13:01:52 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
- devices when temp is low
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210419084536.25000-1-lukasz.luba@arm.com>
- <20210419084536.25000-3-lukasz.luba@arm.com>
- <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
- <55943d6f-0f72-215d-1dd4-bf3996092df7@arm.com>
- <91411c9c-d78e-8ba6-1cd3-da6879bc5ceb@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <0fc57590-cc7c-9e04-16bc-13b7b787ad2f@arm.com>
-Date:   Tue, 20 Apr 2021 21:01:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233819AbhDTUDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:03:23 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:35574 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233682AbhDTUDW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:03:22 -0400
+Received: by mail-oi1-f173.google.com with SMTP id e25so10210135oii.2;
+        Tue, 20 Apr 2021 13:02:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KjD4lXtva/+btnljL9bkUIKj0w5NavTEnen058f6CYg=;
+        b=FwFN0OQwKjwGjgtCZ2g0D/uu/VUsmDzV9vzUvFrWf9fZjjNrGjKEU3bhsOI6eBoFQP
+         dsg6j2b1juxqNTMLOkFI2Je7/0A065Oo3jNaghEnAT0TDok9bkyo4MTopgQI5ug/qxHZ
+         skV7oXxyWSdDZHqtxkCaK+s7SNyosGQI92sHeOgqDk+G7t7Hr1JWaWNJ/ERwsiuYFgVV
+         Sz8Ms3iba0DYDZM8eJPcmOtyC7UViOkPF8GSEMLNImKzoAmU/6bnFKyOQgfOqg6xwF2+
+         /FRqgelRpD4wCW/kxJ4jHDkznviZK2u/A6b3r+MXispB+YloiTd0fJgdRN8KWSdHm0iA
+         nPkQ==
+X-Gm-Message-State: AOAM531eEpJWNtcmwyiaCTzMryGFyZdekZkQ9/Njj0TC8Oj3iqazLAEc
+        hkxncQF3mJBJuM5Ng21KJg==
+X-Google-Smtp-Source: ABdhPJxsU17fvzON9fb6P8t7ei/fmSZiVxJF23/q6NmCKy9c1HHOB/zC0Uq2cgzpTjxZzey78BhuzA==
+X-Received: by 2002:a05:6808:b3b:: with SMTP id t27mr4236059oij.131.1618948970562;
+        Tue, 20 Apr 2021 13:02:50 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s3sm14508ool.36.2021.04.20.13.02.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 13:02:47 -0700 (PDT)
+Received: (nullmailer pid 3719999 invoked by uid 1000);
+        Tue, 20 Apr 2021 20:02:46 -0000
+Date:   Tue, 20 Apr 2021 15:02:46 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] dt-bindings: serial: Add label property for pl011
+Message-ID: <20210420200246.GA3717650@robh.at.kernel.org>
+References: <20210415073105.3687-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <91411c9c-d78e-8ba6-1cd3-da6879bc5ceb@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415073105.3687-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/20/21 4:24 PM, Daniel Lezcano wrote:
-> On 20/04/2021 16:21, Lukasz Luba wrote:
->> Hi Daniel,
->>
->> On 4/20/21 2:30 PM, Daniel Lezcano wrote:
->>> On 19/04/2021 10:45, Lukasz Luba wrote:
->>
->> [snip]
->>
->>>> -        instance->cdev->updated = false;
->>>> +        if (update)
->>>> +            instance->cdev->updated = false;
->>>> +
->>>>            mutex_unlock(&instance->cdev->lock);
->>>> -        (instance->cdev);
->>>> +
->>>> +        if (update)
->>>> +            thermal_cdev_update(instance->cdev);
->>>
->>> This cdev update has something bad IMHO. It is protected by a mutex but
->>> the 'updated' field is left unprotected before calling
->>> thermal_cdev_update().
->>>
->>> It is not the fault of this code but how the cooling device are updated
->>> and how it interacts with the thermal instances.
->>>
->>> IMO, part of the core code needs to revisited.
->>
->> I agree, but please check my comments below.
->>
->>>
->>> This change tight a bit more the knot.
->>>
->>> Would it make sense to you if we create a function eg.
->>> __thermal_cdev_update()
->>
->> I'm not sure if I assume it right that the function would only have the:
->> list_for_each_entry(instance, &cdev->thermal_instances, cdev_node)
->>
->> loop from the thermal_cdev_update(). But if it has only this loop then
->> it's too little.
->>
->>>
->>> And then we have:
->>>
->>> void thermal_cdev_update(struct thermal_cooling_device *cdev)
->>> {
->>>           mutex_lock(&cdev->lock);
->>>           /* cooling device is updated*/
->>>           if (cdev->updated) {
->>>                   mutex_unlock(&cdev->lock);
->>>                   return;
->>>           }
->>>
->>>      __thermal_cdev_update(cdev);
->>>
->>>           thermal_cdev_set_cur_state(cdev, target);
->>
->> Here we are actually setting the 'target' state via:
->> cdev->ops->set_cur_state(cdev, target)
->>
->> then we notify, then updating stats.
->>
->>>
->>>           cdev->updated = true;
->>>           mutex_unlock(&cdev->lock);
->>>           trace_cdev_update(cdev, target);
->>
->> Also this trace is something that I'm using in my tests...
+On Thu, Apr 15, 2021 at 03:31:05PM +0800, Zhen Lei wrote:
+> When there is more than one pl011 serial port present, the label property
+> allows a custom name to be used for briefly describe the usage or position
+> of each serial port.
 > 
-> Yeah, I noticed right after sending the comments. All that should be
-> moved in the lockless function.
+> Without this "label" property, many dtbs_check warnings similar to the
+> following are reported:
+> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
+> serial@ffd74000: Additional properties are not allowed ('label' was unexpected)
+>         From schema: Documentation/devicetree/bindings/serial/pl011.yaml
 
-Agree
+I think this should go into serial.yaml instead.
 
 > 
-> So this function becomes:
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/serial/pl011.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> void thermal_cdev_update(struct thermal_cooling_device *cdev)
-> {
-> 	mutex_lock(&cdev->lock);
-> 	if (!cdev->updated) {
-> 		__thermal_cdev_update(cdev);
-> 		cdev->updated = true;
-> 	}
-> 	mutex_unlock(&cdev->lock);
-> 
-> 	dev_dbg(&cdev->device, "set to state %lu\n", target);
-> }
-> 
-> We end up with the trace_cdev_update(cdev, target) inside the mutex
-> section but that should be fine.
+> diff --git a/Documentation/devicetree/bindings/serial/pl011.yaml b/Documentation/devicetree/bindings/serial/pl011.yaml
+> index 1f8e9f2644b6b80..303c7746423f503 100644
+> --- a/Documentation/devicetree/bindings/serial/pl011.yaml
+> +++ b/Documentation/devicetree/bindings/serial/pl011.yaml
+> @@ -34,6 +34,9 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  label:
+> +    maxItems: 1
 
-True, this shouldn't be an issue.
+label is always a single string and so 'maxItems' is always 1. Just 
+need:
 
-> 
->>>           dev_dbg(&cdev->device, "set to state %lu\n", target);
->>> }
->>>
->>> And in this file we do instead:
->>>
->>> -        instance->cdev->updated = false;
->>> +        if (update)
->>> +            __thermal_cdev_update(instance->cdev);
->>>             mutex_unlock(&instance->cdev->lock);
->>> -        thermal_cdev_update(instance->cdev);
->>
->> Without the line above, we are not un-throttling the devices.
-> 
-> Is it still true with the amended function thermal_cdev_update() ?
-> 
-> 
+label: true
 
-That new approach should work. I can test your patch with this new
-functions and re-base my work on top of it.
-Or you like me to write such patch and send it?
+> +
+>    interrupts:
+>      maxItems: 1
+>  
+> -- 
+> 2.26.0.106.g9fadedd
+> 
+> 
