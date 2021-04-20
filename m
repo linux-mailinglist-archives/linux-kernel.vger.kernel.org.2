@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914843655C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E687A3655D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhDTJvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:51:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38524 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhDTJvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:51:45 -0400
-Received: from zn.tnic (p200300ec2f0e52003145dfcc247b909a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5200:3145:dfcc:247b:909a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DFCE01EC0103;
-        Tue, 20 Apr 2021 11:51:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618912273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nu9NnhXo+DMKJ3rvwlbMifnQjVrpaKGMWoTrw6zuu30=;
-        b=fD2V4XGGukrvb+aMl/SUZbaqnmeF+f1AJBhnO35x+YlEOUEd+pt5qKbhpTcyFoQa1rtztW
-        jAd7o2oVbz0ciA/NXOwfrOoE7uYONxrhmJOPcwbfk0iwRx7neBH9qi+b+4fDEsCzS92NK7
-        glFwpdjvYi2mGQkiO/xepxxLOL6Z7h0=
-Date:   Tue, 20 Apr 2021 11:51:15 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, ak@linux.intel.com,
-        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC Part2 PATCH 04/30] x86/mm: split the physmap when adding
- the page in RMP table
-Message-ID: <20210420095115.GE5029@zn.tnic>
-References: <61596c4c-3849-99d5-b0aa-6ad6b415dff9@intel.com>
- <B17112AE-8848-48B0-997D-E1A3D79BD395@amacapital.net>
- <535400b4-0593-a7ca-1548-532ee1fefbd7@intel.com>
+        id S231255AbhDTKBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230204AbhDTKBA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:01:00 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3637EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 03:00:29 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 5C1351F426F0
+Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec: Add Type C hard reset
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>
+References: <20210416182739.2938473-1-pmalani@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <172e5982-5544-7170-4c88-95e196e28fac@collabora.com>
+Date:   Tue, 20 Apr 2021 12:00:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <20210416182739.2938473-1-pmalani@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <535400b4-0593-a7ca-1548-532ee1fefbd7@intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:33:08AM -0700, Dave Hansen wrote:
-> My point was just that you can't _easily_ do the 2M->4k kernel mapping
-> demotion in a page fault handler, like I think Borislav was suggesting.
+Hi Prashant,
 
-Yeah, see my reply to Brijesh. Not in the #PF handler but when the guest
-does update the RMP table on page allocation, we should split the kernel
-mapping too, so that it corresponds to what's being changed in the RMP
-table.
+On 16/4/21 20:27, Prashant Malani wrote:
+> Update the EC command header to include the new event bit. This bit
+> is included in the latest version of the Chrome EC headers[1].
+> 
+> [1] https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/main/include/ec_commands.h
+> 
+> Change-Id: I52a36e725d945665814d4e59ddd1e76a3692db9f
 
-Dunno how useful it would be if we also do coalescing of 4K pages into
-their corresponding 2M pages... I haven't looked at set_memory.c for a
-long time and have forgotten about all details...
+Please remember to remove the ChromeOS specific tags and add properly the Signed-off
 
-In any case, my main goal here is to keep the tables in sync so that we
-don't have to do crazy splitting in unsafe contexts like #PF. I hope I'm
-making sense...
+Thanks,
+ Enric
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+> v2 is the first version the patch was introduced.
+> 
+>  include/linux/platform_data/cros_ec_commands.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+> index 5ff8597ceabd..9156078c6fc6 100644
+> --- a/include/linux/platform_data/cros_ec_commands.h
+> +++ b/include/linux/platform_data/cros_ec_commands.h
+> @@ -5678,6 +5678,7 @@ enum tcpc_cc_polarity {
+>  
+>  #define PD_STATUS_EVENT_SOP_DISC_DONE		BIT(0)
+>  #define PD_STATUS_EVENT_SOP_PRIME_DISC_DONE	BIT(1)
+> +#define PD_STATUS_EVENT_HARD_RESET		BIT(2)
+>  
+>  struct ec_params_typec_status {
+>  	uint8_t port;
+> 
