@@ -2,155 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C0B365CD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAA2365CDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhDTQGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:06:24 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:23168 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232174AbhDTQGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:06:21 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FPpST5fYSz9tyMJ;
-        Tue, 20 Apr 2021 18:05:45 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 6qTfVqAOsH66; Tue, 20 Apr 2021 18:05:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPpST4Shgz9tyMF;
-        Tue, 20 Apr 2021 18:05:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2B5AD8B807;
-        Tue, 20 Apr 2021 18:05:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ZiEcE-0Tlz-R; Tue, 20 Apr 2021 18:05:47 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0267E8B7ED;
-        Tue, 20 Apr 2021 18:05:45 +0200 (CEST)
-Subject: Re: [PATCH v4 19/20] mips: Convert to GENERIC_CMDLINE
-To:     Daniel Walker <danielwa@cisco.com>, Rob Herring <robh@kernel.org>
-Cc:     will@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
-        arnd@kernel.org, akpm@linux-foundation.org,
-        linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
-        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-mm@kvack.org
-References: <cover.1617375802.git.christophe.leroy@csgroup.eu>
- <a01b6cdbae01fff77e26f7a5c40ee5260e1952b5.1617375802.git.christophe.leroy@csgroup.eu>
- <20210406173836.GW2469518@zorba>
- <20210408190408.GA1724284@robh.at.kernel.org>
- <20210409012349.GG3981976@zorba>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <d92f99bf-20b7-a4b6-3d86-5b859e42cad8@csgroup.eu>
-Date:   Tue, 20 Apr 2021 18:05:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232871AbhDTQHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:07:40 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:55018 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232174AbhDTQHj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:07:39 -0400
+Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lYsu1-00059N-Q3; Tue, 20 Apr 2021 12:07:05 -0400
+Date:   Tue, 20 Apr 2021 12:07:05 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH v3] sched,fair: skip newidle_balance if a wakeup is pending
+Message-ID: <20210420120705.5c705d4b@imladris.surriel.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210409012349.GG3981976@zorba>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The try_to_wake_up function has an optimization where it can queue
+a task for wakeup on its previous CPU, if the task is still in the
+middle of going to sleep inside schedule().
+
+Once schedule() re-enables IRQs, the task will be woken up with an
+IPI, and placed back on the runqueue.
+
+If we have such a wakeup pending, there is no need to search other
+CPUs for runnable tasks. Just skip (or bail out early from) newidle
+balancing, and run the just woken up task.
+
+For a memcache like workload test, this reduces total CPU use by
+about 2%, proportionally split between user and system time,
+and p99 and p95 application response time by 10% on average.
+The schedstats run_delay number shows a similar improvement.
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
+---
+ kernel/sched/fair.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 69680158963f..fd80175c3b3e 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10594,6 +10594,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	u64 curr_cost = 0;
+ 
+ 	update_misfit_status(NULL, this_rq);
++
++	/*
++	 * There is a task waiting to run. No need to search for one.
++	 * Return 0; the task will be enqueued when switching to idle.
++	 */
++	if (this_rq->ttwu_pending)
++		return 0;
++
+ 	/*
+ 	 * We must set idle_stamp _before_ calling idle_balance(), such that we
+ 	 * measure the duration of idle_balance() as idle time.
+@@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 		 * Stop searching for tasks to pull if there are
+ 		 * now runnable tasks on this rq.
+ 		 */
+-		if (pulled_task || this_rq->nr_running > 0)
++		if (pulled_task || this_rq->nr_running > 0 ||
++		    this_rq->ttwu_pending)
+ 			break;
+ 	}
+ 	rcu_read_unlock();
+@@ -10688,7 +10697,12 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	if (this_rq->nr_running != this_rq->cfs.h_nr_running)
+ 		pulled_task = -1;
+ 
+-	if (pulled_task)
++	/*
++	 * If we are no longer idle, do not let the time spent here pull
++	 * down this_rq->avg_idle. That could lead to newidle_balance not
++	 * doing enough work, and the CPU actually going idle.
++	 */
++	if (pulled_task || this_rq->ttwu_pending)
+ 		this_rq->idle_stamp = 0;
+ 
+ 	rq_repin_lock(this_rq, rf);
+-- 
+2.25.4
 
 
-Le 09/04/2021 à 03:23, Daniel Walker a écrit :
-> On Thu, Apr 08, 2021 at 02:04:08PM -0500, Rob Herring wrote:
->> On Tue, Apr 06, 2021 at 10:38:36AM -0700, Daniel Walker wrote:
->>> On Fri, Apr 02, 2021 at 03:18:21PM +0000, Christophe Leroy wrote:
->>>> -config CMDLINE_BOOL
->>>> -	bool "Built-in kernel command line"
->>>> -	help
->>>> -	  For most systems, it is firmware or second stage bootloader that
->>>> -	  by default specifies the kernel command line options.  However,
->>>> -	  it might be necessary or advantageous to either override the
->>>> -	  default kernel command line or add a few extra options to it.
->>>> -	  For such cases, this option allows you to hardcode your own
->>>> -	  command line options directly into the kernel.  For that, you
->>>> -	  should choose 'Y' here, and fill in the extra boot arguments
->>>> -	  in CONFIG_CMDLINE.
->>>> -
->>>> -	  The built-in options will be concatenated to the default command
->>>> -	  line if CMDLINE_OVERRIDE is set to 'N'. Otherwise, the default
->>>> -	  command line will be ignored and replaced by the built-in string.
->>>> -
->>>> -	  Most MIPS systems will normally expect 'N' here and rely upon
->>>> -	  the command line from the firmware or the second-stage bootloader.
->>>> -
->>>
->>>
->>> See how you complained that I have CMDLINE_BOOL in my changed, and you think it
->>> shouldn't exist.
->>>
->>> Yet here mips has it, and you just deleted it with no feature parity in your
->>> changes for this.
->>
->> AFAICT, CMDLINE_BOOL equates to a non-empty or empty CONFIG_CMDLINE. You
->> seem to need it just because you have CMDLINE_PREPEND and
->> CMDLINE_APPEND. If that's not it, what feature is missing? CMDLINE_BOOL
->> is not a feature, but an implementation detail.
-> 
-> Not true.
-> 
-> It makes it easier to turn it all off inside the Kconfig , so it's for usability
-> and multiple architecture have it even with just CMDLINE as I was commenting
-> here.
-> 
-
-Among the 13 architectures having CONFIG_CMDLINE, todayb only 6 have a CONFIG_CMDLINE_BOOL in addition:
-
-arch/arm/Kconfig:config CMDLINE
-arch/arm64/Kconfig:config CMDLINE
-arch/hexagon/Kconfig:config CMDLINE
-arch/microblaze/Kconfig:config CMDLINE
-arch/mips/Kconfig.debug:config CMDLINE
-arch/nios2/Kconfig:config CMDLINE
-arch/openrisc/Kconfig:config CMDLINE
-arch/powerpc/Kconfig:config CMDLINE
-arch/riscv/Kconfig:config CMDLINE
-arch/sh/Kconfig:config CMDLINE
-arch/sparc/Kconfig:config CMDLINE
-arch/x86/Kconfig:config CMDLINE
-arch/xtensa/Kconfig:config CMDLINE
-
-arch/microblaze/Kconfig:config CMDLINE_BOOL
-arch/mips/Kconfig.debug:config CMDLINE_BOOL
-arch/nios2/Kconfig:config CMDLINE_BOOL
-arch/sparc/Kconfig:config CMDLINE_BOOL
-arch/x86/Kconfig:config CMDLINE_BOOL
-arch/xtensa/Kconfig:config CMDLINE_BOOL
-
-
-In the begining I hesitated about the CMDLINE_BOOL, at the end I decided to go the same way as what 
-is done today in the kernel for initramfs with CONFIG_INITRAMFS_SOURCE.
-
-The problem I see within adding CONFIG_CMDLINE_BOOL for every architecture which don't have it today 
-is that when doing a "make oldconfig" on their custom configs, thousands of users will loose their 
-CMDLINE without notice.
-
-When we do the other way round, removing CONFIG_CMDLINE_BOOL on the 6 architectures that have it 
-today will have no impact on existing config.
-
-Also, in order to avoid tons of #ifdefs in the code as mandated by Kernel Codying Style §21, we have 
-to have CONFIG_CMDLINE defined at all time, so at the end CONFIG_CMDLINE_BOOL is really redundant 
-with an empty CONFIG_CMDLINE.
-
-Unlike you, the approach I took for my series is to minimise the impact on existing implementation 
-and existing configurations as much as possible.
-
-I know you have a different approach where you break every existing config anyway.
-
-https://www.kernel.org/doc/html/latest/process/coding-style.html#conditional-compilation
-
-Christophe
