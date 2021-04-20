@@ -2,135 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186BA3657A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7731A3657A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbhDTLg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 07:36:29 -0400
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:37037 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230290AbhDTLg1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:36:27 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id YofWlXS4Q8K3KYofZlzPTx; Tue, 20 Apr 2021 13:35:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618918554; bh=doq2K2ciyiMrj6S2cEcZtlgv25cz/m88RRkxLWtesi0=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=MeQVxCP+HH56vApGqKbqC5wUCSSWQGP9mNawk6Mk02oGP56yK+tCBQnJtmVAI9mCH
-         TKeZA9gsE7s7v/jZJjdBi/p8sDDdMfgFUXldy7hOJVdugYNdylHPLXIhlc7GNgUOG0
-         LlS+Q4T9uZLsVGfm/kujA39HiHl9Ndtv+X0Zu4lBz2FwhP3YYVJKNnZNj9vV0983Fo
-         iT81rSskXhJWj0a62618wQduoFbNW8reougESlXqrPCo/JAXCxp/Vn6Mjz7IfRzcxc
-         X3GaRMKVXT9ENB6INQAxZ0CUdLjA/wL/cQGhnq4b00oGj3HrHAQHxEJWdIJ1vWKjEl
-         r3DdOOXYnszDw==
-Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Lucas Stach <l.stach@pengutronix.de>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, kernel@collabora.com, cphealy@gmail.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
- <20210407073534.376722-4-benjamin.gaignard@collabora.com>
- <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
- <ffe9b3f5-94f5-453e-73f0-4b42d0454b63@collabora.com>
- <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
- <36008691-d075-203d-0cac-2a012773ea34@collabora.com>
- <43a767f8-77f5-7937-c484-753a3123f6a2@xs4all.nl>
- <e7064bb1-69e6-4214-380d-c464b7832da5@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <0f23d42e-b858-c57d-3bf7-32b511e919d1@xs4all.nl>
-Date:   Tue, 20 Apr 2021 13:35:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <e7064bb1-69e6-4214-380d-c464b7832da5@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S231707AbhDTLgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 07:36:48 -0400
+Received: from mail-eopbgr140070.outbound.protection.outlook.com ([40.107.14.70]:18150
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230290AbhDTLgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:36:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VOKkyJ2pIhc2hFeESHUnhKaON7y+Zsxpd7B1uT9iiDoAXbDoAHj7RdbwayU+0iw50NehtJ9gqY/oMc1za+F/wT0I59L1jmpPwYoYnBNUiLQXCAq8WhGghMjvFWOfDh8N1fPfPLuMxLXJz0U7DkBAo0wOMhdEnONlOZo0P7EDr5sA6adwja/Ku4Xhu56gunu2e3luVfmUv7LlET7ITrJ16m5ZpkgzruXpMbAAC229RP5srkynTOQJ3VRQOuHn672DfyCsWxshJLyD4Hr/z9tIfXqQjMSfrI2eqjiM0/h0gsdKd9zfm3aDPEODK/vE7KHKHWwvcZHvfI3JjCMA05hbeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UiO3Twyr49ldRYRVvhKkewlCHdxJCn/yu1wAYjKB3wE=;
+ b=VnPIWIGnJarzxCAykrugTdHpmv1rmpCPbx6RJCxNx8p1WlbAvRuiKbWjErkPUZ66ujDkiVkGJEdoj26jzslI4atCeZe1Rz2PUGboCQRzEqlochmV5NwLIRL4nKymBr6kKKs++KBtSaC1Yu2MA4xWnBR4z2e73j8wKxcWLgcZsefZ2ho03SYNnQDXFxNM+Dihy1mpj+MXB9XLTr5BmencYg93hwOpDPrca3oj6/rcC+eh3nCsEzPrc6JY2EwOvV1UdkQSzUvvWwRT+jN8/GCMY4BcpYAflHBGqf5XkEz0TvFrd+ndck2DF3HDRf4eaomtgEV9YGbXHBKBT5u4rRXCGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
+ dkim=pass header.d=vaisala.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UiO3Twyr49ldRYRVvhKkewlCHdxJCn/yu1wAYjKB3wE=;
+ b=iiUHP97oQDCaiSfQsXYLWl3QxMR1sz7rwqqiVkp/Ar/fn1CiY8OvmCqb8VD25yN35KaQn+aNgCIPrCH+0u3pT2ymdloD0Bnp4//j6mqqxXXtytHuuedt9mhczUzOcl28dQiD+e+NLG/59NCWFeeIJHRXe5uK3Y5mrjsXxIUVknNXFA34HNrv+mT+WEnPWw7VVFDmqvXBGIxd8AB3Fb4l17cJJebFNhKsosN5JyMIGJY0vPsFnag8lgEX36DVqfU/hzAYBOBr/ohZVuDiuvYdtnav10++1/1ua2p3PPoTVMDIceqYyn2YMr+u2gBnJBGEOSBGZofntOLAKcL2QCmIdA==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=vaisala.com;
+Received: from VI1PR0602MB3568.eurprd06.prod.outlook.com
+ (2603:10a6:803:10::31) by VE1PR06MB6960.eurprd06.prod.outlook.com
+ (2603:10a6:800:1a3::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Tue, 20 Apr
+ 2021 11:36:13 +0000
+Received: from VI1PR0602MB3568.eurprd06.prod.outlook.com
+ ([fe80::c471:1848:5f45:95a4]) by VI1PR0602MB3568.eurprd06.prod.outlook.com
+ ([fe80::c471:1848:5f45:95a4%7]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 11:36:13 +0000
+Subject: Re: [PATCH v3 2/2] iio: accel: Add driver for Murata SCA3300
+ accelerometer
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210419132159.4450-1-tomas.melin@vaisala.com>
+ <20210419132159.4450-3-tomas.melin@vaisala.com>
+ <CAHp75VdApCk_Ydt2W_WWJ_wme4d1ocrrnvo+TjZcQ62RG6uOUA@mail.gmail.com>
+ <bea4dc56-b860-431c-a820-a482ce87743c@vaisala.com>
+ <CAHp75VfM3xToHJ+J095pkoLz1YD5qq-MaZoN3Log+bj6ktWFkQ@mail.gmail.com>
+From:   Tomas Melin <tomas.melin@vaisala.com>
+Message-ID: <b9381886-35a8-8e5d-02b9-5d229439d11e@vaisala.com>
+Date:   Tue, 20 Apr 2021 14:36:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+In-Reply-To: <CAHp75VfM3xToHJ+J095pkoLz1YD5qq-MaZoN3Log+bj6ktWFkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfGZ13gHMa8gkiXjz8wgDyFzaYYCt9UUsYTPpCio4nZAkdDDxuKCKceeVqGxUSF/TqIr7N6FcI4GNAGxjmkU652ja4jvW2ByzAdmzDG7vM0WvbOQLToVt
- +mr75r84cLP2CO6ycEvczdsIhyMbPGyivQMF81Dk1z1w/MCH2xL3B2Pj9yGE+uFHVqCVUwwL8EdHJyq6n//fRi3m0eHmoDIVrcSHRSTVk1wFs3Fab5YV2D97
- 3YIkQKISbzqaJeYyogGdeE8knqEpiFk/fYwiuSc/aSTT0qfrh9qmLrAyryJvItbse7nIlANMWfkNVeIsK6b1Uoc1+9+Fm+o0CYFLIPzLAggTUFyerXuWgwqk
- qqclmRbc7mo6E90K1AucAxaa9/s/LT8F/2to5S6UTEO63+spg6fMmDAI1YnCm/A2pW6lgtvsugovF2QKHfElcJuSLrY0X9whEo9a85W0qOD1bwFfpGwwf+H3
- pK/KHHQPZo42GVN9sY2vNauHBtESUNXdSNA+lorJBkj7VlDwUJL+8jq1WPuGlLwV7YWemR0ZZSEOQ/1mj3TaSDVLmellT2q1F3PYn1qnpxIKtc+K2XWJnWWH
- RAv9NS56n6kDsbfRKnYxZoeIpOh0psmezsRNAIvzUteOUMeJc9cFYX/6HzU3hbbYe3XdKTuqHXkAulupEOeRQ4xJnlXp0wPAQbSzWgJKz8pFvQEsPbXZO5gB
- D1hA43gaNvPivGfQBPep8U3dmOFT8+cCk6xQr+YuoSPlabY0HB4B5OYO5uFUUPqb1rxxRjwGnmRGRBAzPlCAjRL9snvPaRXdMopeT+G4EQG9aAtMyHRAk833
- MUi6eTmQAp4egsQoQk4yT50p3lAjq9eob2h/5HQtOxOs9GkQZer8sRzTfFp2dcRsqF25fIqkINBovF9M+QVjsZgAlULp9iRGXZxf00NjTsHW0ydseWWQQFxR
- 3XqD/DPlAZmD4M3kUOuVTsa9LtHz1hsE5LKFNE89ZFuRfxMZ/IvuEsVNKFHv5GUrw18ATY4Eqrv9Q+gBgR+FlsbXPsI9xcBU3awWbqBxNp6YPjl1GBdnrSsQ
- UY/sfRYqzyGfdLHP/JnPNstLKjv5MlYB0d5ZyRqzbAOatkYa6rOB/9psCaL+n/9XBfClrWaF/gH1jooXhq4zn+gol4qMoXEF1nM=
+Content-Language: en-US
+X-Originating-IP: [85.156.166.106]
+X-ClientProxiedBy: HE1P192CA0015.EURP192.PROD.OUTLOOK.COM (2603:10a6:3:fe::25)
+ To VI1PR0602MB3568.eurprd06.prod.outlook.com (2603:10a6:803:10::31)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.242.132] (85.156.166.106) by HE1P192CA0015.EURP192.PROD.OUTLOOK.COM (2603:10a6:3:fe::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 11:36:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8b5048e6-b97e-4268-9e4f-08d903f080a2
+X-MS-TrafficTypeDiagnostic: VE1PR06MB6960:
+X-Microsoft-Antispam-PRVS: <VE1PR06MB6960FD8A55CAE4476505A457FD489@VE1PR06MB6960.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MGbdbWFu/GH6HQoWDmeRkAotUON8Y/TvMcZf00Skj06dfW11yQI75Tfmb7nHVs93nMEVaDnDS5f189qQL36SFTFVBmVZtZJl6Pf8VVIDHks0Kdom7ELJhYCazT4IfhSFWWIKwZdkb4g4Uviz2B9ftOpei9gn55ceRvIiEztTWE/Gyk3+QNqcXvrLOXkVuWXsL3ZgcIibv7fgFm7v6XBpl+buXcegItMzAOW3B41MW7zbcvnGUSDy65vCqog6qtb4bMlyMlTErQGD8bv9iW/ARUCnjQroFMy+jfMv0/DzbV7MLrgUSBZZcISBK7mhYfPGW1s1ipwP1upkobt/zAL66E5L3SmKHM/5CpjR2wHy3KdtTrwrr+4g9lnN3doNvKxj3lU7fGP+sY8Zl4ayvnqGgEHvX8GkZ7jh9ik/CzChIhiXocqQsxe6bfxRxeD85UHVkb7GKjYx6crb0XiV0gzAgD3YHIzfurqimsEBPSiQIldY8ABXPR+ycwcyCzJp4ndVsEdouRQAKCpkWE91u3PZV+7Icld5A2L4Ul4aTuJTZtF766ZL4+SqH00g8AlS+W9STHRFwv439N+6BNfUECqTlYUj5IjEJDMCyU1TYDq84k3tMPU4fma0MAaPftJovIOwlEN+H4JtXKdbSnCEKmcAVfk/mFLimF6YubobAjTiyR7aznWNlNCai8DspgH/LMG1XJvhiG7cnZEuVpgth524SSepmUDiXYn+KHWz9b5k8TU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0602MB3568.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(186003)(38350700002)(83380400001)(498600001)(86362001)(52116002)(8676002)(8936002)(31696002)(31686004)(6486002)(16526019)(66556008)(66476007)(53546011)(66946007)(5660300002)(956004)(4326008)(2906002)(6916009)(36756003)(44832011)(26005)(2616005)(16576012)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZVdxOEJ1QXo5MkpUbW5OUU50SUtlWE5HcHcyZnVSM1UyS25VVFYrbG0vaHIw?=
+ =?utf-8?B?REhOUW5VdGJmU25ITk1iUjV6YW9ZYmhZOEdoVW9RMlQzN1pZWVk5L3gvUU5x?=
+ =?utf-8?B?ZHJrckhSV0FIQmpMUWtSdDZlVUJ2RjlaK2tndUxGQWloenNTcHlaL1B6cEtL?=
+ =?utf-8?B?aGU1MlB0dmxIQzJCT1JFeVByQks4anVyMzQrZnJBTFdIdkF0c2JhV2ZIcHh5?=
+ =?utf-8?B?MFN0Y1JaSTV1L2c0ZlVlMHI0MDNRMmFjUElxWlBKRWNib3pxM0sydzEwNnV6?=
+ =?utf-8?B?anBuL3dWVGg2ZFlBZnhMQ01VK3R5OVFuWTBWWTByNjQyYUQ3Q2YyeHB1eEph?=
+ =?utf-8?B?ZjRESjJwS1BBUmxFOXo1b1BLOHJzcElBY2VmWHE2MVo3VXFVeEQ2RVFlZkdE?=
+ =?utf-8?B?UlhUOHY2dVlDajE5S29ZSzYyYUxrMDBQa2JBa2lLZVBHRnRtendCSG1oU01W?=
+ =?utf-8?B?bjZYZUYxQnJKK1lJZFlFc2I1TDFNZDh3bDBhcmk0cWUxaWZJMU4vSytFQWVL?=
+ =?utf-8?B?NUJCdG1reE1DQVU1T1I3SkhyUXozby9PTlE5WFNRNXpaMThwWWswK1BxaFJp?=
+ =?utf-8?B?bFl0UFBTV3hnN2RpeUxvUHZ5bGFycnk3cXJ2bEpkSUVKR1lYYkpjcHpONSta?=
+ =?utf-8?B?aVhWaDN0aloveWNsTlkwQ0ZqaHBnVjY4Mm1NSmk1dURXWmFSYlRwRUN0bmRE?=
+ =?utf-8?B?TEovdk9wZlYzVU9sTzFTNnowRE8zUVNYY0l2dlVjTGZLNnRkeTBmU0FLVzlw?=
+ =?utf-8?B?MlFlM00xTm44cGI4Mm0rNlhVSFFiaFROZ3NsYk8yaEl4aTVFTXkwTFBkK1FX?=
+ =?utf-8?B?WXNpaVYrRkNETzRYNmFURTVKUWQrb2JvM1MxcFlLWnJXMmw5QnJDdlk4VGNr?=
+ =?utf-8?B?RkhVSmRXOWR6bmJ0TDExcUJkd0Z4V082ZDlUYUlaM3M0aVdhNklpbVRrMnlx?=
+ =?utf-8?B?TlBENm5Qd0JqdFpkeGwrOUVkYXozd3R1NkJHRS9kVVNQTXY0MktXQzkvWUlv?=
+ =?utf-8?B?RTJFRnVIdlZ4dXlGQlp3UXJVbkw5NHZaYWJsQk1uVWY1TDdZWUIyL2V4ZTRq?=
+ =?utf-8?B?c1dmQWxHenltR1BvR3dWRGh2a0kzdUx1cTVTNW8yb0dxbWZHRkxLWTBFVFBU?=
+ =?utf-8?B?STM5V1ZOd3VnU0JTdFJ0aUM3ZVlzTHJYRC9pYVRXcTM1bzFNMWNCNjhVWUxr?=
+ =?utf-8?B?WDhibzM0Y05YU1JkUnZwK3VVa1FjZHRtaUgzTUpqMTJTM0NuQi9wZHZHcU1t?=
+ =?utf-8?B?Z0FvM0Z2REhXbGI5a0lNTXVUSFVPb0psdDNYVC8ycUpveHhkeElaNyt0dFB2?=
+ =?utf-8?B?NEFQTVlFTzZxQWt6ZTU4Lzd3bzJGU3hobG5VcXAvYUJ5bHV3a1lMNlpDVzBU?=
+ =?utf-8?B?TWZIZlhtUDZsS2hnOW93U2h4UkNHdDVoYUZOZjhIV2l2SmNmci8xVkp2bkk2?=
+ =?utf-8?B?dTJyaUJoQ0FkU1NVUXV5SUFwTmtqL3M5ZVBaRzY3eE5PeDdlS0FFaDVFUVln?=
+ =?utf-8?B?UFFSRnZpMGFlV2MwQzRHNHpqRFdySDVSdlJiYXJqemNrT3RhUTdUTG1QU0lH?=
+ =?utf-8?B?U2xUMEhBa3ErY1BYZVVpQndtNFpGQWluSml4eFdySzBaa0lURHBIM2RMdGJH?=
+ =?utf-8?B?ZnVCdW5uK0JBMnN1ZUFqcFJJWnJYeFNaQlVMWlNRWFpTQ1RNMGRHOUtteDVk?=
+ =?utf-8?B?czFDdlBtVVVuaWVxMUorR2NSMjE3UjRmRkVjNWEwRkRFYSszL3R1UlNJRURt?=
+ =?utf-8?Q?wLLh9kZocLzcOd8si9234PkyMlsSvYuEeEtgTvT?=
+X-OriginatorOrg: vaisala.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b5048e6-b97e-4268-9e4f-08d903f080a2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0602MB3568.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 11:36:13.5860
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YEV32ejwy1IRff5q0bYe+qQ8zkS2mlxMAUA1NLstBg8yMaSzMphgYHA43tHOR262xuN92aW9wjnEYOzuKk9BfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR06MB6960
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 11:31, Benjamin Gaignard wrote:
-> 
-> Le 20/04/2021 à 11:16, Hans Verkuil a écrit :
->> On 20/04/2021 11:10, Benjamin Gaignard wrote:
->>> Le 16/04/2021 à 17:14, Lucas Stach a écrit :
->>>> Am Freitag, dem 16.04.2021 um 15:08 +0200 schrieb Benjamin Gaignard:
->>>>> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
->>>>>> Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
->>>>>>> In order to be able to share the control hardware block between
->>>>>>> VPUs use a syscon instead a ioremap it in the driver.
->>>>>>> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
->>>>>>> phandle is not found look at 'ctrl' reg-name.
->>>>>>> With the method it becomes useless to provide a list of register
->>>>>>> names so remove it.
->>>>>> Sorry for putting a spoke in the wheel after many iterations of the
->>>>>> series.
->>>>>>
->>>>>> We just discussed a way forward on how to handle the clocks and resets
->>>>>> provided by the blkctl block on i.MX8MM and later and it seems there is
->>>>>> a consensus on trying to provide virtual power domains from a blkctl
->>>>>> driver, controlling clocks and resets for the devices in the power
->>>>>> domain. I would like to avoid introducing yet another way of handling
->>>>>> the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
->>>>>> what we are planning to do on the later chip generations.
->>>>>>
->>>>>> CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
->>>>>> virtual power domain thing a shot.
->>>>> That could replace the 3 first patches and Dt patche of this series
->>>>> but that will not impact the hevc part, so I wonder if pure hevc patches
->>>>> could be merged anyway ?
->>>>> They are reviewed and don't depend of how the ctrl block is managed.
->>>> I'm not really in a position to give any informed opinion about that
->>>> hvec patches, as I only skimmed them, but I don't see any reason to
->>>> delay patches 04-11 from this series until the i.MX8M platform issues
->>>> are sorted. AFAICS those things are totally orthogonal.
->>> Hi Hans,
->>> What do you think about this proposal to split this series ?
->>> Get hevc part merged could allow me to continue to add features
->>> like scaling lists, compressed reference buffers and 10-bit supports.
->> Makes sense to me!
-> 
-> Great !
-> If the latest version match your expectations how would you like to processed ?
-> Can you merged patches 4 to 12 ? or should I resend them in a new shorted series ?
 
-A separate patch series would be easier for me.
+On 4/20/21 1:47 PM, Andy Shevchenko wrote:
+> On Tue, Apr 20, 2021 at 11:50 AM Tomas Melin <tomas.melin@vaisala.com> wrote:
+>
+>>>> +       sca_data->txbuf[0] = 0x0 | (SCA3300_REG_STATUS << 2);
+>>> Seems you ignored my comment. What is this 0x0? What is the meaning of it?
+>>> Same for all the rest magic numbers in the code.
+>> Sorry, not ignored but will remove this redundant 0x0 for next round.
+> Maybe it's not redundant after all (I noticed other magic numbers in
+> the same position)? Please, comment your intention case-by-case.
 
-Regards,
+0x0 is for read operation, but since it's just or'd, end result should
 
-	Hans
+be the same. It was there in v1 for clarity (also #defined). Basically
 
-> 
-> Regards,
-> Benjamin
-> 
+thinking perhaps it's cleaner to just leave it out.
+
+Other magics should be cleaned up now.
+
+
+> ...
+>
+>>>> +       for_each_set_bit(bit, indio_dev->active_scan_mask,
+>>>> +                        indio_dev->masklength) {
+>>>> +               ret = sca3300_read_reg(data, sca3300_channels[bit].address,
+>>>> +                                      &val);
+>>>> +               if (ret) {
+>>>> +                       dev_err(&data->spi->dev,
+>>>> +                               "failed to read register, error: %d\n", ret);
+>>>> +                       goto out;
+>>> Does it mean interrupt is handled in this case?
+>>> Perhaps a comment why it's okay to consider so?
+>> IRQ_HANDLED seemed more correct than IRQ_NONE.
+> Why? Care to explain?
+
+Thinking that IRQ was for the device and it was indeed handled. There 
+were errors when handling
+
+it, but it was handled as much as possible.
+
+>
+>>   Or did You have some
+>> other option in mind?
 >>
->> Regards,
+>> How about something like:
 >>
->> 	Hans
->>
+>>       /* handled with errors */
+> But what if this is the very first interrupt (bit in the loop) that
+> failed? What about the rest?
 
+Aah, right. Other option could be to simply continue loop and set 'val' 
+to e.g. 0 for
+
+readings with errors. But perhaps it is after all better to bail out, 
+and only for cases
+
+when _all_ data is reliable, it is pushed to buffers(?)
+
+Comes to mind that perhaps better to have error message in this irq 
+handler as
+
+dev_err_ratelimited(), to avoid possible flooding.
+
+
+So to conclude, proposing:
+
+*change to dev_err_ratelimited()
+
+* comment goto:
+
+     /* handled, but bailing out this round due to errors */
+
+
+Would this be OK?
+
+Thanks,
+
+Tomas
+
+
+
+
+>
+>>       goto out;
+>>
+>>>> +               }
+>>>> +               data->scan.channels[i++] = val;
+>>>> +       }
