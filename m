@@ -2,69 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27BC3652BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E1C3652C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhDTHCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S230331AbhDTHD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhDTHB4 (ORCPT
+        with ESMTP id S229577AbhDTHDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:01:56 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C312C06174A;
-        Tue, 20 Apr 2021 00:01:24 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lYkNs-00EAPs-Ov; Tue, 20 Apr 2021 09:01:21 +0200
-Message-ID: <74494183e65ef549fc5596f314db43a8e792d2ff.camel@sipsolutions.net>
-Subject: Re: [PATCH AUTOSEL 5.4 13/14] gcov: clang: fix clang-11+ build
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Date:   Tue, 20 Apr 2021 09:01:19 +0200
-In-Reply-To: <20210419204454.6601-13-sashal@kernel.org>
-References: <20210419204454.6601-1-sashal@kernel.org>
-         <20210419204454.6601-13-sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Tue, 20 Apr 2021 03:03:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7417C06174A;
+        Tue, 20 Apr 2021 00:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8Oihx25ixLmgK896s6BkBU4Zy4ZTSxg7BY07q9IT2hQ=; b=hFqirIfh+nlo9lCAUemEoOwmcU
+        ZMdFNj8RgdzR2qM5APmrrVtR2OeTcERwNN38u6nFxezVx5GJo/xAtYA7HD2DxH0kqehLO52bXBwLe
+        4/yxCWMoy1FXMYDGSBjvTS3E9tGAd58v9GOpMqgE+YHl2Vwv1VS5Gu+Zq+IQHvZlk/l2dqxTnG4FG
+        MHw2JbqYRC17ffhqd08MnBFxZTB/JNwajHFljefrZWjdnheFvlycOhNYNrNFZHVPMf0UJTWMTKfYK
+        P8u11hg1IsH0zaSL1KL7F3EnxipCucT9Xw4ZAr0PB8sF+LfvSOvdTbzuzkN4XE+OubYIRqGoz37Mw
+        Jw7zA3AA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYkO1-00Eplv-KX; Tue, 20 Apr 2021 07:01:54 +0000
+Date:   Tue, 20 Apr 2021 08:01:29 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Enrico Granata <egranata@google.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
+        stefanha@redhat.com, axboe@kernel.dk,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] virtio_blk: Add support for lifetime feature
+Message-ID: <20210420070129.GA3534874@infradead.org>
+References: <20210416194709.155497-1-egranata@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416194709.155497-1-egranata@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-19 at 20:44 +0000, Sasha Levin wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> [ Upstream commit 04c53de57cb6435738961dace8b1b71d3ecd3c39 ]
-> 
-> With clang-11+, the code is broken due to my kvmalloc() conversion
-> (which predated the clang-11 support code) leaving one vmalloc() in
-> place.  Fix that.
+Just to despit my 2 cents again:  I think the way this is specified
+in the virtio spec is actively harmful and we should not suport it in
+Linux.
 
-This patch might *apply* on 5.4 (and the other kernels you selected it
-for), but then I'm pretty sure it'll be broken, unless you also applied
-the various patches this was actually fixing (my kvmalloc conversion,
-and the clang-11 support).
+If others override me we at least need to require a detailed
+documentation of these fields as the virto spec does not provide it.
 
-Also, Linus has (correctly) reverted this patch from mainline, it
-shouldn't have gone there in the first place, probably really should be
-squashed into my kvmalloc conversion patch that's in -mm now.
-
-Sorry if I didn't make that clear enough at the time.
-
-
-In any case, please drop this patch from all stable trees.
-
-johannes
-
+Please also do not add pointless over 80 character lines, and follow
+the one value per sysfs file rule.
