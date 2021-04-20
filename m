@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073C836552A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E0A365530
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhDTJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:20:35 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47122 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230090AbhDTJUb (ORCPT
+        id S231271AbhDTJXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:23:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49460 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230168AbhDTJXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:20:31 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13K9HT4h020058;
-        Tue, 20 Apr 2021 11:19:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=N8/gyx3fcfxXoHoOct6sxrHqANEHCxA7tcJ8KBXQD8k=;
- b=wvJ7kT/s3qIv0eJqqR9jWMgPUHaw0EYOC6wlNz/i8F3PsXEYStW8PTTDaY5jabLUSpuq
- oDJkEALpeK3/gXZBE1BAf4rIunFCH66DT6ijf3fjDOeT0SOPP4TNLX7+Ig22t7ltW/NE
- iPvhpOPliKaRjyuarKlcJrpcmALfe4j1hNucpjel7p9s1LVj0r20HMJ3fgGNxGGDzAl3
- UZRX0DcOyEkI8TwO1U8s3nMPRtIMXt95CuYonKDNiWA+fs/pXiiNnDiBwq1X+tpJCkHZ
- EFRXCTzAJfdXTrVILAKUThJKh4BE90ccOrK+i8ldxUe4bS1Qi2QFPBiZSkw6ff7nahDJ XQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 381tg20qtw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 11:19:58 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9827510002A;
-        Tue, 20 Apr 2021 11:19:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 88DC024186E;
-        Tue, 20 Apr 2021 11:19:57 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 11:19:56
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH] remoteproc: stm32: fix mbox_send_message call
-Date:   Tue, 20 Apr 2021 11:19:22 +0200
-Message-ID: <20210420091922.29429-1-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 20 Apr 2021 05:23:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618910582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ix5YDMmXJ3C1/BneKisaiFbJVja4N1CpmLxhrOr+FWA=;
+        b=T1xvWNeIyPYaVf+bM3mQQVaoA6vxGazYBlLgonCy4muMVFcRrWzpfN8StGG3MScwQIVM/V
+        QApTTDlHR1L0OWW3miL0omBknCOXRpuBTPjuOaQlOFYiAlfGTcDf37dJ1tw2A1amfLZUKQ
+        P1qfmiK/AZ1pQRvHvPCOE8kZTM9ZYI4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-rAO9C1eoMH-_bq_8J2uv9w-1; Tue, 20 Apr 2021 05:22:55 -0400
+X-MC-Unique: rAO9C1eoMH-_bq_8J2uv9w-1
+Received: by mail-wm1-f69.google.com with SMTP id n67-20020a1c59460000b0290114d1a03f5bso5672782wmb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:22:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ix5YDMmXJ3C1/BneKisaiFbJVja4N1CpmLxhrOr+FWA=;
+        b=B8VOffcQmaImwtEAQuCJbpYH/7lRofbnXT4mZKuokc5gNdXnhHLfCpds5GUEyiv9rG
+         wp8/e0NaRgonYTVZzMrQnUhz4jiXMaq5VyYeab6LwSANe9BkX++wAvnLfFuaeXOwXH7P
+         Y72Tx5S1pg+LnegxI4LYyV4xIXxxa+09ruCoV3EV4klsOg1ZYQPt5lVIsNxoqj0KdGcv
+         azP1h47RgZGmiAZvy/UdB9uHr2/P5YOnHimTj2M8fYUgQee4KTbPCdGqDKqVs9oq6bQo
+         R3aqYa2jl0qtNPnBywGlu5VYuLYkuRh3dSrUBXgSfbg7ZH0XEHA8fq2mHOLh5dHGrq2b
+         ccBw==
+X-Gm-Message-State: AOAM533sfG4BEf8fc0DyHhS0/uhnMd2hBYCym4LPG7s8fMoC9R4KjB6l
+        dGiv3cGY3RT0p76mWZN56A+skOp58EYqfuCYxBoc8qEY/aOB6j+HwS6zlfRmiwkkvQYmn7ZDuOz
+        0djQRahAmRHGlzYE0xymnL8oQ
+X-Received: by 2002:a1c:c911:: with SMTP id f17mr3456338wmb.45.1618910574425;
+        Tue, 20 Apr 2021 02:22:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyds3aZGiGfNhY717LR9Fd18v+z+0WjKZswcFhDMLESmpRmh8l/f3c9okYjlf6HDlj+DWj7Ug==
+X-Received: by 2002:a1c:c911:: with SMTP id f17mr3456313wmb.45.1618910574180;
+        Tue, 20 Apr 2021 02:22:54 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff2390a.dip0.t-ipconnect.de. [79.242.57.10])
+        by smtp.gmail.com with ESMTPSA id g13sm30774192wrr.9.2021.04.20.02.22.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 02:22:53 -0700 (PDT)
+Subject: Re: [PATCH v1 1/4] include/linux/mmzone.h: add documentation for
+ pfn_valid()
+To:     Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210420090925.7457-1-rppt@kernel.org>
+ <20210420090925.7457-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <f900f889-f059-7d48-dfc7-145c8cd54cf6@redhat.com>
+Date:   Tue, 20 Apr 2021 11:22:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-20_02:2021-04-19,2021-04-20 signatures=0
+In-Reply-To: <20210420090925.7457-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mbox_send_message is called by passing a local dummy message or
-a function parameter. As the message is queued, it is dereferenced.
-This works because the message field is not used by the stm32 ipcc
-driver, but it is not clean.
+On 20.04.21 11:09, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Add comment describing the semantics of pfn_valid() that clarifies that
+> pfn_valid() only checks for availability of a memory map entry (i.e. struct
+> page) for a PFN rather than availability of usable memory backing that PFN.
+> 
+> The most "generic" version of pfn_valid() used by the configurations with
+> SPARSEMEM enabled resides in include/linux/mmzone.h so this is the most
+> suitable place for documentation about semantics of pfn_valid().
+> 
+> Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>   include/linux/mmzone.h | 11 +++++++++++
+>   1 file changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 47946cec7584..961f0eeefb62 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1410,6 +1410,17 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>   #endif
+>   
+>   #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+> +/**
+> + * pfn_valid - check if there is a valid memory map entry for a PFN
+> + * @pfn: the page frame number to check
+> + *
+> + * Check if there is a valid memory map entry aka struct page for the @pfn.
+> + * Note, that availability of the memory map entry does not imply that
+> + * there is actual usable memory at that @pfn. The struct page may
+> + * represent a hole or an unusable page frame.
+> + *
+> + * Return: 1 for PFNs that have memory map entries and 0 otherwise
+> + */
+>   static inline int pfn_valid(unsigned long pfn)
+>   {
+>   	struct mem_section *ms;
+> 
 
-Fix by passing a constant string in all cases.
+I'd rephrase all "there is a valid memory map" to "there is a memory 
+map" and add "pfn_valid() does to indicate whether the memory map as 
+actually initialized -- see pfn_to_online_page()."
 
-The associated comments are removed because rproc should not have to
-deal with the behavior of the mailbox frame.
+pfn_valid() means that we can do a pfn_to_page() and don't get a fault 
+when accessing the "struct page". It doesn't state anything about the 
+content.
 
-Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/remoteproc/stm32_rproc.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 7353f9e7e7af..0e8203a432ab 100644
---- a/drivers/remoteproc/stm32_rproc.c
-+++ b/drivers/remoteproc/stm32_rproc.c
-@@ -474,14 +474,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
- static int stm32_rproc_detach(struct rproc *rproc)
- {
- 	struct stm32_rproc *ddata = rproc->priv;
--	int err, dummy_data, idx;
-+	int err, idx;
- 
- 	/* Inform the remote processor of the detach */
- 	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
- 	if (idx >= 0 && ddata->mb[idx].chan) {
--		/* A dummy data is sent to allow to block on transmit */
--		err = mbox_send_message(ddata->mb[idx].chan,
--					&dummy_data);
-+		err = mbox_send_message(ddata->mb[idx].chan, "stop");
- 		if (err < 0)
- 			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
- 	}
-@@ -493,15 +491,13 @@ static int stm32_rproc_detach(struct rproc *rproc)
- static int stm32_rproc_stop(struct rproc *rproc)
- {
- 	struct stm32_rproc *ddata = rproc->priv;
--	int err, dummy_data, idx;
-+	int err, idx;
- 
- 	/* request shutdown of the remote processor */
- 	if (rproc->state != RPROC_OFFLINE) {
- 		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
- 		if (idx >= 0 && ddata->mb[idx].chan) {
--			/* a dummy data is sent to allow to block on transmit */
--			err = mbox_send_message(ddata->mb[idx].chan,
--						&dummy_data);
-+			err = mbox_send_message(ddata->mb[idx].chan, "detach");
- 			if (err < 0)
- 				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
- 		}
-@@ -556,7 +552,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
- 			continue;
- 		if (!ddata->mb[i].chan)
- 			return;
--		err = mbox_send_message(ddata->mb[i].chan, (void *)(long)vqid);
-+		err = mbox_send_message(ddata->mb[i].chan, "kick");
- 		if (err < 0)
- 			dev_err(&rproc->dev, "%s: failed (%s, err:%d)\n",
- 				__func__, ddata->mb[i].name, err);
 -- 
-2.17.1
+Thanks,
+
+David / dhildenb
 
