@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA88364FFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76720365003
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhDTBt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 21:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhDTBt6 (ORCPT
+        id S230033AbhDTBxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 21:53:25 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16139 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhDTBxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:49:58 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB32C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:49:27 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id a11so1618091vkl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:49:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=qZjn7BJ930tQuUyc2/FYjSiXsm0RfnjdcY/KS8brw38=;
-        b=RdVGFWk4xyjwWK8lDp2fNYt+lZL0h7VD9eMRjRLicNeWKxip3Vte1JCF+U77aq3O1y
-         GNTC8p2Xgw7WBHv7h0Cyxg6rxD3hS5AW3Hx0kIEk6AzXZOkSFaab/PDFRgYvZ8S8bZv6
-         Cd/3KsDJhSCWrc1nXOyqyMyuX+wFzj6PCy7JkP/5xq86Ky+farmnuHBqUlyLsHjStI9s
-         ckcveV0w123J3BDLzve+n4aFbZjvGGJMq7EueTHyqG2t2DUbOxjqVVE0cPs7pzqyP3dz
-         rPnqfRF8QZ0+2iWO/Fvzn+7+QGqZgFkReyhNwarAzgGU18hprKVP5JWyzFF8nzshp6PZ
-         Q72w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=qZjn7BJ930tQuUyc2/FYjSiXsm0RfnjdcY/KS8brw38=;
-        b=hAHC4JheTAXATbXMTgKPxSxTb1Xb4yo7fbHVDHB3y+T4KnX8fxsqgXGzAp5vD75F7G
-         t0ACn6UkOXg0cVoAf/nPuadmZNjLgCXpiKArUHbRIqXkTARal9p9yMVK7+NwppbwX6aI
-         InCmgy5GzVt/+TX31bKYyiS2JChLViD3M0NUBxBKfbXp1DOF6092k2sGNmbiZV6r/b+c
-         8TIkin+MHiiNGnbcCLDre3EeFOaoAAEbz52UjfOW/UChBlLnFnUxHb1jBAhH2MmO87/Z
-         ewEFoZXNGMkPBorjtFjCIW2S/Miv5K8SOTkjMqzm6W2MrvlnNds3w6iKo5h31gSy51N9
-         byzg==
-X-Gm-Message-State: AOAM533OqJ+S3dloLiGPzAW0/JUBxz9XzwDL8iXJIb4d+xDb4trsvGGB
-        V7bf0nTbgKlH/zbx5xCeS94N8y1Rj+g7Kery19Ar4g==
-X-Google-Smtp-Source: ABdhPJw0OGcwljAlKeGCi/eOkxnZbDWyQmVwZbTOHj2FcG5ahwl/tLbnnxBNcR+wGK++dIhjaOTk9tNdvXFaYXST+vI=
-X-Received: by 2002:a1f:53c7:: with SMTP id h190mr17800273vkb.19.1618883366234;
- Mon, 19 Apr 2021 18:49:26 -0700 (PDT)
+        Mon, 19 Apr 2021 21:53:25 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FPRSy1sJnzmdWg;
+        Tue, 20 Apr 2021 09:49:54 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 20 Apr
+ 2021 09:52:48 +0800
+Subject: Re: [PATCH] f2fs: fix to cover allocate_segment() with lock
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210414012134.128066-1-yuchao0@huawei.com>
+ <YH22a55sexxwmGCe@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <03dc1c69-9215-1b5f-b1cc-c38454f3b90a@huawei.com>
+Date:   Tue, 20 Apr 2021 09:52:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-From:   Jue Wang <juew@google.com>
-Date:   Mon, 19 Apr 2021 18:49:15 -0700
-Message-ID: <CAPcxDJ6OAd=qdfxoTQ4cp5vQ6_+phWqX8gJfec48XyAZybBpsw@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-To:     nao.horiguchi@gmail.com, "Luck, Tony" <tony.luck@intel.com>
-Cc:     akpm@linux-foundation.org, bp@alien8.de, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        naoya.horiguchi@nec.com, osalvador@suse.de, yaoaili@kingsoft.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YH22a55sexxwmGCe@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 07:43:20 +0900, Naoya Horiguchi wrote:
-...
-> + * This function is intended to handle "Action Required" MCEs on already
-> + * hardware poisoned pages. They could happen, for example, when
-> + * memory_failure() failed to unmap the error page at the first call, or
-> + * when multiple Action Optional MCE events races on different CPUs with
-> + * Local MCE enabled.
+On 2021/4/20 0:57, Jaegeuk Kim wrote:
+> On 04/14, Chao Yu wrote:
+>> As we did for other cases, in fix_curseg_write_pointer(), let's
+>> change as below:
+>> - use callback function s_ops->allocate_segment() instead of
+>> raw function allocate_segment_by_default();
+>> - cover allocate_segment() with curseg_lock and sentry_lock.
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>   fs/f2fs/segment.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index b2ee6b7791b0..daf9531ec58f 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -4848,7 +4848,12 @@ static int fix_curseg_write_pointer(struct f2fs_sb_info *sbi, int type)
+>>   
+>>   	f2fs_notice(sbi, "Assign new section to curseg[%d]: "
+>>   		    "curseg[0x%x,0x%x]", type, cs->segno, cs->next_blkoff);
+>> -	allocate_segment_by_default(sbi, type, true);
+>> +
+>> +	down_read(&SM_I(sbi)->curseg_lock);
+>> +	down_write(&SIT_I(sbi)->sentry_lock);
+>> +	SIT_I(sbi)->s_ops->allocate_segment(sbi, type, true);
+>> +	up_write(&SIT_I(sbi)->sentry_lock);
+>> +	up_read(&SM_I(sbi)->curseg_lock);
+> 
+> Seems f2fs_allocate_new_section()?
 
-+Tony Luck
+f2fs_allocate_new_section() will allocate new section only when current
+section has been initialized and has valid block/ckpt_block.
 
-Hey Tony, I thought SRAO MCEs are broadcasted to all cores in the system
-as they come without an execution context, is it correct?
+It looks fix_curseg_write_pointer() wants to force migrating current segment
+to new section whenever write pointer and curseg->next_blkoff is inconsistent.
 
-If Yes, Naoya, I think we might want to remove the comments about the
-"multiple Action Optional MCE racing" part.
+So how about adding a parameter to force f2fs_allocate_new_section() to
+allocate new section?
 
-Best,
--Jue
+Thanks,
+
+> 
+>>   
+>>   	/* check consistency of the zone curseg pointed to */
+>>   	if (check_zone_write_pointer(sbi, zbd, &zone))
+>> -- 
+>> 2.29.2
+> .
+> 
