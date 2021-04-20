@@ -2,69 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F075A365AC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA76365ACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhDTOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:05:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55310 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232359AbhDTOFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:05:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618927506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N6JmTAHOdm3EBKzZL5WzHZUZAVTtx4LYm8/9OAbOF4I=;
-        b=ew4B6zpLgm7CnWgrZy5ZalklxOHOI4v6mQdTC0jd8h5GfQImJbMaPOEGLsGl7ig/z9vbMu
-        bESXKgEeT55ecoIIJ7whzdn0Q1nLOkLEWmvDf1fqwPTwAaFFS5KgerwM/fCj4bGcBUbez3
-        tmxzrHozEeNEGp+/qGyPBaZrJ/el3J8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BAF81B061;
-        Tue, 20 Apr 2021 14:05:06 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 16:05:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
- memory accounting
-Message-ID: <YH7fkblsuxbHlUZn@dhcp22.suse.cz>
-References: <20210420121354.1160437-1-rppt@kernel.org>
- <20210420132430.GB3596236@casper.infradead.org>
- <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
+        id S232688AbhDTOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:06:17 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17382 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232359AbhDTOGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:06:10 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FPllc5McCzlYL1;
+        Tue, 20 Apr 2021 22:03:40 +0800 (CST)
+Received: from [10.174.176.255] (10.174.176.255) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 20 Apr 2021 22:05:35 +0800
+Subject: Re: [PATCH] ext4: Fix bug on in ext4_es_cache_extent as
+ ext4_split_extent_at failed
+To:     Theodore Ts'o <tytso@mit.edu>
+References: <20210325022925.1769056-1-yebin10@huawei.com>
+ <YGvWwx/+HMdWMJwT@mit.edu> <606D0DE5.8070002@huawei.com>
+ <YG+yQfmMMKw3dKl0@mit.edu>
+CC:     <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <607EDFAF.1050307@huawei.com>
+Date:   Tue, 20 Apr 2021 22:05:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
+In-Reply-To: <YG+yQfmMMKw3dKl0@mit.edu>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.255]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 15:57:08, Michal Hocko wrote:
-[...]
-> Usual memory consumption is usually something like LRU pages + Slab
-> memory + kernel stack + vmalloc used + pcp.
-> 
-> > But I know that KernelStack is allocated through vmalloc these days,
-> > and I don't know whether VmallocUsed includes KernelStack or whether I
-> > can sum them.  Similarly, is Mlocked a subset of Unevictable?
 
-Forgot to reply to these two. Yes they do. So if we want to be precise
-then you have to check the stack allocation configuration. There are
-just so many traps lurking here. Something you get used to over time
-but this is certainly far far away from an ideal state. What else we can
-expect from an ad hoc approach to providing data to userspace that was
-historically applied to this and many other proc interfaces. We are
-trying to be strict for some time but some mistakes are simply hard to
-fix up (e.g. accounting shmem as a page cache to name some more).
 
--- 
-Michal Hocko
-SUSE Labs
+On 2021/4/9 9:47, Theodore Ts'o wrote:
+> On Wed, Apr 07, 2021 at 09:41:57AM +0800, yebin wrote:
+>>>> If call ext4_ext_insert_extent failed but new extent already inserted, we just
+>>>> update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+>>>> cause bug on when cache extent.
+>>> How did this happen in the first place?  It sounds like if the extent
+>>> was already inserted, that would be casue there was an on-disk file
+>>> system corruption, no?
+>>>
+>>> In that case, shouldn't we call ext4_error() to declare the file
+>>> system has an inconsistency, so it can be fixed by fsck?
+>> We inject IO fault when runing  fsstress,  JBD detect IO error then trigger
+>> JBD abort.  At the same time,
+>> if ext4_ext_insert_extent already insert new exntent then call
+>> ext4_ext_dirty to dirty metadata , but
+>> JBD already aborted ,  ext4_ext_dirty will return error.
+>> In ext4_ext_dirty function call  ext4_ext_check_inode check extent if ok, if
+>> not, trigger BUG_ON and
+>> also print extent detail information.
+> In this particular case, skipping the "ex->ee_len = orig_ex.ee_len"
+> may avoid the BUG_ON.  But it's not clear that this is always the
+> right thing to do.  The fundamental question is what should we do we
+> run into an error while we are in the middle of making changes to
+> on-disk and in-memory data structures?
+>
+> In the ideal world, we should undo the changes that we were in the
+> middle of making before we return an error.  That way, the semantics
+> are very clear; on success, the function has made the requested change
+> to the file system.  If the function returns an error, then no changes
+> should be made.
+>
+> That was the reasoning behind resetting ex->ee_len to orig_ex.ee_len
+> in the fix_extent_len inside ext4_split_extent_at().  Unofrtunately,
+> ext4_ext_insert_extent() does *not* always follow this convention, and
+> that's because it would be extremely difficult for it to do so --- the
+> mutations that it makes can be quite complex, including potentially
+> increasing the height of the extent tree.
+>
+> However, I don't think your fix is by any means the ideal one, because
+> the much more common way that ext4_ext_insert_extent() is when it
+> needs to insert a new leaf node, or need to increase the height of the
+> extent tree --- and in it returns an ENOSPC failure.  In that case, it
+> won't have made any changes changes in the extent tree, and so having
+> ext4_split_extent_at() undo the change to ex->ee_len is the right
+> thing to do.
+>
+> Having blocks get leaked when there is an ENOSPC failure, requiring
+> fsck to be run --- and without giving the user any warning that this
+> has happened is *not* a good way to fail.  So I don't think the
+> proposed patch is the right way to go.
+>
+> A better way to go would be to teach ext4_ext_insert_extent() so if
+> there is a late failure, that it unwinds the leaf node back to its
+> original state (at least from a semantic value).  Since the extent
+> leaf node could have been split, and/or adjacent extent entries may
+> have been merged, what it would need to do is to remember the starting
+> block number and length, and make whatever changes are necessaries to
+> the extent entries in that leaf node corresponding to that starting
+> block number and length.
+>
+> If you don't want to do that, then a "do no harm" fix would be
+> something like this:
+>
+> 	...
+> 	} else if (err == -EROFS) {
+> 		return err;
+> 	} else if (err)
+> 		goto fix_extent_len;
+Thanks  for your advice. I will send v2 patch.
+>
+> So in the journal abort case, when err is set to EROFS, we don't try
+> to reset the length, since in theory the file system is read-only
+> already anyway.  However, in the ENOSPC case, we won't end up silently
+> leaking blocks that will be lost until the user somehow decides to run
+> fsck.
+>
+> There are still times when this doesn't get things completely right
+> (e.g., what if we get a late ENOMEM error versus an early ENOMEM
+> failure), where the only real fix is to make ext4_ext_insert_extent()
+> obey the convention that if it returns an error, it must not result in
+> any user-visible state change.
+>
+> Cheers,
+>
+> 						- Ted
+> .
+
