@@ -2,124 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FC43659F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41606365A03
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhDTNZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:25:11 -0400
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:46765 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230479AbhDTNZI (ORCPT
+        id S232515AbhDTN1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:27:10 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:14547 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232456AbhDTN1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:25:08 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id YqMilY68X8K3KYqMllzmro; Tue, 20 Apr 2021 15:24:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618925075; bh=H6wnEcKeZ+8/tOf0g5ZRihQj8kY6LqmYDHCwodi5Or4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=BxWGcQI11dCDZIo6rEYJd75xkcjX83WxkBh1pir48ranKpteycux14t2tz26RwXff
-         R3vW6DnKBvSnu9joVEhJCmRxzDp9icVTYhrHl/qMpSWPuHGHiH2tN04sQpJ/DgdGNc
-         ApdDKO8KjK4y70QN9STeiv0kwtv3Tdym5qFPVpW3LroJJ5Y9HymzJk1A6TKIfDTLDL
-         xaksgg+48es3wvvnZm/poxPiToiY+FmBuDHVOsrIQf7AkPy2kF1Eoo7W5fL0xuFZMb
-         zIWdkheF2vOicU/mYVgusCm7GgAjIR+8VLEZZLd4B+3RcXkjcbn9t9Myze1dl5lT1L
-         9CDCJA6R486Jw==
-Subject: Re: [PATCH 1/6] staging: media: atomisp: improve function argument
- alignment
-To:     Deepak R Varma <mh12gx2825@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <cover.1618859059.git.drv@mailo.com>
- <9b517e04d1a9b56dc14494a246d70915d51b1839.1618859059.git.drv@mailo.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <401d7d5a-70b7-3443-8612-eb4812e22af1@xs4all.nl>
-Date:   Tue, 20 Apr 2021 15:24:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Tue, 20 Apr 2021 09:27:06 -0400
+X-UUID: 14eedb80464c4e94a60d4d3755ee0d11-20210420
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=QRFvcRSzDacuRP/Rwmj28XFP20juDpAYqgUzkpxAhQw=;
+        b=bVPoYDlJnu4V6bKP6mbt71gvkbw9VveTWYMGoBFZHtYGWdWc55etAOqNdyujddf+9RvEZ8fUvIV1nr+v/36HMFZCOYDH0ZoaP/CRx+KbwoX9uFIc9RBzU+c/QzyZLSUKo4lQ6TW9pa8Ds8Jm0nsKEYRXlBg3Aba8RpoWYNWDNy0=;
+X-UUID: 14eedb80464c4e94a60d4d3755ee0d11-20210420
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1991307290; Tue, 20 Apr 2021 21:26:27 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr
+ 2021 21:26:17 +0800
+Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Tue, 20 Apr 2021 21:26:16 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
+        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
+        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
+        <rex-bc.chen@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH 1/4] drm/panel: seperate panel power control from panel prepare/unprepare
+Date:   Tue, 20 Apr 2021 21:26:10 +0800
+Message-ID: <20210420132614.150242-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <9b517e04d1a9b56dc14494a246d70915d51b1839.1618859059.git.drv@mailo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJIFED2aVn04IwaztxkGJ1BQIM74DfjRPx0fZbZVAxOSm3NS6cl9drhoJaytTzJobL7jeP9OjjQjpAN4nd5iskNpGcNPHWRtWWEFNNsr8gJTlCelelnX
- kzBQHEkf1K/7WxC6gh1I+aoG/odu0JVOmtPro8XlN49Cd1beXO3ADh+HQHVMbV6hOsZGAah7wSPKOvWoMkXE+Nlxs7vZs0vTzKuMlJcZmKZJEnWb24GnU+uK
- Et6EMYnNs9sdw5Puvdlyz/bL7kl3tM8YgNkBM3FhDYf+zSsquZxOystKo0hEt89brvhhKCudiUC3wjb/z0Mbp7Vffdsrv27GIcepdCAR9nMQCOSv2W+V9g/f
- IEyBwyHLvpBzbo73q/rfcFw/4sB3gOfbVWREYhXsa8R7ibXDdoIU/GLlFCXTns76EozAXzHT
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 16A2BD5518165BF9873764FF788E4A99C5B0F7B7B0771DF8C7B7BBDDAE541BAA2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/2021 21:12, Deepak R Varma wrote:
-> Improve multi-line function argument alignment according to the code style
-> guidelines. Resolves checkpatch feedback: "Alignment should match
-> open parenthesis".
-> 
-> Signed-off-by: Deepak R Varma <drv@mailo.com>
-
-WARNING: From:/Signed-off-by: email address mismatch: 'From: Deepak R Varma <mh12gx2825@gmail.com>' != 'Signed-off-by: Deepak R Varma
-<drv@mailo.com>'
-
-Which email should I use? Ideally you should post from the same email
-as the Signed-off-by.
-
-Regards,
-
-	Hans
-
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c | 4 ++--
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> index 2b71de722ec3..6be3ee1d93a5 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> @@ -192,8 +192,8 @@ static int __gc0310_buf_reg_array(struct i2c_client *client,
->  }
->  
->  static int __gc0310_write_reg_is_consecutive(struct i2c_client *client,
-> -	struct gc0310_write_ctrl *ctrl,
-> -	const struct gc0310_reg *next)
-> +					     struct gc0310_write_ctrl *ctrl,
-> +					     const struct gc0310_reg *next)
->  {
->  	if (ctrl->index == 0)
->  		return 1;
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> index 78147ffb6099..6ba4a8adff7c 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> @@ -171,8 +171,8 @@ static int __gc2235_buf_reg_array(struct i2c_client *client,
->  }
->  
->  static int __gc2235_write_reg_is_consecutive(struct i2c_client *client,
-> -	struct gc2235_write_ctrl *ctrl,
-> -	const struct gc2235_reg *next)
-> +					     struct gc2235_write_ctrl *ctrl,
-> +					     const struct gc2235_reg *next)
->  {
->  	if (ctrl->index == 0)
->  		return 1;
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> index eecefcd734d0..aec7392fd1de 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> @@ -212,8 +212,8 @@ static int __ov2722_buf_reg_array(struct i2c_client *client,
->  }
->  
->  static int __ov2722_write_reg_is_consecutive(struct i2c_client *client,
-> -	struct ov2722_write_ctrl *ctrl,
-> -	const struct ov2722_reg *next)
-> +					     struct ov2722_write_ctrl *ctrl,
-> +					     const struct ov2722_reg *next)
->  {
->  	if (ctrl->index == 0)
->  		return 1;
-> 
+U29tZSBkc2kgcGFuZWxzIHJlcXVpcmUgdGhlIGRzaSBsYW5lcyBrZWVwaW5nIGxvdyBiZWZvcmUg
+cGFuZWwgcG93ZXINCm9uLiBTbyBzZXBlcmF0ZSB0aGUgcGFuZWwgcG93ZXIgY29udHJvbCBhbmQg
+dGhlIGNvbW11bmljYXRpb24gd2l0aCBwYW5lbC4NCg0KQW5kIHB1dCB0aGUgcG93ZXIgY29udHJv
+bCBpbiBkcm1fcGFuZWxfcHJlcGFyZV9wb3dlciBhbmQNCmRybV9wYW5lbF91bnByZXBhcmVfcG93
+ZXIuIFB1dCB0aGUgY29tbXVuaWNhdGlvbiB3aXRoIHBhbmVsIGluDQpkcm1fcGFuZWxfcHJlcGFy
+ZSBhbmQgZHJtX3BhbmVsX3VucHJlcGFyZS4NCg0KU2lnbmVkLW9mZi1ieTogSml0YW8gU2hpIDxq
+aXRhby5zaGlAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9wYW5l
+bC5jIHwgMTcgKysrKysrKysrKysrKysrDQogZHJpdmVycy9ncHUvZHJtL2RybV9wYW5lbC5jICAg
+IHwgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KIGluY2x1ZGUvZHJtL2Ry
+bV9icmlkZ2UuaCAgICAgICB8ICAyICsrDQogaW5jbHVkZS9kcm0vZHJtX3BhbmVsLmggICAgICAg
+IHwgMTcgKysrKysrKysrKysrKysrDQogNCBmaWxlcyBjaGFuZ2VkLCA3NCBpbnNlcnRpb25zKCsp
+DQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL3BhbmVsLmMgYi9kcml2ZXJz
+L2dwdS9kcm0vYnJpZGdlL3BhbmVsLmMNCmluZGV4IDBkZGMzNzU1MTE5NC4uYTE5Yzk2ZTcxMGZj
+IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9wYW5lbC5jDQorKysgYi9kcml2
+ZXJzL2dwdS9kcm0vYnJpZGdlL3BhbmVsLmMNCkBAIC0xMjUsNiArMTI1LDIzIEBAIHN0YXRpYyBp
+bnQgcGFuZWxfYnJpZGdlX2dldF9tb2RlcyhzdHJ1Y3QgZHJtX2JyaWRnZSAqYnJpZGdlLA0KIAly
+ZXR1cm4gZHJtX3BhbmVsX2dldF9tb2RlcyhwYW5lbF9icmlkZ2UtPnBhbmVsLCBjb25uZWN0b3Ip
+Ow0KIH0NCiANCitpbnQgcGFuZWxfYnJpZGdlX3ByZXBhcmVfcG93ZXIoc3RydWN0IGRybV9icmlk
+Z2UgKmJyaWRnZSkNCit7DQorCXN0cnVjdCBwYW5lbF9icmlkZ2UgKnBhbmVsX2JyaWRnZSA9IGRy
+bV9icmlkZ2VfdG9fcGFuZWxfYnJpZGdlKGJyaWRnZSk7DQorDQorCXJldHVybiBkcm1fcGFuZWxf
+cHJlcGFyZV9wb3dlcihwYW5lbF9icmlkZ2UtPnBhbmVsKTsNCit9DQorRVhQT1JUX1NZTUJPTChw
+YW5lbF9icmlkZ2VfcHJlcGFyZV9wb3dlcik7DQorDQoraW50IHBhbmVsX2JyaWRnZV91bnByZXBh
+cmVfcG93ZXIoc3RydWN0IGRybV9icmlkZ2UgKmJyaWRnZSkNCit7DQorICAgICAgICBzdHJ1Y3Qg
+cGFuZWxfYnJpZGdlICpwYW5lbF9icmlkZ2UgPSBkcm1fYnJpZGdlX3RvX3BhbmVsX2JyaWRnZShi
+cmlkZ2UpOw0KKw0KKyAgICAgICAgcmV0dXJuIGRybV9wYW5lbF91bnByZXBhcmVfcG93ZXIocGFu
+ZWxfYnJpZGdlLT5wYW5lbCk7DQorfQ0KK0VYUE9SVF9TWU1CT0wocGFuZWxfYnJpZGdlX3VucHJl
+cGFyZV9wb3dlcik7DQorDQorDQogc3RhdGljIGNvbnN0IHN0cnVjdCBkcm1fYnJpZGdlX2Z1bmNz
+IHBhbmVsX2JyaWRnZV9icmlkZ2VfZnVuY3MgPSB7DQogCS5hdHRhY2ggPSBwYW5lbF9icmlkZ2Vf
+YXR0YWNoLA0KIAkuZGV0YWNoID0gcGFuZWxfYnJpZGdlX2RldGFjaCwNCmRpZmYgLS1naXQgYS9k
+cml2ZXJzL2dwdS9kcm0vZHJtX3BhbmVsLmMgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX3BhbmVsLmMN
+CmluZGV4IGY2MzQzNzFjNzE3YS4uN2JiNTE4NWRiMTdkIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9n
+cHUvZHJtL2RybV9wYW5lbC5jDQorKysgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX3BhbmVsLmMNCkBA
+IC0xMTUsNiArMTE1LDI0IEBAIGludCBkcm1fcGFuZWxfcHJlcGFyZShzdHJ1Y3QgZHJtX3BhbmVs
+ICpwYW5lbCkNCiB9DQogRVhQT1JUX1NZTUJPTChkcm1fcGFuZWxfcHJlcGFyZSk7DQogDQorLyoq
+DQorICogZHJtX3BhbmVsX3ByZXBhcmVfcG93ZXIgLSBwb3dlciBvbiBhIHBhbmVsJ3MgcG93ZXIN
+CisgKiBAcGFuZWw6IERSTSBwYW5lbA0KKyAqDQorICogQ2FsbGluZyB0aGlzIGZ1bmN0aW9uIHdp
+bGwgZW5hYmxlIHBvd2VyIGFuZCBkZWFzc2VydCBhbnkgcmVzZXQgc2lnbmFscyB0bw0KKyAqIHRo
+ZSBwYW5lbC4NCisgKg0KKyAqIFJldHVybjogMCBvbiBzdWNjZXNzIG9yIGEgbmVnYXRpdmUgZXJy
+b3IgY29kZSBvbiBmYWlsdXJlLg0KKyAqLw0KK2ludCBkcm1fcGFuZWxfcHJlcGFyZV9wb3dlcihz
+dHJ1Y3QgZHJtX3BhbmVsICpwYW5lbCkNCit7DQorCWlmIChwYW5lbCAmJiBwYW5lbC0+ZnVuY3Mg
+JiYgcGFuZWwtPmZ1bmNzLT5wcmVwYXJlX3Bvd2VyKQ0KKwkJcmV0dXJuIHBhbmVsLT5mdW5jcy0+
+cHJlcGFyZV9wb3dlcihwYW5lbCk7DQorDQorCXJldHVybiBwYW5lbCA/IC1FTk9TWVMgOiAtRUlO
+VkFMOw0KK30NCitFWFBPUlRfU1lNQk9MKGRybV9wYW5lbF9wcmVwYXJlX3Bvd2VyKTsNCisNCiAv
+KioNCiAgKiBkcm1fcGFuZWxfdW5wcmVwYXJlIC0gcG93ZXIgb2ZmIGEgcGFuZWwNCiAgKiBAcGFu
+ZWw6IERSTSBwYW5lbA0KQEAgLTEzOCw2ICsxNTYsMjYgQEAgaW50IGRybV9wYW5lbF91bnByZXBh
+cmUoc3RydWN0IGRybV9wYW5lbCAqcGFuZWwpDQogfQ0KIEVYUE9SVF9TWU1CT0woZHJtX3BhbmVs
+X3VucHJlcGFyZSk7DQogDQorLyoqDQorICogZHJtX3BhbmVsX3VucHJlcGFyZV9wb3dlciAtIHBv
+d2VyIG9mZiBhIHBhbmVsDQorICogQHBhbmVsOiBEUk0gcGFuZWwNCisgKg0KKyAqIENhbGxpbmcg
+dGhpcyBmdW5jdGlvbiB3aWxsIGNvbXBsZXRlbHkgcG93ZXIgb2ZmIGEgcGFuZWwgKGFzc2VydCB0
+aGUgcGFuZWwncw0KKyAqIHJlc2V0LCB0dXJuIG9mZiBwb3dlciBzdXBwbGllcywgLi4uKS4gQWZ0
+ZXIgdGhpcyBmdW5jdGlvbiBoYXMgY29tcGxldGVkLCBpdA0KKyAqIGlzIHVzdWFsbHkgbm8gbG9u
+Z2VyIHBvc3NpYmxlIHRvIGNvbW11bmljYXRlIHdpdGggdGhlIHBhbmVsIHVudGlsIGFub3RoZXIN
+CisgKiBjYWxsIHRvIGRybV9wYW5lbF9wcmVwYXJlX3Bvd2VyIGFuZCBkcm1fcGFuZWxfcHJlcGFy
+ZSgpLg0KKyAqDQorICogUmV0dXJuOiAwIG9uIHN1Y2Nlc3Mgb3IgYSBuZWdhdGl2ZSBlcnJvciBj
+b2RlIG9uIGZhaWx1cmUuDQorICovDQoraW50IGRybV9wYW5lbF91bnByZXBhcmVfcG93ZXIoc3Ry
+dWN0IGRybV9wYW5lbCAqcGFuZWwpDQorew0KKwlpZiAocGFuZWwgJiYgcGFuZWwtPmZ1bmNzICYm
+IHBhbmVsLT5mdW5jcy0+dW5wcmVwYXJlX3Bvd2VyKQ0KKwkJcmV0dXJuIHBhbmVsLT5mdW5jcy0+
+dW5wcmVwYXJlX3Bvd2VyKHBhbmVsKTsNCisNCisJcmV0dXJuIHBhbmVsID8gLUVOT1NZUyA6IC1F
+SU5WQUw7DQorfQ0KK0VYUE9SVF9TWU1CT0woZHJtX3BhbmVsX3VucHJlcGFyZV9wb3dlcik7DQor
+DQogLyoqDQogICogZHJtX3BhbmVsX2VuYWJsZSAtIGVuYWJsZSBhIHBhbmVsDQogICogQHBhbmVs
+OiBEUk0gcGFuZWwNCmRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fYnJpZGdlLmggYi9pbmNs
+dWRlL2RybS9kcm1fYnJpZGdlLmgNCmluZGV4IDIxOTVkYWEyODlkMi4uY2M5NGM5ZGE0N2Q4IDEw
+MDY0NA0KLS0tIGEvaW5jbHVkZS9kcm0vZHJtX2JyaWRnZS5oDQorKysgYi9pbmNsdWRlL2RybS9k
+cm1fYnJpZGdlLmgNCkBAIC04OTIsNiArODkyLDggQEAgc3RydWN0IGRybV9icmlkZ2UgKmRldm1f
+ZHJtX3BhbmVsX2JyaWRnZV9hZGRfdHlwZWQoc3RydWN0IGRldmljZSAqZGV2LA0KIAkJCQkJCSAg
+IHN0cnVjdCBkcm1fcGFuZWwgKnBhbmVsLA0KIAkJCQkJCSAgIHUzMiBjb25uZWN0b3JfdHlwZSk7
+DQogc3RydWN0IGRybV9jb25uZWN0b3IgKmRybV9wYW5lbF9icmlkZ2VfY29ubmVjdG9yKHN0cnVj
+dCBkcm1fYnJpZGdlICpicmlkZ2UpOw0KK2ludCBwYW5lbF9icmlkZ2VfcHJlcGFyZV9wb3dlcihz
+dHJ1Y3QgZHJtX2JyaWRnZSAqYnJpZGdlKTsNCitpbnQgcGFuZWxfYnJpZGdlX3VucHJlcGFyZV9w
+b3dlcihzdHJ1Y3QgZHJtX2JyaWRnZSAqYnJpZGdlKTsNCiAjZW5kaWYNCiANCiAjZW5kaWYNCmRp
+ZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fcGFuZWwuaCBiL2luY2x1ZGUvZHJtL2RybV9wYW5l
+bC5oDQppbmRleCAzMzYwNWMzZjBlYmEuLjQ4ZTgzNzEyYWQ0NCAxMDA2NDQNCi0tLSBhL2luY2x1
+ZGUvZHJtL2RybV9wYW5lbC5oDQorKysgYi9pbmNsdWRlL2RybS9kcm1fcGFuZWwuaA0KQEAgLTY4
+LDYgKzY4LDEzIEBAIGVudW0gZHJtX3BhbmVsX29yaWVudGF0aW9uOw0KICAqIGZ1bmN0aW9uYWxp
+dHkgdG8gZW5hYmxlL2Rpc2FibGUgYmFja2xpZ2h0Lg0KICAqLw0KIHN0cnVjdCBkcm1fcGFuZWxf
+ZnVuY3Mgew0KKwkvKioNCisJICogQHByZXBhcmVfcG93ZXI6DQorCSAqDQorCSAqIFR1cm4gb24g
+cGFuZWwgcG93ZXIuDQorCSAqLw0KKwlpbnQgKCpwcmVwYXJlX3Bvd2VyKShzdHJ1Y3QgZHJtX3Bh
+bmVsICpwYW5lbCk7DQorDQogCS8qKg0KIAkgKiBAcHJlcGFyZToNCiAJICoNCkBAIC0xMTUsNiAr
+MTIyLDEzIEBAIHN0cnVjdCBkcm1fcGFuZWxfZnVuY3Mgew0KIAlpbnQgKCpnZXRfbW9kZXMpKHN0
+cnVjdCBkcm1fcGFuZWwgKnBhbmVsLA0KIAkJCSBzdHJ1Y3QgZHJtX2Nvbm5lY3RvciAqY29ubmVj
+dG9yKTsNCiANCisJLyoqDQorCSAqIEB1bnByZXBhcmVfcG93ZXI6DQorCSAqDQorCSAqIFR1cm4g
+b2ZmIHBhbmVsX3Bvd2VyLg0KKwkgKi8NCisJaW50ICgqdW5wcmVwYXJlX3Bvd2VyKShzdHJ1Y3Qg
+ZHJtX3BhbmVsICpwYW5lbCk7DQorDQogCS8qKg0KIAkgKiBAZ2V0X3RpbWluZ3M6DQogCSAqDQpA
+QCAtMTgwLDYgKzE5NCw5IEBAIHZvaWQgZHJtX3BhbmVsX2luaXQoc3RydWN0IGRybV9wYW5lbCAq
+cGFuZWwsIHN0cnVjdCBkZXZpY2UgKmRldiwNCiB2b2lkIGRybV9wYW5lbF9hZGQoc3RydWN0IGRy
+bV9wYW5lbCAqcGFuZWwpOw0KIHZvaWQgZHJtX3BhbmVsX3JlbW92ZShzdHJ1Y3QgZHJtX3BhbmVs
+ICpwYW5lbCk7DQogDQoraW50IGRybV9wYW5lbF9wcmVwYXJlX3Bvd2VyKHN0cnVjdCBkcm1fcGFu
+ZWwgKnBhbmVsKTsNCitpbnQgZHJtX3BhbmVsX3VucHJlcGFyZV9wb3dlcihzdHJ1Y3QgZHJtX3Bh
+bmVsICpwYW5lbCk7DQorDQogaW50IGRybV9wYW5lbF9wcmVwYXJlKHN0cnVjdCBkcm1fcGFuZWwg
+KnBhbmVsKTsNCiBpbnQgZHJtX3BhbmVsX3VucHJlcGFyZShzdHJ1Y3QgZHJtX3BhbmVsICpwYW5l
+bCk7DQogDQotLSANCjIuMjUuMQ0K
 
