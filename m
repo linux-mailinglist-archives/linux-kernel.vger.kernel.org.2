@@ -2,278 +2,569 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7405365A83
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9646365A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhDTNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:48:06 -0400
-Received: from mail-eopbgr150048.outbound.protection.outlook.com ([40.107.15.48]:4636
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232681AbhDTNr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:47:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PMHQhKtE8styA6P6FRmgqqk+JSGnq0LcYSx+KFnPIMuHiOzOCLi+qJqwL7YT9LW2AW3DcAhCwV8qaWAAHG17JZWrbprOFRWlSYfn+vta9PyjEgQZuZEVNIJ+NtS6oXDNGr8ULIj3whwHo+jvBJWU0BNBZMBAjGm7KFuw8rZeHI+wfNVuMLUU5l+zAWfRQExS3Q2Phmk7wqNP062WIGvInznrbE85FtMnmQZN7jmvEILS/O2jNfA3Bu75tOnlrde3DAtNbKMgZneFBzqKHfz+BatiQ7pL9Yq3McRpJ9et1UPIyndrwT7OnDbKrWeK78gLYVdGPGKvgbppB//lKRwn2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kJ6KGnwETtXqo3Zj2BWjcR5g5uaFipNFt1YQNdoQloA=;
- b=Y7nn/t2XpuBmrGzYzpE9lws4wEM9Q8NWdTckYymvJaxGLAkIEJS5qdkpFEm/lUr0NocIY2IFTg6vyvsWzpEo8rSQGS4k1zBF1V+0DQZSwg1YuXKL0Y9dnT3uvyLmcwwNsaNbt7zerUNmCcij60Tx+lWfhk4L1l+d2dFNSwDJFpbeVLDOdzsZfNQh6tUeEiMwE2xm+2Vgp+Rs3eX/QM2+1vUQ2E1ApAbKR2fUhUd/hoH4UlA2JdbUZsgxBKGiFPY/HKTx/Nj+A7qSKYcbPamG3MEoJtAdKC5Gg8wI33APyl7JJEHoKxupYxJbcu1EV5FGGTuFGagwOncDB/oH3phrpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kJ6KGnwETtXqo3Zj2BWjcR5g5uaFipNFt1YQNdoQloA=;
- b=Npa9VTfDJO9W8jZvLv0k0n2IZbn3zateHVoC5ziwLdENIeuYO44ZEdJUrqln1R9m4+X8rbjKx2C1rNNFusIot+Joi4WMrQNZ33jVHfHqrotjbPDjp4fs9gM0bPdbJEQ0gS1CJqJdzKk7C0ZGSz0Nq/Vn6XWN4AtoSHo6P+wPTO0=
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR0401MB2510.eurprd04.prod.outlook.com (2603:10a6:800:54::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Tue, 20 Apr
- 2021 13:47:25 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::e8e2:7756:13bc:2cb3]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::e8e2:7756:13bc:2cb3%7]) with mapi id 15.20.3999.037; Tue, 20 Apr 2021
- 13:47:25 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>
-CC:     "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "perex@perex.cz" <perex@perex.cz>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-Subject: RE: [PATCH] ASoC: fsl: imx-pcm-dma: Don't request dma channel in
- probe
-Thread-Topic: [PATCH] ASoC: fsl: imx-pcm-dma: Don't request dma channel in
- probe
-Thread-Index: AQHWLcMcvbp0uyGgYk605EKKtgH/8aivLYuAgAF2HACAABbKAIIDgX+QgAHvdICAAJqQwIAG4DOAgAHNh+A=
-Date:   Tue, 20 Apr 2021 13:47:25 +0000
-Message-ID: <VE1PR04MB6638659EC8557D01861042B189489@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <1589881301-4143-1-git-send-email-shengjiu.wang@nxp.com>
-         <0866cd8cdb0c22f0b2a6814c4dafa29202aad5f3.camel@pengutronix.de>
-         <CAA+D8APhHvA39wmCayeCsAEKmOJ0n7qOQiT1tZmFHr4+yASgTw@mail.gmail.com>
-         <53258cd99caaf1199036737f8fad6cc097939567.camel@pengutronix.de>
-         <VE1PR04MB66387217EDE5133FD2D8F793894E9@VE1PR04MB6638.eurprd04.prod.outlook.com>
-         <50ef17a2d57b022c48bbca71fd4e074cc3ca9be5.camel@pengutronix.de>
-         <VE1PR04MB6638EE85485768351755557B89499@VE1PR04MB6638.eurprd04.prod.outlook.com>
- <97262466d537402ad4032098ef277d6d47734f1f.camel@pengutronix.de>
-In-Reply-To: <97262466d537402ad4032098ef277d6d47734f1f.camel@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [183.192.237.242]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 596efe60-671e-4020-1206-08d90402d4cb
-x-ms-traffictypediagnostic: VI1PR0401MB2510:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0401MB2510CBE1A01B992C3B02C8B589489@VI1PR0401MB2510.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zSz57UANRbPIzNQ5dkH/pGIA7dGulVjEpoWd6I6r0r6/dYR0zvfAZRha4Wsoj/tKyOasofpOF9ZgGg/ilbqOjRdIAUfkEz+oTj1v96LC6tH8pfJwQQTUjxjuut7W4E3vgSj0e3JCpgjmcP060W7RzRAdWWWOzJnEoYFUr1RpO8DYi39jeLAA5jHvPwwZn/Kc8lLo+0OW/K35wsLNEEgiFMdJaiEO3mBVeUfZtw3BothccAFKzY5AAMZ9p4lAdS5TC6uI4nfCW9zxprdlIt4gg8iaMHcvCD8EnkRsNm/V1SgUdxrr2684Bdk4u96xKHuF+nQIXCq60Agib9VgDp9Hf7BAxwS8Yy1B086qOylfcmEUcTKFp2d9Hh8bb7A4rWpzYxYaN+/kJsUr77kw7yFo11FeF7Nj76JR8c8SEPoHt64TMqtyaYEUS5EHvwKOUnJbDYSjkjIIk5zAs2rwiyemJxudZcPFqeKX1qFiC5YwSqx5hfmkquoL4yD13uj/QX/5yqZBIDMbUqppQZ63SYcjOtnrZ4B/RXxcKUU4ikIsPCYKEH0nwKwX7J4kcB6CkmX/CIoCba8xaVwyM3pYUvVxbK6XTzydoDniVAc58E7lAExwhrHq2NGlt86AVjSYQDBrwM8mvdOOvM7dqCmq6kpv9A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(376002)(346002)(39860400002)(26005)(7696005)(186003)(8936002)(122000001)(4326008)(9686003)(52536014)(2906002)(316002)(38100700002)(55016002)(5660300002)(53546011)(478600001)(54906003)(7416002)(71200400001)(66556008)(66446008)(66476007)(33656002)(64756008)(76116006)(66946007)(83380400001)(6506007)(86362001)(8676002)(110136005)(98474003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?SUtiUnplR1lSNjNuNURuTUQ4ZTg4MlN1aDZCelpxSjcxMGhEVDRocmJSWkpX?=
- =?utf-8?B?QlZMcjZsS0U5Vmo3TmpxMEZnWXJwekhkdHVMTXBXRGFoSVdSQUJibVAwZ2l1?=
- =?utf-8?B?V0pJeC9GN2w2YjBYd204dkVOTnFJZ2JoM0ovR3JybWFNcTF2NVZGb2Q5a3E4?=
- =?utf-8?B?YzNiUGVxeG9UdFk5cDZtenAvdk0zdktYQU5CRkpzM1lUWkxwRXJBeHMzNko1?=
- =?utf-8?B?OFRrcGRGZ3dqblErc3BGZUdRMldYRzNnUmlQbWdwNkxMWTVKWmE4TndxTU41?=
- =?utf-8?B?QWhGL0Z4aXQ3Um92K0hvaDE2MHp2TjU5bW9DcXVRektkalZFcEkvclpHNGpE?=
- =?utf-8?B?RmtVZk5XQnpNb20wVnpmbXg1REF3cUpRZktsTGF0anJ5bjR1dWpXWGN3VmFj?=
- =?utf-8?B?NlJORWFWMWZOTzd4NXNpUUZtaU1icmExYjlxMWRBUjB3em13cXpxTm50d0Q3?=
- =?utf-8?B?QzBOajFOY053UWlrSWZsUks1RHhWOEV5YVhlcFVkbis0SG8wTzFENEVlNFda?=
- =?utf-8?B?eUVSdGtLcld3OXVjNVlodTZ1VWVuZGZtdldKaW9BVXdUQ1ZMa0FtM01MUVNW?=
- =?utf-8?B?SlpDd0tyNURLcWtzcDlQWVdETTBNZmxNdDQ2WkM1ZFRMNkoyTnFHeUZTUGhL?=
- =?utf-8?B?YXI3clZNai90eGNnbGtKdVVHYTV4anZrUDBDWXV5anR5QVdOdkNoSkQvdVFY?=
- =?utf-8?B?Y00xaUlpd09QVC9rSEdOVFFGbWNMWmZtWi9FeFpDN1I5UEwzdHBQS1pnaW5E?=
- =?utf-8?B?ZGhuOWt0THFtL3FhcVF3ZnBLSWVCbWpEcVdqdmp3dTJpOG9ib0d1Sk9xbFJp?=
- =?utf-8?B?N2xqeHlQRXhrR0NZT0RsdnhSYVRQcSttVVF3Ujg1NlZQSDZJU1FYc3BxYllX?=
- =?utf-8?B?MS9wZlczb09jN2VuVFB1L3czZzVKNkZBdUV4WHRvR2VYN3FJZVI5N2o2Z2pF?=
- =?utf-8?B?RWE5VXZHYU1CZXFRMWdOOUdDUHhVSllhMjlWVXczVUJ5SEY4MXpXL0RxQkti?=
- =?utf-8?B?azliM0ljd011dlBCeGJmT3NPOTRIVHdKQlFRemdWZzU4WUIweFpCWWVabFVa?=
- =?utf-8?B?SFE1R2NHYk5xYW8rVHhEeEc3TjE1cWwvQ0tQNXBVdHdZbzdBMzg5Q1NscTBL?=
- =?utf-8?B?bEtwVWJIb1FKMzlsbktyb3I2eDB1UytBbDJ5UnByekdCRTJodXJma3JMVVBJ?=
- =?utf-8?B?ZGtXUnE4SnZMejdsWTdhWGhDQklaODlBN2NmTndTYUhIZHBQZFNra3NaeThk?=
- =?utf-8?B?NVI2THJWMkVleXJSTEVjREZYT01FNHZLY1VwckNQRWtENVpCdFUwUEZqS1Fi?=
- =?utf-8?B?WkVod3g3a0IxQ1NwWDRHeTN4a2J5enZGbHNWbk9qNEl5RkV4bVVSNHRGT016?=
- =?utf-8?B?Y3dIaHUzNlQrYVpWNi93dmFtbnU4ZVI0RnJIOWFJRTN6SFJwUVBKZ2hLU2I1?=
- =?utf-8?B?clB5cEE3RVBKNTBUem4wNDM2YXRBaUF6MHpaOWxSZ0dNVkFiSmV0a0JFRS8w?=
- =?utf-8?B?TU04Zmx2RTkrVW1OcnRRY1ZZanAwY2JQYUtyQUVIaTEvZlFpUWp3YlN6eTFI?=
- =?utf-8?B?UTlLdkxlQ0l3RmNCZEI2SDllSUJmRXM1VHhrdVhNUTRXU3lnaUhBSElxTnRW?=
- =?utf-8?B?UGZaN2xjZmZ3b0Vxam1wOHRYNWk4VXBrekMwUHdiMG84R3lkNU1kbGFlNXNR?=
- =?utf-8?B?RFN0MFo2MitDbUtxeGpKWEZMYXhDRkU5cFo3a0QrYWg4K29wYkxQWHFRY3p3?=
- =?utf-8?Q?W1LcA1nr+VzolL9G3cn0oDvpLoQRfT2UhddjiIK?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232776AbhDTNsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:48:23 -0400
+Received: from out28-149.mail.aliyun.com ([115.124.28.149]:39494 "EHLO
+        out28-149.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232736AbhDTNsL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:48:11 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0839631-0.0011211-0.914916;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.K15QXLp_1618926456;
+Received: from 192.168.88.128(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.K15QXLp_1618926456)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Tue, 20 Apr 2021 21:47:37 +0800
+Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
+To:     Huang Pei <huangpei@loongson.cn>
+Cc:     tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        paul.burton@mips.com, paul@crapouillou.net, siyanteng@loongson.cn,
+        ira.weiny@intel.com, yangtiezhu@loongson.cn, jun.jiang@ingenic.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
+References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <20210416092003.5754967.19768.9603@loongson.cn>
+ <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
+ <20210419045610.frhzxskec47s5rmq@ambrosehua-HP-xw6600-Workstation>
+ <13e37741-c1b4-2aae-471e-0790adc8db59@wanyeetech.com>
+ <20210420024818.r6jf243oglb2ywbr@ambrosehua-HP-xw6600-Workstation>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <e8528334-75cb-e62e-64b6-f6d63acebd05@wanyeetech.com>
+Date:   Tue, 20 Apr 2021 21:47:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 596efe60-671e-4020-1206-08d90402d4cb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 13:47:25.4710
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PEwvmWY8R2xaF4PYrOvC6F//OMSM3DqGCJ58WbFqDL4pnL4CXgQXwAaUU1XDS2TG169VKAhJuEWgat0d7YDo4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2510
+In-Reply-To: <20210420024818.r6jf243oglb2ywbr@ambrosehua-HP-xw6600-Workstation>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjAyMS8wNC8xOSAxNzo0NiBMdWNhcyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25peC5kZT4g
-d3JvdGU6DQo+IEFtIE1vbnRhZywgZGVtIDE5LjA0LjIwMjEgdW0gMDc6MTcgKzAwMDAgc2Nocmll
-YiBSb2JpbiBHb25nOg0KPiA+IEhpIEx1Y2FzLA0KPiA+DQo+ID4gT24gMjAyMS8wNC8xNCBMdWNh
-cyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25peC5kZT4gd3JvdGU6DQo+ID4gPiBIaSBSb2JpbiwN
-Cj4gPiA+DQo+ID4gPiBBbSBNaXR0d29jaCwgZGVtIDE0LjA0LjIwMjEgdW0gMTQ6MzMgKzAwMDAg
-c2NocmllYiBSb2JpbiBHb25nOg0KPiA+ID4gPiBPbiAyMDIwLzA1LzIwIDE3OjQzIEx1Y2FzIFN0
-YWNoIDxsLnN0YWNoQHBlbmd1dHJvbml4LmRlPiB3cm90ZToNCj4gPiA+ID4gPiBBbSBNaXR0d29j
-aCwgZGVuIDIwLjA1LjIwMjAsIDE2OjIwICswODAwIHNjaHJpZWIgU2hlbmdqaXUgV2FuZzoNCj4g
-PiA+ID4gPiA+IEhpDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gT24gVHVlLCBNYXkgMTksIDIw
-MjAgYXQgNjowNCBQTSBMdWNhcyBTdGFjaA0KPiA+ID4gPiA+ID4gPGwuc3RhY2hAcGVuZ3V0cm9u
-aXguZGU+DQo+ID4gPiA+ID4gd3JvdGU6DQo+ID4gPiA+ID4gPiA+IEFtIERpZW5zdGFnLCBkZW4g
-MTkuMDUuMjAyMCwgMTc6NDEgKzA4MDAgc2NocmllYiBTaGVuZ2ppdSBXYW5nOg0KPiA+ID4gPiA+
-ID4gPiA+IFRoZXJlIGFyZSB0d28gcmVxdWlyZW1lbnRzIHRoYXQgd2UgbmVlZCB0byBtb3ZlIHRo
-ZQ0KPiA+ID4gPiA+ID4gPiA+IHJlcXVlc3Qgb2YgZG1hIGNoYW5uZWwgZnJvbSBwcm9iZSB0byBv
-cGVuLg0KPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiBIb3cgZG8geW91IGhhbmRsZSAtRVBS
-T0JFX0RFRkVSIHJldHVybiBjb2RlIGZyb20gdGhlIGNoYW5uZWwNCj4gPiA+ID4gPiA+ID4gcmVx
-dWVzdCBpZiB5b3UgZG9uJ3QgZG8gaXQgaW4gcHJvYmU/DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
-ID4gSSB1c2UgdGhlIGRtYV9yZXF1ZXN0X3NsYXZlX2NoYW5uZWwgb3IgZG1hX3JlcXVlc3RfY2hh
-bm5lbA0KPiA+ID4gPiA+ID4gaW5zdGVhZCBvZiBkbWFlbmdpbmVfcGNtX3JlcXVlc3RfY2hhbl9v
-Zi4gc28gdGhlcmUgc2hvdWxkIGJlDQo+ID4gPiA+ID4gPiBub3QgLUVQUk9CRV9ERUZFUiByZXR1
-cm4gY29kZS4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IFRoaXMgaXMgYSBwcmV0dHkgd2VhayBhcmd1
-bWVudC4gVGhlIGRtYWVuZ2luZSBkZXZpY2UgbWlnaHQgcHJvYmUNCj4gPiA+ID4gPiBhZnRlciB5
-b3UgdHJ5IHRvIGdldCB0aGUgY2hhbm5lbC4gVXNpbmcgYSBmdW5jdGlvbiB0byByZXF1ZXN0DQo+
-ID4gPiA+ID4gdGhlIGNoYW5uZWwgdGhhdCBkb2Vzbid0IGFsbG93IHlvdSB0byBoYW5kbGUgcHJv
-YmUgZGVmZXJyYWwgaXMNCj4gPiA+ID4gPiBJTUhPIGEgYnVnIGFuZCBzaG91bGQgYmUgZml4ZWQs
-IGluc3RlYWQgb2YgYnVpbGRpbmcgZXZlbiBtb3JlDQo+ID4gPiA+ID4gYXNzdW1wdGlvbnMgb24g
-dG9wDQo+ID4gPiBvZiBpdC4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IC0gV2hlbiBkbWEg
-ZGV2aWNlIGJpbmRzIHdpdGggcG93ZXItZG9tYWlucywgdGhlIHBvd2VyIHdpbGwNCj4gPiA+ID4g
-PiA+ID4gPiBiZSBlbmFibGVkIHdoZW4gd2UgcmVxdWVzdCBkbWEgY2hhbm5lbC4gSWYgdGhlIHJl
-cXVlc3Qgb2YNCj4gPiA+ID4gPiA+ID4gPiBkbWEgY2hhbm5lbCBoYXBwZW4gb24gcHJvYmUsIHRo
-ZW4gdGhlIHBvd2VyLWRvbWFpbnMgd2lsbA0KPiA+ID4gPiA+ID4gPiA+IGJlIGFsd2F5cyBlbmFi
-bGVkIGFmdGVyIGtlcm5lbCBib290IHVwLCAgd2hpY2ggaXMgbm90IGdvb2QNCj4gPiA+ID4gPiA+
-ID4gPiBmb3IgcG93ZXIgc2F2aW5nLCAgc28gd2UgbmVlZCB0byBtb3ZlIHRoZSByZXF1ZXN0IG9m
-IGRtYQ0KPiA+ID4gPiA+ID4gPiA+IGNoYW5uZWwgdG8gLm9wZW4oKTsNCj4gPiA+ID4gPiA+ID4N
-Cj4gPiA+ID4gPiA+ID4gVGhpcyBpcyBjZXJ0YWlubHkgc29tZXRoaW5nIHdoaWNoIGNvdWxkIGJl
-IGZpeGVkIGluIHRoZQ0KPiA+ID4gPiA+ID4gPiBkbWFlbmdpbmUgZHJpdmVyLg0KPiA+ID4gPiA+
-ID4NCj4gPiA+ID4gPiA+IERtYSBkcml2ZXIgYWx3YXlzIGNhbGwgdGhlIHBtX3J1bnRpbWVfZ2V0
-X3N5bmMgaW4NCj4gPiA+ID4gPiA+IGRldmljZV9hbGxvY19jaGFuX3Jlc291cmNlcywgdGhlIGRl
-dmljZV9hbGxvY19jaGFuX3Jlc291cmNlcw0KPiA+ID4gPiA+ID4gaXMgY2FsbGVkIHdoZW4gY2hh
-bm5lbCBpcyByZXF1ZXN0ZWQuIHNvIHBvd2VyIGlzIGVuYWJsZWQgb24NCj4gPiA+ID4gPiA+IGNo
-YW5uZWwNCj4gPiA+IHJlcXVlc3QuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBTbyB3aHkgY2FuJ3Qg
-eW91IGZpeCB0aGUgZG1hZW5naW5lIGRyaXZlciB0byBkbyB0aGF0IFJQTSBjYWxsIGF0DQo+ID4g
-PiA+ID4gYSBsYXRlciB0aW1lIHdoZW4gdGhlIGNoYW5uZWwgaXMgYWN0dWFsbHkgZ29pbmcgdG8g
-YmUgdXNlZD8gVGhpcw0KPiA+ID4gPiA+IHdpbGwgYWxsb3cgZnVydGhlciBwb3dlciBzYXZpbmdz
-IHdpdGggb3RoZXIgc2xhdmUgZGV2aWNlcyB0aGFuIHRoZSBhdWRpbw0KPiBQQ00uDQo+ID4gPiA+
-IEhpIEx1Y2FzLA0KPiA+ID4gPiDCoMKgVGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb24uIEkgaGF2
-ZSB0cmllZCB0byBpbXBsZW1lbnQgcnVudGltZQ0KPiA+ID4gPiBhdXRvc3VzcGVuZCBpbiBmc2wt
-ZWRtYSBkcml2ZXIgb24gaS5teDhxbS9xeHAgd2l0aCBkZWxheSB0aW1lICgyDQo+ID4gPiA+IHNl
-YykgZm9yIHRoaXMgZmVhdHVyZSBhcyBiZWxvdyAob3IgeW91IGNhbiByZWZlciB0bw0KPiA+ID4g
-PiBkcml2ZXJzL2RtYS9xY29tL2hpZG1hLmMpLCBhbmQgcG1fcnVudGltZV9nZXRfc3luYy8NCj4g
-PiA+ID4gcG1fcnVudGltZV9wdXRfYXV0b3N1c3BlbmQgaW4gYWxsIGRtYWVuZ2luZSBkcml2ZXIg
-aW50ZXJmYWNlIGxpa2UNCj4gPiA+ID4gZGV2aWNlX2FsbG9jX2NoYW5fcmVzb3VyY2VzL2Rldmlj
-ZV9wcmVwX3NsYXZlX3NnL2RldmljZV9wcmVwX2RtYV9jDQo+ID4gPiA+IHljbGkNCj4gPiA+ID4g
-Yy8NCj4gPiA+ID4gZGV2aWNlX3R4X3N0YXR1cy4uLg0KPiA+ID4gPg0KPiA+ID4gPg0KPiA+ID4g
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHBtX3J1bnRpbWVfdXNlX2F1dG9zdXNw
-ZW5kKGZzbF9jaGFuLT5kZXYpOw0KPiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoHBtX3J1bnRpbWVfc2V0X2F1dG9zdXNwZW5kX2RlbGF5KGZzbF9jaGFuLT4NCj4gZGV2LA0K
-PiA+ID4gMjAwMCk7DQo+ID4gPiA+DQo+ID4gPiA+IFRoYXQgY291bGQgcmVzb2x2ZSB0aGlzIGF1
-ZGlvIGNhc2Ugc2luY2UgdGhlIGF1dG9zdXNwZW5kIGNvdWxkDQo+ID4gPiA+IHN1c3BlbmQgcnVu
-dGltZSBhZnRlcg0KPiA+ID4gPiAyIHNlY29uZHMgaWYgdGhlcmUgaXMgbm8gZnVydGhlciBkbWEg
-dHJhbnNmZXIgYnV0IG9ubHkgY2hhbm5lbA0KPiA+ID4gcmVxdWVzdChkZXZpY2VfYWxsb2NfY2hh
-bl9yZXNvdXJjZXMpLg0KPiA+ID4gPiBCdXQgdW5mb3J0dW5hdGVseSwgaXQgY2F1c2UgYW5vdGhl
-ciBpc3N1ZS4gQXMgeW91IGtub3csIG9uIG91cg0KPiA+ID4gPiBpLm14OHFtL3F4cCwgcG93ZXIg
-ZG9tYWluIGRvbmUgYnkgc2Nmdw0KPiA+ID4gPiAoZHJpdmVycy9maXJtd2FyZS9pbXgvc2N1LXBk
-LmMpDQo+ID4gPiBvdmVyIG1haWxib3g6DQo+ID4gPiA+IMKgaW14X3NjX3BkX3Bvd2VyKCktPmlt
-eF9zY3VfY2FsbF9ycGMoKS0+DQo+ID4gPiA+IGlteF9zY3VfaXBjX3dyaXRlKCktPm1ib3hfc2Vu
-ZF9tZXNzYWdlKCkNCj4gPiA+ID4gd2hpY2ggbWVhbnMgaGF2ZSB0byAnd2FpdHMgZm9yIGNvbXBs
-ZXRpb24nLCBtZWFud2hpbGUsIHNvbWUgZHJpdmVyDQo+ID4gPiA+IGxpa2UgdHR5IHdpbGwgY2Fs
-bCBkbWFlbmdpbmUgaW50ZXJmYWNlcyBpbiBub24tYXRvbWljIGNhc2UgYXMNCj4gPiA+ID4gYmVs
-b3csDQo+ID4gPiA+DQo+ID4gPiA+IHN0YXRpYyBpbnQgdWFydF93cml0ZShzdHJ1Y3QgdHR5X3N0
-cnVjdCAqdHR5LCBjb25zdCB1bnNpZ25lZCBjaGFyDQo+ID4gPiA+ICpidWYsIGludCBjb3VudCkg
-ew0KPiA+ID4gPiDCoMKgwqAuLi4uLi4uDQo+ID4gPiA+IAkgICAgcG9ydCA9IHVhcnRfcG9ydF9s
-b2NrKHN0YXRlLCBmbGFncyk7DQo+ID4gPiA+IMKgwqDCoC4uLi4uLg0KPiA+ID4gPiDCoMKgwqDC
-oMKgwqDCoMKgX191YXJ0X3N0YXJ0KHR0eSk7ICAvL2NhbGwNCj4gc3RhcnRfdHgoKS0+ZG1hZW5n
-aW5lX3ByZXBfc2xhdmVfc2cuLi4NCj4gPiA+ID4gwqDCoMKgwqDCoMKgwqDCoHVhcnRfcG9ydF91
-bmxvY2socG9ydCwgZmxhZ3MpOw0KPiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHJldDsN
-Cj4gPiA+ID4gfQ0KPiA+ID4gPg0KPiA+ID4gPiBUaHVzIGRtYSBydW50aW1lIHJlc3VtZSBtYXkg
-aGFwcGVuIGluIHRoYXQgdGltaW5nIHdpbmRvdyBhbmQgY2F1c2UNCj4gPiA+IGtlcm5lbCBhbGFy
-bS4NCj4gPiA+ID4gSSdtIG5vdCBzdXJlIHdoZXRoZXIgdGhlcmUgYXJlIHNpbWlsYXIgbGltaXRh
-dGlvbnMgb24gb3RoZXIgZHJpdmVyDQo+ID4gPiA+IHN1YnN5c3RlbS4gQnV0IGZvciBtZSwgSXQg
-bG9va3MgbGlrZSB0aGUgb25seSB3YXkgdG8gcmVzb2x2ZSB0aGUNCj4gPiA+ID4gY29udHJhZGlj
-dGlvbiBiZXR3ZWVuIHR0eSBhbmQgc2N1LXBkIChoYXJkd2FyZSBsaW1pdGF0aW9uIG9uDQo+ID4g
-PiA+IGkubXg4cW0vcXhwKSBpcyB0byBnaXZlIHVwIGF1dG9zdXNwZW5kIGFuZCBrZWVwDQo+ID4g
-PiA+IHBtX3J1bnRpbWVfZ2V0X3N5bmMNCj4gPiA+IG9ubHkgaW4gZGV2aWNlX2FsbG9jX2NoYW5f
-cmVzb3VyY2VzIGJlY2F1c2UgcmVxdWVzdCBjaGFubmVsIGlzIGENCj4gPiA+IHNhZmUgbm9uLWF0
-b21pYyBwaGFzZS4NCj4gPiA+ID4gRG8geW91IGhhdmUgYW55IGlkZWE/IFRoYW5rcyBpbiBhZHZh
-bmNlLg0KPiA+ID4NCj4gPiA+IElmIHlvdSBsb29rIGNsb3NlbHkgYXQgdGhlIGRyaXZlciB5b3Ug
-dXNlZCBhcyBhbiBleGFtcGxlIChoaWRtYS5jKQ0KPiA+ID4gaXQgbG9va3MgbGlrZSB0aGVyZSBp
-cyBhbHJlYWR5IHNvbWV0aGluZyBpbiB0aGVyZSwgd2hpY2ggbG9va3MgdmVyeQ0KPiA+ID4gbXVj
-aCBsaWtlIHdoYXQgeW91IG5lZWQNCj4gPiA+IGhlcmU6DQo+ID4gPg0KPiA+ID4gSW4gaGlkbWFf
-aXNzdWVfcGVuZGluZygpIHRoZSBkcml2ZXIgdHJpZXMgdG8gZ2V0IHRoZSBkZXZpY2UgdG8gcnVu
-dGltZQ0KPiByZXN1bWUuDQo+ID4gPiBJZiB0aGlzIGRvZXNuJ3Qgd29yaywgbWF5YmUgZHVlIHRv
-IHRoZSBwb3dlciBkb21haW4gY29kZSBub3QgYmVpbmcNCj4gPiA+IGFibGUgdG8gYmUgY2FsbGVk
-IGluIGF0b21pYyBjb250ZXh0LCB0aGUgYWN0dWFsIHdvcmsgb2Ygd2FraW5nIHVwDQo+ID4gPiB0
-aGUgZG1hIGhhcmR3YXJlIGFuZCBpc3N1aW5nIHRoZSBkZXNjcmlwdG9yIGlzIHNodW50ZWQgdG8g
-YSB0YXNrbGV0Lg0KPiA+ID4NCj4gPiA+IElmIEknbSByZWFkaW5nIHRoaXMgcmlnaHQsIHRoaXMg
-aXMgZXhhY3RseSB3aGF0IHlvdSBuZWVkIGhlcmUgdG8gYmUNCj4gPiA+IGFibGUgdG8gY2FsbCB0
-aGUgZG1hZW5naW5lIGNvZGUgZnJvbSBhdG9taWMgY29udGV4dDogdHJ5IHRoZSBycG0gZ2V0DQo+
-ID4gPiBhbmQgaXNzdWUgaW1tZWRpYXRlbHkgd2hlbiBwb3NzaWJsZSwgb3RoZXJ3aXNlIHNodW50
-IHRoZSB3b3JrIHRvIGENCj4gPiA+IG5vbi0gYXRvbWljIGNvbnRleHQgd2hlcmUgeW91IGNhbiBk
-ZWFsIHdpdGggdGhlIHJlcXVpcmVtZW50cyBvZiBzY3UtcGQuDQo+ID4gWWVzLCBJIGNhbiBzY2hl
-ZHVsZV93b3JrIHRvIHdvcmtlciB0byBydW50aW1lIHJlc3VtZSBlZG1hIGNoYW5uZWwgYnkNCj4g
-Y2FsbGluZyBzY3UtcGQuDQo+ID4gQnV0IHRoYXQgbWVhbnMgYWxsIGRtYWVuZ2luZSBpbnRlcmZh
-Y2VzIHNob3VsZCBiZSB0YWtlbiBjYXJlLCBub3Qgb25seQ0KPiA+IGlzc3VlX3BlbmRpbmcoKSBi
-dXQgYWxzbw0KPiA+IGRtYWVuZ2luZV90ZXJtaW5hdGVfYWxsKCkvZG1hZW5naW5lX3BhdXNlKCkv
-ZG1hZW5naW5lX3Jlc3VtZSgpLw0KPiA+IGRtYWVuZ2luZV90eF9zdGF0dXMoKS4gTm90IHN1cmUg
-d2h5IGhpZG1hIG9ubHkgdGFrZSBjYXJlDQo+ID4gaXNzdWVfcGVuZGluZy4gTWF5YmUgdGhlaXIg
-dXNlciBjYXNlIGlzIGp1c3QgZm9yIG1lbWNweS9tZW1zZXQgc28gdGhhdA0KPiA+IG5vIGZ1cnRo
-ZXIgY29tcGxpY2F0ZSBjYXNlIGFzIEFMU0Egb3IgVFRZLg0KPiA+IEJlc2lkZXMsIGZvciBhdXRv
-c3VzcGVuZCBpbiBjeWNsaWMsIHdlIGhhdmUgdG8gYWRkIHBtX3J1bnRpbWVfZ2V0X3N5bmMNCj4g
-PiBpbnRvIGludGVycnVwdCBoYW5kbGVyIGFzIHFjb20vYmFtX2RtYS5jLiBidXQgaG93IGNvdWxk
-IHJlc29sdmUgdGhlDQo+ID4gc2N1LXBkJ3Mgbm9uLWF0bW9pYyBsaW1pdGF0aW9uIGluIGludGVy
-cnVwdCBoYW5kbGVyPw0KPiANCj4gU3VyZSwgdGhpcyBhbGwgbmVlZHMgc29tZSBjYXJlZnVsIGFu
-YWx5c2lzIG9uIGhvdyB0aG9zZSBmdW5jdGlvbnMgYXJlIGNhbGxlZA0KPiBhbmQgd2hhdCB0byBk
-byBhYm91dCBhdG9taWMgY2FsbGVycywgYnV0IGl0IHNob3VsZCBiZSBkb2FibGUuIEkgZG9uJ3Qg
-c2VlIGFueQ0KPiBmdW5kYW1lbnRhbCBpc3N1ZXMgaGVyZS4NCj4gDQo+IEkgZG9uJ3Qgc2VlIHdo
-eSB5b3Ugd291bGQgZXZlciBuZWVkIHRvIHdha2UgdGhlIGhhcmR3YXJlIGluIGFuIGludGVycnVw
-dA0KPiBoYW5kbGVyLiBTdXJlbHkgdGhlIGhhcmR3YXJlIGlzIGFscmVhZHkgYXdha2UsIGFzIGl0
-IHdvdWxkbid0IHNpZ25hbCBhbg0KPiBpbnRlcnJ1cHQgb3RoZXJ3aXNlLiBBbmQgZm9yIHRoZSBp
-c3N1ZSB3aXRoIHNjdS1wZCB5b3Ugb25seSBjYXJlIGFib3V0IHRoZQ0KPiBzdGF0ZSB0cmFuc2l0
-aW9uIG9mIHN1c3BlbmRlZC0+cnVubmluZy4gSWYgdGhlIGhhcmR3YXJlIGlzIGFscmVhZHkNCj4g
-cnVubmluZy9hd2FrZSwgdGhlIHJ1bnRpbWUgcG0gc3RhdGUgaGFuZGxpbmcgaXMgbm90aGluZyBt
-b3JlIHRoYW4gYnVtcGluZw0KPiBhIHJlZmNvdW50LCB3aGljaCBpcyBhdG9taWMgc2FmZS4gUHV0
-dGluZyB0aGUgSFcgaW4gc3VzcGVuZCBpcyBhbHJlYWR5IGhhbmRsZWQNCj4gYXN5bmNocm9ub3Vz
-bHkgaW4gYSB3b3JrZXIsIHNvIHRoaXMgaXMgYWxzbyBhdG9taWMgc2FmZS4NCkJ1dCB3aXRoIGF1
-dG9zdXNwZW5kIHVzZWQsIGluIGNvcm5lciBjYXNlLCBtYXkgcnVudGltZSBzdXNwZW5kZWQgYmVm
-b3JlIGZhbGxpbmcgDQpJbnRvIGVkbWEgaW50ZXJydXB0IGhhbmRsZXIgaWYgdGltZW91dCBoYXBw
-ZW4gd2l0aCB0aGUgZGVsYXkgdmFsdWUgb2YNCnBtX3J1bnRpbWVfc2V0X2F1dG9zdXNwZW5kX2Rl
-bGF5KCkuIFRodXMsIGNhbid0IHRvdWNoIGFueSBlZG1hIGludGVycnVwdA0Kc3RhdHVzIHJlZ2lz
-dGVyIHVubGVzcyBydW50aW1lIHJlc3VtZSBlZG1hIGluIGludGVycnVwdCBoYW5kbGVyIHdoaWxl
-IHJ1bnRpbWUNCnJlc3VtZSBmdW5jdGlvbiBiYXNlZCBvbiBzY3UtcGQncyBwb3dlciBkb21haW4g
-bWF5IGJsb2NrIG9yIHNsZWVwLg0KSSBoYXZlIGEgc2ltcGxlIHdvcmthcm91bmQgdGhhdCBkaXNh
-YmxlIHJ1bnRpbWUgc3VzcGVuZCBpbiBpc3N1ZV9wZW5kaW5nIHdvcmtlcg0KYnkgY2FsbGluZyBw
-bV9ydW50aW1lX2ZvcmJpZCgpIGFuZCB0aGVuIGVuYWJsZSBydW50aW1lIGF1dG8gc3VzcGVuZCBp
-biANCmRtYWVuZ2luZV90ZXJtaW5hdGVfYWxsIHNvIHRoYXQgd2UgY291bGQgZWFzaWx5IHJlZ2Fy
-ZCB0aGF0IGVkbWEgY2hhbm5lbCBpcyBhbHdheXMNCmluIHJ1bnRpbWUgcmVzdW1lIGJldHdlZW4g
-aXNzdWVfcGVuZGluZyBhbmQgY2hhbm5lbCB0ZXJtaW5hdGVkIGFuZCBpZ25vcmUgdGhlIGFib3Zl
-DQppbnRlcnJ1cHQgaGFuZGxlci9zY3UtcGQgbGltaXRhdGlvbi4NCg0KDQoNCg==
+Hi,
+
+On 2021/4/20 上午10:48, Huang Pei wrote:
+> Hi,
+> On Mon, Apr 19, 2021 at 10:21:40PM +0800, Zhou Yanjie wrote:
+>> Hi
+>>
+>> On 2021/4/19 下午12:56, Huang Pei wrote:
+>>> On Sat, Apr 17, 2021 at 12:45:59AM +0800, Zhou Yanjie wrote:
+>>>> On 2021/4/16 下午5:20, 黄沛 wrote:
+>>>>> Is there any log about the panic?
+>>>> Yes, below is the log:
+>>>>
+>>>>
+>>>> [  195.436017] CPU 0 Unable to handle kernel paging request at virtual
+>>>> address 77eb8000, epc == 80117868, ra == 80118208
+>>>> [  195.446709] Oops[#1]:
+>>>> [  195.448977] CPU: 0 PID: 1461 Comm: Xsession Not tainted
+>>>> 5.12.0-rc6-00227-gc8fc6defbd2e-dirty #1
+>>>> [  195.457661] $ 0   : 00000000 00000001 80117864 77eb9000
+>>>> [  195.462888] $ 4   : 77eb8000 82419600 838ea000 82482ba0
+>>>> [  195.468116] $ 8   : 826f8b18 8306f800 000072d5 8306f800
+>>>> [  195.473343] $12   : 00000002 00000a03 00000001 00000402
+>>>> [  195.478568] $16   : 77eb8000 809faf60 00000004 82482ba0
+>>>> [  195.483794] $20   : 77eb8000 82419600 82482ba0 80860000
+>>>> [  195.489021] $24   : 8086121c 80117864
+>>>> [  195.494248] $28   : 838ea000 838ebd70 00000000 80118208
+>>>> [  195.499475] Hi    : 00008c4e
+>>>> [  195.502343] Lo    : 00004627
+>>>> [  195.505212] epc   : 80117868 r4k_blast_dcache_page_dc32+0x4/0x9c
+>>>> [  195.511217] ra    : 80118208 local_r4k_flush_cache_page+0x120/0x1b8
+>>>> [  195.517476] Status: 10001403 KERNEL EXL IE
+>>>> [  195.521657] Cause : 4080800c (ExcCode 03)
+>>>> [  195.525654] BadVA : 77eb8000
+>>>> [  195.528523] PrId  : 00d00100 (Ingenic XBurst)
+>>>> [  195.532866] Modules linked in:
+>>>> [  195.535911] Process Xsession (pid: 1461, threadinfo=00975a3e,
+>>>> task=3724fd66, tls=77ebd690)
+>>>> [  195.544162] Stack : 808a05ec f7edcbfd 8306f800 00000000 80860000 809faf60
+>>>> 80990a3c 80117f90
+>>>> [  195.552524]         809faf60 82419600 8306f800 801fd84c 00000000 801180b4
+>>>> 838ebe80 80110b7c
+>>>> [  195.560887]         80990a3c 82482ba0 82482ba0 77eb8000 00004627 f7edcbfd
+>>>> 838ebe80 801cbc08
+>>>> [  195.569249]         00000001 181b2000 00000000 801fa06c 00000000 83999ae0
+>>>> 80860000 00000004
+>>>> [  195.577610]         80990a3c f7edcbfd 80990a3c 838ebe80 00000004 80990a3c
+>>>> 82482ba0 04627685
+>>>> [  195.585973]         ...
+>>>> [  195.588413] Call Trace:
+>>>> [  195.590849] [<80117868>] r4k_blast_dcache_page_dc32+0x4/0x9c
+>>>> [  195.596501] [<80118208>] local_r4k_flush_cache_page+0x120/0x1b8
+>>>> [  195.602413] [<80117f90>] r4k_on_each_cpu.isra.8+0x24/0x58
+>>>> [  195.607805] [<801180b4>] r4k_flush_cache_page+0x34/0x58
+>>>> [  195.613023] [<801cbc08>] wp_page_copy+0x3a8/0x56c
+>>>> [  195.617723] [<801ce944>] do_swap_page+0x4cc/0x558
+>>>> [  195.622419] [<801cf3f8>] handle_mm_fault+0x790/0x93c
+>>>> [  195.627374] [<8011025c>] do_page_fault+0x19c/0x540
+>>>> [  195.632159] [<801142f0>] tlb_do_page_fault_1+0x10c/0x11c
+>>>> [  195.637465]
+>>>> [  195.638947] Code: 03e00008  00000000  24831000 <bc950000> bc950020
+>>>> bc950040  bc950060  bc950080  bc9500a0
+>>>> [  195.648706]
+>>>> [  195.650243] ---[ end trace 7cc7d7f611932c42 ]---
+>>>> [  195.654857] Kernel panic - not syncing: Fatal exception
+>>>> [  195.660072] Rebooting in 10 seconds..
+>>>>
+>>>>
+>>>> this problem can be triggered stably (by use Microsoft Remote Desktop client
+>>>> to login to debian9 running on CU1830-Neo).
+>>>>
+>>> Could you print out the PTE value at 0x77eb8000 ?
+>>
+>> Here is the new log:
+>>
+>>
+>> [   33.681712] CPU 0 Unable to handle kernel paging request at virtual
+>> address 77ea4000, epc == 801178ac, ra == 80118250
+>> [   33.692395] Oops[#1]:
+>> [   33.694662] CPU: 0 PID: 1389 Comm: Xsession Not tainted 5.12.0-rc8-dirty
+>> #2
+>> [   33.701612] $ 0   : 00000000 00000001 801178a8 77ea5000
+>> [   33.706839] $ 4   : 77ea4000 81bcd220 80118130 856712a0
+>> [   33.712066] $ 8   : 833e4a80 8544b800 000070a8 8544b800
+>> [   33.717293] $12   : 00000002 000005b7 00000001 00000000
+>> [   33.722518] $16   : 81bcd220 77ea4000 80a11ad8 00000004
+>> [   33.727745] $20   : 77ea4000 81bcd220 856712a0 80860000
+>> [   33.732972] $24   : 0000001c 801178a8
+>> [   33.738197] $28   : 82564000 82565d68 00000000 80118250
+>> [   33.743424] Hi    : 0000f0cc
+>> [   33.746293] Lo    : 00007866
+>> [   33.749162] epc   : 801178ac r4k_blast_dcache_page_dc32+0x4/0x9c
+>> [   33.755166] ra    : 80118250 local_r4k_flush_cache_page+0x120/0x2c8
+>> [   33.761425] Status: 10001403 KERNEL EXL IE
+>> [   33.765605] Cause : 4080800c (ExcCode 03)
+>> [   33.769603] BadVA : 77ea4000
+>> [   33.772472] PrId  : 00d00100 (Ingenic XBurst)
+>> [   33.776816] Modules linked in:
+>> [   33.779861] Process Xsession (pid: 1389, threadinfo=c8bdf64c,
+>> task=2372d853, tls=77ea9690)
+>> [   33.788111] Stack : 808a256c 00000000 808a256c bfa6939a 8544b800 80860000
+>> 8094d308 80a11ad8
+>> [   33.796474]         856712a0 80117fd8 8094d308 81bcd220 8544b800 801fdb10
+>> 80945ce8 801180fc
+>> [   33.804838]         82565e80 80110b8c 80a11ad8 856712a0 856712a0 77ea4000
+>> 00007866 bfa6939a
+>> [   33.813201]         82565e80 801cbe38 00000000 bfa6939a 80863494 801fa2c0
+>> 856712a0 82562a90
+>> [   33.821564]         80860000 00000000 80a11ad8 bfa6939a 80a11ad8 82565e80
+>> 00000000 80a11ad8
+>> [   33.829927]         ...
+>> [   33.832367] Call Trace:
+>> [   33.834803] [<801178ac>] r4k_blast_dcache_page_dc32+0x4/0x9c
+>> [   33.840455] [<80118250>] local_r4k_flush_cache_page+0x120/0x2c8
+>> [   33.846367] [<80117fd8>] r4k_on_each_cpu.isra.10+0x24/0x58
+>> [   33.851845] [<801180fc>] r4k_flush_cache_page+0x34/0x58
+>> [   33.857062] [<801cbe38>] wp_page_copy+0x3a8/0x56c
+>> [   33.861763] [<801ceb74>] do_swap_page+0x4cc/0x558
+>> [   33.866458] [<801cf628>] handle_mm_fault+0x790/0x93c
+>> [   33.871414] [<8011026c>] do_page_fault+0x19c/0x540
+>> [   33.876199] [<80114300>] tlb_do_page_fault_1+0x10c/0x11c
+>> [   33.881506]
+>> [   33.882987] Index:  5 pgmask=4kb va=77ea2000 asid=fd
+>> [   33.882987]  [pa=02a99000 c=3 d=1 v=1 g=0] [pa=0690d000 c=3 d=0 v=0 g=0]
+>> [   33.894635] Index:  6 pgmask=4kb va=77dc4000 asid=fd
+>> [   33.894635]  [pa=01d30000 c=3 d=0 v=1 g=0] [pa=01d31000 c=3 d=0 v=1 g=0]
+>> [   33.906281] Index:  7 pgmask=4kb va=77dc0000 asid=fd
+>> [   33.906281]  [pa=01d2c000 c=3 d=0 v=1 g=0] [pa=01d2d000 c=3 d=0 v=1 g=0]
+>> [   33.917928] Index:  8 pgmask=4kb va=77dc2000 asid=fd
+>> [   33.917928]  [pa=01d2e000 c=3 d=0 v=1 g=0] [pa=01d2f000 c=3 d=0 v=1 g=0]
+>> [   33.929574] Index:  9 pgmask=4kb va=77dc6000 asid=fd
+>> [   33.929574]  [pa=01d32000 c=3 d=0 v=1 g=0] [pa=01d33000 c=3 d=0 v=1 g=0]
+>> [   33.941220] Index: 10 pgmask=4kb va=77dc8000 asid=fd
+>> [   33.941220]  [pa=01d34000 c=3 d=0 v=1 g=0] [pa=01d35000 c=3 d=0 v=1 g=0]
+>> [   33.952866] Index: 11 pgmask=4kb va=77dca000 asid=fd
+>> [   33.952866]  [pa=01d36000 c=3 d=0 v=1 g=0] [pa=01d37000 c=3 d=0 v=1 g=0]
+>> [   33.964512] Index: 12 pgmask=4kb va=77dcc000 asid=fd
+>> [   33.964512]  [pa=01d38000 c=3 d=0 v=1 g=0] [pa=01d39000 c=3 d=0 v=1 g=0]
+>> [   33.976159] Index: 13 pgmask=4kb va=77dce000 asid=fd
+>> [   33.976159]  [pa=01d3a000 c=3 d=0 v=1 g=0] [pa=01d3b000 c=3 d=0 v=1 g=0]
+>> [   33.987805] Index: 14 pgmask=4kb va=77d82000 asid=fd
+>> [   33.987805]  [pa=01dbd000 c=3 d=0 v=1 g=0] [pa=01dbe000 c=3 d=0 v=1 g=0]
+>> [   33.999451] Index: 15 pgmask=4kb va=77d80000 asid=fd
+>> [   33.999451]  [pa=01dbb000 c=3 d=0 v=1 g=0] [pa=01dbc000 c=3 d=0 v=1 g=0]
+>> [   34.011097] Index: 16 pgmask=4kb va=77d84000 asid=fd
+>> [   34.011097]  [pa=01dbf000 c=3 d=0 v=1 g=0] [pa=01dc0000 c=3 d=0 v=1 g=0]
+>> [   34.022743] Index: 17 pgmask=4kb va=77d86000 asid=fd
+>> [   34.022743]  [pa=01dc1000 c=3 d=0 v=1 g=0] [pa=01dc2000 c=3 d=0 v=1 g=0]
+>> [   34.034389] Index: 18 pgmask=4kb va=77d88000 asid=fd
+>> [   34.034389]  [pa=01dc3000 c=3 d=0 v=1 g=0] [pa=01dc4000 c=3 d=0 v=1 g=0]
+>> [   34.046035] Index: 19 pgmask=4kb va=77d8a000 asid=fd
+>> [   34.046035]  [pa=01dc5000 c=3 d=0 v=1 g=0] [pa=01dc6000 c=3 d=0 v=1 g=0]
+>> [   34.057682] Index: 20 pgmask=4kb va=77d8c000 asid=fd
+>> [   34.057682]  [pa=01dc7000 c=3 d=0 v=1 g=0] [pa=01dc8000 c=3 d=0 v=1 g=0]
+>> [   34.069328] Index: 21 pgmask=4kb va=77d8e000 asid=fd
+>> [   34.069328]  [pa=01dc9000 c=3 d=0 v=1 g=0] [pa=01dca000 c=3 d=0 v=1 g=0]
+>> [   34.080975] Index: 22 pgmask=4kb va=7f7b0000 asid=fd
+>> [   34.080975]  [pa=078ea000 c=3 d=0 v=1 g=0] [pa=07801000 c=3 d=0 v=0 g=0]
+>> [   34.092621] Index: 23 pgmask=4kb va=77e5a000 asid=fd
+>> [   34.092621]  [pa=07ece000 c=3 d=0 v=1 g=0] [pa=077fb000 c=3 d=0 v=1 g=0]
+>> [   34.104267] Index: 24 pgmask=4kb va=77e5c000 asid=fd
+>> [   34.104267]  [pa=0775f000 c=3 d=0 v=1 g=0] [pa=07314000 c=3 d=0 v=0 g=0]
+>> [   34.115913] Index: 25 pgmask=4kb va=77ea4000 asid=fd
+>> [   34.115913]  [pa=18122000 c=0 d=0 v=0 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
+> C = 0, pa = 18122000,  it is weird,
+>
+> +. pa is too high for 32bit SOC here;
+>
+> +. C=0 is not a valid cache attribute;
+>
+> I think this is "not" a PTE for memory, maybe a swap entry?
+>
+> Could you print the PTE value, not the value in TLB?
+
+
+The following is the value of PTE.
+
+There are 5 access operations from"pte = mk_pte(page, 
+vma->vm_page_prot)" to "set_pte_at(vma->vm_mm, vmf->address, vmf->pte, 
+pte)" in the "mm/memory.c" file.
+
+They are named pte 1/pte 2/pte 3/pte 4/pte 5.
+
+
+[   37.433993] --- pte 1 = 07b02685
+[   37.437283] --- pte 3 = 07b02685
+[   37.441005] --- pte 1 = 07c0c685
+[   37.444241] --- pte 3 = 07c0c685
+[   37.453561] --- pte 1 = 07b05685
+[   37.456885] --- pte 3 = 07b05685
+[   37.460915] --- pte 1 = 07b8c685
+[   37.464157] --- pte 2 = 07b8c78f
+[   37.467449] --- pte 3 = 07b8c78f
+[   37.472461] --- pte 1 = 07aff685
+[   37.475694] --- pte 3 = 07aff685
+[   37.479970] --- pte 1 = 07b16685
+[   37.483205] --- pte 3 = 07b16685
+[   37.487443] --- pte 1 = 07c20685
+[   37.490679] --- pte 3 = 07c20685
+[   37.494043] --- pte 1 = 07bd9685
+[   37.497337] --- pte 3 = 07bd9685
+[   37.501678] --- pte 1 = 07c0e685
+[   37.504913] --- pte 3 = 07c0e685
+[   37.510009] --- pte 1 = 07c11685
+[   37.513242] --- pte 3 = 07c11685
+[   37.535431] --- pte 1 = 07afd685
+[   37.538721] --- pte 3 = 07afd685
+[   37.542363] --- pte 1 = 07c92685
+[   37.545599] --- pte 3 = 07c92685
+[   37.737458] --- pte 1 = 06853685
+[   37.740698] --- pte 3 = 06853685
+[   37.760229] --- pte 1 = 06853685
+[   37.763504] --- pte 3 = 06853685
+[   37.786619] --- pte 1 = 06853685
+[   37.789895] --- pte 3 = 06853685
+[   37.822622] --- pte 1 = 06853685
+[   37.825928] --- pte 3 = 06853685
+[   37.984660] --- pte 1 = 06853685
+[   37.987995] --- pte 3 = 06853685
+[   40.917495] --- pte 1 = 07b07685
+[   40.920753] --- pte 3 = 07b07685
+[   40.924017] --- pte 1 = 042c6685
+[   40.927306] --- pte 3 = 042c6685
+[   40.931823] --- pte 1 = 07c0d685
+[   40.935073] --- pte 3 = 07c0d685
+[   40.940130] --- pte 1 = 04976685
+[   40.943364] --- pte 3 = 04976685
+[   41.187955] --- pte 1 = 06cb7685
+[   41.191204] --- pte 3 = 06cb7685
+[   41.194841] --- pte 1 = 06d11685
+[   41.198147] --- pte 3 = 06d11685
+[   41.202959] --- pte 1 = 06c85685
+[   41.206287] --- pte 3 = 06c85685
+[   41.210331] --- pte 1 = 03965685
+[   41.213675] --- pte 3 = 03965685
+[   41.218629] --- pte 1 = 0396f685
+[   41.221886] --- pte 3 = 0396f685
+[   41.242299] --- pte 1 = 03fa9685
+[   41.245561] --- pte 3 = 03fa9685
+[   41.282717] --- pte 1 = 026fa685
+[   41.286029] --- pte 2 = 026fa78f
+[   41.289248] --- pte 3 = 026fa78f
+[   41.308755] --- pte 1 = 0767f685
+[   41.311993] --- pte 3 = 0767f685
+[   41.329631] --- pte 1 = 069c4685
+[   41.332925] --- pte 2 = 069c478f
+[   41.336201] --- pte 3 = 069c478f
+[   41.358331] --- pte 1 = 01e3f685
+[   41.361593] --- pte 2 = 01e3f78f
+[   41.364810] --- pte 3 = 01e3f78f
+[   41.371673] --- pte 1 = 03855685
+[   41.374952] --- pte 2 = 0385578f
+[   41.378221] --- pte 3 = 0385578f
+[   41.390334] --- pte 1 = 07781685
+[   41.393596] --- pte 2 = 0778178f
+[   41.396882] --- pte 3 = 0778178f
+[   41.411191] --- pte 1 = 07a41685
+[   41.414462] --- pte 3 = 07a41685
+[   42.328309] --- pte 1 = 06f1a685
+[   42.331544] --- pte 3 = 06f1a685
+[   42.334857] --- pte 1 = 075dc685
+[   42.338157] --- pte 3 = 075dc685
+[   42.343129] --- pte 1 = 076ae685
+[   42.346456] --- pte 3 = 076ae685
+[   42.356107] --- pte 1 = 076bd685
+[   42.359340] --- pte 3 = 076bd685
+[   47.550904] --- pte 1 = 01f15685
+[   47.554140] --- pte 3 = 01f15685
+[   47.559395] --- pte 1 = 07190685
+[   47.562631] --- pte 3 = 07190685
+[   47.567481] --- pte 1 = 07192685
+[   47.570717] --- pte 3 = 07192685
+[   47.578143] --- pte 1 = 0208a685
+[   47.581380] --- pte 3 = 0208a685
+[   47.586849] --- pte 1 = 02aa3685
+[   47.590085] --- pte 3 = 02aa3685
+[   47.594058] --- pte 1 = 02bb4685
+[   47.597358] --- pte 3 = 02bb4685
+[   47.601741] --- pte 1 = 02088685
+[   47.604993] --- pte 3 = 02088685
+[   47.626492] --- pte 1 = 02bb5685
+[   47.629749] --- pte 3 = 02bb5685
+[   47.648313] --- pte 1 = 02aa2685
+[   47.651551] --- pte 3 = 02aa2685
+[   47.683155] --- pte 1 = 01c93685
+[   47.686449] --- pte 3 = 01c93685
+[   48.409395] --- pte 1 = 07f02685
+[   48.412632] --- pte 3 = 07f02685
+[   49.639047] --- pte 1 = 05cd0685
+[   49.642283] --- pte 3 = 05cd0685
+[   49.756173] --- pte 1 = 043e7685
+[   49.759410] --- pte 3 = 043e7685
+[   49.775899] --- pte 1 = 02a22685
+[   49.779158] --- pte 3 = 02a22685
+[   49.801083] --- pte 1 = 018bc685
+[   49.804337] --- pte 3 = 018bc685
+[   49.826453] --- pte 1 = 01db1685
+[   49.829690] --- pte 3 = 01db1685
+[   49.848209] --- pte 1 = 07cb7685
+[   49.851446] --- pte 3 = 07cb7685
+[   49.865907] --- pte 1 = 02592685
+[   49.869172] --- pte 3 = 02592685
+[   49.880463] --- pte 1 = 0256c685
+[   49.883714] --- pte 3 = 0256c685
+[   50.019617] --- pte 1 = 03e30685
+[   50.022854] --- pte 3 = 03e30685
+[   50.027982] --- pte 1 = 07184685
+[   50.031218] --- pte 3 = 07184685
+[   50.034461] --- pte 1 = 07787685
+[   50.037732] --- pte 3 = 07787685
+[   50.056424] --- pte 1 = 01bf4685
+[   50.059660] --- pte 3 = 01bf4685
+[   50.075875] --- pte 1 = 01bf5685
+[   50.079111] --- pte 3 = 01bf5685
+[   50.082879] --- pte 1 = 07e37685
+[   50.086165] --- pte 3 = 07e37685
+[   50.096771] --- pte 1 = 0644c685
+[   50.100007] --- pte 3 = 0644c685
+[   50.103231] --- pte 1 = 07fa3685
+[   50.106523] --- pte 3 = 07fa3685
+[   50.126426] --- pte 1 = 04ca0685
+[   50.129672] --- pte 2 = 04ca078f
+[   50.132889] --- pte 3 = 04ca078f
+[   50.150463] --- pte 1 = 019cf685
+[   50.153699] --- pte 3 = 019cf685
+[   50.176439] --- pte 1 = 07a4e685
+[   50.179675] --- pte 3 = 07a4e685
+[   50.187700] --- pte 1 = 02b44685
+[   50.190966] --- pte 3 = 02b44685
+[   50.206031] --- pte 1 = 03620685
+[   50.209267] --- pte 3 = 03620685
+[   50.213061] --- pte 1 = 02275685
+[   50.216356] --- pte 3 = 02275685
+[   50.239359] --- pte 1 = 07765685
+[   50.242596] --- pte 3 = 07765685
+[   50.263367] --- pte 1 = 04221685
+[   50.266648] --- pte 3 = 04221685
+[   50.292287] irq/37-13450000: page allocation failure: order:0, 
+mode:0x40800(GFP_NOWAIT|__GFP_COMP), nodemask=(null)
+[   50.302738] CPU: 0 PID: 517 Comm: irq/37-13450000 Not tainted 
+5.12.0-rc8-dirty #6
+[   50.310207] Stack : 00040800 00000000 00000001 801565b8 00000000 
+00000007 00000000 635e192b
+[   50.318570]         80ea5bf4 80860000 807e9c80 80860000 80865923 
+00000001 80ea5b98 635e192b
+[   50.326933]         00000000 00000000 807e9c80 00000003 00000001 
+80ea5a6c 00000000 00000bd3
+[   50.335294]         bff4ffd7 120b6cde 80ea5a64 302e3231 80860000 
+00000000 807e8508 00040800
+[   50.343657]         00000000 00000850 00040800 00000000 00000000 
+8042a10c 00000000 808e0000
+[   50.352018]         ...
+[   50.354459] Call Trace:
+[   50.356895] [<80107db8>] show_stack+0x6c/0x12c
+[   50.361341] [<801e2f4c>] warn_alloc+0xa8/0x148
+[   50.365780] [<801e38e0>] __alloc_pages_nodemask+0x8d4/0x908
+[   50.371346] [<801f24ac>] ____cache_alloc+0x2dc/0x6a4
+[   50.376305] [<801f2a10>] kmem_cache_alloc+0x6c/0x104
+[   50.381263] [<803feac0>] jz4780_dma_desc_alloc.isra.9+0x40/0xa0
+[   50.387177] [<803fee90>] jz4780_dma_prep_slave_sg+0x54/0x184
+[   50.392828] [<804f72a8>] jz_mmc_irq_worker+0x2a8/0x760
+[   50.397958] [<80159e88>] irq_thread_fn+0x2c/0x6c
+[   50.402567] [<8015a4a0>] irq_thread+0x128/0x200
+[   50.407089] [<8013c0c8>] kthread+0x148/0x150
+[   50.411351] [<8010224c>] ret_from_kernel_thread+0x14/0x1c
+[   50.416742]
+[   50.418225] Index:  0 pgmask=4kb va=7709a000 asid=1a
+[   50.418225]  [pa=02155000 c=3 d=0 v=0 g=0] [pa=02156000 c=3 d=0 v=1 g=0]
+[   50.429873] Index:  1 pgmask=4kb va=77072000 asid=1a
+[   50.429873]  [pa=038d7000 c=3 d=0 v=0 g=0] [pa=07810000 c=3 d=0 v=1 g=0]
+[   50.441520] Index:  2 pgmask=4kb va=76e1a000 asid=1a
+[   50.441520]  [pa=01f53000 c=3 d=0 v=0 g=0] [pa=01f54000 c=3 d=0 v=1 g=0]
+[   50.453167] Index:  3 pgmask=4kb va=770fe000 asid=1a
+[   50.453167]  [pa=0208d000 c=3 d=0 v=0 g=0] [pa=0208e000 c=3 d=0 v=1 g=0]
+[   50.464814] Index:  4 pgmask=4kb va=566f8000 asid=1a
+[   50.464814]  [pa=03a52000 c=3 d=0 v=0 g=0] [pa=03a53000 c=3 d=0 v=1 g=0]
+[   50.476461] Index:  5 pgmask=4kb va=7fece000 asid=1a
+[   50.476461]  [pa=07ac3000 c=3 d=0 v=1 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
+[   50.488108] Index:  6 pgmask=4kb va=566fe000 asid=1a
+[   50.488108]  [pa=01bcf000 c=3 d=1 v=1 g=0] [pa=05eb1000 c=3 d=1 v=1 g=0]
+[   50.499755] Index:  7 pgmask=4kb va=77098000 asid=1a
+[   50.499755]  [pa=05417000 c=3 d=0 v=1 g=0] [pa=02154000 c=3 d=0 v=1 g=0]
+[   50.511402] Index:  8 pgmask=4kb va=77e64000 asid=1a
+[   50.511402]  [pa=05333000 c=3 d=0 v=1 g=0] [pa=04c85000 c=3 d=0 v=0 g=0]
+[   50.523049] Index:  9 pgmask=4kb va=76e6a000 asid=1a
+[   50.523049]  [pa=021fe000 c=3 d=0 v=1 g=0] [pa=021ff000 c=3 d=0 v=1 g=0]
+[   50.534696] Index: 10 pgmask=4kb va=76f76000 asid=1a
+[   50.534696]  [pa=0698f000 c=3 d=1 v=1 g=0] [pa=0697a000 c=3 d=1 v=1 g=0]
+[   50.546343] Index: 11 pgmask=4kb va=762d6000 asid=1a
+[   50.546343]  [pa=06988000 c=3 d=1 v=1 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
+[   50.557989] Index: 12 pgmask=4kb va=76f74000 asid=1a
+[   50.557989]  [pa=0103d000 c=3 d=1 v=1 g=0] [pa=02b40000 c=3 d=0 v=1 g=0]
+[   50.569636] Index: 13 pgmask=4kb va=566e8000 asid=1a
+[   50.569636]  [pa=05dd0000 c=3 d=1 v=1 g=0] [pa=053e6000 c=3 d=1 v=1 g=0]
+[   50.581283] Index: 14 pgmask=4kb va=566ac000 asid=1a
+[   50.581283]  [pa=00000000 c=0 d=0 v=0 g=0] [pa=04b26000 c=3 d=1 v=1 g=0]
+[   50.592930] Index: 17 pgmask=4kb va=76eca000 asid=1a
+[   50.592930]  [pa=02184000 c=3 d=0 v=1 g=0] [pa=02185000 c=3 d=0 v=0 g=0]
+[   50.604577] Index: 18 pgmask=4kb va=76f8c000 asid=1a
+[   50.604577]  [pa=01da3000 c=3 d=0 v=1 g=0] [pa=01da4000 c=3 d=0 v=1 g=0]
+[   50.616224] Index: 19 pgmask=4kb va=76e9c000 asid=1a
+[   50.616224]  [pa=02225000 c=3 d=0 v=0 g=0] [pa=02226000 c=3 d=0 v=1 g=0]
+[   50.627871] Index: 20 pgmask=4kb va=7fecc000 asid=1a
+[   50.627871]  [pa=05b01000 c=3 d=1 v=1 g=0] [pa=05abe000 c=3 d=1 v=1 g=0]
+[   50.639518] Index: 21 pgmask=4kb va=76ef0000 asid=1a
+[   50.639518]  [pa=021aa000 c=3 d=0 v=1 g=0] [pa=021ab000 c=3 d=0 v=1 g=0]
+[   50.651165] Index: 22 pgmask=4kb va=76e62000 asid=1a
+[   50.651165]  [pa=021f6000 c=3 d=0 v=1 g=0] [pa=021f7000 c=3 d=0 v=1 g=0]
+[   50.662812] Index: 23 pgmask=4kb va=74a00000 asid=1a
+[   50.662812]  [pa=03395000 c=3 d=1 v=1 g=0] [pa=028a0000 c=3 d=1 v=1 g=0]
+[   50.674459] Index: 24 pgmask=4kb va=75400000 asid=1a
+[   50.674459]  [pa=05ec6000 c=3 d=1 v=1 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
+[   50.686105] Index: 25 pgmask=4kb va=76ede000 asid=1a
+[   50.686105]  [pa=02198000 c=3 d=0 v=0 g=0] [pa=02199000 c=3 d=0 v=1 g=0]
+[   50.697753] Index: 26 pgmask=4kb va=c009a000 asid=1a
+[   50.697753]  [pa=00000000 c=0 d=0 v=0 g=1] [pa=02f90000 c=3 d=1 v=1 g=1]
+[   50.709399] Index: 27 pgmask=4kb va=c0086000 asid=1a
+[   50.709399]  [pa=02f69000 c=3 d=1 v=1 g=1] [pa=02f6a000 c=3 d=1 v=1 g=1]
+[   50.721046] Index: 28 pgmask=4kb va=770f2000 asid=1a
+[   50.721046]  [pa=06915000 c=3 d=0 v=1 g=0] [pa=06916000 c=3 d=0 v=1 g=0]
+[   50.732693] Index: 29 pgmask=4kb va=56700000 asid=1a
+[   50.732693]  [pa=0357b000 c=3 d=1 v=1 g=0] [pa=07f9c000 c=3 d=1 v=1 g=0]
+[   50.744340] Index: 30 pgmask=4kb va=76f88000 asid=1a
+[   50.744340]  [pa=01d9f000 c=3 d=0 v=1 g=0] [pa=01da0000 c=3 d=0 v=1 g=0]
+[   50.755987] Index: 31 pgmask=4kb va=76fa4000 asid=1a
+[   50.755987]  [pa=03c3d000 c=3 d=0 v=1 g=0] [pa=00000000 c=0 d=0 v=0 g=0]
+
+
+Thanks and best regards!
+
+
+>
+> tTLB value lost software PTE bits
+>
+>> [   34.127559] Index: 26 pgmask=4kb va=c0096000 asid=fd
+>> [   34.127559]  [pa=0302f000 c=3 d=1 v=1 g=1] [pa=03008000 c=3 d=1 v=1 g=1]
+>> [   34.139205]
+>> [   34.140686] Code: 03e00008  00000000  24831000 <bc950000> bc950020
+>> bc950040  bc950060  bc950080  bc9500a0
+>> [   34.150445]
+>> [   34.151987] ---[ end trace 30089d2c358ff363 ]---
+>> [   34.156614] Kernel panic - not syncing: Fatal exception
+>> [   34.161831] Rebooting in 10 seconds..
+>>
+>>> I really have no idea of how the page_prot setting affecting the swap
+>>> handling.
+>>>
+>>>> Thanks and best regards!
+>>>>
+>>>>
+>>>>>      Original Message
+>>>>> From: 周琰杰 (Zhou Yanjie)
+>>>>> Sent: 2021年4月16日星期五 16:48
+>>>>> To: tsbogend@alpha.franken.de
+>>>>> Cc: linux-mips@vger.kernel.org; linux-kernel@vger.kernel.org; akpm@linux-foundation.org; paul.burton@mips.com; paul@crapouillou.net; siyanteng@loongson.cn; huangpei@loongson.cn; ira.weiny@intel.com; yangtiezhu@loongson.cn; zhouyanjie@wanyeetech.com; jun.jiang@ingenic.com; dongsheng.qiu@ingenic.com; aric.pzqi@ingenic.com; rick.tyliu@ingenic.com; sernia.zhou@foxmail.com
+>>>>> Subject: [PATCH] Revert "MIPS: make userspace mapping young by default".
+>>>>>
+>>>>> This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
+>>>>>
+>>>>> It cause kernel panic on Ingenic X1830, so let's revert it.
+>>>>>
+>>>>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>>>> ---
+>>>>> arch/mips/mm/cache.c | 31 ++++++++++++++-----------------
+>>>>> 1 file changed, 14 insertions(+), 17 deletions(-)
+>>>>>
+>>>>> diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+>>>>> index 7719d63..9cfd432 100644
+>>>>> --- a/arch/mips/mm/cache.c
+>>>>> +++ b/arch/mips/mm/cache.c
+>>>>> @@ -21,7 +21,6 @@
+>>>>> #include <asm/cpu.h>
+>>>>> #include <asm/cpu-features.h>
+>>>>> #include <asm/setup.h>
+>>>>> -#include <asm/pgtable.h>
+>>>>>
+>>>>> /* Cache operations. */
+>>>>> void (*flush_cache_all)(void);
+>>>>> @@ -157,31 +156,29 @@ unsigned long _page_cachable_default;
+>>>>> EXPORT_SYMBOL(_page_cachable_default);
+>>>>>
+>>>>> #define PM(p)	__pgprot(_page_cachable_default | (p))
+>>>>> -#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+>>>>>
+>>>>> static inline void setup_protection_map(void)
+>>>>> {
+>>>>> protection_map[0] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+>>>>> -	protection_map[1] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+>>>>> -	protection_map[2] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+>>>>> -	protection_map[3] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+>>>>> -	protection_map[4] = PVA(_PAGE_PRESENT);
+>>>>> -	protection_map[5] = PVA(_PAGE_PRESENT);
+>>>>> -	protection_map[6] = PVA(_PAGE_PRESENT);
+>>>>> -	protection_map[7] = PVA(_PAGE_PRESENT);
+>>>>> +	protection_map[1] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+>>>>> +	protection_map[2] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+>>>>> +	protection_map[3] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+>>>>> +	protection_map[4] = PM(_PAGE_PRESENT);
+>>>>> +	protection_map[5] = PM(_PAGE_PRESENT);
+>>>>> +	protection_map[6] = PM(_PAGE_PRESENT);
+>>>>> +	protection_map[7] = PM(_PAGE_PRESENT);
+>>>>>
+>>>>> protection_map[8] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+>>>>> -	protection_map[9] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+>>>>> -	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+>>>>> +	protection_map[9] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+>>>>> +	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+>>>>> _PAGE_NO_READ);
+>>>>> -	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+>>>>> -	protection_map[12] = PVA(_PAGE_PRESENT);
+>>>>> -	protection_map[13] = PVA(_PAGE_PRESENT);
+>>>>> -	protection_map[14] = PVA(_PAGE_PRESENT);
+>>>>> -	protection_map[15] = PVA(_PAGE_PRESENT);
+>>>>> +	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+>>>>> +	protection_map[12] = PM(_PAGE_PRESENT);
+>>>>> +	protection_map[13] = PM(_PAGE_PRESENT);
+>>>>> +	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+>>>>> +	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+>>>>> }
+>>>>>
+>>>>> -#undef _PVA
+>>>>> #undef PM
+>>>>>
+>>>>> void cpu_cache_init(void)
