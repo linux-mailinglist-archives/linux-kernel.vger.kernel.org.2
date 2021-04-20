@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B533651D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E56B3651D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhDTF0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 01:26:04 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:24053 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhDTF0D (ORCPT
+        id S229835AbhDTFaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 01:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhDTFaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 01:26:03 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210420052530euoutp02ffe1cf8eafc092feaa0221d9c774ff00~3eaKxtSRJ2883628836euoutp02z
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:25:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210420052530euoutp02ffe1cf8eafc092feaa0221d9c774ff00~3eaKxtSRJ2883628836euoutp02z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618896330;
-        bh=UfpEbtndIqnK+BTtgcqFamqwVazXAKYd9pZ8/utwLmM=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=BFhHDzqaMEBJPsx3xTcHeVBkH3uRuLBaEZLu9OUwA640YJPD0+VomnBvAU2vwx4XL
-         ZFK7RLs2Lk30QHXZ0aMM4Ym7Zut5V4nz/cPz0SSmou500QIdEEtfLeab60X30HY+JR
-         3yqHSkHki6KuZYtNcQLVwxpNDmaMftssqtIG5KJY=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210420052529eucas1p24b9a0ad7cd84b9873fd8d4e40be11fa5~3eaKAyLOQ2232422324eucas1p2l;
-        Tue, 20 Apr 2021 05:25:29 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id E4.82.09439.9C56E706; Tue, 20
-        Apr 2021 06:25:29 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210420052529eucas1p19219c49d2568e79976927c8ebc3978ae~3eaJkCk1-0361303613eucas1p1j;
-        Tue, 20 Apr 2021 05:25:29 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210420052529eusmtrp2a93094881e384f31c662594343399dfb~3eaJiy8Bo0528005280eusmtrp20;
-        Tue, 20 Apr 2021 05:25:29 +0000 (GMT)
-X-AuditID: cbfec7f5-c1bff700000024df-b5-607e65c9941b
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 8B.B9.08696.9C56E706; Tue, 20
-        Apr 2021 06:25:29 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210420052528eusmtip19fe36ef724185ceff481a996e1219ded~3eaI_al6E1953419534eusmtip1U;
-        Tue, 20 Apr 2021 05:25:28 +0000 (GMT)
-Subject: Re: [PATCH 5/7] mfd: sec: Simplify getting of_device_id match data
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        patches@opensource.cirrus.com
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <64fb91ae-c754-fb25-0ef7-17b2f1b8a1e4@samsung.com>
-Date:   Tue, 20 Apr 2021 07:25:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.9.1
+        Tue, 20 Apr 2021 01:30:13 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB714C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 22:29:42 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id v7so10192790qkj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 22:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=CD5KgC7jtIRxFp9L5EX0XqWGl1RUghQJwWPnq/cGmzA=;
+        b=JCafrJcSXX4Mn66ZWw8U8ND0HHkGqhAmFRiw8OMyTHMosRl8XNVwao/iHwNS7jMLX1
+         /N7bbezhvWpt+Iqas9/VOpTAJrx4FkJp16RYUuY7uI6+ufT58hn2Lkk2gei8Or6L8eOS
+         pPm3UWa12JX9fTiXDsRAF82Qrq92UEv3Qi6zkHFgExT0gNh+CmoNr3fpsvKM5pCD8REE
+         xmVPf2zAPQetho4L8Gz6N/1cXKukAoxpvXHCTPuBnDDst5T8fNKgPTTbQTasdckAOFur
+         lfTbDyKvTK+fqPslxjcFuGjRG7OC8RIU6BlXRrkQ99635WyW5KLZYWjN4b9OGUCv1KJf
+         raWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=CD5KgC7jtIRxFp9L5EX0XqWGl1RUghQJwWPnq/cGmzA=;
+        b=o8pmbkmKPLAxm9i4z/COO39ZNyoJl3r1i7CunF9GKozNw4z2NjuNVOLw+DeoybK7uq
+         EoCnjp1w1TLAANxMCNFbrReBB3YniHus8RLErCrB/1xGH1ySE1zfDUFNdEmuPtepP1Ep
+         ltI4HfHEpvtv+a0kOXfhiCEc4v9W3I1qwCu75pTkvTt8Lvpc8IsATQScpaQZK2IAB3oy
+         C98CtKDFfZBysyaeGmMUR1W81PVkBGC0BOpunGfQ7TJWsFH4J8L1vSSZnxNksgA5C+UT
+         NPbehQeYWCy0cw+fRhGKEUhfuW1IvOarQS8L5LkXvp0QWF7PiKLNcUIC61b2zPsFlb6o
+         mTqQ==
+X-Gm-Message-State: AOAM531YIWRlIq1Pyr9icuh1ZwzOVNo0tKZzef7FbVA8ygQ7dgtRZAq3
+        xZgX/UmHJfqF5ykjmGxH+H8=
+X-Google-Smtp-Source: ABdhPJwZS2BpuCSdCWdDvSF5KnO6hp7JbxTakxD8Xsi7lNH9Uo+5o2UZGcERr3xdBBoefGdvXPZw9w==
+X-Received: by 2002:a37:a206:: with SMTP id l6mr15817573qke.5.1618896581783;
+        Mon, 19 Apr 2021 22:29:41 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
+        by smtp.gmail.com with ESMTPSA id v3sm5539052qkb.124.2021.04.19.22.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 22:29:41 -0700 (PDT)
+Message-ID: <2977fdf112bce230ca6739c0a7f9f1f55bd2f693.camel@gmail.com>
+Subject: Re: [PATCH 1/1] powerpc/pseries/iommu: Fix window size for direct
+ mapping with pmem
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Tue, 20 Apr 2021 02:29:38 -0300
+In-Reply-To: <58b28a98-37aa-055f-5dec-d8c0005c9519@ozlabs.ru>
+References: <20210420045404.438735-1-leobras.c@gmail.com>
+         <58b28a98-37aa-055f-5dec-d8c0005c9519@ozlabs.ru>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210419081726.67867-5-krzysztof.kozlowski@canonical.com>
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djP87onU+sSDFqe61lsnLGe1WLj2x9M
-        Fve/HmW0uLxrDpvF7CX9LBYzzu9jsvj8fj+rxd7Wi8wW+694OXB6fPs6icVjVkMvm8eKT/oe
-        d67tYfOYPuc/o0ffllWMHp83yQWwR3HZpKTmZJalFunbJXBlHL30m6XgJHdF89XbjA2Muzi7
-        GDk4JARMJDZdtOpi5OIQEljBKPHmfC8jhPOFUeLu1mPsEM5nRomGH4uZYTqu74rvYuQEii9n
-        lFh8mRPC/sgo0b09D6REWMBb4kWvOkiriMAHJoklZ+azg9SwCRhKdL3tYgOxeQXsJLo/PGUE
-        sVkEVCXe/OoGqxEVSJK4eek/M0SNoMTJmU9YQGxOAXeJwycfg/UyC8hLbH87hxnCFpe49WQ+
-        E8gyCYEPHBL/fiwFa5AQcJH4v209K4QtLPHq+BZ2CFtG4v9OmIZmRomH59ayQzg9jBKXm2Yw
-        QlRZS9w594sN5B1mAU2J9bv0IcKOEjv3d7FBAoJP4sZbQYgj+CQmbZsODR9eiY42IYhqNYlZ
-        x9fBrT144RIzhO0hMfvxZLYJjIqzkLw5C8lrs5C8NgvhhgWMLKsYxVNLi3PTU4uN81LL9YoT
-        c4tL89L1kvNzNzECU9Tpf8e/7mBc8eqj3iFGJg7GQ4wSHMxKIrz3a2sShHhTEiurUovy44tK
-        c1KLDzFKc7AoifPu2romXkggPbEkNTs1tSC1CCbLxMEp1cAUFnHguHb+AQd+/rNH19lt/5kZ
-        adRyr5a9YdOlhs0bv3nvvOATuPbGa/0/u0S8kuR1F3brdVyqs3g2f6fS98Df9rdur5DZcWFe
-        G7NhfOQJOZEHf9fNmzvn9E6z2hj2nR9UMzgd0iomNCxkN761a3at8a3L/3hydYJ2bxCckHBe
-        XPdO7fyuno/tzta6V6fYaj1XzIgQXfAy89a1PzoTXvJKVi2/31j+LWRGiHp1Vd+uwIPLTk9V
-        XLeFoWCt0yb1uMcnAg1Mde8smPkqZI9Gk9CPY9uCpyvMPOlT92KaulH6ivyE+F277qs8Wu27
-        JpkzaP1NwxUz1Crux/Ba2jVtc9xyWDX6l+WqZ9I/8uWzl/74qsRSnJFoqMVcVJwIAPFHZr3A
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRmVeSWpSXmKPExsVy+t/xu7onU+sSDG7OE7bYOGM9q8XGtz+Y
-        LO5/PcpocXnXHDaL2Uv6WSxmnN/HZPH5/X5Wi72tF5kt9l/xcuD0+PZ1EovHrIZeNo8Vn/Q9
-        7lzbw+Yxfc5/Ro++LasYPT5vkgtgj9KzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1
-        MjJV0rezSUnNySxLLdK3S9DLOHrpN0vBSe6K5qu3GRsYd3F2MXJwSAiYSFzfFd/FyMkhJLCU
-        UaL5Ay+ILSEgI3FyWgMrhC0s8edaF1sXIxdQzXtGiXn9L9hBeoUFvCVe9KqD1IgIfGKS2NyR
-        A1FznVFi0ZzpzCAJNgFDia63IM2cHLwCdhLdH54ygtgsAqoSb351s4PYogJJEvcur2SGqBGU
-        ODnzCQuIzSngLnH45GOwXmYBM4l5mx8yQ9jyEtvfzoGyxSVuPZnPNIFRcBaS9llIWmYhaZmF
-        pGUBI8sqRpHU0uLc9NxiI73ixNzi0rx0veT83E2MwOjbduznlh2MK1991DvEyMTBeIhRgoNZ
-        SYT3fm1NghBvSmJlVWpRfnxRaU5q8SFGU6B/JjJLiSbnA+M/ryTe0MzA1NDEzNLA1NLMWEmc
-        1+TImnghgfTEktTs1NSC1CKYPiYOTqkGJvZpjR90JA0Tr2zRmhf65llKxjbla7Ou7uC6JmCe
-        u7opg3l/24TVKX1bZA4nzOprmpmbEnXi3Z4IoZwFekH39HsWvTmy7+mb11+vpllu3/R45bQd
-        0w+ZTpmgqRAyuZBD8f+Phe+833MbXK2fMGOrFMOlXptjfpI/JknvyGIz79wXwWW/omKVxR2V
-        Ld3zLdtMX3NM/aJ6LPjK6TP/+/M4v1i0NPy0vcG05hzTnKwsftELundelgo9OhvDft3u8/xO
-        kfDti9wv9ea/C1u7zkJPcZGs8oWtmX4ya7X3Jzz9UCq5rUR6qZl0m05E2X65zecOO265LWVy
-        vuQ6V+YPVxXnn/8Nbx+XndG2eIIpp7r8hnQlluKMREMt5qLiRACkHu8iRwMAAA==
-X-CMS-MailID: 20210420052529eucas1p19219c49d2568e79976927c8ebc3978ae
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d
-References: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
-        <CGME20210419081852eucas1p29d7904aa73d6621feb03cb24a91ed95d@eucas1p2.samsung.com>
-        <20210419081726.67867-5-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-04-20 at 15:18 +1000, Alexey Kardashevskiy wrote:
+> 
+> On 20/04/2021 14:54, Leonardo Bras wrote:
+> > As of today, if the DDW is big enough to fit (1 << MAX_PHYSMEM_BITS) it's
+> > possible to use direct DMA mapping even with pmem region.
+> > 
+> > But, if that happens, the window size (len) is set to
+> > (MAX_PHYSMEM_BITS - page_shift) instead of MAX_PHYSMEM_BITS, causing a
+> > pagesize times smaller DDW to be created, being insufficient for correct
+> > usage.
+> > 
+> > Fix this so the correct window size is used in this case.
+> 
+> Good find indeed.
+> 
+> afaict this does not create a huge problem though as 
+> query.largest_available_block is always smaller than (MAX_PHYSMEM_BITS - 
+> page_shift) where it matters (phyp).
+> 
+> 
+> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> 
 
-On 19.04.2021 10:17, Krzysztof Kozlowski wrote:
-> Use of_device_get_match_data() to make the code slightly smaller.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->   drivers/mfd/sec-core.c | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
-> index 8d55992da19e..3126c39f3203 100644
-> --- a/drivers/mfd/sec-core.c
-> +++ b/drivers/mfd/sec-core.c
-> @@ -10,6 +10,7 @@
->   #include <linux/slab.h>
->   #include <linux/i2c.h>
->   #include <linux/of.h>
-> +#include <linux/of_device.h>
->   #include <linux/of_irq.h>
->   #include <linux/interrupt.h>
->   #include <linux/pm_runtime.h>
-> @@ -324,12 +325,8 @@ static inline unsigned long sec_i2c_get_driver_data(struct i2c_client *i2c,
->   						const struct i2c_device_id *id)
->   {
->   #ifdef CONFIG_OF
-> -	if (i2c->dev.of_node) {
-> -		const struct of_device_id *match;
-> -
-> -		match = of_match_node(sec_dt_match, i2c->dev.of_node);
-> -		return (unsigned long)match->data;
-> -	}
-> +	if (i2c->dev.of_node)
-> +		return (unsigned long)of_device_get_match_data(&i2c->dev);
->   #endif
+Thanks for reviewing!
 
-Does it make any sense to keep the #ifdef CONFIG_OF after this change? I 
-would also skip (i2c->dev.of_node) check, because 
-of_device_get_match_data() already does that (although indirectly).
-
->   	return id->driver_data;
->   }
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Leonardo Bras
 
