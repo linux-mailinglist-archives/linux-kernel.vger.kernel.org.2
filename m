@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A742F365EC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0893F365EC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbhDTRqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:46:02 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:34971 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231549AbhDTRqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:46:00 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 235C9240101
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 19:45:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1618940727; bh=Y+3vP2qSfKuw36N6bxNiacbL2Ml26/86eq2z9cSuI7s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eo500J9OA4efSluC4LsPcX1jl9efIMF3JaCPXvr7qAkckahTV7gXEUw9kwawf4uMf
-         alQXqwglxBRdWw3sqlYI9SfveN3dmZtqP+KXmSKF8g/+0t0Xab/rS6vSU9Jha/uiAp
-         cJ3bQyjQE5KJxyEKH1lphkYhBLV1dKK+6jmTujV2gRte3+RKtYPQMmiFVwaDQGcibr
-         9tnEKqF39/VDqYusiW77Y/b568SW14omHXf9KHFEbJHyWjniisdAhevtFrNPAHyYU7
-         MuHfze+leaId7+ubHLkFpzDeCpmswmrQ5shYdw5D9tSsVZhJIVLyrbr4fiE/kRjWyU
-         H11xB2Z0FUeSw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4FPrgT1sGGz9rxB;
-        Tue, 20 Apr 2021 19:45:24 +0200 (CEST)
-From:   Sebastian Fricke <sebastian.fricke@posteo.net>
-To:     linux-media@vger.kernel.org
-Cc:     Sebastian Fricke <sebastian.fricke@posteo.net>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] media: rkisp1: rkisp1-params.c: Fix typos
-Date:   Tue, 20 Apr 2021 17:45:22 +0000
-Message-Id: <20210420174522.9618-1-sebastian.fricke@posteo.net>
+        id S233481AbhDTRrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:47:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51754 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhDTRrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:47:40 -0400
+Received: from 111-240-142-99.dynamic-ip.hinet.net ([111.240.142.99] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lYuSo-00083M-3k; Tue, 20 Apr 2021 17:47:06 +0000
+From:   chris.chiu@canonical.com
+To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
+        m.v.b@runbox.com, hadess@hadess.net
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH] USB: Add reset-resume quirk for WD19's Realtek Hub
+Date:   Wed, 21 Apr 2021 01:46:51 +0800
+Message-Id: <20210420174651.6202-1-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/when the camera active/when the camera is active/
-s/thus not isr protection/therefore there is no need to acquire a lock/
+From: Chris Chiu <chris.chiu@canonical.com>
 
-Signed-off-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+Realtek Hub (0bda:5487) in Dell Dock WD19 sometimes fails to work
+after the system resumes from suspend with remote wakeup enabled
+device connected:
+[ 1947.640907] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+[ 1947.641208] usb 5-2.3-port5: cannot disable (err = -71)
+[ 1947.641401] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+[ 1947.641450] usb 5-2.3-port4: cannot reset (err = -71)
+
+Information of this hub:
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 10 Spd=480  MxCh= 5
+D:  Ver= 2.10 Cls=09(hub  ) Sub=00 Prot=02 MxPS=64 #Cfgs=  1
+P:  Vendor=0bda ProdID=5487 Rev= 1.47
+S:  Manufacturer=Dell Inc.
+S:  Product=Dell dock
+C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=01 Driver=hub
+E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+I:* If#= 0 Alt= 1 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=02 Driver=hub
+E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+
+The failure results from the ETIMEDOUT by chance when turning on
+the suspend feature for the specified port of the hub. The port
+seems to be in an unknown state so the hub_activate during resume
+fails the hub_port_status, then the hub will fail to work.
+
+The quirky hub needs the reset-resume quirk to function correctly.
+
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 ---
- drivers/media/platform/rockchip/rkisp1/rkisp1-params.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/core/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-index b6beddd988d0..529c6e21815f 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-@@ -1258,7 +1258,10 @@ void rkisp1_params_configure(struct rkisp1_params *params,
- 	rkisp1_params_config_parameter(params);
- }
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 76ac5d6555ae..4e2483e34250 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -406,6 +406,7 @@ static const struct usb_device_id usb_quirk_list[] = {
  
--/* Not called when the camera active, thus not isr protection. */
-+/*
-+ * Not called when the camera is active, therefore there is no need to acquire
-+ * a lock.
-+ */
- void rkisp1_params_disable(struct rkisp1_params *params)
- {
- 	rkisp1_param_clear_bits(params, RKISP1_CIF_ISP_DPCC_MODE,
+ 	/* Realtek hub in Dell WD19 (Type-C) */
+ 	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
++	{ USB_DEVICE(0x0bda, 0x5487), .driver_info = USB_QUIRK_RESET_RESUME },
+ 
+ 	/* Generic RTL8153 based ethernet adapters */
+ 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
 -- 
-2.25.1
+2.20.1
 
