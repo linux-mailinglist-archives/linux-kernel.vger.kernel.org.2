@@ -2,88 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D2F365AA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC6D365AA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbhDTN7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:59:17 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:36765 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhDTN7P (ORCPT
+        id S232430AbhDTOBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:01:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232303AbhDTOBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:59:15 -0400
-Received: by mail-oi1-f173.google.com with SMTP id v6so11197037oiv.3;
-        Tue, 20 Apr 2021 06:58:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=Kl/HdC6UYvnDbbF4wYRMMSs2xIVc93NKIkmpe2ylv/Y=;
-        b=tSS70KtEO61nEHubzz8/EPxvkUv60OzEqiNLYHXEsBXzWexN0kDnBtqjqTPjy+KdJm
-         pH8vmBtaX1fs8akUf9lMGQH+sc4yc0ieI+Jdo3NTG0pc9eHw7PQx63ltbDUViZLB3ivi
-         lcPyxxa5VDAvju1vKnpppgHpWzdtZl19Vv+VsOsEqFaMH93i56qVv7IN19eeWn5ESbxi
-         zlrTfklnRa5heJqJ4AsjkMaTTBmgdxstLKgey7XAL9kCE8gi/zlscbiNyfE7xGaaID4O
-         Aj+m1S2UGFAykcSbKuEYoPpmd1H9nDsqilcpMbJ2JpvEDwKATSO78suKOMjQoff7Ex4W
-         n/yw==
-X-Gm-Message-State: AOAM532bzHIzoVjdnDQS9r7k9RazEO4Gh1183XmKjUVCCX3x6RoFY94v
-        DLLFDBLMOacqLlWKk2kVtw==
-X-Google-Smtp-Source: ABdhPJw25ncs9k0AEknxek2E28DfrCDHuZPo05s3wKLawuoCrO9ETCuf/42fREidw6vw5JWxLvmu2Q==
-X-Received: by 2002:aca:3684:: with SMTP id d126mr3137121oia.129.1618927123047;
-        Tue, 20 Apr 2021 06:58:43 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 104sm660466oti.52.2021.04.20.06.58.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 06:58:42 -0700 (PDT)
-Received: (nullmailer pid 3235335 invoked by uid 1000);
-        Tue, 20 Apr 2021 13:58:41 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     robh+dt@kernel.org, tejas.patel@xilinx.com,
-        michal.simek@xilinx.com, rajan.vaja@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, amit.sunil.dhamne@xilinx.com,
-        dragan.cvetic@xilinx.com, derek.kiernan@xilinx.com,
-        jolly.shah@xilinx.com, git@xilinx.com, chinnikishore369@gmail.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20210420081153.17020-5-nava.manne@xilinx.com>
-References: <20210420081153.17020-1-nava.manne@xilinx.com> <20210420081153.17020-5-nava.manne@xilinx.com>
-Subject: Re: [PATCH 4/5] misc: doc: Add binding doc for the zynqmp afi config driver
-Date:   Tue, 20 Apr 2021 08:58:41 -0500
-Message-Id: <1618927121.480164.3235334.nullmailer@robh.at.kernel.org>
+        Tue, 20 Apr 2021 10:01:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618927241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iqK0WqphjMHPYvufL4Z+4mLDnbRLlFVDZfwTTB2AyQg=;
+        b=Xee0TBJTETNVpPLwCvY2t5wQlT/gom9t70UnPve1NAyC5eCRryTfGQJxPjbwp2gk3EysAZ
+        8daXrMbCE6lmPZMPPzbLWSj8yn1Dw25nbL1dE2JDs0jTxHBk8Uld2t9RsFb/jWSoUe9sSz
+        jnzAsla4JASAfouzrX2jkJqXquQkcv0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-qi6LV12yM76vX_EAV-AB3Q-1; Tue, 20 Apr 2021 10:00:39 -0400
+X-MC-Unique: qi6LV12yM76vX_EAV-AB3Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CC968030DB;
+        Tue, 20 Apr 2021 14:00:38 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-119-80.rdu2.redhat.com [10.10.119.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 366B55D6A1;
+        Tue, 20 Apr 2021 14:00:34 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C1E8D22054F; Tue, 20 Apr 2021 10:00:33 -0400 (EDT)
+Date:   Tue, 20 Apr 2021 10:00:33 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        jack@suse.cz, willy@infradead.org, linux-nvdimm@lists.01.org,
+        miklos@szeredi.hu, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: [Virtio-fs] [PATCH v3 2/3] dax: Add a wakeup mode parameter to
+ put_unlocked_entry()
+Message-ID: <20210420140033.GA1529659@redhat.com>
+References: <20210419213636.1514816-1-vgoyal@redhat.com>
+ <20210419213636.1514816-3-vgoyal@redhat.com>
+ <20210420093420.2eed3939@bahia.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420093420.2eed3939@bahia.lan>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 13:41:52 +0530, Nava kishore Manne wrote:
-> This patch adds the binding document for the zynqmp afi
-> config driver.
+On Tue, Apr 20, 2021 at 09:34:20AM +0200, Greg Kurz wrote:
+> On Mon, 19 Apr 2021 17:36:35 -0400
+> Vivek Goyal <vgoyal@redhat.com> wrote:
 > 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
->  .../bindings/misc/xlnx,zynqmp-afi-fpga.yaml   | 136 ++++++++++++++++++
->  1 file changed, 136 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml
+> > As of now put_unlocked_entry() always wakes up next waiter. In next
+> > patches we want to wake up all waiters at one callsite. Hence, add a
+> > parameter to the function.
+> > 
+> > This patch does not introduce any change of behavior.
+> > 
+> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  fs/dax.c | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/fs/dax.c b/fs/dax.c
+> > index 00978d0838b1..f19d76a6a493 100644
+> > --- a/fs/dax.c
+> > +++ b/fs/dax.c
+> > @@ -275,11 +275,12 @@ static void wait_entry_unlocked(struct xa_state *xas, void *entry)
+> >  	finish_wait(wq, &ewait.wait);
+> >  }
+> >  
+> > -static void put_unlocked_entry(struct xa_state *xas, void *entry)
+> > +static void put_unlocked_entry(struct xa_state *xas, void *entry,
+> > +			       enum dax_entry_wake_mode mode)
+> >  {
+> >  	/* If we were the only waiter woken, wake the next one */
 > 
+> With this change, the comment is no longer accurate since the
+> function can now wake all waiters if passed mode == WAKE_ALL.
+> Also, it paraphrases the code which is simple enough, so I'd
+> simply drop it.
+> 
+> This is minor though and it shouldn't prevent this fix to go
+> forward.
+> 
+> Reviewed-by: Greg Kurz <groug@kaod.org>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Ok, here is the updated patch which drops that comment line.
 
-yamllint warnings/errors:
+Vivek
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.example.dt.yaml:0:0: /example-0/firmware/zynqmp-firmware: failed to match any schema with compatible: ['xlnx,zynqmp-firmware']
-Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.example.dt.yaml:0:0: /example-0/firmware/zynqmp-firmware/afi: failed to match any schema with compatible: ['xlnx,afi-fpga']
+Subject: dax: Add a wakeup mode parameter to put_unlocked_entry()
 
-See https://patchwork.ozlabs.org/patch/1468230
+As of now put_unlocked_entry() always wakes up next waiter. In next
+patches we want to wake up all waiters at one callsite. Hence, add a
+parameter to the function.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+This patch does not introduce any change of behavior.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ fs/dax.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+Index: redhat-linux/fs/dax.c
+===================================================================
+--- redhat-linux.orig/fs/dax.c	2021-04-20 09:55:45.105069893 -0400
++++ redhat-linux/fs/dax.c	2021-04-20 09:56:27.685822730 -0400
+@@ -275,11 +275,11 @@ static void wait_entry_unlocked(struct x
+ 	finish_wait(wq, &ewait.wait);
+ }
+ 
+-static void put_unlocked_entry(struct xa_state *xas, void *entry)
++static void put_unlocked_entry(struct xa_state *xas, void *entry,
++			       enum dax_entry_wake_mode mode)
+ {
+-	/* If we were the only waiter woken, wake the next one */
+ 	if (entry && !dax_is_conflict(entry))
+-		dax_wake_entry(xas, entry, WAKE_NEXT);
++		dax_wake_entry(xas, entry, mode);
+ }
+ 
+ /*
+@@ -633,7 +633,7 @@ struct page *dax_layout_busy_page_range(
+ 			entry = get_unlocked_entry(&xas, 0);
+ 		if (entry)
+ 			page = dax_busy_page(entry);
+-		put_unlocked_entry(&xas, entry);
++		put_unlocked_entry(&xas, entry, WAKE_NEXT);
+ 		if (page)
+ 			break;
+ 		if (++scanned % XA_CHECK_SCHED)
+@@ -675,7 +675,7 @@ static int __dax_invalidate_entry(struct
+ 	mapping->nrexceptional--;
+ 	ret = 1;
+ out:
+-	put_unlocked_entry(&xas, entry);
++	put_unlocked_entry(&xas, entry, WAKE_NEXT);
+ 	xas_unlock_irq(&xas);
+ 	return ret;
+ }
+@@ -954,7 +954,7 @@ static int dax_writeback_one(struct xa_s
+ 	return ret;
+ 
+  put_unlocked:
+-	put_unlocked_entry(xas, entry);
++	put_unlocked_entry(xas, entry, WAKE_NEXT);
+ 	return ret;
+ }
+ 
+@@ -1695,7 +1695,7 @@ dax_insert_pfn_mkwrite(struct vm_fault *
+ 	/* Did we race with someone splitting entry or so? */
+ 	if (!entry || dax_is_conflict(entry) ||
+ 	    (order == 0 && !dax_is_pte_entry(entry))) {
+-		put_unlocked_entry(&xas, entry);
++		put_unlocked_entry(&xas, entry, WAKE_NEXT);
+ 		xas_unlock_irq(&xas);
+ 		trace_dax_insert_pfn_mkwrite_no_entry(mapping->host, vmf,
+ 						      VM_FAULT_NOPAGE);
 
