@@ -2,334 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ACE3656E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638B13656E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhDTKwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhDTKww (ORCPT
+        id S231715AbhDTKxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:53:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45236 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231483AbhDTKxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:52:52 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB05C06174A;
-        Tue, 20 Apr 2021 03:52:19 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso24769647oto.3;
-        Tue, 20 Apr 2021 03:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ar1NLP1PJ/JjP7pqq8Gu408Ftb6GKKkJF8IQieN/XQ0=;
-        b=eVdwF/+HgUoSK24gJnYJbT5+1XBFzzITbvdlC4ShKsCmqdWQj8tNAkxlkDZKVFtb/O
-         Y7t2XfCpyo0Y/wQnSBN6q81zQPCI1/mfVxChL+C2QvEaBdD/hgBMSeVsvP0a1YoOqD2z
-         XXAPF7whMeEYjNCBAWYPSGo/AOmUlkOMJw+azawjWm2XCmL+h6WUKte7LYz1cPLcrMIL
-         DYkJBdX4pgye/rbgn+R13DAIzUsLp6DoqUcHlscJYAgJsi0AwUAngUfsoigzrJOCGTPt
-         sGfgu4lc8QUx2UZ4DupplhhEY7RoglW5lqXyLMWjnZNTj2oGtKuKdqpwSIdQr3HkADM5
-         tXTA==
+        Tue, 20 Apr 2021 06:53:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618915981;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S27AwgKlv+iaMTT9DUQIVOBnDUO++jFCerhn1E2ub9I=;
+        b=W8/SYmorXwzQ7no5e6QVNd7vt/RJu8sXCa+e/XEEIElz0UJE2fmBgo4j1SwJGne3O3K0pR
+        q+ZMAYYkpt7swplpbW7OYWFv6gByNcUbdPofHfo9xWy9DhzV8Fa70zieoAPVRXQxH8Kfcz
+        8ITUcgKHcdRrkQ7B6xbQH2zUd7KVzRo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-JA63_alFNj6kDsDJYOFi8Q-1; Tue, 20 Apr 2021 06:53:00 -0400
+X-MC-Unique: JA63_alFNj6kDsDJYOFi8Q-1
+Received: by mail-ed1-f70.google.com with SMTP id f9-20020a50fe090000b02903839889635cso10920910edt.14
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 03:52:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ar1NLP1PJ/JjP7pqq8Gu408Ftb6GKKkJF8IQieN/XQ0=;
-        b=Qu2O/zUTsAGhi5TGREnUunmDK343VD+9cN3LvYsd7houFkzSgeVF7waBmlPYxoZW07
-         O7f8TmtDwhwjhJ4LsRD3KGHNqKqh8Q9FCrVjyxy7Dbb2ClMD0+o9mn+aKoDxjXLt+kfQ
-         eiv2jF7igsObg9wDRRNE8ISJyIX3eTwyjb0lMPc2Vux1LZYuPQOQfLMxn4sJh8LNLI3O
-         rtZ8NTD4zg5tuNzn6H45ir2/4FiB+4ySygr/7zf0mQkJWaD1nQuSQ4qOgTQ9UHbOlpco
-         k/Ihmr5jXKgxz6hzlFHpC9fGJmS2ZHB60XGkHon1crIpOwdPAJAI+sh1aXTuv7z6hQq3
-         MEbg==
-X-Gm-Message-State: AOAM533xFc6nMXrBLJ5uPm7irXQd1dU/vjkan3jJ56v2LMMynpVwh48c
-        K13aEqb0yCzfF0yo+CIbdQQ=
-X-Google-Smtp-Source: ABdhPJz3XejbPUl+cy6OhXPqaz6SJ8sIqtfbHmIcZ9FAXPtMPCnDwSjp0FIXny3ibV/tpKUp7Gjc4g==
-X-Received: by 2002:a05:6830:1d98:: with SMTP id y24mr9647565oti.164.1618915939038;
-        Tue, 20 Apr 2021 03:52:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i9sm2202197oog.17.2021.04.20.03.52.17
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S27AwgKlv+iaMTT9DUQIVOBnDUO++jFCerhn1E2ub9I=;
+        b=clzcURAK8uQ4hJKPJgpLDznN14gRqC2dPe+Gjh7vWZrk6LtrvH3Dvu3IGVKI19yLVD
+         5U5y/7kkWiTG6KdXJd2KTvZ+aXVokwl53oIxxN+lIMNHfmnoH7t9v/oko8EcWouQvqL1
+         okLVKKsd7M+pVsW02w3gP6fwVuUYw32WDvM0X9wJdZjKrGjO0fio/q/C75u7gh/cBAkR
+         3InakErMPCxI70QTbBc5TavKfbzGD9qu4CG+WF8qhU21PuANa8sG3/OB9oTg4Ux7UMJm
+         90i7djFX41fzKhbhCDwbkXQ3yPBYKV/BWxizIPzzSe2zzz+3PKJ+1oUU9Hr4ytQI9sE/
+         enaw==
+X-Gm-Message-State: AOAM533VB9KpeaNOaBT8WZzP+Jnx0icrrRCSkk50SdVnADFd3YKPw4rs
+        iAB25WLSaQsiHrQSN0VmJeXopfrInUc+ER5bxYovMxjZ19nvmc8bAwqhIbesSmgGA6dewj5s/cw
+        cw9W6ZtyqbYA2h/igLY1gXa6w
+X-Received: by 2002:a17:907:7051:: with SMTP id ws17mr27034387ejb.498.1618915978982;
+        Tue, 20 Apr 2021 03:52:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnAg4Y/B7vNqk/lIdyUrklowjyBOdLGuy6H/Q+NJlu7PWdgLsntyBDOwwNTeJbdATZVY+h5A==
+X-Received: by 2002:a17:907:7051:: with SMTP id ws17mr27034361ejb.498.1618915978718;
+        Tue, 20 Apr 2021 03:52:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id g11sm15883017edt.35.2021.04.20.03.52.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 03:52:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Enabling pmbus power control
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-References: <20210330112254.GB4976@sirena.org.uk>
- <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
- <20210330174221.GJ4976@sirena.org.uk>
- <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
- <20210330180200.GK4976@sirena.org.uk> <20210330193810.GA235990@roeck-us.net>
- <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
- <20210420033648.GA227111@roeck-us.net>
- <YH5rky8nA4nKAVdg@hatter.bewilderbeest.net>
- <9639fa33-01ca-9802-e745-5e3edb81e305@roeck-us.net>
- <YH59WOg0iKbz1d0l@hatter.bewilderbeest.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <fe111c8a-9588-dbfb-624a-29bb3a5efe13@roeck-us.net>
-Date:   Tue, 20 Apr 2021 03:52:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Apr 2021 03:52:58 -0700 (PDT)
+Subject: Re: [PATCH v13 12/12] x86/kvm: Add guest support for detecting and
+ enabling SEV Live Migration feature.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com,
+        kexec@lists.infradead.org
+References: <cover.1618498113.git.ashish.kalra@amd.com>
+ <ffd67dbc1ae6d3505d844e65928a7248ebaebdcc.1618498113.git.ashish.kalra@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a5694bf9-a02c-9169-dbaa-fecd8587d52a@redhat.com>
+Date:   Tue, 20 Apr 2021 12:52:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YH59WOg0iKbz1d0l@hatter.bewilderbeest.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <ffd67dbc1ae6d3505d844e65928a7248ebaebdcc.1618498113.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/21 12:06 AM, Zev Weiss wrote:
-> On Tue, Apr 20, 2021 at 01:00:25AM CDT, Guenter Roeck wrote:
->> On 4/19/21 10:50 PM, Zev Weiss wrote:
->> [ ... ]
->>
->>> I had a glance at the enclosure driver; it looks pretty geared toward SES-like things (drivers/scsi/ses.c being its only usage I can see in the kernel at the moment) and while it could perhaps be pressed into working for this it seems like it would probably drag in a fair amount of boilerplate and result in a somewhat gratuitously confusing driver arrangement (calling the things involved in the cases we're looking at "enclosures" seems like a bit of a stretch).
->>>
->>> As an alternative, would something like the patch below be more along the lines of what you're suggesting?  And if so, would it make sense to generalize it into something like 'pmbus-switch.c' and add a PMBUS_HAVE_POWERSWITCH functionality bit or similar in the pmbus code instead of hardcoding it for only LM25066 support?
->>>
->>>
->>
->> No. Don't access pmbus functions from outside drivers/hwmon/pmbus.
->>
->> I used to be opposed to function export restrictions (aka export namespaces),
->> but you are making a good case that we need to introduce them for pmbus
->> functions.
->>
->> Guenter
+On 15/04/21 18:01, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
-> Okay -- I figured that was likely to be frowned upon, but the alternative seemed to be effectively duplicating non-trivial chunks of the pmbus code.  However, upon realizing that the LM25066 doesn't actually require any of the paging work the generic pmbus code provides, I suppose it can actually be done with a simple smbus read & write.  Does this version look better?
+> The guest support for detecting and enabling SEV Live migration
+> feature uses the following logic :
 > 
+>   - kvm_init_plaform() invokes check_kvm_sev_migration() which
+>     checks if its booted under the EFI
+> 
+>     - If not EFI,
+> 
+>       i) check for the KVM_FEATURE_CPUID
+> 
+>       ii) if CPUID reports that migration is supported, issue a wrmsrl()
+>           to enable the SEV live migration support
+> 
+>     - If EFI,
+> 
+>       i) check for the KVM_FEATURE_CPUID
+> 
+>       ii) If CPUID reports that migration is supported, read the UEFI variable which
+>           indicates OVMF support for live migration
+> 
+>       iii) the variable indicates live migration is supported, issue a wrmsrl() to
+>            enable the SEV live migration support
+> 
+> The EFI live migration check is done using a late_initcall() callback.
+> 
+> Also, ensure that _bss_decrypted section is marked as decrypted in the
+> shared pages list.
+> 
+> Also adds kexec support for SEV Live Migration.
+> 
+> Reset the host's shared pages list related to kernel
+> specific page encryption status settings before we load a
+> new kernel by kexec. We cannot reset the complete
+> shared pages list here as we need to retain the
+> UEFI/OVMF firmware specific settings.
+> 
+> The host's shared pages list is maintained for the
+> guest to keep track of all unencrypted guest memory regions,
+> therefore we need to explicitly mark all shared pages as
+> encrypted again before rebooting into the new guest kernel.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 
-It is just getting worse and worse. You are re-implementing regulator
-support for the lm25066. The correct solution would be to implement
-regulator support in the lm25066 and use it from the secondary driver
-(which should be chip independent).
+Boris, this one needs an ACK as well.
 
-Guenter
+Paolo
 
-> 
-> Zev
-> 
-> 
-> From 1662e1c59c498ad6b208e6ab450bd467d71def34 Mon Sep 17 00:00:00 2001
-> From: Zev Weiss <zev@bewilderbeest.net>
-> Date: Wed, 31 Mar 2021 01:58:35 -0500
-> Subject: [PATCH] misc: add lm25066-switch driver
-> 
-> This driver allows an lm25066 to be switched on and off from userspace
-> via sysfs.
-> 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 > ---
->  drivers/misc/Kconfig          |   7 ++
->  drivers/misc/Makefile         |   1 +
->  drivers/misc/lm25066-switch.c | 126 ++++++++++++++++++++++++++++++++++
->  3 files changed, 134 insertions(+)
->  create mode 100644 drivers/misc/lm25066-switch.c
+>   arch/x86/include/asm/mem_encrypt.h |  8 ++++
+>   arch/x86/kernel/kvm.c              | 55 +++++++++++++++++++++++++
+>   arch/x86/mm/mem_encrypt.c          | 64 ++++++++++++++++++++++++++++++
+>   3 files changed, 127 insertions(+)
 > 
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index f532c59bb59b..384b6022ec15 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -445,6 +445,13 @@ config HISI_HIKEY_USB
->        switching between the dual-role USB-C port and the USB-A host ports
->        using only one USB controller.
->  
-> +config LM25066_SWITCH
-> +    tristate "LM25066 power switch support"
-> +    depends on OF && SENSORS_LM25066
-> +    help
-> +      This driver augments LM25066 hwmon support with power switch
-> +      functionality controllable from userspace via sysfs.
-> +
->  source "drivers/misc/c2port/Kconfig"
->  source "drivers/misc/eeprom/Kconfig"
->  source "drivers/misc/cb710/Kconfig"
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index 99b6f15a3c70..c948510d0cc9 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -56,3 +56,4 @@ obj-$(CONFIG_HABANA_AI)        += habanalabs/
->  obj-$(CONFIG_UACCE)        += uacce/
->  obj-$(CONFIG_XILINX_SDFEC)    += xilinx_sdfec.o
->  obj-$(CONFIG_HISI_HIKEY_USB)    += hisi_hikey_usb.o
-> +obj-$(CONFIG_LM25066_SWITCH)    += lm25066-switch.o
-> diff --git a/drivers/misc/lm25066-switch.c b/drivers/misc/lm25066-switch.c
-> new file mode 100644
-> index 000000000000..9adc67c320f9
-> --- /dev/null
-> +++ b/drivers/misc/lm25066-switch.c
-> @@ -0,0 +1,126 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * This module provides a thin wrapper around the lm25066 hwmon driver that
-> + * additionally exposes a userspace-controllable on/off power switch via
-> + * sysfs.
-> + *
-> + * Author: Zev Weiss <zweiss@equinix.com>
-> + *
-> + * Copyright (C) 2021 Equinix Services, Inc.
-> + */
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/i2c.h>
-> +#include <linux/platform_device.h>
-> +
-> +/*
-> + * The relevant PMBus command and data values for controlling the LM25066
-> + * power state.  Because it's not a paged device we skip the usual paging
-> + * business other PMBus devices might require.
-> + */
-> +#define CMD_OPERATION 0x01
-> +#define OPERATION_ON 0x80
-> +#define OPERATION_OFF 0x00
-> +
-> +static ssize_t switch_show_state(struct device *dev, struct device_attribute *attr,
-> +                                 char *buf)
+> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+> index 31c4df123aa0..19b77f3a62dc 100644
+> --- a/arch/x86/include/asm/mem_encrypt.h
+> +++ b/arch/x86/include/asm/mem_encrypt.h
+> @@ -21,6 +21,7 @@
+>   extern u64 sme_me_mask;
+>   extern u64 sev_status;
+>   extern bool sev_enabled;
+> +extern bool sev_live_migration_enabled;
+>   
+>   void sme_encrypt_execute(unsigned long encrypted_kernel_vaddr,
+>   			 unsigned long decrypted_kernel_vaddr,
+> @@ -44,8 +45,11 @@ void __init sme_enable(struct boot_params *bp);
+>   
+>   int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long size);
+>   int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size);
+> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages,
+> +					    bool enc);
+>   
+>   void __init mem_encrypt_free_decrypted_mem(void);
+> +void __init check_kvm_sev_migration(void);
+>   
+>   /* Architecture __weak replacement functions */
+>   void __init mem_encrypt_init(void);
+> @@ -60,6 +64,7 @@ bool sev_es_active(void);
+>   #else	/* !CONFIG_AMD_MEM_ENCRYPT */
+>   
+>   #define sme_me_mask	0ULL
+> +#define sev_live_migration_enabled	false
+>   
+>   static inline void __init sme_early_encrypt(resource_size_t paddr,
+>   					    unsigned long size) { }
+> @@ -84,8 +89,11 @@ static inline int __init
+>   early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0; }
+>   static inline int __init
+>   early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { return 0; }
+> +static inline void __init
+> +early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool enc) {}
+>   
+>   static inline void mem_encrypt_free_decrypted_mem(void) { }
+> +static inline void check_kvm_sev_migration(void) { }
+>   
+>   #define __bss_decrypted
+>   
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index 78bb0fae3982..94ef16d263a7 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -26,6 +26,7 @@
+>   #include <linux/kprobes.h>
+>   #include <linux/nmi.h>
+>   #include <linux/swait.h>
+> +#include <linux/efi.h>
+>   #include <asm/timer.h>
+>   #include <asm/cpu.h>
+>   #include <asm/traps.h>
+> @@ -429,6 +430,59 @@ static inline void __set_percpu_decrypted(void *ptr, unsigned long size)
+>   	early_set_memory_decrypted((unsigned long) ptr, size);
+>   }
+>   
+> +static int __init setup_kvm_sev_migration(void)
 > +{
-> +    struct i2c_client *pmic = dev_get_drvdata(dev);
-> +    ssize_t ret = i2c_smbus_read_byte_data(pmic, CMD_OPERATION);
-> +    if (ret < 0)
-> +        return ret;
+> +	efi_char16_t efi_sev_live_migration_enabled[] = L"SevLiveMigrationEnabled";
+> +	efi_guid_t efi_variable_guid = MEM_ENCRYPT_GUID;
+> +	efi_status_t status;
+> +	unsigned long size;
+> +	bool enabled;
 > +
-> +    return sysfs_emit(buf, "%s\n", (ret & OPERATION_ON) ? "on" : "off");
+> +	/*
+> +	 * check_kvm_sev_migration() invoked via kvm_init_platform() before
+> +	 * this callback would have setup the indicator that live migration
+> +	 * feature is supported/enabled.
+> +	 */
+> +	if (!sev_live_migration_enabled)
+> +		return 0;
+> +
+> +	if (!efi_enabled(EFI_BOOT))
+> +		return 0;
+> +
+> +	if (!efi_enabled(EFI_RUNTIME_SERVICES)) {
+> +		pr_info("%s : EFI runtime services are not enabled\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	size = sizeof(enabled);
+> +
+> +	/* Get variable contents into buffer */
+> +	status = efi.get_variable(efi_sev_live_migration_enabled,
+> +				  &efi_variable_guid, NULL, &size, &enabled);
+> +
+> +	if (status == EFI_NOT_FOUND) {
+> +		pr_info("%s : EFI live migration variable not found\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	if (status != EFI_SUCCESS) {
+> +		pr_info("%s : EFI variable retrieval failed\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	if (enabled == 0) {
+> +		pr_info("%s: live migration disabled in EFI\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	pr_info("%s : live migration enabled in EFI\n", __func__);
+> +	wrmsrl(MSR_KVM_SEV_LIVE_MIGRATION, KVM_SEV_LIVE_MIGRATION_ENABLED);
+> +
+> +	return true;
 > +}
 > +
-> +static ssize_t switch_set_state(struct device *dev, struct device_attribute *attr,
-> +                                const char *buf, size_t count)
+> +late_initcall(setup_kvm_sev_migration);
+> +
+>   /*
+>    * Iterate through all possible CPUs and map the memory region pointed
+>    * by apf_reason, steal_time and kvm_apic_eoi as decrypted at once.
+> @@ -747,6 +801,7 @@ static bool __init kvm_msi_ext_dest_id(void)
+>   
+>   static void __init kvm_init_platform(void)
+>   {
+> +	check_kvm_sev_migration();
+>   	kvmclock_init();
+>   	x86_platform.apic_post_init = kvm_apic_init;
+>   }
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index fae9ccbd0da7..382d1d4f00f5 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -20,6 +20,7 @@
+>   #include <linux/bitops.h>
+>   #include <linux/dma-mapping.h>
+>   #include <linux/kvm_para.h>
+> +#include <linux/efi.h>
+>   
+>   #include <asm/tlbflush.h>
+>   #include <asm/fixmap.h>
+> @@ -31,6 +32,7 @@
+>   #include <asm/msr.h>
+>   #include <asm/cmdline.h>
+>   #include <asm/kvm_para.h>
+> +#include <asm/e820/api.h>
+>   
+>   #include "mm_internal.h"
+>   
+> @@ -48,6 +50,8 @@ EXPORT_SYMBOL_GPL(sev_enable_key);
+>   
+>   bool sev_enabled __section(".data");
+>   
+> +bool sev_live_migration_enabled __section(".data");
+> +
+>   /* Buffer used for early in-place encryption by BSP, no locking needed */
+>   static char sme_early_buffer[PAGE_SIZE] __initdata __aligned(PAGE_SIZE);
+>   
+> @@ -237,6 +241,9 @@ static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
+>   	unsigned long sz = npages << PAGE_SHIFT;
+>   	unsigned long vaddr_end, vaddr_next;
+>   
+> +	if (!sev_live_migration_enabled)
+> +		return;
+> +
+>   	vaddr_end = vaddr + sz;
+>   
+>   	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
+> @@ -407,6 +414,12 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
+>   	return early_set_memory_enc_dec(vaddr, size, true);
+>   }
+>   
+> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages,
+> +					bool enc)
 > +{
-> +    int status;
-> +    u8 value;
-> +    struct i2c_client *pmic = dev_get_drvdata(dev);
-> +    if (sysfs_streq(buf, "on"))
-> +        value = OPERATION_ON;
-> +    else if (sysfs_streq(buf, "off"))
-> +        value = OPERATION_OFF;
-> +    else
-> +        return -EINVAL;
-> +    status = i2c_smbus_write_byte_data(pmic, CMD_OPERATION, value);
-> +    return status ? : count;
+> +	set_memory_enc_dec_hypercall(vaddr, npages, enc);
 > +}
 > +
-> +static DEVICE_ATTR(state, 0644, switch_show_state, switch_set_state);
-> +
-> +static struct attribute *attributes[] = {
-> +    &dev_attr_state.attr,
-> +    NULL,
-> +};
-> +
-> +static const struct attribute_group attr_group = {
-> +    .attrs = attributes,
-> +};
-> +
-> +static int lm25066_switch_probe(struct platform_device *pdev)
+>   /*
+>    * SME and SEV are very similar but they are not the same, so there are
+>    * times that the kernel will need to distinguish between SME and SEV. The
+> @@ -462,6 +475,57 @@ bool force_dma_unencrypted(struct device *dev)
+>   	return false;
+>   }
+>   
+> +void __init check_kvm_sev_migration(void)
 > +{
-> +    int status;
-> +    struct device_node *np = pdev->dev.of_node;
-> +    struct device_node *pmic_np;
-> +    struct i2c_client *pmic;
+> +	if (sev_active() &&
+> +	    kvm_para_has_feature(KVM_FEATURE_SEV_LIVE_MIGRATION)) {
+> +		unsigned long nr_pages;
+> +		int i;
 > +
-> +    pmic_np = of_parse_phandle(np, "pmic", 0);
-> +    if (!pmic_np) {
-> +        dev_err(&pdev->dev, "Cannot parse lm25066-switch pmic\n");
-> +        return -ENODEV;
-> +    }
+> +		pr_info("KVM enable live migration\n");
+> +		WRITE_ONCE(sev_live_migration_enabled, true);
 > +
-> +    if (!of_device_is_compatible(pmic_np, "lm25066")) {
-> +        dev_err(&pdev->dev, "lm25066-switch pmic not lm25066 compatible");
-> +        status = -ENODEV;
-> +        goto out;
-> +    }
+> +		/*
+> +		 * Reset the host's shared pages list related to kernel
+> +		 * specific page encryption status settings before we load a
+> +		 * new kernel by kexec. Reset the page encryption status
+> +		 * during early boot intead of just before kexec to avoid SMP
+> +		 * races during kvm_pv_guest_cpu_reboot().
+> +		 * NOTE: We cannot reset the complete shared pages list
+> +		 * here as we need to retain the UEFI/OVMF firmware
+> +		 * specific settings.
+> +		 */
 > +
-> +    pmic = of_find_i2c_device_by_node(pmic_np);
-> +    if (!pmic) {
-> +        status = -EPROBE_DEFER;
-> +        goto out;
-> +    }
+> +		for (i = 0; i < e820_table->nr_entries; i++) {
+> +			struct e820_entry *entry = &e820_table->entries[i];
 > +
-> +    platform_set_drvdata(pdev, pmic);
+> +			if (entry->type != E820_TYPE_RAM)
+> +				continue;
 > +
-> +    status = sysfs_create_group(&pdev->dev.kobj, &attr_group);
+> +			nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
 > +
-> +out:
-> +    of_node_put(pmic_np);
-> +    return status;
+> +			kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS, entry->addr,
+> +					   nr_pages, 1);
+> +		}
+> +
+> +		/*
+> +		 * Ensure that _bss_decrypted section is marked as decrypted in the
+> +		 * shared pages list.
+> +		 */
+> +		nr_pages = DIV_ROUND_UP(__end_bss_decrypted - __start_bss_decrypted,
+> +					PAGE_SIZE);
+> +		early_set_mem_enc_dec_hypercall((unsigned long)__start_bss_decrypted,
+> +						nr_pages, 0);
+> +
+> +		/*
+> +		 * If not booted using EFI, enable Live migration support.
+> +		 */
+> +		if (!efi_enabled(EFI_BOOT))
+> +			wrmsrl(MSR_KVM_SEV_LIVE_MIGRATION,
+> +			       KVM_SEV_LIVE_MIGRATION_ENABLED);
+> +	}
 > +}
 > +
-> +static int lm25066_switch_remove(struct platform_device *pdev)
-> +{
-> +    struct i2c_client *pmic = platform_get_drvdata(pdev);
-> +
-> +    sysfs_remove_group(&pdev->dev.kobj, &attr_group);
-> +    put_device(&pmic->dev);
-> +
-> +    return 0;
-> +}
-> +
-> +static const struct of_device_id lm25066_switch_table[] = {
-> +    { .compatible = "lm25066-switch" },
-> +    { },
-> +};
-> +
-> +static struct platform_driver lm25066_switch_driver = {
-> +    .driver = {
-> +        .name = "lm25066-switch",
-> +        .of_match_table = lm25066_switch_table,
-> +    },
-> +    .probe = lm25066_switch_probe,
-> +    .remove = lm25066_switch_remove,
-> +};
-> +
-> +module_platform_driver(lm25066_switch_driver);
-> +
-> +MODULE_AUTHOR("Zev Weiss <zweiss@equinix.com>");
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("LM25066 power-switch driver");
+>   void __init mem_encrypt_free_decrypted_mem(void)
+>   {
+>   	unsigned long vaddr, vaddr_end, npages;
+> 
 
