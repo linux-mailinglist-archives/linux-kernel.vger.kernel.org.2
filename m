@@ -2,111 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEB4365615
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522F5365618
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhDTKXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:23:04 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:33774 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbhDTKXC (ORCPT
+        id S231573AbhDTKYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:24:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46177 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231473AbhDTKYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:23:02 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13KAK9h8058776;
-        Tue, 20 Apr 2021 10:22:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=bPuzElpjiOo1zRjSEnYwkdbLNwWPB/1sGrCY1L0+/nk=;
- b=SK2yp54Mm5hj2vNEO49W79IuvChvxXimdFLZNUAZotP5gRPO/oBaVGdbMQo+1bcmhin6
- 1xp0K8AH2//Q0Kmcxl90woLQ34FEqIwCfMx1loyveBMLcOjGiZYZVeUbB0J8mB7EJAgx
- 42To4eMxdLW9hQFwMO68k32g88pZNaFYM0bgTaocjT8krFc4/R6jb40ojrqEnuRggZ+s
- CSTOdkQRsakWK8qHU8oqzf2aTZkLhUL88Yu+NuRThnQ/+HzviHk2TpsMjwMmqKYUBFmp
- jq9gK9nnrbcqOW7lwqBGSqPj5IDakFgpzNmoL69op9HyV+0NZWO3kpnKZgQzJjmcvWUJ lA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 37yveaea4h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 10:22:24 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13KAKmrr022570;
-        Tue, 20 Apr 2021 10:22:23 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3809kxskwy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 10:22:23 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13KAMN7r027505;
-        Tue, 20 Apr 2021 10:22:23 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 3809kxskwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 10:22:23 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13KAMLKX021192;
-        Tue, 20 Apr 2021 10:22:21 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Apr 2021 03:22:21 -0700
-Date:   Tue, 20 Apr 2021 13:22:14 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210420102214.GA1981@kadam>
-References: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+        Tue, 20 Apr 2021 06:24:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618914229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b7a+2NIHct7ey/wtfhecbqVWOV2x5OoBwHuqA9oFCX0=;
+        b=XIGscTCSkpkE7hak/7hH7wpclhsG7GZ5QgfQgUG3bqg10mxdbWmh+08PTrv9AMFz+M0phZ
+        fpSrmPXbPg/QQJ47xcJYaBJ0zsLKeyUcNxYRuBpnQhZRoUan3vR5rNYSf6USgcMbrJGw/Q
+        q0pgUSyT819zAY3wW0DidD5wRZVOWFQ=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-cXFioYEyN02HXgocc0E-Cg-1; Tue, 20 Apr 2021 06:23:47 -0400
+X-MC-Unique: cXFioYEyN02HXgocc0E-Cg-1
+Received: by mail-ed1-f69.google.com with SMTP id i18-20020aa7c7120000b02903853032ef71so3924584edq.22
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 03:23:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b7a+2NIHct7ey/wtfhecbqVWOV2x5OoBwHuqA9oFCX0=;
+        b=GjLgzOlxHpsbbwYFap2Mi2OVESuMk53IaCuTrWFg2t5FXI148VkFJp9Z1onHOLpKKG
+         Vkcmp3Z4oj3ABCkrQ2cLtDC6knJDteJDYn18i6j3GXJ85yCoSgi76spwyLkppLAy6yFo
+         iq7f7LvWXzL7PO+mQSkh/Vn8ZhUbaM0Fy2DG1eQbzwurViWLOv7sN2j8JeS2k4h+HC1o
+         o/6n6+Iu/gw4UYxfafYjqP6i3pJ4A7DjQ0IoDHb+hhMgBqpa67goy16fqldasFpfg+6a
+         JUsU3d/QEgdcuQpa++7xdW1K/eiGFeG6CKZdk35VN5B8u2Sq+BBhqeYB09VnE12clNkP
+         mL2g==
+X-Gm-Message-State: AOAM532c4YMpzDHR/tQaPV2cbDdMC7oKOEs3X73Ju3WUatIZskjLr7BR
+        Z3ogI0CI8z1LJDbdYCXbpN7i9YWwI1XRXlYXESlUYqPidTb+hVI7vb8HYDAaMywTxD9CS+iYx+j
+        kK8Mits3wOkJ6UrRT6RZcnS5q
+X-Received: by 2002:a17:907:2151:: with SMTP id rk17mr26644958ejb.203.1618914226686;
+        Tue, 20 Apr 2021 03:23:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzodp7RMnFhaEX9D/NoF30lFskpxX7NtEUD3yP5k2w2nOq60l9HMWrqSyGFWJM4H4SbP3QJkA==
+X-Received: by 2002:a17:907:2151:: with SMTP id rk17mr26644944ejb.203.1618914226491;
+        Tue, 20 Apr 2021 03:23:46 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f20sm9015003ejw.36.2021.04.20.03.23.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 03:23:45 -0700 (PDT)
+Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
+ delivering interrupt
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
+ <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
+ <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
+ <YH2wnl05UBqVhcHr@google.com>
+ <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
+ <CANRm+CwQ266j6wTxqFZtGhp_HfQZ7Y_e843hzROqNUxf9BcaFA@mail.gmail.com>
+ <CANRm+CyHX-_vQLck1a9wpCv8a-YnnemEWm+zVv4eWYby5gdAeg@mail.gmail.com>
+ <b2fca9a5-9b2b-b8f2-0d1e-fc8b9d9b5659@redhat.com>
+ <CANRm+Czysw6z1u+fbsRF3JUyiJc0jErVATusar_Vj8CcSBy5LQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e1d07b55-1539-ed33-911c-713403d776b3@redhat.com>
+Date:   Tue, 20 Apr 2021 12:23:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417153616.25056-1-khaledromdhani216@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: apFXcdx82eJ5clMeWqsNsBlKtdoJAoHu
-X-Proofpoint-ORIG-GUID: apFXcdx82eJ5clMeWqsNsBlKtdoJAoHu
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- adultscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104200079
+In-Reply-To: <CANRm+Czysw6z1u+fbsRF3JUyiJc0jErVATusar_Vj8CcSBy5LQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 04:36:16PM +0100, Khaled ROMDHANI wrote:
-> As reported by the Coverity static analysis.
-> The variable zone is not initialized which
-> may causes a failed assertion.
+On 20/04/21 10:48, Wanpeng Li wrote:
+>> I was thinking of something simpler:
+>>
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 9b8e30dd5b9b..455c648f9adc 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -3198,10 +3198,9 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+>>    {
+>>          struct kvm *kvm = me->kvm;
+>>          struct kvm_vcpu *vcpu;
+>> -       int last_boosted_vcpu = me->kvm->last_boosted_vcpu;
+>>          int yielded = 0;
+>>          int try = 3;
+>> -       int pass;
+>> +       int pass, num_passes = 1;
+>>          int i;
+>>
+>>          kvm_vcpu_set_in_spin_loop(me, true);
+>> @@ -3212,13 +3211,14 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+>>           * VCPU is holding the lock that we need and will release it.
+>>           * We approximate round-robin by starting at the last boosted VCPU.
+>>           */
+>> -       for (pass = 0; pass < 2 && !yielded && try; pass++) {
+>> -               kvm_for_each_vcpu(i, vcpu, kvm) {
+>> -                       if (!pass && i <= last_boosted_vcpu) {
+>> -                               i = last_boosted_vcpu;
+>> -                               continue;
+>> -                       } else if (pass && i > last_boosted_vcpu)
+>> -                               break;
+>> +       for (pass = 0; pass < num_passes; pass++) {
+>> +               int idx = me->kvm->last_boosted_vcpu;
+>> +               int n = atomic_read(&kvm->online_vcpus);
+>> +               for (i = 0; i < n; i++, idx++) {
+>> +                       if (idx == n)
+>> +                               idx = 0;
+>> +
+>> +                       vcpu = kvm_get_vcpu(kvm, idx);
+>>                          if (!READ_ONCE(vcpu->ready))
+>>                                  continue;
+>>                          if (vcpu == me)
+>> @@ -3226,23 +3226,36 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+>>                          if (rcuwait_active(&vcpu->wait) &&
+>>                              !vcpu_dy_runnable(vcpu))
+>>                                  continue;
+>> -                       if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
+>> -                               !kvm_arch_vcpu_in_kernel(vcpu))
+>> -                               continue;
+>>                          if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
+>>                                  continue;
+>>
+>> +                       if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
+>> +                           !kvm_arch_vcpu_in_kernel(vcpu)) {
+>> +                           /*
+>> +                            * A vCPU running in userspace can get to kernel mode via
+>> +                            * an interrupt.  That's a worse choice than a CPU already
+>> +                            * in kernel mode so only do it on a second pass.
+>> +                            */
+>> +                           if (!vcpu_dy_runnable(vcpu))
+>> +                                   continue;
+>> +                           if (pass == 0) {
+>> +                                   num_passes = 2;
+>> +                                   continue;
+>> +                           }
+>> +                       }
+>> +
+>>                          yielded = kvm_vcpu_yield_to(vcpu);
+>>                          if (yielded > 0) {
+>>                                  kvm->last_boosted_vcpu = i;
+>> -                               break;
+>> +                               goto done;
+>>                          } else if (yielded < 0) {
+>>                                  try--;
+>>                                  if (!try)
+>> -                                       break;
+>> +                                       goto done;
+>>                          }
+>>                  }
+>>          }
+>> +done:
 > 
-> Addresses-Coverity: ("Uninitialized variables")
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> ---
-> v2: add a default case as proposed by David Sterba
-> ---
->  fs/btrfs/zoned.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index eeb3ebe11d7a..82527308d165 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
->  	case 0: zone = 0; break;
->  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
->  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+> We just tested the above post against 96 vCPUs VM in an over-subscribe
+> scenario, the score of pbzip2 fluctuated drastically. Sometimes it is
+> worse than vanilla, but the average improvement is around 2.2%. The
+> new version of my post is around 9.3%，the origial posted patch is
+> around 10% which is totally as expected since now both IPI receivers
+> in user-mode and lock-waiters are second class citizens.
 
-It took me a while to spot these break statements.
+Fair enough.  Of the two patches you posted I prefer the original, so 
+I'll go with that one.
 
-> +	default:
-> +		zone = 0;
-> +	break;
+Paolo
 
-This break needs to be indented one more tab.
-
->  	}
->  
->  	ASSERT(zone <= U32_MAX);
-
-regards,
-dan carpenter
