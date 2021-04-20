@@ -2,150 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E75365348
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541DC36534D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhDTHc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhDTHcx (ORCPT
+        id S229722AbhDTHdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 03:33:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16142 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhDTHdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:32:53 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F69C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:32:21 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id h20so19205484plr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 00:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9fA6adm8+bFasH/0H8b/umtS1mE0mVwigWJ/SjgUEnk=;
-        b=QsN5+k/3XRGHarhUmBodvtkQcPjcAM3RvOXJaHa3LoWQjRajWmPvtioJ0d1Vr0/0sf
-         Fq0lGwbVOZErTPi7Fd5S91lwAt7eJTCXVJEGXRdK2FnyXVsxdOZlY8Q/6Kc+Kk3E+4/M
-         nVNWSkvI7bbhxDXJ1gD3FohELLdblpK+emf4PfuI6qAaPE7+pBwJWhMm7is7AwZqMU2C
-         5KuLem91XB8+hJKVjlYb5h89ubwMWVRC43Jji5+c7UOEdcDhdqnOLURiwlUzSvUU4ice
-         uZmMeU6/nhXosEk7wQFcJKpa07DzvnJaX2fXhj4lH3pTWK6fBOy4GPFaDVlov5zU0sDv
-         m96A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9fA6adm8+bFasH/0H8b/umtS1mE0mVwigWJ/SjgUEnk=;
-        b=l/b0uOdacUCwvoLeMMdYetYuThpa+aE9mWzgxwurvxu8SlR8nDrEaFZnlhK/T6ut3n
-         H3TtfBg+m1vOsUDpoG092zOczPmVheeXKoN4GUvpDB+n8nIfm81oyXkLFp9ymvj1JSew
-         +joG9mwtJDfUJ3x29gKIfNdtxeoz92UkVoWtpyVlJDFY5KUuLo4o9Q6BkYklsGXJu2dO
-         dGMKvrWnPc+Qkc/7lksiJ/lQc0EgHU1ULiHvvDQwtxVjrJu8wOX6j6lWXlDsO0yZepmX
-         CKfo8XxcvfWJwWHWp7RWodDR7gyoW9vyaeH3KCPGz6eB9YD5Nr14q5jTHhLGPYmiEr78
-         tXnQ==
-X-Gm-Message-State: AOAM5310gWpvRx0VUdf1JkZkrv3wgh14qbrKp7uP0hbvEtD5k5nTS0x8
-        9HQ/mEV6EJqFF/WMTwRJzYUkhA==
-X-Google-Smtp-Source: ABdhPJyVvk+DZ9rmbhNEI1bXJ+gc6lLQ6muGpcxMZ8MIGyGPC+swQFMuDQ0lxpwA73jaRxw2etbDTw==
-X-Received: by 2002:a17:902:8d83:b029:e6:508a:7b8d with SMTP id v3-20020a1709028d83b02900e6508a7b8dmr28092149plo.18.1618903941522;
-        Tue, 20 Apr 2021 00:32:21 -0700 (PDT)
-Received: from x1 ([2601:1c0:4701:ae70:7c30:3145:6ef:b173])
-        by smtp.gmail.com with ESMTPSA id oa9sm1468435pjb.44.2021.04.20.00.32.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 00:32:20 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 00:32:18 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] pinctrl: core: Show pin numbers for the
- controllers with base = 0
-Message-ID: <20210420073218.GA2538877@x1>
-References: <20210415130356.15885-1-andriy.shevchenko@linux.intel.com>
+        Tue, 20 Apr 2021 03:33:09 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FPb0y06cXzpZP2;
+        Tue, 20 Apr 2021 15:29:38 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 20 Apr 2021 15:32:26 +0800
+Subject: Re: [PATCH v3 02/12] iommu: Add iommu_split_block interface
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210413085457.25400-1-zhukeqian1@huawei.com>
+ <20210413085457.25400-3-zhukeqian1@huawei.com>
+ <fb350f27-be8b-80bf-1ce8-e7e8aba26f02@linux.intel.com>
+ <491da550-dc54-42e6-ac91-13d411575fad@huawei.com>
+ <bc2da48b-f4f7-5a46-2696-2c412a83d190@linux.intel.com>
+ <ac966fbc-7bc6-9d88-e53e-bcd92d536fdb@huawei.com>
+ <3c34baf1-6a57-5666-38a2-0c9d6188b8b8@linux.intel.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <a09830f8-b08f-9b80-8f75-17f13088ff6d@huawei.com>
+Date:   Tue, 20 Apr 2021 15:32:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415130356.15885-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <3c34baf1-6a57-5666-38a2-0c9d6188b8b8@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 04:03:56PM +0300, Andy Shevchenko wrote:
-> The commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-> enabled GPIO pin number and label in debugfs for pin controller. However,
-> it limited that feature to the chips where base is positive number. This,
-> in particular, excluded chips where base is 0 for the historical or backward
-> compatibility reasons. Refactor the code to include the latter as well.
+Hi Baolu,
+
+Cheers for the your quick reply.
+
+On 2021/4/20 10:09, Lu Baolu wrote:
+> Hi Keqian,
 > 
-> Fixes: f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-> Cc: Drew Fustini <drew@beagleboard.org>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pinctrl/core.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
+> On 4/20/21 9:25 AM, Keqian Zhu wrote:
+>> Hi Baolu,
+>>
+>> On 2021/4/19 21:33, Lu Baolu wrote:
+>>> Hi Keqian,
+>>>
+>>> On 2021/4/19 17:32, Keqian Zhu wrote:
+>>>>>> +EXPORT_SYMBOL_GPL(iommu_split_block);
+>>>>> Do you really have any consumers of this interface other than the dirty
+>>>>> bit tracking? If not, I don't suggest to make this as a generic IOMMU
+>>>>> interface.
+>>>>>
+>>>>> There is an implicit requirement for such interfaces. The
+>>>>> iommu_map/unmap(iova, size) shouldn't be called at the same time.
+>>>>> Currently there's no such sanity check in the iommu core. A poorly
+>>>>> written driver could mess up the kernel by misusing this interface.
+>>>> Yes, I don't think up a scenario except dirty tracking.
+>>>>
+>>>> Indeed, we'd better not make them as a generic interface.
+>>>>
+>>>> Do you have any suggestion that underlying iommu drivers can share these code but
+>>>> not make it as a generic iommu interface?
+>>>>
+>>>> I have a not so good idea. Make the "split" interfaces as a static function, and
+>>>> transfer the function pointer to start_dirty_log. But it looks weird and inflexible.
+>>>
+>>> I understand splitting/merging super pages is an optimization, but not a
+>>> functional requirement. So is it possible to let the vendor iommu driver
+>>> decide whether splitting super pages when starting dirty bit tracking
+>>> and the opposite operation during when stopping it? The requirement for
+>> Right. If I understand you correct, actually that is what this series does.
 > 
-> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> index df7f5f049139..8ef24af88b75 100644
-> --- a/drivers/pinctrl/core.c
-> +++ b/drivers/pinctrl/core.c
-> @@ -1604,8 +1604,8 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
->  	unsigned i, pin;
->  #ifdef CONFIG_GPIOLIB
->  	struct pinctrl_gpio_range *range;
-> -	unsigned int gpio_num;
->  	struct gpio_chip *chip;
-> +	int gpio_num;
->  #endif
->  
->  	seq_printf(s, "registered pins: %d\n", pctldev->desc->npins);
-> @@ -1625,7 +1625,7 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
->  		seq_printf(s, "pin %d (%s) ", pin, desc->name);
->  
->  #ifdef CONFIG_GPIOLIB
-> -		gpio_num = 0;
-> +		gpio_num = -1;
->  		list_for_each_entry(range, &pctldev->gpio_ranges, node) {
->  			if ((pin >= range->pin_base) &&
->  			    (pin < (range->pin_base + range->npins))) {
-> @@ -1633,10 +1633,12 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
->  				break;
->  			}
->  		}
-> -		chip = gpio_to_chip(gpio_num);
-> -		if (chip && chip->gpiodev && chip->gpiodev->base)
-> -			seq_printf(s, "%u:%s ", gpio_num -
-> -				chip->gpiodev->base, chip->label);
-> +		if (gpio_num >= 0)
-> +			chip = gpio_to_chip(gpio_num);
-> +		else
-> +			chip = NULL;
-> +		if (chip)
-> +			seq_printf(s, "%u:%s ", gpio_num - chip->gpiodev->base, chip->label);
->  		else
->  			seq_puts(s, "0:? ");
->  #endif
-> -- 
-> 2.30.2
+> I mean to say no generic APIs, jut do it by the iommu subsystem itself.
+> It's totally transparent to the upper level, just like what map() does.
+> The upper layer doesn't care about either super page or small page is
+> in use when do a mapping, right?
+> 
+> If you want to consolidate some code, how about putting them in
+> start/stop_tracking()?
 
-Thank you, this makes sense to me. I had failed to consider what would
-happen when chip->gpiodev->base == 0. I have tested on the BeagleBone
-(AM3358) and the output works as expected. 
+Yep, this reminds me. What we want to reuse is the logic of "chunk by chunk" in split().
+We can implement switch_dirty_log to be "chunk by chunk" too (just the same as sync/clear),
+then the vendor iommu driver can invoke it's own private implementation of split().
+So we can completely remove split() in the IOMMU core layer.
 
-/sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single# more pins
-registered pins: 142
-pin 0 (PIN0) 0:gpio-0-31 44e10800 00000027 pinctrl-single
-pin 1 (PIN1) 1:gpio-0-31 44e10804 00000027 pinctrl-single
-pin 2 (PIN2) 2:gpio-0-31 44e10808 00000027 pinctrl-single
-pin 3 (PIN3) 3:gpio-0-31 44e1080c 00000027 pinctrl-single
-pin 4 (PIN4) 4:gpio-0-31 44e10810 00000027 pinctrl-single
-pin 5 (PIN5) 5:gpio-0-31 44e10814 00000027 pinctrl-single
-pin 6 (PIN6) 6:gpio-0-31 44e10818 00000027 pinctrl-single
-pin 7 (PIN7) 7:gpio-0-31 44e1081c 00000027 pinctrl-single
-pin 8 (PIN8) 22:gpio-96-127 44e10820 00000027 pinctrl-single
-pin 9 (PIN9) 23:gpio-96-127 44e10824 00000037 pinctrl-single
-pin 10 (PIN10) 26:gpio-96-127 44e10828 00000037 pinctrl-single
-pin 11 (PIN11) 27:gpio-96-127 44e1082c 00000037 pinctrl-single
-pin 12 (PIN12) 12:gpio-0-31 44e10830 00000037 pinctrl-single
-pin 13 (PIN13) 13:gpio-0-31 44e10834 00000037 pinctrl-single
-pin 14 (PIN14) 14:gpio-0-31 44e10838 00000037 pinctrl-single
-pin 15 (PIN15) 15:gpio-0-31 44e1083c 00000037 pinctrl-single
-pin 16 (PIN16) 16:gpio-0-31 44e10840 00000027 pinctrl-single
-<snip>
+example code logic
 
-Tested-by: Drew Fustini <drew@beagleboard.org>
-Reviewed-by: Drew Fustini <drew@beagleboard.org>
+iommu.c:
+switch_dirty_log(big range) {
+    for_each_iommu_page(big range) {
+          ops->switch_dirty_log(iommu_pgsize)
+    }
+}
+
+vendor iommu driver:
+switch_dirty_log(iommu_pgsize) {
+
+    if (enable) {
+        ops->split_block(iommu_pgsize)
+        /* And other actions, such as enable hardware capability */
+    } else {
+        for_each_continuous_physical_address(iommu_pgsize)
+            ops->merge_page()
+    }
+}
+
+Besides, vendor iommu driver can invoke split() in clear_dirty_log instead of in switch_dirty_log.
+The benefit is that we usually clear dirty log gradually during dirty tracking, then we can split
+large page mapping gradually, which speedup start_dirty_log and make less side effect on DMA performance.
+
+Does it looks good for you?
+
+Thanks,
+Keqian
