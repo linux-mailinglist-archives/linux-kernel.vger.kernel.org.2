@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DA73655BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914843655C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhDTJte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhDTJtd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:49:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9695C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:49:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=c/4ebdPoDkXsRQNBUYWS70TUfZuUFjko8Cp0we1f+BM=; b=BulSmpljSK+FX7V38AZr3XoNb6
-        CylJg8sIm/YyS9UMI9z82G6/ycIVoB1vQmu5dk/kLGkmceZn4UpjRT4zo4gdKSX7M6WwQW9MmG8Ft
-        ZQTHBEI7RT5iiEFnu3nJHmGBSppCeMcXBjWd7Ls3VLLAR0dy/ElHWx8nrM0D+kJKXY6IwID4zHaho
-        rEEOxgoEOyBlY/w5FwZCtypV53bhyWVj+teXoScwmnrdlbh1RwRbZTmMJBk9CvUIZOXdyJ7isAEsh
-        W8EQZX3vlPg/nHJIJ6wrviZvJHVOpMOt6U2PZBIyDhLUHxxnV4WoFcioPLYE0w7yBYcwMKRrhafmv
-        /NV1+A5g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYmzx-00BoJe-4j; Tue, 20 Apr 2021 09:48:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58725300130;
-        Tue, 20 Apr 2021 11:48:48 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3E6EE2C48E3A3; Tue, 20 Apr 2021 11:48:48 +0200 (CEST)
-Date:   Tue, 20 Apr 2021 11:48:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
-Message-ID: <YH6jgMWpFXy+pFVP@hirez.programming.kicks-ass.net>
-References: <20210413155337.644993-1-namhyung@kernel.org>
- <20210413155337.644993-2-namhyung@kernel.org>
- <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
- <CABPqkBTncWfeFWY=kYXTAr3gRjpyFVL-YJN4K1YOPpHO35PHBw@mail.gmail.com>
+        id S231392AbhDTJvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:51:47 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38524 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229937AbhDTJvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 05:51:45 -0400
+Received: from zn.tnic (p200300ec2f0e52003145dfcc247b909a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5200:3145:dfcc:247b:909a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DFCE01EC0103;
+        Tue, 20 Apr 2021 11:51:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618912273;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=nu9NnhXo+DMKJ3rvwlbMifnQjVrpaKGMWoTrw6zuu30=;
+        b=fD2V4XGGukrvb+aMl/SUZbaqnmeF+f1AJBhnO35x+YlEOUEd+pt5qKbhpTcyFoQa1rtztW
+        jAd7o2oVbz0ciA/NXOwfrOoE7uYONxrhmJOPcwbfk0iwRx7neBH9qi+b+4fDEsCzS92NK7
+        glFwpdjvYi2mGQkiO/xepxxLOL6Z7h0=
+Date:   Tue, 20 Apr 2021 11:51:15 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, ak@linux.intel.com,
+        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC Part2 PATCH 04/30] x86/mm: split the physmap when adding
+ the page in RMP table
+Message-ID: <20210420095115.GE5029@zn.tnic>
+References: <61596c4c-3849-99d5-b0aa-6ad6b415dff9@intel.com>
+ <B17112AE-8848-48B0-997D-E1A3D79BD395@amacapital.net>
+ <535400b4-0593-a7ca-1548-532ee1fefbd7@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CABPqkBTncWfeFWY=kYXTAr3gRjpyFVL-YJN4K1YOPpHO35PHBw@mail.gmail.com>
+In-Reply-To: <535400b4-0593-a7ca-1548-532ee1fefbd7@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 01:34:40AM -0700, Stephane Eranian wrote:
-> The sampling approach will certainly incur more overhead and be at
-> risk of losing the ability to
-> reconstruct the total counter per-cgroup, unless  you set the period
-> for SW_CGROUP_SWITCHES to
-> 1. But then, you run the risk of losing samples if the buffer is full
-> or sampling is throtlled.
-> In some scenarios, we believe the number of context switches between
-> cgroup could be quite high (>> 1000/s).
-> And on top you would have to add the processing of the samples to
-> extract the counts per cgroup. That would require
-> a synthesis on cgroup on perf record and some post-processing on perf
-> report. We are interested in using the data live
-> to make some policy decisions, so a counting approach with perf stat
-> will always be best.
+On Mon, Apr 19, 2021 at 11:33:08AM -0700, Dave Hansen wrote:
+> My point was just that you can't _easily_ do the 2M->4k kernel mapping
+> demotion in a page fault handler, like I think Borislav was suggesting.
 
-Can you please configure your MUA to sanely (re)flow text? The above
-random line-breaks are *so* painful to read.
+Yeah, see my reply to Brijesh. Not in the #PF handler but when the guest
+does update the RMP table on page allocation, we should split the kernel
+mapping too, so that it corresponds to what's being changed in the RMP
+table.
+
+Dunno how useful it would be if we also do coalescing of 4K pages into
+their corresponding 2M pages... I haven't looked at set_memory.c for a
+long time and have forgotten about all details...
+
+In any case, my main goal here is to keep the tables in sync so that we
+don't have to do crazy splitting in unsafe contexts like #PF. I hope I'm
+making sense...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
