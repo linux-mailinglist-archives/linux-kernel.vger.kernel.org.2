@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D28D366521
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F08936651F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbhDUGEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        id S235381AbhDUGDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbhDUGEA (ORCPT
+        with ESMTP id S230343AbhDUGDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:04:00 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEB0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:03:26 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id m11so27683559pfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HyY9cW4ZspnsIypCtHXf1FMM7FMaR7EgF6f9kJkBvd4=;
-        b=YRXCkaNtkRpZGmmh+k7lz8wyKQRehKcuvHjGnHVKKiyMgJXE3BYneLYkVxsra+0ajv
-         rZynHqCBjPgkUZE4eSmnrutWc/XhOC3SUeMULOpzKsmVijpI2qoPoQ9Fr8ID30VYBZ65
-         /1wjPDlT8JdNCQp2IOfmPLWFhVTeOCt5YkeCO56BnzzeUScwD1kNmMNcpqlK6f5LKRWV
-         O7JOrwbkNK/6aGNYxwAFl94in+ecZzq9PI/HFAn6CMJw+UDSpyS2WzYbOizxhVFm9bvh
-         TI23lLfYJNlUyFlzbZvZdFCGnTHv3u5RTStJnl9T2+y+ncfM4GQ5YFOcrD8uhXl1oC3F
-         MpjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HyY9cW4ZspnsIypCtHXf1FMM7FMaR7EgF6f9kJkBvd4=;
-        b=UrMj7C6XtGSTo6uHYdRyOlDW5Fg2sh26KOfwE2vxJSeEoAvnOd+LPbxgHywyRA2D56
-         TKtkovKP7vb2cLRXOwy2xbAxGjT1x/brMowe49cuoQImHCt0Yxei1jkY5P0ta4cp+oon
-         tTgNJa5o8VHpCof5SY4hw/WVlV2h1LaV9I42CFgy5l+ovIzytAojd5dnpPFkozsMECXR
-         uHgPMPf2/epyj7Nw5eOqd6YkpospBd3SbJkXXzKvYI6fuQ/eVTOyi2QdD5e2L/G+w6f4
-         YlEBTCBFyqjdc38bSjSlNHIBSnPV/MNi9bJw/eik95SnDbOOcmhY72acKivVoWG0Yw9V
-         IXKg==
-X-Gm-Message-State: AOAM533R4HzkKKa7Ahm6eAeVNho5Sqm8xMedrrarhKe0mV48fNmnXrbz
-        PMXyCflapgEbSZwyhWlBMZ1ikA==
-X-Google-Smtp-Source: ABdhPJxX4oBOi4XZ4/ASodwXUw6WkJOCcXTAD78Eb8DbrWCph+BR1RI5YlQIRcgozsWUGHs463v0AA==
-X-Received: by 2002:a63:3d48:: with SMTP id k69mr20037675pga.239.1618985005695;
-        Tue, 20 Apr 2021 23:03:25 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id nh24sm887161pjb.38.2021.04.20.23.03.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Apr 2021 23:03:25 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        mhocko@suse.com, osalvador@suse.de
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: hugetlb: fix a race between memory-failure/soft_offline and gather_surplus_pages
-Date:   Wed, 21 Apr 2021 14:02:59 +0800
-Message-Id: <20210421060259.67554-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Wed, 21 Apr 2021 02:03:44 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA306C06174A;
+        Tue, 20 Apr 2021 23:03:08 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQ92d746kz9t5G;
+        Wed, 21 Apr 2021 16:03:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618984986;
+        bh=Nu0j856JHTrbRn2ZyQ4NPGkMiZ3iPamRi9zJal79JSU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IuCSCJQemuTKKnZUw3pNa+w0FWd/PaaoQ/97jvSAZgRQGH7nJpSm74K/2I3PM83kq
+         ZfQ38o/ntyWK9ndBg3v6TVVHaCB+pTfwh7tGsLhvntagQRFJOK4AWnwz3Mjb6lwhbu
+         hfqcFWQHLO86FD7Xo6kojS0DmF/Mc5iuohht7HZOlrLStWgo1T9gxoNlQiHssP361d
+         W8Idzw+y5ztXRJBPE9ks5igsRY9gROtqY5xT23tXydenZzhsxptqfDpq3QqTov9s3Z
+         FF4Fy4NCUuzEmS8lYkUztWL2Q4tdLbJ4ik3uNBb/l7hspHd4rgV4tN0mymRhmD/FLJ
+         6fb186ylrDQZw==
+Date:   Wed, 21 Apr 2021 16:03:04 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the scsi-mkp tree
+Message-ID: <20210421160304.2a2480d8@canb.auug.org.au>
+In-Reply-To: <20210303170349.2165b7b2@canb.auug.org.au>
+References: <20210303170349.2165b7b2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/gibTvOtKrKw4bZmP/yDv9Yx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The possible bad scenario:
+--Sig_/gibTvOtKrKw4bZmP/yDv9Yx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-CPU0:                           CPU1:
+Hi all,
 
-                                gather_surplus_pages()
-                                  page = alloc_surplus_huge_page()
-memory_failure_hugetlb()
-  get_hwpoison_page(page)
-    __get_hwpoison_page(page)
-      get_page_unless_zero(page)
-                                  zero = put_page_testzero(page)
-                                  VM_BUG_ON_PAGE(!zero, page)
-                                  enqueue_huge_page(h, page)
-  put_page(page)
+On Wed, 3 Mar 2021 17:03:49 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> After merging the scsi-mkp tree, today's linux-next build (htmldocs)
+> produced these warnings:
+>=20
+> include/linux/blk-mq.h:395: warning: Function parameter or member 'set_rq=
+_budget_token' not described in 'blk_mq_ops'
+> include/linux/blk-mq.h:395: warning: Function parameter or member 'get_rq=
+_budget_token' not described in 'blk_mq_ops'
+>=20
+> Introduced by commit
+>=20
+>   9dda23635dbe ("scsi: blk-mq: Add callbacks for storing & retrieving bud=
+get token")
 
-The refcount can possibly be increased by memory-failure or soft_offline
-handlers, we can trigger VM_BUG_ON_PAGE and wrongly add the page to the
-hugetlb pool list.
+This is now commit
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/hugetlb.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+  d022d18c045f ("scsi: blk-mq: Add callbacks for storing & retrieving budge=
+t token")
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3476aa06da70..6c96332db34b 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2145,17 +2145,14 @@ static int gather_surplus_pages(struct hstate *h, long delta)
- 
- 	/* Free the needed pages to the hugetlb pool */
- 	list_for_each_entry_safe(page, tmp, &surplus_list, lru) {
--		int zeroed;
--
- 		if ((--needed) < 0)
- 			break;
- 		/*
--		 * This page is now managed by the hugetlb allocator and has
--		 * no users -- drop the buddy allocator's reference.
-+		 * The refcount can possibly be increased by memory-failure or
-+		 * soft_offline handlers.
- 		 */
--		zeroed = put_page_testzero(page);
--		VM_BUG_ON_PAGE(!zeroed, page);
--		enqueue_huge_page(h, page);
-+		if (likely(put_page_testzero(page)))
-+			enqueue_huge_page(h, page);
- 	}
- free:
- 	spin_unlock_irq(&hugetlb_lock);
--- 
-2.11.0
+in the scsi tree and I am still seeing these warnings (as of next-20210420).
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gibTvOtKrKw4bZmP/yDv9Yx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB/wBgACgkQAVBC80lX
+0GyVKwf8CYSOHKqe7PocUMbYz+WnMV09mLFpFkn2Pp+2Q+gH7lw6spyq8gFwnRkZ
+7v1efjcyqoEBGsxDLe6cuZ3xHZvEgUckbYI1wL/i/GLv3CQ7P+8EtRxpyrL8+qH3
+oZUwXcjhGaUJ/6QMjw4FrVDgSQwZla46YHgzc1Ds+L+KnKeJ+2WyWJluO3+83T1+
+xF3nOB1If8t6sziGXZ7JzgjIMYlNjohn8EJGzfB6M0WlU0foncSMIWTt/6MpZPRn
+OeI9+zYoi14HM6EiIKiwhg/Brf7LKNf0SUDJdhxp7e2DuoiJqUjsqnLOTwfhnbQq
++AMTZL40OFeFPiX1CGlPbWL/JFlkyA==
+=+Iur
+-----END PGP SIGNATURE-----
+
+--Sig_/gibTvOtKrKw4bZmP/yDv9Yx--
