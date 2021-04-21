@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA70366D9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D29366D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243311AbhDUOGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243275AbhDUOGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:06:35 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20587C06174A;
-        Wed, 21 Apr 2021 07:06:02 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id b17so29930495pgh.7;
-        Wed, 21 Apr 2021 07:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ExrGjDL8gxPpKOFeTQiPc8ffz5iZclXedQ5tO1PTOYg=;
-        b=aC5A1sf37OefTbJlqH1QyvwaGZ6nX+ntixNNI5eAEM6ULplsp5dQkyIOiZmGMFwVwO
-         iAOk/qYy1/A58AsOI9MsUD09ZlYh+tN9NUaOLqlWfNbSQmfrHLKXSP4QjfsFovXnFwou
-         wfZTOR4dcKsYsLQ8im2gw65PKgADTQ0LM7GE05fe1KgVTY0EFwLAYgsg27oZ23YXVTEk
-         ealN1TbcW7hFpGiuzzH4Zimn2Vdbu7eEXMKtRS/gkInCPm1Fc34O40hyZoN4bdqHG6RU
-         nzsvILKn3am2aRvB8/c0P3vLuF7T5OpMGwZmIYQh8UZDn9dqwxV2czh+4K6QamFowppo
-         U2tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ExrGjDL8gxPpKOFeTQiPc8ffz5iZclXedQ5tO1PTOYg=;
-        b=HBYyUDRgxWtfcLz4aPNahffhtqHrPxU06g30Xr0CDQsCTmYYa4F611K+Rh/lRMvETX
-         Sw2MqQBS3m8vsjbdVSC1b+lZ9ZTQPisgSkRLCowjSIsfXkxeuyYXX90lLf7FkOVHEbt6
-         l73Piisigo9C6Qbrj+dnRtXVnBw2WtxJAXAvefvVhrK2TkHO4q2fidf4rw8YZ63g7s3d
-         WV75S7ZWo8TmtD9gYM+ZY+Boa8O38J55+MTbJLowq3XqtD5zEV8d+8wbavjfULjBPJYr
-         aCF4zBtD5aA7dgAiHjNOcNmkxE67AXq3SlGy5evWwLAN22Or5iGkAjBAbLcTXT6Iy4KV
-         wY8w==
-X-Gm-Message-State: AOAM530Tc+0qdGBusLqljOu+rkLWvDdqzKLmazAVA2YiKkCyx+bf1vVf
-        QlzXQr1umfpZsEd83r7p1smLoprTX998oCH28DE=
-X-Google-Smtp-Source: ABdhPJy+v5E3xERXKn2uHLsoPgtkCr9aSICbwVbN3UB0xJQkOTj9TOKzgem/PRiV3O+0DJ0Wt5KL2wC3Tz5uMj/XzRs=
-X-Received: by 2002:a17:90a:ea83:: with SMTP id h3mr5159674pjz.180.1619013961677;
- Wed, 21 Apr 2021 07:06:01 -0700 (PDT)
+        id S243303AbhDUOGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:06:31 -0400
+Received: from mail-eopbgr700042.outbound.protection.outlook.com ([40.107.70.42]:24673
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243275AbhDUOG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:06:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WpDxo4nEeRvrzY1sHNvQb4QeY0qlWNX82mEyh0rBOmonkbKVGkxlaLggeQRmiw9n6WdlhlbyWwiDu2OkTlfg+oO0CGNi2OKCIPIg26d+qE2JdZDIZasSsyH4ATA8yFyEY/RUrkOXoJ4OuWOmOQ8ZOV6cLHihomNwgLEvN4HHGmgXbU3vZPfdeTz3bEzlV2DeUBXuox3nQ3VPtmatN3ZUGJaWYr3cpxtIbpKcSbG4saj/jYIyUpQCDMrTLbfo7cgEyMXdFso8/QHrkvcu2cKp7DPMljAQz6IpKGeygBp20UJDtR5i/Zb5K5j7a3Iis35ZWe0JMUrGqeR1irxWS13y7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wX1YJQinYoocCQvxUnR/mpHh1+dv792GYF5fU5D0iAA=;
+ b=oHo4fJlRuSJJk+nYhm9A4aUyzqEwOnVStRG2i5Ds2uK9nPwiF4hhOHfEMZxfe06EiryFaXyltqKlepMyaTMrq/nhQWCQ4P+qkK8HSQyaZ0JzEISYWWVoflTfBT/nJztXkynSGEzuiLr+1FyvkWi0+qT58tqvfZU1I8JNBOHJiCZJbKkvidwfhchcb+VaDciu1IF9K3ockYiFuPzbYPk/MzuyZ9KEGK15Nnm1eYihijyHtC2l/ksy4GAy/PLG3e1Bw0CuVIN7oEIRBuktwoF4TLdpLInDzEt9KNxRmpArw8vzRzBHoV2TSXwkILsjb3iFT7CQDcqOjYubfFr3IVshZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wX1YJQinYoocCQvxUnR/mpHh1+dv792GYF5fU5D0iAA=;
+ b=f7ai4a9U+WvJhsPg+xMgXK24fxmT1ZwrGX/kvCxo3ut75hDhu3QL5oKvdines6WcrMzJKVC6NyENHf8uFxXYUusQzAjfS0np+K3smSrBVFfWYAV6LOfZUgk91GLBZOGn+yPvLHfNBckEkeMEauR1J3GUINzBb9N/CrvnRx8vnJUQMxz77xdYiwYGB1EbuwLwzsuxbcl/iXOGdjN7GaikF2TAW25O/vcfqZGtXftaYgp9m8WlQAwuqZsbeqMylxK8I4zjA+QdAOzZDCTiDyCv32nfWC2A+z/9zuF7gArTP5irjXWaOlcGgbjo06IDgYhd7GuQaBTUY5mCuDCZvgIoew==
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4513.namprd12.prod.outlook.com (2603:10b6:5:2ad::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Wed, 21 Apr
+ 2021 14:05:55 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
+ 14:05:55 +0000
+Date:   Wed, 21 Apr 2021 11:05:53 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH 059/190] Revert "RDMA/srpt: Remove unnecessary assertion
+ in srpt_queue_response"
+Message-ID: <20210421140553.GA2268573@nvidia.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-60-gregkh@linuxfoundation.org>
+ <20210421140247.GG1370958@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421140247.GG1370958@nvidia.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: YTXPR0101CA0038.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::15) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-5-mgross@linux.intel.com> <20210305210140.GA622142@robh.at.kernel.org>
- <20210308202008.GA138795@linux.intel.com> <CABb+yY3kRj2F1ao9A1_+ve5dZm0Q=tThJyu-cVo-cqMjZ+uQ2g@mail.gmail.com>
- <20210420221459.GA108315@linux.intel.com> <20210421135542.GB108315@linux.intel.com>
-In-Reply-To: <20210421135542.GB108315@linux.intel.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Wed, 21 Apr 2021 09:05:51 -0500
-Message-ID: <CABb+yY3F+kyvGGXN5feVPBqhuBn9L4Qr9ZhCDFotkjKFzKVofw@mail.gmail.com>
-Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC driver
-To:     mgross@linux.intel.com
-Cc:     Rob Herring <robh@kernel.org>, markgross@kernel.org,
-        "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de, damien.lemoal@wdc.com,
-        dragan.cvetic@xilinx.com, Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, Peng Fan <peng.fan@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Devicetree List <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by YTXPR0101CA0038.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19 via Frontend Transport; Wed, 21 Apr 2021 14:05:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZDUH-009WAs-Oo; Wed, 21 Apr 2021 11:05:53 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c7326429-36af-4c21-d33d-08d904ce94ad
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4513:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4513AB29C21373730C9B6363C2479@DM6PR12MB4513.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:635;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OdOIGoxAgZakbuysOaDbXll1FbzrkKLBsQnzPqi1M2Hv/sMlJfeim6yNLgTXCWb14niKUQzUO0SPsD3n+VIgs3tmCsRLG87l/Zlijfffkt35SdLHtFLwX1/8erx/Pt7lmfI4oiMojlLDseK8hK8r6k6Pt0wxjTzFRPbWW7hr3/5jbXUOluBOb/YdFPjTmS/hXuK7/Qozei0Jy9z2OWpdQnP0NjK+8i/MGkxdqXe8NGgus89egSeUM3AJCnYyQX7KzELgGWCElGaxEgISADGI6LMhbCAGlHPmhSsy8yHbbZPj7EnBZbRSuxLMdQoCiNe+dho430AXt+ogXLfRvEFcneHEXOLAfXMeFVIjvjswEQgK/LOeSPZrVIyf6Oksm2fXb4aSd5a7OupIOZNf/m65XKXhrxz/MN6KCujfkWiycJZwEDKFTzbGYNu4B44VIyoffSedYrcibtWcdNKsGSWmohEhP07E+n5Gof4yNoEsBje6HWLEx4U59JNt8XBRY43nVvIASKpmInQqHOcqeDnO+xa3MVQzSYFqcjrYk0NPCbOMFnRGuS4AJuXi32KMHEWCyhf6CPKuUjEnWXIGt5Kfajs9GzHMt+eF/XjTX39BnDU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(396003)(39860400002)(346002)(2906002)(316002)(26005)(1076003)(478600001)(6916009)(54906003)(2616005)(8936002)(5660300002)(66946007)(38100700002)(66556008)(66476007)(4326008)(86362001)(186003)(9746002)(9786002)(83380400001)(426003)(33656002)(36756003)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QLe9hlQ641DognC80ILwlCf3QT5ceBGUy5Ylaw32Ty92GDkdJ6ZpDB9vCP72?=
+ =?us-ascii?Q?iOhGRZl1ZJy6xDeHluFkb0ZxHQoYqzyWAxQ5iO5jVH44AotZOCBU/Gta+N3D?=
+ =?us-ascii?Q?h8opZy0YCjwoioUrm7La2pKCAl9ErJq6AqFTKnVVq86GDNtKfmQfPthA2nCE?=
+ =?us-ascii?Q?AdFVbQwtw+sHrU5JNizWluByj/iDa4h4WG3T465IY2gPBKdc/TlGaS/WbQLq?=
+ =?us-ascii?Q?Q1ByyRGZ4JbcgkNlxdyS1O5k3W61zUVTq4KIXE+vaqnUPeFljv/Kogra9HgD?=
+ =?us-ascii?Q?PxRLZyKsxyA2qMyIGrU4GTxldEEnwxUel6R8byjp2daMLse58ZiwlJ/CBNyb?=
+ =?us-ascii?Q?f3xRGvXzuLds/MKs1GBj9yvo5CLxu+0apoksQV/woxKkxveDx5zQtnOMLfyg?=
+ =?us-ascii?Q?9Tbb32Cjf/ZtA92QTuX9obzWwvwdFO6vko5b44qXvKB/fkBrILHGN1qeST9o?=
+ =?us-ascii?Q?ChjYIFIG5efroOQKPKiyUsDw6gjPhH29wsw3e7jDpM5SjyeZwyfdb+dbs4vo?=
+ =?us-ascii?Q?eObwWYozIg7WtvRZxIpgfc6HMzQ/tgAkpNMY8IcO7Ccs5aeZ9zs3ujj08bUe?=
+ =?us-ascii?Q?tmF/HP1i4LuHeRldnjV0TKZkGGj04k9U4t/l/rgyWMElXLvGM8Z6oSdZ3fd0?=
+ =?us-ascii?Q?0DcAWeS13T0+hkPKBr4JK/NjwJdXam6Fxy6N+kjCJFjJ6ZIMZcyyJf2+Qmb6?=
+ =?us-ascii?Q?BirNI1EHEuUN5VINRuPJsrqlATsZwXW4+RNjCSyXnyYXodQ9CCBkKBQrUXy4?=
+ =?us-ascii?Q?VGCxMzTpUZLwxGL76aEpvBGkJWZ9H8hoTSlhcRZAwkl1AMVQjL6IhnI7quVG?=
+ =?us-ascii?Q?FpW7sj0g/a1CeGksajhhwYEhf2pp6QvRovS6ZFH4zHixVXSiKMNbtwaNKTbW?=
+ =?us-ascii?Q?v2PhFRCIlW87RdF91ubg50RE4mXu3PlboYdq/F+oXFsghZu1V6uU2wg/yHk/?=
+ =?us-ascii?Q?zeNkGxn10wOigpuWsKnq2JsX0azA3d21NPaqF1HQBkh3WPWqfH4RukFH6ySC?=
+ =?us-ascii?Q?6JKNHOCZg6sF9N2FeOdV5YArXg3HWCBrPstBc/NQ81+1gOB8mq09z6d+Psed?=
+ =?us-ascii?Q?l0yq0e++KZ1JDPJ3p3idN1MtsyscXzxlOX0wN6r1LzKNb1lvYH7+o9epWmoe?=
+ =?us-ascii?Q?P0wT+bd9//do+t7uWeUq1iyR8LZJsoXPPxEh5J89EYowYTKnGpcSXECDbSoa?=
+ =?us-ascii?Q?NhfbfUZ9OIe1jA3wLRUfO6pybHeRbpowePB6DktPOhqy7lXDV7T9G4SRKObb?=
+ =?us-ascii?Q?e/nTGWGC5aP58bAC3ZnIpsSvjXzrf2L6ymHCXU0iidAWah3D0yjxnELP/eXY?=
+ =?us-ascii?Q?KAq5k3sDfRugAm5G8pQIxsb+9/4nhm4kpcFQFuS+rfUsag=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7326429-36af-4c21-d33d-08d904ce94ad
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 14:05:55.5628
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6UKwU/sAYaBhOGW/QHzjYxR0jvwQy0S0GvDS+V03qR6J5na7s5hM/ltMs6sKbV1u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4513
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 8:55 AM mark gross <mgross@linux.intel.com> wrote:
->
-> On Tue, Apr 20, 2021 at 03:14:59PM -0700, mark gross wrote:
-> > On Mon, Apr 12, 2021 at 04:24:41PM -0500, Jassi Brar wrote:
-> > > On Mon, Mar 8, 2021 at 2:20 PM mark gross <mgross@linux.intel.com> wrote:
-> > > >
-> > > > On Fri, Mar 05, 2021 at 03:01:40PM -0600, Rob Herring wrote:
-> > > > > On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
-> > > > > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > > > > >
-> > > > > > Add DT binding documentation for the Intel Keem Bay IPC driver, which
-> > > > >
-> > > > > Bindings are for h/w blocks, not drivers. From a binding perspective, I
-> > > > > don't really care what the driver architecture for some OS looks like. I
-> > > > > continue to not understand what this h/w looks like. A block diagram
-> > > > > would help as would understanding what blocks have multiple clients
-> > > > > (mailboxes and xlink in particular).
-> > > > I'm working to gather this info.
-> > > >
-> > > Do I pick the mailbox related patches (and which ones exactly) ?
-> >
-> > v6-0002-dt-bindings-mailbox-Add-Intel-VPU-IPC-mailbox-bin.patch
-> > and
-> > v6-0003-mailbox-vpu-ipc-mailbox-Add-support-for-Intel-VPU.patch
-> >
-> Sorry for the confusion and delay.  It seems there are some internal requests
-> to change the name of this part of the VPU driver stack to avoid possible future
-> namespace collisions.
->
-> We will rename the vpu-ipc-mailbox with something more specific to KMB on the
-> next posting.  That looks like will have to be against v5.13-rc1 at this point.
-> Sigh.
->
-Ok, I will dequeue the patches.
+On Wed, Apr 21, 2021 at 11:02:47AM -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 21, 2021 at 02:58:54PM +0200, Greg Kroah-Hartman wrote:
+> > This reverts commit 9f48db0d4a08624bb9ba847ea40c8abad753b396.
+> > 
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > Cc: https
+> > Cc: Aditya Pakki <pakki001@umn.edu>
+> > Cc: Bart Van Assche <bvanassche@acm.org>
+> > Cc: Jason Gunthorpe <jgg@mellanox.com>
+> > Cc: Jason Gunthorpe <jgg@mellanox.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >  drivers/infiniband/ulp/srpt/ib_srpt.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> I think this one is fine
 
--j
+Sorry, I realize that is unclear. I mean I don't see a reason to
+revert this patch.
+
+Jason
