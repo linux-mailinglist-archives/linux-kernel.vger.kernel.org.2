@@ -2,109 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E66366679
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D78366683
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237463AbhDUHwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:52:10 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:43806 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237383AbhDUHv7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:51:59 -0400
-Received: by mail-lf1-f45.google.com with SMTP id y4so25304504lfl.10;
-        Wed, 21 Apr 2021 00:51:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=Pae9yH+KaHgTqO+dxMFR9Vep9F1PrK7GQlrKbtuE/kI=;
-        b=CvAbYW+Bz8Sj728WpXFetqW6sVK536wmR4oKurUcMkA5erGaameUl3ZXR/dsx1IHVk
-         1/ziMfI6Fk7n6yt5RanH+ee6XkzzrH0AzzAqemNA0mVQL4ZYTTKMmunzDkWE474NHYfO
-         v6/k1OiWTPbtwQZkKrFe8z/QlKfsI5SMTT1kxa+0PM++P7m+HQBcxEdylz1HXYU3oKxr
-         x1XRtJehMNQ/qw1ybvAb8Wd2hPLhfz+HRWpDu1oVf0ABhThuSf8xSPXjI25XHEHcbM3l
-         2mQp+RtJv21wmYAYjOgOZkpX3UwG27lAgXPoODN5lpmXZLboiA5Fy9mAg9c4Wf0R81qh
-         YeKw==
-X-Gm-Message-State: AOAM533MPIw2QPOojvjLQv9Cf6tfDktk2az+9p0Qw+ac3LtqVaZHy3YF
-        hrIKN10BL5XtYdSoNNuEnco=
-X-Google-Smtp-Source: ABdhPJyamlH7tMymKn/NliNVTaRv5+NWeF4lqRMi91V4eNBUtbjHXg0IbpR8KG2YkoC6zBsccN0XWg==
-X-Received: by 2002:ac2:4e8c:: with SMTP id o12mr16152092lfr.211.1618991485123;
-        Wed, 21 Apr 2021 00:51:25 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id c18sm125078ljd.66.2021.04.21.00.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 00:51:24 -0700 (PDT)
-Message-ID: <da0233f3223d7c0816581afe0969caf0abe20378.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-In-Reply-To: <YFn5CSB1O3i+SzgR@kroah.com>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-         <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-         <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
-         <YFn5CSB1O3i+SzgR@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S237485AbhDUHyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:54:44 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:60823 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234659AbhDUHyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 03:54:43 -0400
+Received: from [192.168.0.3] (ip5f5ae88d.dynamic.kabel-deutschland.de [95.90.232.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7B9B620647B7A;
+        Wed, 21 Apr 2021 09:54:07 +0200 (CEST)
+Subject: Re: [Intel-wired-lan] [PATCH V2 net] ice: Re-organizes reqstd/avail
+ {R, T}XQ check/code for efficiency+readability
+To:     Salil Mehta <salil.mehta@huawei.com>
+Cc:     linuxarm@openeuler.org, netdev@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210413224446.16612-1-salil.mehta@huawei.com>
+ <7974e665-73bd-401c-f023-9da568e1dffc@molgen.mpg.de>
+ <418702bdb5244eb4811a2a1a536c55c0@huawei.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <9335975a-ef19-863c-005a-d460eac83e03@molgen.mpg.de>
+Date:   Wed, 21 Apr 2021 09:54:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Date:   Wed, 21 Apr 2021 10:51:13 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <418702bdb5244eb4811a2a1a536c55c0@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[CC: Remove Jeff, as email is rejected]
 
-On Tue, 2021-03-23 at 15:19 +0100, Greg KH wrote:
-> On Tue, Mar 23, 2021 at 02:58:28PM +0100, Hans de Goede wrote:
-> > Hi,
-> > 
-> > On 3/23/21 2:56 PM, Matti Vaittinen wrote:
-> > > Devm helper header containing small inline helpers was added.
-> > > Hans promised to maintain it.
-> > > 
-> > > Add Hans as maintainer and myself as designated reviewer.
-> > > 
-> > Ultimately this is up to Greg though, so lets wait and see what
-> > Greg has to say about this.
+Dear Salil,
+
+
+Am 21.04.21 um 09:41 schrieb Salil Mehta:
+>> From: Paul Menzel [mailto:pmenzel@molgen.mpg.de]
+>> Sent: Wednesday, April 21, 2021 6:36 AM
+
+[…]
+
+>> In the git commit message summary, could you please use imperative mood [1]?
 > 
-> Can we move some of the devm_* calls in include/device.h into here as
-> well so that you all can be in charge of them instead of me?
+> No issues. There is always a scope of improvement.
+> 
+>>> Re-organize reqstd/avail {R, T}XQ check/code for efficiency+readability
+>>
+>> It’s a bit long though. Maybe:
+>>
+>> Avoid unnecessary assignment with user specified {R,T}XQs
+> 
+> Umm..above conveys the wrong meaning as this is not what patch is doing.
+> 
+> If you see the code, in the presence of the user specified {R,T}XQs it
+> avoids fetching available {R,T}XQ count.
+> 
+> What about below?
+> 
+> "Avoid unnecessary avail_{r,t}xq assignments if user has specified Qs"
 
-Seems like this was left w/o answer. I guess the question was pointed
-to Hans - but what comes to my (not always so humble) opinion - most of
-the devm functions in device.h are tightly related to the device
-interface or devres. Thus the device.h feels like appropriate place for
-most of those. OTOH, the kmalloc/kfree related functions, strdub and
-kmemdub might be candidates for move - those are not really "device
-things".
+Sounds good, still a little long. Maybe:
 
-But this is really not my call :)
+> Avoid unnecessary avail_{r,t}xq assignments with user specified Qs
 
-Best Regards
-	Matti Vaittinen
+>> Am 14.04.21 um 00:44 schrieb Salil Mehta:
+>>> If user has explicitly requested the number of {R,T}XQs, then it is
+>>> unnecessary to get the count of already available {R,T}XQs from the
+>>> PF avail_{r,t}xqs bitmap. This value will get overridden by user specified
+>>> value in any case.
+>>>
+>>> This patch does minor re-organization of the code for improving the flow
+>>> and readabiltiy. This scope of improvement was found during the review of
+>>
+>> readabil*it*y
+> 
+> Thanks. Missed that earlier. My shaky fingers :(
+> 
+>>> the ICE driver code.
+>>>
+>>> FYI, I could not test this change due to unavailability of the hardware.
+>>> It would be helpful if somebody can test this patch and provide Tested-by
+>>> Tag. Many thanks!
+>>
+>> This should go outside the commit message (below the --- for example).
+> 
+> Agreed.
+> 
+>>> Fixes: 87324e747fde ("ice: Implement ethtool ops for channels")
+>>
+>> Did you check the behavior before is actually a bug? Or is it just for
+>> the detection heuristic for commits to be applied to the stable series?
+> 
+> Right, later was the idea.
+>   
+>>> Cc: intel-wired-lan@lists.osuosl.org
+>>> Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+>>> Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
+>>> --
+>>> Change V1->V2
+>>>    (*) Fixed the comments from Anthony Nguyen(Intel)
+>>>        Link: https://lkml.org/lkml/2021/4/12/1997
+>>> ---
+>>>    drivers/net/ethernet/intel/ice/ice_lib.c | 14 ++++++++------
+>>>    1 file changed, 8 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+>>> index d13c7fc8fb0a..d77133d6baa7 100644
+>>> --- a/drivers/net/ethernet/intel/ice/ice_lib.c
+>>> +++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+>>> @@ -161,12 +161,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
+>>>
+>>>    	switch (vsi->type) {
+>>>    	case ICE_VSI_PF:
+>>> -		vsi->alloc_txq = min3(pf->num_lan_msix,
+>>> -				      ice_get_avail_txq_count(pf),
+>>> -				      (u16)num_online_cpus());
+>>>    		if (vsi->req_txq) {
+>>>    			vsi->alloc_txq = vsi->req_txq;
+>>>    			vsi->num_txq = vsi->req_txq;
+>>> +		} else {
+>>> +			vsi->alloc_txq = min3(pf->num_lan_msix,
+>>> +					      ice_get_avail_txq_count(pf),
+>>> +					      (u16)num_online_cpus());
+>>>    		}
+>>
+>> I am curious, did you check the compiler actually creates different
+>> code, or did it notice the inefficiency by itself and optimized it already?
+> 
+> I have not looked into that detail but irrespective of what compiler generates
+> I would like to keep the code in a shape which is more efficient and more readable.
+> 
+> I do understand in certain cases we have to do tradeoff between efficiency
+> and readability but I do not see that here.
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+I agree, as *efficiency* is mentioned several times, I assume it was 
+tested. Thank you for the clarification.
+
+>>>    		pf->num_lan_tx = vsi->alloc_txq;
+>>> @@ -175,12 +176,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
+>>>    		if (!test_bit(ICE_FLAG_RSS_ENA, pf->flags)) {
+>>>    			vsi->alloc_rxq = 1;
+>>>    		} else {
+>>> -			vsi->alloc_rxq = min3(pf->num_lan_msix,
+>>> -					      ice_get_avail_rxq_count(pf),
+>>> -					      (u16)num_online_cpus());
+>>>    			if (vsi->req_rxq) {
+>>>    				vsi->alloc_rxq = vsi->req_rxq;
+>>>    				vsi->num_rxq = vsi->req_rxq;
+>>> +			} else {
+>>> +				vsi->alloc_rxq = min3(pf->num_lan_msix,
+>>> +						      ice_get_avail_rxq_count(pf),
+>>> +						      (u16)num_online_cpus());
+>>>    			}
+>>>    		}
+>>>
 
 
+Kind regards,
+
+Paul
