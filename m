@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F06366C8F
+	by mail.lfdr.de (Postfix) with ESMTP id 9C26A366C91
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241488AbhDUNT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
+        id S241394AbhDUNUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:20:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241013AbhDUNKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D87261469;
-        Wed, 21 Apr 2021 13:10:07 +0000 (UTC)
+        id S239158AbhDUNKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:10:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D7746148E;
+        Wed, 21 Apr 2021 13:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010607;
-        bh=XCGS38mhYxLD3/cRVW/efDV0uQs7n1/+j8g/mA/sRhw=;
+        s=korg; t=1619010610;
+        bh=kjXAUv99G2avn802/hzqZ5IanH+hhReejDiK5KrFqTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I5n9tqUXXMpF/Lp//eeZx6QSrFAn8KpRDWKBP483ZG9isCymxM2NvOtsYZiCg5/kn
-         i2gPQnRO8R5YZmnaInlfcAq8oYpS7gEU/OLytuyTF2HQXMoP6QYKLcNm8wSsUaa10w
-         ys2UGfCtBDUQSFIxxPX4P8ffBbdZRXEmbB1zrFHs=
+        b=fVPG7+ngo1U4LEcO4kzo9Dnyc0yaDwBxqM3dSj+/KYFQ1y+YATLdK/4d6Bvbu/Fom
+         Jj303ldpFruo3/bNOf39quq3EepcK5Pt2Tuu6XKddCUFpeBHEQpn6+lTagvMfkk5qq
+         tEr5D0RvXHAHDfJ/Oc/p0Z0bG0dD6TxU2OehFE4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Wenwen Wang <wang6495@umn.edu>,
-        Adam Radford <aradford@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 189/190] Revert "scsi: 3w-9xxx: fix a missing-check bug"
-Date:   Wed, 21 Apr 2021 15:01:04 +0200
-Message-Id: <20210421130105.1226686-190-gregkh@linuxfoundation.org>
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 190/190] Revert "ethtool: fix a potential missing-check bug"
+Date:   Wed, 21 Apr 2021 15:01:05 +0200
+Message-Id: <20210421130105.1226686-191-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c9318a3e0218bc9dacc25be46b9eec363259536f.
+This reverts commit d656fe49e33df48ee6bc19e871f5862f49895c9e.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -55,29 +54,28 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Adam Radford <aradford@gmail.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/3w-9xxx.c | 5 -----
+ net/ethtool/ioctl.c | 5 -----
  1 file changed, 5 deletions(-)
 
-diff --git a/drivers/scsi/3w-9xxx.c b/drivers/scsi/3w-9xxx.c
-index b96e82de4237..4c5d4ea8a592 100644
---- a/drivers/scsi/3w-9xxx.c
-+++ b/drivers/scsi/3w-9xxx.c
-@@ -886,11 +886,6 @@ static int twa_chrdev_open(struct inode *inode, struct file *file)
- 	unsigned int minor_number;
- 	int retval = TW_IOCTL_ERROR_OS_ENODEV;
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 807bc9465add..542f2428014c 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -869,11 +869,6 @@ static noinline_for_stack int ethtool_get_rxnfc(struct net_device *dev,
+ 		info_size = sizeof(info);
+ 		if (copy_from_user(&info, useraddr, info_size))
+ 			return -EFAULT;
+-		/* Since malicious users may modify the original data,
+-		 * we need to check whether FLOW_RSS is still requested.
+-		 */
+-		if (!(info.flow_type & FLOW_RSS))
+-			return -EINVAL;
+ 	}
  
--	if (!capable(CAP_SYS_ADMIN)) {
--		retval = -EACCES;
--		goto out;
--	}
--
- 	minor_number = iminor(inode);
- 	if (minor_number >= twa_device_extension_count)
- 		goto out;
+ 	if (info.cmd == ETHTOOL_GRXCLSRLALL) {
 -- 
 2.31.1
 
