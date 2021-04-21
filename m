@@ -2,221 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F63366702
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5358366705
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhDUIbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234632AbhDUIbh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:31:37 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6A5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:31:04 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so743213wmi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:31:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mJcwZlu0Ar0OqbJ+UZHBMNI1VVtXFf5qDweduy1D6/0=;
-        b=o024ty8UnwIIrWAXLRcFarFxMWg7aB5MoAF8/o0gVibbG8v/5/bOJSDD6mISRw2/3t
-         RISq8FAaPPdXjtCkc80AWVZZhVMXSS9ePy/0e42mO8s65dFlUpQtGRxAzzUexbPHTd6M
-         E93/bEHx+TF1PTCdAkNCXbq6Pp+HRcW0ij6FCmQkFFbVoW6lQ++b5RuvNMMe+wNz/h3/
-         PbB7VRCpoGtVwhW/m+6VhBrAkJDqFoDnHmnr+0FTaBBaq8a72TaQ7IaFKCSmpQlYp9Pq
-         v0kVNof5TCP9ajsRScnrw6YgYHN4D5Xa6TM1a1Qiz3aZsJ+jjQlgmTFShG0WApO6GR58
-         GRaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mJcwZlu0Ar0OqbJ+UZHBMNI1VVtXFf5qDweduy1D6/0=;
-        b=tnmg6SgDANpkY7OjvuRcrn27iIL6YoDXeZGEbABkmpDfvBsvrlELaHX/hXAtNQWzUo
-         7K4liwrpwRVXgx8xy4Zpfe/Aj6tT2jG+k+QomImxzmxiFwkMTVCeWeG5d19ao4giHh7+
-         a2v/MXKjleGDvR8eMVzMZpjua7I4YJKqTQkpz1Sd7kU3smdmErN9jMUeysNgIWAY/WWQ
-         gWomD6NjgjG2I0i9RSBToC/SGTrv9E4CqMsBlx2s7NZ64r5X3DOE2FjNfwE+4YNneVWM
-         /uh2Qaz8gZ/ufa1TmO0RijCwjlgGvZ8n5cWevRz/nRh7iMH0HtZJZR8FSdSkYsm9MEvt
-         0OIw==
-X-Gm-Message-State: AOAM533sqh/kys0L13iDj7AdapYlxguwshsoqCJlL9/N4AMlqJYlb7OX
-        I5+qV/ZqaR0CIpv7+/Icl+qpSg==
-X-Google-Smtp-Source: ABdhPJwEGruRSdnWTaFzBtUIiMhSy7VtcwIGQ/9y41wbzN7dfUybADZ1XDSeTl9FBzz3Ugj+bZUM4A==
-X-Received: by 2002:a1c:b3c5:: with SMTP id c188mr2432123wmf.168.1618993863536;
-        Wed, 21 Apr 2021 01:31:03 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id g5sm2156525wrq.30.2021.04.21.01.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 01:31:02 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 08:31:00 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        Android Kernel Team <kernel-team@android.com>,
-        Architecture Mailman List <boot-architecture@lists.linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
- reserved memory region
-Message-ID: <YH/ixPnHMxNo08mJ@google.com>
-References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
- <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com>
- <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
- <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
- <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
- <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
+        id S235200AbhDUIcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:32:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55220 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235103AbhDUIcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:32:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618993891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SyJSqv7xgMovYx0Fyr0qnox0jNIz8bRMGSJ+RalSMEM=;
+        b=siMcW6l4HcwIaKfrFUt4CznGlfNMgIfMLRwJLZc8RwDmhBkPH5hNV9om/raAGEcm5r0WG7
+        H6RNw8yNJVMnV1z3ZLbvvn5bISuvlzsdjHpjCHcS4r67LRO6lTocMErt4zVtpm32UmS1ld
+        YVL+Y78LCaDG3UcQZj4JTclxCGy4gqU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6A322B137;
+        Wed, 21 Apr 2021 08:31:31 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 10:31:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 3/8] mm,memory_hotplug: Factor out adjusting present
+ pages into adjust_present_page_count()
+Message-ID: <YH/i4nfrqt2k0mzZ@dhcp22.suse.cz>
+References: <20210416112411.9826-1-osalvador@suse.de>
+ <20210416112411.9826-4-osalvador@suse.de>
+ <YH6i09ieDte+xog8@dhcp22.suse.cz>
+ <20210421080036.GC22456@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
+In-Reply-To: <20210421080036.GC22456@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 20 Apr 2021 at 09:33:56 (-0700), Florian Fainelli wrote:
-> I do wonder as well, we have a 32MB "no-map" reserved memory region on
-> our platforms located at 0xfe000000. Without the offending commit,
-> /proc/iomem looks like this:
-> 
-> 40000000-fdffefff : System RAM
->   40008000-40ffffff : Kernel code
->   41e00000-41ef1d77 : Kernel data
-> 100000000-13fffffff : System RAM
-> 
-> and with the patch applied, we have this:
-> 
-> 40000000-fdffefff : System RAM
->   40008000-40ffffff : Kernel code
->   41e00000-41ef3db7 : Kernel data
-> fdfff000-ffffffff : System RAM
-> 100000000-13fffffff : System RAM
-> 
-> so we can now see that the region 0xfe000000 - 0xfffffff is also cobbled
-> up with the preceding region which is a mailbox between Linux and the
-> secure monitor at 0xfdfff000 and of size 4KB. It seems like there is
-> 
-> The memblock=debug outputs is also different:
-> 
-> [    0.000000] MEMBLOCK configuration:
-> [    0.000000]  memory size = 0xfdfff000 reserved size = 0x7ce4d20d
-> [    0.000000]  memory.cnt  = 0x2
-> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
-> 0xbdfff000 bytes flags: 0x0
-> [    0.000000]  memory[0x1]     [0x00000100000000-0x0000013fffffff],
-> 0x40000000 bytes flags: 0x0
-> [    0.000000]  reserved.cnt  = 0x6
-> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
-> 0xb495 bytes flags: 0x0
-> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef1d77],
-> 0x1cf1d78 bytes flags: 0x0
-> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
-> 0x100000 bytes flags: 0x0
-> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
-> 0x50000 bytes flags: 0x0
-> [    0.000000]  reserved[0x4]   [0x000000c2c00000-0x000000fdbfffff],
-> 0x3b000000 bytes flags: 0x0
-> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
-> 0x40000000 bytes flags: 0x0
-> 
-> [    0.000000] MEMBLOCK configuration:
-> [    0.000000]  memory size = 0x100000000 reserved size = 0x7ca4f24d
-> [    0.000000]  memory.cnt  = 0x3
-> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
-> 0xbdfff000 bytes flags: 0x0
-> [    0.000000]  memory[0x1]     [0x000000fdfff000-0x000000ffffffff],
-> 0x2001000 bytes flags: 0x4
-> [    0.000000]  memory[0x2]     [0x00000100000000-0x0000013fffffff],
-> 0x40000000 bytes flags: 0x0
-> [    0.000000]  reserved.cnt  = 0x6
-> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
-> 0xb495 bytes flags: 0x0
-> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef3db7],
-> 0x1cf3db8 bytes flags: 0x0
-> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
-> 0x100000 bytes flags: 0x0
-> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
-> 0x50000 bytes flags: 0x0
-> [    0.000000]  reserved[0x4]   [0x000000c3000000-0x000000fdbfffff],
-> 0x3ac00000 bytes flags: 0x0
-> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
-> 0x40000000 bytes flags: 0x0
-> 
-> in the second case we can clearly see that the 32MB no-map region is now
-> considered as usable RAM.
-> 
-> Hope this helps.
-> 
+On Wed 21-04-21 10:00:36, Oscar Salvador wrote:
+> On Tue, Apr 20, 2021 at 11:45:55AM +0200, Michal Hocko wrote:
+> > On Fri 16-04-21 13:24:06, Oscar Salvador wrote:
+> > > From: David Hildenbrand <david@redhat.com>
+> > > 
+> > > Let's have a single place (inspired by adjust_managed_page_count()) where
+> > > we adjust present pages.
+> > > In contrast to adjust_managed_page_count(), only memory onlining/offlining
+> > > is allowed to modify the number of present pages.
+> > > 
+> > > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> > > Reviewed-by: Oscar Salvador <osalvador@suse.de>
 > > 
-> > In any case, the mere fact that this causes a regression should be
-> > sufficient justification to revert/withdraw it from v5.4, as I don't
-> > see a reason why it was merged there in the first place. (It has no
-> > fixes tag or cc:stable)
+> > Not sure self review counts ;)
 > 
-> Agreed, however that means we still need to find out whether a more
-> recent kernel is also broken, I should be able to tell you that a little
-> later.
+> Uhm, the original author is David, I just added my signed-off-by as a deliverer.
+> I thought that in that case was ok to stick my Reviewed-by.
+> Or maybe my signed-off-by carries that implicitly.
 
-FWIW I did test this on Qemu before posting. With 5.12-rc8 and a 1MiB
-no-map region at 0x80000000, I have the following:
+Yeah I do expect that one should review own changes but this is not
+really anything to lose sleep over.
 
-40000000-7fffffff : System RAM
-  40210000-417fffff : Kernel code
-  41800000-41daffff : reserved
-  41db0000-4210ffff : Kernel data
-  48000000-48008fff : reserved
-80000000-800fffff : reserved
-80100000-13fffffff : System RAM
-  fa000000-ffffffff : reserved
-  13b000000-13f5fffff : reserved
-  13f6de000-13f77dfff : reserved
-  13f77e000-13f77efff : reserved
-  13f77f000-13f7dafff : reserved
-  13f7dd000-13f7defff : reserved
-  13f7df000-13f7dffff : reserved
-  13f7e0000-13f7f3fff : reserved
-  13f7f4000-13f7fdfff : reserved
-  13f7fe000-13fffffff : reserved
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > 
+> > Btw. I strongly suspect the resize lock is quite pointless here.
+> > Something for a follow up patch.
+> 
+> What makes you think that?
 
-If I remove the 'no-map' qualifier from DT, I get this:
+         * Write access to present_pages at runtime should be protected by
+         * mem_hotplug_begin/end(). Any reader who can't tolerant drift of
+         * present_pages should get_online_mems() to get a stable value.
 
-40000000-13fffffff : System RAM
-  40210000-417fffff : Kernel code
-  41800000-41daffff : reserved
-  41db0000-4210ffff : Kernel data
-  48000000-48008fff : reserved
-  80000000-800fffff : reserved
-  fa000000-ffffffff : reserved
-  13b000000-13f5fffff : reserved
-  13f6de000-13f77dfff : reserved
-  13f77e000-13f77efff : reserved
-  13f77f000-13f7dafff : reserved
-  13f7dd000-13f7defff : reserved
-  13f7df000-13f7dffff : reserved
-  13f7e0000-13f7f3fff : reserved
-  13f7f4000-13f7fdfff : reserved
-  13f7fe000-13fffffff : reserved
+> I have been thinking about this, let us ignore this patch for a moment.
+> 
+> If I poked the code correctly, node_size_lock is taken in:
+> 
+> remove_pfn_range_from_zone()
+> move_pfn_range_to_zone()
+> 
+> both of them handling {zone,node}->spanned_pages
+> 
+> Then we take it in {offline,online}_pages() for {zone,node}->present_pages.
+> 
+> The other places where we take it are __init functions, so not of interest.
+> 
+> Given that {offline,online}_pages() is serialized by the memory_hotplug lock,
+> I would say that {node,zone}->{spanned,present}_pages is, at any time, stable?
+> So, no need for the lock even without considering this patch?
 
-So this does seem to be working fine on my setup. I'll try again with
-5.4 to see if I can repro.
+Yes. The resize lock is really only relevant to the parallel struct page
+initialization during early boot. The hotplug usage seems just a left
+over from the past or maybe it has never been really relevant in that
+context.
 
-Also, 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove already
-reserved regions") looks more likely to cause the issue observed here,
-but that shouldn't be silent. I get the following error message in dmesg
-if I if place the no-map region on top of the kernel image:
+> Now, getting back to this patch.
+> adjust_present_page_count() will be called from memory_block_online(), which
+> is not holding the memory_hotplug lock yet.
+> But, we only fiddle with present pages out of {online,offline}_pages() if
+> we have vmemmap pages, and since that operates on the same memory block,
+> its lock should serialize that.
 
-OF: fdt: Reserved memory: failed to reserve memory for node 'foobar@40210000': base 0x0000000040210000, size 1 MiB
-
-Is that triggering on your end?
-
-Thanks,
-Quentin
+Memory hotplug is always synchronized on the device level.
+-- 
+Michal Hocko
+SUSE Labs
