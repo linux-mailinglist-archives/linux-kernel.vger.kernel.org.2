@@ -2,119 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE3A366817
+	by mail.lfdr.de (Postfix) with ESMTP id D9AD1366818
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238323AbhDUJew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:34:52 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46222 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238245AbhDUJes (ORCPT
+        id S238330AbhDUJey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:34:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238306AbhDUJet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:34:48 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13L9SvcZ022552;
-        Wed, 21 Apr 2021 09:34:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=8gNfUIaKyR1ckO6hGOqqpfoiLL7Zd/cCYnF0H0aUYzs=;
- b=GEglrgSe8BzcLb28XQ399XpShJF8+bwK/BIce9inxxSxJHY/pOgnfcRC6u+M4Dn4o3rD
- GTR+xHfFT9BEr4J6DAZcoJ6xTCG0jqjArcB0edsqUEWJV9+BjwdH69TzNQ7Bl+YEHmEf
- rTLugt8SQhYBSvl3A4oLocywpOXbi0CyKz6NIYDpmFsf4anM09fEyHUGN8rOhJFElm6g
- zmPCgErBbCaa52/3Wd5042jTQun1aaXrE5zavNRuMdGLKHO+E8G9nsr/HjoNuPmc96NJ
- dHagy3mEPI8rnwtujWR/GxyI6A+qoptM3gqLSgBrXYt/e0ZQv1f6MyXU3Rl48FKivKHC 7A== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3818whgn2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 09:34:12 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13L9YBH5123619;
-        Wed, 21 Apr 2021 09:34:11 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38098rg2st-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 09:34:11 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13L9YAGb123586;
-        Wed, 21 Apr 2021 09:34:10 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 38098rg2sb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 09:34:10 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13L9Y8Ow004066;
-        Wed, 21 Apr 2021 09:34:08 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 21 Apr 2021 02:34:07 -0700
-Date:   Wed, 21 Apr 2021 12:34:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Cc:     David E Box <david.e.box@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] platform/x86: intel_pmc_core: re-write copy in
- pmc_core_lpm_latch_mode_write()
-Message-ID: <YH/xicL9RXjH2pvD@mwanda>
+        Wed, 21 Apr 2021 05:34:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618997656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lpoI9NRVB9qsYiKBOjY+ZdCUBK0VWmcEa3eQmAnrZgM=;
+        b=cDVBcaLC8ZBR3d4ON+n63+Vo4FbTXSXtkkwIc4hwOP3BAMO9U3sVYLHTfNTa9MdJs8a27p
+        wtgaDtVkRsNrpTvYpHxgldpik6KbaLuV+G7pDPXMRhERX+2u2bDfbVTdrNeJHmXbZJnspl
+        Xzxc8eyOBVM8qpb2//lxhJAHaxH4gqM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-bOjxYxaANmy5gwkekec0Ag-1; Wed, 21 Apr 2021 05:34:12 -0400
+X-MC-Unique: bOjxYxaANmy5gwkekec0Ag-1
+Received: by mail-ej1-f70.google.com with SMTP id f15-20020a170906738fb029037c94426fffso5696011ejl.22
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:34:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lpoI9NRVB9qsYiKBOjY+ZdCUBK0VWmcEa3eQmAnrZgM=;
+        b=B9/7OP77xhpDgt2TRtKPRcVk8i/6nRIvV1ULJMYasCO6uZoJpD722/8y7oMqtWC74N
+         PZRt4ujIJL3ojWXLv0tZdSZo7lVkKwYhc4mKzmGoBZQpCzqqKeqow5rnPbpUpvzlewrm
+         3Wn/iblxemXqdgP903sbmaBmy6RjKotOWQqvFZ/1bLd1g9TCwxQN0ho7QnQ7IO4ok7da
+         tnizCCan5nqEaKtOP3O/kfo6K3Jzei2wsVdFcCSLCygOwUPAkxAe14enNY1DIszfZipL
+         PQQ/M7m4LHMOYOOVTzzx40lBlKkxNGHCSoBETOzviwf7jvWKEbPOizzo2+3Cgid7aoet
+         ORsw==
+X-Gm-Message-State: AOAM531AYFx1pv5NQ9N2Asfr8Ooex6R+Fy8Mxz/QIw9c54F9+2DTVvsC
+        KDRDglNo4E9xSlSUuEnX4G1qoxYhhAtXrNJtVUN421Ds9lI5alBTMzVZZ1ACZ0UoWBC1yL1xpIq
+        A2qyXLLjlP29acqgiQ75Kb9XD
+X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr16652043ejq.50.1618997651891;
+        Wed, 21 Apr 2021 02:34:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydZjMGm8LWfdlf7IEz5Kzgw+nZROXo4yoyEKgJ4CVcOLHoFG40yO1hYMeXrSjiHD1qHIw/Iw==
+X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr16652025ejq.50.1618997651755;
+        Wed, 21 Apr 2021 02:34:11 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id f19sm2606693edu.12.2021.04.21.02.34.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 02:34:11 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:34:09 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v8 16/19] vsock/loopback: enable SEQPACKET for
+ transport
+Message-ID: <20210421093409.latwryhd7scomdav@steredhat>
+References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
+ <20210413124642.3406320-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: 7bXkb2nbQYGuKUD1iMJTcne8JMqMVFVd
-X-Proofpoint-GUID: 7bXkb2nbQYGuKUD1iMJTcne8JMqMVFVd
+In-Reply-To: <20210413124642.3406320-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two bugs in this code:
-1) "ret" is unsigned so the error handling is broken.
-2) simple_write_to_buffer() is innappropriate.  It will succeed even if
-   we are only able to copy a single byte of data from user space.  This
-   could lead to an information leak if the buf[] array is not fully
-   initialized.
+On Tue, Apr 13, 2021 at 03:46:39PM +0300, Arseny Krasnov wrote:
+>This adds SEQPACKET ops for loopback transport and 'seqpacket_allow()'
+>callback.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>---
+> net/vmw_vsock/vsock_loopback.c | 12 ++++++++++++
+> 1 file changed, 12 insertions(+)
+>
+>diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+>index a45f7ffca8c5..d38ffdbecc84 100644
+>--- a/net/vmw_vsock/vsock_loopback.c
+>+++ b/net/vmw_vsock/vsock_loopback.c
+>@@ -63,6 +63,8 @@ static int vsock_loopback_cancel_pkt(struct vsock_sock *vsk)
+> 	return 0;
+> }
+>
+>+static bool vsock_loopback_seqpacket_allow(void);
+>+
+> static struct virtio_transport loopback_transport = {
+> 	.transport = {
+> 		.module                   = THIS_MODULE,
+>@@ -89,6 +91,10 @@ static struct virtio_transport loopback_transport = {
+> 		.stream_is_active         = virtio_transport_stream_is_active,
+> 		.stream_allow             = virtio_transport_stream_allow,
+>
+>+		.seqpacket_dequeue        = virtio_transport_seqpacket_dequeue,
+>+		.seqpacket_enqueue        = virtio_transport_seqpacket_enqueue,
+>+		.seqpacket_allow          = vsock_loopback_seqpacket_allow,
+>+
+> 		.notify_poll_in           = virtio_transport_notify_poll_in,
+> 		.notify_poll_out          = virtio_transport_notify_poll_out,
+> 		.notify_recv_init         = virtio_transport_notify_recv_init,
+>@@ -103,8 +109,14 @@ static struct virtio_transport loopback_transport = {
+> 	},
+>
+> 	.send_pkt = vsock_loopback_send_pkt,
+>+	.seqpacket_allow = true
+> };
+>
+>+static bool vsock_loopback_seqpacket_allow(void)
+>+{
+>+	return loopback_transport.seqpacket_allow;
+>+}
 
-I've fixed it to use strncpy_from_user() and to return -EINVAL if the
-user supplied string is not NUL terminated.
+here I think we could always return true, since we will remove 
+`.seqpacket_allow` from struct virtio_transport.
 
-Fixes: 8074a79fad2e ("platform/x86: intel_pmc_core: Add option to set/clear LPM mode")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/platform/x86/intel_pmc_core.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-index 3ae00ac85c75..c989796a5d52 100644
---- a/drivers/platform/x86/intel_pmc_core.c
-+++ b/drivers/platform/x86/intel_pmc_core.c
-@@ -1360,18 +1360,19 @@ static ssize_t pmc_core_lpm_latch_mode_write(struct file *file,
- 	struct pmc_dev *pmcdev = s->private;
- 	bool clear = false, c10 = false;
- 	unsigned char buf[8];
--	size_t ret;
--	int idx, m, mode;
-+	int idx, m, mode, ret;
-+	size_t len;
- 	u32 reg;
- 
--	if (count > sizeof(buf) - 1)
-+	if (count > sizeof(buf))
- 		return -EINVAL;
- 
--	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, userbuf, count);
-+	len = min(count, sizeof(buf));
-+	ret = strncpy_from_user(buf, userbuf, len);
- 	if (ret < 0)
- 		return ret;
--
--	buf[count] = '\0';
-+	if (ret == len)
-+		return -EINVAL;
- 
- 	/*
- 	 * Allowed strings are:
--- 
-2.30.2
+>+
+> static void vsock_loopback_work(struct work_struct *work)
+> {
+> 	struct vsock_loopback *vsock =
+>-- 
+>2.25.1
+>
 
