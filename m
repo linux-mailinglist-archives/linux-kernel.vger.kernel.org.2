@@ -2,224 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDD936660D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5CC366610
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhDUHEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:04:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39890 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236301AbhDUHEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:04:09 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13L6YOrQ044023;
-        Wed, 21 Apr 2021 03:02:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=tLg5DX76NZwj7FRceDWBV4qvPy/Jbr1sqJp2kOTA/JY=;
- b=hUaKfxzZma5B5OVj1/ezISza2bhG2HpYt9kS6Fd1xSfbpDTTqMngielE5gKcm5zxGv9H
- /lrSuLbeNIVCEIKI1+f/MkmUcnfIPfwplH3W/Kdww+68wujGr3XyoBIE+mIV8GEzGkkk
- +FPGPF1MHRUORtVbKMqfqO/YeWlM6HLeLPOftXyNov1a2aZryFTiKxOS+ECVG+Hy12Z/
- 3DsaY/zoFdTYNJxe5WTdrZDUkDVEBRqr2Ehedvduwfu4Bb0aMzjfU2Q4uToBmDxmQUy/
- Ma7rB1UV+ycabGOVoXVNw+GmGRtXxlOyF6NiZsIa1OSYF8S55I6WfTtk8V9ze394yVIL xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3829y3xv6d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 03:02:47 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13L6Yfia044934;
-        Wed, 21 Apr 2021 03:02:47 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3829y3xv5h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 03:02:47 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13L6qrQQ026220;
-        Wed, 21 Apr 2021 07:02:45 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 37yqa8960b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 07:02:45 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13L72gKe34013578
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 07:02:42 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D4BB11C04A;
-        Wed, 21 Apr 2021 07:02:42 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 081F411C050;
-        Wed, 21 Apr 2021 07:02:42 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.39.90])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Apr 2021 07:02:41 +0000 (GMT)
-Subject: Re: [PATCH v3 4/9] sched/vtime: Move vtime accounting external
- declarations above inlines
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>
-References: <20210415222106.1643837-1-seanjc@google.com>
- <20210415222106.1643837-5-seanjc@google.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <74cac066-e3e8-7bbf-fb9c-b3709fb7ee0b@de.ibm.com>
-Date:   Wed, 21 Apr 2021 09:02:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236565AbhDUHGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:06:03 -0400
+Received: from mga14.intel.com ([192.55.52.115]:62952 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234637AbhDUHGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 03:06:02 -0400
+IronPort-SDR: UJn2uZ5HohSGWp+1f6VW0aGFWn0hHuW4fQ2IUEA3KC/BfEmwAEekL+eWgcwC8UZto0Cqx0t9ni
+ 0zFtx1RZSRhQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195206788"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="195206788"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 00:05:29 -0700
+IronPort-SDR: WUI6B6A2c1385Mjp3QwBr7DCDjFLPz6hbPrJAmTtPnqqn7pKBakBTUI7ilMc/lUVEP/zYlaiMi
+ II+qu07Imt7Q==
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="463482473"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 00:05:28 -0700
+Subject: [PATCH] MAINTAINERS: Move nvdimm mailing list
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Wed, 21 Apr 2021 00:05:28 -0700
+Message-ID: <161898872871.3406469.4054282559340528393.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-In-Reply-To: <20210415222106.1643837-5-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OwUQ2hJzq0lBhnvGEjeUot3B6WWb09Nt
-X-Proofpoint-ORIG-GUID: vko_u5Nh6RQFLonC9XaqHBjqxTdmkN8U
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-21_02:2021-04-20,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104210052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After seeing some users have subscription management trouble, more spam
+than other Linux development lists, and considering some of the benefits
+of kernel.org hosted lists, nvdimm and persistent memory development is
+moving to nvdimm@lists.linux.dev.
 
+The old list will remain up until v5.14-rc1 and shutdown thereafter.
 
-On 16.04.21 00:21, Sean Christopherson wrote:
-> Move the blob of external declarations (and their stubs) above the set of
-> inline definitions (and their stubs) for vtime accounting.  This will
-> allow a future patch to bring in more inline definitions without also
-> having to shuffle large chunks of code.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Sean Christopherson<seanjc@google.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Oliver O'Halloran <oohall@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+---
+ Documentation/ABI/obsolete/sysfs-class-dax    |    2 +
+ Documentation/ABI/removed/sysfs-bus-nfit      |    2 +
+ Documentation/ABI/testing/sysfs-bus-nfit      |   40 +++++++++++++------------
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |    4 +--
+ Documentation/driver-api/nvdimm/nvdimm.rst    |    2 +
+ MAINTAINERS                                   |   14 ++++-----
+ 6 files changed, 32 insertions(+), 32 deletions(-)
 
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+diff --git a/Documentation/ABI/obsolete/sysfs-class-dax b/Documentation/ABI/obsolete/sysfs-class-dax
+index 0faf1354cd05..5bcce27458e3 100644
+--- a/Documentation/ABI/obsolete/sysfs-class-dax
++++ b/Documentation/ABI/obsolete/sysfs-class-dax
+@@ -1,7 +1,7 @@
+ What:           /sys/class/dax/
+ Date:           May, 2016
+ KernelVersion:  v4.7
+-Contact:        linux-nvdimm@lists.01.org
++Contact:        nvdimm@lists.linux.dev
+ Description:	Device DAX is the device-centric analogue of Filesystem
+ 		DAX (CONFIG_FS_DAX).  It allows memory ranges to be
+ 		allocated and mapped without need of an intervening file
+diff --git a/Documentation/ABI/removed/sysfs-bus-nfit b/Documentation/ABI/removed/sysfs-bus-nfit
+index ae8c1ca53828..277437005def 100644
+--- a/Documentation/ABI/removed/sysfs-bus-nfit
++++ b/Documentation/ABI/removed/sysfs-bus-nfit
+@@ -1,7 +1,7 @@
+ What:		/sys/bus/nd/devices/regionX/nfit/ecc_unit_size
+ Date:		Aug, 2017
+ KernelVersion:	v4.14 (Removed v4.18)
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Size of a write request to a DIMM that will not incur a
+ 		read-modify-write cycle at the memory controller.
+diff --git a/Documentation/ABI/testing/sysfs-bus-nfit b/Documentation/ABI/testing/sysfs-bus-nfit
+index 63ef0b9ecce7..e7282d184a74 100644
+--- a/Documentation/ABI/testing/sysfs-bus-nfit
++++ b/Documentation/ABI/testing/sysfs-bus-nfit
+@@ -5,7 +5,7 @@ Interface Table (NFIT)' section in the ACPI specification
+ What:		/sys/bus/nd/devices/nmemX/nfit/serial
+ Date:		Jun, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Serial number of the NVDIMM (non-volatile dual in-line
+ 		memory module), assigned by the module vendor.
+@@ -14,7 +14,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/handle
+ Date:		Apr, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) The address (given by the _ADR object) of the device on its
+ 		parent bus of the NVDIMM device containing the NVDIMM region.
+@@ -23,7 +23,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/device
+ Date:		Apr, 2015
+ KernelVersion:	v4.1
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Device id for the NVDIMM, assigned by the module vendor.
+ 
+@@ -31,7 +31,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/rev_id
+ Date:		Jun, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Revision of the NVDIMM, assigned by the module vendor.
+ 
+@@ -39,7 +39,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/phys_id
+ Date:		Apr, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Handle (i.e., instance number) for the SMBIOS (system
+ 		management BIOS) Memory Device structure describing the NVDIMM
+@@ -49,7 +49,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/flags
+ Date:		Jun, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) The flags in the NFIT memory device sub-structure indicate
+ 		the state of the data on the nvdimm relative to its energy
+@@ -68,7 +68,7 @@ What:		/sys/bus/nd/devices/nmemX/nfit/format1
+ What:		/sys/bus/nd/devices/nmemX/nfit/formats
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) The interface codes indicate support for persistent memory
+ 		mapped directly into system physical address space and / or a
+@@ -84,7 +84,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/vendor
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Vendor id of the NVDIMM.
+ 
+@@ -92,7 +92,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/dsm_mask
+ Date:		May, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) The bitmask indicates the supported device specific control
+ 		functions relative to the NVDIMM command family supported by the
+@@ -102,7 +102,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/family
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Displays the NVDIMM family command sets. Values
+ 		0, 1, 2 and 3 correspond to NVDIMM_FAMILY_INTEL,
+@@ -118,7 +118,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/id
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) ACPI specification 6.2 section 5.2.25.9, defines an
+ 		identifier for an NVDIMM, which refelects the id attribute.
+@@ -127,7 +127,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/subsystem_vendor
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Sub-system vendor id of the NVDIMM non-volatile memory
+ 		subsystem controller.
+@@ -136,7 +136,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/subsystem_rev_id
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Sub-system revision id of the NVDIMM non-volatile memory subsystem
+ 		controller, assigned by the non-volatile memory subsystem
+@@ -146,7 +146,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/nfit/subsystem_device
+ Date:		Apr, 2016
+ KernelVersion:	v4.7
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) Sub-system device id for the NVDIMM non-volatile memory
+ 		subsystem controller, assigned by the non-volatile memory
+@@ -156,7 +156,7 @@ Description:
+ What:		/sys/bus/nd/devices/ndbusX/nfit/revision
+ Date:		Jun, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) ACPI NFIT table revision number.
+ 
+@@ -164,7 +164,7 @@ Description:
+ What:		/sys/bus/nd/devices/ndbusX/nfit/scrub
+ Date:		Sep, 2016
+ KernelVersion:	v4.9
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RW) This shows the number of full Address Range Scrubs (ARS)
+ 		that have been completed since driver load time. Userspace can
+@@ -177,7 +177,7 @@ Description:
+ What:		/sys/bus/nd/devices/ndbusX/nfit/hw_error_scrub
+ Date:		Sep, 2016
+ KernelVersion:	v4.9
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RW) Provides a way to toggle the behavior between just adding
+ 		the address (cache line) where the MCE happened to the poison
+@@ -196,7 +196,7 @@ Description:
+ What:		/sys/bus/nd/devices/ndbusX/nfit/dsm_mask
+ Date:		Jun, 2017
+ KernelVersion:	v4.13
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) The bitmask indicates the supported bus specific control
+ 		functions. See the section named 'NVDIMM Root Device _DSMs' in
+@@ -205,7 +205,7 @@ Description:
+ What:		/sys/bus/nd/devices/ndbusX/nfit/firmware_activate_noidle
+ Date:		Apr, 2020
+ KernelVersion:	v5.8
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RW) The Intel platform implementation of firmware activate
+ 		support exposes an option let the platform force idle devices in
+@@ -225,7 +225,7 @@ Description:
+ What:		/sys/bus/nd/devices/regionX/nfit/range_index
+ Date:		Jun, 2015
+ KernelVersion:	v4.2
+-Contact:	linux-nvdimm@lists.01.org
++Contact:	nvdimm@lists.linux.dev
+ Description:
+ 		(RO) A unique number provided by the BIOS to identify an address
+ 		range. Used by NVDIMM Region Mapping Structure to uniquely refer
+diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+index 8316c33862a0..92e2db0e2d3d 100644
+--- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
++++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
+@@ -1,7 +1,7 @@
+ What:		/sys/bus/nd/devices/nmemX/papr/flags
+ Date:		Apr, 2020
+ KernelVersion:	v5.8
+-Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
++Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
+ Description:
+ 		(RO) Report flags indicating various states of a
+ 		papr-pmem NVDIMM device. Each flag maps to a one or
+@@ -36,7 +36,7 @@ Description:
+ What:		/sys/bus/nd/devices/nmemX/papr/perf_stats
+ Date:		May, 2020
+ KernelVersion:	v5.9
+-Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
++Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, nvdimm@lists.linux.dev,
+ Description:
+ 		(RO) Report various performance stats related to papr-scm NVDIMM
+ 		device.  Each stat is reported on a new line with each line
+diff --git a/Documentation/driver-api/nvdimm/nvdimm.rst b/Documentation/driver-api/nvdimm/nvdimm.rst
+index ef6d59e0978e..1d8302b89bd4 100644
+--- a/Documentation/driver-api/nvdimm/nvdimm.rst
++++ b/Documentation/driver-api/nvdimm/nvdimm.rst
+@@ -4,7 +4,7 @@ LIBNVDIMM: Non-Volatile Devices
+ 
+ libnvdimm - kernel / libndctl - userspace helper library
+ 
+-linux-nvdimm@lists.01.org
++nvdimm@lists.linux.dev
+ 
+ Version 13
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9450e052f1b1..4d18fa67f71b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5146,7 +5146,7 @@ DEVICE DIRECT ACCESS (DAX)
+ M:	Dan Williams <dan.j.williams@intel.com>
+ M:	Vishal Verma <vishal.l.verma@intel.com>
+ M:	Dave Jiang <dave.jiang@intel.com>
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ F:	drivers/dax/
+ 
+@@ -6887,7 +6887,7 @@ M:	Dan Williams <dan.j.williams@intel.com>
+ R:	Matthew Wilcox <willy@infradead.org>
+ R:	Jan Kara <jack@suse.cz>
+ L:	linux-fsdevel@vger.kernel.org
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ F:	fs/dax.c
+ F:	include/linux/dax.h
+@@ -10146,7 +10146,7 @@ LIBNVDIMM BLK: MMIO-APERTURE DRIVER
+ M:	Dan Williams <dan.j.williams@intel.com>
+ M:	Vishal Verma <vishal.l.verma@intel.com>
+ M:	Dave Jiang <dave.jiang@intel.com>
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ Q:	https://patchwork.kernel.org/project/linux-nvdimm/list/
+ P:	Documentation/nvdimm/maintainer-entry-profile.rst
+@@ -10157,7 +10157,7 @@ LIBNVDIMM BTT: BLOCK TRANSLATION TABLE
+ M:	Vishal Verma <vishal.l.verma@intel.com>
+ M:	Dan Williams <dan.j.williams@intel.com>
+ M:	Dave Jiang <dave.jiang@intel.com>
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ Q:	https://patchwork.kernel.org/project/linux-nvdimm/list/
+ P:	Documentation/nvdimm/maintainer-entry-profile.rst
+@@ -10167,7 +10167,7 @@ LIBNVDIMM PMEM: PERSISTENT MEMORY DRIVER
+ M:	Dan Williams <dan.j.williams@intel.com>
+ M:	Vishal Verma <vishal.l.verma@intel.com>
+ M:	Dave Jiang <dave.jiang@intel.com>
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ Q:	https://patchwork.kernel.org/project/linux-nvdimm/list/
+ P:	Documentation/nvdimm/maintainer-entry-profile.rst
+@@ -10175,7 +10175,7 @@ F:	drivers/nvdimm/pmem*
+ 
+ LIBNVDIMM: DEVICETREE BINDINGS
+ M:	Oliver O'Halloran <oohall@gmail.com>
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ Q:	https://patchwork.kernel.org/project/linux-nvdimm/list/
+ F:	Documentation/devicetree/bindings/pmem/pmem-region.txt
+@@ -10186,7 +10186,7 @@ M:	Dan Williams <dan.j.williams@intel.com>
+ M:	Vishal Verma <vishal.l.verma@intel.com>
+ M:	Dave Jiang <dave.jiang@intel.com>
+ M:	Ira Weiny <ira.weiny@intel.com>
+-L:	linux-nvdimm@lists.01.org
++L:	nvdimm@lists.linux.dev
+ S:	Supported
+ Q:	https://patchwork.kernel.org/project/linux-nvdimm/list/
+ P:	Documentation/nvdimm/maintainer-entry-profile.rst
 
-> ---
->   include/linux/vtime.h | 94 +++++++++++++++++++++----------------------
->   1 file changed, 47 insertions(+), 47 deletions(-)
-> 
-> diff --git a/include/linux/vtime.h b/include/linux/vtime.h
-> index 041d6524d144..6a4317560539 100644
-> --- a/include/linux/vtime.h
-> +++ b/include/linux/vtime.h
-> @@ -10,53 +10,6 @@
->   
->   struct task_struct;
->   
-> -/*
-> - * vtime_accounting_enabled_this_cpu() definitions/declarations
-> - */
-> -#if defined(CONFIG_VIRT_CPU_ACCOUNTING_NATIVE)
-> -
-> -static inline bool vtime_accounting_enabled_this_cpu(void) { return true; }
-> -extern void vtime_task_switch(struct task_struct *prev);
-> -
-> -#elif defined(CONFIG_VIRT_CPU_ACCOUNTING_GEN)
-> -
-> -/*
-> - * Checks if vtime is enabled on some CPU. Cputime readers want to be careful
-> - * in that case and compute the tickless cputime.
-> - * For now vtime state is tied to context tracking. We might want to decouple
-> - * those later if necessary.
-> - */
-> -static inline bool vtime_accounting_enabled(void)
-> -{
-> -	return context_tracking_enabled();
-> -}
-> -
-> -static inline bool vtime_accounting_enabled_cpu(int cpu)
-> -{
-> -	return context_tracking_enabled_cpu(cpu);
-> -}
-> -
-> -static inline bool vtime_accounting_enabled_this_cpu(void)
-> -{
-> -	return context_tracking_enabled_this_cpu();
-> -}
-> -
-> -extern void vtime_task_switch_generic(struct task_struct *prev);
-> -
-> -static inline void vtime_task_switch(struct task_struct *prev)
-> -{
-> -	if (vtime_accounting_enabled_this_cpu())
-> -		vtime_task_switch_generic(prev);
-> -}
-> -
-> -#else /* !CONFIG_VIRT_CPU_ACCOUNTING */
-> -
-> -static inline bool vtime_accounting_enabled_cpu(int cpu) {return false; }
-> -static inline bool vtime_accounting_enabled_this_cpu(void) { return false; }
-> -static inline void vtime_task_switch(struct task_struct *prev) { }
-> -
-> -#endif
-> -
->   /*
->    * Common vtime APIs
->    */
-> @@ -94,6 +47,53 @@ static inline void vtime_account_hardirq(struct task_struct *tsk) { }
->   static inline void vtime_flush(struct task_struct *tsk) { }
->   #endif
->   
-> +/*
-> + * vtime_accounting_enabled_this_cpu() definitions/declarations
-> + */
-> +#if defined(CONFIG_VIRT_CPU_ACCOUNTING_NATIVE)
-> +
-> +static inline bool vtime_accounting_enabled_this_cpu(void) { return true; }
-> +extern void vtime_task_switch(struct task_struct *prev);
-> +
-> +#elif defined(CONFIG_VIRT_CPU_ACCOUNTING_GEN)
-> +
-> +/*
-> + * Checks if vtime is enabled on some CPU. Cputime readers want to be careful
-> + * in that case and compute the tickless cputime.
-> + * For now vtime state is tied to context tracking. We might want to decouple
-> + * those later if necessary.
-> + */
-> +static inline bool vtime_accounting_enabled(void)
-> +{
-> +	return context_tracking_enabled();
-> +}
-> +
-> +static inline bool vtime_accounting_enabled_cpu(int cpu)
-> +{
-> +	return context_tracking_enabled_cpu(cpu);
-> +}
-> +
-> +static inline bool vtime_accounting_enabled_this_cpu(void)
-> +{
-> +	return context_tracking_enabled_this_cpu();
-> +}
-> +
-> +extern void vtime_task_switch_generic(struct task_struct *prev);
-> +
-> +static inline void vtime_task_switch(struct task_struct *prev)
-> +{
-> +	if (vtime_accounting_enabled_this_cpu())
-> +		vtime_task_switch_generic(prev);
-> +}
-> +
-> +#else /* !CONFIG_VIRT_CPU_ACCOUNTING */
-> +
-> +static inline bool vtime_accounting_enabled_cpu(int cpu) {return false; }
-> +static inline bool vtime_accounting_enabled_this_cpu(void) { return false; }
-> +static inline void vtime_task_switch(struct task_struct *prev) { }
-> +
-> +#endif
-> +
->   
->   #ifdef CONFIG_IRQ_TIME_ACCOUNTING
->   extern void irqtime_account_irq(struct task_struct *tsk, unsigned int offset);
-> -- 2.31.1.368.gbe11c130af-goog
-> 
