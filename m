@@ -2,354 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717D536691A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E09366921
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239312AbhDUKV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238390AbhDUKV4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:21:56 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B927EC06174A;
-        Wed, 21 Apr 2021 03:21:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id z5so12205861edr.11;
-        Wed, 21 Apr 2021 03:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g8LULkbDRZ8eVfXCHGC767kB3FBP1zfeEdAZN5jFV9c=;
-        b=tevUl7sxPd6UdAoVqq8vzKQLBkAHjFHSy03QAxJJbnNhGjv/nyn/WtbkRcnhrClYVK
-         0ZfSjTHAjTTk7VN+KYDySPw1ydes6msX0ACP53L4ER5mPjwcZkt2xPbUCzdMtvOiEa8O
-         xZ+ajNNndiqZaOHUics3D/1kVWu3fYBqU7K6h8IxyI79aRtOdD3n+OoOtGUBtatUKNoM
-         5hucAEtkhWmWEp0XfxQfrke9/HkE2J41O1OM7NPZLFQJYc2yw+8D4YHWDNJt8jE+HK0p
-         gFjYcXuDOikrX6+P7gQgaVKRYjxYS3gGrY8Rld8v2Gto55TebKDo1XBEN5vmyWiv6Ksc
-         JEVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g8LULkbDRZ8eVfXCHGC767kB3FBP1zfeEdAZN5jFV9c=;
-        b=bCPyGsJE7Xna54rVJWYJdDXdOW/GWkOw0It4O7kmKph5HKlO2XPh6FTxKUuh4+3/mw
-         87Oh6qOsbvPVtgofMIYJMMQRZQoIVv1DbE4uqO9J8ULEAB2vTErvjBFvQEIb2Rlwzuo4
-         blgErXsruknZxHbn+NnicAHRdw4IBIUC3AlTLDy7dAMAh9DqLU+sDBzKbQj+BQNHxd87
-         Z86qI2UTs96071jrXWXkUYWvbGJuAl1Wan6jyrLSDnj9HzcB1QoETPiC2ANskFffjvtb
-         goiaRhuPOVh3BlquKs1nssOhG0OF1nOaiVod/eZIgeNO1W9TFjJVrT742dimfsMKOIRS
-         haXw==
-X-Gm-Message-State: AOAM5338WxRcM62I5kscRxylczzw6LLOWdwM5LLE0O6zUn4pOcxaUMuB
-        eeL46siBty+oK9v5zagEmHs=
-X-Google-Smtp-Source: ABdhPJzzIsH1DrQHKrRxRUYhls4ojSiQ/r+11NGATWyliEdg4oW+w+51aTfSUVBJ/24WKkLmBx4wlQ==
-X-Received: by 2002:a05:6402:31ac:: with SMTP id dj12mr19503851edb.267.1619000482455;
-        Wed, 21 Apr 2021 03:21:22 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:241e:502:1d80:445:7a19:e51f:9a1e])
-        by smtp.gmail.com with ESMTPSA id ke14sm1975113ejc.1.2021.04.21.03.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 03:21:21 -0700 (PDT)
-From:   Leonard Crestez <cdleonard@gmail.com>
-To:     Willem de Bruijn <willemb@google.com>,
-        Ilya Lesokhin <ilyal@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, Wei Wang <weiwan@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
-Date:   Wed, 21 Apr 2021 13:21:11 +0300
-Message-Id: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S239172AbhDUKYJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 06:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235231AbhDUKYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 06:24:03 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52E4B61445;
+        Wed, 21 Apr 2021 10:23:30 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lZA12-008f1C-1U; Wed, 21 Apr 2021 11:23:28 +0100
+Date:   Wed, 21 Apr 2021 11:23:27 +0100
+Message-ID: <874kg0q6lc.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kever Yang <kever.yang@rock-chips.com>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Heiko =?UTF-8?B?U3Q=?= =?UTF-8?B?w7xibmVy?= <heiko@sntech.de>
+Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
+In-Reply-To: <2791594e-db60-e1d0-88e5-7e5bbd98ae4d@rock-chips.com>
+References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
+        <871rbeo7wf.wl-maz@kernel.org>
+        <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
+        <87y2dmmggt.wl-maz@kernel.org>
+        <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
+        <87tuoambdb.wl-maz@kernel.org>
+        <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+        <871rbdt4tu.wl-maz@kernel.org>
+        <678e9950-dd85-abb2-a104-07a4db1fad49@rock-chips.com>
+        <87k0p4m0gm.wl-maz@kernel.org>
+        <8d2e22f5-1c1b-e795-8757-ae078446d961@rock-chips.com>
+        <878s5i2qyw.wl-maz@kernel.org>
+        <2791594e-db60-e1d0-88e5-7e5bbd98ae4d@rock-chips.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kever.yang@rock-chips.com, pgwipeout@gmail.com, tglx@linutronix.de, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, heiko@sntech.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
-in order to accumulate enough data" but linux almost never does that.
+On Wed, 21 Apr 2021 02:40:26 +0100,
+Kever Yang <kever.yang@rock-chips.com> wrote:
+> 
+> Hi Marc,
+> 
+> On 2021/4/16 下午11:23, Marc Zyngier wrote:
+> > On Fri, 16 Apr 2021 02:13:38 +0100,
+> > Kever Yang <kever.yang@rock-chips.com> wrote:
+> >> Hi Marc,
+> >> 
+> >> On 2021/4/15 下午4:11, Marc Zyngier wrote:
+> >>> Hi Kever,
+> >>> 
+> >>> On Thu, 15 Apr 2021 08:24:33 +0100,
+> >>> Kever Yang <kever.yang@rock-chips.com> wrote:
+> >>>> Hi Marc, Peter,
+> >>>> 
+> >>>>       RK356x GIC has two issues:
+> >>>> 
+> >>>> 1. GIC only support 32bit address while rk356x supports 8GB DDR SDRAM,
+> >>>> so we use ZONE_DMA32 to fix this issue;
+> >>> What transactions does this affect exactly?
+> >> The GIC on rk356x is a 32bit master, which means all the space its
+> >> logic need to access should be in the 4GB range.
+> > Well, at least this is consistently broken.
+> 
+> There are many legacy IPs which only support 32bit bus, we have to
+> use them as is in the new 64bit SoCs, I think the 32bit GIC can be
+> considered the same as those case, can we add CONFIG_ZONE_DMA32
+> support in GIC driver?
 
-Linux waits for probe_size + (1 + retries) * mss_cache to be available
-in the send buffer and if that condition is not met it will send anyway
-using the current MSS. The feature can be made to work by sending very
-large chunks of data from userspace (for example 128k) but for small writes
-on fast links probes almost never happen.
+Only as an erratum workaround. The GIC isn't some random device that
+can live behind an IOMMU that will sort the mapping problem for
+you. By design, it must be untranslated, so limiting it to only a
+portion of the physical address space is a bug, full stop.
 
-This patch tries to implement the "MAY" by adding an extra flag
-"wait_data" to icsk_mtup which is set to 1 if a probe is possible but
-insufficient data is available. Then data is held back in
-tcp_write_xmit until a probe is sent, probing conditions are no longer
-met, or 500ms pass.
+> eg. Other peripheral driver use dma_alloc_coherent() instead of
+> alloc_pages(), so then can support ZONE_DMA32 without any code
+> change.
 
-Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+You do realise that dma_alloc_coherent() requires the use of a struct
+device, and that the GIC is required to be up and running long before
+the device model is available, right?
 
----
- Documentation/networking/ip-sysctl.rst |  4 ++
- include/net/inet_connection_sock.h     |  7 +++-
- include/net/netns/ipv4.h               |  1 +
- include/net/tcp.h                      |  2 +
- net/ipv4/sysctl_net_ipv4.c             |  7 ++++
- net/ipv4/tcp_ipv4.c                    |  1 +
- net/ipv4/tcp_output.c                  | 54 ++++++++++++++++++++++++--
- 7 files changed, 71 insertions(+), 5 deletions(-)
+> >>> Only some ITS tables? Or
+> >>> all of them, including the command queue? What about the configuration
+> >>> and pending tables associated with the redistributors?
+> >>> 
+> >>>> 2. GIC version is r1p6-00rel0, RK356x interconnect does not support
+> >>>> GIC and CPU snoop to each other, hence the GIC does not support the
+> >>>> shareability feature.  The read of register value for shareability
+> >>>> feature does not return as expect in GICR and GITS, so we have to
+> >>>> workaround for it.
+> >>> How about the cacheability attribute? Can you please provide the exact
+> >>> set of attributes that this system actually supports for each of the
+> >>> ITS and redistributor base registers?
+> >> The shareability attributes in GICR_PENDBASEER, GICR_PROPBASER,
+> >> GITS_BASERn, GITS_CBASER default value is 0b00, when we set 0b01 then
+> >> read returns 0b01.
+> > And I claim that this is a perfectly broken behaviour. How do you
+> > expect software to find about the gory details of the integration?
+> > That's the only way for SW to find out what the HW is capable of...
+> 
+> As a software engineer, I totally agree with you on this point, but
+> when we back to the truth, we should know that these registers has
+> never been defined as "module capability for shareability"
 
-My tests are here: https://github.com/cdleonard/test-tcp-mtu-probing
+Says who? If SW cannot discover the capability of the HW, then nothing
+works.
 
-This patch makes the test pass quite reliably with
-ICMP_BLACKHOLE=1 TCP_MTU_PROBING=1 IPERF_WINDOW=256k IPERF_LEN=8k while
-before it only worked with much higher IPERF_LEN=256k
+> in hardware. The software use it as capability detect, and it works
+> before, but not means match the original hardware design, in this
+> case the new hardware may not follow the design because it's not a
+> standard or a clear enough guide for it.
 
-In my loopback tests I also observed another issue when tcp_retries
-increases because of SACKReorder. This makes the original problem worse
-(since the retries amount factors in buffer requirement) and seems to be
-unrelated issue. Maybe when loss happens due to MTU shrinkage the sender
-sack logic is confused somehow?
+The spec has been clear enough for *everyone* so far, and other GIC600
+implementations got it perfectly right. There has been *one*
+exception, which is documented and handled as a quirk.
 
-I know it's towards the end of the cycle but this is mostly just intended for
-discussion.
+> The capability register should always read-only instead of
+> read-write, the understanding software engineer and from hardware
+> engineer always have a gap.
+> 
+> I would proposal to add a optional dts property for driver to
+> identify if the board's GIC shareability or not, which is a method
+> used by many other module drivers.
 
-diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-index c2ecc9894fd0..47945a6b435d 100644
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -550,10 +550,14 @@ tcp_probe_interval - UNSIGNED INTEGER
- tcp_probe_threshold - INTEGER
- 	Controls when TCP Packetization-Layer Path MTU Discovery probing
- 	will stop in respect to the width of search range in bytes. Default
- 	is 8 bytes.
- 
-+tcp_probe_wait - INTEGER
-+	How long to wait for data for a tcp mtu probe. The default is 500
-+	milliseconds, zero can be used to disable this feature.
-+
- tcp_no_metrics_save - BOOLEAN
- 	By default, TCP saves various connection metrics in the route cache
- 	when the connection closes, so that connections established in the
- 	near future can use these to set initial conditions.  Usually, this
- 	increases overall performance, but may sometimes cause performance
-diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-index 3c8c59471bc1..19afcc7a4f4a 100644
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -123,15 +123,20 @@ struct inet_connection_sock {
- 		/* Range of MTUs to search */
- 		int		  search_high;
- 		int		  search_low;
- 
- 		/* Information on the current probe. */
--		u32		  probe_size:31,
-+		u32		  probe_size:30,
-+		/* Are we actively accumulating data for an mtu probe? */
-+				  wait_data:1,
- 		/* Is the MTUP feature enabled for this connection? */
- 				  enabled:1;
- 
- 		u32		  probe_timestamp;
-+
-+		/* Timer for wait_data */
-+		struct	  timer_list	wait_data_timer;
- 	} icsk_mtup;
- 	u32			  icsk_probes_tstamp;
- 	u32			  icsk_user_timeout;
- 
- 	u64			  icsk_ca_priv[104 / sizeof(u64)];
-diff --git a/include/net/netns/ipv4.h b/include/net/netns/ipv4.h
-index 87e1612497ea..5af1e8a31a02 100644
---- a/include/net/netns/ipv4.h
-+++ b/include/net/netns/ipv4.h
-@@ -126,10 +126,11 @@ struct netns_ipv4 {
- 	int sysctl_tcp_mtu_probe_floor;
- 	int sysctl_tcp_base_mss;
- 	int sysctl_tcp_min_snd_mss;
- 	int sysctl_tcp_probe_threshold;
- 	u32 sysctl_tcp_probe_interval;
-+	int sysctl_tcp_probe_wait;
- 
- 	int sysctl_tcp_keepalive_time;
- 	int sysctl_tcp_keepalive_intvl;
- 	u8 sysctl_tcp_keepalive_probes;
- 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index eaea43afcc97..9060cc855363 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1375,10 +1375,12 @@ static inline void tcp_slow_start_after_idle_check(struct sock *sk)
- 	s32 delta;
- 
- 	if (!sock_net(sk)->ipv4.sysctl_tcp_slow_start_after_idle || tp->packets_out ||
- 	    ca_ops->cong_control)
- 		return;
-+	if (inet_csk(sk)->icsk_mtup.wait_data)
-+		return;
- 	delta = tcp_jiffies32 - tp->lsndtime;
- 	if (delta > inet_csk(sk)->icsk_rto)
- 		tcp_cwnd_restart(sk, delta);
- }
- 
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index a62934b9f15a..1b6bbb24138a 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -842,10 +842,17 @@ static struct ctl_table ipv4_net_table[] = {
- 		.maxlen		= sizeof(u32),
- 		.mode		= 0644,
- 		.proc_handler	= proc_douintvec_minmax,
- 		.extra2		= &u32_max_div_HZ,
- 	},
-+	{
-+		.procname	= "tcp_probe_wait",
-+		.data		= &init_net.ipv4.sysctl_tcp_probe_wait,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_ms_jiffies,
-+	},
- 	{
- 		.procname	= "igmp_link_local_mcast_reports",
- 		.data		= &init_net.ipv4.sysctl_igmp_llm_reports,
- 		.maxlen		= sizeof(u8),
- 		.mode		= 0644,
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 312184cead57..39f74f04e8b5 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2889,10 +2889,11 @@ static int __net_init tcp_sk_init(struct net *net)
- 	net->ipv4.sysctl_tcp_base_mss = TCP_BASE_MSS;
- 	net->ipv4.sysctl_tcp_min_snd_mss = TCP_MIN_SND_MSS;
- 	net->ipv4.sysctl_tcp_probe_threshold = TCP_PROBE_THRESHOLD;
- 	net->ipv4.sysctl_tcp_probe_interval = TCP_PROBE_INTERVAL;
- 	net->ipv4.sysctl_tcp_mtu_probe_floor = TCP_MIN_SND_MSS;
-+	net->ipv4.sysctl_tcp_probe_wait = HZ / 2;
- 
- 	net->ipv4.sysctl_tcp_keepalive_time = TCP_KEEPALIVE_TIME;
- 	net->ipv4.sysctl_tcp_keepalive_probes = TCP_KEEPALIVE_PROBES;
- 	net->ipv4.sysctl_tcp_keepalive_intvl = TCP_KEEPALIVE_INTVL;
- 
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index bde781f46b41..15bbf0c97959 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -1754,10 +1754,39 @@ int tcp_mss_to_mtu(struct sock *sk, int mss)
- 	}
- 	return mtu;
- }
- EXPORT_SYMBOL(tcp_mss_to_mtu);
- 
-+void tcp_mtu_probe_wait_stop(struct sock *sk)
-+{
-+	struct inet_connection_sock *icsk = inet_csk(sk);
-+
-+	if (icsk->icsk_mtup.wait_data) {
-+		icsk->icsk_mtup.wait_data = false;
-+		sk_stop_timer(sk, &icsk->icsk_mtup.wait_data_timer);
-+	}
-+}
-+
-+static void tcp_mtu_probe_wait_timer(struct timer_list *t)
-+{
-+	struct inet_connection_sock *icsk = from_timer(icsk, t, icsk_mtup.wait_data_timer);
-+	struct sock *sk = &icsk->icsk_inet.sk;
-+
-+	bh_lock_sock(sk);
-+	if (!sock_owned_by_user(sk)) {
-+		/* push pending frames now */
-+		icsk->icsk_mtup.wait_data = false;
-+		tcp_push_pending_frames(sk);
-+	} else {
-+		/* flush later if sock locked by user */
-+		sk_reset_timer(sk, &icsk->icsk_mtup.wait_data_timer, jiffies + HZ / 10);
-+	}
-+	bh_unlock_sock(sk);
-+	sock_put(sk);
-+}
-+
-+
- /* MTU probing init per socket */
- void tcp_mtup_init(struct sock *sk)
- {
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	struct inet_connection_sock *icsk = inet_csk(sk);
-@@ -1768,10 +1797,11 @@ void tcp_mtup_init(struct sock *sk)
- 			       icsk->icsk_af_ops->net_header_len;
- 	icsk->icsk_mtup.search_low = tcp_mss_to_mtu(sk, net->ipv4.sysctl_tcp_base_mss);
- 	icsk->icsk_mtup.probe_size = 0;
- 	if (icsk->icsk_mtup.enabled)
- 		icsk->icsk_mtup.probe_timestamp = tcp_jiffies32;
-+	timer_setup(&icsk->icsk_mtup.wait_data_timer, tcp_mtu_probe_wait_timer, 0);
- }
- EXPORT_SYMBOL(tcp_mtup_init);
- 
- /* This function synchronize snd mss to current pmtu/exthdr set.
- 
-@@ -2366,16 +2396,18 @@ static int tcp_mtu_probe(struct sock *sk)
- 		 */
- 		tcp_mtu_check_reprobe(sk);
- 		return -1;
- 	}
- 
-+	/* Can probe ever fit inside window? */
-+	if (tp->snd_wnd < size_needed)
-+		return -1;
-+
- 	/* Have enough data in the send queue to probe? */
- 	if (tp->write_seq - tp->snd_nxt < size_needed)
--		return -1;
-+		return net->ipv4.sysctl_tcp_probe_wait ? 0 : -1;
- 
--	if (tp->snd_wnd < size_needed)
--		return -1;
- 	if (after(tp->snd_nxt + size_needed, tcp_wnd_end(tp)))
- 		return 0;
- 
- 	/* Do we need to wait to drain cwnd? With none in flight, don't stall */
- 	if (tcp_packets_in_flight(tp) + 2 > tp->snd_cwnd) {
-@@ -2596,28 +2628,42 @@ void tcp_chrono_stop(struct sock *sk, const enum tcp_chrono type)
-  * but cannot send anything now because of SWS or another problem.
-  */
- static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
- 			   int push_one, gfp_t gfp)
- {
-+	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
-+	struct net *net = sock_net(sk);
- 	struct sk_buff *skb;
- 	unsigned int tso_segs, sent_pkts;
- 	int cwnd_quota;
- 	int result;
- 	bool is_cwnd_limited = false, is_rwnd_limited = false;
- 	u32 max_segs;
- 
- 	sent_pkts = 0;
- 
- 	tcp_mstamp_refresh(tp);
--	if (!push_one) {
-+	/*
-+	 * Waiting for tcp probe data also applies when push_one=1
-+	 * If user does many small writes we hold them until we have have enough
-+	 * for a probe.
-+	 */
-+	if (!push_one || (push_one < 2 && net->ipv4.sysctl_tcp_probe_wait)) {
- 		/* Do MTU probing. */
- 		result = tcp_mtu_probe(sk);
- 		if (!result) {
-+			if (net->ipv4.sysctl_tcp_probe_wait && !icsk->icsk_mtup.wait_data) {
-+				icsk->icsk_mtup.wait_data = true;
-+				sk_reset_timer(sk, &icsk->icsk_mtup.wait_data_timer, jiffies + net->ipv4.sysctl_tcp_probe_wait);
-+			}
- 			return false;
- 		} else if (result > 0) {
-+			tcp_mtu_probe_wait_stop(sk);
- 			sent_pkts = 1;
-+		} else {
-+			tcp_mtu_probe_wait_stop(sk);
- 		}
- 	}
- 
- 	max_segs = tcp_tso_segs(sk, mss_now);
- 	while ((skb = tcp_send_head(sk))) {
+Are you also going to propose and support an ACPI specification update
+to cope with similarly broken devices? Either this is something that
+is available across the various firmware implementations, or it
+doesn't exist.
+
+>
+> >> Since there is no ACE coherency interface for this GIC controller, all
+> >> the cacheability in the GIC is not support in hardware.
+> >> 
+> >>> Also, please provide errata numbers for these two issues so that we
+> >>> can properly document them and track the workarounds.
+> >> What kind of errata do you need, could you please share any kind of
+> >> example close to this case?
+> > I would like something that says:
+> > 
+> > "ROCKCHIP_ERRATUM_123456: The GIC600 integration in RK356x doesn't
+> >   support any of the shareability or cacheability attributes, and
+> >   requires both values to be set to 0b00 for all the ITS and
+> >   Redistributor tables."
+> > 
+> > This is pretty similar to the bug affecting ThunderX with its "erratum
+> > 24313" (covered by CONFIG_CAVIUM_ERRATUM_22375), where the tables have
+> > to be flagged as non-cacheable. The Rockchip one is just worse.
+> > 
+> > We need an official erratum number so that we can refer to it in the
+> > source, commit log and documentation, as well as cross-reference it
+> > with the TRM. This number will be part of a configuration symbol that
+> > will make the compilation conditional so that people don't have to
+> > carry the extra burden generated by this bug if they don't need to.
+> > 
+> > Same thing goes for the 32bit bug.
+> > 
+> >> We consider this as a SoC implement design instead of a bug, so we
+> >> will add document in RK356X  TRM to describe the GIC design, but no
+> >> idea how to provide the errata.
+> >> 
+> >> Here is the shareabily attribute from ARM GIC architecture specification:
+> >> Shareability, bits [11:10] (from GITS_CBASER)
+> >> Indicates the Shareability attributes of accesses to the command
+> >> queue. The possible values of this field are:
+> >> 0b00 Non-shareable.
+> >> 0b01 Inner Shareable.
+> >> 0b10 Outer Shareable.
+> >> 0b11 Reserved. Treated as 0b00.
+> >> It is IMPLEMENTATION DEFINED whether this field has a fixed value or
+> >> can be programmed by software. Implementing this field with a fixed
+> >> value is deprecated.
+> >> On a Warm reset, this field resets to an architecturally UNKNOWN value
+> >> 
+> >> As you can see, "Implementing this field with a fixed value is
+> >> deprecated", so software should program this field to '0b00
+> >> Non-shareable' if the SoC design does not support the cache
+> >> shareability.
+> > [I really feel special when people quote the GIC spec at me]
+> > 
+> > That isn't what it says. Hardcoding the field with a fixed value is
+> > indeed deprecated, but that doesn't mean this field should accept
+> > values that the HW cannot support. If anything, what this says is "try
+> > and implement the options that SW is going to use".
+> > 
+> > But you need to give SW an indication of what is usable, because there
+> > is no other way to *discover* what the SoC is capable of at runtime.
+> > Otherwise, we would need to carry a per-SoC list of what the HW
+> > supports. I don't think that's the right thing to do (and you're about
+> > 8 years too late anyway).
+> > 
+> > Other GIC600 integrations got it perfectly right, by the way. Same for
+> > other GIC implementations, with the notable exception of Cavium and
+> > their first GIC in ThunderX, as described above.
+> 
+> I'm not sure if you still work for ARM or not, but we do have double
+
+I don't think whoever pays my salary is relevant in this context. I am
+writing as the guy who maintains the GIC architecture in Linux, and
+the fact that I have worked, work, or will work for ARM or not has no
+bearing on what I am saying here.
+
+> check again and again with IP vendor about this point, the GIC500
+> works because it's hardware bind to a fix value inside the IP, but
+> GIC600 does not do the same binding, and there is no any config
+> option to hardcode the reg field to a fixed value in the IP when
+> we don't need the ACE-lite.
+> 
+> This is why I insist that this is a different SoC implementation
+> instead of a SoC bug, we should add the support in the GIC driver
+> for different hardware case.
+> 
+> When you say we're about 8 years too late, I think there still not
+> much SoCs using GIC600, maybe the GIC600 IP is available for user at
+> mid of 2017?
+
+I'm not sure what the year 2017 does here. SW written as early as 2013
+and compliant with the architecture still works on GIC600 when it is
+properly integrated. Linux also has specific requirements, and you
+have decided to ignore them. That's your choice. But you also get to
+keep the pieces when things break.
+
+Now, this discussion has lasted long enough, and isn't going anywhere.
+If you want upstream support for your HW, I have explained what needs
+to be done: document the two problems, implement the workarounds using
+the GIC quirk infrastructure just like any other silicon vendor has
+done over the past 8 years.
+
+If you don't want to do it, it suits me just as well. I won't have to
+maintain yet another set of SoC-specific workarounds.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
