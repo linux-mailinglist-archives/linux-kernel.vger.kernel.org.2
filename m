@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EDB36689B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B52736689D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238939AbhDUJ5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52558 "EHLO mail.kernel.org"
+        id S235285AbhDUJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:57:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238613AbhDUJ4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:56:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A7961474;
+        id S238620AbhDUJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6E206145B;
         Wed, 21 Apr 2021 09:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1618998936;
-        bh=GXf9JQz9uOBMOtADoys8RVhTcC0zBy8R1BiZtPKj/QE=;
+        bh=rpTrUwy38tMF4LXHWp5J+Jv1V+4HlHiORTormNkoodU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eb8U4/U+lXEfqJlwcjFlu4nRlW5tFdfcJvzR+BR0yl+TA3j2MbzfDromZLLje9MAg
-         /OBZ+CJSBjz3SBtsns3CdprESQ8qFHPBXHfZ5/wyOk/OqtiaUvRDbYvkbhSWDWsScG
-         +3Xt2tW156AAq+b253Cu+pp08TvCq2+K0LPaCAhAkB7wJof9xIG7KYnIpnxaA6BlVp
-         dEDnV3DoIemIJ1ZJCjJBMjN6yOvmW1HLYasnaes0BnQ7k43+C+9sUJIvD+xMNrQCgz
-         fv3h9MEj3KNDx3swaTJADMicvq+hZmVEMfP3S4C69wXlXnf8LmiM/JMfVhn4JqlmN5
-         uLw1qftp+/wWA==
+        b=lvWf0IoKfhZ+hNZQ24jntnjzzoOv1G8xte4bMStk7WAmXLPCb1DUIEXzAOZizz7Xf
+         HVeofCpUtWdDiyYjhJP1hCYhx0a6ncoXIcLMof4XT3s6aCEkmcsUShg1BUY9Q1XH5M
+         cx12uy7NX5R9d3cnrdlTRVm5gdbjy4KgGJZIp16FLE/XuKc4fshO8nTBJTLkXVxX4O
+         w6hu7yLNCiLyd0Ax4AW4KjJIg7WPxKbMHUUR34h7lpMB5gXCzDP0CdQh2N4J0rCJ8L
+         HexyA08lOb/K+w3K0qJC2bu+XJx9uhy9nh2jXGTMyhs1fl8uuuM4abLXemSdtMwgJb
+         o1O89ga9ZjXRw==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lZ9a7-0000p1-TY; Wed, 21 Apr 2021 11:55:39 +0200
+        id 1lZ9a8-0000p3-0B; Wed, 21 Apr 2021 11:55:40 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 14/26] serial: meson: drop low-latency workaround
-Date:   Wed, 21 Apr 2021 11:54:57 +0200
-Message-Id: <20210421095509.3024-15-johan@kernel.org>
+Subject: [PATCH 15/26] serial: mpc52xx_uart: drop low-latency workaround
+Date:   Wed, 21 Apr 2021 11:54:58 +0200
+Message-Id: <20210421095509.3024-16-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210421095509.3024-1-johan@kernel.org>
 References: <20210421095509.3024-1-johan@kernel.org>
@@ -42,34 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The meson driver has always carried an unnecessary workaround for the
-infamous low_latency behaviour of tty_flip_buffer_push(), which had
-already been removed by the time the driver was added by commit
-ff7693d079e5 ("ARM: meson: serial: add MesonX SoC on-chip uart driver").
+Commit fbe543b412ce ("Fix a potential issue in mpc52xx uart driver")
+worked around the infamous low_latency behaviour of
+tty_flip_buffer_push() by simply dropping and reacquiring the port lock
+in the interrupt handler.
 
-Specifically, since commit a9c3f68f3cd8 ("tty: Fix low_latency BUG"),
+Since commit a9c3f68f3cd8 ("tty: Fix low_latency BUG"),
 tty_flip_buffer_push() always schedules a work item to push data to the
 line discipline and there's no need to keep any low_latency hacks around.
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/serial/meson_uart.c | 2 --
+ drivers/tty/serial/mpc52xx_uart.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
-index 69eeef9edfa5..529cd0289056 100644
---- a/drivers/tty/serial/meson_uart.c
-+++ b/drivers/tty/serial/meson_uart.c
-@@ -226,9 +226,7 @@ static void meson_receive_chars(struct uart_port *port)
- 
- 	} while (!(readl(port->membase + AML_UART_STATUS) & AML_UART_RX_EMPTY));
+diff --git a/drivers/tty/serial/mpc52xx_uart.c b/drivers/tty/serial/mpc52xx_uart.c
+index af1700445251..2704dc988e4a 100644
+--- a/drivers/tty/serial/mpc52xx_uart.c
++++ b/drivers/tty/serial/mpc52xx_uart.c
+@@ -1421,9 +1421,7 @@ mpc52xx_uart_int_rx_chars(struct uart_port *port)
+ 		}
+ 	}
  
 -	spin_unlock(&port->lock);
  	tty_flip_buffer_push(tport);
 -	spin_lock(&port->lock);
- }
  
- static irqreturn_t meson_uart_interrupt(int irq, void *dev_id)
+ 	return psc_ops->raw_rx_rdy(port);
+ }
 -- 
 2.26.3
 
