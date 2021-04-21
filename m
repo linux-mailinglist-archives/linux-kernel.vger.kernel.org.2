@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0829F366C2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EC4366C2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240011AbhDUNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
+        id S242121AbhDUNLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:11:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239848AbhDUNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:09:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0D446145F;
-        Wed, 21 Apr 2021 13:08:09 +0000 (UTC)
+        id S241494AbhDUNJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:09:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 667A461458;
+        Wed, 21 Apr 2021 13:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010490;
-        bh=sSRQktclxyfF75kY+G0JAh4bOy+iuvXcJmw+3f5HdOk=;
+        s=korg; t=1619010493;
+        bh=LjRPFfaiBM794yDXhw61zjcLIyxr26zjVv2XqpLbM9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wnl19z1sbVIPBplR2xlFVg/B41emVxpUILTXFBJIWKtpmcx66t7Vj1h+oOdFvch3/
-         Iyy4jkFHbtbWpw2aod6QXYASniJfTfz5RsB4Ha1nMdZF/uPqCSKzqMVF6XLChoaqg3
-         CbPPh6RYJaqO8JFatuP+YCd07dC5Ti8DThNNb0A8=
+        b=it86d/5UulW32oERWFxno7pOm38n8gW8KEiDuh4ZhRtEgMtaAjK6xVWPkQ5i/bJZk
+         7SkMtK/PtbUIQCjOrSlFhKOOGfLF45QrwoP+FaaZP2VvHLNGB5d+ZFUk9ng+VAQiNX
+         0MPvT/wczfb8j+togiF2/Pq+GZ/YvgKrPML0/PNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>
-Subject: [PATCH 156/190] Revert "serial: max310x: pass return value of spi_register_driver"
-Date:   Wed, 21 Apr 2021 15:00:31 +0200
-Message-Id: <20210421130105.1226686-157-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 157/190] Revert "Input: ad7879 - add check for read errors in interrupt"
+Date:   Wed, 21 Apr 2021 15:00:32 +0200
+Message-Id: <20210421130105.1226686-158-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -36,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
+This reverts commit e85bb0beb6498c0dffe18a2f1f16d575bc175c32.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -52,30 +53,36 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/max310x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/input/touchscreen/ad7879.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 1b61d26bb7af..93f69b66b896 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1518,10 +1518,10 @@ static int __init max310x_uart_init(void)
- 		return ret;
+diff --git a/drivers/input/touchscreen/ad7879.c b/drivers/input/touchscreen/ad7879.c
+index e850853328f1..8c4f3c193550 100644
+--- a/drivers/input/touchscreen/ad7879.c
++++ b/drivers/input/touchscreen/ad7879.c
+@@ -245,14 +245,11 @@ static void ad7879_timer(struct timer_list *t)
+ static irqreturn_t ad7879_irq(int irq, void *handle)
+ {
+ 	struct ad7879 *ts = handle;
+-	int error;
  
- #ifdef CONFIG_SPI_MASTER
--	ret = spi_register_driver(&max310x_spi_driver);
-+	spi_register_driver(&max310x_spi_driver);
- #endif
+-	error = regmap_bulk_read(ts->regmap, AD7879_REG_XPLUS,
+-				 ts->conversion_data, AD7879_NR_SENSE);
+-	if (error)
+-		dev_err_ratelimited(ts->dev, "failed to read %#02x: %d\n",
+-				    AD7879_REG_XPLUS, error);
+-	else if (!ad7879_report(ts))
++	regmap_bulk_read(ts->regmap, AD7879_REG_XPLUS,
++			 ts->conversion_data, AD7879_NR_SENSE);
++
++	if (!ad7879_report(ts))
+ 		mod_timer(&ts->timer, jiffies + TS_PEN_UP_TIMEOUT);
  
--	return ret;
-+	return 0;
- }
- module_init(max310x_uart_init);
- 
+ 	return IRQ_HANDLED;
 -- 
 2.31.1
 
