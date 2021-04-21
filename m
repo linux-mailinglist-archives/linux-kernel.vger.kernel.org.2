@@ -2,177 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D03366DCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DE0366DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239480AbhDUOL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:11:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31420 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237931AbhDUOLx (ORCPT
+        id S239794AbhDUOMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239591AbhDUOMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:11:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619014279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=no9E22n6xFp0ErmLBps/AYHPNqCND0cR48PHFS1zZb0=;
-        b=ZqSJPu7PqLMpUcNT5i5Lmp579MCjp61b0W9kTjX4WEbmXWZ+d8LNvBBnOnrBYkjfhmmAPX
-        lz6dRMMRXMooYJabbI3n5fbTB8USXWihcLfxzg142bOCMWEq/mH1ygNsTTzE4ix1V8q7bL
-        ixh6rA1I3XMFxga7cDKfqMz7Lc5UE/s=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-dSl1NBl8Ot6oQpiYJAMmEQ-1; Wed, 21 Apr 2021 10:11:18 -0400
-X-MC-Unique: dSl1NBl8Ot6oQpiYJAMmEQ-1
-Received: by mail-ej1-f70.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so5926460ejz.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 07:11:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        Wed, 21 Apr 2021 10:12:03 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766D3C06174A;
+        Wed, 21 Apr 2021 07:11:30 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id e89-20020a9d01e20000b0290294134181aeso13253706ote.5;
+        Wed, 21 Apr 2021 07:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=no9E22n6xFp0ErmLBps/AYHPNqCND0cR48PHFS1zZb0=;
-        b=PhTG2rxkb4EXZNRPXd4xb3yB04alM/hoXRwNLgD4ZfyibTyo4IL3ShxClUmdCEV4cU
-         DmUoqpZlP8JGKByInkMKeqkAPMiGUbwa62LtkFDYHwuU3h1wwc33U8VhTtWfWoZw86Or
-         0JcQSqefD0V8TqsX2QqWFez3Dv5bZsNNNL80XS16VNJ/zZPMwD8WkWcw4CSTtitOEf2r
-         xsL2ro9e4eyGGdS5xsZ2V7bE5tgrI7mv4ZID6PP6GT/qRBfFHKkRJcu9AeoycI4XkVdU
-         uZXgFJtR4HhMUZ3gNEiV6tvtDV8aHr4AK/MR5GeYKziZBtkDDnRKi7w76Uo4RmmMaBwI
-         2hmw==
-X-Gm-Message-State: AOAM532tBLlA00jvSRVDXwtv4sbrr6FTPsCPlD+XYKuhvQWCMxIPBByx
-        Jfs7DtlJ9voxOOZAZNZL3C+FqaK1vkamZYR8QlLsrUVFconhH4fSKZgjV7ATuEmm6bK94Rd768y
-        M2cANZMQzhLtNFPPUGdPBJ5n8
-X-Received: by 2002:a05:6402:40c9:: with SMTP id z9mr39325079edb.24.1619014276819;
-        Wed, 21 Apr 2021 07:11:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrqZt+nvJogt73yI9Jd+E2aQ0gY3a+a2uV/BTiXvfbZcykZA0uU7drO20nWxyzpawU6I76Xg==
-X-Received: by 2002:a05:6402:40c9:: with SMTP id z9mr39325055edb.24.1619014276660;
-        Wed, 21 Apr 2021 07:11:16 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id bu26sm2497436ejb.30.2021.04.21.07.11.15
+        bh=C+MMGu6/cdDUyGRCAkorYxe8bF5C7WJDPp9/ShABlOU=;
+        b=gmj1SVVbiQG/yKolJzH1wD8dfp3SWUUnQe9+lwQsSLYGZ3rqKl/lFThcD9ndaFzlmy
+         pRH2PyQg5xTFUaLSVbp0DYqzUJXPBKVmm0JPcE+g2GmR8WDq0GcO74lwnCkEzdo+rqCg
+         LrrognhvbjlOK7cZOXIMCZXQ+IJDmjAfnkFSFKKgsUUzXGWlcr9BG+9x8kXoPFacVpFE
+         teq1Wajw89s18QYvTjN4XQ2t2BKKFSPZixeyQtOR0l0kJWtK1B2buoKi+JeHlcejynCI
+         EVRhh4BXZ2Pl4mJ+5fiX5Iu7soWjMLQ2J/pBjyLaqxZwgh5IW3/Rp7DWN7TcaMQO7yXA
+         BvKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=C+MMGu6/cdDUyGRCAkorYxe8bF5C7WJDPp9/ShABlOU=;
+        b=LukgHC1ADyopHq7Ln3CE67aCJgTGxYt4RgaS1cFr+NmGFyEuY1gm/f431wPf/jabdO
+         2a4xTaKhE8CweUJFingCuD8X5Makl40Q9j5DPdlD+NVzixL4xi1D1GErPEqyAAw530w9
+         y+MWje702KBrQLqyirrWdsJHsHvuyNtVBj1eExU5L61mQ5b1SRroRzEqtHGI4dt9BhZi
+         dFbdzNwDwN5nC0NOnUWwVVU+jOssHUJgO7g8kzByS3aBoAeyU0ggC0jkK0dQjNiz38U3
+         sW4PUSgFl2bqLVoxtUaOf7CcLC+8uJsNtnVNEs47PtjdyE8BwgFkyof+9w0v9qcpu8tu
+         tZ/g==
+X-Gm-Message-State: AOAM532v4Cw8uzwuq1Tek63HhPwAR6CQvBjNfFHwDQVvhOhr4pWVvcro
+        vcq+LP4+Okp7Bt54FrB2So7GUhY5Yic=
+X-Google-Smtp-Source: ABdhPJwHg1FJRGDzgw5/MyTHpkZNNXQcNJAZciGSi3Ft8ARQ1p0BzIhuXFZUFjQoQ4x2M0mP67A3Ow==
+X-Received: by 2002:a9d:7e8e:: with SMTP id m14mr10229356otp.302.1619014289335;
+        Wed, 21 Apr 2021 07:11:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c21sm474473ooa.48.2021.04.21.07.11.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 07:11:16 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: intel_pmc_core: re-write copy in
- pmc_core_lpm_latch_mode_write()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Cc:     David E Box <david.e.box@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <YH/xicL9RXjH2pvD@mwanda>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <87e61d84-e23e-1ccc-c4ed-57ffa0ed95fb@redhat.com>
-Date:   Wed, 21 Apr 2021 16:11:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 21 Apr 2021 07:11:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH V5] watchdog: mtk: support dual mode when the bark irq is
+ available
+To:     Wang Qing <wangqing@vivo.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1618992304-18903-1-git-send-email-wangqing@vivo.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <65b0c4d4-7b01-eb4c-3b1e-0d1427e85c3e@roeck-us.net>
+Date:   Wed, 21 Apr 2021 07:11:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YH/xicL9RXjH2pvD@mwanda>
+In-Reply-To: <1618992304-18903-1-git-send-email-wangqing@vivo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
-
-On 4/21/21 11:34 AM, Dan Carpenter wrote:
-> There are two bugs in this code:
-> 1) "ret" is unsigned so the error handling is broken.
-
-This is already fixed in the latest for-next branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=for-next
-
-> 2) simple_write_to_buffer() is innappropriate.  It will succeed even if
->    we are only able to copy a single byte of data from user space.  This
->    could lead to an information leak if the buf[] array is not fully
->    initialized.
+On 4/21/21 1:05 AM, Wang Qing wrote:
+> Support using irq handling wdt bark first instead of directly resetting.
 > 
-> I've fixed it to use strncpy_from_user() and to return -EINVAL if the
-> user supplied string is not NUL terminated.
-
-This is a debugfs interface, AFAIK there is no guarantee that:
-
-echo foo > /sys/kernel/debug/foo/bar
-
-Will result in the buf of the write(fd, buf, 4 /* 3 chars + '\n' */)
-call actually being 0 terminated ?  I know that with sysfs the sysfs
-code takes care of 0 termination, but I don't believe that that is the
-case in debugfs ?
-
-So it would see that the original code which does not assume 0
-termination of the user-input is correct here.
-
-Except that you are right that this could result in processing
-whatever was leftover in the buffer, since simple_write_to_buffer()
-may write less then count bytes to buf.
-
-This should fix that however, while sticking with simple_write_to_buffer():
-
-diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-index d174aeb492e0..ac753e1b2cd4 100644
---- a/drivers/platform/x86/intel_pmc_core.c
-+++ b/drivers/platform/x86/intel_pmc_core.c
-@@ -1371,7 +1371,7 @@ static ssize_t pmc_core_lpm_latch_mode_write(struct file *file,
- 	if (ret < 0)
- 		return ret;
- 
--	buf[count] = '\0';
-+	buf[ret] = '\0';
- 
- 	/*
- 	 * Allowed strings are:
-
-I think that that would be a better fix ?
-
-Regards,
-
-Hans
-
-
+> When the watchdog timer expires in dual mode, an interrupt will be
+> triggered first, then the timing restarts. The reset signal will be
+> initiated when the timer expires again.
 > 
-> Fixes: 8074a79fad2e ("platform/x86: intel_pmc_core: Add option to set/clear LPM mode")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> The dual mode is disabled by default.
+> 
+
+This means the real timeout is now timeout * 2. This is not what
+is supposed to happen. The hard watchdog timeout needs to happen at
+'timeout'.
+
+If you want to do this, it needs to be done using pre-timeout,
+only the pre-timeout time (and thus the watchdog timeout written
+into the chip) must be limited to timeout / 2. Pre-timeout must
+by default be disabled and only be supported if an interrupt was
+provided.
+
+I don't see a need for an additional module parameter. Providing
+an interrupt implies that pre-timeout support is wanted. This needs
+to be documented accordingly.
+
+I am not lot looking at the errors reported by 0-day. Please address those.
+
+Guenter
+
+> V2:
+> - panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
+> 
+> V3:
+> - Modify the pretimeout behavior, manually reset after the pretimeout
+> - is processed and wait until timeout.
+> 
+> V4:
+> - Remove pretimeout related processing. 
+> - Add dual mode control separately.
+> 
+> V5:
+> - Fix some formatting and printing problems.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 > ---
->  drivers/platform/x86/intel_pmc_core.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
+>  drivers/watchdog/mtk_wdt.c | 36 ++++++++++++++++++++++++++++++++----
+>  1 file changed, 32 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index 3ae00ac85c75..c989796a5d52 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -1360,18 +1360,19 @@ static ssize_t pmc_core_lpm_latch_mode_write(struct file *file,
->  	struct pmc_dev *pmcdev = s->private;
->  	bool clear = false, c10 = false;
->  	unsigned char buf[8];
-> -	size_t ret;
-> -	int idx, m, mode;
-> +	int idx, m, mode, ret;
-> +	size_t len;
->  	u32 reg;
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index 97ca993..40122f8
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/reset-controller.h>
+>  #include <linux/types.h>
+>  #include <linux/watchdog.h>
+> +#include <linux/interrupt.h>
 >  
-> -	if (count > sizeof(buf) - 1)
-> +	if (count > sizeof(buf))
->  		return -EINVAL;
-
-Assuming that the buffer passed to a debugfs write is guaranteed to be 0 terminated
-then this is not necessary, if we hit this case then the ret == len check below
-will trigger?
-
+>  #define WDT_MAX_TIMEOUT		31
+>  #define WDT_MIN_TIMEOUT		1
+> @@ -57,6 +58,7 @@
 >  
-> -	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, userbuf, count);
-> +	len = min(count, sizeof(buf));
-> +	ret = strncpy_from_user(buf, userbuf, len);
->  	if (ret < 0)
+>  static bool nowayout = WATCHDOG_NOWAYOUT;
+>  static unsigned int timeout;
+> +static bool dual_mode;
+>  
+>  struct mtk_wdt_dev {
+>  	struct watchdog_device wdt_dev;
+> @@ -239,13 +241,23 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
 >  		return ret;
-> -
-> -	buf[count] = '\0';
-> +	if (ret == len)
-> +		return -EINVAL;
 >  
->  	/*
->  	 * Allowed strings are:
+>  	reg = ioread32(wdt_base + WDT_MODE);
+> -	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	if (dual_mode)
+> +		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	else
+> +		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+>  	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+>  	iowrite32(reg, wdt_base + WDT_MODE);
+>  
+>  	return 0;
+>  }
+>  
+> +static irqreturn_t mtk_wdt_isr(int irq, void *arg)
+> +{
+> +	panic("wdt bark!\n");
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static const struct watchdog_info mtk_wdt_info = {
+>  	.identity	= DRV_NAME,
+>  	.options	= WDIOF_SETTIMEOUT |
+> @@ -267,7 +279,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct mtk_wdt_dev *mtk_wdt;
+>  	const struct mtk_wdt_data *wdt_data;
+> -	int err;
+> +	int err, irq;
+>  
+>  	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+>  	if (!mtk_wdt)
+> @@ -279,6 +291,19 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	if (IS_ERR(mtk_wdt->wdt_base))
+>  		return PTR_ERR(mtk_wdt->wdt_base);
+>  
+> +	if (dual_mode) {
+> +		irq = platform_get_irq(pdev, 0);
+> +		if (irq > 0) {
+> +			err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
+> +						&mtk_wdt->wdt_dev);
+> +			if (err)
+> +				return err;
+> +		} else {
+> +			dual_mode = 0;
+> +			dev_info(&pdev->dev, "couldn't get wdt irq, set dual_mode = 0\n");
+> +		}
+> +	}
+> +
+>  	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
+>  	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+>  	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+> @@ -299,8 +324,8 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	if (unlikely(err))
+>  		return err;
+>  
+> -	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)\n",
+> -		 mtk_wdt->wdt_dev.timeout, nowayout);
+> +	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d,
+> +		 dual_mode=%d)\n", mtk_wdt->wdt_dev.timeout, nowayout, dual_mode);
+>  
+>  	wdt_data = of_device_get_match_data(dev);
+>  	if (wdt_data) {
+> @@ -368,6 +393,9 @@ module_param(nowayout, bool, 0);
+>  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
+>  			__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+>  
+> +module_param(dual_mode, bool, 0);
+> +MODULE_PARM_DESC(dual_mode, "Dual mode triggers irq before reset (default=0)");
+> +
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Matthias Brugger <matthias.bgg@gmail.com>");
+>  MODULE_DESCRIPTION("Mediatek WatchDog Timer Driver");
 > 
 
