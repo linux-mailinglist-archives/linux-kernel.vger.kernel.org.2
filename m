@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC22B3667CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7933667D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237980AbhDUJR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:17:26 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12674 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhDUJRZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:17:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618996612; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=C15zEg9lT28TsukmTZN4mMcIoCliTgr0gqXl4JqKaYA=; b=jM12FpWEvt60uPS2c5KQQDAL5+oIaG3rQWBwfdgzSpbH3kZ4qI/y1KLGrOpsw5mpZ83QeKQ2
- FVgJ+bjhlGqaIDGF5my63ZnWys1Z6XWG7cHgpkn0et3Ym+g4MQlpN3Uk/fdLOG0MXh9x+/uD
- 7trQTYbA9P3MsXpD0rGycwr1IQc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 607fed6f853c0a2c46c7a107 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 09:16:31
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A7FFDC4323A; Wed, 21 Apr 2021 09:16:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6475FC433D3;
-        Wed, 21 Apr 2021 09:16:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6475FC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zijuhu@codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v1] Bluetooth: btusb: use default nvm if boardID is 0 for wcn6855.
-Date:   Wed, 21 Apr 2021 17:16:16 +0800
-Message-Id: <1618996576-7743-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S237732AbhDUJTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:19:43 -0400
+Received: from elvis.franken.de ([193.175.24.41]:34846 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230516AbhDUJTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:19:40 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lZ90d-0002YJ-00; Wed, 21 Apr 2021 11:18:59 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 744F7C07CD; Wed, 21 Apr 2021 11:18:43 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 11:18:43 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+Message-ID: <20210421091843.GA6174@alpha.franken.de>
+References: <20210420123932.24634-1-tsbogend@alpha.franken.de>
+ <CAHp75VcQ4WXm3uS2r=uDpA4+0vPWdKjev6=vV_JDxMLPzpHDRw@mail.gmail.com>
+ <20210421083214.GA5694@alpha.franken.de>
+ <CAHp75VeeWTdYjSgyjgzmFSpO=Zc+Q6SCS-06LVcVoghuF9vNgA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeeWTdYjSgyjgzmFSpO=Zc+Q6SCS-06LVcVoghuF9vNgA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+On Wed, Apr 21, 2021 at 11:48:59AM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 21, 2021 at 11:32 AM Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> wrote:
+> > On Wed, Apr 21, 2021 at 11:09:51AM +0300, Andy Shevchenko wrote:
+> > > On Tuesday, April 20, 2021, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > > wrote:
+> > >
+> > > > IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+> > > > to 32 gpios. All gpios could be used as interrupt source.
+> > >
+> > >
+> > >
+> > > I would recommend looking for latest new drivers in GPIO subsystem to see
+> > > how you may improve yours.
+> >
+> > Could give me a better pointer to it ? I looked at a lot of gpio driver
+> > and took what fitted best.
+> >
+> > > Here just one question, why it can not be a module
+> >
+> > that's probably doable...
+> >
+> > > why arch_initcall() is used
+> >
+> > without that interrupts weren't avaiable early enough.
+> >
+> > > and why you put a dead code into it (see the first part of the
+> > > question)?
+> >
+> > hmm, pointer please ?
+> 
+> It's already in the question above, do your homework :-)
 
-if boardID is 0, will use the default nvm file without surfix.
+is this some sort of joke I'm not getting ?
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+git log --oneline drivers/gpio/Makefile
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 6f25337..61afea9 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -4138,9 +4138,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 	int err;
- 
- 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
--		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
--			 le32_to_cpu(ver->rom_version),
--			 le16_to_cpu(ver->board_id));
-+		if (le16_to_cpu(ver->board_id) == 0x0) { //if boardid equal 0, use default nvm.
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
-+				 le32_to_cpu(ver->rom_version));
-+		} else {
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-+				le32_to_cpu(ver->rom_version),
-+				le16_to_cpu(ver->board_id));
-+		}
- 	} else {
- 		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
- 			 le32_to_cpu(ver->rom_version));
+2ad74f40dacc gpio: visconti: Add Toshiba Visconti GPIO support
+
+that's the latest driver added in v5.12-rc8. Is that a good one ?
+
+Thomas.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
