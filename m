@@ -2,79 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B473670A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C354F3670A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241521AbhDUQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:53:45 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:38858 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235436AbhDUQxn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:53:43 -0400
-Received: by mail-oo1-f43.google.com with SMTP id p12-20020a4a2f0c0000b02901ecdbb16887so2422138oop.5;
-        Wed, 21 Apr 2021 09:53:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+WcdVAWw1wrE0hCoQ+UXML3T7kI52AZNB5+mZJ4YXyA=;
-        b=cQ4bRpTUkpKMKuk/SZmMkvkZhovg70ur5KulEFMV9YTnrLMa9eL8QJATDNtikdem0H
-         VTOd8ICaIePVrtuR3sl4gRUohr+xfsk9+5zxq3jn4Rz7FSoMPJfMivkDuL1AgE/4qdDo
-         VHysH4Nn4kCxs7tPHEkJjJU/sCdlq+p/JpxoQgzEAlufMHuBJBa+w5iJ1FyiDqF3R08s
-         aF3GAgJzG9XGzUUcEs74CY2B1zaS+Un1WiFYaYxEFmUWjjIwln+Gy/L/mSV5YbBzduBF
-         4zS/h8l0gouaY80wUg1u1zq35oSllGGgCPTCvfDk3vZlsngD+ELnU0Cctq+Wtf+SLx9f
-         V7HQ==
-X-Gm-Message-State: AOAM5322bKVvbDQxPXPU4IwtMXw4OE6AxvKX5AAZwN64WmsKABfIYOuu
-        9XYiIssSw+McSI2yCqtIneQUUJYG4dedl+D038U=
-X-Google-Smtp-Source: ABdhPJxSq8Z7Oay74Ci2aElVdYLnRCXpGGB0j1dzlozKhf7iQegxeIuo8msIODvBqfSxPh1mcqBZT4r7aiHGlWtKT74=
-X-Received: by 2002:a4a:d781:: with SMTP id c1mr21492266oou.44.1619023989913;
- Wed, 21 Apr 2021 09:53:09 -0700 (PDT)
+        id S237661AbhDUQyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:54:45 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:54904 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234323AbhDUQym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:54:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619024037; bh=VCmSJ8LSVouvy6XexIpQzAWw/oMIdau2v3GIRsCTjLk=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=Qrm+M4CXk3LXvBJdpxDbZFQYTXTZpFbfliyfaN8imjwqGR6mej5fD/IY3s/IGBxRo
+         0dhvYqhyb83lqq8tAs0ZEFoP7cgvQuSzlYRYIHhLfKVrHf2764A7LEqs6/3fLC7mku
+         bWs9zqb9m/MbZTKRnzwFfxiHwRXltWY7Io+//t/Y=
+Received: by 192.168.90.16 [192.168.90.16] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 18:53:56 +0200 (CEST)
+X-EA-Auth: R/cr+GsY4HzJDApy1GVkt5r/Ha9d4WSyD1Ioq6i1yspDcwJ26DnqyHVZ245xX24+fFZzMH2CPResh9pZFvlTzmcuuSpOf/6i
+Date:   Wed, 21 Apr 2021 22:23:51 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v1 3/6] staging: media: atomisp: use __func__ over function
+ names
+Message-ID: <2cb42846abb7cab5e64bc29d5e496766f5df169b.1619022192.git.drv@mailo.com>
+References: <cover.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
-References: <20210415143758.1962567-1-colin.king@canonical.com>
-In-Reply-To: <20210415143758.1962567-1-colin.king@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 21 Apr 2021 18:52:58 +0200
-Message-ID: <CAJZ5v0gogVAEZRP7AoiHhEiYcDtjsUoAUUACSpUcWBEc_qhSSw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: APEI: remove redundant assignment to variable rc
-To:     Colin King <colin.king@canonical.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619022192.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:38 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable rc is being assigned a value that is never read,
-> the assignment is redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/acpi/apei/einj.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-> index 133156759551..328e8aeece6c 100644
-> --- a/drivers/acpi/apei/einj.c
-> +++ b/drivers/acpi/apei/einj.c
-> @@ -725,7 +725,6 @@ static int __init einj_init(void)
->                 goto err_release;
->         }
->
-> -       rc = -ENOMEM;
->         einj_param = einj_get_parameter_address();
->         if ((param_extension || acpi5) && einj_param) {
->                 debugfs_create_x32("flags", S_IRUSR | S_IWUSR, einj_debug_dir,
-> --
+Replace hard coded function names from the debug print strings by
+standard __func__ predefined identifier. This resolves following
+checkpatch script WARNING:
+Prefer using '"%s...", __func__' to using function's name, in a string.
 
-Applied as 5.13 material, thanks!
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
+
+Changes in v1:
+   - None.
+
+ .../staging/media/atomisp/i2c/atomisp-gc0310.c   |  2 +-
+ .../staging/media/atomisp/i2c/atomisp-gc2235.c   |  2 +-
+ .../staging/media/atomisp/i2c/atomisp-lm3554.c   |  2 +-
+ .../staging/media/atomisp/i2c/atomisp-ov2680.c   | 16 ++++++++--------
+ .../staging/media/atomisp/i2c/atomisp-ov2722.c   |  2 +-
+ 5 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index d68a2bcc9ae1..b572551f1a0d 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -1292,7 +1292,7 @@ static int gc0310_remove(struct i2c_client *client)
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+ 	struct gc0310_device *dev = to_gc0310_sensor(sd);
+ 
+-	dev_dbg(&client->dev, "gc0310_remove...\n");
++	dev_dbg(&client->dev, "%s...\n", __func__);
+ 
+ 	dev->platform_data->csi_cfg(sd, 0);
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index e722c639b60d..548c572d3b57 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -1034,7 +1034,7 @@ static int gc2235_remove(struct i2c_client *client)
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+ 	struct gc2235_device *dev = to_gc2235_sensor(sd);
+ 
+-	dev_dbg(&client->dev, "gc2235_remove...\n");
++	dev_dbg(&client->dev, "%s...\n", __func__);
+ 
+ 	dev->platform_data->csi_cfg(sd, 0);
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+index 7ca7378b1859..ab10fd98dbc0 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+@@ -680,7 +680,7 @@ static int lm3554_detect(struct v4l2_subdev *sd)
+ 	int ret;
+ 
+ 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA)) {
+-		dev_err(&client->dev, "lm3554_detect i2c error\n");
++		dev_err(&client->dev, "%s i2c error\n", __func__);
+ 		return -ENODEV;
+ 	}
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+index 92c52431bd8f..c17615149f46 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+@@ -146,7 +146,7 @@ static int ov2680_g_bin_factor_x(struct v4l2_subdev *sd, s32 *val)
+ 	struct ov2680_device *dev = to_ov2680_sensor(sd);
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 
+-	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_x\n");
++	dev_dbg(&client->dev,  "++++%s\n", __func__);
+ 	*val = ov2680_res[dev->fmt_idx].bin_factor_x;
+ 
+ 	return 0;
+@@ -158,7 +158,7 @@ static int ov2680_g_bin_factor_y(struct v4l2_subdev *sd, s32 *val)
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 
+ 	*val = ov2680_res[dev->fmt_idx].bin_factor_y;
+-	dev_dbg(&client->dev,  "++++ov2680_g_bin_factor_y\n");
++	dev_dbg(&client->dev,  "++++%s\n", __func__);
+ 	return 0;
+ }
+ 
+@@ -173,7 +173,7 @@ static int ov2680_get_intg_factor(struct i2c_client *client,
+ 	u16 reg_val;
+ 	int ret;
+ 
+-	dev_dbg(&client->dev,  "++++ov2680_get_intg_factor\n");
++	dev_dbg(&client->dev,  "++++%s\n", __func__);
+ 	if (!info)
+ 		return -EINVAL;
+ 
+@@ -251,8 +251,8 @@ static long __ov2680_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+ 	int ret, exp_val;
+ 
+ 	dev_dbg(&client->dev,
+-		"+++++++__ov2680_set_exposure coarse_itg %d, gain %d, digitgain %d++\n",
+-		coarse_itg, gain, digitgain);
++		"+++++++%s coarse_itg %d, gain %d, digitgain %d++\n",
++		__func__, coarse_itg, gain, digitgain);
+ 
+ 	vts = ov2680_res[dev->fmt_idx].lines_per_frame;
+ 
+@@ -1061,9 +1061,9 @@ static int ov2680_s_stream(struct v4l2_subdev *sd, int enable)
+ 
+ 	mutex_lock(&dev->input_lock);
+ 	if (enable)
+-		dev_dbg(&client->dev, "ov2680_s_stream one\n");
++		dev_dbg(&client->dev, "%s one\n", __func__);
+ 	else
+-		dev_dbg(&client->dev, "ov2680_s_stream off\n");
++		dev_dbg(&client->dev, "%s off\n", __func__);
+ 
+ 	ret = ov2680_write_reg(client, 1, OV2680_SW_STREAM,
+ 			       enable ? OV2680_START_STREAMING :
+@@ -1227,7 +1227,7 @@ static int ov2680_remove(struct i2c_client *client)
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+ 	struct ov2680_device *dev = to_ov2680_sensor(sd);
+ 
+-	dev_dbg(&client->dev, "ov2680_remove...\n");
++	dev_dbg(&client->dev, "%s...\n", __func__);
+ 
+ 	dev->platform_data->csi_cfg(sd, 0);
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index d046a9804f63..69409f8447b5 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -1175,7 +1175,7 @@ static int ov2722_remove(struct i2c_client *client)
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+ 	struct ov2722_device *dev = to_ov2722_sensor(sd);
+ 
+-	dev_dbg(&client->dev, "ov2722_remove...\n");
++	dev_dbg(&client->dev, "%s...\n", __func__);
+ 
+ 	dev->platform_data->csi_cfg(sd, 0);
+ 	v4l2_ctrl_handler_free(&dev->ctrl_handler);
+-- 
+2.25.1
+
+
+
