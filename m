@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AF3366666
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66194366667
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237281AbhDUHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:46:52 -0400
-Received: from mail-dm6nam11on2046.outbound.protection.outlook.com ([40.107.223.46]:65322
+        id S237304AbhDUHrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:47:32 -0400
+Received: from mail-dm6nam11on2088.outbound.protection.outlook.com ([40.107.223.88]:4825
         "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236352AbhDUHqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:46:51 -0400
+        id S236352AbhDUHrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 03:47:31 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YHNw5oihEdM4HAd2hLvbCaq2ApXjKxxT59U68YOJB7sYr9H2gpSR6J8f7sYhZpTiygSQGg/qfhV/7hgizMNyhXmn1AkAZ73A18d1McYcq299bUzCqGvw77CtM1NSxnFQOj/HOfcIZadM6soLb7ldbYfrbtRn8AQvPxdtaXz/SNspo6JGbh6dylDrLMcwsL2fPMSAFzByMUSbFPdlZW0j5LVn3A66TFh9OfeaFQe8J7qwb3SUDsV4QkC8zdV+S52s64rme/cqQ6CqLPMs6+XFOgLbF8cJVEkOfzZ6FraHWd3n+dfbkOIZf4bETcw6JuIgoqq8p4iXpS16kyUA7l+GwQ==
+ b=nTA1/PdvjnAXhW5nYAAybqmWUi7u5wL5SEPBdXehtasABVe5mOzGD91zQt8CpHhLMlFSCwhvK0fdVh/mCoSQY2Iq6+QjeTDMx9tzFkGY5GW/pHZiJ9nju3jDTufPa7p+lUsRvWYPMY6EwAHLrNIdf77fzIUMWmbykvX/51JuOsWobItraWm+YuoAvC1FR9W8nOeK6q/JHJqeNzZqsVlpRnsTtS5jG9jKA8c+sQp+8ZXEQ15zQ9mDtIkyYK3xA5xX3Jp41llHJxJW586ld6atkOpoHO9951dlGeigbPiMX23orH1ff6tdPLilkhXKAPYKaxOtCWXagX5Q16QRuA4Gfw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=67uUmaJzp5nhhACqHPCJa/Y+kBc3pq3ZZwxZzIkuQ2U=;
- b=kPaUggqWGWRoCFJ5eSmbblhk/eC6uEez8zYp4oIlCt0R0+7ksD04erinzvhSLX/oG5kQzAeEOSv8tJow78KU+/+/BmHNtmphSwOYY2F5nKiTrYHkQMGUv/DtlTYtwZ7N1bEQCK5qT2i1nWo/3/5exdRD62lUZtSnCMqd2Cliawv8xJ8inyxpwBdqjNM/Jr2FOa92KhnlCyTWNXqUeM8d7spO1ld+xvXWfz2IVqikDWp36labkFCJbNhEtbV5nR27BqhSFUWw0m/jvXY0AifxTobiVUeTG6MTZzf0raLbT068HXoIQuFyF0HNpEC4YTFRYhB4Zwejsi/figuU3y3/xw==
+ bh=wDPDwAYYMzwwPZDpqQKsKwBfkjy6tzNRxE7e5x3K718=;
+ b=JQhHK8bwrFvtyZMSkiD/BQjRt2qcuhDateiJUnJeHQ2VjrEYct8b+IVca17SClNi+wCLWe0YXagdaRRuO2yfxX69etgPxnPaMB9LWWRSh3qzRXAPfFhLOKQ3qUWNZTGcEjgGid5ZdOE+r+/b33KYU/4rzT9c453jSTJCF4Sy83ZzaBByZY2VjiIw9FkcsYsiT4RiEItwPsCGc3CXXEwSLkcFNbryXZq6DS/kvJNGkuR9AeQeFze7hdKuD60z9wYKAWv/DUX4yTT60jolv3R4yaKGUzpWv82jPhLlmMsxrQX97gFkbvwnzb5JNvFofiGBQ4je/q7kQBgylEMnBdwlXw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.112.34) smtp.rcpttodomain=lists.linux-foundation.org
  smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=67uUmaJzp5nhhACqHPCJa/Y+kBc3pq3ZZwxZzIkuQ2U=;
- b=LMNeoA4VPxSKcWEE8BF0xQ1y/cepgOVk/QDLMew/u2Sz8yWw3vdAYdg2w4j2G5jZYoy7G9JGCFv2o8EnYLq64Nb4VKKoNfMtqadqYdpBi5u8+l9Pyjt4LOymv9HYy4YyMmxr/OeAOvRDoE+Jv+pEnYYJ/DbpYwn52RxmB6RKW3VdMZhuPmn+0DAb8PnOgRpcfaLZo4rhdouRCgdkqDwJPIX8YPwquySkX8IT6gnqyP2LlhqGGHsMsF7V0YR0iFI6gLH8B2WuPLOE43so3qeaBNpbskdDkuCedAHl8au8KKWD2h1mlhDrPjoXedHncPhhxJYHNmNkcMqtzyJP/i+zSw==
-Received: from MW2PR16CA0067.namprd16.prod.outlook.com (2603:10b6:907:1::44)
- by BN8PR12MB3507.namprd12.prod.outlook.com (2603:10b6:408:6e::32) with
+ bh=wDPDwAYYMzwwPZDpqQKsKwBfkjy6tzNRxE7e5x3K718=;
+ b=o2yK0ZmNuX1yrjLAq6n/EhS2EnltSzRF80BZ0G/x9ghMDdB1N2DERqzPdMsHqoqq7xGMXTSOY4BVYfPVvaN1b+BIzNRQXUZL7q+3ipfVeaIhLQqxz3L56xFn2HWEg6ZoV3tmj4BWn2SJRyv+sWddPoqjZT1umAChEmjxeaDfjs1qfL+lTIQD3trVx5SgfRUoWZRA71OP1J+6RxeV2tqOU8sLRld/ZmCBlgiBS5uROd1DIi0XBFNPXYn5Y7kAvRBi0F67y0CAyhGn55kWa6de6ORV1pE1QKTf+no8RJnAEwVCVFvIJIOWImJ/Dx6iVWqDaIWz0fxfAXpxazpDZBurIA==
+Received: from MW4PR04CA0054.namprd04.prod.outlook.com (2603:10b6:303:6a::29)
+ by BN7PR12MB2771.namprd12.prod.outlook.com (2603:10b6:408:29::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.21; Wed, 21 Apr
- 2021 07:46:17 +0000
-Received: from CO1NAM11FT017.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:1:cafe::39) by MW2PR16CA0067.outlook.office365.com
- (2603:10b6:907:1::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Wed, 21 Apr
+ 2021 07:46:57 +0000
+Received: from CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:6a:cafe::8c) by MW4PR04CA0054.outlook.office365.com
+ (2603:10b6:303:6a::29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
- Transport; Wed, 21 Apr 2021 07:46:16 +0000
+ Transport; Wed, 21 Apr 2021 07:46:57 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
  smtp.mailfrom=nvidia.com; lists.linux-foundation.org; dkim=none (message not
  signed) header.d=none;lists.linux-foundation.org; dmarc=pass action=none
@@ -46,111 +46,116 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.112.34 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.112.34; helo=mail.nvidia.com;
 Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT017.mail.protection.outlook.com (10.13.175.108) with Microsoft SMTP
+ CO1NAM11FT050.mail.protection.outlook.com (10.13.174.79) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 07:46:16 +0000
+ 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 07:46:56 +0000
 Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
  HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 21 Apr 2021 07:46:14 +0000
-Date:   Wed, 21 Apr 2021 10:46:11 +0300
+ 15.0.1497.2; Wed, 21 Apr 2021 07:46:55 +0000
+Date:   Wed, 21 Apr 2021 10:46:51 +0300
 From:   Eli Cohen <elic@nvidia.com>
 To:     Jason Wang <jasowang@redhat.com>
 CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
         <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/7] virito_pci libray: hide vp_modern_map_capability()
-Message-ID: <20210421074611.GF97533@mtl-vdi-166.wap.labs.mlnx>
+Subject: Re: [PATCH 7/7] vp_vdpa: report doorbell address
+Message-ID: <20210421074651.GG97533@mtl-vdi-166.wap.labs.mlnx>
 References: <20210415073147.19331-1-jasowang@redhat.com>
- <20210415073147.19331-6-jasowang@redhat.com>
+ <20210415073147.19331-8-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210415073147.19331-6-jasowang@redhat.com>
+In-Reply-To: <20210415073147.19331-8-jasowang@redhat.com>
 User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
 X-Originating-IP: [172.20.145.6]
 X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
  HQMAIL107.nvidia.com (172.20.187.13)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ba299cd8-7f43-41bb-4310-08d904998b62
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3507:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB35076ADA4E7ED09AB501634DAB479@BN8PR12MB3507.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Office365-Filtering-Correlation-Id: 37c51a74-4a0c-4120-aaac-08d90499a36f
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2771:
+X-Microsoft-Antispam-PRVS: <BN7PR12MB277156C9FBE70068B489A422AB479@BN7PR12MB2771.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:57;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6x/Mjjfxhm2ytwQo6Cp4jVjHA2tWQx8kWmTYBPbwYYdQQmW2g9xUESm6SarCsVO+xvR1JGFhsIz86W3YrUlrmMBV/BQ1CYs0hzw/oudb0SvlzXRcqylFrY7kVM+LH94vXrACkUK+bVbNrfoNRJ7+YIcvAqsxjMfboTx/V/cEOTWUw83v4WboUcnlWmHEWUp4i2j4DkIV3O5EpxTfCnSvnW68eVGLlxgu9CtAHCSsFCPnHWkGaNrHCtbjp6gvCq5vyLNKOgmC7zfq6RAdrETWiW3Ml4xeF558KLEGNkdXZtus+99wdhACouEeXl6+c/Ub3Sn3omXsGUUPzby8+OOBIjzRGKN7B7lVtG+J17jN5mrrCQIJpTK9tWPjx/wzuCWxMswj2hwyp1yGeQR/AQTtIeKr1nWmHYlIupwCZBvAydRtYMG4rpUwaLDVfowgCrEu0y/SJgC9bV0Hq0xf6JvfQrtOxlXXybP1gOv4AIcT8yIrpyJAw+VEnCAMtkNJw3tQ++d5WOZEBPzORQiYYM1O4Xae7NB6l6GjEvhL9MUTbuD614hd8ulZ1Md8mm+iJyJZhqqG4aQj0EP6SwjqkzyteGtjNC0B2X1R2ATkCmUml3n+QRcDJXXregYtAWRMa0VpCbWEr+SU6CDvdcJYn9LmijENpNKL62IiuPYfv8xZT2M=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(136003)(36840700001)(46966006)(55016002)(7696005)(9686003)(26005)(47076005)(82310400003)(1076003)(86362001)(6916009)(8936002)(5660300002)(356005)(478600001)(7636003)(82740400003)(2906002)(336012)(70586007)(426003)(36860700001)(70206006)(54906003)(316002)(36906005)(83380400001)(6666004)(33656002)(16526019)(4326008)(186003)(8676002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Mvy4bWjpPARNgP4J829dsAzMQOaRTGRwbmJZHEwOEOEjo6k0YRR7P4dmfb/vLYTbJEPsXcP9RvKys48Ijh+MKsdRhTa/ZpAIQUylS4lcx/iIOK3fVrAlpFjnVMx2MKCFKGW/stVY5JX5Fkv1BukL+v2/K7ImWxPsJqdPazC/VASI4VXXS9U5kw6fyNYX8Q8lW4h7LHVO+vadC00okdKndXGv0EUbWJD6xJpxzH87PxjHOJUubd3lNG8/N8gH9fmCUpqbMNtqYvnNLwK6oU1PovX+voZW15+TYSWs/LO8dZ2XIZTSRxAVvla3ncnBA99ETP0qgpKyz6E5OnUUxPLlxAdwlM3q/zaQb9dI/G+J/kCqoY2W7dtyprzHaVeDjnHY14HC43lXHUWnPLlcXLa1IGxEjM+Sh8joLLjFASOndSV/4/awRDdI/Fdd66qz4nXOX/t5w/CSxKkYghJSqz8PuWf0grS3wtXuB91nlEnwdqQtid3nVj9Js7PBhf4fT+RfEJLgVOWrfZ2pgDNkFVtBHkJzyb7k68+cf0eBhPWsRB4Ne45+cf6Upr2hICpl3unVQFbzH2IFSOuG9En2uUqpnLcnqElhIm92XQF90HdmzvFTWLiDN/fISYubi4Rt3SatcVNfug/C9c37IRz7D0iWfQNo+6nqoe7mZqDtGGiDeHA=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(36840700001)(46966006)(54906003)(8936002)(33656002)(55016002)(186003)(26005)(16526019)(6666004)(36860700001)(2906002)(70206006)(4326008)(9686003)(36906005)(6916009)(478600001)(8676002)(1076003)(316002)(336012)(5660300002)(47076005)(70586007)(86362001)(82740400003)(82310400003)(7696005)(426003)(83380400001)(7636003)(356005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 07:46:16.3546
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 07:46:56.6968
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba299cd8-7f43-41bb-4310-08d904998b62
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37c51a74-4a0c-4120-aaac-08d90499a36f
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT017.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3507
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2771
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:31:45AM -0400, Jason Wang wrote:
-> No user now and the capability should not be setup
-> externally. Instead, every access to the capability should be done via
-> virtio_pci_modern_device.
+On Thu, Apr 15, 2021 at 03:31:47AM -0400, Jason Wang wrote:
+> This patch reports the per vq doorbell location and size to vDPA
+> bus. Userspace can then map the doorbell via mmap() via vhost-vDPA bus
+> driver.
 > 
 > Signed-off-by: Jason Wang <jasowang@redhat.com>
 
 Reviewed-by: Eli Cohen <elic@nvidia.com>
 
 > ---
->  drivers/virtio/virtio_pci_modern_dev.c | 10 ++++------
->  include/linux/virtio_pci_modern.h      |  5 -----
->  2 files changed, 4 insertions(+), 11 deletions(-)
+>  drivers/vdpa/virtio_pci/vp_vdpa.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
-> index 5a657e56b46d..9c241c9bd920 100644
-> --- a/drivers/virtio/virtio_pci_modern_dev.c
-> +++ b/drivers/virtio/virtio_pci_modern_dev.c
-> @@ -16,11 +16,10 @@
->   *
->   * Returns the io address of for the part of the capability
->   */
-> -void __iomem *vp_modern_map_capability(struct virtio_pci_modern_device *mdev, int off,
-> -				       size_t minlen,
-> -				       u32 align,
-> -				       u32 start, u32 size,
-> -				       size_t *len)
-> +static void __iomem *
-> +vp_modern_map_capability(struct virtio_pci_modern_device *mdev, int off,
-> +			 size_t minlen, u32 align, u32 start, u32 size,
-> +			 size_t *len)
->  {
->  	struct pci_dev *dev = mdev->pci_dev;
->  	u8 bar;
-> @@ -90,7 +89,6 @@ void __iomem *vp_modern_map_capability(struct virtio_pci_modern_device *mdev, in
->  			length, offset, bar);
->  	return p;
->  }
-> -EXPORT_SYMBOL_GPL(vp_modern_map_capability);
+> diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> index 98205e54d089..002b928d0ca1 100644
+> --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
+> +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> @@ -26,6 +26,7 @@ struct vp_vring {
+>  	void __iomem *notify;
+>  	char msix_name[VP_VDPA_NAME_SIZE];
+>  	struct vdpa_callback cb;
+> +	resource_size_t notify_pa;
+>  	int irq;
+>  };
 >  
->  /**
->   * virtio_pci_find_capability - walk capabilities to find device info.
-> diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-> index 179a2fb4bf37..e6e7072413c1 100644
-> --- a/include/linux/virtio_pci_modern.h
-> +++ b/include/linux/virtio_pci_modern.h
-> @@ -99,11 +99,6 @@ void vp_modern_set_queue_size(struct virtio_pci_modern_device *mdev,
->  u16 vp_modern_get_queue_size(struct virtio_pci_modern_device *mdev,
->  			     u16 idx);
->  u16 vp_modern_get_num_queues(struct virtio_pci_modern_device *mdev);
-> -void __iomem *vp_modern_map_capability(struct virtio_pci_modern_device *mdev, int off,
-> -				       size_t minlen,
-> -				       u32 align,
-> -				       u32 start, u32 size,
-> -				       size_t *len);
->  void *vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
->                                u16 index);
->  int vp_modern_probe(struct virtio_pci_modern_device *mdev);
+> @@ -336,6 +337,19 @@ static void vp_vdpa_set_config_cb(struct vdpa_device *vdpa,
+>  	vp_vdpa->config_cb = *cb;
+>  }
+>  
+> +static struct vdpa_notification_area
+> +vp_vdpa_get_vq_notification(struct vdpa_device *vdpa, u16 qid)
+> +{
+> +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+> +	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+> +	struct vdpa_notification_area notify;
+> +
+> +	notify.addr = vp_vdpa->vring[qid].notify_pa;
+> +	notify.size = mdev->notify_offset_multiplier;
+> +
+> +	return notify;
+> +}
+> +
+>  static const struct vdpa_config_ops vp_vdpa_ops = {
+>  	.get_features	= vp_vdpa_get_features,
+>  	.set_features	= vp_vdpa_set_features,
+> @@ -343,6 +357,7 @@ static const struct vdpa_config_ops vp_vdpa_ops = {
+>  	.set_status	= vp_vdpa_set_status,
+>  	.get_vq_num_max	= vp_vdpa_get_vq_num_max,
+>  	.get_vq_state	= vp_vdpa_get_vq_state,
+> +	.get_vq_notification = vp_vdpa_get_vq_notification,
+>  	.set_vq_state	= vp_vdpa_set_vq_state,
+>  	.set_vq_cb	= vp_vdpa_set_vq_cb,
+>  	.set_vq_ready	= vp_vdpa_set_vq_ready,
+> @@ -416,7 +431,8 @@ static int vp_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	for (i = 0; i < vp_vdpa->queues; i++) {
+>  		vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
+>  		vp_vdpa->vring[i].notify =
+> -			vp_modern_map_vq_notify(mdev, i, NULL);
+> +			vp_modern_map_vq_notify(mdev, i,
+> +						&vp_vdpa->vring[i].notify_pa);
+>  		if (!vp_vdpa->vring[i].notify) {
+>  			dev_warn(&pdev->dev, "Fail to map vq notify %d\n", i);
+>  			goto err;
 > -- 
 > 2.18.1
 > 
