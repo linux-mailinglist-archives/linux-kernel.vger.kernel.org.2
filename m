@@ -2,164 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806253666B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D523666B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhDUIFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:05:50 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:24048 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234116AbhDUIFs (ORCPT
+        id S234327AbhDUIHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:07:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23330 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230516AbhDUIHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:05:48 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 90E7D8003C6;
-        Wed, 21 Apr 2021 16:05:12 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V5] watchdog: mtk: support dual mode when the bark irq is available
-Date:   Wed, 21 Apr 2021 16:05:04 +0800
-Message-Id: <1618992304-18903-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkkaS1ZMSUNKTU1DQ01LHh5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NEk6MRw6TT8SMAgjPEMLTh8S
-        MBkKFBlVSlVKTUpDQkJJSEpISENCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFPQ05MNwY+
-X-HM-Tid: 0a78f376321db03akuuu90e7d8003c6
+        Wed, 21 Apr 2021 04:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618992397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oK3rihUx7OjIP8MnUHMJzvDGc/eOqRPG2UhKmsMq4M0=;
+        b=UZW5Khe6lh5gHHWlcAUDR38ItYn3AvecgEQoiZ4scT//QAD74YgSv7MrqSUL+9pKVcK6/C
+        UH+kcBVDPLhM4ArAmtLjGW+a7D90FgJbo4foxS11T8Lm+qFmVyY6x/EkbDaOMdDq5To6tx
+        fyI2pD7tGt6epiqN+4H3X6NZjz4pNz4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-A8yo4FyyP7CYbUocy3WK1w-1; Wed, 21 Apr 2021 04:06:36 -0400
+X-MC-Unique: A8yo4FyyP7CYbUocy3WK1w-1
+Received: by mail-wm1-f72.google.com with SMTP id k26-20020a7bc41a0000b0290125f388fcfbso118071wmi.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:06:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=oK3rihUx7OjIP8MnUHMJzvDGc/eOqRPG2UhKmsMq4M0=;
+        b=nzeKLWAgLhE1WnUGCw8MC7mk3V/GyDnFRp5BUB5dXdnlkj0MvKhwCPBw08+W7srX1C
+         J+ZLi2sXeQmSfB8qfU7ua1ADgB71lEflaZEtJJQlEVoruebMYy+08aNWOHPF40CdGrzq
+         pSEyBC0TFvoaLlNOmH3xqmhDX92jZSXF2Vq0uvAHQEOKzqqs6Ah8nPSOkVKLU0NITPFV
+         y0RgrK/gwZXfkfnU3F5NZxBd7voWrieQj1BdVWXq3IOU0ArwCvza+t4n7KNLrhhQs5el
+         Px+k/Iadmft0oQBIOko0lbie9lQuN7itZ9R6DRcCuA1CSJvPqxAXuiaWdAwgxPbiRVKA
+         4YsQ==
+X-Gm-Message-State: AOAM530+OH/W6KG34o4BLtA+wh2Uv6CwmSwgMedyPcxiBhSuHUxfzfJq
+        z7MXiMtxxLqTp9Ujr2wITA4pX6DpelDIR4efJddQE4T9/oDqiWzlbYojFrsvD0UKOclgK9IZD3T
+        CP8iGABunwB+P5n2CmPbhBy/26B3uhknrELZnzCT/ZE2Qj8bQPbv+5uJ7u6SXyXhgWi/MQhUl
+X-Received: by 2002:a5d:424a:: with SMTP id s10mr26464906wrr.70.1618992394862;
+        Wed, 21 Apr 2021 01:06:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxh933TlcjPpXOPqkAVaIRzTS8Z39NS8E9+o0Sn0mgvIQuFp76UNqwReiF9Ybvlt4h+OULlSQ==
+X-Received: by 2002:a5d:424a:: with SMTP id s10mr26464883wrr.70.1618992394632;
+        Wed, 21 Apr 2021 01:06:34 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64b8.dip0.t-ipconnect.de. [91.12.100.184])
+        by smtp.gmail.com with ESMTPSA id h81sm1747260wmf.41.2021.04.21.01.06.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 01:06:34 -0700 (PDT)
+Subject: Re: [PATCH v9 3/8] mm,memory_hotplug: Factor out adjusting present
+ pages into adjust_present_page_count()
+To:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210416112411.9826-1-osalvador@suse.de>
+ <20210416112411.9826-4-osalvador@suse.de> <YH6i09ieDte+xog8@dhcp22.suse.cz>
+ <20210421080036.GC22456@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <c352a62a-3369-01a9-10b0-c76f5c2dc038@redhat.com>
+Date:   Wed, 21 Apr 2021 10:06:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210421080036.GC22456@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support using irq handling wdt bark first instead of directly resetting.
+On 21.04.21 10:00, Oscar Salvador wrote:
+> On Tue, Apr 20, 2021 at 11:45:55AM +0200, Michal Hocko wrote:
+>> On Fri 16-04-21 13:24:06, Oscar Salvador wrote:
+>>> From: David Hildenbrand <david@redhat.com>
+>>>
+>>> Let's have a single place (inspired by adjust_managed_page_count()) where
+>>> we adjust present pages.
+>>> In contrast to adjust_managed_page_count(), only memory onlining/offlining
+>>> is allowed to modify the number of present pages.
+>>>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+>>> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+>>
+>> Not sure self review counts ;)
+> 
+> Uhm, the original author is David, I just added my signed-off-by as a deliverer.
+> I thought that in that case was ok to stick my Reviewed-by.
+> Or maybe my signed-off-by carries that implicitly.
+> 
+>> Acked-by: Michal Hocko <mhocko@suse.com>
+>>
+>> Btw. I strongly suspect the resize lock is quite pointless here.
+>> Something for a follow up patch.
+> 
+> What makes you think that?
+> I have been thinking about this, let us ignore this patch for a moment.
+> 
+> If I poked the code correctly, node_size_lock is taken in:
+> 
+> remove_pfn_range_from_zone()
+> move_pfn_range_to_zone()
+> 
+> both of them handling {zone,node}->spanned_pages
+> 
+> Then we take it in {offline,online}_pages() for {zone,node}->present_pages.
+> 
+> The other places where we take it are __init functions, so not of interest.
+> 
+> Given that {offline,online}_pages() is serialized by the memory_hotplug lock,
+> I would say that {node,zone}->{spanned,present}_pages is, at any time, stable?
+> So, no need for the lock even without considering this patch?
+> 
+> Now, getting back to this patch.
+> adjust_present_page_count() will be called from memory_block_online(), which
+> is not holding the memory_hotplug lock yet.
+> But, we only fiddle with present pages out of {online,offline}_pages() if
+> we have vmemmap pages, and since that operates on the same memory block,
+> its lock should serialize that.
+> 
+> I think I went down a rabbit hole, I am slightly confused now.
 
-When the watchdog timer expires in dual mode, an interrupt will be
-triggered first, then the timing restarts. The reset signal will be
-initiated when the timer expires again.
+We always hold the device hotplug lock when onlining/offlining memory.
 
-The dual mode is disabled by default.
+I agree that the lock might be unnecessary (had the same thoughts a 
+while ago), we can look into that in the future.
 
-V2:
-- panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
-
-V3:
-- Modify the pretimeout behavior, manually reset after the pretimeout
-- is processed and wait until timeout.
-
-V4:
-- Remove pretimeout related processing. 
-- Add dual mode control separately.
-
-V5:
-- Fix some formatting and printing problems.
-
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/watchdog/mtk_wdt.c | 36 ++++++++++++++++++++++++++++++++----
- 1 file changed, 32 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993..40122f8
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -25,6 +25,7 @@
- #include <linux/reset-controller.h>
- #include <linux/types.h>
- #include <linux/watchdog.h>
-+#include <linux/interrupt.h>
- 
- #define WDT_MAX_TIMEOUT		31
- #define WDT_MIN_TIMEOUT		1
-@@ -57,6 +58,7 @@
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
- static unsigned int timeout;
-+static bool dual_mode;
- 
- struct mtk_wdt_dev {
- 	struct watchdog_device wdt_dev;
-@@ -239,13 +241,23 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
- 		return ret;
- 
- 	reg = ioread32(wdt_base + WDT_MODE);
--	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	if (dual_mode)
-+		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	else
-+		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
- 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
- 	iowrite32(reg, wdt_base + WDT_MODE);
- 
- 	return 0;
- }
- 
-+static irqreturn_t mtk_wdt_isr(int irq, void *arg)
-+{
-+	panic("wdt bark!\n");
-+
-+	return IRQ_HANDLED;
-+}
-+
- static const struct watchdog_info mtk_wdt_info = {
- 	.identity	= DRV_NAME,
- 	.options	= WDIOF_SETTIMEOUT |
-@@ -267,7 +279,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_wdt_dev *mtk_wdt;
- 	const struct mtk_wdt_data *wdt_data;
--	int err;
-+	int err, irq;
- 
- 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
- 	if (!mtk_wdt)
-@@ -279,6 +291,19 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	if (IS_ERR(mtk_wdt->wdt_base))
- 		return PTR_ERR(mtk_wdt->wdt_base);
- 
-+	if (dual_mode) {
-+		irq = platform_get_irq(pdev, 0);
-+		if (irq > 0) {
-+			err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
-+						&mtk_wdt->wdt_dev);
-+			if (err)
-+				return err;
-+		} else {
-+			dual_mode = 0;
-+			dev_info(&pdev->dev, "couldn't get wdt irq, set dual_mode = 0\n");
-+		}
-+	}
-+
- 	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
- 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
- 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
-@@ -299,8 +324,8 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	if (unlikely(err))
- 		return err;
- 
--	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)\n",
--		 mtk_wdt->wdt_dev.timeout, nowayout);
-+	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d,
-+		 dual_mode=%d)\n", mtk_wdt->wdt_dev.timeout, nowayout, dual_mode);
- 
- 	wdt_data = of_device_get_match_data(dev);
- 	if (wdt_data) {
-@@ -368,6 +393,9 @@ module_param(nowayout, bool, 0);
- MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
- 			__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
- 
-+module_param(dual_mode, bool, 0);
-+MODULE_PARM_DESC(dual_mode, "Dual mode triggers irq before reset (default=0)");
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Matthias Brugger <matthias.bgg@gmail.com>");
- MODULE_DESCRIPTION("Mediatek WatchDog Timer Driver");
 -- 
-2.7.4
+Thanks,
+
+David / dhildenb
 
