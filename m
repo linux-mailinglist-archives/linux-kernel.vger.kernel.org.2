@@ -2,150 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD753675E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44D03675E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343766AbhDUXqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 19:46:19 -0400
-Received: from mail-eopbgr700064.outbound.protection.outlook.com ([40.107.70.64]:40232
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237429AbhDUXqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:46:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=By+TPShso+V9xvOzsdj9ppqfFACt8lCNhEjiu8S/kfDAAiXktM5qeG9rbji/B75xEi0AlN0kN0jDsNLMO6SIbosvutSQBBDo/04vyZpHMR54qqz1yx//AXcMics2WK68z4r1RRZtdizomEvXkOCbD8BzqZjOGmHr9DJ2qAjuE/icZ8GA7ZFwFsHquRrrVo/c/Z/gqCSxsyK8y9GRq+MOs0TpBN4KZdB7T8gvnkgNZHdbauL0okhEVAYhyMkz+84oeut4QuaAVTK4sKGUteiUmC66H7GjJPqQcik7m0iW9X+I6g4sOi6TlGuiQ03Jj0V4A8otq6i1chAYDS4h3CZX6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4dDdnSL3EiNVtGwVBF2cblrL3zMuuhDvgYxckU+NWm8=;
- b=aSFCKs4m/W1NWWjYdblVqcs3A0I4/pDyoGsS2ollDk84uBzm4Q0UPMsmrM6sCx0FlEP2ROTEsBnTJc2+6DzDsuIcvcwrwVcReAlDwhxp7d5KVTGfaMMCTuyOYJR8OqKpaj2lE9TZAsz/o6xS+46iwj7W8npTuGp6r2fCZSnf9BNUK/1IK0BzpfliuxKFFBQePFsy+d2mWnbvTwqg1mdF8QelN8tNMikXnPVXEy9daPrBgVeMmELEmtN5joscZ/FHRZsGoPGCfzf3P0uwSZnEE9LtjWP8+8AoAbDAxsxUuv5I5XYuwPoTzBFbab3ujZRPpxyTMyPvVhwMS+8MPZZwAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1343777AbhDUXu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 19:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234816AbhDUXu0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 19:50:26 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B4AC06174A;
+        Wed, 21 Apr 2021 16:49:52 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id a1so49724411ljp.2;
+        Wed, 21 Apr 2021 16:49:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4dDdnSL3EiNVtGwVBF2cblrL3zMuuhDvgYxckU+NWm8=;
- b=VuHU17seRTao4cB81eRV78a9RnURYMLM/XH0iwly+bSABwYrlo/GNFmaFmHYF3LPbXChD9F6nY0nsTnlydDxrOvruBHgiBWuTjf38ho1e8giy2x6UPU/dDOZXhOEtAK66cl4EHRS8C6ESCqim7jWPFxxAvbWkpGKkqtXFcAy1YQ=
-Authentication-Results: goodmis.org; dkim=none (message not signed)
- header.d=none;goodmis.org; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM4PR11MB5440.namprd11.prod.outlook.com (2603:10b6:5:39c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Wed, 21 Apr
- 2021 23:45:42 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::1caa:f0c2:b584:4aea]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::1caa:f0c2:b584:4aea%3]) with mapi id 15.20.4065.021; Wed, 21 Apr 2021
- 23:45:42 +0000
-Date:   Wed, 21 Apr 2021 19:45:27 -0400
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 1/2] bitmap_parse: support 'all' semantics
-Message-ID: <20210421234527.GD194948@windriver.com>
-References: <20210421031326.72816-1-yury.norov@gmail.com>
- <20210421031326.72816-2-yury.norov@gmail.com>
- <20210421111932.36665920@gandalf.local.home>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421111932.36665920@gandalf.local.home>
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: BL1PR13CA0124.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::9) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5rLqatd0/cPLTKtVbdK7mYIU6Py/40xQ4LKl2quF0qk=;
+        b=h9AgVeqfNYvmKTbZiu5GNcEmw9xgAeFCaltYCTxxGreTrtwN4fpvS1sV7J5Sw3csX0
+         hZJc3ERjkk0FzYCvHu+PlVfVCwEvBGAADt6aZpqxDshtBF6bElhJj03YZ0zxsB9LM/yT
+         axXwjmoaoUhLLj7E1Evw/YqWayBwHemfikEaZkihF4WEzQsajNSCLmC0FPVgPFalorAn
+         j4YLzjZYKG7pEo3XKjjzJXLZrpjeltmpldIRjpVpQ3dsrhGbDHLhmIwxBwgCziKQXbjl
+         zfKfDDDXPJwvNNstIWsp0/CmWKw+5v9OVzbUERAbBlemo9QtNCWbrWISPuSKYB1YtPEm
+         XD0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5rLqatd0/cPLTKtVbdK7mYIU6Py/40xQ4LKl2quF0qk=;
+        b=F/58YdzHzwD2x13OUWB6RkMIqzzCbLs+y2yhaSHfrzZO84/skvJtQtVKPHeqwlzMTy
+         VJr1Ma/KyNNxcScN3zLDGSNQhNiHNSWCSECOQXsYOFwXofOa0I6SSOqgdGNLKQYDML7i
+         WpnijLz/jxRrDq7sMrChMyRQdseMImQQTsLsgn1bOh63B/02n46UDGbqim/OqIMzRNAm
+         aNVcNp9LPyQNNpXhMOurc6KqcoDwRb/cJGaI5bVk1tVWZ/PCGzVP0S1dA4p6VXrsel+t
+         MB22YYiCllMUGI7RR7FBdVKSoOYDhcSL876LCoY2P9tIQX1204qhPzYlW8Pt0xl/5YNR
+         2IVg==
+X-Gm-Message-State: AOAM530jwlGDF2gFUxHyZcpEooDL1MHyltV1L++nXxHd+19O/yIqxvSi
+        g2mYbZMHOrEx9MT6TB/8DIU=
+X-Google-Smtp-Source: ABdhPJznnuxx9XBJ1JQpBCbM/IsT0QdoG97Yok024S5D1tB8/C4i/WG4Qic7AUaBEL+kn90VQWucIg==
+X-Received: by 2002:a2e:7119:: with SMTP id m25mr490630ljc.231.1619048991396;
+        Wed, 21 Apr 2021 16:49:51 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
+        by smtp.gmail.com with ESMTPSA id u6sm94758lfr.164.2021.04.21.16.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 16:49:51 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] iio: gyro: mpu3050: Fix reported temperature value
+Date:   Thu, 22 Apr 2021 02:48:20 +0300
+Message-Id: <20210421234820.32211-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by BL1PR13CA0124.namprd13.prod.outlook.com (2603:10b6:208:2bb::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.16 via Frontend Transport; Wed, 21 Apr 2021 23:45:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a34bca0-c9e2-4cc9-8277-08d9051f92dd
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5440:
-X-Microsoft-Antispam-PRVS: <DM4PR11MB544030BCC7810BC80A92990083479@DM4PR11MB5440.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YZ18ygSuWxsxzucoqKkgkn5el2IPdkzGo0BaA4/HKwnE0hxmFNIdzPiIiNdtW5EmyUvCmHXhjD/RKw4aLPbjCPn6JvrpGkZUXu6qK6sHEghOa3nttrg76fQNiCNKjhHJ8kcXfjJQ59e+34qhO+l4R0//QhZaMfDtCDnOyG1l1faQkpPi6Eh9LBYc8rPjOEA0tSMu3P7rFKxNd7lav7mTBY5M5YVy+2vu/1PNXRolSjMNZ4b24TPRWA/fxhwO6WEpXw/9qePEb46CP5LaqCN3dzB5k/4Ej4mWWrH+yK9kY2XjWULTueZy01pfWhfC2LTNekVh+2qjBtsyMJZuOLurjQ1wRY25ffKNcNebyoMrF6xh+MMmiUonZO/0/JW6s/uVVrl5t7G8s8cLHZAwKBR70EYPRujQbKJfSiYoeDEFKCOZ2b1S8979GKbsF4M73sxaKoThWznnaILDjVXijJEe3dXa90T8l/KGzsl9RUbRLBUQz0VwscMylAg/kr+xFMqMgV+7CmwTlLRz3A1CFHFdHx64udmQZ29lv30cxof0CD7ufK4H5rYNoVJMAckI8rS1bH8lbZgZHSiP9nig4ydoTqQZO8vb1NmmKw75nCX1mTHi7rZo992yxSIy/DOQeC+ekSEDCwnb89MDdYjhjzfpoep/rhbBDeAcNFp0LO6QTJc5YXrLjOPsfx5BiP8RjmXe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(366004)(396003)(39850400004)(7696005)(86362001)(4326008)(186003)(8676002)(956004)(1076003)(38350700002)(36756003)(478600001)(54906003)(55016002)(33656002)(38100700002)(8936002)(7416002)(2906002)(52116002)(5660300002)(8886007)(316002)(44832011)(66476007)(66946007)(6916009)(26005)(16526019)(66556008)(2616005)(6666004)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?P0KIkLs7ZhwivWXFk8OnOt61Dt9hnzxsafvYiaW6UNSvsfnILaPWG1sqTNPB?=
- =?us-ascii?Q?YcDVM4AKRn20I/AHRV2PIYhSlGL/oiEuMw1FpT+LBtHScvpafYsgajeg3QN+?=
- =?us-ascii?Q?CD81rM0Lf4QlCXkeMoN8gVrqvXUmbNZgDARC17VUo0HGn/hnJQzmAV+9DgLU?=
- =?us-ascii?Q?jh/SBn5FlCqRZ6t2/IcXG3Bqm4kCwtKD06/v3X+xZ4JMKbeyJZkUy6iE3B7z?=
- =?us-ascii?Q?oLf7WIAMDt/yev+HWB2amqdeNkqgF/TZxTPt3VuooAbpnkVUd5ugWitaBG4H?=
- =?us-ascii?Q?mj4jeAcSJtx4WlGo0RdIeIrlqX9RbGTWmVwt7vA5Kj1B4VPo2zAGs/mlN01P?=
- =?us-ascii?Q?snf93JUvRAQvzgPpYBBqsc2eb3dnsBvYlOuOrX/mf6ZFfOPxkXPdrB+8k6YZ?=
- =?us-ascii?Q?Y8dBEmwfREMdnCGAkiYb9C8YqV0Emjl3KODB0BTliwSRCYuPlJ0seiMBwSYq?=
- =?us-ascii?Q?aiQKKsCDsRvVaMZgooIEwck90Lgi6RiLVXsFhmAD/oT7u3kpzamghwLNpfvV?=
- =?us-ascii?Q?h42KEc9erB26aZ8ZqWRfPujN4jXGI5q5X25iCsiN7Yx4KjWHCmxamVNadfu0?=
- =?us-ascii?Q?GssuplK+fyp9SvYhUwGNg6ddJ8mMu816ktwHcmpR7GPwfaCrhB41pey9qZv6?=
- =?us-ascii?Q?joWRyadamhCWWwVUDiXiGRjETAHN4GVzQc8Jr5orWgQwDwOYfxaRXbc/l+XD?=
- =?us-ascii?Q?BnPKOoiB9i1fUQj7TQN1eXvXQ0rWfuQdeVwJbzfE6dxgVeLPngkQCXu+9Gjs?=
- =?us-ascii?Q?P0h8QeMzzLv49VTW8bU10SbO7Ec1GohbvhYcSkdmZ8dsitqB9dk9VoqPDhx8?=
- =?us-ascii?Q?6RowBdAa3yekwIfsefm5sr51H0/fnQrggZ53WvmDuDRHWA1WIoKLZHkYaGdJ?=
- =?us-ascii?Q?m1V2XpzKV4HR90zqI18oAlCqbzPuQKrOuirBjUiZe3P9tsELECCT0VwWf2xZ?=
- =?us-ascii?Q?4ViOefI50vxizYNnUTGCyIRbuQGEPVcgUlEjixlq63HExaQbVmPW+asLVfl1?=
- =?us-ascii?Q?LfZEGnzDu3DS0D1JCHo74/TmNf4kvml4sjZVDDj9W+HCxbOnYnOL331TzoBw?=
- =?us-ascii?Q?za6y2Kq+SHxCSHpSs90y3pw9UtOlqkdfwKAQvLO6BYcVW48hRxld3LbJkqxA?=
- =?us-ascii?Q?mOmzv4q8hWoDtp9EizehXzThcjhBEkZ5h5BqT5Ywf8+zrTpSd89Mh+mShltf?=
- =?us-ascii?Q?LCM2DsC8pndhKK0hZ0xnu1iiJEYg3lckKCjcV+u4o84lgQTlblwxLTvirRnf?=
- =?us-ascii?Q?M0KJUz/JvyyjzlMiz9aP51b236ff8zaFfqBgxJQNUD8+5hysxiNWLpfVJ0D9?=
- =?us-ascii?Q?m+57oUm6Qn3Op3Q0cVz6qQ9U?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a34bca0-c9e2-4cc9-8277-08d9051f92dd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:45:42.0998
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k3nN09nMSjlI+zkTf80Rbb9uMTx0svqw7/3Lv2xgk4cs9KN45WSKclgFP8tRC1RfwIBsnwD0EpV/bXCqksCjbZCvMzUITbkEUbfNB9ouyUc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5440
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Re: [PATCH 1/2] bitmap_parse: support 'all' semantics] On 21/04/2021 (Wed 11:19) Steven Rostedt wrote:
+The raw temperature value is a signed 16bit integer. The sign casting
+is missed in the code, which results in a wrong temperature reported by
+userspace tools, fix it.
 
-> On Tue, 20 Apr 2021 20:13:25 -0700
-> Yury Norov <yury.norov@gmail.com> wrote:
-> 
-> > @@ -76,6 +76,11 @@ to change, such as less cores in the CPU list, then N and any ranges using N
-> >  will also change.  Use the same on a small 4 core system, and "16-N" becomes
-> >  "16-3" and now the same boot input will be flagged as invalid (start > end).
-> >  
-> > +The special case-tolerant group name "all" has a meaning of selecting all CPUs,
-> > +such that "isolcpus=all" is the equivalent of "isolcpus=0-N".
-> 
-> I'm OK with the concept of this patch set, but really? That is a horrible
-> example. One should NEVER set isolcpus to all!
+Cc: stable@vger.kernel.org
+Link: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
+Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # Asus TF201
+Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/iio/gyro/mpu3050-core.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-It wouldn't have parsed anyways.  The "isolcpus=" would just think "all" was
-an unsupported flag and discard it before it ever got to cpu/bitmap
-processing.   See 3662daf02350 "sched/isolation: Allow "isolcpus=" to
-skip unknown sub-parameters".
+diff --git a/drivers/iio/gyro/mpu3050-core.c b/drivers/iio/gyro/mpu3050-core.c
+index ac90be03332a..9885428ca12e 100644
+--- a/drivers/iio/gyro/mpu3050-core.c
++++ b/drivers/iio/gyro/mpu3050-core.c
+@@ -272,7 +272,16 @@ static int mpu3050_read_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_OFFSET:
+ 		switch (chan->type) {
+ 		case IIO_TEMP:
+-			/* The temperature scaling is (x+23000)/280 Celsius */
++			/*
++			 * The temperature scaling is (x+23000)/280 Celsius,
++			 * where 23000 includes room temperature offset of
++			 * +35C, 280 is the precision scale and x is the signed
++			 * 16bit integer which corresponds to the temperature
++			 * range of -40C..85C.
++			 *
++			 * Temperature value itself represents temperature of
++			 * the sensor die.
++			 */
+ 			*val = 23000;
+ 			return IIO_VAL_INT;
+ 		default:
+@@ -329,7 +338,7 @@ static int mpu3050_read_raw(struct iio_dev *indio_dev,
+ 				goto out_read_raw_unlock;
+ 			}
+ 
+-			*val = be16_to_cpu(raw_val);
++			*val = (s16)be16_to_cpu(raw_val);
+ 			ret = IIO_VAL_INT;
+ 
+ 			goto out_read_raw_unlock;
+-- 
+2.30.2
 
-The use case example Paul chose (not me; the smart Paul) is better.
-
-Paul.
---
-
-> 
-> -- Steve
-> 
-> 
-> > +
-> > +The semantics of "N" and "all" is supported on a level of bitmaps and holds for
-> > +all users of bitmap_parse().
-> >  
