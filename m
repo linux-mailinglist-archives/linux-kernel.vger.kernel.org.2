@@ -2,62 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81103672FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2253672FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245346AbhDUTAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:00:08 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:49760 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239751AbhDUTAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:00:07 -0400
-Received: from zn.tnic (p2e58483a.dip0.t-ipconnect.de [46.88.72.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B5B141EC01B7;
-        Wed, 21 Apr 2021 20:59:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619031572;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=1o1imbBarj6dETiKm39DNAq8E4f8mKRo2g5LdAjz65c=;
-        b=NlSSQs1FHjYasXdCKmBnNCKi3SmUh72P7QVZYdsFMQl/49C1jQlmpnhaV4Rnwp6TY0bdBe
-        JUoL5xnxAp9Lc7nwFTQQlemIJozLTkAyf4umIZ9GDW0qPTyo08UO7WU/s0WZslAGPhIUjb
-        JIWHpRRO4qUef/K1By4PJeC9++L7ZBs=
-Date:   Wed, 21 Apr 2021 20:57:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Saripalli, RK" <rsaripal@amd.com>
-Cc:     Bandan Das <bsd@redhat.com>, Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 4/4] x86/speculation: Add PSF mitigation kernel parameters
-Message-ID: <20210421185725.GC22401@zn.tnic>
-References: <20210421090117.22315-1-rsaripal@amd.com>
- <20210421090117.22315-5-rsaripal@amd.com>
- <4c688fc7-67df-3187-54b2-bf20e510fb39@infradead.org>
- <jpg4kfzfpzm.fsf@linux.bootlegged.copy>
- <20210421184826.GA3120@zn.tnic>
- <863ece71-463f-fc50-db13-7fd280902d6b@amd.com>
+        id S245354AbhDUS7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:59:09 -0400
+Received: from mail-vk1-f177.google.com ([209.85.221.177]:42898 "EHLO
+        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245352AbhDUS7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:59:07 -0400
+Received: by mail-vk1-f177.google.com with SMTP id k128so5806275vke.9;
+        Wed, 21 Apr 2021 11:58:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3SxB69pUYAxGtcTsZ0OZls1Z7/FhoWntrRFhu04EJ/g=;
+        b=SyiypKUxzYst1GOz9oIGIVD3aPWTuSXnSV2VBJ0LLUpVnvMty+T1euAqQC6A1SLnXj
+         5cW/7EKay95Fe7ytKFIET2gv9frHNAJDaZIwNIGUr/KgdjzRfmWB7QG9HBc0zTMZ9JFQ
+         QQula9FPJuvV7IasgA/lUw3O9qqG6re1FM/BeGFWJibaSG89jZRmbYUe7KInZEiUhsSu
+         cCNJD3TR4dyQsEvUV2B+yEJC1CiVT17A7yrFi5DDkpa6ZH7FbhjsYa8yfC8xBnoOsDNI
+         DsFVYEWUbjQOqzOEcZfxVk57Sxz7DtuZ3me/cnXMD6Y0PIXfpC2QaVs1faVmtymF9quk
+         Hkqg==
+X-Gm-Message-State: AOAM531PCaVuE8409NNk2t1M7JSoDMmZPuuHqu+2DEZAb1Laz7ZH0TxM
+        Kfy0RRKvywr8/9L2aaZ8oaazBh5cTTCqLNJYTPvqMUzh
+X-Google-Smtp-Source: ABdhPJzv+Gfvn5UVDzPrZgWN3n2JCrP7UuiJq/g4kG6fLExWhvt7T3ukPswRuKSUoLVGTkfToVDlYnbYZ33P8lNaOIQ=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr12911517vkj.1.1619031513120;
+ Wed, 21 Apr 2021 11:58:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <863ece71-463f-fc50-db13-7fd280902d6b@amd.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-74-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-74-gregkh@linuxfoundation.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 21 Apr 2021 20:58:22 +0200
+Message-ID: <CAMuHMdVFf3_jo+oGPm4THhan3bVZx99omkG1LnAp=B4JTKhChA@mail.gmail.com>
+Subject: Re: [PATCH 073/190] Revert "media: rcar_drif: fix a memory disclosure"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kangjie Lu <kjlu@umn.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 01:55:03PM -0500, Saripalli, RK wrote:
-> I separated them into separate patches because the KVM patch depends on one of the patch.
-> The corresponding QEMU patch depends on another patch.
-> 
-> By separating them into 4 separate patches, my thinking was I could keep them logically separate.
+Hi Greg,
 
-Sure but they all go together through the same tree - why does that
-matter for Qemu/KVM?
+On Wed, Apr 21, 2021 at 3:06 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> This reverts commit d39083234c60519724c6ed59509a2129fd2aed41.
+>
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+>
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+>
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Upon a second look, I still see nothing wrong with the original commit.
+However, as I'm no v4l expert, I'd like to defer to the experts for final
+judgement.
+
+> --- a/drivers/media/platform/rcar_drif.c
+> +++ b/drivers/media/platform/rcar_drif.c
+> @@ -915,7 +915,6 @@ static int rcar_drif_g_fmt_sdr_cap(struct file *file, void *priv,
+>  {
+>         struct rcar_drif_sdr *sdr = video_drvdata(file);
+>
+> -       memset(f->fmt.sdr.reserved, 0, sizeof(f->fmt.sdr.reserved));
+>         f->fmt.sdr.pixelformat = sdr->fmt->pixelformat;
+>         f->fmt.sdr.buffersize = sdr->fmt->buffersize;
+>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Regards/Gruss,
-    Boris.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
