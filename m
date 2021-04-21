@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B6D3671EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0DA367212
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245021AbhDURvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60842 "EHLO mail.kernel.org"
+        id S245070AbhDURyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:54:52 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:34880 "EHLO msg-2.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244889AbhDURus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:50:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B00A961422;
-        Wed, 21 Apr 2021 17:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619027414;
-        bh=TTyu7wmjMrDzl+3OrRJqrNUYHSJoREbsfVWUZJoCK1w=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PICAVAJHIy54CT+KWDVRO0y/2HN5rlslOsiNuh27tk7W/OIO/penGRBC59nAZsPQV
-         FADtkuCNgSG7ZODmEOx1SDOtn7XNNEtc2T7d2mLJcgevjhZH3EQ9OP/gK8d497UeOk
-         tlfn5hZTeAohJusbGenaSxsD3xLu9qn0v0sVNGXk2U3rT2Mv5ugjSAp8VubxoAdkEv
-         hbvA5zoNsgBh/lzzuubfZdClTd0OpQh4nS5sE2Jvv5N5gRZl+1+XkGV26F8ccQouMi
-         R80XSLa9Ef0nLWgLmE3ZZfT+gxkmG4ksGxMQydxMQys22q7Qy/r/c2CpHtQzr+Rkev
-         BZgNFheCv1uEA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A748F60A3C;
-        Wed, 21 Apr 2021 17:50:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S245062AbhDURyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:54:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619027511; bh=KmEs2Jw6W/Sa4tMaUwVQoGqFAg9/D9hlUcgxz6/4Ibk=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=GPdsuvzdILH348+ILnSMZVmzUPuy1UDE9Q05gp16riuDrm/MEcaI4tgHuiVgznDnZ
+         GZNRZ3ZZRybuH2/3JGVpHQoYAXNNpWMvhJyVW42bv+JUf1g3NSG/B4lj62rXYPoXUL
+         IAUQYHDOZVpSn5IFFZolzidrL9hIvj7GHReHfUOQ=
+Received: by 192.168.90.13 [192.168.90.13] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 19:51:50 +0200 (CEST)
+X-EA-Auth: cOEA2r8N0tvh3q22alNot4CePdoQ85+cXUuZoHT8f0oww9NMENQ2f4wp0ZpWxPGTUsiffL2YbcygWEFaYFaNOX6tRmtGwkFE
+Date:   Wed, 21 Apr 2021 23:21:44 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <20210421175144.GA224467@localhost>
+References: <cover.1619022192.git.drv@mailo.com>
+ <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+ <20210421171045.GB1414@agape.jhs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v1] net: dsa: fix bridge support for drivers without
- port_bridge_flags callback
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161902741468.20144.2290526822940755644.git-patchwork-notify@kernel.org>
-Date:   Wed, 21 Apr 2021 17:50:14 +0000
-References: <20210421130540.12522-1-o.rempel@pengutronix.de>
-In-Reply-To: <20210421130540.12522-1-o.rempel@pengutronix.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, vivien.didelot@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421171045.GB1414@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 21 Apr 2021 15:05:40 +0200 you wrote:
-> Starting with patch:
-> a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+On Wed, Apr 21, 2021 at 07:10:46PM +0200, Fabio Aiuto wrote:
+> On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
+> > Reformat code comment blocks according to the coding style guidelines.
+> > This resolves different checkpatch script WARNINGs around block comments.
+> > 
+> > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > ---
+> > 
+> > Changes in v1:
+> >    - implement following changes suggested by Fabio Aiuto                              
+> >        a. Corrected commenting style                                                               
+> >        b. Similar style implemented for other comment blocks in                                    
+> >           the same files.                                       
 > 
-> drivers without "port_bridge_flags" callback will fail to join the bridge.
-> Looking at the code, -EOPNOTSUPP seems to be the proper return value,
-> which makes at least microchip and atheros switches work again.
+> If you want to tag me you should add the Suggested-by: tag in commit message
+> before Signed-off-by tag...
 > 
-> [...]
+> $ vim +485 Documentation/process/submitting-patches.rst
 
-Here is the summary with links:
-  - [net-next,v1] net: dsa: fix bridge support for drivers without port_bridge_flags callback
-    https://git.kernel.org/netdev/net-next/c/70a7c484c7c3
+Yes, perfect. I will tag you in v3 accordingly.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thank you.
+deepak.
+
+> 
+> thank you,
+> 
+> fabio
 
 
