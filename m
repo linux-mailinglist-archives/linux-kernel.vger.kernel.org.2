@@ -2,74 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1542C3667AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F056F3667C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbhDUJJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:09:46 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58876 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237589AbhDUJJj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:09:39 -0400
-Received: from [IPv6:2a02:810a:880:f54:c90f:3911:b88f:e044] (unknown [IPv6:2a02:810a:880:f54:c90f:3911:b88f:e044])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7FDFC1F42A1A;
-        Wed, 21 Apr 2021 10:09:04 +0100 (BST)
-Subject: Re: [PATCH v2] media: rkisp1: rkisp1-params.c: Fix typos
-To:     Sebastian Fricke <sebastian.fricke@posteo.net>,
-        linux-media@vger.kernel.org
-Cc:     Helen Koike <helen.koike@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210420174522.9618-1-sebastian.fricke@posteo.net>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <a0c52c66-6930-7ace-e1ac-9608a7e72bfa@collabora.com>
-Date:   Wed, 21 Apr 2021 11:09:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237873AbhDUJP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:15:56 -0400
+Received: from mga04.intel.com ([192.55.52.120]:24547 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230516AbhDUJPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:15:48 -0400
+IronPort-SDR: 6Ioii57Qac5wImbV7hFXO6TB2fF6FFLCQbD0O8ZvCOONmaXe9BbJzSNih0M1svLF6QiKs1hI2L
+ tm3PvxQYIC0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="193545423"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="193545423"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 02:15:15 -0700
+IronPort-SDR: iu7XieK2x/FLtydb7ub8P3QHXYCKZHk/kqg102JBUFQDF0I/wL0msZEHrvwjes53CgaAfSxsyc
+ n6tWejVqEccw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="463519827"
+Received: from silpixa00396680.ir.intel.com (HELO silpixa00396680.ger.corp.intel.com) ([10.237.223.54])
+  by orsmga001.jf.intel.com with ESMTP; 21 Apr 2021 02:15:12 -0700
+From:   Ray Kinsella <mdr@ashroe.eu>
+To:     acme@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jolsa@kernel.org,
+        kan.liang@linux.intel.com, ak@linux.intel.com, mdr@ashroe.eu
+Subject: [PATCH] perf tools: Update topdown documentation to permit rdpmc calls
+Date:   Wed, 21 Apr 2021 10:10:09 +0100
+Message-Id: <20210421091009.1711565-1-mdr@ashroe.eu>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210420174522.9618-1-sebastian.fricke@posteo.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Thanks for the fix,
+Update Topdown documentation to permit calls to rdpmc, and describe
+interaction with system calls.
 
-On 20.04.21 19:45, Sebastian Fricke wrote:
-> s/when the camera active/when the camera is active/
-> s/thus not isr protection/therefore there is no need to acquire a lock/
-> 
-> Signed-off-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Ray Kinsella <mdr@ashroe.eu>
+---
+ tools/perf/Documentation/topdown.txt | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+diff --git a/tools/perf/Documentation/topdown.txt b/tools/perf/Documentation/topdown.txt
+index 10f07f9455b8..c6302df4cf29 100644
+--- a/tools/perf/Documentation/topdown.txt
++++ b/tools/perf/Documentation/topdown.txt
+@@ -72,6 +72,7 @@ For example, the perf_event_attr structure can be initialized with
+ The Fixed counter 3 must be the leader of the group.
+ 
+ #include <linux/perf_event.h>
++#include <sys/mman.h>
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ 
+@@ -95,6 +96,11 @@ int slots_fd = perf_event_open(&slots, 0, -1, -1, 0);
+ if (slots_fd < 0)
+ 	... error ...
+ 
++/* Memory mapping the fd permits _rdpmc calls from userspace */
++void *slots_p = mmap(0, getpagesize(), PROT_READ, MAP_SHARED, slots_fd, 0);
++if (!slot_p)
++	.... error ...
++
+ /*
+  * Open metrics event file descriptor for current task.
+  * Set slots event as the leader of the group.
+@@ -110,6 +116,14 @@ int metrics_fd = perf_event_open(&metrics, 0, -1, slots_fd, 0);
+ if (metrics_fd < 0)
+ 	... error ...
+ 
++/* Memory mapping the fd permits _rdpmc calls from userspace */
++void *metrics_p = mmap(0, getpagesize(), PROT_READ, MAP_SHARED, metrics_fd, 0);
++if (!metrics_p)
++	... error ...
++
++Note: the file descriptors returned by the perf_event_open calls must be memory
++mapped to permit calls to the _rdpmd instruction. Permission may also be granted
++by writing the /sys/devices/cpu/rdpmc sysfs node.
+ 
+ The RDPMC instruction (or _rdpmc compiler intrinsic) can now be used
+ to read slots and the topdown metrics at different points of the program:
+@@ -141,6 +155,10 @@ as the parallelism and overlap in the CPU program execution will
+ cause too much measurement inaccuracy. For example instrumenting
+ individual basic blocks is definitely too fine grained.
+ 
++_rdpmc calls should not be mixed with reading the metrics and slots counters
++through system calls, as the kernel will reset these counters after each system
++call.
++
+ Decoding metrics values
+ =======================
+ 
+-- 
+2.26.2
 
-> ---
->   drivers/media/platform/rockchip/rkisp1/rkisp1-params.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-> index b6beddd988d0..529c6e21815f 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
-> @@ -1258,7 +1258,10 @@ void rkisp1_params_configure(struct rkisp1_params *params,
->   	rkisp1_params_config_parameter(params);
->   }
->   
-> -/* Not called when the camera active, thus not isr protection. */
-> +/*
-> + * Not called when the camera is active, therefore there is no need to acquire
-> + * a lock.
-> + */
->   void rkisp1_params_disable(struct rkisp1_params *params)
->   {
->   	rkisp1_param_clear_bits(params, RKISP1_CIF_ISP_DPCC_MODE,
-> 
