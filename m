@@ -2,151 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291C3366D26
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D072D366D29
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242806AbhDUNuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:50:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57270 "EHLO mail.kernel.org"
+        id S242838AbhDUNuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:50:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235222AbhDUNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:50:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 715C261439;
-        Wed, 21 Apr 2021 13:49:26 +0000 (UTC)
+        id S242814AbhDUNuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:50:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 199C161439;
+        Wed, 21 Apr 2021 13:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619012969;
-        bh=3JOEoDIfnaWwGOlo+8UCRIcFvWxqNH742UwCb6Bunsw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AJni0jwQfWQGMuhJ1iw9JPbOb3fZ6nT1Ti0gxEaAYRcrOfru1mmcChSuiLoWY1Mo/
-         H9Y3m9xrHuVVPGh8JYLHKE5jH6YopLIXA3oRDubPbnLqw/Q0B/OZi7TSfGXo1sLV6q
-         Ts+vD1yvplPmi8u7/SpcVzCD+tdsTQMToYbdgxlAGQHcbvpl/HZ4OAn6JAHyI2ehFJ
-         wqefYwsEvSw5Vm7ABNjS14SNFKP1J4aojQjbb0PdXHF3zsmYz5JAqiQEOSNJKXpnx6
-         yHE5b7EjOOu5O9hsIc8lq3QbwGVtSM5BGp3ZU8NlBkMBiaklHiMeUwYlfroUjBhW7z
-         P/I2acEcaNQnw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Andrew Scull <ascull@google.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: arm64: build perf support only when enabled
-Date:   Wed, 21 Apr 2021 15:49:01 +0200
-Message-Id: <20210421134922.3309033-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1619012975;
+        bh=DfvW4thW35pyhxnz0Xb3KHpopcscliALtkpJSIRX4gA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VBmtKNXEDbDJq2+QztTmG9r2Vg8OCWs/gZ/nFZKANBM8qtEdKgo9G//Ro21DlXotR
+         IyXp/TqMMa9NHAvp97bjZZfR4Jq/F8M94GEPqrN1y8J+oRa7rP8GSFpGhJCiT3NVeU
+         RUZX2Jpw9ukIK/qRqzWgHmdc90tyBKE1iWhBc2ukukB1ynT8UMy0fMsReZkvAZkqib
+         pM80DJ6mFWv32EUkoX710SR++2fUXyhAeJowWiFEQx4gYfQlxsSBLDReakV3r52v4e
+         mnbLdxAoaiK7rk5LYFACLm0A7nZj5Cl82yCQCXDeYX8E0SCpasBx3qn409RmTNcVfF
+         a5VeukcK1eFZQ==
+Date:   Wed, 21 Apr 2021 16:49:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     "Shelat, Abhi" <a.shelat@northeastern.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YIAta3cRl8mk/RkH@unreal>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
+ <YH+7ZydHv4+Y1hlx@kroah.com>
+ <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
+ <YH/8jcoC1ffuksrf@kroah.com>
+ <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
+ <20210421133727.GA27929@fieldses.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421133727.GA27929@fieldses.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Apr 21, 2021 at 09:37:27AM -0400, J. Bruce Fields wrote:
+> On Wed, Apr 21, 2021 at 11:58:08AM +0000, Shelat, Abhi wrote:
+> > Academic research should NOT waste the time of a community.
+> > 
+> > If you believe this behavior deserves an escalation, you can contact
+> > the Institutional Review Board (irb@umn.edu) at UMN to investigate
+> > whether this behavior was harmful; in particular, whether the research
+> > activity had an appropriate IRB review, and what safeguards prevent
+> > repeats in other communities.
+> 
+> For what it's worth, they do address security, IRB, and maintainer-time
+> questions in "Ethical Considerations", starting on p. 8:
+> 
+> 	https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceInsecurity.pdf
+> 
+> (Summary: in that experiment, they claim actual fixes were sent before
+> the original (incorrect) patches had a chance to be committed; that
+> their IRB reviewed the plan and determined it was not human research;
+> and that patches were all small and (after correction) fixed real (if
+> minor) bugs.)
+> 
+> This effort doesn't appear to be following similar protocols, if Leon
+> Romanvosky and Aditya Pakki are correct that security holes have already
+> reached stable.
 
-The perf_num_counters() function is only defined when CONFIG_PERF_EVENTS
-is enabled:
+Aditya Pakki is the one who is sending those patches.
 
-arch/arm64/kvm/perf.c: In function 'kvm_perf_init':
-arch/arm64/kvm/perf.c:58:43: error: implicit declaration of function 'perf_num_counters'; did you mean 'dec_mm_counter'? [-Werror=implicit-function-declaration]
-   58 |         if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0
-      |                                           ^~~~~~~~~~~~~~~~~
+If you want to see another accepted patch that is already part of
+stable@, you are invited to take a look on this patch that has "built-in bug":
+8e949363f017 ("net: mlx5: Add a missing check on idr_find, free buf")
 
-Use conditional compilation to disable this feature entirely when
-CONFIG_PERF_EVENTS is disabled in the host.
-
-Fixes: 6b5b368fccd7 ("KVM: arm64: Turn kvm_arm_support_pmu_v3() into a static key")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Not sure if this is the correct symbol to check for, but this is
-one way to avoid the build failure.
----
- arch/arm64/kvm/Makefile | 4 +++-
- arch/arm64/kvm/arm.c    | 8 +++++---
- include/kvm/arm_pmu.h   | 7 +++++++
- 3 files changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-index 589921392cb1..9adf12ba5047 100644
---- a/arch/arm64/kvm/Makefile
-+++ b/arch/arm64/kvm/Makefile
-@@ -12,7 +12,7 @@ obj-$(CONFIG_KVM) += hyp/
- 
- kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
- 	 $(KVM)/vfio.o $(KVM)/irqchip.o \
--	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
-+	 arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
- 	 inject_fault.o va_layout.o handle_exit.o \
- 	 guest.o debug.o reset.o sys_regs.o \
- 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
-@@ -24,4 +24,6 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
- 	 vgic/vgic-mmio-v3.o vgic/vgic-kvm-device.o \
- 	 vgic/vgic-its.o vgic/vgic-debug.o
- 
-+kvm-$(CONFIG_PERF_EVENTS) += perf.o
-+
- kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 4808aca8c87c..720e075c70f9 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1694,7 +1694,8 @@ static int init_subsystems(void)
- 	if (err)
- 		goto out;
- 
--	kvm_perf_init();
-+	if (IS_ENABLED(CONFIG_PERF_EVENTS))
-+		kvm_perf_init();
- 	kvm_sys_reg_table_init();
- 
- out:
-@@ -1899,7 +1900,8 @@ static int init_hyp_mode(void)
- 	return 0;
- 
- out_err:
--	teardown_hyp_mode();
-+	if (IS_ENABLED(CONFIG_PERF_EVENTS))
-+		teardown_hyp_mode();
- 	kvm_err("error initializing Hyp mode: %d\n", err);
- 	return err;
- }
-@@ -2101,7 +2103,7 @@ int kvm_arch_init(void *opaque)
- 
- out_hyp:
- 	hyp_cpu_pm_exit();
--	if (!in_hyp_mode)
-+	if (!IS_ENABLED(CONFIG_PERF_EVENTS) && in_hyp_mode)
- 		teardown_hyp_mode();
- out_err:
- 	return err;
-diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
-index 6fd3cda608e4..d84307a1ebd5 100644
---- a/include/kvm/arm_pmu.h
-+++ b/include/kvm/arm_pmu.h
-@@ -13,12 +13,19 @@
- #define ARMV8_PMU_CYCLE_IDX		(ARMV8_PMU_MAX_COUNTERS - 1)
- #define ARMV8_PMU_MAX_COUNTER_PAIRS	((ARMV8_PMU_MAX_COUNTERS + 1) >> 1)
- 
-+#ifdef CONFIG_PERF_EVENTS
- DECLARE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
- 
- static __always_inline bool kvm_arm_support_pmu_v3(void)
- {
- 	return static_branch_likely(&kvm_arm_pmu_available);
- }
-+#else
-+static __always_inline bool kvm_arm_support_pmu_v3(void)
-+{
-+	return 0;
-+}
-+#endif
- 
- #ifdef CONFIG_HW_PERF_EVENTS
- 
--- 
-2.29.2
-
+Thanks
