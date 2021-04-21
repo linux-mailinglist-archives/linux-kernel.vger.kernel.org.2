@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFC9367531
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E685367533
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239789AbhDUWdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 18:33:33 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:44557 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235362AbhDUWdc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 18:33:32 -0400
-Received: by mail-ot1-f47.google.com with SMTP id 5-20020a9d09050000b029029432d8d8c5so14432315otp.11;
-        Wed, 21 Apr 2021 15:32:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dpOmUUExdbFkJ4kS32EEaVe5t2M7xJq+mg38SoSOiuc=;
-        b=MvGAF9Yw4vv/goAq1/jWapJlrh8VKUmT27WNJCxzGZ3gpU4hmudaY9iClAMFlmz0mt
-         eeQI4ceH1Lt+Eko1zkq8USmEPUCjTPNNi6ThzopRmGdQA1JIYxl1zDroAGJL0ubidgnB
-         f3EB3Bo/HZ+BhqG5pVXf1Ko5mKI9EetMqoy2mqt2wglOKYi4qEO0O69l7wPe487IPJjR
-         XbZGxwSU6RlJjgKblS0Wus12ZUBhr7hGczQo0acdFymNZ5zBzSxzBMsbux4l3pSVyiJ7
-         AQOU1vuyJuiQoDD9X0B6eZhet4IBpv5DXz2s0fn6I5VQ7KQUb/1RL0FkHTAPWVGQFP4j
-         9KQQ==
-X-Gm-Message-State: AOAM533j9L/odNW5DEymTKtH96ToHEynnHt0fTDXGAQl5+1+x/bIIgBf
-        HAF5NO7iP1J8VbkcNPAKjGzDyN9Nmg==
-X-Google-Smtp-Source: ABdhPJyBpK5+T8amA19Lhb4J6/XazxnG/kEaaOGHTBdikqQyXjrOfxT7tQdjc1b1ReGEgRYjsQZF+Q==
-X-Received: by 2002:a9d:a2a:: with SMTP id 39mr299856otg.371.1619044376711;
-        Wed, 21 Apr 2021 15:32:56 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 64sm209136oob.12.2021.04.21.15.32.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 15:32:55 -0700 (PDT)
-Received: (nullmailer pid 1735222 invoked by uid 1000);
-        Wed, 21 Apr 2021 22:32:54 -0000
-Date:   Wed, 21 Apr 2021 17:32:54 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/4] dt-bindings: reset: Convert ti,sci-reset to json
- schema
-Message-ID: <20210421223254.GA1734415@robh.at.kernel.org>
-References: <20210416063721.20538-1-nm@ti.com>
- <20210416063721.20538-2-nm@ti.com>
+        id S1343571AbhDUWe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 18:34:58 -0400
+Received: from phobos.denx.de ([85.214.62.61]:43076 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235362AbhDUWe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 18:34:57 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 0907B82B2A;
+        Thu, 22 Apr 2021 00:34:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1619044462;
+        bh=YHOt5rEQqqgrZKlawGGCxmHmff9BaDd36mWnVdSB7p0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=IUCgkY6kwyEpjXvQxLUyT/icyvRa0CnSNUQ/IEkl4w8zsHpjv8Dco2D2tYywdDujC
+         OIBLasP3UEBwrIYELghIJ+nzsuvMaoNMi1GZ1wiuQc08Ag/0C0/IODeZ8K6xmKy6Q6
+         qYVLzVFEkTnfDSG7kEKN953aYe7U2z2M2Rc96AQ3mCciSIjBYBPA2IoY6ukedYya4v
+         qUbWBrHINadGy5YoVxe3nTsBWPOMS6InU7DRGI8NwXbEMxc16uqEa0J1jnH86xjgDB
+         wZWctxBCZxRSg2i1pnccqRSY1GnWRaPINKtkH7h7XHolB41jtydnZWMrzdf388GzLM
+         MtBHnPHklkNPQ==
+Subject: Re: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for
+ SN65DSI83/84/85
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Claudius Heine <ch@denx.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+References: <20210214174453.104616-1-jagan@amarulasolutions.com>
+ <d7f9b241-3cfc-836a-2519-3b6621899108@denx.de>
+ <CAMty3ZBMt+bx7ZrCQf0b3wrJUtZVe3CS=8-t_wYZ4+=PwP+mbQ@mail.gmail.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <2d9a88e9-e443-0243-4b68-85fc01d9677b@denx.de>
+Date:   Thu, 22 Apr 2021 00:34:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416063721.20538-2-nm@ti.com>
+In-Reply-To: <CAMty3ZBMt+bx7ZrCQf0b3wrJUtZVe3CS=8-t_wYZ4+=PwP+mbQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:37:18AM -0500, Nishanth Menon wrote:
-> Convert the ti,sci-reset to json schema for better checks and documentation.
+On 4/8/21 4:45 PM, Jagan Teki wrote:
+> On Wed, Mar 24, 2021 at 7:26 PM Claudius Heine <ch@denx.de> wrote:
+>>
+>> Hi Jagan,
+>>
+>> On 2021-02-14 18:44, Jagan Teki wrote:
+>>> SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge
+>>> controller IC's from Texas Instruments.
+>>>
+>>> SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
+>>> SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
+>>> SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
+>>>
+>>> Right now the bridge driver is supporting Channel A with single
+>>> link, so dt-bindings documented according to it.
+>>
+>> Do you know when we can expect a v4 for this?
+>>
+>> I am currently working on top of your patch set to setup a dual-link
+>> LVDS bridge of SN65DSI84.
 > 
-> Differences being:
->  - Drop consumer example as they are documented in the corresponding
->    bindings themselves.
->  - Drop phandle description for reset consumer or cell definition as it is
->    redundant.
-> 
-> NOTE: we do have false positive checkpatch warning with this patch:
-> "DT binding docs and includes should be a separate patch"
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  .../bindings/reset/ti,sci-reset.txt           | 62 -------------------
->  .../bindings/reset/ti,sci-reset.yaml          | 51 +++++++++++++++
->  2 files changed, 51 insertions(+), 62 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/reset/ti,sci-reset.txt
->  create mode 100644 Documentation/devicetree/bindings/reset/ti,sci-reset.yaml
+> Yes, I'm planning to send v4 this week. will keep you in CC. thanks!
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+I haven't seen any activity here for over two weeks, so I decided to 
+send V2 of the driver I wrote, now tested on both DSI83 and DSI84.
