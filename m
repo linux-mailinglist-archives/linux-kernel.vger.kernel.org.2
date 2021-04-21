@@ -2,144 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9B9366900
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E5C366903
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238727AbhDUKRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbhDUKRK (ORCPT
+        id S238777AbhDUKRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:17:55 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:29683 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234038AbhDUKRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:17:10 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247C4C06174A;
-        Wed, 21 Apr 2021 03:16:37 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id h20so21379104plr.4;
-        Wed, 21 Apr 2021 03:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gDa9oTZfQRTnJaBXZvLtLg6d8IpAGa0lj0v6OYQNJ+c=;
-        b=Wc/13pNsNqjLw2uUxT/IpQG7jmfX5ju7StOQiMj8ICk6WUZYtFoEBoi40Fjf9Z+CHM
-         XpFEVCU675SZG87WERMj4bE/xUFPDHQTCyAjoFlszEp1DD/pRzS+qpqbnQPqDDNYsCWM
-         3RnA650cqSQv5uUxCjjQiX2k1kRLhs89y8yh7ouWjcelPHkaNqmH2Q+s+aACbSQjO78F
-         smArAeU2pAIZAO1rMWUzVNnRRzhDKmdrjspik1xiQTB5KSKJveWGo3NvwFaRIp/BlPPk
-         V9ocAzbP5s2YKv7wGtEX16gjgTA3aM+1kt7VsO0yg32SExFOUvgs9oyAJEyY7xUL6Ofl
-         +Keg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gDa9oTZfQRTnJaBXZvLtLg6d8IpAGa0lj0v6OYQNJ+c=;
-        b=aQAfgI585gnE2k9IfXewPRRJloG9Q3FOt/JWdhEGw337cn88NNUeAqIEz2wj2jOWgv
-         XZwC2kblz99mrMT2W6SVphQW2Np/BbNqbQumo4pAdEl8YWp8I+qZpe7WWxDOJE01MWkn
-         Ea3BI/l1eQuPSQslJpiBTv8bwn9AaGSmUPkBj/8avym5pLeGvKCOW7NK5oLaCAuGIlW9
-         3r8smr0wRFae5EXorxYGCZ3gDeaEaB0kVxYE3kConM0T6oS03QTZwo/lawjY5wZ+BNdt
-         OnTXJEe0ysVPkUa7QPk3q0Y6ALiCAaA2BRxLjieC1OZVocy/W0LjsQc1l+5wInagyuBf
-         URZg==
-X-Gm-Message-State: AOAM531mLvHW/LRUQvkAY5DBwyLBAnWycg/20xCjUTtkQEAG68l09kkA
-        +Y9tQfB44P7UVz7jwEQu3yo=
-X-Google-Smtp-Source: ABdhPJycbAW/PUelPvUga866z6t6lXrR4uZfmFlYhqJvktcROY5zeLT0hwCQ3UrjSYma05M7qR72RA==
-X-Received: by 2002:a17:902:8b81:b029:eb:5a4:9cae with SMTP id ay1-20020a1709028b81b02900eb05a49caemr33659303plb.13.1619000196723;
-        Wed, 21 Apr 2021 03:16:36 -0700 (PDT)
-Received: from localhost ([103.241.225.98])
-        by smtp.gmail.com with ESMTPSA id n11sm1584135pff.96.2021.04.21.03.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 03:16:36 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 15:46:30 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] staging: media: atomisp: use printk with KERN
- facility level
-Message-ID: <20210421101630.GA216321@localhost>
-References: <cover.1618859059.git.drv@mailo.com>
- <4947abeebc2cecca43137675519a2fb48577d3e5.1618859059.git.drv@mailo.com>
- <20210420083522.GA1411@agape.jhs>
- <20210420171353.GA193332@localhost>
- <20210421072216.GB1418@agape.jhs>
+        Wed, 21 Apr 2021 06:17:54 -0400
+X-UUID: 49718aed876c4f74b64e9a3795e53fbb-20210421
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9IoeKBla8pN9WE4+y5GJhke4Dy+p0ylLEjnf88v7Uqk=;
+        b=fQNY8k1jcr1ai4RxVlKGqy4Sh6iY16HRZ+oA0gEszTI+/RS/kDRdk0rscojYm9Xgs2GFggVQqxEKSGUkzPDGhZOdSQnUPQrk/jNJQ1YywVuZ/U6S5V8mhh1k+tV14lM83t2bo5TjaDiApMlM60cbUG9cd515Uk6JBtNtBz0naIo=;
+X-UUID: 49718aed876c4f74b64e9a3795e53fbb-20210421
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <fengquan.chen@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 366369709; Wed, 21 Apr 2021 18:17:15 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Apr
+ 2021 18:17:07 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 21 Apr 2021 18:17:07 +0800
+Message-ID: <1619000227.25707.20.camel@mhfsdcap03>
+Subject: Re: [PATCH] clocksource/drivers/timer-mediatek: optimize systimer
+ irq clear flow on Mediatek Socs
+From:   Fengquan Chen <fengquan.chen@mediatek.com>
+To:     Evan Benn <evanbenn@chromium.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <dehui.sun@mediatek.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Wed, 21 Apr 2021 18:17:07 +0800
+In-Reply-To: <CAKz_xw2abQyS9Vvx7DUppGGd-AaDQAfdAOwi46fB9yLPJWJeUA@mail.gmail.com>
+References: <1614670085-26229-1-git-send-email-Fengquan.Chen@mediatek.com>
+         <1614670085-26229-2-git-send-email-Fengquan.Chen@mediatek.com>
+         <CAKz_xw2abQyS9Vvx7DUppGGd-AaDQAfdAOwi46fB9yLPJWJeUA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421072216.GB1418@agape.jhs>
+X-TM-SNTS-SMTP: BDB2F9AC03454462D38628DCDC4993140A01337F80411D53696602FA182485272000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:22:17AM +0200, Fabio Aiuto wrote:
-> On Tue, Apr 20, 2021 at 10:43:53PM +0530, Deepak R Varma wrote:
-> > On Tue, Apr 20, 2021 at 10:35:23AM +0200, Fabio Aiuto wrote:
-> > > Hi Deepak,
-> > > 
-> > > On Tue, Apr 20, 2021 at 12:46:40AM +0530, Deepak R Varma wrote:
-> > > > printk() without KERN_<LEVEL> facility is flagged by checkpatch as a
-> > > > warning. It is better to use pr_info() which comes with an
-> > > > inbuilt KERN_INFO level.
-> > > > 
-> > > > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > > > ---
-> > > >  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > > > index b572551f1a0d..a0f3c5c32f94 100644
-> > > > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > > > @@ -1020,7 +1020,7 @@ static int gc0310_set_fmt(struct v4l2_subdev *sd,
-> > > >  		return -EINVAL;
-> > > >  	}
-> > > >  
-> > > > -	printk("%s: before gc0310_write_reg_array %s\n", __func__,
-> > > > +	pr_info("%s: before gc0310_write_reg_array %s\n", __func__,
-> > > >  	       gc0310_res[dev->fmt_idx].desc);
-> > > 
-> > > in a driver is best recommended to replace a raw printk call
-> > > with a dev_*() log. Check few lines above here to see
-> > > how it is done.
-> > 
-> > Hello Fabio,
-> > thank you for the feedback. Should I resubmit this patch with additional
-> > printk() / pr_info() replacement by dev_*()? OR send in a new patch with
-> > this change? Just want to make sure I am not including more than one
-> > change type in the patch.
-> > 
-> > deepak.
-> > 
-> 
-> Hi Deepak,
-> 
-> what I would do is to just resend this patch with replacement by dev_*(),
-> which is just one change. Then if you want to replace all other
-> raw printk/pr_*() occurrences is matter of another separate
-> patch/series.
-> 
-Hi Fabio,
-That sounds good. Thank you for your comments. I will resubmit the patch
-set according to the feedbacks received.
+T24gVHVlLCAyMDIxLTAzLTIzIGF0IDExOjQ4ICsxMTAwLCBFdmFuIEJlbm4gd3JvdGU6DQo+IE9u
+IFRodSwgTWFyIDQsIDIwMjEgYXQgMTE6MDcgQU0gRmVuZ3F1YW4gQ2hlbg0KPiA8RmVuZ3F1YW4u
+Q2hlbkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gMSllbnN1cmUgc3lzdGltZXIgaXMg
+ZW5hYmxlZCBiZWZvcmUgY2xlYXIgYW5kIGRpc2FibGUgaW50ZXJydXB0LCB3aGljaCBvbmx5DQo+
+ID4gZm9yIHN5c3RpbWVyIGluIE1lZGlhdGVrIFNvY3MuDQo+IA0KPiBXaHkgZG9lcyB0aGUgdGlt
+ZXIgbmVlZCB0byBiZSBlbmFibGVkIGJlZm9yZSB0aGUgaW50ZXJydXB0IGNhbiBiZQ0KPiBkaXNh
+YmxlZD8gVGhlIGRhdGFzaGVldCBJIGhhdmUgZG9lcyBub3Qgc3VnZ2VzdCB0aGF0IHRoaXMgaXMg
+cmVxdWlyZWQuDQo+IA0KDQpUaGFua3MgZm9yIHJldmlldy4gRm9yIHN5c3RpbWVyLCB5b3UgbXVz
+dCBlbmFibGUgdGltZXIgYmVmb3JlIGNsZWFyDQppcnEsaXQncyBhIGh3IGxpbWl0YXRpb24gdGhh
+dCB3b3VsZCBiZSBlYXNpbHkgbmVnbGVjdGVkLg0KDQo+ID4NCj4gPiAyKWNsZWFyIGFueSBwZW5k
+aW5nIHRpbWVyLWlycSB3aGVuIHNodXRkb3duIHRvIGtlZXAgc3VzcGVuZCBmbG93IGNsZWFuLA0K
+PiA+IHdoZW4gdXNlIHN5c3RpbWVyIGFzIHRpY2stYnJvYWRjYXN0IHRpbWVyDQo+ID4NCj4gPiBD
+aGFuZ2UtSWQ6IElhM2VkYTgzMzI0YWYyZmRhZjVjYmIzNTY5YTliZjAyMGExMWY4MDA5DQo+ID4g
+U2lnbmVkLW9mZi1ieTogRmVuZ3F1YW4gQ2hlbiA8ZmVuZ3F1YW4uY2hlbkBtZWRpYXRlay5jb20+
+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYyB8IDQg
+KysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9jbG9ja3NvdXJjZS90aW1lci1tZWRpYXRlay5jIGIvZHJpdmVycy9j
+bG9ja3NvdXJjZS90aW1lci1tZWRpYXRlay5jDQo+ID4gaW5kZXggOTMxOGVkYy4uOWYxZjA5NWRj
+IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYw0K
+PiA+ICsrKyBiL2RyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYw0KPiA+IEBAIC03
+NSw2ICs3NSw3IEBADQo+ID4gIHN0YXRpYyB2b2lkIG10a19zeXN0X2Fja19pcnEoc3RydWN0IHRp
+bWVyX29mICp0bykNCj4gDQo+IFRoaXMgZnVuY3Rpb24gc2VlbXMgdG8gYmUgbWlzLW5hbWVkLiBJ
+dCBkb2VzIG1vcmUgdGhhbiBqdXN0IGFjayB0aGUgaXJxLg0KPiANCj4gPiAgew0KPiA+ICAgICAg
+ICAgLyogQ2xlYXIgYW5kIGRpc2FibGUgaW50ZXJydXB0ICovDQo+ID4gKyAgICAgICB3cml0ZWwo
+U1lTVF9DT05fRU4sIFNZU1RfQ09OX1JFRyh0bykpOw0KPiANCj4gVGhpcyBsaW5lIHNlZW1zIHRv
+IGVuYWJsZSB0aGUgdGltZXIgYW5kIGRpc2FibGUgdGhlIGludGVycnVwdC4NCj4gDQo+ID4gICAg
+ICAgICB3cml0ZWwoU1lTVF9DT05fSVJRX0NMUiB8IFNZU1RfQ09OX0VOLCBTWVNUX0NPTl9SRUco
+dG8pKTsNCj4gDQo+IFRoaXMgbGluZSBhY2tzIHRoZSBpbnRlcnJ1cHQgYW5kIGVuYWJsZXMgdGhl
+IHRpbWVyIGFuZCBkaXNhYmxlcyB0aGUgaW50ZXJydXB0Lg0KPiBBcmUgdGhlc2UgbGluZXMgYm90
+aCBuZWNlc3Nhcnk/DQo+IE1heWJlIHRoaXMgZnVuY3Rpb24gc2hvdWxkIGp1c3QgYWNrIHRoZSBp
+bnRlcnJ1cHQgd2l0aG91dCBjaGFuZ2luZyB0aGUNCj4gb3RoZXIgYml0cy4NCg0KVGhhbmtzIGZv
+ciByZXZpZXcuIA0KDQppdCdzIG5lY2Vzc2FyeS4NCg0KQXMgZGVzY3JpYmVkIGFib3ZlLHdlIG11
+c3QgZW5hYmxlIHRpbWVyIGJlZm9yZSBjbGVhcg0KaXJxLCBzbyBoZXJlIGlzIGp1c3Qgd2FudCB0
+byBlbnN1cmUgaXJxIGNsZWFyIHN1Y2Nlc3NmdWxseS4NCg0KV2UgYWx3YXlzIGRpc2FibGUgaXJx
+IGhlcmUsIGFuZCB3aWxsIGJlIHJlLWVuYWJsZSBpbg0KbXRrX3N5c3RfY2xrZXZ0X25leHRfZXZl
+bnQuDQoNCj4gDQo+ID4gIH0NCj4gPg0KPiA+IEBAIC0xMTEsNiArMTEyLDkgQEAgc3RhdGljIGlu
+dCBtdGtfc3lzdF9jbGtldnRfbmV4dF9ldmVudCh1bnNpZ25lZCBsb25nIHRpY2tzLA0KPiA+DQo+
+ID4gIHN0YXRpYyBpbnQgbXRrX3N5c3RfY2xrZXZ0X3NodXRkb3duKHN0cnVjdCBjbG9ja19ldmVu
+dF9kZXZpY2UgKmNsa2V2dCkNCj4gPiAgew0KPiA+ICsgICAgICAgLyogQ2xlYXIgYW55IGlycSAq
+Lw0KPiA+ICsgICAgICAgbXRrX3N5c3RfYWNrX2lycSh0b190aW1lcl9vZihjbGtldnQpKTsNCj4g
+PiArDQo+ID4gICAgICAgICAvKiBEaXNhYmxlIHRpbWVyICovDQo+ID4gICAgICAgICB3cml0ZWwo
+MCwgU1lTVF9DT05fUkVHKHRvX3RpbWVyX29mKGNsa2V2dCkpKTsNCj4gDQo+IFRoaXMgaXMgYSB0
+aGlyZCB3cml0ZSB0byB0aGUgc2FtZSByZWdpc3RlciwgSSBiZWxpZXZlIGFsbCAzIHdyaXRlcyBj
+YW4NCj4gYmUgY29tYmluZWQgaW50byAxLiBJcyB0aGF0IHBvc3NpYmxlPw0KDQpUaGFua3MgZm9y
+IHJldmlldy4gDQoNCnRoZXJlJ3MgYSBodyBsaW1pdGF0aW9uIGhlcmUsIHdlIGNhbiBub3QgY2xl
+YXIgaXJxIHdoaWxlIHRpbWVyIGlzDQpkaXNhYmxlZCwgYW5kIFNZU1RfQ09OX0VOJlNZU1RfQ09O
+X0lSUV9DTFIgYml0IG11c3QgYmUgd3JpdGUgYXQgdGhlIHNhbWUNCnRpbWUgb3IgY2FuIG5vdCAg
+d3JpdGUgU1lTVF9DT05fSVJRX0NMUiBiaXQgc2VwZXJhdGVseS4NCg0KDQo+IA0KPiA+DQo+ID4g
+LS0NCj4gPiAxLjguMS4xLmRpcnR5DQo+ID4NCg0K
 
-Have a good day.
-deepak.
-
-> > > 
-> > > 
-> > > >  	ret = startup(sd);
-> > > >  	if (ret) {
-> > > > -- 
-> > > > 2.25.1
-> > > > 
-> > > > 
-> > > 
-> > > 
-> > > thank you,
-> > > 
-> > > fabio
-> 
-> thank you,
-> 
-> fabio
