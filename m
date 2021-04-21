@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B22E36714D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4D8367159
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241949AbhDUR1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240745AbhDUR1w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:27:52 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4679C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:27:18 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id w4so38443599wrt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y5rB5hdeendPXtZ8kWukMNJqwT+C7isho8ILaV2Ei6o=;
-        b=Fju+oMaW0JZE6NP+ZWRAXWvRXIbNMJ9AkdGWpnEpT9MFfQHRXAG+fvbY6kVNCuMvmv
-         LojzxCPUkXSZnjVfw3UvD7H4ysLctuaUpYoHZ/9dwKF5gzsUpBpIPzwOVx7YB7ZzREFS
-         lkcuBdEi6ByJEScWZxyesm7cbHU2sFimUGBSnsQTWP2JecS3Y2ig6fPqejI1iGujBQNq
-         OFhCdy8aLJe/HGzUTxD2HQV0nZcpLpRH64kdNBmgML8Zphob/Xf6HbNgTUZ9kGUerWpb
-         2SZZFRJuzVDmvASSSVdqdSbg//3smMc1lo3PZ7NQaF3noICRnSBSfeo4lk742ndCMj0o
-         +e/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y5rB5hdeendPXtZ8kWukMNJqwT+C7isho8ILaV2Ei6o=;
-        b=bnuIAeYOlCdrqOt6ggYwwOKxpsUsJdjxbB22VfGWwC2kxk5Mda3/AXn6ekDew7hrWZ
-         Dzb1Camjr33riv5Fx+qsPL2ZcoHYV2AeK8V8E7KiO2O8LQScTAnW1I+ZL1IRqON6HPM5
-         bAwxegwm3kzOS4ifdtT19euL/nFOelM1YA4eAL6n7NepYUCHcqWlwYpxL0l2ClpYmOwk
-         KOAmEz2ms3j9kp4lSlpGO1I6Gcy8QjuAcFg+TQHyTwr/mEnx3rG6rNhc4tCUP2zGxMsG
-         vMl+XOBdIKocd0h4Dg+p9rh4711uo4QH8Osa0W7t1ss9ghEPwT/QOanxR03ugJQy7z6l
-         u1eQ==
-X-Gm-Message-State: AOAM530DZx2pWfMXR3oPGLr4C99qPKtHSeXqpvdv8+b1+3glRfFhzR33
-        L1VlMlkxyYz+5Hpxenm/ptdycQ==
-X-Google-Smtp-Source: ABdhPJzJkAvQ2xZ2smIGZxg2awxu3YJLjsW5vTvBTIz7iwmQHISbAOifURiuXOjt6TiYzZyHioknTA==
-X-Received: by 2002:a5d:528a:: with SMTP id c10mr6127292wrv.333.1619026037338;
-        Wed, 21 Apr 2021 10:27:17 -0700 (PDT)
-Received: from snaipe-arista.infra.corp.arista.io (188-141-36-148.dynamic.upc.ie. [188.141.36.148])
-        by smtp.gmail.com with ESMTPSA id m15sm110805wrx.32.2021.04.21.10.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:27:17 -0700 (PDT)
-From:   Snaipe <snaipe@arista.com>
-To:     gscrivan@redhat.com
-Cc:     alexander@mihalicyn.com, christian.brauner@ubuntu.com,
-        containers@lists.linux-foundation.org, cyphar@cyphar.com,
-        ebiederm@xmission.com, geofft@ldpreload.com, jcsible@cert.org,
-        josh@joshtriplett.org, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, luto@amacapital.net, mic@digikod.net,
-        mpatel@redhat.com, ptikhomirov@virtuozzo.com, sargun@sargun.me,
-        serge@hallyn.com, stgraber@ubuntu.com, vgoyal@redhat.com,
-        watl@google.com, Snaipe <snaipe@arista.com>
-Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated user namespaces
-Date:   Wed, 21 Apr 2021 19:27:14 +0200
-Message-Id: <20210421172714.912119-1-snaipe@arista.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <87ft6act3c.fsf@redhat.com>
-References: <87ft6act3c.fsf@redhat.com>
+        id S244740AbhDURaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242135AbhDURam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:30:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF1146145A;
+        Wed, 21 Apr 2021 17:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619026209;
+        bh=Kg+L7L5MnQr8ri1Son24ac2eGLQrFFY6Xdrl0VYSxQI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pbcvQO5igVyhs1GtiLnZkxt231dSqHE6eLSTBn8V/FRIDlUwNZmOaF8lDuGGRi2nc
+         g/x9BAoPkU4C3kuJlhO8BHgpeBva7FqBmqs7crBYljbnHGqomkEZ2owWOJq1rWPNzG
+         JD0kPZtkXqngPUwwjSxwrZY14MfFRefB609m8A1vZJb25mLgtroKsv4cUZ8iCjOTlb
+         cMxPX6DFjJcgXknORd17sFgApZcaQdzN2l4XmYXEEIXZQ7bRG7b1eAOnxPYl9Wfalx
+         ixKwgb/rt3xst7rOycH6VVSI9Z47isYxtMem6yYe3JH2LTMNgTCslhULbgpvO+16ql
+         NbZZ/UrkrGt3w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 879D15C0267; Wed, 21 Apr 2021 10:30:08 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 10:30:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 0/2] bitmap_parselist: support 'all' semantics
+Message-ID: <20210421173008.GV975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210421031326.72816-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421031326.72816-1-yury.norov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Giuseppe Scrivano" <gscrivan@redhat.com> writes:
->>> >> instead of a prctl, I've added a new mode to /proc/PID/setgroups that
->>> >> allows setgroups in a userns locking the current gids.
->>> >> 
->>> >> What do you think about using /proc/PID/setgroups instead of a new
->>> >> prctl()?
->>> >
->>> > It's better than not having it, but two concerns -
->>> >
->>> > 1. some userspace, especially testsuites, could become confused by the fact
->>> > that they can't drop groups no matter how hard they try, since these will all
->>> > still show up as regular groups.
->>> 
->>> I forgot to send a link to a second patch :-) that completes the feature:
->>> https://github.com/giuseppe/linux/commit/1c5fe726346b216293a527719e64f34e6297f0c2
->>> 
->>> When the new mode is used, the gids that are not known in the userns do
->>> not show up in userspace.
->>
->> Ah, right - and of course those gids better not be mapped into the namespace :)
->>
->> But so, this is the patch you said you agreed was not worth the extra
->> complexity?
->
-> yes, these two patches are what looked too complex at that time.  The
-> problem still exists though, we could perhaps reconsider if the
-> extra-complexity is acceptable to address it.
+On Tue, Apr 20, 2021 at 08:13:24PM -0700, Yury Norov wrote:
+> RCU code supports a special group 'all' which selects all bits in a bitmap.
+> We have recently added 'N' extension for bitmap parse, so that '0-N' would
+> have exactly the same meaning as 'all'. But because the 'all' is already
+> used by RCU, it would be reasonable to support it in core bitmap code as a
+> common and easy-readable alias for '0-N'.
+> 
+> Moving the 'all' support to core bitmap code adds another level of
+> flexibility for system configuration by supporting patterns. For example,
+> every second bit in cpumask may be selected like this:
+> 	isolcpus=all:1/2
+> 
+> v2:
+>  - cleanup patch 1;
+>  - in patch 2 explain why dropping legacy comment.
 
-Hey Folks, sorry for necro-bumping, but I've found this discussion
-while searching for this specific issue, and it seems like the most
-recent relevant discussion on the matter. I'd like to chime in with
-our personal experience.
+Nice!
 
-We have a tool[1] that allows unprivileged use of namespaces
-(when using a userns, which is the default).
+I have pulled this into -rcu with some minor updates, including replacing
+the "isolcpus=all" with "rcu_nocbs=all:1/2" per Steve Rostedt's feedback.
 
-The primary use-case of said tool is lightweight containerization,
-but we're also using it for other mundane usages, like a better
-substitute for fakeroot to build and package privileged software
-(e.g. sudo or ping, which needs to be installed with special
-capabilities) unprivileged, or to copy file trees that are owned by
-the user or sub-ids.
+Could you please check to make sure that I didn't mess anything up?
 
-For the first use-case, it's always safe to drop unmapped groups,
-because the target rootfs is always owned by the user or its sub-ids.
+If tests go well, this will go into -next later today or tomorrow.
+Although I cannot prove that this will not make the upcoming merge window,
+but Murphy insists that it will instead be the v5.14 merge window.
 
-For the other use-cases, this is more problematic, as you're all
-well-aware of. Our position right now is that the tool will always
-allow setgroups in user namespace, and that it's not safe to use on
-systems that rely on negative access groups.
+							Thanx, Paul
 
-I think that something that's not mentioned is that if a user setgroups
-to a fixed list of subgids, dropping all unmapped gids, they don't just
-gain the ability to access these negative-access files, they also lose
-legitimate access to files that their unmapped groups allow them to
-access. This is fine for our first use-case, but a bit surprising for
-the second one -- and since setgroups never lets us keep unmapped gids,
-we have no way to keep these desired groups.
-
-From a first glance, a sysctl that explicitly controls that would not
-address the above problem, but keeping around the original group list
-of the owner of the user ns would have the desired semantics.
-
-Giuseppe's patch seems to address this use case, which would personally
-make me very happy.
-
-[1]: https://github.com/aristanetworks/bst
-
--- 
-Snaipe
+> Yury Norov (2):
+>   bitmap_parse: support 'all' semantics
+>   rcu/tree_plugin: don't handle the case of 'all' CPU range
+> 
+>  Documentation/admin-guide/kernel-parameters.rst | 5 +++++
+>  kernel/rcu/tree_plugin.h                        | 9 +++------
+>  lib/bitmap.c                                    | 9 +++++++++
+>  lib/test_bitmap.c                               | 7 +++++++
+>  4 files changed, 24 insertions(+), 6 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
