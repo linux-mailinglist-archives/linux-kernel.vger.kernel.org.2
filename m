@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D540E366F64
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98618366F66
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244051AbhDUPrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:47:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36344 "EHLO mail.kernel.org"
+        id S244076AbhDUPr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:47:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7332 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240048AbhDUPrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F30A261445;
-        Wed, 21 Apr 2021 15:47:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619020037;
-        bh=ADTV+2h6AZ8fKKS3l4lFTCAnpRDEK/9+OLIwZNY1akQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Or58hK3bVfF84OafrCR9LKKSSklvRg0tJwSU2jAAiLddYluGkozt4YNXM5HfY9+/l
-         IysiIshJHG650Sch09e0oUh1wOjFN0tDHPJUoY01qFmeETcDKuxi6A8xahnv4Dn9PO
-         K4ledSjyCfIH+tFQmqyjxdtc9/H4xKKIgvvwnMU5TThSnVBQb9jsm3UoQZ5XRH2BIU
-         VVLB06Izd+mryp2JC3EncqfrwuqFxClGvhaj6Bb4cawO7oUaAxsF3MseoMWnbGoQRV
-         r8PBIVnzX9nELU6esiZ4vFyh1RO7yCM5vvRHLwgVnU1zCZF7cB+QaWnlFgAQw8iXnO
-         Rn/4OVpR7/0aw==
-Date:   Wed, 21 Apr 2021 17:47:10 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Qiushi Wu <wu000273@umn.edu>
-cc:     Kangjie Lu <kjlu@umn.edu>, Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, x86@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Will Deacon <will@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
-In-Reply-To: <CAMV6ehGWOB5ENV2Z0QpjQ=rpF9GC=22QTTY-Win+Jd928LbC-A@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2104211743010.18270@cbobk.fhfr.pm>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net> <nycvar.YFH.7.76.2104211628560.18270@cbobk.fhfr.pm> <CAK8KejoGgoWcEUm7gnTw+_5CuZX1+bnHoeY0Ea-pAO+gd8dbcg@mail.gmail.com>
- <nycvar.YFH.7.76.2104211707250.18270@cbobk.fhfr.pm> <CAMV6ehGWOB5ENV2Z0QpjQ=rpF9GC=22QTTY-Win+Jd928LbC-A@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S240048AbhDUPr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:47:57 -0400
+IronPort-SDR: 59K++GrGpblefWecCRlbGl7/HaLBLLSiEwudbnEbsgznJMTX2lZr2nuRancwVfdER88aPaOlyJ
+ 3b8NOFeWjCDw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195746871"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="195746871"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:47:23 -0700
+IronPort-SDR: +6mU2LlNAdxcSaBl9c99E4D6p7vlikuzZy16GF4EzYw2UcnMcI6qk4E8ig7vDbEfoNn49jTwHE
+ +ybThPtXXhvQ==
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="602931060"
+Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.212.81.216]) ([10.212.81.216])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:47:22 -0700
+Subject: Re: [PATCH v2 1/1] dmaengine: idxd: Add IDXD performance monitor
+ support
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        kan.liang@linux.intel.com, dave.jiang@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+References: <cover.1617467772.git.zanussi@kernel.org>
+ <d38a8b3a5d087f1df918fa98627938ef0c898208.1617467772.git.zanussi@kernel.org>
+ <YH623ULPRbdi1ker@vkoul-mobl.Dlink>
+ <34f61cc9-a6d6-e5a3-5f8c-6ffae8858cce@linux.intel.com>
+ <YH+/qyUVtlHwWQJ/@vkoul-mobl.Dlink>
+ <410134d7-5a4d-3537-e9cc-c4c8e7068cde@linux.intel.com>
+ <YIA+ycNfqwytoy/Z@vkoul-mobl.Dlink>
+From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
+Message-ID: <fa867751-0019-1950-bdc4-019737f29e4b@linux.intel.com>
+Date:   Wed, 21 Apr 2021 10:47:21 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YIA+ycNfqwytoy/Z@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021, Qiushi Wu wrote:
 
-> The function description of "kobject_init_and_add()" mentioned that "If 
-> this function returns an error, kobject_put() must be called to properly 
-> clean up the memory associated with the object." (see 
-> https://elixir.bootlin.com/linux/v5.12-rc8/source/lib/kobject.c#L464) So 
-> we use this patch to fix the issue, and I may miss some context here, 
-> but I don't see why this cause some issue like NULL dereferences.
+
+On 4/21/2021 10:03 AM, Vinod Koul wrote:
+> On 21-04-21, 07:50, Zanussi, Tom wrote:
 > 
-> The identification methodology for this bug and other similar bugs that
-> are error-handling related, is shown in "Understanding and Detecting
-> Disordered Error Handling with Precise Function Pairing."
-> (https://www.usenix.org/conference/usenixsecurity21/presentation/wu-qiushi)
+>>>>>> +static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
+>>>>>> +			    char *buf);
+>>>>>> +
+>>>>>> +static cpumask_t		perfmon_dsa_cpu_mask;
+>>>>>> +static bool			cpuhp_set_up;
+>>>>>> +static enum cpuhp_state		cpuhp_slot;
+>>>>>> +
+>>>>>> +static DEVICE_ATTR_RO(cpumask);
+>>>>>
+>>>>> Pls document these new attributes added
+>>>
+>>> ?
+>>>
+>>
+>> Yes, I'll add comments to all the attributes (also I'm assuming they don't need to be documented elsewhere).
+> 
+> They need to be, all new sysfs attributes are ABI and need to be
+> documented in Documentation/ABI/
+> 
 
-You are calling kobject_put() if kobject_init_and_add() fails. That will 
-in turn invoke pci_slot_release() which will try to delete slot->list, but 
-that hasn't been initialized yet. 
+OK, will do that as well, thanks for letting me know.
 
-Fixed in 4684709bf8, present in two major Linux kernel releases.
+Tom
 
--- 
-Jiri Kosina
-SUSE Labs
-
+> Thanks
+> 
