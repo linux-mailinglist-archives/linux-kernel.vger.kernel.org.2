@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28FB366BE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C824366BE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241080AbhDUNIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:08:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47424 "EHLO mail.kernel.org"
+        id S241355AbhDUNIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:08:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239666AbhDUNGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:06:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C2D66145B;
-        Wed, 21 Apr 2021 13:05:34 +0000 (UTC)
+        id S240933AbhDUNGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:06:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5E896143C;
+        Wed, 21 Apr 2021 13:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010334;
-        bh=g7T7F/HL29LRdez0m2U2NDAgyqKQOAAT6blQsVHdKjI=;
+        s=korg; t=1619010337;
+        bh=PmbW62rFImm/dD76NdzJarGfWdBoLuW5tjUbaM4Y2H8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CAnxi8kEoIODQ6IPoolsHEfz5/RaQI3wB0rSPJ3RTh/kjyVIjyLdaZAn7969Bqu+q
-         VulDNAFPGR7abmK/3syTM2Hga1K5XbAkLHb4FImW7WHQ4qDkdwZVvBHyMgGL7ish62
-         NE0fLTgRUep83Ogw7O3AC70sXyBPRoENRzWQx9o8=
+        b=Kmqfsd2k6hT75uqLsvHt447/dMbpoGQuKGg8qfdrpCAtpsOogFg1Wi5lRg/4xxK4M
+         P8s8Fauhbq+Ugt/2GDRn5qOSw/7tZVBBXNRF45qrtKU3yEGF0uIw3RamHtqyvyOe8y
+         OywH/OhPjj+tA6H0J83kY746gNNX6Kgl7J4GFfRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Rob Herring <robh@kernel.org>,
+        Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH 097/190] Revert "video: imsttfb: fix potential NULL pointer dereferences"
-Date:   Wed, 21 Apr 2021 14:59:32 +0200
-Message-Id: <20210421130105.1226686-98-gregkh@linuxfoundation.org>
+Subject: [PATCH 098/190] Revert "video: hgafb: fix potential NULL pointer dereference"
+Date:   Wed, 21 Apr 2021 14:59:33 +0200
+Message-Id: <20210421130105.1226686-99-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -39,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
+This reverts commit ec7f6aad57ad29e4e66cc2e18e1e1599ddb02542.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -57,31 +56,26 @@ codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Finn Thain <fthain@telegraphics.com.au>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
 Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/imsttfb.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/video/fbdev/hgafb.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/video/fbdev/imsttfb.c b/drivers/video/fbdev/imsttfb.c
-index 3ac053b88495..e04411701ec8 100644
---- a/drivers/video/fbdev/imsttfb.c
-+++ b/drivers/video/fbdev/imsttfb.c
-@@ -1512,11 +1512,6 @@ static int imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	info->fix.smem_start = addr;
- 	info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
- 					    0x400000 : 0x800000);
--	if (!info->screen_base) {
--		release_mem_region(addr, size);
--		framebuffer_release(info);
--		return -ENOMEM;
--	}
- 	info->fix.mmio_start = addr + 0x800000;
- 	par->dc_regs = ioremap(addr + 0x800000, 0x1000);
- 	par->cmap_regs_phys = addr + 0x840000;
+diff --git a/drivers/video/fbdev/hgafb.c b/drivers/video/fbdev/hgafb.c
+index 8bbac7182ad3..fca29f219f8b 100644
+--- a/drivers/video/fbdev/hgafb.c
++++ b/drivers/video/fbdev/hgafb.c
+@@ -285,8 +285,6 @@ static int hga_card_detect(void)
+ 	hga_vram_len  = 0x08000;
+ 
+ 	hga_vram = ioremap(0xb0000, hga_vram_len);
+-	if (!hga_vram)
+-		goto error;
+ 
+ 	if (request_region(0x3b0, 12, "hgafb"))
+ 		release_io_ports = 1;
 -- 
 2.31.1
 
