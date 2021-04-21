@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D399E3673BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8BC3673BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245493AbhDUTsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:48:19 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24228 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245529AbhDUTsM (ORCPT
+        id S245536AbhDUTtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235545AbhDUTtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:48:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619034459; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=l0NAsDKx52g50OCZgN1pj9kXvIC/sjJda6vYAMFYqrY=; b=L7RECLq8CiJyQj7gEYCdC/VrgsqnjD9tEWHlMdLGWChxXhva9WnEfsUANK8UdV4LP9Kg0k+Q
- MfpfwWXrjjD4InDhEKfBAQuFTDUBipZekTsCuJi1FWVg18iffQ170Tpn+d+XNXvD2x4Lp4UZ
- UvZC27nHTv1X+rsFfPv/cLaJXdk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60808159853c0a2c469d2dd9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 19:47:37
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8D16C43145; Wed, 21 Apr 2021 19:47:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75D67C4338A;
-        Wed, 21 Apr 2021 19:47:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 75D67C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, peter.chen@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hemant Kumar <hemantk@codeaurora.org>, stable@vger.kernel.org,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2] usb: gadget: Fix double free of device descriptor pointers
-Date:   Wed, 21 Apr 2021 12:47:32 -0700
-Message-Id: <1619034452-17334-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 21 Apr 2021 15:49:51 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D459C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:49:16 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id m11so29884948pfc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O19OVUmKX+OatpTnEx2U4M6GnjJTDDCO8nNhpR1gr+U=;
+        b=HVJpPUulS/cE7FTJFQx951RCIw/OmH6YXIQbR5foiMyGtLNI0cVGjM7U8320d3cV9L
+         JxKLlWe/bDSY/GgFeePkdVPrCV+NZibAEAwS4zsS3KYGfXPgeBTvEVMRJ3RK419Hn/MN
+         sE41F434eXaMq8yFrV8mjgqFlKstFjRqHVFQ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O19OVUmKX+OatpTnEx2U4M6GnjJTDDCO8nNhpR1gr+U=;
+        b=hxSZVJhOMDiyi6TbirLdNvHCjigVRZdb8f5DPQwO6tkF2j9UL2C2N/OxV/ClRvdpyo
+         mseLgzzNLfzQ5v31eM6dELZdBKzMEw5/eJcB+PoGfHZsd2NWMmVEyDV/CN5t4fr/h/cb
+         fyybgWHrYcEkTXqXxmVtrKmXW3T2hCIlvTvt+BlgeiL9aq7Q9hl1lYlaAfdbBqAIqs3n
+         ujL7gms6Yt9bYhVEKTJpBABX3QQFGPXNIRmDAB3vl0n/rAhmu52jmB/bI8Tyehr4euA+
+         T5UMqSZwIZURqdPDaDYoa/RpIuqr4jX0jToAtJaH83JfAEqpI1U+/H9J4W4UCvZo78c6
+         oSBw==
+X-Gm-Message-State: AOAM532E9+VGbEpxQdDmY/5EQ/KHo3Jj0p9tUQQePC/ou2ZWgcIcjzgd
+        SkeA9vqSLmH8tZHyT6HXhZI34A==
+X-Google-Smtp-Source: ABdhPJz9xRiT9tNpBXV6BTuNLW1W3j8W0pT2+ejHISCsnJyOhHDvmUe9/eBvJ8kEdeTc+v9S1nwD0w==
+X-Received: by 2002:a63:1157:: with SMTP id 23mr12968428pgr.25.1619034556055;
+        Wed, 21 Apr 2021 12:49:16 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k19sm200050pgl.1.2021.04.21.12.49.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 12:49:15 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 12:49:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Thomas Gleixner <tglx@linutronix.de>, kjlu@umn.edu,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joe Perches <joe@perches.com>,
+        Nicolai Stange <nstange@suse.de>,
+        Roland Dreier <roland@purestorage.com>
+Subject: Re: [PATCH 113/190] Revert "x86/hpet: Prevent potential NULL pointer
+ dereference"
+Message-ID: <202104211245.F5FEC8D15D@keescook>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-114-gregkh@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-114-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hemant Kumar <hemantk@codeaurora.org>
+On Wed, Apr 21, 2021 at 02:59:48PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 2e84f116afca3719c9d0a1a78b47b48f75fd5724.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: kjlu@umn.edu
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Joe Perches <joe@perches.com>
+> Cc: Nicolai Stange <nstange@suse.de>
+> Cc: Roland Dreier <roland@purestorage.com>
+> Cc: https
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/x86/kernel/hpet.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
+> index 08651a4e6aa0..0515a97bf6f5 100644
+> --- a/arch/x86/kernel/hpet.c
+> +++ b/arch/x86/kernel/hpet.c
+> @@ -930,8 +930,6 @@ int __init hpet_enable(void)
+>  		return 0;
+>  
+>  	hpet_set_mapping();
+> -	if (!hpet_virt_address)
+> -		return 0;
+>  
+>  	/* Validate that the config register is working */
+>  	if (!hpet_cfg_working())
 
-Upon driver unbind usb_free_all_descriptors() function frees all
-speed descriptor pointers without setting them to NULL. In case
-gadget speed changes (i.e from super speed plus to super speed)
-after driver unbind only upto super speed descriptor pointers get
-populated. Super speed plus desc still holds the stale (already
-freed) pointer. Fix this issue by setting all descriptor pointers
-to NULL after freeing them in usb_free_all_descriptors().
+FWIW, this patch looks harmless. It is checking for a failure in
+hpet_set_mapping(), and avoids the following code from performing
+0-offset reads. hpet_set_mapping() is likely to never fail in real-world
+situations. *shrug*
 
-Fixes: f5c61225cf29 ("usb: gadget: Update function for SuperSpeedPlus")
-cc: stable@vger.kernel.org
-Reviewed-by: Peter Chen <peter.chen@kernel.org>
-Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
-Changes in v2:
- - Add Reviewed-by and Fixes tags
- - CC'ed stable tree
+I think it would make more sense for the check to live in
+hpet_cfg_working(), though.
 
- drivers/usb/gadget/config.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/usb/gadget/config.c b/drivers/usb/gadget/config.c
-index 2d11535..8bb2577 100644
---- a/drivers/usb/gadget/config.c
-+++ b/drivers/usb/gadget/config.c
-@@ -194,9 +194,13 @@ EXPORT_SYMBOL_GPL(usb_assign_descriptors);
- void usb_free_all_descriptors(struct usb_function *f)
- {
- 	usb_free_descriptors(f->fs_descriptors);
-+	f->fs_descriptors = NULL;
- 	usb_free_descriptors(f->hs_descriptors);
-+	f->hs_descriptors = NULL;
- 	usb_free_descriptors(f->ss_descriptors);
-+	f->ss_descriptors = NULL;
- 	usb_free_descriptors(f->ssp_descriptors);
-+	f->ssp_descriptors = NULL;
- }
- EXPORT_SYMBOL_GPL(usb_free_all_descriptors);
- 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Kees Cook
