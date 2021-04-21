@@ -2,125 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B883671E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B6D3671EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244983AbhDURu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235848AbhDURu2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:50:28 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA1CC06174A;
-        Wed, 21 Apr 2021 10:49:53 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d6so13579464qtx.13;
-        Wed, 21 Apr 2021 10:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kiwlnfkgGTrM7xFnB6+P2WRhoU4ZK1BamhT8u+Eu9o8=;
-        b=SO3/cL9dMcFliYhY106EhS8fdV+uEsYaSg5zP2OT4O5D76ne7bv2CyKrvbLObDsoKJ
-         2XDS4qmIRr+ui5w18Z03FWsnrdARAF4ktMDEYwTXbiNNKkPtPdrgiiuaIZPWEWgx1a9s
-         oZRHym3RcnN6eNGfqKdBghmZgFZAHbJhgRURn0P0byGaikoMkfc+DX4DRY3k/N8iu7lo
-         zdi2p4GFVzZowDSgGd1MHpshXHKqeUnOPu2TDtE8zvLkzYIQxKJ4WVgMwe7cnC7hEq0K
-         pgDC2/+AydJOTlICk3V4NansoYundMK+G+ChTBJProdeau8TkOAtDNddRXbdlZ3qP70S
-         2SqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kiwlnfkgGTrM7xFnB6+P2WRhoU4ZK1BamhT8u+Eu9o8=;
-        b=Y3r5aUYWuaIWABZ3H9Yp81x1R94TPcnWZFh3MsWrWoFjhu6r3461XOAR/D1FFcGCfX
-         BsYN98Si7FAzf+AePzQFFpgJbMDp67+B8X/2XRL3c/I03N882E/T/tUCUeUAc7r+833F
-         CBdQHlJtUPnfRRfKdwRL88Oz6zKXKIS+Q+QvQJhWHpvbB6KogeUtvS4faEqriiGjb+rO
-         P3HI7FX4C5eflh4yQQr6qxxnH0bUS84lTd8OjUMzn8XOXDuzg+mAc7tY2+3qjtF/obMs
-         BaseiOur5x/Naua4PW5bRdujUSXXv3Psh0DD+ZbVw4DqNljxaRi4uFZnURt09sMPDFjS
-         Qb2g==
-X-Gm-Message-State: AOAM531NT2iSuA242ZcVZxZh406JAJwd9sNB5d6bquxXMpBnktE9l37d
-        ivvqleh/Yp3tBb2LBYP0aBp5VvqPAlM=
-X-Google-Smtp-Source: ABdhPJzjqtGEdIv0HyEfkFIOQvHJ0dsbpdxxCKNjTgAyBLn4RiZk1g1PtbaawkV98dgcHwiIlbrnDQ==
-X-Received: by 2002:a05:622a:46:: with SMTP id y6mr21947498qtw.44.1619027392326;
-        Wed, 21 Apr 2021 10:49:52 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id h62sm15225qkf.116.2021.04.21.10.49.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:49:51 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 10:49:50 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 0/2] bitmap_parselist: support 'all' semantics
-Message-ID: <20210421174950.GA106553@yury-ThinkPad>
-References: <20210421031326.72816-1-yury.norov@gmail.com>
- <20210421173008.GV975577@paulmck-ThinkPad-P17-Gen-1>
+        id S245021AbhDURvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244889AbhDURus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:50:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B00A961422;
+        Wed, 21 Apr 2021 17:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619027414;
+        bh=TTyu7wmjMrDzl+3OrRJqrNUYHSJoREbsfVWUZJoCK1w=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PICAVAJHIy54CT+KWDVRO0y/2HN5rlslOsiNuh27tk7W/OIO/penGRBC59nAZsPQV
+         FADtkuCNgSG7ZODmEOx1SDOtn7XNNEtc2T7d2mLJcgevjhZH3EQ9OP/gK8d497UeOk
+         tlfn5hZTeAohJusbGenaSxsD3xLu9qn0v0sVNGXk2U3rT2Mv5ugjSAp8VubxoAdkEv
+         hbvA5zoNsgBh/lzzuubfZdClTd0OpQh4nS5sE2Jvv5N5gRZl+1+XkGV26F8ccQouMi
+         R80XSLa9Ef0nLWgLmE3ZZfT+gxkmG4ksGxMQydxMQys22q7Qy/r/c2CpHtQzr+Rkev
+         BZgNFheCv1uEA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A748F60A3C;
+        Wed, 21 Apr 2021 17:50:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421173008.GV975577@paulmck-ThinkPad-P17-Gen-1>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v1] net: dsa: fix bridge support for drivers without
+ port_bridge_flags callback
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161902741468.20144.2290526822940755644.git-patchwork-notify@kernel.org>
+Date:   Wed, 21 Apr 2021 17:50:14 +0000
+References: <20210421130540.12522-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210421130540.12522-1-o.rempel@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     andrew@lunn.ch, f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:30:08AM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 20, 2021 at 08:13:24PM -0700, Yury Norov wrote:
-> > RCU code supports a special group 'all' which selects all bits in a bitmap.
-> > We have recently added 'N' extension for bitmap parse, so that '0-N' would
-> > have exactly the same meaning as 'all'. But because the 'all' is already
-> > used by RCU, it would be reasonable to support it in core bitmap code as a
-> > common and easy-readable alias for '0-N'.
-> > 
-> > Moving the 'all' support to core bitmap code adds another level of
-> > flexibility for system configuration by supporting patterns. For example,
-> > every second bit in cpumask may be selected like this:
-> > 	isolcpus=all:1/2
-> > 
-> > v2:
-> >  - cleanup patch 1;
-> >  - in patch 2 explain why dropping legacy comment.
-> 
-> Nice!
-> 
-> I have pulled this into -rcu with some minor updates, including replacing
-> the "isolcpus=all" with "rcu_nocbs=all:1/2" per Steve Rostedt's feedback.
+Hello:
 
-Thank you Paul and Steven for fixing this 'isolcpus=all'.
-'rcu_nocbs=all:1/2' would look better in the documentation.
- 
-> Could you please check to make sure that I didn't mess anything up?
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Everything is OK. Thank you for fixing this.
+On Wed, 21 Apr 2021 15:05:40 +0200 you wrote:
+> Starting with patch:
+> a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+> 
+> drivers without "port_bridge_flags" callback will fail to join the bridge.
+> Looking at the code, -EOPNOTSUPP seems to be the proper return value,
+> which makes at least microchip and atheros switches work again.
+> 
+> [...]
 
-> If tests go well, this will go into -next later today or tomorrow.
-> Although I cannot prove that this will not make the upcoming merge window,
-> but Murphy insists that it will instead be the v5.14 merge window.
-> 
-> 							Thanx, Paul
-> 
-> > Yury Norov (2):
-> >   bitmap_parse: support 'all' semantics
-> >   rcu/tree_plugin: don't handle the case of 'all' CPU range
-> > 
-> >  Documentation/admin-guide/kernel-parameters.rst | 5 +++++
-> >  kernel/rcu/tree_plugin.h                        | 9 +++------
-> >  lib/bitmap.c                                    | 9 +++++++++
-> >  lib/test_bitmap.c                               | 7 +++++++
-> >  4 files changed, 24 insertions(+), 6 deletions(-)
-> > 
-> > -- 
-> > 2.25.1
-> > 
+Here is the summary with links:
+  - [net-next,v1] net: dsa: fix bridge support for drivers without port_bridge_flags callback
+    https://git.kernel.org/netdev/net-next/c/70a7c484c7c3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
