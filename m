@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537E236717B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A50367185
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242138AbhDURjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:39:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33880 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235434AbhDURjO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:39:14 -0400
-Received: from mail-lf1-f70.google.com ([209.85.167.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lZGoC-0007IK-98
-        for linux-kernel@vger.kernel.org; Wed, 21 Apr 2021 17:38:40 +0000
-Received: by mail-lf1-f70.google.com with SMTP id s8-20020a1977080000b02901ae88fbe012so1154652lfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:38:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I9+aIwz9Vql5/6wSQl+X+pueE49imN5o1e/PPElxYzU=;
-        b=jXfoVDdfAlj/s86mGJU57Sc6Dmhu+ICN/MO7jUH/YE86vjReKS0CkRsvBJyDJS4i5d
-         fYP1HiXkLjxRbvyhnCBNUh4Y/eLE/NI33tJy+h9e/skGE6gxpgVPu0j+JuMmKeSAvE/k
-         NrvZn+0pfbPsY2QX5XflpFhzY2xn23GMMZ6jX3YWVLigPzBCNjJSc6kdh6Civ7E0bv72
-         3y3OUbG11l9yYdefLa+hCgQOTIIbZhWMmd9QCCoYdr7OWD6ua1/2ir0WGQS1nwzU9W3f
-         V3wuVQ1fQfbNwrACxgV06sjKhMh7Vaa49S6ETcjRxmD5bgQd382B+1o7ZqzRdimHf78q
-         JoPQ==
-X-Gm-Message-State: AOAM5308FRiw+kZNFNxVRyR6LESFwaufLrnwKoCIMvUMcGGl+W2UDTZ6
-        QGU8lwxQdHUSSrMRRW4tInjp16KYUgxGqbPTiXNkIIocAs8EmXlg1tFB2RMF9NyHn4EDDJQDTGv
-        XuttuuzrJiRVx3uJvxHplVNGElHn8UsBK0eeQTAqEN+QkE0MkvHVufAj/iA==
-X-Received: by 2002:a05:6512:3f8c:: with SMTP id x12mr19950139lfa.622.1619026719734;
-        Wed, 21 Apr 2021 10:38:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzItHMeXRB2TVHPu5Htg1i1sRwwHWMfKEkn/SOqau90eZrlMpzeKkrk6JIgPMVOa4v50O5FId3GHVMezAV3Sbg=
-X-Received: by 2002:a05:6512:3f8c:: with SMTP id x12mr19950124lfa.622.1619026719493;
- Wed, 21 Apr 2021 10:38:39 -0700 (PDT)
+        id S244820AbhDURkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:40:41 -0400
+Received: from elvis.franken.de ([193.175.24.41]:35562 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244814AbhDURkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:40:36 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lZGpV-0006uJ-00; Wed, 21 Apr 2021 19:40:01 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D0202C08D9; Wed, 21 Apr 2021 19:39:24 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 19:39:24 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: gpio: Add devicetree binding for IDT
+ 79RC3243x GPIO controller
+Message-ID: <20210421173924.GA15599@alpha.franken.de>
+References: <20210421162026.41978-1-tsbogend@alpha.franken.de>
+ <20210421162026.41978-2-tsbogend@alpha.franken.de>
+ <20210421171727.GA1310436@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20210416091344.1210803-1-kai.heng.feng@canonical.com>
- <20210419065027.GA19201@lst.de> <CAAd53p4r45fZ4ewCko_Q-mO92omBZkEiPpyyc2SYRXH+6WpEKg@mail.gmail.com>
- <BYAPR12MB3238A5758B18B061204F264EFB479@BYAPR12MB3238.namprd12.prod.outlook.com>
-In-Reply-To: <BYAPR12MB3238A5758B18B061204F264EFB479@BYAPR12MB3238.namprd12.prod.outlook.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 22 Apr 2021 01:38:27 +0800
-Message-ID: <CAAd53p6f14W3RtbhpszzdRp56bh5y3ciezNq2WgsA9FwmREdSw@mail.gmail.com>
-Subject: Re: [PATCH v2] nvme: Favor D3cold for suspend if NVMe device supports it
-To:     "Liang, Prike" <Prike.Liang@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Sagi Grimberg <sagi@grimberg.me>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "S-k, Shyam-sundar" <Shyam-sundar.S-k@amd.com>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421171727.GA1310436@robh.at.kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 4:42 PM Liang, Prike <Prike.Liang@amd.com> wrote:
->
-> [AMD Public Use]
->
-> According to BIOS guys the _PR3 should be always implemented for NVMe device on the onwards ASIC. This solution seems more simple and looks good to me.
+On Wed, Apr 21, 2021 at 12:17:27PM -0500, Rob Herring wrote:
+> On Wed, Apr 21, 2021 at 06:20:26PM +0200, Thomas Bogendoerfer wrote:
+> > Add YAML devicetree binding for IDT 79RC3243x GPIO controller
+> > 
+> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > ---
+> >  .../bindings/gpio/gpio-idt3243x.yaml          | 73 +++++++++++++++++++
+> 
+> Use compatible string for filename.
 
-Turns out ASUS laptops don't have _PR3 implement in ACPI, so this
-patch doesn't work on them.
-For now, please use the patch from AMD instead, thanks!
+ok
 
-Kai-Heng
+> >  1 file changed, 73 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml b/Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml
+> > new file mode 100644
+> > index 000000000000..346a57ef8298
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml
+> > @@ -0,0 +1,73 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/gpio/gpio-idt3243x.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: IDT 79RC32434x GPIO controller
+> > +
+> > +maintainers:
+> > +  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: idt,3243x-gpio
+> 
+> What's the 'x'? Generally, we don't do wildcards for compatible strings.
 
->
-> Reviewed-by: Prike Liang <Prike.Liang@amd.com>
->
-> Thanks,
-> Prike
-> > -----Original Message-----
-> > From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > Sent: Monday, April 19, 2021 2:58 PM
-> > To: Christoph Hellwig <hch@lst.de>
-> > Cc: Keith Busch <kbusch@kernel.org>; Jens Axboe <axboe@fb.com>; Sagi
-> > Grimberg <sagi@grimberg.me>; Deucher, Alexander
-> > <Alexander.Deucher@amd.com>; Liang, Prike <Prike.Liang@amd.com>; S-k,
-> > Shyam-sundar <Shyam-sundar.S-k@amd.com>; open list:NVM EXPRESS
-> > DRIVER <linux-nvme@lists.infradead.org>; open list <linux-
-> > kernel@vger.kernel.org>
-> > Subject: Re: [PATCH v2] nvme: Favor D3cold for suspend if NVMe device
-> > supports it
-> >
-> > On Mon, Apr 19, 2021 at 2:50 PM Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > On Fri, Apr 16, 2021 at 05:13:44PM +0800, Kai-Heng Feng wrote:
-> > > > On AMD platforms that use s2idle, NVMe timeouts on s2idle resume,
-> > > > because their SMU FW may cut off NVMe power during sleep.
-> > >
-> > > We're already have a discussion on a proper quirk for thse broken
-> > > platforms on the linux-nvme list, please take part in that discussion.
-> >
-> > Thanks. I didn't notice v5 was sent the to mailing list.
-> > As of now, AMD folks are also reviewing this, and I believe this approach is
-> > less quirky.
-> >
-> > Kai-Heng
+there are 3 different SoCs 79rc32434, 79rc32435 and 79rc32438. So should
+I add 3 compatible strings and use the first as filename ?
+
+> > +  ngpios:
+> > +    description:
+> > +      Number of available gpios in a bank.
+> 
+> That's every 'ngpios'. Drop.
+
+ok.
+
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    gpio0: interrupt-controller@50000 {
+> 
+> gpio@...
+> 
+> As generally it's primarily a GPIO controller and secondarily an 
+> interrupt controller.
+
+ok.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
