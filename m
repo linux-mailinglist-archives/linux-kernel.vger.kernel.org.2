@@ -2,176 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389BC3670F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C263A3670F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238594AbhDURKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:10:55 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:33337 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237525AbhDURKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:10:47 -0400
-Received: by mail-ot1-f53.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso17090841otl.0;
-        Wed, 21 Apr 2021 10:10:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e0xWzzrYHgN7CwVeKC5YSWwbefoDagQfjjCSIuIGdkk=;
-        b=GJjakUme88UXAIo3Hp7GGOq45grhSO63FKN8D6v8Paw7tZwAV+W2IFfTzEdIeA5BUj
-         ksuafC+8FSmKXjApUmTNxejzdD2PAuzCd82nyFhQgVqEoHZ2OieU1t/hqhzPHABl7cpX
-         ZDpSWgoAS1XFMXnbN1Am+OgwbRMTO/tj4LyKHyx+YCHKqqntYzTIoo9KPYnLwUh+1JTP
-         CMjv3bWtpKL5gGHNSfHN7S7ffM/HprKZfj6asSN1Aho0kfRUlGHLvSy2y6+teG61e0KS
-         IlctDIF61LU6cJUpOup7pvYogL176sy5j9fTnDlEQDPnINkBsU1MkBEvSevuOH3IlTSm
-         R1WQ==
-X-Gm-Message-State: AOAM532NB3h4WMCQFkvmEtZbMoTNKg9MfeIT4r8xdKnnys/NWkT3EUC7
-        lgI9vKy1nNp3rAFB0MJoPKsHtOh48g==
-X-Google-Smtp-Source: ABdhPJypK4E7aeXDEY++vjKPabPUUmMwWk6RUH2mGwu/pJkMcLh3KjbnujNyOy8QDhNdXav2oMUGIg==
-X-Received: by 2002:a9d:39e4:: with SMTP id y91mr22109670otb.277.1619025013631;
-        Wed, 21 Apr 2021 10:10:13 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j4sm590199oiw.0.2021.04.21.10.10.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:10:12 -0700 (PDT)
-Received: (nullmailer pid 1306257 invoked by uid 1000);
-        Wed, 21 Apr 2021 17:10:09 -0000
-Date:   Wed, 21 Apr 2021 12:10:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        devicetree@vger.kernel.org, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        bgodavar@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, abhishekpandit@chromium.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: Convert to DT schema
-Message-ID: <20210421171009.GA1300559@robh.at.kernel.org>
-References: <1618936010-16579-1-git-send-email-gubbaven@codeaurora.org>
- <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
+        id S242574AbhDURLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238034AbhDURKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:10:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5606A61360;
+        Wed, 21 Apr 2021 17:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619025020;
+        bh=vQW/O+ZRlOWfybjW1VBTul75liFN4bSm4NGQMUpQUt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bLe+rypc/AwdIGixQpLnD3YnfRANOWDeSjFkhTfu2bu9XAezbNXlXjq8ttbMvesTs
+         dS7Fs2XcrFBDivtz+XddlwOTQeb7OOnU583/I6hT2E6JMgShitGXLx+uy6QrsddQYz
+         RoUmSUUwG8o+h82IA4MkGK7dAuU09qPIVzbE/u1dIbSMFnuw7TZAnIWHhpRX9sCVkc
+         IYzaSDVRZyRFJ0FtRkmoZ5/AbJL3Ox4K7vDts12Fv80qKOPCBInSLxqFlvGJcrY9W4
+         +mNbg+JCcUIcz6vF3bM3iC51b4FbhFE94l01WZBgVQxDnCS0QqRvKWz4jk7HOpfYUk
+         II82pwHBSlvyQ==
+Date:   Wed, 21 Apr 2021 10:10:15 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@intel.com>
+Subject: Re: [PATCH] KVM: x86: Fix implicit enum conversion goof in scattered
+ reverse CPUID code
+Message-ID: <YIBcd+5NKJFnkTC1@archlinux-ax161>
+References: <20210421010850.3009718-1-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
+In-Reply-To: <20210421010850.3009718-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 09:56:49PM +0530, Venkata Lakshmi Narayana Gubba wrote:
-> Converted Qualcomm Bluetooth binidings to DT schema.
+On Tue, Apr 20, 2021 at 06:08:50PM -0700, Sean Christopherson wrote:
+> Take "enum kvm_only_cpuid_leafs" in scattered specific CPUID helpers
+> (which is obvious in hindsight), and use "unsigned int" for leafs that
+> can be the kernel's standard "enum cpuid_leaf" or the aforementioned
+> KVM-only variant.  Loss of the enum params is a bit disapponting, but
+> gcc obviously isn't providing any extra sanity checks, and the various
+
+Unfortunately, gcc's -Wenum-conversion is behind -Wextra rather than
+-Wall like clang. If you explicitly enable it with
+KCFLAGS=-Wenum-conversion to your make invocation, it will warn in the
+exact same way as clang:
+
+arch/x86/kvm/cpuid.c: In function 'kvm_set_cpu_caps':
+arch/x86/kvm/cpuid.c:499:29: warning: implicit conversion from 'enum kvm_only_cpuid_leafs' to 'enum cpuid_leafs' [-Wenum-conversion]
+  499 |  kvm_cpu_cap_init_scattered(CPUID_12_EAX,
+      |                             ^~~~~~~~~~~~
+arch/x86/kvm/cpuid.c: In function '__do_cpuid_func':
+arch/x86/kvm/cpuid.c:837:31: warning: implicit conversion from 'enum kvm_only_cpuid_leafs' to 'enum cpuid_leafs' [-Wenum-conversion]
+  837 |   cpuid_entry_override(entry, CPUID_12_EAX);
+      |                               ^~~~~~~~~~~~
+
+clang's warning for comparison/posterity:
+
+arch/x86/kvm/cpuid.c:499:29: warning: implicit conversion from enumeration type 'enum kvm_only_cpuid_leafs' to different enumeration type 'enum cpuid_leafs' [-Wenum-conversion]
+        kvm_cpu_cap_init_scattered(CPUID_12_EAX,
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~
+arch/x86/kvm/cpuid.c:837:31: warning: implicit conversion from enumeration type 'enum kvm_only_cpuid_leafs' to different enumeration type 'enum cpuid_leafs' [-Wenum-conversion]
+                cpuid_entry_override(entry, CPUID_12_EAX);
+                ~~~~~~~~~~~~~~~~~~~~        ^~~~~~~~~~~~
+2 warnings generated.
+
+> BUILD_BUG_ON() assertions ensure the input is in range.
 > 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> This fixes implicit enum conversions that are detected by clang-11.
+> 
+> Fixes: 4e66c0cb79b7 ("KVM: x86: Add support for reverse CPUID lookup of scattered features")
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+This makes GCC and clang happy in my brief testing.
+
+I assume this will get squashed but in case not, here are some tags:
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 69 -----------------
->  .../bindings/net/qualcomm-bluetooth.yaml           | 87 ++++++++++++++++++++++
->  2 files changed, 87 insertions(+), 69 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
->  create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-
-> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-> new file mode 100644
-> index 0000000..55cd995
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Bluetooth Chips
-> +
-> +maintainers:
-> +  - Rob Herring <robh@kernel.org>
-> +  - Marcel Holtmann <marcel@holtmann.org>
-
-This should be someone that knows and cares about this h/w. I don't.
-
-> +
-> +description:
-> +  This binding describes Qualcomm UART-attached bluetooth chips.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,qca6174-bt
-> +      - qcom,qca9377-bt
-> +      - qcom,wcn3990-bt
-> +      - qcom,wcn3991-bt
-> +      - qcom,wcn3998-bt
-> +      - qcom,qca6390-bt      
-> +
-> +  enable-gpios:
-> +    maxItems: 1
-> +    description: gpio specifier used to enable chip
-> +   
-> +  clocks:
-> +    maxItems: 1
-> +    description: clock provided to the controller (SUSCLK_32KHZ)
-> +
-> +  vddio-supply:
-> +    description: VDD_IO supply regulator handle
-> +
-> +  vddxo-supply:
-> +    description: VDD_XO supply regulator handle
-> +
-> +  vddrf-supply:
-> +    description: VDD_RF supply regulator handle
-> +
-> +  vddch0-supply:
-> +    description: VDD_CH0 supply regulator handle
-> +
-> +  max-speed: 
-> +    description: see Documentation/devicetree/bindings/serial/serial.yaml
-> +
-> +  firmware-name:
-> +    description: specify the name of nvm firmware to load
-> +
-> +  local-bd-address:
-> +    description: see Documentation/devicetree/bindings/net/bluetooth.txt
-> +
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    uart {
-> +        label = "BT-UART";
-
-Why do you need a label for in internal port where you've described the 
-connection?
-
-> +        status = "okay";
-
-Don't show status in examples.
-
-> +
-> +        bluetooth {
-> +            compatible = "qcom,qca6174-bt";
-> +            enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
-> +            clocks = <&divclk4>;
-> +            firmware-name = "nvm_00440302.bin";
-> +        };
-> +    };
-> +  - |
-> +    uart {
-> +
-> +        bluetooth {
-> +            compatible = "qcom,wcn3990-bt";
-> +            vddio-supply = <&vreg_s4a_1p8>;
-> +            vddxo-supply = <&vreg_l7a_1p8>;
-> +            vddrf-supply = <&vreg_l17a_1p3>;
-> +            vddch0-supply = <&vreg_l25a_3p3>;
-> +            max-speed = <3200000>;
-> +            firmware-name = "crnv21.bin";		
-> +        };
-> +    };
+> 
+> Hopefully it's not too late to squash this...
+> 
+>  arch/x86/kvm/cpuid.c | 5 +++--
+>  arch/x86/kvm/cpuid.h | 2 +-
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 96e41e1a1bde..e9d644147bf5 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -365,7 +365,7 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
+>  }
+>  
+>  /* Mask kvm_cpu_caps for @leaf with the raw CPUID capabilities of this CPU. */
+> -static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
+> +static __always_inline void __kvm_cpu_cap_mask(unsigned int leaf)
+>  {
+>  	const struct cpuid_reg cpuid = x86_feature_cpuid(leaf * 32);
+>  	struct kvm_cpuid_entry2 entry;
+> @@ -378,7 +378,8 @@ static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
+>  	kvm_cpu_caps[leaf] &= *__cpuid_entry_get_reg(&entry, cpuid.reg);
+>  }
+>  
+> -static __always_inline void kvm_cpu_cap_init_scattered(enum cpuid_leafs leaf, u32 mask)
+> +static __always_inline
+> +void kvm_cpu_cap_init_scattered(enum kvm_only_cpuid_leafs leaf, u32 mask)
+>  {
+>  	/* Use kvm_cpu_cap_mask for non-scattered leafs. */
+>  	BUILD_BUG_ON(leaf < NCAPINTS);
+> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> index eeb4a3020e1b..7bb4504a2944 100644
+> --- a/arch/x86/kvm/cpuid.h
+> +++ b/arch/x86/kvm/cpuid.h
+> @@ -236,7 +236,7 @@ static __always_inline void cpuid_entry_change(struct kvm_cpuid_entry2 *entry,
+>  }
+>  
+>  static __always_inline void cpuid_entry_override(struct kvm_cpuid_entry2 *entry,
+> -						 enum cpuid_leafs leaf)
+> +						 unsigned int leaf)
+>  {
+>  	u32 *reg = cpuid_entry_get_reg(entry, leaf * 32);
+>  
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
+> 2.31.1.368.gbe11c130af-goog
 > 
