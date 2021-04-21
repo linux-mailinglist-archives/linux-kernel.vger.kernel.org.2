@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D859366E29
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3B9366DE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242960AbhDUO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:27:02 -0400
-Received: from elvis.franken.de ([193.175.24.41]:35319 "EHLO elvis.franken.de"
+        id S235887AbhDUOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243507AbhDUO1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:27:01 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lZDoA-0005BV-00; Wed, 21 Apr 2021 16:26:26 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7AC22C0840; Wed, 21 Apr 2021 16:15:18 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 16:15:18 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lib/math/test_div64: Fix error message formatting
-Message-ID: <20210421141518.GA11331@alpha.franken.de>
-References: <alpine.DEB.2.21.2104211445290.44318@angie.orcam.me.uk>
+        id S235339AbhDUOQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:16:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D5A06144D;
+        Wed, 21 Apr 2021 14:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619014530;
+        bh=GMG3YoNBTM4O0A7DlywWeHR/mJ0BmCq+hm5gz760GSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k0OaXKxpVMrtZQW4e4wc5Cbgzi+0TOZhcmpT4yt/slkbhZOnl7X4EwRmIVeAOq6EM
+         32tmQsZAL/rLcp/T+WMDgRbCIFJRbCqxcYwDYt7q2+XcBVwYEJXOTm4kCCUGfSAw9c
+         rC+KOkN0JVnt9QabDnU84dvWuw52X7yL3Wx86GzEOklZZhEeD1ZINmQUS12DB2SvvY
+         c+bdbM7y4q02EuRXjunEVujq+FbCUvrmUPu6lfZ8oVRhZJPQFBPAEVBL88Xkro6ptC
+         Sos8IKG43KEwcpzjEYA9gfD92iAtIJltB8iT+PpmoTx7rD6rYr1/kAcfgJ5KcHjWrS
+         Iq5QYqeSoElUg==
+Date:   Wed, 21 Apr 2021 17:15:26 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Anna Schumaker <anna.schumaker@netapp.com>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YIAzfsMx6bn5Twu8@unreal>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
+ <CAFX2JfnGCbanTaGurArBw-5F2MynPD=GpwkfU6wVoNKr9ffzRg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2104211445290.44318@angie.orcam.me.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAFX2JfnGCbanTaGurArBw-5F2MynPD=GpwkfU6wVoNKr9ffzRg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:25:22PM +0200, Maciej W. Rozycki wrote:
-> Align the expected result with one actually produced for easier visual 
-> comparison; this has to take into account what the format specifiers 
-> will actually produce rather than the characters they consist of.  E.g.:
+On Wed, Apr 21, 2021 at 08:51:02AM -0400, Anna Schumaker wrote:
+> On Wed, Apr 21, 2021 at 2:07 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Tue, Apr 20, 2021 at 01:10:08PM -0400, J. Bruce Fields wrote:
+> > > On Tue, Apr 20, 2021 at 09:15:23AM +0200, Greg KH wrote:
+> > > > If you look at the code, this is impossible to have happen.
+> > > >
+> > > > Please stop submitting known-invalid patches.  Your professor is playing
+> > > > around with the review process in order to achieve a paper in some
+> > > > strange and bizarre way.
+> > > >
+> > > > This is not ok, it is wasting our time, and we will have to report this,
+> > > > AGAIN, to your university...
+> > >
+> > > What's the story here?
+> >
+> > Those commits are part of the following research:
+> > https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceInsecurity.pdf
 > 
-> test_div64: ERROR: 10000000ab275080 / 00000009 => 01c71c71da20d00e,00000002
-> test_div64: ERROR: expected value              => 0000000013045e47,00000001
-> 
-> (with a failure induced by setting bit #60 of the divident).
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> ---
->  lib/math/test_div64.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This thread is the first I'm hearing about this. I wonder if there is
+> a good way of alerting the entire kernel community (including those
+> only subscribed to subsystem mailing lists) about what's going on? It
+> seems like useful information to have to push back against these
+> patches.
 
-applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+IMHO, kernel users ML is good enough for that.
