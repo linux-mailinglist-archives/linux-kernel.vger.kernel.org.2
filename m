@@ -2,183 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9066E3665EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F2A3665EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236703AbhDUHBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
+        id S236671AbhDUHBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236673AbhDUHBw (ORCPT
+        with ESMTP id S236441AbhDUHBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:01:52 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00751C06138E
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:01:18 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 82so46033762yby.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:01:18 -0700 (PDT)
+        Wed, 21 Apr 2021 03:01:48 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40E6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:01:15 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id w6so13277686pfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4bKgB7JiZwc4vgVkRBcbHea3g47Hab58/tBD/C4XU4M=;
-        b=OEgGH/vIkSE1eIGDm/azD5/DxoZjhOcM87MNX1nFCuCS4h+Kq6OcixIp0TKvka7/kS
-         F/Xw4tQIcPchwAuQ6Q7qj7lOsd2DfmrZCtn59zdAKtoLY963ij+xMkutbVgnxwT9fvrU
-         27dRJRyK4jG18ZrB1u5TZ98zFX0gIBn5XneOoGcekW6JggAPoV13mLaEELc2AoSXW1sf
-         gFAfbkQH0y0E/QutPfuPe5TQcKHMJ6TSuX+8YhVlhA3PyvDUgD1/QlboL+yVIlgd8uQH
-         soB/sBSDXVp4JI9suLovHaRHOFID5r+ssqKUgyfkkR4eGu91kyya9ccIdgt+7HFykRdi
-         dO9g==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pkSVS2YCjVQvqsgnImMuXupcbzBZpj2KtRtviCbjdFI=;
+        b=fibkw8xQDhCYyY7TuSaQGDQfpVLcOo/wHEkWSbs7rC362g3qcRmkb6qA5cswEs9pzu
+         UT0st8t5a4jzQOpQB3RwixyVhYqGGKXpZ5jr9eOnOj7Vwu8qQimiR735BH7ygzVZkdLX
+         7UOVZih2pSB+eFrFo0G8tMmQ3ezLZmmb+OQ2duPoz0mag8K9ViiJCHW2pBk18oTZiasp
+         nEvlokm+qeZo9d809wQDQS5qxKICS84mq41sxmy3Yl60u6ySeQxCBUzqRk4pncHewOLZ
+         2laooZ7N299W4oEK4L3GURcpAIIXiiyDJVEMOMiPJLUY4gl+v1sR+eh9/ogjzpzazi1C
+         YuJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4bKgB7JiZwc4vgVkRBcbHea3g47Hab58/tBD/C4XU4M=;
-        b=sZzywDDhImKTcttg4Q+w9vaA+V3/a2DzwXcji/WsFsZfs1sGyLVbaBh1Jyh9UVn03S
-         c1fdBifjnJ8wn2vcxK594xWd6SDyd7so4G2HsM4M/pdvRctJJ7h0c8cP4Om7cmDItf1K
-         Cs1izmwyOUgwZu7CUPK979abIsqEme2Gfm2KhNNeT9yvGz2viVIoB5MaBccwtX6iTTVS
-         NVA1b7IHBVZdOnSjXLLdQIiYpW7Qcvdf6XNzh9JeUCUJczB5QFg+FqUKwggNe0mPNPNb
-         FB36gmJnA/Xa1QLaDdCtAKcxfWycfcfgZgyxf4vCA1zeJ3asb26nAJBXx1OdkZ0a8opn
-         34MQ==
-X-Gm-Message-State: AOAM533TYnzZ2miJPeE9h5OURNbalxrJ1ji0RdlnO1BJAFRIwNcB3Jq+
-        VGpaYco5E9wKUA5mdWv5e/KhI3cAigWR6sUIn5zkvg==
-X-Google-Smtp-Source: ABdhPJyH9+ZJbkD7iNParB2kAQl6tKzUxYtAjmBvRxVXuWS16qiin3xx7TOsJ4dZn4d6+rHgImxNhOaRF8VRiNeX6UU=
-X-Received: by 2002:a5b:ed2:: with SMTP id a18mr31248849ybs.466.1618988477848;
- Wed, 21 Apr 2021 00:01:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pkSVS2YCjVQvqsgnImMuXupcbzBZpj2KtRtviCbjdFI=;
+        b=slFAf3laakgZydIELqQwgjkx80lNQQn5I+8QKLQe4UEJoshzuCVLCxeqFhplsCPyeg
+         1Z3W3qjJR6JoQqHE0/VVxBZO5D5biCMm0BNgHw4PON+GHWVy2dVlIWKJbr+LcijrfYBV
+         h7xoxcykKu9lQsHex7yB9kdLTg+t5c/bLBhzMfRVgpvQEIrci3gk5oSsK4QgceBh9uA6
+         pwSMpLfjVdHfDkQGdv5G26RsNJJkZWf5tMBRcvEkNq6kP2RENj9fCDY1y4x8EZWcr5rD
+         dECOjV8oxAIz9hcW6bvKqhAGehtd7Xa87nAxVtb5KNecAf3EkylLaojUTCONE05UfdtC
+         CYxw==
+X-Gm-Message-State: AOAM532zlWOH7c/eW9xTo/JgsYWzb4Q20Rh4mQ8azKYl6uZ5dtmafrGb
+        p+FMDHPdnvXoJp21505ZMd7OiQ==
+X-Google-Smtp-Source: ABdhPJxGDsvyIpyLQfQw6SW6VlR4eiF1JC+LcAxoZZaLSbZuuuay+GazHOtO2DyfuJIxRbE+49jVZg==
+X-Received: by 2002:a63:db47:: with SMTP id x7mr11537072pgi.360.1618988475453;
+        Wed, 21 Apr 2021 00:01:15 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.255])
+        by smtp.gmail.com with ESMTPSA id c4sm929842pfb.94.2021.04.21.00.01.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Apr 2021 00:01:14 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        bsingharora@gmail.com, shy828301@gmail.com,
+        alex.shi@linux.alibaba.com, Muchun Song <songmuchun@bytedance.com>
+Subject: [RFC PATCH v3 00/12] Use obj_cgroup APIs to charge the LRU pages
+Date:   Wed, 21 Apr 2021 15:00:47 +0800
+Message-Id: <20210421070059.69361-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <20210205222644.2357303-9-saravanak@google.com>
- <20210210114435.122242-1-tudor.ambarus@microchip.com> <20210210114435.122242-2-tudor.ambarus@microchip.com>
- <20210421032653.GA179924@roeck-us.net>
-In-Reply-To: <20210421032653.GA179924@roeck-us.net>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 21 Apr 2021 00:00:41 -0700
-Message-ID: <CAGETcx_nb4HTGqAME_pVu3gjZ9UQabsi7hsXzB47_Qsp7vRcdA@mail.gmail.com>
-Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Brown, Len" <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 8:27 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Hi,
->
-> On Wed, Feb 10, 2021 at 01:44:35PM +0200, Tudor Ambarus wrote:
-> > This is a follow-up for:
-> > commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
-> >
-> > The above commit updated the deprecated of_clk_add_provider(),
-> > but missed to update the preferred of_clk_add_hw_provider().
-> > Update it now.
-> >
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->
-> This patch still causes a crash when booting a raspi2 image in linux-next.
+This is v3 based on the top of the series[1] (memcontrol code cleanup and
+simplification). Roman is working on the generalization of obj_cgroup API.
+But before that, hope someone can review this patches for correctness.
 
-Stephen,
+Since the following patchsets applied. All the kernel memory are charged
+with the new APIs of obj_cgroup.
 
-Can we please just pick any one of the proposed fixes? This bug has
-been unfixed for so long!
+	[v17,00/19] The new cgroup slab memory controller[2]
+	[v5,0/7] Use obj_cgroup APIs to charge kmem pages[3]
 
--Saravana
+But user memory allocations (LRU pages) pinning memcgs for a long time -
+it exists at a larger scale and is causing recurring problems in the real
+world: page cache doesn't get reclaimed for a long time, or is used by the
+second, third, fourth, ... instance of the same job that was restarted into
+a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
+and make page reclaim very inefficient.
 
->
-> [   21.456500] Unable to handle kernel NULL pointer dereference at virtual address 00000028
-> [   21.456750] pgd = (ptrval)
-> [   21.456927] [00000028] *pgd=00000000
-> [   21.457567] Internal error: Oops: 5 [#1] SMP ARM
-> [   21.457882] Modules linked in:
-> [   21.458077] CPU: 0 PID: 77 Comm: kworker/u8:10 Not tainted 5.12.0-rc8-next-20210420 #1
-> [   21.458291] Hardware name: BCM2835
-> [   21.458525] Workqueue: events_unbound deferred_probe_work_func
-> [   21.458997] PC is at of_clk_add_hw_provider+0xbc/0xe8
-> [   21.459176] LR is at of_clk_add_hw_provider+0xa8/0xe8
-> ...
-> [   21.477603] [<c0a32aec>] (of_clk_add_hw_provider) from [<c0a32b60>] (devm_of_clk_add_hw_provider+0x48/0x80)
-> [   21.477861] [<c0a32b60>] (devm_of_clk_add_hw_provider) from [<c0a471e4>] (raspberrypi_clk_probe+0x260/0x388)
-> [   21.478087] [<c0a471e4>] (raspberrypi_clk_probe) from [<c0c1c4d0>] (platform_probe+0x5c/0xb8)
-> [   21.478287] [<c0c1c4d0>] (platform_probe) from [<c0c19d84>] (really_probe+0xf0/0x39c)
-> [   21.478471] [<c0c19d84>] (really_probe) from [<c0c1a098>] (driver_probe_device+0x68/0xc0)
-> [   21.478659] [<c0c1a098>] (driver_probe_device) from [<c0c17f54>] (bus_for_each_drv+0x84/0xc8)
-> [   21.478860] [<c0c17f54>] (bus_for_each_drv) from [<c0c19c20>] (__device_attach+0xec/0x158)
-> [   21.479050] [<c0c19c20>] (__device_attach) from [<c0c18de8>] (bus_probe_device+0x88/0x90)
-> [   21.479236] [<c0c18de8>] (bus_probe_device) from [<c0c16a68>] (device_add+0x398/0x8ac)
-> [   21.479421] [<c0c16a68>] (device_add) from [<c0c1c1b4>] (platform_device_add+0xf0/0x200)
-> [   21.479607] [<c0c1c1b4>] (platform_device_add) from [<c0c1ccc0>] (platform_device_register_full+0xd0/0x110)
-> [   21.479836] [<c0c1ccc0>] (platform_device_register_full) from [<c104c130>] (rpi_firmware_probe+0x1a4/0x20c)
-> [   21.480061] [<c104c130>] (rpi_firmware_probe) from [<c0c1c4d0>] (platform_probe+0x5c/0xb8)
-> [   21.480255] [<c0c1c4d0>] (platform_probe) from [<c0c19d84>] (really_probe+0xf0/0x39c)
-> [   21.480437] [<c0c19d84>] (really_probe) from [<c0c1a098>] (driver_probe_device+0x68/0xc0)
-> [   21.480626] [<c0c1a098>] (driver_probe_device) from [<c0c17f54>] (bus_for_each_drv+0x84/0xc8)
-> [   21.480829] [<c0c17f54>] (bus_for_each_drv) from [<c0c19c20>] (__device_attach+0xec/0x158)
-> [   21.481018] [<c0c19c20>] (__device_attach) from [<c0c18de8>] (bus_probe_device+0x88/0x90)
-> [   21.481205] [<c0c18de8>] (bus_probe_device) from [<c0c192bc>] (deferred_probe_work_func+0x8c/0xbc)
-> [   21.481413] [<c0c192bc>] (deferred_probe_work_func) from [<c036802c>] (process_one_work+0x268/0x798)
-> [   21.481624] [<c036802c>] (process_one_work) from [<c0368774>] (worker_thread+0x218/0x4f4)
-> [   21.481822] [<c0368774>] (worker_thread) from [<c0370f28>] (kthread+0x140/0x174)
-> [   21.481999] [<c0370f28>] (kthread) from [<c030017c>] (ret_from_fork+0x14/0x38)
-> [   21.482185] Exception stack(0xc42b7fb0 to 0xc42b7ff8)
->
-> Updated bisect log is attached.
->
-> Guenter
->
-> ---
-> # bad: [50b8b1d699ac313c0a07a3c185ffb23aecab8abb] Add linux-next specific files for 20210419
-> # good: [bf05bf16c76bb44ab5156223e1e58e26dfe30a88] Linux 5.12-rc8
-> git bisect start 'HEAD' 'v5.12-rc8'
-> # good: [c4bb91fc07e59241cde97f913d7a2fbedc248f0d] Merge remote-tracking branch 'crypto/master'
-> git bisect good c4bb91fc07e59241cde97f913d7a2fbedc248f0d
-> # good: [f15bbf170b40b48a43ed7076ce9f8ac9380e5752] Merge remote-tracking branch 'edac/edac-for-next'
-> git bisect good f15bbf170b40b48a43ed7076ce9f8ac9380e5752
-> # bad: [550a78090dcc4061e191312a757a127f0b6e6323] Merge remote-tracking branch 'vfio/next'
-> git bisect bad 550a78090dcc4061e191312a757a127f0b6e6323
-> # bad: [9f074d2a7bf49b2c9e1609703757b18de7611aef] Merge remote-tracking branch 'usb/usb-next'
-> git bisect bad 9f074d2a7bf49b2c9e1609703757b18de7611aef
-> # good: [855b2fdb7c543c94e7623e6ad0b492f04a5317db] Merge remote-tracking branch 'percpu/for-next'
-> git bisect good 855b2fdb7c543c94e7623e6ad0b492f04a5317db
-> # good: [1d08ed588c6a85a35a24c82eb4cf0807ec2b366a] usbip: vudc: fix missing unlock on error in usbip_sockfd_store()
-> git bisect good 1d08ed588c6a85a35a24c82eb4cf0807ec2b366a
-> # good: [1b7ce8fab5fd0c406dbf165b12d44b301decf589] Merge remote-tracking branch 'ipmi/for-next'
-> git bisect good 1b7ce8fab5fd0c406dbf165b12d44b301decf589
-> # good: [fe8e488058c47e9a8a2c85321f7198a0a17b0131] dt-bindings: usb: mtk-xhci: add wakeup interrupt
-> git bisect good fe8e488058c47e9a8a2c85321f7198a0a17b0131
-> # bad: [3c652132ce9052e626bf509932fcacfebed1ccb4] platform-msi: fix kernel-doc warnings
-> git bisect bad 3c652132ce9052e626bf509932fcacfebed1ccb4
-> # bad: [7f2fac70b729d68a34e5eba8d1fb68eb69b05169] device property: Add test cases for fwnode_property_count_*() APIs
-> git bisect bad 7f2fac70b729d68a34e5eba8d1fb68eb69b05169
-> # good: [38f087de8947700d3b06d3d1594490e0f611c5d1] devtmpfs: fix placement of complete() call
-> git bisect good 38f087de8947700d3b06d3d1594490e0f611c5d1
-> # good: [b6f617df4fa936c1ab1831c2b23563f6c1add6c4] driver core: Update device link status properly for device_bind_driver()
-> git bisect good b6f617df4fa936c1ab1831c2b23563f6c1add6c4
-> # bad: [6579c8d97ad7fc5671ee60234f3b8388abee5f77] clk: Mark fwnodes when their clock provider is added
-> git bisect bad 6579c8d97ad7fc5671ee60234f3b8388abee5f77
-> # good: [ea718c699055c8566eb64432388a04974c43b2ea] Revert "Revert "driver core: Set fw_devlink=on by default""
-> git bisect good ea718c699055c8566eb64432388a04974c43b2ea
-> # first bad commit: [6579c8d97ad7fc5671ee60234f3b8388abee5f77] clk: Mark fwnodes when their clock provider is added
+We can convert LRU pages and most other raw memcg pins to the objcg direction
+to fix this problem, and then the LRU pages will not pin the memcgs.
+
+This patchset aims to make the LRU pages to drop the reference to memory
+cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+of the dying cgroups will not increase if we run the following test script.
+
+```bash
+#!/bin/bash
+
+cat /proc/cgroups | grep memory
+
+cd /sys/fs/cgroup/memory
+
+for i in range{1..500}
+do
+	mkdir test
+	echo $$ > test/cgroup.procs
+	sleep 60 &
+	echo $$ > cgroup.procs
+	echo `cat test/cgroup.procs` > cgroup.procs
+	rmdir test
+done
+
+cat /proc/cgroups | grep memory
+```
+
+Thanks.
+
+[1] https://lore.kernel.org/linux-mm/20210417043538.9793-1-songmuchun@bytedance.com/
+[2] https://lore.kernel.org/linux-mm/20200623015846.1141975-1-guro@fb.com/
+[3] https://lore.kernel.org/linux-mm/20210319163821.20704-1-songmuchun@bytedance.com/
+
+Changlogs in RFC v3:
+  1. Drop the code cleanup and simplification patches. Gather those patches
+     into a separate series[1].
+  2. Rework patch #1 suggested by Johannes.
+
+Changlogs in RFC v2:
+  1. Collect Acked-by tags by Johannes. Thanks.
+  2. Rework lruvec_holds_page_lru_lock() suggested by Johannes. Thanks.
+  3. Fix move_pages_to_lru().
+
+Muchun Song (12):
+  mm: memcontrol: move the objcg infrastructure out of CONFIG_MEMCG_KMEM
+  mm: memcontrol: introduce compact_lock_page_lruvec_irqsave
+  mm: memcontrol: make lruvec lock safe when the LRU pages reparented
+  mm: vmscan: rework move_pages_to_lru()
+  mm: thp: introduce lock/unlock_split_queue{_irqsave}()
+  mm: thp: make deferred split queue lock safe when the LRU pages
+    reparented
+  mm: memcontrol: make all the callers of page_memcg() safe
+  mm: memcontrol: introduce memcg_reparent_ops
+  mm: memcontrol: use obj_cgroup APIs to charge the LRU pages
+  mm: memcontrol: rename {un}lock_page_memcg() to {un}lock_page_objcg()
+  mm: lru: add VM_BUG_ON_PAGE to lru maintenance function
+  mm: lru: use lruvec lock to serialize memcg changes
+
+ Documentation/admin-guide/cgroup-v1/memory.rst |   2 +-
+ fs/buffer.c                                    |  13 +-
+ fs/fs-writeback.c                              |  23 +-
+ fs/iomap/buffered-io.c                         |   4 +-
+ include/linux/memcontrol.h                     | 182 ++++----
+ include/linux/mm_inline.h                      |   6 +
+ mm/compaction.c                                |  36 +-
+ mm/filemap.c                                   |   2 +-
+ mm/huge_memory.c                               | 171 ++++++--
+ mm/memcontrol.c                                | 562 ++++++++++++++++++-------
+ mm/migrate.c                                   |   4 +
+ mm/page-writeback.c                            |  24 +-
+ mm/page_io.c                                   |   5 +-
+ mm/rmap.c                                      |  14 +-
+ mm/swap.c                                      |  46 +-
+ mm/vmscan.c                                    |  56 ++-
+ 16 files changed, 795 insertions(+), 355 deletions(-)
+
+-- 
+2.11.0
+
