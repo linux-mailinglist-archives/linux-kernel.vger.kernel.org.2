@@ -2,278 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE01836683B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFD136683F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238479AbhDUJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:39:15 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:60667 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238011AbhDUJjL (ORCPT
+        id S238519AbhDUJjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:39:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58178 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238011AbhDUJja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:39:11 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 39DAD5804E5;
-        Wed, 21 Apr 2021 05:38:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 21 Apr 2021 05:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=2W4/VcQCLi4nwEha4WtXFo3m7AG
-        hU4mE3p+qqZ+mIH8=; b=RNB22NM4KqSYsruQVebhTNePV+vBSXppIKlDmqegRxP
-        feSOay/4xkYBKwLDIAszWAOnEWg4q++1gPFRQyHnBtKu8+qYYRHm12jjc3CE/5vL
-        o6UHy45R2xnKu4IbEgNzOSNJseHua9ZFMm8YidKC96j942VcNUEeKD6JseULRaEV
-        sqO5s7pU/fqnEWnVJUzG95LqCAsIYtEtbOQJwubB142xMO50wZX/LQXHNEkcuaRF
-        qha+swk20WXOZKpt1klmMOUZI1EYSm6P5C8nvycJoxcEPz+Ov9bp+/bDdz/0jX5k
-        upIt7sMI9R6BF8Dy+Du8WI+NKj4v6/wwpmRzwF7e99Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=2W4/Vc
-        QCLi4nwEha4WtXFo3m7AGhU4mE3p+qqZ+mIH8=; b=up9+FJsAHI/C47dO4CaNUM
-        4EH3sAPhfa0B2aKdfL/8G3bX6/akrKd+4WzkZXxmLDgVvHAaMxldntmAObi1jSCs
-        g9KSRh5i3BiT7XvbMmxq8fLaJqS4DUb0byMl2xmLUCClYL62E158zrAG7xS+OQHA
-        vjOY05NHBPhXUumaCV/5UXhtpnA31h8YNyuqZIXjxh61nH/3c/tROrQRgJQQHjx8
-        mg8UqbTqm4W3JnIrPhgtR6LQj4nnAaBcw2iIDfj/oKDE5ucPrho6rMBngPWpDuKx
-        qxVoKIHMST9/2kMVWqBTP/GNObNsEMFspdd6EouyQZVgC+o4Uir8H3swJybRTC9A
-        ==
-X-ME-Sender: <xms:m_J_YJ-7KJRFENAIRSuqrPbpP2RvsmT5e1AZW0fL5GKGorFKF3eg_g>
-    <xme:m_J_YNvYcs5O0oFXzbhN64QHUR3unzCdYUt1g17J_pQSgHqLKWZQbMFfLL284DqJm
-    wwrjdM7Hzl1sflv1zU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhephfeiteehhfeuudeluedtieeuteegveevkefgkeeitdetvdeftdevtdffgeei
-    uedvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghdpsghoohhtlhhinhdrtg
-    homhdpkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvg
-    hrnhhordhtvggthh
-X-ME-Proxy: <xmx:m_J_YHBv_-BnTWHXQ2pZr8sdzR0tuLoxaS1PbEvwH65zy--zUKeE0Q>
-    <xmx:m_J_YNd-BGv3PXgAze6lgTX-UlHP6KdSD1ythy8pfF6g3FKo18MIHQ>
-    <xmx:m_J_YOPvVjcErpgp1_faOm4y31pZdXWTXuKujEnmLL101eFL4Gv1Bg>
-    <xmx:nvJ_YFoDo2sQp0Ct8uOzqz2VAbkDCi72Q4dpkugyF26BtAo805wTrw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8F3EB1080068;
-        Wed, 21 Apr 2021 05:38:35 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 11:38:33 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 5/6] dt-bindings: display: add Unisoc's mipi dsi
- controller bindings
-Message-ID: <20210421093833.dhnkf2265hrtwkzr@gilmour>
-References: <20210222132822.7830-1-kevin3.tang@gmail.com>
- <20210222132822.7830-6-kevin3.tang@gmail.com>
- <20210324111316.ggo5deacaoecu27q@gilmour>
- <CAFPSGXah3gKKHXhukRAPT=RjQZTnvDznG+619+8tah-hfFrUzA@mail.gmail.com>
- <20210407104653.l4xwfl3qshaimat3@gilmour>
- <CAFPSGXaQKeKMKC7MGXhxQErB_yh_eE8khk1hOrjHnuOH20Gg4Q@mail.gmail.com>
- <20210415084230.moqxuy3caym3kupk@gilmour>
- <CAFPSGXYujpe=C64f=MJAUmqGwoP6t=NE+nNqezmKUTcyrxt+=g@mail.gmail.com>
+        Wed, 21 Apr 2021 05:39:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618997937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gSlikRZsUWJsx7Rq6CkgW2e557egJiXRO6RyE7OIcao=;
+        b=Qm38YQluwhJMAEdAtWBP/e6A9EGkhfPp0mE628pJJwV8QOCfLaALm23TH4FcxENBjwonY2
+        Zvbz7Z95hhSq/qc7y76nDgob+mDyNfMY7igdcCSU+QUYUX4nE7Q/s/l1ivomyus5vv+h+D
+        DFaH3x32dDGa7jVSbjH1x4DyIqf8GTI=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-380-qRLECCWSNZm2x1jFpbSc8g-1; Wed, 21 Apr 2021 05:38:56 -0400
+X-MC-Unique: qRLECCWSNZm2x1jFpbSc8g-1
+Received: by mail-ed1-f69.google.com with SMTP id z3-20020a05640240c3b029037fb0c2bd3bso14824266edb.23
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:38:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gSlikRZsUWJsx7Rq6CkgW2e557egJiXRO6RyE7OIcao=;
+        b=tB/CSx27B7BkAEVxcGgotNSVrcGHTeC4aQZ7Djqq8iq67Ys9qa4zEaLMN6gev5YYvf
+         pS+Bi/17xNYV9QeYELNdqEo64F8WHq/DUUdIsEhwj/Sg4wkRGJxWv4F2EXOOWIa0krFy
+         c4sAPYns7+L+QhUYC9lHF3NAVUhLnE877FERJfS7iQjosYkdX89noU7PYRGOQyWML2Fd
+         KP3ydo5h51KR3OICGtxQ5DhjVieUqYbDv2SNBt7MMZnuHWv9qpCt8GHIsLfhwXil8XuO
+         i3xbnTdY4r9ESm/KHqnJ3O9S0tRLPWjiI1bKPvc1CbZeUo2o3DG1NaB6Dzbi132DRXbM
+         7RRA==
+X-Gm-Message-State: AOAM533/MLaJlkPdNAxQdO/fm7lGi5fdgDLEXDPw5LjILJiBI5nNUN11
+        bUXIMKa3ePe1O0jLuatKSRT13qcBuREvKcSK6qfBrW/gkOiEezQS/78Cz7rjm0vD9RQTGOYML2w
+        CT4NWilte4eiLM76OnLXhDF8r
+X-Received: by 2002:a17:907:76c5:: with SMTP id kf5mr31320938ejc.526.1618997934984;
+        Wed, 21 Apr 2021 02:38:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIwbBRm7mr85h28m7cl7ow2IIb274l/KuCduv8M7TerEq2T8gyqF0loaor8I4gqRyLdgQpMw==
+X-Received: by 2002:a17:907:76c5:: with SMTP id kf5mr31320915ejc.526.1618997934762;
+        Wed, 21 Apr 2021 02:38:54 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id g11sm2506664edw.37.2021.04.21.02.38.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 02:38:54 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:38:51 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v8 19/19] af_vsock: serialize writes to shared socket
+Message-ID: <20210421093851.36yazy5vp4uwimd6@steredhat>
+References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
+ <20210413124739.3408031-1-arseny.krasnov@kaspersky.com>
+ <7d433ed9-8d4c-707a-9149-ff0e65d7f943@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rpyo6ffe5bipimwd"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAFPSGXYujpe=C64f=MJAUmqGwoP6t=NE+nNqezmKUTcyrxt+=g@mail.gmail.com>
+In-Reply-To: <7d433ed9-8d4c-707a-9149-ff0e65d7f943@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 14, 2021 at 01:51:17PM +0300, Arseny Krasnov wrote:
+>
+>On 13.04.2021 15:47, Arseny Krasnov wrote:
+>> This add logic, that serializes write access to single socket
+>> by multiple threads. It is implemented be adding field with TID
+>> of current writer. When writer tries to send something, it checks
+>> that field is -1(free), else it sleep in the same way as waiting
+>> for free space at peers' side.
+>>
+>> This implementation is PoC and not related to SEQPACKET close, so
+>> i've placed it after whole patchset.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>>  include/net/af_vsock.h   |  1 +
+>>  net/vmw_vsock/af_vsock.c | 10 +++++++++-
+>>  2 files changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> index 53d3f33dbdbf..786df80b9fc3 100644
+>> --- a/include/net/af_vsock.h
+>> +++ b/include/net/af_vsock.h
+>> @@ -69,6 +69,7 @@ struct vsock_sock {
+>>  	u64 buffer_size;
+>>  	u64 buffer_min_size;
+>>  	u64 buffer_max_size;
+>> +	pid_t tid_owner;
+>>
+>>  	/* Private to transport. */
+>>  	void *trans;
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 54bee7e643f4..d00f8c07a9d3 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -1765,7 +1765,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>>  		ssize_t written;
+>>
+>>  		add_wait_queue(sk_sleep(sk), &wait);
+>> -		while (vsock_stream_has_space(vsk) == 0 &&
+>> +		while ((vsock_stream_has_space(vsk) == 0 ||
+>> +			(vsk->tid_owner != current->pid &&
+>> +			 vsk->tid_owner != -1)) &&
+>>  		       sk->sk_err == 0 &&
+>>  		       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
+>>  		       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
+>> @@ -1796,6 +1798,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>>  				goto out_err;
+>>  			}
+>>  		}
+>> +
+>> +		vsk->tid_owner = current->pid;
+>>  		remove_wait_queue(sk_sleep(sk), &wait);
+>>
+>>  		/* These checks occur both as part of and after the loop
+>> @@ -1852,7 +1856,10 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>>  			err = total_written;
+>>  	}
+>>  out:
+>> +	vsk->tid_owner = -1;
+>>  	release_sock(sk);
+>> +	sk->sk_write_space(sk);
+>> +
+>>  	return err;
+>>  }
+>>
+>> @@ -2199,6 +2206,7 @@ static int vsock_create(struct net *net, struct socket *sock,
+>>  		return -ENOMEM;
+>>
+>>  	vsk = vsock_sk(sk);
+>> +	vsk->tid_owner = -1;
+>This must be moved to '__vsock_create()'
 
---rpyo6ffe5bipimwd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Okay, I'll review the next version.
 
-Hi,
+In order to backport this fix to stable branches I think is better to 
+move at the beginning of this series or even out as a separate patch.
 
-On Mon, Apr 19, 2021 at 12:33:42AM +0800, Kevin Tang wrote:
-> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=8815=E6=
-=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=884:42=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Fri, Apr 09, 2021 at 08:23:19AM +0800, Kevin Tang wrote:
-> > > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=887=
-=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=886:46=E5=86=99=E9=81=93=EF=BC=
-=9A
-> > >
-> > > > On Wed, Mar 31, 2021 at 09:49:14AM +0800, Kevin Tang wrote:
-> > > > > Hi Maxime,
-> > > > >
-> > > > > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B43=E6=9C=
-=8824=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=887:13=E5=86=99=E9=81=93=
-=EF=BC=9A
-> > > > >
-> > > > > > On Mon, Feb 22, 2021 at 09:28:21PM +0800, Kevin Tang wrote:
-> > > > > > > From: Kevin Tang <kevin.tang@unisoc.com>
-> > > > > > >
-> > > > > > > Adds MIPI DSI Controller
-> > > > > > > support for Unisoc's display subsystem.
-> > > > > > >
-> > > > > > > Cc: Orson Zhai <orsonzhai@gmail.com>
-> > > > > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-> > > > > > > Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
-> > > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > > > > ---
-> > > > > > >  .../display/sprd/sprd,sharkl3-dsi-host.yaml   | 102
-> > > > ++++++++++++++++++
-> > > > > > >  1 file changed, 102 insertions(+)
-> > > > > > >  create mode 100644
-> > > > > >
-> > > > Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-hos=
-t.yaml
-> > > > > > >
-> > > > > > > diff --git
-> > > > > >
-> > > > a/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-h=
-ost.yaml
-> > > > > >
-> > > > b/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-h=
-ost.yaml
-> > > > > > > new file mode 100644
-> > > > > > > index 000000000..d439f688f
-> > > > > > > --- /dev/null
-> > > > > > > +++
-> > > > > >
-> > > > b/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-h=
-ost.yaml
-> > > > > > > @@ -0,0 +1,102 @@
-> > > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > > +%YAML 1.2
-> > > > > > > +---
-> > > > > > > +$id:
-> > > > > > http://devicetree.org/schemas/display/sprd/sprd,sharkl3-dsi-hos=
-t.yaml#
-> > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > > +
-> > > > > > > +title: Unisoc MIPI DSI Controller
-> > > > > > > +
-> > > > > > > +maintainers:
-> > > > > > > +  - Kevin Tang <kevin.tang@unisoc.com>
-> > > > > > > +
-> > > > > > > +properties:
-> > > > > > > +  compatible:
-> > > > > > > +    const: sprd,sharkl3-dsi-host
-> > > > > > > +
-> > > > > > > +  reg:
-> > > > > > > +    maxItems: 1
-> > > > > > > +
-> > > > > > > +  interrupts:
-> > > > > > > +    maxItems: 2
-> > > > > > > +
-> > > > > > > +  clocks:
-> > > > > > > +    minItems: 1
-> > > > > > > +
-> > > > > > > +  clock-names:
-> > > > > > > +    items:
-> > > > > > > +      - const: clk_src_96m
-> > > > > > > +
-> > > > > > > +  power-domains:
-> > > > > > > +    maxItems: 1
-> > > > > > > +
-> > > > > > > +  ports:
-> > > > > > > +    type: object
-> > > > > > > +
-> > > > > > > +    properties:
-> > > > > > > +      "#address-cells":
-> > > > > > > +        const: 1
-> > > > > > > +
-> > > > > > > +      "#size-cells":
-> > > > > > > +        const: 0
-> > > > > > > +
-> > > > > > > +      port@0:
-> > > > > > > +        type: object
-> > > > > > > +        description:
-> > > > > > > +          A port node with endpoint definitions as defined in
-> > > > > > > +
-> > > > Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > > > > > > +          That port should be the input endpoint, usually co=
-ming
-> > > > from
-> > > > > > > +          the associated DPU.
-> > > > > > > +      port@1:
-> > > > > > > +        type: object
-> > > > > > > +        description:
-> > > > > > > +          A port node with endpoint definitions as defined in
-> > > > > > > +
-> > > > Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > > > > > > +          That port should be the output endpoint, usually o=
-utput to
-> > > > > > > +          the associated panel.
-> > > > > >
-> > > > > > The DSI generic binding asks that peripherals that are controll=
-ed
-> > > > > > through a DCS be a subnode of the MIPI-DSI bus, not through a p=
-ort
-> > > > > > endpoint.
-> > > > > >
-> > > > >  Our DSI controller don't support DCS now...
-> > > >
-> > > > I'm not sure I follow you, you mentionned in the patch 4 that you w=
-ere
-> > > > testing for a device to be in command mode, how would that work wit=
-hout
-> > > > DCS support?
-> > > >
-> > > Sorry, I see DCS as DSC, pls ignore my previous comments.
-> > >
-> > > dsi input node is display controller and dsi output node is panel,
-> > > I still don't understand what it has to do with dcs? and it seems that
-> > > other vendors also like this.
-> > >
-> > > can you help provide some cases?
-> >
-> > So the device tree is a tree organized through which bus controls which
-> > device: Your DSI controller is accessed through a memory-mapped region
-> > and is thus a child node of the main bus (I guess?) and then, since the
-> > DSI panel is going to be controlled through the DSI controller and
-> > MIPI-DCS, it needs to be a child of the display controller.
-> Yeah, access DSI controller registers is through AHB bus.
->=20
-> I'm a little confused, DSI panel node should be a child of the display
-> controller?
+Thanks,
+Stefano
 
-If they are controlled through DSI, yes.
+>>
+>>  	if (sock->type == SOCK_DGRAM) {
+>>  		ret = vsock_assign_transport(vsk, NULL);
+>
 
-> I found a lot of cases are organized like this, we also do like it.
-> https://elixir.bootlin.com/linux/v5.11.15/source/arch/arm/boot/dts/tegra1=
-14-dalmore.dts#L48
->=20
-> >
-> > This is exactly what is being described here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/Documentation/devicetree/bindings/display/mipi-dsi-bus.txt#n42
-> >
-> > The second port is thus not needed at all
-> Yeah, dsi_out port is no need, should be detele.
-> Besides, I also have a question, if out dsi-phy is separate driver(eg,
-> dphy have it's own bus)
-> dsi_out port should be "dphy_in"?
-
-You could argue both, but phys are usually represented through the phys pro=
-perty.
-
-Maxime
-
---rpyo6ffe5bipimwd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYH/ymQAKCRDj7w1vZxhR
-xT1aAQCFJmJwubW5uuEih1MMXtaGdOWmBlYyTp0PjzRuH48wVAD/YnauZ0hvub2Q
-gTr8Pxphr82Txyym/aDFSxH2AeubEQs=
-=9LY+
------END PGP SIGNATURE-----
-
---rpyo6ffe5bipimwd--
