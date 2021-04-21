@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E8D36746F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B94A367443
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245706AbhDUUua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 16:50:30 -0400
-Received: from mail.tuxforce.de ([84.38.66.179]:39576 "EHLO mail.tuxforce.de"
+        id S245659AbhDUUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 16:46:15 -0400
+Received: from relay.sw.ru ([185.231.240.75]:53730 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245698AbhDUUu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 16:50:28 -0400
-X-Greylist: delayed 435 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Apr 2021 16:50:27 EDT
-Received: from [IPv6:2001:4dd5:b099:0:19b2:6b8c:f4bb:b22d] (2001-4dd5-b099-0-19b2-6b8c-f4bb-b22d.ipv6dyn.netcologne.de [IPv6:2001:4dd5:b099:0:19b2:6b8c:f4bb:b22d])
-        by mail.tuxforce.de (Postfix) with ESMTPSA id 0421052007D;
-        Wed, 21 Apr 2021 22:42:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.tuxforce.de 0421052007D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tuxforce.de;
-        s=202009; t=1619037757;
-        bh=eeldZ43v9kOcNhynOalmpLgFTzFOymh3pImWlM/X8Q8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=EnzW78doaicFyEjhlvnSCVRWqYVS7b48MpoJj8P/vRPfVy/kJhF1df1QHkSduUXrZ
-         4TeDUL9RWu/0r2lcOotvd4nPhpptQsRjINLHlanqvQAAxzU4EMiwtqXHq4Thqhd+Gk
-         JOonAxqYML+RdCqM/N1R6BtBnq9gdzSKKcLjawx9xPAWGBQizW85NaW7MWfXkk+FJI
-         4SXcIHDdpZddUWYb0d0CrrH896egRYeCHp8AlFEZS4v/uU4BaPCCku31GsybTmpSq0
-         BFt0SeSPWXMd5diPY7CCk5JvFLGl4ge0dPR3x1918W47NLrYUJJmQvA1PzIDHd9w6w
-         T/cW39CUwwMcQ==
-Subject: Re: [PATCH 2/2] fs/kernel_read_file: use
- usermodehelper_read_trylock() as a stop gap
-To:     Luis Chamberlain <mcgrof@kernel.org>, rafael@kernel.org,
-        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-        bvanassche@acm.org, jeyu@kernel.org, ebiederm@xmission.com
-Cc:     mchehab@kernel.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Lukas Middendorf <kernel@tuxforce.de>
-References: <20210416235850.23690-1-mcgrof@kernel.org>
- <20210416235850.23690-3-mcgrof@kernel.org>
-From:   Lukas Middendorf <kernel@tuxforce.de>
-Message-ID: <35ff02c7-8a76-730e-ddb9-f91634f5098b@tuxforce.de>
-Date:   Wed, 21 Apr 2021 22:42:36 +0200
+        id S240376AbhDUUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 16:46:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=D6uUhADjC6LU6MbgKADZIizPtViaFackH1IQC8VDEqM=; b=uU+27TpiWd+htOW4O
+        tw/gHkfOHeXQgJhnht0TV6MhJyWKEEmfFDm6hDh+yw/VF17Pn/W1FipY9Ak7WD6aNR1X3BVDdUs0Y
+        1MzmWB1BQbQWCgJwzWevNiMdnqEAo1jJ2qCQRHSIVBiGtaflSWGrQAW/zJExwMOsxQE8R0X4sb8EM
+        =;
+Received: from [192.168.15.132]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1lZJiw-0018k7-P7; Wed, 21 Apr 2021 23:45:26 +0300
+Subject: Re: [PATCH 176/190] Revert "net/net_namespace: Check the return value
+ of register_pernet_subsys()"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-177-gregkh@linuxfoundation.org>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <c4cdd3fe-0fd1-c328-14f4-e428eee1d02c@virtuozzo.com>
+Date:   Wed, 21 Apr 2021 23:45:26 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210416235850.23690-3-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210421130105.1226686-177-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 17/04/2021 01:58, Luis Chamberlain wrote:
-> The VFS lacks support to do automatic freeze / thaw of filesystems
-> on the suspend / resume cycle. This can cause some issues, namely
-> stalls when we have reads/writes during the suspend / resume cycle.
+On 21.04.2021 16:00, Greg Kroah-Hartman wrote:
+> This reverts commit 0eb987c874dc93f9c9d85a6465dbde20fdd3884c.
 > 
-> Although for module loading / kexec the probability of this happening
-> is extremely low, maybe even impossible, its a known real issue with
-> the request_firmare() API which it does direct fs read. For this reason
-> only be chatty about the issue on the call used by the firmware API.
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 > 
-> Lukas Middendorf has reported an easy situation to reproduce, which can
-> be caused by questionably buggy drivers which call the request_firmware()
-> API on resume.
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
 > 
-[snip]
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  net/core/net_namespace.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> The VFS fs freeze work fixes this issue, however it requires a bit
-> more work, which may take a while to land upstream, and so for now
-> this provides a simple stop-gap solution.
-> 
-> We can remove this stop-gap solution once the kernel gets VFS
-> fs freeze / thaw support.
-> 
-> Reported-by: Lukas Middendorf <kernel@tuxforce.de>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+> index 43b6ac4c4439..9ae0b275238e 100644
+> --- a/net/core/net_namespace.c
+> +++ b/net/core/net_namespace.c
+> @@ -1101,8 +1101,7 @@ static int __init net_ns_init(void)
+>  	init_net_initialized = true;
+>  	up_write(&pernet_ops_rwsem);
+>  
+> -	if (register_pernet_subsys(&net_ns_ops))
+> -		panic("Could not register network namespace subsystems");
+> +	register_pernet_subsys(&net_ns_ops);
 
-Tested-by: Lukas Middendorf <kernel@tuxforce.de>
+Nacked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 
-
-Works as advertised.
-
-This prevents stalls on resume with buggy drivers (e.g. si2168) by 
-totally blocking uncached request_firmware() on resume. Uncached 
-request_firmware() will fail reliably (also in situations where it by 
-accident worked previously without stalling).
-If firmware caching has been set up properly before suspend (either 
-through firmware_request_cache() or through request_firmware() outside 
-of a suspend/resume situation), the call to request_firmware() will 
-still work as expected on resume. This should not break properly 
-behaving drivers.
-
-A failing firmware load is definitely preferable (and easier to debug 
-and fix in the respective drivers) compared to a stall on resume.
-
-Lukas
+This patch does not have any problem, since it has been already carefully reviewed.
+Kernel panics here only, if we can't allocate ns_common::inum for init_net.
+This can be only a result of a critical deficiency of memory during boot.
