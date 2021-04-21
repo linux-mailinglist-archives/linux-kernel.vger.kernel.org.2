@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28728367393
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A814367397
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245443AbhDUTna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S245483AbhDUTnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241211AbhDUTn3 (ORCPT
+        with ESMTP id S245449AbhDUTnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:43:29 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C764AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:54 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id x7so42474050wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:54 -0700 (PDT)
+        Wed, 21 Apr 2021 15:43:31 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53840C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:56 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so1899986wmq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=prbsc0FyNObzI+Wvj3P6FznlVAvE0zjRobacKBhitVA=;
-        b=TA1TfJKHBEZIrBxpR53G5eOoISpEKxuSiMYvlHmHfvOn4KpnIsZBkWt5u5KBadT55G
-         emnfZBDEEgeVmcit93tfkq3uOvwyIJreSWA0P4Y2NIJtZqiNbchrNomB+73rdUxKUwJD
-         igfT4UVzD3jPXClgg/1jrNpgORohlP3faxxKubgEUa69hKZw9ptqE8SBB0z3KnZvJrbG
-         GXSTFs2NAHSZ1+zE85j4+sqo63rTL2JmFsoyGdDiTnSE+1zawQe91Ivnqfn4S2jFMdxp
-         cepJ1VAnZk4MBzvN3JOAOVJhZ77zsDUFPl8i5QXdEdzCDRA90HU4+kYWcJeEq/vrDpvL
-         jb+w==
+        bh=ShTncdUzjrz6cNLv2EKSnQN/sv7lyGf36TiUA7bk/P0=;
+        b=JhGwi36fjJc+zoWDVEAcd8lB5RGChTW67hYEkCOC1tUmIaOKPqs6rnKskCvBMnZFpf
+         5yJA3OwFHq4WOCETMWUgYec55fTPCbFSU+jC18CLuvetf0yj+n7EQNZisWMcFu/nYbGp
+         NCQDiuXgo+tvAK23b+z7iRoLHRJZRqA3teYaefAytAwg9/hsWCYG61AF3eyjdKLX+cFR
+         uqy8MjhmOKF0zzGbfPdDtKe/piA7+lFKCJwC2kOkUWwd6b4RDyHRnacdwc/CxyCo24Cm
+         /KXHz7sxjXjmHprM6h5KPF2uBK8beIqsEkKNkJ+aV6yaitcNzkr1tZOzJUR2FEdCKRCz
+         hxsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=prbsc0FyNObzI+Wvj3P6FznlVAvE0zjRobacKBhitVA=;
-        b=GMLjZd+n7MVCBREJzO1SR0PnZpmqLMBuMBGqvCBJqlda+aT+7IM76EQANMJlbAdh26
-         37k0e7pSIlIiTuFpNKzI7/7aWqjcBcgI3ZKgHL52Y+r9pWRgAdIP2rJbZ66/BRFzo4Ug
-         JB6sdizwe1qItKTymhFELaUZRezQZf2c2Jwg//UVn9K5k+t8TPGxLJhyVeilTLkTi7Oe
-         ddwAdtyW6uRkr9IGGV7TbKXTz3cIFvpb6Yw5Z/1zCGawVc7LKu9KMGd9ZYsgKyf5oOwr
-         V+vIBwkvbyRg0imtH60tQD2BX6Of7S+mM9s1v9YXPTF8N4APBb7clIXmt0cx+Gs5aq3L
-         OTGg==
-X-Gm-Message-State: AOAM531T9pNQVfEc731+jcYqBDkKVHpNzc8yNxyGPRntGmpuazwuCZKJ
-        JZ1Ab1fePH9CfV2Qflyh/aA=
-X-Google-Smtp-Source: ABdhPJx6yLbiq5abH25qv20sKnGJQ9F1yfiFlHebIXRV8dHW84eJQOMVJKyF3fMyuhKVZ9695EzjGQ==
-X-Received: by 2002:adf:d0c8:: with SMTP id z8mr29435342wrh.68.1619034173663;
-        Wed, 21 Apr 2021 12:42:53 -0700 (PDT)
+        bh=ShTncdUzjrz6cNLv2EKSnQN/sv7lyGf36TiUA7bk/P0=;
+        b=hOV+zFxA/5FGTx75Zy4u4nPhYSBjLhNfYiud0BriyXU5cID5vUesxJpKkVQ0RBpPU4
+         7Z1GmO/uNGAPqEZSrozVyIstmmaobm8zeHE9q7oJdt/AFxAdSNt/nr9DavGW3/1Jc3+l
+         j4KdYR7+cohMRb3SwKmWIhbo8W9SMynLhlo8lLf8fBz036mgoNvCp6n7vJcWqPg9jIja
+         jzOG9+/uhD6ZRfFQ1aF0sts0tz9qMa1AcWjH/Qxl3qVNojrXcOKMgAVgpatscyXwZUUL
+         uUffijWHG032Nktf8kJjPR3Zv37TlwDRplkearOiZ68XLSjVb54zMBphBatpu2m7y6xy
+         0JjA==
+X-Gm-Message-State: AOAM530t6t/pC+RIGwm66YVouD2wSrerbUX+3flF9VvFGi419Ziqe0hI
+        h/I/U588Xl6WlX3gpt1D6wI=
+X-Google-Smtp-Source: ABdhPJzdYSdyl7cnO5J1oIr2zrMu2Krywp24GqqGQ0qefC5fYcnsi8ZReoTLrjM0QPEQXbYRLmFNdw==
+X-Received: by 2002:a05:600c:d9:: with SMTP id u25mr11619370wmm.151.1619034175119;
+        Wed, 21 Apr 2021 12:42:55 -0700 (PDT)
 Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:6d3d:2d8b:5417:831c])
-        by smtp.gmail.com with ESMTPSA id o4sm484163wrn.81.2021.04.21.12.42.52
+        by smtp.gmail.com with ESMTPSA id o4sm484163wrn.81.2021.04.21.12.42.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 12:42:53 -0700 (PDT)
+        Wed, 21 Apr 2021 12:42:54 -0700 (PDT)
 From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
 To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
         tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
 Cc:     melissa.srw@gmail.com, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH 1/3] drm: drm_atomic_uapi.c: Use tabs for code indents
-Date:   Wed, 21 Apr 2021 20:42:47 +0100
-Message-Id: <dc8286f5590fff609f924845fb622dd5f962a11b.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
+Subject: [PATCH 2/3] drm: drm_blend.c: Use tabs for code indents
+Date:   Wed, 21 Apr 2021 20:42:48 +0100
+Message-Id: <f441188f84aac2f9f72f36a42c88623b16cd1f87.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
 References: <cover.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
@@ -71,33 +71,24 @@ Problem found by checkpatch.
 
 Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
 ---
- drivers/gpu/drm/drm_atomic_uapi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/drm_blend.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
-index 268bb69c2e2f..438e9585b225 100644
---- a/drivers/gpu/drm/drm_atomic_uapi.c
-+++ b/drivers/gpu/drm/drm_atomic_uapi.c
-@@ -78,8 +78,8 @@ int drm_atomic_set_mode_for_crtc(struct drm_crtc_state *state,
- 		drm_mode_convert_to_umode(&umode, mode);
- 		state->mode_blob =
- 			drm_property_create_blob(state->crtc->dev,
--		                                 sizeof(umode),
--		                                 &umode);
-+						 sizeof(umode),
-+						 &umode);
- 		if (IS_ERR(state->mode_blob))
- 			return PTR_ERR(state->mode_blob);
+diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
+index 26e2f2ffd255..ec37cbfabb50 100644
+--- a/drivers/gpu/drm/drm_blend.c
++++ b/drivers/gpu/drm/drm_blend.c
+@@ -328,8 +328,8 @@ unsigned int drm_rotation_simplify(unsigned int rotation,
+ 	if (rotation & ~supported_rotations) {
+ 		rotation ^= DRM_MODE_REFLECT_X | DRM_MODE_REFLECT_Y;
+ 		rotation = (rotation & DRM_MODE_REFLECT_MASK) |
+-		           BIT((ffs(rotation & DRM_MODE_ROTATE_MASK) + 1)
+-		           % 4);
++			    BIT((ffs(rotation & DRM_MODE_ROTATE_MASK) + 1)
++			    % 4);
+ 	}
  
-@@ -114,7 +114,7 @@ EXPORT_SYMBOL(drm_atomic_set_mode_for_crtc);
-  * Zero on success, error code on failure. Cannot return -EDEADLK.
-  */
- int drm_atomic_set_mode_prop_for_crtc(struct drm_crtc_state *state,
--                                      struct drm_property_blob *blob)
-+				      struct drm_property_blob *blob)
- {
- 	struct drm_crtc *crtc = state->crtc;
- 
+ 	return rotation;
 -- 
 2.25.1
 
