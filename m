@@ -2,145 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D5D3667F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457403667FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbhDUJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhDUJ1g (ORCPT
+        id S238230AbhDUJ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:28:05 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51921 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230516AbhDUJ2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:27:36 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B34C06174A;
-        Wed, 21 Apr 2021 02:27:02 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id bx20so47384636edb.12;
-        Wed, 21 Apr 2021 02:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/hH6gOY5Krjw8Rc2Sxt75fVQdHpdQjhafzlD6HdCfVc=;
-        b=hJNclq7CenzlSQ5Zhk5Ww/3t0wzxy9F/QcPiPW4f0ljxEUi2HXp8kTEaZdeUDawaLe
-         dkhPonR9EENLcqruGCcYlhDBX10TWvnKCLkuSdwin4DSt3D88dhN2bhnoibh1FZO7HXW
-         GcvBpik5Eht2Tx5XeM+HkiQbJKz7Q7SaSYCHdmPxCNpYpyfN30/SXnpMvGsH/2qJGkT2
-         gvFuah46Fe6/S91lMoV0wa8PvdWDVY+aRjpu1fldBQ4f7tmAQ5ztfmqGtT13IdXyRqIo
-         I2xkmlcEH8lwPoTu8Xdx1SjFRr8jw4tIYsL5bqOxNbWxRg+wh/m0TOhAtzNsPx2xsZGc
-         rBzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/hH6gOY5Krjw8Rc2Sxt75fVQdHpdQjhafzlD6HdCfVc=;
-        b=fnumQGvn4iLtIRdeysVXfJVMuUaek+5HHmUAzhOmzji2EVk23BJLJFxmC7DzDPS+w5
-         QLpaBHT6WPxgJIgJTvzfs7RCz/6KR/WG1/Td5UNvGNdUwaWvdjRVfTiDI+TTXd4DPrxy
-         i6SFhHTzZFqQLkTsLaLmGSHXBIcXl45jleZf0txEQ+yfi/IWZEWTQZ1OSt2tCdhylaJv
-         B6eHdRIYyWj9EhlK0o8uSuCvpmFwx7ZL7osXAhqE1frgJ5ze2ckaEVBC0af/TjLl5Teq
-         PACbd69sE8Q4R5C0LdKJ8GCm1NgnzAAa1vkO2+jeIN2BxSzi1iIthtYT2PijGE36FFwb
-         p71w==
-X-Gm-Message-State: AOAM532NFE6IOObHUqZW8vj5ZHHWDLMgqGpvQU4/mFvcet1WxMOMpdLA
-        nDPtcaKmS/ER5rnfNkQZ2g4=
-X-Google-Smtp-Source: ABdhPJyhKDP7bQ6iqb8kCTWEN9iCqDKVLP4xB+AE90OA08e7doKGYDxLySzFZ32pdT5LcVqvSNVmZQ==
-X-Received: by 2002:a05:6402:350:: with SMTP id r16mr29860142edw.227.1618997221534;
-        Wed, 21 Apr 2021 02:27:01 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id j9sm2496474eds.71.2021.04.21.02.26.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 02:27:01 -0700 (PDT)
-Subject: Re: [PATCH v1 3/5] dt-bindings: mmc: rockchip-dw-mshc: add
- description for rk3568
-To:     cl@rock-chips.com, heiko@sntech.de
-Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com
-References: <20210421065921.23917-1-cl@rock-chips.com>
- <20210421065921.23917-4-cl@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <7dde9617-9d71-9fdd-6f91-3fc327fa9bc1@gmail.com>
-Date:   Wed, 21 Apr 2021 11:26:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 21 Apr 2021 05:28:03 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id BFC615C0114;
+        Wed, 21 Apr 2021 05:27:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 21 Apr 2021 05:27:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=9dH6I2lCf6KaG/adJovZAIRRmL2
+        xnY0W1xR7ps1E0Jg=; b=Z9yTpzRefPDTbMCbpvemRI6X9mADIGXhjCEXJNL5PX2
+        KfhNOMe9z+svdtgvKSRv/bOiSh12b1Qi42l4w9feuNoHMAOCS7qAa9BuabhP9MMX
+        V3+4x+ge4M0xzXypNvCB7VIvby3tCZJjgeaHDoLOjkWGR0Ces+Sbi2W+TOfCvI0M
+        Tog505mPq1HN7rYDWhc+RKsrt5PU9cpcw1ooGno8bQsQ5eU3/xI0R1wwXsBSFGG5
+        yPpMqSzGEppNA3m5KE2aUzsq+5Z1LiF6jmfOuIYjEIU8koCfAvnXb2ObsEGWM+eL
+        PQGhEJPCkwGqjQCyjgkN1e0bYUa6lONlRnnyzoVKYjA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=9dH6I2
+        lCf6KaG/adJovZAIRRmL2xnY0W1xR7ps1E0Jg=; b=c1tCO1B5qpa+mxSE3EeT5L
+        OjrnDfv6OhArJpEGLe0juS+SCBDM7bo5tIuYy3me1fD+vo1x9SFcoYahCfH58oQJ
+        gDjLwBmwQ80k+d9MQsk2NHa0Rb4U/ZV0O3AtzMwGok1PlNWam275ldO59UmUcR2J
+        /5Bi7qXhzkUC4QDF4KA4Gep89dmbUxidqnoMz8DH8PFM3cJEgpldKeUNktlvxytS
+        zkM62QD6Mscf0Wv1W++SBjQVzCb45W+a+cfCMGHIJl6aM9lMxkS9IXwBZFQY5hrq
+        ShrP2IiSmY/U37pYBBfEoLjQ1hzQzC8SIzEQ5w5ikCOE+VJ20GpQbaSS0lXPHWZw
+        ==
+X-ME-Sender: <xms:APB_YLmVQub7r2Ise749WjUjfm0ahIuMRoWRwXSV-CQqBDH-1MhuMA>
+    <xme:APB_YO0RYJmtauWGYInNMyByIbCsy63OmJcS_BNivgKE8y4mlON6VjPClX709SI-j
+    4cS-50iUh436NyqwLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:APB_YBro3qGu7WtCcUWnDa-eSOBXPCMRjv-YCP9y-9TWEOaO3R_-oQ>
+    <xmx:APB_YDmbS_l_OUjd7EfWcJNWVAXX0gSh0N3t4ycuwxBxJ609mQ8FKw>
+    <xmx:APB_YJ0RdtXWc5IfzT3kyQH3B5kY6pa7KfA7nEWweNVv9WBKW41Vag>
+    <xmx:AfB_YGnxVaOse70VGiKkULfZf0E_F7Z5MiONHWQv4p89GrzNyaxN6Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C855C24005B;
+        Wed, 21 Apr 2021 05:27:27 -0400 (EDT)
+Date:   Wed, 21 Apr 2021 11:27:25 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 0/2] Allwinner H6 USB3 device tree updates
+Message-ID: <20210421092725.qacp3446hiyf73ov@gilmour>
+References: <20210421042834.27309-1-samuel@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <20210421065921.23917-4-cl@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jf4xm3l2oukir3xt"
+Content-Disposition: inline
+In-Reply-To: <20210421042834.27309-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 8:59 AM, cl@rock-chips.com wrote:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> add "rockchip,rk3568-dwcmshc", "snps,dwcmshc-sdhci" for mmc nodes on
-> a rk3568 platform to rockchip-dw-mshc.yaml.
-> 
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
-> ---
->  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> index 3762f1c8de96..2a6c1cee4887 100644
-> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-> @@ -27,6 +27,8 @@ properties:
->        - const: rockchip,rk2928-dw-mshc
->        # for Rockchip RK3288
->        - const: rockchip,rk3288-dw-mshc
 
-> +      # for Rockchip RK3568
-> +      - const: rockchip,rk3568-dwcmshc
+--jf4xm3l2oukir3xt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Remove.
-This would create two descriptions.
-"rockchip,rk3568-dwcmshc"
-"rockchip,rk3568-dwcmshc", "snps,dwcmshc-sdhci"
+Hi,
 
->        - items:
->            - enum:
+On Tue, Apr 20, 2021 at 11:28:32PM -0500, Samuel Holland wrote:
+> While implementing support for this USB controller in U-Boot, I noticed
+> that the reset line alsp affects they PHY. It looks like most platforms
+> use a separate glue node to represent this, and in fact there is already
+> a compatible for the H6 listed in drivers/usb/dwc3/dwc3-of-simple.c.
+>=20
+> Since this layout matches the usual way of modeling this hardware, it
+> allows using the existing drivers without adding platform-specific code.
 
->              # for Rockchip PX30
+I'm not sure which branch you based this on, but the Pine H64 seems to
+be missing the USB3 support in the first place. I've applied the rest of
+the changes though, thanks!
 
-Remove comments.
+Maxime
 
-> @@ -41,6 +43,8 @@ properties:
->                - rockchip,rk3328-dw-mshc
+--jf4xm3l2oukir3xt
+Content-Type: application/pgp-signature; name="signature.asc"
 
->              # for Rockchip RK3368
+-----BEGIN PGP SIGNATURE-----
 
-Remove comments.
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYH/v/QAKCRDj7w1vZxhR
+xTUmAP4qrMOtgHXTjgmjwRw2xJfTRkCrMp+xzzfSSSrM/DANwAEA6RyQ7yp3cV66
+SblHZBPC6Yj8DUMVRy+KT0nJelfcvQ8=
+=Gcf+
+-----END PGP SIGNATURE-----
 
->                - rockchip,rk3368-dw-mshc
-
-> +            # for Rockchip RK3568
-
-Maybe remove the "#" comments in this enum part too.
-This was one of the first Rockchip documents that was converted, but is
-not really needed, as it both mentions the soc name.
-
-> +              - rockchip,rk3568-dw-mshc
-
-Sort this below rockchip,rk3399-dw-mshc
-
->              # for Rockchip RK3399
-
-Remove comments.
->                - rockchip,rk3399-dw-mshc
-
->              # for Rockchip RV1108
-
-Remove comments.
-
-> 
-
+--jf4xm3l2oukir3xt--
