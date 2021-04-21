@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7987D36697F
+	by mail.lfdr.de (Postfix) with ESMTP id CE9C7366980
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236132AbhDUKwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
+        id S236243AbhDUKws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhDUKwh (ORCPT
+        with ESMTP id S236175AbhDUKwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:52:37 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC56C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 03:52:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id z8-20020a2566480000b02904e0f6f67f42so15505145ybm.15
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 03:52:03 -0700 (PDT)
+        Wed, 21 Apr 2021 06:52:41 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9046EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 03:52:06 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id bf25-20020a0564021a59b0290385169cebf8so7427403edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 03:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=OxgBhA98k3tGthKxuSN/4brjg9G3Dacp3flVNK8rvYo=;
-        b=kZCrucRDppiGDBPjAXIIXIo0MxE4/IyqxJJhXwKZnRZitxeGk0n/gU50Zw9DaWrpD+
-         dIpvk0jbhDyEE//vafgmDxLrgr2YyYm66YH+SiaJKfmQozMx5XcaeO5hf4eWzECEKjp0
-         DelqluZ8nf+mHKY0XVzdVwGk8ty9BSH78j0/6K/wFDufY5AfFSbPeh8A4xraPkTh886n
-         9Z4kUhLBAsqyKAVGsv02WcAeZV3sEBGaDgqRuEJcNLLQHQPf3JIiEw3lCSUgcKZvdDXG
-         xeUD6XPpxzPQXIngH07/btqdDuRqSxVDtooRU6+D+Q1pVBCH9B7GNwaUSnOrJcrjCtc4
-         Zjng==
+        bh=S7gKkVqw6gJJUkQX3/NKZ5hEYF7HuP5mcybwHhcoGA8=;
+        b=BKLqZcruEVs1tQhMgavhobMYH3pkurizK7K0prlTtT7UrKBFybRppZodySbtpHep4Q
+         dahuNpp+xKHhDa+OyyRnw8e2sf/QI9FxUpG+uLlUXHrf2chSK+ctL7VnE3D26Z4yixzt
+         aqrvmWwUE9nVzIqIDx963uaNsvyOloDReUzMky+nBXxdQBFjLZuyH05HxCwsqKB2cnQ3
+         4mGy0+AnDgPt4VsmVV67b2DM0GvFf9qXOzs3jKk56lYF0E6l2UPZ9yg+vySmVVouOi+d
+         ZcuQyL1tcho+GmMD5X26B1MJaXgBGDD2AkS/iWonncxyQv+YGdXrwBVcfiHto03hxFSk
+         50Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=OxgBhA98k3tGthKxuSN/4brjg9G3Dacp3flVNK8rvYo=;
-        b=eNxszgfgKn0noVfFkqLfOWc0CLJAmikyl/hTc1T/62Sw0l9UFVZIcokP6V22YNl2Vi
-         wknoZY99tIC8oqI97aYHjXMwcd8DdNS5y36iGmowuZ6FmkxUdlm80wMzrNgMfT2Py9C5
-         S6AvxQBKkxM+iZ2cgAtq8z+2jATxhGSAAv5nX1DxfmUdviPQzAeykmHIEvq1JT0v8WeB
-         yqiX1JtLNc7s3HIrwOHYESzDE3Rr3NWRp7Bda0p7bHs+8YFYvUvDdtIwrDJTJqn2UyFF
-         9vr9Twz+Kwn2BR9uhUY4gr/exlYaQ8aR0xnD4Punjfe9NpTqAU3NdgOoFeBrxLaTeec+
-         PO1A==
-X-Gm-Message-State: AOAM5333ZFggrvkq30HvdrdIGDyS4j6H9oIsliDTl6h6/KD2FuUw8SDi
-        ytnFm0xJKvfYGEOwZ5VP76P++nyyAg==
-X-Google-Smtp-Source: ABdhPJxnxD3CB/9+5BCPqRdLBDuWnvcCjjRpgFvxXOW0RsfmOBJPVhGilgvJZ/ty/H3/94vwogLNxmc1JQ==
+        bh=S7gKkVqw6gJJUkQX3/NKZ5hEYF7HuP5mcybwHhcoGA8=;
+        b=jvPCh8OyaF9OYmfzGH5ehWFY8er49dLoUX0v/Iyj3R3uEmKEWu5PYLQEJLkzpCJ1Kw
+         63sMwaFBSdvv3rcje3Z/yGRpmGR82AFvcsHe4a772rivqFjeVtOyeDs7uU0C+k0irU7z
+         HMETdOI22JkEB4HhCrR/OwRIAjHg62vr22r0YySUOj0mnILRdA7gBZqPyHDLcaL3ZRFf
+         WMlmO145JYZtLEwN94dWyVdPlOxQI537z5neJQ1sfKAJm3vWqUPq3edpctAOBCAWhLuA
+         ZZfF5ndXnjpu7Bq4nwa/1yCCJgxXhjmDHz+usmU5RooRN1Pon8YskvZI92NwVmE19Pcw
+         Xz9w==
+X-Gm-Message-State: AOAM531B5HXRMpU8hfso0Cm7hhZhnvfb1TwWJxQ7e6VhlhQO41NhSYho
+        NQCvWoLASOlv0/jvzEAPpBeSrmQsUg==
+X-Google-Smtp-Source: ABdhPJyjCmPDiQcNUfvf1eIuCw4ql8YdC3rYLPuX10VxgctCoYcEuZQUMCVPDf2UQQgpokCHE10ey+Upqw==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:c552:ee7c:6a14:80cc])
- (user=elver job=sendgmr) by 2002:a25:8b86:: with SMTP id j6mr29548944ybl.470.1619002322474;
- Wed, 21 Apr 2021 03:52:02 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 12:51:30 +0200
+ (user=elver job=sendgmr) by 2002:a17:906:3d41:: with SMTP id
+ q1mr31542346ejf.282.1619002325029; Wed, 21 Apr 2021 03:52:05 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 12:51:31 +0200
 In-Reply-To: <20210421105132.3965998-1-elver@google.com>
-Message-Id: <20210421105132.3965998-2-elver@google.com>
+Message-Id: <20210421105132.3965998-3-elver@google.com>
 Mime-Version: 1.0
 References: <20210421105132.3965998-1-elver@google.com>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH v2 1/3] kfence: await for allocation using wait_event
+Subject: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, akpm@linux-foundation.org
 Cc:     glider@google.com, dvyukov@google.com, jannh@google.com,
@@ -62,124 +62,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On mostly-idle systems, we have observed that toggle_allocation_gate()
-is a cause of frequent wake-ups, preventing an otherwise idle CPU to go
-into a lower power state.
+The allocation wait timeout was initially added because of warnings due
+to CONFIG_DETECT_HUNG_TASK=y [1]. While the 1 sec timeout is sufficient
+to resolve the warnings (given the hung task timeout must be 1 sec or
+larger) it may cause unnecessary wake-ups if the system is idle.
+[1] https://lkml.kernel.org/r/CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com
 
-A late change in KFENCE's development, due to a potential deadlock [1],
-required changing the scheduling-friendly wait_event_timeout() and
-wake_up() to an open-coded wait-loop using schedule_timeout().
-[1] https://lkml.kernel.org/r/000000000000c0645805b7f982e4@google.com
+Fix it by computing the timeout duration in terms of the current
+sysctl_hung_task_timeout_secs value.
 
-To avoid unnecessary wake-ups, switch to using wait_event_timeout().
-
-Unfortunately, we still cannot use a version with direct wake_up() in
-__kfence_alloc() due to the same potential for deadlock as in [1].
-Instead, add a level of indirection via an irq_work that is scheduled if
-we determine that the kfence_timer requires a wake_up().
-
-Fixes: 0ce20dd84089 ("mm: add Kernel Electric-Fence infrastructure")
 Signed-off-by: Marco Elver <elver@google.com>
 ---
-v2:
-* Replace kfence_timer_waiting with simpler waitqueue_active() check.
----
- lib/Kconfig.kfence |  1 +
- mm/kfence/core.c   | 45 +++++++++++++++++++++++++++++----------------
- 2 files changed, 30 insertions(+), 16 deletions(-)
+ mm/kfence/core.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/lib/Kconfig.kfence b/lib/Kconfig.kfence
-index 78f50ccb3b45..e641add33947 100644
---- a/lib/Kconfig.kfence
-+++ b/lib/Kconfig.kfence
-@@ -7,6 +7,7 @@ menuconfig KFENCE
- 	bool "KFENCE: low-overhead sampling-based memory safety error detector"
- 	depends on HAVE_ARCH_KFENCE && (SLAB || SLUB)
- 	select STACKTRACE
-+	select IRQ_WORK
- 	help
- 	  KFENCE is a low-overhead sampling-based detector of heap out-of-bounds
- 	  access, use-after-free, and invalid-free errors. KFENCE is designed
 diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 768dbd58170d..235d726f88bc 100644
+index 235d726f88bc..9742649f3f88 100644
 --- a/mm/kfence/core.c
 +++ b/mm/kfence/core.c
-@@ -10,6 +10,7 @@
- #include <linux/atomic.h>
- #include <linux/bug.h>
- #include <linux/debugfs.h>
-+#include <linux/irq_work.h>
- #include <linux/kcsan-checks.h>
- #include <linux/kfence.h>
- #include <linux/kmemleak.h>
-@@ -587,6 +588,17 @@ late_initcall(kfence_debugfs_init);
- 
- /* === Allocation Gate Timer ================================================ */
- 
-+#ifdef CONFIG_KFENCE_STATIC_KEYS
-+/* Wait queue to wake up allocation-gate timer task. */
-+static DECLARE_WAIT_QUEUE_HEAD(allocation_wait);
-+
-+static void wake_up_kfence_timer(struct irq_work *work)
-+{
-+	wake_up(&allocation_wait);
-+}
-+static DEFINE_IRQ_WORK(wake_up_kfence_timer_work, wake_up_kfence_timer);
-+#endif
-+
- /*
-  * Set up delayed work, which will enable and disable the static key. We need to
-  * use a work queue (rather than a simple timer), since enabling and disabling a
-@@ -604,25 +616,13 @@ static void toggle_allocation_gate(struct work_struct *work)
- 	if (!READ_ONCE(kfence_enabled))
- 		return;
- 
--	/* Enable static key, and await allocation to happen. */
- 	atomic_set(&kfence_allocation_gate, 0);
- #ifdef CONFIG_KFENCE_STATIC_KEYS
-+	/* Enable static key, and await allocation to happen. */
+@@ -20,6 +20,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/random.h>
+ #include <linux/rcupdate.h>
++#include <linux/sched/sysctl.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+@@ -621,7 +622,16 @@ static void toggle_allocation_gate(struct work_struct *work)
+ 	/* Enable static key, and await allocation to happen. */
  	static_branch_enable(&kfence_allocation_key);
--	/*
--	 * Await an allocation. Timeout after 1 second, in case the kernel stops
--	 * doing allocations, to avoid stalling this worker task for too long.
--	 */
--	{
--		unsigned long end_wait = jiffies + HZ;
--
--		do {
--			set_current_state(TASK_UNINTERRUPTIBLE);
--			if (atomic_read(&kfence_allocation_gate) != 0)
--				break;
--			schedule_timeout(1);
--		} while (time_before(jiffies, end_wait));
--		__set_current_state(TASK_RUNNING);
--	}
-+
-+	wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
-+
+ 
+-	wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
++	if (sysctl_hung_task_timeout_secs) {
++		/*
++		 * During low activity with no allocations we might wait a
++		 * while; let's avoid the hung task warning.
++		 */
++		wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate),
++				   sysctl_hung_task_timeout_secs * HZ / 2);
++	} else {
++		wait_event(allocation_wait, atomic_read(&kfence_allocation_gate));
++	}
+ 
  	/* Disable static key and reset timer. */
  	static_branch_disable(&kfence_allocation_key);
- #endif
-@@ -729,6 +729,19 @@ void *__kfence_alloc(struct kmem_cache *s, size_t size, gfp_t flags)
- 	 */
- 	if (atomic_read(&kfence_allocation_gate) || atomic_inc_return(&kfence_allocation_gate) > 1)
- 		return NULL;
-+#ifdef CONFIG_KFENCE_STATIC_KEYS
-+	/*
-+	 * waitqueue_active() is fully ordered after the update of
-+	 * kfence_allocation_gate per atomic_inc_return().
-+	 */
-+	if (waitqueue_active(&allocation_wait)) {
-+		/*
-+		 * Calling wake_up() here may deadlock when allocations happen
-+		 * from within timer code. Use an irq_work to defer it.
-+		 */
-+		irq_work_queue(&wake_up_kfence_timer_work);
-+	}
-+#endif
- 
- 	if (!READ_ONCE(kfence_enabled))
- 		return NULL;
 -- 
 2.31.1.368.gbe11c130af-goog
 
