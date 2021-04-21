@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41788366538
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C35236653F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbhDUGMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231821AbhDUGMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:12:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F65661420;
-        Wed, 21 Apr 2021 06:11:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618985497;
-        bh=YhPOHuGJ/c29KhIGdQUtJ/biKTM/tPQx+TdNyvwGiJ8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VtD+/yB1oLQwLgsb+e9qbA5z47LcOQckXo0SDV/pEz0+sEJEArmwhncjlEnc2AgdM
-         lnLMn9wFn9RgtD5sLjVJGyPriC3VIccLZIgpxxPHLAGTQPSj9dEDEqncfR91faE6tE
-         R8iMlVFIp3++aD+rEmQ/GRuGULNUWRaC6ke8cORTWi2z/Q2MT4PrnOGNTLIl43rA2L
-         YzkyplhIpZ4ecEmPUrRU11rM09KJxnnx0FKKqDlR0fXviPVPIyUvUgORZpsgTUUrHL
-         qHkSNzkWvo8zl7L4VrPdPLmKVjZra5M4GgGBLboGl1eEeNcy0Y8onTLIaGmTNrQlgR
-         cE1EwTSCIcEzg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: [PATCH v3] docs: proc.rst: meminfo: briefly describe gaps in memory accounting
-Date:   Wed, 21 Apr 2021 09:11:27 +0300
-Message-Id: <20210421061127.1182723-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S235619AbhDUGOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235530AbhDUGOr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:14:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F934C06174A;
+        Tue, 20 Apr 2021 23:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/XEuHM9LCAA/ybLdTU4Am5aL3JBSDVFKYObgKXbEK4o=; b=pF/2a9IwQHXhDK23QbwsgImXsO
+        BxoUBIQGjR4Cyy7sO3x23SmfYX8mnYM7kGAX8ZvpZd2+Wl3zKQlRi/f4AJc7EuJGJG+exnksm6jM3
+        Mq558U6zpBl5wrQ/7+g2mRUNPMk909CYU99UL29p4Qw3KVL820RXJq4+9NUiFPGwSPbjUMXJKF7Vf
+        2TDxplRNKLBMK9HluDzX1q9W3oBeg9zT/MJzdV/cfGbsnXB8riHAwld+PgoL4aAQCvaEfjkkA3JOc
+        nQty3lIh7fMETySCnQl9jkJ0ohmKnZtg5jZ+OwLFENsWGD7vwJarQF1sRamGjrWJ1G3sx26poa84n
+        qH3W/CDA==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZ66u-00Dls4-0I; Wed, 21 Apr 2021 06:14:10 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] alpha: eliminate old-style function definitions
+Date:   Tue, 20 Apr 2021 23:13:12 -0700
+Message-Id: <20210421061312.30097-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+'make ARCH=alpha W=1' reports a couple of old-style function
+definitions with missing parameter list, so fix those.
 
-Add a paragraph that explains that it may happen that the counters in
-/proc/meminfo do not add up to the overall memory usage.
+../arch/alpha/kernel/pc873xx.c: In function 'pc873xx_get_base':
+../arch/alpha/kernel/pc873xx.c:16:21: warning: old-style function definition [-Wold-style-definition]
+   16 | unsigned int __init pc873xx_get_base()
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+../arch/alpha/kernel/pc873xx.c: In function 'pc873xx_get_model':
+../arch/alpha/kernel/pc873xx.c:21:14: warning: old-style function definition [-Wold-style-definition]
+   21 | char *__init pc873xx_get_model()
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: linux-alpha@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
 ---
-v3:
-* Add sentense about counters overlap
-* Use wording suggested by Matthew
+ arch/alpha/kernel/pc873xx.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v2: Link: https://lore.kernel.org/lkml/20210420121354.1160437-1-rppt@kernel.org
-* Add brief changelog
-* Fix typo
-* Update example about network memory usage according to Eric's comment at
-
-https://lore.kernel.org/lkml/CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com
-
-v1: Link: https://lore.kernel.org/lkml/20210420085105.1156640-1-rppt@kernel.org
- Documentation/filesystems/proc.rst | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 48fbfc336ebf..0a07a5025571 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -929,8 +929,15 @@ meminfo
- ~~~~~~~
+--- linux-next-20210420.orig/arch/alpha/kernel/pc873xx.c
++++ linux-next-20210420/arch/alpha/kernel/pc873xx.c
+@@ -13,12 +13,12 @@ static char *pc873xx_names[] = {
+ static unsigned int base, model;
  
- Provides information about distribution and utilization of memory.  This
--varies by architecture and compile options.  The following is from a
--16GB PIII, which has highmem enabled.  You may not have all of these fields.
-+varies by architecture and compile options.  Some of the counters reported
-+here overlap.  The memory reported by the non overlapping counters may not
-+add up to the overall memory usage and the difference for some workloads
-+can be substantial.  In many cases there are other means to find out
-+additional memory using subsystem specific interfaces, for instance
-+/proc/net/sockstat for TCP memory allocations.
-+
-+The following is from a 16GB PIII, which has highmem enabled.
-+You may not have all of these fields.
  
- ::
+-unsigned int __init pc873xx_get_base()
++unsigned int __init pc873xx_get_base(void)
+ {
+ 	return base;
+ }
  
--- 
-2.29.2
-
+-char *__init pc873xx_get_model()
++char *__init pc873xx_get_model(void)
+ {
+ 	return pc873xx_names[model];
+ }
