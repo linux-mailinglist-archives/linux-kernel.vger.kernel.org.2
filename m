@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45573670CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2062B3670C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244533AbhDURAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:00:42 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:55646 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238561AbhDURAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:00:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619024396; bh=1zpDHmjIzxY49Mt3IYcCEgsoUmmFqjWtOUsQY9ePfv8=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=eUQsrGKjDZLNOVJ75r+Fd/LIYXKWvnx3EestVUIXfz5Sm9Wnao9cm7YzwbOZuj9NK
-         nK+bWUm4Lc5sI9m2y2SiBTV2a4aB9HAs/4VjcEMmrPfmDyFIOcV+uOWbyqUDXpwmnG
-         GfUeb+MVyMyzZueprgjd8ARYLtPP3t50AXt6OHBs=
-Received: by 192.168.90.13 [192.168.90.13] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Wed, 21 Apr 2021 18:59:56 +0200 (CEST)
-X-EA-Auth: EV88Yij/Mb8pf/RW+sMJ3xp+I4kYflPok2Y86sYPM3YJ/z6BQ1d3cIsbwwtEbO82eY+5S4+B08vtHAZmclnHgkgerZo8kqmA
-Date:   Wed, 21 Apr 2021 22:29:50 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
-Subject: [PATCH v1 6/6] staging: media: atomisp: replace raw printk() by
- dev_info()
-Message-ID: <091f7989226169722220e95e0e838d2d139eb286.1619022192.git.drv@mailo.com>
-References: <cover.1619022192.git.drv@mailo.com>
+        id S244509AbhDURAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:00:30 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:45779 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238561AbhDURA1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:00:27 -0400
+Received: by mail-ot1-f54.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so34438923otf.12;
+        Wed, 21 Apr 2021 09:59:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h+2uWSkW19YMSUIgrRyX+Zrerp6y6BIi//8JY71zHg0=;
+        b=Xd1X497ITXsACaOZInK/gmCLpdgEOGJaKoQvMGpiaq0PZRAYBb8kYIfXPzSwaAIn7d
+         2IqY3OweFp5cXFVIPLHUTnko6COXAix+YsFIrBIsg70ZuGj6yQW+upI9ADZJ8iD/ZnzW
+         ksozCgk7cG4Kxb0v+yuIk11k0Xdvl9xge13AN1cw9yCihtdZpWfQn2sS3eRdjhtT/aae
+         xv9i2BoWzW8dfeE3jpywrStE3hcOU3KcYVHGcV4+V953J0aDh5vPBWp6uT+PMo8Idhm3
+         Byz3MaqzEPVWMUL3UkicVJjbSzSjFb4LrTnIL4fIZ6lS6LZia75oxV12y8V8LZtR7hKA
+         KfrA==
+X-Gm-Message-State: AOAM532O/xi75qhnKjzf2qUkTqonpMvH1qwvwMgY3QqbFiL4BuAyPffJ
+        6CGFL+wR+w/7LRwY3bfKig==
+X-Google-Smtp-Source: ABdhPJwWoz3BS4dg+l9N7pX1PZhZ/4wlq0ogtsxElhcG8h2QSloGBtatkURwBVfcHg/r68nPpaIvzw==
+X-Received: by 2002:a9d:615b:: with SMTP id c27mr22752308otk.119.1619024393434;
+        Wed, 21 Apr 2021 09:59:53 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w23sm643762otl.60.2021.04.21.09.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 09:59:52 -0700 (PDT)
+Received: (nullmailer pid 1292145 invoked by uid 1000);
+        Wed, 21 Apr 2021 16:59:51 -0000
+Date:   Wed, 21 Apr 2021 11:59:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     devicetree@vger.kernel.org,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+        boris.brezillon@collabora.com,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        hsinyi@chromium.org, hoegsberg@chromium.org,
+        Matthias Brugger <matthias.bgg@gmail.com>, fshao@chromium.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH v13 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek
+ MT8183
+Message-ID: <20210421165951.GA1292095@robh.at.kernel.org>
+References: <20210421052855.1279713-1-drinkcat@chromium.org>
+ <20210421132841.v13.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1619022192.git.drv@mailo.com>
+In-Reply-To: <20210421132841.v13.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is better to use dev_info() instead of raw printk() call. This
-addresses the checkpatch complain for not using KERN_<LEVEL> facility in
-printk() call.
+On Wed, 21 Apr 2021 13:28:52 +0800, Nicolas Boichat wrote:
+> Define a compatible string for the Mali Bifrost GPU found in
+> Mediatek's MT8183 SoCs.
+> 
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+> 
+> (no changes since v12)
+> 
+> Changes in v12:
+>  - binding: Fix min/maxItems logic (Rob Herring)
+> 
+> Changes in v11:
+>  - binding: power-domain-names not power-domainS-names
+> 
+> Changes in v10:
+>  - Fix the binding to make sure sram-supply property can be provided.
+> 
+> Changes in v6:
+>  - Rebased, actually tested with recent mesa driver.
+> 
+> Changes in v5:
+>  - Rename "2d" power domain to "core2"
+> 
+> Changes in v4:
+>  - Add power-domain-names description
+>    (kept Alyssa's reviewed-by as the change is minor)
+> 
+>  .../bindings/gpu/arm,mali-bifrost.yaml        | 30 ++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
+> 
 
-Signed-off-by: Deepak R Varma <drv@mailo.com>
----
-
-Changes in v1:
-   - implement following changes suggested by Fabio Aiuto
-       a. use dev_info instead of pr_info
-       b. update patch log message accordingly
-
-
- drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-index b572551f1a0d..7e4e123fdb52 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-@@ -1020,8 +1020,8 @@ static int gc0310_set_fmt(struct v4l2_subdev *sd,
- 		return -EINVAL;
- 	}
- 
--	printk("%s: before gc0310_write_reg_array %s\n", __func__,
--	       gc0310_res[dev->fmt_idx].desc);
-+	dev_info(&client->dev, "%s: before gc0310_write_reg_array %s\n",
-+		 __func__, gc0310_res[dev->fmt_idx].desc);
- 	ret = startup(sd);
- 	if (ret) {
- 		dev_err(&client->dev, "gc0310 startup err\n");
--- 
-2.25.1
-
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
