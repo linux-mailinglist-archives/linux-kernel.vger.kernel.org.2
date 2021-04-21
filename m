@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A34C3667A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3993667A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237845AbhDUJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:08:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31936 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237625AbhDUJIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:08:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618996086; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=OX6XiY6joBfdyzSpmKbHuqcmnZRR1EQFEvTqQUGxAWo=; b=A5RTzwZiLVVmi4sQHSkTy5ItGtVNTLwJ148b5FJ7MNaxDk+JELe/IhbU5lwh+oUuDqkdctsg
- 134SG4ltfdkj+vbN33+NREobVdXkeGzB+/DThfxm4L1cX7lXF11fqglpvfp2Kd56bvsPCSiD
- sGt/BS9lpP2XuadF42K64JQwHrc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 607feb54f34440a9d470a5ff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 09:07:32
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 648BDC43147; Wed, 21 Apr 2021 09:07:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3F43C43217;
-        Wed, 21 Apr 2021 09:07:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3F43C43217
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] brcmsmac: fix shift on 4 bit masked value
-References: <20210318164513.19600-1-colin.king@canonical.com>
-        <20210418061021.AB25CC43217@smtp.codeaurora.org>
-        <78ad5b527aa1da06569fd5ae422ea2a403ef40a0.camel@perches.com>
-Date:   Wed, 21 Apr 2021 12:07:24 +0300
-In-Reply-To: <78ad5b527aa1da06569fd5ae422ea2a403ef40a0.camel@perches.com> (Joe
-        Perches's message of "Sun, 18 Apr 2021 00:58:40 -0700")
-Message-ID: <87pmyoj99v.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S237625AbhDUJJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:09:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16610 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233975AbhDUJJc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:09:32 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FQF6K6TBWz17RWx;
+        Wed, 21 Apr 2021 17:06:33 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 21 Apr
+ 2021 17:08:50 +0800
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: compress: add compress_inode to cache
+ compressed blockst
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210202080056.51658-1-yuchao0@huawei.com>
+ <46e9924c-0086-cd2a-2e93-7149b92ba27e@huawei.com>
+ <YDsleDjeIcpuBXKA@google.com> <YEFBAuP26t0RzVHZ@google.com>
+ <01a0ff76-6fa7-3196-8760-e7f6f163ef64@huawei.com>
+ <YEa66ekikyuPWSyd@google.com>
+ <a40929d4-a8de-98ea-8dd8-6c807d8a6adc@huawei.com>
+ <YEkxpAp8FQjRUfm6@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <157988c7-079f-0c9f-5cf9-e83bc2f835d1@huawei.com>
+Date:   Wed, 21 Apr 2021 17:08:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YEkxpAp8FQjRUfm6@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches <joe@perches.com> writes:
+On 2021/3/11 4:52, Jaegeuk Kim wrote:
+> On 03/09, Chao Yu wrote:
+>> On 2021/3/9 8:01, Jaegeuk Kim wrote:
+>>> On 03/05, Chao Yu wrote:
+>>>> On 2021/3/5 4:20, Jaegeuk Kim wrote:
+>>>>> On 02/27, Jaegeuk Kim wrote:
+>>>>>> On 02/04, Chao Yu wrote:
+>>>>>>> Jaegeuk,
+>>>>>>>
+>>>>>>> On 2021/2/2 16:00, Chao Yu wrote:
+>>>>>>>> -	for (i = 0; i < dic->nr_cpages; i++) {
+>>>>>>>> +	for (i = 0; i < cc->nr_cpages; i++) {
+>>>>>>>>      		struct page *page = dic->cpages[i];
+>>>>>>>
+>>>>>>> por_fsstress still hang in this line?
+>>>>>>
+>>>>>> I'm stuck on testing the patches, since the latest kernel is panicking somehow.
+>>>>>> Let me update later, once I can test a bit. :(
+>>>>>
+>>>>> It seems this works without error.
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=4e6e1364dccba80ed44925870b97fbcf989b96c9
+>>>>
+>>>> Ah, good news.
+>>>>
+>>>> Thanks for helping to test the patch. :)
+>>>
+>>> Hmm, I hit this again. Let me check w/o compress_cache back. :(
+>>
+>> Oops :(
+> 
+> Ok, apprantely that panic is caused by compress_cache. The test is running over
+> 24hours w/o it.
 
-> On Sun, 2021-04-18 at 06:10 +0000, Kalle Valo wrote:
->> Colin King <colin.king@canonical.com> wrote:
->> 
->> > From: Colin Ian King <colin.king@canonical.com>
->> > 
->> > The calculation of offtune_val seems incorrect, the u16 value in
->> > pi->tx_rx_cal_radio_saveregs[2] is being masked with 0xf0 and then
->> > shifted 8 places right so that always ends up as a zero result. I
->> > believe the intended shift was 4 bits to the right. Fix this.
->> > 
->> > [Note: not tested, I don't have the H/W]
->> > 
->> > Addresses-Coverity: ("Operands don't affect result")
->> > Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
->> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> 
->> I think this needs review from someone familiar with the hardware.
->> 
->> Patch set to Changes Requested.
->
-> What "change" are you requesting here?
+Jaegeuk,
 
-Don't take patchwork states literally, a better name for this state
-would be "Needs work" or something like that.
+I'm still struggling troubleshooting this issue.
 
-> Likely there needs to be some other setting for the patch.
->
-> Perhaps "deferred" as you seem to be requesting a review
-> and there's no actual change necessary, just approval from
-> someone with the hardware and that someone test the patch.
+However, I failed again to reproduce this bug, I doubt the reason may be
+my test script and environment(device type/size) is different from yours.
+(btw, I used pmem as back-end device, and test w/ all fault injection
+points and w/o write_io/checkpoint fault injection points)
 
-I already asked for help on April 7th and nobody replied, so I'm
-dropping this now. The patch can be resent if/when the change is
-confirmed to be correct.
+Could you please share me your run.sh script? and test command?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+And I'd like to ask what's your device type and size?
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Thanks,
+
+> .
+> 
