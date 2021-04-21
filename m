@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E753366D42
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB7A366D43
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242989AbhDUNyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:54:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242830AbhDUNyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:54:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B4426144B;
-        Wed, 21 Apr 2021 13:53:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013226;
-        bh=0rKvhLDt7blseOg5lD76BiIXxaQkYgn7bjwS1ztIl8w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RN1PJp8eNC1a0HXnqqlbRdq3tj69BR6ciaOgMKHpaCH0u+hk/Q+SyiuQSByjJjB8t
-         6q0fcravS1r/cD8UooCi6dTSjzevxOINfEF8/oj5Qhw59oGjyOsyxd5Cjw3iNbr61G
-         Sx0ViEpZI2DGgfcQdL0ZtGBHBFRcUJ7eCsS3+mODfLQHX4ARnwBZduAlLXU7yBbidQ
-         S6f+nu4w5wq1qNcncwImZphH30sVR6z20rOvBfP91Q0Njvr4qfXM5W5C7pgyLAyq9d
-         Fveqs175c9iSeruoputPHo4hZusrQyB9op1eD1eO/hAzrXjIlCHh2IRU1UVoGyZSTb
-         RLpy6/nkbL2fA==
-Received: by mail-ej1-f50.google.com with SMTP id r20so13868188ejo.11;
-        Wed, 21 Apr 2021 06:53:46 -0700 (PDT)
-X-Gm-Message-State: AOAM533olciDEHoMp9Jm4pYKjoAJw8bAJRiEoBfvs6pXOvUPLEOSl7lh
-        HwXjBEX4ZXpbN+MpirVKGJ4OaLc8/X5/cZD1OQ==
-X-Google-Smtp-Source: ABdhPJwIHkkky38gGfZa2TH3r1i3DdQKvoDkySZpNTy1vBol05zTr9KSCzZmWWJgkBCrSSa5CinqqrbXNCD9NtNQ5lU=
-X-Received: by 2002:a17:906:7806:: with SMTP id u6mr30969225ejm.130.1619013224782;
- Wed, 21 Apr 2021 06:53:44 -0700 (PDT)
+        id S243009AbhDUNya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238548AbhDUNy3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:54:29 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243B8C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:53:56 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id k73so40985459ybf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:53:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bdMOzuAoKxixfYpfTCctOntChT3rj2anNj427Z+V4fI=;
+        b=e60I8oGyg1eKKDX/emsMxMSiUCKJmDxAmHy+66zYAcJWGj2XX29f3qTi9We4lmkGug
+         UFumw8VwdHrERSfCHRYt/FvSh/ymtT9LOenDcgnMm47EFe2asQ95PHBaIBlrCy8+CjRj
+         PZZ0fP0fJSl312uEr1dICQzv8azoSUG3J00rWUqveaosdk5XxiPd8cVLLbOMkpxzk5r2
+         31wUcCtswKYl4xq5HoJkDTe72SIuzUoY3QfxUkEOJolBgA7syct8xm46ZAjx/oaGsmty
+         TG+qlmmi2Eaj98y5rNl0Ac1ETOCnDCh4ig4rdNbTGZOP9wOSKjXQ3DFa9lhb9Oue9oiB
+         Kl3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bdMOzuAoKxixfYpfTCctOntChT3rj2anNj427Z+V4fI=;
+        b=MATr+wYQ8xNq2sK3xl17n1jZkRwbxsk7ibkvcpDD1TeaTIIGcLzJupbV3wQvC9vWeP
+         80Ypm0BzHFkJ1x2Ew6IWmKYAQP8MnjmCXG3uccvq/WFBwP3GADGeKgdrmbzbakIJyV85
+         3ZmI3sXU2m2kOnE27/edceQkBIEL+8OZBL+9LT+C7FCG39OVCbPXZZVjR6jBocEvmhsN
+         3wD7zaIvLD2QilALkxZd0Np9sncAjdqy+/TGXNTE2wMsqJNaG3ubvccV9kqVTq3huQQa
+         q8fjUWu7W+FBuR4RIzrM5BsM8fyPFhjRK2UJWJ72iVvnnRfzRPZAHDK5dXXEHeCXFKU7
+         d4WA==
+X-Gm-Message-State: AOAM5306xUgaPzrW1VWA7h0pjj13fLjhqL6rWB2yGxPIXx0UK7iBpyg2
+        TrSzo87o3i322GM2xSDBP1GG3mx+GxBj60ZxgOiz5y28cxa8yQ==
+X-Google-Smtp-Source: ABdhPJxM1Tz/eZXdZzFK+62m9JjOcooFXllsYAgWS43J+TrFjHDeu3+OkfRoq9kpfWycA2e77xl+Ixo1i6BngPOBDLo=
+X-Received: by 2002:a5b:ed1:: with SMTP id a17mr31897569ybs.157.1619013235441;
+ Wed, 21 Apr 2021 06:53:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415073105.3687-1-thunder.leizhen@huawei.com>
- <20210420200246.GA3717650@robh.at.kernel.org> <fa6c6079-8061-5774-8252-31956ac84ae2@huawei.com>
-In-Reply-To: <fa6c6079-8061-5774-8252-31956ac84ae2@huawei.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 21 Apr 2021 08:53:32 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKggh0XDCHg8E694Zjuz2yiJ6tkxHDBDsMM3Y_XiZxypA@mail.gmail.com>
-Message-ID: <CAL_JsqKggh0XDCHg8E694Zjuz2yiJ6tkxHDBDsMM3Y_XiZxypA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dt-bindings: serial: Add label property for pl011
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-112-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-112-gregkh@linuxfoundation.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 21 Apr 2021 15:53:44 +0200
+Message-ID: <CAMpxmJXn9E7PfRKok7ZyTx0Y+P_q3buArg8YR7wV=+A9Sid2_Q@mail.gmail.com>
+Subject: Re: [PATCH 111/190] Revert "gpio: aspeed: fix a potential NULL
+ pointer dereference"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Kangjie Lu <kjlu@umn.edu>,
+        Andrew Jeffery <andrew@aj.id.au>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 4:38 AM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
+On Wed, Apr 21, 2021 at 3:07 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
+> This reverts commit 6cf4511e9729c00a7306cf94085f9cc3c52ee723.
 >
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 >
-> On 2021/4/21 4:02, Rob Herring wrote:
-> > On Thu, Apr 15, 2021 at 03:31:05PM +0800, Zhen Lei wrote:
-> >> When there is more than one pl011 serial port present, the label prope=
-rty
-> >> allows a custom name to be used for briefly describe the usage or posi=
-tion
-> >> of each serial port.
-> >>
-> >> Without this "label" property, many dtbs_check warnings similar to the
-> >> following are reported:
-> >> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
-> >> serial@ffd74000: Additional properties are not allowed ('label' was un=
-expected)
-> >>         From schema: Documentation/devicetree/bindings/serial/pl011.ya=
-ml
-> >
-> > I think this should go into serial.yaml instead.
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
 >
-> Yes=EF=BC=8CBut if I add "label: true" into serial.yaml, it doesn't work.=
- I haven't figured out why.
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Andrew Jeffery <andrew@aj.id.au>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/gpio/gpio-aspeed.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-aspeed.c b/drivers/gpio/gpio-aspeed.c
+> index b966f5e28ebf..91d0fdf8469d 100644
+> --- a/drivers/gpio/gpio-aspeed.c
+> +++ b/drivers/gpio/gpio-aspeed.c
+> @@ -1231,8 +1231,6 @@ static int __init aspeed_gpio_probe(struct platform_device *pdev)
+>
+>         gpio->offset_timer =
+>                 devm_kzalloc(&pdev->dev, gpio->chip.ngpio, GFP_KERNEL);
+> -       if (!gpio->offset_timer)
+> -               return -ENOMEM;
+>
+>         rc = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+>         if (rc < 0)
+> --
+> 2.31.1
+>
 
-Change the 'additionalProperties: false' to 'unevaluatedProperties: false'.
+Hi Greg,
 
-> By the way, should "$ref: /schemas/serial.yaml#" be replaced with "$ref: =
-/schemas/serial/serial.yaml#"?
+I'm sorry you need to waste your time on this cr*p.
 
-Oh, yes! Looks like it should be fixed for the other serial schemas
-too. There is a /schemas/serial.yaml schema from dt-schema which
-predates the kernel one, but it just has the $nodename. The kernel one
-is much more complete.
+This patch wasn't wrong though, so I'd recommend it's left in the tree.
 
-Rob
+Best regards,
+Bartosz Golaszewski
