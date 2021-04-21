@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890BC366BB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486E5366BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239570AbhDUNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45290 "EHLO mail.kernel.org"
+        id S241723AbhDUNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240663AbhDUNEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:04:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E269861456;
-        Wed, 21 Apr 2021 13:04:10 +0000 (UTC)
+        id S239667AbhDUNGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:06:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB4361480;
+        Wed, 21 Apr 2021 13:06:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010251;
-        bh=x0vsa/qDfa6fZnfroSb5vwjMRZa5ySo4U3GVJN0UZfY=;
+        s=korg; t=1619010372;
+        bh=L6CDiMKVBcpxu7wnDVhJUgVnlRUjMRTWbhg/qwrGUQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sQ/1leI6S8PgsF2pZO4UhFWtNcvfM9fEGdavdRy8hNRL202BzHz/zPde+ubV2UElp
-         0fIDd32mrtYTiM9eLIo5PhI9h3AR9dctS8kJQWUGl7DV9xc3G4i/h9cXz6a34eRiQv
-         Oc3sBp5uar6uKgih54N26nFoTkznh9hrSBotwcf4=
+        b=gexuhlPBi897OKxYREfksj+FRzrwVkeL+CmJhxlVXq1GmiOXVQcBACJG2dmHzExGN
+         D/rOhwIt1FRvx3+glK/zJbgLPJM4J46UTGxhlFPpf0qe5eNK22pQr2wY8zrma/GDTa
+         V7J1sFexR06BbxaAljWJAeUb7X8Bw3K/YPyj84Es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Aditya Pakki <pakki001@umn.edu>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH 066/190] Revert "bpf: Remove unnecessary assertion on fp_old"
-Date:   Wed, 21 Apr 2021 14:59:01 +0200
-Message-Id: <20210421130105.1226686-67-gregkh@linuxfoundation.org>
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 067/190] Revert "net: caif: replace BUG_ON with recovery code"
+Date:   Wed, 21 Apr 2021 14:59:02 +0200
+Message-Id: <20210421130105.1226686-68-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 5bf2fc1f9c88397b125d5ec5f65b1ed9300ba59d.
+This reverts commit c5dea815834c7d2e9fc633785455bc428b7a1956.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,26 +54,27 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: https
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/caif/caif_serial.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 75244ecb2389..da29211ea5d8 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -230,6 +230,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
- 	struct bpf_prog *fp;
- 	u32 pages;
+diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
+index 8215cd77301f..4720a7bac4fb 100644
+--- a/drivers/net/caif/caif_serial.c
++++ b/drivers/net/caif/caif_serial.c
+@@ -269,9 +269,7 @@ static netdev_tx_t caif_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct ser_device *ser;
  
-+	BUG_ON(fp_old == NULL);
-+
- 	size = round_up(size, PAGE_SIZE);
- 	pages = size / PAGE_SIZE;
- 	if (pages <= fp_old->pages)
+-	if (WARN_ON(!dev))
+-		return -EINVAL;
+-
++	BUG_ON(dev == NULL);
+ 	ser = netdev_priv(dev);
+ 
+ 	/* Send flow off once, on high water mark */
 -- 
 2.31.1
 
