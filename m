@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEA9366831
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71394366837
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238462AbhDUJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:37:47 -0400
-Received: from muru.com ([72.249.23.125]:57140 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238140AbhDUJhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:37:45 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 44E5780F7;
-        Wed, 21 Apr 2021 09:38:33 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 12:37:07 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Lin Ruizhe <linruizhe@huawei.com>, rui.zhang@intel.com,
-        edubezval@gmail.com, j-keerthy@ti.com, amitk@kernel.org,
-        radhesh.fadnis@ti.com, eballetbo@gmail.com,
-        linux-pm@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] thermal: ti-soc-thermal: Remove unused variable 'val'
-Message-ID: <YH/yQ5Hd+30DH4p/@atomide.com>
-References: <20210421084256.57591-1-linruizhe@huawei.com>
- <YH/nK6xshH+lW7e0@kroah.com>
- <8e66040e-4330-d4f0-afbb-8cae62a5082e@linaro.org>
+        id S238470AbhDUJiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:38:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16487 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238140AbhDUJiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:38:51 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FQFmB2XhhztWfr;
+        Wed, 21 Apr 2021 17:35:54 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.72) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 21 Apr 2021
+ 17:38:12 +0800
+Subject: Re: [PATCH 1/1] dt-bindings: serial: Add label property for pl011
+To:     Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210415073105.3687-1-thunder.leizhen@huawei.com>
+ <20210420200246.GA3717650@robh.at.kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <fa6c6079-8061-5774-8252-31956ac84ae2@huawei.com>
+Date:   Wed, 21 Apr 2021 17:38:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e66040e-4330-d4f0-afbb-8cae62a5082e@linaro.org>
+In-Reply-To: <20210420200246.GA3717650@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Daniel Lezcano <daniel.lezcano@linaro.org> [210421 09:07]:
-> On 21/04/2021 10:49, Greg KH wrote:
-> > On Wed, Apr 21, 2021 at 04:42:56PM +0800, Lin Ruizhe wrote:
-> >> The variable 'val'in function ti_bandgap_restore_ctxt is
-> >> the register value of read bandgap registers. This function is to
-> >> restore the context. But there is no operation on the return value
-> >> of this register, so this block is redundant. Hulk robot scans this
-> >> warning.This commit remove the dead code.
-> >>
-> >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >> Fixes: b87ea759a4cc ("staging: omap-thermal: fix context restore function")
-> >> Signed-off-by: Lin Ruizhe <linruizhe@huawei.com>
-> >> ---
-> >> v3:
-> >> -Add Fixes tag and more accurate commit message in this patch.
-> >> v2:
-> >> -As suggest remove the whole unuesed block in fuction
-> >>  ti_bandgap_restore_ctxt
-> >>
-> >>  drivers/thermal/ti-soc-thermal/ti-bandgap.c | 4 ----
-> >>  1 file changed, 4 deletions(-)
-> >>
-> >> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> >> index d81af89166d2..684ffb645aa9 100644
-> >> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> >> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-> >> @@ -1142,14 +1142,10 @@ static int ti_bandgap_restore_ctxt(struct ti_bandgap *bgp)
-> >>  	for (i = 0; i < bgp->conf->sensor_count; i++) {
-> >>  		struct temp_sensor_registers *tsr;
-> >>  		struct temp_sensor_regval *rval;
-> >> -		u32 val = 0;
-> >>  
-> >>  		rval = &bgp->regval[i];
-> >>  		tsr = bgp->conf->sensors[i].registers;
-> >>  
-> >> -		if (TI_BANDGAP_HAS(bgp, COUNTER))
-> >> -			val = ti_bandgap_readl(bgp, tsr->bgap_counter);
-> > 
-> > Are you sure that this hardware does not require this read to happen in
-> > order for it to work properly?
+
+
+On 2021/4/21 4:02, Rob Herring wrote:
+> On Thu, Apr 15, 2021 at 03:31:05PM +0800, Zhen Lei wrote:
+>> When there is more than one pl011 serial port present, the label property
+>> allows a custom name to be used for briefly describe the usage or position
+>> of each serial port.
+>>
+>> Without this "label" property, many dtbs_check warnings similar to the
+>> following are reported:
+>> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
+>> serial@ffd74000: Additional properties are not allowed ('label' was unexpected)
+>>         From schema: Documentation/devicetree/bindings/serial/pl011.yaml
 > 
-> Yes, initially we had the same concern but we were unable to find
-> anything specific in the history. The commit mentioned above removed the
-> user of the 'val' code but without removing this block of code.
+> I think this should go into serial.yaml instead.
+
+Yes，But if I add "label: true" into serial.yaml, it doesn't work. I haven't figured out why.
+
+By the way, should "$ref: /schemas/serial.yaml#" be replaced with "$ref: /schemas/serial/serial.yaml#"?
+
 > 
-> When looking at the current code, it really looks like an oversight.
-
-Yes so it seems.
-
-> There is nothing in the commit's changelog referring to a need of
-> reading the counter register but perhaps I'm wrong because I'm not sure
-> to understand correctly the changelog.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  Documentation/devicetree/bindings/serial/pl011.yaml | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/serial/pl011.yaml b/Documentation/devicetree/bindings/serial/pl011.yaml
+>> index 1f8e9f2644b6b80..303c7746423f503 100644
+>> --- a/Documentation/devicetree/bindings/serial/pl011.yaml
+>> +++ b/Documentation/devicetree/bindings/serial/pl011.yaml
+>> @@ -34,6 +34,9 @@ properties:
+>>    reg:
+>>      maxItems: 1
+>>  
+>> +  label:
+>> +    maxItems: 1
 > 
-> > Lots of hardware does need this, have you tested this?
+> label is always a single string and so 'maxItems' is always 1. Just 
+> need:
+> 
+> label: true
 
-I just tested this on omap3 logicpd torpedo devkit that can do off during
-idle and reading /sys/class/thermal/thermal_zone0/temp works. So feel
-free to add:
+OK
 
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
+> 
+>> +
+>>    interrupts:
+>>      maxItems: 1
+>>  
+>> -- 
+>> 2.26.0.106.g9fadedd
+>>
+>>
+> 
+> .
+> 
+
