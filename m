@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386D5366648
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EF6366649
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbhDUHec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:34:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54590 "EHLO mx2.suse.de"
+        id S236735AbhDUHe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:34:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54786 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234038AbhDUHea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:34:30 -0400
+        id S234038AbhDUHe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 03:34:57 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618990464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zly4Y5bY/7sVzFR1D7MJtPS/ysK81xWuNjbRZ79r6+w=;
+        b=NXomZfSNfkrXR5oqhS+ficumz14UX3ZMVY54MUXmSxWVkw6HzkfjnsMhQPr4C6xqrT3fGM
+        bYw5SZeMzJlFCSGqZaI91Z7nOz3ZrJ+/lt5IJMzh0Ud1pzwWKefbhpHU++PB+AaiPdbike
+        bGaEDNgZ8rWiokCMH3sEgOZf1/2VNOg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D932AAFE6;
-        Wed, 21 Apr 2021 07:33:56 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 09:33:52 +0200
-From:   Oscar Salvador <osalvador@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id F2BB4B127;
+        Wed, 21 Apr 2021 07:34:23 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 09:34:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
 To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v20 8/9] mm: memory_hotplug: disable
- memmap_on_memory when hugetlb_free_vmemmap enabled
-Message-ID: <20210421073346.GA22456@linux>
-References: <20210415084005.25049-1-songmuchun@bytedance.com>
- <20210415084005.25049-9-songmuchun@bytedance.com>
- <YH6udU5rKmDcx5dY@localhost.localdomain>
- <CAMZfGtXmDhkCWateAR0q_EgRPDmGh_=D-6UuhMd+Si6=TDvghQ@mail.gmail.com>
+Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
+Subject: Re: [PATCH] mm: memcontrol: fix root_mem_cgroup charging
+Message-ID: <YH/Vf8SDRy7VR7ur@dhcp22.suse.cz>
+References: <20210421062644.68331-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtXmDhkCWateAR0q_EgRPDmGh_=D-6UuhMd+Si6=TDvghQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210421062644.68331-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:41:24AM +0800, Muchun Song wrote:
-> > Documentation/admin-guide/kernel-parameters.txt already provides an
-> > explanation on memory_hotplug.memmap_on_memory parameter that states
-> > that the feature cannot be enabled when using hugetlb-vmemmap
-> > optimization.
-> >
-> > Users can always check whether the feature is enabled via
-> > /sys/modules/memory_hotplug/parameters/memmap_on_memory.
+On Wed 21-04-21 14:26:44, Muchun Song wrote:
+> The below scenario can cause the page counters of the root_mem_cgroup
+> to be out of balance.
+> 
+> CPU0:                                   CPU1:
+> 
+> objcg = get_obj_cgroup_from_current()
+> obj_cgroup_charge_pages(objcg)
+>                                         memcg_reparent_objcgs()
+>                                             // reparent to root_mem_cgroup
+>                                             WRITE_ONCE(iter->memcg, parent)
+>     // memcg == root_mem_cgroup
+>     memcg = get_mem_cgroup_from_objcg(objcg)
+>     // do not charge to the root_mem_cgroup
+>     try_charge(memcg)
+> 
+> obj_cgroup_uncharge_pages(objcg)
+>     memcg = get_mem_cgroup_from_objcg(objcg)
+>     // uncharge from the root_mem_cgroup
+>     page_counter_uncharge(&memcg->memory)
+> 
+> This can cause the page counter to be less than the actual value,
+> Although we do not display the value (mem_cgroup_usage) so there
+> shouldn't be any actual problem, but there is a WARN_ON_ONCE in
+> the page_counter_cancel(). Who knows if it will trigger? So it
+> is better to fix it.
 
-Heh, I realized this is not completely true.
-Users can check whether the feature is __enabled__ by checking the sys fs,
-but although it is enabled, it might not be effective.
+The changelog doesn't explain the fix and why you have chosen to charge
+kmem objects to root memcg and left all other try_charge users intact.
+The reason is likely that those are not reparented now but that just
+adds an inconsistency.
 
-This might be due to a different number of reasons, vmemmap does not fully
-span a PMD, the size we want to add spans more than a single memory block, etc.
+Is there any reason you haven't simply matched obj_cgroup_uncharge_pages
+to check for the root memcg and bail out early?
 
-That is what
-
-"Note that even when enabled, there are a few cases where the feature is not
- effective."
-
-is supposed to mean.
-
-Anyway, I did not change my opionion on this.
-
-Thanks
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/memcontrol.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 1e68a9992b01..81b54bd9b9e0 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2686,8 +2686,8 @@ void mem_cgroup_handle_over_high(void)
+>  	css_put(&memcg->css);
+>  }
+>  
+> -static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> -		      unsigned int nr_pages)
+> +static int __try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> +			unsigned int nr_pages)
+>  {
+>  	unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
+>  	int nr_retries = MAX_RECLAIM_RETRIES;
+> @@ -2699,8 +2699,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	bool drained = false;
+>  	unsigned long pflags;
+>  
+> -	if (mem_cgroup_is_root(memcg))
+> -		return 0;
+>  retry:
+>  	if (consume_stock(memcg, nr_pages))
+>  		return 0;
+> @@ -2880,6 +2878,15 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	return 0;
+>  }
+>  
+> +static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> +			     unsigned int nr_pages)
+> +{
+> +	if (mem_cgroup_is_root(memcg))
+> +		return 0;
+> +
+> +	return __try_charge(memcg, gfp_mask, nr_pages);
+> +}
+> +
+>  #if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
+>  static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+> @@ -3125,7 +3132,7 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+>  
+>  	memcg = get_mem_cgroup_from_objcg(objcg);
+>  
+> -	ret = try_charge(memcg, gfp, nr_pages);
+> +	ret = __try_charge(memcg, gfp, nr_pages);
+>  	if (ret)
+>  		goto out;
+>  
+> -- 
+> 2.11.0
 
 -- 
-Oscar Salvador
-SUSE L3
+Michal Hocko
+SUSE Labs
