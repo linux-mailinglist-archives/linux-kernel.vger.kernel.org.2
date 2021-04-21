@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E5C366903
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819F8366907
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238777AbhDUKRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:17:55 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:29683 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234038AbhDUKRy (ORCPT
+        id S238797AbhDUKTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:19:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39377 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234947AbhDUKTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:17:54 -0400
-X-UUID: 49718aed876c4f74b64e9a3795e53fbb-20210421
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9IoeKBla8pN9WE4+y5GJhke4Dy+p0ylLEjnf88v7Uqk=;
-        b=fQNY8k1jcr1ai4RxVlKGqy4Sh6iY16HRZ+oA0gEszTI+/RS/kDRdk0rscojYm9Xgs2GFggVQqxEKSGUkzPDGhZOdSQnUPQrk/jNJQ1YywVuZ/U6S5V8mhh1k+tV14lM83t2bo5TjaDiApMlM60cbUG9cd515Uk6JBtNtBz0naIo=;
-X-UUID: 49718aed876c4f74b64e9a3795e53fbb-20210421
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <fengquan.chen@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 366369709; Wed, 21 Apr 2021 18:17:15 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 21 Apr
- 2021 18:17:07 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 21 Apr 2021 18:17:07 +0800
-Message-ID: <1619000227.25707.20.camel@mhfsdcap03>
-Subject: Re: [PATCH] clocksource/drivers/timer-mediatek: optimize systimer
- irq clear flow on Mediatek Socs
-From:   Fengquan Chen <fengquan.chen@mediatek.com>
-To:     Evan Benn <evanbenn@chromium.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <dehui.sun@mediatek.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Wed, 21 Apr 2021 18:17:07 +0800
-In-Reply-To: <CAKz_xw2abQyS9Vvx7DUppGGd-AaDQAfdAOwi46fB9yLPJWJeUA@mail.gmail.com>
-References: <1614670085-26229-1-git-send-email-Fengquan.Chen@mediatek.com>
-         <1614670085-26229-2-git-send-email-Fengquan.Chen@mediatek.com>
-         <CAKz_xw2abQyS9Vvx7DUppGGd-AaDQAfdAOwi46fB9yLPJWJeUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 21 Apr 2021 06:19:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619000311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x9vYDchYhebFU76wqYouyAVgYBvDfRNiPS9Y9xYWp/k=;
+        b=RR67y3BPg00isJshV2mVFu1p1Ho4FVHcDAJho3su6l3pABb/QrIskARzHJHK6Ih4cgCFT4
+        9qM6Y4/mKjXhZ88LlRedJ36nVmsfyBmQH520lwlZhvF0+finiV43H5SSyXne4zWT459Q1n
+        in72XMnFxnjAFPHdAYikEI3kcr9BnJ4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-RZ1mMx62MQuCqPtaFOhj5g-1; Wed, 21 Apr 2021 06:18:27 -0400
+X-MC-Unique: RZ1mMx62MQuCqPtaFOhj5g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 898D718397A7;
+        Wed, 21 Apr 2021 10:18:26 +0000 (UTC)
+Received: from krava (unknown [10.40.193.60])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BF2E919D9B;
+        Wed, 21 Apr 2021 10:18:24 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 12:18:23 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "acme@redhat.com" <acme@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH v4 3/4] perf-stat: introduce config
+ stat.bpf-counter-events
+Message-ID: <YH/773ecFa3iESlH@krava>
+References: <20210419203649.164121-1-song@kernel.org>
+ <20210419203649.164121-4-song@kernel.org>
+ <YH8P5ol5JRr5JO5v@krava>
+ <EE06CC67-3FFA-43E2-B032-EC8B37A9EC1C@fb.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: BDB2F9AC03454462D38628DCDC4993140A01337F80411D53696602FA182485272000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <EE06CC67-3FFA-43E2-B032-EC8B37A9EC1C@fb.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAzLTIzIGF0IDExOjQ4ICsxMTAwLCBFdmFuIEJlbm4gd3JvdGU6DQo+IE9u
-IFRodSwgTWFyIDQsIDIwMjEgYXQgMTE6MDcgQU0gRmVuZ3F1YW4gQ2hlbg0KPiA8RmVuZ3F1YW4u
-Q2hlbkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gMSllbnN1cmUgc3lzdGltZXIgaXMg
-ZW5hYmxlZCBiZWZvcmUgY2xlYXIgYW5kIGRpc2FibGUgaW50ZXJydXB0LCB3aGljaCBvbmx5DQo+
-ID4gZm9yIHN5c3RpbWVyIGluIE1lZGlhdGVrIFNvY3MuDQo+IA0KPiBXaHkgZG9lcyB0aGUgdGlt
-ZXIgbmVlZCB0byBiZSBlbmFibGVkIGJlZm9yZSB0aGUgaW50ZXJydXB0IGNhbiBiZQ0KPiBkaXNh
-YmxlZD8gVGhlIGRhdGFzaGVldCBJIGhhdmUgZG9lcyBub3Qgc3VnZ2VzdCB0aGF0IHRoaXMgaXMg
-cmVxdWlyZWQuDQo+IA0KDQpUaGFua3MgZm9yIHJldmlldy4gRm9yIHN5c3RpbWVyLCB5b3UgbXVz
-dCBlbmFibGUgdGltZXIgYmVmb3JlIGNsZWFyDQppcnEsaXQncyBhIGh3IGxpbWl0YXRpb24gdGhh
-dCB3b3VsZCBiZSBlYXNpbHkgbmVnbGVjdGVkLg0KDQo+ID4NCj4gPiAyKWNsZWFyIGFueSBwZW5k
-aW5nIHRpbWVyLWlycSB3aGVuIHNodXRkb3duIHRvIGtlZXAgc3VzcGVuZCBmbG93IGNsZWFuLA0K
-PiA+IHdoZW4gdXNlIHN5c3RpbWVyIGFzIHRpY2stYnJvYWRjYXN0IHRpbWVyDQo+ID4NCj4gPiBD
-aGFuZ2UtSWQ6IElhM2VkYTgzMzI0YWYyZmRhZjVjYmIzNTY5YTliZjAyMGExMWY4MDA5DQo+ID4g
-U2lnbmVkLW9mZi1ieTogRmVuZ3F1YW4gQ2hlbiA8ZmVuZ3F1YW4uY2hlbkBtZWRpYXRlay5jb20+
-DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYyB8IDQg
-KysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9jbG9ja3NvdXJjZS90aW1lci1tZWRpYXRlay5jIGIvZHJpdmVycy9j
-bG9ja3NvdXJjZS90aW1lci1tZWRpYXRlay5jDQo+ID4gaW5kZXggOTMxOGVkYy4uOWYxZjA5NWRj
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYw0K
-PiA+ICsrKyBiL2RyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYw0KPiA+IEBAIC03
-NSw2ICs3NSw3IEBADQo+ID4gIHN0YXRpYyB2b2lkIG10a19zeXN0X2Fja19pcnEoc3RydWN0IHRp
-bWVyX29mICp0bykNCj4gDQo+IFRoaXMgZnVuY3Rpb24gc2VlbXMgdG8gYmUgbWlzLW5hbWVkLiBJ
-dCBkb2VzIG1vcmUgdGhhbiBqdXN0IGFjayB0aGUgaXJxLg0KPiANCj4gPiAgew0KPiA+ICAgICAg
-ICAgLyogQ2xlYXIgYW5kIGRpc2FibGUgaW50ZXJydXB0ICovDQo+ID4gKyAgICAgICB3cml0ZWwo
-U1lTVF9DT05fRU4sIFNZU1RfQ09OX1JFRyh0bykpOw0KPiANCj4gVGhpcyBsaW5lIHNlZW1zIHRv
-IGVuYWJsZSB0aGUgdGltZXIgYW5kIGRpc2FibGUgdGhlIGludGVycnVwdC4NCj4gDQo+ID4gICAg
-ICAgICB3cml0ZWwoU1lTVF9DT05fSVJRX0NMUiB8IFNZU1RfQ09OX0VOLCBTWVNUX0NPTl9SRUco
-dG8pKTsNCj4gDQo+IFRoaXMgbGluZSBhY2tzIHRoZSBpbnRlcnJ1cHQgYW5kIGVuYWJsZXMgdGhl
-IHRpbWVyIGFuZCBkaXNhYmxlcyB0aGUgaW50ZXJydXB0Lg0KPiBBcmUgdGhlc2UgbGluZXMgYm90
-aCBuZWNlc3Nhcnk/DQo+IE1heWJlIHRoaXMgZnVuY3Rpb24gc2hvdWxkIGp1c3QgYWNrIHRoZSBp
-bnRlcnJ1cHQgd2l0aG91dCBjaGFuZ2luZyB0aGUNCj4gb3RoZXIgYml0cy4NCg0KVGhhbmtzIGZv
-ciByZXZpZXcuIA0KDQppdCdzIG5lY2Vzc2FyeS4NCg0KQXMgZGVzY3JpYmVkIGFib3ZlLHdlIG11
-c3QgZW5hYmxlIHRpbWVyIGJlZm9yZSBjbGVhcg0KaXJxLCBzbyBoZXJlIGlzIGp1c3Qgd2FudCB0
-byBlbnN1cmUgaXJxIGNsZWFyIHN1Y2Nlc3NmdWxseS4NCg0KV2UgYWx3YXlzIGRpc2FibGUgaXJx
-IGhlcmUsIGFuZCB3aWxsIGJlIHJlLWVuYWJsZSBpbg0KbXRrX3N5c3RfY2xrZXZ0X25leHRfZXZl
-bnQuDQoNCj4gDQo+ID4gIH0NCj4gPg0KPiA+IEBAIC0xMTEsNiArMTEyLDkgQEAgc3RhdGljIGlu
-dCBtdGtfc3lzdF9jbGtldnRfbmV4dF9ldmVudCh1bnNpZ25lZCBsb25nIHRpY2tzLA0KPiA+DQo+
-ID4gIHN0YXRpYyBpbnQgbXRrX3N5c3RfY2xrZXZ0X3NodXRkb3duKHN0cnVjdCBjbG9ja19ldmVu
-dF9kZXZpY2UgKmNsa2V2dCkNCj4gPiAgew0KPiA+ICsgICAgICAgLyogQ2xlYXIgYW55IGlycSAq
-Lw0KPiA+ICsgICAgICAgbXRrX3N5c3RfYWNrX2lycSh0b190aW1lcl9vZihjbGtldnQpKTsNCj4g
-PiArDQo+ID4gICAgICAgICAvKiBEaXNhYmxlIHRpbWVyICovDQo+ID4gICAgICAgICB3cml0ZWwo
-MCwgU1lTVF9DT05fUkVHKHRvX3RpbWVyX29mKGNsa2V2dCkpKTsNCj4gDQo+IFRoaXMgaXMgYSB0
-aGlyZCB3cml0ZSB0byB0aGUgc2FtZSByZWdpc3RlciwgSSBiZWxpZXZlIGFsbCAzIHdyaXRlcyBj
-YW4NCj4gYmUgY29tYmluZWQgaW50byAxLiBJcyB0aGF0IHBvc3NpYmxlPw0KDQpUaGFua3MgZm9y
-IHJldmlldy4gDQoNCnRoZXJlJ3MgYSBodyBsaW1pdGF0aW9uIGhlcmUsIHdlIGNhbiBub3QgY2xl
-YXIgaXJxIHdoaWxlIHRpbWVyIGlzDQpkaXNhYmxlZCwgYW5kIFNZU1RfQ09OX0VOJlNZU1RfQ09O
-X0lSUV9DTFIgYml0IG11c3QgYmUgd3JpdGUgYXQgdGhlIHNhbWUNCnRpbWUgb3IgY2FuIG5vdCAg
-d3JpdGUgU1lTVF9DT05fSVJRX0NMUiBiaXQgc2VwZXJhdGVseS4NCg0KDQo+IA0KPiA+DQo+ID4g
-LS0NCj4gPiAxLjguMS4xLmRpcnR5DQo+ID4NCg0K
+On Tue, Apr 20, 2021 at 09:21:32PM +0000, Song Liu wrote:
+> 
+> 
+> > On Apr 20, 2021, at 10:31 AM, Jiri Olsa <jolsa@redhat.com> wrote:
+> > 
+> > On Mon, Apr 19, 2021 at 01:36:48PM -0700, Song Liu wrote:
+> > 
+> > SNIP
+> > 
+> >> 	if (stat_config.initial_delay < 0) {
+> >> @@ -784,11 +790,11 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+> >> 	if (affinity__setup(&affinity) < 0)
+> >> 		return -1;
+> >> 
+> >> -	if (target__has_bpf(&target)) {
+> >> -		evlist__for_each_entry(evsel_list, counter) {
+> >> -			if (bpf_counter__load(counter, &target))
+> >> -				return -1;
+> >> -		}
+> >> +	evlist__for_each_entry(evsel_list, counter) {
+> >> +		if (bpf_counter__load(counter, &target))
+> >> +			return -1;
+> >> +		if (!evsel__is_bpf(counter))
+> >> +			all_counters_use_bpf = false;
+> > 
+> > could be done in bpf_counter__load, check below:
+> > 
+> >> 	}
+> >> 
+> >> 	evlist__for_each_cpu (evsel_list, i, cpu) {
+> >> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> >> index 5de991ab46af9..33b1888103dfa 100644
+> >> --- a/tools/perf/util/bpf_counter.c
+> >> +++ b/tools/perf/util/bpf_counter.c
+> >> @@ -790,7 +790,8 @@ int bpf_counter__load(struct evsel *evsel, struct target *target)
+> >> {
+> >> 	if (target->bpf_str)
+> >> 		evsel->bpf_counter_ops = &bpf_program_profiler_ops;
+> >> -	else if (target->use_bpf)
+> >> +	else if (target->use_bpf ||
+> >> +		 evsel__match_bpf_counter_events(evsel->name))
+> >> 		evsel->bpf_counter_ops = &bperf_ops;
+> > 
+> > with:
+> > 	else
+> > 		all_counters_use_bpf = false;
+> > 
+> > I was also thinking of oving it to evlist, but it's sat specific,
+> > so I think it's good as static.. thanks for changing the implementation
+> 
+> Hmm... then we need to somehow make all_counters_use_bpf visible in
+> bpf_counter.c, which won't be very clean. Also, since this is stat 
+> specific, I guess it is better to keep it inside builtin-stat.c?
+> The runtime overhead should be minimal. 
+
+ah it's different file :) then it's better as it is, sorry
+
+jirka
+
+> 
+> Thanks,
+> Song
+> 
 
