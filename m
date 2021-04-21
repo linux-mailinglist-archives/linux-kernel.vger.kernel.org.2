@@ -2,131 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7D2366FD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638F1366FE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243972AbhDUQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239855AbhDUQTa (ORCPT
+        id S244281AbhDUQUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:20:43 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2896 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244246AbhDUQUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:19:30 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F342C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:18:56 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id s15so50081772edd.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ylabI7yel8trfiw05+8kfE4gsMq9DsV89TTz7H0mBd4=;
-        b=SwLJaGpPLtubReINVzZzoWVROzzwBu7D3g0d7StyTVDnq3cS/jTgMrZklC1rtnAfIJ
-         I1NtrQwMsXKsB7O6l0w6BobwTe+J6V2eALIjXVy+DBpFRzVJBNkwYZZrhHIjKL8/0WFL
-         Xg7jgr0yS8iCGqxANmUPLzPwRLaORmZOEmoUr1VDcTHIz/cK+rF4MGWq7WDqvPgbYEJS
-         ci15cpv8c6UrFqFq8CS5BkvPNYL54rGjZoBDVeTeBc1i3b1lwj23nZMN6CthAlVaUn8+
-         bQzZSld8I8O7N560e6m9J1V5SxaSwzKEnXkiQhjTy6Fq2F2ZTyQycEXiZ8aIaz6lYOcx
-         9gGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ylabI7yel8trfiw05+8kfE4gsMq9DsV89TTz7H0mBd4=;
-        b=ErRX+hNdPS8bc23hQdLfsrwgaTJVN6XnT7d/OTtXKY1mI77/ovvs+YueIHqKDxUh3D
-         vpFqsHmxOhLA3FWfAbdVMtZ/1AAn8irvLhL9hXGIX4fpgPJCIOnq1WsHhUpMsOm9qMUH
-         XOhxRntruo65t/YYA4NJNtTVcgO5nfjl6Odo5J34vKu2jt+UN/QUESGNYKvPQ5OAIija
-         arQr8I+GoZ/DBJKKb7t3tHizostupajKPGOi72CNxozQy9zSR7DBv1/bG30dh7zgcBMV
-         l239KOu9ESvpewqhPzdxcb5Yc1ZXQhcqfKi9m/QOQ7IR4KeaRlMFhMw/hYw5JJUN0q5N
-         X4iA==
-X-Gm-Message-State: AOAM530qWxHlf25oz+JUcJmILnyo8nBWG/nQX1WJXvT9mpWlpaCmFE1k
-        FVhOod11J5vE1Iq2oTxMnM4JFPJv2fp7QoaYCQlu
-X-Google-Smtp-Source: ABdhPJwe2K3xdo/wYDUajrSKOQC+ZfSGOOTnvAWJ3Q4TE+mRT3v4LP5OjTWk8dOB6gRk7KryePjRjm28w5JAaJLwAvE=
-X-Received: by 2002:a05:6402:199:: with SMTP id r25mr31401269edv.128.1619021935361;
- Wed, 21 Apr 2021 09:18:55 -0700 (PDT)
+        Wed, 21 Apr 2021 12:20:38 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FQQYl0XrYz6slNm;
+        Thu, 22 Apr 2021 00:12:27 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Apr 2021 18:19:57 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <jmorris@namei.org>, <paul@paul-moore.com>,
+        <casey@schaufler-ca.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
+        <reiserfs-devel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 0/6] evm: Prepare for moving to the LSM infrastructure
+Date:   Wed, 21 Apr 2021 18:19:19 +0200
+Message-ID: <20210421161925.968825-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-86-gregkh@linuxfoundation.org>
-In-Reply-To: <20210421130105.1226686-86-gregkh@linuxfoundation.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 21 Apr 2021 12:18:44 -0400
-Message-ID: <CAHC9VhTvKeNFPsJadVK_i1+qaQBRSVfdWd+HC_EsgZx3coM8oA@mail.gmail.com>
-Subject: Re: [PATCH 085/190] Revert "audit: fix a memory leak bug"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Richard Guy Briggs <rgb@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.62.217]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 9:04 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This reverts commit 70c4cf17e445264453bc5323db3e50aa0ac9e81f.
->
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
->
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
->
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: Richard Guy Briggs <rgb@redhat.com>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  kernel/auditfilter.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
+This patch set depends on:
 
-NACK on this revert.  I've looked at the original patch again this
-morning, and the original patch still looks correct and doesn't appear
-to introduce any new faults to the best of my understanding.
+https://lore.kernel.org/linux-integrity/20210409114313.4073-1-roberto.sassu@huawei.com/
+https://lore.kernel.org/linux-integrity/20210407105252.30721-1-roberto.sassu@huawei.com/
 
-> diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
-> index 333b3bcfc545..19f908b96000 100644
-> --- a/kernel/auditfilter.c
-> +++ b/kernel/auditfilter.c
-> @@ -1125,24 +1125,22 @@ int audit_rule_change(int type, int seq, void *data, size_t datasz)
->         int err = 0;
->         struct audit_entry *entry;
->
-> +       entry = audit_data_to_entry(data, datasz);
-> +       if (IS_ERR(entry))
-> +               return PTR_ERR(entry);
-> +
->         switch (type) {
->         case AUDIT_ADD_RULE:
-> -               entry = audit_data_to_entry(data, datasz);
-> -               if (IS_ERR(entry))
-> -                       return PTR_ERR(entry);
->                 err = audit_add_rule(entry);
->                 audit_log_rule_change("add_rule", &entry->rule, !err);
->                 break;
->         case AUDIT_DEL_RULE:
-> -               entry = audit_data_to_entry(data, datasz);
-> -               if (IS_ERR(entry))
-> -                       return PTR_ERR(entry);
->                 err = audit_del_rule(entry);
->                 audit_log_rule_change("remove_rule", &entry->rule, !err);
->                 break;
->         default:
-> +               err = -EINVAL;
->                 WARN_ON(1);
-> -               return -EINVAL;
->         }
->
->         if (err || type == AUDIT_DEL_RULE) {
-> --
-> 2.31.1
+One of the challenges that must be tackled to move IMA and EVM to the LSM
+infrastructure is to ensure that EVM is capable to correctly handle
+multiple stacked LSMs providing an xattr at file creation. At the moment,
+there are few issues that would prevent a correct integration. This patch
+set aims at solving them.
+
+From the LSM infrastructure side, the LSM stacking feature added the
+possibility of registering multiple implementations of the security hooks,
+that are called sequentially whenever someone calls the corresponding
+security hook. However, security_inode_init_security() and
+security_old_inode_init_security() are currently limited to support one
+xattr provided by LSM and one by EVM.
+
+In addition, using the call_int_hook() macro causes some issues. According
+to the documentation in include/linux/lsm_hooks.h, it is a legitimate case
+that an LSM returns -EOPNOTSUPP when it does not want to provide an xattr.
+However, the loop defined in the macro would stop calling subsequent LSMs
+if that happens. In the case of security_old_inode_init_security(), using
+the macro would also cause a memory leak due to replacing the *value
+pointer, if multiple LSMs provide an xattr.
+
+From EVM side, the first operation to be done is to change the definition
+of evm_inode_init_security() to be compatible with the security hook
+definition. Unfortunately, the current definition does not provide enough
+information for EVM, as it must have visibility of all xattrs provided by
+LSMs to correctly calculate the HMAC. This patch set changes the security
+hook definition by replacing the name, value and len triple with the xattr
+array allocated by security_inode_init_security().
+
+Secondly, EVM must know how many elements are in the xattr array. It seems
+that it is not necessary to add another parameter, as all filesystems that
+define an initxattr function expect that the last element of the array is
+one with the name field set to NULL. EVM reuses the same assumption.
+
+This patch set has been tested by introducing several instances of a
+TestLSM (some providing an xattr, some not, one with a wrong implementation
+to see how the LSM infrastructure handles it). The patch is not included
+in this set but it is available here:
+
+https://github.com/robertosassu/linux/commit/dbe867fdf0b61b9bd73332f159e7ce5ca2a9b980
+
+The test, added to ima-evm-utils, is available here:
+
+https://github.com/robertosassu/ima-evm-utils/blob/evm-multiple-lsms-v2-devel-v2/tests/evm_multiple_lsms.test
+
+The test takes a UML kernel built by Travis and launches it several times,
+each time with a different combination of LSMs. After boot, it first checks
+that there is an xattr for each LSM providing it, and then calculates the
+HMAC in user space and compares it with the HMAC calculated by EVM in
+kernel space.
+
+A test report can be obtained here:
+
+https://travis-ci.com/github/robertosassu/ima-evm-utils/jobs/500142666
+
+SELinux Test Suite result (diff 5.11.14-200.fc33.x86_64 5.12.0-rc8+):
+-Files=70, Tests=1099, 82 wallclock secs ( 0.35 usr  0.09 sys +  7.39 cusr 10.14 csys = 17.97 CPU)
++Files=70, Tests=1108, 104 wallclock secs ( 0.35 usr  0.09 sys +  7.35 cusr 11.35 csys = 19.14 CPU)
+ Result: FAIL
+-Failed 2/70 test programs. 5/1099 subtests failed.
++Failed 2/70 test programs. 5/1108 subtests failed.
+
+Smack Test Suite result:
+smack_set_ambient 1 TPASS: Test "smack_set_ambient" success.
+smack_set_current 1 TPASS: Test "smack_set_current" success.
+smack_set_doi 1 TPASS: Test "smack_set_doi" success.
+smack_set_netlabel 1 TPASS: Test "smack_set_netlabel" success.
+smack_set_socket_labels    1  TPASS  :  Test smack_set_socket_labels success.
+smack_set_cipso 1 TPASS: Test "smack_set_cipso" success.
+smack_set_direct 1 TPASS: Test "smack_set_direct" success.
+smack_set_load 1 TPASS: Test "smack_set_load" success.
+smack_set_onlycap 1 TFAIL: The smack label reported for "/smack/onlycap"
+
+Lastly, running the test on reiserfs to check
+security_old_inode_init_security(), some issues have been discovered: a
+free of xattr->name which is not correct after commit 9548906b2bb7 ('xattr:
+Constify ->name member of "struct xattr"'), missing calls to
+reiserfs_security_free() and a misalignment with
+security_inode_init_security() (the old version expects the full xattr name
+with the security. prefix, the new version just the suffix). The last issue
+has not been fixed yet.
+
+Changelog
+
+v1:
+- add calls to reiserfs_security_free() and initialize sec->value to NULL
+  (suggested by Tetsuo and Mimi)
+- change definition of inode_init_security hook, replace the name, value
+  and len triple with the xattr array (suggested by Casey)
+- introduce lsm_find_xattr_slot() helper for LSMs to find an unused slot in
+  the passed xattr array
+
+Roberto Sassu (6):
+  xattr: Complete constify ->name member of "struct xattr"
+  reiserfs: Add missing calls to reiserfs_security_free()
+  security: Pass xattrs allocated by LSMs to the inode_init_security
+    hook
+  security: Support multiple LSMs implementing the inode_init_security
+    hook
+  evm: Align evm_inode_init_security() definition with LSM
+    infrastructure
+  evm: Support multiple LSMs providing an xattr
+
+ fs/reiserfs/namei.c                 |   4 ++
+ fs/reiserfs/xattr_security.c        |   3 +-
+ include/linux/evm.h                 |  17 +++--
+ include/linux/lsm_hook_defs.h       |   4 +-
+ include/linux/lsm_hooks.h           |  22 ++++--
+ security/integrity/evm/evm.h        |   2 +
+ security/integrity/evm/evm_crypto.c |   9 ++-
+ security/integrity/evm/evm_main.c   |  28 +++++---
+ security/security.c                 | 105 +++++++++++++++++++++++-----
+ security/selinux/hooks.c            |  13 ++--
+ security/smack/smack_lsm.c          |  20 +++---
+ 11 files changed, 167 insertions(+), 60 deletions(-)
 
 -- 
-paul moore
-www.paul-moore.com
+2.25.1
+
