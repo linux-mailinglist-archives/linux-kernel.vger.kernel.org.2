@@ -2,306 +2,489 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB13366609
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAB43665F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237083AbhDUHD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237019AbhDUHC6 (ORCPT
+        id S234025AbhDUHCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:02:08 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:46826 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236687AbhDUHBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:02:58 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108FCC06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:02:26 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id d10so28867341pgf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BJAHJm3WxSe3+llhyrF3h/iI+dQ91A0h6PAGmd2OEFk=;
-        b=BeH9IaJf8VdTn4BAiugjYflGK3f6pItsg0TrfNOa1MxaHsQKfj6jg0UE2QvaYoSuCG
-         wgmFXLZ8DBrWtGquuBiQMWp5zbNNHUGToDM+d3vVAS2nfLBR+45go56JfFtlUyfwswb4
-         vLYbHoL5kwfMpPjb6diPhoTzcW8Me7/HlaJ9R2Pdh8s0/QUPPOepbp7z/uBW3tM7UjrQ
-         oR1bpdJgMLNVsiV0jnDDb7la4ruYN1ePHui0wHUzgISwjBzKPYzMEcoqlJExroko1Yri
-         t3ddomQky76M0c/NEbSBW1YPNwf6TC66wnBz1J5sUchc2Y9amStwuBFFnXhAn1B+rHYL
-         VEFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BJAHJm3WxSe3+llhyrF3h/iI+dQ91A0h6PAGmd2OEFk=;
-        b=eUiyb/PMYvCEQTrXlLlW8JuJb03ogR6BakjBrnjTeA2s5EuOuQIhI3KbLfqBjnw6MG
-         Wm6DF9ai7bw2RyUD5BExToGT6elnv0ZPULYMbAQWsoH1lXZ1d0GrYHMkzsny/Kepf0De
-         ompC/HR9tcXxhD4MbCYKZduAPCx/oKgYvjHpX27y3H1xND51PpgUiCLBpqT8LX3ZZ6Oo
-         MZR/xXJIz3HVfEDV/UTwrNvaNOo66hXRvNI4of/sJ7mWpawgx75SHQ50wrWzzG97ehZH
-         m2agJoo2kRrtfEYSVFppdlDJdDGbtMduwKexUM+IAvyp/w1tWJon/pfj+Z7xPz049ttc
-         zePg==
-X-Gm-Message-State: AOAM531FFSKWUzqyuUd/LIyprQG2cYCZjMwrJvXzZF42KCS7ps3Nfm8s
-        r+LynzVsg9xHeXi5gOnTvyrJnw==
-X-Google-Smtp-Source: ABdhPJzeTGvNyWdwdVzov34MZyp9MGcpmAiL3jSAq3rDfYrXFLPV6gEhqI7Dgn5W34gAQp+k2m70Jw==
-X-Received: by 2002:a17:90a:f303:: with SMTP id ca3mr9435343pjb.145.1618988545660;
-        Wed, 21 Apr 2021 00:02:25 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id c4sm929842pfb.94.2021.04.21.00.02.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Apr 2021 00:02:25 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        akpm@linux-foundation.org, shakeelb@google.com,
-        vdavydov.dev@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        bsingharora@gmail.com, shy828301@gmail.com,
-        alex.shi@linux.alibaba.com, Muchun Song <songmuchun@bytedance.com>
-Subject: [RFC PATCH v3 12/12] mm: lru: use lruvec lock to serialize memcg changes
-Date:   Wed, 21 Apr 2021 15:00:59 +0800
-Message-Id: <20210421070059.69361-13-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210421070059.69361-1-songmuchun@bytedance.com>
-References: <20210421070059.69361-1-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 21 Apr 2021 03:01:54 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 24197CD56A;
+        Wed, 21 Apr 2021 15:01:20 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P2750T140649152108288S1618988477663415_;
+        Wed, 21 Apr 2021 15:01:19 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <c1aa1976bd0cd7ce8e2380b990314327>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 25
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com
+Subject: [PATCH v1 5/5] arm64: dts: rockchip: add basic dts for RK3568 EVB
+Date:   Wed, 21 Apr 2021 15:01:15 +0800
+Message-Id: <20210421070115.24000-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210421065921.23917-1-cl@rock-chips.com>
+References: <20210421065921.23917-1-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described by commit fc574c23558c ("mm/swap.c: serialize memcg
-changes in pagevec_lru_move_fn"), TestClearPageLRU() aims to
-serialize mem_cgroup_move_account() during pagevec_lru_move_fn().
-Now lock_page_lruvec*() has the ability to detect whether page
-memcg has been changed. So we can use lruvec lock to serialize
-mem_cgroup_move_account() during pagevec_lru_move_fn(). This
-change is a partial revert of the commit fc574c23558c ("mm/swap.c:
-serialize memcg changes in pagevec_lru_move_fn").
+From: Liang Chen <cl@rock-chips.com>
 
-And pagevec_lru_move_fn() is more hot compare with
-mem_cgroup_move_account(), removing an atomic operation would be
-an optimization. Also this change would not dirty cacheline for a
-page which isn't on the LRU.
+This patch add rk3568-evb1-v10.dts for RK3568 evaluation board.
+add uart/emmc/i2c/rk809 node for basic function.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Liang Chen <cl@rock-chips.com>
 ---
- mm/compaction.c |  1 +
- mm/memcontrol.c | 31 +++++++++++++++++++++++++++++++
- mm/swap.c       | 41 +++++++++++------------------------------
- mm/vmscan.c     |  9 ++++-----
- 4 files changed, 47 insertions(+), 35 deletions(-)
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 382 ++++++++++++++++++
+ 3 files changed, 388 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index f88e2731d27c..9421abb64c16 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -531,6 +531,7 @@ compact_lock_page_lruvec_irqsave(struct page *page, unsigned long *flags,
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index 4a6f772c1043..d26b062a9f0e 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -560,6 +560,11 @@ properties:
+           - const: rockchip,rk3368-evb-act8846
+           - const: rockchip,rk3368
  
- 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
- out:
-+	/* See the comments in lock_page_lruvec(). */
- 	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
- 		spin_unlock_irqrestore(&lruvec->lru_lock, *flags);
- 		goto retry;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index dcab57d2b981..1e68a9992b01 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1303,12 +1303,38 @@ struct lruvec *lock_page_lruvec(struct page *page)
- 	lruvec = mem_cgroup_page_lruvec(page);
- 	spin_lock(&lruvec->lru_lock);
- 
-+	/*
-+	 * The memcg of the page can be changed by any the following routines:
-+	 *
-+	 * 1) mem_cgroup_move_account() or
-+	 * 2) memcg_reparent_objcgs()
-+	 *
-+	 * The possible bad scenario would like:
-+	 *
-+	 * CPU0:                CPU1:                CPU2:
-+	 * lruvec = mem_cgroup_page_lruvec()
-+	 *
-+	 *                      if (!isolate_lru_page())
-+	 *                              mem_cgroup_move_account()
-+	 *
-+	 *                                           memcg_reparent_objcgs()
-+	 *
-+	 * spin_lock(&lruvec->lru_lock)
-+	 *                ^^^^^^
-+	 *              wrong lock
-+	 *
-+	 * Either CPU1 or CPU2 can change page memcg, so we need to check
-+	 * whether page memcg is changed, if so, we should reacquire the
-+	 * new lruvec lock.
-+	 */
- 	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
- 		spin_unlock(&lruvec->lru_lock);
- 		goto retry;
- 	}
- 
- 	/*
-+	 * When we reach here, it means that the page_memcg(page) is stable.
-+	 *
- 	 * Preemption is disabled in the internal of spin_lock, which can serve
- 	 * as RCU read-side critical sections.
- 	 */
-@@ -1326,6 +1352,7 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
- 	lruvec = mem_cgroup_page_lruvec(page);
- 	spin_lock_irq(&lruvec->lru_lock);
- 
-+	/* See the comments in lock_page_lruvec(). */
- 	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
- 		spin_unlock_irq(&lruvec->lru_lock);
- 		goto retry;
-@@ -1346,6 +1373,7 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
- 	lruvec = mem_cgroup_page_lruvec(page);
- 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
- 
-+	/* See the comments in lock_page_lruvec(). */
- 	if (unlikely(lruvec_memcg(lruvec) != page_memcg(page))) {
- 		spin_unlock_irqrestore(&lruvec->lru_lock, *flags);
- 		goto retry;
-@@ -5673,7 +5701,10 @@ static int mem_cgroup_move_account(struct page *page,
- 	obj_cgroup_get(to->objcg);
- 	obj_cgroup_put(from->objcg);
- 
-+	/* See the comments in lock_page_lruvec(). */
-+	spin_lock(&from_vec->lru_lock);
- 	page->memcg_data = (unsigned long)to->objcg;
-+	spin_unlock(&from_vec->lru_lock);
- 
- 	__unlock_page_objcg(from->objcg);
- 
-diff --git a/mm/swap.c b/mm/swap.c
-index f3ce307d09fa..48e66a05c913 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -211,14 +211,8 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
- 	for (i = 0; i < pagevec_count(pvec); i++) {
- 		struct page *page = pvec->pages[i];
- 
--		/* block memcg migration during page moving between lru */
--		if (!TestClearPageLRU(page))
--			continue;
--
- 		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
- 		(*move_fn)(page, lruvec);
--
--		SetPageLRU(page);
- 	}
- 	if (lruvec)
- 		unlock_page_lruvec_irqrestore(lruvec, flags);
-@@ -228,7 +222,7 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
- 
- static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
- {
--	if (!PageUnevictable(page)) {
-+	if (PageLRU(page) && !PageUnevictable(page)) {
- 		del_page_from_lru_list(page, lruvec);
- 		ClearPageActive(page);
- 		add_page_to_lru_list_tail(page, lruvec);
-@@ -324,7 +318,7 @@ void lru_note_cost_page(struct page *page)
- 
- static void __activate_page(struct page *page, struct lruvec *lruvec)
- {
--	if (!PageActive(page) && !PageUnevictable(page)) {
-+	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
- 		int nr_pages = thp_nr_pages(page);
- 
- 		del_page_from_lru_list(page, lruvec);
-@@ -377,12 +371,9 @@ static void activate_page(struct page *page)
- 	struct lruvec *lruvec;
- 
- 	page = compound_head(page);
--	if (TestClearPageLRU(page)) {
--		lruvec = lock_page_lruvec_irq(page);
--		__activate_page(page, lruvec);
--		unlock_page_lruvec_irq(lruvec);
--		SetPageLRU(page);
--	}
-+	lruvec = lock_page_lruvec_irq(page);
-+	__activate_page(page, lruvec);
-+	unlock_page_lruvec_irq(lruvec);
- }
- #endif
- 
-@@ -537,6 +528,9 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
- 	bool active = PageActive(page);
- 	int nr_pages = thp_nr_pages(page);
- 
-+	if (!PageLRU(page))
-+		return;
++      - description: Rockchip RK3568 Evaluation board
++        items:
++          - const: rockchip,rk3568-evb1-v10
++          - const: rockchip,rk3568
 +
- 	if (PageUnevictable(page))
- 		return;
- 
-@@ -574,7 +568,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
- 
- static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
- {
--	if (PageActive(page) && !PageUnevictable(page)) {
-+	if (PageLRU(page) && PageActive(page) && !PageUnevictable(page)) {
- 		int nr_pages = thp_nr_pages(page);
- 
- 		del_page_from_lru_list(page, lruvec);
-@@ -590,7 +584,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
- 
- static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec)
- {
--	if (PageAnon(page) && PageSwapBacked(page) &&
-+	if (PageLRU(page) && PageAnon(page) && PageSwapBacked(page) &&
- 	    !PageSwapCache(page) && !PageUnevictable(page)) {
- 		int nr_pages = thp_nr_pages(page);
- 
-@@ -1055,20 +1049,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
-  */
- void __pagevec_lru_add(struct pagevec *pvec)
- {
--	int i;
--	struct lruvec *lruvec = NULL;
--	unsigned long flags = 0;
--
--	for (i = 0; i < pagevec_count(pvec); i++) {
--		struct page *page = pvec->pages[i];
--
--		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
--		__pagevec_lru_add_fn(page, lruvec);
--	}
--	if (lruvec)
--		unlock_page_lruvec_irqrestore(lruvec, flags);
--	release_pages(pvec->pages, pvec->nr);
--	pagevec_reinit(pvec);
-+	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn);
- }
- 
- /**
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 924db107fad7..1e55e337952e 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4468,18 +4468,17 @@ void check_move_unevictable_pages(struct pagevec *pvec)
- 		nr_pages = thp_nr_pages(page);
- 		pgscanned += nr_pages;
- 
--		/* block memcg migration during page moving between lru */
--		if (!TestClearPageLRU(page))
-+		lruvec = relock_page_lruvec_irq(page, lruvec);
+       - description: Rockchip RK3399 Evaluation board
+         items:
+           - const: rockchip,rk3399-evb
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index c3e00c0e2db7..7fdb41de01ec 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -51,3 +51,4 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire-excavator.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-rock-pi-n10.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-evb1-v10.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+new file mode 100644
+index 000000000000..be8aae2e8c67
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+@@ -0,0 +1,382 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
++ *
++ */
 +
-+		if (!PageLRU(page) || !PageUnevictable(page))
- 			continue;
- 
--		lruvec = relock_page_lruvec_irq(page, lruvec);
--		if (page_evictable(page) && PageUnevictable(page)) {
-+		if (page_evictable(page)) {
- 			del_page_from_lru_list(page, lruvec);
- 			ClearPageUnevictable(page);
- 			add_page_to_lru_list(page, lruvec);
- 			pgrescued += nr_pages;
- 		}
--		SetPageLRU(page);
- 	}
- 
- 	if (lruvec) {
++/dts-v1/;
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/pinctrl/rockchip.h>
++#include "rk3568.dtsi"
++
++/ {
++	model = "Rockchip RK3568 EVB1 DDR4 V10 Board";
++	compatible = "rockchip,rk3568-evb1-v10", "rockchip,rk3568";
++
++	chosen: chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	dc_12v: dc-12v {
++		compatible = "regulator-fixed";
++		regulator-name = "dc_12v";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
++	vcc3v3_sys: vcc3v3-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&dc_12v>;
++	};
++
++	vcc5v0_sys: vcc5v0-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&dc_12v>;
++	};
++
++	vcc5v0_host: vcc5v0-host-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vcc5v0_host_en>;
++		regulator-name = "vcc5v0_host";
++		regulator-always-on;
++	};
++
++	vcc5v0_otg: vcc5v0-otg-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vcc5v0_otg_en>;
++		regulator-name = "vcc5v0_otg";
++	};
++
++	vcc3v3_lcd0_n: vcc3v3-lcd0-n {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_lcd0_n";
++		regulator-boot-on;
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	vcc3v3_lcd1_n: vcc3v3-lcd1-n {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_lcd1_n";
++		regulator-boot-on;
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++};
++
++&i2c0 {
++	status = "okay";
++
++	rk809: pmic@20 {
++		compatible = "rockchip,rk809";
++		reg = <0x20>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++
++		pinctrl-names = "default", "pmic-sleep",
++				"pmic-power-off", "pmic-reset";
++		pinctrl-0 = <&pmic_int>;
++		pinctrl-1 = <&soc_slppin_slp>, <&rk817_slppin_slp>;
++		pinctrl-2 = <&soc_slppin_gpio>, <&rk817_slppin_pwrdn>;
++		pinctrl-3 = <&soc_slppin_gpio>, <&rk817_slppin_rst>;
++
++		rockchip,system-power-controller;
++		wakeup-source;
++		#clock-cells = <1>;
++		clock-output-names = "rk808-clkout1", "rk808-clkout2";
++		//fb-inner-reg-idxs = <2>;
++		/* 1: rst regs (default in codes), 0: rst the pmic */
++		pmic-reset-func = <0>;
++
++		vcc1-supply = <&vcc3v3_sys>;
++		vcc2-supply = <&vcc3v3_sys>;
++		vcc3-supply = <&vcc3v3_sys>;
++		vcc4-supply = <&vcc3v3_sys>;
++		vcc5-supply = <&vcc3v3_sys>;
++		vcc6-supply = <&vcc3v3_sys>;
++		vcc7-supply = <&vcc3v3_sys>;
++		vcc8-supply = <&vcc3v3_sys>;
++		vcc9-supply = <&vcc3v3_sys>;
++
++		pwrkey {
++			status = "okay";
++		};
++
++		pinctrl_rk8xx: pinctrl_rk8xx {
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			rk817_slppin_null: rk817_slppin_null {
++				pins = "gpio_slp";
++				function = "pin_fun0";
++			};
++
++			rk817_slppin_slp: rk817_slppin_slp {
++				pins = "gpio_slp";
++				function = "pin_fun1";
++			};
++
++			rk817_slppin_pwrdn: rk817_slppin_pwrdn {
++				pins = "gpio_slp";
++				function = "pin_fun2";
++			};
++
++			rk817_slppin_rst: rk817_slppin_rst {
++				pins = "gpio_slp";
++				function = "pin_fun3";
++			};
++		};
++
++		regulators {
++			vdd_logic: DCDC_REG1 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <500000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-init-microvolt = <900000>;
++				regulator-ramp-delay = <6001>;
++				regulator-initial-mode = <0x2>;
++				regulator-name = "vdd_logic";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_gpu: DCDC_REG2 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <500000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-init-microvolt = <900000>;
++				regulator-ramp-delay = <6001>;
++				regulator-initial-mode = <0x2>;
++				regulator-name = "vdd_gpu";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_ddr: DCDC_REG3 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-initial-mode = <0x2>;
++				regulator-name = "vcc_ddr";
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vdd_npu: DCDC_REG4 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <500000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-init-microvolt = <900000>;
++				regulator-ramp-delay = <6001>;
++				regulator-initial-mode = <0x2>;
++				regulator-name = "vdd_npu";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdda0v9_image: LDO_REG1 {
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-name = "vdda0v9_image";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdda_0v9: LDO_REG2 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-name = "vdda_0v9";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdda0v9_pmu: LDO_REG3 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-name = "vdda0v9_pmu";
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <900000>;
++				};
++			};
++
++			vccio_acodec: LDO_REG4 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "vccio_acodec";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vccio_sd: LDO_REG5 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "vccio_sd";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc3v3_pmu: LDO_REG6 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "vcc3v3_pmu";
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vcca_1v8: LDO_REG7 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcca_1v8";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcca1v8_pmu: LDO_REG8 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcca1v8_pmu";
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vcca1v8_image: LDO_REG9 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcca1v8_image";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_1v8: DCDC_REG5 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcc_1v8";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_3v3: SWITCH_REG1 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-name = "vcc_3v3";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc3v3_sd: SWITCH_REG2 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-name = "vcc3v3_sd";
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++		};
++	};
++};
++
++
++&pinctrl {
++	pmic {
++		pmic_int: pmic_int {
++			rockchip,pins =
++				<0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++
++		soc_slppin_gpio: soc_slppin_gpio {
++			rockchip,pins =
++				<0 RK_PA2 RK_FUNC_GPIO &pcfg_output_low>;
++		};
++
++		soc_slppin_slp: soc_slppin_slp {
++			rockchip,pins =
++				<0 RK_PA2 1 &pcfg_pull_none>;
++		};
++
++		soc_slppin_rst: soc_slppin_rst {
++			rockchip,pins =
++				<0 RK_PA2 2 &pcfg_pull_none>;
++		};
++	};
++
++	usb {
++		vcc5v0_host_en: vcc5v0-host-en {
++			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		vcc5v0_otg_en: vcc5v0-otg-en {
++			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++};
++
++&sdhci {
++	bus-width = <8>;
++	non-removable;
++	rockchip,txclk-tapnum = <0x8>;
++	max-frequency = <200000000>;
++	status = "okay";
++};
++
++&uart2 {
++	status = "okay";
++};
 -- 
-2.11.0
+2.17.1
+
+
 
