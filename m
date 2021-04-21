@@ -2,63 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1541736711D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6116F367122
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244670AbhDURQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:16:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:38418 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244700AbhDURPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:15:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DF8013A1;
-        Wed, 21 Apr 2021 10:15:20 -0700 (PDT)
-Received: from bogus (unknown [10.57.52.142])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2E503F694;
-        Wed, 21 Apr 2021 10:15:18 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 18:15:16 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        dann frazier <dann.frazier@canonical.com>,
-        Fu Wei <wefu@redhat.com>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH 2/2] ACPI: irq: Prevent unregistering of GIC SGIs
-Message-ID: <20210421171516.hg3ex7jqigqjqa6i@bogus>
-References: <20210421164317.1718831-1-maz@kernel.org>
- <20210421164317.1718831-3-maz@kernel.org>
+        id S244663AbhDURRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241372AbhDURRo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:17:44 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373BEC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:17:11 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id r128so40965358lff.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=43DYgV+tGi3uz6vhioZmI3U81q1qHyxbq4uVPUHsfyU=;
+        b=AR3/oRNQSPVYA2pY6BU9wrRI9xS5PUnAzVRKz6HYe0O732krReHkvYGW15ekzTEgHp
+         GgMABGXqEVMGTibj+qxS3EfaemN5IkCCIsdSYwejleSElo+pHn2acnw4PuMQjzyHb04C
+         /KLI91lfAzPyKc2ILg532Curi/5o6gIQ7zPTKMNcek0kgwL7/VB1U4V5raWxFj6GquGM
+         YDr8KOXu2kIrikYXNuz45thQ8JmDEYZhfdagjoP2XDi9Y6O9XPFRtP6dnFjzxRD/TRs/
+         wDfVor0seMOF0X6lGIFJ4TOoYeAAd68W6OAwDCWx5x7I8V/w1wflAa7wht/5pHFdweYI
+         oUWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=43DYgV+tGi3uz6vhioZmI3U81q1qHyxbq4uVPUHsfyU=;
+        b=Qk1BCV9YW6GkaBFRleejvU+7wTFB+4/UIGioUS6v3tLe5/p+AgP+6csjyG1+VvRoUF
+         Od6uVk+Omlu1iLzIhGl6dn8RWRWtxZ7Y4lPcU+or7oDAjADM3ki8Q2fEL4HYM7d+1WYP
+         N7J7fKxbX0YVaBA+N0bRi9RbNaJltluqXUZA+vDQBMHYsQZFRhFIRkvu3mGol2fw0BD+
+         M8bKhzoc2BLQuV/x7GGEzks6BPJ8UpGvgSoIDObyQaGVcsFDWckUkQcriE+iR/wZAXCR
+         SWdKKJtDLM6K1offvchKeJrvsRLLYL0/HGJelMqe1nIOkJ+rHJ//8merrJJWU1JgyerS
+         0Cjg==
+X-Gm-Message-State: AOAM533Hv8qsAkqKxnM3XsAyToSGIryCPfC24yaImuhwda0YjAAk42yZ
+        VCzctivZqUVqeZYriR+bMd4S+NghDeJ33cYH0eXl5Q==
+X-Google-Smtp-Source: ABdhPJybU9H+tLJtOGevTx1w60ZOSPFsWMP4Oi3hRGsgFGVAPXCG5++l5UHc3Nif8YjQqL2oOuS/Li4qFENwVCAMQYM=
+X-Received: by 2002:a05:6512:150:: with SMTP id m16mr21006546lfo.374.1619025429467;
+ Wed, 21 Apr 2021 10:17:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421164317.1718831-3-maz@kernel.org>
-User-Agent: NeoMutt/20171215
+References: <20210421135215.3414589-1-arnd@kernel.org>
+In-Reply-To: <20210421135215.3414589-1-arnd@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 21 Apr 2021 10:16:58 -0700
+Message-ID: <CAKwvOdk21V0qW_xQrWqQYnrw8nEr_+KTJnVZgL0gJsJiUf2Scw@mail.gmail.com>
+Subject: Re: [PATCH] memstick: r592: ignore kfifo_out() return code again
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-mmc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 05:43:17PM +0100, Marc Zyngier wrote:
-> When using ACPI on arm64, which implies the GIC IRQ model, no
-> table should ever provide a GSI number in the range [0:15],
-> as these are reserved for IPIs.
+On Wed, Apr 21, 2021 at 6:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> However, drivers tend to call acpi_unregister_gsi() with any
-> random GSI number provided by half baked tables, which results
-> in an exploding kernel when its IPIs have been unconfigured.
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> In order to catch this, check for the silly case early, warn
-> that something is going wrong and avoid the above disaster.
+> A minor cleanup to address a clang warning removed an assigned
+> but unused local variable, but this now caused a gcc warning as
+> kfifo_out() is annotated to require checking its return code:
+>
+> In file included from drivers/memstick/host/r592.h:13,
+>                  from drivers/memstick/host/r592.c:21:
+> drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
+> include/linux/kfifo.h:588:1: error: ignoring return value of '__kfifo_uint_must_check_helper' declared with attribute 'warn_unused_result' [-Werror=unused-result]
+>   588 | __kfifo_uint_must_check_helper( \
+>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   589 | ({ \
+>       | ~~~~
+>   590 |         typeof((fifo) + 1) __tmp = (fifo); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   591 |         typeof(__tmp->ptr) __buf = (buf); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   592 |         unsigned long __n = (n); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   593 |         const size_t __recsize = sizeof(*__tmp->rectype); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   594 |         struct __kfifo *__kfifo = &__tmp->kfifo; \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   595 |         (__recsize) ?\
+>       |         ~~~~~~~~~~~~~~
+>   596 |         __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   597 |         __kfifo_out(__kfifo, __buf, __n); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   598 | }) \
+>       | ~~~~
+>   599 | )
+>       | ~
+> drivers/memstick/host/r592.c:367:9: note: in expansion of macro 'kfifo_out'
+>   367 |         kfifo_out(&dev->pio_fifo, buffer, 4);
+>       |         ^~~~~~~~~
+>
+> The value was never checked here, and the purpose of the function
+> is only to flush the contents, so restore the old behavior but
+> add a cast to void and a comment, which hopefully warns with neither
+> gcc nor clang now.
+>
+> If anyone has an idea for how to fix it without ignoring the return
+> code, that is probably better.
+
+Should r592_flush_fifo_write be made to return an int, then callers of
+r592_flush_fifo_write percolate up their return code?
+r592_transfer_fifo_pio() seems to only return 0, but its callers are
+doing return code checking.
+
+>
+> Fixes: 4b00ed3c5072 ("memstick: r592: remove unused variable")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/memstick/host/r592.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+> index 026fadaa1d5d..615a83782e55 100644
+> --- a/drivers/memstick/host/r592.c
+> +++ b/drivers/memstick/host/r592.c
+> @@ -359,12 +359,15 @@ static void r592_write_fifo_pio(struct r592_device *dev,
+>  /* Flushes the temporary FIFO used to make aligned DWORD writes */
+>  static void r592_flush_fifo_write(struct r592_device *dev)
+>  {
+> +       int ret;
+>         u8 buffer[4] = { 0 };
+>
+>         if (kfifo_is_empty(&dev->pio_fifo))
+>                 return;
+>
+> -       kfifo_out(&dev->pio_fifo, buffer, 4);
+> +       ret = kfifo_out(&dev->pio_fifo, buffer, 4);
+> +       /* intentionally ignore __must_check return code */
+> +       (void)ret;
+>         r592_write_reg_raw_be(dev, R592_FIFO_PIO, *(u32 *)buffer);
+>  }
+>
+> --
+> 2.29.2
 >
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 
-Just curious if this is just precaution or do we have a platform doing
-something stupid like this ?
-
---
-Regards,
-Sudeep
+-- 
+Thanks,
+~Nick Desaulniers
