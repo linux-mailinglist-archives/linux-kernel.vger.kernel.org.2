@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0070D366BE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ADF366BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241160AbhDUNIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:08:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47630 "EHLO mail.kernel.org"
+        id S240286AbhDUNIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240943AbhDUNGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:06:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E53B761458;
-        Wed, 21 Apr 2021 13:05:44 +0000 (UTC)
+        id S239604AbhDUNGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:06:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DFC6146D;
+        Wed, 21 Apr 2021 13:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010345;
-        bh=2ycM2uqfzYjMsQHL5ct7JTX4bBiNqWZl4SpNrvgt/xY=;
+        s=korg; t=1619010348;
+        bh=91wwQTLszap9hlXYtl2ct8GpI7EFi+4sg4UwdtlKRDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CxZuPXI3UsCbXn614XGcMFA65pBwOHtRis8EVc/mryA9nR2jZQ4UKofNGC4mEf65y
-         BmLnhC1wbuHGnuIRQsCMHeGpZuRdAKmi8o2wc5qHIaompYiLllo8DnAhStRrQo7qJm
-         vsqnHkD0mB6tHavi9z52+H9P0bN+2vl3VD6ygHtA=
+        b=E5bnp02GnUSFDs64DlVp9wlIYIR2YmGeRBMgtnVoDRNi/ZIEcSTgsirWdGHOOFTHD
+         eQsROKJYoV4bcDIn6uzsJhq3I2V9uG0uBaR6jf6wjHn0t6srE9H9xv9KlFpNPq/PR9
+         t04ynQb2W4vUr94IvAExUamzHNv5TACuT6wZGwI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kangjie Lu <kjlu@umn.edu>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Mukesh Ojha <mojha@codeaurora.org>
-Subject: [PATCH 101/190] Revert "PCI: xilinx: Check for __get_free_pages() failure"
-Date:   Wed, 21 Apr 2021 14:59:36 +0200
-Message-Id: <20210421130105.1226686-102-gregkh@linuxfoundation.org>
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH 102/190] Revert "media: video-mux: fix null pointer dereferences"
+Date:   Wed, 21 Apr 2021 14:59:37 +0200
+Message-Id: <20210421130105.1226686-103-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -39,7 +39,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 699ca30162686bf305cdf94861be02eb0cf9bda2.
+This reverts commit aeb0d0f581e2079868e64a2e5ee346d340376eae.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -56,58 +56,33 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Steven Price <steven.price@arm.com>
-Cc: Mukesh Ojha <mojha@codeaurora.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/controller/pcie-xilinx.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/media/platform/video-mux.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-xilinx.c b/drivers/pci/controller/pcie-xilinx.c
-index fa5baeb82653..942c25bf7980 100644
---- a/drivers/pci/controller/pcie-xilinx.c
-+++ b/drivers/pci/controller/pcie-xilinx.c
-@@ -326,19 +326,14 @@ static const struct irq_domain_ops msi_domain_ops = {
-  * xilinx_pcie_enable_msi - Enable MSI support
-  * @port: PCIe port information
-  */
--static int xilinx_pcie_enable_msi(struct xilinx_pcie_port *port)
-+static void xilinx_pcie_enable_msi(struct xilinx_pcie_port *port)
- {
- 	phys_addr_t msg_addr;
- 
- 	port->msi_pages = __get_free_pages(GFP_KERNEL, 0);
--	if (!port->msi_pages)
+diff --git a/drivers/media/platform/video-mux.c b/drivers/media/platform/video-mux.c
+index 133122e38515..a754e20850c2 100644
+--- a/drivers/media/platform/video-mux.c
++++ b/drivers/media/platform/video-mux.c
+@@ -442,14 +442,9 @@ static int video_mux_probe(struct platform_device *pdev)
+ 	vmux->active = -1;
+ 	vmux->pads = devm_kcalloc(dev, num_pads, sizeof(*vmux->pads),
+ 				  GFP_KERNEL);
+-	if (!vmux->pads)
 -		return -ENOMEM;
 -
- 	msg_addr = virt_to_phys((void *)port->msi_pages);
- 	pcie_write(port, 0x0, XILINX_PCIE_REG_MSIBASE1);
- 	pcie_write(port, msg_addr, XILINX_PCIE_REG_MSIBASE2);
--
--	return 0;
- }
+ 	vmux->format_mbus = devm_kcalloc(dev, num_pads,
+ 					 sizeof(*vmux->format_mbus),
+ 					 GFP_KERNEL);
+-	if (!vmux->format_mbus)
+-		return -ENOMEM;
  
- /* INTx Functions */
-@@ -493,7 +488,6 @@ static int xilinx_pcie_init_irq_domain(struct xilinx_pcie_port *port)
- 	struct device *dev = port->dev;
- 	struct device_node *node = dev->of_node;
- 	struct device_node *pcie_intc_node;
--	int ret;
- 
- 	/* Setup INTx */
- 	pcie_intc_node = of_get_next_child(node, NULL);
-@@ -522,9 +516,7 @@ static int xilinx_pcie_init_irq_domain(struct xilinx_pcie_port *port)
- 			return -ENODEV;
- 		}
- 
--		ret = xilinx_pcie_enable_msi(port);
--		if (ret)
--			return ret;
-+		xilinx_pcie_enable_msi(port);
- 	}
- 
- 	return 0;
+ 	for (i = 0; i < num_pads; i++) {
+ 		vmux->pads[i].flags = (i < num_pads - 1) ? MEDIA_PAD_FL_SINK
 -- 
 2.31.1
 
