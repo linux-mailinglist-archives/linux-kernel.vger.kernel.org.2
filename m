@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA11F367248
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5153C36724B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245128AbhDUSKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43730 "EHLO mail.kernel.org"
+        id S245130AbhDUSLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:11:51 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:37188 "EHLO msg-2.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242522AbhDUSKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:10:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 391EA61439;
-        Wed, 21 Apr 2021 18:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619028609;
-        bh=DMWMh302W2iGOjLpgW9u4BLfm43qFYWA9celLBEAZXw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lkz/jq92X2ctfw1/mYb7CBlAYjgK3J0ZticobT75RzwTw/vapfnouwSwwZgXNrr+c
-         MQNGxJUkbQ68ZwUb1dyuMXdmNICBAFwwjacbvMqW9DUzJVmon1DXV5fsItTutFo0JE
-         U8cOKSvYV/MyX7NlzzSRMytF35yCYJeZr4JHMPSPoUIZsGYX9uWlFB80vtrVLAr6DX
-         WtL7SmI3VAHxqvwKOV3Ic1oHGX4us0ItF4C8/m5ODEF+EJwcy+D8yXp/49YSPqd0A3
-         /Zx7TNjqYfDFa9aJX/aXOqGeoujS0ga6uqChisR1p9caj84CE5cRdUlc+N0HwXdnmM
-         hYfCeYmdN0xsw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2EDD260A52;
-        Wed, 21 Apr 2021 18:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236338AbhDUSLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:11:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619028667; bh=hVkpXoXRCDud9d2iZ8Uq+3hghCBpN8gxuMa+wmvkmLA=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Type;
+        b=e5QxZ0kcjjZDi6RfRtIUHu9sCCxGzmTYEQJs+Nmg9t6yOd4Mz8ib89BcDUFStRM23
+         obXDA6c4U5cqurTgPzcQkO5FH84Bxh5vIDmuBmzBSY/0MX77ejAlLrLc2sLjDZzXTM
+         bILHnvbdH9rWk9AFRmvugDolPazkNQEDmQX+B4+o=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 20:11:06 +0200 (CEST)
+X-EA-Auth: wDOq6wE8frt/6XN8hMR2yKNCQfOQUFSagrfS1gx2zrw5P1NVrFbjxUNsQlwQH8T+ZZy6FBRJcmidiZFnq5cltOav2prmbBLM
+Date:   Wed, 21 Apr 2021 23:41:01 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v3 0/6] staging: media: atomisp: code cleanup fixes 
+Message-ID: <cover.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] net: phy: intel-xway: enable integrated led functions
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161902860918.28303.5159266984657312592.git-patchwork-notify@kernel.org>
-Date:   Wed, 21 Apr 2021 18:10:09 +0000
-References: <20210421055047.22858-1-ms@dev.tdt.de>
-In-Reply-To: <20210421055047.22858-1-ms@dev.tdt.de>
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     hauke@hauke-m.de, martin.blumenstingl@googlemail.com,
-        f.fainelli@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This patch set addresses different kinds of checkpatch WARNING and
+CHECK complaints.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Note: The patches should be applied in the ascending order.
 
-On Wed, 21 Apr 2021 07:50:47 +0200 you wrote:
-> The Intel xway phys offer the possibility to deactivate the integrated
-> LED function and to control the LEDs manually.
-> If this was set by the bootloader, it must be ensured that the
-> integrated LED function is enabled for all LEDs when loading the driver.
-> 
-> Before commit 6e2d85ec0559 ("net: phy: Stop with excessive soft reset")
-> the LEDs were enabled by a soft-reset of the PHY (using
-> genphy_soft_reset). Initialize the XWAY_MDIO_LED with it's default
-> value (which is applied during a soft reset) instead of adding back
-> the soft reset. This brings back the default LED configuration while
-> still preventing an excessive amount of soft resets.
-> 
-> [...]
+Changes since v2:
+   Generic change:
+   1. Correct patch versioning in patch subject
 
-Here is the summary with links:
-  - [net,v3] net: phy: intel-xway: enable integrated led functions
-    https://git.kernel.org/netdev/net/c/357a07c26697
+   Patch Specific change:
+   1. patch 1/6 : none
+   2. patch 2/6 : none
+   3. patch 3/6 : none
+   4. patch 4/6 :
+        a. Tag Fabio Auito for the patch suggestion
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+   5. patch 5/6 : none
+   6. patch 6/6:
+        a. Tag Fabio Auito for the patch suggestion
+
+Changes since v1:
+   Generic change:
+   1. The patch set is being resent from an email account that matches with
+      the patch signed-of-by tag. Issue highlighted by Hans Verkuil.
+
+   Patch specific changes:
+   1. patch 1/6 : none
+   2. patch 2/6 : none
+   3. patch 3/6 : none
+   4. patch 4/6 : implement following changes suggested by Fabio Aiuto
+        a. Corrected commenting style
+        b. Similar style implemented for other comment blocks in
+           the same files.
+   5. patch 5/6 : none
+   6. patch 6/6: implement following changes suggested by Fabio Aiuto
+        a. use dev_info instead of pr_info
+        b. update patch log message accordingly
+
+
+Deepak R Varma (6):
+  staging: media: atomisp: improve function argument alignment
+  staging: media: atomisp: balance braces around if...else block
+  staging: media: atomisp: use __func__ over function names
+  staging: media: atomisp: reformat code comment blocks
+  staging: media: atomisp: fix CamelCase variable naming
+  staging: media: atomisp: replace raw printk() by dev_info()
+
+ .../media/atomisp/i2c/atomisp-gc0310.c        |  14 +--
+ .../media/atomisp/i2c/atomisp-gc2235.c        |  29 ++---
+ .../atomisp/i2c/atomisp-libmsrlisthelper.c    |   6 +-
+ .../media/atomisp/i2c/atomisp-lm3554.c        |   2 +-
+ .../media/atomisp/i2c/atomisp-mt9m114.c       | 106 ++++++++++--------
+ .../media/atomisp/i2c/atomisp-ov2680.c        |  43 ++++---
+ .../media/atomisp/i2c/atomisp-ov2722.c        |  10 +-
+ 7 files changed, 116 insertions(+), 94 deletions(-)
+
+-- 
+2.25.1
+
 
 
