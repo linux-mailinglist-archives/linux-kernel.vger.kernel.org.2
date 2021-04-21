@@ -2,147 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3DB366AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBD6366AB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239725AbhDUMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:24:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234625AbhDUMYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:24:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A066F61413;
-        Wed, 21 Apr 2021 12:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619007849;
-        bh=yh6as9NWrw83rUxIIucPP9c/DuWOHZ6hcJhSm2Fn9Ok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f860jUcnW8H/ZBnBJQDe/Z6caOzDRAGPY71Yij6AZzc/ZM/zzjOtrh/+5CE5GsVGq
-         pcCQEa6epu4I83oTKrt74ImgnXKtd9KyRgmfsqGZlr8Bt59P8mseStzqzZTTH+JDEv
-         cbASQV89YWSTPadoCjBpoVNYoVZbCHv0LUMT5QYw4AJn8DnrowVzXcs76egO3nAEsD
-         SYrstjJsa5Io7QYCgk/PjQ3RSqScp6IHEZpfmMUBy4G8/OpnJJOhVxKPX5lRTdWVDV
-         mwcCMR9hEV/F0b2ygmBKDOm4YPpGvmDG+pNyGhOOBdY1GklZRKtgBMeykKpPRCVOqv
-         /5gpsy2wh2JtQ==
-Date:   Wed, 21 Apr 2021 15:24:01 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 4/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-Message-ID: <YIAZYVI/HZWBr7BI@kernel.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
- <20210421065108.1987-5-rppt@kernel.org>
- <66d50afe-77e6-70ee-6b51-5db28a086c68@arm.com>
+        id S238895AbhDUM1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:27:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238011AbhDUM1D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:27:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619007990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JiwbXjmwv7WSPaNysAbVhn2SptL19dKY+XRIVBMw2AM=;
+        b=CRbJnXzNEuxsl9oJ/8fSufw7SkKE4Jd72SMGl5kUvy5PdhVz/1IqKLpMKovkkbn6NqNEXT
+        BdYo+jyj3HizX/x270tA9SIaGH8zWR55t3hyH8TCy6zm97pjPqCMjOnVd5GNNpXS0p4fwK
+        1G4lJucOS0/Nmtjv+VLN26fYkmR7D98=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-k-zTHqAyPgS0hEBUZGqgpA-1; Wed, 21 Apr 2021 08:26:28 -0400
+X-MC-Unique: k-zTHqAyPgS0hEBUZGqgpA-1
+Received: by mail-ed1-f71.google.com with SMTP id n18-20020a0564020612b02903853320059eso5903726edv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:26:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JiwbXjmwv7WSPaNysAbVhn2SptL19dKY+XRIVBMw2AM=;
+        b=MDmnYZ17mfDixhsf03u/UidBltZmbvqNg+95bQ8s+DVUIYNIm+yvq5GAW7W/CMcxT5
+         iV4/kbdYpvOHekpvhjALmCLdLorFtvmWjFXUStInAc0/xP9Tl9dMV0cI2PLyo6CnHSb0
+         p5hZuZnsR/PC8jaZqK+EkPhVvUMjD2SefRMKpO4qQt7O81c5XxDvxrQQs975/JL19uJT
+         TAxhbTbG3MT+7RCU3h2KGgegYByXDTp2I7SPhbgtK8pV6+9n95LFc6wuhJjj45Hpp9qi
+         Fa/Zqx6sSTZTUAzJwmmXhGvObsu9njXR4rrTFwDDZGItcTLoQllaIkgUJEsbk6knW4zT
+         gUoQ==
+X-Gm-Message-State: AOAM532EvmvF1BDRxM14ACpI9FDr0CjxEmbDUyof0PzbUIka5mxgws2L
+        eprL/Mlt08WIE+c6BPF8SU5a+iQpSBZktMTiHzZ8QpTt8ijC2hOFpDwfgxP0zr+7jSMMALq5O+6
+        RNJWocV3YzxiCEZk7dFP9d5Xi
+X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr20506126ede.48.1619007987358;
+        Wed, 21 Apr 2021 05:26:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7yRkfzjtIoczfISFbr/N7MhY4x+m8ezWTbWctqf/bSo8LTZjrsr4mbWZVCx6Lxhbh1fXM5g==
+X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr20506111ede.48.1619007987227;
+        Wed, 21 Apr 2021 05:26:27 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id u23sm3146200eds.8.2021.04.21.05.26.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 05:26:26 -0700 (PDT)
+Subject: Re: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "sre@kernel.org" <sre@kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "wens@csie.org" <wens@csie.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "cw00.choi@samsung.com" <cw00.choi@samsung.com>,
+        "broonie@kernel.org" <broonie@kernel.org>
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
+ <YFn5CSB1O3i+SzgR@kroah.com>
+ <da0233f3223d7c0816581afe0969caf0abe20378.camel@fi.rohmeurope.com>
+ <96935c55-c799-595e-024c-56fd352f279e@redhat.com>
+ <2f6d096c30a6d1d22422cf9c3553d74132f75708.camel@fi.rohmeurope.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <171af93e-e5be-b35f-23d4-0ccf37062902@redhat.com>
+Date:   Wed, 21 Apr 2021 14:26:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66d50afe-77e6-70ee-6b51-5db28a086c68@arm.com>
+In-Reply-To: <2f6d096c30a6d1d22422cf9c3553d74132f75708.camel@fi.rohmeurope.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 04:36:46PM +0530, Anshuman Khandual wrote:
-> 
-> On 4/21/21 12:21 PM, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > The arm64's version of pfn_valid() differs from the generic because of two
-> > reasons:
-> > 
-> > * Parts of the memory map are freed during boot. This makes it necessary to
-> >   verify that there is actual physical memory that corresponds to a pfn
-> >   which is done by querying memblock.
-> > 
-> > * There are NOMAP memory regions. These regions are not mapped in the
-> >   linear map and until the previous commit the struct pages representing
-> >   these areas had default values.
-> > 
-> > As the consequence of absence of the special treatment of NOMAP regions in
-> > the memory map it was necessary to use memblock_is_map_memory() in
-> > pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
-> > generic mm functionality would not treat a NOMAP page as a normal page.
-> > 
-> > Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
-> > the rest of core mm will treat them as unusable memory and thus
-> > pfn_valid_within() is no longer required at all and can be disabled by
-> > removing CONFIG_HOLES_IN_ZONE on arm64.
-> 
-> This makes sense.
-> 
-> > 
-> > pfn_valid() can be slightly simplified by replacing
-> > memblock_is_map_memory() with memblock_is_memory().
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  arch/arm64/Kconfig   | 3 ---
-> >  arch/arm64/mm/init.c | 4 ++--
-> >  2 files changed, 2 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index e4e1b6550115..58e439046d05 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -1040,9 +1040,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
-> >  	def_bool y
-> >  	depends on NUMA
-> >  
-> > -config HOLES_IN_ZONE
-> > -	def_bool y
-> > -
-> 
-> Right.
-> 
-> >  source "kernel/Kconfig.hz"
-> >  
-> >  config ARCH_SPARSEMEM_ENABLE
-> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > index dc03bdc12c0f..eb3f56fb8c7c 100644
-> > --- a/arch/arm64/mm/init.c
-> > +++ b/arch/arm64/mm/init.c
-> > @@ -243,7 +243,7 @@ int pfn_valid(unsigned long pfn)
-> >  
-> >  	/*
-> >  	 * ZONE_DEVICE memory does not have the memblock entries.
-> > -	 * memblock_is_map_memory() check for ZONE_DEVICE based
-> > +	 * memblock_is_memory() check for ZONE_DEVICE based
-> >  	 * addresses will always fail. Even the normal hotplugged
-> >  	 * memory will never have MEMBLOCK_NOMAP flag set in their
-> >  	 * memblock entries. Skip memblock search for all non early
-> > @@ -254,7 +254,7 @@ int pfn_valid(unsigned long pfn)
-> >  		return pfn_section_valid(ms, pfn);
-> >  }
-> >  #endif
-> > -	return memblock_is_map_memory(addr);
-> > +	return memblock_is_memory(addr);
-> 
-> Wondering if MEMBLOCK_NOMAP is now being treated similarly to other
-> memory pfns for page table walking purpose but with PageReserved(),
-> why memblock_is_memory() is still required ? At this point, should
-> not we just return valid for early_section() memory. As pfn_valid()
-> now just implies that pfn has a struct page backing which has been
-> already verified with valid_section() etc.
+Hi,
 
-memblock_is_memory() is required because arm64 frees unused parts of the
-memory map. So, for instance, if we have 64M out of 128M populated in a
-section the section based calculation would return 1 for a pfn in the
-second half of the section, but there would be no memory map there.
+On 4/21/21 2:17 PM, Vaittinen, Matti wrote:
+> 
+> On Wed, 2021-04-21 at 13:58 +0200, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 4/21/21 9:51 AM, Matti Vaittinen wrote:
+>>> On Tue, 2021-03-23 at 15:19 +0100, Greg KH wrote:
+>>>> On Tue, Mar 23, 2021 at 02:58:28PM +0100, Hans de Goede wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 3/23/21 2:56 PM, Matti Vaittinen wrote:
+>>>>>> Devm helper header containing small inline helpers was added.
+>>>>>> Hans promised to maintain it.
+>>>>>>
+>>>>>> Add Hans as maintainer and myself as designated reviewer.
+>>>>>>
+>>>>> Ultimately this is up to Greg though, so lets wait and see what
+>>>>> Greg has to say about this.
+>>>>
+>>>> Can we move some of the devm_* calls in include/device.h into
+>>>> here as
+>>>> well so that you all can be in charge of them instead of me?
+>>>
+>>> Seems like this was left w/o answer. I guess the question was
+>>> pointed
+>>> to Hans
+>>
+>> I believe that Greg was (mostly) joking here. At least that is how
+>> I interpreted Greg's reply,which is why I did not answer.
+> 
+> Ah. I missed the sarcastic tone of typing. I should've noted that by
+> the font :]
+> 
+>> Also note that Greg merged this series, but not this patch,
+>> so the new devm-helpers.h file will presumably be maintained by Greg.
+> 
+> Hmm. Are you sure?
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=2077ca682169afb212d8a887c70057a660290df9
 
+Ah, you're right.
 
-> >  }
-> >  EXPORT_SYMBOL(pfn_valid);
-> >  
-> > 
+I was looking at the wrong branch, sorry about the confusion.
 
--- 
-Sincerely yours,
-Mike.
+Ok, so I guess I do maintain the new devm-helpers.h file, that is fine.
+
+Which makes your email from earlier today more relevant:
+
+> but what comes to my (not always so humble) opinion - most of
+> the devm functions in device.h are tightly related to the device
+> interface or devres. Thus the device.h feels like appropriate place for
+> most of those.
+
+I agree with you that most devm_ functions in device.h are probably
+left there. Moving them will also mean modifying all the drivers
+which use them to include the new devm-helpers.h include file
+which seems like needless churn.
+
+> OTOH, the kmalloc/kfree related functions, strdub and
+> kmemdub might be candidates for move - those are not really "device
+> things".
+
+I'm certainly open to moving some functions to devm-helpers.h, but
+also see above about needless churn.
+
+Regards,
+
+Hans
+
