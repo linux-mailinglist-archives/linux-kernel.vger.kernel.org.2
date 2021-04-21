@@ -2,149 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007233662D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163D33662D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhDUADt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 20:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        id S234527AbhDUAEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 20:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234382AbhDUADr (ORCPT
+        with ESMTP id S234444AbhDUADz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 20:03:47 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50EBC06174A;
-        Tue, 20 Apr 2021 17:03:14 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id v6so12933154oiv.3;
-        Tue, 20 Apr 2021 17:03:14 -0700 (PDT)
+        Tue, 20 Apr 2021 20:03:55 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C067BC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:03:22 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id x9so5007897uao.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Bzy1XVE3pX0bVpKOU6c03egp1B/YRIMRasUEXcl28pk=;
-        b=eNf8Vlth2r1UW49M5oiMWsxxA5rquUjZ4/tvhLU4tG/VqdFuTA23WEYoCYEPiWwojd
-         pK7VH0dAxzg8HoUhPEYc34kcMGPoRnjDfxZ10z0Rb7JGr0ADasV9Yv0hzxfu3RgUdOLt
-         dA5wZIPtMBkcCGPekzDf7yY6SeG1pOtonesHDK4hS7JENAIBGmMXyg8s0o42+im98IpX
-         1eedA3m2ekpWbbeTIYKiMxPzvZmn/fYbl8nJV/4GE1JuIa4o0Iw0QgHCn2hI4/7h7aYY
-         EjGBKooscnyqyWu6GBIqfe0EFPBtbOw4ruc0Fpex6ctQ0k5SLiTUURkl+jtzCpeWRwHd
-         9JNQ==
+         :cc;
+        bh=+pWfqImez5c/AvjBdvwv0ThwA7fdMurH1H09DMK3D8E=;
+        b=bCUOhHnYf8zZ2HGjarEZAx9Am08hh+poRRWb8icqE6E8KFe8FSyUfCWuWbjpz5x6Ic
+         q1aN4mlV4RU0w/JWst/cMhetxCq55Xa1XZBb6mx6RprQMPP7BH4Sod/8nCp5/LnJuMxs
+         MGYQR+tPzt2uRy0VxNa3RVooraO36yw0IR2ac=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Bzy1XVE3pX0bVpKOU6c03egp1B/YRIMRasUEXcl28pk=;
-        b=UswiiyU2DR4e1R/xBlBcrJ/wFo0xFaYJDjU76woSMofZBmL2pzkB2q061kHP1OFaT8
-         JGk5MdB4M03t7R87tsUoaIPPYMVBYYx62xX33PLW37RljhM6ISiVX06G2T0QdDjBmdOx
-         qAsOqPad8xMekQRHnEwl8OdJ2ingxHw1+Vvdr1GDGUoXRkX6fmx5T+m3vVXzveMRXeja
-         jaK654UrXvbyXrTuzsZPNysErte3XBzqD7ZA00mUi9aMulblwBVyYQpSG+L4kAl+Km2x
-         Jls7lpaZLCqWdVQYHDW9xeJ0VnskNjegTSqbbe2sNE+lWzGqjFSevDKl/YLvTCGQayPb
-         7TCw==
-X-Gm-Message-State: AOAM533QF49QyrMYbBjX8hioZDM/5kdmFqN04PUwFK792TWSxVyBah21
-        wemoKh5yT1yooYENsmn2p0FZYuEBryIGbCrZVRI=
-X-Google-Smtp-Source: ABdhPJy+DqK7M4J1LuG62c3cPuiea8egSrJJt94kyNl27+TAnlda55H4l4jGWLJr2QzKApIH+mn+qXtI134+dclonow=
-X-Received: by 2002:a05:6808:68a:: with SMTP id k10mr4882531oig.120.1618963394237;
- Tue, 20 Apr 2021 17:03:14 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=+pWfqImez5c/AvjBdvwv0ThwA7fdMurH1H09DMK3D8E=;
+        b=B4jNZK5UO8JvqAk8MLoY4qeuzofotvHG+8uJg4zn8Cgha9/q+DW5XRiSVAee8AJ/zO
+         IsjSJGnWTasm+twHoh8QKnme+7HL3Ij7Xq/vzvJ8CD/zb6f1prasPa79Gd4Dh/xbWuHA
+         8IJpO2kpq8MshGVf8oykvBxaDxFC9MBtfNf/y/ni2gKTB7PmrirycW4KzhaaDEdLqMVM
+         u24s/wl0jusq3GH7bwVQDPOzkYdHZ+/e01aUfMpgiv6OZ2ewi9/FFI44/Z2Vlesdkf7S
+         /CTCaYczOh2E+EHIM+fZ0WNZ9Q4SO8+Bdi2v6MnpGg/HGukUHyQoKisQGe6pVGtozpLB
+         dEYA==
+X-Gm-Message-State: AOAM531ADlY0S/w576Ju2+rdLFEjpikFzlZPP2jBQ7WTbhTjAZGp3+W5
+        1VxPINNQaDudtIYnrsMHtfLFAs6PuguSJ2BcMiCtiQ==
+X-Google-Smtp-Source: ABdhPJzo1HIB/m7CJLvMIj2ZoR2HWULK0YObQ5wtKPidV7QWFoxV0pht9shOXTz97PvrW74Ix1b3dUqPnwPRnQtavz4=
+X-Received: by 2002:ab0:638e:: with SMTP id y14mr14599883uao.82.1618963401853;
+ Tue, 20 Apr 2021 17:03:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org>
- <20210416143725.2769053-36-lee.jones@linaro.org> <59a21fb5-224e-882f-5d2f-e337e78eb7db@amd.com>
-In-Reply-To: <59a21fb5-224e-882f-5d2f-e337e78eb7db@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 20 Apr 2021 20:03:03 -0400
-Message-ID: <CADnq5_MHCpUPR764FNp-A8_9xQhq1tTHAXkRc0foAKqKRFyaAw@mail.gmail.com>
-Subject: Re: [PATCH 35/40] drm/amd/amdgpu/amdgpu_cs: Repair some function
- naming disparity
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media <linux-media@vger.kernel.org>
+References: <20210126011759.1605641-1-drinkcat@chromium.org>
+ <20210126091747.v11.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid> <1a37f9be-8ec8-893a-e2fc-f0739948f71f@baylibre.com>
+In-Reply-To: <1a37f9be-8ec8-893a-e2fc-f0739948f71f@baylibre.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 21 Apr 2021 08:03:10 +0800
+Message-ID: <CANMq1KBMXyYsjmaoVa+qb1TiSTm5ZqViqno36hJk0hNAUr4pmA@mail.gmail.com>
+Subject: Re: [PATCH v11 2/4] arm64: dts: mt8183: Add node for the Mali GPU
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Fei Shao <fshao@chromium.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kristian Kristensen <hoegsberg@chromium.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Fri, Apr 16, 2021 at 11:54 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
+On Tue, Apr 20, 2021 at 11:33 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
 >
-> Am 16.04.21 um 16:37 schrieb Lee Jones:
-> > Fixes the following W=3D1 kernel build warning(s):
+> On 26/01/2021 02:17, Nicolas Boichat wrote:
+> > Add a basic GPU node for mt8183.
 > >
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:685: warning: expecting protot=
-ype for cs_parser_fini(). Prototype was for amdgpu_cs_parser_fini() instead
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1502: warning: expecting proto=
-type for amdgpu_cs_wait_all_fence(). Prototype was for amdgpu_cs_wait_all_f=
-ences() instead
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1656: warning: expecting proto=
-type for amdgpu_cs_find_bo_va(). Prototype was for amdgpu_cs_find_mapping()=
- instead
-> >
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: Jerome Glisse <glisse@freedesktop.org>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linaro-mm-sig@lists.linaro.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 > > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> > The binding we use with out-of-tree Mali drivers includes more
+> > clocks, this is used for devfreq: the out-of-tree driver switches
+> > clk_mux to clk_sub_parent (26Mhz), adjusts clk_main_parent, then
+> > switches clk_mux back to clk_main_parent:
+> > (see https://chromium.googlesource.com/chromiumos/third_party/kernel/+/chromeos-4.19/drivers/gpu/arm/midgard/platform/mediatek/mali_kbase_runtime_pm.c#423)
+> > clocks =
+> >         <&topckgen CLK_TOP_MFGPLL_CK>,
+> >         <&topckgen CLK_TOP_MUX_MFG>,
+> >         <&clk26m>,
+> >         <&mfgcfg CLK_MFG_BG3D>;
+> > clock-names =
+> >         "clk_main_parent",
+> >         "clk_mux",
+> >         "clk_sub_parent",
+> >         "subsys_mfg_cg";
+> > (based on discussions, this probably belongs in the clock core)
 > >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/a=
-md/amdgpu/amdgpu_cs.c
-> > index b5c7669980458..90136f9dedd65 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-> > @@ -672,7 +672,7 @@ static int amdgpu_cs_sync_rings(struct amdgpu_cs_pa=
-rser *p)
-> >   }
+> > This only matters for devfreq, that is disabled anyway as we don't
+> > have platform-specific code to handle >1 supplies.
 > >
-> >   /**
-> > - * cs_parser_fini() - clean parser states
-> > + * amdgpu_cs_parser_fini() - clean parser states
-> >    * @parser: parser structure holding parsing context.
-> >    * @error:  error number
-> >    * @backoff:        indicator to backoff the reservation
-> > @@ -1488,7 +1488,7 @@ int amdgpu_cs_fence_to_handle_ioctl(struct drm_de=
-vice *dev, void *data,
-> >   }
+> > Changes in v11:
+> >  - mt8183*.dts: remove incorrect supply-names
 > >
-> >   /**
-> > - * amdgpu_cs_wait_all_fence - wait on all fences to signal
-> > + * amdgpu_cs_wait_all_fences - wait on all fences to signal
-> >    *
-> >    * @adev: amdgpu device
-> >    * @filp: file private
-> > @@ -1639,7 +1639,7 @@ int amdgpu_cs_wait_fences_ioctl(struct drm_device=
- *dev, void *data,
-> >   }
+> > Changes in v10: None
+> > Changes in v9: None
+> > Changes in v8: None
+> > Changes in v7: None
+> > Changes in v6:
+> >  - Add gpu regulators to kukui dtsi as well.
+> >  - Power domains are now attached to spm, not scpsys
+> >  - Drop R-B.
 > >
-> >   /**
-> > - * amdgpu_cs_find_bo_va - find bo_va for VM address
-> > + * amdgpu_cs_find_mapping - find bo_va for VM address
-> >    *
-> >    * @parser: command submission parser context
-> >    * @addr: VM address
+> > Changes in v5:
+> >  - Rename "2d" power domain to "core2" (keep R-B again).
+> >
+> > Changes in v4:
+> >  - Add power-domain-names to describe the 3 domains.
+> >    (kept Alyssa's reviewed-by as the change is minor)
+> >
+> > Changes in v3: None
+> > Changes in v2:
+> >  - Use sram instead of mali_sram as SRAM supply name.
+> >  - Rename mali@ to gpu@.
+> >
+> >  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
+> >  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
+> >  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
+> >  3 files changed, 115 insertions(+)
+> >
 >
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> If you re-spin, you can also add the same changes to mt8183-pumpkin.dts :
+
+Will do in v12.
+
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+> index eb6e595c2975..cc23e5df391e 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+> @@ -68,6 +68,11 @@ &auxadc {
+>         status = "okay";
+>  };
+>
+> +&gpu {
+> +       mali-supply = <&mt6358_vgpu_reg>;
+> +       sram-supply = <&mt6358_vsram_gpu_reg>;
+> +};
+> +
+>  &i2c0 {
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&i2c_pins_0>;
+>
+> I did a boot-test of the platform with panfrost and drm-misc-next and it worked fine.
+
+Great news thanks!
+
+>
+> Thanks,
+> Neil
+>
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> > index cba2d8933e79..1cfbea5a0101 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> > @@ -42,6 +42,11 @@ &auxadc {
+> >       status = "okay";
+> >  };
+> >
+> > +&gpu {
+> > +     mali-supply = <&mt6358_vgpu_reg>;
+> > +     sram-supply = <&mt6358_vsram_gpu_reg>;
+> > +};
+> > +
+> >  &i2c0 {
+> >       pinctrl-names = "default";
+> >       pinctrl-0 = <&i2c_pins_0>;
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> > index bf2ad1294dd3..a38315b604df 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> > @@ -249,6 +249,11 @@ &cpu7 {
+> >       proc-supply = <&mt6358_vproc11_reg>;
+> >  };
+> >
+> > +&gpu {
+> > +     mali-supply = <&mt6358_vgpu_reg>;
+> > +     sram-supply = <&mt6358_vsram_gpu_reg>;
+> > +};
+> > +
+> >  &i2c0 {
+> >       pinctrl-names = "default";
+> >       pinctrl-0 = <&i2c0_pins>;
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > index 5b782a4769e7..5430e05e18a0 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> > @@ -964,6 +964,111 @@ mfgcfg: syscon@13000000 {
+> >                       #clock-cells = <1>;
+> >               };
+> >
+> > +             gpu: gpu@13040000 {
+> > +                     compatible = "mediatek,mt8183-mali", "arm,mali-bifrost";
+> > +                     reg = <0 0x13040000 0 0x4000>;
+> > +                     interrupts =
+> > +                             <GIC_SPI 280 IRQ_TYPE_LEVEL_LOW>,
+> > +                             <GIC_SPI 279 IRQ_TYPE_LEVEL_LOW>,
+> > +                             <GIC_SPI 278 IRQ_TYPE_LEVEL_LOW>;
+> > +                     interrupt-names = "job", "mmu", "gpu";
+> > +
+> > +                     clocks = <&topckgen CLK_TOP_MFGPLL_CK>;
+> > +
+> > +                     power-domains =
+> > +                             <&spm MT8183_POWER_DOMAIN_MFG_CORE0>,
+> > +                             <&spm MT8183_POWER_DOMAIN_MFG_CORE1>,
+> > +                             <&spm MT8183_POWER_DOMAIN_MFG_2D>;
+> > +                     power-domain-names = "core0", "core1", "core2";
+> > +
+> > +                     operating-points-v2 = <&gpu_opp_table>;
+> > +             };
+> > +
+> > +             gpu_opp_table: opp_table0 {
+> > +                     compatible = "operating-points-v2";
+> > +                     opp-shared;
+> > +
+> > +                     opp-300000000 {
+> > +                             opp-hz = /bits/ 64 <300000000>;
+> > +                             opp-microvolt = <625000>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-320000000 {
+> > +                             opp-hz = /bits/ 64 <320000000>;
+> > +                             opp-microvolt = <631250>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-340000000 {
+> > +                             opp-hz = /bits/ 64 <340000000>;
+> > +                             opp-microvolt = <637500>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-360000000 {
+> > +                             opp-hz = /bits/ 64 <360000000>;
+> > +                             opp-microvolt = <643750>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-380000000 {
+> > +                             opp-hz = /bits/ 64 <380000000>;
+> > +                             opp-microvolt = <650000>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-400000000 {
+> > +                             opp-hz = /bits/ 64 <400000000>;
+> > +                             opp-microvolt = <656250>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-420000000 {
+> > +                             opp-hz = /bits/ 64 <420000000>;
+> > +                             opp-microvolt = <662500>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-460000000 {
+> > +                             opp-hz = /bits/ 64 <460000000>;
+> > +                             opp-microvolt = <675000>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-500000000 {
+> > +                             opp-hz = /bits/ 64 <500000000>;
+> > +                             opp-microvolt = <687500>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-540000000 {
+> > +                             opp-hz = /bits/ 64 <540000000>;
+> > +                             opp-microvolt = <700000>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-580000000 {
+> > +                             opp-hz = /bits/ 64 <580000000>;
+> > +                             opp-microvolt = <712500>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-620000000 {
+> > +                             opp-hz = /bits/ 64 <620000000>;
+> > +                             opp-microvolt = <725000>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-653000000 {
+> > +                             opp-hz = /bits/ 64 <653000000>;
+> > +                             opp-microvolt = <743750>, <850000>;
+> > +                     };
+> > +
+> > +                     opp-698000000 {
+> > +                             opp-hz = /bits/ 64 <698000000>;
+> > +                             opp-microvolt = <768750>, <868750>;
+> > +                     };
+> > +
+> > +                     opp-743000000 {
+> > +                             opp-hz = /bits/ 64 <743000000>;
+> > +                             opp-microvolt = <793750>, <893750>;
+> > +                     };
+> > +
+> > +                     opp-800000000 {
+> > +                             opp-hz = /bits/ 64 <800000000>;
+> > +                             opp-microvolt = <825000>, <925000>;
+> > +                     };
+> > +             };
+> > +
+> >               mmsys: syscon@14000000 {
+> >                       compatible = "mediatek,mt8183-mmsys", "syscon";
+> >                       reg = <0 0x14000000 0 0x1000>;
+> >
+>
