@@ -2,121 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A637B366D3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804B6366D38
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242941AbhDUNw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59064 "EHLO mail.kernel.org"
+        id S242935AbhDUNwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:52:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237781AbhDUNwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:52:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C18DD6144C;
-        Wed, 21 Apr 2021 13:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013142;
-        bh=dc0EvbcvLLQuVCGRqItZSLQQVJEGn+D0uyY4r76gb2A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=htVAWSN7dcGz2UGfywUQaAVdE0Da+7Wp8BV4DCRzCjAvswhx4/0oGPRXZHvfHsgV7
-         uCdnGNv0IIJZVqjbrTjLi+awk/OIMY+tpk3CAquMVf+mlmkp7GV3+l5QGN4tQPSzsj
-         xq5dZt7Flga0/D3vo37WOycHjhPK3QvQiUl1iiv2V0xy20UKZDKy5OpX7qTfty2QOB
-         XifDmdNZordN6XPSFLT34ZEgwvSndA9WK7NeiiEG4T/jnrMaJI+6TfXEj7DYvy9LkU
-         5EX/+V/7abhfr0/COe3xOfawL0E8Ji9N1HwjjD+b215e9aeFppomfniLGPksFgC6oC
-         ahGthUnexyGOA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] memstick: r592: ignore kfifo_out() return code again
-Date:   Wed, 21 Apr 2021 15:51:58 +0200
-Message-Id: <20210421135215.3414589-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S237169AbhDUNwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:52:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA38560720;
+        Wed, 21 Apr 2021 13:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619013122;
+        bh=M1NxN6ccTM92wlA49g8YyafcO0paq+D/K0FB7+Bfcfs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D4AyrJIhWpEPoe+REwS/KgnyuOhTaCLzy8QD7sLeqwn9wXju37lWnfMNcSGZG4cU5
+         hCfOVKt15TXl3sJ761X2n6B8pBZT5V+mM4qQNBIYnhgjZJktYyTTGJjCk8vx2ZT3oG
+         tN4ntIj2yvHOwv8Z3jgShtQajlELJgp/+70e+QmE=
+Date:   Wed, 21 Apr 2021 15:51:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Wenwen Wang <wang6495@umn.edu>
+Subject: Re: [PATCH 081/190] Revert "tracing: Fix a memory leak by early
+ error exit in trace_pid_write()"
+Message-ID: <YIAt/0Fb0QjpNubP@kroah.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-82-gregkh@linuxfoundation.org>
+ <20210421092919.2576ce8d@gandalf.local.home>
+ <20210421093343.2c52786a@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421093343.2c52786a@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Apr 21, 2021 at 09:33:43AM -0400, Steven Rostedt wrote:
+> On Wed, 21 Apr 2021 09:29:19 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
+> Just to clear up any confusion about my tag above. It was a second review
+> of the original patch, not for the revert.
 
-A minor cleanup to address a clang warning removed an assigned
-but unused local variable, but this now caused a gcc warning as
-kfifo_out() is annotated to require checking its return code:
+Fair enough, I'll handle it, thanks!
 
-In file included from drivers/memstick/host/r592.h:13,
-                 from drivers/memstick/host/r592.c:21:
-drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
-include/linux/kfifo.h:588:1: error: ignoring return value of '__kfifo_uint_must_check_helper' declared with attribute 'warn_unused_result' [-Werror=unused-result]
-  588 | __kfifo_uint_must_check_helper( \
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  589 | ({ \
-      | ~~~~
-  590 |         typeof((fifo) + 1) __tmp = (fifo); \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  591 |         typeof(__tmp->ptr) __buf = (buf); \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  592 |         unsigned long __n = (n); \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~
-  593 |         const size_t __recsize = sizeof(*__tmp->rectype); \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  594 |         struct __kfifo *__kfifo = &__tmp->kfifo; \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  595 |         (__recsize) ?\
-      |         ~~~~~~~~~~~~~~
-  596 |         __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  597 |         __kfifo_out(__kfifo, __buf, __n); \
-      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  598 | }) \
-      | ~~~~
-  599 | )
-      | ~
-drivers/memstick/host/r592.c:367:9: note: in expansion of macro 'kfifo_out'
-  367 |         kfifo_out(&dev->pio_fifo, buffer, 4);
-      |         ^~~~~~~~~
-
-The value was never checked here, and the purpose of the function
-is only to flush the contents, so restore the old behavior but
-add a cast to void and a comment, which hopefully warns with neither
-gcc nor clang now.
-
-If anyone has an idea for how to fix it without ignoring the return
-code, that is probably better.
-
-Fixes: 4b00ed3c5072 ("memstick: r592: remove unused variable")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/memstick/host/r592.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
-index 026fadaa1d5d..615a83782e55 100644
---- a/drivers/memstick/host/r592.c
-+++ b/drivers/memstick/host/r592.c
-@@ -359,12 +359,15 @@ static void r592_write_fifo_pio(struct r592_device *dev,
- /* Flushes the temporary FIFO used to make aligned DWORD writes */
- static void r592_flush_fifo_write(struct r592_device *dev)
- {
-+	int ret;
- 	u8 buffer[4] = { 0 };
- 
- 	if (kfifo_is_empty(&dev->pio_fifo))
- 		return;
- 
--	kfifo_out(&dev->pio_fifo, buffer, 4);
-+	ret = kfifo_out(&dev->pio_fifo, buffer, 4);
-+	/* intentionally ignore __must_check return code */
-+	(void)ret;
- 	r592_write_reg_raw_be(dev, R592_FIFO_PIO, *(u32 *)buffer);
- }
- 
--- 
-2.29.2
-
+greg k-h
