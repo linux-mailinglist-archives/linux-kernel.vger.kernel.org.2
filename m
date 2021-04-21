@@ -2,200 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EDF367339
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14C536734B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239966AbhDUTNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:13:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21268 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235535AbhDUTNs (ORCPT
+        id S242914AbhDUTSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:18:33 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:34098 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241659AbhDUTSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:13:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619032394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ftb3f+P7+1mOJewyvfh1G9UljZ8q13sSYxQQCbMYd20=;
-        b=MjVXLG1GOhSQo67QMYB8m81lUac8KuYclZw2mR/B/VX0rFQZ27MZMgTqZ0O4wEugqWgew2
-        u/4ZyHgebU0K99WOeX4+rEOGUP9Q9KGjQckz9buEIOK9SeeJ8NA51jybMr2yUDoYS8aXcG
-        2TulAV1cijnkMkzloS6ynQd/ONyUsjg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-uCi6xlovOaShJNxmp9ojMg-1; Wed, 21 Apr 2021 15:13:11 -0400
-X-MC-Unique: uCi6xlovOaShJNxmp9ojMg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3EA19107ACCA;
-        Wed, 21 Apr 2021 19:13:10 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-206.rdu2.redhat.com [10.10.114.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FB5D10023AE;
-        Wed, 21 Apr 2021 19:13:06 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id AFEA5220BCF; Wed, 21 Apr 2021 15:13:05 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 15:13:05 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Greg Kurz <groug@kaod.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>
-Subject: Re: [Virtio-fs] [PATCH v3 2/3] dax: Add a wakeup mode parameter to
- put_unlocked_entry()
-Message-ID: <20210421191305.GG1579961@redhat.com>
-References: <20210419213636.1514816-1-vgoyal@redhat.com>
- <20210419213636.1514816-3-vgoyal@redhat.com>
- <20210420093420.2eed3939@bahia.lan>
- <20210420140033.GA1529659@redhat.com>
- <CAPcyv4g2raipYhivwbiSvsHmSdgLO8wphh5dhY3hpjwko9G4Hw@mail.gmail.com>
+        Wed, 21 Apr 2021 15:18:31 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lZIME-004DZE-Pl; Wed, 21 Apr 2021 13:17:55 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lZIMD-00AtxS-Q9; Wed, 21 Apr 2021 13:17:54 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20210416045851.GA13811@mail.hallyn.com>
+        <20210416150501.zam55gschpn2w56i@wittgenstein>
+        <20210416213453.GA29094@mail.hallyn.com>
+        <20210417021945.GA687@mail.hallyn.com>
+        <20210417200434.GA17430@mail.hallyn.com>
+        <20210419122514.GA20598@mail.hallyn.com>
+        <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
+        <20210420034208.GA2830@mail.hallyn.com>
+        <20210420083129.exyn7ptahx2fg72e@wittgenstein>
+        <20210420134334.GA11582@mail.hallyn.com>
+Date:   Wed, 21 Apr 2021 14:16:34 -0500
+In-Reply-To: <20210420134334.GA11582@mail.hallyn.com> (Serge E. Hallyn's
+        message of "Tue, 20 Apr 2021 08:43:34 -0500")
+Message-ID: <m15z0fphwt.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4g2raipYhivwbiSvsHmSdgLO8wphh5dhY3hpjwko9G4Hw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-XM-SPF: eid=1lZIMD-00AtxS-Q9;;;mid=<m15z0fphwt.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18G0AOfV6rwW+2m4+vJWzKrMcLT6wolZpc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4906]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;"Serge E. Hallyn" <serge@hallyn.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 465 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 12 (2.5%), b_tie_ro: 10 (2.1%), parse: 1.78
+        (0.4%), extract_message_metadata: 18 (3.9%), get_uri_detail_list: 2.5
+        (0.5%), tests_pri_-1000: 5 (1.2%), tests_pri_-950: 1.34 (0.3%),
+        tests_pri_-900: 1.11 (0.2%), tests_pri_-90: 58 (12.4%), check_bayes:
+        56 (12.1%), b_tokenize: 8 (1.8%), b_tok_get_all: 7 (1.5%),
+        b_comp_prob: 2.3 (0.5%), b_tok_touch_all: 35 (7.6%), b_finish: 0.86
+        (0.2%), tests_pri_0: 350 (75.4%), check_dkim_signature: 0.75 (0.2%),
+        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 0.42 (0.1%), tests_pri_10:
+        2.2 (0.5%), tests_pri_500: 11 (2.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3.4] capabilities: require CAP_SETFCAP to map uid 0
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 12:09:54PM -0700, Dan Williams wrote:
-> On Tue, Apr 20, 2021 at 7:01 AM Vivek Goyal <vgoyal@redhat.com> wrote:
-> >
-> > On Tue, Apr 20, 2021 at 09:34:20AM +0200, Greg Kurz wrote:
-> > > On Mon, 19 Apr 2021 17:36:35 -0400
-> > > Vivek Goyal <vgoyal@redhat.com> wrote:
-> > >
-> > > > As of now put_unlocked_entry() always wakes up next waiter. In next
-> > > > patches we want to wake up all waiters at one callsite. Hence, add a
-> > > > parameter to the function.
-> > > >
-> > > > This patch does not introduce any change of behavior.
-> > > >
-> > > > Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> > > > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > > > ---
-> > > >  fs/dax.c | 13 +++++++------
-> > > >  1 file changed, 7 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/fs/dax.c b/fs/dax.c
-> > > > index 00978d0838b1..f19d76a6a493 100644
-> > > > --- a/fs/dax.c
-> > > > +++ b/fs/dax.c
-> > > > @@ -275,11 +275,12 @@ static void wait_entry_unlocked(struct xa_state *xas, void *entry)
-> > > >     finish_wait(wq, &ewait.wait);
-> > > >  }
-> > > >
-> > > > -static void put_unlocked_entry(struct xa_state *xas, void *entry)
-> > > > +static void put_unlocked_entry(struct xa_state *xas, void *entry,
-> > > > +                          enum dax_entry_wake_mode mode)
-> > > >  {
-> > > >     /* If we were the only waiter woken, wake the next one */
-> > >
-> > > With this change, the comment is no longer accurate since the
-> > > function can now wake all waiters if passed mode == WAKE_ALL.
-> > > Also, it paraphrases the code which is simple enough, so I'd
-> > > simply drop it.
-> > >
-> > > This is minor though and it shouldn't prevent this fix to go
-> > > forward.
-> > >
-> > > Reviewed-by: Greg Kurz <groug@kaod.org>
-> >
-> > Ok, here is the updated patch which drops that comment line.
-> >
-> > Vivek
-> 
-> Hi Vivek,
-> 
-> Can you get in the habit of not replying inline with new patches like
-> this? Collect the review feedback, take a pause, and resend the full
-> series so tooling like b4 and patchwork can track when a new posting
-> supersedes a previous one. As is, this inline style inflicts manual
-> effort on the maintainer.
+"Serge E. Hallyn" <serge@hallyn.com> writes:
 
-Hi Dan,
+> +/**
+> + * verify_root_map() - check the uid 0 mapping
+> + * @file: idmapping file
+> + * @map_ns: user namespace of the target process
+> + * @new_map: requested idmap
+> + *
+> + * If a process requests mapping parent uid 0 into the new ns, verify that the
+> + * process writing the map had the CAP_SETFCAP capability as the target process
+> + * will be able to write fscaps that are valid in ancestor user namespaces.
+> + *
+> + * Return: true if the mapping is allowed, false if not.
+> + */
+> +static bool verify_root_map(const struct file *file,
+> +			    struct user_namespace *map_ns,
+> +			    struct uid_gid_map *new_map)
+> +{
+> +	int idx;
+> +	const struct user_namespace *file_ns = file->f_cred->user_ns;
+> +	struct uid_gid_extent *extent0 = NULL;
+> +
+> +	for (idx = 0; idx < new_map->nr_extents; idx++) {
+> +		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+> +			extent0 = &new_map->extent[idx];
+> +		else
+> +			extent0 = &new_map->forward[idx];
+> +		if (extent0->lower_first == 0)
+> +			break;
+> +
+> +		extent0 = NULL;
+> +	}
+> +
+> +	if (!extent0)
+> +		return true;
+> +
+> +	if (map_ns == file_ns) {
+> +		/* The process unshared its ns and is writing to its own
+> +		 * /proc/self/uid_map.  User already has full capabilites in
+> +		 * the new namespace.  Verify that the parent had CAP_SETFCAP
+> +		 * when it unshared.
+> +		 * */
+> +		if (!file_ns->parent_could_setfcap)
+> +			return false;
+> +	} else {
+> +		/* Process p1 is writing to uid_map of p2, who is in a child
+> +		 * user namespace to p1's.  Verify that the opener of the map
+> +		 * file has CAP_SETFCAP against the parent of the new map
+> +		 * namespace */
+> +		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
+> +			return false;
+> +	}
 
-Sure. I will avoid doing this updated inline patch style. I will post new
-version of patch series. 
+Is there any reason this permission check is not simply:
 
-Thanks
-Vivek
+	return map_ns->parent_could_setfcap ||
+               file_ns_capable(file, map_ns->parent, CAP_SETFCAP);
 
-> 
-> >
-> > Subject: dax: Add a wakeup mode parameter to put_unlocked_entry()
-> >
-> > As of now put_unlocked_entry() always wakes up next waiter. In next
-> > patches we want to wake up all waiters at one callsite. Hence, add a
-> > parameter to the function.
-> >
-> > This patch does not introduce any change of behavior.
-> >
-> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > ---
-> >  fs/dax.c |   14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> >
-> > Index: redhat-linux/fs/dax.c
-> > ===================================================================
-> > --- redhat-linux.orig/fs/dax.c  2021-04-20 09:55:45.105069893 -0400
-> > +++ redhat-linux/fs/dax.c       2021-04-20 09:56:27.685822730 -0400
-> > @@ -275,11 +275,11 @@ static void wait_entry_unlocked(struct x
-> >         finish_wait(wq, &ewait.wait);
-> >  }
-> >
-> > -static void put_unlocked_entry(struct xa_state *xas, void *entry)
-> > +static void put_unlocked_entry(struct xa_state *xas, void *entry,
-> > +                              enum dax_entry_wake_mode mode)
-> >  {
-> > -       /* If we were the only waiter woken, wake the next one */
-> >         if (entry && !dax_is_conflict(entry))
-> > -               dax_wake_entry(xas, entry, WAKE_NEXT);
-> > +               dax_wake_entry(xas, entry, mode);
-> >  }
-> >
-> >  /*
-> > @@ -633,7 +633,7 @@ struct page *dax_layout_busy_page_range(
-> >                         entry = get_unlocked_entry(&xas, 0);
-> >                 if (entry)
-> >                         page = dax_busy_page(entry);
-> > -               put_unlocked_entry(&xas, entry);
-> > +               put_unlocked_entry(&xas, entry, WAKE_NEXT);
-> >                 if (page)
-> >                         break;
-> >                 if (++scanned % XA_CHECK_SCHED)
-> > @@ -675,7 +675,7 @@ static int __dax_invalidate_entry(struct
-> >         mapping->nrexceptional--;
-> >         ret = 1;
-> >  out:
-> > -       put_unlocked_entry(&xas, entry);
-> > +       put_unlocked_entry(&xas, entry, WAKE_NEXT);
-> >         xas_unlock_irq(&xas);
-> >         return ret;
-> >  }
-> > @@ -954,7 +954,7 @@ static int dax_writeback_one(struct xa_s
-> >         return ret;
-> >
-> >   put_unlocked:
-> > -       put_unlocked_entry(xas, entry);
-> > +       put_unlocked_entry(xas, entry, WAKE_NEXT);
-> >         return ret;
-> >  }
-> >
-> > @@ -1695,7 +1695,7 @@ dax_insert_pfn_mkwrite(struct vm_fault *
-> >         /* Did we race with someone splitting entry or so? */
-> >         if (!entry || dax_is_conflict(entry) ||
-> >             (order == 0 && !dax_is_pte_entry(entry))) {
-> > -               put_unlocked_entry(&xas, entry);
-> > +               put_unlocked_entry(&xas, entry, WAKE_NEXT);
-> >                 xas_unlock_irq(&xas);
-> >                 trace_dax_insert_pfn_mkwrite_no_entry(mapping->host, vmf,
-> >                                                       VM_FAULT_NOPAGE);
-> >
-> 
+That is why don't we allow any mapping (that is otherwise valid) in user
+namespaces whose creator had the permission to call CAP_SETFCAP?
 
+Why limit the case of using the creators permissions to only the case of
+mapping just a single uid (that happens to be the current euid) in the
+user namespace?
+
+I don't see any safety reasons for the map_ns == file_ns test.
+
+
+
+Is the file_ns_capable check for CAP_SETFCAP actually needed?  AKA could
+the permission check be simplified to:
+
+	return map_ns->parent_could_setfcap;
+
+That would be a much easier rule to explain to people.
+
+I seem to remember distributions at least trying to make newuidmap have
+just CAP_SETUID and newgidmap have just CAP_SETGID.  Such a simplified
+check would facilitate that.
+
+Eric
