@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53559366C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07410366C18
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242395AbhDUNKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:10:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
+        id S242429AbhDUNKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:10:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240762AbhDUNHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:07:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DADE61454;
-        Wed, 21 Apr 2021 13:06:55 +0000 (UTC)
+        id S239596AbhDUNHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:07:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD6361456;
+        Wed, 21 Apr 2021 13:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010415;
-        bh=kTTIUOI1lvgEO744bfl/sbBEmDo4AC4onNLNFUDA7HU=;
+        s=korg; t=1619010418;
+        bh=NYaFbUFIT0k8IE0TzN+Qufiyvgc8Dhv5BV/fyTwrBwI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J5jZO/pWwB+r0jtBd9ENzzexsqs+1+tYoXFHD4D/DvM5dqtiljmwX3rTemZzjqlzG
-         n3DJMFealHL1yATV4tigilO7251gkJp00FnooB6ERAa7eFHZgyLZbm2drDvM3aOuBJ
-         QkyuEzltxID6p6dmRySNpKr4g8r+Y9kSLRFMZkug=
+        b=m+Ox3c7ri2lCI1WB3AQKI/LL57yOh3PVjo09B1AHjgJldvF+EwxNtMne7lcztDez/
+         oyefX4xZT30URFdDqhAk+5umQldx3Xi5RRZ663kmAxMjgaDUxnxdmXwSJ1qCHHUCEL
+         7gaTPjBLRnLq90N2pdAYNIyNibq/ZiSPMNMoL2h0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>,
+        Aditya Pakki <pakki001@umn.edu>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 128/190] Revert "net: strparser: fix a missing check for create_singlethread_workqueue"
-Date:   Wed, 21 Apr 2021 15:00:03 +0200
-Message-Id: <20210421130105.1226686-129-gregkh@linuxfoundation.org>
+Subject: [PATCH 129/190] Revert "qlcnic: Avoid potential NULL pointer dereference"
+Date:   Wed, 21 Apr 2021 15:00:04 +0200
+Message-Id: <20210421130105.1226686-130-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 228cd2dba27cee9956c1af97e6445be056881e41.
+This reverts commit 5bf7295fe34a5251b1d241b9736af4697b590670.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,26 +53,26 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Aditya Pakki <pakki001@umn.edu>
 Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/strparser/strparser.c | 2 --
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/net/strparser/strparser.c b/net/strparser/strparser.c
-index b3815c1e8f2e..efce4ddaa320 100644
---- a/net/strparser/strparser.c
-+++ b/net/strparser/strparser.c
-@@ -542,8 +542,6 @@ EXPORT_SYMBOL_GPL(strp_check_rcv);
- static int __init strp_dev_init(void)
- {
- 	strp_wq = create_singlethread_workqueue("kstrp");
--	if (unlikely(!strp_wq))
--		return -ENOMEM;
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
+index d8a3ecaed3fc..985cf8cb2ec0 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c
+@@ -1047,8 +1047,6 @@ int qlcnic_do_lb_test(struct qlcnic_adapter *adapter, u8 mode)
  
- 	return 0;
- }
+ 	for (i = 0; i < QLCNIC_NUM_ILB_PKT; i++) {
+ 		skb = netdev_alloc_skb(adapter->netdev, QLCNIC_ILB_PKT_SIZE);
+-		if (!skb)
+-			break;
+ 		qlcnic_create_loopback_buff(skb->data, adapter->mac_addr);
+ 		skb_put(skb, QLCNIC_ILB_PKT_SIZE);
+ 		adapter->ahw->diag_cnt = 0;
 -- 
 2.31.1
 
