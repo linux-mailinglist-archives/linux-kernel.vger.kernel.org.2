@@ -2,166 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBD6366AB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8514366ABD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238895AbhDUM1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:27:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37289 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238011AbhDUM1D (ORCPT
+        id S238614AbhDUM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239677AbhDUM1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619007990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JiwbXjmwv7WSPaNysAbVhn2SptL19dKY+XRIVBMw2AM=;
-        b=CRbJnXzNEuxsl9oJ/8fSufw7SkKE4Jd72SMGl5kUvy5PdhVz/1IqKLpMKovkkbn6NqNEXT
-        BdYo+jyj3HizX/x270tA9SIaGH8zWR55t3hyH8TCy6zm97pjPqCMjOnVd5GNNpXS0p4fwK
-        1G4lJucOS0/Nmtjv+VLN26fYkmR7D98=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-k-zTHqAyPgS0hEBUZGqgpA-1; Wed, 21 Apr 2021 08:26:28 -0400
-X-MC-Unique: k-zTHqAyPgS0hEBUZGqgpA-1
-Received: by mail-ed1-f71.google.com with SMTP id n18-20020a0564020612b02903853320059eso5903726edv.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:26:28 -0700 (PDT)
+        Wed, 21 Apr 2021 08:27:15 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFE0C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:26:40 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id f12so31045306qtf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PfdUg8qCYc8gMXz26FZLYUj2ZZgGdRD3Vxnn3cJ18Mg=;
+        b=TCFikcAU1fKwXmNOc3DUpmk0HxrFW8oOQW1rtm1jQT/c4Ug1VdKbjYRTAVcn8Qmtw2
+         Nl1WYk7FbqQ8sDiCosbNJQOUO4jm7CKzlbHZWUwrNbFpALOJjIpA+382/GIxfaY+GuIZ
+         df8HUd4ke/bQKOkl3cbC/SUXNKI9g7jcUeaBhwQSFMNitHWaBAwIdTBRWWEfwRfY0ban
+         U5n+D2EIsHj3TL6LTBpVHzWBaJ5m4oFLeViJl7Qv4LAlFE8M39tn4OXK4sEKuok6d7CJ
+         Y18RRYbpVAadfn1Ql8SnBD78P/D5ZUTqFXglyJfY8PJWrGS8uYp8HY86L8J6fiEsBJEU
+         GJ0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JiwbXjmwv7WSPaNysAbVhn2SptL19dKY+XRIVBMw2AM=;
-        b=MDmnYZ17mfDixhsf03u/UidBltZmbvqNg+95bQ8s+DVUIYNIm+yvq5GAW7W/CMcxT5
-         iV4/kbdYpvOHekpvhjALmCLdLorFtvmWjFXUStInAc0/xP9Tl9dMV0cI2PLyo6CnHSb0
-         p5hZuZnsR/PC8jaZqK+EkPhVvUMjD2SefRMKpO4qQt7O81c5XxDvxrQQs975/JL19uJT
-         TAxhbTbG3MT+7RCU3h2KGgegYByXDTp2I7SPhbgtK8pV6+9n95LFc6wuhJjj45Hpp9qi
-         Fa/Zqx6sSTZTUAzJwmmXhGvObsu9njXR4rrTFwDDZGItcTLoQllaIkgUJEsbk6knW4zT
-         gUoQ==
-X-Gm-Message-State: AOAM532EvmvF1BDRxM14ACpI9FDr0CjxEmbDUyof0PzbUIka5mxgws2L
-        eprL/Mlt08WIE+c6BPF8SU5a+iQpSBZktMTiHzZ8QpTt8ijC2hOFpDwfgxP0zr+7jSMMALq5O+6
-        RNJWocV3YzxiCEZk7dFP9d5Xi
-X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr20506126ede.48.1619007987358;
-        Wed, 21 Apr 2021 05:26:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7yRkfzjtIoczfISFbr/N7MhY4x+m8ezWTbWctqf/bSo8LTZjrsr4mbWZVCx6Lxhbh1fXM5g==
-X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr20506111ede.48.1619007987227;
-        Wed, 21 Apr 2021 05:26:27 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id u23sm3146200eds.8.2021.04.21.05.26.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 05:26:26 -0700 (PDT)
-Subject: Re: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "cw00.choi@samsung.com" <cw00.choi@samsung.com>,
-        "broonie@kernel.org" <broonie@kernel.org>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
- <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
- <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
- <YFn5CSB1O3i+SzgR@kroah.com>
- <da0233f3223d7c0816581afe0969caf0abe20378.camel@fi.rohmeurope.com>
- <96935c55-c799-595e-024c-56fd352f279e@redhat.com>
- <2f6d096c30a6d1d22422cf9c3553d74132f75708.camel@fi.rohmeurope.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <171af93e-e5be-b35f-23d4-0ccf37062902@redhat.com>
-Date:   Wed, 21 Apr 2021 14:26:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PfdUg8qCYc8gMXz26FZLYUj2ZZgGdRD3Vxnn3cJ18Mg=;
+        b=nP03/WyhzocQML8VeMAjqiPDv1COlgP4c08lff7IRTY6xOqnie8dEKZ3JXY7JufgKU
+         IR3lK2YhH82wvh0HQypKzg247QxXobKUhbA5scnJcJZXXPjcwK/IV7BV0emqUIHevXp6
+         IhalCgY14D6NtV69XK2W73CELhD+1FJmaDl/rRr3RvUwFq2KGsw5NA/7MNsJUiFUfMhc
+         wNYGMNm3vfdoow0ebJv4ZOg6N5cU8KCdbeRv2WHVDoTLmQrONeiO48FI3rYXX0Ndy2vM
+         7IDrndVWf4f5xwPCFV04L2qqF7vVupQtkmsSMM5uQxnk8bvh4B2ccEohqlpczUf3A1te
+         TgCg==
+X-Gm-Message-State: AOAM533Cq6iQjxQL3HkE92KN5IWBva1oFmWxs1jQAL4jbDRdh3WHVnFd
+        GgTNpXDum4b7CisM/r9tohA19AI+RyEnhw/3m6T3Eg==
+X-Google-Smtp-Source: ABdhPJzKMfw3c8z2Bk0lm1xBbc0eCX4jiGr6K2CJqkalj3qV6FPnuQbXtVbVzcCk66rkIaAVNaUcDyrR54nlgxFvfiU=
+X-Received: by 2002:ac8:110d:: with SMTP id c13mr21244783qtj.337.1619007999712;
+ Wed, 21 Apr 2021 05:26:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2f6d096c30a6d1d22422cf9c3553d74132f75708.camel@fi.rohmeurope.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00000000000057102e058e722bba@google.com> <000000000000dfe1bc05c063d0fa@google.com>
+ <YH/wggx86Ph1bwPi@hirez.programming.kicks-ass.net>
+In-Reply-To: <YH/wggx86Ph1bwPi@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 21 Apr 2021 14:26:28 +0200
+Message-ID: <CACT4Y+YnWXtoDTNL6E3=wTZWKvDhu7jp-frXrGUgvJ5YorBUKw@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in perf_event_free_task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>, cobranza@ingcoecuador.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephane Eranian <eranian@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
+        kpsingh@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Apr 21, 2021 at 11:30 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Apr 20, 2021 at 02:10:22AM -0700, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    7af08140 Revert "gcov: clang: fix clang-11+ build"
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15416871d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=7692cea7450c97fa2a0a
+> > compiler:       Debian clang version 11.0.1-2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145c9ffed00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12de31ded00000
+>
+> When I build that C file and run it, it completes. AFAICT that's not the
+> expected outcome given we're looking for a hung-task scenario. Hmm?
 
-On 4/21/21 2:17 PM, Vaittinen, Matti wrote:
-> 
-> On Wed, 2021-04-21 at 13:58 +0200, Hans de Goede wrote:
->> Hi,
->>
->> On 4/21/21 9:51 AM, Matti Vaittinen wrote:
->>> On Tue, 2021-03-23 at 15:19 +0100, Greg KH wrote:
->>>> On Tue, Mar 23, 2021 at 02:58:28PM +0100, Hans de Goede wrote:
->>>>> Hi,
->>>>>
->>>>> On 3/23/21 2:56 PM, Matti Vaittinen wrote:
->>>>>> Devm helper header containing small inline helpers was added.
->>>>>> Hans promised to maintain it.
->>>>>>
->>>>>> Add Hans as maintainer and myself as designated reviewer.
->>>>>>
->>>>> Ultimately this is up to Greg though, so lets wait and see what
->>>>> Greg has to say about this.
->>>>
->>>> Can we move some of the devm_* calls in include/device.h into
->>>> here as
->>>> well so that you all can be in charge of them instead of me?
->>>
->>> Seems like this was left w/o answer. I guess the question was
->>> pointed
->>> to Hans
->>
->> I believe that Greg was (mostly) joking here. At least that is how
->> I interpreted Greg's reply,which is why I did not answer.
-> 
-> Ah. I missed the sarcastic tone of typing. I should've noted that by
-> the font :]
-> 
->> Also note that Greg merged this series, but not this patch,
->> so the new devm-helpers.h file will presumably be maintained by Greg.
-> 
-> Hmm. Are you sure?
-> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=2077ca682169afb212d8a887c70057a660290df9
 
-Ah, you're right.
+I just reproduced it on some similar kernel I had. Maybe you used a
+different config. Or maybe it requires a similar qemu machine.
+However, the reproducer looks like a fork bomb and it produced
+thousands of subprocesses and took some time.
+In the past 2 years it's been happening all reproducers look similar
+and involve clone and perf_event_open.
 
-I was looking at the wrong branch, sorry about the confusion.
 
-Ok, so I guess I do maintain the new devm-helpers.h file, that is fine.
 
-Which makes your email from earlier today more relevant:
+INFO: task a.out:13194 blocked for more than 143 seconds.
+      Not tainted 5.12.0-rc5-next-20210330 #113
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:a.out           state:D stack:28616 pid:13194 ppid: 23696 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4329 [inline]
+ __schedule+0x911/0x2160 kernel/sched/core.c:5079
+ schedule+0xcf/0x270 kernel/sched/core.c:5158
+ perf_event_free_task+0x519/0x6c0 kernel/events/core.c:12627
+ copy_process+0x4a1e/0x70b0 kernel/fork.c:2377
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2501
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2618
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x451e49
+RSP: 002b:00007fa8e0d66118 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000451e49
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000022086605
+RBP: 00007fa8e0d66200 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc688a6c7e
+R13: 00007ffc688a6c7f R14: 00007fa8e0d66300 R15: 0000000000022000
 
-> but what comes to my (not always so humble) opinion - most of
-> the devm functions in device.h are tightly related to the device
-> interface or devres. Thus the device.h feels like appropriate place for
-> most of those.
+Showing all locks held in the system:
+3 locks held by kworker/u8:1/35:
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc90000597da8 (net_cleanup_work){+.+.}-{0:0}, at:
+process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+ #2: ffffffff8ce94f50 (pernet_ops_rwsem){++++}-{3:3}, at:
+cleanup_net+0x9b/0xb10 net/core/net_namespace.c:557
+3 locks held by kworker/u8:3/269:
+1 lock held by khungtaskd/1654:
+ #0: ffffffff8b7773a0 (rcu_read_lock){....}-{1:2}, at:
+debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
+1 lock held by rsyslogd/8425:
+ #0: ffff88801433edf0 (&f->f_pos_lock){+.+.}-{3:3}, at:
+__fdget_pos+0xe9/0x100 fs/file.c:967
+2 locks held by getty/8519:
+ #0: ffff888020a09098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000115b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8520:
+ #0: ffff888025793098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000113b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8521:
+ #0: ffff8880194b5098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011ab2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8522:
+ #0: ffff888020a0f098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011db2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8523:
+ #0: ffff888019293098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011bb2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8524:
+ #0: ffff888019296098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011cb2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by kworker/0:5/8616:
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc90001d77da8 ((kfence_timer).work){+.+.}-{0:0}, at:
+process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+2 locks held by bash/13876:
+ #0: ffff88804e222098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000be332e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
 
-I agree with you that most devm_ functions in device.h are probably
-left there. Moving them will also mean modifying all the drivers
-which use them to include the new devm-helpers.h include file
-which seems like needless churn.
+=============================================
 
-> OTOH, the kmalloc/kfree related functions, strdub and
-> kmemdub might be candidates for move - those are not really "device
-> things".
-
-I'm certainly open to moving some functions to devm-helpers.h, but
-also see above about needless churn.
-
-Regards,
-
-Hans
-
+NMI backtrace for cpu 3
+CPU: 3 PID: 1654 Comm: khungtaskd Not tainted 5.12.0-rc5-next-20210330 #113
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd8e/0xf40 kernel/hung_task.c:338
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 3 to CPUs 0-2:
+NMI backtrace for cpu 2 skipped: idling at native_safe_halt
+arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 2 skipped: idling at arch_safe_halt
+arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 2 skipped: idling at default_idle+0xe/0x10
+arch/x86/kernel/process.c:683
+NMI backtrace for cpu 0 skipped: idling at native_safe_halt
+arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 0 skipped: idling at arch_safe_halt
+arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 0 skipped: idling at default_idle+0xe/0x10
+arch/x86/kernel/process.c:683
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt
+arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt
+arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 1 skipped: idling at default_idle+0xe/0x10
+arch/x86/kernel/process.c:683
