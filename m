@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC0D366BA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3515366BAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240502AbhDUNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
+        id S239438AbhDUNFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240564AbhDUNDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D8361455;
-        Wed, 21 Apr 2021 13:03:19 +0000 (UTC)
+        id S240548AbhDUNEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:04:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57A706143C;
+        Wed, 21 Apr 2021 13:03:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010200;
-        bh=grD8+w8ZOzj0zgn/0mJAyVyX5veIj926JQXIJjIb1V0=;
+        s=korg; t=1619010229;
+        bh=MpMoVO4edAnODvbDGtRci7R1TicF3Kz/2VQW7XI8lgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xFipHGaAeoH7YuUbjl0WoBatF+8Wf0TOR+JfPl/sbChG/uRINFs8ot/dCbX+RxH89
-         zZ704u6DYqvwNETfdFyGmmBitNmgH5MWs6lS3F24B7jmdk5VmK+HVCEmE81TP7CyXn
-         sajhttt1uikRjwnfSleY0ZIT7ml6CTPGMWB7Oeuk=
+        b=ZiESlzETpnNQlN+YAwC7D7NsCoubWWWZhiVm2STjCGYnGnq62yiK5Rh90IGmXdXsb
+         UsXXG4QGS0eHMEQtShZ+cIukNdLg4kGqsvZTikO3RwzdBotAIP7Fp5rIpMgoYcuzLE
+         drMa+c2ZNgHyG1IC6rwgcrE2BBakvYzardKAHwAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 031/190] Revert "test_objagg: Fix potential memory leak in error handling"
-Date:   Wed, 21 Apr 2021 14:58:26 +0200
-Message-Id: <20210421130105.1226686-32-gregkh@linuxfoundation.org>
+        Qiushi Wu <wu000273@umn.edu>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 032/190] Revert "ASoC: img-parallel-out: Fix a reference count leak"
+Date:   Wed, 21 Apr 2021 14:58:27 +0200
+Message-Id: <20210421130105.1226686-33-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit a6379f0ad6375a707e915518ecd5c2270afcd395.
+This reverts commit 6b9fbb073636906eee9fe4d4c05a4f445b9e2a23.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,30 +52,30 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
+Cc: Qiushi Wu <wu000273@umn.edu>
+Cc: https
+Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/test_objagg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/img/img-parallel-out.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/lib/test_objagg.c b/lib/test_objagg.c
-index da137939a410..72c1abfa154d 100644
---- a/lib/test_objagg.c
-+++ b/lib/test_objagg.c
-@@ -979,10 +979,10 @@ static int test_hints_case(const struct hints_case *hints_case)
- err_world2_obj_get:
- 	for (i--; i >= 0; i--)
- 		world_obj_put(&world2, objagg, hints_case->key_ids[i]);
--	i = hints_case->key_ids_count;
-+	objagg_hints_put(hints);
- 	objagg_destroy(objagg2);
-+	i = hints_case->key_ids_count;
- err_check_expect_hints_stats:
--	objagg_hints_put(hints);
- err_hints_get:
- err_check_expect_stats:
- err_world_obj_get:
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index 4da49a42e854..5ddbe3a31c2e 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -163,10 +163,8 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	}
+ 
+ 	ret = pm_runtime_get_sync(prl->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(prl->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
+ 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
 -- 
 2.31.1
 
