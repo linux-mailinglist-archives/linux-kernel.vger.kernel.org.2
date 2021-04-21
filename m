@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FAB366F71
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB87366F8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244100AbhDUPvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:51:39 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34960 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235510AbhDUPvh (ORCPT
+        id S239854AbhDUP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:56:18 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:10242 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235610AbhDUP4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:51:37 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 9BBFC1F42362
-Received: by earth.universe (Postfix, from userid 1000)
-        id 1A6D53C0C96; Wed, 21 Apr 2021 17:51:01 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 17:51:01 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@kernel.org,
-        Qiushi Wu <wu000273@umn.edu>
-Subject: Re: [PATCH 051/190] Revert "power: supply: core: fix memory leak in
- HWMON error path"
-Message-ID: <20210421155101.n2mbmhj6x42i3a4l@earth.universe>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-52-gregkh@linuxfoundation.org>
+        Wed, 21 Apr 2021 11:56:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWK2NsT_1619020519;
+Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UWK2NsT_1619020519)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 21 Apr 2021 23:55:30 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+To:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     Wen Yang <wenyang@linux.alibaba.com>,
+        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs/ext4: remove redundant initialization of variable busy
+Date:   Wed, 21 Apr 2021 23:54:55 +0800
+Message-Id: <20210421155455.51725-1-wenyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gqpebck3mxmnoa5l"
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-52-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The variable status is being initialized with a value that is never
+read and it is being updated later with a new value. The initialization
+is redundant and could be removed. Also put the variable declarations
+into reverse christmas tree order. Finally, we add the log printing and
+ext4_mb_show_pa() for troubleshooting, they are enabled only when
+CONFIG_EXT4_DEBUG is set.
 
---gqpebck3mxmnoa5l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ fs/ext4/mballoc.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Hi,
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a02fadf..1402b14 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -351,6 +351,8 @@ static void ext4_mb_generate_from_freelist(struct super_block *sb, void *bitmap,
+ 						ext4_group_t group);
+ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac);
+ 
++static inline void ext4_mb_show_pa(struct super_block *sb);
++
+ /*
+  * The algorithm using this percpu seq counter goes below:
+  * 1. We sample the percpu discard_pa_seq counter before trying for block
+@@ -4217,9 +4219,9 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 	struct ext4_prealloc_space *pa, *tmp;
+ 	struct list_head list;
+ 	struct ext4_buddy e4b;
++	int free_total = 0;
++	int busy, free;
+ 	int err;
+-	int busy = 0;
+-	int free, free_total = 0;
+ 
+ 	mb_debug(sb, "discard preallocation for group %u\n", group);
+ 	if (list_empty(&grp->bb_prealloc_list))
+@@ -4247,6 +4249,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 
+ 	INIT_LIST_HEAD(&list);
+ repeat:
++	busy = 0;
+ 	free = 0;
+ 	ext4_lock_group(sb, group);
+ 	list_for_each_entry_safe(pa, tmp,
+@@ -4255,6 +4258,8 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 		if (atomic_read(&pa->pa_count)) {
+ 			spin_unlock(&pa->pa_lock);
+ 			busy = 1;
++			mb_debug(sb, "used pa while discarding for group %u\n", group);
++			ext4_mb_show_pa(sb);
+ 			continue;
+ 		}
+ 		if (pa->pa_deleted) {
+@@ -4300,7 +4305,6 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ 	if (free_total < needed && busy) {
+ 		ext4_unlock_group(sb, group);
+ 		cond_resched();
+-		busy = 0;
+ 		goto repeat;
+ 	}
+ 	ext4_unlock_group(sb, group);
+-- 
+1.8.3.1
 
-On Wed, Apr 21, 2021 at 02:58:46PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 1d7a7128a2e9e1f137c99b0a44e94d70a77343e3.
->=20
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
->=20
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
->=20
-> Cc: stable@kernel.org
-> Cc: Qiushi Wu <wu000273@umn.edu>
-> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
-
-Change is quite simple, so doing another review now:
-
-It is correct that power_supply_hwmon_bitmap_free() must be called
-when devm_add_action() fails. This is not already done in the error
-path, so the original patch is correct and the revert reintroduces a
-memory leak in error path.
-
-I suggest dropping the revert.
-
-Thanks,
-
--- Sebastian
-
->  drivers/power/supply/power_supply_hwmon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/power_supply_hwmon.c b/drivers/power/su=
-pply/power_supply_hwmon.c
-> index bffe6d84c429..62ca29e0d47a 100644
-> --- a/drivers/power/supply/power_supply_hwmon.c
-> +++ b/drivers/power/supply/power_supply_hwmon.c
-> @@ -356,7 +356,7 @@ int power_supply_add_hwmon_sysfs(struct power_supply =
-*psy)
->  		goto error;
->  	}
-> =20
-> -	ret =3D devm_add_action_or_reset(dev, power_supply_hwmon_bitmap_free,
-> +	ret =3D devm_add_action(dev, power_supply_hwmon_bitmap_free,
->  			      psyhw->props);
->  	if (ret)
->  		goto error;
-> --=20
-> 2.31.1
->=20
-
---gqpebck3mxmnoa5l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCASd4ACgkQ2O7X88g7
-+poN+Q//dEiIYl4MXs5BKdHvnm3UkgY+WTHhV6lItI21prSNE45lvhQECS+aKjlU
-dp1TO/M6AZtl0P91Rxl3K4KMTJ9287aZdgpkZJZBaOq/DNC0iFKrNEFuKyu8Si52
-E7WoKGgDK3zk1Z0ENPXxgPyqYdXMPNfgnxpfCnYWnyobI4L8BCUrtJNklnX0JAyq
-4hA9JcpsCpFldZ7EktIzPEH95gpNc5e3frxQFSrvmZkkqHpbAB0aN0WXyls/wnwu
-7V9gJRgG4EtT31VCkPTPgc3z41FQV4V8lOojIOqxJR2NRxedhNRHbCoaq/86KTa1
-a1FYJUh4SPb7IrzyUJwXwpaElY9wmnQ+0KZpPxoNIGC/QRbda0/VE9wy0214L/K6
-srJs3YBYthgOtqovvjuB43PuA99jsmL4axjM7Kuf5EjkLkXrdJeX37E4YK9q3pyT
-USl7zRf5BHIkjnIuE3rx83YIczrezJih0XAeC4PX4zgy5tmOoYpb9S5SFA8wboff
-T3YnETrpiCt45fEJvIW7PNBECpAxtmUrBsBfgH0+GBS59S4z1BPx5oLccDwFHlrr
-ZqBC7ESSnafhQTCNDGSfvGYlRY7JvK4T2hLcbsS2Nink7e5WtL0nTQlXmW/+aAzx
-G02JtwWOZiwqaoWUnP/MR+KP9vbf2oX4OiY+Use24F3fXMSCOrk=
-=9a4A
------END PGP SIGNATURE-----
-
---gqpebck3mxmnoa5l--
