@@ -2,122 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF37C3666DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26D93666E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbhDUIQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:16:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234532AbhDUIQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:16:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B590161264;
-        Wed, 21 Apr 2021 08:15:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618992950;
-        bh=8feRFI+Nf7CsMwsoYsmAwHpr1e9275LaSeUvdaoYQT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t3BHKnNimm0EQCUx2EoeWZa/23frWnb8N7x1me4NyuKUEgcMKb+wnCVnYaVZxZac+
-         XjrmGYQoWAykLubQIICJ/UsMPHimRlr28qs0D/VApT64+Pck0NFDSPnNE3eV9uYigJ
-         U3iSTwp0UPoYC7+Xz9HZgkceMCwp4LXDcU2GNd30=
-Date:   Wed, 21 Apr 2021 10:15:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Aditya Pakki <pakki001@umn.edu>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YH/fM/TsbmcZzwnX@kroah.com>
-References: <20210407001658.2208535-1-pakki001@umn.edu>
- <YH5/i7OvsjSmqADv@kroah.com>
- <20210420171008.GB4017@fieldses.org>
- <YH+zwQgBBGUJdiVK@unreal>
- <YH+7ZydHv4+Y1hlx@kroah.com>
- <CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com>
+        id S234549AbhDUIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:17:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47769 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234010AbhDUIRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:17:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618993041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P0FbeJ53aKVzlQQGzIJrlpdNfqU7q4WOuEBNdaNenu8=;
+        b=TmuNS4Ezw+hEaxT9UfTKKaaeRi7f3SrQo/MQ7G9GYaD29bzOub3YlYjW6PQ2/CyWIdpmM5
+        hjBYbaD/5U2phpCAip9NXEaqAcL/yhiFoY9LLRJCMmxNorkDVRyq+qXSm5Y0BCJK3Vrikj
+        2C3jjVLQcfGQ2AQwxlUf3L0DvGcSSRI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-604-BkXkWc7QOw6372n4GTzxVA-1; Wed, 21 Apr 2021 04:17:17 -0400
+X-MC-Unique: BkXkWc7QOw6372n4GTzxVA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C74A2107ACC7;
+        Wed, 21 Apr 2021 08:17:15 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-189.pek2.redhat.com [10.72.13.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C8F060C05;
+        Wed, 21 Apr 2021 08:17:09 +0000 (UTC)
+Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, parav@nvidia.com, elic@nvidia.com,
+        "Zhu, Lingshan" <lingshan.zhu@intel.com>
+References: <20210408082648.20145-1-jasowang@redhat.com>
+ <20210408115834-mutt-send-email-mst@kernel.org>
+ <a6a4ab68-c958-7266-c67c-142960222b67@redhat.com>
+ <20210409115343-mutt-send-email-mst@kernel.org>
+ <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
+ <20210412050730-mutt-send-email-mst@kernel.org>
+ <01918e14-7f7a-abf2-5864-292a32f0233c@redhat.com>
+ <d5632a4d-4d0b-b08d-06f9-c56f16734607@redhat.com>
+ <20210421035331-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3d5754f3-c012-67ad-5f01-fc16ec53df4e@redhat.com>
+Date:   Wed, 21 Apr 2021 16:17:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com>
+In-Reply-To: <20210421035331-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: http://en.wikipedia.org/wiki/Top_post
-Q: Were do I find info about this thing called top-posting?
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
 
-A: No.
-Q: Should I include quotations after my reply?
+在 2021/4/21 下午4:03, Michael S. Tsirkin 写道:
+> On Wed, Apr 21, 2021 at 03:41:36PM +0800, Jason Wang wrote:
+>> 在 2021/4/12 下午5:23, Jason Wang 写道:
+>>> 在 2021/4/12 下午5:09, Michael S. Tsirkin 写道:
+>>>> On Mon, Apr 12, 2021 at 02:35:07PM +0800, Jason Wang wrote:
+>>>>> 在 2021/4/10 上午12:04, Michael S. Tsirkin 写道:
+>>>>>> On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
+>>>>>>> 在 2021/4/8 下午11:59, Michael S. Tsirkin 写道:
+>>>>>>>> On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
+>>>>>>>>> This patch mandates 1.0 for vDPA devices. The goal is to have the
+>>>>>>>>> semantic of normative statement in the virtio
+>>>>>>>>> spec and eliminate the
+>>>>>>>>> burden of transitional device for both vDPA bus and vDPA parent.
+>>>>>>>>>
+>>>>>>>>> uAPI seems fine since all the vDPA parent mandates
+>>>>>>>>> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+>>>>>>>>>
+>>>>>>>>> For legacy guests, it can still work since Qemu will mediate when
+>>>>>>>>> necessary (e.g doing the endian conversion).
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>>>>>>> Hmm. If we do this, don't we still have a problem with
+>>>>>>>> legacy drivers which don't ack 1.0?
+>>>>>>> Yes, but it's not something that is introduced in this
+>>>>>>> commit. The legacy
+>>>>>>> driver never work ...
+>>>>>> My point is this neither fixes or prevents this.
+>>>>>>
+>>>>>> So my suggestion is to finally add ioctls along the lines
+>>>>>> of PROTOCOL_FEATURES of vhost-user.
+>>>>>>
+>>>>>> Then that one can have bits for legacy le, legacy be and modern.
+>>>>>>
+>>>>>> BTW I looked at vhost-user and it does not look like that
+>>>>>> has a solution for this problem either, right?
+>>>>> Right.
+>>>>>
+>>>>>
+>>>>>>>> Note 1.0 affects ring endianness which is not mediated in QEMU
+>>>>>>>> so QEMU can't pretend to device guest is 1.0.
+>>>>>>> Right, I plan to send patches to do mediation in the
+>>>>>>> Qemu to unbreak legacy
+>>>>>>> drivers.
+>>>>>>>
+>>>>>>> Thanks
+>>>>>> I frankly think we'll need PROTOCOL_FEATURES anyway, it's
+>>>>>> too useful ...
+>>>>>> so why not teach drivers about it and be done with it? You
+>>>>>> can't emulate
+>>>>>> legacy on modern in a cross endian situation because of vring
+>>>>>> endian-ness ...
+>>>>> So the problem still. This can only work when the hardware can support
+>>>>> legacy vring endian-ness.
+>>>>>
+>>>>> Consider:
+>>>>>
+>>>>> 1) the leagcy driver support is non-normative in the spec
+>>>>> 2) support a transitional device in the kenrel may requires the
+>>>>> hardware
+>>>>> support and a burden of kernel codes
+>>>>>
+>>>>> I'd rather simply drop the legacy driver support
+>>>> My point is this patch does not drop legacy support. It merely mandates
+>>>> modern support.
+>>>
+>>> I am not sure I get here. This patch fails the set_feature if VERSION_1
+>>> is not negotiated. This means:
+>>>
+>>> 1) vDPA presents a modern device instead of transitonal device
+>>> 2) legacy driver can't be probed
+>>>
+>>> What I'm missing?
+>>
+>> Hi Michael:
+>>
+>> Do you agree to find the way to present modern device? We need a conclusion
+>> to make the netlink API work to move forward.
+>>
+>> Thanks
+> I think we need a way to support legacy with no data path overhead. qemu
+> setting VERSION_1 for a legacy guest affects the ring format so it does
+> not really work. This seems to rule out emulating config space entirely
+> in userspace.
 
-http://daringfireball.net/2007/07/on_top
 
-On Wed, Apr 21, 2021 at 02:56:27AM -0500, Aditya Pakki wrote:
-> Greg,
-> 
-> I respectfully ask you to cease and desist from making wild accusations
-> that are bordering on slander.
-> 
-> These patches were sent as part of a new static analyzer that I wrote and
-> it's sensitivity is obviously not great. I sent patches on the hopes to get
-> feedback. We are not experts in the linux kernel and repeatedly making
-> these statements is disgusting to hear.
-> 
-> Obviously, it is a wrong step but your preconceived biases are so strong
-> that you make allegations without merit nor give us any benefit of doubt.
-> 
-> I will not be sending any more patches due to the attitude that is not only
-> unwelcome but also intimidating to newbies and non experts.
+So I'd rather drop the legacy support in this case. It never work for 
+vDPA in the past and virtio-vDPA doesn't even need that. Note that 
+ACCESS_PLATFORM is mandated for all the vDPA parents right now which 
+implies modern device and LE. I wonder what's the value for supporting 
+legacy in this case or do we really encourage vendors to ship card with 
+legacy support (e.g endian support in the hardware)?
 
-You, and your group, have publicly admitted to sending known-buggy
-patches to see how the kernel community would react to them, and
-published a paper based on that work.
 
-Now you submit a new series of obviously-incorrect patches again, so
-what am I supposed to think of such a thing?
+>
+> So I think we should add an ioctl along the lines of
+> protocol features. Then I think we can reserve feature bits
+> for config space format: legacy LE, legacy BE, modern.
 
-They obviously were _NOT_ created by a static analysis tool that is of
-any intelligence, as they all are the result of totally different
-patterns, and all of which are obviously not even fixing anything at
-all.  So what am I supposed to think here, other than that you and your
-group are continuing to experiment on the kernel community developers by
-sending such nonsense patches?
 
-When submitting patches created by a tool, everyone who does so submits
-them with wording like "found by tool XXX, we are not sure if this is
-correct or not, please advise." which is NOT what you did here at all.
-You were not asking for help, you were claiming that these were
-legitimate fixes, which you KNEW to be incorrect.
+We had VHOST_SET_VRING_ENDIAN but this will complicates both the vDPA 
+parent and management. What's more important, legacy behaviour is not 
+restrictied by the spec.
 
-A few minutes with anyone with the semblance of knowledge of C can see
-that your submissions do NOT do anything at all, so to think that a tool
-created them, and then that you thought they were a valid "fix" is
-totally negligent on your part, not ours.  You are the one at fault, it
-is not our job to be the test subjects of a tool you create.
 
-Our community welcomes developers who wish to help and enhance Linux.
-That is NOT what you are attempting to do here, so please do not try to
-frame it that way.
+>
+> Querying the feature bits will provide us with info about
+> what does the device support. Acking them will tell device
+> what does guest need.
 
-Our community does not appreciate being experimented on, and being
-"tested" by submitting known patches that are either do nothing on
-purpose, or introduce bugs on purpose.  If you wish to do work like
-this, I suggest you find a different community to run your experiments
-on, you are not welcome here.
 
-Because of this, I will now have to ban all future contributions from
-your University and rip out your previous contributions, as they were
-obviously submitted in bad-faith with the intent to cause problems.
+I think this can work, but I wonder how much we can gain from such 
+complexitiy.
 
-*plonk*
+Thanks
 
-greg k-h
+
+>
+>
+>
+>
+>
+>>>
+>>>>> to have a simple and easy
+>>>>> abstarction in the kenrel. For legacy driver in the guest,
+>>>>> hypervisor is in
+>>>>> charge of the mediation:
+>>>>>
+>>>>> 1) config space access endian conversion
+>>>>> 2) using shadow virtqueue to change the endian in the vring
+>>>>>
+>>>>> Thanks
+>>>> I'd like to avoid shadow virtqueue hacks if at all possible.
+>>>> Last I checked performance wasn't much better than just emulating
+>>>> virtio in software.
+>>>
+>>> I think the legacy driver support is just a nice to have. Or do you see
+>>> any value to that? I guess for mellanox and intel, only modern device is
+>>> supported in the hardware.
+>>>
+>>> Thanks
+>>>
+>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>> ---
+>>>>>>>>>      include/linux/vdpa.h | 6 ++++++
+>>>>>>>>>      1 file changed, 6 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+>>>>>>>>> index 0fefeb976877..cfde4ec999b4 100644
+>>>>>>>>> --- a/include/linux/vdpa.h
+>>>>>>>>> +++ b/include/linux/vdpa.h
+>>>>>>>>> @@ -6,6 +6,7 @@
+>>>>>>>>>      #include <linux/device.h>
+>>>>>>>>>      #include <linux/interrupt.h>
+>>>>>>>>>      #include <linux/vhost_iotlb.h>
+>>>>>>>>> +#include <uapi/linux/virtio_config.h>
+>>>>>>>>>      /**
+>>>>>>>>>       * vDPA callback definition.
+>>>>>>>>> @@ -317,6 +318,11 @@ static inline int
+>>>>>>>>> vdpa_set_features(struct vdpa_device *vdev, u64
+>>>>>>>>> features)
+>>>>>>>>>      {
+>>>>>>>>>              const struct vdpa_config_ops *ops = vdev->config;
+>>>>>>>>> +        /* Mandating 1.0 to have semantics of
+>>>>>>>>> normative statements in
+>>>>>>>>> +         * the spec. */
+>>>>>>>>> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
+>>>>>>>>> +        return -EINVAL;
+>>>>>>>>> +
+>>>>>>>>>          vdev->features_valid = true;
+>>>>>>>>>              return ops->set_features(vdev, features);
+>>>>>>>>>      }
+>>>>>>>>> -- 
+>>>>>>>>> 2.25.1
+
