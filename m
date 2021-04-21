@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F253670D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0930A3670DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244571AbhDUREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S244572AbhDURET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244560AbhDUREE (ORCPT
+        with ESMTP id S244592AbhDUREK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:04:04 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC16FC06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:03:29 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZGG4-00757O-RP; Wed, 21 Apr 2021 17:03:24 +0000
-Date:   Wed, 21 Apr 2021 17:03:24 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Tyler Hicks <code@tyhicks.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Michael Halcrow <mhalcrow@google.com>
-Subject: Re: [PATCH 053/190] Revert "ecryptfs: replace BUG_ON with error
- handling code"
-Message-ID: <YIBa3L88Ak1vBM4Y@zeniv-ca.linux.org.uk>
+        Wed, 21 Apr 2021 13:04:10 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43B8C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:03:37 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id m12so9757995pgr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1qqg5JsS9oq/8h7Zs6Mu/mei19Ti6bAmfD5fULLF4bo=;
+        b=d0wqTZdzwxRw9cTHUUvBJvX+tVmrd5i6gRNi4rkBXxrj8VYQEQ+d1u5amZs0vykbVw
+         sR9Lh7O2RAgpYLVXhDavKjEXceXYh4UglH8rMp03VAd7EbRt6V2laef9Q9JuXSh+nR2C
+         RdaGIWqLNo77FLHUeRQpYDUQr2t9kkZasTsrORrRUhrvUrDQx0jf2A4+cyTE3QmPWKRH
+         l80Rcc/Mfts7R3KUwon9OJD0lK9aKneswcLzqKcAHaVD/T01xg1g0PIPcXMAz1Uuq4gA
+         SmLsfN1b7sYO7ilEFPYNDNMGcZvOy6OkkzGfMb7yFEtVuCWWPFvzaB9SuI2sD2VlnU7b
+         XYkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1qqg5JsS9oq/8h7Zs6Mu/mei19Ti6bAmfD5fULLF4bo=;
+        b=UxVNOepQ59kbchUYdeG7aQ3071c3JHMSfDoPcy94AQelzkkcotpEUK/DuOfGuz/QLp
+         xIJ1pXtJiSX3MtrMzdvwArtzDBmmBH2yfg9quZE1G5b0Nh8SL9S/ptNV41FJOdFMlkwd
+         aVl7qSgURzOoGl9f8HtBLeowjUfReAdvdarZkRYDP+hIm+lEh+bVKv5stRk7NwA0ZSvJ
+         JJuglOTh4ZTsIXAQpHM+oWfk4+hD5q93qCU3QhWGONYjuOSQadDph4gP7ZbBQVfxVA31
+         iLl46EmLeUPrM747+tVhpq6Hhr5d1qDfGnAPW6Fanz0xE8zWItpvBUHgkwapJ+HkTcaL
+         JpBA==
+X-Gm-Message-State: AOAM533cojXEGeX8NQvnl+I7P/NQm4B5uZnyOWGhAW56MfyOpR8hoqH0
+        b79cY4KMEzZrz6VFfX7pMm0=
+X-Google-Smtp-Source: ABdhPJypFXyyofjvgT9jDkBVlH2vQ5rgil6IngxHJ9XLgsksmgMy/JyFvmsKEvoogOt20OVeqQYrDw==
+X-Received: by 2002:a63:c60a:: with SMTP id w10mr22352907pgg.421.1619024616990;
+        Wed, 21 Apr 2021 10:03:36 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:684d:4367:6ee3:8019])
+        by smtp.gmail.com with ESMTPSA id e9sm18836pgk.69.2021.04.21.10.03.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:03:35 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 10:03:33 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
+Subject: Re: [PATCH 157/190] Revert "Input: ad7879 - add check for read
+ errors in interrupt"
+Message-ID: <YIBa5X+5g/qNL+N8@google.com>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-54-gregkh@linuxfoundation.org>
- <YIBM8hiBLFO+JJr/@zeniv-ca.linux.org.uk>
- <20210421161329.GD4991@sequoia>
+ <20210421130105.1226686-158-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421161329.GD4991@sequoia>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210421130105.1226686-158-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:13:29AM -0500, Tyler Hicks wrote:
+Hi Greg,
 
-> > It *is* functionally harmless, AFAICS, but only because the condition
-> > is really impossible.  However,
-> > 	* it refers to vague (s)tool they'd produced, nevermind that
-> > all they really do is "find BUG_ON(), replace with returning an error".
-> > 	* unlike BUG_ON(), the replacement does *NOT* document the
-> > fact that condition should be impossible.
-> > IMO either should be sufficient for rejecting the patch.
+On Wed, Apr 21, 2021 at 03:00:32PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit e85bb0beb6498c0dffe18a2f1f16d575bc175c32.
 > 
-> I agree that it was not a malicious change. There are other places
-> within the same function that return -EINVAL and the expectation is that
-> errors from this function should be handled safely.
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
 
-Umm...  Assuming that failure exits in the callers will function properly
-if those conditions are true.  Which is not obvious at all.
+This one looks really OK to me and does not have to be reverted (unless
+Aditya will come clean and show the error introduced?).
 
-> That said, I can find no real-world reports of this BUG_ON() ever being
-> a problem and I don't think that there's any actual need for this
-> change. So, I'm alright with it being reverted considering the
-> circumstances.
+> 
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/input/touchscreen/ad7879.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/ad7879.c b/drivers/input/touchscreen/ad7879.c
+> index e850853328f1..8c4f3c193550 100644
+> --- a/drivers/input/touchscreen/ad7879.c
+> +++ b/drivers/input/touchscreen/ad7879.c
+> @@ -245,14 +245,11 @@ static void ad7879_timer(struct timer_list *t)
+>  static irqreturn_t ad7879_irq(int irq, void *handle)
+>  {
+>  	struct ad7879 *ts = handle;
+> -	int error;
+>  
+> -	error = regmap_bulk_read(ts->regmap, AD7879_REG_XPLUS,
+> -				 ts->conversion_data, AD7879_NR_SENSE);
+> -	if (error)
+> -		dev_err_ratelimited(ts->dev, "failed to read %#02x: %d\n",
+> -				    AD7879_REG_XPLUS, error);
+> -	else if (!ad7879_report(ts))
+> +	regmap_bulk_read(ts->regmap, AD7879_REG_XPLUS,
+> +			 ts->conversion_data, AD7879_NR_SENSE);
+> +
+> +	if (!ad7879_report(ts))
+>  		mod_timer(&ts->timer, jiffies + TS_PEN_UP_TIMEOUT);
+>  
+>  	return IRQ_HANDLED;
+> -- 
+> 2.31.1
+> 
 
-AFAICS, at least some parts of that BUG_ON() are provably impossible
-(e.g. NULL crypt_stat would've oopsed well upstream of the only call
-of that function).  ECRYPTFS_STRUCT_INITIALIZED is set after
-ecryptfs_alloc_inode() and never cleared, i.e. it should be present
-in ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat.flags for
-all inodes.  And crypt_stat we are passing to that thing is
-calculated as &(ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat),
-which is another reason why it can't be NULL.
+Thanks.
 
-Incidentally, what's ecryptfs_setattr() doing with similar check?
-It had been introduced in e10f281bca03 "eCryptfs: initialize crypt_stat
-in setattr", which claims
-    Recent changes in eCryptfs have made it possible to get to ecryptfs_setattr()
-    with an uninitialized crypt_stat struct.  This results in a wide and colorful
-    variety of unpleasantries.  This patch properly initializes the crypt_stat
-    structure in ecryptfs_setattr() when it is necessary to do so.
-and AFAICS at that point the call of ecryptfs_init_crypt_stat() in
-ecryptfs_alloc_inode() had already been there and EXCRYPTFS_STRUCT_INITIALIZED
-had been (unconditionally) set by it.  So how could that check trigger in
-ecryptfs_setattr()?  No direct calls of that function (then as well as now),
-it's only reachable as ecryptfs_{symlink,dir,main}_iops.setattr.  The first
-two could only end up set by ecryptfs_interpose(), for inode returned by
-iget5_locked() (i.e. one that had been returned by ->alloc_inode()),
-the last is set by ecryptfs_init_inode(), called by ecryptfs_inode_set(), 
-passed as callback to iget5_locked() by the same ecryptfs_interpose().
-IOW, again, the inode must have been returned by ->alloc_inode().
-
-I realize that it had been a long time ago, but... could somebody
-recall what that patch had been about?  Michael?
-
-Commit in question contains another (and much bigger) chunk; do
-the comments in commit message refer to it?  Because it really
-looks like
-	if (!(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
-		ecryptfs_init_crypt_stat(crypt_stat);
-part in ecryptfs_setattr() is a confusing no-op...
+-- 
+Dmitry
