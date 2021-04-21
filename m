@@ -2,104 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931FC366C99
+	by mail.lfdr.de (Postfix) with ESMTP id 20291366C98
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242481AbhDUNUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        id S242359AbhDUNUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243230AbhDUNQv (ORCPT
+        with ESMTP id S243263AbhDUNRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:16:51 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A179C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:14:30 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id z2so5704072qkb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FLAsc1Z4dnOJhx9j49BuieXWeT6WZBtSOA3VkyjkMZQ=;
-        b=tYHXF8gJ/FEVyhoKy/hhOJwu/VaLnvRGbOIB5eeuv8kIKp8Pk2sG4k5RLU8Iy+QtqC
-         MjeVHJzHDtoyQen+75eQEu/9qKW4nXnFaTaQ7xBZy/5kcx617yBMSlWl1Bmy9PGw3EXT
-         Dm/mf7S/cP4Bt4nf19WbXp37/ATGJsvlukWTY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FLAsc1Z4dnOJhx9j49BuieXWeT6WZBtSOA3VkyjkMZQ=;
-        b=C+wWFm56QHgoTvcrVt8cK3K8Za71Xop+XYUeZ+p6BKrIafOdAEDHY4SZDovkmDySCY
-         wDZjWSX6N4er25kikmh4pQLPHD86SGFJfA3XrxCvc14RneZOXkhcpj7xKMw/Pdrc1MYZ
-         /l40c3jH8AKaN9Ru57Kw3gkLJm29BSfGjuQ7LxLk+/+Y7cLeaQj1dCfOLcKTXsyDYKGa
-         pq2vBs0jTW0fC0Ayccl3MSv/KaGSHB4BzPEQq0wt8ociIh5kOW2lUqgtqCQ0CrD/o9j7
-         WbnVNnBidI9XKR+YX1neZeRHqOrp2bwCPn3F524S59PzvMGgpLdf+VvtceiGDUGgXLW9
-         6Ynw==
-X-Gm-Message-State: AOAM532KKwCWEYk72dj8iHReIUwb0/lbZLnhEbRWw4ncCe+W0uo300Eu
-        Anww3FRFQXPdUrn+2r67Pm56Gg==
-X-Google-Smtp-Source: ABdhPJyrCovHI6nCGiVuL5uqRt/CDEiOpg01AhJt58tMF8UGDQRXsusGnnMkSaW+/XFwmu30AGdzrw==
-X-Received: by 2002:ae9:c014:: with SMTP id u20mr17669678qkk.55.1619010869338;
-        Wed, 21 Apr 2021 06:14:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:92c9])
-        by smtp.gmail.com with ESMTPSA id 1sm2340371qkr.102.2021.04.21.06.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 06:14:28 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 14:14:27 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Wed, 21 Apr 2021 09:17:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFE9C06174A;
+        Wed, 21 Apr 2021 06:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dRzGSSNRpz+eFzH2So2ubKBvMje2zZTAEujED4XgJ/A=; b=cONTAs1f8SM90mxQ+xn7aZBJEz
+        ZB+5o8m2aPzm6QanM+Jrbm3O0Kh2JwvtUC6otyn/AP0ZS5PxUxHSK3jK8yFxzlRYU/w3C/Vf+EnbJ
+        HgyOumHIQJ0YRrkd/XYygZoE1vE34hnc7Kd6uCW47XYJvoWpRvXbhnCbD8zwDJW6bVj7sFVS1dFg7
+        8w6lXL900xGpbrXunim5UE1K7cCdXdyhum3VTvJHYt4NG0vXdsUnJW5kZnUFAeDBdcEZbcXd71WG7
+        T5eucAm13curkj/KT24LbNYdehoqSQKxDPaYXpnXKN1KV1cXu/YBYZNzqc4t9tOh9N9p5h24ctKY9
+        O6Dp+/Ug==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZChO-00GYcv-1O; Wed, 21 Apr 2021 13:15:40 +0000
+Date:   Wed, 21 Apr 2021 14:15:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YIAlM2jXadciFfGW@chrisdown.name>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
- <YFDAfPCnS204jiD5@chrisdown.name>
- <YFHAdUB4lu4mJ9Ar@alley>
- <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
- <YFMvfawY+0CncS8G@alley>
- <YHmXi303WxVZzVwI@chrisdown.name>
- <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH v3] staging: media: atomisp: pci:
+ Change line break to avoid an open parenthesis at the end of the line
+Message-ID: <20210421131522.GI3596236@casper.infradead.org>
+References: <20210421123718.GA4597@focaruja>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <20210421123718.GA4597@focaruja>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rasmus Villemoes writes:
->> One (ugly) way to handle this would be to have a new "level" field in
->> the printk index entry, with semantics that if it's some sentinel value,
->> look at the format itself for the format, otherwise if it's some other
->> value, the level field itself is the level.
->>
->> This will work, but it's pretty ugly. Any better suggestions? :-)
->
->Well, that was more or less exactly what I suggested when I wrote
->
->> One could also record the function a format is being used with - without
->> that, the display probably can't show a reasonable <level> for those
->> dev_* function.
->
->But, I think the real question is, why are we/you interested in the
->level at all? Isn't the format string itself enough for the purpose of
->tracking which printks have come and gone? IOW, what about, on the
->display side, simply skipping over some KERN_* prefix if present?
+On Wed, Apr 21, 2021 at 09:37:18AM -0300, Aline Santana Cordeiro wrote:
+> -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
+> -    u32 mbus_code);
+> +const struct atomisp_format_bridge *
+> +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
 
-Hmm, as Petr suggested, it's largely so that we can determine whether it will 
-be emitted at the current console loglevel. Otherwise, even if the printk site 
-is present, it might not ever get emitted. To that extent I am pretty convinced 
-it's necessary to reliably achieve the goals in the changelog.
+As I said, better to break the 80 column rule than do this.
 
-Judging by the conversation there's no immediately obvious better way, so 
-unless you or Petr object, I'll send a patch in the v6 series which implements 
-the "ugly" way with dev_printk support as the first user. That should make it 
-easier to add other printk-likes in future as needed.
