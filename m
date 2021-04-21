@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5358366705
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C62366706
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbhDUIcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:32:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55220 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235103AbhDUIcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:32:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618993891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SyJSqv7xgMovYx0Fyr0qnox0jNIz8bRMGSJ+RalSMEM=;
-        b=siMcW6l4HcwIaKfrFUt4CznGlfNMgIfMLRwJLZc8RwDmhBkPH5hNV9om/raAGEcm5r0WG7
-        H6RNw8yNJVMnV1z3ZLbvvn5bISuvlzsdjHpjCHcS4r67LRO6lTocMErt4zVtpm32UmS1ld
-        YVL+Y78LCaDG3UcQZj4JTclxCGy4gqU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A322B137;
-        Wed, 21 Apr 2021 08:31:31 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 10:31:30 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 3/8] mm,memory_hotplug: Factor out adjusting present
- pages into adjust_present_page_count()
-Message-ID: <YH/i4nfrqt2k0mzZ@dhcp22.suse.cz>
-References: <20210416112411.9826-1-osalvador@suse.de>
- <20210416112411.9826-4-osalvador@suse.de>
- <YH6i09ieDte+xog8@dhcp22.suse.cz>
- <20210421080036.GC22456@linux>
+        id S235286AbhDUIcL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 04:32:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:25643 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235219AbhDUIcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:32:09 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-10-g07RpUZBPa6J7oZEm98CFQ-1; Wed, 21 Apr 2021 09:31:33 +0100
+X-MC-Unique: g07RpUZBPa6J7oZEm98CFQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 21 Apr 2021 09:31:32 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Wed, 21 Apr 2021 09:31:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] arm64: Show three registers per line
+Thread-Topic: [PATCH] arm64: Show three registers per line
+Thread-Index: AQHXNgoYyzkcKOScw0mUJJFkt/fGqaq+o1Zw
+Date:   Wed, 21 Apr 2021 08:31:32 +0000
+Message-ID: <c3ef59f1c06b42ecaa05a84beb7321b3@AcuMS.aculab.com>
+References: <20210420172245.3679077-1-willy@infradead.org>
+In-Reply-To: <20210420172245.3679077-1-willy@infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421080036.GC22456@linux>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21-04-21 10:00:36, Oscar Salvador wrote:
-> On Tue, Apr 20, 2021 at 11:45:55AM +0200, Michal Hocko wrote:
-> > On Fri 16-04-21 13:24:06, Oscar Salvador wrote:
-> > > From: David Hildenbrand <david@redhat.com>
-> > > 
-> > > Let's have a single place (inspired by adjust_managed_page_count()) where
-> > > we adjust present pages.
-> > > In contrast to adjust_managed_page_count(), only memory onlining/offlining
-> > > is allowed to modify the number of present pages.
-> > > 
-> > > Signed-off-by: David Hildenbrand <david@redhat.com>
-> > > Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> > > Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> > 
-> > Not sure self review counts ;)
+From: Matthew Wilcox
+> Sent: 20 April 2021 18:23
+>
+> Displaying two registers per line takes 15 lines.  That improves to just
+> 10 lines if we display three registers per line, which reduces the amount
+> of information lost when oopses are cut off.  It stays within 80 columns
+> and matches x86-64.
 > 
-> Uhm, the original author is David, I just added my signed-off-by as a deliverer.
-> I thought that in that case was ok to stick my Reviewed-by.
-> Or maybe my signed-off-by carries that implicitly.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  arch/arm64/kernel/process.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 6e60aa3b5ea9..aff5a2c12297 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -294,13 +294,10 @@ void __show_regs(struct pt_regs *regs)
+>  	i = top_reg;
+> 
+>  	while (i >= 0) {
+> -		printk("x%-2d: %016llx ", i, regs->regs[i]);
+> -		i--;
+> +		printk("x%-2d: %016llx", i, regs->regs[i]);
+> 
+> -		if (i % 2 == 0) {
+> -			pr_cont("x%-2d: %016llx ", i, regs->regs[i]);
+> -			i--;
+> -		}
+> +		while (i-- % 3)
+> +			pr_cont(" x%-2d: %016llx", i, regs->regs[i]);
+> 
+>  		pr_cont("\n");
+>  	}
 
-Yeah I do expect that one should review own changes but this is not
-really anything to lose sleep over.
+I think I'd avoid pr_cont() to avoid 'mishaps' during concurrent oops.
+This probably needs something like:
+	for (; i >= 0; i -= 3) {
+		switch (i) {
+		case 0:
+			printk("x%-2d: %016llx\n", i, regs->regs[i]);
+			break;
+		case 1:
+			printk("x%-2d: %016llx x%-2d: %016llx\n",
+			       i, regs->regs[i], i - 1, regs->regs[i - 1]);
+			break;
+		default:
+			printk("x%-2d: %016llx x%-2d: %016llx x%-2d: %016llx\n",
+			       i, regs->regs[i], i - 1, regs->regs[i - 1],
+				 i - 2, regs->regs[i - 2]);
+			continue;
+		}
+		break;
+	}
 
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > 
-> > Btw. I strongly suspect the resize lock is quite pointless here.
-> > Something for a follow up patch.
-> 
-> What makes you think that?
+	David
 
-         * Write access to present_pages at runtime should be protected by
-         * mem_hotplug_begin/end(). Any reader who can't tolerant drift of
-         * present_pages should get_online_mems() to get a stable value.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-> I have been thinking about this, let us ignore this patch for a moment.
-> 
-> If I poked the code correctly, node_size_lock is taken in:
-> 
-> remove_pfn_range_from_zone()
-> move_pfn_range_to_zone()
-> 
-> both of them handling {zone,node}->spanned_pages
-> 
-> Then we take it in {offline,online}_pages() for {zone,node}->present_pages.
-> 
-> The other places where we take it are __init functions, so not of interest.
-> 
-> Given that {offline,online}_pages() is serialized by the memory_hotplug lock,
-> I would say that {node,zone}->{spanned,present}_pages is, at any time, stable?
-> So, no need for the lock even without considering this patch?
-
-Yes. The resize lock is really only relevant to the parallel struct page
-initialization during early boot. The hotplug usage seems just a left
-over from the past or maybe it has never been really relevant in that
-context.
-
-> Now, getting back to this patch.
-> adjust_present_page_count() will be called from memory_block_online(), which
-> is not holding the memory_hotplug lock yet.
-> But, we only fiddle with present pages out of {online,offline}_pages() if
-> we have vmemmap pages, and since that operates on the same memory block,
-> its lock should serialize that.
-
-Memory hotplug is always synchronized on the device level.
--- 
-Michal Hocko
-SUSE Labs
