@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D27366C83
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EF7366C61
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242285AbhDUNTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:19:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52246 "EHLO mail.kernel.org"
+        id S242778AbhDUNPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:15:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242182AbhDUNJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:09:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0E1361455;
-        Wed, 21 Apr 2021 13:09:17 +0000 (UTC)
+        id S242219AbhDUNJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:09:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEEA61452;
+        Wed, 21 Apr 2021 13:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010558;
-        bh=QkfzxDfaZfGtpmoa/d+laslR7/OyV5I25yoNwC+3S/o=;
+        s=korg; t=1619010561;
+        bh=ncxvy4C7jFoBmabQQErPO1mM8Q7G9qxCCFnwgrAtcoQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LtdO7aLiNC/anZpvFaLn6KweK8L34oUPNv0ihAu7Ni3h7J8w/OTRGPY5dcAKyYEmA
-         LK4rgBudE7xUrJ2RKIsAY619OJqzPlknMyU2RISWDVReM/PNm6SGJxcDNzfO1luymJ
-         TNeaPtO1v+XgtRb0lbDwPs0Idptpc4ASMQiMWDMU=
+        b=KMbDserhPr/39BIPzAzfYiuHv8KuyTuJQn00Aer21q8KnOeMKRpPQ4UJ4qgyujKiL
+         wuh3YjFMBwWZDE57Fil9U8gwe0fUB1hNrUUFLMMGGrLDVB7Pd2sTL67uceGrKguQj1
+         pedvoXdculJs9rTqSmHayPwy9ioU2bCZRDZ7BaGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 178/190] Revert "net: netxen: fix a missing check and an uninitialized use"
-Date:   Wed, 21 Apr 2021 15:00:53 +0200
-Message-Id: <20210421130105.1226686-179-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 179/190] Revert "drivers/regulator: fix a missing check of return value"
+Date:   Wed, 21 Apr 2021 15:00:54 +0200
+Message-Id: <20210421130105.1226686-180-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit d134e486e831defd26130770181f01dfc6195f7d.
+This reverts commit 966e927bf8cc6a44f8b72582a1d6d3ffc73b12ad.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,26 +53,34 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
+Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/regulator/palmas-regulator.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
-index 08f9477d2ee8..32b9e28dda16 100644
---- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
-+++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
-@@ -1107,8 +1107,7 @@ netxen_validate_firmware(struct netxen_adapter *adapter)
- 		return -EINVAL;
- 	}
- 	val = nx_get_bios_version(adapter);
--	if (netxen_rom_fast_read(adapter, NX_BIOS_VERSION_OFFSET, (int *)&bios))
--		return -EIO;
-+	netxen_rom_fast_read(adapter, NX_BIOS_VERSION_OFFSET, (int *)&bios);
- 	if ((__force u32)val != bios) {
- 		dev_err(&pdev->dev, "%s: firmware bios is incompatible\n",
- 				fw_name[fw_type]);
+diff --git a/drivers/regulator/palmas-regulator.c b/drivers/regulator/palmas-regulator.c
+index 337dd614695e..f27ad8254291 100644
+--- a/drivers/regulator/palmas-regulator.c
++++ b/drivers/regulator/palmas-regulator.c
+@@ -438,16 +438,13 @@ static int palmas_ldo_write(struct palmas *palmas, unsigned int reg,
+ static int palmas_set_mode_smps(struct regulator_dev *dev, unsigned int mode)
+ {
+ 	int id = rdev_get_id(dev);
+-	int ret;
+ 	struct palmas_pmic *pmic = rdev_get_drvdata(dev);
+ 	struct palmas_pmic_driver_data *ddata = pmic->palmas->pmic_ddata;
+ 	struct palmas_regs_info *rinfo = &ddata->palmas_regs_info[id];
+ 	unsigned int reg;
+ 	bool rail_enable = true;
+ 
+-	ret = palmas_smps_read(pmic->palmas, rinfo->ctrl_addr, &reg);
+-	if (ret)
+-		return ret;
++	palmas_smps_read(pmic->palmas, rinfo->ctrl_addr, &reg);
+ 
+ 	reg &= ~PALMAS_SMPS12_CTRL_MODE_ACTIVE_MASK;
+ 
 -- 
 2.31.1
 
