@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53430366BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BED5366B97
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240945AbhDUNGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:06:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45088 "EHLO mail.kernel.org"
+        id S240481AbhDUNDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:03:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240772AbhDUNFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA1A761459;
-        Wed, 21 Apr 2021 13:04:26 +0000 (UTC)
+        id S240392AbhDUNDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:03:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5FB46144B;
+        Wed, 21 Apr 2021 13:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010267;
-        bh=3cAA7Azs7mPjOxr4kpObd82fiDWSh7aevdtiGJgx1QU=;
+        s=korg; t=1619010172;
+        bh=4FALHvgAMTrACEpfV9mbSRxIf7DEV2x/BSx/ROwSxVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qlMy/B/KIuSpNlcct0Baxb1FlbDxyeLZhz2FTN3pzYMyLutxdgxEGxdcObxKXs5Rx
-         sz1oAEf8QnKyZe04iEnWSfeva7HUy7hejc3G6NY0nsx4q+9Cw9hC+oJwY7DQwAu2S6
-         fvacf6nJ2lNMLex4yzhne70YTmeFTTPLtSF1OzP8=
+        b=2NOndzHogBGRpfWmmJpksqUl2lKBZ7QiKZq1J6iaRquUnlKQfyhvUavQbwUne/Olw
+         1CdDjyu5rtmM8u/ApC54IwF4jFm4hpaTzq4OIXZHTn5xShBVwMZnTejdfrYhSaDTXs
+         Anrrs6tZQWRLiBn0u3lgOWvgMKeJoZtH7A7LkMe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Qiushi Wu <wu000273@umn.edu>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 038/190] Revert "cpuidle: Fix three reference count leaks"
-Date:   Wed, 21 Apr 2021 14:58:33 +0200
-Message-Id: <20210421130105.1226686-39-gregkh@linuxfoundation.org>
+        Qiushi Wu <wu000273@umn.edu>, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 039/190] Revert "iommu: Fix reference count leak in iommu_group_alloc."
+Date:   Wed, 21 Apr 2021 14:58:34 +0200
+Message-Id: <20210421130105.1226686-40-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c343bf1ba5efcbf2266a1fe3baefec9cc82f867f.
+This reverts commit 7cc31613734c4870ae32f5265d576ef296621343.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,41 +53,24 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Qiushi Wu <wu000273@umn.edu>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: https
+Cc: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/cpuidle/sysfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iommu/iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-index 53ec9585ccd4..23a219cedbdb 100644
---- a/drivers/cpuidle/sysfs.c
-+++ b/drivers/cpuidle/sysfs.c
-@@ -487,7 +487,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
- 		ret = kobject_init_and_add(&kobj->kobj, &ktype_state_cpuidle,
- 					   &kdev->kobj, "state%d", i);
- 		if (ret) {
--			kobject_put(&kobj->kobj);
-+			kfree(kobj);
- 			goto error_state;
- 		}
- 		cpuidle_add_s2idle_attr_group(kobj);
-@@ -618,7 +618,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
- 	ret = kobject_init_and_add(&kdrv->kobj, &ktype_driver_cpuidle,
- 				   &kdev->kobj, "driver");
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index d0b0a15dba84..cd22cd0e6517 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -596,7 +596,7 @@ struct iommu_group *iommu_group_alloc(void)
+ 				   NULL, "%d", group->id);
  	if (ret) {
--		kobject_put(&kdrv->kobj);
-+		kfree(kdrv);
- 		return ret;
- 	}
- 
-@@ -712,7 +712,7 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 	error = kobject_init_and_add(&kdev->kobj, &ktype_cpuidle, &cpu_dev->kobj,
- 				   "cpuidle");
- 	if (error) {
--		kobject_put(&kdev->kobj);
-+		kfree(kdev);
- 		return error;
+ 		ida_simple_remove(&iommu_group_ida, group->id);
+-		kobject_put(&group->kobj);
++		kfree(group);
+ 		return ERR_PTR(ret);
  	}
  
 -- 
