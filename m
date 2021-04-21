@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAF4367118
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF10367119
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244659AbhDURPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242773AbhDURPc (ORCPT
+        id S244679AbhDURPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:15:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22109 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241487AbhDURPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:15:32 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3FFC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:14:57 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id cq11so6619946edb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i2gnFyBa30zVwz1K/L6S0r8solVsMJjfsMacMOrQKsU=;
-        b=Ox+u8ztgX4f0xss71LqTRBYCI7/8RjrQJ/yjc9wkfY7wNCHyf23bwpjhlZT6iXcDXt
-         HoqdyKMRyN0isaGQkW0HwC/rIXsMxw/pcLEX9PYAM0dMxEy1wGD/2n8j4jVXpkeTS6f8
-         LO5oL8Ei5UDyNihL30C2zLpzTMz8/DHMaw29Xj6JKTBeTcwgqn3/RKEN0hj/akx4Su6t
-         zWGxYHJtHSNYA4q05RLc/J4jJHtnT7dmKkKoZYdsplJPqyPGXtH6AoI9JaFjB4CCVLeO
-         /wnHA2dQ8KNV4YPrau/DBrfXQckEFQdVmOwXCxgTazQWrV+LUIJi4d+0q8RcoyNfOhfn
-         Hx1A==
+        Wed, 21 Apr 2021 13:15:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619025297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7Ds+L1bCP6+6WbzB+/50dXw+9s8exJ7s0FvADavIhEQ=;
+        b=PvlAzhw0jdpOXutQmo5/QE1wEP1cw0GFd1fWU7MgSq4rPzbHkzTzyQkvey6X513C4DV35F
+        a+Qm82UoEsynmvZvfyi6pWKQHuO2JbX9q/K7JKh/Kc8oMCADwfjbOLwYnYbH7dMLrCRKzE
+        W9f5pjnwVUjOKy72u4ebCOEWs0fQf0w=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-3rfhUMYVPKGbSisJWlF22Q-1; Wed, 21 Apr 2021 13:14:50 -0400
+X-MC-Unique: 3rfhUMYVPKGbSisJWlF22Q-1
+Received: by mail-ej1-f72.google.com with SMTP id o25-20020a1709061d59b029037c94676df5so6163108ejh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:14:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i2gnFyBa30zVwz1K/L6S0r8solVsMJjfsMacMOrQKsU=;
-        b=Ojpd+jgaAbSBpFYWoZxKFAVq9b4iBYv09K2f3It7alC1kPj0gCND110jYIM34234Zl
-         TFYnKw/ei4tz/XZRKDzpYoK/UtHKpHuy3UrJcPPiZmyR1MwZ5Wt3QLYL0rtxxapVRLvk
-         nHRyEWUaxyvhYsHe62gkksuK4kyvU0gqZf5rZUtbOTQBOj4DmoyWn5UZHqerc6n2zy9G
-         1c9sIlzEuV9eGgXpQ2AICJMSEcPzXks7nVrSQLayYknbtDinTUlX59e4A6H9+Mi5XDC/
-         HYRtvGvGPuXj6hfTZMjA+1kY9Uac1HW/BPDqEY9DrE9rXhSekeDMA0RhUyYCqJQGvEqw
-         keIw==
-X-Gm-Message-State: AOAM533aQw9G4w3Yv6UEwTCOEGWK6IPhWCPhL1LWDCnVESEfSOxG/0eu
-        yxC+TJTgID1obGWAck6BLxZTSbPwhK/VfNLvxxWm
-X-Google-Smtp-Source: ABdhPJyWgCO2IVv8Y/TetSy2LghoVNXm9TSh5duqoaz1Pvk67SkbzTNOEoTTLUGtfbGRE0pHTgch5D6kq/bKjkV/UyE=
-X-Received: by 2002:a05:6402:1cc1:: with SMTP id ds1mr38445644edb.135.1619025295842;
- Wed, 21 Apr 2021 10:14:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Ds+L1bCP6+6WbzB+/50dXw+9s8exJ7s0FvADavIhEQ=;
+        b=hcPaqDjR5B91MJZMCd9AVyx/6SuK1FVPljnkbzq+kPcjrZ+98HAw24sZGsVYWPvqrC
+         ZEx3LglO2uvlowoWS6//ympmq8be4U7Le2c6k9kJ1e5T/bj3lr6PuJjH4k8bjPxOORZC
+         kXv7wep2GJJUEjmK21k4Ltny36/kPqu6DC3Q8Qxidjc2llgSS9VHkdPoy9huyMXGWfOo
+         7ej3ZBZjHCZgc0Gf8pruBge6IXMw1k1EbP5Tc27eucIAhFecJEyUKESonDiEZEIjAhiS
+         YGvyPFq0dnL8lixBr2HP9FYQYzMr+gq43n22uxWLqWxR+Ozyq7/n3Mm66NbeIh9DeT/U
+         LqYg==
+X-Gm-Message-State: AOAM530neIjZTQ2htjulqx8/LTxoExF/vk8BBqr+GiziWZUH4xhGY99U
+        1Opax8JTm729QHyvLKptGolLRK54cPyCoR0wqxo+8Vw50YjAUm0nMvwQNLfQRhu/LadiFz5Y2Ke
+        1H3LD6eo60dAWovxCBYD2n3/s
+X-Received: by 2002:a05:6402:290:: with SMTP id l16mr29082595edv.337.1619025289506;
+        Wed, 21 Apr 2021 10:14:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmoKETRUuKqjG2OlKoFygbPK3HDWwNtdSKU+JS0tzwEYE4lpqCN0fHqQM+w+zccUEMLCoX8w==
+X-Received: by 2002:a05:6402:290:: with SMTP id l16mr29082582edv.337.1619025289299;
+        Wed, 21 Apr 2021 10:14:49 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8308:b105:dd00:277b:6436:24db:9466])
+        by smtp.gmail.com with ESMTPSA id i1sm22905edt.33.2021.04.21.10.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:14:48 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>
+Cc:     linux-security-module@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Subject: [RFC PATCH 0/2] selinux,anon_inodes: Use a separate SELinux class for each type of anon inode
+Date:   Wed, 21 Apr 2021 19:14:44 +0200
+Message-Id: <20210421171446.785507-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-86-gregkh@linuxfoundation.org> <CAHC9VhTvKeNFPsJadVK_i1+qaQBRSVfdWd+HC_EsgZx3coM8oA@mail.gmail.com>
- <20210421170257.GJ3141668@madcap2.tricolour.ca>
-In-Reply-To: <20210421170257.GJ3141668@madcap2.tricolour.ca>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 21 Apr 2021 13:14:44 -0400
-Message-ID: <CAHC9VhRFtRSV4MudvOP+Hba0SbJxvk0Lt9rJJk-GvnRnjPDxOA@mail.gmail.com>
-Subject: Re: [PATCH 085/190] Revert "audit: fix a memory leak bug"
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 1:03 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> On 2021-04-21 12:18, Paul Moore wrote:
-> > On Wed, Apr 21, 2021 at 9:04 AM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This reverts commit 70c4cf17e445264453bc5323db3e50aa0ac9e81f.
-> > >
-> > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > faith" to try to test the kernel community's ability to review "known
-> > > malicious" changes.  The result of these submissions can be found in a
-> > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > >
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove this
-> > > change to ensure that no problems are being introduced into the
-> > > codebase.
-> > >
-> > > Cc: Wenwen Wang <wang6495@umn.edu>
-> > > Cc: Richard Guy Briggs <rgb@redhat.com>
-> > > Cc: Paul Moore <paul@paul-moore.com>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >  kernel/auditfilter.c | 12 +++++-------
-> > >  1 file changed, 5 insertions(+), 7 deletions(-)
-> >
-> > NACK on this revert.  I've looked at the original patch again this
-> > morning, and the original patch still looks correct and doesn't appear
-> > to introduce any new faults to the best of my understanding.
->
-> Agreed.  Though on review, a much simpler fix to my original patch that
-> caused this problem requiring this fix
->         e85322d21cfebeac64f58a204e9adc0bc5c1e46f rgb 2014-10-02 ("audit: cull redundancy in audit_rule_change")
-> would have been the two-liner in the error path similar to the pattern
-> in audit_data_to_entry() error path would have been:
->
->         if (entry->rule.tree)
->                 audit_put_tree(entry->rule.tree); /* that's the temporary one */
+This series aims to correct a design flaw in the original anon_inode
+SELinux support that would make it hard to write policies for anonymous
+inodes once more types of them are supported (currently only userfaultfd
+inodes are). A more detailed rationale is provided in the second patch.
 
-Given the situation this morning I think it is best to limit
-discussion on this thread to just the safety of the patches in
-question and the necessity of the reverts Greg is proposing here.  If
-you have suggestions about how to clean-up or otherwise improve the
-code relating to these patches I think it is better to have that
-discussion in the appropriate subsystem list/forum/etc (as one would
-do normally).
+The first patch extends the anon_inode_getfd_secure() function to accept
+an additional numeric identifier that represents the type of the
+anonymous inode being created, which is passed to the LSMs via
+security_inode_init_security_anon().
+
+The second patch then introduces a new SELinux policy capability that
+allow policies to opt-in to have a separate class used for each type of
+anon inode. That means that the "old way" will still 
+
+I wish I had realized the practical consequences earlier, while the
+patches were still under review, but it only started to sink in after
+the authors themselves later raised the issue in an off-list
+conversation. Even then, I still hoped it wouldn't be that bad, but the
+more I thought about how to apply this in an actual policy, the more I
+realized how much pain it would be to work with the current design, so
+I decided to propose these changes.
+
+I hope this will be an acceptable solution.
+
+A selinux-testsuite patch that adapts the userfaultfd test to work also
+with the new policy capability enabled will follow.
+
+Ondrej Mosnacek (2):
+  LSM,anon_inodes: explicitly distinguish anon inode types
+  selinux: add capability to map anon inode types to separate classes
+
+ fs/anon_inodes.c                           | 42 +++++++++++++---------
+ fs/userfaultfd.c                           |  6 ++--
+ include/linux/anon_inodes.h                |  4 ++-
+ include/linux/lsm_hook_defs.h              |  3 +-
+ include/linux/security.h                   | 19 ++++++++++
+ security/security.c                        |  3 +-
+ security/selinux/hooks.c                   | 28 ++++++++++++++-
+ security/selinux/include/classmap.h        |  2 ++
+ security/selinux/include/policycap.h       |  1 +
+ security/selinux/include/policycap_names.h |  3 +-
+ security/selinux/include/security.h        |  7 ++++
+ 11 files changed, 95 insertions(+), 23 deletions(-)
 
 -- 
-paul moore
-www.paul-moore.com
+2.30.2
+
