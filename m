@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3787C366C64
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83AB366C86
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242843AbhDUNQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:16:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
+        id S242505AbhDUNT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242340AbhDUNKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:10:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C43176143B;
-        Wed, 21 Apr 2021 13:09:31 +0000 (UTC)
+        id S242391AbhDUNKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:10:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7356A6144B;
+        Wed, 21 Apr 2021 13:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010572;
-        bh=v8XqbaWDsCTh/eqqJjgZUGkLkeNt2H0yrxWwioMDIvk=;
+        s=korg; t=1619010575;
+        bh=aBj9HX6oeSFbfvO8zNy9bzFpOITov04ZH+xy06ElNZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eALUEUhLzVil8kHOxCrj7yKOwvNqxs7iC0OxZDiEAKmGBVb6jzrJOBGrpjJOgOC7l
-         Vr0Ez6xi746XxhKQqGL10rKsJPgdL6Wu7Ohkc3eQmeGgT41wod8Sj501k1wAcT30M0
-         61NsTeZNzZZ3C0aGkxumgTz2DofccDe9MMC63Sbg=
+        b=1abrnDgUt08aiOP/aHF42rvM4PqdbuYzcFQPD4WXlRY98mnjTBK0ULGr5xlANvJwQ
+         HlGq1I8X6bLhsnsKREkLB0+pATYDHw2iH+sheHg9Qurs0p5Xv/TXt7r0W1xFod7OSa
+         oOWKz/af2J6V9UJwg+J+ZlMI0ZGGXduVdgZSLOp0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>, Sean Young <sean@mess.org>,
+        Aditya Pakki <pakki001@umn.edu>,
         Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 149/190] Revert "media: lgdt3306a: fix a missing check of return value"
-Date:   Wed, 21 Apr 2021 15:00:24 +0200
-Message-Id: <20210421130105.1226686-150-gregkh@linuxfoundation.org>
+Subject: [PATCH 150/190] Revert "media: gspca: mt9m111: Check write_bridge for timeout"
+Date:   Wed, 21 Apr 2021 15:00:25 +0200
+Message-Id: <20210421130105.1226686-151-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c9b7d8f252a5a6f8ca6e948151367cbc7bc4b776.
+This reverts commit 656025850074f5c1ba2e05be37bda57ba2b8d491.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,30 +53,47 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Sean Young <sean@mess.org>
+Cc: Aditya Pakki <pakki001@umn.edu>
 Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/dvb-frontends/lgdt3306a.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/media/usb/gspca/m5602/m5602_mt9m111.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/lgdt3306a.c b/drivers/media/dvb-frontends/lgdt3306a.c
-index 722576f1732a..f34263a33ede 100644
---- a/drivers/media/dvb-frontends/lgdt3306a.c
-+++ b/drivers/media/dvb-frontends/lgdt3306a.c
-@@ -1690,10 +1690,7 @@ static int lgdt3306a_read_signal_strength(struct dvb_frontend *fe,
- 	case QAM_256:
- 	case QAM_AUTO:
- 		/* need to know actual modulation to set proper SNR baseline */
--		ret = lgdt3306a_read_reg(state, 0x00a6, &val);
--		if (lg_chkerr(ret))
--			goto fail;
--
-+		lgdt3306a_read_reg(state, 0x00a6, &val);
- 		if(val & 0x04)
- 			ref_snr = 2800; /* QAM-256 28dB */
- 		else
+diff --git a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
+index bfa3b381d8a2..50481dc928d0 100644
+--- a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
++++ b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
+@@ -195,7 +195,7 @@ static const struct v4l2_ctrl_config mt9m111_greenbal_cfg = {
+ int mt9m111_probe(struct sd *sd)
+ {
+ 	u8 data[2] = {0x00, 0x00};
+-	int i, rc = 0;
++	int i;
+ 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
+ 
+ 	if (force_sensor) {
+@@ -213,18 +213,16 @@ int mt9m111_probe(struct sd *sd)
+ 	/* Do the preinit */
+ 	for (i = 0; i < ARRAY_SIZE(preinit_mt9m111); i++) {
+ 		if (preinit_mt9m111[i][0] == BRIDGE) {
+-			rc |= m5602_write_bridge(sd,
++			m5602_write_bridge(sd,
+ 				preinit_mt9m111[i][1],
+ 				preinit_mt9m111[i][2]);
+ 		} else {
+ 			data[0] = preinit_mt9m111[i][2];
+ 			data[1] = preinit_mt9m111[i][3];
+-			rc |= m5602_write_sensor(sd,
++			m5602_write_sensor(sd,
+ 				preinit_mt9m111[i][1], data, 2);
+ 		}
+ 	}
+-	if (rc < 0)
+-		return rc;
+ 
+ 	if (m5602_read_sensor(sd, MT9M111_SC_CHIPVER, data, 2))
+ 		return -ENODEV;
 -- 
 2.31.1
 
