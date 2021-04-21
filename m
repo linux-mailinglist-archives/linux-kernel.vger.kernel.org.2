@@ -2,165 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4903666B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB763666F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhDUIGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:06:41 -0400
-Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:15201
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231685AbhDUIGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:06:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kionR9k3itmrRO+eolAaBU1TXVAO06Y0bFcByIIJSLdrh5XViZmLikKFZkLB3GsGKvhJDt7T8Nk8LJ4M0dK13kjo8pa9L9rr+U/biOicSOmYmfgykubf8p/Vnx52P7Nfmyd4XajYMNWYGauM7Xna2FAihdvxDl+cftC+gnpYuwFoIk8kCnjS5AiJkpTlccgZpNBdUzBCWb2SmyPEEA3QLyx6tjWkQqZQNT3i7p/0an7im3OghhfSFQAo51cPHhx4SkQ4fY+2a7Wsj25ym1SSdUSQiPqo2XQMnKkCPXpT+JRA1AoX04yewyt67aS76PXWwkoLNUygTQRn8VBlY2EZZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BxUdBpgvFbIJdR5BwP6Mwgbcbhw3f6P0+zfUXKhB5aw=;
- b=QbEZxgjpq5mJar5rH9DwDbN5V1SYYFURIXjiTKeeL0vMhDtjyfBnOI3apf6Epy9Ay3bKnHcBq2c2kr5Dzu+zHPq6+XoaBp05ZQD72DWrjfYjJMCGq12CgMNCb+wSnJMICgdI4RrMvfxishew9nDt4aCwZXzINy9d9YZ+9uB1LOeA+C1T4iCgYY13EQQXx1Pl82r5G4lQFYkYDK/YMCmsTozqyYyrw8qrTckFCKMoW4Aj7hM6SI/qBJwdh3n2CufCL4B8fMEsQKFkfyDU28ffkfALuOtypFiy5HsM2Vl243XqBKa1qkH2a1LcMO0hVbIDViaDJDLlOPVfpmP4Eg555A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BxUdBpgvFbIJdR5BwP6Mwgbcbhw3f6P0+zfUXKhB5aw=;
- b=WhHxy8kkBvwk1jXfBbsLnQHnF3Fg3QREY9zDkVbTiUnI+JSHYwGkFai7tL8aCCPP4s5R6a5w2QLZjZkKq9KTpFxsX5bDgQKi298Vu3yo686zw4YWXNNzn29HWGdccFiSo9ChWIn06crnGgdFFNJelWjFjt1J0CRpsYd5Q00NLtU=
-Received: from BN9PR03CA0411.namprd03.prod.outlook.com (2603:10b6:408:111::26)
- by CH2PR12MB4087.namprd12.prod.outlook.com (2603:10b6:610:7f::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 21 Apr
- 2021 08:06:03 +0000
-Received: from BN8NAM11FT007.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:111:cafe::26) by BN9PR03CA0411.outlook.office365.com
- (2603:10b6:408:111::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend
- Transport; Wed, 21 Apr 2021 08:06:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT007.mail.protection.outlook.com (10.13.177.109) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 08:06:02 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 21 Apr
- 2021 03:06:02 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 21 Apr
- 2021 03:06:02 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Wed, 21 Apr 2021 03:05:58 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: drop S24_LE format support
-Date:   Wed, 21 Apr 2021 13:53:11 +0530
-Message-ID: <1618993402-10354-1-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
+        id S234860AbhDUIZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:25:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234532AbhDUIZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:25:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618993499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bk8W5PYdHyJiKDovJRouAdDCNSetd5qB4OVJxOdiFwg=;
+        b=LDkRp0Tj3nF3rLDMdRs4eQHvBjxwr5zi79nMsb8woptM7ERXXXgk7NIyUuJiptTUckLiuY
+        L7hyiIRaCt9TIYX7gHR6kKaUItEfKrBjfvHqsm8qeirVp6Grxb6jxSb8KTTcxQiNv4c94f
+        SPCUggI0Rk+UboLCzICgyMPB8SocdPA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-eGm1tr3zNhuh5-pBvEMyww-1; Wed, 21 Apr 2021 04:24:55 -0400
+X-MC-Unique: eGm1tr3zNhuh5-pBvEMyww-1
+Received: by mail-wm1-f69.google.com with SMTP id o7-20020a1c41070000b02901336831e90fso142971wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:24:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=bk8W5PYdHyJiKDovJRouAdDCNSetd5qB4OVJxOdiFwg=;
+        b=fnLR5fakyUG1LHyX4qZtXUJJKbQ5BcbFi9wLxldD3AcHbL5ykGaMVs5EkYvr0/YYby
+         LcrW9OgJj0El0HpUUqZbB8LKxTFSQr4QN9+5dMwEPbymB1EGaF6RbKdY7hXdHQn7O+gE
+         yul/+4JpA4xUFBA1bzLpizKc3eMvk/hSL4h7IJiV5DJI/Wa6ql78I3nmCDgHCIaQWud+
+         HHnyKfkC691eHl3aB3Ge83nkmO3Fj5d3ZYxH9zfz1dYIR35C1NQqUxeyp24oXb8A55kP
+         H5It84NgJKz0XzizmOvfo+YkH3lx2RaIiNS8O4Hu7Fe/vidCPmiRYL1veLi44eyf0X5w
+         ArWw==
+X-Gm-Message-State: AOAM5316W20lzekmD3UJC09mdQyUO+fvM1hXAipSXmavpaLkGhKItYUu
+        0zXiBm4+3KTBYs2+KfVJtalX8EdnSTx3dDKSnJXypWYsuWWykCnul+V3cbEegOwN6ftr+jSqX8M
+        QXWh2fs549u9+6PdlCMZxEcsV
+X-Received: by 2002:a7b:cd98:: with SMTP id y24mr8533421wmj.52.1618993494612;
+        Wed, 21 Apr 2021 01:24:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz66JaAPB0MZ3k8rlE/+XxLnpLgswfnSuQ0gGhJbGsKo8b8e2liPNbXu1b7K15K8mCo+h3b7A==
+X-Received: by 2002:a7b:cd98:: with SMTP id y24mr8533405wmj.52.1618993494454;
+        Wed, 21 Apr 2021 01:24:54 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id l13sm2067320wrt.14.2021.04.21.01.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 01:24:54 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>
+Subject: RE: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 1/1] Drivers:
+ hv: vmbus: Increase wait time for VMbus unload
+In-Reply-To: <MWHPR21MB15937990D10174A63E65F579D7489@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1618894089-126662-1-git-send-email-mikelley@microsoft.com>
+ <87tuo1i9o5.fsf@vitty.brq.redhat.com>
+ <MWHPR21MB15937990D10174A63E65F579D7489@MWHPR21MB1593.namprd21.prod.outlook.com>
+Date:   Wed, 21 Apr 2021 10:24:53 +0200
+Message-ID: <875z0ghwoa.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d4c85e8-e844-4871-6f49-08d9049c4e99
-X-MS-TrafficTypeDiagnostic: CH2PR12MB4087:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB40877291F76D9CBE53F9290397479@CH2PR12MB4087.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JhPBa6Dl9uyx9tj9XKbmKtfm/+u8SxcP1Q9dC8IwJvBjBDkGmwAGoC969Z9lubvh7ORc6d0mmYYZgrDAxfbHDNPPUUisCkvH48P/I6auNUkOGMN9gB+h3ckFNmiQtunqqDk2zZRu6ZUzvukJO02d5ipQTbTuB6QwhGu85CpMtcGiF6DXIBSxBnZfGufsd7HtLoatdlME80g3TWHudANjOnASVRiWhws1eCrgeASBbNwgJh2yR9mBsrbXnc80bwsjuTWoZ+DDzs2QB7aaewd/K75ThRcI3oaiO4yn37qes+5UCdrdWy/rDpmK6Ry8BL3dh9YMVwGruSZulA0hZzUOrZqcWwPmrhFzcyNYb3NnA8FW04dA2U1lPgBUwkZGO+wPPHcc6vgM8J2DcKElE6Vlt1QO6WldLOl+uoDs/7V0LjGVH1gbza2PMoWlvnPoBnYSAtB02EHGpQxgPgW4HjMzQqPng1rvdgxsxQfGJK8G/MllOA+qmhk63tDbbxXj3enTzrMjblDo/8nrRUk9iZqoFrGdbnnJQHp8mjQQVwGIxTAo8J5BjfkPLv9CBznskSRhWX3QgfX0DHaNvNADvtd8IS/Pl8fD9ktKzxGD5ExClRmizhiJhJaox9RdiCL0vPDhFcSmzFO4e+C2rrITAWpRr31OQhI3O+ioH1UeVhM+VR6ARy4OZTX+u04sUMn3YCny
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(36840700001)(46966006)(316002)(8936002)(81166007)(70206006)(82740400003)(83380400001)(8676002)(36860700001)(110136005)(4326008)(356005)(2906002)(186003)(478600001)(36756003)(7696005)(47076005)(82310400003)(6666004)(54906003)(426003)(26005)(336012)(2616005)(5660300002)(70586007)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 08:06:02.9293
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d4c85e8-e844-4871-6f49-08d9049c4e99
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT007.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AMD I2S Controller doesn't support S24_LE format.
-Remove S24_LE format support from ACP DMA driver
-and CPU DAI Driver.
+Michael Kelley <mikelley@microsoft.com> writes:
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/raven/acp3x-i2s.c     | 6 ++----
- sound/soc/amd/raven/acp3x-pcm-dma.c | 6 ++----
- 2 files changed, 4 insertions(+), 8 deletions(-)
+> From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Tuesday, April 20, 2021 2:32 AM
+>> 
+>> Michael Kelley <mikelley@microsoft.com> writes:
+>> 
+>> > When running in Azure, disks may be connected to a Linux VM with
+>> > read/write caching enabled. If a VM panics and issues a VMbus
+>> > UNLOAD request to Hyper-V, the response is delayed until all dirty
+>> > data in the disk cache is flushed.  In extreme cases, this flushing
+>> > can take 10's of seconds, depending on the disk speed and the amount
+>> > of dirty data. If kdump is configured for the VM, the current 10 second
+>> > timeout in vmbus_wait_for_unload() may be exceeded, and the UNLOAD
+>> > complete message may arrive well after the kdump kernel is already
+>> > running, causing problems.  Note that no problem occurs if kdump is
+>> > not enabled because Hyper-V waits for the cache flush before doing
+>> > a reboot through the BIOS/UEFI code.
+>> >
+>> > Fix this problem by increasing the timeout in vmbus_wait_for_unload()
+>> > to 100 seconds. Also output periodic messages so that if anyone is
+>> > watching the serial console, they won't think the VM is completely
+>> > hung.
+>> >
+>> > Fixes: 911e1987efc8 ("Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload")
+>> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+>> > ---
+>> >
+>> > Changed in v2: Fixed silly error in the argument to mdelay()
+>> >
+>> > ---
+>> >  drivers/hv/channel_mgmt.c | 30 +++++++++++++++++++++++++-----
+>> >  1 file changed, 25 insertions(+), 5 deletions(-)
+>> >
+>> > diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+>> > index f3cf4af..ef4685c 100644
+>> > --- a/drivers/hv/channel_mgmt.c
+>> > +++ b/drivers/hv/channel_mgmt.c
+>> > @@ -755,6 +755,12 @@ static void init_vp_index(struct vmbus_channel *channel)
+>> >  	free_cpumask_var(available_mask);
+>> >  }
+>> >
+>> > +#define UNLOAD_DELAY_UNIT_MS	10		/* 10 milliseconds */
+>> > +#define UNLOAD_WAIT_MS		(100*1000)	/* 100 seconds */
+>> > +#define UNLOAD_WAIT_LOOPS	(UNLOAD_WAIT_MS/UNLOAD_DELAY_UNIT_MS)
+>> > +#define UNLOAD_MSG_MS		(5*1000)	/* Every 5 seconds */
+>> > +#define UNLOAD_MSG_LOOPS	(UNLOAD_MSG_MS/UNLOAD_DELAY_UNIT_MS)
+>> > +
+>> >  static void vmbus_wait_for_unload(void)
+>> >  {
+>> >  	int cpu;
+>> > @@ -772,12 +778,17 @@ static void vmbus_wait_for_unload(void)
+>> >  	 * vmbus_connection.unload_event. If not, the last thing we can do is
+>> >  	 * read message pages for all CPUs directly.
+>> >  	 *
+>> > -	 * Wait no more than 10 seconds so that the panic path can't get
+>> > -	 * hung forever in case the response message isn't seen.
+>> > +	 * Wait up to 100 seconds since an Azure host must writeback any dirty
+>> > +	 * data in its disk cache before the VMbus UNLOAD request will
+>> > +	 * complete. This flushing has been empirically observed to take up
+>> > +	 * to 50 seconds in cases with a lot of dirty data, so allow additional
+>> > +	 * leeway and for inaccuracies in mdelay(). But eventually time out so
+>> > +	 * that the panic path can't get hung forever in case the response
+>> > +	 * message isn't seen.
+>> 
+>> I vaguely remember debugging cases when CHANNELMSG_UNLOAD_RESPONSE never
+>> arrives, it was kind of pointless to proceed to kexec as attempts to
+>> reconnect Vmbus devices were failing (no devices were offered after
+>> CHANNELMSG_REQUESTOFFERS AFAIR). Would it maybe make sense to just do
+>> emergency reboot instead of proceeding to kexec when this happens? Just
+>> wondering.
+>> 
+>
+> Yes, I think there have been (and maybe still are) situations where we don't
+> ever get the UNLOAD response.  But there have been bugs fixed in Hyper-V
+> that I think make that less likely.  There's also an unfixed (and maybe not fixable)
+> problem when not operating in STIMER Direct Mode, where an old-style
+> timer message can block the UNLOAD response message.  But as the world
+> moves forward to later kernel versions that use STIMER Direct Mode, that
+> also becomes less likely.   So my inclination is to let execution continue on
+> the normal execution path, even if the UNLOAD response message isn't
+> received.  Maybe we just didn't wait quite long enough (even at 100 seconds).
+> It's a judgment call, and it's not clear to me that doing an emergency reboot
+> is really any better.
+>
+> As background work for this patch, we also discovered another bug in Hyper-V.
+> If the kdump kernel runs and does a VMbus INITIATE_CONTACT while the
+> UNLOAD is still in progress, the Hyper-V code is supposed to wait for the UNLOAD
+> to complete, and then commence the VMbus version negotiation.  But it
+> doesn't do that -- it finally sends the UNLOAD response, but never does the
+> version negotiation, so the kdump kernel hangs forever.  The Hyper-V team
+> plans to fix this, and hopefully we'll get a patch deployed in Azure, which
+> will eliminate one more scenario where the kdump kernel doesn't succeed.
+>
 
-diff --git a/sound/soc/amd/raven/acp3x-i2s.c b/sound/soc/amd/raven/acp3x-i2s.c
-index 396cb7d..de6f70d 100644
---- a/sound/soc/amd/raven/acp3x-i2s.c
-+++ b/sound/soc/amd/raven/acp3x-i2s.c
-@@ -264,8 +264,7 @@ static struct snd_soc_dai_driver acp3x_i2s_dai = {
- 	.playback = {
- 		.rates = SNDRV_PCM_RATE_8000_96000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
--			SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE |
--			SNDRV_PCM_FMTBIT_S32_LE,
-+			SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
- 		.channels_min = 2,
- 		.channels_max = 8,
- 		.rate_min = 8000,
-@@ -274,8 +273,7 @@ static struct snd_soc_dai_driver acp3x_i2s_dai = {
- 	.capture = {
- 		.rates = SNDRV_PCM_RATE_8000_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
--			SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE |
--			SNDRV_PCM_FMTBIT_S32_LE,
-+			SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rate_min = 8000,
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 417cda2..f22bb2b 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -24,8 +24,7 @@ static const struct snd_pcm_hardware acp3x_pcm_hardware_playback = {
- 		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
- 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
- 	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
--		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE |
--		   SNDRV_PCM_FMTBIT_S32_LE,
-+		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
- 	.channels_min = 2,
- 	.channels_max = 8,
- 	.rates = SNDRV_PCM_RATE_8000_96000,
-@@ -45,8 +44,7 @@ static const struct snd_pcm_hardware acp3x_pcm_hardware_capture = {
- 		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
- 		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
- 	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
--		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE |
--		   SNDRV_PCM_FMTBIT_S32_LE,
-+		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
- 	.channels_min = 2,
- 	.channels_max = 2,
- 	.rates = SNDRV_PCM_RATE_8000_48000,
+Ah, ok, if bugs in Hyper-V/Azure are being fixed then it seems
+reasonable to keep the current logic (proceeding to kexec even when we
+didn't receive UNLOAD). Thanks for the additional info!
+
 -- 
-2.7.4
+Vitaly
 
