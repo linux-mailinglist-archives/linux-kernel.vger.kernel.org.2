@@ -2,154 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B7536672C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341BB36672F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237345AbhDUIoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:44:16 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:9452 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235469AbhDUIoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:44:15 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FQDbw5cNtz9v00K;
-        Wed, 21 Apr 2021 10:43:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id i3lotJLr58Wp; Wed, 21 Apr 2021 10:43:40 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FQDbw4kkxz9v00C;
-        Wed, 21 Apr 2021 10:43:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AD2DF8B815;
-        Wed, 21 Apr 2021 10:43:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id C4C5ukKWYpUh; Wed, 21 Apr 2021 10:43:41 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D85998B770;
-        Wed, 21 Apr 2021 10:43:40 +0200 (CEST)
-Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-References: <202102271820.WlZCxtzY-lkp@intel.com>
- <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
- <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
- <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <fce1f2a1-a4ea-03d1-20ab-f0c716884819@csgroup.eu>
-Date:   Wed, 21 Apr 2021 10:43:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S237118AbhDUIof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:44:35 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:42190 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235083AbhDUIod (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:44:33 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13L8bSlw004719;
+        Wed, 21 Apr 2021 03:43:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=nPczol+VR0KR9nJGshmhZqjVXxehr8YBfTima70vMQ4=;
+ b=FF8yrK+TrvFPsj6oIGfOhVxAy/ZLNwMxTJtIssQ3eWRsxa1yX+ovoZYalxNjZf5ZGQdC
+ j7uVxhm7R0/idzqj0mnAd9BfwWCPnjjBZMi+tujkAdIB26iJSlmAups7gTnOdDFbNR6D
+ pWlv9M6+zhMySn9pQQeiHUMG7uldQlutL4Ji6uB++Nlh3bsazIVjvkxCa4I0o3yo4yDi
+ avuIeBzBub6aBUuhQOUia+q13hHQOZvRZNQJmmwdVWIkTxPgh89xz1giZ7gs2M2SfEks
+ 8e93BRU/aMbd6PCryeMYfh83RgDpDt839Y/HhtvLcfo41UjW3WDPMtaD3bzkfPBsRgKR 0w== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 381a0rjtcs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 21 Apr 2021 03:43:58 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 21 Apr
+ 2021 09:43:57 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 21 Apr 2021 09:43:57 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 292D711D6;
+        Wed, 21 Apr 2021 08:43:57 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 08:43:57 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] regulator: Avoid a double 'of_node_get' in
+ 'regulator_of_get_init_node()'
+Message-ID: <20210421084357.GB64205@ediswmail.ad.cirrus.com>
+References: <a79f0068812b89ff412d572a1171f22109c24132.1618947049.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <a79f0068812b89ff412d572a1171f22109c24132.1618947049.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: WmW1AHhvl6ZsxFfNfknH2sKP5mZ1xlsz
+X-Proofpoint-ORIG-GUID: WmW1AHhvl6ZsxFfNfknH2sKP5mZ1xlsz
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ phishscore=0 mlxlogscore=770 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 adultscore=0 spamscore=0 clxscore=1011
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 18/04/2021 à 19:15, Randy Dunlap a écrit :
-> On 4/18/21 3:43 AM, Christophe Leroy wrote:
->>
->>
->> Le 18/04/2021 à 02:02, Randy Dunlap a écrit :
->>> HI--
->>>
->>> I no longer see this build error.
->>
->> Fixed by https://github.com/torvalds/linux/commit/acdad8fb4a1574323db88f98a38b630691574e16
->>
->>> However:
->>>
->>> On 2/27/21 2:24 AM, kernel test robot wrote:
->>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
->>>> commit: 259149cf7c3c6195e6199e045ca988c31d081cab powerpc/32s: Only build hash code when CONFIG_PPC_BOOK3S_604 is selected
->>>> date:   4 weeks ago
->>>> config: powerpc64-randconfig-r013-20210227 (attached as .config)
->>>
->>> ktr/lkp, this is a PPC32 .config file that is attached, not PPC64.
->>>
->>> Also:
->>>
->>>> compiler: powerpc-linux-gcc (GCC) 9.3.0
->>
->> ...
->>
->>>
->>> I do see this build error:
->>>
->>> powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->>> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
->>>
->>> when either
->>> CONFIG_KERNEL_LZO=y
->>> or
->>> CONFIG_KERNEL_LZMA=y
->>>
->>> but the build succeeds when either
->>> CONFIG_KERNEL_GZIP=y
->>> or
->>> CONFIG_KERNEL_XZ=y
->>>
->>> I guess that is due to arch/powerpc/boot/decompress.c doing this:
->>>
->>> #ifdef CONFIG_KERNEL_GZIP
->>> #    include "decompress_inflate.c"
->>> #endif
->>>
->>> #ifdef CONFIG_KERNEL_XZ
->>> #    include "xz_config.h"
->>> #    include "../../../lib/decompress_unxz.c"
->>> #endif
->>>
->>>
->>> It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
->>> to be set/enabled (maybe unless a uImage is being built?).
->>
->>
->> Can you test by https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/ ?
+On Tue, Apr 20, 2021 at 09:31:51PM +0200, Christophe JAILLET wrote:
+> 'for_each_available_child_of_node()' already performs an 'of_node_get()'
+> on child, so there is no need to perform another one before returning.
+> Otherwise, a double 'get' is performed and a resource may never be
+> released.
 > 
-> Hi Christophe,
-> 
-> I get build errors for both LZO and LZMA:
-> 
+> Fixes: 925c85e21ed8 ("regulator: Factor out location of init data OF node")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
 
-Can you check with the following changes on top of my patch:
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/lib/decompress_unlzo.c b/lib/decompress_unlzo.c
-index a8dbde4b32d4..f06f925385c0 100644
---- a/lib/decompress_unlzo.c
-+++ b/lib/decompress_unlzo.c
-@@ -23,13 +23,15 @@
-  #include <linux/decompress/unlzo.h>
-  #endif
-
--#include <linux/lzo.h>
-  #ifdef __KERNEL__
-  #include <linux/types.h>
-+#endif
-+#include <linux/lzo.h>
-+#ifdef __KERNEL__
-  #include <linux/decompress/mm.h>
-+#include <linux/compiler.h>
-  #endif
-
--#include <linux/compiler.h>
-  #include <asm/unaligned.h>
-
-  static const unsigned char lzop_magic[] = {
-
-
-
-Thanks
-Christophe
+Thanks,
+Charles
