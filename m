@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD483668AD
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1AF3668AE
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhDUJ7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:59:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16611 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbhDUJ7j (ORCPT
+        id S234532AbhDUJ7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:59:44 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17808 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233991AbhDUJ7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:59:39 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FQGD94s8Tz19Lm1;
-        Wed, 21 Apr 2021 17:56:41 +0800 (CST)
+        Wed, 21 Apr 2021 05:59:40 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FQGDB6w0Wz7wCG;
+        Wed, 21 Apr 2021 17:56:42 +0800 (CST)
 Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 21 Apr 2021 17:59:02 +0800
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 21 Apr 2021 17:59:04 +0800
 Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>
 CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
         <linuxarm@openeuler.org>
 References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
@@ -31,14 +31,15 @@ References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
  <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
  <20210420125957.GA1370958@nvidia.com>
  <20210420160457.6b91850a@x1.home.shazbot.org>
+ <20210420231830.GD1370958@nvidia.com>
 From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
-Date:   Wed, 21 Apr 2021 17:59:02 +0800
+Message-ID: <8930d7db-2145-5cc3-ce6f-67dc3959d391@huawei.com>
+Date:   Wed, 21 Apr 2021 17:59:04 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210420160457.6b91850a@x1.home.shazbot.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210420231830.GD1370958@nvidia.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.67.102.118]
 X-CFilter-Loop: Reflected
@@ -46,95 +47,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/21 6:04, Alex Williamson wrote:
-> On Tue, 20 Apr 2021 09:59:57 -0300
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
+On 2021/4/21 7:18, Jason Gunthorpe wrote:
+> On Tue, Apr 20, 2021 at 04:04:57PM -0600, Alex Williamson wrote:
 > 
->> On Tue, Apr 20, 2021 at 08:50:12PM +0800, liulongfang wrote:
->>> On 2021/4/19 20:33, Jason Gunthorpe wrote:  
->>>> On Mon, Apr 19, 2021 at 08:24:40PM +0800, liulongfang wrote:
->>>>   
->>>>>> I'm also confused how this works securely at all, as a general rule a
->>>>>> VFIO PCI driver cannot access the MMIO memory of the function it is
->>>>>> planning to assign to the guest. There is a lot of danger that the
->>>>>> guest could access that MMIO space one way or another.  
->>>>>
->>>>> VF's MMIO memory is divided into two parts, one is the guest part,
->>>>> and the other is the live migration part. They do not affect each other,
->>>>> so there is no security problem.  
->>>>
->>>> AFAIK there are several scenarios where a guest can access this MMIO
->>>> memory using DMA even if it is not mapped into the guest for CPU
->>>> access.
->>>>   
->>> The hardware divides VF's MMIO memory into two parts. The live migration
->>> driver in the host uses the live migration part, and the device driver in
->>> the guest uses the guest part. They obtain the address of VF's MMIO memory
->>> in their respective drivers, although these two parts The memory is
->>> continuous on the hardware device, but due to the needs of the drive function,
->>> they will not perform operations on another part of the memory, and the
->>> device hardware also independently responds to the operation commands of
->>> the two parts.  
+>>> The migration control registers must be on a different VF from the VF
+>>> being plugged into a guest and the two VFs have to be in different
+>>> IOMMU groups to ensure they are isolated from each other.
 >>
->> It doesn't matter, the memory is still under the same PCI BDF and VFIO
->> supports scenarios where devices in the same IOMMU group are not
->> isolated from each other.
->>
->> This is why the granual of isolation is a PCI BDF - VFIO directly
->> blocks kernel drivers from attaching to PCI BDFs that are not
->> completely isolated from VFIO BDF.
->>
->> Bypassing this prevention and attaching a kernel driver directly to
->> the same BDF being exposed to the guest breaks that isolation model.
->>
->>> So, I still don't understand what the security risk you are talking about is,
->>> and what do you think the security design should look like?
->>> Can you elaborate on it?  
->>
->> Each security domain must have its own PCI BDF.
->>
->> The migration control registers must be on a different VF from the VF
->> being plugged into a guest and the two VFs have to be in different
->> IOMMU groups to ensure they are isolated from each other.
+>> I think that's a solution, I don't know if it's the only solution.
 > 
-> I think that's a solution, I don't know if it's the only solution.
-> AIUI, the issue here is that we have a device specific kernel driver
-> extending vfio-pci with migration support for this device by using an
+> Maybe, but that approach does offer DMA access for the migration. For
+> instance to implement something that needs a lot of data like
+> migrating a complicated device state, or dirty page tracking or
+> whatver.
+> 
+> This driver seems very simple - it has only 17 state elements - and
+> doesn't use DMA.
+> 
+Yes��the operating address of this driver is the MMIO address,
+not the DMA address, but the internal hardware DMA address is used
+as data for migration.
 
-If the two parts of the MMIO region are split into different BAR spaces on
-the device, the MMIO region of ​​the business function is still placed in BAR2,
-and the MMIO region of ​​the live migration function is moved to BAR4.
-Only BAR2 is mapped in the guest. only BAR4 is mapped in the host.
-This can solve this security issue.
-
-> MMIO region of the same device.  This is susceptible to DMA> manipulation by the user device.   Whether that's a security issue or> not depends on how the user can break the device.  If the scope is
-> limited to breaking their own device, they can do that any number of
-> ways and it's not very interesting.  If the user can manipulate device
-> state in order to trigger an exploit of the host-side kernel driver,
-> that's obviously more of a problem.
+> I can't quite tell, but does this pass the hypervisor BAR into the
+> guest anyhow? That would certainly be an adquate statement that it is
+> safe, assuming someone did a good security analysis.
 > 
-> The other side of this is that if migration support can be implemented
-> entirely within the VF using this portion of the device MMIO space, why
-> do we need the host kernel to support this rather than implementing it
-> in userspace?  For example, QEMU could know about this device,
-> manipulate the BAR size to expose only the operational portion of MMIO
-> to the VM and use the remainder to support migration itself.  I'm
-> afraid that just like mdev, the vfio migration uAPI is going to be used
-> as an excuse to create kernel drivers simply to be able to make use of
-> that uAPI.  I haven't looked at this driver to know if it has some
-
-When the accelerator device is designed to support the live migration
-function, it is based on the uAPI of the migration region to realize the
-live migration function, so the live migration function requires a driver
-that connects to this uAPI.
-Is this set of interfaces not open to us now?
-
-> other reason to exist beyond what could be done through vfio-pci and
-> userspace migration support.  Thanks,
+>> ways and it's not very interesting.  If the user can manipulate device
+>> state in order to trigger an exploit of the host-side kernel driver,
+>> that's obviously more of a problem.
 > 
-> Alex
+> Well, for instance, we have an implementation of
+> (VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING) which means the
+> guest CPUs are still running and a hostile guest can be manipulating
+> the device.
 > 
+> But this driver is running code, like vf_qm_state_pre_save() in this
+> state. Looks very suspicious.
+> 
+> One quick attack I can imagine is to use the guest CPU to DOS the
+> migration and permanently block it, eg by causing qm_mb() or other
+> looping functions to fail.
+> 
+> There may be worse things possible, it is a bit hard to tell just from
+> the code.
+> 
+> .. also drivers should not be open coding ARM assembly as in
+> qm_mb_write()
+> 
+OK, these codes need to be encapsulated and should not be presented in
+this driver.
+
+> .. and also, code can not randomly call pci_get_drvdata() on a struct
+> device it isn't attached to haven't verified the right driver is
+> bound, or locked correctly.
+> 
+Yes, This call needs to be placed in an encapsulation interface,
+and access protection needs to be added.
+
+>> manipulate the BAR size to expose only the operational portion of MMIO
+>> to the VM and use the remainder to support migration itself.  I'm
+>> afraid that just like mdev, the vfio migration uAPI is going to be used
+>> as an excuse to create kernel drivers simply to be able to make use of
+>> that uAPI.
+> 
+> I thought that is the general direction people had agreed on during
+> the IDXD mdev discussion?
+> 
+> People want the IOCTLs from VFIO to be the single API to program all
+> the VMMs to and to not implement user space drivers..
+> 
+> This actually seems like a great candidate for a userspace driver.
+> 
+> I would like to know we are still settled on this direction as the
+> mlx5 drivers we are working on also have some complicated option to be
+> user space only.
+> 
+> Jason
 > .
 > 
-Thanks，
-Longfang.
