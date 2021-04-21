@@ -2,66 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391BA366EF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03FF366EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbhDUPUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:20:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50952 "EHLO mail.kernel.org"
+        id S243933AbhDUPUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:20:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234573AbhDUPUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:20:09 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8CE7961427;
-        Wed, 21 Apr 2021 15:19:34 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 11:19:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 1/2] bitmap_parse: support 'all' semantics
-Message-ID: <20210421111932.36665920@gandalf.local.home>
-In-Reply-To: <20210421031326.72816-2-yury.norov@gmail.com>
-References: <20210421031326.72816-1-yury.norov@gmail.com>
-        <20210421031326.72816-2-yury.norov@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S243922AbhDUPUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB42B600D1;
+        Wed, 21 Apr 2021 15:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619018407;
+        bh=HWhvnssITHYMFlL/4RLZozTot8Jt6F+Tluq69jLq6Ww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WNRkVOmf+WdtsV99f1zX2N9BVDfsmDp34we/NqC62qF0QVHNsKGw29UBOtlA0cSpZ
+         ix1/svSA3cwZ8xQU9+omBt1mFmotQNGMIwLeS8o55MiQBOxTJEDeUDXlO7UE2Eny7F
+         5i6WWByQe72YhjmB73Hr/o9crSxV1gShidpisdzqWxqPwmaaFxm+A/JQzgBN0orn0P
+         lj92XGa2jpSEWYyeyLB29Sr3FWDvMtrPJTD4KXQ63pSmqAThA8Qx/a3lqcJmN/AhmT
+         mZvYuxWsv3MOwGZniBxwaYc/JRP2f5HylGzUGdQbVrfGD4dUgrtSQbB4TMuHs8Qh5m
+         aw+XAHEV2EzcA==
+Date:   Wed, 21 Apr 2021 16:19:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christoph Fritz <chf.fritz@googlemail.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regulator: bd71815: select CONFIG_ROHM_REGULATOR
+Message-ID: <20210421151940.GC4617@sirena.org.uk>
+References: <20210421135433.3505561-1-arnd@kernel.org>
+ <20210421145302.GA36124@sirena.org.uk>
+ <CAK8P3a3FoAEAQYoccqMNJ-TbScnen6Mm5y+2vE5ZPOjsag8tMg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3FoAEAQYoccqMNJ-TbScnen6Mm5y+2vE5ZPOjsag8tMg@mail.gmail.com>
+X-Cookie: RELATIVES!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 20:13:25 -0700
-Yury Norov <yury.norov@gmail.com> wrote:
 
-> @@ -76,6 +76,11 @@ to change, such as less cores in the CPU list, then N and any ranges using N
->  will also change.  Use the same on a small 4 core system, and "16-N" becomes
->  "16-3" and now the same boot input will be flagged as invalid (start > end).
->  
-> +The special case-tolerant group name "all" has a meaning of selecting all CPUs,
-> +such that "isolcpus=all" is the equivalent of "isolcpus=0-N".
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'm OK with the concept of this patch set, but really? That is a horrible
-example. One should NEVER set isolcpus to all!
+On Wed, Apr 21, 2021 at 05:16:36PM +0200, Arnd Bergmann wrote:
 
--- Steve
+> It looks like something went wrong in the coordination between the
+> trees, but I'm not quite sure what.
 
+Dunno if it was this series but Lee did send a pull request for
+something which wasn't based on a dependency series from me that it
+should've been.
 
-> +
-> +The semantics of "N" and "all" is supported on a level of bitmaps and holds for
-> +all users of bitmap_parse().
->  
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCAQosACgkQJNaLcl1U
+h9AgqAf/ZV/PGVrtJs/9P0NBmN0QPFtbbPneb6SyyRkiKP33Ntwm8y0yGQJDZ47N
+L2qB9wvrxoA8FcTKKqRwKYxdaCm4/9RLCJppQJ/zD7Fz6/B6ytZUKFQbjEkdwrv3
+FqAGo3JEdbC3FcV84KyT6CUj8JDq7FRUNysWBXcPfiyI3qiLD0RIgr1iG4E/b6Ro
+cmwXPxEoamc2sw4rFerrN7fkynSMTZ/Cj1Nz0KDuY20IHSJ5KAUbfxnjPe8uE0qT
+XOoHh9TNNvL4BNccaFwVKtJbYGN3LDb8LqlHT42/FL7zpKvBCC69lwNAIXt0dzDh
+IB80cw2cj017zeth1z9YV5gAWQ08XA==
+=d/yl
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
