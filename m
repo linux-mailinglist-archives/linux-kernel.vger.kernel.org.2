@@ -2,230 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449DF3670B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7753670B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244459AbhDUQ4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:56:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20540 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241421AbhDUQ4i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:56:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619024164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WHVpGOnvgUdnZaidGHvCao8vNO73Bx6jgVM9T3hkQo4=;
-        b=OTjPwCdUp3KbCqZ6jidFEDILy2FLjeRcW5ipzQrdBl+zjtBuwa118KQuWXQQ+UyVWhOpVI
-        pXthNaaBsGyJOIMa4XdjXwW2pHjttleRYAaLqYlWKNJEEhX2/Q+6qkt41PtDPD6qBGHEh5
-        UZLodE6U6DWcijjdLapmVRB0ssSj2ps=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-owvcPJw4PzuPMDQUSoDOLg-1; Wed, 21 Apr 2021 12:56:02 -0400
-X-MC-Unique: owvcPJw4PzuPMDQUSoDOLg-1
-Received: by mail-ed1-f71.google.com with SMTP id h13-20020a05640250cdb02903790a9c55acso15336815edb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:56:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WHVpGOnvgUdnZaidGHvCao8vNO73Bx6jgVM9T3hkQo4=;
-        b=MlujyCts3teD1njyOd4EnnNfN+w4JdhnLcn/ijyOD8fxnGVsaTvwBfBuO85WeQ+xNL
-         8zsn5EevlNAP2eg5t+nhnOZ9TaxfCScBY2eYZAdavESzz44YKRfgugdAi94v5+doMhBC
-         Gd+8efxl7Y7GQhguerX2zFfr8XWFy+/ALI5dusNr8XKw3xcxMzdMUnfavFzN50tt053r
-         H9BNzUQNPkJ1HkQ4tzKPKiesIVK5qapBc2kvQTao30MOEdrZFIiUCVZxQDgf31oC4Ofr
-         Dsq4e9cDRortzszan51k5C80EJDjiieYBC7OH0TT513YN0eZ3SSkeHhspxnC6zDYxLck
-         H02A==
-X-Gm-Message-State: AOAM532YUrb42PsLtZlUE+s4cabPImtL449tMz0jx+HEdg8skhpmHVvj
-        0VeeWz8iGjzGJwv/k073Q3g01+SBaHDsSSEjdFT7ShmGiX1Lxtne4aE83RWamySan3VN/zpjNj+
-        XAPadIE4DWtvZtmii3eUxt7Yk
-X-Received: by 2002:a17:907:d04:: with SMTP id gn4mr26911414ejc.152.1619024160711;
-        Wed, 21 Apr 2021 09:56:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwirT3k5FbggerOtX8ZxAcTHiz+/y2q6Bqqt1N0daROeqmGEmRRHpjtf53zoOvfQmfVl7E8yw==
-X-Received: by 2002:a17:907:d04:: with SMTP id gn4mr26911403ejc.152.1619024160559;
-        Wed, 21 Apr 2021 09:56:00 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id z17sm51669ejc.69.2021.04.21.09.55.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 09:56:00 -0700 (PDT)
-Subject: Re: [PATCH 114/190] Revert "staging: rtl8188eu: Fix potential NULL
- pointer dereference of kcalloc"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>, Mukesh Ojha <mojha@codeaurora.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-115-gregkh@linuxfoundation.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <cf31b48e-25b5-bd8a-113e-64dbc96a063b@redhat.com>
-Date:   Wed, 21 Apr 2021 18:55:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S244485AbhDUQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:57:14 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:55248 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244466AbhDUQ5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:57:01 -0400
+X-Greylist: delayed 315 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Apr 2021 12:56:59 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619024174; bh=YtetIt89bMCwEpcMWwCQXjKo4GvGKm7xUuJcwpbES5k=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=M/fESto5OP1RiQ4bKc9xU11IgO2u4S208FDjQSowzlofFZ1J4F9nszYNuC39wCDbZ
+         j09iydqSIECvJsdjr41Oj4aEpVKUl4AErUGx0DKAvnC6tgzd6RBUVwlGbPHwgIgFtP
+         abffySiU0LjLHhtFXAioW3c0Hds9MChKgEa0WoY4=
+Received: by 192.168.90.14 [192.168.90.14] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 18:56:14 +0200 (CEST)
+X-EA-Auth: ItxAaoHD8A/gZo95ABEI5NtQiNtPRagRGj18W9RVxzZf+9c1hDH41hanHIHU0OnNyJL5KqYPEGUwVvbGqtrt3+tsy93WdvoW
+Date:   Wed, 21 Apr 2021 22:26:09 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v1 4/6] staging: media: atomisp: reformat code comment blocks
+Message-ID: <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+References: <cover.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-115-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619022192.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Reformat code comment blocks according to the coding style guidelines.
+This resolves different checkpatch script WARNINGs around block comments.
 
-On 4/21/21 2:59 PM, Greg Kroah-Hartman wrote:
-> This reverts commit 7671ce0d92933762f469266daf43bd34d422d58c.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Mukesh Ojha <mojha@codeaurora.org>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
 
-FWIW the original commit seems fine here. So if that is an option please
-drop this revert from the set.
+Changes in v1:
+   - implement following changes suggested by Fabio Aiuto                              
+       a. Corrected commenting style                                                               
+       b. Similar style implemented for other comment blocks in                                    
+          the same files.                                       
 
-Regards,
+ .../media/atomisp/i2c/atomisp-gc2235.c        | 19 ++++----
+ .../atomisp/i2c/atomisp-libmsrlisthelper.c    |  6 ++-
+ .../media/atomisp/i2c/atomisp-mt9m114.c       | 46 +++++++++++--------
+ .../media/atomisp/i2c/atomisp-ov2680.c        | 20 +++++---
+ 4 files changed, 56 insertions(+), 35 deletions(-)
 
-Hans
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index 548c572d3b57..6ee6e8414f0e 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -228,7 +228,7 @@ static int gc2235_g_focal(struct v4l2_subdev *sd, s32 *val)
+ 
+ static int gc2235_g_fnumber(struct v4l2_subdev *sd, s32 *val)
+ {
+-	/*const f number for imx*/
++	/* const f number for imx */
+ 	*val = (GC2235_F_NUMBER_DEFAULT_NUM << 16) | GC2235_F_NUMBER_DEM;
+ 	return 0;
+ }
+@@ -427,7 +427,8 @@ static long gc2235_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+ 	return 0;
+ }
+ 
+-/* This returns the exposure time being used. This should only be used
++/*
++ * This returns the exposure time being used. This should only be used
+  * for filling in EXIF data, not for actual image processing.
+  */
+ static int gc2235_q_exposure(struct v4l2_subdev *sd, s32 *value)
+@@ -746,11 +747,12 @@ static int startup(struct v4l2_subdev *sd)
+ 	int ret = 0;
+ 
+ 	if (is_init == 0) {
+-		/* force gc2235 to do a reset in res change, otherwise it
+-		* can not output normal after switching res. and it is not
+-		* necessary for first time run up after power on, for the sack
+-		* of performance
+-		*/
++		/*
++		 * force gc2235 to do a reset in res change, otherwise it
++		 * can not output normal after switching res. and it is not
++		 * necessary for first time run up after power on, for the sack
++		 * of performance
++		 */
+ 		power_down(sd);
+ 		power_up(sd);
+ 		gc2235_write_reg_array(client, gc2235_init_settings);
+@@ -904,7 +906,8 @@ static int gc2235_s_config(struct v4l2_subdev *sd,
+ 	    (struct camera_sensor_platform_data *)platform_data;
+ 
+ 	mutex_lock(&dev->input_lock);
+-	/* power off the module, then power on it in future
++	/*
++	 * power off the module, then power on it in future
+ 	 * as first power on by board may not fulfill the
+ 	 * power on sequqence needed by the module
+ 	 */
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c b/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c
+index b93c80471f22..7a20d918a9d5 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c
+@@ -50,14 +50,16 @@ struct tbd_data_record_header {
+ static int set_msr_configuration(struct i2c_client *client, uint8_t *bufptr,
+ 				 unsigned int size)
+ {
+-	/* The configuration data contains any number of sequences where
++	/*
++	 * The configuration data contains any number of sequences where
+ 	 * the first byte (that is, uint8_t) that marks the number of bytes
+ 	 * in the sequence to follow, is indeed followed by the indicated
+ 	 * number of bytes of actual data to be written to sensor.
+ 	 * By convention, the first two bytes of actual data should be
+ 	 * understood as an address in the sensor address space (hibyte
+ 	 * followed by lobyte) where the remaining data in the sequence
+-	 * will be written. */
++	 * will be written.
++	 */
+ 
+ 	u8 *ptr = bufptr;
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index 465fc4468442..f314e5fed9cb 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -475,10 +475,12 @@ static int gpio_ctrl(struct v4l2_subdev *sd, bool flag)
+ 	if (!dev || !dev->platform_data)
+ 		return -ENODEV;
+ 
+-	/* Note: current modules wire only one GPIO signal (RESET#),
++	/*
++	 * Note: current modules wire only one GPIO signal (RESET#),
+ 	 * but the schematic wires up two to the connector.  BIOS
+ 	 * versions have been unfortunately inconsistent with which
+-	 * ACPI index RESET# is on, so hit both */
++	 * ACPI index RESET# is on, so hit both
++	 */
+ 
+ 	if (flag) {
+ 		ret = dev->platform_data->gpio0_ctrl(sd, 0);
+@@ -560,7 +562,7 @@ static int power_down(struct v4l2_subdev *sd)
+ 	if (ret)
+ 		dev_err(&client->dev, "vprog failed.\n");
+ 
+-	/*according to DS, 20ms is needed after power down*/
++	/* according to DS, 20ms is needed after power down */
+ 	msleep(20);
+ 
+ 	return ret;
+@@ -947,7 +949,7 @@ static int mt9m114_g_focal(struct v4l2_subdev *sd, s32 *val)
+ 
+ static int mt9m114_g_fnumber(struct v4l2_subdev *sd, s32 *val)
+ {
+-	/*const f number for mt9m114*/
++	/* const f number for mt9m114 */
+ 	*val = (MT9M114_F_NUMBER_DEFAULT_NUM << 16) | MT9M114_F_NUMBER_DEM;
+ 	return 0;
+ }
+@@ -1014,13 +1016,13 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 	AnalogGain = exposure->gain[0];
+ 	DigitalGain = exposure->gain[1];
+ 	if (!dev->streamon) {
+-		/*Save the first exposure values while stream is off*/
++		/* Save the first exposure values while stream is off */
+ 		dev->first_exp = coarse_integration;
+ 		dev->first_gain = AnalogGain;
+ 		dev->first_diggain = DigitalGain;
+ 	}
+-	/* DigitalGain = 0x400 * (((u16) DigitalGain) >> 8) +
+-	((unsigned int)(0x400 * (((u16) DigitalGain) & 0xFF)) >>8); */
++	/* DigitalGain = 0x400 * (((u16) DigitalGain) >> 8) +		*/
++	/* ((unsigned int)(0x400 * (((u16) DigitalGain) & 0xFF)) >>8);	*/
+ 
+ 	/* set frame length */
+ 	if (FLines < coarse_integration + 6)
+@@ -1034,8 +1036,10 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 	}
+ 
+ 	/* set coarse integration */
+-	/* 3A provide real exposure time.
+-		should not translate to any value here. */
++	/*
++	 * 3A provide real exposure time.
++	 * should not translate to any value here.
++	 */
+ 	ret = mt9m114_write_reg(client, MISENSOR_16BIT,
+ 				REG_EXPO_COARSE, (u16)(coarse_integration));
+ 	if (ret) {
+@@ -1044,7 +1048,7 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 	}
+ 
+ 	/*
+-	// set analog/digital gain
++	 * set analog/digital gain
+ 	switch(AnalogGain)
+ 	{
+ 	case 0:
+@@ -1069,8 +1073,10 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 	*/
+ 	if (DigitalGain >= 16 || DigitalGain <= 1)
+ 		DigitalGain = 1;
+-	/* AnalogGainToWrite =
+-		(u16)((DigitalGain << 12) | AnalogGainToWrite); */
++
++	/*
++	 * AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite);
++	 */
+ 	AnalogGainToWrite = (u16)((DigitalGain << 12) | (u16)AnalogGain);
+ 	ret = mt9m114_write_reg(client, MISENSOR_16BIT,
+ 				REG_GAIN, AnalogGainToWrite);
+@@ -1095,8 +1101,10 @@ static long mt9m114_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+ 	return 0;
+ }
+ 
+-/* This returns the exposure time being used. This should only be used
+-   for filling in EXIF data, not for actual image processing. */
++/*
++ * This returns the exposure time being used. This should only be used
++ * for filling in EXIF data, not for actual image processing.
++ */
+ static int mt9m114_g_exposure(struct v4l2_subdev *sd, s32 *value)
+ {
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+@@ -1247,7 +1255,8 @@ static int mt9m114_s_ev(struct v4l2_subdev *sd, s32 val)
+ 	s32 luma = 0x37;
+ 	int err;
+ 
+-	/* EV value only support -2 to 2
++	/*
++	 * EV value only support -2 to 2
+ 	 * 0: 0x37, 1:0x47, 2:0x57, -1:0x27, -2:0x17
+ 	 */
+ 	if (val < -2 || val > 2)
+@@ -1295,9 +1304,10 @@ static int mt9m114_g_ev(struct v4l2_subdev *sd, s32 *val)
+ 	return 0;
+ }
+ 
+-/* Fake interface
++/*
++ * Fake interface
+  * mt9m114 now can not support 3a_lock
+-*/
++ */
+ static int mt9m114_s_3a_lock(struct v4l2_subdev *sd, s32 val)
+ {
+ 	aaalock = val;
+@@ -1843,7 +1853,7 @@ static int mt9m114_probe(struct i2c_client *client)
+ 		return ret;
+ 	}
+ 
+-	/*TODO add format code here*/
++	/* TODO add format code here */
+ 	dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+ 	dev->pad.flags = MEDIA_PAD_FL_SOURCE;
+ 	dev->format.code = MEDIA_BUS_FMT_SGRBG10_1X10;
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+index c17615149f46..4571f4328b80 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+@@ -127,7 +127,7 @@ static int ov2680_g_focal(struct v4l2_subdev *sd, s32 *val)
+ 
+ static int ov2680_g_fnumber(struct v4l2_subdev *sd, s32 *val)
+ {
+-	/*const f number for ov2680*/
++	/* const f number for ov2680 */
+ 
+ 	*val = (OV2680_F_NUMBER_DEFAULT_NUM << 16) | OV2680_F_NUMBER_DEM;
+ 	return 0;
+@@ -399,7 +399,8 @@ static long ov2680_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
+ 	return 0;
+ }
+ 
+-/* This returns the exposure time being used. This should only be used
++/*
++ * This returns the exposure time being used. This should only be used
+  * for filling in EXIF data, not for actual image processing.
+  */
+ static int ov2680_q_exposure(struct v4l2_subdev *sd, s32 *value)
+@@ -728,11 +729,13 @@ static int gpio_ctrl(struct v4l2_subdev *sd, bool flag)
+ 	if (!dev || !dev->platform_data)
+ 		return -ENODEV;
+ 
+-	/* The OV2680 documents only one GPIO input (#XSHUTDN), but
++	/*
++	 * The OV2680 documents only one GPIO input (#XSHUTDN), but
+ 	 * existing integrations often wire two (reset/power_down)
+ 	 * because that is the way other sensors work.  There is no
+ 	 * way to tell how it is wired internally, so existing
+-	 * firmwares expose both and we drive them symmetrically. */
++	 * firmwares expose both and we drive them symmetrically.
++	 */
+ 	if (flag) {
+ 		ret = dev->platform_data->gpio0_ctrl(sd, 1);
+ 		usleep_range(10000, 15000);
+@@ -978,7 +981,8 @@ static int ov2680_set_fmt(struct v4l2_subdev *sd,
+ 		goto err;
+ 	}
+ 
+-	/*recall flip functions to avoid flip registers
++	/*
++	 * recall flip functions to avoid flip registers
+ 	 * were overridden by default setting
+ 	 */
+ 	if (h_flag)
+@@ -988,7 +992,8 @@ static int ov2680_set_fmt(struct v4l2_subdev *sd,
+ 
+ 	v4l2_info(client, "\n%s idx %d\n", __func__, dev->fmt_idx);
+ 
+-	/*ret = startup(sd);
++	/*
++	 * ret = startup(sd);
+ 	 * if (ret)
+ 	 * dev_err(&client->dev, "ov2680 startup err\n");
+ 	 */
+@@ -1097,7 +1102,8 @@ static int ov2680_s_config(struct v4l2_subdev *sd,
+ 	    (struct camera_sensor_platform_data *)platform_data;
+ 
+ 	mutex_lock(&dev->input_lock);
+-	/* power off the module, then power on it in future
++	/*
++	 * power off the module, then power on it in future
+ 	 * as first power on by board may not fulfill the
+ 	 * power on sequqence needed by the module
+ 	 */
+-- 
+2.25.1
 
 
-
-> ---
->  drivers/staging/rtl8188eu/core/rtw_xmit.c    |  9 ++-------
->  drivers/staging/rtl8188eu/include/rtw_xmit.h |  2 +-
->  drivers/staging/rtl8723bs/core/rtw_xmit.c    | 14 +++++++-------
->  drivers/staging/rtl8723bs/include/rtw_xmit.h |  2 +-
->  4 files changed, 11 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8188eu/core/rtw_xmit.c b/drivers/staging/rtl8188eu/core/rtw_xmit.c
-> index 317355f830cb..580a3678acc6 100644
-> --- a/drivers/staging/rtl8188eu/core/rtw_xmit.c
-> +++ b/drivers/staging/rtl8188eu/core/rtw_xmit.c
-> @@ -174,9 +174,7 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
->  
->  	pxmitpriv->free_xmit_extbuf_cnt = num_xmit_extbuf;
->  
-> -	res = rtw_alloc_hwxmits(padapter);
-> -	if (res == _FAIL)
-> -		goto exit;
-> +	rtw_alloc_hwxmits(padapter);
->  	rtw_init_hwxmits(pxmitpriv->hwxmits, pxmitpriv->hwxmit_entry);
->  
->  	for (i = 0; i < 4; i++)
-> @@ -1505,7 +1503,7 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
->  	return res;
->  }
->  
-> -s32 rtw_alloc_hwxmits(struct adapter *padapter)
-> +void rtw_alloc_hwxmits(struct adapter *padapter)
->  {
->  	struct hw_xmit *hwxmits;
->  	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
-> @@ -1514,8 +1512,6 @@ s32 rtw_alloc_hwxmits(struct adapter *padapter)
->  
->  	pxmitpriv->hwxmits = kcalloc(pxmitpriv->hwxmit_entry,
->  				     sizeof(struct hw_xmit), GFP_KERNEL);
-> -	if (!pxmitpriv->hwxmits)
-> -		return _FAIL;
->  
->  	hwxmits = pxmitpriv->hwxmits;
->  
-> @@ -1523,7 +1519,6 @@ s32 rtw_alloc_hwxmits(struct adapter *padapter)
->  	hwxmits[1] .sta_queue = &pxmitpriv->vi_pending;
->  	hwxmits[2] .sta_queue = &pxmitpriv->be_pending;
->  	hwxmits[3] .sta_queue = &pxmitpriv->bk_pending;
-> -	return _SUCCESS;
->  }
->  
->  void rtw_free_hwxmits(struct adapter *padapter)
-> diff --git a/drivers/staging/rtl8188eu/include/rtw_xmit.h b/drivers/staging/rtl8188eu/include/rtw_xmit.h
-> index 456fd52717f3..59490a447382 100644
-> --- a/drivers/staging/rtl8188eu/include/rtw_xmit.h
-> +++ b/drivers/staging/rtl8188eu/include/rtw_xmit.h
-> @@ -330,7 +330,7 @@ s32 rtw_txframes_sta_ac_pending(struct adapter *padapter,
->  void rtw_init_hwxmits(struct hw_xmit *phwxmit, int entry);
->  s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter);
->  void _rtw_free_xmit_priv(struct xmit_priv *pxmitpriv);
-> -s32 rtw_alloc_hwxmits(struct adapter *padapter);
-> +void rtw_alloc_hwxmits(struct adapter *padapter);
->  void rtw_free_hwxmits(struct adapter *padapter);
->  s32 rtw_xmit(struct adapter *padapter, struct sk_buff **pkt);
->  
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> index 41632fa0b3c8..9b1b8add34e1 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-> @@ -248,9 +248,7 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
->  		}
->  	}
->  
-> -	res = rtw_alloc_hwxmits(padapter);
-> -	if (res == _FAIL)
-> -		goto exit;
-> +	rtw_alloc_hwxmits(padapter);
->  	rtw_init_hwxmits(pxmitpriv->hwxmits, pxmitpriv->hwxmit_entry);
->  
->  	for (i = 0; i < 4; i++)
-> @@ -1990,7 +1988,7 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
->  	return res;
->  }
->  
-> -s32 rtw_alloc_hwxmits(struct adapter *padapter)
-> +void rtw_alloc_hwxmits(struct adapter *padapter)
->  {
->  	struct hw_xmit *hwxmits;
->  	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
-> @@ -2001,8 +1999,10 @@ s32 rtw_alloc_hwxmits(struct adapter *padapter)
->  
->  	pxmitpriv->hwxmits = rtw_zmalloc(sizeof(struct hw_xmit) * pxmitpriv->hwxmit_entry);
->  
-> -	if (!pxmitpriv->hwxmits)
-> -		return _FAIL;
-> +	if (pxmitpriv->hwxmits == NULL) {
-> +		DBG_871X("alloc hwxmits fail!...\n");
-> +		return;
-> +	}
->  
->  	hwxmits = pxmitpriv->hwxmits;
->  
-> @@ -2027,7 +2027,7 @@ s32 rtw_alloc_hwxmits(struct adapter *padapter)
->  	} else {
->  	}
->  
-> -	return _SUCCESS;
-> +
->  }
->  
->  void rtw_free_hwxmits(struct adapter *padapter)
-> diff --git a/drivers/staging/rtl8723bs/include/rtw_xmit.h b/drivers/staging/rtl8723bs/include/rtw_xmit.h
-> index c04318573f8f..9f25ff77aa2c 100644
-> --- a/drivers/staging/rtl8723bs/include/rtw_xmit.h
-> +++ b/drivers/staging/rtl8723bs/include/rtw_xmit.h
-> @@ -483,7 +483,7 @@ s32 _rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter);
->  void _rtw_free_xmit_priv(struct xmit_priv *pxmitpriv);
->  
->  
-> -s32 rtw_alloc_hwxmits(struct adapter *padapter);
-> +void rtw_alloc_hwxmits(struct adapter *padapter);
->  void rtw_free_hwxmits(struct adapter *padapter);
->  
->  
-> 
 
