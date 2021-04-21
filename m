@@ -2,176 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B512366C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931FC366C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242212AbhDUNUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:20:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:34828 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241230AbhDUNNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:13:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AA4F11B3;
-        Wed, 21 Apr 2021 06:12:45 -0700 (PDT)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6693B3F774;
-        Wed, 21 Apr 2021 06:12:41 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] arm64: decouple check whether pfn is in linear map
- from pfn_valid()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
+        id S242481AbhDUNUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243230AbhDUNQv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:16:51 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A179C06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:14:30 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id z2so5704072qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FLAsc1Z4dnOJhx9j49BuieXWeT6WZBtSOA3VkyjkMZQ=;
+        b=tYHXF8gJ/FEVyhoKy/hhOJwu/VaLnvRGbOIB5eeuv8kIKp8Pk2sG4k5RLU8Iy+QtqC
+         MjeVHJzHDtoyQen+75eQEu/9qKW4nXnFaTaQ7xBZy/5kcx617yBMSlWl1Bmy9PGw3EXT
+         Dm/mf7S/cP4Bt4nf19WbXp37/ATGJsvlukWTY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FLAsc1Z4dnOJhx9j49BuieXWeT6WZBtSOA3VkyjkMZQ=;
+        b=C+wWFm56QHgoTvcrVt8cK3K8Za71Xop+XYUeZ+p6BKrIafOdAEDHY4SZDovkmDySCY
+         wDZjWSX6N4er25kikmh4pQLPHD86SGFJfA3XrxCvc14RneZOXkhcpj7xKMw/Pdrc1MYZ
+         /l40c3jH8AKaN9Ru57Kw3gkLJm29BSfGjuQ7LxLk+/+Y7cLeaQj1dCfOLcKTXsyDYKGa
+         pq2vBs0jTW0fC0Ayccl3MSv/KaGSHB4BzPEQq0wt8ociIh5kOW2lUqgtqCQ0CrD/o9j7
+         WbnVNnBidI9XKR+YX1neZeRHqOrp2bwCPn3F524S59PzvMGgpLdf+VvtceiGDUGgXLW9
+         6Ynw==
+X-Gm-Message-State: AOAM532KKwCWEYk72dj8iHReIUwb0/lbZLnhEbRWw4ncCe+W0uo300Eu
+        Anww3FRFQXPdUrn+2r67Pm56Gg==
+X-Google-Smtp-Source: ABdhPJyrCovHI6nCGiVuL5uqRt/CDEiOpg01AhJt58tMF8UGDQRXsusGnnMkSaW+/XFwmu30AGdzrw==
+X-Received: by 2002:ae9:c014:: with SMTP id u20mr17669678qkk.55.1619010869338;
+        Wed, 21 Apr 2021 06:14:29 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:92c9])
+        by smtp.gmail.com with ESMTPSA id 1sm2340371qkr.102.2021.04.21.06.14.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 06:14:28 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 14:14:27 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210421065108.1987-1-rppt@kernel.org>
- <20210421065108.1987-4-rppt@kernel.org>
- <0a7cc0d4-5d3d-7d6d-f4c3-bb2965b810e6@arm.com> <YIAYYcWtuwszHMux@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <2f9fb38c-0125-feca-4e15-3d443f3635e4@arm.com>
-Date:   Wed, 21 Apr 2021 18:43:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+Message-ID: <YIAlM2jXadciFfGW@chrisdown.name>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+ <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+ <YFDAfPCnS204jiD5@chrisdown.name>
+ <YFHAdUB4lu4mJ9Ar@alley>
+ <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
+ <YFMvfawY+0CncS8G@alley>
+ <YHmXi303WxVZzVwI@chrisdown.name>
+ <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
 MIME-Version: 1.0
-In-Reply-To: <YIAYYcWtuwszHMux@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 5:49 PM, Mike Rapoport wrote:
-> On Wed, Apr 21, 2021 at 04:29:48PM +0530, Anshuman Khandual wrote:
+Rasmus Villemoes writes:
+>> One (ugly) way to handle this would be to have a new "level" field in
+>> the printk index entry, with semantics that if it's some sentinel value,
+>> look at the format itself for the format, otherwise if it's some other
+>> value, the level field itself is the level.
 >>
->> On 4/21/21 12:21 PM, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> The intended semantics of pfn_valid() is to verify whether there is a
->>> struct page for the pfn in question and nothing else.
->>>
->>> Yet, on arm64 it is used to distinguish memory areas that are mapped in the
->>> linear map vs those that require ioremap() to access them.
->>>
->>> Introduce a dedicated pfn_is_map_memory() wrapper for
->>> memblock_is_map_memory() to perform such check and use it where
->>> appropriate.
->>>
->>> Using a wrapper allows to avoid cyclic include dependencies.
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>> ---
->>>  arch/arm64/include/asm/memory.h |  2 +-
->>>  arch/arm64/include/asm/page.h   |  1 +
->>>  arch/arm64/kvm/mmu.c            |  2 +-
->>>  arch/arm64/mm/init.c            | 11 +++++++++++
->>>  arch/arm64/mm/ioremap.c         |  4 ++--
->>>  arch/arm64/mm/mmu.c             |  2 +-
->>>  6 files changed, 17 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
->>> index 0aabc3be9a75..194f9f993d30 100644
->>> --- a/arch/arm64/include/asm/memory.h
->>> +++ b/arch/arm64/include/asm/memory.h
->>> @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
->>>  
->>>  #define virt_addr_valid(addr)	({					\
->>>  	__typeof__(addr) __addr = __tag_reset(addr);			\
->>> -	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
->>> +	__is_lm_address(__addr) && pfn_is_map_memory(virt_to_pfn(__addr));	\
->>>  })
->>>  
->>>  void dump_mem_limit(void);
->>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
->>> index 012cffc574e8..99a6da91f870 100644
->>> --- a/arch/arm64/include/asm/page.h
->>> +++ b/arch/arm64/include/asm/page.h
->>> @@ -38,6 +38,7 @@ void copy_highpage(struct page *to, struct page *from);
->>>  typedef struct page *pgtable_t;
->>>  
->>>  extern int pfn_valid(unsigned long);
->>> +extern int pfn_is_map_memory(unsigned long);
->>
->> Check patch is complaining about this.
->>
->> WARNING: function definition argument 'unsigned long' should also have an identifier name
->> #50: FILE: arch/arm64/include/asm/page.h:41:
->> +extern int pfn_is_map_memory(unsigned long);
->>
->>
->>>  
->>>  #include <asm/memory.h>
->>>  
->>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>> index 8711894db8c2..23dd99e29b23 100644
->>> --- a/arch/arm64/kvm/mmu.c
->>> +++ b/arch/arm64/kvm/mmu.c
->>> @@ -85,7 +85,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
->>>  
->>>  static bool kvm_is_device_pfn(unsigned long pfn)
->>>  {
->>> -	return !pfn_valid(pfn);
->>> +	return !pfn_is_map_memory(pfn);
->>>  }
->>>  
->>>  /*
->>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
->>> index 3685e12aba9b..dc03bdc12c0f 100644
->>> --- a/arch/arm64/mm/init.c
->>> +++ b/arch/arm64/mm/init.c
->>> @@ -258,6 +258,17 @@ int pfn_valid(unsigned long pfn)
->>>  }
->>>  EXPORT_SYMBOL(pfn_valid);
->>>  
->>> +int pfn_is_map_memory(unsigned long pfn)
->>> +{
->>> +	phys_addr_t addr = PFN_PHYS(pfn);
->>> +
->>
->> Should also bring with it, the comment regarding upper bits in
->> the pfn from arm64 pfn_valid().
-> 
-> I think a reference to the comment in pfn_valid() will suffice.
+>> This will work, but it's pretty ugly. Any better suggestions? :-)
+>
+>Well, that was more or less exactly what I suggested when I wrote
+>
+>> One could also record the function a format is being used with - without
+>> that, the display probably can't show a reasonable <level> for those
+>> dev_* function.
+>
+>But, I think the real question is, why are we/you interested in the
+>level at all? Isn't the format string itself enough for the purpose of
+>tracking which printks have come and gone? IOW, what about, on the
+>display side, simply skipping over some KERN_* prefix if present?
 
-Okay.
+Hmm, as Petr suggested, it's largely so that we can determine whether it will 
+be emitted at the current console loglevel. Otherwise, even if the printk site 
+is present, it might not ever get emitted. To that extent I am pretty convinced 
+it's necessary to reliably achieve the goals in the changelog.
 
-> 
-> BTW, I wonder how is that other architectures do not need this check?
-
-Trying to move that into generic pfn_valid() in mmzone.h, will resend
-the RFC patch after this series.
-
-https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
-
->  
->>> +	if (PHYS_PFN(addr) != pfn)
->>> +		return 0;
->>> +	
->>
->>  ^^^^^ trailing spaces here.
->>
->> ERROR: trailing whitespace
->> #81: FILE: arch/arm64/mm/init.c:263:
->> +^I$
-> 
-> Oops :)
->  
->>> +	return memblock_is_map_memory(addr);
->>> +}
->>> +EXPORT_SYMBOL(pfn_is_map_memory);
->>> +
->>
->> Is the EXPORT_SYMBOL() required to build drivers which will use
->> pfn_is_map_memory() but currently use pfn_valid() ?
-> 
-> Yes, this is required for virt_addr_valid() that is used by modules.
-> 
-
-There will be two adjacent EXPORT_SYMBOLS(), one for pfn_valid() and
-one for pfn_is_map_memory(). But its okay I guess, cant help it.
+Judging by the conversation there's no immediately obvious better way, so 
+unless you or Petr object, I'll send a patch in the v6 series which implements 
+the "ugly" way with dev_printk support as the first user. That should make it 
+easier to add other printk-likes in future as needed.
