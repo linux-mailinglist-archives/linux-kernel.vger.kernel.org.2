@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1418366776
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C239366778
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237769AbhDUJCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:02:14 -0400
-Received: from mail-eopbgr760078.outbound.protection.outlook.com ([40.107.76.78]:60630
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S237847AbhDUJCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:02:21 -0400
+Received: from mail-dm6nam12on2055.outbound.protection.outlook.com ([40.107.243.55]:41574
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237043AbhDUJCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:02:09 -0400
+        id S237699AbhDUJCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:02:11 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lvfuxlJM83MM5RP8Uc3RFunZnYeczZIh12X1Shi/5KF3YyigEPPMwDpe6+GLMOVqXHcLO4GpqK+sMsywwr6khfIX6meBSd3ossC2o49JQq8fHxZnRNJcyoIl79kBN6DzuKnS4pfu+RvxOL8RteKpuBRGgXPHMxG0IWZwWUyUWdIdD5c/vNjOy5CEhvpiwYu0KOnbJCg/2p+rJh1r/cyUGCf/Wbn140WRsoed+iXqvgKUbmSULsjZZ6aPrULEPSqb6xt1ZIuRMcKrssXoxZ1/ppZ81Ab+Ybb+9+qes2H8mvDf8WbE2x+toTZDwbHOSQA0vbxV9LqqJ2jiiP8AvcS6nA==
+ b=ZpXav6PBtEY9DUhR4pzXCL1KmzgFixsjlzePBOfioOjU2qeT0FtaV3y+JRztsGs2pv+C9up83Kt5F4LntinTwwSwwBv3xcEn6IKocYVBGhmzfcyIcW7z7xP3D+O2kfXOlr11wS1zadgaiixyY3aay19C8J/JoACtvOfutCE9wPfSuZI4FFMU/DVoXty+bjuYKDK3kMVqoFM5DJpGGcKon2+LEeeGpqRVEenyTnaxe6jLooR/w6YSK1hSVM3aKBmzkFPxCQ+aFsIwXN/JBB6Q40jyyz+M41LNWGykyiOJ9VNHvHo7JgMyscPYEQiWPe+XQJCLCOJ7CAeGro+E+Z48oA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oMJEF2RK9BZpBqUSnsAi4Om9qfYjmfhkNbXhy8MQGx8=;
- b=P7rS1TlweKIOrRLGjEkAdySl+Ls208p2ih4a2lsGXrpgqX7fHU/HosuyMNKx12MBaQgoJUec90NV88+Z0we+i4EtKinblzxRQxYzOEVjvyQTAI8SjdFwmHIz8J71Z+jzFnTzubvCiYMJ2ZcqyPeayKn8TGVtWZGBegwkgv5XKnPHkd6rMhDJGD3kSdGgmEvsUHyB9gMqdBK2ZePo4m5Avb8k8cwmCXC1xFoo3gWpk/mtzBzlnwQvf86bVANBsMdA3HzzChXJhbaJd/7aAXTeaF33EQ6Wh84gQ+XJdpAdMLDmIjqNBeoHefwWrO8TOYh/KBEv+m2mpu4RrrvdiMJ+kw==
+ bh=DuA1w0t1mxBB2cNbBmjm6Vzp6+qJHiRAVSFcULjBicM=;
+ b=i5qMNwhtahBQizj6gNqVbbNRymeS8RNtNTOR2tNRt91iSkDFko0lAzeWHHyfl4TIgh73NEkx6YlFfzSLM7nLxVKPDcMC697HnEWuztqH9RwPkdowpZn2KJWtEpw4MHPJb9gY2mh0iNMWvSY6vxijNYMkS5H5FeKP+m9NmEED2A1UEm9g8rQV83UHtxZ8wDBA8e+aww013/UmYFLiiAcRyjpHD766tKVTUhP/zzl/ppTd6QBpK8lQnsnxPDFo/RmoY6wT4P3ifM/fdsmwUH3ugwRAoMwoM1UpgrdCfPRe1XHsLo6uhh7NQdYQV6JHqlvIqCL5BZGcoocl6xUVdE0v5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oMJEF2RK9BZpBqUSnsAi4Om9qfYjmfhkNbXhy8MQGx8=;
- b=ZijAse/Kq2hon/+vqYWBT3wPa6qYWKkXDjlf3Ww6O3H4yeILVfrFEt774kGyxAZ2WBX4CJfZFCcaEXygYpg9bV7u6JKxlKcPE890scwEoPGJVkGjGxTfYQBmW/5qPTG/8JnTm+YSiYoQUdSb4ppY4aJu1K6K4DStm9EHxB5LzMI=
-Received: from CO2PR04CA0197.namprd04.prod.outlook.com (2603:10b6:104:5::27)
- by DM5PR1201MB0155.namprd12.prod.outlook.com (2603:10b6:4:55::20) with
+ bh=DuA1w0t1mxBB2cNbBmjm6Vzp6+qJHiRAVSFcULjBicM=;
+ b=3HH2TikspKEC2xoG91IyRNeXqhbVbobQWqeJSwu9mLLb/+lChA1vgnECiT3q/SWkbXYcwl79WL7AiY2IJMjpHtp76GuIqyvCFvMA00AuSE/zvC4RRikqerPZXykEVQEoMJhZD85wq5f92C08dLq7uaeXYj06o3KLSIYwavrx5YQ=
+Received: from CO2PR04CA0184.namprd04.prod.outlook.com (2603:10b6:104:5::14)
+ by MN2PR12MB3630.namprd12.prod.outlook.com (2603:10b6:208:cc::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Wed, 21 Apr
- 2021 09:01:35 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.22; Wed, 21 Apr
+ 2021 09:01:36 +0000
 Received: from CO1NAM11FT028.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:5:cafe::bc) by CO2PR04CA0197.outlook.office365.com
- (2603:10b6:104:5::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend
- Transport; Wed, 21 Apr 2021 09:01:35 +0000
+ (2603:10b6:104:5:cafe::63) by CO2PR04CA0184.outlook.office365.com
+ (2603:10b6:104:5::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
+ Transport; Wed, 21 Apr 2021 09:01:36 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
@@ -46,18 +46,18 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CO1NAM11FT028.mail.protection.outlook.com (10.13.175.214) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 09:01:35 +0000
+ 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 09:01:36 +0000
 Received: from rsaripalli-Inspiron-5676.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 21 Apr 2021 04:01:33 -0500
+ 15.1.2242.4; Wed, 21 Apr 2021 04:01:34 -0500
 From:   Ramakrishna Saripalli <rsaripal@amd.com>
 To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
         <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
 CC:     <bsd@redhat.com>, <rsaripal@amd.com>
-Subject: [PATCH 2/4] x86/speculation: Introduce SPEC_CTRL_MSR bit for PSFD
-Date:   Wed, 21 Apr 2021 04:01:15 -0500
-Message-ID: <20210421090117.22315-3-rsaripal@amd.com>
+Subject: [PATCH 3/4] x86/speculation: Implement PSF mitigation support
+Date:   Wed, 21 Apr 2021 04:01:16 -0500
+Message-ID: <20210421090117.22315-4-rsaripal@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210421090117.22315-1-rsaripal@amd.com>
 References: <20210421090117.22315-1-rsaripal@amd.com>
@@ -69,52 +69,70 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e2ec5388-4d6f-4bd6-a297-08d904a410ff
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0155:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB01554B93DC656A5CEC9066C49B479@DM5PR1201MB0155.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Office365-Filtering-Correlation-Id: 3c03ae0f-78a4-4b38-a4fd-08d904a4115e
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3630:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB363088466E91592E2DE2B8809B479@MN2PR12MB3630.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wHfC4INJkyNb+QJQ8laIQzsY3iTIojIHzaXObj82Z3opni8oViyoeTkaphXBcWuZB7HObyD8ILTbdsNbs1IJtDF1deahQEa7ZY2mx8gz5loM2EoS+iV/SjVb+0QAvubqWhF1d/BqAsCZ/eisFgGHgM5Fb6xbn7k4CiS8Ud/TerzJ/p2HB9pYTTOfWscaiO2SNQKdZ87gZX84cMOi98cm/Bgy1v5BTq74EjSpKSxidxyH1l7AbT8s3yllcpubpI0mDjZQenZNrhSHt7jz81iuw7Vs/pLnbD5cNEA07OqKfb2GHUnyG5XNrmyHPNKMxr7Hm0iBgb1+0HOEesmJsbwlRa3zZeKGyiAe3b1SA3GSkoHYborui+WW6peEhz51o99SLf1g1W3Na2Qt98vDpgSM/WRJI2t454mn8P9TKcqPs63VPHTY9H2M8cwQE23RIEkQrIOWt+lm5QmlOtHOm4Wkw2WcdJCMFQVcC5Mtc2AqUEEGLcIkF8MIZeMHK+JXSM0wqm5E+1cFf4z1EwOVErF54QxSl6TTL42GE+re4QGCgl6e4bHY7uK20npiRxdvzezdWAkg1G2iPBHPT9x8aAPU5RtDD+W1V8PDg/zkwui8e8RBP+aPV5JqypZTEQEqmcYr2kWGiwYzgdKYFrZzNgoQTVy1CsyvK3HWVy2FqtPuyBhai9shayJVgZlggm49KTZ3
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(136003)(46966006)(36840700001)(1076003)(70206006)(356005)(316002)(7696005)(8676002)(54906003)(2616005)(82310400003)(5660300002)(36756003)(4326008)(426003)(110136005)(47076005)(2906002)(6666004)(26005)(336012)(81166007)(186003)(8936002)(16526019)(82740400003)(36860700001)(70586007)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: VwYq+sMNLyHq8lku/eny3bf/HzTfMnBQaWOewITiY8q8uiVfCFHqbZsmTZxYwXdrpJAiEICbmfwNX1mRun4/WZ2AqSHqSvpcEWUEQAfmduFq5P9WVSJnbeBfFYtik1A1YWYVOBzlAFxPTPVcGkUfIWP4GOzGGSq0ruGr24N5cVEnRIANRv+GlxbgYg59w/unRWIUxbGL2RU/dLgHrpOeXndQ/IEn+eUBLJ521uPFoqIRd+ZhAfyHb+F089V8Y4Gorxi38GYbNmSlw0vUvPm3oniOtO/8NzH079A1gze/PrI9ys1fXGT7dnN9aKOgqOw7UThku+9kSyfFZqYhulWoWdupFQHindlyAGI1juBAUT1gJOxHJcHsT0h/2hzocszsFQq2MuP35YMyU6pKEnBcMDbPd3+dRmrZq//DVPENZASoa9evgVdNK96VF5RvUz5S/si2GxBuELNyAgZ0OE6vEpeHGVVsa8U0pHWO1qKANfyG905n7DrjDL3Hvgk36dVrrwj8uynCbuDbsE2Mzgk8cos8tG81S9EkOXq66DVV7D29EWbwZg2dGEEKKQLPGpg/GDU8d//6KviE15SEYn+ret+Gg1NsA4Gdk9wlAE6jcWz1dMqDbCSxyjNJyqtLF02vO01y53OEwu2HTp2a86oSPEf6BkmXNDR4l47QZ1g0zFIx5DptcLhRfNMn58iyZ8xd
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(39860400002)(376002)(36840700001)(46966006)(1076003)(8676002)(110136005)(316002)(47076005)(5660300002)(2616005)(8936002)(83380400001)(4326008)(478600001)(6666004)(70206006)(7696005)(70586007)(82740400003)(54906003)(2906002)(82310400003)(426003)(16526019)(336012)(36860700001)(26005)(186003)(81166007)(36756003)(356005)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 09:01:35.4383
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 09:01:36.0599
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2ec5388-4d6f-4bd6-a297-08d904a410ff
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c03ae0f-78a4-4b38-a4fd-08d904a4115e
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT028.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0155
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3630
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ramakrishna Saripalli <rk.saripalli@amd.com>
 
-All AMD processors that support PSF implement a bit in
-SPEC_CTRL MSR (0x48) to disable or enable Predictive Store
-Forwarding.
+Implement support for PSF mitigation via a kernel parameter.
+
+Kernel parameter predict_store_fwd has the following values
+
+- off. PSF mitigation is enabled which means the feature is disabled.
+
+- on. PSF mitigation is not enabled. This is also the default behavior.
 
 Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
 ---
- arch/x86/include/asm/msr-index.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/cpu/amd.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 546d6ecf0a35..f569918c8754 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -51,6 +51,8 @@
- #define SPEC_CTRL_STIBP			BIT(SPEC_CTRL_STIBP_SHIFT)	/* STIBP mask */
- #define SPEC_CTRL_SSBD_SHIFT		2	   /* Speculative Store Bypass Disable bit */
- #define SPEC_CTRL_SSBD			BIT(SPEC_CTRL_SSBD_SHIFT)	/* Speculative Store Bypass Disable */
-+#define SPEC_CTRL_PSFD_SHIFT		7
-+#define SPEC_CTRL_PSFD			BIT(SPEC_CTRL_PSFD_SHIFT)	/* Predictive Store Forwarding Disable */
- 
- #define MSR_IA32_PRED_CMD		0x00000049 /* Prediction Command */
- #define PRED_CMD_IBPB			BIT(0)	   /* Indirect Branch Prediction Barrier */
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 347a956f71ca..88aac52eeb1b 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1170,3 +1170,22 @@ void set_dr_addr_mask(unsigned long mask, int dr)
+ 		break;
+ 	}
+ }
++
++static int __init psf_cmdline(char *str)
++{
++	if (!boot_cpu_has(X86_FEATURE_PSFD))
++		return 0;
++
++	if (!str)
++		return -EINVAL;
++
++	if (!strcmp(str, "off")) {
++		x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
++		wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
++		setup_clear_cpu_cap(X86_FEATURE_PSFD);
++	}
++
++	return 0;
++}
++
++early_param("predict_store_fwd", psf_cmdline);
 -- 
 2.25.1
 
