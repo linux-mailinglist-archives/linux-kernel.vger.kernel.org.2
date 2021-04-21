@@ -2,97 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C3A366E4B
+	by mail.lfdr.de (Postfix) with ESMTP id 20404366E4A
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243602AbhDUOd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243227AbhDUOd0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:33:26 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 07:32:51 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id l17so11269675oil.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 07:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O4NdzpZfqirPp0gvR813Ah3uNgfBFiqBDJuyFPyGu1E=;
-        b=Kjz9TxZBQw4kQOiJ6hp0eg94TUg7BhRw7HZ8u74uB33gpDmRY6KAQzDoDFyY9qiFDU
-         0rqSNQr7DET8P3ubXLIabb344MfpQ/1AxVSeePgjKBgtjwzU3vl+QIi3xmXZ083gD0/9
-         LQhoP5fRUPucz1zsAF4aXtw1RiIZpoROr55O8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O4NdzpZfqirPp0gvR813Ah3uNgfBFiqBDJuyFPyGu1E=;
-        b=dFHM43K0pnCm5l6ZnsTOcImMKN/y6Wf3y0pu+63HblwXJPY8vkdP8yMrePkNfsI0I6
-         Fp74PILIabO/tV9UDIXr+GxwHgG0dE3leG14s6m1hj23QgrCiMzqQwMtGWptPLHFxkHx
-         Ic21SZwsKUMX09FM9XzEP1yHxVuea6OQTIpYMd47GrHugKR29UV1rfQK4EfFSu0YcIYo
-         btaSThy+OqonhTWsZtexwEKueOTu1C7W5TxnubfcDjRAd7OI9w5At0oqojiyJ/go3XW8
-         pe8KeWBZHsAN0QTS/MCWHld2FWS9KRoUBiHWwdUI7L20HJiDhVpKpHMYUfHLmfyIio/o
-         204A==
-X-Gm-Message-State: AOAM533gXMvSEjCeXtNkEXjVGT+4wKqvoGloIiY7wXnwIFqV3ek3Suqd
-        t/cmPMEEZDDMV2N/B9ZpVRkwcTOIKK6UgrvagrSdw6QIQlA=
-X-Google-Smtp-Source: ABdhPJzplxjGkMkE3Q1aIt+OfIn0aKTDJphbICRrJaG7SWlq7lWbgO/UnV/T4onLOoKBjH6XsduDUlgmuHX60sLxXw8=
-X-Received: by 2002:a05:6808:9b0:: with SMTP id e16mr6459393oig.128.1619015571169;
- Wed, 21 Apr 2021 07:32:51 -0700 (PDT)
+        id S243593AbhDUOdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:33:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243227AbhDUOdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:33:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5061B61448;
+        Wed, 21 Apr 2021 14:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619015571;
+        bh=dd3HvJVPIBFjv8CRf9O08UUhpaw3gLM9+mwfLrJFx9I=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=O+eKtFL+OKhMOqDGQAgHQt8v2ijekLfH10jbVwVfIrQPb9/ig3Q5wlBSjV/l05IV8
+         R1C2FriS9EtFBMzyZjB+S2971HoCGrn2+AtkSQdKng4mjTY1j0R+SAiACW0KKyl6Go
+         SfejY5cmAyHBN0ynVYCaE7B8cOCyDCsPdBPWKnlqldeBX65FHGZcFQzUyZCvhw6C/H
+         3MbeiFA7beIbouBU43WIroHVnu4quJfOGhz9hOhlwhRuw2wWwa5u4titNA3ZuK2bFt
+         LMMBgG3n5nmuKoARguerWdkwW3614RGFMnrZIcRdQ2vd6BM37qnXCjvRV6qFuPaqLv
+         YA08ueol+sKzw==
+Date:   Wed, 21 Apr 2021 16:32:44 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aditya Pakki <pakki001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>, x86@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Will Deacon <will@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
+In-Reply-To: <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net>
+Message-ID: <nycvar.YFH.7.76.2104211628560.18270@cbobk.fhfr.pm>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210421120938.546076-1-maarten.lankhorst@linux.intel.com>
-In-Reply-To: <20210421120938.546076-1-maarten.lankhorst@linux.intel.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 21 Apr 2021 16:32:40 +0200
-Message-ID: <CAKMK7uF51AyrqydPVwy4u=H9h2apk2uYhnvUFRijDCY4Y2OKzQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/i915: Fix docbook descriptions for i915_gem_shrinker
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 2:09 PM Maarten Lankhorst
-<maarten.lankhorst@linux.intel.com> wrote:
->
-> Fixes the following htmldocs warning:
-> drivers/gpu/drm/i915/gem/i915_gem_shrinker.c:102: warning: Function parameter or member 'ww' not described in 'i915_gem_shrink'
->
-> Fixes: cf41a8f1dc1e ("drm/i915: Finally remove obj->mm.lock.")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+On Wed, 21 Apr 2021, Guenter Roeck wrote:
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > Commits from @umn.edu addresses have been found to be submitted in 
+> > "bad faith" to try to test the kernel community's ability to review 
+> > "known malicious" changes.  The result of these submissions can be 
+> > found in a paper published at the 42nd IEEE Symposium on Security and 
+> > Privacy entitled, "Open Source Insecurity: Stealthily Introducing 
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu 
+> > (University of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Sigh. As if this wouldn't be a problem everywhere.
 
-> ---
->  drivers/gpu/drm/i915/gem/i915_gem_shrinker.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-> index 7545ddd83659..f4fb68e8955a 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-> @@ -72,6 +72,7 @@ static void try_to_writeback(struct drm_i915_gem_object *obj,
->
->  /**
->   * i915_gem_shrink - Shrink buffer object caches
-> + * @ww: i915 gem ww acquire ctx, or NULL
->   * @i915: i915 device
->   * @target: amount of memory to make available, in pages
->   * @nr_scanned: optional output for number of pages scanned (incremental)
-> --
-> 2.31.0
->
+Right.
 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > This patchset has the "easy" reverts, there are 68 remaining ones that
+> > need to be manually reviewed.  Some of them are not able to be reverted
+> > as they already have been reverted, or fixed up with follow-on patches
+> > as they were determined to be invalid.  Proof that these submissions
+> > were almost universally wrong.
+> > 
+> > I will be working with some other kernel developers to determine if any
+> > of these reverts were actually valid changes, were actually valid, and
+> > if so, will resubmit them properly later.  For now, it's better to be
+> > safe.
+> > 
+> > I'll take this through my tree, so no need for any maintainer to worry
+> > about this, but they should be aware that future submissions from anyone
+> > with a umn.edu address should be by default-rejected unless otherwise
+> > determined to actually be a valid fix (i.e. they provide proof and you
+> > can verify it, but really, why waste your time doing that extra work?)
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> [ ... ]
+> >   Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
+> 
+> I see
+> 
+> 9aa3aa15f4c2 hwmon: (lm80) fix a missing check of bus read in lm80 probe
+> c9c63915519b hwmon: (lm80) fix a missing check of the status of SMBus read
+> 
+> The latter indeed introduced a problem which was later fixed with
+
+Therefore I'd like to ask Kangjie Lu (who is CCed here) to consider 
+revising his statement in the attempted public clarification:
+
+	"The experiment did not introduce any bug or bug-introducing commit into 
+	 OSS."
+
+at [1] as it's clearly not true. Missing mutex unlock clearky is a bug 
+introduced by this experiment.
+
+[1] https://www-users.cs.umn.edu/~kjlu/
+
+Thanks,
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Jiri Kosina
+SUSE Labs
+
