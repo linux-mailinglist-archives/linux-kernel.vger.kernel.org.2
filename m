@@ -2,226 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC63F366F1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52428366F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243994AbhDUP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243982AbhDUP1o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:27:44 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C6AC06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:27:09 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id o9-20020a1c41090000b029012c8dac9d47so1524776wma.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:27:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gKdt8Wk+0o9N/o4Eeh7jFivsYAp+6odRUk2hDoOYTNE=;
-        b=Ld1STCnsE1eouA8OovEt+JR3kvLhy+38SIeXNlwIkDlOiLq05bK7Xtf0K9jrzy0JBg
-         l7Vv9cqjwitQLtZanAgbC4FHzf0jZYrRiLFa1aiMF+HviBubCWXTbitrlhIeZgclqfrr
-         rNSiHWguSr/4GVnfTLurIDqrGY85zcHBi1fjyNVIwnwt04M07BxCWghuUhWyyCRBw0PQ
-         kODch46wzB/NfbSZH3OkAXLF7Scy075Euz1AgKCdsC/jqLZFujuUsUSTB9qK2x31ltBH
-         td1grGFzAsMrRdOHHH0QYY+3dvXwt//4U27ImWFpSaFnt7wVbc0SpT/Y+WZBQRPuwY4A
-         rcLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gKdt8Wk+0o9N/o4Eeh7jFivsYAp+6odRUk2hDoOYTNE=;
-        b=G/JYDP1BukTOOu81ixauVfLeehIztozIe3E7sv64q/asqgQDuwgcOnhlW/BjUKcDFE
-         9/XMjIfeDDY3JwNM7pTybkxKS3zjHqO/WskyOIJ3Dwxpvi15BFu2IAHTnx5ragIYm6qz
-         lGcJttysR7i3PZrHog3nC6wUQlwvpwnBgwtlPX8A0z6TUW1s9IWVmxykZv+XxRoFdYo2
-         URgt2sbca+qlp8h2y2gH/83E27qmbKo/ffdW9CwNjsSzz0JvA1uLYLbQiUF/6M/hK1a+
-         yY/DTBbC0RH4SgkbXLBnU7u0j4uqF9BYbf5dtc5tmFMM695ZbQ5kD/k6XuYIx/L/iWDp
-         CNDw==
-X-Gm-Message-State: AOAM531iPuk4nE8C+dD2ZKCUX93Qbp0t93aXXDhDJdbjEQgSD2GYDHrW
-        Cy4n4gyuW4MUHTm6/OqFwu74Aw==
-X-Google-Smtp-Source: ABdhPJx/Z4/wH0IczXzrpu1/+CHFDyPCB4UahTsagrUa+vs9LV/LiT8hoPliplY5euRpNBomq4NZqQ==
-X-Received: by 2002:a1c:1f8e:: with SMTP id f136mr10451672wmf.17.1619018828018;
-        Wed, 21 Apr 2021 08:27:08 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.81.177])
-        by smtp.gmail.com with ESMTPSA id n2sm3159970wmb.32.2021.04.21.08.27.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 08:27:07 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
- <7dc31256-eb1d-dc93-5e55-2de27475e0c6@csgroup.eu>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <c84445eb-8621-9ac2-2e8a-b58b8241903a@isovalent.com>
-Date:   Wed, 21 Apr 2021 16:27:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S244009AbhDUP2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:28:03 -0400
+Received: from mail-eopbgr750091.outbound.protection.outlook.com ([40.107.75.91]:18070
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243982AbhDUP2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:28:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dJNcAlyQbIzayli/Tj82za69ohYI5amY/CqKsSZBsNbtPLsRcCFkzTl6tqQre9/2l/UfHN47p3myfDjGikxsHYR8hGHDwNo59id+dU5ImMqwWOGTN2fKJt9JyBCSMWUbvCW+yR4AQjPoyGf6MLS9u4IG2l2xG0Urp+J7362i7EJHmsHZHIsY7gvYECmP9eDsZBBulnRS746xlZBy8JMC9W4y6Cq4q3ldXMiyn041d18Z8qukj5bM0v3PXZOozIwUunFVSGUY9/as7+QNyZ1hwmA0eGHAxXDqkAVJ/97LEAR99Upd+4vDUZyS04ZS/kjO8sia21KTT4qGbfbNa1Rz1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1PVxifqyGM9WgUge7yVaMGBSTRodEfhHDL3QmTOFTII=;
+ b=iXjeX+XPlOD9Vf2KEmPH7hvc4w41/0Tx0/OqFRxUBDo5JR9OpHQazxU/QubRnRzuPdXbLA/DChmqoliGh0ZeAPk2rC5cSlMgZewV7zvKSAFkMilAIZY80RPaRqPyxyUq+rr3203buZtkCPjzs9UDXmrD3NvOGWH1MXEoUBVdDFIfTUdfo3dZxuyhuXNlRPS319HAclpr+IWwwZXxIsepLgWkKwteKR8tlfTt6AK5QcKbJezFxjK+5TubjaKjZxnUxTtLTbyk0pOOriFJ1jvxjj24Jlp/hsgRGVLpNspQUq3NBSE2Skq3YnT9l5ORads72l2+o9FLh+cAFuZIp0eDbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1PVxifqyGM9WgUge7yVaMGBSTRodEfhHDL3QmTOFTII=;
+ b=M9VmyYHdCBjO2w2OIk42FxnD5i4PDU4GIp5cefwvpKzih/R+uWIjlr+LHrofnHHZ/gexB5mk/zyDzdBhXr7HwyAeGGht4rKS+L3NaLVqZ+9BcqUlDknPPgECFBNHzZoqG8y66J6rxRpOlii6hwDay1CZYMEL842kogG91wKKagQ=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW2PR2101MB0905.namprd21.prod.outlook.com (2603:10b6:302:10::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.10; Wed, 21 Apr
+ 2021 15:27:24 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f%5]) with mapi id 15.20.4087.016; Wed, 21 Apr 2021
+ 15:27:24 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Joe Perches <joe@perches.com>, KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: RE: [PATCH 1/1] video: hyperv_fb: Add ratelimit on error message
+Thread-Topic: [PATCH 1/1] video: hyperv_fb: Add ratelimit on error message
+Thread-Index: AQHXNfwbMInj8J9Lc0erCaPnZXj03qq90y8AgAFDusA=
+Date:   Wed, 21 Apr 2021 15:27:24 +0000
+Message-ID: <MWHPR21MB1593C45E6B94664509FA940DD7479@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1618933459-10585-1-git-send-email-mikelley@microsoft.com>
+ <c5de33a3cd1dc18688fc2bb7cf6a84aedcc5a041.camel@perches.com>
+In-Reply-To: <c5de33a3cd1dc18688fc2bb7cf6a84aedcc5a041.camel@perches.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=d473cfa3-8c7f-4f20-8b7e-2d7e5f767aa5;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-21T15:17:27Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: perches.com; dkim=none (message not signed)
+ header.d=none;perches.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [75.104.93.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aee71c07-f7e0-46aa-30bb-08d904d9f6ec
+x-ms-traffictypediagnostic: MW2PR2101MB0905:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB0905AEAEBEE7648EB258E2EAD7479@MW2PR2101MB0905.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AIB4rxBRWgQlY4RYRDO88Irb3nCgp20kQYIMU63YG3KPQVnPVyzcoH+ImfvZiWcetBUt6pHalnyZLgYiEtdD2HE3hAmVpEVVQQIUHbuavo9aUpa7vve4yieqYqNIcb6/ol92BUmnvmgorjlLHsaEwkodAS/cqwJcfzp/pmK4cfCug7NWqxE6ARcM8prwy8rOleiCXwSlapZcpg6VQrxR1en7mlMrjCmTfxQ34Uisn4LcdpwoPV1GQ0e/eaZAFhYEWEYwZ0B4Cd0c5SPeJ3IWMeOnNHz78UdpvCadyMTaAiWUei0Msez93YEn6oWr+6zeyLTaMifeey2rxC0KqfVZiNBbr/wosaVZlQnsy5lGwsAQYvjyc6FHQTO2W35V5HGw1eXkl3U6Ww1HukyUtGaciUxpu6Cx6nEFQCxlaXdvpZ7p3EvtcCmqFuhlRCcfYyPPpli/AopnDtj62F/lR28XML94Guv2+a3h3Lm5/u4CSvvtkTwHt+C61Ppx9FcKiYTFD4gec21kDZTk1ZS2CM1HWJygd2K70VI+p3hCEQ8gBrf0dClf2FvsjnGVRWSL1QkvTsNi9wfSBewdTL2mI36vKcb7aGTRpKOyBNCFP4AIJrw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(66476007)(66946007)(26005)(110136005)(76116006)(8676002)(6506007)(66556008)(64756008)(66446008)(52536014)(82950400001)(82960400001)(71200400001)(5660300002)(55016002)(7696005)(9686003)(186003)(8990500004)(83380400001)(2906002)(478600001)(38100700002)(122000001)(86362001)(10290500003)(15650500001)(33656002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?GxMIieSpy3qRb0HWRKr3NDgYVYcTUZCx3FiWnATBOqW6nzWJVxWieNwio6?=
+ =?iso-8859-1?Q?itGxOK97AoFgV0K6sg/Kg6iIieRogKeqxDVPttAS3MrsXzurfsnOGh/87t?=
+ =?iso-8859-1?Q?czaSwK0/Qp6LE2ajfHwfBRafqbUZlA4HpRh1ZXt8GtRx9DF30u+hRbsghL?=
+ =?iso-8859-1?Q?Uvxl9xUiBtoVOLfIufCMvJGemht0D6Adsd0IWg3ho0QvHBFMS2UNzCqrjc?=
+ =?iso-8859-1?Q?Ggc3rGSGD/r7qdAvg7lwDPv7Tw8boxOvZTNGs16LYQ3AIl2t8MknYM8gNA?=
+ =?iso-8859-1?Q?I0isi4LvL6pyan+sMX1i99c90B7o+D/gPZSK5LeAnzChG6fjA6bLLaR+Y6?=
+ =?iso-8859-1?Q?GO9VnszSTbIcY5Eq1spQbVRtzrgkEx6feIVP59bKLU3eYTZGFcYmoiEaDo?=
+ =?iso-8859-1?Q?6/WyCPaDcocteps8LuSNMdnGIKTzGRXYDZI526njhjQt0dKzHoZg0kqayG?=
+ =?iso-8859-1?Q?R9IcXydhMaznZA6IUtBIVy5ZidKIbnIgvdWVrVcPXa2zf03WYkw+V6TP2F?=
+ =?iso-8859-1?Q?vB4qEEK84T9r+fQ7vPFMbwF2PA02y7WvhwDMRtO01d3c93PcPIPpOXP1Ca?=
+ =?iso-8859-1?Q?9hgo/0conIRknS65afEjpMgZM81NFPhvDwBwika3TxkHY+T+8GaZvyPxCR?=
+ =?iso-8859-1?Q?nXDp0dqhWUAI9OogRCYtOmXz+FxJo87APpOcFAU2B1ehG9fObmrzW8YCVS?=
+ =?iso-8859-1?Q?kBS37YKPbGp35w7T1NazHv0yWl+4wBsdbYyMlZbv3YmVeU4eDFkPJeChTQ?=
+ =?iso-8859-1?Q?i1Yg9W9zg2AiIyURsEtEoL3HS4vmr/p8Gabh8dfITfU1RiV9UMcQ6UnRRB?=
+ =?iso-8859-1?Q?JlcSrTrWvNbP6TYp6joX+Bm48QGQt0EzZDbDjp9VCZtkFDY1hbsFaDYQvy?=
+ =?iso-8859-1?Q?DBhdFkAxc8Tq1GPFkLEE9cO8HBqno/c5uBa63Ym5x/QJ+ts8qevpOlna92?=
+ =?iso-8859-1?Q?t4SxsZzWXpl7CMYn2n8yQ+c4RbgCu/TFWoogZZZBN+Ew+0zdairvmcU93S?=
+ =?iso-8859-1?Q?0KgKrHyBc5XQJHKos69XYDRYHLkGRbcbC9jcGTvCwjWtkF845bFsN3/20b?=
+ =?iso-8859-1?Q?0QRVqkai7N9tJaMrtEo7ztGxdKMZm++tJn+HUImBcSiOxmKGE1GNnBXaz3?=
+ =?iso-8859-1?Q?WriN7sAKm7y6HlrrQwVxHkv3GAkGQlRgVMvJNX5B/xRUMnnjl5/eyMc7I9?=
+ =?iso-8859-1?Q?WtyP4hBgCdIM7viRI0biJeU79yEhiPD15oxT62WIar2OsY2diFcNoCHvoP?=
+ =?iso-8859-1?Q?wrR7WL4vzTcpAK3zfQftgWHRtDQm0fMLRoePTGAey/Jqgp2dDyZU7E2F5O?=
+ =?iso-8859-1?Q?5ymSqnm6hTZ+Coi2KyVM3/dAmgsobVb9iqpEUVgdo2e+aYSvJMl6MN1PsA?=
+ =?iso-8859-1?Q?hWm7C+wyNA?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <7dc31256-eb1d-dc93-5e55-2de27475e0c6@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aee71c07-f7e0-46aa-30bb-08d904d9f6ec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2021 15:27:24.5524
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QoKHJ+bMR9g/svZovhOlf2vB8QmXgdafgyyHBFiJPkCeJ6DTxe1MdcXpS6BDp7BHgpBzKQxXRaahbfbYVvmTlbhXdT43deW/5W8fQscuvmc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0905
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-04-21 15:10 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> 
-> Le 20/04/2021 à 05:28, Alexei Starovoitov a écrit :
->> On Sat, Apr 17, 2021 at 1:16 AM Christophe Leroy
->> <christophe.leroy@csgroup.eu> wrote:
->>>
->>>
->>>
->>> Le 16/04/2021 à 01:49, Alexei Starovoitov a écrit :
->>>> On Thu, Apr 15, 2021 at 8:41 AM Quentin Monnet
->>>> <quentin@isovalent.com> wrote:
->>>>>
->>>>> 2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
->>>>>> On 4/15/21 11:32 AM, Jianlin Lv wrote:
->>>>>>> For debugging JITs, dumping the JITed image to kernel log is
->>>>>>> discouraged,
->>>>>>> "bpftool prog dump jited" is much better way to examine JITed dumps.
->>>>>>> This patch get rid of the code related to bpf_jit_enable=2 mode and
->>>>>>> update the proc handler of bpf_jit_enable, also added auxiliary
->>>>>>> information to explain how to use bpf_jit_disasm tool after this
->>>>>>> change.
->>>>>>>
->>>>>>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
->>>>>
->>>>> Hello,
->>>>>
->>>>> For what it's worth, I have already seen people dump the JIT image in
->>>>> kernel logs in Qemu VMs running with just a busybox, not for kernel
->>>>> development, but in a context where buiding/using bpftool was not
->>>>> possible.
->>>>
->>>> If building/using bpftool is not possible then majority of selftests
->>>> won't
->>>> be exercised. I don't think such environment is suitable for any kind
->>>> of bpf development. Much so for JIT debugging.
->>>> While bpf_jit_enable=2 is nothing but the debugging tool for JIT
->>>> developers.
->>>> I'd rather nuke that code instead of carrying it from kernel to kernel.
->>>>
->>>
->>> When I implemented JIT for PPC32, it was extremely helpfull.
->>>
->>> As far as I understand, for the time being bpftool is not usable in
->>> my environment because it
->>> doesn't support cross compilation when the target's endianess differs
->>> from the building host
->>> endianess, see discussion at
->>> https://lore.kernel.org/bpf/21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu/
->>>
->>>
->>> That's right that selftests can't be exercised because they don't build.
->>>
->>> The question might be candid as I didn't investigate much about the
->>> replacement of "bpf_jit_enable=2
->>> debugging mode" by bpftool, how do we use bpftool exactly for that ?
->>> Especially when using the BPF
->>> test module ?
->>
->> the kernel developers can add any amount of printk and dumps to debug
->> their code,
->> but such debugging aid should not be part of the production kernel.
->> That sysctl was two things at once: debugging tool for kernel devs and
->> introspection for users.
->> bpftool jit dump solves the 2nd part. It provides JIT introspection to
->> users.
->> Debugging of the kernel can be done with any amount of auxiliary code
->> including calling print_hex_dump() during jiting.
->>
-> 
-> I get the following message when trying the command suggested in the
-> patch message:
-> 
-> root@vgoip:~# ./bpftool prog dump jited
-> Error: No libbfd support
-> 
-> Christophe
+From: Joe Perches <joe@perches.com> Sent: Tuesday, April 20, 2021 12:59 PM
+>=20
+> On Tue, 2021-04-20 at 08:44 -0700, Michael Kelley wrote:
+> > Due to a full ring buffer, the driver may be unable to send updates to
+> > the Hyper-V host.  But outputing the error message can make the problem
+> > worse because console output is also typically written to the frame
+> > buffer.  As a result, in some circumstances the error message is output
+> > continuously.
+> >
+> > Break the cycle by rate limiting the error message.  Also output
+> > the error code for additional diagnosability.
+> >
+> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+>=20
+> None of the callers of this function ever check the return status.
+> Why is important/useful to emit this message at all?
+>
 
-Hi Christophe,
+Except during device initialization, the messages tell Hyper-V
+about updates to the frame buffer contents.  The fbdev
+framework functions (such as fillrect) that eventually call synthvid_send()
+are void functions.   So the message is the only alert that something
+has gone wrong in the communication with Hyper-V, which makes
+it useful for diagnostic purposes.
 
-Bpftool relies on libbfd to disassemble the JIT-ed instructions, but
-this is an optional dependency and your version of bpftool has been
-compiled without it.
+Michael
 
-You could try to install it on your system (it is usually shipped with
-binutils, package "binutils-dev" on Ubuntu for example). If you want to
-cross-compile bpftool, the libbfd version provided by your distribution
-may not include support for the target architecture. In that case you
-would have to build libbfd yourself to make sure it supports it.
+=20
+> > ---
+> > =A0drivers/video/fbdev/hyperv_fb.c | 2 +-
+> > =A01 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hype=
+rv_fb.c
+> > index 4dc9077..a7e6eea 100644
+> > --- a/drivers/video/fbdev/hyperv_fb.c
+> > +++ b/drivers/video/fbdev/hyperv_fb.c
+> > @@ -308,7 +308,7 @@ static inline int synthvid_send(struct hv_device *h=
+dev,
+> > =A0			       VM_PKT_DATA_INBAND, 0);
+> >
+> >
+> > =A0	if (ret)
+> > -		pr_err("Unable to send packet via vmbus\n");
+> > +		pr_err_ratelimited("Unable to send packet via vmbus; error %d\n", re=
+t);
+> >
+> >
+> > =A0	return ret;
+> > =A0}
+>=20
 
-Then you can clean up the results from the libbfd probing:
-
-    $ make -C tools/build/feature/ clean
-
-and recompile bpftool.
-
-I hope this helps,
-Quentin
