@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DF6366FB7
+	by mail.lfdr.de (Postfix) with ESMTP id A3E5E366FB8
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244245AbhDUQGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:06:21 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:23408 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235921AbhDUQGO (ORCPT
+        id S244251AbhDUQGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:06:25 -0400
+Received: from mail-pf1-f179.google.com ([209.85.210.179]:39810 "EHLO
+        mail-pf1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244241AbhDUQGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:06:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1619021138; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=gyXYaODNllryh1sTYaeqPeUj4GCOEReKQxRRpl9APqu3J4hJK98H4rEjfTg900FFMe
-    fK+8w+IlODgMa1CplmdXcOjYCV0MZNvbbJYxQ7dk9vLEi3qO6N7ROVdViCYukwEBodYR
-    K7xVPdpY+MyLyFg9/7Y+Cs8PouUYm4jT0bkS947PIvyXFcxYsA4SZrSRHx0qOcOpVaBW
-    GtDP1ctdY2w6HF7oJrno+Br/hNXIwdsDwBLawsHHkSosLAQ7fgAnMeFdp0U8YrH9/Z6Z
-    6pkxWeZGV7wGtprVxn/80n8yvKaBLgvRORkjXYPkBbYU54fQOdqCvIyGhQAqx1wmTkAA
-    zFUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619021138;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=ZnB6n91eJ/MByNOT4nJoMMoQqFjCem7iinD4teAGwlI=;
-    b=ZcRlZ0FOOBlf6fsCS2iHOR9y2m26RTT2verI/LV8ZhtrWmAz2sdI7HwPbwyns1u7+k
-    Xt5qumw2GuD148dVUUby636d4wXjaHJrPe5KBevlyBFYsviPAI9md8wRtXLlGvsjYuBO
-    WItuHFKMEltZpdvRcHPFb7DPfQHkXpUPKTegCKjrVIwYTtm6HLCWz/OGkJYTvKuZIfPY
-    Y0XvyhBevmAnFoQk65ZmyqcueLnXPSWji7Q25k7/Qqd77VserUUBbzlFxSdJqroNEebi
-    U06O8AoMso4NMJCEOxc7VTR5TexiG8E0wn4jA3UgeMYOjNLGEwGEvx0qwGoIB4VzeFHU
-    D+lQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619021138;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=ZnB6n91eJ/MByNOT4nJoMMoQqFjCem7iinD4teAGwlI=;
-    b=l49M3Aq+zqbNQ6IBXHO+OLTh9JQLyx56mVzw0k2VnTdzmY6CHo2e4Vk9BBoYXlb8P/
-    gNI/HP3bMsW1Dw04AktwK5gKZoKvIo8JYGlFYqh0NOMkLQlSYW7X2MlYxh2yaDQnSfeW
-    HzA2lGVCRBAcfI8lT5SE+0j6Y8S78a8xWmHIndr2qr02eyPT5mNhUKwFQ+ePga3lCqID
-    kcljnttl7lwOjEpwVjAcFMzBiSuRNCWGZqgmv/Hv6KqL3vyFViLZWUb/SikaVKuwkYIx
-    trcj8UFATYl7ISSX1ezQOD4T5QZqOpE8KFuxV/HLjYB0G8l5steQIYna6mXt+RsA3x5b
-    tegw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlSeXA9h"
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.24.3 DYNA|AUTH)
-    with ESMTPSA id Q01a92x3LG5cSwq
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Wed, 21 Apr 2021 18:05:38 +0200 (CEST)
-Subject: Re: [PATCH 4/4] MIPS: Avoid DIVU in `__div64_32' is result would be zero
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <alpine.DEB.2.21.2104200331110.44318@angie.orcam.me.uk>
-Date:   Wed, 21 Apr 2021 18:05:37 +0200
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <284CBC37-0F4F-4077-A172-7E47C90B8B43@goldelico.com>
-References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <alpine.DEB.2.21.2104200331110.44318@angie.orcam.me.uk>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-X-Mailer: Apple Mail (2.3124)
+        Wed, 21 Apr 2021 12:06:21 -0400
+Received: by mail-pf1-f179.google.com with SMTP id c17so29290396pfn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:05:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8yTVX8+oRbYXLONfEb90CxPaxaI5p8TKq6tQSe8PKmc=;
+        b=qb2G1wkXmwEBVMrfjQvja3ZDozrWXcHce8yw3+xvaNt8n4546zPolO2qqHBKQtRj8A
+         I3LsrjABuj80buGax+GdzEqmsUQIDqehYdxrNBFFGdi9fvBmkkACg4aR2QDSPaI4Q3ua
+         HZuVuGFNIk6kOL0WdsjmTCjHOf0sWaKGM1WP5C7Z25UBOBMyrnBCouQdIpBYOpRBHMsT
+         Gv66Yv+CnGAaYCFqUDXV+iTexx2jDrXabLh+dvV4PJdDEz5MgXyc1BPZOqHR6xQ/sglk
+         cAfbMn8DTg/hHRYv06wxeelcdA8+3BeVIEpG3ikb7ALtWdrFV6+VZn3pz1n+F1JMyZb8
+         hfjQ==
+X-Gm-Message-State: AOAM5321afIyA+aAqjoULVkookhizyTWm6CrrjqVWlIWebmLCBRNVrRv
+        eKmzQp3wh6IKDc5WcCTW5yc=
+X-Google-Smtp-Source: ABdhPJzhHgA/jxYBJG2T49SANDsNTCG54bEF/+2bJHv7wt0AQdpuV9PE0i7S14XDGdJS4+THRV8eaQ==
+X-Received: by 2002:a17:90a:f3d1:: with SMTP id ha17mr12386702pjb.123.1619021146615;
+        Wed, 21 Apr 2021 09:05:46 -0700 (PDT)
+Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id t1sm2398836pjo.33.2021.04.21.09.05.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 09:05:46 -0700 (PDT)
+Subject: Re: [PATCH 059/190] Revert "RDMA/srpt: Remove unnecessary assertion
+ in srpt_queue_response"
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-60-gregkh@linuxfoundation.org>
+ <20210421140247.GG1370958@nvidia.com> <20210421140553.GA2268573@nvidia.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ab214d8e-bc80-ddfe-10e9-25389f84471b@acm.org>
+Date:   Wed, 21 Apr 2021 09:05:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210421140553.GA2268573@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/21/21 7:05 AM, Jason Gunthorpe wrote:
+> On Wed, Apr 21, 2021 at 11:02:47AM -0300, Jason Gunthorpe wrote:
+>> On Wed, Apr 21, 2021 at 02:58:54PM +0200, Greg Kroah-Hartman wrote:
+>>> This reverts commit 9f48db0d4a08624bb9ba847ea40c8abad753b396.
+>>>
+>>> Commits from @umn.edu addresses have been found to be submitted in "bad
+>>> faith" to try to test the kernel community's ability to review "known
+>>> malicious" changes.  The result of these submissions can be found in a
+>>> paper published at the 42nd IEEE Symposium on Security and Privacy
+>>> entitled, "Open Source Insecurity: Stealthily Introducing
+>>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+>>> of Minnesota) and Kangjie Lu (University of Minnesota).
+>>>
+>>> Because of this, all submissions from this group must be reverted from
+>>> the kernel tree and will need to be re-reviewed again to determine if
+>>> they actually are a valid fix.  Until that work is complete, remove this
+>>> change to ensure that no problems are being introduced into the
+>>> codebase.
+>>>
+>>> Cc: https
+>>> Cc: Aditya Pakki <pakki001@umn.edu>
+>>> Cc: Bart Van Assche <bvanassche@acm.org>
+>>> Cc: Jason Gunthorpe <jgg@mellanox.com>
+>>> Cc: Jason Gunthorpe <jgg@mellanox.com>
+>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>   drivers/infiniband/ulp/srpt/ib_srpt.c | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>
+>> I think this one is fine
+> 
+> Sorry, I realize that is unclear. I mean I don't see a reason to
+> revert this patch.
 
-> Am 20.04.2021 um 04:50 schrieb Maciej W. Rozycki <macro@orcam.me.uk>:
->=20
-> We already check the high part of the divident against zero to avoid =
-the=20
+Greg, I share Jason's opinion and would like to see this revert dropped. 
+The function srpt_queue_response() dereferences the 'ch' pointer before 
+the BUG_ON(ch) statement is reached. I think this makes the BUG_ON() 
+statement that would be reintroduced by this revert superfluous.
 
-nit-picking: s/divident/dividend/
+Thanks,
 
-(seems to come from from Latin "dividendum" =3D the number that is to be =
-divided).
-
-> costly DIVU instruction in that case, needed to reduce the high part =
-of=20
-> the divident, so we may well check against the divisor instead and set=20=
-
-> the high part of the quotient to zero right away.  We need to treat =
-the=20
-> high part the divident in that case though as the remainder that would=20=
-
-> be calculated by the DIVU instruction we avoided.
->=20
-> This has passed correctness verification with test_div64 and reduced =
-the
-> module's average execution time down to 1.0445s and 0.2619s from =
-1.0668s
-> and 0.2629s respectively for an R3400 CPU @40MHz and a 5Kc CPU =
-@160MHz.
-
-Impressive.
-
->=20
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> ---
-> I have made an experimental change on top of this to put `__div64_32' =
-out=20
-> of line, and that increases the averages respectively up to 1.0785s =
-and=20
-> 0.2705s.  Not a terrible loss, especially compared to generic times =
-quoted=20
-> with 3/4, but still, so I think it would best be made where optimising =
-for=20
-> size, as noted in the cover letter.
-> ---
-> arch/mips/include/asm/div64.h |    6 ++++--
-> 1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-> Index: linux-3maxp-div64/arch/mips/include/asm/div64.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-3maxp-div64.orig/arch/mips/include/asm/div64.h
-> +++ linux-3maxp-div64/arch/mips/include/asm/div64.h
-> @@ -68,9 +68,11 @@
-> 									=
-\
-> 	__high =3D __div >> 32;						=
-\
-> 	__low =3D __div;							=
-\
-> -	__upper =3D __high;						=
-\
-> 									=
-\
-> -	if (__high) {							=
-\
-> +	if (__high < __radix) {						=
-\
-> +		__upper =3D __high;					=
-\
-> +		__high =3D 0;						=
-\
-> +	} else {							=
-\
-> 		__asm__("divu	$0, %z1, %z2"				=
-\
-> 		: "=3Dx" (__modquot)					=
-\
-> 		: "Jr" (__high), "Jr" (__radix));			=
-\
-
+Bart.
