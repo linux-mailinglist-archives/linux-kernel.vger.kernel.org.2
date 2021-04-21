@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B94A367443
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C86367447
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245659AbhDUUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 16:46:15 -0400
-Received: from relay.sw.ru ([185.231.240.75]:53730 "EHLO relay.sw.ru"
+        id S245675AbhDUUrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 16:47:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:23887 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240376AbhDUUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 16:46:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=D6uUhADjC6LU6MbgKADZIizPtViaFackH1IQC8VDEqM=; b=uU+27TpiWd+htOW4O
-        tw/gHkfOHeXQgJhnht0TV6MhJyWKEEmfFDm6hDh+yw/VF17Pn/W1FipY9Ak7WD6aNR1X3BVDdUs0Y
-        1MzmWB1BQbQWCgJwzWevNiMdnqEAo1jJ2qCQRHSIVBiGtaflSWGrQAW/zJExwMOsxQE8R0X4sb8EM
-        =;
-Received: from [192.168.15.132]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1lZJiw-0018k7-P7; Wed, 21 Apr 2021 23:45:26 +0300
-Subject: Re: [PATCH 176/190] Revert "net/net_namespace: Check the return value
- of register_pernet_subsys()"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-177-gregkh@linuxfoundation.org>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <c4cdd3fe-0fd1-c328-14f4-e428eee1d02c@virtuozzo.com>
-Date:   Wed, 21 Apr 2021 23:45:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-177-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S242811AbhDUUrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 16:47:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619037995; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=WMNzn12sp0I1xSRnusBjExFnrSaK6dKVV0yrk/rva9o=; b=lzo2ujKoWg/nXGuT2J3p2HkTMBGtXS1ZAyvTiVAinFn/0Q++Lo/pvit4mr1EVWlhYo9fFdOQ
+ OmWK0b/qxDAu1AWvhWoTEMKeblw1zovUwUbhnOSTI9StvXjOPmjviiuTD82gh+BRZ7KeVveC
+ iJxlmGhvcD0KRDGDAMEmZTUCaVU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60808f15f34440a9d46888a9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 20:46:13
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4F13C4360C; Wed, 21 Apr 2021 20:46:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54E6CC4338A;
+        Wed, 21 Apr 2021 20:46:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 54E6CC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dp: service only one irq_hpd if there are multiple irq_hpd pending
+Date:   Wed, 21 Apr 2021 13:46:04 -0700
+Message-Id: <1619037964-26222-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.04.2021 16:00, Greg Kroah-Hartman wrote:
-> This reverts commit 0eb987c874dc93f9c9d85a6465dbde20fdd3884c.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  net/core/net_namespace.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-> index 43b6ac4c4439..9ae0b275238e 100644
-> --- a/net/core/net_namespace.c
-> +++ b/net/core/net_namespace.c
-> @@ -1101,8 +1101,7 @@ static int __init net_ns_init(void)
->  	init_net_initialized = true;
->  	up_write(&pernet_ops_rwsem);
->  
-> -	if (register_pernet_subsys(&net_ns_ops))
-> -		panic("Could not register network namespace subsystems");
-> +	register_pernet_subsys(&net_ns_ops);
+irq_hpd is an asynchronous event generated by panel to bring up attention
+of host. It could only be generated at run time of normal operation and
+it is not possible to be generated while main link is down. Therefore no
+need to handle irq_hpd if main link is down, such as cable unplug or system
+suspended. To handle irq_hpd, host has to read DPCD out of panel to figure
+out what action requested and perform that action accordingly. Also only
+handle the latest irq_hpd if there are multiple irq_hpd pending at the time
+of service since panel contains only the latest irq_hpd request status.
 
-Nacked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+Changes in v2:
+-- re wording of commit test
 
-This patch does not have any problem, since it has been already carefully reviewed.
-Kernel panics here only, if we can't allocate ns_common::inum for init_net.
-This can be only a result of a critical deficiency of memory during boot.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 5a39da6..1107c4e 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -707,6 +707,12 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
++	/*
++	 * handle only one irq_hpd in case of multiple irq_hpd pending
++	 * since panel contains the lateset request at this time
++	 */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
+ 	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
+ 	if (ret == -ECONNRESET) { /* cable unplugged */
+ 		dp->core_initialized = false;
+@@ -1300,6 +1306,9 @@ static int dp_pm_suspend(struct device *dev)
+ 	/* host_init will be called at pm_resume */
+ 	dp->core_initialized = false;
+ 
++	/* suspending, no need to handle pending irq_hdps */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	return 0;
+@@ -1496,6 +1505,9 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	/* stop sentinel checking */
+ 	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+ 
++	/* link is teared down, no need to handle pending irq_hdps */
++	dp_del_event(dp_display, EV_IRQ_HPD_INT);
++
+ 	dp_display_disable(dp_display, 0);
+ 
+ 	rc = dp_display_unprepare(dp);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
