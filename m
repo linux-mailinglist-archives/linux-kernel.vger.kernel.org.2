@@ -2,287 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5C036633E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B54B366330
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhDUA6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 20:58:41 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:14240 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233836AbhDUA6g (ORCPT
+        id S234452AbhDUAvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 20:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233836AbhDUAvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 20:58:36 -0400
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210421005802epoutp028929659239fd199d41b83020cdd5649e~3uZ7aKC8A2559025590epoutp02e
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:58:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210421005802epoutp028929659239fd199d41b83020cdd5649e~3uZ7aKC8A2559025590epoutp02e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618966683;
-        bh=ugM7hUPe8lTGq2rF80TL2iUX0vbLFUIXjbQ0j/VKwpk=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=Orr83rW00argI+RRmzI5pzMiAHxxF+EfbTyUEji8BH0+R7hW+kXIygE6W7Wou9kZ8
-         3F6BkWYhbSyMVQVuqIdZxpmW/rE4ibW4HJ4QQc0fvzjvu6fG74bj1+qoJYud086UpR
-         5bejS8SeGrrCXFZwY7GL6/nPgblFb45/WCrtM33w=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20210421005802epcas3p24952de7164d1f6eaf8946e915723f2b9~3uZ6v1mlW1206812068epcas3p2X;
-        Wed, 21 Apr 2021 00:58:02 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
-        (Postfix) with ESMTP id 4FQ2Gf1Ys2z4x9QL; Wed, 21 Apr 2021 00:58:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v3] scsi: ufs: Add batched WB buffer flush
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        Keoseong Park <keosung.park@samsung.com>,
-        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01618966682184.JavaMail.epsvc@epcpadp4>
-Date:   Wed, 21 Apr 2021 09:38:15 +0900
-X-CMS-MailID: 20210421003815epcms2p7acd6c25a95fdecdfa854964436212cd0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210421003815epcms2p7acd6c25a95fdecdfa854964436212cd0
-References: <CGME20210421003815epcms2p7acd6c25a95fdecdfa854964436212cd0@epcms2p7>
+        Tue, 20 Apr 2021 20:51:14 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02D1C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:50:42 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 31so12606919pgn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8YLOYTL9uFfTlsUBTt4KtFnsgrD3qMKDwpIsIQc1OzQ=;
+        b=GTHAWJyYH+TVJoASsZJVT+rFImVeTfbBdAU0ib1vxL3BQwDL7OWyZZRY+dVfY+CbpJ
+         teVIlUg3keh/0L70wBaEjFOe9F0jWuGp5A/2LL2L+QU1LNxy3sEJmhmPc3v7dSxnSngQ
+         I87A7TZRRHK9Zj4RcZGYcgJgbC3ctsHHRvmxI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8YLOYTL9uFfTlsUBTt4KtFnsgrD3qMKDwpIsIQc1OzQ=;
+        b=icxxSDBxONrjQ6eHqWIJ09g1MKYCkiqVEaR9bkcrTahtsqEsbuwP3XWf9LUr/NF1va
+         BwOX8/hWqd4NliFSPYlsbP1uYLTohwtvsNgBAfh93AV9diZdmtFYFTL+aFsqd5cbNFwC
+         VpC9v6jXA2YOCAA5QpE/lILiPtv3cZ9if0XM6ipTI5BlB0rTPDDM2Ma7HDG/bMl3U1iI
+         mYWUv4HmhWlB/dnL6HiJfB93RJYfJ5F09GRWmBlHaD59SHLLl+/qN1YugICTcUdrXnEq
+         sWK8vpyI5ElQwc6wO27Nu4NgpTsMLS4lA5Vwr4yVXPbdJYaOE3S97Fwon8d1Uj04Zuan
+         xWUQ==
+X-Gm-Message-State: AOAM532eCyCR0EhWERUMfN89xXvgIRTshqynVk7cLnmrx+UCXPRzuzNJ
+        ajAIaerQlOE//ZO+CEcXabdKpw==
+X-Google-Smtp-Source: ABdhPJyqsXFJPEW53dgWZWzIl1MKNJhSGg4Hv/Awq+xELaEHiZszta5Vzv92f/tFkQR8imMYCtKe3w==
+X-Received: by 2002:a63:1a47:: with SMTP id a7mr19505511pgm.437.1618966242338;
+        Tue, 20 Apr 2021 17:50:42 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:b1f0:79e0:c1ca:fd1])
+        by smtp.gmail.com with UTF8SMTPSA id x38sm183812pfu.22.2021.04.20.17.50.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 17:50:41 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 17:50:40 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        rjliao@codeaurora.org, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: Convert to DT schema
+Message-ID: <YH924M62b7PDd/r6@google.com>
+References: <1618936010-16579-1-git-send-email-gubbaven@codeaurora.org>
+ <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, WriteBooster (WB) buffer is always flushed during hibern8. However,
-this is inefficient because data in the WB buffer can be invalid due to
-spatial locality of IO workload.
-If the WB buffer flush is flushed in a batched manner, the amount of data
-migration and power consumption can be reduced because the overwritten data
-of the WB buffer may be invalid due to spatial locality.
+On Tue, Apr 20, 2021 at 09:56:49PM +0530, Venkata Lakshmi Narayana Gubba wrote:
 
-This patch supports batched flush of WB buffer. When batched flush is enabled,
-fWriteBoosterBufferFlushDuringHibernate is set only when
-b_rpm_dev_flush_capable is true during runtime suspend. When the device is
-resumed, fWriteBoosterBufferFlushDuringHibernate is cleared to stop flush
-during hibern8.
+> Subject: dt-bindings: net: bluetooth: Convert to DT schema
 
-Changelog
-  - Add reported-by tag by kernel test robot.
-  - Fix warning reported by kernel test robot.
+This doesn't convert the generic binding or all bindings to DT schema
+as the subject suggests, but the Qualcomm BT binding.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Co-developed-by: Keoseong Park <keosung.park@samsung.com>
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  9 +++++
- drivers/scsi/ufs/ufs-sysfs.c               | 47 ++++++++++++++++++++++
- drivers/scsi/ufs/ufshcd.c                  | 14 +++++--
- drivers/scsi/ufs/ufshcd.h                  |  2 +
- 4 files changed, 68 insertions(+), 4 deletions(-)
+>
+> Converted Qualcomm Bluetooth binidings to DT schema.
+> 
+> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> ---
+>  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 69 -----------------
+>  .../bindings/net/qualcomm-bluetooth.yaml           | 87 ++++++++++++++++++++++
+>  2 files changed, 87 insertions(+), 69 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+> deleted file mode 100644
+> index 709ca6d..0000000
+> --- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+> +++ /dev/null
+> @@ -1,69 +0,0 @@
+> -Qualcomm Bluetooth Chips
+> ----------------------
+> -
+> -This documents the binding structure and common properties for serial
+> -attached Qualcomm devices.
+> -
+> -Serial attached Qualcomm devices shall be a child node of the host UART
+> -device the slave device is attached to.
+> -
+> -Required properties:
+> - - compatible: should contain one of the following:
+> -   * "qcom,qca6174-bt"
+> -   * "qcom,qca9377-bt"
+> -   * "qcom,wcn3990-bt"
+> -   * "qcom,wcn3991-bt"
+> -   * "qcom,wcn3998-bt"
+> -   * "qcom,qca6390-bt"
+> -
+> -Optional properties for compatible string qcom,qca6174-bt:
+> -
+> - - enable-gpios: gpio specifier used to enable chip
+> - - clocks: clock provided to the controller (SUSCLK_32KHZ)
+> - - firmware-name: specify the name of nvm firmware to load
+> -
+> -Optional properties for compatible string qcom,qca9377-bt:
+> -
+> - - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
+> -
+> -Required properties for compatible string qcom,wcn399x-bt:
+> -
+> - - vddio-supply: VDD_IO supply regulator handle.
+> - - vddxo-supply: VDD_XO supply regulator handle.
+> - - vddrf-supply: VDD_RF supply regulator handle.
+> - - vddch0-supply: VDD_CH0 supply regulator handle.
+> -
+> -Optional properties for compatible string qcom,wcn399x-bt:
+> -
+> - - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
+> - - firmware-name: specify the name of nvm firmware to load
+> - - clocks: clock provided to the controller
+> -
+> -Examples:
+> -
+> -serial@7570000 {
+> -	label = "BT-UART";
+> -	status = "okay";
+> -
+> -	bluetooth {
+> -		compatible = "qcom,qca6174-bt";
+> -
+> -		enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
+> -		clocks = <&divclk4>;
+> -		firmware-name = "nvm_00440302.bin";
+> -	};
+> -};
+> -
+> -serial@898000 {
+> -	bluetooth {
+> -		compatible = "qcom,wcn3990-bt";
+> -
+> -		vddio-supply = <&vreg_s4a_1p8>;
+> -		vddxo-supply = <&vreg_l7a_1p8>;
+> -		vddrf-supply = <&vreg_l17a_1p3>;
+> -		vddch0-supply = <&vreg_l25a_3p3>;
+> -		max-speed = <3200000>;
+> -		firmware-name = "crnv21.bin";
+> -		clocks = <&rpmhcc RPMH_RF_CLK2>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> new file mode 100644
+> index 0000000..55cd995
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Bluetooth Chips
+> +
+> +maintainers:
+> +  - Rob Herring <robh@kernel.org>
+> +  - Marcel Holtmann <marcel@holtmann.org>
+> +
+> +description:
+> +  This binding describes Qualcomm UART-attached bluetooth chips.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qca6174-bt
+> +      - qcom,qca9377-bt
+> +      - qcom,wcn3990-bt
+> +      - qcom,wcn3991-bt
+> +      - qcom,wcn3998-bt
+> +      - qcom,qca6390-bt      
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index d1bc23cb6a9d..b67b8449e840 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1172,3 +1172,12 @@ Description:	This node is used to set or display whether UFS WriteBooster is
- 		(if the platform supports UFSHCD_CAP_CLK_SCALING). For a
- 		platform that doesn't support UFSHCD_CAP_CLK_SCALING, we can
- 		disable/enable WriteBooster through this sysfs node.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/wb_batched_flush
-+Date:		April 2021
-+Contact:	Daejun Park <daejun7.park@samsung.com>
-+Description:	This entry shows whether batch flushing of UFS WriteBooster
-+		buffers is enabled. Writing 1 to this entry allows the device to flush
-+		the WriteBooster buffer only when it needs to perform a buffer flush
-+		during runtime suspend. Writing 0 to this entry allows the device to
-+		flush the WriteBooster buffer during link hibernation.
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index d7c3cff9662f..b8fbe8676275 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -253,6 +253,51 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
- 	return res < 0 ? res : count;
- }
- 
-+
-+static ssize_t wb_batched_flush_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", hba->vps->wb_batched_flush);
-+}
-+
-+static ssize_t wb_batched_flush_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t count)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+	unsigned int wb_batched_flush;
-+	ssize_t res = 0;
-+
-+	if (!ufshcd_is_wb_allowed(hba)) {
-+		dev_warn(dev, "To control WB through wb_batched_flush is not allowed!\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (kstrtouint(buf, 0, &wb_batched_flush))
-+		return -EINVAL;
-+
-+	if (wb_batched_flush != 0 && wb_batched_flush != 1)
-+		return -EINVAL;
-+
-+	down(&hba->host_sem);
-+	if (!ufshcd_is_user_access_allowed(hba)) {
-+		res = -EBUSY;
-+		goto out;
-+	}
-+
-+	pm_runtime_get_sync(hba->dev);
-+	res = ufshcd_wb_toggle_flush_during_h8(hba, !wb_batched_flush);
-+	pm_runtime_put_sync(hba->dev);
-+	if (!res)
-+		hba->vps->wb_batched_flush = wb_batched_flush;
-+
-+out:
-+	up(&hba->host_sem);
-+	return res < 0 ? res : count;
-+}
-+
- static DEVICE_ATTR_RW(rpm_lvl);
- static DEVICE_ATTR_RO(rpm_target_dev_state);
- static DEVICE_ATTR_RO(rpm_target_link_state);
-@@ -261,6 +306,7 @@ static DEVICE_ATTR_RO(spm_target_dev_state);
- static DEVICE_ATTR_RO(spm_target_link_state);
- static DEVICE_ATTR_RW(auto_hibern8);
- static DEVICE_ATTR_RW(wb_on);
-+static DEVICE_ATTR_RW(wb_batched_flush);
- 
- static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
- 	&dev_attr_rpm_lvl.attr,
-@@ -271,6 +317,7 @@ static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
- 	&dev_attr_spm_target_link_state.attr,
- 	&dev_attr_auto_hibern8.attr,
- 	&dev_attr_wb_on.attr,
-+	&dev_attr_wb_batched_flush.attr,
- 	NULL
- };
- 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 0625da7a42ee..e11dc578a17c 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -244,7 +244,6 @@ static int ufshcd_setup_vreg(struct ufs_hba *hba, bool on);
- static inline int ufshcd_config_vreg_hpm(struct ufs_hba *hba,
- 					 struct ufs_vreg *vreg);
- static int ufshcd_try_to_abort_task(struct ufs_hba *hba, int tag);
--static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
- static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable);
- static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba);
- static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba);
-@@ -277,7 +276,8 @@ static inline void ufshcd_wb_config(struct ufs_hba *hba)
- 
- 	ufshcd_wb_toggle(hba, true);
- 
--	ufshcd_wb_toggle_flush_during_h8(hba, true);
-+	ufshcd_wb_toggle_flush_during_h8(hba, !hba->vps->wb_batched_flush);
-+
- 	if (!(hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL))
- 		ufshcd_wb_toggle_flush(hba, true);
- }
-@@ -5472,7 +5472,7 @@ int ufshcd_wb_toggle(struct ufs_hba *hba, bool enable)
- 	return ret;
- }
- 
--static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
-+int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
- {
- 	int ret;
- 
-@@ -5481,10 +5481,12 @@ static void ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
- 	if (ret) {
- 		dev_err(hba->dev, "%s: WB-Buf Flush during H8 %s failed: %d\n",
- 			__func__, set ? "enable" : "disable", ret);
--		return;
-+		return ret;
- 	}
- 	dev_dbg(hba->dev, "%s WB-Buf Flush during H8 %s\n",
- 			__func__, set ? "enabled" : "disabled");
-+
-+	return ret;
- }
- 
- static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool enable)
-@@ -8745,6 +8747,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
- 			if (ret)
- 				goto enable_gating;
-+		} else if (hba->vps->wb_batched_flush) {
-+			ufshcd_wb_toggle_flush_during_h8(hba, true);
- 		}
- 	}
- 
-@@ -8925,6 +8929,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	ufshcd_auto_hibern8_enable(hba);
- 
- 	if (hba->dev_info.b_rpm_dev_flush_capable) {
-+		if (hba->vps->wb_batched_flush)
-+			ufshcd_wb_toggle_flush_during_h8(hba, false);
- 		hba->dev_info.b_rpm_dev_flush_capable = false;
- 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
- 	}
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 5eb66a8debc7..049f3f08506c 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -643,6 +643,7 @@ struct ufs_hba_variant_params {
- 	struct devfreq_simple_ondemand_data ondemand_data;
- 	u16 hba_enable_delay_us;
- 	u32 wb_flush_threshold;
-+	bool wb_batched_flush;
- };
- 
- /**
-@@ -1105,6 +1106,7 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
- 			     enum query_opcode desc_op);
- 
- int ufshcd_wb_toggle(struct ufs_hba *hba, bool enable);
-+int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set);
- 
- /* Wrapper functions for safely calling variant operations */
- static inline const char *ufshcd_get_var_name(struct ufs_hba *hba)
--- 
-2.25.1
+delete trailing blanks
 
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: gpio specifier used to enable chip
+> +   
 
+delete blanks
+
+> +  clocks:
+> +    maxItems: 1
+> +    description: clock provided to the controller (SUSCLK_32KHZ)
+> +
+> +  vddio-supply:
+> +    description: VDD_IO supply regulator handle
+> +
+> +  vddxo-supply:
+> +    description: VDD_XO supply regulator handle
+> +
+> +  vddrf-supply:
+> +    description: VDD_RF supply regulator handle
+> +
+> +  vddch0-supply:
+> +    description: VDD_CH0 supply regulator handle
+> +
+> +  max-speed: 
+
+delete trailing blank
+
+> +    description: see Documentation/devicetree/bindings/serial/serial.yaml
+> +
+> +  firmware-name:
+> +    description: specify the name of nvm firmware to load
+> +
+> +  local-bd-address:
+> +    description: see Documentation/devicetree/bindings/net/bluetooth.txt
+> +
+> +
+> +required:
+> +  - compatible
+
+it seems you could make the supplies conditionally required based on the
+compatible string. See Documentation/devicetree/bindings/connector/usb-connector.yaml
+for an example
+
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    uart {
+> +        label = "BT-UART";
+> +        status = "okay";
+> +
+> +        bluetooth {
+> +            compatible = "qcom,qca6174-bt";
+> +            enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
+> +            clocks = <&divclk4>;
+> +            firmware-name = "nvm_00440302.bin";
+> +        };
+> +    };
+> +  - |
+> +    uart {
+> +
+> +        bluetooth {
+> +            compatible = "qcom,wcn3990-bt";
+> +            vddio-supply = <&vreg_s4a_1p8>;
+> +            vddxo-supply = <&vreg_l7a_1p8>;
+> +            vddrf-supply = <&vreg_l17a_1p3>;
+> +            vddch0-supply = <&vreg_l25a_3p3>;
+> +            max-speed = <3200000>;
+> +            firmware-name = "crnv21.bin";		
+
+delete trailing blanks
