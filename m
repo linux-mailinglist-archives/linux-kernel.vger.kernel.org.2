@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6BD366A00
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A550D366A0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237727AbhDULlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 07:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
+        id S238761AbhDULmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 07:42:13 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51371 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235269AbhDULlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 07:41:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 592A76143D;
-        Wed, 21 Apr 2021 11:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619005245;
-        bh=poA2P4x8C+8J0ecOX5vbS9XCYlOs5tlreN5uXovLSso=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aNa67FK+YPof4nHt4L45S5AZQRy48vbJjrpeazwsC3hganGMSCiKtAJ2lZvMGb+HD
-         +OEpuLcB6+iE0MqOCwh+j20tQ9caPv0yRERvOaCIL0VFUZZ/khyOyRcxfgbWKO0+hP
-         lqjuJIcK9cMNXzJsvbaWxpMIC1TXoftJA8Xt/2M1cLbh0og6SoMG4Wd2W6eiIs4LxH
-         6LQ7sSkf2wcCtIPxpXdBWX+XEhiW+6SGghWj8/nex0SmPZBrVb7oH/pTMp/YRtHULj
-         reqjGUV+XoB+xtfnvshOYPjDj6Mt3GqaaSjcxM35DXkJu0aX4+KFG5VS3ezoe+QfUj
-         oQHQvzwoDqm/Q==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next v2 0/9] Fix memory corruption in CM
-Date:   Wed, 21 Apr 2021 14:40:30 +0300
-Message-Id: <cover.1619004798.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.30.2
+        id S237575AbhDULmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 07:42:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQJYF6wJkz9sjB;
+        Wed, 21 Apr 2021 21:41:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619005298;
+        bh=I1NgyMIoyOKjCXFY2N2P3O3RsN3GgwWYHvsxpNnyoqM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Xi/Q8XLYVdP8mcDWDulCFUw07IDCHLva9me5ippvneiaSH3pegHI4Ta6cwf8/0wgv
+         /6sJJT65zPvMMfuf4w8P1oHgZ8769SJm6cNfkdTJ+lLgnYsHDh/ot8yeFR1fycUU7t
+         Ee+sjUz4N9ExO/cvVf2/Fw36vnrAlL8ByvBQUdbpc+leHjnUUsG0dvLoPXCFt0mzo1
+         4ka88IkNNqlQf55odi/ebX6Y4Y0dz0uFxJvoU9OiY3cGKmRNzlFMsTcE4O+79jedKK
+         MXP4twumABbE/zvunfi26bCqRuQaoZGg3LKSMF35gGkR2feNLM0bqlcEi9j8J5I8Db
+         8hlkHX2un6wpQ==
+Date:   Wed, 21 Apr 2021 21:41:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guo Ren <ren_guo@c-sky.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the csky tree
+Message-ID: <20210421214136.2aa5d34b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/rs79qFZyJFWlCYYLItY1H_b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+--Sig_/rs79qFZyJFWlCYYLItY1H_b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Changelog:
-v3:
- * Included Jason's patches in this series
-v1: https://lore.kernel.org/linux-rdma/20210411122152.59274-1-leon@kernel.org
- * Squashed "remove mad_agent ..." patches to make sure that we don't
-   need to check for the NULL argument.
-v0: https://lore.kernel.org/lkml/20210318100309.670344-1-leon@kernel.org
+Hi all,
 
--------------------------------------------------------------------------------
+Commit
 
-Hi,
+  8bfe70e69658 ("csky: fix syscache.c fallthrough warning")
 
-This series from Mark fixes long standing bug in CM migration logic,
-reported by Ryan [1].
+is missing a Signed-off-by from its committer.
 
-Thanks
+--=20
+Cheers,
+Stephen Rothwell
 
-[1] https://lore.kernel.org/linux-rdma/CAFMmRNx9cg--NUnZjFM8yWqFaEtsmAWV4EogKb3a0+hnjdtJFA@mail.gmail.com/
+--Sig_/rs79qFZyJFWlCYYLItY1H_b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Jason Gunthorpe (4):
-  IB/cm: Pair cm_alloc_response_msg() with a cm_free_response_msg()
-  IB/cm: Split cm_alloc_msg()
-  IB/cm: Call the correct message free functions in cm_send_handler()
-  IB/cm: Tidy remaining cm_msg free paths
+-----BEGIN PGP SIGNATURE-----
 
-Mark Zhang (5):
-  Revert "IB/cm: Mark stale CM id's whenever the mad agent was
-    unregistered"
-  IB/cm: Simplify ib_cancel_mad() and ib_modify_mad() calls
-  IB/cm: Clear all associated AV's ports when remove a cm device
-  IB/cm: Add lock protection when access av/alt_av's port of a cm_id
-  IB/cm: Initialize av before aquire the spin lock in cm_lap_handler
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCAD3AACgkQAVBC80lX
+0GxrQwf+Np4pQQ5ssGNYRtaQ6MCx0T+WrQswkqknEq507Yq2F2tpb9RbTpkxlEN7
+RuRRZmqk63sQriqIRH6unwlmFgwcMouZivO/qV4cU+7lBO3dFjDh6z04ZoobP5ot
+iMWsa6uxCvkG+ex+kUQFMjKNYNZaorfDadbzyki2od9OycMm5xkfBA5jHmoMgdZX
+0qEKF+T7CRM9DDGQhD76dZBUTUHCpvp+yptkvwmWbbTZdQcoU+gePgFCnLvp7CKp
+YlfKPqYIojZPGNtCTlS5mJSzeLadJSXOjXhlPy/EzF0vRL45oLvxspXBvDM0Bwdx
+nz0Av+CUrwUE2L2KSfgoQS0yLX7jAg==
+=FtTS
+-----END PGP SIGNATURE-----
 
- drivers/infiniband/core/cm.c       | 621 ++++++++++++++++-------------
- drivers/infiniband/core/mad.c      |  17 +-
- drivers/infiniband/core/sa_query.c |   4 +-
- include/rdma/ib_mad.h              |  27 +-
- 4 files changed, 368 insertions(+), 301 deletions(-)
-
--- 
-2.30.2
-
+--Sig_/rs79qFZyJFWlCYYLItY1H_b--
