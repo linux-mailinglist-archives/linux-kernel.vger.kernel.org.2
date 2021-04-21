@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35878367368
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F07736736D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243447AbhDUTZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235949AbhDUTZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:25:52 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D12BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:25:19 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c3so11027903pfo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ek4HM+AMfhrtBceEoaqKaZCGvxaJ9XRd6T4BFcnTSbg=;
-        b=LqBXbljSGHnE4kZak2tnnIS9FLPoj5YYnIIkKoXXZ8L6bDR5MQqrkbJLcjz1ZnEvAl
-         MYL5kWxYBOxZZurzhDrvniCM2EJrY35Gnc78+8dB+5BCS0fvZ61TjxaLMFI4kkmXzl9Q
-         3PZk5I5c/PI8euiQztaG+ya5JF1vyO4UVv4Mj/bguZHAk2tGtsuYZVsj75rZ1a5iWjjv
-         F9TxvK5F1WQtxTSayjozJpL4OL7i+m1t7cVPYCWvzAhBkxx3CelfYT3cJonqTu2V0vxx
-         N5le2zqLA6UDtIJVYysmcj/QTkRnAkCqyYobxpwQwDaOXvytTDb3h15vQjcNNknocwvx
-         pgOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=ek4HM+AMfhrtBceEoaqKaZCGvxaJ9XRd6T4BFcnTSbg=;
-        b=VYT1IdHyeeIp1q6/SPerwBeKbxL6drWetfh6s/ZRrA+VsdYqkXpJTwdu5h/VBLeZlo
-         /efJnBZ488e44mLclZcNULmwA7ALKizOjwhP+Nt64e8tJ68Uw582JWdg4tUMKiyyQuzE
-         udq7/tcl6baEF8LJSCULMhvBuLChDYowV5YukOrLLA90jjJe/L+M34sgQKgKg5xNCLG0
-         AV14l2oD66iOpx9YC2Bowiq01dQmKycJ+fkIIzmO/FbqWAxc8uORZssGRcMJvRIswyLR
-         6fW5C8JgK9YjAVtPstbDI82gyc75CTmDKWSsvrU8eCfQo0RlcEk9hqGtsbdbL+6DzBZ0
-         Z3jA==
-X-Gm-Message-State: AOAM530RnDXTyLPICSOQSTkpY3iPIn28aC53/A4UoEX1wlo+BYK/c0RE
-        2qCcalqWtmre+Vh/p9GhqFo=
-X-Google-Smtp-Source: ABdhPJxOCD6BPDvonp3N2DT3AuPEvMKoYbQFrivw0T69pCgCei1fG7N7yzvtO0fr1sXIWSGEIQpU9w==
-X-Received: by 2002:a17:90b:234c:: with SMTP id ms12mr7633941pjb.162.1619033118851;
-        Wed, 21 Apr 2021 12:25:18 -0700 (PDT)
-Received: from localhost ([2601:647:5e00:17f0:a47b:2362:7918:fbea])
-        by smtp.gmail.com with ESMTPSA id o62sm101377pfg.79.2021.04.21.12.25.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 12:25:18 -0700 (PDT)
-Sender: Roland Dreier <roland.dreier@gmail.com>
-From:   Roland Dreier <roland@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     jgg@mellanox.com, linux-kernel@vger.kernel.org, wu000273@umn.edu
-Subject: Re: [PATCH 044/190] Revert "RDMA/pvrdma: Fix missing pci disable in pvrdma_pci_probe()"
-Date:   Wed, 21 Apr 2021 12:25:17 -0700
-Message-Id: <20210421192517.1327240-1-roland@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210421130105.1226686-45-gregkh@linuxfoundation.org>
-References: <20210421130105.1226686-45-gregkh@linuxfoundation.org>
+        id S242942AbhDUT2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235159AbhDUT2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 15:28:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77C1F61439;
+        Wed, 21 Apr 2021 19:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619033286;
+        bh=3Prx6APaB0qLvd0pJ5rZUpsHpKVoGTv/kj4I88UpMFU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=grLY+7tslNYeq3F0ztxKd7Mv69IPh5RV9PVFqpwhmJSr/FNF8kG4kvKU6wZH1BmeN
+         LJ7wL3++XTI38rKqNsh86IcuJruAY+xcbSt+9In8evCK96/QllKCAgIar3cPLgKciG
+         5XFoErNr9nr7NpDJlnT16yewyV3OzNEfHsxzMC0e9LgzhiQdiA89ZKZ4fS75SBKfcw
+         HSOXd1lERpV+NwV9I1/cznHuxE5ACJQ/Gg1AQ5cEEmUWZZFL/O9J6hc73wVJO67R2r
+         sgBM/Z2HjAPX/Bo1qh6OMapDy8hOHO1+qXn98svubdET233MB976J2iFPYJc32hNY2
+         ryU7U+knbPTWw==
+Received: by mail-wm1-f52.google.com with SMTP id k128so22793726wmk.4;
+        Wed, 21 Apr 2021 12:28:06 -0700 (PDT)
+X-Gm-Message-State: AOAM530Dxkohkp71JBADbHpd7rfS/UZTJ/Op96berOIZX/ITzW2U68FN
+        e0uH48Naipb5kNZjkj6j8psgd6NzgL3/8XwIMw0=
+X-Google-Smtp-Source: ABdhPJxaOXHntTZbcJvxKAY6l8tAygpl01bDvtRlqRjFSflL49lx5n4FJz9U4dWlNMBZgp1/vj/w3pjGCsoGVKp0IOk=
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr11641379wmf.84.1619033285096;
+ Wed, 21 Apr 2021 12:28:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210421135215.3414589-1-arnd@kernel.org> <CAKwvOdk21V0qW_xQrWqQYnrw8nEr_+KTJnVZgL0gJsJiUf2Scw@mail.gmail.com>
+In-Reply-To: <CAKwvOdk21V0qW_xQrWqQYnrw8nEr_+KTJnVZgL0gJsJiUf2Scw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 21 Apr 2021 21:27:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a23w+8Hzj0v7c32ebH1Qj0xE3+uO+WUsmnLUM3QXfyV1A@mail.gmail.com>
+Message-ID: <CAK8P3a23w+8Hzj0v7c32ebH1Qj0xE3+uO+WUsmnLUM3QXfyV1A@mail.gmail.com>
+Subject: Re: [PATCH] memstick: r592: ignore kfifo_out() return code again
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a really weird one because the patch actually looks correct
-and the revert looks wrong??
+On Wed, Apr 21, 2021 at 7:17 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+> On Wed, Apr 21, 2021 at 6:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
 
-	ret = pci_enable_device(pdev);
+> > The value was never checked here, and the purpose of the function
+> > is only to flush the contents, so restore the old behavior but
+> > add a cast to void and a comment, which hopefully warns with neither
+> > gcc nor clang now.
+> >
+> > If anyone has an idea for how to fix it without ignoring the return
+> > code, that is probably better.
+>
+> Should r592_flush_fifo_write be made to return an int, then callers of
+> r592_flush_fifo_write percolate up their return code?
+> r592_transfer_fifo_pio() seems to only return 0, but its callers are
+> doing return code checking.
 
-[...dbg statements...]
+I looked into that but couldn't come up with anything useful to do with
+the return code in the callers. kfifo_out() itself doesn't seem to
+ever return an error but only the length.
 
-	if (!(pci_resource_flags(pdev, 0) & IORESOURCE_MEM) ||
-	    !(pci_resource_flags(pdev, 1) & IORESOURCE_MEM)) {
-		dev_err(&pdev->dev, "PCI BAR region not MMIO\n");
-		ret = -ENOMEM;
-		goto err_disable_pdev;
-	}
-
- - R.
+        Arnd
