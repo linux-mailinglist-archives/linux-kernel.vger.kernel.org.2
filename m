@@ -2,257 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602CC3668D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918CF3668C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237882AbhDUKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:06:22 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:45014 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235351AbhDUKGV (ORCPT
+        id S237816AbhDUKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:01:42 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59967 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234678AbhDUKBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:06:21 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210421100546epoutp01ac0ae11ecf3253f7eaeccae923d94876~314KH-TEO2006720067epoutp01J
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:05:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210421100546epoutp01ac0ae11ecf3253f7eaeccae923d94876~314KH-TEO2006720067epoutp01J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618999546;
-        bh=VR8rouP0JzVMAgnzUeYqAnG/XSgynGblfIzoFBVDnPA=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=MygCF2Es1JcTXQn9hd6LZn7RkZnPFw70aAL4Ww/wHnb2VPIJzIHdK3GCyNKwGXv29
-         9g75Ys30MxHXrEhc55lx+AFtOMLN8mt3FoaIbIae/4WKFI45jdfGyDIEfIep5M6Xno
-         1xl4KzYzkEyx/7yBFFUJnY26Cn2DrHNiCVp/G9yg=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210421100546epcas1p3f4d94189a868ea01dd6af882cb16ed9f~314JiGpOm2533125331epcas1p3f;
-        Wed, 21 Apr 2021 10:05:46 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4FQGQc5DzLz4x9Pt; Wed, 21 Apr
-        2021 10:05:44 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0B.9E.10258.8F8FF706; Wed, 21 Apr 2021 19:05:44 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a~314HtgKHX1657516575epcas1p1v;
-        Wed, 21 Apr 2021 10:05:44 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210421100544epsmtrp2848e1eb09accada9e5a28931de385f58~314HsKKf30892408924epsmtrp2W;
-        Wed, 21 Apr 2021 10:05:44 +0000 (GMT)
-X-AuditID: b6c32a38-42fff70000002812-c9-607ff8f8b532
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D4.5B.08163.7F8FF706; Wed, 21 Apr 2021 19:05:43 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210421100543epsmtip1fb5ee5175ec8a9732425d01c6f6a41a2~314Hbbjnn0202502025epsmtip1M;
-        Wed, 21 Apr 2021 10:05:43 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     bvanassche@acm.org, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
-        gregkh@linuxfoundation.org, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
-Subject: [PATCH v8] bio: limit bio max size
-Date:   Wed, 21 Apr 2021 18:47:45 +0900
-Message-Id: <20210421094745.29660-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 21 Apr 2021 06:01:32 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1153C5804F2;
+        Wed, 21 Apr 2021 06:00:58 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 21 Apr 2021 06:00:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=d5yWQMfM/Co2rLORB29xCNYtdUp
+        YpDGcIm7lir7nAGY=; b=b/p8TqIhLg7pPNSTCKSnslytl8onsOGnWIA8xYMuMe+
+        qyRE9+0YZlilCL7ye6NWgpTfEFIYJBxcYdohgGs9alOxf/zbe6hi82JrS9bO6WUJ
+        yxoF5PtCtLgvboOZ7qUt1A83Sh44vhK9zJn2yeTBkVnzEvUf89MBpNNLxSVgO9tX
+        5ZbtZSeSKC4BicPMINIAlGs56wmZPb1AheIzgchSaYoc7vfc9xog9VxhVO/VVTEh
+        PY9xDmouJM6zTjssRBgJHk10citEkQeJImaS7/EwPvXtKPSJEK8bCAb2pH4x0PHm
+        yd9KRcW1/rlOcCFohaVcOcCluiaQDWjcQgex6yufTrQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=d5yWQM
+        fM/Co2rLORB29xCNYtdUpYpDGcIm7lir7nAGY=; b=uFwiUhHsWbDMf1DwUm1b5C
+        iGjD+Jff5gc28W1BgCPiuqNBxxd55jajR82MDE/UAx3QlFnN9OFpoqSwEXNqJBqN
+        GFC4bVNbIRADqroj2pisTgW6X1EzCDQk/IfksmDvfPXfWHDYTg6QR0QJ+xmi3KCq
+        xfK+d/5BJHgo/10JnliV053JKQKz6jYw9J6ynmgM/jAVE2tV24TOV9FLCschx1rp
+        k/HGvHwOnE825MmXlsu9GhV5C8v52+fm0sxvT9/urTAg3MnH3oldpwrX+CFTvE+h
+        2H0J5NjAUDcubc1rqIFaCo3Gk8X183yTSQP1j+eD4JyszHbCpJpRKjyNk/WGZh3A
+        ==
+X-ME-Sender: <xms:2Pd_YFOdqyQORzN9sEWJfMXN5TgbA_mXmTcwmRZsAXTKD-oCs8TsnA>
+    <xme:2Pd_YPUE99ymJyNj5pKIQFt2Q5mh8-wyDwNCEmZjFWj1_K9F-Wd_8KkY-71SfqBTO
+    jFqP_Gh2qLuV_BdZzw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepjedtudekleffteevffduvdekfffffedvtdeuveffgfeffedtleetueelgeef
+    leetnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppeeltddrkeelrdeike
+    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    mhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:2Pd_YJ0-Swphm2nvmI43zwVklfjsTBBINvIebDv2W2uGTR6CPu6zvA>
+    <xmx:2Pd_YNqSSsafnlsivi_f67R91HgmVjYhHNySFV4URxdWHoYeNFBNqA>
+    <xmx:2Pd_YAXRV2k1yYyp5kmropoQ_g1W7Mx_SfQm-Ez4KAxQFqLpzVXTmg>
+    <xmx:2vd_YMQ60ED7h6aHjREUJPwhL3-PdnpZz8VopHd3wi4K_06Ea6K7Cg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3E9ED1080063;
+        Wed, 21 Apr 2021 06:00:56 -0400 (EDT)
+Date:   Wed, 21 Apr 2021 12:00:52 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 4/6] drm/sprd: add Unisoc's drm display controller
+ driver
+Message-ID: <20210421100052.gujzkrafp26e6tcz@gilmour>
+References: <20210222132822.7830-1-kevin3.tang@gmail.com>
+ <20210222132822.7830-5-kevin3.tang@gmail.com>
+ <20210324111019.og6d3w47swjim2mq@gilmour>
+ <CAFPSGXYZPoM45vF_HcjMBcO_Ek-UJZw7F+Q0Of-gWZxvVaPQjg@mail.gmail.com>
+ <20210415090312.md6exuuv2y4mblxn@gilmour>
+ <CAFPSGXYdA=09xWZJi2oCQsbr3eH1GBgzjD8DRm5=beiKAtx37Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOJsWRmVeSWpSXmKPExsWy7bCmnu6PH/UJBl/OqVjMWbWN0WL13X42
-        i2kffjJbtLZ/Y7JoXryezeL0hEVMFj1Pmlgt/nbdY7L4+rDYYu8tbYvLu+awWRya3MxkMX3z
-        HGaLa/fPsFscvneVxeLhkonMFudOfmK1mPfYweLX8qOMFu9/XGe3OLVjMrPF+r0/2RzEPC5f
-        8faY2PyO3WPnrLvsHptXaHlcPlvqsWlVJ5vH/rlr2D3e77vK5tG3ZRWjx+dNch7tB7qZArij
-        cmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgD5VUihL
-        zCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbk
-        ZNxsesJWcFqr4see6cwNjK1yXYycHBICJhL7ep6wdDFycQgJ7GCU6Dy6nRHC+cQoMe35LzYI
-        5zOjxOEVR5hgWp4cfQ+V2MUosfvSC3a4qn2bdjGCVLEJ6Ej0vb0FViUicJJJ4smBdjCHWeAx
-        o8SVk21sIFXCAtoSRz5uZe1i5OBgEVCV2NwQCxLmFbCWOPl7AzPEOnmJP/d7mCHighInZ4Jc
-        ywk0R16ieetsZpCZEgIvOCT+T5rNBtHgIvHhzF5GCFtY4tXxLewQtpTE53d72SAauhklmtvm
-        M0I4ExglljxfBvWdscSnz58ZQS5iFtCUWL9LHyKsKLHz91xGiM18Eu++9oAdLSHAK9HRJgRR
-        oiJxpuU+M8yu52t3Qk30kJizowfsaCGBWIlVN6cwTmCUn4Xkn1lI/pmFsHgBI/MqRrHUguLc
-        9NRiwwIT5IjdxAhO8VoWOxjnvv2gd4iRiYPxEKMEB7OSCO/92poEId6UxMqq1KL8+KLSnNTi
-        Q4ymwACeyCwlmpwPzDJ5JfGGpkbGxsYWJmbmZqbGSuK86c7VCUIC6YklqdmpqQWpRTB9TByc
-        Ug1Mfive1SsJinK8n77aVWdH46KZj8otqyKXpIbkir6ten3ablb/gV9hNQKX2dsnKVxymO7k
-        kXKyuOPIHP/95fEZKdE73kzfxPNMycWDq7lJI0Rix6yWhVYTvt+YxF1Uzv6jVv+6alN8rlr3
-        /hMnBZiSfkrKli+0l9STjeJ4Eq7N/nuSbXR+StC2+4Wh22f/nG6Q9S5ghv8Ru9C7W1Tz1TO2
-        zOCUiFr88t+frSEHuMSNUs1rJ8Zbvf4Z9+LDmhn2t/11+2tlJ945y1Kvf+1HZ515dcyfUmXH
-        paFvWJP2zc3schI8q7LeqvyU1ce08LMby9glrhjylWcbFinodEp1Ld06IbfOeNEphbCD5rf6
-        w5RYijMSDbWYi4oTAbk8ax16BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsWy7bCSnO73H/UJBvs3WVnMWbWN0WL13X42
-        i2kffjJbtLZ/Y7JoXryezeL0hEVMFj1Pmlgt/nbdY7L4+rDYYu8tbYvLu+awWRya3MxkMX3z
-        HGaLa/fPsFscvneVxeLhkonMFudOfmK1mPfYweLX8qOMFu9/XGe3OLVjMrPF+r0/2RzEPC5f
-        8faY2PyO3WPnrLvsHptXaHlcPlvqsWlVJ5vH/rlr2D3e77vK5tG3ZRWjx+dNch7tB7qZArij
-        uGxSUnMyy1KL9O0SuDJuNj1hKzitVfFjz3TmBsZWuS5GTg4JAROJJ0ffs3UxcnEICexglNjw
-        dC47REJK4viJt6xdjBxAtrDE4cPFEDUfGSW+HHnKClLDJqAj0ff2FliziMBtJomjX/6zgDjM
-        Aq8ZJboeL2IBqRIW0JY48nEr2CQWAVWJzQ2xIGFeAWuJk783MEMsk5f4c7+HGSIuKHFy5hOw
-        VmagePPW2cwTGPlmIUnNQpJawMi0ilEytaA4Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjONq0
-        tHYw7ln1Qe8QIxMH4yFGCQ5mJRHe+7U1CUK8KYmVValF+fFFpTmpxYcYpTlYlMR5L3SdjBcS
-        SE8sSc1OTS1ILYLJMnFwSjUwHYkVtrf7p2L+sSfhg7rjntjMWu4jS58fu7mI6cyko3s+GGk+
-        XLaiTWOH+gELIUP2tcELeCz/i+zeu/u0VEHS+s0H/vetPb+7uHPrgR3/2L/NzxfeuWJd6d4T
-        81m7/mYuUcpUr9jSuW3DFf6e416TP8WVCC62jZgYd2ES62054Zn21uzrjuTevC/1Xm/dvrOG
-        0oLffxjmF+7WeX6Vp6RDPYV3scAxu5mruetUW7p/eH0P5380VzjDcfeC2tgbB2fH5m+ZPttu
-        2pMg7zTxqTJbJ6w8VJsRLnT2+36H0FPd0aelfdY6vjAQ1zRdc6Dt8+zrs7NagkWOO7Ff2M83
-        bZpy8Flmh3/Nb4JnuWy40SjKZKbEUpyRaKjFXFScCABg3QPOJQMAAA==
-X-CMS-MailID: 20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a
-References: <CGME20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a@epcas1p1.samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kpgrv3m2gbmdl54j"
+Content-Disposition: inline
+In-Reply-To: <CAFPSGXYdA=09xWZJi2oCQsbr3eH1GBgzjD8DRm5=beiKAtx37Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bio size can grow up to 4GB when muli-page bvec is enabled.
-but sometimes it would lead to inefficient behaviors.
-in case of large chunk direct I/O, - 32MB chunk read in user space -
-all pages for 32MB would be merged to a bio structure if the pages
-physical addresses are contiguous. it makes some delay to submit
-until merge complete. bio max size should be limited to a proper size.
 
-When 32MB chunk read with direct I/O option is coming from userspace,
-kernel behavior is below now in do_direct_IO() loop. it's timeline.
+--kpgrv3m2gbmdl54j
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- | bio merge for 32MB. total 8,192 pages are merged.
- | total elapsed time is over 2ms.
- |------------------ ... ----------------------->|
-                                                 | 8,192 pages merged a bio.
-                                                 | at this time, first bio submit is done.
-                                                 | 1 bio is split to 32 read request and issue.
-                                                 |--------------->
-                                                  |--------------->
-                                                   |--------------->
-                                                              ......
-                                                                   |--------------->
-                                                                    |--------------->|
-                          total 19ms elapsed to complete 32MB read done from device. |
+On Mon, Apr 19, 2021 at 07:01:00AM +0800, Kevin Tang wrote:
+> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=8815=E6=
+=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=885:03=E5=86=99=E9=81=93=EF=BC=9A
+> > On Thu, Apr 15, 2021 at 08:18:52AM +0800, Kevin Tang wrote:
+> > > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B43=E6=9C=8824=
+=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=887:10=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > > > > +static struct sprd_dpu *sprd_crtc_init(struct drm_device *drm,
+> > > > > +                      struct drm_plane *primary)
+> > > > > +{
+> > > > > +     struct device_node *port;
+> > > > > +     struct sprd_dpu *dpu;
+> > > > > +
+> > > > > +     /*
+> > > > > +      * set crtc port so that drm_of_find_possible_crtcs call wo=
+rks
+> > > > > +      */
+> > > > > +     port =3D of_parse_phandle(drm->dev->of_node, "ports", 0);
+> > > > > +     if (!port) {
+> > > > > +             drm_err(drm, "find 'ports' phandle of %s failed\n",
+> > > > > +                       drm->dev->of_node->full_name);
+> > > > > +             return ERR_PTR(-EINVAL);
+> > > > > +     }
+> > > > > +     of_node_put(port);
+> > > >
+> > > > The YAML binding should already make sure that your binding is sane=
+, and
+> > > > if you still get a DT that doesn't follow it, you have a whole lot =
+of
+> > > > other issues than whether ports is there :)
+> > > >
+> > > > > +     dpu =3D drmm_crtc_alloc_with_planes(drm, struct sprd_dpu, b=
+ase,
+> > > > > +                                     primary, NULL,
+> > > > > +                                     &sprd_crtc_funcs, NULL);
+> > > > > +     if (IS_ERR(dpu)) {
+> > > > > +             drm_err(drm, "failed to init crtc.\n");
+> > > > > +             return dpu;
+> > > > > +     }
+> > > > > +
+> > > > > +     dpu->base.port =3D port;
+> > > >
+> > > > But you're still referencing it here, while you called of_node_put =
+on it
+> > > > already? You should only call it once you're done with it.
+> > >
+> > >  of_node_put should be called after done with it, this maybe indeed b=
+e a bug.
+> > > i will fix it.
+> > > >
+> > > >
+> > > > I'm not really sure why you would need drm_of_find_possible_crtcs to
+> > > > work then if you don't follow the OF-Graph bindings.
+> > >
+> > > it scan all endports of encoder, if a matching crtc is found by
+> > > OF-Graph bindings
+> > > and then genarate the crtc mask, here is description:
+> > > 41  /**
+> > > 42   * drm_of_find_possible_crtcs - find the possible CRTCs for an en=
+coder port
+> > > 43   * @dev: DRM device
+> > > 44   * @port: encoder port to scan for endpoints
+> > > 45   *
+> > > 46   * Scan all endpoints attached to a port, locate their attached C=
+RTCs,
+> > > 47   * and generate the DRM mask of CRTCs which may be attached to th=
+is
+> > > 48   * encoder.
+> > > 49   *
+> > > if we don't follow the OF-Graph bindings, crtc can't attched to encod=
+er.
+> >
+> > Yeah, what I'm actually confused about is why you would need the
+> > of_parse_phandle call. You usually call drm_of_find_possible_crtcs with
+> > the encoder device node, so from your MIPI-DSI driver in your case, and
+> > with it's device->of_node pointer and it should work perfectly fine?
+> I still confused about use drm_of_find_possible_crtcs to bind crtc and
+> encoder, the port of drm_crtc, default is null?
+>=20
+> 709  /**
+> 710   * struct drm_crtc - central CRTC control structure
+> 711   * @dev: parent DRM device
+> 712   * @port: OF node used by drm_of_find_possible_crtcs()
+> -------------------------------------------------------------------------=
+----------------------------
+> 25  static uint32_t drm_crtc_port_mask(struct drm_device *dev,
+> 26     struct device_node *port)
+> 27  {
+> 28   unsigned int index =3D 0;
+> 29   struct drm_crtc *tmp;
+> 30
+> 31   drm_for_each_crtc(tmp, dev) {
+> 32   if (tmp->port =3D=3D port)
+> 33   return 1 << index;
+> 34
+> 35   index++;
+> 36   }
+> 37
+> 38   return 0;
+> 39  }
+>=20
+> I did not see any place to initialize the port of drm_crtc in the drm
+> framework, if not setup it.
+> it looks like the port of drm_crtc is undefined.
+>=20
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/rockchip/r=
+ockchip_drm_vop.c#L1851
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/tilcdc/til=
+cdc_crtc.c#L1051
 
-If bio max size is limited with 1MB, behavior is changed below.
+Yeah, you need to initialize it for drm_of_find_possible_crtcs to work,
+but my point was that you shouldn't do it through of_parse_phandle, just
+put the output of_graph_get_port_by_id like you found in those drivers.
 
- | bio merge for 1MB. 256 pages are merged for each bio.
- | total 32 bio will be made.
- | total elapsed time is over 2ms. it's same.
- | but, first bio submit timing is fast. about 100us.
- |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-      | 256 pages merged a bio.
-      | at this time, first bio submit is done.
-      | and 1 read request is issued for 1 bio.
-      |--------------->
-           |--------------->
-                |--------------->
-                                      ......
-                                                 |--------------->
-                                                  |--------------->|
-        total 17ms elapsed to complete 32MB read done from device. |
+Maxime
 
-As a result, read request issue timing is faster if bio max size is limited.
-Current kernel behavior with multipage bvec, super large bio can be created.
-And it lead to delay first I/O request issue.
+--kpgrv3m2gbmdl54j
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
----
- block/bio.c            | 9 ++++++++-
- block/blk-settings.c   | 5 +++++
- include/linux/bio.h    | 4 +++-
- include/linux/blkdev.h | 2 ++
- 4 files changed, 18 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/block/bio.c b/block/bio.c
-index 50e579088aca..9e5061ecc317 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -255,6 +255,13 @@ void bio_init(struct bio *bio, struct bio_vec *table,
- }
- EXPORT_SYMBOL(bio_init);
- 
-+unsigned int bio_max_size(struct bio *bio)
-+{
-+	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
-+
-+	return q->limits.bio_max_bytes;
-+}
-+
- /**
-  * bio_reset - reinitialize a bio
-  * @bio:	bio to reset
-@@ -866,7 +873,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
- 		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
- 
- 		if (page_is_mergeable(bv, page, len, off, same_page)) {
--			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-+			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
- 				*same_page = false;
- 				return false;
- 			}
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index b4aa2f37fab6..cd3dcb5afe50 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -37,6 +37,7 @@ EXPORT_SYMBOL_GPL(blk_queue_rq_timeout);
-  */
- void blk_set_default_limits(struct queue_limits *lim)
- {
-+	lim->bio_max_bytes = UINT_MAX;
- 	lim->max_segments = BLK_MAX_SEGMENTS;
- 	lim->max_discard_segments = 1;
- 	lim->max_integrity_segments = 0;
-@@ -168,6 +169,10 @@ void blk_queue_max_hw_sectors(struct request_queue *q, unsigned int max_hw_secto
- 				 limits->logical_block_size >> SECTOR_SHIFT);
- 	limits->max_sectors = max_sectors;
- 
-+	if (check_shl_overflow(max_sectors, SECTOR_SHIFT,
-+				&limits->bio_max_bytes))
-+		limits->bio_max_bytes = UINT_MAX;
-+
- 	q->backing_dev_info->io_pages = max_sectors >> (PAGE_SHIFT - 9);
- }
- EXPORT_SYMBOL(blk_queue_max_hw_sectors);
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index d0246c92a6e8..e5add63da3af 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -106,6 +106,8 @@ static inline void *bio_data(struct bio *bio)
- 	return NULL;
- }
- 
-+extern unsigned int bio_max_size(struct bio *bio);
-+
- /**
-  * bio_full - check if the bio is full
-  * @bio:	bio to check
-@@ -119,7 +121,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
- 	if (bio->bi_vcnt >= bio->bi_max_vecs)
- 		return true;
- 
--	if (bio->bi_iter.bi_size > UINT_MAX - len)
-+	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
- 		return true;
- 
- 	return false;
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 158aefae1030..c205d60ac611 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -312,6 +312,8 @@ enum blk_zoned_model {
- };
- 
- struct queue_limits {
-+	unsigned int		bio_max_bytes;
-+
- 	unsigned long		bounce_pfn;
- 	unsigned long		seg_boundary_mask;
- 	unsigned long		virt_boundary_mask;
--- 
-2.29.0
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYH/31AAKCRDj7w1vZxhR
+xfYbAQCyx/frCmI48iF2v9KLvwRkV6q7XhdIGq6JZ8So9sDZdwEAg7fNpob0hObc
++1Speo1tpFxjtmM3FtNHpH8nYvYk4ww=
+=LDrh
+-----END PGP SIGNATURE-----
 
+--kpgrv3m2gbmdl54j--
