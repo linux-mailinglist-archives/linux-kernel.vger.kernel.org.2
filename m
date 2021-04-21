@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC52366D44
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86033366D48
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239436AbhDUNzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:55:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60512 "EHLO mail.kernel.org"
+        id S242958AbhDUNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:55:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235434AbhDUNzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:55:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7F9661445;
-        Wed, 21 Apr 2021 13:54:37 +0000 (UTC)
+        id S235434AbhDUNzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:55:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC6B611F2;
+        Wed, 21 Apr 2021 13:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013280;
-        bh=xsSRZkZgikKP0lAUU0pZmINr59Nb0l2owCZotO2GYEk=;
+        s=k20201202; t=1619013307;
+        bh=JD5ziEk/FB8CNzMad7zbcOvmZivcvUwNl7nwAGloB5w=;
         h=From:To:Cc:Subject:Date:From;
-        b=i1qgcFVMKCUH+ijRpqfAWmAOO2HHEms+iY2/YL0CquBOaBahdegI+oBA56jkMEuVC
-         P7YxORNasFIkSQenTzRYzFQIOnzF9yXrbM6uJNl9bx/i0mrHrwFLvYlBuQ6/4fnJcx
-         jqUaNzMs8BqGExG7/slTfE/sf60mJiTX91ySpInsbr2mk8e9peMM322Ol498qWqfA+
-         cChOadTTF227LA/L2wpwdY6ZQ0FEbTODLKIcOoD5YrQXcutJLLkUkzglMK6Yw2Qk1P
-         8GW+KtaxZLUkx+4vI+3sGe35495ehA196qlcdQkt5Bc9iXeVxiO0aFfypAUmynLbtb
-         0YF1QYaiaDByA==
+        b=i0gTfVfze0/PUJiMP682KpT9c250YJgN8nYi7fAF1ZSJklOTRE7NrVvG0j+02PR45
+         Ls4m1q+1KehLZmP8q3ld7gfP5y5ufPdyN8SFN0xnzE22DmWq4tAfQEbrSKcfQeH4U2
+         zkaX3jmIYXWFa2dQ1RJsAZWtXW1pKR1xeZ/E4tmsKb/AADmC5HcISI008N6qAZb3hp
+         2UrWjqEd0UOtC9nVlQesswvXD9QYKaUYqvPXazujPkCfwoY2LwvAQ+dFR+KNXMakFD
+         MK0Ms+CkWg9nJuuzex4fZo4CxhWInZ1CFfIWxmUYk1GrFNmtLg13+tdKO4MFpJni6A
+         ZJX8EbmUw/AdA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christoph Fritz <chf.fritz@googlemail.com>,
-        Axel Lin <axel.lin@ingics.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Adam Ward <Adam.Ward.opensource@diasemi.com>,
+To:     Stefan Schaeckeler <sschaeck@cisco.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, Joel Stanley <joel@jms.id.au>,
+        Troy Lee <troy_lee@aspeedtech.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: bd71815: select CONFIG_ROHM_REGULATOR
-Date:   Wed, 21 Apr 2021 15:54:27 +0200
-Message-Id: <20210421135433.3505561-1-arnd@kernel.org>
+        Liu Shixin <liushixin2@huawei.com>, linux-edac@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC/aspeed: use proper format string for printing resource
+Date:   Wed, 21 Apr 2021 15:54:53 +0200
+Message-Id: <20210421135500.3518661-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,30 +48,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The newly added driver is missing a dependency as shown by this
-randconfig build failure:
+On ARMv7, resource_size_t can be 64-bit, which breaks printing
+it as %x:
 
-arm-linux-gnueabi-ld: drivers/regulator/bd71815-regulator.o: in function `buck12_set_hw_dvs_levels':
-bd71815-regulator.c:(.text+0x4b6): undefined reference to `rohm_regulator_set_dvs_levels'
+drivers/edac/aspeed_edac.c: In function 'init_csrows':
+drivers/edac/aspeed_edac.c:257:28: error: format '%x' expects argument of type 'unsigned int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Werror=format=]
+  257 |         dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
 
-Fixes: 1aad39001e85 ("regulator: Support ROHM BD71815 regulators")
+Use the special %pR format string to pretty-print the entire
+resource instead.
+
+Fixes: edfc2d73ca45 ("EDAC/aspeed: Add support for AST2400 and AST2600")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/regulator/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/edac/aspeed_edac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 9d84d9245490..9aeb32c320aa 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -207,6 +207,7 @@ config REGULATOR_BD70528
- config REGULATOR_BD71815
- 	tristate "ROHM BD71815 Power Regulator"
- 	depends on MFD_ROHM_BD71828
-+	select REGULATOR_ROHM
- 	help
- 	  This driver supports voltage regulators on ROHM BD71815 PMIC.
- 	  This will enable support for the software controllable buck
+diff --git a/drivers/edac/aspeed_edac.c b/drivers/edac/aspeed_edac.c
+index a46da56d6d54..6bd5f8815919 100644
+--- a/drivers/edac/aspeed_edac.c
++++ b/drivers/edac/aspeed_edac.c
+@@ -254,8 +254,8 @@ static int init_csrows(struct mem_ctl_info *mci)
+ 		return rc;
+ 	}
+ 
+-	dev_dbg(mci->pdev, "dt: /memory node resources: first page r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+-		r.start, resource_size(&r), PAGE_SHIFT);
++	dev_dbg(mci->pdev, "dt: /memory node resources: first page %pR, PAGE_SHIFT macro=0x%x\n",
++		&r, PAGE_SHIFT);
+ 
+ 	csrow->first_page = r.start >> PAGE_SHIFT;
+ 	nr_pages = resource_size(&r) >> PAGE_SHIFT;
 -- 
 2.29.2
 
