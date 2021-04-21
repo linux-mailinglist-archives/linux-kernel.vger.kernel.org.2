@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C956B366B42
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A87366B46
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239950AbhDUMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:52:44 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:42523 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240016AbhDUMwe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:52:34 -0400
-Received: by mail-oi1-f174.google.com with SMTP id n140so42263125oig.9;
-        Wed, 21 Apr 2021 05:52:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zwO8vsC3WF0Gf7xPYT37EC+0RIGJQlGIPk45BXNQjoI=;
-        b=grvdIkWuf3ZT8DGVkXokuG4yJmlqziGnXWdZaMxujn/yRddNSVjYOQ56PYcmeC/6QP
-         4Y1mfu6OjDFFg8Be8oUKumZu6WUW2Sw66HzGN9jOis0qty2cD5KFgIliGyDzAyqm5fxb
-         dW8vYT6qLJiha/y5iwyIYlEQTi55QxxAu7pgXgQc5NL79nin3fH25xLmvJ54OD0wB67i
-         hjJthjvKqkw5Fi5YlSqAAy7SpiEtuyT1KFruo5n7zoSvUv1Z5DQjtZEVcgQBqL9+p1kZ
-         L99qniCpODaX6HdJpIBiJy7skCpgkp6Cwd7nSE44+zYHIzTwA2jbUiPfdOzvpnS5yEfZ
-         Ii+g==
-X-Gm-Message-State: AOAM533FA4BY6arVXyH5nFmpSQqnRL3N44oxZ7Fl5IEtNAdxp+tBm/Xe
-        QwjNqiz4kJGhy08Cqxct9A==
-X-Google-Smtp-Source: ABdhPJwuXxmsp6awIny76czSvcTY/qAULnw3HztMD4Vy1/7UEk9JaKovoI9nMVJars5LmQkTsmaVZQ==
-X-Received: by 2002:aca:c74c:: with SMTP id x73mr6718116oif.100.1619009520597;
-        Wed, 21 Apr 2021 05:52:00 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c13sm487459otr.51.2021.04.21.05.51.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 05:51:59 -0700 (PDT)
-Received: (nullmailer pid 967440 invoked by uid 1000);
-        Wed, 21 Apr 2021 12:51:57 -0000
-Date:   Wed, 21 Apr 2021 07:51:57 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     aik@ozlabs.ru, Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
- 64-bit memory addresses
-Message-ID: <20210421125157.GA967343@robh.at.kernel.org>
-References: <20210415180050.373791-1-leobras.c@gmail.com>
+        id S239996AbhDUMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:53:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240075AbhDUMwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:52:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 734D161451;
+        Wed, 21 Apr 2021 12:52:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619009532;
+        bh=IZaohxyczQIzHLXvsyuiv2v5D/4sNbVy8dDuoz3fFGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t4aIOOTC5ix2jgy/a9TcU89YGXm1NuU8SlAsyk607UNWbUwWtM/+3g6lRvPLItq9m
+         fZnhJ6eaunWWrQtYzx6iCDj9PGqNkPWZhU1q12R63kVf6ERMvZKtMrkgA/B7mapb1B
+         Wr8ksXPlU3mRj/bejwntX1cLj6ULhpg8DaB9mczPKgC2fy7spouD4N2UP+uLEPb8py
+         FD8wfmZSi78O9pq0fCD3ddJ5ASn4b+KCRMyd34lT28Pjq47I679K6LDjWp0LdJ0h5Q
+         vwEv3bvob0a4ZkphNyJzNEDytjYPrX7jHbjPfi1UEGRrmPPOWxe/6S17SdCsqBMwDK
+         R28D3o8CrINBQ==
+Date:   Wed, 21 Apr 2021 14:52:06 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     keyrings@vger.kernel.org, dhowells@redhat.com, zohar@linux.ibm.com,
+        jarkko@kernel.org, nayna@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] certs: Add support for using elliptic curve keys
+ for signing modules
+Message-ID: <YIAf9jYGu03lrJLn@gunter>
+References: <20210408152403.1189121-1-stefanb@linux.ibm.com>
+ <20210408152403.1189121-3-stefanb@linux.ibm.com>
+ <YH7fKUjJoynyPkHt@gunter>
+ <794ef635-de91-9207-f28b-ab6805fd95c9@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210415180050.373791-1-leobras.c@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <794ef635-de91-9207-f28b-ab6805fd95c9@linux.ibm.com>
+X-OS:   Linux gunter 5.11.12-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 15:00:51 -0300, Leonardo Bras wrote:
-> Many other resource flag parsers already add this flag when the input
-> has bits 24 & 25 set, so update this one to do the same.
-> 
-> Some devices (like virtio-net) have more than one memory resource
-> (like MMIO32 and MMIO64) and without this flag it would be needed to
-> verify the address range to know which one is which.
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> ---
->  drivers/of/address.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
++++ Stefan Berger [20/04/21 17:02 -0400]:
+>
+>On 4/20/21 10:03 AM, Jessica Yu wrote:
+>>+++ Stefan Berger [08/04/21 11:24 -0400]:
+>>>
+>>>diff --git a/crypto/asymmetric_keys/pkcs7_parser.c 
+>>>b/crypto/asymmetric_keys/pkcs7_parser.c
+>>>index 967329e0a07b..2546ec6a0505 100644
+>>>--- a/crypto/asymmetric_keys/pkcs7_parser.c
+>>>+++ b/crypto/asymmetric_keys/pkcs7_parser.c
+>>>@@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, 
+>>>size_t hdrlen,
+>>>        ctx->sinfo->sig->pkey_algo = "rsa";
+>>>        ctx->sinfo->sig->encoding = "pkcs1";
+>>>        break;
+>>>+    case OID_id_ecdsa_with_sha256:
+>>>+        ctx->sinfo->sig->pkey_algo = "ecdsa";
+>>>+        ctx->sinfo->sig->encoding = "x962";
+>>>+        break;
+>>
+>>Hi Stefan,
+>>
+>>Does CONFIG_MODULE_SIG_KEY_TYPE_ECDSA have a dependency on 
+>>MODULE_SIG_SHA256?
+>
+>You are right, per the code above it does have a dependency on SHA256. 
+>ECDSA is using NIST p384 (secp384r1) for signing and per my tests it 
+>can be paired with all the sha hashes once the code above is extended. 
+>Now when it comes to module signing, should we pair it with a 
+>particular hash? I am not currently aware of a guidance document on 
+>this but sha256 and sha384 seem to be good choices these days, so 
+>maybe selecting ECDSA module signing should have a 'depends on' on 
+>these?
 
-Applied, thanks!
+Yeah, I would tack on the 'depends on' until the code above has been
+extended to cover more sha hashes - because currently if someone
+builds and signs a bunch of modules with an ECDSA key, they will fail
+to load if they picked something other than sha256. I am unfortunately
+not knowledgeable enough to suggest an official guideline on choice of
+hash, but for now it is reasonable to have a 'depends on' for which
+hashes the code currently supports, so that users don't run into
+module loading rejection issues.
+
+Thanks!
+
+Jessica
