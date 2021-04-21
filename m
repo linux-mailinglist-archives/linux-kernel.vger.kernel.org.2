@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF6C366FA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271C2366FAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241633AbhDUQD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        id S244202AbhDUQEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240106AbhDUQDZ (ORCPT
+        with ESMTP id S244186AbhDUQDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:03:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF366C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:02:52 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 0DEFE1F41EF9
-Received: by earth.universe (Postfix, from userid 1000)
-        id 2CD463C0C96; Wed, 21 Apr 2021 18:02:48 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 18:02:48 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH 092/190] Revert "power: charger-manager: fix a potential
- NULL pointer dereference"
-Message-ID: <20210421160248.fveahtwspxa53fft@earth.universe>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-93-gregkh@linuxfoundation.org>
+        Wed, 21 Apr 2021 12:03:54 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6995CC06174A;
+        Wed, 21 Apr 2021 09:03:21 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u21so64313822ejo.13;
+        Wed, 21 Apr 2021 09:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wjm2V8u1ETN6t9NVbeWLUphBIt6mO0zsCxAklfCFw/E=;
+        b=S0+5dSFhP6EcjKm/HSOdO49eP2TNeCFrOoj6kYhIAWGvr+XLpkCVpvsi2lekuQ2jBM
+         oEaU2Tc8nqXCAXCpElwbx2oFxGYMZfRuygdibM1B669uAGjUfbbyqUrM13cbxVaTrFkX
+         GwpyeSjbgEEkLijFCpyFUWpbobJMa6Wqeloh3XAszKbK56pSG8OrUCK+uIjpWv7IdHST
+         /75eGIQgP8PI1VvpOqqQlZtZ8p0rpVmEotM2XWyzMNBlMorIXrS34g3auSgPZCFyP/xB
+         HYvfQ1ppecKaBzLkOsrk5QL3LzMH4N7d34bP//W9sxwhE/iljYk+yITZ9Z+qmjC2rAm4
+         ZIiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wjm2V8u1ETN6t9NVbeWLUphBIt6mO0zsCxAklfCFw/E=;
+        b=ZESk2eH39rtHYXhipa2LYCepYyk2b/TRV+fgiM8Cvsu5U9MGHejov6bbjKvXk/fLDX
+         y4qNP0VaHW+BZw9GdNs57oaOr6K/APlJaHBFlc2MZFJ76tR2bqm5tZCmCb7zEZiyDjUy
+         32Q6DfXKnLIMK+4X9cwmt9vD46MlViRq+qyyw7Puxa+js2QUju+fnE6ofVaGzhA6yDjT
+         OBUEY+11WtD8pgb6aqkTRuQ326Dq5Ouo+S8OY1Tvnn2suW6M2ImHxB8kTzNTIq4p9evR
+         aUTKVeHICZDBQA7FVX+p1v6Y76pXkc3NnpV/RWxNN2vp8+cw1PaR5Pc6OB2Xocn4Gzhq
+         ABWg==
+X-Gm-Message-State: AOAM532SWqFcXnR+6GYqpRf1y0miwNnPPBmSlcipazjeRrXP6w4g6QZC
+        N+qiov9VkPw5yRFCdMF1ebqxGtFWhw5AiwZmyFDcAtwZXs6akA==
+X-Google-Smtp-Source: ABdhPJzTFkmTZh3l+T5B4KgpzvZ7I6sMkd2W5G+JIogn9VGIrsCvMpgVgsGpTIHtiL/SOEGztTHTyB7+SwFpc9JWwVE=
+X-Received: by 2002:a17:906:e5a:: with SMTP id q26mr33469816eji.263.1619020999982;
+ Wed, 21 Apr 2021 09:03:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sk2sus5fq2i26mdz"
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-93-gregkh@linuxfoundation.org>
+References: <20210421140505.30756-1-aford173@gmail.com> <3937a792-8985-10c1-b818-af2fbc2241df@gmail.com>
+In-Reply-To: <3937a792-8985-10c1-b818-af2fbc2241df@gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 21 Apr 2021 11:03:08 -0500
+Message-ID: <CAHCN7xJa9RsK0kbGR8JCV1i2WdPXjYQDJ5hqYNzdQZWxcyPoGg@mail.gmail.com>
+Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 21, 2021 at 9:25 AM Sergei Shtylyov
+<sergei.shtylyov@gmail.com> wrote:
+>
+> On 4/21/21 5:05 PM, Adam Ford wrote:
+>
+> > The call to clk_disable_unprepare() can happen before priv is
+> > initialized.
+>
+>    This still doesn't make sense for me...
+>
+I need an external reference clock enabled by a programmable clock so
+I added functionality to turn it on.  [1] When I did it, I was
+reminded to disable the clock in the event of an the error condition.
+I originally added a call to clk_disable_unprepare(priv->refclk)
+under the label called out_release, but a bot responded to me that we
+may jump to this error condition before priv is initialized.
 
---sk2sus5fq2i26mdz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This fix is supposed to create a new label so the errors that happen
+after the refclk is initialized will get disabled, but any errors that
+happen before the clock is initialized will handle errors like they
+did before.
 
-Hi,
+Does that help explain things better?
 
-On Wed, Apr 21, 2021 at 02:59:27PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit 75cf4f5aa903604e1bd7bec2c0988d643c6fb946.
->=20
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
->=20
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
->=20
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
+adam
 
-Doing another review:
+[1] - https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=8ef7adc6beb2ef0bce83513dc9e4505e7b21e8c2
 
-create_freezable_workqueue can return NULL when allocations fails
-and it is the first call in late init call, so it's fine to just
-exit with -ENOMEM.
-
-I suggest to drop the revert.
-
--- Sebastian
-
->  drivers/power/supply/charger-manager.c | 3 ---
->  1 file changed, 3 deletions(-)
->=20
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
-y/charger-manager.c
-> index 4dea8ecd70bc..f34c07ffcfe6 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -1749,9 +1749,6 @@ static struct platform_driver charger_manager_drive=
-r =3D {
->  static int __init charger_manager_init(void)
->  {
->  	cm_wq =3D create_freezable_workqueue("charger_manager");
-> -	if (unlikely(!cm_wq))
-> -		return -ENOMEM;
-> -
->  	INIT_DELAYED_WORK(&cm_monitor_work, cm_monitor_poller);
-> =20
->  	return platform_driver_register(&charger_manager_driver);
-> --=20
-> 2.31.1
->=20
-
---sk2sus5fq2i26mdz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCATJ8ACgkQ2O7X88g7
-+poxrBAAgYJBOi6VDcxiDF++/eI/Eooun3oXyFwzD7NNS6IU4F8laGH/ovy1wwGG
-17i1jZfok3kAaWuEPtfaFYym8tDbAvzpCtum1w98+yOu7iIICOPP951YjSZ1YE9N
-09FatXOowFlV2X9vSDwiYIToWr1x+XERDFMOm5RxVkcqUdSFoNSuHT99i3yqktfC
-1gI/2l/H5we1CW6gM3c2vzcnpylfVcQiR+G8Kg0tVhBJO0IqK5LomSE/78NZkZKK
-Almy+FtnDi3E2vrciRTGlkx9dMuCta2lOdaxeOq7HaLsJ20EdmMmBUEw2Mr7iKP7
-vslbGysdZ5B2O8unPzLfFB8jPqC1fKNmE6abUtcoLOyUg3qdv2TAGto4Be1L8t/s
-jetg7fIB+mCcG8pLEkDOaX/6KKUvMGgoIDgU7MA1r7FRHP0bE2pjjwOZDsSjLOfC
-+zGKhH4FBb3u+uV13liLH915vWYDPGbGyIM4Lxfx2HTon77JfM9xWlv/Rr6Knk+H
-LVqMaSJb2zCIADPKXFeFRMmmAVvZaJbxKG6TFRyo0jQ++MMEysdzgz+EeK9Wc4vR
-gET2+aYmyIBdIeIv8ERh1fjroN87GVYl/k8w+WfPgjhcJCyIhA8OuQZ5aGqH0eTp
-04iEKpqLAY0FgKzs2RzUCEy8N6PDZMzCFkvYS2t2VF/Ob+1BPmc=
-=sn7L
------END PGP SIGNATURE-----
-
---sk2sus5fq2i26mdz--
+> > This means moving clk_disable_unprepare out of
+>                                          ^ call
+> > out_release into a new label.
+> >
+> > Fixes: 8ef7adc6beb2 ("net: ethernet: ravb: Enable optional refclk")
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+>
+>
+> [...]
+>
+> MBR, Sergei
