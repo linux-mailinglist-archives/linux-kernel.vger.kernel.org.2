@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B49366C0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3858D366C10
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbhDUNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:08:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S241515AbhDUNJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:09:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239792AbhDUNGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:06:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF34B61456;
-        Wed, 21 Apr 2021 13:05:55 +0000 (UTC)
+        id S241016AbhDUNGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:06:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CB7A61454;
+        Wed, 21 Apr 2021 13:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010356;
-        bh=xyKRLiAsNPk0vNJs+zp5ArFimlX5BPhJ5AEEvgzXO4M=;
+        s=korg; t=1619010359;
+        bh=m+3ucLzlwy3goGwBfxWuBS1Xb3CtERzjhfWjyiMGLsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWdnFXLb6VDH+FgP40tjOkbk4IAi7rs/B2NOQk9TV5ZXZEeDREc9yN1QfS8RZ33tc
-         Cg4AQptZSm6IJxKwCpcgpn+/p15lC1t2Jmg9N5FBl4rAHxNUnwoNMwtb+OXIPnn2/b
-         tOKbN5aBCl60bBca83XeiC1nXO1H41WpQScOvgTM=
+        b=GcyWxQehf0U2srDehXY7o1z7zL25ur5nFZOYSGrhwYXHY6wXKTDChGAj07uKVeuMb
+         +X7QGjUQDJFwiQNF/cjkE7ic8Uouw11oTAw5gdZgCmCCHpHqLlyvK4VaIfw0mraSxT
+         GNybhK74mEU8hv25tWdDuojPvI204R1UZZMxUDto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Aditya Pakki <pakki001@umn.edu>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 071/190] Revert "pppoe: remove redundant BUG_ON() check in pppoe_pernet"
-Date:   Wed, 21 Apr 2021 14:59:06 +0200
-Message-Id: <20210421130105.1226686-72-gregkh@linuxfoundation.org>
+Subject: [PATCH 072/190] Revert "net: atm: Reduce the severity of logging in unlink_clip_vcc"
+Date:   Wed, 21 Apr 2021 14:59:07 +0200
+Message-Id: <20210421130105.1226686-73-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 02a896ca84874bbfcedc006303f2951dda89b298.
+This reverts commit 60f5c4aaae452ae9252128ef7f9ae222aa70c569.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -57,22 +57,35 @@ Cc: Aditya Pakki <pakki001@umn.edu>
 Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ppp/pppoe.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/atm/clip.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
-index d7f50b835050..803a4fe1ca18 100644
---- a/drivers/net/ppp/pppoe.c
-+++ b/drivers/net/ppp/pppoe.c
-@@ -119,6 +119,8 @@ static inline bool stage_session(__be16 sid)
+diff --git a/net/atm/clip.c b/net/atm/clip.c
+index 294cb9efe3d3..a7972da7235d 100644
+--- a/net/atm/clip.c
++++ b/net/atm/clip.c
+@@ -89,7 +89,7 @@ static void unlink_clip_vcc(struct clip_vcc *clip_vcc)
+ 	struct clip_vcc **walk;
  
- static inline struct pppoe_net *pppoe_pernet(struct net *net)
- {
-+	BUG_ON(!net);
-+
- 	return net_generic(net, pppoe_net_id);
+ 	if (!entry) {
+-		pr_err("!clip_vcc->entry (clip_vcc %p)\n", clip_vcc);
++		pr_crit("!clip_vcc->entry (clip_vcc %p)\n", clip_vcc);
+ 		return;
+ 	}
+ 	netif_tx_lock_bh(entry->neigh->dev);	/* block clip_start_xmit() */
+@@ -109,10 +109,10 @@ static void unlink_clip_vcc(struct clip_vcc *clip_vcc)
+ 			error = neigh_update(entry->neigh, NULL, NUD_NONE,
+ 					     NEIGH_UPDATE_F_ADMIN, 0);
+ 			if (error)
+-				pr_err("neigh_update failed with %d\n", error);
++				pr_crit("neigh_update failed with %d\n", error);
+ 			goto out;
+ 		}
+-	pr_err("ATMARP: failed (entry %p, vcc 0x%p)\n", entry, clip_vcc);
++	pr_crit("ATMARP: failed (entry %p, vcc 0x%p)\n", entry, clip_vcc);
+ out:
+ 	netif_tx_unlock_bh(entry->neigh->dev);
  }
- 
 -- 
 2.31.1
 
