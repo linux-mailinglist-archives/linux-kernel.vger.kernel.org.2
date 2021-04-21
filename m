@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB233665BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E503665E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbhDUG5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhDUG5E (ORCPT
+        id S234111AbhDUHAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:00:50 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:44698 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236406AbhDUHAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:57:04 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60385C06174A;
-        Tue, 20 Apr 2021 23:56:31 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id 2so20649264vsh.4;
-        Tue, 20 Apr 2021 23:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZ8OXikTKVlH7T8DQOt+y/7x4Zf4x2hsUuy/B/b14Io=;
-        b=oCPYmIbjutCHYviOt3jEMFwVnL5KhMF2d3lor2ct9X7/5OzSoQnoqIFUk5N52VV4Mp
-         YMY7WKFBBJzZuFs5mXTmrdmFUkXF4/3OvqzFACu8DC4gxZlp2X42fKUy+73m6C5VxNwy
-         wT+bGY/wUwLW5+z7oqzv1smkXVi3JZfd9mSaDSVl5JnPr84MuQdLQTlmgrlH8UUCbmgu
-         cwZGtQpHUkA9KGu3Okfy8NjILzOPkU0g+Xsh1VuYX2S4WsMJci7vg/hRCtv57zfiDnvl
-         vOJFSrsVOLoGDbVLQx89B3kNOlTeahyT5t/wKM3RgkiJIkSq1Iii2hIOY1vZxmeVoYCc
-         s9/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZ8OXikTKVlH7T8DQOt+y/7x4Zf4x2hsUuy/B/b14Io=;
-        b=W9mDMUlQv8t1kAapwcb6QSzVq3oYzlvPtelNpfRDwwjT3+3CAnOv4R3y0w4GvxuBI9
-         9H6vutk7nm5RPrEWD1tlLBlAUrRVxHEk6uoWMYhMxYC8htGlNIPwIRyAlLkqhzMCxFBm
-         MnVhs/cJTbTWIRuoOg05nfNL8MOnAJMD5mPgsvU6oUotuKw215AMxKb4a+MyNd7gPtjc
-         KwYS9Omey2cIBVB5FXjCDF7oH2OE140v6juCGeQkKcFYMvzkZz54QQhq/1HMyjoKMrsa
-         +UA6jO192PV0ErDlA8ZFvC5MiRwIvgsh7pPVu65xHwmlsgYBMpYFJAGTdkHBPO1FitRZ
-         WEGw==
-X-Gm-Message-State: AOAM533nrtOsXQ12WQOPZgynmRnaLmrzIP+Zdj983vJJF7E8e4FyCTUP
-        l5r1JPJ/7IoT1yQqjIe0To8=
-X-Google-Smtp-Source: ABdhPJx60kNBeC7ZiSHF0yhePo24lh1pqJbnxdBeQIzPxX1ATrIuiQAIoFE0dZnn0297q/Dqon5REQ==
-X-Received: by 2002:a05:6102:941:: with SMTP id a1mr12117241vsi.32.1618988190619;
-        Tue, 20 Apr 2021 23:56:30 -0700 (PDT)
-Received: from localhost.localdomain ([87.101.93.188])
-        by smtp.gmail.com with ESMTPSA id j23sm170173uak.19.2021.04.20.23.56.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 23:56:30 -0700 (PDT)
-From:   Jarvis Jiang <jarvis.w.jiang@gmail.com>
-To:     mani@kernel.org, hemantk@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        cchen50@lenovo.com, mpearson@lenovo.com,
-        Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Subject: [PATCH v1] bus: mhi: pci_generic: T99W175: update channel name from AT to DUN
-Date:   Tue, 20 Apr 2021 23:55:01 -0700
-Message-Id: <20210421065501.3134-1-jarvis.w.jiang@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 21 Apr 2021 03:00:25 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id B1BC8CD6C2;
+        Wed, 21 Apr 2021 14:59:29 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P2750T140649152108288S1618988366606986_;
+        Wed, 21 Apr 2021 14:59:29 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <92c2736a293fc828a169398c6256a2cc>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 25
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com
+Subject: [PATCH v1 0/5] arm64: dts: rockchip: add basic dtsi/dts files for RK3568 SoC
+Date:   Wed, 21 Apr 2021 14:59:16 +0800
+Message-Id: <20210421065921.23917-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to MHI v1.1 specification, change the channel name of T99W175
-from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
-so that the channels can be bound to the Qcom WWAN control driver, and
-device node such as /dev/wwan0p3AT will be generated, which is very useful
-for debugging modem
+From: Liang Chen <cl@rock-chips.com>
 
-Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
----
- drivers/bus/mhi/pci_generic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+1. add some dt-bindings for RK3568 devices.
+2. add core dtsi for RK3568 SoC.
+3. add basic dts for RK3568 EVB
 
-diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-index 7c810f02a2ef..8c7f6576e421 100644
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
- 	MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
- 	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
- 	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
--	MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
--	MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
-+	MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
-+	MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
- 	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
- 	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
- };
+Liang Chen (5):
+  dt-bindings: i2c: i2c-rk3x: add description for rk3568
+  dt-bindings: serial: snps-dw-apb-uart: add description for rk3568
+  dt-bindings: mmc: rockchip-dw-mshc: add description for rk3568
+  arm64: dts: rockchip: add core dtsi for RK3568 SoC
+  arm64: dts: rockchip: add basic dts for RK3568 EVB
+
+ .../devicetree/bindings/arm/rockchip.yaml     |    5 +
+ .../devicetree/bindings/i2c/i2c-rk3x.yaml     |    1 +
+ .../bindings/mmc/rockchip-dw-mshc.yaml        |    4 +
+ .../bindings/serial/snps-dw-apb-uart.yaml     |    1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |    1 +
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     |  382 +++
+ .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 2789 +++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  795 +++++
+ .../boot/dts/rockchip/rockchip-pinconf.dtsi   |  346 ++
+ 9 files changed, 4324 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/rockchip-pinconf.dtsi
+
 -- 
-2.25.1
+2.17.1
+
+
 
