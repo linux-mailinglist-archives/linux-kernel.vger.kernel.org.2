@@ -2,139 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F463670A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218EB3670A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244451AbhDUQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:52:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59480 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236337AbhDUQwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:52:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619023892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gjQXrH4xeYrIB2ORoikJWsh5LNazWseLuD6nZZi/C1I=;
-        b=dBGYwTqltyNdVhotQ/BuIslLzBhXbKwshZhbLU5j4zXnyBAAIl8BhmrLPGp8EwYnTElf6u
-        il6ABKTjOtcsbo8eTa/wzTw+jRyGSrxIANGEFd2uq2c+KWtV7mRo4g3I3MyYafa5yAb1me
-        cHp5x+wp45Rt7x4C3gzLcajALSB91mg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-T0M4KLG3OhGv3CWO9triXg-1; Wed, 21 Apr 2021 12:51:28 -0400
-X-MC-Unique: T0M4KLG3OhGv3CWO9triXg-1
-Received: by mail-ed1-f70.google.com with SMTP id y10-20020a50f1ca0000b0290382d654f75eso15348822edl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:51:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gjQXrH4xeYrIB2ORoikJWsh5LNazWseLuD6nZZi/C1I=;
-        b=tbgVwwUHAEtJXHf0K+WzIpvdxsZsCoQBgAuBRG10UpXWi2Xj4ILCtCQsGKYOz/+Pb0
-         A/+0c56WB/pwYU3d6czyUyo7vKbdWn70p6mGdAHHYlXkuX9YdpINvjK+3iNWyG8pQA9O
-         yQqXlP98M4R+RHD8c5BCE1aeuKddybTqQ7n5rZW91M2nrd7xOgytgq0mtVSqMPBgv8p3
-         5ZxrumiVGpu7pFwXC5ioOA81+ZxjqwoDXeyPlO+KuankcAE8ysAt1lZOIhmozPNH/JLG
-         s4+MIHK7ybCzN1eIB9H8I84gDGNN0P8/ahMLA4A6lGBcAFICf2Yq/2qVP8hr1pVVY1jp
-         Raag==
-X-Gm-Message-State: AOAM532EP6rtrwiupdmQjQu1zQfi+ls8YbPsBORUWC0Ypgx/9CyD15Ea
-        Qu7g0oJSKqUGHm618OXC6hjK6wpZ7ewERE7R5sUVUjqVSasSK1mza53oWv69nm13n3Ctw2BI9GQ
-        oCHscZBqLHZvlFImdAvHpW99o
-X-Received: by 2002:aa7:ca0f:: with SMTP id y15mr37849849eds.384.1619023885980;
-        Wed, 21 Apr 2021 09:51:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqW7Azbf5F1ylPKe7siKINVBCl7sWZ+mUGWj7pdZphS3ywhBU9wnzZ/97mUdsSbPAHSB3k1A==
-X-Received: by 2002:aa7:ca0f:: with SMTP id y15mr37849837eds.384.1619023885859;
-        Wed, 21 Apr 2021 09:51:25 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id i2sm38288ejv.99.2021.04.21.09.51.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 09:51:25 -0700 (PDT)
-Subject: Re: [PATCH 186/190] Revert "virt: vbox: Only copy_from_user the
- request-header once"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Wenwen Wang <wang6495@umn.edu>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-187-gregkh@linuxfoundation.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <68067532-56e5-c135-7a7e-0743c8e7b2a0@redhat.com>
-Date:   Wed, 21 Apr 2021 18:51:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S240702AbhDUQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:53:13 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:55750 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235436AbhDUQxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:53:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619023944; bh=LKtMoR4lsluuaw9UOiUUQQGDhk1e0PTaigauOMlSMHQ=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=fJkDjDYAsrl0pDfTdLjNf1xKlQCTUNMLfC8kER6o1hc14YS73hymtNxZDBoVusUd9
+         WTei8J0a1gUrTo8D8NxrfeTXA6OwZHW7a7O0spGBhx9y0D5I90SDLAFFVwEcgxP/bl
+         f809t/ijOLWrTu7zqu72wVtDxmQOSQCPoBt35tQk=
+Received: by b-5.in.mailobj.net [192.168.90.15] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 18:52:24 +0200 (CEST)
+X-EA-Auth: lgo6EQFlf5F1cWIR3PxDR5L0JVX/v/z4oWqmwf74AXAClxDNJu6PKIZhTifq5qe0/7QYSQAWGfvnmvxm6CjWvpn2n3/V599d
+Date:   Wed, 21 Apr 2021 22:22:19 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v1 2/6] staging: media: atomisp: balance braces around
+ if...else block
+Message-ID: <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
+References: <cover.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-187-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619022192.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Balance braces around the if else blocks as per the code style guidelines.
+Resolves checkpatch script CHECK / WARNING feedback messages.
 
-On 4/21/21 3:01 PM, Greg Kroah-Hartman wrote:
-> This reverts commit bd23a7269834dc7c1f93e83535d16ebc44b75eba.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
 
-Ugh what a mess (the whole umn.edu thing).
+Changes in v1:
+   - None.
 
-I still remember reviewing this patch during its original submission
-and I've reviewed it again this morning when you just send it out.
+ drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
+ drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
+ 5 files changed, 12 insertions(+), 11 deletions(-)
 
-And now after letting it sit for a bit I've reviewed it a third time
-and it seems to do what it says on the label / in the original commit
-msg; and if fixes a real, potentially security, issue.
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index 6be3ee1d93a5..d68a2bcc9ae1 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			return gc0310_init(sd);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index 6ba4a8adff7c..e722c639b60d 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		ret = power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			ret = __gc2235_init(sd);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..465fc4468442 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
+ 
+ static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
+ {
+-	if (power == 0)
++	if (power == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		if (power_up(sd))
+ 			return -EINVAL;
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+index c90730513438..92c52431bd8f 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+@@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
+ 	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
+ 	if (ret)
+ 		return ret;
+-	if (value) {
++
++	if (value)
+ 		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
+-	} else {
++	else
+ 		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
+-	}
++
+ 	ret = ov2680_write_reg(client, 1,
+ 			       OV2680_FLIP_REG, val);
+ 	if (ret)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index aec7392fd1de..d046a9804f63 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			return ov2722_init(sd);
+-- 
+2.25.1
 
-I'm not sure what the process is for "good" patches in the set
-which you are reverting. I would prefer for this patch to be dropped
-from the set of reveert. But I can also submit a revert of the revert(?)
-once this set of reverts has been merged.
 
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/virt/vboxguest/vboxguest_linux.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/virt/vboxguest/vboxguest_linux.c b/drivers/virt/vboxguest/vboxguest_linux.c
-> index 73eb34849eab..f5cd9cfa1ef6 100644
-> --- a/drivers/virt/vboxguest/vboxguest_linux.c
-> +++ b/drivers/virt/vboxguest/vboxguest_linux.c
-> @@ -142,9 +142,7 @@ static long vbg_misc_device_ioctl(struct file *filp, unsigned int req,
->  	if (!buf)
->  		return -ENOMEM;
->  
-> -	*((struct vbg_ioctl_hdr *)buf) = hdr;
-> -	if (copy_from_user(buf + sizeof(hdr), (void *)arg + sizeof(hdr),
-> -			   hdr.size_in - sizeof(hdr))) {
-> +	if (copy_from_user(buf, (void *)arg, hdr.size_in)) {
->  		ret = -EFAULT;
->  		goto out;
->  	}
-> 
 
