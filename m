@@ -2,102 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB87366F8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E125366F8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239854AbhDUP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:56:18 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:10242 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235610AbhDUP4R (ORCPT
+        id S240584AbhDUP5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:57:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40402 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235524AbhDUP5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:56:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWK2NsT_1619020519;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UWK2NsT_1619020519)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 21 Apr 2021 23:55:30 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     Wen Yang <wenyang@linux.alibaba.com>,
-        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ext4: remove redundant initialization of variable busy
-Date:   Wed, 21 Apr 2021 23:54:55 +0800
-Message-Id: <20210421155455.51725-1-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
+        Wed, 21 Apr 2021 11:57:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619020608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pIe5tKrugrnOlOskmdMbwkkEL74PO/UkyVq9Mz8MMs8=;
+        b=SOB6ZRBKByfMkYSKH8eFVzhRCMfgZQKTfmcSVPt8+4mBJdO1tfHQoTA63hXiMENJM11GCi
+        CbEB2s2IkxyKAHHVmWMXJBpAIhkB8tMvZlJPzMZ+MZGsIgDpshw4HE3hi3ULgL5S6tLASe
+        cpc9b69fs9GC7V/c8ixpjJvTZvVO7ic=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-nQmi_AIYPVuFDxN6YabeCQ-1; Wed, 21 Apr 2021 11:56:44 -0400
+X-MC-Unique: nQmi_AIYPVuFDxN6YabeCQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C3181020C30;
+        Wed, 21 Apr 2021 15:56:43 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-206.rdu2.redhat.com [10.10.114.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF28E5B69B;
+        Wed, 21 Apr 2021 15:56:31 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 822EE220BCF; Wed, 21 Apr 2021 11:56:31 -0400 (EDT)
+Date:   Wed, 21 Apr 2021 11:56:31 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        willy@infradead.org, virtio-fs@redhat.com, slp@redhat.com,
+        miklos@szeredi.hu, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dax: Add an enum for specifying dax wakup mode
+Message-ID: <20210421155631.GC1579961@redhat.com>
+References: <20210419213636.1514816-1-vgoyal@redhat.com>
+ <20210419213636.1514816-2-vgoyal@redhat.com>
+ <20210421092440.GM8706@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421092440.GM8706@quack2.suse.cz>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable status is being initialized with a value that is never
-read and it is being updated later with a new value. The initialization
-is redundant and could be removed. Also put the variable declarations
-into reverse christmas tree order. Finally, we add the log printing and
-ext4_mb_show_pa() for troubleshooting, they are enabled only when
-CONFIG_EXT4_DEBUG is set.
+On Wed, Apr 21, 2021 at 11:24:40AM +0200, Jan Kara wrote:
+> On Mon 19-04-21 17:36:34, Vivek Goyal wrote:
+> > Dan mentioned that he is not very fond of passing around a boolean true/false
+> > to specify if only next waiter should be woken up or all waiters should be
+> > woken up. He instead prefers that we introduce an enum and make it very
+> > explicity at the callsite itself. Easier to read code.
+> > 
+> > This patch should not introduce any change of behavior.
+> > 
+> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  fs/dax.c | 23 +++++++++++++++++------
+> >  1 file changed, 17 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/fs/dax.c b/fs/dax.c
+> > index b3d27fdc6775..00978d0838b1 100644
+> > --- a/fs/dax.c
+> > +++ b/fs/dax.c
+> > @@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
+> >  	struct exceptional_entry_key key;
+> >  };
+> >  
+> > +/**
+> > + * enum dax_entry_wake_mode: waitqueue wakeup toggle
+> > + * @WAKE_NEXT: entry was not mutated
+> > + * @WAKE_ALL: entry was invalidated, or resized
+> 
+> Let's document the constants in terms of what they do, not when they are
+> expected to be called. So something like:
+> 
+> @WAKE_NEXT: wake only the first waiter in the waitqueue
+> @WAKE_ALL: wake all waiters in the waitqueue
+> 
+> Otherwise the patch looks good so feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
 
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Hi Jan,
+
+Here is the updated patch based on your feedback.
+
+Thanks
+Vivek
+
+
+Subject: dax: Add an enum for specifying dax wakup mode
+
+Dan mentioned that he is not very fond of passing around a boolean true/false
+to specify if only next waiter should be woken up or all waiters should be
+woken up. He instead prefers that we introduce an enum and make it very
+explicity at the callsite itself. Easier to read code.
+
+This patch should not introduce any change of behavior.
+
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 ---
- fs/ext4/mballoc.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ fs/dax.c |   23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a02fadf..1402b14 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -351,6 +351,8 @@ static void ext4_mb_generate_from_freelist(struct super_block *sb, void *bitmap,
- 						ext4_group_t group);
- static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac);
+Index: redhat-linux/fs/dax.c
+===================================================================
+--- redhat-linux.orig/fs/dax.c	2021-04-21 11:51:04.716289502 -0400
++++ redhat-linux/fs/dax.c	2021-04-21 11:52:10.298010850 -0400
+@@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
+ 	struct exceptional_entry_key key;
+ };
  
-+static inline void ext4_mb_show_pa(struct super_block *sb);
++/**
++ * enum dax_entry_wake_mode: waitqueue wakeup toggle
++ * @WAKE_NEXT: wake only the first waiter in the waitqueue
++ * @WAKE_ALL: wake all waiters in the waitqueue
++ */
++enum dax_entry_wake_mode {
++	WAKE_NEXT,
++	WAKE_ALL,
++};
 +
+ static wait_queue_head_t *dax_entry_waitqueue(struct xa_state *xas,
+ 		void *entry, struct exceptional_entry_key *key)
+ {
+@@ -182,7 +192,8 @@ static int wake_exceptional_entry_func(w
+  * The important information it's conveying is whether the entry at
+  * this index used to be a PMD entry.
+  */
+-static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
++static void dax_wake_entry(struct xa_state *xas, void *entry,
++			   enum dax_entry_wake_mode mode)
+ {
+ 	struct exceptional_entry_key key;
+ 	wait_queue_head_t *wq;
+@@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_sta
+ 	 * must be in the waitqueue and the following check will see them.
+ 	 */
+ 	if (waitqueue_active(wq))
+-		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
++		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
+ }
+ 
  /*
-  * The algorithm using this percpu seq counter goes below:
-  * 1. We sample the percpu discard_pa_seq counter before trying for block
-@@ -4217,9 +4219,9 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 	struct ext4_prealloc_space *pa, *tmp;
- 	struct list_head list;
- 	struct ext4_buddy e4b;
-+	int free_total = 0;
-+	int busy, free;
- 	int err;
--	int busy = 0;
--	int free, free_total = 0;
+@@ -268,7 +279,7 @@ static void put_unlocked_entry(struct xa
+ {
+ 	/* If we were the only waiter woken, wake the next one */
+ 	if (entry && !dax_is_conflict(entry))
+-		dax_wake_entry(xas, entry, false);
++		dax_wake_entry(xas, entry, WAKE_NEXT);
+ }
  
- 	mb_debug(sb, "discard preallocation for group %u\n", group);
- 	if (list_empty(&grp->bb_prealloc_list))
-@@ -4247,6 +4249,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+ /*
+@@ -286,7 +297,7 @@ static void dax_unlock_entry(struct xa_s
+ 	old = xas_store(xas, entry);
+ 	xas_unlock_irq(xas);
+ 	BUG_ON(!dax_is_locked(old));
+-	dax_wake_entry(xas, entry, false);
++	dax_wake_entry(xas, entry, WAKE_NEXT);
+ }
  
- 	INIT_LIST_HEAD(&list);
- repeat:
-+	busy = 0;
- 	free = 0;
- 	ext4_lock_group(sb, group);
- 	list_for_each_entry_safe(pa, tmp,
-@@ -4255,6 +4258,8 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 		if (atomic_read(&pa->pa_count)) {
- 			spin_unlock(&pa->pa_lock);
- 			busy = 1;
-+			mb_debug(sb, "used pa while discarding for group %u\n", group);
-+			ext4_mb_show_pa(sb);
- 			continue;
- 		}
- 		if (pa->pa_deleted) {
-@@ -4300,7 +4305,6 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 	if (free_total < needed && busy) {
- 		ext4_unlock_group(sb, group);
- 		cond_resched();
--		busy = 0;
- 		goto repeat;
- 	}
- 	ext4_unlock_group(sb, group);
--- 
-1.8.3.1
+ /*
+@@ -524,7 +535,7 @@ retry:
+ 
+ 		dax_disassociate_entry(entry, mapping, false);
+ 		xas_store(xas, NULL);	/* undo the PMD join */
+-		dax_wake_entry(xas, entry, true);
++		dax_wake_entry(xas, entry, WAKE_ALL);
+ 		mapping->nrexceptional--;
+ 		entry = NULL;
+ 		xas_set(xas, index);
+@@ -937,7 +948,7 @@ static int dax_writeback_one(struct xa_s
+ 	xas_lock_irq(xas);
+ 	xas_store(xas, entry);
+ 	xas_clear_mark(xas, PAGECACHE_TAG_DIRTY);
+-	dax_wake_entry(xas, entry, false);
++	dax_wake_entry(xas, entry, WAKE_NEXT);
+ 
+ 	trace_dax_writeback_one(mapping->host, index, count);
+ 	return ret;
 
