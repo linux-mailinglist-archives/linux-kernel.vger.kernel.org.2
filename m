@@ -2,190 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F35367558
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2320836755D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343584AbhDUWwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 18:52:50 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:39792 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235481AbhDUWwt (ORCPT
+        id S1343600AbhDUWxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 18:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235481AbhDUWxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 18:52:49 -0400
-Received: by mail-oi1-f178.google.com with SMTP id i81so43992171oif.6;
-        Wed, 21 Apr 2021 15:52:14 -0700 (PDT)
+        Wed, 21 Apr 2021 18:53:18 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B57C06138A;
+        Wed, 21 Apr 2021 15:52:44 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 5-20020a9d09050000b029029432d8d8c5so14469683otp.11;
+        Wed, 21 Apr 2021 15:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+Q3lYO1hTpL3JeJVnFbKHYgLVKq2KQUZWjQJJYj9jJM=;
+        b=U60eCJYI6LzX7UlSt8krSU6ggge2RW0Q4fVjfJuBK6S5Ik1hpq9BFAmYk7W6JNVtUm
+         iUd65hB/5tMXH+wNIfDyyBFqaRsmjOLLY+VpchG585B6IKObrYTa8+9rR1u1tD1jip2T
+         +rcunfytTqNtKPKCvOOwfNB40UGUr8E2PA88BjbavfU1b07G06x3wca9rRsA9gycR9WK
+         od0XtgycC2g1bzlAer5pE4DsiYa7pNrunhodWR8VBXC5tgxGs74uNPyreqBeZdTFvcSo
+         kt4KnyGvqY3N3Ml6WWFDZj8X/taYOgFc/STmk1HpE99fS7UQzNDW2oUjXdmmdwe+MAQU
+         B11w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZfP+v08fbXOyQGmlXgs34y9m62CQJ9d66rbECIK0MBw=;
-        b=Dd0tQaJJBFhGob251JdzNdw0wZj2fT81LhNPTPSlIEYY31ATxH55JwJQ1v5+52qBlt
-         yu0wgqO7EE3ycpSrtCHxtbF/77kOUX2xWW42W6/nD5prBiMg+IbEaF8aKATdS2fcvy7Q
-         zxsJ0ZmvSv3rHedkTWF9MHhRuj8wWwrLj/rmiV6GIhiGAtXDPz00TDRK5nRXCNFvBno9
-         9gG2mgw/fKJ60C3Zt2fhqFagu6B7EoHCOMCwh3oTpFTgK6ASPnNGUwdVjZ5oLNLzGPil
-         UG92kUZMNb9PDhQQZ1UsQepMy1aHR/x0ZRjkdrIKN5AHAPrp7t8VcfNgzNfgBkBOuZlZ
-         SDzQ==
-X-Gm-Message-State: AOAM533z5uPGpPwCrzzLjVQ3BUPrc/oncgllu5MtttTSpy13cojgaKaF
-        QvMhWqRJ1r5ls2fZp2hATA==
-X-Google-Smtp-Source: ABdhPJxM2G9XHRqVP6I+dA7m+p0XdMvLC72ekhQnsH+Rh1qvuIPrfU3LUCdqIWAsIOh3/pRWmS17Pg==
-X-Received: by 2002:aca:44b:: with SMTP id 72mr216449oie.68.1619045534389;
-        Wed, 21 Apr 2021 15:52:14 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d17sm181223oth.19.2021.04.21.15.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 15:52:13 -0700 (PDT)
-Received: (nullmailer pid 1761097 invoked by uid 1000);
-        Wed, 21 Apr 2021 22:52:12 -0000
-Date:   Wed, 21 Apr 2021 17:52:12 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: arm: firmware: Convert linaro,optee-tz to
- json schema
-Message-ID: <20210421225212.GB1750844@robh.at.kernel.org>
-References: <20210416222518.15801-1-nm@ti.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+Q3lYO1hTpL3JeJVnFbKHYgLVKq2KQUZWjQJJYj9jJM=;
+        b=PTZ77RRAOccVSOHAGqJmsqhbqcr/qPI1dwtnhUHmA9h3iEI/GGEcbpdjGXrs3JVwpe
+         CFoelUhWHtjPqMyFQUncbRjkoOTnTPUzSRPgMbIqsKmi24yOo5xJh9tqJY2uatxIfdnb
+         8+nAW0jrLRXnPMuyRvhJy3YX2Ga0nNK6FQUnULqfH9+DwOVDAMyvo2WGSm1epf4E6O9j
+         3bPitjTROS/IssCwtiFdVa+hFRnCLs0zam05+XItnjXXUY6D075pPFipawWOS0c95HMX
+         JJTZG3x14xgR6uLiA0vgEf3sg5k7OrE3+0L2eQVaFH+5hQi2mFRrm0W6KFRMZHCjpqqE
+         y0/w==
+X-Gm-Message-State: AOAM530YcwjKMbQ50uDFs4ZcLexgkhnN1sPYbfwUyaYYMPx65Cxbi2Xc
+        sw5JFBhyLE6OYwon3rM+vfw=
+X-Google-Smtp-Source: ABdhPJwozywGSqQF3xMLdEXGk1/u2t5WGdubCmaImSDPIJQ/cPLAZTkZQ25/VuvtQm4+NZul5sPALA==
+X-Received: by 2002:a05:6830:1584:: with SMTP id i4mr371717otr.129.1619045564152;
+        Wed, 21 Apr 2021 15:52:44 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k8sm179101oig.6.2021.04.21.15.52.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Apr 2021 15:52:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 21 Apr 2021 15:52:40 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Aditya Pakki <pakki001@umn.edu>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <20210421225240.GA117423@roeck-us.net>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416222518.15801-1-nm@ti.com>
+In-Reply-To: <20210407001658.2208535-1-pakki001@umn.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 05:25:18PM -0500, Nishanth Menon wrote:
-> Convert linaro,optee-tz to json schema format for better documentation
-> and error checks.
+On Tue, Apr 06, 2021 at 07:16:56PM -0500, Aditya Pakki wrote:
+> In gss_pipe_destroy_msg(), in case of error in msg, gss_release_msg
+> deletes gss_msg. The patch adds a check to avoid a potential double
+> free.
 > 
-> NOTE:
-> 1. This change does introduce a stricter naming convention for
->    optee nodes.
-> 2. We do have false positive checkpatch warning with this patch:
->    "DT binding docs and includes should be a separate patch"
-
-Not really something that needs to be in the commit msg. I'm aware of 
-the issue, just haven't gotten around to fixing it.
-
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 > ---
->  .../bindings/arm/firmware/linaro,optee-tz.txt | 31 ----------
->  .../arm/firmware/linaro,optee-tz.yaml         | 62 +++++++++++++++++++
->  2 files changed, 62 insertions(+), 31 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
+>  net/sunrpc/auth_gss/auth_gss.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-> deleted file mode 100644
-> index d38834c67dff..000000000000
-> --- a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-> +++ /dev/null
-> @@ -1,31 +0,0 @@
-> -OP-TEE Device Tree Bindings
-> -
-> -OP-TEE is a piece of software using hardware features to provide a Trusted
-> -Execution Environment. The security can be provided with ARM TrustZone, but
-> -also by virtualization or a separate chip.
-> -
-> -We're using "linaro" as the first part of the compatible property for
-> -the reference implementation maintained by Linaro.
-> -
-> -* OP-TEE based on ARM TrustZone required properties:
-> -
-> -- compatible     : should contain "linaro,optee-tz"
-> -
-> -- method         : The method of calling the OP-TEE Trusted OS. Permitted
-> -                   values are:
-> -
-> -                   "smc" : SMC #0, with the register assignments specified
-> -		           in drivers/tee/optee/optee_smc.h
-> -
-> -                   "hvc" : HVC #0, with the register assignments specified
-> -		           in drivers/tee/optee/optee_smc.h
-> -
-> -
-> -
-> -Example:
-> -	firmware {
-> -		optee {
-> -			compatible = "linaro,optee-tz";
-> -			method = "smc";
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-> new file mode 100644
-> index 000000000000..6513b5ac8b2c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/firmware/linaro,optee-tz.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: OP-TEE Device Tree Bindings
-> +
-> +maintainers:
-> +  - Jens Wiklander <jens.wiklander@linaro.org>
-> +
-> +description: |
-> +  OP-TEE is a piece of software using hardware features to provide a Trusted
-> +  Execution Environment. The security can be provided with ARM TrustZone, but
-> +  also by virtualization or a separate chip.
-> +
-> +  We're using "linaro" as the first part of the compatible property for
-> +  the reference implementation maintained by Linaro.
-> +
-> +properties:
-> +  $nodename:
-> +    const: 'optee'
+> diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
+> index 5f42aa5fc612..eb52eebb3923 100644
+> --- a/net/sunrpc/auth_gss/auth_gss.c
+> +++ b/net/sunrpc/auth_gss/auth_gss.c
+> @@ -848,7 +848,8 @@ gss_pipe_destroy_msg(struct rpc_pipe_msg *msg)
+>  			warn_gssd();
+>  		gss_release_msg(gss_msg);
+>  	}
+> -	gss_release_msg(gss_msg);
+> +	if (gss_msg)
+> +		gss_release_msg(gss_msg);
 
-Don't need quotes.
+I know I am adding to the noise here, but it has to be said:
+gss_msg is assigned with
+	struct gss_upcall_msg *gss_msg = container_of(msg, struct gss_upcall_msg, msg);
+and thus never NULL.
 
-> +
-> +  compatible:
-> +    const: linaro,optee-tz
-> +
-> +  method:
-> +    description: The method of calling the OP-TEE Trusted OS.
-> +    oneOf:
-> +      - description: |
-> +          SMC #0, with the register assignments specified
-> +          in drivers/tee/optee/optee_smc.h
-> +        items:
-> +          - const: smc
-> +      - description: |
-> +          HVC #0, with the register assignments specified
-> +          in drivers/tee/optee/optee_smc.h
-> +        items:
-> +          - const: hvc
+Guenter
 
-Please just do 'enum: [ smc, hvc ]' and rework to a single description.
-
-> +
-> +required:
-> +  - compatible
-> +  - method
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    firmware  {
-> +        optee  {
-> +            compatible = "linaro,optee-tz";
-> +            method = "smc";
-> +        };
-> +    };
-> +
-> +  - |
-> +    firmware  {
-> +        optee  {
-> +            compatible = "linaro,optee-tz";
-> +            method = "hvc";
-> +        };
-> +    };
+>  }
+>  
+>  static void gss_pipe_dentry_destroy(struct dentry *dir,
 > -- 
-> 2.31.0
+> 2.25.1
 > 
