@@ -2,246 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AD0366423
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 05:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D00366428
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 05:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbhDUDnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 23:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S234946AbhDUDtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 23:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233874AbhDUDnn (ORCPT
+        with ESMTP id S233874AbhDUDtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 23:43:43 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A7BC06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 20:43:09 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id q2so3048632pfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 20:43:09 -0700 (PDT)
+        Tue, 20 Apr 2021 23:49:46 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C444CC06174A;
+        Tue, 20 Apr 2021 20:49:12 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q10so28468478pgj.2;
+        Tue, 20 Apr 2021 20:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KmKEWuh5kX+xwliBF/7UPbgNwt5vdw/WaIbOHk7+c2c=;
-        b=D7SzKgyrUNQwXWF1oBPoS5L/TdTX7IV6DZcj4o3bXAG/nI1PLwARVLHG05VNer8PrQ
-         LqQMbArJmBX7eFaejaAcIQ+iDUsJRbdJudzkznKNK9i5Pj3hwzk3PZ3XrBB612K+qNVW
-         5eOZ9jXYCAGMnI7SMy2msbQj7sxWn7Kbwb6IQHRN+1DnNysKm6li7qWZ8HbocKa5HKgy
-         9cwTk9BczWKoSi9OqrNCmmRzVETsKrujTohOO8EO5gyyhP8jrBrHibLeN8qoNfx3wYK+
-         5PuE0RuIe7cSKlOmBrSiRb8uRzi3YAmBRGLNr/JV5aGCt7oYM/N+jrwUD0Sa/mCRj6Xa
-         DZgA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=BHpUFAqHZX4mO5ukpyVl9eTql2LntThdLp21IqHADRI=;
+        b=udWcJJ9RhNpgAHpGjwBpvjs5D6Emcld4QGLZieFmYfz5VyKrIrwT4g+8awx1iwg3aD
+         CPYJ6Zk35bmX5EWxVa13i5lb8fCpM/Qf3/Y75kiNM9W0WcGBOoqrE/mlvOzzLJeh0KVH
+         ISF+wGtz2xB0BBeTCxHOh1pCX0wVVEp6eKnNQAlOEho0ZZq5zr4F4aNdf4jCGo50qKr5
+         peEf7m7hUy69GSO7EqODIA2PxCfFy1LW6asiBYCAyc+E2+pqHckEIjor44fQ/Frv134D
+         AJQ9TIF2oFI9p5ItkDbCwbedjnzFg+lIPOr3QKym0WzZk4/cTm1U3pJQsHEY1/8bsJXp
+         etWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KmKEWuh5kX+xwliBF/7UPbgNwt5vdw/WaIbOHk7+c2c=;
-        b=qyoYG7yyTWouNc9yjubbedI/KU+34tWt1MHs1afb0OZz4rtmRCF7KTN8mdwbDU9s2X
-         WNUalmUVMdD/JDZ4gMDVjmQsAHzbi5t1g9J/uV/llPdEfsJo80i2r/RyqTdVRjQKyfVc
-         20wbdjQ90r+qyY5A12+luBc2a2xYDG5MD5TXLRMXDfFb6ofpI3041BKj0A3QsXQF/fJr
-         wFbTqmCrRqszATRr9wEigq8/ltKhHozZy10qaeaS3UVm1asdjxbWVs6o2cu9i1TYUNHf
-         MWd8sq97ylffTXuCEc349JoEP1kFnWsHVOCQR+PUYm0Fp7dzaKJunqx56DBcnkX3qQRm
-         7GeA==
-X-Gm-Message-State: AOAM5318ypf8Uz2ZCDtEnavQsj7mAYlQHrwkP/8t+QVmvh8iMSmf/CaW
-        09vXnjoKR4oa3pSjRgaEXzvwt1MoVePUnOnuo+5JvA==
-X-Google-Smtp-Source: ABdhPJxJBozIBcM52f25VJKMAu9Q4Z49o+wvjiK79PClh8TFh0Gj5u1gwWUVmU2G1T3AbtNVtkTL5Fx4chmzwPXwWD4=
-X-Received: by 2002:a05:6a00:8c7:b029:20f:1cf4:d02 with SMTP id
- s7-20020a056a0008c7b029020f1cf40d02mr28230925pfu.49.1618976588944; Tue, 20
- Apr 2021 20:43:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210415084005.25049-1-songmuchun@bytedance.com>
- <20210415084005.25049-7-songmuchun@bytedance.com> <5f914142-009b-3bfc-9cb2-46154f610e29@oracle.com>
- <CAMZfGtV+_mNRumR1RBWiu6OOqhUsTZyBvp--39CJHEEFKMX5Eg@mail.gmail.com> <8de3d7a0-f100-5d50-fe54-b83af07570f4@oracle.com>
-In-Reply-To: <8de3d7a0-f100-5d50-fe54-b83af07570f4@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 21 Apr 2021 11:42:31 +0800
-Message-ID: <CAMZfGtWMSjYS_Xqb8qXfvzsQCZG7Vn2hUxpxiOqLrPXgy80Suw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v20 6/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BHpUFAqHZX4mO5ukpyVl9eTql2LntThdLp21IqHADRI=;
+        b=ZnTGA8AVdT7QpZaEPc3iinQ8jaIeejLeBZcmDYW6s0ndzTEfpj4uG09A2ZTuDrLYKm
+         KxdY7LrJz6BpV+xzlZIi6DEpbogRp/vPkTD5U5pOoHmth+6MS5OnmA35pgkBm+/c11gB
+         sAnordsM+1eFshNBqhQa2uvoWpQ6fITG+aM76EpTkWZSDlt11b8gPo110IRojqqrb7P5
+         DIKpyz7bS0lGtzkhwuxJexCvjAkyk9Tke4HYUxujOymMoGO/+07oOmDiv8TBzmYYaxVv
+         r4jvB5VoE98OaRGIJoOU0QwGxmGSRGzzdfI/5RpjPglTsigT0V1sLqMvsudR+n3cWRf4
+         5Lcw==
+X-Gm-Message-State: AOAM532npU/8Pde7uVdTQBDEPWvvNDIlyw0FBE1JoK6nEqtF2c0mOjG6
+        xEnH57OBUcf/T8aIZ9905NYFhXY86F2vIA==
+X-Google-Smtp-Source: ABdhPJziyR0I+2KWNVyuQ1HMXAlR5bR6NXwdRoqXKxpprpEFnydd6ls7EHd+kuqKVnygB0Bqq3RCmA==
+X-Received: by 2002:a17:90a:ca8e:: with SMTP id y14mr8614864pjt.6.1618976952233;
+        Tue, 20 Apr 2021 20:49:12 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id s43sm382555pfw.164.2021.04.20.20.49.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Apr 2021 20:49:11 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     festevam@gmail.com, shawnguo@kernel.org, s.riedmueller@phytec.de,
+        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
+        arnd@arndb.de, olof@lixom.net, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, prabhakar.csengg@gmail.com,
+        mchehab@kernel.org
+Cc:     krzysztof.kozlowski@canonical.com, krzk@kernel.org,
+        robh+dt@kernel.org, linux@rempel-privat.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v4 0/4] arm: imx: Add i.mx6q DaSheng COM-9XX SBC board support
+Date:   Wed, 21 Apr 2021 11:48:54 +0800
+Message-Id: <1618976938-20834-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 1:48 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 4/20/21 1:46 AM, Muchun Song wrote:
-> > On Tue, Apr 20, 2021 at 7:20 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>
-> >> On 4/15/21 1:40 AM, Muchun Song wrote:
-> >>> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> >>> index 0abed7e766b8..6e970a7d3480 100644
-> >>> --- a/include/linux/hugetlb.h
-> >>> +++ b/include/linux/hugetlb.h
-> >>> @@ -525,6 +525,7 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
-> >>>   *   code knows it has only reference.  All other examinations and
-> >>>   *   modifications require hugetlb_lock.
-> >>>   * HPG_freed - Set when page is on the free lists.
-> >>> + * HPG_vmemmap_optimized - Set when the vmemmap pages of the page are freed.
-> >>>   *   Synchronization: hugetlb_lock held for examination and modification.
-> >>
-> >> I like the per-page flag.  In previous versions of the series, you just
-> >> checked the free_vmemmap_pages_per_hpage() to determine if vmemmmap
-> >> should be allocated.  Is there any change in functionality that makes is
-> >> necessary to set the flag in each page, or is it mostly for flexibility
-> >> going forward?
-> >
-> > Actually, only the routine of dissolving the page cares whether
-> > the page is on the buddy free list when update_and_free_page
-> > returns. But we cannot change the return type of the
-> > update_and_free_page (e.g. change return type from 'void' to 'int').
-> > Why? If the hugepage is freed through a kworker, we cannot
-> > know the return value when update_and_free_page returns.
-> > So adding a return value seems odd.
-> >
-> > In the dissolving routine, We can allocate vmemmap pages first,
-> > if it is successful, then we can make sure that
-> > update_and_free_page can successfully free page. So I need
-> > some stuff to mark the page which does not need to allocate
-> > vmemmap pages.
-> >
-> > On the surface, we seem to have a straightforward method
-> > to do this.
-> >
-> > Add a new parameter 'alloc_vmemmap' to update_and_free_page() to
-> > indicate that the caller is already allocated the vmemmap pages.
-> > update_and_free_page() do not need to allocate. Just like below.
-> >
-> >    void update_and_free_page(struct hstate *h, struct page *page, bool atomic,
-> >            bool alloc_vmemmap)
-> >    {
-> >        if (alloc_vmemmap)
-> >            // allocate vmemmap pages
-> >    }
-> >
-> > But if the page is freed through a kworker. How to pass
-> > 'alloc_vmemmap' to the kworker? We can embed this
-> > information into the per-page flag. So if we introduce
-> > HPG_vmemmap_optimized, the parameter of
-> > alloc_vmemmap is also necessary.
-> >
-> > So it seems that introducing HPG_vmemmap_optimized is
-> > a good choice.
->
-> Thanks for the explanation!
->
-> Agree that the flag is a good choice.  How about adding a comment like
-> this above the alloc_huge_page_vmemmap call in dissolve_free_huge_page?
->
-> /*
->  * Normally update_and_free_page will allocate required vmemmmap before
->  * freeing the page.  update_and_free_page will fail to free the page
->  * if it can not allocate required vmemmap.  We need to adjust
->  * max_huge_pages if the page is not freed.  Attempt to allocate
->  * vmemmmap here so that we can take appropriate action on failure.
->  */
+From: dillon min <dillon.minfei@gmail.com>
 
-Thanks. I will add this comment.
+This patchset aims to add kernel support on DaSheng COM-8XX SBC board
+optimize ov2659 driver to handle xvclk on/off at proper stage to save power
 
->
-> ...
-> >>> +static void add_hugetlb_page(struct hstate *h, struct page *page,
-> >>> +                          bool adjust_surplus)
-> >>> +{
-> >>
-> >> We need to be a bit careful with hugepage specific flags that may be
-> >> set.  The routine remove_hugetlb_page which is called for 'page' before
-> >> this routine will not clear any of the hugepage specific flags.  If the
-> >> calling path goes through free_huge_page, most but not all flags are
-> >> cleared.
-> >>
-> >> We had a discussion about clearing the page->private field in Oscar's
-> >> series.  In the case of 'new' pages we can assume page->private is
-> >> cleared, but perhaps we should not make that assumption here.  Since we
-> >> hope to rarely call this routine, it might be safer to do something
-> >> like:
-> >>
-> >>         set_page_private(page, 0);
-> >>         SetHPageVmemmapOptimized(page);
-> >
-> > Agree. Thanks for your reminder. I will fix this.
-> >
-> >>
-> >>> +     int nid = page_to_nid(page);
-> >>> +
-> >>> +     lockdep_assert_held(&hugetlb_lock);
-> >>> +
-> >>> +     INIT_LIST_HEAD(&page->lru);
-> >>> +     h->nr_huge_pages++;
-> >>> +     h->nr_huge_pages_node[nid]++;
-> >>> +
-> >>> +     if (adjust_surplus) {
-> >>> +             h->surplus_huge_pages++;
-> >>> +             h->surplus_huge_pages_node[nid]++;
-> >>> +     }
-> >>> +
-> >>> +     set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
-> >>> +
-> >>> +     /*
-> >>> +      * The refcount can possibly be increased by memory-failure or
-> >>> +      * soft_offline handlers.
-> >>> +      */
-> >>> +     if (likely(put_page_testzero(page))) {
-> >>
-> >> In the existing code there is no such test.  Is the need for the test
-> >> because of something introduced in the new code?
-> >
-> > No.
-> >
-> >> Or, should this test be in the existing code?
-> >
-> > Yes. gather_surplus_pages should be fixed. I can fix it
-> > in a separate patch.
-> >
-> > The possible bad scenario:
-> >
-> > CPU0:                           CPU1:
-> >                                 set_compound_page_dtor(HUGETLB_PAGE_DTOR);
-> > memory_failure_hugetlb
-> >   get_hwpoison_page
-> >     __get_hwpoison_page
-> >       get_page_unless_zero
-> >                                 put_page_testzero()
-> >
-> >   put_page(page)
-> >
-> >
-> > More details and discussion can refer to:
-> >
-> > https://lore.kernel.org/linux-doc/CAMZfGtVRSBkKe=tKAKLY8dp_hywotq3xL+EJZNjXuSKt3HK3bQ@mail.gmail.com/
-> >
->
-> Thanks you!  I did not remember that discussion.
->
-> It would be helpful to add a separate patch for gather_surplus_pages.
-> Otherwise, we have the VM_BUG_ON there and not in add_hugetlb_page.
->
+changes based on linux master branch, since commit id:
+89698becf06d341a700913c3d89ce2a914af69a2
 
-Agree. Will do.
+The DaSheng Com-9xx is and ARM based signle board computer (SBC)
+featuring:
+- i.MX6Q
+- 2GiB LPDDR3 DRAM
+- 8GiB eMMC 5.0 FLASH
+- 4MiB SPI Flash
+- USB 2.0 Host/Device
+- Multiple multi-protocol RS232/RS485 Serial ports
+- microSD socket
+- 5V DC power input
+- HDMI1.4a,1080p@60
+- RGMIIx1 Gigabit Ethernet
+- CSI0x1, connect with ov2659
 
-> --
-> Mike Kravetz
+---
+v4:
+all changes are on '[PATCH v3 3/4] arm: dts: imx: Add i.mx6q DaSheng COM-9XX
+SBC board support'
+- change 'green' to 'led-0', fix dtbs_check warrning
+- change 'pmic: pfuze100@8' to 'pfuze100: pmic@8', fix dtbs_check warrning
+- use GPIO_ACTIVE_HIGH instead of 0, from Fabio's suggestion, thanks
+- change 'flash: m25p80@0' to 'm25p80: flash@0'
+- move 'MX6QDL_PAD_GPIO_0__CCM_CLKO1' to pinctrl_ov2659{}
+- move 'MX6QDL_PAD_NANDF_D0__GPIO2_IO00, MX6QDL_PAD_NANDF_D1__GPIO2_IO01'
+  to pinctrl_usdhc2_gpioio{}
+- remove unused hoggrp
+- use wdog2, instead of wdog1 for external reset
+- v3 link:
+https://lore.kernel.org/lkml/1618459535-8141-1-git-send-email-dillon.minfei@gmail.com/
+
+v3:
+- optimize commit message for patch v3 ov2659 part
+- move 'imx6q-ds.dtb' after 'imx6q-dms-ba16.dtb' to follow the alphabetical
+  order(arch/arm/boot/dts/Makefile)
+- move 'ds,imx6q-sbc' after 'dmo,imx6q-edmqmx6' to follow the alphabetical
+  order. (Documentation/devicetree/bindings/arm/fsl.yaml)
+- move v2 patch 4 to v3 patch 1
+- add 'Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>'
+  for [PATCH v3 1/4]
+
+- v2 link:
+https://lore.kernel.org/lkml/1618383117-17179-1-git-send-email-dillon.minfei@gmail.com/
+
+v2:
+- add "[PATCH v2 4/4] dt-bindings: add dasheng vendor prefix" to fix
+  checkpatch.pl warning.
+
+dillon min (4):
+  dt-bindings: add dasheng vendor prefix
+  dt-bindings: arm: imx: Add i.mx6q DaSheng COM-9XX SBC
+  arm: dts: imx: Add i.mx6q DaSheng COM-9XX SBC board support
+  media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}() to
+    set xvclk on/off
+
+ Documentation/devicetree/bindings/arm/fsl.yaml     |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/imx6q-ds.dts                     |  17 +
+ arch/arm/boot/dts/imx6qdl-ds.dtsi                  | 460 +++++++++++++++++++++
+ drivers/media/i2c/ov2659.c                         |  24 +-
+ 6 files changed, 499 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6q-ds.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-ds.dtsi
+
+-- 
+2.7.4
+
