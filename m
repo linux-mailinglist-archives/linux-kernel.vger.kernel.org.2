@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B78366D2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8030E366D2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242845AbhDUNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:50:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
+        id S241438AbhDUNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234768AbhDUNug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:50:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 625BF60C3E;
-        Wed, 21 Apr 2021 13:50:01 +0000 (UTC)
+        id S234768AbhDUNvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99D0360C3E;
+        Wed, 21 Apr 2021 13:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013003;
-        bh=ZwbuGMgJnP2yBgKidTmrVn0kPEoHr/JE1RzsucEKyeI=;
+        s=k20201202; t=1619013028;
+        bh=FxcX021BKYIxYSRHLjSkX3lW5GniH7rGGGHlSXt9iaI=;
         h=From:To:Cc:Subject:Date:From;
-        b=MIAvkSDuHDrtEVoAhbo/IF74URwCzMMj/BHa1C2rvgy4+pGBYrVzUrpkhaEize+D1
-         i6VJwhh6UNLdxfrgc7jux8MP46qlg1dd9VaGJfKXPygVO+ZZFOa89min0dZtAbHOnd
-         SOkehsdL1ODmvnfLLeSh/TYZ7U5MRKldCejbOpes8EQV/eSy6/4UapbDdQ3pfKN2wk
-         nKJ1+i2lRWh0iRQNXxcIez/69UYSaYVsK6l++r05ieGUYOfqXOkLxXwSWZGdojMJsA
-         EUZa6jRMmk/Od+0Dnj+zLVqdSWZfhrN8FZAyGkeFkYgbMF+gjzYLWoM/xBbYOU+hsx
-         3EKQKzpTzRqSQ==
+        b=QFwmMOmIgndM28hziBnbXRv1n/6s8mckAf4SA0gncX1/AsvSUwFX8g3+cOqzvDdIl
+         UFziatvWmeoMMtytGOAfZpC5xYiT1uTgoSrA9nT4OwxAYw1u8K56PNu5N1ANAyA5SS
+         FSiMuYHG3PAKX/IH7JPcHX3wK7+Z8LXgnecCfP8MXsTo5T4Ee0eiBEm9498iFH07pq
+         4gDvWCGfJ+MHrNKdkDo0M/EHzY/CCbH25QEgPonC4N4R2VOIrAkatvv87jsvSjbSw5
+         dWe+bpLWPuyPg63JueWB+IVL6y6p5nmuxSjoxxMacntGFsetBWF3QXZ5lODjJqveqU
+         ThVYiFuHnccKQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: intel_pmc_core: add ACPI dependency
-Date:   Wed, 21 Apr 2021 15:49:39 +0200
-Message-Id: <20210421134957.3329062-1-arnd@kernel.org>
+To:     Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Jianpeng Ma <jianpeng.ma@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bcache: add BLK_DEV dependency for BCACHE_NVM_PAGES
+Date:   Wed, 21 Apr 2021 15:50:16 +0200
+Message-Id: <20210421135021.3360382-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,33 +42,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The driver now fails to build without ACPI:
+Selecting this without CONFIG_BLK_DEV causes a Kconfig warning:
 
-drivers/platform/x86/intel_pmc_core.c: In function 'pmc_core_get_tgl_lpm_reqs':
-drivers/platform/x86/intel_pmc_core.c:617:41: error: invalid use of undefined type 'struct acpi_device'
-  617 |         out_obj = acpi_evaluate_dsm(adev->handle, &s0ix_dsm_guid, 0,
+WARNING: unmet direct dependencies detected for LIBNVDIMM
+  Depends on [n]: PHYS_ADDR_T_64BIT [=y] && HAS_IOMEM [=y] && BLK_DEV [=n]
+  Selected by [y]:
+  - BCACHE_NVM_PAGES [=y] && MD [=y] && BCACHE [=y] && PHYS_ADDR_T_64BIT [=y]
 
-This could probably be made optional, but it won't be used without
-ACPI in practice, so just add a Kconfig dependency.
+Add it as another dependency.
 
-Fixes: 428131364f00 ("platform/x86: intel_pmc_core: Get LPM requirements for Tiger Lake")
+Fixes: 688330711e9a ("bcache: initialize the nvm pages allocator")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/platform/x86/Kconfig | 1 +
+ drivers/md/bcache/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 697fc446ac41..2714f7c3843e 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1194,6 +1194,7 @@ config INTEL_MRFLD_PWRBTN
- config INTEL_PMC_CORE
- 	tristate "Intel PMC Core driver"
- 	depends on PCI
-+	depends on ACPI
+diff --git a/drivers/md/bcache/Kconfig b/drivers/md/bcache/Kconfig
+index 0996e366ad0b..9cb3d8c39fc1 100644
+--- a/drivers/md/bcache/Kconfig
++++ b/drivers/md/bcache/Kconfig
+@@ -40,6 +40,7 @@ config BCACHE_NVM_PAGES
+ 	bool "NVDIMM support for bcache (EXPERIMENTAL)"
+ 	depends on BCACHE
+ 	depends on PHYS_ADDR_T_64BIT
++	depends on BLKDEV
+ 	select LIBNVDIMM
+ 	select DAX
  	help
- 	  The Intel Platform Controller Hub for Intel Core SoCs provides access
- 	  to Power Management Controller registers via various interfaces. This
 -- 
 2.29.2
 
