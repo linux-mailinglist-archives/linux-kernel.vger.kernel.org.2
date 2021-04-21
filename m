@@ -2,84 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E9B3670BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1143670BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244496AbhDUQ5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:57:50 -0400
-Received: from mail-ej1-f49.google.com ([209.85.218.49]:46067 "EHLO
-        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244466AbhDUQ5s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:57:48 -0400
-Received: by mail-ej1-f49.google.com with SMTP id sd23so55889389ejb.12;
-        Wed, 21 Apr 2021 09:57:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VprZ1v1eR/PVW56oSc4CCRlyP5XCo5aWjnBcMg7fMKk=;
-        b=AjJ2N08JOg1KwxBb+6cbJ176jOqGK73SApBWsVqqLg2UIpS7q3fD6DkV8L7JNBvLhy
-         XZxlONUxMK61LK+PENM2sgXVNTeJ3ChhXVeTduy0mNHo1ZXWSuTwtD7b3ExVkjgPsQfh
-         Rc7FeitMVdM1O52yb1nH6wbimmrm+FTHpg23pTgDBB0eFT/7GgTEukl5N9tjP+8epeao
-         z5yFzyR+hfu6vfhXaB5d9tpHSI6a//icCVoSHv2UtuEcco4qc7LC6Pe4+4REwJU1G8/n
-         Zpr4eaXfSGsrS/YC7BaVXMPqxCRh7ADokWpbXfLYz2X+fjsudRH87pvJAyoGm1ALGTH8
-         0wcQ==
-X-Gm-Message-State: AOAM532qN1KeAwOXhQjqnDCp3wMrx07yBO0oZ5x5mPR1gTL16KvULf3b
-        Clz9ikGzlsO5x1vJq1cix2c=
-X-Google-Smtp-Source: ABdhPJzG6MX3jb/UygsnaDSyOf4HbRocn7udptX3A8B2u/9FGdNyegf6EPXMGSurwPhGKuef5d/sAw==
-X-Received: by 2002:a17:906:134d:: with SMTP id x13mr34102150ejb.61.1619024232717;
-        Wed, 21 Apr 2021 09:57:12 -0700 (PDT)
-Received: from client-192-168-1-100.lan ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id i2sm48897ejv.99.2021.04.21.09.57.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 09:57:12 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 18:57:11 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Prike Liang <Prike.Liang@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rajat Jain <rajatja@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bixuan Cui <cuibixuan@huawei.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme: fix unused variable warning
-Message-ID: <YIBZZ7EvA1CUk0vb@client-192-168-1-100.lan>
-References: <20210421140436.3882411-1-arnd@kernel.org>
+        id S244506AbhDUQ6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:58:07 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:56260 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244361AbhDUQ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:58:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619024246; bh=wJVG2mwAUKrmZf2180PWZ+xA5DtLo71i+R/AQbSR8Rc=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=gkq0SMQoXKiPND51l7hOjTwYyu2YA3gtWtC+f/ZUBjecYsSCMU/2H8pZV+sCdNQIG
+         /NKv0M49vnHIdMqGwpDQj4ucUImEQbsI2y5ogXBvkKE4jckBGH2uh0iHKh5Okr0x+8
+         yMEzbYaneTuiiiNX2De39Lfke1FLlehOzlWz+N0k=
+Received: by 192.168.90.12 [192.168.90.12] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 18:57:26 +0200 (CEST)
+X-EA-Auth: qBSpmPoU7dXwq7xUGCcn+tLOi4Zfa6Q3NDPjR57os4uzyR8LSxyT1RVOdkmI+gEAXg1wzqxoWSUBcmwZIEn5TgUeBznPYN1d
+Date:   Wed, 21 Apr 2021 22:27:21 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v1 5/6] staging: media: atomisp: fix CamelCase variable naming
+Message-ID: <adf2e8a7f22a22e3b17f59fb79af4414935189fc.1619022192.git.drv@mailo.com>
+References: <cover.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210421140436.3882411-1-arnd@kernel.org>
+In-Reply-To: <cover.1619022192.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Bixuan]
+Mixed case variable names are discouraged and they result in checkpatch
+script "Avoid CamelCase" warnings. Replace such CamelCase variable names
+by lower case strings according to the coding style guidelines.
 
-Hi Arnd,
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
 
-> The function was introduced with a variable that is never referenced:
-> 
-> drivers/pci/quirks.c: In function 'quirk_amd_nvme_fixup':
-> drivers/pci/quirks.c:312:25: warning: unused variable 'rdev' [-Wunused-variable]
-> 
-> Fixes: 9597624ef606 ("nvme: put some AMD PCIE downstream NVME device to simple suspend/resume path")
-[...]
+Changes in v1:
+   - None.
 
-A simialr patch was sent recently, as per:
+ .../media/atomisp/i2c/atomisp-mt9m114.c       | 60 +++++++++----------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
-  https://lore.kernel.org/linux-pci/20210417114258.23640-1-cuibixuan@huawei.com/
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f314e5fed9cb..6de2cee4363e 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1000,10 +1000,10 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 	struct mt9m114_device *dev = to_mt9m114_sensor(sd);
+ 	int ret = 0;
+ 	unsigned int coarse_integration = 0;
+-	unsigned int FLines = 0;
+-	unsigned int FrameLengthLines = 0; /* ExposureTime.FrameLengthLines; */
+-	unsigned int AnalogGain, DigitalGain;
+-	u32 AnalogGainToWrite = 0;
++	unsigned int f_lines = 0;
++	unsigned int frame_len_lines = 0; /* ExposureTime.FrameLengthLines; */
++	unsigned int analog_gain, digital_gain;
++	u32 analog_gain_to_write = 0;
+ 
+ 	dev_dbg(&client->dev, "%s(0x%X 0x%X 0x%X)\n", __func__,
+ 		exposure->integration_time[0], exposure->gain[0],
+@@ -1011,27 +1011,27 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 
+ 	coarse_integration = exposure->integration_time[0];
+ 	/* fine_integration = ExposureTime.FineIntegrationTime; */
+-	/* FrameLengthLines = ExposureTime.FrameLengthLines; */
+-	FLines = mt9m114_res[dev->res].lines_per_frame;
+-	AnalogGain = exposure->gain[0];
+-	DigitalGain = exposure->gain[1];
++	/* frame_len_lines = ExposureTime.FrameLengthLines; */
++	f_lines = mt9m114_res[dev->res].lines_per_frame;
++	analog_gain = exposure->gain[0];
++	digital_gain = exposure->gain[1];
+ 	if (!dev->streamon) {
+ 		/* Save the first exposure values while stream is off */
+ 		dev->first_exp = coarse_integration;
+-		dev->first_gain = AnalogGain;
+-		dev->first_diggain = DigitalGain;
++		dev->first_gain = analog_gain;
++		dev->first_diggain = digital_gain;
+ 	}
+-	/* DigitalGain = 0x400 * (((u16) DigitalGain) >> 8) +		*/
+-	/* ((unsigned int)(0x400 * (((u16) DigitalGain) & 0xFF)) >>8);	*/
++	/* digital_gain = 0x400 * (((u16) digital_gain) >> 8) +		*/
++	/* ((unsigned int)(0x400 * (((u16) digital_gain) & 0xFF)) >>8);	*/
+ 
+ 	/* set frame length */
+-	if (FLines < coarse_integration + 6)
+-		FLines = coarse_integration + 6;
+-	if (FLines < FrameLengthLines)
+-		FLines = FrameLengthLines;
+-	ret = mt9m114_write_reg(client, MISENSOR_16BIT, 0x300A, FLines);
++	if (f_lines < coarse_integration + 6)
++		f_lines = coarse_integration + 6;
++	if (f_lines < frame_len_lines)
++		f_lines = frame_len_lines;
++	ret = mt9m114_write_reg(client, MISENSOR_16BIT, 0x300A, f_lines);
+ 	if (ret) {
+-		v4l2_err(client, "%s: fail to set FLines\n", __func__);
++		v4l2_err(client, "%s: fail to set f_lines\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1049,39 +1049,39 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+ 
+ 	/*
+ 	 * set analog/digital gain
+-	switch(AnalogGain)
++	switch(analog_gain)
+ 	{
+ 	case 0:
+-	  AnalogGainToWrite = 0x0;
++	  analog_gain_to_write = 0x0;
+ 	  break;
+ 	case 1:
+-	  AnalogGainToWrite = 0x20;
++	  analog_gain_to_write = 0x20;
+ 	  break;
+ 	case 2:
+-	  AnalogGainToWrite = 0x60;
++	  analog_gain_to_write = 0x60;
+ 	  break;
+ 	case 4:
+-	  AnalogGainToWrite = 0xA0;
++	  analog_gain_to_write = 0xA0;
+ 	  break;
+ 	case 8:
+-	  AnalogGainToWrite = 0xE0;
++	  analog_gain_to_write = 0xE0;
+ 	  break;
+ 	default:
+-	  AnalogGainToWrite = 0x20;
++	  analog_gain_to_write = 0x20;
+ 	  break;
+ 	}
+ 	*/
+-	if (DigitalGain >= 16 || DigitalGain <= 1)
+-		DigitalGain = 1;
++	if (digital_gain >= 16 || digital_gain <= 1)
++		digital_gain = 1;
+ 
+ 	/*
+ 	 * AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite);
+ 	 */
+-	AnalogGainToWrite = (u16)((DigitalGain << 12) | (u16)AnalogGain);
++	analog_gain_to_write = (u16)((digital_gain << 12) | (u16)analog_gain);
+ 	ret = mt9m114_write_reg(client, MISENSOR_16BIT,
+-				REG_GAIN, AnalogGainToWrite);
++				REG_GAIN, analog_gain_to_write);
+ 	if (ret) {
+-		v4l2_err(client, "%s: fail to set AnalogGainToWrite\n",
++		v4l2_err(client, "%s: fail to set analog_gain_to_write\n",
+ 			 __func__);
+ 		return -EINVAL;
+ 	}
+-- 
+2.25.1
 
-Other than that,
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-Krzysztof
