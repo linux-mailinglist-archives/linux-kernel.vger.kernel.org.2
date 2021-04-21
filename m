@@ -2,69 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454F836726A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A3036727A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245211AbhDUSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:20:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242578AbhDUSUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:20:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 43AE861448;
-        Wed, 21 Apr 2021 18:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619029209;
-        bh=E54TmFKp3Y20gYaeGiLf9VOBNkPefR+f5LS/nkCT56k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Nqn5ax004SfszeP4Hxycgni0oLLLGDVR7pFg1oCA1UjmWZWdcsjGOu3isET3nkTGD
-         aYJLf41NMoK2p+c3yIoYgCDlBnKZ5dsmN7TCZFLRZgYRWnPdjXZesiSKORs/UBSbYp
-         nzOx0yJD9Cfrdaox8zXBC2XoZ/6Da1TGetDEc0WDNk9EY1Xn2CuSxCtkQMqqoo3cpi
-         s2YTpmA1dogJEmkjMY+jMr+3n5qHRH/6IMX5ovPa+Bxme6SJEVdIRDA0glizrHnJd1
-         8L4WD2mvIAn1GFeNJAROfMC1qez5uVjCbjwmiS9CeNv6IwK1hPvIhO882mCOqlrvPI
-         bA+sdJlvef+mQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B61E60A3C;
-        Wed, 21 Apr 2021 18:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S241908AbhDUSY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240329AbhDUSYZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:24:25 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F05C06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:23:51 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n10-20020a05600c4f8ab0290130f0d3cba3so3041097wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:23:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tJ7/2ImOqgNsMlFTe/U5S+rQQA/z5wDSOJMIaWnIOgo=;
+        b=LlgaznfbO9/ZSbTPeEQB5h2fYiuEy/UXnZz4dMzIoZw7XZw5B0iSASvQ9RiESglTm8
+         yfop1QiYJ3v3KQAjSMr/S1H4YOSJRxRCK0YGLCQU00R8wAY3qp0536OxpzbV/VJ1LS68
+         FVLQeGTQ+eDY5zFb9jbA5K0XiyOihaFcbt720mp5lMULdPuMEBqblG8DpaSALBTeXrjv
+         scdfotKNRYeTQiULehH5gPQvE7ubOSXCKVIIkZBzIYySCXbGLKjZKCgyeECkL7IJsEul
+         THUCFR1MTDC0Mn3jwcNMLOByaj6M+6pAxmp8fWY6p3kcdYQxP9g3megC3f3YUlPYf2jp
+         P0CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tJ7/2ImOqgNsMlFTe/U5S+rQQA/z5wDSOJMIaWnIOgo=;
+        b=i6bFe4vZ5wunDs3fl3dp0z89QLlF7qwqI0UdpRE6iPeRl1UlNIJd3FXw3fvaTPoLWA
+         poDxp0BmeytAoD073s1fVvt5MIuxFAw/bLN6LYv57qs38dCnjkYgV4M+99ltgWl/xuBn
+         WL92yodVurZH2Z243pxR7blwZF6N9dMnFGVsKqCXXfVzVGpAQuMAY7YuUvxLEVs9+iPm
+         WvJjLomp+rgIjZt/6cKMFv7sGdg247O/1YDHcfuuCb6Qj1051df/KlIHzXA9RAzuVv+c
+         VqPi2j7afQhK5Y0gsgy0ie3H8s3Na+u860Rl15r14aTCq9LRZVCKUqAeHgk66lTDSo1Z
+         cOcA==
+X-Gm-Message-State: AOAM531tnIVeLzgZoAHcdih9vxcOckbuFKwrALPWAevcHuN31Wr/LhXW
+        8uJw73iQNJsFp4WBM1CXKpCy/g==
+X-Google-Smtp-Source: ABdhPJz4oJRSYRSLilmTZi/+V+8VJ8VJiSw4FBXvscnpE0PMQuvmwXn9sxvIod8vYtqC6Jaz4xsTiA==
+X-Received: by 2002:a05:600c:20d:: with SMTP id 13mr11054836wmi.29.1619029430262;
+        Wed, 21 Apr 2021 11:23:50 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:6273:c89a:6562:e1ba])
+        by smtp.gmail.com with ESMTPSA id m11sm232602wri.44.2021.04.21.11.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 11:23:49 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 20:23:43 +0200
+From:   Marco Elver <elver@google.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-tegra@vger.kernel.org, jonathanh@nvidia.com
+Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and si_perf
+ to siginfo
+Message-ID: <YIBtr2w/8KhOoiUA@elver.google.com>
+References: <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
+ <43f8a3bf-34c5-0fc9-c335-7f92eaf23022@samsung.com>
+ <dccaa337-f3e5-08e4-fe40-a603811bb13e@samsung.com>
+ <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
+ <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com>
+ <f114ff4a-6612-0935-12ac-0e2ac18d896c@samsung.com>
+ <CANpmjNM6bQpc49teN-9qQhCXoJXaek5stFGR2kPwDroSFBc0fw@mail.gmail.com>
+ <cf6ed5cd-3202-65ce-86bc-6f1eba1b7d17@samsung.com>
+ <CANpmjNPr_JtRC762ap8PQVmsFNY5YhHvOk0wNcPHq=ZQt-qxYg@mail.gmail.com>
+ <YIBSg7Vi+U383dT7@elver.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161902920923.1057.702460765675498591.git-patchwork-notify@kernel.org>
-Date:   Wed, 21 Apr 2021 18:20:09 +0000
-References: <20210421140505.30756-1-aford173@gmail.com>
-In-Reply-To: <20210421140505.30756-1-aford173@gmail.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     netdev@vger.kernel.org, aford@beaconembedded.com,
-        sergei.shtylyov@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        andrew@lunn.ch, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIBSg7Vi+U383dT7@elver.google.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 21 Apr 2021 09:05:05 -0500 you wrote:
-> The call to clk_disable_unprepare() can happen before priv is
-> initialized. This means moving clk_disable_unprepare out of
-> out_release into a new label.
-> 
-> Fixes: 8ef7adc6beb2 ("net: ethernet: ravb: Enable optional refclk")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
+On Wed, Apr 21, 2021 at 06:27PM +0200, Marco Elver wrote:
+> On Wed, Apr 21, 2021 at 05:11PM +0200, Marco Elver wrote:
+> > +Cc linux-arm-kernel
+> > 
 > [...]
+> > >
+> > > I've managed to reproduce this issue with a public Raspberry Pi OS Lite
+> > > rootfs image, even without deploying kernel modules:
+> > >
+> > > https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-03-25/2021-03-04-raspios-buster-armhf-lite.zip
+> > >
+> > > # qemu-system-arm -M virt -smp 2 -m 512 -kernel zImage -append "earlycon
+> > > console=ttyAMA0 root=/dev/vda2 rw rootwait" -serial stdio -display none
+> > > -monitor null -device virtio-blk-device,drive=virtio-blk -drive
+> > > file=/tmp/2021-03-04-raspios-buster-armhf-lite.img,id=virtio-blk,if=none,format=raw
+> > > -netdev user,id=user -device virtio-net-device,netdev=user
+> > >
+> > > The above one doesn't boot if zImage z compiled from commit fb6cc127e0b6
+> > > and boots if compiled from 2e498d0a74e5. In both cases I've used default
+> > > arm/multi_v7_defconfig and
+> > > gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabi toolchain.
+> > 
+> > Yup, I've narrowed it down to the addition of "__u64 _perf" to
+> > siginfo_t. My guess is the __u64 causes a different alignment for a
+> > bunch of adjacent fields. It seems that x86 and m68k are the only ones
+> > that have compile-time tests for the offsets. Arm should probably add
+> > those -- I have added a bucket of static_assert() in
+> > arch/arm/kernel/signal.c and see that something's off.
+> > 
+> > I'll hopefully have a fix in a day or so.
+> 
+> Arm and compiler folks: are there some special alignment requirement for
+> __u64 on arm 32-bit? (And if there is for arm64, please shout as well.)
+> 
+> With the static-asserts below, the only thing that I can do to fix it is
+> to completely remove the __u64. Padding it before or after with __u32
+> just does not work. It seems that the use of __u64 shifts everything
+> in __sifields by 4 bytes.
+> 
+> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+> index d0bb9125c853..b02a4ac55938 100644
+> --- a/include/uapi/asm-generic/siginfo.h
+> +++ b/include/uapi/asm-generic/siginfo.h
+> @@ -92,7 +92,10 @@ union __sifields {
+>  				__u32 _pkey;
+>  			} _addr_pkey;
+>  			/* used when si_code=TRAP_PERF */
+> -			__u64 _perf;
+> +			struct {
+> +				__u32 _perf1;
+> +				__u32 _perf2;
+> +			} _perf;
+>  		};
+>  	} _sigfault;
+> 
+> ^^ works, but I'd hate to have to split this into 2 __u32 because it
+> makes the whole design worse.
+> 
+> What alignment trick do we have to do here to fix it for __u64?
 
-Here is the summary with links:
-  - net: ethernet: ravb: Fix release of refclk
-    https://git.kernel.org/netdev/net-next/c/36e69da892f1
+So I think we just have to settle on 'unsigned long' here. On many
+architectures, like 32-bit Arm, the alignment of a structure is that of
+its largest member. This means that there is no portable way to add
+64-bit integers to siginfo_t on 32-bit architectures.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+In the case of the si_perf field, word size is sufficient since the data
+it contains is user-defined. On 32-bit architectures, any excess bits of
+perf_event_attr::sig_data will therefore be truncated when copying into
+si_perf.
+
+Feel free to test the below if you have time, but the below lets me boot
+32-bit arm which previously timed out. It also passes all the
+static_asserts() I added (will send those as separate patches).
+
+Once I'm convinced this passes all others tests too, I'll send a patch.
+
+Thanks,
+-- Marco
 
 
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index c8821d966812..f0d2dd35d408 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -237,7 +237,7 @@ typedef struct compat_siginfo {
+ 					u32 _pkey;
+ 				} _addr_pkey;
+ 				/* used when si_code=TRAP_PERF */
+-				compat_u64 _perf;
++				compat_ulong_t _perf;
+ 			};
+ 		} _sigfault;
+ 
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index d0bb9125c853..03d6f6d2c1fe 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -92,7 +92,7 @@ union __sifields {
+ 				__u32 _pkey;
+ 			} _addr_pkey;
+ 			/* used when si_code=TRAP_PERF */
+-			__u64 _perf;
++			unsigned long _perf;
+ 		};
+ 	} _sigfault;
+ 
