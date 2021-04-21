@@ -2,211 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A619B366ED8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD1D366EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240398AbhDUPMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236626AbhDUPMm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:12:42 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2C1C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:12:09 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id c6-20020a4aacc60000b02901e6260b12e2so6782596oon.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FEXEAgUao8/U1XoW751IUwiCrSmDVaqLIc6z62zqqMg=;
-        b=Vo5glLC6k7D+/dE1nb/qouPscezMFfLgYz7H9PDhiS+225DnfgsTkqbIQ3YKQxcbKH
-         N9WNrIISNRSCIXZ0Xa2geQUHPwPnz1H0/r2shySWTDVl9W9/1wWxlwISt92QkyHI1/D5
-         is4kUk+NU/HEU91rjPdqiJG5y3zN7p9qXt+Hmpoxbd5ZzCUXzUI+sZiJlvFysiAqPOzk
-         2JWPjDS8PDVfeR7oLmiyTUp1U5Sj+Recg00TFzL2m2g9M6d82OTR14ZDv16kvT/l4M2D
-         BpDuIcq7ihOTMmVUiwcrQGjhGXbhQPyPPMY7gQ1x2zK9oJETG0hcADBQKWBqljmgmIpW
-         xnPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FEXEAgUao8/U1XoW751IUwiCrSmDVaqLIc6z62zqqMg=;
-        b=Afr5K4ussY+KMmOPmbEztEaYr9C/tb/JksVh1C5lS5ENvK8JsKqBTdsBcacVqG6OFm
-         YqAgZ5FH5poatjN4dF3lAI3Ii5mNgPdp6LHYFOt0VUdpxzTOzmG0af5VhMbNu484qN8S
-         vGIZBOjaD7BCVbDtOEFpqCVxk1cAXR5duY/tjYpTQw5IrswAS7fqrmv3PyRj7CCeZcLZ
-         RcmY7zduAcBWFkI42qeEzYLCEavsqVJKblTsXzqPYwNYUc8HLv2ehMfvA0XCCE088nJz
-         7EjpL5jTcJJlrwE22JoNS27r6wW+xhWVOJHGEhuQise0pg8T+4dazUDYZpo/i4b9Xk5W
-         gT+A==
-X-Gm-Message-State: AOAM533KSnvsjeKn6lQTdEsr27GfXA1yar+mWUn5/2VoJg6XHmh34o9a
-        IzivQ1csUqXULJmtBg3pwV/TTy3frMzJ3v38qanEDQ==
-X-Google-Smtp-Source: ABdhPJyng+pvseRT0sVGDwFEJZ8TI5HsU+LGWY1XrOff8CcFEH9YHvKH2/GavzRvVwXXrQ+JymLm5bTa/K1m4eP+ih4=
-X-Received: by 2002:a4a:d80e:: with SMTP id f14mr18296328oov.54.1619017928732;
- Wed, 21 Apr 2021 08:12:08 -0700 (PDT)
+        id S240470AbhDUPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:12:50 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40256 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236626AbhDUPMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:12:45 -0400
+IronPort-SDR: 20V0UwkH8GsdxVB3uCgocFRH/X6uNJpB309perHoqeWuhx8zu7TVO4DRF7/YQK1DECPzYMp29Z
+ owThjgHzIbEg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="175822881"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="175822881"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:12:09 -0700
+IronPort-SDR: 2AJSyPeHklbv64FG0nC1kSTrr5ejTj+yt4yloRg86YVPyzGRvt0nOv6mLSN5wM6N1TYWUKBubW
+ w/9rbIkoo55Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="385803595"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 21 Apr 2021 08:12:08 -0700
+Received: from [10.212.233.108] (kliang2-MOBL.ccr.corp.intel.com [10.212.233.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id C5B975808CA;
+        Wed, 21 Apr 2021 08:12:07 -0700 (PDT)
+Subject: Re: [PATCH V5] perf/x86: Reset the dirty counter to prevent the leak
+ for an RDPMC task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        acme@kernel.org, mark.rutland@arm.com, luto@amacapital.net,
+        eranian@google.com, namhyung@kernel.org
+References: <1618957842-103858-1-git-send-email-kan.liang@linux.intel.com>
+ <YH/eF4YWg73Lkcrr@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <c683d70f-ae07-765d-1278-5771d1061cc0@linux.intel.com>
+Date:   Wed, 21 Apr 2021 11:12:06 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210408103605.1676875-1-elver@google.com> <CGME20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8@eucas1p1.samsung.com>
- <20210408103605.1676875-6-elver@google.com> <1fbf3429-42e5-0959-9a5c-91de80f02b6a@samsung.com>
- <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
- <43f8a3bf-34c5-0fc9-c335-7f92eaf23022@samsung.com> <dccaa337-f3e5-08e4-fe40-a603811bb13e@samsung.com>
- <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
- <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com> <f114ff4a-6612-0935-12ac-0e2ac18d896c@samsung.com>
- <CANpmjNM6bQpc49teN-9qQhCXoJXaek5stFGR2kPwDroSFBc0fw@mail.gmail.com> <cf6ed5cd-3202-65ce-86bc-6f1eba1b7d17@samsung.com>
-In-Reply-To: <cf6ed5cd-3202-65ce-86bc-6f1eba1b7d17@samsung.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 21 Apr 2021 17:11:57 +0200
-Message-ID: <CANpmjNPr_JtRC762ap8PQVmsFNY5YhHvOk0wNcPHq=ZQt-qxYg@mail.gmail.com>
-Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and si_perf
- to siginfo
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YH/eF4YWg73Lkcrr@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc linux-arm-kernel
 
-On Wed, 21 Apr 2021 at 15:19, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->
-> Hi Marco,
->
-> On 21.04.2021 13:03, Marco Elver wrote:
-> > On Wed, 21 Apr 2021 at 12:57, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
-> >> On 21.04.2021 11:35, Marek Szyprowski wrote:
-> >>> On 21.04.2021 10:11, Marco Elver wrote:
-> >>>> On Wed, 21 Apr 2021 at 09:35, Marek Szyprowski
-> >>>> <m.szyprowski@samsung.com> wrote:
-> >>>>> On 21.04.2021 08:21, Marek Szyprowski wrote:
-> >>>>>> On 21.04.2021 00:42, Marco Elver wrote:
-> >>>>>>> On Tue, 20 Apr 2021 at 23:26, Marek Szyprowski
-> >>>>>>> <m.szyprowski@samsung.com> wrote:
-> >>>>>>>> On 08.04.2021 12:36, Marco Elver wrote:
-> >>>>>>>>> Introduces the TRAP_PERF si_code, and associated siginfo_t field
-> >>>>>>>>> si_perf. These will be used by the perf event subsystem to send
-> >>>>>>>>> signals
-> >>>>>>>>> (if requested) to the task where an event occurred.
-> >>>>>>>>>
-> >>>>>>>>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-> >>>>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de> # asm-generic
-> >>>>>>>>> Signed-off-by: Marco Elver <elver@google.com>
-> >>>>>>>> This patch landed in linux-next as commit fb6cc127e0b6 ("signal:
-> >>>>>>>> Introduce TRAP_PERF si_code and si_perf to siginfo"). It causes
-> >>>>>>>> regression on my test systems (arm 32bit and 64bit). Most systems
-> >>>>>>>> fails
-> >>>>>>>> to boot in the given time frame. I've observed that there is a
-> >>>>>>>> timeout
-> >>>>>>>> waiting for udev to populate /dev and then also during the network
-> >>>>>>>> interfaces configuration. Reverting this commit, together with
-> >>>>>>>> 97ba62b27867 ("perf: Add support for SIGTRAP on perf events") to
-> >>>>>>>> let it
-> >>>>>>>> compile, on top of next-20210420 fixes the issue.
-> >>>>>>> Thanks, this is weird for sure and nothing in particular stands out.
-> >>>>>>>
-> >>>>>>> I have questions:
-> >>>>>>> -- Can you please share your config?
-> >>>>>> This happens with standard multi_v7_defconfig (arm) or just defconfig
-> >>>>>> for arm64.
-> >>>>>>
-> >>>>>>> -- Also, can you share how you run this? Can it be reproduced in
-> >>>>>>> qemu?
-> >>>>>> Nothing special. I just boot my test systems and see that they are
-> >>>>>> waiting lots of time during the udev populating /dev and network
-> >>>>>> interfaces configuration. I didn't try with qemu yet.
-> >>>>>>> -- How did you derive this patch to be at fault? Why not just
-> >>>>>>> 97ba62b27867, given you also need to revert it?
-> >>>>>> Well, I've just run my boot tests with automated 'git bisect' and that
-> >>>>>> was its result. It was a bit late in the evening, so I didn't analyze
-> >>>>>> it further, I've just posted a report about the issue I've found. It
-> >>>>>> looks that bisecting pointed to a wrong commit somehow.
-> >>>>>>> If you are unsure which patch exactly it is, can you try just
-> >>>>>>> reverting 97ba62b27867 and see what happens?
-> >>>>>> Indeed, this is a real faulty commit. Initially I've decided to revert
-> >>>>>> it to let kernel compile (it uses some symbols introduced by this
-> >>>>>> commit). Reverting only it on top of linux-next 20210420 also fixes
-> >>>>>> the issue. I'm sorry for the noise in this thread. I hope we will find
-> >>>>>> what really causes the issue.
-> >>>>> This was a premature conclusion. It looks that during the test I've did
-> >>>>> while writing that reply, the modules were not deployed properly and a
-> >>>>> test board (RPi4) booted without modules. In that case the board booted
-> >>>>> fine and there was no udev timeout. After deploying kernel modules, the
-> >>>>> udev timeout is back.
-> >>>> I'm confused now. Can you confirm that the problem is due to your
-> >>>> kernel modules, or do you think it's still due to 97ba62b27867? Or
-> >>>> fb6cc127e0b6 (this patch)?
-> >>> I don't use any custom kernel modules. I just deploy all modules that
-> >>> are being built from the given kernel defconfig (arm
-> >>> multi_v7_defconfig or arm64 default) and they are automatically loaded
-> >>> during the boot by udev. I've checked again and bisect was right. The
-> >>> kernel built from fb6cc127e0b6 suffers from the described issue, while
-> >>> the one build from the previous commit (2e498d0a74e5) works fine.
-> >> I've managed to reproduce this issue with qemu. I've compiled the kernel
-> >> for arm 32bit with multi_v7_defconfig and used some older Debian rootfs
-> >> image. The log and qemu parameters are here:
-> >> https://protect2.fireeye.com/v1/url?k=7cfc23a2-23671aa9-7cfda8ed-002590f5b904-dab7e2ec39dae1f9&q=1&e=36a5ed13-6ad5-430c-8f44-e95c4f0af5c3&u=https%3A%2F%2Fpaste.debian.net%2F1194526%2F
-> >>
-> >> Check the timestamp for the 'EXT4-fs (vda): re-mounted' message and
-> >> 'done (timeout)' status for the 'Waiting for /dev to be fully populated'
-> >> message. This happens only when kernel modules build from the
-> >> multi_v7_defconfig are deployed on the rootfs.
-> > Still hard to say what is going on and what is at fault. But being
-> > able to repro this in qemu helps debug quicker -- would you also be
-> > able to share the precise rootfs.img, i.e. upload it somewhere I can
-> > fetch it? And just to be sure, please also share your .config, as it
-> > might have compiler-version dependent configuration that might help
-> > repro (unlikely, but you never know).
->
-> I've managed to reproduce this issue with a public Raspberry Pi OS Lite
-> rootfs image, even without deploying kernel modules:
->
-> https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-03-25/2021-03-04-raspios-buster-armhf-lite.zip
->
-> # qemu-system-arm -M virt -smp 2 -m 512 -kernel zImage -append "earlycon
-> console=ttyAMA0 root=/dev/vda2 rw rootwait" -serial stdio -display none
-> -monitor null -device virtio-blk-device,drive=virtio-blk -drive
-> file=/tmp/2021-03-04-raspios-buster-armhf-lite.img,id=virtio-blk,if=none,format=raw
-> -netdev user,id=user -device virtio-net-device,netdev=user
->
-> The above one doesn't boot if zImage z compiled from commit fb6cc127e0b6
-> and boots if compiled from 2e498d0a74e5. In both cases I've used default
-> arm/multi_v7_defconfig and
-> gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabi toolchain.
 
-Yup, I've narrowed it down to the addition of "__u64 _perf" to
-siginfo_t. My guess is the __u64 causes a different alignment for a
-bunch of adjacent fields. It seems that x86 and m68k are the only ones
-that have compile-time tests for the offsets. Arm should probably add
-those -- I have added a bucket of static_assert() in
-arch/arm/kernel/signal.c and see that something's off.
+On 4/21/2021 4:11 AM, Peter Zijlstra wrote:
+>> @@ -2327,10 +2367,17 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+>>   
+>>   static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+>>   {
+>> +	unsigned long flags;
+>>   
+>>   	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+>>   		return;
+>>   
+>> +	if (x86_pmu.sched_task && event->hw.target) {
+>> +		local_irq_save(flags);
+>> +		perf_sched_cb_dec(event->ctx->pmu);
+>> +		local_irq_restore(flags);
+>> +	}
+>> +
+>>   	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
+>>   		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
+>>   }
+> I don't understand how this can possibly be correct. Both
+> perf_sched_cb_{inc,dec} modify strict per-cpu state, but the mapped
+> functions happen on whatever random CPU of the moment whenever the task
+> memory map changes.
+> 
+> Suppose we mmap() on CPU0 and then exit on CPU1. Suppose the task does
+> mmap() on CPU0 but then creates threads and runs on CPU1-4 concurrently
+> before existing on CPU5.
+> 
+> Could be I'm not seeing it due to having a snot-brain, please explain.
 
-I'll hopefully have a fix in a day or so.
+You are right.
+I implemented a new test case which mmap() on CPU 3, run and exit on CPU 
+0. It can still read the counter values from other tasks on CPU 0.
+
+Actually, I don't think we need perf_sched_cb_{inc,dec} and sched_task().
+
+The mm->context.perf_rdpmc_allowed will tell us if it's a RDPMC task.
+I think a clean way should be to add a new check_leakage() method. When 
+perf schedules in a RDPMC task, we invoke the method and clear the dirty 
+counters.
+(I use a generic name check_leakage for the method so it can be reused 
+by other ARCHs if possible.)
+
+The patch is as below. The new and old test cases are all passed. I will 
+do more tests.
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index c7fcc8d..229dd48 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1624,6 +1624,8 @@ static void x86_pmu_del(struct perf_event *event, 
+int flags)
+  	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+  		goto do_del;
+
++	__set_bit(event->hw.idx, cpuc->dirty);
++
+  	/*
+  	 * Not a TXN, therefore cleanup properly.
+  	 */
+@@ -2631,6 +2633,37 @@ static int x86_pmu_check_period(struct perf_event 
+*event, u64 value)
+  	return 0;
+  }
+
++static void x86_pmu_clear_dirty_counters(void)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	int i;
++
++	 /* Don't need to clear the assigned counter. */
++	for (i = 0; i < cpuc->n_events; i++)
++		__clear_bit(cpuc->assign[i], cpuc->dirty);
++
++	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
++		return;
++
++	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
++		/* Metrics and fake events don't have corresponding HW counters. */
++		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
++			continue;
++		else if (i >= INTEL_PMC_IDX_FIXED)
++			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
++		else
++			wrmsrl(x86_pmu_event_addr(i), 0);
++	}
++
++	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
++}
++
++static void x86_pmu_check_leakage(void)
++{
++	if (READ_ONCE(x86_pmu.attr_rdpmc))
++		x86_pmu_clear_dirty_counters();
++}
++
+  static int x86_pmu_aux_output_match(struct perf_event *event)
+  {
+  	if (!(pmu.capabilities & PERF_PMU_CAP_AUX_OUTPUT))
+@@ -2675,6 +2708,7 @@ static struct pmu pmu = {
+  	.sched_task		= x86_pmu_sched_task,
+  	.swap_task_ctx		= x86_pmu_swap_task_ctx,
+  	.check_period		= x86_pmu_check_period,
++	.check_leakage		= x86_pmu_check_leakage,
+
+  	.aux_output_match	= x86_pmu_aux_output_match,
+
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 27fa85e..d6003e0 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -229,6 +229,7 @@ struct cpu_hw_events {
+  	 */
+  	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
+  	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
++	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+  	int			enabled;
+
+  	int			n_events; /* the # of events in the below arrays */
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index a763928..bcf3964 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -514,6 +514,11 @@ struct pmu {
+  	 * Check period value for PERF_EVENT_IOC_PERIOD ioctl.
+  	 */
+  	int (*check_period)		(struct perf_event *event, u64 value); /* 
+optional */
++
++	/*
++	 * Check and clear dirty counters to prevent potential leakage
++	 */
++	void (*check_leakage)		(void); /* optional */
+  };
+
+  enum perf_addr_filter_action_t {
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 928b166..b496113 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3822,6 +3822,12 @@ static void cpu_ctx_sched_in(struct 
+perf_cpu_context *cpuctx,
+  	ctx_sched_in(ctx, cpuctx, event_type, task);
+  }
+
++static bool has_check_leakage(struct pmu *pmu)
++{
++	return pmu->check_leakage && current->mm &&
++	       atomic_read(&current->mm->context.perf_rdpmc_allowed);
++}
++
+  static void perf_event_context_sched_in(struct perf_event_context *ctx,
+  					struct task_struct *task)
+  {
+@@ -3832,6 +3838,8 @@ static void perf_event_context_sched_in(struct 
+perf_event_context *ctx,
+  	if (cpuctx->task_ctx == ctx) {
+  		if (cpuctx->sched_cb_usage)
+  			__perf_pmu_sched_task(cpuctx, true);
++		if (has_check_leakage(pmu))
++			pmu->check_leakage();
+  		return;
+  	}
+
+@@ -3858,6 +3866,8 @@ static void perf_event_context_sched_in(struct 
+perf_event_context *ctx,
+
+  	if (cpuctx->sched_cb_usage && pmu->sched_task)
+  		pmu->sched_task(cpuctx->task_ctx, true);
++	if (has_check_leakage(pmu))
++		pmu->check_leakage();
+
+  	perf_pmu_enable(pmu);
+
 
 Thanks,
--- Marco
+Kan
