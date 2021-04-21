@@ -2,153 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF4C367588
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED62436757C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343658AbhDUXJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 19:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343629AbhDUXJc (ORCPT
+        id S1343617AbhDUXEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 19:04:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343612AbhDUXEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:09:32 -0400
-X-Greylist: delayed 298 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 21 Apr 2021 16:08:58 PDT
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0897C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:08:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-        d=auristor.com; s=MDaemon; r=y; t=1619046237; x=1619651037;
-        i=jaltman@auristor.com; q=dns/txt; h=Subject:To:Cc:References:
-        From:Organization:Message-ID:Date:User-Agent:MIME-Version:
-        In-Reply-To:Content-Type; bh=svaA56JyCVBMA4sH8+QhPKmyZQzC30F8uYq
-        c8IJtzS4=; b=twFeLca/2kdXVieHYAGoPhLu2xtqdOhAmqbT4Av+ppVP1t2jVtY
-        /tXlcPxOOJJ+nG/SvV2arzIfubt3QYSIVXRlxRfvB4tpdfUYS0qiClalvid/UHvU
-        mhCk5J9vCttua5HpMJYDkQqCTJR8cSk4hPm3fvCdlEGn0f0hnC5lHeWQ=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Wed, 21 Apr 2021 19:03:57 -0400
-Received: from [IPv6:2603:7000:73d:4f22:a130:f9e2:913b:3942] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v21.0.1) 
-        with ESMTPSA id md5001002923289.msg; Wed, 21 Apr 2021 19:03:56 -0400
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Wed, 21 Apr 2021 19:03:56 -0400
-        (not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73d:4f22:a130:f9e2:913b:3942
-X-MDHelo: [IPv6:2603:7000:73d:4f22:a130:f9e2:913b:3942]
-X-MDArrival-Date: Wed, 21 Apr 2021 19:03:56 -0400
-X-MDOrigin-Country: United States, North America
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=1745ad0e69=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2][next] afs: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva (gustavoars@kernel.org)" <gustavoars@kernel.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210420211615.GA51432@embeddedor>
-From:   Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-Message-ID: <45926d81-cfae-8465-84e6-af76d668c1ef@auristor.com>
-Date:   Wed, 21 Apr 2021 19:03:47 -0400
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 21 Apr 2021 19:04:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619046243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/UmtHR6B+oXPHYT2L60drMqrNVwo6SWNjkWX1by19Tg=;
+        b=XtMoNZY/5JJlhguvt9xnrn1bUjl75F2rQj/dhMEv4K/YMpRq5dsuX7IVDM6YoqBYsIQGda
+        Ptjt6I0aD/y5tClCXYydtrwDO4e4mR2W8LxbagYeJXw2IYjbof53IXFlp7HygmOCLhq/VN
+        E/XU5ZUczJvwHwijeWIdcAUdxc/kJOo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-d2LMjUsiNryraJJ1ydfueg-1; Wed, 21 Apr 2021 19:04:01 -0400
+X-MC-Unique: d2LMjUsiNryraJJ1ydfueg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EB6B107ACE4;
+        Wed, 21 Apr 2021 23:04:00 +0000 (UTC)
+Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A66FB6E400;
+        Wed, 21 Apr 2021 23:03:59 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 17:03:59 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>
+Subject: Re: [PATCH 036/190] Revert "vfio/mdev: Fix reference count leak in
+ add_mdev_supported_type"
+Message-ID: <20210421170359.1b8f481b@redhat.com>
+In-Reply-To: <20210421183634.GA2290758@nvidia.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+        <20210421130105.1226686-37-gregkh@linuxfoundation.org>
+        <20210421183634.GA2290758@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210420211615.GA51432@embeddedor>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="X0jWOGGYxsMP3iN5tfoIEdjkPxZix9kpE"
-X-MDCFSigsAdded: auristor.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---X0jWOGGYxsMP3iN5tfoIEdjkPxZix9kpE
-Content-Type: multipart/mixed; boundary="gRcyHZ2wmjW9ayFyvkpfEJhKRdynUjywo";
- protected-headers="v1"
-From: Jeffrey E Altman <jaltman@auristor.com>
-To: "Gustavo A. R. Silva (gustavoars@kernel.org)" <gustavoars@kernel.org>,
- David Howells <dhowells@redhat.com>
-Cc: linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Message-ID: <45926d81-cfae-8465-84e6-af76d668c1ef@auristor.com>
-Subject: Re: [PATCH v2][next] afs: Fix fall-through warnings for Clang
-References: <20210420211615.GA51432@embeddedor>
-In-Reply-To: <20210420211615.GA51432@embeddedor>
+On Wed, 21 Apr 2021 15:36:34 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
---gRcyHZ2wmjW9ayFyvkpfEJhKRdynUjywo
-Content-Type: multipart/mixed;
- boundary="------------92303E2F8BC9BFB02BE72ECD"
-Content-Language: en-US
+> On Wed, Apr 21, 2021 at 02:58:31PM +0200, Greg Kroah-Hartman wrote:
+> > This reverts commit aa8ba13cae3134b8ef1c1b6879f66372531da738.
+> > 
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> > 
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> > 
+> > Cc: Qiushi Wu <wu000273@umn.edu>
+> > Cc: Cornelia Huck <cohuck@redhat.com>
+> > Cc: Kirti Wankhede <kwankhede@nvidia.com>
+> > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  drivers/vfio/mdev/mdev_sysfs.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)  
+> 
+> I recently audited all of this mdev stuff, the original patch is OK,
+> though I would have written it with a goto. Please don't revert it.
 
-This is a multi-part message in MIME format.
---------------92303E2F8BC9BFB02BE72ECD
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Agreed, the original commit looks correct.  Thanks,
 
-On 4/20/2021 5:16 PM, Gustavo A. R. Silva (gustavoars@kernel.org) wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple=
-
-> warnings by explicitly adding multiple fallthrough pseudo-keywords
-> in places where the code is intended to fall through to the next
-> case.
->=20
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
-> Changes in v2:
->   - Place blank line after the fallthrough markings, not before.
->     Link: https://lore.kernel.org/linux-hardening/748935.1606147853@war=
-thog.procyon.org.uk/
-
-This change looks good to me.
-
-Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
-
-
-
---------------92303E2F8BC9BFB02BE72ECD
-Content-Type: text/x-vcard; charset=utf-8;
- name="jaltman.vcf"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="jaltman.vcf"
-
-begin:vcard
-fn:Jeffrey Altman
-n:Altman;Jeffrey
-org:AuriStor, Inc.
-adr:;;255 W 94TH ST STE 6B;New York;NY;10025-6985;United States
-email;internet:jaltman@auristor.com
-title:CEO
-tel;work:+1-212-769-9018
-url:https://www.linkedin.com/in/jeffreyaltman/
-version:2.1
-end:vcard
-
-
---------------92303E2F8BC9BFB02BE72ECD--
-
---gRcyHZ2wmjW9ayFyvkpfEJhKRdynUjywo--
-
---X0jWOGGYxsMP3iN5tfoIEdjkPxZix9kpE
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEE+kRK8Zf0SbJM8+aZ93pzVZK2mgQFAmCAr1MFAwAAAAAACgkQ93pzVZK2mgRB
-Jw/9EWFZCGZiOd3lYfyWJL2CYtAJTNp62QgG7NLp6zgMsDGPDRc8GzE54EcvhdKoCJSRm069RaC8
-kSRxs8gQ0+pbdb26a8jkKSCIU1sOAqXXXju/aRLGHmFyRx5DkAj2gZW5cpV6KopnWky19B9LwuOV
-O15ZY2iANiPlee/iRva4fSBkhFXVYLaFDhYxgP3zGn10U9U88NSZ/OVqGoEicBkeqyRY8V99Ahy2
-u00Y5kSNURTRlQvZonw7qqASPIX+R/30weOY5OklrP2VDcm2G9S9VEqqlWb6k/LI4XaHgijR1t4A
-ZEHQKc65LVO7IMS4ufwCmf0TYtAdjLFwoBQPGU/QSJCJcg63rjtYi4nSMwyFW5m0JUfON7fGgze7
-IzN6YnU95yTSei2Nbq1t3zJ0QCjqANH1BDmpSWOS8x1+rzuSik7BaF7nSF32+xpa4LyOfbfy3vkH
-Dqbk7v0H0XRbG5cKOt9cADakcDT/vjauMR3Yuwu6oE0yG6KymaazOD+nHmJA5zPYpX++0memWV7v
-00CQai0opoJKKREXN9ttDhDDKFJMxvER6prP5U+QZ/mSFaKaPRy8SHlZFwIx/4v3DX8dbARp6/MT
-U0aokm1ILIatLoxkanB4jrzGOsVbiDSR7DmkWZx6xtnFGpv7J8rCyHA1zY6nQTUiVgcpeyZT9net
-TGc=
-=4w1V
------END PGP SIGNATURE-----
-
---X0jWOGGYxsMP3iN5tfoIEdjkPxZix9kpE--
+Alex
 
