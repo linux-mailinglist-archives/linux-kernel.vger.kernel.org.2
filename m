@@ -2,92 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB83A3670FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5109E367101
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242581AbhDURLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237498AbhDURLY (ORCPT
+        id S242837AbhDURLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:11:36 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:33427 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242747AbhDURL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:11:24 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53C3C06174A;
-        Wed, 21 Apr 2021 10:10:50 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id n2so64564292ejy.7;
-        Wed, 21 Apr 2021 10:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Rkwiaa+jDirhSShgjwe6icAk4sFKZ5EO8zRW1jIFg44=;
-        b=DsDkE0eGwAkD3YmuxAcuy1TVhxXhwELGxCW2xA2E4g2uydgtItcJNYoH9Sa58mIvvF
-         QybA/NKXi81EHOrwzVNacmnzawvR11PDtRhfgLGd8C5TmnBHTzFw/2AVC6RfyrCmNKna
-         M/mpe1xHHKnkaWeHcWhkeOWhwLfMCIq36kWufAu9eIU2cyilL/CMEsCXA3hjRtH3Hz8L
-         5/4Wd7kFie2NDNoPnyqodl+d6H5whYRXLuQn843retaqEt5vp/Bg1R3rJgEDDSsIAJWv
-         nGmAmXeKhophjawX8YjH3WAdfalFEF5Sm24lajzgzj/ILVocLJyexA2HEDXMtUkF5bcr
-         B4ZQ==
+        Wed, 21 Apr 2021 13:11:28 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso17092994otl.0;
+        Wed, 21 Apr 2021 10:10:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Rkwiaa+jDirhSShgjwe6icAk4sFKZ5EO8zRW1jIFg44=;
-        b=F/8pzZbjeF7w1QyoCkmGNMcGC7Zw4hOBjaDMTx5UvEhJzbRakTpAwIxIajuPLYIOgr
-         faTw7uJdJEkPOxenK5cm3AZhNgQnoanaq9i3iGXX1wBSjnbT07v3GEzK9V/P7tEwEgAL
-         X5HHg30aEI+h/brWOAdsn0WD4VRwgKpeIxCAUtYlxPcMdvx+jedDcO4GAfmFY370D0YJ
-         5UqSuEZ+OCKQaMahUvRL7NeUXnyjH7Os648cC4tcuxEjk3HbG2N4xmj655vN7TtJESbd
-         b0L+yo2mYXwOqM4TF+92pThH8vBMbZmIFetEV/Bh/995nJ7Q2PKb8V5WvxOuWoiCSLfV
-         Lnwg==
-X-Gm-Message-State: AOAM5308r0mngh8FVm/L+3UhJN5uC4pg0YivswxvTaBmbkZwF9/gKxRS
-        +ku9o9cILyMkrgqemZ4EULc=
-X-Google-Smtp-Source: ABdhPJxyXGyiyR0G9YsfYYLPW+LoFsrJ+5akqfwUQh7rQhXfA32oUMLzR/q7nluYdZEEogQZrk5UBQ==
-X-Received: by 2002:a17:906:28c9:: with SMTP id p9mr35058595ejd.111.1619025049289;
-        Wed, 21 Apr 2021 10:10:49 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.3])
-        by smtp.gmail.com with ESMTPSA id dc24sm66566ejb.123.2021.04.21.10.10.48
+         :mime-version:content-disposition:in-reply-to;
+        bh=7VCmwU3Z0G8gtBRqBZ0QmXHLoUtJnHDKmIJay+MuhNk=;
+        b=P0/U731DgMgAR6KkcplMBwVFSP6Y5PbWLedkfBpcyvPAY2+T6lGBhBoflLYL628pEu
+         RlZ6H4CjOS1N2hv1rySQU5YxlKS2BVigpwBD4ZlvNbqm4/Ks8vAXt6Ui2xjLqwt1lfGY
+         QMAu3AOz+HVbfqwJMB41mQvK7PNu9RpXBXXXRP7dSWLwm+4r+SR/6SOzre8sTBqCkCzg
+         dLWzRLjYC3TJn5IAXq3ueGcM+/3LJj32gUHWaxJbZccMWWceEXeiXs9btJqQt58oEzQx
+         RzP9gBF2U8NJcsHh9Ox3TTvq1VmXHDpa51rjhegGlYloyWbdKN31ul6dXIKZPudDqoMC
+         6vKA==
+X-Gm-Message-State: AOAM531ZjpBuJxcmfB5KNhm5i9Xnij6lRkAfQ+2lL/fTim2QpYZtzg7Y
+        AwJ7DbhrLAe5k+bh8RygoA==
+X-Google-Smtp-Source: ABdhPJxrxI1T9rM8FIpasVMhaqbSwwczX0XBN/Xn5THPt7rz4TqBPfUUcRhdqm3edVVdagpPw89bhg==
+X-Received: by 2002:a05:6830:4110:: with SMTP id w16mr24502392ott.348.1619025054795;
+        Wed, 21 Apr 2021 10:10:54 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w24sm2493otj.33.2021.04.21.10.10.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:10:49 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 19:10:46 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
- blocks
-Message-ID: <20210421171045.GB1414@agape.jhs>
-References: <cover.1619022192.git.drv@mailo.com>
- <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+        Wed, 21 Apr 2021 10:10:53 -0700 (PDT)
+Received: (nullmailer pid 1307176 invoked by uid 1000);
+        Wed, 21 Apr 2021 17:10:52 -0000
+Date:   Wed, 21 Apr 2021 12:10:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        devicetree@vger.kernel.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: Convert to DT schema
+Message-ID: <20210421171052.GB1300559@robh.at.kernel.org>
+References: <1618936010-16579-1-git-send-email-gubbaven@codeaurora.org>
+ <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
-> Reformat code comment blocks according to the coding style guidelines.
-> This resolves different checkpatch script WARNINGs around block comments.
+On Tue, Apr 20, 2021 at 09:56:49PM +0530, Venkata Lakshmi Narayana Gubba wrote:
+> Converted Qualcomm Bluetooth binidings to DT schema.
 > 
-> Signed-off-by: Deepak R Varma <drv@mailo.com>
+> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
 > ---
+>  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 69 -----------------
+>  .../bindings/net/qualcomm-bluetooth.yaml           | 87 ++++++++++++++++++++++
+>  2 files changed, 87 insertions(+), 69 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
 > 
-> Changes in v1:
->    - implement following changes suggested by Fabio Aiuto                              
->        a. Corrected commenting style                                                               
->        b. Similar style implemented for other comment blocks in                                    
->           the same files.                                       
+> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+> deleted file mode 100644
+> index 709ca6d..0000000
+> --- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+> +++ /dev/null
+> @@ -1,69 +0,0 @@
+> -Qualcomm Bluetooth Chips
+> ----------------------
+> -
+> -This documents the binding structure and common properties for serial
+> -attached Qualcomm devices.
+> -
+> -Serial attached Qualcomm devices shall be a child node of the host UART
+> -device the slave device is attached to.
+> -
+> -Required properties:
+> - - compatible: should contain one of the following:
+> -   * "qcom,qca6174-bt"
+> -   * "qcom,qca9377-bt"
+> -   * "qcom,wcn3990-bt"
+> -   * "qcom,wcn3991-bt"
+> -   * "qcom,wcn3998-bt"
+> -   * "qcom,qca6390-bt"
+> -
+> -Optional properties for compatible string qcom,qca6174-bt:
+> -
+> - - enable-gpios: gpio specifier used to enable chip
+> - - clocks: clock provided to the controller (SUSCLK_32KHZ)
+> - - firmware-name: specify the name of nvm firmware to load
+> -
+> -Optional properties for compatible string qcom,qca9377-bt:
+> -
+> - - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
+> -
+> -Required properties for compatible string qcom,wcn399x-bt:
+> -
+> - - vddio-supply: VDD_IO supply regulator handle.
+> - - vddxo-supply: VDD_XO supply regulator handle.
+> - - vddrf-supply: VDD_RF supply regulator handle.
+> - - vddch0-supply: VDD_CH0 supply regulator handle.
+> -
+> -Optional properties for compatible string qcom,wcn399x-bt:
+> -
+> - - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
+> - - firmware-name: specify the name of nvm firmware to load
+> - - clocks: clock provided to the controller
+> -
+> -Examples:
+> -
+> -serial@7570000 {
+> -	label = "BT-UART";
+> -	status = "okay";
+> -
+> -	bluetooth {
+> -		compatible = "qcom,qca6174-bt";
+> -
+> -		enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
+> -		clocks = <&divclk4>;
+> -		firmware-name = "nvm_00440302.bin";
+> -	};
+> -};
+> -
+> -serial@898000 {
+> -	bluetooth {
+> -		compatible = "qcom,wcn3990-bt";
+> -
+> -		vddio-supply = <&vreg_s4a_1p8>;
+> -		vddxo-supply = <&vreg_l7a_1p8>;
+> -		vddrf-supply = <&vreg_l17a_1p3>;
+> -		vddch0-supply = <&vreg_l25a_3p3>;
+> -		max-speed = <3200000>;
+> -		firmware-name = "crnv21.bin";
+> -		clocks = <&rpmhcc RPMH_RF_CLK2>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> new file mode 100644
+> index 0000000..55cd995
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Bluetooth Chips
+> +
+> +maintainers:
+> +  - Rob Herring <robh@kernel.org>
+> +  - Marcel Holtmann <marcel@holtmann.org>
+> +
+> +description:
+> +  This binding describes Qualcomm UART-attached bluetooth chips.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qca6174-bt
+> +      - qcom,qca9377-bt
+> +      - qcom,wcn3990-bt
+> +      - qcom,wcn3991-bt
+> +      - qcom,wcn3998-bt
+> +      - qcom,qca6390-bt      
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: gpio specifier used to enable chip
+> +   
+> +  clocks:
+> +    maxItems: 1
+> +    description: clock provided to the controller (SUSCLK_32KHZ)
+> +
+> +  vddio-supply:
+> +    description: VDD_IO supply regulator handle
+> +
+> +  vddxo-supply:
+> +    description: VDD_XO supply regulator handle
+> +
+> +  vddrf-supply:
+> +    description: VDD_RF supply regulator handle
+> +
+> +  vddch0-supply:
+> +    description: VDD_CH0 supply regulator handle
+> +
+> +  max-speed: 
+> +    description: see Documentation/devicetree/bindings/serial/serial.yaml
+> +
+> +  firmware-name:
+> +    description: specify the name of nvm firmware to load
+> +
+> +  local-bd-address:
+> +    description: see Documentation/devicetree/bindings/net/bluetooth.txt
+> +
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    uart {
 
-If you want to tag me you should add the Suggested-by: tag in commit message
-before Signed-off-by tag...
+Also, 'serial' is the proper node name.
 
-$ vim +485 Documentation/process/submitting-patches.rst
-
-thank you,
-
-fabio
+> +        label = "BT-UART";
+> +        status = "okay";
+> +
+> +        bluetooth {
+> +            compatible = "qcom,qca6174-bt";
+> +            enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
+> +            clocks = <&divclk4>;
+> +            firmware-name = "nvm_00440302.bin";
+> +        };
+> +    };
+> +  - |
+> +    uart {
+> +
+> +        bluetooth {
+> +            compatible = "qcom,wcn3990-bt";
+> +            vddio-supply = <&vreg_s4a_1p8>;
+> +            vddxo-supply = <&vreg_l7a_1p8>;
+> +            vddrf-supply = <&vreg_l17a_1p3>;
+> +            vddch0-supply = <&vreg_l25a_3p3>;
+> +            max-speed = <3200000>;
+> +            firmware-name = "crnv21.bin";		
+> +        };
+> +    };
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
