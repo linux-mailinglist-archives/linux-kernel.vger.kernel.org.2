@@ -2,127 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A672C366DB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF577366D9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243409AbhDUOHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:07:53 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36978 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243323AbhDUOHi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:07:38 -0400
-Received: from viremana-dev.fwjladdvyuiujdukmejncen4mf.xx.internal.cloudapp.net (unknown [13.66.132.26])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A031020B8001;
-        Wed, 21 Apr 2021 07:07:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A031020B8001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1619014024;
-        bh=Cg5t1YQVX4cxqUdMwABIBhBs50zuYp0RIByfae1cQIs=;
+        id S243321AbhDUOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:07:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243195AbhDUOHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:07:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D226144D;
+        Wed, 21 Apr 2021 14:06:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619014020;
+        bh=Skq855dn4Yk8ZwBtQx47eXayXzk9s74Sg6+dno+4Ebw=;
         h=From:To:Cc:Subject:Date:From;
-        b=sNmmAB3BcY0o93b9qcSFnOEbwY3ph/E3Kh64eWsqihR8XQP0ycLXgMHqIdofeuiXp
-         fxwdd95sbKFEvYMd1dc9Pxf9XxNwOvnVYAHuhnMugcCoj8TmKxZWq9qHje2uznlzrU
-         Wwm7Kws0hrjCsyJvQmgpafYqzb/fD2ZDzXKFIH5o=
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-To:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH v3 0/7] Hyper-V nested virt enlightenments for SVM
-Date:   Wed, 21 Apr 2021 14:06:47 +0000
-Message-Id: <cover.1619013347.git.viremana@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        b=A2iwB8xHmmW52ko7lImxPer4TrHRy06TLUnEw5x6ZCLapRg+MKpq0k8GCJWPhrhqS
+         Q9g5G+px+nMsU3Mpy2L3hSvfiZqVK/LQqW0CsG4O2eRavgFPxvCp1BNpWIhjgHKp+k
+         qEBKaOGGWyecjdjYxkEgy/c81IJrYRxPqJGBkUz3JhrVFpVA+M7pSSTClzxmHwEBj3
+         aQL/ka9VddIrzvTp10WI/PWuBStazHXfAvPxo7G5HrxA+PG2TplPQO2QJz8Q4q6uVH
+         Hptw4ZIN/SWSF7PK4hTTxBuG4wDLUXT2/ljZeXu34PquS1z8ohCtcFeT3PNqHMoVM/
+         N+G6bcwVfi/VQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: stm32-qspi: fix debug format string
+Date:   Wed, 21 Apr 2021 16:06:48 +0200
+Message-Id: <20210421140653.3964725-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series enables the nested virtualization enlightenments for
-SVM. This is very similar to the enlightenments for VMX except for the
-fact that there is no enlightened VMCS. For SVM, VMCB is already an
-architectural in-memory data structure.
+From: Arnd Bergmann <arnd@arndb.de>
 
-The supported enlightenments are:
+Printing size_t needs a special %zd format modifier to avoid a
+warning like:
 
-Enlightened TLB Flush: If this is enabled, ASID invalidations invalidate
-only gva -> hpa entries. To flush entries derived from NPT, hyper-v
-provided hypercalls (HvFlushGuestPhysicalAddressSpace or
-HvFlushGuestPhysicalAddressList) should be used.
+drivers/spi/spi-stm32-qspi.c:481:41: note: format string is defined here
+  481 |         dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
 
-Enlightened MSR bitmap(TLFS 16.5.3): "When enabled, L0 hypervisor does
-not monitor the MSR bitmaps for changes. Instead, the L1 hypervisor must
-invalidate the corresponding clean field after making changes to one of
-the MSR bitmaps."
-
-Direct Virtual Flush(TLFS 16.8): The hypervisor exposes hypercalls
-(HvFlushVirtualAddressSpace, HvFlushVirtualAddressSpaceEx,
-HvFlushVirtualAddressList, and HvFlushVirtualAddressListEx) that allow
-operating systems to more efficiently manage the virtual TLB. The L1
-hypervisor can choose to allow its guest to use those hypercalls and
-delegate the responsibility to handle them to the L0 hypervisor. This
-requires the use of a partition assist page."
-
-L2 Windows boot time was measured with and without the patch. Time was
-measured from power on to the login screen and was averaged over a
-consecutive 5 trials:
-  Without the patch: 42 seconds
-  With the patch: 29 seconds
---
-
-Changes from v2:
-- Refactored the Remote TLB Flush logic into separate hyperv specific
-  source files (kvm_onhyperv.[ch]).
-- Reverted the VMCB Clean bits macro changes as it is no longer needed.
-
-Changes from v1:
-- Move the remote TLB flush related fields from kvm_vcpu_hv and kvm_hv
-  to kvm_vcpu_arch and kvm_arch.
-- Modify the VMCB clean mask runtime based on whether L1 hypervisor
-  is running on Hyper-V or not.
-- Detect Hyper-V nested enlightenments based on
-  HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.
-- Address other minor review comments.
+Fixes: 18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
+ drivers/spi/spi-stm32-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Vineeth Pillai (7):
-  hyperv: Detect Nested virtualization support for SVM
-  hyperv: SVM enlightened TLB flush support flag
-  KVM: x86: hyper-v: Move the remote TLB flush logic out of vmx
-  KVM: SVM: hyper-v: Nested enlightenments in VMCB
-  KVM: SVM: hyper-v: Remote TLB flush for SVM
-  KVM: SVM: hyper-v: Enlightened MSR-Bitmap support
-  KVM: SVM: hyper-v: Direct Virtual Flush support
-
- arch/x86/include/asm/hyperv-tlfs.h |   9 +++
- arch/x86/include/asm/kvm_host.h    |  14 ++++
- arch/x86/include/asm/svm.h         |  24 +++++-
- arch/x86/kernel/cpu/mshyperv.c     |  10 ++-
- arch/x86/kvm/Makefile              |   5 ++
- arch/x86/kvm/kvm_onhyperv.c        |  94 ++++++++++++++++++++++
- arch/x86/kvm/kvm_onhyperv.h        |  31 ++++++++
- arch/x86/kvm/svm/svm.c             | 121 +++++++++++++++++++++++++++++
- arch/x86/kvm/svm/svm.h             |  12 ++-
- arch/x86/kvm/vmx/vmx.c             |  97 ++---------------------
- arch/x86/kvm/vmx/vmx.h             |  10 ---
- arch/x86/kvm/x86.c                 |   8 ++
- 12 files changed, 330 insertions(+), 105 deletions(-)
- create mode 100644 arch/x86/kvm/kvm_onhyperv.c
- create mode 100644 arch/x86/kvm/kvm_onhyperv.h
-
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index e2a99f054551..7e640ccc7e77 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -478,7 +478,7 @@ static ssize_t stm32_qspi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+ 	 * all needed transfer information into struct spi_mem_op
+ 	 */
+ 	memcpy(&op, &desc->info.op_tmpl, sizeof(struct spi_mem_op));
+-	dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
++	dev_dbg(qspi->dev, "%s len = 0x%zx offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
+ 
+ 	op.data.nbytes = len;
+ 	op.addr.val = desc->info.offset + offs;
 -- 
-2.25.1
+2.29.2
 
