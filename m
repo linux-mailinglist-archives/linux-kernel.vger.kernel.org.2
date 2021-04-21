@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF577366D9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0274366DAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243321AbhDUOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:07:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243195AbhDUOHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:07:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D226144D;
-        Wed, 21 Apr 2021 14:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619014020;
-        bh=Skq855dn4Yk8ZwBtQx47eXayXzk9s74Sg6+dno+4Ebw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=A2iwB8xHmmW52ko7lImxPer4TrHRy06TLUnEw5x6ZCLapRg+MKpq0k8GCJWPhrhqS
-         Q9g5G+px+nMsU3Mpy2L3hSvfiZqVK/LQqW0CsG4O2eRavgFPxvCp1BNpWIhjgHKp+k
-         qEBKaOGGWyecjdjYxkEgy/c81IJrYRxPqJGBkUz3JhrVFpVA+M7pSSTClzxmHwEBj3
-         aQL/ka9VddIrzvTp10WI/PWuBStazHXfAvPxo7G5HrxA+PG2TplPQO2QJz8Q4q6uVH
-         Hptw4ZIN/SWSF7PK4hTTxBuG4wDLUXT2/ljZeXu34PquS1z8ohCtcFeT3PNqHMoVM/
-         N+G6bcwVfi/VQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: stm32-qspi: fix debug format string
-Date:   Wed, 21 Apr 2021 16:06:48 +0200
-Message-Id: <20210421140653.3964725-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S243372AbhDUOHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:07:45 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36990 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243325AbhDUOHi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:07:38 -0400
+Received: from viremana-dev.fwjladdvyuiujdukmejncen4mf.xx.internal.cloudapp.net (unknown [13.66.132.26])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BB3C320B8002;
+        Wed, 21 Apr 2021 07:07:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BB3C320B8002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1619014024;
+        bh=Ej89Qm9LLMSPxt8OXtylVuc32Z7Yd+HfBt+EQT9qOcM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=e1hmnl5o7jJjdPHO+UTWuZZfRw6460kHg7YwZrt8dptet2McqPR/Pl9m8lewDv5Zj
+         a4ABS+9+myFvA0jjAxPyihFnGMPyE1ng5SlXP+1FpLVbz4Vtbpg0LAWXevVXm+XitC
+         kBOJtjq0/g1lZ1VwRbtu0gp2T+Y22a9j6g4AiJOE=
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+To:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: [PATCH v3 1/7] hyperv: Detect Nested virtualization support for SVM
+Date:   Wed, 21 Apr 2021 14:06:48 +0000
+Message-Id: <9d832252e556f4eddacf9a2b33008fbcf993a44b.1619013347.git.viremana@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1619013347.git.viremana@linux.microsoft.com>
+References: <cover.1619013347.git.viremana@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Previously, to detect nested virtualization enlightenment support,
+we were using HV_X64_ENLIGHTENED_VMCS_RECOMMENDED feature bit of
+HYPERV_CPUID_ENLIGHTMENT_INFO.EAX CPUID as docuemented in TLFS:
+ "Bit 14: Recommend a nested hypervisor using the enlightened VMCS
+  interface. Also indicates that additional nested enlightenments
+  may be available (see leaf 0x4000000A)".
 
-Printing size_t needs a special %zd format modifier to avoid a
-warning like:
+Enlightened VMCS, however, is an Intel only feature so the above
+detection method doesn't work for AMD. So, use the
+HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.EAX CPUID information ("The
+maximum input value for hypervisor CPUID information.") and this
+works for both AMD and Intel.
 
-drivers/spi/spi-stm32-qspi.c:481:41: note: format string is defined here
-  481 |         dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
-
-Fixes: 18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
 ---
- drivers/spi/spi-stm32-qspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/cpu/mshyperv.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index e2a99f054551..7e640ccc7e77 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -478,7 +478,7 @@ static ssize_t stm32_qspi_dirmap_read(struct spi_mem_dirmap_desc *desc,
- 	 * all needed transfer information into struct spi_mem_op
- 	 */
- 	memcpy(&op, &desc->info.op_tmpl, sizeof(struct spi_mem_op));
--	dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
-+	dev_dbg(qspi->dev, "%s len = 0x%zx offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index 3546d3e21787..c6f812851e37 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -252,6 +252,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
  
- 	op.data.nbytes = len;
- 	op.addr.val = desc->info.offset + offs;
+ static void __init ms_hyperv_init_platform(void)
+ {
++	int hv_max_functions_eax;
+ 	int hv_host_info_eax;
+ 	int hv_host_info_ebx;
+ 	int hv_host_info_ecx;
+@@ -269,6 +270,8 @@ static void __init ms_hyperv_init_platform(void)
+ 	ms_hyperv.misc_features = cpuid_edx(HYPERV_CPUID_FEATURES);
+ 	ms_hyperv.hints    = cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
+ 
++	hv_max_functions_eax = cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS);
++
+ 	pr_info("Hyper-V: privilege flags low 0x%x, high 0x%x, hints 0x%x, misc 0x%x\n",
+ 		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
+ 		ms_hyperv.misc_features);
+@@ -298,8 +301,7 @@ static void __init ms_hyperv_init_platform(void)
+ 	/*
+ 	 * Extract host information.
+ 	 */
+-	if (cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS) >=
+-	    HYPERV_CPUID_VERSION) {
++	if (hv_max_functions_eax >= HYPERV_CPUID_VERSION) {
+ 		hv_host_info_eax = cpuid_eax(HYPERV_CPUID_VERSION);
+ 		hv_host_info_ebx = cpuid_ebx(HYPERV_CPUID_VERSION);
+ 		hv_host_info_ecx = cpuid_ecx(HYPERV_CPUID_VERSION);
+@@ -325,9 +327,11 @@ static void __init ms_hyperv_init_platform(void)
+ 			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
+ 	}
+ 
+-	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
++	if (hv_max_functions_eax >= HYPERV_CPUID_NESTED_FEATURES) {
+ 		ms_hyperv.nested_features =
+ 			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
++		pr_info("Hyper-V: Nested features: 0x%x\n",
++			ms_hyperv.nested_features);
+ 	}
+ 
+ 	/*
 -- 
-2.29.2
+2.25.1
 
