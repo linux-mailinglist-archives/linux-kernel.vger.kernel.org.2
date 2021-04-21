@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3757366BDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A97366BE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241306AbhDUNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:08:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47148 "EHLO mail.kernel.org"
+        id S241082AbhDUNII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:08:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240880AbhDUNF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 450A9614A7;
-        Wed, 21 Apr 2021 13:05:23 +0000 (UTC)
+        id S235371AbhDUNF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:05:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1561261459;
+        Wed, 21 Apr 2021 13:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010323;
-        bh=N6L4un44SRtl6mVFQS/awvX20+NhfvEx630PeXwuqIg=;
+        s=korg; t=1619010326;
+        bh=iXg+8KxDKOBhkRze7GpiKTXV0xC00Ox02bUbCZX+qWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xMrXo6/rTDsyyz1ksL7wBZdkSq+GOSLx6jBWeBkdpqC6roJei4sORvbSmN1cYz5q0
-         Q+bohUA1iQ2LOjxcT81rSa4RxD4C0DsviA104GbJCKj9vH2SWdIgkEeBVr80zrLtkI
-         LErssIU40ab7m4bLuzo8GUurDMHlMK6x36Q32uQc=
+        b=VSkemneyvBg8XNJT5XoOZnUyT+hSIYlQ8zXFEVmWBNpqx32vECRBGTOgD9Cf6OnQl
+         2LSdUWoWnqsX4NXVpQuQ0uQO2CZEtOV8nS4AcW6WlijamvmIyHYKSD6zoSyZIxGSL5
+         kSdyfEeoOLn7NQ0Oh8ucnn2XQ7HZBQEHW9379IHI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 094/190] Revert "iio: adc: fix a potential NULL pointer dereference"
-Date:   Wed, 21 Apr 2021 14:59:29 +0200
-Message-Id: <20210421130105.1226686-95-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>, Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 095/190] Revert "rtlwifi: fix a potential NULL pointer dereference"
+Date:   Wed, 21 Apr 2021 14:59:30 +0200
+Message-Id: <20210421130105.1226686-96-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 13814627c9658cf8382dd052bc251ee415670a55.
+This reverts commit 765976285a8c8db3f0eb7f033829a899d0c2786e.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,25 +53,28 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/mxs-lradc-adc.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/wireless/realtek/rtlwifi/base.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/iio/adc/mxs-lradc-adc.c b/drivers/iio/adc/mxs-lradc-adc.c
-index 30e29f44ebd2..7f327ae95739 100644
---- a/drivers/iio/adc/mxs-lradc-adc.c
-+++ b/drivers/iio/adc/mxs-lradc-adc.c
-@@ -456,8 +456,6 @@ static int mxs_lradc_adc_trigger_init(struct iio_dev *iio)
- 
- 	trig = devm_iio_trigger_alloc(&iio->dev, "%s-dev%i", iio->name,
- 				      iio->id);
--	if (!trig)
--		return -ENOMEM;
- 
- 	trig->dev.parent = adc->dev;
- 	iio_trigger_set_drvdata(trig, iio);
+diff --git a/drivers/net/wireless/realtek/rtlwifi/base.c b/drivers/net/wireless/realtek/rtlwifi/base.c
+index 6e8bd99e8911..1d067536889e 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/base.c
++++ b/drivers/net/wireless/realtek/rtlwifi/base.c
+@@ -452,11 +452,6 @@ static void _rtl_init_deferred_work(struct ieee80211_hw *hw)
+ 	/* <2> work queue */
+ 	rtlpriv->works.hw = hw;
+ 	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
+-	if (unlikely(!rtlpriv->works.rtl_wq)) {
+-		pr_err("Failed to allocate work queue\n");
+-		return;
+-	}
+-
+ 	INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
+ 			  rtl_watchdog_wq_callback);
+ 	INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
 -- 
 2.31.1
 
