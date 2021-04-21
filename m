@@ -2,176 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666DD367383
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154B8367385
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243518AbhDUTiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:38:12 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:34433 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235949AbhDUTiE (ORCPT
+        id S243262AbhDUTiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235949AbhDUTit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:38:04 -0400
-Received: by mail-lf1-f53.google.com with SMTP id t14so11387051lfe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:37:30 -0700 (PDT)
+        Wed, 21 Apr 2021 15:38:49 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03C4C06174A;
+        Wed, 21 Apr 2021 12:38:15 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id 66so4449008qkf.2;
+        Wed, 21 Apr 2021 12:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZWTsx//HrJ2RHu0HgCdgSrEyArHnq9DI4QEo+WYe8fg=;
+        b=e1l+mJOanxoKUOTLpnATTOFkssw9nfsmeCnl1B6/IFLbekGvdZp/G6JSrJPTMgDTI5
+         b9yyDwjWLxqWh/S7zoK6lHCF92epKHBLsblU/S3wOveg2A/0pIIv7COM9tMptsC7nvuE
+         rjKBZBubipYjdMm+WikyNAJFYW0aw/HdBN8VO0/ZP19HU0Oz8lm9P4hFaOfLaUGEgkw3
+         47ROvJY/8krgl7j7fdkfyjqOdB1zRSgPMjg0h+QASRZ5JWUryR6ppAv6eOzU3JDN8Km2
+         4z05FrM+Uu1rrhNbxADK0v4ALvpuE4ED9WLaapWb2ZsWeIlz3qVxgXHb6EGC7a5z/jeT
+         gXQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ekhWhrhz9TUwBrqEkhr3jaEF7+/PXZSw9GQDhfaAAw4=;
-        b=cDhuZ8/q3DOA2ExkCfAl7SeQEw4KVx738uuirsrb0uYStw3sTLog3cX8IzL634PXTQ
-         /UAj8pFchg0bqNJYtl4zFEk4CXw8Ev/tw+5Gqs31KG5lxR/y3Sv1HQK8+LeCo0UU+G7j
-         Gf9I+t37FMHPq9u6EztHu9i7NrpTkjjnK15m6yQHo9BcoBon5XUMVSOlP9VkbMG+fNsN
-         UgDJiRt5fM3NXSjObS29CgD5Zopr04v3sjMmzJvjgIB0yGdmeRoVXjBOU9NDX/HPe9mE
-         BDR+7L9Vw+RloeY7G2wqC+Coy455T9zLTVjA2MCGJ3bt4XFePlhTppJsqhnx7o9ciZFt
-         EGGw==
-X-Gm-Message-State: AOAM532hTJ4UggzlMTt98HBQzIB5v8vakcjrV3AB2bNvFq+GUdvzDhny
-        Vh6u1EnncUjskeHRhdSPkcQmZVYUzV6f0E8S/44=
-X-Google-Smtp-Source: ABdhPJxsEDo2oiLQKU53xxa7/vsBvHe1ooHfgLXOytO4cfXUo+8O/uek0ccjTqRMsQzFtDtwsh1LXDsEvEgYJMJMHpk=
-X-Received: by 2002:a05:6512:150:: with SMTP id m16mr21377244lfo.374.1619033850205;
- Wed, 21 Apr 2021 12:37:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZWTsx//HrJ2RHu0HgCdgSrEyArHnq9DI4QEo+WYe8fg=;
+        b=E7g7MBly90FFPViXpJGm3dIGglmjX92alyTgf/cWRYjuK8HQoSmWwAcQUYMU8IwFdt
+         Ijg2NJFaV1YkhJ2QAgCNHNBA0Y2vX2d5irY5WGQvAaM7uGEJ5ppvEbFADjcZmuXIzUlm
+         LlM1kwIypZWl02puXSm8Bprm4y9DZW4i7wM4TDKZWmc+5CO4sRNtBy6s/RTqinjJsdfY
+         LZxSYeKaRGzZ81pJV0Arvhw+kMgYUdCw8KggayCQK+yKr+URby/XswIekg0nRvCngx5x
+         iMUvgcTD96HMCT9J36tGe2s4CWTtbO6GJOCKt5VGzX2K2iT/0stzn9A0BLrostFA131x
+         KIsQ==
+X-Gm-Message-State: AOAM530aQYuIAzIvRvu3TWXaKFD5D15whes63fyOUui5bNvKsfhpWlvD
+        yshunljiSX7CGr6Ccwtg7Y0=
+X-Google-Smtp-Source: ABdhPJyXc+/zrC8T8zUjum69hY80LLH1bLWj/jqqP+sRkuGXVVaz6pGJd/N4yFT9D+RrWUcGiJEZqQ==
+X-Received: by 2002:a05:620a:124a:: with SMTP id a10mr16376642qkl.447.1619033895142;
+        Wed, 21 Apr 2021 12:38:15 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id f15sm454636qtm.49.2021.04.21.12.38.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 12:38:14 -0700 (PDT)
+Subject: Re: [PATCH] of: overlay: Fix kerneldoc warning in of_overlay_remove()
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20210421154548.1192903-1-robh@kernel.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <98f083c9-5e2d-6388-88f6-4883e025bebf@gmail.com>
+Date:   Wed, 21 Apr 2021 14:38:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210413155337.644993-1-namhyung@kernel.org> <20210413155337.644993-2-namhyung@kernel.org>
- <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net> <CABPqkBTncWfeFWY=kYXTAr3gRjpyFVL-YJN4K1YOPpHO35PHBw@mail.gmail.com>
- <YH664QumxBAIyYpt@hirez.programming.kicks-ass.net>
-In-Reply-To: <YH664QumxBAIyYpt@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 22 Apr 2021 04:37:18 +0900
-Message-ID: <CAM9d7cjXtGLuEkVaCOgJifwJUJmSABcZ5LRAdUsRM8TRYsVGsQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210421154548.1192903-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 8:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Apr 20, 2021 at 01:34:40AM -0700, Stephane Eranian wrote:
-> > The sampling approach will certainly incur more overhead and be at
-> > risk of losing the ability to reconstruct the total counter
-> > per-cgroup, unless  you set the period for SW_CGROUP_SWITCHES to 1.
-> > But then, you run the risk of losing samples if the buffer is full or
-> > sampling is throtlled.  In some scenarios, we believe the number of
-> > context switches between cgroup could be quite high (>> 1000/s).  And
-> > on top you would have to add the processing of the samples to extract
-> > the counts per cgroup. That would require a synthesis on cgroup on
-> > perf record and some post-processing on perf report. We are interested
-> > in using the data live to make some policy decisions, so a counting
-> > approach with perf stat will always be best.
-> >
-> > The fundamental problem Namhyung is trying to solve is the following:
-> >
-> > num_fds = num_cpus x num_events x num_cgroups
-> >
-> > On an 256-CPU AMD server running 200 cgroups with 6 events/cgroup (as
-> > an example):
-> >
-> > num_fds = 256 x 200 x 6 = 307,200 fds (with all the kernel memory
-> > associated with them).
->
-> So the PERCPU proposal would reduce that to 200 * 6 = 1200 fds, which is
-> a definite win.
+On 4/21/21 10:45 AM, Rob Herring wrote:
+> '*ovcs_id' causes a warning because '*' is treated as bold markup:
+> 
+> Documentation/devicetree/kernel-api:56: ../drivers/of/overlay.c:1184: WARNING: Inline emphasis start-string without end-string.
+> 
+> Fix this to use the normal '@' markup for function parameters.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/of/overlay.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> index d241273170fd..67c9aa6f14da 100644
+> --- a/drivers/of/overlay.c
+> +++ b/drivers/of/overlay.c
+> @@ -1181,7 +1181,7 @@ static int overlay_removal_is_ok(struct overlay_changeset *remove_ovcs)
+>   * If an error is returned by an overlay changeset post-remove notifier
+>   * then no further overlay changeset post-remove notifier will be called.
+>   *
+> - * Return: 0 on success, or a negative error number.  *ovcs_id is set to
+> + * Return: 0 on success, or a negative error number.  @ovcs_id is set to
+>   * zero after reverting the changeset, even if a subsequent error occurs.
+>   */
+>  int of_overlay_remove(int *ovcs_id)
+> 
 
-Sure.  It's good for the fd reduction.  But it won't help event scheduling
-on a cpu which is a more important problem for us.
+The change results in incorrect information.  I am guessing that "@*ovcs_id"
+would not be valid syntax (I have not tried it).  The changed version says
+that the pointer ovcs_id is changed to zero, but the actual action is to
+change the value pointed to by ovcs_id is changed to zero.  Is there a
+valid syntax to say this?
 
->
-> > On each CPU, that implies: 200 x 6 = 1200
-> > events to schedule and 6 to find on each cgroup switch
->
-> Right, so here we could optimize; if we find the event-groups are
-> identical in composition we can probably frob something that swizzles
-> the counts around without touching the PMU. That would be very similar
-> to what we already have in perf_event_context_sched_out().
-
-Right, that's what we want.
-
->
-> This gets a wee bit tricky when you consider cgroup hierarchy though;
-> suppose you have:
->
->            R
->           / \
->          A   B
->             / \
->            C   D
->
-> And are monitoring both B and D, then you'll end up with 12 counters
-> active instead of the 6. I'm not sure how to make that go away. 'Don't
-> do that then' might be good enough.
-
-In my approach, it propagates the delta to the parents (if exist)
-all the way to the root cgroup.
-
->
-> > This does not scale for us:
-> >    - run against the fd limit, but also memory consumption in the
-> >    kernel per struct file, struct inode, struct perf_event ....
-> >    - number of events per-cpu is still also large
-> >    - require event scheduling on cgroup switches, even with RB-tree
-> >    improvements, still heavy
-> >    - require event scheduling even if measuring the same events across
-> >    all cgroups
-> >
-> > One factor in that equation above needs to disappear. The one counter
-> > per file descriptor is respected with Nahmyung's patch because he is
-> > operating a plain per-cpu mode. What changes is just how and where the
-> > count is accumulated in perf_events. The resulting programming on the
-> > hardware is the same as before.
->
-> Yes, you're aggregating differently. And that's exactly the problem. The
-> aggregation is a variable one with fairly poor semantics. Suppose you
-> create a new cgroup, then you have to tear down and recreate the whole
-> thing, which is pretty crap.
-
-Yep, but I think cgroup aggregation is an important use case and
-we'd better support it efficiently.
-
-Tracking all cgroups (including new one) can be difficult, that's why
-I suggested passing a list of interested cgroups and counting them
-only.  I can change it to allow adding new cgroups without tearing
-down the existing list.  Is that ok to you?
-
->
-> Ftrace had a similar issue; where people wanted aggregation, and that
-> resulted in the event histogram, which, quite frankla,y is a scary
-> monster that I've no intention of duplicating. That's half a programming
-> language implemented.
-
-The ftrace event histogram supports generic aggregation.  IOW users
-can specify which key and data field to aggregate.  That surely would
-complicate the things.
-
->
-> > As you point out, the difficulty is how to express the cgroups of
-> > interest and how to read the counts back.  I agree that the ioctl() is
-> > not ideal for the latter. For the former, if you do not want ioctl()
-> > then you would have to overload perf_event_open() with a vector of
-> > cgroup fd, for instance. As for the read, you could, as you suggest,
-> > use the read syscall if you want to read all the cgroups at once using
-> > a new read_format. I don't have a problem with that.  As for cgroup-id
-> > vs. cgroup-fd, I think you make a fair point about consistency with
-> > the existing approach. I don't have a problem with that either
->
-> So that is a problem of aggregation; which is basically a
-> programmability problem. You're asking for a variadic-fixed-function
-> now, but tomorrow someone else will come and want another one.
-
-Well.. maybe we can add more stuff later if it's really needed.
-But BPF also can handle many aggregations these days. :)
-
-Thanks,
-Namhyung
+-Frank
