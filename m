@@ -2,196 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E125366F8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B71366F92
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240584AbhDUP5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:57:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40402 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235524AbhDUP5V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:57:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619020608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pIe5tKrugrnOlOskmdMbwkkEL74PO/UkyVq9Mz8MMs8=;
-        b=SOB6ZRBKByfMkYSKH8eFVzhRCMfgZQKTfmcSVPt8+4mBJdO1tfHQoTA63hXiMENJM11GCi
-        CbEB2s2IkxyKAHHVmWMXJBpAIhkB8tMvZlJPzMZ+MZGsIgDpshw4HE3hi3ULgL5S6tLASe
-        cpc9b69fs9GC7V/c8ixpjJvTZvVO7ic=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-nQmi_AIYPVuFDxN6YabeCQ-1; Wed, 21 Apr 2021 11:56:44 -0400
-X-MC-Unique: nQmi_AIYPVuFDxN6YabeCQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C3181020C30;
-        Wed, 21 Apr 2021 15:56:43 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-206.rdu2.redhat.com [10.10.114.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF28E5B69B;
-        Wed, 21 Apr 2021 15:56:31 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 822EE220BCF; Wed, 21 Apr 2021 11:56:31 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 11:56:31 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        willy@infradead.org, virtio-fs@redhat.com, slp@redhat.com,
-        miklos@szeredi.hu, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] dax: Add an enum for specifying dax wakup mode
-Message-ID: <20210421155631.GC1579961@redhat.com>
-References: <20210419213636.1514816-1-vgoyal@redhat.com>
- <20210419213636.1514816-2-vgoyal@redhat.com>
- <20210421092440.GM8706@quack2.suse.cz>
+        id S241335AbhDUP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:58:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235524AbhDUP6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:58:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52D0D6144B;
+        Wed, 21 Apr 2021 15:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619020668;
+        bh=GDHTx2Ati79aaQDh5rPmeZsQfiHr4Gx4DzLeFLm/spM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AEDzDw9opEABVJro9JzkhQbRoqsUaPeb59uxeK7aiFy+oHL7XlbFz2UJSOWu/mlgj
+         krG0UQ8vDS1K6j5RwShDOkp+dNS48k4qRz4blK1gsCNIo27iys2GGcvJ2Ybzxn2FKE
+         FYoTOCPyaQKEK/i/+lRNlOWdZovy+cwWe/ZDUyK2O23pRm51+gnw3CwRY71+c3mRYb
+         Owa+VwHzl/KSZMZZRR1eQWoP7yB0J7nlixwK5k3754PT3/zHnDVGRfPXJ5RrWza1VS
+         POfwsi5ABoN5qgkZhEHmsX4inFuaT/OL37lHHE0U609Mgci2sdzKOCttdtqw536mCC
+         ReHXt903vgWIw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0FC4C5C0267; Wed, 21 Apr 2021 08:57:48 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 08:57:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH 1/2] bitmap_parse: support 'all' semantics
+Message-ID: <20210421155748.GU975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210421031326.72816-1-yury.norov@gmail.com>
+ <20210421031326.72816-2-yury.norov@gmail.com>
+ <20210421111932.36665920@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421092440.GM8706@quack2.suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210421111932.36665920@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:24:40AM +0200, Jan Kara wrote:
-> On Mon 19-04-21 17:36:34, Vivek Goyal wrote:
-> > Dan mentioned that he is not very fond of passing around a boolean true/false
-> > to specify if only next waiter should be woken up or all waiters should be
-> > woken up. He instead prefers that we introduce an enum and make it very
-> > explicity at the callsite itself. Easier to read code.
-> > 
-> > This patch should not introduce any change of behavior.
-> > 
-> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > ---
-> >  fs/dax.c | 23 +++++++++++++++++------
-> >  1 file changed, 17 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/dax.c b/fs/dax.c
-> > index b3d27fdc6775..00978d0838b1 100644
-> > --- a/fs/dax.c
-> > +++ b/fs/dax.c
-> > @@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
-> >  	struct exceptional_entry_key key;
-> >  };
+On Wed, Apr 21, 2021 at 11:19:32AM -0400, Steven Rostedt wrote:
+> On Tue, 20 Apr 2021 20:13:25 -0700
+> Yury Norov <yury.norov@gmail.com> wrote:
+> 
+> > @@ -76,6 +76,11 @@ to change, such as less cores in the CPU list, then N and any ranges using N
+> >  will also change.  Use the same on a small 4 core system, and "16-N" becomes
+> >  "16-3" and now the same boot input will be flagged as invalid (start > end).
 > >  
-> > +/**
-> > + * enum dax_entry_wake_mode: waitqueue wakeup toggle
-> > + * @WAKE_NEXT: entry was not mutated
-> > + * @WAKE_ALL: entry was invalidated, or resized
+> > +The special case-tolerant group name "all" has a meaning of selecting all CPUs,
+> > +such that "isolcpus=all" is the equivalent of "isolcpus=0-N".
 > 
-> Let's document the constants in terms of what they do, not when they are
-> expected to be called. So something like:
+> I'm OK with the concept of this patch set, but really? That is a horrible
+> example. One should NEVER set isolcpus to all!
+
+How about "isolcpus=all:2/4"?  ;-)
+
+							Thanx, Paul
+
+> -- Steve
 > 
-> @WAKE_NEXT: wake only the first waiter in the waitqueue
-> @WAKE_ALL: wake all waiters in the waitqueue
 > 
-> Otherwise the patch looks good so feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-
-Hi Jan,
-
-Here is the updated patch based on your feedback.
-
-Thanks
-Vivek
-
-
-Subject: dax: Add an enum for specifying dax wakup mode
-
-Dan mentioned that he is not very fond of passing around a boolean true/false
-to specify if only next waiter should be woken up or all waiters should be
-woken up. He instead prefers that we introduce an enum and make it very
-explicity at the callsite itself. Easier to read code.
-
-This patch should not introduce any change of behavior.
-
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
----
- fs/dax.c |   23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
-
-Index: redhat-linux/fs/dax.c
-===================================================================
---- redhat-linux.orig/fs/dax.c	2021-04-21 11:51:04.716289502 -0400
-+++ redhat-linux/fs/dax.c	2021-04-21 11:52:10.298010850 -0400
-@@ -144,6 +144,16 @@ struct wait_exceptional_entry_queue {
- 	struct exceptional_entry_key key;
- };
- 
-+/**
-+ * enum dax_entry_wake_mode: waitqueue wakeup toggle
-+ * @WAKE_NEXT: wake only the first waiter in the waitqueue
-+ * @WAKE_ALL: wake all waiters in the waitqueue
-+ */
-+enum dax_entry_wake_mode {
-+	WAKE_NEXT,
-+	WAKE_ALL,
-+};
-+
- static wait_queue_head_t *dax_entry_waitqueue(struct xa_state *xas,
- 		void *entry, struct exceptional_entry_key *key)
- {
-@@ -182,7 +192,8 @@ static int wake_exceptional_entry_func(w
-  * The important information it's conveying is whether the entry at
-  * this index used to be a PMD entry.
-  */
--static void dax_wake_entry(struct xa_state *xas, void *entry, bool wake_all)
-+static void dax_wake_entry(struct xa_state *xas, void *entry,
-+			   enum dax_entry_wake_mode mode)
- {
- 	struct exceptional_entry_key key;
- 	wait_queue_head_t *wq;
-@@ -196,7 +207,7 @@ static void dax_wake_entry(struct xa_sta
- 	 * must be in the waitqueue and the following check will see them.
- 	 */
- 	if (waitqueue_active(wq))
--		__wake_up(wq, TASK_NORMAL, wake_all ? 0 : 1, &key);
-+		__wake_up(wq, TASK_NORMAL, mode == WAKE_ALL ? 0 : 1, &key);
- }
- 
- /*
-@@ -268,7 +279,7 @@ static void put_unlocked_entry(struct xa
- {
- 	/* If we were the only waiter woken, wake the next one */
- 	if (entry && !dax_is_conflict(entry))
--		dax_wake_entry(xas, entry, false);
-+		dax_wake_entry(xas, entry, WAKE_NEXT);
- }
- 
- /*
-@@ -286,7 +297,7 @@ static void dax_unlock_entry(struct xa_s
- 	old = xas_store(xas, entry);
- 	xas_unlock_irq(xas);
- 	BUG_ON(!dax_is_locked(old));
--	dax_wake_entry(xas, entry, false);
-+	dax_wake_entry(xas, entry, WAKE_NEXT);
- }
- 
- /*
-@@ -524,7 +535,7 @@ retry:
- 
- 		dax_disassociate_entry(entry, mapping, false);
- 		xas_store(xas, NULL);	/* undo the PMD join */
--		dax_wake_entry(xas, entry, true);
-+		dax_wake_entry(xas, entry, WAKE_ALL);
- 		mapping->nrexceptional--;
- 		entry = NULL;
- 		xas_set(xas, index);
-@@ -937,7 +948,7 @@ static int dax_writeback_one(struct xa_s
- 	xas_lock_irq(xas);
- 	xas_store(xas, entry);
- 	xas_clear_mark(xas, PAGECACHE_TAG_DIRTY);
--	dax_wake_entry(xas, entry, false);
-+	dax_wake_entry(xas, entry, WAKE_NEXT);
- 
- 	trace_dax_writeback_one(mapping->host, index, count);
- 	return ret;
-
+> > +
+> > +The semantics of "N" and "all" is supported on a level of bitmaps and holds for
+> > +all users of bitmap_parse().
+> >  
