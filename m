@@ -2,81 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95CE3669C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130483669C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238712AbhDULRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 07:17:21 -0400
-Received: from elvis.franken.de ([193.175.24.41]:35032 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235052AbhDULRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 07:17:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lZAqa-0003QQ-00; Wed, 21 Apr 2021 13:16:44 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 491B7C07F1; Wed, 21 Apr 2021 13:15:24 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 13:15:24 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
-Message-ID: <20210421111524.GA8043@alpha.franken.de>
-References: <20210420123932.24634-1-tsbogend@alpha.franken.de>
- <CAHp75VcQ4WXm3uS2r=uDpA4+0vPWdKjev6=vV_JDxMLPzpHDRw@mail.gmail.com>
- <20210421083214.GA5694@alpha.franken.de>
- <CAHp75VeeWTdYjSgyjgzmFSpO=Zc+Q6SCS-06LVcVoghuF9vNgA@mail.gmail.com>
- <20210421091843.GA6174@alpha.franken.de>
- <CAHp75Vf921iQUR=VgMXTD-M_Ah+8UeAmKXXqgvB8WFz58pQ5Qg@mail.gmail.com>
- <20210421103720.GA7390@alpha.franken.de>
- <CAHp75VdgUus64zbbaD5enV0-sof4jYSs3soORqyBTkxVhM4b6A@mail.gmail.com>
+        id S238681AbhDULQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 07:16:35 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42908 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235951AbhDULQa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 07:16:30 -0400
+Received: from [192.168.86.31] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DC78B20B8001;
+        Wed, 21 Apr 2021 04:15:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC78B20B8001
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1619003757;
+        bh=0lGPWgCWxMY7QAIfAJHFkFTAYipH0FMtf/PdmxPyrUw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gudX5C8+viqc/m58ZbDfBIGMK5DF+vGWywf/UQuUq+w1S+fUI8PZmcpVYd9Zhl71G
+         7V5SefAQZ34ieq6v2Vd8FjSDLntWCzHUMWa3sIdlqQpijXqElS6Ied6EMj3YoGLLjf
+         JG9H08F28TC64nZMQQiYrs63e9IN3gNQlH1Xp1o0=
+Subject: Re: [PATCH v2 2/7] hyperv: SVM enlightened TLB flush support flag
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, viremana@linux.microsoft.com
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <3fd0cdfb9a4164a3fb90351db4dc10f52a7c4819.1618492553.git.viremana@linux.microsoft.com>
+ <20210421100026.4hcgrxeri444if45@liuwe-devbox-debian-v2>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <4a57cd2b-43b5-2625-3663-449ffa715b51@linux.microsoft.com>
+Date:   Wed, 21 Apr 2021 07:15:54 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdgUus64zbbaD5enV0-sof4jYSs3soORqyBTkxVhM4b6A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210421100026.4hcgrxeri444if45@liuwe-devbox-debian-v2>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 01:46:43PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 21, 2021 at 1:37 PM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Wed, Apr 21, 2021 at 12:54:53PM +0300, Andy Shevchenko wrote:
-> > > As I promised you, I will do a deep review later on, I'm giving you
-> > > time to find issues yourself. That's how you may actually learn the
-> > > things. It's solely your choice to follow or not, my promise will be
-> > > kept and you will get an answer anyway.
-> >
-> > so let's make it a challenge ;-)
-> >
-> > I see I could use gpiochip_get_data() in few place.
-> >
-> > Is there more you see ?
-> 
-> Good.
-> 
-> For now:
-> - dead code due to driver not being compiled as module
 
-Can you explain, why it's dead code, if it's not compilable as module ?
 
-> - too verbose Kconfig machinery (it's not about the "help" part!)
+On 4/21/21 6:00 AM, Wei Liu wrote:
+> On Thu, Apr 15, 2021 at 01:43:37PM +0000, Vineeth Pillai wrote:
+>>   
+>> +/*
+>> + * This is specific to AMD and specifies that enlightened TLB flush is
+>> + * supported. If guest opts in to this feature, ASID invalidations only
+>> + * flushes gva -> hpa mapping entries. To flush the TLB entries derived
+>> + * from NPT, hypercalls should be used (HvFlushGuestPhysicalAddressSpace
+>> + * or HvFlushGuestPhysicalAddressList).
+>> + */
+>> +#define HV_X64_NESTED_ENLIGHTENED_TLB			BIT(22)
+>> +
+> c
+> This is not yet documented in TLFS, right? I can't find this bit in the
+> latest edition (6.0b).
+This would be documented in the TLFS update which is soon to be
+released.
 
-the default y part ? Well I'm converting the MIPS rb532 platform to
-device tree. So I'm trying to make the whole process as bisectable
-as possible. And this would help, but I've no problem dropping that.
+>
+> My first thought is the comment says this is AMD specific but the name
+> is rather generic. That looks a bit odd to begin with.
+I thought of of keeping the name generic to avoid renaming Intel
+specific ones also. If I understand correctly, the TLFS would also
+be having generic name for this and just translated the generic
+name here in this header.
 
-> - open coded stuff in IRQ handler
+Thanks,
+Vineeth
 
-done.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
