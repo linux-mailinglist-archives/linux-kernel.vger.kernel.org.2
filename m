@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA14E366BC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22065366BC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241027AbhDUNGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:06:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43838 "EHLO mail.kernel.org"
+        id S239663AbhDUNGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234340AbhDUNFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F06F86144C;
-        Wed, 21 Apr 2021 13:04:42 +0000 (UTC)
+        id S239853AbhDUNFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:05:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B538861455;
+        Wed, 21 Apr 2021 13:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010283;
-        bh=Djgxgz4Yq5aee3tYO2USWvW75GrNTN0DXteofV7ehlM=;
+        s=korg; t=1619010286;
+        bh=fHIhHWhbZ0ZhEMCmgbmyntppO5e7+bgAG3Mo5QZudmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PYL/IvRL6FDVNX/snG1keQqDtl62hSZ16hcc4Wagp4Mry2UpdpqyJixIoQpHXSZK3
-         4m/HN6qa85Oxt4RjVwdMvbwsdk5sloEsjrX+Kg6izXGmYN+OqVocLCljrAI44hqTjT
-         p8tpPsJy/4bOX+zZqPLzQVEIazOM+9MQDony2lnk=
+        b=P9ZAJj9Ok1AnD6oyTDrXniGsEFAsdE0OKXejWL5p469GqRQ/+2mdGjv4/QQlTord3
+         XaRwbeiLAQ6pIE4R+CczsYXoIT88xRs+nKtCg7Mg87oTK0TRL3uOoeknwUq/K428d+
+         fgLDpsKp3ty6zKNRwLySF6KMzRgcgjDKew/qvD/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wenwen Wang <wang6495@umn.edu>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 080/190] Revert "ALSA: usx2y: fix a double free bug"
-Date:   Wed, 21 Apr 2021 14:59:15 +0200
-Message-Id: <20210421130105.1226686-81-gregkh@linuxfoundation.org>
+        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 081/190] Revert "tracing: Fix a memory leak by early error exit in trace_pid_write()"
+Date:   Wed, 21 Apr 2021 14:59:16 +0200
+Message-Id: <20210421130105.1226686-82-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -36,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit cbb88db76a1536e02e93e5bd37ebbfbb6c4043a9.
+This reverts commit 91862cc7867bba4ee5c8fcf0ca2f1d30427b6129.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -52,29 +53,39 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
+Cc: http
+Cc: stable@vger.kernel.org
 Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/usx2y/usbusx2y.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/trace/trace.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/usb/usx2y/usbusx2y.c b/sound/usb/usx2y/usbusx2y.c
-index 3cd28d24f0a7..bb188245b0e2 100644
---- a/sound/usb/usx2y/usbusx2y.c
-+++ b/sound/usb/usx2y/usbusx2y.c
-@@ -279,8 +279,10 @@ int usX2Y_In04_init(struct usX2Ydev *usX2Y)
- 	if (! (usX2Y->In04urb = usb_alloc_urb(0, GFP_KERNEL)))
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 5c777627212f..faed4f44d224 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -691,10 +691,8 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
+ 	 * not modified.
+ 	 */
+ 	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
+-	if (!pid_list) {
+-		trace_parser_put(&parser);
++	if (!pid_list)
  		return -ENOMEM;
+-	}
  
--	if (! (usX2Y->In04Buf = kmalloc(21, GFP_KERNEL)))
-+	if (! (usX2Y->In04Buf = kmalloc(21, GFP_KERNEL))) {
-+		usb_free_urb(usX2Y->In04urb);
+ 	pid_list->pid_max = READ_ONCE(pid_max);
+ 
+@@ -704,7 +702,6 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
+ 
+ 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
+ 	if (!pid_list->pids) {
+-		trace_parser_put(&parser);
+ 		kfree(pid_list);
  		return -ENOMEM;
-+	}
- 	 
- 	init_waitqueue_head(&usX2Y->In04WaitQueue);
- 	usb_fill_int_urb(usX2Y->In04urb, usX2Y->dev, usb_rcvintpipe(usX2Y->dev, 0x4),
+ 	}
 -- 
 2.31.1
 
