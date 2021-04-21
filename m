@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E9A366C3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F0A366C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239635AbhDUNM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:12:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
+        id S241952AbhDUNSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241595AbhDUNJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA3B61490;
-        Wed, 21 Apr 2021 13:08:26 +0000 (UTC)
+        id S241612AbhDUNJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:09:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 067D16147E;
+        Wed, 21 Apr 2021 13:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010507;
-        bh=Xt7209rGwREThTcDv+SmGI3pQmUdWPuA4ZT4v2byidk=;
+        s=korg; t=1619010512;
+        bh=YbM/JDcEhtUKoOaWmqWbdFHG0wyL5M+A2QKrbumK1ek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yjV0RH1U2lP/rqxPyeZbaqidUrYttAf6MoLTtTF5OyNsSE30NFWCYusujhVWiXbLF
-         Jgt3SqIaKBr5sJLyBushNJ4zNUR3sQB9yIO2j1Tu2oH13MYkPnLHSdGhCUfK98tq8j
-         v6GvoDVeKa5aP8p4KtHxtnC1ZwA7gl/v5PrRZs2Y=
+        b=ZWtFzqqqw/EGB3vDBdQyv81UrU/QJ4C9ElOJM6iCyyGzwdTazwtTTZJciBy8oEDsm
+         MKLyzeNUfNyWVh/aRaFuoC1uRWnv4FUUGCZfTSw3X4Oli2no/eMxJK5hGZXw8BJd9M
+         irlFdsEW31X7GjuEEpANHb3Hg0CGDhv3GUTDp8b0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, Sinan Kaya <okaya@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 162/190] Revert "dmaengine: qcom_hidma: Check for driver register failure"
-Date:   Wed, 21 Apr 2021 15:00:37 +0200
-Message-Id: <20210421130105.1226686-163-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>, Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 163/190] Revert "dmaengine: mv_xor: Fix a missing check in mv_xor_channel_add"
+Date:   Wed, 21 Apr 2021 15:00:38 +0200
+Message-Id: <20210421130105.1226686-164-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit a474b3f0428d6b02a538aa10b3c3b722751cb382.
+This reverts commit 7c97381e7a9a5ec359007c0d491a143e3d9f787c.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,28 +53,28 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Sinan Kaya <okaya@kernel.org>
 Cc: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/qcom/hidma_mgmt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/dma/mv_xor.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
-index 806ca02c52d7..fe87b01f7a4e 100644
---- a/drivers/dma/qcom/hidma_mgmt.c
-+++ b/drivers/dma/qcom/hidma_mgmt.c
-@@ -418,8 +418,9 @@ static int __init hidma_mgmt_init(void)
- 		hidma_mgmt_of_populate_channels(child);
- 	}
- #endif
--	return platform_driver_register(&hidma_mgmt_driver);
-+	platform_driver_register(&hidma_mgmt_driver);
+diff --git a/drivers/dma/mv_xor.c b/drivers/dma/mv_xor.c
+index 23b232b57518..78bd52565571 100644
+--- a/drivers/dma/mv_xor.c
++++ b/drivers/dma/mv_xor.c
+@@ -1144,10 +1144,7 @@ mv_xor_channel_add(struct mv_xor_device *xordev,
+ 		 dma_has_cap(DMA_MEMCPY, dma_dev->cap_mask) ? "cpy " : "",
+ 		 dma_has_cap(DMA_INTERRUPT, dma_dev->cap_mask) ? "intr " : "");
  
-+	return 0;
- }
- module_init(hidma_mgmt_init);
- MODULE_LICENSE("GPL v2");
+-	ret = dma_async_device_register(dma_dev);
+-	if (ret)
+-		goto err_free_irq;
+-
++	dma_async_device_register(dma_dev);
+ 	return mv_chan;
+ 
+ err_free_irq:
 -- 
 2.31.1
 
