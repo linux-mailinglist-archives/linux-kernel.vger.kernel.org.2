@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7824A366D66
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7C6366D69
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243131AbhDUN7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S242008AbhDUOA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235159AbhDUN7g (ORCPT
+        with ESMTP id S233259AbhDUOAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:59:36 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DB4C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:59:03 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id m7so37018028ljp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:59:03 -0700 (PDT)
+        Wed, 21 Apr 2021 10:00:25 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907F1C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:59:52 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso16532647otl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:59:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ib9EyqO0WAjoDZ6fdgzjZQ0H5z4tmjUfn5ViYgk5R6k=;
-        b=fwhdPFJJ9tHWWJ38lpptmzBw7yy93iXiaOiuwx6es5qpjWPtijqkL4W5RcXHh4zEHk
-         LttWzHBPpWKUjV92JxNCjvfathqf/stEnmcf9P2+Ot8Fz4nFILNHZpA2FRZSDN5hiDPn
-         8dV8KEsr6J7e9L1JxNfPVLXEQCj2n9HnE5OzJ1VRKM3TXXDqVWqz0IO/bH2EHrQaVCRC
-         dH+6qKg+wzS/59/9ho36IDSKOAJP2sgVJWMd7jUMTbvsMRymJEgWizkgi7i8ODjM6gx4
-         4KhXNe/7ikzKG0EopujBaOApZkoKvr8U11c9TMGm0sou9CD5tlUbNrzibGJ+eFmHssgX
-         Iriw==
+         :cc;
+        bh=ojaZEJIsv8ujX9Ndfl290AF0sng1kMHpf6JRlQJX1FA=;
+        b=DSVCS4qhhj1LeqnBJPJzjthT+qvuny4MBjIpXIjq0nbKa67gSSoe6qV52+B1DdXX8w
+         zS37wHN2hFFxNpwX8KvsAPPcI/luWfI7bIUAICamMqioq+mDkmnOSMIKEQe1RP+GQeh1
+         7bxTZR0/6yOzPd4iRfS1M3wAdlqRlkcRX51PPdeQrsF6VVEa8n6nk03N5iXAcyqyK4lw
+         NNKh4SLMbLLpjFih6HckbDWZ5RkmSs/FkD21qSVoKulFG/pqP3GMukh32kKO715y/Nft
+         re+dxF9tz4cBcZ0lRUe4WRwM8z5E0LHYJjVwE3iN9tj31km0WpIPozm+TAl442b2bNjU
+         b08w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ib9EyqO0WAjoDZ6fdgzjZQ0H5z4tmjUfn5ViYgk5R6k=;
-        b=SJHZ3zoMfDYi6VoArIXj8y+9L4IfHTreABDddKv4bbSl9cCSvL1wayVOMHnPIrovdT
-         4KsBn4DClm8CAndiVBg1zhtlOdH+MX689K2GsJx3XrT3KpJaYklLGYqGxuiGEUYVIs/h
-         bb39sr8z6yIwvRcUilN2bZCqyt162vC1YP8ANrDVIfmfUP1PrH09wE4EoejaqHjBcobV
-         ReIup1g3m5vjJ4H90MXj8YfYDePXljUe2uChZHTJyUWX1kd0mW7Ne/vcTreq0hXyYYAK
-         taccrj8ZmSjJqSiPIvPEfoUA6aWG17CIvuQNXvk/yF8U/aM28lOPOqUhs6kgdvHmrDLu
-         6CGQ==
-X-Gm-Message-State: AOAM530jvPlhTvCzKXNF/6GeFgLVEx8dWCsjQyTsCeMOafpKackzs1rb
-        daA3xUaqtChkIvmDqQ6PbAlu+D+lbw48hJ1ojpw=
-X-Google-Smtp-Source: ABdhPJzqg97MeQOjeuKmpKgeqPk5jSB2yj880kx1uDw1GzS9+dGZBRsnQW7kOxD5TZniJBkJ417W22ixCHEMaXNX8QM=
-X-Received: by 2002:a2e:8987:: with SMTP id c7mr8239550lji.420.1619013541838;
- Wed, 21 Apr 2021 06:59:01 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ojaZEJIsv8ujX9Ndfl290AF0sng1kMHpf6JRlQJX1FA=;
+        b=hI8oqovLbRNF4YUTYTBjSpmrxwqTt0Ls3bXbAVAHtyQoSb8rfjvgKjXp0LCt7n+3rC
+         M82pjVAFLrzmKW+dPEgJU2pwck5MwUGprGOsdcWC7jVbOlKystFPzOrI+OGSXk5HMCvq
+         FRfec+jjw/8bY+dB2aKoyCm5gkfDhAQAOQEyuZHd3J30FBnNy51cFUmcUKqh/q48y4KO
+         F2mAvzT1syfL7hGx0wRDQOVeApuXiumfefGogejbs58qn/JMWkq80p8Qbqhf0SvgNQ2E
+         mbsQuqzMFOUl3YZdUp/30NKeeu9kDke6271l2e99+EMdzJRj+bKx1LRvOp9sugmjUcjO
+         D0hw==
+X-Gm-Message-State: AOAM530Z+Ni/i3/rOAprPzRYPAlfRCKnRi7e69WGG1NBcuODInJJWRAm
+        OKeLcZMMsXEtMdujvQTiqnv9By9NQS7EppPkDbV13A==
+X-Google-Smtp-Source: ABdhPJxAjly8gw/Xl7DUDWkXezmp2Yi+R2D7LDRjv1FOAjGGgSQ6OfjIxyegEOb22bIZRIjJdcZC5Ut2dPKtOFnBx1E=
+X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr18788241otn.233.1619013591799;
+ Wed, 21 Apr 2021 06:59:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <CABXGCsOifMk4+VHi4bnHCL2L_tT+Tm_Rz+KxD3ZQOowx1xms4g@mail.gmail.com>
- <293189a2-3a6b-1e50-7607-33917743b9d8@amd.com> <CABXGCsMMUa=0+GAHxfVdOOFO0Lx=tCa4+ongHN8rF4TAR9nVmg@mail.gmail.com>
- <66f5fdcb-d414-603d-bdb8-70579335b4a2@gmail.com> <CABXGCsP+qjMuPpi7o=mnuvcuRyViYxiT8qEsqS2kHwMSEs835A@mail.gmail.com>
- <fff4926a-8f20-8d31-611b-473e84d89af0@amd.com>
-In-Reply-To: <fff4926a-8f20-8d31-611b-473e84d89af0@amd.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Wed, 21 Apr 2021 18:58:50 +0500
-Message-ID: <CABXGCsN_ZsQpeFOpkdJyn_JtG1imp4+Yrfr2msqQGUwNDoLpmg@mail.gmail.com>
-Subject: Re: [BUG] VAAPI encoder cause kernel panic if encoded video in 4K
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
+References: <20210421135059.3371701-1-arnd@kernel.org>
+In-Reply-To: <20210421135059.3371701-1-arnd@kernel.org>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 21 Apr 2021 15:59:40 +0200
+Message-ID: <CANpmjNM81K-3GhDmzUVdY32kZ_5XOwrT-4zSUDeRHpCs30fa1g@mail.gmail.com>
+Subject: Re: [PATCH] kcsan: fix printk format string
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        David Gow <davidgow@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 at 11:42, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
-> I can try, but I'm not sure if we even have the full page fault handling
-> for Navi in 5.12.
+On Wed, 21 Apr 2021 at 15:51, Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
+> Printing a 'long' variable using the '%d' format string is wrong
+> and causes a warning from gcc:
+>
+> kernel/kcsan/kcsan_test.c: In function 'nthreads_gen_params':
+> include/linux/kern_levels.h:5:25: error: format '%d' expects argument of type 'int', but argument 3 has type 'long int' [-Werror=format=]
+>
+> Use the appropriate format modifier.
+>
+> Fixes: f6a149140321 ("kcsan: Switch to KUNIT_CASE_PARAM for parameterized tests")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-It would be great. For me this patch is working as expected and I
-already for several days didn't see the panic "kernel BUG at
-drivers/dma-buf/dma-resv.c:287!".
-Anyway I will waiting for any news.
+Reviewed-by: Marco Elver <elver@google.com>
 
---=20
-Best Regards,
-Mike Gavrilov.
+Thank you!
+
+Normally KCSAN patches go through -rcu, but perhaps in this instance
+it should be picked up into -tip/locking/core directly, so it goes out
+with "kcsan: Switch to KUNIT_CASE_PARAM for parameterized tests".
+Paul, Ingo, do you have a preference?
+
+Thanks,
+-- Marco
+
+> ---
+>  kernel/kcsan/kcsan_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
+> index 9247009295b5..a29e9b1a30c8 100644
+> --- a/kernel/kcsan/kcsan_test.c
+> +++ b/kernel/kcsan/kcsan_test.c
+> @@ -981,7 +981,7 @@ static const void *nthreads_gen_params(const void *prev, char *desc)
+>                 const long min_required_cpus = 2 + min_unused_cpus;
+>
+>                 if (num_online_cpus() < min_required_cpus) {
+> -                       pr_err_once("Too few online CPUs (%u < %d) for test\n",
+> +                       pr_err_once("Too few online CPUs (%u < %ld) for test\n",
+>                                     num_online_cpus(), min_required_cpus);
+>                         nthreads = 0;
+>                 } else if (nthreads >= num_online_cpus() - min_unused_cpus) {
+> --
+> 2.29.2
