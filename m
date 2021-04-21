@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130483669C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090853669D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238681AbhDULQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 07:16:35 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42908 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235951AbhDULQa (ORCPT
+        id S237593AbhDULS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 07:18:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56276 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237414AbhDULSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 07:16:30 -0400
-Received: from [192.168.86.31] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DC78B20B8001;
-        Wed, 21 Apr 2021 04:15:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC78B20B8001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1619003757;
-        bh=0lGPWgCWxMY7QAIfAJHFkFTAYipH0FMtf/PdmxPyrUw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gudX5C8+viqc/m58ZbDfBIGMK5DF+vGWywf/UQuUq+w1S+fUI8PZmcpVYd9Zhl71G
-         7V5SefAQZ34ieq6v2Vd8FjSDLntWCzHUMWa3sIdlqQpijXqElS6Ied6EMj3YoGLLjf
-         JG9H08F28TC64nZMQQiYrs63e9IN3gNQlH1Xp1o0=
-Subject: Re: [PATCH v2 2/7] hyperv: SVM enlightened TLB flush support flag
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, viremana@linux.microsoft.com
-References: <cover.1618492553.git.viremana@linux.microsoft.com>
- <3fd0cdfb9a4164a3fb90351db4dc10f52a7c4819.1618492553.git.viremana@linux.microsoft.com>
- <20210421100026.4hcgrxeri444if45@liuwe-devbox-debian-v2>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <4a57cd2b-43b5-2625-3663-449ffa715b51@linux.microsoft.com>
-Date:   Wed, 21 Apr 2021 07:15:54 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 21 Apr 2021 07:18:52 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LBEZRO050148;
+        Wed, 21 Apr 2021 07:18:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=jAiMiw2e6+1XZZGZXBMG035KEyr8tjtVKWXIdCM0biQ=;
+ b=YUKvfRbx7B0r3vJ1PH4TaPyxW+vonDkI3EH/cT+Kl96BFtDb0qi5CCzhG2EzoN9q13b4
+ RZQ5EFbbvlKiTLtup2ArpoKVH+HNnFlX2+Y/MNQnm5sU4po2M4cE5z33TC65gfCtI1/I
+ NZgha6NdX5OU9ta49/njYdMqjYM4nXcp5hIIkSneElvN3PTWHRlBhXyzcPlXpyeTOKxQ
+ SF+RwcRnWW+ZXqiOtZLz8uK69ymgWTyhw5RArZo5nyv2A3+B+i8mo5iFt7DvPGcLoTVK
+ m8/Xae0conpE77bb00py3JCuuICLQt7hO4JHJl1gPSsbAGkvHda7sjp9WYJgGGwbYB8i jQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 382jds14pq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 07:18:05 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13LBG88B056012;
+        Wed, 21 Apr 2021 07:18:04 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 382jds14p3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 07:18:04 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13LBH3ZK018782;
+        Wed, 21 Apr 2021 11:18:02 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 37yqa8j91u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 11:18:02 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13LBI0tE24445332
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Apr 2021 11:18:00 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67DC94203F;
+        Wed, 21 Apr 2021 11:18:00 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0988142045;
+        Wed, 21 Apr 2021 11:18:00 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Apr 2021 11:17:59 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: [PATCH v3 0/3] asm-generic/io.h: Silence -Wnull-pointer-arithmetic warning on PCI_IOBASE
+Date:   Wed, 21 Apr 2021 13:17:56 +0200
+Message-Id: <20210421111759.2059976-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210421100026.4hcgrxeri444if45@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EAQBMOlkNhLPmhmROBdDkmWEOEqTImRJ
+X-Proofpoint-ORIG-GUID: M-rChegDgNZIrGrKaOcdNqLCeP0dzNQa
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-21_04:2021-04-21,2021-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 phishscore=0 mlxlogscore=647
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+This is version 3 of my attempt to get rid of a clang -Wnull-pointer-arithmetic
+warning for the use of PCI_IOBASE in asm-generic/io.h. This was originally
+found on s390 but should apply to all platforms leaving PCI_IOBASE undefined
+while making use of the inb() and friends helpers from asm-generic/io.h.
 
-On 4/21/21 6:00 AM, Wei Liu wrote:
-> On Thu, Apr 15, 2021 at 01:43:37PM +0000, Vineeth Pillai wrote:
->>   
->> +/*
->> + * This is specific to AMD and specifies that enlightened TLB flush is
->> + * supported. If guest opts in to this feature, ASID invalidations only
->> + * flushes gva -> hpa mapping entries. To flush the TLB entries derived
->> + * from NPT, hypercalls should be used (HvFlushGuestPhysicalAddressSpace
->> + * or HvFlushGuestPhysicalAddressList).
->> + */
->> +#define HV_X64_NESTED_ENLIGHTENED_TLB			BIT(22)
->> +
-> c
-> This is not yet documented in TLFS, right? I can't find this bit in the
-> latest edition (6.0b).
-This would be documented in the TLFS update which is soon to be
-released.
+This applies cleanly and was compile tested on top of v5.12-rc8 for the
+previously broken ARC and nds32 architectures.
 
->
-> My first thought is the comment says this is AMD specific but the name
-> is rather generic. That looks a bit odd to begin with.
-I thought of of keeping the name generic to avoid renaming Intel
-specific ones also. If I understand correctly, the TLFS would also
-be having generic name for this and just translated the generic
-name here in this header.
+I did boot test this only on x86_64 and s390x the former implements inb()
+itself while the latter would emit a WARN_ONCE() but no drivers using inb().
 
 Thanks,
-Vineeth
+Niklas
+
+Changes since v2:
+- Improved comment for SPARC PCI_IOBASE definition as suggested by David Laight
+- Added a patch for ARC which is missing the asm/bug.h include for WARN_ONCE()
+  (kernel test robot)
+- Added ifdefs to ioport_map() and __pci_ioport_map() since apparently at least
+  test configs enable CONFIG_HAS_IOPORT_MAP even on architectures which leave
+  PCI_IOBASE unset (kernel test robot for nds32 and ARC).
+
+Changes since v1:
+- Added patch to explicitly set PCI_IOBASE to 0 on sparc as suggested by Arnd
+  Bergmann
+- Instead of working around the warning with a uintptr_t PCI_IOBASE make inb()
+  and friends explicitly WARN_ONCE() and return 0xff... (Arnd Bergmann)
+
+Niklas Schnelle (3):
+  sparc: explicitly set PCI_IOBASE to 0
+  ARC: io.h: Include asm/bug.h
+  asm-generic/io.h: Silence -Wnull-pointer-arithmetic warning on
+    PCI_IOBASE
+
+ arch/arc/include/asm/io.h   |  1 +
+ arch/sparc/include/asm/io.h |  8 +++++
+ include/asm-generic/io.h    | 64 ++++++++++++++++++++++++++++++++++---
+ 3 files changed, 69 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
 
