@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFA9366BBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2383366B96
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240971AbhDUNGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:06:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45702 "EHLO mail.kernel.org"
+        id S240441AbhDUNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:03:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240776AbhDUNFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F3B6143C;
-        Wed, 21 Apr 2021 13:04:29 +0000 (UTC)
+        id S240342AbhDUNDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:03:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F0016143B;
+        Wed, 21 Apr 2021 13:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010270;
-        bh=dJhtTlGjgVhYBBb75ZTez9qEgnAZsAL6t71HFuNL1+4=;
+        s=korg; t=1619010169;
+        bh=lM35Y+wMFT/ShIx1jQMdZbxzdMf4JqsEl/YfqCQFEe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7TJIJiGSE+++ulUbAK5MS/vOPCP5qz0iE4REUVEuHuuP7Ic41dicdaeLl4AEmp/4
-         I2gqGwK33Mk85vL8gh2JlEaHKiJ+GYB1PejG/X0X4JH5M15LNlt2C8gZzJnTGlIu1L
-         nPPir3uxs75ndrO82L6mpG+RXjxG7/NqXibsM1bc=
+        b=itzpA+MXjqk108BtacEKDMUWYpRXSyfJRsdyBifAMs2Wi578SYoYXbLhTQV3iv/rx
+         Bldr/VOU4BudyGz+6FsSziBup4QZ/VrYD2ODBSRZFh8ApaxhxIID4hiHlEIHmLVPDg
+         pfAfhag3+dkB0armYhhoWFAmarutnpd7JqB4828A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Qiushi Wu <wu000273@umn.edu>, Borislav Petkov <bp@suse.de>
-Subject: [PATCH 029/190] Revert "EDAC: Fix reference count leaks"
-Date:   Wed, 21 Apr 2021 14:58:24 +0200
-Message-Id: <20210421130105.1226686-30-gregkh@linuxfoundation.org>
+        Qiushi Wu <wu000273@umn.edu>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 030/190] Revert "ASoC: tegra: Fix reference count leaks."
+Date:   Wed, 21 Apr 2021 14:58:25 +0200
+Message-Id: <20210421130105.1226686-31-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -36,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 17ed808ad243192fb923e4e653c1338d3ba06207.
+This reverts commit deca195383a6085be62cb453079e03e04d618d6e.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,40 +55,47 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Qiushi Wu <wu000273@umn.edu>
-Cc: Borislav Petkov <bp@suse.de>
+Cc: Jon Hunter <jonathanh@nvidia.com>
 Cc: https
-Cc: https
+Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/edac/edac_device_sysfs.c | 1 -
- drivers/edac/edac_pci_sysfs.c    | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/tegra/tegra30_ahub.c | 4 +---
+ sound/soc/tegra/tegra30_i2s.c  | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/edac/edac_device_sysfs.c b/drivers/edac/edac_device_sysfs.c
-index 5e7593753799..0e7ea3591b78 100644
---- a/drivers/edac/edac_device_sysfs.c
-+++ b/drivers/edac/edac_device_sysfs.c
-@@ -275,7 +275,6 @@ int edac_device_register_sysfs_main_kobj(struct edac_device_ctl_info *edac_dev)
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 9ef05ca4f6c4..b116b05e4e72 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -657,10 +657,8 @@ static int tegra30_ahub_resume(struct device *dev)
+ 	int ret;
  
- 	/* Error exit stack */
- err_kobj_reg:
--	kobject_put(&edac_dev->kobj);
- 	module_put(edac_dev->owner);
+ 	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0) {
+-		pm_runtime_put(dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 	ret = regcache_sync(ahub->regmap_ahub);
+ 	ret |= regcache_sync(ahub->regmap_apbif);
+ 	pm_runtime_put(dev);
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 6740df541508..3187a0f0c07a 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -567,10 +567,8 @@ static int tegra30_i2s_resume(struct device *dev)
+ 	int ret;
  
- err_out:
-diff --git a/drivers/edac/edac_pci_sysfs.c b/drivers/edac/edac_pci_sysfs.c
-index 53042af7262e..72c9eb9fdffb 100644
---- a/drivers/edac/edac_pci_sysfs.c
-+++ b/drivers/edac/edac_pci_sysfs.c
-@@ -386,7 +386,7 @@ static int edac_pci_main_kobj_setup(void)
+ 	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0) {
+-		pm_runtime_put(dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 	ret = regcache_sync(i2s->regmap);
+ 	pm_runtime_put(dev);
  
- 	/* Error unwind statck */
- kobject_init_and_add_fail:
--	kobject_put(edac_pci_top_main_kobj);
-+	kfree(edac_pci_top_main_kobj);
- 
- kzalloc_fail:
- 	module_put(THIS_MODULE);
 -- 
 2.31.1
 
