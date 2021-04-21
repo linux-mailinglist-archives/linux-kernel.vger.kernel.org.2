@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175BB3673D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777B13673E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245583AbhDUT7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:59:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:40832 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244346AbhDUT66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:58:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16F9F11D4;
-        Wed, 21 Apr 2021 12:58:25 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF0B33F774;
-        Wed, 21 Apr 2021 12:58:23 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] Rework CPU capacity asymmetry detection
-In-Reply-To: <1618578085-29584-1-git-send-email-beata.michalska@arm.com>
-References: <1618578085-29584-1-git-send-email-beata.michalska@arm.com>
-Date:   Wed, 21 Apr 2021 20:58:21 +0100
-Message-ID: <87zgxrtnoi.mognet@arm.com>
+        id S245608AbhDUUA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 16:00:59 -0400
+Received: from www381.your-server.de ([78.46.137.84]:43904 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236019AbhDUUA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 16:00:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=yt70wR24IFvvxPRHHqNJYfo+rlOehQs+hl0UuMrdIUw=; b=UKYaeUrVOsbtJyT4RDME2ixy+y
+        MM8Iblj/3FdDkK/vGZLJ0dr/mPsm1XJlkn3ldDDM9n53Uem+FyoE2jp0LeRj4oTCidXFK8l/Xxnl9
+        /xTWzTbmZnwQxoo0yBfNawbULL9hRmq4hEvPBC4un72CHSRKm9qvCTpSR146VB9wUm0EhF+uu209m
+        EwZ0ipm9hlNSzN8zdc6FOo3IWuC0Gy8GvwEA59bZrkTf6c8douPur6BU9d7ePReVBXP+AnFswRuHb
+        127L9G7agYVKVAGuD3VJAgl+5YHn9oUzvjLNnUOaVKKiD6UvyOd96D4ABubO1WZuQ4t/3Uaxk0Z1P
+        e9eNIdEg==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lZJ1J-000GXC-3t; Wed, 21 Apr 2021 22:00:21 +0200
+Received: from [2001:a61:2a42:9501:9e5c:8eff:fe01:8578]
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lZJ1I-000RA3-Qk; Wed, 21 Apr 2021 22:00:20 +0200
+Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Nathan Royer <nroyer@invensense.com>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
+ <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
+ <f2b7938f-12ea-529b-da5e-83c9c8074e1a@gmail.com>
+ <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
+ <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
+ <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <b5a2ce37-b386-40b3-d9ad-6e77deda74e6@metafoo.de>
+Date:   Wed, 21 Apr 2021 22:00:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26147/Wed Apr 21 13:06:05 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/21 14:01, Beata Michalska wrote:
-> Verified on (mostly):
->     - QEMU (version 4.2.1) with variants of possible asymmetric topologies
->       - machine: virt
->       - modifying the device-tree 'cpus' node for virt machine:
+On 4/21/21 9:41 PM, Andy Shevchenko wrote:
+> On Wed, Apr 21, 2021 at 10:05 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+>> On Wed, Apr 21, 2021 at 1:14 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>>> On Tue, Apr 20, 2021 at 11:26 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>
+>>>> I found a non-kernel example
+>>>> which uses a similar equation [1], but in a different form. The main
+>>>> difference is that the Arduino code interprets a raw temperature value
+>>>> as a signed integer, while upstream assumes it's unsigned.
+>>>>
+>>>> [1]
+>>>> https://github.com/blaisejarrett/Arduino-Lib.MPU3050/blob/master/MPU3050lib.cpp#L111
+>>> Oh that's nice. Room temperature as mentioned is 20 deg C
+>>> I think?
+>>>
+>>> The divide by 280 part seems coherent in all examples.
+>>>
+>>>> Still, even if assume that the raw temperature is a signed s16 value, it
+>>>> gives us ~35C in a result, which should be off by ~10C.
+>> Actually here [1] it says in chapter 3.1 that room temperature is 35°C.
+>>
+>> Range: -30°C .. +85°C
+>> Sensitivity: 280 LSB/°C
+>> Room temperature offset: 35°C = -13200 LSB
+>>
+>> [1]: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
 >
->       qemu-system-aarch64 -kernel $KERNEL_IMG
->           -drive format=qcow2,file=$IMAGE
->           -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
->            loglevel=15 kmemleak=on' -m 2G  --nographic  -cpu cortex-a57
->           -machine virt -smp cores=6 -machine dumpdtb=$CUSTOM_DTB.dtb
+> So, if I'm reading this and the register description right the value
+> is in the range
+> -32768..32767.
+> -13200 defines 35°C
 >
->       $KERNEL_PATH/scripts/dtc/dtc -I dtb -O dts $CUSTOM_DTB.dts >
->       $CUSTOM_DTB.dtb
+> 50000 as mentioned by Dmitry is actually -15536. So, it means that the
+> more negative a value is the higher temperature is shown.
 >
->       (modify the dts)
+> Since it's linearized scale, now we can see that
 >
->       $KERNEL_PATH/scripts/dtc/dtc -I dts -O dtb $CUSTOM_DTB.dts >
->       $CUSTOM_DTB.dtb
+> (13200 -15536)/280 + 35 gives us 26.66.
 >
->       qemu-system-aarch64 -kernel $KERNEL_IMG
->           -drive format=qcow2,file=$IMAGE
->           -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
->            loglevel=15 kmemleak=on' -m 2G  --nographic  -cpu cortex-a57
->           -machine virt -smp cores=6 -machine dtb=$CUSTOM_DTB.dtb
->
+> Does it make sense?
+(13200 + x)/280 + 35 = (23000 + x)/280, which is what is in the driver. 
+So the only bit missing is the cast to s16.
 
-Thanks to your QEMU wizardry, I've also tested this on a few funky
-topologies such as:
 
-  DIE [                     ]
-  MC  [       ][            ]
-       0  1  2  3  4  5  6  7
-       L  L  M  L  L  M  B  B
-
-and
-
-  DIE [                ]
-  MC  [          ][    ]
-       0  1  2  3  4  5
-       L  L  M  M  B  B
-
-+ some hotplug ops, and the resulting SD_ flags all made sense to me.
-
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-
-For patches 1, 3:
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
->
-> Beata Michalska (3):
->   sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL sched_domain flag
->   sched/topology: Rework CPU capacity asymmetry detection
->   sched/doc: Update the CPU capacity asymmetry bits
->
->  Documentation/scheduler/sched-capacity.rst |   6 +-
->  Documentation/scheduler/sched-energy.rst   |   2 +-
->  include/linux/sched/sd_flags.h             |  10 +
->  kernel/sched/topology.c                    | 339 +++++++++++++++++++++++++----
->  4 files changed, 314 insertions(+), 43 deletions(-)
->
-> --
-> 2.7.4
