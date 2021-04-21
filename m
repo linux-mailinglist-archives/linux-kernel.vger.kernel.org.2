@@ -2,150 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0459A366E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5DB366E83
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243687AbhDUOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:52:10 -0400
-Received: from mail-co1nam11on2059.outbound.protection.outlook.com ([40.107.220.59]:57024
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234550AbhDUOwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:52:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ann57bPZoqe0sH/q3qSUG67qBZtgLVrHZuIxkyoMdctnEYsCetA6g/NPmi06Em37gUEgVlfwtbA//MW74MQmCTqojujuQ9GuYGncyM4JNMOGXzz/kS3+vMsI2rOshBQ0eCX0/pkLuLgqKPy1VjfPqUh7htUi2UFqvKVFhmDsBe9+bDaj1AIF5bTrEL6Ve/uv93tvjC5cOGKvJdDcEa3l5j36zBm/DUpfXh+iNjIYodgdrLn4TAijytKzZe4BQxqHSuJD6btLb4AhyerkP4oAjwoSagCYva3uP6sO0UmHftgBQfYs5yQtqTW7b6D4gEaqpehPAuevS7Mng0E+Esl1Cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+11aCm1e3T6/R2EyORgdqBbNjlehDeHsJ14E4eXm1Sw=;
- b=lVTvwt9Iul3ad+79LKekCSL2qgtwym1Dy4hQwQflQ2MG5fD5FGZX46Fn2P4jQRd4A/4D3fuh5LSIJ58U8TONy9+z63uAgSy7uDhZKuhFKwTyhtJHKKmPS8lDW3xsQG68KpfCOZ+giI0RyW4UgtXzqqNQbS56Nq6MfN2E/AGx1GSKpblFI8nPTkBT2XaaL13H/qWjVYCBjoUMHuVsLZDVLsvRQbKHb2SMkeSgL9cTdGW5Sodow5EYKjcWCOUHscSIjF+K3cJplms0fITbyfdkkeJ0Wak/JzCBQU+MGudsIIj6G9MtDDMC5YFrxnl2HAFVLzO1nL6oQfdI2O6eNely6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+11aCm1e3T6/R2EyORgdqBbNjlehDeHsJ14E4eXm1Sw=;
- b=kicKopLknSm5WI2s/fkvGewDFFoN6FhDfUvI+mFtkzXH2nMy4/Z08o2mnQqlNCpbIGi1rtt5pVauK8lDKTCoDxBHHAhjpQFXTMvuT71dkRuznWGAb6+EE5LpFhrZiCGBXeEdtOrJEkAf4ur3JiptFyBV+s45buZmOU/niAfV9Eg=
-Received: from DM6PR11MB3964.namprd11.prod.outlook.com (2603:10b6:5:19c::28)
- by DM5PR1101MB2121.namprd11.prod.outlook.com (2603:10b6:4:50::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Wed, 21 Apr
- 2021 14:51:34 +0000
-Received: from DM6PR11MB3964.namprd11.prod.outlook.com
- ([fe80::3156:d3e2:eb8e:d82d]) by DM6PR11MB3964.namprd11.prod.outlook.com
- ([fe80::3156:d3e2:eb8e:d82d%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 14:51:34 +0000
-From:   "Xue, Ying" <Ying.Xue@windriver.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "tipc-discussion@lists.sourceforge.net" 
-        <tipc-discussion@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
-Thread-Topic: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
-Thread-Index: AQHXEaFxo2BHz0QaeEKXUNd+t+OJ3aq/VSvA
-Date:   Wed, 21 Apr 2021 14:51:33 +0000
-Message-ID: <DM6PR11MB3964D94D53B98CBA9A25892484479@DM6PR11MB3964.namprd11.prod.outlook.com>
-References: <20210305092504.GA140204@embeddedor>
-In-Reply-To: <20210305092504.GA140204@embeddedor>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [147.11.252.42]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 372355a6-f2b8-42df-94d8-08d904d4f546
-x-ms-traffictypediagnostic: DM5PR1101MB2121:
-x-microsoft-antispam-prvs: <DM5PR1101MB21215349813CBAAEF3F0CC5084479@DM5PR1101MB2121.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rPkMIKsPC+8vCcguz/cwxl5FYr9j3tFej6Spk6JJ6LZgjP0ouf4YNzfAyH6j6lwGIAInWv+yul9tNSJHANn9/LMJ0fsJKJn9adPm+b1Gb5tI32ioLVem98wL2YRZegWRvpFn+4Wna4aYXPBtLxZex9ZPPcYVMY90QqOPUsCAglHyuJVIzUA9E44M0cMIFjLa9de9HwMIPhNs1wcDSAb9UrNauWHhH85eKaZodtXSDfCjMXF4cbnlviKWP4cXO+99EIkZVccWBlo1NriLrkKY7Z/FrYlTSe8jK7tywy86Hi+pZfSz2XnARrOUhFpzr6VBaMsQYNQYIO8jbukrK8sseArUXsyocURIBwiAS0Ko/sp4gOUFLLZPNA++cWrhsEahKYtdu2KLGuXJbX+7m5nzdSi5Mu5ITJVDMP+AE+q/QlSSxCp1q51fLrg6gsdBYLF93Mj2IDFZXXVEN6G9aFjxh8PuIXZy4RVja8UOtyBYVZKm0SGE85R9uytW5oeA1cnHKJPMYro8MCfr2UZUTYFKUB6NlgCdiCiM4RlkZBsmWps55Jey5Y5VnSoSSYTrV4ep+2UVOrAoCC5LMvRsmHSNDPeBMYm2drcaGAtepsqvSxhuJ359TUytPvPwRq5eFG1lQa7HbErBzeWXtMHOm9kLvJCIZJJ0SSxT7MbX01KDdU4PmBVw7vfjgksXXEoFYxTz
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3964.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39830400003)(8676002)(64756008)(55016002)(478600001)(5660300002)(186003)(66476007)(2906002)(6506007)(66446008)(54906003)(33656002)(53546011)(316002)(66556008)(83380400001)(26005)(8936002)(66946007)(71200400001)(4326008)(122000001)(9686003)(7696005)(86362001)(966005)(110136005)(76116006)(52536014)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?7rRmJRFFGBgwyeKOoxoKTbZ6oofm5w5M082OPWUyM0jQOo41Ah7C3BvAI6sD?=
- =?us-ascii?Q?MPpegZgX3i5pICQ2gJeGV9YoKX7tJPtFC/Hr/qQGpJ64taUMZesRNgowYdxM?=
- =?us-ascii?Q?e+IopjxkcH+yUH/1RMJP3vMyzOToRmIykooxPc+R8OzdOs0Yy92h10wKF9iC?=
- =?us-ascii?Q?Im9gX/wVHOZle6k9pc2zThddxBazJsjN8x2BNfyJ4EOcylNb369vmaVLXM+S?=
- =?us-ascii?Q?3XlLR1EaAvQuWCgsyQ3z3gPsJFgTCXCvfTOJFbzEyxlqr0+qawQomUrtxdQK?=
- =?us-ascii?Q?3rqwE9Q6E/9vtshDwk8dmdwdYD34GMzL+qZ1ICM0Xk7eoROpef1ZL/vC4QxJ?=
- =?us-ascii?Q?BPizhU5j9tZzML9hGEPqeBIDBKpOYR8cKRTBuogfnjoDtz+Y2Gll1rbC2w5S?=
- =?us-ascii?Q?Qjt8ChCntq0nJJpYQlHU1ti6tnAxZECdsaMliRfLQ4l8GhkW3Fo7NmrfiLSB?=
- =?us-ascii?Q?qVmeRn0f4RzVN85iG1NPHkeuJL6Nh53wdrGKRpe8JMIJuE0KlU1JdoQ+DdKu?=
- =?us-ascii?Q?RwhUBvJ/ZJneG1Lb8DY5KYhbJIHz2yCo3nD6OeXrL85Oon7n4vJfIkqGtlIy?=
- =?us-ascii?Q?xKOczKyKWigSyxweMn2+eovMAlMR/o+NGrap3nxyiStr6ssQL4wVRtnzEDSL?=
- =?us-ascii?Q?14MkwfqQv4d9eRUvYej+T+ZIYcoJWQ15GkYLOL4birCffad3opvCmH+2LBGm?=
- =?us-ascii?Q?AQsHE42LQO0jDwpJe0qyGvQDggm8dcQZz30s2mTmFU15jjT6qbmie3OoxRqw?=
- =?us-ascii?Q?O0qUoCaWaLlJtG1U8WimN2HctZbBL0Zz8DJwcrtwmcKx3Ilg/UD2ccB6leGQ?=
- =?us-ascii?Q?bKNO/+Z5oUcvEI0vb0GxZdMxQ/v5Kt+l01tYTxoDGBszTzbGJK2k94E1n7Fu?=
- =?us-ascii?Q?Z1CigvXqNPn6Yr6fnFasg95GK9jrHwkfYbBSgrcG9NkdcMvE1zOxuMARs4c9?=
- =?us-ascii?Q?5QKJON/K8RGS4TtTYE4KgGR+cjb2lx4mwV1QWiSVDetiP2KhQxu2T238nDS1?=
- =?us-ascii?Q?JaHJ8Ca4zWJ6xZRu9PXmAoG5zWtM/SVSqryScFT7vNYmSjKD5FI9UQx8BH+d?=
- =?us-ascii?Q?X3FHrr2CNY2h+Souxo2J0/i08ZvERqzxHsUeqMRWLd9fqOzsEmj0euV2e5PT?=
- =?us-ascii?Q?x2NsI96X8iyOQH3VOz12kouH89oWAtYDVNCBP9Lz+334CNw2HNCxR7fbF1+q?=
- =?us-ascii?Q?WWjrxewjPqaWB2/G3nBjOm54/PouXyXJqs3MyeHm9bv2wSlOD4TUKBtaF83C?=
- =?us-ascii?Q?QOEYcQKD+F262Apx+G3NPpyrwxAyvf5Yh48Bhvw/L2D6WpLexdHZtTtEutF4?=
- =?us-ascii?Q?dDkcURZlNVhHTTjCNW8OACRF?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S243693AbhDUOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240369AbhDUOwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:52:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8881D613B6;
+        Wed, 21 Apr 2021 14:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619016729;
+        bh=KV+Ho0UxpPWM/DJ7vXp8Ca8eQ9iHjx1m52Pvj4SRTTk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nHvRdsmx9g3QMyv663N5BwhMOXbVYkurwTlbFgvVKKB9UT2X4//bbT0RhohT21j74
+         MVHo3ZXyl+CkWhY7Mv+iQEljzUJmYGD3WHYiksDdPXswTJQ9F1ZlGYOeSU+StZ7Fk4
+         1SyyrulMrr9revyUAR0g/A/P6S6x2Wrjdaj0qoPkIQ2rbHATxsboa6aNNutMXKq3Cu
+         i592eaH5knlXyk+uRET3/amSRoUpLlO2sd2gBKxNRDeDxCTUTQs1f5yvQglmffePo8
+         wgHlMWhRPTwAhMtBQxoL1uINWC/9jI5FF1izA2NnudpoL4pbkRIMbaXgVOHw18wnrc
+         d32ps7+hnPNtQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lZED6-00036M-UM; Wed, 21 Apr 2021 16:52:13 +0200
+Date:   Wed, 21 Apr 2021 16:52:12 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Pho Tran <photranvan0712@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hung.Nguyen@silabs.com,
+        Tung.Pham@silabs.com, Pho Tran <pho.tran@silabs.com>
+Subject: Re: [PATCH v9] USB: serial: cp210x: Add support for GPIOs on CP2108
+Message-ID: <YIA8HD0S6C+x5ZC9@hovoldconsulting.com>
+References: <20210408103607.2077-1-photranvan0712@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3964.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 372355a6-f2b8-42df-94d8-08d904d4f546
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2021 14:51:34.3467
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QwPKEaSC9ZdmLHqGHzkWlovsl0Xq72UDKlpxwdWmAugjPbQoZwWL4rJF/1SUjef1JqwrILBmtuRHdElCEB8HDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2121
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408103607.2077-1-photranvan0712@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch looks good to me.
+On Thu, Apr 08, 2021 at 05:36:07PM +0700, Pho Tran wrote:
+> From: Pho Tran <pho.tran@silabs.com>
+> 
+> Similar to other CP210x devices, GPIO interfaces (gpiochip) should be
+> supported for CP2108.
+ 
+> +/*
+> + * Quad Port Config definitions
+> + * Refer to https://www.silabs.com/documents/public/application-notes/an978-cp210x-usb-to-uart-api-specification.pdf
+> + * for more information.
+> + * CP210X_VENDOR_SPECIFIC, CP210X_GET_PORTCONFIG call reads these 0x49 bytes
+> + * on a CP2108 chip.
+> + * CP2108 Quad Port State structure(used in Quad Port Config structure)
+> + */
+> +struct cp210x_quad_port_state {
+> +	__le16 gpio_mode_PB0;
+> +	__le16 gpio_mode_PB1;
+> +	__le16 gpio_mode_PB2;
+> +	__le16 gpio_mode_PB3;
+> +	__le16 gpio_mode_PB4;
+> +
+> +
+> +	__le16 gpio_lowpower_PB0;
+> +	__le16 gpio_lowpower_PB1;
+> +	__le16 gpio_lowpower_PB2;
+> +	__le16 gpio_lowpower_PB3;
+> +	__le16 gpio_lowpower_PB4;
+> +
+> +	__le16 gpio_latch_PB0;
+> +	__le16 gpio_latch_PB1;
+> +	__le16 gpio_latch_PB2;
+> +	__le16 gpio_latch_PB3;
+> +	__le16 gpio_latch_PB4;
+> +};
+> +
+> +// Cp2108 Quad Port Config structure
+> +struct cp210x_quad_port_config {
+> +	struct cp210x_quad_port_state reset_state;
+> +	struct cp210x_quad_port_state suspend_state;
+> +	u8 ipdelay_IFC[4];
+> +	u8 enhancedfxn_IFC[4];
+> +	u8 enhancedfxn_device;
+> +	u8 extclkfreq[4];
+> +} __packed;
 
------Original Message-----
-From: Gustavo A. R. Silva <gustavoars@kernel.org>=20
-Sent: Friday, March 5, 2021 5:25 PM
-To: Jon Maloy <jmaloy@redhat.com>; Xue, Ying <Ying.Xue@windriver.com>; Davi=
-d S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org; tipc-discussion@lists.sourceforge.net; linux-ke=
-rnel@vger.kernel.org; Gustavo A. R. Silva <gustavoars@kernel.org>; linux-ha=
-rdening@vger.kernel.org
-Subject: [PATCH RESEND][next] tipc: Fix fall-through warnings for Clang
+One more thing; I noticed that the layout of the other port-config
+structures do not match the ones used by your library API, which is what
+the above pdf documents (e.g. they have additional padding).
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning by=
- explicitly adding a break statement instead of letting the code fall throu=
-gh to the next case.
+Did you verify that the above layout is actually correct? And did you
+try changing the pin functions in EEPROM and make sure that your code
+handles it as expected?
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/tipc/link.c | 1 +
- 1 file changed, 1 insertion(+)
+Is there any corresponding document for the actual device protocol?
 
-diff --git a/net/tipc/link.c b/net/tipc/link.c index 115109259430..bcc426e1=
-6725 100644
---- a/net/tipc/link.c
-+++ b/net/tipc/link.c
-@@ -649,6 +649,7 @@ int tipc_link_fsm_evt(struct tipc_link *l, int evt)
- 			break;
- 		case LINK_FAILOVER_BEGIN_EVT:
- 			l->state =3D LINK_FAILINGOVER;
-+			break;
- 		case LINK_FAILURE_EVT:
- 		case LINK_RESET_EVT:
- 		case LINK_ESTABLISH_EVT:
---
-2.27.0
-
+Johan
