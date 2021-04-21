@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4D8367159
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA3C367167
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244740AbhDURaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242135AbhDURam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:30:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF1146145A;
-        Wed, 21 Apr 2021 17:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619026209;
-        bh=Kg+L7L5MnQr8ri1Son24ac2eGLQrFFY6Xdrl0VYSxQI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pbcvQO5igVyhs1GtiLnZkxt231dSqHE6eLSTBn8V/FRIDlUwNZmOaF8lDuGGRi2nc
-         g/x9BAoPkU4C3kuJlhO8BHgpeBva7FqBmqs7crBYljbnHGqomkEZ2owWOJq1rWPNzG
-         JD0kPZtkXqngPUwwjSxwrZY14MfFRefB609m8A1vZJb25mLgtroKsv4cUZ8iCjOTlb
-         cMxPX6DFjJcgXknORd17sFgApZcaQdzN2l4XmYXEEIXZQ7bRG7b1eAOnxPYl9Wfalx
-         ixKwgb/rt3xst7rOycH6VVSI9Z47isYxtMem6yYe3JH2LTMNgTCslhULbgpvO+16ql
-         NbZZ/UrkrGt3w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 879D15C0267; Wed, 21 Apr 2021 10:30:08 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 10:30:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2 0/2] bitmap_parselist: support 'all' semantics
-Message-ID: <20210421173008.GV975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210421031326.72816-1-yury.norov@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421031326.72816-1-yury.norov@gmail.com>
+        id S242827AbhDURfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:35:25 -0400
+Received: from sender11-of-o51.zoho.eu ([31.186.226.237]:21113 "EHLO
+        sender11-of-o51.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239822AbhDURfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:35:24 -0400
+X-Greylist: delayed 907 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Apr 2021 13:35:23 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1619025575; cv=none; 
+        d=zohomail.eu; s=zohoarc; 
+        b=WmXre7ic130ZOYKn+d0nKVKDMIhYzL4dXCULW7ofz24R/FKdC6PdmTZpWJG04hkaGYFT822YkOq2eKN/S+zDe7vZswz2jgyWDPiiNzaO/EPdwtD9jxuN43iOAazDpX4/hIO33rs53rPWEgavBPzK6xEh7tJKsodtk+eLMSeuTOM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+        t=1619025575; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=obrCtbJ+KgZ6tsOyyDAx+m+OwfF0hUYR7eox/my8XBY=; 
+        b=Tu13UAm6jYWn1VVHyzUV8boM2z5SfT5CZMR/RdOCn6yTaXTd0v8MVQOpMNwQy9wvWRYBlMsRLn1Fu6zd2gBLUjG/UDkSSIqnIMFbcWNJjSlbVAsYi7/ogFaRbyELGDgJHxwugCxmncA3a5bdXOPgUtNGeUn6uxb/fvjAa4QLu8E=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+        spf=pass  smtp.mailfrom=philipp@uvos.xyz;
+        dmarc=pass header.from=<philipp@uvos.xyz> header.from=<philipp@uvos.xyz>
+Received: from UVOSLinux (ip-95-222-215-74.hsi15.unitymediagroup.de [95.222.215.74]) by mx.zoho.eu
+        with SMTPS id 1619025573833283.36820387667444; Wed, 21 Apr 2021 19:19:33 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 19:19:33 +0200
+From:   Carl Philipp Klemm <philipp@uvos.xyz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     zhuguangqing83@gmail.com, Sebastian Reichel <sre@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] power: supply: cpcap-battery: fix invalid usage of
+ list cursor
+Message-Id: <20210421191933.6fa083e0b2496aedaef4957a@uvos.xyz>
+In-Reply-To: <YIBNDrHlwqn5hrl2@atomide.com>
+References: <20210421143650.16045-1-zhuguangqing83@gmail.com>
+        <YIBNDrHlwqn5hrl2@atomide.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 08:13:24PM -0700, Yury Norov wrote:
-> RCU code supports a special group 'all' which selects all bits in a bitmap.
-> We have recently added 'N' extension for bitmap parse, so that '0-N' would
-> have exactly the same meaning as 'all'. But because the 'all' is already
-> used by RCU, it would be reasonable to support it in core bitmap code as a
-> common and easy-readable alias for '0-N'.
+Looks good to me, but dosent appear to solve the bootup bug.
+
+(this time reply all)
+
+Reviewed-by: Carl Philipp Klemm <philipp@uvos.xyz>
+Tested-by: Carl Philipp Klemm <philipp@uvos.xyz>
+
+-- 
+Carl Philipp Klemm <philipp@uvos.xyz> <carl@uvos.xyz>
+
+On Wed, 21 Apr 2021 19:04:30 +0300
+Tony Lindgren <tony@atomide.com> wrote:
+
+> Hi,
 > 
-> Moving the 'all' support to core bitmap code adds another level of
-> flexibility for system configuration by supporting patterns. For example,
-> every second bit in cpumask may be selected like this:
-> 	isolcpus=all:1/2
+> * zhuguangqing83@gmail.com <zhuguangqing83@gmail.com> [210421 14:38]:
+> > From: Guangqing Zhu <zhuguangqing83@gmail.com>
+> > 
+> > Fix invalid usage of a list_for_each_entry in cpcap_battery_irq_thread().
+> > Empty list or fully traversed list points to list head, which is not
+> > NULL (and before the first element containing real data).
+> > 
+> > Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+> > ---
+> > v2:
+> >   - Modify commit message and code as suggested by Sebastian.
 > 
-> v2:
->  - cleanup patch 1;
->  - in patch 2 explain why dropping legacy comment.
-
-Nice!
-
-I have pulled this into -rcu with some minor updates, including replacing
-the "isolcpus=all" with "rcu_nocbs=all:1/2" per Steve Rostedt's feedback.
-
-Could you please check to make sure that I didn't mess anything up?
-
-If tests go well, this will go into -next later today or tomorrow.
-Although I cannot prove that this will not make the upcoming merge window,
-but Murphy insists that it will instead be the v5.14 merge window.
-
-							Thanx, Paul
-
-> Yury Norov (2):
->   bitmap_parse: support 'all' semantics
->   rcu/tree_plugin: don't handle the case of 'all' CPU range
+> Thanks looks OK to me. Looks like there's no flag we need to set there when
+> the entry is found, so this should do for the check.
 > 
->  Documentation/admin-guide/kernel-parameters.rst | 5 +++++
->  kernel/rcu/tree_plugin.h                        | 9 +++------
->  lib/bitmap.c                                    | 9 +++++++++
->  lib/test_bitmap.c                               | 7 +++++++
->  4 files changed, 24 insertions(+), 6 deletions(-)
+> Hmm I wonder if this just might fix the issue where booting with a USB
+> charger connected can hang..
 > 
-> -- 
-> 2.25.1
+> Reviewed-by: Tony Lindgren <tony@atomide.com>
 > 
+> > ---
+> >  drivers/power/supply/cpcap-battery.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
+> > index 6d5bcdb9f45d..a3fc0084cda0 100644
+> > --- a/drivers/power/supply/cpcap-battery.c
+> > +++ b/drivers/power/supply/cpcap-battery.c
+> > @@ -786,7 +786,7 @@ static irqreturn_t cpcap_battery_irq_thread(int irq, void *data)
+> >  			break;
+> >  	}
+> >  
+> > -	if (!d)
+> > +	if (list_entry_is_head(d, &ddata->irq_list, node))
+> >  		return IRQ_NONE;
+> >  
+> >  	latest = cpcap_battery_latest(ddata);
+> > -- 
+> > 2.17.1
+> > 
