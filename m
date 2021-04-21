@@ -2,143 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92461366656
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827EC366659
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237061AbhDUHmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:42:15 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3405 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbhDUHmN (ORCPT
+        id S237117AbhDUHmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:42:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235209AbhDUHmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:42:13 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FQC8k4991z5sHp;
-        Wed, 21 Apr 2021 15:38:30 +0800 (CST)
-Received: from dggpeml100022.china.huawei.com (7.185.36.176) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 21 Apr 2021 15:41:16 +0800
-Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
- dggpeml100022.china.huawei.com (7.185.36.176) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 21 Apr 2021 15:41:15 +0800
-Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
- lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.2176.012;
- Wed, 21 Apr 2021 08:41:13 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-CC:     "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: RE: [Intel-wired-lan] [PATCH V2 net] ice: Re-organizes reqstd/avail
- {R, T}XQ check/code for efficiency+readability
-Thread-Topic: [Intel-wired-lan] [PATCH V2 net] ice: Re-organizes reqstd/avail
- {R, T}XQ check/code for efficiency+readability
-Thread-Index: AQHXNnA44ik22M7HZEWiZd3JF/ZDoKq+hESg
-Date:   Wed, 21 Apr 2021 07:41:13 +0000
-Message-ID: <418702bdb5244eb4811a2a1a536c55c0@huawei.com>
-References: <20210413224446.16612-1-salil.mehta@huawei.com>
- <7974e665-73bd-401c-f023-9da568e1dffc@molgen.mpg.de>
-In-Reply-To: <7974e665-73bd-401c-f023-9da568e1dffc@molgen.mpg.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.66.69]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 21 Apr 2021 03:42:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618990909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2yN6XcKhbSauKK4BfJl008OKCv6/B7lbDp7G8UqJ3nU=;
+        b=iq1bx22DiZR6iSSBq6LpediJbIB//2UjN6PJyst70dNlfQBT4sFqpw+UpyawP4lvy3Gj/V
+        KqKxaU0X4YzAAz8N5MCL4PXMghCK/OymYLBwEwc367Z0aBxp460xISUB8Q7bCRyYwhLzgu
+        /8Fk11BrxzvH8P6/DztK7BDyLnyafm0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-XujTHFoeOWm6cWS6FymcKA-1; Wed, 21 Apr 2021 03:41:45 -0400
+X-MC-Unique: XujTHFoeOWm6cWS6FymcKA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64A691B2C980;
+        Wed, 21 Apr 2021 07:41:44 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-189.pek2.redhat.com [10.72.13.189])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE94A60C5F;
+        Wed, 21 Apr 2021 07:41:38 +0000 (UTC)
+Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
+From:   Jason Wang <jasowang@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, parav@nvidia.com, elic@nvidia.com,
+        "Zhu, Lingshan" <lingshan.zhu@intel.com>
+References: <20210408082648.20145-1-jasowang@redhat.com>
+ <20210408115834-mutt-send-email-mst@kernel.org>
+ <a6a4ab68-c958-7266-c67c-142960222b67@redhat.com>
+ <20210409115343-mutt-send-email-mst@kernel.org>
+ <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
+ <20210412050730-mutt-send-email-mst@kernel.org>
+ <01918e14-7f7a-abf2-5864-292a32f0233c@redhat.com>
+Message-ID: <d5632a4d-4d0b-b08d-06f9-c56f16734607@redhat.com>
+Date:   Wed, 21 Apr 2021 15:41:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <01918e14-7f7a-abf2-5864-292a32f0233c@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBQYXVsIE1lbnplbCBbbWFpbHRvOnBtZW56ZWxAbW9sZ2VuLm1wZy5kZV0NCj4gU2Vu
-dDogV2VkbmVzZGF5LCBBcHJpbCAyMSwgMjAyMSA2OjM2IEFNDQo+IFRvOiBTYWxpbCBNZWh0YSA8
-c2FsaWwubWVodGFAaHVhd2VpLmNvbT4NCj4gQ2M6IGxpbnV4YXJtQG9wZW5ldWxlci5vcmc7IG5l
-dGRldkB2Z2VyLmtlcm5lbC5vcmc7IExpbnV4YXJtDQo+IDxsaW51eGFybUBodWF3ZWkuY29tPjsg
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgSmVmZiBLaXJzaGVyDQo+IDxqZWZmcmV5LnQu
-a2lyc2hlckBpbnRlbC5jb20+OyBpbnRlbC13aXJlZC1sYW5AbGlzdHMub3N1b3NsLm9yZzsgRGF2
-aWQgUy4NCj4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1
-YmFAa2VybmVsLm9yZz4NCj4gU3ViamVjdDogUmU6IFtJbnRlbC13aXJlZC1sYW5dIFtQQVRDSCBW
-MiBuZXRdIGljZTogUmUtb3JnYW5pemVzIHJlcXN0ZC9hdmFpbA0KPiB7UiwgVH1YUSBjaGVjay9j
-b2RlIGZvciBlZmZpY2llbmN5K3JlYWRhYmlsaXR5DQo+IA0KPiBEZWFyIFNhbGlsLA0KPiANCj4g
-DQo+IFRoYW5rIHlvdSB2ZXJ5IG11Y2ggZm9yIHlvdXIgcGF0Y2guDQoNClRoYW5rcyBmb3IgdGhl
-IHJldmlldy4NCg0KPiBJbiB0aGUgZ2l0IGNvbW1pdCBtZXNzYWdlIHN1bW1hcnksIGNvdWxkIHlv
-dSBwbGVhc2UgdXNlIGltcGVyYXRpdmUgbW9vZCBbMV0/DQoNCk5vIGlzc3Vlcy4gVGhlcmUgaXMg
-YWx3YXlzIGEgc2NvcGUgb2YgaW1wcm92ZW1lbnQuDQoNCg0KPiA+IFJlLW9yZ2FuaXplIHJlcXN0
-ZC9hdmFpbCB7UiwgVH1YUSBjaGVjay9jb2RlIGZvciBlZmZpY2llbmN5K3JlYWRhYmlsaXR5DQo+
-IA0KPiBJdOKAmXMgYSBiaXQgbG9uZyB0aG91Z2guIE1heWJlOg0KPiANCj4gQXZvaWQgdW5uZWNl
-c3NhcnkgYXNzaWdubWVudCB3aXRoIHVzZXIgc3BlY2lmaWVkIHtSLFR9WFFzDQoNClVtbS4uYWJv
-dmUgY29udmV5cyB0aGUgd3JvbmcgbWVhbmluZyBhcyB0aGlzIGlzIG5vdCB3aGF0IHBhdGNoIGlz
-IGRvaW5nLiANCg0KSWYgeW91IHNlZSB0aGUgY29kZSwgaW4gdGhlIHByZXNlbmNlIG9mIHRoZSB1
-c2VyIHNwZWNpZmllZCB7UixUfVhRcyBpdA0KYXZvaWRzIGZldGNoaW5nIGF2YWlsYWJsZSB7UixU
-fVhRIGNvdW50LiANCg0KV2hhdCBhYm91dCBiZWxvdz8NCg0KIkF2b2lkIHVubmVjZXNzYXJ5IGF2
-YWlsX3tyLHR9eHEgYXNzaWdubWVudHMgaWYgdXNlciBoYXMgc3BlY2lmaWVkIFFzIg0KDQoNCj4g
-QW0gMTQuMDQuMjEgdW0gMDA6NDQgc2NocmllYiBTYWxpbCBNZWh0YToNCj4gPiBJZiB1c2VyIGhh
-cyBleHBsaWNpdGx5IHJlcXVlc3RlZCB0aGUgbnVtYmVyIG9mIHtSLFR9WFFzLCB0aGVuIGl0IGlz
-DQo+ID4gdW5uZWNlc3NhcnkgdG8gZ2V0IHRoZSBjb3VudCBvZiBhbHJlYWR5IGF2YWlsYWJsZSB7
-UixUfVhRcyBmcm9tIHRoZQ0KPiA+IFBGIGF2YWlsX3tyLHR9eHFzIGJpdG1hcC4gVGhpcyB2YWx1
-ZSB3aWxsIGdldCBvdmVycmlkZGVuIGJ5IHVzZXIgc3BlY2lmaWVkDQo+ID4gdmFsdWUgaW4gYW55
-IGNhc2UuDQo+ID4NCj4gPiBUaGlzIHBhdGNoIGRvZXMgbWlub3IgcmUtb3JnYW5pemF0aW9uIG9m
-IHRoZSBjb2RlIGZvciBpbXByb3ZpbmcgdGhlIGZsb3cNCj4gPiBhbmQgcmVhZGFiaWx0aXkuIFRo
-aXMgc2NvcGUgb2YgaW1wcm92ZW1lbnQgd2FzIGZvdW5kIGR1cmluZyB0aGUgcmV2aWV3IG9mDQo+
-IA0KPiByZWFkYWJpbCppdCp5DQoNCg0KVGhhbmtzLiBNaXNzZWQgdGhhdCBlYXJsaWVyLiBNeSBz
-aGFreSBmaW5nZXJzIDooDQoNCiANCj4gPiB0aGUgSUNFIGRyaXZlciBjb2RlLg0KPiA+DQo+ID4g
-RllJLCBJIGNvdWxkIG5vdCB0ZXN0IHRoaXMgY2hhbmdlIGR1ZSB0byB1bmF2YWlsYWJpbGl0eSBv
-ZiB0aGUgaGFyZHdhcmUuDQo+ID4gSXQgd291bGQgYmUgaGVscGZ1bCBpZiBzb21lYm9keSBjYW4g
-dGVzdCB0aGlzIHBhdGNoIGFuZCBwcm92aWRlIFRlc3RlZC1ieQ0KPiA+IFRhZy4gTWFueSB0aGFu
-a3MhDQo+IA0KPiBUaGlzIHNob3VsZCBnbyBvdXRzaWRlIHRoZSBjb21taXQgbWVzc2FnZSAoYmVs
-b3cgdGhlIC0tLSBmb3IgZXhhbXBsZSkuDQoNCkFncmVlZC4NCg0KPiA+IEZpeGVzOiA4NzMyNGU3
-NDdmZGUgKCJpY2U6IEltcGxlbWVudCBldGh0b29sIG9wcyBmb3IgY2hhbm5lbHMiKQ0KPiANCj4g
-RGlkIHlvdSBjaGVjayB0aGUgYmVoYXZpb3IgYmVmb3JlIGlzIGFjdHVhbGx5IGEgYnVnPyBPciBp
-cyBpdCBqdXN0IGZvcg0KPiB0aGUgZGV0ZWN0aW9uIGhldXJpc3RpYyBmb3IgY29tbWl0cyB0byBi
-ZSBhcHBsaWVkIHRvIHRoZSBzdGFibGUgc2VyaWVzPw0KDQpSaWdodCwgbGF0ZXIgd2FzIHRoZSBp
-ZGVhLiANCg0KIA0KPiA+IENjOiBpbnRlbC13aXJlZC1sYW5AbGlzdHMub3N1b3NsLm9yZw0KPiA+
-IENjOiBKZWZmIEtpcnNoZXIgPGplZmZyZXkudC5raXJzaGVyQGludGVsLmNvbT4NCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBTYWxpbCBNZWh0YSA8c2FsaWwubWVodGFAaHVhd2VpLmNvbT4NCj4gPiAtLQ0K
-PiA+IENoYW5nZSBWMS0+VjINCj4gPiAgICgqKSBGaXhlZCB0aGUgY29tbWVudHMgZnJvbSBBbnRo
-b255IE5ndXllbihJbnRlbCkNCj4gPiAgICAgICBMaW5rOiBodHRwczovL2xrbWwub3JnL2xrbWwv
-MjAyMS80LzEyLzE5OTcNCj4gPiAtLS0NCj4gPiAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVs
-L2ljZS9pY2VfbGliLmMgfCAxNCArKysrKysrKy0tLS0tLQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQs
-IDggaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNlX2xpYi5jDQo+IGIvZHJpdmVycy9uZXQv
-ZXRoZXJuZXQvaW50ZWwvaWNlL2ljZV9saWIuYw0KPiA+IGluZGV4IGQxM2M3ZmM4ZmIwYS4uZDc3
-MTMzZDZiYWE3IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lj
-ZS9pY2VfbGliLmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNl
-X2xpYi5jDQo+ID4gQEAgLTE2MSwxMiArMTYxLDEzIEBAIHN0YXRpYyB2b2lkIGljZV92c2lfc2V0
-X251bV9xcyhzdHJ1Y3QgaWNlX3ZzaSAqdnNpLCB1MTYNCj4gdmZfaWQpDQo+ID4NCj4gPiAgIAlz
-d2l0Y2ggKHZzaS0+dHlwZSkgew0KPiA+ICAgCWNhc2UgSUNFX1ZTSV9QRjoNCj4gPiAtCQl2c2kt
-PmFsbG9jX3R4cSA9IG1pbjMocGYtPm51bV9sYW5fbXNpeCwNCj4gPiAtCQkJCSAgICAgIGljZV9n
-ZXRfYXZhaWxfdHhxX2NvdW50KHBmKSwNCj4gPiAtCQkJCSAgICAgICh1MTYpbnVtX29ubGluZV9j
-cHVzKCkpOw0KPiA+ICAgCQlpZiAodnNpLT5yZXFfdHhxKSB7DQo+ID4gICAJCQl2c2ktPmFsbG9j
-X3R4cSA9IHZzaS0+cmVxX3R4cTsNCj4gPiAgIAkJCXZzaS0+bnVtX3R4cSA9IHZzaS0+cmVxX3R4
-cTsNCj4gPiArCQl9IGVsc2Ugew0KPiA+ICsJCQl2c2ktPmFsbG9jX3R4cSA9IG1pbjMocGYtPm51
-bV9sYW5fbXNpeCwNCj4gPiArCQkJCQkgICAgICBpY2VfZ2V0X2F2YWlsX3R4cV9jb3VudChwZiks
-DQo+ID4gKwkJCQkJICAgICAgKHUxNiludW1fb25saW5lX2NwdXMoKSk7DQo+ID4gICAJCX0NCj4g
-DQo+IEkgYW0gY3VyaW91cywgZGlkIHlvdSBjaGVjayB0aGUgY29tcGlsZXIgYWN0dWFsbHkgY3Jl
-YXRlcyBkaWZmZXJlbnQNCj4gY29kZSwgb3IgZGlkIGl0IG5vdGljZSB0aGUgaW5lZmZpY2llbmN5
-IGJ5IGl0c2VsZiBhbmQgb3B0aW1pemVkIGl0IGFscmVhZHk/DQoNCkkgaGF2ZSBub3QgbG9va2Vk
-IGludG8gdGhhdCBkZXRhaWwgYnV0IGlycmVzcGVjdGl2ZSBvZiB3aGF0IGNvbXBpbGVyIGdlbmVy
-YXRlcw0KSSB3b3VsZCBsaWtlIHRvIGtlZXAgdGhlIGNvZGUgaW4gYSBzaGFwZSB3aGljaCBpcyBt
-b3JlIGVmZmljaWVudCBhbmQgbW9yZSByZWFkYWJsZS4NCg0KSSBkbyB1bmRlcnN0YW5kIGluIGNl
-cnRhaW4gY2FzZXMgd2UgaGF2ZSB0byBkbyB0cmFkZW9mZiBiZXR3ZWVuIGVmZmljaWVuY3kNCmFu
-ZCByZWFkYWJpbGl0eSBidXQgSSBkbyBub3Qgc2VlIHRoYXQgaGVyZS4NCg0KDQo+ID4gICAJCXBm
-LT5udW1fbGFuX3R4ID0gdnNpLT5hbGxvY190eHE7DQo+ID4gQEAgLTE3NSwxMiArMTc2LDEzIEBA
-IHN0YXRpYyB2b2lkIGljZV92c2lfc2V0X251bV9xcyhzdHJ1Y3QgaWNlX3ZzaSAqdnNpLCB1MTYN
-Cj4gdmZfaWQpDQo+ID4gICAJCWlmICghdGVzdF9iaXQoSUNFX0ZMQUdfUlNTX0VOQSwgcGYtPmZs
-YWdzKSkgew0KPiA+ICAgCQkJdnNpLT5hbGxvY19yeHEgPSAxOw0KPiA+ICAgCQl9IGVsc2Ugew0K
-PiA+IC0JCQl2c2ktPmFsbG9jX3J4cSA9IG1pbjMocGYtPm51bV9sYW5fbXNpeCwNCj4gPiAtCQkJ
-CQkgICAgICBpY2VfZ2V0X2F2YWlsX3J4cV9jb3VudChwZiksDQo+ID4gLQkJCQkJICAgICAgKHUx
-NiludW1fb25saW5lX2NwdXMoKSk7DQo+ID4gICAJCQlpZiAodnNpLT5yZXFfcnhxKSB7DQo+ID4g
-ICAJCQkJdnNpLT5hbGxvY19yeHEgPSB2c2ktPnJlcV9yeHE7DQo+ID4gICAJCQkJdnNpLT5udW1f
-cnhxID0gdnNpLT5yZXFfcnhxOw0KPiA+ICsJCQl9IGVsc2Ugew0KPiA+ICsJCQkJdnNpLT5hbGxv
-Y19yeHEgPSBtaW4zKHBmLT5udW1fbGFuX21zaXgsDQo+ID4gKwkJCQkJCSAgICAgIGljZV9nZXRf
-YXZhaWxfcnhxX2NvdW50KHBmKSwNCj4gPiArCQkJCQkJICAgICAgKHUxNiludW1fb25saW5lX2Nw
-dXMoKSk7DQo+ID4gICAJCQl9DQo+ID4gICAJCX0NCj4gPg0KPiANCj4gDQo+IEtpbmQgcmVnYXJk
-cywNCj4gDQo+IFBhdWwNCg==
+
+在 2021/4/12 下午5:23, Jason Wang 写道:
+>
+> 在 2021/4/12 下午5:09, Michael S. Tsirkin 写道:
+>> On Mon, Apr 12, 2021 at 02:35:07PM +0800, Jason Wang wrote:
+>>> 在 2021/4/10 上午12:04, Michael S. Tsirkin 写道:
+>>>> On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
+>>>>> 在 2021/4/8 下午11:59, Michael S. Tsirkin 写道:
+>>>>>> On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
+>>>>>>> This patch mandates 1.0 for vDPA devices. The goal is to have the
+>>>>>>> semantic of normative statement in the virtio spec and eliminate 
+>>>>>>> the
+>>>>>>> burden of transitional device for both vDPA bus and vDPA parent.
+>>>>>>>
+>>>>>>> uAPI seems fine since all the vDPA parent mandates
+>>>>>>> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+>>>>>>>
+>>>>>>> For legacy guests, it can still work since Qemu will mediate when
+>>>>>>> necessary (e.g doing the endian conversion).
+>>>>>>>
+>>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>>>>> Hmm. If we do this, don't we still have a problem with
+>>>>>> legacy drivers which don't ack 1.0?
+>>>>> Yes, but it's not something that is introduced in this commit. The 
+>>>>> legacy
+>>>>> driver never work ...
+>>>> My point is this neither fixes or prevents this.
+>>>>
+>>>> So my suggestion is to finally add ioctls along the lines
+>>>> of PROTOCOL_FEATURES of vhost-user.
+>>>>
+>>>> Then that one can have bits for legacy le, legacy be and modern.
+>>>>
+>>>> BTW I looked at vhost-user and it does not look like that
+>>>> has a solution for this problem either, right?
+>>>
+>>> Right.
+>>>
+>>>
+>>>>
+>>>>>> Note 1.0 affects ring endianness which is not mediated in QEMU
+>>>>>> so QEMU can't pretend to device guest is 1.0.
+>>>>> Right, I plan to send patches to do mediation in the Qemu to 
+>>>>> unbreak legacy
+>>>>> drivers.
+>>>>>
+>>>>> Thanks
+>>>> I frankly think we'll need PROTOCOL_FEATURES anyway, it's too 
+>>>> useful ...
+>>>> so why not teach drivers about it and be done with it? You can't 
+>>>> emulate
+>>>> legacy on modern in a cross endian situation because of vring
+>>>> endian-ness ...
+>>>
+>>> So the problem still. This can only work when the hardware can support
+>>> legacy vring endian-ness.
+>>>
+>>> Consider:
+>>>
+>>> 1) the leagcy driver support is non-normative in the spec
+>>> 2) support a transitional device in the kenrel may requires the 
+>>> hardware
+>>> support and a burden of kernel codes
+>>>
+>>> I'd rather simply drop the legacy driver support
+>>
+>> My point is this patch does not drop legacy support. It merely mandates
+>> modern support.
+>
+>
+> I am not sure I get here. This patch fails the set_feature if 
+> VERSION_1 is not negotiated. This means:
+>
+> 1) vDPA presents a modern device instead of transitonal device
+> 2) legacy driver can't be probed
+>
+> What I'm missing?
+
+
+Hi Michael:
+
+Do you agree to find the way to present modern device? We need a 
+conclusion to make the netlink API work to move forward.
+
+Thanks
+
+
+>
+>
+>>
+>>> to have a simple and easy
+>>> abstarction in the kenrel. For legacy driver in the guest, 
+>>> hypervisor is in
+>>> charge of the mediation:
+>>>
+>>> 1) config space access endian conversion
+>>> 2) using shadow virtqueue to change the endian in the vring
+>>>
+>>> Thanks
+>> I'd like to avoid shadow virtqueue hacks if at all possible.
+>> Last I checked performance wasn't much better than just emulating
+>> virtio in software.
+>
+>
+> I think the legacy driver support is just a nice to have. Or do you 
+> see any value to that? I guess for mellanox and intel, only modern 
+> device is supported in the hardware.
+>
+> Thanks
+>
+>
+>>
+>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>> ---
+>>>>>>>     include/linux/vdpa.h | 6 ++++++
+>>>>>>>     1 file changed, 6 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+>>>>>>> index 0fefeb976877..cfde4ec999b4 100644
+>>>>>>> --- a/include/linux/vdpa.h
+>>>>>>> +++ b/include/linux/vdpa.h
+>>>>>>> @@ -6,6 +6,7 @@
+>>>>>>>     #include <linux/device.h>
+>>>>>>>     #include <linux/interrupt.h>
+>>>>>>>     #include <linux/vhost_iotlb.h>
+>>>>>>> +#include <uapi/linux/virtio_config.h>
+>>>>>>>     /**
+>>>>>>>      * vDPA callback definition.
+>>>>>>> @@ -317,6 +318,11 @@ static inline int vdpa_set_features(struct 
+>>>>>>> vdpa_device *vdev, u64 features)
+>>>>>>>     {
+>>>>>>>             const struct vdpa_config_ops *ops = vdev->config;
+>>>>>>> +        /* Mandating 1.0 to have semantics of normative 
+>>>>>>> statements in
+>>>>>>> +         * the spec. */
+>>>>>>> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
+>>>>>>> +        return -EINVAL;
+>>>>>>> +
+>>>>>>>         vdev->features_valid = true;
+>>>>>>>             return ops->set_features(vdev, features);
+>>>>>>>     }
+>>>>>>> -- 
+>>>>>>> 2.25.1
+>
+
