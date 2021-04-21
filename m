@@ -2,119 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9833667AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE58366781
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237703AbhDUJMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:12:00 -0400
-Received: from relay2.uni-heidelberg.de ([129.206.119.212]:1936 "EHLO
-        relay2.uni-heidelberg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbhDUJL7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:11:59 -0400
-X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Apr 2021 05:11:58 EDT
-X-IPAS-Result: =?us-ascii?q?A2BiAABF6n9g/1BqzoFaGgEBAQEBAQEBAQEDAQEBARIBA?=
- =?us-ascii?q?QEBAgIBAQEBQIFSgw1ra4N9RpF2lTmFSoFzAQEBAQEBAQEBCTEBAgQBAYRQg?=
- =?us-ascii?q?XcCJTgTAgMBAQEDAgMBAQEBAQYBAQEBAQYEgQSFXYZuBFI1AiYCFigiEoV5q?=
- =?us-ascii?q?Fh/M4EBiE6BCyOBECoBiV+BT4JNgieBE4Ngg38JHDuCei4IgisEgkAHWTa+C?=
- =?us-ascii?q?gegEAINJZQzkFEBLZIcgleeLYU9NYE2gXwzPoM4UBkOjlaOGEIvOAIGCgEBA?=
- =?us-ascii?q?wlZAQGMNAEB?=
-IronPort-HdrOrdr: A9a23:GfVDTaqnIoTMbCle/zNhRZAaV5t1L9V00zAX/kB9WHVpW+afkN
- 2jm+le6A/shF8qKQgdsP2jGI3Fe3PT8pZp/ZIcVI3JYCDKsHalRbsSiLfK7CbnH0TFh4xg/I
- dmN5NzEdjhSWV95PyKgzWQN/YF7J25/LuzheHYpk0NcShPZ7t75wl0Tia3e3cGIDVuPpYyGJ
- qC6scvnVPJEkg/Vci1CmIIWOLOvbTw9K7OWwIMBBIs9WC1/FSVwYP9eiLouCs2YndgxfMH/X
- LemwL0op+/u+y2oyWx60bjq7pRntXlxp9vJuypzvIUJDLllxqyaO1aNoGqjXQapueg7Vpvqt
- 3QulMbOdhp4X+5RA6IiCqo4AXr3DYw53KK8zGlvUc=
-X-IronPort-Anti-Spam-Filtered: true
-Received: from lemon.iwr.uni-heidelberg.de ([129.206.106.80])
-  by relay2.uni-heidelberg.de with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Apr 2021 11:03:55 +0200
-Received: from hlauer by lemon.iwr.uni-heidelberg.de with local (Exim 4.92)
-        (envelope-from <hlauer@lemon.iwr.uni-heidelberg.de>)
-        id 1lZ8m2-0005Hc-I3; Wed, 21 Apr 2021 11:03:54 +0200
-Date:   Wed, 21 Apr 2021 11:03:54 +0200
-From:   Hermann.Lauer@uni-heidelberg.de
-To:     sre@kernel.org, wens@csie.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] axp209 PMIC: setting constant_charge_current to 0
- disables battery charging
-Message-ID: <20210421090354.GF19953@lemon.iwr.uni-heidelberg.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S237562AbhDUJG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:06:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232140AbhDUJG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:06:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98C0460BBB;
+        Wed, 21 Apr 2021 09:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618995956;
+        bh=1rD31JwPHch2tFBsYzB01NfYY1/f2nxyVqYPhVqfr38=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Cka7YmHhBYg2CS342tjfOGEizj4JvEKputokhkK0jsTVIdjmUO1BXJkelOB8wBr7g
+         MON3ZIDYj1zAs8Lklty073S1MS9y089ArRr1/VAfXUl3veYVVvcdIXwHZHNj/un7JW
+         vu5EDGtnl1yFI1yh086f9QHDXjSshYidB0YpWxnruTVyDvvaTck1lhzW1zZmpoYi4b
+         XuH/eGFk/IUkSvQXiRJhREiOjXm+CJVn8e3ZfIy/AYXebIRXAUSSOZuMtcDkNVRm1S
+         nZDFXjqGpPouNYQIHApeSwQdJSxXmQGtjzfmboKg7UXpvYpuoSXaEpBE990PP0kxRr
+         06hLg6K2aRACw==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, arnd@arndb.de
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH] asm-generic: uaccess.h: Fixup GENERIC_STRNCPY_FROM_USER & STRNLEN_USER
+Date:   Wed, 21 Apr 2021 09:04:53 +0000
+Message-Id: <1618995893-92100-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Maintainers,
+From: Guo Ren <guoren@linux.alibaba.com>
 
-this proposed patch allows setting constant_charge_current to 0 on axp209
-PMIC to disable charging. constant_charge_current_max with a value of 0 makes
-no sense and should still report the maximum allowed value, so the getter code
-is unrolled for the POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT case.
+When arch include asm-generic/uaccess.h and enable GENERIC
+STRNCPY_FROM_USER / STRNLEN_USER. Then, compile error.
 
-This works on the axp209 of Banana{Pi M1,Pi M1+,Pro}. I have no access to
-the other chips the driver deals with.
-
-Thanks for comments and greetings
-  Hermann
-
-Signed-off-by: Hermann.Lauer@uni-heidelberg.de
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
 ---
- patches/axp209-charge-current0.patchl | 18 ++++++++++--------
- 1 files changed, 10 insertions(+), 8 deletions(-)
+ include/asm-generic/uaccess.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
---- a/drivers/power/supply/axp20x_battery.c
-+++ b/drivers/power/supply/axp20x_battery.c
-@@ -40,6 +40,7 @@
- #define AXP209_FG_PERCENT		GENMASK(6, 0)
- #define AXP22X_FG_VALID			BIT(7)
+diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
+index 4973328..c02080d 100644
+--- a/include/asm-generic/uaccess.h
++++ b/include/asm-generic/uaccess.h
+@@ -243,6 +243,9 @@ static inline int __get_user_fn(size_t size, const void __user *ptr, void *x)
  
-+#define AXP20X_CHRG_CTRL1_ENABLE	BIT(7)
- #define AXP20X_CHRG_CTRL1_TGT_VOLT	GENMASK(6, 5)
- #define AXP20X_CHRG_CTRL1_TGT_4_1V	(0 << 5)
- #define AXP20X_CHRG_CTRL1_TGT_4_15V	(1 << 5)
-@@ -249,11 +250,18 @@
- 		break;
+ extern int __get_user_bad(void) __attribute__((noreturn));
  
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
--		ret = axp20x_get_constant_charge_current(axp20x_batt,
--							 &val->intval);
-+		ret = regmap_read(axp20x_batt->regmap, AXP20X_CHRG_CTRL1, &val->intval);
- 		if (ret)
- 			return ret;
--		break;
-+
-+		if (val->intval & AXP20X_CHRG_CTRL1_ENABLE) {
-+			val->intval &= AXP20X_CHRG_CTRL1_TGT_CURR;
-+			val->intval = val->intval * axp20x_batt->data->ccc_scale +
-+					axp20x_batt->data->ccc_offset;
-+		} else
-+			val->intval = 0;
-+
-+		return 0;
- 
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
- 		val->intval = axp20x_batt->max_ccc;
-@@ -392,6 +400,10 @@
- static int axp20x_set_constant_charge_current(struct axp20x_batt_ps *axp_batt,
- 					      int charge_current)
- {
-+	if (charge_current == 0)
-+		return regmap_update_bits(axp_batt->regmap, AXP20X_CHRG_CTRL1,
-+				  AXP20X_CHRG_CTRL1_ENABLE, 0);
-+
- 	if (charge_current > axp_batt->max_ccc)
- 		return -EINVAL;
- 
-@@ -402,7 +414,8 @@
- 		return -EINVAL;
- 
- 	return regmap_update_bits(axp_batt->regmap, AXP20X_CHRG_CTRL1,
--				  AXP20X_CHRG_CTRL1_TGT_CURR, charge_current);
-+				  AXP20X_CHRG_CTRL1_TGT_CURR | AXP20X_CHRG_CTRL1_ENABLE,
-+				  charge_current | AXP20X_CHRG_CTRL1_ENABLE);
++#ifdef CONFIG_GENERIC_STRNCPY_FROM_USER
++long strncpy_from_user(char *dst, const char __user *src, long count);
++#else
+ /*
+  * Copy a null terminated string from userspace.
+  */
+@@ -265,7 +268,11 @@ strncpy_from_user(char *dst, const char __user *src, long count)
+ 		return -EFAULT;
+ 	return __strncpy_from_user(dst, src, count);
  }
++#endif /* CONFIG_GENERIC_STRNCPY_FROM_USER */
  
- static int axp20x_set_max_constant_charge_current(struct axp20x_batt_ps *axp,
++#ifdef CONFIG_GENERIC_STRNLEN_USER
++long strnlen_user(const char __user *src, long n);
++#else
+ /*
+  * Return the size of a string (including the ending 0)
+  *
+@@ -286,6 +293,7 @@ static inline long strnlen_user(const char __user *src, long n)
+ 		return 0;
+ 	return __strnlen_user(src, n);
+ }
++#endif /* CONFIG_GENERIC_STRNLEN_USER */
+ 
+ /*
+  * Zero Userspace
+-- 
+2.7.4
+
