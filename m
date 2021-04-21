@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777B13673E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D163673EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245608AbhDUUA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 16:00:59 -0400
-Received: from www381.your-server.de ([78.46.137.84]:43904 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbhDUUA5 (ORCPT
+        id S245612AbhDUUBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 16:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244313AbhDUUBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 16:00:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=yt70wR24IFvvxPRHHqNJYfo+rlOehQs+hl0UuMrdIUw=; b=UKYaeUrVOsbtJyT4RDME2ixy+y
-        MM8Iblj/3FdDkK/vGZLJ0dr/mPsm1XJlkn3ldDDM9n53Uem+FyoE2jp0LeRj4oTCidXFK8l/Xxnl9
-        /xTWzTbmZnwQxoo0yBfNawbULL9hRmq4hEvPBC4un72CHSRKm9qvCTpSR146VB9wUm0EhF+uu209m
-        EwZ0ipm9hlNSzN8zdc6FOo3IWuC0Gy8GvwEA59bZrkTf6c8douPur6BU9d7ePReVBXP+AnFswRuHb
-        127L9G7agYVKVAGuD3VJAgl+5YHn9oUzvjLNnUOaVKKiD6UvyOd96D4ABubO1WZuQ4t/3Uaxk0Z1P
-        e9eNIdEg==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lZJ1J-000GXC-3t; Wed, 21 Apr 2021 22:00:21 +0200
-Received: from [2001:a61:2a42:9501:9e5c:8eff:fe01:8578]
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lZJ1I-000RA3-Qk; Wed, 21 Apr 2021 22:00:20 +0200
-Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
+        Wed, 21 Apr 2021 16:01:32 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547EFC06174A;
+        Wed, 21 Apr 2021 13:00:58 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id y32so30961402pga.11;
+        Wed, 21 Apr 2021 13:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AReDrWOEZXfvF/s6rcjOJXciEs33E3HMi3ZXRWC77ko=;
+        b=d68kX1neFSgr3WmIahqpDr6edfAbLCUyJpu7m9DXUS8jZYqNAB5TdLVQHH7or34fVi
+         pxkS2rfNo8HHNKGaf3E5MKTLCEnvz/O0E+O/Gq+hF/KaYplKBzTTbVzkn11HnfeVZRo6
+         j7VcrYdXzblpKgbGJr10XwdqpLCFefHkJCjPNvIIKZdV676eeFtOR+XTHQ0TsZLH2/xJ
+         gHZ52hTHFOGeeDV0edvImseVqO4EQAjZpR+8yRAjNyqAug+YOqezfRG0TLE+7CcNRNmn
+         SyEqO8IrXaaH4o6KLBiRHRIdImgEEHBPuGqeJH/ODKRLnA+Irzc8zMKPytJHJOUXvpGH
+         9cRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AReDrWOEZXfvF/s6rcjOJXciEs33E3HMi3ZXRWC77ko=;
+        b=Y0hbCY0GrG9dUqUaA/PBV47XqCw/9BfxYQAU99XTE17dTrtZFV5sJjCK+H6MkCdgUW
+         GHuaEPOUaJuJ061swjMR9Z+EdM5w3aYAB9UtuGN5kTg0aWlo0K5DUVyQcbrHRvwF7pHw
+         L0KFIv6Zq7WwFhX3TYh+bPzfHD+O9GfXdLCirvYFI8hlH6gi5b3nHFh+YECMDa8ZJRma
+         vLMJNQG6kYNLe0YFMb2MdIfJhPx3IdG0MXAihxUqMkVj9xxlGYjp3z5F6th2PFb/qh9K
+         p6ry+ci/Hxn2Avn4e9kHsVzttFLEaImYrqlYdZsSpeo4h/k22qLcquN3Sm5yRHrrh319
+         95Pw==
+X-Gm-Message-State: AOAM532mUKeE43lAz8imL8XceIefjVEgbx6u0foXbk8XIZ9pEJdU+PGL
+        M1gd4cLogWZU4gwbwShYTUj1lKFRpJc=
+X-Google-Smtp-Source: ABdhPJwxQt61tc581In1dq1C2NPuS3JK12hpnNEsEBCvb8dKPVhK+UJGMolqD5QaXB21oWvicKzY7Q==
+X-Received: by 2002:a63:5814:: with SMTP id m20mr23532782pgb.82.1619035257402;
+        Wed, 21 Apr 2021 13:00:57 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id t11sm170756pji.54.2021.04.21.13.00.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 13:00:56 -0700 (PDT)
+Subject: Re: [-next] serial: 8250: Match legacy NS16550A UARTs
 To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Nathan Royer <nroyer@invensense.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
- <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
- <f2b7938f-12ea-529b-da5e-83c9c8074e1a@gmail.com>
- <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
- <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
- <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <b5a2ce37-b386-40b3-d9ad-6e77deda74e6@metafoo.de>
-Date:   Wed, 21 Apr 2021 22:00:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Alan Cooper <alcooperx@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210414134539.42332-1-alcooperx@gmail.com>
+ <CAHp75VfQetCJJZ_U70xEduVBQHEx_GkHeKBs2uzNtvcq9H0BqQ@mail.gmail.com>
+ <CAOGqxeUiFE0348Y=yEoD7bnMaGnFkbvNy3WZ2oSZZzR4D-xz_w@mail.gmail.com>
+ <CAHp75VfD7i9irKDxk0v+j1c1wFrcu9v+OA-X7+edsg6johhJnQ@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <072cc4c2-9a63-312a-a4bd-b4aa6d393a7e@gmail.com>
+Date:   Wed, 21 Apr 2021 13:00:55 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfD7i9irKDxk0v+j1c1wFrcu9v+OA-X7+edsg6johhJnQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26147/Wed Apr 21 13:06:05 2021)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 9:41 PM, Andy Shevchenko wrote:
-> On Wed, Apr 21, 2021 at 10:05 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Wed, Apr 21, 2021 at 1:14 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->>> On Tue, Apr 20, 2021 at 11:26 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>>
->>>> I found a non-kernel example
->>>> which uses a similar equation [1], but in a different form. The main
->>>> difference is that the Arduino code interprets a raw temperature value
->>>> as a signed integer, while upstream assumes it's unsigned.
->>>>
->>>> [1]
->>>> https://github.com/blaisejarrett/Arduino-Lib.MPU3050/blob/master/MPU3050lib.cpp#L111
->>> Oh that's nice. Room temperature as mentioned is 20 deg C
->>> I think?
->>>
->>> The divide by 280 part seems coherent in all examples.
->>>
->>>> Still, even if assume that the raw temperature is a signed s16 value, it
->>>> gives us ~35C in a result, which should be off by ~10C.
->> Actually here [1] it says in chapter 3.1 that room temperature is 35°C.
->>
->> Range: -30°C .. +85°C
->> Sensitivity: 280 LSB/°C
->> Room temperature offset: 35°C = -13200 LSB
->>
->> [1]: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
->
-> So, if I'm reading this and the register description right the value
-> is in the range
-> -32768..32767.
-> -13200 defines 35°C
->
-> 50000 as mentioned by Dmitry is actually -15536. So, it means that the
-> more negative a value is the higher temperature is shown.
->
-> Since it's linearized scale, now we can see that
->
-> (13200 -15536)/280 + 35 gives us 26.66.
->
-> Does it make sense?
-(13200 + x)/280 + 35 = (23000 + x)/280, which is what is in the driver. 
-So the only bit missing is the cast to s16.
 
 
+On 4/21/2021 12:57 PM, Andy Shevchenko wrote:
+> On Wed, Apr 21, 2021 at 10:04 PM Alan Cooper <alcooperx@gmail.com> wrote:
+>> On Thu, Apr 15, 2021 at 6:44 AM Andy Shevchenko
+>> <andy.shevchenko@gmail.com> wrote:
+>>> On Wed, Apr 14, 2021 at 7:13 PM Al Cooper <alcooperx@gmail.com> wrote:
+> 
+>> The problem is that when both the 8250_of and 8250_bcm7271 drivers
+>> were running, occasionally the 8250_of driver would be bound to the
+>> enhanced UART instead of the 8250_bcm7271 driver. This was happening
+>> because we use SCMI based clocks which come up late in initialization
+>> and cause probe DEFER's when the two drivers get their clocks.
+>> Occasionally the SCMI clock would become ready between the
+>> 8250_bcm7271 probe and the 8250_of probe and the 8250_of driver would
+>> be bound. To fix this we decided to config only our 8250_bcm7271
+>> driver and added "ns16665a0" to the compatible string so the driver
+>> would work on our older system.
+> 
+> Interesting reading.
+> 
+> As far as I understand the 8250 approach (*), you blacklist (or
+> whatever naming you prefer, b/c 8250_of seems does not have such) the
+> binding based on the presence of the specific compatible string.
+> 
+> I.o.w. in 8250_of you need to check if you are trying to probe the
+> device which has both compatible strings. In that case you simply
+> return -ENODEV.
+
+Yes we had a downstream patch not submitted that did exactly that:
+
++       if (IS_ENABLED(CONFIG_SERIAL_8250_BCM7271) &&
++           of_device_is_compatible(ofdev->dev.of_node,
+"brcm,bcm7271-uart"))
++               return -ENODEV;
++
+
+but thanks to Al's findings it does not appear to be needed anymore, we
+could submit it somehow if you feel like other scenarios like having
+SCMI and the UART drivers as modules.
+-- 
+Florian
