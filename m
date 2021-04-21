@@ -2,71 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4F93670A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69BD3670AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237481AbhDUQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:55:00 -0400
-Received: from mail-ed1-f49.google.com ([209.85.208.49]:42723 "EHLO
-        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236426AbhDUQy6 (ORCPT
+        id S240180AbhDUQzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:55:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237257AbhDUQzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:54:58 -0400
-Received: by mail-ed1-f49.google.com with SMTP id d21so30083378edv.9;
-        Wed, 21 Apr 2021 09:54:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LwXhMkGUMNYwRKRStEL04Gs6Tphs7NzMu5XYeJimgo8=;
-        b=uJRhbTSULmzlqgrkJy4ph5/So8zPjpSW1EeMWWLxvbYDZ+E50W9Dfl+Dve3OOOJeXy
-         hX3T3RofsHTvSrKKL74SmThBZ7zmY7p/jcyYX8pQmei4R4fRk9lQ1Rzto1FDjddZyxSU
-         WMnltyNR/VU3MOUal0kkRjbQp8aB91nAdeAYDEj0fMyvhGmv0raI/J1lqSJoIdEuI4Z/
-         WKS1ysjkBehptsEkfhsBdzIf5BPIVA2/zrCEAXK+it4iN0ex5OjdxZoU2MfINNNip+b6
-         tI6IhBCULbWABwdnsPMzxTSXw7EGO+tyaFM1WqV1/TIaXfPYUSYDcM43o6iGwtB4fRrO
-         8+AQ==
-X-Gm-Message-State: AOAM531nFZ2eq0kNCbmXLFoCR7yPsPcCkNY7O7wcGJzTbugtryCfvadN
-        /LFZjDCyBBdJcAqnRp9ms2w=
-X-Google-Smtp-Source: ABdhPJyGCcVU826RHHkW/QBdZ6r/MsN4F0wdJSbV7FA19XAFP1HUc+Rq8MpQnk2kKxg3ciJEek9I1w==
-X-Received: by 2002:a05:6402:6da:: with SMTP id n26mr26868699edy.203.1619024061980;
-        Wed, 21 Apr 2021 09:54:21 -0700 (PDT)
-Received: from client-192-168-1-100.lan ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id q6sm55200ejt.51.2021.04.21.09.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 09:54:21 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 18:54:20 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI/VPD: fix unused pci_vpd_set_size function warning
-Message-ID: <YIBYvJV0Hr7pt/T1@client-192-168-1-100.lan>
-References: <20210421140334.3847155-1-arnd@kernel.org>
+        Wed, 21 Apr 2021 12:55:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619024103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a7JdcUX8euC4TKmJkCs8pS1cnLRRfeyWp+CS9J58HkU=;
+        b=CkDrPYRQlJgQrs5FIVNJakI42LrLLrovx9HVZNRNFr8gVLQQOdivB1WYXcv6JpJ3X1g9Us
+        ABtWiea9Rq/CMlLCcek/jzzkib+HY7cq/L39rgFAJQZYsJWofMmcvvYfyM6b3fp4ZpaCj6
+        7ew8PAL4pshuxDcFNqsh56T5QaQH34k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-aKLr98iKNbyZKCa4-hYviw-1; Wed, 21 Apr 2021 12:55:00 -0400
+X-MC-Unique: aKLr98iKNbyZKCa4-hYviw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6B37801814;
+        Wed, 21 Apr 2021 16:54:57 +0000 (UTC)
+Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BE3AB5D736;
+        Wed, 21 Apr 2021 16:54:51 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 10:54:51 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210421105451.56d3670a@redhat.com>
+In-Reply-To: <20210421162307.GM1370958@nvidia.com>
+References: <YGW27KFt9eQB9X2z@myrica>
+        <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210401134236.GF1463678@nvidia.com>
+        <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210401160337.GJ1463678@nvidia.com>
+        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+        <20210415230732.GG1370958@nvidia.com>
+        <20210416061258.325e762e@jacob-builder>
+        <20210416094547.1774e1a3@redhat.com>
+        <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210421162307.GM1370958@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210421140334.3847155-1-arnd@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, 21 Apr 2021 13:23:07 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> The only user of this function is now in an #ifdef, causing
-> a warning when that symbol is not defined:
+> On Wed, Apr 21, 2021 at 01:18:07PM +0000, Liu, Yi L wrote:
+> > > Ideally this new /dev/ioasid interface, and making use of it as a VFIO
+> > > IOMMU backend, should replace type1.   
+> > 
+> > yeah, just a double check, I think this also requires a new set of uAPIs
+> > (e.g. new MAP/UNMAP), which means the current VFIO IOMMU type1 related ioctls
+> > would be deprecated in future. right?  
 > 
-> drivers/pci/vpd.c:289:13: error: 'pci_vpd_set_size' defined but not used [-Werror=unused-function]
->   289 | static void pci_vpd_set_size(struct pci_dev *dev, size_t len)
+> This is something to think about, it might make sense to run the
+> current ioctls in some "compat" mode under /dev/ioasid just to make
+> migration easier
+
+Right, deprecating type1 doesn't necessarily mean deprecating the uAPI.
+We created a type1v2 with minor semantic differences in unmap behavior
+within the same uAPI.  Userspace is able to query and select an IOMMU
+backend model and each model might have a different uAPI.  The SPAPR
+IOMMU backend already takes advantage of this, using some ioctls
+consistent with type1, but also requiring some extra steps.
+
+Also note that the simple MAP and UNMAP uAPI of type1 has its
+limitations, which we already struggle with.  See for example the
+massive performance issues backing a vIOMMU with this uAPI.  The
+/dev/ioasid approach should alleviate some of that, using a page table
+for the 1st level, but a more advanced uAPI for the 2nd level seems
+necessary at some point as well.
+
+> In this sense /dev/ioasid would be a container that holds multiple
+> IOASIDs and every new format ioctl specifies the IOASID to operate
+> on. The legacy ioctls would use some default IOASID but otherwise act
+> the same.
 > 
-> Move the function into that #ifdef block.
-[...]
+> I'm assuming here there is nothing especially wrong with the /dev/vfio
+> interface beyond being in the wrong place in the kernel and not
+> supporting multiple IOASIDs?
+> 
+> Then there may be a fairly simple approch to just make /dev/vfio ==
+> /dev/ioasid, at least for type 1.
+>
+> By this I mean we could have the new /dev/ioasid code take over the
+> /dev/vfio char dev and present both interfaces, but with the same
+> fops.
 
-Thank you!
+That's essentially replacing vfio-core, where I think we're more
+talking about /dev/ioasid being an available IOMMU backend driver which
+a user can select when available.  The interface of making that
+selection might change to accept an external /dev/ioasid file
+descriptor, of course.  Maybe you can elaborate on how the vfio device
+and group uAPI live (or not) in this new scheme were /dev/ioasid is the
+primary interface.  Thanks,
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Alex
 
-Krzysztof
