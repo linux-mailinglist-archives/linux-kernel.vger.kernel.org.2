@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0653036718D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9258136718F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244836AbhDURlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:41:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:38818 "EHLO foss.arm.com"
+        id S243133AbhDURma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:42:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:38842 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243098AbhDURlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:41:45 -0400
+        id S236913AbhDURm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:42:28 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A92E311FB;
-        Wed, 21 Apr 2021 10:41:11 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.3.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1FBB3F694;
-        Wed, 21 Apr 2021 10:41:08 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 18:41:05 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
-        eparis@redhat.com, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] arm64: syscall.h: Add sign extension handling in
- syscall_get_return_value for compat
-Message-ID: <20210421174105.GB52940@C02TD0UTHF1T.local>
-References: <20210416075533.7720-1-zhe.he@windriver.com>
- <20210416075533.7720-2-zhe.he@windriver.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416075533.7720-2-zhe.he@windriver.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3508C11FB;
+        Wed, 21 Apr 2021 10:41:55 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.27.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A4C703F694;
+        Wed, 21 Apr 2021 10:41:53 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org
+Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
+        lukasz.luba@arm.com
+Subject: [PATCH v3 0/3] Improve IPA mechanisms in low temperature state
+Date:   Wed, 21 Apr 2021 18:41:42 +0100
+Message-Id: <20210421174145.8213-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:55:32PM +0800, He Zhe wrote:
-> Add sign extension handling in syscall_get_return_value so that it can
-> handle 32-bit compatible case and can be used by for example audit, just
-> like what syscall_get_error does.
+Hi all,
 
-If a compat syscall can ever legitimately return a non-error value with
-bit 31 set, and this sign-extends it, is that ever going to reach
-userspace as a 64-bit value?
+This v3 patch set aims to address the issues present in IPA when the
+temperature is below the first trip point and cooling devices are not
+throttled.
+The first patch adds a basic check of cooling devices power to keep the
+internal statistics fresh. This allows to avoid issue when the statistics
+cover very long period, because they were not maintained.
+The second patch addresses an issue described in bugzilla [1], which is:
+unneccessary updating cooling devices when their state has not changed
+because they are not throttled. This update triggers sending an event,
+which should be avoided. Thus, patch 2/3 adds a tracking mechanism if
+the update was triggered and makes sure it will be done only once when
+the temperature continue to stay below first trip point.
+The last patch 3/3 is co-developed by Daniel, who presented the code
+during v2 review. I have created a helper function based on his idea,
+which can now be used inside IPA governor lock protected code. 
 
-IIUC things like mmap() can return pointers above 2GiB for a compat
-task, so I'm a bit uneasy that we'd handle those wrong. I can't see a
-way of preventing that unless we keep the upper 32 bits for errors.
+changelog:
+v3:
+- new patch 3/3 co-developed with Daniel
+v2:
+- patch 2/2 uses now simple 'update' bool flag and information from
+  'tz->last_temperature'
+- patch 1/2 has small change in the comment
+- re-based on top of today's thermal/next branch
 
-Mark.
+Regards,
+Lukasz Luba
 
-> 
-> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> ---
->  arch/arm64/include/asm/syscall.h | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-> index cfc0672013f6..cd7a22787aeb 100644
-> --- a/arch/arm64/include/asm/syscall.h
-> +++ b/arch/arm64/include/asm/syscall.h
-> @@ -44,7 +44,12 @@ static inline long syscall_get_error(struct task_struct *task,
->  static inline long syscall_get_return_value(struct task_struct *task,
->  					    struct pt_regs *regs)
->  {
-> -	return regs->regs[0];
-> +	long val = regs->regs[0];
-> +
-> +	if (is_compat_thread(task_thread_info(task)))
-> +		val = sign_extend64(val, 31);
-> +
-> +	return val;
->  }
->  
->  static inline void syscall_set_return_value(struct task_struct *task,
-> -- 
-> 2.17.1
-> 
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=212501
+
+Lukasz Luba (3):
+  thermal: power_allocator: maintain the device statistics from going
+    stale
+  thermal: power_allocator: update once cooling devices when temp is low
+  thermal: create a helper __thermal_cdev_update() without a lock
+
+ drivers/thermal/gov_power_allocator.c | 21 ++++++++++++++++----
+ drivers/thermal/thermal_core.h        |  1 +
+ drivers/thermal/thermal_helpers.c     | 28 +++++++++++++++++----------
+ 3 files changed, 36 insertions(+), 14 deletions(-)
+
+-- 
+2.17.1
+
