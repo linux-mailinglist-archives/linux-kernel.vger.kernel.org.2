@@ -2,417 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2347D36643C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 06:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1BE36643F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 06:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhDUEGm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 00:06:42 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3404 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbhDUEGk (ORCPT
+        id S233382AbhDUEIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 00:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231733AbhDUEIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 00:06:40 -0400
-Received: from dggeme712-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FQ6N815lbz5r4G;
-        Wed, 21 Apr 2021 12:03:04 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggeme712-chm.china.huawei.com (10.1.199.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 21 Apr 2021 12:06:03 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Wed, 21 Apr 2021 12:06:03 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-CC:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        yangyicong <yangyicong@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "hpa@zytor.com" <hpa@zytor.com>
-Subject: RE: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within a
- die
-Thread-Topic: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within a
- die
-Thread-Index: AQHXHHeQcl1lHq1u7kWPO6cWrdJxq6qKVPyAgACJR5D//6lPAIAAByuAgDJgJ6CAAZz6gA==
-Date:   Wed, 21 Apr 2021 04:06:03 +0000
-Message-ID: <be2755fd4f1447cb97c4de04eb378a0b@hisilicon.com>
-References: <20210319041618.14316-1-song.bao.hua@hisilicon.com>
- <20210319041618.14316-2-song.bao.hua@hisilicon.com>
- <YFRGIedW1fUlnmi+@kroah.com> <eb48302277f3436eb9899032e6b0bf1c@hisilicon.com>
- <20210319093616.00001879@Huawei.com> <YFR2kwakbcGiI37w@kroah.com> 
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.139]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 21 Apr 2021 00:08:48 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D86CC06138D
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 21:08:14 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id g9so23798449wrx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 21:08:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WaZO4G68UBU3vGgoF4QvbcfZTEDhOHGYS1PfQvi2NPo=;
+        b=hH2Ior+J2Jj3gNXUDRQb2B5cZpo1VHS6g+VxjUN7R8OhdUl9fhcQUHHeg/UwbHPYkt
+         dvGPFGGvtpzm8il69fqV/k0anKDrs22fD/uFqXYj0ug4Y+1RH4uNXWw4BUEMLlpXILc2
+         Jx6VXSLIDhRyISk0eDiw/aZmSEU/hILFVJSJGngSlOVAe7pLyUlzfdScUA7dR9xmikir
+         52k0XdSlSqtToZK98+AX7uP+/v58m4aOzTRqPceiJ5HDk6BuqTrDTiuQiVVNQK1ZyS+j
+         ok3BfOLol+LEdd2mebvVJo/83uUq7QtERwHcfiTs0dQVkxVyz7NtJ9AEF8iR0m2daEqw
+         JRtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WaZO4G68UBU3vGgoF4QvbcfZTEDhOHGYS1PfQvi2NPo=;
+        b=ZEGX9QLTCIcyDSNfULRNpSnk1GuPgy6wHzB1c2j4sMRbl1FPK0csoSAKs5NV0jsp1/
+         qcOomVuLfEPRSfTbMzfAPRxs6TsMs5asTTBF25P9Ff+PJM/on+oPmieeeQFZdYEgGQoD
+         0FR9ZG5FfAxNLgpc3dW/xRj99VL8HrPN1ZvaTUt9dqBg6nSHOWCTTf8pR5dB4EyNGTC8
+         F6B32IUJWtha797LFTFtGDnMxfwp9sTmDoeWZlCIEyeifisRTN7k+r16guEzX52w4vqE
+         wnsayNd3FpLaa4xWUEoVXguZYpCVNo67qyggCueNS9n3uVeDb9FCNiY9fgY5UYVK8VNk
+         JnOg==
+X-Gm-Message-State: AOAM533wKvchaRVJKTjMK/327NUj7WI/QbyCuL/UoJm9HPyMDJoOBpxG
+        mU2fZZHfXmouAOvpTcO6uzZYhoSVHfJgpp5oAhTFmg==
+X-Google-Smtp-Source: ABdhPJy1qAwhycXgUCLM7eQQ0TAd+o7Pc7JTlOn+Av52SdM9p6+E9B1lX0Eh9/lh6HEocIJMfofebUvw4PhdiBPt1NU=
+X-Received: by 2002:adf:ce12:: with SMTP id p18mr24500366wrn.144.1618978092690;
+ Tue, 20 Apr 2021 21:08:12 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <a49a7142-104e-fdaa-4a6a-619505695229@redhat.com> <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 21 Apr 2021 09:38:01 +0530
+Message-ID: <CAAhSdy1EYhgA52m48DcyevM5j5EsuXPbVq5Z0KHB+SaXorNTeg@mail.gmail.com>
+Subject: Re: [PATCH v16 00/17] KVM RISC-V Support
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Graf <graf@amazon.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Palmer,
 
+On Sat, Apr 10, 2021 at 12:28 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Wed, 31 Mar 2021 02:21:58 PDT (-0700), pbonzini@redhat.com wrote:
+> > On 30/03/21 07:48, Anup Patel wrote:
+> >>
+> >> It seems Andrew does not want to freeze H-extension until we have virtualization
+> >> aware interrupt controller (such as RISC-V AIA specification) and IOMMU. Lot
+> >> of us feel that these things can be done independently because RISC-V
+> >> H-extension already has provisions for external interrupt controller with
+> >> virtualization support.
+>
+> Sorry to hear that.  It's really gotten to a point where I'm just
+> embarrassed with how the RISC-V foundation is being run -- not sure if
+> these other ones bled into Linux land, but this is the third ISA
+> extension that's blown up over the last few weeks.  We had a lot of
+> discussion about this on the binutils/GCC side of things and I've
+> managed to convince myself that coupling the software stack to the
+> specification process isn't viable -- we made that decision under the
+> assumption that specifications would actually progress through the
+> process, but in practice that's just not happening.
+>
+> My goal with the RISC-V stuff has always been getting us to a place
+> where we have real shipping products running a software stack that is as
+> close as possible to the upstream codebases.  I see that as the only way
+> to get the software stack to a point where it can be sustainably
+> maintained.  The "only frozen extensions" policy was meant to help this
+> by steering vendors towards a common base we could support, but in
+> practice it's just not working out.  The specification process is just
+> so unreliable that in practice everything that gets built ends up
+> relying on some non-standard behavior: whether it's a draft extension,
+> some vendor-specific extension, or just some implementation quirks.
+> There's always going to be some degree of that going on, but over the
+> last year or so we've just stopped progressing.
+>
+> My worry with accepting the draft extensions is that we have no
+> guarantee of compatibility between various drafts, which makes
+> supporting multiple versions much more difficult.  I've always really
+> only been worried about supporting what gets implemented in a chip I can
+> actually run code on, as I can at least guarantee that doesn't change.
+> In practice that really has nothing to do with the specification freeze:
+> even ratified specifications change in ways that break compatibility so
+> we need to support multiple versions anyway.  That's why we've got
+> things like the K210 support (which doesn't quite follow the ratified
+> specs) and are going to take the errata stuff.  I hadn't been all that
+> worried about the H support because there was a plan to get is to
+> hardware, but with the change I'm not really sure how that's going to
+> happen.
+>
+> > Yes, frankly that's pretty ridiculous as it's perfectly possible to
+> > emulate the interrupt controller in software (and an IOMMU is not needed
+> > at all if you are okay with emulated or paravirtualized devices---which
+> > is almost always the case except for partitioning hypervisors).
+>
+> There's certainly some risk to freezing the H extension before we have
+> all flavors of systems up and running.  I spent a lot of time arguing
+> that case years ago before we started telling people that the H
+> extension just needed implementation, but that's not the decision we
+> made.  I don't really do RISC-V foundation stuff any more so I don't
+> know why this changed, but it's just too late.  It would be wonderful to
+> have an implementation of everything we need to build out one of these
+> complex systems, but I just just don't see how the current plan gets
+> there: that's a huge amount of work and I don't see why anyone would
+> commit to that when they can't count on it being supported when it's
+> released.
+>
+> There are clearly some systems that can be built with this as it stands.
+> They're not going to satisfy every use case, but at least we'll get
+> people to start seriously using the spec.  That's the only way I can see
+> to move forward with this.  It's pretty clear that sitting around and
+> waiting doesn't work, we've tried that.
+>
+> > Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
+> > drivers/staging/riscv/kvm?
+>
+> I'm certainly ready to drop my objections to merging the code based on
+> it targeting a draft extension, but at a bare minimum I want to get a
+> new policy in place that everyone can agree to for merging code.  I've
+> tried to draft up a new policy a handful of times this week, but I'm not
+> really quite sure how to go about this: ultimately trying to build
+> stable interfaces around an unstable ISA is just a losing battle.  I've
+> got a bunch of stuff going on right now, but I'll try to find some time
+> to actually sit down and finish one.
 
-> -----Original Message-----
-> From: Song Bao Hua (Barry Song)
-> Sent: Tuesday, April 20, 2021 3:24 PM
-> To: 'Greg KH' <gregkh@linuxfoundation.org>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>
-> Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
-> rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
-> tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org; peterz@infradead.org;
-> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com;
-> juri.lelli@redhat.com; mark.rutland@arm.com; sudeep.holla@arm.com;
-> aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; x86@kernel.org;
-> xuwei (O) <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu (Kenneth)
-> <liguozhu@hisilicon.com>; linuxarm@openeuler.org; hpa@zytor.com; tiantao (H)
-> <tiantao6@hisilicon.com>
-> Subject: RE: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
-> a die
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Friday, March 19, 2021 11:02 PM
-> > To: Jonathan Cameron <jonathan.cameron@huawei.com>
-> > Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> > tim.c.chen@linux.intel.com; catalin.marinas@arm.com; will@kernel.org;
-> > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
-> > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org;
-> peterz@infradead.org;
-> > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com;
-> > juri.lelli@redhat.com; mark.rutland@arm.com; sudeep.holla@arm.com;
-> > aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
-> > linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org; x86@kernel.org;
-> > xuwei (O) <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> > guodong.xu@linaro.org; yangyicong <yangyicong@huawei.com>; Liguozhu
-> (Kenneth)
-> > <liguozhu@hisilicon.com>; linuxarm@openeuler.org; hpa@zytor.com
-> > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs within
-> > a die
+Can you send the patch for the updated policy which we can review ??
+
+Will it be possible to get KVM RISC-V merged for Linux-5.13 ?
+
+Regards,
+Anup
+
+>
+> I know it might seem odd to complain about how slowly things are going
+> and then throw up another roadblock, but I really do think this is a
+> very important thing to get right.  I'm just not sure how we're going to
+> get anywhere with RISC-V without someone providing stability, so I want
+> to make sure that whatever we do here can be done reliably.  If we don't
+> I'm worried the vendors are just going to go off and do their own
+> software stacks, which will make getting everyone back on the same page
+> very difficult.
+>
+> > Either way, the best way to do it would be like this:
 > >
-> > On Fri, Mar 19, 2021 at 09:36:16AM +0000, Jonathan Cameron wrote:
-> > > On Fri, 19 Mar 2021 06:57:08 +0000
-> > > "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com> wrote:
-> > >
-> > > > > -----Original Message-----
-> > > > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > > > > Sent: Friday, March 19, 2021 7:35 PM
-> > > > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > > > > Cc: tim.c.chen@linux.intel.com; catalin.marinas@arm.com;
-> > will@kernel.org;
-> > > > > rjw@rjwysocki.net; vincent.guittot@linaro.org; bp@alien8.de;
-> > > > > tglx@linutronix.de; mingo@redhat.com; lenb@kernel.org;
-> > peterz@infradead.org;
-> > > > > dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> > > > > mgorman@suse.de; msys.mizuma@gmail.com; valentin.schneider@arm.com;
-> > Jonathan
-> > > > > Cameron <jonathan.cameron@huawei.com>; juri.lelli@redhat.com;
-> > > > > mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
-> > > > > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > > > > linux-acpi@vger.kernel.org; x86@kernel.org; xuwei (O)
-> > <xuwei5@huawei.com>;
-> > > > > Zengtao (B) <prime.zeng@hisilicon.com>; guodong.xu@linaro.org;
-> > yangyicong
-> > > > > <yangyicong@huawei.com>; Liguozhu (Kenneth) <liguozhu@hisilicon.com>;
-> > > > > linuxarm@openeuler.org; hpa@zytor.com
-> > > > > Subject: Re: [RFC PATCH v5 1/4] topology: Represent clusters of CPUs
-> within
-> > > > > a die
-> > > > >
-> > > > > On Fri, Mar 19, 2021 at 05:16:15PM +1300, Barry Song wrote:
-> > > > > > diff --git a/Documentation/admin-guide/cputopology.rst
-> > > > > b/Documentation/admin-guide/cputopology.rst
-> > > > > > index b90dafc..f9d3745 100644
-> > > > > > --- a/Documentation/admin-guide/cputopology.rst
-> > > > > > +++ b/Documentation/admin-guide/cputopology.rst
-> > > > > > @@ -24,6 +24,12 @@ core_id:
-> > > > > >  	identifier (rather than the kernel's).  The actual value is
-> > > > > >  	architecture and platform dependent.
-> > > > > >
-> > > > > > +cluster_id:
-> > > > > > +
-> > > > > > +	the Cluster ID of cpuX.  Typically it is the hardware platform's
-> > > > > > +	identifier (rather than the kernel's).  The actual value is
-> > > > > > +	architecture and platform dependent.
-> > > > > > +
-> > > > > >  book_id:
-> > > > > >
-> > > > > >  	the book ID of cpuX. Typically it is the hardware platform's
-> > > > > > @@ -56,6 +62,14 @@ package_cpus_list:
-> > > > > >  	human-readable list of CPUs sharing the same physical_package_id.
-> > > > > >  	(deprecated name: "core_siblings_list")
-> > > > > >
-> > > > > > +cluster_cpus:
-> > > > > > +
-> > > > > > +	internal kernel map of CPUs within the same cluster.
-> > > > > > +
-> > > > > > +cluster_cpus_list:
-> > > > > > +
-> > > > > > +	human-readable list of CPUs within the same cluster.
-> > > > > > +
-> > > > > >  die_cpus:
-> > > > > >
-> > > > > >  	internal kernel map of CPUs within the same die.
-> > > > >
-> > > > > Why are these sysfs files in this file, and not in a Documentation/ABI/
-> > > > > file which can be correctly parsed and shown to userspace?
-> > > >
-> > > > Well. Those ABIs have been there for much a long time. It is like:
-> > > >
-> > > > [root@ceph1 topology]# ls
-> > > > core_id  core_siblings  core_siblings_list  physical_package_id
-> > thread_siblings  thread_siblings_list
-> > > > [root@ceph1 topology]# pwd
-> > > > /sys/devices/system/cpu/cpu100/topology
-> > > > [root@ceph1 topology]# cat core_siblings_list
-> > > > 64-127
-> > > > [root@ceph1 topology]#
-> > > >
-> > > > >
-> > > > > Any chance you can fix that up here as well?
-> > > >
-> > > > Yes. we will send a separate patch to address this, which won't
-> > > > be in this patchset. This patchset will base on that one.
-> > > >
-> > > > >
-> > > > > Also note that "list" is not something that goes in sysfs, sysfs is
-> "one
-> > > > > value per file", and a list is not "one value".  How do you prevent
-> > > > > overflowing the buffer of the sysfs file if you have a "list"?
-> > > > >
-> > > >
-> > > > At a glance, the list is using "-" rather than a real list
-> > > > [root@ceph1 topology]# cat core_siblings_list
-> > > > 64-127
-> > > >
-> > > > Anyway, I will take a look if it has any chance to overflow.
-> > >
-> > > It could in theory be alternate CPUs as comma separated list.
-> > > So it's would get interesting around 500-1000 cpus (guessing).
-> > >
-> > > Hopefully no one has that crazy a cpu numbering scheme but it's possible
-> > > (note that cluster is fine for this, but I guess it might eventually
-> > > happen for core-siblings list (cpus within a package).
-> > >
-> > > Shouldn't crash or anything like that but might terminate early.
+> > 1) you apply patch 1 in a topic branch
 > >
-> > We have a broken sysfs api already for listing LED numbers that has had
-> > to be worked around in the past, please do not create a new one with
-> > that same problem, we should learn from them :)
-> 
-> Another place I am seeing a cpu list is in numa topology:
-> /sys/devices/system/node/nodex/cpulist.
-> 
-> But the code has a BUILD_BUG_ON to guard the pagebuf:
-> 
-> static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
-> {
-> 	ssize_t n;
-> 	cpumask_var_t mask;
-> 	struct node *node_dev = to_node(dev);
-> 
-> 	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
-> 	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
-> 
-> 	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
-> 		return 0;
-> 
-> 	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
-> 	n = cpumap_print_to_pagebuf(list, buf, mask);
-> 	free_cpumask_var(mask);
-> 
-> 	return n;
-> }
-> 
-> For lists in cpu topology, I haven't seen this while I believe we need it.
-> Or am I missing something?
-
-I would prefer we send two patches as a series
-"clarify and cleanup CPU and NUMA topology ABIs" with a cover
-letter and the below one as 1/2. 2/2 would be the patch moving
-the place of cpu topology ABI doc.
-
-From b32c0c00a187d4fe4c49d54d30650b0cacb2c351 Mon Sep 17 00:00:00 2001
-From: Tian Tao <tiantao6@hisilicon.com>
-Date: Wed, 21 Apr 2021 14:36:11 +1200
-Subject: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue of sysfs
- pagebuf
-
-Both numa node and cpu use cpu bitmap like 3,ffffffff to expose hardware
-topology. When cpu number is large, the page buffer of sysfs will over-
-flow. This doesn't really happen nowadays as the maximum NR_CPUS is 8196
-for X86_64 and 4096 for ARM64 since 8196 * 9 / 32 = 2305 is still smaller
-than 4KB page size.
-So the existing BUILD_BUG_ON() in drivers/base/node.c is pretty much
-preventing future problems similar with Y2K when hardware gets more
-and more CPUs.
-On the other hand, it should be more sensible to move the guard to common
-code which can protect both cpu and numa:
-/sys/devices/system/cpu/cpu0/topology/die_cpus etc.
-/sys/devices/system/node/node0/cpumap etc.
-
-Topology bitmap mask strings shouldn't be larger than PAGE_SIZE as
-lstopo and numactl depend on them. But other ABIs exposing cpu lists
-are not really used by common applications, so this patch also marks
-those lists could be trimmed as there is no any guarantee those lists
-are always less than PAGE_SIZE especially a list could be like this:
-0, 3, 5, 7, 9, 11... etc.
-
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Documentation/ABI/stable/sysfs-devices-node |  5 ++++-
- Documentation/admin-guide/cputopology.rst   | 15 +++++++++++++++
- drivers/base/node.c                         |  3 ---
- include/linux/cpumask.h                     |  6 ++++++
- 4 files changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/ABI/stable/sysfs-devices-node b/Documentation/ABI/stable/sysfs-devices-node
-index 484fc04bcc25..9832a17b2b15 100644
---- a/Documentation/ABI/stable/sysfs-devices-node
-+++ b/Documentation/ABI/stable/sysfs-devices-node
-@@ -47,7 +47,10 @@ What:		/sys/devices/system/node/nodeX/cpulist
- Date:		October 2002
- Contact:	Linux Memory Management list <linux-mm@kvack.org>
- Description:
--		The CPUs associated to the node.
-+		The CPUs associated to the node. The format is like 0-3,
-+		8-11, 12-13. The maximum size is PAGE_SIZE, so the tail
-+		of the string will be trimmed while its size is larger
-+		than PAGE_SIZE.
- 
- What:		/sys/devices/system/node/nodeX/meminfo
- Date:		October 2002
-diff --git a/Documentation/admin-guide/cputopology.rst b/Documentation/admin-guide/cputopology.rst
-index b90dafcc8237..8fac776a5ffa 100644
---- a/Documentation/admin-guide/cputopology.rst
-+++ b/Documentation/admin-guide/cputopology.rst
-@@ -44,6 +44,9 @@ core_cpus:
- core_cpus_list:
- 
- 	human-readable list of CPUs within the same core.
-+	The format is like 0-3, 8-11, 12-13. The maximum size is PAGE_SIZE,
-+	so the tail of the string will be trimmed while its size is larger
-+	than PAGE_SIZE.
- 	(deprecated name: "thread_siblings_list");
- 
- package_cpus:
-@@ -54,6 +57,9 @@ package_cpus:
- package_cpus_list:
- 
- 	human-readable list of CPUs sharing the same physical_package_id.
-+	The format is like 0-3, 8-11, 12-13. The maximum size is PAGE_SIZE,
-+	so the tail of the string will be trimmed while its size is larger
-+	than PAGE_SIZE.
- 	(deprecated name: "core_siblings_list")
- 
- die_cpus:
-@@ -63,6 +69,9 @@ die_cpus:
- die_cpus_list:
- 
- 	human-readable list of CPUs within the same die.
-+	The format is like 0-3, 8-11, 12-13. The maximum size is PAGE_SIZE,
-+	so the tail of the string will be trimmed while its size is larger
-+	than PAGE_SIZE.
- 
- book_siblings:
- 
-@@ -73,6 +82,9 @@ book_siblings_list:
- 
- 	human-readable list of cpuX's hardware threads within the same
- 	book_id.
-+	The format is like 0-3, 8-11, 12-13. The maximum size is PAGE_SIZE,
-+	so the tail of the string will be trimmed while its size is larger
-+	than PAGE_SIZE.
- 
- drawer_siblings:
- 
-@@ -83,6 +95,9 @@ drawer_siblings_list:
- 
- 	human-readable list of cpuX's hardware threads within the same
- 	drawer_id.
-+	The format is like 0-3, 8-11, 12-13. The maximum size is PAGE_SIZE,
-+	so the tail of the string will be trimmed while its size is larger
-+	than PAGE_SIZE.
- 
- Architecture-neutral, drivers/base/topology.c, exports these attributes.
- However, the book and drawer related sysfs files will only be created if
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index f449dbb2c746..50324d06bcd5 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -33,9 +33,6 @@ static ssize_t node_read_cpumap(struct device *dev, bool list, char *buf)
- 	cpumask_var_t mask;
- 	struct node *node_dev = to_node(dev);
- 
--	/* 2008/04/07: buf currently PAGE_SIZE, need 9 chars per 32 bits. */
--	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
--
- 	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
- 		return 0;
- 
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index 383684e30f12..81f145e0c742 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -12,6 +12,7 @@
- #include <linux/bitmap.h>
- #include <linux/atomic.h>
- #include <linux/bug.h>
-+#include <asm/page.h>
- 
- /* Don't assign or return these: may not be this big! */
- typedef struct cpumask { DECLARE_BITMAP(bits, NR_CPUS); } cpumask_t;
-@@ -924,6 +925,11 @@ static inline const struct cpumask *get_cpu_mask(unsigned int cpu)
- static inline ssize_t
- cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
- {
-+	/*
-+	 * 32bits requires 9bytes: "ff,ffffffff", thus, too many CPUs will
-+	 * cause the overflow of sysfs pagebuf
-+	 */
-+	BUILD_BUG_ON((NR_CPUS/32 * 9) > (PAGE_SIZE-1));
- 	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
- 				      nr_cpu_ids);
- }
--- 
-2.25.1
-
-Thanks
-Barry
+> > 2) you merge the topic branch in the risc-v tree
+> >
+> > 3) Anup merges the topic branch too and sends me a pull request.
+> >
+> > Paolo
