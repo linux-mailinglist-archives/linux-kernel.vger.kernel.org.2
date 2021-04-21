@@ -2,235 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C90366E50
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EB0366E5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243620AbhDUOej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        id S239929AbhDUOhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243607AbhDUOeh (ORCPT
+        with ESMTP id S235791AbhDUOha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:34:37 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E2DC06174A;
-        Wed, 21 Apr 2021 07:34:04 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id s22so8915056pgk.6;
-        Wed, 21 Apr 2021 07:34:04 -0700 (PDT)
+        Wed, 21 Apr 2021 10:37:30 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959BC06174A;
+        Wed, 21 Apr 2021 07:36:55 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s22so8923949pgk.6;
+        Wed, 21 Apr 2021 07:36:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1MMJc9E2vJ4S7Mny58l5zqOl5ND0C+JpidbUw7b0wr8=;
-        b=hmCLQPukuwX5xjaiFufvuWOBk/GDwoQezj8xLqvWrNJKbeXdhYEcx9oQOKRoQgN9VD
-         O1ZpkhRTflPPxkWOsy3GiUNM9gcl0aypYx5HNwhsaG56YoSCEmUeEc4D1PqNoE2Hzjv7
-         t3Rzdx7S2zIx1OU6Lrq9zofN703C9q3CYsiAMnOLMYPbsqDsYn7BiXSb3irOPD1wCDLU
-         rxIsiw63E4Q0jR0M7gfeob9kGUQmH1CwZZKE7QPyXUilwshoKeofozWas1Q/QDpgxumQ
-         1zpS8n03cBXQ3iPvump4FS51nouHFpO9NKPYmLWISCTk+BVe+L9Y3u0WTXIqScpU/oMf
-         CmwA==
+        h=from:to:cc:subject:date:message-id;
+        bh=EKAtUZl+TRDKugRT+eA6LqC2SBuBYVSKTMQWk3KBVs4=;
+        b=Z4Y1u0jhO1lXAyubIB2I4kWETFgqF3fgDTnOvdpqWnDn6++0UCMA9C/4VhtQTj+G2Y
+         WL/IHCrN5u2DQhMv1ne5JJ9Jiz33hweq2u6OByXiE4ZMQfqIzqTIu02Fj7+3HwuRAf0e
+         B27/V8HH+DDqbf0SNhKk15GajiGHf6zfoXFNlcE3KIH8vNSSTpdWFVHO+fy2e/+2dWsf
+         3aAYYjxQfVxBtKXgw6+hWCbQVk0dPzg0pXw5rn0RORx6aOhE7q+TPNPaYH0BnQoH2rsn
+         9yNX/CBFgtJum6uzdDu7/6cPBnvGfOmGyj1IAlEXxVg6nr2paaj98CAhJY6EyAoSawSe
+         Nelg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1MMJc9E2vJ4S7Mny58l5zqOl5ND0C+JpidbUw7b0wr8=;
-        b=ngCJeapmzi62YN0qnnKIyoFM7KLGm313tqtlaU4yGORsNQSRBTMHLoQqncf68CfDCw
-         uNHWYEteQ3ctyQ9Bo5Yjy21uPeEKbW5iHFj8PZ3vsAWucAYDM4PQpyaTeoEcN9VibIRW
-         kW9HKXbPiRYsJpCXRe0RCAhQyh2CmXqCUfuodt5oldcqvuKAmswI7YEeaClaWXzz0j22
-         0XrlLIeYkxkCVDw3QvEaeZgEUdisGiAvZ8Kx9TFrNBTFYu0WcJZKfMEjSPLGxhdXEAj4
-         X5WgqTBB4Vd5iLqT1/k0lHrvUzAKGKT0+5HyO4mYKy/o+jmhahx4zHJyxRQRl7091PeT
-         XUKA==
-X-Gm-Message-State: AOAM530j44crAyu4EqU1dQ1fv0AGAXPzHRazTVZXrAktsXQ+1IRqoPUj
-        SdjyyzjjV7FMAI0HEuM3rL8=
-X-Google-Smtp-Source: ABdhPJzJoeMfm9yb4ykA4VQqjob3L1dTR1jGK0bpZKmOxdgkOzg82y+ruzcbLkM1cWTVuglShYikiQ==
-X-Received: by 2002:a17:90a:684d:: with SMTP id e13mr11225600pjm.161.1619015643726;
-        Wed, 21 Apr 2021 07:34:03 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 14sm2072289pfi.145.2021.04.21.07.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 07:34:02 -0700 (PDT)
-Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
- reserved memory region
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        Android Kernel Team <kernel-team@android.com>,
-        Architecture Mailman List <boot-architecture@lists.linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
- <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com>
- <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
- <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
- <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
- <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
- <YH/ixPnHMxNo08mJ@google.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cc8f96a4-6c85-b869-d3cf-5dc543982054@gmail.com>
-Date:   Wed, 21 Apr 2021 07:33:52 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <YH/ixPnHMxNo08mJ@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EKAtUZl+TRDKugRT+eA6LqC2SBuBYVSKTMQWk3KBVs4=;
+        b=UDumkzGLgdnA3G0wWPQIkV+qEw8A4EQ6gR5YEFmC81ciGWGvMmwOC4THC0x+1z+pt9
+         drfa8Pyd2J12rVOhoT1ScAT/g/r4w0NzCqeu6BJ+1eRSQiiK8Vn9906eoi1CCzjpL+RW
+         VXJgMGtF6UqErZo7gTrz6Ox2hRBYTXimSCyDeUFnkQEpe2vNS/OhMtIQnBWPSQl+rjV3
+         rwDAO1eu4nNaG3/AD6qbX4rf2lvtOmap7ViqZgd3KLKhunbTJ0fQAKRbLwDQS6W9uSg1
+         06OH64A8b7rKEs/QRRcMvOYKNusVK+54TawawaUNtUBmUQsC5bRIk8bgtW73ZeyeBJB+
+         GptQ==
+X-Gm-Message-State: AOAM532tmcrhwaVSUeo2r9rtPBYSnW4sE2XoQPzZF85AK63RsYJnwi9R
+        lltJ67ucL+QUdmqDmxyc602haYwQQ6WS7zSN
+X-Google-Smtp-Source: ABdhPJxKNrifmZEuw++9U8ppHmiCF3OoM9Yznds7wUI/lYOWG5SwGp66/Q5gKXfxsWV9r5u17lHaSg==
+X-Received: by 2002:a17:90a:4811:: with SMTP id a17mr11276071pjh.74.1619015814894;
+        Wed, 21 Apr 2021 07:36:54 -0700 (PDT)
+Received: from localhost.localdomain ([96.44.140.50])
+        by smtp.gmail.com with ESMTPSA id 123sm1977731pfx.180.2021.04.21.07.36.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 07:36:54 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Guangqing Zhu <zhuguangqing83@gmail.com>
+Subject: [PATCH v2] power: supply: cpcap-battery: fix invalid usage of list cursor
+Date:   Wed, 21 Apr 2021 22:36:50 +0800
+Message-Id: <20210421143650.16045-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
+Fix invalid usage of a list_for_each_entry in cpcap_battery_irq_thread().
+Empty list or fully traversed list points to list head, which is not
+NULL (and before the first element containing real data).
 
-On 4/21/2021 1:31 AM, Quentin Perret wrote:
-> On Tuesday 20 Apr 2021 at 09:33:56 (-0700), Florian Fainelli wrote:
->> I do wonder as well, we have a 32MB "no-map" reserved memory region on
->> our platforms located at 0xfe000000. Without the offending commit,
->> /proc/iomem looks like this:
->>
->> 40000000-fdffefff : System RAM
->>   40008000-40ffffff : Kernel code
->>   41e00000-41ef1d77 : Kernel data
->> 100000000-13fffffff : System RAM
->>
->> and with the patch applied, we have this:
->>
->> 40000000-fdffefff : System RAM
->>   40008000-40ffffff : Kernel code
->>   41e00000-41ef3db7 : Kernel data
->> fdfff000-ffffffff : System RAM
->> 100000000-13fffffff : System RAM
->>
->> so we can now see that the region 0xfe000000 - 0xfffffff is also cobbled
->> up with the preceding region which is a mailbox between Linux and the
->> secure monitor at 0xfdfff000 and of size 4KB. It seems like there is
->>
->> The memblock=debug outputs is also different:
->>
->> [    0.000000] MEMBLOCK configuration:
->> [    0.000000]  memory size = 0xfdfff000 reserved size = 0x7ce4d20d
->> [    0.000000]  memory.cnt  = 0x2
->> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
->> 0xbdfff000 bytes flags: 0x0
->> [    0.000000]  memory[0x1]     [0x00000100000000-0x0000013fffffff],
->> 0x40000000 bytes flags: 0x0
->> [    0.000000]  reserved.cnt  = 0x6
->> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
->> 0xb495 bytes flags: 0x0
->> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef1d77],
->> 0x1cf1d78 bytes flags: 0x0
->> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
->> 0x100000 bytes flags: 0x0
->> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
->> 0x50000 bytes flags: 0x0
->> [    0.000000]  reserved[0x4]   [0x000000c2c00000-0x000000fdbfffff],
->> 0x3b000000 bytes flags: 0x0
->> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
->> 0x40000000 bytes flags: 0x0
->>
->> [    0.000000] MEMBLOCK configuration:
->> [    0.000000]  memory size = 0x100000000 reserved size = 0x7ca4f24d
->> [    0.000000]  memory.cnt  = 0x3
->> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
->> 0xbdfff000 bytes flags: 0x0
->> [    0.000000]  memory[0x1]     [0x000000fdfff000-0x000000ffffffff],
->> 0x2001000 bytes flags: 0x4
->> [    0.000000]  memory[0x2]     [0x00000100000000-0x0000013fffffff],
->> 0x40000000 bytes flags: 0x0
->> [    0.000000]  reserved.cnt  = 0x6
->> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
->> 0xb495 bytes flags: 0x0
->> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef3db7],
->> 0x1cf3db8 bytes flags: 0x0
->> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
->> 0x100000 bytes flags: 0x0
->> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
->> 0x50000 bytes flags: 0x0
->> [    0.000000]  reserved[0x4]   [0x000000c3000000-0x000000fdbfffff],
->> 0x3ac00000 bytes flags: 0x0
->> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
->> 0x40000000 bytes flags: 0x0
->>
->> in the second case we can clearly see that the 32MB no-map region is now
->> considered as usable RAM.
->>
->> Hope this helps.
->>
->>>
->>> In any case, the mere fact that this causes a regression should be
->>> sufficient justification to revert/withdraw it from v5.4, as I don't
->>> see a reason why it was merged there in the first place. (It has no
->>> fixes tag or cc:stable)
->>
->> Agreed, however that means we still need to find out whether a more
->> recent kernel is also broken, I should be able to tell you that a little
->> later.
-> 
-> FWIW I did test this on Qemu before posting. With 5.12-rc8 and a 1MiB
-> no-map region at 0x80000000, I have the following:
-> 
-> 40000000-7fffffff : System RAM
->   40210000-417fffff : Kernel code
->   41800000-41daffff : reserved
->   41db0000-4210ffff : Kernel data
->   48000000-48008fff : reserved
-> 80000000-800fffff : reserved
-> 80100000-13fffffff : System RAM
->   fa000000-ffffffff : reserved
->   13b000000-13f5fffff : reserved
->   13f6de000-13f77dfff : reserved
->   13f77e000-13f77efff : reserved
->   13f77f000-13f7dafff : reserved
->   13f7dd000-13f7defff : reserved
->   13f7df000-13f7dffff : reserved
->   13f7e0000-13f7f3fff : reserved
->   13f7f4000-13f7fdfff : reserved
->   13f7fe000-13fffffff : reserved
-> 
-> If I remove the 'no-map' qualifier from DT, I get this:
-> 
-> 40000000-13fffffff : System RAM
->   40210000-417fffff : Kernel code
->   41800000-41daffff : reserved
->   41db0000-4210ffff : Kernel data
->   48000000-48008fff : reserved
->   80000000-800fffff : reserved
->   fa000000-ffffffff : reserved
->   13b000000-13f5fffff : reserved
->   13f6de000-13f77dfff : reserved
->   13f77e000-13f77efff : reserved
->   13f77f000-13f7dafff : reserved
->   13f7dd000-13f7defff : reserved
->   13f7df000-13f7dffff : reserved
->   13f7e0000-13f7f3fff : reserved
->   13f7f4000-13f7fdfff : reserved
->   13f7fe000-13fffffff : reserved
-> 
-> So this does seem to be working fine on my setup. I'll try again with
-> 5.4 to see if I can repro.
-> 
-> Also, 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove already
-> reserved regions") looks more likely to cause the issue observed here,
-> but that shouldn't be silent. I get the following error message in dmesg
-> if I if place the no-map region on top of the kernel image:
-> 
-> OF: fdt: Reserved memory: failed to reserve memory for node 'foobar@40210000': base 0x0000000040210000, size 1 MiB
-> 
-> Is that triggering on your end?
+Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+---
+v2:
+  - Modify commit message and code as suggested by Sebastian.
+---
+ drivers/power/supply/cpcap-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It is not, otherwise I would have noticed earlier, can you try the same
-thing that happens on my platform with a reserved region (without
-no-map) adjacent to a reserved region with 'no-map'? I will test
-different and newer kernels than 5.4 today to find out if this is still
-a problem with upstream. I could confirm that v4.9.259 also have this
-problem now.
+diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
+index 6d5bcdb9f45d..a3fc0084cda0 100644
+--- a/drivers/power/supply/cpcap-battery.c
++++ b/drivers/power/supply/cpcap-battery.c
+@@ -786,7 +786,7 @@ static irqreturn_t cpcap_battery_irq_thread(int irq, void *data)
+ 			break;
+ 	}
+ 
+-	if (!d)
++	if (list_entry_is_head(d, &ddata->irq_list, node))
+ 		return IRQ_NONE;
+ 
+ 	latest = cpcap_battery_latest(ddata);
 -- 
-Florian
+2.17.1
+
