@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C56366720
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884EA36673E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236256AbhDUImQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:42:16 -0400
-Received: from mga02.intel.com ([134.134.136.20]:28332 "EHLO mga02.intel.com"
+        id S237543AbhDUIqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:46:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:55180 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhDUImO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:42:14 -0400
-IronPort-SDR: f+l9Wj78NpD/RQTmAVr2CkDG/2k+HCYx1LEmFVCou8yLBQbS/OzgKf2DCZeC9WDfdBP0dqbw82
- qiq9AUj+iVOQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="182793781"
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="182793781"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 01:41:41 -0700
-IronPort-SDR: /fwMw7Aaz+8j1L6wYxFmScfEReB1nmgpeJCTWfKvGnnbkI3h1qiIYaZADDhsfvqJp/tpUFEtIi
- rdWm/MvFW9ZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="455249802"
-Received: from glass.png.intel.com ([10.158.65.59])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Apr 2021 01:41:38 -0700
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net-next 1/1] stmmac: intel: set TSO/TBS TX Queues default settings
-Date:   Wed, 21 Apr 2021 16:46:06 +0800
-Message-Id: <20210421084606.20851-1-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S237188AbhDUIqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:46:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38B3711B3;
+        Wed, 21 Apr 2021 01:46:13 -0700 (PDT)
+Received: from [10.57.27.219] (unknown [10.57.27.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7AC43F73B;
+        Wed, 21 Apr 2021 01:46:11 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
+ devices when temp is low
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        amitk@kernel.org, rui.zhang@intel.com
+References: <20210419084536.25000-1-lukasz.luba@arm.com>
+ <20210419084536.25000-3-lukasz.luba@arm.com>
+ <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
+ <55943d6f-0f72-215d-1dd4-bf3996092df7@arm.com>
+ <91411c9c-d78e-8ba6-1cd3-da6879bc5ceb@linaro.org>
+ <0fc57590-cc7c-9e04-16bc-13b7b787ad2f@arm.com>
+ <6ca7915a-9d31-10bd-4f9b-2f815a41df05@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <aa57e829-082a-6387-445b-d1f7aba488d9@arm.com>
+Date:   Wed, 21 Apr 2021 09:46:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6ca7915a-9d31-10bd-4f9b-2f815a41df05@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TSO and TBS cannot coexist, for now we set Intel mGbE controller to use
-below TX Queue mapping: TxQ0 uses TSO and the rest of TXQs supports TBS.
 
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index ec140fc4a0f5..844332a2c2e0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -446,6 +446,9 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 
- 		/* Disable Priority config by default */
- 		plat->tx_queues_cfg[i].use_prio = false;
-+		/* Default TX Q0 to use TSO and rest TXQ for TBS */
-+		if (i > 0)
-+			plat->tx_queues_cfg[i].tbs_en = 1;
- 	}
- 
- 	/* FIFO size is 4096 bytes for 1 tx/rx queue */
--- 
-2.25.1
+On 4/20/21 10:03 PM, Daniel Lezcano wrote:
+> On 20/04/2021 22:01, Lukasz Luba wrote:
+>>
+>>
+>> On 4/20/21 4:24 PM, Daniel Lezcano wrote:
+>>> On 20/04/2021 16:21, Lukasz Luba wrote:
+>>>> Hi Daniel,
+>>>>
+>>>> On 4/20/21 2:30 PM, Daniel Lezcano wrote:
+>>>>> On 19/04/2021 10:45, Lukasz Luba wrote:
+>>>>
+>>>> [snip]
+> 
+> [ ... ]
+> 
+>>
+>> That new approach should work. I can test your patch with this new
+>> functions and re-base my work on top of it.
+>> Or you like me to write such patch and send it?
+> 
+> At your convenience. I'm pretty busy ATM with more patches to review, so
+> if you can handle that change that will be nice. Otherwise, I can take
+> care of it but later.
+> 
 
+OK, so I will create such patch and add your name in tags:
+Co-developed-by: and Signed-off-by:
+plus also a lore.kernel.org link in the patch commit message into this
+discussion. Thanks for having a look at this.
+
+Regards,
+Lukasz
