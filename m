@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FB736677B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9833667AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237548AbhDUJDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237033AbhDUJDy (ORCPT
+        id S237703AbhDUJMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:12:00 -0400
+Received: from relay2.uni-heidelberg.de ([129.206.119.212]:1936 "EHLO
+        relay2.uni-heidelberg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231354AbhDUJL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:03:54 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9509BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:03:21 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id q10so29161387pgj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yx6aQUZUvPvikSOIyFX0nHKqtDVLfC9ijwB0D2c1bfI=;
-        b=oIwiM0uDfHzYTsio/ZfgDEzO6t6ogj1GIURnP3Ga8yUuIXydUYzdNzGw8kr1TDjL8X
-         sgjXjOLJMOyR9Mpwia4+E+LnhOcmc+p6Ep2SAK3gczVjBcBtxOcOWkf7pdQ4XuTOrE34
-         WqekeL78rKzxrf8CmMmjMEiU/9JjRhCU+JYm+yvSmbPU4hpk+kfGNd8SlyNqCYUUyFWh
-         9YecQtGKNYaNNkNrimS+E5d6oV1xK8hjVUV/HmRe9NvUawS6a4LlcqXjkQ+REwkN7Uku
-         1Cs34jq3K31w3YgROt6wbr70whSuMEiInJiHpzCFZtyayt7fvWGLJRbSjosgKpJNuTD0
-         xs0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yx6aQUZUvPvikSOIyFX0nHKqtDVLfC9ijwB0D2c1bfI=;
-        b=YaN37ZswpmJszsldc6l/kZYy0XfYa1rAe4lvd4PC7AL7jw2SUqHaeBmk/yiY/G++sv
-         rLfUCtWQxE7Pg4PL8Otgqup5gLbjREa1TP59XBORxTuqP+NP36Wkoc26H0ddsMbKIg+x
-         ejufcPrDXfvkuFnmv1w2trXP5lmkoAe6rHrWx6fqde3AW/LzpAIJhchjwbfWnf9N0Mgw
-         I3K0l2pxhwxlMDs1MG/oM1HOiY+FICMbpsUc4GtfngKXjOHjH/1wdc8/zjeXafM4fXlu
-         R7Fa06XI3VWuK/y/8DJAC5Qevpz0uX+MD3LBCC2+fsxDIgIBhBlJrOEHn3Hm8/QV0sOZ
-         y5DA==
-X-Gm-Message-State: AOAM532AqghSEhuRX+a+3kBYpYMLFRFefNIdp2ofbckA/wifp0ABY4Ga
-        r9Qm2HI2FVpYHix9UQprvgLrn4+BekZbDf+Nm7C1hQ==
-X-Google-Smtp-Source: ABdhPJzxLPXSfufQouIdkQl0RAryo1fFcGzW4CXnNwhc7Q/gH+kQLI/F9ZE950rMyBzaw7BmrqHzuYSVeB0iF/uLLhM=
-X-Received: by 2002:a63:1665:: with SMTP id 37mr21355237pgw.31.1618995801174;
- Wed, 21 Apr 2021 02:03:21 -0700 (PDT)
+        Wed, 21 Apr 2021 05:11:59 -0400
+X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Apr 2021 05:11:58 EDT
+X-IPAS-Result: =?us-ascii?q?A2BiAABF6n9g/1BqzoFaGgEBAQEBAQEBAQEDAQEBARIBA?=
+ =?us-ascii?q?QEBAgIBAQEBQIFSgw1ra4N9RpF2lTmFSoFzAQEBAQEBAQEBCTEBAgQBAYRQg?=
+ =?us-ascii?q?XcCJTgTAgMBAQEDAgMBAQEBAQYBAQEBAQYEgQSFXYZuBFI1AiYCFigiEoV5q?=
+ =?us-ascii?q?Fh/M4EBiE6BCyOBECoBiV+BT4JNgieBE4Ngg38JHDuCei4IgisEgkAHWTa+C?=
+ =?us-ascii?q?gegEAINJZQzkFEBLZIcgleeLYU9NYE2gXwzPoM4UBkOjlaOGEIvOAIGCgEBA?=
+ =?us-ascii?q?wlZAQGMNAEB?=
+IronPort-HdrOrdr: A9a23:GfVDTaqnIoTMbCle/zNhRZAaV5t1L9V00zAX/kB9WHVpW+afkN
+ 2jm+le6A/shF8qKQgdsP2jGI3Fe3PT8pZp/ZIcVI3JYCDKsHalRbsSiLfK7CbnH0TFh4xg/I
+ dmN5NzEdjhSWV95PyKgzWQN/YF7J25/LuzheHYpk0NcShPZ7t75wl0Tia3e3cGIDVuPpYyGJ
+ qC6scvnVPJEkg/Vci1CmIIWOLOvbTw9K7OWwIMBBIs9WC1/FSVwYP9eiLouCs2YndgxfMH/X
+ LemwL0op+/u+y2oyWx60bjq7pRntXlxp9vJuypzvIUJDLllxqyaO1aNoGqjXQapueg7Vpvqt
+ 3QulMbOdhp4X+5RA6IiCqo4AXr3DYw53KK8zGlvUc=
+X-IronPort-Anti-Spam-Filtered: true
+Received: from lemon.iwr.uni-heidelberg.de ([129.206.106.80])
+  by relay2.uni-heidelberg.de with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Apr 2021 11:03:55 +0200
+Received: from hlauer by lemon.iwr.uni-heidelberg.de with local (Exim 4.92)
+        (envelope-from <hlauer@lemon.iwr.uni-heidelberg.de>)
+        id 1lZ8m2-0005Hc-I3; Wed, 21 Apr 2021 11:03:54 +0200
+Date:   Wed, 21 Apr 2021 11:03:54 +0200
+From:   Hermann.Lauer@uni-heidelberg.de
+To:     sre@kernel.org, wens@csie.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] axp209 PMIC: setting constant_charge_current to 0
+ disables battery charging
+Message-ID: <20210421090354.GF19953@lemon.iwr.uni-heidelberg.de>
 MIME-Version: 1.0
-References: <20210421060259.67554-1-songmuchun@bytedance.com>
- <YH/cVoUCTKu/UkqB@dhcp22.suse.cz> <20210421083315.GA7552@hori.linux.bs1.fc.nec.co.jp>
-In-Reply-To: <20210421083315.GA7552@hori.linux.bs1.fc.nec.co.jp>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 21 Apr 2021 17:02:44 +0800
-Message-ID: <CAMZfGtXSuuMjtr0zNOxSsN3cYZPAYzuf6bqAVqwoO8q4eQ0HtQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: hugetlb: fix a race between
- memory-failure/soft_offline and gather_surplus_pages
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 4:33 PM HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=80=80=
-=E7=9B=B4=E4=B9=9F)
-<naoya.horiguchi@nec.com> wrote:
->
-> On Wed, Apr 21, 2021 at 10:03:34AM +0200, Michal Hocko wrote:
-> > [Cc Naoya]
-> >
-> > On Wed 21-04-21 14:02:59, Muchun Song wrote:
-> > > The possible bad scenario:
-> > >
-> > > CPU0:                           CPU1:
-> > >
-> > >                                 gather_surplus_pages()
-> > >                                   page =3D alloc_surplus_huge_page()
-> > > memory_failure_hugetlb()
-> > >   get_hwpoison_page(page)
-> > >     __get_hwpoison_page(page)
-> > >       get_page_unless_zero(page)
-> > >                                   zero =3D put_page_testzero(page)
-> > >                                   VM_BUG_ON_PAGE(!zero, page)
-> > >                                   enqueue_huge_page(h, page)
-> > >   put_page(page)
-> > >
-> > > The refcount can possibly be increased by memory-failure or soft_offl=
-ine
-> > > handlers, we can trigger VM_BUG_ON_PAGE and wrongly add the page to t=
-he
-> > > hugetlb pool list.
-> >
-> > The hwpoison side of this looks really suspicious to me. It shouldn't
-> > really touch the reference count of hugetlb pages without being very
-> > careful (and having hugetlb_lock held).
->
-> I have the same feeling, there is a window where a hugepage is refcounted
-> during converting from buddy free pages into free hugepage, so refcount
-> alone is not enough to prevent the race.  hugetlb_lock is retaken after
-> alloc_surplus_huge_page returns, so simply holding hugetlb_lock in
-> get_hwpoison_page() seems not work.  Is there any status bit to show that=
- a
-> hugepage is just being initialized (not in free hugepage pool or in use)?
+Dear Maintainers,
 
-HPageFreed() can indicate whether a page is on the
-free pool list.
+this proposed patch allows setting constant_charge_current to 0 on axp209
+PMIC to disable charging. constant_charge_current_max with a value of 0 makes
+no sense and should still report the maximum allowed value, so the getter code
+is unrolled for the POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT case.
 
->
-> > What would happen if the
-> > reference count was increased after the page has been enqueed into the
-> > pool? This can just blow up later.
->
-> Yes, this is another concern.
->
-> Thanks,
-> Naoya Horiguchi
+This works on the axp209 of Banana{Pi M1,Pi M1+,Pro}. I have no access to
+the other chips the driver deals with.
+
+Thanks for comments and greetings
+  Hermann
+
+Signed-off-by: Hermann.Lauer@uni-heidelberg.de
+---
+ patches/axp209-charge-current0.patchl | 18 ++++++++++--------
+ 1 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
+--- a/drivers/power/supply/axp20x_battery.c
++++ b/drivers/power/supply/axp20x_battery.c
+@@ -40,6 +40,7 @@
+ #define AXP209_FG_PERCENT		GENMASK(6, 0)
+ #define AXP22X_FG_VALID			BIT(7)
+ 
++#define AXP20X_CHRG_CTRL1_ENABLE	BIT(7)
+ #define AXP20X_CHRG_CTRL1_TGT_VOLT	GENMASK(6, 5)
+ #define AXP20X_CHRG_CTRL1_TGT_4_1V	(0 << 5)
+ #define AXP20X_CHRG_CTRL1_TGT_4_15V	(1 << 5)
+@@ -249,11 +250,18 @@
+ 		break;
+ 
+ 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+-		ret = axp20x_get_constant_charge_current(axp20x_batt,
+-							 &val->intval);
++		ret = regmap_read(axp20x_batt->regmap, AXP20X_CHRG_CTRL1, &val->intval);
+ 		if (ret)
+ 			return ret;
+-		break;
++
++		if (val->intval & AXP20X_CHRG_CTRL1_ENABLE) {
++			val->intval &= AXP20X_CHRG_CTRL1_TGT_CURR;
++			val->intval = val->intval * axp20x_batt->data->ccc_scale +
++					axp20x_batt->data->ccc_offset;
++		} else
++			val->intval = 0;
++
++		return 0;
+ 
+ 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
+ 		val->intval = axp20x_batt->max_ccc;
+@@ -392,6 +400,10 @@
+ static int axp20x_set_constant_charge_current(struct axp20x_batt_ps *axp_batt,
+ 					      int charge_current)
+ {
++	if (charge_current == 0)
++		return regmap_update_bits(axp_batt->regmap, AXP20X_CHRG_CTRL1,
++				  AXP20X_CHRG_CTRL1_ENABLE, 0);
++
+ 	if (charge_current > axp_batt->max_ccc)
+ 		return -EINVAL;
+ 
+@@ -402,7 +414,8 @@
+ 		return -EINVAL;
+ 
+ 	return regmap_update_bits(axp_batt->regmap, AXP20X_CHRG_CTRL1,
+-				  AXP20X_CHRG_CTRL1_TGT_CURR, charge_current);
++				  AXP20X_CHRG_CTRL1_TGT_CURR | AXP20X_CHRG_CTRL1_ENABLE,
++				  charge_current | AXP20X_CHRG_CTRL1_ENABLE);
+ }
+ 
+ static int axp20x_set_max_constant_charge_current(struct axp20x_batt_ps *axp,
