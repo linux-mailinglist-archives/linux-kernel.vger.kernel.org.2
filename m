@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D072D366D29
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B78366D2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242838AbhDUNuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57366 "EHLO mail.kernel.org"
+        id S242845AbhDUNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:50:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242814AbhDUNuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 199C161439;
-        Wed, 21 Apr 2021 13:49:34 +0000 (UTC)
+        id S234768AbhDUNug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:50:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 625BF60C3E;
+        Wed, 21 Apr 2021 13:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619012975;
-        bh=DfvW4thW35pyhxnz0Xb3KHpopcscliALtkpJSIRX4gA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VBmtKNXEDbDJq2+QztTmG9r2Vg8OCWs/gZ/nFZKANBM8qtEdKgo9G//Ro21DlXotR
-         IyXp/TqMMa9NHAvp97bjZZfR4Jq/F8M94GEPqrN1y8J+oRa7rP8GSFpGhJCiT3NVeU
-         RUZX2Jpw9ukIK/qRqzWgHmdc90tyBKE1iWhBc2ukukB1ynT8UMy0fMsReZkvAZkqib
-         pM80DJ6mFWv32EUkoX710SR++2fUXyhAeJowWiFEQx4gYfQlxsSBLDReakV3r52v4e
-         mnbLdxAoaiK7rk5LYFACLm0A7nZj5Cl82yCQCXDeYX8E0SCpasBx3qn409RmTNcVfF
-         a5VeukcK1eFZQ==
-Date:   Wed, 21 Apr 2021 16:49:31 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     "Shelat, Abhi" <a.shelat@northeastern.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YIAta3cRl8mk/RkH@unreal>
-References: <20210407001658.2208535-1-pakki001@umn.edu>
- <YH5/i7OvsjSmqADv@kroah.com>
- <20210420171008.GB4017@fieldses.org>
- <YH+zwQgBBGUJdiVK@unreal>
- <YH+7ZydHv4+Y1hlx@kroah.com>
- <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
- <YH/8jcoC1ffuksrf@kroah.com>
- <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
- <20210421133727.GA27929@fieldses.org>
+        s=k20201202; t=1619013003;
+        bh=ZwbuGMgJnP2yBgKidTmrVn0kPEoHr/JE1RzsucEKyeI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MIAvkSDuHDrtEVoAhbo/IF74URwCzMMj/BHa1C2rvgy4+pGBYrVzUrpkhaEize+D1
+         i6VJwhh6UNLdxfrgc7jux8MP46qlg1dd9VaGJfKXPygVO+ZZFOa89min0dZtAbHOnd
+         SOkehsdL1ODmvnfLLeSh/TYZ7U5MRKldCejbOpes8EQV/eSy6/4UapbDdQ3pfKN2wk
+         nKJ1+i2lRWh0iRQNXxcIez/69UYSaYVsK6l++r05ieGUYOfqXOkLxXwSWZGdojMJsA
+         EUZa6jRMmk/Od+0Dnj+zLVqdSWZfhrN8FZAyGkeFkYgbMF+gjzYLWoM/xBbYOU+hsx
+         3EKQKzpTzRqSQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: intel_pmc_core: add ACPI dependency
+Date:   Wed, 21 Apr 2021 15:49:39 +0200
+Message-Id: <20210421134957.3329062-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421133727.GA27929@fieldses.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:37:27AM -0400, J. Bruce Fields wrote:
-> On Wed, Apr 21, 2021 at 11:58:08AM +0000, Shelat, Abhi wrote:
-> > Academic research should NOT waste the time of a community.
-> > 
-> > If you believe this behavior deserves an escalation, you can contact
-> > the Institutional Review Board (irb@umn.edu) at UMN to investigate
-> > whether this behavior was harmful; in particular, whether the research
-> > activity had an appropriate IRB review, and what safeguards prevent
-> > repeats in other communities.
-> 
-> For what it's worth, they do address security, IRB, and maintainer-time
-> questions in "Ethical Considerations", starting on p. 8:
-> 
-> 	https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceInsecurity.pdf
-> 
-> (Summary: in that experiment, they claim actual fixes were sent before
-> the original (incorrect) patches had a chance to be committed; that
-> their IRB reviewed the plan and determined it was not human research;
-> and that patches were all small and (after correction) fixed real (if
-> minor) bugs.)
-> 
-> This effort doesn't appear to be following similar protocols, if Leon
-> Romanvosky and Aditya Pakki are correct that security holes have already
-> reached stable.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Aditya Pakki is the one who is sending those patches.
+The driver now fails to build without ACPI:
 
-If you want to see another accepted patch that is already part of
-stable@, you are invited to take a look on this patch that has "built-in bug":
-8e949363f017 ("net: mlx5: Add a missing check on idr_find, free buf")
+drivers/platform/x86/intel_pmc_core.c: In function 'pmc_core_get_tgl_lpm_reqs':
+drivers/platform/x86/intel_pmc_core.c:617:41: error: invalid use of undefined type 'struct acpi_device'
+  617 |         out_obj = acpi_evaluate_dsm(adev->handle, &s0ix_dsm_guid, 0,
 
-Thanks
+This could probably be made optional, but it won't be used without
+ACPI in practice, so just add a Kconfig dependency.
+
+Fixes: 428131364f00 ("platform/x86: intel_pmc_core: Get LPM requirements for Tiger Lake")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/platform/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 697fc446ac41..2714f7c3843e 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1194,6 +1194,7 @@ config INTEL_MRFLD_PWRBTN
+ config INTEL_PMC_CORE
+ 	tristate "Intel PMC Core driver"
+ 	depends on PCI
++	depends on ACPI
+ 	help
+ 	  The Intel Platform Controller Hub for Intel Core SoCs provides access
+ 	  to Power Management Controller registers via various interfaces. This
+-- 
+2.29.2
+
