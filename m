@@ -2,107 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF831367294
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEF7367297
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244348AbhDUSbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:31:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47327 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235723AbhDUSbI (ORCPT
+        id S241711AbhDUSdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231685AbhDUSc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:31:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619029835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VtGtYNFtNAebLz2pgKqQah+fAXQ7o/bJBdongF2UrwY=;
-        b=bk2qBoeaLwpD2LwmtpWUperRm+9c1Cunam97fB1lt8xVJLL0KZceqNBlWkzqWD+2M9wMc6
-        YeNf+GWrdN+z7XIY2qtNHkYzlpVzyt1OpKzWPdOcylF8uFm5HnQH0VMVplTUBMOsGcsYih
-        LmQhwpTVk9+DHFUtV4sGMraXrh1iqNc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-r_aH-naCNO2wyBNc55BI9Q-1; Wed, 21 Apr 2021 14:30:13 -0400
-X-MC-Unique: r_aH-naCNO2wyBNc55BI9Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2FCB8542F4;
-        Wed, 21 Apr 2021 18:29:59 +0000 (UTC)
-Received: from krava (unknown [10.40.195.227])
-        by smtp.corp.redhat.com (Postfix) with SMTP id AD5C05C1B4;
-        Wed, 21 Apr 2021 18:29:57 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 20:29:56 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v4 15/25] perf stat: Filter out unmatched aggregation for
- hybrid event
-Message-ID: <YIBvJLAvL0rWGhhP@krava>
-References: <20210416140517.18206-1-yao.jin@linux.intel.com>
- <20210416140517.18206-16-yao.jin@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416140517.18206-16-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Wed, 21 Apr 2021 14:32:56 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D1FC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:32:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z8-20020a2566480000b02904e0f6f67f42so17063891ybm.15
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=FvAswNxnPHsrYsB29334aDx0CJGCBFJ87PYQGSoXC7U=;
+        b=Jml0dfSb6fz47ZIEY22eqphvQEi8jUZhPeaUH3yBL4lYpGNTOxCsF3JqbFPN6YZ/FN
+         u4kSvuOnoXcMkdH6vnguAyqWSlh+kk+5KtLPxDqphU1SbOWmB6jK4BQv5TwH7fd0Hueu
+         tWqQMaDeLwsa03LzDzHv34/Vhahm0e+cah9sva3WQ5fO50VCeCrURAsp+zW2v/GBWnXQ
+         9j6Kho/ORIiadlzNR+WOjMZdnVwLU2HDIEIlBxwCIdqLBrE0DcdOhRYwqR9pFeMSXnq+
+         rNsf1SLYxaUXxyyC+Y7QeArAAiVuIkqIVLBZmsUe5m7L8MLzBML6u7G2tAzTOiZj3oVB
+         3e5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=FvAswNxnPHsrYsB29334aDx0CJGCBFJ87PYQGSoXC7U=;
+        b=RFksRFeBcARgfQDSV/jmXtlukkyskWKkR1/l+WDyREVXHVCEVV1EP0pfR4EFFdQ82N
+         aeP+LauZesIu0hncV8BvMq3xMH5cql7Zzd4g6uCNBo1r54Jssz1aUGUI4Tuw8FLRW0ky
+         g1snDYTZTHG+cSVBb0BJ9UXo5rV3JImjUqqDOBOvHBIoVGeeCcbDtlAZlazWw1VEDghc
+         yyp0O0KuTc5pRVLrGZYu4iVLRf+KN2jGcNXIP7a9eMXJkWiQQhmKd99lLY5r7INUqhce
+         zN0e9FhkFyu5fWXAC4ShkBD8QF7WlgJiF38u6VVjvowPNjth11U7+UWkIdfUC6iVdo7B
+         or8g==
+X-Gm-Message-State: AOAM533GS07wqjndV2aDcntz+fC7F+H6pVIv+DA4qor7IG/QOw8/e6L4
+        J9X+O8YPvTEKLJ8nxgTWf9DX/TIj3mzX5g==
+X-Google-Smtp-Source: ABdhPJyOHrklTMDQJJLuS1w6K2MpKW95veAmi+cEimLFh0JwPRA0CZyJe82W5vhKKxqxYZxMZUaqD7N69ZeD8g==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:9524:9c1f:6fff:a9ad])
+ (user=dlatypov job=sendgmr) by 2002:a25:3f04:: with SMTP id
+ m4mr35514845yba.350.1619029941836; Wed, 21 Apr 2021 11:32:21 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:32:10 -0700
+Message-Id: <20210421183210.2557462-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH 1/2] kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:05:07PM +0800, Jin Yao wrote:
+Add in:
+* kunit_kmalloc_array() and wire up kunit_kmalloc() to be a special
+case of it.
+* kunit_kcalloc() for symmetry with kunit_kzalloc()
 
-SNIP
+This should using KUnit more natural by making it more similar to the
+existing *alloc() APIs.
 
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index 5255d78b1c30..15eafd249e46 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -643,6 +643,20 @@ static void aggr_cb(struct perf_stat_config *config,
->  	}
->  }
->  
-> +static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
-> +				   struct evsel *counter, struct aggr_cpu_id id)
-> +{
-> +	struct aggr_cpu_id s;
-> +
-> +	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
-> +		s = config->aggr_get_id(config, evsel__cpus(counter), i);
-> +		if (cpu_map__compare_aggr_cpu_id(s, id))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  static void print_counter_aggrdata(struct perf_stat_config *config,
->  				   struct evsel *counter, int s,
->  				   char *prefix, bool metric_only,
-> @@ -656,6 +670,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
->  	double uval;
->  
->  	ad.id = id = config->aggr_map->map[s];
-> +
-> +	if (perf_pmu__has_hybrid() &&
-> +	    !aggr_id_hybrid_matched(config, counter, id)) {
-> +		return;
-> +	}
-> +
->  	ad.val = ad.ena = ad.run = 0;
->  	ad.nr = 0;
->  	if (!collect_data(config, counter, aggr_cb, &ad))
+And while we shouldn't necessarily be writing unit tests where overflow
+should be a concern, it can't hurt to be safe.
 
-there's same check in aggr_cb, so it seems like we could just make check in here:
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++----
+ lib/kunit/test.c     | 22 ++++++++++++----------
+ 2 files changed, 44 insertions(+), 14 deletions(-)
 
-	if (perf_pmu__has_hybrid() && ad.ena == 0)
-		return;
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 49601c4b98b8..7fa0de4af977 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -577,16 +577,30 @@ static inline int kunit_destroy_named_resource(struct kunit *test,
+ void kunit_remove_resource(struct kunit *test, struct kunit_resource *res);
+ 
+ /**
+- * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
++ * kunit_kmalloc_array() - Like kmalloc_array() except the allocation is *test managed*.
+  * @test: The test context object.
++ * @n: number of elements.
+  * @size: The size in bytes of the desired memory.
+  * @gfp: flags passed to underlying kmalloc().
+  *
+- * Just like `kmalloc(...)`, except the allocation is managed by the test case
++ * Just like `kmalloc_array(...)`, except the allocation is managed by the test case
+  * and is automatically cleaned up after the test case concludes. See &struct
+  * kunit_resource for more information.
+  */
+-void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
++void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t flags);
++
++/**
++ * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
++ * @test: The test context object.
++ * @size: The size in bytes of the desired memory.
++ * @gfp: flags passed to underlying kmalloc().
++ *
++ * See kmalloc() and kunit_kmalloc_array() for more information.
++ */
++static inline void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
++{
++	return kunit_kmalloc_array(test, 1, size, gfp);
++}
+ 
+ /**
+  * kunit_kfree() - Like kfree except for allocations managed by KUnit.
+@@ -601,13 +615,27 @@ void kunit_kfree(struct kunit *test, const void *ptr);
+  * @size: The size in bytes of the desired memory.
+  * @gfp: flags passed to underlying kmalloc().
+  *
+- * See kzalloc() and kunit_kmalloc() for more information.
++ * See kzalloc() and kunit_kmalloc_array() for more information.
+  */
+ static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
+ {
+ 	return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
+ }
+ 
++/**
++ * kunit_kzalloc() - Just like kunit_kmalloc_array(), but zeroes the allocation.
++ * @test: The test context object.
++ * @n: number of elements.
++ * @size: The size in bytes of the desired memory.
++ * @gfp: flags passed to underlying kmalloc().
++ *
++ * See kcalloc() and kunit_kmalloc_array() for more information.
++ */
++static inline void *kunit_kcalloc(struct kunit *test, size_t n, size_t size, gfp_t flags)
++{
++	return kunit_kmalloc_array(test, n, size, flags | __GFP_ZERO);
++}
++
+ void kunit_cleanup(struct kunit *test);
+ 
+ void kunit_log_append(char *log, const char *fmt, ...);
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index ec9494e914ef..052fccf69eef 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -540,41 +540,43 @@ int kunit_destroy_resource(struct kunit *test, kunit_resource_match_t match,
+ }
+ EXPORT_SYMBOL_GPL(kunit_destroy_resource);
+ 
+-struct kunit_kmalloc_params {
++struct kunit_kmalloc_array_params {
++	size_t n;
+ 	size_t size;
+ 	gfp_t gfp;
+ };
+ 
+-static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
++static int kunit_kmalloc_array_init(struct kunit_resource *res, void *context)
+ {
+-	struct kunit_kmalloc_params *params = context;
++	struct kunit_kmalloc_array_params *params = context;
+ 
+-	res->data = kmalloc(params->size, params->gfp);
++	res->data = kmalloc_array(params->n, params->size, params->gfp);
+ 	if (!res->data)
+ 		return -ENOMEM;
+ 
+ 	return 0;
+ }
+ 
+-static void kunit_kmalloc_free(struct kunit_resource *res)
++static void kunit_kmalloc_array_free(struct kunit_resource *res)
+ {
+ 	kfree(res->data);
+ }
+ 
+-void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
++void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
+ {
+-	struct kunit_kmalloc_params params = {
++	struct kunit_kmalloc_array_params params = {
+ 		.size = size,
++		.n = n,
+ 		.gfp = gfp
+ 	};
+ 
+ 	return kunit_alloc_resource(test,
+-				    kunit_kmalloc_init,
+-				    kunit_kmalloc_free,
++				    kunit_kmalloc_array_init,
++				    kunit_kmalloc_array_free,
+ 				    gfp,
+ 				    &params);
+ }
+-EXPORT_SYMBOL_GPL(kunit_kmalloc);
++EXPORT_SYMBOL_GPL(kunit_kmalloc_array);
+ 
+ void kunit_kfree(struct kunit *test, const void *ptr)
+ {
 
-without another extra loop
-
-jirka
+base-commit: 16fc44d6387e260f4932e9248b985837324705d8
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
