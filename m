@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89BF366E60
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93529366E62
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbhDUOjJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 10:39:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34888 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234938AbhDUOjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:39:04 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-279-E_LjFz9SPlSA_JZbVKloyw-1; Wed, 21 Apr 2021 15:38:28 +0100
-X-MC-Unique: E_LjFz9SPlSA_JZbVKloyw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 21 Apr 2021 15:38:27 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 21 Apr 2021 15:38:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        "Voon Weifeng" <weifeng.voon@intel.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Thierry Reding <treding@nvidia.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [net-next] net: stmmac: fix gcc-10 -Wrestrict warning
-Thread-Topic: [PATCH] [net-next] net: stmmac: fix gcc-10 -Wrestrict warning
-Thread-Index: AQHXNrT6fDpLRbOb4EudX81jJF2zvaq/CRyw
-Date:   Wed, 21 Apr 2021 14:38:27 +0000
-Message-ID: <caa29114659049e584b9fa7fbb6226c8@AcuMS.aculab.com>
-References: <20210421134743.3260921-1-arnd@kernel.org>
-In-Reply-To: <20210421134743.3260921-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S243624AbhDUOju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:39:50 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46406 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243476AbhDUOjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:39:48 -0400
+IronPort-SDR: LupxxomHL1KBvkM7KxMieqd/DuMb0fGwXheUgmYBmLyv0c/h66H9u+qzQAyolcdonoUVmSu1u/
+ 0oX1NukqTTBw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="175194776"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="175194776"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 07:39:15 -0700
+IronPort-SDR: 5FrLDqwjxLoKcB5liQmfvq9kHa0/Cm2aFt6uXtcwXh41gdtzV+M0BR0F0wOut9XQPBOY97/eLE
+ rBG+3t5cmTMw==
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="421008986"
+Received: from lvaldivi-mobl3.ger.corp.intel.com (HELO [10.252.63.171]) ([10.252.63.171])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 07:39:13 -0700
+Subject: Re: [PATCH] drm/i915: Fix docbook descriptions for i915_cmd_parser
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210421120353.544518-1-maarten.lankhorst@linux.intel.com>
+ <CAKMK7uFpoY7YMEMbftjq+P5XHR6L+F0KwFtbK7CtuUFy7HsLkQ@mail.gmail.com>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Message-ID: <9ae96fa1-6c91-4ec1-422d-8e0a95251bb7@linux.intel.com>
+Date:   Wed, 21 Apr 2021 16:39:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <CAKMK7uFpoY7YMEMbftjq+P5XHR6L+F0KwFtbK7CtuUFy7HsLkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 21 April 2021 14:47
-> 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> gcc-10 and later warn about a theoretical array overrun when
-> accessing priv->int_name_rx_irq[i] with an out of bounds value
-> of 'i':
-> 
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c: In function 'stmmac_request_irq_multi_msi':
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3528:17: error: 'snprintf' argument 4 may overlap
-> destination object 'dev' [-Werror=restrict]
->  3528 |                 snprintf(int_name, int_name_len, "%s:%s-%d", dev->name, "tx", i);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3404:60: note: destination object referenced by
-> 'restrict'-qualified argument 1 was declared here
->  3404 | static int stmmac_request_irq_multi_msi(struct net_device *dev)
->       |                                         ~~~~~~~~~~~~~~~~~~~^~~
-> 
-> The warning is a bit strange since it's not actually about the array
-> bounds but rather about possible string operations with overlapping
-> arguments, but it's not technically wrong.
-> 
-> Avoid the warning by adding an extra bounds check.
-> 
-> Fixes: 8532f613bc78 ("net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index d1ca07c846e6..aadac783687b 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -3498,6 +3498,8 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> 
->  	/* Request Rx MSI irq */
->  	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
-> +		if (i > MTL_MAX_RX_QUEUES)
-> +			break;
->  		if (priv->rx_irq[i] == 0)
->  			continue;
-
-It might be best to do:
-	num_queues = min(priv->plat->rx_queues_to_use, MTL_MAX_RX_QUEUES);
-	if (i = 0; i < num_queues; i++) {
-		...
-
-Or just give up - if rx_queues_to_use is too big it's all
-gone horribly wrong already.
-
-The compile must be smoking weed again.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Op 21-04-2021 om 16:32 schreef Daniel Vetter:
+> On Wed, Apr 21, 2021 at 2:03 PM Maarten Lankhorst
+> <maarten.lankhorst@linux.intel.com> wrote:
+>> Fixes the following htmldocs warnings:
+>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Excess function parameter 'trampoline' description in 'intel_engine_cmd_parser'
+>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'jump_whitelist' not described in 'intel_engine_cmd_parser'
+>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'shadow_map' not described in 'intel_engine_cmd_parser'
+>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'batch_map' not described in 'intel_engine_cmd_parser'
+>> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Excess function parameter 'trampoline' description in 'intel_engine_cmd_parser'
+>>
+>> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>> ---
+>>  drivers/gpu/drm/i915/i915_cmd_parser.c | 16 +++++++++++++++-
+>>  1 file changed, 15 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/i915_cmd_parser.c b/drivers/gpu/drm/i915/i915_cmd_parser.c
+>> index e6f1e93abbbb..afb9b7516999 100644
+>> --- a/drivers/gpu/drm/i915/i915_cmd_parser.c
+>> +++ b/drivers/gpu/drm/i915/i915_cmd_parser.c
+>> @@ -1369,6 +1369,18 @@ static int check_bbstart(u32 *cmd, u32 offset, u32 length,
+>>         return 0;
+>>  }
+>>
+>> +/**
+>> + * intel_engine_cmd_parser_alloc_jump_whitelist() - preallocate jump whitelist for intel_engine_cmd_parser()
+>> + * @batch_length: length of the commands in batch_obj
+>> + * @trampoline: Whether jump trampolines are used.
+>> + *
+>> + * Preallocates a jump whitelist for parsing the cmd buffer in intel_engine_cmd_parser().
+>> + * This has to be preallocated, because the command parser runs in signaling context,
+>> + * and may not allocate any memory.
+>> + *
+>> + * Return: NULL or pointer to a jump whitelist, or ERR_PTR() on failure. Use
+>> + * IS_ERR() to check for errors. Must bre freed() with kfree().
+> IS_ERR_OR_NULL or needs an actual bugfix in the code since we're not
+> consistent. Also s/bre/be/
+We're sort of consistent, NULL is a valid return code. IS_ERR is only on faliure. :)
+> -Daniel
+>
+>> + */
+>>  unsigned long *intel_engine_cmd_parser_alloc_jump_whitelist(u32 batch_length,
+>>                                                             bool trampoline)
+>>  {
+>> @@ -1401,7 +1413,9 @@ unsigned long *intel_engine_cmd_parser_alloc_jump_whitelist(u32 batch_length,
+>>   * @batch_offset: byte offset in the batch at which execution starts
+>>   * @batch_length: length of the commands in batch_obj
+>>   * @shadow: validated copy of the batch buffer in question
+>> - * @trampoline: whether to emit a conditional trampoline at the end of the batch
+>> + * @jump_whitelist: buffer preallocated with intel_engine_cmd_parser_alloc_jump_whitelist()
+>> + * @shadow_map: mapping to @shadow vma
+>> + * @batch_map: mapping to @batch vma
+>>   *
+>>   * Parses the specified batch buffer looking for privilege violations as
+>>   * described in the overview.
+>> --
+>> 2.31.0
+>>
+>
 
