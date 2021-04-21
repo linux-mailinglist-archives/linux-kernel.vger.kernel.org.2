@@ -2,262 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DE0366DCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E71366DD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239794AbhDUOMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239591AbhDUOMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:12:03 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766D3C06174A;
-        Wed, 21 Apr 2021 07:11:30 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id e89-20020a9d01e20000b0290294134181aeso13253706ote.5;
-        Wed, 21 Apr 2021 07:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C+MMGu6/cdDUyGRCAkorYxe8bF5C7WJDPp9/ShABlOU=;
-        b=gmj1SVVbiQG/yKolJzH1wD8dfp3SWUUnQe9+lwQsSLYGZ3rqKl/lFThcD9ndaFzlmy
-         pRH2PyQg5xTFUaLSVbp0DYqzUJXPBKVmm0JPcE+g2GmR8WDq0GcO74lwnCkEzdo+rqCg
-         LrrognhvbjlOK7cZOXIMCZXQ+IJDmjAfnkFSFKKgsUUzXGWlcr9BG+9x8kXoPFacVpFE
-         teq1Wajw89s18QYvTjN4XQ2t2BKKFSPZixeyQtOR0l0kJWtK1B2buoKi+JeHlcejynCI
-         EVRhh4BXZ2Pl4mJ+5fiX5Iu7soWjMLQ2J/pBjyLaqxZwgh5IW3/Rp7DWN7TcaMQO7yXA
-         BvKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=C+MMGu6/cdDUyGRCAkorYxe8bF5C7WJDPp9/ShABlOU=;
-        b=LukgHC1ADyopHq7Ln3CE67aCJgTGxYt4RgaS1cFr+NmGFyEuY1gm/f431wPf/jabdO
-         2a4xTaKhE8CweUJFingCuD8X5Makl40Q9j5DPdlD+NVzixL4xi1D1GErPEqyAAw530w9
-         y+MWje702KBrQLqyirrWdsJHsHvuyNtVBj1eExU5L61mQ5b1SRroRzEqtHGI4dt9BhZi
-         dFbdzNwDwN5nC0NOnUWwVVU+jOssHUJgO7g8kzByS3aBoAeyU0ggC0jkK0dQjNiz38U3
-         sW4PUSgFl2bqLVoxtUaOf7CcLC+8uJsNtnVNEs47PtjdyE8BwgFkyof+9w0v9qcpu8tu
-         tZ/g==
-X-Gm-Message-State: AOAM532v4Cw8uzwuq1Tek63HhPwAR6CQvBjNfFHwDQVvhOhr4pWVvcro
-        vcq+LP4+Okp7Bt54FrB2So7GUhY5Yic=
-X-Google-Smtp-Source: ABdhPJwHg1FJRGDzgw5/MyTHpkZNNXQcNJAZciGSi3Ft8ARQ1p0BzIhuXFZUFjQoQ4x2M0mP67A3Ow==
-X-Received: by 2002:a9d:7e8e:: with SMTP id m14mr10229356otp.302.1619014289335;
-        Wed, 21 Apr 2021 07:11:29 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c21sm474473ooa.48.2021.04.21.07.11.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 07:11:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH V5] watchdog: mtk: support dual mode when the bark irq is
- available
-To:     Wang Qing <wangqing@vivo.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1618992304-18903-1-git-send-email-wangqing@vivo.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <65b0c4d4-7b01-eb4c-3b1e-0d1427e85c3e@roeck-us.net>
-Date:   Wed, 21 Apr 2021 07:11:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241911AbhDUONR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235552AbhDUONQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0069461445;
+        Wed, 21 Apr 2021 14:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619014362;
+        bh=n0NteZqvzMWXZ+4wogR9QLuIhPzmShJ7ox00dqcop78=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oD+5wY8O7TfywO13RREcUmEEEUjSivHJ3SIo7cIlvZrNC6b2wEy4sFQPuduqW55y/
+         akZfMCH31j1bpC6S32DHETpFFIFZ+TttM13cZxzbepTzrjQq6AOitb5itybjk2wc7L
+         CRIYCeJtEwJFnN4y4/6NcIgX9qfz12Wsgiqrd42CBHrcu3conLXVawCDZXtvseyRzx
+         zQxVZUmGTol/qOitFje+XNNFab7NXZljGSz3y3vAjtEl08heG01AKoN+m8GBYK4Qjx
+         xREJ/NPAQMqlV3Q5vqLWpgo7EJUoh+VWVuTjkA4JGVkdBLgLv7Z//hjs3CWHtoRoAS
+         WWuTMEsMfCyYw==
+Date:   Wed, 21 Apr 2021 17:12:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "a.shelat@northeastern.edu" <a.shelat@northeastern.edu>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "dwysocha@redhat.com" <dwysocha@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "sudipm.mukherjee@gmail.com" <sudipm.mukherjee@gmail.com>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "pakki001@umn.edu" <pakki001@umn.edu>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YIAy1tH0miFxEJEk@unreal>
+References: <YH+zwQgBBGUJdiVK@unreal>
+ <YH+7ZydHv4+Y1hlx@kroah.com>
+ <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
+ <YH/8jcoC1ffuksrf@kroah.com>
+ <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
+ <YIAYThdIoAPu2h7b@unreal>
+ <6530850bc6f0341d1f2d5043ba1dd04e242cff66.camel@hammerspace.com>
+ <YIAmy0zgrQW/44Hz@kroah.com>
+ <YIApyFQNCBOgNkhU@unreal>
+ <YIAtwtOpy/emQWr2@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <1618992304-18903-1-git-send-email-wangqing@vivo.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YIAtwtOpy/emQWr2@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 1:05 AM, Wang Qing wrote:
-> Support using irq handling wdt bark first instead of directly resetting.
+On Wed, Apr 21, 2021 at 03:50:58PM +0200, gregkh@linuxfoundation.org wrote:
+> On Wed, Apr 21, 2021 at 04:34:00PM +0300, Leon Romanovsky wrote:
+> > On Wed, Apr 21, 2021 at 03:21:15PM +0200, gregkh@linuxfoundation.org wrote:
+> > > On Wed, Apr 21, 2021 at 01:11:03PM +0000, Trond Myklebust wrote:
+> > > > On Wed, 2021-04-21 at 15:19 +0300, Leon Romanovsky wrote:
+> > > > > On Wed, Apr 21, 2021 at 11:58:08AM +0000, Shelat, Abhi wrote:
+> > > > > > > > 
+> > > > > > > > > > They introduce kernel bugs on purpose. Yesterday, I took a
+> > > > > > > > > > look on 4
+> > > > > > > > > > accepted patches from Aditya and 3 of them added various
+> > > > > > > > > > severity security
+> > > > > > > > > > "holes".
+> > > > > > > > > 
+> > > > > > > > > All contributions by this group of people need to be
+> > > > > > > > > reverted, if they
+> > > > > > > > > have not been done so already, as what they are doing is
+> > > > > > > > > intentional
+> > > > > > > > > malicious behavior and is not acceptable and totally
+> > > > > > > > > unethical.  I'll
+> > > > > > > > > look at it after lunch unless someone else wants to do it…
+> > > > > > > > 
+> > > > > > 
+> > > > > > <snip>
+> > > > > > 
+> > > > > > Academic research should NOT waste the time of a community.
+> > > > > > 
+> > > > > > If you believe this behavior deserves an escalation, you can
+> > > > > > contact the Institutional Review Board (irb@umn.edu) at UMN to
+> > > > > > investigate whether this behavior was harmful; in particular,
+> > > > > > whether the research activity had an appropriate IRB review, and
+> > > > > > what safeguards prevent repeats in other communities.
+> > > > > 
+> > > > > The huge advantage of being "community" is that we don't need to do
+> > > > > all
+> > > > > the above and waste our time to fill some bureaucratic forms with
+> > > > > unclear
+> > > > > timelines and results.
+> > > > > 
+> > > > > Our solution to ignore all @umn.edu contributions is much more
+> > > > > reliable
+> > > > > to us who are suffering from these researchers.
+> > > > > 
+> > > > 
+> > > > <shrug>That's an easy thing to sidestep by just shifting to using a
+> > > > private email address.</shrug>
+> > > 
+> > > If they just want to be jerks, yes.  But they can't then use that type
+> > > of "hiding" to get away with claiming it was done for a University
+> > > research project as that's even more unethical than what they are doing
+> > > now.
+> > > 
+> > > > There really is no alternative for maintainers other than to always be
+> > > > sceptical of patches submitted by people who are not known and trusted
+> > > > members of the community, and to scrutinise those patches with more
+> > > > care.
+> > > 
+> > > Agreed, and when we notice things like this that were determined to be
+> > > bad, we have the ability to easily go back and rip the changes out and
+> > > we can slowly add them back if they are actually something we want to
+> > > do.
+> > > 
+> > > Which is what I just did:
+> > > 	https://lore.kernel.org/lkml/20210421130105.1226686-1-gregkh@linuxfoundation.org/
+> > 
+> > Greg,
+> > 
+> > Did you push your series to the public git? I would like to add you a
+> > couple of reverts.
 > 
-> When the watchdog timer expires in dual mode, an interrupt will be
-> triggered first, then the timing restarts. The reset signal will be
-> initiated when the timer expires again.
+> Yes, it can be found here:
+> 	git@gitolite.kernel.org:/pub/scm/linux/kernel/git/gregkh/driver-core.git umn.edu-reverts
 > 
-> The dual mode is disabled by default.
+> You can send reverts in email if you want, whatever works best.
 > 
+> > And do you have a list of not reverted commits? It will save us from
+> > doing same comparison of reverted/not reverted over and over.
+> 
+> Below is the list that didn't do a simple "revert" that I need to look
+> at.  I was going to have my interns look into this, there's no need to
+> bother busy maintainers with it unless you really want to, as I can't
+> tell anyone what to work on :)
 
-This means the real timeout is now timeout * 2. This is not what
-is supposed to happen. The hard watchdog timeout needs to happen at
-'timeout'.
+Ohh, you have interns, so even better.
 
-If you want to do this, it needs to be done using pre-timeout,
-only the pre-timeout time (and thus the watchdog timeout written
-into the chip) must be limited to timeout / 2. Pre-timeout must
-by default be disabled and only be supported if an interrupt was
-provided.
+Thanks
 
-I don't see a need for an additional module parameter. Providing
-an interrupt implies that pre-timeout support is wanted. This needs
-to be documented accordingly.
-
-I am not lot looking at the errors reported by 0-day. Please address those.
-
-Guenter
-
-> V2:
-> - panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
 > 
-> V3:
-> - Modify the pretimeout behavior, manually reset after the pretimeout
-> - is processed and wait until timeout.
+> thanks,
 > 
-> V4:
-> - Remove pretimeout related processing. 
-> - Add dual mode control separately.
+> greg k-h
 > 
-> V5:
-> - Fix some formatting and printing problems.
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
->  drivers/watchdog/mtk_wdt.c | 36 ++++++++++++++++++++++++++++++++----
->  1 file changed, 32 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-> index 97ca993..40122f8
-> --- a/drivers/watchdog/mtk_wdt.c
-> +++ b/drivers/watchdog/mtk_wdt.c
-> @@ -25,6 +25,7 @@
->  #include <linux/reset-controller.h>
->  #include <linux/types.h>
->  #include <linux/watchdog.h>
-> +#include <linux/interrupt.h>
->  
->  #define WDT_MAX_TIMEOUT		31
->  #define WDT_MIN_TIMEOUT		1
-> @@ -57,6 +58,7 @@
->  
->  static bool nowayout = WATCHDOG_NOWAYOUT;
->  static unsigned int timeout;
-> +static bool dual_mode;
->  
->  struct mtk_wdt_dev {
->  	struct watchdog_device wdt_dev;
-> @@ -239,13 +241,23 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
->  		return ret;
->  
->  	reg = ioread32(wdt_base + WDT_MODE);
-> -	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-> +	if (dual_mode)
-> +		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-> +	else
-> +		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
->  	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
->  	iowrite32(reg, wdt_base + WDT_MODE);
->  
->  	return 0;
->  }
->  
-> +static irqreturn_t mtk_wdt_isr(int irq, void *arg)
-> +{
-> +	panic("wdt bark!\n");
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static const struct watchdog_info mtk_wdt_info = {
->  	.identity	= DRV_NAME,
->  	.options	= WDIOF_SETTIMEOUT |
-> @@ -267,7 +279,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct mtk_wdt_dev *mtk_wdt;
->  	const struct mtk_wdt_data *wdt_data;
-> -	int err;
-> +	int err, irq;
->  
->  	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
->  	if (!mtk_wdt)
-> @@ -279,6 +291,19 @@ static int mtk_wdt_probe(struct platform_device *pdev)
->  	if (IS_ERR(mtk_wdt->wdt_base))
->  		return PTR_ERR(mtk_wdt->wdt_base);
->  
-> +	if (dual_mode) {
-> +		irq = platform_get_irq(pdev, 0);
-> +		if (irq > 0) {
-> +			err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
-> +						&mtk_wdt->wdt_dev);
-> +			if (err)
-> +				return err;
-> +		} else {
-> +			dual_mode = 0;
-> +			dev_info(&pdev->dev, "couldn't get wdt irq, set dual_mode = 0\n");
-> +		}
-> +	}
-> +
->  	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
->  	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
->  	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
-> @@ -299,8 +324,8 @@ static int mtk_wdt_probe(struct platform_device *pdev)
->  	if (unlikely(err))
->  		return err;
->  
-> -	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)\n",
-> -		 mtk_wdt->wdt_dev.timeout, nowayout);
-> +	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d,
-> +		 dual_mode=%d)\n", mtk_wdt->wdt_dev.timeout, nowayout, dual_mode);
->  
->  	wdt_data = of_device_get_match_data(dev);
->  	if (wdt_data) {
-> @@ -368,6 +393,9 @@ module_param(nowayout, bool, 0);
->  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
->  			__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
->  
-> +module_param(dual_mode, bool, 0);
-> +MODULE_PARM_DESC(dual_mode, "Dual mode triggers irq before reset (default=0)");
-> +
->  MODULE_LICENSE("GPL");
->  MODULE_AUTHOR("Matthias Brugger <matthias.bgg@gmail.com>");
->  MODULE_DESCRIPTION("Mediatek WatchDog Timer Driver");
-> 
-
+> -------------------------
+> # commits that need to be looked at as a clean revert did not work
+> 990a1162986e
+> 58d0c864e1a7
+> a068aab42258
+> 8816cd726a4f
+> c705f9fc6a17
+> 8b6fc114beeb
+> 169f9acae086
+> 8da96730331d
+> f4f5748bfec9
+> e08f0761234d
+> cb5173594d50
+> 06d5d6b7f994
+> d9350f21e5fe
+> 6f0ce4dfc5a3
+> f0d14edd2ba4
+> 46953f97224d
+> 3c77ff8f8bae
+> 0aab8e4df470
+> 8e949363f017
+> f8ee34c3e77a
+> fd21b79e541e
+> 766460852cfa
+> 41f00e6e9e55
+> 78540a259b05
+> 208c6e8cff1b
+> 7ecced0934e5
+> 48f40b96de2c
+> 9aabb68568b4
+> 2cc12751cf46
+> 534c89c22e26
+> 6a8ca24590a2
+> d70d70aec963
+> d7737d425745
+> 3a10e3dd52e8
+> d6cb77228e3a
+> 517ccc2aa50d
+> 07660ca679da
+> 0fff9bd47e13
+> 6ade657d6125
+> 2795e8c25161
+> 4ec850e5dfec
+> 035a14e71f27
+> 10010493c126
+> 4280b73092fe
+> 5910fa0d0d98
+> 40619f7dd3ef
+> 0a54ea9f481f
+> 44fabd8cdaaa
+> 02cc53e223d4
+> c99776cc4018
+> 7fc93f3285b1
+> 6ae16dfb61bc
+> 9c6260de505b
+> eb8950861c1b
+> 46273cf7e009
+> 89dfd0083751
+> c9c63915519b
+> cd07e3701fa6
+> 15b3048aeed8
+> 7172122be6a4
+> 47db7873136a
+> 58f5bbe331c5
+> 6b995f4eec34
+> 8af03d1ae2e1
+> f16b613ca8b3
+> 6009d1fe6ba3
+> 8e03477cb709
+> dc487321b1e6
