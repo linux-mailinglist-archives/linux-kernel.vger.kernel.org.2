@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBFC366D8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E4C366D8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243238AbhDUOFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:05:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39982 "EHLO mail.kernel.org"
+        id S243255AbhDUOFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:05:44 -0400
+Received: from mout.gmx.net ([212.227.17.22]:56801 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235783AbhDUOFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:05:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E2761139;
-        Wed, 21 Apr 2021 14:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013883;
-        bh=5OGO+AtIx6WC8ePcztw83ciGI9Z5SbHrkm/X3Q/Y7f0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eB67MTjq1psoXvHTQBleOqpux5gfW5UyclZRw2tiFBrku45n7JUn1WoU3mHeg7vB3
-         4qrUEMSNojag57boD66K1yeBc+9zJJvpdnraUSrlLp9sA3F2wr4THlCvQrlB/S+wF5
-         ND2NR/oKya4a6Buc+wDjwm9uB6B6aBFqVYQWKKGOCHjBhA2Iha55H33J0oGRp0vxRe
-         LueLFx5FNR9neosH0M34nXESLRwKpCdIP6vRQT1pxMiyMdvN3iensgnl2SpC5EvCTY
-         w1OGu8uTX8j7WHG2Ju36+zDFbYIZLn+LsEghKFDPFgDcyDKMHB9Fm6BNRN93gZiTEu
-         zhWrql+5sQBaw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Prike Liang <Prike.Liang@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rajat Jain <rajatja@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] nvme: fix unused variable warning
-Date:   Wed, 21 Apr 2021 16:04:20 +0200
-Message-Id: <20210421140436.3882411-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S235887AbhDUOFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:05:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619013874;
+        bh=eo1nK0UD2a7QXD/BCB5NO5zSj3zAXmk7v82G2w6ov4I=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=G+fxJoRkgDWQqoVA/oCFNizQN28RLwvucCkG4u4LUS13DuzyCAR10TCUyD06nCofG
+         ktc2+sk1UiidCDYbv0oth/EwiWC8eym5yn/GmOCsMA9NdU0NWWicPpnSZjYjm93O9s
+         KF+ZykHc+hPXTY42qP9sVj0rp1RujzEaHoeKMbM4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.245.77.133] ([80.245.77.133]) by web-mail.gmx.net
+ (3c-app-gmx-bs34.server.lan [172.19.170.86]) (via HTTP); Wed, 21 Apr 2021
+ 16:04:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <trinity-47c2d588-093d-4054-a16f-81d76aa667e0-1619013874284@3c-app-gmx-bs34>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
+Subject: Aw: Re: [PATCH net-next v2 2/2] net: ethernet: mediatek: support
+ custom GMAC label
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 21 Apr 2021 16:04:34 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <CALCv0x2SG=0kBRnxfSPxi+FvaBK=QGPHQkHWHvTXOw64KawPUQ@mail.gmail.com>
+References: <20210419154659.44096-1-ilya.lipnitskiy@gmail.com>
+ <20210419154659.44096-3-ilya.lipnitskiy@gmail.com>
+ <20210420195132.GA3686955@robh.at.kernel.org>
+ <CALCv0x2SG=0kBRnxfSPxi+FvaBK=QGPHQkHWHvTXOw64KawPUQ@mail.gmail.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:sV5Mlbn73eWH7aiVlwaybpsQCFZyxd8vwbmUGt69EWlA1fnqNSM9XL/OwUTnRLA5pwmJ2
+ gQkOKxpSNkq6/G3e221sldSrvVJLEN4B49Qny4npb20S0MhCGfh0wrdacbeBD/nargGhUw2I7I5m
+ I99HhDGPZSLFTC/zJEQhrTf4sJ7+6nT2AQu9uZLnD84WejyQBaFQZMMuNpHJdGVRAYllNzG7loj4
+ Gf6K304Da2vxOZP1JyzFMtzwfeh81dRZHl+2GW69itbKKoKMzWtgkXQ1d2CHNHQaHTbgHAVGY+rW
+ P0=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Z2mfGzqKo3A=:7BgbnqxAImJaah8rUDd72I
+ qd9iee+wk72p/Y+dXXy+REOgl5yfZHwf4KOIwbXQ4SOZPHo3dgu7MNwpkGTS0N+4iNTbwggOX
+ ctORwLVkjE7QoBlZLU0RBC6JpGFZb0gVOoLpALJwzHV9kfwhyTq0YwdecwIennA5diIsyFl6u
+ +eDtmPFQAGVrcusQ2RngtfIftgPhmiZ4aMkfWzV+QfaUx9wjCf4sLpw6+KBAaXSLymW6FLCOt
+ u67DE3xm5QTYs3rZfoKBFNM5oAx5FiY1pjUV76MWmsUZFXsPxU6voxOh15CH5t9esDGdb6Cyj
+ 54qZ+K5QuGVsSpLgUC9xGtbBi/BQjMkM+Zr2b0exGKaeyniIaeTi3vDuuRX1Z/ZgrICmO7w+G
+ /lSqUT9dnFfBBfYzxNfNBJTpKHeUCNDtKHqK/QM+KJRvFdCaeV7Wo4HrM4R47Ymp6Em7RiT8r
+ k12pTc/fB0ZQnFEVhSPmIAcGBMRbRWqQffoHJTsD6B0nH69C+PcgsqFGNyli89FXqPZuJ1pLr
+ DCITTDUsUy1TfhafZOMiw+AqNh7fOQPazWrpSmr0ui8Darhm+dEw6U/lNLBlhqWFLAfOlarvi
+ q5Dn1CNvLeRjGKRnq6v4KdWrogCp5dLFQrlpzMORRtkpHyAwTsPj8mBAp42ltz/kfqBp0H/Dt
+ 6cZr5FZhVMceWm6R+P8m505ySlRkX/MsnPnKRT57l5fa4XxLYdAEQRS1Jy+pfoA69A8j44Byw
+ YRi4CtB4eiB/JKOptodiWl5nnYIs6H6DIRGXZgrhZCDFiElEVj572TAKYmMWAGi+q90VkzIm5
+ N3YMTjWFekP3kFSV9/ZR372038pW0j+0ijryhNruduR4LIjCXJY2J6OrIFAUzTM68Y7hjCuBq
+ ZWyWRmxE0zfwVUlIHTCJBmMaSaZcQiHhPA5qzSfJE+vAatagR1ewYZ2yDZFoO81/25igrac+K
+ 9DcCk+d7Igg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-The function was introduced with a variable that is never referenced:
+for dsa slave-ports there is already a property "label", but not for master/cpu-ports
 
-drivers/pci/quirks.c: In function 'quirk_amd_nvme_fixup':
-drivers/pci/quirks.c:312:25: warning: unused variable 'rdev' [-Wunused-variable]
+https://elixir.bootlin.com/linux/v5.12-rc8/source/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts#L163
 
-Fixes: 9597624ef606 ("nvme: put some AMD PCIE downstream NVME device to simple suspend/resume path")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/pci/quirks.c | 2 --
- 1 file changed, 2 deletions(-)
+handled here:
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 2e24dced699a..c86ede081534 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -309,8 +309,6 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AMD,	PCI_DEVICE_ID_AMD_8151_0,	quirk_nopci
- 
- static void quirk_amd_nvme_fixup(struct pci_dev *dev)
- {
--	struct pci_dev *rdev;
--
- 	dev->dev_flags |= PCI_DEV_FLAGS_AMD_NVME_SIMPLE_SUSPEND;
- 	pci_info(dev, "AMD simple suspend opt enabled\n");
- 
--- 
-2.29.2
+https://elixir.bootlin.com/linux/v5.12-rc8/source/net/dsa/dsa2.c#L1113
 
+@ilya maybe you can rename slave-ports instead of master-port without code change?
+
+i also prefer a more generic way to name interfaces in dts, not only in the mtk-driver, but the udev-approach is a way too, but this needs to be configured on each system manually...a preset by kernel/dts will be nice (at least to distinguish master/cpu- and user-ports).
+
+regards Frank
