@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22065366BC6
+	by mail.lfdr.de (Postfix) with ESMTP id 75CE5366BC7
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239663AbhDUNGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
+        id S239906AbhDUNGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:06:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239853AbhDUNFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B538861455;
-        Wed, 21 Apr 2021 13:04:45 +0000 (UTC)
+        id S240583AbhDUNFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:05:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC836147F;
+        Wed, 21 Apr 2021 13:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010286;
-        bh=fHIhHWhbZ0ZhEMCmgbmyntppO5e7+bgAG3Mo5QZudmY=;
+        s=korg; t=1619010288;
+        bh=7Vee09nptjwDH1gypGYwiUhxHVAaryNmxT382IIZJLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P9ZAJj9Ok1AnD6oyTDrXniGsEFAsdE0OKXejWL5p469GqRQ/+2mdGjv4/QQlTord3
-         XaRwbeiLAQ6pIE4R+CczsYXoIT88xRs+nKtCg7Mg87oTK0TRL3uOoeknwUq/K428d+
-         fgLDpsKp3ty6zKNRwLySF6KMzRgcgjDKew/qvD/w=
+        b=2EdLdrttvmYDkwho1HjFMpmalvmK6WjLjD5A01xtpEtaLo7sDaaoXcPHTObItiyub
+         yZwsXSZZIG76Fzddbc/GOqtzQ46GQO02KfthFxyzrivKyM8naQFlJNyKiWwF27tTNH
+         ks1Wl/QNkGWxAsR+1Am1OwzDmz737mfCGnxDUF2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 081/190] Revert "tracing: Fix a memory leak by early error exit in trace_pid_write()"
-Date:   Wed, 21 Apr 2021 14:59:16 +0200
-Message-Id: <20210421130105.1226686-82-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 082/190] Revert "rsi: Fix NULL pointer dereference in kmalloc"
+Date:   Wed, 21 Apr 2021 14:59:17 +0200
+Message-Id: <20210421130105.1226686-83-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 91862cc7867bba4ee5c8fcf0ca2f1d30427b6129.
+This reverts commit d5414c2355b20ea8201156d2e874265f1cb0d775.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,38 +53,81 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: http
-Cc: stable@vger.kernel.org
-Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/wireless/rsi/rsi_91x_mac80211.c | 30 +++++++++------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 5c777627212f..faed4f44d224 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -691,10 +691,8 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
- 	 * not modified.
- 	 */
- 	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
--	if (!pid_list) {
--		trace_parser_put(&parser);
-+	if (!pid_list)
- 		return -ENOMEM;
--	}
+diff --git a/drivers/net/wireless/rsi/rsi_91x_mac80211.c b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
+index 16025300cddb..714d4d53236c 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_mac80211.c
++++ b/drivers/net/wireless/rsi/rsi_91x_mac80211.c
+@@ -188,27 +188,27 @@ bool rsi_is_cipher_wep(struct rsi_common *common)
+  * @adapter: Pointer to the adapter structure.
+  * @band: Operating band to be set.
+  *
+- * Return: int - 0 on success, negative error on failure.
++ * Return: None.
+  */
+-static int rsi_register_rates_channels(struct rsi_hw *adapter, int band)
++static void rsi_register_rates_channels(struct rsi_hw *adapter, int band)
+ {
+ 	struct ieee80211_supported_band *sbands = &adapter->sbands[band];
+ 	void *channels = NULL;
  
- 	pid_list->pid_max = READ_ONCE(pid_max);
+ 	if (band == NL80211_BAND_2GHZ) {
+-		channels = kmemdup(rsi_2ghz_channels, sizeof(rsi_2ghz_channels),
+-				   GFP_KERNEL);
+-		if (!channels)
+-			return -ENOMEM;
++		channels = kmalloc(sizeof(rsi_2ghz_channels), GFP_KERNEL);
++		memcpy(channels,
++		       rsi_2ghz_channels,
++		       sizeof(rsi_2ghz_channels));
+ 		sbands->band = NL80211_BAND_2GHZ;
+ 		sbands->n_channels = ARRAY_SIZE(rsi_2ghz_channels);
+ 		sbands->bitrates = rsi_rates;
+ 		sbands->n_bitrates = ARRAY_SIZE(rsi_rates);
+ 	} else {
+-		channels = kmemdup(rsi_5ghz_channels, sizeof(rsi_5ghz_channels),
+-				   GFP_KERNEL);
+-		if (!channels)
+-			return -ENOMEM;
++		channels = kmalloc(sizeof(rsi_5ghz_channels), GFP_KERNEL);
++		memcpy(channels,
++		       rsi_5ghz_channels,
++		       sizeof(rsi_5ghz_channels));
+ 		sbands->band = NL80211_BAND_5GHZ;
+ 		sbands->n_channels = ARRAY_SIZE(rsi_5ghz_channels);
+ 		sbands->bitrates = &rsi_rates[4];
+@@ -227,7 +227,6 @@ static int rsi_register_rates_channels(struct rsi_hw *adapter, int band)
+ 	sbands->ht_cap.mcs.rx_mask[0] = 0xff;
+ 	sbands->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
+ 	/* sbands->ht_cap.mcs.rx_highest = 0x82; */
+-	return 0;
+ }
  
-@@ -704,7 +702,6 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
+ static int rsi_mac80211_hw_scan_start(struct ieee80211_hw *hw,
+@@ -2067,16 +2066,11 @@ int rsi_mac80211_attach(struct rsi_common *common)
+ 	wiphy->available_antennas_rx = 1;
+ 	wiphy->available_antennas_tx = 1;
  
- 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
- 	if (!pid_list->pids) {
--		trace_parser_put(&parser);
- 		kfree(pid_list);
- 		return -ENOMEM;
+-	status = rsi_register_rates_channels(adapter, NL80211_BAND_2GHZ);
+-	if (status)
+-		return status;
++	rsi_register_rates_channels(adapter, NL80211_BAND_2GHZ);
+ 	wiphy->bands[NL80211_BAND_2GHZ] =
+ 		&adapter->sbands[NL80211_BAND_2GHZ];
+ 	if (common->num_supp_bands > 1) {
+-		status = rsi_register_rates_channels(adapter,
+-						     NL80211_BAND_5GHZ);
+-		if (status)
+-			return status;
++		rsi_register_rates_channels(adapter, NL80211_BAND_5GHZ);
+ 		wiphy->bands[NL80211_BAND_5GHZ] =
+ 			&adapter->sbands[NL80211_BAND_5GHZ];
  	}
 -- 
 2.31.1
