@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2854366EB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A23366EBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243793AbhDUPGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:06:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243121AbhDUPGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:06:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E61FB6144D;
-        Wed, 21 Apr 2021 15:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619017537;
-        bh=nfD4SW2pUDpqbkiRD2gBMWPIOHPXr915NNTI0fU3FB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rMe1oWvbaNQXPNMnRswTPL9c4Q5r5c9WqA6dTL7xczH6iTditPo0VP2ln/xiCzlvY
-         Bhu4RTFI5xQY8Wcdj2leqiNkfnCakGQbzn59F5/E4idO1bpFWONlZN4dgHM7rs5kmT
-         PyHTue3M2b1Bh49IP4LcZQdfkuwrBW741EZsmUzuwAnJi7VWtpllpkdiEMrKIYGHj3
-         S7ozaYL6amLmvnZF155TdA4fQPj3bwWNSuGTvmhnspcmrv94eafvKbu7ew9EcY7FPg
-         232NoPiZql6lFrMpzneeyITYJBO2o/cjbdjpWuhgQJtn+YWpvVHTK0T+m1uh+2q96x
-         nKwsA1NW67Sgg==
-Date:   Wed, 21 Apr 2021 16:05:10 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: stm32-qspi: fix debug format string
-Message-ID: <20210421150510.GA36785@sirena.org.uk>
-References: <20210421140653.3964725-1-arnd@kernel.org>
+        id S243804AbhDUPGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243784AbhDUPGT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:06:19 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07CBC06174A;
+        Wed, 21 Apr 2021 08:05:45 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id o16so8199034plg.5;
+        Wed, 21 Apr 2021 08:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r/6P/78czMGOWvXynhkkL5aORB61zmrK7gWQX9iwSJI=;
+        b=kXb+5Hr9OFnBDcgjzTb/gcVJTabEOFdI6jrvpVGEaGeyPACKTdIxIvOkEeBXChhwFu
+         Eu4gVDMYCYp1I4Qz2jZtmnOXZSNVtU4D3gLwZMYbCri4esx0Ta00cjkH2fOpusrlnO/s
+         10WQ2Dd1UZaqH/ecLY6E0jpzNmwyJcQEy1BHW9fcsO0V0id6wgNCjHch2ABp8BZOYKuI
+         M7Q+GaKPH+4CKIn+hpICl2UoKJaZR/chSV+/rNualoApd6ZRw85mw2O4JJ97Iokfh0DC
+         LKCdEicYglLMR+UTMujKbDDG/mD4t7EOLxeOrfJ8mJWOgOF8RVgRJd1sEsBwiHzj6mmi
+         G/rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r/6P/78czMGOWvXynhkkL5aORB61zmrK7gWQX9iwSJI=;
+        b=Xl8SKezU/oLTfe+WyZeRTmzPeaDvOr6FxvLIC24oVu2ERcMeMtRWUD5RDyILc3DOF1
+         Cdw5U6ldRLVZYzYKR03iC0s2QLYFU19JVwYq1YkhdvffTMfSVa54FJpijLLRK2KKWzG2
+         ytbkfK2+cOXiDrHZ9Dqu20nfpTimqCuQsjIAhyBYY1Y0W8HAHLPksOGfJbjrd32iaasi
+         +0BptY/Eduvtf/76OxEG93u3sRgM99sYgMjKvA2vzqL7shnnZ/gDrxxkCws7TH8cHpG0
+         Zc1wnMAVAJeCTgRryxLBzvF62rc2i34Ub5B2v/rEjlUdHvQ98I8jbCmqCXZcehJZI9b6
+         CoGg==
+X-Gm-Message-State: AOAM532NxXX4oe8SD1wd4aUlx6Pyz6OvOmC612Hf77Fhq8nBfOBN8jRc
+        eqgiERmEmnjmIIQ1PZkQZ2f+E/gLIjwugPZGXmo=
+X-Google-Smtp-Source: ABdhPJzqYGZPIbbvxGfguqe17tf6eTcJtin3HZBfyZy4pmYYHak5rq8/AuAThry9p1jBIFdkLp+nBbBmfeV5EtEiJro=
+X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
+ 91-20020a1709020264b02900eb3d3aa09cmr34461278plc.0.1619017545476; Wed, 21 Apr
+ 2021 08:05:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <20210421140653.3964725-1-arnd@kernel.org>
-X-Cookie: Tell me what to think!!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210404181409.1451026-1-andy.shevchenko@gmail.com> <20210421140340.GD3@paasikivi.fi.intel.com>
+In-Reply-To: <20210421140340.GD3@paasikivi.fi.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 21 Apr 2021 18:05:29 +0300
+Message-ID: <CAHp75VcLXE6Bq_7d0DwPwL_EGoCy02dmWF=xZpSUfgkOYNEOew@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] media: ipu3-cio2: Fix referece counting when
+ looping over ACPI devices
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 21, 2021 at 5:04 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+> On Sun, Apr 04, 2021 at 09:14:09PM +0300, Andy Shevchenko wrote:
+> > When we continue, due to device is disabled, loop we have to drop reference count.
+> > When we have an array full of devices we have to also drop the reference count.
+> > Note, in this case the cio2_bridge_unregister_sensors() is called by the caller.
+>
+> Please limit the commit message to 75 chars, at least if there's no reason
+> to do otherwise.
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK.
 
-On Wed, Apr 21, 2021 at 04:06:48PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> Printing size_t needs a special %zd format modifier to avoid a
-> warning like:
+> I can wrap it this time.
 
-This doesn't apply against current code, please check and resend.
+Thanks!
 
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCAPyUACgkQJNaLcl1U
-h9Coogf/R7NTfXnqSMK+6GxbfAfEwF48TROZhMO5m95NKkXRByuOSq/2QIWrEVP7
-FdOwLifiRbZ/re3cDx36ZFesHYsfeAea56rPkL/q8ntwu5a10A/GNYSEym+A0H0h
-+IenL6VFoWm6yCL/rFAb02kpbz9NFx0WpTT/SK2heCKHb8CH/eIYtXmzALicrBvj
-MCwhCuMVtpm9dBU3IR0jU7M9S0vtqZMNXyB4mNoqKkC9hFLA7vdqmK4m3Oaui0Yi
-e5N7Q/rB+N6+iPIzjOJJL57h/9s2/4rinmBOJXcVg6jSn/MsZSdBHssSSz/tTKpV
-3zg4lAvtiX7hiVXjElq77+SxD7/dgA==
-=8/No
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
+-- 
+With Best Regards,
+Andy Shevchenko
