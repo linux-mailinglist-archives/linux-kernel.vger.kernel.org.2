@@ -2,113 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457403667FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD9636680D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238230AbhDUJ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:28:05 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51921 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230516AbhDUJ2D (ORCPT
+        id S238275AbhDUJdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237041AbhDUJdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:28:03 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id BFC615C0114;
-        Wed, 21 Apr 2021 05:27:29 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 21 Apr 2021 05:27:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=9dH6I2lCf6KaG/adJovZAIRRmL2
-        xnY0W1xR7ps1E0Jg=; b=Z9yTpzRefPDTbMCbpvemRI6X9mADIGXhjCEXJNL5PX2
-        KfhNOMe9z+svdtgvKSRv/bOiSh12b1Qi42l4w9feuNoHMAOCS7qAa9BuabhP9MMX
-        V3+4x+ge4M0xzXypNvCB7VIvby3tCZJjgeaHDoLOjkWGR0Ces+Sbi2W+TOfCvI0M
-        Tog505mPq1HN7rYDWhc+RKsrt5PU9cpcw1ooGno8bQsQ5eU3/xI0R1wwXsBSFGG5
-        yPpMqSzGEppNA3m5KE2aUzsq+5Z1LiF6jmfOuIYjEIU8koCfAvnXb2ObsEGWM+eL
-        PQGhEJPCkwGqjQCyjgkN1e0bYUa6lONlRnnyzoVKYjA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=9dH6I2
-        lCf6KaG/adJovZAIRRmL2xnY0W1xR7ps1E0Jg=; b=c1tCO1B5qpa+mxSE3EeT5L
-        OjrnDfv6OhArJpEGLe0juS+SCBDM7bo5tIuYy3me1fD+vo1x9SFcoYahCfH58oQJ
-        gDjLwBmwQ80k+d9MQsk2NHa0Rb4U/ZV0O3AtzMwGok1PlNWam275ldO59UmUcR2J
-        /5Bi7qXhzkUC4QDF4KA4Gep89dmbUxidqnoMz8DH8PFM3cJEgpldKeUNktlvxytS
-        zkM62QD6Mscf0Wv1W++SBjQVzCb45W+a+cfCMGHIJl6aM9lMxkS9IXwBZFQY5hrq
-        ShrP2IiSmY/U37pYBBfEoLjQ1hzQzC8SIzEQ5w5ikCOE+VJ20GpQbaSS0lXPHWZw
-        ==
-X-ME-Sender: <xms:APB_YLmVQub7r2Ise749WjUjfm0ahIuMRoWRwXSV-CQqBDH-1MhuMA>
-    <xme:APB_YO0RYJmtauWGYInNMyByIbCsy63OmJcS_BNivgKE8y4mlON6VjPClX709SI-j
-    4cS-50iUh436NyqwLg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:APB_YBro3qGu7WtCcUWnDa-eSOBXPCMRjv-YCP9y-9TWEOaO3R_-oQ>
-    <xmx:APB_YDmbS_l_OUjd7EfWcJNWVAXX0gSh0N3t4ycuwxBxJ609mQ8FKw>
-    <xmx:APB_YJ0RdtXWc5IfzT3kyQH3B5kY6pa7KfA7nEWweNVv9WBKW41Vag>
-    <xmx:AfB_YGnxVaOse70VGiKkULfZf0E_F7Z5MiONHWQv4p89GrzNyaxN6Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C855C24005B;
-        Wed, 21 Apr 2021 05:27:27 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 11:27:25 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 0/2] Allwinner H6 USB3 device tree updates
-Message-ID: <20210421092725.qacp3446hiyf73ov@gilmour>
-References: <20210421042834.27309-1-samuel@sholland.org>
+        Wed, 21 Apr 2021 05:33:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64077C06174A;
+        Wed, 21 Apr 2021 02:32:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YDpKhq3lEyHoaGRnqdn0n1KeXiDGOFgpAVazWEK6jjM=; b=hUTRioDO9yMCVjGjRtZdJIimKD
+        amLrXljQUyiXujO/gW2E/5KfG3hGTS3/F4kpLS++BJSjrSaTN98spYobmufzP5bekJHiGjKwN9wqa
+        P7Fwejqp6uAdUAsZYVsI+zikYWZ/+bI6vR1L1dIJCJXxMjmb8e1Fqatof//5WX0Uw365ZoCSPNpSj
+        ha5Zl1BJwFTKzeO51GXyGmWZf9BTUbilsD+okvhfsT8MaGSdijhIZqLasYWnu0bIVq8lH/kNVKLQN
+        kbIUYF4lSF/5gqsbfaya7Eyhy4yl3VNP21IzgC/PRgbYwcvcs9d19zs5Txx+IhHSMSVlal8LqhBw9
+        rOF3FDFQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZ9Ay-00GKSu-6P; Wed, 21 Apr 2021 09:29:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15616300130;
+        Wed, 21 Apr 2021 11:29:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C529F20190AC3; Wed, 21 Apr 2021 11:29:38 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 11:29:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     syzbot <syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com>
+Cc:     acme@kernel.org, acme@redhat.com,
+        alexander.shishkin@linux.intel.com, andrii@kernel.org,
+        ast@kernel.org, bpf@vger.kernel.org, cobranza@ingcoecuador.com,
+        daniel@iogearbox.net, eranian@google.com, john.fastabend@gmail.com,
+        jolsa@redhat.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        mingo@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        torvalds@linux-foundation.org, vincent.weaver@maine.edu, yhs@fb.com
+Subject: Re: [syzbot] INFO: task hung in perf_event_free_task
+Message-ID: <YH/wggx86Ph1bwPi@hirez.programming.kicks-ass.net>
+References: <00000000000057102e058e722bba@google.com>
+ <000000000000dfe1bc05c063d0fa@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jf4xm3l2oukir3xt"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421042834.27309-1-samuel@sholland.org>
+In-Reply-To: <000000000000dfe1bc05c063d0fa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 20, 2021 at 02:10:22AM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    7af08140 Revert "gcov: clang: fix clang-11+ build"
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15416871d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7692cea7450c97fa2a0a
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145c9ffed00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12de31ded00000
 
---jf4xm3l2oukir3xt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Apr 20, 2021 at 11:28:32PM -0500, Samuel Holland wrote:
-> While implementing support for this USB controller in U-Boot, I noticed
-> that the reset line alsp affects they PHY. It looks like most platforms
-> use a separate glue node to represent this, and in fact there is already
-> a compatible for the H6 listed in drivers/usb/dwc3/dwc3-of-simple.c.
->=20
-> Since this layout matches the usual way of modeling this hardware, it
-> allows using the existing drivers without adding platform-specific code.
-
-I'm not sure which branch you based this on, but the Pine H64 seems to
-be missing the USB3 support in the first place. I've applied the rest of
-the changes though, thanks!
-
-Maxime
-
---jf4xm3l2oukir3xt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYH/v/QAKCRDj7w1vZxhR
-xTUmAP4qrMOtgHXTjgmjwRw2xJfTRkCrMp+xzzfSSSrM/DANwAEA6RyQ7yp3cV66
-SblHZBPC6Yj8DUMVRy+KT0nJelfcvQ8=
-=Gcf+
------END PGP SIGNATURE-----
-
---jf4xm3l2oukir3xt--
+When I build that C file and run it, it completes. AFAICT that's not the
+expected outcome given we're looking for a hung-task scenario. Hmm?
