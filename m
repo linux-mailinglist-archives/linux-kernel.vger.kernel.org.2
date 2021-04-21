@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D163673EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079EA3673EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245612AbhDUUBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 16:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        id S245622AbhDUUCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 16:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244313AbhDUUBc (ORCPT
+        with ESMTP id S244313AbhDUUCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 16:01:32 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547EFC06174A;
-        Wed, 21 Apr 2021 13:00:58 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id y32so30961402pga.11;
-        Wed, 21 Apr 2021 13:00:58 -0700 (PDT)
+        Wed, 21 Apr 2021 16:02:20 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8638BC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 13:01:46 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id x76so38598765ybe.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 13:01:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AReDrWOEZXfvF/s6rcjOJXciEs33E3HMi3ZXRWC77ko=;
-        b=d68kX1neFSgr3WmIahqpDr6edfAbLCUyJpu7m9DXUS8jZYqNAB5TdLVQHH7or34fVi
-         pxkS2rfNo8HHNKGaf3E5MKTLCEnvz/O0E+O/Gq+hF/KaYplKBzTTbVzkn11HnfeVZRo6
-         j7VcrYdXzblpKgbGJr10XwdqpLCFefHkJCjPNvIIKZdV676eeFtOR+XTHQ0TsZLH2/xJ
-         gHZ52hTHFOGeeDV0edvImseVqO4EQAjZpR+8yRAjNyqAug+YOqezfRG0TLE+7CcNRNmn
-         SyEqO8IrXaaH4o6KLBiRHRIdImgEEHBPuGqeJH/ODKRLnA+Irzc8zMKPytJHJOUXvpGH
-         9cRQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N25SjpwU7jt3YRnEr3GAIUXkZUK/W3lOm1cYE1CKpNY=;
+        b=G7JYVKHjK6F2HUO6B+H/oniSDXpZCAbY6/ho8+v+7JRI1O7sVMjJG/E2nCFROq5VAP
+         +Jt7jLWKKZBfOwWgvgqy8Ur/t5ajGyAgwyLpElgr4TjYopQl7dHBJE4da6V4HGshitmW
+         gbP81GI1ewkJa3zZLvG6xegeMt/5R0rm+yybtswjGH2Kmsfha998wgHtXHHWtKneBBQT
+         HETYMqY+rFcm5ZFosLVKAun4cMDUVO1HwTDvICbago+LXQm0SgV1xivHgbL505g3j0Zf
+         XrtShRPqu6kbRzPysQJxwGhcnAvgtqcW8DwlTpcsxH7PcE/u9Gcx8WbVYudRisMwf7MM
+         pk5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AReDrWOEZXfvF/s6rcjOJXciEs33E3HMi3ZXRWC77ko=;
-        b=Y0hbCY0GrG9dUqUaA/PBV47XqCw/9BfxYQAU99XTE17dTrtZFV5sJjCK+H6MkCdgUW
-         GHuaEPOUaJuJ061swjMR9Z+EdM5w3aYAB9UtuGN5kTg0aWlo0K5DUVyQcbrHRvwF7pHw
-         L0KFIv6Zq7WwFhX3TYh+bPzfHD+O9GfXdLCirvYFI8hlH6gi5b3nHFh+YECMDa8ZJRma
-         vLMJNQG6kYNLe0YFMb2MdIfJhPx3IdG0MXAihxUqMkVj9xxlGYjp3z5F6th2PFb/qh9K
-         p6ry+ci/Hxn2Avn4e9kHsVzttFLEaImYrqlYdZsSpeo4h/k22qLcquN3Sm5yRHrrh319
-         95Pw==
-X-Gm-Message-State: AOAM532mUKeE43lAz8imL8XceIefjVEgbx6u0foXbk8XIZ9pEJdU+PGL
-        M1gd4cLogWZU4gwbwShYTUj1lKFRpJc=
-X-Google-Smtp-Source: ABdhPJwxQt61tc581In1dq1C2NPuS3JK12hpnNEsEBCvb8dKPVhK+UJGMolqD5QaXB21oWvicKzY7Q==
-X-Received: by 2002:a63:5814:: with SMTP id m20mr23532782pgb.82.1619035257402;
-        Wed, 21 Apr 2021 13:00:57 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id t11sm170756pji.54.2021.04.21.13.00.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 13:00:56 -0700 (PDT)
-Subject: Re: [-next] serial: 8250: Match legacy NS16550A UARTs
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alan Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-References: <20210414134539.42332-1-alcooperx@gmail.com>
- <CAHp75VfQetCJJZ_U70xEduVBQHEx_GkHeKBs2uzNtvcq9H0BqQ@mail.gmail.com>
- <CAOGqxeUiFE0348Y=yEoD7bnMaGnFkbvNy3WZ2oSZZzR4D-xz_w@mail.gmail.com>
- <CAHp75VfD7i9irKDxk0v+j1c1wFrcu9v+OA-X7+edsg6johhJnQ@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <072cc4c2-9a63-312a-a4bd-b4aa6d393a7e@gmail.com>
-Date:   Wed, 21 Apr 2021 13:00:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N25SjpwU7jt3YRnEr3GAIUXkZUK/W3lOm1cYE1CKpNY=;
+        b=qquqG9sRAIt40/x2/WHjLoogvxQnH9zQqw4KIu1mw8tjSU8qMhoQ+EJ2G5+yoBvBTV
+         kn/3x6NSL4hPLu+S+1CfTz7cDIVhQtMG3qDxUw+vZdxqs007U5zbt9YLTPYIBrIEbviR
+         VBaxDVR82DNRPpzp+UGqc4WiiGXSyC3Qc7sfh1MoJHgB6X2Mq+AtE/K+Mp9mq7iaRI6P
+         A7pe50ixSCM0lMLjYRm3aTyJYvJXWPfSmsaSgcwANksCs1GNkXgBiYxqr8nZ2BpOH78G
+         c9+JzL6q76k1UanDvvIbJ4jsVPuiP8z5Ma8wLboMr9UmSEeKmj9GhNpR8TVV5xxRbNUY
+         zpvw==
+X-Gm-Message-State: AOAM531I3H/Lkp2YgkKhIuMrOx+bm71+OLYO70NmqEs2L3xqGsQzFoVY
+        IyWtjsOLkceMqRECu8WzykY0lna2spbh15O9PX6CAA==
+X-Google-Smtp-Source: ABdhPJxQawgMOAh8U7mORlWyVS1yUZDsWs9dCsjLPG9HijkOotn83qeRYhVGs7QfLaIKXNmHvhQBKIT8OxVw9st4uGc=
+X-Received: by 2002:a5b:7c5:: with SMTP id t5mr34532781ybq.190.1619035305484;
+ Wed, 21 Apr 2021 13:01:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfD7i9irKDxk0v+j1c1wFrcu9v+OA-X7+edsg6johhJnQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
+ <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz> <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
+ <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
+ <CAHk-=wj0JH6PnG7dW51Sr5ZqhomqSaSLTQV7z4Si2dLeSVcO_g@mail.gmail.com>
+ <alpine.LRH.2.02.2104071432420.31819@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAHk-=whUKYdWbKfFzXXnK8n04oCMwEgSnG8Y3tgE=YZUjiDvbA@mail.gmail.com> <CAJuCfpHa+eydE_voX38V-jtv5J_RnyT=eY12-VmcLbVG_u2dyA@mail.gmail.com>
+In-Reply-To: <CAJuCfpHa+eydE_voX38V-jtv5J_RnyT=eY12-VmcLbVG_u2dyA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 21 Apr 2021 13:01:34 -0700
+Message-ID: <CAJuCfpHJjtv_=jLULge8D4EK_AK2yGLMcWKcGSaknzuWm0DFtA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Peter Xu <peterx@redhat.com>,
+        stable <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
+        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 7, 2021 at 2:53 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Wed, Apr 7, 2021 at 12:23 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Wed, Apr 7, 2021 at 11:47 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
+> > >
+> > > So, we fixed it, but we don't know why.
+> > >
+> > > Peter Xu's patchset that fixed it is here:
+> > > https://lore.kernel.org/lkml/20200821234958.7896-1-peterx@redhat.com/
+> >
+> > Yeah, that's the part that ends up being really painful to backport
+> > (with all the subsequent fixes too), so the 4.14 people would prefer
+> > to avoid it.
+> >
+> > But I think that if it's a "requires dax pmem and ptrace on top", it
+> > may simply be a non-issue for those users. Although who knows - maybe
+> > that ends up being a real issue on Android..
+>
+> A lot to digest, so I need to do some reading now. Thanks everyone!
 
+After a delay due to vacation I prepared backports of 17839856fd58
+("gup: document and work around "COW can break either way" issue") for
+4.14 and 4.19 kernels. As Linus pointed out, uffd-wp was introduced
+later in 5.7, so is not an issue for 4.x kernels. The issue with THPs
+is still unresolved, so with or without this patch it's still there
+(Android is not affected by this since we do not use THPs with older
+kernels).
+Andrea pointed out that there are other issues and to properly fix
+them his COR approach is needed. However it has not been accepted yet,
+so I can't really backport it. I'll be happy to do that though if it
+is accepted in the future.
 
-On 4/21/2021 12:57 PM, Andy Shevchenko wrote:
-> On Wed, Apr 21, 2021 at 10:04 PM Alan Cooper <alcooperx@gmail.com> wrote:
->> On Thu, Apr 15, 2021 at 6:44 AM Andy Shevchenko
->> <andy.shevchenko@gmail.com> wrote:
->>> On Wed, Apr 14, 2021 at 7:13 PM Al Cooper <alcooperx@gmail.com> wrote:
-> 
->> The problem is that when both the 8250_of and 8250_bcm7271 drivers
->> were running, occasionally the 8250_of driver would be bound to the
->> enhanced UART instead of the 8250_bcm7271 driver. This was happening
->> because we use SCMI based clocks which come up late in initialization
->> and cause probe DEFER's when the two drivers get their clocks.
->> Occasionally the SCMI clock would become ready between the
->> 8250_bcm7271 probe and the 8250_of probe and the 8250_of driver would
->> be bound. To fix this we decided to config only our 8250_bcm7271
->> driver and added "ns16665a0" to the compatible string so the driver
->> would work on our older system.
-> 
-> Interesting reading.
-> 
-> As far as I understand the 8250 approach (*), you blacklist (or
-> whatever naming you prefer, b/c 8250_of seems does not have such) the
-> binding based on the presence of the specific compatible string.
-> 
-> I.o.w. in 8250_of you need to check if you are trying to probe the
-> device which has both compatible strings. In that case you simply
-> return -ENODEV.
+Peter, you mentioned https://lkml.org/lkml/2020/8/10/439 patch to
+distinguish real writes vs enforced COW read requests, however I also
+see that you had a later version of this patch here:
+https://lore.kernel.org/patchwork/patch/1286506/. Which one should I
+backport? Or is it not needed in the absence of uffd-wp support in the
+earlier kernels?
+Thanks,
+Suren.
 
-Yes we had a downstream patch not submitted that did exactly that:
-
-+       if (IS_ENABLED(CONFIG_SERIAL_8250_BCM7271) &&
-+           of_device_is_compatible(ofdev->dev.of_node,
-"brcm,bcm7271-uart"))
-+               return -ENODEV;
-+
-
-but thanks to Al's findings it does not appear to be needed anymore, we
-could submit it somehow if you feel like other scenarios like having
-SCMI and the UART drivers as modules.
--- 
-Florian
+>
+> >
+> >             Linus
