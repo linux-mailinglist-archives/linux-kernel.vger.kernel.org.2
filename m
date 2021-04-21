@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40A036690E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD2D366918
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239259AbhDUKUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:20:33 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58238 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238576AbhDUKUb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:20:31 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13LAJbJC177096;
-        Wed, 21 Apr 2021 10:19:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=SlRAyGU25dwXwyv5aZOPm9CgJNtYNYlpX2MTdvyihHk=;
- b=ZbJrVhQJ222SMc3ou6XiqVlioU67X954DehKzrms1yMXSxFiOgbH1Bzpi1m1cyQiuRDd
- 01J6HsYzQ9ODakHe2N3RaLwCgbVGKsYIYqeb4UL4YmfXigjeIQS9HfnD2alGWRm16XEd
- mxsvz0kmOvrDh02+4S3aKygq5HJZUPo2ilbYSmrz9aeGYFOXdM8fwrze3B2Mrzy+rKQ5
- +G+X0qkCr1hPY3LAJDDpvZeiXinvo8CQ/wGpGyPQYU0MXGaGVSvQXBQZ0IxWo5Yg8FFm
- R2X9GAKevy/2wzaJYSzWYjVh1/5P87BGsG1DwgC5GN8cwCCbIsh6dVCE1TAOk0T5eDSL TQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 38022y17fd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 10:19:53 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13LAAwvH050981;
-        Wed, 21 Apr 2021 10:19:53 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38098rhf1a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 10:19:53 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13LAFFQl063101;
-        Wed, 21 Apr 2021 10:19:52 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 38098rhf0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 10:19:52 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13LAJqHq015371;
-        Wed, 21 Apr 2021 10:19:52 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 21 Apr 2021 03:19:51 -0700
-Date:   Wed, 21 Apr 2021 13:19:45 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH 2/2] ataflop: fix off by one in ataflop_probe()
-Message-ID: <YH/8QdfDxhjGjXHG@mwanda>
+        id S239288AbhDUKVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:21:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238390AbhDUKVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 06:21:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11DD76143B;
+        Wed, 21 Apr 2021 10:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619000464;
+        bh=hbFr6G44bKelkLXCtpk/IXprzfwUZE84xJEsflGAtYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nvAOjbszJ3K45fjsOOfopGIN1qHSC4Nadp7pai56Priet0waSyonqaBB2LuBSIZEs
+         hfzdDdOw1HTzwovrQ6KTnKxzu5x2VPtpzWLz547zt0bDsAs6/S4FZ8FOQRHgMDSFrB
+         PoExlTS25uQUa/gztV0sGFTjX10xJAvifWa4/d0c=
+Date:   Wed, 21 Apr 2021 12:21:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        linux-nfs@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YH/8jcoC1ffuksrf@kroah.com>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
+ <YH+7ZydHv4+Y1hlx@kroah.com>
+ <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YH/7+65JruUO/wsg@mwanda>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: MpqaWVj0MZOzOsX3HfwIMjt7dd3juTo-
-X-Proofpoint-GUID: MpqaWVj0MZOzOsX3HfwIMjt7dd3juTo-
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9960 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- spamscore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104210079
+In-Reply-To: <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch complains that the "type > NUM_DISK_MINORS" should be >=
-instead of >.  We also need to subtract one from "type" at the start.
+On Wed, Apr 21, 2021 at 11:07:11AM +0100, Sudip Mukherjee wrote:
+> Hi Greg,
+> 
+> On Wed, Apr 21, 2021 at 6:44 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Apr 21, 2021 at 08:10:25AM +0300, Leon Romanovsky wrote:
+> > > On Tue, Apr 20, 2021 at 01:10:08PM -0400, J. Bruce Fields wrote:
+> > > > On Tue, Apr 20, 2021 at 09:15:23AM +0200, Greg KH wrote:
+> > > > > If you look at the code, this is impossible to have happen.
+> > > > >
+> 
+> <snip>
+> 
+> > > They introduce kernel bugs on purpose. Yesterday, I took a look on 4
+> > > accepted patches from Aditya and 3 of them added various severity security
+> > > "holes".
+> >
+> > All contributions by this group of people need to be reverted, if they
+> > have not been done so already, as what they are doing is intentional
+> > malicious behavior and is not acceptable and totally unethical.  I'll
+> > look at it after lunch unless someone else wants to do it...
+> 
+> A lot of these have already reached the stable trees. I can send you
+> revert patches for stable by the end of today (if your scripts have
+> not already done it).
 
-Fixes: bf9c0538e485 ("ataflop: use a separate gendisk for each media format")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/block/ataflop.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Yes, if you have a list of these that are already in the stable trees,
+that would be great to have revert patches, it would save me the extra
+effort these mess is causing us to have to do...
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index aed2c2a4f4ea..d601e49f80e0 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2001,7 +2001,10 @@ static void ataflop_probe(dev_t dev)
- 	int drive = MINOR(dev) & 3;
- 	int type  = MINOR(dev) >> 2;
- 
--	if (drive >= FD_MAX_UNITS || type > NUM_DISK_MINORS)
-+	if (type)
-+		type--;
-+
-+	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
- 		return;
- 	mutex_lock(&ataflop_probe_lock);
- 	if (!unit[drive].disk[type]) {
--- 
-2.30.2
+thanks,
 
+greg k-h
