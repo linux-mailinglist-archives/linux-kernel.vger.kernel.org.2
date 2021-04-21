@@ -2,143 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406DA3666D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98113666DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhDUIQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:16:03 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:38791 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234010AbhDUIP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:15:56 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210421081521epoutp0486e553d0a7a44ca8d444805c510a095e~30XvuYrVo2364723647epoutp04c
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:15:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210421081521epoutp0486e553d0a7a44ca8d444805c510a095e~30XvuYrVo2364723647epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618992921;
-        bh=HS4J43y+tg5ufiqDn6go8vMT66WmpgWbwxk48ryxnhc=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=u2odaMOptHW+nq6fnkpXv5tmCQ+wSmz6TnHTMTn4ZJb2YaqO70pZk3IdaV/g23HHp
-         UWM1CEGr+GXK3+zyCsVNtJj27bIbNo8PPOAljmk79t4BYScf6RP15RqoBmFVayOoJm
-         wHKqRCy2LEWOk49/9fgMN/9t0q/PeXM3V8WWWdsQ=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210421081520epcas2p4f782116aa51acd0be403561e7cd7e84b~30Xum733o1037210372epcas2p4d;
-        Wed, 21 Apr 2021 08:15:20 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.183]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4FQCzB5pCXz4x9QR; Wed, 21 Apr
-        2021 08:15:18 +0000 (GMT)
-X-AuditID: b6c32a46-e01ff700000025de-b9-607fdf16b39f
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E6.42.09694.61FDF706; Wed, 21 Apr 2021 17:15:18 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] block: remove redundant check in blk_attempt_plug_merge
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "axboe@kernel.dk" <axboe@kernel.dk>
-CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210421081517epcms2p75252b49900647146260b4f3c18cfd7c5@epcms2p7>
-Date:   Wed, 21 Apr 2021 17:15:17 +0900
-X-CMS-MailID: 20210421081517epcms2p75252b49900647146260b4f3c18cfd7c5
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAJsWRmVeSWpSXmKPExsWy7bCmha7Y/foEg8nfhSxW3+1ns3h5SNNi
-        18GDbBarHoRb9PZvZbPYfHADs0X/v3YWi22fBS2On3zHaLH3lrbF5V1z2Cw6p69hceDxuHy2
-        1KNvyypGj8+b5AKYo3JsMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22V
-        XHwCdN0yc4AOUlIoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUGBoW6BUn5haX5qXr
-        JefnWhkaGBiZAlUm5GRMuGJccIS3YtKU1SwNjBe4uhg5OSQETCQObZnE2MXIxSEksINRYsLl
-        +SxdjBwcvAKCEn93CIPUCAt4SLy+uoYRxBYSUJJYf3EWO0RcT+LWQ4g4m4COxPQT98HiIgLq
-        ErOPb2cGmckscI5Z4vyKjywQy3glZrQ/hbKlJbYv38oIYWtI/FjWywxhi0rcXP2WHcZ+f2w+
-        VI2IROu9s1A1ghIPfu6GiktKHNv9gQnCrpfYeucX2DMSAj2MEod33mKFSOhLXOvYCLaYV8BX
-        on3WXLA4i4CqxKMFHVDLXCS+HbkBFmcWkJfY/nYOMyggmAU0Jdbv0gcxJQSUJY7cgnulYeNv
-        dnQ2swCfRMfhv3DxHfOeQJ2mJrHu53omiDEyErfmMU5gVJqFCOhZSNbOQli7gJF5FaNYakFx
-        bnpqsVGBEXLUbmIEJ00ttx2MU95+0DvEyMTBeIhRgoNZSYT3fm1NghBvSmJlVWpRfnxRaU5q
-        8SFGU6CHJzJLiSbnA9N2Xkm8oamRmZmBpamFqZmRhZI478/UugQhgfTEktTs1NSC1CKYPiYO
-        TqkGJlWb7t1rsrgPdNbzfYzdd3jKqejPy7+mX/M85RV2q/FpwZtN0p9uz+Zf9lYs1vRCSNrL
-        12fy15xTfbGsj0f8/OSd2e9Vm/29Lir4dwt5fdAVi1PL3S7iaHNy8aS5YXf8sl4+aVpf7Tj9
-        RprKkgDeMwFJvVGi8ldyJ1yQlV/JcPtNZ++538rbbxm9f7vBIm3FpykfN8cl8Ah4TZJ3VEhR
-        u3r+9NU5j6XnOVxuuuG0amFLgFPEeW77ub+szlzirH2asC93c488u+0kIZuLv4+HTnYwKmeI
-        nSMX4zjl17v7es97NKbn7P8sobatrWTWwjfRkk1tbz57zkp1e/XJ8lls2G1pt4yztl7vnp4Q
-        Osws6abEUpyRaKjFXFScCADLfDqYIwQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210421081517epcms2p75252b49900647146260b4f3c18cfd7c5
-References: <CGME20210421081517epcms2p75252b49900647146260b4f3c18cfd7c5@epcms2p7>
+        id S234661AbhDUIQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:16:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59178 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234010AbhDUIQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:16:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3908B137;
+        Wed, 21 Apr 2021 08:15:49 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 10:15:46 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 4/8] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <20210421081546.GD22456@linux>
+References: <20210416112411.9826-1-osalvador@suse.de>
+ <20210416112411.9826-5-osalvador@suse.de>
+ <YH6zQ1Dty9kJFkuk@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH6zQ1Dty9kJFkuk@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-blk_attempt_plug_merge is only called by blk_mq_submit_bio and the
-parameter of same_queue_rq is not NULL. This patch remove redundant
-check for same_queue_rq is not NULL in list_for_each_entry_reverse.
+On Tue, Apr 20, 2021 at 12:56:03PM +0200, Michal Hocko wrote:
+> On Fri 16-04-21 13:24:07, Oscar Salvador wrote:
+> > Physical memory hotadd has to allocate a memmap (struct page array) for
+> > the newly added memory section. Currently, alloc_pages_node() is used
+> > for those allocations.
+> > 
+> > This has some disadvantages:
+> >  a) an existing memory is consumed for that purpose
+> >     (eg: ~2MB per 128MB memory section on x86_64)
+> 
+> I would extend this slightly. This can even lead to extreme cases where
+> system goes OOM because the physically hotplugged memory depletes the
+> available memory before it is onlined.
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- block/blk-merge.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+Ok.
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index ffb4aa0ea68b..0af8a276de09 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -1030,7 +1030,6 @@ static enum bio_merge_status blk_attempt_bio_merge(struct request_queue *q,
-  * @nr_segs: number of segments in @bio
-  * @same_queue_rq: pointer to &struct request that gets filled in when
-  * another request associated with @q is found on the plug list
-- * (optional, may be %NULL)
-  *
-  * Determine whether @bio being queued on @q can be merged with a request
-  * on %current's plugged list.  Returns %true if merge was successful,
-@@ -1059,18 +1058,16 @@ bool blk_attempt_plug_merge(struct request_queue *q, struct bio *bio,
- 	plug_list = &plug->mq_list;
- 
- 	list_for_each_entry_reverse(rq, plug_list, queuelist) {
--		if (rq->q == q && same_queue_rq) {
--			/*
--			 * Only blk-mq multiple hardware queues case checks the
--			 * rq in the same queue, there should be only one such
--			 * rq in a queue
--			 **/
--			*same_queue_rq = rq;
--		}
--
- 		if (rq->q != q)
- 			continue;
- 
-+		/*
-+		 * Only blk-mq multiple hardware queues case checks the
-+		 * rq in the same queue, there should be only one such
-+		 * rq in a queue
-+		 **/
-+		*same_queue_rq = rq;
-+
- 		if (blk_attempt_bio_merge(q, rq, bio, nr_segs, false) ==
- 		    BIO_MERGE_OK)
- 			return true;
+> > Vmemap page tables can map arbitrary memory.
+> > That means that we can simply use the beginning of each memory section and
+> > map struct pages there.
+> 
+> Again this can be confusing because this is not what is really happening
+> in practice because we are going to have a multisection memory block
+> where all sections will be backed by a common reserved space rather than
+> per section sparse space. I would go with
+> 
+> "
+> Vmemap page tables can map arbitrary memory. That means that we can
+> reserve a part of the physically hotadded memory to back vmemmap page
+> tables. This implementation uses the beggining of the hotplugged memory
+> for that purpose.
+> "
+
+Yeah, I thought I fixed that, it should have been "That means that we can simply
+use the beginning of each memory block...", but I am ok with your rewording.
+
+> There is quite a large leap from __populate_section_memmap to the
+> memory_block that deserves explaining to not lose all the subtle things
+> discussed in the past. I think it should be made clear why all the fuzz.
+> I would structure it as follows:
+> "
+> There are some non-obiously things to consider though.  Vmemmap
+> pages are allocated/freed during the memory hotplug events
+> (add_memory_resource, try_remove_memory) when the memory is
+> added/removed. This means that the reserved physical range is not online
+> yet it is used. The most obvious side effect is that pfn_to_online_page
+> returns NULL for those pfns. The current design expects that this
+> should be OK as the hotplugged memory is considered a garbage until it
+> is onlined. For example hibernation wouldn't save the content of those
+> vmmemmaps into the image so it wouldn't be restored on resume but this
+> should be OK as there no real content to recover anyway while metadata
+> is reachable from other data structures (e.g. vmemmap page tables).
+> 
+> The reserved space is therefore (de)initialized during the {on,off}line
+> events (mhp_{de}init_memmap_on_memory). That is done by extracting page
+> allocator independent initialization from the regular onlining path.
+> The primary reason to handle the reserved space outside of {on,off}line_pages
+> is to make each initialization specific to the purpose rather than
+> special case them in a single function.
+
+Ok, that definitely adds a valuable information.
+
+> > diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> > index f209925a5d4e..2e2b2f654f0a 100644
+> > --- a/drivers/base/memory.c
+> > +++ b/drivers/base/memory.c
+> > @@ -173,16 +173,72 @@ static int memory_block_online(struct memory_block *mem)
+> >  {
+> >  	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
+> >  	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
+> > +	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
+> > +	struct zone *zone;
+> > +	int ret;
+> > +
+> > +	zone = zone_for_pfn_range(mem->online_type, mem->nid, start_pfn, nr_pages);
+> > +
+> > +	/*
+> > +	 * Although vmemmap pages have a different lifecycle than the pages
+> > +	 * they describe (they remain until the memory is unplugged), doing
+> > +	 * their initialization and accounting at memory onlining/offlining
+> > +	 * stage simplifies things a lot.
+> 
+> "simplify things a lot" is not really helpful to people reading the
+> code. It would be much better to state reasons here. I would go with
+> 	 * stage helps to keep accounting easier to follow - e.g.
+> 	 * vmemmaps belong to the same zone as the onlined memory.
+
+Ok
+
+> >  static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
+> >  {
+> >  	const unsigned long end_pfn = start_pfn + nr_pages;
+> > -	unsigned long pfn;
+> > +	unsigned long pfn = start_pfn;
+> > +
+> > +	while (!IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES)) {
+> > +		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
+> > +		pfn += pageblock_nr_pages;
+> > +	}
+> 
+> I believe we do not need to check for nr_pages as the actual operation
+> will never run out of range in practice but the code is more subtle than
+
+If you mean that IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES) can go, that is not
+right.
+Of course, with your changes below it would not be necesary.
+
+> necessary. Using two different iteration styles is also hurting the code
+> readability. I would go with the following
+> 	for (pfn = start_pfn; pfn < end_pfn; ) {
+> 		unsigned long order = min(MAX_ORDER - 1UL, __ffs(pfn));
+> 
+> 		while (start + (1UL << order) > end_pfn)
+>                         order--;
+> 		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
+> 		pfn += 1 << order;
+> 	}
+> 
+> which is what __free_pages_memory does already.
+
+this is kinda what I used to have in the early versions, but it was agreed
+with David to split it in two loops to make it explicit.
+I can go back to that if it is preferred.
+
+> > +	if (memmap_on_memory) {
+> > +		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
+> > +						      get_nr_vmemmap_pages_cb);
+> > +		if (nr_vmemmap_pages) {
+> > +			if (size != memory_block_size_bytes()) {
+> > +				pr_warn("Refuse to remove %#llx - %#llx,"
+> > +					"wrong granularity\n",
+> > +					start, start + size);
+> > +				return -EINVAL;
+> > +			}
+> > +
+> > +			/*
+> > +			 * Let remove_pmd_table->free_hugepage_table do the
+> > +			 * right thing if we used vmem_altmap when hot-adding
+> > +			 * the range.
+> > +			 */
+> > +			mhp_altmap.alloc = nr_vmemmap_pages;
+> > +			altmap = &mhp_altmap;
+> > +		}
+> > +	}
+> > +
+> >  	/* remove memmap entry */
+> >  	firmware_map_remove(start, start + size, "System RAM");
+> 
+> I have to say I still dislike this and I would just wrap it inside out
+> and do the operation from within walk_memory_blocks but I will not
+> insist.
+
+I have to confess I forgot about the details of that dicussion, as we were
+quite focused on decoupling vmemmap pages from {online,offline} interface.
+Would you mind elaborating a bit more?
+
+
 -- 
-2.25.1
-
+Oscar Salvador
+SUSE L3
