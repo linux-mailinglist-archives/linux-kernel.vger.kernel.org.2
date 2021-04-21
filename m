@@ -2,212 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F7366821
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EEF36682A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238387AbhDUJgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:36:00 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:37054 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238354AbhDUJf6 (ORCPT
+        id S238340AbhDUJgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:36:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52510 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238084AbhDUJgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:35:58 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210421093523euoutp02c2606110831e277dd4c3b597e4766d6f~31doX3Alz1775817758euoutp02s
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:35:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210421093523euoutp02c2606110831e277dd4c3b597e4766d6f~31doX3Alz1775817758euoutp02s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618997723;
-        bh=AN/04FgvAqzABcyyvdUV6OXT5CUrutzKOCHl9Vs9JMw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=WI9rVvVQhlH46U9WiAXbFkjWSoOLVX1TSJit6rBmA7u8vOltttVe9IJcdidlm+jYy
-         kDFmCxancpOrWmc0C5Ls9qSTGqwF0PhXTMAhP6rKfysnf0i+5epGZwaPwAYhmhfwgR
-         rj81pHQAIgCU4uNuSjq3dzijv/JoYAyTiFpNFweA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210421093523eucas1p264374ab1d1f4c98df1606d348145bd13~31dnt_7u22054820548eucas1p2F;
-        Wed, 21 Apr 2021 09:35:23 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 1D.5E.09439.AD1FF706; Wed, 21
-        Apr 2021 10:35:22 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210421093522eucas1p1f0bf1889f23b7a71e8ea35313273606c~31dnM5u6t0040500405eucas1p1R;
-        Wed, 21 Apr 2021 09:35:22 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210421093522eusmtrp23da702d9b240a0ce063e6582bc69a744~31dnLjT981228112281eusmtrp2f;
-        Wed, 21 Apr 2021 09:35:22 +0000 (GMT)
-X-AuditID: cbfec7f5-c1bff700000024df-2a-607ff1da516b
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 7D.C9.08705.AD1FF706; Wed, 21
-        Apr 2021 10:35:22 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210421093520eusmtip1254c053cba84fc98636bab56c42935ae~31dlr8s4R2875628756eusmtip1f;
-        Wed, 21 Apr 2021 09:35:20 +0000 (GMT)
-Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and
- si_perf to siginfo
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com>
-Date:   Wed, 21 Apr 2021 11:35:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.9.1
+        Wed, 21 Apr 2021 05:36:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618997762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ACqY+6Q4cI9VoecQi1p0SEw3gzRohNqiuStWl9wmApY=;
+        b=UigBYRz/aIkod6IdJs6M4DhYhVKRDUDQU89YYXBxZkir9cxE9/SiWfhkqUwdHz3lIrH5ny
+        vC2H+H4n6dRZUx4NY3YMiOhusLHjLv5mUnczrXm+2kXNuUQFhl1Wxk8Yd9WKvc+4XtoCP7
+        uX+0Wc9kUrE78fnjQQ1OCQ/iHu/3GHo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-cLax-nl5O3KAc541HZhdBQ-1; Wed, 21 Apr 2021 05:35:59 -0400
+X-MC-Unique: cLax-nl5O3KAc541HZhdBQ-1
+Received: by mail-ed1-f71.google.com with SMTP id i25-20020a50fc190000b0290384fe0dab00so9127731edr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:35:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ACqY+6Q4cI9VoecQi1p0SEw3gzRohNqiuStWl9wmApY=;
+        b=LEoOU9XYorvW7f4hf4ue3OtT1GbQxJ7U9iQmyob5Eq9PUCcy89aO6/QJ02+mFZ+1LL
+         xVca3e+RMPFoANGpc/WqemhSBisQT30pNfpt+FKN9a6mtbW7zRC3Yd4TblkCU2V032/R
+         8F0J6jdcep7/R67T3/LKodyzTYJiwyc/n20oFn5FV0Jx3844Wgo0jSt0G64BapqnlP1s
+         ceyzCd6iGf/4sZ6pvUkJCoqcm2gx8zWfkYyaNV9NUgUZ+FOI3Lr0InExX2pRfYKByBep
+         BY2f2S8XJ0wupfZkQtAqUO6w2xol+cRrRBxe8opO3mSnSJY3aERS31ViVmbUSUI27C1A
+         9opg==
+X-Gm-Message-State: AOAM5310Zi0qDggT4y+0fh9SHXzQwwijqKyxtjxo5Rutv6mzt9ZoSZ/7
+        z3V3OJPuVBVBsoODLDNNns3hewUWwp8rxdxFL/N3fy7uRF8r9n7xv1m/RTLXUCC61YDJdTj5a8S
+        25GFQCCTsrvPc1sw9OrLtXLnA
+X-Received: by 2002:aa7:d2da:: with SMTP id k26mr37681361edr.156.1618997758238;
+        Wed, 21 Apr 2021 02:35:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJXDahCktxfXYwURao9+4dGAANy5jTDVWd/ahoUUrBTut9yRSYVXom1JKkvyS3Gy9Il0hI6A==
+X-Received: by 2002:aa7:d2da:: with SMTP id k26mr37681335edr.156.1618997758036;
+        Wed, 21 Apr 2021 02:35:58 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id g20sm2552335edb.7.2021.04.21.02.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 02:35:57 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:35:54 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v8 17/19] vsock_test: add SOCK_SEQPACKET tests
+Message-ID: <20210421093554.y45al5r7xhoo7dwh@steredhat>
+References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
+ <20210413124701.3407363-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTZxjG/c45PT1tUjkUtn7pEJcymboUx4TlMyNsmoUd9webkmUJGYOq
-        Z4VxXWu9bMpQA+u6CYgXpKGIKbcgKpSbIHdGaydU5DI2AgNGQ5aSQhoBHaYwyoGN/37v+z5v
-        nudNXgoXm0gplZByklWlKJJkpJBoMP9jk4+6vo97u9d+AOn+fEAiramAh9x5Zj66M55Dopqb
-        93nowlwAyp3K4qOs3kYemhltxdAPrlYcFWcu8NGAVY56+twYqpiZwJC2eZFALa1WAg02F5Io
-        f2yeRKUjTzFk7OzgoYGOYgxdLKsnUH17JkA5YyMkslzuwFCt6TqOnrgtPPSiepr3gR9TVVQF
-        mJfLeYBxG1w4U2zSMC1XrCRTW7GXGezTMKbKH0lmzmbjM13dWsAUWY8w823DJJNdVwmYZyZ/
-        xmR3Yp96RQvDTrBJCadY1b7wOGF80eqXaTd2nOk1BmaASYkOCChIh8DsqzU8D4vpCgBzZ+J1
-        QLjGCwDOjP5KcsUzANu7JnmbG9dLHBuDcgBvuxYwrnAB2LKaw/eofOho2G3rxz3sS8ugczob
-        94hwepiC2qZuzDMg6WCoc+pID4vocFj609C6BUHvgquP2wgPv0Ifg38MrOKcxhtaC+zrfQF9
-        BNYby9bNcHonbHQW4hxL4Kj91noiSDcJ4bVRM+ByfwhzHpbzOfaBDkvdBvvB1abNhUsATtnu
-        8rniZwAHL97c2H4PjtmW16JSaxZ74P3mfVz7IHRU6zFPG9Lb4e9Oby7EdpjXkI9zbRHUZok5
-        dSDUW+79Z9vZP4DnApl+y2n6Lefot5yj/9+3GBCVQMJq1MlKVr0/hT0dpFYkqzUpyqDjqckm
-        sPbWj1csiw9AhcMV1AUwCnQBSOEyX9HE+XNxYtEJxdlvWVVqrEqTxKq7wGsUIZOImuurYsW0
-        UnGSTWTZNFa1OcUogTQDux1+PIY3/8n4sD9x1d2gNFx4XimgUMgd5kWEfH/26x/H7Da0vypf
-        MkqM6WEfzeL6gFTRX+b6d/qmnpLX0KGWSVu48rODBVrNw1nFo+WzXyy0RPsFvHkuaWK5piy/
-        uPKtqF/ORyz9XS04853paMJvCfQ3rfaBw2G+4s49JW/s6H93Fkz7bIt0XTIzparPQ1Ob/GMN
-        2/rTH+kCC0snI3RzxLiyp+LecGRwUtRpR60hZPHrr0oypI11/SMjkWmhXvnH4kNWeobSHaF3
-        L9cEQz1xQBKz8tLYNuT3XNWcecNdILjlLX0yUValM0a9nyiVnoqqLRReCXLuXjokz9hZXutF
-        JiplhDpeEbwXV6kV/wIdY7s/RQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKKsWRmVeSWpSXmKPExsVy+t/xu7q3PtYnGCyaKWTRdW8Hm0XHppms
-        Fn8nHWO3WH23n81i44z1rBaN75QtJjxsY7doO7Od1eLZrb1MFu0f9zJbLGj9wm5x6aSuxdGz
-        f5ksVjy7z2TRsesri8WevSdZLC7vmsNmMf3OezaLpdcvMlksPniA1eLSgQVMFk3LtrJYbN3f
-        ymjRf+c6m8Xx3gNMFps3TWW2OP/3OKvFjw2PWR1kPNbMW8Po8fvXJEaPv3M/Mnss2FTqsWfi
-        STaPzSu0PC6fLfXYtKqTzePduXPsHocOdzB6zDsZ6PF+31U2j74tqxg9Pm+S89j05C1TAH+U
-        nk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsa8/3EF
-        02QrzixWa2B8IN7FyMkhIWAiMXXJK7YuRi4OIYGljBITbj1kgUjISJyc1sAKYQtL/LnWBVX0
-        nlGidc5FJpCEsECUxKW/75hBbBEBJYm3j/uYQYqYBW5ySCzZ+YQJouMZs8STz3vAqtgEDCW6
-        3oKM4uTgFbCTWNp9BWwFi4CqxP/T+8BWiwokSdy7vJIZokZQ4uTMJ2BxToFAia2Ll7GD2MwC
-        ZhLzNj9khrDlJba/nQNli0vcejKfaQKj0Cwk7bOQtMxC0jILScsCRpZVjCKppcW56bnFhnrF
-        ibnFpXnpesn5uZsYgelp27Gfm3cwznv1Ue8QIxMH4yFGCQ5mJRHe+7U1CUK8KYmVValF+fFF
-        pTmpxYcYTYH+mcgsJZqcD0yQeSXxhmYGpoYmZpYGppZmxkrivFvnrokXEkhPLEnNTk0tSC2C
-        6WPi4JRqYGK2DdvgX/SrJOaB77Q3rO4LXRdzHcnS2D3XULg/vHeZ3f7JhX+EU9IusW98LGVs
-        rbJl4beQy//MpK+Hy2/P/nDZUXK/xs4ny305Jm41evB0uuc8/tMX5zOdXe8W+OkXyyTTNTVL
-        UhZ0PWCKqFd9cTFha/sEyZQ/uSkKlzgPqc56oufOwWYe9+fe5/yPx4NnNYunzIpycxL/Wbjt
-        xbvgqzVXO9r+T604/1M7+++Gk0t4w7oYvtm02s2K1Hqa+/q2ypmauo2mRXu2tqjzHAzIEPm9
-        Uaw8K6lx/rK5f/4Y8/XVBuUlPXZne1r3KUVg7u5dOX83ep4WFtBgnq/C8HnbkyMK7yqjHn54
-        p2s1l+VFsbMSS3FGoqEWc1FxIgC7i2Ns2AMAAA==
-X-CMS-MailID: 20210421093522eucas1p1f0bf1889f23b7a71e8ea35313273606c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8
-References: <20210408103605.1676875-1-elver@google.com>
-        <CGME20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8@eucas1p1.samsung.com>
-        <20210408103605.1676875-6-elver@google.com>
-        <1fbf3429-42e5-0959-9a5c-91de80f02b6a@samsung.com>
-        <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
-        <43f8a3bf-34c5-0fc9-c335-7f92eaf23022@samsung.com>
-        <dccaa337-f3e5-08e4-fe40-a603811bb13e@samsung.com>
-        <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210413124701.3407363-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
+On Tue, Apr 13, 2021 at 03:46:58PM +0300, Arseny Krasnov wrote:
+>This adds test of SOCK_SEQPACKET socket: it transfer data and
+>then tests MSG_TRUNC flag. Cases for connect(), bind(), etc. are
+>not tested, because it is same as for stream socket.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+>v7 -> v8:
+> - Test for MSG_EOR flags now removed.
 
-On 21.04.2021 10:11, Marco Elver wrote:
-> On Wed, 21 Apr 2021 at 09:35, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->> On 21.04.2021 08:21, Marek Szyprowski wrote:
->>> On 21.04.2021 00:42, Marco Elver wrote:
->>>> On Tue, 20 Apr 2021 at 23:26, Marek Szyprowski
->>>> <m.szyprowski@samsung.com> wrote:
->>>>> On 08.04.2021 12:36, Marco Elver wrote:
->>>>>> Introduces the TRAP_PERF si_code, and associated siginfo_t field
->>>>>> si_perf. These will be used by the perf event subsystem to send
->>>>>> signals
->>>>>> (if requested) to the task where an event occurred.
->>>>>>
->>>>>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
->>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de> # asm-generic
->>>>>> Signed-off-by: Marco Elver <elver@google.com>
->>>>> This patch landed in linux-next as commit fb6cc127e0b6 ("signal:
->>>>> Introduce TRAP_PERF si_code and si_perf to siginfo"). It causes
->>>>> regression on my test systems (arm 32bit and 64bit). Most systems fails
->>>>> to boot in the given time frame. I've observed that there is a timeout
->>>>> waiting for udev to populate /dev and then also during the network
->>>>> interfaces configuration. Reverting this commit, together with
->>>>> 97ba62b27867 ("perf: Add support for SIGTRAP on perf events") to let it
->>>>> compile, on top of next-20210420 fixes the issue.
->>>> Thanks, this is weird for sure and nothing in particular stands out.
->>>>
->>>> I have questions:
->>>> -- Can you please share your config?
->>> This happens with standard multi_v7_defconfig (arm) or just defconfig
->>> for arm64.
->>>
->>>> -- Also, can you share how you run this? Can it be reproduced in qemu?
->>> Nothing special. I just boot my test systems and see that they are
->>> waiting lots of time during the udev populating /dev and network
->>> interfaces configuration. I didn't try with qemu yet.
->>>> -- How did you derive this patch to be at fault? Why not just
->>>> 97ba62b27867, given you also need to revert it?
->>> Well, I've just run my boot tests with automated 'git bisect' and that
->>> was its result. It was a bit late in the evening, so I didn't analyze
->>> it further, I've just posted a report about the issue I've found. It
->>> looks that bisecting pointed to a wrong commit somehow.
->>>> If you are unsure which patch exactly it is, can you try just
->>>> reverting 97ba62b27867 and see what happens?
->>> Indeed, this is a real faulty commit. Initially I've decided to revert
->>> it to let kernel compile (it uses some symbols introduced by this
->>> commit). Reverting only it on top of linux-next 20210420 also fixes
->>> the issue. I'm sorry for the noise in this thread. I hope we will find
->>> what really causes the issue.
->> This was a premature conclusion. It looks that during the test I've did
->> while writing that reply, the modules were not deployed properly and a
->> test board (RPi4) booted without modules. In that case the board booted
->> fine and there was no udev timeout. After deploying kernel modules, the
->> udev timeout is back.
-> I'm confused now. Can you confirm that the problem is due to your
-> kernel modules, or do you think it's still due to 97ba62b27867? Or
-> fb6cc127e0b6 (this patch)?
+Why did we remove it?
 
-I don't use any custom kernel modules. I just deploy all modules that 
-are being built from the given kernel defconfig (arm multi_v7_defconfig 
-or arm64 default) and they are automatically loaded during the boot by 
-udev. I've checked again and bisect was right. The kernel built from 
-fb6cc127e0b6 suffers from the described issue, while the one build from 
-the previous commit (2e498d0a74e5) works fine.
+Thanks,
+Stefano
 
-Best regards
-
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+>
+> tools/testing/vsock/util.c       | 32 +++++++++++++---
+> tools/testing/vsock/util.h       |  3 ++
+> tools/testing/vsock/vsock_test.c | 63 ++++++++++++++++++++++++++++++++
+> 3 files changed, 93 insertions(+), 5 deletions(-)
+>
+>diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
+>index 93cbd6f603f9..2acbb7703c6a 100644
+>--- a/tools/testing/vsock/util.c
+>+++ b/tools/testing/vsock/util.c
+>@@ -84,7 +84,7 @@ void vsock_wait_remote_close(int fd)
+> }
+>
+> /* Connect to <cid, port> and return the file descriptor. */
+>-int vsock_stream_connect(unsigned int cid, unsigned int port)
+>+static int vsock_connect(unsigned int cid, unsigned int port, int type)
+> {
+> 	union {
+> 		struct sockaddr sa;
+>@@ -101,7 +101,7 @@ int vsock_stream_connect(unsigned int cid, unsigned int port)
+>
+> 	control_expectln("LISTENING");
+>
+>-	fd = socket(AF_VSOCK, SOCK_STREAM, 0);
+>+	fd = socket(AF_VSOCK, type, 0);
+>
+> 	timeout_begin(TIMEOUT);
+> 	do {
+>@@ -120,11 +120,21 @@ int vsock_stream_connect(unsigned int cid, unsigned int port)
+> 	return fd;
+> }
+>
+>+int vsock_stream_connect(unsigned int cid, unsigned int port)
+>+{
+>+	return vsock_connect(cid, port, SOCK_STREAM);
+>+}
+>+
+>+int vsock_seqpacket_connect(unsigned int cid, unsigned int port)
+>+{
+>+	return vsock_connect(cid, port, SOCK_SEQPACKET);
+>+}
+>+
+> /* Listen on <cid, port> and return the first incoming connection.  The remote
+>  * address is stored to clientaddrp.  clientaddrp may be NULL.
+>  */
+>-int vsock_stream_accept(unsigned int cid, unsigned int port,
+>-			struct sockaddr_vm *clientaddrp)
+>+static int vsock_accept(unsigned int cid, unsigned int port,
+>+			struct sockaddr_vm *clientaddrp, int type)
+> {
+> 	union {
+> 		struct sockaddr sa;
+>@@ -145,7 +155,7 @@ int vsock_stream_accept(unsigned int cid, unsigned int port,
+> 	int client_fd;
+> 	int old_errno;
+>
+>-	fd = socket(AF_VSOCK, SOCK_STREAM, 0);
+>+	fd = socket(AF_VSOCK, type, 0);
+>
+> 	if (bind(fd, &addr.sa, sizeof(addr.svm)) < 0) {
+> 		perror("bind");
+>@@ -189,6 +199,18 @@ int vsock_stream_accept(unsigned int cid, unsigned int port,
+> 	return client_fd;
+> }
+>
+>+int vsock_stream_accept(unsigned int cid, unsigned int port,
+>+			struct sockaddr_vm *clientaddrp)
+>+{
+>+	return vsock_accept(cid, port, clientaddrp, SOCK_STREAM);
+>+}
+>+
+>+int vsock_seqpacket_accept(unsigned int cid, unsigned int port,
+>+			   struct sockaddr_vm *clientaddrp)
+>+{
+>+	return vsock_accept(cid, port, clientaddrp, SOCK_SEQPACKET);
+>+}
+>+
+> /* Transmit one byte and check the return value.
+>  *
+>  * expected_ret:
+>diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
+>index e53dd09d26d9..a3375ad2fb7f 100644
+>--- a/tools/testing/vsock/util.h
+>+++ b/tools/testing/vsock/util.h
+>@@ -36,8 +36,11 @@ struct test_case {
+> void init_signals(void);
+> unsigned int parse_cid(const char *str);
+> int vsock_stream_connect(unsigned int cid, unsigned int port);
+>+int vsock_seqpacket_connect(unsigned int cid, unsigned int port);
+> int vsock_stream_accept(unsigned int cid, unsigned int port,
+> 			struct sockaddr_vm *clientaddrp);
+>+int vsock_seqpacket_accept(unsigned int cid, unsigned int port,
+>+			   struct sockaddr_vm *clientaddrp);
+> void vsock_wait_remote_close(int fd);
+> void send_byte(int fd, int expected_ret, int flags);
+> void recv_byte(int fd, int expected_ret, int flags);
+>diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+>index 5a4fb80fa832..ffec985fd36f 100644
+>--- a/tools/testing/vsock/vsock_test.c
+>+++ b/tools/testing/vsock/vsock_test.c
+>@@ -14,6 +14,8 @@
+> #include <errno.h>
+> #include <unistd.h>
+> #include <linux/kernel.h>
+>+#include <sys/types.h>
+>+#include <sys/socket.h>
+>
+> #include "timeout.h"
+> #include "control.h"
+>@@ -279,6 +281,62 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
+> 	close(fd);
+> }
+>
+>+#define MESSAGE_TRUNC_SZ 32
+>+static void test_seqpacket_msg_trunc_client(const struct test_opts *opts)
+>+{
+>+	int fd;
+>+	char buf[MESSAGE_TRUNC_SZ];
+>+
+>+	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
+>+	if (fd < 0) {
+>+		perror("connect");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (send(fd, buf, sizeof(buf), 0) != sizeof(buf)) {
+>+		perror("send failed");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	control_writeln("SENDDONE");
+>+	close(fd);
+>+}
+>+
+>+static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
+>+{
+>+	int fd;
+>+	char buf[MESSAGE_TRUNC_SZ / 2];
+>+	struct msghdr msg = {0};
+>+	struct iovec iov = {0};
+>+
+>+	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
+>+	if (fd < 0) {
+>+		perror("accept");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	control_expectln("SENDDONE");
+>+	iov.iov_base = buf;
+>+	iov.iov_len = sizeof(buf);
+>+	msg.msg_iov = &iov;
+>+	msg.msg_iovlen = 1;
+>+
+>+	ssize_t ret = recvmsg(fd, &msg, MSG_TRUNC);
+>+
+>+	if (ret != MESSAGE_TRUNC_SZ) {
+>+		printf("%zi\n", ret);
+>+		perror("MSG_TRUNC doesn't work");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (!(msg.msg_flags & MSG_TRUNC)) {
+>+		fprintf(stderr, "MSG_TRUNC expected\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	close(fd);
+>+}
+>+
+> static struct test_case test_cases[] = {
+> 	{
+> 		.name = "SOCK_STREAM connection reset",
+>@@ -309,6 +367,11 @@ static struct test_case test_cases[] = {
+> 		.run_client = test_stream_msg_peek_client,
+> 		.run_server = test_stream_msg_peek_server,
+> 	},
+>+	{
+>+		.name = "SOCK_SEQPACKET send data MSG_TRUNC",
+>+		.run_client = test_seqpacket_msg_trunc_client,
+>+		.run_server = test_seqpacket_msg_trunc_server,
+>+	},
+> 	{},
+> };
+>
+>-- 
+>2.25.1
+>
 
