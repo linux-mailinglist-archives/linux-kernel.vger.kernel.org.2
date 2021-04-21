@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FE136720D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E0336720F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243640AbhDURyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:54:25 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48932 "EHLO mga14.intel.com"
+        id S245041AbhDURym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:54:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:49672 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243375AbhDURyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:54:23 -0400
-IronPort-SDR: /VL4ZreGaq6NI8kUJ8vgtQrN+cZJ7hf08CRxYeKReBfxL4ZQX9VrcNc7+cVBgzEBV6cjzEfZFS
- w8vol+H6NhQQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195301534"
+        id S243192AbhDURyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:54:40 -0400
+IronPort-SDR: biYErnG+ZqwLBKfsSol0zKhvn7/FSjb/e8a33N69OP0GsEdjRPJU329knSyMXZZEdUR6Vr25+O
+ wEOwSu8iDYrw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="182875878"
 X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="195301534"
+   d="scan'208";a="182875878"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:53:50 -0700
-IronPort-SDR: RIZb0MRHyztcffxl5iuuncej8/aH9ccGhf462926I1z18DfGJgyipFc05YsTshajOraCiHkp8p
- c8B9HWXwNp7w==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:54:06 -0700
+IronPort-SDR: ZXGipQWNSsHNUlpqwBwBGej/nZnWOLYdtDY1t3N8SXOBWiu0jLapikzNNHVMCzyI7Rbcit0HM4
+ pGaVOPBt934A==
 X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="427609582"
+   d="scan'208";a="427609634"
 Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.153.90]) ([10.249.153.90])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:53:49 -0700
-Subject: Re: [PATCH 038/190] Revert "cpuidle: Fix three reference count leaks"
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:54:05 -0700
+Subject: Re: [PATCH 040/190] Revert "ACPI: CPPC: Fix reference count leak in
+ acpi_cppc_processor_probe()"
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>
+Cc:     Qiushi Wu <wu000273@umn.edu>, "4 . 10+" <stable@vger.kernel.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-39-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-41-gregkh@linuxfoundation.org>
 From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
  173, 80-298 Gdansk
-Message-ID: <6fc7a639-f97f-923e-04e7-6402b4e6ef7f@intel.com>
-Date:   Wed, 21 Apr 2021 19:53:46 +0200
+Message-ID: <48ff1501-b0e2-4a86-ea27-9ef059eabf6b@intel.com>
+Date:   Wed, 21 Apr 2021 19:54:03 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-39-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-41-gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -47,7 +48,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 4/21/2021 2:58 PM, Greg Kroah-Hartman wrote:
-> This reverts commit c343bf1ba5efcbf2266a1fe3baefec9cc82f867f.
+> This reverts commit 4d8be4bc94f74bb7d096e1c2e44457b530d5a170.
 >
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -64,6 +65,7 @@ On 4/21/2021 2:58 PM, Greg Kroah-Hartman wrote:
 > codebase.
 >
 > Cc: Qiushi Wu <wu000273@umn.edu>
+> Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
 > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
@@ -71,38 +73,19 @@ Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
 
 > ---
->   drivers/cpuidle/sysfs.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>   drivers/acpi/cppc_acpi.c | 1 -
+>   1 file changed, 1 deletion(-)
 >
-> diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-> index 53ec9585ccd4..23a219cedbdb 100644
-> --- a/drivers/cpuidle/sysfs.c
-> +++ b/drivers/cpuidle/sysfs.c
-> @@ -487,7 +487,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
->   		ret = kobject_init_and_add(&kobj->kobj, &ktype_state_cpuidle,
->   					   &kdev->kobj, "state%d", i);
->   		if (ret) {
-> -			kobject_put(&kobj->kobj);
-> +			kfree(kobj);
->   			goto error_state;
->   		}
->   		cpuidle_add_s2idle_attr_group(kobj);
-> @@ -618,7 +618,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
->   	ret = kobject_init_and_add(&kdrv->kobj, &ktype_driver_cpuidle,
->   				   &kdev->kobj, "driver");
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 69057fcd2c04..42650b34e45e 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -830,7 +830,6 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
+>   			"acpi_cppc");
 >   	if (ret) {
-> -		kobject_put(&kdrv->kobj);
-> +		kfree(kdrv);
->   		return ret;
->   	}
->   
-> @@ -712,7 +712,7 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
->   	error = kobject_init_and_add(&kdev->kobj, &ktype_cpuidle, &cpu_dev->kobj,
->   				   "cpuidle");
->   	if (error) {
-> -		kobject_put(&kdev->kobj);
-> +		kfree(kdev);
->   		return error;
+>   		per_cpu(cpc_desc_ptr, pr->id) = NULL;
+> -		kobject_put(&cpc_ptr->kobj);
+>   		goto out_free;
 >   	}
 >   
 
