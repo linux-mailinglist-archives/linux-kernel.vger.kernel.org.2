@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEF2366582
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8843665AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbhDUGiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhDUGh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:37:59 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CDAC06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:37:27 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id b17so28826214pgh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HKnb0/Wp1/KdttL9yRw7SGhgV9gm7UJrbe7pDdJcB2s=;
-        b=cIAvj+b0oXS8z+hy/4HNj1PYtUcxooUaIh2OMKj8qMOJwpV9A8KgmLFYhQGW80sgmX
-         h9CVBOsAvaK1VeAoKiFAFYTjnO2uUJVN/YVPUX52tMiCz1fMy+Yd6e9HhmmgM7THzD3V
-         DLIDj3lmado+iU4GY84E59KkyZSzVjUmFFDhGqK1NawYcmB8jHEDSsd1EavLbXj4JDcQ
-         yMsJ5UBWaZc+rDTuiYjNOl0lJXrWtQakuXdWWziukdoXxjyXTikOIHq9/zP6iQucrKwL
-         zTdrRaBAU8XXMszmeRW39N+RbhixibAuziHkCyqM1M7jfHXn0tKXvJs/fWcSI3+oZlAH
-         9uEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HKnb0/Wp1/KdttL9yRw7SGhgV9gm7UJrbe7pDdJcB2s=;
-        b=nyuUKDCFYYpFaJKqXTKzsKBJ/P54dSKgbGnopvP83O6krKmRGnzRlLdWgZTQpECBDG
-         WWOTT+LvreuIKKOMTZc212RO+oWkO6TA1uSyvI6v7V5UC4YR0UTATc1ND7etR/2wmlsL
-         S1YH/UvzaXqcS/2bnhaye7XMi46mrWnfmUEdJtXVh3RCVXRs1RgDTC46UBmUd1kmZZe9
-         XuKF5itMXHGo8z2YFYR07FLGnoYUBsCobLgIKIHuwbSkJHcp4ZieWsFDJDZ+2O+3/Hm+
-         DD/a9ymFWMKC27RcpJ4xXzQmKTX59g/ah1PqXmbstLSdF3ALNhkVvEWZdpCC/y7fnaCk
-         TGpg==
-X-Gm-Message-State: AOAM531lPij9buDJEk/YDLTN9jPj4l+yyi+fUJfyAPL886QBOSsYVBiR
-        Fr1mPRE+u5SxR2JzbO0K3RtgBimbPqB5ndA+wPYUTg==
-X-Google-Smtp-Source: ABdhPJzY+O+wn3KsiwnyK8jf305Cuddgx+uwIvGe7FkkOxZ2PTS3ZBUG1XnFCslPF/PRHNZ1rrBym668hxUkLlbeApI=
-X-Received: by 2002:a63:ff0a:: with SMTP id k10mr20944841pgi.303.1618987046493;
- Tue, 20 Apr 2021 23:37:26 -0700 (PDT)
+        id S236200AbhDUGvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:51:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234077AbhDUGvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:51:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2A3F6141C;
+        Wed, 21 Apr 2021 06:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618987877;
+        bh=h4GND5vJICk88LCJ9meFOAMI9O6wV3PzqLp/IpgFJ7U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Sa/SkDUfTgVqWZXzIXBK9d2C/yo2XcW+5D8jncWLrCpkTua+0/K3LdRSdZaDn/oq8
+         p1D+KhoiFeBa8xb6Z9UFllDPVCvaVSylc4lQOskt/bNX2EWVz+04L1Ei3JX7AfH1m4
+         jgEIE24S7R6HkKcfU/PgPKyQ7hiWJ8SIeoqy6dRhpJkwW6wquRFM6EztRvgUCQrAS7
+         s04ebkNr/UT6CsAO2UsCDG9mK3cR7ypINnS1jy1X97f7Kteov8DtUApmzFsoxH4cQ4
+         tX1YfgfNDud8WqTdgTHuC56C/P/VtjXn3CrzXeZAf2nPB0xqd3MXW5BscLfR2ydMK5
+         uoCF7wb3lZs5g==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
+Date:   Wed, 21 Apr 2021 09:51:04 +0300
+Message-Id: <20210421065108.1987-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210421035616.14540-1-jarvis.w.jiang@gmail.com>
-In-Reply-To: <20210421035616.14540-1-jarvis.w.jiang@gmail.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 21 Apr 2021 08:46:08 +0200
-Message-ID: <CAMZdPi9pqS15ABWMpGOZ35-wvfGL4z=NRMrN_Az3nZvmmEKSWQ@mail.gmail.com>
-Subject: Re: [PATCH v1] net: Qcom WWAN control driver: fix the rx_budget was
- eaten incorrectly
-To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarvis,
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-On Wed, 21 Apr 2021 at 05:57, Jarvis Jiang <jarvis.w.jiang@gmail.com> wrote:
->
-> mhi_wwan_rx_budget_dec() should check the value of mhiwwan->rx_budget
-> before the decrement, not the value after decrement.
->
-> When mhiwwan->rx_budget = 1, mhi_wwan_rx_budget_dec() will always return
-> false, which will cause the mhi_wwan_ctrl_refill_work() not to queue rx
-> buffers to transfer ring any more, and rx will be stuck.
->
-> This patch was tested with Ubuntu 20.04 X86_64 PC as host
->
-> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Hi,
 
-Thanks for the patch, but a similar change for this issue has just
-been merged in net-next (a926c025d56b net: wwan: mhi_wwan_ctrl: Fix RX
-buffer starvation).
+These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
+pfn_valid_within() to 1. 
 
-Regards,
-Loic
+The idea is to mark NOMAP pages as reserved in the memory map and restore
+the intended semantics of pfn_valid() to designate availability of struct
+page for a pfn.
+
+With this the core mm will be able to cope with the fact that it cannot use
+NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
+will be treated correctly even without the need for pfn_valid_within.
+
+The patches are only boot tested on qemu-system-aarch64 so I'd really
+appreciate memory stress tests on real hardware.
+
+If this actually works we'll be one step closer to drop custom pfn_valid()
+on arm64 altogether.
+
+v2:
+* Add check for PFN overflow in pfn_is_map_memory()
+* Add Acked-by and Reviewed-by tags, thanks David.
+
+v1: Link: https://lore.kernel.org/lkml/20210420090925.7457-1-rppt@kernel.org
+* Add comment about the semantics of pfn_valid() as Anshuman suggested
+* Extend comments about MEMBLOCK_NOMAP, per Anshuman
+* Use pfn_is_map_memory() name for the exported wrapper for
+  memblock_is_map_memory(). It is still local to arch/arm64 in the end
+  because of header dependency issues.
+
+rfc: Link: https://lore.kernel.org/lkml/20210407172607.8812-1-rppt@kernel.org
+
+Mike Rapoport (4):
+  include/linux/mmzone.h: add documentation for pfn_valid()
+  memblock: update initialization of reserved pages
+  arm64: decouple check whether pfn is in linear map from pfn_valid()
+  arm64: drop pfn_valid_within() and simplify pfn_valid()
+
+ arch/arm64/Kconfig              |  3 ---
+ arch/arm64/include/asm/memory.h |  2 +-
+ arch/arm64/include/asm/page.h   |  1 +
+ arch/arm64/kvm/mmu.c            |  2 +-
+ arch/arm64/mm/init.c            | 10 ++++++++--
+ arch/arm64/mm/ioremap.c         |  4 ++--
+ arch/arm64/mm/mmu.c             |  2 +-
+ include/linux/memblock.h        |  4 +++-
+ include/linux/mmzone.h          | 11 +++++++++++
+ mm/memblock.c                   | 28 ++++++++++++++++++++++++++--
+ 10 files changed, 54 insertions(+), 13 deletions(-)
+
+base-commit: e49d033bddf5b565044e2abe4241353959bc9120
+-- 
+2.28.0
+
+*** BLURB HERE ***
+
+Mike Rapoport (4):
+  include/linux/mmzone.h: add documentation for pfn_valid()
+  memblock: update initialization of reserved pages
+  arm64: decouple check whether pfn is in linear map from pfn_valid()
+  arm64: drop pfn_valid_within() and simplify pfn_valid()
+
+ arch/arm64/Kconfig              |  3 ---
+ arch/arm64/include/asm/memory.h |  2 +-
+ arch/arm64/include/asm/page.h   |  1 +
+ arch/arm64/kvm/mmu.c            |  2 +-
+ arch/arm64/mm/init.c            | 15 +++++++++++++--
+ arch/arm64/mm/ioremap.c         |  4 ++--
+ arch/arm64/mm/mmu.c             |  2 +-
+ include/linux/memblock.h        |  4 +++-
+ include/linux/mmzone.h          | 11 +++++++++++
+ mm/memblock.c                   | 28 ++++++++++++++++++++++++++--
+ 10 files changed, 59 insertions(+), 13 deletions(-)
+
+-- 
+2.28.0
+
