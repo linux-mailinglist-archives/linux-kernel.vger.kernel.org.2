@@ -2,151 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69C6367056
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF05C367059
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242164AbhDUQlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        id S242251AbhDUQmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241399AbhDUQk4 (ORCPT
+        with ESMTP id S241399AbhDUQl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:40:56 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76702C06174A;
-        Wed, 21 Apr 2021 09:40:21 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id d10so30403814pgf.12;
-        Wed, 21 Apr 2021 09:40:21 -0700 (PDT)
+        Wed, 21 Apr 2021 12:41:57 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC008C06138A;
+        Wed, 21 Apr 2021 09:41:23 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id l19so31556629ilk.13;
+        Wed, 21 Apr 2021 09:41:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CLHwhKyipeOdMEUwSlBPKOFTL7ssHwYscZIWDf/tAUo=;
-        b=D0FmzH805R9NP7K4Nkb0LBVvN9k0GaA82gGttudQT/kHCeFEWVKn75VyicvN+x6QxY
-         KI7fQgeRMmA7ByEb2nRZkDuf3ri8Nruk9910gJqNTwcSWph/CJwmmDRRPBOHRERfHsmk
-         6mdvTEtDXEoRmedkyLsZ8kiDHat3aV8/pfdK65yvH3OZKoXQHcU88yAnqDBEIg2zFQXK
-         IYqL1hzK29GY4ZjxJOkoisjseVBs8Ut9XMdT/I6QPiu2NBXGqNNSTbiT2Q3doZ4J95Ig
-         uPZ3pw931XGutzQgSJIxwqTj+TwXLiOQ0/zcv1zHQXGw0lAf7J6UC+tAUxiEogerw/78
-         0RxQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=3OjZNLUcaWPhCXBSI1zBOXgxHoSv4A+YzxMp3DdNijI=;
+        b=fWz/dSDZ6ha1J83BysSTDfMmGmRI07BKjaDnKgxqkzxN7WchgxgmtGDYk54siKB1co
+         Utqk9SyZL/Z8u5uZF/+vFVPPMOdH9goMtdZGwPatuXFCkTTxTm2sOy9HDtKdj5B3nyS3
+         O0UjCwIMFRiPDA0KR2yrngGAkbU+39LdFOZSk85sgG4kXSBfncqCqVN9fk3DBposh0ID
+         wdwr2v6/zmy2zAyKtmKPQfaTOHs7smAqVVEVne4zRfvxIPr1jsx9uzXHzD0IxK3PEell
+         MX5XLDkppIYYrt0Sl2PcGs+JAz1+ZUSUfMBvymp7O+Rj069KlgUjPZw9CRcB+Gu/BW0Q
+         ZAAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CLHwhKyipeOdMEUwSlBPKOFTL7ssHwYscZIWDf/tAUo=;
-        b=X0rvASA2afkUciRom4huG+x+jnYagxGZ9TQwuJ45AoOJjMQnpM15oP2bVd6hpzbQ67
-         4NZTScLjS/E2HJPMQRWRy41VCouYfRsVbdzkyykShdI4deDbbUcTpY7dqxtBAFHLodUJ
-         yF+RvhxHyen8IBDTY+BhSdTsode7z32sxqxcMbvymzrNlBOujpJA9i3D32BCEAkx4+yA
-         ftDdGCVYJ85sMVm4KquCQ0dKFVtIm2aoDwES6UUf15D64M2/TJBzo8mint9+DvxSxyMf
-         Pb8k7F90OkcUo0qsvHoHZG9Wo3Pq+L9z6YEutFZzhcxCW0RBYRTanKQV747I5vuuHQ85
-         j+fw==
-X-Gm-Message-State: AOAM531G19o1io/KcLmOanmWdhGxJtp88BMMiBaEU7m+0I5Ow4CSWOew
-        S3kFTsGIrNi4HNZijDnoX1I=
-X-Google-Smtp-Source: ABdhPJxR2Q27DJhcnBTiO0nrP0VQ2wX4zj5cBYj9fAOWVbtRgpBU4VesU42lybe6GmMPFmop45xceg==
-X-Received: by 2002:a17:90b:19d1:: with SMTP id nm17mr12028957pjb.218.1619023220996;
-        Wed, 21 Apr 2021 09:40:20 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id 195sm2180413pfy.194.2021.04.21.09.40.14
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=3OjZNLUcaWPhCXBSI1zBOXgxHoSv4A+YzxMp3DdNijI=;
+        b=baCcLdXIWd8uqAOK6kcNBt7Pi4+QgjKu8m61u4ladpKlFhYltu51Z0+qgZM5gJaWoT
+         6AH5HzfygbSkA11dudvIby3aQVG0b2DdkaIhbdTfYPtC4uBHhhtFVbPVeyGUaKw30Kdw
+         PBfPzttzrF27TR2bIymulml2G1he3lL26oLHmludLTQ0r65af7eWRPT/rzM4UPqR0teD
+         sA2C0cBH9VXC3g0ukbnaMeqYU0L/IHfnR8/yCSeNip6Sw+cvAfEHKDzKIJGoCZkFUkIL
+         zI5Lz4OV05aiRXij6c0aXvyrCr5hoj2Aan4OtYCQPzDgOPEHRNG5sTDnOAXarF8cx3kt
+         BYrQ==
+X-Gm-Message-State: AOAM5311XZI3X1I4myw0idzXR/g0R4xnU93/iN3SOYRVL+XyBf+GihhY
+        A6yAWm+Y60KVHBFD4EJXwG4=
+X-Google-Smtp-Source: ABdhPJwAiN4+rRptpkaB7o5ijyT0nwWvnM0JzyPTPcn5p4Zp+d7+Oua/uUHPId8dzQUDN8qH7CNS6w==
+X-Received: by 2002:a92:cc0f:: with SMTP id s15mr10344488ilp.187.1619023283433;
+        Wed, 21 Apr 2021 09:41:23 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id y10sm1177550ilv.73.2021.04.21.09.41.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 09:40:20 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 19:40:09 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH net-next v1] net: dsa: fix bridge support for drivers
- without port_bridge_flags callback
-Message-ID: <20210421164009.jylcxlab2evi2gcr@skbuf>
-References: <20210421130540.12522-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421130540.12522-1-o.rempel@pengutronix.de>
+        Wed, 21 Apr 2021 09:41:23 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 09:41:13 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Message-ID: <608055a9a6f4d_46b9208b0@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210421122348.547922-1-jackmanb@google.com>
+References: <20210421122348.547922-1-jackmanb@google.com>
+Subject: RE: Help with verifier failure
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:05:40PM +0200, Oleksij Rempel wrote:
-> Starting with patch:
-> a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+Brendan Jackman wrote:
+> Hi,
 > 
-> drivers without "port_bridge_flags" callback will fail to join the bridge.
-> Looking at the code, -EOPNOTSUPP seems to be the proper return value,
-> which makes at least microchip and atheros switches work again.
+> Recently when our internal Clang build was updated to 0e92cbd6a652 we started
+> hitting a verifier issue that I can't see an easy fix for. I've narrowed it down
+> to a minimal reproducer - this email is a patch to add that repro as a prog
+> test (./test_progs -t example).
 > 
-> Fixes: a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  net/dsa/port.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/dsa/port.c b/net/dsa/port.c
-> index 01e30264b25b..6379d66a6bb3 100644
-> --- a/net/dsa/port.c
-> +++ b/net/dsa/port.c
-> @@ -550,7 +550,7 @@ int dsa_port_bridge_flags(const struct dsa_port *dp,
->  	struct dsa_switch *ds = dp->ds;
->  
->  	if (!ds->ops->port_bridge_flags)
-> -		return -EINVAL;
-> +		return -EOPNOTSUPP;
->  
->  	return ds->ops->port_bridge_flags(ds, dp->index, flags, extack);
->  }
-> -- 
-> 2.29.2
+> Here's the BPF code I get from the attached source:
 > 
 
-The Fixes: tag should be:
+[...]
 
-Fixes: 5961d6a12c13 ("net: dsa: inherit the actual bridge port flags at join time")
+> 
+> w2 can't exceed 4096 but the verifier doesn't seem to "backpropagate" those
+> bounds from r8 (note the umax_value for R8 goes to 4095 after the branch from 36
+> to 20, but R2's umax_value is still 266342399)
+> 
+> from 31 to 34: R0_w=inv(id=0) R1_w=inv2097152 R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2093056 R8_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+> ; int BPF_PROG(exec, struct linux_binprm *bprm) {
+> 34: (bf) r7 = r1
+> ; (void) bpf_probe_read_user(buf, read_size, src);
+> 35: (bc) w2 = w8
+> 36: (a5) if r8 < 0x1000 goto pc-17
+> 
+> from 36 to 20: R0_w=inv(id=0) R1_w=inv2097152 R2_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2097152 R8_w=inv(id=0,umax_value=4095,var_off=(0x0; 0xfff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+> ; void *src = (void *)(char *)bprm->p + offset;
+> 20: (79) r1 = *(u64 *)(r10 -24)
+> 21: (79) r3 = *(u64 *)(r1 +24)
+> ; uint64_t read_size = args_size - offset;
+> 22: (0f) r3 += r7
+> 23: (07) r3 += -4096
+> ; (void) bpf_probe_read_user(buf, read_size, src);
+> 24: (79) r1 = *(u64 *)(r10 -16)
+> 25: (85) call bpf_probe_read_user#112
+>  R0_w=inv(id=0) R1_w=map_value(id=0,off=0,ks=4,vs=4096,imm=0) R2_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R3_w=inv(id=0) R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2097152 R8_w=inv(id=0,umax_value=4095,var_off=(0x0; 0xfff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+>  R0_w=inv(id=0) R1_w=map_value(id=0,off=0,ks=4,vs=4096,imm=0) R2_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R3_w=inv(id=0) R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2097152 R8_w=inv(id=0,umax_value=4095,var_off=(0x0; 0xfff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+> invalid access to map value, value_size=4096 off=0 size=266342399
+> R1 min value is outside of the allowed memory range
+> processed 9239 insns (limit 1000000) max_states_per_insn 4 total_states 133 peak_states 133 mark_read 2
+> 
+> This seems like it must be a common pitfall, any idea what we can do to fix it
+> and avoid it in future? Am I misunderstanding the issue?
 
-What we return to the bridge is -EINVAL, via dsa_port_pre_bridge_flags()
-(it is a two-step calling convention thing). But dsa_port_bridge_flags()
-should never return that -EINVAL to the bridge, because the bridge
-should just stop if the "pre" call returned an error.
+We also hit this from time to time. I have asm blocks to work-around
+at the moment. I was going to see how ugly propagating the bounds
+backwards gets. I had some code for this some time ago but never
+pushed it, it was smashed in with some CFG building for loops back
+before loops were possible. I can take a look next week unless someone
+beats me there.
 
-So the -EINVAL return value from dsa_port_bridge_flags() is just for
-callers who don't bother to call "pre".
-
-To be honest I don't know why I wrote dsa_port_inherit_brport_flags this
-way. It might be better to just do:
-
------------------------------[cut here]-----------------------------
-diff --git a/net/dsa/port.c b/net/dsa/port.c
-index 01e30264b25b..d5e227a77fbc 100644
---- a/net/dsa/port.c
-+++ b/net/dsa/port.c
-@@ -138,8 +138,12 @@ static int dsa_port_inherit_brport_flags(struct dsa_port *dp,
- 		if (br_port_flag_is_set(brport_dev, BIT(flag)))
- 			flags.val = BIT(flag);
- 
-+		err = dsa_port_pre_bridge_flags(dp, flags, extack);
-+		if (err == -EINVAL)
-+			continue;
-+
- 		err = dsa_port_bridge_flags(dp, flags, extack);
--		if (err && err != -EOPNOTSUPP)
-+		if (err)
- 			return err;
- 	}
- 
-@@ -159,8 +163,12 @@ static void dsa_port_clear_brport_flags(struct dsa_port *dp)
- 		flags.mask = BIT(flag);
- 		flags.val = val & BIT(flag);
- 
-+		err = dsa_port_pre_bridge_flags(dp, flags, NULL);
-+		if (err == -EINVAL)
-+			continue;
-+
- 		err = dsa_port_bridge_flags(dp, flags, NULL);
--		if (err && err != -EOPNOTSUPP)
-+		if (err)
- 			dev_err(dp->ds->dev,
- 				"failed to clear bridge port flag %lu: %pe\n",
- 				flags.val, ERR_PTR(err));
------------------------------[cut here]-----------------------------
+> 
+> Cheers,
+> Brendan
+> 
