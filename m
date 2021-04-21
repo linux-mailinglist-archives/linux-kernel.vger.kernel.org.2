@@ -2,108 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC47366C32
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65628366C93
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhDUNL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:11:58 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:31026 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241520AbhDUNJF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:09:05 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AsWWe2a95b09bdMuPSMtuk+AnI+orLtY04lQ7?=
- =?us-ascii?q?vn1ZYxY9SK2lvuqpm+kW0gKxtSYJVBgb9OyoFaGcTRrnm6JdzpIWOd6ZMDXOmG?=
- =?us-ascii?q?ztF4166Jun/juIIULD38pQz71pfaQ7KNCYNzhHpOL75AX9LNo62tmA98mT79v2?=
- =?us-ascii?q?9HtmQQF0Z6wI1W4QNi+hHkJ7XwVAD5YifaDshfZvnSaqengcc62AbUUtYu6rna?=
- =?us-ascii?q?yoqLvWJToPBxsq82C1/FaV1II=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,240,1613430000"; 
-   d="scan'208";a="504326993"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 15:08:28 +0200
-Date:   Wed, 21 Apr 2021 15:08:28 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v3] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-In-Reply-To: <20210421123718.GA4597@focaruja>
-Message-ID: <alpine.DEB.2.22.394.2104211507280.9436@hadrien>
-References: <20210421123718.GA4597@focaruja>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S242010AbhDUNUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:20:16 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50808 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241464AbhDUNLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:11:00 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FQLWV59G9z9vBLf;
+        Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 1tKtWkP_gmVi; Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FQLWV4Fv2z9vBLc;
+        Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F36848B829;
+        Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id TzC-CtULx2FR; Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D3C3C8B825;
+        Wed, 21 Apr 2021 15:10:11 +0200 (CEST)
+Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        Will Deacon <will@kernel.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
+        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Yonghong Song <yhs@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Wang YanQing <udknight@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
+        Jianlin Lv <Jianlin.Lv@arm.com>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+ <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+ <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
+ <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
+ <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
+ <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <7dc31256-eb1d-dc93-5e55-2de27475e0c6@csgroup.eu>
+Date:   Wed, 21 Apr 2021 15:10:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
+Le 20/04/2021 à 05:28, Alexei Starovoitov a écrit :
+> On Sat, Apr 17, 2021 at 1:16 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 16/04/2021 à 01:49, Alexei Starovoitov a écrit :
+>>> On Thu, Apr 15, 2021 at 8:41 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>>>
+>>>> 2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
+>>>>> On 4/15/21 11:32 AM, Jianlin Lv wrote:
+>>>>>> For debugging JITs, dumping the JITed image to kernel log is discouraged,
+>>>>>> "bpftool prog dump jited" is much better way to examine JITed dumps.
+>>>>>> This patch get rid of the code related to bpf_jit_enable=2 mode and
+>>>>>> update the proc handler of bpf_jit_enable, also added auxiliary
+>>>>>> information to explain how to use bpf_jit_disasm tool after this change.
+>>>>>>
+>>>>>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+>>>>
+>>>> Hello,
+>>>>
+>>>> For what it's worth, I have already seen people dump the JIT image in
+>>>> kernel logs in Qemu VMs running with just a busybox, not for kernel
+>>>> development, but in a context where buiding/using bpftool was not
+>>>> possible.
+>>>
+>>> If building/using bpftool is not possible then majority of selftests won't
+>>> be exercised. I don't think such environment is suitable for any kind
+>>> of bpf development. Much so for JIT debugging.
+>>> While bpf_jit_enable=2 is nothing but the debugging tool for JIT developers.
+>>> I'd rather nuke that code instead of carrying it from kernel to kernel.
+>>>
+>>
+>> When I implemented JIT for PPC32, it was extremely helpfull.
+>>
+>> As far as I understand, for the time being bpftool is not usable in my environment because it
+>> doesn't support cross compilation when the target's endianess differs from the building host
+>> endianess, see discussion at
+>> https://lore.kernel.org/bpf/21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu/
+>>
+>> That's right that selftests can't be exercised because they don't build.
+>>
+>> The question might be candid as I didn't investigate much about the replacement of "bpf_jit_enable=2
+>> debugging mode" by bpftool, how do we use bpftool exactly for that ? Especially when using the BPF
+>> test module ?
+> 
+> the kernel developers can add any amount of printk and dumps to debug
+> their code,
+> but such debugging aid should not be part of the production kernel.
+> That sysctl was two things at once: debugging tool for kernel devs and
+> introspection for users.
+> bpftool jit dump solves the 2nd part. It provides JIT introspection to users.
+> Debugging of the kernel can be done with any amount of auxiliary code
+> including calling print_hex_dump() during jiting.
+> 
 
-> Change line break to avoid an open parenthesis at the end of the line.
-> It consequently removed spaces at the start of the subsequent line.
+I get the following message when trying the command suggested in the patch message:
 
-The message is hard to understand.  There are a lot of singular nouns, but
-actually there are two changes.  Which change is being described by the
-above message?  What does "It" refer to?
+root@vgoip:~# ./bpftool prog dump jited
+Error: No libbfd support
 
-julia
-
-
-> Both issues detected by checkpatch.pl.
->
-> Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-> ---
->
-> Changes since v2:
->  - Insert a space between the function type and pointer
->
-> Changes since v1:
->  - Keep the pointer with the function return type
->    instead of left it with the function name
->
->  drivers/staging/media/atomisp/pci/atomisp_cmd.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.h b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> index 1c0d464..639eca3 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
-> @@ -75,8 +75,8 @@ void atomisp_wdt(struct timer_list *t);
->  void atomisp_setup_flash(struct atomisp_sub_device *asd);
->  irqreturn_t atomisp_isr(int irq, void *dev);
->  irqreturn_t atomisp_isr_thread(int irq, void *isp_ptr);
-> -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
-> -    u32 mbus_code);
-> +const struct atomisp_format_bridge *
-> +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
->  bool atomisp_is_mbuscode_raw(uint32_t code);
->  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
->  			   const struct ia_css_frame *frame, u32 *p_pgnr);
-> @@ -381,9 +381,9 @@ enum mipi_port_id __get_mipi_port(struct atomisp_device *isp,
->
->  bool atomisp_is_vf_pipe(struct atomisp_video_pipe *pipe);
->
-> -void atomisp_apply_css_parameters(
-> -    struct atomisp_sub_device *asd,
-> -    struct atomisp_css_params *css_param);
-> +void atomisp_apply_css_parameters(struct atomisp_sub_device *asd,
-> +				  struct atomisp_css_params *css_param);
-> +
->  void atomisp_free_css_parameters(struct atomisp_css_params *css_param);
->
->  void atomisp_handle_parameter_and_buffer(struct atomisp_video_pipe *pipe);
-> --
-> 2.7.4
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210421123718.GA4597%40focaruja.
->
+Christophe
