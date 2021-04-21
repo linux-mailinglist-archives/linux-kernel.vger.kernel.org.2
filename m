@@ -2,168 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14C536734B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12EF5367346
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242914AbhDUTSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:18:33 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:34098 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241659AbhDUTSb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:18:31 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lZIME-004DZE-Pl; Wed, 21 Apr 2021 13:17:55 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lZIMD-00AtxS-Q9; Wed, 21 Apr 2021 13:17:54 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Andrew G. Morgan" <morgan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20210416045851.GA13811@mail.hallyn.com>
-        <20210416150501.zam55gschpn2w56i@wittgenstein>
-        <20210416213453.GA29094@mail.hallyn.com>
-        <20210417021945.GA687@mail.hallyn.com>
-        <20210417200434.GA17430@mail.hallyn.com>
-        <20210419122514.GA20598@mail.hallyn.com>
-        <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
-        <20210420034208.GA2830@mail.hallyn.com>
-        <20210420083129.exyn7ptahx2fg72e@wittgenstein>
-        <20210420134334.GA11582@mail.hallyn.com>
-Date:   Wed, 21 Apr 2021 14:16:34 -0500
-In-Reply-To: <20210420134334.GA11582@mail.hallyn.com> (Serge E. Hallyn's
-        message of "Tue, 20 Apr 2021 08:43:34 -0500")
-Message-ID: <m15z0fphwt.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S241631AbhDUTRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:17:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:30709 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238683AbhDUTRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 15:17:34 -0400
+IronPort-SDR: Yb/i+IWYYTe9KCQIOMPZxMDaHy3u6e8hA+p3/ehKkwTHnmBsaIAz6k3dyH1tocJH/qNfdLw0ra
+ a9+mdTMJD01g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="216410141"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="216410141"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 12:17:00 -0700
+IronPort-SDR: wL1GMd3DH4nTUveL+j5Dz6APfmKwDFrODu9dYaVZhjKEfgRMFq1tsJBt2aZz95gxvLE3cWFVM2
+ tmrCUtxtXAVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="453031555"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Apr 2021 12:16:59 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lZILK-0003jJ-Qo; Wed, 21 Apr 2021 19:16:58 +0000
+Date:   Thu, 22 Apr 2021 03:16:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ c1d2a603724a0c05e09d41753ff4b0409c1e2d56
+Message-ID: <60807a1a.DcI2pkipuz1dy1fq%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lZIMD-00AtxS-Q9;;;mid=<m15z0fphwt.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18G0AOfV6rwW+2m4+vJWzKrMcLT6wolZpc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4906]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;"Serge E. Hallyn" <serge@hallyn.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 465 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 12 (2.5%), b_tie_ro: 10 (2.1%), parse: 1.78
-        (0.4%), extract_message_metadata: 18 (3.9%), get_uri_detail_list: 2.5
-        (0.5%), tests_pri_-1000: 5 (1.2%), tests_pri_-950: 1.34 (0.3%),
-        tests_pri_-900: 1.11 (0.2%), tests_pri_-90: 58 (12.4%), check_bayes:
-        56 (12.1%), b_tokenize: 8 (1.8%), b_tok_get_all: 7 (1.5%),
-        b_comp_prob: 2.3 (0.5%), b_tok_touch_all: 35 (7.6%), b_finish: 0.86
-        (0.2%), tests_pri_0: 350 (75.4%), check_dkim_signature: 0.75 (0.2%),
-        check_dkim_adsp: 2.5 (0.5%), poll_dns_idle: 0.42 (0.1%), tests_pri_10:
-        2.2 (0.5%), tests_pri_500: 11 (2.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3.4] capabilities: require CAP_SETFCAP to map uid 0
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Serge E. Hallyn" <serge@hallyn.com> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: c1d2a603724a0c05e09d41753ff4b0409c1e2d56  Merge branch 'linus'
 
-> +/**
-> + * verify_root_map() - check the uid 0 mapping
-> + * @file: idmapping file
-> + * @map_ns: user namespace of the target process
-> + * @new_map: requested idmap
-> + *
-> + * If a process requests mapping parent uid 0 into the new ns, verify that the
-> + * process writing the map had the CAP_SETFCAP capability as the target process
-> + * will be able to write fscaps that are valid in ancestor user namespaces.
-> + *
-> + * Return: true if the mapping is allowed, false if not.
-> + */
-> +static bool verify_root_map(const struct file *file,
-> +			    struct user_namespace *map_ns,
-> +			    struct uid_gid_map *new_map)
-> +{
-> +	int idx;
-> +	const struct user_namespace *file_ns = file->f_cred->user_ns;
-> +	struct uid_gid_extent *extent0 = NULL;
-> +
-> +	for (idx = 0; idx < new_map->nr_extents; idx++) {
-> +		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> +			extent0 = &new_map->extent[idx];
-> +		else
-> +			extent0 = &new_map->forward[idx];
-> +		if (extent0->lower_first == 0)
-> +			break;
-> +
-> +		extent0 = NULL;
-> +	}
-> +
-> +	if (!extent0)
-> +		return true;
-> +
-> +	if (map_ns == file_ns) {
-> +		/* The process unshared its ns and is writing to its own
-> +		 * /proc/self/uid_map.  User already has full capabilites in
-> +		 * the new namespace.  Verify that the parent had CAP_SETFCAP
-> +		 * when it unshared.
-> +		 * */
-> +		if (!file_ns->parent_could_setfcap)
-> +			return false;
-> +	} else {
-> +		/* Process p1 is writing to uid_map of p2, who is in a child
-> +		 * user namespace to p1's.  Verify that the opener of the map
-> +		 * file has CAP_SETFCAP against the parent of the new map
-> +		 * namespace */
-> +		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
-> +			return false;
-> +	}
+elapsed time: 722m
 
-Is there any reason this permission check is not simply:
+configs tested: 156
+configs skipped: 2
 
-	return map_ns->parent_could_setfcap ||
-               file_ns_capable(file, map_ns->parent, CAP_SETFCAP);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-That is why don't we allow any mapping (that is otherwise valid) in user
-namespaces whose creator had the permission to call CAP_SETFCAP?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                      tct_hammer_defconfig
+sh                           se7724_defconfig
+mips                      pic32mzda_defconfig
+arm64                            alldefconfig
+arm                           tegra_defconfig
+ia64                            zx1_defconfig
+powerpc                    sam440ep_defconfig
+arm                       aspeed_g4_defconfig
+powerpc                       maple_defconfig
+sh                        sh7763rdp_defconfig
+arm                              alldefconfig
+arm                       omap2plus_defconfig
+mips                           rs90_defconfig
+arm                      integrator_defconfig
+s390                       zfcpdump_defconfig
+m68k                        m5307c3_defconfig
+arm                          badge4_defconfig
+m68k                           sun3_defconfig
+mips                           ip22_defconfig
+arm                      footbridge_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                              defconfig
+powerpc                  iss476-smp_defconfig
+h8300                     edosk2674_defconfig
+arm                          pxa3xx_defconfig
+s390                             allmodconfig
+h8300                               defconfig
+arm                          lpd270_defconfig
+arm                        multi_v7_defconfig
+m68k                          amiga_defconfig
+powerpc                      katmai_defconfig
+arm                          simpad_defconfig
+sh                     magicpanelr2_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                 mpc836x_rdk_defconfig
+powerpc                     redwood_defconfig
+powerpc                          g5_defconfig
+arm                           omap1_defconfig
+arm                         cm_x300_defconfig
+arm                         bcm2835_defconfig
+arm                        keystone_defconfig
+ia64                         bigsur_defconfig
+powerpc                   motionpro_defconfig
+mips                     decstation_defconfig
+arm                   milbeaut_m10v_defconfig
+um                               alldefconfig
+arm                       multi_v4t_defconfig
+microblaze                          defconfig
+mips                        maltaup_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                      ppc44x_defconfig
+arm                            qcom_defconfig
+arc                     haps_hs_smp_defconfig
+arm                       imx_v6_v7_defconfig
+arm                          collie_defconfig
+powerpc                     skiroot_defconfig
+mips                      maltaaprp_defconfig
+sh                           se7206_defconfig
+sh                          sdk7786_defconfig
+powerpc                     ksi8560_defconfig
+arc                          axs103_defconfig
+arm                        clps711x_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arc                 nsimosci_hs_smp_defconfig
+m68k                          sun3x_defconfig
+sh                          rsk7201_defconfig
+xtensa                           alldefconfig
+powerpc                 mpc836x_mds_defconfig
+mips                     loongson1b_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                        fsp2_defconfig
+arm                         mv78xx0_defconfig
+powerpc                     mpc83xx_defconfig
+sh                           se7722_defconfig
+openrisc                         alldefconfig
+powerpc                      acadia_defconfig
+mips                            e55_defconfig
+sh                            migor_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210421
+x86_64               randconfig-a002-20210421
+x86_64               randconfig-a001-20210421
+x86_64               randconfig-a005-20210421
+x86_64               randconfig-a006-20210421
+x86_64               randconfig-a003-20210421
+i386                 randconfig-a005-20210421
+i386                 randconfig-a002-20210421
+i386                 randconfig-a001-20210421
+i386                 randconfig-a006-20210421
+i386                 randconfig-a004-20210421
+i386                 randconfig-a003-20210421
+i386                 randconfig-a012-20210421
+i386                 randconfig-a014-20210421
+i386                 randconfig-a011-20210421
+i386                 randconfig-a013-20210421
+i386                 randconfig-a015-20210421
+i386                 randconfig-a016-20210421
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Why limit the case of using the creators permissions to only the case of
-mapping just a single uid (that happens to be the current euid) in the
-user namespace?
+clang tested configs:
+x86_64               randconfig-a015-20210421
+x86_64               randconfig-a016-20210421
+x86_64               randconfig-a011-20210421
+x86_64               randconfig-a014-20210421
+x86_64               randconfig-a013-20210421
+x86_64               randconfig-a012-20210421
 
-I don't see any safety reasons for the map_ns == file_ns test.
-
-
-
-Is the file_ns_capable check for CAP_SETFCAP actually needed?  AKA could
-the permission check be simplified to:
-
-	return map_ns->parent_could_setfcap;
-
-That would be a much easier rule to explain to people.
-
-I seem to remember distributions at least trying to make newuidmap have
-just CAP_SETUID and newgidmap have just CAP_SETGID.  Such a simplified
-check would facilitate that.
-
-Eric
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
