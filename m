@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9055366C92
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDDC366C87
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241917AbhDUNUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:20:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54002 "EHLO mail.kernel.org"
+        id S242587AbhDUNTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241399AbhDUNKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:10:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E456143B;
-        Wed, 21 Apr 2021 13:10:12 +0000 (UTC)
+        id S240024AbhDUNKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:10:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A1A61460;
+        Wed, 21 Apr 2021 13:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010613;
-        bh=d/Kxwex8yL6ysQ5bRXvaV3m6u+RpTx759xF+V/JNs40=;
+        s=korg; t=1619010588;
+        bh=PC+AmimZ64LXINEFBEJcfX3oi27j5+mQsX9YRy/xi4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EZ4S9jytfSXnRHkVPONLdHM8TSSWtdGdPvG9rvMcjnNq1eDPBrSHhhJV3s8rWI1hD
-         8Z6uOA1xgL5w6CNKDE2CB5IgmpthWmgKPYQg9q5wdkyV2A+/LX3uvHjdHXRedHNfpM
-         1jCbSO2HcExFAl+5QiwNjC+lAOYq3mSH/zwxDKFg=
+        b=m6fF8zP2jzW0QOszZDIy0+lBp0Bi+HULSmffhhdOiUV4+I4bTlz/uneKEuM8dwi7S
+         VDpnLi41+n3n6nLM785LnEqMpl4HwEheSbpLM605QcvR2MAqzupH/U54Kltsxk9If3
+         UKFe6PErOM5pgCdTE+JT2QdHz8Ea6aJzAEEgPmjs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 181/190] Revert "dm ioctl: harden copy_params()'s copy_from_user() from malicious users"
-Date:   Wed, 21 Apr 2021 15:00:56 +0200
-Message-Id: <20210421130105.1226686-182-gregkh@linuxfoundation.org>
+        Wenwen Wang <wang6495@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 182/190] Revert "ethtool: fix a missing-check bug"
+Date:   Wed, 21 Apr 2021 15:00:57 +0200
+Message-Id: <20210421130105.1226686-183-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 800a7340ab7dd667edf95e74d8e4f23a17e87076.
+This reverts commit 2bb3207dbbd4d30e96dd0e1c8e013104193bd59c.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,52 +53,27 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: stable@vger.kernel.org
 Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Mike Snitzer <snitzer@redhat.com>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-ioctl.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ net/ethtool/ioctl.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-index 1ca65b434f1f..820342de92cd 100644
---- a/drivers/md/dm-ioctl.c
-+++ b/drivers/md/dm-ioctl.c
-@@ -1747,7 +1747,8 @@ static void free_params(struct dm_ioctl *param, size_t param_size, int param_fla
- }
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 771688e1b0da..807bc9465add 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -876,9 +876,6 @@ static noinline_for_stack int ethtool_get_rxnfc(struct net_device *dev,
+ 			return -EINVAL;
+ 	}
  
- static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl *param_kernel,
--		       int ioctl_flags, struct dm_ioctl **param, int *param_flags)
-+		       int ioctl_flags,
-+		       struct dm_ioctl **param, int *param_flags)
- {
- 	struct dm_ioctl *dmi;
- 	int secure_data;
-@@ -1788,13 +1789,18 @@ static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl *param_kern
- 
- 	*param_flags |= DM_PARAMS_MALLOC;
- 
--	/* Copy from param_kernel (which was already copied from user) */
--	memcpy(dmi, param_kernel, minimum_data_size);
+-	if (info.cmd != cmd)
+-		return -EINVAL;
 -
--	if (copy_from_user(&dmi->data, (char __user *)user + minimum_data_size,
--			   param_kernel->data_size - minimum_data_size))
-+	if (copy_from_user(dmi, user, param_kernel->data_size))
- 		goto bad;
-+
- data_copied:
-+	/*
-+	 * Abort if something changed the ioctl data while it was being copied.
-+	 */
-+	if (dmi->data_size != param_kernel->data_size) {
-+		DMERR("rejecting ioctl: data size modified while processing parameters");
-+		goto bad;
-+	}
-+
- 	/* Wipe the user buffer so we do not return it to userspace */
- 	if (secure_data && clear_user(user, param_kernel->data_size))
- 		goto bad;
+ 	if (info.cmd == ETHTOOL_GRXCLSRLALL) {
+ 		if (info.rule_cnt > 0) {
+ 			if (info.rule_cnt <= KMALLOC_MAX_SIZE / sizeof(u32))
 -- 
 2.31.1
 
