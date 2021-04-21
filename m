@@ -2,267 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B54B366330
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AEB366335
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhDUAvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 20:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233836AbhDUAvO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 20:51:14 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02D1C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:50:42 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 31so12606919pgn.13
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8YLOYTL9uFfTlsUBTt4KtFnsgrD3qMKDwpIsIQc1OzQ=;
-        b=GTHAWJyYH+TVJoASsZJVT+rFImVeTfbBdAU0ib1vxL3BQwDL7OWyZZRY+dVfY+CbpJ
-         teVIlUg3keh/0L70wBaEjFOe9F0jWuGp5A/2LL2L+QU1LNxy3sEJmhmPc3v7dSxnSngQ
-         I87A7TZRRHK9Zj4RcZGYcgJgbC3ctsHHRvmxI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8YLOYTL9uFfTlsUBTt4KtFnsgrD3qMKDwpIsIQc1OzQ=;
-        b=icxxSDBxONrjQ6eHqWIJ09g1MKYCkiqVEaR9bkcrTahtsqEsbuwP3XWf9LUr/NF1va
-         BwOX8/hWqd4NliFSPYlsbP1uYLTohwtvsNgBAfh93AV9diZdmtFYFTL+aFsqd5cbNFwC
-         VpC9v6jXA2YOCAA5QpE/lILiPtv3cZ9if0XM6ipTI5BlB0rTPDDM2Ma7HDG/bMl3U1iI
-         mYWUv4HmhWlB/dnL6HiJfB93RJYfJ5F09GRWmBlHaD59SHLLl+/qN1YugICTcUdrXnEq
-         sWK8vpyI5ElQwc6wO27Nu4NgpTsMLS4lA5Vwr4yVXPbdJYaOE3S97Fwon8d1Uj04Zuan
-         xWUQ==
-X-Gm-Message-State: AOAM532eCyCR0EhWERUMfN89xXvgIRTshqynVk7cLnmrx+UCXPRzuzNJ
-        ajAIaerQlOE//ZO+CEcXabdKpw==
-X-Google-Smtp-Source: ABdhPJyqsXFJPEW53dgWZWzIl1MKNJhSGg4Hv/Awq+xELaEHiZszta5Vzv92f/tFkQR8imMYCtKe3w==
-X-Received: by 2002:a63:1a47:: with SMTP id a7mr19505511pgm.437.1618966242338;
-        Tue, 20 Apr 2021 17:50:42 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:b1f0:79e0:c1ca:fd1])
-        by smtp.gmail.com with UTF8SMTPSA id x38sm183812pfu.22.2021.04.20.17.50.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 17:50:41 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 17:50:40 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: Convert to DT schema
-Message-ID: <YH924M62b7PDd/r6@google.com>
-References: <1618936010-16579-1-git-send-email-gubbaven@codeaurora.org>
- <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
+        id S234481AbhDUAzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 20:55:33 -0400
+Received: from mga05.intel.com ([192.55.52.43]:20914 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233879AbhDUAzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 20:55:32 -0400
+IronPort-SDR: HjWHxHL2TeHK6bxqnO+VOQUDPMDnnhGiS1yc2srbKs/WmWZGirlPTNyXpcTfSXItgm3W7f1g0Y
+ 8AzfDhMkH+KQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="280950041"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="280950041"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 17:53:14 -0700
+IronPort-SDR: vuoAgGJOiKXukaQlTtzHZ/Q2gJBD+wF/P20v3xuSrVlwliklefdMHTmVRnVc3ngGoW1ZCNX1q2
+ ziLMTfIpybJA==
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="427311101"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 17:52:45 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v3 2/4] swap: fix do_swap_page() race with swapoff
+References: <20210420133048.6773-1-linmiaohe@huawei.com>
+        <20210420133048.6773-3-linmiaohe@huawei.com>
+Date:   Wed, 21 Apr 2021 08:52:43 +0800
+In-Reply-To: <20210420133048.6773-3-linmiaohe@huawei.com> (Miaohe Lin's
+        message of "Tue, 20 Apr 2021 09:30:46 -0400")
+Message-ID: <877dkw31d0.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 09:56:49PM +0530, Venkata Lakshmi Narayana Gubba wrote:
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-> Subject: dt-bindings: net: bluetooth: Convert to DT schema
-
-This doesn't convert the generic binding or all bindings to DT schema
-as the subject suggests, but the Qualcomm BT binding.
-
+> When I was investigating the swap code, I found the below possible race
+> window:
 >
-> Converted Qualcomm Bluetooth binidings to DT schema.
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> CPU 1                                   	CPU 2
+> -----                                   	-----
+> do_swap_page
+>   if (data_race(si->flags & SWP_SYNCHRONOUS_IO)
+>   swap_readpage
+>     if (data_race(sis->flags & SWP_FS_OPS)) {
+>                                         	swapoff
+> 					  	  p->flags &= ~SWP_VALID;
+> 					  	  ..
+> 					  	  synchronize_rcu();
+> 					  	  ..
+
+You have deleted SWP_VALID and RCU solution in 1/4, so please revise this.
+
+> 					  	  p->swap_file = NULL;
+>     struct file *swap_file = sis->swap_file;
+>     struct address_space *mapping = swap_file->f_mapping;[oops!]
+>
+> Note that for the pages that are swapped in through swap cache, this isn't
+> an issue. Because the page is locked, and the swap entry will be marked
+> with SWAP_HAS_CACHE, so swapoff() can not proceed until the page has been
+> unlocked.
+>
+> Using current get/put_swap_device() to guard against concurrent swapoff for
+> swap_readpage() looks terrible because swap_readpage() may take really long
+> time. And this race may not be really pernicious because swapoff is usually
+> done when system shutdown only. To reduce the performance overhead on the
+> hot-path as much as possible, it appears we can use the percpu_ref to close
+> this race window(as suggested by Huang, Ying).
+
+This needs to be revised too.  Unless you squash 1/4 and 2/4.
+
+> Fixes: 0bcac06f27d7 ("mm,swap: skip swapcache for swapin of synchronous device")
+> Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 69 -----------------
->  .../bindings/net/qualcomm-bluetooth.yaml           | 87 ++++++++++++++++++++++
->  2 files changed, 87 insertions(+), 69 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
->  create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-> deleted file mode 100644
-> index 709ca6d..0000000
-> --- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-> +++ /dev/null
-> @@ -1,69 +0,0 @@
-> -Qualcomm Bluetooth Chips
-> ----------------------
-> -
-> -This documents the binding structure and common properties for serial
-> -attached Qualcomm devices.
-> -
-> -Serial attached Qualcomm devices shall be a child node of the host UART
-> -device the slave device is attached to.
-> -
-> -Required properties:
-> - - compatible: should contain one of the following:
-> -   * "qcom,qca6174-bt"
-> -   * "qcom,qca9377-bt"
-> -   * "qcom,wcn3990-bt"
-> -   * "qcom,wcn3991-bt"
-> -   * "qcom,wcn3998-bt"
-> -   * "qcom,qca6390-bt"
-> -
-> -Optional properties for compatible string qcom,qca6174-bt:
-> -
-> - - enable-gpios: gpio specifier used to enable chip
-> - - clocks: clock provided to the controller (SUSCLK_32KHZ)
-> - - firmware-name: specify the name of nvm firmware to load
-> -
-> -Optional properties for compatible string qcom,qca9377-bt:
-> -
-> - - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
-> -
-> -Required properties for compatible string qcom,wcn399x-bt:
-> -
-> - - vddio-supply: VDD_IO supply regulator handle.
-> - - vddxo-supply: VDD_XO supply regulator handle.
-> - - vddrf-supply: VDD_RF supply regulator handle.
-> - - vddch0-supply: VDD_CH0 supply regulator handle.
-> -
-> -Optional properties for compatible string qcom,wcn399x-bt:
-> -
-> - - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
-> - - firmware-name: specify the name of nvm firmware to load
-> - - clocks: clock provided to the controller
-> -
-> -Examples:
-> -
-> -serial@7570000 {
-> -	label = "BT-UART";
-> -	status = "okay";
-> -
-> -	bluetooth {
-> -		compatible = "qcom,qca6174-bt";
-> -
-> -		enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
-> -		clocks = <&divclk4>;
-> -		firmware-name = "nvm_00440302.bin";
-> -	};
-> -};
-> -
-> -serial@898000 {
-> -	bluetooth {
-> -		compatible = "qcom,wcn3990-bt";
-> -
-> -		vddio-supply = <&vreg_s4a_1p8>;
-> -		vddxo-supply = <&vreg_l7a_1p8>;
-> -		vddrf-supply = <&vreg_l17a_1p3>;
-> -		vddch0-supply = <&vreg_l25a_3p3>;
-> -		max-speed = <3200000>;
-> -		firmware-name = "crnv21.bin";
-> -		clocks = <&rpmhcc RPMH_RF_CLK2>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-> new file mode 100644
-> index 0000000..55cd995
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>  include/linux/swap.h | 9 +++++++++
+>  mm/memory.c          | 9 +++++++++
+>  2 files changed, 18 insertions(+)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index c9e7fea10b83..46d51d058d05 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -527,6 +527,15 @@ static inline struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+>  	return NULL;
+>  }
+>  
+> +static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
+> +{
+> +	return NULL;
+> +}
 > +
-> +title: Qualcomm Bluetooth Chips
+> +static inline void put_swap_device(struct swap_info_struct *si)
+> +{
+> +}
 > +
-> +maintainers:
-> +  - Rob Herring <robh@kernel.org>
-> +  - Marcel Holtmann <marcel@holtmann.org>
-> +
-> +description:
-> +  This binding describes Qualcomm UART-attached bluetooth chips.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,qca6174-bt
-> +      - qcom,qca9377-bt
-> +      - qcom,wcn3990-bt
-> +      - qcom,wcn3991-bt
-> +      - qcom,wcn3998-bt
-> +      - qcom,qca6390-bt      
+>  #define swap_address_space(entry)		(NULL)
+>  #define get_nr_swap_pages()			0L
+>  #define total_swap_pages			0L
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 27014c3bde9f..7a2fe12cf641 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct page *page = NULL, *swapcache;
+> +	struct swap_info_struct *si = NULL;
+>  	swp_entry_t entry;
+>  	pte_t pte;
+>  	int locked;
+> @@ -3338,6 +3339,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  		goto out;
+>  	}
+>  
+> +	/* Prevent swapoff from happening to us. */
+> +	si = get_swap_device(entry);
 
-delete trailing blanks
+There's
 
-> +
-> +  enable-gpios:
-> +    maxItems: 1
-> +    description: gpio specifier used to enable chip
-> +   
+		struct swap_info_struct *si = swp_swap_info(entry);
 
-delete blanks
+in do_swap_page(), you can remove that.
 
-> +  clocks:
-> +    maxItems: 1
-> +    description: clock provided to the controller (SUSCLK_32KHZ)
-> +
-> +  vddio-supply:
-> +    description: VDD_IO supply regulator handle
-> +
-> +  vddxo-supply:
-> +    description: VDD_XO supply regulator handle
-> +
-> +  vddrf-supply:
-> +    description: VDD_RF supply regulator handle
-> +
-> +  vddch0-supply:
-> +    description: VDD_CH0 supply regulator handle
-> +
-> +  max-speed: 
+Best Regards,
+Huang, Ying
 
-delete trailing blank
-
-> +    description: see Documentation/devicetree/bindings/serial/serial.yaml
-> +
-> +  firmware-name:
-> +    description: specify the name of nvm firmware to load
-> +
-> +  local-bd-address:
-> +    description: see Documentation/devicetree/bindings/net/bluetooth.txt
-> +
-> +
-> +required:
-> +  - compatible
-
-it seems you could make the supplies conditionally required based on the
-compatible string. See Documentation/devicetree/bindings/connector/usb-connector.yaml
-for an example
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    uart {
-> +        label = "BT-UART";
-> +        status = "okay";
-> +
-> +        bluetooth {
-> +            compatible = "qcom,qca6174-bt";
-> +            enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
-> +            clocks = <&divclk4>;
-> +            firmware-name = "nvm_00440302.bin";
-> +        };
-> +    };
-> +  - |
-> +    uart {
-> +
-> +        bluetooth {
-> +            compatible = "qcom,wcn3990-bt";
-> +            vddio-supply = <&vreg_s4a_1p8>;
-> +            vddxo-supply = <&vreg_l7a_1p8>;
-> +            vddrf-supply = <&vreg_l17a_1p3>;
-> +            vddch0-supply = <&vreg_l25a_3p3>;
-> +            max-speed = <3200000>;
-> +            firmware-name = "crnv21.bin";		
-
-delete trailing blanks
+> +	if (unlikely(!si))
+> +		goto out;
+>  
+>  	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
+>  	page = lookup_swap_cache(entry, vma, vmf->address);
+> @@ -3514,6 +3519,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  unlock:
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  out:
+> +	if (si)
+> +		put_swap_device(si);
+>  	return ret;
+>  out_nomap:
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+> @@ -3525,6 +3532,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  		unlock_page(swapcache);
+>  		put_page(swapcache);
+>  	}
+> +	if (si)
+> +		put_swap_device(si);
+>  	return ret;
+>  }
