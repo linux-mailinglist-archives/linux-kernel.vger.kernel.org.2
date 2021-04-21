@@ -2,170 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D350367074
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C459836706E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244415AbhDUQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:46:47 -0400
-Received: from mx2.veeam.com ([64.129.123.6]:41916 "EHLO mx2.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244347AbhDUQqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238199AbhDUQqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 21 Apr 2021 12:46:39 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id 5EBE742406;
-        Wed, 21 Apr 2021 12:45:55 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1619023555; bh=h41nYawhFuIkEKobo2LpVytJxoNFHzzj229eHud/Mao=;
-        h=From:To:CC:Subject:Date:From;
-        b=AIixUZHGmo+HZI8/mBT9Jyka2qBirNEsUiFr0ZNXQWEAEpkw0owg9Zthc60rcGMPc
-         t2kC+i5K8uAHmV0ydIiixsQRHdFZ+OnAglYLP/Wb1RBw0p376hlrWcJo1InAMCFLTy
-         tFApGARHJ4c0a8f55gHvN9aoqZZwxMXQjWYiq4K4=
-Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
- prgmbx01.amust.local (172.24.0.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Wed, 21 Apr 2021 18:45:53 +0200
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Hannes Reinecke <hare@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, <dm-devel@redhat.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtepa@veeam.com>, <pavel.tide@veeam.com>
-Subject: [PATCH v9 0/4] block device interposer
-Date:   Wed, 21 Apr 2021 19:45:41 +0300
-Message-ID: <1619023545-23431-1-git-send-email-sergei.shtepa@veeam.com>
-X-Mailer: git-send-email 1.8.3.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241220AbhDUQqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:46:30 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A28C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:45:56 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id e5so13380041wrg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BLwYcqJ6UcNz3X6OS9ZPBF9VijP9qaPjSIQPm+2ZeF4=;
+        b=YZjDJg6WZvk0vHuhjp7OGbOTJI0KQH7YRmkk9+rQZOT0S+yR+cJm65Zawbb2hUUaes
+         YGjvEufFoS9NByC2oydxaGQ5F6lBuqvYPMdeYxr2VNOLZ8+Hg/G/dErNOZwdSj2yKNnc
+         XlGhgOX4MYupGtUDEWzcWW+pZudojlWlyuw8TR7xwbZJnqQ9QjInoI1kIpxs5FH1ndsj
+         JiBNzGvDT38dXh04BhIQr6ClbuLnPDOgwmmcR5B3K61NpQYlh3Puk0h+YAoBPZxxvQ7y
+         pa0cb0bVHvaYayLKaj1O2cVAWteJyFPcBaRocIoZhHqEpsN+3ZlDYD8xjTjWXT2iniKR
+         9d7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BLwYcqJ6UcNz3X6OS9ZPBF9VijP9qaPjSIQPm+2ZeF4=;
+        b=pHPLybBLwksdFTIiiJ/UcMzpfgfltRknbit/GWucnh1YdCNhLz4ctkQ7wZYXseAKNz
+         +PWeBHISz+CWnm1j8P83gRICs35l3Gmkjuu1cEArwEvxb/gwdKbohaR0ynXT5i3IDp2r
+         ZB+2Ely48CKIbiKM6gGa8fDRvha8v41P0DNgkH0wOVJSWO6hVs7pGHiLh+V6zWLcb2V4
+         0HNlDbz9gtqFRVtCLMw27cpBIuJ7wo+cl+gz93FCa3hPC63L4+wxHXsURG3Qqp/xiXI2
+         num+Bc1sL1IeiSbjbUV26aUBzafknD4I6ieZSqVb80cFv21jLnL/hQm5LZ4fDOBiTiRf
+         diIg==
+X-Gm-Message-State: AOAM532TsBc7rv01y3/zt18t44r+/4XSs2CRtEpfGeO8Hof/iueSUu0e
+        vcn3w7MZUGK1eMJ1kyWzuIDGBo+sNGOnca1bPCQ7zQ==
+X-Google-Smtp-Source: ABdhPJwkfmMvaQ+1LA+nhCeYuUt8FBtc52TexF/XJKjA5LC9WerIyIPZgMqnNiYQG3EULO148fjeP4yO5v2Hd+3HdZE=
+X-Received: by 2002:a05:6000:1249:: with SMTP id j9mr27716991wrx.416.1619023554782;
+ Wed, 21 Apr 2021 09:45:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29D2A50B59677566
-X-Veeam-MMEX: True
+References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
+ <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com> <CAH56bmDBGsHOSjJpo=TseUATOh0cZqTMFyFO1sqtQmMrTPHtrA@mail.gmail.com>
+In-Reply-To: <CAH56bmDBGsHOSjJpo=TseUATOh0cZqTMFyFO1sqtQmMrTPHtrA@mail.gmail.com>
+From:   Matt Mathis <mattmathis@google.com>
+Date:   Wed, 21 Apr 2021 09:45:42 -0700
+Message-ID: <CAH56bmCp8eRqsdoMTmAmCaEnubwEy317OJKQ9UjqMvDwrkcMdQ@mail.gmail.com>
+Subject: Fwd: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
+To:     Leonard Crestez <cdleonard@gmail.com>
+Cc:     "Cc: Willem de Bruijn" <willemb@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Ilya Lesokhin <ilyal@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, Wei Wang <weiwan@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Yuchung Cheng <ycheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new version of a block device interposer (blk_interposer).
+(Resending in plain text mode)
 
-In this series of patches,  I have tried to take into account the comments
-made by Mike to the previous version.
+Surely there is a way to adapt tcp_tso_should_defer(), it is trying to
+solve a similar problem.
 
-First of all, this applies to more detailed explanations of the commits.
-Indeed, the changes in blk-core.c and dm.c may seem complicated, but they
-are no more complicated than the rest of the code in these files.
+If I were to implement PLPMTUD today, I would more deeply entwine it
+into TCP's support for TSO.  e.g. successful deferring segments
+sometimes enables TSO and sometimes enables PLPMTUD.
 
-Removed the [interpose] option for block devices opened by the DM target.
-Instead, the dm_get_device_ex() function is added, which allows to
-explicitly specify which devices can be used for the interposer and which
-can not.
+But there is a deeper question:  John Heffner and I invested a huge
+amount of energy in trying to make PLPMTUD work for opportunistic
+Jumbo discovery, only to discover that we had moved the problem down
+to the device driver/nic, were it isn't so readily solvable.
 
-Additional testing has revealed a problem with suspending and resuming DM
-targets attached via blk_interposer. This has been fixed.
+The driver needs to carve nic buffer memory before it can communicate
+with a switch (to either ask or measure the MTU), and once it has done
+that it needs to either re-carve the memory or run with suboptimal
+carving.  Both of these are problematic.
 
-History:
-v8 - https://patchwork.kernel.org/project/linux-block/cover/1617968884-15149-1-git-send-email-sergei.shtepa@veeam.com/
-  * The attaching and detaching to interposed device moved to
-    __dm_suspend() and __dm_resume() functions.
-  * Redesigned the submit_bio_noacct() function and added a lock for the
-    block device interposer.
-  * Adds [interpose] option to block device patch in dm table.
-  * Fix origin_map() then o->split_binary value is zero.
+There is also a problem that many link technologies will
+non-deterministically deliver jumbo frames at greatly increased error
+rates.   This issue requires a long conversation on it's own.
 
-v7 - https://patchwork.kernel.org/project/linux-block/cover/1615563895-28565-1-git-send-email-sergei.shtepa@veeam.com/
-  * the request interception mechanism. Now the interposer is
-    a block device that receives requests instead of the original device;
-  * code design fixes.
+Thanks,
+--MM--
+The best way to predict the future is to create it.  - Alan Kay
 
-v6 - https://patchwork.kernel.org/project/linux-block/cover/1614774618-22410-1-git-send-email-sergei.shtepa@veeam.com/
-  * designed for 5.12;
-  * thanks to the new design of the bio structure in v5.12, it is
-    possible to perform interception not for the entire disk, but
-    for each block device;
-  * instead of the new ioctl DM_DEV_REMAP_CMD and the 'noexcl' option,
-    the DM_INTERPOSED_FLAG flag for the ioctl DM_TABLE_LOAD_CMD is
-    applied.
+We must not tolerate intolerance;
+       however our response must be carefully measured:
+            too strong would be hypocritical and risks spiraling out of control;
+            too weak risks being mistaken for tacit approval.
 
-v5 - https://patchwork.kernel.org/project/linux-block/cover/1612881028-7878-1-git-send-email-sergei.shtepa@veeam.com/
- * rebase for v5.11-rc7;
- * patch set organization;
- * fix defects in documentation;
- * add some comments;
- * change mutex names for better code readability;
- * remove calling bd_unlink_disk_holder() for targets with non-exclusive
-   flag;
- * change type for struct dm_remap_param from uint8_t to __u8.
 
-v4 - https://patchwork.kernel.org/project/linux-block/cover/1612367638-3794-1-git-send-email-sergei.shtepa@veeam.com/
-Mostly changes were made, due to Damien's comments:
- * on the design of the code;
- * by the patch set organization;
- * bug with passing a wrong parameter to dm_get_device();
- * description of the 'noexcl' parameter in the linear.rst.
-Also added remap_and_filter.rst.
-
-v3 - https://patchwork.kernel.org/project/linux-block/cover/1611853955-32167-1-git-send-email-sergei.shtepa@veeam.com/
-In this version, I already suggested blk_interposer to apply to dm-linear.
-Problems were solved:
- * Interception of bio requests from a specific device on the disk, not
-   from the entire disk. To do this, we added the dm_interposed_dev
-   structure and an interval tree to store these structures.
- * Implemented ioctl DM_DEV_REMAP_CMD. A patch with changes in the lvm2
-   project was sent to the team lvm-devel@redhat.com.
- * Added the 'noexcl' option for dm-linear, which allows you to open
-   the underlying block-device without FMODE_EXCL mode.
-
-v2 - https://patchwork.kernel.org/project/linux-block/cover/1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com/
-I tried to suggest blk_interposer without using it in device mapper,
-but with the addition of a sample of its use. It was then that I learned
-about the maintainers' attitudes towards the samples directory :).
-
-v1 - https://lwn.net/ml/linux-block/20201119164924.74401-1-hare@suse.de/
-This Hannes's patch can be considered as a starting point, since this is
-where the interception mechanism and the term blk_interposer itself
-appeared. It became clear that blk_interposer can be useful for
-device mapper.
-
-before v1 - https://patchwork.kernel.org/project/linux-block/cover/1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com/
-I tried to offer a rather cumbersome blk-filter and a monster-like
-blk-snap module for creating snapshots.
-
-Sergei Shtepa (4):
-  Adds blk_interposer
-  Applying the blk_interposer in the block device layer
-  Add blk_interposer in DM
-  Using dm_get_device_ex() instead of dm_get_device()
-
- block/bio.c                   |   2 +
- block/blk-core.c              | 194 ++++++++++++++-------------
- block/genhd.c                 |  52 ++++++++
- drivers/md/dm-cache-target.c  |   5 +-
- drivers/md/dm-core.h          |   1 +
- drivers/md/dm-delay.c         |   3 +-
- drivers/md/dm-dust.c          |   3 +-
- drivers/md/dm-era-target.c    |   4 +-
- drivers/md/dm-flakey.c        |   3 +-
- drivers/md/dm-ioctl.c         |  59 ++++++++-
- drivers/md/dm-linear.c        |   3 +-
- drivers/md/dm-log-writes.c    |   3 +-
- drivers/md/dm-snap.c          |   3 +-
- drivers/md/dm-table.c         |  21 ++-
- drivers/md/dm-writecache.c    |   3 +-
- drivers/md/dm.c               | 242 ++++++++++++++++++++++++++++++----
- drivers/md/dm.h               |   8 +-
- fs/block_dev.c                |   3 +
- include/linux/blk_types.h     |   6 +
- include/linux/blkdev.h        |  32 +++++
- include/linux/device-mapper.h |  11 +-
- include/uapi/linux/dm-ioctl.h |   6 +
- 22 files changed, 530 insertions(+), 137 deletions(-)
-
---
-2.20.1
-
+On Wed, Apr 21, 2021 at 5:48 AM Neal Cardwell <ncardwell@google.com> wrote:
+>
+> On Wed, Apr 21, 2021 at 6:21 AM Leonard Crestez <cdleonard@gmail.com> wrote:
+> >
+> > According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
+> > in order to accumulate enough data" but linux almost never does that.
+> >
+> > Linux waits for probe_size + (1 + retries) * mss_cache to be available
+> > in the send buffer and if that condition is not met it will send anyway
+> > using the current MSS. The feature can be made to work by sending very
+> > large chunks of data from userspace (for example 128k) but for small writes
+> > on fast links probes almost never happen.
+> >
+> > This patch tries to implement the "MAY" by adding an extra flag
+> > "wait_data" to icsk_mtup which is set to 1 if a probe is possible but
+> > insufficient data is available. Then data is held back in
+> > tcp_write_xmit until a probe is sent, probing conditions are no longer
+> > met, or 500ms pass.
+> >
+> > Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
+> >
+> > ---
+> >  Documentation/networking/ip-sysctl.rst |  4 ++
+> >  include/net/inet_connection_sock.h     |  7 +++-
+> >  include/net/netns/ipv4.h               |  1 +
+> >  include/net/tcp.h                      |  2 +
+> >  net/ipv4/sysctl_net_ipv4.c             |  7 ++++
+> >  net/ipv4/tcp_ipv4.c                    |  1 +
+> >  net/ipv4/tcp_output.c                  | 54 ++++++++++++++++++++++++--
+> >  7 files changed, 71 insertions(+), 5 deletions(-)
+> >
+> > My tests are here: https://github.com/cdleonard/test-tcp-mtu-probing
+> >
+> > This patch makes the test pass quite reliably with
+> > ICMP_BLACKHOLE=1 TCP_MTU_PROBING=1 IPERF_WINDOW=256k IPERF_LEN=8k while
+> > before it only worked with much higher IPERF_LEN=256k
+> >
+> > In my loopback tests I also observed another issue when tcp_retries
+> > increases because of SACKReorder. This makes the original problem worse
+> > (since the retries amount factors in buffer requirement) and seems to be
+> > unrelated issue. Maybe when loss happens due to MTU shrinkage the sender
+> > sack logic is confused somehow?
+> >
+> > I know it's towards the end of the cycle but this is mostly just intended for
+> > discussion.
+>
+> Thanks for raising the question of how to trigger PMTU probes more often!
+>
+> AFAICT this approach would cause unacceptable performance impacts by
+> often injecting unnecessary 500ms delays when there is no need to do
+> so.
+>
+> If the goal is to increase the frequency of PMTU probes, which seems
+> like a valid goal, I would suggest that we rethink the Linux heuristic
+> for triggering PMTU probes in the light of the fact that the loss
+> detection mechanism is now RACK-TLP, which provides quick recovery in
+> a much wider variety of scenarios.
+>
+> After all, https://tools.ietf.org/html/rfc4821#section-7.4 says:
+>
+>    In addition, the timely loss detection algorithms in most protocols
+>    have pre-conditions that SHOULD be satisfied before sending a probe.
+>
+> And we know that the "timely loss detection algorithms" have advanced
+> since this RFC was written in 2007.
+>
+> You mention:
+> > Linux waits for probe_size + (1 + retries) * mss_cache to be available
+>
+> The code in question seems to be:
+>
+>   size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
+>
+> How about just changing this to:
+>
+>   size_needed = probe_size + tp->mss_cache;
+>
+> The rationale would be that if that amount of data is available, then
+> the sender can send one probe and one following current-mss-size
+> packet. If the path MTU has not increased to allow the probe of size
+> probe_size to pass through the network, then the following
+> current-mss-size packet will likely pass through the network, generate
+> a SACK, and trigger a RACK fast recovery 1/4*min_rtt later, when the
+> RACK reorder timer fires.
+>
+> A secondary rationale for this heuristic would be: if the flow never
+> accumulates roughly two packets worth of data, then does the flow
+> really need a bigger packet size?
+>
+> IMHO, just reducing the size_needed seems far preferable to needlessly
+> injecting 500ms delays.
+>
+> best,
+> neal
