@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90EB366CDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08D3366CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242214AbhDUNaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:30:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241644AbhDUNaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:30:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3F46008E;
-        Wed, 21 Apr 2021 13:29:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619011774;
-        bh=rUnHKzP2RJ+ynrTW2RlaXW0lo2URfY8WXPco0RHrmhA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WmOMr47J7IUhfxH30sb0ENh/Y5r04C5SSNWqfNlcKXehPbaisPYnTtTymP7jFdkdK
-         S3WBcYogZuBO0Ga/GA/W9KzsfYZd4t+AAHyVLk4DXtAvMDwRD6FwieCvr7xRCQyXm8
-         yIYgQR9X+EexcF19O/3cMud8LGJXXxPBMkf/RXJJ9WZsippbIj236iaknYuyUk+a8f
-         kPHXwgvt48cwt3zGKK7yvULanP/IN2xJcVyZIK4p4fdaPLkZ2rUZNhBF0LqS/No8cZ
-         ys3Snv48iGu2vEcAi8/KxUingyaMJw3W48sFrgCivwWdzib1Qg9+2ViyxZ6iMYWQo5
-         +TlLNtw1G2PGQ==
-Received: by mail-ej1-f44.google.com with SMTP id u21so63547003ejo.13;
-        Wed, 21 Apr 2021 06:29:34 -0700 (PDT)
-X-Gm-Message-State: AOAM530RXfMwClKsswEOVpSl/UafQzP14nlC1UYduGVMzcOlXw8xTV44
-        Pb5vSNH2vNDRZPc2gugKpLJ3mphAqJtbkZvY3Ho=
-X-Google-Smtp-Source: ABdhPJzMMViUuqtQ9pug04qjkPSYYz7pojO/DjCrp5ViV8Ea+sF18hev3n7o3ZUu4TY3HK36SWIvvE4DjLKH0lKbbO0=
-X-Received: by 2002:a17:906:4e93:: with SMTP id v19mr32199993eju.215.1619011772820;
- Wed, 21 Apr 2021 06:29:32 -0700 (PDT)
+        id S242368AbhDUNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:33:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22692 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240339AbhDUNdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:33:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619011953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eHGylvMWVSknLesn5TIShxESJ3h/B3URDa1h0briNGk=;
+        b=QQhol4s5fvVz5w0CNT8nM+8DvGBfpI2rJ73iNobcXsYgIE33XTieakOHPgvpjJIhIWe2C5
+        RUDons0QWKpLP16G0U25HeAbQSO8mDhTDL3idhtBT/mcqt+dRXJQ/eI0cQ4mze+5riAA99
+        FWutE13Q5WNRumiqE+lQM4jw3xz7uq8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-97lvuigvP_-ssdBgdw6EGQ-1; Wed, 21 Apr 2021 09:31:45 -0400
+X-MC-Unique: 97lvuigvP_-ssdBgdw6EGQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 135081936B6D;
+        Wed, 21 Apr 2021 13:31:44 +0000 (UTC)
+Received: from [10.10.115.104] (ovpn-115-104.rdu2.redhat.com [10.10.115.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4216E10016DB;
+        Wed, 21 Apr 2021 13:31:40 +0000 (UTC)
+Subject: Re: [IRQ] IRQ affinity not working properly?
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Chris Friesen <chris.friesen@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+References: <a0d5551e-761b-1571-b8e1-5586ec4d9f3b@windriver.com>
+ <87blb3ce29.ffs@nanos.tec.linutronix.de>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Organization: Red Hat Inc,
+Message-ID: <fdebec53-097a-d28f-96ec-cfe8d7ef8412@redhat.com>
+Date:   Wed, 21 Apr 2021 09:31:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20200614033106.426-1-wu000273@umn.edu> <013fba3b-2451-855b-08d4-87682464b8bf@xs4all.nl>
-In-Reply-To: <013fba3b-2451-855b-08d4-87682464b8bf@xs4all.nl>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 21 Apr 2021 15:29:21 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPc2_J-_m_e0+xGW=RHgx6p67yMTTfQhjVkEHUmVB5DGzQ@mail.gmail.com>
-Message-ID: <CAJKOXPc2_J-_m_e0+xGW=RHgx6p67yMTTfQhjVkEHUmVB5DGzQ@mail.gmail.com>
-Subject: Re: [PATCH] media: sti: Fix reference count leaks
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Jean-Christophe Trotin <jean-christophe.trotin@st.com>,
-        wu000273@umn.edu, kjlu@umn.edu,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87blb3ce29.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sept 2020 at 13:45, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> Hi Jean-Christophe,
->
-> I'll take this patch, but while reviewing it I noticed something else:
->
-> On 14/06/2020 05:31, wu000273@umn.edu wrote:
-> > From: Qiushi Wu <wu000273@umn.edu>
-> >
-> > pm_runtime_get_sync() increments the runtime PM usage counter even
-> > when it returns an error code, causing incorrect ref count if
-> > pm_runtime_put_noidle() is not called in error handling paths.
-> > Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
-> >
-> > Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-> > ---
-> >  drivers/media/platform/sti/hva/hva-hw.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
-> > index 401aaafa1710..bb13348be083 100644
-> > --- a/drivers/media/platform/sti/hva/hva-hw.c
-> > +++ b/drivers/media/platform/sti/hva/hva-hw.c
-> > @@ -272,6 +272,7 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
-> >
-> >       if (pm_runtime_get_sync(dev) < 0) {
-> >               dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
-> > +             pm_runtime_put_noidle(dev);
-> >               mutex_unlock(&hva->protect_mutex);
->
-> This appears to be a spurious mutex_unlock() since I don't see a corresponding mutex_lock.
->
-> Jean-Christophe, can you check this and, if I am right, post a patch fixing this?
 
-Probably patch should be skipped due to uncertain intentions:
-https://lore.kernel.org/linux-nfs/YH+7ZydHv4+Y1hlx@kroah.com/
+On 3/28/21 2:45 PM, Thomas Gleixner wrote:
+> On Fri, Jan 29 2021 at 13:17, Chris Friesen wrote:
+>> I have a CentOS 7 linux system with 48 logical CPUs and a number of
 
-Best regards,
-Krzysztof
+<snip>
+
+>> IR-PCI-MSI-edge      iavf-net1-TxRx-3
+>> 961:          0          0          0          0 28492         0 
+>> IR-PCI-MSI-edge iavf-0000:b5:02.7:mbx
+>> 962:          0          0          0          0 435608         0 
+>> IR-PCI-MSI-edge      iavf-net1-TxRx-0
+>> 963:          0          0          0          0 394832         0 
+>> IR-PCI-MSI-edge      iavf-net1-TxRx-1
+>> 964:          0          0          0          0 398414         0 
+>> IR-PCI-MSI-edge      iavf-net1-TxRx-2
+>> 965:          0          0          0          0 192847         0 
+>> IR-PCI-MSI-edge      iavf-net1-TxRx-3
+>>
+>> There were IRQs coming in on the "iavf-0000:b5:02.7:mbx" interrupt at 
+>> roughly 1 per second without any traffic, while the interrupt rate on 
+>> the "iavf-net1-TxRx-<X>" seemed to be related to traffic.
+>>
+>> Is this expected?  It seems like the IRQ subsystem is not respecting the 
+>> configured SMP affinity for the interrupt in question.  I've also seen 
+>> the same behaviour with igb interrupts.
+> No it's not expected. Do you see the same behaviour with a recent
+> mainline kernel, i.e. 5.10 or 5.11?
+>
+>
+
+Jesse pointed me to this thread and apologies that it took a while for me
+to respond here.
+
+I agree it will be interesting to see with which kernel version Chris is
+reproducing the issue.
+
+Initially, I thought that this issue is the same as the one that we have
+been discussing in another thread [1].
+
+However, in that case, the smp affinity mask itself is incorrect and doesn't
+follow the default smp affinity mask (with irqbalance disabled).
+
+
+[1] https://lore.kernel.org/lkml/1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com/
+
+-- 
+Thanks
+Nitesh
+
