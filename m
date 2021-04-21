@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E103668A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298D23668A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbhDUJ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:57:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52654 "EHLO mail.kernel.org"
+        id S235400AbhDUJ6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:58:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238647AbhDUJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238650AbhDUJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Apr 2021 05:56:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18EE961452;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FA486145D;
         Wed, 21 Apr 2021 09:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1618998937;
-        bh=Iu7STYqQoU25QYwNxiMypzgo5dwXaP/UJ6w1NJlXkQI=;
+        bh=0Q1FSWChHoIk65q7u9cztH7Ba1e7MUq1Gmq6C+qJeQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PLJO3cVFkPvKUo0Jduizeba4+6ayZsxmcc/n50l4xFf3AU88OHclO6VGmscdSBlqW
-         huksUBwxPuBAknROGVI+CIfCAFChiwPD5C/CwOFyONQbL55n1R8pnUzhNdrYjqpeUK
-         kDtbfWhPNgqnN7N2S6RcRvycthE8hkRPY/L8VgswDSye9LXrLCi/T8DQVocLez8Tkl
-         1Xh9Fmf1R7p3iQt7dM6+IcfKlxSPEOPK5P0PkWmDkaUV1R8TY+gHSoAThOLn+W+tuC
-         uWPbsGWVm2AQIZv255y0rg877JWullgu6BQJ15WNrncZYplar1Z1uHwM6DFSLLv2cV
-         HnX1eg1Ph2jlw==
+        b=gslRcaUTlMXXSXBT67LcwgbOYA3e3JeucmhBE7LKEJ43J5nHoFWCsVHgk1mdYv1/P
+         Cbx1IQA2wTPhdKxh6aXHAn899Jy7h0v11n8lnlbqS9AB/bBQWLhY8r/TLYqyiWq8UT
+         WPZd2GmjfukEODldBORvNOz+C4ZJC1fhl2uBXUYeXCk/SMjbopC3bsU5ilHcKoEqKd
+         nYvdYg1AohvvSSs3kqcXq+PXArCvGA5Cv/gLqCyf9wtS0fc+AsSjm6v173c/tO3k/7
+         w8PnVS2P0WzfLY6fgfWTRzM+EpInK4ElZZ3VbehXl2WeKMHpt59EZIVpvdN0guGf76
+         LWIPosk/bsQUQ==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lZ9a8-0000pI-D1; Wed, 21 Apr 2021 11:55:40 +0200
+        id 1lZ9a8-0000pL-FX; Wed, 21 Apr 2021 11:55:40 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 20/26] serial: sa1100: drop low-latency workaround
-Date:   Wed, 21 Apr 2021 11:55:03 +0200
-Message-Id: <20210421095509.3024-21-johan@kernel.org>
+Subject: [PATCH 21/26] serial: txx9: drop low-latency workaround
+Date:   Wed, 21 Apr 2021 11:55:04 +0200
+Message-Id: <20210421095509.3024-22-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210421095509.3024-1-johan@kernel.org>
 References: <20210421095509.3024-1-johan@kernel.org>
@@ -42,47 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 53e0e6706c76 ("tty: serial: sa1100: drop uart_port->lock before
-calling tty_flip_buffer_push()") claimed to address a locking
-issue but only provided a dubious lockdep splat from an unrelated
-driver, which in the end turned out to be due a broken local change
-carried by the author.
-
-Unfortunately these patches were merged before the issue had been
-analysed properly so the commit messages makes no sense whatsoever.
-
-The real issue was first seen on RT which at the time effectively always
-set the low_latency flag for all serial drivers by patching
-tty_flip_buffer_push(). This in turn revealed that many drivers did not
-handle the infamous low_latency behaviour which meant that data was
-pushed immediately to the line discipline instead of being deferred to a
-work queue.
+Commit f5ee56cc184e ("[PATCH] txx9 serial update") worked around the
+infamous low_latency behaviour of tty_flip_buffer_push() by simply
+dropping and reacquiring the port lock in the interrupt handler.
 
 Since commit a9c3f68f3cd8 ("tty: Fix low_latency BUG"),
 tty_flip_buffer_push() always schedules a work item to push data to the
-line discipline and there's no need to keep any low_latency hacks
-around.
+line discipline and there's no need to keep any low_latency hacks around.
 
-Link: https://lore.kernel.org/linux-serial/cover.1376923198.git.viresh.kumar@linaro.org/
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/serial/sa1100.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/tty/serial/serial_txx9.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/sa1100.c b/drivers/tty/serial/sa1100.c
-index f5fab1dd96bc..697b6a002a16 100644
---- a/drivers/tty/serial/sa1100.c
-+++ b/drivers/tty/serial/sa1100.c
-@@ -223,9 +223,7 @@ sa1100_rx_chars(struct sa1100_port *sport)
- 			 UTSR0_TO_SM(UART_GET_UTSR0(sport));
- 	}
- 
--	spin_unlock(&sport->port.lock);
- 	tty_flip_buffer_push(&sport->port.state->port);
--	spin_lock(&sport->port.lock);
+diff --git a/drivers/tty/serial/serial_txx9.c b/drivers/tty/serial/serial_txx9.c
+index 7a07e7272de1..0a7e5b74bc1d 100644
+--- a/drivers/tty/serial/serial_txx9.c
++++ b/drivers/tty/serial/serial_txx9.c
+@@ -330,9 +330,9 @@ receive_chars(struct uart_txx9_port *up, unsigned int *status)
+ 		up->port.ignore_status_mask = next_ignore_status_mask;
+ 		disr = sio_in(up, TXX9_SIDISR);
+ 	} while (!(disr & TXX9_SIDISR_UVALID) && (max_count-- > 0));
+-	spin_unlock(&up->port.lock);
++
+ 	tty_flip_buffer_push(&up->port.state->port);
+-	spin_lock(&up->port.lock);
++
+ 	*status = disr;
  }
  
- static void sa1100_tx_chars(struct sa1100_port *sport)
 -- 
 2.26.3
 
