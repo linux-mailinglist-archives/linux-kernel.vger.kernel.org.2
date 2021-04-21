@@ -2,155 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BFC366548
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BD036654D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbhDUGS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:18:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17019 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhDUGS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:18:28 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FQ9JF16xfzPsbv;
-        Wed, 21 Apr 2021 14:14:53 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 21 Apr 2021 14:17:44 +0800
-Subject: Re: [PATCH] KVM: arm64: Correctly handle the mmio faulting
-To:     Gavin Shan <gshan@redhat.com>, Santosh Shukla <sashukla@nvidia.com>
-References: <1603297010-18787-1-git-send-email-sashukla@nvidia.com>
- <8b20dfc0-3b5e-c658-c47d-ebc50d20568d@huawei.com>
- <2e23aaa7-0c8d-13ba-2eae-9e6ab2adc587@redhat.com>
-CC:     <maz@kernel.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
-        <cjia@nvidia.com>, <linux-arm-kernel@lists.infradead.org>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <ed8a8b90-8b96-4967-01f5-cd0f536c38d2@huawei.com>
-Date:   Wed, 21 Apr 2021 14:17:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
-MIME-Version: 1.0
-In-Reply-To: <2e23aaa7-0c8d-13ba-2eae-9e6ab2adc587@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+        id S235759AbhDUGUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:20:17 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:34126 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229536AbhDUGUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:20:15 -0400
+Received: from localhost.localdomain (unknown [58.249.121.165])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb8v6w39gdoULAA--.20179S2;
+        Wed, 21 Apr 2021 14:19:39 +0800 (CST)
+From:   xiaochuan mao <maoxiaochuan@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michael <michael5hzg@gmail.com>,
+        xiaochuan mao <maoxiaochuan@loongson.cn>
+Subject: [PATCH] mips/bootinfo:correct some comments of fw_arg
+Date:   Wed, 21 Apr 2021 14:19:17 +0800
+Message-Id: <20210421061917.13953-1-maoxiaochuan@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: AQAAf9Dxb8v6w39gdoULAA--.20179S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gryftw47CrWftryUCrW3Wrg_yoWfuwc_C3
+        W7ZanYgrs5Cry8Zr15XwnagFyxta4Uu3s7Cr4kXr1qyay3Zw45WFWjyry7Jw4DCryqyrZ5
+        ZF9Yqrnxt3s29jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8AwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUkhLnUUUUU=
+X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+from arch/mips/kernel/head.S we know that use a0~a3 for fw_arg0~fw_arg3
+there is some code from head.S:
+	LONG_S		a0, fw_arg0		# firmware arguments
+	LONG_S		a1, fw_arg1
+	LONG_S		a2, fw_arg2
+	LONG_S		a3, fw_arg3
 
-On 2021/4/21 14:20, Gavin Shan wrote:
-> Hi Keqian and Santosh,
-> 
-> On 4/21/21 12:59 PM, Keqian Zhu wrote:
->> On 2020/10/22 0:16, Santosh Shukla wrote:
->>> The Commit:6d674e28 introduces a notion to detect and handle the
->>> device mapping. The commit checks for the VM_PFNMAP flag is set
->>> in vma->flags and if set then marks force_pte to true such that
->>> if force_pte is true then ignore the THP function check
->>> (/transparent_hugepage_adjust()).
->>>
->>> There could be an issue with the VM_PFNMAP flag setting and checking.
->>> For example consider a case where the mdev vendor driver register's
->>> the vma_fault handler named vma_mmio_fault(), which maps the
->>> host MMIO region in-turn calls remap_pfn_range() and maps
->>> the MMIO's vma space. Where, remap_pfn_range implicitly sets
->>> the VM_PFNMAP flag into vma->flags.
->> Could you give the name of the mdev vendor driver that triggers this issue?
->> I failed to find one according to your description. Thanks.
->>
-> 
-> I think it would be fixed in driver side to set VM_PFNMAP in
-> its mmap() callback (call_mmap()), like vfio PCI driver does.
-> It means it won't be delayed until page fault is issued and
-> remap_pfn_range() is called. It's determined from the beginning
-> that the vma associated the mdev vendor driver is serving as
-> PFN remapping purpose. So the vma should be populated completely,
-> including the VM_PFNMAP flag before it becomes visible to user
-> space.
-> 
-> The example can be found from vfio driver in drivers/vfio/pci/vfio_pci.c:
->     vfio_pci_mmap:       VM_PFNMAP is set for the vma
->     vfio_pci_mmap_fault: remap_pfn_range() is called
-Right. I have discussed the above with Marc. I want to find the driver
-to fix it. However, AFAICS, there is no driver matches the description...
+Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
+---
+ arch/mips/include/asm/bootinfo.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Keqian
+diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
+index 5be10ece3ef0..4c2e8173e6ec 100644
+--- a/arch/mips/include/asm/bootinfo.h
++++ b/arch/mips/include/asm/bootinfo.h
+@@ -107,7 +107,7 @@ extern void (*free_init_pages_eva)(void *begin, void *end);
+ extern char arcs_cmdline[COMMAND_LINE_SIZE];
+ 
+ /*
+- * Registers a0, a1, a3 and a4 as passed to the kernel entry by firmware
++ * Registers a0, a1, a2 and a3 as passed to the kernel entry by firmware
+  */
+ extern unsigned long fw_arg0, fw_arg1, fw_arg2, fw_arg3;
+ 
+-- 
+2.17.1
 
-> 
-> Thanks,
-> Gavin
-> 
->>>
->>> Now lets assume a mmio fault handing flow where guest first access
->>> the MMIO region whose 2nd stage translation is not present.
->>> So that results to arm64-kvm hypervisor executing guest abort handler,
->>> like below:
->>>
->>> kvm_handle_guest_abort() -->
->>>   user_mem_abort()--> {
->>>
->>>      ...
->>>      0. checks the vma->flags for the VM_PFNMAP.
->>>      1. Since VM_PFNMAP flag is not yet set so force_pte _is_ false;
->>>      2. gfn_to_pfn_prot() -->
->>>          __gfn_to_pfn_memslot() -->
->>>              fixup_user_fault() -->
->>>                  handle_mm_fault()-->
->>>                      __do_fault() -->
->>>                         vma_mmio_fault() --> // vendor's mdev fault handler
->>>                          remap_pfn_range()--> // Here sets the VM_PFNMAP
->>>                         flag into vma->flags.
->>>      3. Now that force_pte is set to false in step-2),
->>>         will execute transparent_hugepage_adjust() func and
->>>         that lead to Oops [4].
->>>   }
->>>
->>> The proposition is to check is_iomap flag before executing the THP
->>> function transparent_hugepage_adjust().
->>>
->>> [4] THP Oops:
->>>> pc: kvm_is_transparent_hugepage+0x18/0xb0
->>>> ...
->>>> ...
->>>> user_mem_abort+0x340/0x9b8
->>>> kvm_handle_guest_abort+0x248/0x468
->>>> handle_exit+0x150/0x1b0
->>>> kvm_arch_vcpu_ioctl_run+0x4d4/0x778
->>>> kvm_vcpu_ioctl+0x3c0/0x858
->>>> ksys_ioctl+0x84/0xb8
->>>> __arm64_sys_ioctl+0x28/0x38
->>>
->>> Tested on Huawei Kunpeng Taishan-200 arm64 server, Using VFIO-mdev device.
->>> Linux tip: 583090b1
->>>
->>> Fixes: 6d674e28 ("KVM: arm/arm64: Properly handle faulting of device mappings")
->>> Signed-off-by: Santosh Shukla <sashukla@nvidia.com>
->>> ---
->>>   arch/arm64/kvm/mmu.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>> index 3d26b47..ff15357 100644
->>> --- a/arch/arm64/kvm/mmu.c
->>> +++ b/arch/arm64/kvm/mmu.c
->>> @@ -1947,7 +1947,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>>        * If we are not forced to use page mapping, check if we are
->>>        * backed by a THP and thus use block mapping if possible.
->>>        */
->>> -    if (vma_pagesize == PAGE_SIZE && !force_pte)
->>> +    if (vma_pagesize == PAGE_SIZE && !force_pte && !is_iomap(flags))
->>>           vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->>>                                  &pfn, &fault_ipa);
->>>       if (writable)
->>>
->>
-> 
-> .
-> 
