@@ -2,181 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DB336685B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C329366861
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236418AbhDUJvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbhDUJvS (ORCPT
+        id S238332AbhDUJxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:53:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47601 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233957AbhDUJw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:51:18 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDECC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:50:44 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c17so28266421pfn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FofhuHim/yAjLcyzSZ2t1K4ha+04WQhQ6veF6EUmaCw=;
-        b=wyV+20cNMljrH/90JfzzMkjbjWp2UDqI8qqA1ZTIFgwWhvrHsDzuUJkRC1r6qx16q7
-         V06CvlnKq9hFEGaxgbFRnkd8tkDiYGuYEVlua4TE1Z6neZRKv74cAs+8Wt24tSxxp1Aj
-         HsLrO0U2l5E6WIm+4h14LnFuMVUIhxFfUZ/hpLzdzIatdHNDZ4oQ3BBTn+U/PhPGWoPr
-         HQuOInxzzDxhyQ7hnypn0+PFLQ06nYub9SHheHA9GBIw5KFEe6QSl5M3VM1VR72Oy585
-         +pzsyRDmY8WbVeCVHtCN+S3iBYYfRjbic0CfkgDZc1omxHABftLywiHkqR53ndQtQyqZ
-         lpWA==
+        Wed, 21 Apr 2021 05:52:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618998745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NwxZLRTcXC5OvGvzLAau5wtnxa0kL69bqUW5LXiDYks=;
+        b=fWOwSFFXj8tl0kRnNrjWhqnvL/t88pnD7+TrgKlWBrbYLzPjfb+4ilkDbw2wTaNBO694JL
+        OmL4ucdds0+skNCED1mByGvQm+wq8pyRur5VGcUPkCY7uxzQS4WLgtJp27N94iUwQCpQiP
+        e+pUFipmoTGK1OIivSKKjHD0jMvBiMQ=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-8Z4uTn-pM-qdPl4sDKMIIw-1; Wed, 21 Apr 2021 05:52:17 -0400
+X-MC-Unique: 8Z4uTn-pM-qdPl4sDKMIIw-1
+Received: by mail-ej1-f70.google.com with SMTP id jl27-20020a17090775dbb029037ccdce96e6so5659974ejc.21
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:52:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FofhuHim/yAjLcyzSZ2t1K4ha+04WQhQ6veF6EUmaCw=;
-        b=cbb6ShuoEl7iQ9Q9MizDUrScatFDjIR5Nghxn4Zrcdacd3v9eovoGXcF4djY21Ho0A
-         Q/EAfO7Zc1ZRLvenmcOQVd36feAmp01iTmzwPD1UEqAXCB00df1D34AWLj8LkIgPXDCe
-         06NScNy6txnhE6wOsfHesHXx3go5kOwwokGex70PJNpLGOFSPxRkmjpitf7OJsKUiE0k
-         rsLZvPgj5z3QMMXZ+/hNO0FBSeWcyDCfVH5LwpVVV8e10lQ6Nw0xUvIIh2D+fYAwBqd1
-         A+BaLpLTjw3qY5UpfoFRd69v8ctSn6JOEXOiDAtmwpIBRE5lOgu19nHTsFxJvA7NbBoU
-         T2kQ==
-X-Gm-Message-State: AOAM533cTa5oeJ3wpUoQAlMmk41fz4KI0eQ72b+/ZTD8TCy5odUOD9KW
-        RLl0+pZDCWG3oVeg6ZJdEabwCW/z9GSOl0va8xCFEDEHl9PXcg==
-X-Google-Smtp-Source: ABdhPJzflLOYb7RSqIdpU6cNT1PnBtbHHmAc9zSIUPhCxdW9TODj+DCrWgD4U4R8hHHOFB8fQpCZhQO+Ic3CfL2BGtA=
-X-Received: by 2002:a05:6a00:228a:b029:264:1ec7:7c3 with SMTP id
- f10-20020a056a00228ab02902641ec707c3mr6848675pfe.2.1618998643807; Wed, 21 Apr
- 2021 02:50:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NwxZLRTcXC5OvGvzLAau5wtnxa0kL69bqUW5LXiDYks=;
+        b=BoV71QgvU3qVdxZKZMDxqkboVZ/3+FCQkpsuOgP/4GcObbGjuykyzpQIPZ34rE00oW
+         zBxmcI3Xww7/xZu9ZEhUNsM6jrKM4SZ30HB3PW/ogCVnLbpqVP6/a+HYasJt4jTaORx+
+         XZwr+0xaYv/U0udqeOLmyN3uV6L65Um1YEm41jHu4CtkBLd+go42mmSxL20ckqYQaWRB
+         rexNUvfrWD2Nyo16KEvVS03vsmlG5Stx5NBgmXM1h+JOVsqCtIxNAH4Mm9Vr0U9YleVJ
+         eUOmX6QCeOMUPhgDtaXKd1tjGihf4HHmSQSBTPPhBOH6NMYcelQAf8qCu5BzIB+NZw8z
+         eBjA==
+X-Gm-Message-State: AOAM531VvW57RAJrGkKKXphTA6nLre68pl4K6JkAO2wxAU6zMOerhLWM
+        lEb6x9G6nU82J47Plc17tzvZnCQq47U7/tgON+9Cny5HEhJaNgw/xIab5DeuGRBffBTUMaPa/WV
+        oSVik2S4Cm1h/6mIHKGh2KOAm
+X-Received: by 2002:a17:906:ff52:: with SMTP id zo18mr30698322ejb.298.1618998736468;
+        Wed, 21 Apr 2021 02:52:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzB2TWs/IaLV9bRBCA0/SpDD3KlzXRPfhylvrcMnGywNW0K6wQOPNcsHmJxw78RjLZB+u5T0A==
+X-Received: by 2002:a17:906:ff52:: with SMTP id zo18mr30698307ejb.298.1618998736227;
+        Wed, 21 Apr 2021 02:52:16 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id h9sm1836039ejf.10.2021.04.21.02.52.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 02:52:15 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:52:13 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v8 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210421095213.25hnfi2th7gzyzt2@steredhat>
+References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210421062644.68331-1-songmuchun@bytedance.com> <YH/Vf8SDRy7VR7ur@dhcp22.suse.cz>
-In-Reply-To: <YH/Vf8SDRy7VR7ur@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 21 Apr 2021 17:50:06 +0800
-Message-ID: <CAMZfGtVpz1FvzmhWFzXAJE3wWBMJwdwU+JqQ6a8KeOhV3FGJ4Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix root_mem_cgroup charging
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 3:34 PM Michal Hocko <mhocko@suse.com> wrote:
+On Tue, Apr 13, 2021 at 03:39:51PM +0300, Arseny Krasnov wrote:
+>	This patchset implements support of SOCK_SEQPACKET for virtio
+>transport.
+>	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>do it, new bit for field 'flags' was added: SEQ_EOR. This bit is
+>set to 1 in last RW packet of message.
+>	Now as  packets of one socket are not reordered neither on vsock
+>nor on vhost transport layers, such bit allows to restore original
+>message on receiver's side. If user's buffer is smaller than message
+>length, when all out of size data is dropped.
+>	Maximum length of datagram is not limited as in stream socket,
+>because same credit logic is used. Difference with stream socket is
+>that user is not woken up until whole record is received or error
+>occurred. Implementation also supports 'MSG_TRUNC' flags.
+>	Tests also implemented.
 >
-> On Wed 21-04-21 14:26:44, Muchun Song wrote:
-> > The below scenario can cause the page counters of the root_mem_cgroup
-> > to be out of balance.
-> >
-> > CPU0:                                   CPU1:
-> >
-> > objcg = get_obj_cgroup_from_current()
-> > obj_cgroup_charge_pages(objcg)
-> >                                         memcg_reparent_objcgs()
-> >                                             // reparent to root_mem_cgroup
-> >                                             WRITE_ONCE(iter->memcg, parent)
-> >     // memcg == root_mem_cgroup
-> >     memcg = get_mem_cgroup_from_objcg(objcg)
-> >     // do not charge to the root_mem_cgroup
-> >     try_charge(memcg)
-> >
-> > obj_cgroup_uncharge_pages(objcg)
-> >     memcg = get_mem_cgroup_from_objcg(objcg)
-> >     // uncharge from the root_mem_cgroup
-> >     page_counter_uncharge(&memcg->memory)
-> >
-> > This can cause the page counter to be less than the actual value,
-> > Although we do not display the value (mem_cgroup_usage) so there
-> > shouldn't be any actual problem, but there is a WARN_ON_ONCE in
-> > the page_counter_cancel(). Who knows if it will trigger? So it
-> > is better to fix it.
+>	Thanks to stsp2@yandex.ru for encouragements and initial design
+>recommendations.
 >
-> The changelog doesn't explain the fix and why you have chosen to charge
-> kmem objects to root memcg and left all other try_charge users intact.
-
-The object cgroup is special (because the page can reparent). Only the
-user of objcg APIs should be fixed.
-
-> The reason is likely that those are not reparented now but that just
-> adds an inconsistency.
+> Arseny Krasnov (19):
+>  af_vsock: update functions for connectible socket
+>  af_vsock: separate wait data loop
+>  af_vsock: separate receive data loop
+>  af_vsock: implement SEQPACKET receive loop
+>  af_vsock: implement send logic for SEQPACKET
+>  af_vsock: rest of SEQPACKET support
+>  af_vsock: update comments for stream sockets
+>  virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
+>  virtio/vsock: simplify credit update function API
+>  virtio/vsock: defines and constants for SEQPACKET
+>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>  virtio/vsock: add SEQPACKET receive logic
+>  virtio/vsock: rest of SOCK_SEQPACKET support
+>  virtio/vsock: enable SEQPACKET for transport
+>  vhost/vsock: enable SEQPACKET for transport
+>  vsock/loopback: enable SEQPACKET for transport
+>  vsock_test: add SOCK_SEQPACKET tests
+>  virtio/vsock: update trace event for SEQPACKET
+>  af_vsock: serialize writes to shared socket
 >
-> Is there any reason you haven't simply matched obj_cgroup_uncharge_pages
-> to check for the root memcg and bail out early?
+> drivers/vhost/vsock.c                        |  31 +-
+> include/linux/virtio_vsock.h                 |  11 +
+> include/net/af_vsock.h                       |   8 +
+> .../events/vsock_virtio_transport_common.h   |   5 +-
+> include/uapi/linux/virtio_vsock.h            |   9 +
+> net/vmw_vsock/af_vsock.c                     | 470 +++++++++++------
+> net/vmw_vsock/virtio_transport.c             |  17 +
+> net/vmw_vsock/virtio_transport_common.c      | 167 ++++--
+> net/vmw_vsock/vsock_loopback.c               |  12 +
+> tools/testing/vsock/util.c                   |  32 +-
+> tools/testing/vsock/util.h                   |   3 +
+> tools/testing/vsock/vsock_test.c             |  63 +++
+> 12 files changed, 625 insertions(+), 203 deletions(-)
+>
+> v7 -> v8:
+> General changelog:
+> - whole idea is simplified: channel now considered reliable,
+>   so SEQ_BEGIN, SEQ_END, 'msg_len' and 'msg_id' were removed.
+>   Only thing that is used to mark end of message is bit in
+>   'flags' field of packet header: VIRTIO_VSOCK_SEQ_EOR. Packet
+>   with such bit set to 1 means, that this is last packet of
+>   message.
+>
+> - POSIX MSG_EOR support is removed, as there is no exact
+>   description how it works.
 
-Because obj_cgroup_uncharge_pages() uncharges pages from the
-root memcg unconditionally. Why? Because some pages can be
-reparented to root memcg, in order to ensure the correctness of
-page counter of root memcg. We have to uncharge pages from
-root memcg. So we do not check whether the page belongs to
-the root memcg when it uncharges. Based on this, we have
-to make sure that the root memcg page counter is increased
-when the page charged. I think the diagram (in the commit log) can
-illustrate this problem well.
+It would be nice to support it, I'll try to see if I can find anything.
 
-Thanks.
+I just reviewed the series. I think the most important things to fix are 
+the `seqpacket_allow` stored in the struct virtio_transport that is 
+wrong IMHO, and use cpu_to_le32()/le32_to_cpu() to access the flags.
+
+I also left some other comments around.
+
+Thanks,
+Stefano
 
 >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 17 ++++++++++++-----
-> >  1 file changed, 12 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 1e68a9992b01..81b54bd9b9e0 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2686,8 +2686,8 @@ void mem_cgroup_handle_over_high(void)
-> >       css_put(&memcg->css);
-> >  }
-> >
-> > -static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > -                   unsigned int nr_pages)
-> > +static int __try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > +                     unsigned int nr_pages)
-> >  {
-> >       unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
-> >       int nr_retries = MAX_RECLAIM_RETRIES;
-> > @@ -2699,8 +2699,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >       bool drained = false;
-> >       unsigned long pflags;
-> >
-> > -     if (mem_cgroup_is_root(memcg))
-> > -             return 0;
-> >  retry:
-> >       if (consume_stock(memcg, nr_pages))
-> >               return 0;
-> > @@ -2880,6 +2878,15 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >       return 0;
-> >  }
-> >
-> > +static inline int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > +                          unsigned int nr_pages)
-> > +{
-> > +     if (mem_cgroup_is_root(memcg))
-> > +             return 0;
-> > +
-> > +     return __try_charge(memcg, gfp_mask, nr_pages);
-> > +}
-> > +
-> >  #if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
-> >  static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
-> >  {
-> > @@ -3125,7 +3132,7 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
-> >
-> >       memcg = get_mem_cgroup_from_objcg(objcg);
-> >
-> > -     ret = try_charge(memcg, gfp, nr_pages);
-> > +     ret = __try_charge(memcg, gfp, nr_pages);
-> >       if (ret)
-> >               goto out;
-> >
-> > --
-> > 2.11.0
+> - all changes to 'include/uapi/linux/virtio_vsock.h' moved
+>   to dedicated patch, as these changes linked with patch to
+>   spec.
 >
-> --
-> Michal Hocko
-> SUSE Labs
+> - patch 'virtio/vsock: SEQPACKET feature bit support' now merged
+>   to 'virtio/vsock: setup SEQPACKET ops for transport'.
+>
+> - patch 'vhost/vsock: SEQPACKET feature bit support' now merged
+>   to 'vhost/vsock: setup SEQPACKET ops for transport'.
+>
+> Per patch changelog:
+>  see every patch after '---' line.
+>
+> v6 -> v7:
+> General changelog:
+> - virtio transport callback for message length now removed
+>   from transport. Length of record is returned by dequeue
+>   callback.
+>
+> - function which tries to get message length now returns 0
+>   when rx queue is empty. Also length of current message in
+>   progress is set to 0, when message processed or error
+>   happens.
+>
+> - patches for virtio feature bit moved after patches with
+>   transport ops.
+>
+> Per patch changelog:
+>  see every patch after '---' line.
+>
+> v5 -> v6:
+> General changelog:
+> - virtio transport specific callbacks which send SEQ_BEGIN or
+>   SEQ_END now hidden inside virtio transport. Only enqueue,
+>   dequeue and record length callbacks are provided by transport.
+>
+> - virtio feature bit for SEQPACKET socket support introduced:
+>   VIRTIO_VSOCK_F_SEQPACKET.
+>
+> - 'msg_cnt' field in 'struct virtio_vsock_seq_hdr' renamed to
+>   'msg_id' and used as id.
+>
+> Per patch changelog:
+> - 'af_vsock: separate wait data loop':
+>    1) Commit message updated.
+>    2) 'prepare_to_wait()' moved inside while loop(thanks to
+>      Jorgen Hansen).
+>    Marked 'Reviewed-by' with 1), but as 2) I removed R-b.
+>
+> - 'af_vsock: separate receive data loop': commit message
+>    updated.
+>    Marked 'Reviewed-by' with that fix.
+>
+> - 'af_vsock: implement SEQPACKET receive loop': style fixes.
+>
+> - 'af_vsock: rest of SEQPACKET support':
+>    1) 'module_put()' added when transport callback check failed.
+>    2) Now only 'seqpacket_allow()' callback called to check
+>       support of SEQPACKET by transport.
+>
+> - 'af_vsock: update comments for stream sockets': commit message
+>    updated.
+>    Marked 'Reviewed-by' with that fix.
+>
+> - 'virtio/vsock: set packet's type in send':
+>    1) Commit message updated.
+>    2) Parameter 'type' from 'virtio_transport_send_credit_update()'
+>       also removed in this patch instead of in next.
+>
+> - 'virtio/vsock: dequeue callback for SOCK_SEQPACKET': SEQPACKET
+>    related state wrapped to special struct.
+>
+> - 'virtio/vsock: update trace event for SEQPACKET': format strings
+>    now not broken by new lines.
+>
+> v4 -> v5:
+> - patches reorganized:
+>   1) Setting of packet's type in 'virtio_transport_send_pkt_info()'
+>      is moved to separate patch.
+>   2) Simplifying of 'virtio_transport_send_credit_update()' is
+>      moved to separate patch and before main virtio/vsock patches.
+> - style problem fixed
+> - in 'af_vsock: separate receive data loop' extra 'release_sock()'
+>   removed
+> - added trace event fields for SEQPACKET
+> - in 'af_vsock: separate wait data loop':
+>   1) 'vsock_wait_data()' removed 'goto out;'
+>   2) Comment for invalid data amount is changed.
+> - in 'af_vsock: rest of SEQPACKET support', 'new_transport' pointer
+>   check is moved after 'try_module_get()'
+> - in 'af_vsock: update comments for stream sockets', 'connect-oriented'
+>   replaced with 'connection-oriented'
+> - in 'loopback/vsock: setup SEQPACKET ops for transport',
+>   'loopback/vsock' replaced with 'vsock/loopback'
+>
+> v3 -> v4:
+> - SEQPACKET specific metadata moved from packet header to payload
+>   and called 'virtio_vsock_seq_hdr'
+> - record integrity check:
+>   1) SEQ_END operation was added, which marks end of record.
+>   2) Both SEQ_BEGIN and SEQ_END carries counter which is incremented
+>      on every marker send.
+> - af_vsock.c: socket operations for STREAM and SEQPACKET call same
+>   functions instead of having own "gates" differs only by names:
+>   'vsock_seqpacket/stream_getsockopt()' now replaced with
+>   'vsock_connectible_getsockopt()'.
+> - af_vsock.c: 'seqpacket_dequeue' callback returns error and flag that
+>   record ready. There is no need to return number of copied bytes,
+>   because case when record received successfully is checked at virtio
+>   transport layer, when SEQ_END is processed. Also user doesn't need
+>   number of copied bytes, because 'recv()' from SEQPACKET could return
+>   error, length of users's buffer or length of whole record(both are
+>   known in af_vsock.c).
+> - af_vsock.c: both wait loops in af_vsock.c(for data and space) moved
+>   to separate functions because now both called from several places.
+> - af_vsock.c: 'vsock_assign_transport()' checks that 'new_transport'
+>   pointer is not NULL and returns 'ESOCKTNOSUPPORT' instead of 'ENODEV'
+>   if failed to use transport.
+> - tools/testing/vsock/vsock_test.c: rename tests
+>
+> v2 -> v3:
+> - patches reorganized: split for prepare and implementation patches
+> - local variables are declared in "Reverse Christmas tree" manner
+> - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
+>   fields access
+> - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
+>   between stream and seqpacket sockets.
+> - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
+> - af_vsock.c: 'vsock_wait_data()' refactored.
+>
+> v1 -> v2:
+> - patches reordered: af_vsock.c related changes now before virtio vsock
+> - patches reorganized: more small patches, where +/- are not mixed
+> - tests for SOCK_SEQPACKET added
+> - all commit messages updated
+> - af_vsock.c: 'vsock_pre_recv_check()' inlined to
+>   'vsock_connectible_recvmsg()'
+> - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
+>   was not found
+> - virtio_transport_common.c: transport callback for seqpacket dequeue
+> - virtio_transport_common.c: simplified
+>   'virtio_transport_recv_connected()'
+> - virtio_transport_common.c: send reset on socket and packet type
+>			      mismatch.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>
+>-- 
+>2.25.1
+>
+
