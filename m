@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C263A3670F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB83A3670FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242574AbhDURLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238034AbhDURKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5606A61360;
-        Wed, 21 Apr 2021 17:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619025020;
-        bh=vQW/O+ZRlOWfybjW1VBTul75liFN4bSm4NGQMUpQUt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bLe+rypc/AwdIGixQpLnD3YnfRANOWDeSjFkhTfu2bu9XAezbNXlXjq8ttbMvesTs
-         dS7Fs2XcrFBDivtz+XddlwOTQeb7OOnU583/I6hT2E6JMgShitGXLx+uy6QrsddQYz
-         RoUmSUUwG8o+h82IA4MkGK7dAuU09qPIVzbE/u1dIbSMFnuw7TZAnIWHhpRX9sCVkc
-         IYzaSDVRZyRFJ0FtRkmoZ5/AbJL3Ox4K7vDts12Fv80qKOPCBInSLxqFlvGJcrY9W4
-         +mNbg+JCcUIcz6vF3bM3iC51b4FbhFE94l01WZBgVQxDnCS0QqRvKWz4jk7HOpfYUk
-         II82pwHBSlvyQ==
-Date:   Wed, 21 Apr 2021 10:10:15 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>
-Subject: Re: [PATCH] KVM: x86: Fix implicit enum conversion goof in scattered
- reverse CPUID code
-Message-ID: <YIBcd+5NKJFnkTC1@archlinux-ax161>
-References: <20210421010850.3009718-1-seanjc@google.com>
+        id S242581AbhDURLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237498AbhDURLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:11:24 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53C3C06174A;
+        Wed, 21 Apr 2021 10:10:50 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id n2so64564292ejy.7;
+        Wed, 21 Apr 2021 10:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Rkwiaa+jDirhSShgjwe6icAk4sFKZ5EO8zRW1jIFg44=;
+        b=DsDkE0eGwAkD3YmuxAcuy1TVhxXhwELGxCW2xA2E4g2uydgtItcJNYoH9Sa58mIvvF
+         QybA/NKXi81EHOrwzVNacmnzawvR11PDtRhfgLGd8C5TmnBHTzFw/2AVC6RfyrCmNKna
+         M/mpe1xHHKnkaWeHcWhkeOWhwLfMCIq36kWufAu9eIU2cyilL/CMEsCXA3hjRtH3Hz8L
+         5/4Wd7kFie2NDNoPnyqodl+d6H5whYRXLuQn843retaqEt5vp/Bg1R3rJgEDDSsIAJWv
+         nGmAmXeKhophjawX8YjH3WAdfalFEF5Sm24lajzgzj/ILVocLJyexA2HEDXMtUkF5bcr
+         B4ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Rkwiaa+jDirhSShgjwe6icAk4sFKZ5EO8zRW1jIFg44=;
+        b=F/8pzZbjeF7w1QyoCkmGNMcGC7Zw4hOBjaDMTx5UvEhJzbRakTpAwIxIajuPLYIOgr
+         faTw7uJdJEkPOxenK5cm3AZhNgQnoanaq9i3iGXX1wBSjnbT07v3GEzK9V/P7tEwEgAL
+         X5HHg30aEI+h/brWOAdsn0WD4VRwgKpeIxCAUtYlxPcMdvx+jedDcO4GAfmFY370D0YJ
+         5UqSuEZ+OCKQaMahUvRL7NeUXnyjH7Os648cC4tcuxEjk3HbG2N4xmj655vN7TtJESbd
+         b0L+yo2mYXwOqM4TF+92pThH8vBMbZmIFetEV/Bh/995nJ7Q2PKb8V5WvxOuWoiCSLfV
+         Lnwg==
+X-Gm-Message-State: AOAM5308r0mngh8FVm/L+3UhJN5uC4pg0YivswxvTaBmbkZwF9/gKxRS
+        +ku9o9cILyMkrgqemZ4EULc=
+X-Google-Smtp-Source: ABdhPJxyXGyiyR0G9YsfYYLPW+LoFsrJ+5akqfwUQh7rQhXfA32oUMLzR/q7nluYdZEEogQZrk5UBQ==
+X-Received: by 2002:a17:906:28c9:: with SMTP id p9mr35058595ejd.111.1619025049289;
+        Wed, 21 Apr 2021 10:10:49 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.3])
+        by smtp.gmail.com with ESMTPSA id dc24sm66566ejb.123.2021.04.21.10.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:10:49 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 19:10:46 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <20210421171045.GB1414@agape.jhs>
+References: <cover.1619022192.git.drv@mailo.com>
+ <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421010850.3009718-1-seanjc@google.com>
+In-Reply-To: <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 06:08:50PM -0700, Sean Christopherson wrote:
-> Take "enum kvm_only_cpuid_leafs" in scattered specific CPUID helpers
-> (which is obvious in hindsight), and use "unsigned int" for leafs that
-> can be the kernel's standard "enum cpuid_leaf" or the aforementioned
-> KVM-only variant.  Loss of the enum params is a bit disapponting, but
-> gcc obviously isn't providing any extra sanity checks, and the various
-
-Unfortunately, gcc's -Wenum-conversion is behind -Wextra rather than
--Wall like clang. If you explicitly enable it with
-KCFLAGS=-Wenum-conversion to your make invocation, it will warn in the
-exact same way as clang:
-
-arch/x86/kvm/cpuid.c: In function 'kvm_set_cpu_caps':
-arch/x86/kvm/cpuid.c:499:29: warning: implicit conversion from 'enum kvm_only_cpuid_leafs' to 'enum cpuid_leafs' [-Wenum-conversion]
-  499 |  kvm_cpu_cap_init_scattered(CPUID_12_EAX,
-      |                             ^~~~~~~~~~~~
-arch/x86/kvm/cpuid.c: In function '__do_cpuid_func':
-arch/x86/kvm/cpuid.c:837:31: warning: implicit conversion from 'enum kvm_only_cpuid_leafs' to 'enum cpuid_leafs' [-Wenum-conversion]
-  837 |   cpuid_entry_override(entry, CPUID_12_EAX);
-      |                               ^~~~~~~~~~~~
-
-clang's warning for comparison/posterity:
-
-arch/x86/kvm/cpuid.c:499:29: warning: implicit conversion from enumeration type 'enum kvm_only_cpuid_leafs' to different enumeration type 'enum cpuid_leafs' [-Wenum-conversion]
-        kvm_cpu_cap_init_scattered(CPUID_12_EAX,
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~
-arch/x86/kvm/cpuid.c:837:31: warning: implicit conversion from enumeration type 'enum kvm_only_cpuid_leafs' to different enumeration type 'enum cpuid_leafs' [-Wenum-conversion]
-                cpuid_entry_override(entry, CPUID_12_EAX);
-                ~~~~~~~~~~~~~~~~~~~~        ^~~~~~~~~~~~
-2 warnings generated.
-
-> BUILD_BUG_ON() assertions ensure the input is in range.
+On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
+> Reformat code comment blocks according to the coding style guidelines.
+> This resolves different checkpatch script WARNINGs around block comments.
 > 
-> This fixes implicit enum conversions that are detected by clang-11.
-> 
-> Fixes: 4e66c0cb79b7 ("KVM: x86: Add support for reverse CPUID lookup of scattered features")
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-This makes GCC and clang happy in my brief testing.
-
-I assume this will get squashed but in case not, here are some tags:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-
+> Signed-off-by: Deepak R Varma <drv@mailo.com>
 > ---
 > 
-> Hopefully it's not too late to squash this...
-> 
->  arch/x86/kvm/cpuid.c | 5 +++--
->  arch/x86/kvm/cpuid.h | 2 +-
->  2 files changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 96e41e1a1bde..e9d644147bf5 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -365,7 +365,7 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
->  }
->  
->  /* Mask kvm_cpu_caps for @leaf with the raw CPUID capabilities of this CPU. */
-> -static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
-> +static __always_inline void __kvm_cpu_cap_mask(unsigned int leaf)
->  {
->  	const struct cpuid_reg cpuid = x86_feature_cpuid(leaf * 32);
->  	struct kvm_cpuid_entry2 entry;
-> @@ -378,7 +378,8 @@ static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
->  	kvm_cpu_caps[leaf] &= *__cpuid_entry_get_reg(&entry, cpuid.reg);
->  }
->  
-> -static __always_inline void kvm_cpu_cap_init_scattered(enum cpuid_leafs leaf, u32 mask)
-> +static __always_inline
-> +void kvm_cpu_cap_init_scattered(enum kvm_only_cpuid_leafs leaf, u32 mask)
->  {
->  	/* Use kvm_cpu_cap_mask for non-scattered leafs. */
->  	BUILD_BUG_ON(leaf < NCAPINTS);
-> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> index eeb4a3020e1b..7bb4504a2944 100644
-> --- a/arch/x86/kvm/cpuid.h
-> +++ b/arch/x86/kvm/cpuid.h
-> @@ -236,7 +236,7 @@ static __always_inline void cpuid_entry_change(struct kvm_cpuid_entry2 *entry,
->  }
->  
->  static __always_inline void cpuid_entry_override(struct kvm_cpuid_entry2 *entry,
-> -						 enum cpuid_leafs leaf)
-> +						 unsigned int leaf)
->  {
->  	u32 *reg = cpuid_entry_get_reg(entry, leaf * 32);
->  
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
+> Changes in v1:
+>    - implement following changes suggested by Fabio Aiuto                              
+>        a. Corrected commenting style                                                               
+>        b. Similar style implemented for other comment blocks in                                    
+>           the same files.                                       
+
+If you want to tag me you should add the Suggested-by: tag in commit message
+before Signed-off-by tag...
+
+$ vim +485 Documentation/process/submitting-patches.rst
+
+thank you,
+
+fabio
