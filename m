@@ -2,180 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA15D3662EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5B53662F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbhDUAMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 20:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S234380AbhDUATv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 20:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbhDUAMJ (ORCPT
+        with ESMTP id S233752AbhDUATt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 20:12:09 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568E5C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:11:36 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id x9so5013844uao.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:11:36 -0700 (PDT)
+        Tue, 20 Apr 2021 20:19:49 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA47C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:19:16 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id 20so16666959pll.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 17:19:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nr8WfPTD0ymzHIbs2kjYSoWUK3mdmT/dSasQxodVNi4=;
-        b=GI0ovTiZqm8iMDijT4AKKjtlbOiJDgwVXdcalz+E7xX62mEZJ37VWi/mWslqbVug/r
-         HTOUNI+5vJnyoE73eJbkyqOggquJwm2Loj79niLY//q6M1JrIAk+Mn3llXaADlbTjTxk
-         gXyqJcylyjURRI7oYreUxNV7uQgdWHUO/ZYeE=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=28EYDCuNWEgzn0N/DDDzksKfMnr58lRuBZLjk0Jhsjs=;
+        b=Pdu80w7hjJNKzTd9/wtRPCkavr5vuViu0jIhvfpCmdJPuaWSTTXTLxiPjYEUGCM4NT
+         EQtU0nxUxSQ7AFLMYymomc8P3aFit5iQoNum6Tkwc5TRfGSG8Md3UF7bdDtXkTrmuydk
+         rXj/FFjQ9gYzX7XIkrmkSEi25QphbSu53N+hQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nr8WfPTD0ymzHIbs2kjYSoWUK3mdmT/dSasQxodVNi4=;
-        b=P1ku7uVmPbUsI/5ca+RnrpZEvZDp+4916DR5hK1QPPWnUzIysC58NJkaKIElI06uaR
-         PsY8B6suJ6o8Kwn4+LQt9xUl5nuJi3wzl1oK83FJQM9wnMLK1HaZbU0YWmB1LUjis88k
-         LKNVXmXQZsOX5jVAYVQMfa1ZyTF8QeI5CksL3GKHOkhifTZF4eZg81R8Vu6oKNSDVaSO
-         ZtCryGvO+mwvbYUdpRm49cp7gpYVwp9gZq2jVGh+7NgTSjx23J8ZJd9xva088MxjdFj4
-         1y3RA58LbG7lTx+B9c/bJkS/tXmXpYqTGnviWKu+dAJ9eQffXeDEiJxHbaMEsdO/5t1K
-         7npw==
-X-Gm-Message-State: AOAM531JQpFiOSy3fUAWg64Hdw2bnljepSGdQkY45Kk+3GFX3FKncrWG
-        StSmuqLFdQzNDtfNlI3qLrJIFW57i2879tGjBdfBog==
-X-Google-Smtp-Source: ABdhPJxUAnIDoIjMJ4cqmCiIvJa73yvdSkT6+oLpfc5i3QoBtmDV3PFojekJpmrhUyBafr5ivJ6qVjyvOPNT7jFjNAk=
-X-Received: by 2002:ab0:380e:: with SMTP id x14mr15131536uav.27.1618963895533;
- Tue, 20 Apr 2021 17:11:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210126011759.1605641-1-drinkcat@chromium.org>
- <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid> <CAL_Jsq+gWm+94zF1XN2KiRYgAZewiDkCk5B5bhLB=M+-HbD=fA@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+gWm+94zF1XN2KiRYgAZewiDkCk5B5bhLB=M+-HbD=fA@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=28EYDCuNWEgzn0N/DDDzksKfMnr58lRuBZLjk0Jhsjs=;
+        b=J655AuNsO23zZ6023TkaaVLUDzCwq73CEI3n42hv1ya4flGvPbMhIt6a3YgDp9W0so
+         Dc5eBhXY+9z05pshyTkwtCtFySh1J1fPYZ4A0ji6pBGrqYLvJn6FYxwnkHQ99iUhiBxN
+         hEIsTckU3zY1M5/na5Y3NfwSflSlRJBmzQ5+Q1gM+l/E+Vk6svdsIKRfPuuKMN/BSn1G
+         KiM9+uIP+7DQjqzt6pmkzCSFRPWLOoYWNWzshWV+UVJRh4U5Y/BkPt0Nyl3ln/XW4TDQ
+         UM0rD/QlxrbEPv6yv3u7k+Mk/rRVW+bjzCxCYzB6msPc74ijhS+oaFYH4vCe3BGXQHGQ
+         mJCg==
+X-Gm-Message-State: AOAM533+N1VfxA7pTnTYP5Wb/wwAKioVB+U1HA2HK6QXycUWPrFw4l8/
+        AnkjVXkGVNhMT7yDPl/NxwOOnA==
+X-Google-Smtp-Source: ABdhPJycAMpVOiAPk5bNG+ToyEpwyx0jWbEfRCT6RQGX15gR7dVK0eZc8hhwBF+N3WsTLEKL6ICzJg==
+X-Received: by 2002:a17:902:9b96:b029:ec:b399:8389 with SMTP id y22-20020a1709029b96b02900ecb3998389mr8067446plp.1.1618964356100;
+        Tue, 20 Apr 2021 17:19:16 -0700 (PDT)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:95d2:8c89:b629:ff49])
+        by smtp.gmail.com with ESMTPSA id d20sm145494pfn.166.2021.04.20.17.19.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 17:19:15 -0700 (PDT)
 From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Wed, 21 Apr 2021 08:11:24 +0800
-Message-ID: <CANMq1KCNMx4hS02ZFd0NSOwvw3Xaqm13v8aHO6UMP5Nn3_uX-Q@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
-To:     Rob Herring <robh@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Fei Shao <fshao@chromium.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
+To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Cc:     fshao@chromium.org, hsinyi@chromium.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        hoegsberg@chromium.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        boris.brezillon@collabora.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v12 0/4] drm/panfrost: Add support for mt8183 GPU
+Date:   Wed, 21 Apr 2021 08:19:04 +0800
+Message-Id: <20210421001908.813625-1-drinkcat@chromium.org>
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 9:01 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Mon, Jan 25, 2021 at 7:18 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
-> >
-> > Define a compatible string for the Mali Bifrost GPU found in
-> > Mediatek's MT8183 SoCs.
-> >
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > ---
-> >
-> > Changes in v11:
-> >  - binding: power-domain-names not power-domainS-names
-> >
-> > Changes in v10:
-> >  - Fix the binding to make sure sram-supply property can be provided.
-> >
-> > Changes in v9: None
-> > Changes in v8: None
-> > Changes in v7: None
-> > Changes in v6:
-> >  - Rebased, actually tested with recent mesa driver.
-> >
-> > Changes in v5:
-> >  - Rename "2d" power domain to "core2"
-> >
-> > Changes in v4:
-> >  - Add power-domain-names description
-> >    (kept Alyssa's reviewed-by as the change is minor)
-> >
-> > Changes in v3: None
-> > Changes in v2: None
-> >
-> >  .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
-> >  1 file changed, 28 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
-> > index 184492162e7e..3e758f88e2cd 100644
-> > --- a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
-> > +++ b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
-> > @@ -17,6 +17,7 @@ properties:
-> >      items:
-> >        - enum:
-> >            - amlogic,meson-g12a-mali
-> > +          - mediatek,mt8183-mali
-> >            - realtek,rtd1619-mali
-> >            - rockchip,px30-mali
-> >        - const: arm,mali-bifrost # Mali Bifrost GPU model/revision is fully discoverable
-> > @@ -41,6 +42,8 @@ properties:
-> >
-> >    mali-supply: true
-> >
-> > +  sram-supply: true
-> > +
-> >    operating-points-v2: true
-> >
-> >    power-domains:
-> > @@ -87,6 +90,31 @@ allOf:
-> >      then:
-> >        required:
-> >          - resets
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: mediatek,mt8183-mali
-> > +    then:
-> > +      properties:
-> > +        power-domains:
-> > +          description:
-> > +            List of phandle and PM domain specifier as documented in
-> > +            Documentation/devicetree/bindings/power/power_domain.txt
-> > +          minItems: 3
-> > +          maxItems: 3
->
-> This won't work because the top level schema restricts this to 1. The
-> top level needs to say:
->
-> power-domains:
->   minItems: 1
->   maxItems: 3
->
-> And you need just 'minItems: 3' here and 'maxItems: 1' in the else clause.
->
-> And drop the description. That's every 'power-domains' property.
->
-> > +        power-domain-names:
-> > +          items:
-> > +            - const: core0
-> > +            - const: core1
-> > +            - const: core2
->
-> Blank line
+Hi!
 
-Thanks, hopefully all fixed in v12.
+This is just a rebase of the v11, untested (but it seems like
+Neil Armstrong recently tested it), with small changes in
+binding and dts. v11 cover follows:
 
-> > +      required:
-> > +        - sram-supply
-> > +        - power-domains
-> > +        - power-domain-names
-> > +    else:
-> > +      properties:
-> > +        sram-supply: false
-> >
-> >  examples:
-> >    - |
-> > --
-> > 2.30.0.280.ga3ce27912f-goog
-> >
+Follow-up on the v5 [1], things have gotten significantly
+better in the last year, thanks to the efforts on Bifrost
+support by the Collabora team (and probably others I'm not
+aware of).
+
+I've been testing this series on a MT8183/kukui device, with a
+chromeos-5.10 kernel [2], and got basic Chromium OS UI up with
+mesa 20.3.2 (lots of artifacts though).
+
+devfreq is currently not supported, as we'll need:
+ - Clock core support for switching the GPU core clock (see 2/4).
+ - Platform-specific handling of the 2-regulator (see 3/4).
+
+Since the latter is easy to detect, patch 3/4 just disables
+devfreq if the more than one regulator is specified in the
+compatible matching table.
+
+[1] https://patchwork.kernel.org/project/linux-mediatek/cover/20200306041345.259332-1-drinkcat@chromium.org/
+[2] https://crrev.com/c/2608070
+
+Changes in v12:
+ - binding: Fix min/maxItems logic (Rob Herring)
+ - Add gpu node to mt8183-pumpkin.dts as well (Neil Armstrong).
+
+Changes in v11:
+ - binding: power-domain-names not power-domainS-names
+ - mt8183*.dts: remove incorrect supply-names
+
+Changes in v10:
+ - Fix the binding to make sure sram-supply property can be provided.
+
+Changes in v9:
+ - Explain why devfreq needs to be disabled for GPUs with >1
+   regulators.
+
+Changes in v8:
+ - Use DRM_DEV_INFO instead of ERROR
+
+Changes in v7:
+ - Fix GPU ID in commit message
+ - Fix GPU ID in commit message
+
+Changes in v6:
+ - Rebased, actually tested with recent mesa driver.
+ - Add gpu regulators to kukui dtsi as well.
+ - Power domains are now attached to spm, not scpsys
+ - Drop R-B.
+ - devfreq: New change
+ - Context conflicts, reflow the code.
+ - Use ARRAY_SIZE for power domains too.
+
+Changes in v5:
+ - Rename "2d" power domain to "core2"
+ - Rename "2d" power domain to "core2" (keep R-B again).
+ - Change power domain name from 2d to core2.
+
+Changes in v4:
+ - Add power-domain-names description
+   (kept Alyssa's reviewed-by as the change is minor)
+ - Add power-domain-names to describe the 3 domains.
+   (kept Alyssa's reviewed-by as the change is minor)
+ - Add power domain names.
+
+Changes in v3:
+ - Match mt8183-mali instead of bifrost, as we require special
+   handling for the 2 regulators and 3 power domains.
+
+Changes in v2:
+ - Use sram instead of mali_sram as SRAM supply name.
+ - Rename mali@ to gpu@.
+
+Nicolas Boichat (4):
+  dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+  arm64: dts: mt8183: Add node for the Mali GPU
+  drm/panfrost: devfreq: Disable devfreq when num_supplies > 1
+  drm/panfrost: Add mt8183-mali compatible string
+
+ .../bindings/gpu/arm,mali-bifrost.yaml        |  30 ++++-
+ arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
+ .../boot/dts/mediatek/mt8183-pumpkin.dts      |   5 +
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c   |  16 ++-
+ drivers/gpu/drm/panfrost/panfrost_drv.c       |  10 ++
+ 7 files changed, 172 insertions(+), 4 deletions(-)
+
+-- 
+2.31.1.368.gbe11c130af-goog
+
