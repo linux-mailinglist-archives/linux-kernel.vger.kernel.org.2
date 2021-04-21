@@ -2,126 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EB1366D5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51221366D51
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243120AbhDUN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243038AbhDUN5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:57:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF0856144D;
-        Wed, 21 Apr 2021 13:56:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013388;
-        bh=JR07JyZ8UJK9Zsnb9BH+u/PKpxm352xvttxjWOx5aBs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+r1yXyeUlRi9sVm1chURKaj1i2uwzcMbWJMnZhh71vhfeVccP7cdQsoHOf4r0Wsp
-         1njXtVY6aX03USXocTSFlbMaV2Z1HdF5Wd0OkdG5GtWL271SC4G+0Z+OJKN9BIAWRk
-         E3lSMn61pWwq1SL9zD3OH9nAAmuoUeN5LuwQMjxir8lEFLP+ZHhcWvh+8m8n0vdDtc
-         VlCnjbIQ5L/5nRuW0BMf9tv/c4wQgKKmYPoq6fGqwMnQidwpf9xoiRtV/dKnrK3ojL
-         zi/h0UsEIOD4iSEegQQapZn/N7J/2XEpbKiMDtVT/syUoOk/4dJIKRQEqVD8GiDK5O
-         nhbijk43v9Oyw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
+        id S243047AbhDUN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:57:14 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:35850 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243022AbhDUN4v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:56:51 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3APaOKvqlP3Pcw0E0YrRiZALaqo8/pDfLN3DAb?=
+ =?us-ascii?q?vn1ZSRFFG/GwvcaogfgdyFvImC8cMUtQ/eyoFaGcTRrnnqJdzpIWOd6ZNjXOmG?=
+ =?us-ascii?q?ztF4166Jun/juIIUzD38p88YslTKRkEt33CjFB/KPHyS21CcwpztXC0I3Av4fj?=
+ =?us-ascii?q?5kxgRw1rdK1shj0RYjqzKUF4SBJLApA0DvOnl6l6jgC9cncaZNnTPBc4dtXEzu?=
+ =?us-ascii?q?emqLvbexIcQzYo5A6S5AnYioLSIlyomi0TVD5C2t4ZnFTtmQaR3Mqej80=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,240,1613430000"; 
+   d="scan'208";a="504336688"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 15:56:08 +0200
+Date:   Wed, 21 Apr 2021 15:56:08 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-usb@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] usb: xhci: tegra: mark PM functions as __maybe_unused
-Date:   Wed, 21 Apr 2021 15:56:08 +0200
-Message-Id: <20210421135613.3560777-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210421135613.3560777-1-arnd@kernel.org>
-References: <20210421135613.3560777-1-arnd@kernel.org>
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH v3] staging: media: atomisp: pci:
+ Change line break to avoid an open parenthesis at the end of the line
+In-Reply-To: <7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2104211555040.9436@hadrien>
+References: <20210421123718.GA4597@focaruja>  <alpine.DEB.2.22.394.2104211507280.9436@hadrien> <7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323329-1581330247-1619013368=:9436"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The added #ifdefs in the PM rework were almost correct, but still
-cause warnings in some randconfig builds:
+--8323329-1581330247-1619013368=:9436
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined but not used [-Werror=unused-function]
- 2147 | static int tegra_xusb_resume(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~
-drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' defined but not used [-Werror=unused-function]
- 2105 | static int tegra_xusb_suspend(struct device *dev)
 
-Replace the #ifdef checks with simpler __maybe_unused annotations to
-reliably shut up these warnings.
 
-Fixes: d64d362f1d8b ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/usb/host/xhci-tegra.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
 
-diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-index ce97ff054c68..adead2377149 100644
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -1787,7 +1787,6 @@ static int tegra_xusb_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#if IS_ENABLED(CONFIG_PM) || IS_ENABLED(CONFIG_PM_SLEEP)
- static bool xhci_hub_ports_suspended(struct xhci_hub *hub)
- {
- 	struct device *dev = hub->hcd->self.controller;
-@@ -2102,7 +2101,7 @@ static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool runtime)
- 	return err;
- }
- 
--static int tegra_xusb_suspend(struct device *dev)
-+static __maybe_unused int tegra_xusb_suspend(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int err;
-@@ -2144,7 +2143,7 @@ static int tegra_xusb_suspend(struct device *dev)
- 	return err;
- }
- 
--static int tegra_xusb_resume(struct device *dev)
-+static __maybe_unused int tegra_xusb_resume(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int err;
-@@ -2174,10 +2173,8 @@ static int tegra_xusb_resume(struct device *dev)
- 
- 	return 0;
- }
--#endif
- 
--#ifdef CONFIG_PM
--static int tegra_xusb_runtime_suspend(struct device *dev)
-+static __maybe_unused int tegra_xusb_runtime_suspend(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int ret;
-@@ -2190,7 +2187,7 @@ static int tegra_xusb_runtime_suspend(struct device *dev)
- 	return ret;
- }
- 
--static int tegra_xusb_runtime_resume(struct device *dev)
-+static __maybe_unused int tegra_xusb_runtime_resume(struct device *dev)
- {
- 	struct tegra_xusb *tegra = dev_get_drvdata(dev);
- 	int err;
-@@ -2201,7 +2198,6 @@ static int tegra_xusb_runtime_resume(struct device *dev)
- 
- 	return err;
- }
--#endif
- 
- static const struct dev_pm_ops tegra_xusb_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra_xusb_runtime_suspend,
--- 
-2.29.2
+> Em qua, 2021-04-21 às 15:08 +0200, Julia Lawall escreveu:
+> >
+> >
+> > On Wed, 21 Apr 2021, Aline Santana Cordeiro wrote:
+> >
+> > > Change line break to avoid an open parenthesis at the end of the
+> > > line.
+> > > It consequently removed spaces at the start of the subsequent line.
+> >
+> > The message is hard to understand.  There are a lot of singular
+> > nouns, but
+> > actually there are two changes.  Which change is being described by
+> > the
+> > above message?  What does "It" refer to?
+> >
+> > julia
+>
+> Checkpatch indicated two problems with this function declaration:
+> 1) The line ending with an open parenthesis, and
+> 2) The following line - with the function parameters - has spaces in
+> its identation.
+>
+> When I changed the line break to put the function name and its
+> parameter in the following line, both checkpath checks were eliminated.
+>
+> So, the main change was the line break and, also, the line break (it)
+> removed the space in the following line.
+>
+> Is it better to change the message and explain only about the line
+> break?
 
+The message should explain about the whole patch.  So if you change two
+things, it should be clear that what you are saying covers both of them.
+
+But it seems that Matthew doesn't think that the line break is a good idea
+anyway.
+
+julia
+
+>
+> Thank you,
+> Aline
+> >
+> >
+> > > Both issues detected by checkpatch.pl.
+> > >
+> > > Signed-off-by: Aline Santana Cordeiro <
+> > > alinesantanacordeiro@gmail.com>
+> > > ---
+> > >
+> > > Changes since v2:
+> > >  - Insert a space between the function type and pointer
+> > >
+> > > Changes since v1:
+> > >  - Keep the pointer with the function return type
+> > >    instead of left it with the function name
+> > >
+> > >  drivers/staging/media/atomisp/pci/atomisp_cmd.h | 10 +++++-----
+> > >  1 file changed, 5 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> > > b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> > > index 1c0d464..639eca3 100644
+> > > --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> > > +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.h
+> > > @@ -75,8 +75,8 @@ void atomisp_wdt(struct timer_list *t);
+> > >  void atomisp_setup_flash(struct atomisp_sub_device *asd);
+> > >  irqreturn_t atomisp_isr(int irq, void *dev);
+> > >  irqreturn_t atomisp_isr_thread(int irq, void *isp_ptr);
+> > > -const struct atomisp_format_bridge
+> > > *get_atomisp_format_bridge_from_mbus(
+> > > -    u32 mbus_code);
+> > > +const struct atomisp_format_bridge *
+> > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+> > >  bool atomisp_is_mbuscode_raw(uint32_t code);
+> > >  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
+> > >                            const struct ia_css_frame *frame, u32
+> > > *p_pgnr);
+> > > @@ -381,9 +381,9 @@ enum mipi_port_id __get_mipi_port(struct
+> > > atomisp_device *isp,
+> > >
+> > >  bool atomisp_is_vf_pipe(struct atomisp_video_pipe *pipe);
+> > >
+> > > -void atomisp_apply_css_parameters(
+> > > -    struct atomisp_sub_device *asd,
+> > > -    struct atomisp_css_params *css_param);
+> > > +void atomisp_apply_css_parameters(struct atomisp_sub_device *asd,
+> > > +                                 struct atomisp_css_params
+> > > *css_param);
+> > > +
+> > >  void atomisp_free_css_parameters(struct atomisp_css_params
+> > > *css_param);
+> > >
+> > >  void atomisp_handle_parameter_and_buffer(struct atomisp_video_pipe
+> > > *pipe);
+> > > --
+> > > 2.7.4
+> > >
+> > > --
+> > > You received this message because you are subscribed to the Google
+> > > Groups "outreachy-kernel" group.
+> > > To unsubscribe from this group and stop receiving emails from it,
+> > > send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> > > To view this discussion on the web visit
+> > > https://groups.google.com/d/msgid/outreachy-kernel/20210421123718.GA4597%40focaruja
+> > > .
+> > >
+>
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/7aeac7041a6f6d7b3d8563f0d0bf0a4d31f379b0.camel%40gmail.com.
+>
+--8323329-1581330247-1619013368=:9436--
