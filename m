@@ -2,208 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A3036727A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171B336727E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241908AbhDUSY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240329AbhDUSYZ (ORCPT
+        id S244377AbhDUSZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:25:35 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:38722 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241161AbhDUSZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:24:25 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F05C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:23:51 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n10-20020a05600c4f8ab0290130f0d3cba3so3041097wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tJ7/2ImOqgNsMlFTe/U5S+rQQA/z5wDSOJMIaWnIOgo=;
-        b=LlgaznfbO9/ZSbTPeEQB5h2fYiuEy/UXnZz4dMzIoZw7XZw5B0iSASvQ9RiESglTm8
-         yfop1QiYJ3v3KQAjSMr/S1H4YOSJRxRCK0YGLCQU00R8wAY3qp0536OxpzbV/VJ1LS68
-         FVLQeGTQ+eDY5zFb9jbA5K0XiyOihaFcbt720mp5lMULdPuMEBqblG8DpaSALBTeXrjv
-         scdfotKNRYeTQiULehH5gPQvE7ubOSXCKVIIkZBzIYySCXbGLKjZKCgyeECkL7IJsEul
-         THUCFR1MTDC0Mn3jwcNMLOByaj6M+6pAxmp8fWY6p3kcdYQxP9g3megC3f3YUlPYf2jp
-         P0CA==
+        Wed, 21 Apr 2021 14:25:34 -0400
+Received: by mail-io1-f41.google.com with SMTP id q25so11641605iog.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:25:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tJ7/2ImOqgNsMlFTe/U5S+rQQA/z5wDSOJMIaWnIOgo=;
-        b=i6bFe4vZ5wunDs3fl3dp0z89QLlF7qwqI0UdpRE6iPeRl1UlNIJd3FXw3fvaTPoLWA
-         poDxp0BmeytAoD073s1fVvt5MIuxFAw/bLN6LYv57qs38dCnjkYgV4M+99ltgWl/xuBn
-         WL92yodVurZH2Z243pxR7blwZF6N9dMnFGVsKqCXXfVzVGpAQuMAY7YuUvxLEVs9+iPm
-         WvJjLomp+rgIjZt/6cKMFv7sGdg247O/1YDHcfuuCb6Qj1051df/KlIHzXA9RAzuVv+c
-         VqPi2j7afQhK5Y0gsgy0ie3H8s3Na+u860Rl15r14aTCq9LRZVCKUqAeHgk66lTDSo1Z
-         cOcA==
-X-Gm-Message-State: AOAM531tnIVeLzgZoAHcdih9vxcOckbuFKwrALPWAevcHuN31Wr/LhXW
-        8uJw73iQNJsFp4WBM1CXKpCy/g==
-X-Google-Smtp-Source: ABdhPJz4oJRSYRSLilmTZi/+V+8VJ8VJiSw4FBXvscnpE0PMQuvmwXn9sxvIod8vYtqC6Jaz4xsTiA==
-X-Received: by 2002:a05:600c:20d:: with SMTP id 13mr11054836wmi.29.1619029430262;
-        Wed, 21 Apr 2021 11:23:50 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:6273:c89a:6562:e1ba])
-        by smtp.gmail.com with ESMTPSA id m11sm232602wri.44.2021.04.21.11.23.48
+         :mime-version:content-disposition:in-reply-to;
+        bh=mPgB8yCc8zamYWb0vi63329hsT/Sv+pV390azKvDE9o=;
+        b=fobxI6dfdYW9iFYsk4luNw8phk2xsDaylgfegZmrV9yvZkRTrefe/3WcCtnTh4uInA
+         rnayPqD5rEk07y6bhc/eDOpWn9GO3L4lAVZcZ0L7e3BGicvZyAgZX+Ue+0kyJGU1wANX
+         W6tj4kW9wVbXO11ATdBeWP5CPcEsITm0ICHm0zm8SysprimnuD6dx9OwLOsNpNUmxOnI
+         nDbSmOJSlV+UNr25TseMd+eXNS2AHXB2264Qs0m+RGKMwL5YkVs18AGRRit4TaM9X93L
+         4d3oPklXX+78MRHKOcem7dmcKJGMqU2lN3gdntsrqZk68CAykqir9Ps70mtS9yzGBhDv
+         Cdwg==
+X-Gm-Message-State: AOAM532dBvWCHTtf0IHTdiexHeFjFoSksG4rTEQh+f2FWPqYVApKmEXs
+        x2AJh0+cSsY6iIBTZ+3xFtBv1egPtKI=
+X-Google-Smtp-Source: ABdhPJy8zrY3Zf7pmdbJqdN5CEQFL21g4VMTreumaKiwCar481749ycVklTaBVnkSeqNRN+nUx7EgQ==
+X-Received: by 2002:a02:968f:: with SMTP id w15mr15747575jai.109.1619029500338;
+        Wed, 21 Apr 2021 11:25:00 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id y19sm63666ili.51.2021.04.21.11.24.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 11:23:49 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 20:23:43 +0200
-From:   Marco Elver <elver@google.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com
-Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and si_perf
- to siginfo
-Message-ID: <YIBtr2w/8KhOoiUA@elver.google.com>
-References: <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
- <43f8a3bf-34c5-0fc9-c335-7f92eaf23022@samsung.com>
- <dccaa337-f3e5-08e4-fe40-a603811bb13e@samsung.com>
- <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
- <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com>
- <f114ff4a-6612-0935-12ac-0e2ac18d896c@samsung.com>
- <CANpmjNM6bQpc49teN-9qQhCXoJXaek5stFGR2kPwDroSFBc0fw@mail.gmail.com>
- <cf6ed5cd-3202-65ce-86bc-6f1eba1b7d17@samsung.com>
- <CANpmjNPr_JtRC762ap8PQVmsFNY5YhHvOk0wNcPHq=ZQt-qxYg@mail.gmail.com>
- <YIBSg7Vi+U383dT7@elver.google.com>
+        Wed, 21 Apr 2021 11:24:59 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 18:24:58 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Roman Gushchin <guro@fb.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/4] percpu: partial chunk depopulation
+Message-ID: <YIBt+qaZ4teb+WfW@google.com>
+References: <20210419225047.3415425-1-dennis@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIBSg7Vi+U383dT7@elver.google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <20210419225047.3415425-1-dennis@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 06:27PM +0200, Marco Elver wrote:
-> On Wed, Apr 21, 2021 at 05:11PM +0200, Marco Elver wrote:
-> > +Cc linux-arm-kernel
-> > 
-> [...]
-> > >
-> > > I've managed to reproduce this issue with a public Raspberry Pi OS Lite
-> > > rootfs image, even without deploying kernel modules:
-> > >
-> > > https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-03-25/2021-03-04-raspios-buster-armhf-lite.zip
-> > >
-> > > # qemu-system-arm -M virt -smp 2 -m 512 -kernel zImage -append "earlycon
-> > > console=ttyAMA0 root=/dev/vda2 rw rootwait" -serial stdio -display none
-> > > -monitor null -device virtio-blk-device,drive=virtio-blk -drive
-> > > file=/tmp/2021-03-04-raspios-buster-armhf-lite.img,id=virtio-blk,if=none,format=raw
-> > > -netdev user,id=user -device virtio-net-device,netdev=user
-> > >
-> > > The above one doesn't boot if zImage z compiled from commit fb6cc127e0b6
-> > > and boots if compiled from 2e498d0a74e5. In both cases I've used default
-> > > arm/multi_v7_defconfig and
-> > > gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabi toolchain.
-> > 
-> > Yup, I've narrowed it down to the addition of "__u64 _perf" to
-> > siginfo_t. My guess is the __u64 causes a different alignment for a
-> > bunch of adjacent fields. It seems that x86 and m68k are the only ones
-> > that have compile-time tests for the offsets. Arm should probably add
-> > those -- I have added a bucket of static_assert() in
-> > arch/arm/kernel/signal.c and see that something's off.
-> > 
-> > I'll hopefully have a fix in a day or so.
+On Mon, Apr 19, 2021 at 10:50:43PM +0000, Dennis Zhou wrote:
+> Hello,
 > 
-> Arm and compiler folks: are there some special alignment requirement for
-> __u64 on arm 32-bit? (And if there is for arm64, please shout as well.)
+> This series is a continuation of Roman's series in [1]. It aims to solve
+> chunks holding onto free pages by adding a reclaim process to the percpu
+> balance work item.
 > 
-> With the static-asserts below, the only thing that I can do to fix it is
-> to completely remove the __u64. Padding it before or after with __u32
-> just does not work. It seems that the use of __u64 shifts everything
-> in __sifields by 4 bytes.
+> The main difference is that the nr_empty_pop_pages is now managed at
+> time of isolation instead of intermixed. This helps with deciding which
+> chunks to free instead of having to interleave returning chunks to
+> active duty.
 > 
-> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> index d0bb9125c853..b02a4ac55938 100644
-> --- a/include/uapi/asm-generic/siginfo.h
-> +++ b/include/uapi/asm-generic/siginfo.h
-> @@ -92,7 +92,10 @@ union __sifields {
->  				__u32 _pkey;
->  			} _addr_pkey;
->  			/* used when si_code=TRAP_PERF */
-> -			__u64 _perf;
-> +			struct {
-> +				__u32 _perf1;
-> +				__u32 _perf2;
-> +			} _perf;
->  		};
->  	} _sigfault;
+> The allocation priority is as follows:
+>   1) appropriate chunk slot increasing until fit
+>   2) sidelined chunks
+>   3) full free chunks
 > 
-> ^^ works, but I'd hate to have to split this into 2 __u32 because it
-> makes the whole design worse.
+> The last slot for to_depopulate is never used for allocations.
 > 
-> What alignment trick do we have to do here to fix it for __u64?
+> A big thanks to Roman for initiating the work and being available for
+> iterating on these ideas.
+> 
+> This patchset contains the following 4 patches:
+>   0001-percpu-factor-out-pcpu_check_block_hint.patch
+>   0002-percpu-use-pcpu_free_slot-instead-of-pcpu_nr_slots-1.patch
+>   0003-percpu-implement-partial-chunk-depopulation.patch
+>   0004-percpu-use-reclaim-threshold-instead-of-running-for-.patch
+> 
+> 0001 and 0002 are clean ups. 0003 implement partial chunk depopulation
+> initially from Roman. 0004 adds a reclaim threshold so we do not need to
+> schedule for every page freed.
+> 
+> This series is on top of percpu$for-5.14 67c2669d69fb.
+> 
+> diffstats below:
+> 
+> Dennis Zhou (2):
+>   percpu: use pcpu_free_slot instead of pcpu_nr_slots - 1
+>   percpu: use reclaim threshold instead of running for every page
+> 
+> Roman Gushchin (2):
+>   percpu: factor out pcpu_check_block_hint()
+>   percpu: implement partial chunk depopulation
+> 
+>  mm/percpu-internal.h |   5 +
+>  mm/percpu-km.c       |   5 +
+>  mm/percpu-stats.c    |  20 ++--
+>  mm/percpu-vm.c       |  30 ++++++
+>  mm/percpu.c          | 252 ++++++++++++++++++++++++++++++++++++++-----
+>  5 files changed, 278 insertions(+), 34 deletions(-)
+> 
+> Thanks,
+> Dennis
 
-So I think we just have to settle on 'unsigned long' here. On many
-architectures, like 32-bit Arm, the alignment of a structure is that of
-its largest member. This means that there is no portable way to add
-64-bit integers to siginfo_t on 32-bit architectures.
-
-In the case of the si_perf field, word size is sufficient since the data
-it contains is user-defined. On 32-bit architectures, any excess bits of
-perf_event_attr::sig_data will therefore be truncated when copying into
-si_perf.
-
-Feel free to test the below if you have time, but the below lets me boot
-32-bit arm which previously timed out. It also passes all the
-static_asserts() I added (will send those as separate patches).
-
-Once I'm convinced this passes all others tests too, I'll send a patch.
+I've applied this to for-5.14 with 1 modification to the batching
+threshold, 4 pages is quite little, so make it 16.
 
 Thanks,
--- Marco
-
-
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index c8821d966812..f0d2dd35d408 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -237,7 +237,7 @@ typedef struct compat_siginfo {
- 					u32 _pkey;
- 				} _addr_pkey;
- 				/* used when si_code=TRAP_PERF */
--				compat_u64 _perf;
-+				compat_ulong_t _perf;
- 			};
- 		} _sigfault;
- 
-diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-index d0bb9125c853..03d6f6d2c1fe 100644
---- a/include/uapi/asm-generic/siginfo.h
-+++ b/include/uapi/asm-generic/siginfo.h
-@@ -92,7 +92,7 @@ union __sifields {
- 				__u32 _pkey;
- 			} _addr_pkey;
- 			/* used when si_code=TRAP_PERF */
--			__u64 _perf;
-+			unsigned long _perf;
- 		};
- 	} _sigfault;
- 
+Dennis
