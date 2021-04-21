@@ -2,108 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08D3366CE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635E0366CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242368AbhDUNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:33:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22692 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240339AbhDUNdH (ORCPT
+        id S241193AbhDUNdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239412AbhDUNdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:33:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619011953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eHGylvMWVSknLesn5TIShxESJ3h/B3URDa1h0briNGk=;
-        b=QQhol4s5fvVz5w0CNT8nM+8DvGBfpI2rJ73iNobcXsYgIE33XTieakOHPgvpjJIhIWe2C5
-        RUDons0QWKpLP16G0U25HeAbQSO8mDhTDL3idhtBT/mcqt+dRXJQ/eI0cQ4mze+5riAA99
-        FWutE13Q5WNRumiqE+lQM4jw3xz7uq8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-97lvuigvP_-ssdBgdw6EGQ-1; Wed, 21 Apr 2021 09:31:45 -0400
-X-MC-Unique: 97lvuigvP_-ssdBgdw6EGQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 135081936B6D;
-        Wed, 21 Apr 2021 13:31:44 +0000 (UTC)
-Received: from [10.10.115.104] (ovpn-115-104.rdu2.redhat.com [10.10.115.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4216E10016DB;
-        Wed, 21 Apr 2021 13:31:40 +0000 (UTC)
-Subject: Re: [IRQ] IRQ affinity not working properly?
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Chris Friesen <chris.friesen@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-References: <a0d5551e-761b-1571-b8e1-5586ec4d9f3b@windriver.com>
- <87blb3ce29.ffs@nanos.tec.linutronix.de>
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-Organization: Red Hat Inc,
-Message-ID: <fdebec53-097a-d28f-96ec-cfe8d7ef8412@redhat.com>
-Date:   Wed, 21 Apr 2021 09:31:37 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 21 Apr 2021 09:33:52 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA8BC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:33:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m8+ukUnKX1UN4v+oEFo61NeqPbdozFzIkzd1W6ilz2c=; b=NpAIwf66aozx1FI0vafphGaIzm
+        Nf3+CvhIYsqvOqLsT+/ymDDoj2qubI+Gk0j+3ktoXiLMHK441VG6MUEUhsnA1CR7SPeS9nP8ibSVh
+        xhgcNjNR5gZ6LDbZGa3XVEHD8fo0+bjtAVrBq9/cdgIZv9unG5iROOv9g3G1RZKmSeZF/mSfvI7dK
+        vHgbBYcTJc56lBar0iCGfSgsgQLS9GB0FTtuFi5MLkxOS7hYt/wSQ896v2hbyg3HwPaaQOZJtPBbu
+        xY0O5OuxQ7pyJ0cOoJN2UpKdLa0005eIm3jPdFxGrdKEh1tO2uPsx/DFfmSAwmvENqCBdrw8gEwDq
+        AyN9SdlA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZCyY-00ETCz-4t; Wed, 21 Apr 2021 13:33:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B8B6730013E;
+        Wed, 21 Apr 2021 15:33:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 68AA428582675; Wed, 21 Apr 2021 15:33:04 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 15:33:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
+        mingo@kernel.org, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH 4/9] sched: Default core-sched policy
+Message-ID: <YIApkMU+2jZHUVD7@hirez.programming.kicks-ass.net>
+References: <20210401131012.395311786@infradead.org>
+ <20210401133917.291069972@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <87blb3ce29.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401133917.291069972@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 01, 2021 at 03:10:16PM +0200, Peter Zijlstra wrote:
+> Implement default core scheduling policy.
+> 
+>  - fork() / clone(): inherit cookie from parent
+>  - exec(): if cookie then new cookie
+> 
+> Did that exec() thing want to change cookie on suid instead, just like
+> perf_event_exit_task() ?
 
-On 3/28/21 2:45 PM, Thomas Gleixner wrote:
-> On Fri, Jan 29 2021 at 13:17, Chris Friesen wrote:
->> I have a CentOS 7 linux system with 48 logical CPUs and a number of
-
-<snip>
-
->> IR-PCI-MSI-edge      iavf-net1-TxRx-3
->> 961:          0          0          0          0 28492         0 
->> IR-PCI-MSI-edge iavf-0000:b5:02.7:mbx
->> 962:          0          0          0          0 435608         0 
->> IR-PCI-MSI-edge      iavf-net1-TxRx-0
->> 963:          0          0          0          0 394832         0 
->> IR-PCI-MSI-edge      iavf-net1-TxRx-1
->> 964:          0          0          0          0 398414         0 
->> IR-PCI-MSI-edge      iavf-net1-TxRx-2
->> 965:          0          0          0          0 192847         0 
->> IR-PCI-MSI-edge      iavf-net1-TxRx-3
->>
->> There were IRQs coming in on the "iavf-0000:b5:02.7:mbx" interrupt at 
->> roughly 1 per second without any traffic, while the interrupt rate on 
->> the "iavf-net1-TxRx-<X>" seemed to be related to traffic.
->>
->> Is this expected?  It seems like the IRQ subsystem is not respecting the 
->> configured SMP affinity for the interrupt in question.  I've also seen 
->> the same behaviour with igb interrupts.
-> No it's not expected. Do you see the same behaviour with a recent
-> mainline kernel, i.e. 5.10 or 5.11?
->
->
-
-Jesse pointed me to this thread and apologies that it took a while for me
-to respond here.
-
-I agree it will be interesting to see with which kernel version Chris is
-reproducing the issue.
-
-Initially, I thought that this issue is the same as the one that we have
-been discussing in another thread [1].
-
-However, in that case, the smp affinity mask itself is incorrect and doesn't
-follow the default smp affinity mask (with irqbalance disabled).
-
-
-[1] https://lore.kernel.org/lkml/1a044a14-0884-eedb-5d30-28b4bec24b23@redhat.com/
-
--- 
-Thanks
-Nitesh
-
+Talk to me about that exec() thing; I still think it's weird. Did we
+just want to drop cookie on suid instead?
