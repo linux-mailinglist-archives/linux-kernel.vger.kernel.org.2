@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F472366728
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0580336672B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237008AbhDUIni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:43:38 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43761 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232194AbhDUInh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:43:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-118-CrBwdaVmPfOEx9eMOh2cMQ-1; Wed, 21 Apr 2021 09:43:02 +0100
-X-MC-Unique: CrBwdaVmPfOEx9eMOh2cMQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 21 Apr 2021 09:43:01 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 21 Apr 2021 09:43:01 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "hch@lst.de" <hch@lst.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
-Thread-Topic: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
-Thread-Index: AQHXNir2f1yRrc3ugkWz9MvyD1ZvgKq+pqyQ
-Date:   Wed, 21 Apr 2021 08:43:01 +0000
-Message-ID: <5c41d562589b497ca3c1047e0e18b3a1@AcuMS.aculab.com>
-References: <20210416230724.2519198-1-willy@infradead.org>
- <20210416230724.2519198-2-willy@infradead.org>
- <20210417024522.GP2531743@casper.infradead.org>
- <9f99b0a0-f1c1-f3b0-5f84-3a4bfc711725@synopsys.com>
- <20210420031029.GI2531743@casper.infradead.org>
- <CAK8P3a0KUwf1Z0bHiUaHC2nHztevkxg5_FBSzHddNeSsBayWUA@mail.gmail.com>
- <8d0fce1c-be7c-1c9b-bf5c-0c531db496ac@synopsys.com>
- <CAK8P3a3rzz1gfNLoGC8aZJiAC-tgZYD6P8pQsoEfgCAmQK=FAw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3rzz1gfNLoGC8aZJiAC-tgZYD6P8pQsoEfgCAmQK=FAw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S237065AbhDUIoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:44:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37094 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232194AbhDUIoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:44:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618994608; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qx4dGYz57xIKRcyBm8cNLa//VH6OP4QY62G9bSPSqbY=;
+        b=vR1jIb+IgHGDVvD+K8RweleyuDGzDT/mMygFYy7nkeudoMFWAJVfU/v1E09OascrON5j3j
+        Q3Wb53w8sKl5yVpWbnaVJZaCpEEyA6h00hpKvfXVnYxV5a++I10QGew/VTkFK7AVpqm+L0
+        357YNt97omyJtOgPqG4H7hMYOLn/zNk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DE8C8B151;
+        Wed, 21 Apr 2021 08:43:27 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 10:43:26 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Subject: Re: [External] Re: [PATCH] mm: hugetlb: fix a race between
+ memory-failure/soft_offline and gather_surplus_pages
+Message-ID: <YH/lrlmkEb5b8LCo@dhcp22.suse.cz>
+References: <20210421060259.67554-1-songmuchun@bytedance.com>
+ <YH/cVoUCTKu/UkqB@dhcp22.suse.cz>
+ <CAMZfGtWh4tRiMrOTLvv5GHM1JUCt9b+UHf_DwLev32S=+iLW8g@mail.gmail.com>
+ <20210421082103.GE22456@linux>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421082103.GE22456@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAyMCBBcHJpbCAyMDIxIDIyOjIwDQo+IA0KPiBP
-biBUdWUsIEFwciAyMCwgMjAyMSBhdCAxMToxNCBQTSBWaW5lZXQgR3VwdGENCj4gPFZpbmVldC5H
-dXB0YTFAc3lub3BzeXMuY29tPiB3cm90ZToNCj4gPiBPbiA0LzIwLzIxIDEyOjA3IEFNLCBBcm5k
-IEJlcmdtYW5uIHdyb3RlOg0KPiANCj4gPiA+DQo+ID4gPiB3aGljaCBtZWFucyB0aGF0IGhhbGYg
-dGhlIDMyLWJpdCBhcmNoaXRlY3R1cmVzIGRvIHRoaXMuIFRoaXMgbWF5DQo+ID4gPiBjYXVzZSBt
-b3JlIHByb2JsZW1zIHdoZW4gYXJjIGFuZC9vciBtaWNyb2JsYXplIHdhbnQgdG8gc3VwcG9ydA0K
-PiA+ID4gNjQtYml0IGtlcm5lbHMgYW5kIGNvbXBhdCBtb2RlIGluIHRoZSBmdXR1cmUgb24gdGhl
-aXIgbGF0ZXN0IGhhcmR3YXJlLA0KPiA+ID4gYXMgdGhhdCBtZWFucyBkdXBsaWNhdGluZyB0aGUg
-eDg2IHNwZWNpZmljIGhhY2tzIHdlIGhhdmUgZm9yIGNvbXBhdC4NCj4gPiA+DQo+ID4gPiBXaGF0
-IGlzIGFsaWdub2YodTY0KSBvbiA2NC1iaXQgYXJjPw0KPiA+DQo+ID4gJCBlY2hvICdpbnQgYSA9
-IF9fYWxpZ25vZl9fKGxvbmcgbG9uZyk7JyB8IGFyYzY0LWxpbnV4LWdudS1nY2MgLXhjIC0NCj4g
-PiAtV2FsbCAtUyAtbyAtIHwgZ3JlcCAtQTEgYTogfCB0YWlsIC1uIDEgfCBjdXQgLWYgMw0KPiA+
-IDgNCj4gDQo+IE9rLCBnb29kLg0KDQpUaGF0IHRlc3QgZG9lc24ndCBwcm92ZSBhbnl0aGluZy4N
-ClRyeSBydW5uaW5nIG9uIHg4NjoNCiQgZWNobyAnaW50IGEgPSBfX2FsaWdub2ZfXyhsb25nIGxv
-bmcpOycgfCBnY2MgLXhjIC0gLVdhbGwgLVMgLW8gLSAtbTMyDQogICAgICAgIC5maWxlICAgIiIN
-CiAgICAgICAgLmdsb2JsICBhDQogICAgICAgIC5kYXRhDQogICAgICAgIC5hbGlnbiA0DQogICAg
-ICAgIC50eXBlICAgYSwgQG9iamVjdA0KICAgICAgICAuc2l6ZSAgIGEsIDQNCmE6DQogICAgICAg
-IC5sb25nICAgOA0KICAgICAgICAuaWRlbnQgICJHQ0M6IChVYnVudHUgNS40LjAtNnVidW50dTF+
-MTYuMDQuMTApIDUuNC4wIDIwMTYwNjA5Ig0KICAgICAgICAuc2VjdGlvbiAgICAgICAgLm5vdGUu
-R05VLXN0YWNrLCIiLEBwcm9nYml0cw0KDQpVc2luZyAnX19hbGlnbm9mX18oc3RydWN0IHtsb25n
-IGxvbmcgeDt9KScgZG9lcyBnaXZlIHRoZSBleHBlY3RlZCA0Lg0KDQpfX2FsaWdub2ZfXygpIHJl
-dHVybnMgdGhlIHByZWZlcnJlZCBhbGlnbm1lbnQsIG5vdCB0aGUgZW5mb3JjZWQNCmFsaWdubW5l
-dCAtIGdvIGZpZ3VyZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
-ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
-UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Wed 21-04-21 10:21:03, Oscar Salvador wrote:
+> On Wed, Apr 21, 2021 at 04:15:00PM +0800, Muchun Song wrote:
+> > > The hwpoison side of this looks really suspicious to me. It shouldn't
+> > > really touch the reference count of hugetlb pages without being very
+> > > careful (and having hugetlb_lock held). What would happen if the
+> > > reference count was increased after the page has been enqueed into the
+> > > pool? This can just blow up later.
+> > 
+> > If the page has been enqueued into the pool, then the page can be
+> > allocated to other users. The page reference count will be reset to
+> > 1 in the dequeue_huge_page_node_exact(). Then memory-failure
+> > will free the page because of put_page(). This is wrong. Because
+> > there is another user.
+> 
+> Note that dequeue_huge_page_node_exact() will not hand over any pages
+> which are poisoned, so in this case it will not be allocated.
 
+I have to say I have missed the HWPoison check so the this particular
+scenario is not possible indeed.
+
+> But it is true that we might need hugetlb lock, this needs some more
+> thought.
+
+yes, nobody should be touching to the reference count of hugetlb pool
+pages out of the hugetlb proper.
+
+> I will have a look. 
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
