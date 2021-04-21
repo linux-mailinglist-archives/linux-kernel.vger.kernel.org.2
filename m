@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D2D3675CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E343675D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343726AbhDUXjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 19:39:14 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10758 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343744AbhDUXjI (ORCPT
+        id S1343749AbhDUXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 19:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240975AbhDUXkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:39:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619048314; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=DI4NnpQboSAGCCcGeghFhUMpaZoKXyXDycUOCuomHEU=; b=KKTb7DLcBbK6HizLrecNasmhFDxAg+G9sH1miEhsYgGRr53T1PqW2fL+iBigH1Sd8vT6nDSR
- 21VYLittA8gWLHJ9oPWnkeMWjWHzV5ncmhEPC2LlLNldcRP81ziaMScmE4RVa0+w0Wmz045/
- XH9I/u7mDcBhgIuXLhsJLAmmCp8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6080b764febcffa80ff228ad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 23:38:12
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D7E1C43144; Wed, 21 Apr 2021 23:38:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Wed, 21 Apr 2021 19:40:11 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935CCC06174A;
+        Wed, 21 Apr 2021 16:39:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38751C4323A;
-        Wed, 21 Apr 2021 23:38:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 38751C4323A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] drm/msm/dp: dp_link_parse_sink_count() return immediately if aux read failed
-Date:   Wed, 21 Apr 2021 16:37:38 -0700
-Message-Id: <1619048258-8717-5-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
-References: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQcTd0htvz9sSC;
+        Thu, 22 Apr 2021 09:39:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619048374;
+        bh=qJoGTGye6paMArGsdMr9r00+gDOyhQrqidc2GC/7au4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Sij2kZHz/kmk5NrWcCyFuDehImtKyic8Gj2S7VWO6ccqhG9TOcPOvowPTdfsU67ug
+         sjLWQ9AjRGCxfus1rl8cBV8bvSHzWgLllgSFKHUgSCS+dmbmwIkYviheaE3tlAw3ml
+         pIqE4Sc468/S+DFdCw/M2V82uuBTSE/s9MK2lyjgyyGL+rfuqMYc1hW1W0pCW3imPs
+         479jmAfz47+TtU9++VxGcHD157dY4cBzjqq0TscsObzEuwD6I+qabIe+rK69QobIV6
+         KE+NUqGUek6tTfFT3lJE+gHFHfZtroGhsG9TFtBzPP7dOjXvHgLcKWdYco0C0aBCAm
+         zjgf+52xman/A==
+Date:   Thu, 22 Apr 2021 09:39:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>, Guo Ren <ren_guo@c-sky.com>
+Cc:     Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the vfs tree with the csky tree
+Message-ID: <20210422093931.620a6a05@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/cSembKQCKlscaq7IaoEc54r";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add checking aux read/write status at both dp_link_parse_sink_count()
-and dp_link_parse_sink_status_filed() to avoid long timeout delay if
-dp aux read/write failed at timeout due to cable unplugged.
+--Sig_/cSembKQCKlscaq7IaoEc54r
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Changes in V4:
--- split this patch as stand alone patch
+Hi all,
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_display.c | 12 +++++++++---
- drivers/gpu/drm/msm/dp/dp_link.c    | 20 +++++++++++++++-----
- 2 files changed, 24 insertions(+), 8 deletions(-)
+Today's linux-next merge of the vfs tree got a conflict in:
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 1784e11..d1319b5 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -711,9 +711,15 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 		return 0;
- 	}
- 
--	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
--	if (ret == -ECONNRESET) { /* cable unplugged */
--		dp->core_initialized = false;
-+	/*
-+	 * dp core (ahb/aux clks) must be initialized before
-+	 * irq_hpd be handled
-+	 */
-+	if (dp->core_initialized) {
-+		ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
-+		if (ret == -ECONNRESET) { /* cable unplugged */
-+			dp->core_initialized = false;
-+		}
- 	}
- 
- 	mutex_unlock(&dp->event_mutex);
-diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
-index be986da..53ecae6 100644
---- a/drivers/gpu/drm/msm/dp/dp_link.c
-+++ b/drivers/gpu/drm/msm/dp/dp_link.c
-@@ -737,18 +737,25 @@ static int dp_link_parse_sink_count(struct dp_link *dp_link)
- 	return 0;
- }
- 
--static void dp_link_parse_sink_status_field(struct dp_link_private *link)
-+static int dp_link_parse_sink_status_field(struct dp_link_private *link)
- {
- 	int len = 0;
- 
- 	link->prev_sink_count = link->dp_link.sink_count;
--	dp_link_parse_sink_count(&link->dp_link);
-+	len = dp_link_parse_sink_count(&link->dp_link);
-+	if (len < 0) {
-+		DRM_ERROR("DP parse sink count failed\n");
-+		return len;
-+	}
- 
- 	len = drm_dp_dpcd_read_link_status(link->aux,
- 		link->link_status);
--	if (len < DP_LINK_STATUS_SIZE)
-+	if (len < DP_LINK_STATUS_SIZE) {
- 		DRM_ERROR("DP link status read failed\n");
--	dp_link_parse_request(link);
-+		return len;
-+	}
-+
-+	return dp_link_parse_request(link);
- }
- 
- /**
-@@ -1032,7 +1039,10 @@ int dp_link_process_request(struct dp_link *dp_link)
- 
- 	dp_link_reset_data(link);
- 
--	dp_link_parse_sink_status_field(link);
-+	ret = dp_link_parse_sink_status_field(link);
-+	if (ret) {
-+		return ret;
-+	}
- 
- 	if (link->request.test_requested == DP_TEST_LINK_EDID_READ) {
- 		dp_link->sink_request |= DP_TEST_LINK_EDID_READ;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+  arch/csky/include/asm/uaccess.h
 
+between commit:
+
+  d3900e8d918f ("csky: uaccess.h: Coding convention with asm generic")
+
+from the csky tree and commit:
+
+  a0d8d552783b ("whack-a-mole: kill strlen_user() (again)")
+
+from the vfs tree.
+
+I fixed it up (I just used the former version (which also removed
+strlen_user) and can carry the fix as necessary. This is now fixed as
+far as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/cSembKQCKlscaq7IaoEc54r
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCAt7MACgkQAVBC80lX
+0Gw7hwf+NX6uod2J+qFdTE/2Mw1lsF3b8hAbgOY8HmFsvEbvdt4XI2l0nck6/jiL
+yJLiJ4KbIMYeStiO5l3zd0iHPzeJ4qMIbBmVIaAZ1xmrjqGoeCgCgeXxdzBv9SBy
+0B70EXdZ8aPI6cXp/O6omAxLWOnZzvft0Kbr0CYva8oxGpi4iIRojDhG394/Izme
+/knyxS5+e2YaIZhpkoTb9T8+jT/Ed4Iap+t4ksGllXdIOa7rvW7JD5pflL0kAyCz
+cVIPz4PKdhQlkiBiDEgDxeSWL8r3bSb1+hDUf+OobFlsV/NS5bHGPVcipRb2MHqE
+2X/IcC8Bl3y/yEJyHNvWxSYKWC+t0w==
+=tz87
+-----END PGP SIGNATURE-----
+
+--Sig_/cSembKQCKlscaq7IaoEc54r--
