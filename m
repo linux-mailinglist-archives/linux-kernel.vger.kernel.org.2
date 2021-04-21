@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D15367037
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF038367041
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239460AbhDUQcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:32:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11449 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236939AbhDUQcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:32:31 -0400
-IronPort-SDR: x5GusIOeLSyuBJI9uxoeS6Kz0Mxu08MAkCGqu3kGPYBP2ktdkCzhIpBuSCRIOiVKr62ePrTTb4
- OZyZaxnzV5oA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195755676"
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="195755676"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 09:31:58 -0700
-IronPort-SDR: jpgftBOnqMnzl6J2OJMKjJRdDuwaPEF4yuBKoJ/NElHat8bwOm3Ld3YSQlnVt2EYbM46teIylK
- x3iPDehF0gDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="384500741"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 21 Apr 2021 09:31:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EFAE42EF; Wed, 21 Apr 2021 19:32:09 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Lechner <david@lechnology.com>,
-        Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
-        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 7/7] drm/hx8357d: Avoid spamming logs if probe is deferred
-Date:   Wed, 21 Apr 2021 19:31:57 +0300
-Message-Id: <20210421163157.50949-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210421163157.50949-1-andriy.shevchenko@linux.intel.com>
-References: <20210421163157.50949-1-andriy.shevchenko@linux.intel.com>
+        id S241891AbhDUQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241136AbhDUQdQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:33:16 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72F4C06174A;
+        Wed, 21 Apr 2021 09:32:42 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m12so9672419pgr.9;
+        Wed, 21 Apr 2021 09:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dbbH5mU0eZQOvfNmncVtsU5aW1qxNpTR7xNLktkxO/8=;
+        b=r2pyaVk2t6foNEjWeJgrpPuyNXGzX/dF+DIu22dYUss19nfc4lBaUxn8OQ7azwSplI
+         nX0gqVnTVlg1Us4NtxIYike5JKI8ygpel1bfLgzbjgKWHP86RfWJwIFVWCEIGpfHMMen
+         YSJ8fR20KjjLk761nB5Dh9Z5TpXopTYm1z9A+YSNH7rWN0FwIBk/c5x8UmyZpIEoRODx
+         2m6aBQSr+UxyCfr0cPeKKQgmonBo9iNxhzYfECMVWEI8ZqTf58H4wuJ/BiU9/ZwPvOSO
+         6aMPDMlnpWANyfXqvjOwsfzd2ak8rZOIK9LfFnmI4MC/LWPZv2B7nKoEMZvFeCsPEHd7
+         qW1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dbbH5mU0eZQOvfNmncVtsU5aW1qxNpTR7xNLktkxO/8=;
+        b=Rv5CrSZ5cenWSj0f63jb3CMTDooPHVjADd3/XJfbC33AIeT54XXz75WCNkbMR5njti
+         USBeIrufxe7B4Xo6LMUj6vzqkVMjaAtdXAdq2h3tGvGn6tgmTnKBdfe9RxMvJx+pC8zJ
+         eEj0ViQUFU2+6/i1D5c8IuFSwVjmsBeHS+BR7U65u3KVkTARzEwTQyHWH1VOFTbMtWVU
+         hQDKIjlGWSgkxujWex2Xa2k36Mlrfdkz/es4fymas9Yh3Sb5vYrn9/ttdERCAWifJjjQ
+         ddy77Gn2pPMglkEBE4QD0nCLZ62EO9jtsHEqMjik5l5ZPR6qCw6Hcl33urHIeFr3XQds
+         5quQ==
+X-Gm-Message-State: AOAM5319luzG+hHKZEfO7goTMHIm/GH/w7e0ymPsNHRCrnBMBKEnHlC1
+        431mvgUmFVt2saNtfD+4Oqfr56Y/sk4=
+X-Google-Smtp-Source: ABdhPJx6glrHRUC62q7tOtGWilSy1urFZAUxX7xDjf+r/jBBvgSwUma1em94Dza3fRJUG5e63dF7xQ==
+X-Received: by 2002:a17:90a:c209:: with SMTP id e9mr12234306pjt.104.1619022762408;
+        Wed, 21 Apr 2021 09:32:42 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s22sm2630721pjs.42.2021.04.21.09.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 09:32:41 -0700 (PDT)
+Subject: Re: [PATCH net-next v1] net: dsa: fix bridge support for drivers
+ without port_bridge_flags callback
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+References: <20210421130540.12522-1-o.rempel@pengutronix.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <d1b615ef-4a0d-2bdb-b41e-e4dcec8fe14c@gmail.com>
+Date:   Wed, 21 Apr 2021 09:32:33 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210421130540.12522-1-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GPIO request can fail and probe may be deferred. Thus,
-the error message may be printed again and again. Avoid
-this by replacing DRM_DEV_ERROR() by dev_err_probe().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpu/drm/tiny/hx8357d.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/tiny/hx8357d.c b/drivers/gpu/drm/tiny/hx8357d.c
-index c6525cd02bc2..17b2a3cb4918 100644
---- a/drivers/gpu/drm/tiny/hx8357d.c
-+++ b/drivers/gpu/drm/tiny/hx8357d.c
-@@ -234,10 +234,8 @@ static int hx8357d_probe(struct spi_device *spi)
- 	drm = &dbidev->drm;
- 
- 	dc = devm_gpiod_get(dev, "dc", GPIOD_OUT_LOW);
--	if (IS_ERR(dc)) {
--		DRM_DEV_ERROR(dev, "Failed to get gpio 'dc'\n");
--		return PTR_ERR(dc);
--	}
-+	if (IS_ERR(dc))
-+		return dev_err_probe(dev, PTR_ERR(dc), "Failed to get GPIO 'dc'\n");
- 
- 	dbidev->backlight = devm_of_find_backlight(dev);
- 	if (IS_ERR(dbidev->backlight))
+On 4/21/2021 6:05 AM, Oleksij Rempel wrote:
+> Starting with patch:
+> a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+> 
+> drivers without "port_bridge_flags" callback will fail to join the bridge.
+> Looking at the code, -EOPNOTSUPP seems to be the proper return value,
+> which makes at least microchip and atheros switches work again.
+> 
+> Fixes: a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.30.2
-
+Florian
