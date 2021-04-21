@@ -2,148 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBA636714C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B22E36714D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241087AbhDUR1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41002 "EHLO
+        id S241949AbhDUR1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240745AbhDUR1r (ORCPT
+        with ESMTP id S240745AbhDUR1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:27:47 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF5EC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:27:13 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id o16so48621817ljp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:27:13 -0700 (PDT)
+        Wed, 21 Apr 2021 13:27:52 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4679C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:27:18 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id w4so38443599wrt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+AYbK2ewnyqJA4Ppt5z67NuX99hMx2pvf+UJ7JiaSo0=;
-        b=srP1LfQTFL4piTgxdFMK6Ma/ReO7E91WnmsdiIw87h+T+YWtKFxj1WN9FazN+8kFCU
-         8+o9Cd42GW3nW5JOAJOcA0LOECMoG+EeLxMu2TU0XKzoJCHxxmkN+UZuOgqYI3Pfp6tE
-         F3VsrS+t2t9vv1lsHCz0hVRjiE7n1TEG5fPqlz4ZvmjLTHoEl6uanAF0wu6VRrT0GxDz
-         EpvwwYNFfUrdCS1iN4EXaKe95dLK3BQNyrnT7KRlRAWWQDjPOz49ndi4/PR1cGXeedMz
-         eC5F+hZeAnuG1rULLkfwq2QUuFhMInR+xQpFiqxpgkpc/qOhAGrA6oN2rB1LqoNLbb9c
-         iP6Q==
+        d=arista.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=y5rB5hdeendPXtZ8kWukMNJqwT+C7isho8ILaV2Ei6o=;
+        b=Fju+oMaW0JZE6NP+ZWRAXWvRXIbNMJ9AkdGWpnEpT9MFfQHRXAG+fvbY6kVNCuMvmv
+         LojzxCPUkXSZnjVfw3UvD7H4ysLctuaUpYoHZ/9dwKF5gzsUpBpIPzwOVx7YB7ZzREFS
+         lkcuBdEi6ByJEScWZxyesm7cbHU2sFimUGBSnsQTWP2JecS3Y2ig6fPqejI1iGujBQNq
+         OFhCdy8aLJe/HGzUTxD2HQV0nZcpLpRH64kdNBmgML8Zphob/Xf6HbNgTUZ9kGUerWpb
+         2SZZFRJuzVDmvASSSVdqdSbg//3smMc1lo3PZ7NQaF3noICRnSBSfeo4lk742ndCMj0o
+         +e/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+AYbK2ewnyqJA4Ppt5z67NuX99hMx2pvf+UJ7JiaSo0=;
-        b=XUpn8WVZ5H/Mg2y3Axe+qk5ndP1F2ibp8SEdCoRcX+EDBpBQ7828JH22KoR68TjNBu
-         P4ZnbVbSBaCrwO7sXRT3A5B4zjTxTOaLUsg4tpg/DgPohQ2Mx6qqj5oU3fu8S1u5M2b6
-         fZaR66AN4iJ7/ewZGBPO6qRGtP9r1lgzi3NVGivihJ8lwqMwW/c8LyFqYTfhjPg1GCh4
-         feKUKdKcBQKezNt9zBasvY7LOITAYr+2wynnKXBUvoOtW6ueJT7ZePB7KvHnExaMTrbC
-         GDEZnDE55tMeCKy20YzIAFN4Z0Spccekml+yQrY41k1vY/RpImSioAeHSA1YpWj6fHMH
-         Ga9w==
-X-Gm-Message-State: AOAM530/PO7R8ENmzSVYqrs/i5GXSNXp0/r/FjbjXNTlpnOBaIjTSzvp
-        XeTEvVbnp6TnEL3rA8gLHTF50vNVVHuXbLU6ip21Zw==
-X-Google-Smtp-Source: ABdhPJyH7/djGxEtDaSlmPglwq6jZ/zKYRw457memmoW1ue7gH3gQuREoD8VTN9+DdQXeydAwtdeLpN/voeGGz8EVjM=
-X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr19144304ljp.209.1619026032105;
- Wed, 21 Apr 2021 10:27:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=y5rB5hdeendPXtZ8kWukMNJqwT+C7isho8ILaV2Ei6o=;
+        b=bnuIAeYOlCdrqOt6ggYwwOKxpsUsJdjxbB22VfGWwC2kxk5Mda3/AXn6ekDew7hrWZ
+         Dzb1Camjr33riv5Fx+qsPL2ZcoHYV2AeK8V8E7KiO2O8LQScTAnW1I+ZL1IRqON6HPM5
+         bAwxegwm3kzOS4ifdtT19euL/nFOelM1YA4eAL6n7NepYUCHcqWlwYpxL0l2ClpYmOwk
+         KOAmEz2ms3j9kp4lSlpGO1I6Gcy8QjuAcFg+TQHyTwr/mEnx3rG6rNhc4tCUP2zGxMsG
+         vMl+XOBdIKocd0h4Dg+p9rh4711uo4QH8Osa0W7t1ss9ghEPwT/QOanxR03ugJQy7z6l
+         u1eQ==
+X-Gm-Message-State: AOAM530DZx2pWfMXR3oPGLr4C99qPKtHSeXqpvdv8+b1+3glRfFhzR33
+        L1VlMlkxyYz+5Hpxenm/ptdycQ==
+X-Google-Smtp-Source: ABdhPJzJkAvQ2xZ2smIGZxg2awxu3YJLjsW5vTvBTIz7iwmQHISbAOifURiuXOjt6TiYzZyHioknTA==
+X-Received: by 2002:a5d:528a:: with SMTP id c10mr6127292wrv.333.1619026037338;
+        Wed, 21 Apr 2021 10:27:17 -0700 (PDT)
+Received: from snaipe-arista.infra.corp.arista.io (188-141-36-148.dynamic.upc.ie. [188.141.36.148])
+        by smtp.gmail.com with ESMTPSA id m15sm110805wrx.32.2021.04.21.10.27.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:27:17 -0700 (PDT)
+From:   Snaipe <snaipe@arista.com>
+To:     gscrivan@redhat.com
+Cc:     alexander@mihalicyn.com, christian.brauner@ubuntu.com,
+        containers@lists.linux-foundation.org, cyphar@cyphar.com,
+        ebiederm@xmission.com, geofft@ldpreload.com, jcsible@cert.org,
+        josh@joshtriplett.org, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, luto@amacapital.net, mic@digikod.net,
+        mpatel@redhat.com, ptikhomirov@virtuozzo.com, sargun@sargun.me,
+        serge@hallyn.com, stgraber@ubuntu.com, vgoyal@redhat.com,
+        watl@google.com, Snaipe <snaipe@arista.com>
+Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated user namespaces
+Date:   Wed, 21 Apr 2021 19:27:14 +0200
+Message-Id: <20210421172714.912119-1-snaipe@arista.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <87ft6act3c.fsf@redhat.com>
+References: <87ft6act3c.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20210420120705.5c705d4b@imladris.surriel.com>
-In-Reply-To: <20210420120705.5c705d4b@imladris.surriel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 21 Apr 2021 19:27:00 +0200
-Message-ID: <CAKfTPtCcS_bNUi-KwspHssabORupj9K8Y=+Hc7nOzr9JBK-8AA@mail.gmail.com>
-Subject: Re: [PATCH v3] sched,fair: skip newidle_balance if a wakeup is pending
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rik,
+"Giuseppe Scrivano" <gscrivan@redhat.com> writes:
+>>> >> instead of a prctl, I've added a new mode to /proc/PID/setgroups that
+>>> >> allows setgroups in a userns locking the current gids.
+>>> >> 
+>>> >> What do you think about using /proc/PID/setgroups instead of a new
+>>> >> prctl()?
+>>> >
+>>> > It's better than not having it, but two concerns -
+>>> >
+>>> > 1. some userspace, especially testsuites, could become confused by the fact
+>>> > that they can't drop groups no matter how hard they try, since these will all
+>>> > still show up as regular groups.
+>>> 
+>>> I forgot to send a link to a second patch :-) that completes the feature:
+>>> https://github.com/giuseppe/linux/commit/1c5fe726346b216293a527719e64f34e6297f0c2
+>>> 
+>>> When the new mode is used, the gids that are not known in the userns do
+>>> not show up in userspace.
+>>
+>> Ah, right - and of course those gids better not be mapped into the namespace :)
+>>
+>> But so, this is the patch you said you agreed was not worth the extra
+>> complexity?
+>
+> yes, these two patches are what looked too complex at that time.  The
+> problem still exists though, we could perhaps reconsider if the
+> extra-complexity is acceptable to address it.
 
-On Tue, 20 Apr 2021 at 18:07, Rik van Riel <riel@surriel.com> wrote:
->
-> The try_to_wake_up function has an optimization where it can queue
-> a task for wakeup on its previous CPU, if the task is still in the
-> middle of going to sleep inside schedule().
->
-> Once schedule() re-enables IRQs, the task will be woken up with an
-> IPI, and placed back on the runqueue.
->
-> If we have such a wakeup pending, there is no need to search other
-> CPUs for runnable tasks. Just skip (or bail out early from) newidle
-> balancing, and run the just woken up task.
->
-> For a memcache like workload test, this reduces total CPU use by
-> about 2%, proportionally split between user and system time,
-> and p99 and p95 application response time by 10% on average.
-> The schedstats run_delay number shows a similar improvement.
->
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> ---
->  kernel/sched/fair.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 69680158963f..fd80175c3b3e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10594,6 +10594,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->         u64 curr_cost = 0;
->
->         update_misfit_status(NULL, this_rq);
-> +
-> +       /*
-> +        * There is a task waiting to run. No need to search for one.
-> +        * Return 0; the task will be enqueued when switching to idle.
-> +        */
-> +       if (this_rq->ttwu_pending)
-> +               return 0;
-> +
->         /*
->          * We must set idle_stamp _before_ calling idle_balance(), such that we
->          * measure the duration of idle_balance() as idle time.
-> @@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->                  * Stop searching for tasks to pull if there are
->                  * now runnable tasks on this rq.
->                  */
-> -               if (pulled_task || this_rq->nr_running > 0)
-> +               if (pulled_task || this_rq->nr_running > 0 ||
-> +                   this_rq->ttwu_pending)
->                         break;
->         }
->         rcu_read_unlock();
-> @@ -10688,7 +10697,12 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->         if (this_rq->nr_running != this_rq->cfs.h_nr_running)
->                 pulled_task = -1;
->
-> -       if (pulled_task)
-> +       /*
-> +        * If we are no longer idle, do not let the time spent here pull
-> +        * down this_rq->avg_idle. That could lead to newidle_balance not
-> +        * doing enough work, and the CPU actually going idle.
-> +        */
-> +       if (pulled_task || this_rq->ttwu_pending)
+Hey Folks, sorry for necro-bumping, but I've found this discussion
+while searching for this specific issue, and it seems like the most
+recent relevant discussion on the matter. I'd like to chime in with
+our personal experience.
 
-I'm still running some benchmarks to evaluate the impact of your patch
-and more especially the line above which clears this_rq->idle_stamp
-and skips the time spent in newidle_balance from being accounted for
-in avg_idle. I have some results which  show some regression because
-of this test especially with hackbench.
-On large system, the time spent in newidle_balance can be significant
-and we can't ignore it just because this_rq->ttwu_pending is set while
-looping the domains because without newidle_balance the idle time
-would have been large and we end up screwing up the metric
+We have a tool[1] that allows unprivileged use of namespaces
+(when using a userns, which is the default).
 
->                 this_rq->idle_stamp = 0;
->
->         rq_repin_lock(this_rq, rf);
-> --
-> 2.25.4
->
->
+The primary use-case of said tool is lightweight containerization,
+but we're also using it for other mundane usages, like a better
+substitute for fakeroot to build and package privileged software
+(e.g. sudo or ping, which needs to be installed with special
+capabilities) unprivileged, or to copy file trees that are owned by
+the user or sub-ids.
+
+For the first use-case, it's always safe to drop unmapped groups,
+because the target rootfs is always owned by the user or its sub-ids.
+
+For the other use-cases, this is more problematic, as you're all
+well-aware of. Our position right now is that the tool will always
+allow setgroups in user namespace, and that it's not safe to use on
+systems that rely on negative access groups.
+
+I think that something that's not mentioned is that if a user setgroups
+to a fixed list of subgids, dropping all unmapped gids, they don't just
+gain the ability to access these negative-access files, they also lose
+legitimate access to files that their unmapped groups allow them to
+access. This is fine for our first use-case, but a bit surprising for
+the second one -- and since setgroups never lets us keep unmapped gids,
+we have no way to keep these desired groups.
+
+From a first glance, a sysctl that explicitly controls that would not
+address the above problem, but keeping around the original group list
+of the owner of the user ns would have the desired semantics.
+
+Giuseppe's patch seems to address this use case, which would personally
+make me very happy.
+
+[1]: https://github.com/aristanetworks/bst
+
+-- 
+Snaipe
