@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDAD36639D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 04:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5C736639F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 04:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhDUCYc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Apr 2021 22:24:32 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:51848 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234023AbhDUCYa (ORCPT
+        id S234660AbhDUC0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 22:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233999AbhDUCZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 22:24:30 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13L2Nn3pA020711, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13L2Nn3pA020711
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 21 Apr 2021 10:23:49 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 21 Apr 2021 10:23:48 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 21 Apr 2021 10:23:48 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74]) by
- RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74%5]) with mapi id
- 15.01.2106.013; Wed, 21 Apr 2021 10:23:47 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH net-next 4/6] r8152: support new chips
-Thread-Topic: [PATCH net-next 4/6] r8152: support new chips
-Thread-Index: AQHXMpdaTtc3dnJiRE+pHF9mj571x6q3Ka6AgAXMWPCAAEY8AIABAclQ
-Date:   Wed, 21 Apr 2021 02:23:47 +0000
-Message-ID: <cc2e5a6ba1b649d3a5806f71256e657f@realtek.com>
-References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
-        <1394712342-15778-354-Taiwan-albertk@realtek.com>
-        <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <0de9842749db4718b8f45a0f2fff7967@realtek.com>
- <20210420113420.79d7c65a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210420113420.79d7c65a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/4/20_=3F=3F_10:27:00?=
-x-kse-attachment-filter-triggered-rules: Clean
-x-kse-attachment-filter-triggered-filters: Clean
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 20 Apr 2021 22:25:59 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C21C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 19:25:27 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id h15so9539534pfv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 19:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4dCJhI1fJvUae+RK1az1zv2HWWPb9fK682R4tcWUrdw=;
+        b=WB5zZwfCqIVs7HgZ87AobyF4tz7HDBk0ZqdY/tjhYPQSkYqJGnyKTdC23bGM7v4wSn
+         hRE6tncwr0sZMLV1ayrJ9udYmY6RvBpcoX22IQJkhmt5in8lbRAst9jRsFXT3VNj9BM6
+         k8/hRYeo/XKxO4bptdslAwJu0UosAoCex7RzQtKh65pqcTI40OZZ8TKTlgygkkz9j1DI
+         HJhI8/bBHizyryLAs6ODGTwMBiBbGb5TNNZDcAsaKHNykW7qmH+vFIqxNJR6TyT5GJDg
+         8CVc0ZPK3KdcgDn46pWTIg3u9YIO53bpwrtBzrSeatwP8Nvban02UM7BEZfczcQSp7Ru
+         /Ufg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4dCJhI1fJvUae+RK1az1zv2HWWPb9fK682R4tcWUrdw=;
+        b=knL3eagHM2O0m43qB90vCD2mxZdkKTIOTLrZG4ZkR/1s7c9nHxteP2yIcItxfzz7WG
+         TVakO+0UbKVca1s2xXlmgFJIPJFl++HPFpIbsoVYahBdTJb1uOg2dzSRPUoQG1Lvxfxi
+         AE1npLprbhA9i8iqzOtpH4c3v4U/NHoATFp0/NNoa3FgK8oP/p3yzVw3CVoTP3tB3uyS
+         aELtZLl6XGOPzkzzWtK7CLZVWhD1lOFEKb+Tvxzs/VQM5KW3WfQXxIlmUT6dxsqo8oP7
+         JnMESwuc6luTjceFnoxOGP0axfoTC85xbUrCw3JiSTVtTB9nufqd+W2wjVbV+Jk/W3vM
+         UCtw==
+X-Gm-Message-State: AOAM5309ocOd9bmTsTLM1Xlo/N/eaEgWY42PpWdkGHFKfEJCekYCnyeW
+        3IHUzfBIDgf5Cm8fEwSJWKQ=
+X-Google-Smtp-Source: ABdhPJx2BVmJvDjs+S+GjL1n4IfWIXRiYNYSrxk9wJ6LVMcArDvbYJ2vtVLbCbtb8HcIUrJFpY/39w==
+X-Received: by 2002:a17:90a:e54c:: with SMTP id ei12mr8185477pjb.164.1618971926628;
+        Tue, 20 Apr 2021 19:25:26 -0700 (PDT)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id x18sm279583pfp.57.2021.04.20.19.25.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Apr 2021 19:25:26 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yejune Deng <yejune.deng@gmail.com>
+Subject: [PATCH] mm/slab.c: use 'ac' from the caller
+Date:   Wed, 21 Apr 2021 10:25:17 +0800
+Message-Id: <20210421022518.67451-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 01:51:53
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163255 [Apr 21 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/21/2021 01:54:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 02:01:58
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163255 [Apr 21 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/21/2021 02:04:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org>
-> Sent: Wednesday, April 21, 2021 2:34 AM
-[...]
-> > We test 2.5G Ethernet on some embedded platform.
-> > And we find 64 is not large enough, and the performance
-> > couldn't reach 2.5 G bits/s.
-> 
-> Did you manage to identify what the cause is?
-> 
-> NAPI will keep calling your driver if the budget was exhausted, the
-> only difference between 64 and 256 should be the setup cost of the
-> driver's internal loop. And perhaps more frequent GRO flush - what's
-> the CONFIG_HZ set to?
+It can use 'ac' from ____cache_alloc() in cache_alloc_refill().
+This saves call cpu_cache_get() twice.
 
-I am not sure. It is more than one year ago.
-The CONFIG_HZ may be 250.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ mm/slab.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-First, the CPU of that platform is slower than a x86 platform.
-Then, the rx data comes very fast, because of the 2.5G Ethernet.
-We find the budget is always exhausted, when the traffic is busy.
-
-Best Regards,
-Hayes
+diff --git a/mm/slab.c b/mm/slab.c
+index d0f725637663..4b2dc8f8cc37 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -2896,11 +2896,11 @@ static __always_inline int alloc_block(struct kmem_cache *cachep,
+ 	return batchcount;
+ }
+ 
+-static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
++static void *cache_alloc_refill(struct kmem_cache *cachep, struct array_cache *ac, gfp_t flags)
+ {
+ 	int batchcount;
+ 	struct kmem_cache_node *n;
+-	struct array_cache *ac, *shared;
++	struct array_cache *shared;
+ 	int node;
+ 	void *list = NULL;
+ 	struct page *page;
+@@ -2908,7 +2908,6 @@ static void *cache_alloc_refill(struct kmem_cache *cachep, gfp_t flags)
+ 	check_irq_off();
+ 	node = numa_mem_id();
+ 
+-	ac = cpu_cache_get(cachep);
+ 	batchcount = ac->batchcount;
+ 	if (!ac->touched && batchcount > BATCHREFILL_LIMIT) {
+ 		/*
+@@ -3045,12 +3044,7 @@ static inline void *____cache_alloc(struct kmem_cache *cachep, gfp_t flags)
+ 	}
+ 
+ 	STATS_INC_ALLOCMISS(cachep);
+-	objp = cache_alloc_refill(cachep, flags);
+-	/*
+-	 * the 'ac' may be updated by cache_alloc_refill(),
+-	 * and kmemleak_erase() requires its correct value.
+-	 */
+-	ac = cpu_cache_get(cachep);
++	objp = cache_alloc_refill(cachep, ac, flags);
+ 
+ out:
+ 	/*
+-- 
+2.29.0
 
