@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522293664F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 07:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF4C3664F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 07:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235251AbhDUFl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 01:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhDUFlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 01:41:23 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DA1C06174A;
-        Tue, 20 Apr 2021 22:40:50 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id p16so17038430plf.12;
-        Tue, 20 Apr 2021 22:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tz/1YLak3C2mdGfTxiavo+SW8NvwR0wTpkEAogFdEMQ=;
-        b=eIHbYrmFhAfP4GMs4jOK134+pFUSXvPIzF4F4qGRT/C4rs0rIr3CxpbSEIfCdQU1Hl
-         bk+tU3q0H3Sdx1EaUoxz5VZ1JV2zHUqBzXG2vSq1UegKTAoYC4qXcYC9wh+xTPl1Qk7I
-         Ubqz2QpPQ5sckLYMDpVe+ZDMcVrVCGICrcX1/4rLbb6EknNeXCqmzRLPkZ/Ij92Rhb3q
-         2nsIkdoN1YgVz3Fdc1hqxGL6MFqH8zqchQX8jkzfBSxNQO2g4SA2lkxEvCAsn0NkpTfc
-         eKhFDi6chfSUTeH6cNOn0mE2akDPIJnVCm6iR6s7b5i3fF0EeeplSCnn7KxKs4MLll20
-         LQLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tz/1YLak3C2mdGfTxiavo+SW8NvwR0wTpkEAogFdEMQ=;
-        b=uf0DRa648hBorxu99tt+MR3oXjbISwZJFvHB8q0WcURg64OuTS0X+ivQdfwljvfJzU
-         2jk7z6obTo3SJsazZnNB2d5uNxGVOK9tB0iFLDLpYQPk/7izKGta4WUFENEKK8aXOG6P
-         0o4GrLsVdoWlSsFqZzqf0ysqh9oFtvnfOMlBqpNzr2DnC69LDwgSMmGP0Iy2RJ9Yzgkq
-         jTwSpC5ErbwurqOfZoMsL8VbbEyClJaO9bUKbeRTweTtNgcR1jm5ST8j2S0saXMSKzt/
-         bXA1DW+zLkxsMPqquEAEOyGsgNZmc/duiICB6iQR6CSRDo+bVei3cGMq5uSaidhbsJP7
-         C0QQ==
-X-Gm-Message-State: AOAM531kobC4ublzyPWUBSXynnOu2I0jUkR5rr6vo16DYf6hPvBluVIY
-        ZmUzTIS2781sGLxy+yAb9hbyIHU0vUg=
-X-Google-Smtp-Source: ABdhPJxkhfM8E+r6GkwGoNudsvs1kPqFhcTMeMXeBjBvi4ipLS+yWEMxKOpjlwN130tSfSC99n0+dw==
-X-Received: by 2002:a17:902:edd0:b029:ec:8e2a:d6ed with SMTP id q16-20020a170902edd0b02900ec8e2ad6edmr21176740plk.32.1618983649760;
-        Tue, 20 Apr 2021 22:40:49 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:b533:61c1:84ff:eacd])
-        by smtp.gmail.com with ESMTPSA id k127sm683705pfd.63.2021.04.20.22.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 22:40:48 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 22:40:46 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        linux-input@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        devicetree@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: repair reference in HYCON HY46XX
- TOUCHSCREEN SUPPORT
-Message-ID: <YH+63pkPpT52PkFV@google.com>
-References: <20210419060023.3460-1-lukas.bulwahn@gmail.com>
+        id S235279AbhDUFnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 01:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhDUFnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 01:43:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D749C613D5;
+        Wed, 21 Apr 2021 05:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618983790;
+        bh=46DEw1GkA/TFpTbQoIDwrXdc0q4tL1Go9e21SMUFhiU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XtclWBtAW1D8f3YXTpHWvChErFPCOD0RMLHu+Nb/wyayOuAGQgkG/mn8t+5lKHgPj
+         OOG56/vsTA0sBAXi0+gx+gtZjtBYcB41VJDRTRF+WMss/cCaeWfLQFTDDllic+3Uo4
+         tAmWX1dt5Rcd3HrYij1H7A25oqpYCGLM1+HsE7Ms=
+Date:   Wed, 21 Apr 2021 07:43:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YH+7ZydHv4+Y1hlx@kroah.com>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419060023.3460-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <YH+zwQgBBGUJdiVK@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 08:00:23AM +0200, Lukas Bulwahn wrote:
-> Commit aa2f62cf211a ("Input: add driver for the Hycon HY46XX touchpanel
-> series") adds the file ./drivers/input/touchscreen/hycon-hy46xx.c, but the
-> file entry in MAINTAINERS refers to ./drivers/input/touchscreen/hy46xx.c.
+On Wed, Apr 21, 2021 at 08:10:25AM +0300, Leon Romanovsky wrote:
+> On Tue, Apr 20, 2021 at 01:10:08PM -0400, J. Bruce Fields wrote:
+> > On Tue, Apr 20, 2021 at 09:15:23AM +0200, Greg KH wrote:
+> > > If you look at the code, this is impossible to have happen.
+> > > 
+> > > Please stop submitting known-invalid patches.  Your professor is playing
+> > > around with the review process in order to achieve a paper in some
+> > > strange and bizarre way.
+> > > 
+> > > This is not ok, it is wasting our time, and we will have to report this,
+> > > AGAIN, to your university...
+> > 
+> > What's the story here?
 > 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> Those commits are part of the following research:
+> https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceInsecurity.pdf
 > 
->   warning: no file matches    F:    drivers/input/touchscreen/hy46xx.c
-> 
-> Repair the file entry by referring to the right location.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> They introduce kernel bugs on purpose. Yesterday, I took a look on 4
+> accepted patches from Aditya and 3 of them added various severity security
+> "holes".
 
-Applied, thank you.
+All contributions by this group of people need to be reverted, if they
+have not been done so already, as what they are doing is intentional
+malicious behavior and is not acceptable and totally unethical.  I'll
+look at it after lunch unless someone else wants to do it...
 
--- 
-Dmitry
+greg k-h
