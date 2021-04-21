@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726DD366BAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CBC366BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240797AbhDUNFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:05:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44060 "EHLO mail.kernel.org"
+        id S230250AbhDUNFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:05:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240488AbhDUNEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D95B76143B;
-        Wed, 21 Apr 2021 13:03:46 +0000 (UTC)
+        id S240601AbhDUNE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:04:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED1706144C;
+        Wed, 21 Apr 2021 13:03:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010227;
-        bh=uwUa5giK+hqOEz8KG6fYiKCbWvTf4cA9SwlNTJe96AE=;
+        s=korg; t=1619010232;
+        bh=l233XCfRG/lEpEy02xGiO26Ehmuwm0jg3tAhArijFOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X2IVc8JRUKB44u9tHL74XqG8M108pk5V2LE9kFhF0KrLLo4SY+x3OV8tnGBe/nTO8
-         a3cvP4WIxsAkyQPz3PgbEOZd+9YHmxFe4rY1QXA1prEHNrNX96DhOEcxjrWL/BKzvk
-         CvA8+eOhiR/5AF1PNiOySrpAZaRQPLAAAEKqOAE8=
+        b=PhVEBRelCG7mrZBHFt23qJrUaPQlmMTZYgwsRkM3q7svZ683B1qHQUifZMHP6B5pB
+         ihZAGj+T5pM7t3G2B1Gxb0XQAd6jrzC0pMJehH2/BB7oU0a7lkSINXX7wTyOpp55uq
+         tlJTg+MgAAMqMNp+vnYeIS4RfJneh3Aqi8Wim6fU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Aditya Pakki <pakki001@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 058/190] Revert "media: cx231xx: replace BUG_ON with recovery code"
-Date:   Wed, 21 Apr 2021 14:58:53 +0200
-Message-Id: <20210421130105.1226686-59-gregkh@linuxfoundation.org>
+        Bart Van Assche <bvanassche@acm.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 059/190] Revert "RDMA/srpt: Remove unnecessary assertion in srpt_queue_response"
+Date:   Wed, 21 Apr 2021 14:58:54 +0200
+Message-Id: <20210421130105.1226686-60-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 93a24578de721006055b422c7772e0e417e1983c.
+This reverts commit 9f48db0d4a08624bb9ba847ea40c8abad753b396.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,28 +54,29 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
+Cc: https
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/cx231xx/cx231xx-i2c.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/usb/cx231xx/cx231xx-i2c.c b/drivers/media/usb/cx231xx/cx231xx-i2c.c
-index c6659253c6fb..f33b6a077d57 100644
---- a/drivers/media/usb/cx231xx/cx231xx-i2c.c
-+++ b/drivers/media/usb/cx231xx/cx231xx-i2c.c
-@@ -515,8 +515,7 @@ int cx231xx_i2c_register(struct cx231xx_i2c *bus)
- {
- 	struct cx231xx *dev = bus->dev;
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 6be60aa5ffe2..b5a7c4fbf23b 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -2807,6 +2807,8 @@ static void srpt_queue_response(struct se_cmd *cmd)
+ 	int resp_len, ret, i;
+ 	u8 srp_tm_status;
  
--	if (!dev->cx231xx_send_usb_command)
--		return -EINVAL;
-+	BUG_ON(!dev->cx231xx_send_usb_command);
- 
- 	bus->i2c_adap = cx231xx_adap_template;
- 	bus->i2c_adap.dev.parent = dev->dev;
++	BUG_ON(!ch);
++
+ 	state = ioctx->state;
+ 	switch (state) {
+ 	case SRPT_STATE_NEW:
 -- 
 2.31.1
 
