@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC92D366BCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797EC366BE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241114AbhDUNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:07:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
+        id S241115AbhDUNIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:08:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238294AbhDUNFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F1D561463;
-        Wed, 21 Apr 2021 13:05:01 +0000 (UTC)
+        id S240756AbhDUNGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:06:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 975FE6145E;
+        Wed, 21 Apr 2021 13:05:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010302;
-        bh=tKWWxmEKW5e7z8Nhqa7Lvp+xmzZj0UfNCnUfuz+9UDg=;
+        s=korg; t=1619010332;
+        bh=sCLqANXAX786STyiAW2V24LoRfYtqIrgiYZo6bt7cVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1eqikCjwo2yi6wpFfdt7wn6NJA3b1o53pGbxmZ/GAgYK9XSOQ2YD/LRa45CmcLxcC
-         4AEenZLv66GLKPuECN+fs2WEgYUWHTniajIMl6Wx+wpDQm4LUnRipUSddsrR1kwqrA
-         LmdtQkv+RKXKL030w8g4OeZrShmgHWMKDV/yyOiQ=
+        b=zoLH5QFs0X5Z1tUg3KAfuD8E7yeGLe3t8si2n9c3Mshgy7HrfevMcIdyTac8JOho1
+         vxgIJA3QdrZ7qMcM72Z5SD2PzUhE2za/0c0wrVwrm8G3FXEp8aKqqY5eJ7d8+5VcK6
+         qeR+6I01kJeWaQ9hKLbI6b+Qa0uvtErRwv55tA+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Aditya Pakki <pakki001@umn.edu>,
         Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 069/190] Revert "mac80211: Remove redundant assertion"
-Date:   Wed, 21 Apr 2021 14:59:04 +0200
-Message-Id: <20210421130105.1226686-70-gregkh@linuxfoundation.org>
+Subject: [PATCH 070/190] Revert "rfkill: Fix incorrect check to avoid NULL pointer dereference"
+Date:   Wed, 21 Apr 2021 14:59:05 +0200
+Message-Id: <20210421130105.1226686-71-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 1ee7826ab68f7e9fa1a01533983acf6a6f62e297.
+This reverts commit 6fc232db9e8cd50b9b83534de9cd91ace711b2d7.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -58,21 +58,29 @@ Cc: https
 Cc: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/util.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/rfkill/core.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/net/mac80211/util.c b/net/mac80211/util.c
-index c0fa526a45b4..2de2e655be59 100644
---- a/net/mac80211/util.c
-+++ b/net/mac80211/util.c
-@@ -39,6 +39,7 @@ const void *const mac80211_wiphy_privid = &mac80211_wiphy_privid;
- struct ieee80211_hw *wiphy_to_ieee80211_hw(struct wiphy *wiphy)
+diff --git a/net/rfkill/core.c b/net/rfkill/core.c
+index ac15a944573f..8a27164d7f5f 100644
+--- a/net/rfkill/core.c
++++ b/net/rfkill/core.c
+@@ -1033,13 +1033,10 @@ static void rfkill_sync_work(struct work_struct *work)
+ int __must_check rfkill_register(struct rfkill *rfkill)
  {
- 	struct ieee80211_local *local;
-+	BUG_ON(!wiphy);
+ 	static unsigned long rfkill_no;
+-	struct device *dev;
++	struct device *dev = &rfkill->dev;
+ 	int error;
  
- 	local = wiphy_priv(wiphy);
- 	return &local->hw;
+-	if (!rfkill)
+-		return -EINVAL;
+-
+-	dev = &rfkill->dev;
++	BUG_ON(!rfkill);
+ 
+ 	mutex_lock(&rfkill_global_mutex);
+ 
 -- 
 2.31.1
 
