@@ -2,199 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98113666DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF37C3666DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhDUIQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:16:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59178 "EHLO mx2.suse.de"
+        id S234603AbhDUIQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:16:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234010AbhDUIQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:16:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3908B137;
+        id S234532AbhDUIQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:16:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B590161264;
         Wed, 21 Apr 2021 08:15:49 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 10:15:46 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618992950;
+        bh=8feRFI+Nf7CsMwsoYsmAwHpr1e9275LaSeUvdaoYQT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t3BHKnNimm0EQCUx2EoeWZa/23frWnb8N7x1me4NyuKUEgcMKb+wnCVnYaVZxZac+
+         XjrmGYQoWAykLubQIICJ/UsMPHimRlr28qs0D/VApT64+Pck0NFDSPnNE3eV9uYigJ
+         U3iSTwp0UPoYC7+Xz9HZgkceMCwp4LXDcU2GNd30=
+Date:   Wed, 21 Apr 2021 10:15:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Aditya Pakki <pakki001@umn.edu>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 4/8] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <20210421081546.GD22456@linux>
-References: <20210416112411.9826-1-osalvador@suse.de>
- <20210416112411.9826-5-osalvador@suse.de>
- <YH6zQ1Dty9kJFkuk@dhcp22.suse.cz>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YH/fM/TsbmcZzwnX@kroah.com>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
+ <YH+7ZydHv4+Y1hlx@kroah.com>
+ <CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YH6zQ1Dty9kJFkuk@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+EnHHSw4X+ubOUNYP2zXNpu70G74NN1Sct2Zin6pRgq--TqhA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:56:03PM +0200, Michal Hocko wrote:
-> On Fri 16-04-21 13:24:07, Oscar Salvador wrote:
-> > Physical memory hotadd has to allocate a memmap (struct page array) for
-> > the newly added memory section. Currently, alloc_pages_node() is used
-> > for those allocations.
-> > 
-> > This has some disadvantages:
-> >  a) an existing memory is consumed for that purpose
-> >     (eg: ~2MB per 128MB memory section on x86_64)
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
+
+A: No.
+Q: Should I include quotations after my reply?
+
+http://daringfireball.net/2007/07/on_top
+
+On Wed, Apr 21, 2021 at 02:56:27AM -0500, Aditya Pakki wrote:
+> Greg,
 > 
-> I would extend this slightly. This can even lead to extreme cases where
-> system goes OOM because the physically hotplugged memory depletes the
-> available memory before it is onlined.
-
-Ok.
-
-> > Vmemap page tables can map arbitrary memory.
-> > That means that we can simply use the beginning of each memory section and
-> > map struct pages there.
+> I respectfully ask you to cease and desist from making wild accusations
+> that are bordering on slander.
 > 
-> Again this can be confusing because this is not what is really happening
-> in practice because we are going to have a multisection memory block
-> where all sections will be backed by a common reserved space rather than
-> per section sparse space. I would go with
+> These patches were sent as part of a new static analyzer that I wrote and
+> it's sensitivity is obviously not great. I sent patches on the hopes to get
+> feedback. We are not experts in the linux kernel and repeatedly making
+> these statements is disgusting to hear.
 > 
-> "
-> Vmemap page tables can map arbitrary memory. That means that we can
-> reserve a part of the physically hotadded memory to back vmemmap page
-> tables. This implementation uses the beggining of the hotplugged memory
-> for that purpose.
-> "
-
-Yeah, I thought I fixed that, it should have been "That means that we can simply
-use the beginning of each memory block...", but I am ok with your rewording.
-
-> There is quite a large leap from __populate_section_memmap to the
-> memory_block that deserves explaining to not lose all the subtle things
-> discussed in the past. I think it should be made clear why all the fuzz.
-> I would structure it as follows:
-> "
-> There are some non-obiously things to consider though.  Vmemmap
-> pages are allocated/freed during the memory hotplug events
-> (add_memory_resource, try_remove_memory) when the memory is
-> added/removed. This means that the reserved physical range is not online
-> yet it is used. The most obvious side effect is that pfn_to_online_page
-> returns NULL for those pfns. The current design expects that this
-> should be OK as the hotplugged memory is considered a garbage until it
-> is onlined. For example hibernation wouldn't save the content of those
-> vmmemmaps into the image so it wouldn't be restored on resume but this
-> should be OK as there no real content to recover anyway while metadata
-> is reachable from other data structures (e.g. vmemmap page tables).
+> Obviously, it is a wrong step but your preconceived biases are so strong
+> that you make allegations without merit nor give us any benefit of doubt.
 > 
-> The reserved space is therefore (de)initialized during the {on,off}line
-> events (mhp_{de}init_memmap_on_memory). That is done by extracting page
-> allocator independent initialization from the regular onlining path.
-> The primary reason to handle the reserved space outside of {on,off}line_pages
-> is to make each initialization specific to the purpose rather than
-> special case them in a single function.
+> I will not be sending any more patches due to the attitude that is not only
+> unwelcome but also intimidating to newbies and non experts.
 
-Ok, that definitely adds a valuable information.
+You, and your group, have publicly admitted to sending known-buggy
+patches to see how the kernel community would react to them, and
+published a paper based on that work.
 
-> > diff --git a/drivers/base/memory.c b/drivers/base/memory.c
-> > index f209925a5d4e..2e2b2f654f0a 100644
-> > --- a/drivers/base/memory.c
-> > +++ b/drivers/base/memory.c
-> > @@ -173,16 +173,72 @@ static int memory_block_online(struct memory_block *mem)
-> >  {
-> >  	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
-> >  	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
-> > +	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
-> > +	struct zone *zone;
-> > +	int ret;
-> > +
-> > +	zone = zone_for_pfn_range(mem->online_type, mem->nid, start_pfn, nr_pages);
-> > +
-> > +	/*
-> > +	 * Although vmemmap pages have a different lifecycle than the pages
-> > +	 * they describe (they remain until the memory is unplugged), doing
-> > +	 * their initialization and accounting at memory onlining/offlining
-> > +	 * stage simplifies things a lot.
-> 
-> "simplify things a lot" is not really helpful to people reading the
-> code. It would be much better to state reasons here. I would go with
-> 	 * stage helps to keep accounting easier to follow - e.g.
-> 	 * vmemmaps belong to the same zone as the onlined memory.
+Now you submit a new series of obviously-incorrect patches again, so
+what am I supposed to think of such a thing?
 
-Ok
+They obviously were _NOT_ created by a static analysis tool that is of
+any intelligence, as they all are the result of totally different
+patterns, and all of which are obviously not even fixing anything at
+all.  So what am I supposed to think here, other than that you and your
+group are continuing to experiment on the kernel community developers by
+sending such nonsense patches?
 
-> >  static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
-> >  {
-> >  	const unsigned long end_pfn = start_pfn + nr_pages;
-> > -	unsigned long pfn;
-> > +	unsigned long pfn = start_pfn;
-> > +
-> > +	while (!IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES)) {
-> > +		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
-> > +		pfn += pageblock_nr_pages;
-> > +	}
-> 
-> I believe we do not need to check for nr_pages as the actual operation
-> will never run out of range in practice but the code is more subtle than
+When submitting patches created by a tool, everyone who does so submits
+them with wording like "found by tool XXX, we are not sure if this is
+correct or not, please advise." which is NOT what you did here at all.
+You were not asking for help, you were claiming that these were
+legitimate fixes, which you KNEW to be incorrect.
 
-If you mean that IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES) can go, that is not
-right.
-Of course, with your changes below it would not be necesary.
+A few minutes with anyone with the semblance of knowledge of C can see
+that your submissions do NOT do anything at all, so to think that a tool
+created them, and then that you thought they were a valid "fix" is
+totally negligent on your part, not ours.  You are the one at fault, it
+is not our job to be the test subjects of a tool you create.
 
-> necessary. Using two different iteration styles is also hurting the code
-> readability. I would go with the following
-> 	for (pfn = start_pfn; pfn < end_pfn; ) {
-> 		unsigned long order = min(MAX_ORDER - 1UL, __ffs(pfn));
-> 
-> 		while (start + (1UL << order) > end_pfn)
->                         order--;
-> 		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
-> 		pfn += 1 << order;
-> 	}
-> 
-> which is what __free_pages_memory does already.
+Our community welcomes developers who wish to help and enhance Linux.
+That is NOT what you are attempting to do here, so please do not try to
+frame it that way.
 
-this is kinda what I used to have in the early versions, but it was agreed
-with David to split it in two loops to make it explicit.
-I can go back to that if it is preferred.
+Our community does not appreciate being experimented on, and being
+"tested" by submitting known patches that are either do nothing on
+purpose, or introduce bugs on purpose.  If you wish to do work like
+this, I suggest you find a different community to run your experiments
+on, you are not welcome here.
 
-> > +	if (memmap_on_memory) {
-> > +		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
-> > +						      get_nr_vmemmap_pages_cb);
-> > +		if (nr_vmemmap_pages) {
-> > +			if (size != memory_block_size_bytes()) {
-> > +				pr_warn("Refuse to remove %#llx - %#llx,"
-> > +					"wrong granularity\n",
-> > +					start, start + size);
-> > +				return -EINVAL;
-> > +			}
-> > +
-> > +			/*
-> > +			 * Let remove_pmd_table->free_hugepage_table do the
-> > +			 * right thing if we used vmem_altmap when hot-adding
-> > +			 * the range.
-> > +			 */
-> > +			mhp_altmap.alloc = nr_vmemmap_pages;
-> > +			altmap = &mhp_altmap;
-> > +		}
-> > +	}
-> > +
-> >  	/* remove memmap entry */
-> >  	firmware_map_remove(start, start + size, "System RAM");
-> 
-> I have to say I still dislike this and I would just wrap it inside out
-> and do the operation from within walk_memory_blocks but I will not
-> insist.
+Because of this, I will now have to ban all future contributions from
+your University and rip out your previous contributions, as they were
+obviously submitted in bad-faith with the intent to cause problems.
 
-I have to confess I forgot about the details of that dicussion, as we were
-quite focused on decoupling vmemmap pages from {online,offline} interface.
-Would you mind elaborating a bit more?
+*plonk*
 
-
--- 
-Oscar Salvador
-SUSE L3
+greg k-h
