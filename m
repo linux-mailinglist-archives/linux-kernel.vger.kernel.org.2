@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9FA366534
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41788366538
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhDUGLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbhDUGLS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:11:18 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F149AC06174A;
-        Tue, 20 Apr 2021 23:10:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQ9CQ2dq0z9t5G;
-        Wed, 21 Apr 2021 16:10:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618985444;
-        bh=4MvTAN8NWMjHr1OMP9BQ1vlhM4Re9k9Mwv+2K60afss=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ip1uYGMNCaFRYUXkpAy6gH9W1pbbNfJ6rW3PX8bbYXLBkZ816UJFGfpINRHyk+PB+
-         l8sIGJ42w2NZQ6Tv0QFJ0Z49tHfvlcQskF64zfWCXz6EqI5XSCIsSGng0lQU81dTCq
-         XV+yVm3E8Xw/MQ2PUyZwmBFUpNCn+kvevXFB4NWsKrXNQls9ZGICN8ig614KEUxagt
-         TsFJOVYhHWDhLLVlj1ntn1kapa9+blAYsoYpOVpqwFHtoiqM9XtkCzjjDb5qfG6L6O
-         fad9UyGHOyCpLmX3R4Php66nSSru+pPfvwxJTcVCy46WaCcx/J1ONeefxG/GWDjLup
-         JsuQ1MWFlGxWw==
-Date:   Wed, 21 Apr 2021 16:10:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Zhan Liu <zhan.liu@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210421161041.47f8b3a7@canb.auug.org.au>
-In-Reply-To: <20210311220033.7c5fe548@canb.auug.org.au>
-References: <20210311220033.7c5fe548@canb.auug.org.au>
+        id S235538AbhDUGMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231821AbhDUGMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:12:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F65661420;
+        Wed, 21 Apr 2021 06:11:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618985497;
+        bh=YhPOHuGJ/c29KhIGdQUtJ/biKTM/tPQx+TdNyvwGiJ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VtD+/yB1oLQwLgsb+e9qbA5z47LcOQckXo0SDV/pEz0+sEJEArmwhncjlEnc2AgdM
+         lnLMn9wFn9RgtD5sLjVJGyPriC3VIccLZIgpxxPHLAGTQPSj9dEDEqncfR91faE6tE
+         R8iMlVFIp3++aD+rEmQ/GRuGULNUWRaC6ke8cORTWi2z/Q2MT4PrnOGNTLIl43rA2L
+         YzkyplhIpZ4ecEmPUrRU11rM09KJxnnx0FKKqDlR0fXviPVPIyUvUgORZpsgTUUrHL
+         qHkSNzkWvo8zl7L4VrPdPLmKVjZra5M4GgGBLboGl1eEeNcy0Y8onTLIaGmTNrQlgR
+         cE1EwTSCIcEzg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org
+Subject: [PATCH v3] docs: proc.rst: meminfo: briefly describe gaps in memory accounting
+Date:   Wed, 21 Apr 2021 09:11:27 +0300
+Message-Id: <20210421061127.1182723-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1SE.zLDGNbwles/Nb1PByQO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1SE.zLDGNbwles/Nb1PByQO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Hi all,
+Add a paragraph that explains that it may happen that the counters in
+/proc/meminfo do not add up to the overall memory usage.
 
-On Thu, 11 Mar 2021 22:00:33 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging the amdgpu tree, today's linux-next build (htmldocs)
-> produced this warning:
->=20
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:143: warning: Function =
-parameter or member 'list' not described in 'dal_allocation'
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:143: warning: Function =
-parameter or member 'bo' not described in 'dal_allocation'
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:143: warning: Function =
-parameter or member 'cpu_ptr' not described in 'dal_allocation'
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:143: warning: Function =
-parameter or member 'gpu_addr' not described in 'dal_allocation'
->=20
-> Introduced by commit
->=20
->   1ace37b873c2 ("drm/amdgpu/display: Implement functions to let DC alloca=
-te GPU memory")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+v3:
+* Add sentense about counters overlap
+* Use wording suggested by Matthew
 
-I am still seeing these warnings (as of next-20210420).  That is now
-commit
+v2: Link: https://lore.kernel.org/lkml/20210420121354.1160437-1-rppt@kernel.org
+* Add brief changelog
+* Fix typo
+* Update example about network memory usage according to Eric's comment at
 
-  0dd795323405 ("drm/amdgpu/display: Implement functions to let DC allocate=
- GPU memory")
+https://lore.kernel.org/lkml/CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com
 
-in the drm tree.
---=20
-Cheers,
-Stephen Rothwell
+v1: Link: https://lore.kernel.org/lkml/20210420085105.1156640-1-rppt@kernel.org
+ Documentation/filesystems/proc.rst | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---Sig_/1SE.zLDGNbwles/Nb1PByQO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 48fbfc336ebf..0a07a5025571 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -929,8 +929,15 @@ meminfo
+ ~~~~~~~
+ 
+ Provides information about distribution and utilization of memory.  This
+-varies by architecture and compile options.  The following is from a
+-16GB PIII, which has highmem enabled.  You may not have all of these fields.
++varies by architecture and compile options.  Some of the counters reported
++here overlap.  The memory reported by the non overlapping counters may not
++add up to the overall memory usage and the difference for some workloads
++can be substantial.  In many cases there are other means to find out
++additional memory using subsystem specific interfaces, for instance
++/proc/net/sockstat for TCP memory allocations.
++
++The following is from a 16GB PIII, which has highmem enabled.
++You may not have all of these fields.
+ 
+ ::
+ 
+-- 
+2.29.2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB/weEACgkQAVBC80lX
-0Gy7kAgAnIAGxiQIdjCsEFtLKE9bQrN5w6+GdFkEjK6teBscqxxifBWJy7HCyUac
-3rfNbzu2sIfaio5KPcY2/0FuhQsCOqhsITRYDF+n5yUriLsarAX4LhxHe7OaA/N5
-HjCm8KJXiPiLp2+LAfmGyjMb9C1AGh7vE7WVWopkLHopDeZyW3fbxutOPEwLWK9Q
-ttk42DkijKee1cqPhFzqGQdu4J6gCnRUO+T3ARjirl65ZOcpsB47GmsGavWL4/bo
-97EW7X6tWYUE0Sa+2iQsL6zYTN/taSnARe2DE/9jWKs1bZftxNFwV24R4IJqBz2l
-g6ia2dEyU7VAY8A/8zSiCGmJHRHp/Q==
-=LSTq
------END PGP SIGNATURE-----
-
---Sig_/1SE.zLDGNbwles/Nb1PByQO--
