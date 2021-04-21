@@ -2,164 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7F1366C11
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE5B366C02
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241558AbhDUNJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        id S242563AbhDUNKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241019AbhDUNGd (ORCPT
+        with ESMTP id S241040AbhDUNHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:06:33 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64D7C061346;
-        Wed, 21 Apr 2021 06:05:59 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id q22so4306849lfu.8;
-        Wed, 21 Apr 2021 06:05:59 -0700 (PDT)
+        Wed, 21 Apr 2021 09:07:40 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52E1C061346;
+        Wed, 21 Apr 2021 06:06:51 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id r20so13641941ejo.11;
+        Wed, 21 Apr 2021 06:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=JmUkovJ4PF+YyKy/jY+0gRoy2D+XF6hMzgTd5ze+4xg=;
-        b=aImxsQYwp6kUAL2GogTKXZeIFbCiw845KWa6WLKWiH2R2pDvvWqyuEd08Swnrz79LQ
-         htxKev6DLtaTTPhelPLHcbGoGJKsyYFIPAkMX1k5pvGtOrgQ4fTFnzbSzgE4kTihGi8Z
-         pDA+WRoBlkKmN5kQ9M6PMwC7T+74JIiOovWl5o/2GZTxrwrohmjxQHNR7mQNIyCIsiT8
-         joRMrpfFiJZ2hR5D4vC4VxlfK8UpCC1Xx0RZhU04sYRV0V5izQkrOu3xszroITfthKjB
-         J6m8juZ2EOK4xE2ywgum61B8ahqR+v/2ykHY/Wcki2yWmJLn3jwBTlCFP140P67oH6Ld
-         1cNw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NF62lDVsQt04hH2B9Wki6giRIoml6Qiuq3Q8CuUfCRo=;
+        b=XGGIQbuC2dEPTL2EO4Kd7PI8FlwkSywJFMj+ocmrvhn3IU7sX9ehbCOkdI/8WOw4sN
+         jDJmEQDff085HRxggLQS0hIK3SmRk8HG4bXnE0ls2LE0UwHJdH66jgXDvS8bILIPd/0k
+         BzdamnzuH+ClUZ3444HBACI18mfkjElUGQ/9AusO8VaAxTbRyIEa7sLY4JYkDPpgf+q7
+         D9Zr9/n/3DiNfzR5ncdCKVEC18P1RhUoXCfvtSi8D1NMcRWC48Puq1yuNKxHe9PlgkEc
+         Ol9ozFGjsKUr96y5HaW9lB1lF1hhDf+9hSq4NEPBriK0+tG5aGOKrWfjKMGcFSke0DuM
+         Hulw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=JmUkovJ4PF+YyKy/jY+0gRoy2D+XF6hMzgTd5ze+4xg=;
-        b=JXlfCg5sxxG1uA9PU92L52Sm9/EhaD13WxHBjKgSMAsm1p07IUc1DKTB1zhufEDMiZ
-         6h9CEmx6N+dBS3kwGaZRXD/p3S6BHCct3mcY5cpDUHYJ5UyrIAOkb15g+0Az7h04IABa
-         bFju9yojTYe9SAuHuOFQ580W2pQLD7niTqEmDUwo07ddw6ahE/9LqfzoG8xxB3H31R3y
-         jY40z5FHbFb/1h6+eJwDIC7KGO6c7KheOU4XX6xoSt12lMuJxhBE0dKQp5QTcoYa6aVG
-         LSY7NuJ6/5ceY+KewRIizowyAKzl+wLLh7fuWGkxZIw/en1Yu6f3hb6UhJex3cqPtqYZ
-         FVsQ==
-X-Gm-Message-State: AOAM532k8SM0T4osVAtREWUmQZlLaJdhOG1a9vAqtO5KLPKj0eauGFSa
-        gyufvitzFtNeSw/a/aSjN48=
-X-Google-Smtp-Source: ABdhPJw2O58VpMVpU+gR1j223w9p5DmKGY1H7WzcXBxLkb3E7wEvrE/DzxeCxpyIHOSevNFox4N+Uw==
-X-Received: by 2002:a19:e4a:: with SMTP id 71mr19781865lfo.218.1619010358462;
-        Wed, 21 Apr 2021 06:05:58 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id b10sm199558ljr.109.2021.04.21.06.05.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 06:05:57 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 16:05:46 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     <Peter.Enderborg@sony.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <sumit.semwal@linaro.org>, <christian.koenig@amd.com>,
-        <adobriyan@gmail.com>, <akpm@linux-foundation.org>,
-        <songmuchun@bytedance.com>, <guro@fb.com>, <shakeelb@google.com>,
-        <mhocko@suse.com>, <neilb@suse.de>, <samitolvanen@google.com>,
-        <rppt@kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>, <willy@infradead.org>
-Subject: Re: [PATCH v5] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <20210421160546.7045245f@eldfell>
-In-Reply-To: <cbde932e-8887-391f-4a1d-515e5c56c01d@sony.com>
-References: <20210417163835.25064-1-peter.enderborg@sony.com>
-        <YH6Xv00ddYfMA3Lg@phenom.ffwll.local>
-        <176e7e71-59b7-b288-9483-10e0f42a7a3f@sony.com>
-        <YH63iPzbGWzb676T@phenom.ffwll.local>
-        <a60d1eaf-f9f8-e0f3-d214-15ce2c0635c2@sony.com>
-        <YH/tHFBtIawBfGBl@phenom.ffwll.local>
-        <cbde932e-8887-391f-4a1d-515e5c56c01d@sony.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NF62lDVsQt04hH2B9Wki6giRIoml6Qiuq3Q8CuUfCRo=;
+        b=Duo12ch6KnLLjcFuS2FvoHlEXzxJJfE2olr0qTfW56IiwSwCciBfOVHjN0UsGEMBqk
+         5ENKYFzYvRcmjIytTyaxOWrpYNa7SPFpGI8bbESa8bKimF8yGItL9Hj/gkKL7If/PlJQ
+         7tZCTokBpg4pVKaP3zDiwS4rJODGMazgslnR1L/HvnNZbwdDGxaYfSpT6um063Xb/rtt
+         9XSXIEY3kmUoSIXde06FABtzAPrBEE0lGrWqYQ5w3hN3iut1mFa54EwwjMTDHOPHciIX
+         4DLj233YRHbEkqHJpqVC4fzKI1WzUWgcnV6OR15gRJNuUOgwEVtVCdGUxEruCxl9YXYM
+         GqjQ==
+X-Gm-Message-State: AOAM533vrGRh/JHN7eyVktd87WW3CEawMjuxReKlOPeSTqNwRboCASQS
+        H+WpiDMKEDc+dxeBIJFu2pnZld7CYWrozPsIFg==
+X-Google-Smtp-Source: ABdhPJxoBmUNx9eX0oYOFhSIg2Y4F2e334SIF1OdXk+N9gVrawGwsjSNVDFq7zak9tQ1k0QeymJIbZBah//ut4I4GBc=
+X-Received: by 2002:a17:906:9ac5:: with SMTP id ah5mr32008102ejc.360.1619010410401;
+ Wed, 21 Apr 2021 06:06:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/T2Q=aDoIbEuzeKlHNow=Dcn"; protocol="application/pgp-signature"
+References: <20210329200348.24a9a8be@canb.auug.org.au> <20210421162320.1e3ff588@canb.auug.org.au>
+In-Reply-To: <20210421162320.1e3ff588@canb.auug.org.au>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Wed, 21 Apr 2021 08:06:37 -0500
+Message-ID: <CAL_Jsq+0aPu75-mfQ+udkWWpJ3734J72V3fuXa_nzK9wfaX30Q@mail.gmail.com>
+Subject: Re: linux-next: build warnings after merge of Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grant Likely <grant.likely@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T2Q=aDoIbEuzeKlHNow=Dcn
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Apr 21, 2021 at 1:23 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Mon, 29 Mar 2021 20:04:10 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > After merging Linus' tree, today's linux-next build (htmldocs) produced
+> > these warnings:
+> >
+> > include/linux/of.h:1211: warning: Function parameter or member 'output' not described in 'of_property_read_string_index'
+> > include/linux/of.h:1211: warning: Excess function parameter 'out_string' description in 'of_property_read_string_index'
+> >
+> > Introduced by commit
+> >
+> >   a87fa1d81a9f ("of: Fix overflow bug in string property parsing functions")
+> >
+> > I assume that these warnings have turned up now due to better(?) tooling.
+>
+> I am still seeing these warnings (as of next-20210420).
 
-On Wed, 21 Apr 2021 10:37:11 +0000
-<Peter.Enderborg@sony.com> wrote:
+A fix is now in my tree.
 
-> On 4/21/21 11:15 AM, Daniel Vetter wrote:
-> > On Tue, Apr 20, 2021 at 11:37:41AM +0000, Peter.Enderborg@sony.com wrot=
-e: =20
-
-> >> But I dont think they will. dma-buf does not have to be mapped to a pr=
-ocess,
-> >> and the case of vram, it is not covered in current global_zone. All of=
- them
-> >> would be very nice to have in some form. But it wont change what the
-> >> correct value of what "Total" is. =20
-> > We need to understand what the "correct" value is. Not in terms of kern=
-el
-> > code, but in terms of semantics. Like if userspace allocates a GL textu=
-re,
-> > is this supposed to show up in your metric or not. Stuff like that. =20
-
-> That it like that would like to only one pointer type. You need to know w=
-hat
-> you pointing at to know what it is. it might be a hardware or a other poi=
-nter.
-
-To clarify the GL texture example: a GL texture consumes "graphics
-memory", whatever that is, but they are not allocated as dmabufs. So
-they count for resource consumption, but they do not show up in your
-counter, until they become exported. Most GL textures are never
-exported at all. In fact, exporting GL textures is a path strongly
-recommended against due to unsuitable EGL/GL API.
-
-As far as I understand, dmabufs are never allocated as is. Dmabufs
-always just wrap an existing memory allocation. So creating (exporting)
-a dmabuf does not increase resource usage. Allocation increases
-resource usage, and most allocations are never exported.
-
-> If there is a limitation on your pointers it is a good metric to count th=
-em
-> even if you don't=C2=A0 know what they are. Same goes for dma-buf, they
-> are generic, but they consume some resources that are counted in pages.
-
-Given above, I could even argue that *dmabufs* do not consume
-resources. They only reference resources that were already allocated
-by some specific means (not generic). They might keep the resource
-allocated, preventing it from being freed if leaked.
-
-As you might know, there is no really generic "dmabuf allocator", not
-as a kernel UAPI nor as a userspace library (the hypothetical Unix
-Device Memory Allocator library notwithstanding).
-
-So this kind of leaves the question, what is DmaBufTotal good for? Is
-it the same kind of counter as VIRT in 'top'? If you know your
-particular programs, you can maybe infer if VIRT is too much or not,
-but for e.g. WebKitWebProcess it is normal to have 85 GB in VIRT and
-it's not a problem (like I have, on this 8 GB RAM machine).
-
-
-Thanks,
-pq
-
---Sig_/T2Q=aDoIbEuzeKlHNow=Dcn
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmCAIyoACgkQI1/ltBGq
-qqdgcA/+OU3upziPx5lqynmqoiFPG1bUHAZHL5yi5T2jmhfS7JPQT5Hkjv3wUtNe
-1liYgsv2ATY/B6EPnwB85cH7mwBdWa2b20cbgld3yoUrTYbGVD6mG5C9xGwgnT/3
-Yu7gABmOPTmnBwjYDpQm/C98QhWDTTeizPYUJzIeb36+Zf1cItMjUhG1dcokslp3
-T0LcPJnttN5WKbmZCPVvAZJ02mWDx6/k6VYbT77NvSRJ+GPMZBL3wNxkY4hzMC4l
-LAmZm2biGahXtgsG93kblsM4DjWppAti0ToJF9OQlnTdzeFWEm8OMuZMrDj7gT6X
-MPfMDR3l+pmfB3VM6QeBxhWC6swl3RvWIEpti6gaHy/JcNdhuDYWuYBFVPosLxQV
-zHEe+wXTuUoQyGtINR0F8aU+pgT7lHp6BBZxHbQyHlxoxo05mM7hSupHt1yFfY+U
-vUvggaM50URJjG+t88DLyYaB0tX3APSkUY8wVuKB/vO3VYb3v9g+dgCN+GJBD4/q
-Yqhjf7PWG3aHU6kwEWIJDHXiXOMKVZnALodzAloRck/vh4zs8QDgGE7MGDnj5NUI
-GdPjTDK6xMx7Xhx0tlZgtkPhbiQdkhN+r0jqgeNlNm2VTUv/T6UerfWOkN9BlS2k
-/6Es9bwDrvvL+MKC2XCylqSNRHQkDMmayMtymQCEIitRZLTYbVg=
-=1pAh
------END PGP SIGNATURE-----
-
---Sig_/T2Q=aDoIbEuzeKlHNow=Dcn--
+Rob
