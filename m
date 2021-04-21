@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2383366B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC0D366BA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240441AbhDUNDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42922 "EHLO mail.kernel.org"
+        id S240502AbhDUNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:04:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240342AbhDUNDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F0016143B;
-        Wed, 21 Apr 2021 13:02:48 +0000 (UTC)
+        id S240564AbhDUNDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:03:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D8361455;
+        Wed, 21 Apr 2021 13:03:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010169;
-        bh=lM35Y+wMFT/ShIx1jQMdZbxzdMf4JqsEl/YfqCQFEe8=;
+        s=korg; t=1619010200;
+        bh=grD8+w8ZOzj0zgn/0mJAyVyX5veIj926JQXIJjIb1V0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=itzpA+MXjqk108BtacEKDMUWYpRXSyfJRsdyBifAMs2Wi578SYoYXbLhTQV3iv/rx
-         Bldr/VOU4BudyGz+6FsSziBup4QZ/VrYD2ODBSRZFh8ApaxhxIID4hiHlEIHmLVPDg
-         pfAfhag3+dkB0armYhhoWFAmarutnpd7JqB4828A=
+        b=xFipHGaAeoH7YuUbjl0WoBatF+8Wf0TOR+JfPl/sbChG/uRINFs8ot/dCbX+RxH89
+         zZ704u6DYqvwNETfdFyGmmBitNmgH5MWs6lS3F24B7jmdk5VmK+HVCEmE81TP7CyXn
+         sajhttt1uikRjwnfSleY0ZIT7ml6CTPGMWB7Oeuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Qiushi Wu <wu000273@umn.edu>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 030/190] Revert "ASoC: tegra: Fix reference count leaks."
-Date:   Wed, 21 Apr 2021 14:58:25 +0200
-Message-Id: <20210421130105.1226686-31-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 031/190] Revert "test_objagg: Fix potential memory leak in error handling"
+Date:   Wed, 21 Apr 2021 14:58:26 +0200
+Message-Id: <20210421130105.1226686-32-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit deca195383a6085be62cb453079e03e04d618d6e.
+This reverts commit a6379f0ad6375a707e915518ecd5c2270afcd395.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,48 +53,30 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Qiushi Wu <wu000273@umn.edu>
-Cc: Jon Hunter <jonathanh@nvidia.com>
-Cc: https
-Cc: Mark Brown <broonie@kernel.org>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/tegra/tegra30_ahub.c | 4 +---
- sound/soc/tegra/tegra30_i2s.c  | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ lib/test_objagg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 9ef05ca4f6c4..b116b05e4e72 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -657,10 +657,8 @@ static int tegra30_ahub_resume(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0) {
--		pm_runtime_put(dev);
-+	if (ret < 0)
- 		return ret;
--	}
- 	ret = regcache_sync(ahub->regmap_ahub);
- 	ret |= regcache_sync(ahub->regmap_apbif);
- 	pm_runtime_put(dev);
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 6740df541508..3187a0f0c07a 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -567,10 +567,8 @@ static int tegra30_i2s_resume(struct device *dev)
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(dev);
--	if (ret < 0) {
--		pm_runtime_put(dev);
-+	if (ret < 0)
- 		return ret;
--	}
- 	ret = regcache_sync(i2s->regmap);
- 	pm_runtime_put(dev);
- 
+diff --git a/lib/test_objagg.c b/lib/test_objagg.c
+index da137939a410..72c1abfa154d 100644
+--- a/lib/test_objagg.c
++++ b/lib/test_objagg.c
+@@ -979,10 +979,10 @@ static int test_hints_case(const struct hints_case *hints_case)
+ err_world2_obj_get:
+ 	for (i--; i >= 0; i--)
+ 		world_obj_put(&world2, objagg, hints_case->key_ids[i]);
+-	i = hints_case->key_ids_count;
++	objagg_hints_put(hints);
+ 	objagg_destroy(objagg2);
++	i = hints_case->key_ids_count;
+ err_check_expect_hints_stats:
+-	objagg_hints_put(hints);
+ err_hints_get:
+ err_check_expect_stats:
+ err_world_obj_get:
 -- 
 2.31.1
 
