@@ -2,100 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912BE367160
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C09367164
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242272AbhDURd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:33:29 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17539 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235303AbhDURd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:33:28 -0400
-IronPort-SDR: o++UO7LnLRZ9V3mVFlAmcjQbqnF6VaXZ0hVnvD/a++hNzYgstFTDHNbSr6RyVnxYACwR44sT70
- gWctEawMoJvw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195767473"
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="195767473"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:32:54 -0700
-IronPort-SDR: CDaZpIxq2ZZnt2SZWMmShEx5WpDwsDd1+BtNwR838e8UDi07Erpse9OqKPQ/fKIvvAXbmlB6ik
- +NG0W2+ZJXyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="391544525"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Apr 2021 10:32:53 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.174])
-        by linux.intel.com (Postfix) with ESMTP id BE40258090E;
-        Wed, 21 Apr 2021 10:32:53 -0700 (PDT)
-Message-ID: <eff01b04545eb14f5547b45b1c620e244ce25631.camel@linux.intel.com>
-Subject: Re: [PATCH] platform/x86: intel_pmc_core: add ACPI dependency
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 21 Apr 2021 10:32:53 -0700
-In-Reply-To: <20210421134957.3329062-1-arnd@kernel.org>
-References: <20210421134957.3329062-1-arnd@kernel.org>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S242713AbhDUReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:34:07 -0400
+Received: from mail-mw2nam10on2119.outbound.protection.outlook.com ([40.107.94.119]:32321
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239822AbhDUReE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:34:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VtN+8Yk7u/bsw8MC9fwmEbdeoq+pCocpnheTnN7RpePI85cmBdpxFwU6jz98CnUh8EOfqzOjEbYXPhA3aLVcymltiRNEKRCLmx0o5auEJo0BXI6bgpZi+VEBwOR9deWQTik2a3kiwYEJaE4TbjqNhN4jo1zCXDMKCrPBOGPYHM4A910RAu3Bgy088i+NWIBs2OJFa9seApc24U9jRWZELDfUWa8D3/beIvmEt3QZssDHsPENVCl5w81cFbwYWzqBSsrgBQFzhNae4f7Iak5ix8QwVEBJcCSlZy+6uuTdLPh2EgfMIIU+uKRCa2Rzso8vjAi1wXhBaeddf+vUDYpnaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DIaA5h2arZwGRXuP7WWy47PiFdDmhN5OqlHH5rrfjjk=;
+ b=M0yX4D4NmIcC6bMgucGgvFzUciYjthDTXy7/nGOmO1lgmGthNC53oEa7lZUNAwszxlb90dk+FREA9FaodW7ZMjl/Ii+2qt6jMumgUjhxIBwohCxP5SShYc9T0xrReJAVeDMGcV9ntXXt4Z8AmMAeUd0vTovqziACifnQTXKrUFUmfzojirv6XbOctLSZfY3u14LyttV1lYPKsNvLfFd8fZOKwkTSMKsiKg48zwFOSV4n8zCI6/49R4/FjfkQCucQcu7KorzMb1cKu4AOO4CqAPrhYLzkxDij6axJwdyf3J8fD5gK5+GhTVSH28r245n0YsgFVxL2IxnIH+Cb5WnMFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DIaA5h2arZwGRXuP7WWy47PiFdDmhN5OqlHH5rrfjjk=;
+ b=DJOqaKF/RcTi7eNYhZ4uEQXvlHQ1wvmZYYgMKvXd29KHtr9SiLrUx6SyLNXCHD/ZT/TvH+5Rk32SFRRqksP0TrZDgMLszRVe9n7/GmwNz5JKg3H1Y8gEtyq2lL6DMk+C/qZt2hRNlm/qh40WoheFyLfDGFqqhtJX7T68pQ1yRG8=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MWHPR21MB0477.namprd21.prod.outlook.com (2603:10b6:300:ec::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.10; Wed, 21 Apr
+ 2021 17:33:30 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f%5]) with mapi id 15.20.4087.016; Wed, 21 Apr 2021
+ 17:33:30 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>
+CC:     Long Li <longli@microsoft.com>
+Subject: RE: [PATCH] PCI: hv: Fix a race condition when removing the device
+Thread-Topic: [PATCH] PCI: hv: Fix a race condition when removing the device
+Thread-Index: AQHXNVHtsv1pPhn/lUymN/4kjb1Ps6q/O9jQ
+Date:   Wed, 21 Apr 2021 17:33:29 +0000
+Message-ID: <MWHPR21MB1593CAEAFB8988ECB93BE6E3D7479@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <1618860054-928-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <1618860054-928-1-git-send-email-longli@linuxonhyperv.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0c2cd82d-a9ce-4184-9a5b-6c1855cc9093;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-21T17:24:53Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: linuxonhyperv.com; dkim=none (message not signed)
+ header.d=none;linuxonhyperv.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [75.104.93.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 530ced51-da83-425b-abef-08d904eb9440
+x-ms-traffictypediagnostic: MWHPR21MB0477:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB047749C92D59B76EB2A84962D7479@MWHPR21MB0477.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uJPxflBkWy+ZSRIaowK4XsUXQughcKxSqiHkeQhuy2RRvOEOlOUXXNmMXCmpZW3y+WEPyecpSlATQy94EaHYKjtzbPD+8+a69VkEWJoHJM5Uft4rCZAesn/QvKD8ihdR10XSFPsTPkhrYCuYOTDz6Xkz8JS91epRozNY9d+SYW9a7iCpXQMWFEElzUPbbBMXrlTLUZidjaupuTTeoDDvqyeynWn5SBLleFT0xQolD8C5W1pJLf/IrU3+9kT0l+7oPcYwwLnmsFEqqsI3MF9U9FzWjrXUVOmC9GBWUVB2H6NmL3zmrnXL+k6sl0dgXMq5xIFqP70zoTw1QeV2W8LVQ2yY+bEw5rYNzaQkCsTNlpPeSBeu1AS0vFw/CPHv6DTlzbhlShRwoUqRPnXwe+mPJXFTXVk3fZRvxU5mWE/0CpCyWIX9nHhaIZ+LHBtU37/axB6QMUC1fUXTVNKN31stp9+RyNB+e3GAciwBk+XMIMYaqZ0WWV/3PUEPREQ4cZonKYDpAvKN3FDnjr/APpZa50l7Pp7CXYcapAXsidXnPZbJU6E+E5lThctY2EcXA/OYeophI2xk3YYNNFBv1rUtkXcAkaxgYt0sTY3aI6MYcrsoLS1KR5Leemwx2I8MvKR71EW8WFpq5ZfvMXAb23ok4Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(6506007)(110136005)(26005)(186003)(478600001)(6636002)(316002)(8936002)(10290500003)(82950400001)(8990500004)(7696005)(9686003)(8676002)(55016002)(52536014)(76116006)(83380400001)(921005)(38100700002)(2906002)(4326008)(107886003)(82960400001)(66946007)(66476007)(66556008)(64756008)(66446008)(33656002)(86362001)(71200400001)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?PMQIs0D1SuEwunDLDLIs6ULvrvSdwaFdiZsl8AAe+p0u6U58qMDe5V5+lcm0?=
+ =?us-ascii?Q?9gxk1gtHzFAhRMR34b/JO9WeToU1Zrxje00jWvd/tJjLzlkJ7n0QS96o1phL?=
+ =?us-ascii?Q?LyxuK+oo1Sn93mhl5wRhtHil3+WkL4I5bm7Jr4cppZeyAZoA7TW2BoCFPsnC?=
+ =?us-ascii?Q?WsRrQd45Mk9djHfNv2PIuRVJuwlOP64vOZqVTLMcsYvaIvH4LdEU/kQgHqZz?=
+ =?us-ascii?Q?dYGCyK/8WHE1nzJ+07HOD4GdSbNN2OEeRz+Zuh1FMtK+u6qN6X2oRG9rmxhT?=
+ =?us-ascii?Q?90Dba4Uu3kymGqcWJv5cyhXE0dlsFJVLstB8lkcUqisPMvfWY5qvQiRojMmN?=
+ =?us-ascii?Q?xd/vPbFKCc1BQ07gt6w+7+32x//4A6l5qEJ4J0k8NhazbEyNZiOhPrNFcbU1?=
+ =?us-ascii?Q?svfVmflcezYJBZm+hBTk20B06i+R73AIOxD4hiKj049JJAOarfe8HlMRJ4jt?=
+ =?us-ascii?Q?Q3AG5Ct5Yq6zUQ1ZDRnAiaDBLYrcszWgQbiZoNiYfy1BpIF/4wEFEFbIBsRl?=
+ =?us-ascii?Q?9EARFl1rCzTnMRYDFH1wnYnE9aBBmRz+ErUAB9uZjUb9BppTQVEgd3UszLuk?=
+ =?us-ascii?Q?pX+doXFJUwzOGnbOK56/ISvjISflDSPDNYnd+2UhHtP6k4TKNcG+nU0esU12?=
+ =?us-ascii?Q?nFDDVor0eYXWiThjT42GWBGQNUbHHf3QVCiJbuBdUVldzv42HQm45Lf4wHLo?=
+ =?us-ascii?Q?b7netdRMmEtNflJVec3URaf8QZebF7KcR1eC4XfcitUA0xwr+l4k/CwodEoq?=
+ =?us-ascii?Q?9ewApSzXEj4A38aRmG188Z7f402oWd/aaigeXdaVsRRW65Gb11yr3wQqpoHQ?=
+ =?us-ascii?Q?GBXWtqsaS9XOv65zGRdNV5qeT5RQ56GiQzjqVfSpHU0pYegXdMl8XWFfjTsX?=
+ =?us-ascii?Q?D5DlnjPYz36d0DjzQ4uRv8m1+OR/I5oNAM8deesvdkJ+du7s6pJeK4NqByNm?=
+ =?us-ascii?Q?Tgk9TbDObbIZ5XcHf2r77WX63aoBsJmGybVJ5J57mmxuJIl8PJY8QQgRhmMT?=
+ =?us-ascii?Q?vkrQuptD523boipsJCcsRn0+lBEsGsYfSitA3if/ESAHiRTwOnHAjXKHoio0?=
+ =?us-ascii?Q?qY1teAmihtNKUwb8pRr27kXAyxrMjL1zWWMyt1h5ZOFhSv7ycCqSStvAyHKf?=
+ =?us-ascii?Q?N0FHOay1e1hld0Ng5ufynj8UARDKwBG+fYg7a/OBE//U2VZeQjfu+Uch/b2U?=
+ =?us-ascii?Q?uCYqnHF4neyLY4Fdr/iE5TsstzVeezuE0/nMnk1af4tdgVhlNqZZ+gugbfCe?=
+ =?us-ascii?Q?MtPJaU861AU/vUQhXcQtnNuKyiHezKVTQdSfJhPUEro3Jy9d9KDKFz6KoTZw?=
+ =?us-ascii?Q?W1ssEhXyLIV1u9cJWwrlG96F?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 530ced51-da83-425b-abef-08d904eb9440
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2021 17:33:29.8878
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m4Ca54nd67u0NNrxISrZsOcekgVUzAiTPjO6ti65CyXSczwOntva5vM6hKTZcNnAix2NS2BvVOM/jk4Xqfsi8Hn65mzhpVYwRgRBECEFvgc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0477
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the fix Arnd. Thought I could get away with not adding the
-dependency since the function is stubbed but didn't realize struct
-acpi_device wouldn't be defined. Should have build tested it.
+From: longli@linuxonhyperv.com <longli@linuxonhyperv.com>  Sent: Monday, Ap=
+ril 19, 2021 12:21 PM
+>=20
+> On removing the device, any work item (hv_pci_devices_present() or
+> hv_pci_eject_device()) scheduled on workqueue hbus->wq may still be runni=
+ng
+> and race with hv_pci_remove().
+>=20
+> This can happen because the host may send PCI_EJECT or PCI_BUS_RELATIONS(=
+2)
+> and decide to rescind the channel immediately after that.
+>=20
+> Fix this by flushing/stopping the workqueue of hbus before doing hbus rem=
+ove.
 
-David
+I can see that this change follows the same pattern as in hv_pci_suspend().=
+   The
+comments there give a full explanation of the issue and the solution.  But
+interestingly, the current code also has a reference count mechanism on
+the hbus.  And code near the end of hv_pci_remove() decrements the referenc=
+e
+count and then waits for all users to finish before destroying the workqueu=
+e.
+With this change, is this reference counting mechanism still needed?   If t=
+he
+workqueue has already been emptied, it seems like the wait_for_completion()
+near the end of hv_pci_remove() would never be waiting for anything.  It ma=
+kes
+me wonder if moving the reference count checking code from near the end of
+hv_pci_remove() up to near the beginning would solve the problem as well
+(and maybe in hv_pci_suspend also?).
 
-On Wed, 2021-04-21 at 15:49 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The driver now fails to build without ACPI:
-> 
-> drivers/platform/x86/intel_pmc_core.c: In function
-> 'pmc_core_get_tgl_lpm_reqs':
-> drivers/platform/x86/intel_pmc_core.c:617:41: error: invalid use of
-> undefined type 'struct acpi_device'
->   617 |         out_obj = acpi_evaluate_dsm(adev->handle,
-> &s0ix_dsm_guid, 0,
-> 
-> This could probably be made optional, but it won't be used without
-> ACPI in practice, so just add a Kconfig dependency.
-> 
-> Fixes: 428131364f00 ("platform/x86: intel_pmc_core: Get LPM
-> requirements for Tiger Lake")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Michael=20
+
+>=20
+> Signed-off-by: Long Li <longli@microsoft.com>
 > ---
->  drivers/platform/x86/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/x86/Kconfig
-> b/drivers/platform/x86/Kconfig
-> index 697fc446ac41..2714f7c3843e 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1194,6 +1194,7 @@ config INTEL_MRFLD_PWRBTN
->  config INTEL_PMC_CORE
->         tristate "Intel PMC Core driver"
->         depends on PCI
-> +       depends on ACPI
->         help
->           The Intel Platform Controller Hub for Intel Core SoCs
-> provides access
->           to Power Management Controller registers via various
-> interfaces. This
-
+>  drivers/pci/controller/pci-hyperv.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller=
+/pci-hyperv.c
+> index 27a17a1e4a7c..116815404313 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3305,6 +3305,17 @@ static int hv_pci_remove(struct hv_device *hdev)
+>=20
+>  	hbus =3D hv_get_drvdata(hdev);
+>  	if (hbus->state =3D=3D hv_pcibus_installed) {
+> +		tasklet_disable(&hdev->channel->callback_event);
+> +		hbus->state =3D hv_pcibus_removing;
+> +		tasklet_enable(&hdev->channel->callback_event);
+> +
+> +		flush_workqueue(hbus->wq);
+> +		/*
+> +		 * At this point, no work is running or can be scheduled
+> +		 * on hbus-wq. We can't race with hv_pci_devices_present()
+> +		 * or hv_pci_eject_device(), it's safe to proceed.
+> +		 */
+> +
+>  		/* Remove the bus from PCI's point of view. */
+>  		pci_lock_rescan_remove();
+>  		pci_stop_root_bus(hbus->pci_bus);
+> --
+> 2.27.0
 
