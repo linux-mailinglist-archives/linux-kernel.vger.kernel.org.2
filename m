@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BB3366B9C
+	by mail.lfdr.de (Postfix) with ESMTP id 66921366B9D
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240577AbhDUNDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43646 "EHLO mail.kernel.org"
+        id S240587AbhDUND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:03:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240506AbhDUNDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 115E261459;
-        Wed, 21 Apr 2021 13:03:05 +0000 (UTC)
+        id S240522AbhDUNDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:03:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A030F6144B;
+        Wed, 21 Apr 2021 13:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010186;
-        bh=W4NBVmYwrc825+kYS81jpfa+Nf9qD+n4WTUOb8CDs3I=;
+        s=korg; t=1619010189;
+        bh=nCLdY1rkZxE75HgPMVP2afAAIR9qIwWr0k6pxmJIp5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XwhU13r1eRiGxn0tuEf/ywI3G/pN/3eWaTTa8XeuaF7dCKE+3gkHLOofyHAuBKqtR
-         LVVj81DagTAxkrKdqq+XCwVOfM9XHexjea6bC9cLgFRDCtr57n3cp7ar1SzIfUqQMM
-         A9d3KXQkXm4RPIvJNW0vfMGvhgsToIofvOWKNyDE=
+        b=XPBt4INDOYQ+sPUfV+GuuVYDZiydXQoO3AeHU/WCYQtxjdzWK0ay7pPp1eKLI+RP3
+         8whUdWKy9Mwc6CkKxau5NVfOFOnhHHB1dWirjKpHoDax+YlAoEyKdr16kISgiqWXfc
+         X7M1aRe6pjIk5mPl/ovUdFeq+Mfr/PPMVAi57E2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Qiushi Wu <wu000273@umn.edu>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH 044/190] Revert "RDMA/pvrdma: Fix missing pci disable in pvrdma_pci_probe()"
-Date:   Wed, 21 Apr 2021 14:58:39 +0200
-Message-Id: <20210421130105.1226686-45-gregkh@linuxfoundation.org>
+        Qiushi Wu <wu000273@umn.edu>, Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 045/190] Revert "usb: gadget: fix potential double-free in m66592_probe."
+Date:   Wed, 21 Apr 2021 14:58:40 +0200
+Message-Id: <20210421130105.1226686-46-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit db857e6ae548f0f4f4a0f63fffeeedf3cca21f9d.
+This reverts commit 44734a594196bf1d474212f38fe3a0d37a73278b.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,27 +52,26 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: https
 Cc: Qiushi Wu <wu000273@umn.edu>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
+ drivers/usb/gadget/udc/m66592-udc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index 4b6019e7de67..c5f8d2da07f6 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -800,7 +800,7 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
- 	    !(pci_resource_flags(pdev, 1) & IORESOURCE_MEM)) {
- 		dev_err(&pdev->dev, "PCI BAR region not MMIO\n");
- 		ret = -ENOMEM;
--		goto err_disable_pdev;
-+		goto err_free_device;
- 	}
+diff --git a/drivers/usb/gadget/udc/m66592-udc.c b/drivers/usb/gadget/udc/m66592-udc.c
+index 931e6362a13d..75d16a8902e6 100644
+--- a/drivers/usb/gadget/udc/m66592-udc.c
++++ b/drivers/usb/gadget/udc/m66592-udc.c
+@@ -1667,7 +1667,7 @@ static int m66592_probe(struct platform_device *pdev)
  
- 	ret = pci_request_regions(pdev, DRV_NAME);
+ err_add_udc:
+ 	m66592_free_request(&m66592->ep[0].ep, m66592->ep0_req);
+-	m66592->ep0_req = NULL;
++
+ clean_up3:
+ 	if (m66592->pdata->on_chip) {
+ 		clk_disable(m66592->clk);
 -- 
 2.31.1
 
