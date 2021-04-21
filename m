@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C743366F38
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D96366F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244040AbhDUPco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244024AbhDUPcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244022AbhDUPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 21 Apr 2021 11:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F277861445;
-        Wed, 21 Apr 2021 15:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619019129;
-        bh=RC899umZ0BwpHoFBaQEd03wqXFYBjtGaL5NqM7dfCT8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CpNQszCLq4n8vEbp+4q9qxxt6foYHXA6LMbxM0pUASXfc28rRQcnHijjCXk/bU4TR
-         TdDYeNqRAnnuj8/VLcS5qJ+U07HSMDxPsyQDrG7EJzs2PCv4MxVSBtSYtwYW+PNk62
-         KPitZe+vN9l/HeCKZkA695LuhNegPcRtu6FLyojANSpA0XhVRnYVDfv4MxiPKnPyaa
-         s33u6+4RK9KDcho9/4XcQ0uBmY7Nh+0+l0fdoIHE8WzrDzLSrBN5K5PIpOTmbJh780
-         NBpCEJ2w2VdcFapAACBUQ6BQdb5B+z9QC/dLgLEdzQHHEZlz953zvRL+EwG6ghuB8k
-         P/eYtCOFPaOGg==
-Date:   Wed, 21 Apr 2021 18:31:58 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Peter.Enderborg@sony.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        mhocko@suse.com, neilb@suse.de, samitolvanen@google.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, willy@infradead.org
-Subject: Re: [PATCH v5] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <YIBFbh4Dd1XaDbto@kernel.org>
-References: <20210417163835.25064-1-peter.enderborg@sony.com>
- <YH6Xv00ddYfMA3Lg@phenom.ffwll.local>
- <176e7e71-59b7-b288-9483-10e0f42a7a3f@sony.com>
- <YH63iPzbGWzb676T@phenom.ffwll.local>
- <a60d1eaf-f9f8-e0f3-d214-15ce2c0635c2@sony.com>
- <YH/tHFBtIawBfGBl@phenom.ffwll.local>
- <cbde932e-8887-391f-4a1d-515e5c56c01d@sony.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238663AbhDUPcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:32:39 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623F3C06174A;
+        Wed, 21 Apr 2021 08:32:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f10df00c08862b6cef04697.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:df00:c088:62b6:cef0:4697])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 820641EC025A;
+        Wed, 21 Apr 2021 17:32:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619019124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=s8sUezfXPQv8iAJBppOiBu9E4CwEDqfiDCGzGrmwl4M=;
+        b=FXU0I0XIYbTuMEf2IFWWyyoLNaFzCPPpZDQTLICw0gLJdp/Qn5soa57LIFi/mGBxULtYFx
+        yIS4ZwNzvTGOYAirC3gOEaDy+AnmmQKBYHvl8bxRS0rUkbenUQoKlRM63lRloZp8YVzraa
+        EzsRiVQyxE247suWLHpmrQCrR9v8AtM=
+Date:   Wed, 21 Apr 2021 17:32:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v13 12/12] x86/kvm: Add guest support for detecting and
+ enabling SEV Live Migration feature.
+Message-ID: <20210421153202.GC5004@zn.tnic>
+References: <cover.1618498113.git.ashish.kalra@amd.com>
+ <ffd67dbc1ae6d3505d844e65928a7248ebaebdcc.1618498113.git.ashish.kalra@amd.com>
+ <20210421144402.GB5004@zn.tnic>
+ <20210421152220.GB14004@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cbde932e-8887-391f-4a1d-515e5c56c01d@sony.com>
+In-Reply-To: <20210421152220.GB14004@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:37:11AM +0000, Peter.Enderborg@sony.com wrote:
-> On 4/21/21 11:15 AM, Daniel Vetter wrote:
-> >
-> > We need to understand what the "correct" value is. Not in terms of kernel
-> > code, but in terms of semantics. Like if userspace allocates a GL texture,
-> > is this supposed to show up in your metric or not. Stuff like that.
-> That it like that would like to only one pointer type. You need to know what
-> 
-> you pointing at to know what it is. it might be a hardware or a other pointer.
-> 
-> If there is a limitation on your pointers it is a good metric to count them
-> even if you don't  know what they are. Same goes for dma-buf, they
-> are generic, but they consume some resources that are counted in pages.
-> 
-> It would be very good if there a sub division where you could measure
-> all possible types separately.  We have the detailed in debugfs, but nothing
-> for the user. A summary in meminfo seems to be the best place for such
-> metric.
- 
-Let me try to summarize my understanding of the problem, maybe it'll help
-others as well.
+On Wed, Apr 21, 2021 at 03:22:20PM +0000, Ashish Kalra wrote:
 
-A device driver allocates memory and exports this memory via dma-buf so
-that this memory will be accessible for userspace via a file descriptor.
+> Yes, the above mentions to get KVM_FEATURE_CPUID and then check if live
+> migration feature is supported, i.e.,
+> kvm_para_has_feature(KVM_FEATURE_SEV_LIVE_MIGRATION). The above comments
+> are written more generically.
 
-The allocated memory can be either allocated with alloc_page() from system
-RAM or by other means from dedicated VRAM (that is not managed by Linux mm)
-or even from on-device memory.
+Do not write generic comments please - write exact comments to state
+precisely why you're doing what you're doing.
 
-The dma-buf driver tracks the amount of the memory it was requested to
-export and the size it sees is available at debugfs and fdinfo.
+> Just to ensure that the sev_live_migration_enabled is set to TRUE before
+> it is used immediately next in the function.
 
-The debugfs is not available to user and maybe entirely disabled in
-production systems.
+Why wouldn't it be set to true by the time the next function runs?
 
-There could be quite a few open dma-bufs so there is no overall summary,
-plus fdinfo in production systems your refer to is also unavailable to the
-user because of selinux policy.
+Do you have any concrete observations where this is not the case?
 
-And there are a few details that are not clear to me:
-
-* Since DRM device drivers seem to be the major user of dma-buf exports,
-  why cannot we add information about their memory consumption to, say,
-  /sys/class/graphics/drm/cardX/memory-usage?
-
-* How exactly user generates reports that would include the new counters?
-  From my (mostly outdated) experience Android users won't open a terminal
-  and type 'cat /proc/meminfo' there. I'd presume there is a vendor agent
-  that collects the data and sends it for analysis. In this case what is
-  the reason the vendor is unable to adjust selinix policy so that the
-  agent will be able to access fdinfo?
-
-* And, as others already mentioned, it is not clear what are the problems
-  that can be detected by examining DmaBufTotal except saying "oh, there is
-  too much/too little memory exported via dma-buf". What would be user
-  visible effects of these problems? What are the next steps to investigate
-  them? What other data will be probably required to identify root cause?
+Thx.
 
 -- 
-Sincerely yours,
-Mike.
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
