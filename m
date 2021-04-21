@@ -2,147 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218EB3670A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B473670A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240702AbhDUQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:53:13 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:55750 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235436AbhDUQxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:53:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619023944; bh=LKtMoR4lsluuaw9UOiUUQQGDhk1e0PTaigauOMlSMHQ=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=fJkDjDYAsrl0pDfTdLjNf1xKlQCTUNMLfC8kER6o1hc14YS73hymtNxZDBoVusUd9
-         WTei8J0a1gUrTo8D8NxrfeTXA6OwZHW7a7O0spGBhx9y0D5I90SDLAFFVwEcgxP/bl
-         f809t/ijOLWrTu7zqu72wVtDxmQOSQCPoBt35tQk=
-Received: by b-5.in.mailobj.net [192.168.90.15] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Wed, 21 Apr 2021 18:52:24 +0200 (CEST)
-X-EA-Auth: lgo6EQFlf5F1cWIR3PxDR5L0JVX/v/z4oWqmwf74AXAClxDNJu6PKIZhTifq5qe0/7QYSQAWGfvnmvxm6CjWvpn2n3/V599d
-Date:   Wed, 21 Apr 2021 22:22:19 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
-Subject: [PATCH v1 2/6] staging: media: atomisp: balance braces around
- if...else block
-Message-ID: <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
-References: <cover.1619022192.git.drv@mailo.com>
+        id S241521AbhDUQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:53:45 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:38858 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235436AbhDUQxn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:53:43 -0400
+Received: by mail-oo1-f43.google.com with SMTP id p12-20020a4a2f0c0000b02901ecdbb16887so2422138oop.5;
+        Wed, 21 Apr 2021 09:53:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+WcdVAWw1wrE0hCoQ+UXML3T7kI52AZNB5+mZJ4YXyA=;
+        b=cQ4bRpTUkpKMKuk/SZmMkvkZhovg70ur5KulEFMV9YTnrLMa9eL8QJATDNtikdem0H
+         VTOd8ICaIePVrtuR3sl4gRUohr+xfsk9+5zxq3jn4Rz7FSoMPJfMivkDuL1AgE/4qdDo
+         VHysH4Nn4kCxs7tPHEkJjJU/sCdlq+p/JpxoQgzEAlufMHuBJBa+w5iJ1FyiDqF3R08s
+         aF3GAgJzG9XGzUUcEs74CY2B1zaS+Un1WiFYaYxEFmUWjjIwln+Gy/L/mSV5YbBzduBF
+         4zS/h8l0gouaY80wUg1u1zq35oSllGGgCPTCvfDk3vZlsngD+ELnU0Cctq+Wtf+SLx9f
+         V7HQ==
+X-Gm-Message-State: AOAM5322bKVvbDQxPXPU4IwtMXw4OE6AxvKX5AAZwN64WmsKABfIYOuu
+        9XYiIssSw+McSI2yCqtIneQUUJYG4dedl+D038U=
+X-Google-Smtp-Source: ABdhPJxSq8Z7Oay74Ci2aElVdYLnRCXpGGB0j1dzlozKhf7iQegxeIuo8msIODvBqfSxPh1mcqBZT4r7aiHGlWtKT74=
+X-Received: by 2002:a4a:d781:: with SMTP id c1mr21492266oou.44.1619023989913;
+ Wed, 21 Apr 2021 09:53:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1619022192.git.drv@mailo.com>
+References: <20210415143758.1962567-1-colin.king@canonical.com>
+In-Reply-To: <20210415143758.1962567-1-colin.king@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 21 Apr 2021 18:52:58 +0200
+Message-ID: <CAJZ5v0gogVAEZRP7AoiHhEiYcDtjsUoAUUACSpUcWBEc_qhSSw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: APEI: remove redundant assignment to variable rc
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Balance braces around the if else blocks as per the code style guidelines.
-Resolves checkpatch script CHECK / WARNING feedback messages.
+On Thu, Apr 15, 2021 at 4:38 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable rc is being assigned a value that is never read,
+> the assignment is redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/acpi/apei/einj.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
+> index 133156759551..328e8aeece6c 100644
+> --- a/drivers/acpi/apei/einj.c
+> +++ b/drivers/acpi/apei/einj.c
+> @@ -725,7 +725,6 @@ static int __init einj_init(void)
+>                 goto err_release;
+>         }
+>
+> -       rc = -ENOMEM;
+>         einj_param = einj_get_parameter_address();
+>         if ((param_extension || acpi5) && einj_param) {
+>                 debugfs_create_x32("flags", S_IRUSR | S_IWUSR, einj_debug_dir,
+> --
 
-Signed-off-by: Deepak R Varma <drv@mailo.com>
----
-
-Changes in v1:
-   - None.
-
- drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
- drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
- drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
- drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
- drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
- 5 files changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-index 6be3ee1d93a5..d68a2bcc9ae1 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-@@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
- {
- 	int ret;
- 
--	if (on == 0)
-+	if (on == 0) {
- 		return power_down(sd);
--	else {
-+	} else {
- 		ret = power_up(sd);
- 		if (!ret)
- 			return gc0310_init(sd);
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-index 6ba4a8adff7c..e722c639b60d 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-@@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
- {
- 	int ret;
- 
--	if (on == 0)
-+	if (on == 0) {
- 		ret = power_down(sd);
--	else {
-+	} else {
- 		ret = power_up(sd);
- 		if (!ret)
- 			ret = __gc2235_init(sd);
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-index f5de81132177..465fc4468442 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-@@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
- 
- static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
- {
--	if (power == 0)
-+	if (power == 0) {
- 		return power_down(sd);
--	else {
-+	} else {
- 		if (power_up(sd))
- 			return -EINVAL;
- 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-index c90730513438..92c52431bd8f 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
-@@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
- 	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
- 	if (ret)
- 		return ret;
--	if (value) {
-+
-+	if (value)
- 		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
--	} else {
-+	else
- 		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
--	}
-+
- 	ret = ov2680_write_reg(client, 1,
- 			       OV2680_FLIP_REG, val);
- 	if (ret)
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-index aec7392fd1de..d046a9804f63 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-@@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
- {
- 	int ret;
- 
--	if (on == 0)
-+	if (on == 0) {
- 		return power_down(sd);
--	else {
-+	} else {
- 		ret = power_up(sd);
- 		if (!ret)
- 			return ov2722_init(sd);
--- 
-2.25.1
-
-
-
+Applied as 5.13 material, thanks!
