@@ -2,156 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A66367187
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C01536718A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242739AbhDURlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
+        id S243023AbhDURlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242273AbhDURlB (ORCPT
+        with ESMTP id S234640AbhDURla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:41:01 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F776C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:40:27 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id h11so11902755pfn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:40:27 -0700 (PDT)
+        Wed, 21 Apr 2021 13:41:30 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4650BC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:40:57 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id h15so11869922pfv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:40:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=h/beBkqWPWtq3+yl17G4GLEbQfDSlnnJp5RXRR66KYE=;
-        b=cE0ORofprgoov158xmxjlX5mEid/m5laCX19wY+7OZffLWMAyu4RXrrYeIEa7iS9mW
-         zSNDddWAs9KTix7ZcMvjMulSqHoNTB3r6cgSok/jUsVlVoYId3I8bcU4kfTnDPzWnXIU
-         QbgdAPoqeRzIEGzsjsCiO8HMSyRXKLHi4ZBag=
+        bh=KqxdLKVRxruk3VhviovYIaEHWX0upwD63/5cJozT3Xk=;
+        b=ikBHNJurMTLHP8Txl/56QkAbqnldy80ahyLzWNHPAqXFyq1HkiG7onJin3REQoxLpj
+         tUmwPEzzpuucrWPkZBuNB7nFadmFtru21xzefr3YY/7pde0xc7ebDHC63kHOBRfA5538
+         wwHBH3PNghUAV6WCyD059MuhOAqGR30uVs34IpRAhXDKwED2iyDMD6Tu31GSV+VoSgeJ
+         RyCuvc4ezp6TNvHoqfcs4xlqhOqERrmff9a00eZtC/rozbIrbh2tYdXfP0p7Y8QUwGYs
+         90y/8C/9P1nzOfS543GmJVL6B4HG3LLLsYr4keqxeBXgDSjfjhrQfXQF5wH5hRkrhEM7
+         z5xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=h/beBkqWPWtq3+yl17G4GLEbQfDSlnnJp5RXRR66KYE=;
-        b=LC7BN/VyPMp6nawN7Q7OVDNw06M1INumKueYdX5ARWgnIVlMebgQjRcY5GB9C1S2Pc
-         8r3UhPIpJ3iFxMQ6eHRx9F/6+8tIJwJ1FNrgtt5lqfGf5zesb9hbDY++tVxTVxEdVi5W
-         X/PqeMUghg5vl0yF6MzOZ1wE1AAYxpw0gP90BkkTKOys4c1t0hzc/pOFagflk7imwkHa
-         j/Lo23Z/qL4oy48KNmRjEugh9Cu4ipt1LEy4IwckK0BQHdkkPow/9cOEwyu30J5gJ9Aj
-         unIUdSlFlF+cxjLYhwuEOfLFZJcLaMeqEqyhLQbA3MWUCu8Eb8FUTgFUDjT+QUO3Y8uW
-         N8bw==
-X-Gm-Message-State: AOAM531yusIcPHCtaB/UWsbj1vSLiWXrHHlyW9v/Q9HGmfAVxRggpaaI
-        4SJoxte4+skqPZBwcQLntKdWBQ==
-X-Google-Smtp-Source: ABdhPJw2VsFXVVPmA45ixsygoh7TW76jWkUpmaK+0w/xbWIpwp9qQGUbnQTlZg9rcsnkVLbLcnJhXQ==
-X-Received: by 2002:a63:5b5c:: with SMTP id l28mr22480973pgm.363.1619026826588;
-        Wed, 21 Apr 2021 10:40:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m9sm58735pgt.65.2021.04.21.10.40.25
+        bh=KqxdLKVRxruk3VhviovYIaEHWX0upwD63/5cJozT3Xk=;
+        b=GUWyHNIowPPeuUBOD1qz2ouUKekR+zj2zZQxcQTPWh6CjJVGXs248rcbgR3BhVICqC
+         k7PHCVODrPW/xn9Bm48V8syam+wXNExqHZ4nLpiwmeN1jlht3lAIWIU7Pb7BqE8kmrRq
+         Xu8Goxe/PNv3CPXvyN+gkPrw0OJMUokhZT8vt+mgRzbQfo7VAmq1GiBw+7bvKFe+w9af
+         9D+zHX0jXh8IOml16fYB0OMey0rhyfP8SPw0LAEI9cC93GYemh2kbPab8ZxDOjVOl/CT
+         pWNiygtsEiwY/TnqNOm6gyNve2ASoEIA0f2JZgqgo1MKIY++ig/zbWEStjJ3prvsqoct
+         J8HA==
+X-Gm-Message-State: AOAM532RLuWXAoOywU43vX6WVTgg4Ahq/keXaX4vGdCHQr+qEf4Y7SeO
+        Q3eZNmOCrWdwSBWsu7zLGMxeIg==
+X-Google-Smtp-Source: ABdhPJzK8tVMg33C/wZvY7JUR5cwCTHDq0JUq0IowoA1jQW1qJkblE1B9he3NCv5ZOXiyAPA+qG4qA==
+X-Received: by 2002:a17:90a:c08f:: with SMTP id o15mr12664038pjs.22.1619026856756;
+        Wed, 21 Apr 2021 10:40:56 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id pc17sm21713pjb.19.2021.04.21.10.40.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:40:25 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 10:40:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ralph Metzler <rjkm@metzlerbros.de>,
-        Matthias Benesch <twoof7@freenet.de>,
-        Oliver Endriss <o.endriss@gmx.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] media: ngene: Fix out-of-bounds bug in
- ngene_command_config_free_buf()
-Message-ID: <202104211039.31E9785@keescook>
-References: <20210420001631.GA45456@embeddedor>
+        Wed, 21 Apr 2021 10:40:55 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:40:53 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 5/7] rpmsg: char: Introduce a rpmsg driver for the
+ rpmsg char device
+Message-ID: <20210421174053.GA1223348@xps15>
+References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
+ <20210413134458.17912-6-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420001631.GA45456@embeddedor>
+In-Reply-To: <20210413134458.17912-6-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 07:16:31PM -0500, Gustavo A. R. Silva wrote:
-> Fix an 11-year old bug in ngene_command_config_free_buf() while
-> addressing the following warnings caught with -Warray-bounds:
-> 
-> arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
-> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
-> 
-> The problem is that the original code is trying to copy 6 bytes of
-> data into a one-byte size member _config_ of the wrong structue
-> FW_CONFIGURE_BUFFERS, in a single call to memcpy(). This causes a
-> legitimate compiler warning because memcpy() overruns the length
-> of &com.cmd.ConfigureBuffers.config. It seems that the right
-> structure is FW_CONFIGURE_FREE_BUFFERS, instead, because it contains
-> 6 more members apart from the header _hdr_. Also, the name of
-> the function ngene_command_config_free_buf() suggests that the actual
-> intention is to ConfigureFreeBuffers, instead of ConfigureBuffers
-> (which configuration takes place in the function ngene_command_config_buf(),
-> above).
-> 
-> Fix this by enclosing those 6 members of struct FW_CONFIGURE_FREE_BUFFERS
-> into new struct config, and use &com.cmd.ConfigureFreeBuffers.config as
-> the destination address, instead of &com.cmd.ConfigureBuffers.config,
-> when calling memcpy().
-> 
-> This also helps with the ongoing efforts to globally enable
-> -Warray-bounds and get us closer to being able to tighten the
-> FORTIFY_SOURCE routines on memcpy().
-> 
-> Link: https://github.com/KSPP/linux/issues/109
-> Fixes: dae52d009fc9 ("V4L/DVB: ngene: Initial check-in")
-> Cc: stable@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Good day Arnaud,
 
-Nice find! Yeah, this looks like a copy/paste bug but it went unnoticed
-because it's occupying the same memory via the union. Heh.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
+On Tue, Apr 13, 2021 at 03:44:56PM +0200, Arnaud Pouliquen wrote:
+> A rpmsg char device allows to probe the endpoint device on a remote name
+> service announcement.
+> 
+> With this patch the /dev/rpmsgX interface is created either by a user
+> application or by the remote firmware.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> 
 > ---
->  drivers/media/pci/ngene/ngene-core.c |  2 +-
->  drivers/media/pci/ngene/ngene.h      | 14 ++++++++------
->  2 files changed, 9 insertions(+), 7 deletions(-)
+> update from V1:
+>  - add missing unregister_rpmsg_driver call on module exit.
 > 
-> diff --git a/drivers/media/pci/ngene/ngene-core.c b/drivers/media/pci/ngene/ngene-core.c
-> index 07f342db6701..7481f553f959 100644
-> --- a/drivers/media/pci/ngene/ngene-core.c
-> +++ b/drivers/media/pci/ngene/ngene-core.c
-> @@ -385,7 +385,7 @@ static int ngene_command_config_free_buf(struct ngene *dev, u8 *config)
->  
->  	com.cmd.hdr.Opcode = CMD_CONFIGURE_FREE_BUFFER;
->  	com.cmd.hdr.Length = 6;
-> -	memcpy(&com.cmd.ConfigureBuffers.config, config, 6);
-> +	memcpy(&com.cmd.ConfigureFreeBuffers.config, config, 6);
->  	com.in_len = 6;
->  	com.out_len = 0;
->  
-> diff --git a/drivers/media/pci/ngene/ngene.h b/drivers/media/pci/ngene/ngene.h
-> index 84f04e0e0cb9..3d296f1998a1 100644
-> --- a/drivers/media/pci/ngene/ngene.h
-> +++ b/drivers/media/pci/ngene/ngene.h
-> @@ -407,12 +407,14 @@ enum _BUFFER_CONFIGS {
->  
->  struct FW_CONFIGURE_FREE_BUFFERS {
->  	struct FW_HEADER hdr;
-> -	u8   UVI1_BufferLength;
-> -	u8   UVI2_BufferLength;
-> -	u8   TVO_BufferLength;
-> -	u8   AUD1_BufferLength;
-> -	u8   AUD2_BufferLength;
-> -	u8   TVA_BufferLength;
-> +	struct {
-> +		u8   UVI1_BufferLength;
-> +		u8   UVI2_BufferLength;
-> +		u8   TVO_BufferLength;
-> +		u8   AUD1_BufferLength;
-> +		u8   AUD2_BufferLength;
-> +		u8   TVA_BufferLength;
-> +	} __packed config;
->  } __attribute__ ((__packed__));
->  
->  struct FW_CONFIGURE_UART {
-> -- 
-> 2.27.0
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 59 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 58 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index a64249d83172..4606787b7011 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -26,6 +26,8 @@
+>  #include "rpmsg_char.h"
+>  #include "rpmsg_internal.h"
+>  
+> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
+> +
 
--- 
-Kees Cook
+Why not simply call it rpmsg-char?
+
+>  static dev_t rpmsg_major;
+>  
+>  static DEFINE_IDA(rpmsg_ept_ida);
+> @@ -403,13 +405,67 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
+>  }
+>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
+>  
+> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_channel_info chinfo;
+> +	struct rpmsg_eptdev *eptdev;
+> +
+> +	if (!rpdev->ept)
+> +		return -EINVAL;
+> +
+> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+> +	chinfo.src = rpdev->src;
+> +	chinfo.dst = rpdev->dst;
+> +
+> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo, NULL);
+> +	if (IS_ERR(eptdev))
+> +		return PTR_ERR(eptdev);
+> +
+> +	/* Set the private field of the default endpoint to retrieve context on callback. */
+> +	rpdev->ept->priv = eptdev;
+
+This is already done in rpmsg_create_ept() when rpmsg_eptdev_open() is called.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+> +{
+> +	int ret;
+> +
+> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
+> +	if (ret)
+> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+> +}
+> +
+> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+> +	{ .name	= RPMSG_CHAR_DEVNAME },
+> +	{ },
+> +};
+> +
+> +static struct rpmsg_driver rpmsg_chrdev_driver = {
+> +	.probe = rpmsg_chrdev_probe,
+> +	.remove = rpmsg_chrdev_remove,
+> +	.id_table = rpmsg_chrdev_id_table,
+> +	.callback = rpmsg_ept_cb,
+
+Not sure why we need a callback associated to this driver when
+rpmsg_eptdev_open() already creates and rpmsg_endpoint.  To me the only thing
+having a callback provides is the association between the rpmsg_device and the
+rpmsg_endpoint[1] that happens in rpmsg_dev_probe().  The QC folks already do
+this association in their platform code[2].  Since this is not done in
+__rpmsg_create_ept() a check for rpdev->ept == NULL could be done in
+rpmsg_eptdev_open() and do the assignment there. 
+
+[1]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/rpmsg_core.c#L513  
+[2]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/qcom_glink_native.c#L1623
+
+> +	.drv = {
+> +		.name = "rpmsg_chrdev",
+> +	},
+> +};
+> +
+>  static int rpmsg_chrdev_init(void)
+>  {
+>  	int ret;
+>  
+>  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_char");
+> -	if (ret < 0)
+> +	if (ret < 0) {
+>  		pr_err("rpmsg: failed to allocate char dev region\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+> +	if (ret < 0) {
+> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
+> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> +	}
+>  
+>  	return ret;
+>  }
+> @@ -417,6 +473,7 @@ postcore_initcall(rpmsg_chrdev_init);
+>  
+>  static void rpmsg_chrdev_exit(void)
+>  {
+> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>  }
+>  module_exit(rpmsg_chrdev_exit);
+> -- 
+> 2.17.1
+> 
