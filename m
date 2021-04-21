@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8EC366BDC
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC1E366BDD
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241282AbhDUNH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46176 "EHLO mail.kernel.org"
+        id S241291AbhDUNIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:08:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240488AbhDUNFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:05:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AD776143B;
-        Wed, 21 Apr 2021 13:05:17 +0000 (UTC)
+        id S240871AbhDUNFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:05:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1D4F61452;
+        Wed, 21 Apr 2021 13:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010318;
-        bh=ojQvf/A1spJ4WB9WSdcGXFWVoC+D29fj+3vCBlmlzQ8=;
+        s=korg; t=1619010321;
+        bh=24xhrEebHpUi4UWGihTxBLzHznoCUsddkzAlZucDGdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v0rYMu+iagqI4BlEp9p+2Jy//nFBx+xFHJg6TZRjksgR/9WtfSChjMJTMGyHuJObH
-         /dG1FsCfWaIKK1PSyfkBQi+mlYpZOFbKtoqduKjgt0MjtVmRrM0F6gIb/4BfwmMKCf
-         9xjITKYFfSERiyAkAT5eS/Td617ehqLNy0wJIE4s=
+        b=yCqfQQ6qGQqdGOFAveY6RZiA7aQDvnPYWPYrYpFKUQrG0ploT893PPfGeEGS5Cst8
+         zalAN1IzexDfyNcRfsBGdOji34EObfakcpWSdCwt9nu9ByUFAqMVx3jTbtWgM/K1GQ
+         2a1I1Iu15wnhsiW6Fsmtav81oZ9agZa+DcGy//Gg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kangjie Lu <kjlu@umn.edu>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 092/190] Revert "power: charger-manager: fix a potential NULL pointer dereference"
-Date:   Wed, 21 Apr 2021 14:59:27 +0200
-Message-Id: <20210421130105.1226686-93-gregkh@linuxfoundation.org>
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 093/190] Revert "iio: hmc5843: fix potential NULL pointer dereferences"
+Date:   Wed, 21 Apr 2021 14:59:28 +0200
+Message-Id: <20210421130105.1226686-94-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 75cf4f5aa903604e1bd7bec2c0988d643c6fb946.
+This reverts commit 536cc27deade8f1ec3c1beefa60d5fbe0f6fcb28.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,26 +54,58 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/supply/charger-manager.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/iio/magnetometer/hmc5843_i2c.c | 7 +------
+ drivers/iio/magnetometer/hmc5843_spi.c | 7 +------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index 4dea8ecd70bc..f34c07ffcfe6 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -1749,9 +1749,6 @@ static struct platform_driver charger_manager_driver = {
- static int __init charger_manager_init(void)
+diff --git a/drivers/iio/magnetometer/hmc5843_i2c.c b/drivers/iio/magnetometer/hmc5843_i2c.c
+index 67fe657fdb3e..9a4491233d08 100644
+--- a/drivers/iio/magnetometer/hmc5843_i2c.c
++++ b/drivers/iio/magnetometer/hmc5843_i2c.c
+@@ -55,13 +55,8 @@ static const struct regmap_config hmc5843_i2c_regmap_config = {
+ static int hmc5843_i2c_probe(struct i2c_client *cli,
+ 			     const struct i2c_device_id *id)
  {
- 	cm_wq = create_freezable_workqueue("charger_manager");
--	if (unlikely(!cm_wq))
--		return -ENOMEM;
+-	struct regmap *regmap = devm_regmap_init_i2c(cli,
+-			&hmc5843_i2c_regmap_config);
+-	if (IS_ERR(regmap))
+-		return PTR_ERR(regmap);
 -
- 	INIT_DELAYED_WORK(&cm_monitor_work, cm_monitor_poller);
+ 	return hmc5843_common_probe(&cli->dev,
+-			regmap,
++			devm_regmap_init_i2c(cli, &hmc5843_i2c_regmap_config),
+ 			id->driver_data, id->name);
+ }
  
- 	return platform_driver_register(&charger_manager_driver);
+diff --git a/drivers/iio/magnetometer/hmc5843_spi.c b/drivers/iio/magnetometer/hmc5843_spi.c
+index d827554c346e..58bdbc7257ec 100644
+--- a/drivers/iio/magnetometer/hmc5843_spi.c
++++ b/drivers/iio/magnetometer/hmc5843_spi.c
+@@ -55,7 +55,6 @@ static const struct regmap_config hmc5843_spi_regmap_config = {
+ static int hmc5843_spi_probe(struct spi_device *spi)
+ {
+ 	int ret;
+-	struct regmap *regmap;
+ 	const struct spi_device_id *id = spi_get_device_id(spi);
+ 
+ 	spi->mode = SPI_MODE_3;
+@@ -65,12 +64,8 @@ static int hmc5843_spi_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
+ 
+-	regmap = devm_regmap_init_spi(spi, &hmc5843_spi_regmap_config);
+-	if (IS_ERR(regmap))
+-		return PTR_ERR(regmap);
+-
+ 	return hmc5843_common_probe(&spi->dev,
+-			regmap,
++			devm_regmap_init_spi(spi, &hmc5843_spi_regmap_config),
+ 			id->driver_data, id->name);
+ }
+ 
 -- 
 2.31.1
 
