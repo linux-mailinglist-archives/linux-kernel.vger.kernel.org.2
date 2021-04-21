@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADBD3662E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFF03662E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 02:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhDUAKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 20:10:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59652 "EHLO mail.kernel.org"
+        id S234547AbhDUAKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 20:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233925AbhDUAKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234444AbhDUAKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Apr 2021 20:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 02485613AB;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8556961426;
         Wed, 21 Apr 2021 00:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1618963810;
-        bh=aEFN1j86mjrs+AI3p0w/G35OcT0kIvgBU/+Q6X+dcCU=;
+        bh=M1UcTxjqdRTTyczqkoRTSpB0ZszeSqpnUTu5RDGj99k=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IUPM+tdYkdrd+P+jNL+T3vGsq+OROeDHPOOJ6YF0M4/PfUSuTKwPiS0qZ6zBEBEeg
-         GpP6tiRciRfgg7XWyK4eCZGGGobz06il2lwWVyd5eM1bugzvOkFl26jYMEYcm9AZHV
-         3wpegrUy0GCoRr7B4lecAFi7mE0W8gbS4vLj/A6l8cbMbwTAJh24I2wgHX9V9CrAol
-         3UZnUOaHowmGUo+Fsd8MHFAmTqzY6UJZY++PNyN5EghrUkuZOF3r2EpvHCNbSuE9WW
-         jYYrMu2hapiyClj7ZFykKRgea3SdEBLtWIdASgAWrE73UCr5+7kRhMRxPtPXAXzQTl
-         LE2gwfqLW+pPg==
+        b=YcTys5olEIkNOP2nI7mbo4ZTvK56wtb+VDpkevjKNpr2FKIMrvS0gmwjfZARNQrch
+         et/1VkJ2+4eSf0Zz04RnyGUbA4ae8qJO3PINhr//+ZPT91mdHC/CNJC1LjKNfCv6Ga
+         i6cN4tvP1fsK5okMp7wza+bQzn/dII+d5jP2yDUWlrEsUClt7JPq7ro/u42UJq+xXw
+         bPJFWegIUZCMXcBRYyK54OkbyP3cX2ODTqOiLx+RNWGbL7Rt2uPHahz2oIymT+CroX
+         YdY4Oo2b8YHr34ekI3cNAd1/EhbsVs6ojAnV56YNF/mdVLBAJTRSn5bWONCsVWiMVM
+         icH0+zsTfNGAw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EBCB360A0B;
-        Wed, 21 Apr 2021 00:10:09 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7FEF360A39;
+        Wed, 21 Apr 2021 00:10:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] vsock/virtio: free queued packets when closing socket
+Subject: Re: [PATCH net-next v2] net: phy: at803x: fix probe error if copper page
+ is selected
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161896380996.7038.17484390718444445248.git-patchwork-notify@kernel.org>
-Date:   Wed, 21 Apr 2021 00:10:09 +0000
-References: <20210420110727.139945-1-sgarzare@redhat.com>
-In-Reply-To: <20210420110727.139945-1-sgarzare@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     netdev@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, davem@davemloft.net,
-        kuba@kernel.org, stefanha@redhat.com
+Message-Id: <161896381051.7038.17479076161170031115.git-patchwork-notify@kernel.org>
+Date:   Wed, 21 Apr 2021 00:10:10 +0000
+References: <20210420102929.13505-1-michael@walle.cc>
+In-Reply-To: <20210420102929.13505-1-michael@walle.cc>
+To:     Michael Walle <michael@walle.cc>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, mail@david-bauer.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 20 Apr 2021 13:07:27 +0200 you wrote:
-> As reported by syzbot [1], there is a memory leak while closing the
-> socket. We partially solved this issue with commit ac03046ece2b
-> ("vsock/virtio: free packets during the socket release"), but we
-> forgot to drain the RX queue when the socket is definitely closed by
-> the scheduled work.
-> 
-> To avoid future issues, let's use the new virtio_transport_remove_sock()
-> to drain the RX queue before removing the socket from the af_vsock lists
-> calling vsock_remove_sock().
+On Tue, 20 Apr 2021 12:29:29 +0200 you wrote:
+> The commit c329e5afb42f ("net: phy: at803x: select correct page on
+> config init") selects the copper page during probe. This fails if the
+> copper page was already selected. In this case, the value of the copper
+> page (which is 1) is propagated through phy_restore_page() and is
+> finally returned for at803x_probe(). Fix it, by just using the
+> at803x_page_write() directly.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] vsock/virtio: free queued packets when closing socket
-    https://git.kernel.org/netdev/net/c/8432b8114957
+  - [net-next,v2] net: phy: at803x: fix probe error if copper page is selected
+    https://git.kernel.org/netdev/net-next/c/8f7e876273e2
 
 You are awesome, thank you!
 --
