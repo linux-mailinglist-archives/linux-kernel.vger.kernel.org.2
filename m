@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A42E366A5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431E0366A5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbhDUMEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239357AbhDUMEH (ORCPT
+        id S238952AbhDUMET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:04:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238956AbhDUMEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:04:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE369C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+NSk+az2QosENoII1h0fqE2YODWrKCILNwyXS4ZFhb4=; b=jzAMmu4OHt/dmR5Ru5u7WE3vd0
-        f8fhGkRvxhl7a3ZHNw8LuwACsVQ7sop0zjD9jdeH1k/2fC0xZqDkZNEinc7Zb4aOlaV7s/GF1gpQZ
-        YCFfWFXd174kt8d17d0U57ddGI7v/mLJ6hiadhowHziMW+TltM6BYQcr78PatCop3/wdEy2SGhkGq
-        VrR6dqPelQFHkLt6XOYC+ch0BXErHOB+4Hq7QN5N6SNNB3MhJGT43BRfsq58LDj1KItwCkNd5dcLV
-        NsIZX5JwgrblpvIq95reCDSbJ8YZexpz+olQ4zg/moS0DAPR9NKW4itlm60Ryzwgj0iPUGkuf2pGc
-        LINWNLnQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZBZX-00ELjm-4G; Wed, 21 Apr 2021 12:03:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 077EF300130;
-        Wed, 21 Apr 2021 14:03:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E243628582672; Wed, 21 Apr 2021 14:03:08 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 14:03:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Oliver Sang <oliver.sang@intel.com>, 0day robot <lkp@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
-        yu.c.chen@intel.com
-Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8%
- regression
-Message-ID: <YIAUfFXFFY9Jggra@hirez.programming.kicks-ass.net>
-References: <20210414052151.GB21236@xsang-OptiPlex-9020>
- <87im4on5u5.mognet@arm.com>
- <20210421032022.GA13430@xsang-OptiPlex-9020>
- <87bla8ue3e.mognet@arm.com>
+        Wed, 21 Apr 2021 08:04:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619006622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aoa98lbKIkfUuinek7AZtQ3bY9C9ca5MGA8QkBftOUQ=;
+        b=TjrXiz/vcuWFDHx7w+FLZTruxWpRQon0tkRtXQroErsgzUBmYuoe6UrYVCEbY0sSu+TacC
+        Jf+Ohm+qe1SLdbeshEhcOzuKXxFn2blDbRD2crfxB9zLoQCFA/Gw9UZmkifMUhoEYRcmzc
+        LzrEQKWAa3PrhOpzLi3FqVmYMyB7/cs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-AMOfeaQyN2-PKS8iCJWjkw-1; Wed, 21 Apr 2021 08:03:41 -0400
+X-MC-Unique: AMOfeaQyN2-PKS8iCJWjkw-1
+Received: by mail-ed1-f70.google.com with SMTP id c13-20020a05640227cdb0290385526e5de5so4856391ede.21
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:03:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aoa98lbKIkfUuinek7AZtQ3bY9C9ca5MGA8QkBftOUQ=;
+        b=eUy5Lz3sv0FGMV/bA95cvMj7wbpLLDGTzSRUa49SExitP4dPd7zsM0oCR9lx+GNgqt
+         vfC/TLLXYkFlcx3vd6HzTJGfNOZ72okchNR6oQYYJx6MyAF1dmVDZM6h2nJfQSNSTB0V
+         kdSU1WsLSeFu8jwCPQQDxPhvvn5uTPTJ73Hf51TAxLQhxnBSdgTrqrF09juY4H45lulg
+         AouMSfcoyrQsSFRhc9NkzqjXYoG3TJfqDOyPGg0kNPEwkx8ce4ZJpa9SaFoKZarJBrvq
+         398/QkBFAF7HJv2IcwNRgiKbM3wB3ZdTkK0xegCaNoJAapTHMehVhP6H3a6KBQy8XFvw
+         8CoA==
+X-Gm-Message-State: AOAM530201Qr0XKS/GvopkKEdA63hA3QVuhF3E8qP87B43ndbWVc9KTO
+        QsyHB3XmlTMVJKOGge4Vm9NLboXAbipiJrSlsb+EJt3a96GuUbKff5cbcr2+prjDO7zc89xkF3z
+        rx6ca6ACaxXRkWDkhn5xB0nya
+X-Received: by 2002:a17:906:48c6:: with SMTP id d6mr19684012ejt.376.1619006619765;
+        Wed, 21 Apr 2021 05:03:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmO54JKOiecI4sAlWSGZNU5i0/sa3KUAYs6Z7y0lYplS6vtWGxsQ3sDXkE6LHhUqB82AYBSA==
+X-Received: by 2002:a17:906:48c6:: with SMTP id d6mr19683983ejt.376.1619006619601;
+        Wed, 21 Apr 2021 05:03:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id br14sm2296525ejb.61.2021.04.21.05.03.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 05:03:38 -0700 (PDT)
+Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
+References: <20210420112006.741541-1-pbonzini@redhat.com>
+ <YH8P26OibEfxvJAu@google.com>
+ <05129de6-c8d9-de94-89e7-6257197433ef@redhat.com>
+ <YH8lMTMzfD7KugRg@google.com> <YH82qgTLCKUoSyNa@google.com>
+ <4b96c4fc-23a4-0bd2-ea58-fa6d81e50b15@redhat.com>
+ <YH9aj8FLQ4z4Po/x@google.com> <YH9hyid+zyQN1GUw@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <478030b2-7521-4080-c3de-46533c2cc3cf@redhat.com>
+Date:   Wed, 21 Apr 2021 14:03:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bla8ue3e.mognet@arm.com>
+In-Reply-To: <YH9hyid+zyQN1GUw@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:27:49AM +0100, Valentin Schneider wrote:
-> o 2-socket Xeon E5-2690 (x86, 40 cores)
-> 
-> and found at worse a -0.3% regression and at best a 2% improvement. I know
-> that x86 box is somewhat ancient, but it's been my go-to "have I broken
-> x86?" test victim for a while :-)
+On 21/04/21 01:20, Sean Christopherson wrote:
+> If userspace blindly copies CPUID, but doesn't
+> enable the capability, the guest will think the hypercall is supported.  The
+> guest hopefully won't freak out too much on the resulting -KVM_ENOSYS, but it
+> does make the CPUID flag rather useless.
 
-It happens that my main test-box is an E5-2680. I've got a slightly more
-modern one too, but that boots like treacle so I end up using the IVB-EP
-most :-)
+Yes that's why the CPUID bit must *not* be in KVM_GET_SUPPORTED_CPUID.
+
+> The
+> guest hopefully won't freak out too much on the resulting -KVM_ENOSYS, but it
+> does make the CPUID flag rather useless.
+> 
+> We can make it work with:
+> 
+> 		u64 gpa = a0, npages = a1, enc = a2;
+> 
+> 		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
+> 			break;
+> 
+> 		if (!PAGE_ALIGNED(gpa) || !npages ||
+> 		    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa)) {
+> 			ret = -EINVAL;
+> 			break;
+> 		}
+> 
+> 		if (!vcpu->kvm->arch.hypercall_exit_enabled) {
+> 			ret = 0;
+> 			break;
+> 		}
+> 
+> 		[...]
+
+The interaction with KVM_CAP_ENFORCE_PV_FEATURE_CPUID scares me.  But 
+I'll take it into account when posting v2.
+
+>>>> (BTW, it's better to return a bitmask of hypercalls that will exit to
+>>>> userspace from KVM_CHECK_EXTENSION.  Userspace can still reject with -ENOSYS
+>>>> those that it doesn't know, but it's important that it knows in general how
+>>>> to handle KVM_EXIT_HYPERCALL).
+>
+> Speaking of bitmasks, what about also accepting a bitmask for enabling the
+> capability?  (not sure if the above implies that).  E.g.
+
+Yes, makes sense.
+
+Paolo
+
