@@ -2,316 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084D536753D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41C0367548
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343576AbhDUWlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 18:41:18 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:33725 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhDUWlS (ORCPT
+        id S243107AbhDUWod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 18:44:33 -0400
+Received: from sonic311-30.consmr.mail.ne1.yahoo.com ([66.163.188.211]:43842
+        "EHLO sonic311-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234183AbhDUWo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 18:41:18 -0400
-Received: by mail-ot1-f45.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso17907577otl.0;
-        Wed, 21 Apr 2021 15:40:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RQELPAcx4r8r1G2/6bk2QQXKHGwcPfLjNXv4IU1C2JI=;
-        b=tX2Eb85jE2pN1AYwht6cLS+rUAjp6wB5NmU+eCUNibhZO5Zzw8lGRs3gv34wfd9Gno
-         Zc3pkCWkEHJRvOctKB0C71D/aQDfRQkUkIQKaXxbM8CinvcEMwIMjPi0fhedrkJcYBec
-         iwZbJgvS42nNpC1i83ReSOsa8axFV2MMDavWDDKnseG6vsrKyhxZqDEwaLxRBDDtm2JK
-         aYaAgOPFYGUldgP79A5IPhjRrH8LwNDKYX12jZnpb8TGnqXaR42R2kLij6OHlNhnG6Ll
-         pQW3RBVYLpysDlBVNE020YOZpx4lEyyhwoWpl3DdNdxP2adE9LQCzthkc9H0rIfPdeMc
-         zEEw==
-X-Gm-Message-State: AOAM531cmKi3XjwvQ1hmLrUs6mV7LIAUE2rf2yU+jV1aLRP5SjI+z+r8
-        vNOg/hgJp6ri0dIf2O1xE25rm2tCFQ==
-X-Google-Smtp-Source: ABdhPJwqIxWHS9pI2qaVwYS391Uf7+mqnQF5mRHq/DXmLnfo0ncTFGZ77MWZSTBi7cM0JkzXR0bVJA==
-X-Received: by 2002:a9d:394:: with SMTP id f20mr357464otf.220.1619044844111;
-        Wed, 21 Apr 2021 15:40:44 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p22sm207821otf.25.2021.04.21.15.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 15:40:42 -0700 (PDT)
-Received: (nullmailer pid 1745763 invoked by uid 1000);
-        Wed, 21 Apr 2021 22:40:41 -0000
-Date:   Wed, 21 Apr 2021 17:40:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/4] dt-bindings: arm: keystone: Convert ti,sci to json
- schema
-Message-ID: <20210421224041.GA1740292@robh.at.kernel.org>
-References: <20210416063721.20538-1-nm@ti.com>
- <20210416063721.20538-5-nm@ti.com>
+        Wed, 21 Apr 2021 18:44:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1619045035; bh=MB9zO7McvPmioxzhN+e5Vh39AUmsx8/cXEwQ1feTM0s=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=DmWXKFnjz2d6JUBIVczNc/zjMfKTXbm21VW1dfa04ONIPY/snL8uluYvp4jhdUFbhYqzLMjOIcl+d/2/Z4LwOaQGug4Z4bsBS2ia9MbexNzsp9M6ILAmUepHbk5gizG8gz9vFB/dbajGuCXHBWXyFpbGPm1SbY1ObVSTlRdQDN/DPGFIbaVgTemQXlMqOhfLdflpaWELfFm2+TeqPSq2ntY6GNQIawXiXA0NfA6eRQF7B72QrhHQZZd/JEo+7XXr7N3ZBkSk6q6zqfhWMbsMYSjfGcVix2tCOFEKMSUrXms88Kp0WWkhx1Bb6W8iNIcivZ9U3SN5PTNyLrJOCpqRnw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1619045035; bh=ieU2/qrLV3IRmLoQ5YVtfxGudHH/5aHFGm4V7Cjzbn/=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=m0VEMvyJmp5V4/4vWO/oZNTF6YsEEOVXru4LJTSxzIL3agH6vo3FPyV4QqWDU2/LKPOS/RbnatmjFe3qcGQMo5n8dunCsKTgCSVwIi3YuXo6Kn2zzVynmEt3pbae457O6iFVsQdSKrG30U6qrMf2c+c+cBLGPmUsB86tvhTivDPy/nPkQcs/GX3VdX9nCZbGnPL10viUpT1gXIGpsz+9DTEGpLHn31dqbjhplbxPxgyF0R8O8AKaNtcebKidWrYkX8MAenoWuDDRght7U4KeZCs/hIh91QnDJeglqRsHtm6iWdj0OtG7DsPVPtKh3+WpBUlAQ52jg1Vt9RpbabfvgA==
+X-YMail-OSG: w4_T9IsVM1lo0vQsGUg7FNdeFw5ptn1Qeu6cH7ya3W8UEYwEOoKNJahzvoMGyB0
+ 8lWOcyitwXfVtWxxUJ.iVVFseVkDPr5C3ylbJOt22qoiq51vVRuZ.VBkPJ825jX2tKLbeKrpwr4w
+ OEXHitYaDjDbw8ojfyKU7tMdLCyRJttKnUIzHg._UUxf4rEmMBw7VMU12ULENjxjwk9bWU2NxwMZ
+ iHAf.2q1ACgNUyt21jHhKSoG2TtMzVtwu787nhqCimwn7ahVV3cgoEkMX2YsYBcjF_B4rCQypS5b
+ _.TcTtxZsOe_aIpXj0bwKUDEL_DWCqYoH8qq9yvpUHfG0NlVsb_oGJavmld4ZKr9WEyIwEmLysUC
+ ba3B5BlQ0IJoEezLHKUF__w2OZPceAY_3Qt_YxdcbPG2T.N1ELHQc7BjLIXfUP486Wo0qs3YKeJJ
+ Wcdq1PjpG2Or7r7BjWt9qV5bNNA3zuc22VBI4GamHca4w4xYC5Is2GaKozF4DtR.vZ.TIeyAONZS
+ ANPBZ1em9frMAPKsc_VZPSrt2moMo1nSmuIvHyY4tx6DV_BvGM48SgZlBlTKtqPqRtQlCDpgHU0i
+ dVSOnrwbfsWSVsEAlo78IN.kFf6R0zUb4AJV0rdKUEAsx_YJ0EAD_guveRQRXt3GNOKfJazH9Xvj
+ MxcLlULwxnyMNFGLB9c2ng0TFdlSjXPQMvSlWFu0QkJAk0LDo_lGk.T8YDlDgcND2CzjAMi_veic
+ kI7v..i16mlZRSUUXtvirjG0WWfYGi4YOgau8_JVgn4190MvMPZsuizj.5Rzt8nF5Gz3RankfhLw
+ CFRt2OfhWV_hPin_i61e2I2sqT_XV0ccXdrILiSXsHtrRFJDUxgzl4yYMQQ5M_tY_4XoNEUMqwGL
+ .smJwblb0jS8_roHfpGKHoEaknKGbC5bTEOdPARxtiYXkOD2Y5VJ6ZxGRn2ZUSq04jYRIHgeokm2
+ N9sVxcA3mxYikjM9abMFjhIzhgDbAyWRGm.qUJf1bAI77j7jfBq0_KmLDYRhSTigeXnmMMVyVRLJ
+ PJDgCpncfZAqZPXuF4mcstrOqreSRrF5m9PMVV8nWKBNfxvzXLpfoJFNAnXdTYg7cnTgxEjwsA_n
+ xejld8ew6uPeMuvCXfwWDJOjxPAeMdEalfJ7S1Ap517il0IOlKFWrecBoYQN5DFeW_RN8bAp2P1u
+ pI6v1JXHI9k06ENIoacHJaYNIdzJ1LiFX_B0StR5J9IQwBBePSA4xe5dmDp2.Yd4mW9Ee05QaVOM
+ 73e4LMP1WFU0q7necIA6McW.yNHHDthFLOqwTxGY5NefiZ8Sw.sUJp52afK1ag3jf.Q8z2pBeNcz
+ 5g5xWSDuMUXTmWJN.trN7ye.qH.3UGWkAqpC.Of1osKsahw1DllVic5hQU6_U53Ed9U8mKBGzaG_
+ VCyOasdlUS8waacSg7xRk4rtTPcyqcZZ1MEu9mjZ_r64a52PQQ1aalDZ6J8a.J4kCi01qBgTc38D
+ .qIaXJM9WktiNlnw__D9cUdKTa5H_jcn1KPv8Ub_YD917rQpps7yHEJvQBMfaEoMRARkZ7NG6E8k
+ 6fgYoImQS3VGT8iWgASOkphfWp81mBRys62GwOslWkyDaTxbI3cUPUyHModP7V6jpKrdUA9er5Su
+ Aqnt8S6hGwryGMNEQMtElPOsjog.1sHtlmPi3vrMa.2NyhB20gDPwjTxCKqhNUQx9ZTmDTuffnFt
+ XGuegsoOq3Al77K33IYNJRXQs0g3wLSIhRffeARRAW0iOob2wo1hkDlC4ORlUW2cApXcGSDjfkDp
+ 77f6ApVOvn_q0olMcKEGzw2lP0X0yv00Vf.nU45o1qJgyU9kvh510VqUxom03Ps_s.bT_Pr3LCgF
+ uaPPYyJfLXHRJ9owl54T765tmnH1EmG35wJrAqn.Bp.gtsL_n.kp6uAwmJQY4Y6NP6Qoq5yjSNJY
+ uN102BT4F2X707qSSydOlnct3lfvb4JlprFTwBfag6heAWPX2eMfTCxinYqRjUPNrN2TJX8DjazZ
+ GIQ33l1wt.SeEOo.GEB1R3lcfv212bfyx.f_6PItk_PYKqSkeSCcCDgq8bHrd0vcyOd0h5DYZLNP
+ u0DrGg28CG5HVTdtOOlQ3PwXNFzKf92ioV7KYywf3w0KFlLyQ_KpUjfprO63_soQi3RnI7SvCCHq
+ 8g6MB9jKsnSY8ea4p5gLkhjUDOdACMDRrJQt1UjfAU03P79VOB58H.h1itnIMSCXIGSUtf6L4efL
+ eSkpgQR_YkfchtaSbAzsvFz3_6E8tlk9kms3k5xlicR73onbOEBHgRSr0aDqakKq6V0Ilvw3fxTG
+ BZC.d1s5vd5pHoxlOQfQoYxBo282EeeytlzgD37siWYry.IgGdCjqlk4a2Nb6O6CSK06d7KG1pOj
+ xNKWIvmk1Gh3ICNEkT6F8o0BTz1m0UHqX9R03_jVQWxA5mM8P4SySye6z9tP4lH2M6KYOeg2Huyj
+ 5fE1v_UnNE9ncTpEVK8_XttWxinoTQAk703aZcHCYTYjcQNc40mHILrqBe0O38nt58Wtfj.W2N1I
+ gOh1lTm62P3MafcsZwhc2qQANTfew1d78rxI.12lvGWUjSawzsGHTC9UL4bUSGzf_yZNXlLuh0Z0
+ NjfRNINbJCQFaP5m9rxtP9IsD0jYgmQzWDbO9QS1oqPiV6dxX_vh7R3a3cBAJ6ucMvA.BGSpAHiC
+ LozmVd1noItGTAax8HHXjOoEBVpIfi_6L3jUZe7gp0o0ycM9O4L7LiuyYePPLKIYu5wXq82bBQe0
+ UoxgVXK2wxQa_mYvIPKifSZWwoQJfAlQXHRyn2geJ0jeabI59l93vMHdNcH17PrBzREqxbLFM_bf
+ _wH_ifcfiYsR2.rdXW5ftwRZLmk574KwkTKWcecthxiOyXIpYMrTy9wmvB69OOAdvICxyBZzPIfY
+ DiKgdY3wnNnrh.zCH6a18zi0jBSmjPszZfjCUlXpKpeWMzOCTUTuX3LzdsAWH65gFGMp1wUEIv63
+ 4SWd4eEHVkLTou1reciNJGTs9WKGuNvwG44FzRjptJTYwj_aoYroUKeutjpf3zow8tnoRb6N7bt8
+ 8fAOcJG7ulzv5tfsDVrizfg_hBYyOnS1kYKyZS19cPFepFSPEgS.3vvpB
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Wed, 21 Apr 2021 22:43:55 +0000
+Received: by kubenode512.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 8d5fac0008ab4c1e871a17521cafc02e;
+          Wed, 21 Apr 2021 22:43:49 +0000 (UTC)
+Subject: Re: [PATCH v2 3/6] security: Pass xattrs allocated by LSMs to the
+ inode_init_security hook
+To:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
+        jmorris@namei.org, paul@paul-moore.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210421161925.968825-1-roberto.sassu@huawei.com>
+ <20210421161925.968825-4-roberto.sassu@huawei.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <0caf1e58-1e2d-c781-3f71-18aaf55cada2@schaufler-ca.com>
+Date:   Wed, 21 Apr 2021 15:43:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416063721.20538-5-nm@ti.com>
+In-Reply-To: <20210421161925.968825-4-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.18121 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:37:21AM -0500, Nishanth Menon wrote:
-> Convert the ti,sci to json schema for better checks and documentation.
-> 
-> NOTE: This change does introduce a stricter naming convention for
-> TI-SCI controller nodes.
-> 
-> NOTE: we do have false positive checkpatch warning with this patch:
-> "DT binding docs and includes should be a separate patch"
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+On 4/21/2021 9:19 AM, Roberto Sassu wrote:
+> In preparation for moving EVM to the LSM infrastructure, this patch
+> replaces the name, value, len triple with the xattr array pointer provi=
+ded
+> by security_inode_init_security(). LSMs are expected to call the new
+> function lsm_find_xattr_slot() to find the first unused slot of the arr=
+ay
+> where the xattr should be written.
+>
+> This patch modifies also SELinux and Smack to search for an unused slot=
+, to
+> have a consistent behavior across LSMs (the unmodified version would
+> overwrite the xattr set by the first LSM in the chain). It is also
+> desirable to have the modification in those LSMs, as they are likely us=
+ed
+> as a reference for the development of new LSMs.
+
+This looks better than V1. One safety comment below.
+
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > ---
->  .../bindings/arm/keystone/ti,sci.txt          |  86 ------------
->  .../bindings/arm/keystone/ti,sci.yaml         | 129 ++++++++++++++++++
->  2 files changed, 129 insertions(+), 86 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.txt b/Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
-> deleted file mode 100644
-> index 6f0cd31c1520..000000000000
-> --- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
-> +++ /dev/null
-> @@ -1,86 +0,0 @@
-> -Texas Instruments System Control Interface (TI-SCI) Message Protocol
-> ---------------------------------------------------------------------
-> -
-> -Texas Instrument's processors including those belonging to Keystone generation
-> -of processors have separate hardware entity which is now responsible for the
-> -management of the System on Chip (SoC) system. These include various system
-> -level functions as well.
-> -
-> -An example of such an SoC is K2G, which contains the system control hardware
-> -block called Power Management Micro Controller (PMMC). This hardware block is
-> -initialized early into boot process and provides services to Operating Systems
-> -on multiple processors including ones running Linux.
-> -
-> -See http://processors.wiki.ti.com/index.php/TISCI for protocol definition.
-> -
-> -TI-SCI controller Device Node:
-> -=============================
-> -
-> -The TI-SCI node describes the Texas Instrument's System Controller entity node.
-> -This parent node may optionally have additional children nodes which describe
-> -specific functionality such as clocks, power domain, reset or additional
-> -functionality as may be required for the SoC. This hierarchy also describes the
-> -relationship between the TI-SCI parent node to the child node.
-> -
-> -Required properties:
-> --------------------
-> -- compatible:	should be "ti,k2g-sci" for TI 66AK2G SoC
-> -		should be "ti,am654-sci" for for TI AM654 SoC
-> -- mbox-names:
-> -	"rx" - Mailbox corresponding to receive path
-> -	"tx" - Mailbox corresponding to transmit path
-> -
-> -- mboxes: Mailboxes corresponding to the mbox-names. Each value of the mboxes
-> -	  property should contain a phandle to the mailbox controller device
-> -	  node and an args specifier that will be the phandle to the intended
-> -	  sub-mailbox child node to be used for communication.
-> -
-> -See Documentation/devicetree/bindings/mailbox/mailbox.txt for more details
-> -about the generic mailbox controller and client driver bindings. Also see
-> -Documentation/devicetree/bindings/mailbox/ti,message-manager.txt for typical
-> -controller that is used to communicate with this System controllers.
-> -
-> -Optional Properties:
-> --------------------
-> -- reg-names:
-> -	debug_messages - Map the Debug message region
-> -- reg:  register space corresponding to the debug_messages
-> -- ti,system-reboot-controller: If system reboot can be triggered by SoC reboot
-> -- ti,host-id: Integer value corresponding to the host ID assigned by Firmware
-> -	for identification of host processing entities such as virtual
-> -	machines
-> -
-> -Example (K2G):
-> --------------
-> -	pmmc: pmmc {
-> -		compatible = "ti,k2g-sci";
-> -		ti,host-id = <2>;
-> -		mbox-names = "rx", "tx";
-> -		mboxes= <&msgmgr &msgmgr_proxy_pmmc_rx>,
-> -			<&msgmgr &msgmgr_proxy_pmmc_tx>;
-> -		reg-names = "debug_messages";
-> -		reg = <0x02921800 0x800>;
-> -	};
-> -
-> -
-> -TI-SCI Client Device Node:
-> -=========================
-> -
-> -Client nodes are maintained as children of the relevant TI-SCI device node.
-> -
-> -Example (K2G):
-> --------------
-> -	pmmc: pmmc {
-> -		compatible = "ti,k2g-sci";
-> -		...
-> -
-> -		my_clk_node: clk_node {
-> -			...
-> -			...
-> -		};
-> -
-> -		my_pd_node: pd_node {
-> -			...
-> -			...
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-> new file mode 100644
-> index 000000000000..3e835ad84dc2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
-> @@ -0,0 +1,129 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/keystone/ti,sci.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI-SCI controller device node bindings
-> +
-> +maintainers:
-> +  - Nishanth Menon <nm@ti.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/mbox/mbox-consumer.yaml#
+>  include/linux/lsm_hook_defs.h |  4 ++--
+>  include/linux/lsm_hooks.h     | 18 +++++++++++++++---
+>  security/security.c           | 13 +++++++------
+>  security/selinux/hooks.c      | 13 ++++++-------
+>  security/smack/smack_lsm.c    | 20 +++++++++-----------
+>  5 files changed, 39 insertions(+), 29 deletions(-)
+>
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_def=
+s.h
+> index 477a597db013..afb9dd122f60 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -111,8 +111,8 @@ LSM_HOOK(int, 0, path_notify, const struct path *pa=
+th, u64 mask,
+>  LSM_HOOK(int, 0, inode_alloc_security, struct inode *inode)
+>  LSM_HOOK(void, LSM_RET_VOID, inode_free_security, struct inode *inode)=
 
-Drop.
+>  LSM_HOOK(int, 0, inode_init_security, struct inode *inode,
+> -	 struct inode *dir, const struct qstr *qstr, const char **name,
+> -	 void **value, size_t *len)
+> +	 struct inode *dir, const struct qstr *qstr, struct xattr *xattrs,
+> +	 void *fs_data)
+>  LSM_HOOK(int, 0, inode_init_security_anon, struct inode *inode,
+>  	 const struct qstr *name, const struct inode *context_inode)
+>  LSM_HOOK(int, 0, inode_create, struct inode *dir, struct dentry *dentr=
+y,
+> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> index c5498f5174ce..e8c9bac29b9d 100644
+> --- a/include/linux/lsm_hooks.h
+> +++ b/include/linux/lsm_hooks.h
+> @@ -27,6 +27,7 @@
+> =20
+>  #include <linux/security.h>
+>  #include <linux/init.h>
+> +#include <linux/xattr.h>
+>  #include <linux/rculist.h>
+> =20
+>  /**
+> @@ -227,9 +228,11 @@
+>   *	@inode contains the inode structure of the newly created inode.
+>   *	@dir contains the inode structure of the parent directory.
+>   *	@qstr contains the last path component of the new object
+> - *	@name will be set to the allocated name suffix (e.g. selinux).
+> - *	@value will be set to the allocated attribute value.
+> - *	@len will be set to the length of the value.
+> + *	@xattrs contains the full array of xattrs allocated by LSMs where
+> + *	->name will be set to the allocated name suffix (e.g. selinux).
+> + *	->value will be set to the allocated attribute value.
+> + *	->len will be set to the length of the value.
+> + *	@fs_data contains filesystem-specific data.
+>   *	Returns 0 if @name and @value have been successfully set,
+>   *	-EOPNOTSUPP if no security attribute is needed, or
+>   *	-ENOMEM on memory allocation failure.
+> @@ -1661,4 +1664,13 @@ static inline void security_delete_hooks(struct =
+security_hook_list *hooks,
+> =20
+>  extern int lsm_inode_alloc(struct inode *inode);
+> =20
 
-> +
-> +description: |
-> +  Texas Instrument's processors including those belonging to Keystone generation
-> +  of processors have separate hardware entity which is now responsible for the
-> +  management of the System on Chip (SoC) system. These include various system
-> +  level functions as well.
-> +
-> +  An example of such an SoC is K2G, which contains the system control hardware
-> +  block called Power Management Micro Controller (PMMC). This hardware block is
-> +  initialized early into boot process and provides services to Operating Systems
-> +  on multiple processors including ones running Linux.
-> +
-> +  See http://processors.wiki.ti.com/index.php/TISCI for protocol definition.
-> +
-> +  The TI-SCI node describes the Texas Instrument's System Controller entity node.
-> +  This parent node may optionally have additional children nodes which describe
-> +  specific functionality such as clocks, power domain, reset or additional
-> +  functionality as may be required for the SoC. This hierarchy also describes the
-> +  relationship between the TI-SCI parent node to the child node.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^system-controller@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    oneOf:
-> +      - description: System controller on TI 66AK2G SoC and other K3 SoCs
-> +        items:
-> +          - const: ti,k2g-sci
-> +      - description: System controller on TI AM654 SoC
-> +        items:
-> +          - const: ti,am654-sci
-> +
-> +  reg-names:
-> +    description: |
-> +      Specifies the debug messages memory mapped region that is optionally
-> +      made available from TI-SCI controller.
-> +      - const: debug_messages
+Some "security researcher" with a fuzz tester is going to manage to dump =
+junk
+into the slots and ruin your week. I suggest a simple change to make boun=
+ds checking
+possible. It should never happen, but if that was sufficient people would=20
+love C
+string processing better.
 
-Drop the '-' and fix the indent so it's an actual schema.
+> +static inline struct xattr *lsm_find_xattr_slot(struct xattr *xattrs)
 
-> +
-> +  reg:
-> +    minItems: 1
-> +
-> +  mbox-names:
-> +    description: |
-> +      Specifies the mailboxes used to communicate with TI-SCI Controller
-> +      made available from TI-SCI controller.
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +  mboxes:
-> +    minItems: 2
-> +
-> +  ti,system-reboot-controller:
-> +    description: Determines If system reboot can be triggered by SoC reboot
-> +    type: boolean
-> +
-> +  ti,host-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Value corresponding to the host ID assigned by Firmware
-> +      for identification of host processing entities such as virtual machines.
-> +
-> +required:
-> +  - compatible
-> +  - mbox-names
-> +  - mboxes
-> +
-> +additionalProperties: false
-> +
-> +patternProperties:
-> +  # All other properties should be a power, clock or reset controller
-> +  "^(power-controller|clock-controller|reset-controller)$":
-> +    type: object
-> +    oneOf:
-> +      - $ref: /schemas/soc/ti/sci-pm-domain.yaml#
-> +      - $ref: /schemas/clock/ti,sci-clk.yaml#
-> +      - $ref: /schemas/reset/ti,sci-reset.yaml#
++static inline struct xattr *lsm_find_xattr_slot(struct xattr *xattrs, in=
+t available)
 
-I'd prefer you separate these with a property for each node.
+> +{
+> +	struct xattr *slot;
+> +
+> +	for (slot =3D xattrs; slot && slot->name !=3D NULL; slot++)
 
++	for (slot =3D xattrs; slot && slot->name !=3D NULL; slot++)
+ 		if (WARN_ON(slot > xattrs[available]))
+			return NULL;=20
+
+> +		;
 > +
-> +examples:
-> +  - |
-> +    pmmc: system-controller@2921800 {
-> +      compatible = "ti,k2g-sci";
-> +      ti,system-reboot-controller;
-> +      mbox-names = "rx", "tx";
-> +      mboxes= <&msgmgr 5 2>,
-> +              <&msgmgr 0 0>;
-> +      reg-names = "debug_messages";
-> +      reg = <0x02921800 0x800>;
-> +    };
+> +	return slot;
+> +}
+>  #endif /* ! __LINUX_LSM_HOOKS_H */
+> diff --git a/security/security.c b/security/security.c
+> index 7f14e59c4f8e..2c1fe1496069 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1037,18 +1037,16 @@ int security_inode_init_security(struct inode *=
+inode, struct inode *dir,
+> =20
+>  	if (!initxattrs)
+>  		return call_int_hook(inode_init_security, -EOPNOTSUPP, inode,
+> -				     dir, qstr, NULL, NULL, NULL);
+> +				     dir, qstr, NULL, fs_data);
+>  	memset(new_xattrs, 0, sizeof(new_xattrs));
+>  	lsm_xattr =3D new_xattrs;
+>  	ret =3D call_int_hook(inode_init_security, -EOPNOTSUPP, inode, dir, q=
+str,
+> -						&lsm_xattr->name,
+> -						&lsm_xattr->value,
+> -						&lsm_xattr->value_len);
+> +			    lsm_xattr, fs_data);
+>  	if (ret)
+>  		goto out;
+> =20
+>  	evm_xattr =3D lsm_xattr + 1;
+> -	ret =3D evm_inode_init_security(inode, lsm_xattr, evm_xattr);
+> +	ret =3D evm_inode_init_security(inode, new_xattrs, evm_xattr);
+>  	if (ret)
+>  		goto out;
+>  	ret =3D initxattrs(inode, new_xattrs, fs_data);
+> @@ -1071,10 +1069,13 @@ int security_old_inode_init_security(struct ino=
+de *inode, struct inode *dir,
+>  				     const struct qstr *qstr, const char **name,
+>  				     void **value, size_t *len)
+>  {
+> +	struct xattr xattr =3D { .name =3D NULL, .value =3D NULL, .value_len =
+=3D 0 };
+> +	struct xattr *lsm_xattr =3D (name && value && len) ? &xattr : NULL;
 > +
-> +  - |
-> +    dmsc: system-controller@44083000 {
-> +      compatible = "ti,k2g-sci";
-> +      ti,host-id = <12>;
-> +      mbox-names = "rx", "tx";
-> +      mboxes= <&secure_proxy_main 11>,
-> +              <&secure_proxy_main 13>;
-> +      reg-names = "debug_messages";
-> +      reg = <0x44083000 0x1000>;
-> +
-> +      k3_pds: power-controller {
-> +        compatible = "ti,sci-pm-domain";
-> +        #power-domain-cells = <2>;
-> +      };
-> +
-> +      k3_clks: clock-controller {
-> +        compatible = "ti,k2g-sci-clk";
-> +        #clock-cells = <2>;
-> +      };
-> +
-> +      k3_reset: reset-controller {
-> +        compatible = "ti,sci-reset";
-> +        #reset-cells = <2>;
-> +      };
-> +    };
-> -- 
-> 2.31.0
-> 
+>  	if (unlikely(IS_PRIVATE(inode)))
+>  		return -EOPNOTSUPP;
+>  	return call_int_hook(inode_init_security, -EOPNOTSUPP, inode, dir,
+> -			     qstr, name, value, len);
+> +			     qstr, lsm_xattr, NULL);
+>  }
+>  EXPORT_SYMBOL(security_old_inode_init_security);
+> =20
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index ddd097790d47..806827eb132a 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -2916,11 +2916,11 @@ static int selinux_dentry_create_files_as(struc=
+t dentry *dentry, int mode,
+> =20
+>  static int selinux_inode_init_security(struct inode *inode, struct ino=
+de *dir,
+>  				       const struct qstr *qstr,
+> -				       const char **name,
+> -				       void **value, size_t *len)
+> +				       struct xattr *xattrs, void *fs_data)
+>  {
+>  	const struct task_security_struct *tsec =3D selinux_cred(current_cred=
+());
+>  	struct superblock_security_struct *sbsec;
+> +	struct xattr *xattr =3D lsm_find_xattr_slot(xattrs);
+>  	u32 newsid, clen;
+>  	int rc;
+>  	char *context;
+> @@ -2947,16 +2947,15 @@ static int selinux_inode_init_security(struct i=
+node *inode, struct inode *dir,
+>  	    !(sbsec->flags & SBLABEL_MNT))
+>  		return -EOPNOTSUPP;
+> =20
+> -	if (name)
+> -		*name =3D XATTR_SELINUX_SUFFIX;
+> +	if (xattr) {
+> +		xattr->name =3D XATTR_SELINUX_SUFFIX;
+> =20
+> -	if (value && len) {
+>  		rc =3D security_sid_to_context_force(&selinux_state, newsid,
+>  						   &context, &clen);
+>  		if (rc)
+>  			return rc;
+> -		*value =3D context;
+> -		*len =3D clen;
+> +		xattr->value =3D context;
+> +		xattr->value_len =3D clen;
+>  	}
+> =20
+>  	return 0;
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index 12a45e61c1a5..af7eee0fee52 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -962,26 +962,24 @@ static int smack_inode_alloc_security(struct inod=
+e *inode)
+>   * @inode: the newly created inode
+>   * @dir: containing directory object
+>   * @qstr: unused
+> - * @name: where to put the attribute name
+> - * @value: where to put the attribute value
+> - * @len: where to put the length of the attribute
+> + * @xattrs: where to put the attribute
+>   *
+>   * Returns 0 if it all works out, -ENOMEM if there's no memory
+>   */
+>  static int smack_inode_init_security(struct inode *inode, struct inode=20
+*dir,
+> -				     const struct qstr *qstr, const char **name,
+> -				     void **value, size_t *len)
+> +				     const struct qstr *qstr,
+> +				     struct xattr *xattrs, void *fs_data)
+>  {
+>  	struct inode_smack *issp =3D smack_inode(inode);
+>  	struct smack_known *skp =3D smk_of_current();
+>  	struct smack_known *isp =3D smk_of_inode(inode);
+>  	struct smack_known *dsp =3D smk_of_inode(dir);
+> +	struct xattr *xattr =3D lsm_find_xattr_slot(xattrs);
+>  	int may;
+> =20
+> -	if (name)
+> -		*name =3D XATTR_SMACK_SUFFIX;
+> +	if (xattr) {
+> +		xattr->name =3D XATTR_SMACK_SUFFIX;
+> =20
+> -	if (value && len) {
+>  		rcu_read_lock();
+>  		may =3D smk_access_entry(skp->smk_known, dsp->smk_known,
+>  				       &skp->smk_rules);
+> @@ -999,11 +997,11 @@ static int smack_inode_init_security(struct inode=20
+*inode, struct inode *dir,
+>  			issp->smk_flags |=3D SMK_INODE_CHANGED;
+>  		}
+> =20
+> -		*value =3D kstrdup(isp->smk_known, GFP_NOFS);
+> -		if (*value =3D=3D NULL)
+> +		xattr->value =3D kstrdup(isp->smk_known, GFP_NOFS);
+> +		if (xattr->value =3D=3D NULL)
+>  			return -ENOMEM;
+> =20
+> -		*len =3D strlen(isp->smk_known);
+> +		xattr->value_len =3D strlen(isp->smk_known);
+>  	}
+> =20
+>  	return 0;
+
