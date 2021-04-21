@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AF936738F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6EE367392
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243613AbhDUTmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        id S245366AbhDUTn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241211AbhDUTmJ (ORCPT
+        with ESMTP id S241211AbhDUTn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:42:09 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF27C06174A;
-        Wed, 21 Apr 2021 12:41:36 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id p67so24912315pfp.10;
-        Wed, 21 Apr 2021 12:41:36 -0700 (PDT)
+        Wed, 21 Apr 2021 15:43:27 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E80C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:53 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id j5so41532711wrn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nRBx/55JbHQxbFmenDwMWp+CYHgyy9UiP1byrqk81Io=;
-        b=I1kdklP5Gl0iIFWPPfyW98fYUbH6ZFjxU9wdEv3H/VBi8p01xwntSWaqeCmq1aFAN+
-         wbIWC4VeSuVkp2nMIdpFrcRP3Q0L46S4rvp6XVM7Se1Sr6Y8t0oDW2jlaSXjYDnsLygv
-         7eSHbXYtmExIOfkm98qMa6cRJXX2N14JuO7jtktCiTcvijg55fOOat+pvE6nuGHdN5B/
-         3+tN67/R9kPhP45NhyP5UuzFp7lcanYRgjRoUWoYlXcv9SZPzLgwlXOloICdf+QoMy1U
-         a1gG0NbU8aXeOpog95RnsN7iu5L1Ky+8LwIGJyJA1gnTtcKsUzXIhgJiIicdA5qBa12u
-         3Itw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JU6/Qfl9n+QXWwBGt0462NZzcBDiybmlQ03LCPVjDcM=;
+        b=EF4lWCEaoKX8fLy8cm5aOM/qjMBsBPcQxY6gh7z1b6zRT0KzOLOCYtnYT2OLC64JbL
+         rzQ4CI8LNWIewiRGfBk3db2sk9X0ITizHMfXEx/Y2SMgBvuJ459nGLhFpSsjSbrG0kZe
+         HfMkpztZZ/ki5VMyPg1iW5fC26ijNiTbKL47LjdIPjS5/Nvmefod6zmqaC2qJg/UILlX
+         01eY3CBfTf0+doHRt6V/+PIs0FRC9J17kKkXKz+XC9FMuGsQ6ECfcI5rPqRwc1BePWvp
+         tk5nyun6WSPL/nx080ahNpi59LafdJssw6pQ2dpr9Y+rPhgK3SC+9y211CksOFi3xh9P
+         yrug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nRBx/55JbHQxbFmenDwMWp+CYHgyy9UiP1byrqk81Io=;
-        b=pYM2FoR2jh0HZUBEKlq7wPDzxb5Tqj39IDx5WvKBolVj9DcGVpJ5f9tLtpvKJuYI0i
-         olDjp190Hmg0HSYh69bkLpc3Bvk60zl5y5dMr8WsPRgDCtUq1MMvHAogZphUE9SEZw4H
-         DtcQNlVeR1lTVk6vMzBr8tacbj9b7lJxvBxjLUUVQi6b0Xysb81vrFSaQSbJ0R+eQBtb
-         IqqdlmB9BQQ3dbsMgfOOHF5GpPPXGPsMEnf7DaSkgflVbOveu4EJVa4smaOsEnD/48cL
-         C3L7xXU7TVuweHjLzkYySMwme3AOLccU4nYT0+bL5xTALILcsSZQt0zFJY6WvgTdAtSc
-         Euow==
-X-Gm-Message-State: AOAM531Fi79mucJef+Q1P3sGKf3Gl6sf324GwFiTMYvkDqlVkxvLb39j
-        s7IAJ9McPOHt8adNbv2lrvjHHwNHlhYp+R6XEJM6kpOqiYo=
-X-Google-Smtp-Source: ABdhPJwW4KtpJ1Nvt1U+nEt8BVDwRzPRIJApRIZsHKMKrffT0qyjL4mjYRXOJWp3XJzE5VyxNx7mBmgMFcJ6aMoeQi0=
-X-Received: by 2002:a62:e50f:0:b029:214:8e4a:ae46 with SMTP id
- n15-20020a62e50f0000b02902148e4aae46mr31633820pff.73.1619034095723; Wed, 21
- Apr 2021 12:41:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JU6/Qfl9n+QXWwBGt0462NZzcBDiybmlQ03LCPVjDcM=;
+        b=P4SHN4IMiGhgv2ER1bEKMHYxBCmzBjcYQ9S3nzZIrStySfNGNNbpbzm5+MVBXsUpTP
+         KzlQ6IGlWbntcrCU7iL6YznFGCnWb1f5uSOOk2izZTQkn8MCQcJE/C+ojLTTEdj9QkS5
+         +VWcl2pGc9+03A3LqwfhrNw0be3TeQzbRYLZRULp/F3oj+2RBoMwYHsTcuViyAepadk4
+         EnozNrzBeRWuxYRWLT13rMkKTazOCKr6ymvu5IqQDRpyeC7WcRLJmCaTNUREeHjmPNs1
+         XEvM+Jui7nmshcVua1K/dq/hQuE0aLMd6UgTl1TNyB+9980wp8fAxzWpzKmhzT2gfqoh
+         ROgQ==
+X-Gm-Message-State: AOAM533gK/r6k9kf1VK2OKLfke2GjNmM+ze05oZJZTvfChV93fsPBCDB
+        bU/EntzWn9+uSXqx98SAr2w=
+X-Google-Smtp-Source: ABdhPJxwLLpPCAGgCKzl/unvPvqM8+kZJPO3R33aSTcElWruEpi/1NIOV+MzVBGeU40BkA90bykGHQ==
+X-Received: by 2002:adf:cf09:: with SMTP id o9mr29478140wrj.366.1619034172365;
+        Wed, 21 Apr 2021 12:42:52 -0700 (PDT)
+Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:6d3d:2d8b:5417:831c])
+        by smtp.gmail.com with ESMTPSA id o4sm484163wrn.81.2021.04.21.12.42.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 12:42:51 -0700 (PDT)
+From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     melissa.srw@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: [PATCH 0/3] drm: Use tabs for code indents 
+Date:   Wed, 21 Apr 2021 20:42:46 +0100
+Message-Id: <cover.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
- <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
- <f2b7938f-12ea-529b-da5e-83c9c8074e1a@gmail.com> <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
- <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
-In-Reply-To: <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 21 Apr 2021 22:41:19 +0300
-Message-ID: <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com>
-Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Nathan Royer <nroyer@invensense.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:05 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Apr 21, 2021 at 1:14 PM Linus Walleij <linus.walleij@linaro.org> =
-wrote:
-> >
-> > On Tue, Apr 20, 2021 at 11:26 PM Dmitry Osipenko <digetx@gmail.com> wro=
-te:
-> >
-> > > I found a non-kernel example
-> > > which uses a similar equation [1], but in a different form. The main
-> > > difference is that the Arduino code interprets a raw temperature valu=
-e
-> > > as a signed integer, while upstream assumes it's unsigned.
-> > >
-> > > [1]
-> > > https://github.com/blaisejarrett/Arduino-Lib.MPU3050/blob/master/MPU3=
-050lib.cpp#L111
-> >
-> > Oh that's nice. Room temperature as mentioned is 20 deg C
-> > I think?
-> >
-> > The divide by 280 part seems coherent in all examples.
-> >
-> > > Still, even if assume that the raw temperature is a signed s16 value,=
- it
-> > > gives us ~35C in a result, which should be off by ~10C.
->
-> Actually here [1] it says in chapter 3.1 that room temperature is 35=C2=
-=B0C.
->
-> Range: -30=C2=B0C .. +85=C2=B0C
-> Sensitivity: 280 LSB/=C2=B0C
-> Room temperature offset: 35=C2=B0C =3D -13200 LSB
->
-> [1]: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
+Remove space and use tabs for indent the code to follow the
+Linux kernel coding conventions.
+Problem found by checkpatch
 
+Beatriz Martins de Carvalho (3):
+  drm: drm_atomic_uapi.c: Use tabs for code indents
+  drm: drm_blend.c: Use tabs for code indents
+  drm: drm_connector.c: Use tabs for code indents
 
-So, if I'm reading this and the register description right the value
-is in the range
--32768..32767.
--13200 defines 35=C2=B0C
+ drivers/gpu/drm/drm_atomic_uapi.c |  6 ++---
+ drivers/gpu/drm/drm_blend.c       |  4 ++--
+ drivers/gpu/drm/drm_connector.c   | 38 +++++++++++++++----------------
+ 3 files changed, 24 insertions(+), 24 deletions(-)
 
-50000 as mentioned by Dmitry is actually -15536. So, it means that the
-more negative a value is the higher temperature is shown.
+-- 
+2.25.1
 
-Since it's linearized scale, now we can see that
-
-(13200 -15536)/280 + 35 gives us 26.66.
-
-Does it make sense?
-
---=20
-With Best Regards,
-Andy Shevchenko
