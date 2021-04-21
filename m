@@ -2,74 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C988B3664B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 07:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649DA3664B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 07:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbhDUFLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 01:11:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
+        id S235149AbhDUFUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 01:20:33 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:17015 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230440AbhDUFLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 01:11:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4049D6105A;
-        Wed, 21 Apr 2021 05:10:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618981830;
-        bh=gDTv6Ws3dmiAvi6sW15n2JiYhMOJzINkMNlGAdGchIE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NMxNzSRnAAGnNumW9gSrxiCWk3sJBxRFXy+AOmTUBr4BNVY8gd+WVCqDapgGFwLmt
-         NwSm+rO0py+PkwjfQhaRZ4Gw2XAk2ombhiKsAXwiS06GLwP8kXpWPvPIHdT8U7CGVL
-         jbfNlAjMmaoWu6EETQ5Dat7jn1guk47kwOKRVGtwXPSJXYuM3dPmtPxHsycUf1544S
-         Jj+Q5MRKWqrx9vYj111SkvVE78KVv2llcQNbVVI51ZsLiFLPDsJy39KQmcK1fcC7AR
-         On4NjLtWK5qWryVFk9uIp9q2F9SL/4/Ux5FknOXDi317F1DSGyi2HP99puFc4GrRoi
-         OkVsDhQ1wmAMg==
-Date:   Wed, 21 Apr 2021 08:10:25 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YH+zwQgBBGUJdiVK@unreal>
-References: <20210407001658.2208535-1-pakki001@umn.edu>
- <YH5/i7OvsjSmqADv@kroah.com>
- <20210420171008.GB4017@fieldses.org>
+        id S230343AbhDUFUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 01:20:32 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FQ84t0yFMzB09Zx;
+        Wed, 21 Apr 2021 07:19:58 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id gwq0mv73agO5; Wed, 21 Apr 2021 07:19:58 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FQ84s74jZzB09Zr;
+        Wed, 21 Apr 2021 07:19:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C12EA8B814;
+        Wed, 21 Apr 2021 07:19:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 37EEIdynIZD1; Wed, 21 Apr 2021 07:19:58 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 588E38B770;
+        Wed, 21 Apr 2021 07:19:58 +0200 (CEST)
+Subject: Re: [PATCH v2] powerpc: make ALTIVEC select PPC_FPU
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org,
+        Segher Boessenkool <segher@kernel.crashing.org>
+References: <20210421025605.10868-1-rdunlap@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <60ac6ff1-6bfa-d335-ac0e-336fe3e50587@csgroup.eu>
+Date:   Wed, 21 Apr 2021 07:19:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420171008.GB4017@fieldses.org>
+In-Reply-To: <20210421025605.10868-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 01:10:08PM -0400, J. Bruce Fields wrote:
-> On Tue, Apr 20, 2021 at 09:15:23AM +0200, Greg KH wrote:
-> > If you look at the code, this is impossible to have happen.
-> > 
-> > Please stop submitting known-invalid patches.  Your professor is playing
-> > around with the review process in order to achieve a paper in some
-> > strange and bizarre way.
-> > 
-> > This is not ok, it is wasting our time, and we will have to report this,
-> > AGAIN, to your university...
+
+
+Le 21/04/2021 à 04:56, Randy Dunlap a écrit :
+> On a kernel config with ALTIVEC=y and PPC_FPU not set/enabled,
+> there are build errors:
 > 
-> What's the story here?
-
-Those commits are part of the following research:
-https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceInsecurity.pdf
-
-They introduce kernel bugs on purpose. Yesterday, I took a look on 4
-accepted patches from Aditya and 3 of them added various severity security
-"holes".
-
-Thanks
-
+> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
+>             enable_kernel_fp();
+> ../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
+> ../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
+>    637 |   put_vr(rn, &u.v);
+>        |   ^~~~~~
+> ../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
+> ../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
+>    660 |   get_vr(rn, &u.v);
+>        |   ^~~~~~
 > 
-> --b.
+> In theory ALTIVEC is independent of PPC_FPU but in practice nobody
+> is going to build such a machine, so make ALTIVEC require PPC_FPU
+> by selecting it.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Segher Boessenkool <segher@kernel.crashing.org>
+> Cc: lkp@intel.com
+> ---
+> v2: change ALTIVEC depends on PPC_FPU to select (Christophe and Michael)
+> 
+>   arch/powerpc/platforms/86xx/Kconfig    |    1 +
+>   arch/powerpc/platforms/Kconfig.cputype |    2 ++
+>   2 files changed, 3 insertions(+)
+> 
+> --- linux-next-20210416.orig/arch/powerpc/platforms/86xx/Kconfig
+> +++ linux-next-20210416/arch/powerpc/platforms/86xx/Kconfig
+> @@ -4,6 +4,7 @@ menuconfig PPC_86xx
+>   	bool "86xx-based boards"
+>   	depends on PPC_BOOK3S_32
+>   	select FSL_SOC
+> +	select PPC_FPU
+
+Now that ALTIVEC selects PPC_FPU by itself, I don't think you need that.
+
+>   	select ALTIVEC
+>   	help
+>   	  The Freescale E600 SoCs have 74xx cores.
+> --- linux-next-20210416.orig/arch/powerpc/platforms/Kconfig.cputype
+> +++ linux-next-20210416/arch/powerpc/platforms/Kconfig.cputype
+> @@ -186,6 +186,7 @@ config E300C3_CPU
+>   config G4_CPU
+>   	bool "G4 (74xx)"
+>   	depends on PPC_BOOK3S_32
+> +	select PPC_FPU
+
+Same
+
+>   	select ALTIVEC
+>   
+>   endchoice
+> @@ -310,6 +311,7 @@ config PHYS_64BIT
+>   config ALTIVEC
+>   	bool "AltiVec Support"
+>   	depends on PPC_BOOK3S_32 || PPC_BOOK3S_64 || (PPC_E500MC && PPC64)
+> +	select PPC_FPU
+>   	help
+>   	  This option enables kernel support for the Altivec extensions to the
+>   	  PowerPC processor. The kernel currently supports saving and restoring
+> 
