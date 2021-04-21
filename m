@@ -2,137 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C080367195
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5550A367197
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244868AbhDURmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:42:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:38870 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244854AbhDURme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:42:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD90B11FB;
-        Wed, 21 Apr 2021 10:42:00 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.27.219])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 390EE3F694;
-        Wed, 21 Apr 2021 10:41:58 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com,
-        lukasz.luba@arm.com
-Subject: [PATCH v3 3/3] thermal: create a helper __thermal_cdev_update() without a lock
-Date:   Wed, 21 Apr 2021 18:41:45 +0100
-Message-Id: <20210421174145.8213-4-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210421174145.8213-1-lukasz.luba@arm.com>
-References: <20210421174145.8213-1-lukasz.luba@arm.com>
+        id S244860AbhDURnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:43:35 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33967 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234964AbhDURne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:43:34 -0400
+Received: from 36-229-230-199.dynamic-ip.hinet.net ([36.229.230.199] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lZGsL-0007Uv-CB; Wed, 21 Apr 2021 17:42:58 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Dennis Li <Dennis.Li@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/amdgpu: Register VGA clients after init can no longer fail
+Date:   Thu, 22 Apr 2021 01:42:46 +0800
+Message-Id: <20210421174248.97506-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a need to have a helper function which updates cooling device
-state from the governors code. With this change governor can use
-lock and unlock while calling helper function. This avoid unnecessary
-second time lock/unlock which was in previous solution present in
-governor implementation. This new helper function must be called
-with mutex 'cdev->lock' hold.
+When an amdgpu device fails to init, it makes another VGA device cause
+kernel splat:
+kernel: amdgpu 0000:08:00.0: amdgpu: amdgpu_device_ip_init failed
+kernel: amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
+kernel: amdgpu: probe of 0000:08:00.0 failed with error -110
+...
+kernel: amdgpu 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
+kernel: BUG: kernel NULL pointer dereference, address: 0000000000000018
+kernel: #PF: supervisor read access in kernel mode
+kernel: #PF: error_code(0x0000) - not-present page
+kernel: PGD 0 P4D 0
+kernel: Oops: 0000 [#1] SMP NOPTI
+kernel: CPU: 6 PID: 1080 Comm: Xorg Tainted: G        W         5.12.0-rc8+ #12
+kernel: Hardware name: HP HP EliteDesk 805 G6/872B, BIOS S09 Ver. 02.02.00 12/30/2020
+kernel: RIP: 0010:amdgpu_device_vga_set_decode+0x13/0x30 [amdgpu]
+kernel: Code: 06 31 c0 c3 b8 ea ff ff ff 5d c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00 00 55 48 8b 87 90 06 00 00 48 89 e5 53 89 f3 <48> 8b 40 18 40 0f b6 f6 e8 40 58 39 fd 80 fb 01 5b 5d 19 c0 83 e0
+kernel: RSP: 0018:ffffae3c0246bd68 EFLAGS: 00010002
+kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+kernel: RDX: ffff8dd1af5a8560 RSI: 0000000000000000 RDI: ffff8dce8c160000
+kernel: RBP: ffffae3c0246bd70 R08: ffff8dd1af5985c0 R09: ffffae3c0246ba38
+kernel: R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000246
+kernel: R13: 0000000000000000 R14: 0000000000000003 R15: ffff8dce81490000
+kernel: FS:  00007f9303d8fa40(0000) GS:ffff8dd1af580000(0000) knlGS:0000000000000000
+kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kernel: CR2: 0000000000000018 CR3: 0000000103cfa000 CR4: 0000000000350ee0
+kernel: Call Trace:
+kernel:  vga_arbiter_notify_clients.part.0+0x4a/0x80
+kernel:  vga_get+0x17f/0x1c0
+kernel:  vga_arb_write+0x121/0x6a0
+kernel:  ? apparmor_file_permission+0x1c/0x20
+kernel:  ? security_file_permission+0x30/0x180
+kernel:  vfs_write+0xca/0x280
+kernel:  ksys_write+0x67/0xe0
+kernel:  __x64_sys_write+0x1a/0x20
+kernel:  do_syscall_64+0x38/0x90
+kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
+kernel: RIP: 0033:0x7f93041e02f7
+kernel: Code: 75 05 48 83 c4 58 c3 e8 f7 33 ff ff 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+kernel: RSP: 002b:00007fff60e49b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+kernel: RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f93041e02f7
+kernel: RDX: 000000000000000b RSI: 00007fff60e49b40 RDI: 000000000000000f
+kernel: RBP: 00007fff60e49b40 R08: 00000000ffffffff R09: 00007fff60e499d0
+kernel: R10: 00007f93049350b5 R11: 0000000000000246 R12: 000056111d45e808
+kernel: R13: 0000000000000000 R14: 000056111d45e7f8 R15: 000056111d46c980
+kernel: Modules linked in: nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_seq input_leds snd_seq_device snd_timer snd soundcore joydev kvm_amd serio_raw k10temp mac_hid hp_wmi ccp kvm sparse_keymap wmi_bmof ucsi_acpi efi_pstore typec_ucsi rapl typec video wmi sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath linear dm_mirror dm_region_hash dm_log hid_generic usbhid hid amdgpu drm_ttm_helper ttm iommu_v2 gpu_sched i2c_algo_bit drm_kms_helper syscopyarea sysfillrect crct10dif_pclmul sysimgblt crc32_pclmul fb_sys_fops ghash_clmulni_intel cec rc_core aesni_intel crypto_simd psmouse cryptd r8169 i2c_piix4 drm ahci xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic
+kernel: CR2: 0000000000000018
+kernel: ---[ end trace 76d04313d4214c51 ]---
 
-The changed been discussed and part of code presented in thread:
-https://lore.kernel.org/linux-pm/20210419084536.25000-1-lukasz.luba@arm.com/
+Commit 4192f7b57689 ("drm/amdgpu: unmap register bar on device init
+failure") makes amdgpu_driver_unload_kms() skips amdgpu_device_fini(),
+so the VGA clients remain registered. So when
+vga_arbiter_notify_clients() iterates over registered clients, it causes
+NULL pointer dereference.
 
-Co-developed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Since there's no reason to register VGA clients that early, so solve
+the issue by putting them after all the goto cleanups.
+
+Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failure")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- drivers/thermal/gov_power_allocator.c |  5 +----
- drivers/thermal/thermal_core.h        |  1 +
- drivers/thermal/thermal_helpers.c     | 28 +++++++++++++++++----------
- 3 files changed, 20 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 26 +++++++++++-----------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index f379f1aaa3b5..a6cdb2e892da 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -595,12 +595,9 @@ static void allow_maximum_power(struct thermal_zone_device *tz, bool update)
- 		cdev->ops->get_requested_power(cdev, &req_power);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index b4ad1c055c70..115a7699e11e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3410,19 +3410,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+ 	/* doorbell bar mapping and doorbell index init*/
+ 	amdgpu_device_doorbell_init(adev);
  
- 		if (update)
--			instance->cdev->updated = false;
-+			__thermal_cdev_update(instance->cdev);
- 
- 		mutex_unlock(&instance->cdev->lock);
+-	/* if we have > 1 VGA cards, then disable the amdgpu VGA resources */
+-	/* this will fail for cards that aren't VGA class devices, just
+-	 * ignore it */
+-	if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
+-		vga_client_register(adev->pdev, adev, NULL, amdgpu_device_vga_set_decode);
 -
--		if (update)
--			thermal_cdev_update(instance->cdev);
- 	}
- 	mutex_unlock(&tz->lock);
- }
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index 86b8cef7310e..726e327b4205 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -66,6 +66,7 @@ static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
- }
- 
- void thermal_cdev_update(struct thermal_cooling_device *);
-+void __thermal_cdev_update(struct thermal_cooling_device *cdev);
- 
- /**
-  * struct thermal_trip - representation of a point in temperature domain
-diff --git a/drivers/thermal/thermal_helpers.c b/drivers/thermal/thermal_helpers.c
-index 7f50f412e02a..3d7fd46104de 100644
---- a/drivers/thermal/thermal_helpers.c
-+++ b/drivers/thermal/thermal_helpers.c
-@@ -192,18 +192,12 @@ static void thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev,
- 	thermal_cooling_device_stats_update(cdev, target);
- }
- 
--void thermal_cdev_update(struct thermal_cooling_device *cdev)
-+
-+void __thermal_cdev_update(struct thermal_cooling_device *cdev)
- {
- 	struct thermal_instance *instance;
- 	unsigned long target = 0;
- 
--	mutex_lock(&cdev->lock);
--	/* cooling device is updated*/
--	if (cdev->updated) {
--		mutex_unlock(&cdev->lock);
--		return;
+-	if (amdgpu_device_supports_px(ddev)) {
+-		px = true;
+-		vga_switcheroo_register_client(adev->pdev,
+-					       &amdgpu_switcheroo_ops, px);
+-		vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_pm_domain);
 -	}
 -
- 	/* Make sure cdev enters the deepest cooling state */
- 	list_for_each_entry(instance, &cdev->thermal_instances, cdev_node) {
- 		dev_dbg(&cdev->device, "zone%d->target=%lu\n",
-@@ -216,11 +210,25 @@ void thermal_cdev_update(struct thermal_cooling_device *cdev)
+ 	if (amdgpu_emu_mode == 1) {
+ 		/* post the asic on emulation mode */
+ 		emu_soc_asic_init(adev);
+@@ -3619,6 +3606,19 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+ 	if (amdgpu_device_cache_pci_state(adev->pdev))
+ 		pci_restore_state(pdev);
  
- 	thermal_cdev_set_cur_state(cdev, target);
- 
--	cdev->updated = true;
--	mutex_unlock(&cdev->lock);
- 	trace_cdev_update(cdev, target);
- 	dev_dbg(&cdev->device, "set to state %lu\n", target);
- }
++	/* if we have > 1 VGA cards, then disable the amdgpu VGA resources */
++	/* this will fail for cards that aren't VGA class devices, just
++	 * ignore it */
++	if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
++		vga_client_register(adev->pdev, adev, NULL, amdgpu_device_vga_set_decode);
 +
-+/**
-+ * thermal_cdev_update - update cooling device state if needed
-+ * @cdev:	pointer to struct thermal_cooling_device
-+ *
-+ * Update the cooling device state if there is a need.
-+ */
-+void thermal_cdev_update(struct thermal_cooling_device *cdev)
-+{
-+	mutex_lock(&cdev->lock);
-+	if (!cdev->updated) {
-+		__thermal_cdev_update(cdev);
-+		cdev->updated = true;
++	if (amdgpu_device_supports_px(ddev)) {
++		px = true;
++		vga_switcheroo_register_client(adev->pdev,
++					       &amdgpu_switcheroo_ops, px);
++		vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_pm_domain);
 +	}
-+	mutex_unlock(&cdev->lock);
-+}
- EXPORT_SYMBOL(thermal_cdev_update);
- 
- /**
++
+ 	if (adev->gmc.xgmi.pending_reset)
+ 		queue_delayed_work(system_wq, &mgpu_info.delayed_reset_work,
+ 				   msecs_to_jiffies(AMDGPU_RESUME_MS));
 -- 
-2.17.1
+2.30.2
 
