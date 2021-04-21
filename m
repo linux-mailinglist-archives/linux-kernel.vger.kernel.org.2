@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E129366BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0566F366C15
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241957AbhDUNJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:09:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47370 "EHLO mail.kernel.org"
+        id S242011AbhDUNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:09:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239689AbhDUNG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:06:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83B4561452;
-        Wed, 21 Apr 2021 13:06:25 +0000 (UTC)
+        id S240139AbhDUNHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:07:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C6561457;
+        Wed, 21 Apr 2021 13:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010386;
-        bh=uzIaOMNGCQ6Uf/UGxcGNeEuzWnR9hEHddcDqfgT9RdE=;
+        s=korg; t=1619010388;
+        bh=JohFeQwR6jXzApbZjK7P2q6uFpDFGfiGCYI+5rIdurw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TmvGFEBrvwU1GzDYUOA2urJBrwHYJk167nE8bF3RrCh2iJiDwLFMCXvCZschkEK48
-         qL+g+Kz3PlygDwcnQ1Hroe4JRwat3KI+qbB73QHCyzNq6sAUIWQuT79IXcnCIMvsNv
-         HLrty9P3eBOffKFrJPBlgJ1JgIHpJX/ScbxXc3Tk=
+        b=FnXYLLpPZTowsQEu3H2ZvxmvHSgkKaPUiOmIR2uznkcT/3cHSyVDhBV3HEOigVwDB
+         1Oa6Hh4aacYxef9vUlWp8W+7RneC2zmGLnsj+FOoSf87uQk1n3xhbe7V2VYLQ/GJsV
+         ciacU7mW32zLoRCnjjtghKoFj1YfVxI9Y1jD4QSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>, Avri Altman <avri.altman@wdc.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 118/190] Revert "scsi: ufs: fix a missing check of devm_reset_control_get"
-Date:   Wed, 21 Apr 2021 14:59:53 +0200
-Message-Id: <20210421130105.1226686-119-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>, stable <stable@vger.kernel.org>
+Subject: [PATCH 119/190] Revert "tty: mxs-auart: fix a potential NULL pointer dereference"
+Date:   Wed, 21 Apr 2021 14:59:54 +0200
+Message-Id: <20210421130105.1226686-120-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 63a06181d7ce169d09843645c50fea1901bc9f0a.
+This reverts commit 6734330654dac550f12e932996b868c6d0dcb421.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,28 +53,28 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Avri Altman <avri.altman@wdc.com>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufs-hisi.c | 4 ----
+ drivers/tty/serial/mxs-auart.c | 4 ----
  1 file changed, 4 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-hisi.c b/drivers/scsi/ufs/ufs-hisi.c
-index 0aa58131e791..7d1e07a9d9dd 100644
---- a/drivers/scsi/ufs/ufs-hisi.c
-+++ b/drivers/scsi/ufs/ufs-hisi.c
-@@ -468,10 +468,6 @@ static int ufs_hisi_init_common(struct ufs_hba *hba)
- 	ufshcd_set_variant(hba, host);
+diff --git a/drivers/tty/serial/mxs-auart.c b/drivers/tty/serial/mxs-auart.c
+index f414d6acad69..edad6ebbdfd5 100644
+--- a/drivers/tty/serial/mxs-auart.c
++++ b/drivers/tty/serial/mxs-auart.c
+@@ -1644,10 +1644,6 @@ static int mxs_auart_probe(struct platform_device *pdev)
  
- 	host->rst  = devm_reset_control_get(dev, "rst");
--	if (IS_ERR(host->rst)) {
--		dev_err(dev, "%s: failed to get reset control\n", __func__);
--		return PTR_ERR(host->rst);
+ 	s->port.mapbase = r->start;
+ 	s->port.membase = ioremap(r->start, resource_size(r));
+-	if (!s->port.membase) {
+-		ret = -ENOMEM;
+-		goto out_disable_clks;
 -	}
- 
- 	ufs_hisi_set_pm_lvl(hba);
- 
+ 	s->port.ops = &mxs_auart_ops;
+ 	s->port.iotype = UPIO_MEM;
+ 	s->port.fifosize = MXS_AUART_FIFO_SIZE;
 -- 
 2.31.1
 
