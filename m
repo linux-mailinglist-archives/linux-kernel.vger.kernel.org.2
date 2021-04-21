@@ -2,95 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92253666FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F63366702
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhDUI3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234632AbhDUI3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:29:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A3D6142C;
-        Wed, 21 Apr 2021 08:29:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618993741;
-        bh=PlDQaFaPk/kK/krQ9Bde4x/76KoZ9JGgl7x0Ep6sHVk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pO4njqXE6uBEbx7G0wZlpJqd1p67dfNA7DkA542Htbybn2qZOAeINQEBvtbR0yfD+
-         +laEtyvzotfzONDY7GUxCcU+DfEaGDwy3pIK4fuPtZtCKsnYphOKhPjJyNP8zbL8i6
-         0oJAxKrvFMkrd8JSevVqFzmQA4JD1q2vehc35jNjw/dXeDuMwHScKLsll2gnDWjQtm
-         UtjkQCqY0xXSPnYT5heGL8ZZgifqb5n2DWESfobdYjmTtPJAC+6N5wxQhHL+VTfEQ+
-         2uvhALFQZNX+3ztsJ/2yAuILymkQUThB6HBxQQcfuP7I9MmRGCkKT5gFlGZPxqLZxb
-         AXABIwbNdIhCQ==
-Received: by mail-lf1-f54.google.com with SMTP id 4so5769291lfp.11;
-        Wed, 21 Apr 2021 01:29:01 -0700 (PDT)
-X-Gm-Message-State: AOAM531Af6FekkVT9zBhiW2RGJ7cDxd11/64oYKjJ7rHNRBWWKT0nVuL
-        I9bPxOtM7Vj4u02GFn3lnktWAktxZNtckjvx0oQ=
-X-Google-Smtp-Source: ABdhPJyLGHbOYUo5kuRuRui9Du9S01mLmss+HOmeO1VcFN20rB5jfa8IKdI3kVIvvkC7cLrIhIA+yBJKbfVJGWJ89/A=
-X-Received: by 2002:a19:e34c:: with SMTP id c12mr19212590lfk.555.1618993739734;
- Wed, 21 Apr 2021 01:28:59 -0700 (PDT)
+        id S235094AbhDUIbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234632AbhDUIbh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:31:37 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6A5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:31:04 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so743213wmi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mJcwZlu0Ar0OqbJ+UZHBMNI1VVtXFf5qDweduy1D6/0=;
+        b=o024ty8UnwIIrWAXLRcFarFxMWg7aB5MoAF8/o0gVibbG8v/5/bOJSDD6mISRw2/3t
+         RISq8FAaPPdXjtCkc80AWVZZhVMXSS9ePy/0e42mO8s65dFlUpQtGRxAzzUexbPHTd6M
+         E93/bEHx+TF1PTCdAkNCXbq6Pp+HRcW0ij6FCmQkFFbVoW6lQ++b5RuvNMMe+wNz/h3/
+         PbB7VRCpoGtVwhW/m+6VhBrAkJDqFoDnHmnr+0FTaBBaq8a72TaQ7IaFKCSmpQlYp9Pq
+         v0kVNof5TCP9ajsRScnrw6YgYHN4D5Xa6TM1a1Qiz3aZsJ+jjQlgmTFShG0WApO6GR58
+         GRaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mJcwZlu0Ar0OqbJ+UZHBMNI1VVtXFf5qDweduy1D6/0=;
+        b=tnmg6SgDANpkY7OjvuRcrn27iIL6YoDXeZGEbABkmpDfvBsvrlELaHX/hXAtNQWzUo
+         7K4liwrpwRVXgx8xy4Zpfe/Aj6tT2jG+k+QomImxzmxiFwkMTVCeWeG5d19ao4giHh7+
+         a2v/MXKjleGDvR8eMVzMZpjua7I4YJKqTQkpz1Sd7kU3smdmErN9jMUeysNgIWAY/WWQ
+         gWomD6NjgjG2I0i9RSBToC/SGTrv9E4CqMsBlx2s7NZ64r5X3DOE2FjNfwE+4YNneVWM
+         /uh2Qaz8gZ/ufa1TmO0RijCwjlgGvZ8n5cWevRz/nRh7iMH0HtZJZR8FSdSkYsm9MEvt
+         0OIw==
+X-Gm-Message-State: AOAM533sqh/kys0L13iDj7AdapYlxguwshsoqCJlL9/N4AMlqJYlb7OX
+        I5+qV/ZqaR0CIpv7+/Icl+qpSg==
+X-Google-Smtp-Source: ABdhPJwEGruRSdnWTaFzBtUIiMhSy7VtcwIGQ/9y41wbzN7dfUybADZ1XDSeTl9FBzz3Ugj+bZUM4A==
+X-Received: by 2002:a1c:b3c5:: with SMTP id c188mr2432123wmf.168.1618993863536;
+        Wed, 21 Apr 2021 01:31:03 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id g5sm2156525wrq.30.2021.04.21.01.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 01:31:02 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 08:31:00 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Android Kernel Team <kernel-team@android.com>,
+        Architecture Mailman List <boot-architecture@lists.linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
+ reserved memory region
+Message-ID: <YH/ixPnHMxNo08mJ@google.com>
+References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
+ <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com>
+ <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
+ <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
+ <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
+ <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
 MIME-Version: 1.0
-References: <1618925829-90071-1-git-send-email-guoren@kernel.org>
- <1618925829-90071-2-git-send-email-guoren@kernel.org> <CAK8P3a1aNDomNiX7W1USWnmdw1VR21ALX7NvJYGW9LBO+jvA4A@mail.gmail.com>
-In-Reply-To: <CAK8P3a1aNDomNiX7W1USWnmdw1VR21ALX7NvJYGW9LBO+jvA4A@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 21 Apr 2021 16:28:48 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ7LPW7tb-Q+mPVnVbfqUCaBotqOQhwk32N7tr59HZU9A@mail.gmail.com>
-Message-ID: <CAJF2gTQ7LPW7tb-Q+mPVnVbfqUCaBotqOQhwk32N7tr59HZU9A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] nios2: Cleanup deprecated function strlen_user
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Arnd,
+On Tuesday 20 Apr 2021 at 09:33:56 (-0700), Florian Fainelli wrote:
+> I do wonder as well, we have a 32MB "no-map" reserved memory region on
+> our platforms located at 0xfe000000. Without the offending commit,
+> /proc/iomem looks like this:
+> 
+> 40000000-fdffefff : System RAM
+>   40008000-40ffffff : Kernel code
+>   41e00000-41ef1d77 : Kernel data
+> 100000000-13fffffff : System RAM
+> 
+> and with the patch applied, we have this:
+> 
+> 40000000-fdffefff : System RAM
+>   40008000-40ffffff : Kernel code
+>   41e00000-41ef3db7 : Kernel data
+> fdfff000-ffffffff : System RAM
+> 100000000-13fffffff : System RAM
+> 
+> so we can now see that the region 0xfe000000 - 0xfffffff is also cobbled
+> up with the preceding region which is a mailbox between Linux and the
+> secure monitor at 0xfdfff000 and of size 4KB. It seems like there is
+> 
+> The memblock=debug outputs is also different:
+> 
+> [    0.000000] MEMBLOCK configuration:
+> [    0.000000]  memory size = 0xfdfff000 reserved size = 0x7ce4d20d
+> [    0.000000]  memory.cnt  = 0x2
+> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
+> 0xbdfff000 bytes flags: 0x0
+> [    0.000000]  memory[0x1]     [0x00000100000000-0x0000013fffffff],
+> 0x40000000 bytes flags: 0x0
+> [    0.000000]  reserved.cnt  = 0x6
+> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
+> 0xb495 bytes flags: 0x0
+> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef1d77],
+> 0x1cf1d78 bytes flags: 0x0
+> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
+> 0x100000 bytes flags: 0x0
+> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
+> 0x50000 bytes flags: 0x0
+> [    0.000000]  reserved[0x4]   [0x000000c2c00000-0x000000fdbfffff],
+> 0x3b000000 bytes flags: 0x0
+> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
+> 0x40000000 bytes flags: 0x0
+> 
+> [    0.000000] MEMBLOCK configuration:
+> [    0.000000]  memory size = 0x100000000 reserved size = 0x7ca4f24d
+> [    0.000000]  memory.cnt  = 0x3
+> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
+> 0xbdfff000 bytes flags: 0x0
+> [    0.000000]  memory[0x1]     [0x000000fdfff000-0x000000ffffffff],
+> 0x2001000 bytes flags: 0x4
+> [    0.000000]  memory[0x2]     [0x00000100000000-0x0000013fffffff],
+> 0x40000000 bytes flags: 0x0
+> [    0.000000]  reserved.cnt  = 0x6
+> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
+> 0xb495 bytes flags: 0x0
+> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef3db7],
+> 0x1cf3db8 bytes flags: 0x0
+> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
+> 0x100000 bytes flags: 0x0
+> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
+> 0x50000 bytes flags: 0x0
+> [    0.000000]  reserved[0x4]   [0x000000c3000000-0x000000fdbfffff],
+> 0x3ac00000 bytes flags: 0x0
+> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
+> 0x40000000 bytes flags: 0x0
+> 
+> in the second case we can clearly see that the 32MB no-map region is now
+> considered as usable RAM.
+> 
+> Hope this helps.
+> 
+> > 
+> > In any case, the mere fact that this causes a regression should be
+> > sufficient justification to revert/withdraw it from v5.4, as I don't
+> > see a reason why it was merged there in the first place. (It has no
+> > fixes tag or cc:stable)
+> 
+> Agreed, however that means we still need to find out whether a more
+> recent kernel is also broken, I should be able to tell you that a little
+> later.
 
-On Tue, Apr 20, 2021 at 10:32 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Tue, Apr 20, 2021 at 3:37 PM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > $ grep strlen_user * -r
-> > arch/csky/include/asm/uaccess.h:#define strlen_user(str) strnlen_user(str, 32767)
-> > arch/csky/lib/usercopy.c: * strlen_user: - Get the size of a string in user space.
-> > arch/ia64/lib/strlen.S: // Please note that in the case of strlen() as opposed to strlen_user()
-> > arch/mips/lib/strnlen_user.S: *  make strlen_user and strnlen_user access the first few KSEG0
-> > arch/nds32/include/asm/uaccess.h:extern __must_check long strlen_user(const char __user * str);
-> > arch/nios2/include/asm/uaccess.h:extern __must_check long strlen_user(const char __user *str);
-> > arch/riscv/include/asm/uaccess.h:extern long __must_check strlen_user(const char __user *str);
-> > kernel/trace/trace_probe_tmpl.h:static nokprobe_inline int fetch_store_strlen_user(unsigned long addr);
-> > kernel/trace/trace_probe_tmpl.h:                        ret += fetch_store_strlen_user(val + code->offset);
-> > kernel/trace/trace_uprobe.c:fetch_store_strlen_user(unsigned long addr)
-> > kernel/trace/trace_kprobe.c:fetch_store_strlen_user(unsigned long addr)
-> > kernel/trace/trace_kprobe.c:            return fetch_store_strlen_user(addr);
->
-> I would suggest using "grep strlen_user * -rw", to let the whole-word match
-> filter out the irrelevant ones for the changelog.
->
-> > See grep result, nobody uses it.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
->
-> All three patches
->
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
->
-> Do you want me to pick them up in the asm-generic tree?
-Yes, please take them.
+FWIW I did test this on Qemu before posting. With 5.12-rc8 and a 1MiB
+no-map region at 0x80000000, I have the following:
 
+40000000-7fffffff : System RAM
+  40210000-417fffff : Kernel code
+  41800000-41daffff : reserved
+  41db0000-4210ffff : Kernel data
+  48000000-48008fff : reserved
+80000000-800fffff : reserved
+80100000-13fffffff : System RAM
+  fa000000-ffffffff : reserved
+  13b000000-13f5fffff : reserved
+  13f6de000-13f77dfff : reserved
+  13f77e000-13f77efff : reserved
+  13f77f000-13f7dafff : reserved
+  13f7dd000-13f7defff : reserved
+  13f7df000-13f7dffff : reserved
+  13f7e0000-13f7f3fff : reserved
+  13f7f4000-13f7fdfff : reserved
+  13f7fe000-13fffffff : reserved
 
+If I remove the 'no-map' qualifier from DT, I get this:
 
--- 
-Best Regards
- Guo Ren
+40000000-13fffffff : System RAM
+  40210000-417fffff : Kernel code
+  41800000-41daffff : reserved
+  41db0000-4210ffff : Kernel data
+  48000000-48008fff : reserved
+  80000000-800fffff : reserved
+  fa000000-ffffffff : reserved
+  13b000000-13f5fffff : reserved
+  13f6de000-13f77dfff : reserved
+  13f77e000-13f77efff : reserved
+  13f77f000-13f7dafff : reserved
+  13f7dd000-13f7defff : reserved
+  13f7df000-13f7dffff : reserved
+  13f7e0000-13f7f3fff : reserved
+  13f7f4000-13f7fdfff : reserved
+  13f7fe000-13fffffff : reserved
 
-ML: https://lore.kernel.org/linux-csky/
+So this does seem to be working fine on my setup. I'll try again with
+5.4 to see if I can repro.
+
+Also, 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove already
+reserved regions") looks more likely to cause the issue observed here,
+but that shouldn't be silent. I get the following error message in dmesg
+if I if place the no-map region on top of the kernel image:
+
+OF: fdt: Reserved memory: failed to reserve memory for node 'foobar@40210000': base 0x0000000040210000, size 1 MiB
+
+Is that triggering on your end?
+
+Thanks,
+Quentin
