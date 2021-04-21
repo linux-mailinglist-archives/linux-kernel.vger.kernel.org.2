@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA1B366BA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1247366BA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240646AbhDUNEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44378 "EHLO mail.kernel.org"
+        id S240709AbhDUNEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:04:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240616AbhDUNEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:04:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86B6561452;
-        Wed, 21 Apr 2021 13:03:33 +0000 (UTC)
+        id S240646AbhDUNEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:04:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB4276144C;
+        Wed, 21 Apr 2021 13:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010214;
-        bh=QtDnaKBKc0kYe7eyxA54hxHE0gWxOWk1oNAd7iN2/pw=;
+        s=korg; t=1619010216;
+        bh=safbXJMe4uxXLpovjnkp5EwbdjRLORiNMeJaarTVHhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t4GH9/kn+mRsdJ+lIAMNzU6TjMQuJe/ey4udQ5cDYddIWyfnFAo5MzXFSi+C2padh
-         SkxV6qap4MSAipM3IMxju1+/PbhuZo9Coco1kzAWX55WufPdt55qnrZiO25KDJBlca
-         jW/y+2OVf5H9LrKIQ9b2NVwio0Qi6AzJILgvh88Q=
+        b=slRVLgsyp9m+UH450CIMxI/XwcDvodsbGexm8DQCXNJcIiXZaB5xYvYD8aspWM4cR
+         4bL4MiBp0P+iRklkdYDomh9E4fLmucc4BzSOU2uJUAjRAY/hLsl/Pffmy8m2W3n5AR
+         9C4ujDcCpUq/ynkPGL+sPxGYe+NFSzMmSVTLv2ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, Tyler Hicks <code@tyhicks.com>
-Subject: [PATCH 053/190] Revert "ecryptfs: replace BUG_ON with error handling code"
-Date:   Wed, 21 Apr 2021 14:58:48 +0200
-Message-Id: <20210421130105.1226686-54-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 054/190] Revert "clk: samsung: Remove redundant check in samsung_cmu_register_one"
+Date:   Wed, 21 Apr 2021 14:58:49 +0200
+Message-Id: <20210421130105.1226686-55-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -36,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
+This reverts commit 8d7a577d04e8ce24b1b81ee44ec8cd1dda2a9cd9.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,29 +55,29 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Tyler Hicks <code@tyhicks.com>
+Cc: https
+Cc: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ecryptfs/crypto.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/clk/samsung/clk.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
-index 943e523f4c9d..3d8623139538 100644
---- a/fs/ecryptfs/crypto.c
-+++ b/fs/ecryptfs/crypto.c
-@@ -296,10 +296,8 @@ static int crypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
- 	struct extent_crypt_result ecr;
- 	int rc = 0;
+diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+index 1949ae7851b2..dad31308c071 100644
+--- a/drivers/clk/samsung/clk.c
++++ b/drivers/clk/samsung/clk.c
+@@ -356,6 +356,10 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+ 	}
  
--	if (!crypt_stat || !crypt_stat->tfm
--	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
--		return -EINVAL;
--
-+	BUG_ON(!crypt_stat || !crypt_stat->tfm
-+	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
- 	if (unlikely(ecryptfs_verbosity > 0)) {
- 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
- 				crypt_stat->key_size);
+ 	ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
++	if (!ctx) {
++		panic("%s: unable to allocate ctx\n", __func__);
++		return ctx;
++	}
+ 
+ 	if (cmu->pll_clks)
+ 		samsung_clk_register_pll(ctx, cmu->pll_clks, cmu->nr_pll_clks,
 -- 
 2.31.1
 
