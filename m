@@ -2,117 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A07367576
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FA8367587
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243919AbhDUXCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 19:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        id S1343624AbhDUXJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 19:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhDUXCg (ORCPT
+        with ESMTP id S234826AbhDUXJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:02:36 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E0CC06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:02:01 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id i4so11557069ybe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:02:01 -0700 (PDT)
+        Wed, 21 Apr 2021 19:09:19 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777D5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:08:45 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x19so38827367lfa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:08:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aoJo1QotiA58rE0SFr32dy7Ybplj8AJq2l6VJ7dQkEQ=;
-        b=QHehOCMjmNqOFXdNBHkvdxCY4NwD0Lx3eOoa85xgiJTHGZddr0M8yfA9CH3CnKMq4N
-         zg/qPwsWiIRBK8WAn5qwoKo5kXyuRcBYvI4V5rX7mTPb9tqSSYktmu9AuBLJFCJ9ZEbC
-         6GPU09FCfcvAIJeh32pywKrWM/WedhiTxZMnA53Fkx9bArWw2Z8LNtJ36fg8kU+0EFLm
-         pN8IA+pNoBFOJyzrlL1/f7MENhxAzW4jxdma5/ldNJ59013RmbRC/f+xZE2SLS3rM0LE
-         312EC1+Q+GvX9E5/S6W1azTFovdrWOtg66SqyYYtsMWCf7i2OELu3zbFoRgkZAKWdCS+
-         HIaQ==
+         :cc:content-transfer-encoding;
+        bh=ihwBbr0wDU/pkGia8qTBJOVfFxizBeK/hnkFTc8CCWU=;
+        b=IZ3haLM5tJgi14Jfg0jJ1v5/78eVhgD8eIYJUrR9Izelrt74oysMKCUZZLkwfJo5oF
+         TV3VkBNz1mJ/1bePKD+xFSmIUYZP4B/qVg/n4GSkyARswtHbOWvFkiqg5WRNl1Pq5rnT
+         gd0sHo1zYzyORfqIbFghSzcX7RqDUNmKaErsomEZ1aUxcC2+CQ20SeA5IYQ1jmt2sICi
+         D/3//l0flWRzR7DdvSbmYWTZO8xfO5dPSbTiU0YQjCpqtkAkSuBKWz/Z7Nnq1Guws7ik
+         w9fVyVM456cSTZVssMxCnDz3sRxLlsObrr3w0nGRNyIC5JkJBM1Y5ZqnvaT+MONX8S+I
+         Kc1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aoJo1QotiA58rE0SFr32dy7Ybplj8AJq2l6VJ7dQkEQ=;
-        b=VF7aN4rRRuEmrsRMZqRVnyZuiB5MpTjYWc6nLxTpcNwlKjB+9m+Sfbej/A0QZTlFD/
-         VqDRwNKHut5tCiAo7QSsTp9457VxD326P8tWGLmVF0HHx0gaj5l41ruJN4FJ0oV24vVB
-         jU0ukMLmrlUHQ1Lt7neWtnzIyEangqW57vkN0kcd9bBgZDZNgHPBVaIoGYnPCXPd9N2h
-         PZ4HdRlGzZ9efzXesT3mlGfSdl1glkxG39bjsCwYaf09U6pqFL6/MHrfhTldw6oG2mT9
-         yjFn+oU11dF6VFobqvHaHnjbm9IJqsL8uhMXeEFl0ZCglOtb12lHNWs4+widybDH6vyS
-         0sFg==
-X-Gm-Message-State: AOAM5333fri6vpRCVm3EpA24fASKQq3EvauM5bzBEGUzbg6VDZIwc2aM
-        LSfgSvSssxvvS9povcl1dbs19GSY6IakQc74PNNyUA==
-X-Google-Smtp-Source: ABdhPJzh9vlYwPkMEKULJjYTcBpMiSl1hOKnJL1fZfY4HVew/pwAufmrAtY5C3gIjYxDqhImuTzFk1dOWHImUGrfqFE=
-X-Received: by 2002:a25:c801:: with SMTP id y1mr582786ybf.250.1619046119937;
- Wed, 21 Apr 2021 16:01:59 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ihwBbr0wDU/pkGia8qTBJOVfFxizBeK/hnkFTc8CCWU=;
+        b=joZzhsmWVfDqYkmT4QWgZ7AOEbCaKV0Zf5R3f5Rh/ORWHPHjkWpxfsZLjAOo9Wzfjo
+         saDF2YPQINdkaBLeE6JPwXNgUkVuxpOuMG/mrXcPr9UEx3r5FRdLUuF61PFp+uZTd6tX
+         jIn3gjNJ43U+c5qaYtWwKCbD+hYys2l1XJ1W1Y0Gv+dP6iF0pPyxtHdvtMdnCKOlvJ7i
+         51Pj0uibhS8Jq0iHKBhO50nEnTQCuAg2gdPGLc2HZL3/6x4h7YB80cOpXSuPo5p0F5RA
+         ZnAJ5zO1Qe9SpLhMEnxS9CfmmF1B3mVVDiITz51VJ0AwdGrLRU6dbKOumXdKBZsLAe9P
+         b67w==
+X-Gm-Message-State: AOAM530Mjy11pXvWGvQKn/szUUpFESRot5/r4Ad8xpXeANqIyL48v/Qw
+        /Q0SEXmRS0JYmQodhqW3b9Z1Pwu3QrP/AG0sUSxqe5R0B90=
+X-Google-Smtp-Source: ABdhPJw6QtkcxmWSpbyIuuNgpDxk4vNzZQHC4Ez36jv/K20KJUzmzZ9d+mZdRDzjwhY8fJLVEZFGhEIo+t3auUc5w+A=
+X-Received: by 2002:a05:6512:3a85:: with SMTP id q5mr347706lfu.465.1619046151567;
+ Wed, 21 Apr 2021 16:02:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401181741.168763-1-surenb@google.com> <CAHk-=wg8MDMLi8x+u-dee-ai0KiAavm6+JceV00gRXQRFG=Cgw@mail.gmail.com>
- <c7d580fe-e467-4f08-a11d-6b8ceaf41e8f@suse.cz> <CAHk-=wiQCrpxGL4o5piCSqJF0jahUUYW=9R=oGATiiPnkaGY0g@mail.gmail.com>
- <CAJuCfpFgHMMWZgch5gfjHj936gmpDztb8ZT-vJn6G0-r5BvceA@mail.gmail.com>
- <CAHk-=wj0JH6PnG7dW51Sr5ZqhomqSaSLTQV7z4Si2dLeSVcO_g@mail.gmail.com>
- <alpine.LRH.2.02.2104071432420.31819@file01.intranet.prod.int.rdu2.redhat.com>
- <CAHk-=whUKYdWbKfFzXXnK8n04oCMwEgSnG8Y3tgE=YZUjiDvbA@mail.gmail.com>
- <CAJuCfpHa+eydE_voX38V-jtv5J_RnyT=eY12-VmcLbVG_u2dyA@mail.gmail.com>
- <CAJuCfpHJjtv_=jLULge8D4EK_AK2yGLMcWKcGSaknzuWm0DFtA@mail.gmail.com>
- <20210421210517.GA6404@xz-x1> <CAJuCfpFfRq8TYs78BvXWriVNm4hf1+o_rX7OUGF=5Hdjcpg30g@mail.gmail.com>
-In-Reply-To: <CAJuCfpFfRq8TYs78BvXWriVNm4hf1+o_rX7OUGF=5Hdjcpg30g@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 21 Apr 2021 16:01:48 -0700
-Message-ID: <CAJuCfpGa4esN0ovL1=h3h2pyt2D1YzYF4Q9Ew6Q8q08mkdn8vA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] 4.14 backports of fixes for "CoW after fork() issue"
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, Shaohua Li <shli@fb.com>,
-        Nadav Amit <namit@vmware.com>, Linux-MM <linux-mm@kvack.org>,
+References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
+ <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
+ <f2b7938f-12ea-529b-da5e-83c9c8074e1a@gmail.com> <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
+ <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
+ <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com> <b5a2ce37-b386-40b3-d9ad-6e77deda74e6@metafoo.de>
+In-Reply-To: <b5a2ce37-b386-40b3-d9ad-6e77deda74e6@metafoo.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 22 Apr 2021 01:02:20 +0200
+Message-ID: <CACRpkdborNeVNQEq9vf9N_CCkKqpBN-0g0FE-oJws4zTrxnXvQ@mail.gmail.com>
+Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Nathan Royer <nroyer@invensense.com>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 2:17 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Wed, Apr 21, 2021 at 2:05 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Hi, Suren,
-> >
-> > On Wed, Apr 21, 2021 at 01:01:34PM -0700, Suren Baghdasaryan wrote:
-> > > Peter, you mentioned https://lkml.org/lkml/2020/8/10/439 patch to
-> > > distinguish real writes vs enforced COW read requests, however I also
-> > > see that you had a later version of this patch here:
-> > > https://lore.kernel.org/patchwork/patch/1286506/. Which one should I
-> > > backport? Or is it not needed in the absence of uffd-wp support in the
-> > > earlier kernels?
-> >
-> > Sorry I have no ability to evaluate the rest... but according to Linus's
-> > previous reply, my understanding is that it is not needed, not to mention it's
-> > not upstreamed too.
->
-> Thanks! Then I'll send the backports for 17839856fd58 alone and if
-> more backports are needed I'll post followup patches.
+On Wed, Apr 21, 2021 at 10:00 PM Lars-Peter Clausen <lars@metafoo.de> wrote=
+:
+> On 4/21/21 9:41 PM, Andy Shevchenko wrote:
+> > On Wed, Apr 21, 2021 at 10:05 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> >> On Wed, Apr 21, 2021 at 1:14 PM Linus Walleij <linus.walleij@linaro.or=
+g> wrote:
+> >>> On Tue, Apr 20, 2021 at 11:26 PM Dmitry Osipenko <digetx@gmail.com> w=
+rote:
+> >>>
+> >>>> I found a non-kernel example
+> >>>> which uses a similar equation [1], but in a different form. The main
+> >>>> difference is that the Arduino code interprets a raw temperature val=
+ue
+> >>>> as a signed integer, while upstream assumes it's unsigned.
+> >>>>
+> >>>> [1]
+> >>>> https://github.com/blaisejarrett/Arduino-Lib.MPU3050/blob/master/MPU=
+3050lib.cpp#L111
+> >>> Oh that's nice. Room temperature as mentioned is 20 deg C
+> >>> I think?
+> >>>
+> >>> The divide by 280 part seems coherent in all examples.
+> >>>
+> >>>> Still, even if assume that the raw temperature is a signed s16 value=
+, it
+> >>>> gives us ~35C in a result, which should be off by ~10C.
+> >> Actually here [1] it says in chapter 3.1 that room temperature is 35=
+=C2=B0C.
+> >>
+> >> Range: -30=C2=B0C .. +85=C2=B0C
+> >> Sensitivity: 280 LSB/=C2=B0C
+> >> Room temperature offset: 35=C2=B0C =3D -13200 LSB
+> >>
+> >> [1]: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
 
-Posted 4.19 backport: https://lore.kernel.org/patchwork/patch/1416747
-and 4.14 backport: https://lore.kernel.org/patchwork/patch/1416748.
-They are identical but Greg asked me to submit separate patches due to
-an additional minor merge conflict in 4.14.
+Oh nice find!
 
-> Cheers,
-> Suren.
->
+> > So, if I'm reading this and the register description right the value
+> > is in the range
+> > -32768..32767.
+> > -13200 defines 35=C2=B0C
 > >
-> > Thanks,
+> > 50000 as mentioned by Dmitry is actually -15536. So, it means that the
+> > more negative a value is the higher temperature is shown.
 > >
-> > --
-> > Peter Xu
+> > Since it's linearized scale, now we can see that
 > >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> > (13200 -15536)/280 + 35 gives us 26.66.
 > >
+> > Does it make sense?
+> (13200 + x)/280 + 35 =3D (23000 + x)/280, which is what is in the driver.
+> So the only bit missing is the cast to s16.
+
+Yup there is the bug. (I am guilty.)
+
+Dmitry will you test & send a patch?
+
+Yours,
+Linus Walleij
