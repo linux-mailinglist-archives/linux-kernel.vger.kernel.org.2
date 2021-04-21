@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973BA366C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2214A366C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242554AbhDUNPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242026AbhDUNJo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:09:44 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7BBC061344
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:09:11 -0700 (PDT)
+        id S242020AbhDUNSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:18:47 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33195 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241993AbhDUNJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:09:43 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FQLVC5vg7z9vDw; Wed, 21 Apr 2021 23:09:06 +1000 (AEST)
+        id 4FQLV93XvFz9vDk; Wed, 21 Apr 2021 23:09:04 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <69f9968f4b592fefda55227f0f7430ea612cc950.1611299687.git.christophe.leroy@csgroup.eu>
-References: <69f9968f4b592fefda55227f0f7430ea612cc950.1611299687.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/32: Use r2 in wrtspr() instead of r0
-Message-Id: <161901050347.1961279.12121626398624044029.b4-ty@ellerman.id.au>
-Date:   Wed, 21 Apr 2021 23:08:23 +1000
+To:     naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com, yhs@fb.com,
+        Paul Mackerras <paulus@samba.org>, john.fastabend@gmail.com,
+        andrii@kernel.org, daniel@iogearbox.net,
+        Christophe Leroy <christophe.leroy@csgroup.eu>, kafai@fb.com,
+        songliubraving@fb.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        kpsingh@chromium.org, Michael Ellerman <mpe@ellerman.id.au>,
+        ast@kernel.org
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <34d12a4f75cb8b53a925fada5e7ddddd3b145203.1618227846.git.christophe.leroy@csgroup.eu>
+References: <34d12a4f75cb8b53a925fada5e7ddddd3b145203.1618227846.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH 1/3] powerpc/ebpf32: Fix comment on BPF_ALU{64} | BPF_LSH | BPF_K
+Message-Id: <161901050428.1961279.6678434799432870652.b4-ty@ellerman.id.au>
+Date:   Wed, 21 Apr 2021 23:08:24 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -35,21 +36,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 07:15:03 +0000 (UTC), Christophe Leroy wrote:
-> wrtspr() is a function to write an arbitrary value in a special
-> register. It is used on 8xx to write to SPRN_NRI, SPRN_EID and
-> SPRN_EIE. Writing any value to one of those will play with MSR EE
-> and MSR RI regardless of that value.
-> 
-> r0 is used many places in the generated code and using r0 for
-> that creates an unnecessary dependency of this instruction with
-> preceding ones using r0 in a few places in vmlinux.
-> 
-> [...]
+On Mon, 12 Apr 2021 11:44:16 +0000 (UTC), Christophe Leroy wrote:
+> Replace <<== by <<=
 
 Applied to powerpc/next.
 
-[1/1] powerpc/32: Use r2 in wrtspr() instead of r0
-      https://git.kernel.org/powerpc/c/867e762480f4ad4106b16299a373fa23eccf5b4b
+[1/3] powerpc/ebpf32: Fix comment on BPF_ALU{64} | BPF_LSH | BPF_K
+      https://git.kernel.org/powerpc/c/d228cc4969663623e6b5a749b02e4619352a0a8d
+[2/3] powerpc/ebpf32: Rework 64 bits shifts to avoid tests and branches
+      https://git.kernel.org/powerpc/c/e7de0023e1232f42a10ef6af03352538cc27eaf6
+[3/3] powerpc/ebpf32: Use standard function call for functions within 32M distance
+      https://git.kernel.org/powerpc/c/ee7c3ec3b4b1222b30272624897826bc40d79bc5
 
 cheers
