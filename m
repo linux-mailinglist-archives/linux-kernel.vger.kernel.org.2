@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618563673B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D399E3673BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245534AbhDUTsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245493AbhDUTrs (ORCPT
+        id S245493AbhDUTsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:48:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24228 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245529AbhDUTsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:47:48 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FC2C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:47:13 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id w186so18306895wmg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yfid5mt4o5SnHIBGrtPwH6oVDyBU8btfMOQ75Gb0/cY=;
-        b=LKfsuxEC1pQx5HGYVdIakZHU1YNE76qyidClLc1Ingi52X2R8O0ujbEUwocr50BqHq
-         FEQ11v/VpDyhweTsTFm8+L8ZAb5V2OgQKNxlZ1uNAUK6keMrv9fIvIRcatZenE93XCqY
-         ECmBewYF8nWmY6k1y/EFhLnV1hp/ro93FHJcq1+oZBh7MIo+wQZnAOvri1u0GJEfcGo8
-         pEGYgKaOIWJ7O/r0C9r7DQenrBkIQq8X2ZQ/C9neqiZ8Oy2dMR7aDZ3ZU3JZWKIvcU7r
-         +VF3Fdk+Vt8aw4gM+rwHxsNw6kMhM9Fkgw186E9FHvut5+p3H5viZEkPWj0rhEWfwK2c
-         t5iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yfid5mt4o5SnHIBGrtPwH6oVDyBU8btfMOQ75Gb0/cY=;
-        b=eA28Zfaef1Ueu/JvOrY3qepAaY/5NFjc8Cmxv5G0m3z5EnFOfXX5tVFQjG187RTU/i
-         96omn/UosRu+3jt0AbY9EApCOWFNr13iLL21CKRzqw105ULCU2hvPN1wUhdJZrVNnJs0
-         b07pFoJdiPiRrlN3R72U8o4U+oRa/X71Qi4kBD/F3GYSLFHGx20Sh8qgpNilMVo5CDQ6
-         NTKTBvPOm7tnux70YCF8qJbe0MNPv0UMHpCpAUSr/5guQqPL8Ifk0tWAhDRoyJLdJXbX
-         D7FKNqGdRoP27ZlGSeX0/qOKe1tQJZXSgkYY6+bpmtdMyXnAV8JEhDvMjbtnvPak3rEa
-         Ku5w==
-X-Gm-Message-State: AOAM5320hSUymVOXVwAhNLpFA8SEfbqxSr6nTHqRI/0nOK6QOMeoxvjV
-        5Vcpfatty4+fhXvQkbP6/ZA=
-X-Google-Smtp-Source: ABdhPJz2uLV4nWLi4eXhOCtXdleTEIXrzjTgH7mD6Oolld/dVCTPksywDFUu1wAm+e7Y+o4O5Vx7JQ==
-X-Received: by 2002:a05:600c:cc:: with SMTP id u12mr11443875wmm.110.1619034432706;
-        Wed, 21 Apr 2021 12:47:12 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:6d3d:2d8b:5417:831c])
-        by smtp.gmail.com with ESMTPSA id c6sm13004217wmr.0.2021.04.21.12.47.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 12:47:11 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     melissa.srw@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH 5/5] drm: drm_context.c: Adjust end of block comment
-Date:   Wed, 21 Apr 2021 20:46:58 +0100
-Message-Id: <341b1ae1475fad22035cf3ff11df73cd49063d4c.1618756333.git.martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1618756333.git.martinsdecarvalhobeatriz@gmail.com>
-References: <cover.1618756333.git.martinsdecarvalhobeatriz@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 21 Apr 2021 15:48:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619034459; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=l0NAsDKx52g50OCZgN1pj9kXvIC/sjJda6vYAMFYqrY=; b=L7RECLq8CiJyQj7gEYCdC/VrgsqnjD9tEWHlMdLGWChxXhva9WnEfsUANK8UdV4LP9Kg0k+Q
+ MfpfwWXrjjD4InDhEKfBAQuFTDUBipZekTsCuJi1FWVg18iffQ170Tpn+d+XNXvD2x4Lp4UZ
+ UvZC27nHTv1X+rsFfPv/cLaJXdk=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60808159853c0a2c469d2dd9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 19:47:37
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D8D16C43145; Wed, 21 Apr 2021 19:47:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75D67C4338A;
+        Wed, 21 Apr 2021 19:47:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 75D67C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, peter.chen@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>, stable@vger.kernel.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v2] usb: gadget: Fix double free of device descriptor pointers
+Date:   Wed, 21 Apr 2021 12:47:32 -0700
+Message-Id: <1619034452-17334-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new line with */ on the last line of a block comment to follow the
-Linux kernel coding conventions.
-Problem found by checkpatch.
+From: Hemant Kumar <hemantk@codeaurora.org>
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Upon driver unbind usb_free_all_descriptors() function frees all
+speed descriptor pointers without setting them to NULL. In case
+gadget speed changes (i.e from super speed plus to super speed)
+after driver unbind only upto super speed descriptor pointers get
+populated. Super speed plus desc still holds the stale (already
+freed) pointer. Fix this issue by setting all descriptor pointers
+to NULL after freeing them in usb_free_all_descriptors().
+
+Fixes: f5c61225cf29 ("usb: gadget: Update function for SuperSpeedPlus")
+cc: stable@vger.kernel.org
+Reviewed-by: Peter Chen <peter.chen@kernel.org>
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 ---
- drivers/gpu/drm/drm_context.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes in v2:
+ - Add Reviewed-by and Fixes tags
+ - CC'ed stable tree
 
-diff --git a/drivers/gpu/drm/drm_context.c b/drivers/gpu/drm/drm_context.c
-index c99be950bf17..54e3c513d6a5 100644
---- a/drivers/gpu/drm/drm_context.c
-+++ b/drivers/gpu/drm/drm_context.c
-@@ -312,7 +312,8 @@ static int drm_context_switch_complete(struct drm_device *dev,
+ drivers/usb/gadget/config.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/usb/gadget/config.c b/drivers/usb/gadget/config.c
+index 2d11535..8bb2577 100644
+--- a/drivers/usb/gadget/config.c
++++ b/drivers/usb/gadget/config.c
+@@ -194,9 +194,13 @@ EXPORT_SYMBOL_GPL(usb_assign_descriptors);
+ void usb_free_all_descriptors(struct usb_function *f)
+ {
+ 	usb_free_descriptors(f->fs_descriptors);
++	f->fs_descriptors = NULL;
+ 	usb_free_descriptors(f->hs_descriptors);
++	f->hs_descriptors = NULL;
+ 	usb_free_descriptors(f->ss_descriptors);
++	f->ss_descriptors = NULL;
+ 	usb_free_descriptors(f->ssp_descriptors);
++	f->ssp_descriptors = NULL;
+ }
+ EXPORT_SYMBOL_GPL(usb_free_all_descriptors);
  
- 	/* If a context switch is ever initiated
- 	   when the kernel holds the lock, release
--	   that lock here. */
-+	   that lock here.
-+	 */
- 	clear_bit(0, &dev->context_flag);
- 
- 	return 0;
 -- 
-2.25.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
