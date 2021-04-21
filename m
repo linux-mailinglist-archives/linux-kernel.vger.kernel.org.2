@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9330D367240
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F266367243
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242595AbhDUSJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:09:09 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:53884 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242531AbhDUSJI (ORCPT
+        id S242460AbhDUSKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:10:24 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34528 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240952AbhDUSKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:09:08 -0400
-Received: by mail-wm1-f46.google.com with SMTP id w186so18166459wmg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:08:34 -0700 (PDT)
+        Wed, 21 Apr 2021 14:10:22 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <dann.frazier@canonical.com>)
+        id 1lZHIK-0000dG-FZ
+        for linux-kernel@vger.kernel.org; Wed, 21 Apr 2021 18:09:48 +0000
+Received: by mail-il1-f197.google.com with SMTP id v3-20020a056e0213c3b029016165a33c15so16566699ilj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:09:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u4OrAwM6HM7t7PmS20ysML10gn7rmGmTSDSvy/li7Gk=;
-        b=gA/+1srFHkele3k40mdSolKHUXHAG9S6YQoov7f9Y17b/3cBjf1FPgbkZMP/0VJnG7
-         Oturt7FO98saciwKojJY4FTqBbHHr9LJtbXpF/GOs9NeWSGIQPbbDxYKcWAJG6KN3GBE
-         U9O+5X71K4A6NFI7Kc/HWImxEA43+ltInl9Ri3xSGXu9B3fjjJeYxc4XWUUhvhsdYrH3
-         jTqMfV7hdx052BlJOuTw60spkh7bqsemyii01i5fY9Ca0yG7rfKNkUAnGeefIhB1jxkn
-         3tfWpPqz2Z3MHojLXibhKGTN8RaaKaVIqXVinS++f82/0vW4RIKorndBH4OVbIl8umTd
-         dh3g==
-X-Gm-Message-State: AOAM530ZqNwV5zeu5UMCWvZM2RQb8KSZPMpaBgwsb/WRwM+46kdrK1xf
-        MknzFQWKJjkBf1oQl0Q3Agg=
-X-Google-Smtp-Source: ABdhPJyFL82e5C7Do7GdbrxzS4rQGprDL3osqSavHza1AVDNDPZXHUjOIcv4QXJgLxl9gE6Pk4Jypw==
-X-Received: by 2002:a7b:cc86:: with SMTP id p6mr11064811wma.164.1619028514200;
-        Wed, 21 Apr 2021 11:08:34 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.googlemail.com with ESMTPSA id g3sm198915wrp.46.2021.04.21.11.08.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 11:08:32 -0700 (PDT)
-Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
-To:     Al Viro <viro@zeniv.linux.org.uk>, Kangjie Lu <kjlu@umn.edu>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, Qiushi Wu <wu000273@umn.edu>,
-        x86@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hWjwHxIOFRhofmysaApLRpmaeSuY0CQj1n7uMTgnl5Y=;
+        b=cJEK5bneeD1I8zFU8h9t5UYDUjI4DxHmInVRL7es+OPtX/afqFqbsfUPAQwuG6cJsO
+         NgC3oVB4aIhk97Or9VaqZ9KT2uL4byB5MiMBA09EWqoOjrPYkOPXfnHR2cObSG/55WZ7
+         tZs99SMjtfNmryIra6tJwBD/VD1EpCHx9zsT0RNSo+3OTWafunENcel0EWRV/lUYt5iC
+         oCcHOfJuiEKB+29UnZI/Pe5rNLACQbiBjnv//31u3maBEN5BIR3NXFI9QRgCPFUhPPTN
+         W0jQ0beP9JFJWa4cdvAzNGgFSIpqpd974HVedf2cNMl2OfzYjw7zR599WqE8O5s4+Vb6
+         qotQ==
+X-Gm-Message-State: AOAM530u93c+SCBaIMNM4fjrmBr4lkUMLN/8cgnW9QYyEIxDgIhCJR/U
+        Y50TjRC5AIFfN/6hqtC1MA2VMzEPo4aeJ7m/bVYpZk126Pi+wf+OujxiAmS9J4NE+pUe9LMyqP9
+        c+oxqcxGhHRBCJP42vN6uQNlXlhVk4GvlUAdUAzDu5Q==
+X-Received: by 2002:a05:6e02:2197:: with SMTP id j23mr27636500ila.269.1619028587539;
+        Wed, 21 Apr 2021 11:09:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwM+ERtaD+oau8p0ZRaMWgHV0MRuEys8xEYJcvbu541bBxY8/j4v6fYjRX2Gxi/8+mUU2hyQQ==
+X-Received: by 2002:a05:6e02:2197:: with SMTP id j23mr27636486ila.269.1619028587247;
+        Wed, 21 Apr 2021 11:09:47 -0700 (PDT)
+Received: from xps13.dannf (c-71-56-235-36.hsd1.co.comcast.net. [71.56.235.36])
+        by smtp.gmail.com with ESMTPSA id x18sm81998ior.10.2021.04.21.11.09.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 11:09:46 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 12:09:44 -0600
+From:   dann frazier <dann.frazier@canonical.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>, Fu Wei <wefu@redhat.com>,
+        Len Brown <lenb@kernel.org>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Takashi Iwai <tiwai@suse.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net>
- <nycvar.YFH.7.76.2104211628560.18270@cbobk.fhfr.pm>
- <CAK8KejoGgoWcEUm7gnTw+_5CuZX1+bnHoeY0Ea-pAO+gd8dbcg@mail.gmail.com>
- <YIBBt6ypFtT+i994@pendragon.ideasonboard.com>
- <CAK8Kejqq4qUT=2nqvnVM=r7H_P3dF=+3dHa6HWOCP=9GeeTbpA@mail.gmail.com>
- <6406f3ad-141d-5533-c717-e11cea4e179e@roeck-us.net>
- <YIBlggJ2hZ3TYszc@zeniv-ca.linux.org.uk>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <8bef2ac8-2e05-a0b5-3518-e59ad32e0138@kernel.org>
-Date:   Wed, 21 Apr 2021 20:08:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 0/2] arm64: ACPI GTDT watchdog fixes
+Message-ID: <YIBqaPiLCrqc9f/c@xps13.dannf>
+References: <20210421164317.1718831-1-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YIBlggJ2hZ3TYszc@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421164317.1718831-1-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/2021 19:48, Al Viro wrote:
-> On Wed, Apr 21, 2021 at 08:59:34AM -0700, Guenter Roeck wrote:
->> On 4/21/21 8:21 AM, Kangjie Lu wrote:
->>
->>> All of the commits sent by my students are in good faith to fix some bugs.
+On Wed, Apr 21, 2021 at 05:43:15PM +0100, Marc Zyngier wrote:
+> Dann recently reported that his ThunderX machine failed to boot since
+> 64b499d8df40 ("irqchip/gic-v3: Configure SGIs as standard
+> interrupts"), with a not so pretty crash while trying to send an IPI.
 > 
+> It turned out to be caused by a mix of broken firmware and a buggy
+> GTDT watchdog driver. Both have forever been buggy, but the above
+> commit revealed that the error handling path of the driver was
+> probably the worse part of it all.
 > 
-> Just to make sure - does that statement cover the following commit?
+> Anyway, this short series has two goals:
+> - handle broken firmware in a less broken way
+> - make sure that the route cause of the problem can be identified
+>   quickly
 > 
-> commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05
-> Author: Aditya Pakki <pakki001@umn.edu>
-> Date:   Tue Apr 6 19:09:12 2021 -0500
+> Thanks,
 > 
->     net/rds: Avoid potential use after free in rds_send_remove_from_sock
+> 	M.
 > 
-> And is "Ph.D. student in Computer Science" an accurate description of
-> the gentleman in question?
+> Marc Zyngier (2):
+>   ACPI: GTDT: Don't corrupt interrupt mappings on watchdow probe failure
+>   ACPI: irq: Prevent unregistering of GIC SGIs
 > 
-> We all made utterly bonehead mistakes (if you want a fresh example
-> of mine, take a look at 161aff1d93ab "LOOKUP_MOUNTPOINT: fold
-> path_mountpointat() into path_lookupat()"; see 035d80695fae for the
-> merge of the fix and explanation of what was wrong in the original
-> commit).
-> 
-> However, there's a general expectation that once you become aware of
-> dumb mistake in something you have published (and merge into mainline
-> certainly qualifies as publication) you shall retract it as soon
-> as possible.  If a student is not aware of such expectation, their
-> advisor really ought to inform them of it.
+>  drivers/acpi/arm64/gtdt.c | 10 ++++++----
+>  drivers/acpi/irq.c        |  6 +++++-
+>  2 files changed, 11 insertions(+), 5 deletions(-)
 
-Mentioned gentleman was also notified on 8th of April with Coverity
-report that his patch is questionable:
-https://lore.kernel.org/linux-next/202104081640.1A09A99900@keescook/
+For the series:
 
-The report was ignored by the patch author.
-
-Best regards,
-Krzysztof
+Tested-by: dann frazier <dann.frazier@canonical.com>
