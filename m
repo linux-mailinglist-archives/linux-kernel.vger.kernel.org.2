@@ -2,149 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5550A367197
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9515736719E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244860AbhDURnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:43:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33967 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234964AbhDURne (ORCPT
+        id S244881AbhDURoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244880AbhDURoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:43:34 -0400
-Received: from 36-229-230-199.dynamic-ip.hinet.net ([36.229.230.199] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lZGsL-0007Uv-CB; Wed, 21 Apr 2021 17:42:58 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Evan Quan <evan.quan@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Dennis Li <Dennis.Li@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        amd-gfx@lists.freedesktop.org (open list:RADEON and AMDGPU DRM DRIVERS),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/amdgpu: Register VGA clients after init can no longer fail
-Date:   Thu, 22 Apr 2021 01:42:46 +0800
-Message-Id: <20210421174248.97506-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 21 Apr 2021 13:44:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DA4C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:43:33 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lZGsj-0003PI-NV; Wed, 21 Apr 2021 19:43:21 +0200
+Message-ID: <18fbdc4bf0574a722134400ad9e4510d3cbcb767.camel@pengutronix.de>
+Subject: Re: [PATCH] ASoC: fsl: imx-pcm-dma: Don't request dma channel in
+ probe
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Robin Gong <yibin.gong@nxp.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "S.j. Wang" <shengjiu.wang@nxp.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Date:   Wed, 21 Apr 2021 19:43:18 +0200
+In-Reply-To: <VE1PR04MB66887C731E32BDBB340B044C89479@VE1PR04MB6688.eurprd04.prod.outlook.com>
+References: <1589881301-4143-1-git-send-email-shengjiu.wang@nxp.com>
+         <0866cd8cdb0c22f0b2a6814c4dafa29202aad5f3.camel@pengutronix.de>
+         <CAA+D8APhHvA39wmCayeCsAEKmOJ0n7qOQiT1tZmFHr4+yASgTw@mail.gmail.com>
+         <53258cd99caaf1199036737f8fad6cc097939567.camel@pengutronix.de>
+         <VE1PR04MB66387217EDE5133FD2D8F793894E9@VE1PR04MB6638.eurprd04.prod.outlook.com>
+         <50ef17a2d57b022c48bbca71fd4e074cc3ca9be5.camel@pengutronix.de>
+         <VE1PR04MB6638EE85485768351755557B89499@VE1PR04MB6638.eurprd04.prod.outlook.com>
+         <97262466d537402ad4032098ef277d6d47734f1f.camel@pengutronix.de>
+         <VE1PR04MB6638659EC8557D01861042B189489@VE1PR04MB6638.eurprd04.prod.outlook.com>
+         <d8d084aa7ff183e2f78128a46a0ce5241f357c9a.camel@pengutronix.de>
+         <VE1PR04MB66887C731E32BDBB340B044C89479@VE1PR04MB6688.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an amdgpu device fails to init, it makes another VGA device cause
-kernel splat:
-kernel: amdgpu 0000:08:00.0: amdgpu: amdgpu_device_ip_init failed
-kernel: amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
-kernel: amdgpu: probe of 0000:08:00.0 failed with error -110
-...
-kernel: amdgpu 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
-kernel: BUG: kernel NULL pointer dereference, address: 0000000000000018
-kernel: #PF: supervisor read access in kernel mode
-kernel: #PF: error_code(0x0000) - not-present page
-kernel: PGD 0 P4D 0
-kernel: Oops: 0000 [#1] SMP NOPTI
-kernel: CPU: 6 PID: 1080 Comm: Xorg Tainted: G        W         5.12.0-rc8+ #12
-kernel: Hardware name: HP HP EliteDesk 805 G6/872B, BIOS S09 Ver. 02.02.00 12/30/2020
-kernel: RIP: 0010:amdgpu_device_vga_set_decode+0x13/0x30 [amdgpu]
-kernel: Code: 06 31 c0 c3 b8 ea ff ff ff 5d c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f 1f 44 00 00 55 48 8b 87 90 06 00 00 48 89 e5 53 89 f3 <48> 8b 40 18 40 0f b6 f6 e8 40 58 39 fd 80 fb 01 5b 5d 19 c0 83 e0
-kernel: RSP: 0018:ffffae3c0246bd68 EFLAGS: 00010002
-kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-kernel: RDX: ffff8dd1af5a8560 RSI: 0000000000000000 RDI: ffff8dce8c160000
-kernel: RBP: ffffae3c0246bd70 R08: ffff8dd1af5985c0 R09: ffffae3c0246ba38
-kernel: R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000246
-kernel: R13: 0000000000000000 R14: 0000000000000003 R15: ffff8dce81490000
-kernel: FS:  00007f9303d8fa40(0000) GS:ffff8dd1af580000(0000) knlGS:0000000000000000
-kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-kernel: CR2: 0000000000000018 CR3: 0000000103cfa000 CR4: 0000000000350ee0
-kernel: Call Trace:
-kernel:  vga_arbiter_notify_clients.part.0+0x4a/0x80
-kernel:  vga_get+0x17f/0x1c0
-kernel:  vga_arb_write+0x121/0x6a0
-kernel:  ? apparmor_file_permission+0x1c/0x20
-kernel:  ? security_file_permission+0x30/0x180
-kernel:  vfs_write+0xca/0x280
-kernel:  ksys_write+0x67/0xe0
-kernel:  __x64_sys_write+0x1a/0x20
-kernel:  do_syscall_64+0x38/0x90
-kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-kernel: RIP: 0033:0x7f93041e02f7
-kernel: Code: 75 05 48 83 c4 58 c3 e8 f7 33 ff ff 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-kernel: RSP: 002b:00007fff60e49b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-kernel: RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f93041e02f7
-kernel: RDX: 000000000000000b RSI: 00007fff60e49b40 RDI: 000000000000000f
-kernel: RBP: 00007fff60e49b40 R08: 00000000ffffffff R09: 00007fff60e499d0
-kernel: R10: 00007f93049350b5 R11: 0000000000000246 R12: 000056111d45e808
-kernel: R13: 0000000000000000 R14: 000056111d45e7f8 R15: 000056111d46c980
-kernel: Modules linked in: nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_seq input_leds snd_seq_device snd_timer snd soundcore joydev kvm_amd serio_raw k10temp mac_hid hp_wmi ccp kvm sparse_keymap wmi_bmof ucsi_acpi efi_pstore typec_ucsi rapl typec video wmi sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx libcrc32c xor raid6_pq raid1 raid0 multipath linear dm_mirror dm_region_hash dm_log hid_generic usbhid hid amdgpu drm_ttm_helper ttm iommu_v2 gpu_sched i2c_algo_bit drm_kms_helper syscopyarea sysfillrect crct10dif_pclmul sysimgblt crc32_pclmul fb_sys_fops ghash_clmulni_intel cec rc_core aesni_intel crypto_simd psmouse cryptd r8169 i2c_piix4 drm ahci xhci_pci realtek libahci xhci_pci_renesas gpio_amdpt gpio_generic
-kernel: CR2: 0000000000000018
-kernel: ---[ end trace 76d04313d4214c51 ]---
+Am Mittwoch, dem 21.04.2021 um 14:54 +0000 schrieb Robin Gong:
+> On 20201/04/20 22:01 Lucas Stach <l.stach@pengutronix.de> wrote:
+> > Am Dienstag, dem 20.04.2021 um 13:47 +0000 schrieb Robin Gong:
+> > > On 2021/04/19 17:46 Lucas Stach <l.stach@pengutronix.de> wrote:
+> > > > Am Montag, dem 19.04.2021 um 07:17 +0000 schrieb Robin Gong:
+> > > > > Hi Lucas,
+> > > > > 
+> > > > > On 2021/04/14 Lucas Stach <l.stach@pengutronix.de> wrote:
+> > > > > > Hi Robin,
+> > > > > > 
+> > > > > > Am Mittwoch, dem 14.04.2021 um 14:33 +0000 schrieb Robin Gong:
+> > > > > > > On 2020/05/20 17:43 Lucas Stach <l.stach@pengutronix.de> wrote:
+> > > > > > > > Am Mittwoch, den 20.05.2020, 16:20 +0800 schrieb Shengjiu
+> > Wang:
+> > > > > > > > > Hi
+> > > > > > > > > 
+> > > > > > > > > On Tue, May 19, 2020 at 6:04 PM Lucas Stach
+> > > > > > > > > <l.stach@pengutronix.de>
+> > > > > > > > wrote:
+> > > > > > > > > > Am Dienstag, den 19.05.2020, 17:41 +0800 schrieb Shengjiu
+> > Wang:
+> > > > > > > > > > > There are two requirements that we need to move the
+> > > > > > > > > > > request of dma channel from probe to open.
+> > > > > > > > > > 
+> > > > > > > > > > How do you handle -EPROBE_DEFER return code from the
+> > > > > > > > > > channel request if you don't do it in probe?
+> > > > > > > > > 
+> > > > > > > > > I use the dma_request_slave_channel or dma_request_channel
+> > > > > > > > > instead of dmaengine_pcm_request_chan_of. so there should
+> > > > > > > > > be not -EPROBE_DEFER return code.
+> > > > > > > > 
+> > > > > > > > This is a pretty weak argument. The dmaengine device might
+> > > > > > > > probe after you try to get the channel. Using a function to
+> > > > > > > > request the channel that doesn't allow you to handle probe
+> > > > > > > > deferral is IMHO a bug and should be fixed, instead of
+> > > > > > > > building even more assumptions on top
+> > > > > > of it.
+> > > > > > > > 
+> > > > > > > > > > > - When dma device binds with power-domains, the power
+> > > > > > > > > > > will be enabled when we request dma channel. If the
+> > > > > > > > > > > request of dma channel happen on probe, then the
+> > > > > > > > > > > power-domains will be always enabled after kernel boot
+> > > > > > > > > > > up,  which is not good for power saving,  so we need
+> > > > > > > > > > > to move the request of dma channel to .open();
+> > > > > > > > > > 
+> > > > > > > > > > This is certainly something which could be fixed in the
+> > > > > > > > > > dmaengine driver.
+> > > > > > > > > 
+> > > > > > > > > Dma driver always call the pm_runtime_get_sync in
+> > > > > > > > > device_alloc_chan_resources, the
+> > > > > > > > > device_alloc_chan_resources is called when channel is
+> > > > > > > > > requested. so power is enabled on channel
+> > > > > > request.
+> > > > > > > > 
+> > > > > > > > So why can't you fix the dmaengine driver to do that RPM
+> > > > > > > > call at a later time when the channel is actually going to
+> > > > > > > > be used? This will allow further power savings with other
+> > > > > > > > slave devices than the audio
+> > > > PCM.
+> > > > > > > Hi Lucas,
+> > > > > > >   Thanks for your suggestion. I have tried to implement
+> > > > > > > runtime autosuspend in fsl-edma driver on i.mx8qm/qxp with
+> > > > > > > delay time (2
+> > > > > > > sec) for this feature as below (or you can refer to
+> > > > > > > drivers/dma/qcom/hidma.c), and pm_runtime_get_sync/
+> > > > > > > pm_runtime_put_autosuspend in all dmaengine driver interface
+> > > > > > > like
+> > > > > > > device_alloc_chan_resources/device_prep_slave_sg/device_prep_d
+> > > > > > > ma_c
+> > > > > > > ycli
+> > > > > > > c/
+> > > > > > > device_tx_status...
+> > > > > > > 
+> > > > > > > 
+> > > > > > >                 pm_runtime_use_autosuspend(fsl_chan->de
+> > v);
+> > > > > > >                 pm_runtime_set_autosuspend_delay(fsl_cha
+> > n->
+> > > > dev,
+> > > > > > 2000);
+> > > > > > > 
+> > > > > > > That could resolve this audio case since the autosuspend could
+> > > > > > > suspend runtime after
+> > > > > > > 2 seconds if there is no further dma transfer but only channel
+> > > > > > request(device_alloc_chan_resources).
+> > > > > > > But unfortunately, it cause another issue. As you know, on our
+> > > > > > > i.mx8qm/qxp, power domain done by scfw
+> > > > > > > (drivers/firmware/imx/scu-pd.c)
+> > > > > > over mailbox:
+> > > > > > >  imx_sc_pd_power()->imx_scu_call_rpc()->
+> > > > > > > imx_scu_ipc_write()->mbox_send_message()
+> > > > > > > which means have to 'waits for completion', meanwhile, some
+> > > > > > > driver like tty will call dmaengine interfaces in non-atomic
+> > > > > > > case as below,
+> > > > > > > 
+> > > > > > > static int uart_write(struct tty_struct *tty, const unsigned
+> > > > > > > char *buf, int count) {
+> > > > > > >    .......
+> > > > > > > 	    port = uart_port_lock(state, flags);
+> > > > > > >    ......
+> > > > > > >         __uart_start(tty);  //call
+> > > > start_tx()->dmaengine_prep_slave_sg...
+> > > > > > >         uart_port_unlock(port, flags);
+> > > > > > >         return ret;
+> > > > > > > }
+> > > > > > > 
+> > > > > > > Thus dma runtime resume may happen in that timing window and
+> > > > > > > cause
+> > > > > > kernel alarm.
+> > > > > > > I'm not sure whether there are similar limitations on other
+> > > > > > > driver subsystem. But for me, It looks like the only way to
+> > > > > > > resolve the contradiction between tty and scu-pd (hardware
+> > > > > > > limitation on
+> > > > > > > i.mx8qm/qxp) is to give up autosuspend and keep
+> > > > > > > pm_runtime_get_sync
+> > > > > > only in device_alloc_chan_resources because request channel is a
+> > > > > > safe non-atomic phase.
+> > > > > > > Do you have any idea? Thanks in advance.
+> > > > > > 
+> > > > > > If you look closely at the driver you used as an example
+> > > > > > (hidma.c) it looks like there is already something in there,
+> > > > > > which looks very much like what you need
+> > > > > > here:
+> > > > > > 
+> > > > > > In hidma_issue_pending() the driver tries to get the device to
+> > > > > > runtime
+> > > > resume.
+> > > > > > If this doesn't work, maybe due to the power domain code not
+> > > > > > being able to be called in atomic context, the actual work of
+> > > > > > waking up the dma hardware and issuing the descriptor is shunted to a
+> > tasklet.
+> > > > > > 
+> > > > > > If I'm reading this right, this is exactly what you need here to
+> > > > > > be able to call the dmaengine code from atomic context: try the
+> > > > > > rpm get and issue immediately when possible, otherwise shunt the
+> > > > > > work to a
+> > > > > > non- atomic context where you can deal with the requirements of
+> > scu-pd.
+> > > > > Yes, I can schedule_work to worker to runtime resume edma channel
+> > > > > by
+> > > > calling scu-pd.
+> > > > > But that means all dmaengine interfaces should be taken care, not
+> > > > > only
+> > > > > issue_pending() but also
+> > > > > dmaengine_terminate_all()/dmaengine_pause()/dmaengine_resume()/
+> > > > > dmaengine_tx_status(). Not sure why hidma only take care
+> > > > > issue_pending. Maybe their user case is just for memcpy/memset so
+> > > > > that no further complicate case as ALSA or TTY.
+> > > > > Besides, for autosuspend in cyclic, we have to add
+> > > > > pm_runtime_get_sync into interrupt handler as qcom/bam_dma.c. but
+> > > > > how could resolve the scu-pd's non-atmoic limitation in interrupt
+> > handler?
+> > > > 
+> > > > Sure, this all needs some careful analysis on how those functions
+> > > > are called and what to do about atomic callers, but it should be
+> > > > doable. I don't see any fundamental issues here.
+> > > > 
+> > > > I don't see why you would ever need to wake the hardware in an
+> > > > interrupt handler. Surely the hardware is already awake, as it
+> > > > wouldn't signal an interrupt otherwise. And for the issue with
+> > > > scu-pd you only care about the state transition of
+> > > > suspended->running. If the hardware is already running/awake, the
+> > > > runtime pm state handling is nothing more than bumping a refcount,
+> > > > which is atomic safe. Putting the HW in suspend is already handled
+> > asynchronously in a worker, so this is also atomic safe.
+> > > But with autosuspend used, in corner case, may runtime suspended
+> > > before falling Into edma interrupt handler if timeout happen with the
+> > > delay value of pm_runtime_set_autosuspend_delay(). Thus, can't touch
+> > > any edma interrupt status register unless runtime resume edma in
+> > > interrupt handler while runtime resume function based on scu-pd's power
+> > domain may block or sleep.
+> > > I have a simple workaround that disable runtime suspend in
+> > > issue_pending worker by calling pm_runtime_forbid() and then enable
+> > > runtime auto suspend in dmaengine_terminate_all so that we could
+> > > easily regard that edma channel is always in runtime resume between
+> > > issue_pending and channel terminated and ignore the above interrupt
+> > handler/scu-pd limitation.
+> > 
+> > The IRQ handler is the point where you are informed by the hardware that a
+> > specific operation is complete. I don't see any use-case where it would be valid
+> > to drop the rpm refcount to 0 before the IRQ is handled. Surely the hardware
+> > needs to stay awake until the currently queued operations are complete and if
+> > the IRQ handler is the completion point the IRQ handler is the first point in
+> > time where your autosuspend timer should start to run. There should never be
+> > a situation where the timer expiry can get between IRQ signaling and the
+> > handler code running.
+> But the timer of runtime_auto_suspend decide when enter runtime suspend rather
+> than hardware, while transfer data size and transfer rate on IP bus decide when the
+> dma interrupt happen. 
+> 
+But it isn't the hardware that decides to drop the rpm refcount to 0
+and starting the autosuspend timer, it's the driver.
 
-Commit 4192f7b57689 ("drm/amdgpu: unmap register bar on device init
-failure") makes amdgpu_driver_unload_kms() skips amdgpu_device_fini(),
-so the VGA clients remain registered. So when
-vga_arbiter_notify_clients() iterates over registered clients, it causes
-NULL pointer dereference.
+>  Generally, we can call pm_runtime_get_sync(fsl_chan->dev)/
+> pm_runtime_mark_last_busy in interrupt handler to hope the runtime_auto_suspend
+> timer expiry later than interrupt coming, but if the transfer data size is larger in cyclic
+> and transfer rate is very slow like 115200 or lower on uart, the fix autosuspend timer
+> 100ms/200ms maybe not enough, hence, runtime suspend may execute meanwhile
+> the dma interrupt maybe triggered and caught by GIC(but interrupt handler prevent
+> by spin_lock_irqsave in pm_suspend_timer_fn() ), and then interrupt handler start
+> to run after runtime suspend. 
 
-Since there's no reason to register VGA clients that early, so solve
-the issue by putting them after all the goto cleanups.
+If your driver code drops the rpm refcount to 0 and starts the
+autosuspend timer while a cyclic transfer is still in flight this is
+clearly a bug. Autosuspend is not there to paper over driver bugs, but
+to amortize cost of actually suspending and resuming the hardware. Your
+driver code must still work even if the timeout is 0, i.e. the hardware
+is immediately suspended after you drop the rpm refcount to 0.
 
-Fixes: 4192f7b57689 ("drm/amdgpu: unmap register bar on device init failure")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 26 +++++++++++-----------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+If you still have transfers queued/in-flight the driver code must keep
+a rpm reference.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index b4ad1c055c70..115a7699e11e 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3410,19 +3410,6 @@ int amdgpu_device_init(struct amdgpu_device *adev,
- 	/* doorbell bar mapping and doorbell index init*/
- 	amdgpu_device_doorbell_init(adev);
- 
--	/* if we have > 1 VGA cards, then disable the amdgpu VGA resources */
--	/* this will fail for cards that aren't VGA class devices, just
--	 * ignore it */
--	if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
--		vga_client_register(adev->pdev, adev, NULL, amdgpu_device_vga_set_decode);
--
--	if (amdgpu_device_supports_px(ddev)) {
--		px = true;
--		vga_switcheroo_register_client(adev->pdev,
--					       &amdgpu_switcheroo_ops, px);
--		vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_pm_domain);
--	}
--
- 	if (amdgpu_emu_mode == 1) {
- 		/* post the asic on emulation mode */
- 		emu_soc_asic_init(adev);
-@@ -3619,6 +3606,19 @@ int amdgpu_device_init(struct amdgpu_device *adev,
- 	if (amdgpu_device_cache_pci_state(adev->pdev))
- 		pci_restore_state(pdev);
- 
-+	/* if we have > 1 VGA cards, then disable the amdgpu VGA resources */
-+	/* this will fail for cards that aren't VGA class devices, just
-+	 * ignore it */
-+	if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
-+		vga_client_register(adev->pdev, adev, NULL, amdgpu_device_vga_set_decode);
-+
-+	if (amdgpu_device_supports_px(ddev)) {
-+		px = true;
-+		vga_switcheroo_register_client(adev->pdev,
-+					       &amdgpu_switcheroo_ops, px);
-+		vga_switcheroo_init_domain_pm_ops(adev->dev, &adev->vga_pm_domain);
-+	}
-+
- 	if (adev->gmc.xgmi.pending_reset)
- 		queue_delayed_work(system_wq, &mgpu_info.delayed_reset_work,
- 				   msecs_to_jiffies(AMDGPU_RESUME_MS));
--- 
-2.30.2
+Regards,
+Lucas
 
