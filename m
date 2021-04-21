@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE7C366DDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB96366DDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239533AbhDUOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:15:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:36174 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236522AbhDUOPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243333AbhDUOPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236743AbhDUOPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Apr 2021 10:15:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7FD711B3;
-        Wed, 21 Apr 2021 07:14:31 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE7413F774;
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7DAC06174A;
+        Wed, 21 Apr 2021 07:14:30 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id q136so21935722qka.7;
+        Wed, 21 Apr 2021 07:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=H0xUL+VFdyIa0ji4Th/5YMGTFHYr1jkOK9wBOItrp/Y=;
+        b=Htq4AavTUvaIKjrSwYSgfk/9LOhsOQRau62GNNkBD79Sh4VxHePzD2L+B52RENCsHI
+         4PL+nqqx70rsT6DneonIWLk2JgIAAKH4RYpwmo9Wn4GDqdmpAlfpjtk7jRllYJmXZiyo
+         tnWbbNT+p3igXVTAx/jBF1NGPsOxeu1AmVb87QTHjEKTdSc2O7Jo3LKCuXXR0KpW4+Bg
+         RW9awX3klxF+hBslxw/CUl5QEoKtY33EQ/HmP0wx4EJ0xHnjRpqiBjFbzcGxBnN5SQYr
+         KgFfi77SLsFAOdNhi6+68ezGqnlxjq1tZBqUtfj/RhDFkEwEa14TQvGCRvorbKiVdznv
+         Pi9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=H0xUL+VFdyIa0ji4Th/5YMGTFHYr1jkOK9wBOItrp/Y=;
+        b=BcCnbKgSX+9JiOELj0lrxdNt7av1PMyExWtdW2rZo89dYSMsVNTvCQjq+fjnknYpaz
+         0+oio0U8DoiIoXaQhNylUwR9J7x4zLZwRH+N5RQZ0xjchC+qkhtutQLivuAcJrGxteju
+         W+RJfAIQLHGrIPidehikS6wFOQCU2wrsuPYchBVfWSb5QcN0NGqk01OkJ8+EN1uLI7ZE
+         llyXQTiHWU3AG+r8Ru+Bm5+k3+3UP8fdCTL1VKDDfrpt2bttZY4SAB2sgx2A0ql+9JeL
+         XLSr61FeUYrajZP3BJ9HnyCSiYznZaKMRJqovwkrRkI2h/vp2sIHrsKLG+aS5B56cXWq
+         gRMg==
+X-Gm-Message-State: AOAM532YjNp+LV96fyjnYWaS1iAaC2FjC9wHGBNeZEQ6zImoLPIxL70P
+        PZS2/OBwXmZon3htt+qjtp4=
+X-Google-Smtp-Source: ABdhPJw8CLguVFAPzF8l1/1q5ENNtjHkvPtfqw/PekYFKdTDnJWRL0D+IoF3dUIZdep6LDU4L/VqjQ==
+X-Received: by 2002:a37:a5d6:: with SMTP id o205mr11119679qke.166.1619014469882;
         Wed, 21 Apr 2021 07:14:29 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Arnd Bergmann <arnd@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Paul Turner <pjt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Fix an unused function warning
-In-Reply-To: <20210421140145.3767949-1-arnd@kernel.org>
-References: <20210421140145.3767949-1-arnd@kernel.org>
-Date:   Wed, 21 Apr 2021 15:14:25 +0100
-Message-ID: <875z0fvi66.mognet@arm.com>
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
+        by smtp.gmail.com with ESMTPSA id o12sm2150348qkg.36.2021.04.21.07.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 07:14:29 -0700 (PDT)
+Message-ID: <5da23b1199c897b464c7bf7027ac50057d1cb5b6.camel@gmail.com>
+Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
+ 64-bit memory addresses
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Date:   Wed, 21 Apr 2021 11:14:25 -0300
+In-Reply-To: <CAL_JsqJXKVUFh9KrJjobn-jE-PFKN0w-V_i3qkfBrpTah4g8Xw@mail.gmail.com>
+References: <20210415180050.373791-1-leobras.c@gmail.com>
+         <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
+         <7b089cd48b90f2445c7cb80da1ce8638607c46fc.camel@gmail.com>
+         <CAL_Jsq+m6CkGj_NYGvwxoKwoQ4PkEu6hfGdMTT3i4APoHSkNeg@mail.gmail.com>
+         <b875ef1778e17a87ee1f4b71d26f2782831b1d07.camel@gmail.com>
+         <CAL_JsqK83MFqZ4yCz+i7sunpXFmi+vvjCSxVmcCh1YG=mOxY9A@mail.gmail.com>
+         <b56b8a5c8f02a2afea9554ebf16a423c182a9fc3.camel@gmail.com>
+         <CAL_JsqJXKVUFh9KrJjobn-jE-PFKN0w-V_i3qkfBrpTah4g8Xw@mail.gmail.com>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-04-20 at 17:34 -0500, Rob Herring wrote:
+> > [...]
+> > I think the point here is bus resources not getting the MEM_64 flag,
+> > but device resources getting it correctly. Is that supposed to happen?
+> 
+> I experimented with this on Arm with qemu and it seems fine there too.
+> Looks like the BARs are first read and will have bit 2 set by default
+> (or hardwired?). Now I'm just wondering why powerpc needs the code it
+> has...
+> 
+> Anyways, I'll apply the patch.
+> 
+> Rob
 
-Hi,
+Thanks Rob!
 
-On 21/04/21 16:01, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Without CONFIG_NO_HZ_COMMON, there is now a warning about update_nohz_stats
-> after the last caller outside the #ifdef was removed
->
-> kernel/sched/fair.c:8433:13: error: 'update_nohz_stats' defined but not used [-Werror=unused-function]
->  8433 | static bool update_nohz_stats(struct rq *rq)
->
-> Simplify the function by removing the #ifdef inside it and move it into
-> the block in which it gets called.
->
-> Fixes: 0826530de3cb ("sched/fair: Remove update of blocked load from newidle_balance")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-That should be covered by:
-
-  3f5ad91488e8 ("sched/fair: Move update_nohz_stats() to the CONFIG_NO_HZ_COMMON block to simplify the code & fix an unused function warning")
-
-which currently sits in tip/sched/core. We might want to shove that in
-tip/sched/urgent along with the latest in-flight fixes.
