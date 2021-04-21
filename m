@@ -2,197 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCB83673A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D16A3673A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245521AbhDUToO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:44:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38696 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245496AbhDUToC (ORCPT
+        id S236419AbhDUTo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243378AbhDUTo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:44:02 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LJYH4F088501;
-        Wed, 21 Apr 2021 15:43:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=4OumTIa+6p1ka93GHomN7b6NR3Ghe9gvkQLBB6dvFEs=;
- b=rbGz/pzykMQeN+bE6ID5uoGRdxDDBIsdC2jNghjzXLKSMCpR8UHk9FuhbCQUA5ww+o5/
- jRCZCEddaoefSU/KJuFPCAL9R9m7/cOvmkaVg9lepdxU1vc2/bEQMD9pqggV47GTWY6I
- OsKrZ+uXP3Xv/1XKupNGfe5Dpl67MKmfycVY0Sx4JHInyekJnbelXWVq2wquNJeBOeeu
- Vj2D4RJh2cGxBNc8fqGllwjedABzuVfypcSYWa7naPfYuf8xJOjQ7jwHd7b/Lv/yunJq
- ZIIeLeI46eY2MF6A4tBk8aOca7mvays2fyOAWeaucXcE1i66P/ufn01JVG1CWEyQzGMH BQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 382sbr9td2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 15:43:27 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13LJaAkD097703;
-        Wed, 21 Apr 2021 15:43:27 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 382sbr9tcq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 15:43:27 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13LJgYAD021907;
-        Wed, 21 Apr 2021 19:43:26 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma03wdc.us.ibm.com with ESMTP id 37yqa9cg4x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 19:43:26 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13LJhODe32178508
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 19:43:24 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4FE678060;
-        Wed, 21 Apr 2021 19:43:24 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EDFD87805E;
-        Wed, 21 Apr 2021 19:43:23 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.47.158.152])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Apr 2021 19:43:23 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
-        zohar@linux.ibm.com, jarkko@kernel.org
-Cc:     nayna@linux.ibm.com, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v3 2/2] certs: Add support for using elliptic curve keys for signing modules
-Date:   Wed, 21 Apr 2021 15:43:19 -0400
-Message-Id: <20210421194319.1489291-3-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210421194319.1489291-1-stefanb@linux.ibm.com>
-References: <20210421194319.1489291-1-stefanb@linux.ibm.com>
+        Wed, 21 Apr 2021 15:44:27 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E5EC06174A;
+        Wed, 21 Apr 2021 12:43:51 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id h36so14381002lfv.7;
+        Wed, 21 Apr 2021 12:43:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qhjGQqRuIlFnkwTxrM8RYY1j9MhklbMal3j+ne7dpI8=;
+        b=GC3JgOPUj0btLYVQvPKO0dFyV4FWQO8wRIlBpjwrduf4tf832thjJHQfECEEbKyY8d
+         Ioz67ZBhkOz36ZkjzuTEnlRZp1FC+qETS1YFgXYhKo5X93ZsDtBhm71Df+I2E6R7Hy6D
+         3R4HYJUXi8yHnvNV8WcRC/+e2fpvN5LlkJdR43aa7Q0Qob/8gPjblxZ91/PZ3nQpatOT
+         cnpvFL+LbsioO0nLN5N+BYh6GGMUkTm2lXQ1a69p0wTmnO8Gy+2aSPZZPbhhH2/+bl8q
+         njetjtulKQyxOWVIFq9phb14WtlzRkZus6DFqkTKAyZ9M9ISwBBNmlyrizgYa9+Ue9Fo
+         +t4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qhjGQqRuIlFnkwTxrM8RYY1j9MhklbMal3j+ne7dpI8=;
+        b=Ig7lzzO2JXSXTKF+/mQCb7bJsU/TQfVzOk+Bz6HyBYF2I/mSzm2k3Nsh98GvJPVvXx
+         7fbqJ3f0iYW+I7DIWRmzAhdk2N7bQesqmqN7yBQRIu1oJvXcG3vxtf57BJSle0pC2TBp
+         H2jhrglZFbmPxIBOFa6TGj7uqYBNbXu/vLkKojCFgLSei7PrhFxyPRFYDlMOwczCOBRj
+         IYNsxN5QWgnrIvdzfKsvdMUkKohNxbJtZzYsyty/s+9qNkc8P9mbVVV5xZn0Yw9xCL2Y
+         xk/xN/8MWgxxXWK9O1aumYGi4chYHRhFgr5K9xaXwz2dDEvNn3PIGV6+Bs5285pPyNol
+         V88g==
+X-Gm-Message-State: AOAM533B9mMH97hl7bwLdTRq4qCqZ9lWAQ+ULpXZFIgG8WDylKxyvkVX
+        4uSWxKnVYXLThI3y9Er2H7W6X4k8yMOSEg==
+X-Google-Smtp-Source: ABdhPJwEqpkQzJy8WWnBzkv6pvUxJ02s4RXYUw/bRxCDF5tppHzwrqy5NF6ee5hh83j+obp7rfSGLQ==
+X-Received: by 2002:a05:6512:3056:: with SMTP id b22mr13861180lfb.601.1619034230437;
+        Wed, 21 Apr 2021 12:43:50 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.147])
+        by smtp.gmail.com with ESMTPSA id t2sm50228lfl.73.2021.04.21.12.43.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 12:43:50 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     mchehab@kernel.org, gustavoars@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com
+Subject: [PATCH] media: cpia2: fix memory leak in cpia2_usb_probe
+Date:   Wed, 21 Apr 2021 22:43:45 +0300
+Message-Id: <20210421194345.12650-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: RZqX34gZpmpTwsXMgx2-u_MIVJc9ikub
-X-Proofpoint-GUID: E6BucHQ_nDFy5dpOVlW0s3UZ41Syh29g
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-21_05:2021-04-21,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 clxscore=1015 spamscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104210134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for using elliptic curve keys for signing modules. It uses
-a NIST P384 (secp384r1) key if the user chooses an elliptic curve key
-and will have ECDSA support built into the kernel.
+syzbot reported leak in cpia2 usb driver. The problem was
+in invalid error handling.
 
-Note: A developer choosing an ECDSA key for signing modules should still
-delete the signing key (rm certs/signing_key.*) when building an older
-version of a kernel that only supports RSA keys. Unless kbuild automati-
-cally detects and generates a new kernel module key, ECDSA-signed kernel
-modules will fail signature verification.
+v4l2_device_register() is called in cpia2_init_camera_struct(), but
+all error cases after cpia2_init_camera_struct() did not call the
+v4l2_device_unregister()
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-
+Reported-by: syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
-v3:
-  - added missing OIDs for ECDSA signed hashes to pkcs7_sig_note_pkey_algo
-  - added recommendation to use string hash to Kconfig help text
+ drivers/media/usb/cpia2/cpia2.h      |  1 +
+ drivers/media/usb/cpia2/cpia2_core.c | 12 ++++++++++++
+ drivers/media/usb/cpia2/cpia2_usb.c  | 13 +++++++------
+ 3 files changed, 20 insertions(+), 6 deletions(-)
 
-v2:
-  - check for ECDSA key by id-ecPublicKey from output line
-    'Public Key Algorithm: id-ecPublicKey'.
----
- certs/Kconfig                         | 26 ++++++++++++++++++++++++++
- certs/Makefile                        |  9 +++++++++
- crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
- 3 files changed, 43 insertions(+)
-
-diff --git a/certs/Kconfig b/certs/Kconfig
-index 48675ad319db..d58f16c9f2d9 100644
---- a/certs/Kconfig
-+++ b/certs/Kconfig
-@@ -15,6 +15,32 @@ config MODULE_SIG_KEY
-          then the kernel will automatically generate the private key and
-          certificate as described in Documentation/admin-guide/module-signing.rst
+diff --git a/drivers/media/usb/cpia2/cpia2.h b/drivers/media/usb/cpia2/cpia2.h
+index 50835f5f7512..57b7f1ea68da 100644
+--- a/drivers/media/usb/cpia2/cpia2.h
++++ b/drivers/media/usb/cpia2/cpia2.h
+@@ -429,6 +429,7 @@ int cpia2_send_command(struct camera_data *cam, struct cpia2_command *cmd);
+ int cpia2_do_command(struct camera_data *cam,
+ 		     unsigned int command,
+ 		     unsigned char direction, unsigned char param);
++void cpia2_deinit_camera_struct(struct camera_data *cam, struct usb_interface *intf);
+ struct camera_data *cpia2_init_camera_struct(struct usb_interface *intf);
+ int cpia2_init_camera(struct camera_data *cam);
+ int cpia2_allocate_buffers(struct camera_data *cam);
+diff --git a/drivers/media/usb/cpia2/cpia2_core.c b/drivers/media/usb/cpia2/cpia2_core.c
+index e747548ab286..b5a2d06fb356 100644
+--- a/drivers/media/usb/cpia2/cpia2_core.c
++++ b/drivers/media/usb/cpia2/cpia2_core.c
+@@ -2163,6 +2163,18 @@ static void reset_camera_struct(struct camera_data *cam)
+ 	cam->height = cam->params.roi.height;
+ }
  
-+choice
-+	prompt "Type of module signing key to be generated"
-+	default MODULE_SIG_KEY_TYPE_RSA
-+	help
-+	 The type of module signing key type to generate. This option
-+	 does not apply if a #PKCS11 URI is used.
++/******************************************************************************
++ *
++ *  cpia2_init_camera_struct
++ *
++ *  Deinitialize camera struct
++ *****************************************************************************/
++void cpia2_deinit_camera_struct(struct camera_data *cam, struct usb_interface *intf)
++{
++	v4l2_device_unregister(&cam->v4l2_dev);
++	kfree(cam);
++}
 +
-+config MODULE_SIG_KEY_TYPE_RSA
-+	bool "RSA"
-+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-+	help
-+	 Use an RSA key for module signing.
-+
-+config MODULE_SIG_KEY_TYPE_ECDSA
-+	bool "ECDSA"
-+	select CRYPTO_ECDSA
-+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
-+	help
-+	 Use an elliptic curve key (NIST P384) for module signing. Consider
-+	 using a strong hash like sha256 or sha384 for hashing modules.
-+
-+	 Note: Remove all ECDSA signing keys, e.g. certs/signing_key.pem,
-+	 when falling back to building Linux 5.11 and older kernels.
-+
-+endchoice
-+
- config SYSTEM_TRUSTED_KEYRING
- 	bool "Provide system-wide ring of trusted keys"
- 	depends on KEYS
-diff --git a/certs/Makefile b/certs/Makefile
-index f64bc89ccbf1..c2fabc288550 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -62,7 +62,15 @@ ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
+ /******************************************************************************
+  *
+  *  cpia2_init_camera_struct
+diff --git a/drivers/media/usb/cpia2/cpia2_usb.c b/drivers/media/usb/cpia2/cpia2_usb.c
+index 3ab80a7b4498..76aac06f9fb8 100644
+--- a/drivers/media/usb/cpia2/cpia2_usb.c
++++ b/drivers/media/usb/cpia2/cpia2_usb.c
+@@ -844,15 +844,13 @@ static int cpia2_usb_probe(struct usb_interface *intf,
+ 	ret = set_alternate(cam, USBIF_CMDONLY);
+ 	if (ret < 0) {
+ 		ERR("%s: usb_set_interface error (ret = %d)\n", __func__, ret);
+-		kfree(cam);
+-		return ret;
++		goto alt_err;
+ 	}
  
- X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
  
-+# Support user changing key type
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
-+keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
-+$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-+endif
+ 	if((ret = cpia2_init_camera(cam)) < 0) {
+ 		ERR("%s: failed to initialize cpia2 camera (ret = %d)\n", __func__, ret);
+-		kfree(cam);
+-		return ret;
++		goto alt_err;
+ 	}
+ 	LOG("  CPiA Version: %d.%02d (%d.%d)\n",
+ 	       cam->params.version.firmware_revision_hi,
+@@ -872,11 +870,14 @@ static int cpia2_usb_probe(struct usb_interface *intf,
+ 	ret = cpia2_register_camera(cam);
+ 	if (ret < 0) {
+ 		ERR("%s: Failed to register cpia2 camera (ret = %d)\n", __func__, ret);
+-		kfree(cam);
+-		return ret;
++		goto alt_err;
+ 	}
+ 
+ 	return 0;
 +
-+ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
- $(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
-+endif
++alt_err:
++	cpia2_deinit_camera_struct(cam, intf);
++	return ret;
+ }
  
- $(obj)/signing_key.pem: $(obj)/x509.genkey
- 	@$(kecho) "###"
-@@ -77,6 +85,7 @@ $(obj)/signing_key.pem: $(obj)/x509.genkey
- 		-batch -x509 -config $(obj)/x509.genkey \
- 		-outform PEM -out $(obj)/signing_key.pem \
- 		-keyout $(obj)/signing_key.pem \
-+		$(keytype_openssl) \
- 		$($(quiet)redirect_openssl)
- 	@$(kecho) "###"
- 	@$(kecho) "### Key pair generated."
-diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
-index 967329e0a07b..6592279d839a 100644
---- a/crypto/asymmetric_keys/pkcs7_parser.c
-+++ b/crypto/asymmetric_keys/pkcs7_parser.c
-@@ -269,6 +269,14 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
- 		ctx->sinfo->sig->pkey_algo = "rsa";
- 		ctx->sinfo->sig->encoding = "pkcs1";
- 		break;
-+	case OID_id_ecdsa_with_sha1:
-+	case OID_id_ecdsa_with_sha224:
-+	case OID_id_ecdsa_with_sha256:
-+	case OID_id_ecdsa_with_sha384:
-+	case OID_id_ecdsa_with_sha512:
-+		ctx->sinfo->sig->pkey_algo = "ecdsa";
-+		ctx->sinfo->sig->encoding = "x962";
-+		break;
- 	default:
- 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
- 		return -ENOPKG;
+ /******************************************************************************
 -- 
-2.29.2
+2.31.1
 
