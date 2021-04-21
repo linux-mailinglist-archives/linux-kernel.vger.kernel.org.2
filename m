@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36375366B8E
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4C3366B8F
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240372AbhDUND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42374 "EHLO mail.kernel.org"
+        id S240407AbhDUNDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:03:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240278AbhDUNDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 971EC61452;
-        Wed, 21 Apr 2021 13:02:38 +0000 (UTC)
+        id S240295AbhDUNDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:03:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 687E061466;
+        Wed, 21 Apr 2021 13:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010159;
-        bh=JISSNLCRsICD+PQqMZc3EJeL6gvIu5lIH+NViGkjM4E=;
+        s=korg; t=1619010161;
+        bh=w5cntnSQSLZYATigOln5iqK+yz1jM039eB5lvhRRzGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mqS9HnFq1Jo4JPZWqHu5SYKRNXgdyAqtAZH9ioGXuSx+9hnL4ZMWjFUvtuIvONDlW
-         R9OGLcycbm0GrivqGtv/tdrEjka537L+NYfeL5xRI4rOP5Gol1Ok4tI4Y5KD54w6Qn
-         hDlpYM/Fuc0ac5ye/06vX9SESNC8PS9zyt8TlE3U=
+        b=KBE6yPwmxenq4IRTOdhKQGuvu/ztAaKMJknDyQKccNkOA9+xeGE909n5+Tulnm2e8
+         NXt+x/4u470c7DXbz5YkOPJhy2Q/isUXS+E6fs+pykNqnQokGVtBZL9peu+i2RA8QC
+         saRdrDkj+1tucXSEFxIbLc5CcgBTiX8cbqUx10sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Qiushi Wu <wu000273@umn.edu>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count leak"
-Date:   Wed, 21 Apr 2021 14:58:04 +0200
-Message-Id: <20210421130105.1226686-10-gregkh@linuxfoundation.org>
+Subject: [PATCH 010/190] Revert "media: camss: Fix a reference count leak."
+Date:   Wed, 21 Apr 2021 14:58:05 +0200
+Message-Id: <20210421130105.1226686-11-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 78741ce98c2e36188e2343434406b0e0bc50b0e7.
+This reverts commit d0675b67b42eb4f1a840d1513b5b00f78312f833.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -59,25 +59,25 @@ Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +---
+ drivers/media/platform/qcom/camss/camss-csiphy.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c b/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
-index 62d2320a7218..7d52431c2c83 100644
---- a/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
-+++ b/drivers/media/platform/s5p-mfc/s5p_mfc_pm.c
-@@ -79,10 +79,8 @@ int s5p_mfc_power_on(void)
- 	int i, ret = 0;
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+index 509c9a59c09c..a5d717d022a5 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+@@ -174,10 +174,8 @@ static int csiphy_set_power(struct v4l2_subdev *sd, int on)
+ 		int ret;
  
- 	ret = pm_runtime_get_sync(pm->device);
--	if (ret < 0) {
--		pm_runtime_put_noidle(pm->device);
-+	if (ret < 0)
- 		return ret;
--	}
+ 		ret = pm_runtime_get_sync(dev);
+-		if (ret < 0) {
+-			pm_runtime_put_sync(dev);
++		if (ret < 0)
+ 			return ret;
+-		}
  
- 	/* clock control */
- 	for (i = 0; i < pm->num_clocks; i++) {
+ 		ret = csiphy_set_clock_rates(csiphy);
+ 		if (ret < 0) {
 -- 
 2.31.1
 
