@@ -2,222 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918CF3668C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925F13668CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237816AbhDUKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:01:42 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59967 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234678AbhDUKBc (ORCPT
+        id S237637AbhDUKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:04:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48913 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239079AbhDUKEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:01:32 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1153C5804F2;
-        Wed, 21 Apr 2021 06:00:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 21 Apr 2021 06:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=d5yWQMfM/Co2rLORB29xCNYtdUp
-        YpDGcIm7lir7nAGY=; b=b/p8TqIhLg7pPNSTCKSnslytl8onsOGnWIA8xYMuMe+
-        qyRE9+0YZlilCL7ye6NWgpTfEFIYJBxcYdohgGs9alOxf/zbe6hi82JrS9bO6WUJ
-        yxoF5PtCtLgvboOZ7qUt1A83Sh44vhK9zJn2yeTBkVnzEvUf89MBpNNLxSVgO9tX
-        5ZbtZSeSKC4BicPMINIAlGs56wmZPb1AheIzgchSaYoc7vfc9xog9VxhVO/VVTEh
-        PY9xDmouJM6zTjssRBgJHk10citEkQeJImaS7/EwPvXtKPSJEK8bCAb2pH4x0PHm
-        yd9KRcW1/rlOcCFohaVcOcCluiaQDWjcQgex6yufTrQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=d5yWQM
-        fM/Co2rLORB29xCNYtdUpYpDGcIm7lir7nAGY=; b=uFwiUhHsWbDMf1DwUm1b5C
-        iGjD+Jff5gc28W1BgCPiuqNBxxd55jajR82MDE/UAx3QlFnN9OFpoqSwEXNqJBqN
-        GFC4bVNbIRADqroj2pisTgW6X1EzCDQk/IfksmDvfPXfWHDYTg6QR0QJ+xmi3KCq
-        xfK+d/5BJHgo/10JnliV053JKQKz6jYw9J6ynmgM/jAVE2tV24TOV9FLCschx1rp
-        k/HGvHwOnE825MmXlsu9GhV5C8v52+fm0sxvT9/urTAg3MnH3oldpwrX+CFTvE+h
-        2H0J5NjAUDcubc1rqIFaCo3Gk8X183yTSQP1j+eD4JyszHbCpJpRKjyNk/WGZh3A
-        ==
-X-ME-Sender: <xms:2Pd_YFOdqyQORzN9sEWJfMXN5TgbA_mXmTcwmRZsAXTKD-oCs8TsnA>
-    <xme:2Pd_YPUE99ymJyNj5pKIQFt2Q5mh8-wyDwNCEmZjFWj1_K9F-Wd_8KkY-71SfqBTO
-    jFqP_Gh2qLuV_BdZzw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedgvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepjedtudekleffteevffduvdekfffffedvtdeuveffgfeffedtleetueelgeef
-    leetnecuffhomhgrihhnpegsohhothhlihhnrdgtohhmnecukfhppeeltddrkeelrdeike
-    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    mhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:2Pd_YJ0-Swphm2nvmI43zwVklfjsTBBINvIebDv2W2uGTR6CPu6zvA>
-    <xmx:2Pd_YNqSSsafnlsivi_f67R91HgmVjYhHNySFV4URxdWHoYeNFBNqA>
-    <xmx:2Pd_YAXRV2k1yYyp5kmropoQ_g1W7Mx_SfQm-Ez4KAxQFqLpzVXTmg>
-    <xmx:2vd_YMQ60ED7h6aHjREUJPwhL3-PdnpZz8VopHd3wi4K_06Ea6K7Cg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3E9ED1080063;
-        Wed, 21 Apr 2021 06:00:56 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 12:00:52 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] drm/sprd: add Unisoc's drm display controller
- driver
-Message-ID: <20210421100052.gujzkrafp26e6tcz@gilmour>
-References: <20210222132822.7830-1-kevin3.tang@gmail.com>
- <20210222132822.7830-5-kevin3.tang@gmail.com>
- <20210324111019.og6d3w47swjim2mq@gilmour>
- <CAFPSGXYZPoM45vF_HcjMBcO_Ek-UJZw7F+Q0Of-gWZxvVaPQjg@mail.gmail.com>
- <20210415090312.md6exuuv2y4mblxn@gilmour>
- <CAFPSGXYdA=09xWZJi2oCQsbr3eH1GBgzjD8DRm5=beiKAtx37Q@mail.gmail.com>
+        Wed, 21 Apr 2021 06:04:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618999421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n51UXKAobVuD2mW80zWtyfK+7XsIfgUY+7qWTbvHHXw=;
+        b=Sy3OmkaGNZEGxMbvcaME8X18O53StAelOcWIgwNDtAxrhNYWoJgBx+te2wxHgnEsRuvKhW
+        Ag/sq6JrTOuw6W8MPhGwto/dopvdfppkabFuu+Y/hAuLRrR5WwX40NSiP7QwDNhs6K+eqO
+        u3FHrm04vpZ4VUF2wHq+ehqrNFnonOw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-CCQ74LpDPlqSKelimY-MmA-1; Wed, 21 Apr 2021 06:03:37 -0400
+X-MC-Unique: CCQ74LpDPlqSKelimY-MmA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FE016D241;
+        Wed, 21 Apr 2021 10:03:36 +0000 (UTC)
+Received: from krava (unknown [10.40.193.60])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6E690100239A;
+        Wed, 21 Apr 2021 10:03:34 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 12:03:33 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v4 00/25] perf tool: AlderLake hybrid support series 1
+Message-ID: <YH/4dXpmJgnNLAMb@krava>
+References: <20210416140517.18206-1-yao.jin@linux.intel.com>
+ <0853bb70-8e19-8077-d48f-71cc43a089ba@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kpgrv3m2gbmdl54j"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFPSGXYdA=09xWZJi2oCQsbr3eH1GBgzjD8DRm5=beiKAtx37Q@mail.gmail.com>
+In-Reply-To: <0853bb70-8e19-8077-d48f-71cc43a089ba@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 21, 2021 at 09:14:20AM +0800, Jin, Yao wrote:
+> Hi Arnaldo, Hi Jiri,
+> 
+> Kan's patch series for AlderLake perf core support has been upstreamed, so
+> the interface will not be changed any more.
+> 
+> For this perf tool series (v4), do you have any comments?
 
---kpgrv3m2gbmdl54j
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+hi,
+I plan to go through it this week
 
-On Mon, Apr 19, 2021 at 07:01:00AM +0800, Kevin Tang wrote:
-> Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=8815=E6=
-=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=885:03=E5=86=99=E9=81=93=EF=BC=9A
-> > On Thu, Apr 15, 2021 at 08:18:52AM +0800, Kevin Tang wrote:
-> > > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B43=E6=9C=8824=
-=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=887:10=E5=86=99=E9=81=93=EF=BC=
-=9A
-> > > > > +static struct sprd_dpu *sprd_crtc_init(struct drm_device *drm,
-> > > > > +                      struct drm_plane *primary)
-> > > > > +{
-> > > > > +     struct device_node *port;
-> > > > > +     struct sprd_dpu *dpu;
-> > > > > +
-> > > > > +     /*
-> > > > > +      * set crtc port so that drm_of_find_possible_crtcs call wo=
-rks
-> > > > > +      */
-> > > > > +     port =3D of_parse_phandle(drm->dev->of_node, "ports", 0);
-> > > > > +     if (!port) {
-> > > > > +             drm_err(drm, "find 'ports' phandle of %s failed\n",
-> > > > > +                       drm->dev->of_node->full_name);
-> > > > > +             return ERR_PTR(-EINVAL);
-> > > > > +     }
-> > > > > +     of_node_put(port);
-> > > >
-> > > > The YAML binding should already make sure that your binding is sane=
-, and
-> > > > if you still get a DT that doesn't follow it, you have a whole lot =
-of
-> > > > other issues than whether ports is there :)
-> > > >
-> > > > > +     dpu =3D drmm_crtc_alloc_with_planes(drm, struct sprd_dpu, b=
-ase,
-> > > > > +                                     primary, NULL,
-> > > > > +                                     &sprd_crtc_funcs, NULL);
-> > > > > +     if (IS_ERR(dpu)) {
-> > > > > +             drm_err(drm, "failed to init crtc.\n");
-> > > > > +             return dpu;
-> > > > > +     }
-> > > > > +
-> > > > > +     dpu->base.port =3D port;
-> > > >
-> > > > But you're still referencing it here, while you called of_node_put =
-on it
-> > > > already? You should only call it once you're done with it.
-> > >
-> > >  of_node_put should be called after done with it, this maybe indeed b=
-e a bug.
-> > > i will fix it.
-> > > >
-> > > >
-> > > > I'm not really sure why you would need drm_of_find_possible_crtcs to
-> > > > work then if you don't follow the OF-Graph bindings.
-> > >
-> > > it scan all endports of encoder, if a matching crtc is found by
-> > > OF-Graph bindings
-> > > and then genarate the crtc mask, here is description:
-> > > 41  /**
-> > > 42   * drm_of_find_possible_crtcs - find the possible CRTCs for an en=
-coder port
-> > > 43   * @dev: DRM device
-> > > 44   * @port: encoder port to scan for endpoints
-> > > 45   *
-> > > 46   * Scan all endpoints attached to a port, locate their attached C=
-RTCs,
-> > > 47   * and generate the DRM mask of CRTCs which may be attached to th=
-is
-> > > 48   * encoder.
-> > > 49   *
-> > > if we don't follow the OF-Graph bindings, crtc can't attched to encod=
-er.
-> >
-> > Yeah, what I'm actually confused about is why you would need the
-> > of_parse_phandle call. You usually call drm_of_find_possible_crtcs with
-> > the encoder device node, so from your MIPI-DSI driver in your case, and
-> > with it's device->of_node pointer and it should work perfectly fine?
-> I still confused about use drm_of_find_possible_crtcs to bind crtc and
-> encoder, the port of drm_crtc, default is null?
->=20
-> 709  /**
-> 710   * struct drm_crtc - central CRTC control structure
-> 711   * @dev: parent DRM device
-> 712   * @port: OF node used by drm_of_find_possible_crtcs()
-> -------------------------------------------------------------------------=
-----------------------------
-> 25  static uint32_t drm_crtc_port_mask(struct drm_device *dev,
-> 26     struct device_node *port)
-> 27  {
-> 28   unsigned int index =3D 0;
-> 29   struct drm_crtc *tmp;
-> 30
-> 31   drm_for_each_crtc(tmp, dev) {
-> 32   if (tmp->port =3D=3D port)
-> 33   return 1 << index;
-> 34
-> 35   index++;
-> 36   }
-> 37
-> 38   return 0;
-> 39  }
->=20
-> I did not see any place to initialize the port of drm_crtc in the drm
-> framework, if not setup it.
-> it looks like the port of drm_crtc is undefined.
->=20
-> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/rockchip/r=
-ockchip_drm_vop.c#L1851
-> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/tilcdc/til=
-cdc_crtc.c#L1051
+jirka
 
-Yeah, you need to initialize it for drm_of_find_possible_crtcs to work,
-but my point was that you shouldn't do it through of_parse_phandle, just
-put the output of_graph_get_port_by_id like you found in those drivers.
+> 
+> Thanks
+> Jin Yao
+> 
+> On 4/16/2021 10:04 PM, Jin Yao wrote:
+> > AlderLake uses a hybrid architecture utilizing Golden Cove cores
+> > (core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
+> > event list. Some events are available on core cpu, some events
+> > are available on atom cpu and some events can be available on both.
+> > 
+> > Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
+> > /sys/devices/cpu_core
+> > /sys/devices/cpu_atom
+> > 
+> > cat /sys/devices/cpu_core/cpus
+> > 0-15
+> > 
+> > cat /sys/devices/cpu_atom/cpus
+> > 16-23
+> > 
+> > In this example, core cpus are 0-15 and atom cpus are 16-23.
+> > 
+> > To enable a core only event or atom only event:
+> > 
+> >          cpu_core/<event name>/
+> > or
+> >          cpu_atom/<event name>/
+> > 
+> > Count the 'cycles' event on core cpus.
+> > 
+> >    # perf stat -e cpu_core/cycles/ -a -- sleep 1
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >        12,853,951,349      cpu_core/cycles/
+> > 
+> >           1.002581249 seconds time elapsed
+> > 
+> > If one event is available on both atom cpu and core cpu, two events
+> > are created automatically.
+> > 
+> >    # perf stat -e cycles -a -- sleep 1
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >        12,856,467,438      cpu_core/cycles/
+> >         6,404,634,785      cpu_atom/cycles/
+> > 
+> >           1.002453013 seconds time elapsed
+> > 
+> > Group is supported if the events are from same pmu, otherwise a warning
+> > is displayed and disable grouping automatically.
+> > 
+> >    # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >        12,863,866,968      cpu_core/cycles/
+> >           554,795,017      cpu_core/instructions/
+> > 
+> >           1.002616117 seconds time elapsed
+> > 
+> >    # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
+> >    WARNING: events in group from different hybrid PMUs!
+> >    WARNING: grouped events cpus do not match, disabling group:
+> >      anon group { cpu_core/cycles/, cpu_atom/instructions/ }
+> > 
+> >     Performance counter stats for 'system wide':
+> > 
+> >             6,283,970      cpu_core/cycles/
+> >               765,635      cpu_atom/instructions/
+> > 
+> >           1.003959036 seconds time elapsed
+> > 
+> > Note that, since the whole patchset for AlderLake hybrid support is very
+> > large (40+ patches). For simplicity, it's splitted into several patch
+> > series.
+> > 
+> > The patch series 1 only supports the basic functionality. The advanced
+> > supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
+> > will be added in follow-up patch series.
+> > 
+> > The perf tool codes can also be found at:
+> > https://github.com/yaoj/perf.git
+> > 
+> > v4:
+> > ---
+> > - In Liang Kan's patch:
+> >    '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE',
+> >    the user interface for hardware events and cache events are changed, so
+> >    perf tool patches are changed as well.
+> > 
+> > - Fix an issue when atom CPUs are offlined. "/sys/bus/event_source/devices/cpu_atom/cpus"
+> >    exists but the content is empty. For this case, we can't enable the cpu_atom
+> >    PMU. '[PATCH v4 05/25] perf pmu: Save detected hybrid pmus to a global pmu list'
+> > 
+> > - Define 'ret' variable for return value in patch
+> >    '[PATCH v4 09/25] perf parse-events: Create two hybrid cache events'
+> > 
+> > - Directly return add_raw_hybrid() in patch
+> >    '[PATCH v4 10/25] perf parse-events: Create two hybrid raw events'
+> > - Drop the patch 'perf pmu: Support 'cycles' and 'branches' inside
+> >    hybrid PMU'.
+> > 
+> > - Separate '[PATCH v3 12/27] perf parse-events: Support no alias assigned event
+> >    inside hybrid PMU' into two patches:
+> >    '[PATCH v4 11/25] perf parse-events: Compare with hybrid pmu name'
+> >    '[PATCH v4 12/25] perf parse-events: Support event inside hybrid pmu'.
+> >    And these two patches are improved according to Jiri's comments.
+> > 
+> > v3:
+> > ---
+> > - Drop 'perf evlist: Hybrid event uses its own cpus'. This patch is wide
+> >    and actually it's not very necessary. The current perf framework has
+> >    processed the cpus for evsel well even for hybrid evsel. So this patch can
+> >    be dropped.
+> > 
+> > - Drop 'perf evsel: Adjust hybrid event and global event mixed group'.
+> >    The patch is a bit tricky and hard to understand. In v3, we will disable
+> >    grouping when the group members are from different PMUs. So this patch
+> >    would be not necessary.
+> > 
+> > - Create parse-events-hybrid.c/parse-events-hybrid.h and evlist-hybrid.c/evlist-hybrid.h.
+> >    Move hybrid related codes to these files.
+> > 
+> > - Create a new patch 'perf pmu: Support 'cycles' and 'branches' inside hybrid PMU' to
+> >    support 'cycles' and 'branches' inside PMU.
+> > 
+> > - Create a new patch 'perf record: Uniquify hybrid event name' to tell user the
+> >    pmu which the event belongs to for perf-record.
+> > 
+> > - If group members are from different hybrid PMUs, shows warning and disable
+> >    grouping.
+> > 
+> > - Other refining and refactoring.
+> > 
+> > v2:
+> > ---
+> > - Drop kernel patches (Kan posted the series "Add Alder Lake support for perf (kernel)" separately).
+> > - Drop the patches for perf-c2c/perf-mem/topdown/metrics/topology header supports,
+> >    which will be added in series 2 or series 3.
+> > - Simplify the arguments of __perf_pmu__new_alias() by passing
+> >    the 'struct pme_event' pointer.
+> > - Check sysfs validity before access.
+> > - Use pmu style event name, such as "cpu_core/cycles/".
+> > - Move command output two chars to the right.
+> > - Move pmu hybrid functions to new created pmu-hybrid.c/pmu-hybrid.h.
+> >    This is to pass the perf test python case.
+> > 
+> > Jin Yao (25):
+> >    tools headers uapi: Update tools's copy of linux/perf_event.h
+> >    perf jevents: Support unit value "cpu_core" and "cpu_atom"
+> >    perf pmu: Simplify arguments of __perf_pmu__new_alias
+> >    perf pmu: Save pmu name
+> >    perf pmu: Save detected hybrid pmus to a global pmu list
+> >    perf pmu: Add hybrid helper functions
+> >    perf stat: Uniquify hybrid event name
+> >    perf parse-events: Create two hybrid hardware events
+> >    perf parse-events: Create two hybrid cache events
+> >    perf parse-events: Create two hybrid raw events
+> >    perf parse-events: Compare with hybrid pmu name
+> >    perf parse-events: Support event inside hybrid pmu
+> >    perf record: Create two hybrid 'cycles' events by default
+> >    perf stat: Add default hybrid events
+> >    perf stat: Filter out unmatched aggregation for hybrid event
+> >    perf stat: Warn group events from different hybrid PMU
+> >    perf record: Uniquify hybrid event name
+> >    perf tests: Add hybrid cases for 'Parse event definition strings' test
+> >    perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
+> >    perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
+> >    perf tests: Support 'Track with sched_switch' test for hybrid
+> >    perf tests: Support 'Parse and process metrics' test for hybrid
+> >    perf tests: Support 'Session topology' test for hybrid
+> >    perf tests: Support 'Convert perf time to TSC' test for hybrid
+> >    perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
+> > 
+> >   include/uapi/linux/perf_event.h            |  15 ++
+> >   tools/include/uapi/linux/perf_event.h      |  15 ++
+> >   tools/perf/builtin-record.c                |  47 +++++-
+> >   tools/perf/builtin-stat.c                  |  29 ++++
+> >   tools/perf/pmu-events/jevents.c            |   2 +
+> >   tools/perf/tests/attr.c                    |   4 +
+> >   tools/perf/tests/evsel-roundtrip-name.c    |  19 ++-
+> >   tools/perf/tests/parse-events.c            | 152 ++++++++++++++++++
+> >   tools/perf/tests/parse-metric.c            |  10 +-
+> >   tools/perf/tests/perf-time-to-tsc.c        |  16 ++
+> >   tools/perf/tests/shell/stat+shadow_stat.sh |   3 +
+> >   tools/perf/tests/switch-tracking.c         |  10 +-
+> >   tools/perf/tests/topology.c                |  10 +-
+> >   tools/perf/util/Build                      |   3 +
+> >   tools/perf/util/evlist-hybrid.c            |  88 ++++++++++
+> >   tools/perf/util/evlist-hybrid.h            |  14 ++
+> >   tools/perf/util/evlist.c                   |   5 +-
+> >   tools/perf/util/evsel.c                    |  12 +-
+> >   tools/perf/util/evsel.h                    |   4 +-
+> >   tools/perf/util/parse-events-hybrid.c      | 178 +++++++++++++++++++++
+> >   tools/perf/util/parse-events-hybrid.h      |  23 +++
+> >   tools/perf/util/parse-events.c             |  86 +++++++++-
+> >   tools/perf/util/parse-events.h             |   9 +-
+> >   tools/perf/util/parse-events.y             |   9 +-
+> >   tools/perf/util/pmu-hybrid.c               |  89 +++++++++++
+> >   tools/perf/util/pmu-hybrid.h               |  22 +++
+> >   tools/perf/util/pmu.c                      |  64 +++++---
+> >   tools/perf/util/pmu.h                      |   7 +
+> >   tools/perf/util/python-ext-sources         |   2 +
+> >   tools/perf/util/stat-display.c             |  35 +++-
+> >   30 files changed, 933 insertions(+), 49 deletions(-)
+> >   create mode 100644 tools/perf/util/evlist-hybrid.c
+> >   create mode 100644 tools/perf/util/evlist-hybrid.h
+> >   create mode 100644 tools/perf/util/parse-events-hybrid.c
+> >   create mode 100644 tools/perf/util/parse-events-hybrid.h
+> >   create mode 100644 tools/perf/util/pmu-hybrid.c
+> >   create mode 100644 tools/perf/util/pmu-hybrid.h
+> > 
+> 
 
-Maxime
-
---kpgrv3m2gbmdl54j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYH/31AAKCRDj7w1vZxhR
-xfYbAQCyx/frCmI48iF2v9KLvwRkV6q7XhdIGq6JZ8So9sDZdwEAg7fNpob0hObc
-+1Speo1tpFxjtmM3FtNHpH8nYvYk4ww=
-=LDrh
------END PGP SIGNATURE-----
-
---kpgrv3m2gbmdl54j--
