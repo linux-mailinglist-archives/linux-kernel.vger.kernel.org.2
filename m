@@ -2,262 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD4A36679B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F38336679E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238074AbhDUJHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        id S237965AbhDUJHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237965AbhDUJG6 (ORCPT
+        with ESMTP id S238011AbhDUJHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:06:58 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497B7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:06:25 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id h15so10454480pfv.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:06:25 -0700 (PDT)
+        Wed, 21 Apr 2021 05:07:30 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58CCC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:06:57 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id h15so10455895pfv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:06:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sk0aghWAXiuY04TlYdrwhlUuLk1uH7qefHmT/IdZMDg=;
-        b=X1z4+mbKLpRObRWvepNJAEU8M64wuBuiqxLX549X+Ho8iRE5kaQD90yRHfHCY+YJ6g
-         FM8LaOVK1/LdWKWgkNWbU+n3nwqg8lp67hlUI1TOdQ2mcwKv2oZTuiocfajeExKfeUV7
-         O/1pyQwQXhYeTpQv9ql/qWWY7D6cxwf+5pPlc=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z+iHXh65iVvo4np4Gau+UG0A6fVjF6OF4qe3iW5dlBQ=;
+        b=cKRTNiweZv1CB+TmPXTHEuk/D3q6KRWbOYv26a5/nnRcbXbBa4sRinHzaZqlDw8IPK
+         V26zl43Ll4ob/dxArZPWyA4qOpnJxPJk8DjZuABCkaNyS8O8ZsjefM98zQ/WDfNoXHjw
+         I9Y4Jb7szrqvY1AsKwIGCc+RpKJHRvfXrbtzOpClqU2kr3qEvAJAWqK7aiwM4w7pEYAc
+         N9/GDBfvk/vlEZcV/aayCTXvn5DmtTALGlTwJ2lRrwaZkNLn5ePUmFlVzUMAmu4Dvv9t
+         LOWZ6CH+NAODFuCCxob1MO+H9YWAbW1/x6xFI+jX3V8c4KE39RF6vvG/gEqKUp5c5WK6
+         f8vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sk0aghWAXiuY04TlYdrwhlUuLk1uH7qefHmT/IdZMDg=;
-        b=aWT2kIjMsahFsIw3q1ytF/qi73dV6Y21L1tSufrFmmuRVNSjOBeqaDZ11A00C2NCnJ
-         QorucvDqrZmEtYnGo38ebknH/t37xcM0oJHW7kGJXwY5/XVbqKk/T54Arc8qunjktpOy
-         CG8OaZMtow9Kz8lotp8iespiKMiDkW0aC0uOgf5DcxjzwKrk4vKTHgFrcUTy2YWgN2DS
-         vIvOXaBVJYNvBbucSQkKkcjGd4ojQS8G85hGz8DOY+iIbscQZV7MPzM+pbRVHR2M+yBC
-         HIiJhmTcxpmcNUhDwtMQ++ytBJJQWYcxZQwKR0cgXOYYkdA7ndGYsbuOG5umyIbkNiWJ
-         l81A==
-X-Gm-Message-State: AOAM5317lkDaWCXcuuQwmVQwzgiivDRNSzkbboOnJw2YyRtyOh/k2sd0
-        EITDWaWq2s5j457LPWKLa/4WWA==
-X-Google-Smtp-Source: ABdhPJwx8xPcPkWj8CVwq7V7TaSoTM3OM9ne0/1AqA3lNvcjnZl3HcAtiDGW8d97DRHzqFh/tgp/pQ==
-X-Received: by 2002:a17:90a:1b42:: with SMTP id q60mr10308555pjq.230.1618995984831;
-        Wed, 21 Apr 2021 02:06:24 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:60c1:887e:ac53:9b5c])
-        by smtp.gmail.com with ESMTPSA id jx20sm1495889pjb.41.2021.04.21.02.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 02:06:24 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Ben Ho <Ben.Ho@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH v3 10/10] arm64: dts: mt8183: Add kukui-jacuzzi-fennel board
-Date:   Wed, 21 Apr 2021 17:06:01 +0800
-Message-Id: <20210421090601.730744-11-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-In-Reply-To: <20210421090601.730744-1-hsinyi@chromium.org>
-References: <20210421090601.730744-1-hsinyi@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z+iHXh65iVvo4np4Gau+UG0A6fVjF6OF4qe3iW5dlBQ=;
+        b=BaTD40MuUC1nziaI5kjNvL2G+3yw2rgPDT58gScpUSYg++GsIACGo9s18waC3VPGGj
+         U61ln2UkyVhk9At7M8gztU+KCHSuh+xOOODatCE6Ul30s2gX2zdP7IhH2dOSivInwdjw
+         IRXqYBFUR9vO5wIrKCaA1GpcXL5L/b/mSEDjgN7IVe9U51UOH0Y1VHh0vW37VR+f/RtK
+         T37PxVHYGBd0Wuf3kynhxTIckO3yzZ2+ZPBMn7AvJGueR+tQE24yjj0vAJA4LK5Kb/bJ
+         Ica+3ACgzyrHwufomL2waaeb+DkxFZKdWAdRngqoa1fbuwlpSfedESYn7HRRAjJJ7nUl
+         xBgw==
+X-Gm-Message-State: AOAM533aE1l0cGr64jKZ/rjgJQtsAZa0csBtPU6pzNmIIIAdF/BMl/r9
+        My/+obDc06E3pgI7Bp9DYfP8SnPQd/SGvIQaqHvkjQ==
+X-Google-Smtp-Source: ABdhPJzKNN7n6cCYVH22d3weYBRKCJ+tLw5cB/f+qRUy/RycEPUVGIGD6d0QfahjlqPmJZLfex7L+sVrp7mhdjHX1iA=
+X-Received: by 2002:a63:1665:: with SMTP id 37mr21367832pgw.31.1618996017511;
+ Wed, 21 Apr 2021 02:06:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210415084005.25049-1-songmuchun@bytedance.com>
+ <20210415084005.25049-9-songmuchun@bytedance.com> <YH6udU5rKmDcx5dY@localhost.localdomain>
+ <CAMZfGtXmDhkCWateAR0q_EgRPDmGh_=D-6UuhMd+Si6=TDvghQ@mail.gmail.com> <20210421073346.GA22456@linux>
+In-Reply-To: <20210421073346.GA22456@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 21 Apr 2021 17:06:20 +0800
+Message-ID: <CAMZfGtWLkYPbz3F-QSNYLOgfwdcTA7iJxG6uvVLCoFtjaBt6nw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v20 8/9] mm: memory_hotplug: disable
+ memmap_on_memory when hugetlb_free_vmemmap enabled
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
+        X86 ML <x86@kernel.org>, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fennel is known as Lenovo IdeaPad Flex 3 Chromebook.
-Fennel14 is known as Lenovo IdeaPad 3 Chromebook.
+On Wed, Apr 21, 2021 at 3:33 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Wed, Apr 21, 2021 at 11:41:24AM +0800, Muchun Song wrote:
+> > > Documentation/admin-guide/kernel-parameters.txt already provides an
+> > > explanation on memory_hotplug.memmap_on_memory parameter that states
+> > > that the feature cannot be enabled when using hugetlb-vmemmap
+> > > optimization.
+> > >
+> > > Users can always check whether the feature is enabled via
+> > > /sys/modules/memory_hotplug/parameters/memmap_on_memory.
+>
+> Heh, I realized this is not completely true.
+> Users can check whether the feature is __enabled__ by checking the sys fs,
+> but although it is enabled, it might not be effective.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/Makefile         |  3 ++
- .../mt8183-kukui-jacuzzi-fennel-sku1.dts      | 44 +++++++++++++++++++
- .../mt8183-kukui-jacuzzi-fennel-sku6.dts      | 32 ++++++++++++++
- .../mediatek/mt8183-kukui-jacuzzi-fennel.dtsi | 27 ++++++++++++
- .../mt8183-kukui-jacuzzi-fennel14.dts         | 16 +++++++
- .../dts/mediatek/mt8183-kukui-jacuzzi.dtsi    |  8 ++++
- 6 files changed, 130 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
+Right. I have done the test.
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 25770d83059d..4f68ebed2e31 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -15,6 +15,9 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-evb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-evb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-burnet.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-damu.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku1.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel-sku6.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-fennel14.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-juniper-sku16.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kappa.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kenzo.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
-new file mode 100644
-index 000000000000..ef6257c9a2d2
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2021 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+
-+/ {
-+	model = "Google fennel sku1 board";
-+	compatible = "google,fennel-sku1", "google,fennel", "mediatek,mt8183";
-+
-+	pwmleds {
-+		compatible = "pwm-leds";
-+		keyboard_backlight: keyboard-backlight {
-+			label = "cros_ec::kbd_backlight";
-+			pwms = <&cros_ec_pwm 0>;
-+			max-brightness = <1023>;
-+		};
-+	};
-+};
-+
-+&cros_ec_pwm {
-+	status = "okay";
-+};
-+
-+&touchscreen {
-+	status = "okay";
-+
-+	compatible = "hid-over-i2c";
-+	reg = <0x10>;
-+	interrupt-parent = <&pio>;
-+	interrupts = <155 IRQ_TYPE_LEVEL_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&touchscreen_pins>;
-+
-+	post-power-on-delay-ms = <10>;
-+	hid-descr-addr = <0x0001>;
-+};
-+
-+&qca_wifi {
-+	qcom,ath10k-calibration-variant = "GO_FENNEL";
-+};
-+
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
-new file mode 100644
-index 000000000000..899c2e42385c
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2021 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+
-+/ {
-+	model = "Google fennel sku6 board";
-+	compatible = "google,fennel-sku6", "google,fennel", "mediatek,mt8183";
-+};
-+
-+&touchscreen {
-+	status = "okay";
-+
-+	compatible = "hid-over-i2c";
-+	reg = <0x10>;
-+	interrupt-parent = <&pio>;
-+	interrupts = <155 IRQ_TYPE_LEVEL_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&touchscreen_pins>;
-+
-+	post-power-on-delay-ms = <10>;
-+	hid-descr-addr = <0x0001>;
-+};
-+
-+
-+&qca_wifi {
-+	qcom,ath10k-calibration-variant = "GO_FENNEL";
-+};
-+
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
-new file mode 100644
-index 000000000000..bbe6c338f465
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2021 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi.dtsi"
-+
-+&mt6358codec {
-+	mediatek,dmic-mode = <1>; /* one-wire */
-+};
-+
-+&i2c2 {
-+	trackpad@2c {
-+		compatible = "hid-over-i2c";
-+		reg = <0x2c>;
-+		hid-descr-addr = <0x20>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&trackpad_pins>;
-+
-+		interrupts-extended = <&pio 7 IRQ_TYPE_LEVEL_LOW>;
-+
-+		wakeup-source;
-+	};
-+};
-+
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
-new file mode 100644
-index 000000000000..e8c41f6b4b0d
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2021 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi-fennel.dtsi"
-+
-+/ {
-+	model = "Google fennel14 sku0 board";
-+	compatible = "google,fennel-sku0", "google,fennel", "mediatek,mt8183";
-+};
-+
-+&qca_wifi {
-+	qcom,ath10k-calibration-variant = "GO_FENNEL14";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-index 4049dff8464b..d8826c82bcda 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi.dtsi
-@@ -92,6 +92,14 @@ volume_up {
- 	};
- };
- 
-+&cros_ec {
-+	cros_ec_pwm: ec-pwm {
-+		compatible = "google,cros-ec-pwm";
-+		#pwm-cells = <1>;
-+		status = "disabled";
-+	};
-+};
-+
- &dsi0 {
- 	status = "okay";
- 	/delete-node/panel@0;
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+>
+> This might be due to a different number of reasons, vmemmap does not fully
+> span a PMD, the size we want to add spans more than a single memory block, etc.
 
+Agree. Thanks for your explanations.
+
+>
+> That is what
+>
+> "Note that even when enabled, there are a few cases where the feature is not
+>  effective."
+>
+> is supposed to mean.
+>
+> Anyway, I did not change my opionion on this.
+>
+> Thanks
+>
+> --
+> Oscar Salvador
+> SUSE L3
