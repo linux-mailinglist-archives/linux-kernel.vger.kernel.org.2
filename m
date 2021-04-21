@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A2C366696
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147C1366698
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237516AbhDUIAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235285AbhDUIAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:00:06 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDE7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:59:33 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id s4so2820346qtw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 00:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:content-transfer-encoding
-         :date:message-id;
-        bh=cJkRJYy2mP9xs3yZpwwbsS4qRW8FNd/4NKo5XFd2bgc=;
-        b=hJozwj1tTWRkIFw9UX5dsJ1Z/NyHiOlLoFZLPlmdstYK4bzMK4P4fejlQUIvvLxWrq
-         EvszHc/k+31DrZiwaXNXvqSt5eu4nphAVCJ68wDnS3ALnp3LRJXNrbjJcju8kaWurzgg
-         +zPynv9y9K/70T0sOS8XgV7D2PBYFXcSyskyYREVEEidHNu7GYKdLy0vnmJh3Wb5m1bt
-         rs/zHcPsHT7aULUn8mXGekQ+ghe7X/ZMOzgo+P27RoAO9KTdr6htPX+mE+++OtYTfGU2
-         G1/a5FWa0OFlTlgTUfklV2mper2yHeQq0fomu69HW9u3kgcFayN7eMyqoHOKXdMBsx4w
-         egWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=cJkRJYy2mP9xs3yZpwwbsS4qRW8FNd/4NKo5XFd2bgc=;
-        b=eFEgLdyraLXZ3LodgEdVr+cPs1rtaw7DI6C55IU8qQVrH2iCb1wgZF1UhGJpA85GTv
-         qhOOAVwHo/3Nk6CWMakMtfKcNOL0r18ImqeFuLMJmEzVB21sORFTe17cgH/kPECh8cLf
-         iBaHof2bYk83cakiUcxzAlB8q7+kx1sVb0t2MnK2IFXS/JjbmXkCwrOWdA50pepMw7EE
-         nNkQ6h7fsBJeerKyufiM1JmwaX5QY4gUdwWyaO+z+ztxKkpYFKqdCFmJutQSBHZbkngj
-         AICGBT/FK3iSIYPBzs/ucyoMG1l0bc8hS9T+HzRgc+ns2uHOt2eMxC8Kc4ExXDIsv/KF
-         nD0A==
-X-Gm-Message-State: AOAM5317lRMxbk+IF8IH3Z66TEPaqLZi8A3MgVVwGMaAHMJGBGejLjcG
-        3bl/JKG1NIvCvYEgAxxzhEpSBA==
-X-Google-Smtp-Source: ABdhPJznvty6Bj5sYvcZJattKvFsWyLVJYMQ/GkNV3bnS3ZOiuJRekauNEF/KU0llucQKo0wpX1rdg==
-X-Received: by 2002:a05:622a:1c5:: with SMTP id t5mr20018694qtw.49.1618991972693;
-        Wed, 21 Apr 2021 00:59:32 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id l124sm1496431qkf.38.2021.04.21.00.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 00:59:32 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Coly Li <colyli@suse.de>, Jianpeng Ma <jianpeng.ma@intel.com>,
-        Qiaowei Ren <qiaowei.ren@intel.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org
-Subject: next-20210420 build breakage on 32-bit - include/uapi/linux/bcache-nvm.h
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1618991971_13593P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Apr 2021 03:59:31 -0400
-Message-ID: <697668.1618991971@turing-police>
+        id S237534AbhDUIBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:01:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49556 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235510AbhDUIBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:01:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 303F8B127;
+        Wed, 21 Apr 2021 08:00:39 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 10:00:36 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 3/8] mm,memory_hotplug: Factor out adjusting present
+ pages into adjust_present_page_count()
+Message-ID: <20210421080036.GC22456@linux>
+References: <20210416112411.9826-1-osalvador@suse.de>
+ <20210416112411.9826-4-osalvador@suse.de>
+ <YH6i09ieDte+xog8@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH6i09ieDte+xog8@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1618991971_13593P
-Content-Type: text/plain; charset=us-ascii
+On Tue, Apr 20, 2021 at 11:45:55AM +0200, Michal Hocko wrote:
+> On Fri 16-04-21 13:24:06, Oscar Salvador wrote:
+> > From: David Hildenbrand <david@redhat.com>
+> > 
+> > Let's have a single place (inspired by adjust_managed_page_count()) where
+> > we adjust present pages.
+> > In contrast to adjust_managed_page_count(), only memory onlining/offlining
+> > is allowed to modify the number of present pages.
+> > 
+> > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> > Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> 
+> Not sure self review counts ;)
 
-commit 97d69b16cb973e04ea5309b9cb4356aa6b42c54e
-Author: Coly Li <colyli@suse.de>
-Date:   Wed Apr 14 13:46:36 2021 +0800
+Uhm, the original author is David, I just added my signed-off-by as a deliverer.
+I thought that in that case was ok to stick my Reviewed-by.
+Or maybe my signed-off-by carries that implicitly.
 
-    bcache: add initial data structures for nvm pages
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> Btw. I strongly suspect the resize lock is quite pointless here.
+> Something for a follow up patch.
 
-contains this code:
+What makes you think that?
+I have been thinking about this, let us ignore this patch for a moment.
 
-+#if (__BITS_PER_LONG != 64)
-+       #error "Non-64bit platform is not supported"
-+#endif
+If I poked the code correctly, node_size_lock is taken in:
 
-This breaks the build on arm and other 32-bit systems:
+remove_pfn_range_from_zone()
+move_pfn_range_to_zone()
 
-  HDRTEST usr/include/linux/bcache-nvm.h
-In file included from <command-line>:32:
-./usr/include/linux/bcache-nvm.h:109:3: error: #error "Non-64bit platform is not supported"
-  #error "Non-64bit platform is not supported"
-   ^~~~~
-make[3]: *** [/usr/src/linux-next/usr/include/Makefile:106: usr/include/linux/bcache-nvm.hdrtest] Error 1
-make[2]: *** [/usr/src/linux-next/scripts/Makefile.build:534: usr/include] Error 2
-make[1]: *** [/usr/src/linux-next/Makefile:1967: usr] Error 2
+both of them handling {zone,node}->spanned_pages
+
+Then we take it in {offline,online}_pages() for {zone,node}->present_pages.
+
+The other places where we take it are __init functions, so not of interest.
+
+Given that {offline,online}_pages() is serialized by the memory_hotplug lock,
+I would say that {node,zone}->{spanned,present}_pages is, at any time, stable?
+So, no need for the lock even without considering this patch?
+
+Now, getting back to this patch.
+adjust_present_page_count() will be called from memory_block_online(), which
+is not holding the memory_hotplug lock yet.
+But, we only fiddle with present pages out of {online,offline}_pages() if
+we have vmemmap pages, and since that operates on the same memory block,
+its lock should serialize that.
+
+I think I went down a rabbit hole, I am slightly confused now.
 
 
---==_Exmh_1618991971_13593P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBYH/bYgdmEQWDXROgAQJntRAAg072xVR/BfzrIhZTP2+Oa0qii+bD9Ybi
-4PLLIVAgkoGdLBGCKuXLq37fTtt53pdzNFBS7V6tRBTj1Q2jIoQVdrOegfGVfsve
-NRRC7nD9X5Zyw3RPKWIcHzFF224sVsjWZz325m+v4Hu1/fQt/3gTqYaVRmMArd0Q
-PskVvG4FnX3ikEpChhCvN8cXjGC1CXE4RqyGrQxbCp2kF80MGNGFxexBDEP1lQPB
-4NraHDmRRYJct+QvH4QVzWBm1zefAJ/HwKTXa4xcSxRYhJ0dftRkTI7SXCXwuH1t
-plp3KEHL0Tk+IqH1RftWwyHiZ+302K46FNApaiR7ZCMYF4zpqEo4E2SzT3MxiCB6
-r/LqazpdR0SziRqy4gXcsqYwhyS+6Gz4IyGjCAO8gHdrsdAKI9bAct8wOY/b0CBA
-nFTVrFB3ANk0SifBulF/CVPsJcxZpwJv5TrIx89tvvsUBjYOsLGIk0TGdEXVwJFv
-Lusn9t5+4qHbBijhU3/1/rbUaX18XdjU844kgXmmQO8Rqr2O4sQJYgrXVm094BMv
-QrKqZ4zzM/n/Hnsz3LOPgQ1WeeN8PelDxRXCoDLrgnxa7sXhehvGddk223W43P/v
-xvYefCrivfkyiBxrYaIF6F3EhxyBxcbnBkue2QFV8QAXmHiUjULpJ+rLIO3u6CBG
-MbC3ODLF3DM=
-=PkoC
------END PGP SIGNATURE-----
-
---==_Exmh_1618991971_13593P--
+-- 
+Oscar Salvador
+SUSE L3
