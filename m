@@ -2,179 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4976F367175
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649E0367178
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244785AbhDURiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:38:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244778AbhDURiC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:38:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619026648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcj0BxIds39pKf4Y/6SgEUiTuwVXhlAX55Wjn1Rv4og=;
-        b=GGzu6ZMSp3rgjPNbMHD0uXqAyb7hwr1eZYDGzOHSN9ictDUMrIq517zSPLeXc5K1g7SMEj
-        cALq90Oj59N7i6zWRD7tongFTBQoLCEOIhhWU4PFdIW0gfMW0sR0fAE78rtK/fDo+RbS65
-        uyuz9jHidLj5Gsba6fWlsEGOl733Yl8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-QFRSmfvYNnS1OLHiWLYfEQ-1; Wed, 21 Apr 2021 13:37:24 -0400
-X-MC-Unique: QFRSmfvYNnS1OLHiWLYfEQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEC75100A608;
-        Wed, 21 Apr 2021 17:37:22 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5274E1001B2C;
-        Wed, 21 Apr 2021 17:37:22 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com, srutherford@google.com, joro@8bytes.org,
-        brijesh.singh@amd.com, thomas.lendacky@amd.com,
-        venu.busireddy@oracle.com
-Subject: [PATCH v2 2/2] KVM: x86: add MSR_KVM_MIGRATION_CONTROL
-Date:   Wed, 21 Apr 2021 13:37:16 -0400
-Message-Id: <20210421173716.1577745-3-pbonzini@redhat.com>
-In-Reply-To: <20210421173716.1577745-1-pbonzini@redhat.com>
-References: <20210421173716.1577745-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S244780AbhDURiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:38:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244787AbhDURiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:38:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A0735613D8;
+        Wed, 21 Apr 2021 17:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619026654;
+        bh=5+4v3LEA0IcW8kyPvMA7y7BMUzpNkwem4cJS8NDQqgw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=IPDAU02ignKnys3aZhkiUG6urz0kS9R5mmF5zFm8aI5hZ0tRhe584DW0ANOQdxcNi
+         g79cTQrjmie+zUbgszUOnVWrz0Brt+FL44ozQc2zp2jPJxPl0gzKRvDXUpShSNdhUV
+         Rph6fB8O74c/6FrmvCkgJ+z4KxkHrARXvqtIc/uw9ryVf6xw78D1p1Kw35rU1FEmeH
+         8v8qxyHXpUFdQqXFPW4yJPFnCAmwy2IU1Unk8SwnR026d82+u096V4otRJqrB6hLnH
+         kNU1ErJMexFI20xfzq8uHqNkZ7cK11oUaPkhri3IuYUEAxRA2oJ3kdA7W2kw2PXvZ+
+         nHIlIWjQ1uyYQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9515B60A2A;
+        Wed, 21 Apr 2021 17:37:34 +0000 (UTC)
+Subject: Re: [GIT PULL] MMC fixes for v5.12-rc9
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210421125649.186054-1-ulf.hansson@linaro.org>
+References: <20210421125649.186054-1-ulf.hansson@linaro.org>
+X-PR-Tracked-List-Id: <linux-mmc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210421125649.186054-1-ulf.hansson@linaro.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.12-rc5
+X-PR-Tracked-Commit-Id: 7412dee9f1fd3e224202b633fdfa6eeaebe0307e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 16fc44d6387e260f4932e9248b985837324705d8
+Message-Id: <161902665454.13029.13990139235095475895.pr-tracker-bot@kernel.org>
+Date:   Wed, 21 Apr 2021 17:37:34 +0000
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new MSR that can be used to communicate whether the page
-encryption status bitmap is up to date and therefore whether live
-migration of an encrypted guest is possible.
+The pull request you sent on Wed, 21 Apr 2021 14:56:49 +0200:
 
-The MSR should be processed by userspace if it is going to live
-migrate the guest; the default implementation does nothing.
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.12-rc5
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- Documentation/virt/kvm/cpuid.rst     |  4 ++++
- Documentation/virt/kvm/msr.rst       | 10 ++++++++++
- arch/x86/include/uapi/asm/kvm_para.h |  4 ++++
- arch/x86/kvm/cpuid.c                 |  3 ++-
- arch/x86/kvm/x86.c                   | 14 ++++++++++++++
- 5 files changed, 34 insertions(+), 1 deletion(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/16fc44d6387e260f4932e9248b985837324705d8
 
-diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-index c9378d163b5a..906d32812ab1 100644
---- a/Documentation/virt/kvm/cpuid.rst
-+++ b/Documentation/virt/kvm/cpuid.rst
-@@ -101,6 +101,10 @@ KVM_FEATURE_HC_PAGE_ENC_STATUS     16          guest checks this feature bit bef
-                                                hypercall to notify the page state
-                                                change
- 
-+KVM_FEATURE_MIGRATION_CONTROL      17          guest checks this feature bit
-+                                               before setting bit 0 of
-+                                               MSR_KVM_MIGRATION_CONTROL
-+
- KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
-                                                per-cpu warps are expected in
-                                                kvmclock
-diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-index e37a14c323d2..3917fd57314e 100644
---- a/Documentation/virt/kvm/msr.rst
-+++ b/Documentation/virt/kvm/msr.rst
-@@ -376,3 +376,13 @@ data:
- 	write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
- 	and check if there are more notifications pending. The MSR is available
- 	if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
-+
-+MSR_KVM_MIGRATION_CONTROL:
-+        0x4b564d08
-+
-+data:
-+        If the guest is running with encrypted memory and it is communicating
-+        page encryption status to the host using the ``KVM_HC_PAGE_ENC_STATUS``
-+        hypercall, it can set bit 0 in this MSR to allow live migration of
-+        the guest.  The bit remains set to 0 (but WRMSR does not fail) if
-+        the host is not interested in page encryption status.
-diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-index be49956b603f..f66b3ad35f97 100644
---- a/arch/x86/include/uapi/asm/kvm_para.h
-+++ b/arch/x86/include/uapi/asm/kvm_para.h
-@@ -34,6 +34,7 @@
- #define KVM_FEATURE_ASYNC_PF_INT	14
- #define KVM_FEATURE_MSI_EXT_DEST_ID	15
- #define KVM_FEATURE_HC_PAGE_ENC_STATUS	16
-+#define KVM_FEATURE_MIGRATION_CONTROL	17
- 
- #define KVM_HINTS_REALTIME      0
- 
-@@ -55,6 +56,7 @@
- #define MSR_KVM_POLL_CONTROL	0x4b564d05
- #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
- #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
-+#define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
- 
- struct kvm_steal_time {
- 	__u64 steal;
-@@ -91,6 +93,8 @@ struct kvm_clock_pairing {
- /* MSR_KVM_ASYNC_PF_INT */
- #define KVM_ASYNC_PF_VEC_MASK			GENMASK(7, 0)
- 
-+/* MSR_KVM_MIGRATION_CONTROL */
-+#define KVM_PAGE_ENC_STATUS_UPTODATE		(1 << 0)
- 
- /* Operations for KVM_HC_MMU_OP */
- #define KVM_MMU_OP_WRITE_PTE            1
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 2ae061586677..b488c77bd429 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -887,7 +887,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 			     (1 << KVM_FEATURE_PV_SEND_IPI) |
- 			     (1 << KVM_FEATURE_POLL_CONTROL) |
- 			     (1 << KVM_FEATURE_PV_SCHED_YIELD) |
--			     (1 << KVM_FEATURE_ASYNC_PF_INT);
-+			     (1 << KVM_FEATURE_ASYNC_PF_INT) |
-+			     (1 << KVM_FEATURE_MIGRATION_CONTROL);
- 
- 		if (sched_info_on())
- 			entry->eax |= (1 << KVM_FEATURE_STEAL_TIME);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c2babf70a587..4cc849f2a048 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3258,6 +3258,14 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		vcpu->arch.msr_kvm_poll_control = data;
- 		break;
- 
-+	case MSR_KVM_MIGRATION_CONTROL:
-+		if (!guest_pv_has(vcpu, KVM_FEATURE_MIGRATION_CONTROL))
-+			return 1;
-+
-+		if (data & ~KVM_PAGE_ENC_STATUS_UPTODATE)
-+			return 1;
-+		break;
-+
- 	case MSR_IA32_MCG_CTL:
- 	case MSR_IA32_MCG_STATUS:
- 	case MSR_IA32_MC0_CTL ... MSR_IA32_MCx_CTL(KVM_MAX_MCE_BANKS) - 1:
-@@ -3549,6 +3557,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
- 			return 1;
- 
-+		msr_info->data = 0;
-+		break;
-+	case MSR_KVM_MIGRATION_CONTROL:
-+		if (!guest_pv_has(vcpu, KVM_FEATURE_MIGRATION_CONTROL))
-+			return 1;
-+
- 		msr_info->data = 0;
- 		break;
- 	case MSR_KVM_STEAL_TIME:
+Thank you!
+
 -- 
-2.26.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
