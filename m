@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5CF366D4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C29366D4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242983AbhDUN4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:56:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33864 "EHLO mx2.suse.de"
+        id S243006AbhDUN42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:56:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:12825 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235434AbhDUN4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:56:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7613DB12C;
-        Wed, 21 Apr 2021 13:55:33 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4396B1F2B69; Wed, 21 Apr 2021 15:55:33 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 15:55:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 087/190] Revert "udf: fix an uninitialized read bug and
- remove dead code"
-Message-ID: <20210421135533.GV8706@quack2.suse.cz>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-88-gregkh@linuxfoundation.org>
+        id S242991AbhDUN4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:56:17 -0400
+IronPort-SDR: /z5Uds6EhP9vAgs3m6iBsqqSG/IwSo0pz3bbuN7bpMSaZdy/edwh4CWm086F3Dg2ahfMnL6TF/
+ OtnFjntsGLAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195813564"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="195813564"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 06:55:44 -0700
+IronPort-SDR: a0O7fup/fNWapIQUoQDd4Us1kG2YhvXRSlca7TFcVhV5ftYCHn7OaIP3lFVgBiOzDREuQTNjey
+ nVUytfM/VGGw==
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="445941924"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 06:55:43 -0700
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id ECA1B6363;
+        Wed, 21 Apr 2021 06:55:42 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 06:55:42 -0700
+From:   mark gross <mgross@linux.intel.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     mgross@linux.intel.com, Rob Herring <robh@kernel.org>,
+        markgross@kernel.org, "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de,
+        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, Peng Fan <peng.fan@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Devicetree List <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC
+ driver
+Message-ID: <20210421135542.GB108315@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-5-mgross@linux.intel.com>
+ <20210305210140.GA622142@robh.at.kernel.org>
+ <20210308202008.GA138795@linux.intel.com>
+ <CABb+yY3kRj2F1ao9A1_+ve5dZm0Q=tThJyu-cVo-cqMjZ+uQ2g@mail.gmail.com>
+ <20210420221459.GA108315@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-88-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210420221459.GA108315@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21-04-21 14:59:22, Greg Kroah-Hartman wrote:
-> This reverts commit 39416c5872db69859e867fa250b9cbb3f1e0d185.
+On Tue, Apr 20, 2021 at 03:14:59PM -0700, mark gross wrote:
+> On Mon, Apr 12, 2021 at 04:24:41PM -0500, Jassi Brar wrote:
+> > On Mon, Mar 8, 2021 at 2:20 PM mark gross <mgross@linux.intel.com> wrote:
+> > >
+> > > On Fri, Mar 05, 2021 at 03:01:40PM -0600, Rob Herring wrote:
+> > > > On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
+> > > > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > > > >
+> > > > > Add DT binding documentation for the Intel Keem Bay IPC driver, which
+> > > >
+> > > > Bindings are for h/w blocks, not drivers. From a binding perspective, I
+> > > > don't really care what the driver architecture for some OS looks like. I
+> > > > continue to not understand what this h/w looks like. A block diagram
+> > > > would help as would understanding what blocks have multiple clients
+> > > > (mailboxes and xlink in particular).
+> > > I'm working to gather this info.
+> > >
+> > Do I pick the mailbox related patches (and which ones exactly) ?
 > 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: Jan Kara <jack@suse.cz>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> v6-0002-dt-bindings-mailbox-Add-Intel-VPU-IPC-mailbox-bin.patch
+> and 
+> v6-0003-mailbox-vpu-ipc-mailbox-Add-support-for-Intel-VPU.patch
+>
+Sorry for the confusion and delay.  It seems there are some internal requests
+to change the name of this part of the VPU driver stack to avoid possible future
+namespace collisions.
 
-Hi Greg!
+We will rename the vpu-ipc-mailbox with something more specific to KMB on the
+next posting.  That looks like will have to be against v5.13-rc1 at this point.
+Sigh.
 
-I'm pretty confident this particular report & fix was valid (in fact it was
-me who suggested the particular change). So I don't see point in reverting
-it...
+Thanks,
 
-								Honza
-
-> ---
->  fs/udf/namei.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/fs/udf/namei.c b/fs/udf/namei.c
-> index f146b3089f3d..77906b679187 100644
-> --- a/fs/udf/namei.c
-> +++ b/fs/udf/namei.c
-> @@ -304,6 +304,21 @@ static struct dentry *udf_lookup(struct inode *dir, struct dentry *dentry,
->  	if (dentry->d_name.len > UDF_NAME_LEN)
->  		return ERR_PTR(-ENAMETOOLONG);
->  
-> +#ifdef UDF_RECOVERY
-> +	/* temporary shorthand for specifying files by inode number */
-> +	if (!strncmp(dentry->d_name.name, ".B=", 3)) {
-> +		struct kernel_lb_addr lb = {
-> +			.logicalBlockNum = 0,
-> +			.partitionReferenceNum =
-> +				simple_strtoul(dentry->d_name.name + 3,
-> +						NULL, 0),
-> +		};
-> +		inode = udf_iget(dir->i_sb, lb);
-> +		if (IS_ERR(inode))
-> +			return inode;
-> +	} else
-> +#endif /* UDF_RECOVERY */
-> +
->  	fi = udf_find_entry(dir, &dentry->d_name, &fibh, &cfi);
->  	if (IS_ERR(fi))
->  		return ERR_CAST(fi);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--mark
