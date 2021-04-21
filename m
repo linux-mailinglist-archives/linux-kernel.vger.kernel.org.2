@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69182366767
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C415366769
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhDUI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236099AbhDUI7M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:59:12 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD44FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:58:39 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id c3so9324086pfo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lr+Ycz6BuRbj33U2Is4Kuv/TVfp1al5FWNN9+J922js=;
-        b=tRjtVdEqhhlRAjKgKXlbefmzETj4mNJWhRBUZVYMAEo72hE6RBbxhMYaJhCw+bH7bn
-         z0kM0qYsaSDqyVz/z9UH8gQa/uyDPGRMrvBW0RT+YNUe3QvRAbSwNwQkCJ/gbZCJ8OOE
-         uRDCjO/udzAoq1yXIRXo8/bqJGFfL8z8SWxaMC+7Ey0fcin/LtJ2AKzJT5ceUSeKYFvp
-         JXAtXjDt6zcTnfsyCilxszx/GKDsZZIZLtZnLAwvBTSK3fAwKyTspTOOckEZBzdh0ybs
-         QS7eVcVxUa1LmxprgHmoTKesXV6qOLjJzNg81grc3ejEBIujVJR5b/oJ01ymn/gAqfQZ
-         WU6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lr+Ycz6BuRbj33U2Is4Kuv/TVfp1al5FWNN9+J922js=;
-        b=ZGuGOepeqK6P+DmuWjt0058KTXzh6bxtqMrkFYVvyQgwMrX5uNgfMK5Ick21R4OTc+
-         xvyTyfnZDskeBk1xJ14cuu75+pOlUZN908Ge2IUhlvqHCHoX8p8ZAOqfYiRD6lMC25rR
-         xt0TZTY6d00jHqFQ0vaYHi+/eo9JFm5MkmOwWHiddL8V2wD0RkjLAS40nfSTLceVTzhx
-         Ck54RzHIM7ZeP3NjNXonXm+b3+mFzIN0WKxzRojcCTMEfpUs2hg+7JpiDv282QNxLlS/
-         H69hlrk0OrUf2A9w75FMe/sQ2Ndkz9FsGhdi92/vTrO5ul09ceCIgZfka8A0tA5p6k9R
-         Kc+w==
-X-Gm-Message-State: AOAM531V1M6xl1VhnaYazbg5SqnCssIZl242g4Z98+Y6n+04oseg1v60
-        UD0HDXfzhDVZTKbB9cMBnA6/vSijTouuZQhYScvuL5Th/6Y4Pg==
-X-Google-Smtp-Source: ABdhPJykDmmu4Ncb1pa1fieQO2qdC4OFg3yF7VCrBNV7KetM5geUXbnStkkTpc8y2MM05DtUzuv4fcu8LrQe7oaGyg8=
-X-Received: by 2002:a17:90a:644b:: with SMTP id y11mr9679126pjm.229.1618995519230;
- Wed, 21 Apr 2021 01:58:39 -0700 (PDT)
+        id S237689AbhDUI7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235313AbhDUI7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB79661442;
+        Wed, 21 Apr 2021 08:58:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618995518;
+        bh=64KJf6xIhQSnl3PhQoQ0a9YdaBe+gMwA8Np6LwW1+/4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KspKrNpocGC+THW2FQf8l/RTxYj9VsuAMN9o6fRqaCIHROlddiUnVoGVbSJevcK8P
+         t9Ih4ay4gNZRHVDqglHOGunFJvorx346JxWj8TRSdxkGT0Mx+bIg6kSOy9/tw6wrli
+         AyoCGd/Aj4lwDeEU4D5FwKzcgcMb/8X46RKGEXUG2g1sE3gyPvvaBF9LVNzp8ElJtH
+         nxpWNiCTcCzxZsHmOA3b5MzE1AlJaFRQLBbGl79XxBJRzbOZ0HNJnsSBV2Azw6FIoW
+         hMQ03qhaDP19GOcFUHxal2wg+Dsk2MwLLe7C5x4sfsipcA0LcpO/cD4GZh1Ilzc8Wj
+         Fofb7CfADu1kg==
+Received: by mail-wm1-f41.google.com with SMTP id y124-20020a1c32820000b029010c93864955so813562wmy.5;
+        Wed, 21 Apr 2021 01:58:38 -0700 (PDT)
+X-Gm-Message-State: AOAM531Kp2AXW+HY9HLB32geyZ/Va+EPyrxSSOZWhgjWMVsNx6Rt2fVK
+        c+cGX8VWgxHhaUFtsVR+y4V+oS3IPsrXJ65rjbo=
+X-Google-Smtp-Source: ABdhPJzfODrhPhGfivkqeugtVvYFeuZiRdEx50xM7G3CMPJPgDkMCFmpfx3SbcIBA3tmKParqz5KGFeTEwP9bSV2emc=
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr8921317wmf.84.1618995517297;
+ Wed, 21 Apr 2021 01:58:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210421060259.67554-1-songmuchun@bytedance.com>
- <YH/cVoUCTKu/UkqB@dhcp22.suse.cz> <CAMZfGtWh4tRiMrOTLvv5GHM1JUCt9b+UHf_DwLev32S=+iLW8g@mail.gmail.com>
- <20210421082103.GE22456@linux> <CAMZfGtXsXViJTWrMoECCaCD+2mF7zB5n61aFJvVgpGTaUVEC4A@mail.gmail.com>
- <20210421084911.GH22456@linux>
-In-Reply-To: <20210421084911.GH22456@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 21 Apr 2021 16:58:02 +0800
-Message-ID: <CAMZfGtWCi7RoYE0q_7RzshvL_meSUpjWKavBOh6ifUUV6QEm+g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: hugetlb: fix a race between
- memory-failure/soft_offline and gather_surplus_pages
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+References: <20210416230724.2519198-1-willy@infradead.org> <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org> <9f99b0a0-f1c1-f3b0-5f84-3a4bfc711725@synopsys.com>
+ <20210420031029.GI2531743@casper.infradead.org> <CAK8P3a0KUwf1Z0bHiUaHC2nHztevkxg5_FBSzHddNeSsBayWUA@mail.gmail.com>
+ <8d0fce1c-be7c-1c9b-bf5c-0c531db496ac@synopsys.com> <CAK8P3a3rzz1gfNLoGC8aZJiAC-tgZYD6P8pQsoEfgCAmQK=FAw@mail.gmail.com>
+ <5c41d562589b497ca3c1047e0e18b3a1@AcuMS.aculab.com>
+In-Reply-To: <5c41d562589b497ca3c1047e0e18b3a1@AcuMS.aculab.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 21 Apr 2021 10:58:18 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2GN9HVwSjfsXaYVO29zeUNB1hQENRw1K0DXCLdt-M-qA@mail.gmail.com>
+Message-ID: <CAK8P3a2GN9HVwSjfsXaYVO29zeUNB1hQENRw1K0DXCLdt-M-qA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "hch@lst.de" <hch@lst.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 4:49 PM Oscar Salvador <osalvador@suse.de> wrote:
+On Wed, Apr 21, 2021 at 10:43 AM David Laight <David.Laight@aculab.com> wrote:
+> From: Arnd Bergmann Sent: 20 April 2021 22:20
+> > On Tue, Apr 20, 2021 at 11:14 PM Vineet Gupta <Vineet.Gupta1@synopsys.com> wrote:
+> > > On 4/20/21 12:07 AM, Arnd Bergmann wrote:
+> >
+> > > >
+> > > > which means that half the 32-bit architectures do this. This may
+> > > > cause more problems when arc and/or microblaze want to support
+> > > > 64-bit kernels and compat mode in the future on their latest hardware,
+> > > > as that means duplicating the x86 specific hacks we have for compat.
+> > > >
+> > > > What is alignof(u64) on 64-bit arc?
+> > >
+> > > $ echo 'int a = __alignof__(long long);' | arc64-linux-gnu-gcc -xc -
+> > > -Wall -S -o - | grep -A1 a: | tail -n 1 | cut -f 3
+> > > 8
+> >
+> > Ok, good.
 >
-> On Wed, Apr 21, 2021 at 04:41:10PM +0800, Muchun Song wrote:
->
-> > But softoffline does not set page hwpoison before
-> > __get_hwpoison_page(). So the page still can be
-> > allocated. Right?
->
-> Yep, soft_offline() only marks the page as hwpoison once the page has been
-> fully contended and no other use is possible.
-> But yeah, hugetlb is a bit trickier in that regard.
->
-> This needs fixing in there.
+> That test doesn't prove anything.
+> Try running on x86:
+> $ echo 'int a = __alignof__(long long);' | gcc -xc - -Wall -S -o - -m32
+> a:
+>         .long   8
 
-It is OK to fix it in softoffline/memory-failure.
-I just want to expose the race. Thanks.
+Right, I had wondered about that one after I sent the email.
 
+> Using '__alignof__(struct {long long x;})' does give the expected 4.
 >
->
-> --
-> Oscar Salvador
-> SUSE L3
+> __alignof__() returns the preferred alignment, not the enforced
+> alignmnet - go figure.
+
+I checked the others as well now, and i386 is the only one that
+changed here: m68k still has '2', while arc/csky/h8300/microblaze/
+nios2/or1k/sh/i386 all have '4' and the rest have '8'.
+
+     Arnd
