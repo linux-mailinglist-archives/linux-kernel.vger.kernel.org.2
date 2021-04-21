@@ -2,199 +2,629 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631EA3666EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369313666EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234798AbhDUIWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:22:31 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3089 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234573AbhDUIWa (ORCPT
+        id S234851AbhDUIXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:23:32 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17386 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234500AbhDUIXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:22:30 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FQD2R4WF3zWYbG;
-        Wed, 21 Apr 2021 16:18:07 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 21 Apr 2021 16:21:55 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 21 Apr
- 2021 16:21:54 +0800
-Subject: Re: [PATCH net v4 1/2] net: sched: fix packet stuck problem for
- lockless qdisc
-To:     Michal Kubecek <mkubecek@suse.cz>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <olteanv@gmail.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
-        <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <pabeni@redhat.com>, <mzhivich@akamai.com>,
-        <johunt@akamai.com>, <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>
-References: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
- <1618535809-11952-2-git-send-email-linyunsheng@huawei.com>
- <20210419152946.3n7adsd355rfeoda@lion.mk-sys.cz>
- <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
- <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
- <80d64438-e3e5-e861-4da0-f6c89e3c73f7@huawei.com>
- <20210421053123.wdq3kwlvf72kwtch@lion.mk-sys.cz>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <6a8dea49-3a3e-4172-1d65-5dbcb0125eda@huawei.com>
-Date:   Wed, 21 Apr 2021 16:21:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Wed, 21 Apr 2021 04:23:31 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FQD5l5T28zlYvF;
+        Wed, 21 Apr 2021 16:20:59 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.203) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Wed, 21 Apr 2021
+ 16:22:49 +0800
+Subject: Re: [PATCH v3 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     John Garry <john.garry@huawei.com>, Qi Liu <liuqi115@huawei.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <zhangshaokun@hisilicon.com>
+References: <1618490885-44612-1-git-send-email-liuqi115@huawei.com>
+ <1618490885-44612-3-git-send-email-liuqi115@huawei.com>
+ <778f067e-9ad1-a84f-807d-09fc6f143032@huawei.com>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <9fe957b3-2502-86ea-e427-9946771344bc@huawei.com>
+Date:   Wed, 21 Apr 2021 16:22:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210421053123.wdq3kwlvf72kwtch@lion.mk-sys.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+In-Reply-To: <778f067e-9ad1-a84f-807d-09fc6f143032@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.38.203]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/21 13:31, Michal Kubecek wrote:
-> On Wed, Apr 21, 2021 at 09:52:40AM +0800, Yunsheng Lin wrote:
->> On 2021/4/21 4:34, Michal Kubecek wrote:
->>> However, I noticed something disturbing in the results of a simple
->>> 1-thread TCP_STREAM test (client sends data through a TCP connection to
->>> server using long writes, we measure the amount of data received by the
->>> server):
->>>
->>>   server: 172.17.1.1, port 12543
->>>   iterations: 20, threads: 1, test length: 30
->>>   test: TCP_STREAM, message size: 1048576
->>>   
->>>   1     927403548.4 B/s,  avg   927403548.4 B/s, mdev           0.0 B/s (  0.0%)
->>>   2    1176317172.1 B/s,  avg  1051860360.2 B/s, mdev   124456811.8 B/s ( 11.8%), confid. +/-  1581348251.3 B/s (150.3%)
->>>   3     927335837.8 B/s,  avg  1010352186.1 B/s, mdev   117354970.3 B/s ( 11.6%), confid. +/-   357073677.2 B/s ( 35.3%)
->>>   4    1176728045.1 B/s,  avg  1051946150.8 B/s, mdev   124576544.7 B/s ( 11.8%), confid. +/-   228863127.8 B/s ( 21.8%)
->>>   5    1176788216.3 B/s,  avg  1076914563.9 B/s, mdev   122102985.3 B/s ( 11.3%), confid. +/-   169478943.5 B/s ( 15.7%)
->>>   6    1158167055.1 B/s,  avg  1090456645.8 B/s, mdev   115504209.5 B/s ( 10.6%), confid. +/-   132805140.8 B/s ( 12.2%)
->>>   7    1176243474.4 B/s,  avg  1102711907.0 B/s, mdev   111069717.1 B/s ( 10.1%), confid. +/-   110956822.2 B/s ( 10.1%)
->>>   8    1176771142.8 B/s,  avg  1111969311.5 B/s, mdev   106744173.5 B/s (  9.6%), confid. +/-    95417120.0 B/s (  8.6%)
->>>   9    1176206364.6 B/s,  avg  1119106761.8 B/s, mdev   102644185.2 B/s (  9.2%), confid. +/-    83685200.5 B/s (  7.5%)
->>>   10   1175888409.4 B/s,  avg  1124784926.6 B/s, mdev    98855550.5 B/s (  8.8%), confid. +/-    74537085.1 B/s (  6.6%)
->>>   11   1176541407.6 B/s,  avg  1129490061.2 B/s, mdev    95422224.8 B/s (  8.4%), confid. +/-    67230249.7 B/s (  6.0%)
->>>   12    934185352.8 B/s,  avg  1113214668.9 B/s, mdev   106114984.5 B/s (  9.5%), confid. +/-    70420712.5 B/s (  6.3%)
->>>   13   1176550558.1 B/s,  avg  1118086660.3 B/s, mdev   103339448.9 B/s (  9.2%), confid. +/-    65002902.4 B/s (  5.8%)
->>>   14   1176521808.8 B/s,  avg  1122260599.5 B/s, mdev   100711151.3 B/s (  9.0%), confid. +/-    60333655.0 B/s (  5.4%)
->>>   15   1176744840.8 B/s,  avg  1125892882.3 B/s, mdev    98240838.2 B/s (  8.7%), confid. +/-    56319052.3 B/s (  5.0%)
->>>   16   1176593778.5 B/s,  avg  1129061688.3 B/s, mdev    95909740.8 B/s (  8.5%), confid. +/-    52771633.5 B/s (  4.7%)
->>>   17   1176583967.4 B/s,  avg  1131857116.5 B/s, mdev    93715582.2 B/s (  8.3%), confid. +/-    49669258.6 B/s (  4.4%)
->>>   18   1176853301.8 B/s,  avg  1134356904.5 B/s, mdev    91656530.2 B/s (  8.1%), confid. +/-    46905244.8 B/s (  4.1%)
->>>   19   1176592845.7 B/s,  avg  1136579848.8 B/s, mdev    89709043.8 B/s (  7.9%), confid. +/-    44424855.9 B/s (  3.9%)
->>>   20   1176608117.3 B/s,  avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
->>>   all                     avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
->>>
->>> Each line shows result of one 30 second long test and average, mean
->>> deviation and 99% confidence interval half width through the iterations
->>> so far. While 17 iteration results are essentially the wire speed minus
->>> TCP overhead, iterations 1, 3 and 12 are more than 20% lower. As results
->>> of the same test on unpatched 5.12-rc7 are much more consistent (the
->>> lowest iteration result through the whole test was 1175939718.3 and the
->>> mean deviation only 276889.1 B/s), it doesn't seeem to be just a random
->>> fluctuation.
+Hi John,
+
+On 2021/4/20 17:45, John Garry wrote:
+> On 15/04/2021 13:48, Qi Liu wrote:
+>> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+>> to sample bandwidth, latency, buffer occupation etc.
 >>
->> I think I need to relearn the statistial math to understand the above
->> "99% confidence interval half width ":)
+>> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+>> registered as a PMU in /sys/bus/event_source/devices, so users can
+>> select target PMU, and use filter to do further sets.
+>>
+>> Filtering options contains:
+>> event        - select the event.
+>> subevent     - select the subevent.
+>> port         - select target Root Ports. Information of Root Ports
+>>                 are shown under sysfs.
+>> bdf          - select requester_id of target EP device.
+>> trig_len     - set trigger condition for starting event statistics.
+>> trigger_mode - set trigger mode. 0 means starting to statistic when
+>>                 bigger than trigger condition, and 1 means smaller.
+>> thr_len      - set threshold for statistics.
+>> thr_mode     - set threshold mode. 0 means count when bigger than
+>>                 threshold, and 1 means smaller.
+>>
+>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
 > 
-> An easy way to understand it is that if the last column shows 42 MB/s,
-> it means that with 99% confidence (probability), the measured average
-> is within 42 MB/s off the actual one.
+> Some minor items and nits with coding style below, but generally looks ok:
 > 
->> But the problem do not seems related too much with "99% confidence
->> interval half width ", but with "mean deviation"?
+> Reviewed-by: John Garry <john.garry@huawei.com>
 > 
-> Mean deviation is a symptom here. What worries me is that most results
-> show the same value (corresponding to fully saturated line) with very
-> little variation, in some iterations (1, 3 and 12 here) we can suddenly
-> see much lower value (by ~2.5 GB/s, i.e. 20-25%). And as each iteration
-> runs the connection for 30 seconds, it cannot be just some short glitch.
+>> ---
+>>   MAINTAINERS                                |    6 +
+>>   drivers/perf/Kconfig                       |    2 +
+>>   drivers/perf/Makefile                      |    1 +
+>>   drivers/perf/pci/Kconfig                   |   16 +
+>>   drivers/perf/pci/Makefile                  |    2 +
+>>   drivers/perf/pci/hisilicon/Makefile        |    3 +
+>>   drivers/perf/pci/hisilicon/hisi_pcie_pmu.c | 1014 
+>> ++++++++++++++++++++++++++++
+>>   include/linux/cpuhotplug.h                 |    1 +
+>>   8 files changed, 1045 insertions(+)
+>>   create mode 100644 drivers/perf/pci/Kconfig
+>>   create mode 100644 drivers/perf/pci/Makefile
+>>   create mode 100644 drivers/perf/pci/hisilicon/Makefile
+>>   create mode 100644 drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 7fdc513..efe06cd 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -8084,6 +8084,12 @@ W:    http://www.hisilicon.com
+>>   F:    Documentation/admin-guide/perf/hisi-pmu.rst
+>>   F:    drivers/perf/hisilicon
+>> +HISILICON PCIE PMU DRIVER
+>> +M:    Qi Liu <liuqi115@huawei.com>
+>> +S:    Maintained
+>> +F:    Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+>> +F:    drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+>> +
+>>   HISILICON QM AND ZIP Controller DRIVER
+>>   M:    Zhou Wang <wangzhou1@hisilicon.com>
+>>   L:    linux-crypto@vger.kernel.org
+>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>> index 77522e5..ddd82fa 100644
+>> --- a/drivers/perf/Kconfig
+>> +++ b/drivers/perf/Kconfig
+>> @@ -139,4 +139,6 @@ config ARM_DMC620_PMU
+>>   source "drivers/perf/hisilicon/Kconfig"
+>> +source "drivers/perf/pci/Kconfig"
+>> +
+>>   endmenu
+>> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+>> index 5260b11..1208c08 100644
+>> --- a/drivers/perf/Makefile
+>> +++ b/drivers/perf/Makefile
+>> @@ -14,3 +14,4 @@ obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
+>>   obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
+>>   obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
+>>   obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
+>> +obj-y += pci/
+>> diff --git a/drivers/perf/pci/Kconfig b/drivers/perf/pci/Kconfig
+>> new file mode 100644
+>> index 0000000..9f30291
+>> --- /dev/null
+>> +++ b/drivers/perf/pci/Kconfig
+>> @@ -0,0 +1,16 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +#
+>> +# PCIe Performance Monitor Drivers
+>> +#
+>> +menu "PCIe Performance Monitor"
+>> +
+>> +config HISI_PCIE_PMU
+>> +    tristate "HiSilicon PCIE PERF PMU"
+>> +    depends on (ARM64 && PCI) || COMPILE_TEST
+>> +    help
+>> +      Provide support for HiSilicon PCIe performance monitoring unit 
+>> (PMU)
+>> +      RCiEP devices.
+>> +      Adds the PCIe PMU into perf events system for monitoring latency,
+>> +      bandwidth etc.
+>> +
+>> +endmenu
+>> diff --git a/drivers/perf/pci/Makefile b/drivers/perf/pci/Makefile
+>> new file mode 100644
+>> index 0000000..a56b1a9
+>> --- /dev/null
+>> +++ b/drivers/perf/pci/Makefile
+>> @@ -0,0 +1,2 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +obj-y += hisilicon/
+>> diff --git a/drivers/perf/pci/hisilicon/Makefile 
+>> b/drivers/perf/pci/hisilicon/Makefile
+>> new file mode 100644
+>> index 0000000..65b0bd7
+>> --- /dev/null
+>> +++ b/drivers/perf/pci/hisilicon/Makefile
+>> @@ -0,0 +1,3 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +
+>> +obj-$(CONFIG_HISI_PCIE_PMU) += hisi_pcie_pmu.o
+>> diff --git a/drivers/perf/pci/hisilicon/hisi_pcie_pmu.c 
+>> b/drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+>> new file mode 100644
+>> index 0000000..415bf39
+>> --- /dev/null
+>> +++ b/drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+>> @@ -0,0 +1,1014 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * This driver adds support for PCIe PMU RCiEP device. Related
+>> + * perf events are bandwidth, bandwidth utilization, latency
+>> + * etc.
+>> + *
+>> + * Copyright (C) 2021 HiSilicon Limited
+>> + * Author: Qi Liu<liuqi115@huawei.com>
+>> + */
+>> +#include <linux/bitfield.h>
+>> +#include <linux/bitmap.h>
+>> +#include <linux/bug.h>
+>> +#include <linux/cpuhotplug.h>
+>> +#include <linux/cpumask.h>
+>> +#include <linux/device.h>
+>> +#include <linux/err.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/irq.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/list.h>
+>> +#include <linux/module.h>
+>> +#include <linux/pci.h>
+>> +#include <linux/perf_event.h>
+>> +
+>> +/* Define registers */
+>> +#define HISI_PCIE_GLOBAL_CTRL        0x00
+>> +#define HISI_PCIE_EVENT_CTRL        0x010
+>> +#define HISI_PCIE_CNT            0x090
+>> +#define HISI_PCIE_EXT_CNT        0x110
+>> +#define HISI_PCIE_INT_STAT        0x150
+>> +#define HISI_PCIE_INT_MASK        0x154
+>> +#define HISI_PCIE_REG_BDF        0xfe0
+>> +#define HISI_PCIE_REG_VERSION        0xfe4
+>> +#define HISI_PCIE_REG_INFO        0xfe8
+>> +#define HISI_PCIE_REG_FREQ        0xfec
+>> +
+>> +/* Define PCIE CTRL CMD */
+>> +#define HISI_PCIE_GLOBAL_EN        0x01
+>> +#define HISI_PCIE_GLOBAL_NONE        0
+>> +#define HISI_PCIE_EVENT_EN        BIT(20)
+>> +#define HISI_PCIE_RESET_CNT        BIT(22)
+>> +#define HISI_PCIE_DEFAULT_SET        BIT(34)
+>> +#define HISI_PCIE_THR_EN        BIT(26)
+>> +#define HISI_PCIE_TARGET_EN        BIT(32)
+>> +#define HISI_PCIE_TRIG_EN        BIT(52)
+>> +
+>> +/* Define offsets in event ctrl regesiter */
+>> +#define HISI_PCIE_EVENT_M        GENMASK_ULL(7, 0)
+>> +#define HISI_PCIE_SUBEVENT_M        GENMASK_ULL(15, 8)
+>> +#define HISI_PCIE_THR_MODE_M        GENMASK_ULL(27, 27)
+>> +#define HISI_PCIE_THR_M            GENMASK_ULL(31, 28)
+>> +#define HISI_PCIE_TARGET_M        GENMASK_ULL(52, 36)
+>> +#define HISI_PCIE_TRIG_MODE_M        GENMASK_ULL(53, 53)
+>> +#define HISI_PCIE_TRIG_M        GENMASK_ULL(59, 56)
+>> +
+>> +#define HISI_PCIE_MAX_COUNTERS        8
+>> +#define HISI_PCIE_REG_STEP        8
+>> +#define HISI_PCIE_EVENT_MAX        0xa2
+>> +#define HISI_PCIE_SUBEVENT_MAX        0x20
+>> +#define HISI_PCIE_THR_MAX_VAL        10
+>> +#define HISI_PCIE_TRIG_MAX_VAL        10
+>> +#define HISI_PCIE_COUNTER_BITS        64
+>> +#define HISI_PCIE_MAX_PERIOD        BIT_ULL(63)
+>> +
+>> +struct hisi_pcie_pmu {
+>> +    struct perf_event *hw_events[HISI_PCIE_MAX_COUNTERS];
+>> +    struct hlist_node node;
+>> +    struct pci_dev *pdev;
+>> +    struct pmu pmu;
+>> +    void __iomem *base;
+>> +    int irq;
+>> +    u32 identifier;
+>> +    /* Minimum and maximum bdf of root ports monitored by PMU */
+>> +    u16 bdf_min;
+>> +    u16 bdf_max;
+>> +    int on_cpu;
+>> +};
+>> +
+>> +#define to_pcie_pmu(p)  (container_of((p), struct hisi_pcie_pmu, pmu))
+>> +#define GET_PCI_DEVFN(bdf)  ((bdf) & 0xff)
+>> +
+>> +#define HISI_PCIE_PMU_FILTER_ATTR(_name, _config, _hi, _lo)          \
+>> +    static u64 hisi_pcie_get_##_name(struct perf_event *event)      \
+>> +    {                                  \
+>> +        return FIELD_GET(GENMASK(_hi, _lo), event->attr._config); \
+>> +    }                                  \
+>> +
+>> +HISI_PCIE_PMU_FILTER_ATTR(event, config, 7, 0);
+>> +HISI_PCIE_PMU_FILTER_ATTR(subevent, config, 15, 8);
+>> +HISI_PCIE_PMU_FILTER_ATTR(thr_len, config1, 3, 0);
+>> +HISI_PCIE_PMU_FILTER_ATTR(thr_mode, config1, 4, 4);
+>> +HISI_PCIE_PMU_FILTER_ATTR(trig_len, config1, 8, 5);
+>> +HISI_PCIE_PMU_FILTER_ATTR(trig_mode, config1, 9, 9);
+>> +HISI_PCIE_PMU_FILTER_ATTR(port, config2, 15, 0);
+>> +HISI_PCIE_PMU_FILTER_ATTR(bdf, config2, 31, 16);
+>> +
+>> +#define HISI_PCIE_BUILD_EVENTS(name)                         \
+>> +    static bool is_##name##_event(u32 idx)                \
+>> +    {                                \
+>> +        return (idx >= name##_events_list[0] &&            \
+>> +            idx <= name##_events_list[1]) ||        \
+>> +            idx == name##_events_list[2];             \
+>> +    }                                \
+>> +
+>> +/*
+>> + * The first element of event list is minimum index of TL-layer events
+>> + * and the second element is maximum index. The third element is index
+>> + * of a DL-layer event.
+>> + */
+>> +static const u32 bw_events_list[] = {0x04, 0x08, 0x84};
+>> +static const u32 latency_events_list[] = {0x10, 0x15, 0x85};
+>> +static const u32 bus_util_events_list[] = {0x20, 0x24, 0x09};
+>> +static const u32 buf_util_events_list[] = {0x28, 0x2a, 0x33};
+>> +
+>> +HISI_PCIE_BUILD_EVENTS(bw);
+>> +HISI_PCIE_BUILD_EVENTS(latency);
+>> +HISI_PCIE_BUILD_EVENTS(bus_util);
+>> +HISI_PCIE_BUILD_EVENTS(buf_util);
+>> +
+>> +static ssize_t hisi_pcie_format_sysfs_show(struct device *dev,
+>> +                    struct device_attribute *attr, char *buf)
+>> +{
+>> +    struct dev_ext_attribute *eattr;
+>> +
+>> +    eattr = container_of(attr, struct dev_ext_attribute, attr);
+>> +
+>> +    return sysfs_emit(buf, "%s\n", (char *)eattr->var);
+>> +}
+>> +
+>> +static ssize_t hisi_pcie_event_sysfs_show(struct device *dev,
+>> +                   struct device_attribute *attr, char *buf)
+>> +{
+>> +    struct dev_ext_attribute *eattr;
+>> +
+>> +    eattr = container_of(attr, struct dev_ext_attribute, attr);
+>> +
+>> +    return sysfs_emit(buf, "config=0x%lx\n", (unsigned long)eattr->var);
+>> +}
 > 
-> I managed to get tcpdump captures yesterday but they are huge even with
-> "-s 128" (client ~5.6 GB, server ~9.0 GB) so that working with them is
-> rather slow so I did not find anything interesting yet.
+> As before, I hope that we can have common versions of these function for 
+> all drivers in future
 > 
->> I tried using netperf, which seems only show throughput of 9415.06
->> (10^6bits/sec) using 10G netdev. which tool did you used to show the
->> above number?
+got it, will do this latter.
+>> +
+>> +static int hisi_pcie_pmu_event_init(struct perf_event *event)
+>> +{
+>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>> +
+>> +    event->cpu = pcie_pmu->on_cpu;
+>> +
+>> +    if (event->attr.type != event->pmu->type)
+>> +        return -ENOENT;
+>> +
+>> +    /* Sampling is not supported. */
+>> +    if (is_sampling_event(event) || event->attach_state & 
+>> PERF_ATTACH_TASK)
+>> +        return -EOPNOTSUPP;
+>> +
+>> +    if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu)) {
+>> +        pci_err(pcie_pmu->pdev, "Invalid filter!\n");
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    if (!hisi_pcie_pmu_validate_event_group(event))
+>> +        return -EINVAL;
+>> +
+>> +    return 0;
+>> +}
+>> +
 > 
-> 9415.06 * 10^6 b/s is 1176.9 * 10^6 B/s so it's about the same as the
-> numbers above (the good ones, that is). As this was part of a longer
-> test trying different thread counts from 1 to 128, I was using another
-> utility I started writing recently:
+> again, if this is generic, then can factor out later
+got it.
+> 
+>> +/*
+>> + * The bandwidth, latency, bus utilization and buffer occupancy 
+>> features are
+>> + * calculated from data in HISI_PCIE_CNT and extern data in 
+>> HISI_PCIE_EXT_CNT.
+> 
+> extern data? or extended data?
+It should be "extended data" here, I'll fix this in next version. Thanks.
+> 
+>> + * Other features are obtained only by HISI_PCIE_CNT.
+>> + * So data and data_ext are processed in this function to get 
+>> performanace
+>> + * value like, bandwidth, latency, etc.
+>> + */
+>> +static u64 hisi_pcie_pmu_get_performance(struct perf_event *event, 
+>> u64 data,
+>> +                     u64 data_ext)
+>> +{
+>> +#define CONVERT_DW_TO_BYTE(x)    (sizeof(u32) * (x))
+>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>> +    u64 us_per_cycle = readl(pcie_pmu->base + HISI_PCIE_REG_FREQ);
+>> +    u32 idx = hisi_pcie_get_event(event);
+>> +
+>> +    if (!data_ext)
+>> +        return 0;
+>> +
+>> +    /* Process data to set unit of bandwidth as "Byte/ms". */
+>> +    if (is_bw_event(idx)) {
+> 
+> ideally we could use a switch statement here, but with how macro 
+> is_bw_event is defined, doesn't seem possible
+> 
+>> +        if (!data_ext / 1000)
+>> +            return 0;
+>> +
+>> +        return (CONVERT_DW_TO_BYTE(data)) / (data_ext / 1000);
+>> +    }
+>> +
+>> +    /* Process data to set unit of latency as "us". */
+>> +    if (is_latency_event(idx))
+>> +        return (data * us_per_cycle) / data_ext;
+>> +
+>> +    if (is_bus_util_event(idx))
+>> +        return (data * us_per_cycle) / data_ext;
+>> +
+>> +    if (is_buf_util_event(idx))
+>> +        return data / (data_ext * us_per_cycle);
+>> +
+>> +    return data;
+>> +}
+>> +
+>> +static void hisi_pcie_pmu_read_counter(struct perf_event *event, u64 
+>> *cnt,
+>> +                       u64 *cnt_ext)
+>> +{
+>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>> +    u32 idx = event->hw.idx;
+>> +
+>> +    *cnt = hisi_pcie_pmu_readq(pcie_pmu, HISI_PCIE_CNT, idx);
+>> +    *cnt_ext = hisi_pcie_pmu_readq(pcie_pmu, HISI_PCIE_EXT_CNT, idx);
+>> +}
+>> +
+>> +static void hisi_pcie_pmu_write_counter(struct perf_event *event, u64 
+>> val,
+>> +                    u64 val_ext)
+>> +{
+>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>> +    u32 idx = event->hw.idx;
+>> +
+>> +    hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_CNT, idx, val);
+>> +    hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EXT_CNT, idx, val_ext);
+>> +}
+>> +
+>> +static int hisi_pcie_pmu_get_event_idx(struct hisi_pcie_pmu *pcie_pmu)
+>> +{
+>> +    int idx;
+>> +
+>> +    for (idx = 0; idx < HISI_PCIE_MAX_COUNTERS; idx++) {
+>> +        if (!pcie_pmu->hw_events[idx])
+>> +            return idx;
+>> +    }
+>> +
+>> +    return -EINVAL;
+>> +}
+>> +
+>> +static void hisi_pcie_pmu_event_update(struct perf_event *event)
+>> +{
+>> +    struct hw_perf_event *hwc = &event->hw;
+>> +    struct hw_perf_event_extra *hwc_ext = &hwc->extra_reg;
+>> +    u64 new_cnt_ext, prev_cnt_ext;
+>> +    u64 new_cnt, prev_cnt, delta;
+>> +
+>> +    hwc_ext = &hwc->extra_reg;
+>> +    do {
+>> +        prev_cnt = local64_read(&hwc->prev_count);
+>> +        prev_cnt_ext = hwc_ext->config;
+>> +        hisi_pcie_pmu_read_counter(event, &new_cnt, &new_cnt_ext);
+>> +    } while (local64_cmpxchg(&hwc->prev_count, prev_cnt,
+>> +                 new_cnt) != prev_cnt);
+>> +
+>> +    hwc_ext->config = new_cnt_ext;
+>> +
+>> +    delta = hisi_pcie_pmu_get_performance(event, new_cnt - prev_cnt,
+>> +                          new_cnt_ext - prev_cnt_ext);
+>> +    local64_add(delta, &event->count);
+>> +}
+> 
+> ...
+> 
+>> +
+>> +static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct 
+>> hlist_node *node)
+>> +{
+>> +    struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node,
+>> +                     struct hisi_pcie_pmu, node);
+>> +    unsigned int target;
+>> +
+>> +    /* Nothing to do if this CPU doesn't own the PMU */
+>> +    if (pcie_pmu->on_cpu != cpu)
+>> +        return 0;
+>> +
+>> +    /* Choose a new CPU from all online cpus. */
+>> +    target = cpumask_any_but(cpu_online_mask, cpu);
+> 
+> I don't think cpu would ever be involved in cpu_online_mask at this 
+> point. Not sure.
+> 
+You are righ, may be cpumask_first(cpu_online_mask) is enough
+>> +    if (target >= nr_cpu_ids)
+>> +        return 0;
+> 
+> might be worth an error message if this fails ...
+ok, will add one in next version.
+> 
+>> +
+>> +    perf_pmu_migrate_context(&pcie_pmu->pmu, cpu, target);
+>> +    /* Use this CPU for event counting */
+>> +    pcie_pmu->on_cpu = target;
+>> +    WARN_ON(irq_set_affinity_hint(pcie_pmu->irq, cpumask_of(target)));
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +/*
+>> + * Events with the "dl" suffix in their names count performance in DL 
+>> layer,
+>> + * otherswise, events count performance in TL layer.
+>> + */
+>> +static struct attribute *hisi_pcie_pmu_events_attr[] = {
+>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_rx_mwr, 0x0104),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_rx_mrd, 0x1005),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_tx_mwr, 0x0105),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_tx_mrd, 0x2004),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_rx_mwr, 0x0010),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_rx_mrd, 0x0210),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_tx_mrd, 0x0011),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(lat_tx_cfg, 0x0111),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_rx_dl, 0x0184),
+>> +    HISI_PCIE_PMU_EVENT_ATTR(bw_tx_dl, 0x0384),
+>> +    NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_pcie_pmu_events_group = {
+>> +    .name = "events",
+>> +    .attrs = hisi_pcie_pmu_events_attr,
+>> +};
+>> +
+>> +static struct attribute *hisi_pcie_pmu_format_attr[] = {
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(event, "config:0-7"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(subevent, "config:8-15"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(thr_len, "config1:0-3"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(thr_mode, "config1:4"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(trig_len, "config1:5-8"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(trig_mode, "config1:9"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(port, "config2:0-15"),
+>> +    HISI_PCIE_PMU_FORMAT_ATTR(bdf, "config2:16-31"),
+>> +    NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_pcie_pmu_format_group = {
+>> +    .name = "format",
+>> +    .attrs = hisi_pcie_pmu_format_attr,
+>> +};
+>> +
+>> +static struct device_attribute hisi_pcie_pmu_bus_attr =
+>> +    __ATTR(bus, 0444, hisi_pcie_bus_show, NULL);
+>> +
+>> +static struct attribute *hisi_pcie_pmu_bus_attrs[] = {
+>> +    &hisi_pcie_pmu_bus_attr.attr,
+>> +    NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_pcie_pmu_bus_attr_group = {
+>> +    .attrs = hisi_pcie_pmu_bus_attrs,
+>> +};
+>> +
+>> +static struct device_attribute hisi_pcie_pmu_cpumask_attr =
+>> +    __ATTR(cpumask, 0444, hisi_pcie_cpumask_show, NULL);
+>> +
+>> +static struct attribute *hisi_pcie_pmu_cpumask_attrs[] = {
+>> +    &hisi_pcie_pmu_cpumask_attr.attr,
+>> +    NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_pcie_pmu_cpumask_attr_group = {
+>> +    .attrs = hisi_pcie_pmu_cpumask_attrs,
+>> +};
+>> +
+>> +static struct device_attribute hisi_pcie_pmu_identifier_attr =
+>> +    __ATTR(identifier, 0444, hisi_pcie_identifier_show, NULL);
+>> +
+>> +static struct attribute *hisi_pcie_pmu_identifier_attrs[] = {
+>> +    &hisi_pcie_pmu_identifier_attr.attr,
+>> +    NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_pcie_pmu_identifier_attr_group = {
+>> +    .attrs = hisi_pcie_pmu_identifier_attrs,
+>> +};
+>> +
+>> +static const struct attribute_group *hisi_pcie_pmu_attr_groups[] = {
+>> +    &hisi_pcie_pmu_events_group,
+>> +    &hisi_pcie_pmu_format_group,
+>> +    &hisi_pcie_pmu_bus_attr_group,
+>> +    &hisi_pcie_pmu_cpumask_attr_group,
+>> +    &hisi_pcie_pmu_identifier_attr_group,
+>> +    NULL
+>> +};
+>> +
+>> +static int hisi_pcie_alloc_pmu(struct pci_dev *pdev,
+>> +                 struct hisi_pcie_pmu *pcie_pmu)
+>> +{
+>> +    u16 sicl_id, device_id;
+>> +    char *name;
+>> +
+>> +    pcie_pmu->base = pci_ioremap_bar(pdev, 2);
+>> +    if (!pcie_pmu->base) {
+>> +        pci_err(pdev, "Ioremap failed for pcie_pmu resource.\n");
+>> +        return -ENOMEM;
+>> +    }
+> 
+> nit: this does not seem related to "alloc" functionality
+> 
+ok, I'll move this pcie_pmu->base to hisi_pcie_init_pmu() function.
 
-I tried using below shell to simulate your testcase:
-
-#!/bin/sh
-
-for((i=0; i<20; i++))
-do
-        taskset -c 0-31 netperf -t TCP_STREAM -H 192.168.100.2 -l 30 -- -m 1048576
-done
-
-And I got a quite stable result: 9413~9416 (10^6bits/sec) for 10G netdev.
-
-> 
->   https://github.com/mkubecek/nperf
-> 
-> It is still raw and a lot of features are missing but it can be already
-> used for multithreaded TCP_STREAM and TCP_RR tests. In particular, the
-> output above was with
-> 
->   nperf -H 172.17.1.1 -l 30 -i 20 --exact -t TCP_STREAM -M 1
-
-I tried your nperf too, unfortunately it does not seem to work on my
-system(arm64), which exits very quickly and output the blow result:
-
-root@(none):/home# nperf -H 192.168.100.2 -l 30 -i 20 --exact -t TCP_STREAM -M 1
-server: 192.168.100.2, port 12543
-iterations: 20, threads: 1, test length: 30
-test: TCP_STREAM, message size: 1048576
-
-1             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%)
-2             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-3             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           nan B/s (  nan%)
-4             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-5             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-6             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-7             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-8             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-9             4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-10            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-11            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-12            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-13            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-14            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-15            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-16            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-17            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-18            4.0 B/s,  avg           4.0 B/s, mdev           0.0 B/s (  0.0%), confid. +/-           0.0 B/s (  0.0%)
-19            4.0 B/s,  avg           4.0 B/s, mdev           nan B/s (  nan%), confid. +/-           nan B/s (  nan%)
-20            4.0 B/s,  avg           4.0 B/s, mdev           nan B/s (  nan%), confid. +/-           nan B/s (  nan%)
-all                     avg           4.0 B/s, mdev           nan B/s (  nan%), confid. +/-           nan B/s (  nan%)
-
-> 
-> The results are with 1 thread so that they should be also reproducible
-> with netperf too. But it needs to be repeated enough times, when
-> I wanted to get the packet captures, I did 40 iterations and only two of
-> them showed lower result.
-> 
-> Michal
+Thanks,
+Qi
+>> +
+>> +    hisi_pcie_parse_reg_value(pcie_pmu, HISI_PCIE_REG_BDF,
+>> +                  &pcie_pmu->bdf_min, &pcie_pmu->bdf_max);
+>> +    hisi_pcie_parse_reg_value(pcie_pmu, HISI_PCIE_REG_INFO, &device_id,
+>> +                  &sicl_id);
+>> +    name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+>> +                  "hisi_pcie%u_%u", sicl_id, device_id);
+>> +    if (!name)
+>> +        return -ENOMEM;
+>> +
+>> +    pcie_pmu->pdev = pdev;
+>> +    pcie_pmu->on_cpu = -1;
+>> +    pcie_pmu->identifier = readl(pcie_pmu->base + 
+>> HISI_PCIE_REG_VERSION);
+>> +    pcie_pmu->pmu = (struct pmu) {
+>> +        .name        = name,
+>> +        .module        = THIS_MODULE,
+>> +        .event_init    = hisi_pcie_pmu_event_init,
+>> +        .pmu_enable    = hisi_pcie_pmu_enable,
+>> +        .pmu_disable    = hisi_pcie_pmu_disable,
+>> +        .add        = hisi_pcie_pmu_add,
+>> +        .del        = hisi_pcie_pmu_del,
+>> +        .start        = hisi_pcie_pmu_start,
+>> +        .stop        = hisi_pcie_pmu_stop,
+>> +        .read        = hisi_pcie_pmu_read,
+>> +        .task_ctx_nr    = perf_invalid_context,
+>> +        .attr_groups    = hisi_pcie_pmu_attr_groups,
+>> +        .capabilities    = PERF_PMU_CAP_NO_EXCLUDE,
+>> +    };
+>> +
+>> +    return 0;
+>> +}
+>> +
 > 
 > .
-> 
 
