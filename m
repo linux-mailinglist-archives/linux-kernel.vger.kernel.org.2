@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFDD3666C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBF83666C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhDUIKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:10:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45938 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230516AbhDUIKk (ORCPT
+        id S234425AbhDUILv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhDUILt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:10:40 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13L84nHU018022;
-        Wed, 21 Apr 2021 04:09:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mwMz8kH8eb7LB6iRuFzo9APuB5In4r3taMfrok+THW4=;
- b=Rknlww4miNeAZKdajbWbLyPpE+ftxaPA3pFA6A4vAZnZsIvI9wZ5maxLoixx5GgB9BLT
- qMHUd9p6os8/Zuiht7jAmBLekRlotOG8qjaFFSG4Su9Hci09+DK8U3w2ZZ98Cinjl3CN
- EEz/jcgD1dA8PLuzq7d/e9z51bB3vnuNqEvxjv170xkZQwEmF/Ry5wiLw13141aIh04L
- UsXe1yVWj9h7KlikXqJInk8ACDkPuujp1ntyEREeKUjIduXKHR4+uUDThtD1Uo8sSr0a
- GbZGxV0RhyvM55vCTHtsl2OwX7YUne7/9U1HwVe0SOwpg3nf+mw48H7IN7iK9MXekFIP FA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 382e86bfys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 04:09:19 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13L876rJ032050;
-        Wed, 21 Apr 2021 04:09:19 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 382e86bfxs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 04:09:18 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13L895b8006545;
-        Wed, 21 Apr 2021 08:09:16 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 37yqa8j59m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 08:09:16 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13L89DC126739028
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 08:09:13 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C0ECA11C058;
-        Wed, 21 Apr 2021 08:09:13 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A17011C04C;
-        Wed, 21 Apr 2021 08:09:13 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.39.90])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 21 Apr 2021 08:09:13 +0000 (GMT)
-Subject: Re: [PATCH v3 9/9] KVM: Move instrumentation-safe annotations for
- enter/exit to x86 code
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-References: <20210415222106.1643837-1-seanjc@google.com>
- <20210415222106.1643837-10-seanjc@google.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <0c74158d-279a-5afa-0778-822c77ac8dc2@de.ibm.com>
-Date:   Wed, 21 Apr 2021 10:09:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Wed, 21 Apr 2021 04:11:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF72CC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RF1KBkYzPgdbo2HHSPnyOjODyBl1vp50ND2wwWY3PoE=; b=NJnylM5CtFZCN+bRHfJvlNMLZ2
+        G4tf5ePYTtfVC0XzEob+Ebm+JI//qKKYLkUqiyoYLFmPTOoZ0HBzXVrOjCPECebGwPz+IuuXNUlYf
+        uJnck5E7TH0dVNbyqERwxF9fPZ+NpYb7Dapa8ofsPbQO95WF+uq/tCh9OLsRdwQ2/BtGGkpWx+0Ka
+        PgdYfV9Ri7U3bXN53aRp5441ZAaszZ1MWsxpSgk+7MMGM9yPvXZMYK8hRCW3pWd7klvjj8JyOpVtB
+        eqQXKuWelgbmAU62mACcvm+/EpE9RkkbX6VkiNCa0As9hPgN8K6SFfmeUVrOrgDRki8m9+KRQO3KD
+        SmUcU5tQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZ7wv-00Dx8o-54; Wed, 21 Apr 2021 08:11:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 027D53001E2;
+        Wed, 21 Apr 2021 10:11:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DED6B2C37BCF8; Wed, 21 Apr 2021 10:11:03 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 10:11:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        acme@kernel.org, mark.rutland@arm.com, luto@amacapital.net,
+        eranian@google.com, namhyung@kernel.org
+Subject: Re: [PATCH V5] perf/x86: Reset the dirty counter to prevent the leak
+ for an RDPMC task
+Message-ID: <YH/eF4YWg73Lkcrr@hirez.programming.kicks-ass.net>
+References: <1618957842-103858-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415222106.1643837-10-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: O0Gbqj7PsH1bpmljgRZ33Sx1MRyz_OsV
-X-Proofpoint-GUID: QYIWjy8vpv4N55O6Q4tlpQ0Nqt1_mssd
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-21_02:2021-04-21,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- mlxscore=0 clxscore=1015 malwarescore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104210063
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618957842-103858-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 20, 2021 at 03:30:42PM -0700, kan.liang@linux.intel.com wrote:
+>  static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+>  {
+> +	unsigned long flags;
+> +
+>  	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+>  		return;
+>  
+>  	/*
+> +	 * Enable sched_task() for the RDPMC task,
+> +	 * and clear the existing dirty counters.
+> +	 */
+> +	if (x86_pmu.sched_task && event->hw.target) {
+> +		local_irq_save(flags);
+> +		perf_sched_cb_inc(event->ctx->pmu);
+> +		x86_pmu_clear_dirty_counters();
+> +		local_irq_restore(flags);
+> +	}
+> +
+> +	/*
+>  	 * This function relies on not being called concurrently in two
+>  	 * tasks in the same mm.  Otherwise one task could observe
+>  	 * perf_rdpmc_allowed > 1 and return all the way back to
+> @@ -2327,10 +2367,17 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+>  
+>  static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+>  {
+> +	unsigned long flags;
+>  
+>  	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+>  		return;
+>  
+> +	if (x86_pmu.sched_task && event->hw.target) {
+> +		local_irq_save(flags);
+> +		perf_sched_cb_dec(event->ctx->pmu);
+> +		local_irq_restore(flags);
+> +	}
+> +
+>  	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
+>  		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
+>  }
 
+I don't understand how this can possibly be correct. Both
+perf_sched_cb_{inc,dec} modify strict per-cpu state, but the mapped
+functions happen on whatever random CPU of the moment whenever the task
+memory map changes.
 
-On 16.04.21 00:21, Sean Christopherson wrote:
-> Drop the instrumentation_{begin,end}() annonations from the common KVM
-> guest enter/exit helpers, and massage the x86 code as needed to preserve
-> the necessary annotations.  x86 is the only architecture whose transition
-> flow is tagged as noinstr, and more specifically, it is the only
-> architecture for which instrumentation_{begin,end}() can be non-empty.
-> 
-> No other architecture supports CONFIG_STACK_VALIDATION=y, and s390 is the
-> only other architecture that support CONFIG_DEBUG_ENTRY=y.  For
-> instrumentation annontations to be meaningful, both aformentioned configs
-> must be enabled.
-> 
-> Letting x86 deal with the annotations avoids unnecessary nops by
-> squashing back-to-back instrumention-safe sequences.
+Suppose we mmap() on CPU0 and then exit on CPU1. Suppose the task does
+mmap() on CPU0 but then creates threads and runs on CPU1-4 concurrently
+before existing on CPU5.
 
-We have considered implementing objtool for s390. Not sure where we
-stand and if we will do this or not. Sven/Heiko?
-
-So maybe drop this patch until every other arch agrees that there are
-no plans to implement this.
+Could be I'm not seeing it due to having a snot-brain, please explain.
