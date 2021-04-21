@@ -2,160 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66194366667
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57F436665E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbhDUHrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:47:32 -0400
-Received: from mail-dm6nam11on2088.outbound.protection.outlook.com ([40.107.223.88]:4825
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236352AbhDUHrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:47:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nTA1/PdvjnAXhW5nYAAybqmWUi7u5wL5SEPBdXehtasABVe5mOzGD91zQt8CpHhLMlFSCwhvK0fdVh/mCoSQY2Iq6+QjeTDMx9tzFkGY5GW/pHZiJ9nju3jDTufPa7p+lUsRvWYPMY6EwAHLrNIdf77fzIUMWmbykvX/51JuOsWobItraWm+YuoAvC1FR9W8nOeK6q/JHJqeNzZqsVlpRnsTtS5jG9jKA8c+sQp+8ZXEQ15zQ9mDtIkyYK3xA5xX3Jp41llHJxJW586ld6atkOpoHO9951dlGeigbPiMX23orH1ff6tdPLilkhXKAPYKaxOtCWXagX5Q16QRuA4Gfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wDPDwAYYMzwwPZDpqQKsKwBfkjy6tzNRxE7e5x3K718=;
- b=JQhHK8bwrFvtyZMSkiD/BQjRt2qcuhDateiJUnJeHQ2VjrEYct8b+IVca17SClNi+wCLWe0YXagdaRRuO2yfxX69etgPxnPaMB9LWWRSh3qzRXAPfFhLOKQ3qUWNZTGcEjgGid5ZdOE+r+/b33KYU/4rzT9c453jSTJCF4Sy83ZzaBByZY2VjiIw9FkcsYsiT4RiEItwPsCGc3CXXEwSLkcFNbryXZq6DS/kvJNGkuR9AeQeFze7hdKuD60z9wYKAWv/DUX4yTT60jolv3R4yaKGUzpWv82jPhLlmMsxrQX97gFkbvwnzb5JNvFofiGBQ4je/q7kQBgylEMnBdwlXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lists.linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wDPDwAYYMzwwPZDpqQKsKwBfkjy6tzNRxE7e5x3K718=;
- b=o2yK0ZmNuX1yrjLAq6n/EhS2EnltSzRF80BZ0G/x9ghMDdB1N2DERqzPdMsHqoqq7xGMXTSOY4BVYfPVvaN1b+BIzNRQXUZL7q+3ipfVeaIhLQqxz3L56xFn2HWEg6ZoV3tmj4BWn2SJRyv+sWddPoqjZT1umAChEmjxeaDfjs1qfL+lTIQD3trVx5SgfRUoWZRA71OP1J+6RxeV2tqOU8sLRld/ZmCBlgiBS5uROd1DIi0XBFNPXYn5Y7kAvRBi0F67y0CAyhGn55kWa6de6ORV1pE1QKTf+no8RJnAEwVCVFvIJIOWImJ/Dx6iVWqDaIWz0fxfAXpxazpDZBurIA==
-Received: from MW4PR04CA0054.namprd04.prod.outlook.com (2603:10b6:303:6a::29)
- by BN7PR12MB2771.namprd12.prod.outlook.com (2603:10b6:408:29::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Wed, 21 Apr
- 2021 07:46:57 +0000
-Received: from CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:6a:cafe::8c) by MW4PR04CA0054.outlook.office365.com
- (2603:10b6:303:6a::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
- Transport; Wed, 21 Apr 2021 07:46:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT050.mail.protection.outlook.com (10.13.174.79) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 07:46:56 +0000
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 21 Apr 2021 07:46:55 +0000
-Date:   Wed, 21 Apr 2021 10:46:51 +0300
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/7] vp_vdpa: report doorbell address
-Message-ID: <20210421074651.GG97533@mtl-vdi-166.wap.labs.mlnx>
-References: <20210415073147.19331-1-jasowang@redhat.com>
- <20210415073147.19331-8-jasowang@redhat.com>
+        id S237159AbhDUHpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:45:33 -0400
+Received: from mga18.intel.com ([134.134.136.126]:35638 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235209AbhDUHpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 03:45:31 -0400
+IronPort-SDR: oQEw/3uJ4MFqYNYHwJfHF/7xo/bAml2UwtF4i63Imjh4BYjsTgAOEf+kmk8Pb95wjPCfy1T1V9
+ Pq3FNpD9gIEw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="183145104"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="183145104"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 00:44:58 -0700
+IronPort-SDR: /ZfMj8tehuOV2jaCj9TI57dzsFt0fcxC7/DYzUco5ddScdT7bOEChibRekFkuP5opoRN7g8iL4
+ mGOXkNzA+4Rg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="617260348"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Apr 2021 00:44:56 -0700
+Subject: Re: [PATCH resend] xhci: Do not use GFP_KERNEL in (potentially)
+ atomic context
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        mathias.nyman@intel.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <f30e8c94707b0e3a257f4c628a1b5d7744898109.1618921790.git.christophe.jaillet@wanadoo.fr>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <5eb0bea7-46b6-7225-7603-cac3195a92e4@linux.intel.com>
+Date:   Wed, 21 Apr 2021 10:46:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210415073147.19331-8-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 37c51a74-4a0c-4120-aaac-08d90499a36f
-X-MS-TrafficTypeDiagnostic: BN7PR12MB2771:
-X-Microsoft-Antispam-PRVS: <BN7PR12MB277156C9FBE70068B489A422AB479@BN7PR12MB2771.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:57;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Mvy4bWjpPARNgP4J829dsAzMQOaRTGRwbmJZHEwOEOEjo6k0YRR7P4dmfb/vLYTbJEPsXcP9RvKys48Ijh+MKsdRhTa/ZpAIQUylS4lcx/iIOK3fVrAlpFjnVMx2MKCFKGW/stVY5JX5Fkv1BukL+v2/K7ImWxPsJqdPazC/VASI4VXXS9U5kw6fyNYX8Q8lW4h7LHVO+vadC00okdKndXGv0EUbWJD6xJpxzH87PxjHOJUubd3lNG8/N8gH9fmCUpqbMNtqYvnNLwK6oU1PovX+voZW15+TYSWs/LO8dZ2XIZTSRxAVvla3ncnBA99ETP0qgpKyz6E5OnUUxPLlxAdwlM3q/zaQb9dI/G+J/kCqoY2W7dtyprzHaVeDjnHY14HC43lXHUWnPLlcXLa1IGxEjM+Sh8joLLjFASOndSV/4/awRDdI/Fdd66qz4nXOX/t5w/CSxKkYghJSqz8PuWf0grS3wtXuB91nlEnwdqQtid3nVj9Js7PBhf4fT+RfEJLgVOWrfZ2pgDNkFVtBHkJzyb7k68+cf0eBhPWsRB4Ne45+cf6Upr2hICpl3unVQFbzH2IFSOuG9En2uUqpnLcnqElhIm92XQF90HdmzvFTWLiDN/fISYubi4Rt3SatcVNfug/C9c37IRz7D0iWfQNo+6nqoe7mZqDtGGiDeHA=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(36840700001)(46966006)(54906003)(8936002)(33656002)(55016002)(186003)(26005)(16526019)(6666004)(36860700001)(2906002)(70206006)(4326008)(9686003)(36906005)(6916009)(478600001)(8676002)(1076003)(316002)(336012)(5660300002)(47076005)(70586007)(86362001)(82740400003)(82310400003)(7696005)(426003)(83380400001)(7636003)(356005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 07:46:56.6968
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37c51a74-4a0c-4120-aaac-08d90499a36f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT050.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2771
+In-Reply-To: <f30e8c94707b0e3a257f4c628a1b5d7744898109.1618921790.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:31:47AM -0400, Jason Wang wrote:
-> This patch reports the per vq doorbell location and size to vDPA
-> bus. Userspace can then map the doorbell via mmap() via vhost-vDPA bus
-> driver.
+On 20.4.2021 15.32, Christophe JAILLET wrote:
+> 'xhci_urb_enqueue()' is passed a 'mem_flags' argument, because "URBs may be
+> submitted in interrupt context" (see comment related to 'usb_submit_urb()'
+> in 'drivers/usb/core/urb.c')
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-
-Reviewed-by: Eli Cohen <elic@nvidia.com>
-
+> So this flag should be used in all the calling chain.
+> Up to now, 'xhci_check_maxpacket()' which is only called from
+> 'xhci_urb_enqueue()', uses GFP_KERNEL.
+> 
+> Be safe and pass the mem_flags to this function as well.
+> 
+> Fixes: ddba5cd0aeff ("xhci: Use command structures when queuing commands on the command ring")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  drivers/vdpa/virtio_pci/vp_vdpa.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+> I'm not 100% sure of the Fixes tag. The commit is the only that introduced
+> this GFP_KERNEL, but I've not checked what was the behavior before that.
 > 
-> diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
-> index 98205e54d089..002b928d0ca1 100644
-> --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
-> +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
-> @@ -26,6 +26,7 @@ struct vp_vring {
->  	void __iomem *notify;
->  	char msix_name[VP_VDPA_NAME_SIZE];
->  	struct vdpa_callback cb;
-> +	resource_size_t notify_pa;
->  	int irq;
->  };
->  
-> @@ -336,6 +337,19 @@ static void vp_vdpa_set_config_cb(struct vdpa_device *vdpa,
->  	vp_vdpa->config_cb = *cb;
->  }
->  
-> +static struct vdpa_notification_area
-> +vp_vdpa_get_vq_notification(struct vdpa_device *vdpa, u16 qid)
-> +{
-> +	struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
-> +	struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
-> +	struct vdpa_notification_area notify;
-> +
-> +	notify.addr = vp_vdpa->vring[qid].notify_pa;
-> +	notify.size = mdev->notify_offset_multiplier;
-> +
-> +	return notify;
-> +}
-> +
->  static const struct vdpa_config_ops vp_vdpa_ops = {
->  	.get_features	= vp_vdpa_get_features,
->  	.set_features	= vp_vdpa_set_features,
-> @@ -343,6 +357,7 @@ static const struct vdpa_config_ops vp_vdpa_ops = {
->  	.set_status	= vp_vdpa_set_status,
->  	.get_vq_num_max	= vp_vdpa_get_vq_num_max,
->  	.get_vq_state	= vp_vdpa_get_vq_state,
-> +	.get_vq_notification = vp_vdpa_get_vq_notification,
->  	.set_vq_state	= vp_vdpa_set_vq_state,
->  	.set_vq_cb	= vp_vdpa_set_vq_cb,
->  	.set_vq_ready	= vp_vdpa_set_vq_ready,
-> @@ -416,7 +431,8 @@ static int vp_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	for (i = 0; i < vp_vdpa->queues; i++) {
->  		vp_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
->  		vp_vdpa->vring[i].notify =
-> -			vp_modern_map_vq_notify(mdev, i, NULL);
-> +			vp_modern_map_vq_notify(mdev, i,
-> +						&vp_vdpa->vring[i].notify_pa);
->  		if (!vp_vdpa->vring[i].notify) {
->  			dev_warn(&pdev->dev, "Fail to map vq notify %d\n", i);
->  			goto err;
-> -- 
-> 2.18.1
+> If the patch is correct, I guess that a cc stable should be welcome.
 > 
+> This patch was proposed on 14/08/20. It has been rebased on latest -next tree.
+
+Added to queue, and added stable tag
+
+Thanks
+-Mathias
