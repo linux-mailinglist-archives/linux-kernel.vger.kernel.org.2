@@ -2,108 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751EB366BA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F2D366BD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240579AbhDUNE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:04:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60798 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240429AbhDUNDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619010201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Ybdj/fzU2bZRYjiULaAlp9LEAozBU/5F769WjomL9o=;
-        b=FwNpjTAQ6/tVzAdHxCKKtyRhZI311dm0XNmvqBDpqllIsyzXcDB/cJuVwb263FExHg8O/u
-        zyVEOXPmyDRoR3wc5G19i4WDlF+H1WIfF7ErzdKBc7jCnmt6Oy/e9ZHCCl51+Sv3OfvJRc
-        EZSji6GQhUL+0Gb+i+jwlCIUVUcCQDE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9EE21B314;
-        Wed, 21 Apr 2021 13:03:21 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 15:03:20 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix root_mem_cgroup
- charging
-Message-ID: <YIAimEdqpen3/38Z@dhcp22.suse.cz>
-References: <20210421062644.68331-1-songmuchun@bytedance.com>
- <YH/Vf8SDRy7VR7ur@dhcp22.suse.cz>
- <CAMZfGtVpz1FvzmhWFzXAJE3wWBMJwdwU+JqQ6a8KeOhV3FGJ4Q@mail.gmail.com>
+        id S241246AbhDUNHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:07:47 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:42601 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235601AbhDUNFu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:05:50 -0400
+Received: by mail-oi1-f180.google.com with SMTP id n140so42300024oig.9
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:05:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LPKiX7VSpKxG540R9ms/jNFsPJZtAQrNlGGHbcOxTSI=;
+        b=jSffUJpeauKbLhC2ECfRISXbvc+oYYie9Oi3six8a2r0bKWkxqHjK3yeCXChm5pyLm
+         tN0AIFR29y8azS9QDvwwoxtmJRIhI4j++iC+m131v5r5cke4b1NUjHVUprxlSM/iEmhl
+         SmSsIQxtj5+x3U9v4/kML+tNmGF0QxYuD3XKVNp9FNOSa45KVoB49r6LF9WPCtrOysMz
+         hAzon9pjv5fD/1CCgWoJL7MLEy5eSAgKFnTH/e8kghXBodzSAA1941aLAFCW6oIWox1n
+         Acgq8Z3nKh2pOkyGFedyK6tShXIJ9Dimv1rvLJ9cROtohebvaVLe1VBaPTVoOX0thzZF
+         ihSA==
+X-Gm-Message-State: AOAM530hRaMvExnKvkanI+lQeFIc2HIh6ICZpOAHR3GrZYa4ZTeMuSEr
+        OhEhbS8Hp4s87YMu40qDwg==
+X-Google-Smtp-Source: ABdhPJwyP7/9QRD3ytKxi6R6frhY1kfEtoATaqT4P7IyD2MGCsEKNPO9bM2VbVNReg5XjdxSiSXqWw==
+X-Received: by 2002:aca:d693:: with SMTP id n141mr6609168oig.107.1619010316711;
+        Wed, 21 Apr 2021 06:05:16 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a65sm438007oob.27.2021.04.21.06.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 06:05:15 -0700 (PDT)
+Received: (nullmailer pid 984585 invoked by uid 1000);
+        Wed, 21 Apr 2021 13:05:14 -0000
+Date:   Wed, 21 Apr 2021 08:05:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] of: linux/of.h: fix kernel-doc warnings
+Message-ID: <20210421130514.GA984119@robh.at.kernel.org>
+References: <20210417061244.2262-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtVpz1FvzmhWFzXAJE3wWBMJwdwU+JqQ6a8KeOhV3FGJ4Q@mail.gmail.com>
+In-Reply-To: <20210417061244.2262-1-rdunlap@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21-04-21 17:50:06, Muchun Song wrote:
-> On Wed, Apr 21, 2021 at 3:34 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 21-04-21 14:26:44, Muchun Song wrote:
-> > > The below scenario can cause the page counters of the root_mem_cgroup
-> > > to be out of balance.
-> > >
-> > > CPU0:                                   CPU1:
-> > >
-> > > objcg = get_obj_cgroup_from_current()
-> > > obj_cgroup_charge_pages(objcg)
-> > >                                         memcg_reparent_objcgs()
-> > >                                             // reparent to root_mem_cgroup
-> > >                                             WRITE_ONCE(iter->memcg, parent)
-> > >     // memcg == root_mem_cgroup
-> > >     memcg = get_mem_cgroup_from_objcg(objcg)
-> > >     // do not charge to the root_mem_cgroup
-> > >     try_charge(memcg)
-> > >
-> > > obj_cgroup_uncharge_pages(objcg)
-> > >     memcg = get_mem_cgroup_from_objcg(objcg)
-> > >     // uncharge from the root_mem_cgroup
-> > >     page_counter_uncharge(&memcg->memory)
-> > >
-> > > This can cause the page counter to be less than the actual value,
-> > > Although we do not display the value (mem_cgroup_usage) so there
-> > > shouldn't be any actual problem, but there is a WARN_ON_ONCE in
-> > > the page_counter_cancel(). Who knows if it will trigger? So it
-> > > is better to fix it.
-> >
-> > The changelog doesn't explain the fix and why you have chosen to charge
-> > kmem objects to root memcg and left all other try_charge users intact.
+On Fri, 16 Apr 2021 23:12:44 -0700, Randy Dunlap wrote:
+> Correct kernel-doc notation warnings:
 > 
-> The object cgroup is special (because the page can reparent). Only the
-> user of objcg APIs should be fixed.
+> ../include/linux/of.h:1211: warning: Function parameter or member 'output' not described in 'of_property_read_string_index'
+> ../include/linux/of.h:1211: warning: Excess function parameter 'out_string' description in 'of_property_read_string_index'
+> ../include/linux/of.h:1477: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * Overlay support
 > 
-> > The reason is likely that those are not reparented now but that just
-> > adds an inconsistency.
-> >
-> > Is there any reason you haven't simply matched obj_cgroup_uncharge_pages
-> > to check for the root memcg and bail out early?
-> 
-> Because obj_cgroup_uncharge_pages() uncharges pages from the
-> root memcg unconditionally. Why? Because some pages can be
-> reparented to root memcg, in order to ensure the correctness of
-> page counter of root memcg. We have to uncharge pages from
-> root memcg. So we do not check whether the page belongs to
-> the root memcg when it uncharges.
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  include/linux/of.h |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-I am not sure I follow. Let me ask differently. Wouldn't you
-achieve the same if you simply didn't uncharge root memcg in
-obj_cgroup_charge_pages?
-
-Btw. which tree is this patch based on? The current linux-next doesn't
-uncharge from memcg->memory inside obj_cgroup_uncharge_pages (nor does
-the Linus tree).
--- 
-Michal Hocko
-SUSE Labs
+Applied, thanks!
