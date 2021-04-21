@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A58366C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187D1366C69
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242638AbhDUNTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:19:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53350 "EHLO mail.kernel.org"
+        id S241977AbhDUNRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:17:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240690AbhDUNKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:10:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCED06144B;
-        Wed, 21 Apr 2021 13:09:50 +0000 (UTC)
+        id S241024AbhDUNK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:10:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A152361458;
+        Wed, 21 Apr 2021 13:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010591;
-        bh=6SLFUUO/EODsTVe+ugwl98usGWL/SJmF84pJS8eQtjs=;
+        s=korg; t=1619010594;
+        bh=xAiuepRL8u1n+6l95/9Eem+KXz0Wy3w79dz6DcdRAd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWCvmQWjwDJV9B6rxalMxH/WX2t47RE6bJRNg+iB79q8ZNxT1t7302U1YjGxDUkno
-         MqBdIz0oRCNxvYorT2j4mb5802LBP70Kf2q4DGIicnS0Cl+VXBUPXE6Nn7Sb1x0mKT
-         3EVURFl98pnKsX/QOe1QdQsNgf2Rc9OkysZo1S5Y=
+        b=vWy65IPf6SYXzKGIFsmWbrIs6yOgVqNR/wTg1k0H2HlvI7PpnbL4egdCrFJd2fYQN
+         ckzxr3KYNs9eM4Moh4YEvK571hkZszS0P2EkZg+/4lcyzmkaoQWxrrfQzE1rh14Gle
+         62tfC63gl1q9ETVRRnOyFWEybB0ms42FiBOrAG9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Wenwen Wang <wang6495@umn.edu>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 183/190] Revert "media: isif: fix a NULL pointer dereference bug"
-Date:   Wed, 21 Apr 2021 15:00:58 +0200
-Message-Id: <20210421130105.1226686-184-gregkh@linuxfoundation.org>
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 184/190] Revert "yam: fix a missing-check bug"
+Date:   Wed, 21 Apr 2021 15:00:59 +0200
+Message-Id: <20210421130105.1226686-185-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit a26ac6c1bed951b2066cc4b2257facd919e35c0b.
+This reverts commit 0781168e23a2fc8dceb989f11fc5b39b3ccacc35.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -55,27 +54,34 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/davinci/isif.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/hamradio/yam.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/media/platform/davinci/isif.c b/drivers/media/platform/davinci/isif.c
-index c53cecd072b1..5355a14c090b 100644
---- a/drivers/media/platform/davinci/isif.c
-+++ b/drivers/media/platform/davinci/isif.c
-@@ -1086,8 +1086,7 @@ static int isif_probe(struct platform_device *pdev)
+diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
+index 5ab53e9942f3..616db3a0d2f4 100644
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -951,8 +951,6 @@ static int yam_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
+ 				 sizeof(struct yamdrv_ioctl_mcs));
+ 		if (IS_ERR(ym))
+ 			return PTR_ERR(ym);
+-		if (ym->cmd != SIOCYAMSMCS)
+-			return -EINVAL;
+ 		if (ym->bitrate > YAM_MAXBITRATE) {
+ 			kfree(ym);
+ 			return -EINVAL;
+@@ -968,8 +966,6 @@ static int yam_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
+ 		if (copy_from_user(&yi, ifr->ifr_data, sizeof(struct yamdrv_ioctl_cfg)))
+ 			 return -EFAULT;
  
- 	while (i >= 0) {
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
--		if (res)
--			release_mem_region(res->start, resource_size(res));
-+		release_mem_region(res->start, resource_size(res));
- 		i--;
- 	}
- 	vpfe_unregister_ccdc_device(&isif_hw_dev);
+-		if (yi.cmd != SIOCYAMSCFG)
+-			return -EINVAL;
+ 		if ((yi.cfg.mask & YAM_IOBASE) && netif_running(dev))
+ 			return -EINVAL;		/* Cannot change this parameter when up */
+ 		if ((yi.cfg.mask & YAM_IRQ) && netif_running(dev))
 -- 
 2.31.1
 
