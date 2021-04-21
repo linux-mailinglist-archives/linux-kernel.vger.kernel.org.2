@@ -2,133 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F7B36661C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC60366620
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 09:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbhDUHQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 03:16:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34748 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234052AbhDUHQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 03:16:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618989376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/t8yc2lQ3pLQ4sfUDYcnlZrhBPSE43fDoX7RlTCbrYU=;
-        b=oz0tPCAnFgexhSXdu2bypRgSNPkmuFx2oBUto0IsTOm7T3MUgl/JhML9WF6kinDHrFrVOJ
-        IS5PbSD5CKpAsNC4PlCXPuwL+EcVCRnxa0oA0IGADjtUOAMQAdi/ymAjuKIk/ClNmYMU/+
-        v+8nf1NboN5d1MbJTAFteM/dOvHUqKo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3A005AEAC;
-        Wed, 21 Apr 2021 07:16:16 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 09:16:15 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dragos Sbirlea <dragoss@google.com>,
-        Priya Duraisamy <padmapriyad@google.com>
-Subject: Re: [RFC] memory reserve for userspace oom-killer
-Message-ID: <YH/RPydqhwXdyG80@dhcp22.suse.cz>
-References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <YH54pyRWSi1zLMw4@dhcp22.suse.cz>
- <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
+        id S234052AbhDUHR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 03:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232194AbhDUHRx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 03:17:53 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30100C06174A;
+        Wed, 21 Apr 2021 00:17:19 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r9so61973350ejj.3;
+        Wed, 21 Apr 2021 00:17:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bVeOu4pMcs/MkyvtHGjQBuONEKPS36STmVfSa7uNqkQ=;
+        b=JTV/sXLmd9LGmDJkSPqLdUyIhWnchxxFtD9uODcIpLvTFMiEr80ZMSA+2x9PfnLogm
+         mkL8y2618yKsxygDSJxm66T3OjBOMV9HQeMKpI0gqj/vvYSR4M/NHLyfhh0gfRXMoCzy
+         f0QF1Y72zwVcp/LqvP4+9Dmw84Nf5bDbWls6dbAEhMjYL8vURHhfC7T93CiRzqJK1xpt
+         wDIxl7ASrZjgG6d092Z4R/a2tRVptvPRFrs7qJ5jK2IDmXiSvtzlAjTFWyAJB8h5B9l4
+         XGA/mTn9or2UpcrQfvFe3+R8jZtwjAIgn/koM0D+x7mqhil1MgtKnISGaVg3ztGz8O2o
+         OaJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bVeOu4pMcs/MkyvtHGjQBuONEKPS36STmVfSa7uNqkQ=;
+        b=R3J7iio1rotV2a9b/iMDci9RXiR3g1O4D2dl4LdJOUm2rdnLUO7ILGYHuD9mz8Jv1c
+         TUR27L6YDwft36bvzwhePA7ZjoKDonIEQZhPcGKQ5SlkYrp84hsDhnaXiaeVdShZdXfD
+         3a4qGS3GLrN9VLBBosQsjxGf+IeBHzG7xoeKHDeCUEHh9iAQ2OTfFtpT0Y/uDYTKR1DT
+         aguZLuRrlb6aLv8fJrs6GSYscjIXRQLREKH0KScAS28w1l/je+2xM8fUlyZD8vBmD5Vv
+         T5YaanDoe0kG8ugDBZ+4EFtlzvqDgbcAUJUEGgYF8FdDDeXEDXhghdJzat9X0xoL2iwO
+         5qUQ==
+X-Gm-Message-State: AOAM532kjDpgINpETqrh5MthtPwHq8kjE8Qe56jMbc3TQzcuPIPKouU9
+        uPdHugI66Pzdaz7g3nRupQE=
+X-Google-Smtp-Source: ABdhPJzSctcVl4ntwb0OcVwfSE3JXBmfPFEpyxCP3CdvVaJXGC3pJfC0WcqiiXc0lW6qPz4IhfICUA==
+X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr31157360ejb.118.1618989437947;
+        Wed, 21 Apr 2021 00:17:17 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.65])
+        by smtp.gmail.com with ESMTPSA id v1sm1996439eds.17.2021.04.21.00.17.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 00:17:17 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 09:17:15 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Deepak R Varma <mh12gx2825@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] staging: media: atomisp: reformat code comment blocks
+Message-ID: <20210421071713.GA1418@agape.jhs>
+References: <cover.1618859059.git.drv@mailo.com>
+ <7cf7b8253550460e7273c94bae005939000679fd.1618859059.git.drv@mailo.com>
+ <20210420084448.GC1411@agape.jhs>
+ <20210420171729.GB193332@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
+In-Reply-To: <20210420171729.GB193332@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 09:04:21, Shakeel Butt wrote:
-> On Mon, Apr 19, 2021 at 11:46 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 19-04-21 18:44:02, Shakeel Butt wrote:
-> [...]
-> > > memory.min. However a new allocation from userspace oom-killer can
-> > > still get stuck in the reclaim and policy rich oom-killer do trigger
-> > > new allocations through syscalls or even heap.
-> >
-> > Can you be more specific please?
-> >
+On Tue, Apr 20, 2021 at 10:47:29PM +0530, Deepak R Varma wrote:
+> On Tue, Apr 20, 2021 at 10:44:48AM +0200, Fabio Aiuto wrote:
+> > On Tue, Apr 20, 2021 at 12:45:04AM +0530, Deepak R Varma wrote:
+> > > Reformat code comment blocks according to the coding style guidelines.
+> > > This resolves different checkpatch script WARNINGs around block comments.
+> > > 
+> > > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > > ---
+> > >  .../media/atomisp/i2c/atomisp-gc2235.c        |  8 +++----
+> > >  .../atomisp/i2c/atomisp-libmsrlisthelper.c    |  3 ++-
+> > >  .../media/atomisp/i2c/atomisp-mt9m114.c       | 22 +++++++++++--------
+> > >  .../media/atomisp/i2c/atomisp-ov2680.c        |  3 ++-
+> > >  4 files changed, 21 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > > index 548c572d3b57..a585d73665a6 100644
+> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+> > > @@ -747,10 +747,10 @@ static int startup(struct v4l2_subdev *sd)
+> > >  
+> > >  	if (is_init == 0) {
+> > >  		/* force gc2235 to do a reset in res change, otherwise it
+> > > -		* can not output normal after switching res. and it is not
+> > > -		* necessary for first time run up after power on, for the sack
+> > > -		* of performance
+> > > -		*/
+> > > +		 * can not output normal after switching res. and it is not
+> > > +		 * necessary for first time run up after power on, for the sack
+> > > +		 * of performance
+> > > +		 */
+> > >  		power_down(sd);
+> > >  		power_up(sd);
+> > >  		gc2235_write_reg_array(client, gc2235_init_settings);
+> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c b/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c
+> > > index b93c80471f22..750b3484eb19 100644
+> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c
+> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-libmsrlisthelper.c
+> > > @@ -57,7 +57,8 @@ static int set_msr_configuration(struct i2c_client *client, uint8_t *bufptr,
+> > >  	 * By convention, the first two bytes of actual data should be
+> > >  	 * understood as an address in the sensor address space (hibyte
+> > >  	 * followed by lobyte) where the remaining data in the sequence
+> > > -	 * will be written. */
+> > > +	 * will be written.
+> > > +	 */
+> > >  
+> > >  	u8 *ptr = bufptr;
+> > >  
+> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> > > index 465fc4468442..160bb58ce708 100644
+> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+> > > @@ -478,7 +478,8 @@ static int gpio_ctrl(struct v4l2_subdev *sd, bool flag)
+> > >  	/* Note: current modules wire only one GPIO signal (RESET#),
+> > >  	 * but the schematic wires up two to the connector.  BIOS
+> > >  	 * versions have been unfortunately inconsistent with which
+> > > -	 * ACPI index RESET# is on, so hit both */
+> > > +	 * ACPI index RESET# is on, so hit both
+> > > +	 */
+> > >  
+> > >  	if (flag) {
+> > >  		ret = dev->platform_data->gpio0_ctrl(sd, 0);
+> > > @@ -1019,8 +1020,8 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+> > >  		dev->first_gain = AnalogGain;
+> > >  		dev->first_diggain = DigitalGain;
+> > >  	}
+> > > -	/* DigitalGain = 0x400 * (((u16) DigitalGain) >> 8) +
+> > > -	((unsigned int)(0x400 * (((u16) DigitalGain) & 0xFF)) >>8); */
+> > > +	/* DigitalGain = 0x400 * (((u16) DigitalGain) >> 8) +		*/
+> > > +	/* ((unsigned int)(0x400 * (((u16) DigitalGain) & 0xFF)) >>8);	*/
+> > >  
+> > >  	/* set frame length */
+> > >  	if (FLines < coarse_integration + 6)
+> > > @@ -1035,7 +1036,8 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+> > >  
+> > >  	/* set coarse integration */
+> > >  	/* 3A provide real exposure time.
+> > > -		should not translate to any value here. */
+> > > +	 * should not translate to any value here.
+> > > +	 */
+> > >  	ret = mt9m114_write_reg(client, MISENSOR_16BIT,
+> > >  				REG_EXPO_COARSE, (u16)(coarse_integration));
+> > >  	if (ret) {
+> > > @@ -1044,7 +1046,7 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+> > >  	}
+> > >  
+> > >  	/*
+> > > -	// set analog/digital gain
+> > > +	 * set analog/digital gain
+> > >  	switch(AnalogGain)
+> > >  	{
+> > >  	case 0:
+> > > @@ -1069,8 +1071,9 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
+> > >  	*/
+> > >  	if (DigitalGain >= 16 || DigitalGain <= 1)
+> > >  		DigitalGain = 1;
+> > > -	/* AnalogGainToWrite =
+> > > -		(u16)((DigitalGain << 12) | AnalogGainToWrite); */
+> > > +
+> > > +	/* AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite);
+> > > +	 */
+> > 
+> > this is best recommended for one line comment:
+> > 
+> > /* AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite); */
 > 
-> To decide when to kill, the oom-killer has to read a lot of metrics.
-> It has to open a lot of files to read them and there will definitely
-> be new allocations involved in those operations. For example reading
-> memory.stat does a page size allocation. Similarly, to perform action
-> the oom-killer may have to read cgroup.procs file which again has
-> allocation inside it.
-
-True but many of those can be avoided by opening the file early. At
-least seq_file based ones will not allocate later if the output size
-doesn't increase. Which should be the case for many. I think it is a
-general improvement to push those who allocate during read to an open
-time allocation.
-
-> Regarding sophisticated oom policy, I can give one example of our
-> cluster level policy. For robustness, many user facing jobs run a lot
-> of instances in a cluster to handle failures. Such jobs are tolerant
-> to some amount of failures but they still have requirements to not let
-> the number of running instances below some threshold. Normally killing
-> such jobs is fine but we do want to make sure that we do not violate
-> their cluster level agreement. So, the userspace oom-killer may
-> dynamically need to confirm if such a job can be killed.
-
-What kind of data do you need to examine to make those decisions?
-
-> [...]
-> > > To reliably solve this problem, we need to give guaranteed memory to
-> > > the userspace oom-killer.
-> >
-> > There is nothing like that. Even memory reserves are a finite resource
-> > which can be consumed as it is sharing those reserves with other users
-> > who are not necessarily coordinated. So before we start discussing
-> > making this even more muddy by handing over memory reserves to the
-> > userspace we should really examine whether pre-allocation is something
-> > that will not work.
-> >
+> It then extends beyond 80 character in length. Will that be acceptable?
 > 
-> We actually explored if we can restrict the syscalls for the
-> oom-killer which does not do memory allocations. We concluded that is
-> not practical and not maintainable. Whatever the list we can come up
-> with will be outdated soon. In addition, converting all the must-have
-> syscalls to not do allocations is not possible/practical.
 
-I am definitely curious to learn more.
+if the intention is to stay within 80 characters in length then it's better
 
-[...]
-> > > 2. Mempool
-> > >
-> > > The idea is to preallocate mempool with a given amount of memory for
-> > > userspace oom-killer. Preferably this will be per-thread and
-> > > oom-killer can preallocate mempool for its specific threads. The core
-> > > page allocator can check before going to the reclaim path if the task
-> > > has private access to the mempool and return page from it if yes.
-> >
-> > Could you elaborate some more on how this would be controlled from the
-> > userspace? A dedicated syscall? A driver?
-> >
-> 
-> I was thinking of simply prctl(SET_MEMPOOL, bytes) to assign mempool
-> to a thread (not shared between threads) and prctl(RESET_MEMPOOL) to
-> free the mempool.
+	/*
+	 * AnalogGainToWrite = (u16)(DigitalGain << 12) | AnalogGainToWrite);
+	 */
 
-I am not a great fan of prctl. It has become a dumping ground for all
-mix of unrelated functionality. But let's say this is a minor detail at
-this stage. So you are proposing to have a per mm mem pool that would be
-used as a fallback for an allocation which cannot make a forward
-progress, right? Would that pool be preallocated and sitting idle? What
-kind of allocations would be allowed to use the pool? What if the pool
-is depleted?
--- 
-Michal Hocko
-SUSE Labs
+thank you,
+
+fabio
