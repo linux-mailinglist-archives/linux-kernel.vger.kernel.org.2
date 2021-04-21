@@ -2,162 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D273D366B1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C23E366B29
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239899AbhDUMsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239808AbhDUMsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:48:40 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FD3C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:48:07 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id s2so13077984uap.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dm0VCnlctogH7NOXWwxOQ2XUcL7nBdd4RWT0rpQEyQI=;
-        b=YI2Q1E+CS8kAaAkcnffqc+qE9TexY8iEgOXv2ZsWTPykZBkZed4F0O5qgAbdCpBwB1
-         aN4x1nzAqF76aeUo6CeXHs2QOsxXCHxZQSlJl6wMURxpWw5rXCkmFn9A2q182P6CTbBx
-         DUfhXIK+EMg88MG0T28BgaqmNt+Zkc9muh+vihGr+UfwK5BeM0RtuWhQSK9MH2GhD/ix
-         8dR5D42ck0lOY1rkn4XBhMpU+APlwCnhP9TZxduoukqejsv4Dzw2WDqI+NxtgbAzm5ma
-         aCQyDL8qVxYEfmqtZ/oUOesfMTpOrtTA7xzFIiSrKi+MZMSDCYsAcCYczVSbO7Q04rW9
-         cHDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dm0VCnlctogH7NOXWwxOQ2XUcL7nBdd4RWT0rpQEyQI=;
-        b=aP5UbkDzTSlFQ+eyEhJHULDTsZEz25Lt6RjQSe5JNtBcU6n5V540l7vlNfeCPQMsbi
-         tpAmCRcTZkKMbj7aROMKJkUZ1BUc6WvgEn7bliZS9aPlwPXUo+uMx7tIgHCml3lLETfr
-         DqHCYOs8TzXDtFi9zw4OP+v8/2mycwlGocUOHNLEQfHt6WjB1uYZgJq0zMw5keWVu5VV
-         QIDJ8sT0cchzNPxGrsdbkLQDHVJ9t1MISYr4NhQLqZEuX2vKLOcbzIr7qsJUo5ZIg9tz
-         jdpBwSfXrxhzGXRemF3uthTl1SsHfI8dYOlW7d/VN8Wn5CojJ9R4+aKGMNn2PNx1k+OF
-         pJAA==
-X-Gm-Message-State: AOAM531cLePCaWne+hUL5jVzl/SziN8dUgYvBAGu96ryo31u7B1NlKSt
-        7b/oz2uDGbd4VTySnREJB8E5wPOSPQD23mxOEQeJGg==
-X-Google-Smtp-Source: ABdhPJylNukcekPvf42D1Q55VlcIB9+JcyiIKTYsmg8UWehYrxAN6wib4b4Lt+57AUUM3T1zlYLmaSo1ji3mYR8og80=
-X-Received: by 2002:ab0:20d0:: with SMTP id z16mr16998068ual.33.1619009286572;
- Wed, 21 Apr 2021 05:48:06 -0700 (PDT)
+        id S239891AbhDUMvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:51:15 -0400
+Received: from mga01.intel.com ([192.55.52.88]:57114 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234716AbhDUMvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:51:12 -0400
+IronPort-SDR: ADrPJY77JTT6OTXLjFtj6DEc/Wm1l4mfgx5hVsrn9OVIeSyXrh4P4vLKeBAPvo2wCtGIOe4nG+
+ /Nbe4Ko5p8bw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="216330980"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="216330980"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 05:50:39 -0700
+IronPort-SDR: 4PRdwROv/b2zd1YieZy/TR5IupqTRDY8kDcpgupKd5E33kwM+y+qLDBsVIFWYrCHNPDjcnHtr9
+ /fJu/Qsvf6uQ==
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="602888932"
+Received: from pdhumal-mobl.amr.corp.intel.com (HELO [10.212.81.216]) ([10.212.81.216])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 05:50:38 -0700
+Subject: Re: [PATCH v2 1/1] dmaengine: idxd: Add IDXD performance monitor
+ support
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        kan.liang@linux.intel.com, dave.jiang@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+References: <cover.1617467772.git.zanussi@kernel.org>
+ <d38a8b3a5d087f1df918fa98627938ef0c898208.1617467772.git.zanussi@kernel.org>
+ <YH623ULPRbdi1ker@vkoul-mobl.Dlink>
+ <34f61cc9-a6d6-e5a3-5f8c-6ffae8858cce@linux.intel.com>
+ <YH+/qyUVtlHwWQJ/@vkoul-mobl.Dlink>
+From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
+Message-ID: <410134d7-5a4d-3537-e9cc-c4c8e7068cde@linux.intel.com>
+Date:   Wed, 21 Apr 2021 07:50:36 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
-In-Reply-To: <d7fbf3d3a2490d0a9e99945593ada243da58e0f8.1619000255.git.cdleonard@gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Wed, 21 Apr 2021 08:47:50 -0400
-Message-ID: <CADVnQynLSDQHxgMN6=mU2m58t_JKUyugmw0j6g1UDG+jLxTfAw@mail.gmail.com>
-Subject: Re: [RFC] tcp: Delay sending non-probes for RFC4821 mtu probing
-To:     Leonard Crestez <cdleonard@gmail.com>
-Cc:     Willem de Bruijn <willemb@google.com>,
-        Ilya Lesokhin <ilyal@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, Wei Wang <weiwan@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matt Mathis <mattmathis@google.com>,
-        Yuchung Cheng <ycheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YH+/qyUVtlHwWQJ/@vkoul-mobl.Dlink>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 6:21 AM Leonard Crestez <cdleonard@gmail.com> wrote:
->
-> According to RFC4821 Section 7.4 "Protocols MAY delay sending non-probes
-> in order to accumulate enough data" but linux almost never does that.
->
-> Linux waits for probe_size + (1 + retries) * mss_cache to be available
-> in the send buffer and if that condition is not met it will send anyway
-> using the current MSS. The feature can be made to work by sending very
-> large chunks of data from userspace (for example 128k) but for small writes
-> on fast links probes almost never happen.
->
-> This patch tries to implement the "MAY" by adding an extra flag
-> "wait_data" to icsk_mtup which is set to 1 if a probe is possible but
-> insufficient data is available. Then data is held back in
-> tcp_write_xmit until a probe is sent, probing conditions are no longer
-> met, or 500ms pass.
->
-> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
->
-> ---
->  Documentation/networking/ip-sysctl.rst |  4 ++
->  include/net/inet_connection_sock.h     |  7 +++-
->  include/net/netns/ipv4.h               |  1 +
->  include/net/tcp.h                      |  2 +
->  net/ipv4/sysctl_net_ipv4.c             |  7 ++++
->  net/ipv4/tcp_ipv4.c                    |  1 +
->  net/ipv4/tcp_output.c                  | 54 ++++++++++++++++++++++++--
->  7 files changed, 71 insertions(+), 5 deletions(-)
->
-> My tests are here: https://github.com/cdleonard/test-tcp-mtu-probing
->
-> This patch makes the test pass quite reliably with
-> ICMP_BLACKHOLE=1 TCP_MTU_PROBING=1 IPERF_WINDOW=256k IPERF_LEN=8k while
-> before it only worked with much higher IPERF_LEN=256k
->
-> In my loopback tests I also observed another issue when tcp_retries
-> increases because of SACKReorder. This makes the original problem worse
-> (since the retries amount factors in buffer requirement) and seems to be
-> unrelated issue. Maybe when loss happens due to MTU shrinkage the sender
-> sack logic is confused somehow?
->
-> I know it's towards the end of the cycle but this is mostly just intended for
-> discussion.
+Hi Vinod,
 
-Thanks for raising the question of how to trigger PMTU probes more often!
+On 4/21/2021 1:01 AM, Vinod Koul wrote:
+> On 20-04-21, 09:13, Zanussi, Tom wrote:
+>> Hi Vinod,
+>>
+>> On 4/20/2021 6:11 AM, Vinod Koul wrote:
+>>> On 03-04-21, 11:45, Tom Zanussi wrote:
+>>>
+>>>> +config INTEL_IDXD_PERFMON
+>>>> +	bool "Intel Data Accelerators performance monitor support"
+>>>> +	depends on INTEL_IDXD
+>>>> +	default y
+>>>
+>>> default y..?
+>>
+>> Will change to n.
+> 
+> That is the default, you may drop this line
+> 
 
-AFAICT this approach would cause unacceptable performance impacts by
-often injecting unnecessary 500ms delays when there is no need to do
-so.
+OK, will do.
 
-If the goal is to increase the frequency of PMTU probes, which seems
-like a valid goal, I would suggest that we rethink the Linux heuristic
-for triggering PMTU probes in the light of the fact that the loss
-detection mechanism is now RACK-TLP, which provides quick recovery in
-a much wider variety of scenarios.
+>>
+>>>
+>>>>    /* IDXD software descriptor */
+>>>> @@ -369,4 +399,19 @@ int idxd_cdev_get_major(struct idxd_device *idxd);
+>>>>    int idxd_wq_add_cdev(struct idxd_wq *wq);
+>>>>    void idxd_wq_del_cdev(struct idxd_wq *wq);
+>>>> +/* perfmon */
+>>>> +#ifdef CONFIG_INTEL_IDXD_PERFMON
+>>>
+>>> maybe use IS_ENABLED()
+> 
+> ?
+> 
 
-After all, https://tools.ietf.org/html/rfc4821#section-7.4 says:
+Yes, I'll change to this.
 
-   In addition, the timely loss detection algorithms in most protocols
-   have pre-conditions that SHOULD be satisfied before sending a probe.
+>>>
+>>>> @@ -556,6 +562,8 @@ static int __init idxd_init_module(void)
+>>>>    	for (i = 0; i < IDXD_TYPE_MAX; i++)
+>>>>    		idr_init(&idxd_idrs[i]);
+>>>> +	perfmon_init();
+>>>> +
+>>>>    	err = idxd_register_bus_type();
+>>>>    	if (err < 0)
+>>>>    		return err;
+>>>> @@ -589,5 +597,6 @@ static void __exit idxd_exit_module(void)
+>>>>    	pci_unregister_driver(&idxd_pci_driver);
+>>>>    	idxd_cdev_remove();
+>>>>    	idxd_unregister_bus_type();
+>>>> +	perfmon_exit();
+>>>
+>>> Ideally would make sense to add perfmon module first and then add use in
+>>> idxd..
+>>>
+>>
+>> OK, I'll separate this out into a separate patch.
+>>
+>>>> +static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
+>>>> +			    char *buf);
+>>>> +
+>>>> +static cpumask_t		perfmon_dsa_cpu_mask;
+>>>> +static bool			cpuhp_set_up;
+>>>> +static enum cpuhp_state		cpuhp_slot;
+>>>> +
+>>>> +static DEVICE_ATTR_RO(cpumask);
+>>>
+>>> Pls document these new attributes added
+> 
+> ?
+> 
 
-And we know that the "timely loss detection algorithms" have advanced
-since this RFC was written in 2007.
+Yes, I'll add comments to all the attributes (also I'm assuming they don't need to be documented elsewhere).
 
-You mention:
-> Linux waits for probe_size + (1 + retries) * mss_cache to be available
+>>>
+>>>> +static int perfmon_collect_events(struct idxd_pmu *idxd_pmu,
+>>>> +				  struct perf_event *leader,
+>>>> +				  bool dogrp)
+>>>
+>>> dogrp..?
+>>>
+>>
+>> Yeah, bad name, first thought on seeing it is always 'dog'. ;-)
+> 
+> Yep, that was my first read as well... i guess it would be better as
+> do_grp
+> 
 
-The code in question seems to be:
+Yep, will make change it to that.
 
-  size_needed = probe_size + (tp->reordering + 1) * tp->mss_cache;
+Thanks,
 
-How about just changing this to:
-
-  size_needed = probe_size + tp->mss_cache;
-
-The rationale would be that if that amount of data is available, then
-the sender can send one probe and one following current-mss-size
-packet. If the path MTU has not increased to allow the probe of size
-probe_size to pass through the network, then the following
-current-mss-size packet will likely pass through the network, generate
-a SACK, and trigger a RACK fast recovery 1/4*min_rtt later, when the
-RACK reorder timer fires.
-
-A secondary rationale for this heuristic would be: if the flow never
-accumulates roughly two packets worth of data, then does the flow
-really need a bigger packet size?
-
-IMHO, just reducing the size_needed seems far preferable to needlessly
-injecting 500ms delays.
-
-best,
-neal
+Tom
