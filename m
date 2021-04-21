@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B21366BA8
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA1B366BA7
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239489AbhDUNE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:04:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44302 "EHLO mail.kernel.org"
+        id S240646AbhDUNEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240612AbhDUNED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:04:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C696143B;
-        Wed, 21 Apr 2021 13:03:30 +0000 (UTC)
+        id S240616AbhDUNEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:04:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86B6561452;
+        Wed, 21 Apr 2021 13:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010210;
-        bh=TvnieelAUSi/kput2ZUsThvUtBXN6s3HC7/1/YfUMGg=;
+        s=korg; t=1619010214;
+        bh=QtDnaKBKc0kYe7eyxA54hxHE0gWxOWk1oNAd7iN2/pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n9Wk3Ea7B+86KF1Ny0YfMg1DfdhzeRJo0hftmURO542o59NIGau2KmNLZ3fAeQWhj
-         fsr/8umMbsP3soqiJtRH6BitFluhnYVHJ5/jXotgz768oCIdgjizYOxjk1bdQ1SC83
-         aO46y//b3FbXqLvWAmjMH5uH4dTsIRviX4JO5KIE=
+        b=t4GH9/kn+mRsdJ+lIAMNzU6TjMQuJe/ey4udQ5cDYddIWyfnFAo5MzXFSi+C2padh
+         SkxV6qap4MSAipM3IMxju1+/PbhuZo9Coco1kzAWX55WufPdt55qnrZiO25KDJBlca
+         jW/y+2OVf5H9LrKIQ9b2NVwio0Qi6AzJILgvh88Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 052/190] Revert "media: media/saa7146: fix incorrect assertion in saa7146_buffer_finish"
-Date:   Wed, 21 Apr 2021 14:58:47 +0200
-Message-Id: <20210421130105.1226686-53-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>, Tyler Hicks <code@tyhicks.com>
+Subject: [PATCH 053/190] Revert "ecryptfs: replace BUG_ON with error handling code"
+Date:   Wed, 21 Apr 2021 14:58:48 +0200
+Message-Id: <20210421130105.1226686-54-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 639c0a5b0503fb57127fa8972208d43020a9bcf6.
+This reverts commit 2c2a7552dd6465e8fde6bc9cccf8d66ed1c1eb72.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -55,26 +53,29 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Tyler Hicks <code@tyhicks.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/common/saa7146/saa7146_fops.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ecryptfs/crypto.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/common/saa7146/saa7146_fops.c b/drivers/media/common/saa7146/saa7146_fops.c
-index baf5772c52a9..c256146fd3b6 100644
---- a/drivers/media/common/saa7146/saa7146_fops.c
-+++ b/drivers/media/common/saa7146/saa7146_fops.c
-@@ -95,6 +95,8 @@ void saa7146_buffer_finish(struct saa7146_dev *dev,
- 	DEB_EE("dev:%p, dmaq:%p, state:%d\n", dev, q, state);
- 	DEB_EE("q->curr:%p\n", q->curr);
+diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
+index 943e523f4c9d..3d8623139538 100644
+--- a/fs/ecryptfs/crypto.c
++++ b/fs/ecryptfs/crypto.c
+@@ -296,10 +296,8 @@ static int crypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
+ 	struct extent_crypt_result ecr;
+ 	int rc = 0;
  
-+	BUG_ON(!q->curr);
-+
- 	/* finish current buffer */
- 	if (NULL == q->curr) {
- 		DEB_D("aiii. no current buffer\n");
+-	if (!crypt_stat || !crypt_stat->tfm
+-	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
+-		return -EINVAL;
+-
++	BUG_ON(!crypt_stat || !crypt_stat->tfm
++	       || !(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED));
+ 	if (unlikely(ecryptfs_verbosity > 0)) {
+ 		ecryptfs_printk(KERN_DEBUG, "Key size [%zd]; key:\n",
+ 				crypt_stat->key_size);
 -- 
 2.31.1
 
