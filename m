@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DC43673C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E9B3673CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245562AbhDUTuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:50:50 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45265 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235545AbhDUTus (ORCPT
+        id S243366AbhDUTym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235876AbhDUTyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:50:48 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13LJnp00015873
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 15:49:52 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 8A16C15C3B0D; Wed, 21 Apr 2021 15:49:51 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 15:49:51 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Weikeng Chen <w.k@berkeley.edu>
-Cc:     anna.schumaker@netapp.com, bfields@fieldses.org,
-        chuck.lever@oracle.com, davem@davemloft.net, dwysocha@redhat.com,
-        gregkh@linuxfoundation.org, kuba@kernel.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, pakki001@umn.edu,
-        trond.myklebust@hammerspace.com
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YICB3wiptvvtTeA5@mit.edu>
-References: <CAHr+ZK-ayy2vku9ovuSB4egtOxrPEKxCdVQN3nFqMK07+K5_8g@mail.gmail.com>
+        Wed, 21 Apr 2021 15:54:41 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65ACC06174A;
+        Wed, 21 Apr 2021 12:54:07 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id b38so7951107ljf.5;
+        Wed, 21 Apr 2021 12:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FaGZMfKcpaY2SI/xlccaXDE8VdSfkM0I1wpRK4kkOfo=;
+        b=mX4k7AcAzC9Nzs+tc4eTqCFngYebglnEkS3JoOV5Jja/R1kfi79G/StPFXEMeRWo/q
+         lED8RhMqMBTXmRIY6qUZLe86ASloZZ4f9BqdBocSovV/Y/zR08Nq9eyDYhiH0b098K5i
+         YwDuPwiuqovAzGz+ogEiZYExfaZwOyxunY+8H+ZTeOyQtM/3o6N2Gjjvg4l+dA49ilWA
+         WGabMW+fk5o5wNqiDvYi5qPCjv5nbTqTnygRmIH3y26x4LOr2G0vsHVUEzpb0BaHvjTR
+         WdNHhE8MThYnXnu6+/IYvJYMfMTlrLpAPcOgjjOmHvi4XbSvoCAM6rgsKRCR/ucXzO3d
+         8YCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FaGZMfKcpaY2SI/xlccaXDE8VdSfkM0I1wpRK4kkOfo=;
+        b=Lo/bt0efiGe5YqG+MDd5WLa7GhNjXpXeKFWsWR/9litXoGyO7M8aKQ092Q1FIDvBv6
+         fJBvaPDkPHLQWZMnz0aXCKS8E9kkeBI4kvyA0rSoWmaUiv1HqRkGo3LiJLYzh62R07rZ
+         Scc0TeG/1bCRZx9wH2MMFYwUUCZ6I+aSgc8+nksx6YCPdrcz/CRFgb2UDoRjdoRA6wGW
+         mrLd6v25TW1Po4fjFEena7/qyywQts9iv4rEnoZcTBxtfMLkUYJXZCaN+EzO/CuycPu0
+         EHbL0FRTnlqPxxsiJPztXaqskmKeauhgt5oRDSQQkJarSBBRSIaPBK2AYbCceSJH3Mr4
+         aOHg==
+X-Gm-Message-State: AOAM530BxJEXWVYeTFSCOW/KAs3rbuAzbY0/Cp90/IUwBt9D/m2XjbO3
+        zH56ew5auUYPvy0yjs8lV3ln48FwJqrkS3WAx2o=
+X-Google-Smtp-Source: ABdhPJzqzxlULjo6C0I1dEIRsSnu3iSCqmDiiYM14qyIvYpgS9ZCM5Bh3IrrUQeGdoQi6Xjd7pqu6KD4Jn4acMaJSnM=
+X-Received: by 2002:a2e:6a05:: with SMTP id f5mr5744845ljc.23.1619034846218;
+ Wed, 21 Apr 2021 12:54:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHr+ZK-ayy2vku9ovuSB4egtOxrPEKxCdVQN3nFqMK07+K5_8g@mail.gmail.com>
+References: <20210421120400.2126433-1-tmricht@linux.ibm.com>
+In-Reply-To: <20210421120400.2126433-1-tmricht@linux.ibm.com>
+From:   Namhyung Kim <namhyung@gmail.com>
+Date:   Thu, 22 Apr 2021 04:53:55 +0900
+Message-ID: <CAM9d7ci4MG1m-ebQQmGaD96ssznsmbCofz1xva2kDHygX1qStQ@mail.gmail.com>
+Subject: Re: [PATCH] [PING] perf ftrace: Command fails on s390
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Alexander Schmidt <alexschm@de.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:35:00AM -0700, Weikeng Chen wrote:
-> 
-> [1] I think the UMN IRB makes an incorrect assertion that the
-> research is not human research, and that starts the entire problem
-> and probably continues to be.
+Hello,
 
-I think what we need to somehow establish is some norms about how
-academic researchers engage with Open Source communities in general,
-and the Linux Kernel community in particular.
+On Wed, Apr 21, 2021 at 10:03 PM Thomas Richter <tmricht@linux.ibm.com> wrote:
+>
+> Command 'perf ftrace -v -- ls' fails in s390 (at least 5.12.0rc6).
+>
+> The root cause is a missing pointer dereference which causes an
+> array element address to be used as PID.
+>
+> Fix this by extracting the PID.
+>
+> Output before:
+>   # ./perf ftrace -v -- ls
+>   function_graph tracer is used
+>   write '-263732416' to tracing/set_ftrace_pid failed: Invalid argument
+>   failed to set ftrace pid
+>   #
+>
+> Output after:
+>    ./perf ftrace -v -- ls
+>    function_graph tracer is used
+>    # tracer: function_graph
+>    #
+>    # CPU  DURATION                  FUNCTION CALLS
+>    # |     |   |                     |   |   |   |
+>    4)               |  rcu_read_lock_sched_held() {
+>    4)   0.552 us    |    rcu_lockdep_current_cpu_online();
+>    4)   6.124 us    |  }
+>
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Reported-by: Alexander Schmidt <alexschm@de.ibm.com>
 
-To be fair, I don't know if Aditya Pakki was deliberately trying to
-get nonsense patches in just to demonstrate that there is less review
-for trivial patches, or whether he was creating a completely
-incompetent, non-state-of-the-art static code analyzer, and was too
-incompetent to hand check the patch to realize the results were
-nonsense.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-The big problem here is the lack of disclosure that the patch was
-computer generated, using a new tool that might not be giving accurate
-results, and that instead of diclosing this fact, submitting it as a
-patch to be reviewed.  Again, I don't know whether or not this was
-submitted in bad faith --- but the point is, Aditya belongs to
-research group which has previously submitted patches in bad faith,
-without disclosure, and his supervising professor and UMN's IRB
-doesn't see any problem with it.  So it's a bit rich when Aditya seems
-to be whining that we're not giving him the benefit of the doubt and
-not assuming that his patches might have been submitted in good faith
---- when the only *responsible* thing to do is to assume that it is
-sent in bad faith, given the past behaviour of his research group, and
-the apparently lack of any kind of institutional controls at UMN
-regarding this sort of thing.
+Thanks,
+Namhyung
 
-Of course, UMN researchers could just start using fake e-mail
-addresses, or start using personal gmail or yahoo or hotmail
-addresses.  (Hopefully at that point the ethics review boards at UMN
-will be clueful enough to realize that maybe, just maybe, UMN
-researchers have stepped over a line.)
-
-However, your larger point is a fair one.  We do need to do a better
-job of reviewing patches, even "trivial" ones, and if that means that
-we might need to be a bit more skeptical dealing with newbies who are
-trying to get started, that's a price we will need to pay.  Speaking
-for myself, I've always tried to be highly skeptical about patches and
-give them a thorough review.  And I don't need to assume malice from
-nation-state intelligence agencies; we're all human, and we all make
-mistakes.
-
-Cheers,
-
-					- Ted
+> ---
+>  tools/perf/builtin-ftrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> index d49448a1060c..87cb11a7a3ee 100644
+> --- a/tools/perf/builtin-ftrace.c
+> +++ b/tools/perf/builtin-ftrace.c
+> @@ -289,7 +289,7 @@ static int set_tracing_pid(struct perf_ftrace *ftrace)
+>
+>         for (i = 0; i < perf_thread_map__nr(ftrace->evlist->core.threads); i++) {
+>                 scnprintf(buf, sizeof(buf), "%d",
+> -                         ftrace->evlist->core.threads->map[i]);
+> +                         perf_thread_map__pid(ftrace->evlist->core.threads, i));
+>                 if (append_tracing_file("set_ftrace_pid", buf) < 0)
+>                         return -1;
+>         }
+> --
+> 2.30.2
+>
