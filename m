@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271C2366FAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C60366FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244202AbhDUQEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244186AbhDUQDy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:03:54 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6995CC06174A;
-        Wed, 21 Apr 2021 09:03:21 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id u21so64313822ejo.13;
-        Wed, 21 Apr 2021 09:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wjm2V8u1ETN6t9NVbeWLUphBIt6mO0zsCxAklfCFw/E=;
-        b=S0+5dSFhP6EcjKm/HSOdO49eP2TNeCFrOoj6kYhIAWGvr+XLpkCVpvsi2lekuQ2jBM
-         oEaU2Tc8nqXCAXCpElwbx2oFxGYMZfRuygdibM1B669uAGjUfbbyqUrM13cbxVaTrFkX
-         GwpyeSjbgEEkLijFCpyFUWpbobJMa6Wqeloh3XAszKbK56pSG8OrUCK+uIjpWv7IdHST
-         /75eGIQgP8PI1VvpOqqQlZtZ8p0rpVmEotM2XWyzMNBlMorIXrS34g3auSgPZCFyP/xB
-         HYvfQ1ppecKaBzLkOsrk5QL3LzMH4N7d34bP//W9sxwhE/iljYk+yITZ9Z+qmjC2rAm4
-         ZIiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wjm2V8u1ETN6t9NVbeWLUphBIt6mO0zsCxAklfCFw/E=;
-        b=ZESk2eH39rtHYXhipa2LYCepYyk2b/TRV+fgiM8Cvsu5U9MGHejov6bbjKvXk/fLDX
-         y4qNP0VaHW+BZw9GdNs57oaOr6K/APlJaHBFlc2MZFJ76tR2bqm5tZCmCb7zEZiyDjUy
-         32Q6DfXKnLIMK+4X9cwmt9vD46MlViRq+qyyw7Puxa+js2QUju+fnE6ofVaGzhA6yDjT
-         OBUEY+11WtD8pgb6aqkTRuQ326Dq5Ouo+S8OY1Tvnn2suW6M2ImHxB8kTzNTIq4p9evR
-         aUTKVeHICZDBQA7FVX+p1v6Y76pXkc3NnpV/RWxNN2vp8+cw1PaR5Pc6OB2Xocn4Gzhq
-         ABWg==
-X-Gm-Message-State: AOAM532SWqFcXnR+6GYqpRf1y0miwNnPPBmSlcipazjeRrXP6w4g6QZC
-        N+qiov9VkPw5yRFCdMF1ebqxGtFWhw5AiwZmyFDcAtwZXs6akA==
-X-Google-Smtp-Source: ABdhPJzTFkmTZh3l+T5B4KgpzvZ7I6sMkd2W5G+JIogn9VGIrsCvMpgVgsGpTIHtiL/SOEGztTHTyB7+SwFpc9JWwVE=
-X-Received: by 2002:a17:906:e5a:: with SMTP id q26mr33469816eji.263.1619020999982;
- Wed, 21 Apr 2021 09:03:19 -0700 (PDT)
+        id S244203AbhDUQD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:03:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244113AbhDUQDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 12:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6BF6144B;
+        Wed, 21 Apr 2021 16:03:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619020997;
+        bh=7CsJfe+j4d9FkYen0AQp2LykjWqg4OXhoV31J3rCAio=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=caMC0h6yhh838CEWizFVUUctBzTQsLXS6wBySTCQWFXDSQlp+6GQQqvOPL2Ie6WZZ
+         6/G0wDCQ3gF8VCY1bBuzyPTJxDUkvttwdO4rksSf72Z6zbfmp8xRz87h4QWQQkX9Ye
+         SwDaXt6er53XN0EqdXpl+FbD7bVkgr2nvTX3au5ZdQ5MV6QNcbRBNofjOy1xY5FtMY
+         wJ7hLa3ZVI/pLnTrTxkI/15ZaoHX1wH8OLBF1UhhfCVA48BXhewjGiaBlA+fDFAZ1x
+         n3D4fEDADCbiv1Kr08Jj87ElFofM2E+v4BHk6cjPKvJXgipKunWD7SfrGryWCpOU/g
+         7d1l0tZ13jN4w==
+Date:   Wed, 21 Apr 2021 09:03:15 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        oss-drivers@netronome.com,
+        Simon Horman <simon.horman@netronome.com>
+Subject: Re: [PATCH 050/190] Revert "nfp: abm: fix a memory leak bug"
+Message-ID: <20210421090315.11cc4eaf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210421130105.1226686-51-gregkh@linuxfoundation.org>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+        <20210421130105.1226686-51-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210421140505.30756-1-aford173@gmail.com> <3937a792-8985-10c1-b818-af2fbc2241df@gmail.com>
-In-Reply-To: <3937a792-8985-10c1-b818-af2fbc2241df@gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 21 Apr 2021 11:03:08 -0500
-Message-ID: <CAHCN7xJa9RsK0kbGR8JCV1i2WdPXjYQDJ5hqYNzdQZWxcyPoGg@mail.gmail.com>
-Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 9:25 AM Sergei Shtylyov
-<sergei.shtylyov@gmail.com> wrote:
->
-> On 4/21/21 5:05 PM, Adam Ford wrote:
->
-> > The call to clk_disable_unprepare() can happen before priv is
-> > initialized.
->
->    This still doesn't make sense for me...
->
-I need an external reference clock enabled by a programmable clock so
-I added functionality to turn it on.  [1] When I did it, I was
-reminded to disable the clock in the event of an the error condition.
-I originally added a call to clk_disable_unprepare(priv->refclk)
-under the label called out_release, but a bot responded to me that we
-may jump to this error condition before priv is initialized.
+On Wed, 21 Apr 2021 14:58:45 +0200 Greg Kroah-Hartman wrote:
+> This reverts commit bd4af432cc71b5fbfe4833510359a6ad3ada250d.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Qiushi Wu <wu000273@umn.edu>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/net/ethernet/netronome/nfp/abm/main.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/netronome/nfp/abm/main.c b/drivers/net/ethernet/netronome/nfp/abm/main.c
+> index bdbf0726145e..341773b43a4d 100644
+> --- a/drivers/net/ethernet/netronome/nfp/abm/main.c
+> +++ b/drivers/net/ethernet/netronome/nfp/abm/main.c
+> @@ -283,7 +283,6 @@ nfp_abm_vnic_set_mac(struct nfp_pf *pf, struct nfp_abm *abm, struct nfp_net *nn,
+>  	if (!nfp_nsp_has_hwinfo_lookup(nsp)) {
+>  		nfp_warn(pf->cpp, "NSP doesn't support PF MAC generation\n");
+>  		eth_hw_addr_random(nn->dp.netdev);
+> -		nfp_nsp_close(nsp);
+>  		return;
+>  	}
+>  
 
-This fix is supposed to create a new label so the errors that happen
-after the refclk is initialized will get disabled, but any errors that
-happen before the clock is initialized will handle errors like they
-did before.
-
-Does that help explain things better?
-
-adam
-
-[1] - https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=8ef7adc6beb2ef0bce83513dc9e4505e7b21e8c2
-
-> > This means moving clk_disable_unprepare out of
->                                          ^ call
-> > out_release into a new label.
-> >
-> > Fixes: 8ef7adc6beb2 ("net: ethernet: ravb: Enable optional refclk")
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
->
-> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
->
->
-> [...]
->
-> MBR, Sergei
+This one still looks correct to me :S
