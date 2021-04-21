@@ -2,226 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4CD366990
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05962366994
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhDUK61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:58:27 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:40891 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237591AbhDUK6W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:58:22 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210421105748euoutp01587ef96582d901a2b494681e93ceae88~32llsPRXe1836718367euoutp01b
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:57:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210421105748euoutp01587ef96582d901a2b494681e93ceae88~32llsPRXe1836718367euoutp01b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619002668;
-        bh=fm1eqmpbNzHOboUTj3NSBQeDomNm2Q05nCq64X6M2Hc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=nDEBZrE/PhA9WEyfhkz2EAPLAdwWRg25XjXXt1tsx3qy+rpaba0P700fKWvmdzwBK
-         6QBJ910c+9r0ABBbBTO4i9zgzKKjPCpNNJxfVlety+8es2eRCO8HRKpok7T91b1DiR
-         N52cu90YaoRDwh0VoQPMl6L7m5etTEU/asCyU0MA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210421105748eucas1p1adc3a75c330e83af5575c178adb64d6b~32llKz6si0447104471eucas1p1C;
-        Wed, 21 Apr 2021 10:57:48 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id A6.DD.09439.B2500806; Wed, 21
-        Apr 2021 11:57:48 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210421105747eucas1p2f2130bcbed85f4972ad6cda151f0cd5d~32lkjLz4s2534425344eucas1p2O;
-        Wed, 21 Apr 2021 10:57:47 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210421105747eusmtrp1f4730e935f9870bd197504e8e0ce1ca6~32lkiDURH0781807818eusmtrp1H;
-        Wed, 21 Apr 2021 10:57:47 +0000 (GMT)
-X-AuditID: cbfec7f5-c03ff700000024df-9e-6080052b1b7d
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id AE.08.08705.B2500806; Wed, 21
-        Apr 2021 11:57:47 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210421105745eusmtip2c57c80c6fb506a4f9029fd86aac48b86~32ljFqDMu0666906669eusmtip2V;
-        Wed, 21 Apr 2021 10:57:45 +0000 (GMT)
-Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and
- si_perf to siginfo
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S237120AbhDUK7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:59:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhDUK7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 06:59:16 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89A766144D;
+        Wed, 21 Apr 2021 10:58:43 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lZAZ7-008fKb-Ed; Wed, 21 Apr 2021 11:58:41 +0100
+Date:   Wed, 21 Apr 2021 11:58:40 +0100
+Message-ID: <8735vjrjj3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     dann frazier <dann.frazier@canonical.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Russell King <linux@arm.linux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <f114ff4a-6612-0935-12ac-0e2ac18d896c@samsung.com>
-Date:   Wed, 21 Apr 2021 12:57:45 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SfUwbZRjnvbtej87CUVDeAFFTlMlkZUR0r2xuIzJzauLYP5pMzKjjBBTY
-        0lLnpjNsjrZrkK9lGVRgRDPsWBFWYIUGsHzIWRllKzKwaUEyGFDTTT7d2OqknFP++z2/j/ye
-        J3koXNJMRlDZefmsIk+eIyVFxNX++0Nb4wQF6dtuvId0420k0poqBchX3i9El90lJLpS0ShA
-        J+9Eo9JJtRCpr5kF6LazE0Oa+U4c1RYuCZHDthX9NOjDkOH2BIa0lmUCdXTaCDRsqSLReddd
-        El0cvYGh77qtAuSw1mLoVF0rgVp/LASoxDVKIu5rK4aaTedwNOTjBOhe0y3BnijGWGMEzIPV
-        csD4qudxptakYjrKbCTTbNjCDA+qGFP9GZK5Y7cLmZ5eLWBqbPuZu10jJFPcUg+YRdPTjGnK
-        i6UGHxDtzGBzsj9lFfG70kVZg/YR/Eix9LP7K4ugAHgidSCQgnQiPD3bQOqAiJLQBgCv/bUq
-        8AsSegnAyx3ZvLAIYNVpN/E44Vkox3jhewBnuTmCH+YBbB/uWneF0gdgr/067scknQB1Xh3p
-        x2G0FHpvFeP+AE6PUFDb3ov5BTG9C077Lq2HCfp5eKb14nr4SfpD+JvjEc57QqCtcmrdE0jv
-        hjNWs9CPcfoZaPZW4TwOh86pC+vrQbpdBPuLOZLfOwXeXKj+F4dCD9ci5HEUHDhbRPCBrwCc
-        tDcI+aEIwOFTFYB37YAu++pamlqriIWNlnieToaeJj3mpyEdBMe8IfwSQbD86nmcp8VQq5bw
-        7hio5374r7b7ugMvBVL9htP0G87RbzhH/39vLSDqQTirUuZmssqX8tijMqU8V6nKy5QdOpxr
-        Amt/PfA3t9wGDJ55WQ/AKNADIIVLw8QTJ75Il4gz5MeOs4rDBxWqHFbZAyIpQhoutrQaD0ro
-        THk++wnLHmEVj1WMCowowDJEJfqHD5McNfuoMJ3mQmFTnH5vcEpFyIujv2jgc9VvREEOO/sx
-        eHvsgSnZfE7yxKWuVKvmqRPf7BS+/5F8acJtXix168zupmcX4j5I2lTXl+NUp3GbIxKsbxqy
-        UjU/u99CxiG03ZcSrZKEjqRsc/0R8G1boHNWs4qSWxLVuUmfu2Z2FA1H9335biz+SBlvLqwb
-        q6xVY3MDFmcZo41xrnRUjv85V5cQOykLH785YOa2b9pti2g4dOXVd7Ij849lBe1r140up73w
-        enBZrGXzdMf+5n6uZs7TGHBPHWF8OUrQ8spM2srJ46/FjxX8rjjaTccEpPbJEut7p/dk/don
-        bZBJCWWWPGELrlDK/wEppw4HRgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOKsWRmVeSWpSXmKPExsVy+t/xe7rarA0JBgs7hS267u1gs+jYNJPV
-        4u+kY+wWq+/2s1lsnLGe1aLxnbLFhIdt7BZtZ7azWjy7tZfJov3jXmaLBa1f2C0undS1OHr2
-        L5PFimf3mSw6dn1lsdiz9ySLxeVdc9gspt95z2ax9PpFJovFBw+wWlw6sIDJomnZVhaLrftb
-        GS3671xnszjee4DJYvOmqcwW5/8eZ7X4seExq4OMx5p5axg9fv+axOjxd+5HZo8Fm0o99kw8
-        yeaxeYWWx+WzpR6bVnWyebw7d47d49DhDkaPeScDPd7vu8rm0bdlFaPH501yHpuevGUK4I/S
-        synKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQyzh77ipz
-        QZ9Sxc9vnxkbGF9JdzFyckgImEi8+jSJqYuRi0NIYCmjRNOf24wQCRmJk9MaWCFsYYk/17rY
-        IIreM0q8+/4LLCEsECVx6e87ZhCbTcBQoustSBEnh4iAksTbx33MIA3MAjc5JJbsfAK1YjaL
-        xISDM1lAqngF7CSe/l0JZrMIqEp0bl0KNklUIEni3uWVzBA1ghInZz4Bq+EUsJd4fmA7O4jN
-        LGAmMW/zQ2YIW15i+9s5ULa4xK0n85kmMArNQtI+C0nLLCQts5C0LGBkWcUoklpanJueW2yo
-        V5yYW1yal66XnJ+7iRGYorYd+7l5B+O8Vx/1DjEycTAeYpTgYFYS4b1fW5MgxJuSWFmVWpQf
-        X1Sak1p8iNEU6J+JzFKiyfnAJJlXEm9oZmBqaGJmaWBqaWasJM67de6aeCGB9MSS1OzU1ILU
-        Ipg+Jg5OqQYmgXl2/159NmxfXz+lZ/bZS2lXGUsk9xQ/vdghq2q3KIRpxeKIsJbcU1P9t06I
-        yOgrW71+gVBAwXmuU4p5ChqMntZlPRt7j853DFW/W5h/5MthmSe3evcGKp6uYf4t8tX0xLSe
-        ZUkPreVWrHlks2uCyvrUC981k9ZM5oh8H2z2aO9v75K3p/M8mYL3H73EWF75pEv26L1FE9he
-        1mXVv0/ykxGI2lAi1jP5Stb+qeeLm1d9tgh5csC7xkR6S/2lxZeirk6rcX6vZ8dUdmaedj7j
-        pyvCs9yMd0rKesWlpExi+5y/16WY3+W+hnr2PW4mcwmb/AkbU+c+3XBjwyXruNs5vZqteh43
-        zk894f0zXGunEktxRqKhFnNRcSIAOf2bydoDAAA=
-X-CMS-MailID: 20210421105747eucas1p2f2130bcbed85f4972ad6cda151f0cd5d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8
-References: <20210408103605.1676875-1-elver@google.com>
-        <CGME20210420212618eucas1p102b427d1af9c682217dfe093f3eac3e8@eucas1p1.samsung.com>
-        <20210408103605.1676875-6-elver@google.com>
-        <1fbf3429-42e5-0959-9a5c-91de80f02b6a@samsung.com>
-        <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
-        <43f8a3bf-34c5-0fc9-c335-7f92eaf23022@samsung.com>
-        <dccaa337-f3e5-08e4-fe40-a603811bb13e@samsung.com>
-        <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
-        <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com>
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 08/11] irqchip/gic: Configure SGIs as standard interrupts
+In-Reply-To: <YH9G3+aDUWpcLCpD@xps13.dannf>
+References: <20200519161755.209565-1-maz@kernel.org>
+        <20200519161755.209565-9-maz@kernel.org>
+        <YH87dtTfwYgavusz@xps13.dannf>
+        <YH9G3+aDUWpcLCpD@xps13.dannf>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dann.frazier@canonical.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, linux@arm.linux.org.uk, catalin.marinas@arm.com, tglx@linutronix.de, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.04.2021 11:35, Marek Szyprowski wrote:
-> On 21.04.2021 10:11, Marco Elver wrote:
->> On Wed, 21 Apr 2021 at 09:35, Marek Szyprowski 
->> <m.szyprowski@samsung.com> wrote:
->>> On 21.04.2021 08:21, Marek Szyprowski wrote:
->>>> On 21.04.2021 00:42, Marco Elver wrote:
->>>>> On Tue, 20 Apr 2021 at 23:26, Marek Szyprowski
->>>>> <m.szyprowski@samsung.com> wrote:
->>>>>> On 08.04.2021 12:36, Marco Elver wrote:
->>>>>>> Introduces the TRAP_PERF si_code, and associated siginfo_t field
->>>>>>> si_perf. These will be used by the perf event subsystem to send
->>>>>>> signals
->>>>>>> (if requested) to the task where an event occurred.
->>>>>>>
->>>>>>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
->>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de> # asm-generic
->>>>>>> Signed-off-by: Marco Elver <elver@google.com>
->>>>>> This patch landed in linux-next as commit fb6cc127e0b6 ("signal:
->>>>>> Introduce TRAP_PERF si_code and si_perf to siginfo"). It causes
->>>>>> regression on my test systems (arm 32bit and 64bit). Most systems 
->>>>>> fails
->>>>>> to boot in the given time frame. I've observed that there is a 
->>>>>> timeout
->>>>>> waiting for udev to populate /dev and then also during the network
->>>>>> interfaces configuration. Reverting this commit, together with
->>>>>> 97ba62b27867 ("perf: Add support for SIGTRAP on perf events") to 
->>>>>> let it
->>>>>> compile, on top of next-20210420 fixes the issue.
->>>>> Thanks, this is weird for sure and nothing in particular stands out.
->>>>>
->>>>> I have questions:
->>>>> -- Can you please share your config?
->>>> This happens with standard multi_v7_defconfig (arm) or just defconfig
->>>> for arm64.
->>>>
->>>>> -- Also, can you share how you run this? Can it be reproduced in 
->>>>> qemu?
->>>> Nothing special. I just boot my test systems and see that they are
->>>> waiting lots of time during the udev populating /dev and network
->>>> interfaces configuration. I didn't try with qemu yet.
->>>>> -- How did you derive this patch to be at fault? Why not just
->>>>> 97ba62b27867, given you also need to revert it?
->>>> Well, I've just run my boot tests with automated 'git bisect' and that
->>>> was its result. It was a bit late in the evening, so I didn't analyze
->>>> it further, I've just posted a report about the issue I've found. It
->>>> looks that bisecting pointed to a wrong commit somehow.
->>>>> If you are unsure which patch exactly it is, can you try just
->>>>> reverting 97ba62b27867 and see what happens?
->>>> Indeed, this is a real faulty commit. Initially I've decided to revert
->>>> it to let kernel compile (it uses some symbols introduced by this
->>>> commit). Reverting only it on top of linux-next 20210420 also fixes
->>>> the issue. I'm sorry for the noise in this thread. I hope we will find
->>>> what really causes the issue.
->>> This was a premature conclusion. It looks that during the test I've did
->>> while writing that reply, the modules were not deployed properly and a
->>> test board (RPi4) booted without modules. In that case the board booted
->>> fine and there was no udev timeout. After deploying kernel modules, the
->>> udev timeout is back.
->> I'm confused now. Can you confirm that the problem is due to your
->> kernel modules, or do you think it's still due to 97ba62b27867? Or
->> fb6cc127e0b6 (this patch)?
->
-> I don't use any custom kernel modules. I just deploy all modules that 
-> are being built from the given kernel defconfig (arm 
-> multi_v7_defconfig or arm64 default) and they are automatically loaded 
-> during the boot by udev. I've checked again and bisect was right. The 
-> kernel built from fb6cc127e0b6 suffers from the described issue, while 
-> the one build from the previous commit (2e498d0a74e5) works fine.
+Hi Dan,n
 
-I've managed to reproduce this issue with qemu. I've compiled the kernel 
-for arm 32bit with multi_v7_defconfig and used some older Debian rootfs 
-image. The log and qemu parameters are here: 
-https://paste.debian.net/1194526/
+On Tue, 20 Apr 2021 22:25:51 +0100,
+dann frazier <dann.frazier@canonical.com> wrote:
+> 
+> On Tue, Apr 20, 2021 at 02:37:10PM -0600, dann frazier wrote:
+> > On Tue, May 19, 2020 at 05:17:52PM +0100, Marc Zyngier wrote:
+> > > Change the way we deal with GIC SGIs by turning them into proper
+> > > IRQs, and calling into the arch code to register the interrupt range
+> > > instead of a callback.
+> > > 
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > 
+> > hey Marc,
+> > 
+> >   I bisected a boot failure on our Gigabyte R120-T33 systems (ThunderX
+> > CN88XX) down to this commit, but only when running in ACPI mode. See below:
+> > 
+> > 
+> > EFI stub: Booting Linux Kernel...
+> > EFI stub: EFI_RNG_PROTOCOL unavailable, KASLR will be disabled
+> > EFI stub: Using DTB from configuration table
+> > EFI stub: Exiting boot services and installing virtual address map...
+> > [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x431f0a11]
+> > [    0.000000] Linux version 5.11.0-13-generic (buildd@bos02-arm64-067) (gcc (Ubuntu 10.2.1-23ubuntu1) 10.2.1 20210312, GNU ld (GNU Binutils for Ubuntu) 2.36.1) #14-Ubuntu SMP Fri Mar 19 16:57:35 UTC 2021 (Ubuntu 5.11.0-13.14-generic 5.11.7)
+> 
+> Sorry, realized I posted a log from an Ubuntu kernel. Here's an
+> upstream one:
 
-Check the timestamp for the 'EXT4-fs (vda): re-mounted' message and 
-'done (timeout)' status for the 'Waiting for /dev to be fully populated' 
-message. This happens only when kernel modules build from the 
-multi_v7_defconfig are deployed on the rootfs.
+[...]
 
-Best regards
+> 
+> [    7.842174] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 243)
+> [    7.849699] io scheduler mq-deadline registered
+> [    7.857591] shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
+> [    7.865127] efifb: probing for efifb
+> [    7.868738] efifb: No BGRT, not showing boot graphics
+> [    7.873783] efifb: framebuffer at 0x881010000000, using 3072k, total 3072k
+> [    7.880649] efifb: mode is 1024x768x32, linelength=4096, pages=1
+> [    7.886647] efifb: scrolling: redraw
+> [    7.890212] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
+> [    7.895905] fbcon: Deferring console take-over
+> [    7.900350] fb0: EFI VGA frame buffer device
+> [    7.905289] input: Power Button as /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0C:00/input/input0
+> [    7.913714] ACPI: button: Power Button [PWRB]
+> [    7.919549] ACPI GTDT: [Firmware Bug]: failed to get the Watchdog base address.
+> [    7.927289] Unable to handle kernel read from unreadable memory at virtual address 0000000000000028
+> [    7.936326] Mem abort info:
+> [    7.939108]   ESR = 0x96000004
+> [    7.942151]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    7.947451]   SET = 0, FnV = 0
+> [    7.950494]   EA = 0, S1PTW = 0
+> [    7.953624] Data abort info:
+> [    7.956492]   ISV = 0, ISS = 0x00000004
+> [    7.960316]   CM = 0, WnR = 0
+> [    7.963273] [0000000000000028] user address but active_mm is swapper
+> [    7.969616] Internal error: Oops: 96000004 [#1] SMP
+> [    7.974483] Modules linked in:
+> [    7.977531] CPU: 9 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc8 #19
+> [    7.983874] Hardware name: GIGABYTE R120-T33/MT30-GS1, BIOS F02 08/06/2019
+> [    7.990737] pstate: 40400085 (nZcv daIf +PAN -UAO -TCO BTYPE=--)
+> [    7.996732] pc : __ipi_send_mask+0x60/0x114
+> [    8.000910] lr : smp_cross_call+0x40/0xcc
+> [    8.004913] sp : ffff800012753c10
+> [    8.008216] x29: ffff800012753c10 x28: ffff000100de5d00 
+> [    8.013521] x27: 000000000000000a x26: ffff80001225da20 
+> [    8.018825] x25: 0000000000000000 x24: ffff000ff62719b0 
+> [    8.024129] x23: ffff80001225d000 x22: ffff800012368108 
+> [    8.029433] x21: ffff800010f69a20 x20: 0000000000000000 
+> [    8.034737] x19: ffff000100143c60 x18: 0000000000000020 
+> [    8.040041] x17: 000000008e74252f x16: 00000000bf0ab2ad 
+> [    8.045345] x15: ffffffffffffffff x14: 0000000000000000 
+> [    8.050649] x13: 003d090000000000 x12: 00003d0900000000 
+> [    8.055953] x11: 0000000000000000 x10: 00003d0900000000 
+> [    8.061257] x9 : ffff800010027f14 x8 : 0000000000000000 
+> [    8.066561] x7 : 00000000ffffffff x6 : ffff000ff6148698 
+> [    8.071865] x5 : ffff80001159d040 x4 : ffff80001159d110 
+> [    8.077169] x3 : ffff800010f69a00 x2 : 0000000000000000 
+> [    8.082473] x1 : ffff800010f69a20 x0 : 0000000000000000 
+> [    8.087777] Call trace:
+> [    8.090213]  __ipi_send_mask+0x60/0x114
+> [    8.094038]  smp_cross_call+0x40/0xcc
+> [    8.097691]  smp_send_reschedule+0x3c/0x50
+> [    8.101778]  resched_curr+0x5c/0xb0
+> [    8.105258]  check_preempt_curr+0x58/0x90
+> [    8.109258]  ttwu_do_wakeup+0x2c/0x190
+> [    8.112996]  ttwu_do_activate+0x7c/0x114
+> [    8.116909]  try_to_wake_up+0x388/0x670
+> [    8.120735]  wake_up_process+0x24/0x30
+> [    8.124474]  swake_up_one+0x48/0x9c
+> [    8.127953]  rcu_gp_kthread_wake+0x68/0x8c
+> [    8.132041]  rcu_accelerate_cbs_unlocked+0xb4/0xf0
+> [    8.136822]  rcu_core+0x520/0x694
+> [    8.140128]  rcu_core_si+0x1c/0x2c
+> [    8.143520]  __do_softirq+0x128/0x388
+> [    8.147172]  irq_exit+0xc4/0xec
+> [    8.150304]  __handle_domain_irq+0x8c/0xec
+> [    8.154394]  gic_handle_irq+0xd8/0x2f0
+> [    8.158132]  el1_irq+0xc0/0x180
+> [    8.161262]  __pi_strcmp+0x20/0x158
+> [    8.164742]  driver_register+0x68/0x140
+> [    8.168571]  __platform_driver_register+0x34/0x40
+> [    8.173265]  imx8mp_clk_driver_init+0x28/0x34
+> [    8.177614]  do_one_initcall+0x50/0x260
+> [    8.181440]  kernel_init_freeable+0x24c/0x2d4
+> [    8.185790]  kernel_init+0x20/0x134
+> [    8.189271]  ret_from_fork+0x10/0x18
+> [    8.192840] Code: a90363f7 aa0103f5 d0010957 f9401260 (b9402800) 
+> [    8.198955] ---[ end trace c24172add816c1f0 ]---
+> [    8.203562] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+> [    8.210442] SMP: stopping secondary CPUs
+> [    9.258360] SMP: failed to stop secondary CPUs 0,9
+> [    9.263141] Kernel Offset: disabled
+> [    9.266617] CPU features: 0x00040002,69101108
+> [    9.270963] Memory Limit: none
+> [    9.274024] ---[ end Kernel panic - not syncing: Oops: Fatal exception in interrupt ]---
+
+Please feed this stacktrace to scripts/decode_stacktrace.sh so that I
+can get an idea about what is going wrong. I bet something is playing
+ungodly games with the one of the IPIs, and things go horribly wrong.
+
+Now, here's a hunch: in the fine TX1 tradition, the firmware is broken
+and the GTDT table looks unusable. Amusingly, the crash happens right
+after the SBSA watchdog fails to probe.
+
+And looking at the code that implements that driver, it looks dodgy as
+hell, as it unmaps an interrupt it doesn't even know is valid. And it
+does that right when the driver fails the way you experienced it. If,
+by any chance, the interrupt field is 0 in the firmware table, this
+results in SGI0 being unmapped. Given that this is the rescheduling
+interrupt, fireworks happen.
+
+Can you have a go with the patchlet below, and let me know if that
+helps?
+
+Thanks,
+
+	M.
+
+diff --git a/drivers/acpi/arm64/gtdt.c b/drivers/acpi/arm64/gtdt.c
+index f2d0e5915dab..0a0a982f9c28 100644
+--- a/drivers/acpi/arm64/gtdt.c
++++ b/drivers/acpi/arm64/gtdt.c
+@@ -329,7 +329,7 @@ static int __init gtdt_import_sbsa_gwdt(struct acpi_gtdt_watchdog *wd,
+ 					int index)
+ {
+ 	struct platform_device *pdev;
+-	int irq = map_gt_gsi(wd->timer_interrupt, wd->timer_flags);
++	int irq;
+ 
+ 	/*
+ 	 * According to SBSA specification the size of refresh and control
+@@ -338,7 +338,7 @@ static int __init gtdt_import_sbsa_gwdt(struct acpi_gtdt_watchdog *wd,
+ 	struct resource res[] = {
+ 		DEFINE_RES_MEM(wd->control_frame_address, SZ_4K),
+ 		DEFINE_RES_MEM(wd->refresh_frame_address, SZ_4K),
+-		DEFINE_RES_IRQ(irq),
++		{},
+ 	};
+ 	int nr_res = ARRAY_SIZE(res);
+ 
+@@ -348,10 +348,11 @@ static int __init gtdt_import_sbsa_gwdt(struct acpi_gtdt_watchdog *wd,
+ 
+ 	if (!(wd->refresh_frame_address && wd->control_frame_address)) {
+ 		pr_err(FW_BUG "failed to get the Watchdog base address.\n");
+-		acpi_unregister_gsi(wd->timer_interrupt);
+ 		return -EINVAL;
+ 	}
+ 
++	irq = map_gt_gsi(wd->timer_interrupt, wd->timer_flags);
++	res[2] = (struct resource)DEFINE_RES_IRQ(irq);
+ 	if (irq <= 0) {
+ 		pr_warn("failed to map the Watchdog interrupt.\n");
+ 		nr_res--;
+@@ -364,7 +365,8 @@ static int __init gtdt_import_sbsa_gwdt(struct acpi_gtdt_watchdog *wd,
+ 	 */
+ 	pdev = platform_device_register_simple("sbsa-gwdt", index, res, nr_res);
+ 	if (IS_ERR(pdev)) {
+-		acpi_unregister_gsi(wd->timer_interrupt);
++		if (irq > 0)
++			acpi_unregister_gsi(wd->timer_interrupt);
+ 		return PTR_ERR(pdev);
+ 	}
+ 
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Without deviation from the norm, progress is not possible.
