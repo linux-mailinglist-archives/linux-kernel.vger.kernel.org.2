@@ -2,59 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343EC366D3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E753366D42
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242971AbhDUNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59606 "EHLO mail.kernel.org"
+        id S242989AbhDUNyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:54:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233038AbhDUNxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:53:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6CA611F2;
-        Wed, 21 Apr 2021 13:53:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619013190;
-        bh=eS93WFrLaeWM4LksKEZiibcuTPutGPetcYGctLJEJpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ra+RCDJ1ZQTaGokJPCMfrAC6a65V43q2KPtPP1bFRQYVrGZzEd5LSs5+mcbDYmIti
-         FKzmJL1y0yJeNLcroekdZAE2vNpaP7uqx1lzmOfQ3VcCm4F5zuE00VHR8GvvvYV9ff
-         AyIy9t6oRJG7EXuMDlQXan2XPgdS4gYlwI1P+qyg=
-Date:   Wed, 21 Apr 2021 15:53:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Aditya Pakki <pakki001@umn.edu>
-Subject: Re: [PATCH 070/190] Revert "rfkill: Fix incorrect check to avoid
- NULL pointer dereference"
-Message-ID: <YIAuQ05GEuYB1Zzv@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-71-gregkh@linuxfoundation.org>
- <911d4b8d3e9c68860ef4163fc4cce3b5fbb485c5.camel@sipsolutions.net>
+        id S242830AbhDUNyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:54:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B4426144B;
+        Wed, 21 Apr 2021 13:53:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619013226;
+        bh=0rKvhLDt7blseOg5lD76BiIXxaQkYgn7bjwS1ztIl8w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RN1PJp8eNC1a0HXnqqlbRdq3tj69BR6ciaOgMKHpaCH0u+hk/Q+SyiuQSByjJjB8t
+         6q0fcravS1r/cD8UooCi6dTSjzevxOINfEF8/oj5Qhw59oGjyOsyxd5Cjw3iNbr61G
+         Sx0ViEpZI2DGgfcQdL0ZtGBHBFRcUJ7eCsS3+mODfLQHX4ARnwBZduAlLXU7yBbidQ
+         S6f+nu4w5wq1qNcncwImZphH30sVR6z20rOvBfP91Q0Njvr4qfXM5W5C7pgyLAyq9d
+         Fveqs175c9iSeruoputPHo4hZusrQyB9op1eD1eO/hAzrXjIlCHh2IRU1UVoGyZSTb
+         RLpy6/nkbL2fA==
+Received: by mail-ej1-f50.google.com with SMTP id r20so13868188ejo.11;
+        Wed, 21 Apr 2021 06:53:46 -0700 (PDT)
+X-Gm-Message-State: AOAM533olciDEHoMp9Jm4pYKjoAJw8bAJRiEoBfvs6pXOvUPLEOSl7lh
+        HwXjBEX4ZXpbN+MpirVKGJ4OaLc8/X5/cZD1OQ==
+X-Google-Smtp-Source: ABdhPJwIHkkky38gGfZa2TH3r1i3DdQKvoDkySZpNTy1vBol05zTr9KSCzZmWWJgkBCrSSa5CinqqrbXNCD9NtNQ5lU=
+X-Received: by 2002:a17:906:7806:: with SMTP id u6mr30969225ejm.130.1619013224782;
+ Wed, 21 Apr 2021 06:53:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <911d4b8d3e9c68860ef4163fc4cce3b5fbb485c5.camel@sipsolutions.net>
+References: <20210415073105.3687-1-thunder.leizhen@huawei.com>
+ <20210420200246.GA3717650@robh.at.kernel.org> <fa6c6079-8061-5774-8252-31956ac84ae2@huawei.com>
+In-Reply-To: <fa6c6079-8061-5774-8252-31956ac84ae2@huawei.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 21 Apr 2021 08:53:32 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKggh0XDCHg8E694Zjuz2yiJ6tkxHDBDsMM3Y_XiZxypA@mail.gmail.com>
+Message-ID: <CAL_JsqKggh0XDCHg8E694Zjuz2yiJ6tkxHDBDsMM3Y_XiZxypA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dt-bindings: serial: Add label property for pl011
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:43:31PM +0200, Johannes Berg wrote:
-> On Wed, 2021-04-21 at 12:59 +0000, Greg Kroah-Hartman wrote:
-> > This reverts commit 6fc232db9e8cd50b9b83534de9cd91ace711b2d7.
-> 
-> This commit was fine, though the commit log is misleading since there's
-> no dereference yet, just a pointer calculation. I may not have seen that
-> at the time, or have decided that the slight commit log inaccuracy
-> didn't matter.
-> 
-> I'm inclined towards keeping it, since it removed a BUG_ON(), but
-> there's no reasonable scenario where somebody could end up calling this
-> function with a NULL pointer.
+On Wed, Apr 21, 2021 at 4:38 AM Leizhen (ThunderTown)
+<thunder.leizhen@huawei.com> wrote:
+>
+>
+>
+> On 2021/4/21 4:02, Rob Herring wrote:
+> > On Thu, Apr 15, 2021 at 03:31:05PM +0800, Zhen Lei wrote:
+> >> When there is more than one pl011 serial port present, the label prope=
+rty
+> >> allows a custom name to be used for briefly describe the usage or posi=
+tion
+> >> of each serial port.
+> >>
+> >> Without this "label" property, many dtbs_check warnings similar to the
+> >> following are reported:
+> >> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
+> >> serial@ffd74000: Additional properties are not allowed ('label' was un=
+expected)
+> >>         From schema: Documentation/devicetree/bindings/serial/pl011.ya=
+ml
+> >
+> > I think this should go into serial.yaml instead.
+>
+> Yes=EF=BC=8CBut if I add "label: true" into serial.yaml, it doesn't work.=
+ I haven't figured out why.
 
-Yeah, these "pointless" patches are not good as they waste maintainers
-bandwidth, which is why I want to discourage them.
+Change the 'additionalProperties: false' to 'unevaluatedProperties: false'.
 
-thanks for reviewing these reverts, much apprecated.
+> By the way, should "$ref: /schemas/serial.yaml#" be replaced with "$ref: =
+/schemas/serial/serial.yaml#"?
 
-greg k-h
+Oh, yes! Looks like it should be fixed for the other serial schemas
+too. There is a /schemas/serial.yaml schema from dt-schema which
+predates the kernel one, but it just has the $nodename. The kernel one
+is much more complete.
+
+Rob
