@@ -2,266 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D2D366351
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 03:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42417366354
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 03:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhDUBPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 21:15:03 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30711 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233874AbhDUBO6 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 21:14:58 -0400
-IronPort-SDR: slj6HJlNIV1wk5hqJF6QU0p5NDq7zAD/QhkPJMUF2ILgDpz2zDdrmu6g0x1BVyFu7eSuemPrrq
- Glv+fANWgwpg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="183112836"
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="183112836"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 18:14:24 -0700
-IronPort-SDR: z66tzb5UQT2Ys7970/oqcBxtNYpNfgbvD6xtGW3zauZRZHKOo4TL4EsYWM0Y53IAeeSq2vvulj
- VOJyM8A1cfxA==
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="427317487"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 18:14:22 -0700
-Subject: Re: [PATCH v4 00/25] perf tool: AlderLake hybrid support series 1
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210416140517.18206-1-yao.jin@linux.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <0853bb70-8e19-8077-d48f-71cc43a089ba@linux.intel.com>
-Date:   Wed, 21 Apr 2021 09:14:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S234309AbhDUBTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 21:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233824AbhDUBTP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 21:19:15 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0767BC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 18:18:43 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g8so64393043lfv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 18:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iuYkrU1zcW7Z65oSaWVLBz+0IZ221pOBrSimYNtby7s=;
+        b=ndkdt3mjYlW+H/QWZc671xlRMDK4yybhmgXbvu53LBPocwBLlpjTZ783Rd2QVNzrGj
+         IkSdWhxhBQo0UbqFvs6XPv6hCdPKkg3b7FMjuPdJLz2w54a+Wyfrp6CFYDZyPmDZ3IkE
+         W0vUtwV0T3yekrghgmLcCS164X9lDUDwgvhq916QgiJMH6wfzNW5C5/XrLnNN1ph/GiG
+         K9J+ZM292B32Iy7S2ga4b5yxthPArwSwjdGo+ryLUmzGMwC6X6Vm5f3VEnJDlzd6Fanr
+         5Tu901R+Odid1zCgNaLUEr0kwh4Mm7azowTlPf+njENOsLhgr4i1ixuDJo8Jn+I4+guT
+         /+4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iuYkrU1zcW7Z65oSaWVLBz+0IZ221pOBrSimYNtby7s=;
+        b=QZ4Xs6cuy90s87K7eSJQo+JnWnuyVK6yXbZldrlfXxrD9XgGuRd/eCm8f+4VhQlZOV
+         Z3/eUax/kKeRaa6cyshUMHZuxOb7qfzeJwW68+5DpYPkog95mZ3Fa6l9UrZeJDy9njYq
+         RX5Mvq5ceytUXZq/vLlq3LUQWRhyLt8QdYzJlOl3ekgtdCJTY9yCLkkJLvCqx83EUpIa
+         D9TjCUnBbDPPHOgMNCiytXwVFnQvLiMbp4MSbjCVV1OQvNRwR8PFMEAam3hWC0+ozpYE
+         6zLvc9oTvZ1nQaHfA0F4QEICgL3i/sk7r/XIRD7/Cceeu6ir4BsqwPY+7PvNqjgw7oBT
+         RFYQ==
+X-Gm-Message-State: AOAM533QejDjZqJAyHymndjag5H7zl3UQG/UEcSC27+Ez4N6IhAg0cb8
+        mZWPRRbKzu3D/x293QVvCbuB0xopugifP3RGnj9JRA==
+X-Google-Smtp-Source: ABdhPJxpxXiVbMCgfjPsAKK51JzwZPy6+zbSmmw770y0uEFu9+qDNgQV48FCOjkzQcNHaQ2ZAMShaBbuBCdhR7VK8ec=
+X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr17393868lfs.358.1618967921088;
+ Tue, 20 Apr 2021 18:18:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210416140517.18206-1-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
+In-Reply-To: <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 20 Apr 2021 18:18:29 -0700
+Message-ID: <CALvZod7dXuFPeMv5NGu96uCosFpWY_Gy07iDsfSORCA0dT_zsA@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo, Hi Jiri,
+On Tue, Apr 20, 2021 at 12:18 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Mon, Apr 19, 2021 at 06:44:02PM -0700, Shakeel Butt wrote:
+[...]
+> > 1. prctl(PF_MEMALLOC)
+> >
+> > The idea is to give userspace oom-killer (just one thread which is
+> > finding the appropriate victims and will be sending SIGKILLs) access
+> > to MEMALLOC reserves. Most of the time the preallocation, mlock and
+> > memory.min will be good enough but for rare occasions, when the
+> > userspace oom-killer needs to allocate, the PF_MEMALLOC flag will
+> > protect it from reclaim and let the allocation dip into the memory
+> > reserves.
+> >
+> > The misuse of this feature would be risky but it can be limited to
+> > privileged applications. Userspace oom-killer is the only appropriate
+> > user of this feature. This option is simple to implement.
+>
+> Hello Shakeel!
+>
+> If ordinary PAGE_SIZE and smaller kernel allocations start to fail,
+> the system is already in a relatively bad shape. Arguably the userspace
+> OOM killer should kick in earlier, it's already a bit too late.
 
-Kan's patch series for AlderLake perf core support has been upstreamed, so the interface will not be 
-changed any more.
+Please note that these are not allocation failures but rather reclaim
+on allocations (which is very normal). Our observation is that this
+reclaim is very unpredictable and depends on the type of memory
+present on the system which depends on the workload. If there is a
+good amount of easily reclaimable memory (e.g. clean file pages), the
+reclaim would be really fast. However for other types of reclaimable
+memory the reclaim time varies a lot. The unreclaimable memory, pinned
+memory, too many direct reclaimers, too many isolated memory and many
+other things/heuristics/assumptions make the reclaim further
+non-deterministic.
 
-For this perf tool series (v4), do you have any comments?
+In our observation the global reclaim is very non-deterministic at the
+tail and dramatically impacts the reliability of the system. We are
+looking for a solution which is independent of the global reclaim.
 
-Thanks
-Jin Yao
+> Allowing to use reserves just pushes this even further, so we're risking
+> the kernel stability for no good reason.
 
-On 4/16/2021 10:04 PM, Jin Yao wrote:
-> AlderLake uses a hybrid architecture utilizing Golden Cove cores
-> (core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
-> event list. Some events are available on core cpu, some events
-> are available on atom cpu and some events can be available on both.
-> 
-> Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
-> /sys/devices/cpu_core
-> /sys/devices/cpu_atom
-> 
-> cat /sys/devices/cpu_core/cpus
-> 0-15
-> 
-> cat /sys/devices/cpu_atom/cpus
-> 16-23
-> 
-> In this example, core cpus are 0-15 and atom cpus are 16-23.
-> 
-> To enable a core only event or atom only event:
-> 
->          cpu_core/<event name>/
-> or
->          cpu_atom/<event name>/
-> 
-> Count the 'cycles' event on core cpus.
-> 
->    # perf stat -e cpu_core/cycles/ -a -- sleep 1
-> 
->     Performance counter stats for 'system wide':
-> 
->        12,853,951,349      cpu_core/cycles/
-> 
->           1.002581249 seconds time elapsed
-> 
-> If one event is available on both atom cpu and core cpu, two events
-> are created automatically.
-> 
->    # perf stat -e cycles -a -- sleep 1
-> 
->     Performance counter stats for 'system wide':
-> 
->        12,856,467,438      cpu_core/cycles/
->         6,404,634,785      cpu_atom/cycles/
-> 
->           1.002453013 seconds time elapsed
-> 
-> Group is supported if the events are from same pmu, otherwise a warning
-> is displayed and disable grouping automatically.
-> 
->    # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
-> 
->     Performance counter stats for 'system wide':
-> 
->        12,863,866,968      cpu_core/cycles/
->           554,795,017      cpu_core/instructions/
-> 
->           1.002616117 seconds time elapsed
-> 
->    # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
->    WARNING: events in group from different hybrid PMUs!
->    WARNING: grouped events cpus do not match, disabling group:
->      anon group { cpu_core/cycles/, cpu_atom/instructions/ }
-> 
->     Performance counter stats for 'system wide':
-> 
->             6,283,970      cpu_core/cycles/
->               765,635      cpu_atom/instructions/
-> 
->           1.003959036 seconds time elapsed
-> 
-> Note that, since the whole patchset for AlderLake hybrid support is very
-> large (40+ patches). For simplicity, it's splitted into several patch
-> series.
-> 
-> The patch series 1 only supports the basic functionality. The advanced
-> supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
-> will be added in follow-up patch series.
-> 
-> The perf tool codes can also be found at:
-> https://github.com/yaoj/perf.git
-> 
-> v4:
-> ---
-> - In Liang Kan's patch:
->    '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE',
->    the user interface for hardware events and cache events are changed, so
->    perf tool patches are changed as well.
-> 
-> - Fix an issue when atom CPUs are offlined. "/sys/bus/event_source/devices/cpu_atom/cpus"
->    exists but the content is empty. For this case, we can't enable the cpu_atom
->    PMU. '[PATCH v4 05/25] perf pmu: Save detected hybrid pmus to a global pmu list'
-> 
-> - Define 'ret' variable for return value in patch
->    '[PATCH v4 09/25] perf parse-events: Create two hybrid cache events'
-> 
-> - Directly return add_raw_hybrid() in patch
->    '[PATCH v4 10/25] perf parse-events: Create two hybrid raw events'
->   
-> - Drop the patch 'perf pmu: Support 'cycles' and 'branches' inside
->    hybrid PMU'.
-> 
-> - Separate '[PATCH v3 12/27] perf parse-events: Support no alias assigned event
->    inside hybrid PMU' into two patches:
->    '[PATCH v4 11/25] perf parse-events: Compare with hybrid pmu name'
->    '[PATCH v4 12/25] perf parse-events: Support event inside hybrid pmu'.
->    And these two patches are improved according to Jiri's comments.
-> 
-> v3:
-> ---
-> - Drop 'perf evlist: Hybrid event uses its own cpus'. This patch is wide
->    and actually it's not very necessary. The current perf framework has
->    processed the cpus for evsel well even for hybrid evsel. So this patch can
->    be dropped.
-> 
-> - Drop 'perf evsel: Adjust hybrid event and global event mixed group'.
->    The patch is a bit tricky and hard to understand. In v3, we will disable
->    grouping when the group members are from different PMUs. So this patch
->    would be not necessary.
-> 
-> - Create parse-events-hybrid.c/parse-events-hybrid.h and evlist-hybrid.c/evlist-hybrid.h.
->    Move hybrid related codes to these files.
-> 
-> - Create a new patch 'perf pmu: Support 'cycles' and 'branches' inside hybrid PMU' to
->    support 'cycles' and 'branches' inside PMU.
-> 
-> - Create a new patch 'perf record: Uniquify hybrid event name' to tell user the
->    pmu which the event belongs to for perf-record.
-> 
-> - If group members are from different hybrid PMUs, shows warning and disable
->    grouping.
-> 
-> - Other refining and refactoring.
-> 
-> v2:
-> ---
-> - Drop kernel patches (Kan posted the series "Add Alder Lake support for perf (kernel)" separately).
-> - Drop the patches for perf-c2c/perf-mem/topdown/metrics/topology header supports,
->    which will be added in series 2 or series 3.
-> - Simplify the arguments of __perf_pmu__new_alias() by passing
->    the 'struct pme_event' pointer.
-> - Check sysfs validity before access.
-> - Use pmu style event name, such as "cpu_core/cycles/".
-> - Move command output two chars to the right.
-> - Move pmu hybrid functions to new created pmu-hybrid.c/pmu-hybrid.h.
->    This is to pass the perf test python case.
-> 
-> Jin Yao (25):
->    tools headers uapi: Update tools's copy of linux/perf_event.h
->    perf jevents: Support unit value "cpu_core" and "cpu_atom"
->    perf pmu: Simplify arguments of __perf_pmu__new_alias
->    perf pmu: Save pmu name
->    perf pmu: Save detected hybrid pmus to a global pmu list
->    perf pmu: Add hybrid helper functions
->    perf stat: Uniquify hybrid event name
->    perf parse-events: Create two hybrid hardware events
->    perf parse-events: Create two hybrid cache events
->    perf parse-events: Create two hybrid raw events
->    perf parse-events: Compare with hybrid pmu name
->    perf parse-events: Support event inside hybrid pmu
->    perf record: Create two hybrid 'cycles' events by default
->    perf stat: Add default hybrid events
->    perf stat: Filter out unmatched aggregation for hybrid event
->    perf stat: Warn group events from different hybrid PMU
->    perf record: Uniquify hybrid event name
->    perf tests: Add hybrid cases for 'Parse event definition strings' test
->    perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
->    perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
->    perf tests: Support 'Track with sched_switch' test for hybrid
->    perf tests: Support 'Parse and process metrics' test for hybrid
->    perf tests: Support 'Session topology' test for hybrid
->    perf tests: Support 'Convert perf time to TSC' test for hybrid
->    perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
-> 
->   include/uapi/linux/perf_event.h            |  15 ++
->   tools/include/uapi/linux/perf_event.h      |  15 ++
->   tools/perf/builtin-record.c                |  47 +++++-
->   tools/perf/builtin-stat.c                  |  29 ++++
->   tools/perf/pmu-events/jevents.c            |   2 +
->   tools/perf/tests/attr.c                    |   4 +
->   tools/perf/tests/evsel-roundtrip-name.c    |  19 ++-
->   tools/perf/tests/parse-events.c            | 152 ++++++++++++++++++
->   tools/perf/tests/parse-metric.c            |  10 +-
->   tools/perf/tests/perf-time-to-tsc.c        |  16 ++
->   tools/perf/tests/shell/stat+shadow_stat.sh |   3 +
->   tools/perf/tests/switch-tracking.c         |  10 +-
->   tools/perf/tests/topology.c                |  10 +-
->   tools/perf/util/Build                      |   3 +
->   tools/perf/util/evlist-hybrid.c            |  88 ++++++++++
->   tools/perf/util/evlist-hybrid.h            |  14 ++
->   tools/perf/util/evlist.c                   |   5 +-
->   tools/perf/util/evsel.c                    |  12 +-
->   tools/perf/util/evsel.h                    |   4 +-
->   tools/perf/util/parse-events-hybrid.c      | 178 +++++++++++++++++++++
->   tools/perf/util/parse-events-hybrid.h      |  23 +++
->   tools/perf/util/parse-events.c             |  86 +++++++++-
->   tools/perf/util/parse-events.h             |   9 +-
->   tools/perf/util/parse-events.y             |   9 +-
->   tools/perf/util/pmu-hybrid.c               |  89 +++++++++++
->   tools/perf/util/pmu-hybrid.h               |  22 +++
->   tools/perf/util/pmu.c                      |  64 +++++---
->   tools/perf/util/pmu.h                      |   7 +
->   tools/perf/util/python-ext-sources         |   2 +
->   tools/perf/util/stat-display.c             |  35 +++-
->   30 files changed, 933 insertions(+), 49 deletions(-)
->   create mode 100644 tools/perf/util/evlist-hybrid.c
->   create mode 100644 tools/perf/util/evlist-hybrid.h
->   create mode 100644 tools/perf/util/parse-events-hybrid.c
->   create mode 100644 tools/perf/util/parse-events-hybrid.h
->   create mode 100644 tools/perf/util/pmu-hybrid.c
->   create mode 100644 tools/perf/util/pmu-hybrid.h
-> 
+Michal has suggested ALLOC_OOM which is less risky.
+
+>
+> But I agree that throttling the oom daemon in direct reclaim makes no sense.
+> I wonder if we can introduce a per-task flag which will exclude the task from
+> throttling, but instead all (large) allocations will just fail under a
+> significant memory pressure more easily. In this case if there is a significant
+> memory shortage the oom daemon will not be fully functional (will get -ENOMEM
+> for an attempt to read some stats, for example), but still will be able to kill
+> some processes and make the forward progress.
+
+So, the suggestion is to have a per-task flag to (1) indicate to not
+throttle and (2) fail allocations easily on significant memory
+pressure.
+
+For (1), the challenge I see is that there are a lot of places in the
+reclaim code paths where a task can get throttled. There are
+filesystems that block/throttle in slab shrinking. Any process can get
+blocked on an unrelated page or inode writeback within reclaim.
+
+For (2), I am not sure how to deterministically define "significant
+memory pressure". One idea is to follow the __GFP_NORETRY semantics
+and along with (1) the userspace oom-killer will see ENOMEM more
+reliably than stucking in the reclaim.
+
+So, the oom-killer maintains a list of processes to kill in extreme
+conditions, have their pidfds open and keep that list fresh. Whenever
+any syscalls returns ENOMEM, it starts doing
+pidfd_send_signal(SIGKILL) to that list of processes, right?
+
+The idea has merit but I don't see how this is any simpler. The (1) is
+challenging on its own and my main concern is that it will be very
+hard to maintain as reclaim code (particularly shrinkers) callbacks
+into many diverse subsystems.
+
+> But maybe it can be done in userspace too: by splitting the daemon into
+> a core- and extended part and avoid doing anything behind bare minimum
+> in the core part.
+>
+> >
+> > 2. Mempool
+> >
+> > The idea is to preallocate mempool with a given amount of memory for
+> > userspace oom-killer. Preferably this will be per-thread and
+> > oom-killer can preallocate mempool for its specific threads. The core
+> > page allocator can check before going to the reclaim path if the task
+> > has private access to the mempool and return page from it if yes.
+> >
+> > This option would be more complicated than the previous option as the
+> > lifecycle of the page from the mempool would be more sophisticated.
+> > Additionally the current mempool does not handle higher order pages
+> > and we might need to extend it to allow such allocations. Though this
+> > feature might have more use-cases and it would be less risky than the
+> > previous option.
+>
+> It looks like an over-kill for the oom daemon protection, but if there
+> are other good use cases, maybe it's a good feature to have.
+>
+
+IMHO it is not an over-kill and easier to do then to remove all
+instances of potential blocking/throttling sites in memory reclaim.
+
+> >
+> > Another idea I had was to use kthread based oom-killer and provide the
+> > policies through eBPF program. Though I am not sure how to make it
+> > monitor arbitrary metrics and if that can be done without any
+> > allocations.
+>
+> To start this effort it would be nice to understand what metrics various
+> oom daemons use and how easy is to gather them from the bpf side. I like
+> this idea long-term, but not sure if it has been settled down enough.
+> I imagine it will require a fair amount of work on the bpf side, so we
+> need a good understanding of features we need.
+>
+
+Are there any examples of gathering existing metrics from bpf? Suren
+has given a list of metrics useful for Android. Is it possible to
+gather those metrics?
+
+BTW thanks a lot for taking a look and I really appreciate your time.
+
+thanks,
+Shakeel
