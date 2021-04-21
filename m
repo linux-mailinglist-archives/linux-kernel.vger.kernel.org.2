@@ -2,148 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F21366D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40963366D60
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243140AbhDUN6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243131AbhDUN6a (ORCPT
+        id S243122AbhDUN61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:58:27 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:40039 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238217AbhDUN60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:58:30 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9AAC06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:57:56 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a5so10854346ljk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 06:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SzUt8X/WzmqyiQTQOb09ZoIGFmeYojo8TKKWXg5zRNc=;
-        b=mjoh/M3C5zXaRixBaiMGh8FW3jbxldonTsAzJ77oVizAjeOQHKGQiC3i75Wu1umZhX
-         RchEyUx3ji5vKetnRRp26j8o1NQ2RDmlT0MDgmHTFqrnIHTNRA2hOPGLJSlBZ96jGVKf
-         571gU2R/TArQpNfCLUqywHzxY8P+cvMHYJLT1l3UwzGQBXFPMDEgJCSCblnavYn8A5bO
-         JXVBkSCY3RsQl8DJcCt2LB/rX6BfDfUMqitdJacy+e9UK6xr1L491vhp2P7k43GWQnVa
-         XgkwX1mnEErizRWbJD2VriTjvK5e1upblqP8QOGLtZ4cRNo9253JqHD+ovek+QYElz8G
-         tJ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SzUt8X/WzmqyiQTQOb09ZoIGFmeYojo8TKKWXg5zRNc=;
-        b=OqU3qqyfLyAGvA/oEy3JreU5pQP0z1YuqTO8zd0bpbWqX/72tRSFMH59tlNMBDgwdf
-         l5rhGjUFPp0UejZbuUQL7PxRbvsxNg0UouvPDIzJAKxc19ZCx8wky1GXaIL9s760hYJz
-         2u+NJfh9DlzlWK6F0qRs7nrBDlTqHnfKCX7OOBikvkuAGDlL0E3bN11dvKB1CT/p4QTn
-         H4ysRrrWHZmlbA6X9pS2aZEyorx6nZuNAd4/hB1Yzm8uIrlov5cXjRy2uyC/Zp/CpUUc
-         nxlo6yA9/KcVS+ePGIHUTPUMQLleedrdVTEaLDoIRK06BCmiNu+486KbZa8nZrOoiFfV
-         Xc5Q==
-X-Gm-Message-State: AOAM5302IbOTMjUKkPcQ2DJMLB/4DH6OrVKAAdoqLNznDY9zutTmnhDL
-        DBd5BhCGlP/t9T54bxBOCM8R21TS63qDK8P+FX/CCQ==
-X-Google-Smtp-Source: ABdhPJx1Lm56U6Iaz2d/ewarjkjUGkr/8pRTih0VFjqY53M8ShQv8y5HDqr7v1iWjgb9Db+DYtrST3iPQEA9mNdFn3o=
-X-Received: by 2002:a2e:8118:: with SMTP id d24mr18609060ljg.122.1619013475253;
- Wed, 21 Apr 2021 06:57:55 -0700 (PDT)
+        Wed, 21 Apr 2021 09:58:26 -0400
+X-Originating-IP: 78.45.89.65
+Received: from im-t490s.redhat.com (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
+        (Authenticated sender: i.maximets@ovn.org)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 89E21240007;
+        Wed, 21 Apr 2021 13:57:49 +0000 (UTC)
+From:   Ilya Maximets <i.maximets@ovn.org>
+To:     Pravin B Shelar <pshelar@ovn.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andy Zhou <azhou@ovn.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dev@openvswitch.org, Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        William Tu <u9012063@gmail.com>,
+        Jean Tourrilhes <jean.tourrilhes@hpe.com>,
+        Ilya Maximets <i.maximets@ovn.org>
+Subject: [PATCH net] openvswitch: meter: remove rate from the bucket size calculation
+Date:   Wed, 21 Apr 2021 15:57:47 +0200
+Message-Id: <20210421135747.312095-1-i.maximets@ovn.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <YH54pyRWSi1zLMw4@dhcp22.suse.cz> <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
- <YH/RPydqhwXdyG80@dhcp22.suse.cz>
-In-Reply-To: <YH/RPydqhwXdyG80@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 21 Apr 2021 06:57:43 -0700
-Message-ID: <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
-Subject: Re: [RFC] memory reserve for userspace oom-killer
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dragos Sbirlea <dragoss@google.com>,
-        Priya Duraisamy <padmapriyad@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 12:16 AM Michal Hocko <mhocko@suse.com> wrote:
->
-[...]
-> > To decide when to kill, the oom-killer has to read a lot of metrics.
-> > It has to open a lot of files to read them and there will definitely
-> > be new allocations involved in those operations. For example reading
-> > memory.stat does a page size allocation. Similarly, to perform action
-> > the oom-killer may have to read cgroup.procs file which again has
-> > allocation inside it.
->
-> True but many of those can be avoided by opening the file early. At
-> least seq_file based ones will not allocate later if the output size
-> doesn't increase. Which should be the case for many. I think it is a
-> general improvement to push those who allocate during read to an open
-> time allocation.
->
+Implementation of meters supposed to be a classic token bucket with 2
+typical parameters: rate and burst size.
 
-I agree that this would be a general improvement but it is not always
-possible (see below).
+Burst size in this schema is the maximum number of bytes/packets that
+could pass without being rate limited.
 
-> > Regarding sophisticated oom policy, I can give one example of our
-> > cluster level policy. For robustness, many user facing jobs run a lot
-> > of instances in a cluster to handle failures. Such jobs are tolerant
-> > to some amount of failures but they still have requirements to not let
-> > the number of running instances below some threshold. Normally killing
-> > such jobs is fine but we do want to make sure that we do not violate
-> > their cluster level agreement. So, the userspace oom-killer may
-> > dynamically need to confirm if such a job can be killed.
->
-> What kind of data do you need to examine to make those decisions?
->
+Recent changes to userspace datapath made meter implementation to be
+in line with the kernel one, and this uncovered several issues.
 
-Most of the time the cluster level scheduler pushes the information to
-the node controller which transfers that information to the
-oom-killer. However based on the freshness of the information the
-oom-killer might request to pull the latest information (IPC and RPC).
+The main problem is that maximum bucket size for unknown reason
+accounts not only burst size, but also the numerical value of rate.
+This creates a lot of confusion around behavior of meters.
 
-[...]
-> >
-> > I was thinking of simply prctl(SET_MEMPOOL, bytes) to assign mempool
-> > to a thread (not shared between threads) and prctl(RESET_MEMPOOL) to
-> > free the mempool.
->
-> I am not a great fan of prctl. It has become a dumping ground for all
-> mix of unrelated functionality. But let's say this is a minor detail at
-> this stage.
+For example, if rate is configured as 1000 pps and burst size set to 1,
+this should mean that meter will tolerate bursts of 1 packet at most,
+i.e. not a single packet above the rate should pass the meter.
+However, current implementation calculates maximum bucket size as
+(rate + burst size), so the effective bucket size will be 1001.  This
+means that first 1000 packets will not be rate limited and average
+rate might be twice as high as the configured rate.  This also makes
+it practically impossible to configure meter that will have burst size
+lower than the rate, which might be a desirable configuration if the
+rate is high.
 
-I agree this does not have to be prctl().
+Inability to configure low values of a burst size and overall inability
+for a user to predict what will be a maximum and average rate from the
+configured parameters of a meter without looking at the OVS and kernel
+code might be also classified as a security issue, because drop meters
+are frequently used as a way of protection from DoS attacks.
 
-> So you are proposing to have a per mm mem pool that would be
+This change removes rate from the calculation of a bucket size, making
+it in line with the classic token bucket algorithm and essentially
+making the rate and burst tolerance being predictable from a users'
+perspective.
 
-I was thinking of per-task_struct instead of per-mm_struct just for simplicity.
+Same change proposed for the userspace implementation.
 
-> used as a fallback for an allocation which cannot make a forward
-> progress, right?
+Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
+Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+---
 
-Correct
+The same patch for the userspace datapath:
+  https://patchwork.ozlabs.org/project/openvswitch/patch/20210421134816.311584-1-i.maximets@ovn.org/
 
-> Would that pool be preallocated and sitting idle?
+ net/openvswitch/meter.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Correct
+diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
+index 15424d26e85d..96b524ceabca 100644
+--- a/net/openvswitch/meter.c
++++ b/net/openvswitch/meter.c
+@@ -392,7 +392,7 @@ static struct dp_meter *dp_meter_create(struct nlattr **a)
+ 		 *
+ 		 * Start with a full bucket.
+ 		 */
+-		band->bucket = (band->burst_size + band->rate) * 1000ULL;
++		band->bucket = band->burst_size * 1000ULL;
+ 		band_max_delta_t = div_u64(band->bucket, band->rate);
+ 		if (band_max_delta_t > meter->max_delta_t)
+ 			meter->max_delta_t = band_max_delta_t;
+@@ -641,7 +641,7 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
+ 		long long int max_bucket_size;
+ 
+ 		band = &meter->bands[i];
+-		max_bucket_size = (band->burst_size + band->rate) * 1000LL;
++		max_bucket_size = band->burst_size * 1000LL;
+ 
+ 		band->bucket += delta_ms * band->rate;
+ 		if (band->bucket > max_bucket_size)
+-- 
+2.26.3
 
-> What kind of allocations would be allowed to use the pool?
-
-I was thinking of any type of allocation from the oom-killer (or
-specific threads). Please note that the mempool is the backup and only
-used in the slowpath.
-
-> What if the pool is depleted?
-
-This would mean that either the estimate of mempool size is bad or
-oom-killer is buggy and leaking memory.
-
-I am open to any design directions for mempool or some other way where
-we can provide a notion of memory guarantee to oom-killer.
-
-thanks,
-Shakeel
