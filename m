@@ -2,226 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D629367200
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A12367207
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245030AbhDURwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:52:41 -0400
-Received: from mail-bn8nam12on2049.outbound.protection.outlook.com ([40.107.237.49]:6791
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235242AbhDURwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:52:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PtikV1Rj5AeF1VX+dPPbqaFW0xU/kh4GN4Mjj5nq2RLUTo441iG3sIga6irmnGkDv6ilNwjQ+fP6tM0FIVDnYVUrgbKL8OWSC5v3lq1Wy3TkcNHWv191/ZTvFVWLbngt+xUeLM6f3i6RkNyV4cBQCpdcGgYEAPSg1Ht/B7bWCi7cq7k9r+58uUaEgQhRY9lz5gpEQtZc1uF5nrznHjo8bfrnDBlPWqA/W42sLEJAw+/ELTiG8vYXnSbsTOBF/GPM5/MK9ltuNzF2TQP2HOg7UyDc2VN9uSn5Q14rJ1PSPsttcdt/1z5NBC1WFURTfI8mJUttSQEspuDwyUgh41mj2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XpSJ5skAT76bfSWLlCPUo8FROtI5wdyyLtOzDx3PG20=;
- b=E1mkxEPlJbgpGNyJAnvZ/xgb+8Vxrtbc5+YC7VZKmIDLf0Q/qv6rk0WwGA6tKQsztzOtO1cu9Eej5ckx5GbzdlhmQcQHKJ/ZAH6r1hEwGROii8O21CRbN2rVkl3ikn/WGeq26UTENWDFG2j46Of1ouIwwMx0SRVdEeSykBPgQ6jRDuJp9cQB66k7/orQ3NFLa656p8/N/Wh1dluDoj1LEYGeOerubwlooCvKNG3wWJWD1PVKlRCv930bWxbKBppGR6w8UESKal2biq2P7+PknTg97/jt09orvlooBs10ZJzrnzUhqxKkQ8ezI4erJZvH1Vg9eDUiqh9DyKsqYilgtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XpSJ5skAT76bfSWLlCPUo8FROtI5wdyyLtOzDx3PG20=;
- b=UGpu6HypLD1mw7A7rXMV7M6oEt+0YiEmgoR+4+NtDG9h8lcgV8yPlBmHQOerJRReiHjx+ui0MHJVR3u4AYFSMFbNZ4oN7cPmH3GIS4o2dTGJVj/keWP9b3zTm9zKVb8NIO9fUS3hPQLkK4/4GwUYVkuNX4Gm200rq0BaL7CkAWib06qhDWOSMou82mOm5wzcHbPkw/HQKZvT7jAaT26eRCNvpukviHXTW2sKcs/lqyiwHrgxjnTTEMuI+2XFGUhO/steh3WGhUuQLhiQp5F4kKaRuY4e3bmrL5WXaZTk7ILwoJg2QGxBYnES6s15zErlTyOXrLYTHZ2/d3iEv6kTtg==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2858.namprd12.prod.outlook.com (2603:10b6:5:182::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Wed, 21 Apr
- 2021 17:52:05 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 17:52:05 +0000
-Date:   Wed, 21 Apr 2021 14:52:03 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210421175203.GN1370958@nvidia.com>
-References: <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401160337.GJ1463678@nvidia.com>
- <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
- <20210415230732.GG1370958@nvidia.com>
- <20210416061258.325e762e@jacob-builder>
- <20210416094547.1774e1a3@redhat.com>
- <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210421162307.GM1370958@nvidia.com>
- <20210421105451.56d3670a@redhat.com>
+        id S245061AbhDURxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245038AbhDURw5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:52:57 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F696C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:52:22 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c3so10793866pfo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F8lkA4hkBRm1o8o4SU5huyASULJsB2lMHciTFbdF6O8=;
+        b=tVkZqcb2OYMo8TeiyjHt8lztpGjkZX2YQeO9k4ZeUn1GWmlDJu5npEeHkEPQw/vp6C
+         75ycT2rlLpAK7qKTetKZFoJHpTRRpkBXypDH+xAO+g845/C2w6qrCDt5g6OcSF2y7zun
+         giXaBmacdJy5TOVwYzwgaEG7c69OaeWK94u/wN8cMTwQy2p0xxTFwDAj5eqBrou40OrN
+         PjfQFfzptlq/5obzEJkNcytVbf+//JXbuS7rWjAcsH/qY3rvqObmbvKJoQr52cg8M96T
+         qk9YZB1zU/c0tW7fKhvzBPb49wOLvGkokCY31v+WF5k4eE7UEXFQkjocmO9nzoZZnVO9
+         qHsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F8lkA4hkBRm1o8o4SU5huyASULJsB2lMHciTFbdF6O8=;
+        b=D83coib8Iy9oVXGm2G08zBn6vT1jSXQw7wul0Wi67rWRuiASK1kTuBrA4J4VWKFMrF
+         dE7XffPedhB4Znb6EjZY61CCDTnUD+ng9MaQkvqLO6HZ4dLxRV34wk0VmjhoxdJCwtUi
+         KOV4ZG4k9FB3cX2vRTka1OxCFD6cSvQ8wbFp1UjvjPjAh3Z7e2SzVnBg1OqmF/N11j7o
+         myDN18ZUGzCM538G22F0UiVpSRZVmWT0D3bFIrarTMnReG5DxNjege2KXc0X0a1gLH/E
+         Mb6cTKx9M5WSwG/Hf+fGkquNKzvCulyu6LkJF8fcIX9krDmVy3DYJGPd6F5go9ca7hcx
+         i4bA==
+X-Gm-Message-State: AOAM532slPzG7G+YdgWRJipP7zJSyrfvjjevvvGEe/jZuAVmDUliUQYk
+        vCQTmI+kO3I7C/PjWtpbKB74cQ==
+X-Google-Smtp-Source: ABdhPJzlR3wrMYoeAZsc7+3hEhJetPjUmotybMDO/BGXrmO4iRHfR4V2cmwzt/LZva0YZJI14+sdTg==
+X-Received: by 2002:aa7:90d3:0:b029:241:21a1:6ffb with SMTP id k19-20020aa790d30000b029024121a16ffbmr30199230pfk.43.1619027541773;
+        Wed, 21 Apr 2021 10:52:21 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id b1sm74102pgf.84.2021.04.21.10.52.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:52:21 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:52:19 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 1/7] rpmsg: char: Export eptdev create an destroy
+ functions
+Message-ID: <20210421175219.GD1223348@xps15>
+References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
+ <20210413134458.17912-2-arnaud.pouliquen@foss.st.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421105451.56d3670a@redhat.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR16CA0045.namprd16.prod.outlook.com
- (2603:10b6:208:234::14) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR16CA0045.namprd16.prod.outlook.com (2603:10b6:208:234::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 17:52:04 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZH19-009apO-GC; Wed, 21 Apr 2021 14:52:03 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bf78f60-cd89-4fd0-d0b4-08d904ee2c8e
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2858:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB285861EBAAF81949B875A380C2479@DM6PR12MB2858.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BFz8nq2O1WzkNQbEo81H5xgGV7lLIs1XJDpQq10NNgEB8ltt/seA07eCzb0A3L056ruoHJkEGqju+fF2CVJn8rT8vLvmksBiyjXPcetFoKFdIZKxNosDfs1TxtkKeXWiUtytBdpp+BJJixhkysJrY2B9TGzqXX+EfbbStxbZ3p8bNquQmCRoPxnz6tsHX3supEzShqko/+1On1SOmMPotLEpf2pNPB2ddT5m6TWoi9RD672I7M7cpY34AUe4FYLqBhgpvsc0yDFF9T7YZ+e4FaW1yCZd8SoBECoLXMs39J/+KFzh9qJPKamGftsjrblvRIXy6zEOGeSkdMasjnytptj730xzJR4676+LCxpw2iVT/VJIKNSXhAW7Rxl7JgmKlZQGxceX4WRehuPP3S46sjtF+eIMnlMdGZxWeUGrYbirRvYcLALv5spxD+bppo+Ild5S1kNFbf+6FmYlmIFCovovizWHv4+4WlddPHW60OwxubR8IhUba82FB6aYcRrcVf0BguhYlc2Pb7emSrQvMeKQCFnCrEOQnvu3kNqK5yflr5sbUrBdw+/rTLto6j7EsBL2Q1MObNBdt18sgJ0f4N6M318EBILwux7PmuGdHw0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(376002)(136003)(396003)(5660300002)(6916009)(33656002)(1076003)(7416002)(83380400001)(86362001)(316002)(66946007)(66476007)(66556008)(2616005)(426003)(186003)(36756003)(4326008)(8676002)(478600001)(38100700002)(9746002)(26005)(54906003)(2906002)(9786002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?0AAjQ6EdHr/yq4PCUo6AKHQfXUEpS208nr9UUmEuwAxUsM23Psm9nIFCxcAJ?=
- =?us-ascii?Q?11wTAFGgKxNkZFCAY+2GoAsKXVg1gXVXw8ww+HDvKmgmB3Pzuu1D6p61iSqL?=
- =?us-ascii?Q?RLbfHCPSJbZuP3iRnOsnQp1zcJCb0WXLyBNTtw/0SqgCOdFAmLhJaft93CGN?=
- =?us-ascii?Q?5FOd5JFcogBmN8h79pvNbTsy8AS+hR+TFeEmfwSSDmqymWp52WTo3VsSIxv1?=
- =?us-ascii?Q?5dWQmCY7KSFYSExBQrANlaDlfpTCofl664fLQbR/WwyeLhAocZkQfXjfjtja?=
- =?us-ascii?Q?HVipBMOLaFcfFSXOrkqqmGdEDcF5gJvKvS+S3paoEucI7NP3/j28LuiNm/8u?=
- =?us-ascii?Q?4xj7veiMaUO6xsbRvwgMWKYP2pKwQgSItDVCv1RulVBtBF0oFPQ7eYIapNF4?=
- =?us-ascii?Q?z8GzvbjQN7/ytzxWTbrFK6cszIcqSKA5YunD5palSPutSIP9Jp5EfThocd0W?=
- =?us-ascii?Q?KtVvI8FyacU4qzMIlkEOpVhAWdo7zptD62YbaRyx/YZ0k9vVoLda0FYEabTZ?=
- =?us-ascii?Q?0AXgvnz85d279ZTxQsz1B+leRKgzE86F2WsIU+JuEIKj7aPLyrrRAeKSZaqz?=
- =?us-ascii?Q?phJktOJEIKFQhX6F1PUy87FBpoOMnJS81B/E9Ja3I9CbqjPQuBB0A156rQWs?=
- =?us-ascii?Q?XhSSbM/hi2L4M+4Oa/HWw0iHnQfeJIuspif0lAc31cw7HWEVzfetTtUZrD1E?=
- =?us-ascii?Q?K6647MNIyePiSPNQJFHSLjUY9JZb7FdRO8sacEAAHk0/EPX2r5J7RQUv6UUm?=
- =?us-ascii?Q?L6NYvVcUeFvmsCJXOzwfcuzvbjBf7KASf0UYubxJFzQ4jUb2uPIEr+ncHibH?=
- =?us-ascii?Q?XNtHVlFplPjXp8rXEWQgXePQTES+E31DaFwMqoSttwkN4fsSN3Da5C9t4AMh?=
- =?us-ascii?Q?oYBSHr23by7JLd7prFKJZfTBW1BRAR4xbVimBBR2pPxaf6zLSJZYSyqdMen0?=
- =?us-ascii?Q?IUDD0b7FvlupwrJen9K8SMRwFq01UJRM/61u0+5m2z1iHtVWYDhg//mIh2Dw?=
- =?us-ascii?Q?LCemJ9qV/BuMzDdb8BczCPBcE1GA7uFrb3mc8RAhHdLoA+yjQDVqkGoP+dR0?=
- =?us-ascii?Q?aQFqJw2/aLmo/0Gzo2P9hC08FMepnvVxEhupVq1uzhdHvgyfG4MRnMUJ3pgD?=
- =?us-ascii?Q?aupdj3MbubhQFEYoI855N/OXAwMzYxAC/0Xdf+xpiO/zcNAdV3A/ylB2xOOM?=
- =?us-ascii?Q?gFr0n7//fgZexfE/0dtW2fg1pZ2bwxF+N0jEHBkrYqt6ktpsLYbnrI9hRUtw?=
- =?us-ascii?Q?1ob6+uvGtnkmOlDJWFuPWnVl9Is16QF9VP1WpO+2XLX7+5ahEU4wNp9NSRJT?=
- =?us-ascii?Q?eA5U+/cjJumdOYc78sVHhNe6rcKih6UWrnFSnm0vlTvPtA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bf78f60-cd89-4fd0-d0b4-08d904ee2c8e
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 17:52:04.8379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7DaPg9k7TDPi4ATtuPZDMLRqZYfkJETbhg1J75pjloIH4NVUcuFigclVBC3fUnbV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2858
+In-Reply-To: <20210413134458.17912-2-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:54:51AM -0600, Alex Williamson wrote:
+On Tue, Apr 13, 2021 at 03:44:52PM +0200, Arnaud Pouliquen wrote:
+> To prepare the split of the code related to the control (ctrldev)
+> and the endpoint (eptdev) devices in 2 separate files:
+> 
+> - Rename and export the functions in rpmsg_char.h.
+> 
+> - Suppress the dependency with the rpmsg_ctrldev struct in the
+>   rpmsg_chrdev_create_eptdev function.
+> 
+> - The rpmsg class is provided as parameter in rpmsg_chrdev_create_eptdev,
+>   because the class is associated to the control part.
+> 
+> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 19 +++++++++------
+>  drivers/rpmsg/rpmsg_char.h | 50 ++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 61 insertions(+), 8 deletions(-)
+>  create mode 100644 drivers/rpmsg/rpmsg_char.h
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 2bebc9b2d163..b9df8dc4365f 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> + * Copyright (C) 2021, STMicroelectronics
+>   * Copyright (c) 2016, Linaro Ltd.
+>   * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
+>   * Copyright (c) 2012, PetaLogix
+> @@ -22,6 +23,7 @@
+>  #include <linux/uaccess.h>
+>  #include <uapi/linux/rpmsg.h>
+>  
+> +#include "rpmsg_char.h"
+>  #include "rpmsg_internal.h"
+>  
+>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+> @@ -78,7 +80,7 @@ struct rpmsg_eptdev {
+>  	wait_queue_head_t readq;
+>  };
+>  
+> -static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+> +int rpmsg_chrdev_destroy_eptdev(struct device *dev, void *data)
 
-> That's essentially replacing vfio-core, where I think we're more
+Shouldn't this be rpmsg_chrdev_eptdev_destroy()?  I've been wondering about the
+flipping of destroy and eptdev...  The same for rpmsg_chrdev_create_eptdev().
 
-I am only talking about /dev/vfio here which is basically the IOMMU
-interface part.
+With that:
 
-I still expect that VFIO_GROUP_SET_CONTAINER will be used to connect
-/dev/{ioasid,vfio} to the VFIO group and all the group and device
-logic stays inside VFIO.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-The appeal of unifying /dev/{ioasid,vfio} to a single fops is that it
-cleans up vfio a lot - we don't have to have two different code paths
-where one handles a vfio_container and the other a ioasid_container
-and the all the related different iommu ops and so on.
-
-Everything can be switched to ioasid_container all down the line. If
-it wasn't for PPC this looks fairly simple.
-
-Since getting rid of PPC looks a bit hard, we'd be stuck with
-accepting a /dev/ioasid and then immediately wrappering it in a
-vfio_container an shimming it through a vfio_iommu_ops. It is not
-ideal at all, but in my look around I don't see a major problem if
-type1 implementation is moved to live under /dev/ioasid.
-
-For concreteness if we look at the set container flow with ioasid I'd
-say something like:
-
-vfio_group_fops_unl_ioctl()
- VFIO_GROUP_SET_CONTAINER
-  vfio_group_set_container()
-     if (f.file->f_op == &vfio_fops) {
-          // Use a real vfio_container and vfio_iommu_driver
-          driver->ops->attach_group()
-             tce_iommu_attach_group()
-     }
-
-     if (ioasid_container = ioasid_get_from_fd(container_fd)) {
-         // create a dummy vfio_container and use the ioasid driver
-	 container = kzalloc()
-         container->iommu_driver = ioasid_shim
-         driver->ops->attach_group()
-             ioasid_shim_attach_group(ioasid_container, ...)
-                 ioasid_attach_group()
-                     // What used to be vfio_iommu_attach_group()
-
-Broadly all the ops vfio need go through the ioasid_shim which relays
-them to the generic ioasid API.
-
-We end up with a ioasid.h that basically has the vfio_iommu_type1 code
-lightly recast into some 'struct iommu_container' and a set of
-ioasid_* function entry points that follow vfio_iommu_driver_ops_type1:
-  ioasid_attach_group
-  ioasid_detatch_group
-  ioasid_<something about user pages>
-  ioasid_read/ioasid_write
-
-If we have this, and /dev/ioasid implements the legacy IOCTLs, then
-/dev/vfio == /dev/ioasid and we can compile out vfio_fops and related
-from vfio.c and tell ioasid.c to create /dev/vfio instead using the
-ops it owns.
-
-This is a very long winded way of saying ideally we'd do
-approximately:
-  git mv drivers/vfio/vfio_iommu_type1.c drivers/ioasid/ioasid.c
-
-As the first step. Essentially we declare that what is type1 is really
-the user interface to the internal kernel IOMMU kAPI, which has been
-steadily evolving since type1 was created 10 years ago.
-
-> The interface of making that selection might change to accept an
-> external /dev/ioasid file descriptor, of course.  Maybe you can
-> elaborate on how the vfio device and group uAPI live (or not) in
-> this new scheme were /dev/ioasid is the primary interface.  Thanks,
-
-They say in vfio. You'd still open a group and you'd still pass in
-either /dev/vfio or /dev/ioasid to define the container
-
-Though, completely as an unrelated aside, I admit to not entirely
-understanding why the group is the central element of the uAPI.
-
-It is weird that the vfio "drivers" all work on the struct vfio_device
-(at least after my series), and it has a file_operations presence via
-vfio_device_fops, but instead of struct vfio_device directly having a
-'struct device' and cdev to access the FD we get it through a group FD
-and agroup chardev via VFIO_GROUP_GET_DEVICE_FD
-
-If we were to revise this, and I don't see a huge reason to do so, I
-would put a struct device and cdev in struct vfio_device, attach the
-vfio_device directly to the ioasid and then forget about the group, at
-least as uapi, completely.
-
-Or at least I don't see where that gets into trouble, but I'm not too
-familiar with the multi-vfio in a process scenario..
-
-Jason
+>  {
+>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
+>  
+> @@ -97,6 +99,7 @@ static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL(rpmsg_chrdev_destroy_eptdev);
+>  
+>  static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
+>  			void *priv, u32 addr)
+> @@ -280,7 +283,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
+>  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
+>  		return -EINVAL;
+>  
+> -	return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
+> +	return rpmsg_chrdev_destroy_eptdev(&eptdev->dev, NULL);
+>  }
+>  
+>  static const struct file_operations rpmsg_eptdev_fops = {
+> @@ -339,10 +342,9 @@ static void rpmsg_eptdev_release_device(struct device *dev)
+>  	kfree(eptdev);
+>  }
+>  
+> -static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+> -			       struct rpmsg_channel_info chinfo)
+> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
+> +			       struct rpmsg_channel_info chinfo, struct class *rpmsg_class)
+>  {
+> -	struct rpmsg_device *rpdev = ctrldev->rpdev;
+>  	struct rpmsg_eptdev *eptdev;
+>  	struct device *dev;
+>  	int ret;
+> @@ -362,7 +364,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>  
+>  	device_initialize(dev);
+>  	dev->class = rpmsg_class;
+> -	dev->parent = &ctrldev->dev;
+> +	dev->parent = parent;
+>  	dev->groups = rpmsg_eptdev_groups;
+>  	dev_set_drvdata(dev, eptdev);
+>  
+> @@ -405,6 +407,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
+>  
+>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
+>  {
+> @@ -444,7 +447,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>  	chinfo.src = eptinfo.src;
+>  	chinfo.dst = eptinfo.dst;
+>  
+> -	return rpmsg_eptdev_create(ctrldev, chinfo);
+> +	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo, rpmsg_class);
+>  };
+>  
+>  static const struct file_operations rpmsg_ctrldev_fops = {
+> @@ -530,7 +533,7 @@ static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+>  	int ret;
+>  
+>  	/* Destroy all endpoints */
+> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_eptdev_destroy);
+> +	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
+>  	if (ret)
+>  		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
+>  
+> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
+> new file mode 100644
+> index 000000000000..379d2ae2bee8
+> --- /dev/null
+> +++ b/drivers/rpmsg/rpmsg_char.h
+> @@ -0,0 +1,50 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * Copyright (C) STMicroelectronics 2021.
+> + */
+> +
+> +#ifndef __RPMSG_CHRDEV_H__
+> +#define __RPMSG_CHRDEV_H__
+> +
+> +#if IS_REACHABLE(CONFIG_RPMSG_CHAR)
+> +/**
+> + * rpmsg_chrdev_create_eptdev() - register char device based on an endpoint
+> + * @rpdev:  prepared rpdev to be used for creating endpoints
+> + * @parent: parent device
+> + * @chinfo: assiated endpoint channel information.
+> + *
+> + * This function create a new rpmsg char endpoint device to instantiate a new
+> + * endpoint based on chinfo information.
+> + */
+> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
+> +			       struct rpmsg_channel_info chinfo, struct class *rpmsg_class);
+> +
+> +/**
+> + * rpmsg_chrdev_destroy_eptdev() - destroy created char device endpoint.
+> + * @data: private data associated to the endpoint device
+> + *
+> + * This function destroys a rpmsg char endpoint device created by the RPMSG_DESTROY_EPT_IOCTL
+> + * control.
+> + */
+> +int rpmsg_chrdev_destroy_eptdev(struct device *dev, void *data);
+> +
+> +#else  /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
+> +
+> +static inline int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
+> +					     struct rpmsg_channel_info chinfo,
+> +					     struct class *rpmsg_class)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static inline int rpmsg_chrdev_destroy_eptdev(struct device *dev, void *data)
+> +{
+> +	/* This shouldn't be possible */
+> +	WARN_ON(1);
+> +
+> +	return 0;
+> +}
+> +
+> +#endif /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
+> +
+> +#endif /*__RPMSG_CHRDEV_H__ */
+> -- 
+> 2.17.1
+> 
