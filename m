@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00AA366718
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0544366719
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbhDUIkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:40:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17021 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235997AbhDUIkL (ORCPT
+        id S236678AbhDUIkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235313AbhDUIkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:40:11 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FQDRm303QzPsHZ;
-        Wed, 21 Apr 2021 16:36:36 +0800 (CST)
-Received: from huawei.com (10.175.112.154) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Wed, 21 Apr 2021
- 16:39:30 +0800
-From:   jinyiting <jinyiting@huawei.com>
-To:     <j.vosburgh@gmail.com>, <vfalico@gmail.com>, <andy@greyhouse.net>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <security@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <xuhanbing@huawei.com>, <wangxiaogang3@huawei.com>
-Subject: [PATCH] bonding: 3ad: Fix the conflict between bond_update_slave_arr and the state machine
-Date:   Wed, 21 Apr 2021 16:38:21 +0800
-Message-ID: <1618994301-1186-1-git-send-email-jinyiting@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        Wed, 21 Apr 2021 04:40:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B815CC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WX/ulq1oGNVEHNSHwMYQBTN+yMAByfD4DdWq5Ogc4BE=; b=IHOjLVkFNthLw0m0jh91D4QMrK
+        dLgad/fvbQKBTEe6c45p2Ewv0J8Jnx6I/b7rO0fgKcbcE61S39UPINs5iXMtI3rcLmjelM2FDSa4R
+        /agPjGmL9w56IytbRQqd5rq5pe1A7i0bIQn3pNlpFbWn7ObVBpjEajxNp32nUjpQKLrLr6mXp1Ej/
+        6EWVaD3SLjCZKFhbUBTUF8HWicN2NlwVi8rVD4+FaLri/AtlNua0eqmS4zqIbRIsUJqLfzwlYnIVp
+        XERvuJZsBj4YvppFMbdPOG+KyhXgVNvILLeVDhgyF5v3OLQYx9XUC58WaXQZtUES81oYk6kY9LUVD
+        sfxZ1xiQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZ8NY-00GHDi-R4; Wed, 21 Apr 2021 08:38:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 87A993001E2;
+        Wed, 21 Apr 2021 10:38:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6E2C52C6D8C9C; Wed, 21 Apr 2021 10:38:34 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 10:38:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 2/2] perf/x86/lbr: Move cpuc->lbr_xsave allocation
+ out of sleeping region
+Message-ID: <YH/kikWFlfD260qy@hirez.programming.kicks-ass.net>
+References: <20210421021825.37872-1-like.xu@linux.intel.com>
+ <20210421021825.37872-2-like.xu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421021825.37872-2-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bond works in mode 4, and performs down/up operations on the bond
-that is normally negotiated. The probability of bond-> slave_arr is NULL
+On Wed, Apr 21, 2021 at 10:18:25AM +0800, Like Xu wrote:
+> -int x86_reserve_hardware(void)
+> +int x86_reserve_hardware(struct perf_event *event)
+>  {
+>  	int err = 0;
+>  
+> @@ -398,8 +398,10 @@ int x86_reserve_hardware(void)
+>  		if (atomic_read(&pmc_refcount) == 0) {
+>  			if (!reserve_pmc_hardware())
+>  				err = -EBUSY;
+> -			else
+> +			else {
+>  				reserve_ds_buffers();
+> +				reserve_lbr_buffers(event);
+> +			}
+>  		}
+>  		if (!err)
+>  			atomic_inc(&pmc_refcount);
+> @@ -650,7 +652,7 @@ static int __x86_pmu_event_init(struct perf_event *event)
+>  	if (!x86_pmu_initialized())
+>  		return -ENODEV;
+>  
+> -	err = x86_reserve_hardware();
+> +	err = x86_reserve_hardware(event);
+>  	if (err)
+>  		return err;
+>  
 
-Test commands:
-   ifconfig bond1 down
-   ifconfig bond1 up
-
-The conflict occurs in the following process：
-
-__dev_open (CPU A)
---bond_open
-  --queue_delayed_work(bond->wq,&bond->ad_work,0);
-  --bond_update_slave_arr
-    --bond_3ad_get_active_agg_info
-
-ad_work(CPU B)
---bond_3ad_state_machine_handler
-  --ad_agg_selection_logic
-
-ad_work runs on cpu B. In the function ad_agg_selection_logic, all
-agg->is_active will be cleared. Before the new active aggregator is
-selected on CPU B, bond_3ad_get_active_agg_info failed on CPU A,
-bond->slave_arr will be set to NULL. The best aggregator in
-ad_agg_selection_logic has not changed, no need to update slave arr.
-
-The conflict occurred in that ad_agg_selection_logic clears
-agg->is_active under mode_lock, but bond_open -> bond_update_slave_arr
-is inspecting agg->is_active outside the lock.
-
-Also, bond_update_slave_arr is normal for potential sleep when
-allocating memory, so replace the WARN_ON with a call to might_sleep.
-
-Signed-off-by: jinyiting <jinyiting@huawei.com>
----
-
-Previous versions:
- * https://lore.kernel.org/netdev/612b5e32-ea11-428e-0c17-e2977185f045@huawei.com/
-
- drivers/net/bonding/bond_main.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 74cbbb2..83ef62d 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -4391,9 +4391,7 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 	int agg_id = 0;
- 	int ret = 0;
- 
--#ifdef CONFIG_LOCKDEP
--	WARN_ON(lockdep_is_held(&bond->mode_lock));
--#endif
-+	might_sleep();
- 
- 	usable_slaves = kzalloc(struct_size(usable_slaves, arr,
- 					    bond->slave_cnt), GFP_KERNEL);
-@@ -4406,7 +4404,9 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 	if (BOND_MODE(bond) == BOND_MODE_8023AD) {
- 		struct ad_info ad_info;
- 
-+		spin_lock_bh(&bond->mode_lock);
- 		if (bond_3ad_get_active_agg_info(bond, &ad_info)) {
-+			spin_unlock_bh(&bond->mode_lock);
- 			pr_debug("bond_3ad_get_active_agg_info failed\n");
- 			/* No active aggragator means it's not safe to use
- 			 * the previous array.
-@@ -4414,6 +4414,7 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 			bond_reset_slave_arr(bond);
- 			goto out;
- 		}
-+		spin_unlock_bh(&bond->mode_lock);
- 		agg_id = ad_info.aggregator_id;
- 	}
- 	bond_for_each_slave(bond, slave, iter) {
--- 
-1.7.12.4
-
+This is still complete garbage..
