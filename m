@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3911367215
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7467A367216
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245089AbhDURzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:55:05 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33909 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243789AbhDURzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:55:00 -0400
-IronPort-SDR: uCCXmVgpPRXiUFehm+aeZWawIS+MNKChXNXFxnGke9QzkSn1makgDophfRyaGDJDbwfYeMnr3m
- TlT6CjGVqx3g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195857008"
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="195857008"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:54:26 -0700
-IronPort-SDR: G89qDqo2oHdvPA03l8fUHO7SiY2xJCah0aGHRtlGk9HU+B1ZW8qYKJBfNM+WKZwrM+F61wmSQM
- QwcnZD6yHYvA==
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="427609738"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.153.90]) ([10.249.153.90])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:54:25 -0700
-Subject: Re: [PATCH 041/190] Revert "ACPI: sysfs: Fix reference count leak in
- acpi_sysfs_add_hotplug_profile()"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Qiushi Wu <wu000273@umn.edu>, "3 . 10+" <stable@vger.kernel.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-42-gregkh@linuxfoundation.org>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <c7451c62-69fe-bd8f-f90c-5574cf70b60c@intel.com>
-Date:   Wed, 21 Apr 2021 19:54:23 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S245084AbhDURzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245079AbhDURzD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:55:03 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54911C06174A;
+        Wed, 21 Apr 2021 10:54:29 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id j7so13479026eds.8;
+        Wed, 21 Apr 2021 10:54:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NNHrI9PudBGjVSwUN3nmEntVSmixq7OdjkvqE9eSJV4=;
+        b=ZTZzpQTGenymX5Ef0xQGOxHKMY5SJsxboIZ2xb2iornwvQSBmKb3VLgHdi4Dsgkjim
+         2Z7CvQIHDwAhYF0ceuXebraEHsNz2HAKyze0cu2w0SoRz4aXFlIBalc/eFYAMLAaW8VE
+         8yjq8WV7Ap7bqiU5MVYCSPGKF41pSlOmHTX4jzTwMgymIJDaSecJeZP3deisFeWLPVfP
+         qunVK7nsBexehZ/swxeLlxSYYiheTnRQ6t/xhI7Xb2xMSs3hMxPfaN3vpyDHAIl3PPyz
+         mU83OGwLbHPvC4417/9cvL7ynK1QnhYf2yNWl1gMMoz/XGr1iZTC0jYknNcrYknD9o15
+         X7pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NNHrI9PudBGjVSwUN3nmEntVSmixq7OdjkvqE9eSJV4=;
+        b=ZJWUxHTONgVUEvh0a+T22lKS1a9aXBq9mnN6u7dDgVYeQq5j0HruBFSzGwzP6e6pVJ
+         4D9HjHMB+r7a6mhyhyHxmkGY8nPslD9lztLrO6zfcP5C4nFH3SZ0OVX47ryVxRrxexkH
+         pkiX7XXaq/WW7AAx7M1QpP3ImmL3ictHYne5ndpJ94C6cygc2JjpL0yyU7QeMT0IDrie
+         TBgkQA+VUfYe40vsod4rLgD6z/5CfwGrI1docgQXTilPNq08BEJXyBVsYeBbPp4Ioz39
+         /zByc6+1+/UHjYnVb0JIKq/TasCOgE3+yw1hzZBxuvUqn0NTAG41ebk31x1iwQ9nx9g5
+         89XA==
+X-Gm-Message-State: AOAM532Qmf1sMYU5VUHJdsukXzqE9VH5kCYY9DqrElAMj/ECnqbJHuhb
+        zGlZqXlIB0LEjQ3C1Hl9c/c=
+X-Google-Smtp-Source: ABdhPJwWYyF5WLRhLUbucnYzQEisWLDY1LAD4e5mzjMEsW6upH0WHg13lY+gcqMV8KhNEUjdeunO5g==
+X-Received: by 2002:a50:e607:: with SMTP id y7mr40639278edm.18.1619027668091;
+        Wed, 21 Apr 2021 10:54:28 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.3])
+        by smtp.gmail.com with ESMTPSA id t4sm93905edd.6.2021.04.21.10.54.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:54:27 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 19:54:24 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH v1 4/6] staging: media: atomisp: reformat code comment
+ blocks
+Message-ID: <20210421175423.GC1414@agape.jhs>
+References: <cover.1619022192.git.drv@mailo.com>
+ <efdd8910b519dd55838570c72e3ce35e063f4a11.1619022192.git.drv@mailo.com>
+ <20210421171045.GB1414@agape.jhs>
+ <20210421175144.GA224467@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-42-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421175144.GA224467@localhost>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/2021 2:58 PM, Greg Kroah-Hartman wrote:
-> This reverts commit 6e6c25283dff866308c87b49434c7dbad4774cc0.
->
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
->
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
->
-> Cc: Qiushi Wu <wu000273@umn.edu>
-> Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Wed, Apr 21, 2021 at 11:21:44PM +0530, Deepak R Varma wrote:
+> On Wed, Apr 21, 2021 at 07:10:46PM +0200, Fabio Aiuto wrote:
+> > On Wed, Apr 21, 2021 at 10:26:09PM +0530, Deepak R Varma wrote:
+> > > Reformat code comment blocks according to the coding style guidelines.
+> > > This resolves different checkpatch script WARNINGs around block comments.
+> > > 
+> > > Signed-off-by: Deepak R Varma <drv@mailo.com>
+> > > ---
+> > > 
+> > > Changes in v1:
+> > >    - implement following changes suggested by Fabio Aiuto                              
+> > >        a. Corrected commenting style                                                               
+> > >        b. Similar style implemented for other comment blocks in                                    
+> > >           the same files.                                       
+> > 
+> > If you want to tag me you should add the Suggested-by: tag in commit message
+> > before Signed-off-by tag...
+> > 
+> > $ vim +485 Documentation/process/submitting-patches.rst
+> 
+> Yes, perfect. I will tag you in v3 accordingly.
+> 
+> Thank you.
+> deepak.
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+feel free, you don't need:)
 
+> 
+> > 
+> > thank you,
+> > 
+> > fabio
+> 
+> 
 
-> ---
->   drivers/acpi/sysfs.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
-> index 8baf7644a0d0..842bf63b91e9 100644
-> --- a/drivers/acpi/sysfs.c
-> +++ b/drivers/acpi/sysfs.c
-> @@ -986,10 +986,8 @@ void acpi_sysfs_add_hotplug_profile(struct acpi_hotplug_profile *hotplug,
->   
->   	error = kobject_init_and_add(&hotplug->kobj,
->   		&acpi_hotplug_profile_ktype, hotplug_kobj, "%s", name);
-> -	if (error) {
-> -		kobject_put(&hotplug->kobj);
-> +	if (error)
->   		goto err_out;
-> -	}
->   
->   	kobject_uevent(&hotplug->kobj, KOBJ_ADD);
->   	return;
+thank you,
 
-
+fabio
