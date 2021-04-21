@@ -2,80 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803043666D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33293666DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhDUIOZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 04:14:25 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:45652 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234476AbhDUIOR (ORCPT
+        id S234403AbhDUIQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234010AbhDUIQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:14:17 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-146-0tFHdEHxM4aXflNbaT3tgQ-1; Wed, 21 Apr 2021 09:13:40 +0100
-X-MC-Unique: 0tFHdEHxM4aXflNbaT3tgQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 21 Apr 2021 09:13:40 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 21 Apr 2021 09:13:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Maciej W. Rozycki'" <macro@orcam.me.uk>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Christoph Hellwig <hch@lst.de>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v2 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-Thread-Topic: [PATCH v2 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-Thread-Index: AQHXNg9Ed+BsTt2aWkawhrOt2gHa/qq+nqtA
-Date:   Wed, 21 Apr 2021 08:13:40 +0000
-Message-ID: <bcb0b8fa8e1f404989c9d6450be10074@AcuMS.aculab.com>
-References: <alpine.DEB.2.21.2104201934280.44318@angie.orcam.me.uk>
- <alpine.DEB.2.21.2104201940430.44318@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2104201940430.44318@angie.orcam.me.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 21 Apr 2021 04:16:15 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB2FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:15:43 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id w10so29070258pgh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 01:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tDNi7Pq76OfCbCdDxGFAeY3yEV5OAvKRxPwWNq6c2gI=;
+        b=o8Og5Y6Dn/+kfZJBIZs6BSbOTg5nNzykjXvsqwsIVdyq+0GF0bS3b+DdqN6hXehJDI
+         biDuz3w83z7gZ2p3zCFEgxTozK7f5T/vS/T4lP+erF7v0waEzzszV296BjZMgUPSbINI
+         JyCsfp0RQMKtwvkdEP7Zw9uEKNFwIxYCHtVCyPfWq9appujBXx4FzsxfBdMwgnEvqNXf
+         mTcBcncnis9jwnR1Ldm+6ZG0LjnIrYvoFQ+FVyqr774UZGGGf2HWWhLZ5AwdK6oI6L4r
+         ER0aZh3OT3sajU78pis5FyN1AdgC7Vz638KeEDzGnG5IUGDHdWteZ4RDDdqXgFkpl2zC
+         QP1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tDNi7Pq76OfCbCdDxGFAeY3yEV5OAvKRxPwWNq6c2gI=;
+        b=FmuzGo8hFRp7PgXOgv7Al4+qMJDUBZYl2p8hOqW5Ps738x3l8XYWXskJlR2hfW6FgN
+         6qjKd5/I6EnJuY04mBeVcdCEIxnF20JXDkQuqyxbwCq6dR1THvojflVaS/uAu9qubp5w
+         r5vSF6/EAsSG7Lrzt+jFzYiieNPOlKNRDy8tIPmplOPBKH6B8F27kTiAzADOG2fFl4AS
+         Rg/vxOu35QhoHr9JodbGRFqjfgbC05scALbZQsyE86CL6UIbVkMlVWaIyQaf4CtDpzoZ
+         ifGcLfdFA/Vjz0/J+hGov4U6rKOTpib/JYhr/geA5u4FJ0oi7393jb1MbgkJKmEaFL3z
+         cR3Q==
+X-Gm-Message-State: AOAM5327H78HO/cWb2csiCvQa4B2gFM8Dp9r8BrQDtKRP3DlesTiJqvT
+        36YIrYkzXdxvNf6lYmsYmOrmbEIQBMy80In3wi8VVg==
+X-Google-Smtp-Source: ABdhPJzXH/SH9ISXGP6z7pxMlQohQseRZtXZzZ6t0MqPW7IN6/wHVEY+DNN9jKRYkpmbFgdPziL4EhPQZKiFliNnuHE=
+X-Received: by 2002:a63:f07:: with SMTP id e7mr21045228pgl.341.1618992937492;
+ Wed, 21 Apr 2021 01:15:37 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210421060259.67554-1-songmuchun@bytedance.com> <YH/cVoUCTKu/UkqB@dhcp22.suse.cz>
+In-Reply-To: <YH/cVoUCTKu/UkqB@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 21 Apr 2021 16:15:00 +0800
+Message-ID: <CAMZfGtWh4tRiMrOTLvv5GHM1JUCt9b+UHf_DwLev32S=+iLW8g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: hugetlb: fix a race between
+ memory-failure/soft_offline and gather_surplus_pages
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki
-> Sent: 20 April 2021 19:02
-> 
-> Update BusLogic driver's messaging system to use `pr_cont' for
-> continuation lines, bringing messy output:
+On Wed, Apr 21, 2021 at 4:03 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> [Cc Naoya]
+>
+> On Wed 21-04-21 14:02:59, Muchun Song wrote:
+> > The possible bad scenario:
+> >
+> > CPU0:                           CPU1:
+> >
+> >                                 gather_surplus_pages()
+> >                                   page = alloc_surplus_huge_page()
+> > memory_failure_hugetlb()
+> >   get_hwpoison_page(page)
+> >     __get_hwpoison_page(page)
+> >       get_page_unless_zero(page)
+> >                                   zero = put_page_testzero(page)
+> >                                   VM_BUG_ON_PAGE(!zero, page)
+> >                                   enqueue_huge_page(h, page)
+> >   put_page(page)
+> >
+> > The refcount can possibly be increased by memory-failure or soft_offline
+> > handlers, we can trigger VM_BUG_ON_PAGE and wrongly add the page to the
+> > hugetlb pool list.
+>
+> The hwpoison side of this looks really suspicious to me. It shouldn't
+> really touch the reference count of hugetlb pages without being very
+> careful (and having hugetlb_lock held). What would happen if the
+> reference count was increased after the page has been enqueed into the
+> pool? This can just blow up later.
 
-If reasonably possible it is best to avoid use of pr_cont().
+If the page has been enqueued into the pool, then the page can be
+allocated to other users. The page reference count will be reset to
+1 in the dequeue_huge_page_node_exact(). Then memory-failure
+will free the page because of put_page(). This is wrong. Because
+there is another user.
 
-If there are concurrent writes from multiple cpu I believe
-the writes still get separated.
-(Something has to give...)
-
-For instance I've seen concurrent 'oops' generate the list of
-loaded modules one module per line with the two lists interleaved!
-
-Quite often one of the %p[A-Z] modifiers can help.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/hugetlb.c | 11 ++++-------
+> >  1 file changed, 4 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 3476aa06da70..6c96332db34b 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -2145,17 +2145,14 @@ static int gather_surplus_pages(struct hstate *h, long delta)
+> >
+> >       /* Free the needed pages to the hugetlb pool */
+> >       list_for_each_entry_safe(page, tmp, &surplus_list, lru) {
+> > -             int zeroed;
+> > -
+> >               if ((--needed) < 0)
+> >                       break;
+> >               /*
+> > -              * This page is now managed by the hugetlb allocator and has
+> > -              * no users -- drop the buddy allocator's reference.
+> > +              * The refcount can possibly be increased by memory-failure or
+> > +              * soft_offline handlers.
+> >                */
+> > -             zeroed = put_page_testzero(page);
+> > -             VM_BUG_ON_PAGE(!zeroed, page);
+> > -             enqueue_huge_page(h, page);
+> > +             if (likely(put_page_testzero(page)))
+> > +                     enqueue_huge_page(h, page);
+> >       }
+> >  free:
+> >       spin_unlock_irq(&hugetlb_lock);
+> > --
+> > 2.11.0
+> >
+>
+> --
+> Michal Hocko
+> SUSE Labs
