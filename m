@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254DB367488
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 23:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B1E367490
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 23:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243777AbhDUVEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 17:04:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42522 "EHLO mail.kernel.org"
+        id S243820AbhDUVFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 17:05:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243738AbhDUVE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 17:04:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12C7661430;
-        Wed, 21 Apr 2021 21:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619039036;
-        bh=IaBb1c3cX98QzIPvD5RUvOgFDyvnR2QxDhJCuML849Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C4PKMD6iLGZftn0UsLnqVBptSgwr3yY91BEsXwBDbraPTAiy++DCYaPXPAxnMeahO
-         mlmmUEjW2eECjPyg5+dEhfppczCwFZWLxlAJW+N1qn+YaogCJthXo5DmaDAiXPjkvC
-         B0rc8v+c1DEJzsw3F5ep2h/jA70gEDqwnBSQfvSrLDmalZJBSIMKv+BguVTBffpHUt
-         zMhwnh2TRKKtRM9zWlzeRpClGC0mpTHE1OAVIJ0K0vsXQ84PAg4Vz2mU8FIkU6CeQ7
-         v8DN7dPXuOw8yiOLFo6cRCxkns0os0sMv/d7gYeZ0euxVpxfEe3oyMv7ZCYZKdnuXK
-         ePAX/EiB++d4w==
-Received: by mail-ed1-f45.google.com with SMTP id y3so14655748eds.5;
-        Wed, 21 Apr 2021 14:03:55 -0700 (PDT)
-X-Gm-Message-State: AOAM533Qpzppni5a4hDIyOxyAVWqmXgQpRmtbCzoAA1KUKewAIoY4VCt
-        s7A+dJo4gYp7+npOWauwy9obTlQKW3VFLmUPHA==
-X-Google-Smtp-Source: ABdhPJxSwlINOXfFFJEjV/5x0Grlz+Qr9MJ+PMZ3ryTTbMIEDaePb7cG3Q6zi2myMXZvukAXKmVusm2aZTB01dhWQ00=
-X-Received: by 2002:aa7:cd51:: with SMTP id v17mr40993285edw.137.1619039034660;
- Wed, 21 Apr 2021 14:03:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210421154548.1192903-1-robh@kernel.org> <98f083c9-5e2d-6388-88f6-4883e025bebf@gmail.com>
-In-Reply-To: <98f083c9-5e2d-6388-88f6-4883e025bebf@gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 21 Apr 2021 16:03:42 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJJt5_zCcu-zFmZkPNtuNrOKZBiEoD2foM-uhU56Lg2Hg@mail.gmail.com>
-Message-ID: <CAL_JsqJJt5_zCcu-zFmZkPNtuNrOKZBiEoD2foM-uhU56Lg2Hg@mail.gmail.com>
-Subject: Re: [PATCH] of: overlay: Fix kerneldoc warning in of_overlay_remove()
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S240539AbhDUVFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 17:05:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7781161430;
+        Wed, 21 Apr 2021 21:04:58 +0000 (UTC)
+From:   Tom Zanussi <tom.zanussi@linux.intel.com>
+To:     vkoul@kernel.org
+Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
+        kan.liang@linux.intel.com, dave.jiang@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: [PATCH v3 0/2] dmaengine: idxd: IDXD pmu support
+Date:   Wed, 21 Apr 2021 16:04:53 -0500
+Message-Id: <cover.1619033785.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 2:38 PM Frank Rowand <frowand.list@gmail.com> wrote:
->
-> On 4/21/21 10:45 AM, Rob Herring wrote:
-> > '*ovcs_id' causes a warning because '*' is treated as bold markup:
-> >
-> > Documentation/devicetree/kernel-api:56: ../drivers/of/overlay.c:1184: WARNING: Inline emphasis start-string without end-string.
-> >
-> > Fix this to use the normal '@' markup for function parameters.
-> >
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Cc: Frank Rowand <frowand.list@gmail.com>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  drivers/of/overlay.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-> > index d241273170fd..67c9aa6f14da 100644
-> > --- a/drivers/of/overlay.c
-> > +++ b/drivers/of/overlay.c
-> > @@ -1181,7 +1181,7 @@ static int overlay_removal_is_ok(struct overlay_changeset *remove_ovcs)
-> >   * If an error is returned by an overlay changeset post-remove notifier
-> >   * then no further overlay changeset post-remove notifier will be called.
-> >   *
-> > - * Return: 0 on success, or a negative error number.  *ovcs_id is set to
-> > + * Return: 0 on success, or a negative error number.  @ovcs_id is set to
-> >   * zero after reverting the changeset, even if a subsequent error occurs.
-> >   */
-> >  int of_overlay_remove(int *ovcs_id)
-> >
->
-> The change results in incorrect information.  I am guessing that "@*ovcs_id"
-> would not be valid syntax (I have not tried it).  The changed version says
-> that the pointer ovcs_id is changed to zero, but the actual action is to
-> change the value pointed to by ovcs_id is changed to zero.  Is there a
-> valid syntax to say this?
+Hi,
 
-I was assuming the reader should know how parameters work in C...
-Having previously beat my head with the syntax here, I went with the
-easy route. Normal rSt syntax would be ``*`` to escape it. But
-kerneldoc isn't normal syntax. Turns out just plain "*@ovcs_id" works
-without warning and highlights the parameter (which was missing
-before).
+This is v3 of the IDXD pmu support patch, which addresses the comments
+from Vinod:
 
-I'll update the commit.
+ - Removed the default line for INTEL_IDXD_PERFMON making it default 'n'
 
-Rob
+ - Replaced #ifdef CONFIG_INTEL_IDXD_PERFMON with IS_ENABLED()
+
+ - Split the patch into two separate patches, the perfmon
+   implementation and the code that uses it in the IDXD driver.
+
+ - Added a new file,
+   Documentation/ABI/testing/sysfs-bus-event_source-devices-dsa that
+   documents the new format and cpumask attributes, and added better
+   comments for those in the code.
+
+ - Changed 'dogrp' to 'do_group' in perfmon_collect_events()
+
+ - Moved 'int idx' inside the loop in perfmon_validate_group() to the
+   top of function.
+
+ - In perfmon_pmu_read_counter(), return ioread64() directly and get
+   rid of cntrdata.
+
+I also fixed some erroneous code in perfmon_counter_overflow() that
+because of my misreading of the spec caused unintended clearing of
+wrong bits.  According to the spec you need to write 1 rather than 0
+to an OVFSTATUS bit to clear it.
+
+Thanks,
+
+Tom
+
+ -- original v2 text --
+
+Hi,
+
+This is v2 of the IDXD pmu support patch, which is the same as v1 but
+removes a few assigned-but-unused variables reported by kernel test
+robot <lkp@intel.com>.
+
+ -- original v1 text --
+
+Hi,
+
+This patchset implements initial pmu support for the Intel DSA (Data
+Streaming Accelerator [1]), which I'm hoping can go into 5.13.
+
+I'm also hoping to supply a couple follow-on patches in the near
+future, but I'm not yet sure how much sense they make, so I thought
+I'd throw a couple ideas out there and maybe get some opinions before
+going forward with them:
+
+  - The perf userspace interface for this isn't exactly user-friedly,
+    in that you currently need to specify numeric values for field
+    values:
+
+     # perf stat -e dsa0/filter_wq=0x1,filter_tc=0x1,filter_sz=0x7,
+                    filter_eng=0x1,event=0x8,event_category=0x3/
+
+    It would be nicer to be able to specify those values symbolically
+    instead, and the way to do that seems to be via some JSON files in
+    perf userspace.
+
+  - Some of the DSA pmu support is patterned after existing uncore
+    code, and there seems to be at least some opportunity to
+    consolidate some of the things they both do into common code, such
+    as the cpumask device attributes and related cpu hotplug support.
+    At this point I'm not sure how much sense it makes to put any
+    effort into that, but would be willing to try if there would be
+    some interest in it, especially considering there will probably be
+    future pmu support added that could benefit from it.
+
+Thanks,
+
+Tom
+
+Tom Zanussi (2):
+  dmaengine: idxd: Add IDXD performance monitor support
+  dmaengine: idxd: Enable IDXD performance monitor support
+
+ .../sysfs-bus-event_source-devices-dsa        |  30 +
+ drivers/dma/Kconfig                           |  12 +
+ drivers/dma/idxd/Makefile                     |   2 +
+ drivers/dma/idxd/idxd.h                       |  45 ++
+ drivers/dma/idxd/init.c                       |   9 +
+ drivers/dma/idxd/irq.c                        |   5 +-
+ drivers/dma/idxd/perfmon.c                    | 662 ++++++++++++++++++
+ drivers/dma/idxd/perfmon.h                    | 119 ++++
+ drivers/dma/idxd/registers.h                  | 108 +++
+ include/linux/cpuhotplug.h                    |   1 +
+ 10 files changed, 989 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-event_source-devices-dsa
+ create mode 100644 drivers/dma/idxd/perfmon.c
+ create mode 100644 drivers/dma/idxd/perfmon.h
+
+-- 
+2.17.1
+
