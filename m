@@ -2,94 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475803670F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389BC3670F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244643AbhDURLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:11:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:38296 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237858AbhDURKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:10:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0047E11FB;
-        Wed, 21 Apr 2021 10:10:16 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.3.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BC1C3F694;
+        id S238594AbhDURKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:10:55 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:33337 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237525AbhDURKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:10:47 -0400
+Received: by mail-ot1-f53.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso17090841otl.0;
         Wed, 21 Apr 2021 10:10:14 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 18:10:05 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        He Zhe <zhe.he@windriver.com>, oleg@redhat.com,
-        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
-        eparis@redhat.com, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm64: ptrace: Add is_syscall_success to handle
- compat
-Message-ID: <20210421171005.GA46949@C02TD0UTHF1T.local>
-References: <20210416075533.7720-1-zhe.he@windriver.com>
- <20210416123322.GA23184@arm.com>
- <20210416133431.GA2303@C02TD0UTHF1T.local>
- <20210419121932.GA30004@willie-the-truck>
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e0xWzzrYHgN7CwVeKC5YSWwbefoDagQfjjCSIuIGdkk=;
+        b=GJjakUme88UXAIo3Hp7GGOq45grhSO63FKN8D6v8Paw7tZwAV+W2IFfTzEdIeA5BUj
+         ksuafC+8FSmKXjApUmTNxejzdD2PAuzCd82nyFhQgVqEoHZ2OieU1t/hqhzPHABl7cpX
+         ZDpSWgoAS1XFMXnbN1Am+OgwbRMTO/tj4LyKHyx+YCHKqqntYzTIoo9KPYnLwUh+1JTP
+         CMjv3bWtpKL5gGHNSfHN7S7ffM/HprKZfj6asSN1Aho0kfRUlGHLvSy2y6+teG61e0KS
+         IlctDIF61LU6cJUpOup7pvYogL176sy5j9fTnDlEQDPnINkBsU1MkBEvSevuOH3IlTSm
+         R1WQ==
+X-Gm-Message-State: AOAM532NB3h4WMCQFkvmEtZbMoTNKg9MfeIT4r8xdKnnys/NWkT3EUC7
+        lgI9vKy1nNp3rAFB0MJoPKsHtOh48g==
+X-Google-Smtp-Source: ABdhPJypK4E7aeXDEY++vjKPabPUUmMwWk6RUH2mGwu/pJkMcLh3KjbnujNyOy8QDhNdXav2oMUGIg==
+X-Received: by 2002:a9d:39e4:: with SMTP id y91mr22109670otb.277.1619025013631;
+        Wed, 21 Apr 2021 10:10:13 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j4sm590199oiw.0.2021.04.21.10.10.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:10:12 -0700 (PDT)
+Received: (nullmailer pid 1306257 invoked by uid 1000);
+        Wed, 21 Apr 2021 17:10:09 -0000
+Date:   Wed, 21 Apr 2021 12:10:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        devicetree@vger.kernel.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: Convert to DT schema
+Message-ID: <20210421171009.GA1300559@robh.at.kernel.org>
+References: <1618936010-16579-1-git-send-email-gubbaven@codeaurora.org>
+ <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419121932.GA30004@willie-the-truck>
+In-Reply-To: <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 01:19:33PM +0100, Will Deacon wrote:
-> On Fri, Apr 16, 2021 at 02:34:41PM +0100, Mark Rutland wrote:
-> > I think this is a problem we created for ourselves back in commit:
-> > 
-> >   15956689a0e60aa0 ("arm64: compat: Ensure upper 32 bits of x0 are zero on syscall return)
-> > 
-> > AFAICT, the perf regs samples are the only place this matters, since for
-> > ptrace the compat regs are implicitly truncated to compat_ulong_t, and
-> > audit expects the non-truncated return value. Other architectures don't
-> > truncate here, so I think we're setting ourselves up for a game of
-> > whack-a-mole to truncate and extend wherever we need to.
-> > 
-> > Given that, I suspect it'd be better to do something like the below.
-> > 
-> > Will, thoughts?
+On Tue, Apr 20, 2021 at 09:56:49PM +0530, Venkata Lakshmi Narayana Gubba wrote:
+> Converted Qualcomm Bluetooth binidings to DT schema.
 > 
-> I think perf is one example, but this is also visible to userspace via the
-> native ptrace interface and I distinctly remember needing this for some
-> versions of arm64 strace to work correctly when tracing compat tasks.
+> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> ---
+>  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 69 -----------------
+>  .../bindings/net/qualcomm-bluetooth.yaml           | 87 ++++++++++++++++++++++
+>  2 files changed, 87 insertions(+), 69 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
 
-FWIW, you've convinced me on your approach (more on that below), but
-when I went digging here this didn't seem to be exposed via ptrace --
-for any task tracing a compat task, the GPRs are exposed via
-compat_gpr_{get,set}(), which always truncate to compat_ulong_t, giving
-the lower 32 bits. See task_user_regset_view() for where we get the
-regset.
+> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> new file mode 100644
+> index 0000000..55cd995
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Bluetooth Chips
+> +
+> +maintainers:
+> +  - Rob Herring <robh@kernel.org>
+> +  - Marcel Holtmann <marcel@holtmann.org>
 
-Am I missing something, or are you thinking of another issue you fixed
-at the same time?
+This should be someone that knows and cares about this h/w. I don't.
 
-> So I do think that clearing the upper bits on the return path is the right
-> approach, but it sounds like we need some more work to handle syscall(-1)
-> and audit (what exactly is the problem here after these patches have been
-> applied?)
+> +
+> +description:
+> +  This binding describes Qualcomm UART-attached bluetooth chips.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qca6174-bt
+> +      - qcom,qca9377-bt
+> +      - qcom,wcn3990-bt
+> +      - qcom,wcn3991-bt
+> +      - qcom,wcn3998-bt
+> +      - qcom,qca6390-bt      
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: gpio specifier used to enable chip
+> +   
+> +  clocks:
+> +    maxItems: 1
+> +    description: clock provided to the controller (SUSCLK_32KHZ)
+> +
+> +  vddio-supply:
+> +    description: VDD_IO supply regulator handle
+> +
+> +  vddxo-supply:
+> +    description: VDD_XO supply regulator handle
+> +
+> +  vddrf-supply:
+> +    description: VDD_RF supply regulator handle
+> +
+> +  vddch0-supply:
+> +    description: VDD_CH0 supply regulator handle
+> +
+> +  max-speed: 
+> +    description: see Documentation/devicetree/bindings/serial/serial.yaml
+> +
+> +  firmware-name:
+> +    description: specify the name of nvm firmware to load
+> +
+> +  local-bd-address:
+> +    description: see Documentation/devicetree/bindings/net/bluetooth.txt
+> +
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    uart {
+> +        label = "BT-UART";
 
-From digging a bit more, I think I agree, and I think these patches are
-sufficient for audit. I have some comments I'll leave separately.
+Why do you need a label for in internal port where you've described the 
+connection?
 
-The remaining issues are wherever we assign a signed value to a compat
-GPR without explicit truncation. That'll leak via perf sampling the user
-regs, but I haven't managed to convince myself whether that causes any
-functional change in behaviour for audit, seccomp, or syscall tracing.
+> +        status = "okay";
 
-Since we mostly use compat_ulong_t for intermediate values in compat
-code, it does look like this is only an issue for x0 where we assign an
-error value, e.g. the -ENOSYS case in el0_svc_common. I'll go see if I
-can find any more.
+Don't show status in examples.
 
-With those fixed up we can remove the x0 truncation from entry.S,
-which'd be nice too.
-
-Thanks,
-Mark.
+> +
+> +        bluetooth {
+> +            compatible = "qcom,qca6174-bt";
+> +            enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
+> +            clocks = <&divclk4>;
+> +            firmware-name = "nvm_00440302.bin";
+> +        };
+> +    };
+> +  - |
+> +    uart {
+> +
+> +        bluetooth {
+> +            compatible = "qcom,wcn3990-bt";
+> +            vddio-supply = <&vreg_s4a_1p8>;
+> +            vddxo-supply = <&vreg_l7a_1p8>;
+> +            vddrf-supply = <&vreg_l17a_1p3>;
+> +            vddch0-supply = <&vreg_l25a_3p3>;
+> +            max-speed = <3200000>;
+> +            firmware-name = "crnv21.bin";		
+> +        };
+> +    };
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
