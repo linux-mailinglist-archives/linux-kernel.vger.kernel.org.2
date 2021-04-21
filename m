@@ -2,95 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5045E36655A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE7236655F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235893AbhDUGX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:23:58 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:32941 "EHLO ozlabs.org"
+        id S236090AbhDUGYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:24:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57492 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhDUGX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:23:56 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S235975AbhDUGYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:24:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618986222; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=joVt7EiJpq5MpkTsFfA7/raYnftwlEGm8PrYlH6jj2I=;
+ b=DkbHvbE4w1MMfJu+bT6r5gh7em96MbTYBJLGvHcXMYrQnFT5u1ch9PogQIHECeD9549KgE50
+ cDWAPPc77nn0MRK3sh8rLoFryychDN9Wn0iIB+LnmGbxqTiJ1OA3CJfwy25kaP8lUaNphh4g
+ LTWN3/UHaaoQxgdXwivg+DlpBks=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 607fc4db215b831afb7a20d8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 06:23:23
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C9C07C4338A; Wed, 21 Apr 2021 06:23:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQ9V223l2z9sXM;
-        Wed, 21 Apr 2021 16:23:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618986202;
-        bh=oc+lUy7m3Y5Ufm0AlDocBfZTDxzyGbg9KJ4PmGy6emw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=osTHEMFWr5h2Q0vlhgH0tYKwCMrwD2f5OXriteJPKX3L9QH1ERw2rImZEOqjMBliu
-         D9oZIuOlQCk3lycRDrlKad4/6j2FyxzM1RdDdTETF+gP0lEFFPoTev6rDj9akg7BqZ
-         zP00zYwwR26fq8C/ltiw4bllbvSpGq9D5NEAb8KFpBepa0JbNtia9rT9KlpZ2ByoZ0
-         XNR7aHPwwWvHukNK9wVzwZ/s/5cXC+E+B+ThfluN4QqaLr2n36SLlO7icfWDeHBszo
-         umjRgMD1dkW1hDTeOe3bLJ8baA4qG2yNAINobgFWAlVqahe8kI9spsPwSrgrBI/nHH
-         xZxmNLHxh2MJQ==
-Date:   Wed, 21 Apr 2021 16:23:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grant Likely <grant.likely@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of Linus' tree
-Message-ID: <20210421162320.1e3ff588@canb.auug.org.au>
-In-Reply-To: <20210329200348.24a9a8be@canb.auug.org.au>
-References: <20210329200348.24a9a8be@canb.auug.org.au>
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73638C433D3;
+        Wed, 21 Apr 2021 06:23:21 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8td+aPeckMG4nSs_jfm1gDM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 21 Apr 2021 11:53:21 +0530
+From:   skakit@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 4/4] dt-bindings: input: pm8941-pwrkey: Convert pm8941
+ power key binding to yaml
+In-Reply-To: <20210409185044.GA3946207@robh.at.kernel.org>
+References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
+ <1617881469-31965-5-git-send-email-skakit@codeaurora.org>
+ <20210409185044.GA3946207@robh.at.kernel.org>
+Message-ID: <68095bad57e336c70b622c5b8d5870b1@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8td+aPeckMG4nSs_jfm1gDM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Rob,
 
-Hi all,
+On 2021-04-10 00:20, Rob Herring wrote:
+> On Thu, Apr 08, 2021 at 05:01:09PM +0530, satya priya wrote:
+>> Convert qcom pm8941 power key binding from .txt to .yaml format.
+>> 
+>> Signed-off-by: satya priya <skakit@codeaurora.org>
+[...]
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - qcom,pm8941-pwrkey
+>> +      - qcom,pm8941-resin
+>> +      - qcom,pmk8350-pwrkey
+>> +      - qcom,pmk8350-resin
+>> +
+>> +  interrupts:
+> 
+> How many?
+> 
 
-On Mon, 29 Mar 2021 20:04:10 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging Linus' tree, today's linux-next build (htmldocs) produced
-> these warnings:
->=20
-> include/linux/of.h:1211: warning: Function parameter or member 'output' n=
-ot described in 'of_property_read_string_index'
-> include/linux/of.h:1211: warning: Excess function parameter 'out_string' =
-description in 'of_property_read_string_index'
->=20
-> Introduced by commit
->=20
->   a87fa1d81a9f ("of: Fix overflow bug in string property parsing function=
-s")
->=20
-> I assume that these warnings have turned up now due to better(?) tooling.
+ok, will add maxItems.
 
-I am still seeing these warnings (as of next-20210420).
+>> +    description: |
+>> +          Key change interrupt; The format of the specifier is
+>> +          defined by the binding document describing the node's
+>> +          interrupt parent.
+> 
+> The 2nd sentence is every 'interrupts' property. Drop.
+> 
 
---=20
-Cheers,
-Stephen Rothwell
+Will remove the description.
 
---Sig_/8td+aPeckMG4nSs_jfm1gDM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+>> +
+>> +  debounce:
+>> +    description: |
+>> +          Time in microseconds that key must be pressed or
+>> +          released for state change interrupt to trigger.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +
+>> +  bias-pull-up:
+>> +    description: |
+>> +           Presence of this property indicates that the KPDPWR_N
+>> +           pin should be configured for pull up.
+>> +    $ref: /schemas/types.yaml#/definitions/flag
+>> +
+>> +  linux,code:
+>> +    description: |
+>> +           The input key-code associated with the power key.
+>> +           Use the linux event codes defined in
+>> +           include/dt-bindings/input/linux-event-codes.h
+>> +           When property is omitted KEY_POWER is assumed.
+>> +    $ref: "input.yaml#"
+> 
+> You've just defined that 'linux,code' is a node with properties defined
+> in input.yaml. Need to move this up to the top level.
+> 
 
------BEGIN PGP SIGNATURE-----
+allOf:
+   $ref: "input.yaml#"
+That means I should add like this at the beginning? please correct me if 
+wrong.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB/xNgACgkQAVBC80lX
-0GxHtwf8DOVzFP2iS2+jYYbY56WtZuAZGt0iwh38RgCOn/+IUeuqlV9RqN+xMJDk
-0cURrmKy2DGk2wmvV/w2oJb92nqS866Q/9zcWbbnLgK6aOYgpGfS39xhmy3maSAO
-2PED9mKr72BSZ0eR1+POu7dYHeXqFSVs/JoZF8ykFuzsHK49eL8G3oprcveWw6wY
-J8CyUYzA6Fjjz/DmOHkb2+IJPQ3mRkt75pOseVTyuiHiZjHTIteMK4JYZ1btl1u7
-rIjtqsoWgAGoiFaVDf4+i1Ht2gFRCfZubm/XalNIGbPWrqZ1UEkkl9s67IKMKEyf
-U4gmBGA98VLpyF9Nj3U6V/0fP6PuEg==
-=lQha
------END PGP SIGNATURE-----
+>> +
+>> +required:
+>> +  - compatible
+>> +  - interrupts
+>> +
+>> +additionalProperties: false
+[...]
 
---Sig_/8td+aPeckMG4nSs_jfm1gDM--
+Thanks,
+Satya Priya
