@@ -2,78 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC9736747C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC4736747D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 22:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243722AbhDUU65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 16:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        id S243731AbhDUVA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 17:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240376AbhDUU6z (ORCPT
+        with ESMTP id S240376AbhDUVAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 16:58:55 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D205C06174A;
-        Wed, 21 Apr 2021 13:58:20 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a1so49309554ljp.2;
-        Wed, 21 Apr 2021 13:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HbjyALLYT9sc4ltzHbyvFrQq0il4AdDcmjIqRRdwAcg=;
-        b=JC4S4AeHQz+8tvq0dKWeCwyFl4AglL83Ha1TC5CiNL8zURhrmL/Ym9y3VD2bHKflDl
-         3wT/+06zNZJBmopz7lqjc9wftqHaWu+1u8JGHF5ikLiKM2jfoocZcNstd0E0PqHTtc9a
-         RjWTKWexDoTIXYUIkDoZmHJm4KrMehSHSTvbdirJs8l9yG4fmXTrCLEeZuGFa5fC7hgO
-         VvW2Fycr44EPe1SW34Bsv/ROlsppm8V4CvVxocL//QQ60OgxlgTiPW6C5vE8WE49LBoW
-         Fjb2akZP3c4mXkk8Q2Xvt9CxUl1lYMRoCZXn9NTQkeDgZWNIotuAaMUEKuecXIcEK/hy
-         mxXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HbjyALLYT9sc4ltzHbyvFrQq0il4AdDcmjIqRRdwAcg=;
-        b=r/zegBTTfhN9d3rkae0k/fHzMZJ8Hx+odJLAAi/kY6J+Cbazrehn4USOda1ptX99JB
-         wJU7k+tfZSQ0uYezx0h88lwrOpZSTDeDoxPljRHn2ZA6oyn3DNJ03/8JNw+Z/tYXge0h
-         mV1D81VzApmnQe3lpVS0nX+v1g4oZIdgmvUGjT2gNRsrZsXbN6ZGjqUNhdECCZnMA1Ea
-         qId4nrZuSu31qqgG2HQBJ/vwCS8v1ta/0OFZSry0ZrF48bi2br/F8pil5jVpq81ZHP07
-         FepHh7uJ5Rc58xrjnkpmZ8KRcM9kS5WmWJiM5xJRrSxj6js0xrrVN9PduISJomcKCapK
-         /j0Q==
-X-Gm-Message-State: AOAM530Hj9VL6laamksLfX+immFDJ7iXSDXJjeBBfZUHuyI1qRcCK5pa
-        LGEWeHoNR8HO0jdGxP5q/YNC1E+ZC98=
-X-Google-Smtp-Source: ABdhPJwWffQ74QyHL/EUXvvs7iEVOZjmTLuLf2YV7vbh+hKaUXslKziidpXcBtFx7FBT7TonYudAiA==
-X-Received: by 2002:a2e:6a05:: with SMTP id f5mr102861ljc.23.1619038698931;
-        Wed, 21 Apr 2021 13:58:18 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
-        by smtp.googlemail.com with ESMTPSA id b10sm66928ljr.109.2021.04.21.13.58.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 13:58:18 -0700 (PDT)
-Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
- <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
- <f2b7938f-12ea-529b-da5e-83c9c8074e1a@gmail.com>
- <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
- <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
- <CAHp75Vckb-B=rLsZA3At2zU95No9SUvRo24xNodObZEv-UU81Q@mail.gmail.com>
- <b5a2ce37-b386-40b3-d9ad-6e77deda74e6@metafoo.de>
- <CAHp75VdY2NXJJGkT=so847wjxS3iCrsiZsvBR-V68XVM7HeRyw@mail.gmail.com>
- <CAHp75VczPd5kNBTD+LroYnVo31azYHBD8RZdy9RaQEK3KvObHQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <af175b05-e37f-f9b3-cfd9-8bf48add3e99@gmail.com>
-Date:   Wed, 21 Apr 2021 23:58:17 +0300
+        Wed, 21 Apr 2021 17:00:24 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B83EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 13:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=rfZ2allPP+v8X2sml5OGsmvKn3aZtnzQ4fKQFLZOE34=; b=OlWMvgCXyK582OBPpn1kHYBz2K
+        6jKh7dCqNYyMAG+uW5cOdGkml6d3Q20/rVX2CAUzHBzUt69kefVDoBQc/DCeIIx7kOHk6ky+EkTD1
+        ofzvdBvhOjs17A5HTeKgGOSqX2ouM1UyNyvumkaQwhDjguT2/iHtT+1ht+xFBPjTONuyQ5xvJ/D2Y
+        j4FeqPFl+vHqbWzHf13pdnNuyo3uPJ7xSpNnEQtd8z7/pBLKFZdXpy1T8IyHcmGaq+LjBaSem+uB9
+        4tuCG/kYX4EMI7MgCrdkGmmM+BbdTV9XJ3wPkcDKj5p3Afnk6tHAtOQFDQ/BqnPSj8VIW92b4vy3k
+        uoj7YMRw==;
+Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZJwc-00FBur-8o; Wed, 21 Apr 2021 20:59:36 +0000
+Subject: Re: [PATCH v2] powerpc: make ALTIVEC select PPC_FPU
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org,
+        Segher Boessenkool <segher@kernel.crashing.org>
+References: <20210421025605.10868-1-rdunlap@infradead.org>
+ <60ac6ff1-6bfa-d335-ac0e-336fe3e50587@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d2821589-0205-cd80-ef81-050d396f8cc1@infradead.org>
+Date:   Wed, 21 Apr 2021 13:59:27 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VczPd5kNBTD+LroYnVo31azYHBD8RZdy9RaQEK3KvObHQ@mail.gmail.com>
+In-Reply-To: <60ac6ff1-6bfa-d335-ac0e-336fe3e50587@csgroup.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,63 +51,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.04.2021 23:04, Andy Shevchenko пишет:
-> On Wed, Apr 21, 2021 at 11:02 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+On 4/20/21 10:19 PM, Christophe Leroy wrote:
+> 
+> 
+> Le 21/04/2021 à 04:56, Randy Dunlap a écrit :
+>> On a kernel config with ALTIVEC=y and PPC_FPU not set/enabled,
+>> there are build errors:
 >>
->> On Wed, Apr 21, 2021 at 11:00 PM Lars-Peter Clausen <lars@metafoo.de> wrote:
->>> On 4/21/21 9:41 PM, Andy Shevchenko wrote:
->>>> On Wed, Apr 21, 2021 at 10:05 PM Andy Shevchenko
->>>> <andy.shevchenko@gmail.com> wrote:
->>>>> On Wed, Apr 21, 2021 at 1:14 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->>>>>> On Tue, Apr 20, 2021 at 11:26 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->>>>>>
->>>>>>> I found a non-kernel example
->>>>>>> which uses a similar equation [1], but in a different form. The main
->>>>>>> difference is that the Arduino code interprets a raw temperature value
->>>>>>> as a signed integer, while upstream assumes it's unsigned.
->>>>>>>
->>>>>>> [1]
->>>>>>> https://github.com/blaisejarrett/Arduino-Lib.MPU3050/blob/master/MPU3050lib.cpp#L111
->>>>>> Oh that's nice. Room temperature as mentioned is 20 deg C
->>>>>> I think?
->>>>>>
->>>>>> The divide by 280 part seems coherent in all examples.
->>>>>>
->>>>>>> Still, even if assume that the raw temperature is a signed s16 value, it
->>>>>>> gives us ~35C in a result, which should be off by ~10C.
->>>>> Actually here [1] it says in chapter 3.1 that room temperature is 35°C.
->>>>>
->>>>> Range: -30°C .. +85°C
->>>>> Sensitivity: 280 LSB/°C
->>>>> Room temperature offset: 35°C = -13200 LSB
->>>>>
->>>>> [1]: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
->>>>
->>>> So, if I'm reading this and the register description right the value
->>>> is in the range
->>>> -32768..32767.
->>>> -13200 defines 35°C
->>>>
->>>> 50000 as mentioned by Dmitry is actually -15536. So, it means that the
->>>> more negative a value is the higher temperature is shown.
->>>>
->>>> Since it's linearized scale, now we can see that
->>>>
->>>> (13200 -15536)/280 + 35 gives us 26.66.
->>>>
->>>> Does it make sense?
->>> (13200 + x)/280 + 35 = (23000 + x)/280, which is what is in the driver.
->>> So the only bit missing is the cast to s16.
+>> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
+>>             enable_kernel_fp();
+>> ../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
+>> ../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
+>>    637 |   put_vr(rn, &u.v);
+>>        |   ^~~~~~
+>> ../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
+>> ../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
+>>    660 |   get_vr(rn, &u.v);
+>>        |   ^~~~~~
 >>
->> Cool! So, that cast needs a very good comment then :-)
+>> In theory ALTIVEC is independent of PPC_FPU but in practice nobody
+>> is going to build such a machine, so make ALTIVEC require PPC_FPU
+>> by selecting it.
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> Cc: Segher Boessenkool <segher@kernel.crashing.org>
+>> Cc: lkp@intel.com
+>> ---
+>> v2: change ALTIVEC depends on PPC_FPU to select (Christophe and Michael)
+>>
+>>   arch/powerpc/platforms/86xx/Kconfig    |    1 +
+>>   arch/powerpc/platforms/Kconfig.cputype |    2 ++
+>>   2 files changed, 3 insertions(+)
+>>
+>> --- linux-next-20210416.orig/arch/powerpc/platforms/86xx/Kconfig
+>> +++ linux-next-20210416/arch/powerpc/platforms/86xx/Kconfig
+>> @@ -4,6 +4,7 @@ menuconfig PPC_86xx
+>>       bool "86xx-based boards"
+>>       depends on PPC_BOOK3S_32
+>>       select FSL_SOC
+>> +    select PPC_FPU
 > 
-> "will need" (since it's not yet in upstream)
+> Now that ALTIVEC selects PPC_FPU by itself, I don't think you need that.
 > 
+>>       select ALTIVEC
+>>       help
+>>         The Freescale E600 SoCs have 74xx cores.
+>> --- linux-next-20210416.orig/arch/powerpc/platforms/Kconfig.cputype
+>> +++ linux-next-20210416/arch/powerpc/platforms/Kconfig.cputype
+>> @@ -186,6 +186,7 @@ config E300C3_CPU
+>>   config G4_CPU
+>>       bool "G4 (74xx)"
+>>       depends on PPC_BOOK3S_32
+>> +    select PPC_FPU
 > 
+> Same
 
-The exact value I'm getting is 52144, which is -13392 and gives us 35C.
-I see that the datasheet says it should be a temperature of the sensor
-die, so maybe it's a correct value, although it means that it's warm as
-much as ARM CPU core, which is questionable to me whether it's a correct
-value.
+Of course. v3 coming up.
+Thanks.
+
+>>       select ALTIVEC
+>>     endchoice
+>> @@ -310,6 +311,7 @@ config PHYS_64BIT
+>>   config ALTIVEC
+>>       bool "AltiVec Support"
+>>       depends on PPC_BOOK3S_32 || PPC_BOOK3S_64 || (PPC_E500MC && PPC64)
+>> +    select PPC_FPU
+>>       help
+>>         This option enables kernel support for the Altivec extensions to the
+>>         PowerPC processor. The kernel currently supports saving and restoring
+>>
+
+
+-- 
+~Randy
