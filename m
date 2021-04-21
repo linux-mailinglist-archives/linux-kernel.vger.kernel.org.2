@@ -2,60 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E983E366A7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63497366A82
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239508AbhDUMKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbhDUMKO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:10:14 -0400
-X-Greylist: delayed 341 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 21 Apr 2021 05:09:41 PDT
-Received: from mblankhorst.nl (mblankhorst.nl [IPv6:2a02:2308::216:3eff:fe92:dfa3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B43C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:09:41 -0700 (PDT)
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH] drm/i915: Fix docbook descriptions for i915_gem_shrinker
-Date:   Wed, 21 Apr 2021 14:09:38 +0200
-Message-Id: <20210421120938.546076-1-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.31.0
+        id S239632AbhDUMK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:10:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239515AbhDUMK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF40613E0;
+        Wed, 21 Apr 2021 12:09:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619006993;
+        bh=2LUCdUr5aEbuS1s48Lx12yxSKE9UTo8U9uXYQqqVcPE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kOK4H0EODUbCzdjm3fyht0gXrb+4/8PlHme0ZoTVpw5TXUXaocApBDlkOm8Vdix+7
+         avQeX4MjFkRoXz68XaMTXgtYRK/hrLvKDl9FD875kYDXAF3SBbPLriAvODgJvLTl7S
+         iwazzRCpbQlT/58e7dXjhV5piMCHk8kvQbNv15zM=
+Date:   Wed, 21 Apr 2021 14:09:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     matti.vaittinen@fi.rohmeurope.com,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
+Message-ID: <YIAWDh5tMl607kHv@kroah.com>
+References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
+ <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
+ <YFn5CSB1O3i+SzgR@kroah.com>
+ <da0233f3223d7c0816581afe0969caf0abe20378.camel@fi.rohmeurope.com>
+ <96935c55-c799-595e-024c-56fd352f279e@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96935c55-c799-595e-024c-56fd352f279e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following htmldocs warning:
-drivers/gpu/drm/i915/gem/i915_gem_shrinker.c:102: warning: Function parameter or member 'ww' not described in 'i915_gem_shrink'
+On Wed, Apr 21, 2021 at 01:58:29PM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 4/21/21 9:51 AM, Matti Vaittinen wrote:
+> > 
+> > On Tue, 2021-03-23 at 15:19 +0100, Greg KH wrote:
+> >> On Tue, Mar 23, 2021 at 02:58:28PM +0100, Hans de Goede wrote:
+> >>> Hi,
+> >>>
+> >>> On 3/23/21 2:56 PM, Matti Vaittinen wrote:
+> >>>> Devm helper header containing small inline helpers was added.
+> >>>> Hans promised to maintain it.
+> >>>>
+> >>>> Add Hans as maintainer and myself as designated reviewer.
+> >>>>
+> >>> Ultimately this is up to Greg though, so lets wait and see what
+> >>> Greg has to say about this.
+> >>
+> >> Can we move some of the devm_* calls in include/device.h into here as
+> >> well so that you all can be in charge of them instead of me?
+> > 
+> > Seems like this was left w/o answer. I guess the question was pointed
+> > to Hans
+> 
+> I believe that Greg was (mostly) joking here. At least that is how
+> I interpreted Greg's reply,which is why I did not answer.
 
-Fixes: cf41a8f1dc1e ("drm/i915: Finally remove obj->mm.lock.")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
----
- drivers/gpu/drm/i915/gem/i915_gem_shrinker.c | 1 +
- 1 file changed, 1 insertion(+)
+I have no idea what this thread was about anymore, sorry :)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-index 7545ddd83659..f4fb68e8955a 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-@@ -72,6 +72,7 @@ static void try_to_writeback(struct drm_i915_gem_object *obj,
- 
- /**
-  * i915_gem_shrink - Shrink buffer object caches
-+ * @ww: i915 gem ww acquire ctx, or NULL
-  * @i915: i915 device
-  * @target: amount of memory to make available, in pages
-  * @nr_scanned: optional output for number of pages scanned (incremental)
--- 
-2.31.0
+> Also note that Greg merged this series, but not this patch,
+> so the new devm-helpers.h file will presumably be maintained by Greg.
 
+What's one more file...
+
+thanks,
+
+greg k-h
