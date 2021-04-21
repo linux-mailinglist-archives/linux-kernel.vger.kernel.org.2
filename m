@@ -2,160 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC95366FA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF6C366FA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244181AbhDUQBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        id S241633AbhDUQD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244164AbhDUQBh (ORCPT
+        with ESMTP id S240106AbhDUQDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:01:37 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD002C06174A;
-        Wed, 21 Apr 2021 09:01:03 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id m16so30942292qtx.9;
-        Wed, 21 Apr 2021 09:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IZX0f4l29NX/01aOrqPfZSbd0Re69bnUWgeaZTOG6n8=;
-        b=o6ZStsWKClgUKYeiAudSs0S4iegwa10djaCsrD0H1i/sVg3CH37ojWeJGWsaqjBNix
-         fg4qq8UtjTiyYBHRHdhfzGVBeu60+ANyg0e6zfv/f2eEEkVCWegv312mtIfGQSMAUa1Y
-         rGr8+H9yh/E5oO3CAH6rPqeuF8S75Rn1nLeoF7reuqGBG8ZNbRub8J8Ql97IYlVcSSrj
-         JuVNOjy5o3PrdHKLn9Ix1yKaUEZX39wcmQwGOf63y8jmIedlt0vUieq9KFBgvfYfnEJz
-         ddz6Ikj7ARk+gjuBYBN4auAphwkWWndTidZuF2IfdF7ok9j+y210jKxZMNDbiZ8IykVw
-         g8xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IZX0f4l29NX/01aOrqPfZSbd0Re69bnUWgeaZTOG6n8=;
-        b=m8GfmeCGEZErVcaz8jSKJ4IOazyaavQv6YIAcZqa76ccgr4MkGG8x1SF1OvUw+nEWX
-         CkPiELVZCO9cAdmlmgce8eKEiZ2ecdBvaj1HWIUztbm9foCq9ubJ0vgx16vYo33s4OFK
-         ZJ78Cu0dmkaMmERIiVwh8nnngZx10L8le4zc62fuNA6csH2Z4QBJN1tQ4nGgEko2xHAj
-         M68bxmo3/uHlAdmLGiFKpJ0sZY2WX3Jy1NEaz3cAUwaRvLGf9lZ4rhxoVY6vZt/aXb+k
-         m6GJ12zpCP7caCdCOnYkM20QPIzT3Yl576FS1XNTVh8noudrDB0u4wfhPgUxT8A8OwKh
-         3Dwg==
-X-Gm-Message-State: AOAM532k9GlvLwPpREX3JYOz9Fy5ZZEmrIkL64QCdx/SXBq2RLLlJ8qT
-        ECnj606bADHSZfVrLP9/pou4WbRUYUkfs+3EeOYG7H/BYdw=
-X-Google-Smtp-Source: ABdhPJz/AkuXc+OhH2STai27k2AjCowcdJgOGN5BmBlmK48LFuPiREhp3bYkoIvSCb/7p7c7gembzxKuDg2BBH4ejx0=
-X-Received: by 2002:ac8:b45:: with SMTP id m5mr22366004qti.56.1619020862693;
- Wed, 21 Apr 2021 09:01:02 -0700 (PDT)
+        Wed, 21 Apr 2021 12:03:25 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF366C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 09:02:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 0DEFE1F41EF9
+Received: by earth.universe (Postfix, from userid 1000)
+        id 2CD463C0C96; Wed, 21 Apr 2021 18:02:48 +0200 (CEST)
+Date:   Wed, 21 Apr 2021 18:02:48 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>
+Subject: Re: [PATCH 092/190] Revert "power: charger-manager: fix a potential
+ NULL pointer dereference"
+Message-ID: <20210421160248.fveahtwspxa53fft@earth.universe>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-93-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210317012054.238334-1-davispuh@gmail.com> <20210321214939.6984-1-davispuh@gmail.com>
-In-Reply-To: <20210321214939.6984-1-davispuh@gmail.com>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Wed, 21 Apr 2021 19:00:51 +0300
-Message-ID: <CAOE4rSySx3fcRkvSMHEwpGVMFTOCeirw9owCu+9YDcLPzhsV9A@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sk2sus5fq2i26mdz"
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-93-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sv=C4=93td., 2021. g. 21. marts, plkst. 23:46 =E2=80=94 lietot=C4=81js D=C4=
-=81vis Mos=C4=81ns
-(<davispuh@gmail.com>) rakst=C4=ABja:
->
-> Currently if there's any corruption at all in extent tree
-> (eg. even single bit) then mounting will fail with:
-> "failed to read block groups: -5" (-EIO)
-> It happens because we immediately abort on first error when
-> searching in extent tree for block groups.
->
-> Now with this patch if `ignorebadroots` option is specified
-> then we handle such case and continue by removing already
-> created block groups and creating dummy block groups.
->
-> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
-> ---
->  fs/btrfs/block-group.c | 20 ++++++++++++++++++++
->  fs/btrfs/disk-io.c     |  4 ++--
->  fs/btrfs/disk-io.h     |  2 ++
->  3 files changed, 24 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 48ebc106a606..f485cf14c2f8 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2048,6 +2048,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *=
-info)
->         ret =3D check_chunk_block_group_mappings(info);
->  error:
->         btrfs_free_path(path);
-> +
-> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
-> +
-> +               if (btrfs_super_log_root(info->super_copy) !=3D 0) {
-> +                       btrfs_warn(info, "Ignoring tree-log replay due to=
- extent tree corruption!");
-> +                       btrfs_set_super_log_root(info->super_copy, 0);
-> +               }
-> +
-> +               btrfs_put_block_group_cache(info);
-> +               btrfs_stop_all_workers(info);
-> +               btrfs_free_block_groups(info);
-> +               ret =3D btrfs_init_workqueues(info, NULL);
-> +               if (ret)
-> +                       return ret;
-> +               ret =3D btrfs_init_space_info(info);
-> +               if (ret)
-> +                       return ret;
-> +               return fill_dummy_bgs(info);
-> +       }
-> +
->         return ret;
->  }
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 07a2b4f69b10..dc744f76d075 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1955,7 +1955,7 @@ static int read_backup_root(struct btrfs_fs_info *f=
-s_info, u8 priority)
->  }
->
->  /* helper to cleanup workers */
-> -static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
-> +void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
->  {
->         btrfs_destroy_workqueue(fs_info->fixup_workers);
->         btrfs_destroy_workqueue(fs_info->delalloc_workers);
-> @@ -2122,7 +2122,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info =
-*fs_info)
->         mutex_init(&fs_info->qgroup_rescan_lock);
->  }
->
-> -static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
-> +int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
->                 struct btrfs_fs_devices *fs_devices)
->  {
->         u32 max_active =3D fs_info->thread_pool_size;
-> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-> index e45057c0c016..f9bfcba86a04 100644
-> --- a/fs/btrfs/disk-io.h
-> +++ b/fs/btrfs/disk-io.h
-> @@ -137,6 +137,8 @@ int btrfs_find_free_objectid(struct btrfs_root *root,=
- u64 *objectid);
->  int btrfs_find_highest_objectid(struct btrfs_root *root, u64 *objectid);
->  int __init btrfs_end_io_wq_init(void);
->  void __cold btrfs_end_io_wq_exit(void);
-> +void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
-> +int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs=
-_devices *fs_devices);
->
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  void btrfs_set_buffer_lockdep_class(u64 objectid,
-> --
-> 2.30.2
->
 
-Ping? Could anyone take a look?
+--sk2sus5fq2i26mdz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Wed, Apr 21, 2021 at 02:59:27PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 75cf4f5aa903604e1bd7bec2c0988d643c6fb946.
+>=20
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+>=20
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+>=20
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+
+Doing another review:
+
+create_freezable_workqueue can return NULL when allocations fails
+and it is the first call in late init call, so it's fine to just
+exit with -ENOMEM.
+
+I suggest to drop the revert.
+
+-- Sebastian
+
+>  drivers/power/supply/charger-manager.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/suppl=
+y/charger-manager.c
+> index 4dea8ecd70bc..f34c07ffcfe6 100644
+> --- a/drivers/power/supply/charger-manager.c
+> +++ b/drivers/power/supply/charger-manager.c
+> @@ -1749,9 +1749,6 @@ static struct platform_driver charger_manager_drive=
+r =3D {
+>  static int __init charger_manager_init(void)
+>  {
+>  	cm_wq =3D create_freezable_workqueue("charger_manager");
+> -	if (unlikely(!cm_wq))
+> -		return -ENOMEM;
+> -
+>  	INIT_DELAYED_WORK(&cm_monitor_work, cm_monitor_poller);
+> =20
+>  	return platform_driver_register(&charger_manager_driver);
+> --=20
+> 2.31.1
+>=20
+
+--sk2sus5fq2i26mdz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCATJ8ACgkQ2O7X88g7
++poxrBAAgYJBOi6VDcxiDF++/eI/Eooun3oXyFwzD7NNS6IU4F8laGH/ovy1wwGG
+17i1jZfok3kAaWuEPtfaFYym8tDbAvzpCtum1w98+yOu7iIICOPP951YjSZ1YE9N
+09FatXOowFlV2X9vSDwiYIToWr1x+XERDFMOm5RxVkcqUdSFoNSuHT99i3yqktfC
+1gI/2l/H5we1CW6gM3c2vzcnpylfVcQiR+G8Kg0tVhBJO0IqK5LomSE/78NZkZKK
+Almy+FtnDi3E2vrciRTGlkx9dMuCta2lOdaxeOq7HaLsJ20EdmMmBUEw2Mr7iKP7
+vslbGysdZ5B2O8unPzLfFB8jPqC1fKNmE6abUtcoLOyUg3qdv2TAGto4Be1L8t/s
+jetg7fIB+mCcG8pLEkDOaX/6KKUvMGgoIDgU7MA1r7FRHP0bE2pjjwOZDsSjLOfC
++zGKhH4FBb3u+uV13liLH915vWYDPGbGyIM4Lxfx2HTon77JfM9xWlv/Rr6Knk+H
+LVqMaSJb2zCIADPKXFeFRMmmAVvZaJbxKG6TFRyo0jQ++MMEysdzgz+EeK9Wc4vR
+gET2+aYmyIBdIeIv8ERh1fjroN87GVYl/k8w+WfPgjhcJCyIhA8OuQZ5aGqH0eTp
+04iEKpqLAY0FgKzs2RzUCEy8N6PDZMzCFkvYS2t2VF/Ob+1BPmc=
+=sn7L
+-----END PGP SIGNATURE-----
+
+--sk2sus5fq2i26mdz--
