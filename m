@@ -2,188 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E7B36656A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797D836656C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236000AbhDUG2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235973AbhDUG2q (ORCPT
+        id S236135AbhDUG25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:28:57 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17807 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235988AbhDUG2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:28:46 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCADC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:27:28 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id r20so12042348ejo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ubbveyGFGB9lGxZ2PsZnYO9Uh9BiFCaQmbz5AkePdx0=;
-        b=0pOaCnRqDIIyyObKB+tQkHS6fLbcV4AILR/VdvFgpScvYjYEeh5bvwD62LwHKuRpbI
-         MGYLRzMdQQMu+SFjyp1BhhXZTOm98ezI745/Za/FD8BnX6pKHmocYt5CjJyqRPe77IRH
-         oERK4OZmBAOknovn8ndhPfwQXWdJdhJZcR2eZBVZ3QWlEhlt4Oy1+ucvnCnfqzGFNIdJ
-         9FJp2UEaMKb5lE3yruWA7I9iTwIyNuMUmXhDFqUcJ2F2vYQnFylFeiRkYsr33TkzfXqB
-         reYVuxtge1OCrihEboyaFD3JNhu84sb/lP74yKy4wCZPrMDrHADD1sEr+8AhyfyQPMit
-         Km1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ubbveyGFGB9lGxZ2PsZnYO9Uh9BiFCaQmbz5AkePdx0=;
-        b=lGi+cQmfIWuxcL/9Kq0yIdOFNJ5K0ZdCBVGkUtRmlehSPQA2yUNp6D3K1JFRweA3fQ
-         gWNnDZKEwUg6WSArNQWwoxDVmtbyQIr+fTf/1ePawoNxDW2dMu4jj6jy+TIme+8tVwE9
-         uGfW2iMP4zc4aqEoqfH6TP75IgHGdNzZ1bcqaXpkIw/bqqAE3YhF+irDS8lvYWLHjz9Y
-         IWW+OXw+O8y2DwKvz6UAbHKq24t8NvVhb0UzE0t1DOAZ31fPD6Wstr8bQSc0n0vwVU5K
-         tsiN3fRHvViA0cEycDDuSqc4tcBSAOoN76Wjyctge1HvQVa0E5iY1zkJrYjh1uKWOJoM
-         5oKQ==
-X-Gm-Message-State: AOAM530OkP7d4E+6q5ZMc12lFjBZrNEVNthwErPkaAkRbNZsoPct2R8I
-        owfxU0cFqXJwFfmJZNAS4V2s7XkKgHBYG7e7rf5JAg==
-X-Google-Smtp-Source: ABdhPJwjK38YokcWOj87eRYHESjhBVScHpMQSqg8IL5vTvDH0sI422rrgmIsqrzKWo6B/OSqWobRNEJa7xW8XcK+7o0=
-X-Received: by 2002:a17:906:3ec1:: with SMTP id d1mr4871361ejj.523.1618986446803;
- Tue, 20 Apr 2021 23:27:26 -0700 (PDT)
+        Wed, 21 Apr 2021 02:28:51 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FQ9Xt2LtZz7wjD;
+        Wed, 21 Apr 2021 14:25:50 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 21 Apr 2021 14:28:08 +0800
+Subject: Re: [PATCH v4 1/2] kvm/arm64: Remove the creation time's mapping of
+ MMIO regions
+To:     Gavin Shan <gshan@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>
+References: <20210415140328.24200-1-zhukeqian1@huawei.com>
+ <20210415140328.24200-2-zhukeqian1@huawei.com>
+ <ad39c796-2778-df26-b0c6-231e7626a747@redhat.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <bd4d2cfc-37b9-f20a-5a5c-ed352d1a46dc@huawei.com>
+Date:   Wed, 21 Apr 2021 14:28:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <1299622684.20306.77.camel@gandalf.stny.rr.com>
- <877hc64klm.fsf@rustcorp.com.au> <20130813111442.632f3421@gandalf.local.home>
- <87siybk8yl.fsf@rustcorp.com.au> <20130814233228.778f25d0@gandalf.local.home>
- <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com>
- <20210419181111.5eb582e8@gandalf.local.home> <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com>
- <20210420085532.4062b15e@gandalf.local.home> <CAPcyv4gHHPdCYPzLeNzX0KMoNrOf8H0N5PBiWam0wF+WhV-Jpg@mail.gmail.com>
- <20210420163243.45293c9a@gandalf.local.home>
-In-Reply-To: <20210420163243.45293c9a@gandalf.local.home>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 20 Apr 2021 23:27:19 -0700
-Message-ID: <CAPcyv4gS7iDrahX9i0PGMhR4k14XVkrCyGk3ZX8JEtO9RAQDhw@mail.gmail.com>
-Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@elte.hu" <mingo@elte.hu>,
-        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
-        "yuanhan.liu@linux.intel.com" <yuanhan.liu@linux.intel.com>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ad39c796-2778-df26-b0c6-231e7626a747@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 1:33 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 20 Apr 2021 12:54:39 -0700
-> Dan Williams <dan.j.williams@intel.com> wrote:
->
-> > On Tue, Apr 20, 2021 at 5:55 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > >
-> > > > The dev_dbg() filter language is attractive, it's too bad
-> > >
-> > > Not sure what you mean by that. What filter language. Tracepoints do have a
-> > > pretty good filtering too.
-> >
-> > I'm trying to replicate dev_dbg() usability with tracing. So, when
-> > people say "don't use dev_dbg() for that" that tracing can reliably
-> > replace everything that dev_dbg() was offering. What I think that
-> > looks like is the ability to turn on function tracing by a function
-> > name glob in addition to any tracepoints in those same functions all
-> > from the kernel boot command line, or a module parameter.
->
-> You can enable functions on the kernel command line in globs (and trace
-> events as well). And if the kernel command line doesn't work properly (it's
-> not as tested as the run time side is), it should be trivial to fix it.
->
->
-> >
-> > > > trace_printk() has such a high runtime cost as combining dynamic-debug
-> > > > and tracing would seem to be a panacea.
-> > >
-> > > trace_printk() has a high runtime cost? Besides that it's not allowed on
-> > > production code (see nasty banner), it is made to be extremely fast.
-> > > Although, it does do sprintf() work.
-> >
-> > I was referring to the banner. dev_dbg() does not have that production
-> > code restriction.
->
-> You can have a tracepoint like trace_printk that doesn't give a banner.
-> Basically, the reason trace_printk() has that restriction is because you
-> can't filter it like you can trace events. It's similar to a printk(). If I
-> had allowed trace_printk() in the kernel, it would be all over the place,
-> and it would just add a bunch of noise to the trace output, because its
-> either on or off. And if you have trace_printk() and so would all other
-> systems, and then you would deal with trace_printk()s from everyone which
-> could drown out the ones you want. Hence, I added that banner to keep that
-> from happening. trace_printk() will even drown out events. (I hate it when
-> I leave one in my debug kernel, and it adds a bunch of noise against what
-> I'm trying to debug with events!).
->
-> But you can add your own trace point, and even make it generic. That's what
-> bpf did for their bpf_trace_printk. You could convert dev_dbg() into a
-> tracepoint!
->
->
-> static __printf(2, 3) int __dev_dbg(const struct device *dev, char *fmt, ...)
-> {
->         static char buf[DEV_DEBUG_PRINTK_SIZE];
->         unsigned long flags;
->         va_list ap;
->         int ret;
->
->         raw_spin_lock_irqsave(&dev_dbg_printk_lock, flags);
->         va_start(ap, fmt);
->         ret = vsnprintf(buf, sizeof(buf), fmt, ap);
->         va_end(ap);
->         /* vsnprintf() will not append null for zero-length strings */
->         if (ret == 0)
->                 buf[0] = '\0';
->         trace_dev_dbg_printk(dev, buf);
->         raw_spin_unlock_irqrestore(&dev_dbg_printk_lock, flags);
->
->         return ret;
-> }
->
-> #define dev_dbg(dev, fmt, ...)                                  \
->         do {                                                    \
->                 if (trace_dev_dbg_printk_enabled())             \
->                         __dev_dbg(dev, fmt, ##__VA_ARGS__);     \
->         } while (0)
->
-> Note, the "trace_dev_dbg_printk_enabled()" is a static branch, which means
-> it is a nop when the dev_dbg_printk tracepoint is not enabled, and is a jmp
-> to the __dev_dbg() logic when it is enabled. It's not a conditional branch.
->
-> And have:
->
-> TRACE_EVENT(dev_dbg_printk,
->
->         TP_PROTO(const struct device *dev, const char *dbg_str),
->
->         TP_ARGS(dev, dbg_str),
->
->         TP_STRUCT__entry(
->                 __field(const struct device *dev)
->                 __string(dev_name, dev_name(dev))
->                 __string(dbg_str, dbg_str)
->         ),
->
->         TP_fast_assign(
->                 __entry->dev = dev;
->                 __assign_str(dev_name, dev_name(dev))
->                 __assign_str(dbg_str, dbg_str);
->         ),
->
->         TP_printk("%p dev=%s %s", __entry->dev, __get_string(dev_name), __get_str(dbg_str))
-> );
->
-> And then you could even filter on the device name, or even parts of the
-> string, as you can filter events, and even have them have glob matches.
+Hi Gavin,
 
-Oooh, I might run with this, it's been on my backlog to go investigate
-and you just threw out a solution. Imagine being able to to specify
-'t' instead of 'p' for a given debug print so that dev_dbg() users can
-move from console to trace buffer, but also tracing users have access
-to more tracepoints that happen to appear at useful dev_dbg()
-locations.
+On 2021/4/21 14:38, Gavin Shan wrote:
+> Hi Keqian,
+> 
+> On 4/16/21 12:03 AM, Keqian Zhu wrote:
+>> The MMIO regions may be unmapped for many reasons and can be remapped
+>> by stage2 fault path. Map MMIO regions at creation time becomes a
+>> minor optimization and makes these two mapping path hard to sync.
+>>
+>> Remove the mapping code while keep the useful sanity check.
+>>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>   arch/arm64/kvm/mmu.c | 38 +++-----------------------------------
+>>   1 file changed, 3 insertions(+), 35 deletions(-)
+>>
+> 
+> After removing the logic to create stage2 mapping for VM_PFNMAP region,
+> I think the "do { } while" loop becomes unnecessary and can be dropped
+> completely. It means the only sanity check is to see if the memory slot
+> overflows IPA space or not. In that case, KVM_MR_FLAGS_ONLY can be
+> ignored because the memory slot's base address and length aren't changed
+> when we have KVM_MR_FLAGS_ONLY.
+Maybe not exactly. Here we do an important sanity check that we shouldn't
+log dirty for memslots with VM_PFNMAP.
 
-Thanks, Steven!
+
+> 
+> It seems the patch isn't based on "next" branch because find_vma() was
+> replaced by find_vma_intersection() by one of my patches :)
+Yep, I remember it. I will replace it at next merge window...
+
+Thanks,
+Keqian
+
+> 
+> Thanks,
+> Gavin
+> 
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index 8711894db8c2..c59af5ca01b0 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -1301,7 +1301,6 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>>   {
+>>       hva_t hva = mem->userspace_addr;
+>>       hva_t reg_end = hva + mem->memory_size;
+>> -    bool writable = !(mem->flags & KVM_MEM_READONLY);
+>>       int ret = 0;
+>>         if (change != KVM_MR_CREATE && change != KVM_MR_MOVE &&
+>> @@ -1318,8 +1317,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>>       mmap_read_lock(current->mm);
+>>       /*
+>>        * A memory region could potentially cover multiple VMAs, and any holes
+>> -     * between them, so iterate over all of them to find out if we can map
+>> -     * any of them right now.
+>> +     * between them, so iterate over all of them.
+>>        *
+>>        *     +--------------------------------------------+
+>>        * +---------------+----------------+   +----------------+
+>> @@ -1330,50 +1328,20 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>>        */
+>>       do {
+>>           struct vm_area_struct *vma = find_vma(current->mm, hva);
+>> -        hva_t vm_start, vm_end;
+>>             if (!vma || vma->vm_start >= reg_end)
+>>               break;
+>>   -        /*
+>> -         * Take the intersection of this VMA with the memory region
+>> -         */
+>> -        vm_start = max(hva, vma->vm_start);
+>> -        vm_end = min(reg_end, vma->vm_end);
+>> -
+>>           if (vma->vm_flags & VM_PFNMAP) {
+>> -            gpa_t gpa = mem->guest_phys_addr +
+>> -                    (vm_start - mem->userspace_addr);
+>> -            phys_addr_t pa;
+>> -
+>> -            pa = (phys_addr_t)vma->vm_pgoff << PAGE_SHIFT;
+>> -            pa += vm_start - vma->vm_start;
+>> -
+>>               /* IO region dirty page logging not allowed */
+>>               if (memslot->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+>>                   ret = -EINVAL;
+>> -                goto out;
+>> -            }
+>> -
+>> -            ret = kvm_phys_addr_ioremap(kvm, gpa, pa,
+>> -                            vm_end - vm_start,
+>> -                            writable);
+>> -            if (ret)
+>>                   break;
+>> +            }
+>>           }
+>> -        hva = vm_end;
+>> +        hva = min(reg_end, vma->vm_end);
+>>       } while (hva < reg_end);
+>>   -    if (change == KVM_MR_FLAGS_ONLY)
+>> -        goto out;
+>> -
+>> -    spin_lock(&kvm->mmu_lock);
+>> -    if (ret)
+>> -        unmap_stage2_range(&kvm->arch.mmu, mem->guest_phys_addr, mem->memory_size);
+>> -    else if (!cpus_have_final_cap(ARM64_HAS_STAGE2_FWB))
+>> -        stage2_flush_memslot(kvm, memslot);
+>> -    spin_unlock(&kvm->mmu_lock);
+>> -out:
+>>       mmap_read_unlock(current->mm);
+>>       return ret;
+>>   }
+>>
+> 
+> .
+> 
