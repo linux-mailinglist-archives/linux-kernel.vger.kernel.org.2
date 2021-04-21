@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8521F3672D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC12D3672DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245283AbhDUSsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235269AbhDUSsa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:48:30 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76390C06174A;
-        Wed, 21 Apr 2021 11:47:55 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id z16so30755867pga.1;
-        Wed, 21 Apr 2021 11:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DWlEjhkosbdFJdYkdgHRxg+yCz/Y2VdtjDbfu98fJME=;
-        b=RTudUTdt4NdhTTPWpDKzroN4k3kseztpxFb12/BidKZoGQLOHFhwaS1nFkiptN3jHM
-         suhL5SGE8/1h2fENqyWk0Wfj5jsRzxlnnLF7WeEDL7nou4Vu36ewAcOpOqERGZsjOkqn
-         WmfYTL2ORIfPyNy8J1m7jXEs49lG+uu9l2HYAcxgHHnr2Gx3qM93nnwjU9+tI8/DdMKB
-         6s8zY+cewFB9T5/H1mXn7htez4ZqS1EsNKzN+Z8PquS1a7VbOGt448oQgac9c+rhGO3q
-         OyQXWHWih7YNQP/a0XGSeyqctR8R4yzdBdJOpIDNBV4CkbAPOR+b0u+JxJHfYc6iDfdw
-         AnBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DWlEjhkosbdFJdYkdgHRxg+yCz/Y2VdtjDbfu98fJME=;
-        b=dsU+I5htOc2coc3t86Bg1eAr6hxH58dm98pOBCNqufa/HUM7QV1fCgZRASU2BzyR/W
-         SQILLeZTFWM0rwfX0gnBtZS5uiUDi4gwyxDtiGnjtG8WAnlBLiLpMgIXHNRqjEFYpHmn
-         wee46G5TlvjthSEASe+jvOQFTZD+C51IaxCPBTLkgqX90PHI+/jcrSJEON9PVJcEA9Wn
-         TAyiJ6sfUcB0q/y4iMPy5NS9X78/YbEMSpgrDx2qcj2r+1Mkx6aA36Clkfs0txUMvWea
-         AXT2quclwMRs/Irrbg8xvoQzymkZzG/rBmw6jsGqmk/PIU4wwnnwCt2t4N5Vc9JLSAY7
-         SwfA==
-X-Gm-Message-State: AOAM5336S7HaCQgiX28uMOAuWtfZW+eTZDHwSxK3apga7SOLqC+KyB3N
-        wkgp7UqnXK6JWZm8YNY+/ew=
-X-Google-Smtp-Source: ABdhPJw5vA7JuDNxmfeHwrsHzCzvymLS1RLRp08ylnm9bGF6jx2hE7UC2TSO2qCYFuT3QToT/ioqng==
-X-Received: by 2002:a65:590a:: with SMTP id f10mr23139755pgu.358.1619030874900;
-        Wed, 21 Apr 2021 11:47:54 -0700 (PDT)
-Received: from localhost.localdomain ([103.248.31.176])
-        by smtp.googlemail.com with ESMTPSA id x22sm142542pgx.19.2021.04.21.11.47.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 11:47:54 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH] PCI: Check value of resource alignment before using __ffs
-Date:   Thu, 22 Apr 2021 00:17:47 +0530
-Message-Id: <20210421184747.62391-1-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S245310AbhDUSvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:51:09 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48366 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243061AbhDUSvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:51:08 -0400
+Received: from zn.tnic (p2e58483a.dip0.t-ipconnect.de [46.88.72.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1EC381EC01B7;
+        Wed, 21 Apr 2021 20:50:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1619031034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=woEG6I0sfEGGLeu6jOQkQD9fV+v4+KVZGarzOOeRXwE=;
+        b=B6FCFTmrbZfFBSyHDjWVsyU7iuc4b6PJEwAogaQydwLo5UA9TuEBpaTjJvfWy/fRC0tIE1
+        vqSO9CvCqEaHN8q1qBVCXQG1f1lH2POkrNCZqwP3X8WFBR8jlfMqmAubmN/159p/L11D6F
+        2bKLPGLb6bjRDG983501aGhSfEJcOGo=
+Date:   Wed, 21 Apr 2021 20:48:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Bandan Das <bsd@redhat.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Ramakrishna Saripalli <rsaripal@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 4/4] x86/speculation: Add PSF mitigation kernel parameters
+Message-ID: <20210421184826.GA3120@zn.tnic>
+References: <20210421090117.22315-1-rsaripal@amd.com>
+ <20210421090117.22315-5-rsaripal@amd.com>
+ <4c688fc7-67df-3187-54b2-bf20e510fb39@infradead.org>
+ <jpg4kfzfpzm.fsf@linux.bootlegged.copy>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <jpg4kfzfpzm.fsf@linux.bootlegged.copy>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return value of __ffs is undefined if no set bit exists in
-its argument. This indicates that the associated BAR has
-invalid alignment.
+On Wed, Apr 21, 2021 at 02:32:13PM -0400, Bandan Das wrote:
+> Maybe, rename the parameter to something like psfd_disable, then off
+> -> disables mitigation and on -> enables it. Or just rewriting this to
+> off -> turns off predictive store forwarding is probably ok too.
 
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/pci/setup-bus.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Yes:
 
-diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
-index 2ce636937c6e..44e8449418ae 100644
---- a/drivers/pci/setup-bus.c
-+++ b/drivers/pci/setup-bus.c
-@@ -1044,6 +1044,11 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
- 			 * resources.
- 			 */
- 			align = pci_resource_alignment(dev, r);
-+			if (!align) {
-+				pci_warn(dev, "BAR %d: %pR has bogus alignment\n",
-+					 i, r);
-+				continue;
-+			}
- 			order = __ffs(align) - 20;
- 			if (order < 0)
- 				order = 0;
---
-2.31.1
+	off - Turns off predictive store forwarding.
+	on  - Turns on...
+
+Ramakrishna, you don't have to call this a mitigation - this is a flag
+which controls the feature.
+
+Also, those 4 patches can be merged into a single one which simply adds
+the feature along with the boot-time controls.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
