@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E60366F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFA6366F12
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243966AbhDUPXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:23:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52304 "EHLO mail.kernel.org"
+        id S243948AbhDUPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:24:50 -0400
+Received: from mga14.intel.com ([192.55.52.115]:35687 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243965AbhDUPXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:23:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10DB2600D1;
-        Wed, 21 Apr 2021 15:22:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619018553;
-        bh=uCRYmylzXXwa0XgJ+Nt67oOm790cS23CJ6ivt68PYCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gKiXkibF/agDmdT747lettzZS6BzcIS9zeBkCcI7acJPPdkTnfvXXDTuqwCJTetO0
-         YwhkHieLcgJ8T75/6pa2ZcC/NL34QgNmUNf2auwdtjA6cUJdlTg2nsAdl1afv8mnEw
-         /ciHEsx3N2B0bmY+jruPcscaKZo+J8oywdXQ45Po=
-Date:   Wed, 21 Apr 2021 17:22:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lorenzo Colitti <lorenzo@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after
- __hrtimer_get_next_event()
-Message-ID: <YIBDNoX7Fzb8B6RH@kroah.com>
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
- <YHXRWoVIYLL4rYG9@kroah.com>
- <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
- <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
- <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com>
- <87eef5qbrx.ffs@nanos.tec.linutronix.de>
- <CAKD1Yr2qeXseNLcQ9r4niob02jGOXdVeta6OwWF3Ta1dyp1V2Q@mail.gmail.com>
- <CAKD1Yr1TOd1XKFdWK2Wr_Pw2rKciSapCM8ATEirxpCApZZzZmQ@mail.gmail.com>
+        id S244010AbhDUPYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:24:02 -0400
+IronPort-SDR: cdTdzFgRViFcDv8gRKs8iUF7CgxnaoVW1zrXGcJafDiGZdZeCCDwCk8AyYZHbr6cpteVfwUiEN
+ kJU3XFV7cHEw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195273900"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="195273900"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:23:29 -0700
+IronPort-SDR: goI6wrw2Cay5It9IfcIPGyGV379vnJrjvX3s1ZHB8nSCryD3TSo2CIT4KGJ7ZpNmtZstU7CY7x
+ 4ha8JHMX5UqQ==
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="455380891"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:23:26 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lZEhH-0064QA-K1; Wed, 21 Apr 2021 18:23:23 +0300
+Date:   Wed, 21 Apr 2021 18:23:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, rric@kernel.org,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] Introduce pcim_alloc_irq_vectors()
+Message-ID: <YIBDa1bvKInOg2LH@smile.fi.intel.com>
+References: <20210226155056.1068534-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKD1Yr1TOd1XKFdWK2Wr_Pw2rKciSapCM8ATEirxpCApZZzZmQ@mail.gmail.com>
+In-Reply-To: <20210226155056.1068534-1-zhengdejin5@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:40:54PM +0900, Lorenzo Colitti wrote:
-> On Wed, Apr 21, 2021 at 11:08 PM Lorenzo Colitti <lorenzo@google.com> wrote:
-> > load the timer will almost never fire since there will always be
-> > another packet coming. So the speed of adding/updating the timer is
-> > much more important than the accuracy. We will try to move it to
-> > timer_list.
+On Fri, Feb 26, 2021 at 11:50:52PM +0800, Dejin Zheng wrote:
+> Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
+> has been called before, then pci_alloc_irq_vectors() is actually a
+> device-managed function. It is used as a device-managed function, So
+> replace it with pcim_alloc_irq_vectors().
+
+Bjorn, I don't see this anywhere, except mailing list. Neither your opinion.
+What is the plan?
+
+> Changelog
+> ---------
+> v4 -> v5:
+> 	- Remove the check of enable device in pcim_alloc_irq_vectors()
+> 	  and make it as a static line function.
+> 	- Modify the subject name in patch 3 and patch 4.
+> v3 -> v4:
+> 	- add some commit comments for patch 3
+> v2 -> v3:
+> 	- Add some commit comments for replace some codes in
+> 	  pcim_release() by pci_free_irq_vectors().
+> 	- Simplify the error handling path in i2c designware
+> 	  driver.
+> v1 -> v2:
+> 	- Use pci_free_irq_vectors() to replace some code in
+> 	  pcim_release().
+> 	- Modify some commit messages.
 > 
-> ... but actually, that's not acceptable, because AFAICS timer_list
-> counts in jiffies so its resolution might be as low as 10ms. It's not
-> acceptable to delay network traffic by up to 10ms under load. Not sure
-> if there is another timer API that can be used here.
+> Dejin Zheng (4):
+>   PCI: Introduce pcim_alloc_irq_vectors()
+>   Documentation: devres: Add pcim_alloc_irq_vectors()
+>   i2c: designware: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
+>   i2c: thunderx: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
+> 
+>  .../driver-api/driver-model/devres.rst        |  1 +
+>  drivers/i2c/busses/i2c-designware-pcidrv.c    | 15 ++++--------
+>  drivers/i2c/busses/i2c-thunderx-pcidrv.c      |  2 +-
+>  drivers/pci/pci.c                             |  5 +---
+>  include/linux/pci.h                           | 24 +++++++++++++++++++
+>  5 files changed, 31 insertions(+), 16 deletions(-)
+> 
+> -- 
+> 2.25.0
+> 
 
-What do other network drivers do?  This has to be a common problem, why
-is this USB driver somehow unique here?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-thanks,
 
-greg k-h
