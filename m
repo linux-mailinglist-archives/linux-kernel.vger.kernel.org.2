@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4967366B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11285366B9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240543AbhDUNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:04:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43744 "EHLO mail.kernel.org"
+        id S240623AbhDUNEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:04:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240539AbhDUNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50ECA6143C;
-        Wed, 21 Apr 2021 13:03:11 +0000 (UTC)
+        id S240488AbhDUNDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:03:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C506144C;
+        Wed, 21 Apr 2021 13:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010192;
-        bh=CKTU3ju0CTssqZVCVjEK831bAjS6bxbKLGwVEl+0GnQ=;
+        s=korg; t=1619010194;
+        bh=89kxREtPf2htSEjjuf1n+Ag6s1bNqHtO2rnpCeyFvqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l6jo1LZfuKNdUOwOc5JY8xyG4Wr38F7UOdrs/HLIPnrKejMsxgwGqodNzoGOC5hlC
-         HGLr/Bjpd+B7FY/qIIngKKbE/W4027Aa0WkPySW3QOIQwNgtmPIBnE8mdfUIVJJjZo
-         /NiMVZGG0n4q19q3O5tirHPfkUxQslGe1VazIAYM=
+        b=tLgM1wuDzHbpPVmIN8X0cRFvGHY0TsHTtgaTJNwov6G3W+5Kr3vTE1wTd6YvcJDWd
+         DdCKyiPnJHIcz3V1BAkDUu72mnAO80dZemqhNrA6FY+Ugqz4a8UYM6ma1gnR5NaRAg
+         3T7fJ1y0tn3k++vgPlKH2VO5nScpkuRFjROgfivA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Qiushi Wu <wu000273@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 046/190] Revert "net/mlx4_core: fix a memory leak bug."
-Date:   Wed, 21 Apr 2021 14:58:41 +0200
-Message-Id: <20210421130105.1226686-47-gregkh@linuxfoundation.org>
+        David Howells <dhowells@redhat.com>,
+        Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH 047/190] Revert "rxrpc: Fix a memory leak in rxkad_verify_response()"
+Date:   Wed, 21 Apr 2021 14:58:42 +0200
+Message-Id: <20210421130105.1226686-48-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit febfd9d3c7f74063e8e630b15413ca91b567f963.
+This reverts commit f45d01f4f30b53c3a0a1c6c1c154acb7ff74ab9f.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,25 +55,26 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Qiushi Wu <wu000273@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Markus Elfring <Markus.Elfring@web.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/fw.c | 2 +-
+ net/rxrpc/rxkad.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/fw.c b/drivers/net/ethernet/mellanox/mlx4/fw.c
-index f6cfec81ccc3..380e027ba5df 100644
---- a/drivers/net/ethernet/mellanox/mlx4/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/fw.c
-@@ -2734,7 +2734,7 @@ void mlx4_opreq_action(struct work_struct *work)
- 		if (err) {
- 			mlx4_err(dev, "Failed to retrieve required operation: %d\n",
- 				 err);
--			goto out;
-+			return;
- 		}
- 		MLX4_GET(modifier, outbox, GET_OP_REQ_MODIFIER_OFFSET);
- 		MLX4_GET(token, outbox, GET_OP_REQ_TOKEN_OFFSET);
+diff --git a/net/rxrpc/rxkad.c b/net/rxrpc/rxkad.c
+index e2e9e9b0a6d7..6cdbfb4f8cda 100644
+--- a/net/rxrpc/rxkad.c
++++ b/net/rxrpc/rxkad.c
+@@ -1241,7 +1241,7 @@ static int rxkad_verify_response(struct rxrpc_connection *conn,
+ 	ret = rxkad_decrypt_ticket(conn, server_key, skb, ticket, ticket_len,
+ 				   &session_key, &expiry, _abort_code);
+ 	if (ret < 0)
+-		goto temporary_error_free_ticket;
++		goto temporary_error_free_resp;
+ 
+ 	/* use the session key from inside the ticket to decrypt the
+ 	 * response */
 -- 
 2.31.1
 
