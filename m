@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AD1366818
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F002E36681B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238330AbhDUJey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:34:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39182 "EHLO
+        id S238338AbhDUJfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:35:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27814 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238306AbhDUJet (ORCPT
+        by vger.kernel.org with ESMTP id S238267AbhDUJfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:34:49 -0400
+        Wed, 21 Apr 2021 05:35:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618997656;
+        s=mimecast20190719; t=1618997711;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpoI9NRVB9qsYiKBOjY+ZdCUBK0VWmcEa3eQmAnrZgM=;
-        b=cDVBcaLC8ZBR3d4ON+n63+Vo4FbTXSXtkkwIc4hwOP3BAMO9U3sVYLHTfNTa9MdJs8a27p
-        wtgaDtVkRsNrpTvYpHxgldpik6KbaLuV+G7pDPXMRhERX+2u2bDfbVTdrNeJHmXbZJnspl
-        Xzxc8eyOBVM8qpb2//lxhJAHaxH4gqM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-bOjxYxaANmy5gwkekec0Ag-1; Wed, 21 Apr 2021 05:34:12 -0400
-X-MC-Unique: bOjxYxaANmy5gwkekec0Ag-1
-Received: by mail-ej1-f70.google.com with SMTP id f15-20020a170906738fb029037c94426fffso5696011ejl.22
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 02:34:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lpoI9NRVB9qsYiKBOjY+ZdCUBK0VWmcEa3eQmAnrZgM=;
-        b=B9/7OP77xhpDgt2TRtKPRcVk8i/6nRIvV1ULJMYasCO6uZoJpD722/8y7oMqtWC74N
-         PZRt4ujIJL3ojWXLv0tZdSZo7lVkKwYhc4mKzmGoBZQpCzqqKeqow5rnPbpUpvzlewrm
-         3Wn/iblxemXqdgP903sbmaBmy6RjKotOWQqvFZ/1bLd1g9TCwxQN0ho7QnQ7IO4ok7da
-         tnizCCan5nqEaKtOP3O/kfo6K3Jzei2wsVdFcCSLCygOwUPAkxAe14enNY1DIszfZipL
-         PQQ/M7m4LHMOYOOVTzzx40lBlKkxNGHCSoBETOzviwf7jvWKEbPOizzo2+3Cgid7aoet
-         ORsw==
-X-Gm-Message-State: AOAM531AYFx1pv5NQ9N2Asfr8Ooex6R+Fy8Mxz/QIw9c54F9+2DTVvsC
-        KDRDglNo4E9xSlSUuEnX4G1qoxYhhAtXrNJtVUN421Ds9lI5alBTMzVZZ1ACZ0UoWBC1yL1xpIq
-        A2qyXLLjlP29acqgiQ75Kb9XD
-X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr16652043ejq.50.1618997651891;
-        Wed, 21 Apr 2021 02:34:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydZjMGm8LWfdlf7IEz5Kzgw+nZROXo4yoyEKgJ4CVcOLHoFG40yO1hYMeXrSjiHD1qHIw/Iw==
-X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr16652025ejq.50.1618997651755;
-        Wed, 21 Apr 2021 02:34:11 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id f19sm2606693edu.12.2021.04.21.02.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 02:34:11 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 11:34:09 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v8 16/19] vsock/loopback: enable SEQPACKET for
- transport
-Message-ID: <20210421093409.latwryhd7scomdav@steredhat>
-References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
- <20210413124642.3406320-1-arseny.krasnov@kaspersky.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NFFOkQmFoT44FyitzBtJNBAyIcAKGsIgK97fQioaoI0=;
+        b=AtVfmtqCsBzQqCUeAF/GxULHpKLmhv8e9samQdOKynfQGgvVB8TKc28ZCUCmuiMhB5okl9
+        KSLrT8+qOtdMD8YSTMpdfB2ecFYGO8is9aQsgjWC/9gbNZIjiO/VW3Qeiv6aG3nbZ7M73T
+        jWR77YoBny/kD+Pk45KyloiaIqKcCIc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-z6OMJECiOX2JWnTVVwLLDA-1; Wed, 21 Apr 2021 05:35:07 -0400
+X-MC-Unique: z6OMJECiOX2JWnTVVwLLDA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7609E81746E;
+        Wed, 21 Apr 2021 09:35:04 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-224.ams2.redhat.com [10.36.113.224])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DB2C5DDAD;
+        Wed, 21 Apr 2021 09:34:54 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Don Zickus <dzickus@redhat.com>, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v1 0/3] perf/binfmt/mm: remove in-tree usage of MAP_EXECUTABLE
+Date:   Wed, 21 Apr 2021 11:34:50 +0200
+Message-Id: <20210421093453.6904-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210413124642.3406320-1-arseny.krasnov@kaspersky.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 03:46:39PM +0300, Arseny Krasnov wrote:
->This adds SEQPACKET ops for loopback transport and 'seqpacket_allow()'
->callback.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
->---
-> net/vmw_vsock/vsock_loopback.c | 12 ++++++++++++
-> 1 file changed, 12 insertions(+)
->
->diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
->index a45f7ffca8c5..d38ffdbecc84 100644
->--- a/net/vmw_vsock/vsock_loopback.c
->+++ b/net/vmw_vsock/vsock_loopback.c
->@@ -63,6 +63,8 @@ static int vsock_loopback_cancel_pkt(struct vsock_sock *vsk)
-> 	return 0;
-> }
->
->+static bool vsock_loopback_seqpacket_allow(void);
->+
-> static struct virtio_transport loopback_transport = {
-> 	.transport = {
-> 		.module                   = THIS_MODULE,
->@@ -89,6 +91,10 @@ static struct virtio_transport loopback_transport = {
-> 		.stream_is_active         = virtio_transport_stream_is_active,
-> 		.stream_allow             = virtio_transport_stream_allow,
->
->+		.seqpacket_dequeue        = virtio_transport_seqpacket_dequeue,
->+		.seqpacket_enqueue        = virtio_transport_seqpacket_enqueue,
->+		.seqpacket_allow          = vsock_loopback_seqpacket_allow,
->+
-> 		.notify_poll_in           = virtio_transport_notify_poll_in,
-> 		.notify_poll_out          = virtio_transport_notify_poll_out,
-> 		.notify_recv_init         = virtio_transport_notify_recv_init,
->@@ -103,8 +109,14 @@ static struct virtio_transport loopback_transport = {
-> 	},
->
-> 	.send_pkt = vsock_loopback_send_pkt,
->+	.seqpacket_allow = true
-> };
->
->+static bool vsock_loopback_seqpacket_allow(void)
->+{
->+	return loopback_transport.seqpacket_allow;
->+}
+Stumbling over the history of MAP_EXECUTABLE, I noticed that we still
+have some in-tree users that we can get rid of.
 
-here I think we could always return true, since we will remove 
-`.seqpacket_allow` from struct virtio_transport.
+A good fit for the whole series could be Andrew's tree.
 
->+
-> static void vsock_loopback_work(struct work_struct *work)
-> {
-> 	struct vsock_loopback *vsock =
->-- 
->2.25.1
->
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Kevin Brodsky <Kevin.Brodsky@arm.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: x86@kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
+David Hildenbrand (3):
+  perf: MAP_EXECUTABLE does not indicate VM_MAYEXEC
+  binfmt: remove in-tree usage of MAP_EXECUTABLE
+  mm: ignore MAP_EXECUTABLE in ksys_mmap_pgoff()
+
+ arch/x86/ia32/ia32_aout.c |  4 ++--
+ fs/binfmt_aout.c          |  4 ++--
+ fs/binfmt_elf.c           |  2 +-
+ fs/binfmt_elf_fdpic.c     | 11 ++---------
+ fs/binfmt_flat.c          |  2 +-
+ include/linux/mman.h      |  2 ++
+ kernel/events/core.c      |  2 --
+ mm/mmap.c                 |  2 +-
+ mm/nommu.c                |  2 +-
+ 9 files changed, 12 insertions(+), 19 deletions(-)
+
+-- 
+2.30.2
 
