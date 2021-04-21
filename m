@@ -2,212 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1532E3671A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90433671A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244891AbhDURoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:44:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56736 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244878AbhDURoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:44:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619027027; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=CWCU93Btsi4cuKG948kieS4I2OHLPnaZxfWhEqB9jME=;
- b=YvKydmHnhOIanICOm7OrjHcIRX7omlmR3xBGkslExcK+ul+iq9uTrDtjT0lkkEzHILUFzX2u
- zvSNnXdOG5wPSaZeVmD432KqSfnSqzGXqQ+NcPziEzOc2kKN7scjSZLIu4EqdCdZsosRkIBp
- 2LgCJsOranjbGFTlm0D8snROJek=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60806451853c0a2c461727d4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 17:43:44
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 41FC6C43144; Wed, 21 Apr 2021 17:43:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9130C4338A;
-        Wed, 21 Apr 2021 17:43:42 +0000 (UTC)
+        id S244878AbhDURoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243048AbhDURox (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:44:53 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5E0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:44:20 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso37757161otb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/BXgNj41Emp91IJeL0ZlkH3BYkvRGM2ZK7KMf3kiC2k=;
+        b=h/C+48D3PWUs4Qa4ZPOAwY8TrqzbXXo7UVZV6OX3mmtt9fcljbqJW+5YzG9/DdCXPm
+         hydSzJb6OP7nm+xP0El44tu2I3HBS5C9MXDNIrCx4uuvwluUwms2cNg94g/f+AWCs7fQ
+         Q7T68Kx16FRshI4fuDH5e4RKj1+CkkeUKlJOAw297TuRdyZs8uzgoD4XWN3OyAyBdUJH
+         3C2j5ojCgzwG6Z/5FCmNX7fv2ftms+ppXIEKE7ekqZXfs34nHv6vrQvNLXXXTO6jkBwM
+         3+syuou8IO7MyN9zbrI+jGgiacAx/t5fh9uPXXTpeg8+oUeCuw7wpe0z7SbYiQY9QDvf
+         8CDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/BXgNj41Emp91IJeL0ZlkH3BYkvRGM2ZK7KMf3kiC2k=;
+        b=SyOCIQnOz9iUAQNafOg5AbFuncuBI3RIRiDoprfAEBC++gjdVUdI2tpl1ZL/wSwWIm
+         35jy0nPgvjTG5PviPD66UvsXTbC4xI5OuzWGRhPnUnHyy5hzyZfADSBY/um+95lO5R1R
+         J4inIt4Ts6qtKJ41DnpjresGxheWMXOeL7uOVxZPXNQgl+TPKjOHLJeV49aisVW+X+m2
+         yXCQ+IYmVpZ63cQU8OGHRbSmyHFTngLBujRArc15UleVsbjCWuRKOlGqRJbZJX4uSKK/
+         Cg4E7SmEBb78JI5Q0M/sBDbG8L4nPlBHR/uQ7m2EgTHI84dGFDNfkKIvt5lxiq/Pe8Bh
+         ZpSw==
+X-Gm-Message-State: AOAM531C+gYVnFLS0vihT3nkCwzSzwTK1kGek8w+Q2SpXV5RRcmo0RSF
+        s2UT1jE/dWkeXu4jDMfnKVBDeA==
+X-Google-Smtp-Source: ABdhPJwN8IraGxuBnTNo7hsiM2YWM0ZjJ0I5M+X9SqgmTNPLdHgCZxVQJHgAT0mNWcp454SgFLSGCQ==
+X-Received: by 2002:a9d:7342:: with SMTP id l2mr24289310otk.175.1619027060206;
+        Wed, 21 Apr 2021 10:44:20 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t3sm59071ooa.18.2021.04.21.10.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:44:19 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 12:44:17 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH 16/26] serial: msm_serial: drop low-latency workaround
+Message-ID: <20210421174417.GA1908499@yoga>
+References: <20210421095509.3024-1-johan@kernel.org>
+ <20210421095509.3024-17-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 21 Apr 2021 10:43:42 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] drm/msm/dp: check main link status before start
- aux read
-In-Reply-To: <161896193053.46595.7590816467281538002@swboyd.mtv.corp.google.com>
-References: <1618594731-556-1-git-send-email-khsieh@codeaurora.org>
- <161896193053.46595.7590816467281538002@swboyd.mtv.corp.google.com>
-Message-ID: <4da92917bb65490f500faf7bf9b7003f@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421095509.3024-17-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-20 16:38, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-04-16 10:38:51)
->> Maybe when the cable is disconnected the DP phy should be shutdown and
->> some bit in the phy could effectively "cut off" the aux channel and 
->> then
->> NAKs would start coming through here in the DP controller I/O register
->> space. This patch have DP aux channel read/write to return NAK 
->> immediately
->> if DP controller connection status is in unplugged state.
->> 
->> Changes in V3:
->> -- check core_initialized before handle irq_hpd
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_aux.c     |  5 +++++
->>  drivers/gpu/drm/msm/dp/dp_display.c | 14 ++++++++++----
->>  drivers/gpu/drm/msm/dp/dp_link.c    | 20 +++++++++++++++-----
->>  3 files changed, 30 insertions(+), 9 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
->> b/drivers/gpu/drm/msm/dp/dp_aux.c
->> index 7c22bfe..fae3806 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
->> @@ -343,6 +343,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux 
->> *dp_aux,
->> 
->>         mutex_lock(&aux->mutex);
->> 
->> +       if (!dp_catalog_link_is_connected(aux->catalog)) {
->> +               ret = -ETIMEDOUT;
->> +               goto unlock_exit;
->> +       }
->> +
-> 
-> This still makes me concerned. Any possibility to not do this and have
-> the phy cut the connection off and have this transfer timeout
-> immediately?
-no, we have to wait hardware AUX_NACK timeout.
-only this or the abort flag used last time.
-Last time you have kernel crash because of service irq_hpd while clock 
-is turned off.
-I have add core_initialized checking wiinin irq_hpd to prevent this.
-I think abort flag approach is safer.
+On Wed 21 Apr 04:54 CDT 2021, Johan Hovold wrote:
 
+> Commit f77232dab25b ("tty: serial: msm: drop uart_port->lock before
+> calling tty_flip_buffer_push()") claimed to address a locking
+> issue but only provided a dubious lockdep splat from an unrelated
+> driver, which in the end turned out to be due a broken local change
+> carried by the author.
 > 
->>         aux->native = msg->request & (DP_AUX_NATIVE_WRITE & 
->> DP_AUX_NATIVE_READ);
->> 
->>         /* Ignore address only message */
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index 1784e11..db3f45e 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -571,7 +571,7 @@ static int dp_hpd_plug_handle(struct 
->> dp_display_private *dp, u32 data)
->>                 dp->hpd_state = ST_DISCONNECTED;
->> 
->>                 if (ret == -ECONNRESET) { /* cable unplugged */
->> -                       dp->core_initialized = false;
->> +                       DRM_ERROR("dongle unplugged = %d\n", ret);
+> Unfortunately these patches were merged before the issue had been
+> analysed properly so the commit messages makes no sense whatsoever.
 > 
-> Is this a debug message?
+> The real issue was first seen on RT which at the time effectively always
+> set the low_latency flag for all serial drivers by patching
+> tty_flip_buffer_push(). This in turn revealed that many drivers did not
+> handle the infamous low_latency behaviour which meant that data was
+> pushed immediately to the line discipline instead of being deferred to a
+> work queue.
 > 
->>                 }
->> 
->>         } else {
->> @@ -711,9 +711,15 @@ static int dp_irq_hpd_handle(struct 
->> dp_display_private *dp, u32 data)
->>                 return 0;
->>         }
->> 
->> -       ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
->> -       if (ret == -ECONNRESET) { /* cable unplugged */
->> -               dp->core_initialized = false;
->> +       /*
->> +        * dp core (ahb/aux clks) must be initialized before
->> +        * irq_hpd be handled
->> +        */
->> +       if (dp->core_initialized) {
->> +               ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
->> +               if (ret == -ECONNRESET) { /* cable unplugged */
->> +                       DRM_ERROR("dongle unplugged = %d\n", ret);
+> Since commit a9c3f68f3cd8 ("tty: Fix low_latency BUG"),
+> tty_flip_buffer_push() always schedules a work item to push data to the
+> line discipline and there's no need to keep any low_latency hacks
+> around.
 > 
-> Another debug message?
+> Link: https://lore.kernel.org/linux-serial/cover.1376923198.git.viresh.kumar@linaro.org/
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/tty/serial/msm_serial.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
->> +               }
->>         }
->> 
->>         mutex_unlock(&dp->event_mutex);
->> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c 
->> b/drivers/gpu/drm/msm/dp/dp_link.c
->> index be986da..53ecae6 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_link.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
->> @@ -737,18 +737,25 @@ static int dp_link_parse_sink_count(struct 
->> dp_link *dp_link)
->>         return 0;
->>  }
->> 
->> -static void dp_link_parse_sink_status_field(struct dp_link_private 
->> *link)
->> +static int dp_link_parse_sink_status_field(struct dp_link_private 
->> *link)
->>  {
->>         int len = 0;
->> 
->>         link->prev_sink_count = link->dp_link.sink_count;
->> -       dp_link_parse_sink_count(&link->dp_link);
->> +       len = dp_link_parse_sink_count(&link->dp_link);
->> +       if (len < 0) {
->> +               DRM_ERROR("DP parse sink count failed\n");
->> +               return len;
->> +       }
->> 
->>         len = drm_dp_dpcd_read_link_status(link->aux,
->>                 link->link_status);
->> -       if (len < DP_LINK_STATUS_SIZE)
->> +       if (len < DP_LINK_STATUS_SIZE) {
->>                 DRM_ERROR("DP link status read failed\n");
->> -       dp_link_parse_request(link);
->> +               return len;
->> +       }
->> +
->> +       return dp_link_parse_request(link);
->>  }
->> 
->>  /**
->> @@ -1032,7 +1039,10 @@ int dp_link_process_request(struct dp_link 
->> *dp_link)
->> 
->>         dp_link_reset_data(link);
->> 
->> -       dp_link_parse_sink_status_field(link);
->> +       ret = dp_link_parse_sink_status_field(link);
->> +       if (ret) {
->> +               return ret;
->> +       }
->> 
->>         if (link->request.test_requested == DP_TEST_LINK_EDID_READ) {
->>                 dp_link->sink_request |= DP_TEST_LINK_EDID_READ;
->> --
+> diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
+> index 770c182e2208..fcef7a961430 100644
+> --- a/drivers/tty/serial/msm_serial.c
+> +++ b/drivers/tty/serial/msm_serial.c
+> @@ -757,9 +757,7 @@ static void msm_handle_rx_dm(struct uart_port *port, unsigned int misr)
+>  		count -= r_count;
+>  	}
+>  
+> -	spin_unlock(&port->lock);
+>  	tty_flip_buffer_push(tport);
+> -	spin_lock(&port->lock);
+>  
+>  	if (misr & (UART_IMR_RXSTALE))
+>  		msm_write(port, UART_CR_CMD_RESET_STALE_INT, UART_CR);
+> @@ -819,9 +817,7 @@ static void msm_handle_rx(struct uart_port *port)
+>  			tty_insert_flip_char(tport, c, flag);
+>  	}
+>  
+> -	spin_unlock(&port->lock);
+>  	tty_flip_buffer_push(tport);
+> -	spin_lock(&port->lock);
+>  }
+>  
+>  static void msm_handle_tx_pio(struct uart_port *port, unsigned int tx_count)
+> -- 
+> 2.26.3
 > 
-> Can you split this part off into another patch? It seems to stand on 
-> its
-> own as it makes the code more robust to transfer errors in the sink
-> parsing code.
