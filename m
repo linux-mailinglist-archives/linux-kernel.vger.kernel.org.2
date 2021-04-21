@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B967836731F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1322A367320
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245462AbhDUTFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:05:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35906 "EHLO mail.kernel.org"
+        id S245477AbhDUTFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:05:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245426AbhDUTFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:05:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C959161460;
-        Wed, 21 Apr 2021 19:04:30 +0000 (UTC)
+        id S245398AbhDUTFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 15:05:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A85B161458;
+        Wed, 21 Apr 2021 19:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619031871;
-        bh=D24DHVubd4/wjoy4vR3G76V2bPoq5gjtJRYAY8+PXaM=;
+        s=k20201202; t=1619031874;
+        bh=ZyDUAPH4Kb7Csms8OjB22FUGXxba8AST7W5zS12qq/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNv/itFOjZDVUAvBJ/uaem8kksZesASXtk0ycKnKoiYz6kdmzvcWlcQZcup5K60DJ
-         FTShWrdEEJWmLM124UCN/lImExVAyGpbSIU2Pnr38WhVJwrzdAf1PFTkQLQzXasI17
-         cYae/2d6f/2GztL46NDklHKazJ/JOsJL4bT6oEGEd3HBnJA/c6GgBBxdRjVjJ3aO58
-         UZTo6rI53p/n/dMhlRzw4uUO7+bUr/tOcpUVnbFkBvxaeOVSLjnY81Pn5XRfuGaGCS
-         s8jSmFe//BQ6sFKjVXvTXGPDHjPkGOxhWlBBApZ+dbBfaVZKyoDn033hBVB1cT3CMh
-         0orXt3IBGWc+g==
+        b=UrbYrjYpQwo3Vjs/Nz+yKbOwxdXTMHJD7D7YZHNOV+8UNagjxFhjlLGPHk/bf34At
+         wjfLM/NBLK4QZL5s0yYYeP/WFBEh4JjsONavE68ZcYkYwslrp+25Sw+fOPt9JJneI5
+         X6C4Pmag7afEK+mAHBWHlcpserPFk2vz7mSZ2o+FMXufK0ewNCD/tYfNHGD339pyb1
+         THsWEstdlVksqPdPYAhaDSe9sj3+EcCJu0rCllrT7CATbTgcrcEDvKBc/qO48SyNXi
+         jHCLY8gOMzZPcRl6L4l0nR3ucHOhveSkM0JkhHiN/Bk7h/bb2WkVYaZlXYoBXvZ9CP
+         XT3lUfRpBgrnQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Support Opensource <support.opensource@diasemi.com>
-Subject: Re: [PATCH V3] regulator: da9121: automotive variants identity fix
-Date:   Wed, 21 Apr 2021 20:03:33 +0100
-Message-Id: <161903035952.13561.16363531324449448954.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com,
+        Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        sanjanasrinidhi1810@gmail.com
+Subject: Re: [PATCH] drivers: regulator: core.c: Fix indentation of comment
+Date:   Wed, 21 Apr 2021 20:03:34 +0100
+Message-Id: <161903035952.13561.1913032316850125430.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210421120306.DB5B880007F@slsrvapps-01.diasemi.com>
-References: <20210421120306.DB5B880007F@slsrvapps-01.diasemi.com>
+In-Reply-To: <20210420034718.t7wudu6xcfpahflv@kewl-virtual-machine>
+References: <20210420034718.t7wudu6xcfpahflv@kewl-virtual-machine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,16 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 12:03:06 +0000, Adam Ward wrote:
-> This patch fixes identification of DA913x parts by the DA9121 driver,
-> where a lack of clarity lead to implementation on the basis that variant
-> IDs were to be identical to the equivalent rated non-automotive parts.
-> 
-> There is a new emphasis on the DT identity to cope with overlap in these
-> ID's - this is not considered to be problematic, because projects would
-> be exclusively using automotive or consumer grade parts.
-> 
-> [...]
+On Tue, 20 Apr 2021 09:17:18 +0530, Shubhankar Kuranagatti wrote:
+> Shifted the closing */ of multiline comment to a new line
+> This is done to maintain code uniformity
 
 Applied to
 
@@ -59,8 +51,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: da9121: automotive variants identity fix
-      commit: 013592be146a10d3567c0062cd1416faab060704
+[1/1] drivers: regulator: core.c: Fix indentation of comment
+      commit: 69b8821e293aa823ba8184c80370e7e21bde81e6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
