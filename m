@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E47366969
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0AF366973
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhDUKre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 06:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhDUKrd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:47:33 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFCFC06174A;
-        Wed, 21 Apr 2021 03:46:59 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id q10so29399490pgj.2;
-        Wed, 21 Apr 2021 03:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oU6hXhwQ5Ignvwty2TH1odpK5v3+ZCsNoAjU9Fo3lIU=;
-        b=hOxjl8X6uMuYBL9+aQSGO/Fa/xlDJigVP2oZetR/626YXkBKAIfrrbpYcrLA790z4i
-         xJGlXubw0zz6ydJG1hTfyp/APxG98MPTnt5Vfc8rxmd8KwJR64Ib2jarknCDY+k8/Sc1
-         s+cNVYfM2TDNzHEJKiVDKlstkkXneVGSvVJbzdnVPEOPUzZZfpkVwfooNVJtLNezzma7
-         UMmnvZACUuvKwZUqXOYYX9seOUECaEAu0+pMbpODpt6xBFsB45PjCDh8tRGyn0bXvfrR
-         UdC+t/etKilXjvj/GVkZaSw9HO/MZ4UVv8950xlpUNg36/dgG9dSAvyVNE/7sGXhq7/m
-         g4fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oU6hXhwQ5Ignvwty2TH1odpK5v3+ZCsNoAjU9Fo3lIU=;
-        b=Nu2DsVNiBqqc8EKWG2NLDT4Pkg+5YH+eUECZTD+ZnH3fObtAb56PrCRp1nZEUOt/F7
-         ku4oA336h9rVtwP6kFkqykWdsTgtaiNS8lkQTS3+jfagmeO8uBBnhOC2bkxdsqRhjS8C
-         09YF+2TTKNwcPppuWJ3LDpnv2DL1MfHa4jNVpbogqsfxbV0FHxGBa9MXP6ZXPrtFV46f
-         A0Dq2sP+XF6n6s3NTsLNTwdjYMdOSVJ6D+vAHIAuYjiSf13gxoVizcTS8dmnL8OR7iiW
-         OKL8F7R9yF/Anq+Fulk1/YOaXc8TUnf01jM9+l1tt+Us3xOZ9qHlltgFkfVy0Xo2ds3G
-         2YAA==
-X-Gm-Message-State: AOAM5312q+e9d905mXgCjMSU03b1blj6wpd9ytfWUTS/+4vkPWIeqHE1
-        hNL5gdAymfrsyvXUnp/haax6psKeE5znsAyCbF8=
-X-Google-Smtp-Source: ABdhPJyYtLn8/QBD0Cvv7B92/uc66d+TdHzb8pXDCdyUXwG7YJ3TXhoQQJa7L7NjXSgCYCh2jVMzahw8GS++SUrf1Og=
-X-Received: by 2002:a17:90b:1c0f:: with SMTP id oc15mr10746828pjb.228.1619002019111;
- Wed, 21 Apr 2021 03:46:59 -0700 (PDT)
+        id S235178AbhDUKtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:49:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:59128 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230259AbhDUKtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 06:49:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C4FA113E;
+        Wed, 21 Apr 2021 03:48:34 -0700 (PDT)
+Received: from [10.163.74.228] (unknown [10.163.74.228])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A00AE3F73B;
+        Wed, 21 Apr 2021 03:48:29 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH v2 1/4] include/linux/mmzone.h: add documentation for
+ pfn_valid()
+To:     Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210421065108.1987-1-rppt@kernel.org>
+ <20210421065108.1987-2-rppt@kernel.org>
+Message-ID: <d31ff896-ea1c-d47c-0d11-34fdcd3b7ad8@arm.com>
+Date:   Wed, 21 Apr 2021 16:19:15 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210420123932.24634-1-tsbogend@alpha.franken.de>
- <CAHp75VcQ4WXm3uS2r=uDpA4+0vPWdKjev6=vV_JDxMLPzpHDRw@mail.gmail.com>
- <20210421083214.GA5694@alpha.franken.de> <CAHp75VeeWTdYjSgyjgzmFSpO=Zc+Q6SCS-06LVcVoghuF9vNgA@mail.gmail.com>
- <20210421091843.GA6174@alpha.franken.de> <CAHp75Vf921iQUR=VgMXTD-M_Ah+8UeAmKXXqgvB8WFz58pQ5Qg@mail.gmail.com>
- <20210421103720.GA7390@alpha.franken.de>
-In-Reply-To: <20210421103720.GA7390@alpha.franken.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 21 Apr 2021 13:46:43 +0300
-Message-ID: <CAHp75VdgUus64zbbaD5enV0-sof4jYSs3soORqyBTkxVhM4b6A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210421065108.1987-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 1:37 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Wed, Apr 21, 2021 at 12:54:53PM +0300, Andy Shevchenko wrote:
-> > As I promised you, I will do a deep review later on, I'm giving you
-> > time to find issues yourself. That's how you may actually learn the
-> > things. It's solely your choice to follow or not, my promise will be
-> > kept and you will get an answer anyway.
->
-> so let's make it a challenge ;-)
->
-> I see I could use gpiochip_get_data() in few place.
->
-> Is there more you see ?
+On 4/21/21 12:21 PM, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Add comment describing the semantics of pfn_valid() that clarifies that
+> pfn_valid() only checks for availability of a memory map entry (i.e. struct
+> page) for a PFN rather than availability of usable memory backing that PFN.
+> 
+> The most "generic" version of pfn_valid() used by the configurations with
+> SPARSEMEM enabled resides in include/linux/mmzone.h so this is the most
+> suitable place for documentation about semantics of pfn_valid().
+> 
+> Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Good.
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-For now:
-- dead code due to driver not being compiled as module
-- too verbose Kconfig machinery (it's not about the "help" part!)
-- open coded stuff in IRQ handler
-- whatever you found.
-
--- 
-With Best Regards,
-Andy Shevchenko
+> ---
+>  include/linux/mmzone.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 47946cec7584..961f0eeefb62 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -1410,6 +1410,17 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>  #endif
+>  
+>  #ifndef CONFIG_HAVE_ARCH_PFN_VALID
+> +/**
+> + * pfn_valid - check if there is a valid memory map entry for a PFN
+> + * @pfn: the page frame number to check
+> + *
+> + * Check if there is a valid memory map entry aka struct page for the @pfn.
+> + * Note, that availability of the memory map entry does not imply that
+> + * there is actual usable memory at that @pfn. The struct page may
+> + * represent a hole or an unusable page frame.
+> + *
+> + * Return: 1 for PFNs that have memory map entries and 0 otherwise
+> + */
+>  static inline int pfn_valid(unsigned long pfn)
+>  {
+>  	struct mem_section *ms;
+> 
