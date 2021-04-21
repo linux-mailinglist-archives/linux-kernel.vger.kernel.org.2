@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B593667B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7FE3667A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237915AbhDUJMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237716AbhDUJMA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:12:00 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AEFC06174A;
-        Wed, 21 Apr 2021 02:11:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id j7so11560403eds.8;
-        Wed, 21 Apr 2021 02:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2Q0QOgBFAHEX6JOMcIulNXzdx8L/HYfeVOnvhHwPTHk=;
-        b=BpQwADd0LfkthEA9rTpDz7MyHVsNL7HKb6Vo72I6JZ1WqquBul3E114txhXpDCH5+J
-         RdyKHlRW98AryXY8987m1M8SWjoUXUQfeTBj4C38NjNwzaJO/Qs4ldTgUMJZ+XGpXPZn
-         udC18gY/vZBAT3SY82lDo3f50aBPRi7mBu7tmsFYSkp+uTCJwFRAk5XKS6MOAOnuV7Z2
-         x1blOC2+6U6kYV73GRCPne42IZvkyWBWOapBkYoyzvTc7gqAxO4kQU2BKBaugSSjC5UG
-         Hhs6SLJzG2/dDJJadx2EB88+3bQ22c3OI8SJw+8mLhxaqxhzOYn+iJykTmw1PZPXwZGI
-         1SeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2Q0QOgBFAHEX6JOMcIulNXzdx8L/HYfeVOnvhHwPTHk=;
-        b=MYdOD82QhIFJaDLsb8GhuALxpWQOhT9wTyoxMXzKtkVw8qkCUQRu2s/gHP6Y3bEO4v
-         +q3xiT1cJo/EfmwbMOVOa2u6rJzAehDv29Tu0/obqMeCzgEjAGiXpbKLtNeEfUbEALK3
-         zTuH6M09wFFst9dwwMSCg4lQnDctfbZ26KtWF0Lz1jsa9glF9x6qU1K0cV/Ilea1hUTj
-         bxbGo5yG9xA/tVn6gee5+4goSwNLLPzjZtuJJ3hmXHjVus08tFnzU86KIEM8rCgM7KcB
-         9XVyULsDqyC+5BORPGhfJwnM1wf2wJjxssBk8XALrmyte2DWYoHoU5Q3yHxhh3FRdoEF
-         HguA==
-X-Gm-Message-State: AOAM532uL9yKtArRHWDs50gEYBLNDShwj/5LMPn1e1Un2EXYHt3FbYSf
-        dFo9YAgHNm9IEfHmv1zHvFg=
-X-Google-Smtp-Source: ABdhPJy3z1cKSNS7BjPEFsBpeZdR1m/tRdpWeLixQFDvBD8w/AaxyB3CPX0KyTGhe+yLWUjp6WQZEQ==
-X-Received: by 2002:aa7:d94c:: with SMTP id l12mr31508473eds.290.1618996285880;
-        Wed, 21 Apr 2021 02:11:25 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id s11sm2487783edt.27.2021.04.21.02.11.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 02:11:25 -0700 (PDT)
-Subject: Re: [PATCH v1 2/5] dt-bindings: serial: snps-dw-apb-uart: add
- description for rk3568
-To:     cl@rock-chips.com, heiko@sntech.de
-Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com
-References: <20210421065921.23917-1-cl@rock-chips.com>
- <20210421065921.23917-3-cl@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <b5e0b661-7dfd-1456-f8a9-0f23539fbae1@gmail.com>
-Date:   Wed, 21 Apr 2021 11:11:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S237742AbhDUJJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:09:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:48509 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235406AbhDUJJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:09:33 -0400
+IronPort-SDR: BtVKrBftMwfsbruhgIgMnOGqImM+2bTYqm78v97yaTXAOpmKC2GFaXj5VDMCsXHKBu50gwet9a
+ 4Jaa5+QlXfrg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="256981039"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="256981039"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 02:09:00 -0700
+IronPort-SDR: DN8SoSXKp7r6nZp8rCRIndx7m90PfocgTMR3O5IwKANU6meiFXTRRMXFLk1N6fR4xx8+8VFK4X
+ JbBc86WAjgKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="463517768"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by orsmga001.jf.intel.com with ESMTP; 21 Apr 2021 02:08:57 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: fix TSO and TBS feature enabling during driver open
+Date:   Wed, 21 Apr 2021 17:11:49 +0800
+Message-Id: <20210421091149.5035-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210421065921.23917-3-cl@rock-chips.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 8:59 AM, cl@rock-chips.com wrote:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> add "rockchip,rk3568-uart", "snps,dw-apb-uart" for uart nodes on
-> a rk3568 platform to snps-dw-apb-uart.yaml.
-> 
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
-> ---
->  Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
-> index 87ef1e218152..9bbe4afc26a4 100644
-> --- a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
-> @@ -30,6 +30,7 @@ properties:
->                - rockchip,rk3308-uart
->                - rockchip,rk3328-uart
->                - rockchip,rk3368-uart
+TSO and TBS cannot co-exist and current implementation requires two
+fixes:
 
-> +              - rockchip,rk3568-uart
+ 1) stmmac_open() does not need to call stmmac_enable_tbs() because
+    the MAC is reset in stmmac_init_dma_engine() anyway.
+ 2) Inside stmmac_hw_setup(), we should call stmmac_enable_tso() for
+    TX Q that is _not_ configured for TBS.
 
-Sort this below rockchip,rk3399-uart
+Fixes: 579a25a854d4 ("net: stmmac: Initial support for TBS")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
->                - rockchip,rk3399-uart
->                - rockchip,rv1108-uart
->            - const: snps,dw-apb-uart
-> 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 4749bd0af160..c6f24abf6432 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2757,8 +2757,15 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
+ 
+ 	/* Enable TSO */
+ 	if (priv->tso) {
+-		for (chan = 0; chan < tx_cnt; chan++)
++		for (chan = 0; chan < tx_cnt; chan++) {
++			struct stmmac_tx_queue *tx_q = &priv->tx_queue[chan];
++
++			/* TSO and TBS cannot co-exist */
++			if (tx_q->tbs & STMMAC_TBS_AVAIL)
++				continue;
++
+ 			stmmac_enable_tso(priv, priv->ioaddr, 1, chan);
++		}
+ 	}
+ 
+ 	/* Enable Split Header */
+@@ -2850,9 +2857,8 @@ static int stmmac_open(struct net_device *dev)
+ 		struct stmmac_tx_queue *tx_q = &priv->tx_queue[chan];
+ 		int tbs_en = priv->plat->tx_queues_cfg[chan].tbs_en;
+ 
++		/* Setup per-TXQ tbs flag before TX descriptor alloc */
+ 		tx_q->tbs |= tbs_en ? STMMAC_TBS_AVAIL : 0;
+-		if (stmmac_enable_tbs(priv, priv->ioaddr, tbs_en, chan))
+-			tx_q->tbs &= ~STMMAC_TBS_AVAIL;
+ 	}
+ 
+ 	ret = alloc_dma_desc_resources(priv);
+-- 
+2.25.1
 
