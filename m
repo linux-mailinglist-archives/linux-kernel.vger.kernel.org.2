@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFA6366F12
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A07366F17
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243948AbhDUPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:24:50 -0400
-Received: from mga14.intel.com ([192.55.52.115]:35687 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244010AbhDUPYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:24:02 -0400
-IronPort-SDR: cdTdzFgRViFcDv8gRKs8iUF7CgxnaoVW1zrXGcJafDiGZdZeCCDwCk8AyYZHbr6cpteVfwUiEN
- kJU3XFV7cHEw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195273900"
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="195273900"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:23:29 -0700
-IronPort-SDR: goI6wrw2Cay5It9IfcIPGyGV379vnJrjvX3s1ZHB8nSCryD3TSo2CIT4KGJ7ZpNmtZstU7CY7x
- 4ha8JHMX5UqQ==
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="455380891"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 08:23:26 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lZEhH-0064QA-K1; Wed, 21 Apr 2021 18:23:23 +0300
-Date:   Wed, 21 Apr 2021 18:23:23 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <YIBDa1bvKInOg2LH@smile.fi.intel.com>
-References: <20210226155056.1068534-1-zhengdejin5@gmail.com>
+        id S243980AbhDUP04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243371AbhDUP0w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 11:26:52 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED929C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:26:17 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u4so48172768ljo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z18WoidDm0JluN7aBAMWpypFOPNnTWNb0n1ktiu16SU=;
+        b=Wdz+FXrfCqGktd+1nj/jpu3srZLhF0GwgoTLtEzdp1BU9CyOYHSQNgEC+z6kBfrZZ0
+         GssiKNqPpsy88OtEyhiITxnaRR3n7by3JhQITIQZr2VzU9o8w/QywmCkhEls13YHYDLN
+         MCjZVy5Nc0iWl0JgWNu7/bFN2Q0fNNpTtTk6mNnuYua3NwDZjO1h726O4dCYaBdyUCs2
+         pdxBPGgXA+4B4ka+LQkdSwnru3/rWDXrxN33sBQaDembvySo0aV4OllTRUZmuoyziGsZ
+         ZxVHnxpeGW/lpEaswdZNL8LsXYfkgaPLCMRaeh6zX6PYo22Qa3zSifLhzGCsu/N0/4a6
+         weIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z18WoidDm0JluN7aBAMWpypFOPNnTWNb0n1ktiu16SU=;
+        b=K+kn8lNNVvDghyFqM8v8G1HRbcggAqlo8T5YCZRB4BcWznFScuvgCDbWAu86oqsVsU
+         aH+rgrse3KDrhJ8wa49VhVPWa3KQvWjpNux4iZgybXUp2gMAcY5qdgDmukHVoYiLFwZ6
+         lTBOgH62vSvSRx7ozDX66P3pnq4s+5kszwAlQCf4+RycWelc+ht07BlWuqDIyt57lWNE
+         WIWnzxII5ojOoz4bBFBkOjC21nGIt3VvbpcGxG6RIDZdvr3xFGqo0YqCJUWeh45uwdwk
+         0IkJ+rd5Yg7Os/2RQASkOFgWHUcCJSL8UeIOl+KmjktBokw+RFf2jSetFH22d8RZgKXs
+         es4A==
+X-Gm-Message-State: AOAM532Qj0cffky+fmJw4R/urgWxbHcdxqri658r5OYnErZzxMKIC14z
+        1mImXCO8Lhd3uSId4Cc7tBaV/8c7NdMmEfJ8GjHwWQ==
+X-Google-Smtp-Source: ABdhPJwn7B3VP7SjAu+8sdR+y4D+nCCibV6Lfjt+AsyNWhcE7dh9APcE0EoFqzCQlZZ526RQ6gYzLYRbc9PC8Hbu254=
+X-Received: by 2002:a2e:8118:: with SMTP id d24mr18901064ljg.122.1619018776293;
+ Wed, 21 Apr 2021 08:26:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226155056.1068534-1-zhengdejin5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210420192907.30880-1-longman@redhat.com> <20210420192907.30880-2-longman@redhat.com>
+In-Reply-To: <20210420192907.30880-2-longman@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 21 Apr 2021 08:26:05 -0700
+Message-ID: <CALvZod7tYG+UEYdQav6N68JbSim+r-uTQjbVKcpcuBa3gzp1NA@mail.gmail.com>
+Subject: Re: [PATCH-next v5 1/4] mm/memcg: Move mod_objcg_state() to memcontrol.c
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:50:52PM +0800, Dejin Zheng wrote:
-> Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
-> has been called before, then pci_alloc_irq_vectors() is actually a
-> device-managed function. It is used as a device-managed function, So
-> replace it with pcim_alloc_irq_vectors().
+On Tue, Apr 20, 2021 at 12:30 PM Waiman Long <longman@redhat.com> wrote:
+>
+> The mod_objcg_state() function is moved from mm/slab.h to mm/memcontrol.c
+> so that further optimization can be done to it in later patches without
+> exposing unnecessary details to other mm components.
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Bjorn, I don't see this anywhere, except mailing list. Neither your opinion.
-What is the plan?
-
-> Changelog
-> ---------
-> v4 -> v5:
-> 	- Remove the check of enable device in pcim_alloc_irq_vectors()
-> 	  and make it as a static line function.
-> 	- Modify the subject name in patch 3 and patch 4.
-> v3 -> v4:
-> 	- add some commit comments for patch 3
-> v2 -> v3:
-> 	- Add some commit comments for replace some codes in
-> 	  pcim_release() by pci_free_irq_vectors().
-> 	- Simplify the error handling path in i2c designware
-> 	  driver.
-> v1 -> v2:
-> 	- Use pci_free_irq_vectors() to replace some code in
-> 	  pcim_release().
-> 	- Modify some commit messages.
-> 
-> Dejin Zheng (4):
->   PCI: Introduce pcim_alloc_irq_vectors()
->   Documentation: devres: Add pcim_alloc_irq_vectors()
->   i2c: designware: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
->   i2c: thunderx: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
-> 
->  .../driver-api/driver-model/devres.rst        |  1 +
->  drivers/i2c/busses/i2c-designware-pcidrv.c    | 15 ++++--------
->  drivers/i2c/busses/i2c-thunderx-pcidrv.c      |  2 +-
->  drivers/pci/pci.c                             |  5 +---
->  include/linux/pci.h                           | 24 +++++++++++++++++++
->  5 files changed, 31 insertions(+), 16 deletions(-)
-> 
-> -- 
-> 2.25.0
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
