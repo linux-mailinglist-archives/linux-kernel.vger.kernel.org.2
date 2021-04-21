@@ -2,137 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34377366982
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D081A36698E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 12:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237380AbhDUKxQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 06:53:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:59200 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234632AbhDUKxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 06:53:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 448F7113E;
-        Wed, 21 Apr 2021 03:52:40 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCD903F73B;
-        Wed, 21 Apr 2021 03:52:38 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: Re: [PATCH 2/2] sched/fair: Relax task_hot() for misfit tasks
-In-Reply-To: <CAKfTPtCLNeSzMLO_7uhj13k6CgtzAMhcW5aXJTYUOSYJZi220w@mail.gmail.com>
-References: <20210415175846.494385-1-valentin.schneider@arm.com> <20210415175846.494385-3-valentin.schneider@arm.com> <20210416135113.GA16445@vingu-book> <87blaakxji.mognet@arm.com> <CAKfTPtCLNeSzMLO_7uhj13k6CgtzAMhcW5aXJTYUOSYJZi220w@mail.gmail.com>
-Date:   Wed, 21 Apr 2021 11:52:36 +0100
-Message-ID: <878s5bvrij.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+        id S237684AbhDUK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 06:58:23 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:41345 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237381AbhDUK6W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 06:58:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWI2xU2_1619002657;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWI2xU2_1619002657)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 21 Apr 2021 18:57:48 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     qiang.zhao@nxp.com
+Cc:     leoyang.li@nxp.com, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] soc: fsl: qe: Remove unused function
+Date:   Wed, 21 Apr 2021 18:56:53 +0800
+Message-Id: <1619002613-18216-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 16:33, Vincent Guittot wrote:
-> On Mon, 19 Apr 2021 at 19:13, Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->>
->> On 16/04/21 15:51, Vincent Guittot wrote:
->> > Le jeudi 15 avril 2021 ï¿½ 18:58:46 (+0100), Valentin Schneider a ï¿½crit :
->> >> +
->> >> +/*
->> >> + * What does migrating this task do to our capacity-aware scheduling criterion?
->> >> + *
->> >> + * Returns 1, if the task needs more capacity than the dst CPU can provide.
->> >> + * Returns 0, if the task needs the extra capacity provided by the dst CPU
->> >> + * Returns -1, if the task isn't impacted by the migration wrt capacity.
->> >> + */
->> >> +static int migrate_degrades_capacity(struct task_struct *p, struct lb_env *env)
->> >> +{
->> >> +    if (!(env->sd->flags & SD_ASYM_CPUCAPACITY))
->> >> +            return -1;
->> >> +
->> >> +    if (!task_fits_capacity(p, capacity_of(env->src_cpu))) {
->> >> +            if (cpu_capacity_greater(env->dst_cpu, env->src_cpu))
->> >> +                    return 0;
->> >> +            else if (cpu_capacity_greater(env->src_cpu, env->dst_cpu))
->> >> +                    return 1;
->> >> +            else
->> >> +                    return -1;
->> >> +    }
->> >
->> > Being there means that task fits src_cpu capacity so why testing p against dst_cpu ?
->> >
->>
->> Because if p fits on src_cpu, we don't want to move it to a dst_cpu on
->> which it *doesn't* fit.
->
-> OK. I was confused because I thought that this was only to force
-> migration in case of group_misfit_task but you tried to extend to
-> other cases... I'm not convinced that you succeeded to cover all cases
->
-> Also I found this function which returns 3 values a bit disturbing.
-> IIUC you tried to align to migrate_degrades_capacity but you should
-> have better aligned to task_hot and return only 0 or 1. -1 is not used
->
+The last callers of this function were removed by commit d7c2878cfcfa
+("soc: fsl: qe: remove unused qe_ic_set_* functions"):
+https://github.com/torvalds/linux/commit/d7c2878cfcfa
 
-Ack, will do.
+Fix the following clang warning:
 
->> >> @@ -7672,6 +7698,15 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->> >>      if (tsk_cache_hot == -1)
->> >>              tsk_cache_hot = task_hot(p, env);
->> >>
->> >> +    /*
->> >> +     * On a (sane) asymmetric CPU capacity system, the increase in compute
->> >> +     * capacity should offset any potential performance hit caused by a
->> >> +     * migration.
->> >> +     */
->> >> +    if ((env->dst_grp_type == group_has_spare) &&
->> >
->> > Shouldn't it be env->src_grp_type == group_misfit_task to only care of misfit task case as
->> > stated in $subject
->> >
->>
->> Previously this was env->idle != CPU_NOT_IDLE, but I figured dst_grp_type
->> could give us a better picture. Staring at this some more, this isn't so
->> true when the group size goes up - there's no guarantees the dst_cpu is the
->> one that has spare cycles, and the other CPUs might not be able to grant
->> the capacity uplift dst_cpu can.
->
-> yeah you have to keep checking for env->idle != CPU_NOT_IDLE
->
->>
->> As for not using src_grp_type == group_misfit_task, this is pretty much the
->> same as [1]. CPU-bound (misfit) task + some other task on the same rq
->> implies group_overloaded classification when balancing at MC level (no SMT,
->> so one group per CPU).
->
-> Is it something that happens often or just a sporadic/transient state
-> ? I mean does it really worth the extra complexity and do you see
-> performance improvement ?
->
+drivers/soc/fsl/qe/qe_ic.c:234:29: warning: unused function
+'qe_ic_from_irq' [-Wunused-function].
 
-"Unfortunately" yes, this is a relatively common scenario when running "1
-big task per CPU" types of workloads. The expected behaviour for big.LITTLE
-systems is to upmigrate tasks stuck on the LITTLE CPUs as soon as a big CPU
-becomes free, usually via newidle balance (which, since they process work
-faster than the LITTLEs, is bound to happen), and an extra task being
-enqueued at "the wrong time" can prevent this from happening.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  - Modified submission information.
 
-This usually means a misfit task can take a few dozen extra ms than it
-should to be migrated - in the tests I run (which are pretty much this 1
-hog per CPU workload) this happens about ~20% of the time.
+ drivers/soc/fsl/qe/qe_ic.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-> You should better focus on fixing the simple case of group_misfit_task
-> task. This other cases looks far more complex with lot of corner cases
->
->>
->> [1]: http://lore.kernel.org/r/jhjblcuv2mo.mognet@arm.com
+diff --git a/drivers/soc/fsl/qe/qe_ic.c b/drivers/soc/fsl/qe/qe_ic.c
+index 0390af9..b573712 100644
+--- a/drivers/soc/fsl/qe/qe_ic.c
++++ b/drivers/soc/fsl/qe/qe_ic.c
+@@ -231,11 +231,6 @@ static inline void qe_ic_write(__be32  __iomem *base, unsigned int reg,
+ 	qe_iowrite32be(value, base + (reg >> 2));
+ }
+ 
+-static inline struct qe_ic *qe_ic_from_irq(unsigned int virq)
+-{
+-	return irq_get_chip_data(virq);
+-}
+-
+ static inline struct qe_ic *qe_ic_from_irq_data(struct irq_data *d)
+ {
+ 	return irq_data_get_irq_chip_data(d);
+-- 
+1.8.3.1
+
