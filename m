@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3609366C17
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA47F366BFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242124AbhDUNJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:09:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
+        id S242177AbhDUNJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:09:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240772AbhDUNHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:07:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE36961440;
-        Wed, 21 Apr 2021 13:06:33 +0000 (UTC)
+        id S241094AbhDUNHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:07:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC4061455;
+        Wed, 21 Apr 2021 13:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010394;
-        bh=V8cl84AGiB+lKu2uhDRDqIV9Oc8ljKG6mDuqEQcyutA=;
+        s=korg; t=1619010397;
+        bh=+wvQYNN3mheQSauFtd+crHc6s0cExTvPZFyP3t/D5Ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ggTp6AISyYgRykBV8V2ctRKZeUWittQJSlJN1zLM871TqY3ZJ83rzfIPPMOgHPrKn
-         J9PQCeUUTvI0G7ghD0ZO1TbSzZIlVEOEcYaOrsb5CVKywBqNfv6VzMhbE763ALCs0G
-         nuA9qJ4qS6p1Z8GoMjxP42DE1id1P8UQT//dhK+M=
+        b=j0t5e2FqKIW5OdFy4PDj2MEGAlbbAH1eFQfc2soMtIavEC7s71O6eDEyrooBtoMiD
+         1y7QxFyhXWU+0n70ATBzRtUe9gd9x+PsqO30PrRuXI53UG/I0bGtp9mrxgM3tMlnVf
+         arggl6/LVEy8S888i0BGw+VJLoQPMjyvlX5552i8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH 121/190] Revert "serial: mvebu-uart: Fix to avoid a potential NULL pointer dereference"
-Date:   Wed, 21 Apr 2021 14:59:56 +0200
-Message-Id: <20210421130105.1226686-122-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>, Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 122/190] Revert "HID: logitech: check the return value of create_singlethread_workqueue"
+Date:   Wed, 21 Apr 2021 14:59:57 +0200
+Message-Id: <20210421130105.1226686-123-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 32f47179833b63de72427131169809065db6745e.
+This reverts commit 6c44b15e1c9076d925d5236ddadf1318b0a25ce2.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,28 +52,39 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: stable <stable@vger.kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/mvebu-uart.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/hid/hid-logitech-hidpp.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/tty/serial/mvebu-uart.c b/drivers/tty/serial/mvebu-uart.c
-index e0c00a1b0763..51b0ecabf2ec 100644
---- a/drivers/tty/serial/mvebu-uart.c
-+++ b/drivers/tty/serial/mvebu-uart.c
-@@ -818,9 +818,6 @@ static int mvebu_uart_probe(struct platform_device *pdev)
- 		return -EINVAL;
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index d459e2dbe647..cb73febbe893 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -2547,13 +2547,6 @@ static int hidpp_ff_init(struct hidpp_device *hidpp,
+ 		kfree(data);
+ 		return -ENOMEM;
  	}
- 
--	if (!match)
--		return -ENODEV;
+-	data->wq = create_singlethread_workqueue("hidpp-ff-sendqueue");
+-	if (!data->wq) {
+-		kfree(data->effect_ids);
+-		kfree(data);
+-		return -ENOMEM;
+-	}
 -
- 	/* Assume that all UART ports have a DT alias or none has */
- 	id = of_alias_get_id(pdev->dev.of_node, "serial");
- 	if (!pdev->dev.of_node || id < 0)
+ 	data->hidpp = hidpp;
+ 	data->version = version;
+ 	for (j = 0; j < num_slots; j++)
+@@ -2575,6 +2568,7 @@ static int hidpp_ff_init(struct hidpp_device *hidpp,
+ 		hid_warn(hidpp->hid_dev, "Unable to create sysfs interface for \"range\", errno %d!\n", error);
+ 
+ 	/* init the hardware command queue */
++	data->wq = create_singlethread_workqueue("hidpp-ff-sendqueue");
+ 	atomic_set(&data->workqueue_size, 0);
+ 
+ 	hid_info(hid, "Force feedback support loaded (firmware release %d).\n",
 -- 
 2.31.1
 
