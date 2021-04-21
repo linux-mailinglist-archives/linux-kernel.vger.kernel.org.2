@@ -2,211 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79728366E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2FC366E7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243666AbhDUOvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:51:08 -0400
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:26297 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238737AbhDUOvG (ORCPT
+        id S243673AbhDUOvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243648AbhDUOvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:51:06 -0400
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 8BEC475E79;
-        Wed, 21 Apr 2021 17:50:31 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1619016631;
-        bh=L1DdxYJL/E28deui1V8GgdZVffxo8Xh2hzFRTtPCYvo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=54dbnBkG+e/oqgHhwDN8W3lRg3PHO/kSZt3tbMguq2hQtWUH0kx/K9QjU3oM9dqfB
-         e1y4snj/esV0Iv8eo7+c4CoVGYP3WnJDKlKExO7ZRp0CxJgRf/ouqf966PeKDOjRbv
-         GKrM5tn5BkHOoxWyPWZAdXnSBzejB+cgGU/cxtWtII0GFtpv06eE2KL9Av9WUVYCXj
-         6dSMGmmRXeD9ZFJ4YAoJrSAuPJE2T9UWY1orqGyYXt7Q8Ruq0LmnRlZcP2MjnEmofv
-         Rcdv7w+ezcHosIPNs1Ki5CRMsyZYh3ZV+fzChHxV+/9HLYZ/Q7dZo7a+7+dWp1Bayd
-         TZSaHw5OARgEw==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 543D575D7A;
-        Wed, 21 Apr 2021 17:50:31 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
- Apr 2021 17:50:30 +0300
-Subject: Re: [RFC PATCH v8 13/19] virtio/vsock: rest of SOCK_SEQPACKET support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Alexander Popov <alex.popov@linux.com>,
-        kvm <kvm@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        stsp <stsp2@yandex.ru>, Krasnov Arseniy <oxffffaa@gmail.com>
-References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
- <20210413124528.3404287-1-arseny.krasnov@kaspersky.com>
- <CAGxU2F6A3-pY5We-pC7-k-3v-tOdKnFvHEAs7eGo4bHnD=sM5Q@mail.gmail.com>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <ef33f997-3ba0-0367-e943-16bf832d2859@kaspersky.com>
-Date:   Wed, 21 Apr 2021 17:50:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 21 Apr 2021 10:51:07 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FB9C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 07:50:33 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u17so63966391ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 07:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pColakFL/oD6K5w+4xc6suN1o6M2SKI7M9jsjcF6vq0=;
+        b=fAbQ2AqOrYqvKXyGWn9XD5FfGB7HkD07jpWKW4+MtWRrotpDkK7HIF6Ws0AW7uxiIW
+         VVnG7IElrZskcVceebo/ZYeLNkBtRln4j4h08fME/SPlnpPsgFQc+BeaNeaV8FtyFota
+         ZaHkw9qHtE8HDZEtrgZ5S5YfS0LVWDv+EbgoI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pColakFL/oD6K5w+4xc6suN1o6M2SKI7M9jsjcF6vq0=;
+        b=XF5u0HtmPAaicT2dty2/aCTGjMIos7Z02vMTUCBYdaaSegb2LzCfmNAgFhBF3mtftH
+         nM61sW8Nsvu9lU5DY/Ap+woMzxjDk3mjxN6Qlp3kXlLPlWTL4Qf4D+p0ULS3oSb8XD7/
+         02KdD/XHxoUyWp3XbEdiC8Wbec0OWOq+TaS6U+FqX3N5UQJ3jCerTS+v6K/eXMmWi2BO
+         lsrJB8vLZL6zlrrNbzfcOwBZXMEuNd6iDPgZXT5rQqjoS5OhlKFpwaU2DiXz9Di55WPk
+         iouRJAdo3XlMF283bwkKE4sFVrNr+z0PPVk1xxRruHnW7UCLhlVtFP/vCI5+iP3gHuoZ
+         wZ6A==
+X-Gm-Message-State: AOAM530tSdQMRQmGznyqef6Phg7KS82crdtP0eCmsDdWj2KMO7+JmMYo
+        HudPBNt2QrrySny3ShsLI7akzg==
+X-Google-Smtp-Source: ABdhPJxeetNfYWARegiTKr2YDP6uJ0JGKGiWke66Vc7e3ju9fs61nRP78er07SdcYeRPUHh7yeIHxA==
+X-Received: by 2002:a17:906:3f88:: with SMTP id b8mr33884788ejj.36.1619016632659;
+        Wed, 21 Apr 2021 07:50:32 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id f19sm2790726ejc.54.2021.04.21.07.50.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 07:50:32 -0700 (PDT)
+Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@elte.hu" <mingo@elte.hu>,
+        "chris@chris-wilson.co.uk" <chris@chris-wilson.co.uk>,
+        "yuanhan.liu@linux.intel.com" <yuanhan.liu@linux.intel.com>,
+        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>
+References: <1299622684.20306.77.camel@gandalf.stny.rr.com>
+ <877hc64klm.fsf@rustcorp.com.au> <20130813111442.632f3421@gandalf.local.home>
+ <87siybk8yl.fsf@rustcorp.com.au> <20130814233228.778f25d0@gandalf.local.home>
+ <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com>
+ <20210419181111.5eb582e8@gandalf.local.home>
+ <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com>
+ <20210420085532.4062b15e@gandalf.local.home>
+ <CAPcyv4gHHPdCYPzLeNzX0KMoNrOf8H0N5PBiWam0wF+WhV-Jpg@mail.gmail.com>
+ <20210420163243.45293c9a@gandalf.local.home>
+ <5d191e26-bd00-c338-e366-b4855ac08053@rasmusvillemoes.dk>
+ <20210421102008.411af7c5@gandalf.local.home>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <7d971eef-72bc-db32-e6a3-26e94b1b4236@rasmusvillemoes.dk>
+Date:   Wed, 21 Apr 2021 16:50:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAGxU2F6A3-pY5We-pC7-k-3v-tOdKnFvHEAs7eGo4bHnD=sM5Q@mail.gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210421102008.411af7c5@gandalf.local.home>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 14:29:29
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163270 [Apr 21 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/21/2021 14:32:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 21.04.2021 11:31:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/04/21 13:40:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/21 11:31:00 #16604789
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/04/2021 16.20, Steven Rostedt wrote:
+> On Wed, 21 Apr 2021 09:30:01 +0200
+> Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+> 
+>> On 20/04/2021 22.32, Steven Rostedt wrote:
+>>> 	/* vsnprintf() will not append null for zero-length strings */
+>>> 	if (ret == 0)
+>>> 		buf[0] = '\0';  
+>>
+>> Wrong. snprintf(buf, 16, "") will work just fine and cause a '\0' to be
+>> written to buf[0]. As will snprintf(buf, 16, "%s", ""), and any other
+>> case where there ends up being no characters printed.
+> 
+> I just cut and pasted the bpf_trace_printk() code and modified it for here.
 
-On 21.04.2021 12:12, Stefano Garzarella wrote:
-> On Tue, Apr 13, 2021 at 03:45:25PM +0300, Arseny Krasnov wrote:
->> This adds rest of logic for SEQPACKET:
->> 1) Send SHUTDOWN on socket close for SEQPACKET type.
->> 2) Set SEQPACKET packet type during send.
->> 3) 'seqpacket_allow' flag to virtio transport.
->> 4) Set 'VIRTIO_VSOCK_SEQ_EOR' bit in flags for last
->>   packet of message.
+OK, thanks for the pointer, lemme go write a patch to remove that
+bogosity before it gets cargo-culted further.
+
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/bpf_trace.c#n404
+> 
+>>>
+>>> #define dev_dbg(dev, fmt, ...) 					\
+>>> 	do {							\
+>>> 		if (trace_dev_dbg_printk_enabled())		\
+>>> 			__dev_dbg(dev, fmt, ##__VA_ARGS__);	\
+>>> 	} while (0)
+>>>
+>>> Note, the "trace_dev_dbg_printk_enabled()" is a static branch, which means
+>>> it is a nop when the dev_dbg_printk tracepoint is not enabled, and is a jmp
+>>> to the __dev_dbg() logic when it is enabled. It's not a conditional branch.  
 >>
->> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->> ---
->> v7 -> v8:
->> - MSG_EOR handling is removed, i didn't found exact description about
->>   how it works in POSIX.
->> - SEQ_BEGIN, SEQ_END, etc. now removed.
->>
->> include/linux/virtio_vsock.h            |  6 ++++++
->> net/vmw_vsock/virtio_transport_common.c | 16 ++++++++++++++--
->> 2 files changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->> index 02acf6e9ae04..f00a01bfdd7e 100644
->> --- a/include/linux/virtio_vsock.h
->> +++ b/include/linux/virtio_vsock.h
->> @@ -68,6 +68,8 @@ struct virtio_transport {
->>
->>       /* Takes ownership of the packet */
->>       int (*send_pkt)(struct virtio_vsock_pkt *pkt);
->> +
->> +      bool seqpacket_allow;
->> };
->>
->> ssize_t
->> @@ -80,6 +82,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>                              struct msghdr *msg,
->>                              size_t len, int flags);
->>
->> +int
->> +virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
->> +                                 struct msghdr *msg,
->> +                                 size_t len);
->> ssize_t
->> virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->>                                  struct msghdr *msg,
->> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->> index 572869fef832..4c5b63601308 100644
->> --- a/net/vmw_vsock/virtio_transport_common.c
->> +++ b/net/vmw_vsock/virtio_transport_common.c
->> @@ -74,6 +74,9 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
->>               err = memcpy_from_msg(pkt->buf, info->msg, len);
->>               if (err)
->>                       goto out;
->> +
->> +              if (info->msg->msg_iter.count == 0)
->> +                      pkt->hdr.flags |= VIRTIO_VSOCK_SEQ_EOR;
-> We should set the flag in info->flags and assign it using cpu_to_le32() 
-> or just the following:
-> 			pkt->hdr.flags = cpu_to_le32(info->flags |
-> 						VIRTIO_VSOCK_SEQ_EOR);
-Ack
->
->
->>       }
->>
->>       trace_virtio_transport_alloc_pkt(src_cid, src_port,
->> @@ -187,7 +190,7 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>       struct virtio_vsock_pkt *pkt;
->>       u32 pkt_len = info->pkt_len;
->>
->> -      info->type = VIRTIO_VSOCK_TYPE_STREAM;
->> +      info->type = virtio_transport_get_type(sk_vsock(vsk));
->>
->>       t_ops = virtio_transport_get_ops(vsk);
->>       if (unlikely(!t_ops))
->> @@ -486,6 +489,15 @@ virtio_transport_seqpacket_dequeue(struct 
->> vsock_sock *vsk,
->> }
->> EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
->>
->> +int
->> +virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
->> +                                 struct msghdr *msg,
->> +                                 size_t len)
->> +{
->> +      return virtio_transport_stream_enqueue(vsk, msg, len);
->> +}
->> +EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_enqueue);
->> +
->> int
->> virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>                              struct msghdr *msg,
->> @@ -905,7 +917,7 @@ void virtio_transport_release(struct vsock_sock *vsk)
->>       struct sock *sk = &vsk->sk;
->>       bool remove_sock = true;
->>
->> -      if (sk->sk_type == SOCK_STREAM)
->> +      if (sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET)
->>               remove_sock = virtio_transport_close(vsk);
->>
->>       list_for_each_entry_safe(pkt, tmp, &vvs->rx_queue, list) {
->> --
->> 2.25.1
->>
->
+>> dynamic_debug has been implemented in terms of static_keys for a long
+>> time. And that's a per-dev_dbg invocation static key. IIUC, the above
+>> would cause every single dev_dbg in the kernel to pass through the "grab
+>> a raw spin lock and do the snprintf" thing even when one is just
+>> interested in the dev_dbgs inside a single driver or function.
+> 
+> If you want to make it per device, I'm sure three's a way. Or allocate a
+> per-cpu buffer for the sprintf storage, and then you only need to disable
+> interrupts. And if you make the storage 4 levels deep per CPU (like
+> trace_printk does), then you only need to disable preemption and not even
+> interrupts.
+> 
+> The above wasn't a patch submission. It was a proof of concept. Everything
+> you brought up can be trivially dealt with.
+
+I don't "want" anything. I just fail to see what advantage that proof of
+concept would bring over the current dev_dbg implementation.
+
+Rasmus
