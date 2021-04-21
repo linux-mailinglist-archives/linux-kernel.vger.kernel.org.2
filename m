@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A3336718B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0653036718D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244822AbhDURle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:41:34 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:51594 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243098AbhDURlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:41:32 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
- id 31b07786e97dcc5f; Wed, 21 Apr 2021 19:40:57 +0200
-Received: from kreacher.localnet (89-64-80-44.dynamic.chello.pl [89.64.80.44])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id A8DFF669387;
-        Wed, 21 Apr 2021 19:40:56 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] cpufreq: intel_pstate: Use HWP if enabled by platform firmware
-Date:   Wed, 21 Apr 2021 19:40:56 +0200
-Message-ID: <2602702.mvXUDI8C0e@kreacher>
+        id S244836AbhDURlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:41:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:38818 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243098AbhDURlp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:41:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A92E311FB;
+        Wed, 21 Apr 2021 10:41:11 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.3.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1FBB3F694;
+        Wed, 21 Apr 2021 10:41:08 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 18:41:05 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
+        eparis@redhat.com, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: syscall.h: Add sign extension handling in
+ syscall_get_return_value for compat
+Message-ID: <20210421174105.GB52940@C02TD0UTHF1T.local>
+References: <20210416075533.7720-1-zhe.he@windriver.com>
+ <20210416075533.7720-2-zhe.he@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.80.44
-X-CLIENT-HOSTNAME: 89-64-80-44.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedguddujecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppeekledrieegrdektddrgeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedtrdeggedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416075533.7720-2-zhe.he@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Apr 16, 2021 at 03:55:32PM +0800, He Zhe wrote:
+> Add sign extension handling in syscall_get_return_value so that it can
+> handle 32-bit compatible case and can be used by for example audit, just
+> like what syscall_get_error does.
 
-It turns out that there are systems where HWP is enabled during
-initialization by the platform firmware (BIOS), but HWP EPP support
-is not advertised.
+If a compat syscall can ever legitimately return a non-error value with
+bit 31 set, and this sign-extends it, is that ever going to reach
+userspace as a 64-bit value?
 
-After commit 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP
-if EPP is not supported") intel_pstate refuses to use HWP on those
-systems, but the fallback PERF_CTL interface does not work on them
-either because of enabled HWP, and once enabled, HWP cannot be
-disabled.  Consequently, the users of those systems cannot control
-CPU performance scaling.
+IIUC things like mmap() can return pointers above 2GiB for a compat
+task, so I'm a bit uneasy that we'd handle those wrong. I can't see a
+way of preventing that unless we keep the upper 32 bits for errors.
 
-Address this issue by making intel_pstate use HWP unconditionally if
-it is enabled already when the driver starts.
+Mark.
 
-Fixes: 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP if EPP is not supported")
-Reported-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Tested-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
----
- drivers/cpufreq/intel_pstate.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -3229,6 +3229,14 @@ static const struct x86_cpu_id hwp_suppo
- 	{}
- };
- 
-+static bool intel_pstate_hwp_is_enabled(void)
-+{
-+	u64 value;
-+
-+	rdmsrl(MSR_PM_ENABLE, value);
-+	return !!(value & 0x1);
-+}
-+
- static int __init intel_pstate_init(void)
- {
- 	const struct x86_cpu_id *id;
-@@ -3247,8 +3255,12 @@ static int __init intel_pstate_init(void
- 		 * Avoid enabling HWP for processors without EPP support,
- 		 * because that means incomplete HWP implementation which is a
- 		 * corner case and supporting it is generally problematic.
-+		 *
-+		 * If HWP is enabled already, though, there is no choice but to
-+		 * deal with it.
- 		 */
--		if (!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) {
-+		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
-+		    intel_pstate_hwp_is_enabled()) {
- 			hwp_active++;
- 			hwp_mode_bdw = id->driver_data;
- 			intel_pstate.attr = hwp_cpufreq_attrs;
-
-
-
+> 
+> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> ---
+>  arch/arm64/include/asm/syscall.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
+> index cfc0672013f6..cd7a22787aeb 100644
+> --- a/arch/arm64/include/asm/syscall.h
+> +++ b/arch/arm64/include/asm/syscall.h
+> @@ -44,7 +44,12 @@ static inline long syscall_get_error(struct task_struct *task,
+>  static inline long syscall_get_return_value(struct task_struct *task,
+>  					    struct pt_regs *regs)
+>  {
+> -	return regs->regs[0];
+> +	long val = regs->regs[0];
+> +
+> +	if (is_compat_thread(task_thread_info(task)))
+> +		val = sign_extend64(val, 31);
+> +
+> +	return val;
+>  }
+>  
+>  static inline void syscall_set_return_value(struct task_struct *task,
+> -- 
+> 2.17.1
+> 
