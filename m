@@ -2,259 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6A2366EEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459D3366EF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243913AbhDUPSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239567AbhDUPSN (ORCPT
+        id S243915AbhDUPUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:20:17 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:39522 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240440AbhDUPUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:18:13 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF15C06174A;
-        Wed, 21 Apr 2021 08:17:40 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id q10so30149635pgj.2;
-        Wed, 21 Apr 2021 08:17:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KzQai6Tg69wKbEAWcqKNbEL/MC5Qt4Kn9kSRArYjd2g=;
-        b=s7lpu9qIoTGsbb3qGjUxrXpmysb//u/qu+m3Te9oX2yvS4cFW3GrodM0J1j8OpEuz3
-         7rJ/E3//KYlvJOCIr3CXPU17b5ER7R9cM9Nup+fg8uq8ay20aOIBqpzlM1Ed56i4SGYP
-         4402FemHi+AnOvtD8fFROic4B5IkxaY96gFWppCPnUoqgQ7+mDR9DbMUgSEVK0BRLVqU
-         1ESorBljqOxtuvFFAM48FVwfnK0yaWnSLk1moWpBSqwYM1D8TQeuP1Mr3T1Dtu4UcHDj
-         KQ8hNoUWdVim/JBhkrZ6s1cT75lt1ONMY+MP3O/it58Yz4GmJ557nFpvB5/QwOPXJVx+
-         kglg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KzQai6Tg69wKbEAWcqKNbEL/MC5Qt4Kn9kSRArYjd2g=;
-        b=ZwHEYVwTNlcSgdK7r6xKdMO8yzbUWZkqQRVWNrgCG2sLUHneyCvlQ8Tooun0yyeggM
-         x7vy1YUCW3z6xtULjeM0jmWkedwAxffp74gqzOtEn9g7jaG9wMMTqrX67oU91hF/qCi9
-         vLz2ONXOoMLlz1hN5lt1NVQJWDjCFtHBtr1U7/SUOzwNhUdxL3C4poek2cCFX7B6AS+S
-         AR67Ria4oa9zb8IphvLqBsTPg4CBpcdmUtRRAGiWB2WtdKOGZHwUocnNWJ+GouuDzMQQ
-         e8K+WpKXWFujtpUfXOYWlnJe0AAV/uX8v4MkH9TTNZEEFpFAbL202w1PhG72IkRtw8kH
-         Tmbg==
-X-Gm-Message-State: AOAM530CGZBKdb/XVTfM3kZBcYVMWNU75px9WPMJvPjyA492k750yNqU
-        bGdTtnQJxqF3gMUXq/+0ISE=
-X-Google-Smtp-Source: ABdhPJxWgYwkYHXJWtQtqRBFUzxtigMBTBDBodEWRcQR33QhN1G7Hh69HONKn+mKsR3H0iVm3S5vpA==
-X-Received: by 2002:a65:5282:: with SMTP id y2mr22785908pgp.293.1619018259633;
-        Wed, 21 Apr 2021 08:17:39 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h22sm2084545pfn.55.2021.04.21.08.17.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 08:17:39 -0700 (PDT)
-Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
- reserved memory region
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        Android Kernel Team <kernel-team@android.com>,
-        Architecture Mailman List <boot-architecture@lists.linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
- <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com>
- <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
- <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
- <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
- <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
- <YH/ixPnHMxNo08mJ@google.com>
- <cc8f96a4-6c85-b869-d3cf-5dc543982054@gmail.com>
-Message-ID: <498b8759-1a70-d80f-3a4d-39042b4f608e@gmail.com>
-Date:   Wed, 21 Apr 2021 08:17:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Wed, 21 Apr 2021 11:20:15 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LF1eqh026116;
+        Wed, 21 Apr 2021 15:19:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=Rxpae055naMvyjukIZqKVynJM4wLpOcw2BPFdfdM5sM=;
+ b=fMvfrfBNuzxuhiV0MGTz5RPARWG2+dSn8rnew48y6jv0ulpp+c3EsDnUOY7JKDf2nBii
+ aFR33QXvKMTxS0RrHAK004y/mCtjUfdCkI0gCdEXCbyFW6zpOoo11hFsI/qE6t5N5GYP
+ rkHgw2LHdrxenhc6j3d3H10TENgpW29jeBz/REfhiNaPBMktSVYfxI6hIjQOEEdHtQwc
+ hcHZjTkR9qVVU7MNqJbyng03toEncjesjN2tSZi+lJdwSwkVt4bSnou4Rm/MHnYYZEQj
+ a44Sd/AY3FDdbqFuv1Mc2F+tmzBYIBH+kkHWxKR1T/yiUYu1g9P5UfkEaM0cQ/i2qHKH MQ== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 381tw0gjjr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Apr 2021 15:19:37 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13LFJaS9054029;
+        Wed, 21 Apr 2021 15:19:36 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 38098rvm7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Apr 2021 15:19:36 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13LFGvhc037551;
+        Wed, 21 Apr 2021 15:19:35 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 38098rvm6k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Apr 2021 15:19:35 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13LFJYXI031486;
+        Wed, 21 Apr 2021 15:19:34 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Apr 2021 08:19:33 -0700
+Date:   Wed, 21 Apr 2021 18:19:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Cc:     David E Box <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] platform/x86: intel_pmc_core: Uninitialized data in
+ pmc_core_lpm_latch_mode_write()
+Message-ID: <YIBCf+G9Ef8wrGJw@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <cc8f96a4-6c85-b869-d3cf-5dc543982054@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87e61d84-e23e-1ccc-c4ed-57ffa0ed95fb@redhat.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-GUID: ECw56KjdYg0IXNc2JtlNvMSsnop18kv7
+X-Proofpoint-ORIG-GUID: ECw56KjdYg0IXNc2JtlNvMSsnop18kv7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The simple_write_to_buffer() can return success if even a single byte
+is copied from user space.  In this case it can result in using
+uninitalized data if the buf[] array is not fully initialized.  Really
+we should only succeed if the whole buffer is copied.
 
+Just using copy_from_user() is simpler and more appropriate.
 
-On 4/21/2021 7:33 AM, Florian Fainelli wrote:
-> 
-> 
-> On 4/21/2021 1:31 AM, Quentin Perret wrote:
->> On Tuesday 20 Apr 2021 at 09:33:56 (-0700), Florian Fainelli wrote:
->>> I do wonder as well, we have a 32MB "no-map" reserved memory region on
->>> our platforms located at 0xfe000000. Without the offending commit,
->>> /proc/iomem looks like this:
->>>
->>> 40000000-fdffefff : System RAM
->>>   40008000-40ffffff : Kernel code
->>>   41e00000-41ef1d77 : Kernel data
->>> 100000000-13fffffff : System RAM
->>>
->>> and with the patch applied, we have this:
->>>
->>> 40000000-fdffefff : System RAM
->>>   40008000-40ffffff : Kernel code
->>>   41e00000-41ef3db7 : Kernel data
->>> fdfff000-ffffffff : System RAM
->>> 100000000-13fffffff : System RAM
->>>
->>> so we can now see that the region 0xfe000000 - 0xfffffff is also cobbled
->>> up with the preceding region which is a mailbox between Linux and the
->>> secure monitor at 0xfdfff000 and of size 4KB. It seems like there is
->>>
->>> The memblock=debug outputs is also different:
->>>
->>> [    0.000000] MEMBLOCK configuration:
->>> [    0.000000]  memory size = 0xfdfff000 reserved size = 0x7ce4d20d
->>> [    0.000000]  memory.cnt  = 0x2
->>> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
->>> 0xbdfff000 bytes flags: 0x0
->>> [    0.000000]  memory[0x1]     [0x00000100000000-0x0000013fffffff],
->>> 0x40000000 bytes flags: 0x0
->>> [    0.000000]  reserved.cnt  = 0x6
->>> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
->>> 0xb495 bytes flags: 0x0
->>> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef1d77],
->>> 0x1cf1d78 bytes flags: 0x0
->>> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
->>> 0x100000 bytes flags: 0x0
->>> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
->>> 0x50000 bytes flags: 0x0
->>> [    0.000000]  reserved[0x4]   [0x000000c2c00000-0x000000fdbfffff],
->>> 0x3b000000 bytes flags: 0x0
->>> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
->>> 0x40000000 bytes flags: 0x0
->>>
->>> [    0.000000] MEMBLOCK configuration:
->>> [    0.000000]  memory size = 0x100000000 reserved size = 0x7ca4f24d
->>> [    0.000000]  memory.cnt  = 0x3
->>> [    0.000000]  memory[0x0]     [0x00000040000000-0x000000fdffefff],
->>> 0xbdfff000 bytes flags: 0x0
->>> [    0.000000]  memory[0x1]     [0x000000fdfff000-0x000000ffffffff],
->>> 0x2001000 bytes flags: 0x4
->>> [    0.000000]  memory[0x2]     [0x00000100000000-0x0000013fffffff],
->>> 0x40000000 bytes flags: 0x0
->>> [    0.000000]  reserved.cnt  = 0x6
->>> [    0.000000]  reserved[0x0]   [0x00000040003000-0x0000004000e494],
->>> 0xb495 bytes flags: 0x0
->>> [    0.000000]  reserved[0x1]   [0x00000040200000-0x00000041ef3db7],
->>> 0x1cf3db8 bytes flags: 0x0
->>> [    0.000000]  reserved[0x2]   [0x00000045000000-0x000000450fffff],
->>> 0x100000 bytes flags: 0x0
->>> [    0.000000]  reserved[0x3]   [0x00000047000000-0x0000004704ffff],
->>> 0x50000 bytes flags: 0x0
->>> [    0.000000]  reserved[0x4]   [0x000000c3000000-0x000000fdbfffff],
->>> 0x3ac00000 bytes flags: 0x0
->>> [    0.000000]  reserved[0x5]   [0x00000100000000-0x0000013fffffff],
->>> 0x40000000 bytes flags: 0x0
->>>
->>> in the second case we can clearly see that the 32MB no-map region is now
->>> considered as usable RAM.
->>>
->>> Hope this helps.
->>>
->>>>
->>>> In any case, the mere fact that this causes a regression should be
->>>> sufficient justification to revert/withdraw it from v5.4, as I don't
->>>> see a reason why it was merged there in the first place. (It has no
->>>> fixes tag or cc:stable)
->>>
->>> Agreed, however that means we still need to find out whether a more
->>> recent kernel is also broken, I should be able to tell you that a little
->>> later.
->>
->> FWIW I did test this on Qemu before posting. With 5.12-rc8 and a 1MiB
->> no-map region at 0x80000000, I have the following:
->>
->> 40000000-7fffffff : System RAM
->>   40210000-417fffff : Kernel code
->>   41800000-41daffff : reserved
->>   41db0000-4210ffff : Kernel data
->>   48000000-48008fff : reserved
->> 80000000-800fffff : reserved
->> 80100000-13fffffff : System RAM
->>   fa000000-ffffffff : reserved
->>   13b000000-13f5fffff : reserved
->>   13f6de000-13f77dfff : reserved
->>   13f77e000-13f77efff : reserved
->>   13f77f000-13f7dafff : reserved
->>   13f7dd000-13f7defff : reserved
->>   13f7df000-13f7dffff : reserved
->>   13f7e0000-13f7f3fff : reserved
->>   13f7f4000-13f7fdfff : reserved
->>   13f7fe000-13fffffff : reserved
->>
->> If I remove the 'no-map' qualifier from DT, I get this:
->>
->> 40000000-13fffffff : System RAM
->>   40210000-417fffff : Kernel code
->>   41800000-41daffff : reserved
->>   41db0000-4210ffff : Kernel data
->>   48000000-48008fff : reserved
->>   80000000-800fffff : reserved
->>   fa000000-ffffffff : reserved
->>   13b000000-13f5fffff : reserved
->>   13f6de000-13f77dfff : reserved
->>   13f77e000-13f77efff : reserved
->>   13f77f000-13f7dafff : reserved
->>   13f7dd000-13f7defff : reserved
->>   13f7df000-13f7dffff : reserved
->>   13f7e0000-13f7f3fff : reserved
->>   13f7f4000-13f7fdfff : reserved
->>   13f7fe000-13fffffff : reserved
->>
->> So this does seem to be working fine on my setup. I'll try again with
->> 5.4 to see if I can repro.
->>
->> Also, 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove already
->> reserved regions") looks more likely to cause the issue observed here,
->> but that shouldn't be silent. I get the following error message in dmesg
->> if I if place the no-map region on top of the kernel image:
->>
->> OF: fdt: Reserved memory: failed to reserve memory for node 'foobar@40210000': base 0x0000000040210000, size 1 MiB
->>
->> Is that triggering on your end?
-> 
-> It is not, otherwise I would have noticed earlier, can you try the same
-> thing that happens on my platform with a reserved region (without
-> no-map) adjacent to a reserved region with 'no-map'? I will test
-> different and newer kernels than 5.4 today to find out if this is still
-> a problem with upstream. I could confirm that v4.9.259 also have this
-> problem now.
+Fixes: 8074a79fad2e ("platform/x86: intel_pmc_core: Add option to set/clear LPM mode")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: The first version of this patch returned -EINVAL if userspace didn't
+give us NUL terminated strings.  That's not necessarily a good
+assumption.
 
-5.10.31 works correctly and shows the following for my platform:
+This patch is just simpler as well.  No need to introduce the "len"
+variable because "count" is capped at the start of the function.
 
-40000000-fdffefff : System RAM
-  40200000-40eaffff : Kernel code
-  40eb0000-4237ffff : reserved
-  42380000-425affff : Kernel data
-  45000000-450fffff : reserved
-  47000000-4704ffff : reserved
-  4761e000-47624fff : reserved
-  f8c00000-fdbfffff : reserved
-fdfff000-ffffffff : reserved
-100000000-13fffffff : System RAM
-  13b000000-13effffff : reserved
-  13f114000-13f173fff : reserved
-  13f174000-13f774fff : reserved
-  13f775000-13f7e8fff : reserved
-  13f7eb000-13f7ecfff : reserved
-  13f7ed000-13f7effff : reserved
-  13f7f0000-13fffffff : reserved
+ drivers/platform/x86/intel_pmc_core.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index d174aeb492e0..b0e486a6bdfb 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -1360,17 +1360,13 @@ static ssize_t pmc_core_lpm_latch_mode_write(struct file *file,
+ 	struct pmc_dev *pmcdev = s->private;
+ 	bool clear = false, c10 = false;
+ 	unsigned char buf[8];
+-	ssize_t ret;
+ 	int idx, m, mode;
+ 	u32 reg;
+ 
+ 	if (count > sizeof(buf) - 1)
+ 		return -EINVAL;
+-
+-	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, userbuf, count);
+-	if (ret < 0)
+-		return ret;
+-
++	if (copy_from_user(buf, userbuf, count))
++		return -EFAULT;
+ 	buf[count] = '\0';
+ 
+ 	/*
 -- 
-Florian
+2.30.2
+
