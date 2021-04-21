@@ -2,139 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB404366C9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC59366C9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242518AbhDUNU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:20:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:34902 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242663AbhDUNPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:15:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99CBC11B3;
-        Wed, 21 Apr 2021 06:15:06 -0700 (PDT)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB8C73F774;
-        Wed, 21 Apr 2021 06:15:02 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210421065108.1987-1-rppt@kernel.org>
- <20210421065108.1987-5-rppt@kernel.org>
- <66d50afe-77e6-70ee-6b51-5db28a086c68@arm.com> <YIAZYVI/HZWBr7BI@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <c9c4c4cc-fd4d-8bba-dd14-fa5d52161f9d@arm.com>
-Date:   Wed, 21 Apr 2021 18:45:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242606AbhDUNVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:21:00 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33230 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241559AbhDUNRr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:17:47 -0400
+Received: from maud (unknown [IPv6:2600:8800:8c03:4000::11ea])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: alyssa)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B8F551F42E3B;
+        Wed, 21 Apr 2021 14:17:09 +0100 (BST)
+Date:   Wed, 21 Apr 2021 09:17:04 -0400
+From:   Alyssa Rosenzweig <alyssa@collabora.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        fshao@chromium.org, hsinyi@chromium.org, hoegsberg@chromium.org,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        boris.brezillon@collabora.com, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v13 4/4] drm/panfrost: Add mt8183-mali compatible string
+Message-ID: <YIAl0HRoAKD58C0R@maud>
+References: <20210421052855.1279713-1-drinkcat@chromium.org>
+ <20210421132841.v13.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
 MIME-Version: 1.0
-In-Reply-To: <YIAZYVI/HZWBr7BI@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421132841.v13.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Not that you need it but this patch is Reviewed-by: Alyssa Rosenzweig
+<alyssa.rosenzweig@collabora.com>
 
-
-On 4/21/21 5:54 PM, Mike Rapoport wrote:
-> On Wed, Apr 21, 2021 at 04:36:46PM +0530, Anshuman Khandual wrote:
->>
->> On 4/21/21 12:21 PM, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> The arm64's version of pfn_valid() differs from the generic because of two
->>> reasons:
->>>
->>> * Parts of the memory map are freed during boot. This makes it necessary to
->>>   verify that there is actual physical memory that corresponds to a pfn
->>>   which is done by querying memblock.
->>>
->>> * There are NOMAP memory regions. These regions are not mapped in the
->>>   linear map and until the previous commit the struct pages representing
->>>   these areas had default values.
->>>
->>> As the consequence of absence of the special treatment of NOMAP regions in
->>> the memory map it was necessary to use memblock_is_map_memory() in
->>> pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
->>> generic mm functionality would not treat a NOMAP page as a normal page.
->>>
->>> Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
->>> the rest of core mm will treat them as unusable memory and thus
->>> pfn_valid_within() is no longer required at all and can be disabled by
->>> removing CONFIG_HOLES_IN_ZONE on arm64.
->>
->> This makes sense.
->>
->>>
->>> pfn_valid() can be slightly simplified by replacing
->>> memblock_is_map_memory() with memblock_is_memory().
->>>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>> ---
->>>  arch/arm64/Kconfig   | 3 ---
->>>  arch/arm64/mm/init.c | 4 ++--
->>>  2 files changed, 2 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->>> index e4e1b6550115..58e439046d05 100644
->>> --- a/arch/arm64/Kconfig
->>> +++ b/arch/arm64/Kconfig
->>> @@ -1040,9 +1040,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
->>>  	def_bool y
->>>  	depends on NUMA
->>>  
->>> -config HOLES_IN_ZONE
->>> -	def_bool y
->>> -
->>
->> Right.
->>
->>>  source "kernel/Kconfig.hz"
->>>  
->>>  config ARCH_SPARSEMEM_ENABLE
->>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
->>> index dc03bdc12c0f..eb3f56fb8c7c 100644
->>> --- a/arch/arm64/mm/init.c
->>> +++ b/arch/arm64/mm/init.c
->>> @@ -243,7 +243,7 @@ int pfn_valid(unsigned long pfn)
->>>  
->>>  	/*
->>>  	 * ZONE_DEVICE memory does not have the memblock entries.
->>> -	 * memblock_is_map_memory() check for ZONE_DEVICE based
->>> +	 * memblock_is_memory() check for ZONE_DEVICE based
->>>  	 * addresses will always fail. Even the normal hotplugged
->>>  	 * memory will never have MEMBLOCK_NOMAP flag set in their
->>>  	 * memblock entries. Skip memblock search for all non early
->>> @@ -254,7 +254,7 @@ int pfn_valid(unsigned long pfn)
->>>  		return pfn_section_valid(ms, pfn);
->>>  }
->>>  #endif
->>> -	return memblock_is_map_memory(addr);
->>> +	return memblock_is_memory(addr);
->>
->> Wondering if MEMBLOCK_NOMAP is now being treated similarly to other
->> memory pfns for page table walking purpose but with PageReserved(),
->> why memblock_is_memory() is still required ? At this point, should
->> not we just return valid for early_section() memory. As pfn_valid()
->> now just implies that pfn has a struct page backing which has been
->> already verified with valid_section() etc.
+On Wed, Apr 21, 2021 at 01:28:55PM +0800, Nicolas Boichat wrote:
+> Add support for MT8183's G72 Bifrost.
 > 
-> memblock_is_memory() is required because arm64 frees unused parts of the
-> memory map. So, for instance, if we have 64M out of 128M populated in a
-> section the section based calculation would return 1 for a pfn in the
-> second half of the section, but there would be no memory map there.
-
-Understood.
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> Reviewed-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+> ---
+> 
+> (no changes since v7)
+> 
+> Changes in v7:
+>  - Fix GPU ID in commit message
+> 
+> Changes in v6:
+>  - Context conflicts, reflow the code.
+>  - Use ARRAY_SIZE for power domains too.
+> 
+> Changes in v5:
+>  - Change power domain name from 2d to core2.
+> 
+> Changes in v4:
+>  - Add power domain names.
+> 
+> Changes in v3:
+>  - Match mt8183-mali instead of bifrost, as we require special
+>    handling for the 2 regulators and 3 power domains.
+> 
+>  drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> index 83a461bdeea8..ca07098a6141 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -665,6 +665,15 @@ static const struct panfrost_compatible amlogic_data = {
+>  	.vendor_quirk = panfrost_gpu_amlogic_quirk,
+>  };
+>  
+> +const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
+> +const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
+> +static const struct panfrost_compatible mediatek_mt8183_data = {
+> +	.num_supplies = ARRAY_SIZE(mediatek_mt8183_supplies),
+> +	.supply_names = mediatek_mt8183_supplies,
+> +	.num_pm_domains = ARRAY_SIZE(mediatek_mt8183_pm_domains),
+> +	.pm_domain_names = mediatek_mt8183_pm_domains,
+> +};
+> +
+>  static const struct of_device_id dt_match[] = {
+>  	/* Set first to probe before the generic compatibles */
+>  	{ .compatible = "amlogic,meson-gxm-mali",
+> @@ -681,6 +690,7 @@ static const struct of_device_id dt_match[] = {
+>  	{ .compatible = "arm,mali-t860", .data = &default_data, },
+>  	{ .compatible = "arm,mali-t880", .data = &default_data, },
+>  	{ .compatible = "arm,mali-bifrost", .data = &default_data, },
+> +	{ .compatible = "mediatek,mt8183-mali", .data = &mediatek_mt8183_data },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, dt_match);
+> -- 
+> 2.31.1.368.gbe11c130af-goog
+> 
