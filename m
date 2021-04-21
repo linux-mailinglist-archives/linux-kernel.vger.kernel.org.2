@@ -2,32 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E0A366C7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448DF366C28
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241828AbhDUNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49410 "EHLO mail.kernel.org"
+        id S241815AbhDUNLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:11:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241394AbhDUNIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:08:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD44461467;
-        Wed, 21 Apr 2021 13:07:47 +0000 (UTC)
+        id S241029AbhDUNIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:08:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4156E61440;
+        Wed, 21 Apr 2021 13:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010468;
-        bh=aUJWd+OylxRtW9cpzhgsQHFCpPm4R0a4bxN9pT391Vk=;
+        s=korg; t=1619010470;
+        bh=lDWl2VYoKuY8L8C0WtHDDHgFU8GkwzhpXhUwGs93DJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=03vnQbmB7OtCW90DgYhDoFU5+FgvaIv0DU5R5NE6TnQeTWc86GrmKLBW46rXbDLi2
-         vPFYyyhNkInikZKJoxRsNsawyvGo/2LtqbOKc6zn2NBtfL1KB6tqA5cdzeOIHty2T/
-         fYo3dfqrbvfuR5wHhDJUkiix0eSMWmrdksMt9oFs=
+        b=oYk3kjr448FvGaBX2cMsK+nDcQ/dS53bHn6+4APEKQdD5V5wGUDRTjIjp64szhPCn
+         Twnb0CG9OUYTuxXqEpiWAw7TfM80HXKHkyK+rfBnYuvbYwYchX4mY2b6S9jag0bMDD
+         OHPMEL8BukAuggs2fq7j9ajSNojUdeZVXt0DQGJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 112/190] Revert "libnvdimm/namespace: Fix a potential NULL pointer dereference"
-Date:   Wed, 21 Apr 2021 14:59:47 +0200
-Message-Id: <20210421130105.1226686-113-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        Thomas Gleixner <tglx@linutronix.de>, kjlu@umn.edu,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Joe Perches <joe@perches.com>,
+        Nicolai Stange <nstange@suse.de>,
+        Roland Dreier <roland@purestorage.com>
+Subject: [PATCH 113/190] Revert "x86/hpet: Prevent potential NULL pointer dereference"
+Date:   Wed, 21 Apr 2021 14:59:48 +0200
+Message-Id: <20210421130105.1226686-114-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +43,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 55c1fc0af29a6c1b92f217b7eb7581a882e0c07c.
+This reverts commit 2e84f116afca3719c9d0a1a78b47b48f75fd5724.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,31 +59,34 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: kjlu@umn.edu
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Joe Perches <joe@perches.com>
+Cc: Nicolai Stange <nstange@suse.de>
+Cc: Roland Dreier <roland@purestorage.com>
+Cc: https
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvdimm/namespace_devs.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/x86/kernel/hpet.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
-index 2403b71b601e..04f7cb7a23b7 100644
---- a/drivers/nvdimm/namespace_devs.c
-+++ b/drivers/nvdimm/namespace_devs.c
-@@ -2297,12 +2297,9 @@ static struct device *create_namespace_blk(struct nd_region *nd_region,
- 	if (!nsblk->uuid)
- 		goto blk_err;
- 	memcpy(name, nd_label->name, NSLABEL_NAME_LEN);
--	if (name[0]) {
-+	if (name[0])
- 		nsblk->alt_name = kmemdup(name, NSLABEL_NAME_LEN,
- 				GFP_KERNEL);
--		if (!nsblk->alt_name)
--			goto blk_err;
--	}
- 	res = nsblk_add_resource(nd_region, ndd, nsblk,
- 			__le64_to_cpu(nd_label->dpa));
- 	if (!res)
+diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
+index 08651a4e6aa0..0515a97bf6f5 100644
+--- a/arch/x86/kernel/hpet.c
++++ b/arch/x86/kernel/hpet.c
+@@ -930,8 +930,6 @@ int __init hpet_enable(void)
+ 		return 0;
+ 
+ 	hpet_set_mapping();
+-	if (!hpet_virt_address)
+-		return 0;
+ 
+ 	/* Validate that the config register is working */
+ 	if (!hpet_cfg_working())
 -- 
 2.31.1
 
