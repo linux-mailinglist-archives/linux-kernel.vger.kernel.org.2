@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78E7367503
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AED367506
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 00:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236077AbhDUWLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 18:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235448AbhDUWLN (ORCPT
+        id S243671AbhDUWNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 18:13:12 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:46662 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236112AbhDUWNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 18:11:13 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B5FC06174A;
-        Wed, 21 Apr 2021 15:10:40 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id y1so6798868plg.11;
-        Wed, 21 Apr 2021 15:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jkoDKXBORJsqE7IKc03ttO430VTwoSOVe4XRCyNvB4A=;
-        b=MyKV7gdYb+FFVYLQH1QEe30v0Ta6kUT4h9YnS7QfRbI/gZtcN53j3MCJyz7zdwxk8n
-         KKA42sJFBo142Z5CJPfHlcF9QSanKVJAnS3tRHQyY7YZYt62hssxFwXrbkLQL+e9G8Gs
-         z5kFTivhkQmBM8QvvaXvUcpBvflxbIiViCO24aQGjuhlL9RfN9xBcqh4oPFYUPpljaAv
-         tr7SVQ3hjj68885dBm4b/m4Hm7W8GimDJey2ZU9z1+6my/T+GLkI7Yg6guVxTSmsvtxF
-         3rXfPn1lSrjf5G8mr7kF5E7Xz2AdRXBQTMhnGPXWune1Ur2uIJ+YSPO9SXMnL/Oxvitw
-         k0Og==
+        Wed, 21 Apr 2021 18:13:09 -0400
+Received: by mail-ot1-f48.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso38427611otb.13;
+        Wed, 21 Apr 2021 15:12:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jkoDKXBORJsqE7IKc03ttO430VTwoSOVe4XRCyNvB4A=;
-        b=DAG31+TKX/Dhg4XxCjeCgWU8OsYS0o1Wz05EH6wqcD7y0kIT/C0tyz6Xd4ktsL7Zyv
-         ZdKzgo/JUvpeZjYKlowSBT9BSFVimLxr2f4QqZe1qJhac2sePaxwAQErHrstqSpM0EzV
-         mUXy62vCGlRJjwCPI4Qz0vTZIdf2J22v3CkrV3w8tVKYAtdgXyXOT+a8E2xK7muR4/iP
-         KsW00fVPu/5Xt1Z+OKWkuZzqMc7/icYu3CNPJONbUqdRRQsOOdOF6TELJ/EY4IW2VAbM
-         6BXnwlybe3d/Rzzpo5IDUSz5x5UQgcPh6HBC1EeHe8JP1rCjM5zrhsLrhg77uiaJuujK
-         YLSw==
-X-Gm-Message-State: AOAM532J/K1NyNG2jS3jzqLVyKLItMmcT28qmYVp0UEyL9P1vQSNGHMY
-        ZUEiMWt0LP0nz0arnsKmgB8=
-X-Google-Smtp-Source: ABdhPJzpPgM6e3+a2yGIV98aPkPhua5zknl4irN8nKi5xP/IR5IHueVdGGGiPBEMYtgp6a2gT5nH9Q==
-X-Received: by 2002:a17:902:8688:b029:ea:f782:5eae with SMTP id g8-20020a1709028688b02900eaf7825eaemr100027plo.15.1619043039754;
-        Wed, 21 Apr 2021 15:10:39 -0700 (PDT)
-Received: from localhost.localdomain ([103.248.31.176])
-        by smtp.googlemail.com with ESMTPSA id a16sm308965pgl.12.2021.04.21.15.10.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9vfZ85qaNRDwLWK6paIlumo1fUktvseuhhjpTPIiObQ=;
+        b=kiNCDVfMII2MvtKxqSi0z+sxjnz4Nt5i4PlPLhrNlXLNkDNsUJOJJ0jdstFn06/rZv
+         tPlngEoQp3JvkMo0GE2Ux3qCwGyeV6YFvpiltKmLQ8sHih5bO2HNW8zu+BGLdMPI1ZIt
+         SAUTiWd0rU9Ga83XB1Susd9lvRtfpptiKOJJZNklzVQQ/7PsdAJhiSdqDCMX6miLoniR
+         UbgBUXY2QqzZrC06lEtWkkwoUfyy/c8YqMmuGHq85j2ldmdeoaHM2ak9ulL6oysyaNiM
+         q9BBtmKXfpax++ibL1eXa3/NCZHdEOCsJdCTZjlmCWzcQk2KTEFyEmb+leVZnYUJkdd7
+         q1gw==
+X-Gm-Message-State: AOAM532+U4/Msl+SAN1HgZDhvyfsCUxMGJbQSZvvH79Bwbz6lhRP5mu+
+        YbDYQfSHvSk5Bsk9op4BLA==
+X-Google-Smtp-Source: ABdhPJw6ztIYw2u9aV58Nwci+XDmx1pHvvuUJfxXD65mDFjOzNkizDKgyLgUCDTJ1Z0zh+WzGKPBuQ==
+X-Received: by 2002:a9d:7583:: with SMTP id s3mr241540otk.367.1619043155325;
+        Wed, 21 Apr 2021 15:12:35 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v81sm151880oie.13.2021.04.21.15.12.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 15:10:39 -0700 (PDT)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH] iommu/qcom: Cleanup resources in case of probe error path
-Date:   Thu, 22 Apr 2021 03:40:30 +0530
-Message-Id: <20210421221030.70647-1-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 21 Apr 2021 15:12:34 -0700 (PDT)
+Received: (nullmailer pid 1708485 invoked by uid 1000);
+        Wed, 21 Apr 2021 22:12:33 -0000
+Date:   Wed, 21 Apr 2021 17:12:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/4] dt-bindings: soc/arm: Convert pending ti,sci*
+ bindings to json format
+Message-ID: <20210421221233.GA1705110@robh.at.kernel.org>
+References: <20210416063721.20538-1-nm@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416063721.20538-1-nm@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If device registration fails, remove sysfs attribute
-and if setting bus callbacks fails, unregister the device
-and cleanup the sysfs attribute.
+On Fri, Apr 16, 2021 at 01:37:17AM -0500, Nishanth Menon wrote:
+> Hi,
+> 
+> I understand that the following series belong to various maintainers,
+> but, it is a bit better reviewed as a single series for
+> cohesiveness.
 
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
- drivers/iommu/arm/arm-smmu/qcom_iommu.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+They need to go in together as patch 4 depends on the others.
 
-diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-index 4294abe389b2..5fa128a1f7f0 100644
---- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-+++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-@@ -850,10 +850,12 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
- 	ret = iommu_device_register(&qcom_iommu->iommu, &qcom_iommu_ops, dev);
- 	if (ret) {
- 		dev_err(dev, "Failed to register iommu\n");
--		return ret;
-+		goto err_sysfs_remove;
- 	}
-
--	bus_set_iommu(&platform_bus_type, &qcom_iommu_ops);
-+	ret = bus_set_iommu(&platform_bus_type, &qcom_iommu_ops);
-+	if (ret)
-+		goto err_unregister_device;
-
- 	if (qcom_iommu->local_base) {
- 		pm_runtime_get_sync(dev);
-@@ -862,6 +864,14 @@ static int qcom_iommu_device_probe(struct platform_device *pdev)
- 	}
-
- 	return 0;
-+
-+err_unregister_device:
-+	iommu_device_unregister(&qcom_iommu->iommu);
-+
-+err_sysfs_remove:
-+	iommu_device_sysfs_remove(&qcom_iommu->iommu);
-+
-+	return ret;
- }
-
- static int qcom_iommu_device_remove(struct platform_device *pdev)
---
-2.31.1
-
-I assume its ok to leave pm_runtime_enable in case of error.
+> 
+> There are also dts fixups that this series exposes, which is good, but
+> I chose to hold them back for now pending binding review at least. The
+> complete series is available in [1] if folks are curious.
+> 
+> Nishanth Menon (4):
+>   dt-bindings: reset: Convert ti,sci-reset to json schema
+>   dt-bindings: clock: Convert ti,sci-clk to json schema
+>   dt-bindings: soc: ti: Convert ti,sci-pm-domain to json schema
+>   dt-bindings: arm: keystone: Convert ti,sci to json schema
+> 
+>  .../bindings/arm/keystone/ti,sci.txt          |  86 ------------
+>  .../bindings/arm/keystone/ti,sci.yaml         | 129 ++++++++++++++++++
+>  .../devicetree/bindings/clock/ti,sci-clk.txt  |  36 -----
+>  .../devicetree/bindings/clock/ti,sci-clk.yaml |  52 +++++++
+>  .../bindings/reset/ti,sci-reset.txt           |  62 ---------
+>  .../bindings/reset/ti,sci-reset.yaml          |  51 +++++++
+>  .../bindings/soc/ti/sci-pm-domain.txt         |  65 ---------
+>  .../bindings/soc/ti/sci-pm-domain.yaml        |  59 ++++++++
+>  8 files changed, 291 insertions(+), 249 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/keystone/ti,sci.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/clock/ti,sci-clk.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/reset/ti,sci-reset.txt
+>  create mode 100644 Documentation/devicetree/bindings/reset/ti,sci-reset.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+> 
+> [1] https://github.com/nmenon/linux-2.6-playground/commits/yaml/tisci
+> 
+> Regards,
+> Nishanth Menon
+> -- 
+> 2.31.0
+> 
