@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65329366A68
+	by mail.lfdr.de (Postfix) with ESMTP id B0D19366A69
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239564AbhDUMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:06:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8424 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239528AbhDUMGM (ORCPT
+        id S239559AbhDUMGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239538AbhDUMGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Apr 2021 08:06:12 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LC54Ti061129;
-        Wed, 21 Apr 2021 08:05:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=T9NxUcQeX9cWyi14gRbLH6yWrW8jk9WYoVE4Yo7CR3s=;
- b=RZ/SAMUn7rMRLoiaSPwBtCkp2H1OMY7AENejcOLxZzPKGFPCbnKwIJ/06QLXfCVqg/eo
- yGPt7rbhCm0CF2c8nPVJrlsLMawx5b7PP0B1nHro3C0zD7f78sL+D9QYifgeVAElQyqS
- Le9mDJ0Aj8wI5t7lSDI78q3CE4y/COml382EDMzcO7XLXK8rSCq1U+g5egB3T/9LDVtQ
- 99v2mSRdmbLe1GnMGa6shXy/GdP10ah6bW4MkQWWR2bZi8ODkJoJ2apnuWcyNXhAwY6s
- OlwitF2qxVCdtgSmcjVNnXu9sr6F4C1t9B0BHTEVG2VlqK30KYAvpCYcLnKaHidNVrV7 UA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 382keg8gsj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 08:05:35 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13LC3H9s024382;
-        Wed, 21 Apr 2021 12:04:10 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 37yqa8j9w2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Apr 2021 12:04:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13LC44oa18481636
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 12:04:04 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 433F252054;
-        Wed, 21 Apr 2021 12:04:04 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E8FA552065;
-        Wed, 21 Apr 2021 12:04:03 +0000 (GMT)
-From:   Thomas Richter <tmricht@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>,
-        Alexander Schmidt <alexschm@de.ibm.com>
-Subject: [PATCH] [PING] perf ftrace: Command fails on s390
-Date:   Wed, 21 Apr 2021 14:04:00 +0200
-Message-Id: <20210421120400.2126433-1-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739C0C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:05:38 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id l4so63097992ejc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MRPJS1ijITk2FOQ9jFOtPrHo+61HYV+8yTL1dDNYHhg=;
+        b=TxH7oAz9J7xB9yjMFVUrNyASbL0yCLVBFWU+m3D5imK63lIlt6ybraK7fS7gQfeC2h
+         mNJBEL8Q3lTukmpnbCfm6CA5jUVr+hXjvjcDJAzGoY6lmwxpXIQLWzPpPkuBEne3ijpL
+         /iDO8YrxA3JL4OqM+959s1NY+tJVo8FR8Pb9XdqTNV/H+7Tg39Utlwu7bgU1C1y7XcpR
+         +P1rXy9ruqD/X01ib84GAlIfbNHIAix/00CnoHSDsZpPTbI8cdY0rA/+w2OAAPfjmJ5E
+         2rtojgTPMnRdzsOcNB070nPsOCbZpWIe9g3yDhLyerM16NBgnPqfmwACnM4lnfFB+Mbz
+         n6uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MRPJS1ijITk2FOQ9jFOtPrHo+61HYV+8yTL1dDNYHhg=;
+        b=uBzr/thpGwTwHa3A22qi58uwGBNdmuU/rdr61GCsWd9+RO2f0KL3yU737hEVAs/ff+
+         9oVeaIV9ivhUlw/gNRb63Dl3WwDx/+FuYFmnTPN76qY6NK7As/dkJceOzhc9wW21Y1g4
+         Yn3yugbFmnk5GozMoe4iIFgwwPEM9RVKxQftFgUjcjn5wF8StQ78sCNlt7BwUhV7KNBh
+         5vqOTGvHWOQoytx9KDPtEV0tIpsv8DXg8/AJON03FzHqam4D/Sv4YdV57CqqfrOj0oui
+         ppjoHnRCk02e+hmcOAUBiC15YUnSaNmSRdsgpKk62i6g+7f9PEdsBnGa7Z6nQijIxSw9
+         1O3g==
+X-Gm-Message-State: AOAM533ozvIqZgw6u4PD1GF/TUh2udB8mJTW69wPwGpYXof0r09VxRZZ
+        XrnwM+EG5ZTM9Rf4NkQq6fgBYQ==
+X-Google-Smtp-Source: ABdhPJx6FaYPXOraxyEEDHilMPM6iOAQV4mxrX/r/fiUVlv7V6Q8gic6ywfauVgc5c1nhG1hfBFUvQ==
+X-Received: by 2002:a17:907:294f:: with SMTP id et15mr32179306ejc.14.1619006737133;
+        Wed, 21 Apr 2021 05:05:37 -0700 (PDT)
+Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id n2sm3151431edi.32.2021.04.21.05.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 05:05:36 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH v2 0/5] ASoC: clock provider clean-up
+Date:   Wed, 21 Apr 2021 14:05:07 +0200
+Message-Id: <20210421120512.413057-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: atil0Njdz6NRXhbS6aO4yXrgaKzP6Dxr
-X-Proofpoint-ORIG-GUID: atil0Njdz6NRXhbS6aO4yXrgaKzP6Dxr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-21_04:2021-04-21,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 clxscore=1011 adultscore=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104210094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Command 'perf ftrace -v -- ls' fails in s390 (at least 5.12.0rc6).
+The purpose of this patchset it remove the use the clk member of
+'struct clk_hw' in ASoC. 'struct clk' is a per-user reference to an actual
+clock. In the future, the clk member in 'struct clk_hw' may go away.
 
-The root cause is a missing pointer dereference which causes an
-array element address to be used as PID.
+The usage of this member by a clock provider usually falls into either of
+following categories:
+* Mis-usage of the clock consumer API by a clock provider.
+* Clock provider also being a user of its own clocks. In this case the
+provider should request a 'struct clk' through the appropriate API
+instead of poking in 'struct clk_hw' internals.
 
-Fix this by extracting the PID.
+v1 [0] -> v2:
+ * finalize lpass provider move to devm
 
-Output before:
-  # ./perf ftrace -v -- ls
-  function_graph tracer is used
-  write '-263732416' to tracing/set_ftrace_pid failed: Invalid argument
-  failed to set ftrace pid
-  #
+[0]: https://lore.kernel.org/r/20210410111356.467340-1-jbrunet@baylibre.com
 
-Output after:
-   ./perf ftrace -v -- ls
-   function_graph tracer is used
-   # tracer: function_graph
-   #
-   # CPU  DURATION                  FUNCTION CALLS
-   # |     |   |                     |   |   |   |
-   4)               |  rcu_read_lock_sched_held() {
-   4)   0.552 us    |    rcu_lockdep_current_cpu_online();
-   4)   6.124 us    |  }
+Jerome Brunet (5):
+  ASoC: stm32: properly get clk from the provider
+  ASoC: wcd934x: use the clock provider API
+  ASoC: rt5682: clock driver must use the clock provider API
+  ASoC: lpass: use the clock provider API
+  ASoC: da7219: properly get clk from the provider
 
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Reported-by: Alexander Schmidt <alexschm@de.ibm.com>
----
- tools/perf/builtin-ftrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/da7219.c          |  5 ++++-
+ sound/soc/codecs/lpass-va-macro.c  |  7 ++-----
+ sound/soc/codecs/lpass-wsa-macro.c | 11 +++--------
+ sound/soc/codecs/rt5682.c          |  6 +++---
+ sound/soc/codecs/wcd934x.c         |  6 ++++--
+ sound/soc/stm/stm32_sai_sub.c      |  5 ++++-
+ 6 files changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index d49448a1060c..87cb11a7a3ee 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -289,7 +289,7 @@ static int set_tracing_pid(struct perf_ftrace *ftrace)
- 
- 	for (i = 0; i < perf_thread_map__nr(ftrace->evlist->core.threads); i++) {
- 		scnprintf(buf, sizeof(buf), "%d",
--			  ftrace->evlist->core.threads->map[i]);
-+			  perf_thread_map__pid(ftrace->evlist->core.threads, i));
- 		if (append_tracing_file("set_ftrace_pid", buf) < 0)
- 			return -1;
- 	}
 -- 
-2.30.2
+2.31.1
 
