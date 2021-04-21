@@ -2,100 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DB436653D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE41B366541
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235571AbhDUGOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhDUGOU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:14:20 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D452C06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:13:47 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id v13so7443345ple.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 23:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nevSqjB25WWzzcqHGFweFF6UbgX9/nmSW+k0ejZthf8=;
-        b=sG67lRRbsHmSns4ktZmK8bX8woxMdV04AmG+e5KUz19Ru5BTAoZ/foiVDSFPK1+UlE
-         w6dDCSW4rlJdko/xwuHcrsx0geEpDIpLi4/GsPd5qJM5UwxXaGOtzcu06uTCQncL4Oii
-         6HABcmJTEWqnKktkOf9QDh3Kd6jlEziy5LDF2A9i52z1LvR7b8hwr/k/5h+0DJZtLZr+
-         Jtmot54QvBdxxKfYGjMwvweAdO0GZMW/d+L5Gp9jm8szgKhZxM++D+6UkwkN47hxdwrj
-         smyRN1PLz0QTsIVlf0sESbVVc9ePjiQz+ek9BWExRhx6Ytz/v7iYVN7UE+iCgfePMFIb
-         PDEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nevSqjB25WWzzcqHGFweFF6UbgX9/nmSW+k0ejZthf8=;
-        b=lK5j+dLau2MlUSG8wPz8Kn+Hqa3dqpZKD/hcoGnZe6BDAJozpTYGMULHnlB15qS5pd
-         yjjHm9JB7nj0TjPVHoDpYz6KevMwVcHq3dubaHvg0/mEN3i6Lr6IpQNkpJGUQAZ9Xbwq
-         UTchZlVIi+2kns/cImCtlRI8Cv6Gd6Kz9NvIcBNrXYqAxCBEiiK7w7P4htNcaAT6G+Ry
-         Si64F7ddBnj5+pH58CGhlfqbRZCXhjXoTG+QoLmjj4mnwPpbE5x9F3q2W0AlK+dbVQOT
-         HZcfddx43VyjyLYraiWvN9a6jhxZAXModYQHgsUOacfLUWs62ccyF256yR1YxtCKFaxI
-         R0fw==
-X-Gm-Message-State: AOAM533gmbETYO9hXP8C4UueX6nnIz4MgwJFG+JbNw9K69NV8skK1PrH
-        ixyTdvlOJ4O/IhrMbGP/Q/+tXykHzkOx
-X-Google-Smtp-Source: ABdhPJwJnGTAiKHdEFITonTjRDgbLjhHPCdCfrgwIawrFWzaOaMV3bdh4y5p6nS8QH4umOGqZKXk+Q==
-X-Received: by 2002:a17:903:244:b029:ec:9666:9fc6 with SMTP id j4-20020a1709030244b02900ec96669fc6mr19214218plh.63.1618985626386;
-        Tue, 20 Apr 2021 23:13:46 -0700 (PDT)
-Received: from thinkpad ([2409:4072:6e08:82d:35d7:2e33:457a:84d9])
-        by smtp.gmail.com with ESMTPSA id u6sm747918pfi.44.2021.04.20.23.13.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 23:13:45 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 11:43:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH v2] docs: driver-model: Update the documentation for
- device class
-Message-ID: <20210421061340.GA6522@thinkpad>
-References: <20210407061053.81940-1-manivannan.sadhasivam@linaro.org>
- <87czuoio8r.fsf@meer.lwn.net>
+        id S235626AbhDUGQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:16:14 -0400
+Received: from mga03.intel.com ([134.134.136.65]:29212 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhDUGQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:16:12 -0400
+IronPort-SDR: mYtxKACcMehIBovN7tV7c4KeFJ0bg9OEQj0eYCj2k17Cv/IsN4qM0DhifJGMf+7kLRKiqglpws
+ GZQCxiIgsJGA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195672258"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="195672258"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 23:15:38 -0700
+IronPort-SDR: ow3yGyWyze/fnWJ+ygzfDJ75vnragoP4r3U0qlvk+ob6NGcQ9/qFIDYjTjBmVpTKXA1qyraGgb
+ FHtsQEIc0ggQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="401379518"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 20 Apr 2021 23:15:36 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lZ69A-0003Sc-59; Wed, 21 Apr 2021 06:15:36 +0000
+Date:   Wed, 21 Apr 2021 14:14:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 5849cdf8c120e3979c57d34be55b92d90a77a47e
+Message-ID: <607fc2e0.9Swwvoaxiev31ZUo%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czuoio8r.fsf@meer.lwn.net>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 04:29:24PM -0600, Jonathan Corbet wrote:
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
-> 
-> > The current documentation about the device class is out of date such
-> > that it refers to non-existent APIs and structures. This commit updates
-> > them to the current device class APIs and structures, removes wordings
-> > that no longer valid while trying to keep the original content intact.
-> >
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >
-> > Changes in v2:
-> >
-> > * Fixed CLASS_ATTR_RW as spotted by Greg
-> >
-> >  .../driver-api/driver-model/class.rst         | 144 ++++++++----------
-> >  1 file changed, 66 insertions(+), 78 deletions(-)
-> 
-> Note that this file was removed in commit 1364c6787525 back in
-> February by Geert (added to CC).  If you want to update this document,
-> you'll first want to bring it back.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 5849cdf8c120e3979c57d34be55b92d90a77a47e  x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
 
-Oh thanks for the info! Perhaps I could just revert 1364c6787525 and add this
-commit on top?
+elapsed time: 721m
 
-Thanks,
-Mani
+configs tested: 132
+configs skipped: 70
 
-> Thanks,
-> 
-> jon
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+mips                           gcw0_defconfig
+sh                           se7724_defconfig
+mips                     decstation_defconfig
+sh                          r7785rp_defconfig
+m68k                        m5272c3_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                       maple_defconfig
+powerpc                          allyesconfig
+ia64                            zx1_defconfig
+mips                      maltaaprp_defconfig
+nds32                               defconfig
+powerpc                     tqm8555_defconfig
+powerpc                 mpc834x_mds_defconfig
+mips                           ip27_defconfig
+powerpc                     redwood_defconfig
+powerpc                 mpc8313_rdb_defconfig
+mips                             allyesconfig
+mips                           rs90_defconfig
+sh                            shmin_defconfig
+sh                          polaris_defconfig
+xtensa                       common_defconfig
+mips                  decstation_64_defconfig
+sh                           se7619_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sparc                       sparc64_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                        cell_defconfig
+h8300                       h8s-sim_defconfig
+arm                     davinci_all_defconfig
+m68k                            q40_defconfig
+mips                          malta_defconfig
+mips                        bcm47xx_defconfig
+mips                      fuloong2e_defconfig
+powerpc                 linkstation_defconfig
+mips                      pic32mzda_defconfig
+arm                         nhk8815_defconfig
+mips                         tb0287_defconfig
+sh                          rsk7203_defconfig
+sh                          landisk_defconfig
+powerpc                       eiger_defconfig
+mips                         rt305x_defconfig
+powerpc                      obs600_defconfig
+arm                        spear6xx_defconfig
+nios2                            allyesconfig
+arm                        keystone_defconfig
+sh                              ul2_defconfig
+powerpc                      tqm8xx_defconfig
+sh                         microdev_defconfig
+arm                           spitz_defconfig
+m68k                       m5475evb_defconfig
+arm                            lart_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                        icon_defconfig
+arm                         lpc18xx_defconfig
+sh                             sh03_defconfig
+mips                     cu1000-neo_defconfig
+powerpc                      arches_defconfig
+sh                            migor_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210420
+i386                 randconfig-a002-20210420
+i386                 randconfig-a001-20210420
+i386                 randconfig-a006-20210420
+i386                 randconfig-a004-20210420
+i386                 randconfig-a003-20210420
+x86_64               randconfig-a015-20210420
+x86_64               randconfig-a016-20210420
+x86_64               randconfig-a011-20210420
+x86_64               randconfig-a014-20210420
+x86_64               randconfig-a013-20210420
+x86_64               randconfig-a012-20210420
+i386                 randconfig-a012-20210420
+i386                 randconfig-a014-20210420
+i386                 randconfig-a011-20210420
+i386                 randconfig-a013-20210420
+i386                 randconfig-a015-20210420
+i386                 randconfig-a016-20210420
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20210420
+x86_64               randconfig-a002-20210420
+x86_64               randconfig-a001-20210420
+x86_64               randconfig-a005-20210420
+x86_64               randconfig-a006-20210420
+x86_64               randconfig-a003-20210420
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
