@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADF1366D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53843366D79
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhDUOBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:01:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37190 "EHLO mail.kernel.org"
+        id S238084AbhDUOCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234205AbhDUOBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:01:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A979661439;
-        Wed, 21 Apr 2021 14:00:57 +0000 (UTC)
+        id S236913AbhDUOB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04BEC61439;
+        Wed, 21 Apr 2021 14:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619013660;
-        bh=29A7NdsSMfao/ozpDLRWzTLaOL+x/9sHr4gIsv0B3sE=;
+        s=k20201202; t=1619013684;
+        bh=NAHWkIPCTubNFEdu5PvwFwsX+MLtZ95c+VqOn5fzIh4=;
         h=From:To:Cc:Subject:Date:From;
-        b=BFT/Vgsc5U+2LDBEh9S2JL4tC/mPPkKi7Nx0UNKYzmmujuUeEwu7M/w7cpHoWAYGY
-         wTDNRyCbL/Y/++Qmu7SrDWH3FmkVVK0AJ8HTyu82djzAcS/Dxr5YLYgFuL/0o5WXnA
-         Ur3vLQdGVJsEryRNQZQ9vnbo6jOyjh1xNEBlOvAgDcDQqsgJyV1SwZeY7F724jJNX4
-         T7vO+Qn/Hv7bVAKmmgKAlR98YT6ssef/w1trMub+J/FDf56UvwifkRyr+pyPiMKiEs
-         Mb3bTizsctlTSUhbcU9LMKupBGqXf95sV42iV/R/DQOWt/wTVDV3Abw2wFaqBf77GH
-         I0yCM+0smte6A==
+        b=V0OlZwE/BdwxgfEFfE7u7GYoWVM37GunB6tDOud82E9Xz8pxNlkcuPkX+mZI20RbS
+         u1rOmTgFI9nLr9EPxFOyPUOa71vI7xohjtKWJ5zlA0pwxNUA7NZeHLvumsxtCnacKC
+         cGOOc/C6rnyCBmwakagZxIFYlvgi9r7pihmezpatE1dGc7HI7V64wYxg9IzLJbcmA3
+         fkeNKAiChjdTCd3ii74YakQDxgD+SRDNOG8FPaNAiOKdawT9MUz3xoNyl1STztOewQ
+         aT/hJL+4f8v8b2e67055l901H0Lup7vIzBLoBXNedPIWinQ+VKzB09RLhxo6wvtISJ
+         BtWUvxgN2WTaA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] remoteproc: stm32: fix phys_addr_t format string
-Date:   Wed, 21 Apr 2021 16:00:40 +0200
-Message-Id: <20210421140053.3727528-1-arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
+        Valentin Vidic <vvidic@valentin-vidic.from.hr>,
+        Mike Rapoport <rppt@kernel.org>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [net-next] net: korina: fix compile-testing on x86
+Date:   Wed, 21 Apr 2021 16:01:12 +0200
+Message-Id: <20210421140117.3745422-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,33 +44,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-A phys_addr_t may be wider than an int or pointer:
+The 'desc_empty' enum in this driver conflicts with a function
+of the same namem that is declared in an x86 header:
 
-drivers/remoteproc/stm32_rproc.c: In function 'stm32_rproc_da_to_pa':
-drivers/remoteproc/stm32_rproc.c:583:30: error: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'phys_addr_t' {aka 'long long unsigned int'} [-Werror=format=]
-  583 |                 dev_dbg(dev, "da %llx to pa %#x\n", da, *pa);
+drivers/net/ethernet/korina.c:326:9: error: 'desc_empty' redeclared as different kind of symbol
+  326 |         desc_empty
+      |         ^~~~~~~~~~
+In file included from arch/x86/include/asm/elf.h:93,
+                 from include/linux/elf.h:6,
+                 from include/linux/module.h:18,
+                 from drivers/net/ethernet/korina.c:36:
+arch/x86/include/asm/desc.h:99:19: note: previous definition of 'desc_empty' with type 'int(const void *)'
+   99 | static inline int desc_empty(const void *ptr)
 
-Print it by reference using the special %pap format string.
+As the header was there first, rename the enum value to use
+a more specific namespace.
 
-Fixes: 8a471396d21c ("remoteproc: stm32: Move resource table setup to rproc_ops")
-igned-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 6ef92063bf94 ("net: korina: Make driver COMPILE_TESTable")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/remoteproc/stm32_rproc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/korina.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-index 7353f9e7e7af..32595c950569 100644
---- a/drivers/remoteproc/stm32_rproc.c
-+++ b/drivers/remoteproc/stm32_rproc.c
-@@ -580,7 +580,7 @@ static int stm32_rproc_da_to_pa(struct rproc *rproc,
- 			continue;
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index 4878e527e3c8..300b5e8aac3a 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -322,8 +322,8 @@ struct dma_reg {
+ #define TX_TIMEOUT	(6000 * HZ / 1000)
  
- 		*pa = da - p_mem->dev_addr + p_mem->bus_addr;
--		dev_dbg(dev, "da %llx to pa %#x\n", da, *pa);
-+		dev_dbg(dev, "da %llx to pa %pap\n", da, pa);
+ enum chain_status {
+-	desc_filled,
+-	desc_empty
++	korina_desc_filled,
++	korina_desc_empty
+ };
  
- 		return 0;
+ #define DMA_COUNT(count)	((count) & DMA_DESC_COUNT_MSK)
+@@ -459,7 +459,7 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 	chain_next = (idx + 1) & KORINA_TDS_MASK;
+ 
+ 	if (readl(&(lp->tx_dma_regs->dmandptr)) == 0) {
+-		if (lp->tx_chain_status == desc_empty) {
++		if (lp->tx_chain_status == korina_desc_empty) {
+ 			/* Update tail */
+ 			td->control = DMA_COUNT(length) |
+ 					DMA_DESC_COF | DMA_DESC_IOF;
+@@ -486,16 +486,16 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 			       &lp->tx_dma_regs->dmandptr);
+ 			/* Move head to tail */
+ 			lp->tx_chain_head = lp->tx_chain_tail;
+-			lp->tx_chain_status = desc_empty;
++			lp->tx_chain_status = korina_desc_empty;
+ 		}
+ 	} else {
+-		if (lp->tx_chain_status == desc_empty) {
++		if (lp->tx_chain_status == korina_desc_empty) {
+ 			/* Update tail */
+ 			td->control = DMA_COUNT(length) |
+ 					DMA_DESC_COF | DMA_DESC_IOF;
+ 			/* Move tail */
+ 			lp->tx_chain_tail = chain_next;
+-			lp->tx_chain_status = desc_filled;
++			lp->tx_chain_status = korina_desc_filled;
+ 		} else {
+ 			/* Update tail */
+ 			td->control = DMA_COUNT(length) |
+@@ -864,11 +864,11 @@ korina_tx_dma_interrupt(int irq, void *dev_id)
+ 
+ 		korina_tx(dev);
+ 
+-		if (lp->tx_chain_status == desc_filled &&
++		if (lp->tx_chain_status == korina_desc_filled &&
+ 			(readl(&(lp->tx_dma_regs->dmandptr)) == 0)) {
+ 			writel(korina_tx_dma(lp, lp->tx_chain_head),
+ 			       &lp->tx_dma_regs->dmandptr);
+-			lp->tx_chain_status = desc_empty;
++			lp->tx_chain_status = korina_desc_empty;
+ 			lp->tx_chain_head = lp->tx_chain_tail;
+ 			netif_trans_update(dev);
+ 		}
+@@ -999,7 +999,7 @@ static int korina_alloc_ring(struct net_device *dev)
  	}
+ 	lp->tx_next_done = lp->tx_chain_head = lp->tx_chain_tail =
+ 			lp->tx_full = lp->tx_count = 0;
+-	lp->tx_chain_status = desc_empty;
++	lp->tx_chain_status = korina_desc_empty;
+ 
+ 	/* Initialize the receive descriptors */
+ 	for (i = 0; i < KORINA_NUM_RDS; i++) {
+@@ -1027,7 +1027,7 @@ static int korina_alloc_ring(struct net_device *dev)
+ 	lp->rx_next_done  = 0;
+ 	lp->rx_chain_head = 0;
+ 	lp->rx_chain_tail = 0;
+-	lp->rx_chain_status = desc_empty;
++	lp->rx_chain_status = korina_desc_empty;
+ 
+ 	return 0;
+ }
 -- 
 2.29.2
 
