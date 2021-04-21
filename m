@@ -2,106 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A50367185
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571E036717F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244820AbhDURkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:40:41 -0400
-Received: from elvis.franken.de ([193.175.24.41]:35562 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244814AbhDURkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:40:36 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lZGpV-0006uJ-00; Wed, 21 Apr 2021 19:40:01 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D0202C08D9; Wed, 21 Apr 2021 19:39:24 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 19:39:24 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: gpio: Add devicetree binding for IDT
- 79RC3243x GPIO controller
-Message-ID: <20210421173924.GA15599@alpha.franken.de>
-References: <20210421162026.41978-1-tsbogend@alpha.franken.de>
- <20210421162026.41978-2-tsbogend@alpha.franken.de>
- <20210421171727.GA1310436@robh.at.kernel.org>
+        id S243046AbhDURk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:40:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44978 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235434AbhDURkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:40:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619026788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NozKqtAQsLfIuTJYfL4jEF5T8uHtk7yVgiyg7jRNbZo=;
+        b=daRPAxRVE906X8xVYmHkY/30GS+RHn01dWpZRnKgixjTRX+qaUtFIY8ugeWZF+8xv85ldh
+        EV3PD4U1D0aeLsFKe4YpsYlCLOO9gMIJlGOC66tjSggylyk1RneXk9mnC2ms9bx0imgOAh
+        Wlwp/mm5E2+I5TSgWjXjR2v1aZApUJo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-R1oJopAjPNS_ZDvua3z3Zg-1; Wed, 21 Apr 2021 13:39:36 -0400
+X-MC-Unique: R1oJopAjPNS_ZDvua3z3Zg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EAE28030C9;
+        Wed, 21 Apr 2021 17:39:35 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-206.rdu2.redhat.com [10.10.114.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 26E885D769;
+        Wed, 21 Apr 2021 17:39:32 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id B4E70220BCF; Wed, 21 Apr 2021 13:39:31 -0400 (EDT)
+Date:   Wed, 21 Apr 2021 13:39:31 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
+        jack@suse.cz, willy@infradead.org, linux-nvdimm@lists.01.org,
+        miklos@szeredi.hu, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: [Virtio-fs] [PATCH v3 2/3] dax: Add a wakeup mode parameter to
+ put_unlocked_entry()
+Message-ID: <20210421173931.GF1579961@redhat.com>
+References: <20210419213636.1514816-1-vgoyal@redhat.com>
+ <20210419213636.1514816-3-vgoyal@redhat.com>
+ <20210420093420.2eed3939@bahia.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421171727.GA1310436@robh.at.kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210420093420.2eed3939@bahia.lan>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 12:17:27PM -0500, Rob Herring wrote:
-> On Wed, Apr 21, 2021 at 06:20:26PM +0200, Thomas Bogendoerfer wrote:
-> > Add YAML devicetree binding for IDT 79RC3243x GPIO controller
+On Tue, Apr 20, 2021 at 09:34:20AM +0200, Greg Kurz wrote:
+> On Mon, 19 Apr 2021 17:36:35 -0400
+> Vivek Goyal <vgoyal@redhat.com> wrote:
+> 
+> > As of now put_unlocked_entry() always wakes up next waiter. In next
+> > patches we want to wake up all waiters at one callsite. Hence, add a
+> > parameter to the function.
 > > 
-> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > This patch does not introduce any change of behavior.
+> > 
+> > Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 > > ---
-> >  .../bindings/gpio/gpio-idt3243x.yaml          | 73 +++++++++++++++++++
-> 
-> Use compatible string for filename.
-
-ok
-
-> >  1 file changed, 73 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml
+> >  fs/dax.c | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
 > > 
-> > diff --git a/Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml b/Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml
-> > new file mode 100644
-> > index 000000000000..346a57ef8298
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/gpio/gpio-idt3243x.yaml
-> > @@ -0,0 +1,73 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/gpio/gpio-idt3243x.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: IDT 79RC32434x GPIO controller
-> > +
-> > +maintainers:
-> > +  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: idt,3243x-gpio
+> > diff --git a/fs/dax.c b/fs/dax.c
+> > index 00978d0838b1..f19d76a6a493 100644
+> > --- a/fs/dax.c
+> > +++ b/fs/dax.c
+> > @@ -275,11 +275,12 @@ static void wait_entry_unlocked(struct xa_state *xas, void *entry)
+> >  	finish_wait(wq, &ewait.wait);
+> >  }
+> >  
+> > -static void put_unlocked_entry(struct xa_state *xas, void *entry)
+> > +static void put_unlocked_entry(struct xa_state *xas, void *entry,
+> > +			       enum dax_entry_wake_mode mode)
+> >  {
+> >  	/* If we were the only waiter woken, wake the next one */
 > 
-> What's the 'x'? Generally, we don't do wildcards for compatible strings.
+> With this change, the comment is no longer accurate since the
+> function can now wake all waiters if passed mode == WAKE_ALL.
+> Also, it paraphrases the code which is simple enough, so I'd
+> simply drop it.
 
-there are 3 different SoCs 79rc32434, 79rc32435 and 79rc32438. So should
-I add 3 compatible strings and use the first as filename ?
+Ok, I will get rid of this comment. Agreed that code is simple
+enough. And frankly speaking I don't even understand "If we were the
+only waiter woken" part. How do we know that only this caller
+was woken.
 
-> > +  ngpios:
-> > +    description:
-> > +      Number of available gpios in a bank.
+Vivek
+
 > 
-> That's every 'ngpios'. Drop.
-
-ok.
-
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    gpio0: interrupt-controller@50000 {
+> This is minor though and it shouldn't prevent this fix to go
+> forward.
 > 
-> gpio@...
+> Reviewed-by: Greg Kurz <groug@kaod.org>
 > 
-> As generally it's primarily a GPIO controller and secondarily an 
-> interrupt controller.
+> >  	if (entry && !dax_is_conflict(entry))
+> > -		dax_wake_entry(xas, entry, WAKE_NEXT);
+> > +		dax_wake_entry(xas, entry, mode);
+> >  }
+> >  
+> >  /*
+> > @@ -633,7 +634,7 @@ struct page *dax_layout_busy_page_range(struct address_space *mapping,
+> >  			entry = get_unlocked_entry(&xas, 0);
+> >  		if (entry)
+> >  			page = dax_busy_page(entry);
+> > -		put_unlocked_entry(&xas, entry);
+> > +		put_unlocked_entry(&xas, entry, WAKE_NEXT);
+> >  		if (page)
+> >  			break;
+> >  		if (++scanned % XA_CHECK_SCHED)
+> > @@ -675,7 +676,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
+> >  	mapping->nrexceptional--;
+> >  	ret = 1;
+> >  out:
+> > -	put_unlocked_entry(&xas, entry);
+> > +	put_unlocked_entry(&xas, entry, WAKE_NEXT);
+> >  	xas_unlock_irq(&xas);
+> >  	return ret;
+> >  }
+> > @@ -954,7 +955,7 @@ static int dax_writeback_one(struct xa_state *xas, struct dax_device *dax_dev,
+> >  	return ret;
+> >  
+> >   put_unlocked:
+> > -	put_unlocked_entry(xas, entry);
+> > +	put_unlocked_entry(xas, entry, WAKE_NEXT);
+> >  	return ret;
+> >  }
+> >  
+> > @@ -1695,7 +1696,7 @@ dax_insert_pfn_mkwrite(struct vm_fault *vmf, pfn_t pfn, unsigned int order)
+> >  	/* Did we race with someone splitting entry or so? */
+> >  	if (!entry || dax_is_conflict(entry) ||
+> >  	    (order == 0 && !dax_is_pte_entry(entry))) {
+> > -		put_unlocked_entry(&xas, entry);
+> > +		put_unlocked_entry(&xas, entry, WAKE_NEXT);
+> >  		xas_unlock_irq(&xas);
+> >  		trace_dax_insert_pfn_mkwrite_no_entry(mapping->host, vmf,
+> >  						      VM_FAULT_NOPAGE);
+> 
 
-ok.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
