@@ -2,231 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2A5366A58
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8CA366A5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234939AbhDUMBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:01:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234132AbhDUMBX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:01:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619006450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IK8rNqxriUfZgIBGQj3cIoO+PFxUc7/geRSzlVfw5xE=;
-        b=PxAatrIuQ94WeUzsKHRT5Ye8eJUB+vYJ/MhIjrfmnWPg2wP6emsJLWZEWwPLWFxiVb/1ze
-        /2RBXkxp4wrjLG6TR2fLmZROLNAEltA+0654ikmm4n//K3sxUN8loa8E9ygVqhzhcyizbG
-        wdJFOXMdDBCf/fpV2nA7+UDq110xweA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-PFW-DDt_N-Kh4KBSh6thVw-1; Wed, 21 Apr 2021 08:00:47 -0400
-X-MC-Unique: PFW-DDt_N-Kh4KBSh6thVw-1
-Received: by mail-wr1-f69.google.com with SMTP id 67-20020adf81490000b029010756d109e6so1039984wrm.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:00:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IK8rNqxriUfZgIBGQj3cIoO+PFxUc7/geRSzlVfw5xE=;
-        b=XfE6Vesw/TeceDtPG7gQD6NNYjzMGW/eu/5qXUINCqKd3uMEpXi7iYidb23wthVaYy
-         gUdMcLURc5U1esXR5HwW1jkoiDwDUSfO1SPdWe+Dl6Ch3Z13MP+mRgv2eutiDCdZLCOs
-         jZugvCdnukC3D/XJbEE4QGCjUTvJYF5xOK3CNCfglCbZ7nVw5j5hCntuQwQMAlwxZ9d2
-         WFmgtucL7mN7uApnIrM+HnfgyEibKjuUTj4sw4W6XhOxBa5Fwh1y8f6r7zlKqjSOKteg
-         6RNUptlEbqUvQcnhwGUo0+vTJKeV5lwC6jLPQRXQV4/XCbX6ZiS/WXA+5xSMbH9E3TbX
-         zm5g==
-X-Gm-Message-State: AOAM533Hz1rcpCVpTSXUnVDrgN/AueRUIIv7OYIB7nv0LsBAZz6tcp85
-        druUa/S1wu4aMpDVLVJLxVFz3SZxaMMfbANoYTkgvZ9Aaj/ePal08Qf8KrGcsDlzizn1Jcg/YyT
-        W7/fRejlmUARsH1cz3xMhZAKZ
-X-Received: by 2002:a05:600c:1546:: with SMTP id f6mr9310826wmg.156.1619006446175;
-        Wed, 21 Apr 2021 05:00:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNv79et85M29gcYqBuP/mxfRipp3hvtxuVMeYFbWpLW9uTOlR5sx4EqM3X88BVF4Sp03sdIw==
-X-Received: by 2002:a05:600c:1546:: with SMTP id f6mr9310808wmg.156.1619006445934;
-        Wed, 21 Apr 2021 05:00:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q17sm2958030wro.33.2021.04.21.05.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 05:00:44 -0700 (PDT)
-Subject: Re: [PATCH v13 09/12] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Borislav Petkov <bp@alien8.de>, Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1618498113.git.ashish.kalra@amd.com>
- <f2340642c5b8d597a099285194fca8d05c9843bd.1618498113.git.ashish.kalra@amd.com>
- <20210421100508.GA11234@zn.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f63735b4-8ec2-fdb4-0bac-8ee0921268b0@redhat.com>
-Date:   Wed, 21 Apr 2021 14:00:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S238533AbhDUMCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234132AbhDUMCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:02:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE9D461448;
+        Wed, 21 Apr 2021 12:02:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619006530;
+        bh=sq5loJMS1RgMRKqx3y/IFNVGnUaCXhwVbTBzTxi9LHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aDTRSgkwkp56nhZSfDzll+5h9ZI3oj1PWgFfbG29RvTnsNxC3GR+1aQxmO2NDlu1O
+         69EuBhSN/YiNLx2bU6RI0kgmTnggmRlM0FK+gIjOCtjp7wSYTDOIi8ICxV0sUrYqdq
+         XCa5ag2gG8wkhndIMxfbvr2Na4OAjWAZPCdJyBmgNKKilaY8+aFsT1HOUflvavYApm
+         kF87+PIY6vGrXYYPmM8RhEEoXlPPGX5r3YoCDB+xYVLra/ejNhyNwifU0QwAn18btm
+         SySKqUs7HY9YdguiJXGF68Spmtv967nCj6Vu4BUpyzXUgGI3Eaq2L8JZVbWEB0fNFK
+         pljdATVXVySaQ==
+Date:   Wed, 21 Apr 2021 13:01:43 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Support Opensource <support.opensource@diasemi.com>
+Subject: Re: [PATCH V2] regulator: da9121: automotive variants identity fix
+Message-ID: <20210421120143.GB4617@sirena.org.uk>
+References: <20210421115216.9C1BC80007F@slsrvapps-01.diasemi.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421100508.GA11234@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Disposition: inline
+In-Reply-To: <20210421115216.9C1BC80007F@slsrvapps-01.diasemi.com>
+X-Cookie: RELATIVES!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/21 12:05, Borislav Petkov wrote:
-> On Thu, Apr 15, 2021 at 03:57:26PM +0000, Ashish Kalra wrote:
->> +static inline void page_encryption_changed(unsigned long vaddr, int npages,
->> +						bool enc)
-> 
-> When you see a function name "page_encryption_changed", what does that
-> tell you about what that function does?
-> 
-> Dunno but it doesn't tell me a whole lot.
-> 
-> Now look at the other function names in struct pv_mmu_ops.
-> 
-> See the difference?
-> 
->> +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
-> 
-> If I had to guess what that function does just by reading its name, it
-> sets a memory encryption/decryption hypercall.
-> 
-> Am I close?
 
-The words are right but the order is wrong (more like "hypercall to set 
-some memory's encrypted/decrypted state").  Perhaps? 
-kvm_hypercall_set_page_enc_status.
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-page_encryption_changed does not sound bad to me though, it's a 
-notification-like function name.  Maybe notify_page_enc_status_changed?
+On Wed, Apr 21, 2021 at 11:52:16AM +0000, Adam Ward wrote:
+> be exclusively using automotive or consumer grade parts.
+>=20
+> V2: Fix for TYPE/SUBTYPE error I forgot to commit before generating patch
+>     (Thanks to Raviteja Narayanam for originally spotting this)
+>=20
+> Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
+> ---
 
-Paolo
+As covered in submitting-patches.rst inter version changelogs should go
+after the ---.
 
->> +					bool enc)
->> +{
->> +	unsigned long sz = npages << PAGE_SHIFT;
->> +	unsigned long vaddr_end, vaddr_next;
->> +
->> +	vaddr_end = vaddr + sz;
->> +
->> +	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
->> +		int psize, pmask, level;
->> +		unsigned long pfn;
->> +		pte_t *kpte;
->> +
->> +		kpte = lookup_address(vaddr, &level);
->> +		if (!kpte || pte_none(*kpte))
->> +			return;
->> +
->> +		switch (level) {
->> +		case PG_LEVEL_4K:
->> +			pfn = pte_pfn(*kpte);
->> +			break;
->> +		case PG_LEVEL_2M:
->> +			pfn = pmd_pfn(*(pmd_t *)kpte);
->> +			break;
->> +		case PG_LEVEL_1G:
->> +			pfn = pud_pfn(*(pud_t *)kpte);
->> +			break;
->> +		default:
->> +			return;
->> +		}
-> 
-> Pretty much that same thing is in __set_clr_pte_enc(). Make a helper
-> function pls.
-> 
->> +
->> +		psize = page_level_size(level);
->> +		pmask = page_level_mask(level);
->> +
->> +		kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
->> +				   pfn << PAGE_SHIFT, psize >> PAGE_SHIFT, enc);
->> +
->> +		vaddr_next = (vaddr & pmask) + psize;
->> +	}
-> 
-> As with other patches from Brijesh, that should be a while loop. :)
-> 
->> +}
->> +
->>   static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->>   {
->>   	pgprot_t old_prot, new_prot;
->> @@ -286,12 +329,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->>   static int __init early_set_memory_enc_dec(unsigned long vaddr,
->>   					   unsigned long size, bool enc)
->>   {
->> -	unsigned long vaddr_end, vaddr_next;
->> +	unsigned long vaddr_end, vaddr_next, start;
->>   	unsigned long psize, pmask;
->>   	int split_page_size_mask;
->>   	int level, ret;
->>   	pte_t *kpte;
->>   
->> +	start = vaddr;
->>   	vaddr_next = vaddr;
->>   	vaddr_end = vaddr + size;
->>   
->> @@ -346,6 +390,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
->>   
->>   	ret = 0;
->>   
->> +	set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
->> +					enc);
->>   out:
->>   	__flush_tlb_all();
->>   	return ret;
->> @@ -481,6 +527,15 @@ void __init mem_encrypt_init(void)
->>   	if (sev_active() && !sev_es_active())
->>   		static_branch_enable(&sev_enable_key);
->>   
->> +#ifdef CONFIG_PARAVIRT
->> +	/*
->> +	 * With SEV, we need to make a hypercall when page encryption state is
->> +	 * changed.
->> +	 */
->> +	if (sev_active())
->> +		pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
->> +#endif
-> 
-> There's already a sev_active() check above it. Merge the two pls.
-> 
->> +
->>   	print_mem_encrypt_feature_info();
->>   }
->>   
->> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
->> index 16f878c26667..3576b583ac65 100644
->> --- a/arch/x86/mm/pat/set_memory.c
->> +++ b/arch/x86/mm/pat/set_memory.c
->> @@ -27,6 +27,7 @@
->>   #include <asm/proto.h>
->>   #include <asm/memtype.h>
->>   #include <asm/set_memory.h>
->> +#include <asm/paravirt.h>
->>   
->>   #include "../mm_internal.h"
->>   
->> @@ -2012,6 +2013,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->>   	 */
->>   	cpa_flush(&cpa, 0);
->>   
->> +	/* Notify hypervisor that a given memory range is mapped encrypted
->> +	 * or decrypted. The hypervisor will use this information during the
->> +	 * VM migration.
->> +	 */
-> 
-> Kernel comments style is:
-> 
-> 	/*
-> 	 * A sentence ending with a full-stop.
-> 	 * Another sentence. ...
-> 	 * More sentences. ...
-> 	 */
-> 
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCAFCYACgkQJNaLcl1U
+h9CmNwf9E5JLhw1NMeVaiNhBASVUDF1+VkcIG28y8uTptNaOXhoYMfEsVYEmm2RP
+X4H9Pv8t0OknpFSKwoVwm8PYPB7QoMXwok4giaVDkY4qT65aeAM1thxTN9BpIxra
+KOzB285vJN/FSj6EQJOeYcE/s6vAGrSTbMgokEwsiM2l7dMCtGkRNokyyxWYoaFa
+ukB8Xe3Enq+Wk9uz2W60UP3i6V6pcmo5N8PADt4kWS1l2/t0OuJPNDAix8Y3BGTg
+HHqJWG/ZqX3hlo3BhOiaWMcv6CFHBIwHNoBsKWOBLP/ovCuoWGRHUt5oZJLZiMpw
+xQe4QhoPKPIsstONioQWxVTWG5Ynvg==
+=vVsj
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
