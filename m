@@ -2,94 +2,594 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A87366B46
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E872366B4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239996AbhDUMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:53:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
+        id S235103AbhDUMzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240075AbhDUMwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:52:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 734D161451;
-        Wed, 21 Apr 2021 12:52:10 +0000 (UTC)
+        id S230250AbhDUMzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:55:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E9D6142F;
+        Wed, 21 Apr 2021 12:54:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619009532;
-        bh=IZaohxyczQIzHLXvsyuiv2v5D/4sNbVy8dDuoz3fFGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t4aIOOTC5ix2jgy/a9TcU89YGXm1NuU8SlAsyk607UNWbUwWtM/+3g6lRvPLItq9m
-         fZnhJ6eaunWWrQtYzx6iCDj9PGqNkPWZhU1q12R63kVf6ERMvZKtMrkgA/B7mapb1B
-         Wr8ksXPlU3mRj/bejwntX1cLj6ULhpg8DaB9mczPKgC2fy7spouD4N2UP+uLEPb8py
-         FD8wfmZSi78O9pq0fCD3ddJ5ASn4b+KCRMyd34lT28Pjq47I679K6LDjWp0LdJ0h5Q
-         vwEv3bvob0a4ZkphNyJzNEDytjYPrX7jHbjPfi1UEGRrmPPOWxe/6S17SdCsqBMwDK
-         R28D3o8CrINBQ==
-Date:   Wed, 21 Apr 2021 14:52:06 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     keyrings@vger.kernel.org, dhowells@redhat.com, zohar@linux.ibm.com,
-        jarkko@kernel.org, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] certs: Add support for using elliptic curve keys
- for signing modules
-Message-ID: <YIAf9jYGu03lrJLn@gunter>
-References: <20210408152403.1189121-1-stefanb@linux.ibm.com>
- <20210408152403.1189121-3-stefanb@linux.ibm.com>
- <YH7fKUjJoynyPkHt@gunter>
- <794ef635-de91-9207-f28b-ab6805fd95c9@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <794ef635-de91-9207-f28b-ab6805fd95c9@linux.ibm.com>
-X-OS:   Linux gunter 5.11.12-1-default x86_64
+        s=k20201202; t=1619009677;
+        bh=rBLVu9KEYTHLUm4uLJmeY8VUk0qLhUIjRhdmU0m8ezM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YPyHVOSnieDO0djVDc7RT5bZTWa9A06NwcegyHLuqI65jN5yl8jTeOGls5+Js49MQ
+         Sxkd8i13oj4DLLpF76+5Yt9N9KY+yBowD1gp7NfUytsyoCzygxIZKRqk8wl/UIsToP
+         yb8h4fXSRWLEN02bZtJ0aVty4IBVhSFEDdqYnG6CybAWvoXCcHW6C3XzJ8Oe4hG0bS
+         BwU3Wyq+ERtodAnUxdQX+aa0Yd91ZD/23gbK5W0dc97hUCm5SAKbOYHRJFRgf5vPUV
+         2ej10XG8oYo0Nl+LpST/6p14ViYGZh3v33OdKnxeSZAktZdvYTqodkuEBklUy4tQWO
+         y7GPmtGDH4sjQ==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, arnd@arndb.de
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v3 1/2] locking/atomics: Fixup GENERIC_ATOMIC64 conflict with atomic-arch-fallback.h
+Date:   Wed, 21 Apr 2021 12:53:45 +0000
+Message-Id: <1619009626-93453-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Stefan Berger [20/04/21 17:02 -0400]:
->
->On 4/20/21 10:03 AM, Jessica Yu wrote:
->>+++ Stefan Berger [08/04/21 11:24 -0400]:
->>>
->>>diff --git a/crypto/asymmetric_keys/pkcs7_parser.c 
->>>b/crypto/asymmetric_keys/pkcs7_parser.c
->>>index 967329e0a07b..2546ec6a0505 100644
->>>--- a/crypto/asymmetric_keys/pkcs7_parser.c
->>>+++ b/crypto/asymmetric_keys/pkcs7_parser.c
->>>@@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, 
->>>size_t hdrlen,
->>>        ctx->sinfo->sig->pkey_algo = "rsa";
->>>        ctx->sinfo->sig->encoding = "pkcs1";
->>>        break;
->>>+    case OID_id_ecdsa_with_sha256:
->>>+        ctx->sinfo->sig->pkey_algo = "ecdsa";
->>>+        ctx->sinfo->sig->encoding = "x962";
->>>+        break;
->>
->>Hi Stefan,
->>
->>Does CONFIG_MODULE_SIG_KEY_TYPE_ECDSA have a dependency on 
->>MODULE_SIG_SHA256?
->
->You are right, per the code above it does have a dependency on SHA256. 
->ECDSA is using NIST p384 (secp384r1) for signing and per my tests it 
->can be paired with all the sha hashes once the code above is extended. 
->Now when it comes to module signing, should we pair it with a 
->particular hash? I am not currently aware of a guidance document on 
->this but sha256 and sha384 seem to be good choices these days, so 
->maybe selecting ECDSA module signing should have a 'depends on' on 
->these?
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Yeah, I would tack on the 'depends on' until the code above has been
-extended to cover more sha hashes - because currently if someone
-builds and signs a bunch of modules with an ECDSA key, they will fail
-to load if they picked something other than sha256. I am unfortunately
-not knowledgeable enough to suggest an official guideline on choice of
-hash, but for now it is reasonable to have a 'depends on' for which
-hashes the code currently supports, so that users don't run into
-module loading rejection issues.
+Current GENERIC_ATOMIC64 in atomic-arch-fallback.h is broken. When a 32-bit
+arch use atomic-arch-fallback.h will cause compile error.
 
-Thanks!
+In file included from include/linux/atomic.h:81,
+                    from include/linux/rcupdate.h:25,
+                    from include/linux/rculist.h:11,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14,
+                    from arch/riscv/kernel/asm-offsets.c:10:
+   include/linux/atomic-arch-fallback.h: In function 'arch_atomic64_inc':
+>> include/linux/atomic-arch-fallback.h:1447:2: error: implicit declaration of function 'arch_atomic64_add'; did you mean 'arch_atomic_add'? [-Werror=implicit-function-declaration]
+    1447 |  arch_atomic64_add(1, v);
+         |  ^~~~~~~~~~~~~~~~~
+         |  arch_atomic_add
 
-Jessica
+The atomic-arch-fallback.h & atomic-fallback.h &
+atomic-instrumented.h are generated by gen-atomic-fallback.sh &
+gen-atomic-instrumented.sh, so just take care the bash files.
+
+Remove the dependency of atomic-*-fallback.h in atomic64.h.
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ include/asm-generic/atomic-instrumented.h | 264 +++++++++++++++---------------
+ include/asm-generic/atomic64.h            |  89 ++++++++++
+ include/linux/atomic-arch-fallback.h      |   5 +-
+ include/linux/atomic-fallback.h           |   5 +-
+ scripts/atomic/gen-atomic-fallback.sh     |   3 +-
+ scripts/atomic/gen-atomic-instrumented.sh |  23 ++-
+ 6 files changed, 251 insertions(+), 138 deletions(-)
+
+diff --git a/include/asm-generic/atomic-instrumented.h b/include/asm-generic/atomic-instrumented.h
+index 888b6cf..c9e69c6 100644
+--- a/include/asm-generic/atomic-instrumented.h
++++ b/include/asm-generic/atomic-instrumented.h
+@@ -831,6 +831,137 @@ atomic_dec_if_positive(atomic_t *v)
+ #define atomic_dec_if_positive atomic_dec_if_positive
+ #endif
+ 
++#if !defined(arch_xchg_relaxed) || defined(arch_xchg)
++#define xchg(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_xchg(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_xchg_acquire)
++#define xchg_acquire(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_xchg_acquire(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_xchg_release)
++#define xchg_release(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_xchg_release(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_xchg_relaxed)
++#define xchg_relaxed(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_xchg_relaxed(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if !defined(arch_cmpxchg_relaxed) || defined(arch_cmpxchg)
++#define cmpxchg(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_cmpxchg(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_cmpxchg_acquire)
++#define cmpxchg_acquire(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_cmpxchg_acquire(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_cmpxchg_release)
++#define cmpxchg_release(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_cmpxchg_release(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_cmpxchg_relaxed)
++#define cmpxchg_relaxed(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_cmpxchg_relaxed(__ai_ptr, __VA_ARGS__); \
++})
++#endif
++
++#if !defined(arch_try_cmpxchg_relaxed) || defined(arch_try_cmpxchg)
++#define try_cmpxchg(ptr, oldp, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	typeof(oldp) __ai_oldp = (oldp); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
++	arch_try_cmpxchg(__ai_ptr, __ai_oldp, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_try_cmpxchg_acquire)
++#define try_cmpxchg_acquire(ptr, oldp, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	typeof(oldp) __ai_oldp = (oldp); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
++	arch_try_cmpxchg_acquire(__ai_ptr, __ai_oldp, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_try_cmpxchg_release)
++#define try_cmpxchg_release(ptr, oldp, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	typeof(oldp) __ai_oldp = (oldp); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
++	arch_try_cmpxchg_release(__ai_ptr, __ai_oldp, __VA_ARGS__); \
++})
++#endif
++
++#if defined(arch_try_cmpxchg_relaxed)
++#define try_cmpxchg_relaxed(ptr, oldp, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	typeof(oldp) __ai_oldp = (oldp); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
++	arch_try_cmpxchg_relaxed(__ai_ptr, __ai_oldp, __VA_ARGS__); \
++})
++#endif
++
++#define cmpxchg_local(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_cmpxchg_local(__ai_ptr, __VA_ARGS__); \
++})
++
++#define sync_cmpxchg(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	arch_sync_cmpxchg(__ai_ptr, __VA_ARGS__); \
++})
++
++#ifndef CONFIG_GENERIC_ATOMIC64
+ static __always_inline s64
+ atomic64_read(const atomic64_t *v)
+ {
+@@ -1641,78 +1772,6 @@ atomic64_dec_if_positive(atomic64_t *v)
+ #define atomic64_dec_if_positive atomic64_dec_if_positive
+ #endif
+ 
+-#if !defined(arch_xchg_relaxed) || defined(arch_xchg)
+-#define xchg(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_xchg(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_xchg_acquire)
+-#define xchg_acquire(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_xchg_acquire(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_xchg_release)
+-#define xchg_release(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_xchg_release(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_xchg_relaxed)
+-#define xchg_relaxed(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_xchg_relaxed(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if !defined(arch_cmpxchg_relaxed) || defined(arch_cmpxchg)
+-#define cmpxchg(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_cmpxchg(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_cmpxchg_acquire)
+-#define cmpxchg_acquire(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_cmpxchg_acquire(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_cmpxchg_release)
+-#define cmpxchg_release(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_cmpxchg_release(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_cmpxchg_relaxed)
+-#define cmpxchg_relaxed(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_cmpxchg_relaxed(__ai_ptr, __VA_ARGS__); \
+-})
+-#endif
+-
+ #if !defined(arch_cmpxchg64_relaxed) || defined(arch_cmpxchg64)
+ #define cmpxchg64(ptr, ...) \
+ ({ \
+@@ -1749,57 +1808,6 @@ atomic64_dec_if_positive(atomic64_t *v)
+ })
+ #endif
+ 
+-#if !defined(arch_try_cmpxchg_relaxed) || defined(arch_try_cmpxchg)
+-#define try_cmpxchg(ptr, oldp, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	typeof(oldp) __ai_oldp = (oldp); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+-	arch_try_cmpxchg(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_try_cmpxchg_acquire)
+-#define try_cmpxchg_acquire(ptr, oldp, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	typeof(oldp) __ai_oldp = (oldp); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+-	arch_try_cmpxchg_acquire(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_try_cmpxchg_release)
+-#define try_cmpxchg_release(ptr, oldp, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	typeof(oldp) __ai_oldp = (oldp); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+-	arch_try_cmpxchg_release(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+-})
+-#endif
+-
+-#if defined(arch_try_cmpxchg_relaxed)
+-#define try_cmpxchg_relaxed(ptr, oldp, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	typeof(oldp) __ai_oldp = (oldp); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+-	arch_try_cmpxchg_relaxed(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+-})
+-#endif
+-
+-#define cmpxchg_local(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_cmpxchg_local(__ai_ptr, __VA_ARGS__); \
+-})
+-
+ #define cmpxchg64_local(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1807,13 +1815,7 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	arch_cmpxchg64_local(__ai_ptr, __VA_ARGS__); \
+ })
+ 
+-#define sync_cmpxchg(ptr, ...) \
+-({ \
+-	typeof(ptr) __ai_ptr = (ptr); \
+-	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+-	arch_sync_cmpxchg(__ai_ptr, __VA_ARGS__); \
+-})
+-
++#endif
+ #define cmpxchg_double(ptr, ...) \
+ ({ \
+ 	typeof(ptr) __ai_ptr = (ptr); \
+@@ -1830,4 +1832,4 @@ atomic64_dec_if_positive(atomic64_t *v)
+ })
+ 
+ #endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
+-// 4bec382e44520f4d8267e42620054db26a659ea3
++// 21c7f7e074cb2cb7e2f593fe7c8f6dec6ab9e7ea
+diff --git a/include/asm-generic/atomic64.h b/include/asm-generic/atomic64.h
+index 370f01d..bb5cf1e 100644
+--- a/include/asm-generic/atomic64.h
++++ b/include/asm-generic/atomic64.h
+@@ -34,6 +34,18 @@ extern s64 atomic64_fetch_##op(s64 a, atomic64_t *v);
+ ATOMIC64_OPS(add)
+ ATOMIC64_OPS(sub)
+ 
++#define atomic64_add_relaxed atomic64_add
++#define atomic64_add_acquire atomic64_add
++#define atomic64_add_release atomic64_add
++
++#define atomic64_add_return_relaxed atomic64_add_return
++#define atomic64_add_return_acquire atomic64_add_return
++#define atomic64_add_return_release atomic64_add_return
++
++#define atomic64_fetch_add_relaxed atomic64_fetch_add
++#define atomic64_fetch_add_acquire atomic64_fetch_add
++#define atomic64_fetch_add_release atomic64_fetch_add
++
+ #undef ATOMIC64_OPS
+ #define ATOMIC64_OPS(op)	ATOMIC64_OP(op) ATOMIC64_FETCH_OP(op)
+ 
+@@ -49,8 +61,85 @@ ATOMIC64_OPS(xor)
+ extern s64 atomic64_dec_if_positive(atomic64_t *v);
+ #define atomic64_dec_if_positive atomic64_dec_if_positive
+ extern s64 atomic64_cmpxchg(atomic64_t *v, s64 o, s64 n);
++#define atomic64_cmpxchg_relaxed atomic64_cmpxchg
++#define atomic64_cmpxchg_acquire atomic64_cmpxchg
++#define atomic64_cmpxchg_release atomic64_cmpxchg
+ extern s64 atomic64_xchg(atomic64_t *v, s64 new);
++#define atomic64_xchg_relaxed atomic64_xchg
++#define atomic64_xchg_acquire atomic64_xchg
++#define atomic64_xchg_release atomic64_xchg
+ extern s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u);
+ #define atomic64_fetch_add_unless atomic64_fetch_add_unless
+ 
++static __always_inline void
++atomic64_inc(atomic64_t *v)
++{
++	atomic64_add(1, v);
++}
++
++static __always_inline s64
++atomic64_inc_return(atomic64_t *v)
++{
++	return atomic64_add_return(1, v);
++}
++
++static __always_inline s64
++atomic64_fetch_inc(atomic64_t *v)
++{
++	return atomic64_fetch_add(1, v);
++}
++
++static __always_inline void
++atomic64_dec(atomic64_t *v)
++{
++	atomic64_sub(1, v);
++}
++
++static __always_inline s64
++atomic64_dec_return(atomic64_t *v)
++{
++	return atomic64_sub_return(1, v);
++}
++
++static __always_inline s64
++atomic64_fetch_dec(atomic64_t *v)
++{
++	return atomic64_fetch_sub(1, v);
++}
++
++static __always_inline void
++atomic64_andnot(s64 i, atomic64_t *v)
++{
++	atomic64_and(~i, v);
++}
++
++static __always_inline s64
++atomic64_fetch_andnot(s64 i, atomic64_t *v)
++{
++	return atomic64_fetch_and(~i, v);
++}
++
++static __always_inline bool
++atomic64_sub_and_test(int i, atomic64_t *v)
++{
++	return atomic64_sub_return(i, v) == 0;
++}
++
++static __always_inline bool
++atomic64_dec_and_test(atomic64_t *v)
++{
++	return atomic64_dec_return(v) == 0;
++}
++
++static __always_inline bool
++atomic64_inc_and_test(atomic64_t *v)
++{
++	return atomic64_inc_return(v) == 0;
++}
++
++static __always_inline bool
++atomic64_add_negative(s64 i, atomic64_t *v)
++{
++	return atomic64_add_return(i, v) < 0;
++}
+ #endif  /*  _ASM_GENERIC_ATOMIC64_H  */
+diff --git a/include/linux/atomic-arch-fallback.h b/include/linux/atomic-arch-fallback.h
+index a3dba31..2f1db6a 100644
+--- a/include/linux/atomic-arch-fallback.h
++++ b/include/linux/atomic-arch-fallback.h
+@@ -1252,7 +1252,7 @@ arch_atomic_dec_if_positive(atomic_t *v)
+ 
+ #ifdef CONFIG_GENERIC_ATOMIC64
+ #include <asm-generic/atomic64.h>
+-#endif
++#else
+ 
+ #ifndef arch_atomic64_read_acquire
+ static __always_inline s64
+@@ -2357,5 +2357,6 @@ arch_atomic64_dec_if_positive(atomic64_t *v)
+ #define arch_atomic64_dec_if_positive arch_atomic64_dec_if_positive
+ #endif
+ 
++#endif /* CONFIG_GENERIC_ATOMIC64 */
+ #endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// cca554917d7ea73d5e3e7397dd70c484cad9b2c4
++// ae31a21075855e67a9b2927f8241dedddafda046
+diff --git a/include/linux/atomic-fallback.h b/include/linux/atomic-fallback.h
+index 2a3f55d..7dda483 100644
+--- a/include/linux/atomic-fallback.h
++++ b/include/linux/atomic-fallback.h
+@@ -1369,7 +1369,7 @@ atomic_dec_if_positive(atomic_t *v)
+ 
+ #ifdef CONFIG_GENERIC_ATOMIC64
+ #include <asm-generic/atomic64.h>
+-#endif
++#else
+ 
+ #define arch_atomic64_read atomic64_read
+ #define arch_atomic64_read_acquire atomic64_read_acquire
+@@ -2591,5 +2591,6 @@ atomic64_dec_if_positive(atomic64_t *v)
+ #define atomic64_dec_if_positive atomic64_dec_if_positive
+ #endif
+ 
++#endif /* CONFIG_GENERIC_ATOMIC64 */
+ #endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// d78e6c293c661c15188f0ec05bce45188c8d5892
++// b809c8e3c88910826f765bdba4a74f21c527029d
+diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+index 317a6ce..8b7a685 100755
+--- a/scripts/atomic/gen-atomic-fallback.sh
++++ b/scripts/atomic/gen-atomic-fallback.sh
+@@ -247,7 +247,7 @@ done
+ cat <<EOF
+ #ifdef CONFIG_GENERIC_ATOMIC64
+ #include <asm-generic/atomic64.h>
+-#endif
++#else
+ 
+ EOF
+ 
+@@ -256,5 +256,6 @@ grep '^[a-z]' "$1" | while read name meta args; do
+ done
+ 
+ cat <<EOF
++#endif /* CONFIG_GENERIC_ATOMIC64 */
+ #endif /* _LINUX_ATOMIC_FALLBACK_H */
+ EOF
+diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+index 5766ffc..1f2a58b 100755
+--- a/scripts/atomic/gen-atomic-instrumented.sh
++++ b/scripts/atomic/gen-atomic-instrumented.sh
+@@ -182,21 +182,40 @@ grep '^[a-z]' "$1" | while read name meta args; do
+ 	gen_proto "${meta}" "${name}" "atomic" "int" ${args}
+ done
+ 
++for xchg in "xchg" "cmpxchg" "try_cmpxchg"; do
++	for order in "" "_acquire" "_release" "_relaxed"; do
++		gen_optional_xchg "${xchg}" "${order}"
++	done
++done
++
++for xchg in "cmpxchg_local" "sync_cmpxchg"; do
++	gen_xchg "${xchg}" ""
++	printf "\n"
++done
++
++cat <<EOF
++#ifndef CONFIG_GENERIC_ATOMIC64
++EOF
++
+ grep '^[a-z]' "$1" | while read name meta args; do
+ 	gen_proto "${meta}" "${name}" "atomic64" "s64" ${args}
+ done
+ 
+-for xchg in "xchg" "cmpxchg" "cmpxchg64" "try_cmpxchg"; do
++for xchg in "cmpxchg64"; do
+ 	for order in "" "_acquire" "_release" "_relaxed"; do
+ 		gen_optional_xchg "${xchg}" "${order}"
+ 	done
+ done
+ 
+-for xchg in "cmpxchg_local" "cmpxchg64_local" "sync_cmpxchg"; do
++for xchg in "cmpxchg64_local"; do
+ 	gen_xchg "${xchg}" ""
+ 	printf "\n"
+ done
+ 
++cat <<EOF
++#endif
++EOF
++
+ gen_xchg "cmpxchg_double" "2 * "
+ 
+ printf "\n\n"
+-- 
+2.7.4
+
