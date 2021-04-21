@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FE4366C46
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA9C366C48
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241958AbhDUNNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49734 "EHLO mail.kernel.org"
+        id S242028AbhDUNNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:13:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241756AbhDUNJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:09:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B31761440;
-        Wed, 21 Apr 2021 13:08:45 +0000 (UTC)
+        id S241799AbhDUNJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:09:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BECD161456;
+        Wed, 21 Apr 2021 13:08:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010526;
-        bh=g+lex5KcIa6oASUJQKykhsjhMMZgfqQQZKdIlq4EphA=;
+        s=korg; t=1619010529;
+        bh=XAVhPYkP4O6WNNXT7ea3RJMzHSdbTqei1ppbYqMQFIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YXOiy3ApFXrr8Jl3M7tF6FDZMaJmasn9m76eALXP+eqmrNOlaSke6a7MB3k1dSmNB
-         a30Cq40ryr0uVN6mQLADYcgWiEBUxTvXOdJ7trtVfHMsxi0ngMvO0kcG3+O8TjZent
-         crKzJnu9QFaTQeHMf1p0HGwTeEn+7mh2CLqbKVyc=
+        b=0oB99ZIZsqtx/6aWS6TDqF4ZpVDvVysC0B+6OAxNOgOkVlUa6QOdDosLAcgLs36eL
+         n7IvdaR+AHqo5mqp0Tn0zvNg7z7rw5lkgTKOP4kOF+jb8baAPcqoKT5VF1opD38v7D
+         dj0cY5GL5iOvVJ+OvaA7Fw5diOgDlYHdNgFKKIpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kangjie Lu <kjlu@umn.edu>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH 168/190] Revert "net: marvell: fix a missing check of acpi_match_device"
-Date:   Wed, 21 Apr 2021 15:00:43 +0200
-Message-Id: <20210421130105.1226686-169-gregkh@linuxfoundation.org>
+Subject: [PATCH 169/190] Revert "atl1e: checking the status of atl1e_write_phy_reg"
+Date:   Wed, 21 Apr 2021 15:00:44 +0200
+Message-Id: <20210421130105.1226686-170-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 92ee77d148bf06d8c52664be4d1b862583fd5c0e.
+This reverts commit ff07d48d7bc0974d4f96a85a4df14564fb09f1ef.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -57,22 +57,24 @@ Cc: Kangjie Lu <kjlu@umn.edu>
 Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/atheros/atl1e/atl1e_main.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 1767c60056c5..f1a70b37227f 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -7328,8 +7328,6 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	if (has_acpi_companion(&pdev->dev)) {
- 		acpi_id = acpi_match_device(pdev->dev.driver->acpi_match_table,
- 					    &pdev->dev);
--		if (!acpi_id)
--			return -EINVAL;
- 		priv->hw_version = (unsigned long)acpi_id->driver_data;
- 	} else {
- 		priv->hw_version =
+diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+index ff9f96de74b8..85f9cb769e30 100644
+--- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
++++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+@@ -455,9 +455,7 @@ static void atl1e_mdio_write(struct net_device *netdev, int phy_id,
+ {
+ 	struct atl1e_adapter *adapter = netdev_priv(netdev);
+ 
+-	if (atl1e_write_phy_reg(&adapter->hw,
+-				reg_num & MDIO_REG_ADDR_MASK, val))
+-		netdev_err(netdev, "write phy register failed\n");
++	atl1e_write_phy_reg(&adapter->hw, reg_num & MDIO_REG_ADDR_MASK, val);
+ }
+ 
+ static int atl1e_mii_ioctl(struct net_device *netdev,
 -- 
 2.31.1
 
