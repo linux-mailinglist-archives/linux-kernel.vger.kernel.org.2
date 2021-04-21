@@ -2,166 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CAB3670D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D7B3670D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244552AbhDURCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:02:40 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:39534 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237592AbhDURCi (ORCPT
+        id S244563AbhDURDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:03:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33711 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236712AbhDURDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:02:38 -0400
-Received: by mail-ot1-f49.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso34798696otv.6;
-        Wed, 21 Apr 2021 10:02:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=isMV/0Ztq3m+cwX8Y1FmhR9QizcZtauxZc7jOFA07iQ=;
-        b=bgCp+/ymyeZ9gbyUBfLN9J4N5TQczNNccg+tL0VgYQfUnwxvBQ2C6iQdkviZwosJMA
-         K5rX9kTBw28XYaPgR9L+aMu0nnEuWSPFnQtzleELo0wFWzjdHVD9Re9Lw4MuOp+MJTQv
-         bGpurATA05sr5/5qNFE8GSg5+OfA1JSApK9p0U39x1LREbpXLFf9jAOnUiQalUTVppDM
-         Z0dJb3kL0LJbP4JJ+b9lWhuqSufapXsOhptj3OZoubQLNifVQwuWkP+cBAhLwxXLXnsO
-         /FOvHGJZ59mLaDi3J5smpuflmIfPidLMnmksrZGpL75ruw36fW5q3rfbvvskW5SmZ0gI
-         KKrg==
-X-Gm-Message-State: AOAM531sKY36IoWLJSNguEeVRa1b49wGqdSc2s1POQNX8P4/Jxhjg7CM
-        vU1ZRWFVpzNAL48ZTW0UuzcwmyFXWmjXIFMwBsX2/WhW
-X-Google-Smtp-Source: ABdhPJzwjVywIKpK9HBI2ZFAhU/IpOqdkjYQWu180Z4uP6SKCX4M6+H+WkHU9g/AbzdQvGK+CBxFHa4E/lReVndL2kQ=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr23499174otb.260.1619024523402;
- Wed, 21 Apr 2021 10:02:03 -0700 (PDT)
+        Wed, 21 Apr 2021 13:03:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619024588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IU2gjCTERW+fURIReQ8cOcAZzcEVgLqup7/nNZV9gYw=;
+        b=GGkThi0WyPScLTAuDVKW3bzuxJDXwxXRnUoE6bv8OK2bGZHMs6ImzHNzQg09cm2NoYw3LS
+        Bno3egxHsRXwy1QXffJG0+v7TR4efZnc5lOzLDqI8mW57ttM22NBJzndm9sogYEi7VkgDy
+        sKxZJB/phn4QobEPfJ2XMJAZCTVHF8I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-T3YJPoc5PIaWUZFL-3BRpA-1; Wed, 21 Apr 2021 13:03:06 -0400
+X-MC-Unique: T3YJPoc5PIaWUZFL-3BRpA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A7141008061;
+        Wed, 21 Apr 2021 17:03:05 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5FD6060C5F;
+        Wed, 21 Apr 2021 17:03:00 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 13:02:57 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>
+Subject: Re: [PATCH 085/190] Revert "audit: fix a memory leak bug"
+Message-ID: <20210421170257.GJ3141668@madcap2.tricolour.ca>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-86-gregkh@linuxfoundation.org>
+ <CAHC9VhTvKeNFPsJadVK_i1+qaQBRSVfdWd+HC_EsgZx3coM8oA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210419215707.10290-1-amonakov@ispras.ru>
-In-Reply-To: <20210419215707.10290-1-amonakov@ispras.ru>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 21 Apr 2021 19:01:52 +0200
-Message-ID: <CAJZ5v0jDY3Ttz0_MecqSrvUFitU0B6d2nFEOi8QZNO=8iDAg=A@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Kconfig: fix documentation links
-To:     Alexander Monakov <amonakov@ispras.ru>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhTvKeNFPsJadVK_i1+qaQBRSVfdWd+HC_EsgZx3coM8oA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:03 AM Alexander Monakov <amonakov@ispras.ru> wrote:
->
-> User documentation for cpufreq governors and drivers has been moved to
-> admin-guide; adjust references from Kconfig entries accordingly.
->
-> Remove references from undocumented cpufreq drivers, as well as the
-> 'userspace' cpufreq governor, for which no additional details are
-> provided in the admin-guide text.
->
-> Fixes: 2a0e49279850 ("cpufreq: User/admin documentation update and consolidation")
-> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-> Cc: Rafael Wysocki <rjw@rjwysocki.net>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: linux-pm@vger.kernel.org
-> ---
->  drivers/cpufreq/Kconfig | 23 ++++++-----------------
->  1 file changed, 6 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> index 85de313ddec2..c3038cdc6865 100644
-> --- a/drivers/cpufreq/Kconfig
-> +++ b/drivers/cpufreq/Kconfig
-> @@ -13,7 +13,8 @@ config CPU_FREQ
->           clock speed, you need to either enable a dynamic cpufreq governor
->           (see below) after boot, or use a userspace tool.
->
-> -         For details, take a look at <file:Documentation/cpu-freq>.
-> +         For details, take a look at
-> +         <file:Documentation/admin-guide/pm/cpufreq.rst>.
->
->           If in doubt, say N.
->
-> @@ -140,8 +141,6 @@ config CPU_FREQ_GOV_USERSPACE
->           To compile this driver as a module, choose M here: the
->           module will be called cpufreq_userspace.
->
-> -         For details, take a look at <file:Documentation/cpu-freq/>.
-> -
->           If in doubt, say Y.
->
->  config CPU_FREQ_GOV_ONDEMAND
-> @@ -158,7 +157,8 @@ config CPU_FREQ_GOV_ONDEMAND
->           To compile this driver as a module, choose M here: the
->           module will be called cpufreq_ondemand.
->
-> -         For details, take a look at linux/Documentation/cpu-freq.
-> +         For details, take a look at
-> +         <file:Documentation/admin-guide/pm/cpufreq.rst>.
->
->           If in doubt, say N.
->
-> @@ -182,7 +182,8 @@ config CPU_FREQ_GOV_CONSERVATIVE
->           To compile this driver as a module, choose M here: the
->           module will be called cpufreq_conservative.
->
-> -         For details, take a look at linux/Documentation/cpu-freq.
-> +         For details, take a look at
-> +         <file:Documentation/admin-guide/pm/cpufreq.rst>.
->
->           If in doubt, say N.
->
-> @@ -246,8 +247,6 @@ config IA64_ACPI_CPUFREQ
->         This driver adds a CPUFreq driver which utilizes the ACPI
->         Processor Performance States.
->
-> -       For details, take a look at <file:Documentation/cpu-freq/>.
-> -
->         If in doubt, say N.
->  endif
->
-> @@ -271,8 +270,6 @@ config LOONGSON2_CPUFREQ
->
->           Loongson2F and it's successors support this feature.
->
-> -         For details, take a look at <file:Documentation/cpu-freq/>.
-> -
->           If in doubt, say N.
->
->  config LOONGSON1_CPUFREQ
-> @@ -282,8 +279,6 @@ config LOONGSON1_CPUFREQ
->           This option adds a CPUFreq driver for loongson1 processors which
->           support software configurable cpu frequency.
->
-> -         For details, take a look at <file:Documentation/cpu-freq/>.
-> -
->           If in doubt, say N.
->  endif
->
-> @@ -293,8 +288,6 @@ config SPARC_US3_CPUFREQ
->         help
->           This adds the CPUFreq driver for UltraSPARC-III processors.
->
-> -         For details, take a look at <file:Documentation/cpu-freq>.
-> -
->           If in doubt, say N.
->
->  config SPARC_US2E_CPUFREQ
-> @@ -302,8 +295,6 @@ config SPARC_US2E_CPUFREQ
->         help
->           This adds the CPUFreq driver for UltraSPARC-IIe processors.
->
-> -         For details, take a look at <file:Documentation/cpu-freq>.
-> -
->           If in doubt, say N.
->  endif
->
-> @@ -318,8 +309,6 @@ config SH_CPU_FREQ
->           will also generate a notice in the boot log before disabling
->           itself if the CPU in question is not capable of rate rounding.
->
-> -         For details, take a look at <file:Documentation/cpu-freq>.
-> -
->           If unsure, say N.
->  endif
->
-> --
+On 2021-04-21 12:18, Paul Moore wrote:
+> On Wed, Apr 21, 2021 at 9:04 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This reverts commit 70c4cf17e445264453bc5323db3e50aa0ac9e81f.
+> >
+> > Commits from @umn.edu addresses have been found to be submitted in "bad
+> > faith" to try to test the kernel community's ability to review "known
+> > malicious" changes.  The result of these submissions can be found in a
+> > paper published at the 42nd IEEE Symposium on Security and Privacy
+> > entitled, "Open Source Insecurity: Stealthily Introducing
+> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> > of Minnesota) and Kangjie Lu (University of Minnesota).
+> >
+> > Because of this, all submissions from this group must be reverted from
+> > the kernel tree and will need to be re-reviewed again to determine if
+> > they actually are a valid fix.  Until that work is complete, remove this
+> > change to ensure that no problems are being introduced into the
+> > codebase.
+> >
+> > Cc: Wenwen Wang <wang6495@umn.edu>
+> > Cc: Richard Guy Briggs <rgb@redhat.com>
+> > Cc: Paul Moore <paul@paul-moore.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >  kernel/auditfilter.c | 12 +++++-------
+> >  1 file changed, 5 insertions(+), 7 deletions(-)
+> 
+> NACK on this revert.  I've looked at the original patch again this
+> morning, and the original patch still looks correct and doesn't appear
+> to introduce any new faults to the best of my understanding.
 
-Applied as 5.13 material, thanks!
+Agreed.  Though on review, a much simpler fix to my original patch that
+caused this problem requiring this fix
+	e85322d21cfebeac64f58a204e9adc0bc5c1e46f rgb 2014-10-02 ("audit: cull redundancy in audit_rule_change")
+would have been the two-liner in the error path similar to the pattern
+in audit_data_to_entry() error path would have been:
+
+	if (entry->rule.tree)
+		audit_put_tree(entry->rule.tree); /* that's the temporary one */
+
+> > diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
+> > index 333b3bcfc545..19f908b96000 100644
+> > --- a/kernel/auditfilter.c
+> > +++ b/kernel/auditfilter.c
+> > @@ -1125,24 +1125,22 @@ int audit_rule_change(int type, int seq, void *data, size_t datasz)
+> >         int err = 0;
+> >         struct audit_entry *entry;
+> >
+> > +       entry = audit_data_to_entry(data, datasz);
+> > +       if (IS_ERR(entry))
+> > +               return PTR_ERR(entry);
+> > +
+> >         switch (type) {
+> >         case AUDIT_ADD_RULE:
+> > -               entry = audit_data_to_entry(data, datasz);
+> > -               if (IS_ERR(entry))
+> > -                       return PTR_ERR(entry);
+> >                 err = audit_add_rule(entry);
+> >                 audit_log_rule_change("add_rule", &entry->rule, !err);
+> >                 break;
+> >         case AUDIT_DEL_RULE:
+> > -               entry = audit_data_to_entry(data, datasz);
+> > -               if (IS_ERR(entry))
+> > -                       return PTR_ERR(entry);
+> >                 err = audit_del_rule(entry);
+> >                 audit_log_rule_change("remove_rule", &entry->rule, !err);
+> >                 break;
+> >         default:
+> > +               err = -EINVAL;
+> >                 WARN_ON(1);
+> > -               return -EINVAL;
+> >         }
+> >
+> >         if (err || type == AUDIT_DEL_RULE) {
+> > --
+> > 2.31.1
+> 
+> -- 
+> paul moore
+> www.paul-moore.com
+> 
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
