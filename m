@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AEB3670EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FC43670EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244623AbhDURHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:07:22 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:62069 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241227AbhDURHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:07:18 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FQRmK3b7jz9vBmd;
-        Wed, 21 Apr 2021 19:06:41 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Y49BorPpHm8I; Wed, 21 Apr 2021 19:06:41 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FQRmK2WsHz9vBmc;
-        Wed, 21 Apr 2021 19:06:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0C9608B831;
-        Wed, 21 Apr 2021 19:06:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 43PnHydsgmws; Wed, 21 Apr 2021 19:06:42 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A3F638B82B;
-        Wed, 21 Apr 2021 19:06:42 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4AF106386D; Wed, 21 Apr 2021 17:06:42 +0000 (UTC)
-Message-Id: <361ee3fc5009c709ae0ca592249bb0702c6ef073.1619024780.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2] powerpc/kconfig: Restore alphabetic order of the selects
- under CONFIG_PPC
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 21 Apr 2021 17:06:42 +0000 (UTC)
+        id S244631AbhDURHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244618AbhDURHU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:07:20 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489E4C06174A;
+        Wed, 21 Apr 2021 10:06:47 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id g17so49541648edm.6;
+        Wed, 21 Apr 2021 10:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0vIFwvg8wmGgCq9N2ekETjpF5YhMbIBp9DMrbpQpC+Y=;
+        b=nf1dWnvWNOuqt3vHzuJlOw9TvO3bTbWsMp3Lff1WuokW5DSWGIEkUWlKPoPUDwRJNm
+         i12/tGJ/F0wlY8aKrxVK5jR7EY2j2aDOVDKmU95o0GV4F5QsXEfeijyWxsf0l8WbK2ZV
+         yDqNJOVQ3yoAW67+1YgpBmRn/KIK8usvmTDElx5uu9XKGAbnTbDs3ph/7d8OSJGmzf7F
+         9uR2p00VbE43l/JEqbH2ei8IejUB+S2COYERX6EPyPOCDRBWTdJ/+DR0TEiBErKC8OD9
+         G4WqM6HOBjay1gb/yWVhLDo2jhpyETF7YSaaorEdLbYQIhhvTtE22jO4rFbx5nJZoI49
+         fbPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0vIFwvg8wmGgCq9N2ekETjpF5YhMbIBp9DMrbpQpC+Y=;
+        b=ghyECdbemGuENyKK7aHKHH+MktytNMoMTJ8E7yBwtzTuDU2MvfgaBzFias/A5PbUpR
+         2/sBDvJOXqxh5xx2GP/O38A5fPyrQBsUzJc7ZTNgMwfo8uN2+eX6BxjA67hsVH/XZF3e
+         VKvFYT8OgcZ0iKl37h78G0k6wAT+K1t9O6LjeuOLDgWH9VFe7BMW1IqJoEiLguXoU6Wu
+         u3aasQkrMbVOZBQn7jvFHAx1jr7rZj+PIwRbB7G+RVNhTzc9Z0dZ+B08ScoMaZdbgjZ8
+         Z5Ci4d3T3SlZR1/Dp4SPkLzl0KU7RgcsACi8vX60dW+fb28lH6M42ifQp4ON7KxRfR43
+         98nQ==
+X-Gm-Message-State: AOAM532RxTIO+P3csz0D7uWePyTkh0hUsj9HTkBGPmlfpU9EbkYDtjrG
+        9d6KwecxlFbJP0I0g/zkVCE=
+X-Google-Smtp-Source: ABdhPJxlhYtZIHwmZeIw95gfompLSAb8lwPmIZtnOhw1GpsWvk4Rx60Zifo8ntb+Zt2SgqY7Iv2lZw==
+X-Received: by 2002:aa7:db16:: with SMTP id t22mr30381869eds.266.1619024806106;
+        Wed, 21 Apr 2021 10:06:46 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.3])
+        by smtp.gmail.com with ESMTPSA id gt26sm83277ejb.31.2021.04.21.10.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:06:45 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 19:06:43 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
+Subject: Re: [PATCH v1 2/6] staging: media: atomisp: balance braces around
+ if...else block
+Message-ID: <20210421170642.GA1414@agape.jhs>
+References: <cover.1619022192.git.drv@mailo.com>
+ <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a7d2475af7ae ("powerpc: Sort the selects under CONFIG_PPC")
-sorted all selects under CONFIG_PPC.
+On Wed, Apr 21, 2021 at 10:22:19PM +0530, Deepak R Varma wrote:
+> Balance braces around the if else blocks as per the code style guidelines.
+> Resolves checkpatch script CHECK / WARNING feedback messages.
+> 
+> Signed-off-by: Deepak R Varma <drv@mailo.com>
+> ---
+> 
+> Changes in v1:
+>    - None.
+> 
+>  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
+>  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
+>  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+>  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
+>  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
+>  5 files changed, 12 insertions(+), 11 deletions(-)
+> 
 
-4 years later, several items have been introduced at wrong place,
-a few other have been renamed without moving them to their correct
-place.
+Hi,
 
-Reorder them now.
+the email subject prefix should be [PATCH v2 n/N], the previous
+patchset was v1 implicitly.
 
-While we are at it, simplify the test for a couple of them:
-- PPC_64 && PPC_PSERIES is simplified in PPC_PSERIES
-- PPC_64 && PPC_BOOK3S is simplified in PPC_BOOK3S_64
+thank you,
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Rebased on d20f726744a0 ("Automatic merge of 'next' into merge (2021-04-21 22:57)")
----
- arch/powerpc/Kconfig | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index d2e31a578e26..b2970c8241d5 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -118,28 +118,29 @@ config PPC
- 	# Please keep this list sorted alphabetically.
- 	#
- 	select ARCH_32BIT_OFF_T if PPC32
-+	select ARCH_HAS_COPY_MC			if PPC64
- 	select ARCH_HAS_DEBUG_VIRTUAL
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
- 	select ARCH_HAS_DEVMEM_IS_ALLOWED
-+	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
- 	select ARCH_HAS_ELF_RANDOMIZE
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
--	select ARCH_HAS_KCOV
- 	select ARCH_HAS_HUGEPD			if HUGETLB_PAGE
-+	select ARCH_HAS_KCOV
-+	select ARCH_HAS_MEMBARRIER_CALLBACKS
-+	select ARCH_HAS_MEMBARRIER_SYNC_CORE
- 	select ARCH_HAS_MEMREMAP_COMPAT_ALIGN
- 	select ARCH_HAS_MMIOWB			if PPC64
-+	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PHYS_TO_DMA
- 	select ARCH_HAS_PMEM_API
--	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PTE_DEVMAP		if PPC_BOOK3S_64
- 	select ARCH_HAS_PTE_SPECIAL
--	select ARCH_HAS_MEMBARRIER_CALLBACKS
--	select ARCH_HAS_MEMBARRIER_SYNC_CORE
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
- 	select ARCH_HAS_STRICT_KERNEL_RWX	if ((PPC_BOOK3S_64 || PPC32) && !HIBERNATION)
- 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UACCESS_FLUSHCACHE
--	select ARCH_HAS_COPY_MC			if PPC64
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select ARCH_KEEP_MEMBLOCK
-@@ -161,9 +162,8 @@ config PPC
- 	select BUILDTIME_TABLE_SORT
- 	select CLONE_BACKWARDS
- 	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
--	select DMA_OPS				if PPC64
- 	select DMA_OPS_BYPASS			if PPC64
--	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC64 && PPC_PSERIES
-+	select DMA_OPS				if PPC64
- 	select DYNAMIC_FTRACE			if FUNCTION_TRACER
- 	select EDAC_ATOMIC_SCRUB
- 	select EDAC_SUPPORT
-@@ -188,18 +188,16 @@ config PPC
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
--	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_KFENCE			if PPC32
-+	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
- 	select HAVE_ARCH_NVRAM_OPS
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ASM_MODVERSIONS
--	select HAVE_C_RECORDMCOUNT
--	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
--	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
- 	select HAVE_CONTEXT_TRACKING		if PPC64
-+	select HAVE_C_RECORDMCOUNT
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DYNAMIC_FTRACE
-@@ -213,10 +211,13 @@ config PPC
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_GCC_PLUGINS			if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
- 	select HAVE_GENERIC_VDSO
-+	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC_BOOK3S_64 && SMP
-+	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select HAVE_HW_BREAKPOINT		if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
- 	select HAVE_IDE
- 	select HAVE_IOREMAP_PROT
- 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
-+	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZMA			if DEFAULT_UIMAGE
- 	select HAVE_KERNEL_LZO			if DEFAULT_UIMAGE
-@@ -228,25 +229,24 @@ config PPC
- 	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
--	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
- 	select HAVE_OPTPROBES
- 	select HAVE_PERF_EVENTS
- 	select HAVE_PERF_EVENTS_NMI		if PPC64
--	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select HAVE_PERF_REGS
- 	select HAVE_PERF_USER_STACK_DUMP
--	select MMU_GATHER_RCU_TABLE_FREE
--	select MMU_GATHER_PAGE_SIZE
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_RELIABLE_STACKTRACE
-+	select HAVE_RSEQ
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
-+	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
-+	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_VIRT_CPU_ACCOUNTING
--	select HAVE_IRQ_TIME_ACCOUNTING
--	select HAVE_RSEQ
- 	select IOMMU_HELPER			if PPC64
- 	select IRQ_DOMAIN
- 	select IRQ_FORCED_THREADING
-+	select MMU_GATHER_PAGE_SIZE
-+	select MMU_GATHER_RCU_TABLE_FREE
- 	select MODULES_USE_ELF_RELA
- 	select NEED_DMA_MAP_STATE		if PPC64 || NOT_COHERENT_CACHE
- 	select NEED_SG_DMA_LENGTH
--- 
-2.25.0
-
+fabio
