@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF5C3670DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475803670F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244582AbhDURF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:05:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:16579 "EHLO mga01.intel.com"
+        id S244643AbhDURLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:11:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:38296 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234291AbhDURFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:05:52 -0400
-IronPort-SDR: Ptxp6wEJA8RHS3LmpK31EePmhjRfrpfzmK5AVcdJQDlSF47Tsc+accAmb64KjZKvh33XHiYbz5
- U+rVQshttRWw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="216380809"
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="216380809"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:05:18 -0700
-IronPort-SDR: 0ue8o3OdCuajNt7TOqgoVSoYxeX9eDPWZ9WcF3WyKlp0d1Wtnkr8OgYGefbshEwYRKC41Vzr4m
- 61dRN+4yraJQ==
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="602954126"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:05:18 -0700
-Date:   Wed, 21 Apr 2021 10:06:45 -0700 (PDT)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     "Wu, Hao" <hao.wu@intel.com>
-cc:     "trix@redhat.com" <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Xu, Yilun" <yilun.xu@intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        "mdf@kernel.org" <mdf@kernel.org>
-Subject: RE: [PATCH] fpga: dfl: pci: gracefully handle misconfigured port
- entries
-In-Reply-To: <BYAPR11MB381637F0EFFAFD57902EE47985479@BYAPR11MB3816.namprd11.prod.outlook.com>
-Message-ID: <alpine.DEB.2.22.394.2104211001080.760078@rhweight-WRK1>
-References: <20210420172740.707259-1-matthew.gerlach@linux.intel.com> <BYAPR11MB381637F0EFFAFD57902EE47985479@BYAPR11MB3816.namprd11.prod.outlook.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S237858AbhDURKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:10:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0047E11FB;
+        Wed, 21 Apr 2021 10:10:16 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.3.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BC1C3F694;
+        Wed, 21 Apr 2021 10:10:14 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 18:10:05 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        He Zhe <zhe.he@windriver.com>, oleg@redhat.com,
+        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
+        eparis@redhat.com, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm64: ptrace: Add is_syscall_success to handle
+ compat
+Message-ID: <20210421171005.GA46949@C02TD0UTHF1T.local>
+References: <20210416075533.7720-1-zhe.he@windriver.com>
+ <20210416123322.GA23184@arm.com>
+ <20210416133431.GA2303@C02TD0UTHF1T.local>
+ <20210419121932.GA30004@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419121932.GA30004@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 19, 2021 at 01:19:33PM +0100, Will Deacon wrote:
+> On Fri, Apr 16, 2021 at 02:34:41PM +0100, Mark Rutland wrote:
+> > I think this is a problem we created for ourselves back in commit:
+> > 
+> >   15956689a0e60aa0 ("arm64: compat: Ensure upper 32 bits of x0 are zero on syscall return)
+> > 
+> > AFAICT, the perf regs samples are the only place this matters, since for
+> > ptrace the compat regs are implicitly truncated to compat_ulong_t, and
+> > audit expects the non-truncated return value. Other architectures don't
+> > truncate here, so I think we're setting ourselves up for a game of
+> > whack-a-mole to truncate and extend wherever we need to.
+> > 
+> > Given that, I suspect it'd be better to do something like the below.
+> > 
+> > Will, thoughts?
+> 
+> I think perf is one example, but this is also visible to userspace via the
+> native ptrace interface and I distinctly remember needing this for some
+> versions of arm64 strace to work correctly when tracing compat tasks.
 
+FWIW, you've convinced me on your approach (more on that below), but
+when I went digging here this didn't seem to be exposed via ptrace --
+for any task tracing a compat task, the GPRs are exposed via
+compat_gpr_{get,set}(), which always truncate to compat_ulong_t, giving
+the lower 32 bits. See task_user_regset_view() for where we get the
+regset.
 
-On Wed, 21 Apr 2021, Wu, Hao wrote:
+Am I missing something, or are you thinking of another issue you fixed
+at the same time?
 
->> Subject: [PATCH] fpga: dfl: pci: gracefully handle misconfigured port entries
->>
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> Gracefully ignore misconfigured port entries encountered in
->> incorrect FPGA images.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->>  drivers/fpga/dfl-pci.c | 16 +++++++++++++++-
->>  1 file changed, 15 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
->> index b44523e..660d3b6 100644
->> --- a/drivers/fpga/dfl-pci.c
->> +++ b/drivers/fpga/dfl-pci.c
->> @@ -212,6 +212,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
->>  	int port_num, bar, i, ret = 0;
->>  	resource_size_t start, len;
->>  	void __iomem *base;
->> +	int bars = 0;
->>  	u32 offset;
->>  	u64 v;
->>
->> @@ -228,6 +229,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
->>  	if (dfl_feature_is_fme(base)) {
->>  		start = pci_resource_start(pcidev, 0);
->>  		len = pci_resource_len(pcidev, 0);
->> +		bars |= BIT(0);
->>
->>  		dfl_fpga_enum_info_add_dfl(info, start, len);
->>
->> @@ -253,9 +255,21 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
->>  			 */
->>  			bar = FIELD_GET(FME_PORT_OFST_BAR_ID, v);
->>  			offset = FIELD_GET(FME_PORT_OFST_DFH_OFST, v);
->> +			if (bars & BIT(bar)) {
->> +				dev_warn(&pcidev->dev, "skipping bad port
->> BAR %d\n", bar);
->> +				continue;
->> +			}
->
-> Will it be a real problem that multiple ports are inside one BAR but different offsets?
->
-> Hao
+> So I do think that clearing the upper bits on the return path is the right
+> approach, but it sounds like we need some more work to handle syscall(-1)
+> and audit (what exactly is the problem here after these patches have been
+> applied?)
 
-I don't think multiple ports within a single BAR is something that has 
-been supported in the past.  The genesis for this patch was a 
-misconfigured port entry pointing to BAR0.  BAR0 had already been mapped 
-for the FME and remapping BAR0 failed resulting in enumeration failure.
+From digging a bit more, I think I agree, and I think these patches are
+sufficient for audit. I have some comments I'll leave separately.
 
-Matthew
+The remaining issues are wherever we assign a signed value to a compat
+GPR without explicit truncation. That'll leak via perf sampling the user
+regs, but I haven't managed to convince myself whether that causes any
+functional change in behaviour for audit, seccomp, or syscall tracing.
 
->
->> +
->>  			start = pci_resource_start(pcidev, bar) + offset;
->> -			len = pci_resource_len(pcidev, bar) - offset;
->> +			len = pci_resource_len(pcidev, bar);
->> +			if (offset >= len) {
->> +				dev_warn(&pcidev->dev, "bad port
->> offset %u >= %pa\n",
->> +					 offset, &len);
->> +				continue;
->> +			}
->>
->> +			len -= offset;
->> +			bars |= BIT(bar);
->>  			dfl_fpga_enum_info_add_dfl(info, start, len);
->>  		}
->>  	} else if (dfl_feature_is_port(base)) {
->> --
->> 1.8.3.1
->
->
+Since we mostly use compat_ulong_t for intermediate values in compat
+code, it does look like this is only an issue for x0 where we assign an
+error value, e.g. the -ENOSYS case in el0_svc_common. I'll go see if I
+can find any more.
+
+With those fixed up we can remove the x0 truncation from entry.S,
+which'd be nice too.
+
+Thanks,
+Mark.
