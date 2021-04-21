@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7CF366B92
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E99366B76
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240357AbhDUNDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:03:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43068 "EHLO mail.kernel.org"
+        id S240020AbhDUNCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:02:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240359AbhDUNDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:03:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D00C6142F;
-        Wed, 21 Apr 2021 13:02:46 +0000 (UTC)
+        id S239191AbhDUNCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67ABF613F5;
+        Wed, 21 Apr 2021 13:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010167;
-        bh=xG5knZPm185ejwvtN+fdLP+TxqkuOy5JUHYARZjxZR4=;
+        s=korg; t=1619010095;
+        bh=HjnZ+JXDjvU96Lkub7xtE2D1LDAw1uP0NBlOWN4M4L4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4CN2ulN4GN7SKvghKORS83DFcdAem0o97vdjRyyNwVOyoK99t0+TvfYfmTvZaySV
-         8+i1GT7jqxgW70enhDwi0BYDmr3vSErrssiv3qTliyk+tKYNMZ2VNRMDcBplDL72WP
-         BZ8EAlg3UDC2tUdIsfGV0i19ecGzHF8K3VwAaPcg=
+        b=0OJGYJgF/WvXYM+gmdNlFGT4hWOB9ro5jvUT36NTN8UgngZAqcTynNeDVEXOrIgNr
+         A8hvSQfI0Na/4C8Fp8g6AVYM1ZGmDN+Bsn4IKOlN/8HqvKQuy1zwhE/sOxzpr8cs+q
+         SmDMqdcRzMIu+NtB2Nyp251OoxirlDtqRpfdHz2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 002/190] Revert "media: st-delta: Fix reference count leak in delta_run_work"
-Date:   Wed, 21 Apr 2021 14:57:57 +0200
-Message-Id: <20210421130105.1226686-3-gregkh@linuxfoundation.org>
+Subject: [PATCH 003/190] Revert "media: sti: Fix reference count leaks"
+Date:   Wed, 21 Apr 2021 14:57:58 +0200
+Message-Id: <20210421130105.1226686-4-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 57cc666d36adc7b45e37ba4cd7bc4e44ec4c43d7.
+This reverts commit 6f4432bae9f2d12fc1815b5e26cc07e69bcad0df.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,30 +54,34 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Qiushi Wu <wu000273@umn.edu>
 Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/sti/delta/delta-v4l2.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/media/platform/sti/hva/hva-hw.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/media/platform/sti/delta/delta-v4l2.c b/drivers/media/platform/sti/delta/delta-v4l2.c
-index c691b3d81549..2503224eeee5 100644
---- a/drivers/media/platform/sti/delta/delta-v4l2.c
-+++ b/drivers/media/platform/sti/delta/delta-v4l2.c
-@@ -954,10 +954,8 @@ static void delta_run_work(struct work_struct *work)
- 	/* enable the hardware */
- 	if (!dec->pm) {
- 		ret = delta_get_sync(ctx);
--		if (ret) {
--			delta_put_autosuspend(ctx);
-+		if (ret)
- 			goto err;
--		}
- 	}
+diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+index f59811e27f51..d0d45dc5f32f 100644
+--- a/drivers/media/platform/sti/hva/hva-hw.c
++++ b/drivers/media/platform/sti/hva/hva-hw.c
+@@ -272,7 +272,6 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
  
- 	/* decode this access unit */
+ 	if (pm_runtime_get_sync(dev) < 0) {
+ 		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
+-		pm_runtime_put_noidle(dev);
+ 		mutex_unlock(&hva->protect_mutex);
+ 		return -EFAULT;
+ 	}
+@@ -555,7 +554,6 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
+ 
+ 	if (pm_runtime_get_sync(dev) < 0) {
+ 		seq_puts(s, "Cannot wake up IP\n");
+-		pm_runtime_put_noidle(dev);
+ 		mutex_unlock(&hva->protect_mutex);
+ 		return;
+ 	}
 -- 
 2.31.1
 
