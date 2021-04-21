@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7FC3668A7
+	by mail.lfdr.de (Postfix) with ESMTP id B03BF3668A9
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239009AbhDUJ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:58:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52670 "EHLO mail.kernel.org"
+        id S234407AbhDUJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:58:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238675AbhDUJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238677AbhDUJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Apr 2021 05:56:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8930E61462;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A921061450;
         Wed, 21 Apr 2021 09:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1618998937;
-        bh=JTOTZI6bMv68wR3qvzPPxYqwOcSxCiswzBee2Px7PgY=;
+        bh=8rsXg0JIL9WIWG+sWtMdopUQAIhyepLhKLIESm5IaBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DReJHcPysNeVifagY895TiF+h/2Zp6ioz4yTvg9tBr83wvF8cSx6hd4+zhbIQeaAb
-         gWcaooTTNPRx1clPm1BZpluTZvUJtkNmhzzHm/6fXdMydcb2VRq3O9sMMtLBhKJhGU
-         Mkb7myXJ/k7xuIksaV0msXrI9yrUyUJVxvdkUZJltZi7kNLuedrTIM0DfD44nvNtS6
-         oQJ02b4Cpc9BOqQ7vjdONUwS0Y5697+gM9TpJawkiz6inH4pH+v6b1/dsEMDLGntDU
-         BnzlZgtPc4GJmDUX6+Gr+a3OKighfOCkXkphNu8z6OBauc2RK590cO8guaTukzM29D
-         xpheRL5qWFzMw==
+        b=dVPBGZ7YsqqEZZI3xvTkFdi+qvoVlDEv47x01iGH+yeApKs/mdCRT4QwWUmIu+AFD
+         57Uda2l7vGOKb3alsqwY9/GSvIOwo1eJQxk6km5XZ7n7FdpAWoGHuFkSn9NHNgenU/
+         MVpQZN/jr4M02n0Vp0zfc1IGIzGSf6QNvihHYwsW3s7+3/vqukT2rb+rZ/MupOO8sK
+         auIo/KFqLZVUX+bOAkS6kwTX1DmoEt6kvyzNQWt9lRcTLvBIL0S4V16T1GQRwIul7l
+         K1cIkXIdicK6BFeRNbwJS1P/zhWlAWsoVq9G+VDuhwbNz+PEBeKXwSKycNMHfZjB0d
+         S0qxmWIwTTLwg==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lZ9a8-0000ph-Pe; Wed, 21 Apr 2021 11:55:40 +0200
+        id 1lZ9a8-0000pk-Sa; Wed, 21 Apr 2021 11:55:40 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Tony Prisk <linux@prisktech.co.nz>
-Subject: [PATCH 25/26] serial: vt8500: drop low-latency workaround
-Date:   Wed, 21 Apr 2021 11:55:08 +0200
-Message-Id: <20210421095509.3024-26-johan@kernel.org>
+        Michal Simek <michal.simek@xilinx.com>
+Subject: [PATCH 26/26] serial: xilinx_uartps: drop low-latency workaround
+Date:   Wed, 21 Apr 2021 11:55:09 +0200
+Message-Id: <20210421095509.3024-27-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210421095509.3024-1-johan@kernel.org>
 References: <20210421095509.3024-1-johan@kernel.org>
@@ -43,48 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit de49df58366f ("tty: serial: vt8500: drop uart_port->lock before
-calling tty_flip_buffer_push()") claimed to address a locking
-issue but only provided a dubious lockdep splat from an unrelated
-driver, which in the end turned out to be due a broken local change
-carried by the author.
+Commit c8dbdc842d30 ("serial: xuartps: Rewrite the interrupt handling
+logic") reworked the driver interrupt processing but also, without
+comment, added an unnecessary workaround for the infamous low_latency
+behaviour of tty_flip_buffer_push() which had been removed years
+before.
 
-Unfortunately these patches were merged before the issue had been
-analysed properly so the commit messages makes no sense whatsoever.
-
-The real issue was first seen on RT which at the time effectively always
-set the low_latency flag for all serial drivers by patching
-tty_flip_buffer_push(). This in turn revealed that many drivers did not
-handle the infamous low_latency behaviour which meant that data was
-pushed immediately to the line discipline instead of being deferred to a
-work queue.
-
-Since commit a9c3f68f3cd8 ("tty: Fix low_latency BUG"),
+Specifically, since commit a9c3f68f3cd8 ("tty: Fix low_latency BUG"),
 tty_flip_buffer_push() always schedules a work item to push data to the
-line discipline and there's no need to keep any low_latency hacks
-around.
+line discipline and there's no need to keep any low_latency hacks around.
 
-Link: https://lore.kernel.org/linux-serial/cover.1376923198.git.viresh.kumar@linaro.org/
-Cc: Tony Prisk <linux@prisktech.co.nz>
+Cc: Michal Simek <michal.simek@xilinx.com>
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/serial/vt8500_serial.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/vt8500_serial.c b/drivers/tty/serial/vt8500_serial.c
-index 764e992438b2..c5edd56ff830 100644
---- a/drivers/tty/serial/vt8500_serial.c
-+++ b/drivers/tty/serial/vt8500_serial.c
-@@ -184,9 +184,7 @@ static void handle_rx(struct uart_port *port)
- 			tty_insert_flip_char(tport, c, flag);
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index a14c5d996473..67a2db621e2b 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -301,9 +301,8 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
+ 		tty_insert_flip_char(&port->state->port, data, status);
+ 		isrstatus = 0;
  	}
- 
 -	spin_unlock(&port->lock);
- 	tty_flip_buffer_push(tport);
++
+ 	tty_flip_buffer_push(&port->state->port);
 -	spin_lock(&port->lock);
  }
  
- static void handle_tx(struct uart_port *port)
+ /**
 -- 
 2.26.3
 
