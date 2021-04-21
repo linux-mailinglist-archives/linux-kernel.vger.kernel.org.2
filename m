@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF038367041
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9636036704F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241891AbhDUQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
+        id S241824AbhDUQi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241136AbhDUQdQ (ORCPT
+        with ESMTP id S239029AbhDUQiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:33:16 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72F4C06174A;
-        Wed, 21 Apr 2021 09:32:42 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id m12so9672419pgr.9;
-        Wed, 21 Apr 2021 09:32:42 -0700 (PDT)
+        Wed, 21 Apr 2021 12:38:24 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16848C06174A;
+        Wed, 21 Apr 2021 09:37:51 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id n140so42972504oig.9;
+        Wed, 21 Apr 2021 09:37:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dbbH5mU0eZQOvfNmncVtsU5aW1qxNpTR7xNLktkxO/8=;
-        b=r2pyaVk2t6foNEjWeJgrpPuyNXGzX/dF+DIu22dYUss19nfc4lBaUxn8OQ7azwSplI
-         nX0gqVnTVlg1Us4NtxIYike5JKI8ygpel1bfLgzbjgKWHP86RfWJwIFVWCEIGpfHMMen
-         YSJ8fR20KjjLk761nB5Dh9Z5TpXopTYm1z9A+YSNH7rWN0FwIBk/c5x8UmyZpIEoRODx
-         2m6aBQSr+UxyCfr0cPeKKQgmonBo9iNxhzYfECMVWEI8ZqTf58H4wuJ/BiU9/ZwPvOSO
-         6aMPDMlnpWANyfXqvjOwsfzd2ak8rZOIK9LfFnmI4MC/LWPZv2B7nKoEMZvFeCsPEHd7
-         qW1w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=s40MAWzS3orpX0sQXdh1P8R77Yd2B3X1I4h9wVVWmC4=;
+        b=YqKb/NMl2sXKkVa2wIVghu/UGYH/fIhNM2dV5W1cZ5QHjLt+IhrSgYP3ajqf6c41Qk
+         NY2FUywhIi2+CQ2V/WLITHVbEn1F804cazJcDfEsqRT7mrElADGIXEdk2TsOU3LbvHdm
+         /l8c6RW7tyAE1UZAVxE6fkzNPrsXQTXlvi6HawE6tSrEjxctnR4SyjHke/h4tdaoS/fr
+         mMUjYnLZxBZ5g3aO7GFGyKsFR3d9/mu7xtv7WzDI8KHum5S0gyVJgSvWS93TSGVlRvdY
+         BMIdD+yR7W0jUyClrWKAAneIBCTGXK7DUcXXkBtl/+rCCK2U60Q+jU0wvUlR9goYYO3/
+         pz9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dbbH5mU0eZQOvfNmncVtsU5aW1qxNpTR7xNLktkxO/8=;
-        b=Rv5CrSZ5cenWSj0f63jb3CMTDooPHVjADd3/XJfbC33AIeT54XXz75WCNkbMR5njti
-         USBeIrufxe7B4Xo6LMUj6vzqkVMjaAtdXAdq2h3tGvGn6tgmTnKBdfe9RxMvJx+pC8zJ
-         eEj0ViQUFU2+6/i1D5c8IuFSwVjmsBeHS+BR7U65u3KVkTARzEwTQyHWH1VOFTbMtWVU
-         hQDKIjlGWSgkxujWex2Xa2k36Mlrfdkz/es4fymas9Yh3Sb5vYrn9/ttdERCAWifJjjQ
-         ddy77Gn2pPMglkEBE4QD0nCLZ62EO9jtsHEqMjik5l5ZPR6qCw6Hcl33urHIeFr3XQds
-         5quQ==
-X-Gm-Message-State: AOAM5319luzG+hHKZEfO7goTMHIm/GH/w7e0ymPsNHRCrnBMBKEnHlC1
-        431mvgUmFVt2saNtfD+4Oqfr56Y/sk4=
-X-Google-Smtp-Source: ABdhPJx6glrHRUC62q7tOtGWilSy1urFZAUxX7xDjf+r/jBBvgSwUma1em94Dza3fRJUG5e63dF7xQ==
-X-Received: by 2002:a17:90a:c209:: with SMTP id e9mr12234306pjt.104.1619022762408;
-        Wed, 21 Apr 2021 09:32:42 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id s22sm2630721pjs.42.2021.04.21.09.32.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 09:32:41 -0700 (PDT)
-Subject: Re: [PATCH net-next v1] net: dsa: fix bridge support for drivers
- without port_bridge_flags callback
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
-References: <20210421130540.12522-1-o.rempel@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d1b615ef-4a0d-2bdb-b41e-e4dcec8fe14c@gmail.com>
-Date:   Wed, 21 Apr 2021 09:32:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=s40MAWzS3orpX0sQXdh1P8R77Yd2B3X1I4h9wVVWmC4=;
+        b=QJwYmmofVcWdiK5gopd4VkSCA8M+MKDN83Eslj2KOWTysGEd+/szOumCSQviRJZjq8
+         bhZGacs9Q/JOfRXFqIWnMplNCWg7/Wh4QQRW8JQ00I45ZIdacMOeRK2ks9+XVEN31+UU
+         CPvPJzt+5TDBiPj5JyDFR0pYS43zaQDatYng/+hZ3PNvugycjbnY3cl5D7tbBzrvgM2y
+         E1QlXUuib1IsxgVICrTzB2UaL4ku7fTTipnkyBRSm/9tVtHOWIPv9U4rpEOI/MtVPnYU
+         3IvHsRJBwUm4GqbmA1AV9pDEDJZRWycEYxThnOFOtDoxKcD7YJleCfULtUmcRaOquBb7
+         vI4w==
+X-Gm-Message-State: AOAM5328Tm8xRp2hISMiMFePRJ1CB07Vo7tvWrI2LGT5HTkNRix2XrUs
+        m4vV66NH4048cBfxWXymM1s=
+X-Google-Smtp-Source: ABdhPJzbOhS4G+xW0JcEwWrJDF7AiaCfYMOz184Wxk4dRhLcn5Igq2x91dyn64GngRXv8FAodFmlVQ==
+X-Received: by 2002:aca:ea06:: with SMTP id i6mr7524647oih.82.1619023070523;
+        Wed, 21 Apr 2021 09:37:50 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l62sm580006oih.2.2021.04.21.09.37.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Apr 2021 09:37:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 21 Apr 2021 09:37:48 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Francesco Zanella <francesco.zanella@vimar.com>
+Cc:     linux-watchdog@vger.kernel.org, wim@linux-watchdog.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: watchdog: gpio-wdt: add "start-at-boot"
+Message-ID: <20210421163748.GA110463@roeck-us.net>
+References: <20210421162621.24910-1-francesco.zanella@vimar.com>
+ <20210421162621.24910-2-francesco.zanella@vimar.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421130540.12522-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421162621.24910-2-francesco.zanella@vimar.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/21/2021 6:05 AM, Oleksij Rempel wrote:
-> Starting with patch:
-> a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+On Wed, Apr 21, 2021 at 06:26:20PM +0200, Francesco Zanella wrote:
+> Documentation for new device tree property "start-at-boot".
 > 
-> drivers without "port_bridge_flags" callback will fail to join the bridge.
-> Looking at the code, -EOPNOTSUPP seems to be the proper return value,
-> which makes at least microchip and atheros switches work again.
+> Signed-off-by: Francesco Zanella <francesco.zanella@vimar.com>
+> ---
+>  Documentation/devicetree/bindings/watchdog/gpio-wdt.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Fixes: a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> diff --git a/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt b/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+> index 198794963786..cdaf7f0602e8 100644
+> --- a/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+> +++ b/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+> @@ -17,6 +17,13 @@ Optional Properties:
+>  - always-running: If the watchdog timer cannot be disabled, add this flag to
+>    have the driver keep toggling the signal without a client. It will only cease
+>    to toggle the signal when the device is open and the timeout elapsed.
+> +- start-at-boot: Start pinging hw watchdog at probe, in order to take advantage
+> +  of kernel configs:
+> +  - WATCHDOG_HANDLE_BOOT_ENABLED: Avoid possible reboot if hw watchdog was been
+> +    enabled before the kernel (by uboot for example) and userspace doesn't take
+> +    control of /dev/watchdog in time;
+> +  - WATCHDOG_OPEN_TIMEOUT: Reboot if userspace doesn't take control of
+> +    /dev/watchdog within the timeout.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+You are not supposed to refer to Linux kernel details in devicetree
+bindings documents.
+
+Guenter
+
+>  
+>  Example:
+>  	watchdog: watchdog {
+> -- 
+> 2.17.1
+> 
