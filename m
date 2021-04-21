@@ -2,125 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E064367329
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98C936732F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238033AbhDUTGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        id S236238AbhDUTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234222AbhDUTGi (ORCPT
+        with ESMTP id S234222AbhDUTIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:06:38 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520F4C06138A;
-        Wed, 21 Apr 2021 12:06:04 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id 20so18244269pll.7;
-        Wed, 21 Apr 2021 12:06:04 -0700 (PDT)
+        Wed, 21 Apr 2021 15:08:14 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B944BC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:07:40 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id h10so50569444edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1Y23JnKjBwQdkJUIgYx6qPgc4bpAYldIpTO3iXzJLC8=;
-        b=JrYibZGQdBbnfEVpUaV9G0AG6Hr2ikoH4WWszoEkyadJi3tn5QxoiAysIEaMR/B+x+
-         a1qCFnyicaxd1Lx9w7tUFyKunaxeySRMJ2+xXy5EXZJJLsA4aFNFkc+AF5RfXZQW1m4T
-         aJM00f9JE1VyovGk/FALPO4GMSbscBYkTil1kUELcwzsWaAPYmOASmqj91YBv0kf3HBL
-         uJeEng1z/Rf9UEB63/suGcSGTnkVXtQrobqaokbVS0r0MtYcUDDRy9+mgUOBkQI2EUPm
-         IszEgl2XWyYRpSq3Tqs/PBSNzRfrxIg2LjwHdGMBJjJAhlK5C0xkFcHR5w6FuMWAqDIr
-         guOg==
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfuyWzaRCHi4p0AIL1yf6uYPLz6so+Mgoph5gf0xKEE=;
+        b=GQLyPeSgUnxmCprFj4i5Sx5FH2Bbf+ND/0vOqqOUHFhkZ4gCvWQxE2WMT1Vffbh5Tx
+         zsYsxEk1j/mXKNlvc8U1peFxcWlA017nrakG7fkpTYcX1IUwBYG0cQzyPITNqRSxKHAu
+         JMTlowccj/u4w6yvu/m6mDLZTi+AwUKKih/5g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1Y23JnKjBwQdkJUIgYx6qPgc4bpAYldIpTO3iXzJLC8=;
-        b=BRMrlfnSZscPUKYloEIdbnEGJv9MAm1RXVZA/l8bxJ4WU8xxaZxBVyN8hTRPQpfT5T
-         uLqwzmE3Idi1Y4zGxZ798g6l6RqWCpacJxbqf3jUCG8N586wi/J4SKWpfLdiZHPRAquR
-         1XQH7N9Sxz5VLAE2bSUN3upnnnym5T+veZiwuvaRJIXXk2iiVld+tAZhX2ycM2+n0N2e
-         hJyLPmGHrz/1Y0Z1ym1D973uYs1nu/EhOknTI+pKHJQT2K+Gms+Q8tzgRnV4YAQxU5gd
-         T3xon2ktq+Y8fn7s/ctfen2wkiOykw/JhJi2KofV/VXnvtKZqj/WIt9iDz2cSLtkgZLt
-         ZRvg==
-X-Gm-Message-State: AOAM530iGVpmRjc0nXIwoSE4qTwWRFG6OwD6LU2F8oyqLGGw2gnAFALl
-        x5EaEutqEPXs9oshgP/ZG9Va1XKEAUYPtmotX1M=
-X-Google-Smtp-Source: ABdhPJziy649pqt6T9VdBy4SyUSxBJ3opznbqD9be7lJ55zKeQJVw9XKmov+U5WpBYJTbB+LXVHs7DdWglYJ2OJzRSw=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr34933891plq.17.1619031963840; Wed, 21
- Apr 2021 12:06:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfuyWzaRCHi4p0AIL1yf6uYPLz6so+Mgoph5gf0xKEE=;
+        b=lvtecHMmCoLTEyhBu5EwSvPxcnfG/WEBhWGiIJz4K9/Zbn6HYdmlXbRKvsJNn20Oer
+         7y0aAOsmps8mwbMHDYBzh8iqisawtO4Qidu1no6NrLuw1yNxsINM6ZeDfcDdCTye3/gW
+         JeXRpnmIybH3RkiFevRlm/0d56ce+tPnEH+tcb2UAaPkh6rdEDVdz+dHxIWYKBIy0Uk0
+         YaLpj+l0kGVxD4SdSBLQ0/h26kT1NtmKXe+kls+QWdMoezVUmVn21nzdBjwuHTukcjuo
+         E3OczeVOw5tivPsslxQz6DbxpsAyIE7ew8SL0FDkAabT6ecAJD4PUPFG0+w+UGw02Xac
+         fDOg==
+X-Gm-Message-State: AOAM530awlSPESkaz5/FAAIT6FClSOFpZRz1qeE/4uPzLqWGdMfL9Idr
+        oLpSQWLneWcNvIxg+4YFY0LX3HCUpSxuGV2p2EI=
+X-Google-Smtp-Source: ABdhPJwZuKHB1GLs7hfQZCw+Zja/AgwnA3tCfOM3vVmdk62srIHyqWCuFcXvt8ILWyO9So28UlV3jQ==
+X-Received: by 2002:aa7:d693:: with SMTP id d19mr24515304edr.8.1619032059428;
+        Wed, 21 Apr 2021 12:07:39 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id e5sm251908ejq.85.2021.04.21.12.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 12:07:38 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+Date:   Wed, 21 Apr 2021 21:07:36 +0200
+Message-Id: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
- <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
- <f2b7938f-12ea-529b-da5e-83c9c8074e1a@gmail.com> <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
-In-Reply-To: <CACRpkdbtnCoDdwJA9oi88NKStf5uhi72DgP_a=3Dpp_aT=kYNg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 21 Apr 2021 22:05:47 +0300
-Message-ID: <CAHp75VcEsrM+uYSLo2iEta7C8LQtg26iwQVFX1GUk1Gp5TPT7g@mail.gmail.com>
-Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Nathan Royer <nroyer@invensense.com>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 1:14 PM Linus Walleij <linus.walleij@linaro.org> wr=
-ote:
->
-> On Tue, Apr 20, 2021 at 11:26 PM Dmitry Osipenko <digetx@gmail.com> wrote=
-:
->
-> > I found a non-kernel example
-> > which uses a similar equation [1], but in a different form. The main
-> > difference is that the Arduino code interprets a raw temperature value
-> > as a signed integer, while upstream assumes it's unsigned.
-> >
-> > [1]
-> > https://github.com/blaisejarrett/Arduino-Lib.MPU3050/blob/master/MPU305=
-0lib.cpp#L111
->
-> Oh that's nice. Room temperature as mentioned is 20 deg C
-> I think?
->
-> The divide by 280 part seems coherent in all examples.
->
-> > Still, even if assume that the raw temperature is a signed s16 value, i=
-t
-> > gives us ~35C in a result, which should be off by ~10C.
+The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
+"%s", "") etc. will certainly put '\0' in buf[0]. The only case where
+snprintf() does not guarantee a nul-terminated string is when it is
+given a buffer size of 0 (which of course prevents it from writing
+anything at all to the buffer).
 
-Actually here [1] it says in chapter 3.1 that room temperature is 35=C2=B0C=
-.
+Remove it before it gets cargo-culted elsewhere.
 
-Range: -30=C2=B0C .. +85=C2=B0C
-Sensitivity: 280 LSB/=C2=B0C
-Room temperature offset: 35=C2=B0C =3D -13200 LSB
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ kernel/trace/bpf_trace.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-[1]: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index b0c45d923f0f..4ee55df84cd3 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -412,9 +412,6 @@ static __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
+ 	va_start(ap, fmt);
+ 	ret = vsnprintf(buf, sizeof(buf), fmt, ap);
+ 	va_end(ap);
+-	/* vsnprintf() will not append null for zero-length strings */
+-	if (ret == 0)
+-		buf[0] = '\0';
+ 	trace_bpf_trace_printk(buf);
+ 	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+ 
+-- 
+2.29.2
 
-> > Certainly a manual calibration is an option, but we will try to wait fo=
-r
-> > the answer from Nathans and Jean-Baptiste before going that route.
->
-> The method I have seen used is:
-> - Collect many bags of silica gel, those little packages of "dryer" that
-> come in shoe boxes.
-> - Put the device with all these in two layers of plastic bags and pull ou=
-t
-> cables, glue or strap many layers around the bags to make it really tight
-> where the cables come out.
-> - Submerge this into a mixture of ice and water which is known to be
-> a calibration point for 0 degrees C, wait for some hour or so to
-> stabilize, add some ice if it all melts.
->
-> Now measures should be 0 deg C so any deviance will be the constant
-> offset that need be added for the sensor.
-
-
-
---=20
-With Best Regards,
-Andy Shevchenko
