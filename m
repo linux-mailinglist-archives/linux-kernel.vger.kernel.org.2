@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7BA366B85
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5504A366B86
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240293AbhDUNDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42274 "EHLO mail.kernel.org"
+        id S240305AbhDUNDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:03:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240140AbhDUNCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E937761454;
-        Wed, 21 Apr 2021 13:02:16 +0000 (UTC)
+        id S240246AbhDUNCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:02:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA186144B;
+        Wed, 21 Apr 2021 13:02:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010137;
-        bh=PikN53d+FWu23XlMVOKVXXaD81ya+7z4Xsd2LjkmWKw=;
+        s=korg; t=1619010139;
+        bh=fkWLEin4S5OkwzkSHiUCSkPpCMl/AS9bq7K44LL5cfc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s6nd4TOn/CDxj39z7KS+Ju9mhUhjJZdmQc658HADs5YK7Rur2/9/8Z4oPjKXG5tT1
-         u42eIE9D1KTjhaVUIA44lw/9b5racH6ojbWcRpk5zwHTi1fe4ORPYBK/qStPgKFyQn
-         AjYZ166yys5a9VzJRb3rxV6g3jhMd3WJFgwg3gdI=
+        b=tj4KfKz0L3Exv0KvrI2J/3vNpllj9ya+Kh2utRQ250dsn4dVa9knBKoAzStLB4eRl
+         u5WYhBZp3MYAYbQFyLqSgO5j5Ra3t/FyXueb/V/2T5g8zWWX7RwgJMJl10YIah5N+R
+         QmU82o6l+6HkgHtuied81PKZ6GZEpcsWAUP+xoJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Qiushi Wu <wu000273@umn.edu>,
-        Mathew King <mathewk@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH 025/190] Revert "platform/chrome: cros_ec_ishtp: Fix a double-unlock issue"
-Date:   Wed, 21 Apr 2021 14:58:20 +0200
-Message-Id: <20210421130105.1226686-26-gregkh@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 026/190] Revert "usb: dwc3: pci: Fix reference count leak in dwc3_pci_resume_work"
+Date:   Wed, 21 Apr 2021 14:58:21 +0200
+Message-Id: <20210421130105.1226686-27-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit aaa3cbbac326c95308e315f1ab964a3369c4d07d.
+This reverts commit 2655971ad4b34e97dd921df16bb0b08db9449df7.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,30 +53,29 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Qiushi Wu <wu000273@umn.edu>
-Cc: Mathew King <mathewk@chromium.org>
-Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/chrome/cros_ec_ishtp.c | 4 +---
+ drivers/usb/dwc3/dwc3-pci.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_ishtp.c b/drivers/platform/chrome/cros_ec_ishtp.c
-index f00107017318..d4f41d68232c 100644
---- a/drivers/platform/chrome/cros_ec_ishtp.c
-+++ b/drivers/platform/chrome/cros_ec_ishtp.c
-@@ -677,10 +677,8 @@ static int cros_ec_ishtp_probe(struct ishtp_cl_device *cl_device)
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index 4c5c6972124a..0c0619f7b1a7 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -226,10 +226,8 @@ static void dwc3_pci_resume_work(struct work_struct *work)
+ 	int ret;
  
- 	/* Register croc_ec_dev mfd */
- 	rv = cros_ec_dev_init(client_data);
--	if (rv) {
--		down_write(&init_lock);
-+	if (rv)
- 		goto end_cros_ec_dev_init_error;
+ 	ret = pm_runtime_get_sync(&dwc3->dev);
+-	if (ret) {
+-		pm_runtime_put_sync_autosuspend(&dwc3->dev);
++	if (ret)
+ 		return;
 -	}
  
- 	return 0;
- 
+ 	pm_runtime_mark_last_busy(&dwc3->dev);
+ 	pm_runtime_put_sync_autosuspend(&dwc3->dev);
 -- 
 2.31.1
 
