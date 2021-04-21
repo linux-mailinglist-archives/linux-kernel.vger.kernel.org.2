@@ -2,127 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A979A36634D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 03:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D2D366351
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 03:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhDUBJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 21:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbhDUBJa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 21:09:30 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F422BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 18:08:57 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id u7-20020a259b470000b02904dca50820c2so13934866ybo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 18:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=yreWuj6mbfdz2hyYXXMbP0/DSYeQPnhKZL0KcCdj5RA=;
-        b=ZbDT9mkvb5FK7FzLr7cfj2U79ll5HDNS55F9gFZCf1XL+zG4bER5KOmpLo+luFBH1y
-         z6wx2wRtBQhLMzugVmjygM8c+UaZPwB+F/91Yu6mHwe7Jid7BCant0asWBzggzZcrXSI
-         CK6w7nugeazI5joXFIfVIVrMehCfvKOhjVt7bKrvdCtcAFOgnJobdETedO7AHEFuQke+
-         fXil1H0AWX07UX0+278pdG6jkXSCk39dn6YWMo2ypw052A1On/OYkGUVq7hmucyudBRO
-         uqII9Af0fXBBrUcs1ChZIo8b1KR/REgE6OtCTU2nZom6Qy/dcipBIPSKMOE+G0nx9Vax
-         6vIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=yreWuj6mbfdz2hyYXXMbP0/DSYeQPnhKZL0KcCdj5RA=;
-        b=Umr9oWiXScTh+628HePAtMEnHE8awEu5U7/gOaSxKtDt3dT7SS9avAV7V/cM1Z1Oqq
-         9CzaJewZqgAQPJoS+kJMubPTv5yKP4N1/MKGy6zzVUPdFE3vjIL6vqXE1U2qji2jBgKM
-         k5LBK1CZ5U04v7rf5nv0owbjTBk1KS2QNc42CaZGCTP3UIRZcIauLqRyEsYO45zKjXrN
-         KuYywToCCgg9zy0zzg0mgS2uSBBY7lK1+VX1OqucoG2wd/6q+189ePPT+eeTVpijdY0O
-         rHP1y9cMaAA8HBlt0Z1DuorijuWL5cn8iXUdjm6N6/+fjTuS3mnva0kJY8iMEceKopHS
-         1FHA==
-X-Gm-Message-State: AOAM533DV5ZmxQ3VSqgKr/eOs8tvs0D2nuBMUstuj16C8E/HqvQOueY4
-        oVFl2GwDtTilCw4SjfTehsOBFVgLNw8=
-X-Google-Smtp-Source: ABdhPJx0KB0ZGkUiqj3A1BLGcno/kXT67zz5NuprBq16lIqKPtuL+i3wvD5/JWILMhKvqSlKgkvs7O/Df/E=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:a116:ecd1:5e88:1d40])
- (user=seanjc job=sendgmr) by 2002:a25:d051:: with SMTP id h78mr28826991ybg.497.1618967337262;
- Tue, 20 Apr 2021 18:08:57 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 20 Apr 2021 18:08:50 -0700
-Message-Id: <20210421010850.3009718-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH] KVM: x86: Fix implicit enum conversion goof in scattered
- reverse CPUID code
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234186AbhDUBPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 21:15:03 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30711 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233874AbhDUBO6 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 21:14:58 -0400
+IronPort-SDR: slj6HJlNIV1wk5hqJF6QU0p5NDq7zAD/QhkPJMUF2ILgDpz2zDdrmu6g0x1BVyFu7eSuemPrrq
+ Glv+fANWgwpg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="183112836"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="183112836"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 18:14:24 -0700
+IronPort-SDR: z66tzb5UQT2Ys7970/oqcBxtNYpNfgbvD6xtGW3zauZRZHKOo4TL4EsYWM0Y53IAeeSq2vvulj
+ VOJyM8A1cfxA==
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="427317487"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 18:14:22 -0700
+Subject: Re: [PATCH v4 00/25] perf tool: AlderLake hybrid support series 1
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210416140517.18206-1-yao.jin@linux.intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <0853bb70-8e19-8077-d48f-71cc43a089ba@linux.intel.com>
+Date:   Wed, 21 Apr 2021 09:14:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <20210416140517.18206-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Take "enum kvm_only_cpuid_leafs" in scattered specific CPUID helpers
-(which is obvious in hindsight), and use "unsigned int" for leafs that
-can be the kernel's standard "enum cpuid_leaf" or the aforementioned
-KVM-only variant.  Loss of the enum params is a bit disapponting, but
-gcc obviously isn't providing any extra sanity checks, and the various
-BUILD_BUG_ON() assertions ensure the input is in range.
+Hi Arnaldo, Hi Jiri,
 
-This fixes implicit enum conversions that are detected by clang-11.
+Kan's patch series for AlderLake perf core support has been upstreamed, so the interface will not be 
+changed any more.
 
-Fixes: 4e66c0cb79b7 ("KVM: x86: Add support for reverse CPUID lookup of scattered features")
-Cc: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+For this perf tool series (v4), do you have any comments?
 
-Hopefully it's not too late to squash this...
+Thanks
+Jin Yao
 
- arch/x86/kvm/cpuid.c | 5 +++--
- arch/x86/kvm/cpuid.h | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 96e41e1a1bde..e9d644147bf5 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -365,7 +365,7 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
- }
- 
- /* Mask kvm_cpu_caps for @leaf with the raw CPUID capabilities of this CPU. */
--static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
-+static __always_inline void __kvm_cpu_cap_mask(unsigned int leaf)
- {
- 	const struct cpuid_reg cpuid = x86_feature_cpuid(leaf * 32);
- 	struct kvm_cpuid_entry2 entry;
-@@ -378,7 +378,8 @@ static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
- 	kvm_cpu_caps[leaf] &= *__cpuid_entry_get_reg(&entry, cpuid.reg);
- }
- 
--static __always_inline void kvm_cpu_cap_init_scattered(enum cpuid_leafs leaf, u32 mask)
-+static __always_inline
-+void kvm_cpu_cap_init_scattered(enum kvm_only_cpuid_leafs leaf, u32 mask)
- {
- 	/* Use kvm_cpu_cap_mask for non-scattered leafs. */
- 	BUILD_BUG_ON(leaf < NCAPINTS);
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index eeb4a3020e1b..7bb4504a2944 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -236,7 +236,7 @@ static __always_inline void cpuid_entry_change(struct kvm_cpuid_entry2 *entry,
- }
- 
- static __always_inline void cpuid_entry_override(struct kvm_cpuid_entry2 *entry,
--						 enum cpuid_leafs leaf)
-+						 unsigned int leaf)
- {
- 	u32 *reg = cpuid_entry_get_reg(entry, leaf * 32);
- 
--- 
-2.31.1.368.gbe11c130af-goog
-
+On 4/16/2021 10:04 PM, Jin Yao wrote:
+> AlderLake uses a hybrid architecture utilizing Golden Cove cores
+> (core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
+> event list. Some events are available on core cpu, some events
+> are available on atom cpu and some events can be available on both.
+> 
+> Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
+> /sys/devices/cpu_core
+> /sys/devices/cpu_atom
+> 
+> cat /sys/devices/cpu_core/cpus
+> 0-15
+> 
+> cat /sys/devices/cpu_atom/cpus
+> 16-23
+> 
+> In this example, core cpus are 0-15 and atom cpus are 16-23.
+> 
+> To enable a core only event or atom only event:
+> 
+>          cpu_core/<event name>/
+> or
+>          cpu_atom/<event name>/
+> 
+> Count the 'cycles' event on core cpus.
+> 
+>    # perf stat -e cpu_core/cycles/ -a -- sleep 1
+> 
+>     Performance counter stats for 'system wide':
+> 
+>        12,853,951,349      cpu_core/cycles/
+> 
+>           1.002581249 seconds time elapsed
+> 
+> If one event is available on both atom cpu and core cpu, two events
+> are created automatically.
+> 
+>    # perf stat -e cycles -a -- sleep 1
+> 
+>     Performance counter stats for 'system wide':
+> 
+>        12,856,467,438      cpu_core/cycles/
+>         6,404,634,785      cpu_atom/cycles/
+> 
+>           1.002453013 seconds time elapsed
+> 
+> Group is supported if the events are from same pmu, otherwise a warning
+> is displayed and disable grouping automatically.
+> 
+>    # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
+> 
+>     Performance counter stats for 'system wide':
+> 
+>        12,863,866,968      cpu_core/cycles/
+>           554,795,017      cpu_core/instructions/
+> 
+>           1.002616117 seconds time elapsed
+> 
+>    # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
+>    WARNING: events in group from different hybrid PMUs!
+>    WARNING: grouped events cpus do not match, disabling group:
+>      anon group { cpu_core/cycles/, cpu_atom/instructions/ }
+> 
+>     Performance counter stats for 'system wide':
+> 
+>             6,283,970      cpu_core/cycles/
+>               765,635      cpu_atom/instructions/
+> 
+>           1.003959036 seconds time elapsed
+> 
+> Note that, since the whole patchset for AlderLake hybrid support is very
+> large (40+ patches). For simplicity, it's splitted into several patch
+> series.
+> 
+> The patch series 1 only supports the basic functionality. The advanced
+> supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
+> will be added in follow-up patch series.
+> 
+> The perf tool codes can also be found at:
+> https://github.com/yaoj/perf.git
+> 
+> v4:
+> ---
+> - In Liang Kan's patch:
+>    '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE',
+>    the user interface for hardware events and cache events are changed, so
+>    perf tool patches are changed as well.
+> 
+> - Fix an issue when atom CPUs are offlined. "/sys/bus/event_source/devices/cpu_atom/cpus"
+>    exists but the content is empty. For this case, we can't enable the cpu_atom
+>    PMU. '[PATCH v4 05/25] perf pmu: Save detected hybrid pmus to a global pmu list'
+> 
+> - Define 'ret' variable for return value in patch
+>    '[PATCH v4 09/25] perf parse-events: Create two hybrid cache events'
+> 
+> - Directly return add_raw_hybrid() in patch
+>    '[PATCH v4 10/25] perf parse-events: Create two hybrid raw events'
+>   
+> - Drop the patch 'perf pmu: Support 'cycles' and 'branches' inside
+>    hybrid PMU'.
+> 
+> - Separate '[PATCH v3 12/27] perf parse-events: Support no alias assigned event
+>    inside hybrid PMU' into two patches:
+>    '[PATCH v4 11/25] perf parse-events: Compare with hybrid pmu name'
+>    '[PATCH v4 12/25] perf parse-events: Support event inside hybrid pmu'.
+>    And these two patches are improved according to Jiri's comments.
+> 
+> v3:
+> ---
+> - Drop 'perf evlist: Hybrid event uses its own cpus'. This patch is wide
+>    and actually it's not very necessary. The current perf framework has
+>    processed the cpus for evsel well even for hybrid evsel. So this patch can
+>    be dropped.
+> 
+> - Drop 'perf evsel: Adjust hybrid event and global event mixed group'.
+>    The patch is a bit tricky and hard to understand. In v3, we will disable
+>    grouping when the group members are from different PMUs. So this patch
+>    would be not necessary.
+> 
+> - Create parse-events-hybrid.c/parse-events-hybrid.h and evlist-hybrid.c/evlist-hybrid.h.
+>    Move hybrid related codes to these files.
+> 
+> - Create a new patch 'perf pmu: Support 'cycles' and 'branches' inside hybrid PMU' to
+>    support 'cycles' and 'branches' inside PMU.
+> 
+> - Create a new patch 'perf record: Uniquify hybrid event name' to tell user the
+>    pmu which the event belongs to for perf-record.
+> 
+> - If group members are from different hybrid PMUs, shows warning and disable
+>    grouping.
+> 
+> - Other refining and refactoring.
+> 
+> v2:
+> ---
+> - Drop kernel patches (Kan posted the series "Add Alder Lake support for perf (kernel)" separately).
+> - Drop the patches for perf-c2c/perf-mem/topdown/metrics/topology header supports,
+>    which will be added in series 2 or series 3.
+> - Simplify the arguments of __perf_pmu__new_alias() by passing
+>    the 'struct pme_event' pointer.
+> - Check sysfs validity before access.
+> - Use pmu style event name, such as "cpu_core/cycles/".
+> - Move command output two chars to the right.
+> - Move pmu hybrid functions to new created pmu-hybrid.c/pmu-hybrid.h.
+>    This is to pass the perf test python case.
+> 
+> Jin Yao (25):
+>    tools headers uapi: Update tools's copy of linux/perf_event.h
+>    perf jevents: Support unit value "cpu_core" and "cpu_atom"
+>    perf pmu: Simplify arguments of __perf_pmu__new_alias
+>    perf pmu: Save pmu name
+>    perf pmu: Save detected hybrid pmus to a global pmu list
+>    perf pmu: Add hybrid helper functions
+>    perf stat: Uniquify hybrid event name
+>    perf parse-events: Create two hybrid hardware events
+>    perf parse-events: Create two hybrid cache events
+>    perf parse-events: Create two hybrid raw events
+>    perf parse-events: Compare with hybrid pmu name
+>    perf parse-events: Support event inside hybrid pmu
+>    perf record: Create two hybrid 'cycles' events by default
+>    perf stat: Add default hybrid events
+>    perf stat: Filter out unmatched aggregation for hybrid event
+>    perf stat: Warn group events from different hybrid PMU
+>    perf record: Uniquify hybrid event name
+>    perf tests: Add hybrid cases for 'Parse event definition strings' test
+>    perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
+>    perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
+>    perf tests: Support 'Track with sched_switch' test for hybrid
+>    perf tests: Support 'Parse and process metrics' test for hybrid
+>    perf tests: Support 'Session topology' test for hybrid
+>    perf tests: Support 'Convert perf time to TSC' test for hybrid
+>    perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
+> 
+>   include/uapi/linux/perf_event.h            |  15 ++
+>   tools/include/uapi/linux/perf_event.h      |  15 ++
+>   tools/perf/builtin-record.c                |  47 +++++-
+>   tools/perf/builtin-stat.c                  |  29 ++++
+>   tools/perf/pmu-events/jevents.c            |   2 +
+>   tools/perf/tests/attr.c                    |   4 +
+>   tools/perf/tests/evsel-roundtrip-name.c    |  19 ++-
+>   tools/perf/tests/parse-events.c            | 152 ++++++++++++++++++
+>   tools/perf/tests/parse-metric.c            |  10 +-
+>   tools/perf/tests/perf-time-to-tsc.c        |  16 ++
+>   tools/perf/tests/shell/stat+shadow_stat.sh |   3 +
+>   tools/perf/tests/switch-tracking.c         |  10 +-
+>   tools/perf/tests/topology.c                |  10 +-
+>   tools/perf/util/Build                      |   3 +
+>   tools/perf/util/evlist-hybrid.c            |  88 ++++++++++
+>   tools/perf/util/evlist-hybrid.h            |  14 ++
+>   tools/perf/util/evlist.c                   |   5 +-
+>   tools/perf/util/evsel.c                    |  12 +-
+>   tools/perf/util/evsel.h                    |   4 +-
+>   tools/perf/util/parse-events-hybrid.c      | 178 +++++++++++++++++++++
+>   tools/perf/util/parse-events-hybrid.h      |  23 +++
+>   tools/perf/util/parse-events.c             |  86 +++++++++-
+>   tools/perf/util/parse-events.h             |   9 +-
+>   tools/perf/util/parse-events.y             |   9 +-
+>   tools/perf/util/pmu-hybrid.c               |  89 +++++++++++
+>   tools/perf/util/pmu-hybrid.h               |  22 +++
+>   tools/perf/util/pmu.c                      |  64 +++++---
+>   tools/perf/util/pmu.h                      |   7 +
+>   tools/perf/util/python-ext-sources         |   2 +
+>   tools/perf/util/stat-display.c             |  35 +++-
+>   30 files changed, 933 insertions(+), 49 deletions(-)
+>   create mode 100644 tools/perf/util/evlist-hybrid.c
+>   create mode 100644 tools/perf/util/evlist-hybrid.h
+>   create mode 100644 tools/perf/util/parse-events-hybrid.c
+>   create mode 100644 tools/perf/util/parse-events-hybrid.h
+>   create mode 100644 tools/perf/util/pmu-hybrid.c
+>   create mode 100644 tools/perf/util/pmu-hybrid.h
+> 
