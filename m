@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2A9366BFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC99366BFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242257AbhDUNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:09:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49136 "EHLO mail.kernel.org"
+        id S242314AbhDUNKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240157AbhDUNHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:07:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 058276144B;
-        Wed, 21 Apr 2021 13:06:41 +0000 (UTC)
+        id S239079AbhDUNHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:07:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C339361461;
+        Wed, 21 Apr 2021 13:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010402;
-        bh=WkM5OqGDtqhj2vez0uEmj2CADFldwYZrt7aOxxWbg1g=;
+        s=korg; t=1619010407;
+        bh=t8pHsFSAc99qRtX8oVjYQOac1gO0SohEy/Z13Ui0or8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pukQ2+J5Dp+5bSKloNntBKOUczLImurBcZzovWczlKPBeGalGVCAbE/QXMD0MsAAb
-         LXQb7G7etyDhsN6SHoGkl2+o7pJvi3+/F5p05ksyhbyYrfmFZulQ61zCWSLHCFQy38
-         W5WttRmnZyzDt4S60WWsY0c1KeE6ZIwcC34Joo8w=
+        b=gd2KGO0F6w7qUIZu3fm+En2pkLo8TtdHiNxFB8oktclOULeqaDWuO5AGYkA6nSh2w
+         dSR+JQn0IvEmxMQAPi8n8+9Jf9vDDVV6XhmOqSm9a+ea/GOIWlNp2rfognnADLInHu
+         yS2gEa+TRL0s1HXEMtTQAjUis2BaAzSVjGjj2zNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 124/190] Revert "spi : spi-topcliff-pch: Fix to handle empty DMA buffers"
-Date:   Wed, 21 Apr 2021 14:59:59 +0200
-Message-Id: <20210421130105.1226686-125-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 125/190] Revert "net: tipc: fix a missing check of nla_nest_start"
+Date:   Wed, 21 Apr 2021 15:00:00 +0200
+Message-Id: <20210421130105.1226686-126-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit f37d8e67f39e6d3eaf4cc5471e8a3d21209843c6.
+This reverts commit 4589e28db46ee4961edfd794c5bb43887d38c8e5.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,57 +53,27 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Mark Brown <broonie@kernel.org>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-topcliff-pch.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
+ net/tipc/group.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
-index b459e369079f..12d749e9436b 100644
---- a/drivers/spi/spi-topcliff-pch.c
-+++ b/drivers/spi/spi-topcliff-pch.c
-@@ -1290,27 +1290,18 @@ static void pch_free_dma_buf(struct pch_spi_board_data *board_dat,
- 				  dma->rx_buf_virt, dma->rx_buf_dma);
- }
- 
--static int pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
-+static void pch_alloc_dma_buf(struct pch_spi_board_data *board_dat,
- 			      struct pch_spi_data *data)
+diff --git a/net/tipc/group.c b/net/tipc/group.c
+index 3e137d8c9d2f..d18d497af4de 100644
+--- a/net/tipc/group.c
++++ b/net/tipc/group.c
+@@ -927,9 +927,6 @@ int tipc_group_fill_sock_diag(struct tipc_group *grp, struct sk_buff *skb)
  {
- 	struct pch_spi_dma_ctrl *dma;
--	int ret;
+ 	struct nlattr *group = nla_nest_start_noflag(skb, TIPC_NLA_SOCK_GROUP);
  
- 	dma = &data->dma;
--	ret = 0;
- 	/* Get Consistent memory for Tx DMA */
- 	dma->tx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
- 				PCH_BUF_SIZE, &dma->tx_buf_dma, GFP_KERNEL);
--	if (!dma->tx_buf_virt)
--		ret = -ENOMEM;
+-	if (!group)
+-		return -EMSGSIZE;
 -
- 	/* Get Consistent memory for Rx DMA */
- 	dma->rx_buf_virt = dma_alloc_coherent(&board_dat->pdev->dev,
- 				PCH_BUF_SIZE, &dma->rx_buf_dma, GFP_KERNEL);
--	if (!dma->rx_buf_virt)
--		ret = -ENOMEM;
--
--	return ret;
- }
- 
- static int pch_spi_pd_probe(struct platform_device *plat_dev)
-@@ -1387,9 +1378,7 @@ static int pch_spi_pd_probe(struct platform_device *plat_dev)
- 
- 	if (use_dma) {
- 		dev_info(&plat_dev->dev, "Use DMA for data transfers\n");
--		ret = pch_alloc_dma_buf(board_dat, data);
--		if (ret)
--			goto err_spi_register_master;
-+		pch_alloc_dma_buf(board_dat, data);
- 	}
- 
- 	ret = spi_register_master(master);
+ 	if (nla_put_u32(skb, TIPC_NLA_SOCK_GROUP_ID,
+ 			grp->type) ||
+ 	    nla_put_u32(skb, TIPC_NLA_SOCK_GROUP_INSTANCE,
 -- 
 2.31.1
 
