@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FC43670EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF5C3670DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244631AbhDURHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244618AbhDURHU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:07:20 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489E4C06174A;
-        Wed, 21 Apr 2021 10:06:47 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id g17so49541648edm.6;
-        Wed, 21 Apr 2021 10:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0vIFwvg8wmGgCq9N2ekETjpF5YhMbIBp9DMrbpQpC+Y=;
-        b=nf1dWnvWNOuqt3vHzuJlOw9TvO3bTbWsMp3Lff1WuokW5DSWGIEkUWlKPoPUDwRJNm
-         i12/tGJ/F0wlY8aKrxVK5jR7EY2j2aDOVDKmU95o0GV4F5QsXEfeijyWxsf0l8WbK2ZV
-         yDqNJOVQ3yoAW67+1YgpBmRn/KIK8usvmTDElx5uu9XKGAbnTbDs3ph/7d8OSJGmzf7F
-         9uR2p00VbE43l/JEqbH2ei8IejUB+S2COYERX6EPyPOCDRBWTdJ/+DR0TEiBErKC8OD9
-         G4WqM6HOBjay1gb/yWVhLDo2jhpyETF7YSaaorEdLbYQIhhvTtE22jO4rFbx5nJZoI49
-         fbPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0vIFwvg8wmGgCq9N2ekETjpF5YhMbIBp9DMrbpQpC+Y=;
-        b=ghyECdbemGuENyKK7aHKHH+MktytNMoMTJ8E7yBwtzTuDU2MvfgaBzFias/A5PbUpR
-         2/sBDvJOXqxh5xx2GP/O38A5fPyrQBsUzJc7ZTNgMwfo8uN2+eX6BxjA67hsVH/XZF3e
-         VKvFYT8OgcZ0iKl37h78G0k6wAT+K1t9O6LjeuOLDgWH9VFe7BMW1IqJoEiLguXoU6Wu
-         u3aasQkrMbVOZBQn7jvFHAx1jr7rZj+PIwRbB7G+RVNhTzc9Z0dZ+B08ScoMaZdbgjZ8
-         Z5Ci4d3T3SlZR1/Dp4SPkLzl0KU7RgcsACi8vX60dW+fb28lH6M42ifQp4ON7KxRfR43
-         98nQ==
-X-Gm-Message-State: AOAM532RxTIO+P3csz0D7uWePyTkh0hUsj9HTkBGPmlfpU9EbkYDtjrG
-        9d6KwecxlFbJP0I0g/zkVCE=
-X-Google-Smtp-Source: ABdhPJxlhYtZIHwmZeIw95gfompLSAb8lwPmIZtnOhw1GpsWvk4Rx60Zifo8ntb+Zt2SgqY7Iv2lZw==
-X-Received: by 2002:aa7:db16:: with SMTP id t22mr30381869eds.266.1619024806106;
-        Wed, 21 Apr 2021 10:06:46 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.3])
-        by smtp.gmail.com with ESMTPSA id gt26sm83277ejb.31.2021.04.21.10.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:06:45 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 19:06:43 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH v1 2/6] staging: media: atomisp: balance braces around
- if...else block
-Message-ID: <20210421170642.GA1414@agape.jhs>
-References: <cover.1619022192.git.drv@mailo.com>
- <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
+        id S244582AbhDURF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:05:56 -0400
+Received: from mga01.intel.com ([192.55.52.88]:16579 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234291AbhDURFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:05:52 -0400
+IronPort-SDR: Ptxp6wEJA8RHS3LmpK31EePmhjRfrpfzmK5AVcdJQDlSF47Tsc+accAmb64KjZKvh33XHiYbz5
+ U+rVQshttRWw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="216380809"
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="216380809"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:05:18 -0700
+IronPort-SDR: 0ue8o3OdCuajNt7TOqgoVSoYxeX9eDPWZ9WcF3WyKlp0d1Wtnkr8OgYGefbshEwYRKC41Vzr4m
+ 61dRN+4yraJQ==
+X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
+   d="scan'208";a="602954126"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 10:05:18 -0700
+Date:   Wed, 21 Apr 2021 10:06:45 -0700 (PDT)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@rhweight-WRK1
+To:     "Wu, Hao" <hao.wu@intel.com>
+cc:     "trix@redhat.com" <trix@redhat.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>
+Subject: RE: [PATCH] fpga: dfl: pci: gracefully handle misconfigured port
+ entries
+In-Reply-To: <BYAPR11MB381637F0EFFAFD57902EE47985479@BYAPR11MB3816.namprd11.prod.outlook.com>
+Message-ID: <alpine.DEB.2.22.394.2104211001080.760078@rhweight-WRK1>
+References: <20210420172740.707259-1-matthew.gerlach@linux.intel.com> <BYAPR11MB381637F0EFFAFD57902EE47985479@BYAPR11MB3816.namprd11.prod.outlook.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:22:19PM +0530, Deepak R Varma wrote:
-> Balance braces around the if else blocks as per the code style guidelines.
-> Resolves checkpatch script CHECK / WARNING feedback messages.
-> 
-> Signed-off-by: Deepak R Varma <drv@mailo.com>
-> ---
-> 
-> Changes in v1:
->    - None.
-> 
->  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
->  drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
->  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
->  5 files changed, 12 insertions(+), 11 deletions(-)
-> 
 
-Hi,
 
-the email subject prefix should be [PATCH v2 n/N], the previous
-patchset was v1 implicitly.
+On Wed, 21 Apr 2021, Wu, Hao wrote:
 
-thank you,
+>> Subject: [PATCH] fpga: dfl: pci: gracefully handle misconfigured port entries
+>>
+>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>
+>> Gracefully ignore misconfigured port entries encountered in
+>> incorrect FPGA images.
+>>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>>  drivers/fpga/dfl-pci.c | 16 +++++++++++++++-
+>>  1 file changed, 15 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+>> index b44523e..660d3b6 100644
+>> --- a/drivers/fpga/dfl-pci.c
+>> +++ b/drivers/fpga/dfl-pci.c
+>> @@ -212,6 +212,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
+>>  	int port_num, bar, i, ret = 0;
+>>  	resource_size_t start, len;
+>>  	void __iomem *base;
+>> +	int bars = 0;
+>>  	u32 offset;
+>>  	u64 v;
+>>
+>> @@ -228,6 +229,7 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
+>>  	if (dfl_feature_is_fme(base)) {
+>>  		start = pci_resource_start(pcidev, 0);
+>>  		len = pci_resource_len(pcidev, 0);
+>> +		bars |= BIT(0);
+>>
+>>  		dfl_fpga_enum_info_add_dfl(info, start, len);
+>>
+>> @@ -253,9 +255,21 @@ static int find_dfls_by_default(struct pci_dev *pcidev,
+>>  			 */
+>>  			bar = FIELD_GET(FME_PORT_OFST_BAR_ID, v);
+>>  			offset = FIELD_GET(FME_PORT_OFST_DFH_OFST, v);
+>> +			if (bars & BIT(bar)) {
+>> +				dev_warn(&pcidev->dev, "skipping bad port
+>> BAR %d\n", bar);
+>> +				continue;
+>> +			}
+>
+> Will it be a real problem that multiple ports are inside one BAR but different offsets?
+>
+> Hao
 
-fabio
+I don't think multiple ports within a single BAR is something that has 
+been supported in the past.  The genesis for this patch was a 
+misconfigured port entry pointing to BAR0.  BAR0 had already been mapped 
+for the FME and remapping BAR0 failed resulting in enumeration failure.
+
+Matthew
+
+>
+>> +
+>>  			start = pci_resource_start(pcidev, bar) + offset;
+>> -			len = pci_resource_len(pcidev, bar) - offset;
+>> +			len = pci_resource_len(pcidev, bar);
+>> +			if (offset >= len) {
+>> +				dev_warn(&pcidev->dev, "bad port
+>> offset %u >= %pa\n",
+>> +					 offset, &len);
+>> +				continue;
+>> +			}
+>>
+>> +			len -= offset;
+>> +			bars |= BIT(bar);
+>>  			dfl_fpga_enum_info_add_dfl(info, start, len);
+>>  		}
+>>  	} else if (dfl_feature_is_port(base)) {
+>> --
+>> 1.8.3.1
+>
+>
