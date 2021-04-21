@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F332B366BAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726DD366BAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240783AbhDUNFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:05:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43838 "EHLO mail.kernel.org"
+        id S240797AbhDUNFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240724AbhDUNER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:04:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3288A61456;
-        Wed, 21 Apr 2021 13:03:43 +0000 (UTC)
+        id S240488AbhDUNEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:04:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D95B76143B;
+        Wed, 21 Apr 2021 13:03:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010224;
-        bh=WiaT5Zae82YRFi67K4EqsuhyZXKsltlFHRzd5GC+MBw=;
+        s=korg; t=1619010227;
+        bh=uwUa5giK+hqOEz8KG6fYiKCbWvTf4cA9SwlNTJe96AE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUN6rHM/rKBdm89pQ2hlnDgKh90oiaHlNW/1DrSHKnN/apGihvrpjUP8awvv2jR/T
-         EX2aXAcfVOoMYHY6aA+d0opwRBMxwZiAJA9vk45SZTxPTOJtxQU2drZNo7ldHuDcJ9
-         0MxemuoJkpAGTcj+7Ng2AbUTfeOm+qGjASv1RfWo=
+        b=X2IVc8JRUKB44u9tHL74XqG8M108pk5V2LE9kFhF0KrLLo4SY+x3OV8tnGBe/nTO8
+         a3cvP4WIxsAkyQPz3PgbEOZd+9YHmxFe4rY1QXA1prEHNrNX96DhOEcxjrWL/BKzvk
+         CvA8+eOhiR/5AF1PNiOySrpAZaRQPLAAAEKqOAE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Aditya Pakki <pakki001@umn.edu>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 057/190] Revert "media: saa7146: Avoid using BUG_ON as an assertion"
-Date:   Wed, 21 Apr 2021 14:58:52 +0200
-Message-Id: <20210421130105.1226686-58-gregkh@linuxfoundation.org>
+Subject: [PATCH 058/190] Revert "media: cx231xx: replace BUG_ON with recovery code"
+Date:   Wed, 21 Apr 2021 14:58:53 +0200
+Message-Id: <20210421130105.1226686-59-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 1ec4c6efe23154b4ab44c1a34dbc0eb121eb614a.
+This reverts commit 93a24578de721006055b422c7772e0e417e1983c.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -59,33 +59,23 @@ Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/common/saa7146/saa7146_video.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/media/usb/cx231xx/cx231xx-i2c.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/common/saa7146/saa7146_video.c b/drivers/media/common/saa7146/saa7146_video.c
-index 7b8795eca589..d9d7d82ca451 100644
---- a/drivers/media/common/saa7146/saa7146_video.c
-+++ b/drivers/media/common/saa7146/saa7146_video.c
-@@ -345,8 +345,7 @@ static int video_begin(struct saa7146_fh *fh)
+diff --git a/drivers/media/usb/cx231xx/cx231xx-i2c.c b/drivers/media/usb/cx231xx/cx231xx-i2c.c
+index c6659253c6fb..f33b6a077d57 100644
+--- a/drivers/media/usb/cx231xx/cx231xx-i2c.c
++++ b/drivers/media/usb/cx231xx/cx231xx-i2c.c
+@@ -515,8 +515,7 @@ int cx231xx_i2c_register(struct cx231xx_i2c *bus)
+ {
+ 	struct cx231xx *dev = bus->dev;
  
- 	fmt = saa7146_format_by_fourcc(dev, vv->video_fmt.pixelformat);
- 	/* we need to have a valid format set here */
--	if (!fmt)
+-	if (!dev->cx231xx_send_usb_command)
 -		return -EINVAL;
-+	BUG_ON(NULL == fmt);
++	BUG_ON(!dev->cx231xx_send_usb_command);
  
- 	if (0 != (fmt->flags & FORMAT_IS_PLANAR)) {
- 		resource = RESOURCE_DMA1_HPS|RESOURCE_DMA2_CLP|RESOURCE_DMA3_BRS;
-@@ -399,8 +398,7 @@ static int video_end(struct saa7146_fh *fh, struct file *file)
- 
- 	fmt = saa7146_format_by_fourcc(dev, vv->video_fmt.pixelformat);
- 	/* we need to have a valid format set here */
--	if (!fmt)
--		return -EINVAL;
-+	BUG_ON(NULL == fmt);
- 
- 	if (0 != (fmt->flags & FORMAT_IS_PLANAR)) {
- 		resource = RESOURCE_DMA1_HPS|RESOURCE_DMA2_CLP|RESOURCE_DMA3_BRS;
+ 	bus->i2c_adap = cx231xx_adap_template;
+ 	bus->i2c_adap.dev.parent = dev->dev;
 -- 
 2.31.1
 
