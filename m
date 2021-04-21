@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525433668A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD3A366896
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238907AbhDUJ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52430 "EHLO mail.kernel.org"
+        id S238943AbhDUJ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238644AbhDUJ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:56:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1925C61582;
-        Wed, 21 Apr 2021 09:55:37 +0000 (UTC)
+        id S238604AbhDUJ4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:56:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6752561469;
+        Wed, 21 Apr 2021 09:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618998937;
-        bh=Ksv9YjFjtrxObzx24ubHLCHYQzR97rDs6O9O5M32Y9E=;
+        s=k20201202; t=1618998936;
+        bh=M3Pf9wAJy/8y/JxadSNZvlF/wHl5gLPyQbG2/y5Chec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xo+gdLo0wZl88+ZIU9ETD9DQj6nAHMGqRZR2vfMBWax16YBxqPkVI5VMNVSWs4qnK
-         Zd4TWxWiHjicP+wl+WqBseoTfB4K21KLh3erQaiCWT/opq0Ek42jQzGJ9C2ipNBZ4x
-         mSImIylqi+06i72GoMQ74cmWFMJLCP/Jlxyv5bz0qpboJvHV67JhAQW3w6eQPKYShW
-         t99UXt06Pdfx3CcuXE5kzQlSvJkCZsA4Jv1n+PEJR5a/cqXgJ18FPaOHZif8jZhNdV
-         05T6y+XIcK+EA9GMTMDaaJhbaI5ZIEYxWTOnQtOqKMi6KAajDBNdKlYJz5j3VEoI3K
-         cxsKw49p2AxRQ==
+        b=olJS+bQfx2QIzM5dhDM39QJZztvW69JcgeMS5+Cx19JjvKZ8/vqJxjQGNt5AZxPkY
+         EMIRfpnRkKBYPwnn3lv4aqQSveQ3pym8K0+TgrVC5byJXTS1MyPOMA5/I26iT8qiZ4
+         VQO9eBJdYLcV1pMgZFgSBWSTtuNSW4xrgaWLi35JHEFQRlHWt3Nh9cojg6g/lWxTnT
+         Au3gBm0et0ZTEz1wousLmibJ8AmP75le25aMwuDkkfptkWKPB8QSj1wM5huAR7SGRl
+         nTfQL3rmqeOSH91UjEWQMez6hnMAir4+HDTuE6XqGI9yRFYdWjV6A0cpAwiLSfTOit
+         +/tZc8gkAdtIA==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lZ9a7-0000on-Hf; Wed, 21 Apr 2021 11:55:39 +0200
+        id 1lZ9a7-0000or-KZ; Wed, 21 Apr 2021 11:55:39 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
         linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 10/26] serial: bcm63xx: drop low-latency workaround
-Date:   Wed, 21 Apr 2021 11:54:53 +0200
-Message-Id: <20210421095509.3024-11-johan@kernel.org>
+Subject: [PATCH 11/26] serial: icom: drop low-latency workaround
+Date:   Wed, 21 Apr 2021 11:54:54 +0200
+Message-Id: <20210421095509.3024-12-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210421095509.3024-1-johan@kernel.org>
 References: <20210421095509.3024-1-johan@kernel.org>
@@ -42,7 +42,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b4d499241c34 ("tty: serial: bcm63xx: drop uart_port->lock before
+Commit 5faf75d7fed2 ("tty: serial: icom: drop uart_port->lock before
 calling tty_flip_buffer_push()") claimed to address a locking
 issue but only provided a dubious lockdep splat from an unrelated
 driver, which in the end turned out to be due a broken local change
@@ -66,23 +66,23 @@ around.
 Link: https://lore.kernel.org/linux-serial/cover.1376923198.git.viresh.kumar@linaro.org/
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/tty/serial/bcm63xx_uart.c | 2 --
+ drivers/tty/serial/icom.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/tty/serial/bcm63xx_uart.c b/drivers/tty/serial/bcm63xx_uart.c
-index 5674da2b76f0..5fb0e84f7fd1 100644
---- a/drivers/tty/serial/bcm63xx_uart.c
-+++ b/drivers/tty/serial/bcm63xx_uart.c
-@@ -294,9 +294,7 @@ static void bcm_uart_do_rx(struct uart_port *port)
+diff --git a/drivers/tty/serial/icom.c b/drivers/tty/serial/icom.c
+index 94af7a5ea497..9e9abfc4824a 100644
+--- a/drivers/tty/serial/icom.c
++++ b/drivers/tty/serial/icom.c
+@@ -829,9 +829,7 @@ static void recv_interrupt(u16 port_int_reg, struct icom_port *icom_port)
+ 	}
+ 	icom_port->next_rcv = rcv_buff;
  
- 	} while (--max_count);
- 
--	spin_unlock(&port->lock);
- 	tty_flip_buffer_push(tty_port);
--	spin_lock(&port->lock);
+-	spin_unlock(&icom_port->uart_port.lock);
+ 	tty_flip_buffer_push(port);
+-	spin_lock(&icom_port->uart_port.lock);
  }
  
- /*
+ static void process_interrupt(u16 port_int_reg,
 -- 
 2.26.3
 
