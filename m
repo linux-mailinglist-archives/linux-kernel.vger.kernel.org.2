@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D256366B81
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A637366B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240167AbhDUNCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:02:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42048 "EHLO mail.kernel.org"
+        id S240258AbhDUNC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:02:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240223AbhDUNCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:02:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C804161454;
-        Wed, 21 Apr 2021 13:02:08 +0000 (UTC)
+        id S240205AbhDUNCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:02:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B5646145B;
+        Wed, 21 Apr 2021 13:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010129;
-        bh=rGCAxYqn74DQeaaL7lVQJ6ywr1XrHm1+ENyR03tjiGE=;
+        s=korg; t=1619010132;
+        bh=fOU2FDMvsE7xFnzExHkGW7apxotDv7PtnoucnB5KD/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zvGzYzLEfdJdz/JGxxXUgPZ3UkKDnHSAQ6Dr02tlLS1uFgFu/80ply9PcLWs6hyAs
-         ekqI5Gq8abqQzimmaz2QS6Zr4FCrFEtBnemuD/e+JSCwxwE6uW1Dc+Ehd9l+TJrM4r
-         LVUHP1JR5no0ppFfK1YeMHd/IlQ/EUUd0u+4gutg=
+        b=HXV5qKXMPP72gLnZFj7htLZFmBUElY7ZxVa7PfJ0qdnJbabC6CFdaQZ1mu8tw9bxG
+         mFgP7C5Ymy0bbOXhT9+0vCcY/mGIEtQ06YjRy4UDB9ykup+g7zh/U9cLx+tea9yZui
+         y7AvMLliHYNJ13VMaLL+D823a0d2e7kkG1KRQcXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Evan Quan <evan.quan@amd.com>, Aditya Pakki <pakki001@umn.edu>,
+        Aditya Pakki <pakki001@umn.edu>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 022/190] Revert "drm/radeon: Fix reference count leaks caused by pm_runtime_get_sync"
-Date:   Wed, 21 Apr 2021 14:58:17 +0200
-Message-Id: <20210421130105.1226686-23-gregkh@linuxfoundation.org>
+Subject: [PATCH 023/190] Revert "drm/radeon: fix multiple reference count leak"
+Date:   Wed, 21 Apr 2021 14:58:18 +0200
+Message-Id: <20210421130105.1226686-24-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 9fb10671011143d15b6b40d6d5fa9c52c57e9d63.
+This reverts commit 6f2e8acdb48ed166b65d47837c31b177460491ec.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,64 +53,77 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Evan Quan <evan.quan@amd.com>
 Cc: Aditya Pakki <pakki001@umn.edu>
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/radeon/radeon_display.c | 4 +---
- drivers/gpu/drm/radeon/radeon_drv.c     | 4 +---
- drivers/gpu/drm/radeon/radeon_kms.c     | 4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/radeon/radeon_connectors.c | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-index 652af7a134bd..9f29ba6c2bed 100644
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -627,10 +627,8 @@ radeon_crtc_set_config(struct drm_mode_set *set,
- 	dev = set->crtc->dev;
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+index 607ad5620bd9..ba8885676676 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -879,10 +879,8 @@ radeon_lvds_detect(struct drm_connector *connector, bool force)
  
- 	ret = pm_runtime_get_sync(dev->dev);
--	if (ret < 0) {
--		pm_runtime_put_autosuspend(dev->dev);
-+	if (ret < 0)
- 		return ret;
--	}
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0) {
+-			pm_runtime_put_autosuspend(connector->dev->dev);
++		if (r < 0)
+ 			return connector_status_disconnected;
+-		}
+ 	}
  
- 	ret = drm_crtc_helper_set_config(set, ctx);
+ 	if (encoder) {
+@@ -1027,10 +1025,8 @@ radeon_vga_detect(struct drm_connector *connector, bool force)
  
-diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
-index efeb115ae70e..468b364c2dab 100644
---- a/drivers/gpu/drm/radeon/radeon_drv.c
-+++ b/drivers/gpu/drm/radeon/radeon_drv.c
-@@ -513,10 +513,8 @@ long radeon_drm_ioctl(struct file *filp,
- 	long ret;
- 	dev = file_priv->minor->dev;
- 	ret = pm_runtime_get_sync(dev->dev);
--	if (ret < 0) {
--		pm_runtime_put_autosuspend(dev->dev);
-+	if (ret < 0)
- 		return ret;
--	}
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0) {
+-			pm_runtime_put_autosuspend(connector->dev->dev);
++		if (r < 0)
+ 			return connector_status_disconnected;
+-		}
+ 	}
  
- 	ret = drm_ioctl(filp, cmd, arg);
+ 	encoder = radeon_best_single_encoder(connector);
+@@ -1167,10 +1163,8 @@ radeon_tv_detect(struct drm_connector *connector, bool force)
  
-diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-index 2479d6ab7a36..df644bb68c0f 100644
---- a/drivers/gpu/drm/radeon/radeon_kms.c
-+++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -644,10 +644,8 @@ int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
- 	file_priv->driver_priv = NULL;
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0) {
+-			pm_runtime_put_autosuspend(connector->dev->dev);
++		if (r < 0)
+ 			return connector_status_disconnected;
+-		}
+ 	}
  
- 	r = pm_runtime_get_sync(dev->dev);
--	if (r < 0) {
--		pm_runtime_put_autosuspend(dev->dev);
-+	if (r < 0)
- 		return r;
--	}
+ 	encoder = radeon_best_single_encoder(connector);
+@@ -1253,10 +1247,8 @@ radeon_dvi_detect(struct drm_connector *connector, bool force)
  
- 	/* new gpu have virtual address space support */
- 	if (rdev->family >= CHIP_CAYMAN) {
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0) {
+-			pm_runtime_put_autosuspend(connector->dev->dev);
++		if (r < 0)
+ 			return connector_status_disconnected;
+-		}
+ 	}
+ 
+ 	if (radeon_connector->detected_hpd_without_ddc) {
+@@ -1665,10 +1657,8 @@ radeon_dp_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0) {
+-			pm_runtime_put_autosuspend(connector->dev->dev);
++		if (r < 0)
+ 			return connector_status_disconnected;
+-		}
+ 	}
+ 
+ 	if (!force && radeon_check_hpd_status_unchanged(connector)) {
 -- 
 2.31.1
 
