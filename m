@@ -2,130 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D10366CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90EB366CDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242106AbhDUN3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:29:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
+        id S242214AbhDUNaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:30:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235518AbhDUN3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:29:54 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6B5361449;
-        Wed, 21 Apr 2021 13:29:20 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 09:29:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Wenwen Wang <wang6495@umn.edu>
-Subject: Re: [PATCH 081/190] Revert "tracing: Fix a memory leak by early
- error exit in trace_pid_write()"
-Message-ID: <20210421092919.2576ce8d@gandalf.local.home>
-In-Reply-To: <20210421130105.1226686-82-gregkh@linuxfoundation.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
-        <20210421130105.1226686-82-gregkh@linuxfoundation.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S241644AbhDUNaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:30:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3F46008E;
+        Wed, 21 Apr 2021 13:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619011774;
+        bh=rUnHKzP2RJ+ynrTW2RlaXW0lo2URfY8WXPco0RHrmhA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WmOMr47J7IUhfxH30sb0ENh/Y5r04C5SSNWqfNlcKXehPbaisPYnTtTymP7jFdkdK
+         S3WBcYogZuBO0Ga/GA/W9KzsfYZd4t+AAHyVLk4DXtAvMDwRD6FwieCvr7xRCQyXm8
+         yIYgQR9X+EexcF19O/3cMud8LGJXXxPBMkf/RXJJ9WZsippbIj236iaknYuyUk+a8f
+         kPHXwgvt48cwt3zGKK7yvULanP/IN2xJcVyZIK4p4fdaPLkZ2rUZNhBF0LqS/No8cZ
+         ys3Snv48iGu2vEcAi8/KxUingyaMJw3W48sFrgCivwWdzib1Qg9+2ViyxZ6iMYWQo5
+         +TlLNtw1G2PGQ==
+Received: by mail-ej1-f44.google.com with SMTP id u21so63547003ejo.13;
+        Wed, 21 Apr 2021 06:29:34 -0700 (PDT)
+X-Gm-Message-State: AOAM530RXfMwClKsswEOVpSl/UafQzP14nlC1UYduGVMzcOlXw8xTV44
+        Pb5vSNH2vNDRZPc2gugKpLJ3mphAqJtbkZvY3Ho=
+X-Google-Smtp-Source: ABdhPJzMMViUuqtQ9pug04qjkPSYYz7pojO/DjCrp5ViV8Ea+sF18hev3n7o3ZUu4TY3HK36SWIvvE4DjLKH0lKbbO0=
+X-Received: by 2002:a17:906:4e93:: with SMTP id v19mr32199993eju.215.1619011772820;
+ Wed, 21 Apr 2021 06:29:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200614033106.426-1-wu000273@umn.edu> <013fba3b-2451-855b-08d4-87682464b8bf@xs4all.nl>
+In-Reply-To: <013fba3b-2451-855b-08d4-87682464b8bf@xs4all.nl>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 21 Apr 2021 15:29:21 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPc2_J-_m_e0+xGW=RHgx6p67yMTTfQhjVkEHUmVB5DGzQ@mail.gmail.com>
+Message-ID: <CAJKOXPc2_J-_m_e0+xGW=RHgx6p67yMTTfQhjVkEHUmVB5DGzQ@mail.gmail.com>
+Subject: Re: [PATCH] media: sti: Fix reference count leaks
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Jean-Christophe Trotin <jean-christophe.trotin@st.com>,
+        wu000273@umn.edu, kjlu@umn.edu,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 14:59:16 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Thu, 17 Sept 2020 at 13:45, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> Hi Jean-Christophe,
+>
+> I'll take this patch, but while reviewing it I noticed something else:
+>
+> On 14/06/2020 05:31, wu000273@umn.edu wrote:
+> > From: Qiushi Wu <wu000273@umn.edu>
+> >
+> > pm_runtime_get_sync() increments the runtime PM usage counter even
+> > when it returns an error code, causing incorrect ref count if
+> > pm_runtime_put_noidle() is not called in error handling paths.
+> > Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+> >
+> > Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+> > ---
+> >  drivers/media/platform/sti/hva/hva-hw.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
+> > index 401aaafa1710..bb13348be083 100644
+> > --- a/drivers/media/platform/sti/hva/hva-hw.c
+> > +++ b/drivers/media/platform/sti/hva/hva-hw.c
+> > @@ -272,6 +272,7 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
+> >
+> >       if (pm_runtime_get_sync(dev) < 0) {
+> >               dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
+> > +             pm_runtime_put_noidle(dev);
+> >               mutex_unlock(&hva->protect_mutex);
+>
+> This appears to be a spurious mutex_unlock() since I don't see a corresponding mutex_lock.
+>
+> Jean-Christophe, can you check this and, if I am right, post a patch fixing this?
 
-> This reverts commit 91862cc7867bba4ee5c8fcf0ca2f1d30427b6129.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
+Probably patch should be skipped due to uncertain intentions:
+https://lore.kernel.org/linux-nfs/YH+7ZydHv4+Y1hlx@kroah.com/
 
-I have reviewed this change, and this is a valid fix and does not need to
-be reverted.
-
-The code before the change is:
-
-	if (trace_parser_get_init(&parser, PID_BUF_SIZE + 1))
-		return -ENOMEM;
-
-Where that does:
-
-int trace_parser_get_init(struct trace_parser *parser, int size)
-{
-	memset(parser, 0, sizeof(*parser));
-
-	parser->buffer = kmalloc(size, GFP_KERNEL);
-	if (!parser->buffer)
-		return 1;
-
-	parser->size = size;
-	return 0;
-}
-
-And the trace_parser_put() does:
-
-void trace_parser_put(struct trace_parser *parser)
-{
-	kfree(parser->buffer);
-	parser->buffer = NULL;
-}
-
-Hence, exiting the function without calling trace_parser_put() will indeed
-leak memory.
-
-Please do not revert this patch.
-
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
-
-> Cc: http
-> Cc: stable@vger.kernel.org
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  kernel/trace/trace.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 5c777627212f..faed4f44d224 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -691,10 +691,8 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
->  	 * not modified.
->  	 */
->  	pid_list = kmalloc(sizeof(*pid_list), GFP_KERNEL);
-> -	if (!pid_list) {
-> -		trace_parser_put(&parser);
-> +	if (!pid_list)
->  		return -ENOMEM;
-> -	}
->  
->  	pid_list->pid_max = READ_ONCE(pid_max);
->  
-> @@ -704,7 +702,6 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
->  
->  	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
->  	if (!pid_list->pids) {
-> -		trace_parser_put(&parser);
->  		kfree(pid_list);
->  		return -ENOMEM;
->  	}
-
+Best regards,
+Krzysztof
