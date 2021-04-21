@@ -2,75 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A550D366A0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCD6366A19
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238761AbhDULmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 07:42:13 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51371 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237575AbhDULmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 07:42:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQJYF6wJkz9sjB;
-        Wed, 21 Apr 2021 21:41:37 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619005298;
-        bh=I1NgyMIoyOKjCXFY2N2P3O3RsN3GgwWYHvsxpNnyoqM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Xi/Q8XLYVdP8mcDWDulCFUw07IDCHLva9me5ippvneiaSH3pegHI4Ta6cwf8/0wgv
-         /6sJJT65zPvMMfuf4w8P1oHgZ8769SJm6cNfkdTJ+lLgnYsHDh/ot8yeFR1fycUU7t
-         Ee+sjUz4N9ExO/cvVf2/Fw36vnrAlL8ByvBQUdbpc+leHjnUUsG0dvLoPXCFt0mzo1
-         4ka88IkNNqlQf55odi/ebX6Y4Y0dz0uFxJvoU9OiY3cGKmRNzlFMsTcE4O+79jedKK
-         MXP4twumABbE/zvunfi26bCqRuQaoZGg3LKSMF35gGkR2feNLM0bqlcEi9j8J5I8Db
-         8hlkHX2un6wpQ==
-Date:   Wed, 21 Apr 2021 21:41:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guo Ren <ren_guo@c-sky.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the csky tree
-Message-ID: <20210421214136.2aa5d34b@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rs79qFZyJFWlCYYLItY1H_b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S239153AbhDULpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 07:45:17 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:27473 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235020AbhDULpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 07:45:16 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 21 Apr 2021 04:44:43 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Apr 2021 04:44:41 -0700
+X-QCInternal: smtphost
+Received: from c-rkambl-linux1.ap.qualcomm.com (HELO c-rkambl-linux1.qualcomm.com) ([10.242.50.221])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 21 Apr 2021 17:14:07 +0530
+Received: by c-rkambl-linux1.qualcomm.com (Postfix, from userid 2344811)
+        id B6ECD4828; Wed, 21 Apr 2021 17:14:06 +0530 (IST)
+From:   Rajeshwari <rkambl@codeaurora.org>
+To:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sanm@codeaurora.org, Rajeshwari <rkambl@codeaurora.org>
+Subject: [PATCH V1 0/2] ARM: dts: qcom:  Add device node support for TSENS in SC7280.
+Date:   Wed, 21 Apr 2021 17:14:00 +0530
+Message-Id: <1619005442-16485-1-git-send-email-rkambl@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rs79qFZyJFWlCYYLItY1H_b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add TSENS node, user thermal zone configurations, critical interrupt,
+cooling maps and configuration in yaml for TSENS in SC7280.
 
-Hi all,
+Dependencies:
+https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+https://lore.kernel.org/patchwork/patch/1410952/
 
-Commit
+Rajeshwari (2):
+  ARM: dts: qcom:  Add device node support for TSENS in SC7280.
+  dt-bindings: thermal: tsens: Add configuration in yaml
 
-  8bfe70e69658 ("csky: fix syscache.c fallthrough warning")
+ .../devicetree/bindings/thermal/qcom-tsens.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 874 +++++++++++++++++++++
+ 2 files changed, 875 insertions(+)
 
-is missing a Signed-off-by from its committer.
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rs79qFZyJFWlCYYLItY1H_b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCAD3AACgkQAVBC80lX
-0GxrQwf+Np4pQQ5ssGNYRtaQ6MCx0T+WrQswkqknEq507Yq2F2tpb9RbTpkxlEN7
-RuRRZmqk63sQriqIRH6unwlmFgwcMouZivO/qV4cU+7lBO3dFjDh6z04ZoobP5ot
-iMWsa6uxCvkG+ex+kUQFMjKNYNZaorfDadbzyki2od9OycMm5xkfBA5jHmoMgdZX
-0qEKF+T7CRM9DDGQhD76dZBUTUHCpvp+yptkvwmWbbTZdQcoU+gePgFCnLvp7CKp
-YlfKPqYIojZPGNtCTlS5mJSzeLadJSXOjXhlPy/EzF0vRL45oLvxspXBvDM0Bwdx
-nz0Av+CUrwUE2L2KSfgoQS0yLX7jAg==
-=FtTS
------END PGP SIGNATURE-----
-
---Sig_/rs79qFZyJFWlCYYLItY1H_b--
