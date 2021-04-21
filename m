@@ -2,178 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1703B366B5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9BA366B56
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238484AbhDUM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:56:00 -0400
-Received: from mail-eopbgr60056.outbound.protection.outlook.com ([40.107.6.56]:33643
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233932AbhDUMz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:55:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CC/b2PS7aUiUqo744qOeqQ354+eyhOL7X6LOBLu4aio0y/2XbIPsUsyMW9cZLA7FRB7a5AnjRJGxdMA50/oNhV3hBwUYxx73L+adC2mAOrIQ/ukAWX7iPP6TxPIHOyLvWuh8xtspY400cuDWrSWvZF2ya5SPsf+4RVvFzYlDmt6q90L/YC7x0Ez47HVZCBcTWel8ksu5YUD/y6E3YdhmLU6flTu2iy+rl+dy1UacFtG6UJO6HgZk/TtkICdkLJEN79BxWddWdENtZciLg4FMI2NHioIyj4t9VE5aNRkeQAie93yBrtdVqwrj2PDcDjJUAXfHiQIeAVw98CQnCNCHig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xy1LYzs8uC64ANtO1ePiWYreAA9Z+i0Wa1SSz9Cme4w=;
- b=JsoDTLudaSQ7Y2sZ8BzOnkskKfwIPuTX7ZMCQAqDQztYS0UQumKQPe8jFknc50C8Y3xK5xfZEcqjO47i99qdt60JIuXyP3saNiaDY2y/FAM/jtUhnLvKyKhPCdTTSqS9WwaCT1FOgUJM/GW6z5+ftjD8E4exEAEhDLEl3nJvnvtNVlI/0ZzvtvCoNc2dldRwVPTU9ZiX74V1v9nhyoJv398s11wFjqmLJ9ip/0Cw1SC5NKy0hiHoE9s/n9jiv2WX9H6odtfDs9z4OXRtV3g9vhf69Ef8g9McMf5NGphA8vnHNZLZJK31/IOksSYDYpy3kgRhTkc28FxphKgUTdoq2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xy1LYzs8uC64ANtO1ePiWYreAA9Z+i0Wa1SSz9Cme4w=;
- b=UDLMFxBjgauEngknFnOPWDGZNAIW5zK2CFK81OfleCAGQhhr8lGG4m1RPUJFu4QKLmzXki9/xvmQ5YxVkQHYzuJpKdKKlvPtuD0GaXxHX5H2wIZxUnngdMaSgHk4qW0l2IrGM5XtXP7kjtO6/ZW89ISSL+1JWehqFSgiS2KFvH0=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4065.21; Wed, 21 Apr 2021 12:54:30 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f4d0:ee66:d5fb:9cdd]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::f4d0:ee66:d5fb:9cdd%3]) with mapi id 15.20.4065.021; Wed, 21 Apr 2021
- 12:54:30 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "cw00.choi@samsung.com" <cw00.choi@samsung.com>,
-        "broonie@kernel.org" <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
-Thread-Topic: [PATCH v3 2/8] MAINTAINERS: Add entry for devm helpers
-Thread-Index: AQHXH+xi61CpXgfyeUm0V+UG1OxzHKqRmVoAgAAF/ICALWwlmoAABUKAgAACggCAAAfWgA==
-Date:   Wed, 21 Apr 2021 12:54:29 +0000
-Message-ID: <d434f4abf974cccfe51132c37c35843b1bbc2b77.camel@fi.rohmeurope.com>
-References: <cover.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-         <eec1797734e3d080662aa732c565ed4a3c261799.1616506559.git.matti.vaittinen@fi.rohmeurope.com>
-         <e064fdd7-b276-6732-16fe-2eb2564b2179@redhat.com>
-         <YFn5CSB1O3i+SzgR@kroah.com>
-         <da0233f3223d7c0816581afe0969caf0abe20378.camel@fi.rohmeurope.com>
-         <96935c55-c799-595e-024c-56fd352f279e@redhat.com>
-         <2f6d096c30a6d1d22422cf9c3553d74132f75708.camel@fi.rohmeurope.com>
-         <171af93e-e5be-b35f-23d4-0ccf37062902@redhat.com>
-In-Reply-To: <171af93e-e5be-b35f-23d4-0ccf37062902@redhat.com>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [2001:14ba:16e2:8300::6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1e6cd9b9-d1e3-4872-bfec-08d904c49a64
-x-ms-traffictypediagnostic: HE1PR03MB3162:
-x-microsoft-antispam-prvs: <HE1PR03MB3162E46E72F1073FF759BC1DAD479@HE1PR03MB3162.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oddVuGClWWceGn7iLsqmtc+Fwdw7sChZm2dsek0z2f539EYzn7qtphomxZRt08SnRClSJAzv3U6J6vuUkwDPPL+cL/erXe+IeK/3+/EThLHKs/9VmayPZKWUlxKKTR325Jpk01gIbWKWpcJdsNY4HiGExPbxuECFmyBajUZiO+QO3r2h+QtSOYsQglaECXUUI0eFp93/kkCBflsl1gZYCRoGPNPxiCd3WsPpa8BqI0Md+SMk/dygaVmyB1ihppdclp4aokYFKr/n9fGLAxBIcllpGd/XRUXwtkjj4oQcG1sIFvlmNI6GKbZeyG8kOWyx5rstcSaJarrvi1xlmQvICNkD6ksNWkmY5Dw2Vgm7uobaCpo8BkRTFgHGcGjK4zZnmG2q3BCgYN8z6VsBc4OSAedNRt8bz7ONeOwm/3Fpki4Wm06C6TlE6yLLygfCUAidLE++5E9/vJQya6Laq0HQQSMEPwtj/ozLM5uucgVele/r4WW3knlUmw69Vr6g7C7upJGzp1Blf+ArO6kBm+4GT6ywNbCVOFP2LYoGf+Px+oxyyhD5Nz+1m6Bu4zBUZtb6XoDV6R0yF8EY2ZhxnnILEZ906n2XM1lvDOz4OxTjGeQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(396003)(366004)(136003)(2616005)(5660300002)(54906003)(4326008)(6486002)(110136005)(8676002)(8936002)(86362001)(122000001)(3450700001)(38100700002)(2906002)(66946007)(66556008)(64756008)(71200400001)(66446008)(478600001)(76116006)(7416002)(6512007)(6506007)(53546011)(316002)(186003)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dEN4a3EveTBOVk9VUUxMb3RveVllZExpU1J0dlZjWHhZcEhlNFdSZUJ6eHZE?=
- =?utf-8?B?ZUdhSFhLZHdMdzRyeDBlMG5EQ1hzSzc1eFhhOFdnR0NjYm42cUdzTEllcjdS?=
- =?utf-8?B?UzEzYWFZV0NyNFJPWThiYmdJdkExa1FIN3ZGbSt0VVZ0YmIyTFN1cnd2MHJo?=
- =?utf-8?B?RjhFN2xuK0l4UW1Pejg0VG5SUnNmOGhMUmhMelpsNVU0UFNFN0hBcTcrRWVZ?=
- =?utf-8?B?ZTg1dTNOK29VVVZqN3dzZHhzdzZMbHNlZ2crRWIrbk9yOHVYaFQvc204VUh2?=
- =?utf-8?B?VThpRm1sb2xxTUNSRFFCN0xnTTNTTGlSamgzN0JqWm9xY09Oem1SWWg3dlNQ?=
- =?utf-8?B?aVZWeTNjMDdMSkxHMVgwOURKdHc1YTBhRzl1QjJpRXNqSHhtL1BFZjJ1WTFh?=
- =?utf-8?B?bkVRSXlpVUxxemQ5dXFYN2xCNElET1BFUEJrdUNMWnhRNzlNSnBqYk9EOGJL?=
- =?utf-8?B?OVRyMCsyQlU2eVJFdGZ2OFQ2MXFGYlhPcUtMVE13OWhFQlFNS0FyKzVYMmFw?=
- =?utf-8?B?dG1ONjFUckxLYzdkSTNGY09jVis2c2J6bmVTaDI2RHdsTW44WmhlQVdLZGdP?=
- =?utf-8?B?UTRiM3Ftd3JvY1JYTVZjNzRCOU5LMUNKQmRrcXY0YmwwU2lVK2JTRTU3UENm?=
- =?utf-8?B?TmUwQ0krUE5uTUx5MzVqaTZkcXZYd1pPVjd0KzdJNTFYVW53UW1GbFpmcDFN?=
- =?utf-8?B?VWVSOU0vdEh1VTh0dmRXYUtyRGJCUlc1N3NWQ09VaFo2Z091VUpxUjZIcjNV?=
- =?utf-8?B?MXlJYnd0TXhuSUlWMDhKbys2bEtFQmdUY0RZZXovUU5VWVlFYlNUZWthdldk?=
- =?utf-8?B?YmdiNlErWHlHV0VLWTYybllZeHF2dUNRMHd2UnVPeHhUUWl5azZNNlNFeWpX?=
- =?utf-8?B?c0IrbklNYk1YZG9xTTc1ZkwydGswSzRVUDlNajMzeitYZ3RUNk9lbTJ4bmUv?=
- =?utf-8?B?czNrNVBhODNPTG16SXRkOWpGU20zRDZCbWFNR1NtU2NmRDJmSUN3SHNROXcr?=
- =?utf-8?B?V3lXYzlNSWZ0UjhSSEk2VFFBVFIrVXZibEk1YnVpT25aWWtlcWVOcXl2dmxn?=
- =?utf-8?B?clhxei82V1VoNnRyRFNObFcvZXFrazZjUzdIYkVzdG43Y09uS3ZxOWJ2Uy95?=
- =?utf-8?B?VDNSdG5TRlVVWkUwemQxT3BrV0JydTFPRzA5LzZWUDNNbm5IQU9GUTJRM2Vp?=
- =?utf-8?B?NWJkRHVwWjNrWUUvbVJYM2ZMcnVzSnJaUUZPS0VFeklaY3lzNDNBcGZ0a05F?=
- =?utf-8?B?Um1MR0dMczRVYzJUT0JUWjRFNUZ4OUx6SlpHcitBYVR4Sis3cUNIYTRSYWNp?=
- =?utf-8?B?c09ZNG4zTjU1SEdmNFJZdG9GcEJtc0xqSnZ2azZxbC9pSnpsRDlzaEJkamt1?=
- =?utf-8?B?d3d3bnhUYko5am1yZ1hqVTZPSWRZNW94K2xUc3VOc2ZVSE1VZVZ6eDh3Umhu?=
- =?utf-8?B?aGgrUWpIYzdHU3lRNUdGSWIxZ2ZxZFlORDdHRmtnc3JTY0JabURoOUR2VU1H?=
- =?utf-8?B?VG1aN1U0SXRLazJ5aXlGc0tlYVBSM1NyQS9BSDgyVjVNM1dZUGVEUmV3cjFy?=
- =?utf-8?B?RVFqdmZ2YnB5VXgvVHlTODc2SC9ackl5UWlqMGVWSVNTSTZseW1DZmRsMXBL?=
- =?utf-8?B?RkNCNzFGdlJrc3B4eTlmRGNSMkZLYmcrS3pCUnlQV1Z3SGd5Ym4yc3RFZFBa?=
- =?utf-8?B?TGRHYzlmczNQcTZwVmlLV0tVUWNjbDJqRmFDaWRVOUJYc3NhNnFsOU5DRC95?=
- =?utf-8?B?UjBpbDVZajZmdGsyU1AvUkZxNlY4S1EvZXBmR1liUWhuajQ3UmVQNWpFM3kv?=
- =?utf-8?Q?J+MttdVGPiGnwcTCH1w+u5mdxGTmWwAd3INvU=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A11924D40180CA409E1B82226A98158E@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S238277AbhDUMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:55:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:6510 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234786AbhDUMzh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:55:37 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LCXcVX172431;
+        Wed, 21 Apr 2021 08:55:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+8tDOy3QEBxTbIcWNen4a65kOsTqC91/N7Cf3PLS8Us=;
+ b=szK4U/DPEjiUPIgrukXi7tpq303SPBTJZT9QAmVf2hbOEjWwr70ejQwu+v56zafV6fgf
+ rQyFT4gIkCVi2eeiw/sJr4FB/Fz1C1aiB4k/qyQT/+2g6Yan9STdBNBQIGV0X1AI2GAD
+ uBBgjBL90/s0W/VywMDeSaLv3uuoIDWj63t4NbbCIvKBE5D6iCZjqzefpOoPhQgVcrLr
+ 5c5LhAuYKASpXHzfs//Pm1j1653opXYHF9eMbGHRttl4YNTAY9SOqEkZwT7WSaDtbNsz
+ Uk4PPSmO8ZCINofCPHAYcKuavnrSXFd+V6yRuPnDQjLOQZm9uKMO3hSXcHyI6mmPxdD0 qA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 382kvps42f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 08:55:02 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13LCYiXR178998;
+        Wed, 21 Apr 2021 08:55:02 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 382kvps41g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 08:55:01 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13LCre3L025882;
+        Wed, 21 Apr 2021 12:55:00 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma02wdc.us.ibm.com with ESMTP id 37yqaa1y72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 12:55:00 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13LCt0a736372988
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Apr 2021 12:55:00 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 216C9B2065;
+        Wed, 21 Apr 2021 12:55:00 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A05FB2064;
+        Wed, 21 Apr 2021 12:55:00 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Apr 2021 12:55:00 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] certs: Add support for using elliptic curve keys
+ for signing modules
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     keyrings@vger.kernel.org, dhowells@redhat.com, zohar@linux.ibm.com,
+        jarkko@kernel.org, nayna@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210408152403.1189121-1-stefanb@linux.ibm.com>
+ <20210408152403.1189121-3-stefanb@linux.ibm.com> <YH7fKUjJoynyPkHt@gunter>
+ <794ef635-de91-9207-f28b-ab6805fd95c9@linux.ibm.com>
+ <YIAf9jYGu03lrJLn@gunter>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <c562e50f-b25c-4cf0-80c7-a5aa56d0d5f7@linux.ibm.com>
+Date:   Wed, 21 Apr 2021 08:54:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e6cd9b9-d1e3-4872-bfec-08d904c49a64
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2021 12:54:29.8232
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: D0uProzUlzNNqaKbgz/RxQAgAzRZNyujPkIjmVnh7FIYZQhgJTn5Ep4GU+LKTTHes5sOXnX28NhKYLB7anos91OvCfB37DfXA4skVetA+If/YJ6pRS9IB28JDRRt3Ypt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB3162
+In-Reply-To: <YIAf9jYGu03lrJLn@gunter>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: QF7k2R3pV0gPlh4Hzgnkvb8mPH9PNfI-
+X-Proofpoint-GUID: toVW58-lb19Rnfj7q1nOQnXtj4hWX46B
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-21_04:2021-04-21,2021-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 spamscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 clxscore=1015 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA0LTIxIGF0IDE0OjI2ICswMjAwLCBIYW5zIGRlIEdvZWRlIHdyb3RlOg0K
-PiBIaSwNCj4gDQo+IE9uIDQvMjEvMjEgMjoxNyBQTSwgVmFpdHRpbmVuLCBNYXR0aSB3cm90ZToN
-Cj4gPiBPbiBXZWQsIDIwMjEtMDQtMjEgYXQgMTM6NTggKzAyMDAsIEhhbnMgZGUgR29lZGUgd3Jv
-dGU6DQo+ID4gPiBIaSwNCj4gPiA+IA0KPiA+ID4gT24gNC8yMS8yMSA5OjUxIEFNLCBNYXR0aSBW
-YWl0dGluZW4gd3JvdGU6DQo+ID4gPiA+IE9uIFR1ZSwgMjAyMS0wMy0yMyBhdCAxNToxOSArMDEw
-MCwgR3JlZyBLSCB3cm90ZToNCj4gPiA+ID4gPiBPbiBUdWUsIE1hciAyMywgMjAyMSBhdCAwMjo1
-ODoyOFBNICswMTAwLCBIYW5zIGRlIEdvZWRlDQo+ID4gPiA+ID4gd3JvdGU6DQo+ID4gPiA+ID4g
-PiBIaSwNCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gT24gMy8yMy8yMSAyOjU2IFBNLCBNYXR0
-aSBWYWl0dGluZW4gd3JvdGU6DQo+ID4gPiA+ID4gPiA+IERldm0gaGVscGVyIGhlYWRlciBjb250
-YWluaW5nIHNtYWxsIGlubGluZSBoZWxwZXJzIHdhcw0KPiA+ID4gPiA+ID4gPiBhZGRlZC4NCj4g
-PiA+ID4gPiA+ID4gSGFucyBwcm9taXNlZCB0byBtYWludGFpbiBpdC4NCj4gPiA+ID4gPiA+ID4g
-DQo+ID4gPiA+ID4gPiA+IEFkZCBIYW5zIGFzIG1haW50YWluZXIgYW5kIG15c2VsZiBhcyBkZXNp
-Z25hdGVkIHJldmlld2VyLg0KPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+IFVsdGltYXRlbHkg
-dGhpcyBpcyB1cCB0byBHcmVnIHRob3VnaCwgc28gbGV0cyB3YWl0IGFuZCBzZWUNCj4gPiA+ID4g
-PiA+IHdoYXQNCj4gPiA+ID4gPiA+IEdyZWcgaGFzIHRvIHNheSBhYm91dCB0aGlzLg0KPiA+ID4g
-PiA+IA0KPiA+ID4gPiA+IENhbiB3ZSBtb3ZlIHNvbWUgb2YgdGhlIGRldm1fKiBjYWxscyBpbiBp
-bmNsdWRlL2RldmljZS5oIGludG8NCj4gPiA+ID4gPiBoZXJlIGFzDQo+ID4gPiA+ID4gd2VsbCBz
-byB0aGF0IHlvdSBhbGwgY2FuIGJlIGluIGNoYXJnZSBvZiB0aGVtIGluc3RlYWQgb2YgbWU/DQoN
-Ci4uLg0KDQo+ID4gYnV0IHdoYXQgY29tZXMgdG8gbXkgKG5vdCBhbHdheXMgc28gaHVtYmxlKSBv
-cGluaW9uIC0gbW9zdCBvZg0KPiA+IHRoZSBkZXZtIGZ1bmN0aW9ucyBpbiBkZXZpY2UuaCBhcmUg
-dGlnaHRseSByZWxhdGVkIHRvIHRoZSBkZXZpY2UNCj4gPiBpbnRlcmZhY2Ugb3IgZGV2cmVzLiBU
-aHVzIHRoZSBkZXZpY2UuaCBmZWVscyBsaWtlIGFwcHJvcHJpYXRlIHBsYWNlDQo+ID4gZm9yDQo+
-ID4gbW9zdCBvZiB0aG9zZS4NCj4gDQo+IEkgYWdyZWUgd2l0aCB5b3UgdGhhdCBtb3N0IGRldm1f
-IGZ1bmN0aW9ucyBpbiBkZXZpY2UuaCBhcmUgcHJvYmFibHkNCj4gbGVmdCB0aGVyZS4gTW92aW5n
-IHRoZW0gd2lsbCBhbHNvIG1lYW4gbW9kaWZ5aW5nIGFsbCB0aGUgZHJpdmVycw0KPiB3aGljaCB1
-c2UgdGhlbSB0byBpbmNsdWRlIHRoZSBuZXcgZGV2bS1oZWxwZXJzLmggaW5jbHVkZSBmaWxlDQo+
-IHdoaWNoIHNlZW1zIGxpa2UgbmVlZGxlc3MgY2h1cm4uDQo+IA0KPiA+IE9UT0gsIHRoZSBrbWFs
-bG9jL2tmcmVlIHJlbGF0ZWQgZnVuY3Rpb25zLCBzdHJkdWIgYW5kDQo+ID4ga21lbWR1YiBtaWdo
-dCBiZSBjYW5kaWRhdGVzIGZvciBtb3ZlIC0gdGhvc2UgYXJlIG5vdCByZWFsbHkgImRldmljZQ0K
-PiA+IHRoaW5ncyIuDQo+IA0KPiBJJ20gY2VydGFpbmx5IG9wZW4gdG8gbW92aW5nIHNvbWUgZnVu
-Y3Rpb25zIHRvIGRldm0taGVscGVycy5oLCBidXQNCj4gYWxzbyBzZWUgYWJvdmUgYWJvdXQgbmVl
-ZGxlc3MgY2h1cm4uDQoNCkkgYWdyZWUuIFdoZXRoZXIgdGhlIG1vdmUgaXMgd29ydGggYWxsIHRo
-ZSBoYXNzbGUgZGVwZW5kcyBvbiBob3cgbXVjaA0KR3JlZyBfcmVhbGx5XyB3aXNoZXMgdG8gZ2V0
-IHJpZCBvZiB0aG9zZSBkZXZtIGZ1bmN0aW9ucy4gRXNwZWNpYWxseSB0aGUNCmFsbG9jcyBhcmUg
-dXNlZCBfYSBsb3RfLg0KDQpCZXN0IFJlZ2FyZHMNCgktLU1hdHRpDQoNCg==
+
+On 4/21/21 8:52 AM, Jessica Yu wrote:
+> +++ Stefan Berger [20/04/21 17:02 -0400]:
+>>
+>> On 4/20/21 10:03 AM, Jessica Yu wrote:
+>>> +++ Stefan Berger [08/04/21 11:24 -0400]:
+>>>>
+>>>> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c 
+>>>> b/crypto/asymmetric_keys/pkcs7_parser.c
+>>>> index 967329e0a07b..2546ec6a0505 100644
+>>>> --- a/crypto/asymmetric_keys/pkcs7_parser.c
+>>>> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
+>>>> @@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, 
+>>>> size_t hdrlen,
+>>>>         ctx->sinfo->sig->pkey_algo = "rsa";
+>>>>         ctx->sinfo->sig->encoding = "pkcs1";
+>>>>         break;
+>>>> +    case OID_id_ecdsa_with_sha256:
+>>>> +        ctx->sinfo->sig->pkey_algo = "ecdsa";
+>>>> +        ctx->sinfo->sig->encoding = "x962";
+>>>> +        break;
+>>>
+>>> Hi Stefan,
+>>>
+>>> Does CONFIG_MODULE_SIG_KEY_TYPE_ECDSA have a dependency on 
+>>> MODULE_SIG_SHA256?
+>>
+>> You are right, per the code above it does have a dependency on 
+>> SHA256. ECDSA is using NIST p384 (secp384r1) for signing and per my 
+>> tests it can be paired with all the sha hashes once the code above is 
+>> extended. Now when it comes to module signing, should we pair it with 
+>> a particular hash? I am not currently aware of a guidance document on 
+>> this but sha256 and sha384 seem to be good choices these days, so 
+>> maybe selecting ECDSA module signing should have a 'depends on' on 
+>> these?
+>
+> Yeah, I would tack on the 'depends on' until the code above has been
+> extended to cover more sha hashes - because currently if someone
+> builds and signs a bunch of modules with an ECDSA key, they will fail
+> to load if they picked something other than sha256. I am unfortunately
+> not knowledgeable enough to suggest an official guideline on choice of
+> hash, but for now it is reasonable to have a 'depends on' for which
+> hashes the code currently supports, so that users don't run into
+> module loading rejection issues.
+
+
+I was going to repost this series now with the additional OIDs supported 
+above and a recommendation to use sha384 in the help text for 
+ECDSA-signed modules, but not enforcing this but instead trusting the 
+user that they will choose a reasonable hash (probably >= sha256).
+
+
+    Stefan
+
+
+>
+> Thanks!
+>
+> Jessica
