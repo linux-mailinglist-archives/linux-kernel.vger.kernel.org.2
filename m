@@ -2,173 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660DB36639A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 04:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDAD36639D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 04:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbhDUCVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 22:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbhDUCVd (ORCPT
+        id S234653AbhDUCYc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Apr 2021 22:24:32 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:51848 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234023AbhDUCYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 22:21:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8700BC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 19:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=gS+n52ipM6iCBeIdlowvuYL6d9xTOHm/w0qJRKanKD8=; b=k0emODU+ey57xzGDpoBlV91Fam
-        GcRnKOgQV7cvp85f9Kx8eOx83J8+x0rb5Znx3mnB7cWHnxJr8X57k4mBEbDlaVEFl9PVNl/jPnLGO
-        Hr+iAMR8ycneIMVP3tQrTHOxZHwyOL/aFXe78ZW6EP9YNwmqatatsmupnMQYM0TjoHL2h7DRlfdbG
-        TZXn7XxVvTOilOdzzKR68HV9Bp/PHl+dXgFyl4bsuGFDESysGUYWVQ8TFTUAHk1NVacuWT7zce/uU
-        4cxOaNJrg332kaGMPMdHQiEMKVzjISOV5xtV837D+9h3Ya62pgrIDhro1b+jXqEwB2Xamu77kvKEd
-        hyKdic9w==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZ2Tu-00Fwmc-T2; Wed, 21 Apr 2021 02:20:52 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Michal Simek <monstr@monstr.eu>
-Subject: [PATCH] microblaze: add 'fallthrough' to memcpy/memset/memmove
-Date:   Tue, 20 Apr 2021 19:20:41 -0700
-Message-Id: <20210421022041.10689-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 20 Apr 2021 22:24:30 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13L2Nn3pA020711, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13L2Nn3pA020711
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 21 Apr 2021 10:23:49 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 21 Apr 2021 10:23:48 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 21 Apr 2021 10:23:48 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74]) by
+ RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74%5]) with mapi id
+ 15.01.2106.013; Wed, 21 Apr 2021 10:23:47 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH net-next 4/6] r8152: support new chips
+Thread-Topic: [PATCH net-next 4/6] r8152: support new chips
+Thread-Index: AQHXMpdaTtc3dnJiRE+pHF9mj571x6q3Ka6AgAXMWPCAAEY8AIABAclQ
+Date:   Wed, 21 Apr 2021 02:23:47 +0000
+Message-ID: <cc2e5a6ba1b649d3a5806f71256e657f@realtek.com>
+References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
+        <1394712342-15778-354-Taiwan-albertk@realtek.com>
+        <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <0de9842749db4718b8f45a0f2fff7967@realtek.com>
+ <20210420113420.79d7c65a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210420113420.79d7c65a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.203]
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/4/20_=3F=3F_10:27:00?=
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 01:51:53
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163255 [Apr 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/21/2021 01:54:00
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 02:01:58
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163255 [Apr 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/21/2021 02:04:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "fallthrough" warnings in microblaze memcpy/memset/memmove
-library functions.
+Jakub Kicinski <kuba@kernel.org>
+> Sent: Wednesday, April 21, 2021 2:34 AM
+[...]
+> > We test 2.5G Ethernet on some embedded platform.
+> > And we find 64 is not large enough, and the performance
+> > couldn't reach 2.5 G bits/s.
+> 
+> Did you manage to identify what the cause is?
+> 
+> NAPI will keep calling your driver if the budget was exhausted, the
+> only difference between 64 and 256 should be the setup cost of the
+> driver's internal loop. And perhaps more frequent GRO flush - what's
+> the CONFIG_HZ set to?
 
-  CC      arch/microblaze/lib/memcpy.o
-../arch/microblaze/lib/memcpy.c: In function 'memcpy':
-../arch/microblaze/lib/memcpy.c:70:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   70 |    --c;
-../arch/microblaze/lib/memcpy.c:71:3: note: here
-   71 |   case 2:
-../arch/microblaze/lib/memcpy.c:73:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   73 |    --c;
-../arch/microblaze/lib/memcpy.c:74:3: note: here
-   74 |   case 3:
-../arch/microblaze/lib/memcpy.c:178:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  178 |   *dst++ = *src++;
-../arch/microblaze/lib/memcpy.c:179:2: note: here
-  179 |  case 2:
-../arch/microblaze/lib/memcpy.c:180:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  180 |   *dst++ = *src++;
-../arch/microblaze/lib/memcpy.c:181:2: note: here
-  181 |  case 1:
-  CC      arch/microblaze/lib/memset.o
-../arch/microblaze/lib/memset.c: In function 'memset':
-../arch/microblaze/lib/memset.c:71:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   71 |    --n;
-../arch/microblaze/lib/memset.c:72:3: note: here
-   72 |   case 2:
-../arch/microblaze/lib/memset.c:74:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   74 |    --n;
-../arch/microblaze/lib/memset.c:75:3: note: here
-   75 |   case 3:
-  CC      arch/microblaze/lib/memmove.o
-../arch/microblaze/lib/memmove.c: In function 'memmove':
-../arch/microblaze/lib/memmove.c:92:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   92 |    --c;
-../arch/microblaze/lib/memmove.c:93:3: note: here
-   93 |   case 2:
-../arch/microblaze/lib/memmove.c:95:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
-   95 |    --c;
-../arch/microblaze/lib/memmove.c:96:3: note: here
-   96 |   case 1:
-../arch/microblaze/lib/memmove.c:203:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  203 |   *--dst = *--src;
-../arch/microblaze/lib/memmove.c:204:2: note: here
-  204 |  case 3:
-../arch/microblaze/lib/memmove.c:205:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  205 |   *--dst = *--src;
-../arch/microblaze/lib/memmove.c:206:2: note: here
-  206 |  case 2:
-../arch/microblaze/lib/memmove.c:207:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  207 |   *--dst = *--src;
-../arch/microblaze/lib/memmove.c:208:2: note: here
-  208 |  case 1:
+I am not sure. It is more than one year ago.
+The CONFIG_HZ may be 250.
 
+First, the CPU of that platform is slower than a x86 platform.
+Then, the rx data comes very fast, because of the 2.5G Ethernet.
+We find the budget is always exhausted, when the traffic is busy.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michal Simek <monstr@monstr.eu>
----
- arch/microblaze/lib/memcpy.c  |    4 ++++
- arch/microblaze/lib/memmove.c |    5 +++++
- arch/microblaze/lib/memset.c  |    2 ++
- 3 files changed, 11 insertions(+)
+Best Regards,
+Hayes
 
---- linux-next-20210420.orig/arch/microblaze/lib/memcpy.c
-+++ linux-next-20210420/arch/microblaze/lib/memcpy.c
-@@ -68,9 +68,11 @@ void *memcpy(void *v_dst, const void *v_
- 		case 1:
- 			*dst++ = *src++;
- 			--c;
-+			fallthrough;
- 		case 2:
- 			*dst++ = *src++;
- 			--c;
-+			fallthrough;
- 		case 3:
- 			*dst++ = *src++;
- 			--c;
-@@ -176,8 +178,10 @@ void *memcpy(void *v_dst, const void *v_
- 	switch (c) {
- 	case 3:
- 		*dst++ = *src++;
-+		fallthrough;
- 	case 2:
- 		*dst++ = *src++;
-+		fallthrough;
- 	case 1:
- 		*dst++ = *src++;
- 	}
---- linux-next-20210420.orig/arch/microblaze/lib/memmove.c
-+++ linux-next-20210420/arch/microblaze/lib/memmove.c
-@@ -90,9 +90,11 @@ void *memmove(void *v_dst, const void *v
- 		case 3:
- 			*--dst = *--src;
- 			--c;
-+			fallthrough;
- 		case 2:
- 			*--dst = *--src;
- 			--c;
-+			fallthrough;
- 		case 1:
- 			*--dst = *--src;
- 			--c;
-@@ -201,10 +203,13 @@ void *memmove(void *v_dst, const void *v
- 	switch (c) {
- 	case 4:
- 		*--dst = *--src;
-+		fallthrough;
- 	case 3:
- 		*--dst = *--src;
-+		fallthrough;
- 	case 2:
- 		*--dst = *--src;
-+		fallthrough;
- 	case 1:
- 		*--dst = *--src;
- 	}
---- linux-next-20210420.orig/arch/microblaze/lib/memset.c
-+++ linux-next-20210420/arch/microblaze/lib/memset.c
-@@ -69,9 +69,11 @@ void *memset(void *v_src, int c, __kerne
- 		case 1:
- 			*src++ = c;
- 			--n;
-+			fallthrough;
- 		case 2:
- 			*src++ = c;
- 			--n;
-+			fallthrough;
- 		case 3:
- 			*src++ = c;
- 			--n;
