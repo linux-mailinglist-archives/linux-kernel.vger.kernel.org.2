@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF08366C19
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9238366C01
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242480AbhDUNKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:10:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
+        id S242519AbhDUNKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:10:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241035AbhDUNHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:07:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0378B6146D;
-        Wed, 21 Apr 2021 13:07:00 +0000 (UTC)
+        id S241208AbhDUNHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:07:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC44761460;
+        Wed, 21 Apr 2021 13:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010421;
-        bh=CEumbI762zughXLmNxPnsuID3yI1J/TDIozx/JWmOYs=;
+        s=korg; t=1619010424;
+        bh=CnZ7WV5hyKsc+Xdaoj6tfN3IEyd8ep1/EpD1Q8f9zE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gBHs96z6d5b80E5USDEXH7piaxNXQROasyPbeqBEoMliCbvpzUNuQxkLMpNkaPHGS
-         lDTXNfbeOEvvRbQ93p17rYGhNDZY7hVLT9OLwMgalaM2J33IjkNe7fYO4EPn7Ngn2e
-         h9+M0PBluB9qf8vLVYfqlxxTklqmeIc63G5TQPIs=
+        b=R2RWtWfBnB/NBVUhz96VzRiYo0f5YqQ78stqFMuqOYEjaXfNGVAOpi6i2GBELOwRz
+         z3leh0auNFsCQkm+H/OJbyxqOrS1wanesZcz8FUnD4rbVeHKQ8WiV4W0Yg3JZD3hGE
+         FBOhSoZc+tJmy9K+kAGShDQLJH39Yhf27tMzsOX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 130/190] Revert "ALSA: usx2y: Fix potential NULL pointer dereference"
-Date:   Wed, 21 Apr 2021 15:00:05 +0200
-Message-Id: <20210421130105.1226686-131-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH 131/190] Revert "net: 8390: fix potential NULL pointer dereferences"
+Date:   Wed, 21 Apr 2021 15:00:06 +0200
+Message-Id: <20210421130105.1226686-132-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -36,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit a2c6433ee5a35a8de6d563f6512a26f87835ea0f.
+This reverts commit c7cbc3e937b885c9394bf9d0ca21ceb75c2ac262.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -52,30 +53,41 @@ they actually are a valid fix.  Until that work is complete, remove this
 change to ensure that no problems are being introduced into the
 codebase.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/usx2y/usb_stream.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/ethernet/8390/pcnet_cs.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-index 091c071b270a..6bba17bf689a 100644
---- a/sound/usb/usx2y/usb_stream.c
-+++ b/sound/usb/usx2y/usb_stream.c
-@@ -91,12 +91,7 @@ static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+diff --git a/drivers/net/ethernet/8390/pcnet_cs.c b/drivers/net/ethernet/8390/pcnet_cs.c
+index 9d3b1e0e425c..0a408fa2b7a4 100644
+--- a/drivers/net/ethernet/8390/pcnet_cs.c
++++ b/drivers/net/ethernet/8390/pcnet_cs.c
+@@ -289,11 +289,6 @@ static struct hw_info *get_hwinfo(struct pcmcia_device *link)
  
- 	for (u = 0; u < USB_STREAM_NURBS; ++u) {
- 		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
--		if (!sk->inurb[u])
--			return -ENOMEM;
+     virt = ioremap(link->resource[2]->start,
+ 	    resource_size(link->resource[2]));
+-    if (unlikely(!virt)) {
+-	    pcmcia_release_window(link, link->resource[2]);
+-	    return NULL;
+-    }
 -
- 		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
--		if (!sk->outurb[u])
--			return -ENOMEM;
- 	}
- 
- 	if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
+     for (i = 0; i < NR_INFO; i++) {
+ 	pcmcia_map_mem_page(link, link->resource[2],
+ 		hw_info[i].offset & ~(resource_size(link->resource[2])-1));
+@@ -1430,11 +1425,6 @@ static int setup_shmem_window(struct pcmcia_device *link, int start_pg,
+     /* Try scribbling on the buffer */
+     info->base = ioremap(link->resource[3]->start,
+ 			resource_size(link->resource[3]));
+-    if (unlikely(!info->base)) {
+-	    ret = -ENOMEM;
+-	    goto failed;
+-    }
+-
+     for (i = 0; i < (TX_PAGES<<8); i += 2)
+ 	__raw_writew((i>>1), info->base+offset+i);
+     udelay(100);
 -- 
 2.31.1
 
