@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DFE366D24
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291C3366D26
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242780AbhDUNt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:49:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
+        id S242806AbhDUNuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:50:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235222AbhDUNtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6582260C3E;
-        Wed, 21 Apr 2021 13:48:49 +0000 (UTC)
+        id S235222AbhDUNuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:50:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 715C261439;
+        Wed, 21 Apr 2021 13:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619012931;
-        bh=GO+ss1xX6Lr1YX4hNiDs80lMaAeRx4c1oZ6yYsxMykQ=;
+        s=k20201202; t=1619012969;
+        bh=3JOEoDIfnaWwGOlo+8UCRIcFvWxqNH742UwCb6Bunsw=;
         h=From:To:Cc:Subject:Date:From;
-        b=VrG0KnI6VBOhtLUFd2RazGeMmsYt/daXvXTmZ48fKOGiBpLc9UDe7tiwvERYGRlsr
-         3+JTtEavmFpxvPm3gDmSTSWXU6o0OnNUXGuL8h92WrArf0xSN1OBIAhDfg6W4yT2cW
-         pU7oikukC4k6PU52frLsP8agFnx3/QBTrT0CvtFoCzm61TXVIST3CIrXfgSwDKItO8
-         YwPvUOJtvpGWuPZxOJyNaLne5TuJTpietQOD3wOZ+0jsa+i0nVr0SBtLxzlL2neqDh
-         eIW4IKw6uEa7quqxXb9DMzWPlfKKKKjPe2HJyWvkkR8FHm6dq0BDHLI0Mp1ikFc2BA
-         IBPgBmYntdr7A==
+        b=AJni0jwQfWQGMuhJ1iw9JPbOb3fZ6nT1Ti0gxEaAYRcrOfru1mmcChSuiLoWY1Mo/
+         H9Y3m9xrHuVVPGh8JYLHKE5jH6YopLIXA3oRDubPbnLqw/Q0B/OZi7TSfGXo1sLV6q
+         Ts+vD1yvplPmi8u7/SpcVzCD+tdsTQMToYbdgxlAGQHcbvpl/HZ4OAn6JAHyI2ehFJ
+         wqefYwsEvSw5Vm7ABNjS14SNFKP1J4aojQjbb0PdXHF3zsmYz5JAqiQEOSNJKXpnx6
+         yHE5b7EjOOu5O9hsIc8lq3QbwGVtSM5BGp3ZU8NlBkMBiaklHiMeUwYlfroUjBhW7z
+         P/I2acEcaNQnw==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rajan Vaja <rajan.vaja@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+To:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Fuad Tabba <tabba@google.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
-Date:   Wed, 21 Apr 2021 15:48:36 +0200
-Message-Id: <20210421134844.3297838-1-arnd@kernel.org>
+Subject: [PATCH] KVM: arm64: build perf support only when enabled
+Date:   Wed, 21 Apr 2021 15:49:01 +0200
+Message-Id: <20210421134922.3309033-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -46,85 +48,105 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When the firmware code is disabled, the incomplete error handling
-in the clk driver causes compile-time warnings:
+The perf_num_counters() function is only defined when CONFIG_PERF_EVENTS
+is enabled:
 
-drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
-drivers/clk/zynqmp/pll.c:147:29: error: 'fbdiv' is used uninitialized [-Werror=uninitialized]
-  147 |         rate =  parent_rate * fbdiv;
-      |                 ~~~~~~~~~~~~^~~~~~~
-In function 'zynqmp_pll_get_mode',
-    inlined from 'zynqmp_pll_recalc_rate' at drivers/clk/zynqmp/pll.c:148:6:
-drivers/clk/zynqmp/pll.c:61:27: error: 'ret_payload' is used uninitialized [-Werror=uninitialized]
-   61 |         return ret_payload[1];
-      |                ~~~~~~~~~~~^~~
-drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
-drivers/clk/zynqmp/pll.c:53:13: note: 'ret_payload' declared here
-   53 |         u32 ret_payload[PAYLOAD_ARG_CNT];
-      |             ^~~~~~~~~~~
-drivers/clk/zynqmp/clk-mux-zynqmp.c: In function 'zynqmp_clk_mux_get_parent':
-drivers/clk/zynqmp/clk-mux-zynqmp.c:57:16: error: 'val' is used uninitialized [-Werror=uninitialized]
-   57 |         return val;
-      |                ^~~
+arch/arm64/kvm/perf.c: In function 'kvm_perf_init':
+arch/arm64/kvm/perf.c:58:43: error: implicit declaration of function 'perf_num_counters'; did you mean 'dec_mm_counter'? [-Werror=implicit-function-declaration]
+   58 |         if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0
+      |                                           ^~~~~~~~~~~~~~~~~
 
-As it was apparently intentional to support this for compile testing
-purposes, change the code to have just enough error handling for the
-compiler to not notice the remaining bugs.
+Use conditional compilation to disable this feature entirely when
+CONFIG_PERF_EVENTS is disabled in the host.
 
-Fixes: 21f237534661 ("clk: zynqmp: Drop dependency on ARCH_ZYNQMP")
+Fixes: 6b5b368fccd7 ("KVM: arm64: Turn kvm_arm_support_pmu_v3() into a static key")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/clk/zynqmp/clk-mux-zynqmp.c | 4 +++-
- drivers/clk/zynqmp/pll.c            | 8 ++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+Not sure if this is the correct symbol to check for, but this is
+one way to avoid the build failure.
+---
+ arch/arm64/kvm/Makefile | 4 +++-
+ arch/arm64/kvm/arm.c    | 8 +++++---
+ include/kvm/arm_pmu.h   | 7 +++++++
+ 3 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-index 06194149be83..2afded3c7c11 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -50,9 +50,11 @@ static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
+diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+index 589921392cb1..9adf12ba5047 100644
+--- a/arch/arm64/kvm/Makefile
++++ b/arch/arm64/kvm/Makefile
+@@ -12,7 +12,7 @@ obj-$(CONFIG_KVM) += hyp/
  
- 	ret = zynqmp_pm_clock_getparent(clk_id, &val);
+ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+ 	 $(KVM)/vfio.o $(KVM)/irqchip.o \
+-	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
++	 arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
+ 	 inject_fault.o va_layout.o handle_exit.o \
+ 	 guest.o debug.o reset.o sys_regs.o \
+ 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
+@@ -24,4 +24,6 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+ 	 vgic/vgic-mmio-v3.o vgic/vgic-kvm-device.o \
+ 	 vgic/vgic-its.o vgic/vgic-debug.o
  
--	if (ret)
-+	if (ret) {
- 		pr_warn_once("%s() getparent failed for clock: %s, ret = %d\n",
- 			     __func__, clk_name, ret);
-+		return ret;
-+	}
++kvm-$(CONFIG_PERF_EVENTS) += perf.o
++
+ kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 4808aca8c87c..720e075c70f9 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1694,7 +1694,8 @@ static int init_subsystems(void)
+ 	if (err)
+ 		goto out;
  
- 	return val;
+-	kvm_perf_init();
++	if (IS_ENABLED(CONFIG_PERF_EVENTS))
++		kvm_perf_init();
+ 	kvm_sys_reg_table_init();
+ 
+ out:
+@@ -1899,7 +1900,8 @@ static int init_hyp_mode(void)
+ 	return 0;
+ 
+ out_err:
+-	teardown_hyp_mode();
++	if (IS_ENABLED(CONFIG_PERF_EVENTS))
++		teardown_hyp_mode();
+ 	kvm_err("error initializing Hyp mode: %d\n", err);
+ 	return err;
  }
-diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-index abe6afbf3407..67d2a2d260c1 100644
---- a/drivers/clk/zynqmp/pll.c
-+++ b/drivers/clk/zynqmp/pll.c
-@@ -54,9 +54,11 @@ static inline enum pll_mode zynqmp_pll_get_mode(struct clk_hw *hw)
- 	int ret;
+@@ -2101,7 +2103,7 @@ int kvm_arch_init(void *opaque)
  
- 	ret = zynqmp_pm_get_pll_frac_mode(clk_id, ret_payload);
--	if (ret)
-+	if (ret) {
- 		pr_warn_once("%s() PLL get frac mode failed for %s, ret = %d\n",
- 			     __func__, clk_name, ret);
-+		return ret;
-+	}
+ out_hyp:
+ 	hyp_cpu_pm_exit();
+-	if (!in_hyp_mode)
++	if (!IS_ENABLED(CONFIG_PERF_EVENTS) && in_hyp_mode)
+ 		teardown_hyp_mode();
+ out_err:
+ 	return err;
+diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+index 6fd3cda608e4..d84307a1ebd5 100644
+--- a/include/kvm/arm_pmu.h
++++ b/include/kvm/arm_pmu.h
+@@ -13,12 +13,19 @@
+ #define ARMV8_PMU_CYCLE_IDX		(ARMV8_PMU_MAX_COUNTERS - 1)
+ #define ARMV8_PMU_MAX_COUNTER_PAIRS	((ARMV8_PMU_MAX_COUNTERS + 1) >> 1)
  
- 	return ret_payload[1];
++#ifdef CONFIG_PERF_EVENTS
+ DECLARE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
+ 
+ static __always_inline bool kvm_arm_support_pmu_v3(void)
+ {
+ 	return static_branch_likely(&kvm_arm_pmu_available);
  }
-@@ -140,9 +142,11 @@ static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
- 	int ret;
++#else
++static __always_inline bool kvm_arm_support_pmu_v3(void)
++{
++	return 0;
++}
++#endif
  
- 	ret = zynqmp_pm_clock_getdivider(clk_id, &fbdiv);
--	if (ret)
-+	if (ret) {
- 		pr_warn_once("%s() get divider failed for %s, ret = %d\n",
- 			     __func__, clk_name, ret);
-+		return -1ul;
-+	}
+ #ifdef CONFIG_HW_PERF_EVENTS
  
- 	rate =  parent_rate * fbdiv;
- 	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
 -- 
 2.29.2
 
