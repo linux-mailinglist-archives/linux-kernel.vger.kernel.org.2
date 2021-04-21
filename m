@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D318366391
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 04:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3328C366396
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 04:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhDUCRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 22:17:31 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37051 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234007AbhDUCR2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 22:17:28 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UWFcK-N_1618971414;
-Received: from 30.13.161.100(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWFcK-N_1618971414)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 21 Apr 2021 10:16:54 +0800
-Subject: Re: [PATCH] scsi: a100u2w: remove useless variable
-To:     Julian Calaby <julian.calaby@gmail.com>
-References: <1618197759-128087-1-git-send-email-jiapeng.chong@linux.alibaba.com>
- <CAGRGNgVucQWcGiUnWtsC=oRDXrWkQ13CFojOcM7xU+4TukUoOA@mail.gmail.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   =?UTF-8?B?56eN5ZiJ6bmP?= <jiapeng.chong@linux.alibaba.com>
-Message-ID: <aebf4084-9e41-1e8b-35ca-ae57f934fca5@linux.alibaba.com>
-Date:   Wed, 21 Apr 2021 10:16:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S234629AbhDUCTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 22:19:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44095 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233950AbhDUCTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 22:19:14 -0400
+IronPort-SDR: dFRlfaSKqsScH3AsAfWOL2AUz5QGp/kAOy8Y0qwVAe1JT++xz1J1kprLLSvZKzqTw53aaO084R
+ 4BjhVlrgNiaA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="175733826"
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="175733826"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 19:18:42 -0700
+IronPort-SDR: b6JAxodUtWAtA4sxJpKAE1huCQwBxjwz9Xwa5O7eUNXGHlMZraaNw7i37Qu4vBf0ikARRp4ksy
+ VpQuWDmz1Ujw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
+   d="scan'208";a="384309780"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by orsmga003.jf.intel.com with ESMTP; 20 Apr 2021 19:18:39 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH RESEND 1/2] perf/x86: Skip checking MSR for MSR 0x0
+Date:   Wed, 21 Apr 2021 10:18:24 +0800
+Message-Id: <20210421021825.37872-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAGRGNgVucQWcGiUnWtsC=oRDXrWkQ13CFojOcM7xU+4TukUoOA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/17 14:34, Julian Calaby wrote:
-> Hi Jiapeng,
-> 
-> On Mon, Apr 12, 2021 at 1:23 PM Jiapeng Chong
-> <jiapeng.chong@linux.alibaba.com> wrote:
->>
->> Fix the following gcc warning:
->>
->> drivers/scsi/a100u2w.c:1092:8: warning: variable ‘bios_phys’ set but not
->> used [-Wunused-but-set-variable].
->>
->> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
->> ---
->>   drivers/scsi/a100u2w.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/scsi/a100u2w.c b/drivers/scsi/a100u2w.c
->> index 66c5143..855a3fe 100644
->> --- a/drivers/scsi/a100u2w.c
->> +++ b/drivers/scsi/a100u2w.c
->> @@ -1089,7 +1089,6 @@ static int inia100_probe_one(struct pci_dev *pdev,
->>          int error = -ENODEV;
->>          u32 sz;
->>          unsigned long biosaddr;
->> -       char *bios_phys;
->>
->>          if (pci_enable_device(pdev))
->>                  goto out;
->> @@ -1141,7 +1140,7 @@ static int inia100_probe_one(struct pci_dev *pdev,
->>
->>          biosaddr = host->BIOScfg;
->>          biosaddr = (biosaddr << 4);
->> -       bios_phys = phys_to_virt(biosaddr);
->> +       phys_to_virt(biosaddr);
-> 
-> Does phys_to_virt() have side effects? If it doesn't, there's a lot
-> more stuff that can get deleted here.
-> 
-> Thanks,
-> 
-OK, I'll delete phys_to_virt() and send V2.
+The Architecture LBR does not have MSR_LBR_TOS (0x000001c9).
+When ARCH_LBR we don't set lbr_tos, the failure from the
+check_msr() against MSR 0x000 will make x86_pmu.lbr_nr = 0,
+thereby preventing the initialization of the guest LBR.
+
+Fixes: 47125db27e47 ("perf/x86/intel/lbr: Support Architectural LBR")
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 5272f349dca2..5036496caa60 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4751,10 +4751,10 @@ static bool check_msr(unsigned long msr, u64 mask)
+ 	u64 val_old, val_new, val_tmp;
+ 
+ 	/*
+-	 * Disable the check for real HW, so we don't
++	 * Disable the check for real HW or non-sense msr, so we don't
+ 	 * mess with potentionaly enabled registers:
+ 	 */
+-	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
++	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR) || !msr)
+ 		return true;
+ 
+ 	/*
+-- 
+2.30.2
+
