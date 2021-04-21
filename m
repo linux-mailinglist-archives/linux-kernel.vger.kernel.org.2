@@ -2,267 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AD73674CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 23:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8813674EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 23:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343493AbhDUVae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 17:30:34 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:54290 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238736AbhDUVab (ORCPT
+        id S1343513AbhDUV7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 17:59:02 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:63320 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235570AbhDUV7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 17:30:31 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13LLATug040204;
-        Wed, 21 Apr 2021 21:29:50 GMT
+        Wed, 21 Apr 2021 17:59:01 -0400
+X-Greylist: delayed 1090 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Apr 2021 17:59:01 EDT
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LLbKI6022166;
+        Wed, 21 Apr 2021 21:39:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=qjKaTsQN/mUIe0jMLq2SYhh+OnrXf+HXY1FRghKTPoU=;
- b=fAI6tjQ8JeCehfoKtPyWpaGc4EO3jT2F/Gqm4NWzBm/1MMNpVPQDdkTAa8Eo43pge2Ke
- 9ak3aL+IQe2vGI7yQQ3TrmkMnEFXbziILFXe3A0wz+2ElQD7dizCXebSWajXxi3MmUXI
- lYpfMUqho5fZV3+u0HFBdz25TuyJltWhfiNGnjJQNStMlnFdBjPepm5jnyJWdko5RJHO
- WnYMf2loK/ifS7u7mgwFpVYCI8hTg+BvPBEVJXflM/Z0Q0foeECBGN42OsC4/yaqWS9g
- Q+gVwme4073Dv4Yu7B7dKWo3KsWiRwu28N8OVYFdqPTmOw2oG9ud3fi6+p2S6GQpxlYw mw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 37yn6cbp27-1
+ bh=K9FL1qsLufkIPvXdrntgfZvo0gSzHD9PrcNfBGNvLtE=;
+ b=vi6g9FQhzE773IiWBdpNPXjaW05i/it0Z2bnMUI+TsrGxTRiBEw+4MJPVbtjO8Le2oHr
+ Qc3ghrQ3D7HnKPuJDAgTmWvjtEt3thcrh5DF/ljjUMW/Ne0jycxdyymFbfsctd6GHO4J
+ aMO1xX6yz2Rsmm/hTF9PzHXavFBgRVozDndxrxmg8/OsMDcM7IXhAh/98LjzJW2MJ1bD
+ bIHPT679sdtfMqs5rcTIXBIvP+T7QEdJdvlR4RuQznCzchhl2Ljh4VlFY0QD85J9o0vz
+ wulpTwFSKOOhtl06uU72Y25qbYxCLSnGpv40fbS1KQNjiCQ3oTbTfJclHoHWUtn2nXD0 cw== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 382unxg0aj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 21:29:50 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13LLAY5T170179;
-        Wed, 21 Apr 2021 21:29:49 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by aserp3020.oracle.com with ESMTP id 3809k2ghcj-1
+        Wed, 21 Apr 2021 21:39:43 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13LLdaAN104482;
+        Wed, 21 Apr 2021 21:39:42 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by aserp3020.oracle.com with ESMTP id 3809k2gtbs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 21:29:49 +0000
+        Wed, 21 Apr 2021 21:39:42 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HITLhOMiooT1Gjeoibqumw6ojEDa1YK/XqS8XblOpf9A/oNeLT95Usmrx3TnGIpH9Z6cGHFZbG1LtFNYoaMZmDzj9UTvY8rIP+ykY2bwKTElh5coSWc84aJ/+pQv86//67qFT6HlDxz6E8W+/JXTgTvMl6EathBDR5ZOH5CWHHnJAHxXb5KussUAXgru3LmQOQFO2trrGAAAu6Zi9cyrKLKd2lFkM91Yo8mur4KvXXDwcg0Fyk3Yo00ebTGddU719NY85+jMHAaouDsdxWhWJySqiN8HK2OhTeg4THGe1GOKapYgVI5IXk128LG6sBPCRKhDEHhWT+rnO9AG8b4BXA==
+ b=DjsUtS845n48YdvUJIREq0DFG6wfI2pogdYljp6J+P3it1wMJUafToThMNH/zCCv18ZxIF6d0VMlogVpIMTvOP8mVOlI0T68ALT99KRX4+QQAf88i0COGxRcLqh4O+hDN/B9/dOTS6vnQQPdlY8OPUEndO2s2XrjhMPu3tcC5YDuNh0ZPGiD+A65TPrWDvNe0l7nWMUMIbdFLoJaJHCH2sMD8gtAyGVd9vaYAIBCmoyGB1y5Wp5GpMkulxkobjkQbpDoeQH4O42U75IEuNFh3er2PmpvMqdRjmTvWSJ7WgMxaPID0TzmnoM7nNlYRu69HCpXbW9RorG0mLc4F7vX6A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qjKaTsQN/mUIe0jMLq2SYhh+OnrXf+HXY1FRghKTPoU=;
- b=YB3QK08SfF/ywUt9y0k0tlkLv0BOiyVBoVIfwpD67wxTpBZ23lq9LVbaqCRbcr+yB25gG9T9RPf+jH4cG3mfte+T29ozy4lR31rgznM94AqTzapIzA06IkN8DuSfDzotJFeiFjlUP7Qv0nM1tHuNL3jwwrXBsKJrC9JWS8HEwUWO5fWzKT2dOwb2i+U1B3ftEjAYdlH2LqbOBF9BqnreDxMuXVH4cJSvwtVHZUN03ktL6NSEmioGVthix3Dd9hiEaykxoBYbtt0BEv+nrC/O6ShAHXE6OTXDiwYMF1NGaORHliqchwuX3VispVK8Q7yWPKbhy5vVMn3s78cfahp0dw==
+ bh=K9FL1qsLufkIPvXdrntgfZvo0gSzHD9PrcNfBGNvLtE=;
+ b=iqbpfZ035q/DKN0tVRn+nrI1LzFiUb/x2ulIRkm8RTmTVMPqCYBvmnhA2XAHxAB5HtxhW7ijBWCOY5qlH22yl6O0sCpQ09+r/zZ+VV+Ql++UIpLYi57zTK1RB2CHDP7tUSpFvpypm8d5YKlvt/6t47OR36fAfKF9YXbp5CYJhbXL3Z21wlKZVC0yW5QaK5/S+RdBq8o1E1kDenM44EMXhdO0z9MsfftbO5HO4VETCQOb99Or6ZtVQiWQK35/E478xQzz6gg4BQ7CsQovFXj8Cjxl1uSaOIea+dRYurZt8FsOctzJe5D9Aj/ZDNq1cmds3DlcKxUF/Lul4Lz4LEHn5Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qjKaTsQN/mUIe0jMLq2SYhh+OnrXf+HXY1FRghKTPoU=;
- b=QTMlsO0IgZWkcxAM6SXhBuDy5XiQ+U+rgFRcYDrl6oxHldlbHXf0I4TBYfaWa+rM2+sESEOkIsOrSuzkT3QS+Gq+DDQYuiM25TW7B2FkQNc7B5KHFjxBKGHCGqAA/dltWEbWygYRim75GZaYmGi4IDtw7aLC5854VTYQ7zqH2l8=
-Authentication-Results: sina.com; dkim=none (message not signed)
- header.d=none;sina.com; dmarc=none action=none header.from=oracle.com;
-Received: from SJ0PR10MB4752.namprd10.prod.outlook.com (2603:10b6:a03:2d7::19)
- by BYAPR10MB2630.namprd10.prod.outlook.com (2603:10b6:a02:b1::24) with
+ bh=K9FL1qsLufkIPvXdrntgfZvo0gSzHD9PrcNfBGNvLtE=;
+ b=ZPe1egfYxMNH0D+BiLmDJHVtv0FbZhyf/zgav2kjmpiUjt/TH6XieKGRbKfoB2BTk7sg9WSv3ioQt2D6pE9sK4IY46reY8dRloKVv6XX7NSmF0/iHPBxVqRgHnjSzaUAkfre30NEW1dLfv1UqXw35Fmpco3a7yoqInHcNY4WswU=
+Authentication-Results: linux.vnet.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.vnet.ibm.com; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BY5PR10MB4065.namprd10.prod.outlook.com (2603:10b6:a03:1f6::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Wed, 21 Apr
- 2021 21:29:47 +0000
-Received: from SJ0PR10MB4752.namprd10.prod.outlook.com
- ([fe80::7865:7d35:9cee:363f]) by SJ0PR10MB4752.namprd10.prod.outlook.com
- ([fe80::7865:7d35:9cee:363f%5]) with mapi id 15.20.4065.021; Wed, 21 Apr 2021
- 21:29:47 +0000
-Subject: Re: [PATCH] block: fix io hung by block throttle
-To:     "axboe@kernel.dk" <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hillf Danton <hdanton@sina.com>
-References: <20210414211830.5720-1-junxiao.bi@oracle.com>
- <20210415041153.577-1-hdanton@sina.com>
-From:   Junxiao Bi <junxiao.bi@oracle.com>
-Message-ID: <d5663d72-d939-0fc6-e37b-fdc9c1b39741@oracle.com>
-Date:   Wed, 21 Apr 2021 14:28:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
-In-Reply-To: <20210415041153.577-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 21 Apr
+ 2021 21:39:40 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
+ 21:39:40 +0000
+Subject: Re: [PATCH 00/23] userfaultfd-wp: Support shmem and hugetlbfs
+To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+References: <20210323004912.35132-1-peterx@redhat.com>
+ <20210421160352.GJ4440@xz-x1>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <e75874bf-188b-0aeb-c548-01fc3e33bad4@oracle.com>
+Date:   Wed, 21 Apr 2021 14:39:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210421160352.GJ4440@xz-x1>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [73.231.9.254]
-X-ClientProxiedBy: SJ0PR05CA0085.namprd05.prod.outlook.com
- (2603:10b6:a03:332::30) To SJ0PR10MB4752.namprd10.prod.outlook.com
- (2603:10b6:a03:2d7::19)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: CO1PR15CA0046.namprd15.prod.outlook.com
+ (2603:10b6:101:1f::14) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from dhcp-10-159-153-243.vpn.oracle.com (73.231.9.254) by SJ0PR05CA0085.namprd05.prod.outlook.com (2603:10b6:a03:332::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.15 via Frontend Transport; Wed, 21 Apr 2021 21:29:47 +0000
+Received: from [192.168.2.112] (50.38.35.18) by CO1PR15CA0046.namprd15.prod.outlook.com (2603:10b6:101:1f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Wed, 21 Apr 2021 21:39:39 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ce0aa76f-7185-4255-18d3-08d9050c96b1
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2630:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB26303A9CE6CAFA55A9C3F8ABE8479@BYAPR10MB2630.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 7b975588-79e9-4140-5bed-08d9050df80f
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4065:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB406512957E2A817D54A56C40E2479@BY5PR10MB4065.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y7m5Cbtm7FRruwLUS62ud64yz6hUWWjcGzJH5cqd567gnuCR1yzR3mFgESUJfQniU3OUODmmmzu9qIC8odxgxCsemvIypetbMvtV4qzLSUgfOZbza4xnNjbwXzS2ZO5fpAnPHs3D/EPdmgIE994hK64WyF64p04CwS4cEhEsFG3af7Mw9fL29X1qIjYqNilxfwPebZCy3cKbRsBT+8q1vJmhrOWcdUv3HGeLe1qg4jfekuW9+xWaioMd1FWkUy3m5m0AlQ4+ftB3jwwyca1IZb/SSQFxzuFzwNzgoxnCXQbhIFN2lYkTVX1BLpnvpp6xgkuxo0pJUuq5xpBEeeROZE4KrsksVf3bxEZHF6lMkgT65UEmJB+JXtbqtzufJ55T2RCIf7d/KVo8U3w9yy5LQHbIwR2H/YVAvN1FuTNyWKuGMV9aHw5YgA3xLPvsVL7GXrWiekDqTmnkmfv5tfsoCYK8b3axZo+wBdMTBSIqtr426mP4Ni/N5Hrh8TOsB7kllpnq/ccUoWOsOGNc8AP4L3jJxa9rJniWmCG1u3Zw6lgyWmoGsEGEZEhwZI53wUHrcpqG855NuttsxurZ0k5U/8UzMf5aHGA4NvvVOE8BS1u5KnXfQbzVJgELXeYBajZYJfd1m1YVH16rozO/c4uYTpiGomIzlpWA8w08379ZPNxyFmEmPb0v1l7HWNVKMHqL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4752.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(346002)(366004)(376002)(86362001)(38100700002)(6916009)(31696002)(44832011)(8676002)(2906002)(31686004)(66556008)(6486002)(4326008)(6666004)(478600001)(83380400001)(66946007)(66476007)(53546011)(7696005)(5660300002)(186003)(8936002)(16526019)(26005)(956004)(2616005)(36756003)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T2xacklicUxhSUlqbVowZ2hZRjZvUEkrZG9NQ0R2WngzRE9xWW1ZOERaMzJm?=
- =?utf-8?B?bDBUTndkUG94TDRhTVQ5VE1BVHhGQXUzMXhDYUoxVmZjK2xNN2VQQTd5UEdF?=
- =?utf-8?B?VDRucmcrYnJ1c2JOUy9Qazh4UUpPY2pxUC9WSmxXQlMxUHdhVkZNUlpVbGxQ?=
- =?utf-8?B?NWpPMmxkcWpPbmJ3Z2ErOEFrMHZEd015U3I1Q2lpdmI1cUdwNjZvZmFkRHFy?=
- =?utf-8?B?ekxLRHZRWFlPTzdFVThCa1FlNWlCSC9ieEcrTWp2b25SdHV3WVlGUlZ2Mk4w?=
- =?utf-8?B?dmpWcGtqaENuNHBCdjdpSitmOTNLRlFWMGNNZHNDRlp0aDNBZTZXN3VmekV6?=
- =?utf-8?B?QWp1MVlUV2pBUzNqUmtHVGYxdXkrckQ2SVBFQURtczNHbkhnOWVWV0tiSW5J?=
- =?utf-8?B?WFJlZnV4RW9ScGFZdHJNb3Ivdnc2OU1IbkhuVjJKWnVPMEVYZDRpUFErakZV?=
- =?utf-8?B?V29jWmF1RzljNHFSNS9DNWpVSmtrUkVoT0Q1cjd5V2tZNWt0STloY3laSXRR?=
- =?utf-8?B?QmttcitZUkhNcm4xbmhxOHpOb3Q2TC9TOUNBbXVXSGRSaTV3Z0UvRTZTVHA1?=
- =?utf-8?B?MTl6L0FsdFJhQUdQaWVIUnBLYlR4S283QllWZEl1Q2NVU0Q5VjF0R2wrNDlY?=
- =?utf-8?B?OVU1dTU3eTh5N2pyZXpPMVFuUTcwTnd6TTNPZGh1bVV0cjg1UmNUa2JlRlJD?=
- =?utf-8?B?S2N4VEZJcnpFelVlVFRrV1N4YnExNUxMM3I3dkw1bFhudXB3TjQ2SnZQaU9y?=
- =?utf-8?B?N1FMcHFXZ2F0SGViWVd1TEJHTnVCaHJSaDBqTCszbWFFWWJ2dWMxTEQ0cWVR?=
- =?utf-8?B?aVhNTTlzbVh4UUVoRHZ3NHZxSEFCRXhqbk1IVlh6QkZ2bVFhemxsTGp4VnlR?=
- =?utf-8?B?cmUxdy9wVkdvZDN6RnpvNGtkUjZWM0JVM3J3ZFFVeWlRYVFLdFFuNGJRSjVM?=
- =?utf-8?B?K1pUZnlJR2Y5K0xKWTVsOWJFR0VPT0JQWStjMm9IRTNuZytIR1FpSEZaZ2JU?=
- =?utf-8?B?T2FJWnNXWDJwRzU5cHZxZ3dtV00rODl2Rmh3WUJXSlcxck14Zkk3NHNaSDdu?=
- =?utf-8?B?M010Tk13ZmFvbk5YT1BadERCNjZ0QjRSbk9KWktkSVR6M2RVUzB4Ti9kUzFw?=
- =?utf-8?B?VFg0bUV3S2R2cTg5VzluTmJ2bThyS1VFclQ3WVU0ODVEOEJneHk2TnpBR3FZ?=
- =?utf-8?B?d3BOK2YrWU9xZ25YalArSHlSMjJTVkdMYWJrNCtxbHRFU3ZUakp2MnN3emFr?=
- =?utf-8?B?ZGVTWnl1bG5KSXBlRWpHNVRTNjNRbTY2QXRDWDVMOFJ0bmI1MWZ1NDdIRFJx?=
- =?utf-8?B?RmJzZTE0Q01XeEdOTjBLZ1I4b0xaYlNPL0dkanRWWTl6cENWNGZnWWNSMFEy?=
- =?utf-8?B?L3V2TTRibzdNUGx1YW1QcVZmYlVqZFRseU8yeHoxNUlGY3dTQklGalR1eFhT?=
- =?utf-8?B?MDY4MldYeFlIWUYzbWcyT25oelBSbkVtZ2ZXRG0zMXkwUVRoM0hhelRTYUx4?=
- =?utf-8?B?L1M4QmZrZGF5Yk1kdjFYd2l6TnN2ZS9NZWRVVzcwVnVtWExOZ0JaV2NpSXdX?=
- =?utf-8?B?K0lOL3g5bjBWZTdHU0VmZEFSMmthcWMxQ3kvTHpuQkFZaXdwZEdiVzBIOVU5?=
- =?utf-8?B?cnByQXhUODVCcWxpUk5HT0NhaThyRG0vUTRUZG1nTVJVdXFOdzhkNTJ3T0NJ?=
- =?utf-8?B?UFEybXJXd29GUHBjVW54ZXBoblBNbnNCQk4xbmh0M2dRYm00LzdGek5NUU1T?=
- =?utf-8?Q?4ZmUfCmoss9NhQU2z88ICSi2nd2O+7l2YnpfP1i?=
+X-Microsoft-Antispam-Message-Info: MDbCo3HUts9c51ejY0zMwUmhhtQtsV1dItIGBsCdfSGxx1vAHi8ex4CGkWMPrShmVr93dgOhmeBGDdeO0bAbLMonhkjSQX2hkR27D3riM/xRQdron/Wuc/KDcO1v2HgHp446QJq6gXMXqempukklkxKaAG65Dd2D3dwxI/zZkZqtrw6uZ5EBpusIq1FvD9kHDDl4umzrsElGOUr/JQsc9LdWHr9de8+Zd0bGPU3XYbwbPAohPNDhXRGAtrbC7aiqfJJKPCQriS3/jJq4KvjzP1xWnCcRM7k4N99lcqKhCEDiDAUg5YNm7vNYAAQ8beAt81zL1XzMQl/hRzJg4Zz58bSR8DLm8ndwfsO4U5OGcfO5kOyCNFpQREhkRHM3QJ5i5qYNzFzcJTejYuw9iPoEa2OT58P2VK8+q5g5578E0fqA4BX3SKUda+p5wfa02yKO5wHbHrB2pXZ3H13ZoSjidpwpFe1m1ED+SVGm/6EEQfd6jhJlGLyvyM2ehJN+DxR/ZuMo+6udUGHncde85J8w62eCgN7WGADNRaSwBHaFtscamsi2tj6nrIsLX9dugfxuRwAvxSWy+HS5GDBz9Np/DDpJ5S1geF6uO1OT6hPQzqAVtRBaZhcao2EueOfXSKbJx2a7n2oCr/Pj8k+YD9OrCu4xMXg863OdFKYPxQe39x1Uh0gfmn5OejT+CIlrIMngaecYr7RD7YyPK79trOccDQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(376002)(39860400002)(366004)(6486002)(66946007)(4744005)(16526019)(66556008)(66476007)(478600001)(38100700002)(956004)(86362001)(38350700002)(53546011)(36756003)(8676002)(186003)(54906003)(26005)(5660300002)(8936002)(31696002)(52116002)(16576012)(44832011)(31686004)(2616005)(2906002)(316002)(4326008)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aTkrVldkRjZnaXkzdUVQbUliaStLMXM0OXEraGxzMmZRQlhPbGx0dE54Q0xz?=
+ =?utf-8?B?bVBtUE1VcEJaYXYyY1V4ZldrUXNTYmQ5V2NXdWhzQTBqWlUrR2l1VzAzNUNz?=
+ =?utf-8?B?dG14blFuOEUxcEY0aVg2Sm0xUmhSR2Y2Ni8vbGVzazZPa3BuUkFmdzBHaDg5?=
+ =?utf-8?B?UnBZTG13VThJR2IxL09VWlpUdlJSZWhIc3dsVXhhRFJsT08vdmw2L3RHSmdK?=
+ =?utf-8?B?Um8zamdHazNaTlNVcExveXN6aGFnT0tLdTUwbnJZZnY3bS8yMkZYTEU5eVRR?=
+ =?utf-8?B?dngxc2dpV0UxMjJGWFB3cEp0OHdlVlNrYWVSa3hwRlE3SC90eDVHSnNnWU9G?=
+ =?utf-8?B?bmlSUVNiV0FDSVZJeVhrNEJ1YkI2czN0b0hOQ0NGMEtPZEgyOVJMNy9Ramlu?=
+ =?utf-8?B?OHh6ZDN4eFNiNk5kZW8vb3p5ZUgyMzNSdHlQZ1JGd2xZMHpndEMvVkhWdjhS?=
+ =?utf-8?B?TTNaY0pQSms0THJUQUJXa1dnQWk0WU5GSlN3ZUUwWklyRmZSc0lCaDdaYVlF?=
+ =?utf-8?B?TTF3QmVSQlQzNk15eUtDWTZ0aHhFeUd2a0NRaWhoRGc2ZUFqcEZtL0VHQlhI?=
+ =?utf-8?B?a2F6V1hlQlFWalVSenJyY1hTbVhqb1JXeVNLN2k5QmNwQllCM2tQYXNKM2s2?=
+ =?utf-8?B?R0hGNG9JZUJubzRwV0JhV1M3ZFVxME1aaHFzVnc3cGFzSXlJNExUQ25ZcFhH?=
+ =?utf-8?B?cHh4QkFmMFZWTXdPakc2WTdNUVI2MWM0UHlibW0wakRjWFQ4RTFpSEZHLzIr?=
+ =?utf-8?B?WlgyZUNIRlNWTjBpQitmTUdiZEt4cGNpeklmNzhRcElJaDI1L3BVUFhMaEpt?=
+ =?utf-8?B?TFhpbkw2SWFXVDFLL3BjMTFnQVdwRTBNUEZqUlh3a0dQczhZdm9aQy9DYnJN?=
+ =?utf-8?B?dFArU1hMZWVyWHVGM1lQbGdPbmU4YlZ5eE80L3FlWGhacnRuZ2xLaFdOaWR4?=
+ =?utf-8?B?WnllMytGUkl4bExwSXM0OWt5RjYyZ2JtTHVjckhFUzVNTWRLcVMyUm9XLzFT?=
+ =?utf-8?B?OXA5NnJqZ09tTm5MTVNIOWRKTlRVRVAra3FnNERzUlVkdzQzSWVUVWV3U1BH?=
+ =?utf-8?B?UVFLd3Z6ek13U1NxeGdCbHpwcStjaThxcS9CeWxQS2dMbG1QVXVKSnZZTDdM?=
+ =?utf-8?B?YkVOR21aajB5MmxMdUplR0FCdDhGRmZqME5IdWZIMVplSG1IUDFTWWRndEJs?=
+ =?utf-8?B?QnRhb1FuUWhyTGVJZGhFMTNXUFR1bUJCZnBxQ09ZRG1MTWhxSTlnQmwvY1Vk?=
+ =?utf-8?B?WkQxRUxDaGtNZjJPcE9NdFUrOWxES0FVMGRsSEJyNEZhelgrYkVza1d1MW9k?=
+ =?utf-8?B?QzJvNXJlbFZoMEZKbnl2akM2czM1blNoSGlRZ2xPTFRZeU1FN1pLTjNxMWF5?=
+ =?utf-8?B?QnN1MjNoMDlMeGEwZVllL3BGandFSksxR1ZPc1pjbjdycys2UGhjYU9XcGR6?=
+ =?utf-8?B?V2FCOXAwWGNFM3pqZVgrTlE0c0t3Rmc2TjdDbXlCS0lFZlhaODlKN0FhWnJB?=
+ =?utf-8?B?VGNBTkVPbmxXZnlRUTliVW5aMS9xN2xoYUxZTVVzb3R1Mjl3ZENiZ2drSkM5?=
+ =?utf-8?B?OW1ldGRtR3hVYm8yRW9YNitocG5XcDJ6am1ueTRRWGF5eVFnSnBWaE5heUJR?=
+ =?utf-8?B?MVFIMndvMHBYa01aSnQvbXdSS09pZVM4Z1RBbkFUN0NDV29jM3d1aERPOVBh?=
+ =?utf-8?B?RGdFUGxhUkdHYmprSHRMb1g5VHcrcG04RnZNQWh1L3JaMmdpbk5kVmZqNklY?=
+ =?utf-8?Q?jNfIxLp042t0VKmkfnxAMIONNNDDDTt88GNOD0m?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce0aa76f-7185-4255-18d3-08d9050c96b1
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4752.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b975588-79e9-4140-5bed-08d9050df80f
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 21:29:47.6944
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 21:39:40.6455
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6o667wzVCJmgqVp/E113lCbWdQVokFMI1Gv5uTeHogOLSPIl9WZ3+ymUDrEN1tF5XbuFZFD+n1+ZhdW+dC+x2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2630
+X-MS-Exchange-CrossTenant-UserPrincipalName: WngNA7Xj8Zcwi8v88N2zg2zyZlRIo9t/Zwq0rDuXkbaIzZeuyrv/rLzLv9V48K8YCuRLpJ4k2dXkPlW2OqjsBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4065
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
  suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104210142
-X-Proofpoint-GUID: JNbFyRqXuUxEiZAhig3BhHvZkGAq2Y4c
-X-Proofpoint-ORIG-GUID: JNbFyRqXuUxEiZAhig3BhHvZkGAq2Y4c
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- bulkscore=0 suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104210142
+ definitions=main-2104210143
+X-Proofpoint-GUID: ezJre5KnkNyjdXx1odfjy6BGh8G9NLfb
+X-Proofpoint-ORIG-GUID: ezJre5KnkNyjdXx1odfjy6BGh8G9NLfb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping? This can cause io hung.
+On 4/21/21 9:03 AM, Peter Xu wrote:
+> Hugh, Mike, Andrew,
+> 
+> Any comment for this series?
+> 
 
-Thanks,
+Sorry Peter, always get preempted with something else.
 
-Junxiao.
+I'll start looking at the hugetlb specific changes and back my way into
+swap special pte support.  I feel qualified to review the hugetlb stuff
+and hope others will join in on the common infrastructure changes.
 
-On 4/14/21 9:11 PM, Hillf Danton wrote:
-> On Wed, 14 Apr 2021 14:18:30 Junxiao Bi wrote:
->> There is a race bug which can cause io hung when multiple processes
->> run parallel in rq_qos_wait().
->> Let assume there were 4 processes P1/P2/P3/P4, P1/P2 were at the entry
->> of rq_qos_wait, and P3/P4 were waiting for io done, 2 io were inflight,
->> the inflight io limit was 2. See race below.
->>
->> void rq_qos_wait()
->> {
->> 	...
->>      bool has_sleeper;
->>
->> 	>>>> P3/P4 were in sleeper list, has_sleeper was true for both P1 and P2.
->>      has_sleeper = wq_has_sleeper(&rqw->wait);
->>      if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
->>          return;
->>
->> 	>>>> 2 inflight io done, P3/P4 were waken up to issue 2 new io.
->> 	>>>> 2 new io done, no inflight io.
->>
->> 	>>>> P1/P2 were added to the sleeper list, 2 entry in the list
->>      prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
->>
->> 	>>>> P1/P2 were in the sleeper list, has_sleeper was true for P1/P2.
->>      has_sleeper = !wq_has_single_sleeper(&rqw->wait);
->>      do {
->>          /* The memory barrier in set_task_state saves us here. */
->>          if (data.got_token)
->>              break;
->>          if (!has_sleeper && acquire_inflight_cb(rqw, private_data)) {
->>              finish_wait(&rqw->wait, &data.wq);
->>
->>              /*
->>               * We raced with wbt_wake_function() getting a token,
->>               * which means we now have two. Put our local token
->>               * and wake anyone else potentially waiting for one.
->>               */
->>              smp_rmb();
->>              if (data.got_token)
->>                  cleanup_cb(rqw, private_data);
->>              break;
->>          }
->>
->> 	>>>> P1/P2 hung here forever. New io requests will also hung here.
->>          io_schedule();
->>          has_sleeper = true;
->>          set_current_state(TASK_UNINTERRUPTIBLE);
->>      } while (1);
->>      finish_wait(&rqw->wait, &data.wq);
->> }
->>
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
->> ---
->>   block/blk-rq-qos.c | 9 +++------
->>   1 file changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
->> index 656460636ad3..04d888c99bc0 100644
->> --- a/block/blk-rq-qos.c
->> +++ b/block/blk-rq-qos.c
->> @@ -260,19 +260,17 @@ void rq_qos_wait(struct rq_wait *rqw, void *private_data,
->>   		.cb = acquire_inflight_cb,
->>   		.private_data = private_data,
->>   	};
->> -	bool has_sleeper;
->>   
->> -	has_sleeper = wq_has_sleeper(&rqw->wait);
->> -	if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
->> +	if (!wq_has_sleeper(&rqw->wait)
->> +		&& acquire_inflight_cb(rqw, private_data))
->>   		return;
->>   
->>   	prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
->> -	has_sleeper = !wq_has_single_sleeper(&rqw->wait);
->>   	do {
->>   		/* The memory barrier in set_task_state saves us here. */
->>   		if (data.got_token)
->>   			break;
->> -		if (!has_sleeper && acquire_inflight_cb(rqw, private_data)) {
->> +		if (acquire_inflight_cb(rqw, private_data)) {
->>   			finish_wait(&rqw->wait, &data.wq);
->>   
->>   			/*
->> @@ -286,7 +284,6 @@ void rq_qos_wait(struct rq_wait *rqw, void *private_data,
->>   			break;
->>   		}
->>   		io_schedule();
->> -		has_sleeper = true;
->>   		set_current_state(TASK_UNINTERRUPTIBLE);
->>   	} while (1);
->>   	finish_wait(&rqw->wait, &data.wq);
->> -- 
->> 2.24.3 (Apple Git-128)
->>
-> No wakeup may cause the hang.
->
-> --- a/block/blk-rq-qos.c
-> +++ b/block/blk-rq-qos.c
-> @@ -287,7 +287,8 @@ void rq_qos_wait(struct rq_wait *rqw, vo
->   		}
->   		io_schedule();
->   		has_sleeper = true;
-> -		set_current_state(TASK_UNINTERRUPTIBLE);
-> +		prepare_to_wait_exclusive(&rqw->wait, &data.wq,
-> +						TASK_UNINTERRUPTIBLE);
->   	} while (1);
->   	finish_wait(&rqw->wait, &data.wq);
->   }
+-- 
+Mike Kravetz
