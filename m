@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019A4366C89
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBDE366C8A
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242869AbhDUNTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
+        id S242959AbhDUNTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241050AbhDUNKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:10:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 482846145E;
-        Wed, 21 Apr 2021 13:09:59 +0000 (UTC)
+        id S241089AbhDUNKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:10:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23CAC61460;
+        Wed, 21 Apr 2021 13:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010599;
-        bh=Y672P6BbdL1h7x7HhN95ClrzKujkBDcMO0X0IK2Kaws=;
+        s=korg; t=1619010602;
+        bh=0ZMoyGTMN6cdLV84CGS0daXlsSiChDvc+7QBwEONvJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wu6v4WFoxNGSUKNfiuLxyPpjVloS2995W02z63F8/kRYLvRXr7hjHeGBPNrNstF8f
-         Ix5TDB7K7thGMbbGoMkCeZQznANbGYr6JXB5Vt4JMeRmnQJpGlPn1KIXcvOO1Bqkpp
-         Gd3nQgvaxNFKSi0u2nJMFejv9rwj+tJrADdV9+SU=
+        b=DMazOH0T1RUH78/eA5e0WJusx1mjgCjzU0D8p5NrV0OQHoyGG5ushzNzwm6NJRJhI
+         ziAJ9DuYAR464v/c4d6pP/xdD6LfYnWyfERW3fYrYPIBDI5GcYmqPfIjsWIhylzwmZ
+         0LTk5CTlyU5gBe0n3kk6uzvt9vaNEYi53ZSUp5Ak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wenwen Wang <wang6495@umn.edu>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 186/190] Revert "virt: vbox: Only copy_from_user the request-header once"
-Date:   Wed, 21 Apr 2021 15:01:01 +0200
-Message-Id: <20210421130105.1226686-187-gregkh@linuxfoundation.org>
+        Wenwen Wang <wang6495@umn.edu>, stable@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 187/190] Revert "ALSA: control: fix a redundant-copy issue"
+Date:   Wed, 21 Apr 2021 15:01:02 +0200
+Message-Id: <20210421130105.1226686-188-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit bd23a7269834dc7c1f93e83535d16ebc44b75eba.
+This reverts commit 3f12888dfae2a48741c4caa9214885b3aaf350f9.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -54,28 +54,27 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Wenwen Wang <wang6495@umn.edu>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: <stable@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/virt/vboxguest/vboxguest_linux.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/core/control_compat.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virt/vboxguest/vboxguest_linux.c b/drivers/virt/vboxguest/vboxguest_linux.c
-index 73eb34849eab..f5cd9cfa1ef6 100644
---- a/drivers/virt/vboxguest/vboxguest_linux.c
-+++ b/drivers/virt/vboxguest/vboxguest_linux.c
-@@ -142,9 +142,7 @@ static long vbg_misc_device_ioctl(struct file *filp, unsigned int req,
- 	if (!buf)
- 		return -ENOMEM;
- 
--	*((struct vbg_ioctl_hdr *)buf) = hdr;
--	if (copy_from_user(buf + sizeof(hdr), (void *)arg + sizeof(hdr),
--			   hdr.size_in - sizeof(hdr))) {
-+	if (copy_from_user(buf, (void *)arg, hdr.size_in)) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
+diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+index 1d708aab9c98..857acf83ae47 100644
+--- a/sound/core/control_compat.c
++++ b/sound/core/control_compat.c
+@@ -381,7 +381,8 @@ static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
+ 	if (copy_from_user(&data->id, &data32->id, sizeof(data->id)) ||
+ 	    copy_from_user(&data->type, &data32->type, 3 * sizeof(u32)))
+ 		goto error;
+-	if (get_user(data->owner, &data32->owner))
++	if (get_user(data->owner, &data32->owner) ||
++	    get_user(data->type, &data32->type))
+ 		goto error;
+ 	switch (data->type) {
+ 	case SNDRV_CTL_ELEM_TYPE_BOOLEAN:
 -- 
 2.31.1
 
