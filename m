@@ -2,83 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD42366EE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C471D366EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 17:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243894AbhDUPQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 11:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240773AbhDUPQ3 (ORCPT
+        id S243900AbhDUPQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 11:16:48 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57332 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238768AbhDUPQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:16:29 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6BFC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:15:55 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id u16so25425084oiu.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 08:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=43BM1RWeXNmeeSS9PVJMPj0AxRoQfR0CMNvFedQdo6g=;
-        b=2MP4GxATv8z+lbdocPj1QM5XxbECXHXeXv5daIIZR4d+LiPzLg0o2HV3aeOybsUM8M
-         x1qeuLTLWE95xVzJUx0XJd3VZp/1cLAQs02Dtev12EzxMOX8bq8+927CLJQl/D8LFOrT
-         7XzgbISnulEdJRfehkk8bXbBSv/4MhgH1tDpFJFv8lb3Aif2m1/MNPwaUpMyoI2qbumh
-         xrEGGqXOEtBp4zbvhDlcfdWZ2vCjEaf0yuHSn2+w8hmHQqIZHy7zuexaj1bVSFhSIprq
-         yIFQDQqP9OxfK3kYIXjtPZ5xas1cuv2H8n3n8MZ0OJTVwffG5yth599VbAZ7rqbnDJQj
-         dkqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=43BM1RWeXNmeeSS9PVJMPj0AxRoQfR0CMNvFedQdo6g=;
-        b=DMwNPOfI7hA92F8czLb6Y5IiHsWJL9+YjtiHvaU3rOGLPG7ITITsJQ8RKGZX+0pf7Y
-         VvNDq06y57pGsVMVNynTkICUQeqazTrExu9cEAa1o8asmx+jTUZDVbLMGA0tNHfNv7SS
-         M9lzw6chvt3fVKUyajRkyH0dGbq8JE29spVT+a6Hbc/yGwi0mbCFD7NFjtDFQH4wVplp
-         qkfYC5IO07FJN4ccd5tsYVqUUWb6tVm9QOJKig8hwuFd86poQeYH5klBoqtbLvYq0icY
-         Os7XTvtie1Y0wsxlHIDS9Or8cxynwYgdGodlBRmUccRXH50qEl5sM64PK/h0x2ZnREG9
-         ZIfA==
-X-Gm-Message-State: AOAM531DbIUw0g6FGGk/C2ztvddMAQYGhwFX6lYefa0jI3wMPZX3rahF
-        u9BbNQiouXhoImTWCJ+ekWrKLA==
-X-Google-Smtp-Source: ABdhPJzfGy4O/+HA1Ao/Zzf6QlxmxboWQrb3BWm9jVakgb+joZP/bP3rf5nkvDoHQEz/Ij+2f0gS3g==
-X-Received: by 2002:aca:4c08:: with SMTP id z8mr6884712oia.67.1619018154583;
-        Wed, 21 Apr 2021 08:15:54 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id z25sm571624otm.34.2021.04.21.08.15.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 08:15:54 -0700 (PDT)
-Subject: Re: [PATCH 1/2] ataflop: potential out of bounds in do_format()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <YH/7+65JruUO/wsg@mwanda>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3f79a1f7-8b7c-420c-0e70-d3b5880222bf@kernel.dk>
-Date:   Wed, 21 Apr 2021 09:15:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 21 Apr 2021 11:16:47 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 896DF4AE;
+        Wed, 21 Apr 2021 17:16:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1619018171;
+        bh=TAunVkjVto0RThnQ/DWnbsC41TzzzfFJt7SWrqC9jhM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LXwpnus3C2WCoiV5Cexo5HruEmWFO1Oasm3fNykS//URnqUv9jdCb46eIOa80AT5j
+         awe5BMTth9Ejn/g02auw2h6RTwk9k2VX56YJ9kBWjQA+TGIxGsMEXOtonzyt4x4icw
+         Tayl64CB1m5fth69j6vZ71jsA+yhYHhM8J2m65Ew=
+Date:   Wed, 21 Apr 2021 18:16:07 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kangjie Lu <kjlu@umn.edu>
+Cc:     Jiri Kosina <jikos@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aditya Pakki <pakki001@umn.edu>, Qiushi Wu <wu000273@umn.edu>,
+        x86@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
+Message-ID: <YIBBt6ypFtT+i994@pendragon.ideasonboard.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net>
+ <nycvar.YFH.7.76.2104211628560.18270@cbobk.fhfr.pm>
+ <CAK8KejoGgoWcEUm7gnTw+_5CuZX1+bnHoeY0Ea-pAO+gd8dbcg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YH/7+65JruUO/wsg@mwanda>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAK8KejoGgoWcEUm7gnTw+_5CuZX1+bnHoeY0Ea-pAO+gd8dbcg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 4:18 AM, Dan Carpenter wrote:
-> The function uses "type" as an array index:
-> 
-> 	q = unit[drive].disk[type]->queue;
-> 
-> Unfortunately the bounds check on "type" isn't done until later in the
-> function.  Fix this by moving the bounds check to the start.
+Hi Kangjie,
 
-Applied this and 2/2, thanks Dan.
+On Wed, Apr 21, 2021 at 09:44:52AM -0500, Kangjie Lu wrote:
+> On Wed, Apr 21, 2021 at 9:32 AM Jiri Kosina wrote:
+> > On Wed, 21 Apr 2021, Guenter Roeck wrote:
+> > > > Commits from @umn.edu addresses have been found to be submitted in
+> > > > "bad faith" to try to test the kernel community's ability to review
+> > > > "known malicious" changes.  The result of these submissions can be
+> > > > found in a paper published at the 42nd IEEE Symposium on Security and
+> > > > Privacy entitled, "Open Source Insecurity: Stealthily Introducing
+> > > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu
+> > > > (University of Minnesota) and Kangjie Lu (University of Minnesota).
+> > >
+> > > Sigh. As if this wouldn't be a problem everywhere.
+> >
+> > Right.
+> >
+> > > > Because of this, all submissions from this group must be reverted from
+> > > > the kernel tree and will need to be re-reviewed again to determine if
+> > > > they actually are a valid fix.  Until that work is complete, remove this
+> > > > change to ensure that no problems are being introduced into the
+> > > > codebase.
+> > > >
+> > > > This patchset has the "easy" reverts, there are 68 remaining ones that
+> > > > need to be manually reviewed.  Some of them are not able to be reverted
+> > > > as they already have been reverted, or fixed up with follow-on patches
+> > > > as they were determined to be invalid.  Proof that these submissions
+> > > > were almost universally wrong.
+> > > >
+> > > > I will be working with some other kernel developers to determine if any
+> > > > of these reverts were actually valid changes, were actually valid, and
+> > > > if so, will resubmit them properly later.  For now, it's better to be
+> > > > safe.
+> > > >
+> > > > I'll take this through my tree, so no need for any maintainer to worry
+> > > > about this, but they should be aware that future submissions from anyone
+> > > > with a umn.edu address should be by default-rejected unless otherwise
+> > > > determined to actually be a valid fix (i.e. they provide proof and you
+> > > > can verify it, but really, why waste your time doing that extra work?)
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > > >
+> > > [ ... ]
+> > > >   Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
+> > >
+> > > I see
+> > >
+> > > 9aa3aa15f4c2 hwmon: (lm80) fix a missing check of bus read in lm80 probe
+> > > c9c63915519b hwmon: (lm80) fix a missing check of the status of SMBus read
+> > >
+> > > The latter indeed introduced a problem which was later fixed with
+> >
+> > Therefore I'd like to ask Kangjie Lu (who is CCed here) to consider
+> > revising his statement in the attempted public clarification:
+> >
+> >         "The experiment did not introduce any bug or bug-introducing commit into
+> >          OSS."
+> >
+> > at [1] as it's clearly not true. Missing mutex unlock clearky is a bug
+> > introduced by this experiment.
+> 
+> Hi everyone,
+> 
+> I am so sorry for the concerns. I fully understand why the community is
+> angry. Please allow me to have a very quick response, as Jiri requested. We
+> will provide a detailed explanation later.
+> 
+> These are two different projects. The one published at IEEE S&P 2021 has
+> completely finished in November 2020. My student Aditya is working on a new
+> project that is to find bugs introduced by bad patches. Please do not link
+> these two projects together.  I am sorry that his new patches are not
+> correct either. He did not intentionally make the mistake.
+
+Do you have a list of all known bad commits ? Not that we shouldn't
+revert the other ones as well, but having a list of bad ones would be
+useful when reviewing commits individually to see which ones may
+actually be correct.
+
+> > [1] https://www-users.cs.umn.edu/~kjlu/
 
 -- 
-Jens Axboe
+Regards,
 
+Laurent Pinchart
