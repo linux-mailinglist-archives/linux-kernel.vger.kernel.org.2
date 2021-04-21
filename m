@@ -2,154 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110753669F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347653669FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 13:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237600AbhDULhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 07:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233959AbhDULhH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 07:37:07 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A559FC06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 04:36:33 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id o21-20020a1c4d150000b029012e52898006so1082500wmh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 04:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3U1xeifc4RYATXIaOPm+gVuOiogsqdmpZYnrWwH4mgQ=;
-        b=ZCyo4Lvm/KnWehZdix7AShEog4Tc6zanQV0JB2RIAFSrtiTTBaIlyDy8+ZUdFSezQ6
-         +KbK+TWWkzZESzM4vM3yAKR1/GXsAssfOs/IycMS1pr2LBsPoirx6p8TK2PVEXdwPipp
-         Yz40G+ks8Sc9NTDjekTumF+0YPt5hbeiaZO7NiGaHDeW9Uk9JdRevBoyzCa1+4wbpueO
-         TgZq4GC6w17coiCRMNqqmKORqJmTEPRJPJ9lpmYHY1wciQvqg7qcji/1M/PWhBAkDivZ
-         UuyuLKSwPXxaS4BXRQu7YhNXr6sYusYwex0AehNkhRftOaKR0CEzhzpJYEKd4LE49G5l
-         unfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3U1xeifc4RYATXIaOPm+gVuOiogsqdmpZYnrWwH4mgQ=;
-        b=Nfj2q6MQ2i7j44r/Nr0di12nvslKcQnEWf50TLBcDiXorl6uC+gUTzf4QL217D+zu8
-         rHDJZNtt29kojXfeUUOGOSEw52hGTvSKfLstsaAfHfuQT67IK3YHF3aMnrruu7IbeNzH
-         BuQEUz4WSSazLiD0YIn+Wh327A6W180cFW+UnZTy1AJ6hK9xWRHU55sGXdJ5uDlyamVI
-         REhp1I1HDmXulLkdwbI9OzRV6y+CLBvD+VlkBouNqQuPKm+ZvwlYCbdm/TCEyWxSA236
-         rgxGFoBjALp/I+9FiurG/d9ouNyxY36v549369sB3wcYEmrTEpc7P7ubBiHf0yHto8ID
-         T8UA==
-X-Gm-Message-State: AOAM533MZDgY12cjrU7PCJOIzJ6yc49kLSW3CuteQ3BPV8nDprxv1Kx+
-        6ODvDMzeYhNvEWz6zXLtDXFFsFEUGut/oX5S
-X-Google-Smtp-Source: ABdhPJyOX4FqLp9SQoeu19y0eMvJflSoeUyXcc2fWopIy9J+Fj4eXzzG4ll+AZRlHZl3JEwcMKaHRQ==
-X-Received: by 2002:a1c:9850:: with SMTP id a77mr9163790wme.174.1619004992118;
-        Wed, 21 Apr 2021 04:36:32 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:d985:3a3b:ec32:bdfe? ([2a01:e34:ed2f:f020:d985:3a3b:ec32:bdfe])
-        by smtp.googlemail.com with ESMTPSA id q5sm2162741wmj.20.2021.04.21.04.36.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 04:36:31 -0700 (PDT)
-Subject: Re: [PATCH v3] thermal: ti-soc-thermal: Remove unused variable 'val'
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Lin Ruizhe <linruizhe@huawei.com>, rui.zhang@intel.com,
-        edubezval@gmail.com, j-keerthy@ti.com, amitk@kernel.org,
-        eballetbo@gmail.com, linux-pm@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210421084256.57591-1-linruizhe@huawei.com>
- <YH/nK6xshH+lW7e0@kroah.com>
- <8e66040e-4330-d4f0-afbb-8cae62a5082e@linaro.org>
- <YH/yQ5Hd+30DH4p/@atomide.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <3116672d-4ff3-a065-f76c-1ae820e1ff95@linaro.org>
-Date:   Wed, 21 Apr 2021 13:36:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237662AbhDULiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 07:38:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40014 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237540AbhDULh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 07:37:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619005043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HDOuCC62jfsd2wkWQVjxeXTqXYlpQLnWV9cnsOipcpM=;
+        b=HrKFqzU3wZvPg/mQzVI7H934OPbXXE+18K2hnfl7cE//AMcNvy7rOF5quwJMP6mpQd253v
+        ZVJRlPpAaGZUS3C7H4b89+R+OBj/Zp9skIcFjApgzGck9b1xBPy6Golfb+2p4iM3YNEiwD
+        NV1GgvVUWnzuPbMAIPtdgHgfMX98ZCg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 147B4AF1E;
+        Wed, 21 Apr 2021 11:37:23 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 13:37:22 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 4/8] mm,memory_hotplug: Allocate memmap from the
+ added memory range
+Message-ID: <YIAOcrolk359gnOC@dhcp22.suse.cz>
+References: <20210421102701.25051-1-osalvador@suse.de>
+ <20210421102701.25051-5-osalvador@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <YH/yQ5Hd+30DH4p/@atomide.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421102701.25051-5-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Tony,
-
-thanks for testing
-
-  -- Daniel
-
-On 21/04/2021 11:37, Tony Lindgren wrote:
-> * Daniel Lezcano <daniel.lezcano@linaro.org> [210421 09:07]:
->> On 21/04/2021 10:49, Greg KH wrote:
->>> On Wed, Apr 21, 2021 at 04:42:56PM +0800, Lin Ruizhe wrote:
->>>> The variable 'val'in function ti_bandgap_restore_ctxt is
->>>> the register value of read bandgap registers. This function is to
->>>> restore the context. But there is no operation on the return value
->>>> of this register, so this block is redundant. Hulk robot scans this
->>>> warning.This commit remove the dead code.
->>>>
->>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>> Fixes: b87ea759a4cc ("staging: omap-thermal: fix context restore function")
->>>> Signed-off-by: Lin Ruizhe <linruizhe@huawei.com>
->>>> ---
->>>> v3:
->>>> -Add Fixes tag and more accurate commit message in this patch.
->>>> v2:
->>>> -As suggest remove the whole unuesed block in fuction
->>>>  ti_bandgap_restore_ctxt
->>>>
->>>>  drivers/thermal/ti-soc-thermal/ti-bandgap.c | 4 ----
->>>>  1 file changed, 4 deletions(-)
->>>>
->>>> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
->>>> index d81af89166d2..684ffb645aa9 100644
->>>> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
->>>> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
->>>> @@ -1142,14 +1142,10 @@ static int ti_bandgap_restore_ctxt(struct ti_bandgap *bgp)
->>>>  	for (i = 0; i < bgp->conf->sensor_count; i++) {
->>>>  		struct temp_sensor_registers *tsr;
->>>>  		struct temp_sensor_regval *rval;
->>>> -		u32 val = 0;
->>>>  
->>>>  		rval = &bgp->regval[i];
->>>>  		tsr = bgp->conf->sensors[i].registers;
->>>>  
->>>> -		if (TI_BANDGAP_HAS(bgp, COUNTER))
->>>> -			val = ti_bandgap_readl(bgp, tsr->bgap_counter);
->>>
->>> Are you sure that this hardware does not require this read to happen in
->>> order for it to work properly?
->>
->> Yes, initially we had the same concern but we were unable to find
->> anything specific in the history. The commit mentioned above removed the
->> user of the 'val' code but without removing this block of code.
->>
->> When looking at the current code, it really looks like an oversight.
+On Wed 21-04-21 12:26:57, Oscar Salvador wrote:
+> Physical memory hotadd has to allocate a memmap (struct page array) for
+> the newly added memory section. Currently, alloc_pages_node() is used
+> for those allocations.
 > 
-> Yes so it seems.
+> This has some disadvantages:
+>  a) an existing memory is consumed for that purpose
+>     (eg: ~2MB per 128MB memory section on x86_64)
+>     This can even lead to extreme cases where system goes OOM because
+>     the physically hotplugged memory depletes the available memory before
+>     it is onlined.
+>  b) if the whole node is movable then we have off-node struct pages
+>     which has performance drawbacks.
+>  c) It might be there are no PMD_ALIGNED chunks so memmap array gets
+>     populated with base pages.
 > 
->> There is nothing in the commit's changelog referring to a need of
->> reading the counter register but perhaps I'm wrong because I'm not sure
->> to understand correctly the changelog.
->>
->>> Lots of hardware does need this, have you tested this?
+> This can be improved when CONFIG_SPARSEMEM_VMEMMAP is enabled.
 > 
-> I just tested this on omap3 logicpd torpedo devkit that can do off during
-> idle and reading /sys/class/thermal/thermal_zone0/temp works. So feel
-> free to add:
+> Vmemap page tables can map arbitrary memory. That means that we can
+> reserve a part of the physically hotadded memory to back vmemmap page
+> tables. This implementation uses the beginning of the hotplugged memory
+> for that purpose.
 > 
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
-> Tested-by: Tony Lindgren <tony@atomide.com>
+> There are some non-obviously things to consider though.  Vmemmap
+> pages are allocated/freed during the memory hotplug events
+> (add_memory_resource(), try_remove_memory()) when the memory is
+> added/removed. This means that the reserved physical range is not online
+> although it is used. The most obvious side effect is that pfn_to_online_page()
+> returns NULL for those pfns. The current design expects that this
+> should be OK as the hotplugged memory is considered a garbage until it
+> is onlined. For example hibernation wouldn't save the content of those
+> vmmemmaps into the image so it wouldn't be restored on resume but this
+> should be OK as there no real content to recover anyway while metadata
+> is reachable from other data structures (e.g. vmemmap page tables).
+> 
+> The reserved space is therefore (de)initialized during the {on,off}line
+> events (mhp_{de}init_memmap_on_memory). That is done by extracting page
+> allocator independent initialization from the regular onlining path.
+> The primary reason to handle the reserved space outside of {on,off}line_pages
+> is to make each initialization specific to the purpose rather than
+> special case them in a single function.
+> 
+> As per above, the functions that are introduced are:
+> 
+>  - mhp_init_memmap_on_memory:
+> 		       Initializes vmemmap pages by calling move_pfn_range_to_zone(),
+> 		       calls kasan_add_zero_shadow(), and onlines as many sections
+> 		       as vmemmap pages fully span.
+>  - mhp_deinit_memmap_on_memory:
+> 		       Offlines as many sections as vmemmap pages fully span,
+> 		       removes the range from zhe zone by remove_pfn_range_from_zone(),
+> 		       and calls kasan_remove_zero_shadow() for the range.
+> 
+> The new function memory_block_online() calls mhp_init_memmap_on_memory() before
+> doing the actual online_pages(). Should online_pages() fail, we clean up
+> by calling mhp_deinit_memmap_on_memory().
+> Adjusting of present_pages is done at the end once we know that online_pages()
+> succedeed.
+> 
+> On offline, memory_block_offline() needs to unaccount vmemmap pages from
+> present_pages() before calling offline_pages().
+> This is necessary because offline_pages() tears down some structures based
+> on the fact whether the node or the zone become empty.
+> If offline_pages() fails, we account back vmemmap pages.
+> If it succeeds, we call mhp_deinit_memmap_on_memory().
+> 
+> Hot-remove:
+> 
+>  We need to be careful when removing memory, as adding and
+>  removing memory needs to be done with the same granularity.
+>  To check that this assumption is not violated, we check the
+>  memory range we want to remove and if a) any memory block has
+>  vmemmap pages and b) the range spans more than a single memory
+>  block, we scream out loud and refuse to proceed.
+> 
+>  If all is good and the range was using memmap on memory (aka vmemmap pages),
+>  we construct an altmap structure so free_hugepage_table does the right
+>  thing and calls vmem_altmap_free instead of free_pagetable.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Thanks for testing
+Thanks for updating the changelog.
 
+Acked-by: Michal Hocko <mhocko@suse.com>
 
+[...]
+> @@ -648,9 +650,16 @@ static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
+>  	 * decide to not expose all pages to the buddy (e.g., expose them
+>  	 * later). We account all pages as being online and belonging to this
+>  	 * zone ("present").
+> +	 * When using memmap_on_memory, the range might not be aligned to
+> +	 * MAX_ORDER_NR_PAGES - 1, but pageblock aligned. __ffs() will detect
+> +	 * this and the first chunk to online will be pageblock_nr_pages.
+>  	 */
+> -	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
+> -		(*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
+> +	for (pfn = start_pfn; pfn < end_pfn;) {
+> +		int order = min(MAX_ORDER - 1UL, __ffs(pfn));
+> +
+> +		(*online_page_callback)(pfn_to_page(pfn), order);
+> +		pfn += (1UL << order);
+> +	}
+>  
+>  	/* mark all involved sections as online */
+>  	online_mem_sections(start_pfn, end_pfn);
+
+You have dropped the check for the overflow beyond end_pfn and this made
+me think whether that is safe in general. It took me a while to realize
+that end_pfn is always going to be within MAX_ORDER - 1 due to section
+constrains (hopefully no surprises on some arches). Early init code is
+in a much more complicated situation because the early memory maps can
+have many oddities.
+
+... just thinking out loud in case I need too to look that up again in
+future...
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Michal Hocko
+SUSE Labs
