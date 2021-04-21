@@ -2,148 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AD8367398
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D8D36739D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245492AbhDUTnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245482AbhDUTnd (ORCPT
+        id S245504AbhDUToD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:44:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30624 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243318AbhDUToA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:43:33 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112D0C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:59 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id h4so33464931wrt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+9YyDbXYbo/3ZkbS9vnMcM6O6QITgJOco3N63Yjdcu4=;
-        b=R5lT7KlW09JoVMcjFqoMiMID8trNeIRJeuiU5SI2eCwg8yStG0uKB3CAvFRsEDB7Ci
-         OifXxx3vlT3J5HEQLE8b6o7AVDH3tE0ev8kyNbSeDu/1Pd0z6Dec2fusd8ZGHJRYJv48
-         9mFO/Lhg0/oz5Ka0TdMCVuW3LAwDLS4kcLpmX9wiQPD10lGwPNaaPzuqhmeVsbsSCET0
-         CN3rsDYR4E7sJBLry/q7foKe3J45lE8YqxzUOy/Av12h5UnQmYIPGlpUQRR7rp2t9h0r
-         oVzEP5mVg49yI8BXpCmUc+DIBZTX2P+Fcn5z07G84fY/mLrOoLdErASE0V1FvlNobCOz
-         L13Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+9YyDbXYbo/3ZkbS9vnMcM6O6QITgJOco3N63Yjdcu4=;
-        b=X9LrL2xRSGep72gzUgprHauf6Wu1fMCfE5KCUwS/vwjWWHgGCbCxwKWVnevIx+ou+5
-         7xphkPUtsv+xE5FnTcaHOdJVZo6Aa1VujA5XEhpDtgpBBVDYrklztKOO0bGAJw94QXuG
-         nOyKPyUc7CNSZT3lw4mZEvTa0+2poNc7X2LrJ+WltCpWlBJqcVCk4ZUzecJLDzU+rgO0
-         qGKQU3zsGwgrdT8Uag+DPZCOLS+MX6ZG2zrz8XhNi7EA/yx9uQ7V4TlFMzr9mkd80xRQ
-         U55mwEqgFPZGOkYtVtO8uJuLwpEYTsKuMAX7xqGFfu2e4ktmyCxA5taKqxfODKKd++LZ
-         6kFQ==
-X-Gm-Message-State: AOAM533uwxBMO4UshnmZGSPxyY7/mKz/HJ+mkyLIUqxWsQcdem9298RD
-        9U9kn8IWSx1LGglXnFkqPO0=
-X-Google-Smtp-Source: ABdhPJx59Ihii72tQbBOF8SKCYEdKYUyDEqSZFT+yDTqevDePXP9MKA20iQzUl8vP/Wbv45uB2Y7TA==
-X-Received: by 2002:a05:6000:186d:: with SMTP id d13mr29115281wri.199.1619034177847;
-        Wed, 21 Apr 2021 12:42:57 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:6d3d:2d8b:5417:831c])
-        by smtp.gmail.com with ESMTPSA id o4sm484163wrn.81.2021.04.21.12.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 12:42:55 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     melissa.srw@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH 3/3] drm: drm_connector.c: Use tabs for code indents
-Date:   Wed, 21 Apr 2021 20:42:49 +0100
-Message-Id: <0200474fbdb1149856308bccb8e467415f0b3d99.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
-References: <cover.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
-MIME-Version: 1.0
+        Wed, 21 Apr 2021 15:44:00 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LJYHK5088535;
+        Wed, 21 Apr 2021 15:43:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=ohvVcyYEL73URsRq6+D7RQKD6s9Yf7ykxc76CjqSvmI=;
+ b=kiYngL8I2buuIcrPwDNVxsaORxeKCDYIeD0u+WCfDXevM9iXnH6GfOc8QQI5uyTEmBMP
+ mw4KAshmRntC/boLce6Hr0IllW1iewA/t09mnhMBJ0w/Qfc7269hBCTRqR2VuQBtfl0L
+ NjvXfK6+0nNJ27stArGzn+sRkW/hdn+bL7XHrvq4MrkCsTgHrkZ/SjI9PJoYj+aJdNr8
+ inW8j7e5icsB2PI87WjkgtdjR+ttWM3/e1pjdW1GXyLDJPpwFTgTEjuk+YEEnDmqv594
+ Z2QxAEBpw04BqxQprRsABzbmbMrTvPaid1r9VffCUeJJQG5cVX41SjXE7Pc7H1jivB+z vQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 382sbr9tcm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 15:43:26 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13LJYIbJ088590;
+        Wed, 21 Apr 2021 15:43:25 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 382sbr9tc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 15:43:25 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13LJgaqR024705;
+        Wed, 21 Apr 2021 19:43:24 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04wdc.us.ibm.com with ESMTP id 3813tavx90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Apr 2021 19:43:24 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13LJhNBv35193186
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Apr 2021 19:43:23 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA4FC78064;
+        Wed, 21 Apr 2021 19:43:22 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3E9057805E;
+        Wed, 21 Apr 2021 19:43:22 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.47.158.152])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Apr 2021 19:43:22 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.ibm.com>
+To:     jeyu@kernel.org, keyrings@vger.kernel.org, dhowells@redhat.com,
+        zohar@linux.ibm.com, jarkko@kernel.org
+Cc:     nayna@linux.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v3 0/2] Add support for ECDSA-signed kernel modules
+Date:   Wed, 21 Apr 2021 15:43:17 -0400
+Message-Id: <20210421194319.1489291-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5Vfl1bcSoiVlAuJTqW9cXXPZnzVEmVIF
+X-Proofpoint-GUID: 8WFnDblBUpBfo-Os64COY2oo4IAdbP6_
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-21_05:2021-04-21,2021-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104210134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove space and use tabs for indent the code to follow the
-Linux kernel coding conventions.
-Problem found by checkpatch
+This series adds support for ECDSA-signed kernel modules. It also
+attempts to address a kbuild issue where a developer created an ECDSA
+key for signing kernel modules and then builds an older version of the
+kernel, when bisecting the kernel for example, that does not support
+ECDSA keys.
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
- drivers/gpu/drm/drm_connector.c | 38 ++++++++++++++++-----------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+The first patch addresses the kbuild issue of needing to delete that
+ECDSA key if it is in certs/signing_key.pem and trigger the creation
+of an RSA key. However, for this to work this patch would have to be
+backported to previous versions of the kernel but would also only work
+for the developer if he/she used a stable version of the kernel to which
+this patch was applied. So whether this patch actually achieves the
+wanted effect is not always guaranteed.
 
-diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-index 7631f76e7f34..38600c3a6ab2 100644
---- a/drivers/gpu/drm/drm_connector.c
-+++ b/drivers/gpu/drm/drm_connector.c
-@@ -1958,11 +1958,11 @@ int drm_connector_set_path_property(struct drm_connector *connector,
- 	int ret;
- 
- 	ret = drm_property_replace_global_blob(dev,
--	                                       &connector->path_blob_ptr,
--	                                       strlen(path) + 1,
--	                                       path,
--	                                       &connector->base,
--	                                       dev->mode_config.path_property);
-+					       &connector->path_blob_ptr,
-+					       strlen(path) + 1,
-+					       path,
-+					       &connector->base,
-+					       dev->mode_config.path_property);
- 	return ret;
- }
- EXPORT_SYMBOL(drm_connector_set_path_property);
-@@ -1988,11 +1988,11 @@ int drm_connector_set_tile_property(struct drm_connector *connector)
- 
- 	if (!connector->has_tile) {
- 		ret  = drm_property_replace_global_blob(dev,
--		                                        &connector->tile_blob_ptr,
--		                                        0,
--		                                        NULL,
--		                                        &connector->base,
--		                                        dev->mode_config.tile_property);
-+							&connector->tile_blob_ptr,
-+							0,
-+							NULL,
-+							&connector->base,
-+							dev->mode_config.tile_property);
- 		return ret;
- 	}
- 
-@@ -2003,11 +2003,11 @@ int drm_connector_set_tile_property(struct drm_connector *connector)
- 		 connector->tile_h_size, connector->tile_v_size);
- 
- 	ret = drm_property_replace_global_blob(dev,
--	                                       &connector->tile_blob_ptr,
--	                                       strlen(tile) + 1,
--	                                       tile,
--	                                       &connector->base,
--	                                       dev->mode_config.tile_property);
-+					       &connector->tile_blob_ptr,
-+					       strlen(tile) + 1,
-+					       tile,
-+					       &connector->base,
-+					       dev->mode_config.tile_property);
- 	return ret;
- }
- EXPORT_SYMBOL(drm_connector_set_tile_property);
-@@ -2076,10 +2076,10 @@ int drm_connector_update_edid_property(struct drm_connector *connector,
- 
- 	ret = drm_property_replace_global_blob(dev,
- 					       &connector->edid_blob_ptr,
--	                                       size,
--	                                       edid,
--	                                       &connector->base,
--	                                       dev->mode_config.edid_property);
-+					       size,
-+					       edid,
-+					       &connector->base,
-+					       dev->mode_config.edid_property);
- 	if (ret)
- 		return ret;
- 	return drm_connector_set_tile_property(connector);
+The 2nd patch adds the support for the ECSDA-signed kernel modules.
+
+This patch depends on the ECDSA support series currently queued here:
+https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/log/?h=ecc
+
+  Stefan
+
+v3:
+  - added missing OIDs for ECDSA signed hashes to pkcs7_sig_note_pkey_algo
+  - added recommendation to use string hash to Kconfig help text
+
+v2:
+  - Adjustment to ECDSA key detector string in 2/2
+  - Rephrased cover letter and patch descriptions with Mimi
+
+
+
+Stefan Berger (2):
+  certs: Trigger creation of RSA module signing key if it's not an RSA
+    key
+  certs: Add support for using elliptic curve keys for signing modules
+
+ certs/Kconfig                         | 26 ++++++++++++++++++++++++++
+ certs/Makefile                        | 14 ++++++++++++++
+ crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
+ 3 files changed, 48 insertions(+)
+
 -- 
-2.25.1
+2.29.2
 
