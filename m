@@ -2,91 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595113670C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E89D3670ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244516AbhDURAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238561AbhDURAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:00:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC1961454;
-        Wed, 21 Apr 2021 17:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619024401;
-        bh=AI77qGzZt23pSQs1t20Tpi5v4FMirrG9O8TqEzMEPNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=17utWtfiQYuQh6bvbdYBFtAKskiDt0Xw/ndDR+wAxmo3izMJVumADT/9Q1aiKJspN
-         NDXz5BOe7GxSQaaYAcnM+1GUCTgX8iJPubo9T0LE5vpFOUqnGVFSUSTgY67UArJyn2
-         aG4JIS2EVqT0CfztncXnSbQn7+gwJfIZ3jfe5qzI=
-Date:   Wed, 21 Apr 2021 18:59:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>
-Subject: Re: [PATCH 186/190] Revert "virt: vbox: Only copy_from_user the
- request-header once"
-Message-ID: <YIBaDvrNVHlNRuXM@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-187-gregkh@linuxfoundation.org>
- <68067532-56e5-c135-7a7e-0743c8e7b2a0@redhat.com>
+        id S244638AbhDURIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:08:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244618AbhDURIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 13:08:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619024844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fKYnlKH/ve8gc+F/YlsL5K2ivrBshU263RafrikX1Ew=;
+        b=JaOSgHNWEQTcvrqFf+qbZEF2sepv1lIK+DBaBQ3jP+tZvy7tS1s32/fvSZDreW7VD4Mbep
+        MkbnTHkcRW8MjKZEti8u96e9+fx7xMsv6tB+AFksNm8Y24OFGDjOwrQI+96e4RTyaKXc3R
+        u74E6UMeoANXOQnQM2CpgaHIiTXSIrk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-5krZEk2jOC-yj9xD9bzPaQ-1; Wed, 21 Apr 2021 13:07:07 -0400
+X-MC-Unique: 5krZEk2jOC-yj9xD9bzPaQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0605E10054F6;
+        Wed, 21 Apr 2021 17:07:04 +0000 (UTC)
+Received: from kasong-rh-laptop.redhat.com (ovpn-12-46.pek2.redhat.com [10.72.12.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A118419D80;
+        Wed, 21 Apr 2021 17:07:02 +0000 (UTC)
+From:   Kairui Song <kasong@redhat.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Kairui Song <kasong@redhat.com>
+Subject: [PATCH] ARM: mark free_initrd_mem as __init
+Date:   Thu, 22 Apr 2021 00:34:38 +0800
+Message-Id: <20210421163438.1719964-1-kasong@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68067532-56e5-c135-7a7e-0743c8e7b2a0@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 06:51:24PM +0200, Hans de Goede wrote:
-> Hi Greg,
-> 
-> On 4/21/21 3:01 PM, Greg Kroah-Hartman wrote:
-> > This reverts commit bd23a7269834dc7c1f93e83535d16ebc44b75eba.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: Wenwen Wang <wang6495@umn.edu>
-> > Cc: Hans de Goede <hdegoede@redhat.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Ugh what a mess (the whole umn.edu thing).
-> 
-> I still remember reviewing this patch during its original submission
-> and I've reviewed it again this morning when you just send it out.
-> 
-> And now after letting it sit for a bit I've reviewed it a third time
-> and it seems to do what it says on the label / in the original commit
-> msg; and if fixes a real, potentially security, issue.
-> 
-> I'm not sure what the process is for "good" patches in the set
-> which you are reverting. I would prefer for this patch to be dropped
-> from the set of reveert. But I can also submit a revert of the revert(?)
-> once this set of reverts has been merged.
+free_initrd_mem is only called from __init functions, and only used
+during boot, so mark it __init.
 
-If you have reviewed it, and think it should stay, I will drop the
-revert from my patch series.  Other maintainers/reviewers have asked the
-same thing for their patches, which is fine.
+Signed-off-by: Kairui Song <kasong@redhat.com>
+---
+ arch/arm/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Anything that I do end up reverting, that was not reviewed, will be
-again reviewed by me and others to determine if it is "safe" to come
-back in at a later point in time.
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 828a2561b229..6db5c0d37d95 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -528,7 +528,7 @@ void free_initmem(void)
+ }
+ 
+ #ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
++void __init free_initrd_mem(unsigned long start, unsigned long end)
+ {
+ 	if (start == initrd_start)
+ 		start = round_down(start, PAGE_SIZE);
+-- 
+2.30.2
 
-So thanks for the review, I'll drop this one.
-
-thanks,
-
-greg k-h
