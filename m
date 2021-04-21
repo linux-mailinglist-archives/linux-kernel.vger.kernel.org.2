@@ -2,169 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C639C366AA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595E3366AAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 14:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239716AbhDUMU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 08:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234573AbhDUMU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:20:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 530AD6145E;
-        Wed, 21 Apr 2021 12:19:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619007594;
-        bh=0a/68dskNDkLo1uroY57KwbRLZLoROR0e1l6xfjDK20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vKCh5xS88oZEFh3+M2mJmlwblhZLKM9ca2XwXEkYyFGXs/vJENDTcp2+xVkbz/Mzj
-         a336WGXWzU9a73VFVT3k//XwYrweCrOwX9FoEZ+l+wMJLIS6ZWccT0MXaPLhgkIcoW
-         Xn/V1hwDCFfL9dCpaHCPUWV8flXl+ZDAdyfpfjvTPz9BhcB5j2/YiiIP8EDCvXkMTa
-         SGZLlMLO3ygFxsXJzDB/5B+/T9wRSQ+Lh7rx5YMShZc41aJh9h/IMyNNdqcC5Xvk2k
-         jILPvY/LEsPWuJkwDiIP0ddmDjA84qv4go3Q++WnfolKm5AxJlm7flKGb1N5EeO33H
-         huVQegj1NaxhQ==
-Date:   Wed, 21 Apr 2021 15:19:45 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 3/4] arm64: decouple check whether pfn is in linear
- map from pfn_valid()
-Message-ID: <YIAYYcWtuwszHMux@kernel.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
- <20210421065108.1987-4-rppt@kernel.org>
- <0a7cc0d4-5d3d-7d6d-f4c3-bb2965b810e6@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a7cc0d4-5d3d-7d6d-f4c3-bb2965b810e6@arm.com>
+        id S236774AbhDUMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 08:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233955AbhDUMZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:25:30 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7ECC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:24:56 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id l19-20020a37f5130000b02902e3dc23dc92so5501832qkk.15
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 05:24:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=OD2jJ9yLCKnYZIcD98cpt1RR7ymAHhRQ2H9+zlmmjug=;
+        b=Avtml08dV8RD/7rMgmE8OvfgkjFdUDKpPY/pGUuZzrs4SHKHLGtOaYo/MEW4pVtG3A
+         Yvm2aK343VzqaJksCf19+sHWvrbtM7zz5B8N7J+QhUqieWsel9Po8IVRfk+LoCHw4qAl
+         WkMdgnNXw/jJ4paY1dzzBdUpFK+wTHotoj9Iuo/IzjnXWVMUtAS9ptqW1R+qjK8F/Lhh
+         N8BU5qKoBvxc2vW0I9UTSoIxLlt/HEqTVDdlontCV+qTfNQnkmdQ2KPjqtjjwNsNgUxT
+         7QZW3LiixvtvtEbeBnceOU8FJx6orLMTyS+eWDh6IfNjspUAOAewHp50hN95RkaR0kT2
+         ELmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=OD2jJ9yLCKnYZIcD98cpt1RR7ymAHhRQ2H9+zlmmjug=;
+        b=Ef62l0BFJQC22ur5TNkhInz/YWER+EYLrE8OovW/PiYG54JW+N2hZc5/m5q9VpMTTL
+         /a5xWcsObbPC4N1hCQpEdKYSbXkjyyFIigYoSHim4fn7sp2ZtJsJPmvfniE+74F8pZ8f
+         q7M/YpjaxOuao0R9/REapuOuOLUI1UdzRrj4lmvD9nHMP3M034AoktWDYmOp7rB/tYc3
+         bnjIK5cQt1jVaIj691nBiDbpG42RYPcX15yPuGF/Q/SFSRnzdTX+jteHjKC9kJtVBNh2
+         L+VSmbS+2nEM+feD8U82efLFhbDxLoT6xyFmPg1B48eYNbl5rC7Y9h/8E/2BscXAv2jm
+         NtwQ==
+X-Gm-Message-State: AOAM530c6aEEpG5sI992hOWs5UdKmuBWCd3hY+PoVyAUG+ZHp8e0u9TA
+        xq77oj7Br137a+Px2B6dWvfodyOKW43f7Q==
+X-Google-Smtp-Source: ABdhPJwdPqK7TVpIQ7Pri5OSevKRBEwXc8ZU2QtGuP5x3Hg+8x8ccehM6kZA+SSmO+esKvGhPL5q7ilIY2JSKw==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a0c:f802:: with SMTP id
+ r2mr32315555qvn.50.1619007895392; Wed, 21 Apr 2021 05:24:55 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 12:23:48 +0000
+Message-Id: <20210421122348.547922-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: Help with verifier failure
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 04:29:48PM +0530, Anshuman Khandual wrote:
-> 
-> On 4/21/21 12:21 PM, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > The intended semantics of pfn_valid() is to verify whether there is a
-> > struct page for the pfn in question and nothing else.
-> > 
-> > Yet, on arm64 it is used to distinguish memory areas that are mapped in the
-> > linear map vs those that require ioremap() to access them.
-> > 
-> > Introduce a dedicated pfn_is_map_memory() wrapper for
-> > memblock_is_map_memory() to perform such check and use it where
-> > appropriate.
-> > 
-> > Using a wrapper allows to avoid cyclic include dependencies.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  arch/arm64/include/asm/memory.h |  2 +-
-> >  arch/arm64/include/asm/page.h   |  1 +
-> >  arch/arm64/kvm/mmu.c            |  2 +-
-> >  arch/arm64/mm/init.c            | 11 +++++++++++
-> >  arch/arm64/mm/ioremap.c         |  4 ++--
-> >  arch/arm64/mm/mmu.c             |  2 +-
-> >  6 files changed, 17 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> > index 0aabc3be9a75..194f9f993d30 100644
-> > --- a/arch/arm64/include/asm/memory.h
-> > +++ b/arch/arm64/include/asm/memory.h
-> > @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
-> >  
-> >  #define virt_addr_valid(addr)	({					\
-> >  	__typeof__(addr) __addr = __tag_reset(addr);			\
-> > -	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
-> > +	__is_lm_address(__addr) && pfn_is_map_memory(virt_to_pfn(__addr));	\
-> >  })
-> >  
-> >  void dump_mem_limit(void);
-> > diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> > index 012cffc574e8..99a6da91f870 100644
-> > --- a/arch/arm64/include/asm/page.h
-> > +++ b/arch/arm64/include/asm/page.h
-> > @@ -38,6 +38,7 @@ void copy_highpage(struct page *to, struct page *from);
-> >  typedef struct page *pgtable_t;
-> >  
-> >  extern int pfn_valid(unsigned long);
-> > +extern int pfn_is_map_memory(unsigned long);
-> 
-> Check patch is complaining about this.
-> 
-> WARNING: function definition argument 'unsigned long' should also have an identifier name
-> #50: FILE: arch/arm64/include/asm/page.h:41:
-> +extern int pfn_is_map_memory(unsigned long);
-> 
-> 
-> >  
-> >  #include <asm/memory.h>
-> >  
-> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> > index 8711894db8c2..23dd99e29b23 100644
-> > --- a/arch/arm64/kvm/mmu.c
-> > +++ b/arch/arm64/kvm/mmu.c
-> > @@ -85,7 +85,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
-> >  
-> >  static bool kvm_is_device_pfn(unsigned long pfn)
-> >  {
-> > -	return !pfn_valid(pfn);
-> > +	return !pfn_is_map_memory(pfn);
-> >  }
-> >  
-> >  /*
-> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > index 3685e12aba9b..dc03bdc12c0f 100644
-> > --- a/arch/arm64/mm/init.c
-> > +++ b/arch/arm64/mm/init.c
-> > @@ -258,6 +258,17 @@ int pfn_valid(unsigned long pfn)
-> >  }
-> >  EXPORT_SYMBOL(pfn_valid);
-> >  
-> > +int pfn_is_map_memory(unsigned long pfn)
-> > +{
-> > +	phys_addr_t addr = PFN_PHYS(pfn);
-> > +
-> 
-> Should also bring with it, the comment regarding upper bits in
-> the pfn from arm64 pfn_valid().
+Hi,
 
-I think a reference to the comment in pfn_valid() will suffice.
+Recently when our internal Clang build was updated to 0e92cbd6a652 we start=
+ed
+hitting a verifier issue that I can't see an easy fix for. I've narrowed it=
+ down
+to a minimal reproducer - this email is a patch to add that repro as a prog
+test (./test_progs -t example).
 
-BTW, I wonder how is that other architectures do not need this check?
- 
-> > +	if (PHYS_PFN(addr) != pfn)
-> > +		return 0;
-> > +	
-> 
->  ^^^^^ trailing spaces here.
-> 
-> ERROR: trailing whitespace
-> #81: FILE: arch/arm64/mm/init.c:263:
-> +^I$
+Here's the BPF code I get from the attached source:
 
-Oops :)
- 
-> > +	return memblock_is_map_memory(addr);
-> > +}
-> > +EXPORT_SYMBOL(pfn_is_map_memory);
-> > +
-> 
-> Is the EXPORT_SYMBOL() required to build drivers which will use
-> pfn_is_map_memory() but currently use pfn_valid() ?
+0000000000000000 <exec>:
+; int BPF_PROG(exec, struct linux_binprm *bprm) {
+       0:       79 11 00 00 00 00 00 00 r1 =3D *(u64 *)(r1 + 0)
+       1:       7b 1a e8 ff 00 00 00 00 *(u64 *)(r10 - 24) =3D r1
+;   uint64_t args_size =3D bprm->argc & 0xFFFFFFF;
+       2:       61 17 58 00 00 00 00 00 r7 =3D *(u32 *)(r1 + 88)
+       3:       b4 01 00 00 00 00 00 00 w1 =3D 0
+;   int map_key =3D 0;
+       4:       63 1a fc ff 00 00 00 00 *(u32 *)(r10 - 4) =3D r1
+       5:       bf a2 00 00 00 00 00 00 r2 =3D r10
+       6:       07 02 00 00 fc ff ff ff r2 +=3D -4
+;   void *buf =3D bpf_map_lookup_elem(&buf_map, &map_key);
+       7:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0 ll
+       9:       85 00 00 00 01 00 00 00 call 1
+      10:       7b 0a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) =3D r0
+      11:       57 07 00 00 ff ff ff 0f r7 &=3D 268435455
+      12:       bf 76 00 00 00 00 00 00 r6 =3D r7
+;   if (!buf)
+      13:       16 07 12 00 00 00 00 00 if w7 =3D=3D 0 goto +18 <LBB0_7>
+      14:       79 a1 f0 ff 00 00 00 00 r1 =3D *(u64 *)(r10 - 16)
+      15:       15 01 10 00 00 00 00 00 if r1 =3D=3D 0 goto +16 <LBB0_7>
+      16:       b4 09 00 00 00 00 00 00 w9 =3D 0
+      17:       b7 01 00 00 00 10 00 00 r1 =3D 4096
+      18:       bf 68 00 00 00 00 00 00 r8 =3D r6
+      19:       05 00 0e 00 00 00 00 00 goto +14 <LBB0_3>
 
-Yes, this is required for virt_addr_valid() that is used by modules.
+00000000000000a0 <LBB0_5>:
+;     void *src =3D (void *)(char *)bprm->p + offset;
+      20:       79 a1 e8 ff 00 00 00 00 r1 =3D *(u64 *)(r10 - 24)
+      21:       79 13 18 00 00 00 00 00 r3 =3D *(u64 *)(r1 + 24)
+;     uint64_t read_size =3D args_size - offset;
+      22:       0f 73 00 00 00 00 00 00 r3 +=3D r7
+      23:       07 03 00 00 00 f0 ff ff r3 +=3D -4096
+;     (void) bpf_probe_read_user(buf, read_size, src);
+      24:       79 a1 f0 ff 00 00 00 00 r1 =3D *(u64 *)(r10 - 16)
+      25:       85 00 00 00 70 00 00 00 call 112
+;   for (int i =3D 0; i < 512 && offset < args_size; i++) {
+      26:       26 09 05 00 fe 01 00 00 if w9 > 510 goto +5 <LBB0_7>
+      27:       07 08 00 00 00 f0 ff ff r8 +=3D -4096
+      28:       bf 71 00 00 00 00 00 00 r1 =3D r7
+      29:       07 01 00 00 00 10 00 00 r1 +=3D 4096
+      30:       04 09 00 00 01 00 00 00 w9 +=3D 1
+;   for (int i =3D 0; i < 512 && offset < args_size; i++) {
+      31:       ad 67 02 00 00 00 00 00 if r7 < r6 goto +2 <LBB0_3>
 
--- 
-Sincerely yours,
-Mike.
+0000000000000100 <LBB0_7>:
+; int BPF_PROG(exec, struct linux_binprm *bprm) {
+      32:       b4 00 00 00 00 00 00 00 w0 =3D 0
+      33:       95 00 00 00 00 00 00 00 exit
+
+0000000000000110 <LBB0_3>:
+      34:       bf 17 00 00 00 00 00 00 r7 =3D r1
+;     (void) bpf_probe_read_user(buf, read_size, src);
+      35:       bc 82 00 00 00 00 00 00 w2 =3D w8
+      36:       a5 08 ef ff 00 10 00 00 if r8 < 4096 goto -17 <LBB0_5>
+      37:       b4 02 00 00 00 10 00 00 w2 =3D 4096
+      38:       05 00 ed ff 00 00 00 00 goto -19 <LBB0_5>
+
+
+The full log I get is at
+https://gist.githubusercontent.com/bjackman/2928c4ff4cc89545f3993bddd9d5edb=
+2/raw/feda6d7c165d24be3ea72c3cf7045c50246abd83/gistfile1.txt,
+but basically the verifier runs through the loop a large number of times, g=
+oing
+down the true path of the `if (read_size > CHUNK_LEN)` every time. Then
+eventually it takes the false path.
+
+In the disassembly this is basically instructions 35-37 - pseudocode:
+  w2 =3D w8
+  if (r8 < 4096) {
+    w2 =3D 4096
+  }
+
+w2 can't exceed 4096 but the verifier doesn't seem to "backpropagate" those
+bounds from r8 (note the umax_value for R8 goes to 4095 after the branch fr=
+om 36
+to 20, but R2's umax_value is still 266342399)
+
+from 31 to 34: R0_w=3Dinv(id=3D0) R1_w=3Dinv2097152 R6=3Dinv(id=3D2,umin_va=
+lue=3D2093057,umax_value=3D268435455,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv=
+2093056 R8_w=3Dinv(id=3D0,umax_value=3D266342399,var_off=3D(0x0; 0xfffffff)=
+) R9_w=3DinvP511 R10=3Dfp0 fp-8=3Dmmmm???? fp-16=3Dmap_value fp-24=3Dptr_
+; int BPF_PROG(exec, struct linux_binprm *bprm) {
+34: (bf) r7 =3D r1
+; (void) bpf_probe_read_user(buf, read_size, src);
+35: (bc) w2 =3D w8
+36: (a5) if r8 < 0x1000 goto pc-17
+
+from 36 to 20: R0_w=3Dinv(id=3D0) R1_w=3Dinv2097152 R2_w=3Dinv(id=3D0,umax_=
+value=3D266342399,var_off=3D(0x0; 0xfffffff)) R6=3Dinv(id=3D2,umin_value=3D=
+2093057,umax_value=3D268435455,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv209715=
+2 R8_w=3Dinv(id=3D0,umax_value=3D4095,var_off=3D(0x0; 0xfff)) R9_w=3DinvP51=
+1 R10=3Dfp0 fp-8=3Dmmmm???? fp-16=3Dmap_value fp-24=3Dptr_
+; void *src =3D (void *)(char *)bprm->p + offset;
+20: (79) r1 =3D *(u64 *)(r10 -24)
+21: (79) r3 =3D *(u64 *)(r1 +24)
+; uint64_t read_size =3D args_size - offset;
+22: (0f) r3 +=3D r7
+23: (07) r3 +=3D -4096
+; (void) bpf_probe_read_user(buf, read_size, src);
+24: (79) r1 =3D *(u64 *)(r10 -16)
+25: (85) call bpf_probe_read_user#112
+ R0_w=3Dinv(id=3D0) R1_w=3Dmap_value(id=3D0,off=3D0,ks=3D4,vs=3D4096,imm=3D=
+0) R2_w=3Dinv(id=3D0,umax_value=3D266342399,var_off=3D(0x0; 0xfffffff)) R3_=
+w=3Dinv(id=3D0) R6=3Dinv(id=3D2,umin_value=3D2093057,umax_value=3D268435455=
+,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv2097152 R8_w=3Dinv(id=3D0,umax_value=
+=3D4095,var_off=3D(0x0; 0xfff)) R9_w=3DinvP511 R10=3Dfp0 fp-8=3Dmmmm???? fp=
+-16=3Dmap_value fp-24=3Dptr_
+ R0_w=3Dinv(id=3D0) R1_w=3Dmap_value(id=3D0,off=3D0,ks=3D4,vs=3D4096,imm=3D=
+0) R2_w=3Dinv(id=3D0,umax_value=3D266342399,var_off=3D(0x0; 0xfffffff)) R3_=
+w=3Dinv(id=3D0) R6=3Dinv(id=3D2,umin_value=3D2093057,umax_value=3D268435455=
+,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv2097152 R8_w=3Dinv(id=3D0,umax_value=
+=3D4095,var_off=3D(0x0; 0xfff)) R9_w=3DinvP511 R10=3Dfp0 fp-8=3Dmmmm???? fp=
+-16=3Dmap_value fp-24=3Dptr_
+invalid access to map value, value_size=3D4096 off=3D0 size=3D266342399
+R1 min value is outside of the allowed memory range
+processed 9239 insns (limit 1000000) max_states_per_insn 4 total_states 133=
+ peak_states 133 mark_read 2
+
+This seems like it must be a common pitfall, any idea what we can do to fix=
+ it
+and avoid it in future? Am I misunderstanding the issue?
+
+Cheers,
+Brendan
+
+---
+ .../selftests/bpf/prog_tests/example.c        | 17 ++++++++
+ tools/testing/selftests/bpf/progs/example.c   | 42 +++++++++++++++++++
+ 2 files changed, 59 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/example.c
+ create mode 100644 tools/testing/selftests/bpf/progs/example.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/example.c b/tools/testi=
+ng/selftests/bpf/prog_tests/example.c
+new file mode 100644
+index 000000000000..9c36858019b3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/example.c
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++
++#include "example.skel.h"
++
++void test_example(void)
++{
++	struct example *skel;
++	__u32 duration =3D 0;
++
++	skel =3D example__open_and_load();
++	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
++		return;
++
++	example__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/example.c b/tools/testing/se=
+lftests/bpf/progs/example.c
+new file mode 100644
+index 000000000000..6c90060e92e0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/example.c
+@@ -0,1 +1,42 @@
++#include "vmlinux.h"
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++#define CHUNK_LEN (uint64_t)4096
++struct {
++  __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++  __uint(key_size, sizeof(int));
++  __uint(value_size, CHUNK_LEN);
++  __uint(max_entries, 1);
++} buf_map SEC(".maps");
++
++SEC("lsm/bprm_committed_creds")
++int BPF_PROG(exec, struct linux_binprm *bprm) {
++  /* Actual value doesn't make sense here, just picking something unknown =
+to the
++   * verifier that produces simple disassembly
++   */
++  uint64_t args_size =3D bprm->argc & 0xFFFFFFF;
++  int map_key =3D 0;
++  void *buf =3D bpf_map_lookup_elem(&buf_map, &map_key);
++  uint64_t offset =3D 0;
++  if (!buf)
++    return 0;
++
++  for (int i =3D 0; i < 512 && offset < args_size; i++) {
++    void *src =3D (void *)(char *)bprm->p + offset;
++    uint64_t read_size =3D args_size - offset;
++
++    if (read_size > CHUNK_LEN) {
++      read_size =3D CHUNK_LEN;
++    }
++
++    (void) bpf_probe_read_user(buf, read_size, src);
++
++    offset +=3D CHUNK_LEN;
++  }
++
++  return 0;
++}
+--
+2.31.1.368.gbe11c130af-goog
+
