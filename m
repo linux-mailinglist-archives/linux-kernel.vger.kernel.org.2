@@ -2,38 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1322A367320
+	by mail.lfdr.de (Postfix) with ESMTP id 61141367321
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245477AbhDUTFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:05:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35986 "EHLO mail.kernel.org"
+        id S245460AbhDUTFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:05:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245398AbhDUTFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:05:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85B161458;
-        Wed, 21 Apr 2021 19:04:33 +0000 (UTC)
+        id S245439AbhDUTFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 15:05:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B86A261455;
+        Wed, 21 Apr 2021 19:04:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619031874;
-        bh=ZyDUAPH4Kb7Csms8OjB22FUGXxba8AST7W5zS12qq/g=;
+        s=k20201202; t=1619031877;
+        bh=mJwW6C9lEThN5XEVxVHuEHYAlKqbu5QrhmeC8iM1ubg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UrbYrjYpQwo3Vjs/Nz+yKbOwxdXTMHJD7D7YZHNOV+8UNagjxFhjlLGPHk/bf34At
-         wjfLM/NBLK4QZL5s0yYYeP/WFBEh4JjsONavE68ZcYkYwslrp+25Sw+fOPt9JJneI5
-         X6C4Pmag7afEK+mAHBWHlcpserPFk2vz7mSZ2o+FMXufK0ewNCD/tYfNHGD339pyb1
-         THsWEstdlVksqPdPYAhaDSe9sj3+EcCJu0rCllrT7CATbTgcrcEDvKBc/qO48SyNXi
-         jHCLY8gOMzZPcRl6L4l0nR3ucHOhveSkM0JkhHiN/Bk7h/bb2WkVYaZlXYoBXvZ9CP
-         XT3lUfRpBgrnQ==
+        b=E14WpmCcT1SxOx5cChjTJhtQMhF+QKgXuR7AYeUDhzCei8KokOvOGdSbKwI3lDveV
+         Yc/c4V0ullBNsgdDy6IAW5tUVfNHt/q8i70vkoFXa8ho+eT4XVxwHiRKKksKGZyI9O
+         lkhOa6/2xu7Xtu4C4i7VJvD39Fyd8JE3mkVLPAsVseCrjajjkHIa3pYAM7nrEI5r5Q
+         LokzlKtnlnHF3JMREu6JlIlEulBGZKE7uXIgfWbHSGPHQ2fJqyR6lGSeKNPco4Ilam
+         gje80K/g3mCjrqBe/TPvU38Y+3dldlqjPkc+VsUMERWe2B8OsC4HHfOSSfAx09B5a3
+         0zmShK8rvNI4g==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com,
-        Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        sanjanasrinidhi1810@gmail.com
-Subject: Re: [PATCH] drivers: regulator: core.c: Fix indentation of comment
-Date:   Wed, 21 Apr 2021 20:03:34 +0100
-Message-Id: <161903035952.13561.1913032316850125430.b4-ty@kernel.org>
+To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, Sunil-kumar.Dommati@amd.com,
+        Ye Bin <yebin10@huawei.com>, Alexander.Deucher@amd.com,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Basavaraj.Hiregoudar@amd.com,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: amd: drop S24_LE format support
+Date:   Wed, 21 Apr 2021 20:03:35 +0100
+Message-Id: <161903027032.13397.4454772541226435361.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210420034718.t7wudu6xcfpahflv@kewl-virtual-machine>
-References: <20210420034718.t7wudu6xcfpahflv@kewl-virtual-machine>
+In-Reply-To: <1618993402-10354-1-git-send-email-Vijendar.Mukunda@amd.com>
+References: <1618993402-10354-1-git-send-email-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,18 +50,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 09:17:18 +0530, Shubhankar Kuranagatti wrote:
-> Shifted the closing */ of multiline comment to a new line
-> This is done to maintain code uniformity
+On Wed, 21 Apr 2021 13:53:11 +0530, Vijendar Mukunda wrote:
+> AMD I2S Controller doesn't support S24_LE format.
+> Remove S24_LE format support from ACP DMA driver
+> and CPU DAI Driver.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] drivers: regulator: core.c: Fix indentation of comment
-      commit: 69b8821e293aa823ba8184c80370e7e21bde81e6
+[1/1] ASoC: amd: drop S24_LE format support
+      commit: 1300c7037f0f08692008053e4b12a2fb6fbd185a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
