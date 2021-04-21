@@ -2,106 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D893E36729E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9707436729A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242880AbhDUSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:34:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238438AbhDUSee (ORCPT
+        id S242897AbhDUSdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242871AbhDUSdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:34:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619030040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J0ler724KCUKqQfuTRpL+s1fIh5Og/jAgjF8UUhS5TM=;
-        b=HJkxeBfPcn2MyzymD9x1XaSUizdxH+ujGaxdmkONv7CX77Rpe4zy1lUAfRq1laCLNZB5MK
-        1oR2SSB/ajldKa/BUg2Zpv7WsO1rMleqotJVu0M+Ar45wLDEKttNlWG2ZXmhn40ZmlKYET
-        QJlHoiu7rRY6KBNgiJN0XF3wG6IKCQA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-sPWdTmGWNcmsuK4NQhRQFw-1; Wed, 21 Apr 2021 14:33:58 -0400
-X-MC-Unique: sPWdTmGWNcmsuK4NQhRQFw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0CED9F93C;
-        Wed, 21 Apr 2021 18:32:14 +0000 (UTC)
-Received: from gigantic.usersys.redhat.com (helium.bos.redhat.com [10.18.17.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0125C19D9B;
-        Wed, 21 Apr 2021 18:32:13 +0000 (UTC)
-From:   Bandan Das <bsd@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Ramakrishna Saripalli <rsaripal@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 4/4] x86/speculation: Add PSF mitigation kernel parameters
-References: <20210421090117.22315-1-rsaripal@amd.com>
-        <20210421090117.22315-5-rsaripal@amd.com>
-        <4c688fc7-67df-3187-54b2-bf20e510fb39@infradead.org>
-Date:   Wed, 21 Apr 2021 14:32:13 -0400
-In-Reply-To: <4c688fc7-67df-3187-54b2-bf20e510fb39@infradead.org> (Randy
-        Dunlap's message of "Wed, 21 Apr 2021 09:04:30 -0700")
-Message-ID: <jpg4kfzfpzm.fsf@linux.bootlegged.copy>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Wed, 21 Apr 2021 14:33:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8F1C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:32:32 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n11-20020a25808b0000b02904d9818b80e8so16729657ybk.14
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=otRIiTyXS+j6VPjFyTZH8OUE4RgYzuP4apVN1dvGh40=;
+        b=pjLoWma3KUHNNHRrFaMOfqDcOq8MNdrYg3yXP/FWN015dWQ3s/IymAPiuTTdSb1hlR
+         KdGiW6zGbNTLPTjnAon1Rj8OZtBMvh+L8BBmrDOiU/Ia/s50r/8GB+I8YEmDr/b0Vgl7
+         yI2BwX4Az8Z6wPmfBpHb0/UULItQU1twLsKP3r3WNewfh9C6SAvx8jfdpObGwElHvSX7
+         HGXca1DWDpY2sEuAQ6ZmMjjaSTM3lhiOklNEcOVkL4cB3zHUjKfVgEOzQNdHhntlkTC/
+         I5HUjkX2Dm7YK1iJnwWiOdtapxPZCpVbkRTWq2TjvM83Un065b4tQimEce838u48nIXv
+         DYqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=otRIiTyXS+j6VPjFyTZH8OUE4RgYzuP4apVN1dvGh40=;
+        b=qN2crCcvzm/E/UAJR0e/zqc4Iz1V1aOpGIxy4lNHxAGgbzMzFuJY7UeiR+CCTIftoy
+         oSsnsAznMo/JlI3iQm8T2xssPCGCE4R1Sb97lYcRXGoDHJnLIZBcGCBnUx8xRl1VagP5
+         FEhVBv76d6LZcTimb/P3CU/6f4ff2TBexS8cWUv1QMW7qHviB1ej7idAOEQYo2qmmnSz
+         TlyX0wlKNwHHgqaM/tlf+eV4uAM3PvLtiF7J+BC7PpldC/5DPiJTsPYKqQE3gTeea7gh
+         cbxjxYzHfW5Udn11lzgkOTga1YSj5YD+TvogVSzbF475dew6b0vuEdQod29brl00kuFB
+         +5Cw==
+X-Gm-Message-State: AOAM533Rute/G9zY9SOBP2gQGIGcLCt9mhAL4w70229XvzeP0cnXnZlL
+        PZhkue1tezJf4gdvbM7jVH5n4tEmQvc0Pg==
+X-Google-Smtp-Source: ABdhPJxbCeyuDsPF5Qo0G1xygifPPP8HfLoI0mSGQuk1QRbNDb6wXdw/VPWYY+Tikm+yrk/5zf3BVUuOaifJ5Q==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:9524:9c1f:6fff:a9ad])
+ (user=dlatypov job=sendgmr) by 2002:a5b:802:: with SMTP id
+ x2mr33668814ybp.28.1619029951995; Wed, 21 Apr 2021 11:32:31 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 11:32:22 -0700
+Message-Id: <20210421183222.2557747-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH 2/2] lib/test: convert lib/test_list_sort.c to use KUnit
+From:   Daniel Latypov <dlatypov@google.com>
+To:     andriy.shevchenko@linux.intel.com
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+Functionally, this just means that the test output will be slightly
+changed and it'll now depend on CONFIG_KUNIT=y/m.
 
-> Hi,
->
-> On 4/21/21 2:01 AM, Ramakrishna Saripalli wrote:
->> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
->> 
->> PSF mitigation introduces a new kernel parameter called
->> 	predict_store_fwd.
->> 
->> Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
->> ---
->>  Documentation/admin-guide/kernel-parameters.txt | 5 +++++
->>  1 file changed, 5 insertions(+)
->> 
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->> index 04545725f187..58f6bd02385b 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -3940,6 +3940,11 @@
->>  			Format: {"off"}
->>  			Disable Hardware Transactional Memory
->>  
->> +	predict_store_fwd	[X86] This option controls PSF mitigation
->> +			off - Turns on PSF mitigation.
->> +			on  - Turns off PSF mitigation.
->> +			default : on.
->
-> This should be formatted more like:
->
-> +	predict_store_fwd=	[X86] This option controls PSF mitigation
-> +			off - Turns on PSF mitigation.
-> +			on  - Turns off PSF mitigation.
-> +			default: on.
->
-> But why does "off" turn it on and "on" turn it off?
->
-Maybe, rename the parameter to something like psfd_disable, then off -> disables mitigation and on -> enables it.
-Or just rewriting this to off -> turns off predictive store forwarding is probably ok too.
+It'll still run at boot time and can still be built as a loadable
+module.
 
-Bandan
+There was a pre-existing patch to convert this test that I found later,
+here [1]. Compared to [1], this patch doesn't rename files and uses
+KUnit features more heavily (i.e. does more than converting pr_err()
+calls to KUNIT_FAIL()).
 
->
->> +
->>  	preempt=	[KNL]
->>  			Select preemption mode if you have CONFIG_PREEMPT_DYNAMIC
->>  			none - Limited to cond_resched() calls
->> 
->
-> thanks.
+What this conversion gives us:
+* a shorter test thanks to KUnit's macros
+* a way to run this a bit more easily via kunit.py (and
+CONFIG_KUNIT_ALL_TESTS=y) [2]
+* a structured way of reporting pass/fail
+* uses kunit-managed allocations to avoid the risk of memory leaks
+* more descriptive error messages:
+  * i.e. it prints out which fields are invalid, what the expected
+  values are, etc.
+
+What this conversion does not do:
+* change the name of the file (and thus the name of the module)
+* change the name of the config option
+
+Leaving these as-is for now to minimize the impact to people wanting to
+run this test. IMO, that concern trumps following KUnit's style guide
+for both names, at least for now.
+
+[1] https://lore.kernel.org/linux-kselftest/20201015014616.309000-1-vitor@massaru.org/
+[2] Can be run via
+$ ./tools/testing/kunit/kunit.py run --kunitconfig /dev/stdin <<EOF
+CONFIG_KUNIT=y
+CONFIG_TEST_LIST_SORT=y
+EOF
+
+[16:55:56] Configuring KUnit Kernel ...
+[16:55:56] Building KUnit Kernel ...
+[16:56:29] Starting KUnit Kernel ...
+[16:56:32] ============================================================
+[16:56:32] ======== [PASSED] list_sort ========
+[16:56:32] [PASSED] list_sort_test
+[16:56:32] ============================================================
+[16:56:32] Testing complete. 1 tests run. 0 failed. 0 crashed.
+[16:56:32] Elapsed time: 35.668s total, 0.001s configuring, 32.725s building, 0.000s running
+
+Note: the build time is as after a `make mrproper`.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ lib/Kconfig.debug    |   5 +-
+ lib/test_list_sort.c | 128 +++++++++++++++++--------------------------
+ 2 files changed, 54 insertions(+), 79 deletions(-)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 417c3d3e521b..09a0cc8a55cc 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1999,8 +1999,9 @@ config LKDTM
+ 	Documentation/fault-injection/provoke-crashes.rst
+ 
+ config TEST_LIST_SORT
+-	tristate "Linked list sorting test"
+-	depends on DEBUG_KERNEL || m
++	tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
+ 	help
+ 	  Enable this to turn on 'list_sort()' function test. This test is
+ 	  executed only once during system boot (so affects only boot time),
+diff --git a/lib/test_list_sort.c b/lib/test_list_sort.c
+index 1f017d3b610e..ccfd98dbf57c 100644
+--- a/lib/test_list_sort.c
++++ b/lib/test_list_sort.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define pr_fmt(fmt) "list_sort_test: " fmt
++#include <kunit/test.h>
+ 
+ #include <linux/kernel.h>
+ #include <linux/list_sort.h>
+@@ -23,67 +23,52 @@ struct debug_el {
+ 	struct list_head list;
+ 	unsigned int poison2;
+ 	int value;
+-	unsigned serial;
++	unsigned int serial;
+ };
+ 
+-/* Array, containing pointers to all elements in the test list */
+-static struct debug_el **elts __initdata;
+-
+-static int __init check(struct debug_el *ela, struct debug_el *elb)
++static void check(struct kunit *test, struct debug_el *ela, struct debug_el *elb)
+ {
+-	if (ela->serial >= TEST_LIST_LEN) {
+-		pr_err("error: incorrect serial %d\n", ela->serial);
+-		return -EINVAL;
+-	}
+-	if (elb->serial >= TEST_LIST_LEN) {
+-		pr_err("error: incorrect serial %d\n", elb->serial);
+-		return -EINVAL;
+-	}
+-	if (elts[ela->serial] != ela || elts[elb->serial] != elb) {
+-		pr_err("error: phantom element\n");
+-		return -EINVAL;
+-	}
+-	if (ela->poison1 != TEST_POISON1 || ela->poison2 != TEST_POISON2) {
+-		pr_err("error: bad poison: %#x/%#x\n",
+-			ela->poison1, ela->poison2);
+-		return -EINVAL;
+-	}
+-	if (elb->poison1 != TEST_POISON1 || elb->poison2 != TEST_POISON2) {
+-		pr_err("error: bad poison: %#x/%#x\n",
+-			elb->poison1, elb->poison2);
+-		return -EINVAL;
+-	}
+-	return 0;
++	struct debug_el **elts = test->priv;
++
++	KUNIT_EXPECT_LT_MSG(test, ela->serial, (unsigned int)TEST_LIST_LEN, "incorrect serial");
++	KUNIT_EXPECT_LT_MSG(test, elb->serial, (unsigned int)TEST_LIST_LEN, "incorrect serial");
++
++	KUNIT_EXPECT_PTR_EQ_MSG(test, elts[ela->serial], ela, "phantom element");
++	KUNIT_EXPECT_PTR_EQ_MSG(test, elts[elb->serial], elb, "phantom element");
++
++	KUNIT_EXPECT_EQ_MSG(test, ela->poison1, TEST_POISON1, "bad poison");
++	KUNIT_EXPECT_EQ_MSG(test, ela->poison2, TEST_POISON2, "bad poison");
++
++	KUNIT_EXPECT_EQ_MSG(test, elb->poison1, TEST_POISON1, "bad poison");
++	KUNIT_EXPECT_EQ_MSG(test, elb->poison2, TEST_POISON2, "bad poison");
+ }
+ 
+-static int __init cmp(void *priv, struct list_head *a, struct list_head *b)
++/* `priv` is the test pointer so check() can fail the test if the list is invalid. */
++static int cmp(void *priv, struct list_head *a, struct list_head *b)
+ {
+ 	struct debug_el *ela, *elb;
+ 
+ 	ela = container_of(a, struct debug_el, list);
+ 	elb = container_of(b, struct debug_el, list);
+ 
+-	check(ela, elb);
++	check(priv, ela, elb);
+ 	return ela->value - elb->value;
+ }
+ 
+-static int __init list_sort_test(void)
++static void list_sort_test(struct kunit *test)
+ {
+-	int i, count = 1, err = -ENOMEM;
+-	struct debug_el *el;
++	int i, count = 1;
++	struct debug_el *el, **elts;
+ 	struct list_head *cur;
+ 	LIST_HEAD(head);
+ 
+-	pr_debug("start testing list_sort()\n");
+-
+-	elts = kcalloc(TEST_LIST_LEN, sizeof(*elts), GFP_KERNEL);
+-	if (!elts)
+-		return err;
++	elts = kunit_kcalloc(test, TEST_LIST_LEN, sizeof(*elts), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elts);
++	test->priv = elts;
+ 
+ 	for (i = 0; i < TEST_LIST_LEN; i++) {
+-		el = kmalloc(sizeof(*el), GFP_KERNEL);
+-		if (!el)
+-			goto exit;
++		el = kunit_kmalloc(test, sizeof(*el), GFP_KERNEL);
++		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, el);
+ 
+ 		 /* force some equivalencies */
+ 		el->value = prandom_u32() % (TEST_LIST_LEN / 3);
+@@ -94,55 +79,44 @@ static int __init list_sort_test(void)
+ 		list_add_tail(&el->list, &head);
+ 	}
+ 
+-	list_sort(NULL, &head, cmp);
++	list_sort(test, &head, cmp);
+ 
+-	err = -EINVAL;
+ 	for (cur = head.next; cur->next != &head; cur = cur->next) {
+ 		struct debug_el *el1;
+ 		int cmp_result;
+ 
+-		if (cur->next->prev != cur) {
+-			pr_err("error: list is corrupted\n");
+-			goto exit;
+-		}
++		KUNIT_ASSERT_PTR_EQ_MSG(test, cur->next->prev, cur,
++					"list is corrupted");
+ 
+-		cmp_result = cmp(NULL, cur, cur->next);
+-		if (cmp_result > 0) {
+-			pr_err("error: list is not sorted\n");
+-			goto exit;
+-		}
++		cmp_result = cmp(test, cur, cur->next);
++		KUNIT_ASSERT_LE_MSG(test, cmp_result, 0, "list is not sorted");
+ 
+ 		el = container_of(cur, struct debug_el, list);
+ 		el1 = container_of(cur->next, struct debug_el, list);
+-		if (cmp_result == 0 && el->serial >= el1->serial) {
+-			pr_err("error: order of equivalent elements not "
+-				"preserved\n");
+-			goto exit;
++		if (cmp_result == 0) {
++			KUNIT_ASSERT_LE_MSG(test, el->serial, el1->serial,
++					    "order of equivalent elements not preserved");
+ 		}
+ 
+-		if (check(el, el1)) {
+-			pr_err("error: element check failed\n");
+-			goto exit;
+-		}
++		check(test, el, el1);
+ 		count++;
+ 	}
+-	if (head.prev != cur) {
+-		pr_err("error: list is corrupted\n");
+-		goto exit;
+-	}
++	KUNIT_EXPECT_PTR_EQ_MSG(test, head.prev, cur, "list is corrupted");
+ 
++	KUNIT_EXPECT_EQ_MSG(test, count, TEST_LIST_LEN,
++			    "list length changed after sorting!");
++}
+ 
+-	if (count != TEST_LIST_LEN) {
+-		pr_err("error: bad list length %d", count);
+-		goto exit;
+-	}
++static struct kunit_case list_sort_cases[] = {
++	KUNIT_CASE(list_sort_test),
++	{}
++};
++
++static struct kunit_suite list_sort_suite = {
++	.name = "list_sort",
++	.test_cases = list_sort_cases,
++};
++
++kunit_test_suites(&list_sort_suite);
+ 
+-	err = 0;
+-exit:
+-	for (i = 0; i < TEST_LIST_LEN; i++)
+-		kfree(elts[i]);
+-	kfree(elts);
+-	return err;
+-}
+-module_init(list_sort_test);
+ MODULE_LICENSE("GPL");
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
