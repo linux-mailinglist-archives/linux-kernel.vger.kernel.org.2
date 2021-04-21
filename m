@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BD036654D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BA2366550
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhDUGUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:20:17 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:34126 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229536AbhDUGUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:20:15 -0400
-Received: from localhost.localdomain (unknown [58.249.121.165])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb8v6w39gdoULAA--.20179S2;
-        Wed, 21 Apr 2021 14:19:39 +0800 (CST)
-From:   xiaochuan mao <maoxiaochuan@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        michael <michael5hzg@gmail.com>,
-        xiaochuan mao <maoxiaochuan@loongson.cn>
-Subject: [PATCH] mips/bootinfo:correct some comments of fw_arg
-Date:   Wed, 21 Apr 2021 14:19:17 +0800
-Message-Id: <20210421061917.13953-1-maoxiaochuan@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAf9Dxb8v6w39gdoULAA--.20179S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gryftw47CrWftryUCrW3Wrg_yoWfuwc_C3
-        W7ZanYgrs5Cry8Zr15XwnagFyxta4Uu3s7Cr4kXr1qyay3Zw45WFWjyry7Jw4DCryqyrZ5
-        ZF9Yqrnxt3s29jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbckFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8AwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr
-        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUkhLnUUUUU=
-X-CM-SenderInfo: xpdr5xxdrfx3ldqnw6o6or00hjvr0hdfq/
+        id S235785AbhDUGVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:21:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16145 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhDUGVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:21:38 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FQ9Mt6ttgzpZXL;
+        Wed, 21 Apr 2021 14:18:02 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 21 Apr 2021 14:21:00 +0800
+Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210419130527.791982064@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <4599d4bc-937b-0624-5acb-9e7af0f2c9f8@huawei.com>
+Date:   Wed, 21 Apr 2021 14:20:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-from arch/mips/kernel/head.S we know that use a0~a3 for fw_arg0~fw_arg3
-there is some code from head.S:
-	LONG_S		a0, fw_arg0		# firmware arguments
-	LONG_S		a1, fw_arg1
-	LONG_S		a2, fw_arg2
-	LONG_S		a3, fw_arg3
 
-Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
----
- arch/mips/include/asm/bootinfo.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 5be10ece3ef0..4c2e8173e6ec 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -107,7 +107,7 @@ extern void (*free_init_pages_eva)(void *begin, void *end);
- extern char arcs_cmdline[COMMAND_LINE_SIZE];
- 
- /*
-- * Registers a0, a1, a3 and a4 as passed to the kernel entry by firmware
-+ * Registers a0, a1, a2 and a3 as passed to the kernel entry by firmware
-  */
- extern unsigned long fw_arg0, fw_arg1, fw_arg2, fw_arg3;
- 
--- 
-2.17.1
+On 2021/4/19 21:05, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.32 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.32-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 5.10.32-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.32-rc1
+Commit: bcedd92af6e5899132429d20a9322b12afec2188
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 5764
+passed: 5764
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 5764
+passed: 5764
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
 
