@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B336727E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FBB367286
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244377AbhDUSZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:25:35 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:38722 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241161AbhDUSZe (ORCPT
+        id S245195AbhDUS33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244543AbhDUS31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:25:34 -0400
-Received: by mail-io1-f41.google.com with SMTP id q25so11641605iog.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:25:00 -0700 (PDT)
+        Wed, 21 Apr 2021 14:29:27 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9E4C06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:28:52 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id r128so41256385lff.4
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 11:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a3pKNRpAYonIhJIPLG+pbIg/iVXk4BkHo5q1/p/dOgo=;
+        b=AAoUTPD7oBRut/ALdKm+tPO6jlrcqGZAJSsoMj8iGEp6Zg/YqD6yGfx1Yxi3bpHRcC
+         6siZpF6fb7tuWkT2EQdMnCumN2CMDnOPzmvpYcF5S431ORvspnkulpHEa/t3mERwZHmG
+         7n3krkLX85vE9LhJodHreS7aSegTTQ/WxNpSKGKsxY71e1fntE2ffpomx7mY2GomwzyC
+         Fn/HKakuhmUzJhMig93Y0mlLSeVwDWqQW1R2IcjuZ2uEzJLnTN1ZOJ46woQnyDOezz0w
+         8orZmdhMXW7tHjrcFjkfhhtVhtnhc4W9irW2IzCsysbkc4u1Eo89TJanvCB8v4SRoloM
+         rKvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mPgB8yCc8zamYWb0vi63329hsT/Sv+pV390azKvDE9o=;
-        b=fobxI6dfdYW9iFYsk4luNw8phk2xsDaylgfegZmrV9yvZkRTrefe/3WcCtnTh4uInA
-         rnayPqD5rEk07y6bhc/eDOpWn9GO3L4lAVZcZ0L7e3BGicvZyAgZX+Ue+0kyJGU1wANX
-         W6tj4kW9wVbXO11ATdBeWP5CPcEsITm0ICHm0zm8SysprimnuD6dx9OwLOsNpNUmxOnI
-         nDbSmOJSlV+UNr25TseMd+eXNS2AHXB2264Qs0m+RGKMwL5YkVs18AGRRit4TaM9X93L
-         4d3oPklXX+78MRHKOcem7dmcKJGMqU2lN3gdntsrqZk68CAykqir9Ps70mtS9yzGBhDv
-         Cdwg==
-X-Gm-Message-State: AOAM532dBvWCHTtf0IHTdiexHeFjFoSksG4rTEQh+f2FWPqYVApKmEXs
-        x2AJh0+cSsY6iIBTZ+3xFtBv1egPtKI=
-X-Google-Smtp-Source: ABdhPJy8zrY3Zf7pmdbJqdN5CEQFL21g4VMTreumaKiwCar481749ycVklTaBVnkSeqNRN+nUx7EgQ==
-X-Received: by 2002:a02:968f:: with SMTP id w15mr15747575jai.109.1619029500338;
-        Wed, 21 Apr 2021 11:25:00 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id y19sm63666ili.51.2021.04.21.11.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 11:24:59 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 18:24:58 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Roman Gushchin <guro@fb.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] percpu: partial chunk depopulation
-Message-ID: <YIBt+qaZ4teb+WfW@google.com>
-References: <20210419225047.3415425-1-dennis@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a3pKNRpAYonIhJIPLG+pbIg/iVXk4BkHo5q1/p/dOgo=;
+        b=d52O6hxGJLz0EyVNmmtJ0pzDuh+9sqa1P6IcmJdXvQh542xjeeKSCSxEUufaHBVxOh
+         i5KwF/dSBB/3WBhUdHJDKpClo2Hw3WTKn9QpyRo5pSab1+MY0tUD/iJNqK26QX41Ielh
+         LgZ+Qbmj6cKRbjenXoehGIzZST2rcO/TwvPxOEOpRbeQGLmEfVhS046hMBn7RBi+znDB
+         PkLHw/iefUAw1l29w5NCVrfswazrg7RTEWoxxAeD9IDpN0YiOI9wW1Hd+ladTNihZDgT
+         cwn48Cg3ZdFZ0xc66Ph7uBtU/rIkVHU1kZ9lLP/7yVFqpGV0reVU385bxwDqRWyq2Iky
+         Kgtg==
+X-Gm-Message-State: AOAM531N4vn+ruLFqyJEIsm3yH++gAT63t7sNAW3dN76/aGiBogsS0wp
+        VxJtySUODLnaFim+eTpsfkr2WTJTFEB80vnGE/3nyQ==
+X-Google-Smtp-Source: ABdhPJzVdK3x9cI06saU3B0MCD9Pb2S2GZP3vYXK2GIGysuECny5jZsN839PKrxjU0hUrtB8WK7Aox+R8wCADc2Sqdg=
+X-Received: by 2002:ac2:58ee:: with SMTP id v14mr19969129lfo.83.1619029730879;
+ Wed, 21 Apr 2021 11:28:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419225047.3415425-1-dennis@kernel.org>
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <699e51ba-825d-b243-8205-4d8cff478a66@sony.com>
+In-Reply-To: <699e51ba-825d-b243-8205-4d8cff478a66@sony.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 21 Apr 2021 11:28:38 -0700
+Message-ID: <CALvZod7AEjzWa6AR4Ym1jpfzT32hmepxvci6hXvNJTEQvcQqEw@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     peter enderborg <peter.enderborg@sony.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:50:43PM +0000, Dennis Zhou wrote:
-> Hello,
-> 
-> This series is a continuation of Roman's series in [1]. It aims to solve
-> chunks holding onto free pages by adding a reclaim process to the percpu
-> balance work item.
-> 
-> The main difference is that the nr_empty_pop_pages is now managed at
-> time of isolation instead of intermixed. This helps with deciding which
-> chunks to free instead of having to interleave returning chunks to
-> active duty.
-> 
-> The allocation priority is as follows:
->   1) appropriate chunk slot increasing until fit
->   2) sidelined chunks
->   3) full free chunks
-> 
-> The last slot for to_depopulate is never used for allocations.
-> 
-> A big thanks to Roman for initiating the work and being available for
-> iterating on these ideas.
-> 
-> This patchset contains the following 4 patches:
->   0001-percpu-factor-out-pcpu_check_block_hint.patch
->   0002-percpu-use-pcpu_free_slot-instead-of-pcpu_nr_slots-1.patch
->   0003-percpu-implement-partial-chunk-depopulation.patch
->   0004-percpu-use-reclaim-threshold-instead-of-running-for-.patch
-> 
-> 0001 and 0002 are clean ups. 0003 implement partial chunk depopulation
-> initially from Roman. 0004 adds a reclaim threshold so we do not need to
-> schedule for every page freed.
-> 
-> This series is on top of percpu$for-5.14 67c2669d69fb.
-> 
-> diffstats below:
-> 
-> Dennis Zhou (2):
->   percpu: use pcpu_free_slot instead of pcpu_nr_slots - 1
->   percpu: use reclaim threshold instead of running for every page
-> 
-> Roman Gushchin (2):
->   percpu: factor out pcpu_check_block_hint()
->   percpu: implement partial chunk depopulation
-> 
->  mm/percpu-internal.h |   5 +
->  mm/percpu-km.c       |   5 +
->  mm/percpu-stats.c    |  20 ++--
->  mm/percpu-vm.c       |  30 ++++++
->  mm/percpu.c          | 252 ++++++++++++++++++++++++++++++++++++++-----
->  5 files changed, 278 insertions(+), 34 deletions(-)
-> 
-> Thanks,
-> Dennis
+On Wed, Apr 21, 2021 at 10:06 AM peter enderborg
+<peter.enderborg@sony.com> wrote:
+>
+> On 4/20/21 3:44 AM, Shakeel Butt wrote:
+[...]
+>
+> I think this is the wrong way to go.
 
-I've applied this to for-5.14 with 1 modification to the batching
-threshold, 4 pages is quite little, so make it 16.
+Which one? Are you talking about the kernel one? We already talked out
+of that. To decide to OOM, we need to look at a very diverse set of
+metrics and it seems like that would be very hard to do flexibly
+inside the kernel.
 
-Thanks,
-Dennis
+>
+> I sent a patch for android lowmemorykiller some years ago.
+>
+> http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2017-February/100319.html
+>
+> It has been improved since than, so it can act handle oom callbacks, it can act on vmpressure and psi
+> and as a shrinker. The patches has not been ported to resent kernels though.
+>
+> I don't think vmpressure and psi is that relevant now. (They are what userspace act on)  But the basic idea is to have a priority queue
+> within the kernel. It need pick up new processes and dying process.  And then it has a order, and that
+> is set with oom adj values by activity manager in android.  I see this model can be reused for
+> something that is between a standard oom and userspace.  Instead of vmpressure and psi
+> a watchdog might be a better way.  If userspace (in android the activity manager or lmkd) does not kick the watchdog,
+> the watchdog bite the task according to the priority and kills it.  This priority list does not have to be a list generated
+> within kernel. But it has the advantage that you inherent parents properties.  We use a rb-tree for that.
+>
+> All that is missing is the watchdog.
+>
+
+Actually no. It is missing the flexibility to monitor metrics which a
+user care and based on which they decide to trigger oom-kill. Not sure
+how will watchdog replace psi/vmpressure? Userspace keeps petting the
+watchdog does not mean that system is not suffering.
+
+In addition oom priorities change dynamically and changing it in your
+system seems very hard. Cgroup awareness is missing too.
+
+Anyways, there are already widely deployed userspace oom-killer
+solutions (lmkd, oomd). I am aiming to further improve the
+reliability.
