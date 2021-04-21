@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D945366C7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0829F366C2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241894AbhDUNS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:18:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47148 "EHLO mail.kernel.org"
+        id S240011AbhDUNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:11:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239792AbhDUNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239848AbhDUNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Apr 2021 09:09:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 074B761476;
-        Wed, 21 Apr 2021 13:08:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0D446145F;
+        Wed, 21 Apr 2021 13:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010487;
-        bh=XeXUQhnBtVX/+NBADaBX5aGK6jRrb4fNppiFs2jMYVQ=;
+        s=korg; t=1619010490;
+        bh=sSRQktclxyfF75kY+G0JAh4bOy+iuvXcJmw+3f5HdOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qWqGFZSDqFnmdB2UcJEg5XJZZFk/rMAJXj631qy9/Dv51eoBwz+h5KyZJPTWBaTwm
-         I3JfOJ5qphq3ScvxWur31Flz/3qXq1z15PX2AhCvf5wYpZJk+xr7sziUrLLsYyVfUM
-         j4FXti9LyzPDRIbmz0RM6HPddStY58MSnB6xPGMA=
+        b=wnl19z1sbVIPBplR2xlFVg/B41emVxpUILTXFBJIWKtpmcx66t7Vj1h+oOdFvch3/
+         Iyy4jkFHbtbWpw2aod6QXYASniJfTfz5RsB4Ha1nMdZF/uPqCSKzqMVF6XLChoaqg3
+         CbPPh6RYJaqO8JFatuP+YCd07dC5Ti8DThNNb0A8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>, Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 155/190] Revert "brcmfmac: add a check for the status of usb_register"
-Date:   Wed, 21 Apr 2021 15:00:30 +0200
-Message-Id: <20210421130105.1226686-156-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>
+Subject: [PATCH 156/190] Revert "serial: max310x: pass return value of spi_register_driver"
+Date:   Wed, 21 Apr 2021 15:00:31 +0200
+Message-Id: <20210421130105.1226686-157-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -36,7 +36,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 42daad3343be4a4e1ee03e30a5f5cc731dadfef5.
+This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -53,28 +53,29 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/tty/serial/max310x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-index 586f4dfc638b..d2a803fc8ac6 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-@@ -1586,10 +1586,6 @@ void brcmf_usb_exit(void)
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 1b61d26bb7af..93f69b66b896 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1518,10 +1518,10 @@ static int __init max310x_uart_init(void)
+ 		return ret;
  
- void brcmf_usb_register(void)
- {
--	int ret;
--
- 	brcmf_dbg(USB, "Enter\n");
--	ret = usb_register(&brcmf_usbdrvr);
--	if (ret)
--		brcmf_err("usb_register failed %d\n", ret);
-+	usb_register(&brcmf_usbdrvr);
+ #ifdef CONFIG_SPI_MASTER
+-	ret = spi_register_driver(&max310x_spi_driver);
++	spi_register_driver(&max310x_spi_driver);
+ #endif
+ 
+-	return ret;
++	return 0;
  }
+ module_init(max310x_uart_init);
+ 
 -- 
 2.31.1
 
