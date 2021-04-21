@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617D236652B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5B0366531
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 08:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhDUGIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 02:08:04 -0400
-Received: from ozlabs.org ([203.11.71.1]:44507 "EHLO ozlabs.org"
+        id S235496AbhDUGJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 02:09:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232194AbhDUGIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 02:08:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQ97f13Zkz9t5m;
-        Wed, 21 Apr 2021 16:07:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618985246;
-        bh=e5dw5TlCXSFBTVzqeYivpahEnI476h2guzOPYxUKMm8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=egxmkRL7YOzjpJ181NjLwKsBEqsAkzaOWdavCSAAk2qvCmaLvoHj5CaYWcgeadDtN
-         tPUQpBcK/249MLnrrpuQK11qDcrHw17c12zuDTj5H10ca/w+a9XR/bt/v9QuQNCTON
-         /ZycLCsoCHdKFN0NDDmQ8qdzT/xbCB6Dh3woP5TngjaArEpY7GY6DL9QzOhNFRjtj1
-         sRhRNjVrgx5jrr8wQeaEAaioYwbXahSXl3RZPKyQ1hoJ+HNpcoUm7rcsJQEGvkmDQ9
-         BI2Nl4yTM6l53dD2Z+gxwxjtbXpOjemLSeXObfYjZRsMumsov/sAVYVF9vrfcDuNpG
-         IjuNYDJQ4LSXg==
-Date:   Wed, 21 Apr 2021 16:07:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the usb tree
-Message-ID: <20210421160725.5623cbd8@canb.auug.org.au>
-In-Reply-To: <20210310134916.367c96b5@canb.auug.org.au>
-References: <20210310134916.367c96b5@canb.auug.org.au>
+        id S234510AbhDUGI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 02:08:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8E29613F0;
+        Wed, 21 Apr 2021 06:08:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618985305;
+        bh=WIwPEMJ2n2GN6Jt5ndPkfj7Jm7o9UsjQNTF/6yR/MTU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=InOtHgCHHyr+UD/fD4781eHlCauiwID5+l3E/0C87fRACgeHv7qNSuJDe/h9kBnd7
+         4A2TQg8JZfNjlxd7hN5LuE5oDORFNqmcxXE/vF13CMQuBRSiqrncI/77a1pnCs8hN2
+         EquWx2/oCxBJBDrwi690LLrmqPDyNZjyaAQqrH4DCWJbHVXj+z8sX48UCYp4ImdS4+
+         UL8ctNm7RtjL3P7T7ve6B3okuJVP704lPWxbIHecjZrXJXiKIq6Us/1tuuSgEMFzHs
+         GdBHDxWMwfB7OrgLZt3JDEJ1rvwYOuIt5V7yK+lcvvIreWLEPPe9X5DIk3SAZNhS2Z
+         G7urCY6QYfu2g==
+Date:   Wed, 21 Apr 2021 09:08:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YH/BVW9Kdr9nY5Bs@unreal>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
+ <YH+7ZydHv4+Y1hlx@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sWgxs+xUC3=BTieI3F6qtN=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH+7ZydHv4+Y1hlx@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sWgxs+xUC3=BTieI3F6qtN=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Apr 21, 2021 at 07:43:03AM +0200, Greg KH wrote:
+> On Wed, Apr 21, 2021 at 08:10:25AM +0300, Leon Romanovsky wrote:
+> > On Tue, Apr 20, 2021 at 01:10:08PM -0400, J. Bruce Fields wrote:
+> > > On Tue, Apr 20, 2021 at 09:15:23AM +0200, Greg KH wrote:
+> > > > If you look at the code, this is impossible to have happen.
+> > > > 
+> > > > Please stop submitting known-invalid patches.  Your professor is playing
+> > > > around with the review process in order to achieve a paper in some
+> > > > strange and bizarre way.
+> > > > 
+> > > > This is not ok, it is wasting our time, and we will have to report this,
+> > > > AGAIN, to your university...
+> > > 
+> > > What's the story here?
+> > 
+> > Those commits are part of the following research:
+> > https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceInsecurity.pdf
+> > 
+> > They introduce kernel bugs on purpose. Yesterday, I took a look on 4
+> > accepted patches from Aditya and 3 of them added various severity security
+> > "holes".
+> 
+> All contributions by this group of people need to be reverted, if they
+> have not been done so already, as what they are doing is intentional
+> malicious behavior and is not acceptable and totally unethical.  I'll
+> look at it after lunch unless someone else wants to do it...
 
-Hi all,
+It looks like the best possible scenario.
+I asked to revert the bad patch, but didn't get any response yet.
+https://lore.kernel.org/lkml/YH6aMsbqruMZiWFe@unreal/
 
-On Wed, 10 Mar 2021 13:49:16 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> After merging the usb tree, today's linux-next build (htmldocs) produced
-> this warning:
->=20
-> include/linux/usb/ch9.h:1: warning: no structured comments found
->=20
-> Introduced by commit
->=20
->   855b35ea96c4 ("usb: common: move function's kerneldoc next to its defin=
-ition")
-
-I am still seeing thus warning (as of next-20210420).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sWgxs+xUC3=BTieI3F6qtN=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB/wR0ACgkQAVBC80lX
-0GyUmwgAjjjm5ZC+jfg/5tK/+dWpAPRQr5bOZBLTMkeAOP2S/HEDE5ipebCS6yYq
-LfpmiRQcoAEKZ2pkPL6cjSeTnrHpMeLgNIYlAa9G4RljRwyCdwUPYwRSVXyFH75A
-HQuZx3cE3t8mKNWyMNCj23qdLoapKSKpqBjff6Gkk03v0xzurPUJ8MCqAUMXCs45
-uaAnwN3c6Q2+2gINSH++dwVki8HEOVJZb1elO4fgUTSkpdAdTJZyECDgp6fJEy/v
-ykNmKC1qtySfgAC5HoR8nUu8qPn8PhuHCTdtVe8p1D/0cwVZCsICYR8kJBaOGhKj
-PQI0ws5KgDUWcAWL6ecvP4ZJtdwQOg==
-=c1OG
------END PGP SIGNATURE-----
-
---Sig_/sWgxs+xUC3=BTieI3F6qtN=--
+> 
+> greg k-h
