@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAA73675A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367283675AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343702AbhDUXQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 19:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
+        id S1343681AbhDUXVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 19:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234867AbhDUXQy (ORCPT
+        with ESMTP id S231296AbhDUXVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:16:54 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F02C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:16:19 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id o5so16555984ljc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:16:19 -0700 (PDT)
+        Wed, 21 Apr 2021 19:21:00 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA91C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:20:27 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso35711979otv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 16:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lH3rmBSxRK/l04xfD0njXYt4qzsg1pEDjz8I4N9RkzQ=;
-        b=Zocw/BTbuTjrT92BAEtq7SuWLurIX0T8F12U4/fVnRIl1jEcV8f5c9c4PCalvRqx6K
-         vaVdBUqssEGLbpMkHaXHJhOS+SgOJCf9ECqQga8vjVrPtTjeT4rZXqSTd5zV/G5f/B+5
-         xqGIym/ALNn/owhudKff05t108R9fAPHniNklgI0y6II5DoeAGk6o2C8J0dxA4YwfrVM
-         j6yWIuEW1hiATESq7POYe+5TOCXF5wpMOOjxMsgqhtvbYGz8lSCe5vZGhK771XHgbKXI
-         Bxmv91kplzedqOS/WSRRP63HVL1+Yp3kWfGg68MHcMWOGe4t3ojlaiIirntXPormNVmy
-         CaVA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yr+99ckeJiaoGdClbpWB4HHCEhei4MoOISTzWXxk02Q=;
+        b=qbJ2+PTT2nqKysWj4o9Q+vtSpUSGrF1fZf19BZfYCKxHNxzxGuzV4uVvxYxT+6Fo08
+         +kiWA0CbvKO2TSzV6Q54ruMCNOYdvzXQrzn2CS/H37rUl9TtD3GhL8cYHKBwrXa2IyPV
+         fMlKwmDXPER+OLOcyg4UoXpQB/oyyqQat9nXzTrpHe0da7BlDyubZQQX/ymBjYPg0ziy
+         YBIaJ9sKQlMt6aYhwX/ZK2YVBo1CRRSyn5NcA9/LptaaLjRgr3uplYcXPL13W0jiJsow
+         AyTKusSvzCYN1WrazOEd0DI2eR6YoDSkSexnzI6c6OyKjtE8hmvpq0jczub1oJEsSiR7
+         rLRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lH3rmBSxRK/l04xfD0njXYt4qzsg1pEDjz8I4N9RkzQ=;
-        b=F/MiFp3UkuOoZLi92U0mK+jZ5eihVPIo+TmtOJX+1zTu2X7NmcsSaS1KOSQqD0uMDu
-         NGa0HSTbYL/7r//GHp/HA91p7YlvpAw4DvY6IuOGp9WeLxrSx+7BCmwDtx86YOwjfTWU
-         NK4FIDOmEcgZsWTpD9kvQaRr1v4ZQvt8N+4OGK/BqiECz9R2Dw6tkMqOa7ZsKHwiWVc0
-         7lRitS3V4Rep1Qj6GWfbVD2dxkDAdISbi1V//gpDneYH75tltMq7f3TthvnIeFztLQaR
-         b8iIJLvXdHKJHVSVV2UnoKiKU2PhG166H9THcziicq1Vkm3E/LxJLXDp9W2m5p7cf3V7
-         DOkQ==
-X-Gm-Message-State: AOAM530IRv7QAfLq1lyg6jkR+GcCCUjD1m8I7pcoHmwzbqQm/DKuBRJu
-        NStqNF8nXd05Gz/bdBbxSc/3IriZj4AoXG0qyPgSPg==
-X-Google-Smtp-Source: ABdhPJxEwXEHm3CH9HRLD5IBuDLDMcjgjNd506UvXOl5v00ZCuM1qdTq1sWoS1YTy+0tCNhVk1dcE+lbFgJfGH90Z30=
-X-Received: by 2002:a2e:555:: with SMTP id 82mr439242ljf.200.1619046977716;
- Wed, 21 Apr 2021 16:16:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yr+99ckeJiaoGdClbpWB4HHCEhei4MoOISTzWXxk02Q=;
+        b=MiRVp/GeWqDTOlJIDzgG8iaRrQWrQ8UqbR9uMwiBzzObloeDOg3G0yAQLsXJhPWHMt
+         8C9nx7XpFxObrKcyQtvhypvdNYj4L5XWePtoYtrALrtMRRSR+B8uzrloSouiXIPZpgWB
+         AjHcKFamyNLF5Jj0djaAJ6z1j98khtnVY7jBH5xMjyn2V+CURaPAmevwIc3GTFPw5vB5
+         StXbLjCOS7FtPP2/X00Tns59113+mQwS+S555XDWm5HjCN0DnC6Olkw84gNRZDYFP9j/
+         gvPEr/q5APOOEL42ZBeb8ufkD5D93XLnJDn58jIp6pVychu2ulTUSfZspj9NEeMQg/oe
+         LlWA==
+X-Gm-Message-State: AOAM531R7MWuDbFLjz5LCrGm4CDH0qokJBMOz9hFCFCXvrtpeyH5LqIS
+        xAHtMI7QgfbOjLzgH9qgh4A=
+X-Google-Smtp-Source: ABdhPJzWnJzpSekO8NckH804Oi+7aq+v8bKqBWCF/GY9ROMwTEc4LEbsnAKuRf4101tbO0ZTzyzWVA==
+X-Received: by 2002:a9d:6f04:: with SMTP id n4mr438594otq.33.1619047226562;
+        Wed, 21 Apr 2021 16:20:26 -0700 (PDT)
+Received: from ?IPv6:2600:1700:dfe0:49f0:7057:1c1c:7495:4212? ([2600:1700:dfe0:49f0:7057:1c1c:7495:4212])
+        by smtp.gmail.com with ESMTPSA id j11sm223173ooo.45.2021.04.21.16.20.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 16:20:26 -0700 (PDT)
+Subject: Re: [PATCH 170/190] Revert "net: dsa: bcm_sf2: Propagate error value
+ from mdio_write"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>, "David S . Miller" <davem@davemloft.net>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-171-gregkh@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <30b2efa4-f873-a391-00c7-f1eb278a3db1@gmail.com>
+Date:   Wed, 21 Apr 2021 16:20:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <1618757073-1724-1-git-send-email-zhouyanjie@wanyeetech.com>
-In-Reply-To: <1618757073-1724-1-git-send-email-zhouyanjie@wanyeetech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 22 Apr 2021 01:16:06 +0200
-Message-ID: <CACRpkdY348FQM0TUqmczV96j29WvX4p6QUWajN34N=YF98aLBQ@mail.gmail.com>
-Subject: Re: [PATCH v6 00/12] Fix bugs and add support for new Ingenic SoCs.
-To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "Dr. H. Nikolaus Schaller" <hns@goldelico.com>, paul@boddie.org.uk,
-        andy.shevchenko@gmail.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sernia.zhou@foxmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210421130105.1226686-171-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 4:44 PM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
-<zhouyanjie@wanyeetech.com> wrote:
 
-> v5->v6:
-> 1.Add the missing lcd-24bit group.
-> 2.Add DMIC pins support for Ingenic SoCs.
-> 3.Adjust and simplify the code.
 
-This v6 patch set applied!
+On 4/21/2021 6:00 AM, Greg Kroah-Hartman wrote:
+> This reverts commit e49505f7255be8ced695919c08a29bf2c3d79616.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Thanks a lot for your hard work on this Zhou!
-
-Yours,
-Linus Walleij
+While this commit does not fix a known problem, the driver should have
+arguably propagated the return values and it did not, so I would be
+inclined to keep it.
+-- 
+Florian
