@@ -2,118 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFB83667F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D5D3667F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 11:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238122AbhDUJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 05:27:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51114 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhDUJ1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 05:27:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A8E0BAE06;
-        Wed, 21 Apr 2021 09:26:45 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 80B9F1F2B69; Wed, 21 Apr 2021 11:26:45 +0200 (CEST)
-Date:   Wed, 21 Apr 2021 11:26:45 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        jack@suse.cz, willy@infradead.org, virtio-fs@redhat.com,
-        slp@redhat.com, miklos@szeredi.hu, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] dax: Wake up all waiters after invalidating dax
- entry
-Message-ID: <20210421092645.GO8706@quack2.suse.cz>
-References: <20210419213636.1514816-1-vgoyal@redhat.com>
- <20210419213636.1514816-4-vgoyal@redhat.com>
+        id S238228AbhDUJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 05:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhDUJ1g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 05:27:36 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B34C06174A;
+        Wed, 21 Apr 2021 02:27:02 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id bx20so47384636edb.12;
+        Wed, 21 Apr 2021 02:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/hH6gOY5Krjw8Rc2Sxt75fVQdHpdQjhafzlD6HdCfVc=;
+        b=hJNclq7CenzlSQ5Zhk5Ww/3t0wzxy9F/QcPiPW4f0ljxEUi2HXp8kTEaZdeUDawaLe
+         dkhPonR9EENLcqruGCcYlhDBX10TWvnKCLkuSdwin4DSt3D88dhN2bhnoibh1FZO7HXW
+         GcvBpik5Eht2Tx5XeM+HkiQbJKz7Q7SaSYCHdmPxCNpYpyfN30/SXnpMvGsH/2qJGkT2
+         gvFuah46Fe6/S91lMoV0wa8PvdWDVY+aRjpu1fldBQ4f7tmAQ5ztfmqGtT13IdXyRqIo
+         I2xkmlcEH8lwPoTu8Xdx1SjFRr8jw4tIYsL5bqOxNbWxRg+wh/m0TOhAtzNsPx2xsZGc
+         rBzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/hH6gOY5Krjw8Rc2Sxt75fVQdHpdQjhafzlD6HdCfVc=;
+        b=fnumQGvn4iLtIRdeysVXfJVMuUaek+5HHmUAzhOmzji2EVk23BJLJFxmC7DzDPS+w5
+         QLpaBHT6WPxgJIgJTvzfs7RCz/6KR/WG1/Td5UNvGNdUwaWvdjRVfTiDI+TTXd4DPrxy
+         i6SFhHTzZFqQLkTsLaLmGSHXBIcXl45jleZf0txEQ+yfi/IWZEWTQZ1OSt2tCdhylaJv
+         B6eHdRIYyWj9EhlK0o8uSuCvpmFwx7ZL7osXAhqE1frgJ5ze2ckaEVBC0af/TjLl5Teq
+         PACbd69sE8Q4R5C0LdKJ8GCm1NgnzAAa1vkO2+jeIN2BxSzi1iIthtYT2PijGE36FFwb
+         p71w==
+X-Gm-Message-State: AOAM532NFE6IOObHUqZW8vj5ZHHWDLMgqGpvQU4/mFvcet1WxMOMpdLA
+        nDPtcaKmS/ER5rnfNkQZ2g4=
+X-Google-Smtp-Source: ABdhPJyhKDP7bQ6iqb8kCTWEN9iCqDKVLP4xB+AE90OA08e7doKGYDxLySzFZ32pdT5LcVqvSNVmZQ==
+X-Received: by 2002:a05:6402:350:: with SMTP id r16mr29860142edw.227.1618997221534;
+        Wed, 21 Apr 2021 02:27:01 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id j9sm2496474eds.71.2021.04.21.02.26.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 02:27:01 -0700 (PDT)
+Subject: Re: [PATCH v1 3/5] dt-bindings: mmc: rockchip-dw-mshc: add
+ description for rk3568
+To:     cl@rock-chips.com, heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com
+References: <20210421065921.23917-1-cl@rock-chips.com>
+ <20210421065921.23917-4-cl@rock-chips.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <7dde9617-9d71-9fdd-6f91-3fc327fa9bc1@gmail.com>
+Date:   Wed, 21 Apr 2021 11:26:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419213636.1514816-4-vgoyal@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210421065921.23917-4-cl@rock-chips.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19-04-21 17:36:36, Vivek Goyal wrote:
-> I am seeing missed wakeups which ultimately lead to a deadlock when I am
-> using virtiofs with DAX enabled and running "make -j". I had to mount
-> virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-> the problem consistently.
+On 4/21/21 8:59 AM, cl@rock-chips.com wrote:
+> From: Liang Chen <cl@rock-chips.com>
 > 
-> So here is the problem. put_unlocked_entry() wakes up waiters only
-> if entry is not null as well as !dax_is_conflict(entry). But if I
-> call multiple instances of invalidate_inode_pages2() in parallel,
-> then I can run into a situation where there are waiters on
-> this index but nobody will wait these.
+> add "rockchip,rk3568-dwcmshc", "snps,dwcmshc-sdhci" for mmc nodes on
+> a rk3568 platform to rockchip-dw-mshc.yaml.
 > 
-> invalidate_inode_pages2()
->   invalidate_inode_pages2_range()
->     invalidate_exceptional_entry2()
->       dax_invalidate_mapping_entry_sync()
->         __dax_invalidate_entry() {
->                 xas_lock_irq(&xas);
->                 entry = get_unlocked_entry(&xas, 0);
->                 ...
->                 ...
->                 dax_disassociate_entry(entry, mapping, trunc);
->                 xas_store(&xas, NULL);
->                 ...
->                 ...
->                 put_unlocked_entry(&xas, entry);
->                 xas_unlock_irq(&xas);
->         }
-> 
-> Say a fault in in progress and it has locked entry at offset say "0x1c".
-> Now say three instances of invalidate_inode_pages2() are in progress
-> (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-> dax entry is locked, all tree instances A, B, C will wait in wait queue.
-> 
-> When dax fault finishes, say A is woken up. It will store NULL entry
-> at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-> at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-> this means put_unlocked_entry() will not wake up next waiter, given
-> the current code. And that means C continues to wait and is not woken
-> up.
-> 
-> This patch fixes the issue by waking up all waiters when a dax entry
-> has been invalidated. This seems to fix the deadlock I am facing
-> and I can make forward progress.
-> 
-> Reported-by: Sergio Lopez <slp@redhat.com>
-> Fixes: ac401cc78242 ("dax: New fault locking")
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-
-Looks good to me. Thanks for fixing this! Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> Signed-off-by: Liang Chen <cl@rock-chips.com>
 > ---
->  fs/dax.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index f19d76a6a493..cc497519be83 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -676,7 +676,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
->  	mapping->nrexceptional--;
->  	ret = 1;
->  out:
-> -	put_unlocked_entry(&xas, entry, WAKE_NEXT);
-> +	put_unlocked_entry(&xas, entry, WAKE_ALL);
->  	xas_unlock_irq(&xas);
->  	return ret;
->  }
-> -- 
-> 2.25.4
+> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> index 3762f1c8de96..2a6c1cee4887 100644
+> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> @@ -27,6 +27,8 @@ properties:
+>        - const: rockchip,rk2928-dw-mshc
+>        # for Rockchip RK3288
+>        - const: rockchip,rk3288-dw-mshc
+
+> +      # for Rockchip RK3568
+> +      - const: rockchip,rk3568-dwcmshc
+
+Remove.
+This would create two descriptions.
+"rockchip,rk3568-dwcmshc"
+"rockchip,rk3568-dwcmshc", "snps,dwcmshc-sdhci"
+
+>        - items:
+>            - enum:
+
+>              # for Rockchip PX30
+
+Remove comments.
+
+> @@ -41,6 +43,8 @@ properties:
+>                - rockchip,rk3328-dw-mshc
+
+>              # for Rockchip RK3368
+
+Remove comments.
+
+>                - rockchip,rk3368-dw-mshc
+
+> +            # for Rockchip RK3568
+
+Maybe remove the "#" comments in this enum part too.
+This was one of the first Rockchip documents that was converted, but is
+not really needed, as it both mentions the soc name.
+
+> +              - rockchip,rk3568-dw-mshc
+
+Sort this below rockchip,rk3399-dw-mshc
+
+>              # for Rockchip RK3399
+
+Remove comments.
+>                - rockchip,rk3399-dw-mshc
+
+>              # for Rockchip RV1108
+
+Remove comments.
+
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
