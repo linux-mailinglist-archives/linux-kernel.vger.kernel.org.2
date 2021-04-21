@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DEA366743
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1108E366746
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbhDUItO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:49:14 -0400
-Received: from mga04.intel.com ([192.55.52.120]:22710 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232140AbhDUItN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:49:13 -0400
-IronPort-SDR: OKRyT04GN3A8vSTpdoHCTHkRfVTawfR5C9apMewOsNtS0rIDLzFidupauy55IQrhhxr11ViCEC
- 4ERu3a+tyWtQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="193542248"
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="193542248"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 01:48:40 -0700
-IronPort-SDR: 3+2uj8P/4vfssUQJyAj8EaXG2WVKt9KTA9rmr5r+g3XFXu/gmfT/uHWC2kqKso/MNMAYUhlA8Y
- IAuPa04WE9UA==
-X-IronPort-AV: E=Sophos;i="5.82,238,1613462400"; 
-   d="scan'208";a="420907869"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 01:48:37 -0700
-Subject: Re: [PATCH RESEND 2/2] perf/x86/lbr: Move cpuc->lbr_xsave allocation
- out of sleeping region
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210421021825.37872-1-like.xu@linux.intel.com>
- <20210421021825.37872-2-like.xu@linux.intel.com>
- <YH/kikWFlfD260qy@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <13fd7ac4-46fd-3fa7-0e80-3f46cfc8edac@linux.intel.com>
-Date:   Wed, 21 Apr 2021 16:48:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S237632AbhDUItx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231685AbhDUItt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:49:49 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889F4C06174A;
+        Wed, 21 Apr 2021 01:49:16 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id y62so4271250pfg.4;
+        Wed, 21 Apr 2021 01:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nyG8M0+jDsXmgNyxaYwY/Nj8F4LWNrBZnNTWBz+bDbk=;
+        b=p3UP0qVsgrgFNIgFvL0xCqYPLwPBV0QOdIQG9zi28XJvbF8xwhPDhLE3b3mZdIPr16
+         2P/Xx0MXxZAzcJJUSgL+4XhuPdXXYUjpd4G7v0w3aJL8PxaZQ4RnkGxGE9XSqefskZHR
+         n+z9f4fPD/7fAgs9+ObQdW+opmKLznPGwJCo3MpEiLEWKOsi0y3tMTjPyleoyjmIUlUb
+         bt30VcaRoFKLKJXi0Nt59OTAqiO7JLTvek0Mz/jBueBkxWUHBFDkI5l6SOCsVoe2qsQ3
+         dJl+HQQuSWNBogxc3+EPQT7dIKSPkGG+93xN+l067HKGASFYLKqn6E9ixA839o/vuZEB
+         n4oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nyG8M0+jDsXmgNyxaYwY/Nj8F4LWNrBZnNTWBz+bDbk=;
+        b=mxUPJF6abg8IuQlw4bd166W/rGRLcCDeGo6fdvlLAKRiQ9H/NIAKN3XHdP7tOCw8n+
+         4em4k4QDdYX+sTpX4y55VKiLvCw7bX0sqnO58Ynewtysw96/Ka5ERre1lStEolS0hZwa
+         EzjmJuvwqqmaGy4WjzubTbZnZkgpEKDXJ1mFmUX8NWWjk6i5ikEihPsTwyRtvYfPu+JJ
+         VD+VfPnztdB8n+tfZWX7HpEt9ce8/AohgG5OeRClT5d6GzOmJ/+pBOzCpXF9+EC2cpWi
+         eWj0HzK3z6H96dQunTfPml2UmSjZViS/xtlOSg/kBHETObu9wWfeqwqpEx35VfbTcSOI
+         X+Vw==
+X-Gm-Message-State: AOAM533DYpUToeHC4q9/CoDv7EA7UAcS9uHFp2p9WaKvpjvgON46yTHB
+        OcgXOP978TEO5VkeDeRA4jZhXOtZfaq/4SEcx9XkGN747Rw=
+X-Google-Smtp-Source: ABdhPJxPqlfXv94yNmBqNzuQBPYE0DQP0u0frGcqsdfZFmB8vPO2chdLb8mdatesmZz1zX8Z0ndcqCWxZTHHCbU0u9M=
+X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr10390534pjr.181.1618994956133;
+ Wed, 21 Apr 2021 01:49:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YH/kikWFlfD260qy@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210420123932.24634-1-tsbogend@alpha.franken.de>
+ <CAHp75VcQ4WXm3uS2r=uDpA4+0vPWdKjev6=vV_JDxMLPzpHDRw@mail.gmail.com> <20210421083214.GA5694@alpha.franken.de>
+In-Reply-To: <20210421083214.GA5694@alpha.franken.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 21 Apr 2021 11:48:59 +0300
+Message-ID: <CAHp75VeeWTdYjSgyjgzmFSpO=Zc+Q6SCS-06LVcVoghuF9vNgA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Wed, Apr 21, 2021 at 11:32 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+> On Wed, Apr 21, 2021 at 11:09:51AM +0300, Andy Shevchenko wrote:
+> > On Tuesday, April 20, 2021, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > wrote:
+> >
+> > > IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+> > > to 32 gpios. All gpios could be used as interrupt source.
+> >
+> >
+> >
+> > I would recommend looking for latest new drivers in GPIO subsystem to see
+> > how you may improve yours.
+>
+> Could give me a better pointer to it ? I looked at a lot of gpio driver
+> and took what fitted best.
+>
+> > Here just one question, why it can not be a module
+>
+> that's probably doable...
+>
+> > why arch_initcall() is used
+>
+> without that interrupts weren't avaiable early enough.
+>
+> > and why you put a dead code into it (see the first part of the
+> > question)?
+>
+> hmm, pointer please ?
 
-On 2021/4/21 16:38, Peter Zijlstra wrote:
-> On Wed, Apr 21, 2021 at 10:18:25AM +0800, Like Xu wrote:
->> -int x86_reserve_hardware(void)
->> +int x86_reserve_hardware(struct perf_event *event)
->>   {
->>   	int err = 0;
->>   
->> @@ -398,8 +398,10 @@ int x86_reserve_hardware(void)
->>   		if (atomic_read(&pmc_refcount) == 0) {
->>   			if (!reserve_pmc_hardware())
->>   				err = -EBUSY;
->> -			else
->> +			else {
->>   				reserve_ds_buffers();
->> +				reserve_lbr_buffers(event);
->> +			}
->>   		}
->>   		if (!err)
->>   			atomic_inc(&pmc_refcount);
->> @@ -650,7 +652,7 @@ static int __x86_pmu_event_init(struct perf_event *event)
->>   	if (!x86_pmu_initialized())
->>   		return -ENODEV;
->>   
->> -	err = x86_reserve_hardware();
->> +	err = x86_reserve_hardware(event);
->>   	if (err)
->>   		return err;
->>   
-> 
-> This is still complete garbage..
+It's already in the question above, do your homework :-)
 
-Hhh,thanks for your comment!
-
-So do we have a better idea to alloc cpuc->lbr_xsave
-to avoid this kind of call trace ?
-
-> 
-
+-- 
+With Best Regards,
+Andy Shevchenko
