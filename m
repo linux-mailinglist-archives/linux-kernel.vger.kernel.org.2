@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AB7366C66
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56E3366C2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242913AbhDUNQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:16:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52962 "EHLO mail.kernel.org"
+        id S242051AbhDUNLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:11:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242525AbhDUNKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:10:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 550166143B;
-        Wed, 21 Apr 2021 13:09:40 +0000 (UTC)
+        id S241049AbhDUNIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:08:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A90E161456;
+        Wed, 21 Apr 2021 13:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010580;
-        bh=rJXyx2n989rVeF0RwSfMzLjGMOzQiDJzKpDgh60DZWg=;
+        s=korg; t=1619010482;
+        bh=YN+N+lOhZFGX8Eqnl4lW/SkY2DO/lgawVdtFLhv+E/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7V8KynlSlqYTFnSnhDEOEkglR/xdL/A0bKOjc4ZMe6PJY7s7zkfJjpZMap17mIEt
-         AQM7hFj6zrf9Ozx/LqhqMtpV15zdebucbpgd+igGB1Z3ienvEfoEwIxIS86+LWpR21
-         NTIICQ1YEC6s9ATnLS1GTnI6LKbR2GnkMdS+7uuY=
+        b=dBV0o6rWS6W3l6lM0iRafIsS8s2wf/bqx2n5VY1r9uT49jkoFmNYTzQJt04+UJDBU
+         DXXzJ2pscHwBvbc6+mJa/OgBT4WpTO+LJ1ys96nEk4m0w84HpRZIYwfEnxpuQX76GT
+         1If8EctqsgIVWdIkjQRt6FEf3JrwdQUZMGHwe48o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kangjie Lu <kjlu@umn.edu>,
         Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 152/190] Revert "media: usb: gspca: add a missed check for goto_low_power"
-Date:   Wed, 21 Apr 2021 15:00:27 +0200
-Message-Id: <20210421130105.1226686-153-gregkh@linuxfoundation.org>
+Subject: [PATCH 153/190] Revert "media: usb: gspca: add a missed return-value check for do_command"
+Date:   Wed, 21 Apr 2021 15:00:28 +0200
+Message-Id: <20210421130105.1226686-154-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -37,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 5b711870bec4dc9a6d705d41e127e73944fa3650.
+This reverts commit 5ceaf5452c1b2a452dadaf377f9f07af7bda9cc3.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -57,33 +57,30 @@ Cc: Kangjie Lu <kjlu@umn.edu>
 Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/gspca/cpia1.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/media/usb/gspca/cpia1.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-index a4f7431486f3..d93d384286c1 100644
+index d93d384286c1..99e594559a0c 100644
 --- a/drivers/media/usb/gspca/cpia1.c
 +++ b/drivers/media/usb/gspca/cpia1.c
-@@ -1424,7 +1424,6 @@ static int sd_config(struct gspca_dev *gspca_dev,
- {
- 	struct sd *sd = (struct sd *) gspca_dev;
- 	struct cam *cam;
--	int ret;
+@@ -537,14 +537,10 @@ static int do_command(struct gspca_dev *gspca_dev, u16 command,
+ 		}
+ 		if (sd->params.qx3.button) {
+ 			/* button pressed - unlock the latch */
+-			ret = do_command(gspca_dev, CPIA_COMMAND_WriteMCPort,
++			do_command(gspca_dev, CPIA_COMMAND_WriteMCPort,
+ 				   3, 0xdf, 0xdf, 0);
+-			if (ret)
+-				return ret;
+-			ret = do_command(gspca_dev, CPIA_COMMAND_WriteMCPort,
++			do_command(gspca_dev, CPIA_COMMAND_WriteMCPort,
+ 				   3, 0xff, 0xff, 0);
+-			if (ret)
+-				return ret;
+ 		}
  
- 	sd->mainsFreq = FREQ_DEF == V4L2_CID_POWER_LINE_FREQUENCY_60HZ;
- 	reset_camera_params(gspca_dev);
-@@ -1436,10 +1435,7 @@ static int sd_config(struct gspca_dev *gspca_dev,
- 	cam->cam_mode = mode;
- 	cam->nmodes = ARRAY_SIZE(mode);
- 
--	ret = goto_low_power(gspca_dev);
--	if (ret)
--		gspca_err(gspca_dev, "Cannot go to low power mode: %d\n",
--			  ret);
-+	goto_low_power(gspca_dev);
- 	/* Check the firmware version. */
- 	sd->params.version.firmwareVersion = 0;
- 	get_version_information(gspca_dev);
+ 		/* test whether microscope is cradled */
 -- 
 2.31.1
 
