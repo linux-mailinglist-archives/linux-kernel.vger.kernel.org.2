@@ -2,218 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EF5367346
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0934436734E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241631AbhDUTRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:17:37 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30709 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238683AbhDUTRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:17:34 -0400
-IronPort-SDR: Yb/i+IWYYTe9KCQIOMPZxMDaHy3u6e8hA+p3/ehKkwTHnmBsaIAz6k3dyH1tocJH/qNfdLw0ra
- a9+mdTMJD01g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="216410141"
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="216410141"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 12:17:00 -0700
-IronPort-SDR: wL1GMd3DH4nTUveL+j5Dz6APfmKwDFrODu9dYaVZhjKEfgRMFq1tsJBt2aZz95gxvLE3cWFVM2
- tmrCUtxtXAVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,240,1613462400"; 
-   d="scan'208";a="453031555"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Apr 2021 12:16:59 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lZILK-0003jJ-Qo; Wed, 21 Apr 2021 19:16:58 +0000
-Date:   Thu, 22 Apr 2021 03:16:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- c1d2a603724a0c05e09d41753ff4b0409c1e2d56
-Message-ID: <60807a1a.DcI2pkipuz1dy1fq%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S243130AbhDUTTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243035AbhDUTTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 15:19:09 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE9CC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:18:35 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x19so38059168lfa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=50kzeCPGjm2JMXyK7PkTEiD0mm3C2OtO1PpsOLUYSss=;
+        b=T5uVrfbF8qU1G524RKlJRFgst7C0N8b4H2i02+jwmhpvtNGQJmtRwATMQyisjPGKwT
+         gsYjxwjD/BmmQlIvAf37RXRIKswGX+Hv5IHJWeJIGmVhisndacaJ5qoPcN/oMkAWKI2K
+         rXoWb3LP/jKJJcJoTQxXEwTnmALDSCLAr8aF4kENjxcOQsR1FiyM3YpiQEEA+/MirhaW
+         +P/0OecI6/mj//o2QV4f3/hm4ceifXZNLLqS/ltvN0Gkvy/DDlCZBBrWKzInmGXh+DJB
+         lq2C30XJHf5e6QSu2w8xVzy48r71MroUUoeyLBA+TWWQtRq16jzncXwVIx0S3LBgkBnU
+         pXTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50kzeCPGjm2JMXyK7PkTEiD0mm3C2OtO1PpsOLUYSss=;
+        b=coNGE2iTwOUJ5dR64QQiCte4ifJOI0VvIFO4mtIXL0L8XuU+X7pWSdaUSKOOT8hCGd
+         VAOodWeLcZoIvGjKlRJYKC36a23ilxUhSng9YUKjjSmg3AVAQAXh2BtAkLYMnFKIrvSO
+         EbrRKr2w8hTmtxjQQDtXzeENhnejPvqu/uoCGYki34ETz+vLqTUKB5X7aYnNxJWFx4dq
+         WG5dwahfLxXaWZlOrgmvwx/WZe/cCmEPRm8V+e8i6IWgoOuKaQgPQGPEaP5490ps9o/W
+         yQ5IcSolCwGz0IEpJIxeHXlhq6ObFKHYynqkyvI1IzCGo/6FoPfz38jF4JXRnkiOS4zo
+         w9vA==
+X-Gm-Message-State: AOAM531Yd2NTmPq4aVTMEPfIHDiO5gn3fFpLXOEE+actzs1RRpQ1e6eB
+        hpnZpdkZ3CFvF/d2Kp5p3jFiLtkEnx+2+9oa+Aasrg==
+X-Google-Smtp-Source: ABdhPJwRkaAF9GTcHU5UKL5G1pkSHZyZA+8YQsNebm8e4OwSf5Vk/lYmA3YonXQ9Ur4PbdStzCCHWudt0MGus1u4DzI=
+X-Received: by 2002:a05:6512:92e:: with SMTP id f14mr14648390lft.347.1619032713794;
+ Wed, 21 Apr 2021 12:18:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <699e51ba-825d-b243-8205-4d8cff478a66@sony.com> <CALvZod7AEjzWa6AR4Ym1jpfzT32hmepxvci6hXvNJTEQvcQqEw@mail.gmail.com>
+ <1f8d300b-9a8b-de09-6d5d-6a9c20c66d24@sony.com>
+In-Reply-To: <1f8d300b-9a8b-de09-6d5d-6a9c20c66d24@sony.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 21 Apr 2021 12:18:22 -0700
+Message-ID: <CALvZod5+5ycobmSt=NC3VJF4FRMFmBQEN7SQgipyTDbzHEbPUQ@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     peter enderborg <Peter.Enderborg@sony.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: c1d2a603724a0c05e09d41753ff4b0409c1e2d56  Merge branch 'linus'
+On Wed, Apr 21, 2021 at 11:46 AM <Peter.Enderborg@sony.com> wrote:
+>
+> On 4/21/21 8:28 PM, Shakeel Butt wrote:
+> > On Wed, Apr 21, 2021 at 10:06 AM peter enderborg
+> > <peter.enderborg@sony.com> wrote:
+> >> On 4/20/21 3:44 AM, Shakeel Butt wrote:
+> > [...]
+> >> I think this is the wrong way to go.
+> > Which one? Are you talking about the kernel one? We already talked out
+> > of that. To decide to OOM, we need to look at a very diverse set of
+> > metrics and it seems like that would be very hard to do flexibly
+> > inside the kernel.
+> You dont need to decide to oom, but when oom occurs you
+> can take a proper action.
 
-elapsed time: 722m
+No, we want the flexibility to decide when to oom-kill. Kernel is very
+conservative in triggering the oom-kill.
 
-configs tested: 156
-configs skipped: 2
+> >
+[...]
+> > Actually no. It is missing the flexibility to monitor metrics which a
+> > user care and based on which they decide to trigger oom-kill. Not sure
+> > how will watchdog replace psi/vmpressure? Userspace keeps petting the
+> > watchdog does not mean that system is not suffering.
+>
+> The userspace should very much do what it do. But when it
+> does not do what it should do, including kick the WD. Then
+> the kernel kicks in and kill a pre defined process or as many
+> as needed until the monitoring can start to kick and have the
+> control.
+>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Roman already suggested something similar (i.e. oom-killer core and
+extended and core watching extended) but completely in userspace. I
+don't see why we would want to do that in the kernel instead.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                      tct_hammer_defconfig
-sh                           se7724_defconfig
-mips                      pic32mzda_defconfig
-arm64                            alldefconfig
-arm                           tegra_defconfig
-ia64                            zx1_defconfig
-powerpc                    sam440ep_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                       maple_defconfig
-sh                        sh7763rdp_defconfig
-arm                              alldefconfig
-arm                       omap2plus_defconfig
-mips                           rs90_defconfig
-arm                      integrator_defconfig
-s390                       zfcpdump_defconfig
-m68k                        m5307c3_defconfig
-arm                          badge4_defconfig
-m68k                           sun3_defconfig
-mips                           ip22_defconfig
-arm                      footbridge_defconfig
-h8300                    h8300h-sim_defconfig
-xtensa                              defconfig
-powerpc                  iss476-smp_defconfig
-h8300                     edosk2674_defconfig
-arm                          pxa3xx_defconfig
-s390                             allmodconfig
-h8300                               defconfig
-arm                          lpd270_defconfig
-arm                        multi_v7_defconfig
-m68k                          amiga_defconfig
-powerpc                      katmai_defconfig
-arm                          simpad_defconfig
-sh                     magicpanelr2_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                     redwood_defconfig
-powerpc                          g5_defconfig
-arm                           omap1_defconfig
-arm                         cm_x300_defconfig
-arm                         bcm2835_defconfig
-arm                        keystone_defconfig
-ia64                         bigsur_defconfig
-powerpc                   motionpro_defconfig
-mips                     decstation_defconfig
-arm                   milbeaut_m10v_defconfig
-um                               alldefconfig
-arm                       multi_v4t_defconfig
-microblaze                          defconfig
-mips                        maltaup_defconfig
-mips                        bcm47xx_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                      ppc44x_defconfig
-arm                            qcom_defconfig
-arc                     haps_hs_smp_defconfig
-arm                       imx_v6_v7_defconfig
-arm                          collie_defconfig
-powerpc                     skiroot_defconfig
-mips                      maltaaprp_defconfig
-sh                           se7206_defconfig
-sh                          sdk7786_defconfig
-powerpc                     ksi8560_defconfig
-arc                          axs103_defconfig
-arm                        clps711x_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arc                 nsimosci_hs_smp_defconfig
-m68k                          sun3x_defconfig
-sh                          rsk7201_defconfig
-xtensa                           alldefconfig
-powerpc                 mpc836x_mds_defconfig
-mips                     loongson1b_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                        fsp2_defconfig
-arm                         mv78xx0_defconfig
-powerpc                     mpc83xx_defconfig
-sh                           se7722_defconfig
-openrisc                         alldefconfig
-powerpc                      acadia_defconfig
-mips                            e55_defconfig
-sh                            migor_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210421
-x86_64               randconfig-a002-20210421
-x86_64               randconfig-a001-20210421
-x86_64               randconfig-a005-20210421
-x86_64               randconfig-a006-20210421
-x86_64               randconfig-a003-20210421
-i386                 randconfig-a005-20210421
-i386                 randconfig-a002-20210421
-i386                 randconfig-a001-20210421
-i386                 randconfig-a006-20210421
-i386                 randconfig-a004-20210421
-i386                 randconfig-a003-20210421
-i386                 randconfig-a012-20210421
-i386                 randconfig-a014-20210421
-i386                 randconfig-a011-20210421
-i386                 randconfig-a013-20210421
-i386                 randconfig-a015-20210421
-i386                 randconfig-a016-20210421
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> >
+> > In addition oom priorities change dynamically and changing it in your
+> > system seems very hard. Cgroup awareness is missing too.
+>
+> Why is that hard? Moving a object in a rb-tree is as good it get.
+>
 
-clang tested configs:
-x86_64               randconfig-a015-20210421
-x86_64               randconfig-a016-20210421
-x86_64               randconfig-a011-20210421
-x86_64               randconfig-a014-20210421
-x86_64               randconfig-a013-20210421
-x86_64               randconfig-a012-20210421
+It is a group of objects. Anyways that is implementation detail.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The message I got from this exchange is that we can have a watchdog
+(userspace or kernel) to further improve the reliability of userspace
+oom-killers.
