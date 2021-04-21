@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D7B3670D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F253670D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244563AbhDURDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:03:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236712AbhDURDm (ORCPT
+        id S244571AbhDUREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244560AbhDUREE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:03:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619024588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IU2gjCTERW+fURIReQ8cOcAZzcEVgLqup7/nNZV9gYw=;
-        b=GGkThi0WyPScLTAuDVKW3bzuxJDXwxXRnUoE6bv8OK2bGZHMs6ImzHNzQg09cm2NoYw3LS
-        Bno3egxHsRXwy1QXffJG0+v7TR4efZnc5lOzLDqI8mW57ttM22NBJzndm9sogYEi7VkgDy
-        sKxZJB/phn4QobEPfJ2XMJAZCTVHF8I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-T3YJPoc5PIaWUZFL-3BRpA-1; Wed, 21 Apr 2021 13:03:06 -0400
-X-MC-Unique: T3YJPoc5PIaWUZFL-3BRpA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A7141008061;
-        Wed, 21 Apr 2021 17:03:05 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5FD6060C5F;
-        Wed, 21 Apr 2021 17:03:00 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 13:02:57 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
+        Wed, 21 Apr 2021 13:04:04 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC16FC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:03:29 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZGG4-00757O-RP; Wed, 21 Apr 2021 17:03:24 +0000
+Date:   Wed, 21 Apr 2021 17:03:24 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Tyler Hicks <code@tyhicks.com>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>
-Subject: Re: [PATCH 085/190] Revert "audit: fix a memory leak bug"
-Message-ID: <20210421170257.GJ3141668@madcap2.tricolour.ca>
+        linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Michael Halcrow <mhalcrow@google.com>
+Subject: Re: [PATCH 053/190] Revert "ecryptfs: replace BUG_ON with error
+ handling code"
+Message-ID: <YIBa3L88Ak1vBM4Y@zeniv-ca.linux.org.uk>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-86-gregkh@linuxfoundation.org>
- <CAHC9VhTvKeNFPsJadVK_i1+qaQBRSVfdWd+HC_EsgZx3coM8oA@mail.gmail.com>
+ <20210421130105.1226686-54-gregkh@linuxfoundation.org>
+ <YIBM8hiBLFO+JJr/@zeniv-ca.linux.org.uk>
+ <20210421161329.GD4991@sequoia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHC9VhTvKeNFPsJadVK_i1+qaQBRSVfdWd+HC_EsgZx3coM8oA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210421161329.GD4991@sequoia>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-21 12:18, Paul Moore wrote:
-> On Wed, Apr 21, 2021 at 9:04 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This reverts commit 70c4cf17e445264453bc5323db3e50aa0ac9e81f.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Wenwen Wang <wang6495@umn.edu>
-> > Cc: Richard Guy Briggs <rgb@redhat.com>
-> > Cc: Paul Moore <paul@paul-moore.com>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  kernel/auditfilter.c | 12 +++++-------
-> >  1 file changed, 5 insertions(+), 7 deletions(-)
+On Wed, Apr 21, 2021 at 11:13:29AM -0500, Tyler Hicks wrote:
+
+> > It *is* functionally harmless, AFAICS, but only because the condition
+> > is really impossible.  However,
+> > 	* it refers to vague (s)tool they'd produced, nevermind that
+> > all they really do is "find BUG_ON(), replace with returning an error".
+> > 	* unlike BUG_ON(), the replacement does *NOT* document the
+> > fact that condition should be impossible.
+> > IMO either should be sufficient for rejecting the patch.
 > 
-> NACK on this revert.  I've looked at the original patch again this
-> morning, and the original patch still looks correct and doesn't appear
-> to introduce any new faults to the best of my understanding.
+> I agree that it was not a malicious change. There are other places
+> within the same function that return -EINVAL and the expectation is that
+> errors from this function should be handled safely.
 
-Agreed.  Though on review, a much simpler fix to my original patch that
-caused this problem requiring this fix
-	e85322d21cfebeac64f58a204e9adc0bc5c1e46f rgb 2014-10-02 ("audit: cull redundancy in audit_rule_change")
-would have been the two-liner in the error path similar to the pattern
-in audit_data_to_entry() error path would have been:
+Umm...  Assuming that failure exits in the callers will function properly
+if those conditions are true.  Which is not obvious at all.
 
-	if (entry->rule.tree)
-		audit_put_tree(entry->rule.tree); /* that's the temporary one */
+> That said, I can find no real-world reports of this BUG_ON() ever being
+> a problem and I don't think that there's any actual need for this
+> change. So, I'm alright with it being reverted considering the
+> circumstances.
 
-> > diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
-> > index 333b3bcfc545..19f908b96000 100644
-> > --- a/kernel/auditfilter.c
-> > +++ b/kernel/auditfilter.c
-> > @@ -1125,24 +1125,22 @@ int audit_rule_change(int type, int seq, void *data, size_t datasz)
-> >         int err = 0;
-> >         struct audit_entry *entry;
-> >
-> > +       entry = audit_data_to_entry(data, datasz);
-> > +       if (IS_ERR(entry))
-> > +               return PTR_ERR(entry);
-> > +
-> >         switch (type) {
-> >         case AUDIT_ADD_RULE:
-> > -               entry = audit_data_to_entry(data, datasz);
-> > -               if (IS_ERR(entry))
-> > -                       return PTR_ERR(entry);
-> >                 err = audit_add_rule(entry);
-> >                 audit_log_rule_change("add_rule", &entry->rule, !err);
-> >                 break;
-> >         case AUDIT_DEL_RULE:
-> > -               entry = audit_data_to_entry(data, datasz);
-> > -               if (IS_ERR(entry))
-> > -                       return PTR_ERR(entry);
-> >                 err = audit_del_rule(entry);
-> >                 audit_log_rule_change("remove_rule", &entry->rule, !err);
-> >                 break;
-> >         default:
-> > +               err = -EINVAL;
-> >                 WARN_ON(1);
-> > -               return -EINVAL;
-> >         }
-> >
-> >         if (err || type == AUDIT_DEL_RULE) {
-> > --
-> > 2.31.1
-> 
-> -- 
-> paul moore
-> www.paul-moore.com
-> 
+AFAICS, at least some parts of that BUG_ON() are provably impossible
+(e.g. NULL crypt_stat would've oopsed well upstream of the only call
+of that function).  ECRYPTFS_STRUCT_INITIALIZED is set after
+ecryptfs_alloc_inode() and never cleared, i.e. it should be present
+in ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat.flags for
+all inodes.  And crypt_stat we are passing to that thing is
+calculated as &(ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat),
+which is another reason why it can't be NULL.
 
-- RGB
+Incidentally, what's ecryptfs_setattr() doing with similar check?
+It had been introduced in e10f281bca03 "eCryptfs: initialize crypt_stat
+in setattr", which claims
+    Recent changes in eCryptfs have made it possible to get to ecryptfs_setattr()
+    with an uninitialized crypt_stat struct.  This results in a wide and colorful
+    variety of unpleasantries.  This patch properly initializes the crypt_stat
+    structure in ecryptfs_setattr() when it is necessary to do so.
+and AFAICS at that point the call of ecryptfs_init_crypt_stat() in
+ecryptfs_alloc_inode() had already been there and EXCRYPTFS_STRUCT_INITIALIZED
+had been (unconditionally) set by it.  So how could that check trigger in
+ecryptfs_setattr()?  No direct calls of that function (then as well as now),
+it's only reachable as ecryptfs_{symlink,dir,main}_iops.setattr.  The first
+two could only end up set by ecryptfs_interpose(), for inode returned by
+iget5_locked() (i.e. one that had been returned by ->alloc_inode()),
+the last is set by ecryptfs_init_inode(), called by ecryptfs_inode_set(), 
+passed as callback to iget5_locked() by the same ecryptfs_interpose().
+IOW, again, the inode must have been returned by ->alloc_inode().
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+I realize that it had been a long time ago, but... could somebody
+recall what that patch had been about?  Michael?
 
+Commit in question contains another (and much bigger) chunk; do
+the comments in commit message refer to it?  Because it really
+looks like
+	if (!(crypt_stat->flags & ECRYPTFS_STRUCT_INITIALIZED))
+		ecryptfs_init_crypt_stat(crypt_stat);
+part in ecryptfs_setattr() is a confusing no-op...
