@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACF1367375
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5E4367378
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 21:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239760AbhDUTc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 15:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235159AbhDUTcZ (ORCPT
+        id S242660AbhDUTc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 15:32:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235159AbhDUTc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:32:25 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34630C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:31:51 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id g5so58451536ejx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=foXVhnwT23D/qpAtyx2UOpz422ajD7V5LrdFOfsaVYc=;
-        b=TFO2BuTEkby0ABFf1OkYK/1D90LhANve4lIJJ88/sKZDsAJPhoQCSO6f82qhRXN6ec
-         CgCyxKIrUZTopeueP681KmvgiJ8Xrqm0WA7FASO/sO+pV5OxEEkbRVNqbAvDGYZQi23f
-         x6FX3N+GdEEGDOfY323qyIWLzzEsmsepQ9XoM=
+        Wed, 21 Apr 2021 15:32:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619033543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1BBZbDPdoILFAbDCTmIR8WakICnxwYOnEVliMh8JCfw=;
+        b=JoXskYRY3okldpqpUJjAYNpJ028kQUPyfEVzaXI4IRXMacAEJJuwZl6G+Vn+XA5YcaamQ3
+        uXUzeJyCSnQ7JdLLR7wZQmFOIa+KSevxmKYXA/xsQcTVKW7kymqTHP4S7I3UkqfBMtZ6Vj
+        iqloTTyedESY+X2qu15XYn78RSGdudY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-KNmscVXgOPGgwXUTWQmCxQ-1; Wed, 21 Apr 2021 15:32:21 -0400
+X-MC-Unique: KNmscVXgOPGgwXUTWQmCxQ-1
+Received: by mail-ej1-f72.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so6286808ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 12:32:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=foXVhnwT23D/qpAtyx2UOpz422ajD7V5LrdFOfsaVYc=;
-        b=FEgdMlb7Q/kPB8ZNTs3mqdWFmkH84UQcDc6GDU0RnlcziUVr0aFtGtOhiyQW0XemZQ
-         qBEN9jIyDA0Tmx0PfGbheDQJUEvph4L66l25Nk3qYSYGP2dPTi12W8OYuUUCCE0UIQJo
-         rBCzIv1eZJ5gA+0d/E19siXxCjW9HSL7zP02c7pQb9BJPCkU8RRoKcAm8WZZi7HoCtP+
-         UzBSqg6RMvWvizemMgpzmRkA5giDhLgqaXswtXaE9pmjXZXIU2RaasCwFYodOLGda3wp
-         DYjQgJM5fWy95BnugivZRBDLWLpyCnKDtjp775NJU7uzXgCuZqkOayIRE8DzX3thXu0t
-         8qXw==
-X-Gm-Message-State: AOAM53329GVT+f+rSA+ksviHSuLx7A8XhQofBg6/VUhiVNoSRwcezj88
-        QSjykD5HsqyFBFt+eXPedXZcjQ==
-X-Google-Smtp-Source: ABdhPJzrmiWm8xqN10Pgm6ApQ10O3qhZBNiRi56u9Q1ia2YUMP15g1RqZs30XvuXJlWLsHsUwui6Yg==
-X-Received: by 2002:a17:906:3ec1:: with SMTP id d1mr8143866ejj.523.1619033509937;
-        Wed, 21 Apr 2021 12:31:49 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id z6sm284781ejp.86.2021.04.21.12.31.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 12:31:49 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Alex Kluver <alex.kluver@hpe.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] efi: cper: fix scnprintf() use in cper_mem_err_location()
-Date:   Wed, 21 Apr 2021 21:31:46 +0200
-Message-Id: <20210421193146.1539649-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
+        bh=1BBZbDPdoILFAbDCTmIR8WakICnxwYOnEVliMh8JCfw=;
+        b=ijqLexDEzFFwM3hVuVo5Meg0eck/texswqM1A2NQrIKFof3Bsw76WrBNrW2WZsKqFC
+         vwENBHrlWlt5lqsZxda/tyv5zbC7ILvSO4ZSwvLzNnFW0IPvbxjwThtGBaK/QGNYJtMv
+         SWxNLnJ9+/YXyJb4wnoC61CI7dFu8Sgv6hOvjxNGEjRNQk+pK0bGck5hfufkA2ZR43Z3
+         f0nRnNV0UQbMfyhHmDZqwd5Xnd4rnootdYi5GEBW2aXKzTgT2pczRcL+7s0uxBFcxEFU
+         3GTKKyuQdqEmJQoDx7BKptMKuKzC23c4qKMwvQfcRpqjnlNtwYtUHLGP4tUxEM/eApjL
+         gBsg==
+X-Gm-Message-State: AOAM531ZLcU+uEsGShc3ZXzoBR+aPkAIradPhr1AfjwXPFg6QyfT7BUm
+        XsYpQG6/PTumvzhDPCsXX576QyyZPo468hqL+hJIpqPk2vXbaa8SgM2DeoTPLUotxTaJOUHpZp8
+        iOZP7NAh0w7EH5LGQdMbVQfom
+X-Received: by 2002:a17:906:49c1:: with SMTP id w1mr35176151ejv.178.1619033540663;
+        Wed, 21 Apr 2021 12:32:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdRpxiINqsS4aMzDxg+dVxuQVoOGhMEjSyLCURLTc1al9CQeb0bDFM8n1U/vBFgVyVwEwFUw==
+X-Received: by 2002:a17:906:49c1:: with SMTP id w1mr35176126ejv.178.1619033540350;
+        Wed, 21 Apr 2021 12:32:20 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id gn19sm287812ejc.68.2021.04.21.12.32.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 12:32:19 -0700 (PDT)
+Subject: Re: [PATCH v2] platform/x86: intel_pmc_core: Uninitialized data in
+ pmc_core_lpm_latch_mode_write()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Cc:     David E Box <david.e.box@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <YIBCf+G9Ef8wrGJw@mwanda>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ad05f502-b3dc-b62f-1f9f-ca8c806e1e3c@redhat.com>
+Date:   Wed, 21 Apr 2021 21:32:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YIBCf+G9Ef8wrGJw@mwanda>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last two if-clauses fail to update n, so whatever they might have
-written at &msg[n] would be cut off by the final nul-termination.
+Hi,
 
-That nul-termination is redundant; scnprintf(), just like snprintf(),
-guarantees a nul-terminated output buffer, provided the buffer size is
-positive.
+On 4/21/21 5:19 PM, Dan Carpenter wrote:
+> The simple_write_to_buffer() can return success if even a single byte
+> is copied from user space.  In this case it can result in using
+> uninitalized data if the buf[] array is not fully initialized.  Really
+> we should only succeed if the whole buffer is copied.
+> 
+> Just using copy_from_user() is simpler and more appropriate.
+> 
+> Fixes: 8074a79fad2e ("platform/x86: intel_pmc_core: Add option to set/clear LPM mode")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> v2: The first version of this patch returned -EINVAL if userspace didn't
+> give us NUL terminated strings.  That's not necessarily a good
+> assumption.
+> 
+> This patch is just simpler as well.  No need to introduce the "len"
+> variable because "count" is capped at the start of the function.
 
-And there's no need to discount one byte from the initial buffer;
-vsnprintf() expects to be given the full buffer size - it's not going
-to write the nul-terminator one beyond the given (buffer, size) pair.
+Much better, thank you.
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- drivers/firmware/efi/cper.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
-index e15d484b6a5a..dfa0bd140bef 100644
---- a/drivers/firmware/efi/cper.c
-+++ b/drivers/firmware/efi/cper.c
-@@ -221,7 +221,7 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
- 		return 0;
- 
- 	n = 0;
--	len = CPER_REC_LEN - 1;
-+	len = CPER_REC_LEN;
- 	if (mem->validation_bits & CPER_MEM_VALID_NODE)
- 		n += scnprintf(msg + n, len - n, "node: %d ", mem->node);
- 	if (mem->validation_bits & CPER_MEM_VALID_CARD)
-@@ -258,13 +258,12 @@ static int cper_mem_err_location(struct cper_mem_err_compact *mem, char *msg)
- 		n += scnprintf(msg + n, len - n, "responder_id: 0x%016llx ",
- 			       mem->responder_id);
- 	if (mem->validation_bits & CPER_MEM_VALID_TARGET_ID)
--		scnprintf(msg + n, len - n, "target_id: 0x%016llx ",
--			  mem->target_id);
-+		n += scnprintf(msg + n, len - n, "target_id: 0x%016llx ",
-+			       mem->target_id);
- 	if (mem->validation_bits & CPER_MEM_VALID_CHIP_ID)
--		scnprintf(msg + n, len - n, "chip_id: %d ",
--			  mem->extended >> CPER_MEM_CHIP_ID_SHIFT);
-+		n += scnprintf(msg + n, len - n, "chip_id: %d ",
-+			       mem->extended >> CPER_MEM_CHIP_ID_SHIFT);
- 
--	msg[n] = '\0';
- 	return n;
- }
- 
--- 
-2.29.2
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+>  drivers/platform/x86/intel_pmc_core.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index d174aeb492e0..b0e486a6bdfb 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -1360,17 +1360,13 @@ static ssize_t pmc_core_lpm_latch_mode_write(struct file *file,
+>  	struct pmc_dev *pmcdev = s->private;
+>  	bool clear = false, c10 = false;
+>  	unsigned char buf[8];
+> -	ssize_t ret;
+>  	int idx, m, mode;
+>  	u32 reg;
+>  
+>  	if (count > sizeof(buf) - 1)
+>  		return -EINVAL;
+> -
+> -	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, userbuf, count);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> +	if (copy_from_user(buf, userbuf, count))
+> +		return -EFAULT;
+>  	buf[count] = '\0';
+>  
+>  	/*
+> 
 
