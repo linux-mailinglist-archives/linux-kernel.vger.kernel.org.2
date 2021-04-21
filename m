@@ -2,153 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F139A3671AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491923671B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243357AbhDURqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235836AbhDURqN (ORCPT
+        id S244895AbhDURq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:46:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:36930 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244837AbhDURq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:46:13 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C99C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:45:39 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id j7so21175687pgi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ut0gNS/Z6SzxBjiicfpi9MImfRo7ew13zfAdk9Vprd0=;
-        b=SIrL+Q3r6VEewwGL+joTXOtRbF53efIh5RVPV8yMSyabLzrFjaxGAjqqqrg3lb1SMs
-         /G48ay45D3FQ9m5BLbIQrNjWIHKSaiBgbHW7qqDnr+Y03/3MsGupk6+vUv1k9wjfYRc4
-         VAO1llTS5UE+3vR29D0e/0EIsuXJJFG/QFMh7XN4u1N9NQralqu/Zuqb7vG/ana1shj1
-         GO22AiQpWvql2SgiHZfgI7zlW3+mHN8AVJ0sO8fPmk3OJiihTN2PsPNgrLtOT/Mrsyrm
-         V4V27lwOt4Pl4ItPi+el5Tf1lMdMvnX85wFEiDNDlD09VKSn2YoY+HfhWgQtc+AP3oMh
-         Gqvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ut0gNS/Z6SzxBjiicfpi9MImfRo7ew13zfAdk9Vprd0=;
-        b=TlbZHB5r4T7kef+4YGCckRHzr7as6nqNKvVabYAcFMNxXtrEqY95kGor9kVOEOKD0j
-         PZIwLh7+Mnu+62MJJkMJTKrKFDz1jYssH9a8HgtGMhIT1VCuiVCYWIxjnEg+CnfoyzKO
-         QSE586CY3xqUWi9LEAiJp9EUSDX5oZ7FkNqbSAfAjogdEEn1wYr05urKq2GW8jqDEcVo
-         sg3phBDwD+Qb42U0sxllZXpsrEdZjSD02yLmlE8ygXvrJWKAa1VxfdQAaC5hdUwwSlJT
-         crI/fCxw3hkYWTDd1GfcBxyeiwu791yqD7TAoRxYJxX0HuyX8SaEXRa4LLgNjbGpPO1Y
-         kMQg==
-X-Gm-Message-State: AOAM531Nc8pv9DRz6TozhGI7qSTkHrL6A5oBJ7oENNuwEKwJcSN8UnB4
-        xHR8UI4EfKWwtnbAyWz+3fUMMw==
-X-Google-Smtp-Source: ABdhPJxInlfZIuUPh9liALM1C3FPVm/IvfkXHVriMoop8sdWsZjss+z371kiQlb5L7yDOTWbDg5cqA==
-X-Received: by 2002:a62:ee09:0:b029:247:56aa:dfa6 with SMTP id e9-20020a62ee090000b029024756aadfa6mr31068474pfi.69.1619027139169;
-        Wed, 21 Apr 2021 10:45:39 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gc15sm2654845pjb.2.2021.04.21.10.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:45:38 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 11:45:37 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v2 4/7] rpmsg: char: Introduce
- __rpmsg_chrdev_create_eptdev function
-Message-ID: <20210421174537.GC1223348@xps15>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
- <20210413134458.17912-5-arnaud.pouliquen@foss.st.com>
- <20210421174329.GB1223348@xps15>
+        Wed, 21 Apr 2021 13:46:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619027184; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=mIoGwTFNFlNcqe2snL+bh4loHX2D9cEh/9+/MXFcrK8=;
+ b=jwDYNyiHfkfoJMtVsEw+y4jTwHzINqp0tETi++dRgHD2sGN9g/yk5toofkxNXPB6VTidj/8B
+ TBkF2armNjT+hvs0jItwrHU6gbiEIysccJYSYRVz85ewR75QkxZP7oTvHTpbVOKJxFIr+7Sa
+ PIHIb6snm/lv3ZpyNFNKJhl4rys=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 608064e32cbba88980e64840 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Apr 2021 17:46:11
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4FD1C433F1; Wed, 21 Apr 2021 17:46:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C943C43460;
+        Wed, 21 Apr 2021 17:46:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C943C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421174329.GB1223348@xps15>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath9k:remove unneeded variable in
+ ath9k_dump_legacy_btcoex
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210224130356.51444-1-zhangkun4jr@163.com>
+References: <20210224130356.51444-1-zhangkun4jr@163.com>
+To:     zhangkun4jr@163.com
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath9k-devel@qca.qualcomm.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhang Kun <zhangkun@cdjrlc.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210421174610.B4FD1C433F1@smtp.codeaurora.org>
+Date:   Wed, 21 Apr 2021 17:46:10 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:43:29AM -0600, Mathieu Poirier wrote:
-> On Tue, Apr 13, 2021 at 03:44:55PM +0200, Arnaud Pouliquen wrote:
-> > Introduce the __rpmsg_chrdev_create_eptdev internal function that returns
-> > the rpmsg_eptdev context structure.
-> > 
-> > This patch prepares the introduction of a rpmsg channel device for the
-> > char device. The rpmsg device will need a reference to the context.
-> > 
-> > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> > 
-> > ---
-> > update from V1
-> > - fix __rpmsg_chrdev_create_eptdev function header indentation.
-> > 
-> > ---
-> >  drivers/rpmsg/rpmsg_char.c | 23 ++++++++++++++++++-----
-> >  1 file changed, 18 insertions(+), 5 deletions(-)
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->
+zhangkun4jr@163.com wrote:
 
-Please excuse the brain-bug here - this RB was destined to patch 3/7.  I am not sure
-about this patch yet (see comment in 5/7).
- 
-> > 
-> > diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> > index 21ef9d9eccd7..a64249d83172 100644
-> > --- a/drivers/rpmsg/rpmsg_char.c
-> > +++ b/drivers/rpmsg/rpmsg_char.c
-> > @@ -323,8 +323,9 @@ static void rpmsg_eptdev_release_device(struct device *dev)
-> >  	kfree(eptdev);
-> >  }
-> >  
-> > -int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> > -			       struct rpmsg_channel_info chinfo, struct class *rpmsg_class)
-> > +static struct rpmsg_eptdev *
-> > +__rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> > +			     struct rpmsg_channel_info chinfo, struct class *rpmsg_class)
-> >  {
-> >  	struct rpmsg_eptdev *eptdev;
-> >  	struct device *dev;
-> > @@ -332,7 +333,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >  
-> >  	eptdev = kzalloc(sizeof(*eptdev), GFP_KERNEL);
-> >  	if (!eptdev)
-> > -		return -ENOMEM;
-> > +		return ERR_PTR(-ENOMEM);
-> >  
-> >  	dev = &eptdev->dev;
-> >  	eptdev->rpdev = rpdev;
-> > @@ -376,7 +377,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >  		put_device(dev);
-> >  	}
-> >  
-> > -	return ret;
-> > +	return eptdev;
-> >  
-> >  free_ept_ida:
-> >  	ida_simple_remove(&rpmsg_ept_ida, dev->id);
-> > @@ -386,7 +387,19 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >  	put_device(dev);
-> >  	kfree(eptdev);
-> >  
-> > -	return ret;
-> > +	return ERR_PTR(ret);
-> > +}
-> > +
-> > +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> > +			       struct rpmsg_channel_info chinfo,  struct class *rpmsg_class)
-> > +{
-> > +	struct rpmsg_eptdev *eptdev;
-> > +
-> > +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, parent, chinfo, rpmsg_class);
-> > +	if (IS_ERR(eptdev))
-> > +		return PTR_ERR(eptdev);
-> > +
-> > +	return 0;
-> >  }
-> >  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
-> >  
-> > -- 
-> > 2.17.1
-> > 
+> From: Zhang Kun <zhangkun@cdjrlc.com>
+> 
+> Remove unneeded variable 'len' in ath9k_dump_legacy_btcoex.
+> 
+> Signed-off-by: Zhang Kun <zhangkun@cdjrlc.com>
+
+This fails to compile. Always build check your patches!
+
+In file included from drivers/net/wireless/ath/ath9k/gpio.c:17:
+drivers/net/wireless/ath/ath9k/gpio.c: In function 'ath9k_dump_legacy_btcoex':
+drivers/net/wireless/ath/ath9k/ath9k.h:763:3: error: 'len' undeclared (first use in this function)
+  763 |   len += scnprintf(buf + len, size - len,  \
+      |   ^~~
+drivers/net/wireless/ath/ath9k/gpio.c:501:2: note: in expansion of macro 'ATH_DUMP_BTCOEX'
+  501 |  ATH_DUMP_BTCOEX("Stomp Type", btcoex->bt_stomp_type);
+      |  ^~~~~~~~~~~~~~~
+drivers/net/wireless/ath/ath9k/ath9k.h:763:3: note: each undeclared identifier is reported only once for each function it appears in
+  763 |   len += scnprintf(buf + len, size - len,  \
+      |   ^~~
+drivers/net/wireless/ath/ath9k/gpio.c:501:2: note: in expansion of macro 'ATH_DUMP_BTCOEX'
+  501 |  ATH_DUMP_BTCOEX("Stomp Type", btcoex->bt_stomp_type);
+      |  ^~~~~~~~~~~~~~~
+make[5]: *** [drivers/net/wireless/ath/ath9k/gpio.o] Error 1
+make[4]: *** [drivers/net/wireless/ath/ath9k] Error 2
+make[3]: *** [drivers/net/wireless/ath] Error 2
+make[2]: *** [drivers/net/wireless] Error 2
+make[1]: *** [drivers/net] Error 2
+make: *** [drivers] Error 2
+
+Patch set to Changes Requested.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210224130356.51444-1-zhangkun4jr@163.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
