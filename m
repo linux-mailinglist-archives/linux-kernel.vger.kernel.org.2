@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA30367180
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A66367187
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243039AbhDURka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S242739AbhDURlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243206AbhDURk1 (ORCPT
+        with ESMTP id S242273AbhDURlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:40:27 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CB5C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:39:54 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id a188-20020a4a4cc50000b02901f0ae7068a1so1344724oob.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:39:54 -0700 (PDT)
+        Wed, 21 Apr 2021 13:41:01 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F776C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:40:27 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id h11so11902755pfn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2NIvDL/pnxWG/XSWH6ctMJRwrsiMqVjZJOoDaRoJS8c=;
-        b=gOY34zMKpKy19sMBflS95m2MN3RgmXslX4/+ftWEiEVP1DHf+TSCC3zUfL4ROg23v+
-         9b3/+vRixP/giuz63hBEzXMciraTCQLIP7sMBwZc+bR/LBhqKDMNQiElzOgwKRSsnHNY
-         pHBIt8Jm4t4VOz9NC4qeX8ALH7ClGgjZFNpxCj0ykypTE4fuRxx+3DAKHmUIJ2DZHPjh
-         a9IeSzoKfhGotdS/TkbrXIQzwMPmfRn4jHDlOAy0rt+AdslndDxB6DvTjWHd0HzekQ77
-         zZh5bUv/SUye4oycQS0cgYTkQs3n+ZRKtvoVtgRZHmmRfoImqqF5XjCYAczktkeYD5HP
-         cjrg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h/beBkqWPWtq3+yl17G4GLEbQfDSlnnJp5RXRR66KYE=;
+        b=cE0ORofprgoov158xmxjlX5mEid/m5laCX19wY+7OZffLWMAyu4RXrrYeIEa7iS9mW
+         zSNDddWAs9KTix7ZcMvjMulSqHoNTB3r6cgSok/jUsVlVoYId3I8bcU4kfTnDPzWnXIU
+         QbgdAPoqeRzIEGzsjsCiO8HMSyRXKLHi4ZBag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2NIvDL/pnxWG/XSWH6ctMJRwrsiMqVjZJOoDaRoJS8c=;
-        b=BEwFUYG7QF27+CIj6G43ZDyfYkUyfD2c6Ny8aaRCZ5JXrY40jEjDc59uzDQTql0KMW
-         hrZhqld6Eae0LUNzB06bkSYuXq3oNL7/7Pnc5YyjhBaH3lxGBzsFLyA+scs0E9XZlsBF
-         v6A5qRP2Y58F4Qd/zl/umO6FbtjeXI4aMV2YI+qt24HEdZTk1UKR2C6DGSbK/zfJZ0kF
-         Idw26EjPAW1s5EswhqdaatOPisH40aiT2WcePG1W1stBX57RL1ejjz18KhuM2xK538vI
-         ER/oOhDfU6L1T9waQ29ZA7fUUDxL3MVa0xvhYIvMta8yL27TurGB46VjvNczcjGrknal
-         B9Ig==
-X-Gm-Message-State: AOAM530zqR1OlD7uix+yNV4EblrlUCKsttn+OMtV7dcBwxIIgH01WSPg
-        jHkphoiKV+jXf3bAmAOYlwnLDQ==
-X-Google-Smtp-Source: ABdhPJx8BGLlHmozMfXwtB99k0C+w4yPut6QtEKNm6JL+RYogkPpgrqX1bIqExM1XjlhrOA9ZvY7nQ==
-X-Received: by 2002:a4a:dc11:: with SMTP id p17mr21288861oov.50.1619026793532;
-        Wed, 21 Apr 2021 10:39:53 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q130sm595947oif.40.2021.04.21.10.39.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h/beBkqWPWtq3+yl17G4GLEbQfDSlnnJp5RXRR66KYE=;
+        b=LC7BN/VyPMp6nawN7Q7OVDNw06M1INumKueYdX5ARWgnIVlMebgQjRcY5GB9C1S2Pc
+         8r3UhPIpJ3iFxMQ6eHRx9F/6+8tIJwJ1FNrgtt5lqfGf5zesb9hbDY++tVxTVxEdVi5W
+         X/PqeMUghg5vl0yF6MzOZ1wE1AAYxpw0gP90BkkTKOys4c1t0hzc/pOFagflk7imwkHa
+         j/Lo23Z/qL4oy48KNmRjEugh9Cu4ipt1LEy4IwckK0BQHdkkPow/9cOEwyu30J5gJ9Aj
+         unIUdSlFlF+cxjLYhwuEOfLFZJcLaMeqEqyhLQbA3MWUCu8Eb8FUTgFUDjT+QUO3Y8uW
+         N8bw==
+X-Gm-Message-State: AOAM531yusIcPHCtaB/UWsbj1vSLiWXrHHlyW9v/Q9HGmfAVxRggpaaI
+        4SJoxte4+skqPZBwcQLntKdWBQ==
+X-Google-Smtp-Source: ABdhPJw2VsFXVVPmA45ixsygoh7TW76jWkUpmaK+0w/xbWIpwp9qQGUbnQTlZg9rcsnkVLbLcnJhXQ==
+X-Received: by 2002:a63:5b5c:: with SMTP id l28mr22480973pgm.363.1619026826588;
+        Wed, 21 Apr 2021 10:40:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m9sm58735pgt.65.2021.04.21.10.40.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 10:39:53 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: qrtr: Avoid potential use after free in MHI send
-Date:   Wed, 21 Apr 2021 10:40:07 -0700
-Message-Id: <20210421174007.2954194-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        Wed, 21 Apr 2021 10:40:25 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 10:40:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ralph Metzler <rjkm@metzlerbros.de>,
+        Matthias Benesch <twoof7@freenet.de>,
+        Oliver Endriss <o.endriss@gmx.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] media: ngene: Fix out-of-bounds bug in
+ ngene_command_config_free_buf()
+Message-ID: <202104211039.31E9785@keescook>
+References: <20210420001631.GA45456@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420001631.GA45456@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that the MHI ul_callback will be invoked immediately
-following the queueing of the skb for transmission, leading to the
-callback decrementing the refcount of the associated sk and freeing the
-skb.
+On Mon, Apr 19, 2021 at 07:16:31PM -0500, Gustavo A. R. Silva wrote:
+> Fix an 11-year old bug in ngene_command_config_free_buf() while
+> addressing the following warnings caught with -Warray-bounds:
+> 
+> arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+> 
+> The problem is that the original code is trying to copy 6 bytes of
+> data into a one-byte size member _config_ of the wrong structue
+> FW_CONFIGURE_BUFFERS, in a single call to memcpy(). This causes a
+> legitimate compiler warning because memcpy() overruns the length
+> of &com.cmd.ConfigureBuffers.config. It seems that the right
+> structure is FW_CONFIGURE_FREE_BUFFERS, instead, because it contains
+> 6 more members apart from the header _hdr_. Also, the name of
+> the function ngene_command_config_free_buf() suggests that the actual
+> intention is to ConfigureFreeBuffers, instead of ConfigureBuffers
+> (which configuration takes place in the function ngene_command_config_buf(),
+> above).
+> 
+> Fix this by enclosing those 6 members of struct FW_CONFIGURE_FREE_BUFFERS
+> into new struct config, and use &com.cmd.ConfigureFreeBuffers.config as
+> the destination address, instead of &com.cmd.ConfigureBuffers.config,
+> when calling memcpy().
+> 
+> This also helps with the ongoing efforts to globally enable
+> -Warray-bounds and get us closer to being able to tighten the
+> FORTIFY_SOURCE routines on memcpy().
+> 
+> Link: https://github.com/KSPP/linux/issues/109
+> Fixes: dae52d009fc9 ("V4L/DVB: ngene: Initial check-in")
+> Cc: stable@vger.kernel.org
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-As such the dereference of skb and the increment of the sk refcount must
-happen before the skb is queued, to avoid the skb to be used after free
-and potentially the sk to drop its last refcount..
+Nice find! Yeah, this looks like a copy/paste bug but it went unnoticed
+because it's occupying the same memory via the union. Heh.
 
-Fixes: 6e728f321393 ("net: qrtr: Add MHI transport layer")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- net/qrtr/mhi.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-index 2bf2b1943e61..fa611678af05 100644
---- a/net/qrtr/mhi.c
-+++ b/net/qrtr/mhi.c
-@@ -50,6 +50,9 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
- 	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
- 	int rc;
- 
-+	if (skb->sk)
-+		sock_hold(skb->sk);
-+
- 	rc = skb_linearize(skb);
- 	if (rc)
- 		goto free_skb;
-@@ -59,12 +62,11 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
- 	if (rc)
- 		goto free_skb;
- 
--	if (skb->sk)
--		sock_hold(skb->sk);
--
- 	return rc;
- 
- free_skb:
-+	if (skb->sk)
-+		sock_put(skb->sk);
- 	kfree_skb(skb);
- 
- 	return rc;
+-Kees
+
+> ---
+>  drivers/media/pci/ngene/ngene-core.c |  2 +-
+>  drivers/media/pci/ngene/ngene.h      | 14 ++++++++------
+>  2 files changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/media/pci/ngene/ngene-core.c b/drivers/media/pci/ngene/ngene-core.c
+> index 07f342db6701..7481f553f959 100644
+> --- a/drivers/media/pci/ngene/ngene-core.c
+> +++ b/drivers/media/pci/ngene/ngene-core.c
+> @@ -385,7 +385,7 @@ static int ngene_command_config_free_buf(struct ngene *dev, u8 *config)
+>  
+>  	com.cmd.hdr.Opcode = CMD_CONFIGURE_FREE_BUFFER;
+>  	com.cmd.hdr.Length = 6;
+> -	memcpy(&com.cmd.ConfigureBuffers.config, config, 6);
+> +	memcpy(&com.cmd.ConfigureFreeBuffers.config, config, 6);
+>  	com.in_len = 6;
+>  	com.out_len = 0;
+>  
+> diff --git a/drivers/media/pci/ngene/ngene.h b/drivers/media/pci/ngene/ngene.h
+> index 84f04e0e0cb9..3d296f1998a1 100644
+> --- a/drivers/media/pci/ngene/ngene.h
+> +++ b/drivers/media/pci/ngene/ngene.h
+> @@ -407,12 +407,14 @@ enum _BUFFER_CONFIGS {
+>  
+>  struct FW_CONFIGURE_FREE_BUFFERS {
+>  	struct FW_HEADER hdr;
+> -	u8   UVI1_BufferLength;
+> -	u8   UVI2_BufferLength;
+> -	u8   TVO_BufferLength;
+> -	u8   AUD1_BufferLength;
+> -	u8   AUD2_BufferLength;
+> -	u8   TVA_BufferLength;
+> +	struct {
+> +		u8   UVI1_BufferLength;
+> +		u8   UVI2_BufferLength;
+> +		u8   TVO_BufferLength;
+> +		u8   AUD1_BufferLength;
+> +		u8   AUD2_BufferLength;
+> +		u8   TVA_BufferLength;
+> +	} __packed config;
+>  } __attribute__ ((__packed__));
+>  
+>  struct FW_CONFIGURE_UART {
+> -- 
+> 2.27.0
+> 
+
 -- 
-2.29.2
-
+Kees Cook
