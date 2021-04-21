@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB62C3675F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 01:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11A7367611
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343801AbhDUX7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 19:59:49 -0400
-Received: from mail-bn8nam12on2064.outbound.protection.outlook.com ([40.107.237.64]:38479
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234886AbhDUX7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:59:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gBnR2rlQj601AbKLysJuvTF0kDcz+EkjeeEublWD0NIQgVJ//ZM5rL1DPMXJ5kDhWSmPWBFzlLva09gfQ7NbIom1jkrO0mCuqqRbOImbiZ9HOEluZ4sXRZJvzOVfTRsq+RC+dAcFzzRXZOVjz1eT5sG6vKcbgud/uuBi3TVu4bhjzJTEsArrADI8QnQ1ERxP8rfotX7gugDUmR/2p4gauykJUmD5ZEgZEDiTMKVwa19PL4KoIX7r51iGe7W3bku5K4BXnGuha2hu8J0YcIIkqb3EYsWLLl0WCXcIYe6/kMkv61Mzsiqg7cl03WrHEsgHpb7VvI6Sfz/oQWxHu7np8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T8VnGAYUmc4Zf/1yusJreM5/jjJfgeSEkK4vvkRThRs=;
- b=USnJE5PXeVpPAAnFxEeHWDlhMX978yl/6CbceUSsXXwRqn3HqhfJkHUuVFdFMznj4sJ0V8UlnETjIyDcVkRtZNTiN6JQI7XLUdsPUeIghFtqwjfaDoazekJpxP9BCXN5fqa+uhMEj+VCq/Ku7IC71a1hKjHTeMH6+p2bkEGZjkXzKhUKFC1rXOEeY5+6uwSV6Q/9SmYUZFtO9LDOLtEetkrinhx1u0TXPla0k8FJ3lP3JWcxsqq8E5BIqEPhEjQ5qzh3J4zaYYWKcU4LyREQd/1x9RITg7an5PLl5anbNf3Mhn4SXsd0MGzkFTceM4dunN83HxT7W223w0CG4FK0gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T8VnGAYUmc4Zf/1yusJreM5/jjJfgeSEkK4vvkRThRs=;
- b=FcV6PWCsvsBzEZxnTnmznDlpw79b7g1E+l8yhqyuIKG8IijuJhx86HD81PuUPODilwkat2Ymc7VLJponsA/bqhPplepeqTqQWThjCgXcYl9iQfwzrVGRBkUxknvCaWWbsWAyVWhxjVraGCWAshr+h6SYDN0jSUJQq10cfnieFFovitVUd+Th7yoitcBKWoSVROGq1i17ZRE7QQiG76+7KTX5/an6J7tNTcRM/GzilXri0faIrkQI8C2/RzLyYpknoLKojAwDLFHcpFKR8xDSpCbRYkbUCwRrUgfn38BWaOh5+PPKB0D6I+Lw9vbpmwuqv/6Vodgu+1mJLxOTzmdygQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4620.namprd12.prod.outlook.com (2603:10b6:5:76::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 21 Apr
- 2021 23:59:11 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 23:59:10 +0000
-Date:   Wed, 21 Apr 2021 20:59:09 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Krishna Kumar <krkumar2@in.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: Re: [PATCH rdma-next 0/3] CMA fixes
-Message-ID: <20210421235909.GA2329448@nvidia.com>
-References: <cover.1618753862.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1618753862.git.leonro@nvidia.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR19CA0008.namprd19.prod.outlook.com
- (2603:10b6:208:178::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S235031AbhDVAKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 20:10:03 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:20419 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234761AbhDVAKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 20:10:01 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210422000926epoutp02e9b4725f1d4a3a0b005cde18561b22c4~4BYxVfrOb2562625626epoutp02K
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:09:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210422000926epoutp02e9b4725f1d4a3a0b005cde18561b22c4~4BYxVfrOb2562625626epoutp02K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619050166;
+        bh=iYCZTsdmadjPtS4tIrWvSpCZs4fnSJ67N85memmxcSs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LYf3yya+d7apaWRopFnSEaFkkhNjBuFMbrRD2k2gqyHfno7g1D44rI3rAr98UxCh7
+         5ndAfBozM3zB2GEF9U2+li33oQwNX+3cW0NrVUXdZS1qDYZELkFTTyyrPv5vkfJce0
+         lc4latxGNovLjnS6cVyYUNkB8V8jFCcKeRQMxo+E=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210422000925epcas1p1baef0367eebb0f1638c572c4a10fd7f8~4BYwV6RL30712807128epcas1p1T;
+        Thu, 22 Apr 2021 00:09:25 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4FQd834Q3fz4x9Pq; Thu, 22 Apr
+        2021 00:09:23 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FB.54.09824.3BEB0806; Thu, 22 Apr 2021 09:09:23 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210422000922epcas1p4bb2d0220652f3c497f063719f82bc829~4BYuK4_1_0631206312epcas1p4Z;
+        Thu, 22 Apr 2021 00:09:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210422000922epsmtrp15c42b0eed21fc791ec58eaff67834661~4BYuJvxTX0831008310epsmtrp1I;
+        Thu, 22 Apr 2021 00:09:22 +0000 (GMT)
+X-AuditID: b6c32a37-04bff70000002660-3c-6080beb32333
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DE.87.08163.2BEB0806; Thu, 22 Apr 2021 09:09:22 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210422000922epsmtip1c0d079da380b74ce0e61bedc44b94f4f~4BYt18qss0645406454epsmtip1X;
+        Thu, 22 Apr 2021 00:09:22 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     bvanassche@acm.org
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
+        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v8] bio: limit bio max size
+Date:   Thu, 22 Apr 2021 08:51:24 +0900
+Message-Id: <20210421235124.31579-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <55adfb07-7f10-7ad6-e05d-7aeb7d9c3b29@acm.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR19CA0008.namprd19.prod.outlook.com (2603:10b6:208:178::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Wed, 21 Apr 2021 23:59:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZMkP-009m11-6R; Wed, 21 Apr 2021 20:59:09 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9428c246-743a-4670-395c-08d9052174d3
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4620:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4620A8014B060D1186F26623C2479@DM6PR12MB4620.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VqT2eXkml2AXrdNRTRwKB92n6AcL+sWDcKcvNRB+26Fp0v23+OVWMU9JnP/S7Q0YGjqrn1dZJZH0gWeFHRSVP0JkiL2MgaW9b4YTR/Tzj/nlaLXu2Q3sZPsrXaQDtBv8UN5Yrbg2jw3mR304LRAaGtQXHbR330aehkxkWprZIkVL4sgk2TbH42gVHy+uzwIBRZBkPMfnWSv0onFrO1UBIWPNHLUaFI7CPR8rGl2IQAVXeb9OYXIPFHPkE6NE1uMgHybNRCt95JaZnkk/DH/XpDD9BFykWofZlAbJfThv7skpZ7YF7rOWcojXCnRMLXOZQ96uNaTvQUcZsxmG7WNky5Q1OigbiULi0K0v/R6NJj7eHtlAbhgHvBxOl+G0dSae7XUJ54M6++GdwBgnx3UZ+PhgN/nRYwYG6FWIXRH9tXrugjiT+SPJRIvX9I7NRWEstcNfYeNsECGp1tdZvD4Zp2OCb1hTrI+Dkje1GzhPqt6NHPN3deMwjQcANTyZIGgIosQe9EL8f+E2Dnj/gwM7s/l/csfsGUqBUwX3rj/U6zXurJH8jd0gr9IJIQNhFaXX2MVOg9mLk0dv2Kk0LHVn8DPGiGWGpW7zIZZb1fjWMvE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(396003)(39860400002)(346002)(8676002)(2906002)(426003)(4744005)(478600001)(38100700002)(26005)(6916009)(66476007)(36756003)(66556008)(2616005)(33656002)(186003)(86362001)(107886003)(66946007)(9746002)(9786002)(8936002)(316002)(5660300002)(1076003)(54906003)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nYNHHTrvAuYqXn6ZplauwkLIZJQfozgM6eyP89b+XfqeS9YqFuhB8sduiM1M?=
- =?us-ascii?Q?GCmfLRjA/uoRbhur5RZl/zZ79xAYy6WtQTWwxYhz6A+rfdY0c6/MFMyL2cCV?=
- =?us-ascii?Q?QfHbcWscDneWxNWpF+3d7RGQ0+hTld3mVHglEmuJkTN+0T8SZYIbfcOWkFMH?=
- =?us-ascii?Q?2Y6xBSt/+xDJCy6sVLazo0P7lJsNNXnDYO7qq5pD3uxCyrfeH+8MOWd+thHl?=
- =?us-ascii?Q?6fugqrUN3fMiTFcrVWYL18sFqqJx7naK0dAMifP5PJ1+nn4uaCrM0RhMgGmo?=
- =?us-ascii?Q?Mf8ymOcnaY8UM+WMUvYZWnMw46GM5Wv5+hAWj2sv5AIcK+XhYrRA/lwTeQb6?=
- =?us-ascii?Q?lIrgPG3VtwLc+XldcNb8hCbmFTKFt0zJYRAF4qR9dto40l3IolE6f69dtemM?=
- =?us-ascii?Q?Hw6acI3IvsQjYBqu08/hW8r32nzr6uWxDA/Ox7r6YZdMJSy0+lTwJVkqv3kp?=
- =?us-ascii?Q?vaSWoxUoJsDDHU3MK312v3jDBGYfDNS9i49OB5z4Y8Gaeibe8YuyhhTst3I2?=
- =?us-ascii?Q?mYXGLC/3cmU2stRuLri+jDk834uRKMwPkkl9S8HNoXFnpjXY4feYT2E+2xoL?=
- =?us-ascii?Q?8XBf8Neb83RWOQUEiGsFIihZ8cYH2PRALwq/9q0pgXuu9qABT6iLja/SX6EC?=
- =?us-ascii?Q?34fUsDGDzwQaToYEQShCtVPRdR/pANae3jzYU6m4msoDqhO2oF3RHilbkYgS?=
- =?us-ascii?Q?OaR3o7D7dmoKGNTrdYzQSQoZk5VVjxaaTkFKa3tGRWIlzHUoMA8UQfGKAqXc?=
- =?us-ascii?Q?3Ds0rliD/+LcfFwxOCXTAWzpmDqUPg9y7sa1CGeVtDbacwqrBjRg4LCnJaHK?=
- =?us-ascii?Q?wdnblPWKp3NEAIcbg7JgiEEmTbQDPj+0Kxpt3EUgB5xoBnqQDRp6TXOq9AWK?=
- =?us-ascii?Q?IAO/OVmZgHm3rPcWY8SEqo0DDeSaVrkzYxC8cS8q4P/tMbibPLTp5cH/UPAG?=
- =?us-ascii?Q?Nes6nJLCKiRQcXKp+NnUEJwNB/d6sK2lkTxFUgQ/VhMsu2xAtqhf+NCsTjah?=
- =?us-ascii?Q?MFkjyWewKUB9cEPaxUxuOD6Nf2sdyN+YonWZaZ5Vygj9yLv1QAGEGi/Xq3I7?=
- =?us-ascii?Q?XvgEpJUnekGJmDZigV24sx/XDrO7AsgoFqD+dKVPhqIeMq2cmiSpnUW6Y0pD?=
- =?us-ascii?Q?PTEZ/KDKHEFp1eHOG4Qtxdf78bM/UH0FTVhE9CG1i/L1gXNI2znMRrT7RDeg?=
- =?us-ascii?Q?Cm06nxijm4jqsSFLvaecr/FeO5qXXEmIjuK0RbSQbyvj5uu8zFzBxxuHPWxY?=
- =?us-ascii?Q?qpPqfZkR0AIOEyePzqYKztvBBmuMrhN/SVSNiE7TzV3fa5jr+59C6+SKq+Zv?=
- =?us-ascii?Q?1kwAko9o4Q4M6JTbOIPOkujYiqDPFmpXduojlb0diBzEbQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9428c246-743a-4670-395c-08d9052174d3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:59:10.5353
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A8YmuvQkseZJLXfaaJk2s7/1VBLICx9cRgUmk9Ds8jvn9Aebk5yGr0bIKBSK3nxR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4620
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xbVRTHue+1r+VHzVsHeMUwu6dGYQLtusIdDoX9YC/DJShmMcu0vMAL
+        RUtb+4qZcxqkha1AaLETtDDcYENBobOwDRoLSxecbBNC2KZBB6sQl5nwYyCEARNLC8p/58fn
+        nu85594rxMUPiShhvsbA6jWMmiJCeJeuxkjj2ruLsqVt7dGoruUSQN/etRCoevoRjkpOzGPI
+        2Ogg0A1rA4Yqxov56HHZCIbmvBxyD29DQ646AnlsRgzVtNfh6M7oTQG6OnKbh7znqnDU3zfD
+        R/VjqWjx616AphZ+EaDrnTYcOdyPiNRIeuhWBl1lnBTQXfa7Arr9m1h66OdC2tliJuie098J
+        6Knu2wRd2dEC6FnnFvrElXIsM/SwepeKZXJZvYTV5Ghz8zV5KVRGlnKPUpEolcXJdqIkSqJh
+        CtgUau9rmXHp+WrfpJTkA0Zd6AtlMhxHJbyyS68tNLASlZYzpFCsLletk0l18RxTwBVq8uJz
+        tAXJMql0u8JHZqtVrdfe0Vn5RztHLuBFYAEvA8FCSO6A9dYzoAyECMVkJ4Derkks4MwAaHf8
+        s5aZBdDZ+zlv/cjMtB0PJFwANg39wf+PGl8s9lME+RKsnBgmVu1wMhIO/T3vL4WTpTw4bLrj
+        T2wmE+DU0pS/Ex75PDy1WOuDhEIR+TJcdLwaUHsGLo9W+JFgX/hG91l/fRG5CfZ9Oe63cR9j
+        vFi7NtCKENYuaQP2XrgybVrrejP861qHIGBHwQeWUsFqP5AsB9BY+hUIOFYAz91vwgKUHM7M
+        zvobwskY6HAlBMJbYdfSaRAQfgJOzlXwVxFIiuDJUnEAeQ7eNI3i61r3W7vWKtJwrO37tZVW
+        AuiqbhJYgcS+YR77hnns/yufAXgLiGR1XEEey8l08o1X7AT+tx+b1AmqJ6bjPQATAg+AQpwK
+        F7VyRdliUS7z4TFWr1XqC9Us5wEK37Kr8KiIHK3v82gMSpliu1wuRzsSkxIVcupJUd6ej7LF
+        ZB5jYN9jWR2rXz+HCYOjijDrIeW9toOmsCDR4PGj2OBbb6aZ1BfjnFHllgjl+ccJHrfkiLt1
+        9HrJFTR4yP2nN6uHiLkVvaV409mqF51YWHXzbxPaL041p28rD09T/Pi62byvzxtGpmkbY4f7
+        LJXHdLOuB5/UPluQeT7fZa1P/jQ4I9F8OEVkzsB3p0hCcGV/0JFSleKe9/L7HY1tT+9MnU+9
+        rFV95vAkLhirZz5eCP214al5W88P744tH6ivecFKDTxUNiQ3hc5FHI9YOWBxpiccXOa/YXjb
+        tI8JX2L2a8wDrnrKrYzFf7/Ak2tCen+yWUatu7NEJmwARUqSbfsbRM0no0FNSX90kCOueTJN
+        nEHxOBUji8X1HPMvw/EZoIQEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsWy7bCSnO6mfQ0JBl8361vMWbWN0WL13X42
+        i2kffjJbtLZ/Y7JoXryezeL0hEVMFj1Pmlgt/nbdY7L4+rDYYu8tbYvLu+awWRya3MxkMX3z
+        HGaLa/fPsFscvneVxeLhkonMFudOfmK1mPfYweLX8qOMFu9/XGe3OLVjMrPF+r0/2RzEPC5f
+        8faY2PyO3WPnrLvsHptXaHlcPlvqsWlVJ5vH/rlr2D3e77vK5tG3ZRWjx+dNch7tB7qZArij
+        uGxSUnMyy1KL9O0SuDLWHo8rmMBasePeBuYGxh/MXYycHBICJhKfPswCsrk4hAR2MEqsP7OX
+        ESIhJXH8xFvWLkYOIFtY4vDhYoiaj4wSJ7fNYQKpYRPQkeh7e4sNxBYREJO4/OUbI0gRs8AC
+        FomDO0+wgySEBfQl3v9+D7aNRUBVYsqv2YwgQ3kFrCV+rbeH2CUv8ed+D1gJJ1D49L6FLCC2
+        kICVxJJ9R8Hm8woISpyc+QQszgxU37x1NvMERoFZSFKzkKQWMDKtYpRMLSjOTc8tNiwwykst
+        1ytOzC0uzUvXS87P3cQIjkwtrR2Me1Z90DvEyMTBeIhRgoNZSYR3bXFDghBvSmJlVWpRfnxR
+        aU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2CyTBycUg1M9pKzS8KDlNa/tVLYzbRRqGhD
+        I6tznpT+Qr8Vzk6r8gUXRs27c3rPzt1HnBmPeZr0Stn/y49WLZuTrfe2V6ovMqtr4b4dfeaV
+        ORN4zS02aVz9si3tjsAteQn3Bfuu8884uyapuqnEtWGW7+9lTzpEvKbyZbzy1p101fYit/Xp
+        lNBFisvf3zrzz3JekXL21jnTzJdfKD8/sWSxk3KzWfdRi8xmkdOaK0wfXazYcdGq78iTm5/O
+        zX/mFxU+8/5Cv43/12ovM3ViUWeVSb/FE7Wvcc3u3b93yiV6PbbZPFm2Prv8WB4f6/v1973M
+        eXdmXp2/5sT7nafZLbjSvePnHYwSnndsrXOAQU3/seqQpduvKLEUZyQaajEXFScCAAbcZ8w7
+        AwAA
+X-CMS-MailID: 20210422000922epcas1p4bb2d0220652f3c497f063719f82bc829
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210422000922epcas1p4bb2d0220652f3c497f063719f82bc829
+References: <55adfb07-7f10-7ad6-e05d-7aeb7d9c3b29@acm.org>
+        <CGME20210422000922epcas1p4bb2d0220652f3c497f063719f82bc829@epcas1p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 04:55:51PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+> On 4/21/21 2:47 AM, Changheun Lee wrote:
+> > bio size can grow up to 4GB when muli-page bvec is enabled.
+> > but sometimes it would lead to inefficient behaviors.
+> > in case of large chunk direct I/O, - 32MB chunk read in user space -
 > 
-> Another round of fixes to cma.c
+> This patch looks good to me, hence:
 > 
-> Parav Pandit (1):
->   RDMA/cma: Skip device which doesn't support CM
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 > 
-> Shay Drory (2):
->   RDMA/core: Add CM to restrack after successful attachment to a device
+> Do you plan to submit a dm-crypt patch that limits the bio size when 
+> using dm-crypt to the bio size of the underling device?
+> 
+> Thanks,
+> 
+> Bart.
 
-These two applied to for-next
-
->   RDMA/core: Fix check of device in rdma_listen()
-
-Lets think about this one some more
+Yes, I'm preparing a dm-crypt patch. I'll upstream after applying of this.
+Thank you for your review, and advice. :)
 
 Thanks,
-Jason
+
+Changheun Lee.
