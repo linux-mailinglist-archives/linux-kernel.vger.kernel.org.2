@@ -2,186 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0886366419
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 05:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDAD36641D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 05:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234754AbhDUDfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 23:35:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17385 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233874AbhDUDfi (ORCPT
+        id S234834AbhDUDli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 23:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233874AbhDUDlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 23:35:38 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FQ5jZ5GNJzlYgk;
-        Wed, 21 Apr 2021 11:33:06 +0800 (CST)
-Received: from [10.174.177.26] (10.174.177.26) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 21 Apr 2021 11:34:55 +0800
-Subject: Re: [PATCH] bonding: 3ad: update slave arr after initialize
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-CC:     <vfalico@gmail.com>, <andy@greyhouse.net>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>, <security@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <xuhanbing@huawei.com>,
-        <wangxiaogang3@huawei.com>
-References: <1618537982-454-1-git-send-email-jinyiting@huawei.com>
- <17733.1618547307@famine> <1165c45f-ae7f-48c1-5c65-a879c7bf978a@huawei.com>
- <492.1618895040@famine>
-From:   jin yiting <jinyiting@huawei.com>
-Message-ID: <612b5e32-ea11-428e-0c17-e2977185f045@huawei.com>
-Date:   Wed, 21 Apr 2021 11:34:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tue, 20 Apr 2021 23:41:37 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82112C06174A;
+        Tue, 20 Apr 2021 20:41:03 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id b10so40694246iot.4;
+        Tue, 20 Apr 2021 20:41:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HUL5iOZc28qAX3PsDJ0khNs1c1kb23x81GpeZXPZHr0=;
+        b=WQl3BZB24dee0+iczS32i6ta8dIDUsrzhFvhRoKrmzXendrjWQ6+ymVePQXQ8eK+7J
+         XuICOmjrS/ieQeiC7EDSYpkXk644BJZ7cWliU1vFMgqgxs5mjb5f/ElzehsFDgC/y4pV
+         Qg9q/mFXhRQDOdZaJW+PSsQACanIHQ1OajWj2SP3/Z5Ov8t5F3PHq3rfk0rlBUgk13If
+         OIPD96AJuZDFgx/SSYOF+pU09mna2FvEXliI0AosI8ZcRVnQHr8/ce7mxX/WzTJceFeB
+         8Vv8oDU2X7YKHI3K5D8PJv1eVloXMJxjzDEbjZyor553CzD9YXs4qsYkF8RJd8bckK+M
+         H2eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HUL5iOZc28qAX3PsDJ0khNs1c1kb23x81GpeZXPZHr0=;
+        b=NwiLjE5gvn0vg1kXxj0lw7+EyIKiq5hYOiXmuN62pVgumf1p+zyClgSrtouJq9/+wO
+         zVgQiIu9PLNf7RDrKIywrIOWoVqo/+3/J8y5UEYAAq+LobbhLXLAMT/Gmk2TJCNCUmLS
+         S/GCczK/msr4VfV6s+nzez8fJNrBVFHpbrn483wxHbW6aynZjifFZSFaZsbILpwcZ8BS
+         XYXDLN7qJNDQw8VEt+SsGxOFWYUIxoISA2Zl4FDvIju53E2Np0W1liYAz67foXT+S4B4
+         qE3aQ/+Ns0xwZM889beyuuMcK7TtbZLX1/K2KWJMj1NMOzUFiqStSuHIWjzZIZU5F1eX
+         mq9Q==
+X-Gm-Message-State: AOAM531Pgh2MjyHt/dcoaT/u2cZHIREYNlnpPEku7YzhHR32B4HfvgZX
+        2WdYt7WeEFYlDw5wW338SmbvWwFoXttl3iU2Hi8=
+X-Google-Smtp-Source: ABdhPJzNC46+JNBKZghlVn6QayNw6kik/i4m+Dj7Rwp0R3QmmJrMXqgLvPgwT6+epZB2PlQbrhVzal7ScxXq3V5NSNs=
+X-Received: by 2002:a05:6638:34a0:: with SMTP id t32mr24067421jal.10.1618976462773;
+ Tue, 20 Apr 2021 20:41:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <492.1618895040@famine>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.26]
-X-CFilter-Loop: Reflected
+References: <1618459535-8141-1-git-send-email-dillon.minfei@gmail.com>
+ <1618459535-8141-4-git-send-email-dillon.minfei@gmail.com> <CAOMZO5CcoKDZhj5rQ0_0wkHgk5Mf2RtAHy94EAzjwVgXvvmNeg@mail.gmail.com>
+In-Reply-To: <CAOMZO5CcoKDZhj5rQ0_0wkHgk5Mf2RtAHy94EAzjwVgXvvmNeg@mail.gmail.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Wed, 21 Apr 2021 11:40:26 +0800
+Message-ID: <CAL9mu0+nvkywRffOaXTNJwY7S0wxqNNz2h6pnmV3PhRZG0+_hA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] arm: dts: imx: Add i.mx6q DaSheng COM-9XX SBC
+ board support
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        leoyang.li@nxp.com, arnd@arndb.de, olof@lixom.net,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        prabhakar.csengg@gmail.com, mchehab@kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-imx@nxp.com, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Fabio,
 
+Thanks for quick reply.
 
-ÔÚ 2021/4/20 13:04, Jay Vosburgh Ð´µÀ:
-> jin yiting <jinyiting@huawei.com> wrote:
-> [...]
->>> 	The described issue is a race condition (in that
->>> ad_agg_selection_logic clears agg->is_active under mode_lock, but
->>> bond_open -> bond_update_slave_arr is inspecting agg->is_active outside
->>> the lock).  I don't see how the above change will reliably manage this;
->>> the real issue looks to be that bond_update_slave_arr is committing
->>> changes to the array (via bond_reset_slave_arr) based on a racy
->>> inspection of the active aggregator state while it is in flux.
->>>
->>> 	Also, the description of the issue says "The best aggregator in
->>> ad_agg_selection_logic has not changed, no need to update slave arr,"
->>> but the change above does the opposite, and will set update_slave_arr
->>> when the aggregator has not changed (update_slave_arr remains false at
->>> return of ad_agg_selection_logic).
->>>
->>> 	I believe I understand the described problem, but I don't see
->>> how the patch fixes it.  I suspect (but haven't tested) that the proper
->>> fix is to acquire mode_lock in bond_update_slave_arr while calling
->>> bond_3ad_get_active_agg_info to avoid conflict with the state machine.
->>>
->>> 	-J
->>>
->>> ---
->>> 	-Jay Vosburgh, jay.vosburgh@canonical.com
->>> .
->>>
->>
->> 	Thank you for your reply. The last patch does have redundant
->> update slave arr.Thank you for your correction.
->>
->>         As you said, holding mode_lock in bond_update_slave_arr while
->> calling bond_3ad_get_active_agg_info can avoid conflictwith the state
->> machine. I have tested this patch, with ifdown/ifup operations for bond or
->> slaves.
->>
->>         But bond_update_slave_arr is expected to hold RTNL only and NO
->> other lock. And it have WARN_ON(lockdep_is_held(&bond->mode_lock)); in
->> bond_update_slave_arr. I'm not sure that holding mode_lock in
->> bond_update_slave_arr while calling bond_3ad_get_active_agg_info is a
->> correct action.
-> 
-> 	That WARN_ON came up in discussion recently, and my opinion is
-> that it's incorrect, and is trying to insure bond_update_slave_arr is
-> safe for a potential sleep when allocating memory.
-> 
-> https://lore.kernel.org/netdev/20210322123846.3024549-1-maximmi@nvidia.com/
-> 
-> 	The original authors haven't replied, so I would suggest you
-> remove the WARN_ON and the surrounding CONFIG_LOCKDEP ifdefs as part of
-> your patch and replace it with a call to might_sleep.
-> 
-> 	The other callers of bond_3ad_get_active_agg_info are generally
-> obtaining the state in order to report it to user space, so I think it's
-> safe to leave those calls not holding the mode_lock.  The race is still
-> there, but the data returned to user space is a snapshot and so may
-> reflect an incomplete state during a transition.  Further, having the
-> inspection functions acquire the mode_lock permits user space to spam
-> the lock with little effort.
-> 
-> 	-J
-> 
->> diff --git a/drivers/net/bonding/bond_main.c
->> b/drivers/net/bonding/bond_main.c
->> index 74cbbb2..db988e5 100644
->> --- a/drivers/net/bonding/bond_main.c
->> +++ b/drivers/net/bonding/bond_main.c
->> @@ -4406,7 +4406,9 @@ int bond_update_slave_arr(struct bonding *bond,
->> struct slave *skipslave)
->>     if (BOND_MODE(bond) == BOND_MODE_8023AD) {
->>         struct ad_info ad_info;
->>
->> +       spin_lock_bh(&bond->mode_lock);
->>         if (bond_3ad_get_active_agg_info(bond, &ad_info)) {
->> +           spin_unlock_bh(&bond->mode_lock);
->>             pr_debug("bond_3ad_get_active_agg_info failed\n");
->>             /* No active aggragator means it's not safe to use
->>              * the previous array.
->> @@ -4414,6 +4416,7 @@ int bond_update_slave_arr(struct bonding *bond,
->> struct slave *skipslave)
->>             bond_reset_slave_arr(bond);
->>             goto out;
->>         }
->> +       spin_unlock_bh(&bond->mode_lock);
->>         agg_id = ad_info.aggregator_id;
->>     }
->>     bond_for_each_slave(bond, slave, iter) {
-> 
-> ---
-> 	-Jay Vosburgh, jay.vosburgh@canonical.com
-> .
-> 
-
-	I have remove the WARN_ON and the surrounding CONFIG_LOCKDEP ifdefs in 
-the new patch and replace it with a call to might_sleep.
-
-	And I will send a new patch again.
-
-	Thank you for your guidance.
-
-
-diff --git a/drivers/net/bonding/bond_main.c 
-b/drivers/net/bonding/bond_main.c
-index 74cbbb2..83ef62d 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -4391,9 +4391,7 @@ int bond_update_slave_arr(struct bonding *bond, 
-struct slave *skipslave)
-  	int agg_id = 0;
-  	int ret = 0;
-
--#ifdef CONFIG_LOCKDEP
--	WARN_ON(lockdep_is_held(&bond->mode_lock));
--#endif
-+	might_sleep();
-
-  	usable_slaves = kzalloc(struct_size(usable_slaves, arr,
-  					    bond->slave_cnt), GFP_KERNEL);
-@@ -4406,7 +4404,9 @@ int bond_update_slave_arr(struct bonding *bond, 
-struct slave *skipslave)
-  	if (BOND_MODE(bond) == BOND_MODE_8023AD) {
-  		struct ad_info ad_info;
-
-+		spin_lock_bh(&bond->mode_lock);
-  		if (bond_3ad_get_active_agg_info(bond, &ad_info)) {
-+			spin_unlock_bh(&bond->mode_lock);
-  			pr_debug("bond_3ad_get_active_agg_info failed\n");
-  			/* No active aggragator means it's not safe to use
-  			 * the previous array.
-@@ -4414,6 +4414,7 @@ int bond_update_slave_arr(struct bonding *bond, 
-struct slave *skipslave)
-  			bond_reset_slave_arr(bond);
-  			goto out;
-  		}
-+		spin_unlock_bh(&bond->mode_lock);
-  		agg_id = ad_info.aggregator_id;
-  	}
-  	bond_for_each_slave(bond, slave, iter) {
--- 
-
+On Tue, Apr 20, 2021 at 10:27 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> Hi Dillon,
+>
+> On Thu, Apr 15, 2021 at 1:05 AM <dillon.minfei@gmail.com> wrote:
+>
+> > +               green {
+> > +                       gpios = <&gpio4 8 0>;
+>
+> Please use GPIO_ACTIVE_HIGH label instead:
+> gpios = <&gpio4 8 GPIO_ACTIVE_HIGH>;
+>
+> > +&clks {
+> > +       assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>,
+> > +                         <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
+> > +       assigned-clock-parents = <&clks IMX6QDL_CLK_PLL3_USB_OTG>,
+> > +                                <&clks IMX6QDL_CLK_PLL3_USB_OTG>;
+> > +};
+>
+> You are setting the LDB clock parent, but you don't use LDB in this
+> devicetree. You could simply remove this.
+Agree, thanks.
+>
+> > +&ecspi1 {
+> > +       cs-gpios = <&gpio4 9 GPIO_ACTIVE_LOW>;
+> > +       pinctrl-names = "default";
+> > +       pinctrl-0 = <&pinctrl_ecspi1>;
+> > +       status = "okay";
+> > +
+> > +       flash: m25p80@0 {
+>
+> Node names should be generic:
+>
+> m25p80: flash@0
+Agree, thanks.
+>
+> > +&iomuxc {
+> > +       pinctrl-names = "default";
+> > +       pinctrl-0 = <&pinctrl_hog>;
+> > +
+> > +       imx6qdl-ds {
+> > +               pinctrl_hog: hoggrp {
+> > +                       fsl,pins = <
+> > +                               MX6QDL_PAD_NANDF_D0__GPIO2_IO00 0x1b0b0
+> > +                               MX6QDL_PAD_NANDF_D1__GPIO2_IO01 0x1b0b0
+> > +                               MX6QDL_PAD_GPIO_0__CCM_CLKO1    0x130b0
+>
+> This could be part of the pinctrl_ov2659 group as it provides the
+> clock for the camera.
+>
+> Please try to keep in the hoggrp only the pins that cannot be
+> controlled by any other node.
+Agree, after moving these pinctrl to corresponding component's group,
+the hoggrp is useless.
+so, I removed it in v4.
+>
+> > +&wdog1 {
+> > +       status = "okay";
+> > +};
+> > +
+> > +&wdog2 {
+> > +       pinctrl-names = "default";
+> > +       pinctrl-0 = <&pinctrl_wdog>;
+> > +       fsl,ext-reset-output;
+> > +       status = "disabled";
+>
+> Wouldn't it be better to enable wdog2 and disable wdog1 instead? wdog2
+> provides a POR, which is preferred.
+Agree, thanks.
