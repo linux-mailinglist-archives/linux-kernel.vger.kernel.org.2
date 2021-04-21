@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E183671DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B883671E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 19:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244982AbhDURt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 13:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
+        id S244983AbhDURu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 13:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244996AbhDURtr (ORCPT
+        with ESMTP id S235848AbhDURu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 13:49:47 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156A5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 10:49:14 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZGy2-0075m9-9w; Wed, 21 Apr 2021 17:48:50 +0000
-Date:   Wed, 21 Apr 2021 17:48:50 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Kangjie Lu <kjlu@umn.edu>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, Qiushi Wu <wu000273@umn.edu>,
-        x86@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
-Message-ID: <YIBlggJ2hZ3TYszc@zeniv-ca.linux.org.uk>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net>
- <nycvar.YFH.7.76.2104211628560.18270@cbobk.fhfr.pm>
- <CAK8KejoGgoWcEUm7gnTw+_5CuZX1+bnHoeY0Ea-pAO+gd8dbcg@mail.gmail.com>
- <YIBBt6ypFtT+i994@pendragon.ideasonboard.com>
- <CAK8Kejqq4qUT=2nqvnVM=r7H_P3dF=+3dHa6HWOCP=9GeeTbpA@mail.gmail.com>
- <6406f3ad-141d-5533-c717-e11cea4e179e@roeck-us.net>
+        Wed, 21 Apr 2021 13:50:28 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA1CC06174A;
+        Wed, 21 Apr 2021 10:49:53 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d6so13579464qtx.13;
+        Wed, 21 Apr 2021 10:49:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kiwlnfkgGTrM7xFnB6+P2WRhoU4ZK1BamhT8u+Eu9o8=;
+        b=SO3/cL9dMcFliYhY106EhS8fdV+uEsYaSg5zP2OT4O5D76ne7bv2CyKrvbLObDsoKJ
+         2XDS4qmIRr+ui5w18Z03FWsnrdARAF4ktMDEYwTXbiNNKkPtPdrgiiuaIZPWEWgx1a9s
+         oZRHym3RcnN6eNGfqKdBghmZgFZAHbJhgRURn0P0byGaikoMkfc+DX4DRY3k/N8iu7lo
+         zdi2p4GFVzZowDSgGd1MHpshXHKqeUnOPu2TDtE8zvLkzYIQxKJ4WVgMwe7cnC7hEq0K
+         pgDC2/+AydJOTlICk3V4NansoYundMK+G+ChTBJProdeau8TkOAtDNddRXbdlZ3qP70S
+         2SqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kiwlnfkgGTrM7xFnB6+P2WRhoU4ZK1BamhT8u+Eu9o8=;
+        b=Y3r5aUYWuaIWABZ3H9Yp81x1R94TPcnWZFh3MsWrWoFjhu6r3461XOAR/D1FFcGCfX
+         BsYN98Si7FAzf+AePzQFFpgJbMDp67+B8X/2XRL3c/I03N882E/T/tUCUeUAc7r+833F
+         CBdQHlJtUPnfRRfKdwRL88Oz6zKXKIS+Q+QvQJhWHpvbB6KogeUtvS4faEqriiGjb+rO
+         P3HI7FX4C5eflh4yQQr6qxxnH0bUS84lTd8OjUMzn8XOXDuzg+mAc7tY2+3qjtF/obMs
+         BaseiOur5x/Naua4PW5bRdujUSXXv3Psh0DD+ZbVw4DqNljxaRi4uFZnURt09sMPDFjS
+         Qb2g==
+X-Gm-Message-State: AOAM531NT2iSuA242ZcVZxZh406JAJwd9sNB5d6bquxXMpBnktE9l37d
+        ivvqleh/Yp3tBb2LBYP0aBp5VvqPAlM=
+X-Google-Smtp-Source: ABdhPJzjqtGEdIv0HyEfkFIOQvHJ0dsbpdxxCKNjTgAyBLn4RiZk1g1PtbaawkV98dgcHwiIlbrnDQ==
+X-Received: by 2002:a05:622a:46:: with SMTP id y6mr21947498qtw.44.1619027392326;
+        Wed, 21 Apr 2021 10:49:52 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id h62sm15225qkf.116.2021.04.21.10.49.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 10:49:51 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 10:49:50 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v2 0/2] bitmap_parselist: support 'all' semantics
+Message-ID: <20210421174950.GA106553@yury-ThinkPad>
+References: <20210421031326.72816-1-yury.norov@gmail.com>
+ <20210421173008.GV975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6406f3ad-141d-5533-c717-e11cea4e179e@roeck-us.net>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210421173008.GV975577@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 08:59:34AM -0700, Guenter Roeck wrote:
-> On 4/21/21 8:21 AM, Kangjie Lu wrote:
+On Wed, Apr 21, 2021 at 10:30:08AM -0700, Paul E. McKenney wrote:
+> On Tue, Apr 20, 2021 at 08:13:24PM -0700, Yury Norov wrote:
+> > RCU code supports a special group 'all' which selects all bits in a bitmap.
+> > We have recently added 'N' extension for bitmap parse, so that '0-N' would
+> > have exactly the same meaning as 'all'. But because the 'all' is already
+> > used by RCU, it would be reasonable to support it in core bitmap code as a
+> > common and easy-readable alias for '0-N'.
+> > 
+> > Moving the 'all' support to core bitmap code adds another level of
+> > flexibility for system configuration by supporting patterns. For example,
+> > every second bit in cpumask may be selected like this:
+> > 	isolcpus=all:1/2
+> > 
+> > v2:
+> >  - cleanup patch 1;
+> >  - in patch 2 explain why dropping legacy comment.
 > 
-> > All of the commits sent by my students are in good faith to fix some bugs.
+> Nice!
+> 
+> I have pulled this into -rcu with some minor updates, including replacing
+> the "isolcpus=all" with "rcu_nocbs=all:1/2" per Steve Rostedt's feedback.
 
+Thank you Paul and Steven for fixing this 'isolcpus=all'.
+'rcu_nocbs=all:1/2' would look better in the documentation.
+ 
+> Could you please check to make sure that I didn't mess anything up?
 
-Just to make sure - does that statement cover the following commit?
+Everything is OK. Thank you for fixing this.
 
-commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05
-Author: Aditya Pakki <pakki001@umn.edu>
-Date:   Tue Apr 6 19:09:12 2021 -0500
-
-    net/rds: Avoid potential use after free in rds_send_remove_from_sock
-
-And is "Ph.D. student in Computer Science" an accurate description of
-the gentleman in question?
-
-We all made utterly bonehead mistakes (if you want a fresh example
-of mine, take a look at 161aff1d93ab "LOOKUP_MOUNTPOINT: fold
-path_mountpointat() into path_lookupat()"; see 035d80695fae for the
-merge of the fix and explanation of what was wrong in the original
-commit).
-
-However, there's a general expectation that once you become aware of
-dumb mistake in something you have published (and merge into mainline
-certainly qualifies as publication) you shall retract it as soon
-as possible.  If a student is not aware of such expectation, their
-advisor really ought to inform them of it.
+> If tests go well, this will go into -next later today or tomorrow.
+> Although I cannot prove that this will not make the upcoming merge window,
+> but Murphy insists that it will instead be the v5.14 merge window.
+> 
+> 							Thanx, Paul
+> 
+> > Yury Norov (2):
+> >   bitmap_parse: support 'all' semantics
+> >   rcu/tree_plugin: don't handle the case of 'all' CPU range
+> > 
+> >  Documentation/admin-guide/kernel-parameters.rst | 5 +++++
+> >  kernel/rcu/tree_plugin.h                        | 9 +++------
+> >  lib/bitmap.c                                    | 9 +++++++++
+> >  lib/test_bitmap.c                               | 7 +++++++
+> >  4 files changed, 24 insertions(+), 6 deletions(-)
+> > 
+> > -- 
+> > 2.25.1
+> > 
