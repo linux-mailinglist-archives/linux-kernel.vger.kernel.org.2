@@ -2,135 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98E7366FA2
+	by mail.lfdr.de (Postfix) with ESMTP id 862A7366FA1
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 18:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243866AbhDUQBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 12:01:25 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:8178 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240399AbhDUQBV (ORCPT
+        id S244142AbhDUQBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 12:01:22 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:58984 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243866AbhDUQBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Apr 2021 12:01:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1619020836; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=GY31OMHAfxOgQ5MSqvtRPjan7JM7k9o/QCAWSPD/XzsFpM106CS3/FEtgNxP1tvVOs
-    xOlahGr4AbYwgmpY/eIj8+0sRj6YGqdtuwJUUaO6WhEgWuRqBQYCmPtyEvIJrj1OAD90
-    2++98YsqkMhfXkM/9ZqxGtsh49s+Uk4CWRe0E0QrNGzHCXTraZfBX/YtFIBqTzvFuUpX
-    0FsSVWVsBrBzmRuj9I4mr0dT9srysUuC287SyIW+srxNL/ef0mYfrkoZAH4y45l9Copj
-    rFQfIT4+o2ebB9cctbXPjxJe6gdAKwrRx/PX/DummtMAbgidYDOnrtL++vKVKTlCfYyy
-    sFTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619020836;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=r4OO92Oeg3ScSSut97SNxzYQ47ACxnRLJOORI5ZDQ3A=;
-    b=OsZoI+eliGLENqQTsEvidWaOtvkGbxkRjemUNYbhVD4k23KNV9tAh6fEmU31WHGGpi
-    wpdWZeFWcoWA+/huNu6Ne7Uc/tuF2NYLWR3R6rZYFP7DaMnM1HvRyq+F/A/2ZuJB6p3i
-    p7aNM57wsZQDWAhzfupDAQahhk6rKtikBIVH61GUYB6C4XnwBETBRErR+j+5YY6j/ehi
-    8W8EusV9HZxmU5J9C7xZPan33Zrtjp0K5WTTFx7MsEZujXFw5qLLKoVHlSXgFNhKwhYM
-    y1iktl+FDYdjD0nUDwTpBmzcl2H+cIFmyhALTsPOK3136fiVkJueJp/3kUJ2J4+vPMZH
-    YJLQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619020836;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=r4OO92Oeg3ScSSut97SNxzYQ47ACxnRLJOORI5ZDQ3A=;
-    b=YN6CSLsj4H8OCV9Ziev9OIL5+k1qhc59WUdB2EPLftQT7HyU2uxL4i0NBd+bDniBUW
-    snZwHIlQbgOVi/qTP1gXZKNIIB6AYUm4A2+RfeG6l3DzECxcXVuWAPqoH5QGksZcKKwI
-    cmeVVw9iO+c0QwwzDMVMlT7WnJ9AGORTe9WsQYR7uNhbm3xWReeTf8wmPlO6EVlOdOdJ
-    eC3e4P8vP52guDdk6J2MYPveGPdnERe9P2G1tUgEcX+B3ooVe40DYCeGp3XeU+vey6Gi
-    vREA267U314Zz6UOtsz9RWXYbCwvIPSf1GUeCNKckB6wqYBA/krHjabWBx79LYagXeJX
-    ACUw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlSeXA9h"
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.24.3 DYNA|AUTH)
-    with ESMTPSA id Q01a92x3LG0ZSuO
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Wed, 21 Apr 2021 18:00:35 +0200 (CEST)
-Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk>
-Date:   Wed, 21 Apr 2021 18:00:34 +0200
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com>
-References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-X-Mailer: Apple Mail (2.3124)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8B38A4AE;
+        Wed, 21 Apr 2021 18:00:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1619020846;
+        bh=ZiQfz4CmZBZJxspZmPxDrA4pf7kXHMD7xcnaRLuC3WM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ViHKrGsx3r/43ELKuuK0YPIw3nW7wsKw4W1/QDrsTu2NZjqmPMnTEW8Nbhn7VPAUr
+         GgilSeuaxN6ser6mFcLBpZD8PIGSD+ZRcNLOV+SAxGMa4SSEnP7C55jDmACQLLGBcC
+         KBVgddMy+Z3L8o8gZaWqSdavUWvq07r8A+lsj00g=
+Date:   Wed, 21 Apr 2021 19:00:41 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kangjie Lu <kjlu@umn.edu>
+Cc:     Jiri Kosina <jikos@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aditya Pakki <pakki001@umn.edu>, Qiushi Wu <wu000273@umn.edu>,
+        x86@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
+Message-ID: <YIBMKSovJumS79SR@pendragon.ideasonboard.com>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <4afeeb49-620d-5a9d-29fc-453f6118a944@roeck-us.net>
+ <nycvar.YFH.7.76.2104211628560.18270@cbobk.fhfr.pm>
+ <CAK8KejoGgoWcEUm7gnTw+_5CuZX1+bnHoeY0Ea-pAO+gd8dbcg@mail.gmail.com>
+ <YIBBt6ypFtT+i994@pendragon.ideasonboard.com>
+ <CAK8Kejqq4qUT=2nqvnVM=r7H_P3dF=+3dHa6HWOCP=9GeeTbpA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK8Kejqq4qUT=2nqvnVM=r7H_P3dF=+3dHa6HWOCP=9GeeTbpA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Kangjie,
 
-> Am 20.04.2021 um 04:50 schrieb Maciej W. Rozycki <macro@orcam.me.uk>:
+On Wed, Apr 21, 2021 at 10:21:07AM -0500, Kangjie Lu wrote:
+> On Wed, Apr 21, 2021 at 10:16 AM Laurent Pinchart wrote:
+> > On Wed, Apr 21, 2021 at 09:44:52AM -0500, Kangjie Lu wrote:
+> > > On Wed, Apr 21, 2021 at 9:32 AM Jiri Kosina wrote:
+> > > > On Wed, 21 Apr 2021, Guenter Roeck wrote:
+> > > > > > Commits from @umn.edu addresses have been found to be submitted in
+> > > > > > "bad faith" to try to test the kernel community's ability to review
+> > > > > > "known malicious" changes.  The result of these submissions can be
+> > > > > > found in a paper published at the 42nd IEEE Symposium on Security and
+> > > > > > Privacy entitled, "Open Source Insecurity: Stealthily Introducing
+> > > > > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu
+> > > > > > (University of Minnesota) and Kangjie Lu (University of Minnesota).
+> > > > >
+> > > > > Sigh. As if this wouldn't be a problem everywhere.
+> > > >
+> > > > Right.
+> > > >
+> > > > > > Because of this, all submissions from this group must be reverted from
+> > > > > > the kernel tree and will need to be re-reviewed again to determine if
+> > > > > > they actually are a valid fix.  Until that work is complete, remove this
+> > > > > > change to ensure that no problems are being introduced into the
+> > > > > > codebase.
+> > > > > >
+> > > > > > This patchset has the "easy" reverts, there are 68 remaining ones that
+> > > > > > need to be manually reviewed.  Some of them are not able to be reverted
+> > > > > > as they already have been reverted, or fixed up with follow-on patches
+> > > > > > as they were determined to be invalid.  Proof that these submissions
+> > > > > > were almost universally wrong.
+> > > > > >
+> > > > > > I will be working with some other kernel developers to determine if any
+> > > > > > of these reverts were actually valid changes, were actually valid, and
+> > > > > > if so, will resubmit them properly later.  For now, it's better to be
+> > > > > > safe.
+> > > > > >
+> > > > > > I'll take this through my tree, so no need for any maintainer to worry
+> > > > > > about this, but they should be aware that future submissions from anyone
+> > > > > > with a umn.edu address should be by default-rejected unless otherwise
+> > > > > > determined to actually be a valid fix (i.e. they provide proof and you
+> > > > > > can verify it, but really, why waste your time doing that extra work?)
+> > > > > >
+> > > > > > thanks,
+> > > > > >
+> > > > > > greg k-h
+> > > > > >
+> > > > > [ ... ]
+> > > > > >   Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
+> > > > >
+> > > > > I see
+> > > > >
+> > > > > 9aa3aa15f4c2 hwmon: (lm80) fix a missing check of bus read in lm80 probe
+> > > > > c9c63915519b hwmon: (lm80) fix a missing check of the status of SMBus read
+> > > > >
+> > > > > The latter indeed introduced a problem which was later fixed with
+> > > >
+> > > > Therefore I'd like to ask Kangjie Lu (who is CCed here) to consider
+> > > > revising his statement in the attempted public clarification:
+> > > >
+> > > >         "The experiment did not introduce any bug or bug-introducing commit into
+> > > >          OSS."
+> > > >
+> > > > at [1] as it's clearly not true. Missing mutex unlock clearky is a bug
+> > > > introduced by this experiment.
+> > >
+> > > Hi everyone,
+> > >
+> > > I am so sorry for the concerns. I fully understand why the community is
+> > > angry. Please allow me to have a very quick response, as Jiri requested. We
+> > > will provide a detailed explanation later.
+> > >
+> > > These are two different projects. The one published at IEEE S&P 2021 has
+> > > completely finished in November 2020. My student Aditya is working on a new
+> > > project that is to find bugs introduced by bad patches. Please do not link
+> > > these two projects together.  I am sorry that his new patches are not
+> > > correct either. He did not intentionally make the mistake.
+> >
+> > Do you have a list of all known bad commits ? Not that we shouldn't
+> > revert the other ones as well, but having a list of bad ones would be
+> > useful when reviewing commits individually to see which ones may
+> > actually be correct.
 > 
-> Hi,
-> 
-> As Huacai has recently discovered the MIPS backend for `do_div' has been 
-> broken and inadvertently disabled with commit c21004cd5b4c ("MIPS: Rewrite 
-> <asm/div64.h> to work with gcc 4.4.0.").  As it is code I have originally 
-> written myself and Huacai had issues bringing it back to life leading to a 
-> request to discard it even I have decided to step in.
-> 
-> In the end I have fixed the code and measured its performance to be ~100% 
-> better on average than our generic code.
+> We did not introduce any bad commits in the study of hypocrite commits.
+> Please see more details here:
+> https://www-users.cs.umn.edu/~kjlu/papers/clarifications-hc.pdf
 
-That would be good.
+You may not have intended for those patches to be merged upstream, but
+they were submitted on mailing list for review, and it's clear that at
+least some of them did get merged. I thus repeat my question: do you
+have a full list of all malicious patches submitted to mailing lists ?
 
->  I have decided it would be worth 
-> having the test module I have prepared for correctness evaluation as well 
-> as benchmarking, so I have included it with the series, also so that I can 
-> refer to the results easily.
+> All of the commits sent by my students are in good faith to fix some bugs.
 > 
-> In the end I have included four patches on this occasion: 1/4 is the test 
-> module, 2/4 is an inline documentation fix/clarification for the `do_div' 
-> wrapper, 3/4 enables the MIPS `__div64_32' backend and 4/4 adds a small 
-> performance improvement to it.
+> > > > [1] https://www-users.cs.umn.edu/~kjlu/
 
-How can I apply them to the kernel? There is something wrong which makes
-git am fail.
+-- 
+Regards,
 
-> 
-> I have investigated a fifth change as a potential improvement where I 
-> replaced the call to `do_div64_32' with a DIVU instruction for cases where 
-> the high part of the intermediate divident is zero, but it has turned out 
-> to regress performance a little, so I have discarded it.
-> 
-> Also a follow-up change might be worth having to reduce the code size and 
-> place `__div64_32' out of line for CC_OPTIMIZE_FOR_SIZE configurations, 
-> but I have not fully prepared such a change at this time.  I did use the 
-> WIP form I have for performance evaluation however; see the figures quoted 
-> with 4/4.
-> 
-> These changes have been verified with a DECstation system with an R3400 
-> MIPS I processor @40MHz and a MTI Malta system with a 5Kc MIPS64 processor 
-> @160MHz.
-
-I'd like to test on ~320 MHz JZ4730.
-
-> 
-> See individual change descriptions and any additional discussions for
-> further details.
-> 
-> Questions, comments or concerns?  Otherwise please apply.
-> 
->  Maciej
-
-BR and thanks,
-Nikolaus Schaller
+Laurent Pinchart
