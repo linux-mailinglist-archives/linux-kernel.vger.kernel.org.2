@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ADF366BEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3C9366BEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240286AbhDUNIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46576 "EHLO mail.kernel.org"
+        id S241236AbhDUNIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:08:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239604AbhDUNGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:06:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DFC6146D;
-        Wed, 21 Apr 2021 13:05:47 +0000 (UTC)
+        id S240984AbhDUNGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:06:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70D0F6144B;
+        Wed, 21 Apr 2021 13:05:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010348;
-        bh=91wwQTLszap9hlXYtl2ct8GpI7EFi+4sg4UwdtlKRDE=;
+        s=korg; t=1619010351;
+        bh=dDGRrWasOUeHp1NBLPSltfVXK9G2zmKpgkwxpwZnhZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E5bnp02GnUSFDs64DlVp9wlIYIR2YmGeRBMgtnVoDRNi/ZIEcSTgsirWdGHOOFTHD
-         eQsROKJYoV4bcDIn6uzsJhq3I2V9uG0uBaR6jf6wjHn0t6srE9H9xv9KlFpNPq/PR9
-         t04ynQb2W4vUr94IvAExUamzHNv5TACuT6wZGwI4=
+        b=kSbIYST7rkjyTixM3jv9g0ehgsS6uMh+piemxl9Nu2rA/rehxNQ4xq4qh+3ruuFTK
+         nBRKEF5/ieY7Z4AvUF0hX59Rq5MY6z+8LQ5DeCEk+xN4om+WL32tb4ahbZQAiWat5z
+         eoBZxAiXL89c9MXdhC7305E0QHb/lJnjpgSI3GV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kangjie Lu <kjlu@umn.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 102/190] Revert "media: video-mux: fix null pointer dereferences"
-Date:   Wed, 21 Apr 2021 14:59:37 +0200
-Message-Id: <20210421130105.1226686-103-gregkh@linuxfoundation.org>
+        Kangjie Lu <kjlu@umn.edu>, Mukesh Ojha <mojha@codeaurora.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 103/190] Revert "thunderbolt: property: Fix a missing check of kzalloc"
+Date:   Wed, 21 Apr 2021 14:59:38 +0200
+Message-Id: <20210421130105.1226686-104-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -39,7 +37,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit aeb0d0f581e2079868e64a2e5ee346d340376eae.
+This reverts commit 6183d5a51866f3acdeeb66b75e87d44025b01a55.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -56,33 +54,31 @@ change to ensure that no problems are being introduced into the
 codebase.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Mukesh Ojha <mojha@codeaurora.org>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/video-mux.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/thunderbolt/property.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/video-mux.c b/drivers/media/platform/video-mux.c
-index 133122e38515..a754e20850c2 100644
---- a/drivers/media/platform/video-mux.c
-+++ b/drivers/media/platform/video-mux.c
-@@ -442,14 +442,9 @@ static int video_mux_probe(struct platform_device *pdev)
- 	vmux->active = -1;
- 	vmux->pads = devm_kcalloc(dev, num_pads, sizeof(*vmux->pads),
- 				  GFP_KERNEL);
--	if (!vmux->pads)
--		return -ENOMEM;
--
- 	vmux->format_mbus = devm_kcalloc(dev, num_pads,
- 					 sizeof(*vmux->format_mbus),
- 					 GFP_KERNEL);
--	if (!vmux->format_mbus)
--		return -ENOMEM;
+diff --git a/drivers/thunderbolt/property.c b/drivers/thunderbolt/property.c
+index d5b0cdb8f0b1..841314deb446 100644
+--- a/drivers/thunderbolt/property.c
++++ b/drivers/thunderbolt/property.c
+@@ -587,12 +587,7 @@ int tb_property_add_text(struct tb_property_dir *parent, const char *key,
+ 		return -ENOMEM;
  
- 	for (i = 0; i < num_pads; i++) {
- 		vmux->pads[i].flags = (i < num_pads - 1) ? MEDIA_PAD_FL_SINK
+ 	property->length = size / 4;
+-	property->value.text = kzalloc(size, GFP_KERNEL);
+-	if (!property->value.text) {
+-		kfree(property);
+-		return -ENOMEM;
+-	}
+-
++	property->value.data = kzalloc(size, GFP_KERNEL);
+ 	strcpy(property->value.text, text);
+ 
+ 	list_add_tail(&property->list, &parent->properties);
 -- 
 2.31.1
 
