@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEC936726C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 454F836726A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241371AbhDUSU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:20:57 -0400
-Received: from msg-1.mailo.com ([213.182.54.11]:38752 "EHLO msg-1.mailo.com"
+        id S245211AbhDUSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:20:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245213AbhDUSUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:20:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619029209; bh=mZnxdG84RRgD3doQgt/M+qgDTr7390pGKjmBDLlLYDs=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:In-Reply-To;
-        b=jTO+r3xj7cYu4W2rST0PC7+ytRcoYJ811v7VUFkGlzL3ngJSKYQw/cajdLWzdxmnS
-         a2HPswovf1698LtrghzGFSaF6Dyk49xdE0ZaBA9U7agPrXLJpZqYg1pXCX6ugLWJNi
-         uWBi+5R1hyWJlPNyhjuDXVwdfoadjKYbnTo5xt74=
-Received: by 192.168.90.14 [192.168.90.14] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Wed, 21 Apr 2021 20:20:09 +0200 (CEST)
-X-EA-Auth: 3cyjx2v04dwYoAi4F17rhRnojjHVoYGP0HjO81rWIP2FYzwecIpm0t/Ke1JUPgHtDp68sXkrVkv9p8tGDHwpfc8avPFclp4p
-Date:   Wed, 21 Apr 2021 23:50:04 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
-Subject: [PATCH v3 6/6] staging: media: atomisp: replace raw printk() by
- dev_info()
-Message-ID: <091f7989226169722220e95e0e838d2d139eb286.1619022192.git.drv@mailo.com>
-References: <cover.1619022192.git.drv@mailo.com>
+        id S242578AbhDUSUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:20:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 43AE861448;
+        Wed, 21 Apr 2021 18:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619029209;
+        bh=E54TmFKp3Y20gYaeGiLf9VOBNkPefR+f5LS/nkCT56k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Nqn5ax004SfszeP4Hxycgni0oLLLGDVR7pFg1oCA1UjmWZWdcsjGOu3isET3nkTGD
+         aYJLf41NMoK2p+c3yIoYgCDlBnKZ5dsmN7TCZFLRZgYRWnPdjXZesiSKORs/UBSbYp
+         nzOx0yJD9Cfrdaox8zXBC2XoZ/6Da1TGetDEc0WDNk9EY1Xn2CuSxCtkQMqqoo3cpi
+         s2YTpmA1dogJEmkjMY+jMr+3n5qHRH/6IMX5ovPa+Bxme6SJEVdIRDA0glizrHnJd1
+         8L4WD2mvIAn1GFeNJAROfMC1qez5uVjCbjwmiS9CeNv6IwK1hPvIhO882mCOqlrvPI
+         bA+sdJlvef+mQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3B61E60A3C;
+        Wed, 21 Apr 2021 18:20:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1619022192.git.drv@mailo.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161902920923.1057.702460765675498591.git-patchwork-notify@kernel.org>
+Date:   Wed, 21 Apr 2021 18:20:09 +0000
+References: <20210421140505.30756-1-aford173@gmail.com>
+In-Reply-To: <20210421140505.30756-1-aford173@gmail.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     netdev@vger.kernel.org, aford@beaconembedded.com,
+        sergei.shtylyov@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        andrew@lunn.ch, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is better to use dev_info() instead of raw printk() call. This
-addresses the checkpatch complain for not using KERN_<LEVEL> facility in
-printk() call.
+Hello:
 
-Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Signed-off-by: Deepak R Varma <drv@mailo.com>
----
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Changes since v2:
-   - Tag Fabio Auito for the patch suggestion
+On Wed, 21 Apr 2021 09:05:05 -0500 you wrote:
+> The call to clk_disable_unprepare() can happen before priv is
+> initialized. This means moving clk_disable_unprepare out of
+> out_release into a new label.
+> 
+> Fixes: 8ef7adc6beb2 ("net: ethernet: ravb: Enable optional refclk")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
+> [...]
 
-Changes in v1:
-   - implement following changes suggested by Fabio Aiuto
-       a. use dev_info instead of pr_info
-       b. update patch log message accordingly
+Here is the summary with links:
+  - net: ethernet: ravb: Fix release of refclk
+    https://git.kernel.org/netdev/net-next/c/36e69da892f1
 
-
- drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-index b572551f1a0d..7e4e123fdb52 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-@@ -1020,8 +1020,8 @@ static int gc0310_set_fmt(struct v4l2_subdev *sd,
- 		return -EINVAL;
- 	}
- 
--	printk("%s: before gc0310_write_reg_array %s\n", __func__,
--	       gc0310_res[dev->fmt_idx].desc);
-+	dev_info(&client->dev, "%s: before gc0310_write_reg_array %s\n",
-+		 __func__, gc0310_res[dev->fmt_idx].desc);
- 	ret = startup(sd);
- 	if (ret) {
- 		dev_err(&client->dev, "gc0310 startup err\n");
--- 
-2.25.1
-
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
