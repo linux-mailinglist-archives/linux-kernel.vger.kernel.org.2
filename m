@@ -2,139 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C911636650D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 07:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2F3366511
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 07:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235355AbhDUFxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 01:53:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36398 "EHLO mail.kernel.org"
+        id S235360AbhDUFyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 01:54:43 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:59823 "EHLO mout02.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235285AbhDUFxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 01:53:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D42916140C;
-        Wed, 21 Apr 2021 05:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618984357;
-        bh=g72o3X3Q6Y/a2mSNpa0HjIO9b/1mdQbo0EaTxru/zZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lDwRsR/E5mE9ve2Akk/3k+XO8YXnjrfevy9BmPLxs+lWkLg/W8jvzL1dYtVYW+3Rf
-         c0TNDace3LJilMFVznrYeCRDwGrbHzJWGhCicEdzHL6l8Ssmr+GPd2k1tR0J/Oz8gY
-         HNlkCXKomx+V/ot9YHj+QTDszjYr8FZyUKXC3ov3JbPn6ar8+9fn4C2rsNGgfwD1xK
-         jxVIemH8Bz2l6DRPlexUeyQ5bNbq1sXxlzRv+Ip3azOMMDa2+YNNQtjVpoPrF/KHOO
-         C7w6maQQFuV4pFX+kZC5rXtQY8I5cntBPjYPkw4E8WX1mZ5dZcqHIin3LRMZrwh4pk
-         FPk4mfTeux5gA==
-Date:   Wed, 21 Apr 2021 08:52:29 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 4/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-Message-ID: <YH+9nbDkPyVav3xn@kernel.org>
-References: <20210420090925.7457-1-rppt@kernel.org>
- <20210420090925.7457-5-rppt@kernel.org>
- <8e7171e7-a85c-6066-4ab6-d2bc98ec103b@redhat.com>
+        id S231354AbhDUFyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 01:54:41 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id C3CAC2400FC
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 07:54:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1618984447; bh=yz64K1S8MzFsrG6lA1jNOCnHQSaHgRv/O6kDZOx2kiY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oGWHZDM03tPRNRqxJ4xjMu8qjwvoaXXCslbdQqM/kEoMpJbkU1b7mgweN5Bb/KwW/
+         lpMpZIfhbywv4BG9M9t4BTIm8pucRNt1Gx8abLWiRpUjtYa1eW3QEJvWlq+FJa0IFK
+         xDe1bh2t30im7sinyVKxKgiKm9wcSJfwHH2c8UW5Efh/K3P0aHKG326Aah0QFBIY3i
+         dtEuvrEv3DbYRDI9vbDWfpGNSuUau9X1BWRi0t/Urn5UXeKqCZprnOJMlqsD17CDZo
+         NCfuycuuiGX9lm1wM0GyfVF7RFxtAvHRsDVzyjWdgEyavKfb8g1brIWCtxPAtSyHSI
+         2jthfQTO9hPvg==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FQ8rH21T8z6tmN;
+        Wed, 21 Apr 2021 07:54:07 +0200 (CEST)
+From:   Sebastian Fricke <sebastian.fricke@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Sebastian Fricke <sebastian.fricke@posteo.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH] regulator: core.c: Improve a comment
+Date:   Wed, 21 Apr 2021 05:52:37 +0000
+Message-Id: <20210421055236.13148-1-sebastian.fricke@posteo.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e7171e7-a85c-6066-4ab6-d2bc98ec103b@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 06:00:55PM +0200, David Hildenbrand wrote:
-> On 20.04.21 11:09, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > The arm64's version of pfn_valid() differs from the generic because of two
-> > reasons:
-> > 
-> > * Parts of the memory map are freed during boot. This makes it necessary to
-> >    verify that there is actual physical memory that corresponds to a pfn
-> >    which is done by querying memblock.
-> > 
-> > * There are NOMAP memory regions. These regions are not mapped in the
-> >    linear map and until the previous commit the struct pages representing
-> >    these areas had default values.
-> > 
-> > As the consequence of absence of the special treatment of NOMAP regions in
-> > the memory map it was necessary to use memblock_is_map_memory() in
-> > pfn_valid() and to have pfn_valid_within() aliased to pfn_valid() so that
-> > generic mm functionality would not treat a NOMAP page as a normal page.
-> > 
-> > Since the NOMAP regions are now marked as PageReserved(), pfn walkers and
-> > the rest of core mm will treat them as unusable memory and thus
-> > pfn_valid_within() is no longer required at all and can be disabled by
-> > removing CONFIG_HOLES_IN_ZONE on arm64.
-> > 
-> > pfn_valid() can be slightly simplified by replacing
-> > memblock_is_map_memory() with memblock_is_memory().
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >   arch/arm64/Kconfig   | 3 ---
-> >   arch/arm64/mm/init.c | 4 ++--
-> >   2 files changed, 2 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index e4e1b6550115..58e439046d05 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -1040,9 +1040,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
-> >   	def_bool y
-> >   	depends on NUMA
-> > -config HOLES_IN_ZONE
-> > -	def_bool y
-> > -
-> >   source "kernel/Kconfig.hz"
-> >   config ARCH_SPARSEMEM_ENABLE
-> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > index c54e329aca15..370f33765b64 100644
-> > --- a/arch/arm64/mm/init.c
-> > +++ b/arch/arm64/mm/init.c
-> > @@ -243,7 +243,7 @@ int pfn_valid(unsigned long pfn)
-> >   	/*
-> >   	 * ZONE_DEVICE memory does not have the memblock entries.
-> > -	 * memblock_is_map_memory() check for ZONE_DEVICE based
-> > +	 * memblock_is_memory() check for ZONE_DEVICE based
-> >   	 * addresses will always fail. Even the normal hotplugged
-> >   	 * memory will never have MEMBLOCK_NOMAP flag set in their
-> >   	 * memblock entries. Skip memblock search for all non early
-> > @@ -254,7 +254,7 @@ int pfn_valid(unsigned long pfn)
-> >   		return pfn_section_valid(ms, pfn);
-> >   }
-> >   #endif
-> > -	return memblock_is_map_memory(addr);
-> > +	return memblock_is_memory(addr);
-> >   }
-> >   EXPORT_SYMBOL(pfn_valid);
-> > 
-> 
-> What are the steps needed to get rid of custom pfn_valid() completely?
-> 
-> I'd assume we would have to stop freeing parts of the mem map during boot.
-> How relevant is that for arm64 nowadays, especially with reduced section
-> sizes?
+s/regulator may on/regulator may already be enabled/
+s/or left on/or was left on/
 
-Yes, for arm64 to use the generic pfn_valid() it'd need to stop freeing
-parts of the memory map.
+The aim of this patch is to make the comment more readable and to make
+it clear, that this is about a regulator, that is already enabled instead
+of a regulator that may be switched on.
 
-Presuming struct page is 64 bytes, the memory map takes 2M per section in
-the worst case (128M per section, 4k pages). 
+Signed-off-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+---
+ drivers/regulator/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-So for systems that have less than 128M populated in each section freeing
-unused memory map would mean significant savings.
-
-But nowadays when a clock has at least 1G of RAM I doubt this is relevant
-to many systems if at all.
-
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 16114aea099a..1fb1f586bb6d 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -2650,7 +2650,10 @@ static int _regulator_enable(struct regulator *regulator)
+ 		goto err_disable_supply;
+ 
+ 	if (rdev->use_count == 0) {
+-		/* The regulator may on if it's not switchable or left on */
++		/*
++		 * The regulator may already be enabled if it's not switchable
++		 * or was left on
++		 */
+ 		ret = _regulator_is_enabled(rdev);
+ 		if (ret == -EINVAL || ret == 0) {
+ 			if (!regulator_ops_is_valid(rdev,
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
