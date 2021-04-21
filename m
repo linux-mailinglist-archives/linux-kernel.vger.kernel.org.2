@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B20366DF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411B9366DFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243435AbhDUOSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238683AbhDUOSW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:18:22 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97644C06174A;
-        Wed, 21 Apr 2021 07:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=1V074saVJum22Sdu0O1Nvhp0lC8JmfADLwoclM0Jc2Q=; b=fwxp3IWovc71fxS7cpQfwXEMgC
-        bPqlkUfG9vBToRhRFloVREUyo6QlPItZhLMoZZ4T0lsGelqVAiiuyS0uvHcQZ6kfIJ/p9+mLSK4xj
-        oQPnpygsNhaUCO6hEWFTHbFdCyEWG/baPGltqHvdUjOBbb1zToMJAtDHzcGbzUeh0BKnJBvp0HJBp
-        UZVoR8zLQECkqU/HZZGT6pMCV+1cC/jOuLvdze//wlEyQVD4NwYbIHNMIhL7GS33uJd6pG7scbl6l
-        fnhM0Z1P6WUyHYLM59Pa10y2hFREi5K5VLXt9dIYmnJ82l+mJ3jIOzcwVccu+RghuuJ6tZeYb+7q+
-        dYNJXVOg==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZDff-00EYZv-2D; Wed, 21 Apr 2021 14:17:39 +0000
-Subject: Re: [PATCH] bcache: add BLK_DEV dependency for BCACHE_NVM_PAGES
-To:     Arnd Bergmann <arnd@kernel.org>, Coly Li <colyli@suse.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Jianpeng Ma <jianpeng.ma@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210421135021.3360382-1-arnd@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <aa96ed83-47f4-39a7-4b6e-fb17cb4e9f84@infradead.org>
-Date:   Wed, 21 Apr 2021 07:17:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S243455AbhDUOUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:20:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243495AbhDUOTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:19:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55AC961451;
+        Wed, 21 Apr 2021 14:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619014757;
+        bh=bBmIn8S8ZMIPvTWH/+ochcCoeMONUXeO4WBQU2iFBEg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lqYc8BHKKR3M22tT1kNQkEdfvRhiIOKEdI2dF1DWl1QGd1sDoCBc0MVeAalheZ46m
+         hJyjhy1ad3X/RmGWZWWkByEpqMDCDiFvS+x7CZRhAo9CHx3u4x94aTOqdavs3aX7B8
+         Dp6bFxCEbWdR9xWmjhnVGzxocghVJtTjQ3k7bEayS5Pnbnx42CbkxWQxXxXS/Gl7MP
+         zfrJhblRLM/QvoPePtJWaHm0NpjFsCNlHAHZ2tFczlScD2dM/hrPLOU/0EI2lK0Cqb
+         Kr/4/K6e18mbn5S7dvGC17psQDlTx7F+3Q2gX7h7Y4gbwZ2Fkia+L9lU9DadcC2km/
+         cBoOX1FxQGaqw==
+Received: by mail-ej1-f50.google.com with SMTP id v6so62457021ejo.6;
+        Wed, 21 Apr 2021 07:19:17 -0700 (PDT)
+X-Gm-Message-State: AOAM530z9rfTcwsdJOZiZm06SvfYSpwaYvE3yNwtEqXF1AEC+0VK1K4D
+        olu+mx61qlQfjXfMmBYE6dOjrOklxAolvW6oWro=
+X-Google-Smtp-Source: ABdhPJxaQljIkxFOGY7dNHi0Pk8uTSoPpwsWKcSgA3QnPpgl9pl/W9LzYtSuU+JlWOvBgBy/wcAMfxpFNn+mSdq30Qs=
+X-Received: by 2002:a17:906:4e93:: with SMTP id v19mr32427309eju.215.1619014755832;
+ Wed, 21 Apr 2021 07:19:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210421135021.3360382-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210407000913.2207831-1-pakki001@umn.edu> <YH6aMsbqruMZiWFe@unreal>
+ <YH6azwtJXIyebCnc@unreal>
+In-Reply-To: <YH6azwtJXIyebCnc@unreal>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 21 Apr 2021 16:19:03 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPcyJ43m-n=ACGGgRZkWd8KDD5pNkBSY1mSOebH9BvHROA@mail.gmail.com>
+Message-ID: <CAJKOXPcyJ43m-n=ACGGgRZkWd8KDD5pNkBSY1mSOebH9BvHROA@mail.gmail.com>
+Subject: Re: [PATCH] net/rds: Avoid potential use after free in rds_send_remove_from_sock
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Aditya Pakki <pakki001@umn.edu>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 6:50 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Selecting this without CONFIG_BLK_DEV causes a Kconfig warning:
-> 
-> WARNING: unmet direct dependencies detected for LIBNVDIMM
->   Depends on [n]: PHYS_ADDR_T_64BIT [=y] && HAS_IOMEM [=y] && BLK_DEV [=n]
->   Selected by [y]:
->   - BCACHE_NVM_PAGES [=y] && MD [=y] && BCACHE [=y] && PHYS_ADDR_T_64BIT [=y]
-> 
-> Add it as another dependency.
-> 
-> Fixes: 688330711e9a ("bcache: initialize the nvm pages allocator")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/md/bcache/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/md/bcache/Kconfig b/drivers/md/bcache/Kconfig
-> index 0996e366ad0b..9cb3d8c39fc1 100644
-> --- a/drivers/md/bcache/Kconfig
-> +++ b/drivers/md/bcache/Kconfig
-> @@ -40,6 +40,7 @@ config BCACHE_NVM_PAGES
->  	bool "NVDIMM support for bcache (EXPERIMENTAL)"
->  	depends on BCACHE
->  	depends on PHYS_ADDR_T_64BIT
-> +	depends on BLKDEV
+On Tue, 20 Apr 2021 at 11:13, Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Tue, Apr 20, 2021 at 12:09:06PM +0300, Leon Romanovsky wrote:
+> > On Tue, Apr 06, 2021 at 07:09:12PM -0500, Aditya Pakki wrote:
+> > > In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
+> > > is freed and later under spinlock, causing potential use-after-free.
+> > > Set the free pointer to NULL to avoid undefined behavior.
+> > >
+> > > Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+> > > ---
+> > >  net/rds/message.c | 1 +
+> > >  net/rds/send.c    | 2 +-
+> > >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > Dave, Jakub
+> >
+> > Please revert this patch, given responses from Eric and Al together
+> > with this response from Greg here https://lore.kernel.org/lkml/YH5/i7OvsjSmqADv@kroah.com
+>
+> https://lore.kernel.org/lkml/YH5%2Fi7OvsjSmqADv@kroah.com/
+>
+> >
+> > BTW, I looked on the rds code too and agree with Eric, this patch
+> > is a total garbage.
 
-	           BLK_DEV
+When reverting, consider giving credits to Kees/Coverity as he pointed
+out after testing linux-next that this is bogus:
+https://lore.kernel.org/linux-next/202104081640.1A09A99900@keescook/
 
->  	select LIBNVDIMM
->  	select DAX
->  	help
-> 
 
-tested?
-
--- 
-~Randy
-
+Best regards,
+Krzysztof
