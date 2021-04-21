@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E99366B76
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED368366B82
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240020AbhDUNCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:02:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41086 "EHLO mail.kernel.org"
+        id S239184AbhDUNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:02:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239191AbhDUNCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67ABF613F5;
-        Wed, 21 Apr 2021 13:01:34 +0000 (UTC)
+        id S240153AbhDUNCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 09:02:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31B5C613DC;
+        Wed, 21 Apr 2021 13:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619010095;
-        bh=HjnZ+JXDjvU96Lkub7xtE2D1LDAw1uP0NBlOWN4M4L4=;
+        s=korg; t=1619010126;
+        bh=ersMlf4mb5vpgfp70k5CUd4bD/MbCELRqIIwpyX3d7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0OJGYJgF/WvXYM+gmdNlFGT4hWOB9ro5jvUT36NTN8UgngZAqcTynNeDVEXOrIgNr
-         A8hvSQfI0Na/4C8Fp8g6AVYM1ZGmDN+Bsn4IKOlN/8HqvKQuy1zwhE/sOxzpr8cs+q
-         SmDMqdcRzMIu+NtB2Nyp251OoxirlDtqRpfdHz2M=
+        b=NiBxhQJ84lZ1N7isfs83WWpprAlGB8nM0O7LxYCQ4EE+QnwRORDCog5m/F5JDCqi2
+         nZtdXhairD58EuOPQSIT4xGtmYiUMHz+WyDThrHHYCvyYBc+e4Xuf/i06Si9nGzzH4
+         v1Cmj2xXbKySKKETbVJbiaIrPq/xfuYWc2dcOYj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Qiushi Wu <wu000273@umn.edu>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 003/190] Revert "media: sti: Fix reference count leaks"
-Date:   Wed, 21 Apr 2021 14:57:58 +0200
-Message-Id: <20210421130105.1226686-4-gregkh@linuxfoundation.org>
+Subject: [PATCH 004/190] Revert "media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync"
+Date:   Wed, 21 Apr 2021 14:57:59 +0200
+Message-Id: <20210421130105.1226686-5-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
@@ -38,7 +38,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 6f4432bae9f2d12fc1815b5e26cc07e69bcad0df.
+This reverts commit 7ef64ceea0008c17e94a8a2c60c5d6d46f481996.
 
 Commits from @umn.edu addresses have been found to be submitted in "bad
 faith" to try to test the kernel community's ability to review "known
@@ -59,29 +59,39 @@ Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/sti/hva/hva-hw.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/media/platform/exynos4-is/fimc-isp.c  | 4 +---
+ drivers/media/platform/exynos4-is/fimc-lite.c | 2 +-
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/sti/hva/hva-hw.c b/drivers/media/platform/sti/hva/hva-hw.c
-index f59811e27f51..d0d45dc5f32f 100644
---- a/drivers/media/platform/sti/hva/hva-hw.c
-+++ b/drivers/media/platform/sti/hva/hva-hw.c
-@@ -272,7 +272,6 @@ static unsigned long int hva_hw_get_ip_version(struct hva_dev *hva)
+diff --git a/drivers/media/platform/exynos4-is/fimc-isp.c b/drivers/media/platform/exynos4-is/fimc-isp.c
+index a77c49b18511..cde0d254ec1c 100644
+--- a/drivers/media/platform/exynos4-is/fimc-isp.c
++++ b/drivers/media/platform/exynos4-is/fimc-isp.c
+@@ -305,10 +305,8 @@ static int fimc_isp_subdev_s_power(struct v4l2_subdev *sd, int on)
  
- 	if (pm_runtime_get_sync(dev) < 0) {
- 		dev_err(dev, "%s     failed to get pm_runtime\n", HVA_PREFIX);
--		pm_runtime_put_noidle(dev);
- 		mutex_unlock(&hva->protect_mutex);
- 		return -EFAULT;
- 	}
-@@ -555,7 +554,6 @@ void hva_hw_dump_regs(struct hva_dev *hva, struct seq_file *s)
+ 	if (on) {
+ 		ret = pm_runtime_get_sync(&is->pdev->dev);
+-		if (ret < 0) {
+-			pm_runtime_put(&is->pdev->dev);
++		if (ret < 0)
+ 			return ret;
+-		}
+ 		set_bit(IS_ST_PWR_ON, &is->state);
  
- 	if (pm_runtime_get_sync(dev) < 0) {
- 		seq_puts(s, "Cannot wake up IP\n");
--		pm_runtime_put_noidle(dev);
- 		mutex_unlock(&hva->protect_mutex);
- 		return;
- 	}
+ 		ret = fimc_is_start_firmware(is);
+diff --git a/drivers/media/platform/exynos4-is/fimc-lite.c b/drivers/media/platform/exynos4-is/fimc-lite.c
+index fe20af3a7178..1576f273761b 100644
+--- a/drivers/media/platform/exynos4-is/fimc-lite.c
++++ b/drivers/media/platform/exynos4-is/fimc-lite.c
+@@ -471,7 +471,7 @@ static int fimc_lite_open(struct file *file)
+ 	set_bit(ST_FLITE_IN_USE, &fimc->state);
+ 	ret = pm_runtime_get_sync(&fimc->pdev->dev);
+ 	if (ret < 0)
+-		goto err_pm;
++		goto unlock;
+ 
+ 	ret = v4l2_fh_open(file);
+ 	if (ret < 0)
 -- 
 2.31.1
 
