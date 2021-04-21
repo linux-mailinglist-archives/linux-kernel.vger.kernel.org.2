@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3273A366CA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6742E366CB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 15:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242446AbhDUNWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 09:22:23 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:42763 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242420AbhDUNUk (ORCPT
+        id S242516AbhDUNXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 09:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242371AbhDUNW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:20:40 -0400
-Received: by mail-wr1-f51.google.com with SMTP id p6so34674669wrn.9;
-        Wed, 21 Apr 2021 06:20:05 -0700 (PDT)
+        Wed, 21 Apr 2021 09:22:28 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C8DC061369;
+        Wed, 21 Apr 2021 06:20:15 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id j12so24299892edy.3;
+        Wed, 21 Apr 2021 06:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bV2+iaLvlgLHnb19R4rIgUB8ivM93pPvuTJSfa7AbgI=;
+        b=rlTaaspvH5ESqX5Dez3Dr9A313tLebI5kAtlZ98klePruheU5m62tFcekoRd8KKvxF
+         pOGL3lJa3LG0JadS5qxWN7ZDak2MJGNybVsmlQ2lQuns4CiWUzAAVEaIopwQsDZU8DfY
+         0bSaMK9lavqsqu9OsQOmye8Gityd2ImMIGtAqeO8TESQ3FWnVAqGpCl2YURd40CAnkVa
+         rjOZTzFzlZUa0bKWp/kFAdwVp4w2OM2GSnC7JdizxlAz4F98kW3ihkU2vf2H89SLb+iG
+         uQGn0QSBC+R+WAFg7MfZpKhM9NC/MrD0jsqlb+lXRk8aDh9x229qIf0wAdRevunZTlq+
+         rrWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n+4ksnXPTGxUVOIW+qyHuupy0kwqtpOF8lF9ySVgvLs=;
-        b=eS3135WxHXgT3W/iSiR7Yc7xiDy7xvwfNY5zwmD8Xx5OUTOUYAgb85IXUOw396DD7t
-         qXN6m+gt2PdMJB7lTHY3E+ybEVJU4Y+SQI+pQ0KHcbJBRy9wjjZm9ltvJY4eYCQjgZCM
-         jeCApUX50nwZT4PbYbpRdOLT2bRhW0du02dr71IY1DwplWLFdBA0CAjwXhMMlAneHO+D
-         b1j8zW/TpQtv+aT6liYRYrrz8bbaAivQn4bmWGlczhTkTOU7vrRn0NCTXtyPBspy6tUH
-         pao0SDwsSifeivLHnkb3BPYUlg9tuAg8fllEiuFo0Ux+RPECT6BD4egZhjhVjO/ChK+o
-         NTZQ==
-X-Gm-Message-State: AOAM533kubjMAoLW2JeM0ZVemsWYorbepl7FMDyrKMJGFhwbeqxK9Ef9
-        XZg6tjIA06R/0UIxu/AK96A=
-X-Google-Smtp-Source: ABdhPJzlEAihJohG8iDjY9nVyV4gAQ7PzfTX13jEc5dsfvRiGypGAL0Zr47IexoY49GCSd/ZQVmBWg==
-X-Received: by 2002:a05:6000:18ae:: with SMTP id b14mr27026149wri.211.1619011205131;
-        Wed, 21 Apr 2021 06:20:05 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id v2sm3061922wrr.26.2021.04.21.06.20.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bV2+iaLvlgLHnb19R4rIgUB8ivM93pPvuTJSfa7AbgI=;
+        b=D9bUQ2l3UgO7tm1DZlfR3qlOWkm8xj7dXXGtEtqz0IEE1l/5Ec83n0ab311aVTe26u
+         ViEv2SgpxpwwV0LPmt8nPCm9COy2vt3xMNbXN5ASD2m6MaPHyItbecFFY/Q56EK0xmgh
+         QTrgv8eMyb6p32Soj9kQKrDASNqEEB02Ucd3ttphR/n2/rFf7H2AXCSEts6tL47Y22bZ
+         khUx8pnFBlqSp2rdUR3xvuJI/BH4tyO5AmCh3aJLo6un6GBEwvaRuLeUXAo6aPgTcSnx
+         icMQpnAJMU+4hcXHl0omaOVFSt0EqYZWhue4bWaYN2flPB+YzN6xLP4EwstluH7J2+yb
+         GmKQ==
+X-Gm-Message-State: AOAM530D5tmS5TEsUNDbWEjd1YNJguPslKNiSgRN7+UOzM0Zxqhg5SSR
+        6hQL1IofglxNEsy6O2KzqBuiCsyXHuA=
+X-Google-Smtp-Source: ABdhPJySPVd6U0P9NUSv/L7Jn+1Vhfvq2VSBMPTWo7It//ZrkXlXzknjxJRQeMu/dUU8gywj8dxpHQ==
+X-Received: by 2002:a05:6402:51cd:: with SMTP id r13mr38568119edd.116.1619011214441;
+        Wed, 21 Apr 2021 06:20:14 -0700 (PDT)
+Received: from abel.fritz.box ([2a02:908:1252:fb60:6d51:959c:b29c:d1fe])
+        by smtp.gmail.com with ESMTPSA id k9sm3504463edv.69.2021.04.21.06.20.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 06:20:04 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 13:20:03 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] hyperv: SVM enlightened TLB flush support flag
-Message-ID: <20210421132003.cfnqxdy2vcb24pnp@liuwe-devbox-debian-v2>
-References: <cover.1618492553.git.viremana@linux.microsoft.com>
- <3fd0cdfb9a4164a3fb90351db4dc10f52a7c4819.1618492553.git.viremana@linux.microsoft.com>
- <20210421100026.4hcgrxeri444if45@liuwe-devbox-debian-v2>
- <4a57cd2b-43b5-2625-3663-449ffa715b51@linux.microsoft.com>
+        Wed, 21 Apr 2021 06:20:13 -0700 (PDT)
+From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
+        <ckoenig.leichtzumerken@gmail.com>
+X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+To:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, dri-devel@lists.freedesktop.org
+Cc:     jaharkes@cs.cmu.edu, coda@cs.cmu.edu, miklos@szeredi.hu,
+        akpm@linux-foundation.org, jgg@ziepe.ca
+Subject: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error path
+Date:   Wed, 21 Apr 2021 15:20:11 +0200
+Message-Id: <20210421132012.82354-1-christian.koenig@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a57cd2b-43b5-2625-3663-449ffa715b51@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 07:15:54AM -0400, Vineeth Pillai wrote:
-> 
-> 
-> On 4/21/21 6:00 AM, Wei Liu wrote:
-> > On Thu, Apr 15, 2021 at 01:43:37PM +0000, Vineeth Pillai wrote:
-> > > +/*
-> > > + * This is specific to AMD and specifies that enlightened TLB flush is
-> > > + * supported. If guest opts in to this feature, ASID invalidations only
-> > > + * flushes gva -> hpa mapping entries. To flush the TLB entries derived
-> > > + * from NPT, hypercalls should be used (HvFlushGuestPhysicalAddressSpace
-> > > + * or HvFlushGuestPhysicalAddressList).
-> > > + */
-> > > +#define HV_X64_NESTED_ENLIGHTENED_TLB			BIT(22)
-> > > +
-> > c
-> > This is not yet documented in TLFS, right? I can't find this bit in the
-> > latest edition (6.0b).
-> This would be documented in the TLFS update which is soon to be
-> released.
+mmap_region() now calls fput() on the vma->vm_file.
 
-Okay.
+So we need to drop the extra reference on the coda file instead of the
+host file.
 
-> 
-> > 
-> > My first thought is the comment says this is AMD specific but the name
-> > is rather generic. That looks a bit odd to begin with.
-> I thought of of keeping the name generic to avoid renaming Intel
-> specific ones also. If I understand correctly, the TLFS would also
-> be having generic name for this and just translated the generic
-> name here in this header.
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Fixes: 1527f926fd04 ("mm: mmap: fix fput in error path v2")
+CC: stable@vger.kernel.org # 5.11+
+---
+ fs/coda/file.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Okay. Let's match what is written in TLFS.
+diff --git a/fs/coda/file.c b/fs/coda/file.c
+index 128d63df5bfb..ef5ca22bfb3e 100644
+--- a/fs/coda/file.c
++++ b/fs/coda/file.c
+@@ -175,10 +175,10 @@ coda_file_mmap(struct file *coda_file, struct vm_area_struct *vma)
+ 	ret = call_mmap(vma->vm_file, vma);
+ 
+ 	if (ret) {
+-		/* if call_mmap fails, our caller will put coda_file so we
+-		 * should drop the reference to the host_file that we got.
++		/* if call_mmap fails, our caller will put host_file so we
++		 * should drop the reference to the coda_file that we got.
+ 		 */
+-		fput(host_file);
++		fput(coda_file);
+ 		kfree(cvm_ops);
+ 	} else {
+ 		/* here we add redirects for the open/close vm_operations */
+-- 
+2.25.1
 
-Wei.
-
-> 
-> Thanks,
-> Vineeth
-> 
