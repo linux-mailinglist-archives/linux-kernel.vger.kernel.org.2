@@ -2,189 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8958B36724D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A84367251
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 20:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245136AbhDUSNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 14:13:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56746 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240314AbhDUSNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:13:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619028748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8EfD7qwEqEHdrY5pzf6oTYJDg/yr8xn+BFbmxKK0ZwE=;
-        b=VO/YaBSdrpYuguWFnNnomS4cXcOcAi8C3HoG6IfB+loX5XaBoLGNCi13nIBlN/BWdmBIn4
-        eibNWsk+E74rgh65nt2NQJzTrU/pLal3gx0WZyQl1R80cQefG9pcYlUWqZSFlLxfFZ+tF+
-        tM+7qDkP1KUY5IsIeVPZfGZMvwX/5bg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131--lcLLR2jMzmT_DgVnWqM_g-1; Wed, 21 Apr 2021 14:12:27 -0400
-X-MC-Unique: -lcLLR2jMzmT_DgVnWqM_g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB5248030A0;
-        Wed, 21 Apr 2021 18:12:25 +0000 (UTC)
-Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 73F8919726;
-        Wed, 21 Apr 2021 18:12:25 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 12:12:24 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, <cohuck@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
-Message-ID: <20210421121224.62382e5d@redhat.com>
-In-Reply-To: <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
-References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
-        <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
-        <20210415220137.GA1672608@nvidia.com>
-        <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
-        <20210419123314.GT1370958@nvidia.com>
-        <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
-        <20210420125957.GA1370958@nvidia.com>
-        <20210420160457.6b91850a@x1.home.shazbot.org>
-        <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
+        id S245152AbhDUSON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 14:14:13 -0400
+Received: from msg-1.mailo.com ([213.182.54.11]:38032 "EHLO msg-1.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245161AbhDUSOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 14:14:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619028811; bh=qHiKMu75/S4YyncgFLoh7sC4G8wubAkDTiB2dX4fgiA=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=ZdzZGVE4fRZjHYWe1tvxsRCfHFbKIrBBILZopj2uO3B318i9TuLghkq6NwVP5lah2
+         y4qyWpKD1UJtGYkOBsdalU0Da5JuQKIZPa9j6DyR9jLq0T8S7SiHI5GCShR769MQlC
+         M3F/l/Nj32RY3vCkh/p8gqjDwW0lBBfpH4GBO9Uo=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Wed, 21 Apr 2021 20:13:30 +0200 (CEST)
+X-EA-Auth: Fuog98EV+LrtkM3RYTdAPMfSI80Oscm7Bm+5RptHE3gitvGaNxkNbB4DlaupU9IXY8s6/TkprBmuWlw4aJNcJEOtSHDS20gk
+Date:   Wed, 21 Apr 2021 23:43:24 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v3 2/6] staging: media: atomisp: balance braces around
+ if...else block
+Message-ID: <71220662c5facd746e56288cc74786c96fa3c5a7.1619022192.git.drv@mailo.com>
+References: <cover.1619022192.git.drv@mailo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619022192.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 17:59:02 +0800
-liulongfang <liulongfang@huawei.com> wrote:
+Balance braces around the if else blocks as per the code style guidelines.
+Resolves checkpatch script CHECK / WARNING feedback messages.
 
-> On 2021/4/21 6:04, Alex Williamson wrote:
-> > On Tue, 20 Apr 2021 09:59:57 -0300
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >  =20
-> >> On Tue, Apr 20, 2021 at 08:50:12PM +0800, liulongfang wrote: =20
-> >>> On 2021/4/19 20:33, Jason Gunthorpe wrote:   =20
-> >>>> On Mon, Apr 19, 2021 at 08:24:40PM +0800, liulongfang wrote:
-> >>>>    =20
-> >>>>>> I'm also confused how this works securely at all, as a general rul=
-e a
-> >>>>>> VFIO PCI driver cannot access the MMIO memory of the function it is
-> >>>>>> planning to assign to the guest. There is a lot of danger that the
-> >>>>>> guest could access that MMIO space one way or another.   =20
-> >>>>>
-> >>>>> VF's MMIO memory is divided into two parts, one is the guest part,
-> >>>>> and the other is the live migration part. They do not affect each o=
-ther,
-> >>>>> so there is no security problem.   =20
-> >>>>
-> >>>> AFAIK there are several scenarios where a guest can access this MMIO
-> >>>> memory using DMA even if it is not mapped into the guest for CPU
-> >>>> access.
-> >>>>    =20
-> >>> The hardware divides VF's MMIO memory into two parts. The live migrat=
-ion
-> >>> driver in the host uses the live migration part, and the device drive=
-r in
-> >>> the guest uses the guest part. They obtain the address of VF's MMIO m=
-emory
-> >>> in their respective drivers, although these two parts The memory is
-> >>> continuous on the hardware device, but due to the needs of the drive =
-function,
-> >>> they will not perform operations on another part of the memory, and t=
-he
-> >>> device hardware also independently responds to the operation commands=
- of
-> >>> the two parts.   =20
-> >>
-> >> It doesn't matter, the memory is still under the same PCI BDF and VFIO
-> >> supports scenarios where devices in the same IOMMU group are not
-> >> isolated from each other.
-> >>
-> >> This is why the granual of isolation is a PCI BDF - VFIO directly
-> >> blocks kernel drivers from attaching to PCI BDFs that are not
-> >> completely isolated from VFIO BDF.
-> >>
-> >> Bypassing this prevention and attaching a kernel driver directly to
-> >> the same BDF being exposed to the guest breaks that isolation model.
-> >> =20
-> >>> So, I still don't understand what the security risk you are talking a=
-bout is,
-> >>> and what do you think the security design should look like?
-> >>> Can you elaborate on it?   =20
-> >>
-> >> Each security domain must have its own PCI BDF.
-> >>
-> >> The migration control registers must be on a different VF from the VF
-> >> being plugged into a guest and the two VFs have to be in different
-> >> IOMMU groups to ensure they are isolated from each other. =20
-> >=20
-> > I think that's a solution, I don't know if it's the only solution.
-> > AIUI, the issue here is that we have a device specific kernel driver
-> > extending vfio-pci with migration support for this device by using an =
-=20
->=20
-> If the two parts of the MMIO region are split into different BAR spaces on
-> the device, the MMIO region of =E2=80=8B=E2=80=8Bthe business function is=
- still placed in BAR2,
-> and the MMIO region of =E2=80=8B=E2=80=8Bthe live migration function is m=
-oved to BAR4.
-> Only BAR2 is mapped in the guest. only BAR4 is mapped in the host.
-> This can solve this security issue.
-
-The concern is really the "on the device" part rather than whether the
-resources are within the same BAR or not.  We need to assume that a
-user driver can generate a DMA targeting any address in the system,
-including in this case the user driver could generate a DMA targeting
-this migration BAR.  Ideally this would be routed upstream to the IOMMU
-where it would be blocked for lack of a translation entry.  However,
-because this range resides on the same PCIe requester ID, it's
-logically more similar to a two-function device where the functions are
-considered non-isolated and are therefore exposed within the same IOMMU
-group.  We would not allow a kernel driver for one of those functions
-and a userspace driver for the other.  In this case those drivers are
-strongly related, but we still need to consider to what extent a
-malicious user driver can interfere with or exploit the kernel side
-driver.
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
+Changes since v2:
+   - None.
+Changes since v1:
+   - None.
 
 
-> > MMIO region of the same device.  This is susceptible to DMA> manipulati=
-on by the user device.   Whether that's a security issue or> not depends on=
- how the user can break the device.  If the scope is
-> > limited to breaking their own device, they can do that any number of
-> > ways and it's not very interesting.  If the user can manipulate device
-> > state in order to trigger an exploit of the host-side kernel driver,
-> > that's obviously more of a problem.
-> >=20
-> > The other side of this is that if migration support can be implemented
-> > entirely within the VF using this portion of the device MMIO space, why
-> > do we need the host kernel to support this rather than implementing it
-> > in userspace?  For example, QEMU could know about this device,
-> > manipulate the BAR size to expose only the operational portion of MMIO
-> > to the VM and use the remainder to support migration itself.  I'm
-> > afraid that just like mdev, the vfio migration uAPI is going to be used
-> > as an excuse to create kernel drivers simply to be able to make use of
-> > that uAPI.  I haven't looked at this driver to know if it has some =20
->=20
-> When the accelerator device is designed to support the live migration
-> function, it is based on the uAPI of the migration region to realize the
-> live migration function, so the live migration function requires a driver
-> that connects to this uAPI.
-> Is this set of interfaces not open to us now?
+ drivers/staging/media/atomisp/i2c/atomisp-gc0310.c  | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-gc2235.c  | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+ drivers/staging/media/atomisp/i2c/atomisp-ov2680.c  | 7 ++++---
+ drivers/staging/media/atomisp/i2c/atomisp-ov2722.c  | 4 ++--
+ 5 files changed, 12 insertions(+), 11 deletions(-)
 
-In your model, if both BARs are exposed to userspace and a device
-specific extension in QEMU claims the migration BAR rather than
-exposing it to the VM, could that driver mimic the migration region
-uAPI from userspace?  For example, you don't need page pinning to
-interact with the IOMMU, you don't need resources beyond the scope
-of the endpoint device itself, and the migration info BAR is safe for
-userspace to manage?  If so, then a kernel-based driver to expose a
-migration uAPI seems like it's only a risk for the kernel, ie. moving
-what could be a userspace driver into the kernel for the convenience of
-re-using a kernel uAPI.  Thanks,
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index 6be3ee1d93a5..d68a2bcc9ae1 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -872,9 +872,9 @@ static int gc0310_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			return gc0310_init(sd);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index 6ba4a8adff7c..e722c639b60d 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -658,9 +658,9 @@ static int gc2235_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		ret = power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			ret = __gc2235_init(sd);
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..465fc4468442 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -568,9 +568,9 @@ static int power_down(struct v4l2_subdev *sd)
+ 
+ static int mt9m114_s_power(struct v4l2_subdev *sd, int power)
+ {
+-	if (power == 0)
++	if (power == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		if (power_up(sd))
+ 			return -EINVAL;
+ 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+index c90730513438..92c52431bd8f 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2680.c
+@@ -461,11 +461,12 @@ static int ov2680_v_flip(struct v4l2_subdev *sd, s32 value)
+ 	ret = ov2680_read_reg(client, 1, OV2680_FLIP_REG, &val);
+ 	if (ret)
+ 		return ret;
+-	if (value) {
++
++	if (value)
+ 		val |= OV2680_FLIP_MIRROR_BIT_ENABLE;
+-	} else {
++	else
+ 		val &= ~OV2680_FLIP_MIRROR_BIT_ENABLE;
+-	}
++
+ 	ret = ov2680_write_reg(client, 1,
+ 			       OV2680_FLIP_REG, val);
+ 	if (ret)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index aec7392fd1de..d046a9804f63 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -772,9 +772,9 @@ static int ov2722_s_power(struct v4l2_subdev *sd, int on)
+ {
+ 	int ret;
+ 
+-	if (on == 0)
++	if (on == 0) {
+ 		return power_down(sd);
+-	else {
++	} else {
+ 		ret = power_up(sd);
+ 		if (!ret)
+ 			return ov2722_init(sd);
+-- 
+2.25.1
 
-Alex
+
 
