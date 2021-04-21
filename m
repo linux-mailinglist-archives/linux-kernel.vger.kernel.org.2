@@ -2,183 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F85B366E6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41176366E74
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 16:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243476AbhDUOqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 10:46:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45756 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238607AbhDUOqS (ORCPT
+        id S243652AbhDUOtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 10:49:03 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:42716 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240756AbhDUOst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:46:18 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13LEYrEo095527;
-        Wed, 21 Apr 2021 14:45:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=R4oXjPLXdiq8elUPDMG70DrNyemYMYAWRUqcQxdRT0g=;
- b=qCUcYVO8gjYZmF3W16sEbdagknIY15WroxE//D1gpmyxvUSq36EeYbDks+34FGqnT3ue
- jhzp4363QoiybLWQu4IV8uNfpsJMenIRSe20JPSg5sxSvmlP+TAihzrdKcnhWx2BqSqR
- eKAHy1O7aHcSfxy/oYrTVYnOHak849sdikByQafEsbYaCrIZasGiqcfEP3h6g3C9mOoo
- 4yBv/ODBYgJv3nKmIoQ575kSf2I8pm4Adk3o2N7raxqPAvKbB4b7+ywshOsOH/aANyZS
- PxnCAxDpj5+x/Ju6pVjmfkXBdBCcC+AQ89u5Hi5W9KP4CDnRrqCXtVvpwxIo6W8hdCGG 7Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37yqmnjhss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 14:45:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13LEUHiC054765;
-        Wed, 21 Apr 2021 14:45:24 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2176.outbound.protection.outlook.com [104.47.58.176])
-        by aserp3020.oracle.com with ESMTP id 3809k20r4m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Apr 2021 14:45:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lY7tmi+VgFIzMTske+/cCjDV6qXmwhftKzz8HRu7fY7RFn3dKb2dMIozg9jxoOE2aszJgKyAl3qS3HA/Poc1Tzfs5PBCJDlKmdaWvPoP4XaSXcSGF8eRrTJkmJhJAdDEiGhEEULlnrf80vYv0aqwvTZVQ5pIUHe9xdRMSjPhph6WKHsukFB5CyIfVt1D5RJQgY11HjAP1YoK2JWSurp4rJ2nYC0p0zjsmlmASu04yXhMPkHbpjXPlP7yHFIqeWzBQkVeD6orKxIeuPIvnlKwGP3qUUKpqI6k5BPUxbr4wYtUX/zhXC7m9dTEm7q3OTvBP3lU+t1wfW+tq2ANS4gpLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R4oXjPLXdiq8elUPDMG70DrNyemYMYAWRUqcQxdRT0g=;
- b=ciJiAWIOVi5jSD1meexsbPr4JeihUucRJZsfPm6zLzw98SvBI4N6ViIIXk4KNCIe+8Ac+ocgPwWf9V7iPu05T7zYKBDlAAV4AcWWYehYbdCBUMq6FeD4Ctrs+xM1cs1777wVk3Pq1t/Ckd/McJSylY8euXuPRYpaTd5ywZseq5zdiSMXrGDONKtA3Gh7zPMHcaot7CNaK6+90dVbfbm/7jJyuJ4doaNcmx4wGknQM5u3a1e2/166e15980Tzg8UkECpRsfaXqv0r3vqlJDBESLb0yGx4RnPsmQmoFAEbdZB7XQ0tf5P08pthlIih+zFgTiiU+UPYgmAN1tfgZR4xmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R4oXjPLXdiq8elUPDMG70DrNyemYMYAWRUqcQxdRT0g=;
- b=gdwf311ax69cEKKVcF43Dvveyv8WHw8GWZ6MljAT8YufO8a2VWgT1oJ5/jKYyxBT6GJpX6rqikW2g/qmZ80A49kRBNcI2ndXbLR/iPmHZhUYUvabm/Dk8xPCwuxUkHWT0lFMJ9zqLNLgyBqTqoGTvhgCy8ZluO6rWe93sCula7s=
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4705.namprd10.prod.outlook.com (2603:10b6:303:96::11)
- by MWHPR10MB1373.namprd10.prod.outlook.com (2603:10b6:300:20::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Wed, 21 Apr
- 2021 14:45:22 +0000
-Received: from CO1PR10MB4705.namprd10.prod.outlook.com
- ([fe80::7cf5:7988:6b5a:9b33]) by CO1PR10MB4705.namprd10.prod.outlook.com
- ([fe80::7cf5:7988:6b5a:9b33%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 14:45:22 +0000
-Subject: Re: [PATCH 0/9] sched: Core scheduling interfaces
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Tejun Heo <tj@kernel.org>, Hao Luo <haoluo@google.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Zefan Li <lizefan.x@bytedance.com>
-References: <20210401131012.395311786@infradead.org>
- <YGpOF6f0YcMkWy1u@mtj.duckdns.org>
- <CAEXW_YSS0ex8xK7t2R7c1jiE4eNbwxdwP2uyGPDK78YAaYQr5A@mail.gmail.com>
- <YGxtLOxCb4LO8kN0@slm.duckdns.org> <YHuMy0o7gRd+kIVN@google.com>
- <YH1GyFA96tioW4kZ@hirez.programming.kicks-ass.net>
- <YIAqC5su75GGu+Qx@hirez.programming.kicks-ass.net>
-From:   Chris Hyser <chris.hyser@oracle.com>
-Message-ID: <7703f6ae-51b9-8bc4-a3c0-70f534451014@oracle.com>
-Date:   Wed, 21 Apr 2021 10:45:18 -0400
+        Wed, 21 Apr 2021 10:48:49 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 8E09E521A47;
+        Wed, 21 Apr 2021 17:48:12 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1619016492;
+        bh=x+9RxR3vKP07vYouFMjF6QLuIKPb9SP7CqKKIgJzpuo=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=yLwDFDV8BAsUKrwaWdnPbIqoOi2dJYgzUqItSgOHNN8docs/CJL4M9beg75Ivz3ax
+         FGdEh+uiNdQwYLqpFzDNBjzBm05ADMfJzNV4hGFkRqJ2P+HUKtzpYC2q5wPZ3jekZE
+         yo50jsPwrTB2Giy/o18AEOmPJl+L79G7rpNz9pY6If+hmD+LLI6d9KoGccM6HHSKfw
+         Ep0V1avYCzBi4FkWyT7kcaZ2bXd/LLnC6TDPHWkTRAfycwPjnmFOzzTUty4H2XXLWL
+         QcOgkbQboHMeA1Ghqsk7FzzUgddKzfs22WOSI7fZKDgtDZbSEuu+FTZ0A4e2lKfAN0
+         57Mms4sJ2U0vg==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 4E90E5217A2;
+        Wed, 21 Apr 2021 17:48:11 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 21
+ Apr 2021 17:47:50 +0300
+Subject: Re: [RFC PATCH v8 04/19] af_vsock: implement SEQPACKET receive loop
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Alexander Popov <alex.popov@linux.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
+ <20210413124250.3400313-1-arseny.krasnov@kaspersky.com>
+ <20210421083732.hxlilatddifcokjx@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <9c391b66-84e4-6ead-55fa-1cf42e1e7306@kaspersky.com>
+Date:   Wed, 21 Apr 2021 17:47:44 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-In-Reply-To: <YIAqC5su75GGu+Qx@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.242.218.156]
-X-ClientProxiedBy: MN2PR06CA0010.namprd06.prod.outlook.com
- (2603:10b6:208:23d::15) To CO1PR10MB4705.namprd10.prod.outlook.com
- (2603:10b6:303:96::11)
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.193] (67.242.218.156) by MN2PR06CA0010.namprd06.prod.outlook.com (2603:10b6:208:23d::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Wed, 21 Apr 2021 14:45:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7172952e-a57c-4d02-2a40-08d904d41754
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1373:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB1373C62C9C497D8938F312F09B479@MWHPR10MB1373.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VzQlV1AJRg/fSpzziMtbA5e5ca/EaAbx5cMcXighmyifCiAlfgJTMkYggZmfkQyz20r1+P0jS7Il1n4pBh+1BHzXld011TnRuTqcfKvLbpyCwhaNjHcyQSKFMAH8g9xvHnRps91WQHMnFIdA1qjbQ8K8nCm2HrxgqRZm4OZmEbfm0jjord7an8nPtbnCduxzzNil4z9H5kmOdok8sEEKVOXFw2QZgnOvsscPCsB9ViXKgn8OwzTWWc7atCWNeIKU+DKwkwhicrEryJlQoyhgYr+RgNRDmJsP2O+3ZQjUQwzQwOuSdw1u6w79AS07ME2hZIj87Hg33l36De/bsWR2tUDCvuH0EqKgmXLNw3CImLGFs0zTYfWo29u9uU2DwrDOXptfSADJP+wbn6xTjSgSCZPsxi28NkvJixh4uCBRpOnKUC8NuKLG3cjEtf+aehwMhgiFRTZCG8ACqIPa7xtVnVpxEqKJN6wlMiViuBs9Piawi9cqIgr/feNH6CASAV7HfhvRBWr4yZHRpCbI2CO7vKukoDUe8mmNTRY0gjkIIhmwa8OXbkH1qEXj7Rp+PlqiMBiUKbyc1ho4TSdJKPMRK1B6xJ68yCLBIz5KcVD5JQ6P8dqy78zYu151WbJiq2boDGiiMn7iyj0jeMr8xFspsQ/x/b55ximCIUJaXFXu+H8S4SPjs54i54p08CvxdIUiV+c+hELbg42imz5RSqLluQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4705.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(136003)(39860400002)(346002)(366004)(44832011)(6486002)(53546011)(5660300002)(478600001)(4744005)(86362001)(4326008)(52116002)(54906003)(110136005)(956004)(2616005)(16526019)(2906002)(316002)(26005)(186003)(31686004)(31696002)(7416002)(36756003)(16576012)(66556008)(66946007)(66476007)(83380400001)(8936002)(8676002)(38350700002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZzVzWjV3Y0RVNHVGUm91UGQ1bGlRdEQxVS9KMHRjOFJETE1mUXVGdmFYTnRs?=
- =?utf-8?B?aFlrRXQ5VkIwT1I1S05RNHVuSWZjYktmejVLOXUrVmxwRVZFUlJqUTV3K0tE?=
- =?utf-8?B?K2pWYnd0TXRhbEZUdXVwSVY4WVZDQkNaWTF0SWtvcm5zajBZR0JoVW1IRmRu?=
- =?utf-8?B?anJuT3cxUG9VQVZyZU80TnJNeWVHMklqaGhtTkg4NWNONHlSd0c0bTM3dnEx?=
- =?utf-8?B?b0pMMlIrNVZxNjRROWVNUGtyY1NraFdhWWxyczJSYlVZNkdPU1lYYUpxWkdR?=
- =?utf-8?B?RlM4eEdFUkZrcFhnUXBpZjhzdGM3d3BHUmRQa3JERDA2Q0ZnaTdIUWsyUElO?=
- =?utf-8?B?UHo1V2V3eHhURmIvaUZNRVNaMDY4WEJNR1k1VW9WWnM2ZHFEb0RiVzdBSUpQ?=
- =?utf-8?B?eXZtVVZETmdHQTAxWk5wVE9UOFBEWFpKTzUzMWtnVHIvcFpOMFMrOXZ0Vlln?=
- =?utf-8?B?UXhIejd5REtHQlMxYWw2bUhlMnE0VUg0N2NTTTlBVTFLaFJLN0tOTEJCV1h2?=
- =?utf-8?B?U2V6cXZsM3RCMWx0d2NEVktHVVpUVWdaanhwSndxbEg5b0Q4YTNXaU4xZWJt?=
- =?utf-8?B?OUwzQng2emxlakRIYi8yYmpObnR6YzBvRklyTGRrai9GbzJOVnFzRjBMVmls?=
- =?utf-8?B?T0JGVXFFZGFDaTZjc1RQTDkyNktsMnk5NjQvQ1RNL0pLOE9pbFZzaDRNRkJk?=
- =?utf-8?B?MHZkVjA1UzBac04yY0RsRWxrTUlGR0hLZnF6M2psL2VBVmNGZ29zT21VRnVo?=
- =?utf-8?B?eStzRFJvNytNUmY4VFY1eXJZQW5Ca2ZZNERkVWgvYS9GN01JMG8zUEEvUXFt?=
- =?utf-8?B?YjVaYXR3UWx3R3hNUVRLZWQ5MlMwYjJVRXJNb1pLdVFSWklDRU0rMHJ5TFp1?=
- =?utf-8?B?Z05uMkhNRndzSTFpa2V3RDJsT0VNanlVS09DblVkRmpUeDJhcjNvSy90blZM?=
- =?utf-8?B?bGNSSW81TjIySWU5NXY0Q2hmcjdadXBZUjFlSVhEdVREWVZFWnQrZTlqbjlU?=
- =?utf-8?B?YXN2NHg1eElId25LL1hTOGR4SjJsSmk4aGVXYWZ3cktqNXF2MmhWL2szeGZX?=
- =?utf-8?B?OWhGVmxweGNaNzJYeUlGdmUrTHc1QzMrajZheE85MEFmSjF6OXQrWVkvTk94?=
- =?utf-8?B?WjdhTmgxN3ZnczJqbHhGaUZFVDJpMk9OSEpWUTFxVXBYcUhNSTd0amdNR0U3?=
- =?utf-8?B?K1d5Tm51YlNKbE1FQUtiOWNEM2ZJd1ZOTHNaWlYwQlZ0U3hGZFhyM0s5b3hF?=
- =?utf-8?B?alRMaE83eGVTTXJ1Tzh4d1g3VDNDRXM0K1FDL3hzT3BrV01lOUZGeXNNamhE?=
- =?utf-8?B?U3dDRWI3TGd2bGJSTlQxa09UWThIZEx6S3pjWmNZaVh6V2dRQWRnTis3LzJZ?=
- =?utf-8?B?TkpiM2xQSVBSME03SlN2SVY1aXZIVkhXTUgzRmJvRFh4bEl1ZVVzQU84SU42?=
- =?utf-8?B?TnFlMERDOTJGMFRtU0tldWxGU3NVL3NLVjByc1NwSTBVbXpqK3NQVEJKZjM5?=
- =?utf-8?B?ci9McDQ1SEtXajVWVFNYaWNYL2x1aUFkZm5uRW5RNnV1S0JBdkNNOWNidmZr?=
- =?utf-8?B?VGRVSW13ZXczTG5tYlYySEw1VllhRGVsb2grWjV0M21rcW1vckRKc2dTWkla?=
- =?utf-8?B?QWJiN005Y3lDbnNlNHdiNDdtQW1oOTFyT1pOenQ2VGlwN1Y1c0J4dGp0Umho?=
- =?utf-8?B?RjVZd2pSblZUSDlLU3IzaExzRXZJZ29QdXhkemM4bHBOeXhSYld1aDJhVXAv?=
- =?utf-8?Q?ZxY84i2yXofzzBSehTcEwYP4gMspnn4HR2GY8aM?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7172952e-a57c-4d02-2a40-08d904d41754
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4705.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 14:45:22.2059
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TGMmOQmm5ISJhzny/td/FqKwBuOtM8M7VVBJAFmfnqZEa5gpKu3T+iRXnchUdVvk52bgr1to+oat6ecmbMpfFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1373
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104210113
-X-Proofpoint-ORIG-GUID: 7OLw0VzrPAEGTVYuXVHc4iwZmlWbjYr8
-X-Proofpoint-GUID: 7OLw0VzrPAEGTVYuXVHc4iwZmlWbjYr8
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
- impostorscore=0 spamscore=0 malwarescore=0 clxscore=1011
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104210113
+In-Reply-To: <20210421083732.hxlilatddifcokjx@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 14:29:29
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163270 [Apr 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/21/2021 14:32:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 21.04.2021 11:31:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/04/21 13:40:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/21 11:31:00 #16604789
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 9:35 AM, Peter Zijlstra wrote:
-> On Mon, Apr 19, 2021 at 11:00:57AM +0200, Peter Zijlstra wrote:
->> On Sat, Apr 17, 2021 at 09:35:07PM -0400, Joel Fernandes wrote:
-> 
->>> Peter, any thoughts on this?
->>
->> Adding CGROUP_SHARE is not sufficient to close the hole against CLEAR.
->> So we either then have to 'tweak' the meaning of CLEAR or replace it
->> entirely, neither seem attractive.
->>
->>
->> I'd love to make some progress on all this.
-> 
-> Can I comment out CLEAR so we can sort that out later? I suppose people
 
-I merely added CLEAR for completeness. Ultimately, I think having to kill a process because a cookie got set by mistake 
-is bad, but it can absolutely be sorted out later.
-
--chrish
+On 21.04.2021 11:37, Stefano Garzarella wrote:
+> On Tue, Apr 13, 2021 at 03:42:47PM +0300, Arseny Krasnov wrote:
+>> This adds receive loop for SEQPACKET. It looks like receive loop for
+>> STREAM, but there is a little bit difference:
+>> 1) It doesn't call notify callbacks.
+>> 2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
+>>   there is no sense for these values in SEQPACKET case.
+>> 3) It waits until whole record is received or error is found during
+>>   receiving.
+>> 4) It processes and sets 'MSG_TRUNC' flag.
+>>
+>> So to avoid extra conditions for two types of socket inside one loop, two
+>> independent functions were created.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>> v7 -> v8:
+>> - Length of message is now not returned by callback, it returns only
+>>   length of data read by each call.
+>> - Previous case, when EAGAIN is return and dequeue loop restarted now
+>>   removed(in this simplified version we consider that message could not
+>>   be corrupted).
+>> - MSG_TRUNC in input flags is now handled by callback.
+>>
+>> include/net/af_vsock.h   |  4 +++
+>> net/vmw_vsock/af_vsock.c | 66 +++++++++++++++++++++++++++++++++++++++-
+>> 2 files changed, 69 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> index b1c717286993..5175f5a52ce1 100644
+>> --- a/include/net/af_vsock.h
+>> +++ b/include/net/af_vsock.h
+>> @@ -135,6 +135,10 @@ struct vsock_transport {
+>> 	bool (*stream_is_active)(struct vsock_sock *);
+>> 	bool (*stream_allow)(u32 cid, u32 port);
+>>
+>> +	/* SEQ_PACKET. */
+>> +	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+>> +				     int flags, bool *msg_ready);
+>> +
+>> 	/* Notification. */
+>> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+>> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index c4f6bfa1e381..d9fb4f9a3063 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -1974,6 +1974,67 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+>> 	return err;
+>> }
+>>
+>> +static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
+>> +				     size_t len, int flags)
+>> +{
+>> +	const struct vsock_transport *transport;
+>> +	bool msg_ready;
+>> +	struct vsock_sock *vsk;
+>> +	ssize_t record_len;
+>> +	long timeout;
+>> +	int err = 0;
+>> +	DEFINE_WAIT(wait);
+>> +
+>> +	vsk = vsock_sk(sk);
+>> +	transport = vsk->transport;
+>> +
+>> +	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
+>> +	msg_ready = false;
+>> +	record_len = 0;
+>> +
+>> +	while (1) {
+>> +		ssize_t tmp_record_len;
+> Maybe better a name like `partial_len`, `fragment_len`, or just `read`.
+Ack
+>
+>> +
+>> +		if (vsock_wait_data(sk, &wait, timeout, NULL, 0) <= 0) {
+>> +			/* In case of any loop break(timeout, signal
+>> +			 * interrupt or shutdown), we report user that
+>> +			 * nothing was copied.
+>> +			 */
+>> +			err = 0;
+>> +			break;
+>> +		}
+>> +
+>> +		tmp_record_len = transport->seqpacket_dequeue(vsk, msg, flags, &msg_ready);
+> I think we can avoid to pass 'flags' down to the transports.
+>
+> We can require that seqpacket_dequeue() should always return the real 
+> size of the packet received, and then check below if 'MSG_TRUNC' was 
+> set...
+Ack
+>
+>> +
+>> +		if (tmp_record_len < 0) {
+>> +			err = -ENOMEM;
+>> +			break;
+>> +		}
+>> +
+>> +		record_len += tmp_record_len;
+>> +
+>> +		if (msg_ready)
+>> +			break;
+>> +	}
+>> +
+>> +	if (sk->sk_err)
+>> +		err = -sk->sk_err;
+>> +	else if (sk->sk_shutdown & RCV_SHUTDOWN)
+>> +		err = 0;
+>> +
+>> +	if (msg_ready && err == 0) {
+>> +		err = record_len;
+>> +
+>> +		/* Always set MSG_TRUNC if real length of packet is
+>> +		 * bigger than user's buffer.
+>> +		 */
+> ...here:
+> 		if (flags & MSG_TRUNC && record_len > len)
+>
+>> +		if (record_len > len)
+>> +			msg->msg_flags |= MSG_TRUNC;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +
+>> static int
+>> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>> 			  int flags)
+>> @@ -2029,7 +2090,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>> 		goto out;
+>> 	}
+>>
+>> -	err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>> +	if (sk->sk_type == SOCK_STREAM)
+>> +		err = __vsock_stream_recvmsg(sk, msg, len, flags);
+>> +	else
+>> +		err = __vsock_seqpacket_recvmsg(sk, msg, len, flags);
+>>
+>> out:
+>> 	release_sock(sk);
+>> -- )
+>> 2.25.1
+>>
+>
