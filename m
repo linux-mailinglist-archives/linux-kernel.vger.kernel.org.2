@@ -2,195 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42417366354
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 03:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30CE366369
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 03:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbhDUBTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 21:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbhDUBTP (ORCPT
+        id S234508AbhDUBlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 21:41:42 -0400
+Received: from regular1.263xmail.com ([211.150.70.196]:34738 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231475AbhDUBll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 21:19:15 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0767BC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 18:18:43 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g8so64393043lfv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 18:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iuYkrU1zcW7Z65oSaWVLBz+0IZ221pOBrSimYNtby7s=;
-        b=ndkdt3mjYlW+H/QWZc671xlRMDK4yybhmgXbvu53LBPocwBLlpjTZ783Rd2QVNzrGj
-         IkSdWhxhBQo0UbqFvs6XPv6hCdPKkg3b7FMjuPdJLz2w54a+Wyfrp6CFYDZyPmDZ3IkE
-         W0vUtwV0T3yekrghgmLcCS164X9lDUDwgvhq916QgiJMH6wfzNW5C5/XrLnNN1ph/GiG
-         K9J+ZM292B32Iy7S2ga4b5yxthPArwSwjdGo+ryLUmzGMwC6X6Vm5f3VEnJDlzd6Fanr
-         5Tu901R+Odid1zCgNaLUEr0kwh4Mm7azowTlPf+njENOsLhgr4i1ixuDJo8Jn+I4+guT
-         /+4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iuYkrU1zcW7Z65oSaWVLBz+0IZ221pOBrSimYNtby7s=;
-        b=QZ4Xs6cuy90s87K7eSJQo+JnWnuyVK6yXbZldrlfXxrD9XgGuRd/eCm8f+4VhQlZOV
-         Z3/eUax/kKeRaa6cyshUMHZuxOb7qfzeJwW68+5DpYPkog95mZ3Fa6l9UrZeJDy9njYq
-         RX5Mvq5ceytUXZq/vLlq3LUQWRhyLt8QdYzJlOl3ekgtdCJTY9yCLkkJLvCqx83EUpIa
-         D9TjCUnBbDPPHOgMNCiytXwVFnQvLiMbp4MSbjCVV1OQvNRwR8PFMEAam3hWC0+ozpYE
-         6zLvc9oTvZ1nQaHfA0F4QEICgL3i/sk7r/XIRD7/Cceeu6ir4BsqwPY+7PvNqjgw7oBT
-         RFYQ==
-X-Gm-Message-State: AOAM533QejDjZqJAyHymndjag5H7zl3UQG/UEcSC27+Ez4N6IhAg0cb8
-        mZWPRRbKzu3D/x293QVvCbuB0xopugifP3RGnj9JRA==
-X-Google-Smtp-Source: ABdhPJxpxXiVbMCgfjPsAKK51JzwZPy6+zbSmmw770y0uEFu9+qDNgQV48FCOjkzQcNHaQ2ZAMShaBbuBCdhR7VK8ec=
-X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr17393868lfs.358.1618967921088;
- Tue, 20 Apr 2021 18:18:41 -0700 (PDT)
+        Tue, 20 Apr 2021 21:41:41 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by regular1.263xmail.com (Postfix) with ESMTP id 5ADEE1FB7;
+        Wed, 21 Apr 2021 09:40:34 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [192.168.60.65] (unknown [103.29.142.67])
+        by smtp.263.net (postfix) whith ESMTP id P18573T140528554710784S1618969227797629_;
+        Wed, 21 Apr 2021 09:40:33 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <5db166d1d96e10a4db9cac74f19984fa>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 6
+X-SENDER-IP: 103.29.142.67
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
+ <871rbeo7wf.wl-maz@kernel.org>
+ <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
+ <87y2dmmggt.wl-maz@kernel.org>
+ <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
+ <87tuoambdb.wl-maz@kernel.org>
+ <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+ <871rbdt4tu.wl-maz@kernel.org>
+ <678e9950-dd85-abb2-a104-07a4db1fad49@rock-chips.com>
+ <87k0p4m0gm.wl-maz@kernel.org>
+ <8d2e22f5-1c1b-e795-8757-ae078446d961@rock-chips.com>
+ <878s5i2qyw.wl-maz@kernel.org>
+From:   Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <2791594e-db60-e1d0-88e5-7e5bbd98ae4d@rock-chips.com>
+Date:   Wed, 21 Apr 2021 09:40:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
-In-Reply-To: <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 20 Apr 2021 18:18:29 -0700
-Message-ID: <CALvZod7dXuFPeMv5NGu96uCosFpWY_Gy07iDsfSORCA0dT_zsA@mail.gmail.com>
-Subject: Re: [RFC] memory reserve for userspace oom-killer
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dragos Sbirlea <dragoss@google.com>,
-        Priya Duraisamy <padmapriyad@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <878s5i2qyw.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:18 PM Roman Gushchin <guro@fb.com> wrote:
+Hi Marc,
+
+On 2021/4/16 下午11:23, Marc Zyngier wrote:
+> On Fri, 16 Apr 2021 02:13:38 +0100,
+> Kever Yang <kever.yang@rock-chips.com> wrote:
+>> Hi Marc,
+>>
+>> On 2021/4/15 下午4:11, Marc Zyngier wrote:
+>>> Hi Kever,
+>>>
+>>> On Thu, 15 Apr 2021 08:24:33 +0100,
+>>> Kever Yang <kever.yang@rock-chips.com> wrote:
+>>>> Hi Marc, Peter,
+>>>>
+>>>>       RK356x GIC has two issues:
+>>>>
+>>>> 1. GIC only support 32bit address while rk356x supports 8GB DDR SDRAM,
+>>>> so we use ZONE_DMA32 to fix this issue;
+>>> What transactions does this affect exactly?
+>> The GIC on rk356x is a 32bit master, which means all the space its
+>> logic need to access should be in the 4GB range.
+> Well, at least this is consistently broken.
+
+There are many legacy IPs which only support 32bit bus, we have to use 
+them as is in the new
+
+64bit SoCs, I think the 32bit GIC can be considered the same as those 
+case, can we add CONFIG_ZONE_DMA32
+
+support in GIC driver?
+
+eg. Other peripheral driver use dma_alloc_coherent() instead of 
+alloc_pages(), so then can support
+
+ZONE_DMA32 without any code change.
+
+
+>>> Only some ITS tables? Or
+>>> all of them, including the command queue? What about the configuration
+>>> and pending tables associated with the redistributors?
+>>>
+>>>> 2. GIC version is r1p6-00rel0, RK356x interconnect does not support
+>>>> GIC and CPU snoop to each other, hence the GIC does not support the
+>>>> shareability feature.  The read of register value for shareability
+>>>> feature does not return as expect in GICR and GITS, so we have to
+>>>> workaround for it.
+>>> How about the cacheability attribute? Can you please provide the exact
+>>> set of attributes that this system actually supports for each of the
+>>> ITS and redistributor base registers?
+>> The shareability attributes in GICR_PENDBASEER, GICR_PROPBASER,
+>> GITS_BASERn, GITS_CBASER default value is 0b00, when we set 0b01 then
+>> read returns 0b01.
+> And I claim that this is a perfectly broken behaviour. How do you
+> expect software to find about the gory details of the integration?
+> That's the only way for SW to find out what the HW is capable of...
+
+As a software engineer, I totally agree with you on this point, but when 
+we back to the truth,
+
+we should know that these registers has never been defined as "module 
+capability for shareability"
+
+in hardware. The software use it as capability detect, and it works 
+before, but not means this
+
+match the original hardware design, in this case the new hardware may 
+not follow the legacy
+
+design because it's not a standard or a clear enough guide for it.
+
+The capability register should always read-only instead of read-write, 
+the understanding from
+
+software engineer and from hardware engineer always have a gap.
+
+I would proposal to add a optional dts property for driver to identify 
+if the board's GIC support
+
+shareability or not, which is a method used by many other module drivers.
+
+>> Since there is no ACE coherency interface for this GIC controller, all
+>> the cacheability in the GIC is not support in hardware.
+>>
+>>> Also, please provide errata numbers for these two issues so that we
+>>> can properly document them and track the workarounds.
+>> What kind of errata do you need, could you please share any kind of
+>> example close to this case?
+> I would like something that says:
 >
-> On Mon, Apr 19, 2021 at 06:44:02PM -0700, Shakeel Butt wrote:
-[...]
-> > 1. prctl(PF_MEMALLOC)
-> >
-> > The idea is to give userspace oom-killer (just one thread which is
-> > finding the appropriate victims and will be sending SIGKILLs) access
-> > to MEMALLOC reserves. Most of the time the preallocation, mlock and
-> > memory.min will be good enough but for rare occasions, when the
-> > userspace oom-killer needs to allocate, the PF_MEMALLOC flag will
-> > protect it from reclaim and let the allocation dip into the memory
-> > reserves.
-> >
-> > The misuse of this feature would be risky but it can be limited to
-> > privileged applications. Userspace oom-killer is the only appropriate
-> > user of this feature. This option is simple to implement.
+> "ROCKCHIP_ERRATUM_123456: The GIC600 integration in RK356x doesn't
+>   support any of the shareability or cacheability attributes, and
+>   requires both values to be set to 0b00 for all the ITS and
+>   Redistributor tables."
 >
-> Hello Shakeel!
+> This is pretty similar to the bug affecting ThunderX with its "erratum
+> 24313" (covered by CONFIG_CAVIUM_ERRATUM_22375), where the tables have
+> to be flagged as non-cacheable. The Rockchip one is just worse.
 >
-> If ordinary PAGE_SIZE and smaller kernel allocations start to fail,
-> the system is already in a relatively bad shape. Arguably the userspace
-> OOM killer should kick in earlier, it's already a bit too late.
-
-Please note that these are not allocation failures but rather reclaim
-on allocations (which is very normal). Our observation is that this
-reclaim is very unpredictable and depends on the type of memory
-present on the system which depends on the workload. If there is a
-good amount of easily reclaimable memory (e.g. clean file pages), the
-reclaim would be really fast. However for other types of reclaimable
-memory the reclaim time varies a lot. The unreclaimable memory, pinned
-memory, too many direct reclaimers, too many isolated memory and many
-other things/heuristics/assumptions make the reclaim further
-non-deterministic.
-
-In our observation the global reclaim is very non-deterministic at the
-tail and dramatically impacts the reliability of the system. We are
-looking for a solution which is independent of the global reclaim.
-
-> Allowing to use reserves just pushes this even further, so we're risking
-> the kernel stability for no good reason.
-
-Michal has suggested ALLOC_OOM which is less risky.
-
+> We need an official erratum number so that we can refer to it in the
+> source, commit log and documentation, as well as cross-reference it
+> with the TRM. This number will be part of a configuration symbol that
+> will make the compilation conditional so that people don't have to
+> carry the extra burden generated by this bug if they don't need to.
 >
-> But I agree that throttling the oom daemon in direct reclaim makes no sense.
-> I wonder if we can introduce a per-task flag which will exclude the task from
-> throttling, but instead all (large) allocations will just fail under a
-> significant memory pressure more easily. In this case if there is a significant
-> memory shortage the oom daemon will not be fully functional (will get -ENOMEM
-> for an attempt to read some stats, for example), but still will be able to kill
-> some processes and make the forward progress.
-
-So, the suggestion is to have a per-task flag to (1) indicate to not
-throttle and (2) fail allocations easily on significant memory
-pressure.
-
-For (1), the challenge I see is that there are a lot of places in the
-reclaim code paths where a task can get throttled. There are
-filesystems that block/throttle in slab shrinking. Any process can get
-blocked on an unrelated page or inode writeback within reclaim.
-
-For (2), I am not sure how to deterministically define "significant
-memory pressure". One idea is to follow the __GFP_NORETRY semantics
-and along with (1) the userspace oom-killer will see ENOMEM more
-reliably than stucking in the reclaim.
-
-So, the oom-killer maintains a list of processes to kill in extreme
-conditions, have their pidfds open and keep that list fresh. Whenever
-any syscalls returns ENOMEM, it starts doing
-pidfd_send_signal(SIGKILL) to that list of processes, right?
-
-The idea has merit but I don't see how this is any simpler. The (1) is
-challenging on its own and my main concern is that it will be very
-hard to maintain as reclaim code (particularly shrinkers) callbacks
-into many diverse subsystems.
-
-> But maybe it can be done in userspace too: by splitting the daemon into
-> a core- and extended part and avoid doing anything behind bare minimum
-> in the core part.
+> Same thing goes for the 32bit bug.
 >
-> >
-> > 2. Mempool
-> >
-> > The idea is to preallocate mempool with a given amount of memory for
-> > userspace oom-killer. Preferably this will be per-thread and
-> > oom-killer can preallocate mempool for its specific threads. The core
-> > page allocator can check before going to the reclaim path if the task
-> > has private access to the mempool and return page from it if yes.
-> >
-> > This option would be more complicated than the previous option as the
-> > lifecycle of the page from the mempool would be more sophisticated.
-> > Additionally the current mempool does not handle higher order pages
-> > and we might need to extend it to allow such allocations. Though this
-> > feature might have more use-cases and it would be less risky than the
-> > previous option.
+>> We consider this as a SoC implement design instead of a bug, so we
+>> will add document in RK356X  TRM to describe the GIC design, but no
+>> idea how to provide the errata.
+>>
+>> Here is the shareabily attribute from ARM GIC architecture specification:
+>> Shareability, bits [11:10] (from GITS_CBASER)
+>> Indicates the Shareability attributes of accesses to the command
+>> queue. The possible values of this field are:
+>> 0b00 Non-shareable.
+>> 0b01 Inner Shareable.
+>> 0b10 Outer Shareable.
+>> 0b11 Reserved. Treated as 0b00.
+>> It is IMPLEMENTATION DEFINED whether this field has a fixed value or
+>> can be programmed by software. Implementing this field with a fixed
+>> value is deprecated.
+>> On a Warm reset, this field resets to an architecturally UNKNOWN value
+>>
+>> As you can see, "Implementing this field with a fixed value is
+>> deprecated", so software should program this field to '0b00
+>> Non-shareable' if the SoC design does not support the cache
+>> shareability.
+> [I really feel special when people quote the GIC spec at me]
 >
-> It looks like an over-kill for the oom daemon protection, but if there
-> are other good use cases, maybe it's a good feature to have.
+> That isn't what it says. Hardcoding the field with a fixed value is
+> indeed deprecated, but that doesn't mean this field should accept
+> values that the HW cannot support. If anything, what this says is "try
+> and implement the options that SW is going to use".
+>
+> But you need to give SW an indication of what is usable, because there
+> is no other way to *discover* what the SoC is capable of at runtime.
+> Otherwise, we would need to carry a per-SoC list of what the HW
+> supports. I don't think that's the right thing to do (and you're about
+> 8 years too late anyway).
+>
+> Other GIC600 integrations got it perfectly right, by the way. Same for
+> other GIC implementations, with the notable exception of Cavium and
+> their first GIC in ThunderX, as described above.
+
+I'm not sure if you still work for ARM or not, but we do have double 
+check again and again
+
+with IP vendor about this point, the GIC500 works because it's hardware 
+bind to a fix value inside the IP,
+
+but GIC600 does not do the same binding, and there is no any config 
+option to hardcode the reg field
+
+to a fixed value in the IP when we don't need the ACE-lite.
+
+This is why I insist that this is a different SoC implementation instead 
+of a SoC bug, we should add the
+
+support in the GIC driver for different hardware case.
+
+When you say we're about 8 years too late, I think there still not much 
+SoCs using GIC600, maybe the GIC600 IP
+
+is available for user at mid of 2017?
+
+
+Thanks,
+- Kever
+>
+> Thanks,
+>
+> 	M.
 >
 
-IMHO it is not an over-kill and easier to do then to remove all
-instances of potential blocking/throttling sites in memory reclaim.
 
-> >
-> > Another idea I had was to use kthread based oom-killer and provide the
-> > policies through eBPF program. Though I am not sure how to make it
-> > monitor arbitrary metrics and if that can be done without any
-> > allocations.
->
-> To start this effort it would be nice to understand what metrics various
-> oom daemons use and how easy is to gather them from the bpf side. I like
-> this idea long-term, but not sure if it has been settled down enough.
-> I imagine it will require a fair amount of work on the bpf side, so we
-> need a good understanding of features we need.
->
-
-Are there any examples of gathering existing metrics from bpf? Suren
-has given a list of metrics useful for Android. Is it possible to
-gather those metrics?
-
-BTW thanks a lot for taking a look and I really appreciate your time.
-
-thanks,
-Shakeel
