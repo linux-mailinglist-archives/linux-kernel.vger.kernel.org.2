@@ -2,240 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26D93666E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50383666E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 10:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbhDUIR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 04:17:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47769 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234010AbhDUIRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 04:17:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618993041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0FbeJ53aKVzlQQGzIJrlpdNfqU7q4WOuEBNdaNenu8=;
-        b=TmuNS4Ezw+hEaxT9UfTKKaaeRi7f3SrQo/MQ7G9GYaD29bzOub3YlYjW6PQ2/CyWIdpmM5
-        hjBYbaD/5U2phpCAip9NXEaqAcL/yhiFoY9LLRJCMmxNorkDVRyq+qXSm5Y0BCJK3Vrikj
-        2C3jjVLQcfGQ2AQwxlUf3L0DvGcSSRI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-BkXkWc7QOw6372n4GTzxVA-1; Wed, 21 Apr 2021 04:17:17 -0400
-X-MC-Unique: BkXkWc7QOw6372n4GTzxVA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C74A2107ACC7;
-        Wed, 21 Apr 2021 08:17:15 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-189.pek2.redhat.com [10.72.13.189])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C8F060C05;
-        Wed, 21 Apr 2021 08:17:09 +0000 (UTC)
-Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, parav@nvidia.com, elic@nvidia.com,
-        "Zhu, Lingshan" <lingshan.zhu@intel.com>
-References: <20210408082648.20145-1-jasowang@redhat.com>
- <20210408115834-mutt-send-email-mst@kernel.org>
- <a6a4ab68-c958-7266-c67c-142960222b67@redhat.com>
- <20210409115343-mutt-send-email-mst@kernel.org>
- <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
- <20210412050730-mutt-send-email-mst@kernel.org>
- <01918e14-7f7a-abf2-5864-292a32f0233c@redhat.com>
- <d5632a4d-4d0b-b08d-06f9-c56f16734607@redhat.com>
- <20210421035331-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <3d5754f3-c012-67ad-5f01-fc16ec53df4e@redhat.com>
-Date:   Wed, 21 Apr 2021 16:17:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S234694AbhDUIVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 04:21:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40784 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234573AbhDUIVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 04:21:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11AAAB176;
+        Wed, 21 Apr 2021 08:21:07 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 10:21:03 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Subject: Re: [External] Re: [PATCH] mm: hugetlb: fix a race between
+ memory-failure/soft_offline and gather_surplus_pages
+Message-ID: <20210421082103.GE22456@linux>
+References: <20210421060259.67554-1-songmuchun@bytedance.com>
+ <YH/cVoUCTKu/UkqB@dhcp22.suse.cz>
+ <CAMZfGtWh4tRiMrOTLvv5GHM1JUCt9b+UHf_DwLev32S=+iLW8g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421035331-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWh4tRiMrOTLvv5GHM1JUCt9b+UHf_DwLev32S=+iLW8g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 21, 2021 at 04:15:00PM +0800, Muchun Song wrote:
+> > The hwpoison side of this looks really suspicious to me. It shouldn't
+> > really touch the reference count of hugetlb pages without being very
+> > careful (and having hugetlb_lock held). What would happen if the
+> > reference count was increased after the page has been enqueed into the
+> > pool? This can just blow up later.
+> 
+> If the page has been enqueued into the pool, then the page can be
+> allocated to other users. The page reference count will be reset to
+> 1 in the dequeue_huge_page_node_exact(). Then memory-failure
+> will free the page because of put_page(). This is wrong. Because
+> there is another user.
 
-在 2021/4/21 下午4:03, Michael S. Tsirkin 写道:
-> On Wed, Apr 21, 2021 at 03:41:36PM +0800, Jason Wang wrote:
->> 在 2021/4/12 下午5:23, Jason Wang 写道:
->>> 在 2021/4/12 下午5:09, Michael S. Tsirkin 写道:
->>>> On Mon, Apr 12, 2021 at 02:35:07PM +0800, Jason Wang wrote:
->>>>> 在 2021/4/10 上午12:04, Michael S. Tsirkin 写道:
->>>>>> On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
->>>>>>> 在 2021/4/8 下午11:59, Michael S. Tsirkin 写道:
->>>>>>>> On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
->>>>>>>>> This patch mandates 1.0 for vDPA devices. The goal is to have the
->>>>>>>>> semantic of normative statement in the virtio
->>>>>>>>> spec and eliminate the
->>>>>>>>> burden of transitional device for both vDPA bus and vDPA parent.
->>>>>>>>>
->>>>>>>>> uAPI seems fine since all the vDPA parent mandates
->>>>>>>>> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
->>>>>>>>>
->>>>>>>>> For legacy guests, it can still work since Qemu will mediate when
->>>>>>>>> necessary (e.g doing the endian conversion).
->>>>>>>>>
->>>>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
->>>>>>>> Hmm. If we do this, don't we still have a problem with
->>>>>>>> legacy drivers which don't ack 1.0?
->>>>>>> Yes, but it's not something that is introduced in this
->>>>>>> commit. The legacy
->>>>>>> driver never work ...
->>>>>> My point is this neither fixes or prevents this.
->>>>>>
->>>>>> So my suggestion is to finally add ioctls along the lines
->>>>>> of PROTOCOL_FEATURES of vhost-user.
->>>>>>
->>>>>> Then that one can have bits for legacy le, legacy be and modern.
->>>>>>
->>>>>> BTW I looked at vhost-user and it does not look like that
->>>>>> has a solution for this problem either, right?
->>>>> Right.
->>>>>
->>>>>
->>>>>>>> Note 1.0 affects ring endianness which is not mediated in QEMU
->>>>>>>> so QEMU can't pretend to device guest is 1.0.
->>>>>>> Right, I plan to send patches to do mediation in the
->>>>>>> Qemu to unbreak legacy
->>>>>>> drivers.
->>>>>>>
->>>>>>> Thanks
->>>>>> I frankly think we'll need PROTOCOL_FEATURES anyway, it's
->>>>>> too useful ...
->>>>>> so why not teach drivers about it and be done with it? You
->>>>>> can't emulate
->>>>>> legacy on modern in a cross endian situation because of vring
->>>>>> endian-ness ...
->>>>> So the problem still. This can only work when the hardware can support
->>>>> legacy vring endian-ness.
->>>>>
->>>>> Consider:
->>>>>
->>>>> 1) the leagcy driver support is non-normative in the spec
->>>>> 2) support a transitional device in the kenrel may requires the
->>>>> hardware
->>>>> support and a burden of kernel codes
->>>>>
->>>>> I'd rather simply drop the legacy driver support
->>>> My point is this patch does not drop legacy support. It merely mandates
->>>> modern support.
->>>
->>> I am not sure I get here. This patch fails the set_feature if VERSION_1
->>> is not negotiated. This means:
->>>
->>> 1) vDPA presents a modern device instead of transitonal device
->>> 2) legacy driver can't be probed
->>>
->>> What I'm missing?
->>
->> Hi Michael:
->>
->> Do you agree to find the way to present modern device? We need a conclusion
->> to make the netlink API work to move forward.
->>
->> Thanks
-> I think we need a way to support legacy with no data path overhead. qemu
-> setting VERSION_1 for a legacy guest affects the ring format so it does
-> not really work. This seems to rule out emulating config space entirely
-> in userspace.
+Note that dequeue_huge_page_node_exact() will not hand over any pages
+which are poisoned, so in this case it will not be allocated.
+But it is true that we might need hugetlb lock, this needs some more
+thought.
 
+I will have a look. 
 
-So I'd rather drop the legacy support in this case. It never work for 
-vDPA in the past and virtio-vDPA doesn't even need that. Note that 
-ACCESS_PLATFORM is mandated for all the vDPA parents right now which 
-implies modern device and LE. I wonder what's the value for supporting 
-legacy in this case or do we really encourage vendors to ship card with 
-legacy support (e.g endian support in the hardware)?
-
-
->
-> So I think we should add an ioctl along the lines of
-> protocol features. Then I think we can reserve feature bits
-> for config space format: legacy LE, legacy BE, modern.
-
-
-We had VHOST_SET_VRING_ENDIAN but this will complicates both the vDPA 
-parent and management. What's more important, legacy behaviour is not 
-restrictied by the spec.
-
-
->
-> Querying the feature bits will provide us with info about
-> what does the device support. Acking them will tell device
-> what does guest need.
-
-
-I think this can work, but I wonder how much we can gain from such 
-complexitiy.
-
-Thanks
-
-
->
->
->
->
->
->>>
->>>>> to have a simple and easy
->>>>> abstarction in the kenrel. For legacy driver in the guest,
->>>>> hypervisor is in
->>>>> charge of the mediation:
->>>>>
->>>>> 1) config space access endian conversion
->>>>> 2) using shadow virtqueue to change the endian in the vring
->>>>>
->>>>> Thanks
->>>> I'd like to avoid shadow virtqueue hacks if at all possible.
->>>> Last I checked performance wasn't much better than just emulating
->>>> virtio in software.
->>>
->>> I think the legacy driver support is just a nice to have. Or do you see
->>> any value to that? I guess for mellanox and intel, only modern device is
->>> supported in the hardware.
->>>
->>> Thanks
->>>
->>>
->>>>>>>>
->>>>>>>>
->>>>>>>>> ---
->>>>>>>>>      include/linux/vdpa.h | 6 ++++++
->>>>>>>>>      1 file changed, 6 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->>>>>>>>> index 0fefeb976877..cfde4ec999b4 100644
->>>>>>>>> --- a/include/linux/vdpa.h
->>>>>>>>> +++ b/include/linux/vdpa.h
->>>>>>>>> @@ -6,6 +6,7 @@
->>>>>>>>>      #include <linux/device.h>
->>>>>>>>>      #include <linux/interrupt.h>
->>>>>>>>>      #include <linux/vhost_iotlb.h>
->>>>>>>>> +#include <uapi/linux/virtio_config.h>
->>>>>>>>>      /**
->>>>>>>>>       * vDPA callback definition.
->>>>>>>>> @@ -317,6 +318,11 @@ static inline int
->>>>>>>>> vdpa_set_features(struct vdpa_device *vdev, u64
->>>>>>>>> features)
->>>>>>>>>      {
->>>>>>>>>              const struct vdpa_config_ops *ops = vdev->config;
->>>>>>>>> +        /* Mandating 1.0 to have semantics of
->>>>>>>>> normative statements in
->>>>>>>>> +         * the spec. */
->>>>>>>>> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
->>>>>>>>> +        return -EINVAL;
->>>>>>>>> +
->>>>>>>>>          vdev->features_valid = true;
->>>>>>>>>              return ops->set_features(vdev, features);
->>>>>>>>>      }
->>>>>>>>> -- 
->>>>>>>>> 2.25.1
-
+-- 
+Oscar Salvador
+SUSE L3
