@@ -2,215 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAEC367901
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8B3678E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbhDVEzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 00:55:14 -0400
-Received: from mga18.intel.com ([134.134.136.126]:45534 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232002AbhDVEyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 00:54:55 -0400
-IronPort-SDR: 9mgYFXgs1R6rxY3+P8G2NvGbbT8zd7M1hpAyWpmFk1rcQxP40klWUB4vvlHIJpUCkyF2hBJlNs
- 6o6AK+lsLoJA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="183311519"
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="183311519"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 21:54:17 -0700
-IronPort-SDR: iuWv1RGultJPAEimWc6O+2MUpUlz62hArWyYV7mZnBXIwqPA0IvaDo5E4DgkG5XCKdzMOaZcDf
- Wi/6SkKmpyww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="524515422"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Apr 2021 21:54:16 -0700
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
-        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, linux-kselftest@vger.kernel.org
-Subject: [PATCH v8 6/6] selftest/x86/signal: Include test cases for validating sigaltstack
-Date:   Wed, 21 Apr 2021 21:48:56 -0700
-Message-Id: <20210422044856.27250-7-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210422044856.27250-1-chang.seok.bae@intel.com>
-References: <20210422044856.27250-1-chang.seok.bae@intel.com>
+        id S229709AbhDVEw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 00:52:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229533AbhDVEw4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 00:52:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619067142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j9k2K+Ex6th6PfN+n1tdJx10Bdm1/2R+GEbRdjId//8=;
+        b=gtQncPCYpHNHPdk8800cHteE3RB1gDrGNXv+tF8s1X6586eiXHfPEAintdUDEgcxENPVH6
+        ZalNVgLbQMQC8iqBAxe7ISn4PHkFlFj7oxpCRRcBahNqTG9ApORURiqlbmzVnEBBfm3wwF
+        BsKGZ7nnDpAzAsgcMyXzZ2AwzUpVGT8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-GO-Dxq9TPE6RJTrUoLDQWw-1; Thu, 22 Apr 2021 00:52:19 -0400
+X-MC-Unique: GO-Dxq9TPE6RJTrUoLDQWw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 444EF8189C6;
+        Thu, 22 Apr 2021 04:52:18 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-214.pek2.redhat.com [10.72.13.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 61A5662693;
+        Thu, 22 Apr 2021 04:52:11 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+To:     =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Eli Cohen <elic@nvidia.com>, mst@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <a77efb06-b2ae-c94a-96bc-290b8b7332ba@nextfour.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7bdb251a-5e16-dd22-d204-6ff57e12e72f@redhat.com>
+Date:   Thu, 22 Apr 2021 12:52:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <a77efb06-b2ae-c94a-96bc-290b8b7332ba@nextfour.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test measures the kernel's signal delivery with different (enough vs.
-insufficient) stack sizes.
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Cc: x86@kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
-Changes from v3:
-* Revised test messages again (Borislav Petkov)
+在 2021/4/22 上午11:27, Mika Penttilä 写道:
+>
+>
+> On 22.4.2021 5.37, Jason Wang wrote:
+>>
+>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
+>>> Implement mlx5_get_vq_notification() to return the doorbell address.
+>>> Size is set to one system page as required.
+>>>
+>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>> ---
+>>>   drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
+>>>   drivers/vdpa/mlx5/core/resources.c | 1 +
+>>>   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+>>>   3 files changed, 8 insertions(+)
+>>>
+>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h 
+>>> b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>> index b6cc53ba980c..49de62cda598 100644
+>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+>>>       u32 pdn;
+>>>       struct mlx5_uars_page *uar;
+>>>       void __iomem *kick_addr;
+>>> +    u64 phys_kick_addr;
+>>>       u16 uid;
+>>>       u32 null_mkey;
+>>>       bool valid;
+>>> diff --git a/drivers/vdpa/mlx5/core/resources.c 
+>>> b/drivers/vdpa/mlx5/core/resources.c
+>>> index 6521cbd0f5c2..665f8fc1710f 100644
+>>> --- a/drivers/vdpa/mlx5/core/resources.c
+>>> +++ b/drivers/vdpa/mlx5/core/resources.c
+>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct 
+>>> mlx5_vdpa_dev *mvdev)
+>>>           goto err_key;
+>>>         kick_addr = mdev->bar_addr + offset;
+>>> +    res->phys_kick_addr = kick_addr;
+>>>         res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
+>>>       if (!res->kick_addr) {
+>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c 
+>>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> index 10c5fef3c020..680751074d2a 100644
+>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device 
+>>> *vdev)
+>>>     static struct vdpa_notification_area 
+>>> mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+>>>   {
+>>> +    struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>>>       struct vdpa_notification_area ret = {};
+>>> +    struct mlx5_vdpa_net *ndev;
+>>> +
+>>> +    ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>   +    ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+>>> +    ret.size = PAGE_SIZE;
+>>
+>>
+>> Note that the page will be mapped in to guest, so it's only safe if 
+>> the doorbeel exclusively own the page. This means if there're other 
+>> registers in the page, we can not let the doorbell bypass to work.
+>>
+>> So this is suspicious at least in the case of subfunction where we 
+>> calculate the bar length in mlx5_sf_dev_table_create() as:
+>>
+>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
+>>
+>> It looks to me this can only work for the arch with PAGE_SIZE = 4096, 
+>> otherwise we can map more into the userspace(guest).
+>>
+>> Thanks
+>>
+>>
+> Is there support as of today (in qemu  or elsewhere) to use this mmap 
+> doorbell instead of the traditional kick.
 
-Changes from v2:
-* Revised test messages (Borislav Petkov)
----
- tools/testing/selftests/x86/Makefile      |   2 +-
- tools/testing/selftests/x86/sigaltstack.c | 128 ++++++++++++++++++++++
- 2 files changed, 129 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/x86/sigaltstack.c
 
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 333980375bc7..65bba2ae86ee 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -13,7 +13,7 @@ CAN_BUILD_WITH_NOPIE := $(shell ./check_cc.sh $(CC) trivial_program.c -no-pie)
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
- 			check_initial_reg_state sigreturn iopl ioperm \
- 			test_vsyscall mov_ss_trap \
--			syscall_arg_fault fsgsbase_restore
-+			syscall_arg_fault fsgsbase_restore sigaltstack
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
- 			vdso_restorer
-diff --git a/tools/testing/selftests/x86/sigaltstack.c b/tools/testing/selftests/x86/sigaltstack.c
-new file mode 100644
-index 000000000000..f689af75e979
---- /dev/null
-+++ b/tools/testing/selftests/x86/sigaltstack.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#define _GNU_SOURCE
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <err.h>
-+#include <errno.h>
-+#include <limits.h>
-+#include <sys/mman.h>
-+#include <sys/auxv.h>
-+#include <sys/prctl.h>
-+#include <sys/resource.h>
-+#include <setjmp.h>
-+
-+/* sigaltstack()-enforced minimum stack */
-+#define ENFORCED_MINSIGSTKSZ	2048
-+
-+#ifndef AT_MINSIGSTKSZ
-+#  define AT_MINSIGSTKSZ	51
-+#endif
-+
-+static int nerrs;
-+
-+static bool sigalrm_expected;
-+
-+static unsigned long at_minstack_size;
-+
-+static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
-+		       int flags)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_sigaction = handler;
-+	sa.sa_flags = SA_SIGINFO | flags;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static void clearhandler(int sig)
-+{
-+	struct sigaction sa;
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sa_handler = SIG_DFL;
-+	sigemptyset(&sa.sa_mask);
-+	if (sigaction(sig, &sa, 0))
-+		err(1, "sigaction");
-+}
-+
-+static int setup_altstack(void *start, unsigned long size)
-+{
-+	stack_t ss;
-+
-+	memset(&ss, 0, sizeof(ss));
-+	ss.ss_size = size;
-+	ss.ss_sp = start;
-+
-+	return sigaltstack(&ss, NULL);
-+}
-+
-+static jmp_buf jmpbuf;
-+
-+static void sigsegv(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (sigalrm_expected) {
-+		printf("[FAIL]\tWrong signal delivered: SIGSEGV (expected SIGALRM).");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGSEGV signal delivered.\n");
-+	}
-+
-+	siglongjmp(jmpbuf, 1);
-+}
-+
-+static void sigalrm(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	if (!sigalrm_expected) {
-+		printf("[FAIL]\tWrong signal delivered: SIGALRM (expected SIGSEGV).");
-+		nerrs++;
-+	} else {
-+		printf("[OK]\tSIGALRM signal delivered.\n");
-+	}
-+}
-+
-+static void test_sigaltstack(void *altstack, unsigned long size)
-+{
-+	if (setup_altstack(altstack, size))
-+		err(1, "sigaltstack()");
-+
-+	sigalrm_expected = (size > at_minstack_size) ? true : false;
-+
-+	sethandler(SIGSEGV, sigsegv, 0);
-+	sethandler(SIGALRM, sigalrm, SA_ONSTACK);
-+
-+	if (!sigsetjmp(jmpbuf, 1)) {
-+		printf("[RUN]\tTest an alternate signal stack of %ssufficient size.\n",
-+		       sigalrm_expected ? "" : "in");
-+		printf("\tRaise SIGALRM. %s is expected to be delivered.\n",
-+		       sigalrm_expected ? "It" : "SIGSEGV");
-+		raise(SIGALRM);
-+	}
-+
-+	clearhandler(SIGALRM);
-+	clearhandler(SIGSEGV);
-+}
-+
-+int main(void)
-+{
-+	void *altstack;
-+
-+	at_minstack_size = getauxval(AT_MINSIGSTKSZ);
-+
-+	altstack = mmap(NULL, at_minstack_size + SIGSTKSZ, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
-+	if (altstack == MAP_FAILED)
-+		err(1, "mmap()");
-+
-+	if ((ENFORCED_MINSIGSTKSZ + 1) < at_minstack_size)
-+		test_sigaltstack(altstack, ENFORCED_MINSIGSTKSZ + 1);
-+
-+	test_sigaltstack(altstack, at_minstack_size + SIGSTKSZ);
-+
-+	return nerrs == 0 ? 0 : 1;
-+}
--- 
-2.17.1
+Vhost-user had already had this support in Qemu (see set_host_notifier_mr).
+
+And I've posted patches to support this for qemu[1] and vp_vdpa[2] driver.
+
+Thanks
+
+[1] https://www.mail-archive.com/qemu-devel@nongnu.org/msg798935.html
+
+[2] 
+https://lore.kernel.org/virtualization/20210415073147.19331-5-jasowang@redhat.com/T/
+
+
+>
+> --Mika
+>
+>
+>
+>>
+>>>       return ret;
+>>>   }
+>>
+>
 
