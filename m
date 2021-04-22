@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34FC36879A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8522A368798
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239469AbhDVUDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
+        id S239377AbhDVUDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239199AbhDVUDY (ORCPT
+        with ESMTP id S239266AbhDVUDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:03:24 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3F8C06138B
+        Thu, 22 Apr 2021 16:03:23 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21D0C06138D
         for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:02:47 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id y3so18648749eds.5
+Received: by mail-ej1-x629.google.com with SMTP id w3so70662420ejc.4
         for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:02:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J1S/25Adlc7Pk29dJA+1TNqcXCCzU+HSnSsbA/vO+Ww=;
-        b=AtOk4yNzB2JPe08H8kDDVBiX2/dX32ADRcZuAYvMkQ/qCAJ25nOr9lyKmNkND1Dwpo
-         yjU7kW7Rv4T9rxtqh2lkY05QhfbP/O3hj/MusxVk4ir91WOt64pdKGy7TwaVyKrxMpml
-         mGOLMFfm8T6Sttxpoe9nVL/7pvyRPwLwsofFmz8EEN5MXya7xlopZrChEyhJalcVmAzH
-         lUlEFl059X4WkRb1iTNNb/O8g1IoG5w30KDarNwrXYWz3LtOLbZKJ6yGRJmU6JJCv0iC
-         3+E2+ocQ1l7rd1/GCw5UAyxMHKxdI9xHjBbhUnv2dYIJYuMPrr6H6C9WZHwhXQ79mi92
-         9Tdg==
+        bh=SnOhfJ0MT6ulL904pALJzBTQTb9USKkGTJS+7NkOyis=;
+        b=HKabR5piWEgdGIAykFLARdkWPmGYFMfK+iS66IATF5kRzw62WtmXm/qQ6nF3CQgVuD
+         8jE5ryHkAxcp3IH5Bgw0TsCrpTsclSxnWAqR8X557uaJdvt0vghjyZZxmRsGGVAPk4Vn
+         EwK+FfoqgHgD+dfPTvOKwkCKT4+IUJQ8ZgsNC3TrtKzY+sbm+q7vx2RT7xo2Anzd3FDr
+         J61YTGtCjUb9F7cItsay+G1jlZnBxlUjeGamegFb7G8XWsF95CBNoRQl981CacltgfmC
+         kLKX1Drgw3XHjl6Inl33WxFy2fBkCa0Ae1XfLmzqJ4yI6z3CbLQ0pQiSi1mtAVIP4XhJ
+         eQXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J1S/25Adlc7Pk29dJA+1TNqcXCCzU+HSnSsbA/vO+Ww=;
-        b=oeb7zluG84iPBCEbh6gPN44bWBf5oMqrF7v+463XGK6PcaKSB9KsXPvE4A1McyXa0V
-         LbhFI8J/0dLkg9S+QeOXgxbB/imBLFTQUepy92UshuRngJGj67blORhP5YIxz4hDluIX
-         0lNu7JkgW9bkZvFG876mKiIXL/sEyudgDVyPUGKJXhMozjQ+osrKmam6KZzs+pQt1SO2
-         fvRnAOud/db/lIejHzibsv4PSW5js7gegVwHXoGgeSmQ8HcD6gEXIh7yGCVfbA//g/ya
-         sGqsnxIvzgSIuwOu0CW4EW9aQ0fipLf1VcBb8LauJloXfEhI1VgXNYq29d3sWP7HLIkG
-         30mA==
-X-Gm-Message-State: AOAM5313wdhSMQvBXZoTKrDqGldYqhuPz5k0wrEiwOgoEg/5+5Bfgomy
-        y4PU5pjkPLJNQCtG21rplA==
-X-Google-Smtp-Source: ABdhPJwsLXbco0GIF19I9R0572+De3danW9pDNImEYrdQySEfrI6q4wQTfOe35gRBltFuMHn9fvnxg==
-X-Received: by 2002:a50:ec97:: with SMTP id e23mr236660edr.98.1619121766247;
+        bh=SnOhfJ0MT6ulL904pALJzBTQTb9USKkGTJS+7NkOyis=;
+        b=ArJGhY/iFaMRpmv0Iem4sTLdGQKMxWclnB0BDO/V52YPNDH2O2BJxGkWOJ9dXjhAXv
+         hIv4pSDBZv0PH9uzqYW+qW5zm1qNAYzHOS5RVzciuESYvg39zCdpnX/YoydCcFpvoyhr
+         AtLDWYjTPUgNH9nmpFVZ04EltQn6g8ceJyWIZzjkMLNxJHIzku3weBVnt43d/VelvLaO
+         WMaB8PutsArQDCjQfmzp246mlo0aTWnIY022IkXEAdy9cE0ZT6kh/CyesTNhUh0nkDGo
+         4zOYzT5flNzwQGykQE9IJ3yF+CfMkbJtR49Jx2u9oV3Wfi9NNGersk4FaVwqMSNQIIaV
+         udfg==
+X-Gm-Message-State: AOAM5302IpxMtyPBCO6n4eLhFQrCwnwSSWxo716iIssUBjI3ky6qoPjK
+        tmJRu+ZO2PxY7uD2QgZ7ETm2GKt1fg==
+X-Google-Smtp-Source: ABdhPJwadBampMttNxzQRSAo9aj/jzDsuXhr9dzGvbkB+Bo5yIT4L3CKFuVgfE3y3RW7IQuBC+wIhg==
+X-Received: by 2002:a17:906:b7c4:: with SMTP id fy4mr355199ejb.489.1619121766732;
         Thu, 22 Apr 2021 13:02:46 -0700 (PDT)
 Received: from localhost.localdomain ([46.53.248.145])
-        by smtp.gmail.com with ESMTPSA id u15sm2936199edx.34.2021.04.22.13.02.45
+        by smtp.gmail.com with ESMTPSA id u15sm2936199edx.34.2021.04.22.13.02.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 22 Apr 2021 13:02:46 -0700 (PDT)
 From:   Alexey Dobriyan <adobriyan@gmail.com>
 To:     mingo@redhat.com, peterz@infradead.org
 Cc:     linux-kernel@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [PATCH 3/4] sched: make nr_iowait_cpu() return 32-bit
-Date:   Thu, 22 Apr 2021 23:02:27 +0300
-Message-Id: <20210422200228.1423391-3-adobriyan@gmail.com>
+Subject: [PATCH 4/4] sched: make multiple runqueue task counters 32-bit
+Date:   Thu, 22 Apr 2021 23:02:28 +0300
+Message-Id: <20210422200228.1423391-4-adobriyan@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210422200228.1423391-1-adobriyan@gmail.com>
 References: <20210422200228.1423391-1-adobriyan@gmail.com>
@@ -63,74 +63,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Runqueue ->nr_iowait counters are 32-bit anyway.
+Make
 
-Propagate 32-bitness into other code, but don't try too hard.
+	struct dl_rq::dl_nr_migratory
+	struct dl_rq::dl_nr_running
+
+	struct rt_rq::rt_nr_boosted
+	struct rt_rq::rt_nr_migratory
+	struct rt_rq::rt_nr_total
+
+	struct rq::nr_uninterruptible
+
+32-bit.
+
+If total number of tasks can't exceed 2**32 (and less due to futex pid
+limits), then per-runqueue counters can't as well.
+
+This patchset has been sponsored by REX Prefix Eradication Society.
 
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- drivers/cpuidle/governors/menu.c | 6 +++---
- include/linux/sched/stat.h       | 2 +-
- kernel/sched/core.c              | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ kernel/sched/loadavg.c |  2 +-
+ kernel/sched/sched.h   | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
-index b0a7ad566081..ddaaa36af290 100644
---- a/drivers/cpuidle/governors/menu.c
-+++ b/drivers/cpuidle/governors/menu.c
-@@ -117,7 +117,7 @@ struct menu_device {
- 	int		interval_ptr;
- };
+diff --git a/kernel/sched/loadavg.c b/kernel/sched/loadavg.c
+index d2a655643a02..aef8072cfebe 100644
+--- a/kernel/sched/loadavg.c
++++ b/kernel/sched/loadavg.c
+@@ -81,7 +81,7 @@ long calc_load_fold_active(struct rq *this_rq, long adjust)
+ 	long nr_active, delta = 0;
  
--static inline int which_bucket(u64 duration_ns, unsigned long nr_iowaiters)
-+static inline int which_bucket(u64 duration_ns, unsigned int nr_iowaiters)
- {
- 	int bucket = 0;
+ 	nr_active = this_rq->nr_running - adjust;
+-	nr_active += (long)this_rq->nr_uninterruptible;
++	nr_active += (int)this_rq->nr_uninterruptible;
  
-@@ -150,7 +150,7 @@ static inline int which_bucket(u64 duration_ns, unsigned long nr_iowaiters)
-  * to be, the higher this multiplier, and thus the higher
-  * the barrier to go to an expensive C state.
-  */
--static inline int performance_multiplier(unsigned long nr_iowaiters)
-+static inline int performance_multiplier(unsigned int nr_iowaiters)
- {
- 	/* for IO wait tasks (per cpu!) we add 10x each */
- 	return 1 + 10 * nr_iowaiters;
-@@ -270,7 +270,7 @@ static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
- 	unsigned int predicted_us;
- 	u64 predicted_ns;
- 	u64 interactivity_req;
--	unsigned long nr_iowaiters;
-+	unsigned int nr_iowaiters;
- 	ktime_t delta_next;
- 	int i, idx;
+ 	if (nr_active != this_rq->calc_load_active) {
+ 		delta = nr_active - this_rq->calc_load_active;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 10a1522b1e30..730c81a54ed1 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -622,8 +622,8 @@ struct rt_rq {
+ 	} highest_prio;
+ #endif
+ #ifdef CONFIG_SMP
+-	unsigned long		rt_nr_migratory;
+-	unsigned long		rt_nr_total;
++	unsigned int		rt_nr_migratory;
++	unsigned int		rt_nr_total;
+ 	int			overloaded;
+ 	struct plist_head	pushable_tasks;
  
-diff --git a/include/linux/sched/stat.h b/include/linux/sched/stat.h
-index 8a5b27ae7937..0319bc227c4d 100644
---- a/include/linux/sched/stat.h
-+++ b/include/linux/sched/stat.h
-@@ -19,7 +19,7 @@ extern int nr_processes(void);
- extern unsigned int nr_running(void);
- extern bool single_task_running(void);
- extern unsigned int nr_iowait(void);
--extern unsigned long nr_iowait_cpu(int cpu);
-+extern unsigned int nr_iowait_cpu(int cpu);
+@@ -637,7 +637,7 @@ struct rt_rq {
+ 	raw_spinlock_t		rt_runtime_lock;
  
- static inline int sched_info_on(void)
- {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2cc8d81cdc75..c2012f0ea7a0 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4378,7 +4378,7 @@ unsigned long long nr_context_switches(void)
-  * it does become runnable.
-  */
+ #ifdef CONFIG_RT_GROUP_SCHED
+-	unsigned long		rt_nr_boosted;
++	unsigned int		rt_nr_boosted;
  
--unsigned long nr_iowait_cpu(int cpu)
-+unsigned int nr_iowait_cpu(int cpu)
- {
- 	return atomic_read(&cpu_rq(cpu)->nr_iowait);
- }
+ 	struct rq		*rq;
+ 	struct task_group	*tg;
+@@ -654,7 +654,7 @@ struct dl_rq {
+ 	/* runqueue is an rbtree, ordered by deadline */
+ 	struct rb_root_cached	root;
+ 
+-	unsigned long		dl_nr_running;
++	unsigned int		dl_nr_running;
+ 
+ #ifdef CONFIG_SMP
+ 	/*
+@@ -668,7 +668,7 @@ struct dl_rq {
+ 		u64		next;
+ 	} earliest_dl;
+ 
+-	unsigned long		dl_nr_migratory;
++	unsigned int		dl_nr_migratory;
+ 	int			overloaded;
+ 
+ 	/*
+@@ -946,7 +946,7 @@ struct rq {
+ 	 * one CPU and if it got migrated afterwards it may decrease
+ 	 * it on another CPU. Always updated under the runqueue lock:
+ 	 */
+-	unsigned long		nr_uninterruptible;
++	unsigned int		nr_uninterruptible;
+ 
+ 	struct task_struct __rcu	*curr;
+ 	struct task_struct	*idle;
 -- 
 2.30.2
 
