@@ -2,148 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05369367CAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CFC367CB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235421AbhDVIj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:39:27 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45226 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbhDVIj0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:39:26 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1D1871C0B76; Thu, 22 Apr 2021 10:38:51 +0200 (CEST)
-Date:   Thu, 22 Apr 2021 10:38:50 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Aditya Pakki <pakki001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Qiushi Wu <wu000273@umn.edu>, x86@kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jiri Kosina <jikos@kernel.org>, Will Deacon <will@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
-Message-ID: <20210422083850.GA5316@amd>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+        id S235517AbhDVIjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:39:48 -0400
+Received: from mail-dm6nam10on2069.outbound.protection.outlook.com ([40.107.93.69]:43615
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235249AbhDVIjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:39:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FC5bhQr8WMVP90EL2GDpyhNJF8yLV5u0UmbzLD8/NXJRE6sU3Rwjtfbs7axH0nUuAO5WTEWlDdAO4JgvWNUWLm6dXZRMpQTzauQMAoGt4eX4kRiIEIoIfRR+cMMbMyBsrekuwsDraCcDzXQbqyxiKifSkZJqvvf/kYYhG1v5XFlEBf5iQcsNvWWnWSbJCDWpQFc+GlsjUJ2zBwll8PTA+z/pcccngTOeilsExXVHrf8qxXQAVuLrhQhzSpunEA+W9xk3dzRAS8fnbab6QAguE6GXFOOrGL00hXHu2odKzLWEqDPBxS2DswJTYNED6jTtspweu/63q+qk9URG0xK7cA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EPyVeVh4hOBzS4aMpvbQra5zyqVcfJEzJM0931GaQb0=;
+ b=ZyEQRXRT0JyMKg4An3uwhCNKloSJgXrYvDqnDfEyMpXZFR89Y4SToNbsaUuwbEzjym1Blj+Dtv0wpi+rUXGkSJuGZ7/KUQtnPgYMipvMf9wtaRNM8zpiiSq80XyNmT9d0qyEhi3YvSLXZ2Bl2T2N9gfg3q2njVzIwRVqQ65hlBHLyRSjl14vljiiXyydbaV2XFBttaWlaeN+5Ypk/2oD7xnTaf2pBN3RzfOsUnUARdEQRcYSiP5wCLtsaAPimQU8icfNpc5E/XioNjx22hWdUTJAjqjUHlaxQjqnmioetmXbT8qPqZum0bxm3vtObG1ep67cuDczdHnWU1XMkhUnSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=lists.linux-foundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EPyVeVh4hOBzS4aMpvbQra5zyqVcfJEzJM0931GaQb0=;
+ b=bdT/OKkTGS9R7isfGMs30LL6L+6WUQ62m/df3b1Tl1fwmDXd18a3wuMBxiXPYUcWJjMIF6WUBbnqhgUzI9FargFZj2ALprkdpz+E26//FGFeuXJ/KwRAMq2F8Nhou/PfT/Y8yRBfPXzsUhSUzSlFclqiZpvyn4MF7omfhEHM3qpMGWyRJTl2n0YnMyXRwqd9HZ3F2aROG18z720rp1XTHjyK6edeEAiO/LY/ucn484niyU3llWrtk5iicG8eZOUOD5jH3SYzZVWwKay3pTO2UC9ziheTXZnNUweaA/9dMJWquMzOToQYnOMOgHTlBE5yJKZP/L2AQozLoxENFuhBTw==
+Received: from DM6PR17CA0002.namprd17.prod.outlook.com (2603:10b6:5:1b3::15)
+ by CH2PR12MB3960.namprd12.prod.outlook.com (2603:10b6:610:24::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.21; Thu, 22 Apr
+ 2021 08:39:08 +0000
+Received: from DM6NAM11FT044.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1b3:cafe::8a) by DM6PR17CA0002.outlook.office365.com
+ (2603:10b6:5:1b3::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
+ Transport; Thu, 22 Apr 2021 08:39:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT044.mail.protection.outlook.com (10.13.173.185) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 08:39:07 +0000
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 22 Apr 2021 08:39:05 +0000
+Date:   Thu, 22 Apr 2021 11:39:02 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+Message-ID: <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
+ <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
+ <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6909307b-60a1-4f56-1c41-08d9056a17eb
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3960:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB39609E8EA2DB66B740DE6730AB469@CH2PR12MB3960.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8ndZL6alcvOLhJK7QBFDQ/4Ezfmp/PWK5iJ6TDruEgY4hfdzfeJ4Dh9+lrTKZkQTU36cL8foDnH0Oc0Cs9zsMNaQPpDZfnNrcC/nOReM3pssdYbvwn9a1zACuvsNDFRvTQCx2apR/T0raCRUwAtxcE18PNmAxxqWNThKWPRbKfYTRmk8GMOPL0W//PpIk1s+4OV3CMFsJP8nc/Ffd29FkwP8eBcf7YjBW6CjqPDVPZCrqy5s9YJnEgg8kkjxBFYjVl4SZHCoiHL9MJM1unp9MPcEu7rpqGAcgePiCrKM7OZLPTVzihBedHPO9D/r3VjPGnZdhLJzlRao/6uY7lQMtZU2mB0JsIZ4wY8AKvhOCbYFSOhEs6/l6G/sAhTa7YmzaVRJhxjl2brIVqc8HZZV6dQLrl6GN6Hmv4iepCCsn/ZGEnID0g0gbVUgmN9QOHM1no0iHuowcgVtzZ9g2wde7F3wwxSPDbj6CH71o6vPuSXYMu5Sd1po+YDzYidseQLPkOgMhVrbHMxsOlk4LB+ZBz8tgGOPa7s191BFa3L4dXuV5MM1SGdZhkE5sKwprigGt5TFwtPxJrfHoo9sOXzkgo5QNpJGE9Gxe6qiIoX9e020iVriGGBuACpRT3lG44qFdlNzphdYkSr0uUG7G/xg/zN9FDrKfe5R9xrncivbFvU=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39860400002)(46966006)(36840700001)(316002)(9686003)(478600001)(70586007)(2906002)(336012)(26005)(83380400001)(82740400003)(82310400003)(426003)(33656002)(7696005)(186003)(36906005)(8676002)(16526019)(55016002)(47076005)(86362001)(36860700001)(70206006)(1076003)(4326008)(6916009)(356005)(8936002)(54906003)(5660300002)(6666004)(7636003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 08:39:07.4552
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6909307b-60a1-4f56-1c41-08d9056a17eb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT044.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3960
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
+> 
+> 在 2021/4/22 下午4:07, Eli Cohen 写道:
+> > On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
+> > > On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
+> > > > 在 2021/4/21 下午6:41, Eli Cohen 写道:
+> > > > > Implement mlx5_get_vq_notification() to return the doorbell address.
+> > > > > Size is set to one system page as required.
+> > > > > 
+> > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > > ---
+> > > > >    drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
+> > > > >    drivers/vdpa/mlx5/core/resources.c | 1 +
+> > > > >    drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+> > > > >    3 files changed, 8 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > > index b6cc53ba980c..49de62cda598 100644
+> > > > > --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > > +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> > > > > @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+> > > > >    	u32 pdn;
+> > > > >    	struct mlx5_uars_page *uar;
+> > > > >    	void __iomem *kick_addr;
+> > > > > +	u64 phys_kick_addr;
+> > > > >    	u16 uid;
+> > > > >    	u32 null_mkey;
+> > > > >    	bool valid;
+> > > > > diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> > > > > index 6521cbd0f5c2..665f8fc1710f 100644
+> > > > > --- a/drivers/vdpa/mlx5/core/resources.c
+> > > > > +++ b/drivers/vdpa/mlx5/core/resources.c
+> > > > > @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+> > > > >    		goto err_key;
+> > > > >    	kick_addr = mdev->bar_addr + offset;
+> > > > > +	res->phys_kick_addr = kick_addr;
+> > > > >    	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
+> > > > >    	if (!res->kick_addr) {
+> > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > index 10c5fef3c020..680751074d2a 100644
+> > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > > @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
+> > > > >    static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+> > > > >    {
+> > > > > +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+> > > > >    	struct vdpa_notification_area ret = {};
+> > > > > +	struct mlx5_vdpa_net *ndev;
+> > > > > +
+> > > > > +	ndev = to_mlx5_vdpa_ndev(mvdev);
+> > > > > +	ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+> > > > > +	ret.size = PAGE_SIZE;
+> > > > 
+> > > > Note that the page will be mapped in to guest, so it's only safe if the
+> > > > doorbeel exclusively own the page. This means if there're other registers in
+> > > > the page, we can not let the doorbell bypass to work.
+> > > > 
+> > > > So this is suspicious at least in the case of subfunction where we calculate
+> > > > the bar length in mlx5_sf_dev_table_create() as:
+> > > > 
+> > > > table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
+> > > > 
+> > > > It looks to me this can only work for the arch with PAGE_SIZE = 4096,
+> > > > otherwise we can map more into the userspace(guest).
+> > > > 
+> > > Correct, so I guess I should return here 4096.
+> 
+> 
+> I'm not quite sure but since the calculation of the sf_bar_length is doen
+> via a shift of 12, it might be correct.
+> 
+> And please double check if the doorbell own the page exclusively.
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-I don't believe doing huge revert is good idea.
-
-> I have been meaning to do this for a while, but recent events have
-> finally forced me to do so.
->=20
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-
-Do you have examples of those "bad faith" commits? Because that's not
-what the paper says. While I identified one unneccessary commit during
-stable review, I don't believe it was done in bad faith. According to
-the paper, there are just three (3) (!!) bad faith commits, and were
-done from gmail addresses, and steps were taken so to prevent them
-=66rom entering git.
-
-I do believe we have problem with -stable kernel getting way too many
-changes that are not really fixing anything, or are fixing stuff like
-"16 bytes memory leak once per boot" or printk log levels. I tried
-pushing back with little success. Stable kernel rules are not
-consistent with patches actually accepted into stable. Plus, it is
-quicker to get patch to stable release than to mainline release, which
-I believe is additional problem.
-
-For the reference, the paper seems to be available here:
-
-https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceI=
-nsecurity.pdf
-
-Quoting the paper:
-
-Experiment overview. In this experiment, we leverage
-program-analysis techniques to prepare three minor hypocrite
-commits that introduce UAF bugs in the Linux kernel. The
-three cases represent three different kinds of hypocrite commits:
-(1) a coding-improvement change that simply prints an error
-message, (2) a patch for fixing a memory-leak bug, and (3) a
-patch for fixing a refcount bug. We submit the three patches
-using a random Gmail account to the Linux community and
-seek their feedback=E2=80=94whether the patches look good to them.
-The experiment is to demonstrate the practicality of hypocrite
-commits, and it will not introduce or intend to introduce actual
-UAF or any other bug in the Linux kernel.
-A. Ethical Considerations
-Ensuring the safety of the experiment. In the experiment,
-we aim to demonstrate the practicality of stealthily introducing
-vulnerabilities through hypocrite commits. Our goal is not to
-introduce vulnerabilities to harm OSS. Therefore, we safely
-conduct the experiment to make sure that the introduced UAF
-bugs will not be merged into the actual Linux code. In addition
-to the minor patches that introduce UAF conditions, we also
-prepare the correct patches for fixing the minor issues. We
-send the minor patches to the Linux community through email
-to seek their feedback. Fortunately, there is a time window
-between the confirmation of a patch and the merging of the
-patch. Once a maintainer confirmed our patches, e.g., an email
-reply indicating =E2=80=9Clooks good=E2=80=9D, we immediately notify the
-maintainers of the introduced UAF and request them to not
-go ahead to apply the patch. At the same time, we point out
-the correct fixing of the bug and provide our correct patch.
-In all the three cases, maintainers explicitly acknowledged
-and confirmed to not move forward with the incorrect patches
-=2E..
-
-Best regards,
-							Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCBNhkACgkQMOfwapXb+vIoFgCgs7JgMZ1iyWnYu6g2D5GdSQaL
-gLkAn3ME9jobyMWuLtQ0qtiBQymAiLJp
-=VUCC
------END PGP SIGNATURE-----
-
---SLDf9lqlvOQaIe6s--
+I am checking if it is safe to map the any part of the SF's BAR to
+userspace without harming other functions. If this is true, I will check
+if I can return PAGE_SIZE without compromising security. I think we may
+need to extend struct vdpa_notification_area to contain another field
+offset which indicates the offset from addr where the actual doorbell
+resides.
+> 
+> 
+> > > 
+> > > I also think that the check in vhost_vdpa_mmap() should verify that the
+> > > returned size is not smaller than PAGE_SIZE because the returned address
+> > Actually I think it's ok since you verify the size equals vma->vm_end -
+> > vma->vm_start which must be at least PAGE_SIZE.
+> 
+> 
+> Yes.
+> 
+> Thanks
+> 
+> 
+> > 
+> > > might just be aligned to PAGE_SIZE. I think this should be enoght but
+> > > maybe also use the same logic in vhost_vdpa_fault().
+> 
