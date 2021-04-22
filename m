@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0F93687C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F453687C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbhDVUQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236915AbhDVUQR (ORCPT
+        id S239119AbhDVUR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:17:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34324 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236915AbhDVUR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:16:17 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDABFC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:15:40 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id s7so45945297wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wy0cnaneSmhDortv5ccTKu6/SeWDGYIABVfi/jQ1Jgs=;
-        b=qlVuLFkCWHJ1JEdrPX5oKvIlDUMgdmwfa0uVKLRRWUDhSxg+DAVD7Op8+Bo1CzHyD4
-         X1bIbBSs7S5Wtx0TMXxzrjEeKmOR3DDTI/QFWAVCCByhtzKyYFrX30DBJ+dLLajdOz+x
-         gxaumiSasWTzKXunSSmBmfq61hZf5gSYNDbOhYgwvNGpZpgYBKHFn3JxWNfoUZ6mv0nk
-         LNB06GgOlOHrfciTujIbNEeZU5Ewp1Tl3vNdfyLPe/cr0wg2+8tqn2zXqiNL/oQ+jBJh
-         ENXgBL4SRXvncRciFBvEZhrKcv//ehfjvyQ1AKeCFD2SVqF5dDWKQCTCKRVSZkZnTPcc
-         hosQ==
+        Thu, 22 Apr 2021 16:17:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619122612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F6HkNIXnsQ0jUlhEdnv+PnYZxDWWdvNCPtrwXlIdkmc=;
+        b=g6vtC3eqTh8TDpAbIf0sD8KcMjPgGbeCPgRNpEl13GfMCWGZWRytoNgEMqFh/Xv2cJjQls
+        TZPsMbJFrJVZasNtZUcW5NljKydrDGtNayEr7qZWgBpdWozvcWe2bfRV2XQx1SaBXd3/Go
+        /VWCsKWBK9oS20rnO3uJNExG8WyS0Eo=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-PWZa5fXGNLSJp7jiTiM90g-1; Thu, 22 Apr 2021 16:16:49 -0400
+X-MC-Unique: PWZa5fXGNLSJp7jiTiM90g-1
+Received: by mail-qk1-f198.google.com with SMTP id w3-20020ae9e5030000b029028013f752dbso12882403qkf.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:16:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wy0cnaneSmhDortv5ccTKu6/SeWDGYIABVfi/jQ1Jgs=;
-        b=CvajuwacXOY/ic6dGDP5RDs1jy+vpJ7hNxS2axNuVMpBG/rgv7OOCS1wS1Rxo5EHcu
-         SpXVj3kMWLoh1FBkvrxuoEdlIY+hN7zritz2iYwsLZvYcihbKfTBK3gEDWcb2v7QZwxb
-         cBwADmRf45ouCoRH01Q3s8L0FxXJW3M1jMlFrKRErmgGFzlN4Pqbsh8bwNPIoXpAtgZA
-         dZQBtGdfaxUuSKabs3iFKRmDGzFjHFpH4zm5rnYTkaSQzbwVGCEHLq2e5llVCTwINecU
-         X0gv/THDJBW7FjpexZzs+30b6T+wAe1ZrXQOGebjQr/ppdRNGp9gpd1oG3wPkm9ly2Qv
-         3/Xw==
-X-Gm-Message-State: AOAM530Sv3ULw0sjtPpgQ1UvcOqWZDRrtUnA8gS9vXLi2QIibqZFBDHP
-        zvY5/aX76hyn5nyeYQcs6iyYWPUdPIwpQdfb2tcWPdSedn3iFQ==
-X-Google-Smtp-Source: ABdhPJwTvGFPTPy/4Ib9ppQI+rRLaXkNdN/bBwtBs9AI9t0J0qoZZ6FLT0mjfq3EgaFP7JWbG391Ly+nMb8wDpKc+3k=
-X-Received: by 2002:adf:9148:: with SMTP id j66mr183170wrj.124.1619122539396;
- Thu, 22 Apr 2021 13:15:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=F6HkNIXnsQ0jUlhEdnv+PnYZxDWWdvNCPtrwXlIdkmc=;
+        b=S2Q8z6NotYb9wS9dUrNbBttChQPhAHlBBdCrIgGetuZS8eWv2uizbuGDaQzBDiwo3z
+         ofdR7PB56EY8zijGpT/h5YfOobzCdP4f4quBaTPn7P3IYC//lww7M3xYRLbRTwqKMVxT
+         cFUUwQ2rK0HvxS5xOa5JBQEoP3KeIGwCJpfYBt7aXUBZiQzDDx3OwJ3OP0xmIzpgFhH+
+         w35HLHK/C4lagyybs0TBWMez2mke+8bzTw0jKw538PKJkSV8zYT4fNdrlfjZTGL7gB+G
+         nqcpKkBaRnEC6puFvdUa4Y0i414mWsmBNjxI8lQWWEXr/ue4NhpmQA59KT97qcyypd1a
+         lCoA==
+X-Gm-Message-State: AOAM531eynVFUMHhsCw4ud/34FCXrLRtrjs/ggV4lekyXuFJoQNNuLNP
+        IG+USzsYwVNxur8/C7tpAmeYdh09N2gnwsaj4HjBqK8fL+sz4YtYFULH0qP7C9+1QuWZ+LR6kQn
+        b3PZ3NyKa10K6E7mAyXaREL13
+X-Received: by 2002:a0c:db82:: with SMTP id m2mr262144qvk.37.1619122608055;
+        Thu, 22 Apr 2021 13:16:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJytE+xQEguBXGQZlvwJ1qtOPecl4N0Kjsn9TELwI1t3EWQPLCqM+dsvQai1V7Y+XCx7xnLthw==
+X-Received: by 2002:a0c:db82:: with SMTP id m2mr262125qvk.37.1619122607871;
+        Thu, 22 Apr 2021 13:16:47 -0700 (PDT)
+Received: from localhost.localdomain ([2601:184:417f:70c0::42e6])
+        by smtp.gmail.com with ESMTPSA id x13sm3090600qtf.32.2021.04.22.13.16.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 13:16:47 -0700 (PDT)
+Subject: Re: [PATCH 2/2] lib/test: convert lib/test_list_sort.c to use KUnit
+To:     Daniel Latypov <dlatypov@google.com>,
+        andriy.shevchenko@linux.intel.com
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+References: <20210421183222.2557747-1-dlatypov@google.com>
+From:   Nico Pache <npache@redhat.com>
+Message-ID: <d7b2b598-7087-0445-4647-8521f3238dc2@redhat.com>
+Date:   Thu, 22 Apr 2021 16:16:46 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com> <YIGuvh70JbE1Cx4U@google.com>
- <CALvZod5a8LdhWPwCnxtPb4t=ZJJ3ZYDtLEV_RtV9EaY3E7MgaA@mail.gmail.com>
-In-Reply-To: <CALvZod5a8LdhWPwCnxtPb4t=ZJJ3ZYDtLEV_RtV9EaY3E7MgaA@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 22 Apr 2021 14:15:27 -0600
-Message-ID: <CAOUHufbt6i2-Z9=+Ngjnhnk8nh8-yYkhpPBi0i_ca8xTsk9mVw@mail.gmail.com>
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by too_many_isolated()
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>, wfg@mail.ustc.edu.cn
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210421183222.2557747-1-dlatypov@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:52 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Thu, Apr 22, 2021 at 10:13 AM Yu Zhao <yuzhao@google.com> wrote:
-> >
-> [...]
-> >         spin_lock_irq(&lruvec->lru_lock);
-> > @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
-> >  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
-> >                                 gfp_t gfp_mask, nodemask_t *nodemask)
-> >  {
-> > +       int nr_cpus;
-> >         unsigned long nr_reclaimed;
-> >         struct scan_control sc = {
-> >                 .nr_to_reclaim = SWAP_CLUSTER_MAX,
-> > @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
-> >         set_task_reclaim_state(current, &sc.reclaim_state);
-> >         trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
-> >
-> > +       nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
->
-> kswapd does not call this function (directly or indirectly).
->
-> > +       while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
->
-> At most nr_nodes * nr_cpus direct reclaimers are allowed?
->
-> > +               if (schedule_timeout_killable(HZ / 10))
->
-> trace_mm_vmscan_direct_reclaim_end() and set_task_reclaim_state(NULL)?
->
-> > +                       return SWAP_CLUSTER_MAX;
-> > +       }
-> > +
-> >         nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
-> >
-> > +       if (nr_cpus)
-> > +               atomic_dec(&pgdat->nr_reclaimers);
-> > +
-> >         trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
-> >         set_task_reclaim_state(current, NULL);
->
-> BTW I think this approach needs to be more sophisticated. What if a
-> direct reclaimer within the reclaim is scheduled away and is out of
-> CPU quota?
+Hi,
 
-More sophisticated to what end?
+Can we change this to CONFIG_LIST_SORT_KUNIT_TEST to follow the convention used by other KUNIT tests?
 
-We wouldn't worry about similar scenarios that we ran out of cpu quota
-while holding resources like a mutex, Si why this one is different,
-especially given that we already allow many reclaimers to run
-concurrently?
+Maintainers? thoughts? I recently posted patches to convert some of the other tests that break this format [1].
+
+Cheers,
+
+-- Nico
+
+[1] - https://lkml.org/lkml/2021/4/14/310
+
+On 4/21/21 2:32 PM, Daniel Latypov wrote:
+> [SNIP...]
+>  config TEST_LIST_SORT
+> -	tristate "Linked list sorting test"
+> -	depends on DEBUG_KERNEL || m
+> +	tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
+> +	depends on KUNIT
+> +	default KUNIT_ALL_TESTS
+> [SNAP...]
+
