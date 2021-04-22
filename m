@@ -2,161 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A9F36873B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819B936874F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238911AbhDVTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:35:14 -0400
-Received: from mail-co1nam11on2058.outbound.protection.outlook.com ([40.107.220.58]:59809
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236668AbhDVTfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:35:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aGM6SEpiz4hN0FVdETT9MUJYygtfTY+X6OvTEfEXhFARCZl4Q5jWPjGLC3Ur/u9YK3JfK3vF0sJZAmW9h5RAx8OksKQngbm1Keg9uK4CaxsaG6WOL1PllNpSzwVS9l0piDVwUMpBJTziHnc3HmdnZG4fcMVUSuI1rw4lh0obfvFbQIYqcT1niu5CDaiMp48ke6wDXSVInv5XH8yQLKeE/Gqhu7ZhO4+tS6p7nYIPYPITLEJOliexY2bV0vGM1fQXdxD34LXGZ+rkMHcWYRiOJUHgo2loA3ERV9+nppvaxCTyWNiya7CXrjej/7E2L7b0qtKJMUbFyovkvKg9hTW++Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FSDOcJXeuGnlWb056i+4PRjeQsu0V6uJu7zxVfEMksY=;
- b=Cn1WArvgEh0eMCzEakejLWHNiN222wmlCNJ0BkqJ6RMaOmXfGdMu49K3Xky/o9vLW1FQZIBAGA2Tfcix7Z/oKyauQ7LPZC8Bxjyab1udv2ez+Em2zIJY+S1s/e3AjUM8BUY0n/zS08Z/F8RJPBtqoV3R9lJkDfT6TjoKnmgKG8Ba8cZ6X7jp9U7l3rlBwSwjUPP+pyQ/t3gKgTbgLF+YaUG5MdCrbiv+fnhAlOgZV0zHtc04d8YF1THFKpS3HWSxkrgWNvENJXeWUxAjVUIONU2KfDZPTpyZOrmhS4f5tOLm2qYsZTVdBDt9GhiWJfJOyYkY9DF0g1x4baG/kSwEtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FSDOcJXeuGnlWb056i+4PRjeQsu0V6uJu7zxVfEMksY=;
- b=W7u1dOfpFOLpXTGk8NGxW3LTRXObJJ/m5xn6qLsQ9QxjK9BVxmanferDKn/WYE5dM8O3aHXVh+D1y1lbYQHeauDonnlO4rsY/q17YnulBGqh/cOLJP8gBpvkNTq6uVTIw1aeQeYBA1gD9IppQADUGp7eFQpSS2MIP7co+vQ70X4=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1867.namprd12.prod.outlook.com (2603:10b6:3:10d::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4065.20; Thu, 22 Apr 2021 19:34:35 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4065.023; Thu, 22 Apr
- 2021 19:34:35 +0000
-Subject: Re: [PATCH v5 02/15] KVM: SVM: Free sev_asid_bitmap during init if
- SEV setup fails
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210422021125.3417167-1-seanjc@google.com>
- <20210422021125.3417167-3-seanjc@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <1f3f3ccf-a6af-3ea4-3109-5d38897f820e@amd.com>
-Date:   Thu, 22 Apr 2021 14:34:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210422021125.3417167-3-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA0PR12CA0024.namprd12.prod.outlook.com
- (2603:10b6:806:6f::29) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S239047AbhDVTig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:38:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239025AbhDVTif (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 15:38:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619120279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=biOoOdkcB54+0RggxGqfQD/QFH+RgEKqiVLmKbv8Qt8=;
+        b=Pu09vGheXqQfCSTMH110QUwahN1ua1wGZwpuVPE9YPn+BbXO9jBdXjYJVP1zgGugDgD+lE
+        wSmkNEXwgxx/CO5HvD0A65fIKTF9ZGLJzYylwKBn6elpfQUiiYfAlcYNWvJzXFfohOijL+
+        4YRxcCUyFjqUpTiW4rivQDXqeFtXxkU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-Jm4NmWn3NMmQ8koJLzBOpw-1; Thu, 22 Apr 2021 15:37:56 -0400
+X-MC-Unique: Jm4NmWn3NMmQ8koJLzBOpw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30D138542C1;
+        Thu, 22 Apr 2021 19:37:53 +0000 (UTC)
+Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D5A360BE5;
+        Thu, 22 Apr 2021 19:37:47 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 13:37:47 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210422133747.23322269@redhat.com>
+In-Reply-To: <20210422175715.GA1370958@nvidia.com>
+References: <20210415230732.GG1370958@nvidia.com>
+        <20210416061258.325e762e@jacob-builder>
+        <20210416094547.1774e1a3@redhat.com>
+        <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210421162307.GM1370958@nvidia.com>
+        <20210421105451.56d3670a@redhat.com>
+        <20210421175203.GN1370958@nvidia.com>
+        <20210421133312.15307c44@redhat.com>
+        <20210421230301.GP1370958@nvidia.com>
+        <20210422111337.6ac3624d@redhat.com>
+        <20210422175715.GA1370958@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by SA0PR12CA0024.namprd12.prod.outlook.com (2603:10b6:806:6f::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Thu, 22 Apr 2021 19:34:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b26c58cd-66b5-4397-4bd5-08d905c5a91a
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1867:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1867F166B8ADE87AD26320D8EC469@DM5PR12MB1867.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BTCpNxzFOpPoF3W+gmxvQEP9TW1NQ8pYskiGaCtoqaRwtY7vi/9F+Y8nFR7cEhM8+RUsIeWMnizgPRb4AewSogOIJBv+Yf2U2oB/eRMbj5OiQ1p34gmnJdAmwHAVM5wyCQKiTI/gG/B6Nv2ZPW5GEOcebZ3A3+wKRWcJDzXKWdEY/CYH5fhZ830N30u4KYUuEu6rEmnzF+QkIxJa6v1jz9wMoiliDiusjctnSrWCqrYEeHBsOoZLvJBKzC3NBrIQjjfA9Nhk6vZlAyQdDVDgwBAqru+D4xK7c+cnrDD8P+JlVol2Tm177sqtr6tF+pnd3A00AC69eRryvA3cavSLSXVOBrwRmP0M5fkM9F382Kx3vmXS9Z1Flndy/Yc9mAOkXM9YGfPLJL5nRq7XiplkVtHnS7CXFNtF4bWAXln9a0EoH8/6N7amvEsNfSe+RcCkzCsOXiVjAsQVTXCUTckxNxwXeGJF8wAaypU+Fhmf9E7LNbileh+FNsvAVva//7Dzt/k7INUVOXEabNEkAX+7VS7CSNJtNY9GTU/LtPEluDvIAtI7YswnU4NPwGJ0HARAsg6+2tovUQwysXM0UOXM18kx8YIFYkZofd0iJg72AkZ1y0HVIMtwGrWVO7zXL4tLwpjd+ylQEkMpdRPeZgU7LIkuwPYMfWoq7SxYH4RD8r8BNGJkS3dHNvqQQdlY8mqJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(376002)(346002)(39860400002)(83380400001)(38100700002)(2906002)(31686004)(16576012)(66946007)(66476007)(8936002)(7416002)(86362001)(66556008)(186003)(26005)(316002)(54906003)(4326008)(478600001)(6486002)(110136005)(31696002)(16526019)(8676002)(956004)(53546011)(2616005)(36756003)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bmZ6aUxJMGVSSlZrS0pXNW51MmYyOU03b3lkeG5FaHZ2Vmt4WGl3anN3NnlF?=
- =?utf-8?B?U3JXcENxWUtrTVBpdndTOCswdGNLYWdOS00ya3FyQ0U3T0dhbExUaHFXNWlX?=
- =?utf-8?B?bU1rNmNaQTl3K2Z6STBoUWNKQmdYN3dlWFhIdmg3TWw3dkY2TmY4QmlrTWJS?=
- =?utf-8?B?T0U0ZUd6ZGJ0Qy9KdVpjK0pSY2JJNHZnNmJyQ2o2RCtHME5zNjE1VDQzSE1p?=
- =?utf-8?B?VlBCaFNaWCtHWTNKTVUwV1RneHhTRy9POGxERSt3T3FFWFljdDQ1Q1Z2RXVr?=
- =?utf-8?B?MGFSLzhYTk1CeHVsMzVQaGhjMHhVa3ZSZEhtZlZuaTAyY29VQnRCdzRIRTFY?=
- =?utf-8?B?Mzc4RnZmZ3pGNEFVUTIrQ0tCMi9tTVd6cWtPa0hIaDh1UTUwbkVoVTd2R0kv?=
- =?utf-8?B?N1VGR3J6V001M21mTW1LaWkzdmpuTXBUZmtJY3VlUXhrVEo1eUFQYnUyK2R3?=
- =?utf-8?B?SVNNMytLYUVVTkphbG1mZUxNRjlERlRyMDJhSUYycS9qWGJzV0Rrb1ZhQVF3?=
- =?utf-8?B?L1JoeE1wTGFyTWdhUTY3SWRFdDdqRnN4NFZRNXJQZWRpeW1jR1Z6U2JDR2l5?=
- =?utf-8?B?T1BHTURyZStVeDBZRitNV1FvNExBamltS1Q1NXpQdUlWT0JyZ1VWMHpsclNT?=
- =?utf-8?B?Z0pVdWdQM0k0VUxvK1p3VHRXMC9aT2NDTDhzM2ZHYnVXclFWcm9GMENJZWhl?=
- =?utf-8?B?TFJXai9JL2RmcnI4RmJmNFpmNzhLWjFlZm5KaVBzdnBKVE1ON3lkRHUzcWkw?=
- =?utf-8?B?Uy9FYWNVdUZ2SDJlaDAzdVdUVGVDRi9XZEdXMjBEaFlNZURLZlBUWHJ2NW9I?=
- =?utf-8?B?U3Z5YTdGUW10enorc0RCZDl0OFJMbWtlVVZHZ2VOc1FHWHYrS25KVHM4SExY?=
- =?utf-8?B?ZEtId0pzNm5YOXRYdWJhOEJnbWw4c1k1OEFWamlEL2k2S01GbC80OEZSeG81?=
- =?utf-8?B?ZE44MnU2OHl1Z0EycDRMRHBRaHgwU0YwTUZDNjFIZmVIUFh4UEpqVXRlajB0?=
- =?utf-8?B?UEJZMmV1eXVsVExiV0R2YnJ1V1pwS05IYXVncEV4YzhraStiQ3lhU25GVHI0?=
- =?utf-8?B?SXFkRnBHRjF5ek0yWGlPM3pNUFB5aWYvQ09QVGcwOGpSSnpjZWRiRkh6bnd5?=
- =?utf-8?B?TXN4TU40VXRqa3pjSThNaWNWdVVxZGdPYzJ5eVF0cnZPN2VhL0hveHFWNWFr?=
- =?utf-8?B?bkVzL2JEbmpaNWtWTTI4MndOWTBJOXBpdnZIVVRtSWdGNkNhNUtjSnFtRmJ2?=
- =?utf-8?B?KzlMZng2SGJBMzByYUNtYkhpd2RycTU5QzF1YUxFZ1RBajhGMWQrdWkvSENM?=
- =?utf-8?B?MlFtZ0Q1RmdzNC8xSnpPMXpyRWc5V3l5cGl0cG1lN0tFUHlPdk1OUDZha1dy?=
- =?utf-8?B?QVBNVzZCUkpscDRKYWx4NWhmSFpITGJEMHArME5MWkk1c0IvdUY2OHpXVFJk?=
- =?utf-8?B?WVNwRi9oNGU4L0VEMmxJYUVlbG51NGdvTWMrZENmR0w0UzVSMlRZTVdidEFL?=
- =?utf-8?B?Z3IrRm12OEt3Z2hMeTFFaUpGWG5Mc0J5UzBvbDk2L0FuNThTTllTb1N0d2sy?=
- =?utf-8?B?WGE2OTA5b2VZVndBbC8zSXdZNmJmYlVQb1owNk5pcE8wblpxWWRCWUwyajZN?=
- =?utf-8?B?eTNIenFmdnFvd3dIUnVDRU5RZElVOTJWNGh2OXdEQSt3LzVkWFA4WkR3VE94?=
- =?utf-8?B?M2xZMGY0clVKbi80WW5IbE5ndnJMdm5GdGxZVmV4dXJ3M1dGL2VjcnV1OGU3?=
- =?utf-8?Q?/HtljLhPHu+BR+QyvwrdPW8lp8HpnrCMvpnIgsA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b26c58cd-66b5-4397-4bd5-08d905c5a91a
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 19:34:35.5024
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AUK1Gu9SkHpuqn17UX9Fr3myIsZF417KwEap9WB80L0LuMNY+KH+AHNdJdT68wFotGAZWqcIjgK7gDjfNImu6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1867
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 9:11 PM, Sean Christopherson wrote:
-> Free sev_asid_bitmap if the reclaim bitmap allocation fails, othwerise
-> KVM will unnecessarily keep the bitmap when SEV is not fully enabled.
+On Thu, 22 Apr 2021 14:57:15 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > > The security rule for isolation is that once a device is attached to a
+> > > /dev/ioasid fd then all other devices in that security group must be
+> > > attached to the same ioasid FD or left unused.  
+> > 
+> > Sounds like a group...  Note also that if those other devices are not
+> > isolated from the user's device, the user could manipulate "unused"
+> > devices via DMA.  So even unused devices should be within the same
+> > IOMMU context... thus attaching groups to IOMMU domains.  
 > 
-> Freeing the page is also necessary to avoid introducing a bug when a
-> future patch eliminates svm_sev_enabled() in favor of using the global
-> 'sev' flag directly.  While sev_hardware_enabled() checks max_sev_asid,
-> which is true even if KVM setup fails, 'sev' will be true if and only
-> if KVM setup fully succeeds.
+> That is a very interesting point. So, say, in the classic PCI bus
+> world if I have a NIC and HD on my PCI bus and both are in the group,
+> I assign the NIC to a /dev/ioasid & VFIO then it is possible to use
+> the NIC to access the HD via DMA
 > 
-> Fixes: 33af3a7ef9e6 ("KVM: SVM: Reduce WBINVD/DF_FLUSH invocations")
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> And here you want a more explicit statement that the HD is at risk by
+> using the NIC?
 
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+If by "classic" you mean conventional PCI bus, then this is much worse
+than simply "at risk".  The IOMMU cannot differentiate devices behind a
+PCIe-to-PCI bridge, so the moment you turn on the IOMMU context for the
+NIC, the address space for your HBA is pulled out from under it.  In
+the vfio world, the NIC and HBA are grouped and managed together, the
+user cannot change the IOMMU context of a group unless all of the
+devices in the group are "viable", ie. they are released from any host
+drivers.
 
-> ---
->  arch/x86/kvm/svm/sev.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Honestly, I'm not sure the current group FD is actually showing that
+> very strongly - though I get the point it is modeled in the sysfs and
+> kind of implicit in the API - we evolved things in a way where most
+> actual applications are taking in a PCI BDF from the user, not a group
+> reference. So the actual security impact seems lost on the user.
+
+vfio users are extremely aware of grouping, they understand the model,
+if not always the reason for the grouping.  You only need to look at
+r/VFIO to find various lsgroup scripts and kernel patches to manipulate
+grouping.  The visibility to the user is valuable imo.
+
+> Along my sketch if we have:
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index b4e471b0a231..5ff8a202cc01 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1788,8 +1788,11 @@ void __init sev_hardware_setup(void)
->  		goto out;
->  
->  	sev_reclaim_asid_bitmap = bitmap_zalloc(max_sev_asid, GFP_KERNEL);
-> -	if (!sev_reclaim_asid_bitmap)
-> +	if (!sev_reclaim_asid_bitmap) {
-> +		bitmap_free(sev_asid_bitmap);
-> +		sev_asid_bitmap = NULL;
->  		goto out;
-> +	}
->  
->  	pr_info("SEV supported: %u ASIDs\n", max_sev_asid - min_sev_asid + 1);
->  	sev_supported = true;
+>    ioctl(vifo_device_fd, JOIN_IOASID_FD, ioasifd)
+>    [..]
+>    ioctl(vfio_device, ATTACH_IOASID, gpa_ioasid_id) == ENOPERM
 > 
+> I would feel comfortable if the ATTACH_IOASID fails by default if all
+> devices in the group have not been joined to the same ioasidfd.
+
+And without a group representation to userspace, how would a user know
+to resolve that?
+
+> So in the NIC&HD example the application would need to do:
+> 
+>    ioasid_fd = open("/dev/ioasid");
+>    nic_device_fd = open("/dev/vfio/device0")
+>    hd_device_fd = open("/dev/vfio/device1")
+>    
+>    ioctl(nic_device_fd, JOIN_IOASID_FD, ioasifd)
+>    ioctl(hd_device_fd, JOIN_IOASID_FD, ioasifd)
+>    [..]
+>    ioctl(nice_device, ATTACH_IOASID, gpa_ioasid_id) == SUCCESS
+> 
+> Now the security relation is forced by the kernel to be very explicit.
+
+But not discoverable to the user.
+
+> However to keep current semantics, I'd suggest a flag on
+> JOIN_IOASID_FD called "IOASID_IMPLICIT_GROUP" which has the effect of
+> allowing the ATTACH_IOASID to succeed without the user having to
+> explicitly join all the group devices. This is analogous to the world
+> we have today of opening the VFIO group FD but only instantiating one
+> device FD.
+> 
+> In effect the ioasid FD becomes the group and the numbered IOASID's
+> inside the FD become the /dev/vfio/vfio objects - we don't end up with
+> fewer objects in the system, they just have different uAPI
+> presentations.
+> 
+> I'd envision applications like DPDK that are BDF centric to use the
+> first API with some '--allow-insecure-vfio' flag to switch on the
+> IOASID_IMPLICIT_GROUP. Maybe good applications would also print:
+>   "Danger Will Robinson these PCI BDFs [...] are also at risk"
+> When the switch is used by parsing the sysfs
+
+So the group still exist in sysfs, they just don't have vfio
+representations?  An implicit grouping does what, automatically unbind
+the devices, so an admin gives a user access to the NIC but their HBA
+device disappears because they were implicitly linked?  That's why vfio
+basis ownership on the group, if a user owns the group but the group is
+not viable because a device is still bound to another kernel driver,
+the use can't do anything.  Implicitly snarfing up subtly affected
+devices is bad.
+
+> > > Thus /dev/ioasid also becomes the unit of security and the IOMMU
+> > > subsystem level becomes aware of and enforces the group security
+> > > rules. Userspace does not need to "see" the group  
+> > 
+> > What tools does userspace have to understand isolation of individual
+> > devices without groups?  
+> 
+> I think we can continue to show all of this group information in sysfs
+> files, it just doesn't require application code to open a group FD.
+> 
+> This becomes relavent the more I think about it - elmininating the
+> group and container FD uAPI by directly creating the device FD also
+> sidesteps questions about how to model these objects in a /dev/ioasid
+> only world. We simply don't have them at all so the answer is pretty
+> easy.
+
+I'm not sold.  Ideally each device would be fully isolated, then we
+could assume a 1:1 relation of group and device and collapse the model
+to work on devices.  We don't live in that world and I see a benefit to
+making that explicit in the uapi, even if that group fd might seem
+superfluous at times.  Thanks,
+
+Alex
+
