@@ -2,182 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA7B368706
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43E236870F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238698AbhDVTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
+        id S238752AbhDVTTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbhDVTRd (ORCPT
+        with ESMTP id S236947AbhDVTTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:17:33 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A20C06174A;
-        Thu, 22 Apr 2021 12:16:58 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso41286455otb.13;
-        Thu, 22 Apr 2021 12:16:58 -0700 (PDT)
+        Thu, 22 Apr 2021 15:19:08 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:18:32 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id bf25-20020a0564021a59b0290385169cebf8so9929731edb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WFKHkdJ/TiTXIjZ61s8CUp/eOXsXcoYTAeerWwPKQQc=;
-        b=KKmpmScmGCnRb2n5yZnt15wSgZqeNc0MwejlDkH9XKIhana5b62yO9zea7aBu+wZLe
-         tSy29MfzGcHaZSEHJfUP0SlldG5v9kKvlBv8hHNLVEg0aePS9OSgN82ubHM27kFri9Hb
-         tbQJq/Wq09mPvKoLP6NyG9tw68Z+rhdbvDDxgWRqEyJXvrnCVGm5mQbgGmvqhQcxvoLO
-         E8g/3KaZUhJAbNTwQfZz9wkxCNuyXngN/tnsGSnfgD8yv46FF6QbGzGd2sElgL19Fvju
-         fIVs9QsTftssrkCQ72Yvq3521HCcXwPoMfdXzyUQPBwXUP/xELiCjtGmBKOIC1A63Qvm
-         LEAQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=MG1E5LmNjEnO9dOxTFKDeqsCA70+WVWf6tsEnOy3w2I=;
+        b=CTGWG2bwSDUTBpl+CTY4eDft9pkPUnqmV8/Ue14lePjuizSL+3Ykhz3ZJlkal+QnAA
+         KmhvZ7sfSQNXPG6tqUXMs8QJkAPiJPn11KDWvRl9HUMBdP4ANxpCfZnSlkj6xsnD472v
+         BbOp5SuiR2GC/IKu3JTpZy43oHxjGNpiGELZKh6mzx4KoVlWunsSAKsHPLskOooIXxGo
+         zQHM3ZcE/+mxx2T/YFkCjogZKItkeGAmn3t3aCcQNEOTTE7IvVWQt0WrhXHJK4bQwt8T
+         FO7B31ZxDPW/4ymStBxmI5Bo3x+rjI4B8VsX1j43ZDMKKKj6I27utYMk8vrpQVvIULKk
+         aQXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WFKHkdJ/TiTXIjZ61s8CUp/eOXsXcoYTAeerWwPKQQc=;
-        b=UQjEd/l5jxFzEIE0t4Uy2VnoxyHkqZbxTzYX+U5J7yyPNk5CQCGJXl7oZKKmIhFDwm
-         kABmYpsY1gLE5s4+CmXoi7Ct6Wa5Eo+6XQTufZ4/2Fsb3eE+jM2fY+9d9qET1+UwVKL8
-         1t153sW448EQaAZxceMRX2roQWBTIkkFRer7OE8paFEbv88tGpbcKBQFOqAw/uFK/0ds
-         m763oal1W1V0TA6VKx9FAY8dc9EYhufeHxvbZg7Px3ChsOclmTdTWU7XtZj6QmyW2JfF
-         KwLjg0tv+FkUwXyNIwhOd1MzPX5QMeTAby3n6PAWNy6+9no5ah0sYoNlheOq5xTI4+a7
-         hEoQ==
-X-Gm-Message-State: AOAM531TGaLKPmf7uFz2X33gL7xE65VmLr3bXZfVzi+1DC9bFK/mfoS6
-        FrxdlnYxu8GO/d6akksj6WHUANQ3h3Fcu9BMemM=
-X-Google-Smtp-Source: ABdhPJxuiqTLKR0jY2x7Mzae5sGw4GmHH/gcF0XZOd5CvZE0EHQQZPlFqR+JmcV96hu0Lu53i3715OdCAgAsmxky9Ak=
-X-Received: by 2002:a9d:3e4a:: with SMTP id h10mr88230otg.252.1619119017805;
- Thu, 22 Apr 2021 12:16:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1618785336.git.lucas.p.stankus@gmail.com>
- <54a9eaeaa42d47037b2a07bd933e6dfade745d02.1618785336.git.lucas.p.stankus@gmail.com>
- <20210420193746.GA3632576@robh.at.kernel.org>
-In-Reply-To: <20210420193746.GA3632576@robh.at.kernel.org>
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-Date:   Thu, 22 Apr 2021 16:16:21 -0300
-Message-ID: <CACKVXZDtUync4HnScJnMEj=Gh7bukUUpnPrtE0w1PPgCZOHORg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: staging: iio: cdc: ad7746: add
- binding documentation for AD7746
-To:     Rob Herring <robh@kernel.org>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=MG1E5LmNjEnO9dOxTFKDeqsCA70+WVWf6tsEnOy3w2I=;
+        b=l4lZGah6mPmGmRATQL+u8aEEfnZSVtTsgGcCPGo52hPN6aOLNDtJcDITxXQ7M+gIUN
+         cFPwkiKBs2Oi+AUUUt5wi/Z4Jn31+tL1cFVph7S+vaTZrdZ8xz/eqYOnsN4XPteQcrOu
+         7ApYIZ0+6/2kCNiFWgO2+fbUZRsizjDk7cl0fa/ds1ulPZle9Eve8hYFKQQmeWMGGR/T
+         ri9rD065QTSEjCm5yeefkoEIQjRN6owk9GbkzIh+ti3UwdUgPC0xg1f+rhdQN8XGYEPR
+         OOnhYxPTeAKILO6STe7mDTtlwLIt5EcahQvS3nx45hT2LFqkoBmNtrYLA7NSJFjacWiM
+         aINA==
+X-Gm-Message-State: AOAM533po9lqX4LmQTdgViqWLlO1UJ1jwFUEvW0F94jmtFJ39V1OGmLL
+        0XCvHhZvZ4k7Q8AJpioDftMQh/u61w==
+X-Google-Smtp-Source: ABdhPJw0dS7tM+mkrOgUOXVjg379+Sp3vzFIHd9nGv05RWaB/g7pGx/VbIxJ1BfFq+uBYqyy4wtpUM3+0g==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:145c:dc52:6539:7ac5])
+ (user=elver job=sendgmr) by 2002:a05:6402:1004:: with SMTP id
+ c4mr17333edu.364.1619119110010; Thu, 22 Apr 2021 12:18:30 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 21:18:22 +0200
+Message-Id: <20210422191823.79012-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH tip v2 1/2] signal, perf: Fix siginfo_t by avoiding u64 on
+ 32-bit architectures
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, peterz@infradead.org, mingo@redhat.com,
+        tglx@linutronix.de
+Cc:     m.szyprowski@samsung.com, jonathanh@nvidia.com, dvyukov@google.com,
+        glider@google.com, arnd@arndb.de, christian@brauner.io,
+        axboe@kernel.dk, pcc@google.com, oleg@redhat.com,
+        David.Laight@aculab.com, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 4:37 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Sun, Apr 18, 2021 at 07:49:51PM -0300, Lucas Stankus wrote:
-> > Add device tree binding documentation for AD7746 cdc in YAML format.
-> >
-> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> > ---
-> >
-> > A minor note about the adi,excitation-vdd-permille property. Jonathan
-> > suggested the name to be adi,excitation-vdd-milicent, but I was unsure of
-> > the milicent naming. With a quick search I found out that the common way to
-> > call a thousandth is 'per mille'[1], but I didn't find any use of it in the
-> > kernel documentation. Any thoughts about it?
->
-> Seems okay to me.
->
-> > [1] https://en.wikipedia.org/wiki/Per_mille
-> >
-> >  .../bindings/iio/cdc/adi,ad7746.yaml          | 73 +++++++++++++++++++
-> >  1 file changed, 73 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/cdc/adi,ad7746.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/iio/cdc/adi,ad7746.yaml b/Documentation/devicetree/bindings/iio/cdc/adi,ad7746.yaml
-> > new file mode 100644
-> > index 000000000000..a2a7eee674ba
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/cdc/adi,ad7746.yaml
-> > @@ -0,0 +1,73 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/cdc/adi,ad7746.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: AD7746 24-Bit Capacitance-to-Digital Converter with Temperature Sensor
-> > +
-> > +maintainers:
-> > +  - Michael Hennerich <michael.hennerich@analog.com>
-> > +
-> > +description: |
-> > +  AD7746 24-Bit Capacitance-to-Digital Converter with Temperature Sensor
-> > +
-> > +  Specifications about the part can be found at:
-> > +  https://www.analog.com/media/en/technical-documentation/data-sheets/ad7291.pdf
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - adi,ad7745
-> > +      - adi,ad7746
-> > +      - adi,ad7747
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  adi,excitation-vdd-permille:
-> > +    description: |
-> > +      Set VDD per mille to be used as the excitation voltage.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum: [125, 250, 375, 500]
-> > +
-> > +  adi,exca-output-en:
-> > +    description: Enables the EXCA pin as the excitation output.
-> > +    type: boolean
-> > +
-> > +  adi,exca-output-invert:
-> > +    description: Inverts the excitation output in the EXCA pin.
-> > +    type: boolean
->
-> 'invert' assumes I know what the non-inverted signal is. Sometimes that
-> makes sense, but if you can define in terms of the inverse that would be
-> better. For example, for a normally active low signal, name the property
-> 'foo-active-high'.
+The alignment of a structure is that of its largest member. On
+architectures like 32-bit Arm (but not e.g. 32-bit x86) 64-bit integers
+will require 64-bit alignment and not its natural word size.
 
-Thanks for the feedback!
-From reading the data sheet I couldn't quite grasp what would be an inverted
-excitation output, but I don't have a lot of experience with CDCs. Maybe someone
-with more experience could help out with a better suggestion.
+This means that there is no portable way to add 64-bit integers to
+siginfo_t on 32-bit architectures without breaking the ABI, because
+siginfo_t does not yet (and therefore likely never will) contain 64-bit
+fields on 32-bit architectures. Adding a 64-bit integer could change the
+alignment of the union after the 3 initial int si_signo, si_errno,
+si_code, thus introducing 4 bytes of padding shifting the entire union,
+which would break the ABI.
 
->
-> > +
-> > +  adi,excb-output-en:
-> > +    description: Enables the EXCB pin as the excitation output.
-> > +    type: boolean
-> > +
-> > +  adi,excb-output-invert:
-> > +    description: Inverts the excitation output in the EXCB pin.
-> > +    type: boolean
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    i2c {
-> > +      #address-cells = <1>;
-> > +      #size-cells = <0>;
-> > +
-> > +      ad7746: cdc@48 {
-> > +        compatible = "adi,ad7746";
-> > +        reg = <0x48>;
-> > +        adi,excitation-vdd-permille = <125>;
-> > +
-> > +        adi,exca-output-en;
-> > +        adi,exca-output-invert;
-> > +        adi,excb-output-en;
-> > +        adi,excb-output-invert;
-> > +      };
-> > +    };
-> > +...
-> > --
-> > 2.31.1
-> >
+One alternative would be to use the __packed attribute, however, it is
+non-standard C. Given siginfo_t has definitions outside the Linux kernel
+in various standard libraries that can be compiled with any number of
+different compilers (not just those we rely on), using non-standard
+attributes on siginfo_t should be avoided to ensure portability.
+
+In the case of the si_perf field, word size is sufficient since there is
+no exact requirement on size, given the data it contains is user-defined
+via perf_event_attr::sig_data. On 32-bit architectures, any excess bits
+of perf_event_attr::sig_data will therefore be truncated when copying
+into si_perf.
+
+Since si_perf is intended to disambiguate events (e.g. encoding relevant
+information if there are more events of the same type), 32 bits should
+provide enough entropy to do so on 32-bit architectures.
+
+For 64-bit architectures, no change is intended.
+
+Fixes: fb6cc127e0b6 ("signal: Introduce TRAP_PERF si_code and si_perf to siginfo")
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+v2:
+* Update commit message wording to be clearer and mentioned __packed, as
+  pointed out by David Laight. I'm sure some time in the future somebody
+  will wonder and perhaps run into the same issue, so let's try to give
+  as much background as we can...
+
+v1: https://lkml.kernel.org/r/20210422064437.3577327-1-elver@google.com
+
+Note: I added static_assert()s to verify the siginfo_t layout to
+arch/arm and arch/arm64, which caught the problem. I'll send them
+separately to arm&arm64 maintainers respectively.
+---
+ include/linux/compat.h                                | 2 +-
+ include/uapi/asm-generic/siginfo.h                    | 2 +-
+ tools/testing/selftests/perf_events/sigtrap_threads.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index c8821d966812..f0d2dd35d408 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -237,7 +237,7 @@ typedef struct compat_siginfo {
+ 					u32 _pkey;
+ 				} _addr_pkey;
+ 				/* used when si_code=TRAP_PERF */
+-				compat_u64 _perf;
++				compat_ulong_t _perf;
+ 			};
+ 		} _sigfault;
+ 
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index d0bb9125c853..03d6f6d2c1fe 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -92,7 +92,7 @@ union __sifields {
+ 				__u32 _pkey;
+ 			} _addr_pkey;
+ 			/* used when si_code=TRAP_PERF */
+-			__u64 _perf;
++			unsigned long _perf;
+ 		};
+ 	} _sigfault;
+ 
+diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c b/tools/testing/selftests/perf_events/sigtrap_threads.c
+index 9c0fd442da60..78ddf5e11625 100644
+--- a/tools/testing/selftests/perf_events/sigtrap_threads.c
++++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
+@@ -44,7 +44,7 @@ static struct {
+ } ctx;
+ 
+ /* Unique value to check si_perf is correctly set from perf_event_attr::sig_data. */
+-#define TEST_SIG_DATA(addr) (~(uint64_t)(addr))
++#define TEST_SIG_DATA(addr) (~(unsigned long)(addr))
+ 
+ static struct perf_event_attr make_event_attr(bool enabled, volatile void *addr)
+ {
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
