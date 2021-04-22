@@ -2,69 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16015367EF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC30367EF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbhDVKq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhDVKq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ECAD613C4;
-        Thu, 22 Apr 2021 10:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619088352;
-        bh=TGwnKk/RxvquNuLw5D+m/omaHgTDQoSOY+tpVfcrgEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L5yfjC8lbYuMRmPdHO6ptjp8eu5N99h7ZnBGiGzWGeTtqdJ9kqbZhWDy4q7gtd5YY
-         RVr5CfV6tOpE5eZ0AU+6jk3WUcB0ub0Xyl5HgWucC/jQ85emuUQyVQV9fXj2MtyzHd
-         ZsGp1DQwGyyJEPO5pQ4X+VHXCoadt6N5AfN+HmoIoO3whD55gR1/KXElfJlV2z7PeD
-         4tt0krHZ4CZFGIDZpDOoUCCE0DQA2r4qIs0r1LLBKX+FmXnsZ7FZ1yS0OPQvjkDVCU
-         umqonzbStYcdoLStaZ4vVJyqHYxmqKwuRzg8o/BpGT9FTcWQuBn4nYIeOiYZ31Avxv
-         FDk5QCVI4sT8w==
-Date:   Thu, 22 Apr 2021 11:45:46 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, nathan@kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 2/5] arm64: Get rid of oprofile leftovers
-Message-ID: <20210422104545.GD1442@willie-the-truck>
-References: <20210414134409.1266357-1-maz@kernel.org>
- <20210414134409.1266357-3-maz@kernel.org>
+        id S235943AbhDVKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235930AbhDVKrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:47:31 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E266C06174A;
+        Thu, 22 Apr 2021 03:46:56 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u11so17414515pjr.0;
+        Thu, 22 Apr 2021 03:46:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yc9wGyWGhgFaZSQouLz2+dApxfgGjbSS67UWipX0ris=;
+        b=tBH1+sBLqDZuiPdSoyrOO6NT2umNak5OQbG2/NThReyEBwRA/FlPUiSrgW4o5eQb4t
+         iT8DHPHyznITtM2UcyG3Xf51W7dJcNg2eT/6PiPLf2/HuJZ+nI5n/98iRnqSCJR5P3da
+         I2+5kK3S4UVbIo+nxoDE34Kj0yXaVKAAHIbyhAwQGuLMfdqzrgn2ZG3eI9IMSySfzPCt
+         3C9Ab4Hb5BjPDZcCEwEA6CoBA55oznSqzy9s1VtpIjxAcESFMM0Dd2/mbQWYuBHY9OTO
+         Y0E01Z5i37Eff3QTCk2fQzf1unFVF/VUaCd8y2sE83M65AbeJHXuB6RgjfnbOHzk9MRX
+         WcFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yc9wGyWGhgFaZSQouLz2+dApxfgGjbSS67UWipX0ris=;
+        b=KLwuH5EltG1dnfeUT5dKvyZ7BYl26LDIvMjc5f5pkodYMH14Wij+NDNLtCSCY6rNxq
+         ztAfiNedQjEnD8B6jSj0B75xtbfACyXCPKcUfXpg1DxMr5UucLZYnXncKqZi/sDf4ink
+         Yx8Oov/SPNKPzxucPaamOPz1fE+bd72b9KDZGbLSdPFam2HURW1KBsbgCtwL6lgXOINr
+         bZQS/c1YlanbrbFWkGw1+E7oKlImZ9nGyF1Ih0LbGqdlWA48H+C0WMesQkqURPBCrNmQ
+         GQniBFQ+ZchNhLh8Fb5PR88Zvc9lmFov9vpWqoJbIgKLlqWE08DGadkjEh/LagGr8cqE
+         tmCA==
+X-Gm-Message-State: AOAM533iUG/9H2Qi1XcdZkzc6WzeG8Jo0QAoo2vfk/gLLQOH0m1XmV0I
+        FCJL9hx6RRtI8WXz69JawlnwiS/wf4Qp8/Kvox4=
+X-Google-Smtp-Source: ABdhPJy+ERoKJA1hCj8Oe+lftOnHwnIH8BzpBPEwxs0NMI9jWXOCPRjVXNvMvgFuC81oR7tJvfMC2+9aAoffBsOMBgQ=
+X-Received: by 2002:a17:902:e546:b029:ec:a7f5:2a88 with SMTP id
+ n6-20020a170902e546b02900eca7f52a88mr3078034plf.21.1619088416159; Thu, 22 Apr
+ 2021 03:46:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414134409.1266357-3-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <202104220841.E5T3ZL3m-lkp@intel.com> <20210422001852.GA24577@de5bcc5e76b6>
+In-Reply-To: <20210422001852.GA24577@de5bcc5e76b6>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 22 Apr 2021 13:46:40 +0300
+Message-ID: <CAHp75VdbegA4iHJcT9s-MbU2nHHAKdaRFA_J8DqzR5BKhh-htg@mail.gmail.com>
+Subject: Re: [RFC PATCH linux-next] kernel/resource: __region_intersects() can
+ be static
+To:     kernel test robot <lkp@intel.com>
+Cc:     Alistair Popple <apopple@nvidia.com>, kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 02:44:06PM +0100, Marc Zyngier wrote:
-> perf_pmu_name() and perf_num_counters() are now unused. Drop them.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Thu, Apr 22, 2021 at 4:30 AM kernel test robot <lkp@intel.com> wrote:
+
+Can you generate a commit message as well?
+Otherwise looks valid to me, thanks!
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Fixes: edede6a2ecfe ("kernel/resource: allow region_intersects users to hold resource_lock")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 > ---
->  drivers/perf/arm_pmu.c | 30 ------------------------------
->  1 file changed, 30 deletions(-)
+>  resource.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index 8faae19f8236e..a4bc6f66136c6 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -502,8 +502,8 @@ int __weak page_is_ram(unsigned long pfn)
+>  }
+>  EXPORT_SYMBOL_GPL(page_is_ram);
+>
+> -int __region_intersects(resource_size_t start, size_t size, unsigned long flags,
+> -                       unsigned long desc)
+> +static int __region_intersects(resource_size_t start, size_t size, unsigned long flags,
+> +                              unsigned long desc)
+>  {
+>         struct resource res;
+>         int type = 0; int other = 0;
 
-Nice! This was some of the first code I ever wrote in the kernel but I can't
-say I miss it:
 
-Acked-by: Will Deacon <will@kernel.org>
 
-Will
+-- 
+With Best Regards,
+Andy Shevchenko
