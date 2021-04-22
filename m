@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A57368550
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893ED368552
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238154AbhDVQ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238220AbhDVQ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:56:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:53868 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238156AbhDVQ4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Apr 2021 12:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDVQ4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:56:21 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0566DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:55:47 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id y22-20020a17090a8b16b0290150ae1a6d2bso1302533pjn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n6a5jB5vsbHsHNaYOEmKOrdM81c54DldKWj75CigVaQ=;
-        b=CjG6FHmsUDSpGnoGadKDSnlkzv2/jjuV0fuispVRiMf3RBQ8H5atKOj3kVxiyUNJAY
-         C3bdxafd0iyjFSFiEZGGEo7fQDYXPDA/mU0z/1F1mM/1/yeJCnpZNb7vz9qHKN327ru4
-         jMi/sJYa3DcnmJb6ejURqm9/1MXxl/i/s6wGijsRe0EjdrmCJhHJ98/dIuKDnMBjETZR
-         SHuABpIOvHYMd3rQYezi8pOpws3EeDlHv1ADgiNkx5Jv9/R8lsPO06f2Ax4SVCSDgaPT
-         DXMlkjNlIhfzi8Tbf768prYzfzYjIr0UmAGOjVSI+WnG7c+D1cnp8dw4a6D/olTbcSZn
-         fwWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n6a5jB5vsbHsHNaYOEmKOrdM81c54DldKWj75CigVaQ=;
-        b=XvbFb0qtFH2+GclJecdBRGZCHL71dizsVokIdStxM4LumYIJWKVuCs/YgZJqX0D5KC
-         AuKNX4qPHYocEwfJugSXlBQckG38b15Daex4gzo58JrtFNNCGvO7PjXUJFVvl8IlUvS4
-         DG74D4RsvqAz7x2Ul85GU2QIoajh3X3Q9OX+GW7EF5w5+nzgAyPb5VNirZmy1cdd80u2
-         gEPEDSYBfhmP/rLlQv4s3b+iQ3xDARXu/AZH0PNgc8k6CysnUiyEPA/fiv7eVWnzj60H
-         +O2jYtlfukgPvDa+u1KNJ4qpZQRO46tQkmw+EuGNEdf16o5ZmuPDGRZShvUMmmw7dFKq
-         SzIw==
-X-Gm-Message-State: AOAM530TLRyzLIAATPpkR4Qy9yeFFSmZgJJRKHbjGSPYVErsso6Fvu/9
-        h/Io7mJzC/vCFvtJyngbqiHVXg==
-X-Google-Smtp-Source: ABdhPJz0rv8gCpduJab4WDKbQoF49ie8V+7gtLo01+J9NCXu4kC15THjV7jhMSoCeM20fugpo0NFdw==
-X-Received: by 2002:a17:90a:bb85:: with SMTP id v5mr5059337pjr.106.1619110546372;
-        Thu, 22 Apr 2021 09:55:46 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h11sm2638815pjs.52.2021.04.22.09.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 09:55:45 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 16:55:42 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>
-Subject: Re: [PATCH v2 2/9] KVM: x86: Check CR3 GPA for validity regardless
- of vCPU mode
-Message-ID: <YIGqjoHwG+7rHWyp@google.com>
-References: <20210422022128.3464144-1-seanjc@google.com>
- <20210422022128.3464144-3-seanjc@google.com>
- <8716951d-cddb-d5f9-e7e2-b651120a51e7@redhat.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 076B311D4;
+        Thu, 22 Apr 2021 09:55:49 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.22.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73A843F694;
+        Thu, 22 Apr 2021 09:55:47 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 17:55:45 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     oleg@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
+        eparis@redhat.com, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: syscall.h: Add sign extension handling in
+ syscall_get_return_value for compat
+Message-ID: <20210422165545.GE66392@C02TD0UTHF1T.local>
+References: <20210416075533.7720-1-zhe.he@windriver.com>
+ <20210416075533.7720-2-zhe.he@windriver.com>
+ <20210421174105.GB52940@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8716951d-cddb-d5f9-e7e2-b651120a51e7@redhat.com>
+In-Reply-To: <20210421174105.GB52940@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Paolo Bonzini wrote:
-> On 22/04/21 04:21, Sean Christopherson wrote:
-> > Check CR3 for an invalid GPA even if the vCPU isn't in long mode.  For
-> > bigger emulation flows, notably RSM, the vCPU mode may not be accurate
-> > if CR0/CR4 are loaded after CR3.  For MOV CR3 and similar flows, the
-> > caller is responsible for truncating the value.
-> > 
-> > Note, SMRAM.CR3 is read-only, so this is mostly a theoretical bug since
-> > KVM will not have stored an illegal CR3 into SMRAM during SMI emulation.
+On Wed, Apr 21, 2021 at 06:41:05PM +0100, Mark Rutland wrote:
+> On Fri, Apr 16, 2021 at 03:55:32PM +0800, He Zhe wrote:
+> > Add sign extension handling in syscall_get_return_value so that it can
+> > handle 32-bit compatible case and can be used by for example audit, just
+> > like what syscall_get_error does.
 > 
-> Well, the guest could have changed it...
+> If a compat syscall can ever legitimately return a non-error value with
+> bit 31 set, and this sign-extends it, is that ever going to reach
+> userspace as a 64-bit value?
+> 
+> IIUC things like mmap() can return pointers above 2GiB for a compat
+> task, so I'm a bit uneasy that we'd handle those wrong. I can't see a
+> way of preventing that unless we keep the upper 32 bits for errors.
 
-That's what I tried to address with "SMRAM.CR3 is read-only".  Both Intel and
-AMD state that modifying read-only fields will result in unpredictable behavior,
-i.e. KVM going into the weeds would be within spec.  IIRC, there's no real
-danger to the host, it'll "just" fail VM-Enter.
+Looking at this with fresh eyes, I think we can more closely mirror
+syscall_get_error(), and do something like:
 
-SDM:
-  Some register images are read-only, and must not be modified (modifying these
-  registers will result in unpredictable behavior)
+static inline long syscall_get_return_value(struct task_struct *task,
+					    struct pt_regs *regs)
+{
+	long val = regs->regs[0];
+	long error = val;
 
-APM:
+	if (is_compat_thread(task_thread_info(task)))
+		error = sign_extend64(error, 31);
+	
+	return IS_ERR_VALUE(error) ? error : val;
+}
 
-  Software should not modify offsets specified as read-only or reserved,
-  otherwise unpredictable results can occur.
+Thanks,
+Mark.
+
+> 
+> Mark.
+> 
+> > 
+> > Signed-off-by: He Zhe <zhe.he@windriver.com>
+> > ---
+> >  arch/arm64/include/asm/syscall.h | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
+> > index cfc0672013f6..cd7a22787aeb 100644
+> > --- a/arch/arm64/include/asm/syscall.h
+> > +++ b/arch/arm64/include/asm/syscall.h
+> > @@ -44,7 +44,12 @@ static inline long syscall_get_error(struct task_struct *task,
+> >  static inline long syscall_get_return_value(struct task_struct *task,
+> >  					    struct pt_regs *regs)
+> >  {
+> > -	return regs->regs[0];
+> > +	long val = regs->regs[0];
+> > +
+> > +	if (is_compat_thread(task_thread_info(task)))
+> > +		val = sign_extend64(val, 31);
+> > +
+> > +	return val;
+> >  }
+> >  
+> >  static inline void syscall_set_return_value(struct task_struct *task,
+> > -- 
+> > 2.17.1
+> > 
