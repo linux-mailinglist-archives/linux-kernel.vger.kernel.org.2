@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C752836857E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A4B368583
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236030AbhDVRHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:07:47 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:8606 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238206AbhDVRHf (ORCPT
+        id S238383AbhDVRIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:08:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50306 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237829AbhDVRIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:07:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1619111198; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=th4lh6hwjfD7YppPPMf+uOrTMTqW4GV7g/q6MkXuTBuzT2Ag2W3Blz5gLC6p4syMkN
-    EfGCREYcYWlJ0SmQ+a15eHEsPJDdedE2R6mr4dU2sCcz/bGBgtMnmP1FjqVMCu847dC2
-    pKJV2ccju9JKKGQ+Qncf6zLArqACuUt9bDvSGWLyoBEq0FxcG+0Ui1Yb0KMXidzEc8Qr
-    p9NGBDKg24hbGCvvPAzHofhX8Npuq33qjuDyyfd/GKiye8UreN99E2ZILBbC1itQSuQm
-    mriQWqVpQ0nDn47PJl5eUUAxJLDdliOPefkf5B2DGDdCDnrbZgxpE7+FnaSetg6jtwIn
-    bbFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619111198;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=RZEhjPMTimtcOAMcX8JWlzvK+WjQDhgXOxbfImygjNU=;
-    b=n+DFXBaRckaQUdmzb3uQ08PlykCEMLb0ZALFV/3JMJZRoZEPRTJaE3yF/SFfj8IcVr
-    Wek2q08FUZOncZDrQpsKNCDo4SpKDQcOO9R4Io9MTLmlqbiyYKim0XVrgpIPWA9Xz81P
-    MFmme/ZdVZ+xFxkhC85OhzJWNuSIURS3I5oYG69tKCOOEKjAAA3748ffW7Oapk2wocSp
-    m3bcAiIZtgVoquDB0iq415dNVgvwbsvtWX+sf90Kl7Dp41/vK4Y6IJOgJHSo8M+x/jjn
-    rGFfCvHHTCaC8Huz0A2Ke25UTkQnEhA4YQhX0MYbycgNShsfb3/EjenqOXNO0sSg2V+D
-    BPyg==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619111198;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=RZEhjPMTimtcOAMcX8JWlzvK+WjQDhgXOxbfImygjNU=;
-    b=n0iAFzbgPDMjLR1aswEeJsNWnXIRPDy7g2B3x23bgPhNwVFWRCemigEJ05HIUONGqU
-    J2vhu/v4qeFy1Ol1mRizPpo3O3zdyG4WKOau2E8GR9XsI6saj+m7VAwZyW1uXsRMerdk
-    C+sMBB9ibnqPhtUZ3UBr8YSMOWtNCHgS//6e7OFFJ96uRiiFMPIEGMG5DNCOWp1aZCAK
-    JrApMuHtuaK/iQdWVnk2ZIoCBQRsAls52W7orMXt43xkrQlW8RD6sln6fBbgUkOje41i
-    SNYrr4+5Sk+QnzFdUDzEe4fuPuwuJ2Nb+pd/FbRU/XQvJi9VLVd2JfV6VYlYpjd0SJic
-    vPew==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qOxWRk4dCylX7xo8GB7++2Zda3a+jmqyM0co2qg7zyOUbI="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2001:16b8:2600:e600:a8e1:bb4:fe1c:cea8]
-    by smtp.strato.de (RZmta 47.24.3 AUTH)
-    with ESMTPSA id Q01a92x3MH6bYOb
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 22 Apr 2021 19:06:37 +0200 (CEST)
-Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <alpine.DEB.2.21.2104221828200.44318@angie.orcam.me.uk>
-Date:   Thu, 22 Apr 2021 19:06:36 +0200
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        linux-arch@vger.kernel.org,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Lubomir Rintel <lkundrak@v3.sk>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8FCB8F58-7F0A-4A9E-8BEA-7CCF09A43B63@goldelico.com>
-References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk> <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com> <2d636696-35f0-4731-b1c3-5445a57964fb@www.fastmail.com> <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com> <alpine.DEB.2.21.2104221828200.44318@angie.orcam.me.uk>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-X-Mailer: Apple Mail (2.3124)
+        Thu, 22 Apr 2021 13:08:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619111285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6iyRCQCEGRHHV6y2IaFBtD9oS6jvBRER/Lqe7zRME5s=;
+        b=ZTN7K54dBx2v6RP8uOlKR3VRO0K9wvEW0xe4lNmtwzMYCGpCvw421/UMuALkKgafsgu1B6
+        2jDDWg1fXykj6OWBAX47sKgs1vlPcal13GBqXR3/u12CkOVKKWpfcLWsp8QojntkmzuO8l
+        dRRvzqFS7VS4DcZqM8bhT0Z6dUoqSqg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-2ey14UIJOzuK4QqUFlPTBw-1; Thu, 22 Apr 2021 13:08:01 -0400
+X-MC-Unique: 2ey14UIJOzuK4QqUFlPTBw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBB80A40C1;
+        Thu, 22 Apr 2021 17:07:58 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AE4F25C27C;
+        Thu, 22 Apr 2021 17:07:51 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 19:07:50 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next v4] bpf: Fix some invalid links in
+ bpf_devel_QA.rst
+Message-ID: <20210422190750.7273292c@carbon>
+In-Reply-To: <87pmymcofa.fsf@meer.lwn.net>
+References: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
+        <87pmymcofa.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 22 Apr 2021 09:46:33 -0600
+Jonathan Corbet <corbet@lwn.net> wrote:
 
-> Am 22.04.2021 um 18:55 schrieb Maciej W. Rozycki <macro@orcam.me.uk>:
->=20
->=20
-> Have you used it as a module or at bootstrap?
+> Tiezhu Yang <yangtiezhu@loongson.cn> writes:
+> 
+> > There exist some errors "404 Not Found" when I click the link
+> > of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
+> > in the documentation "HOWTO interact with BPF subsystem" [4].
+> >
+> > As Jesper Dangaard Brouer said, the links work if you are browsing
+> > the document via GitHub [5], so I think maybe it is better to use
+> > the corresponding GitHub links to fix the issues in the kernel.org
+> > official document [4], this change has no influence on GitHub and
+> > looks like more clear.  
+> 
+> No, we really don't want to link to GitHub, that's what we have
+> kernel.org for.
 
-I did load it by insmod.
+I fully agree.
+I actually liked V3 better.
 
-> I would expect your JZ4730 device to have the CP0 Count register as =
-well,=20
-> as it has been architectural ever since MIPS III really, or is your =
-system=20
-> SMP with CP0 Count registers out of sync across CPUs due to sleep =
-modes or=20
-> whatever?
+Back when I wrote the documentation with these links, the BPF doc was
+not well integrated with the kernels doc-system.  It is today, so it
+makes sense to remove the links (that happens to work on GitHub) as you
+did in V3.
 
-It switches clocksource to some operating system timers on the SoC which
-may have an influence on the resolution (or precision).
+Today BPF documentation is nicely organized via this link:
+ https://www.kernel.org/doc/html/latest/bpf/index.html
 
-> Thanks for sharing your figures.
-
-It was a pleasure towards better MIPS support...
-
->=20
->> [1] we are preparing full support for the JZ4730 based Skytone Alpha =
-machine. Most features
->> are working except sound/I2S. I2C is a little unreliable and Ethernet =
-has hickups. And scheduling
->> which indicates some fundamental IRQ or timer issue we could not yet =
-identify.
->=20
-> Good luck with that!
-
-BR and thanks,
-Niklaus
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
