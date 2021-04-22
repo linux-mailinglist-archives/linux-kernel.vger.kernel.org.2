@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E6C36897C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CD236897E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239852AbhDVXrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 19:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
+        id S236949AbhDVXuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 19:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237141AbhDVXrU (ORCPT
+        with ESMTP id S230368AbhDVXuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:47:20 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CF4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:46:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id u15so15797147plf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:46:44 -0700 (PDT)
+        Thu, 22 Apr 2021 19:50:00 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DBFC061574;
+        Thu, 22 Apr 2021 16:49:24 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id g16so7492759plq.3;
+        Thu, 22 Apr 2021 16:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=NTeXqBDN9RVYOkJiN+/wuvdDNkn6afObPv6LqlUiqIk=;
-        b=AnHm77yTkbagnZpDUZ1ZvFhMZVBtpPSttQwTI8axuBcYT1Llyw/Ft81RHLG76xP3Ba
-         N1+NA7LVAwQDlG7HNGG+c1Q9LHDd1zHoAL8OWLgitxiqelTv5XuoRUAYqLZYLMwywsK2
-         Qr1e2ZyKIfO96s7ue06+0/zS+viHg0vnQCQso=
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=IWfYoO0lSsj6QrdF4M9TVhiBQuuRKejv17Qbr6FkpHs=;
+        b=POwfl7cE4Qcz1RenSpkCZiWAxw6lhRiLzZNY9Gg54NjNfXJSWLvpSa/LBmuIldfPHw
+         nrr6RCnjKmzmZ3bWbdQmk8A/jbDyAEyaGPmcb421VfXnnY1L8pgTrNbnDBC/yuoDfgKz
+         T3PNwP9pzPHw3dpSRe/tWnC7ubTOEenoqe0yDlJPATp5NlDzhXzUUTTUoEFW0d2M+X2B
+         wOc1fh5jojyuGAhnrN8WrkDnKATakqCjzhwvLsKKUaYiQH7/lzozfDvO/xJ934r8VOPW
+         8Cf/PGPlNT8E4L8289BNJtNjJYwHp+RiNLLrSa2vXNz3lAY4Kxa0G40LmezScm5J2V/M
+         gVQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=NTeXqBDN9RVYOkJiN+/wuvdDNkn6afObPv6LqlUiqIk=;
-        b=MGyOUEYemoMnvpf+LcyKpZdnyNWLymfahYrm5emCtXpusu/hkS0UooQAlUgZESYnFt
-         kt+xcngi6tfSh7UmsNi0Ot0QexMLH6RSQr+7/wGWbOSTd1fee/D6t78m5qlaZP051hmn
-         BYB+1eIAdi2A48ocATNtQXzfKGraCG8J7880qJ4eCrTZhDUsB+JxnQox6K1U/N+6HFv3
-         hR2MVY4cL8XUCWRoSApLOUSzY9y4Jhq7c5GG//H1AyVVwExjccObHESS1wFBzmPOQG/9
-         Bpkd6WuHud3zIZQX09kYmbHlTlAdixuOcjI5MO/uyBOvSjQVloFqo0rCj62KCX1QzBMb
-         kV2g==
-X-Gm-Message-State: AOAM531e0ld62d3KZdmpcTnPv0ZaVZUjs4rnuGcHF3i/Iwan4EhsLUjS
-        VL8ji82ATcq2WBLlIXPGSRKnnw==
-X-Google-Smtp-Source: ABdhPJzr1tnc2PiNN73pB/HOg9I0gE61e29pPuXK9MBgVVIXrXWgxVMoUL6I65OwhBtFp1OWRk17MQ==
-X-Received: by 2002:a17:903:185:b029:ec:b44d:7c3e with SMTP id z5-20020a1709030185b02900ecb44d7c3emr1038558plg.44.1619135203680;
-        Thu, 22 Apr 2021 16:46:43 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:8893:ffc7:384b:2e13])
-        by smtp.gmail.com with ESMTPSA id e1sm3230271pgl.25.2021.04.22.16.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 16:46:42 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IWfYoO0lSsj6QrdF4M9TVhiBQuuRKejv17Qbr6FkpHs=;
+        b=Pxw7pAmRdDSjEPdkpPuSF5XvxW4+RMspNRdB6NYUzbEXKI3bMdnHFarSU1zscNDgge
+         bgMFU2GDnKNfrijMlc7QGvqiEIWQ1xVZVpA52RnjFSPMN5AcFLUy/G8tkAxHCz9g+CbM
+         O2bjrVQ89AjITUnVKZ/AkyCNfcHteoaugF4lbWTAh8dOkk8iqaYVSBKF00c4ebdvJzQG
+         FxRPgs0PA9szsM2/3SooiENtxAzksOFRCRrxZqvs6OLxRoaGK9NxKQNmHU7+L333VRW9
+         WeL7eAcI95ckFWTibT899Z/6vNVRmv2CT4VJ0UQefuJNGDtxsOppNEWIh8ZvTMGUsW07
+         M8Jw==
+X-Gm-Message-State: AOAM530RcYXZBOGMeombdwrkxnj3KFvpjRSZg2uKDVrLniAidN0rlJSn
+        etMqC4r6prDU5ZjevSg8iG4=
+X-Google-Smtp-Source: ABdhPJyQ8CB6gfavGomE80wlX8RKriAm4NmmFeGRBR1BIbjZmGV4qhobzGGXuBVwCwVbP22GOXafIQ==
+X-Received: by 2002:a17:90a:8410:: with SMTP id j16mr1301384pjn.120.1619135364274;
+        Thu, 22 Apr 2021 16:49:24 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id m20sm5615378pjq.40.2021.04.22.16.49.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 16:49:23 -0700 (PDT)
+Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
+ beyond limit.
+To:     Joe Burmeister <joe.burmeister@devtank.co.uk>,
+        Mark Brown <broonie@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nsaenz@kernel.org
+References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
+ <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
+ <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
+Date:   Thu, 22 Apr 2021 16:49:19 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YIARTVqnN8t/FA/P@smile.fi.intel.com>
-References: <20210420215003.3510247-1-swboyd@chromium.org> <20210420215003.3510247-6-swboyd@chromium.org> <YIARTVqnN8t/FA/P@smile.fi.intel.com>
-Subject: Re: [PATCH v5 05/13] module: Add printk formats to add module build ID to stacktraces
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date:   Thu, 22 Apr 2021 16:46:40 -0700
-Message-ID: <161913520061.46595.8469966711677906076@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andy Shevchenko (2021-04-21 04:49:33)
-> On Tue, Apr 20, 2021 at 02:49:55PM -0700, Stephen Boyd wrote:
-> > Let's make kernel stacktraces easier to identify by including the build
-> > ID[1] of a module if the stacktrace is printing a symbol from a module.
-> > This makes it simpler for developers to locate a kernel module's full
-> > debuginfo for a particular stacktrace. Combined with
-> > scripts/decode_stracktrace.sh, a developer can download the matching
-> > debuginfo from a debuginfod[2] server and find the exact file and line
-> > number for the functions plus offsets in a stacktrace that match the
-> > module. This is especially useful for pstore crash debugging where the
-> > kernel crashes are recorded in something like console-ramoops and the
-> > recovery kernel/modules are different or the debuginfo doesn't exist on
-> > the device due to space concerns (the debuginfo can be too large for
-> > space limited devices).
-> >=20
-> > Originally, I put this on the %pS format, but that was quickly rejected
-> > given that %pS is used in other places such as ftrace where build IDs
-> > aren't meaningful. There was some discussions on the list to put every
-> > module build ID into the "Modules linked in:" section of the stacktrace
-> > message but that quickly becomes very hard to read once you have more
-> > than three or four modules linked in. It also provides too much
-> > information when we don't expect each module to be traversed in a
-> > stacktrace. Having the build ID for modules that aren't important just
-> > makes things messy. Splitting it to multiple lines for each module
-> > quickly explodes the number of lines printed in an oops too, possibly
-> > wrapping the warning off the console. And finally, trying to stash away
-> > each module used in a callstack to provide the ID of each symbol printed
-> > is cumbersome and would require changes to each architecture to stash
-> > away modules and return their build IDs once unwinding has completed.
-> >=20
-> > Instead, we opt for the simpler approach of introducing new printk
-> > formats '%pS[R]b' for "pointer symbolic backtrace with module build ID"
-> > and '%pBb' for "pointer backtrace with module build ID" and then
-> > updating the few places in the architecture layer where the stacktrace
-> > is printed to use this new format.
-> >=20
-> > Example:
->=20
-> Please, shrink the example to leave only meaningful lines.
->=20
-> Why, e.g., do we need to see register dump, is it somehow different?
 
-Can you format it how you would like to see it? Should it be a unified
-diff? I agree it would help to see "what changed" but also don't know
-what you want so opted to provide more information, not less. I was
-worried about the questions like "do you change other parts of a splat?"
-so I just put the whole thing there.
 
->=20
-> ...
->=20
-> > +#ifdef CONFIG_STACKTRACE_BUILD_ID
-> > +     /* Module build ID */
-> > +     unsigned char build_id[BUILD_ID_SIZE_MAX];
->=20
-> Is it really string of characters? Perhaps u8 will be more explicit.
+On 4/22/2021 1:10 PM, Joe Burmeister wrote:
+>> On 4/20/2021 1:34 AM, Joe Burmeister wrote:
+>>> It was previoulsy possible to have a device tree with more chips than
+>>> the driver supports and go off the end of CS arrays.
+>> Do you mind walking me through the code how that could have happened? We
+>> have spi_register_controller() call of_spi_get_gpio_numbers() which has
+>> the following:
+>>
+>> ctlr->num_chipselect = max_t(int, nb, ctlr->num_chipselect);
+>>
+>> such that what the controller has is the maximum between the number of
+>> 'cs-gpios' properties parsed and what was already populated in
+>> ctrl->num_chipselect during bcm2835_spi_probe(), which for this driver
+>> is BCM2835_SPI_NUM_CS (3).
+> 
+> If you make a initial device tree (or add overlay in the rpi's 
+> config.txt) with more on the bus than BCM2835_SPI_NUM_CS (in my case 8
+> devices), you get into this trampling memory state. As the devices are
+> added, once the chip_select is equal to or greater than
+> BCM2835_SPI_NUM_CS, it's writing off the end of the arrays.
 
-I'm just matching the build ID API that uses unsigned char. If you want
-u8 then we should update more places. I could do that in a followup
-patch, but this one is already sorta big.
+OK.
 
->=20
-> ...
->=20
-> > +#include <linux/kernel.h>
->=20
-> What do you need this header for?
->=20
+> 
+> There is no protection from this happening. By the looks of it, this
+> isn't the only driver this could happen with, but it is the one I have
+> hardware for to test. There are also drivers that look like they don't
+> have a problem going well beyond the limit they gave.
 
-For typeof_member().
+Right, which means that we should probably seek a solution within the
+SPI core itself, even if you can only test with spi-bcm2835.c chances
+are that the fix would be applicable for other controllers if done in
+the core.
+
+> 
+> There is protection in spi_add_device, which will catch extra added
+> later, but not ones in the device tree when the spi controller was
+> registered.
+
+Not sure I follow you, if we have the overlay before
+spi_register_controller() is called, how can the check there not
+trigger? And if we load the overlay later when the SPI controller is
+already registered, why does not spi_add_device()'s check work?
+
+How would I go about reproducing this on a Pi4?
+
+> 
+>>> This patches inforces CS limit but sets that limit to the max of the
+>>> default limit and what is in the device tree when driver is loaded.
+>>>
+>>> Signed-off-by: Joe Burmeister <joe.burmeister@devtank.co.uk>
+>> You have changed many more things that just enforcing a limit on
+>> BCM2835_SPI_NUM_CS you have now made all chip-select related data
+>> structuresd dynamically allocated and you have changed a number of
+>> prints to use the shorthand "dev" instead of &pdev->dev.
+> The change to dynamic allocated arrays is just to support what is given
+> in the device  tree rather than increase and enforce the CS limit just
+> for my case.
+> 
+> The shorthand is of course not required. I'll drop it on resubmitting.
+> 
+> Regards,
+> 
+> Joe
+> 
+> 
+
+-- 
+Florian
