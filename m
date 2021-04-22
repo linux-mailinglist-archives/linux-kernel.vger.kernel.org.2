@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1483E36841A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3C7368423
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbhDVPqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236485AbhDVPq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:46:26 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FB1C061367;
-        Thu, 22 Apr 2021 08:44:06 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id y4so32693675lfl.10;
-        Thu, 22 Apr 2021 08:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m57p73/6EC8FlSnir1szkJ7jqEqfWVCfqYqX+nVjqck=;
-        b=ve0MpZs6IKHSbgFFzkqP8d/fRYxjCj8eKWRw/2nI3/b3bSMBpQZW7jykiRUl2W4ohk
-         fpYIFUWyKzepqpAy6OIsMBPXqG+sMr9RG0dbdIIaIm3S8my4nvlG+yl+CjfS+fC9WhFY
-         4wPmYlDHlBkDfLalCkyE0HUJWnfOqNKYJrRtfw60ZUJz9cx6XbNslm91T3mMUpM4kz+z
-         WLmgdo8kjSfIn9KBK98b2e+a1z/Fv7Yv+8lE3jpZOVMGV62AreEmsgBC2kuGQZBFvsvS
-         cA6BOJLlXVUZEr2CP6yDgdrTlgLYAl5mmHmKlW1TRMS55mNrIfry5xwVQpvjVTVthfjU
-         zj6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m57p73/6EC8FlSnir1szkJ7jqEqfWVCfqYqX+nVjqck=;
-        b=LhMtdh4XHixxtdvq3UAnxItt0zq26scjcR2edeYwRI1m0dvXWYDEuXt/21kVuoml+L
-         wHdj6d1p/ICbOsbxrS3aB970bul1yFkjzQKC6md8JyRueWhg3xfRY/en6dtk1DisOfpQ
-         /rkTzpwpC87dh8Xbpvq9C9aQiNjFFczyxgVsLb8wl1YumtbXyTB281YbLL8YucS6JrS5
-         RVG3fPnkLRBGWLjmL1NhZj9a0AY/JBwlOoYhVWGTfgbflH/uo8XUrWoz/bkn0T1lt7Pd
-         iPOHzAa3rsWZKIPqPazXhrk7RbAB726CxiHSB/SWa4vkT6m0ug1fQg/lG+XnMKOBaBui
-         jvLQ==
-X-Gm-Message-State: AOAM533DBWi8E8kVA+2++Uaxx+uOFKQsV+685+R9kp/Qj3JMMSsZeDnF
-        uqo8+uth/Owtqf4DG4LAOqhLVKyMMoorNLPA7Eg=
-X-Google-Smtp-Source: ABdhPJzbTnyFdLToRPn2UfW0jXnyOg5pUZxzOADTdRr+UIwZzwthDRI8BqzV/Y/zZ2GbShl+AwIDD+FAS9LALPLY1Tc=
-X-Received: by 2002:a05:6512:2026:: with SMTP id s6mr3051615lfs.214.1619106245393;
- Thu, 22 Apr 2021 08:44:05 -0700 (PDT)
+        id S237945AbhDVPrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236594AbhDVPq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:46:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFCD560FD7;
+        Thu, 22 Apr 2021 15:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619106383;
+        bh=5wuJRfbMCsCCjkM9s9M1nBLXOjEsvSWtEiDEUi5jm+w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nGOcl2LlvLr7+Tl0B1l3Ua+fi162i1kPjjxjgXu9wnDjpN9wzTqSzS5kP2R/3kAfP
+         CxoNK9hP93qYwNYybEYBeH8pv1vE+wDuA4ltDO6Pm5WhaSLYUmL90HHwJs2U2R0JIB
+         NpzlvpmJZX8qyZzKOTwAGrKbpj3GyxFTjMLzceH2/JjBgpqih9+2LksR/OfSnETvdX
+         tfr8NmItm15uflxB668UdQuFJ83rsVmbn0hAcz6bscKgHdhN5wVzosiulK7t9XqICj
+         AoXFIM6Gk08B96L7BijaE2Vvt0+Sm8JFXU6cLuVbGibH1kqoIZNH/XIur4ztbNsRgp
+         FfsBmQRiUjy/w==
+Date:   Thu, 22 Apr 2021 16:45:55 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kuldeep Singh <kuldeep.singh@nxp.com>
+Cc:     Han Xu <han.xu@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale QSPI
+ binding to json schema
+Message-ID: <20210422154555.GJ4572@sirena.org.uk>
+References: <20210312054038.3586706-1-kuldeep.singh@nxp.com>
+ <20210324152420.GA3093662@robh.at.kernel.org>
+ <DB6PR0402MB275836552946D34CBEA47C48E0469@DB6PR0402MB2758.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
- <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
- <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
- <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk> <CABRcYmLU0f9eSvsjBogKmc_FK8qykfR1pNx9VCW8Scjj4-VQQg@mail.gmail.com>
- <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com>
-In-Reply-To: <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 22 Apr 2021 08:43:54 -0700
-Message-ID: <CAADnVQ+wFcjMzs2G1VAKW5WnFtcBgKMeJcK3ouKJYCR7GdvfWw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-To:     Florent Revest <revest@chromium.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PEkEgRdBLZYkpbX2"
+Content-Disposition: inline
+In-Reply-To: <DB6PR0402MB275836552946D34CBEA47C48E0469@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+X-Cookie: Jesus is my POSTMASTER GENERAL ...
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > I was having a stroll through lib/vsprintf.c and noticed bstr_printf:
-> >
-> >  * This function like C99 vsnprintf, but the difference is that vsnprintf gets
-> >  * arguments from stack, and bstr_printf gets arguments from @bin_buf which is
-> >  * a binary buffer that generated by vbin_printf.
-> >
-> > Maybe it would be easier to just build our argument buffer similarly
-> > to what vbin_printf does.
->
-> I've been experimenting with this idea and it is quite promising :) it
-> also makes the code much cleaner, I find. I'll send a series asap.
 
-You mean to use bstr_printf internally ? That could work indeed.
-Make sure CONFIG_BINARY_PRINTF is selected.
-CONFIG_TRACING does it already.
+--PEkEgRdBLZYkpbX2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> BPF maintainers: should we fix forward or do you prefer reverting the
-> snprintf series and then re-applying another snprintf series without
-> the regression in bpf_trace_printk that mangles some argument types ?
-> (bpf_seq_printf has always been like that so no regression there)
+On Thu, Apr 22, 2021 at 11:09:19AM +0000, Kuldeep Singh wrote:
 
-Pls send it as a follow up.
-Along with another patch to clean verifier bits we discussed.
-The merge window is approaching, so it has to be done asap.
+> Apologies for content free pings.
+> This patch has already been reviewed by Rob and can be accepted if no fur=
+ther changes required.
+
+Whenever I complain about content free pings I also point out that
+resends are helpful, it's not just don't ping it's also that having a
+copy of the patch helps if anything went wrong:
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
+
+--PEkEgRdBLZYkpbX2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCBmjIACgkQJNaLcl1U
+h9BvQgf5AVLciabft5X6466v4Dge6sLOoOT8wulxXKj82y72udIad15u39P9LyPd
+YwQMNu9ySd9x5a0yCrYAie83dIAF+D1J3GmgnhbpomISfpQ6TuyzAce9TqXrq0+S
+MVXSKynpZWJAePgjUhUo/IO/XHZgvE47AMmGK8GQuvnUaqWIGCT5UeIxQQopHbPQ
+W4l0guE1yNEVvCF5aM4PfY2vXWcUpC7Hqhq6AAXYL3YhmnVbLOEW/+gupoCJgVWo
+sDX7qp45aS4oNM6ZGpXZXzH8TTA03FTtExGg9ch+vHlLSct3E9w5tM66IkAeW/mn
+Xd8Ttl6p30JSDX8qj1+XNIyFkGGYWg==
+=TmjE
+-----END PGP SIGNATURE-----
+
+--PEkEgRdBLZYkpbX2--
