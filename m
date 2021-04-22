@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83F83679C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD033679C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhDVGTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
+        id S234856AbhDVGTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230154AbhDVGTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15B886113C;
-        Thu, 22 Apr 2021 06:19:11 +0000 (UTC)
+        id S230154AbhDVGTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 02:19:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 275BD60E0C;
+        Thu, 22 Apr 2021 06:19:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619072355;
-        bh=E81akF1BinjHKMvNozvRyjwjqZ1X1qBHHvRxS2i48PI=;
+        s=k20201202; t=1619072359;
+        bh=uAcQCKfynNirKrVcKn7BUZtb4Q7z7Znh4i0ynZdq9kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhF/ObuaXIspDxBYAAvqiR9bZWwB6AgoMlH014SLQhtOLankdq4B/GD3Yo0udRpVN
-         V4O7zfQeYj3d3MsrkeqVdql8uSygos1lTLK7EI4LL+45XgG1WXnQAKKoqc+MSynyv8
-         RPTss4obNwjyO+I1nhKkRsUpm+BVzxRIOv8H69n8pyGU9MgJmnC8MVR812ygWZw88d
-         IMPinfocfipp01RqC8gTj6sHqEEC14mHm4WBMVnRmpjfqnBGjgfwVLky+NEAH/sLGz
-         ymht+5Lg6VmPoy5sPouM6ey44RYSp1fUy1r+DOgpc2ZVwQZt/vzKXsMWS96M//CVtD
-         HCIHPVRr+SEcQ==
+        b=bzfnTm3Z1pasiEH1lFZ42vt8BpmmNbt8U4aNZDs48SNuYcBU/Xdl4S/HQPLYNPYjN
+         ZdRUVwu+uSRJY+41MYKZluiy9qQuuIn7q9LE/GyHMIbISznQ2oWPWxC9Qz7N1eKu8N
+         9jzEZvri+Lio8jIA6hZawhZU7qVjD6bUoxTribnLNM6fd/BIp3gMFODASulbMWHtOq
+         re+OJ1tv+B49WL1NU+QPHkzjrdACu9GLk9d5KWrIMEQJzR4GJKXwvmCl3M9YHcf2yW
+         zLiUPmbqfOx6PWakTZ2fDBSMKaiZ7ex8/8mUw6yo6le9C7ULIJZw4L3ci5ZLsI7ryO
+         34jeQUkYTpUXQ==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -36,9 +36,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Mike Rapoport <rppt@linux.ibm.com>,
         Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v3 1/4] include/linux/mmzone.h: add documentation for pfn_valid()
-Date:   Thu, 22 Apr 2021 09:18:59 +0300
-Message-Id: <20210422061902.21614-2-rppt@kernel.org>
+Subject: [PATCH v3 2/4] memblock: update initialization of reserved pages
+Date:   Thu, 22 Apr 2021 09:19:00 +0300
+Message-Id: <20210422061902.21614-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210422061902.21614-1-rppt@kernel.org>
 References: <20210422061902.21614-1-rppt@kernel.org>
@@ -50,43 +50,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-Add comment describing the semantics of pfn_valid() that clarifies that
-pfn_valid() only checks for availability of a memory map entry (i.e. struct
-page) for a PFN rather than availability of usable memory backing that PFN.
+The struct pages representing a reserved memory region are initialized
+using reserve_bootmem_range() function. This function is called for each
+reserved region just before the memory is freed from memblock to the buddy
+page allocator.
 
-The most "generic" version of pfn_valid() used by the configurations with
-SPARSEMEM enabled resides in include/linux/mmzone.h so this is the most
-suitable place for documentation about semantics of pfn_valid().
+The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+values set by the memory map initialization which makes it necessary to
+have a special treatment for such pages in pfn_valid() and
+pfn_valid_within().
 
-Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Split out initialization of the reserved pages to a function with a
+meaningful name and treat the MEMBLOCK_NOMAP regions the same way as the
+reserved regions and mark struct pages for the NOMAP regions as
+PageReserved.
+
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- include/linux/mmzone.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ include/linux/memblock.h |  4 +++-
+ mm/memblock.c            | 28 ++++++++++++++++++++++++++--
+ 2 files changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 47946cec7584..961f0eeefb62 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1410,6 +1410,17 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
- #endif
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 5984fff3f175..1b4c97c151ae 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -30,7 +30,9 @@ extern unsigned long long max_possible_pfn;
+  * @MEMBLOCK_NONE: no special request
+  * @MEMBLOCK_HOTPLUG: hotpluggable region
+  * @MEMBLOCK_MIRROR: mirrored region
+- * @MEMBLOCK_NOMAP: don't add to kernel direct mapping
++ * @MEMBLOCK_NOMAP: don't add to kernel direct mapping and treat as
++ * reserved in the memory map; refer to memblock_mark_nomap() description
++ * for further details
+  */
+ enum memblock_flags {
+ 	MEMBLOCK_NONE		= 0x0,	/* No special request */
+diff --git a/mm/memblock.c b/mm/memblock.c
+index afaefa8fc6ab..3abf2c3fea7f 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -906,6 +906,11 @@ int __init_memblock memblock_mark_mirror(phys_addr_t base, phys_addr_t size)
+  * @base: the base phys addr of the region
+  * @size: the size of the region
+  *
++ * The memory regions marked with %MEMBLOCK_NOMAP will not be added to the
++ * direct mapping of the physical memory. These regions will still be
++ * covered by the memory map. The struct page representing NOMAP memory
++ * frames in the memory map will be PageReserved()
++ *
+  * Return: 0 on success, -errno on failure.
+  */
+ int __init_memblock memblock_mark_nomap(phys_addr_t base, phys_addr_t size)
+@@ -2002,6 +2007,26 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
+ 	return end_pfn - start_pfn;
+ }
  
- #ifndef CONFIG_HAVE_ARCH_PFN_VALID
-+/**
-+ * pfn_valid - check if there is a valid memory map entry for a PFN
-+ * @pfn: the page frame number to check
-+ *
-+ * Check if there is a valid memory map entry aka struct page for the @pfn.
-+ * Note, that availability of the memory map entry does not imply that
-+ * there is actual usable memory at that @pfn. The struct page may
-+ * represent a hole or an unusable page frame.
-+ *
-+ * Return: 1 for PFNs that have memory map entries and 0 otherwise
-+ */
- static inline int pfn_valid(unsigned long pfn)
++static void __init memmap_init_reserved_pages(void)
++{
++	struct memblock_region *region;
++	phys_addr_t start, end;
++	u64 i;
++
++	/* initialize struct pages for the reserved regions */
++	for_each_reserved_mem_range(i, &start, &end)
++		reserve_bootmem_region(start, end);
++
++	/* and also treat struct pages for the NOMAP regions as PageReserved */
++	for_each_mem_region(region) {
++		if (memblock_is_nomap(region)) {
++			start = region->base;
++			end = start + region->size;
++			reserve_bootmem_region(start, end);
++		}
++	}
++}
++
+ static unsigned long __init free_low_memory_core_early(void)
  {
- 	struct mem_section *ms;
+ 	unsigned long count = 0;
+@@ -2010,8 +2035,7 @@ static unsigned long __init free_low_memory_core_early(void)
+ 
+ 	memblock_clear_hotplug(0, -1);
+ 
+-	for_each_reserved_mem_range(i, &start, &end)
+-		reserve_bootmem_region(start, end);
++	memmap_init_reserved_pages();
+ 
+ 	/*
+ 	 * We need to use NUMA_NO_NODE instead of NODE_DATA(0)->node_id
 -- 
 2.28.0
 
