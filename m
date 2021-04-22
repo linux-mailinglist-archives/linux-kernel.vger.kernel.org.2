@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB77E3676BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D60C3676C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhDVBYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 21:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
+        id S234699AbhDVB2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 21:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbhDVBYx (ORCPT
+        with ESMTP id S232130AbhDVB2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 21:24:53 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A367C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:24:20 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso26630000otm.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:24:19 -0700 (PDT)
+        Wed, 21 Apr 2021 21:28:18 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C71C06174A;
+        Wed, 21 Apr 2021 18:27:41 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id d25so6793811oij.5;
+        Wed, 21 Apr 2021 18:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9ozvREo55yzyTmh3+SdduMkSnhDPSnqzL0MqxxdtGMM=;
-        b=KpqE9gEXwK0E801R2lpes0ehZGN59SzpZEIgNUxpw2yWfGtEb9GGFUuLQS/dk0ykov
-         9ePEvlqk42ngQ/ymSNYiqyaVIzhDT5z6qYBnnT8PLnsFlBK3I9bxtIXlPKCX45LUKeVY
-         5cu843YQ4/Y9mErbV2ZzcyAlOhTsoFL7SSpX9gCm7cK3GUQo37xNal87tHiRqKvjoo6Y
-         W9+nsyytWxycOR4RLaPJ/eiJp8c36pqD5x9ee2Is1isWl06FIYMigV3gFQrkryssbWrn
-         HeQ0/lhpNmDS5qvVSNteNhaXMscBihQD28kUQp8zHGUKx+KphV1r999s0B4i9GvVxMte
-         OduQ==
+        bh=fcNZfsXjWgubhkoG9HpEo4ENef1L3qrDLqtjAJX6TkA=;
+        b=KajQb+SSSMbK2zN7RtNet6tfRxx/CK61h1sqSPR26UPzYfuEQBRGo5tb/TYgI/eWh5
+         GevcdeycQ4sU/rURYt05kGbitsmYPtyj2QrR7wVlXtoSHCT8T7MXcLNGb7tgTakuQryt
+         f5WlUdXvMV4XI4PbprbuV+P7uOsPgFN2TelvVmzL4oMFQUNbcp4aVraghH9hXT7GxVbJ
+         QKR/2d6hNxQWoQEl3cW7tb3q378lqX1Om6XHBzmZ2Mbj7nMIMOA9lHBaZ6gl6JzTHDmK
+         2rFVHdYlG0KiZTcxFHE4bCx7eTMZeFt1zidPTbDcV8ivzdSjJTxwbj6VyoAvYYvY8QWe
+         1jHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=9ozvREo55yzyTmh3+SdduMkSnhDPSnqzL0MqxxdtGMM=;
-        b=aebozu5j3pBuEBSyylRShK1PW82QHhxrJ81UNPDvOrqvAk6DA+nQvP5l3qgfXcV5bx
-         84SZdQwE46KucNTXtle+RYmIhFIeE0us0YRrbmItg1bnFpAfgLSOACXbRA2mSlUdp8rK
-         8cqqazm+wY4SRGTElBYCHvRDtjsEUY0Ni9EUSOoz5D2u7qFrv9FZBBq82LeOGh6a7SHa
-         SEIdNWEiUJhYZnWM8Uon8bnn66lumM2pojE3Dp/TcRo64aNP1hpJRtq21s+0x9TgakXB
-         oHGBUzLYMG92kMEZmgj3DP4bRp0noL1O6jyxKbiR1rEK6/ogWKTvglY9KpDD7TuKYa8e
-         +s2w==
-X-Gm-Message-State: AOAM5325Djimh8v+ttJm80tMmfc0hlbxF6Y3Kljpj7xrWoVwY6encHxs
-        FHC61RwqCulXWh3OV/4N3MSm/Od86Qk=
-X-Google-Smtp-Source: ABdhPJztbRnTk14VzVYP4IIxmG8VqFLcdAjo+tvny57irMkPJxdRBup/ay/y5rIfDYG1UhbacmIsKA==
-X-Received: by 2002:a9d:664c:: with SMTP id q12mr773843otm.163.1619054659108;
-        Wed, 21 Apr 2021 18:24:19 -0700 (PDT)
+        bh=fcNZfsXjWgubhkoG9HpEo4ENef1L3qrDLqtjAJX6TkA=;
+        b=Wmg/Td/Im4ZNdDtIOF/lLGgPYRFfMej1UmIVQNgUPL7k0ViZ5Vpt7Mtj/Op6fDtqu3
+         Cdf0M8i6ORfRyyjvWtmL2R1H96nWcc+m4qR2U33evZsi9w9oSS8OH9HtMKfJQ14UsSdk
+         K/vTrXFN+NgotmrPRjKpCt9Hfnt2NQqr1OVYVdQ4v06dQXyWfZUPgwW1gnDH+KGnwgxa
+         QgHgjnQiqkK0DyjwZ3A3NwKkv0D8hKYeaCOqiHwhiC6QrrtgCZUzuj2hyYDm6UtX795j
+         HW8TNPe3HSmY0oBDrh6gmSgCx8XkUDB/Q3waPP0P84+Nhk8fdgfcLhZtEA3DB+d3hbdb
+         5gHA==
+X-Gm-Message-State: AOAM532tWy8o2G/b4qJ6znzC8BEZ6bTT9P6b80+cLI3TxbDBmCp8hoql
+        lVsThI/R3jKsJY4MK/N0onqfvzxs/xA=
+X-Google-Smtp-Source: ABdhPJwGMuO27MpsGKW67BzXbP4U/jtcGm4DDI9uVLgmwDiEyM9uB02nl7pLttdx9TeYAADwYryF4g==
+X-Received: by 2002:aca:a844:: with SMTP id r65mr555011oie.168.1619054860403;
+        Wed, 21 Apr 2021 18:27:40 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 64sm284836oob.12.2021.04.21.18.24.16
+        by smtp.gmail.com with ESMTPSA id t3sm295760ooa.18.2021.04.21.18.27.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 18:24:17 -0700 (PDT)
+        Wed, 21 Apr 2021 18:27:39 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] static_call: Fix unused variable warning
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-References: <20210422003334.139452-1-linux@roeck-us.net>
- <20210421204139.669f5c22@oasis.local.home>
+Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
+To:     =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210413025948.901867-1-kubernat@cesnet.cz>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -103,12 +101,12 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6cccb650-9aef-f16c-7ec5-53d3042af292@roeck-us.net>
-Date:   Wed, 21 Apr 2021 18:24:15 -0700
+Message-ID: <250c1c16-541a-984f-c720-1a8b6176e97e@roeck-us.net>
+Date:   Wed, 21 Apr 2021 18:27:38 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210421204139.669f5c22@oasis.local.home>
+In-Reply-To: <20210413025948.901867-1-kubernat@cesnet.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -116,51 +114,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 5:41 PM, Steven Rostedt wrote:
+On 4/12/21 7:59 PM, Václav Kubernát wrote:
+> Converting the driver to use regmap makes it more generic. It also makes
+> it a lot easier to debug through debugfs.
 > 
-> Second patch with the exact same update. Perhaps we should take one
-> before we get more of them ;-)
+> Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
+> ---
+>  drivers/hwmon/Kconfig    |   1 +
+>  drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
+>  2 files changed, 133 insertions(+), 122 deletions(-)
 > 
-> https://lore.kernel.org/lkml/20210416194300.3952208-1-cmllamas@google.com/
-> 
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 1ecf697d8d99..9f11d036c316 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1095,6 +1095,7 @@ config SENSORS_MAX6697
+>  config SENSORS_MAX31790
+>  	tristate "Maxim MAX31790 sensor chip"
+>  	depends on I2C
+> +	select REGMAP_I2C
+>  	help
+>  	  If you say yes here you get support for 6-Channel PWM-Output
+>  	  Fan RPM Controller.
+> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+> index 2c6b333a28e9..e3765ce4444a 100644
+> --- a/drivers/hwmon/max31790.c
+> +++ b/drivers/hwmon/max31790.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/init.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/module.h>
+> +#include <linux/regmap.h>
+>  #include <linux/slab.h>
+>  
+>  /* MAX31790 registers */
+> @@ -46,92 +47,53 @@
+>  
+>  #define NR_CHANNEL			6
+>  
+> +#define MAX31790_REG_USER_BYTE_67	0x67
+> +
+> +#define BULK_TO_U16(msb, lsb)		(((msb) << 8) + (lsb))
+> +#define U16_MSB(num)			(((num) & 0xFF00) >> 8)
+> +#define U16_LSB(num)			((num) & 0x00FF)
+> +
+> +static const struct regmap_range max31790_ro_range = {
+> +	.range_min = MAX31790_REG_TACH_COUNT(0),
+> +	.range_max = MAX31790_REG_PWMOUT(0) - 1,
+> +};
+> +
+> +static const struct regmap_access_table max31790_wr_table = {
+> +	.no_ranges = &max31790_ro_range,
+> +	.n_no_ranges = 1,
+> +};
+> +
+> +static const struct regmap_range max31790_volatile_ranges[] = {
+> +	regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_COUNT(12)),
+> +	regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN_FAULT_STATUS1),
+> +};
+> +
+> +static const struct regmap_access_table max31790_volatile_table = {
+> +	.no_ranges = max31790_volatile_ranges,
+> +	.n_no_ranges = 2,
+> +	.n_yes_ranges = 0
+> +};
 
-Sorry, I missed the other one.
+Looks like my reply to this got lost. Other regmap code suggests that
+volatile register ranges are identified with yes_ranges, not with no_ranges.
+"no" seems to mean "not volatile". Please verify and confirm if the
+above code does what you want it to do.
 
+Thanks,
 Guenter
-
-> -- Steve
-> 
-> 
-> On Wed, 21 Apr 2021 17:33:34 -0700
-> Guenter Roeck <linux@roeck-us.net> wrote:
-> 
->> If CONFIG_MODULES=n, the following build warning is reported.
->>
->> kernel/static_call.c: In function ‘__static_call_update’:
->> kernel/static_call.c:153:18: warning: unused variable ‘mod’
->>
->> Mark the variable as __maybe_unused to fix the problem.
->>
->> Fixes: 9183c3f9ed71 ("static_call: Add inline static call infrastructure")
->> Reported-by: Zach Reizner <zachr@google.com>
->> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->>  kernel/static_call.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/static_call.c b/kernel/static_call.c
->> index 2c5950b0b90e..8211a34251f8 100644
->> --- a/kernel/static_call.c
->> +++ b/kernel/static_call.c
->> @@ -150,7 +150,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
->>  
->>  	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
->>  		bool init = system_state < SYSTEM_RUNNING;
->> -		struct module *mod = site_mod->mod;
->> +		struct module __maybe_unused *mod = site_mod->mod;
->>  
->>  		if (!site_mod->sites) {
->>  			/*
-> 
-
