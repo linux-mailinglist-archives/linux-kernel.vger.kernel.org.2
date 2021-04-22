@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C3E3680F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235873680ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236334AbhDVM47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:56:59 -0400
-Received: from mga11.intel.com ([192.55.52.93]:50634 "EHLO mga11.intel.com"
+        id S236291AbhDVM4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:56:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236250AbhDVM44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:56:56 -0400
-IronPort-SDR: MumVY8dUwPgqFynXsxHqJV2GsvhLeiWdsT5HsLkuFHwWOf29j28O++mg654Wa3EcWJ0oNNmwak
- f3LRXZQVmp+Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="192692233"
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="192692233"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 05:56:21 -0700
-IronPort-SDR: y1fbkouyq0pnuB+LErciUqaGFcqjHgtZrsWF26wfwvrJ3dQFNFuVxqLxJfuF3qhXa4XEqx3Vrr
- nxcKimXuEhSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="446262806"
-Received: from yiliu-dev.bj.intel.com (HELO yiliu-dev) ([10.238.156.135])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Apr 2021 05:56:17 -0700
-Date:   Thu, 22 Apr 2021 20:55:05 +0800
-From:   Liu Yi L <yi.l.liu@linux.intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     yi.l.liu@intel.com, Jason Gunthorpe <jgg@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Li Zefan <lizefan@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210422205505.75f086f8@yiliu-dev>
-In-Reply-To: <20210421133312.15307c44@redhat.com>
-References: <20210401134236.GF1463678@nvidia.com>
-        <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210401160337.GJ1463678@nvidia.com>
-        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
-        <20210415230732.GG1370958@nvidia.com>
-        <20210416061258.325e762e@jacob-builder>
-        <20210416094547.1774e1a3@redhat.com>
-        <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210421162307.GM1370958@nvidia.com>
-        <20210421105451.56d3670a@redhat.com>
-        <20210421175203.GN1370958@nvidia.com>
-        <20210421133312.15307c44@redhat.com>
-Organization: IAGS/SSE(OTC)
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230005AbhDVM4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:56:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97E7161421;
+        Thu, 22 Apr 2021 12:56:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619096175;
+        bh=67Q2cT7gJwqbkeudvADA/kgYbXlrl1Bc7sxBlveRglY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IJ3uZ70WTSsPlJIscCBN/Us3AzLMfZKRzx77q4k0/mk3B6Wz+Tdoy+blJ764BI65G
+         L4qcgWfHw5LtwIrl5Veg1AYRV2AMHu1/WHTRfy/nLXZVIu3L74vRmGVRbdlcOyws1F
+         u5XDMrKoKj6h9gzKPNS/wPvQKOZQ1rkzf6b+gFKFBlkuxQ5l8AfsaEZTbBDj+kPAQ9
+         SWJbAl5k04l1GUKb4W+jhf3zhoIhL2AttNPBOyI0OoSAQw2dOa3UWPOHVZUq7jJs36
+         2aQjCrI5wqT7mLT0O9ItbOEQfwamTgxrjm6emY/nQWatktmydLHrTm+CG6KS+2yvK0
+         DIwjWc99AO6yA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lZYsX-0008M1-9M; Thu, 22 Apr 2021 14:56:21 +0200
+Date:   Thu, 22 Apr 2021 14:56:21 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-serial@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] tty: serial: jsm: remove redundant assignments of
+ several variables
+Message-ID: <YIFydeoE/WRfPcvA@hovoldconsulting.com>
+References: <20210422121115.246625-1-colin.king@canonical.com>
+ <YIFxfH4MXc1ekn4f@hovoldconsulting.com>
+ <c9497e47-cdfb-7be0-ad35-648ea5d68268@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c9497e47-cdfb-7be0-ad35-648ea5d68268@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 13:33:12 -0600, Alex Williamson wrote:
-
-> On Wed, 21 Apr 2021 14:52:03 -0300
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Wed, Apr 21, 2021 at 10:54:51AM -0600, Alex Williamson wrote:
-> >   
-> > > That's essentially replacing vfio-core, where I think we're more    
+On Thu, Apr 22, 2021 at 01:53:03PM +0100, Colin Ian King wrote:
+> On 22/04/2021 13:52, Johan Hovold wrote:
+> > On Thu, Apr 22, 2021 at 01:11:15PM +0100, Colin King wrote:
+> >> From: Colin Ian King <colin.king@canonical.com>
+> >>
+> >> Several variables are being assigned with values that are never
+> >> read and being updated later with a new value. The initializations
+> >> are redundant and can be removed.
+> >>
+> >> Addresses-Coverity: ("Unused value")
+> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> >> ---
+> >>  drivers/tty/serial/jsm/jsm_cls.c | 6 ++----
+> >>  1 file changed, 2 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/drivers/tty/serial/jsm/jsm_cls.c b/drivers/tty/serial/jsm/jsm_cls.c
+> >> index b507a2cec926..b58ea4344aaf 100644
+> >> --- a/drivers/tty/serial/jsm/jsm_cls.c
+> >> +++ b/drivers/tty/serial/jsm/jsm_cls.c
+> >> @@ -349,8 +349,8 @@ static void cls_assert_modem_signals(struct jsm_channel *ch)
+> >>  
+> >>  static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
+> >>  {
+> >> -	int qleft = 0;
+> >> -	u8 linestatus = 0;
+> >> +	int qleft;
+> >> +	u8 linestatus;
+> >>  	u8 error_mask = 0;
+> >>  	u16 head;
+> >>  	u16 tail;
+> >> @@ -365,8 +365,6 @@ static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
+> >>  	head = ch->ch_r_head & RQUEUEMASK;
+> >>  	tail = ch->ch_r_tail & RQUEUEMASK;
+> >>  
+> >> -	/* Get our cached LSR */
+> >> -	linestatus = ch->ch_cached_lsr;
+> >>  	ch->ch_cached_lsr = 0;
 > > 
-> > I am only talking about /dev/vfio here which is basically the IOMMU
-> > interface part.
-> > 
-> > I still expect that VFIO_GROUP_SET_CONTAINER will be used to connect
-> > /dev/{ioasid,vfio} to the VFIO group and all the group and device
-> > logic stays inside VFIO.  
+> > Why leave this assignment in? Looks like this was all copy-pasta, but
+> > this assignment makes even less sense now that you remove the comment
+> > and load.
 > 
-> But that group and device logic is also tied to the container, where
-> the IOMMU backend is the interchangeable thing that provides the IOMMU
-> manipulation for that container.  If you're using
-> VFIO_GROUP_SET_CONTAINER to associate a group to a /dev/ioasid, then
-> you're really either taking that group outside of vfio or you're
-> re-implementing group management in /dev/ioasid.  I'd expect the
-> transition point at VFIO_SET_IOMMU.
+> Which assignment are you referring to?
 
-per my understanding, transiting at the VFIO_SET_IOMMU point makes more
-sense as VFIO can still have the group and device logic, which is the key
-concept of group granularity isolation for userspace direct access.
+The one just above my comment: 
 
--- 
-Regards,
-Yi Liu
+	ch->ch_cached_lsr = 0;
+
+Johan
