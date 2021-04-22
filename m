@@ -2,271 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED2F368333
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD7D368336
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbhDVPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:19:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34440 "EHLO mx2.suse.de"
+        id S237474AbhDVPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:21:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35484 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237954AbhDVPTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:19:15 -0400
+        id S236397AbhDVPVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:21:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5C5EEB170;
-        Thu, 22 Apr 2021 15:18:39 +0000 (UTC)
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210422111441.24318-1-mgorman@techsingularity.net>
- <20210422111441.24318-4-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 3/9] mm/vmstat: Convert NUMA statistics to basic NUMA
- counters
-Message-ID: <ba72d967-aa4e-47e5-5f99-df3dd0bf21d2@suse.cz>
-Date:   Thu, 22 Apr 2021 17:18:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        by mx2.suse.de (Postfix) with ESMTP id A034DB172;
+        Thu, 22 Apr 2021 15:20:56 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: [PATCH v3 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+Date:   Thu, 22 Apr 2021 17:20:53 +0200
+Message-Id: <20210422152055.85544-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210422111441.24318-4-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 1:14 PM, Mel Gorman wrote:
-> NUMA statistics are maintained on the zone level for hits, misses, foreign
-> etc but nothing relies on them being perfectly accurate for functional
-> correctness. The counters are used by userspace to get a general overview
-> of a workloads NUMA behaviour but the page allocator incurs a high cost to
-> maintain perfect accuracy similar to what is required for a vmstat like
-> NR_FREE_PAGES. There even is a sysctl vm.numa_stat to allow userspace to
-> turn off the collection of NUMA statistics like NUMA_HIT.
-> 
-> This patch converts NUMA_HIT and friends to be NUMA events with similar
-> accuracy to VM events. There is a possibility that slight errors will be
-> introduced but the overall trend as seen by userspace will be similar.
-> The counters are no longer updated from vmstat_refresh context as it is
-> unnecessary overhead for counters that may never be read by userspace.
-> Note that counters could be maintained at the node level to save space
-> but it would have a user-visible impact due to /proc/zoneinfo.
-> 
-> [lkp@intel.com: Fix misplaced closing brace for !CONFIG_NUMA]
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+to 32 gpios. All gpios could be used as interrupt source.
 
-...
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+Changes in v3:
+ - changed compatible string to idt,32434-gpio
+ - registers now start with gpio direction register and leaves
+   out alternate function register for pinmux/pinctrl driver
 
-> @@ -731,26 +722,34 @@ static int fold_diff(int *zone_diff, int *numa_diff, int *node_diff)
->  	}
->  	return changes;
->  }
-> -#else
-> -static int fold_diff(int *zone_diff, int *node_diff)
-> +
-> +#ifdef CONFIG_NUMA
-> +static void fold_vm_zone_numa_events(struct zone *zone)
->  {
-> -	int i;
-> -	int changes = 0;
-> +	int zone_numa_events[NR_VM_NUMA_EVENT_ITEMS] = { 0, };
+Changes in v2:
+ - made driver buildable as module
+ - use for_each_set_bit() in irq dispatch handler
+ - use gpiochip_get_data instead of own container_of helper
+ - use module_platform_driver() instead of arch_initcall
+ - don't default y for Mikrotik RB532
 
-Should this be long? pzstats are, the global counters too, so seems weird to use
-int as intermediate sum counter.
+ drivers/gpio/Kconfig         |  12 +++
+ drivers/gpio/Makefile        |   1 +
+ drivers/gpio/gpio-idt3243x.c | 198 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 211 insertions(+)
+ create mode 100644 drivers/gpio/gpio-idt3243x.c
 
-> +	int cpu;
-> +	enum numa_stat_item item;
->  
-> -	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
-> -		if (zone_diff[i]) {
-> -			atomic_long_add(zone_diff[i], &vm_zone_stat[i]);
-> -			changes++;
-> -	}
-> +	for_each_online_cpu(cpu) {
-> +		struct per_cpu_zonestat *pzstats;
->  
-> -	for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> -		if (node_diff[i]) {
-> -			atomic_long_add(node_diff[i], &vm_node_stat[i]);
-> -			changes++;
-> +		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
-> +		for (item = 0; item < NR_VM_NUMA_EVENT_ITEMS; item++)
-> +			zone_numa_events[item] += xchg(&pzstats->vm_numa_event[item], 0);
->  	}
-> -	return changes;
-> +
-> +	for (item = 0; item < NR_VM_NUMA_EVENT_ITEMS; item++)
-> +		zone_numa_event_add(zone_numa_events[item], zone, item);
->  }
-> -#endif /* CONFIG_NUMA */
-> +
-> +void fold_vm_numa_events(void)
-> +{
-> +	struct zone *zone;
-> +
-> +	for_each_populated_zone(zone)
-> +		fold_vm_zone_numa_events(zone);
-> +}
-> +#endif
->  
->  /*
->   * Update the zone counters for the current cpu.
-> @@ -774,15 +773,14 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
->  	struct zone *zone;
->  	int i;
->  	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
-> -#ifdef CONFIG_NUMA
-> -	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
-> -#endif
->  	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
->  	int changes = 0;
->  
->  	for_each_populated_zone(zone) {
->  		struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
-> +#ifdef CONFIG_NUMA
->  		struct per_cpu_pages __percpu *pcp = zone->per_cpu_pageset;
-> +#endif
->  
->  		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
->  			int v;
-> @@ -799,17 +797,6 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
->  			}
->  		}
->  #ifdef CONFIG_NUMA
-> -		for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++) {
-> -			int v;
-> -
-> -			v = this_cpu_xchg(pzstats->vm_numa_stat_diff[i], 0);
-> -			if (v) {
-> -
-> -				atomic_long_add(v, &zone->vm_numa_stat[i]);
-> -				global_numa_diff[i] += v;
-> -				__this_cpu_write(pcp->expire, 3);
-> -			}
-> -		}
->  
->  		if (do_pagesets) {
->  			cond_resched();
-> @@ -857,12 +844,7 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
->  		}
->  	}
->  
-> -#ifdef CONFIG_NUMA
-> -	changes += fold_diff(global_zone_diff, global_numa_diff,
-> -			     global_node_diff);
-> -#else
->  	changes += fold_diff(global_zone_diff, global_node_diff);
-> -#endif
->  	return changes;
->  }
->  
-> @@ -877,9 +859,6 @@ void cpu_vm_stats_fold(int cpu)
->  	struct zone *zone;
->  	int i;
->  	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
-> -#ifdef CONFIG_NUMA
-> -	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
-> -#endif
->  	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
->  
->  	for_each_populated_zone(zone) {
-> @@ -887,7 +866,7 @@ void cpu_vm_stats_fold(int cpu)
->  
->  		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
->  
-> -		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
-> +		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
->  			if (pzstats->vm_stat_diff[i]) {
->  				int v;
->  
-> @@ -896,17 +875,17 @@ void cpu_vm_stats_fold(int cpu)
->  				atomic_long_add(v, &zone->vm_stat[i]);
->  				global_zone_diff[i] += v;
->  			}
-> -
-> +		}
->  #ifdef CONFIG_NUMA
-> -		for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++)
-> -			if (pzstats->vm_numa_stat_diff[i]) {
-> +		for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++) {
-> +			if (pzstats->vm_numa_event[i]) {
->  				int v;
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index e3607ec4c2e8..2948eb4ab8a5 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -770,6 +770,18 @@ config GPIO_MSC313
+ 	  Say Y here to support the main GPIO block on MStar/SigmaStar
+ 	  ARMv7 based SoCs.
+ 
++config GPIO_IDT3243X
++	tristate "IDT 79RC3243X GPIO support"
++	depends on MIKROTIK_RB532 || COMPILE_TEST
++	select GPIO_GENERIC
++	select GPIOLIB_IRQCHIP
++	help
++	  Select this option to enable GPIO driver for
++	  IDT 79RC3243X SoC devices.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called gpio-idt3243x.
++
+ endmenu
+ 
+ menu "Port-mapped I/O GPIO drivers"
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index c58a90a3c3b1..75dd9c5665c5 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -67,6 +67,7 @@ obj-$(CONFIG_GPIO_HISI)                 += gpio-hisi.o
+ obj-$(CONFIG_GPIO_HLWD)			+= gpio-hlwd.o
+ obj-$(CONFIG_HTC_EGPIO)			+= gpio-htc-egpio.o
+ obj-$(CONFIG_GPIO_ICH)			+= gpio-ich.o
++obj-$(CONFIG_GPIO_IDT3243X)		+= gpio-idt3243x.o
+ obj-$(CONFIG_GPIO_IOP)			+= gpio-iop.o
+ obj-$(CONFIG_GPIO_IT87)			+= gpio-it87.o
+ obj-$(CONFIG_GPIO_IXP4XX)		+= gpio-ixp4xx.o
+diff --git a/drivers/gpio/gpio-idt3243x.c b/drivers/gpio/gpio-idt3243x.c
+new file mode 100644
+index 000000000000..1e609bc4d839
+--- /dev/null
++++ b/drivers/gpio/gpio-idt3243x.c
+@@ -0,0 +1,198 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for IDT/Renesas 79RC3243x Interrupt Controller.
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/gpio/driver.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqchip.h>
++#include <linux/irqchip/chained_irq.h>
++#include <linux/irqdomain.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++
++#define IDT_PIC_IRQ_PEND	0x00
++#define IDT_PIC_IRQ_MASK	0x08
++
++#define IDT_GPIO_DIR		0x00
++#define IDT_GPIO_DATA		0x04
++#define IDT_GPIO_ILEVEL		0x08
++#define IDT_GPIO_ISTAT		0x0C
++
++struct idt_gpio_ctrl {
++	struct gpio_chip gc;
++	void __iomem *pic;
++	void __iomem *gpio;
++	u32 mask_cache;
++};
++
++static void idt_gpio_dispatch(struct irq_desc *desc)
++{
++	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++	struct irq_chip *host_chip = irq_desc_get_chip(desc);
++	unsigned int bit, virq;
++	unsigned long pending;
++
++	chained_irq_enter(host_chip, desc);
++
++	pending = readl(ctrl->pic + IDT_PIC_IRQ_PEND);
++	pending &= ~ctrl->mask_cache;
++	for_each_set_bit(bit, &pending, gc->ngpio) {
++		virq = irq_linear_revmap(gc->irq.domain, bit);
++		if (virq)
++			generic_handle_irq(virq);
++	}
++
++	chained_irq_exit(host_chip, desc);
++}
++
++static int idt_gpio_irq_set_type(struct irq_data *d, unsigned int flow_type)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++	unsigned int sense = flow_type & IRQ_TYPE_SENSE_MASK;
++	u32 ilevel;
++
++	if (sense & ~(IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
++		return -EINVAL;
++
++	ilevel = readl(ctrl->gpio + IDT_GPIO_ILEVEL);
++	if (sense & IRQ_TYPE_LEVEL_HIGH)
++		ilevel |= BIT(d->hwirq);
++	else if (sense & IRQ_TYPE_LEVEL_LOW)
++		ilevel &= ~BIT(d->hwirq);
++	else
++		return -EINVAL;
++
++	writel(ilevel, ctrl->gpio + IDT_GPIO_ILEVEL);
++	return 0;
++}
++
++static void idt_gpio_ack(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++
++	writel(~BIT(d->hwirq), ctrl->gpio + IDT_GPIO_ISTAT);
++}
++
++static void idt_gpio_mask(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++
++	ctrl->mask_cache |= BIT(d->hwirq);
++	writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
++}
++
++static void idt_gpio_unmask(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++
++	ctrl->mask_cache &= ~BIT(d->hwirq);
++	writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
++}
++
++static struct irq_chip idt_gpio_irqchip = {
++	.name = "IDTGPIO",
++	.irq_mask = idt_gpio_mask,
++	.irq_ack = idt_gpio_ack,
++	.irq_unmask = idt_gpio_unmask,
++	.irq_set_type = idt_gpio_irq_set_type
++};
++
++static int idt_gpio_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct gpio_irq_chip *girq;
++	struct idt_gpio_ctrl *ctrl;
++	unsigned int parent_irq;
++	int ngpios;
++	int ret;
++
++	ret = device_property_read_u32(dev, "ngpios", &ngpios);
++	if (ret) {
++		dev_err(dev, "ngpios property is not valid\n");
++		return ret;
++	}
++
++	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
++	if (!ctrl)
++		return -ENOMEM;
++
++	ctrl->gpio = devm_platform_ioremap_resource_byname(pdev, "gpio");
++	if (!ctrl->gpio)
++		return -ENOMEM;
++
++	ctrl->gc.parent = dev;
++
++	ret = bgpio_init(&ctrl->gc, &pdev->dev, 4, ctrl->gpio + IDT_GPIO_DATA,
++			 NULL, NULL, ctrl->gpio + IDT_GPIO_DIR, NULL, 0);
++	if (ret) {
++		dev_err(dev, "bgpio_init failed\n");
++		return ret;
++	}
++	ctrl->gc.ngpio = ngpios;
++
++	ctrl->pic = devm_platform_ioremap_resource_byname(pdev, "pic");
++	if (!ctrl->pic)
++		return -ENOMEM;
++
++	parent_irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
++	if (!parent_irq) {
++		dev_err(&pdev->dev, "Failed to map parent IRQ!\n");
++		return -EINVAL;
++	}
++
++	/* Mask interrupts. */
++	ctrl->mask_cache = 0xffffffff;
++	writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
++
++	girq = &ctrl->gc.irq;
++	girq->chip = &idt_gpio_irqchip;
++	girq->parent_handler = idt_gpio_dispatch;
++	girq->num_parents = 1;
++	girq->parents = devm_kcalloc(dev, 1, sizeof(*girq->parents),
++				     GFP_KERNEL);
++	if (!girq->parents) {
++		ret = -ENOMEM;
++		goto out_unmap_irq;
++	}
++	girq->parents[0] = parent_irq;
++	girq->default_type = IRQ_TYPE_NONE;
++	girq->handler = handle_level_irq;
++
++	ret = devm_gpiochip_add_data(&pdev->dev, &ctrl->gc, ctrl);
++	if (ret)
++		goto out_unmap_irq;
++
++	return 0;
++
++out_unmap_irq:
++	irq_dispose_mapping(parent_irq);
++	return ret;
++}
++
++static const struct of_device_id idt_gpio_of_match[] = {
++	{ .compatible = "idt,32434-gpio" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, idt_gpio_of_match);
++
++static struct platform_driver idt_gpio_driver = {
++	.probe = idt_gpio_probe,
++	.driver = {
++		.name = "idt3243x-gpio",
++		.of_match_table = idt_gpio_of_match,
++	},
++};
++module_platform_driver(idt_gpio_driver);
++
++MODULE_DESCRIPTION("IDT 79RC3243x GPIO/PIC Driver");
++MODULE_AUTHOR("Thomas Bogendoerfer <tsbogend@alpha.franken.de>");
++MODULE_LICENSE("GPL");
+-- 
+2.29.2
 
-Also long?
-
->  
-> -				v = pzstats->vm_numa_stat_diff[i];
-> -				pzstats->vm_numa_stat_diff[i] = 0;
-> -				atomic_long_add(v, &zone->vm_numa_stat[i]);
-> -				global_numa_diff[i] += v;
-> +				v = pzstats->vm_numa_event[i];
-> +				pzstats->vm_numa_event[i] = 0;
-> +				zone_numa_event_add(v, zone, i);
->  			}
-> +		}
->  #endif
->  	}
->  
-> @@ -926,11 +905,7 @@ void cpu_vm_stats_fold(int cpu)
->  			}
->  	}
->  
-> -#ifdef CONFIG_NUMA
-> -	fold_diff(global_zone_diff, global_numa_diff, global_node_diff);
-> -#else
->  	fold_diff(global_zone_diff, global_node_diff);
-> -#endif
->  }
->  
->  /*
-> @@ -939,43 +914,36 @@ void cpu_vm_stats_fold(int cpu)
->   */
->  void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
->  {
-> -	int i;
-> +	int i, v;
-
-And the 'v' here. Maybe keep using local to each loop below and make it long for
-the NUMA one?
-
-> -	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
-> +	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
->  		if (pzstats->vm_stat_diff[i]) {
-> -			int v = pzstats->vm_stat_diff[i];
-> +			v = pzstats->vm_stat_diff[i];
->  			pzstats->vm_stat_diff[i] = 0;
-> -			atomic_long_add(v, &zone->vm_stat[i]);
-> -			atomic_long_add(v, &vm_zone_stat[i]);
-> +			zone_page_state_add(v, zone, i);
->  		}
-> +	}
->  
->  #ifdef CONFIG_NUMA
-> -	for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++)
-> -		if (pzstats->vm_numa_stat_diff[i]) {
-> -			int v = pzstats->vm_numa_stat_diff[i];
-> -
-> -			pzstats->vm_numa_stat_diff[i] = 0;
-> -			atomic_long_add(v, &zone->vm_numa_stat[i]);
-> -			atomic_long_add(v, &vm_numa_stat[i]);
-> +	for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++) {
-> +		if (pzstats->vm_numa_event[i]) {
-> +			v = pzstats->vm_numa_event[i];
-> +			pzstats->vm_numa_event[i] = 0;
-> +			zone_numa_event_add(v, zone, i);
->  		}
-> +	}
->  #endif
->  }
->  #endif
->  
->  #ifdef CONFIG_NUMA
