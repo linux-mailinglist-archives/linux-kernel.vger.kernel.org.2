@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD423676DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B9A3676E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhDVBeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 21:34:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231128AbhDVBeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 21:34:07 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 765B9613ED;
-        Thu, 22 Apr 2021 01:33:32 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 21:33:30 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] static_call: Fix unused variable warning
-Message-ID: <20210421213330.0faabfc6@oasis.local.home>
-In-Reply-To: <6cccb650-9aef-f16c-7ec5-53d3042af292@roeck-us.net>
-References: <20210422003334.139452-1-linux@roeck-us.net>
-        <20210421204139.669f5c22@oasis.local.home>
-        <6cccb650-9aef-f16c-7ec5-53d3042af292@roeck-us.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233361AbhDVBi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 21:38:27 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:61025 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229536AbhDVBi0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 21:38:26 -0400
+X-UUID: ce0917296e1646c48868f921555bebc4-20210422
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MaLMoD+Cx4c9RF+MQbi2VA+TR/HgeiidMjRq17YSzZA=;
+        b=kZEVYdDs8Qhv/q5mg4gK8nlswaAJk0caV4eWjDY24sDFmzwyWBhDLVxWn2De1oyoFmPHubHJraG0x44s/F96la2lPNw3dR+CzthLReUIJdMsqq2kQkN3vEUMTnG5xht8jvqSBFXjrPCnbhAMFbELsQ3HaxmiB2NC85zS1D0kf+k=;
+X-UUID: ce0917296e1646c48868f921555bebc4-20210422
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 925003886; Thu, 22 Apr 2021 09:37:42 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 09:37:40 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Apr 2021 09:37:39 +0800
+Message-ID: <1619055459.27999.0.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 0/4] Mediatek pinctrl patch on mt8195
+From:   zhiyong tao <zhiyong.tao@mediatek.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
+        huang eddie <eddie.huang@mediatek.com>, <jg_poxu@mediatek.com>,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        "Sean Wang" <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Date:   Thu, 22 Apr 2021 09:37:39 +0800
+In-Reply-To: <CACRpkdYtjG3LbcMiHmODggWRecSWGSm34vpEtti9x9SKdV9_BA@mail.gmail.com>
+References: <20210413055702.27535-1-zhiyong.tao@mediatek.com>
+         <CACRpkdYtjG3LbcMiHmODggWRecSWGSm34vpEtti9x9SKdV9_BA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: 220BC1F69A6A5C846F04675CAF54A160A39F6A0D1C6092D1B2837A258212E0462000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 18:24:15 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
+T24gVGh1LCAyMDIxLTA0LTIyIGF0IDAxOjUxICswMjAwLCBMaW51cyBXYWxsZWlqIHdyb3RlOg0K
+PiBPbiBUdWUsIEFwciAxMywgMjAyMSBhdCA3OjU3IEFNIFpoaXlvbmcgVGFvIDx6aGl5b25nLnRh
+b0BtZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPiBUaGlzIHNlcmllcyBpbmNsdWRlcyA0IHBh
+dGNoZXM6DQo+ID4gMS5hZGQgcGluY3RybCBmaWxlIGFuZCBpbmRpbmcgZG9jdW1lbnQgb24gbXQ4
+MTk1Lg0KPiA+IDIuYWRkIHBpbmN0cmwgZHJpdmVyIG9uIE1UODE5NS4NCj4gPiAzLmFkZCBwaW5j
+dHJsIGRyaXZlIGZvciBJMkMgcmVsYXRlZCBwaW5zIG9uIE1UODE5NS4NCj4gPiA0LmFkZCBwaW5j
+dHJsIHJzZWwgc2V0dGluZyBvbiBNVDgxOTUuDQo+ID4NCj4gPiBDaGFuZ2VzIGluIHBhdGNoIHY0
+Og0KPiANCj4gUGF0Y2hlcyAxLCAyICYgMyBhcHBsaWVkIQ0KPiANCj4gTm93IHlvdSBvbmx5IG5l
+ZWQgdG8gcmVzZW5kIHBhdGNoIDQuDQo+IA0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0KDQo9
+PT5UaGFua3MgZm9yIHlvdXIgY29tbWVudC4gd2Ugd2lsbCBzZW5kIG9ubHkgcGF0Y2ggNCBpbiBu
+ZXh0IHZlcnNpb24uDQoNCg0K
 
-> On 4/21/21 5:41 PM, Steven Rostedt wrote:
-> > 
-> > Second patch with the exact same update. Perhaps we should take one
-> > before we get more of them ;-)
-> > 
-> > https://lore.kernel.org/lkml/20210416194300.3952208-1-cmllamas@google.com/
-> >   
-> 
-> Sorry, I missed the other one.
-> 
-
-
-That's OK, I just thought you might have been doing some "research" on us.
-
-What? Too soon?
-
--- Steve
