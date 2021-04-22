@@ -2,150 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22B33676EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6FC367704
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhDVBp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 21:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbhDVBp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 21:45:58 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25042C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:45:23 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso32091336ott.8
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4gwq8TvAntR+R7ryaV5scX7MaU4qeWV0yxGPPFVEqkc=;
-        b=kmJLQQObF0su+bCrFxDzVXi/ALdttiDNJ3rxuah9m/9Go4VeW94cWFnqYUGHI2M40F
-         4aFOC3+Cx+oPs8hEXp4qpEfimCgdNcUPIGZDLHcq1gw5o8znDRW7uUGYeCg8qsqBeV8G
-         D5xG6Asn5FSqSst7rxdu9mzUkpIzd6vj5d+usohu8JnqvPjNEUkwdc7N9Yz7HFWnudQf
-         pHmPU/li5VHx1OQCn2ApLSJWuQmTlhIRAeT9sKIF6X1Rn8Hddug4SC4DC+/faySXnwFn
-         3/ybdljcerjyALzIccMcppPcEGFPwX/AhSwX7FW5EwSs57UieEPiOeA8+mvVFP88qWFI
-         LJtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=4gwq8TvAntR+R7ryaV5scX7MaU4qeWV0yxGPPFVEqkc=;
-        b=hmr0qIJ1sLlQ9C2WPLKioVCOtgHauPtiQdyTNLy60JOBcEt69opZG8XH/750n6AMuj
-         aECb90Vla7mEVELt9/Bb7TzBCP3QVBuYUj40vOgLfvIz7J1RP8o5R9ESGFJH93atmJWi
-         CeP+hVwnUa6uTpf7mWWPxG+yJI1MPhSAcA8thfmG07nWDnCcOUyVYCt/xOd0uJ/arGpA
-         DtdemFuyzZtpMKArBhzRh+Zj8O1Pu6N3nTpLYfFdjvzfEnuVjHGy/lcTQw3zSYto7pZH
-         eTHfmpopLREfXRWmo5CDFh5Ddvp7GqpVTNBz4zedV+gLSiiZ9cwLJPQf6wwDQ0x+axZN
-         rJ/Q==
-X-Gm-Message-State: AOAM531Rgws1/Y5xRFlKST5PtBm0XcIs0pES4HptOsKvCGJ3kYcV93MX
-        lm2DAqD8Q60so4paJdP5O+PU4w/hxkw=
-X-Google-Smtp-Source: ABdhPJwQn0Ij+QvrZrk2pWINnM3xCBBWXjYc7SR51sXlDGEaBM6i5awZznVMTzQ3NUy43OxGMxP7FQ==
-X-Received: by 2002:a05:6830:23a9:: with SMTP id m9mr873462ots.45.1619055922289;
-        Wed, 21 Apr 2021 18:45:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d7sm268152oib.49.2021.04.21.18.45.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 18:45:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] static_call: Fix unused variable warning
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-References: <20210422003334.139452-1-linux@roeck-us.net>
- <20210421204139.669f5c22@oasis.local.home>
- <6cccb650-9aef-f16c-7ec5-53d3042af292@roeck-us.net>
- <20210421213330.0faabfc6@oasis.local.home>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <aa2c71a8-8032-6678-2898-a0caa697df8c@roeck-us.net>
-Date:   Wed, 21 Apr 2021 18:45:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231128AbhDVBvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 21:51:23 -0400
+Received: from mail-mw2nam12on2075.outbound.protection.outlook.com ([40.107.244.75]:58880
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229502AbhDVBvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 21:51:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AMdZbhkupS5yVY9UmNxMXHqjkAjIgZbZQBYcbAtrcqItjxjeUNNUjGort36etJ1g/re69CF883A8STiN2Lti4vc77boh8brbUNoQGzVZslItyHvyMtgJlZR6aCb3y/cfpPVf+qc58ceca9J7KPXJ6LtequCUvd/b7gfv40+mHpX/WtLc/bf4tzSU/gA56rYug7sK7H72ZG5p+9Jo1jbAXm+d9Ievrkp/94rP8uPvgrVNUBaUXGkI5I9myk7F8T28jHJIF4FRqJGiOy2Q/fKREgLL5SYdc0f0JcLdaavSxshP39gi+TKRiiDDLe7XAkUva+iOCZb4voS8snKB3tyOmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K3LKgF5TatyPwgXroPUddvrom6DALDkItnS+S+A530E=;
+ b=audkX26sXBg7YOlqcfBC9DnVTI7wuvHwmayjXrxdkFpRdrofmyGYiCx6oOmBonO1aur04wcBkLwWVsw3JGMMJfza6IL0VTgwDqhtls5RgMDi72Ya+0fDX9MXCO7pJHxdLr2PRlzObH5/FclmYBvdkDb3QX2ttRQjZcqvBtfRVtetT4ucbD1jB4OtqEIMx0RSs+tRtLywg1zwtlpR2rVq7blAlw0rIgTiii83J/129i4p0oc/cFCBxzQFrMWfPQjN8eBd0xmASMgj6ztp9A/FvV4F8z34CR5MYHRv2W0nZYNgk4JrcMqfEfYBasjpL1oILnDMGeWhrKyuuRhrlDOSvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K3LKgF5TatyPwgXroPUddvrom6DALDkItnS+S+A530E=;
+ b=SMC8tp/AcvT6IqMOGHc3Qy4waDiA+vkgZyr5MGxEX+zBKF0pPdnmmJu+Fkpq5otSM3kZmV4mmkZE+AQ3s/eMysELT1x44FroovPLZzdzgDsjx0djWafrv6Zm1DjfB1CA8AC88acd8rAV4fjG4nX8x2B/CoOYf2DC7qHnLd2O+HbQfR904qnfPhRHrAIZDH2ajAa/V0Z/nYTpPQgDzFnntISR6JMHJJgCMW0J+AQ5DxbOsPJvcNIIf5FyxTEGfpydG+jgisL3N5JZ+pZqXOXKqiWkAu/VB0PXs4gWnO8qOQgmTBqSxunBkjMLt7GxVe+SpajRlSF273BYd9dZzKaaFw==
+Received: from MW4PR04CA0127.namprd04.prod.outlook.com (2603:10b6:303:84::12)
+ by MN2PR12MB4406.namprd12.prod.outlook.com (2603:10b6:208:268::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Thu, 22 Apr
+ 2021 01:50:46 +0000
+Received: from CO1NAM11FT049.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:84:cafe::2) by MW4PR04CA0127.outlook.office365.com
+ (2603:10b6:303:84::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend
+ Transport; Thu, 22 Apr 2021 01:50:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT049.mail.protection.outlook.com (10.13.175.50) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 01:50:45 +0000
+Received: from [10.19.101.193] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 01:50:43 +0000
+Subject: Re: [PATCH 1/2] phy: tegra: xusb: annotate PM functions as
+ __maybe_unused
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        <linux-phy@lists.infradead.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210421135613.3560777-1-arnd@kernel.org>
+X-Nvconfidentiality: public
+From:   JC Kuo <jckuo@nvidia.com>
+Organization: NVIDIA
+Message-ID: <937252ad-d3f0-ff29-8e3d-1267d46202b0@nvidia.com>
+Date:   Thu, 22 Apr 2021 09:50:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210421213330.0faabfc6@oasis.local.home>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210421135613.3560777-1-arnd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c1932999-e331-4a09-7bae-08d905310bc9
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4406:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB44069368EC291D6D1B1B2DA0D0469@MN2PR12MB4406.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q3m6gmiK0K9Af7bBEECnjgTXVd2lYXy7iPUeJEl9yydNeYLg36Y8IXjua5T/9v6rWDoBdUkTWyNFtZCH8IWhTzxRWt2Jf8tbLWtCJ3NVahWBJI6lvK5UTtTAGds1laoVydhPNFN1I+7wjSagfD4WLYYXjbnG4S1ancbqhZ7mbvEjhlGxOMbS14vodGriH7D0Q1OlkOVdCCulPkjOWBgLikHeGI0abFR+jXBAzxucz9veig9Pv+HTX1V5BPp8kWhbCoQixqBZKTxDkcQjTmhjzXRJf3SIsG/ahtHFl9GM1px9ySpydyu12qCZDHV4QANieiU0iuiYjX9/9Q8VX7HwkjR580bPG8q+g7AbOENQ5EQMqS4S9QobkYC4wF5XdognqMlgAIwwb9nNJHyT5dphctH3BFgKKpM/owfznHvpvm9jWxBSFk+SqBP9XJxrp44fNlME3vuLqGYJUogyqkdT7aEsEMWS1cwB8urzK4Bke26ov5nn2FMBqxy0vlUHiCgvUa0ngNMFJ+SwYvD1JUukCyQLKYVVofHsjj8wd24b9HD8grkswoxAN7p69Ni1N0MpR35YjqKR0VXg0zE0Pqlegt8ry/wC8EAARqHt/73Rg6cZ5fvL8iyR8bloqHO7u6ohY4EvNUSLiaTMC7WSnm7X+BrRylekY5AkVOfvmdzeSQ6KMBpLizLq8pgZfnWUW0Dc
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(36840700001)(46966006)(426003)(31686004)(5660300002)(83380400001)(82740400003)(7636003)(316002)(6636002)(36860700001)(86362001)(186003)(31696002)(4326008)(82310400003)(47076005)(2906002)(26005)(2616005)(336012)(356005)(70206006)(36916002)(54906003)(478600001)(70586007)(7416002)(8676002)(16576012)(110136005)(36756003)(36906005)(16526019)(53546011)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 01:50:45.7816
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1932999-e331-4a09-7bae-08d905310bc9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT049.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4406
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 6:33 PM, Steven Rostedt wrote:
-> On Wed, 21 Apr 2021 18:24:15 -0700
-> Guenter Roeck <linux@roeck-us.net> wrote:
-> 
->> On 4/21/21 5:41 PM, Steven Rostedt wrote:
->>>
->>> Second patch with the exact same update. Perhaps we should take one
->>> before we get more of them ;-)
->>>
->>> https://lore.kernel.org/lkml/20210416194300.3952208-1-cmllamas@google.com/
->>>   
->>
->> Sorry, I missed the other one.
->>
-> 
-> 
-> That's OK, I just thought you might have been doing some "research" on us.
-> 
+Hi Arnd,
+Thanks for the fix.
 
-Not amused. I don't play such games.
+Reviewed-by: JC Kuo <jckuo@nvidia.com>
 
-No, this causes a compile error for us for a build with CONFIG_MODULES=n
-in combination with -Werror. The problem was backported to v5.10.y with
-the merge of v5.10.28, which makes it worse because it introduced a
-regression into that branch. A regression causing a compile error isn't
-really improving confidence in the test coverage of stable releases.
-
-Unfortunately there was a miscommunication internally; my understanding
-was that no patch was submitted upstream.
-
-Guenter
+On 4/21/21 9:56 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Depending on the configuration, there are no references to these
+> two helpers:
+> 
+> drivers/phy/tegra/xusb.c:1286:12: error: 'tegra_xusb_padctl_resume_noirq' defined but not used [-Werror=unused-function]
+>  1286 | static int tegra_xusb_padctl_resume_noirq(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/phy/tegra/xusb.c:1276:12: error: 'tegra_xusb_padctl_suspend_noirq' defined but not used [-Werror=unused-function]
+> 
+> Mark them as __maybe_unused to shut up the warnings without adding
+> fragile #ifdefs.
+> 
+> Fixes: b8bb3d9c9b74 ("phy: tegra: xusb: Add sleepwalk and suspend/resume")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/phy/tegra/xusb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+> index 0aadac678191..963de5913e50 100644
+> --- a/drivers/phy/tegra/xusb.c
+> +++ b/drivers/phy/tegra/xusb.c
+> @@ -1273,7 +1273,7 @@ static int tegra_xusb_padctl_remove(struct platform_device *pdev)
+>  	return err;
+>  }
+>  
+> -static int tegra_xusb_padctl_suspend_noirq(struct device *dev)
+> +static __maybe_unused int tegra_xusb_padctl_suspend_noirq(struct device *dev)
+>  {
+>  	struct tegra_xusb_padctl *padctl = dev_get_drvdata(dev);
+>  
+> @@ -1283,7 +1283,7 @@ static int tegra_xusb_padctl_suspend_noirq(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static int tegra_xusb_padctl_resume_noirq(struct device *dev)
+> +static __maybe_unused int tegra_xusb_padctl_resume_noirq(struct device *dev)
+>  {
+>  	struct tegra_xusb_padctl *padctl = dev_get_drvdata(dev);
+>  
+> 
