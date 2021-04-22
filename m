@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A2B368290
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF661368296
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237311AbhDVOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236501AbhDVOkY (ORCPT
+        id S237498AbhDVOlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:41:10 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19757 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237414AbhDVOk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:40:24 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F91C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:39:49 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lZaUc-00028T-D1; Thu, 22 Apr 2021 16:39:46 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lZaUc-0003xQ-2x; Thu, 22 Apr 2021 16:39:46 +0200
-Date:   Thu, 22 Apr 2021 16:39:45 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Juergen Borleis <jbe@pengutronix.de>, kernel@pengutronix.de,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger/tty: feature data direction
-Message-ID: <20210422143945.n5gqkeh2y2jm6ece@pengutronix.de>
-References: <20210422074702.8831-1-jbe@pengutronix.de>
- <YIEuSPS11fkSwQ7N@kroah.com>
+        Thu, 22 Apr 2021 10:40:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619102424; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=iEBvrbk2q7rMUoHph8b/yTMS2b++mbwgR9IYEcQh7dA=;
+ b=TfJvW8mlzgoXVg48jnsZOJSOa5h2Yt+EehVzHLLu/j474MShhwvToZ9NUAn1WJrtOuvLYCBy
+ NzaSv1Cmiqur9qJmvmjvecqPgxxSMNOTc6nOJv2BxB5vp+rLGZZ9/nQrMh0ZX4XsKuFvjZW2
+ PcMsVgzRcGvWB6kOKbcueRHQGUI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60818abdc39407c3274be578 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 14:39:57
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CF11CC43217; Thu, 22 Apr 2021 14:39:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9F8EAC433F1;
+        Thu, 22 Apr 2021 14:39:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9F8EAC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pt2plmppneqtli76"
-Content-Disposition: inline
-In-Reply-To: <YIEuSPS11fkSwQ7N@kroah.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next][V2] wlcore: Fix buffer overrun by snprintf due to
+ incorrect buffer size
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210419141405.180582-1-colin.king@canonical.com>
+References: <20210419141405.180582-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210422143956.CF11CC43217@smtp.codeaurora.org>
+Date:   Thu, 22 Apr 2021 14:39:56 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Colin King <colin.king@canonical.com> wrote:
 
---pt2plmppneqtli76
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The size of the buffer than can be written to is currently incorrect, it is
+> always the size of the entire buffer even though the snprintf is writing
+> as position pos into the buffer. Fix this by setting the buffer size to be
+> the number of bytes left in the buffer, namely sizeof(buf) - pos.
+> 
+> Addresses-Coverity: ("Out-of-bounds access")
+> Fixes: 7b0e2c4f6be3 ("wlcore: fix overlapping snprintf arguments in debugfs")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Hello Greg,
+Patch applied to wireless-drivers-next.git, thanks.
 
-On Thu, Apr 22, 2021 at 10:05:28AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Apr 22, 2021 at 09:47:02AM +0200, Juergen Borleis wrote:
-> > +static ssize_t dirfilter_show(struct device *dev,
-> > +			      struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev=
-);
-> > +
-> > +	if (trigger_data->indirection)
-> > +		return (ssize_t)sprintf(buf, "in\n");
-> > +	if (trigger_data->outdirection)
-> > +		return (ssize_t)sprintf(buf, "out\n");
-> > +	return (ssize_t)sprintf(buf, "inout\n");
->=20
-> sysfs_emit() please.
->=20
-> And you are adding new sysfs files, that requires an update to
-> Documentation/ABI/ please do so.
+a9a4c080deb3 wlcore: Fix buffer overrun by snprintf due to incorrect buffer size
 
-I agree to these two suggestions.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210419141405.180582-1-colin.king@canonical.com/
 
-> But why are you adding random new sysfs values to a class device?  That
-> feels really wrong.
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-This is quite usual for triggers and there is IMHO no way around this.
-And it is also save as led_trigger_set() emits an uevent after a trigger
-was activated.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---pt2plmppneqtli76
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCBiq4ACgkQwfwUeK3K
-7An9WQf9HqPjIWCpV8lEEjlTUBeaJc2Pwfy9NYtrg6MaIZR/VB14IXJR8o2DfA0v
-ivVDNJTaSwZ6wgcxahH2CJ52PuZv8z240HwCQ8caOFYiGlwXoMaq3l+xE1pPOEfw
-UXY7BaNINxsvRwxpAWeoE33TQosTZlBq0mMga2ytAN6quHsmqK+TDAXdX1G5sTFs
-++rQiUHZJUi0s75yzDxo2qnWpAvXsq2hPWgvOQDvmPdwcz0A2jem15t7PndFd0HP
-J1qiuuZgq+azo5YHYOoYul+HuU3bKza5Qh+auHxF57WorQ2k7KEtr04D4bA/8dMr
-bTUpJgvaHy3BAKpkjQXmd5fLt1GgMw==
-=CpzT
------END PGP SIGNATURE-----
-
---pt2plmppneqtli76--
