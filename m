@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835AD367DBB
+	by mail.lfdr.de (Postfix) with ESMTP id D4DCD367DBC
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhDVJac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:30:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47553 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235635AbhDVJab (ORCPT
+        id S235715AbhDVJai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235686AbhDVJah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:30:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619083796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3kZqpcpDryGiJYWT4WCPcehjl0P1U1v7NJiamcT4384=;
-        b=Ll5xGHn+2E+Spixj+yPOqC1o3Z2QgXrUMFFsNvqjh1DfnfPhTHYl6Wluu9MFe8WAhVOGI1
-        bUZhyO9q7rUTZG0NUNgdmPMsCqZEEXxEItqgksEQ5eDJP1zI4v/UuqXC6D4h3oqMXjP6CO
-        HO+4M6526ahklIt+CuRRqJdh/P/ZqyE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-nmeL2AHLNr2oNKkFuYW9ew-1; Thu, 22 Apr 2021 05:29:53 -0400
-X-MC-Unique: nmeL2AHLNr2oNKkFuYW9ew-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6DD5839A42;
-        Thu, 22 Apr 2021 09:29:51 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 825CC10023AE;
-        Thu, 22 Apr 2021 09:29:49 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sebastien Boeuf <sebastien.boeuf@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: Properly handle APF vs disabled LAPIC situation
-Date:   Thu, 22 Apr 2021 11:29:48 +0200
-Message-Id: <20210422092948.568327-1-vkuznets@redhat.com>
+        Thu, 22 Apr 2021 05:30:37 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF94CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:30:01 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id f11-20020a17090a638bb02901524d3a3d48so638836pjj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:30:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WAiVfU9pZKNLnj0iPV+xV/3yJrODjw+qUqRtrLT7Odc=;
+        b=K/G5gIH2tX122xjHBh6PNpLcYghJ072WSysjKABS1xlNUDPHEtJIuh+4OFz7aQacgg
+         V2Xwyu3/pe7Y6HAqq64ttspX8rmbgc9Abh+qVyS0DxBJvFgm4gph+VELvLIA6MkoKHKT
+         gJIBLV9D3q4Wm/eH7sbullADHRJhNtQ77MykJtLVVcagxQM5qja+oVPkXil1HvfRcF5/
+         4vaNYLAY8t7eNCYJZi60d5DkDFIi955NDPWp95NVUoNsy4CEz0zdozBMxxFCrQOmkjsi
+         nuO6iCm98FdimXko4Nn5Vmo7cBBBcdTxzZGa1PwSV+9DgT9xKKxjxjahoOYX+XFKbYTZ
+         xNiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WAiVfU9pZKNLnj0iPV+xV/3yJrODjw+qUqRtrLT7Odc=;
+        b=h/JpMkdj4LgXbWwJ/wL4OqIdQax9FnNUoh3G4/1LpHMZ32X5tzUAUZLh2wHNESS6b+
+         6jNbhq1t41vhc1CdJGKIOf6tPgg/qbYjAREnROyh6lhD3n2e2X945k6jZWXdYgPxogSF
+         rM+8isxZ78ULRFz99UB8IB67YhXY4CVYRvXid5X49hvdGQ47MZ5UGdiwr9x69bQyjMVc
+         4+CsWIrCb7Jbu+dnMLfFQv+rW2kzZrfTPRQJrFq+6yGYyT1PizXaR1Qlxby7PS2Yjo1l
+         gvYDCi9FibnEUWOWSMq64lL2k3nhDSoMWoBRKCg48ApQ1S89K2WWUSiMZFV1HV48nKxK
+         L68w==
+X-Gm-Message-State: AOAM533o5pTIVAG1Hxw8pv7O7qJqiTD+7DJbPv4DuzlVLkUlhZxl8DUM
+        /ONBZEsUCOPLQfN7w/CvXV4=
+X-Google-Smtp-Source: ABdhPJzQB7yIG4rtpzNAeePr0K+hw2lUJwWy6oJwbOFiBPkmh6oaTNQ9e16Y7j76ODTQyqkCl+d3+A==
+X-Received: by 2002:a17:90b:1bd0:: with SMTP id oa16mr2937519pjb.49.1619083801252;
+        Thu, 22 Apr 2021 02:30:01 -0700 (PDT)
+Received: from [127.0.0.1] ([222.112.70.84])
+        by smtp.gmail.com with ESMTPSA id o5sm1771070pgq.58.2021.04.22.02.29.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 02:30:00 -0700 (PDT)
+Subject: Re: [PATCH] x86/mm: Fix copy&paste error in comments
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org
+References: <20210420053432.4842-1-jojing64@gmail.com>
+From:   Ts'o <jojing64@gmail.com>
+Message-ID: <82c81cd7-bced-d533-56f3-1d75c9f4593b@gmail.com>
+Date:   Thu, 22 Apr 2021 17:29:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210420053432.4842-1-jojing64@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Async PF 'page ready' event may happen when LAPIC is (temporary) disabled.
-In particular, Sebastien reports that when Linux kernel is directly booted
-by Cloud Hypervisor, LAPIC is 'software disabled' when APF mechanism is
-initialized. On initialization KVM tries to inject 'wakeup all' event and
-puts the corresponding token to the slot. It is, however, failing to inject
-an interrupt (kvm_apic_set_irq() -> __apic_accept_irq() -> !apic_enabled())
-so the guest never gets notified and the whole APF mechanism gets stuck.
-The same issue is likely to happen if the guest temporary disables LAPIC
-and a previously unavailable page becomes available.
 
-Do two things to resolve the issue:
-- Avoid dequeuing 'page ready' events from APF queue when LAPIC is
-  disabled.
-- Trigger an attempt to deliver pending 'page ready' events when LAPIC
-  becomes enabled (SPIV or MSR_IA32_APICBASE).
+On 20/4/2021 1:34 pm, Cao jin wrote:
+> Direct page mapping in bottom-up way will allocate memory from low
+> address for page structures in a range, which is the *bottom*,
+> not the *end*.
+> 
+> Signed-off-by: Cao jin <jojing64@gmail.com>
+> ---
+>   arch/x86/mm/init.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+> index e26f5c5c6565..bc2f871c75f1 100644
+> --- a/arch/x86/mm/init.c
+> +++ b/arch/x86/mm/init.c
+> @@ -663,7 +663,7 @@ static void __init memory_map_bottom_up(unsigned long map_start,
+>   	/*
+>   	 * We start from the bottom (@map_start) and go to the top (@map_end).
+>   	 * The memblock_find_in_range() gets us a block of RAM from the
+> -	 * end of RAM in [min_pfn_mapped, max_pfn_mapped) used as new pages
+> +	 * bottom of RAM in [min_pfn_mapped, max_pfn_mapped) used as new pages
+>   	 * for page table.
+>   	 */
 
-Reported-by: Sebastien Boeuf <sebastien.boeuf@intel.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/lapic.c | 6 ++++++
- arch/x86/kvm/x86.c   | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+FYI: There is exactly the same sentence in memory_map_top_down(), looks 
+like a copy & paste error to me.
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index cc369b9ad8f1..49a839d0567a 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -296,6 +296,10 @@ static inline void apic_set_spiv(struct kvm_lapic *apic, u32 val)
- 
- 		atomic_set_release(&apic->vcpu->kvm->arch.apic_map_dirty, DIRTY);
- 	}
-+
-+	/* Check if there are APF page ready requests pending */
-+	if (enabled)
-+		kvm_make_request(KVM_REQ_APF_READY, apic->vcpu);
- }
- 
- static inline void kvm_apic_set_xapic_id(struct kvm_lapic *apic, u8 id)
-@@ -2261,6 +2265,8 @@ void kvm_lapic_set_base(struct kvm_vcpu *vcpu, u64 value)
- 		if (value & MSR_IA32_APICBASE_ENABLE) {
- 			kvm_apic_set_xapic_id(apic, vcpu->vcpu_id);
- 			static_branch_slow_dec_deferred(&apic_hw_disabled);
-+			/* Check if there are APF page ready requests pending */
-+			kvm_make_request(KVM_REQ_APF_READY, vcpu);
- 		} else {
- 			static_branch_inc(&apic_hw_disabled.key);
- 			atomic_set_release(&apic->vcpu->kvm->arch.apic_map_dirty, DIRTY);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a06a6f48386d..001c6a445eaf 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11296,7 +11296,7 @@ bool kvm_arch_can_dequeue_async_page_present(struct kvm_vcpu *vcpu)
- 	if (!kvm_pv_async_pf_enabled(vcpu))
- 		return true;
- 	else
--		return apf_pageready_slot_free(vcpu);
-+		return kvm_lapic_enabled(vcpu) && apf_pageready_slot_free(vcpu);
- }
- 
- void kvm_arch_start_assignment(struct kvm *kvm)
--- 
-2.30.2
-
+--
+Cao jin
