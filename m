@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FEF367696
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21076367699
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242559AbhDVA5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 20:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S242419AbhDVA5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 20:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242216AbhDVA5P (ORCPT
+        with ESMTP id S242452AbhDVA5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:57:15 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F35C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:56:40 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id a18-20020a17090a4812b02900fc63fabd38so43020pjh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:56:40 -0700 (PDT)
+        Wed, 21 Apr 2021 20:57:16 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F25CC06138A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:56:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 137-20020a250d8f0000b02904e7bf943359so17990586ybn.23
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:56:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=XxDAh3fhzg5A8awaqIQozL0a7udxHE7UvhfJ/Wi4USQ=;
-        b=OKzNJGs7evpkAgOjHMv/92KXILF1CXt1OoiqCa3/sFn+5Tiwyhbke+MVLj00a+QOQK
-         W7Yrpe3/8/7w+6jmkjAWhZ6rim6es/ZqzjZjI5KtW92IgYhG/S4rtkcwxTm1jSctmdyw
-         GzbCakasmyLuCDfYUgH5UCLR7gs8yvtx046Nv0VaRZ8TGXDSzFTNdbEDrqXAd9kUCK5u
-         3JpGsusiKCfOpONHLg+mTBNwbCBZDCKX8gTLxqATf9O+QOjjYM4jCAFt16kCO7GTKdT8
-         iEc7S5RdVChyd+fSHctUtWFA338V7T4HuaQ0p5zpR51sn6JCNbtXOzOMxUbOeWEXJwLQ
-         z82g==
+        bh=nQ/zpK/kz603934NoaeU4Gk/eDpKeLkLBX1Q9YclUPA=;
+        b=eP0O7z+LQB2aToODGjmklTU4/ZEqYkoE5cnDIg2lo7Q+vpJ9bR12OhCB4CdXqay1zU
+         77yav77ko4Ygni13AIZ16v+K0y/18AcUBfAuRlm+kSdBvwI6G6MIqX5wJvPWr1vjpjOT
+         RY8cp2nkuurYbZjYKn1mnbrj8FVF5olWJPGwy2dCCUeMAY5P/AC+h6GTyXluGrb70v6R
+         x49xRasTZeVZhhIpM4E8MDgPWfehTjBizf1sIKQb41Tlqee3lYIoFIBzemfr1TeLQ35q
+         4XTfr+dmAHno0tDXFgncMkcFOZrVGxqV/7CWSSPqfwqqyUFZzQgP2L4eIhcLZJxQbFBz
+         8X+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=XxDAh3fhzg5A8awaqIQozL0a7udxHE7UvhfJ/Wi4USQ=;
-        b=cwl6vUaah/9eUjnO9TrufASg0TxNeHqfvbgAEmJZA+QzTz7R2IpvfasQxodp0b+gRk
-         6/cffJ9RgpL8ux01Vr0Ogj0XS99yRPIP2s61gsv+7eyhNnbyYSC1a9G/yxLzHMw88gTO
-         bSW5Wf52YTxbq/maXcDzxCVR0iiTYrAuOUs9ffJgsNu1dcGS8+lLdiefApR2U1RecrAC
-         221tLxKjHvbRsjLsyQ2YIXT5GW9newUnx7FEsQYSn7VZNoOnr4WE4yR34K37VxRtTFOa
-         BEMGf2Cw+zBNd2mB/Fv3T1YK7SVcBD9tMSECBaK0o6SoibUWL3KjKcxepG273ltmEFrK
-         3WBg==
-X-Gm-Message-State: AOAM531KM2IKAQ691lB2xbkjzT9YwHvyGzaDI8DzBZ/jLIF5ROVJ+ZCt
-        LWXl4d+REBuyifbxfYzhyC4RCUcht0Z40A==
-X-Google-Smtp-Source: ABdhPJytWStGBaql7sF4DNf3GoW+tjXcAJaAsgYk0ZcCMM/ByrNRJa463UMEIpmgYtWq8wO9TgWiGOhfc+BiQA==
+        bh=nQ/zpK/kz603934NoaeU4Gk/eDpKeLkLBX1Q9YclUPA=;
+        b=dXVQZO6caJH9rvvdV8HZu4vBSaP+qZr9evlEAq6P8SoW513X8AbdKxZSLJyHNkaOs0
+         hHfps3AFZJxVHZEqz61ur20PF4pWRDQ75rrM5rz6iHMnOhjpFEoeCozR6MH8R5RTRrj7
+         5GNTLBeQ4cEyTLBMJrI+ss33XD95JMskUltSsSi4lBbkCmP5XLrEeg+jBkCKa80BKiUI
+         X1yktgoSfxVmKKPJJvjbNiHOgwwromdfJGa1a98993vLzaQ+gOoBNxdB9kKBtNDADPxn
+         Qq4mG0aFPZsjtfSVkx7ZAJyeVvvpIn44mNoIeFIMGruUtnpWb0X1UMoeT51denkizfHU
+         gPcQ==
+X-Gm-Message-State: AOAM531pUh6hJbV6l8IZtfSEF5euXEw2i04S1D3j0yDPUfc/JOR43gjj
+        R7PcBhQavlpd7Tnno8t6N4K5agVJ4nhDBw==
+X-Google-Smtp-Source: ABdhPJwRNsexrlF6Et7Tudrdqp8qhO7el0jKsQTvh4PiuQzg//HU3EEJk0WGdQkuBV0VKD9bmeLOfOp/jgfbcg==
 X-Received: from ricarkol2.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:62fe])
- (user=ricarkol job=sendgmr) by 2002:aa7:87d5:0:b029:25a:b5f8:15ab with SMTP
- id i21-20020aa787d50000b029025ab5f815abmr861328pfo.22.1619052999831; Wed, 21
- Apr 2021 17:56:39 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 17:56:22 -0700
+ (user=ricarkol job=sendgmr) by 2002:a25:b9c1:: with SMTP id
+ y1mr979521ybj.321.1619053001722; Wed, 21 Apr 2021 17:56:41 -0700 (PDT)
+Date:   Wed, 21 Apr 2021 17:56:23 -0700
 In-Reply-To: <20210422005626.564163-1-ricarkol@google.com>
-Message-Id: <20210422005626.564163-2-ricarkol@google.com>
+Message-Id: <20210422005626.564163-3-ricarkol@google.com>
 Mime-Version: 1.0
 References: <20210422005626.564163-1-ricarkol@google.com>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH 1/5] KVM: x86: Move reverse CPUID helpers to separate header file
+Subject: [PATCH 2/5] x86/cpu: Expose CPUID regs, leaf and index definitions to tools
 From:   Ricardo Koller <ricarkol@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
@@ -77,409 +76,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split out the reverse CPUID machinery to a dedicated header file
-so that KVM selftests can reuse the reverse CPUID definitions without
-introducing any '#ifdef __KERNEL__' pollution.
+Move cpuid_regs, cpuid_regs_idx, and cpuid_leafs out of their
+'#ifdef __KERNEL__' guards so that KVM selftests can reuse the
+definitions in future patches.  Move cpuid_regs and cpuid_regs_idx from
+processor.h to cpufeature.h to avoid blasting processor.h with several
+'#ifdefs'.
 
-Co-developed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/x86/kvm/cpuid.h         | 177 +--------------------------------
- arch/x86/kvm/reverse_cpuid.h | 185 +++++++++++++++++++++++++++++++++++
- 2 files changed, 186 insertions(+), 176 deletions(-)
- create mode 100644 arch/x86/kvm/reverse_cpuid.h
+ arch/x86/events/intel/pt.c        |  1 +
+ arch/x86/include/asm/cpufeature.h | 23 ++++++++++++++++++-----
+ arch/x86/include/asm/processor.h  | 11 -----------
+ arch/x86/kernel/cpu/scattered.c   |  2 +-
+ arch/x86/kernel/cpuid.c           |  2 +-
+ 5 files changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index 888e88b42e8d..6132ed3c6ebf 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -3,28 +3,11 @@
- #define ARCH_X86_KVM_CPUID_H
- 
- #include "x86.h"
-+#include "reverse_cpuid.h"
- #include <asm/cpu.h>
- #include <asm/processor.h>
- #include <uapi/asm/kvm_para.h>
- 
--/*
-- * Hardware-defined CPUID leafs that are scattered in the kernel, but need to
-- * be directly used by KVM.  Note, these word values conflict with the kernel's
-- * "bug" caps, but KVM doesn't use those.
-- */
--enum kvm_only_cpuid_leafs {
--	CPUID_12_EAX	 = NCAPINTS,
--	NR_KVM_CPU_CAPS,
--
--	NKVMCAPINTS = NR_KVM_CPU_CAPS - NCAPINTS,
--};
--
--#define KVM_X86_FEATURE(w, f)		((w)*32 + (f))
--
--/* Intel-defined SGX sub-features, CPUID level 0x12 (EAX). */
--#define KVM_X86_FEATURE_SGX1		KVM_X86_FEATURE(CPUID_12_EAX, 0)
--#define KVM_X86_FEATURE_SGX2		KVM_X86_FEATURE(CPUID_12_EAX, 1)
--
- extern u32 kvm_cpu_caps[NR_KVM_CPU_CAPS] __read_mostly;
- void kvm_set_cpu_caps(void);
- 
-@@ -76,164 +59,6 @@ static inline bool page_address_valid(struct kvm_vcpu *vcpu, gpa_t gpa)
- 	return kvm_vcpu_is_legal_aligned_gpa(vcpu, gpa, PAGE_SIZE);
- }
- 
--struct cpuid_reg {
--	u32 function;
--	u32 index;
--	int reg;
--};
--
--static const struct cpuid_reg reverse_cpuid[] = {
--	[CPUID_1_EDX]         = {         1, 0, CPUID_EDX},
--	[CPUID_8000_0001_EDX] = {0x80000001, 0, CPUID_EDX},
--	[CPUID_8086_0001_EDX] = {0x80860001, 0, CPUID_EDX},
--	[CPUID_1_ECX]         = {         1, 0, CPUID_ECX},
--	[CPUID_C000_0001_EDX] = {0xc0000001, 0, CPUID_EDX},
--	[CPUID_8000_0001_ECX] = {0x80000001, 0, CPUID_ECX},
--	[CPUID_7_0_EBX]       = {         7, 0, CPUID_EBX},
--	[CPUID_D_1_EAX]       = {       0xd, 1, CPUID_EAX},
--	[CPUID_8000_0008_EBX] = {0x80000008, 0, CPUID_EBX},
--	[CPUID_6_EAX]         = {         6, 0, CPUID_EAX},
--	[CPUID_8000_000A_EDX] = {0x8000000a, 0, CPUID_EDX},
--	[CPUID_7_ECX]         = {         7, 0, CPUID_ECX},
--	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
--	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
--	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
--	[CPUID_12_EAX]        = {0x00000012, 0, CPUID_EAX},
--};
--
--/*
-- * Reverse CPUID and its derivatives can only be used for hardware-defined
-- * feature words, i.e. words whose bits directly correspond to a CPUID leaf.
-- * Retrieving a feature bit or masking guest CPUID from a Linux-defined word
-- * is nonsensical as the bit number/mask is an arbitrary software-defined value
-- * and can't be used by KVM to query/control guest capabilities.  And obviously
-- * the leaf being queried must have an entry in the lookup table.
-- */
--static __always_inline void reverse_cpuid_check(unsigned int x86_leaf)
--{
--	BUILD_BUG_ON(x86_leaf == CPUID_LNX_1);
--	BUILD_BUG_ON(x86_leaf == CPUID_LNX_2);
--	BUILD_BUG_ON(x86_leaf == CPUID_LNX_3);
--	BUILD_BUG_ON(x86_leaf == CPUID_LNX_4);
--	BUILD_BUG_ON(x86_leaf >= ARRAY_SIZE(reverse_cpuid));
--	BUILD_BUG_ON(reverse_cpuid[x86_leaf].function == 0);
--}
--
--/*
-- * Translate feature bits that are scattered in the kernel's cpufeatures word
-- * into KVM feature words that align with hardware's definitions.
-- */
--static __always_inline u32 __feature_translate(int x86_feature)
--{
--	if (x86_feature == X86_FEATURE_SGX1)
--		return KVM_X86_FEATURE_SGX1;
--	else if (x86_feature == X86_FEATURE_SGX2)
--		return KVM_X86_FEATURE_SGX2;
--
--	return x86_feature;
--}
--
--static __always_inline u32 __feature_leaf(int x86_feature)
--{
--	return __feature_translate(x86_feature) / 32;
--}
--
--/*
-- * Retrieve the bit mask from an X86_FEATURE_* definition.  Features contain
-- * the hardware defined bit number (stored in bits 4:0) and a software defined
-- * "word" (stored in bits 31:5).  The word is used to index into arrays of
-- * bit masks that hold the per-cpu feature capabilities, e.g. this_cpu_has().
-- */
--static __always_inline u32 __feature_bit(int x86_feature)
--{
--	x86_feature = __feature_translate(x86_feature);
--
--	reverse_cpuid_check(x86_feature / 32);
--	return 1 << (x86_feature & 31);
--}
--
--#define feature_bit(name)  __feature_bit(X86_FEATURE_##name)
--
--static __always_inline struct cpuid_reg x86_feature_cpuid(unsigned int x86_feature)
--{
--	unsigned int x86_leaf = __feature_leaf(x86_feature);
--
--	reverse_cpuid_check(x86_leaf);
--	return reverse_cpuid[x86_leaf];
--}
--
--static __always_inline u32 *__cpuid_entry_get_reg(struct kvm_cpuid_entry2 *entry,
--						  u32 reg)
--{
--	switch (reg) {
--	case CPUID_EAX:
--		return &entry->eax;
--	case CPUID_EBX:
--		return &entry->ebx;
--	case CPUID_ECX:
--		return &entry->ecx;
--	case CPUID_EDX:
--		return &entry->edx;
--	default:
--		BUILD_BUG();
--		return NULL;
--	}
--}
--
--static __always_inline u32 *cpuid_entry_get_reg(struct kvm_cpuid_entry2 *entry,
--						unsigned int x86_feature)
--{
--	const struct cpuid_reg cpuid = x86_feature_cpuid(x86_feature);
--
--	return __cpuid_entry_get_reg(entry, cpuid.reg);
--}
--
--static __always_inline u32 cpuid_entry_get(struct kvm_cpuid_entry2 *entry,
--					   unsigned int x86_feature)
--{
--	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
--
--	return *reg & __feature_bit(x86_feature);
--}
--
--static __always_inline bool cpuid_entry_has(struct kvm_cpuid_entry2 *entry,
--					    unsigned int x86_feature)
--{
--	return cpuid_entry_get(entry, x86_feature);
--}
--
--static __always_inline void cpuid_entry_clear(struct kvm_cpuid_entry2 *entry,
--					      unsigned int x86_feature)
--{
--	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
--
--	*reg &= ~__feature_bit(x86_feature);
--}
--
--static __always_inline void cpuid_entry_set(struct kvm_cpuid_entry2 *entry,
--					    unsigned int x86_feature)
--{
--	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
--
--	*reg |= __feature_bit(x86_feature);
--}
--
--static __always_inline void cpuid_entry_change(struct kvm_cpuid_entry2 *entry,
--					       unsigned int x86_feature,
--					       bool set)
--{
--	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
--
--	/*
--	 * Open coded instead of using cpuid_entry_{clear,set}() to coerce the
--	 * compiler into using CMOV instead of Jcc when possible.
--	 */
--	if (set)
--		*reg |= __feature_bit(x86_feature);
--	else
--		*reg &= ~__feature_bit(x86_feature);
--}
--
- static __always_inline void cpuid_entry_override(struct kvm_cpuid_entry2 *entry,
- 						 enum cpuid_leafs leaf)
- {
-diff --git a/arch/x86/kvm/reverse_cpuid.h b/arch/x86/kvm/reverse_cpuid.h
-new file mode 100644
-index 000000000000..8e0756ddab1a
---- /dev/null
-+++ b/arch/x86/kvm/reverse_cpuid.h
-@@ -0,0 +1,185 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef ARCH_X86_KVM_REVERSE_CPUID_H
-+#define ARCH_X86_KVM_REVERSE_CPUID_H
-+
-+#include <uapi/asm/kvm.h>
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index e94af4a54d0d..882b1478556e 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -21,6 +21,7 @@
+ #include <asm/io.h>
+ #include <asm/intel_pt.h>
+ #include <asm/intel-family.h>
 +#include <asm/cpufeature.h>
-+#include <asm/cpufeatures.h>
-+
-+/*
-+ * Hardware-defined CPUID leafs that are scattered in the kernel, but need to
-+ * be directly used by KVM.  Note, these word values conflict with the kernel's
-+ * "bug" caps, but KVM doesn't use those.
-+ */
-+enum kvm_only_cpuid_leafs {
-+	CPUID_12_EAX	 = NCAPINTS,
-+	NR_KVM_CPU_CAPS,
-+
-+	NKVMCAPINTS = NR_KVM_CPU_CAPS - NCAPINTS,
+ 
+ #include "../perf_event.h"
+ #include "pt.h"
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 1728d4ce5730..22458ab5aac4 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -2,12 +2,19 @@
+ #ifndef _ASM_X86_CPUFEATURE_H
+ #define _ASM_X86_CPUFEATURE_H
+ 
+-#include <asm/processor.h>
++#include <linux/types.h>
+ 
+-#if defined(__KERNEL__) && !defined(__ASSEMBLY__)
++#ifndef __ASSEMBLY__
++struct cpuid_regs {
++	u32 eax, ebx, ecx, edx;
 +};
-+
-+#define KVM_X86_FEATURE(w, f)		((w)*32 + (f))
-+
-+/* Intel-defined SGX sub-features, CPUID level 0x12 (EAX). */
-+#define KVM_X86_FEATURE_SGX1		KVM_X86_FEATURE(CPUID_12_EAX, 0)
-+#define KVM_X86_FEATURE_SGX2		KVM_X86_FEATURE(CPUID_12_EAX, 1)
-+
-+struct cpuid_reg {
-+	u32 function;
-+	u32 index;
-+	int reg;
+ 
+-#include <asm/asm.h>
+-#include <linux/bitops.h>
++enum cpuid_regs_idx {
++	CPUID_EAX = 0,
++	CPUID_EBX,
++	CPUID_ECX,
++	CPUID_EDX,
 +};
+ 
+ enum cpuid_leafs
+ {
+@@ -32,6 +39,11 @@ enum cpuid_leafs
+ 	CPUID_7_EDX,
+ 	CPUID_8000_001F_EAX,
+ };
++#ifdef __KERNEL__
 +
-+static const struct cpuid_reg reverse_cpuid[] = {
-+	[CPUID_1_EDX]         = {         1, 0, CPUID_EDX},
-+	[CPUID_8000_0001_EDX] = {0x80000001, 0, CPUID_EDX},
-+	[CPUID_8086_0001_EDX] = {0x80860001, 0, CPUID_EDX},
-+	[CPUID_1_ECX]         = {         1, 0, CPUID_ECX},
-+	[CPUID_C000_0001_EDX] = {0xc0000001, 0, CPUID_EDX},
-+	[CPUID_8000_0001_ECX] = {0x80000001, 0, CPUID_ECX},
-+	[CPUID_7_0_EBX]       = {         7, 0, CPUID_EBX},
-+	[CPUID_D_1_EAX]       = {       0xd, 1, CPUID_EAX},
-+	[CPUID_8000_0008_EBX] = {0x80000008, 0, CPUID_EBX},
-+	[CPUID_6_EAX]         = {         6, 0, CPUID_EAX},
-+	[CPUID_8000_000A_EDX] = {0x8000000a, 0, CPUID_EDX},
-+	[CPUID_7_ECX]         = {         7, 0, CPUID_ECX},
-+	[CPUID_8000_0007_EBX] = {0x80000007, 0, CPUID_EBX},
-+	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
-+	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
-+	[CPUID_12_EAX]        = {0x00000012, 0, CPUID_EAX},
-+};
-+
-+/*
-+ * Reverse CPUID and its derivatives can only be used for hardware-defined
-+ * feature words, i.e. words whose bits directly correspond to a CPUID leaf.
-+ * Retrieving a feature bit or masking guest CPUID from a Linux-defined word
-+ * is nonsensical as the bit number/mask is an arbitrary software-defined value
-+ * and can't be used by KVM to query/control guest capabilities.  And obviously
-+ * the leaf being queried must have an entry in the lookup table.
-+ */
-+static __always_inline void reverse_cpuid_check(unsigned int x86_leaf)
-+{
-+	BUILD_BUG_ON(x86_leaf == CPUID_LNX_1);
-+	BUILD_BUG_ON(x86_leaf == CPUID_LNX_2);
-+	BUILD_BUG_ON(x86_leaf == CPUID_LNX_3);
-+	BUILD_BUG_ON(x86_leaf == CPUID_LNX_4);
-+	BUILD_BUG_ON(x86_leaf >= ARRAY_SIZE(reverse_cpuid));
-+	BUILD_BUG_ON(reverse_cpuid[x86_leaf].function == 0);
-+}
-+
-+/*
-+ * Translate feature bits that are scattered in the kernel's cpufeatures word
-+ * into KVM feature words that align with hardware's definitions.
-+ */
-+static __always_inline u32 __feature_translate(int x86_feature)
-+{
-+	if (x86_feature == X86_FEATURE_SGX1)
-+		return KVM_X86_FEATURE_SGX1;
-+	else if (x86_feature == X86_FEATURE_SGX2)
-+		return KVM_X86_FEATURE_SGX2;
-+
-+	return x86_feature;
-+}
-+
-+static __always_inline u32 __feature_leaf(int x86_feature)
-+{
-+	return __feature_translate(x86_feature) / 32;
-+}
-+
-+/*
-+ * Retrieve the bit mask from an X86_FEATURE_* definition.  Features contain
-+ * the hardware defined bit number (stored in bits 4:0) and a software defined
-+ * "word" (stored in bits 31:5).  The word is used to index into arrays of
-+ * bit masks that hold the per-cpu feature capabilities, e.g. this_cpu_has().
-+ */
-+static __always_inline u32 __feature_bit(int x86_feature)
-+{
-+	x86_feature = __feature_translate(x86_feature);
-+
-+	reverse_cpuid_check(x86_feature / 32);
-+	return 1 << (x86_feature & 31);
-+}
-+
-+#define feature_bit(name)  __feature_bit(X86_FEATURE_##name)
-+
-+static __always_inline struct cpuid_reg x86_feature_cpuid(unsigned int x86_feature)
-+{
-+	unsigned int x86_leaf = __feature_leaf(x86_feature);
-+
-+	reverse_cpuid_check(x86_leaf);
-+	return reverse_cpuid[x86_leaf];
-+}
-+
-+static __always_inline u32 *__cpuid_entry_get_reg(struct kvm_cpuid_entry2 *entry,
-+						  u32 reg)
-+{
-+	switch (reg) {
-+	case CPUID_EAX:
-+		return &entry->eax;
-+	case CPUID_EBX:
-+		return &entry->ebx;
-+	case CPUID_ECX:
-+		return &entry->ecx;
-+	case CPUID_EDX:
-+		return &entry->edx;
-+	default:
-+		BUILD_BUG();
-+		return NULL;
-+	}
-+}
-+
-+static __always_inline u32 *cpuid_entry_get_reg(struct kvm_cpuid_entry2 *entry,
-+						unsigned int x86_feature)
-+{
-+	const struct cpuid_reg cpuid = x86_feature_cpuid(x86_feature);
-+
-+	return __cpuid_entry_get_reg(entry, cpuid.reg);
-+}
-+
-+static __always_inline u32 cpuid_entry_get(struct kvm_cpuid_entry2 *entry,
-+					   unsigned int x86_feature)
-+{
-+	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
-+
-+	return *reg & __feature_bit(x86_feature);
-+}
-+
-+static __always_inline bool cpuid_entry_has(struct kvm_cpuid_entry2 *entry,
-+					    unsigned int x86_feature)
-+{
-+	return cpuid_entry_get(entry, x86_feature);
-+}
-+
-+static __always_inline void cpuid_entry_clear(struct kvm_cpuid_entry2 *entry,
-+					      unsigned int x86_feature)
-+{
-+	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
-+
-+	*reg &= ~__feature_bit(x86_feature);
-+}
-+
-+static __always_inline void cpuid_entry_set(struct kvm_cpuid_entry2 *entry,
-+					    unsigned int x86_feature)
-+{
-+	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
-+
-+	*reg |= __feature_bit(x86_feature);
-+}
-+
-+static __always_inline void cpuid_entry_change(struct kvm_cpuid_entry2 *entry,
-+					       unsigned int x86_feature,
-+					       bool set)
-+{
-+	u32 *reg = cpuid_entry_get_reg(entry, x86_feature);
-+
-+	/*
-+	 * Open coded instead of using cpuid_entry_{clear,set}() to coerce the
-+	 * compiler into using CMOV instead of Jcc when possible.
-+	 */
-+	if (set)
-+		*reg |= __feature_bit(x86_feature);
-+	else
-+		*reg &= ~__feature_bit(x86_feature);
-+}
-+
-+#endif /* ARCH_X86_KVM_REVERSE_CPUID_H */
++#include <asm/processor.h>
++#include <asm/asm.h>
++#include <linux/bitops.h>
+ 
+ #ifdef CONFIG_X86_FEATURE_NAMES
+ extern const char * const x86_cap_flags[NCAPINTS*32];
+@@ -240,5 +252,6 @@ static __always_inline bool _static_cpu_has(u16 bit)
+ #define CPU_FEATURE_TYPEVAL		boot_cpu_data.x86_vendor, boot_cpu_data.x86, \
+ 					boot_cpu_data.x86_model
+ 
+-#endif /* defined(__KERNEL__) && !defined(__ASSEMBLY__) */
++#endif /* defined(__KERNEL__) */
++#endif /* !defined(__ASSEMBLY__) */
+ #endif /* _ASM_X86_CPUFEATURE_H */
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index dc6d149bf851..bc7fa3de7ccc 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -142,17 +142,6 @@ struct cpuinfo_x86 {
+ 	unsigned		initialized : 1;
+ } __randomize_layout;
+ 
+-struct cpuid_regs {
+-	u32 eax, ebx, ecx, edx;
+-};
+-
+-enum cpuid_regs_idx {
+-	CPUID_EAX = 0,
+-	CPUID_EBX,
+-	CPUID_ECX,
+-	CPUID_EDX,
+-};
+-
+ #define X86_VENDOR_INTEL	0
+ #define X86_VENDOR_CYRIX	1
+ #define X86_VENDOR_AMD		2
+diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+index 21d1f062895a..bcbcda1e329b 100644
+--- a/arch/x86/kernel/cpu/scattered.c
++++ b/arch/x86/kernel/cpu/scattered.c
+@@ -6,7 +6,7 @@
+ 
+ #include <asm/memtype.h>
+ #include <asm/apic.h>
+-#include <asm/processor.h>
++#include <asm/cpufeature.h>
+ 
+ #include "cpu.h"
+ 
+diff --git a/arch/x86/kernel/cpuid.c b/arch/x86/kernel/cpuid.c
+index 6f7b8cc1bc9f..23e67220445b 100644
+--- a/arch/x86/kernel/cpuid.c
++++ b/arch/x86/kernel/cpuid.c
+@@ -37,7 +37,7 @@
+ #include <linux/gfp.h>
+ #include <linux/completion.h>
+ 
+-#include <asm/processor.h>
++#include <asm/cpufeature.h>
+ #include <asm/msr.h>
+ 
+ static struct class *cpuid_class;
 -- 
 2.31.1.368.gbe11c130af-goog
 
