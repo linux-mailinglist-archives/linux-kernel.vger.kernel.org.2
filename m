@@ -2,87 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C028A368282
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD80368286
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236482AbhDVOhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        id S236943AbhDVOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbhDVOhM (ORCPT
+        with ESMTP id S236397AbhDVOhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:37:12 -0400
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E151CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:36:37 -0700 (PDT)
-Received: by mail-vk1-xa2d.google.com with SMTP id u23so5768414vkl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=GR8P6grrgB3ruOkM69G+4yKFVdAdfJxp2iiL3+XxziA=;
-        b=SQf0wC9CJvMOB8pFyT3KrisZwvQ+yvrp0Xt/8dDvabcTCj2hf2KUmlVdk3VtEzHlz7
-         J4inyZ5isJE1XxSbpUP2+BSPpHS/5eV697c/RLrwzFCQzCn5EdQ99MWEEjRSHculFL5P
-         zwIWATBEuGR+iXRgqwZCy3KojPJ15BOQDD4FPWeLLI4vyc1L5cqljjiLkp4hHNn8+ohP
-         Qxaysor7W6+gzjS8ltHNu1Mgz3HuRTuBRp8D40nxarNd0s8q5tcG3+ZiupOShJKqGs/1
-         HjMrFih3kZhJh3aM65EiGg2HLzpuev5s5OcanU8ciUu4pNgRlhrL6l+Uo63cbO2VJ+X+
-         2r+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=GR8P6grrgB3ruOkM69G+4yKFVdAdfJxp2iiL3+XxziA=;
-        b=nix1u+LLJ892U1SQm+73nPAC/CDiSWah4ELHRtmWj8z6RaaxwgcdcaUrW6ldNXbk26
-         VPEvuRrgsYSRrlrABtVl7oc4fhkgDvRYtFvKb4IXjsUxGrEObSTRt63PwkH2u1pR9PxO
-         OCl+LISykG+7cxiFpbmBThec0+ME96eaYbpCFYBUeXWiJnt+xoL8eGpXY1/xaIN6BAq7
-         Q8hZzgol9mBdIj75DwoyZWvHZsRHZyMULhyl2m4dFYooOJ4Bpad1EA77mBkb9NsDeh7q
-         goteCsqSRZLVL+RmtWEViXOnJ0yk+0Vd4f/wTGOK3EP174tkIuueCm9EKN0wSl0rnNSR
-         KDAg==
-X-Gm-Message-State: AOAM532XHTHbgPuZXMle6Y/1U585DzhJXDzF0s2msctlNaOUwiHVD9+c
-        kIM4AdPXbLGv28Rfn6lLKXXGwKbEJYUtV+EhWaATqg==
-X-Google-Smtp-Source: ABdhPJw2/4Q0etYHJIX8SUZrn0cxC9aDLUykjju5XsssaMG4RXKlwNRaWAk8OwmetWkgN7dTRMyHRiyfGopnQ57nIvs=
-X-Received: by 2002:a1f:53c7:: with SMTP id h190mr3106831vkb.19.1619102196901;
- Thu, 22 Apr 2021 07:36:36 -0700 (PDT)
+        Thu, 22 Apr 2021 10:37:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770FDC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:37:05 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lZaRq-000211-A4; Thu, 22 Apr 2021 16:36:54 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lZaRo-0003px-Pz; Thu, 22 Apr 2021 16:36:52 +0200
+Date:   Thu, 22 Apr 2021 16:36:52 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Juergen Borleis <jbe@pengutronix.de>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] leds: trigger/tty: feature data direction
+Message-ID: <20210422143652.wjtk7bz2f556jiru@pengutronix.de>
+References: <20210422074702.8831-1-jbe@pengutronix.de>
 MIME-Version: 1.0
-From:   Jue Wang <juew@google.com>
-Date:   Thu, 22 Apr 2021 07:36:25 -0700
-Message-ID: <CAPcxDJ6tkcgruegNfgPCjA3pS+-Q1iEGAZQejPhzOdx4x9cDnA@mail.gmail.com>
-Subject: Re: [RFCv2 00/13] TDX and guest memory unmapping
-To:     kirill.shutemov@linux.intel.com
-Cc:     andi.kleen@intel.com, dave.hansen@linux.intel.com,
-        david@redhat.com, erdemaktas@google.com, isaku.yamahata@intel.com,
-        jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        peterz@infradead.org, pgonda@google.com,
-        rick.p.edgecombe@intel.com, rientjes@google.com, seanjc@google.com,
-        srutherford@google.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ot3yk6y67ms7lokt"
+Content-Disposition: inline
+In-Reply-To: <20210422074702.8831-1-jbe@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 18:40:53 +0300, Kirill A. Shutemov wrote:
 
-> TDX integrity check failures may lead to system shutdown host kernel must
-> not allow any writes to TD-private memory. This requirment clashes with
-> KVM design: KVM expects the guest memory to be mapped into host userspace
-> (e.g. QEMU).
+--ot3yk6y67ms7lokt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This patchset aims to start discussion on how we can approach the issue.
+Hello J=FCrgen,
 
-Hi Kirill,
+On Thu, Apr 22, 2021 at 09:47:02AM +0200, Juergen Borleis wrote:
+> The current implementation just signals a visible feedback on all kind of
+> activity on the corresponding TTY. But sometimes it is useful to see what
+> kind of activity just happens. This change adds the capability to filter
+> the direction of TTY's data flow. It enables a user to forward both
+> directions to separate LEDs for tx and rx on demand. Default behavior is
+> still both directions.
+>=20
+> Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
+> ---
+>  Documentation/leds/ledtrig-tty.rst | 47 ++++++++++++++++++++++++++
 
-Some potential food for thought:
+I think putting the change to the documentation into a separate patch is
+a good idea as it explains the usage in general and not only adapts it
+to the changes to the source. Other than that: Thanks for this document.
 
-Repurpose Linux page hwpoison semantics for TDX-private memory protection is
-smart, however, treating PG_hwpoison or hwpoison swap pte differently when
-kvm->mem_protected=true implicitly disabled the original capability of page
-hwpoison: protecting the whole system from known corrupted physical memory
-and giving user space applications an opportunity to recover from physical
-memory corruptions.
+>  drivers/leds/trigger/ledtrig-tty.c | 53 +++++++++++++++++++++++++++++-
+>  2 files changed, 99 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/leds/ledtrig-tty.rst
+>=20
+> diff --git a/Documentation/leds/ledtrig-tty.rst b/Documentation/leds/ledt=
+rig-tty.rst
+> new file mode 100644
+> index 00000000..6fc765c
+> --- /dev/null
+> +++ b/Documentation/leds/ledtrig-tty.rst
+> @@ -0,0 +1,47 @@
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +LED TTY Trigger
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +This LED trigger flashes the LED whenever some data flows are happen on =
+the
+> +corresponding TTY device. The TTY device can be freely selected, as well=
+ as the
+> +data flow direction.
+> +
+> +TTY trigger can be enabled and disabled from user space on led class dev=
+ices,
+> +that support this trigger as shown below::
+> +
+> +	echo tty > trigger
+> +	echo none > trigger
+> +
+> +This trigger exports two properties, 'ttyname' and 'dirfilter'. When the
+> +tty trigger is activated both properties are set to default values, whic=
+h means
+> +no related TTY device yet and the LED would flash on both directions.
+> +
+> +Selecting a corresponding trigger TTY::
+> +
+> +	echo ttyS0 > ttyname
+> +
+> +This LED will now flash on data flow in both directions of 'ttyS0'.
+> +
+> +Selecting a direction::
+> +
+> +	echo in > dirfilter
+> +	echo out > dirfilter
+> +	echo inout > dirfilter
+> +
+> +This selection will flash the LED on data flow in the selected direction.
+> +
+> +Example
+> +=3D=3D=3D=3D=3D=3D=3D
+> +
+> +With the 'dirfilter' property one can use two LEDs to give a user a sepa=
+rate
+> +visual feedback about data flow.
+> +
+> +Flash on data send on one LED::
+> +
+> +	echo ttyS0 > ttyname
+> +	echo out > dirfilter
+> +
+> +Flash on data receive on a second LED::
+> +
+> +	echo ttyS0 > ttyname
+> +	echo in > dirfilter
+> diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/le=
+dtrig-tty.c
+> index f62db7e..d3bd231 100644
+> --- a/drivers/leds/trigger/ledtrig-tty.c
+> +++ b/drivers/leds/trigger/ledtrig-tty.c
+> @@ -14,6 +14,8 @@ struct ledtrig_tty_data {
+>  	const char *ttyname;
+>  	struct tty_struct *tty;
+>  	int rx, tx;
+> +	unsigned indirection:1;
+> +	unsigned outdirection:1;
+>  };
+> =20
+>  static void ledtrig_tty_restart(struct ledtrig_tty_data *trigger_data)
+> @@ -76,6 +78,47 @@ static ssize_t ttyname_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RW(ttyname);
+> =20
+> +static ssize_t dirfilter_show(struct device *dev,
+> +			      struct device_attribute *attr, char *buf)
+> +{
+> +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
+> +
+> +	if (trigger_data->indirection)
+> +		return (ssize_t)sprintf(buf, "in\n");
+> +	if (trigger_data->outdirection)
+> +		return (ssize_t)sprintf(buf, "out\n");
+> +	return (ssize_t)sprintf(buf, "inout\n");
 
-Have you considered introducing a set of similar but independent
-page/pte semantics
-for TDX private memory protection purpose?
+I would prefer to call this TX and RX to match the UART lines. This
+would then allow to expand the trigger to also blink on handshaking
+signals or RI. Then maybe a file per signal is sensible?
 
-Best regards,
--Jue
+> +}
+> +
+> +static ssize_t dirfilter_store(struct device *dev,
+> +			       struct device_attribute *attr, const char *buf,
+> +			       size_t size)
+> +{
+> +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
+> +	ssize_t ret =3D size;
+> +
+> +	if (size > 0 && buf[size - 1] =3D=3D '\n')
+> +		size -=3D 1;
+> +
+> +	if (size) {
+> +		if (!strncmp(buf, "in", size)) {
+> +			trigger_data->indirection =3D 1;
+> +			trigger_data->outdirection =3D 0;
+> +			return ret;
+> +		}
+> +		if (!strncmp(buf, "out", size)) {
+> +			trigger_data->indirection =3D 0;
+> +			trigger_data->outdirection =3D 1;
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	trigger_data->indirection =3D 0;
+> +	trigger_data->outdirection =3D 0;
+
+It would be natural to have these two =3D 1 if "inout" is written.
+
+> +	return ret;
+> +}
+> +static DEVICE_ATTR_RW(dirfilter);
+> +
+>  static void ledtrig_tty_work(struct work_struct *work)
+>  {
+>  	struct ledtrig_tty_data *trigger_data =3D
+> @@ -122,7 +165,14 @@ static void ledtrig_tty_work(struct work_struct *wor=
+k)
+> =20
+>  	if (icount.rx !=3D trigger_data->rx ||
+>  	    icount.tx !=3D trigger_data->tx) {
+> -		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
+> +		if (trigger_data->indirection) {
+> +			if (icount.rx !=3D trigger_data->rx)
+> +				led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
+> +		} else if (trigger_data->outdirection) {
+> +			if (icount.tx !=3D trigger_data->tx)
+> +				led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
+> +		} else
+> +			led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
+
+With the above suggestion, this can be simplified to:
+
+	if ((icount.rx !=3D trigger_data->rx && trigger_data->indirection) ||
+	    (icount.tx !=3D trigger_data->tx && trigger_data->outdirection)) {
+		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
+	    =09
+		...
+	=09
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ot3yk6y67ms7lokt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCBigEACgkQwfwUeK3K
+7Am48Qf9Hbki5LcmN2GsB8VCLWllTfrVpXEKQbys3S/NGhfSC39Gxy5UyKs1f03y
+PuuhBjXijCYjfGRFzjCjm3t+hrMoxO0G6QWNm75duBcm8vl9Wsrwoij/jdvY1xBw
+2hzTlIVQ5yCQRYvV5Dgb5J+aQRgXEyAASlbVRapdeEbMbFtfFrXYLngCtOrAEt5Q
+hYdKdDYJHn+8EXtUpdWKmA/tRq+0THDA3SnkMq1WZos35A7at8ejg2vjYENsF6vI
+7RzUFXx/8kPwZjYAC6ZHUh+TN9Xc7pX+QkIQZ/xpfln9KfwWu5Au8+X/RBokAt9Q
+M94QwPvy+EedxFy4ZlLcSDbw83lgww==
+=3hZR
+-----END PGP SIGNATURE-----
+
+--ot3yk6y67ms7lokt--
