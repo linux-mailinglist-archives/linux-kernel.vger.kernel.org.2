@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9D13681A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3813681B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236473AbhDVNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236254AbhDVNo3 (ORCPT
+        id S236448AbhDVNpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:45:45 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:62325 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230005AbhDVNpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:44:29 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D48C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:43:53 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id j18so72271491lfg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=wIyg2GUygQADS0eUtcX7ugYOAZAbRSLVkr0bewDkhhE=;
-        b=U6lNDDcds7fRHXvMPIDhBL90TH/4aTaDhe6/Y4WSihHMniN0B1MJj31UcIZvm691qS
-         2fKXD61zPu0s5Y/7pqwrj8+l/3pfKOEykFIgPOWhLdEfo1X3+IMBCZNPfXIRFDyYyRIB
-         j0ftoUP0IjI3ZF5+4oJolp4x/ACoWf2Y2iXAVePDA+9sHp23dGKJlencxktuwek174A4
-         izDcyzk8lbekH0fepW117SUceWEvYmXV/UTm0lsEi5jzSS0rXg/osksj4pfjvAP0pyZi
-         GPmaXSyTZ2S1+Qu8P9jkvZwfvkJd5gOsklvrK3L5RfJJVzo+a6+HE/+XHJRZkYoD3JNo
-         weUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=wIyg2GUygQADS0eUtcX7ugYOAZAbRSLVkr0bewDkhhE=;
-        b=mrUydjbGbAXXqev7sLb2mmiuL/Fn0zKzP+Adz6k+UJ2HDrl65hpruHMaAhAW72TqZO
-         Be1S8VeRLPaOvC9Wqmy8iUBMJFGI22VshBepspH+QWYIDBTj2CfLDj4uHD5KfGjELLl2
-         JNUCtOP3Ic/KDh7hjZumK5rL0Eeqa2qhvnlD47SC0WnC4quwvfeRYmA66FI2edrWfTg9
-         uIRO+vMxMTkFk3taAeqYDvF6JujqzFu+Ol4RK8th8w3TBkh8+6zVa69btsDXv5UDPaAo
-         lWXOcs/3FUu5XZ3t0R5wgxJ5LW6Dg08P4K4E0WDZ4wjNQICBQMiaF+lMEmkI35kibk79
-         mb8w==
-X-Gm-Message-State: AOAM532uhG9Vmc08PezyE40PUgb6Du/5V8Q5ZdmTGYbTcL1szDRDx7gS
-        37WsR0isywgS7HfskXb4KxWIS4huStSmV685dNU=
-X-Google-Smtp-Source: ABdhPJy+m/KSBt0K/G5Mc5bpm55RYk3zUpx/KzUO27DFfDJ9//kWBH4bO2hyxrUIOmLC9cyqdy9nYHbqV0XAwHqMNOQ=
-X-Received: by 2002:a05:6512:790:: with SMTP id x16mr2525153lfr.167.1619099032440;
- Thu, 22 Apr 2021 06:43:52 -0700 (PDT)
+        Thu, 22 Apr 2021 09:45:43 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AjY/5o6GzN7Zw6DVUpLqECMeALOonbusQ8zAX?=
+ =?us-ascii?q?/mp2TgFYddHdqtC2kJ0gpHvJoRsyeFVlo9CPP6GcXWjRnKQZ3aA9NaqvNTOJhE?=
+ =?us-ascii?q?KGII1u5oPpwXnBNkTFnNJ1+rxnd8FFaeHYKXhfoYLE7BKjE9AmqeP3lZyAoevF?=
+ =?us-ascii?q?1X9iQUVLRshbnmREIz2WGEF3WwVKbKBRfPWhz/BarDmtc2l/VLXYOlA5WYH4x+?=
+ =?us-ascii?q?HjpdbPZB4qI1od4hCSsDXA0tXHOind8hAAcz4n+9sfzVQ=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,242,1613404800"; 
+   d="scan'208";a="107477137"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 22 Apr 2021 21:45:06 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id A8D934D0B8BB;
+        Thu, 22 Apr 2021 21:45:06 +0800 (CST)
+Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 22 Apr 2021 21:45:07 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Thu, 22 Apr 2021 21:45:06 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
+        <linux-btrfs@vger.kernel.org>, <david@fromorbit.com>, <hch@lst.de>,
+        <rgoldwyn@suse.de>, Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Subject: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the code
+Date:   Thu, 22 Apr 2021 21:44:58 +0800
+Message-ID: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Sender: greenarcsafeties@gmail.com
-Received: by 2002:ab3:644f:0:0:0:0:0 with HTTP; Thu, 22 Apr 2021 06:43:51
- -0700 (PDT)
-From:   Peter Schulman <schulman.pet@gmail.com>
-Date:   Thu, 22 Apr 2021 14:43:51 +0100
-X-Google-Sender-Auth: QvapMg_upxBMdcQtZU8vda9YREQ
-Message-ID: <CACduR+L-M9gf0ZB28mw1YyPk5MQQaBLT2NK6XP1OGH-XtYWrfg@mail.gmail.com>
-Subject: Re: Proposal With Jeffery & Schulman
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: A8D934D0B8BB.A36A0
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello ,
+From: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
 
-I sent you an email before about an inheritance without hearing from you.
-Let me reintroduce my email again to you and please reply immediately.
+The page fault part of fsdax code is little complex. In order to add CoW
+feature and make it easy to understand, I was suggested to factor some
+helper functions to simplify the current dax code.
 
-My name is Mr. Peter Schulman the principal attorney at Jeffery & Schulman
-Law Office based in Canada. I am contacting you because of my deceased
-client who died leaving some funds with a bank in Europe in the sum of
-9,850,000 USD. I want to announce you as a heir/beneficiary to the fund.
+This is separated from the previous patchset called "V3 fsdax,xfs: Add
+reflink&dedupe support for fsdax", and the previous comments are here[1].
 
-You don't have to worry, this transaction will be done legally without any
-problem. If you are interested, I can give you more information about my
-proposal as soon as i get your reply.
+[1]: https://patchwork.kernel.org/project/linux-nvdimm/patch/20210319015237.993880-3-ruansy.fnst@fujitsu.com/
 
-Regards,
-Best Regards,
+Changes from V2:
+ - fix the type of 'major' in patch 2
+ - Rebased on v5.12-rc8
 
-Mr. Peter Schulman
-Senior Partner | Project Manager | Litigation
+Changes from V1:
+ - fix Ritesh's email address
+ - simplify return logic in dax_fault_cow_page()
 
-Jeffery & Schulman Law Office
-1230 Bay Street
-Suite 810 Toronto
-Ontario, M5R 2A7
+(Rebased on v5.12-rc8)
+==
+
+Shiyang Ruan (3):
+  fsdax: Factor helpers to simplify dax fault code
+  fsdax: Factor helper: dax_fault_actor()
+  fsdax: Output address in dax_iomap_pfn() and rename it
+
+ fs/dax.c | 443 +++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 234 insertions(+), 209 deletions(-)
+
+--
+2.31.1
+
+
+
