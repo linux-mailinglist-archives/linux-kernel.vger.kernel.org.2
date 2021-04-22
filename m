@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BEB367863
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D349F367866
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbhDVELv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 00:11:51 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:55487 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhDVEKo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 00:10:44 -0400
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-        (Authenticated sender: joe@ovn.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id A1CBB100010;
-        Thu, 22 Apr 2021 04:10:08 +0000 (UTC)
-Received: by mail-yb1-f172.google.com with SMTP id k73so43492094ybf.3;
-        Wed, 21 Apr 2021 21:10:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532ftW7g8pAEXVvM4YxTXJ8+FR7m/9uowpVCxmAsvGCJlMU5KEzE
-        ndb6xLn3biujG5EGFI9h4fYAEhl4wOWh1+jyvVg=
-X-Google-Smtp-Source: ABdhPJwXP5PsKga+gsABTn582f0ZNbO6oVx7Et/U+fU+xwoaHDnJQCv37IRLXdm5utZYVW+Jv5yr8Rj9twKfQz7/dUw=
-X-Received: by 2002:a25:7612:: with SMTP id r18mr1939030ybc.172.1619064607436;
- Wed, 21 Apr 2021 21:10:07 -0700 (PDT)
+        id S230361AbhDVEOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 00:14:00 -0400
+Received: from ozlabs.org ([203.11.71.1]:46627 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235048AbhDVELA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 00:11:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQkV226m0z9sRf;
+        Thu, 22 Apr 2021 14:10:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619064618;
+        bh=J00v65P/G1Quravu+B2tpu2sQCYDuZNR7z6M5UKWSdY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=t5NphDRBo0HCdHFx2oIaKrD/hPxZ+Pl7WoqNkulX4T/XzydcsERNEvw54UiXU4qLz
+         LvUVPGy0nbeb1LZ1PT9Ij5bliVgefWAHJzPv3iq8nfBy0xNQ+JDcnb66Frlu2EiltP
+         4SVf9jWufcNW0Jlg65XqK9PM520uPDSa87coRslLby1S6GKmIsGhidRJCLX++3Tgvq
+         TQ7hFWJH9eCUL50psQJ/oXVpDCfDOcHvFBYYolkhAjgUaDHyfTpV46gha7XqWsc1dW
+         CnhPYj0wyaVtBjGZ03Z5vAMXO9P/Qc0Bl+LBgsNbNPrSBwrY+bjizU3ODF3Kc45hLe
+         d0e4kd7cPO8JQ==
+Date:   Thu, 22 Apr 2021 14:10:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the rcu tree
+Message-ID: <20210422141016.656f50bc@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-127-gregkh@linuxfoundation.org> <20210422015957.4f6d4dfa@linux.microsoft.com>
-In-Reply-To: <20210422015957.4f6d4dfa@linux.microsoft.com>
-From:   Joe Stringer <joe@ovn.org>
-Date:   Wed, 21 Apr 2021 21:09:56 -0700
-X-Gmail-Original-Message-ID: <CAOftzPioU8h9b=isMPZtE8AYF=+qh_nNEp3rFEyQmb6Fi7QZ2g@mail.gmail.com>
-Message-ID: <CAOftzPioU8h9b=isMPZtE8AYF=+qh_nNEp3rFEyQmb6Fi7QZ2g@mail.gmail.com>
-Subject: Re: [PATCH 126/190] Revert "net: openvswitch: fix a NULL pointer dereference"
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, Kangjie Lu <kjlu@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/L=/uF/jS3p9RiyYfKrI6O/e";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 5:01 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> On Wed, 21 Apr 2021 15:00:01 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
->
-> > This reverts commit 6f19893b644a9454d85e593b5e90914e7a72b7dd.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in
-> > "bad faith" to try to test the kernel community's ability to review
-> > "known malicious" changes.  The result of these submissions can be
-> > found in a paper published at the 42nd IEEE Symposium on Security and
-> > Privacy entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu
-> > (University of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove
-> > this change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Kangjie Lu <kjlu@umn.edu>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  net/openvswitch/datapath.c | 4 ----
-> >  1 file changed, 4 deletions(-)
-> >
-> > diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
-> > index 9d6ef6cb9b26..99e63f4bbcaf 100644
-> > --- a/net/openvswitch/datapath.c
-> > +++ b/net/openvswitch/datapath.c
-> > @@ -443,10 +443,6 @@ static int queue_userspace_packet(struct
-> > datapath *dp, struct sk_buff *skb,
-> >       upcall = genlmsg_put(user_skb, 0, 0, &dp_packet_genl_family,
-> >                            0, upcall_info->cmd);
-> > -     if (!upcall) {
-> > -             err = -EINVAL;
-> > -             goto out;
-> > -     }
-> >       upcall->dp_ifindex = dp_ifindex;
-> >
-> >       err = ovs_nla_put_key(key, key, OVS_PACKET_ATTR_KEY, false,
-> > user_skb);
->
-> This patch seems good to me, but given the situation I'd like another
-> pair of eyes on it, at least.
+--Sig_/L=/uF/jS3p9RiyYfKrI6O/e
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The revert LGTM.
+Hi all,
 
-A few lines above:
+After merging the rcu tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-        len = upcall_msg_size(upcall_info, hlen - cutlen,
-                              OVS_CB(skb)->acts_origlen);
-        user_skb = genlmsg_new(len, GFP_ATOMIC);
-        if (!user_skb) {
-                err = -ENOMEM;
-                goto out;
-        }
+In file included from kernel/rcu/update.c:584:
+kernel/rcu/tasks.h:1404:20: error: static declaration of 'show_rcu_tasks_gp=
+_kthreads' follows non-static declaration
+ 1404 | static inline void show_rcu_tasks_gp_kthreads(void) {}
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from kernel/rcu/update.c:49:
+kernel/rcu/rcu.h:440:6: note: previous declaration of 'show_rcu_tasks_gp_kt=
+hreads' was here
+  440 | void show_rcu_tasks_gp_kthreads(void);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
-upcall_msg_size() calculates the expected size of the buffer,
-including at the very least a nlmsg-aligned sizeof(struct ovs_header),
-plus other constants and also potential (likely) variable lengths
-based on the current flow context.
+Caused by commit
 
-genlmsg_new() adds the (nlmsg-aligned) nlmsg header length to the
-calculated length when allocating the buffer, and if the memory
-allocation fails here then the error is already returned.
+  4bf02dd6048d ("tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inl=
+ine")
 
-I don't then see a way for genlmsg_put() to fail per the hunk in the
-commit here given that its buffer reservation is calculated based on:
+I have used the rcu tree from next-20210421 for today.
 
-        nlh = nlmsg_put(skb, portid, seq, family->id, GENL_HDRLEN +
-                        family->hdrsize, flags);
-
-Where family->hdrsize would be sizeof(struct ovs_header) since
-dp_packet_genl_family is the family passed into the genlmsg_put()
-call:
-
-static struct genl_family dp_packet_genl_family __ro_after_init = {
-        .hdrsize = sizeof(struct ovs_header),
-
-Even if there were some allocation bug here to be fixed (due to
-miscalculating the buffer size in the first place), I don't see how
-the extra error path in the included patch could catch such an error.
-The original patch doesn't seem necessarily problematic, but it
-doesn't seem like it adds anything of value either (or at least,
-nothing a comment couldn't clearly explain).
-
+--=20
 Cheers,
-Joe
+Stephen Rothwell
+
+--Sig_/L=/uF/jS3p9RiyYfKrI6O/e
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCA9ygACgkQAVBC80lX
+0GxKigf7B2OUsKIP17p7Hl3M7Epn9RX0slYKG0Asg2pHHSw2QRuZRaXmDAMedigp
+iSh/z83KGU4xtCI8py4p4QgQjl8jdmgwdWKUKw1i0l5C/Riq+RLvYwJqrIUeH0v8
+OZJDgq3HQ6fvmPsGlxdmEGKls5cb6G/b5Bq52NEqHbRBI1uvPZuLbC2AwHVLHrdg
+QBhq4hRL52MaKCiF0AkUE8HVKCj70G+Dvs9xmEJti9K3jJfrxVc3n8R3qA5FG9Wz
+SKueznyjM7T7RbRRGG0QcrhKlL0AjRQCUxoyjNZ4KlX7jzAapEh4nWMKNUJv0mDJ
+HePxc1Cxz+veLgp8xoVWjPl7eBNzaw==
+=Ur5B
+-----END PGP SIGNATURE-----
+
+--Sig_/L=/uF/jS3p9RiyYfKrI6O/e--
