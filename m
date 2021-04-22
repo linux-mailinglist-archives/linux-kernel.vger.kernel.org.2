@@ -2,105 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC30367EF7
+	by mail.lfdr.de (Postfix) with ESMTP id 030AA367EF5
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235943AbhDVKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235930AbhDVKrb (ORCPT
+        id S235911AbhDVKrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:47:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59777 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230285AbhDVKrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:47:31 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E266C06174A;
-        Thu, 22 Apr 2021 03:46:56 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u11so17414515pjr.0;
-        Thu, 22 Apr 2021 03:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yc9wGyWGhgFaZSQouLz2+dApxfgGjbSS67UWipX0ris=;
-        b=tBH1+sBLqDZuiPdSoyrOO6NT2umNak5OQbG2/NThReyEBwRA/FlPUiSrgW4o5eQb4t
-         iT8DHPHyznITtM2UcyG3Xf51W7dJcNg2eT/6PiPLf2/HuJZ+nI5n/98iRnqSCJR5P3da
-         I2+5kK3S4UVbIo+nxoDE34Kj0yXaVKAAHIbyhAwQGuLMfdqzrgn2ZG3eI9IMSySfzPCt
-         3C9Ab4Hb5BjPDZcCEwEA6CoBA55oznSqzy9s1VtpIjxAcESFMM0Dd2/mbQWYuBHY9OTO
-         Y0E01Z5i37Eff3QTCk2fQzf1unFVF/VUaCd8y2sE83M65AbeJHXuB6RgjfnbOHzk9MRX
-         WcFQ==
+        Thu, 22 Apr 2021 06:47:22 -0400
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lZWr8-000688-IM
+        for linux-kernel@vger.kernel.org; Thu, 22 Apr 2021 10:46:46 +0000
+Received: by mail-wr1-f72.google.com with SMTP id j16-20020adfd2100000b02901022328749eso13605178wrh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:46:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yc9wGyWGhgFaZSQouLz2+dApxfgGjbSS67UWipX0ris=;
-        b=KLwuH5EltG1dnfeUT5dKvyZ7BYl26LDIvMjc5f5pkodYMH14Wij+NDNLtCSCY6rNxq
-         ztAfiNedQjEnD8B6jSj0B75xtbfACyXCPKcUfXpg1DxMr5UucLZYnXncKqZi/sDf4ink
-         Yx8Oov/SPNKPzxucPaamOPz1fE+bd72b9KDZGbLSdPFam2HURW1KBsbgCtwL6lgXOINr
-         bZQS/c1YlanbrbFWkGw1+E7oKlImZ9nGyF1Ih0LbGqdlWA48H+C0WMesQkqURPBCrNmQ
-         GQniBFQ+ZchNhLh8Fb5PR88Zvc9lmFov9vpWqoJbIgKLlqWE08DGadkjEh/LagGr8cqE
-         tmCA==
-X-Gm-Message-State: AOAM533iUG/9H2Qi1XcdZkzc6WzeG8Jo0QAoo2vfk/gLLQOH0m1XmV0I
-        FCJL9hx6RRtI8WXz69JawlnwiS/wf4Qp8/Kvox4=
-X-Google-Smtp-Source: ABdhPJy+ERoKJA1hCj8Oe+lftOnHwnIH8BzpBPEwxs0NMI9jWXOCPRjVXNvMvgFuC81oR7tJvfMC2+9aAoffBsOMBgQ=
-X-Received: by 2002:a17:902:e546:b029:ec:a7f5:2a88 with SMTP id
- n6-20020a170902e546b02900eca7f52a88mr3078034plf.21.1619088416159; Thu, 22 Apr
- 2021 03:46:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ChgsWVHouphJpIEvBcUP4TDV1Lb1Y7MqOzirYiGZuls=;
+        b=p8HE4rlizKR7zyr3L3vcS1JtxDlO7tWbc8q0cmKHkuemhKvumk/VQgNKQg4ZUKxE91
+         whO27UKIPOjGGlkdYG35EO1Y9TIwcZ92bgJkPqZfTtL1wIFCP01plZmkgAFqTKZtK75g
+         tZ+4eBLtGsaJ5MDGlpObsWn/yIP79CAL9QcNM0qv/8OEo8qtvPBX6HHp7O4tmzvk9hXF
+         CD5BOyi0jycklME2d08MxUaWeexnAoZLsUuNMM0j1FX0hf6iEjGZu2DsmqN9AS+v+pRu
+         sTypijS9yIieSIvDGQss3zuH4dp9vtaVsD7cBPTg4P92CUFj1dc+c7oW1VQNSatUQ9PU
+         BmFQ==
+X-Gm-Message-State: AOAM532NnUn6wti5KqRO7EywsuoelWfPoGGkO9/SeMM6WFEZeUaHCVOw
+        VjAdJc5oRmDqGB9WX0XVpAOpeNKClOFvO6CUGmuVO2KB12MQunPBkd7u73hUi/1u2kevJzSSnds
+        2Hh2r90QLSlrts+cfI/AdAR2+J3PV9RgKCrLs0Twy0A==
+X-Received: by 2002:a7b:c454:: with SMTP id l20mr14904429wmi.65.1619088406368;
+        Thu, 22 Apr 2021 03:46:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwriIvSyixOuWHVrmtzdeZk8A0gu9EIEm+2/cX2GME4GssfKx9dIbuacbeZx9u7Rg6czj93yA==
+X-Received: by 2002:a7b:c454:: with SMTP id l20mr14904416wmi.65.1619088406202;
+        Thu, 22 Apr 2021 03:46:46 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
+        by smtp.gmail.com with ESMTPSA id h17sm2936241wru.67.2021.04.22.03.46.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 03:46:44 -0700 (PDT)
+Subject: Re: [PATCH v2] hwrng: exynos - Fix runtime PM imbalance on error
+To:     =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Bart=c5=82omiej_=c5=bbolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <CGME20210422104145eucas1p17f46c95b72f3568761a9f7911bf072e1@eucas1p1.samsung.com>
+ <20210422104141.17668-1-l.stelmach@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <bc20ae4c-3e62-7b07-506c-ce8d90f65754@canonical.com>
+Date:   Thu, 22 Apr 2021 12:46:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <202104220841.E5T3ZL3m-lkp@intel.com> <20210422001852.GA24577@de5bcc5e76b6>
-In-Reply-To: <20210422001852.GA24577@de5bcc5e76b6>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 22 Apr 2021 13:46:40 +0300
-Message-ID: <CAHp75VdbegA4iHJcT9s-MbU2nHHAKdaRFA_J8DqzR5BKhh-htg@mail.gmail.com>
-Subject: Re: [RFC PATCH linux-next] kernel/resource: __region_intersects() can
- be static
-To:     kernel test robot <lkp@intel.com>
-Cc:     Alistair Popple <apopple@nvidia.com>, kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210422104141.17668-1-l.stelmach@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 4:30 AM kernel test robot <lkp@intel.com> wrote:
+On 22/04/2021 12:41, Łukasz Stelmach wrote:
+> pm_runtime_get_sync() increments the runtime PM usage counter even
+> the call returns an error code. Thus a pairing decrement is needed
+> on the error handling path to keep the counter balanced.
 
-Can you generate a commit message as well?
-Otherwise looks valid to me, thanks!
+It's exactly the same as Dinghao's patch:
+https://lore.kernel.org/linux-samsung-soc/20200522011659.26727-1-dinghao.liu@zju.edu.cn/
+which you reviewed. It has even the same commit msg
+(although it's difficult to be creative here).
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Fixes: edede6a2ecfe ("kernel/resource: allow region_intersects users to hold resource_lock")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> ---
->  resource.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/resource.c b/kernel/resource.c
-> index 8faae19f8236e..a4bc6f66136c6 100644
-> --- a/kernel/resource.c
-> +++ b/kernel/resource.c
-> @@ -502,8 +502,8 @@ int __weak page_is_ram(unsigned long pfn)
->  }
->  EXPORT_SYMBOL_GPL(page_is_ram);
->
-> -int __region_intersects(resource_size_t start, size_t size, unsigned long flags,
-> -                       unsigned long desc)
-> +static int __region_intersects(resource_size_t start, size_t size, unsigned long flags,
-> +                              unsigned long desc)
->  {
->         struct resource res;
->         int type = 0; int other = 0;
+I think it's better to resend his patch instead.
 
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+Krzysztof
