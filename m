@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DC8367B00
+	by mail.lfdr.de (Postfix) with ESMTP id 87B18367AFF
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbhDVHXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:23:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:27151 "EHLO mga11.intel.com"
+        id S235054AbhDVHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:23:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5988 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhDVHXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:23:05 -0400
-IronPort-SDR: xFPhDG47rqbTxEYRETcPz8lU8lz7f/sjvLxdIJWaZVNqeOa81CvPMkriJqMUXfvDHakT6UxmMU
- K2pbf/iBE++A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="192653830"
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="192653830"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 00:22:28 -0700
-IronPort-SDR: iw3A3sG+OhrlAG9pBfiI3OEEMHl48D18KsakXAEYsj3Oa1kkqHNI5zdcyPuO8kmWTMOGri63Sa
- a43Ht52zpO+Q==
+        id S229629AbhDVHXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 03:23:03 -0400
+IronPort-SDR: 7/3QsbM8ZZXdR1ca7NlAHziJ7nPwMnRZs3qfjelVv346CQFvBW5UiV/OmaCb5//la3n1DRTq4z
+ eUPB44yb8FSg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195953009"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="195953009"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 00:22:28 -0700
+IronPort-SDR: ilypC+zpf/6kHVzjccUWYzD1hZJxHKMWpSN6gJfeUEwFrhX3CbGeJFdvhF44V+KR+l9kyYSlKj
+ BiA9st6h8F8w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="401743954"
+   d="scan'208";a="427821173"
 Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 22 Apr 2021 00:22:27 -0700
+  by orsmga008.jf.intel.com with ESMTP; 22 Apr 2021 00:22:27 -0700
 Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lZTfO-00042W-Iv; Thu, 22 Apr 2021 07:22:26 +0000
-Date:   Thu, 22 Apr 2021 15:22:03 +0800
+        id 1lZTfO-00042T-Dk; Thu, 22 Apr 2021 07:22:26 +0000
+Date:   Thu, 22 Apr 2021 15:22:05 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- bbc440a9296b59b7264d827c3a33936b672afa5a
-Message-ID: <6081241b.g9n8UIa/LsrFBESa%lkp@intel.com>
+Subject: [rcu:dev.2021.04.20a] BUILD SUCCESS
+ fe7d174b033dcf9367759b3c14febb31525aad39
+Message-ID: <6081241d.oOxkbUWAx2gngOgX%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: bbc440a9296b59b7264d827c3a33936b672afa5a  rcu/tree_plugin: Don't handle the case of 'all' CPU range
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.20a
+branch HEAD: fe7d174b033dcf9367759b3c14febb31525aad39  rcu/tree_plugin: Don't handle the case of 'all' CPU range
 
 elapsed time: 723m
 
-configs tested: 143
+configs tested: 148
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -68,8 +68,8 @@ arm                            lart_defconfig
 mips                malta_qemu_32r6_defconfig
 mips                          malta_defconfig
 sh                             shx3_defconfig
-um                                  defconfig
 powerpc                      ppc44x_defconfig
+um                                  defconfig
 mips                        workpad_defconfig
 powerpc                 xes_mpc85xx_defconfig
 powerpc                   currituck_defconfig
@@ -85,6 +85,9 @@ arm                       omap2plus_defconfig
 arm                      tct_hammer_defconfig
 mips                           rs90_defconfig
 arm                      integrator_defconfig
+arm                      footbridge_defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                              defconfig
 powerpc                 mpc836x_rdk_defconfig
 powerpc                      mgcoge_defconfig
 powerpc                         wii_defconfig
@@ -104,6 +107,8 @@ arm                         lpc18xx_defconfig
 mips                      bmips_stb_defconfig
 arm                        mvebu_v7_defconfig
 xtensa                  nommu_kc705_defconfig
+sh                          sdk7780_defconfig
+sh                            titan_defconfig
 arm                         lpc32xx_defconfig
 arm                           h5000_defconfig
 powerpc                     tqm8548_defconfig
