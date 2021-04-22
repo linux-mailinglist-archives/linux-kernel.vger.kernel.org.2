@@ -2,75 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB96368753
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC3E368756
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhDVTk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236668AbhDVTk1 (ORCPT
+        id S238966AbhDVTlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:41:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236668AbhDVTll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:40:27 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDCDC06174A;
-        Thu, 22 Apr 2021 12:39:52 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 98BEC728D; Thu, 22 Apr 2021 15:39:50 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 98BEC728D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1619120390;
-        bh=P1XokK26ajbrSJ6gTQG9u1z+r82OYj/giI7YYlt4FfQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cWlu+nVLokNWr/vD1z1A4zQdGvLXDPGlwRgcvv+QiQ/2FL9Y9D0Yo6wkpjAy20aei
-         spx5BIEgLX77PzswywChYKsUQDgwwmTf4rncvZV+TcJQZmpHCa8ufctFgHPXCR+FRC
-         cgP8won5uqFHVE78mFBvfu8n/hmb01XPuXIi3980=
-Date:   Thu, 22 Apr 2021 15:39:50 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Shelat, Abhi" <a.shelat@northeastern.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <20210422193950.GA25415@fieldses.org>
-References: <YH5/i7OvsjSmqADv@kroah.com>
- <20210420171008.GB4017@fieldses.org>
- <YH+zwQgBBGUJdiVK@unreal>
- <YH+7ZydHv4+Y1hlx@kroah.com>
- <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
- <YH/8jcoC1ffuksrf@kroah.com>
- <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
- <20210421133727.GA27929@fieldses.org>
- <YIAta3cRl8mk/RkH@unreal>
- <20210421135637.GB27929@fieldses.org>
+        Thu, 22 Apr 2021 15:41:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619120466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k6s69Vc1JVO1C/KitZXv6PHxtifVMVmdc7g9HprfJ1I=;
+        b=cX9QNBKBz2ddEoNIIplRpZHu7kT5OHZcjRZhYrzpckmwTe/QNLpb0saUx1Gloakz89ZPhU
+        1FRfCA7a7aYsAJWmcPPZasyFBHkYXwBDT0jYwQwytZPNI8kDpP6lpszhHWW5/EkbtTdhd3
+        Vo8IvdNvpBi6Jx0k/f4FCTRriYZwO08=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-H_9A9vDIP5-r92gcB3cgIg-1; Thu, 22 Apr 2021 15:41:01 -0400
+X-MC-Unique: H_9A9vDIP5-r92gcB3cgIg-1
+Received: by mail-qv1-f70.google.com with SMTP id e20-20020ad442b40000b029019aa511c767so16651009qvr.18
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:41:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=k6s69Vc1JVO1C/KitZXv6PHxtifVMVmdc7g9HprfJ1I=;
+        b=bnnNRhtxo4lp18uikDJ8RjcoYMWKz2YEp1yc0PCB1DB5YKbVZqmY0NJfJg8VDP6Pm6
+         gsSKJjUqmb02i17HgdFi23je0yytEqoZxa/Fdn596SCz7I5u3mMVUqggDv+4K2+SCQZc
+         dive77FwSz3gAQ2JKxUdTUUjkw95hWb5lcceAeGFzBUbOqCiIZ0MxVaAb0TAINseK+es
+         5UhSN4WLSPxOzZQSg6nv6S0WUql1nCjwazJnNYAyFZvoHsvfuZY9xZ3D+vU9nOVAo4Bn
+         QNY0S5ZtSRZAeZJEXdJ4guGWpyOKeIpl/dKFDvzAivpN/ntMKooQOKdB+vELtj9KHxoB
+         cpKA==
+X-Gm-Message-State: AOAM531OEWGmYlZQ7MEFoHJDr8uYFOBFpvHc2eJ0zlJbVAXKxCr+8bwg
+        KmyX8zpX7fABi0Cx6bz5iwIEVSrBcbwtHu8XexvEza1qRC+16VfRDDMdGsfG1HZDpayZjLK2gK4
+        pyYt0T7l/puECnaotnK+RZn/0
+X-Received: by 2002:a05:622a:486:: with SMTP id p6mr124883qtx.98.1619120461126;
+        Thu, 22 Apr 2021 12:41:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw26o1fq4SUq8AjaV9A02QdlXMa58WsaWpt61xtbPijGtt+MgJTuq0edRMBFLJwGY3H0rmZZA==
+X-Received: by 2002:a05:622a:486:: with SMTP id p6mr124872qtx.98.1619120460991;
+        Thu, 22 Apr 2021 12:41:00 -0700 (PDT)
+Received: from localhost.localdomain ([2601:184:417f:70c0::42e6])
+        by smtp.gmail.com with ESMTPSA id a63sm2838849qkf.132.2021.04.22.12.40.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 12:41:00 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] bits: Add tests of GENMASK
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        akpm@linux-foundation.org
+Cc:     andy.shevchenko@gmail.com, arnd@arndb.de, emil.l.velikov@gmail.com,
+        geert@linux-m68k.org, keescook@chromium.org,
+        linus.walleij@linaro.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, syednwaris@gmail.com,
+        vilhelm.gray@gmail.com, yamada.masahiro@socionext.com
+References: <20200620213632.60c2c6b99ec9cf9392fa128d@linux-foundation.org>
+ <20200621054210.14804-1-rikard.falkeborn@gmail.com>
+ <20200621054210.14804-2-rikard.falkeborn@gmail.com>
+From:   Nico Pache <npache@redhat.com>
+Message-ID: <935a7b98-ab4c-15af-3bf0-aa7c1f9de068@redhat.com>
+Date:   Thu, 22 Apr 2021 15:40:12 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421135637.GB27929@fieldses.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200621054210.14804-2-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:56:37AM -0400, J. Bruce Fields wrote:
-> On Wed, Apr 21, 2021 at 04:49:31PM +0300, Leon Romanovsky wrote:
-> > If you want to see another accepted patch that is already part of
-> > stable@, you are invited to take a look on this patch that has "built-in bug":
-> > 8e949363f017 ("net: mlx5: Add a missing check on idr_find, free buf")
-> 
-> Interesting, thanks.
+Hey,
 
-Though looking at it now, I'm not actually seeing the bug--probably I'm
-overlooking something obvious.
+Where is TEST_GENMASK_FAILURES being defined? This fails when compiling this
 
---b.
+test as a module.
+
+Am I missing something here?
+
+Cheers!
+
+-- Nico
+
+On 6/21/20 1:42 AM, Rikard Falkeborn wrote:
+> [Snip...] 
+> +#ifdef TEST_GENMASK_FAILURES
+> +	/* these should fail compilation */
+> +	GENMASK(0, 1);
+> +	GENMASK(0, 10);
+> +	GENMASK(9, 10);
+> +#endif
+> [Snap..] 
+
