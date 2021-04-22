@@ -2,88 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DD43688C4
+	by mail.lfdr.de (Postfix) with ESMTP id D08763688C5
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237132AbhDVV4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:56:53 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39264 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhDVV4w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:56:52 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lZhIs-000DUm-AJ; Thu, 22 Apr 2021 23:56:06 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lZhIs-000JP5-1R; Thu, 22 Apr 2021 23:56:06 +0200
-Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, shuah@kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7ecb85e6-410b-65bb-a042-74045ee17c3f@iogearbox.net>
-Date:   Thu, 22 Apr 2021 23:56:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S233106AbhDVV47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:56:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38862 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232844AbhDVV47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 17:56:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 05D7CB01E;
+        Thu, 22 Apr 2021 21:56:23 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 23:56:15 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: arch/x86/kernel/apic/x2apic_uv_x.c:106 early_get_pnodeid() warn:
+ inconsistent indenting
+Message-ID: <20210422215615.GE6361@zn.tnic>
+References: <202104211946.vkuV39N1-lkp@intel.com>
+ <84b4fbc3-0310-b7d7-f613-0eb4ae090e1e@hpe.com>
+ <20210422090652.GB6361@zn.tnic>
+ <e2e957f1-06f4-29b5-b268-7fd77db25529@hpe.com>
 MIME-Version: 1.0
-In-Reply-To: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26148/Thu Apr 22 13:06:46 2021)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e2e957f1-06f4-29b5-b268-7fd77db25529@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 12:00 PM, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
-> 
-> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
-> comparing pointer to 0.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Thu, Apr 22, 2021 at 02:50:27PM -0700, Mike Travis wrote:
+> Thanks Boris, I do have a clean up patch to remove more dead code coming,
+> I'll put this patch in that if that's okay?
 
-How many more of those 'comparing pointer to 0' patches do you have?
-Right now we already merged the following with similar trivial pattern:
+Yes, better, thanks.
 
-  - ebda107e5f222a086c83ddf6d1ab1da97dd15810
-  - a9c80b03e586fd3819089fbd33c38fb65ad5e00c
-  - 04ea63e34a2ee85cfd38578b3fc97b2d4c9dd573
+Btw, please do not top-post. I think I asked you already.
 
-Given they don't really 'fix' anything, I would like to reduce such
-patch cleanup churn on the bpf tree. Please _consolidate_ all other
-such occurrences into a _single_ patch for BPF selftests, and resubmit.
+Thx.
 
-Thanks!
+-- 
+Regards/Gruss,
+    Boris.
 
-> ---
->   tools/testing/selftests/bpf/progs/fentry_test.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
-> index 52a550d..d4247d6 100644
-> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
-> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
->   SEC("fentry/bpf_fentry_test8")
->   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
->   {
-> -	if (arg->a == 0)
-> +	if (!arg->a)
->   		test8_result = 1;
->   	return 0;
->   }
-> 
-
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
