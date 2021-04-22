@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515B5367FCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B655367FCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236109AbhDVLtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        id S236099AbhDVLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhDVLtD (ORCPT
+        with ESMTP id S230510AbhDVLtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:49:03 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003A2C06174A;
-        Thu, 22 Apr 2021 04:48:27 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id f12so33518934qtf.2;
-        Thu, 22 Apr 2021 04:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fs+IGrXgfxo2+Fjwm8mRibDjnAoxHASw5K6L87Sg2Tk=;
-        b=ex/oPVozkvjmlaiusTuTxGvDzAYNqQIY2iHgUq6nOfsP9QkZyS2An5wO/PFciX4evb
-         HkHM7NxksbslKV3zCmmEfAd474x5uWrdIJlpJsBTq4i98JQWfZBHUUzX1Nk0wfYQ3mt0
-         nxnk0M6HaiqVy1OUoF6UZ4DS5A051gAIEPqE7a+4t2kfNWqqC05YcP/xeosol+FqtWSV
-         lvTh8EcyE0AafTFFoVDj14QdwTigVeaPtINgax+44goW3365p2kD1gWYtDeOTm/zzJOh
-         DyqySXvQoPWaG777/YA/N6UM45fbNpzQSC7VGTb/M3vsN/quH8AOkTfR8cTVkbzTBDZd
-         AMyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Fs+IGrXgfxo2+Fjwm8mRibDjnAoxHASw5K6L87Sg2Tk=;
-        b=aTeITSNsBpYaSwvv6JCPgNSwoRbAcff27N9j9/umUxqlNp+A0F+1+1ebf2A+humld/
-         mht2tK1Z+Mi+EdDxP6K+AbK83dsEbLzfHeMINSaUsH9bakDN4QfNvjuXs5AB/aEAhLxf
-         ih1Yfg9FtsVuioeFvzbFwQG9bT+1v6v0gAS0G/E9ov0e6mwSXp5/zYsUg2kZd50vPE1A
-         kA+UFnhknwR06wxC1Do4D0oPClqJB1I9lcG+kSWe0FlucO4mNRGhqjvBXI1BduBA4ojh
-         1P9wfuwzC7sD6UPccrECzhPU4OzCDNrm/ug4FiAa4zBN8B8dt4gRMYBYWHC6H0TMHmaX
-         uZ/A==
-X-Gm-Message-State: AOAM530giTflkUqL4n0uPcLxFrKIGrOGxIhGt5wtZZ8eZBCGk6An92Wy
-        XmT8K0857Mudm8Dk6GaAEEY=
-X-Google-Smtp-Source: ABdhPJwIrb+ODxaRMS+tT6vDrRUQXf+hfllCX1OLskilzyuoMwASaZ3e3xAC6v4xFoQGuRloePyN4Q==
-X-Received: by 2002:ac8:4796:: with SMTP id k22mr2852559qtq.118.1619092107045;
-        Thu, 22 Apr 2021 04:48:27 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id e15sm1793199qkm.129.2021.04.22.04.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 04:48:26 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 22 Apr 2021 07:48:25 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, KVM <kvm@vger.kernel.org>,
+        Thu, 22 Apr 2021 07:49:39 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1782DC06174A;
+        Thu, 22 Apr 2021 04:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=h4AVMm+Y3zmBUJJ9Lie4N/ArTZTC3WPpTqp9fKjAr1Y=; b=qJqAKnxJdl5z1xNr6KMz95RWtp
+        YqQwKVb9aTVLxPGsDtEptzCZ04aiNNj0FG8tTQOr8ltdg+fh4HWGvZqM+XRwoTnl0vCEcNtcu4SUL
+        GIIPznteonjrOLC79u/ycFIMbBVd22nUD1ksBeko6hlfl0Jkrbj9YymIArIqSUKvCD8y1Vy3sW5cv
+        zsmhjQ37W2+tOm29DvDyJ0gyGvQMKJxNCtrSP9amZ0R7uJOSh/dgRb7qYzC9MLESxOAqK76WIh3sD
+        fw/HZHAkGpyqav2VlEOXns/lSWkLFgk3zWfUG7FSf/MmP5PzQBMISU2K4RJd4mi2lv2PXikFop9vh
+        7r1lqMmg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZXp3-00Gcoq-0t; Thu, 22 Apr 2021 11:48:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 97239300103;
+        Thu, 22 Apr 2021 13:48:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7E08F2C1893EB; Thu, 22 Apr 2021 13:48:39 +0200 (CEST)
+Date:   Thu, 22 Apr 2021 13:48:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Malcolm <dmalcolm@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-toolchains@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vipin Sharma <vipinsh@google.com>
-Subject: Re: linux-next: manual merge of the cgroup tree with the kvm tree
-Message-ID: <YIFiiYtgL7/uvzng@slm.duckdns.org>
-References: <20210422155355.471c7751@canb.auug.org.au>
- <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        yuanzhaoxiong@baidu.com
+Subject: Re: static_branch/jump_label vs branch merging
+Message-ID: <YIFilwwzWiSDZU6b@hirez.programming.kicks-ass.net>
+References: <5f78b7e2f9ae937271ef52ee9e999a91c2719da9.camel@redhat.com>
+ <YHBCoijoopbsDn29@hirez.programming.kicks-ass.net>
+ <YHBQPr8q0cx4iUfN@hirez.programming.kicks-ass.net>
+ <YHBS70ZQ6gOpMk2K@hirez.programming.kicks-ass.net>
+ <3c062f70ffef2dcd48a661f7c8162fb8fbaf6869.camel@redhat.com>
+ <YHCfgHwDtT7m4ffq@hirez.programming.kicks-ass.net>
+ <0a9da587b0330bafdf612c3d51285e144b0b9e46.camel@redhat.com>
+ <YHC0dgwhYS9hKcRT@hirez.programming.kicks-ass.net>
+ <5a07bde1a9fa9a056a19637399b0635252ddb303.camel@redhat.com>
+ <20210409213949.GA33256@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
+In-Reply-To: <20210409213949.GA33256@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Paolo.
+On Fri, Apr 09, 2021 at 11:39:49PM +0200, Peter Zijlstra wrote:
+> On Fri, Apr 09, 2021 at 05:07:15PM -0400, David Malcolm wrote:
+> 
+> > You've built a very specific thing out of asm-goto to fulfil the tough
+> > requirements you outlined above - as well as the nops, there's a thing
+> > in another section to contend with.
+> > 
+> > How to merge these asm-goto constructs?
+> 
+> By calling the function less, you emit less of them. Which then brings
+> us back to the whole pure/const thing.
+> 
+> > Doing so feels very special-case to the kernel and not something that
+> > other GCC users would find useful.
+> 
+> Doesn't it boil down to 'fixing' the pure/const vs asm-goto interaction?
+> I could imagine that having that interaction fixed could allow other
+> creative uses.
 
-On Thu, Apr 22, 2021 at 08:34:15AM +0200, Paolo Bonzini wrote:
-> Tejun, please don't commit patches to other tree without an Acked-by from
-> the maintainer (which I wouldn't have provided, as the right way to go would
-> have been a topic branch).
+Here is another variant:
 
-My apologies, for some reason, I was incorrectly assuming it was all dandy
-on the kvm side.
+  https://lore.kernel.org/lkml/830177B0-45E0-4768-80AB-A99B85D3A52F@baidu.com/
 
-> Fortunately these patches are at the bottom of your tree.  If it's okay,
-> I'll just pull from there "as if" you had provided a topic branch all the
-> time.
-
-I'd be happy with however you wanna resolve it. Please let me know if
-there's anything I can do to help.
-
-Thanks.
-
--- 
-tejun
+Can we please have a __pure__ attribute that is prescriptive and not a
+hint the compiler is free to ignore for $raisins ?
