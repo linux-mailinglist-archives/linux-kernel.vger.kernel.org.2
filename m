@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938293684E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5A63684FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238065AbhDVQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:33:16 -0400
-Received: from mout.gmx.net ([212.227.17.22]:40631 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238206AbhDVQdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:33:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619109158;
-        bh=cSmMf6FVFCXx6/Sb18tAT65fJaJkrLmFKmn91DPp2pk=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=XuMgAtOa0Wo1TgkkSSyau8xaOAIXMbJkVJO+ThS1qZOLWIBxr+2OL0QycKpg16sXw
-         ndA2l6c+W8QsXNQszTUw24AFSomPIhSjdowU96Lt6ZmrROzmN69dHk6vxsOpMfQtbl
-         o8u5aAJw9yEypaytAMBwvaAnCczZjHlWauD/IUiw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.64] ([46.223.149.64]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Ma20q-1m5Yry3Rjw-00VuNk for
- <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:32:38 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Volker_Wei=c3=9fmann?= <volker.weissmann@gmx.de>
-Subject: University of Minnesota paper
-Message-ID: <d85db373-c112-47e1-2efa-1f7164a255ef@gmx.de>
-Date:   Thu, 22 Apr 2021 18:32:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S237663AbhDVQjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:39:09 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2910 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232670AbhDVQjF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:39:05 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FR2sR6GNxz6wj95;
+        Fri, 23 Apr 2021 00:28:11 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Apr 2021 18:38:29 +0200
+Received: from [10.47.95.78] (10.47.95.78) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 22 Apr
+ 2021 17:38:28 +0100
+Subject: Re: [PATCH] scsi: core: Cap initial sdev queue depth at
+ shost.can_queue
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kashyap.desai@broadcom.com>, <dgilbert@interlog.com>
+References: <1618848384-204144-1-git-send-email-john.garry@huawei.com>
+ <YH4aIECa/J/1uS5S@T590> <bba5f248-523d-0def-1a3e-bafeb2b7633f@huawei.com>
+ <YIDTlD2Mq+U36Oqz@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <186be6c5-dbcd-d1fb-67c5-72b5a761568a@huawei.com>
+Date:   Thu, 22 Apr 2021 17:35:42 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YIDTlD2Mq+U36Oqz@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-Provags-ID: V03:K1:c24558wAL6/aclGw9XvN1RwoIVTzAKP6FR22DBV11a2It4bogD4
- 2H5kzQxSJJ8aeO2b1f1Ae34fl7X8VeDTm5kj5L7BzLoqicARVaeSfc505Bed/oG7jaILbNm
- fvJIsQciXQY8ST1ftcBHjnQaSDipiSoluSC0ml+rCdewKf66F2LGYmV55QH1CTY3TyBQ1UQ
- 86Y8eNdCR/kBASe0+nZSg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UE0gZ/psLo8=:OrQoOTkHSF0KmBhk2lF6xz
- t50eoCmc4iSX456uVVRr1bNEUw/8QdY0NYvGJj2s7HCH4NF1bn5PlqJVcLX6K5hWTUkjJAYDZ
- 1vjgG/w7a3KcpmTJf88NQipduJbd4AsyWn1dSe2G0Dt/aRxpEus5qwmYYYCJ00HIVB+TPNOrR
- JzL4sXRfKSxMhF0NJ4jgQyBxzh6AA9aFu0UpXvRn1X4uru2JGUBtSRUD1nTlDoUYR2gGvUUcL
- 7j3eR4ASaykSloHPhKfn+evQBVjiCmP4D1x4VwZp7Y0w3Cl/CH+4LycmxNppQDcuIcul0RhEj
- mP/B0fYJPFXzQa05g9Xd9dKtAyKlhNtMgl0Kedfjb1xF2nbAAgCHGxuEAe0TyMdOXqxigKNpq
- BZAMvOF05r/jiLHknpuHwwyC3nw+Eb8A0FGQXrkfVnVNwPWdx46T4VJjqKhwDwG8u8QEazkFo
- MHh1QDn9ZOoM5nC83A+vw7+ReMOHXKjXu9yNJNGyQVX49iX0mOWQ9klyIoJPPJx64InqL9Iv7
- nA4ncxd0fURwediwE+UVoSa7xzfcEC6e57OlS45X4ugbB4CbnPcWqICfeg5UbiByaunCHhjEM
- NGWzu0r3EFHWoTs1jt/aOP9018naIOkgUg9Rb6gqdnDzTK3fnT8hiu8My4jg+c2mgP92a0jSm
- oeZO32M5xtBXRLsN/KJ3HJEqQrdqF67gGdXip2j8dmfnD+G6l+s+/iDboUjWup1BLDiFPWzOs
- Ln5/6NkHxKlf/Kgb36E9RZtsdtoDDYENenMXatFE4DiMtZsrtjVXrcH9utI1/D5ZLcFoDkgkR
- 8PtX1y2j3brRBlQS66xl5ta8HOEMQRCOHEC/bBQ9m835Fl3QDxTXuuaILyvdWSNf5a+v0VqWW
- 7xp9xej8NwTeFBa0Epv4H39HCwKPjaMFET2FJvcLPDbQfR64n66WRpZTEuAN7Lc2jgwOlfrL6
- UcXkVZXylCBxKSIv3tr09rnvq3ivWn9s86jwpgzeK05ODLIZQErzl+BQrr6xij9CDXHKARbjA
- qARcnBzFnU9+ht/w1ZOv7r+NJkLl5EVpaEBR658FXLpyWZNZpo15P04VF94TE4DCBUR8iX6Fy
- Mf4K/GpatenGhgQ1cSCCwdyIzGyx+wv5Ib5i8tsr6/IusIrehxJbStS5XiOxv0ZtXugUSyDAQ
- MO+Bq1NzOoPCLTcd9MbceAiwSO3/PREYuoh5CyIEueJ50PVnw+ETPZsJOAtfV/Pz6yWDCC5lg
- 9whsuIYuYeSET8jK59lVQjHt8Ma2TEEVtv0LhDg==
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.78]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 22/04/2021 02:38, Ming Lei wrote:
+>> I would rather not change the values which are provided from the driver. I
+>> would rather take the original values and try to use them in a sane way.
+>>
+>> I have not seen other places where driver shost config values are modified
+>> by the core code.
 
-I would like to inform everyone here, that I just wrote the mail below
-to the authors of the paper (wu000273@umn.edu and kjlu@umn.edu).
+Hi Ming,
 
-When I receive an answer, I will post the answer here.
+> Wrt. .cmd_per_lun, I think it is safe to modify it into one correct
+> depth because almost all drivers are just producer of .cmd_per_lun. And
+> except for debug purpose, there are only three consumers of .cmd_per_lun
+> in scsi, and all are for scsi_change_queue_depth():
+> 
+> 	process_message()
+> 	scsi_alloc_sdev()
+> 	virtscsi_change_queue_depth()
 
+sg_ioctl_common() also looks to read it, but I can't imagine we could 
+break that interface with either suggested change.
 
-Mail that I sent (from my university mail address):
+So I still prefer not to modify shost.cmd_per_lun, but if you feel 
+strongly enough then I can look to make that change.
 
+Thanks,
+John
 
-Hello,
-
-I saw your paper [1
-<https://raw.githubusercontent.com/QiushiWu/qiushiwu.github.io/main/papers=
-/OpenSourceInsecurity.pdf>]
-where you claimed that you proposed patches with vulnerabilities to test
-the review process.
-Can you prove that you just did this to test the review process and not
-to actually introduce vulnerabilities.
-
-Did you tell some trustful people in advance that you are doing this to
-test the linux reviewers?
-Did you gave a text that says that those patches have vulnerabilities to
-a notary and told him to publish those texts after a certain date?
-Did you publish a hash of a message that explains that those patches are
-vulnerable in advance?
-
-No offense, but proposing patches with vulnerabilities and then claiming
-(after they got rejected) that you just did it to test the reviewers
-sounds like a really lame excuse to hide something truly malicious.
-
-[1]:
-https://raw.githubusercontent.com/QiushiWu/qiushiwu.github.io/main/papers/=
-OpenSourceInsecurity.pdf
-<https://raw.githubusercontent.com/QiushiWu/qiushiwu.github.io/main/papers=
-/OpenSourceInsecurity.pdf>
-
-Greetings
-
-Volker=C2=A0Wei=C3=9Fmann
