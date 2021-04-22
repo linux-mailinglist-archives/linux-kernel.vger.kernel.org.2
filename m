@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3A0367A78
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE77367A77
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhDVHBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:01:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229962AbhDVHBa (ORCPT
+        id S234877AbhDVHBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:01:01 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17812 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhDVHA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:01:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619074856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9HfKt+tj+kVv8EGTHRuWgwnmy43mLVyvrcb4OZJTQGQ=;
-        b=DRBuMDVo0jsxd6n8QJ8pPg2oUtOzUdgAY09jONA6xGY8+AhrHUux9svtbXXpW8bWGp6oty
-        13Xun8rQKjdMNcJnRLXhPbNvWGf2J7R6q9gHi/DxM5LyUGP+O3F/Jaa/3AOwsjCRRHY5ku
-        R+hNKeVoG0fyQDxnly7jFFQncD/8EGM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-f5AWQ4P9PhqxQUEa_8zcZA-1; Thu, 22 Apr 2021 02:59:54 -0400
-X-MC-Unique: f5AWQ4P9PhqxQUEa_8zcZA-1
-Received: by mail-ej1-f71.google.com with SMTP id x21-20020a1709064bd5b029037c44cb861cso6830793ejv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:59:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9HfKt+tj+kVv8EGTHRuWgwnmy43mLVyvrcb4OZJTQGQ=;
-        b=lPuqwi/Gl6vL/5TZUlejcYx7NRwIxLDFzCnA8VNOi7ChcvYA8xLHA3BjD38uOilubb
-         5VbmXPfbXqk//7T1atpuZ83MVtb7IAB68fZ4opEbV/kb91mBZ1xiuW82djZnu0d3+vnM
-         uKNx38FSx5eVpIwl4G7+XW/OFSyoKsIdk5h5cJp4t3aR4ZKHQ2n4xsfAD0nVGjvZEU3e
-         oYX3XMKS2/lVCVErbwq9F66OfyoepkoT3CRJJlMBcI47wZxHmocgvtOwFAm0EhOfS1ZA
-         HFFOyW3C/DEP8Llp0vpLeqb9NOCjhjtWVS2JjYgwVAZnzOkSNHbUB8zJ+lp5yOfhrbYf
-         RCEA==
-X-Gm-Message-State: AOAM533vEliQ9dfELacq5s/YccgP/0VM5QDH5RpNZGZFEkUzqbvZm4fu
-        QbOxIymG8l/AJ2m/2FvL8yZq1nxBgK1cfYApAY8QFmBR5BHyES+V0sEuMuQk+SgdaVbW9iwVOEW
-        kBr6fPlt0Giskcyo5DkU+63Yy
-X-Received: by 2002:a17:907:294f:: with SMTP id et15mr1825495ejc.14.1619074793047;
-        Wed, 21 Apr 2021 23:59:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy18vOTKev4XwdTSbfQNMYcG3hVv8wE66nlBQZcJc05HPittFlEmKn/E7GPIdzP1VdI5S9Hug==
-X-Received: by 2002:a17:907:294f:: with SMTP id et15mr1825473ejc.14.1619074792912;
-        Wed, 21 Apr 2021 23:59:52 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j9sm1236249eds.71.2021.04.21.23.59.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 23:59:51 -0700 (PDT)
-Subject: Re: [PATCH 3/5] tools headers x86: Copy cpuid helpers from the kernel
-To:     Ricardo Koller <ricarkol@google.com>
-Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Thu, 22 Apr 2021 03:00:59 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FQpCV628sz7vy7;
+        Thu, 22 Apr 2021 14:57:58 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 22 Apr 2021 15:00:20 +0800
+Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
+ pfn_valid()
+To:     Mike Rapoport <rppt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Marc Zyngier" <maz@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210422005626.564163-1-ricarkol@google.com>
- <20210422005626.564163-4-ricarkol@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <404e903a-5752-6ab2-9b46-aa40f7fb0fba@redhat.com>
-Date:   Thu, 22 Apr 2021 08:59:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210421065108.1987-1-rppt@kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
+Date:   Thu, 22 Apr 2021 15:00:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210422005626.564163-4-ricarkol@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210421065108.1987-1-rppt@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 02:56, Ricardo Koller wrote:
-> Copy arch/x86/include/asm/acpufeature.h and arch/x86/kvm/reverse_cpuid.h
-> from the kernel so that KVM selftests can use them in the next commits.
-> Also update the tools copy of arch/x86/include/asm/acpufeatures.h.
 
-Typo.
+On 2021/4/21 14:51, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+>
+> Hi,
+>
+> These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
+> pfn_valid_within() to 1.
+>
+> The idea is to mark NOMAP pages as reserved in the memory map and restore
+> the intended semantics of pfn_valid() to designate availability of struct
+> page for a pfn.
+>
+> With this the core mm will be able to cope with the fact that it cannot use
+> NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
+> will be treated correctly even without the need for pfn_valid_within.
+>
+> The patches are only boot tested on qemu-system-aarch64 so I'd really
+> appreciate memory stress tests on real hardware.
+>
+> If this actually works we'll be one step closer to drop custom pfn_valid()
+> on arm64 altogether.
 
-> These should be kept in sync, ideally with the help of some script like
-> check-headers.sh used by tools/perf/.
+Hi Mike，I have a question, without HOLES_IN_ZONE, the pfn_valid_within() 
+in move_freepages_block()->move_freepages()
+will be optimized, if there are holes in zone, the 'struce page'(memory 
+map) for pfn range of hole will be free by
+free_memmap(), and then the page traverse in the zone(with holes) from 
+move_freepages() will meet the wrong page，
+then it could panic at PageLRU(page) test, check link[1],
 
-Please provide such a script.
+"The idea is to mark NOMAP pages as reserved in the memory map", I see 
+the patch2 check memblock_is_nomap() in memory region
+of memblock, but it seems that memblock_mark_nomap() is not called(maybe 
+I missed), then memmap_init_reserved_pages() won't
+work, so should the HOLES_IN_ZONE still be needed for generic mm code?
 
-Also, without an automated way to keep them in sync I think it's better 
-to copy all of them to tools/testing/selftests/kvm, so that we can be 
-sure that a maintainer (me) runs the script and keeps them up to date. 
-I am fairly sure that the x86 maintainers don't want to have anything to 
-do with all of this business!
-
-Paolo
+[1] 
+https://lore.kernel.org/linux-arm-kernel/541193a6-2bce-f042-5bb2-88913d5f1047@arm.com/
 
