@@ -2,242 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD9A36861E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA223368627
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238481AbhDVRj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:39:28 -0400
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:33456 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236754AbhDVRjW (ORCPT
+        id S236761AbhDVRnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236681AbhDVRn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:39:22 -0400
-Received: by mail-oo1-f41.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so10135347ool.0;
-        Thu, 22 Apr 2021 10:38:47 -0700 (PDT)
+        Thu, 22 Apr 2021 13:43:28 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5417C06174A;
+        Thu, 22 Apr 2021 10:42:51 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id a5so15842043ljk.0;
+        Thu, 22 Apr 2021 10:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ki9ZtYZhSV3LWMVCxjRqnj9/0Swj62JIuDbFJTiqNqI=;
+        b=gK+jtnb9yrizbBOVUv561qvf6W9S3E65goj1NKrx2JI2F2fF+USZI+jexn4Teec+Ey
+         cx0ETik3wyCJz0IdiM+SFp3Y8Ay6hKUHrgap9W3TC24yMe2LlfQJEjFlqWtu6XA8mlHt
+         EcMdZA9dnEdXHrwpu4EBbFLT7I54W/78buf5ck2uSst1wZKUi0sg8sRhiCFgLl+aB2v7
+         VQfjdSRcPhwVqQ+jvB6T6Qm7cgtEoWD31DXewp8dcsifstXSIveq+VjzKqjB00y8UGoB
+         cpntiIr0lPqbF6PfV/C/JdpSOiJNbRBiqvGp5JH4mFMFyWySCIyl90QiqINdDfT9spqb
+         nuGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tMVnVypmvdM6x0K9pdf9C+ZDup5EGo+8ylMsMxOJ0dM=;
-        b=jUVgvYDgYY7/6lBdZB7v17Y4UXOhNeHgAp2SNjivYk6i0UsJw7yzxGiABecnL5RIUF
-         muiHrJGHVmrsCiK3We5ZYuQRLh+WAi29bJcPQQfsgotRNHAF7eDqDQ80OBYqFTA8hY7z
-         5t7l+A5HGxMyBvSz5+SKcKjOi4ORekr7nvQEKwiGVzaOwCrRHZYBs/MisaNfYNQQslfY
-         W6Y+37DDYevkTi3PVKXtZPBuqWYTV+gWuAtvtVn8j7wHEaqhu8fZgEE5Qk94uYo/k8rJ
-         G1afdT+zNG3uHbPn1GeFMJ+cPyVZsGu1mFkJelrwjD7rOkezDBcygrB+iJkqw30aS/BV
-         HyRw==
-X-Gm-Message-State: AOAM531BKL00Dj/Mpkt+42P+vW2RQYfeSEZ6w+zF/FjRqDiIvlzEfvBJ
-        Lk1KPYdqibL5Y7GpXgkSkA==
-X-Google-Smtp-Source: ABdhPJwcgWM0XLWrK7WEs8CdBSkklMghctKgwcSHGZbx3s62U5GMyPjoEZD7BN22/aQxOKo2Wojj3w==
-X-Received: by 2002:a4a:96e3:: with SMTP id t32mr3235742ooi.14.1619113127295;
-        Thu, 22 Apr 2021 10:38:47 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r9sm688532ool.3.2021.04.22.10.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 10:38:46 -0700 (PDT)
-Received: (nullmailer pid 3297132 invoked by uid 1000);
-        Thu, 22 Apr 2021 17:38:44 -0000
-Date:   Thu, 22 Apr 2021 12:38:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     andrew@lunn.ch, netdev@vger.kernel.org, olteanv@gmail.com,
-        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 1/9] dt-bindings: net: dsa: dt bindings for
- microchip lan937x
-Message-ID: <20210422173844.GA3227277@robh.at.kernel.org>
-References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
- <20210422094257.1641396-2-prasanna.vengateshan@microchip.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ki9ZtYZhSV3LWMVCxjRqnj9/0Swj62JIuDbFJTiqNqI=;
+        b=Hl14vJcNW1CdpuGsnBMVH1RMAg/eFLrXyqaJeOL6ltu4e3Ci3xNwZsUAjSRgXAQyZF
+         Kf0aMQk7xBwsQnxcTqmaTbKkkeun/eg7lq50v7DzQaSk3Xp4rKPNgqOO4nrDMKaJatPn
+         QOtPr9P7C1+LRK5Qh0AxDoLLtcY4bNZwr94usVXBwnxbY1I4+iLNTja7i5u/ot75v279
+         MHdeuq1Y6zqh9c4LwPyI1P8dSK/+TjWkCpvoT7/GgRTY19v4JjDSf1/x5OeFcibwpmIQ
+         c18384a6mTVmzz7duGAvDM7Gd8TG//TTWsXRNuJF3F+Ex5yhpjkHZ1Wn8SvgkVBC9r2c
+         2o2Q==
+X-Gm-Message-State: AOAM532zyvrjuCoomDRYprHZ1izs0eJptLxM+WoOx3V1dy9+a3GT4+B+
+        zkANnL0W+RxzUOu6NltF/X5IgyqaLWw=
+X-Google-Smtp-Source: ABdhPJzDQeP4P29DGurtjAOnQSudfJL4xZlJsYM/IqhQN7jgUY27qnGN3k5uHcJ3BSZK97Ze22cuug==
+X-Received: by 2002:a05:651c:44f:: with SMTP id g15mr2559ljg.48.1619113369902;
+        Thu, 22 Apr 2021 10:42:49 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
+        by smtp.googlemail.com with ESMTPSA id m28sm317818lfo.278.2021.04.22.10.42.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 10:42:49 -0700 (PDT)
+Subject: Re: [PATCH v1] iio: gyro: mpu3050: Fix reported temperature value
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210422033841.22211-1-digetx@gmail.com>
+ <CAHp75VdkpTqGyHSdYYwYQ-PY2c=pDWeB_-gYKsrA2iX7POPWmQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <18507b2d-0133-190d-724a-4cf038016c17@gmail.com>
+Date:   Thu, 22 Apr 2021 20:42:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422094257.1641396-2-prasanna.vengateshan@microchip.com>
+In-Reply-To: <CAHp75VdkpTqGyHSdYYwYQ-PY2c=pDWeB_-gYKsrA2iX7POPWmQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 03:12:49PM +0530, Prasanna Vengateshan wrote:
-> Documentation in .yaml format and updates to the MAINTAINERS
-> Also 'make dt_binding_check' is passed
+22.04.2021 09:46, Andy Shevchenko пишет:
+>                     case IIO_TEMP:
+>     -                       /* The temperature scaling is (x+23000)/280
+>     Celsius */
+>     +                       /*
+>     +                        * The temperature scaling is (x+23000)/280
+>     Celsius,
+>     +                        * where 23000 includes room temperature
+>     offset of
+>     +                        * +35C, 280 is the precision scale and x is
+>     the 16-bit
+>     +                        * signed integer which corresponds to the
+>     temperature
+>     +                        * range of -40C..85C.
 > 
-> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-> ---
->  .../bindings/net/dsa/microchip,lan937x.yaml   | 142 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 143 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-> new file mode 100644
-> index 000000000000..22128a52d699
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-> @@ -0,0 +1,142 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/dsa/microchip,lan937x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LAN937x Ethernet Switch Series Tree Bindings
-> +
-> +maintainers:
-> +  - UNGLinuxDriver@microchip.com
-> +
-> +allOf:
-> +  - $ref: dsa.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - microchip,lan9370
-> +      - microchip,lan9371
-> +      - microchip,lan9372
-> +      - microchip,lan9373
-> +      - microchip,lan9374
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 50000000
-> +
-> +  reset-gpios:
-> +    description: Optional gpio specifier for a reset line
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    //Ethernet switch connected via spi to the host
-
-If this is on SPI, why is it not under the spi bus node?
-
-> +    ethernet {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      fixed-link {
-> +        speed = <1000>;
-> +        full-duplex;
-> +      };
-> +    };
-> +
-> +    spi {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      lan9374: switch@0 {
-> +        compatible = "microchip,lan9374";
-> +        reg = <0>;
-> +
-> +        spi-max-frequency = <44000000>;
-> +
-> +        ethernet-ports {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +          port@0 {
-> +            reg = <0>;
-> +            label = "lan1";
-> +            phy-handle = <&t1phy0>;
-> +          };
-> +          port@1 {
-> +            reg = <1>;
-> +            label = "lan2";
-> +            phy-handle = <&t1phy1>;
-> +          };
-> +          port@2 {
-> +            reg = <2>;
-> +            label = "lan4";
-> +            phy-handle = <&t1phy2>;
-> +          };
-> +          port@3 {
-> +            reg = <3>;
-> +            label = "lan6";
-> +            phy-handle = <&t1phy3>;
-> +          };
-> +          port@4 {
-> +            reg = <4>;
-> +            phy-mode = "rgmii";
-> +            ethernet = <&ethernet>;
-
-You are missing 'ethernet' label.
-
-> +            fixed-link {
-> +              speed = <1000>;
-> +              full-duplex;
-> +            };
-> +          };
-> +          port@5 {
-> +            reg = <5>;
-> +            label = "lan7";
-> +            fixed-link {
-> +              speed = <1000>;
-> +              full-duplex;
-> +            };
-> +          };
-> +          port@6 {
-> +            reg = <6>;
-> +            label = "lan5";
-> +            phy-handle = <&t1phy4>;
-> +          };
-> +          port@7 {
-> +            reg = <7>;
-> +            label = "lan3";
-> +            phy-handle = <&t1phy5>;
-> +          };
-> +        };
-> +
-> +        mdio {
-> +          compatible = "microchip,lan937x-mdio";
-
-You can just drop this to make the example pass. Or convert that binding 
-to schema.
-
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          t1phy0: ethernet-phy@0{
-> +            reg = <0x0>;
-> +          };
-> +          t1phy1: ethernet-phy@1{
-> +            reg = <0x1>;
-> +          };
-> +          t1phy2: ethernet-phy@2{
-> +            reg = <0x2>;
-> +          };
-> +          t1phy3: ethernet-phy@3{
-> +            reg = <0x3>;
-> +          };
-> +          t1phy4: ethernet-phy@6{
-> +            reg = <0x6>;
-> +          };
-> +          t1phy5: ethernet-phy@7{
-> +            reg = <0x7>;
-> +          };
-> +        };
-> +      };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c3c8fa572580..a0fdfef8802a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11752,6 +11752,7 @@ M:	UNGLinuxDriver@microchip.com
->  L:	netdev@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> +F:	Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
->  F:	drivers/net/dsa/microchip/*
->  F:	include/linux/platform_data/microchip-ksz.h
->  F:	net/dsa/tag_ksz.c
-> -- 
-> 2.27.0
 > 
+> Datasheet says typical -30°... also think about the other comment you
+> gave, I.e. about temperature of the die itself. Are you suggesting that
+> at -40° the die T is also -40°?  Does it have perpetuum mobile ? ;) it
+> might dissipate not to much energy, but we don’t know the linearity of
+> the curve there.
+
+My understanding that -40C is the minimum temperature which sensor may
+report.
+
+Alright, I think the comment could be improved a tad anyways. I'll
+prepare v3, thanks.
