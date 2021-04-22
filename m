@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F453687C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D913687C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239119AbhDVUR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:17:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34324 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236915AbhDVUR1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:17:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619122612;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F6HkNIXnsQ0jUlhEdnv+PnYZxDWWdvNCPtrwXlIdkmc=;
-        b=g6vtC3eqTh8TDpAbIf0sD8KcMjPgGbeCPgRNpEl13GfMCWGZWRytoNgEMqFh/Xv2cJjQls
-        TZPsMbJFrJVZasNtZUcW5NljKydrDGtNayEr7qZWgBpdWozvcWe2bfRV2XQx1SaBXd3/Go
-        /VWCsKWBK9oS20rnO3uJNExG8WyS0Eo=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-PWZa5fXGNLSJp7jiTiM90g-1; Thu, 22 Apr 2021 16:16:49 -0400
-X-MC-Unique: PWZa5fXGNLSJp7jiTiM90g-1
-Received: by mail-qk1-f198.google.com with SMTP id w3-20020ae9e5030000b029028013f752dbso12882403qkf.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:16:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=F6HkNIXnsQ0jUlhEdnv+PnYZxDWWdvNCPtrwXlIdkmc=;
-        b=S2Q8z6NotYb9wS9dUrNbBttChQPhAHlBBdCrIgGetuZS8eWv2uizbuGDaQzBDiwo3z
-         ofdR7PB56EY8zijGpT/h5YfOobzCdP4f4quBaTPn7P3IYC//lww7M3xYRLbRTwqKMVxT
-         cFUUwQ2rK0HvxS5xOa5JBQEoP3KeIGwCJpfYBt7aXUBZiQzDDx3OwJ3OP0xmIzpgFhH+
-         w35HLHK/C4lagyybs0TBWMez2mke+8bzTw0jKw538PKJkSV8zYT4fNdrlfjZTGL7gB+G
-         nqcpKkBaRnEC6puFvdUa4Y0i414mWsmBNjxI8lQWWEXr/ue4NhpmQA59KT97qcyypd1a
-         lCoA==
-X-Gm-Message-State: AOAM531eynVFUMHhsCw4ud/34FCXrLRtrjs/ggV4lekyXuFJoQNNuLNP
-        IG+USzsYwVNxur8/C7tpAmeYdh09N2gnwsaj4HjBqK8fL+sz4YtYFULH0qP7C9+1QuWZ+LR6kQn
-        b3PZ3NyKa10K6E7mAyXaREL13
-X-Received: by 2002:a0c:db82:: with SMTP id m2mr262144qvk.37.1619122608055;
-        Thu, 22 Apr 2021 13:16:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJytE+xQEguBXGQZlvwJ1qtOPecl4N0Kjsn9TELwI1t3EWQPLCqM+dsvQai1V7Y+XCx7xnLthw==
-X-Received: by 2002:a0c:db82:: with SMTP id m2mr262125qvk.37.1619122607871;
-        Thu, 22 Apr 2021 13:16:47 -0700 (PDT)
-Received: from localhost.localdomain ([2601:184:417f:70c0::42e6])
-        by smtp.gmail.com with ESMTPSA id x13sm3090600qtf.32.2021.04.22.13.16.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 13:16:47 -0700 (PDT)
-Subject: Re: [PATCH 2/2] lib/test: convert lib/test_list_sort.c to use KUnit
-To:     Daniel Latypov <dlatypov@google.com>,
-        andriy.shevchenko@linux.intel.com
-Cc:     brendanhiggins@google.com, davidgow@google.com,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-References: <20210421183222.2557747-1-dlatypov@google.com>
-From:   Nico Pache <npache@redhat.com>
-Message-ID: <d7b2b598-7087-0445-4647-8521f3238dc2@redhat.com>
-Date:   Thu, 22 Apr 2021 16:16:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239070AbhDVUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:18:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:24924 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236915AbhDVUST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 16:18:19 -0400
+IronPort-SDR: bKEUz33tqiFtJA1jg8uicjjAu5asfatWLiSYvNnnVoMSvu+veNwi1S5WJy/3iM047puPqV0kRl
+ zijJOgTVh2Ng==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="192778300"
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="192778300"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 13:17:43 -0700
+IronPort-SDR: cGN1FiVr7rRdcgpr4pABfyQNa2TqI8SwHnvF0YAmf33j9kE5ZlJ1fIFzUW0D4ngpaW3CUaR7lt
+ idK8Dg5iHbyA==
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="428105376"
+Received: from schen9-mobl.amr.corp.intel.com ([10.254.72.4])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 13:17:42 -0700
+Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
+ too_many_isolated()
+To:     Yu Zhao <yuzhao@google.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ying.huang@intel.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, wfg@mail.ustc.edu.cn
+References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
+ <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com>
+ <YIGuvh70JbE1Cx4U@google.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <a085478d-5118-cdff-c611-1649fce7a650@linux.intel.com>
+Date:   Thu, 22 Apr 2021 13:17:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210421183222.2557747-1-dlatypov@google.com>
+In-Reply-To: <YIGuvh70JbE1Cx4U@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Can we change this to CONFIG_LIST_SORT_KUNIT_TEST to follow the convention used by other KUNIT tests?
 
-Maintainers? thoughts? I recently posted patches to convert some of the other tests that break this format [1].
+On 4/22/21 10:13 AM, Yu Zhao wrote:
 
-Cheers,
+> @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
+>  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  				gfp_t gfp_mask, nodemask_t *nodemask)
+>  {
+> +	int nr_cpus;
+>  	unsigned long nr_reclaimed;
+>  	struct scan_control sc = {
+>  		.nr_to_reclaim = SWAP_CLUSTER_MAX,
+> @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  	set_task_reclaim_state(current, &sc.reclaim_state);
+>  	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
+>  
+> +	nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
+> +	while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
+> +		if (schedule_timeout_killable(HZ / 10))
 
--- Nico
+100 msec seems like a long time to wait.  The original code in shrink_inactive_list
+choose 100 msec sleep because the sleep happens only once in the while loop and 100 msec was
+used to check for stalling.  In this case the loop can go on for a while and the 
+#reclaimers can go down below the sooner than 100 msec. Seems like it should be checked
+more often.
 
-[1] - https://lkml.org/lkml/2021/4/14/310
+Tim
 
-On 4/21/21 2:32 PM, Daniel Latypov wrote:
-> [SNIP...]
->  config TEST_LIST_SORT
-> -	tristate "Linked list sorting test"
-> -	depends on DEBUG_KERNEL || m
-> +	tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
-> +	depends on KUNIT
-> +	default KUNIT_ALL_TESTS
-> [SNAP...]
-
+> +			return SWAP_CLUSTER_MAX;
+> +	}
+> +
+>  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
+>  
+> +	if (nr_cpus)
+> +		atomic_dec(&pgdat->nr_reclaimers);
+> +
+>  	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
+>  	set_task_reclaim_state(current, NULL);
+> 
