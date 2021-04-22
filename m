@@ -2,158 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43AE367D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62564367D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhDVJQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:16:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235598AbhDVJQb (ORCPT
+        id S235603AbhDVJRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:17:42 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53422 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235004AbhDVJRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:16:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619082956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZpZ4/lZdrqpUFu+LeCWRgSEcQffomnP0+mjACx6gy8c=;
-        b=A72lalvqTo0i1rfKgUi+Z7inRVuNse7Glc3M7AcX/SiD6fr8075LHJRp+t/rQ2otQS9z1k
-        82xtYHyfwKoB7VbgDMrlZLRNzu+xLOI8PFolEzfxZta2ndyz7x+jgaMdcC+szBvL10smvz
-        a+tx7ympxsswd/h+VbW6czG8Qj6UyFw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-277-GUXQldHaP8ag-HXEf6Mkrg-1; Thu, 22 Apr 2021 05:15:52 -0400
-X-MC-Unique: GUXQldHaP8ag-HXEf6Mkrg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2270F107ACCD;
-        Thu, 22 Apr 2021 09:15:50 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A000919726;
-        Thu, 22 Apr 2021 09:15:41 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 11:15:40 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3] bpf: Fix some invalid links in
- bpf_devel_QA.rst
-Message-ID: <20210422111540.7e37c004@carbon>
-In-Reply-To: <1619062560-30483-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1619062560-30483-1-git-send-email-yangtiezhu@loongson.cn>
+        Thu, 22 Apr 2021 05:17:41 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M9F7p5031432;
+        Thu, 22 Apr 2021 09:16:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=D/UxE1J0KwRNGKLRTnqyWyQysEO9MzOtstRUB6POFxI=;
+ b=DKoET6OTkZlGPSVHKqJ+4JCCag3tka3Wyu04x14Lhjyq0+TYTfcIp1P5wjPGXOKruHWC
+ 9miuMzJIx2S7EnFF7RS1+HmyCQKSJmNnYKOXNYMIiejsXCcn+hyCn9Y+8zeKhJXa5jeV
+ rAHf+5xHsfoohwVKN8djcua1hIbDVIbv8rfqgG8ldhdk5qAwJKglmTj4BlIe3iTePq8Q
+ BDoBO3zmsIJBsGRDHTrQKqf7MQhVsyCLufEVe0Eej8GOJjef01MlOvAf4lObC1TCuePN
+ iB3+KFhvlAM0ZZllhaQDVKnGunwOrPE0fl7Epddfxti8VMkyL7t0WYvlBvfib/GkFJ2c PQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 37yqmnmsq8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Apr 2021 09:16:55 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M9GEBu101531;
+        Thu, 22 Apr 2021 09:16:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3809k36v07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Apr 2021 09:16:55 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13M9GtER106543;
+        Thu, 22 Apr 2021 09:16:55 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 3809k36uys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Apr 2021 09:16:55 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13M9GrlB006626;
+        Thu, 22 Apr 2021 09:16:53 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 22 Apr 2021 09:16:52 +0000
+Date:   Thu, 22 Apr 2021 12:16:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Stefani Seibold <stefani@seibold.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] kfifo: fix ternary sign extension bugs
+Message-ID: <YIE+/cK1tBzSuQPU@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: GWdabAS1ETM8ZGVTShNYtPnjvcPT4c_Q
+X-Proofpoint-GUID: GWdabAS1ETM8ZGVTShNYtPnjvcPT4c_Q
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 clxscore=1011
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104220078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 11:36:00 +0800
-Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+The intent with this code was to return negative error codes but instead
+it returns positives.
 
-> There exist some errors "404 Not Found" when I click the link
-> of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-> in the documentation "HOWTO interact with BPF subsystem" [4].
+The problem is how type promotion works with ternary operations.  These
+functions return long, "ret" is an int and "copied" is a u32.  The
+negative error code is first cast to u32 so it becomes a high positive
+and then cast to long where it's still a positive.
 
-The links work if you are browsing the document via GitHub:
- https://github.com/torvalds/linux/blob/master/Documentation/bpf/bpf_devel_QA.rst
+We could fix this by declaring "ret" as a ssize_t but let's just get
+rid of the ternaries instead.
 
-But I'm fine with removing those links as the official doc is here:
- https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
+Fixes: 5bf2b19320ec ("kfifo: add example files to the kernel sample directory")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ samples/kfifo/bytestream-example.c | 8 ++++++--
+ samples/kfifo/inttype-example.c    | 8 ++++++--
+ samples/kfifo/record-example.c     | 8 ++++++--
+ 3 files changed, 18 insertions(+), 6 deletions(-)
 
-
-> As Alexei Starovoitov suggested, just remove "MAINTAINERS" and
-> "samples/bpf/" links and use correct link of "selftests".
-> 
-> [1] https://www.kernel.org/doc/html/MAINTAINERS
-> [2] https://www.kernel.org/doc/html/samples/bpf/
-> [3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-> [4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
-> 
-> Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
-> 
-> v3: Remove "MAINTAINERS" and "samples/bpf/" links and
->     use correct link of "selftests"
-> 
-> v2: Add Fixes: tag
-> 
->  Documentation/bpf/bpf_devel_QA.rst | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-> index 2ed89ab..d05e67e 100644
-> --- a/Documentation/bpf/bpf_devel_QA.rst
-> +++ b/Documentation/bpf/bpf_devel_QA.rst
-> @@ -29,7 +29,7 @@ list:
->  This may also include issues related to XDP, BPF tracing, etc.
->  
->  Given netdev has a high volume of traffic, please also add the BPF
-> -maintainers to Cc (from kernel MAINTAINERS_ file):
-> +maintainers to Cc (from kernel ``MAINTAINERS`` file):
->  
->  * Alexei Starovoitov <ast@kernel.org>
->  * Daniel Borkmann <daniel@iogearbox.net>
-> @@ -234,11 +234,11 @@ be subject to change.
->  
->  Q: samples/bpf preference vs selftests?
->  ---------------------------------------
-> -Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
-> -selftests_ ?
-> +Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
-> +selftests_?
->  
->  A: In general, we prefer additions to BPF kernel selftests_ rather than
-> -`samples/bpf/`_. The rationale is very simple: kernel selftests are
-> +``samples/bpf/``. The rationale is very simple: kernel selftests are
->  regularly run by various bots to test for kernel regressions.
->  
->  The more test cases we add to BPF selftests, the better the coverage
-> @@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
->  not that BPF kernel selftests cannot demo how a specific feature can
->  be used.
->  
-> -That said, `samples/bpf/`_ may be a good place for people to get started,
-> +That said, ``samples/bpf/`` may be a good place for people to get started,
->  so it might be advisable that simple demos of features could go into
-> -`samples/bpf/`_, but advanced functional and corner-case testing rather
-> +``samples/bpf/``, but advanced functional and corner-case testing rather
->  into kernel selftests.
->  
->  If your sample looks like a test case, then go for BPF kernel selftests
-> @@ -645,10 +645,9 @@ when:
->  
->  .. Links
->  .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
-> -.. _MAINTAINERS: ../../MAINTAINERS
->  .. _netdev-FAQ: ../networking/netdev-FAQ.rst
-> -.. _samples/bpf/: ../../samples/bpf/
-> -.. _selftests: ../../tools/testing/selftests/bpf/
-> +.. _selftests:
-> +   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
->  .. _Documentation/dev-tools/kselftest.rst:
->     https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
->  .. _Documentation/bpf/btf.rst: btf.rst
-
-
-
+diff --git a/samples/kfifo/bytestream-example.c b/samples/kfifo/bytestream-example.c
+index c406f03ee551..5a90aa527877 100644
+--- a/samples/kfifo/bytestream-example.c
++++ b/samples/kfifo/bytestream-example.c
+@@ -122,8 +122,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&write_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static ssize_t fifo_read(struct file *file, char __user *buf,
+@@ -138,8 +140,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&read_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static const struct proc_ops fifo_proc_ops = {
+diff --git a/samples/kfifo/inttype-example.c b/samples/kfifo/inttype-example.c
+index 78977fc4a23f..e5403d8c971a 100644
+--- a/samples/kfifo/inttype-example.c
++++ b/samples/kfifo/inttype-example.c
+@@ -115,8 +115,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&write_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static ssize_t fifo_read(struct file *file, char __user *buf,
+@@ -131,8 +133,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&read_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static const struct proc_ops fifo_proc_ops = {
+diff --git a/samples/kfifo/record-example.c b/samples/kfifo/record-example.c
+index c507998a2617..f64f3d62d6c2 100644
+--- a/samples/kfifo/record-example.c
++++ b/samples/kfifo/record-example.c
+@@ -129,8 +129,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&write_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static ssize_t fifo_read(struct file *file, char __user *buf,
+@@ -145,8 +147,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&read_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static const struct proc_ops fifo_proc_ops = {
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.30.2
 
