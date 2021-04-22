@@ -2,440 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BC53680B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125243680C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236758AbhDVMkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236808AbhDVMjP (ORCPT
+        id S236392AbhDVMrO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 08:47:14 -0400
+Received: from hurricane.elijah.cs.cmu.edu ([128.2.209.191]:51008 "EHLO
+        hurricane.elijah.cs.cmu.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236347AbhDVMrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:39:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43726C061343
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=xHm00EFRE7DKw0xx2JN0twL5mx9qMBKUDKZdW4RdMXg=; b=AlFfa3FQu6/d0XH8O6prBw8XyN
-        cBHY6Z9DCnEwlK+KdQloog3MuEaU1nQ4j97h7SGFtKoIg4kIsbH0zPiPYOGBcV9w1tVn6qt5N38ad
-        FLvaMr1M3cYUq3c8PnClyxViS11rMHjveRsYqLi+1HzvMoIH6Mt2AQ+86sE6hurSK8UvcxaPG56dX
-        RHTtV0q8TTkfkee1RB/Wtq4dOHkM7zzj2uub8plJspKjgrUZeBShkPKALJXNVQGQFySxtpT6RRRla
-        e8YbnuWYj7J/CiidLruogqQjJb2cZODjAmyzz9+bezVdRtQLFeOaJkWNuqanTgX+IcA3QayZ+uBhc
-        3cUjaecg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZYZM-00GicG-TT; Thu, 22 Apr 2021 12:38:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 861C030032C;
-        Thu, 22 Apr 2021 14:35:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 851792C67A908; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
-Message-ID: <20210422123309.100860030@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 22 Apr 2021 14:05:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de
-Subject: [PATCH 19/19] kselftest: Add test for core sched prctl interface
-References: <20210422120459.447350175@infradead.org>
+        Thu, 22 Apr 2021 08:47:12 -0400
+X-Greylist: delayed 1120 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 08:47:12 EDT
+Received: from [72.95.139.242] (helo=[192.168.2.97])
+        by hurricane.elijah.cs.cmu.edu with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <jaharkes@cs.cmu.edu>)
+        id 1lZYR1-0000yX-4S; Thu, 22 Apr 2021 08:27:55 -0400
+Date:   Thu, 22 Apr 2021 08:27:53 -0400
+In-Reply-To: <20210421132012.82354-1-christian.koenig@amd.com>
+References: <20210421132012.82354-1-christian.koenig@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Autocrypt: addr=jaharkes@cs.cmu.edu; keydata=
+ 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
+Subject: Re: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error path
+To:     =?ISO-8859-1?Q?Christian_K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, dri-devel@lists.freedesktop.org
+CC:     coda@cs.cmu.edu, miklos@szeredi.hu, akpm@linux-foundation.org,
+        jgg@ziepe.ca
+From:   Jan Harkes <jaharkes@cs.cmu.edu>
+Message-ID: <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Hyser <chris.hyser@oracle.com>
+Looks good to me.
 
-Provides a selftest and examples of using the interface.
+I'm also maintaining an out of tree coda module build that people sometimes use, which has workarounds for differences between the various kernel versions.
 
-[peterz: updated to not use sched_debug]
-Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/testing/selftests/sched/.gitignore      |    1 
- tools/testing/selftests/sched/Makefile        |   14 +
- tools/testing/selftests/sched/config          |    1 
- tools/testing/selftests/sched/cs_prctl_test.c |  338 ++++++++++++++++++++++++++
- 4 files changed, 354 insertions(+)
- create mode 100644 tools/testing/selftests/sched/.gitignore
- create mode 100644 tools/testing/selftests/sched/Makefile
- create mode 100644 tools/testing/selftests/sched/config
- create mode 100644 tools/testing/selftests/sched/cs_prctl_test.c
+Do you have a reference to the corresponding mmap_region change? If it is merged already I'll probably be able to find it. Is this mmap_region change expected to be backported to any lts kernels?
 
---- /dev/null
-+++ b/tools/testing/selftests/sched/.gitignore
-@@ -0,0 +1 @@
-+cs_prctl_test
---- /dev/null
-+++ b/tools/testing/selftests/sched/Makefile
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+
-+ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
-+CLANG_FLAGS += -no-integrated-as
-+endif
-+
-+CFLAGS += -O2 -Wall -g -I./ -I../../../../usr/include/  -Wl,-rpath=./ \
-+	  $(CLANG_FLAGS)
-+LDLIBS += -lpthread
-+
-+TEST_GEN_FILES := cs_prctl_test
-+TEST_PROGS := cs_prctl_test
-+
-+include ../lib.mk
---- /dev/null
-+++ b/tools/testing/selftests/sched/config
-@@ -0,0 +1 @@
-+CONFIG_SCHED_DEBUG=y
---- /dev/null
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -0,0 +1,338 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Use the core scheduling prctl() to test core scheduling cookies control.
-+ *
-+ * Copyright (c) 2021 Oracle and/or its affiliates.
-+ * Author: Chris Hyser <chris.hyser@oracle.com>
-+ *
-+ *
-+ * This library is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2.1 of the GNU Lesser General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This library is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
-+ * for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public License
-+ * along with this library; if not, see <http://www.gnu.org/licenses>.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/eventfd.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sched.h>
-+#include <sys/prctl.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include <time.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+#if __GLIBC_PREREQ(2, 30) == 0
-+#include <sys/syscall.h>
-+static pid_t gettid(void)
-+{
-+	return syscall(SYS_gettid);
-+}
-+#endif
-+
-+#ifndef PR_SCHED_CORE
-+#define PR_SCHED_CORE			60
-+# define PR_SCHED_CORE_GET		0
-+# define PR_SCHED_CORE_CREATE		1 /* create unique core_sched cookie */
-+# define PR_SCHED_CORE_SHARE_TO		2 /* push core_sched cookie to pid */
-+# define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
-+# define PR_SCHED_CORE_MAX		4
-+#endif
-+
-+#define MAX_PROCESSES 128
-+#define MAX_THREADS   128
-+
-+static const char USAGE[] = "cs_prctl_test [options]\n"
-+"    options:\n"
-+"	-P  : number of processes to create.\n"
-+"	-T  : number of threads per process to create.\n"
-+"	-d  : delay time to keep tasks alive.\n"
-+"	-k  : keep tasks alive until keypress.\n";
-+
-+enum pid_type {PIDTYPE_PID = 0, PIDTYPE_TGID, PIDTYPE_PGID};
-+
-+const int THREAD_CLONE_FLAGS = CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES;
-+
-+static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4,
-+		  unsigned long arg5)
-+{
-+	int res;
-+
-+	res = prctl(option, arg2, arg3, arg4, arg5);
-+	printf("%d = prctl(%d, %ld, %ld, %ld, %lx)\n", res, option, (long)arg2, (long)arg3,
-+	       (long)arg4, arg5);
-+	return res;
-+}
-+
-+#define STACK_SIZE (1024 * 1024)
-+
-+#define handle_error(msg) __handle_error(__FILE__, __LINE__, msg)
-+static void __handle_error(char *fn, int ln, char *msg)
-+{
-+	printf("(%s:%d) - ", fn, ln);
-+	perror(msg);
-+	exit(EXIT_FAILURE);
-+}
-+
-+static void handle_usage(int rc, char *msg)
-+{
-+	puts(USAGE);
-+	puts(msg);
-+	putchar('\n');
-+	exit(rc);
-+}
-+
-+static unsigned long get_cs_cookie(int pid)
-+{
-+	unsigned long long cookie;
-+	int ret;
-+
-+	ret = prctl(PR_SCHED_CORE, PR_SCHED_CORE_GET, pid, PIDTYPE_PID,
-+		    (unsigned long)&cookie);
-+	if (ret) {
-+		printf("Not a core sched system\n");
-+		return -1UL;
-+	}
-+
-+	return cookie;
-+}
-+
-+struct child_args {
-+	int num_threads;
-+	int pfd[2];
-+	int cpid;
-+	int thr_tids[MAX_THREADS];
-+};
-+
-+static int child_func_thread(void __attribute__((unused))*arg)
-+{
-+	while (1)
-+		usleep(20000);
-+	return 0;
-+}
-+
-+static void create_threads(int num_threads, int thr_tids[])
-+{
-+	void *child_stack;
-+	pid_t tid;
-+	int i;
-+
-+	for (i = 0; i < num_threads; ++i) {
-+		child_stack = malloc(STACK_SIZE);
-+		if (!child_stack)
-+			handle_error("child stack allocate");
-+
-+		tid = clone(child_func_thread, child_stack + STACK_SIZE, THREAD_CLONE_FLAGS, NULL);
-+		if (tid == -1)
-+			handle_error("clone thread");
-+		thr_tids[i] = tid;
-+	}
-+}
-+
-+static int child_func_process(void *arg)
-+{
-+	struct child_args *ca = (struct child_args *)arg;
-+
-+	close(ca->pfd[0]);
-+
-+	create_threads(ca->num_threads, ca->thr_tids);
-+
-+	write(ca->pfd[1], &ca->thr_tids, sizeof(int) * ca->num_threads);
-+	close(ca->pfd[1]);
-+
-+	while (1)
-+		usleep(20000);
-+	return 0;
-+}
-+
-+static unsigned char child_func_process_stack[STACK_SIZE];
-+
-+void create_processes(int num_processes, int num_threads, struct child_args proc[])
-+{
-+	pid_t cpid;
-+	int i;
-+
-+	for (i = 0; i < num_processes; ++i) {
-+		proc[i].num_threads = num_threads;
-+
-+		if (pipe(proc[i].pfd) == -1)
-+			handle_error("pipe() failed");
-+
-+		cpid = clone(child_func_process, child_func_process_stack + STACK_SIZE,
-+			     SIGCHLD, &proc[i]);
-+		proc[i].cpid = cpid;
-+		close(proc[i].pfd[1]);
-+	}
-+
-+	for (i = 0; i < num_processes; ++i) {
-+		read(proc[i].pfd[0], &proc[i].thr_tids, sizeof(int) * proc[i].num_threads);
-+		close(proc[i].pfd[0]);
-+	}
-+}
-+
-+void disp_processes(int num_processes, struct child_args proc[])
-+{
-+	int i, j;
-+
-+	printf("tid=%d, / tgid=%d / pgid=%d: %lx\n", gettid(), getpid(), getpgid(0),
-+	       get_cs_cookie(getpid()));
-+
-+	for (i = 0; i < num_processes; ++i) {
-+		printf("    tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].cpid, proc[i].cpid,
-+		       getpgid(proc[i].cpid), get_cs_cookie(proc[i].cpid));
-+		for (j = 0; j < proc[i].num_threads; ++j) {
-+			printf("        tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].thr_tids[j],
-+			       proc[i].cpid, getpgid(0), get_cs_cookie(proc[i].thr_tids[j]));
-+		}
-+	}
-+	puts("\n");
-+}
-+
-+static int errors;
-+
-+#define validate(v) _validate(__LINE__, v, #v)
-+void _validate(int line, int val, char *msg)
-+{
-+	if (!val) {
-+		++errors;
-+		printf("(%d) FAILED: %s\n", line, msg);
-+	} else {
-+		printf("(%d) PASSED: %s\n", line, msg);
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct child_args procs[MAX_PROCESSES];
-+
-+	int keypress = 0;
-+	int num_processes = 2;
-+	int num_threads = 3;
-+	int delay = 0;
-+	int res = 0;
-+	int pidx;
-+	int pid;
-+	int opt;
-+
-+	while ((opt = getopt(argc, argv, ":hkT:P:d:")) != -1) {
-+		switch (opt) {
-+		case 'P':
-+			num_processes = (int)strtol(optarg, NULL, 10);
-+			break;
-+		case 'T':
-+			num_threads = (int)strtoul(optarg, NULL, 10);
-+			break;
-+		case 'd':
-+			delay = (int)strtol(optarg, NULL, 10);
-+			break;
-+		case 'k':
-+			keypress = 1;
-+			break;
-+		case 'h':
-+			printf(USAGE);
-+			exit(EXIT_SUCCESS);
-+		default:
-+			handle_usage(20, "unknown option");
-+		}
-+	}
-+
-+	if (num_processes < 1 || num_processes > MAX_PROCESSES)
-+		handle_usage(1, "Bad processes value");
-+
-+	if (num_threads < 1 || num_threads > MAX_THREADS)
-+		handle_usage(2, "Bad thread value");
-+
-+	if (keypress)
-+		delay = -1;
-+
-+	srand(time(NULL));
-+
-+	/* put into separate process group */
-+	if (setpgid(0, 0) != 0)
-+		handle_error("process group");
-+
-+	printf("\n## Create a thread/process/process group hiearchy\n");
-+	create_processes(num_processes, num_threads, procs);
-+	disp_processes(num_processes, procs);
-+	validate(get_cs_cookie(0) == 0);
-+
-+	printf("\n## Set a cookie on entire process group\n");
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, 0, PIDTYPE_PGID, 0) < 0)
-+		handle_error("core_sched create failed -- PGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) != 0);
-+
-+	/* get a random process pid */
-+	pidx = rand() % num_processes;
-+	pid = procs[pidx].cpid;
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(pid));
-+	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Set a new cookie on entire process/TGID [%d]\n", pid);
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, pid, PIDTYPE_TGID, 0) < 0)
-+		handle_error("core_sched create failed -- TGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) != get_cs_cookie(pid));
-+	validate(get_cs_cookie(pid) != 0);
-+	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy the cookie of current/PGID[%d], to pid [%d] as PIDTYPE_PID\n",
-+	       getpid(), pid);
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, pid, PIDTYPE_PID, 0) < 0)
-+		handle_error("core_sched share to itself failed -- PID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(pid));
-+	validate(get_cs_cookie(pid) != 0);
-+	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy cookie from a thread [%d] to current/PGID [%d] as PIDTYPE_PID\n",
-+	       procs[pidx].thr_tids[0], getpid());
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, procs[pidx].thr_tids[0],
-+		   PIDTYPE_PID, 0) < 0)
-+		handle_error("core_sched share from thread failed -- PID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy cookie from current [%d] to current as pidtype PGID\n", getpid());
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, 0, PIDTYPE_PGID, 0) < 0)
-+		handle_error("core_sched share to self failed -- PGID");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(0) == get_cs_cookie(pid));
-+	validate(get_cs_cookie(pid) != 0);
-+	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	if (errors) {
-+		printf("TESTS FAILED. errors: %d\n", errors);
-+		res = 10;
-+	} else {
-+		printf("SUCCESS !!!\n");
-+	}
-+
-+	if (keypress)
-+		getchar();
-+	else
-+		sleep(delay);
-+
-+	for (pidx = 0; pidx < num_processes; ++pidx)
-+		kill(procs[pidx].cpid, 15);
-+
-+	return res;
-+}
+Jan
 
-
+On April 21, 2021 9:20:11 AM EDT, "Christian König" <ckoenig.leichtzumerken@gmail.com> wrote:
+>mmap_region() now calls fput() on the vma->vm_file.
+>
+>So we need to drop the extra reference on the coda file instead of the
+>host file.
+>
+>Signed-off-by: Christian König <christian.koenig@amd.com>
+>Fixes: 1527f926fd04 ("mm: mmap: fix fput in error path v2")
+>CC: stable@vger.kernel.org # 5.11+
+>---
+> fs/coda/file.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>
+>diff --git a/fs/coda/file.c b/fs/coda/file.c
+>index 128d63df5bfb..ef5ca22bfb3e 100644
+>--- a/fs/coda/file.c
+>+++ b/fs/coda/file.c
+>@@ -175,10 +175,10 @@ coda_file_mmap(struct file *coda_file, struct
+>vm_area_struct *vma)
+> 	ret = call_mmap(vma->vm_file, vma);
+> 
+> 	if (ret) {
+>-		/* if call_mmap fails, our caller will put coda_file so we
+>-		 * should drop the reference to the host_file that we got.
+>+		/* if call_mmap fails, our caller will put host_file so we
+>+		 * should drop the reference to the coda_file that we got.
+> 		 */
+>-		fput(host_file);
+>+		fput(coda_file);
+> 		kfree(cvm_ops);
+> 	} else {
+> 		/* here we add redirects for the open/close vm_operations */
