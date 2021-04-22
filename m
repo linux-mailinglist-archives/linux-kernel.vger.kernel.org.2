@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D97C367906
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E6E36790C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhDVE55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 00:57:57 -0400
-Received: from mail-ed1-f46.google.com ([209.85.208.46]:39890 "EHLO
-        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhDVE54 (ORCPT
+        id S232166AbhDVE7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 00:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhDVE66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 00:57:56 -0400
-Received: by mail-ed1-f46.google.com with SMTP id g17so51162113edm.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 21:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xPuwqXSDNA3qb4GOBBlmEnhsK0h30VSzgWZAMkJobA0=;
-        b=YsZnGeh4nAho8ggYU1zasn1NBzPiM5QT5DMYJDEJBgyWDsZXRVasG5WXLH2CNxxNCg
-         96Yo2aSzB7F9OSW1xMbejhzWAQutByE1tcVkl26bGlMKXOIk4tDwsSYxvoAawF6DaQ4X
-         CO9Tt997+QDZZNMntBYTdSzHl7mAqHVnxyO3AmzB3jWfnknpYcIzgowgv4er+Mym7nEB
-         +jQBDfNpkNfa59O7mH3T29OjcDhuKbce7inJKFlun1giLJKHdxOUtKqDrwcEwZcHnOPU
-         t/6GwQIy3voVeqJaTp+Afu6jY+/KlDKv535t/+2EPZpQZN64GXlCohsEUel3hgkrSkGi
-         Tg+g==
-X-Gm-Message-State: AOAM533NpfeTfH836Ga4uEGmdpMa1/AXXsFDHpG/VSH4GBfEQiKZ5xXB
-        l4WtssyPRT60mtQUZ+D1LII=
-X-Google-Smtp-Source: ABdhPJzgelzMc82d9XqmbzlhHGhvvh7PeOecafTguk8YjmLSzkWXNAWx+duTcFDC9Trw3SGNtO4HgQ==
-X-Received: by 2002:a05:6402:514a:: with SMTP id n10mr1501199edd.25.1619067441675;
-        Wed, 21 Apr 2021 21:57:21 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id 16sm1047249ejw.0.2021.04.21.21.57.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 21:57:20 -0700 (PDT)
-Subject: Re: [PATCH 106/190] Revert "tty: ipwireless: fix missing checks for
- ioremap"
-To:     dsterba@suse.cz, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        David Sterba <dsterba@suse.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-107-gregkh@linuxfoundation.org>
- <20210421155900.GB7604@twin.jikos.cz>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <dd0698e1-9b31-53fc-4dd1-da474cd483bd@kernel.org>
-Date:   Thu, 22 Apr 2021 06:57:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 22 Apr 2021 00:58:58 -0400
+Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [IPv6:2404:9400:2:0:216:3eff:fee1:997a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59BFC06174A;
+        Wed, 21 Apr 2021 21:58:19 -0700 (PDT)
+Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4FQlYC01crzyNW;
+        Thu, 22 Apr 2021 14:58:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
+        s=201702; t=1619067495;
+        bh=5Qm9fdL9JM0MCBkB07Q8K+HFThxx2f+WkF7TA94mSyU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RuQr3ZIc3vMel+d1Oe+xxE34mh0NlqwIV833pKPuu4joQU/pvUB1hgyduolmtscbt
+         Op8qq0O9MAlx1H7p371Nhis5QzKt/gRf7zAdqWd/LrOuFtbb60RqJDME0E2dnabIQB
+         yyU064eP+ATULrrhLix+XtNxuKp60oAURPpYDNSYVfd2l2IYum55bH7DGR5i7QKR+E
+         vBvCWtPLOHRRqkVaU0uuZeR/mAX7BvHgoCHcsre+BkVzspPvXfSqL4IlHilD+xJOxe
+         HXWMB6PNOJx6/B7+9pIje29lHsRb5h9RioCp5jdlApRH+zbe7JaXg7nVLqemAk1Nnz
+         Pfd3bzRurTNDg==
+Date:   Thu, 22 Apr 2021 14:58:05 +1000
+From:   Stephen Rothwell <sfr@rothwell.id.au>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: linux-next: manual merge of the kvm tree with the tip tree
+Message-ID: <20210422145805.53ca36be@elm.ozlabs.ibm.com>
+In-Reply-To: <142AD46E-6B41-49F3-90C1-624649A20764@vmware.com>
+References: <20210422143056.62a3fee4@canb.auug.org.au>
+        <142AD46E-6B41-49F3-90C1-624649A20764@vmware.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210421155900.GB7604@twin.jikos.cz>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 04. 21, 17:59, David Sterba wrote:
-> On Wed, Apr 21, 2021 at 02:59:41PM +0200, Greg Kroah-Hartman wrote:
->> This reverts commit 1bbb1c318cd8a3a39e8c3e2e83d5e90542d6c3e3.
->>
->> Commits from @umn.edu addresses have been found to be submitted in "bad
->> faith" to try to test the kernel community's ability to review "known
->> malicious" changes.  The result of these submissions can be found in a
->> paper published at the 42nd IEEE Symposium on Security and Privacy
->> entitled, "Open Source Insecurity: Stealthily Introducing
->> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
->> of Minnesota) and Kangjie Lu (University of Minnesota).
->>
->> Because of this, all submissions from this group must be reverted from
->> the kernel tree and will need to be re-reviewed again to determine if
->> they actually are a valid fix.  Until that work is complete, remove this
->> change to ensure that no problems are being introduced into the
->> codebase.
-> 
-> I've reviewed the patch at the time and now again with fresh eyes, but
-> it's IMO a valid fix that would have to be done the same way after
-> revert.
+Hi Nadav,
 
-ACK -- the same opinion here.
+On Thu, 22 Apr 2021 04:45:38 +0000 Nadav Amit <namit@vmware.com> wrote:
+>
+> >  static void __init kvm_smp_prepare_boot_cpu(void)
+> >  {
+> >  	/*
+> > @@@ -655,15 -668,9 +673,9 @@@ static void __init kvm_guest_init(void
+> > 
+> >  	if (kvm_para_has_feature(KVM_FEATURE_STEAL_TIME)) {
+> >  		has_steal_clock = 1;
+> > -		pv_ops.time.steal_clock = kvm_steal_clock;
+> > +		static_call_update(pv_steal_clock, kvm_steal_clock);  
+> 
+> I do not understand how this line ended in the merge fix though.
+> 
+> Not that it is correct or wrong, but it is not part of either of
+> these 2 patches AFAIK.
+
+It came from another patch that did not cause a conflict but ended up
+in the diff output.
 
 -- 
-js
-suse labs
+Cheers,
+Stephen Rothwell
