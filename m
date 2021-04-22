@@ -2,172 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C7536893E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D5036893F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239833AbhDVXJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 19:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        id S239855AbhDVXJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 19:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230353AbhDVXJc (ORCPT
+        with ESMTP id S230353AbhDVXJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:09:32 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC51CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:08:55 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id s2-20020a5b07420000b02904eb842efc40so21838984ybq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:08:55 -0700 (PDT)
+        Thu, 22 Apr 2021 19:09:53 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF11C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:09:16 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id h20so24320066plr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RzzE9tvH5mrl8JKXh6xEbaGN7MzALSjf4iPNcVjH73E=;
-        b=J4yBEElQnl4U/FTNqW8MWNpyEajp36rVUBeEVSMlLWgYOb7JNUmsVC6iGmoIvZIp6K
-         ZB2In73E6bfv+IDK7FmPkMDNvQHIcMQ548PF0RnDFwdLSDbnH7fCZwgoGcjfnhfpJOH6
-         FAEu4lgBnarHhVLiQcfHwYONdl/7gKDKv7hwXxNHAGHH56fmyXj6MKJbtd4oVA/GMHzQ
-         ezO4b2h1WfD2tzM4xUkiae6ztmjPrxNqOIDwxczwm2yp78TRVemYamULNisD1a6ciFXv
-         wA7SsnpCl5VzFhcbmz5s9i+tmvX48xdQI7RyHvw4VESQdXyfBOqBh4aHp1qbeZ/aWwd+
-         3W4A==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=I+ChA608q5PY2OZr5MkEs6pE5PCTHTer03gvn9b4wsk=;
+        b=lftAUNTqFM1CixvAqF0/mXn2BtvZ8zs8b4UbV/ZoVc3MpnfmVQ1rzz78UrBE4iPPlk
+         MkjlcDHV/7+vkzhw9DgvNrU6eh2/LJLyDJUecSH+gqXBStdHjzcoaucuOXj7rtG6v0Yi
+         XQS2CU5y7uM5PKFFK8xaEjHvowH4P3oDz3DZ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RzzE9tvH5mrl8JKXh6xEbaGN7MzALSjf4iPNcVjH73E=;
-        b=WGp1nd5c60iazqzcap9kEfobjPSLqF/B0QGYlK2Us6Z5JOdBjn3bNLaXRwHndq/mSe
-         P1ZdU2R5FVs+4JEW8EdXdjCsOgwgL9/g3KB6X1sjrDxU7iYxmT28hMjljC7f3E0Sl40i
-         dP8DQJsG0IL25sijS5B6g30hhf1+NUv8XJNcc7I/jvFoEp3YY3ENKsT1gv3w+Oa6Rb2p
-         7egAeEtgirmK29ijGr1m4hjQXsmaRNOtwNPREOH2fHHXm4xAtiggVVMCWQqWai8X1jrm
-         etOPR95QJd7lrOwM2ihJijO/PSCNk1nwZgeJ00aYP0/GTA+WVg9dXAxQNEURwJc0Uukt
-         OGvw==
-X-Gm-Message-State: AOAM533qMyh8qn/HcuklqxfvGtRWjUGwACecOG1F5pCGGm9pImud5gHh
-        umjpCG4EhyCn8crnT2bmfjf8pAT6AkfduFDIjjQ=
-X-Google-Smtp-Source: ABdhPJwYoIo22k1Ze0677UKgw5Tr/HWOCYzC4aT3bM/vH/VGy7DUTxL6ImzSeNpyfDx6cGljb5NafpXY9lD5zUGi7m4=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:9317:2762:871:5f48])
- (user=ndesaulniers job=sendgmr) by 2002:a5b:5cf:: with SMTP id
- w15mr1520641ybp.490.1619132934932; Thu, 22 Apr 2021 16:08:54 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 16:08:37 -0700
-Message-Id: <20210422230846.1756380-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH] x86: signal: Don't do sas_ss_reset() until we are certain
- that sigframe won't be abandoned
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     clang-built-linux@googlegroups.com,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=I+ChA608q5PY2OZr5MkEs6pE5PCTHTer03gvn9b4wsk=;
+        b=FgqDXfs3XpGcTRP2MHFi2pVDJV/67lx+IixMW3LSp3mDHlbDZdjfPLkKno+raHBNy8
+         /5MKQFvitp6nERkSPrKZNyTkg5qWl09Mkxrz6jmTI78c8CS4/ZOLFgnxk8D2DNo81vwk
+         qRZIdWQGXFEfLg/Vur63QA6h6LQpfTLx6p4W0pesIDpluXJkwx4rWiEQtENSTEEkK/se
+         vUhYEZ/T9H1zvY7Ry10U+wG1Kz5PhkAGyqG6/kcdhW3QoIVJIy1JDIlq6DO0Au8hEjdI
+         BJYoJ9PfycmFxJ5E9oHvFlAIBaZxkED1MWPJePE3Xg04PBHqDsIa0BxMKs9L/Pgl0mbE
+         IC4w==
+X-Gm-Message-State: AOAM533szUv+AoKGBazP2fjdu8QTWUVqAZpYMYd2UoClSt8Nqkb6AUG1
+        D3gPeHzDIvr3U2jkQGrzCpJSQA==
+X-Google-Smtp-Source: ABdhPJwCBaie9yuLL90yVwDtCXeYnxlBEOFwUMRH3KjeOBuPd80mSfqouLqOvdcMa/F/prJJgFlElw==
+X-Received: by 2002:a17:902:e546:b029:ec:a7f5:2a88 with SMTP id n6-20020a170902e546b02900eca7f52a88mr1170687plf.21.1619132955742;
+        Thu, 22 Apr 2021 16:09:15 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-587a-8af2-ee3d-5684.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:587a:8af2:ee3d:5684])
+        by smtp.gmail.com with ESMTPSA id h24sm5755525pjv.50.2021.04.22.16.09.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 16:09:15 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/powernv/pci: remove dead code from !CONFIG_EEH
+In-Reply-To: <20210422195405.4053917-1-ndesaulniers@google.com>
+References: <20210422195405.4053917-1-ndesaulniers@google.com>
+Date:   Fri, 23 Apr 2021 09:09:12 +1000
+Message-ID: <87lf99zzl3.fsf@dja-thinkpad.axtens.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+Hi Nick,
 
-Currently we handle SS_AUTODISARM as soon as we have stored the
-altstack settings into sigframe - that's the point when we have
-set the things up for eventual sigreturn to restore the old settings.
-And if we manage to set the sigframe up (we are not done with that
-yet), everything's fine.  However, in case of failure we end up
-with sigframe-to-be abandoned and SIGSEGV force-delivered.  And
-in that case we end up with inconsistent rules - late failures
-have altstack reset, early ones do not.
+> While looking at -Wundef warnings, the #if CONFIG_EEH stood out as a
+> possible candidate to convert to #ifdef CONFIG_EEH, but it seems that
+> based on Kconfig dependencies it's not possible to build this file
+> without CONFIG_EEH enabled.
 
-It's trivial to get consistent behaviour - just handle SS_AUTODISARM
-once we have set the sigframe up and are committed to entering
-the handler, i.e. in signal_delivered().
+This seemed odd to me, but I think you're right:
 
-Link: https://lore.kernel.org/lkml/20200404170604.GN23230@ZenIV.linux.org.uk/
-Link: https://github.com/ClangBuiltLinux/linux/issues/876
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- include/linux/compat.h |  2 --
- include/linux/signal.h |  2 --
- kernel/signal.c        | 14 ++++----------
- 3 files changed, 4 insertions(+), 14 deletions(-)
+arch/powerpc/platforms/Kconfig contains:
 
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 6e65be753603..40ad060deb82 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -494,8 +494,6 @@ int __compat_save_altstack(compat_stack_t __user *, unsigned long);
- 			&__uss->ss_sp, label); \
- 	unsafe_put_user(t->sas_ss_flags, &__uss->ss_flags, label); \
- 	unsafe_put_user(t->sas_ss_size, &__uss->ss_size, label); \
--	if (t->sas_ss_flags & SS_AUTODISARM) \
--		sas_ss_reset(t); \
- } while (0);
- 
- /*
-diff --git a/include/linux/signal.h b/include/linux/signal.h
-index 205526c4003a..20887ff4c27a 100644
---- a/include/linux/signal.h
-+++ b/include/linux/signal.h
-@@ -460,8 +460,6 @@ int __save_altstack(stack_t __user *, unsigned long);
- 	unsafe_put_user((void __user *)t->sas_ss_sp, &__uss->ss_sp, label); \
- 	unsafe_put_user(t->sas_ss_flags, &__uss->ss_flags, label); \
- 	unsafe_put_user(t->sas_ss_size, &__uss->ss_size, label); \
--	if (t->sas_ss_flags & SS_AUTODISARM) \
--		sas_ss_reset(t); \
- } while (0);
- 
- #ifdef CONFIG_PROC_FS
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f2718350bf4b..384030909daf 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2815,6 +2815,8 @@ static void signal_delivered(struct ksignal *ksig, int stepping)
- 	if (!(ksig->ka.sa.sa_flags & SA_NODEFER))
- 		sigaddset(&blocked, ksig->sig);
- 	set_current_blocked(&blocked);
-+	if (current->sas_ss_flags & SS_AUTODISARM)
-+		sas_ss_reset(current);
- 	tracehook_signal_handler(stepping);
- }
- 
-@@ -4133,11 +4135,7 @@ int __save_altstack(stack_t __user *uss, unsigned long sp)
- 	int err = __put_user((void __user *)t->sas_ss_sp, &uss->ss_sp) |
- 		__put_user(t->sas_ss_flags, &uss->ss_flags) |
- 		__put_user(t->sas_ss_size, &uss->ss_size);
--	if (err)
--		return err;
--	if (t->sas_ss_flags & SS_AUTODISARM)
--		sas_ss_reset(t);
--	return 0;
-+	return err;
- }
- 
- #ifdef CONFIG_COMPAT
-@@ -4192,11 +4190,7 @@ int __compat_save_altstack(compat_stack_t __user *uss, unsigned long sp)
- 			 &uss->ss_sp) |
- 		__put_user(t->sas_ss_flags, &uss->ss_flags) |
- 		__put_user(t->sas_ss_size, &uss->ss_size);
--	if (err)
--		return err;
--	if (t->sas_ss_flags & SS_AUTODISARM)
--		sas_ss_reset(t);
--	return 0;
-+	return err;
- }
- #endif
- 
+config EEH
+	bool
+	depends on (PPC_POWERNV || PPC_PSERIES) && PCI
+	default y
 
-base-commit: 16fc44d6387e260f4932e9248b985837324705d8
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+It's not configurable from e.g. make menuconfig because there's no prompt.
+You can attempt to explicitly disable it with e.g. `scripts/config -d EEH`
+but then something like `make oldconfig` will silently re-enable it for
+you.
 
+It's been forced on since commit e49f7a9997c6 ("powerpc/pseries: Rivet
+CONFIG_EEH for pSeries platform") in 2012 which fixed it for
+pseries. That moved out from pseries to pseries + powernv later on.
+
+There are other cleanups in the same vein that could be made, from the
+Makefile (which has files only built with CONFIG_EEH) through to other
+source files. It looks like there's one `#ifdef CONFIG_EEH` in
+arch/powerpc/platforms/powernv/pci-ioda.c that could be pulled out, for
+example.
+
+I think it's probably worth trying to rip out all of those in one patch?
+
+Kind regards,
+Daniel
