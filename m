@@ -2,167 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243AC367CA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05369367CAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235411AbhDVIiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235314AbhDVIiI (ORCPT
+        id S235421AbhDVIj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:39:27 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45226 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235249AbhDVIj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:38:08 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56CDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:37:32 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x20so40594998lfu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5bNWGj0MtDwouVYiT6igwnQInlIcaj9lEKQchN4rGfQ=;
-        b=EK39SN42ItaMbxrG+9TFGUjIRQwf2ZkofzLSuI57bhVQl80+so3aPUXpXv6umA3y4j
-         3oaKI7ZIjDDWU3BUOuBjOaZj2InXk+vCb+/T1pUlpqy9mWjYAiWkj76HUnbbZ3ywJRm8
-         g504hnVzopm/0VLtyXtULFtBeW8P5twXYsHTtGW06HPQA8b1/C1M+XRP1dPIyja32lDu
-         q5Cy/1t4+zdvGvIzfrrdnCNxtbYbKLgJkTyZg/+xgghX+J00IKuDbJrNPAz/6R7mN3QI
-         XeJc1RHME8HPQeaIy1TRm3+FxneHI763PvuvD79GJIfbebWFAeS5YFIm7+NvGvwrpSim
-         gxYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5bNWGj0MtDwouVYiT6igwnQInlIcaj9lEKQchN4rGfQ=;
-        b=sqaoWcQ63w+mSE5DU/pTLBk0275I3l78637y5CiRM8Ta0dQaAP8s+9Ogx9pFEhgr0y
-         qcUqdAaeubaH4rIUT+sX2ilFL4f7fDOk3EtpUOqig9hm0AFKhGKd/Q4p7MWBiGXL/LaQ
-         VcjNAUZyuXKcWnb1HuzU4WW52mpYZBg1UYpwGBHuyHqVTqd97Xx0TYDPtiql7wB0XrQX
-         PyWttDIAxhN72OGFhovf6AhSKjzwVrlMWPgv6cHw9TlAZsaVvEjV0SCjMWJS0uJ88zYK
-         3oXfY+ePw/2WzBhVU0IkSSH0uvp29rWaucd9fDFRIYwWJfOwCTrHSygK+ELf/k00ejBx
-         btiw==
-X-Gm-Message-State: AOAM533jPxTfz5Pw34aMR4+tqftbM8X4SV/ksq0xab09BdXx8YkkhB+J
-        wYGHDrOpchm7dS5mTUicktsOLZFE7HUqa3CryKs9oM1GSlIO8w==
-X-Google-Smtp-Source: ABdhPJwDlFg6lL+aVXfidcykqKyth+wJUrAT2mk4+mPp/bQm9CkSGTtG+IpY1EE8qtriGbgT5vTNia+/Nc2PUpE9s20=
-X-Received: by 2002:ac2:560b:: with SMTP id v11mr1741453lfd.254.1619080651393;
- Thu, 22 Apr 2021 01:37:31 -0700 (PDT)
+        Thu, 22 Apr 2021 04:39:26 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1D1871C0B76; Thu, 22 Apr 2021 10:38:51 +0200 (CEST)
+Date:   Thu, 22 Apr 2021 10:38:50 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aditya Pakki <pakki001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>, x86@kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jiri Kosina <jikos@kernel.org>, Will Deacon <will@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
+Message-ID: <20210422083850.GA5316@amd>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210420120705.5c705d4b@imladris.surriel.com> <CAKfTPtCcS_bNUi-KwspHssabORupj9K8Y=+Hc7nOzr9JBK-8AA@mail.gmail.com>
-In-Reply-To: <CAKfTPtCcS_bNUi-KwspHssabORupj9K8Y=+Hc7nOzr9JBK-8AA@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 22 Apr 2021 10:37:19 +0200
-Message-ID: <CAKfTPtBogNs1uVoTmiNj0Xw57ZsJ0DS-pas-gA67E79CXvHR5w@mail.gmail.com>
-Subject: Re: [PATCH v3] sched,fair: skip newidle_balance if a wakeup is pending
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 at 19:27, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> Hi Rik,
->
-> On Tue, 20 Apr 2021 at 18:07, Rik van Riel <riel@surriel.com> wrote:
-> >
-> > The try_to_wake_up function has an optimization where it can queue
-> > a task for wakeup on its previous CPU, if the task is still in the
-> > middle of going to sleep inside schedule().
-> >
-> > Once schedule() re-enables IRQs, the task will be woken up with an
-> > IPI, and placed back on the runqueue.
-> >
-> > If we have such a wakeup pending, there is no need to search other
-> > CPUs for runnable tasks. Just skip (or bail out early from) newidle
-> > balancing, and run the just woken up task.
-> >
-> > For a memcache like workload test, this reduces total CPU use by
-> > about 2%, proportionally split between user and system time,
-> > and p99 and p95 application response time by 10% on average.
-> > The schedstats run_delay number shows a similar improvement.
-> >
-> > Signed-off-by: Rik van Riel <riel@surriel.com>
-> > ---
-> >  kernel/sched/fair.c | 18 ++++++++++++++++--
-> >  1 file changed, 16 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 69680158963f..fd80175c3b3e 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -10594,6 +10594,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >         u64 curr_cost = 0;
-> >
-> >         update_misfit_status(NULL, this_rq);
-> > +
-> > +       /*
-> > +        * There is a task waiting to run. No need to search for one.
-> > +        * Return 0; the task will be enqueued when switching to idle.
-> > +        */
-> > +       if (this_rq->ttwu_pending)
-> > +               return 0;
-> > +
-> >         /*
-> >          * We must set idle_stamp _before_ calling idle_balance(), such that we
-> >          * measure the duration of idle_balance() as idle time.
-> > @@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >                  * Stop searching for tasks to pull if there are
-> >                  * now runnable tasks on this rq.
-> >                  */
-> > -               if (pulled_task || this_rq->nr_running > 0)
-> > +               if (pulled_task || this_rq->nr_running > 0 ||
-> > +                   this_rq->ttwu_pending)
-> >                         break;
-> >         }
-> >         rcu_read_unlock();
-> > @@ -10688,7 +10697,12 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >         if (this_rq->nr_running != this_rq->cfs.h_nr_running)
-> >                 pulled_task = -1;
-> >
-> > -       if (pulled_task)
-> > +       /*
-> > +        * If we are no longer idle, do not let the time spent here pull
-> > +        * down this_rq->avg_idle. That could lead to newidle_balance not
-> > +        * doing enough work, and the CPU actually going idle.
-> > +        */
-> > +       if (pulled_task || this_rq->ttwu_pending)
->
-> I'm still running some benchmarks to evaluate the impact of your patch
-> and more especially the line above which clears this_rq->idle_stamp
-> and skips the time spent in newidle_balance from being accounted for
-> in avg_idle. I have some results which  show some regression because
-> of this test especially with hackbench.
-> On large system, the time spent in newidle_balance can be significant
-> and we can't ignore it just because this_rq->ttwu_pending is set while
-> looping the domains because without newidle_balance the idle time
-> would have been large and we end up screwing up the metric
 
-I confirmed that the line above generate hackbench regression on my
-large arm64 system (2 * 112 CPUs)
-I'm testing hackbench with various number of group : 1, 2, 4, 16, 32,
-64, 128, 256 but I have only put the 2 results which significantly
-regress. The other ones are in the +/-1% variation range
+--SLDf9lqlvOQaIe6s
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-hackbench -g $group
+Hi!
 
-group    v5.12-rc8+tip    w/ this patch          w/ this patch without
-the line above
-64       2.862(+/- 9%)    2.952(+/-11%) -3%      2.807(+/- 7%) +2%
-128      3.334(+/-10%)    3.561-+/-13%) -7%      3.181(+/- 6%) +4%
+I don't believe doing huge revert is good idea.
 
+> I have been meaning to do this for a while, but recent events have
+> finally forced me to do so.
+>=20
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 
+Do you have examples of those "bad faith" commits? Because that's not
+what the paper says. While I identified one unneccessary commit during
+stable review, I don't believe it was done in bad faith. According to
+the paper, there are just three (3) (!!) bad faith commits, and were
+done from gmail addresses, and steps were taken so to prevent them
+=66rom entering git.
 
->
-> >                 this_rq->idle_stamp = 0;
-> >
-> >         rq_repin_lock(this_rq, rf);
-> > --
-> > 2.25.4
-> >
-> >
+I do believe we have problem with -stable kernel getting way too many
+changes that are not really fixing anything, or are fixing stuff like
+"16 bytes memory leak once per boot" or printk log levels. I tried
+pushing back with little success. Stable kernel rules are not
+consistent with patches actually accepted into stable. Plus, it is
+quicker to get patch to stable release than to mainline release, which
+I believe is additional problem.
+
+For the reference, the paper seems to be available here:
+
+https://github.com/QiushiWu/QiushiWu.github.io/blob/main/papers/OpenSourceI=
+nsecurity.pdf
+
+Quoting the paper:
+
+Experiment overview. In this experiment, we leverage
+program-analysis techniques to prepare three minor hypocrite
+commits that introduce UAF bugs in the Linux kernel. The
+three cases represent three different kinds of hypocrite commits:
+(1) a coding-improvement change that simply prints an error
+message, (2) a patch for fixing a memory-leak bug, and (3) a
+patch for fixing a refcount bug. We submit the three patches
+using a random Gmail account to the Linux community and
+seek their feedback=E2=80=94whether the patches look good to them.
+The experiment is to demonstrate the practicality of hypocrite
+commits, and it will not introduce or intend to introduce actual
+UAF or any other bug in the Linux kernel.
+A. Ethical Considerations
+Ensuring the safety of the experiment. In the experiment,
+we aim to demonstrate the practicality of stealthily introducing
+vulnerabilities through hypocrite commits. Our goal is not to
+introduce vulnerabilities to harm OSS. Therefore, we safely
+conduct the experiment to make sure that the introduced UAF
+bugs will not be merged into the actual Linux code. In addition
+to the minor patches that introduce UAF conditions, we also
+prepare the correct patches for fixing the minor issues. We
+send the minor patches to the Linux community through email
+to seek their feedback. Fortunately, there is a time window
+between the confirmation of a patch and the merging of the
+patch. Once a maintainer confirmed our patches, e.g., an email
+reply indicating =E2=80=9Clooks good=E2=80=9D, we immediately notify the
+maintainers of the introduced UAF and request them to not
+go ahead to apply the patch. At the same time, we point out
+the correct fixing of the bug and provide our correct patch.
+In all the three cases, maintainers explicitly acknowledged
+and confirmed to not move forward with the incorrect patches
+=2E..
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--SLDf9lqlvOQaIe6s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCBNhkACgkQMOfwapXb+vIoFgCgs7JgMZ1iyWnYu6g2D5GdSQaL
+gLkAn3ME9jobyMWuLtQ0qtiBQymAiLJp
+=VUCC
+-----END PGP SIGNATURE-----
+
+--SLDf9lqlvOQaIe6s--
