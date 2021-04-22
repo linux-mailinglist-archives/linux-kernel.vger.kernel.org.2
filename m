@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA693684B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB6E3684BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhDVQWY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 12:22:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:47292 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236236AbhDVQWT (ORCPT
+        id S236414AbhDVQZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232670AbhDVQZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:22:19 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-270-mhKvP-dDOsuLyQ0QyQj3_Q-1; Thu, 22 Apr 2021 17:21:41 +0100
-X-MC-Unique: mhKvP-dDOsuLyQ0QyQj3_Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 22 Apr 2021 17:21:40 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Thu, 22 Apr 2021 17:21:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Dan Carpenter' <dan.carpenter@oracle.com>,
-        Joel Stanley <joel@jms.id.au>
-CC:     Andrew Jeffery <andrew@aj.id.au>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
-        "John Wang" <wangzhiqiang.bj@bytedance.com>,
-        Brad Bishop <bradleyb@fuzziesquirrel.com>,
-        Patrick Venture <venture@google.com>,
-        "Benjamin Fair" <benjaminfair@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Robert Lippert <rlippert@google.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH] soc: aspeed: fix a ternary sign expansion bug
-Thread-Topic: [PATCH] soc: aspeed: fix a ternary sign expansion bug
-Thread-Index: AQHXN1ec+IlNNgnl7EGootyN/jCOrarAtu4w
-Date:   Thu, 22 Apr 2021 16:21:40 +0000
-Message-ID: <59596244622c4a15ac8cc0747332d0be@AcuMS.aculab.com>
-References: <YIE90PSXsMTa2Y8n@mwanda>
-In-Reply-To: <YIE90PSXsMTa2Y8n@mwanda>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 22 Apr 2021 12:25:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599B1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:24:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=IK2DRL9QTskPdmvchMK2QQZwls+b8mo8keCxH1wBohQ=; b=mJGAf+N7muFsXFIRyvjbKiERu5
+        b6L1zKXmvmeJsmZyBZEJBMZi0Euz7eFDl7KEHHnpSu71+u/6/d1dLBOXZ+brOgN+QlJiVfZwcTedI
+        rc3IyAmT4NLjaMn+xsdZa69smJ1SLjcdYQI6BAPkRBtQrqhqezzQwLHCHCE2rQRO+UeDGXtumFBop
+        Idt7PMJvu2skdNlIG0j88ngqk6YEdu1VmcXlxsBBG54HEfvmtLEmf49nMkZrTng+o4Qc1YKOeTRk+
+        pHe/txF437gin6ojUYKeDUEMGFsZ3j4oKlmqtyfbhS+AJWOmvj2my2RJNWtwKtUY2zEjBcDcoHLYx
+        Nli0QjtA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZc7j-00H3aM-1M; Thu, 22 Apr 2021 16:24:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 061A53001E2;
+        Thu, 22 Apr 2021 18:24:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B22252CBE5ED9; Thu, 22 Apr 2021 18:24:13 +0200 (CEST)
+Date:   Thu, 22 Apr 2021 18:24:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        feng.tang@intel.com, zhengjun.xing@intel.com,
+        aubrey.li@linux.intel.com, yu.c.chen@intel.com
+Subject: Re: [sched,debug]  3b87f136f8:  stress-ng.procfs.ops_per_sec -31.7%
+ regression
+Message-ID: <YIGjLQq6w2wERotq@hirez.programming.kicks-ass.net>
+References: <20210422144258.GD6394@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422144258.GD6394@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter
-> Sent: 22 April 2021 10:12
+On Thu, Apr 22, 2021 at 10:42:58PM +0800, kernel test robot wrote:
 > 
-> The intent here was to return negative error codes but it actually
-> returns positive values.  The problem is that type promotion with
-> ternary operations is quite complicated.
 > 
-> "ret" is an int.  "copied" is a u32.  And the snoop_file_read() function
-> returns long.  What happens is that "ret" is cast to u32 and becomes
-> positive then it's cast to long and it's still positive.
+> Greeting,
 > 
-> Fix this by removing the ternary so that "ret" is type promoted directly
-> to long.
-> 
-> Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/soc/aspeed/aspeed-lpc-snoop.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-> index 210455efb321..eceeaf8dfbeb 100644
-> --- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
-> +++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-> @@ -94,8 +94,10 @@ static ssize_t snoop_file_read(struct file *file, char __user *buffer,
->  			return -EINTR;
->  	}
->  	ret = kfifo_to_user(&chan->fifo, buffer, count, &copied);
-> +	if (ret)
-> +		return ret;
-> 
-> -	return ret ? ret : copied;
-> +	return copied;
+> FYI, we noticed a -31.7% regression of stress-ng.procfs.ops_per_sec due to commit:
 
-I wonder if changing it to:
-	return ret ? ret + 0L : copied;
+> commit: 3b87f136f8fccddf7da016ab7d04bb3cf9b180f0 ("sched,debug: Convert sysctl sched_domains to debugfs")
 
-Might make people think in the future and not convert it back
-as an 'optimisation'.
+> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
 
-I much prefer adding 0 to a cast to fix integer types.
-In can go less wrong!
+>      16865 ±  4%     -31.7%      11516 ±  6%  stress-ng.procfs.ops
 
-IMHO there are far too many casts in the kernel sources.
-Especially the ones that are only there to appease sparse.
-A functional notation for those would remove some of
-the potential problems.
+The patch in question removes a ton of procfs files, so this is just
+about expected. If this also lowers the procfs ops/s measure, this could
+be because all these procfs files were trivial.
 
-	David
+Some procfs files are expensive to read and collect lots of data, these
+files were trivial and fast, by removing them, the average time to read
+a procfs file might very well have increased.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Over-all: -EDONTCARE.
