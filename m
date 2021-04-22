@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4089C368028
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15F1368027
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236216AbhDVMUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:20:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33418 "EHLO mail.kernel.org"
+        id S236195AbhDVMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:20:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35802 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235232AbhDVMUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:20:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A09E861458;
-        Thu, 22 Apr 2021 12:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619094000;
-        bh=Wr0OhYhDfMPeG2IHpq9JA+nWcwCtRYKEEDdMNXqNT9s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LlaLFhYwpL5KwHSeR+kWjYsDL/tsJ53z++3kDhDn76NrrSsP7VizhfXGQyIbXDoqb
-         LJZ8mRtqqeFGV1Q8FDHsud8Q17LECv/AEoLpPNly3nyWYZtcAhFZdQm75qDzi5K+CU
-         0FqxfTjCfYUtjkBT56BenF/rsDnUW62chd9fKHL8CYa3tPqiehAIWZaa30RoU9mGl6
-         V59vWyrsISfh6puiMCNpZBbUjywKOXpSeNu+H0oCQEB5l5hNk6uAJFu7ybD+AkaS2C
-         RRBa4F2UAmwnAb9qcAuFRpEbVSRLTjZYn3bSC9Tuad642ys+HkqBTTOCK45NDMDPIS
-         dw8AordqXki3g==
-Date:   Thu, 22 Apr 2021 15:19:53 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, david@redhat.com, akpm@linux-foundation.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
- with memmap holes
-Message-ID: <YIFp6W/wgcZSxe1k@kernel.org>
-References: <20210422061902.21614-1-rppt@kernel.org>
- <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
- <YIEzaQF8fVtNgU0E@kernel.org>
- <6096b004-aaeb-d814-87e4-92ec1b180f1d@arm.com>
+        id S235232AbhDVMUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:20:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6F664AF1A;
+        Thu, 22 Apr 2021 12:19:54 +0000 (UTC)
+Subject: Re: [PATCH 1/9] mm/page_alloc: Split per cpu page lists and zone
+ stats
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210422111441.24318-1-mgorman@techsingularity.net>
+ <20210422111441.24318-2-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <45156f57-2fa9-71c8-aea5-d06d457c0236@suse.cz>
+Date:   Thu, 22 Apr 2021 14:19:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6096b004-aaeb-d814-87e4-92ec1b180f1d@arm.com>
+In-Reply-To: <20210422111441.24318-2-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:53:36PM +0530, Anshuman Khandual wrote:
-> On 4/22/21 1:57 PM, Mike Rapoport wrote:
+On 4/22/21 1:14 PM, Mel Gorman wrote:
+> The per-cpu page allocator lists and the per-cpu vmstat deltas are stored
+> in the same struct per_cpu_pages even though vmstats have no direct impact
+> on the per-cpu page lists. This is inconsistent because the vmstats for a
+> node are stored on a dedicated structure. The bigger issue is that the
+> per_cpu_pages structure is not cache-aligned and stat updates either
+> cache conflict with adjacent per-cpu lists incurring a runtime cost or
+> padding is required incurring a memory cost.
+> 
+> This patch splits the per-cpu pagelists and the vmstat deltas into separate
+> structures. It's mostly a mechanical conversion but some variable renaming
+> is done to clearly distinguish the per-cpu pages structure (pcp) from
+> the vmstats (pzstats).
+> 
+> Superficially, this appears to increase the size of the per_cpu_pages
+> structure but the movement of expire fills a structure hole so there is
+> no impact overall.
+> 
+> [lkp@intel.com: Check struct per_cpu_zonestat has a non-zero size]
+> [vbabka@suse.cz: Init zone->per_cpu_zonestats properly]
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-...
-
-> >> diff --git a/mm/memblock.c b/mm/memblock.c
-> >> index 3abf2c3fea7f..93f8a9c8428d 100644
-> >> --- a/mm/memblock.c
-> >> +++ b/mm/memblock.c
-> >> @@ -1740,6 +1740,7 @@ bool __init_memblock memblock_is_memory(phys_addr_t addr)
-> >>  {
-> >>  	return memblock_search(&memblock.memory, addr) != -1;
-> >>  }
-> >> +EXPORT_SYMBOL(memblock_is_memory);
-> > 
-> > Please make it inside #ifdef CONFIG_ARCH_MEMBLOCK
-> CONFIG_ARCH_KEEP_MEMBLOCK ?
-
-Yeah, _KEEP went away somehow :)
-
-> Wrap it around the EXPORT_SYMBOL() or the entire function
-> memblock_is_memory().
-
-EXPORT_SYMBOL(). Otherwise we'll have exported __init function.
- 
--- 
-Sincerely yours,
-Mike.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
