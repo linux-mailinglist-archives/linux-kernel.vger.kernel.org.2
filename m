@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE2D36882E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7579A368831
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239318AbhDVUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S239357AbhDVUsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236896AbhDVUrV (ORCPT
+        with ESMTP id S236851AbhDVUsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:47:21 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AEAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:46:46 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id u20so15573703qku.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:46:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=q4jCK/oxeOAevJ+QQnM3lBiBwG2OGtnOoyI45WiPj/0=;
-        b=bm4tK+1+ztG0fhpXNYfdvm16338ubpObJL9yXAF6z5QbYek+XJkIPN5icxfAhQHZa9
-         5vHU3s4lI+K4LhMXS4o7k/nfFp4h1T2D/2idlxRt2E+KH+8MEGjnqj6WbRW/Occrn1ub
-         GMWABtxA3Qa0pH+5bHwmHxHV0ytVM5PRa+hCytRC60NI1y2hUOh7ieNd8+12D82HvYI5
-         pTvN2mA66wfz1vd/dws+vtpU3kad6SV58lBRADz1VW6ZlvOvb8n4NfQv/NWfbrGmF8zN
-         oD/0RCCjhIsKhandoRbU8KeYRvL+FzxbFIC6PK27w2Mg/ng/a/zrM37IDErgPKI7m1v0
-         /uOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=q4jCK/oxeOAevJ+QQnM3lBiBwG2OGtnOoyI45WiPj/0=;
-        b=jCZVFa4hKOIqe5Utb8ClzOmXFddT/97kUXcAAcyLTGGo3/thofHe0ox/Hyiv5ujTS6
-         cBrOVvmD07wTHntaJEoulw4dtrX8SVSPXQU2z5MfBD1g3vLto+6ENXy9argxs820aVai
-         G90XlhLFjs3exHuux7x3cgraGn86RWxnlrZ5iHq6zfTcbwawrDlMAxoiZ69orFV/C1QH
-         jnLoC3jtDtAHHN0lXJkDMATRSoIeM1oNtz5zoqB9AHQt2G33daqTgDvpJM1LQmieTvQy
-         xBmmXd3k79w+Axr6lcGU7sVS+OqzQENEqiiVTYk9rOlJiXbFRsSs7Tu7vhOBTrh8MR7d
-         gu9g==
-X-Gm-Message-State: AOAM531CRF+ZOZLwTUG5xuOkN/4u4FNntoZDR6JXojeVHbPU5kkbR7eL
-        L8V99tdgig88nkioiLC5VnYyJQ==
-X-Google-Smtp-Source: ABdhPJy6B2uOuY8nlYlMlbZzimxyQS3rpI5s21XxaofwWAhrWMOPI3vCjUBaibuvfPrpBMjoQH4Omg==
-X-Received: by 2002:a37:b103:: with SMTP id a3mr652299qkf.261.1619124405346;
-        Thu, 22 Apr 2021 13:46:45 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id m124sm2975451qkc.70.2021.04.22.13.46.43
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 22 Apr 2021 13:46:45 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 13:46:34 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] mm/filemap: fix mapping_seek_hole_data on THP &
- 32-bit
-In-Reply-To: <alpine.LSU.2.11.2104212253000.4412@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2104221338410.1170@eggly.anvils>
-References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils> <alpine.LSU.2.11.2104211737410.3299@eggly.anvils> <20210422011631.GL3596236@casper.infradead.org> <alpine.LSU.2.11.2104212253000.4412@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Thu, 22 Apr 2021 16:48:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CDBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=oiB0fYzitH19QgB8n6QuufnwiQE42rlZZ25AFlDDFQ8=; b=WAnG1Q6yslpE7l2FM6DMLWKzJ4
+        1VtAc2CLt9DlJgXe72U9KrwOowGV31AWIudUmA39A3bd4eryqS/MpoQlNq+fkVdAzaJTzQ8eB4wZT
+        ov7PVnIi7pni11A9x86Sgpo0kREkz/LzgPjduAA1hSDYhhh/IysGqP/36Jf/hTagQP8bSUL3YVCOw
+        SX4RBEEb/T+lThCKfrgA0ZZU7Qw7g480o+Rds8IykNwp38lkRjkMzok4N21hmAyD1P0z5ybCX6eOZ
+        4bo22phCSreP4NO2XXbT/h/TqOYbC1cglN34SxjiWkIsJK/rQL5+xsR1FFvptAca8l/aOc02l3e8O
+        EVnoiQxg==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZgDn-000ywn-Bb; Thu, 22 Apr 2021 20:46:58 +0000
+Subject: Re: [v2 1/1] x86/cpufeatures: Implement Predictive Store Forwarding
+ control.
+To:     "Saripalli, RK" <rsaripal@amd.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>
+Cc:     bsd@redhat.com
+References: <20210422171013.50207-1-rsaripal@amd.com>
+ <20210422171013.50207-2-rsaripal@amd.com>
+ <ee949efc-018c-8b70-3224-da4f24b217b6@infradead.org>
+ <6813af1c-6a59-47ca-ce40-939512092b09@amd.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6e755a24-1309-e75a-175c-196951f1167c@infradead.org>
+Date:   Thu, 22 Apr 2021 13:46:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <6813af1c-6a59-47ca-ce40-939512092b09@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021, Hugh Dickins wrote:
-> On Thu, 22 Apr 2021, Matthew Wilcox wrote:
-> > On Wed, Apr 21, 2021 at 05:39:14PM -0700, Hugh Dickins wrote:
-> > > No problem on 64-bit without huge pages, but xfstests generic/285
-> > > and other SEEK_HOLE/SEEK_DATA tests have regressed on huge tmpfs,
-> > > and on 32-bit architectures, with the new mapping_seek_hole_data().
-> > > Several different bugs turned out to need fixing.
-> > > 
-> > > u64 casts added to stop unfortunate sign-extension when shifting
-> > > (and let's use shifts throughout, rather than mixed with * and /).
-> > 
-> > That confuses me.  loff_t is a signed long long, but it can't be negative
-> > (... right?)  So how does casting it to an u64 before dividing by
-> > PAGE_SIZE help?
+On 4/22/21 12:32 PM, Saripalli, RK wrote:
 > 
-> That is a good question. Sprinkling u64s was the first thing I tried,
-> and I'd swear that it made a good difference at the time; but perhaps
-> that was all down to just the one on xas.xa_index << PAGE_SHIFT. Or
-> is it possible that one of the other bugs led to a negative loff_t,
-> and the casts got better behaviour out of that? Doubtful.
 > 
-> What I certainly recall from yesterday was leaving out one (which?)
-> of the casts as unnecessary, and wasting quite a bit of time until I
-> put it back in. Did I really choose precisely the only one necessary?
+> On 4/22/2021 12:49 PM, Randy Dunlap wrote:
+>> On 4/22/21 10:10 AM, Ramakrishna Saripalli wrote:
+>>> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+>>>
+>>> ====================
+>>> Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
+>>> ---
+>>>  .../admin-guide/kernel-parameters.txt         |  5 +++++
+>>>  arch/x86/include/asm/cpufeatures.h            |  1 +
+>>>  arch/x86/include/asm/msr-index.h              |  2 ++
+>>>  arch/x86/kernel/cpu/amd.c                     | 19 +++++++++++++++++++
+>>>  4 files changed, 27 insertions(+)
+>>
+>> as from v1:
 > 
-> Taking most of them out did give me good quick runs just now: I'll
-> go over them again and try full runs on all machines. You'll think me
-> crazy, but yesterday's experience leaves me reluctant to change without
-> full testing - but agree it's not good to leave ignorant magic in.
+> Randy, could you clarify your comments please?. Is there something here I need to change/clarify/fix?
+> 
 
-And you'll be unsurprised to hear that the test runs went fine,
-with all but one of those u64 casts removed. And I did locate the
-version of filemap.c where I'd left out one "unnecessary" cast:
-I had indeed chosen to remove the only one that's necessary.
+Only that I had made these same comments (below)
+in v1 of the patch.
 
-v2 coming up now, thanks,
+https://lore.kernel.org/lkml/4c688fc7-67df-3187-54b2-bf20e510fb39@infradead.org/
 
-Hugh
+>>
+>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>>> index 04545725f187..58f6bd02385b 100644
+>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>> @@ -3940,6 +3940,11 @@
+>>>  			Format: {"off"}
+>>>  			Disable Hardware Transactional Memory
+>>>  
+>>> +	predict_store_fwd	[X86] This option controls PSF mitigation
+>>
+>> 	predict_store_fwd=	...
+>>
+> 
+> OK
+> 
+>>> +			off - Turns on PSF mitigation.
+>>> +			on  - Turns off PSF mitigation.
+>>> +			default : on.
+>>
+>> 			default: on.
+>>
+> 
+> OK
+> 
+>>> +
+>>>  	preempt=	[KNL]
+>>>  			Select preemption mode if you have CONFIG_PREEMPT_DYNAMIC
+>>>  			none - Limited to cond_resched() calls
+
+-- 
+~Randy
 
