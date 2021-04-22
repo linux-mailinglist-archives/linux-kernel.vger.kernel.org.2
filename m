@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CD236897E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D07368980
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236949AbhDVXuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 19:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
+        id S230368AbhDVXu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 19:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhDVXuA (ORCPT
+        with ESMTP id S239765AbhDVXu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:50:00 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DBFC061574;
-        Thu, 22 Apr 2021 16:49:24 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id g16so7492759plq.3;
-        Thu, 22 Apr 2021 16:49:24 -0700 (PDT)
+        Thu, 22 Apr 2021 19:50:26 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C926C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:49:49 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id w4so42774944wrt.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 16:49:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=IWfYoO0lSsj6QrdF4M9TVhiBQuuRKejv17Qbr6FkpHs=;
-        b=POwfl7cE4Qcz1RenSpkCZiWAxw6lhRiLzZNY9Gg54NjNfXJSWLvpSa/LBmuIldfPHw
-         nrr6RCnjKmzmZ3bWbdQmk8A/jbDyAEyaGPmcb421VfXnnY1L8pgTrNbnDBC/yuoDfgKz
-         T3PNwP9pzPHw3dpSRe/tWnC7ubTOEenoqe0yDlJPATp5NlDzhXzUUTTUoEFW0d2M+X2B
-         wOc1fh5jojyuGAhnrN8WrkDnKATakqCjzhwvLsKKUaYiQH7/lzozfDvO/xJ934r8VOPW
-         8Cf/PGPlNT8E4L8289BNJtNjJYwHp+RiNLLrSa2vXNz3lAY4Kxa0G40LmezScm5J2V/M
-         gVQw==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NajTrN9BBqnPlsm2MhivhGmdkOA3Sl5eTlRcutI2gBs=;
+        b=OwGP73Cp/GEQx3n0coHeBrJuUFXgkDr2cIOd+hNfTBj8NACmQouNLwhsuRCVYG5Ub4
+         Myb3afBm2j9zSj48yCS7m70l81lSi2UEqqNb4pyo00uwrvP202Bjf+wnmawREvMZ6lcf
+         qMQNtlMvvgGTVhFIXsuAgsrpiUIub00K4yYuMTY7clfmQH6UOQIJhOFgtQRY6x7d97fV
+         NK05CGdS5lZDfPhv3Ccj9c8q6KFpTvwZjCRhRcfJTABficZBp5IQPdurB4tfieY3UDRq
+         HF3m4oHHITVLwUe+HloTfnOXjrDg4U/mCpOAllIdmWwSu0t6etjiS09McE5xOfH0rc7D
+         tlqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IWfYoO0lSsj6QrdF4M9TVhiBQuuRKejv17Qbr6FkpHs=;
-        b=Pxw7pAmRdDSjEPdkpPuSF5XvxW4+RMspNRdB6NYUzbEXKI3bMdnHFarSU1zscNDgge
-         bgMFU2GDnKNfrijMlc7QGvqiEIWQ1xVZVpA52RnjFSPMN5AcFLUy/G8tkAxHCz9g+CbM
-         O2bjrVQ89AjITUnVKZ/AkyCNfcHteoaugF4lbWTAh8dOkk8iqaYVSBKF00c4ebdvJzQG
-         FxRPgs0PA9szsM2/3SooiENtxAzksOFRCRrxZqvs6OLxRoaGK9NxKQNmHU7+L333VRW9
-         WeL7eAcI95ckFWTibT899Z/6vNVRmv2CT4VJ0UQefuJNGDtxsOppNEWIh8ZvTMGUsW07
-         M8Jw==
-X-Gm-Message-State: AOAM530RcYXZBOGMeombdwrkxnj3KFvpjRSZg2uKDVrLniAidN0rlJSn
-        etMqC4r6prDU5ZjevSg8iG4=
-X-Google-Smtp-Source: ABdhPJyQ8CB6gfavGomE80wlX8RKriAm4NmmFeGRBR1BIbjZmGV4qhobzGGXuBVwCwVbP22GOXafIQ==
-X-Received: by 2002:a17:90a:8410:: with SMTP id j16mr1301384pjn.120.1619135364274;
-        Thu, 22 Apr 2021 16:49:24 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id m20sm5615378pjq.40.2021.04.22.16.49.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 16:49:23 -0700 (PDT)
-Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
- beyond limit.
-To:     Joe Burmeister <joe.burmeister@devtank.co.uk>,
-        Mark Brown <broonie@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nsaenz@kernel.org
-References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
- <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
- <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
-Date:   Thu, 22 Apr 2021 16:49:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        bh=NajTrN9BBqnPlsm2MhivhGmdkOA3Sl5eTlRcutI2gBs=;
+        b=R1QTzJTNI/1etNTXeGnuPBLSlH9XuPemh8WfrzgeHmIJiLmE7bSa7lNMbOvB9fCcoQ
+         cq9EAcXZY8Eq7vxLcpkfKPREkP4Tp8dDjx6/tfxiyeObpa87yBPB+Q6ze4g21Q0I3hvQ
+         tpfJNBZQS/hHq0rI5eEN18YDElIUgtXgcx7Aw40zptAE2EFO1YQuK3+qXJ+4nrRwW6t9
+         S1gO1PEDziM09PgIHFMDbCiyAX63N6T7HcFWgTdB6xKjE6uWY7lDECcgOb4GRLftxIQG
+         J+GLIZWGVeHpPjNTqZOLDmdzbxnG9RMyxTQC+4ieaFloLE2mqS4nX+QfrXL2bQje5kjT
+         Z75A==
+X-Gm-Message-State: AOAM530JFWgm7ZbikFi5yGHZPqKqlIBDz6bouAcNXrv+GwOD42DHbO0Q
+        ZhNloSGf47NS1bAS5aJOjp4JBQ==
+X-Google-Smtp-Source: ABdhPJwIBvdzQK0JoY1rz5L2C8/VWaXqjk7Vic9kzeMNxmG/gmopenY+aMqjBQsbKYRVeODxGbAcag==
+X-Received: by 2002:a05:6000:114e:: with SMTP id d14mr899685wrx.281.1619135388149;
+        Thu, 22 Apr 2021 16:49:48 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id l13sm6156326wrt.14.2021.04.22.16.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 16:49:47 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sd@queasysnail.net,
+        edumazet@google.com, fw@strlen.de
+Subject: [PATCH v2] net: geneve: modify IP header check in geneve6_xmit_skb and geneve_xmit_skb
+Date:   Fri, 23 Apr 2021 00:49:45 +0100
+Message-Id: <20210422234945.1190-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Modify the header size check in geneve6_xmit_skb and geneve_xmit_skb
+to use pskb_inet_may_pull rather than pskb_network_may_pull. This fixes
+two kernel selftest failures introduced by the commit introducing the
+checks:
+IPv4 over geneve6: PMTU exceptions
+IPv4 over geneve6: PMTU exceptions - nexthop objects
 
+It does this by correctly accounting for the fact that IPv4 packets may
+transit over geneve IPv6 tunnels (and vice versa), and still fixes the
+uninit-value bug fixed by the original commit.
 
-On 4/22/2021 1:10 PM, Joe Burmeister wrote:
->> On 4/20/2021 1:34 AM, Joe Burmeister wrote:
->>> It was previoulsy possible to have a device tree with more chips than
->>> the driver supports and go off the end of CS arrays.
->> Do you mind walking me through the code how that could have happened? We
->> have spi_register_controller() call of_spi_get_gpio_numbers() which has
->> the following:
->>
->> ctlr->num_chipselect = max_t(int, nb, ctlr->num_chipselect);
->>
->> such that what the controller has is the maximum between the number of
->> 'cs-gpios' properties parsed and what was already populated in
->> ctrl->num_chipselect during bcm2835_spi_probe(), which for this driver
->> is BCM2835_SPI_NUM_CS (3).
-> 
-> If you make a initial device tree (or add overlay in the rpi's 
-> config.txt) with more on the bus than BCM2835_SPI_NUM_CS (in my case 8
-> devices), you get into this trampling memory state. As the devices are
-> added, once the chip_select is equal to or greater than
-> BCM2835_SPI_NUM_CS, it's writing off the end of the arrays.
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Fixes: 6628ddfec758 ("net: geneve: check skb is large enough for IPv4/IPv6 header")
+Suggested-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
 
-OK.
+V2:
+* Incorporated feedback from Sabrina Dubroca regarding pskb_inet_may_pull
+* Added Fixes: tag as requested by Eric Dumazet
 
-> 
-> There is no protection from this happening. By the looks of it, this
-> isn't the only driver this could happen with, but it is the one I have
-> hardware for to test. There are also drivers that look like they don't
-> have a problem going well beyond the limit they gave.
+---
+ drivers/net/geneve.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Right, which means that we should probably seek a solution within the
-SPI core itself, even if you can only test with spi-bcm2835.c chances
-are that the fix would be applicable for other controllers if done in
-the core.
-
-> 
-> There is protection in spi_add_device, which will catch extra added
-> later, but not ones in the device tree when the spi controller was
-> registered.
-
-Not sure I follow you, if we have the overlay before
-spi_register_controller() is called, how can the check there not
-trigger? And if we load the overlay later when the SPI controller is
-already registered, why does not spi_add_device()'s check work?
-
-How would I go about reproducing this on a Pi4?
-
-> 
->>> This patches inforces CS limit but sets that limit to the max of the
->>> default limit and what is in the device tree when driver is loaded.
->>>
->>> Signed-off-by: Joe Burmeister <joe.burmeister@devtank.co.uk>
->> You have changed many more things that just enforcing a limit on
->> BCM2835_SPI_NUM_CS you have now made all chip-select related data
->> structuresd dynamically allocated and you have changed a number of
->> prints to use the shorthand "dev" instead of &pdev->dev.
-> The change to dynamic allocated arrays is just to support what is given
-> in the device  tree rather than increase and enforce the CS limit just
-> for my case.
-> 
-> The shorthand is of course not required. I'll drop it on resubmitting.
-> 
-> Regards,
-> 
-> Joe
-> 
-> 
-
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index 42f31c681846..61cd3dd4deab 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -891,7 +891,7 @@ static int geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
+ 
+-	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
++	if (!pskb_inet_may_pull(skb))
+ 		return -EINVAL;
+ 
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+@@ -988,7 +988,7 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
+ 
+-	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
++	if (!pskb_inet_may_pull(skb))
+ 		return -EINVAL;
+ 
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
 -- 
-Florian
+2.30.2
+
