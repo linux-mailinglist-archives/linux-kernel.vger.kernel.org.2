@@ -2,355 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A7D367DC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E84B367DC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbhDVJdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:33:36 -0400
-Received: from mail-vi1eur05on2042.outbound.protection.outlook.com ([40.107.21.42]:38881
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230341AbhDVJde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:33:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qvf0JlfW+XTr49vzRX1Yf1dwmCfpnIOvZ0w5Ws3q+Hnt2358J6FE25O9DQ4LffmSVmnlc92O3cprx4bzdtuXhRXU0pC9LwFasOZls5+KAdQmLjkCbkaXXiLjT5tqS/0qlcZCkVNhpcmYx3cTD4L0fKqkusJKwsWNxVxDFPDUAD4QYJ8Dv6a2lCGMS5aAzF1G9AlNjYNZmzisLJY0JX26wK4khS0o84J9D6iszcO/KAVoLpVsf6fRjlHog581Ko5tdhjvR3z83m1vDX8iEiKYkC4L8yMhg/ibhWAIRoFo/2vTz7820T5L8mJgj9kt/lq8xDzV65aoHQNTwdMyMpRpkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fFkYCH5Y5IynUVRAArfxN+sc01Yvlbm3ZJSEshLXB04=;
- b=O+pEnfTXE+9lmAlbIY9i3d5SMmex996RGjCSPhEfqWYfhFD05FKMDRxPmzhQY7lcetUOuRVNv5HIq7ui1lW3E0XUJyo2hDG+GD0NCAokPnaH89PWkvFUngnMYx+YxnetWyz0su4UWR6kW/S0365Jd8ZqLJSc/GRTcwk8qNfF9Ygmk0bUDpJDVOMmKT6dk0Tny0USjksk46+9UzSQv+kgTkqXZVbxCyh2N7WvMnGHUzzCvm3RhvGDQynfpnCTEu+obppT0Wibepy0tJTkOdmPlL9MvoftPZtX34ClijbGCJxubzUycFtP3LTsy6N+aKxEGGdHNxGN2XJVQaoenjXhWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fFkYCH5Y5IynUVRAArfxN+sc01Yvlbm3ZJSEshLXB04=;
- b=oOJ7qNP3v2YgUBNh1jnZvhMP0IBmYdQEFodlcl1hnTU5I4kAWLDsR0OW/G0PsU7W+tUNpx4u/Bu6vOBip/4SB/a7kJMQeFqlrIjt78OoncMOTM1qcq9XeBsIVlqAGdswJ/ulRnOVfEG11hp1KEoQjIVfq2hm+eH+3u0QX+fNR4A=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB5038.eurprd04.prod.outlook.com (2603:10a6:803:5f::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Thu, 22 Apr
- 2021 09:32:55 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::a5f3:fde9:1d85:5f28]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::a5f3:fde9:1d85:5f28%7]) with mapi id 15.20.4065.021; Thu, 22 Apr 2021
- 09:32:55 +0000
-Message-ID: <460bdf3547942fdca82a19e164162187917e4d57.camel@nxp.com>
-Subject: Re: [PATCH v2] drm/bridge: nwl-dsi: Get MIPI DSI controller and PHY
- ready in ->mode_set()
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Date:   Thu, 22 Apr 2021 17:31:21 +0800
-In-Reply-To: <36441ffb-2a79-f965-efc8-042844bc349d@baylibre.com>
-References: <1619068455-1932-1-git-send-email-victor.liu@nxp.com>
-         <36441ffb-2a79-f965-efc8-042844bc349d@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2P15301CA0011.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::21) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S235699AbhDVJfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:35:37 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:9532 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235339AbhDVJfg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 05:35:36 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13M9VllN023388;
+        Thu, 22 Apr 2021 11:34:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=selector1;
+ bh=PAzGZymp8Tn7VEiuoukm8luQ4ogr9Bf/DPZZ5qZ6axE=;
+ b=gpQIdbVqq/TOpNVXl+xiUBeGU1gf64h84zEtNnWp3bsQ/J4ijna1glmJhC4yTml53NaT
+ mNSDr0C4lvNnAxn9c9t2YL07kZLB0cywT/qsc0bM1ak0ix4Otc0CtkBEBhFSrcPkKlLl
+ AjigITtIPEMv4dnn8SF4jTLledFel/XYsHemKmAi78AQnYB0sqYKj81tN5Delcg48frN
+ b5AManEhZEME/uDn0Q419rVFfuqCdDMJ1SnsTgQeDUgdQcRjG78oHTUJMmg3occ23C4c
+ UDXdtCP2hhE+Iwm09ugcV1gDWlzZMqyShrP5ZqA7qTw8O3hEUEhWnlStZRhjHO7OQRRz FQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 382fxqfsb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 11:34:57 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2A20010002A;
+        Thu, 22 Apr 2021 11:34:56 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 17FD425F400;
+        Thu, 22 Apr 2021 11:34:56 +0200 (CEST)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 11:34:55 +0200
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1497.012; Thu, 22 Apr 2021 11:34:55 +0200
+From:   Valentin CARON - foss <valentin.caron@foss.st.com>
+To:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "dillon.minfei@gmail.com" <dillon.minfei@gmail.com>,
+        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Gerald BAEZA <gerald.baeza@st.com>
+Subject: Re: [PATCH 2/3] serial: stm32: fix threaded interrupt handling
+Thread-Topic: [PATCH 2/3] serial: stm32: fix threaded interrupt handling
+Thread-Index: AQHXMsptWrbsx4Er7UavsC4846LX06rALmWA
+Date:   Thu, 22 Apr 2021 09:34:55 +0000
+Message-ID: <b687c2f2-e6f3-818a-1bb7-bf632d589171@foss.st.com>
+References: <20210416140557.25177-1-johan@kernel.org>
+ <20210416140557.25177-3-johan@kernel.org>
+In-Reply-To: <20210416140557.25177-3-johan@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.49]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <ACAE7D4482F3474797035C4AEF2DBF8E@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry (119.31.174.66) by HK2P15301CA0011.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.3 via Frontend Transport; Thu, 22 Apr 2021 09:32:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 631d88e5-6f05-4f0e-efdf-08d905719b9b
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5038:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB503878D3A3324BB27EFCA29A98469@VI1PR04MB5038.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8CARv5c9QFe/ig0/TAoJ1+NzA/XtkNtJtBYj5NRVm+IUjxBTtBEg6V48Oe4JPYq4uv0uUoEmQ/0/ALqWAHp04B8da2Dj/EISh2ukSTL/v+vFVB37leCuDpJBzjjeMZzXpDLxCR/vD40IHIxWOK6ZYVdYfvDz9rMRvE+D7M+6dsMDdhBV3dF1M37qWqTmNj/wTjz5ANJamvF8WGBMUt4EsuPM6yCt07RwIPFHCUEO0scHN0JdL3v8dEt0S+eCg7etIono43Ug6k+KsyLNMJjStoty3RoWgaiHPsEB/sDwoWIxMbcRy1+g5W0zmvWY0kOEZfuVHQ9kjqh9vTVaCqOURYqTclZXe3GUbd74FMfK/KW+saYTdzkkIoDSRGNZK6nIa9tTGUS3xLrAh3D4JF3RtTVd8ENu2sFJlPnff6eF0KN0hc9T0HRvyNOYedsDBIpZENBNNTvjO8H6ega9V9Wr7SjPhBmP9TNA2HQ+EQc/SHzVHdCoqaUjbRZ8XO4bHLJTTVo75qz7QfqZA1LEg04f0k/+nJGE3SbA/mOxhi2prB1dntKMJPJwV17hVdJ+UiSgEz9p1TpRm3R4UWWLlpwy/GOL/VphIUNPDfmqynSb+Xc43HWX7tJwbux8g4YjNf3ylQ1x61k7uuvez5JLmDGksA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(376002)(39860400002)(8676002)(6666004)(8936002)(86362001)(36756003)(38350700002)(316002)(7416002)(2616005)(52116002)(4326008)(5660300002)(478600001)(53546011)(956004)(186003)(16526019)(6486002)(66574015)(83380400001)(6496006)(2906002)(66946007)(26005)(66556008)(66476007)(38100700002)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dkVNakNLWnljTDJMVWs4RHpUOHJFSWhQaWpicXoxQ2p4MndkbHdDaUFVdHZ1?=
- =?utf-8?B?ZnJBQm1IV0pGcktoN2JnTlhwbmp5VEVXRXVmcFloZnpIUVlmdk5lc3J2cjNH?=
- =?utf-8?B?RUpSd1V6RU5xOVRIVXpUc2lJRGVCeit5dmRQZWc3UDArVlZjSE1KNkN5M0Yy?=
- =?utf-8?B?d1VZbjJzcU13djZrNHJick5OSVBVQzR1djJiUVV5RDdnU1huemt6Q3hpK1B4?=
- =?utf-8?B?cTZkekRWZk5rcHdhUW5KV0dpWEoxdENOS0docGt3V1FlQzZ2S2RIbElrdUkv?=
- =?utf-8?B?R1RiNU81R0VqM2U4M2JMaUR6ZFZySzQ5WVlaTGx6SEVCaXBiOXdxc0ZKK2xV?=
- =?utf-8?B?N2t3N0YwVkcwUy80VkFTL1NIM2lyb1JWQzRwdkV4V3dWYjV6MlY2bzV0Ryth?=
- =?utf-8?B?YmxnRzhJdkJsT1lzZUtqM3NzTkt3NUFhU3hvUWRNUXAwQnBoRXN6aGZxL2Ix?=
- =?utf-8?B?VHhHVFQxNFl1TzdkeS9RZ0N5RHg2MnRiM3FTVEorVkg1Qi84aWZCSGdEekh3?=
- =?utf-8?B?WFdnZXNtamFtYVlHdEdmallSSjl5cDVFSW9GL3c0STMxZ1crMGZTTWJkby9W?=
- =?utf-8?B?c3dzUk9iR2pKYTU0c3VTSklxMmZMRGhkWDNoeEl4SkJsY1IvakJtc1BZZnN4?=
- =?utf-8?B?TXNybkhFVlFRUjhRVlAzWExQa3pab25lNm01dEs1M0s4SXg2Z1ZsYXFhR1hr?=
- =?utf-8?B?Q2gzcldPRDVjSVhlVHBWVERRWEVjbW1oQVRBZnlDOEN5YVNDMXpJamdEb2VR?=
- =?utf-8?B?Wlo5T0pFQ2Q5Q1Q3YUZyazhpTnA5SEVGbzZBTG5GaUFQQ2drbUU1QjA1Qlg4?=
- =?utf-8?B?ZERPR1FHQTdWUUkxYktCRjZXOXI2aFViNDN4SStaczBLcmltOTlJTjk3MDFR?=
- =?utf-8?B?bFI3UWtqL1pWU1RFMGtlNkZTMWRiNytxZU56MDMxL2FhSTBsbVVoYTlmeS9v?=
- =?utf-8?B?bHMxMWM5blRjN0NrODk0bjMrRXVleC9SZzd5dVJnbGQyN2ZrdVJlQkhWNUhQ?=
- =?utf-8?B?Rnc2MGx0MERidmY3SWVmaTBLTGtyV1EwTnJBWGZrT1hYK3crODJOZDIxVlV6?=
- =?utf-8?B?TzVpQUN5SnRKNm1CSDdqU0dVazkvK0MvNzdjMmJEUi9XQmhTZHdETkFjaVNO?=
- =?utf-8?B?NzhVdkx1ajRCcnpJeVJlR1JrMklYVDBFcE1xZ3E3ZTRMcHN5c2lSZ3dOTlM0?=
- =?utf-8?B?VGIzdEpseCtiUjRaR0hPZTdQeEhtY2kydG1xVGxYVStvSitrQTlhUzJyNHVj?=
- =?utf-8?B?SGVmZzBadzdzSVd5T3JRRmRaUVUwQ0pwaXZiZ3I1WnI4VHlSL0ZuWnRzaUM3?=
- =?utf-8?B?b1hxM2JJWEhWaXRadVlqMG83WnROTFVKVjM2Z0ZJSUI2Mkc2Ynllb2FqMmRE?=
- =?utf-8?B?ck1SbithRzlMOFV2cmZCbFg1NEdsbWRTMnVyZGFzQzRzVTdTdVFkd1FnTDRn?=
- =?utf-8?B?QTFObmNvL1R0UWxScVU5T2FsQ2lHYW84VFlhaWI2L1JxeXJ4aTVnSkhHb2VL?=
- =?utf-8?B?bE9OcnFWbndrVk9EcXZwY2NwaEpIV3lBVjNWeG80YzVSWXN5SU5OQ3VHNHAz?=
- =?utf-8?B?U1V2QW05VmlmdzNmdGJ0TTdBUEhiNnZVTkprcUwxMkRhVUdxdkVsTDBaNlFB?=
- =?utf-8?B?UGdBZzhIK05oN2djRUpiWXR5bm9CeVpudjVKOE9EZkNaQWVWZkRiM1VvQUNO?=
- =?utf-8?B?a1VpUFhYQVJxeEhhV2I5ejEvYTdJSjdBV3NoejZqYndIR204VjdlbTd2UHlr?=
- =?utf-8?Q?cZDs2e3taVyltYSiq2fsNx4YIaY1foYczPck40s?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 631d88e5-6f05-4f0e-efdf-08d905719b9b
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 09:32:55.1166
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TVLavvTTavWmUHiHjWg3qM/aP21O3bVvWzviibBVmQUxGmNHSmVsmY9JMPbQmkYwt1nyZy0AxZgf7FCQGQafmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5038
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_01:2021-04-21,2021-04-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
-
-On Thu, 2021-04-22 at 10:48 +0200, Neil Armstrong wrote:
-> Hi,
-> 
-> On 22/04/2021 07:14, Liu Ying wrote:
-> > Some MIPI DSI panel drivers like 'raydium,rm68200' send
-> > MIPI_DCS_SET_DISPLAY_ON commands in panel_funcs->prepare(), which
-> > requires the MIPI DSI controller and PHY to be ready beforehand.
-> > Without this patch, the nwl-dsi driver gets the MIPI DSI controller
-> > and PHY ready in bridge_funcs->pre_enable(), which happens after
-> > the panel_funcs->prepare(). So, this patch shifts the bridge operation
-> > ealier from bridge_funcs->pre_enable() to bridge_funcs->mode_set().
-> 
-> This makes sense, this is how we do on the synopsys dw mipi dsi driver.
-> 
-> > This way, more MIPI DSI panels can connect to this nwl-dsi bridge.
-> > Care is taken to make sure bridge_funcs->mode_set()/atomic_disable()
-> > are called in pairs, which includes removing a check on unchanged HS
-> > clock rate and forcing a full modeset when only connector's DPMS is
-> > brought out of "Off" status.
-> 
-> I would split the changes in multiple patches to clarify the changes.
-
-Maybe, I can split this into the below 3 patches:
-1) Remove a check on unchanged HS clock rate from ->mode_set().
-2) Force a full modeset when only connector's DPMS is brought out of
-"Off" status. This will be done in ->atomic_check() together with the
-fixup for H/VSYNC polarities.
-3) Shift the bridge operation as the last step.
-
-I'll mention that 1) & 2) are needed by 3) in their commit message.
-
-Does this split-up sound reasonable?
-
-Thanks,
-Liu Ying
-
-> 
-> Neil
-> 
-> > Cc: Andrzej Hajda <a.hajda@samsung.com>
-> > Cc: Neil Armstrong <narmstrong@baylibre.com>
-> > Cc: Robert Foss <robert.foss@linaro.org>
-> > Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> > Cc: Jonas Karlman <jonas@kwiboo.se>
-> > Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Guido Günther <agx@sigxcpu.org>
-> > Cc: Robert Chiras <robert.chiras@nxp.com>
-> > Cc: NXP Linux Team <linux-imx@nxp.com>
-> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > ---
-> > v1->v2:
-> > * Fix commit message typo - s/unchange/unchanged/
-> > 
-> >  drivers/gpu/drm/bridge/nwl-dsi.c | 86 +++++++++++++++++++++-------------------
-> >  1 file changed, 46 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
-> > index be6bfc5..229f0b1 100644
-> > --- a/drivers/gpu/drm/bridge/nwl-dsi.c
-> > +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-> > @@ -21,6 +21,7 @@
-> >  #include <linux/sys_soc.h>
-> >  #include <linux/time64.h>
-> >  
-> > +#include <drm/drm_atomic_state_helper.h>
-> >  #include <drm/drm_bridge.h>
-> >  #include <drm/drm_mipi_dsi.h>
-> >  #include <drm/drm_of.h>
-> > @@ -661,7 +662,7 @@ static irqreturn_t nwl_dsi_irq_handler(int irq, void *data)
-> >  	return IRQ_HANDLED;
-> >  }
-> >  
-> > -static int nwl_dsi_enable(struct nwl_dsi *dsi)
-> > +static int nwl_dsi_mode_set(struct nwl_dsi *dsi)
-> >  {
-> >  	struct device *dev = dsi->dev;
-> >  	union phy_configure_opts *phy_cfg = &dsi->phy_cfg;
-> > @@ -748,7 +749,9 @@ static int nwl_dsi_disable(struct nwl_dsi *dsi)
-> >  	return 0;
-> >  }
-> >  
-> > -static void nwl_dsi_bridge_disable(struct drm_bridge *bridge)
-> > +static void
-> > +nwl_dsi_bridge_atomic_disable(struct drm_bridge *bridge,
-> > +			      struct drm_bridge_state *old_bridge_state)
-> >  {
-> >  	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
-> >  	int ret;
-> > @@ -809,17 +812,6 @@ static int nwl_dsi_get_dphy_params(struct nwl_dsi *dsi,
-> >  	return 0;
-> >  }
-> >  
-> > -static bool nwl_dsi_bridge_mode_fixup(struct drm_bridge *bridge,
-> > -				      const struct drm_display_mode *mode,
-> > -				      struct drm_display_mode *adjusted_mode)
-> > -{
-> > -	/* At least LCDIF + NWL needs active high sync */
-> > -	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
-> > -	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
-> > -
-> > -	return true;
-> > -}
-> > -
-> >  static enum drm_mode_status
-> >  nwl_dsi_bridge_mode_valid(struct drm_bridge *bridge,
-> >  			  const struct drm_display_info *info,
-> > @@ -837,6 +829,29 @@ nwl_dsi_bridge_mode_valid(struct drm_bridge *bridge,
-> >  	return MODE_OK;
-> >  }
-> >  
-> > +static int nwl_dsi_bridge_atomic_check(struct drm_bridge *bridge,
-> > +				       struct drm_bridge_state *bridge_state,
-> > +				       struct drm_crtc_state *crtc_state,
-> > +				       struct drm_connector_state *conn_state)
-> > +{
-> > +	struct drm_display_mode *adjusted_mode = &crtc_state->adjusted_mode;
-> > +
-> > +	/* At least LCDIF + NWL needs active high sync */
-> > +	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
-> > +	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
-> > +
-> > +	/*
-> > +	 * Do a full modeset if crtc_state->active is changed to be true.
-> > +	 * This ensures our ->mode_set() is called to get the DSI controller
-> > +	 * and the PHY ready to send DCS commands, when only the connector's
-> > +	 * DPMS is brought out of "Off" status.
-> > +	 */
-> > +	if (crtc_state->active_changed && crtc_state->active)
-> > +		crtc_state->mode_changed = true;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static void
-> >  nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
-> >  			const struct drm_display_mode *mode,
-> > @@ -852,13 +867,6 @@ nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
-> >  	if (ret < 0)
-> >  		return;
-> >  
-> > -	/*
-> > -	 * If hs clock is unchanged, we're all good - all parameters are
-> > -	 * derived from it atm.
-> > -	 */
-> > -	if (new_cfg.mipi_dphy.hs_clk_rate == dsi->phy_cfg.mipi_dphy.hs_clk_rate)
-> > -		return;
-> > -
-> >  	phy_ref_rate = clk_get_rate(dsi->phy_ref_clk);
-> >  	DRM_DEV_DEBUG_DRIVER(dev, "PHY at ref rate: %lu\n", phy_ref_rate);
-> >  	/* Save the new desired phy config */
-> > @@ -866,14 +874,8 @@ nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
-> >  
-> >  	memcpy(&dsi->mode, adjusted_mode, sizeof(dsi->mode));
-> >  	drm_mode_debug_printmodeline(adjusted_mode);
-> > -}
-> >  
-> > -static void nwl_dsi_bridge_pre_enable(struct drm_bridge *bridge)
-> > -{
-> > -	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
-> > -	int ret;
-> > -
-> > -	pm_runtime_get_sync(dsi->dev);
-> > +	pm_runtime_get_sync(dev);
-> >  
-> >  	if (clk_prepare_enable(dsi->lcdif_clk) < 0)
-> >  		return;
-> > @@ -883,27 +885,29 @@ static void nwl_dsi_bridge_pre_enable(struct drm_bridge *bridge)
-> >  	/* Step 1 from DSI reset-out instructions */
-> >  	ret = reset_control_deassert(dsi->rst_pclk);
-> >  	if (ret < 0) {
-> > -		DRM_DEV_ERROR(dsi->dev, "Failed to deassert PCLK: %d\n", ret);
-> > +		DRM_DEV_ERROR(dev, "Failed to deassert PCLK: %d\n", ret);
-> >  		return;
-> >  	}
-> >  
-> >  	/* Step 2 from DSI reset-out instructions */
-> > -	nwl_dsi_enable(dsi);
-> > +	nwl_dsi_mode_set(dsi);
-> >  
-> >  	/* Step 3 from DSI reset-out instructions */
-> >  	ret = reset_control_deassert(dsi->rst_esc);
-> >  	if (ret < 0) {
-> > -		DRM_DEV_ERROR(dsi->dev, "Failed to deassert ESC: %d\n", ret);
-> > +		DRM_DEV_ERROR(dev, "Failed to deassert ESC: %d\n", ret);
-> >  		return;
-> >  	}
-> >  	ret = reset_control_deassert(dsi->rst_byte);
-> >  	if (ret < 0) {
-> > -		DRM_DEV_ERROR(dsi->dev, "Failed to deassert BYTE: %d\n", ret);
-> > +		DRM_DEV_ERROR(dev, "Failed to deassert BYTE: %d\n", ret);
-> >  		return;
-> >  	}
-> >  }
-> >  
-> > -static void nwl_dsi_bridge_enable(struct drm_bridge *bridge)
-> > +static void
-> > +nwl_dsi_bridge_atomic_enable(struct drm_bridge *bridge,
-> > +			     struct drm_bridge_state *old_bridge_state)
-> >  {
-> >  	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
-> >  	int ret;
-> > @@ -948,14 +952,16 @@ static void nwl_dsi_bridge_detach(struct drm_bridge *bridge)
-> >  }
-> >  
-> >  static const struct drm_bridge_funcs nwl_dsi_bridge_funcs = {
-> > -	.pre_enable = nwl_dsi_bridge_pre_enable,
-> > -	.enable     = nwl_dsi_bridge_enable,
-> > -	.disable    = nwl_dsi_bridge_disable,
-> > -	.mode_fixup = nwl_dsi_bridge_mode_fixup,
-> > -	.mode_set   = nwl_dsi_bridge_mode_set,
-> > -	.mode_valid = nwl_dsi_bridge_mode_valid,
-> > -	.attach	    = nwl_dsi_bridge_attach,
-> > -	.detach	    = nwl_dsi_bridge_detach,
-> > +	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
-> > +	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
-> > +	.atomic_reset		= drm_atomic_helper_bridge_reset,
-> > +	.atomic_check		= nwl_dsi_bridge_atomic_check,
-> > +	.atomic_enable		= nwl_dsi_bridge_atomic_enable,
-> > +	.atomic_disable		= nwl_dsi_bridge_atomic_disable,
-> > +	.mode_set		= nwl_dsi_bridge_mode_set,
-> > +	.mode_valid		= nwl_dsi_bridge_mode_valid,
-> > +	.attach			= nwl_dsi_bridge_attach,
-> > +	.detach			= nwl_dsi_bridge_detach,
-> >  };
-> >  
-> >  static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
-> > 
-
+SGksIEpvaGFuDQoNCk9uIDQvMTYvMjEgNDowNSBQTSwgSm9oYW4gSG92b2xkIHdyb3RlOg0KPiBX
+aGVuIERNQSBpcyBlbmFibGVkIHRoZSByZWNlaXZlIGhhbmRsZXIgcnVucyBpbiBhIHRocmVhZGVk
+IGhhbmRsZXIsIGJ1dA0KPiB0aGUgcHJpbWFyeSBoYW5kbGVyIHVwIHVudGlsIHZlcnkgcmVjZW50
+bHkgbmVpdGhlciBkaXNhYmxlZCBpbnRlcnJ1cHRzDQo+IGluIHRoZSBkZXZpY2Ugb3IgdXNlZCBJ
+UlFGX09ORVNIT1QuIFRoaXMgd291bGQgbGVhZCB0byBhIGRlYWRsb2NrIGlmIGFuDQo+IGludGVy
+cnVwdCBjb21lcyBpbiB3aGlsZSB0aGUgdGhyZWFkZWQgcmVjZWl2ZSBoYW5kbGVyIGlzIHJ1bm5p
+bmcgdW5kZXINCj4gdGhlIHBvcnQgbG9jay4NCj4NCj4gQ29tbWl0IGFkNzY3NjgxMjQzNyAoInNl
+cmlhbDogc3RtMzI6IGZpeCBhIGRlYWRsb2NrIGNvbmRpdGlvbiB3aXRoDQo+IHdha2V1cCBldmVu
+dCIpIGNsYWltZWQgdG8gZml4IGFuIHVucmVsYXRlZCBkZWFkbG9jaywgYnV0IHVuZm9ydHVuYXRl
+bHkNCj4gYWxzbyBkaXNhYmxlZCBpbnRlcnJ1cHRzIGluIHRoZSB0aHJlYWRlZCBoYW5kbGVyLiBX
+aGlsZSB0aGlzIHByZXZlbnRzDQo+IHRoZSBkZWFkbG9jayBtZW50aW9uZWQgaW4gdGhlIHByZXZp
+b3VzIHBhcmFncmFwaCBpdCBhbHNvIGRlZmVhdHMgdGhlDQo+IHB1cnBvc2Ugb2YgdXNpbmcgYSB0
+aHJlYWRlZCBoYW5kbGVyIGluIHRoZSBmaXJzdCBwbGFjZS4NCj4NCj4gRml4IHRoaXMgYnkgbWFr
+aW5nIHRoZSBpbnRlcnJ1cHQgb25lLXNob3QgYW5kIG5vdCBkaXNhYmxpbmcgaW50ZXJydXB0cw0K
+PiBpbiB0aGUgdGhyZWFkZWQgaGFuZGxlci4NCj4NCj4gTm90ZSB0aGF0IChyZWNlaXZlKSBETUEg
+bXVzdCBub3QgYmUgdXNlZCBmb3IgYSBjb25zb2xlIHBvcnQgYXMgdGhlDQo+IHRocmVhZGVkIGhh
+bmRsZXIgY291bGQgYmUgaW50ZXJydXB0ZWQgd2hpbGUgaG9sZGluZyB0aGUgcG9ydCBsb2NrLA0K
+PiBzb21ldGhpbmcgd2hpY2ggY291bGQgbGVhZCB0byBhIGRlYWRsb2NrIGluIGNhc2UgYW4gaW50
+ZXJydXB0IGhhbmRsZXINCj4gZW5kcyB1cCBjYWxsaW5nIHByaW50ay4NCj4NCj4gRml4ZXM6IGFk
+NzY3NjgxMjQzNyAoInNlcmlhbDogc3RtMzI6IGZpeCBhIGRlYWRsb2NrIGNvbmRpdGlvbiB3aXRo
+IHdha2V1cCBldmVudCIpDQo+IEZpeGVzOiAzNDg5MTg3MjA0ZWIgKCJzZXJpYWw6IHN0bTMyOiBh
+ZGRpbmcgZG1hIHN1cHBvcnQiKQ0KPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZyAgICAgICMg
+NC45DQo+IENjOiBBbGV4YW5kcmUgVE9SR1VFIDxhbGV4YW5kcmUudG9yZ3VlQHN0LmNvbT4NCj4g
+Q2M6IEdlcmFsZCBCYWV6YSA8Z2VyYWxkLmJhZXphQHN0LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTog
+Sm9oYW4gSG92b2xkIDxqb2hhbkBrZXJuZWwub3JnPg0KDQpSZXZpZXdlZC1ieTogVmFsZW50aW4g
+Q2Fyb248dmFsZW50aW4uY2Fyb25AZm9zcy5zdC5jb20+DQoNCj4gLS0tDQo+ICAgZHJpdmVycy90
+dHkvc2VyaWFsL3N0bTMyLXVzYXJ0LmMgfCAyMiArKysrKysrKysrKystLS0tLS0tLS0tDQo+ICAg
+MSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0KPg0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy90dHkvc2VyaWFsL3N0bTMyLXVzYXJ0LmMgYi9kcml2ZXJzL3R0
+eS9zZXJpYWwvc3RtMzItdXNhcnQuYw0KPiBpbmRleCA0ZDI3NzgwNGM2M2UuLjM1MjRlZDJjMGM3
+MyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsL3N0bTMyLXVzYXJ0LmMNCj4gKysr
+IGIvZHJpdmVycy90dHkvc2VyaWFsL3N0bTMyLXVzYXJ0LmMNCj4gQEAgLTIxNCwxNCArMjE0LDEx
+IEBAIHN0YXRpYyB2b2lkIHN0bTMyX3VzYXJ0X3JlY2VpdmVfY2hhcnMoc3RydWN0IHVhcnRfcG9y
+dCAqcG9ydCwgYm9vbCB0aHJlYWRlZCkNCj4gICAJc3RydWN0IHR0eV9wb3J0ICp0cG9ydCA9ICZw
+b3J0LT5zdGF0ZS0+cG9ydDsNCj4gICAJc3RydWN0IHN0bTMyX3BvcnQgKnN0bTMyX3BvcnQgPSB0
+b19zdG0zMl9wb3J0KHBvcnQpOw0KPiAgIAljb25zdCBzdHJ1Y3Qgc3RtMzJfdXNhcnRfb2Zmc2V0
+cyAqb2ZzID0gJnN0bTMyX3BvcnQtPmluZm8tPm9mczsNCj4gLQl1bnNpZ25lZCBsb25nIGMsIGZs
+YWdzOw0KPiArCXVuc2lnbmVkIGxvbmcgYzsNCj4gICAJdTMyIHNyOw0KPiAgIAljaGFyIGZsYWc7
+DQo+ICAgDQo+IC0JaWYgKHRocmVhZGVkKQ0KPiAtCQlzcGluX2xvY2tfaXJxc2F2ZSgmcG9ydC0+
+bG9jaywgZmxhZ3MpOw0KPiAtCWVsc2UNCj4gLQkJc3Bpbl9sb2NrKCZwb3J0LT5sb2NrKTsNCj4g
+KwlzcGluX2xvY2soJnBvcnQtPmxvY2spOw0KPiAgIA0KPiAgIAl3aGlsZSAoc3RtMzJfdXNhcnRf
+cGVuZGluZ19yeChwb3J0LCAmc3IsICZzdG0zMl9wb3J0LT5sYXN0X3JlcywNCj4gICAJCQkJICAg
+ICAgdGhyZWFkZWQpKSB7DQo+IEBAIC0yNzgsMTAgKzI3NSw3IEBAIHN0YXRpYyB2b2lkIHN0bTMy
+X3VzYXJ0X3JlY2VpdmVfY2hhcnMoc3RydWN0IHVhcnRfcG9ydCAqcG9ydCwgYm9vbCB0aHJlYWRl
+ZCkNCj4gICAJCXVhcnRfaW5zZXJ0X2NoYXIocG9ydCwgc3IsIFVTQVJUX1NSX09SRSwgYywgZmxh
+Zyk7DQo+ICAgCX0NCj4gICANCj4gLQlpZiAodGhyZWFkZWQpDQo+IC0JCXNwaW5fdW5sb2NrX2ly
+cXJlc3RvcmUoJnBvcnQtPmxvY2ssIGZsYWdzKTsNCj4gLQllbHNlDQo+IC0JCXNwaW5fdW5sb2Nr
+KCZwb3J0LT5sb2NrKTsNCj4gKwlzcGluX3VubG9jaygmcG9ydC0+bG9jayk7DQo+ICAgDQo+ICAg
+CXR0eV9mbGlwX2J1ZmZlcl9wdXNoKHRwb3J0KTsNCj4gICB9DQo+IEBAIC02NjcsNyArNjYxLDgg
+QEAgc3RhdGljIGludCBzdG0zMl91c2FydF9zdGFydHVwKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQp
+DQo+ICAgDQo+ICAgCXJldCA9IHJlcXVlc3RfdGhyZWFkZWRfaXJxKHBvcnQtPmlycSwgc3RtMzJf
+dXNhcnRfaW50ZXJydXB0LA0KPiAgIAkJCQkgICBzdG0zMl91c2FydF90aHJlYWRlZF9pbnRlcnJ1
+cHQsDQo+IC0JCQkJICAgSVJRRl9OT19TVVNQRU5ELCBuYW1lLCBwb3J0KTsNCj4gKwkJCQkgICBJ
+UlFGX09ORVNIT1QgfCBJUlFGX05PX1NVU1BFTkQsDQo+ICsJCQkJICAgbmFtZSwgcG9ydCk7DQo+
+ICAgCWlmIChyZXQpDQo+ICAgCQlyZXR1cm4gcmV0Ow0KPiAgIA0KPiBAQCAtMTE1Niw2ICsxMTUx
+LDEzIEBAIHN0YXRpYyBpbnQgc3RtMzJfdXNhcnRfb2ZfZG1hX3J4X3Byb2JlKHN0cnVjdCBzdG0z
+Ml9wb3J0ICpzdG0zMnBvcnQsDQo+ICAgCXN0cnVjdCBkbWFfYXN5bmNfdHhfZGVzY3JpcHRvciAq
+ZGVzYyA9IE5VTEw7DQo+ICAgCWludCByZXQ7DQo+ICAgDQo+ICsJLyoNCj4gKwkgKiBVc2luZyBE
+TUEgYW5kIHRocmVhZGVkIGhhbmRsZXIgZm9yIHRoZSBjb25zb2xlIGNvdWxkIGxlYWQgdG8NCj4g
+KwkgKiBkZWFkbG9ja3MuDQo+ICsJICovDQo+ICsJaWYgKHVhcnRfY29uc29sZShwb3J0KSkNCj4g
+KwkJcmV0dXJuIC1FTk9ERVY7DQo+ICsNCj4gICAJLyogUmVxdWVzdCBETUEgUlggY2hhbm5lbCAq
+Lw0KPiAgIAlzdG0zMnBvcnQtPnJ4X2NoID0gZG1hX3JlcXVlc3Rfc2xhdmVfY2hhbm5lbChkZXYs
+ICJyeCIpOw0KPiAgIAlpZiAoIXN0bTMycG9ydC0+cnhfY2gpIHs=
