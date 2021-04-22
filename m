@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CBB36879B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B233687A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239456AbhDVUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:03:43 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.119]:32971 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239426AbhDVUDh (ORCPT
+        id S239350AbhDVUEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237048AbhDVUEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:03:37 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id D1D673F29F
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 15:03:00 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id ZfXQlBJgRMGeEZfXQlVxpU; Thu, 22 Apr 2021 15:03:00 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=d/5pgn0pMDu8YtsMnk0jcfxUVg079cO2Qvp35naLjTM=; b=FqjaVKwRkgTWGoIjNppT5PAzvz
-        Faf5IKuEfZOR5uDeV/Ct+uMF24hXv9ZDUe04YCBYOVAkoTV2/n1gBVWGLN23NQI3rMbKcRV4A/7fg
-        G6hwB/0pyXGloe+gpEHQMr25zU7gN1DJ65PALPBQZAELVhb76HXUtateby7iMEu7TbePLjFK0nkr/
-        tuZnwpc0VQOcAhxkBuf7XaApXe9S5g02Y/jcBoz/FGhoFHiiXsCdqbz9a6q/cEP6iqu1cANZWYJL3
-        m222t0x3R7YXQX75o9IgYB4lspRzmocEx5CHEBVub2P8u+B8JeWihB45Uv7nQJn25a8XszI2TdFGa
-        UuoQqKgw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58614 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lZfXN-003qnV-A4; Thu, 22 Apr 2021 15:02:57 -0500
-Subject: Re: [PATCH][next] wireless: wext-spy: Fix out-of-bounds warning
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-References: <20210421234337.GA127225@embeddedor>
- <317099c78edb9fdde3db3f1e7c9a4f77529b281a.camel@sipsolutions.net>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <07fc2c3a-ffba-8dad-1ddf-d4da7482c65a@embeddedor.com>
-Date:   Thu, 22 Apr 2021 15:03:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 22 Apr 2021 16:04:14 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5211EC06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:03:38 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v13so10498236ple.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wfL45R5dBs0MS9kZn3ph77DF/daCg5TSX71XRehgnxk=;
+        b=UjUpfOM/+EU+ODcUcs8lF11e3se8Yw8Lky6BSnX4yXUh+tH0bpE0cSc4yyI3n5B7pk
+         pv8ltbRteNvl2R3roc9z2gnsO8vWps8U6LQsGpj3qY+cNNdAKS4TAI5H102o/aDYkmit
+         DSgHAkITih3THSRWqGyqGn3H5/wg4Zzxk0AD8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wfL45R5dBs0MS9kZn3ph77DF/daCg5TSX71XRehgnxk=;
+        b=s0Q8MBgKXkew0sd05Z1MdtLpGt8+A19N3+9gNl2V7CNw1qUE6YYjZb5fooQ++Yy7DC
+         VZ5yn69pBwBPEgZuunMFzgng/9v7LTRt3CrLv3yF6jNyMT87DXCpLB9mCwwbKCNm+YLx
+         srCNrXEaG0DIwe9e7S2v5XIhjG2sp7lvGeHAwclB1Lzt3faLydanW32Gg8QjYf/XRpSo
+         5XPPNrXIw89eSXpAQDEwJBQp7VgYdJ1K/jkHDc/s/1YWLpYY1eWeRcYjf65Sw2snFmK1
+         pB6r9ysymwsxprzSZCcdyy1Y2TyByRQ9ddCGztkxsJMoOpfKG6A2/ujEeWNh3WO0mbVL
+         YvFw==
+X-Gm-Message-State: AOAM533InTH5p1/pYxNehPyn6srxMNU+Smlg21xbdUVLrnNWanD0QGgm
+        y0UpkjftdrvVFtvexk3JvUXgeg==
+X-Google-Smtp-Source: ABdhPJza8gCfdaIX2zwXwIfrBz18VOBT1lbCrdWZuk0N4EoKlrwKK9Gt24lkIqjFphGcuVLpxWADDA==
+X-Received: by 2002:a17:90a:d18a:: with SMTP id fu10mr444528pjb.233.1619121817858;
+        Thu, 22 Apr 2021 13:03:37 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:acff:4f9f:d039:23ff])
+        by smtp.gmail.com with UTF8SMTPSA id y13sm3044062pgs.93.2021.04.22.13.03.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 13:03:37 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 13:03:36 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] interconnect: qcom: bcm-voter: add a missing
+ of_node_put()
+Message-ID: <YIHWmJPcoh4bFKNi@google.com>
+References: <1619116570-13308-1-git-send-email-subbaram@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <317099c78edb9fdde3db3f1e7c9a4f77529b281a.camel@sipsolutions.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lZfXN-003qnV-A4
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58614
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Disposition: inline
+In-Reply-To: <1619116570-13308-1-git-send-email-subbaram@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/22/21 02:04, Johannes Berg wrote:
-> On Wed, 2021-04-21 at 18:43 -0500, Gustavo A. R. Silva wrote:
->>
->>  	/* Just do it */
->> -	memcpy(&(spydata->spy_thr_low), &(threshold->low),
->> -	       2 * sizeof(struct iw_quality));
->> +	memcpy(&spydata->spy_thr_low, &threshold->low, sizeof(threshold->low));
->> +	memcpy(&spydata->spy_thr_high, &threshold->high, sizeof(threshold->high));
->>
+On Thu, Apr 22, 2021 at 11:36:10AM -0700, Subbaraman Narayanamurthy wrote:
+> Add a missing of_node_put() in of_bcm_voter_get() to avoid the
+> reference leak.
 > 
-> It would've been really simple to stick to 80 columns here (and
-> everywhere in the patch), please do that.
-> 
-> Also, why not just use struct assigments?
-> 
-> 	spydata->spy_thr_low = threshold->low;
-> 
-> etc.
-> Done: https://lore.kernel.org/lkml/20210422200032.GA168995@embeddedor/
-> Seems far simpler (and shorter lines).
+> Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+> Cc: stable@vger.kernel.org
 
-Done:
-	https://lore.kernel.org/lkml/20210422200032.GA168995@embeddedor/
+nit: I think you would typically put tags like 'Cc' or 'Fixed' before
+the 'Signed-off-by' tag.
 
-Thanks for the feedback.
---
-Gustavo
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
