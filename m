@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE5A3685CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FEE3685D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236740AbhDVRYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:24:06 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54176 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDVRYD (ORCPT
+        id S238144AbhDVRYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:24:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33152 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236287AbhDVRYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:24:03 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 3EF8B1F4361F
-Message-ID: <7d1f197d868ae84a8bc475f1f48178d2737518c1.camel@collabora.com>
-Subject: Re: [PATCH v1 4/5] arm64: dts: rockchip: add core dtsi for RK3568
- SoC
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        cl@rock-chips.com
-Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
-        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
-        cnsztl@gmail.com, devicetree@vger.kernel.org,
-        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
-        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
-        zhangqing@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com
-Date:   Thu, 22 Apr 2021 14:23:15 -0300
-In-Reply-To: <11131098.F0gNSz5aLb@diego>
-References: <20210421065921.23917-1-cl@rock-chips.com>
-         <20210421065921.23917-5-cl@rock-chips.com> <11131098.F0gNSz5aLb@diego>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Thu, 22 Apr 2021 13:24:53 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MH3774152386;
+        Thu, 22 Apr 2021 13:23:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ny6eUa2pWJaAztEFaaCjx4Af+2Iip1DFJY/+o/Lyygs=;
+ b=cE5pVCiI9SYqc9Wc5Llw0OuuvHycQBGUGl6vOn2HGAkivg2ctlfQtgQJsnCJOAsmCRgr
+ B8lPmA+DsMO4ZLgqetPyVmQMAwQT+k+ZxMlQLhFOInbmMJyoQq8eynV6327gmFhhQ4lc
+ P8YZrru1m2eHgz+pjVzYy/hGVteiYM+k78q7c5UbpVEvH0N1Z0aR3cYd/RcNzbrMqnwA
+ h+KhFUaR/gD8K8DykG0YHpm5LXXji77n1iX3XA2XPqVBo2c7ml7tP9X31e8wLEV9vbS0
+ Z/91XvjHT9Wg/WOHfhKnftluTkb43EuyQef71aC71KsUmChb/Yoht7VvWQYXrsGMOewm 7w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3838n6tcjn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 13:23:39 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13MH45Ou156570;
+        Thu, 22 Apr 2021 13:23:39 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3838n6tcj3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 13:23:39 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13MHGt2Q003591;
+        Thu, 22 Apr 2021 17:23:38 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma05wdc.us.ibm.com with ESMTP id 37yqa9kd7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 17:23:38 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13MHNbbc17301872
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Apr 2021 17:23:37 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5562112405B;
+        Thu, 22 Apr 2021 17:23:37 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42CAF124052;
+        Thu, 22 Apr 2021 17:23:33 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.42.66])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 22 Apr 2021 17:23:32 +0000 (GMT)
+Subject: Re: [PATCH] ima: require CONFIG_MODULES for IMA_APPRAISE_MODSIG
+To:     Arnd Bergmann <arnd@kernel.org>, Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        John Johansen <john.johansen@canonical.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210422132956.1628059-1-arnd@kernel.org>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <2fd688d8-9f39-5839-2262-fb703d19d4c3@linux.vnet.ibm.com>
+Date:   Thu, 22 Apr 2021 13:23:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <20210422132956.1628059-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 86X-afWF5ijgDGXQ3Si7BegMd0btkpNR
+X-Proofpoint-ORIG-GUID: gYy4mficW60_jMLR9n-_9DqqdirzbrSf
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_12:2021-04-22,2021-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 clxscore=1011
+ malwarescore=0 spamscore=0 priorityscore=1501 phishscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104220128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liang,
 
-I'm very impressed Rockchip is pushing patches so early, thanks a lot!
+On 4/22/21 9:29 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When module support is disabled, CONFIG_MODULE_SIG_HASH cannot
+> be set either, so the build process fails with an error
+>
+> certs/Makefile:52: *** Could not determine digest type to use from kernel config.  Stop.
+>
+> when IMA_APPRAISE_MODSIG is set but modules are not.
+>
+> Add a Kconfig dependency to prevent this configuration.
+>
+> Fixes: 0165f4ca223b ("ima: enable signing of modules with build time generated key")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-See below.
+Thanks Arnd !!
 
-On Wed, 2021-04-21 at 11:13 +0200, Heiko Stübner wrote:
-> Hi Liang,
-> 
-> Am Mittwoch, 21. April 2021, 08:59:20 CEST schrieb cl@rock-chips.com:
-> > From: Liang Chen <cl@rock-chips.com>
-> > 
-> > RK3568 is a high-performance and low power quad-core application processor
-> > designed for personal mobile internet device and AIoT equipments.
-> > 
-> > This patch add basic core dtsi file for it.
-> > 
-> > Signed-off-by: Liang Chen <cl@rock-chips.com>
-> 
-> this is a first round of basic stuff :-) .
-> 
-> First of all, I really like the move of moving the pretty standardized
-> pinconfig entries to the rockchip-pinconf.dtsi .
-> 
-> (1) But please move this into a separate patch to make that more visible
-> and maybe even convert _some_ or all arm64 Rockchip socs to use that
-> as well
-> 
-> "arm64: dts: rockchip: add generic pinconfig settings used by most Rockchip socs
-> 
-> The pinconfig settings for Rockchip SoCs are pretty similar on all socs,
-> so move them to a shared dtsi to be included, instead of redefining them
-> for each soc"
-> 
-> (2) I also like the external rk3568-pinctrl approach with the dtsi getting
-> auto-generated. This will probably help us in keeping pinctrl settings
-> synchronous between mainline and the vendor kernel.
-> 
-> (3) From my basic understanding the rk3568 is basically a rk3566 + more
-> peripherals, so ideally they would share the basic ones in a rk3566.dtsi
-> which the rk3568.dtsi then could include and extend with its additional
-> peripherals.
-> 
-> With at least the pine64 boards being based on the rk3566, there probably
-> will be quite a mainline use of it as well.
-> 
-> Or is there something that would prevent this?
-> 
+This fix solves the config issue, but adds an unnecessary MODULES 
+dependency on APPRAISE_MODSIG. APPRAISE_MODSIG can be used for kernel 
+image(appended signature) as well as for kernel modules.
 
-I agree with having a rk3566.dtsi, and rk3568.dtsi on top, instead of the
-other way around. We have some RK3566 boards here, so we can surely test
-the RK3566.dtsi patches very quickly.
+I am working on the fix. I am sorry for the delay, I got stuck with some 
+urgent issues early this week.
 
-Also, it's fine if you want to send v2 with just these minimal peripherals.
-However, I think you could include GMAC and TS-ADC:
+Thanks & Regards,
 
-https://lore.kernel.org/linux-rockchip/31c2e531-96d0-a1c1-644c-28c60eb40cf4@gmail.com/T/#t
-https://lore.kernel.org/linux-rockchip/20210421203409.40717-1-ezequiel@collabora.com/T/#t
-
-These should work right out of the box!
-
-Thanks!
-Ezequiel
+       - Nayna
 
