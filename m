@@ -2,72 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CA43684FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F5A368509
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237782AbhDVQhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:37:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232670AbhDVQhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:37:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B46C261424;
-        Thu, 22 Apr 2021 16:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619109406;
-        bh=fg/L0LsFWhXL8NfM+puv8P931c9U8iaZWIiB+Tj8fLo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=udBiQfP6XCu90KZgEaUcdamYI7R3kLPssNs5hNlOe5Trdpw62zN2Db/SKecMXLh7m
-         ZGdnDV8TtsQ4oD/XrdRHwPicM0p/pLZ+KZjDMwfwhXd0DCSXAfodGw0u8nEV06tAuF
-         PgezMQtdLtCD9K7MVHK8maarxjUeOPhPPD/RmBrkamKcCMtRHovlgU1NQd3U+ouS6c
-         B8uGz3dStaP5SG90vrPV042SqGI94WHO4NdwCp0D/1mWxiX5uNqoPGDzzJLtCkKl7h
-         Yx38vT7faP98MjTuvpNdA+UzNJDNp1TWc+1StQz5d3I3bZlfdcOItldPkz22GFQ50+
-         8PpmpzNL1t7Cw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 530485C00B4; Thu, 22 Apr 2021 09:36:46 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 09:36:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <20210422163646.GG975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210422141016.656f50bc@canb.auug.org.au>
+        id S237993AbhDVQkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:40:24 -0400
+Received: from mail-co1nam11on2057.outbound.protection.outlook.com ([40.107.220.57]:61792
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236236AbhDVQkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:40:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WjbQrbHM24+FQE2bpTd1GA2bIOxSnsI3YeN0c7zQsNnserBxl1sAyUCV6m5INgzxF4mfeG887WiXEcF6dt0PvrsIcYVnPWJ5nqezDgQ9UZ6q9x85lSRnHV/a7yX8XZkTkuTFNd4KpQ4cgha1PHTiA0nxQWHz5/hZTozP4bKfGS0YNLC0jPl2astlFlAyyre5wqw6eHTQGBjMO0ZSo2P7+O4pN04DMDGBXyY+9sm+mIaiB4DUHDASrXU8v6d1TUi58Dxj7PB95PvARL6QbNTvprSxOo2h7yU+HOgLNUC9nXHM8Q0UAJvls1x1kRgzxUT5sIf5gahe09hYZrr5v4Igwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f8wo+Q7FxKV3AavXBxa670YdcVRdUTUmTcDBBHS75Co=;
+ b=nbnb+L2dwEEcGTj4CFTzGD9jhPdwv7tdBSkZEOK+npZdMKij4eX+waZ/3c/TyA/iuMIXUUs4u8dNNg32jzex9LsR4szJIaht/baY0711CmE2vWLnR/9TL0uhTqM72ZOjFcFlGjZ5ubF9+fOMPEL18bEZZ9siHlNPOZ5NgJAXg8saIOgVNj88uLRn4TWPruzg/+4U0k2++nZt+9ddVCEYswZJfUMHXI3VWZGrkGi01c4ZB+OCUZ3CbdQbowLtNR7COsqFsSwY/FhecoWHpljYxML2b0nbtwOKM1iCIznR0SAOEvK0LlxsLgfXa56qPq60rrRm+14dL1uodKDPitpyZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f8wo+Q7FxKV3AavXBxa670YdcVRdUTUmTcDBBHS75Co=;
+ b=XgC97j05+9PNNoN7gOjfAN10OGTCk82sqfYKuk9BRQ7zBvNH4wSKeL3NORJeiUN/+KOnRc+NUiNJ7DnfZg3nACzDD9//OHN5z+b38jGDBUmLPFDxcIKd0EblhDYzSiqEoS3P5KMXThNLKcFF+S4pfrSsO5YP0yMSawMD84gRaBY=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4495.namprd12.prod.outlook.com (2603:10b6:806:70::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Thu, 22 Apr
+ 2021 16:39:45 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4065.023; Thu, 22 Apr 2021
+ 16:39:45 +0000
+From:   Brijesh Singh <brijesh.singh@amd.com>
+To:     pbonzini@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sfr@canb.auug.org.au,
+        Ashish.Kalra@amd.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: [PATCH 0/4] Fix htmldocs warning seen after SEV migration patch merge
+Date:   Thu, 22 Apr 2021 11:38:32 -0500
+Message-Id: <20210422163836.27117-1-brijesh.singh@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN2PR01CA0059.prod.exchangelabs.com (2603:10b6:800::27) To
+ SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422141016.656f50bc@canb.auug.org.au>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from sbrijesh-desktop.amd.com (165.204.77.1) by SN2PR01CA0059.prod.exchangelabs.com (2603:10b6:800::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Thu, 22 Apr 2021 16:39:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ee7ed65c-1100-41b0-9ed4-08d905ad3c83
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4495:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4495DC5A875D7D7AB7023626E5469@SA0PR12MB4495.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:131;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jikdWISlHb7QLTcUDAqHcOT7x3aGngWE+MYmEHYNi/zhfWoaUgqm329QxcfS7tBeEHOU+/FwH5yY1Iuxenv/5AcoFkkXRSDHkiau6QtUX8zomQo3/woKvExkdbzmTMT2YNqJHgcZVCrymECNgnKkERWpAEIOwvCMELvHWTQol+RcopfuxxRP4bB6lN4eHv3r+QsyrVy6i/S+m6OHG8q4CTChAM3bLbyzy6IiWyKOmCt5I8w6vJvmfoKH5jNDz3SwVGivczQIlbQ3G0KfA542vAQGYLoO9qXMEarkeSrsRkSwP1OGikc/LCVPBU9TRa/niKsg6odQD5ATuAWLlkOe7x6rryVbBsI8thjWj4W/fhNKmhqA8AGriRBJ7U7icl5zcYuWy8C+SkUzx5QnNArfRHr8IjeahkufmQ6X28DhbFGiQSTTPoxZAT2tYjbhf6/NHegs6PMN5I3BznF9paHz2PCJNiBXofuUlLEgUE5lNzNBZmN+gNah9+BUtC3zcdryp2eHktlm/b5svNmXHDZ9gLoSEvhPjZxzPBwUtOTbhyFGgt3eIAcpTpc4Tmq73vS1I2u0BrQhoGZ8qO1HKrK2+3lWwmJ5sbSyzwSR6KbBVKl83XZlTyKp1VZB4Fo+FIeNdAzvUgesiLIog1kgOWfoGA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(396003)(39850400004)(26005)(8676002)(66476007)(6486002)(956004)(1076003)(16526019)(2616005)(36756003)(478600001)(4326008)(5660300002)(186003)(83380400001)(316002)(44832011)(38100700002)(38350700002)(6666004)(7696005)(66556008)(2906002)(86362001)(66946007)(8936002)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bVn4rv95Y2fQFmJ1GtnczoACTD0rsggbY/3fY5XdJ1nQ2JbKGnlM646CY+hu?=
+ =?us-ascii?Q?3hEPkJ65Y+xdImTtQSlEE4T/gHTaYmGHiwf0lehRI8NoD/Do7g6yls5kJaX8?=
+ =?us-ascii?Q?UdubCyPRsH+z1n6mxMxsY3dpJTqyUjtX8jnbATM69I1bwzd3/mMCqzd07a+L?=
+ =?us-ascii?Q?MZS1KoRbk7Jq+dgZcSP/T0GtkoZhV6Xy6/XjJ37ZnJB4T3NUDwQOqwUfXBI6?=
+ =?us-ascii?Q?hR95eCU+lXEnwl0IGgA1J/8tNQtIDV1sFxdHX3Xt04PhXPccHxMXzEES8Uxx?=
+ =?us-ascii?Q?kDKZuqJ5hb+eCvYD39Kxplm4aeVC+CIKVRLgyD1gHwx3MmHzCQTuOlTsoZfz?=
+ =?us-ascii?Q?xM/2nio5Zt+wDK7ntMp75qofP7+HxfvnAoS5Mdn9TYk7JwjWdStRjrF7q0fh?=
+ =?us-ascii?Q?AnDQsy1V8TNw7fIHwmBCysuXs9PTX5l/lyAG0mMfYdSwjrN+TS4ydL5SgjdP?=
+ =?us-ascii?Q?ewhFMjDlHv1IAJoNe/leScYAjMUKATetJ7IP4RzafIyv+PPop011T7i768P0?=
+ =?us-ascii?Q?J6Ts8LRD0eCNQ0WhGJAJbx+n8JzaAXLetbALN2ooeBeSEdczocpKow4VVqon?=
+ =?us-ascii?Q?1eIUF0TTI7b2IPSa1GlaGaWDWkyX1vYVF2lLEswPOpsiFBr3XqlQs5iQHtp0?=
+ =?us-ascii?Q?TaFXj1j0C+Zyv2QUK/NictWPAZDS4OvL6a1AjbHr2cwK7yIzDCttdEBy7/4o?=
+ =?us-ascii?Q?5jrfwKk7tq7bbaLqJ4WPPnqwXTAZ05BNZKiwmS/zhAbYFNbmwgGrhAJwg7vx?=
+ =?us-ascii?Q?ScgjMdjnDy5AcqTXyrBPTCOPFF5X0gxqSflRquoFTrr+q5DRrzfT/EZna7Hg?=
+ =?us-ascii?Q?7cZ2NZTdiQJdWrZkpCaK2gsQAhMRcrfwwxEpsfYFRKk/+eQnGRg3FQh2J0jK?=
+ =?us-ascii?Q?CfWO+pn0vvxog/C483eZJ7ZQYUVTKl/DXs7TpLbxKnvLj4eN3p+/XibX4eUQ?=
+ =?us-ascii?Q?2peScguQHYnaj/Rrk85XXLfxUdihpGr8pOaGiCYmWRRoff2easAuMxO+A1t+?=
+ =?us-ascii?Q?OAwnDHMV/iyHOuGjCc/62S2ufY4WCTt7bE/EU28GoZxvn7LQ+q0joN2Epdy0?=
+ =?us-ascii?Q?FOrjYSDGNiIAmWg0ILFx8lYQ16XAvlkjewE+X8Uope1y5i9QN5JLD+PxKn0A?=
+ =?us-ascii?Q?r9vj5v4FOpIfxasBYFs/+mGnpe70hKfG2iSmVrLGuqJABoy9W66wbNkwJ5Mi?=
+ =?us-ascii?Q?kWlmuxs8hnSYd+5NrwKgwUZYYSpSh4a/uuW8crw6j9Kwiq4Zf5oDt4th+HXF?=
+ =?us-ascii?Q?MV+ipzph0uy6kt+ctMu+THno4G2pNGi5lAazIrwIa15g7iPmGJgzhNVQBVzB?=
+ =?us-ascii?Q?9LyMfC11WkDhSX8Ytu2RyOzR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee7ed65c-1100-41b0-9ed4-08d905ad3c83
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 16:39:45.3714
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C8/37xCfNec6AVig44sofAaKOWzIG84pSilRIRK5sY5r4shY7jTMuz6fSMwpoVlMcY7eYdceRGA0S3wrOIu+bA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4495
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:10:16PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the rcu tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
-> 
-> In file included from kernel/rcu/update.c:584:
-> kernel/rcu/tasks.h:1404:20: error: static declaration of 'show_rcu_tasks_gp_kthreads' follows non-static declaration
->  1404 | static inline void show_rcu_tasks_gp_kthreads(void) {}
->       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from kernel/rcu/update.c:49:
-> kernel/rcu/rcu.h:440:6: note: previous declaration of 'show_rcu_tasks_gp_kthreads' was here
->   440 | void show_rcu_tasks_gp_kthreads(void);
->       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   4bf02dd6048d ("tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline")
-> 
-> I have used the rcu tree from next-20210421 for today.
+The make htmldocs reports the following warnings on kvm/next.
 
-Well, that is one commit that isn't going into the upcoming merge window!
+Documentation/virt/kvm/amd-memory-encryption.rst:308: WARNING: Inline emphasis start-string without end-string.
+Documentation/virt/kvm/amd-memory-encryption.rst:310: WARNING: Inline emphasis start-string without end-string.
+Documentation/virt/kvm/amd-memory-encryption.rst:313: WARNING: Inline emphasis start-string without end-string.
+Documentation/virt/kvm/amd-memory-encryption.rst:316: WARNING: Inline emphasis start-string without end-string.
+Documentation/virt/kvm/amd-memory-encryption.rst:319: WARNING: Inline emphasis start-string without end-string.
+Documentation/virt/kvm/amd-memory-encryption.rst:321: WARNING: Definition list ends without a blank line; unexpected unindent.
+Documentation/virt/kvm/amd-memory-encryption.rst:369: WARNING: Title underline too short.
 
-I have (allegedly) fixed it with attribution, but also moved it out of
-my -next pile.  I will update rcu/next after a quick round of tests.
+15. KVM_SEV_RECEIVE_START
+------------------------
+Documentation/virt/kvm/amd-memory-encryption.rst:369: WARNING: Title underline too short.
 
-Apologies for the hassle!
+15. KVM_SEV_RECEIVE_START
+------------------------
+Documentation/virt/kvm/amd-memory-encryption.rst:398: WARNING: Title underline too short.
 
-							Thanx, Paul
+16. KVM_SEV_RECEIVE_UPDATE_DATA
+----------------------------
+Documentation/virt/kvm/amd-memory-encryption.rst:398: WARNING: Title underline too short.
+
+16. KVM_SEV_RECEIVE_UPDATE_DATA
+----------------------------
+Documentation/virt/kvm/amd-memory-encryption.rst:422: WARNING: Title underline too short.
+
+17. KVM_SEV_RECEIVE_FINISH
+------------------------
+Documentation/virt/kvm/amd-memory-encryption.rst:422: WARNING: Title underline too short.
+
+17. KVM_SEV_RECEIVE_FINISH
+------------------------
+
+Brijesh Singh (4):
+  docs: kvm: fix underline too short warning for KVM_SEV_RECEIVE_START
+  docs: kvm: fix underline too sort warning for
+    KVM_SEV_RECEIVE_UPDATE_DATA
+  docs: kvm: fix underline too short warning for KVM_SEV_RECEIVE_FINISH
+  docs: kvm: fix inline emphasis string warning for KVM_SEV_SEND_START
+
+ Documentation/virt/kvm/amd-memory-encryption.rst | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
+
