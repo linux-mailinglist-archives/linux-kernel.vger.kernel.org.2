@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0FC3687EA
+	by mail.lfdr.de (Postfix) with ESMTP id DECB03687EB
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239339AbhDVUaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:30:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41016 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236992AbhDVUaO (ORCPT
+        id S239381AbhDVUaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239239AbhDVUaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:30:14 -0400
-Message-Id: <20210422194705.125957049@linutronix.de>
+        Thu, 22 Apr 2021 16:30:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6D2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:29:40 -0700 (PDT)
+Message-Id: <20210422194705.244476369@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619123377;
+        s=2020; t=1619123378;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=shlvjKCBd71NCvlvINFb/PhBTsCYwLOokXpCAI2ZxMs=;
-        b=FA708uGJ6kx6y8evECzdZw/8AqWgIT4udyi1e6c325QhTqnsRSrlCFz0Up/2F8EcySN4v4
-        LWFswvcop0/1H3xHZ0XdVE5BopPXu3+o7CSInscZ7Y3xWMKb8lIra4MD/Wu3qkXuKc9LxS
-        qbnLf0A8YKQgDoZJjn1rFKg1b12J9owGd9COwJ1BI+iSXRg+QI2MnV/DB/xOJDCw8o4XwM
-        Jzx0peqlGGra2YaXE1EtLBHc+/mMb1ZFGWLfcSpQIhRVB6+BcvY9IoOcnDWkGZbiA74B+V
-        n41A2RqBvjWiD55LK22XIcLe6A3soLt5GwKlzxDhmovonH3sz6gKC7YLFohI0Q==
+        bh=1KyXbAgHyLOPweAOIVefP+lbdiDSQGpwGEeAQArZ+UM=;
+        b=XeQsnOJg/4dL3n5oQUbrpY+lBde/aY+HuFei7nZyj6GmVupsXTAE4CZzqExcQeYceztu4o
+        wrKfhkbnHgIG2am+w1M5q7LAr3Ilb6tU17lj/3zw7NYppb3ms62fVfkwIgeSCK9z42gjn4
+        E4F2S4t8n9vi2bqOm5lG9Xq3psHs1N+ybFz8EXfPCfehn397JB5GU8fpEp5ZUuAyqEy22g
+        M7M8SZOamG8nLuy1NHd39rXsKbHIGiHEbC42E5GNpI8NBgPcLxA6FYITf+d+EoCnOcJdKY
+        BijtFR8pQNDMBxW2XZH+kbqkbVlD2PWWJfhMrQy8JmPdq9fpVv8eTzOxfeXrTw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619123377;
+        s=2020e; t=1619123378;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=shlvjKCBd71NCvlvINFb/PhBTsCYwLOokXpCAI2ZxMs=;
-        b=50hpCusVKJPbu5Ez0SJuS44cxbX+iziql+Hd1uBnOLqC5LcGKGSTEIlCza2g2WPnEPAt+T
-        P7vFH1KvyUa8LHDg==
-Date:   Thu, 22 Apr 2021 21:44:20 +0200
+        bh=1KyXbAgHyLOPweAOIVefP+lbdiDSQGpwGEeAQArZ+UM=;
+        b=n7KbdUt+ty57AarIUrzUuOS96cXdJj7W4doJvqKvfANZfZoaIf3DtfnA6rUUahVx9CaI+X
+        QHdd5lKkJFTHCaCw==
+Date:   Thu, 22 Apr 2021 21:44:21 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +49,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Darren Hart <dvhart@infradead.org>,
         Andrei Vagin <avagin@gmail.com>,
         Kurt Kanzenbach <kurt@linutronix.de>
-Subject: [patch 3/6] futex: Get rid of the val2 conditional dance
+Subject: [patch 4/6] futex: Make syscall entry points less convoluted
 References: <20210422194417.866740847@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,64 +58,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no point in checking which FUTEX operand treats the utime pointer
-as 'val2' argument because that argument to do_futex() is only used by
-exactly these operands.
+The futex and the compat syscall entry points do pretty much the same
+except for the timespec data types and the corresponding copy from
+user function.
 
-So just handing it in unconditionally is not making any difference, but
-removes a lot of pointless gunk.
+Split out the rest into inline functions and share the functionality.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/futex.c |   16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+ kernel/futex.c |   63 +++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 37 insertions(+), 26 deletions(-)
 
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -3765,7 +3765,6 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
- {
- 	struct timespec64 ts;
- 	ktime_t t, *tp = NULL;
--	u32 val2 = 0;
- 	int cmd = op & FUTEX_CMD_MASK;
- 
- 	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
-@@ -3785,15 +3784,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
- 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
--	/*
--	 * requeue parameter in 'utime' if cmd == FUTEX_*_REQUEUE_*.
--	 * number of waiters to wake in 'utime' if cmd == FUTEX_WAKE_OP.
--	 */
--	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
--	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
--		val2 = (u32) (unsigned long) utime;
- 
--	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
-+	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
+@@ -3758,30 +3758,48 @@ long do_futex(u32 __user *uaddr, int op,
+ 	return -ENOSYS;
  }
  
- #ifdef CONFIG_COMPAT
-@@ -3961,7 +3953,6 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
- {
- 	struct timespec64 ts;
- 	ktime_t t, *tp = NULL;
--	int val2 = 0;
- 	int cmd = op & FUTEX_CMD_MASK;
++static __always_inline bool futex_cmd_has_timeout(u32 cmd)
++{
++	switch (cmd) {
++	case FUTEX_WAIT:
++	case FUTEX_LOCK_PI:
++	case FUTEX_WAIT_BITSET:
++	case FUTEX_WAIT_REQUEUE_PI:
++		return true;
++	}
++	return false;
++}
++
++static __always_inline int
++futex_init_timeout(u32 cmd, u32 op, struct timespec64 *ts, ktime_t *t)
++{
++	if (!timespec64_valid(ts))
++		return -EINVAL;
++
++	*t = timespec64_to_ktime(*ts);
++	if (cmd == FUTEX_WAIT)
++		*t = ktime_add_safe(ktime_get(), *t);
++	else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
++		*t = timens_ktime_to_host(CLOCK_MONOTONIC, *t);
++	return 0;
++}
  
- 	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
-@@ -3979,11 +3970,8 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
- 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+ 		const struct __kernel_timespec __user *, utime,
+ 		u32 __user *, uaddr2, u32, val3)
+ {
+-	struct timespec64 ts;
++	int ret, cmd = op & FUTEX_CMD_MASK;
+ 	ktime_t t, *tp = NULL;
+-	int cmd = op & FUTEX_CMD_MASK;
++	struct timespec64 ts;
+ 
+-	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
+-		      cmd == FUTEX_WAIT_BITSET ||
+-		      cmd == FUTEX_WAIT_REQUEUE_PI)) {
++	if (utime && futex_cmd_has_timeout(cmd)) {
+ 		if (unlikely(should_fail_futex(!(op & FUTEX_PRIVATE_FLAG))))
+ 			return -EFAULT;
+ 		if (get_timespec64(&ts, utime))
+ 			return -EFAULT;
+-		if (!timespec64_valid(&ts))
+-			return -EINVAL;
+-
+-		t = timespec64_to_ktime(ts);
+-		if (cmd == FUTEX_WAIT)
+-			t = ktime_add_safe(ktime_get(), t);
+-		else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
+-			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
++		ret = futex_init_timeout(cmd, op, &ts, &t);
++		if (ret)
++			return ret;
  		tp = &t;
  	}
--	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
--	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
--		val2 = (int) (unsigned long) utime;
  
--	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
-+	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
- }
- #endif /* CONFIG_COMPAT_32BIT_TIME */
+@@ -3951,23 +3969,16 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
+ 		const struct old_timespec32 __user *, utime, u32 __user *, uaddr2,
+ 		u32, val3)
+ {
+-	struct timespec64 ts;
++	int ret, cmd = op & FUTEX_CMD_MASK;
+ 	ktime_t t, *tp = NULL;
+-	int cmd = op & FUTEX_CMD_MASK;
++	struct timespec64 ts;
+ 
+-	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
+-		      cmd == FUTEX_WAIT_BITSET ||
+-		      cmd == FUTEX_WAIT_REQUEUE_PI)) {
++	if (utime && futex_cmd_has_timeout(cmd)) {
+ 		if (get_old_timespec32(&ts, utime))
+ 			return -EFAULT;
+-		if (!timespec64_valid(&ts))
+-			return -EINVAL;
+-
+-		t = timespec64_to_ktime(ts);
+-		if (cmd == FUTEX_WAIT)
+-			t = ktime_add_safe(ktime_get(), t);
+-		else if (cmd != FUTEX_LOCK_PI && !(op & FUTEX_CLOCK_REALTIME))
+-			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
++		ret = futex_init_timeout(cmd, op, &ts, &t);
++		if (ret)
++			return ret;
+ 		tp = &t;
+ 	}
  
 
