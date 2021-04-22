@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F56236834B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B06D36834E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhDVP2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:28:10 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:10631 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233106AbhDVP2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:28:09 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FR1WR6Ykrz9v4h8;
-        Thu, 22 Apr 2021 17:27:31 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 5X18jCbvHMHQ; Thu, 22 Apr 2021 17:27:31 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FR1WR5bvkz9v4gH;
-        Thu, 22 Apr 2021 17:27:31 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DCF898B846;
-        Thu, 22 Apr 2021 17:27:32 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 5QPcsvrhPnYt; Thu, 22 Apr 2021 17:27:32 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 34D3D8B845;
-        Thu, 22 Apr 2021 17:27:32 +0200 (CEST)
-Subject: Re: [PATCH 1/2] powerpc: Make the code in __show_regs nice-looking
-To:     Xiongwei Song <sxwjean@me.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
-        aneesh.kumar@linux.ibm.com, 0x7f454c46@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-References: <20210422151022.17868-1-sxwjean@me.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <15aac264-8626-ad15-7301-044c622d7f60@csgroup.eu>
-Date:   Thu, 22 Apr 2021 17:27:14 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236548AbhDVP3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:29:10 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16151 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233106AbhDVP3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:29:06 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FR1T26DV9zpZmV;
+        Thu, 22 Apr 2021 23:25:26 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 22 Apr 2021 23:28:24 +0800
+Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
+ pfn_valid()
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Will Deacon" <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210421065108.1987-1-rppt@kernel.org>
+ <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
+ <YIEl8aKr8Ly0Zd3O@kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
+Date:   Thu, 22 Apr 2021 23:28:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210422151022.17868-1-sxwjean@me.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <YIEl8aKr8Ly0Zd3O@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2021/4/22 15:29, Mike Rapoport wrote:
+> On Thu, Apr 22, 2021 at 03:00:20PM +0800, Kefeng Wang wrote:
+>> On 2021/4/21 14:51, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> Hi,
+>>>
+>>> These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
+>>> pfn_valid_within() to 1.
+>>>
+>>> The idea is to mark NOMAP pages as reserved in the memory map and restore
+>>> the intended semantics of pfn_valid() to designate availability of struct
+>>> page for a pfn.
+>>>
+>>> With this the core mm will be able to cope with the fact that it cannot use
+>>> NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
+>>> will be treated correctly even without the need for pfn_valid_within.
+>>>
+>>> The patches are only boot tested on qemu-system-aarch64 so I'd really
+>>> appreciate memory stress tests on real hardware.
+>>>
+>>> If this actually works we'll be one step closer to drop custom pfn_valid()
+>>> on arm64 altogether.
+>> Hi Mike，I have a question, without HOLES_IN_ZONE, the pfn_valid_within() in
+>> move_freepages_block()->move_freepages()
+>> will be optimized, if there are holes in zone, the 'struce page'(memory map)
+>> for pfn range of hole will be free by
+>> free_memmap(), and then the page traverse in the zone(with holes) from
+>> move_freepages() will meet the wrong page，
+>> then it could panic at PageLRU(page) test, check link[1],
+> First, HOLES_IN_ZONE name us hugely misleading, this configuration option
+> has nothing to to with memory holes, but rather it is there to deal with
+> holes or undefined struct pages in the memory map, when these holes can be
+> inside a MAX_ORDER_NR_PAGES region.
+>
+> In general pfn walkers use pfn_valid() and pfn_valid_within() to avoid
+> accessing *missing* struct pages, like those that are freed at
+> free_memmap(). But on arm64 these tests also filter out the nomap entries
+> because their struct pages are not initialized.
+>
+> The panic you refer to happened because there was an uninitialized struct
+> page in the middle of MAX_ORDER_NR_PAGES region because it corresponded to
+> nomap memory.
+>
+> With these changes I make sure that such pages will be properly initialized
+> as PageReserved and the pfn walkers will be able to rely on the memory map.
+>
+> Note also, that free_memmap() aligns the parts being freed on MAX_ORDER
+> boundaries, so there will be no missing parts in the memory map within a
+> MAX_ORDER_NR_PAGES region.
 
-Le 22/04/2021 à 17:10, Xiongwei Song a écrit :
-> From: Xiongwei Song <sxwjean@gmail.com>
-> 
-> Create a new function named interrupt_detail_printable to judge which
-> interrupts can print esr/dsisr register.
+Ok, thanks, we met a same panic like the link on arm32(without 
+HOLES_IN_ZONE),
 
-What is the benefit of that function ? It may be interesting if the test was done at several places, 
-but as it is done at only one place, I don't thing it is an improvement.
+the scheme for arm64 could be suit for arm32, right?  I will try the 
+patchset with
 
-Until know, you new immediately what was the traps that would print it. Now you have to go and look 
-into a sub-function.
+some changes on arm32 and give some feedback.
 
-And the name is not nice either. All other functions testing anything on the trap type are called 
-trap_is_something()
+Again, the stupid question, where will mark the region of memblock with
 
-Here your function would be better called something like trap_sets_dsisr()
+MEMBLOCK_NOMAP flag ?
 
-> 
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> ---
->   arch/powerpc/kernel/process.c | 21 ++++++++++++++++-----
->   1 file changed, 16 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-> index 89e34aa273e2..5c3830837f3a 100644
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -1453,9 +1453,23 @@ static void print_msr_bits(unsigned long val)
->   #define REGS_PER_LINE	8
->   #endif
+
 >   
-> +static bool interrupt_detail_printable(int trap)
-> +{
-> +	switch (trap) {
-> +	case INTERRUPT_MACHINE_CHECK:
-> +	case INTERRUPT_DATA_STORAGE:
-> +	case INTERRUPT_ALIGNMENT:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +
-> +	return false;
-
-That's redundant with the default case inside the switch.
-
-> +}
-> +
->   static void __show_regs(struct pt_regs *regs)
->   {
-> -	int i, trap;
-> +	int i;
->   
->   	printk("NIP:  "REG" LR: "REG" CTR: "REG"\n",
->   	       regs->nip, regs->link, regs->ctr);
-> @@ -1464,12 +1478,9 @@ static void __show_regs(struct pt_regs *regs)
->   	printk("MSR:  "REG" ", regs->msr);
->   	print_msr_bits(regs->msr);
->   	pr_cont("  CR: %08lx  XER: %08lx\n", regs->ccr, regs->xer);
-> -	trap = TRAP(regs);
->   	if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
->   		pr_cont("CFAR: "REG" ", regs->orig_gpr3);
-> -	if (trap == INTERRUPT_MACHINE_CHECK ||
-> -	    trap == INTERRUPT_DATA_STORAGE ||
-> -	    trap == INTERRUPT_ALIGNMENT) {
-> +	if (interrupt_detail_printable(TRAP(regs))) {
->   		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
->   			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
->   		else
-> 
+>> "The idea is to mark NOMAP pages as reserved in the memory map", I see the
+>> patch2 check memblock_is_nomap() in memory region
+>> of memblock, but it seems that memblock_mark_nomap() is not called(maybe I
+>> missed), then memmap_init_reserved_pages() won't
+>> work, so should the HOLES_IN_ZONE still be needed for generic mm code?
+>>
+>> [1] https://lore.kernel.org/linux-arm-kernel/541193a6-2bce-f042-5bb2-88913d5f1047@arm.com/
+>>
