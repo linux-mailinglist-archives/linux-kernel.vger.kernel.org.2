@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96956367D1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5D2367D20
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235506AbhDVJCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:02:07 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:51236 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhDVJCF (ORCPT
+        id S235518AbhDVJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:03:36 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57848 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhDVJDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:02:05 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M8xue2163355;
-        Thu, 22 Apr 2021 09:01:07 GMT
+        Thu, 22 Apr 2021 05:03:34 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M8evtu061731;
+        Thu, 22 Apr 2021 09:02:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=+DyWdORbB7Ede6TpRJ/COaO5LuAEsT1iyov80SfV6MA=;
- b=RkvrseLlIi8ldTQhwyIm+Iz9Av0wjYrAK5/iK7kJ1Z8i0zDRDeI5CVvQkTWM48BxPu+a
- PXj+ltiJ34XvhKIuApEbAUSTH9aNrYq08atDtbKtuwzLmb5pzBHlozdP6XHRKVStazcK
- WGqvQkzKXLbV7tDh7q0jWuE4YS3w8Dlnsn1o+BEYwcR6eCXuv4AhRXygD2c2az2J1mTH
- caBAmzd1QLibZYm9zOwmMThANcxVYcTOo+ds+nhu7L7uEcYjT2+xnGLUIur2hFT35Y7D
- 6gdA8DALMwR7vxMTo4A3pDY3Mk9sW4AaC9Qpib6ITCkK49KGnc3tGyqjekq9OaVlk1rk rw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 37yn6cct5m-1
+ bh=luKBrUqgQXuE6ecf9zdzvMeJVaBMF+rgQS18TT6YaPA=;
+ b=rj5IDy98a1ehCtAM80zC/x0IcJiL/RU5XYtd39WlRaw4mq638nti628pFWfEZ2reVLa8
+ TFf62VNjYkXNYjtwqvohr+SM3kxRfapDYyXbRdveDyNrWLrOb2okwKKtRdDVabvwJFqM
+ mk3yhSiy5cdL+T07A8iMA1ni5GZmb4mhvkR+uZpQ0QV0mU1lNRZKOwK02df5MkwzxWs8
+ 1akpvtqRId4zjOlvIWpfvk86yHfsFiybynPegOPAx4T/YbzdXEdC1o6RQq3TwAQRvsVK
+ wHU31F+/K+BwDC6mNmxJ+j7lccu1jemHF/P1v9AJ4YO0oX68qDEnQYSR4AgpKkYzBOGu cw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 37yveamdgf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 09:01:07 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M90tuB109723;
-        Thu, 22 Apr 2021 09:01:06 GMT
+        Thu, 22 Apr 2021 09:02:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M9038W156046;
+        Thu, 22 Apr 2021 09:02:37 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3809m1wnbw-1
+        by userp3020.oracle.com with ESMTP id 3809evjx53-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 09:01:06 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13M915OF110866;
-        Thu, 22 Apr 2021 09:01:05 GMT
+        Thu, 22 Apr 2021 09:02:37 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13M92bRp170135;
+        Thu, 22 Apr 2021 09:02:37 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3809m1wnbe-1
+        by userp3020.oracle.com with ESMTP id 3809evjx4s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 09:01:05 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13M912IR018219;
-        Thu, 22 Apr 2021 09:01:02 GMT
+        Thu, 22 Apr 2021 09:02:37 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13M92Zp4019604;
+        Thu, 22 Apr 2021 09:02:35 GMT
 Received: from mwanda (/10.175.205.56)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Apr 2021 02:01:01 -0700
-Date:   Thu, 22 Apr 2021 12:00:54 +0300
+        with ESMTP ; Thu, 22 Apr 2021 09:02:35 +0000
+Date:   Thu, 22 Apr 2021 12:02:29 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jens Axboe <axboe@kernel.dk>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        "Jon Medhurst (Tixy)" <tixy@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org
-Subject: [PATCH] usb: gadget: prevent a ternary sign expansion bug
-Message-ID: <YIE7RrBPLWc3XtMg@mwanda>
+Subject: [PATCH] firmware: arm_scpi: prevent ternary sign expansion bug
+Message-ID: <YIE7pdqV/h10tEAK@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: YYEUKkGAQil2fRn5kdTJJMwDAOkMSuAT
-X-Proofpoint-ORIG-GUID: YYEUKkGAQil2fRn5kdTJJMwDAOkMSuAT
+X-Proofpoint-GUID: 6Sb26I_pnSMvX2LJsvaeWNeSbcTLo0wR
+X-Proofpoint-ORIG-GUID: 6Sb26I_pnSMvX2LJsvaeWNeSbcTLo0wR
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- bulkscore=0 suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 spamscore=0 mlxlogscore=944 adultscore=0 phishscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104220076
+ definitions=main-2104220073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem is that "req->actual" is a u32, "req->status" is an int, and
-iocb->ki_complete() takes a long.  We would expect that a negative error
-code in "req->status" would translate to a negative long value.
+How type promotion works in ternary expressions is a bit tricky.
+The problem is that scpi_clk_get_val() returns longs, "ret" is a int
+which holds a negative error code, and le32_to_cpu() is an unsigned int.
+We want the negative error code to be cast to a negative long.  But
+because le32_to_cpu() is an u32 then "ret" is type promoted to u32 and
+becomes a high positive and then it is promoted to long and it is still
+a high positive value.
 
-But what actually happens is that because "req->actual" is a u32, the
-error codes is type promoted to a high positive value and then remains
-a positive value when it is cast to long.  (No sign expansion).
+Fix this by getting rid of the ternary.
 
-We can fix this by casting "req->status" to long.
-
+Fixes: 8cb7cf56c9fe ("firmware: add support for ARM System Control and Power Interface(SCPI) protocol")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/usb/gadget/legacy/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/firmware/arm_scpi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
-index 71e7d10dd76b..cd8e2737947b 100644
---- a/drivers/usb/gadget/legacy/inode.c
-+++ b/drivers/usb/gadget/legacy/inode.c
-@@ -498,7 +498,8 @@ static void ep_aio_complete(struct usb_ep *ep, struct usb_request *req)
- 		iocb->private = NULL;
- 		/* aio_complete() reports bytes-transferred _and_ faults */
+diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
+index d0dee37ad522..3bf61854121d 100644
+--- a/drivers/firmware/arm_scpi.c
++++ b/drivers/firmware/arm_scpi.c
+@@ -552,8 +552,10 @@ static unsigned long scpi_clk_get_val(u16 clk_id)
  
--		iocb->ki_complete(iocb, req->actual ? req->actual : req->status,
-+		iocb->ki_complete(iocb,
-+				req->actual ? req->actual : (long)req->status,
- 				req->status);
- 	} else {
- 		/* ep_copy_to_user() won't report both; we hide some faults */
+ 	ret = scpi_send_message(CMD_GET_CLOCK_VALUE, &le_clk_id,
+ 				sizeof(le_clk_id), &rate, sizeof(rate));
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : le32_to_cpu(rate);
++	return le32_to_cpu(rate);
+ }
+ 
+ static int scpi_clk_set_val(u16 clk_id, unsigned long rate)
 -- 
 2.30.2
 
