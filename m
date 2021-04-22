@@ -2,154 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9DA36856B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E01336856C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238333AbhDVRCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:02:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:56066 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236058AbhDVRCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:02:46 -0400
-Received: from zn.tnic (p200300ec2f0e2900329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:2900:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B8D4F1EC04D3;
-        Thu, 22 Apr 2021 19:02:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1619110930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jkVWyLB1deuzzVbbl8oNuJ4nSdV2pted+GJ68GpNC24=;
-        b=pUOwOhLD3iKj9nsyiecVOb/1wfzXYagFddJqIjtQL0tCBgypO7g9pzp+5ujpeUSiHqwotm
-        YqlU7Tk6MM2ohfF0qgAWZIFPqox/hZ6nntwY/7kjfUUVVPZ5JJ7E7e4k0iS8PW2LYo6i4m
-        PtFlDzq89Gf1mwFicoNZi73v/bxcges=
-Date:   Thu, 22 Apr 2021 19:02:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     linux-mm@kvack.org, Tony Luck <tony.luck@intel.com>,
-        Aili Yao <yaoaili@kingsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Jue Wang <juew@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Message-ID: <20210422170213.GE7021@zn.tnic>
-References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
- <20210421005728.1994268-4-nao.horiguchi@gmail.com>
+        id S238357AbhDVRDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:03:17 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:35718 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDVRDR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 13:03:17 -0400
+Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lZcir-0000SG-4p; Thu, 22 Apr 2021 13:02:37 -0400
+Date:   Thu, 22 Apr 2021 13:02:36 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@fb.com, Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: [PATCH v4] sched,fair: Skip newidle_balance if a wakeup is pending
+Message-ID: <20210422130236.0bb353df@imladris.surriel.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210421005728.1994268-4-nao.horiguchi@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:57:28AM +0900, Naoya Horiguchi wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> 
-> The previous patch solves the infinite MCE loop issue when multiple
+The try_to_wake_up function has an optimization where it can queue
+a task for wakeup on its previous CPU, if the task is still in the
+middle of going to sleep inside schedule().
 
-"previous patch" has no meaning when it is in git.
+Once schedule() re-enables IRQs, the task will be woken up with an
+IPI, and placed back on the runqueue.
 
-> MCE events races.  The remaining issue is to make sure that all threads
+If we have such a wakeup pending, there is no need to search other
+CPUs for runnable tasks. Just skip (or bail out early from) newidle
+balancing, and run the just woken up task.
 
-	    "race."
+For a memcache like workload test, this reduces total CPU use by
+about 2%, proportionally split between user and system time,
+and p99 and p95 application response time by 10% on average.
+The schedstats run_delay number shows a similar improvement.
 
-> processing Action Required MCEs send to the current processes the
+Signed-off-by: Rik van Riel <riel@surriel.com>
+---
+ kernel/sched/fair.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-s/the //
-
-> SIGBUS with the proper virtual address and the error size.
-> 
-> This patch suggests to do page table walk to find the error virtual
-
-Avoid having "This patch" or "This commit" in the commit message. It is
-tautologically useless.
-
-Also, do
-
-$ git grep 'This patch' Documentation/process
-
-for more details.
-
-> address.  If we find multiple virtual addresses in walking, we now can't
-
-Who's "we"?				during the pagetable walk
-
-> determine which one is correct, so we fall back to sending SIGBUS in
-> kill_me_maybe() without error info as we do now.  This corner case needs
-> to be solved in the future.
-
-Solved how? If you can't map which error comes from which process, you
-can't do anything here. You could send SIGBUS to all but you might
-injure some innocent bystanders this way.
-
-Just code structuring suggestions below - mm stuff is for someone else
-to review properly.
-
-> +static int hwpoison_pte_range(pmd_t *pmdp, unsigned long addr,
-> +			      unsigned long end, struct mm_walk *walk)
-> +{
-> +	struct hwp_walk *hwp = (struct hwp_walk *)walk->private;
-> +	int ret = 0;
-> +	pte_t *ptep;
-> +	spinlock_t *ptl;
-> +
-> +	ptl = pmd_trans_huge_lock(pmdp, walk->vma);
-> +	if (ptl) {
-
-Save yourself an indentation level:
-
-	if (!ptl)
-		goto unlock;
-
-> +		pmd_t pmd = *pmdp;
-> +
-> +		if (pmd_present(pmd)) {
-
-... ditto...
-
-> +			unsigned long pfn = pmd_pfn(pmd);
-> +
-> +			if (pfn <= hwp->pfn && hwp->pfn < pfn + HPAGE_PMD_NR) {
-> +				unsigned long hwpoison_vaddr = addr +
-> +					((hwp->pfn - pfn) << PAGE_SHIFT);
-
-... which will allow you to not break those.
-
-> +
-> +				ret = set_to_kill(&hwp->tk, hwpoison_vaddr,
-> +						  PAGE_SHIFT);
-> +			}
-> +		}
-> +		spin_unlock(ptl);
-> +		goto out;
-> +	}
-> +
-> +	if (pmd_trans_unstable(pmdp))
-> +		goto out;
-> +
-> +	ptep = pte_offset_map_lock(walk->vma->vm_mm, pmdp, addr, &ptl);
-> +	for (; addr != end; ptep++, addr += PAGE_SIZE) {
-> +		ret = check_hwpoisoned_entry(*ptep, addr, PAGE_SHIFT,
-> +					     hwp->pfn, &hwp->tk);
-> +		if (ret == 1)
-> +			break;
-> +	}
-> +	pte_unmap_unlock(ptep - 1, ptl);
-> +out:
-> +	cond_resched();
-> +	return ret;
-> +}
-
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 69680158963f..6a18688a37f8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10594,6 +10594,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	u64 curr_cost = 0;
+ 
+ 	update_misfit_status(NULL, this_rq);
++
++	/*
++	 * There is a task waiting to run. No need to search for one.
++	 * Return 0; the task will be enqueued when switching to idle.
++	 */
++	if (this_rq->ttwu_pending)
++		return 0;
++
+ 	/*
+ 	 * We must set idle_stamp _before_ calling idle_balance(), such that we
+ 	 * measure the duration of idle_balance() as idle time.
+@@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 		 * Stop searching for tasks to pull if there are
+ 		 * now runnable tasks on this rq.
+ 		 */
+-		if (pulled_task || this_rq->nr_running > 0)
++		if (pulled_task || this_rq->nr_running > 0 ||
++		    this_rq->ttwu_pending)
+ 			break;
+ 	}
+ 	rcu_read_unlock();
 -- 
-Regards/Gruss,
-    Boris.
+2.25.4
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
