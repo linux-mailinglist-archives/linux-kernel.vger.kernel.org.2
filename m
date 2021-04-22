@@ -2,326 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97E136800D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F2D368013
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236152AbhDVMHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhDVMHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:07:42 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85756C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:07:07 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id p6so37874611wrn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jhpmYTg4Vp1LA+W35IrfrjHI/xFsmZ2K+o/m22RJAh0=;
-        b=I4EVfUDwG6tP/g+tDNNNvRZX+z1HoktzTyRPsYZhGx3dL2jZC+BvVi5UDRI1nzzZev
-         jbQ+Zbvvnd2evsfTandf0RwP0/rxByagLLwUCbxYnaYwhHlQTr0rfA5o6rl5UDBmcVO4
-         ID4UieIx7envlEfMeg7YLfH3aXbtS1sqsT09K/kp2RpUjeM14fV2Xim9XRHQ+5tLTICj
-         CSWPswWmNIZKwcN/P4fYF5S/0jnjqsc8WKULl98daJZXMFxftHeigQ1vpLjh9TzQcuRy
-         ebwbG8saRt7VK5Ljp0xOXCg7vQpbrrl0vBbNvntRcGXCMIuAubfRch4WDjuq3o0dtYSs
-         slhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=jhpmYTg4Vp1LA+W35IrfrjHI/xFsmZ2K+o/m22RJAh0=;
-        b=Bva35iSAKEdFSWUmVpFv3gpDrybgkZJFhz9rk9J84An466KdrLfc0uoFEj9uoSKP4e
-         bTOnNtHJS4BAfXTCBGBnI90zehqr98usLRgHOduFPbNdx5l8xL6JppGGT6zhw0aJoaoO
-         qoXLsrfQXLVc56IwoTBGAlnuJze1Qy9Iph0TyIMdY47vJE21R9A8WwubuPZnP9uArgh1
-         5kWLYLYeRJ/+/5YQnDBD1MpwL0oyxxETNNv7asmUXzjwBm3uLKqRH5UhhkQjapgq9WLJ
-         Pnd6DwV5tpTf9cJXzgiI2qa3onFvKqDL5C2FoUqtYWdCec4vMpaXsbyJUU5r8EgTCIWM
-         wETQ==
-X-Gm-Message-State: AOAM530rpd5fscPlboXTF3LFVZL0qsx6FYPk9SEI9WhWXz9xLMFmJav4
-        lz7T2jaMiSkTVsuRLWHYU2sGrw==
-X-Google-Smtp-Source: ABdhPJxKV4nRhgozkIzL0OgqkoJfaQIrmU05LEiL/estxrSrhr0s6lCR+8/jyaEeBARScjFTNYZagw==
-X-Received: by 2002:a5d:6e06:: with SMTP id h6mr3731212wrz.201.1619093226139;
-        Thu, 22 Apr 2021 05:07:06 -0700 (PDT)
-Received: from [10.1.3.29] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id g3sm3289419wrp.46.2021.04.22.05.07.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 05:07:05 -0700 (PDT)
-Subject: Re: [PATCH v2] drm/bridge: nwl-dsi: Get MIPI DSI controller and PHY
- ready in ->mode_set()
-To:     Liu Ying <victor.liu@nxp.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-References: <1619068455-1932-1-git-send-email-victor.liu@nxp.com>
- <36441ffb-2a79-f965-efc8-042844bc349d@baylibre.com>
- <460bdf3547942fdca82a19e164162187917e4d57.camel@nxp.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <178556dc-a011-e1e6-4147-dbf584672d32@baylibre.com>
-Date:   Thu, 22 Apr 2021 14:07:04 +0200
+        id S236025AbhDVMKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:10:14 -0400
+Received: from mail-bn7nam10on2053.outbound.protection.outlook.com ([40.107.92.53]:35680
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230510AbhDVMKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:10:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PdOAitXLwwRdioxrgwMvq24fnVzn+LqAtGuDYEkVzt2CVE8qxZqsiACUloAIlAd2txrvOoMw0uZi81ZCjUtfCpZoIhXaOkNHIxfrQHXzWBZiVV1HQqUjWK8ELD6anIUkf1liKOPD0wKV1miSOROZB6EL2NzYE/A4tJYrX64FXsa8EnsTIIOm723SEXMTuT8hox0uimcDMF498rMPHzqctvYI9BKzYNkiQh8y+re+xXoJEJ35v5hKusLM65atTgh46j9x8xeuk+IOuP04SdEGPSjmApY2uD4dSGmCWcAQOzOoZKhDGk6M/W8YndEyfgUJmDaonUIlK6kNYYNQ4U+sGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3FVPT5eEuphjp0x6Vx7p9Xa3DeEvv2vcNswkyU5zFa4=;
+ b=f/07I6hD7LhboI43fSK1do0PkXrPTBJS8oaEjznqOhAmKDry2MehWkLFSuQGZ2f1SiBYmJ2sgV4XZ+vEtUT68vVk1aY6voCUMaayUIxIKoG0rYMa2CqZ5ofkuiWA+tttrceeEVJxtBupA5tXS21I6BEQnF0v+G1nj75mN1zP3Aj9CawOJNgGqDdwsGaXY98kWjBEZt9FlakCoXE7m7qscgT5Y6eeThHExa8rtBNU/hk24QUeNEGkgRu8PiG/H7nqTWag8bFUAt+y1eaw/qPOOQ0SoZ0Pbrfiu3nt7AiHrSGCiV946ZDeDTprBlQGRbpepJTl+U79bi2IuFjOmksCBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3FVPT5eEuphjp0x6Vx7p9Xa3DeEvv2vcNswkyU5zFa4=;
+ b=aSyD3tNaPNSXbH+zMv5rWHD4wlNc1FZ99D9i29U2CRU+C+6Lq0One5mKQqGRD2bIjM/yIeVWsxwQFMtxRzXQISsuR6+LlTEgQGnM4gdPW0k1vPElTtI4L0ETbj68WnwSQku4YZVXrMBmpl1Jp85LvmzlV2KNjOZsfDVqZA4CXUI=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4391.namprd12.prod.outlook.com (2603:10b6:208:269::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.23; Thu, 22 Apr
+ 2021 12:09:36 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6d4d:4674:1cf6:8d34]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6d4d:4674:1cf6:8d34%6]) with mapi id 15.20.4065.022; Thu, 22 Apr 2021
+ 12:09:36 +0000
+Subject: Re: [PATCH 27/40] drm/ttm/ttm_device: Demote kernel-doc abuses
+To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-28-lee.jones@linaro.org>
+ <e5d30ac1-3037-0101-0e1a-9df6a8580c70@amd.com>
+ <YH6Wiuy/Vw1Et4Kn@phenom.ffwll.local>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <b0be3dd8-bfe2-6b9d-b6e5-71e3e5b3cceb@amd.com>
+Date:   Thu, 22 Apr 2021 14:09:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <460bdf3547942fdca82a19e164162187917e4d57.camel@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YH6Wiuy/Vw1Et4Kn@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:2fbd:d2a4:da7e:4526]
+X-ClientProxiedBy: AM4PR0902CA0004.eurprd09.prod.outlook.com
+ (2603:10a6:200:9b::14) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:2fbd:d2a4:da7e:4526] (2a02:908:1252:fb60:2fbd:d2a4:da7e:4526) by AM4PR0902CA0004.eurprd09.prod.outlook.com (2603:10a6:200:9b::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Thu, 22 Apr 2021 12:09:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ee09c3cf-f97e-4b5b-71d4-08d905877f4d
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4391:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4391DA64ECBCEBFB064A1C1983469@MN2PR12MB4391.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JY6aPMDpIfDc1WTQdg/cPXukbcikU8YbkWf3snfYzuW0ZgNqRP68XstKk6S79ycUCDECHWgNOuBbEq0Rzk1lwjY9OcB1E7f0GKR//kF7l7snvY+xTyubYnctWAoBRzIqI4dWejYXYL9Ac9TY1d2mRfDWfATYdVtp6pKK7d8pMrG5stKxdet7ds7VdSaJHYwZZzOJ12gMAi4yvSYfVS6RCKIg4WMLAXZChSEibyQYmeg71Rjbo36N8HFR0zr1vxYbGmwaUCZpt0TPpoX5NcYU9rWEMnfRLxxzrRV9w3llxVb0aCugLgT+qT41Tc/7+yqSHMB6CbhqPuo3bY3lRK+4EnC2CSrGbqOkg9/SxeayKynDGmIS2p9xGuKdRyM40/xs0XM+SyCTb/va07JHP4OPp4G2HHeGBQSivPbBlr5zb4+50cKZuviGxlUYSXRwdAMc0Lx5hdkYE70sNbMmOT3EQhlHTkTBDJacEUks2uY4dmz/X9/Itb4Oq4rgKIs4m0BokiDYBFhC1Je3uiwH1YIxrZAEmwDEIbkFwZO5193mzBP2ap4HeEQHc7zYYRHSjAHwujtmXcRgSGNTPkZg+7te4VJbZ5+xf0LD43VTRLAj1xZtkDV65EEdacRrEG26o60ieMOorhmbElgpTHuv9onQ/X9+Ncqxt+1z6GBMZOTF2wHGMpJzJ5b18zuGZhKGTPOL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(376002)(396003)(366004)(31686004)(31696002)(316002)(86362001)(83380400001)(5660300002)(2906002)(2616005)(66574015)(6666004)(478600001)(52116002)(8936002)(8676002)(38100700002)(6486002)(16526019)(36756003)(66476007)(110136005)(66556008)(66946007)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MzM4SWl3N2NvOFRPY0E1aHp1SDM4Wk9mQklWdFYrUlBLWCtGckRMNVAwM2lv?=
+ =?utf-8?B?QVhoL1lpZVJLUko1VFcrRjZaVzdORUtpWmpvRlh5WWdhemJlNmFzajRhTG1y?=
+ =?utf-8?B?cGVRbExtdFdEbFg5eXlDQkpJYlh2U3g2enpGTVRHTWlIQkJUZmpWbS8xbzMx?=
+ =?utf-8?B?NW96SjJpdUpJbTEwVkpUU3J2eUV6d0UwMVBoS2dDYnUwM2RtY3NlWXFjNU5W?=
+ =?utf-8?B?RlF2MlVjWmxZYWtwM0huSktwRTl1cHZlUDk3d2trKy9FYnZSNHVtM01hVjRa?=
+ =?utf-8?B?K0psbE55STA3dDluRnlPMVVnRGY1bHVWd09IRDNHWW5LK3k3OFZzODV1T0cx?=
+ =?utf-8?B?QmI2aE9IWUlqTVBXeVlEb1c0OFpYM2hlRjN3Z0FUSkF4R3dzdjdoZlRFUkNO?=
+ =?utf-8?B?MTJLc0ZqT1Z4WHFzSnh5cXc4ZndtMTBXdUY0Umk0SjJ1dTVEOC9xRmRTSTcw?=
+ =?utf-8?B?d2pobkFiQmxHaUFLSEM2bTFvVGVhb0dMZkZ2WFZFTlNNMEk3WVpOOHFxSllE?=
+ =?utf-8?B?QS9kL0RWY1phMEpGQldxY0ZTNTRWbjA4Rm1NcnRiTDArRTR3VlFlWW82WlZT?=
+ =?utf-8?B?UXdYdlgyNFNrcjJzRXI2eCs4TEZIS2Y3cVYwYjM5QkpZQkVWYXFrMkwyOTlz?=
+ =?utf-8?B?NDAzVU5ZaEtZeHZkejlXeE9WVmFpcFRxeHhUMTVBSXRWdjd3Zlkxck92QmZK?=
+ =?utf-8?B?cFBId2tVcmpUNjRQbnJqMGZFcUdVMWxUem0xYXFaekEyRUJvV0RPUzJUWWI2?=
+ =?utf-8?B?MjVsbk05QkV5Y3laS2djUVRseXBvUkRzS1BweVJMb1J1cWp5L2tFelE0M1hE?=
+ =?utf-8?B?V0wrZnIxTys3RldiODgvTDROYk02bTA1eVo0cjRqVmROSmFSUERuZEZ0V0ZD?=
+ =?utf-8?B?NDMvd3E1bHROaHphcnJZbW5Gb2F5UGE5MFIyR3RJVEgvWnBRN1ZWcjZxVXZ5?=
+ =?utf-8?B?bVh1TUhqd1czVWRYU3BvS2pkMlFBbjJYQm1KSlBObE5sR1FUcHR6KzAxOUg1?=
+ =?utf-8?B?SS9SWC81Q1U0SVQ3TjNaTWk0RnlHbzZGK0NhVGNZaG1TZjQvbDdXZnI5Y3Ja?=
+ =?utf-8?B?RnUyaS82eDNYSUpzT1JTcFJ6WUZYalBDcDVYc21vY0FJRm1oYWVCeHNMNzRI?=
+ =?utf-8?B?em50RmNrK0paK1pVVjBEZ3l4UUF1bUNLeHgwSExuYjRIVDRsN1hQNHNMTHdJ?=
+ =?utf-8?B?alFqaW5Wcys1djhiRzVsQk0zMzA5RytIZlRESVJTYSt1a2ZkZ1I4dVMyOUJs?=
+ =?utf-8?B?bXRpWWxhSVlhWm1NbkFaOUlield6ZHlXamJmV1B0Y1NCa2t4U1ZyTWY1WnYx?=
+ =?utf-8?B?bkl5N3Rqd0JDMWZXV2N2aXF2QWZ3Z2U0YUQxckpwRGVEZE9LamZ1QUxmV1Fl?=
+ =?utf-8?B?ZHdyNDJ4RVpnYlBuTWdTc3R1WEV0Y3BpbzVrWUhzb0pPRUdBZGJ0Sm80MStJ?=
+ =?utf-8?B?MEZHenRWYTBmL1o1dFhhQWVwWmFQNjN1azVjSDVndHl1U1hFUHYxQWtIN3dQ?=
+ =?utf-8?B?eGpBbGRUR1F6am42YjlhRTFGNEhpU2hlWi92OERUSndKVjJGYzJ4WVBINktr?=
+ =?utf-8?B?NTZPa1V5TXBLMitYQ1BpaUt0VGwyTE9qMDk0dDhKbW1PMXRqM2h0UVJxbDZD?=
+ =?utf-8?B?b0krMmNIaFh0ZkdlV2VCZE5jMDZRR25mSDlDRHE4YUN6bUVmK0R2TjQ2YWJz?=
+ =?utf-8?B?ZVFmdElwYkcwbVN2UktKS0RnbEo0NEJHNUYyL2Nwc1lwdTJNcmZINXZ4Q3Vv?=
+ =?utf-8?B?QUcrREpuOEExOGxIZnRWZzdRSUxIeW1xNjlsZ3VaQ3g5R0Z2UWFXUlNmMEI2?=
+ =?utf-8?B?WHcrMmdpeTdYNyt6UkhGRHNlUTVLVTZ3MFRqZDlKalNGbTNSM0dsZG9XZlJa?=
+ =?utf-8?Q?sc6XHgBnOegdz?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee09c3cf-f97e-4b5b-71d4-08d905877f4d
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 12:09:36.6090
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 12uT3EKmrXJe0jNQ+YluzLPNFBw1nFmuU8YG1QSlb+6W2U0rRd52SpM0Q56LWS7w
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4391
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 22/04/2021 11:31, Liu Ying wrote:
-> Hi Neil,
-> 
-> On Thu, 2021-04-22 at 10:48 +0200, Neil Armstrong wrote:
->> Hi,
->>
->> On 22/04/2021 07:14, Liu Ying wrote:
->>> Some MIPI DSI panel drivers like 'raydium,rm68200' send
->>> MIPI_DCS_SET_DISPLAY_ON commands in panel_funcs->prepare(), which
->>> requires the MIPI DSI controller and PHY to be ready beforehand.
->>> Without this patch, the nwl-dsi driver gets the MIPI DSI controller
->>> and PHY ready in bridge_funcs->pre_enable(), which happens after
->>> the panel_funcs->prepare(). So, this patch shifts the bridge operation
->>> ealier from bridge_funcs->pre_enable() to bridge_funcs->mode_set().
->>
->> This makes sense, this is how we do on the synopsys dw mipi dsi driver.
->>
->>> This way, more MIPI DSI panels can connect to this nwl-dsi bridge.
->>> Care is taken to make sure bridge_funcs->mode_set()/atomic_disable()
->>> are called in pairs, which includes removing a check on unchanged HS
->>> clock rate and forcing a full modeset when only connector's DPMS is
->>> brought out of "Off" status.
->>
->> I would split the changes in multiple patches to clarify the changes.
-> 
-> Maybe, I can split this into the below 3 patches:
-> 1) Remove a check on unchanged HS clock rate from ->mode_set().
-> 2) Force a full modeset when only connector's DPMS is brought out of
-> "Off" status. This will be done in ->atomic_check() together with the
-> fixup for H/VSYNC polarities.
-> 3) Shift the bridge operation as the last step.
-> 
-> I'll mention that 1) & 2) are needed by 3) in their commit message.
 
-Sure, you can also put this split explanation in the cover letter.
-
-> 
-> Does this split-up sound reasonable?
-
-Yes makes sense, thanks
-
-Neil
-
-> 
-> Thanks,
-> Liu Ying
-> 
->>
->> Neil
->>
->>> Cc: Andrzej Hajda <a.hajda@samsung.com>
->>> Cc: Neil Armstrong <narmstrong@baylibre.com>
->>> Cc: Robert Foss <robert.foss@linaro.org>
->>> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
->>> Cc: Jonas Karlman <jonas@kwiboo.se>
->>> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+Am 20.04.21 um 10:53 schrieb Daniel Vetter:
+> On Fri, Apr 16, 2021 at 05:32:52PM +0200, Christian König wrote:
+>> Am 16.04.21 um 16:37 schrieb Lee Jones:
+>>> Fixes the following W=1 kernel build warning(s):
+>>>
+>>>    drivers/gpu/drm/ttm/ttm_device.c:42: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
+>>>    drivers/gpu/drm/ttm/ttm_device.c:42: warning: expecting prototype for ttm_global_mutex(). Prototype was for DEFINE_MUTEX() instead
+>>>    drivers/gpu/drm/ttm/ttm_device.c:112: warning: Function parameter or member 'ctx' not described in 'ttm_global_swapout'
+>>>    drivers/gpu/drm/ttm/ttm_device.c:112: warning: Function parameter or member 'gfp_flags' not described in 'ttm_global_swapout'
+>>>    drivers/gpu/drm/ttm/ttm_device.c:112: warning: expecting prototype for A buffer object shrink method that tries to swap out the first(). Prototype was for ttm_global_swapout() instead
+>>>
+>>> Cc: Christian Koenig <christian.koenig@amd.com>
+>>> Cc: Huang Rui <ray.huang@amd.com>
 >>> Cc: David Airlie <airlied@linux.ie>
 >>> Cc: Daniel Vetter <daniel@ffwll.ch>
->>> Cc: Guido Günther <agx@sigxcpu.org>
->>> Cc: Robert Chiras <robert.chiras@nxp.com>
->>> Cc: NXP Linux Team <linux-imx@nxp.com>
->>> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+>>> Cc: dri-devel@lists.freedesktop.org
+>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>> Reviewed-by: Christian König <christian.koenig@amd.com>
+> Can you pls also land all the patches you reviewed from Lee into
+> drm-misc-next? Just so they wont' get lost. Will all head in for 5.14.
+
+Alex took care of the amdgpu patches and I've just pushed the TTM and 
+the scheduler patch to drm-misc-next.
+
+Christian.
+
+> -Daniel
 >>> ---
->>> v1->v2:
->>> * Fix commit message typo - s/unchange/unchanged/
+>>>    drivers/gpu/drm/ttm/ttm_device.c | 4 ++--
+>>>    1 file changed, 2 insertions(+), 2 deletions(-)
 >>>
->>>  drivers/gpu/drm/bridge/nwl-dsi.c | 86 +++++++++++++++++++++-------------------
->>>  1 file changed, 46 insertions(+), 40 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
->>> index be6bfc5..229f0b1 100644
->>> --- a/drivers/gpu/drm/bridge/nwl-dsi.c
->>> +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
->>> @@ -21,6 +21,7 @@
->>>  #include <linux/sys_soc.h>
->>>  #include <linux/time64.h>
->>>  
->>> +#include <drm/drm_atomic_state_helper.h>
->>>  #include <drm/drm_bridge.h>
->>>  #include <drm/drm_mipi_dsi.h>
->>>  #include <drm/drm_of.h>
->>> @@ -661,7 +662,7 @@ static irqreturn_t nwl_dsi_irq_handler(int irq, void *data)
->>>  	return IRQ_HANDLED;
->>>  }
->>>  
->>> -static int nwl_dsi_enable(struct nwl_dsi *dsi)
->>> +static int nwl_dsi_mode_set(struct nwl_dsi *dsi)
->>>  {
->>>  	struct device *dev = dsi->dev;
->>>  	union phy_configure_opts *phy_cfg = &dsi->phy_cfg;
->>> @@ -748,7 +749,9 @@ static int nwl_dsi_disable(struct nwl_dsi *dsi)
->>>  	return 0;
->>>  }
->>>  
->>> -static void nwl_dsi_bridge_disable(struct drm_bridge *bridge)
->>> +static void
->>> +nwl_dsi_bridge_atomic_disable(struct drm_bridge *bridge,
->>> +			      struct drm_bridge_state *old_bridge_state)
->>>  {
->>>  	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
->>>  	int ret;
->>> @@ -809,17 +812,6 @@ static int nwl_dsi_get_dphy_params(struct nwl_dsi *dsi,
->>>  	return 0;
->>>  }
->>>  
->>> -static bool nwl_dsi_bridge_mode_fixup(struct drm_bridge *bridge,
->>> -				      const struct drm_display_mode *mode,
->>> -				      struct drm_display_mode *adjusted_mode)
->>> -{
->>> -	/* At least LCDIF + NWL needs active high sync */
->>> -	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
->>> -	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
->>> -
->>> -	return true;
->>> -}
->>> -
->>>  static enum drm_mode_status
->>>  nwl_dsi_bridge_mode_valid(struct drm_bridge *bridge,
->>>  			  const struct drm_display_info *info,
->>> @@ -837,6 +829,29 @@ nwl_dsi_bridge_mode_valid(struct drm_bridge *bridge,
->>>  	return MODE_OK;
->>>  }
->>>  
->>> +static int nwl_dsi_bridge_atomic_check(struct drm_bridge *bridge,
->>> +				       struct drm_bridge_state *bridge_state,
->>> +				       struct drm_crtc_state *crtc_state,
->>> +				       struct drm_connector_state *conn_state)
->>> +{
->>> +	struct drm_display_mode *adjusted_mode = &crtc_state->adjusted_mode;
->>> +
->>> +	/* At least LCDIF + NWL needs active high sync */
->>> +	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
->>> +	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
->>> +
->>> +	/*
->>> +	 * Do a full modeset if crtc_state->active is changed to be true.
->>> +	 * This ensures our ->mode_set() is called to get the DSI controller
->>> +	 * and the PHY ready to send DCS commands, when only the connector's
->>> +	 * DPMS is brought out of "Off" status.
->>> +	 */
->>> +	if (crtc_state->active_changed && crtc_state->active)
->>> +		crtc_state->mode_changed = true;
->>> +
->>> +	return 0;
->>> +}
->>> +
->>>  static void
->>>  nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
->>>  			const struct drm_display_mode *mode,
->>> @@ -852,13 +867,6 @@ nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
->>>  	if (ret < 0)
->>>  		return;
->>>  
->>> -	/*
->>> -	 * If hs clock is unchanged, we're all good - all parameters are
->>> -	 * derived from it atm.
->>> -	 */
->>> -	if (new_cfg.mipi_dphy.hs_clk_rate == dsi->phy_cfg.mipi_dphy.hs_clk_rate)
->>> -		return;
->>> -
->>>  	phy_ref_rate = clk_get_rate(dsi->phy_ref_clk);
->>>  	DRM_DEV_DEBUG_DRIVER(dev, "PHY at ref rate: %lu\n", phy_ref_rate);
->>>  	/* Save the new desired phy config */
->>> @@ -866,14 +874,8 @@ nwl_dsi_bridge_mode_set(struct drm_bridge *bridge,
->>>  
->>>  	memcpy(&dsi->mode, adjusted_mode, sizeof(dsi->mode));
->>>  	drm_mode_debug_printmodeline(adjusted_mode);
->>> -}
->>>  
->>> -static void nwl_dsi_bridge_pre_enable(struct drm_bridge *bridge)
->>> -{
->>> -	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
->>> -	int ret;
->>> -
->>> -	pm_runtime_get_sync(dsi->dev);
->>> +	pm_runtime_get_sync(dev);
->>>  
->>>  	if (clk_prepare_enable(dsi->lcdif_clk) < 0)
->>>  		return;
->>> @@ -883,27 +885,29 @@ static void nwl_dsi_bridge_pre_enable(struct drm_bridge *bridge)
->>>  	/* Step 1 from DSI reset-out instructions */
->>>  	ret = reset_control_deassert(dsi->rst_pclk);
->>>  	if (ret < 0) {
->>> -		DRM_DEV_ERROR(dsi->dev, "Failed to deassert PCLK: %d\n", ret);
->>> +		DRM_DEV_ERROR(dev, "Failed to deassert PCLK: %d\n", ret);
->>>  		return;
->>>  	}
->>>  
->>>  	/* Step 2 from DSI reset-out instructions */
->>> -	nwl_dsi_enable(dsi);
->>> +	nwl_dsi_mode_set(dsi);
->>>  
->>>  	/* Step 3 from DSI reset-out instructions */
->>>  	ret = reset_control_deassert(dsi->rst_esc);
->>>  	if (ret < 0) {
->>> -		DRM_DEV_ERROR(dsi->dev, "Failed to deassert ESC: %d\n", ret);
->>> +		DRM_DEV_ERROR(dev, "Failed to deassert ESC: %d\n", ret);
->>>  		return;
->>>  	}
->>>  	ret = reset_control_deassert(dsi->rst_byte);
->>>  	if (ret < 0) {
->>> -		DRM_DEV_ERROR(dsi->dev, "Failed to deassert BYTE: %d\n", ret);
->>> +		DRM_DEV_ERROR(dev, "Failed to deassert BYTE: %d\n", ret);
->>>  		return;
->>>  	}
->>>  }
->>>  
->>> -static void nwl_dsi_bridge_enable(struct drm_bridge *bridge)
->>> +static void
->>> +nwl_dsi_bridge_atomic_enable(struct drm_bridge *bridge,
->>> +			     struct drm_bridge_state *old_bridge_state)
->>>  {
->>>  	struct nwl_dsi *dsi = bridge_to_dsi(bridge);
->>>  	int ret;
->>> @@ -948,14 +952,16 @@ static void nwl_dsi_bridge_detach(struct drm_bridge *bridge)
->>>  }
->>>  
->>>  static const struct drm_bridge_funcs nwl_dsi_bridge_funcs = {
->>> -	.pre_enable = nwl_dsi_bridge_pre_enable,
->>> -	.enable     = nwl_dsi_bridge_enable,
->>> -	.disable    = nwl_dsi_bridge_disable,
->>> -	.mode_fixup = nwl_dsi_bridge_mode_fixup,
->>> -	.mode_set   = nwl_dsi_bridge_mode_set,
->>> -	.mode_valid = nwl_dsi_bridge_mode_valid,
->>> -	.attach	    = nwl_dsi_bridge_attach,
->>> -	.detach	    = nwl_dsi_bridge_detach,
->>> +	.atomic_duplicate_state	= drm_atomic_helper_bridge_duplicate_state,
->>> +	.atomic_destroy_state	= drm_atomic_helper_bridge_destroy_state,
->>> +	.atomic_reset		= drm_atomic_helper_bridge_reset,
->>> +	.atomic_check		= nwl_dsi_bridge_atomic_check,
->>> +	.atomic_enable		= nwl_dsi_bridge_atomic_enable,
->>> +	.atomic_disable		= nwl_dsi_bridge_atomic_disable,
->>> +	.mode_set		= nwl_dsi_bridge_mode_set,
->>> +	.mode_valid		= nwl_dsi_bridge_mode_valid,
->>> +	.attach			= nwl_dsi_bridge_attach,
->>> +	.detach			= nwl_dsi_bridge_detach,
->>>  };
->>>  
->>>  static int nwl_dsi_parse_dt(struct nwl_dsi *dsi)
->>>
-> 
+>>> diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
+>>> index 9b787b3caeb50..a8bec8358350d 100644
+>>> --- a/drivers/gpu/drm/ttm/ttm_device.c
+>>> +++ b/drivers/gpu/drm/ttm/ttm_device.c
+>>> @@ -36,7 +36,7 @@
+>>>    #include "ttm_module.h"
+>>> -/**
+>>> +/*
+>>>     * ttm_global_mutex - protecting the global state
+>>>     */
+>>>    DEFINE_MUTEX(ttm_global_mutex);
+>>> @@ -104,7 +104,7 @@ static int ttm_global_init(void)
+>>>    	return ret;
+>>>    }
+>>> -/**
+>>> +/*
+>>>     * A buffer object shrink method that tries to swap out the first
+>>>     * buffer object on the global::swap_lru list.
+>>>     */
 
