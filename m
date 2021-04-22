@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C002367FF4
+	by mail.lfdr.de (Postfix) with ESMTP id A9F15367FF5
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbhDVMCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56378 "EHLO mail.kernel.org"
+        id S236191AbhDVMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236160AbhDVMCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:02:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59943613FA;
-        Thu, 22 Apr 2021 12:02:10 +0000 (UTC)
+        id S236165AbhDVMCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:02:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F7216145B;
+        Thu, 22 Apr 2021 12:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619092932;
-        bh=WfTbhoyKQVB6lSkA547QqXilKkbmd2gBojyn1EAI7sw=;
+        s=k20201202; t=1619092934;
+        bh=+z6iEVB6WBColAXK43QQx8UoNC1wJ0ztdOjphulwwgk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l3+PuAi8hOsSIUFpOvW9zW8K6KU8AM+0+5Ek+rmdAKcSNU1w7glaXf1/04OQ6YWZe
-         V0HASB+4nxYj8t3xvgjnvWFgcws/7xVvEw4H423c8doV/oYQY5ARWUxWlZReOreR7X
-         AgvmyAcP4tmTi4IAkdkkxAzSUk6f8wfO2axLV3UjvHqc6ekQunbd1LR/+1b1grKHHK
-         svUnnPoB41vS6E3tRNKJhVM/qKDoXhhYclKnhJf4534IEQfrvnF8nrWVkt7TgMyUvn
-         gZp32RsUjSUPekS8Vj77sM1t2gkp1RTcXgTQkq4GCSK95XFjxxLPkIuxe4iEUJxJal
-         UNPc4ovw0i61w==
+        b=u445njB3fPAqnGN5yfEIbFR66CcrnXY+iNd/3dAnMVmQTMxXOHNZMEWhSeX2Pd8Y5
+         YZ5DGhyjEXKJsJM4S2jQj4rNU/P/wCNsJNdASYyF1gP7yghC2Rvo4COfChXzVG3+9R
+         fi4ifctabQvH91D/2wuAEBPA0UCCCrGaAWlCL6a1gHO1rDD74IZYIKro7U6gSx8vu8
+         2NP25RPyglrhqwMkr/5mtqIyRdUi4dClXWJTspoutzb6+VYV/qknKPujit73WuHMpu
+         M7gyw1LxTiFrOG1W2MkVvUuTZH1Rtog6POS+0aHOZvNVafUeZ0w9mZiqmYBbokN3Q9
+         aWc+Oujsk8BWw==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
         Yunfeng Ye <yeyunfeng@huawei.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [PATCH 3/8] tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-Date:   Thu, 22 Apr 2021 14:01:53 +0200
-Message-Id: <20210422120158.33629-4-frederic@kernel.org>
+Subject: [PATCH 4/8] tick/nohz: Update idle_exittime on actual idle exit
+Date:   Thu, 22 Apr 2021 14:01:54 +0200
+Message-Id: <20210422120158.33629-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210422120158.33629-1-frederic@kernel.org>
 References: <20210422120158.33629-1-frederic@kernel.org>
@@ -43,40 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vtime_accounting_enabled_this_cpu() early check already makes what
-follows as dead code in the case of CONFIG_VIRT_CPU_ACCOUNTING_NATIVE.
-No need to keep the ifdeferry around.
+From: Yunfeng Ye <yeyunfeng@huawei.com>
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+The idle_exittime field of tick_sched is used to record the time when
+the idle state was left. but currently the idle_exittime is updated in
+the function tick_nohz_restart_sched_tick(), which is not always in idle
+state when nohz_full is configured:
+
+  tick_irq_exit
+    tick_nohz_irq_exit
+      tick_nohz_full_update_tick
+        tick_nohz_restart_sched_tick
+          ts->idle_exittime = now;
+
+It's thus overwritten by mistake on nohz_full tick restart. Move the
+update to the appropriate idle exit path instead.
+
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
 Cc: Yunfeng Ye <yeyunfeng@huawei.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Marcelo Tosatti <mtosatti@redhat.com>
 Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/time/tick-sched.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index c888445fb181..31efd55ed302 100644
+index 31efd55ed302..ffc13b9dfbe3 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -1192,7 +1192,6 @@ unsigned long tick_nohz_get_idle_calls(void)
- 
- static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
- {
--#ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
- 	unsigned long ticks;
- 
- 	if (vtime_accounting_enabled_this_cpu())
-@@ -1208,7 +1207,6 @@ static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
+@@ -921,8 +921,6 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
+ 	 * Cancel the scheduled timer and restore the tick
  	 */
- 	if (ticks && ticks < LONG_MAX)
- 		account_idle_ticks(ticks);
--#endif
+ 	ts->tick_stopped  = 0;
+-	ts->idle_exittime = now;
+-
+ 	tick_nohz_restart(ts, now);
  }
  
- void tick_nohz_idle_restart_tick(void)
+@@ -1190,10 +1188,13 @@ unsigned long tick_nohz_get_idle_calls(void)
+ 	return ts->idle_calls;
+ }
+ 
+-static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
++static void tick_nohz_account_idle_time(struct tick_sched *ts,
++					ktime_t now)
+ {
+ 	unsigned long ticks;
+ 
++	ts->idle_exittime = now;
++
+ 	if (vtime_accounting_enabled_this_cpu())
+ 		return;
+ 	/*
+@@ -1214,8 +1215,9 @@ void tick_nohz_idle_restart_tick(void)
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 
+ 	if (ts->tick_stopped) {
+-		tick_nohz_restart_sched_tick(ts, ktime_get());
+-		tick_nohz_account_idle_ticks(ts);
++		ktime_t now = ktime_get();
++		tick_nohz_restart_sched_tick(ts, now);
++		tick_nohz_account_idle_time(ts, now);
+ 	}
+ }
+ 
+@@ -1226,7 +1228,7 @@ static void tick_nohz_idle_update_tick(struct tick_sched *ts, ktime_t now)
+ 	else
+ 		tick_nohz_restart_sched_tick(ts, now);
+ 
+-	tick_nohz_account_idle_ticks(ts);
++	tick_nohz_account_idle_time(ts, now);
+ }
+ 
+ /**
 -- 
 2.25.1
 
