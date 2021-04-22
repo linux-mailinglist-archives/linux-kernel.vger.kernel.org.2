@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0573367CB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1F6367CB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235468AbhDVImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhDVImV (ORCPT
+        id S235501AbhDVImp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:42:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45434 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230341AbhDVImo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:42:21 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE11C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:41:45 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id a11so1616950ioo.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/9GF1YfDxhn16pA4SsWRwQdnqJ92y1Idd/tVVwB0RI=;
-        b=LC4HP9PGz3ERWrfyedQJ/0xIkEpplhFDn+XUs9iYGqkhD9kYwGk/i+JCiDAlkCZ4x4
-         XBztsSL7yd8Tic7J2/ckricsb/Vre2VFLtd7ZfsA94VNcNH3nsRwbCz/wbBfA0ozbZQA
-         Xrs9j2tUZ3EBJm0m46prqwwemTt1N4PlPFf2M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/9GF1YfDxhn16pA4SsWRwQdnqJ92y1Idd/tVVwB0RI=;
-        b=Z9bE77PW6dP66w61R/L/ITp7aAE/NoAbcOrNNm1v4BsQUWPFFZVWRaoDYG/KIZlGmF
-         6XAmio+Fw+wf0nkYDRmf5hBdVdYMYmvvcvhk6MQIw6kdIIS/SsJFKFvd4+GsnALLMjI+
-         WvjzBK9zv4Va4w+V4+H9UwqgHtojD4GT2QpNaaM2P8uFNgvYl/jpWDnKR+eGyj9e31yv
-         ISTkrP6Q58NS8BFCymN8+G+/Ax5efkYW1v0CeS7E6LTlDd9Dr2g6xY7ihOwa84FQW9ci
-         0zspjtI8EPonVmAHlxGWWhivkz0UQ/NxESO3DC4CN34MhK14TUgZKKXbk0CQ9YCaCPvw
-         TsnQ==
-X-Gm-Message-State: AOAM531T+4bPWjbaloxXZ4d0LkComw8kK/n4Uj5LhEi3EVzLUJVnFuTv
-        ttCuBtqjGAX2WexjZbKXNIQD1JJF+6v51njUNAxcZQ==
-X-Google-Smtp-Source: ABdhPJzpiaW9ZBjWvxc2yUSkjnNI3WQjqt/9jQRJRnMM08623qjk8RxIhGl8fcN1dzyNYW+zxf2OjMJzyup2Xyry8qc=
-X-Received: by 2002:a05:6638:2515:: with SMTP id v21mr2236163jat.110.1619080905325;
- Thu, 22 Apr 2021 01:41:45 -0700 (PDT)
+        Thu, 22 Apr 2021 04:42:44 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E23B61C0B7A; Thu, 22 Apr 2021 10:42:08 +0200 (CEST)
+Date:   Thu, 22 Apr 2021 10:42:08 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Joseph Qi <jiangqi903@gmail.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 055/190] Revert "fs: ocfs: remove unnecessary assertion
+ in dlm_migrate_lockres"
+Message-ID: <20210422084208.GB5316@amd>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-56-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-3-revest@chromium.org>
- <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
- <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com> <CAADnVQKrc1Rz_qr5R50vJ2H7-K+9AzBVQZ4OMgGEno+8r6sHpw@mail.gmail.com>
-In-Reply-To: <CAADnVQKrc1Rz_qr5R50vJ2H7-K+9AzBVQZ4OMgGEno+8r6sHpw@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 22 Apr 2021 10:41:34 +0200
-Message-ID: <CABRcYm+38oi=wdZZm-=QEjSpS+-u2YTKFf0SQMG+jmf7oqwN-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-56-gregkh@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 5:23 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Apr 20, 2021 at 5:35 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > On Tue, Apr 20, 2021 at 12:54 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Apr 19, 2021 at 05:52:39PM +0200, Florent Revest wrote:
-> > > > This type provides the guarantee that an argument is going to be a const
-> > > > pointer to somewhere in a read-only map value. It also checks that this
-> > > > pointer is followed by a zero character before the end of the map value.
-> > > >
-> > > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > > >  include/linux/bpf.h   |  1 +
-> > > >  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 42 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 77d1d8c65b81..c160526fc8bf 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -309,6 +309,7 @@ enum bpf_arg_type {
-> > > >       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
-> > > >       ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
-> > > >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
-> > > > +     ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> > > >       __BPF_ARG_TYPE_MAX,
-> > > >  };
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index 852541a435ef..5f46dd6f3383 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -4787,6 +4787,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
-> > > >  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
-> > > >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
-> > > >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
-> > > > +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
-> > > >
-> > > >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > > >       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
-> > > > @@ -4817,6 +4818,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > > >       [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
-> > > >       [ARG_PTR_TO_FUNC]               = &func_ptr_types,
-> > > >       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
-> > > > +     [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
-> > > >  };
-> > > >
-> > > >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > > > @@ -5067,6 +5069,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > > >               if (err)
-> > > >                       return err;
-> > > >               err = check_ptr_alignment(env, reg, 0, size, true);
-> > > > +     } else if (arg_type == ARG_PTR_TO_CONST_STR) {
-> > > > +             struct bpf_map *map = reg->map_ptr;
-> > > > +             int map_off;
-> > > > +             u64 map_addr;
-> > > > +             char *str_ptr;
-> > > > +
-> > > > +             if (reg->type != PTR_TO_MAP_VALUE || !map ||
-> > >
-> > > I think the 'type' check is redundant,
-> > > since check_reg_type() did it via compatible_reg_types.
-> > > If so it's probably better to remove it here ?
-> > >
-> > > '!map' looks unnecessary. Can it ever happen? If yes, it's a verifier bug.
-> > > For example in check_mem_access() we just deref reg->map_ptr without checking
-> > > which, I think, is correct.
-> >
-> > I agree with all of the above. I only thought it's better to be safe
-> > than sorry but if you'd like I could follow up with a patch that
-> > removes some checks?
-> ...
-> > Sure, does not hurt. I can also follow up with a patch unless if you
-> > prefer doing it yourself.
->
-> Please send a follow up patch.
 
-Okay, doing that today :)
+--IrhDeMKUP4DT/M7F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I consider this kind of "safe than sorry" to be defensive programming that
-> promotes less-thinking-is-fine-because-its-faster-to-code style.
+On Wed 2021-04-21 14:58:50, Greg Kroah-Hartman wrote:
+> This reverts commit 67e2d2eb542338145a2e0b2336c1cdabd2424fd3.
+>=20
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 
-Fair
+This patch is correct AFAICT.
+								Pavel
 
-> I'm sure you've seen my rants against defensive programming in the past :)
+> index f105746063ed..f89dcf9b6217 100644
+> --- a/fs/ocfs2/dlm/dlmmaster.c
+> +++ b/fs/ocfs2/dlm/dlmmaster.c
+> @@ -2554,6 +2554,8 @@ static int dlm_migrate_lockres(struct dlm_ctxt *dlm,
+>  	if (!dlm_grab(dlm))
+>  		return -EINVAL;
+> =20
+> +	BUG_ON(target =3D=3D O2NM_MAX_NODES);
+> +
+>  	name =3D res->lockname.name;
+>  	namelen =3D res->lockname.len;
+> =20
 
-Ahah, I haven't yet but I surely don't want to make you rant again ;)
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--IrhDeMKUP4DT/M7F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCBNuAACgkQMOfwapXb+vIHpgCgwxP0uw6d6FX5YFQo7Bji0a4f
+y5QAoK02fHQWPtTd9l+6V7p0dk/6pQuM
+=mT4y
+-----END PGP SIGNATURE-----
+
+--IrhDeMKUP4DT/M7F--
