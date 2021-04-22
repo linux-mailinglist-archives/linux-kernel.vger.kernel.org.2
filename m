@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0688C3685E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418013685F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238683AbhDVRaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238394AbhDVRaM (ORCPT
+        id S238694AbhDVRbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:31:12 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:41150 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239023AbhDVRay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:30:12 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6985FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1DyE3USgzq4ZI15aHBo2m2fFbLZpZ606BX/3TbcfNRo=; b=Hki+pKGLtfeEUySz5nHMSq8B8A
-        SAuU8Ck4wEsYQF5dnCBDHbA3S34qyPKgPq/uYE0NJqAbbZ0Dfltr2UMPJKa4K3LzKStw27kTQJYZH
-        V6JMjrZtBLpP/9TLhUT52K4PnGWk1R7DuIOmr1TOxQbzpztqgIVWkpbQEfbnpgxXJa++1rXEHVpcr
-        UhrW3qPY8RAvw1WjFIbsaRVHFr50ZRFxq87bS5ZbNtZ/i1Fj8kE51KHbD56yYRJaoUxbuQcifGNC1
-        fv4zVg1YVSIQC5ctQpUdiMb04rw9F7gx4SJlXs+g/3I6rM56xNGX7ZJY6shJBcL1WgI1JNHYQivBH
-        YcALgr7A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZd8s-00HBLD-S6; Thu, 22 Apr 2021 17:29:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4306A3001E2;
-        Thu, 22 Apr 2021 19:29:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 312D42D04872B; Thu, 22 Apr 2021 19:29:29 +0200 (CEST)
-Date:   Thu, 22 Apr 2021 19:29:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Don Hiatt <dhiatt@digitalocean.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, mingo@kernel.org,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH 00/19] sched: Core Scheduling
-Message-ID: <YIGyeVBS0qnes/RP@hirez.programming.kicks-ass.net>
-References: <20210422120459.447350175@infradead.org>
- <CAOY2WoyMyqjGSWf1JD7tmsBHwKgjpxL7FB3sYjFSge8fBMZv6g@mail.gmail.com>
+        Thu, 22 Apr 2021 13:30:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id 33FFBC3842;
+        Thu, 22 Apr 2021 17:30:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo04-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo04-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ErfpVt9ZJzcN; Thu, 22 Apr 2021 17:30:18 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 38B7AC3757;
+        Thu, 22 Apr 2021 17:30:11 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id F2D1A3EE3E;
+        Thu, 22 Apr 2021 11:30:10 -0600 (MDT)
+Subject: Re: [PATCH v2 2/5] scsi: BusLogic: Avoid unbounded `vsprintf' use
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2104201934280.44318@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2104201939390.44318@angie.orcam.me.uk>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Message-ID: <55356910-b46e-cfab-bb67-fc364ebf5740@gonehiking.org>
+Date:   Thu, 22 Apr 2021 11:30:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOY2WoyMyqjGSWf1JD7tmsBHwKgjpxL7FB3sYjFSge8fBMZv6g@mail.gmail.com>
+In-Reply-To: <alpine.DEB.2.21.2104201939390.44318@angie.orcam.me.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:43:59AM -0700, Don Hiatt wrote:
-> On Thu, Apr 22, 2021 at 5:37 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Hai,
-> >
-> > This is an agressive fold of all the core-scheduling work so far. I've stripped
-> > a whole bunch of tags along the way (hopefully not too many, please yell if you
-> > feel I made a mistake), including tested-by. Please retest.
-> >
-> > Changes since the last partial post is dropping all the cgroup stuff and
-> > PR_SCHED_CORE_CLEAR as well as that exec() behaviour in order to later resolve
-> > the cgroup issue.
-> >
-> Hi Peter,
+On 4/20/21 12:01 PM, Maciej W. Rozycki wrote:
+> Existing `blogic_msg' invocations do not appear to overrun its internal 
+> buffer of a fixed length of 100, which would cause stack corruption, but 
+> it's easy to miss with possible further updates and a fix is cheap in 
+> performance terms, so limit the output produced into the buffer by using 
+> `vscnprintf' rather than `vsprintf'.
 > 
-> Is there a reason that PR_SCHED_CORE_CLEAR got removed? It's handy to
-> be able to clear cookies.
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> ---
+> Changes from v1:
+> 
+> - use `vscnprintf' instead of `vsnprintf' for the correct character count.
+> ---
+>  drivers/scsi/BusLogic.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> linux-buslogic-vscnprintf.diff
+> Index: linux-macro-ide/drivers/scsi/BusLogic.c
+> ===================================================================
+> --- linux-macro-ide.orig/drivers/scsi/BusLogic.c
+> +++ linux-macro-ide/drivers/scsi/BusLogic.c
+> @@ -3588,7 +3588,7 @@ static void blogic_msg(enum blogic_msgle
+>  	int len = 0;
+>  
+>  	va_start(args, adapter);
+> -	len = vsprintf(buf, fmt, args);
+> +	len = vscnprintf(buf, sizeof(buf), fmt, args);
+>  	va_end(args);
+>  	if (msglevel == BLOGIC_ANNOUNCE_LEVEL) {
+>  		static int msglines = 0;
+> 
 
-I agree, but if we're forced to do cgroup with cookie inherit, when
-CLEAR allows a trivial escape.
-
-Until that whole cgroup thing is sorted, it is easiest to not have
-CLEAR, lest we have to change/augment CLEAR semantics in unfortunate
-ways, which is always harder once an API is out there.
-
-Also, see the entire previous discussion here:
-
-  https://lore.kernel.org/lkml/20210401131012.395311786@infradead.org/
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
