@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A9936766C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0892B36766D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244308AbhDVAlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 20:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344084AbhDVAky (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:40:54 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BCEC061345;
-        Wed, 21 Apr 2021 17:39:48 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1lZNNe-0000u0-3V; Thu, 22 Apr 2021 02:39:42 +0200
-Date:   Thu, 22 Apr 2021 02:39:42 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com
-Subject: Re: [PATCH] net: geneve: modify IP header check in geneve6_xmit_skb
-Message-ID: <20210422003942.GF4841@breakpoint.cc>
-References: <20210421231100.7467-1-phil@philpotter.co.uk>
+        id S236417AbhDVAmQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 20:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhDVAmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 20:42:15 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36BF06140F;
+        Thu, 22 Apr 2021 00:41:41 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 20:41:39 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] static_call: Fix unused variable warning
+Message-ID: <20210421204139.669f5c22@oasis.local.home>
+In-Reply-To: <20210422003334.139452-1-linux@roeck-us.net>
+References: <20210422003334.139452-1-linux@roeck-us.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210421231100.7467-1-phil@philpotter.co.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Phillip Potter <phil@philpotter.co.uk> wrote:
-> Modify the check in geneve6_xmit_skb to use the size of a struct iphdr
-> rather than struct ipv6hdr. This fixes two kernel selftest failures
-> introduced by commit 6628ddfec758
-> ("net: geneve: check skb is large enough for IPv4/IPv6 header"), without
-> diminishing the fix provided by that commit.
 
-What errors?
+Second patch with the exact same update. Perhaps we should take one
+before we get more of them ;-)
 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+https://lore.kernel.org/lkml/20210416194300.3952208-1-cmllamas@google.com/
+
+-- Steve
+
+
+On Wed, 21 Apr 2021 17:33:34 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
+
+> If CONFIG_MODULES=n, the following build warning is reported.
+> 
+> kernel/static_call.c: In function ‘__static_call_update’:
+> kernel/static_call.c:153:18: warning: unused variable ‘mod’
+> 
+> Mark the variable as __maybe_unused to fix the problem.
+> 
+> Fixes: 9183c3f9ed71 ("static_call: Add inline static call infrastructure")
+> Reported-by: Zach Reizner <zachr@google.com>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 > ---
->  drivers/net/geneve.c | 2 +-
+>  kernel/static_call.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-> index 42f31c681846..a57a5e6f614f 100644
-> --- a/drivers/net/geneve.c
-> +++ b/drivers/net/geneve.c
-> @@ -988,7 +988,7 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
->  	__be16 sport;
->  	int err;
+> diff --git a/kernel/static_call.c b/kernel/static_call.c
+> index 2c5950b0b90e..8211a34251f8 100644
+> --- a/kernel/static_call.c
+> +++ b/kernel/static_call.c
+> @@ -150,7 +150,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
 >  
-> -	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
-> +	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
->  		return -EINVAL;
+>  	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
+>  		bool init = system_state < SYSTEM_RUNNING;
+> -		struct module *mod = site_mod->mod;
+> +		struct module __maybe_unused *mod = site_mod->mod;
+>  
+>  		if (!site_mod->sites) {
+>  			/*
 
-Seems this is papering over some bug, this change makes no sense to
-me.  Can you please explain this?
