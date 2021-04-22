@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBFC368026
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4089C368028
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhDVMTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:19:49 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35546 "EHLO vps0.lunn.ch"
+        id S236216AbhDVMUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235232AbhDVMTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:19:45 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lZYIM-000Uj3-4U; Thu, 22 Apr 2021 14:18:58 +0200
-Date:   Thu, 22 Apr 2021 14:18:58 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next 05/14] net: ethernet: mtk_eth_soc: reduce MDIO
- bus access latency
-Message-ID: <YIFpsjiqhqEeVXNd@lunn.ch>
-References: <20210422040914.47788-1-ilya.lipnitskiy@gmail.com>
- <20210422040914.47788-6-ilya.lipnitskiy@gmail.com>
+        id S235232AbhDVMUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:20:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A09E861458;
+        Thu, 22 Apr 2021 12:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619094000;
+        bh=Wr0OhYhDfMPeG2IHpq9JA+nWcwCtRYKEEDdMNXqNT9s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LlaLFhYwpL5KwHSeR+kWjYsDL/tsJ53z++3kDhDn76NrrSsP7VizhfXGQyIbXDoqb
+         LJZ8mRtqqeFGV1Q8FDHsud8Q17LECv/AEoLpPNly3nyWYZtcAhFZdQm75qDzi5K+CU
+         0FqxfTjCfYUtjkBT56BenF/rsDnUW62chd9fKHL8CYa3tPqiehAIWZaa30RoU9mGl6
+         V59vWyrsISfh6puiMCNpZBbUjywKOXpSeNu+H0oCQEB5l5hNk6uAJFu7ybD+AkaS2C
+         RRBa4F2UAmwnAb9qcAuFRpEbVSRLTjZYn3bSC9Tuad642ys+HkqBTTOCK45NDMDPIS
+         dw8AordqXki3g==
+Date:   Thu, 22 Apr 2021 15:19:53 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, david@redhat.com, akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+Message-ID: <YIFp6W/wgcZSxe1k@kernel.org>
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+ <YIEzaQF8fVtNgU0E@kernel.org>
+ <6096b004-aaeb-d814-87e4-92ec1b180f1d@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210422040914.47788-6-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <6096b004-aaeb-d814-87e4-92ec1b180f1d@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 09:09:05PM -0700, Ilya Lipnitskiy wrote:
-> From: Felix Fietkau <nbd@nbd.name>
-> 
-> usleep_range often ends up sleeping much longer than the 10-20us provided
-> as a range here. This causes significant latency in mdio bus acceses,
+On Thu, Apr 22, 2021 at 04:53:36PM +0530, Anshuman Khandual wrote:
+> On 4/22/21 1:57 PM, Mike Rapoport wrote:
 
-I found the same with the FEC driver, and make the same change.
+...
 
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
-> [Ilya: use readx_poll_timeout_atomic instead of cond_resched]
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> >> diff --git a/mm/memblock.c b/mm/memblock.c
+> >> index 3abf2c3fea7f..93f8a9c8428d 100644
+> >> --- a/mm/memblock.c
+> >> +++ b/mm/memblock.c
+> >> @@ -1740,6 +1740,7 @@ bool __init_memblock memblock_is_memory(phys_addr_t addr)
+> >>  {
+> >>  	return memblock_search(&memblock.memory, addr) != -1;
+> >>  }
+> >> +EXPORT_SYMBOL(memblock_is_memory);
+> > 
+> > Please make it inside #ifdef CONFIG_ARCH_MEMBLOCK
+> CONFIG_ARCH_KEEP_MEMBLOCK ?
 
+Yeah, _KEEP went away somehow :)
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Wrap it around the EXPORT_SYMBOL() or the entire function
+> memblock_is_memory().
 
-    Andrew
+EXPORT_SYMBOL(). Otherwise we'll have exported __init function.
+ 
+-- 
+Sincerely yours,
+Mike.
