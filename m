@@ -2,151 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8CF367EA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D2A367EA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235802AbhDVKae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:30:34 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:62670 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhDVKad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:30:33 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 89125520F5B;
-        Thu, 22 Apr 2021 13:29:56 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1619087396;
-        bh=gJ/b/xwdSVpAeKgXpj2z9DnCJJYMjVhcutsivV4jIkI=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=46n0d7GcTC/DtZ4ug9hLxZavNm3XtWUYB5Agtxf8YzYw9c0FrFGwHufOtD4XaaU7C
-         PduJnoEmWuUwD0PJK3C6cDK1EsFOaWR9yJ4twT0uMK89Jni5z2oSjamCLHDACbwm3N
-         1uuUEIS0JSR7W3R3pI4VmSLVUVca11fFOxGBtHWflaNQPrUbUqZwnV7tTR6iv1ZXy0
-         F1HKhMNf7lWDRlGvfNdP7nBcqC/iW6GfSFM4rWBrEYcg0w0mkZr9slmTBO17WtJt6v
-         vgxcYCHvUxSxIH6hL7hcV4MdHbdXYUQgP2JtK6ScPCqaDcr10Lqb/FW9VWh0SH1YiZ
-         M1uiBwoJAA7bQ==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id DDAED520D77;
-        Thu, 22 Apr 2021 13:29:55 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 22
- Apr 2021 13:29:54 +0300
-Subject: Re: [RFC PATCH v8 00/19] virtio/vsock: introduce SOCK_SEQPACKET
- support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Alexander Popov <alex.popov@linux.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
- <20210421095213.25hnfi2th7gzyzt2@steredhat>
- <2c3d0749-0f41-e064-0153-b6130268add2@kaspersky.com>
- <20210422084638.bvblk33b4oi6cec6@steredhat>
- <bfefdd94-a84f-8bed-331e-274654a7426f@kaspersky.com>
- <20210422100217.jmpgevtrukqyukfo@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <bc649d1b-80d8-835c-6f47-8a7d402dd0b7@kaspersky.com>
-Date:   Thu, 22 Apr 2021 13:29:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235853AbhDVKbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:31:32 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:47252 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230270AbhDVKbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:31:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619087446; bh=1Tw5TT8F9DngVu9o8wLUbiXpjBJmc/lFX8d3XeMY7LU=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Type;
+        b=Jlykn2+sLEuBucFyMUN/xRyiYSNSHv3VbV0DMCpxx9PxXFJ37I1hrsSvYGRysQQTr
+         oAh2DRyqFttLIxR186RgA5a8TWvFKgFT6VauzCRbjyiORQQpJTuI084i6FIw9j2+Bg
+         1FD4793wLQqKRmu+RWsTRVNTGMy8JfcrMQoBb2JI=
+Received: by 192.168.90.16 [192.168.90.16] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Thu, 22 Apr 2021 12:30:45 +0200 (CEST)
+X-EA-Auth: ST+X3GRd5i66RXwE6cSZZVlovvtaJy8OF8/no//J9UjmxgjOyJZtlDQeFvU73PcXkRXPbFGIuQlaeXAlgewTK47aJzLAEAoj
+Date:   Thu, 22 Apr 2021 16:00:37 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
+Message-ID: <20210422103037.GA239298@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20210422100217.jmpgevtrukqyukfo@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/22/2021 10:12:55
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163280 [Apr 22 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/22/2021 10:15:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 22.04.2021 7:02:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/04/22 09:51:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/22 07:02:00 #16598851
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is recommended to use driver model diagnostic macros dev_*() instead
+of pr_*() since the former ensures that the log messages are always
+associated with the corresponding device and driver.
 
-On 22.04.2021 13:02, Stefano Garzarella wrote:
-> On Thu, Apr 22, 2021 at 12:40:17PM +0300, Arseny Krasnov wrote:
->> On 22.04.2021 11:46, Stefano Garzarella wrote:
->>> On Wed, Apr 21, 2021 at 06:06:28PM +0300, Arseny Krasnov wrote:
->>>> Thank You, i'll prepare next version. Main question is: does this
->>>> approach(no SEQ_BEGIN, SEQ_END, 'msg_len' and 'msg_id') considered
->>>> good? In this case it will be easier to prepare final version, because
->>>> is smaller and more simple than previous logic. Also patch to spec
->>>> will be smaller.
->>> Yes, it's definitely much better than before.
->>>
->>> The only problem I see is that we add some overhead per fragment
->>> (header). We could solve that with the mergeable buffers that Jiang is
->>> considering for DGRAM.
->> If we are talking about receive, i think, i can reuse merge logic for
-> Yep, for TX the guest can potentially enqueue a big buffer.
-> Maybe it's still worth keeping a maximum size and fragmenting as we do 
-> now.
->
->> stream sockets, the only difference is that buffers are mergeable
->> until previous EOR(e.g. previous message) bit is found in rx queue.
->>
-> I got a little lost.
-> Can you elaborate more?
+Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
 
-I'm talking about 'virtio_transport_recv_enqueue()': it tries to copy
+Note: There are few more pr_into() calls that I have not replaced since
+they are very basic (entry and exit) and temporary. They can be removed 
+if the APIs are fully tested. See this example:
+	pr_info("%s S\n", __func__);
 
-data of new packet to buffer of tail packet in rx queue. In case of
+Let me know if I should remove them and resubmit this patch.
 
-SEQPACKET i can reuse it, just adding logic that check EOR bit of
 
-tail packet.
+ .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
->
-> Thanks,
-> Stefano
->
->
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index 7e4e123fdb52..27153ec6f65e 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	/* pixel clock calculattion */
+ 	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
+ 	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
+-	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
++	dev_info(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
+ 
+ 	/* get integration time */
+ 	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
+@@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->crop_horizontal_start = val | (reg_val & 0xFF);
+-	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
++	dev_info(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
+ 
+ 	/* Getting crop_vertical_start */
+ 	ret =  gc0310_read_reg(client, GC0310_8BIT,
+@@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->crop_vertical_start = val | (reg_val & 0xFF);
+-	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
++	dev_info(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
+ 
+ 	/* Getting output_width */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->output_width = val | (reg_val & 0xFF);
+-	pr_info("output_width=%d\n", buf->output_width);
++	dev_info(&client->dev, "output_width=%d\n", buf->output_width);
+ 
+ 	/* Getting output_height */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->output_height = val | (reg_val & 0xFF);
+-	pr_info("output_height=%d\n", buf->output_height);
++	dev_info(&client->dev, "output_height=%d\n", buf->output_height);
+ 
+ 	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
+ 	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
+-	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
+-	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
++	dev_info(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
++	dev_info(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
+ 
+ 	/* Getting line_length_pck */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -389,8 +389,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 		return ret;
+ 	sh_delay = reg_val;
+ 	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
+-	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
+-		sh_delay, buf->line_length_pck);
++	dev_info(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
++		 sh_delay, buf->line_length_pck);
+ 
+ 	/* Getting frame_length_lines */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -404,8 +404,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 		return ret;
+ 	vert_blanking = val | (reg_val & 0xFF);
+ 	buf->frame_length_lines = buf->output_height + vert_blanking;
+-	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
+-		buf->frame_length_lines);
++	dev_info(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
++		 buf->frame_length_lines);
+ 
+ 	buf->binning_factor_x = res->bin_factor_x ?
+ 				res->bin_factor_x : 1;
+@@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
+ 		dgain = gain / 2;
+ 	}
+ 
+-	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
++	dev_info(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
+ 
+ 	/* set analog gain */
+ 	ret = gc0310_write_reg(client, GC0310_8BIT,
+@@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 	int ret;
+ 
+-	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
++	dev_info(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
+ 
+ 	/* set exposure */
+ 	ret = gc0310_write_reg(client, GC0310_8BIT,
+@@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
+ 		return -ENODEV;
+ 	}
+ 	id = ((((u16)high) << 8) | (u16)low);
+-	pr_info("sensor ID = 0x%x\n", id);
++	dev_info(&client->dev, "sensor ID = 0x%x\n", id);
+ 
+ 	if (id != GC0310_ID) {
+ 		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
+@@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 	int ret;
+ 
+-	pr_info("%s S enable=%d\n", __func__, enable);
++	dev_info(&client->dev, "%s S enable=%d\n", __func__, enable);
+ 	mutex_lock(&dev->input_lock);
+ 
+ 	if (enable) {
+-- 
+2.25.1
+
+
+
