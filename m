@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A867236865D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBA4368667
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236827AbhDVSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:07:55 -0400
-Received: from mailout.easymail.ca ([64.68.200.34]:55984 "EHLO
-        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbhDVSHw (ORCPT
+        id S236858AbhDVSMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236459AbhDVSM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:07:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id 351A3A3D0D;
-        Thu, 22 Apr 2021 18:07:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id X_r-WUZfsmQL; Thu, 22 Apr 2021 18:07:17 +0000 (UTC)
-Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        by mailout.easymail.ca (Postfix) with ESMTPA id DDC6E9FF33;
-        Thu, 22 Apr 2021 18:07:08 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id 9ACAB3EE3E;
-        Thu, 22 Apr 2021 12:07:07 -0600 (MDT)
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Ondrej Zary <linux@zary.sk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
- <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org>
- <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk>
- <202104182221.21533.linux@zary.sk>
- <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
- <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk>
- <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org>
- <alpine.DEB.2.21.2104200456100.44318@angie.orcam.me.uk>
- <b23c0a0e-d95b-b941-1cc2-1a8bcf44401a@gonehiking.org>
- <alpine.DEB.2.21.2104221808170.44318@angie.orcam.me.uk>
-From:   Khalid Aziz <khalid@gonehiking.org>
-Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
- Y2021
-Message-ID: <0a4d979b-e3f8-959d-fb9a-3a0fcea42141@gonehiking.org>
-Date:   Thu, 22 Apr 2021 12:07:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 22 Apr 2021 14:12:27 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A236DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:11:51 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id p2so17948738pgh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zOMECuegHtcnsOJsS2wVXJn/DWHnBqjlDGsQSl/szUM=;
+        b=ZM5n2Aq3FEeQFiME92sJqLFtyDxwACpCOvO7R+riBUfsI6FF2pOovYWEL8rUf7yu+z
+         b5PSN28LpI1YNx4znYaoZoxlw7qST4AAkqHlLQ4elw+XqqMsIsOSUieIImXevuj/iRMf
+         J+NMeG4xkE3cZHBEhlxrJ4Zg1IiYyFf88FBIy1OyRs7wi8n1aTh6jkQC8hWpldOsusQd
+         mY9Z3G1sSWAizF9/IOVLWqw7z5AW99XOoEl7Y5GcMPrtBsAUncVmMox2Ch0CmKPKNDDB
+         dm5DLcYK2bQUTX936PQRzo4uBsYYroypNX1B5oYNRpH23r3cQtN+SGMERQ6HsbwrNq4r
+         wcvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zOMECuegHtcnsOJsS2wVXJn/DWHnBqjlDGsQSl/szUM=;
+        b=hacF6D2LV4oZja/972nXXuLBzb+dWhnWS41HQmsA7gZxlpCm6y0SuVTUgAMCY78HO6
+         P4PNwKjiCASFF0erU7gK/8I+twue7LIyhgDIQslQ7Rtpiigc0E6GnGULkuim+prowwtb
+         OmmReL3MtDos784xGg9WJ2o4C+PJiZ8KVBg2qGBxVPUI17td6qerSSFA8aQCyk66Fit0
+         fIbX8dDteb31zOpzMgyD+6HX3EzoaqWQfr7P7+Yi6w53GaS2cRn4sjfOgo1EdVv2fXuf
+         NeBV+9MNULa6fkV1DipVWm3cqo3JSdUEAIEeKTFtB/TMX0+9iPZCsWLin/JE/ObXvlMZ
+         rorw==
+X-Gm-Message-State: AOAM533xPCyeZMP7JQORLD6LKRC4LWWrQM+nxHmVef3RQd60ZTTdBCpk
+        /RWcGzrCYCMaQK4b/pHyQoYsGg==
+X-Google-Smtp-Source: ABdhPJyUmvXutdMSvrTI4H44P0tv+nMUQbh213KsgOf9jCsnF0xA1ZF6jKYTW8kNrrAT+y3qpR58Bw==
+X-Received: by 2002:aa7:800a:0:b029:250:c8c5:64b3 with SMTP id j10-20020aa7800a0000b0290250c8c564b3mr4432744pfi.23.1619115111014;
+        Thu, 22 Apr 2021 11:11:51 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id ft3sm5556349pjb.54.2021.04.22.11.11.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 11:11:50 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 18:11:46 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Wei Huang <wei.huang2@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v5 03/15] KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
+Message-ID: <YIG8Ythi0UIbO+Up@google.com>
+References: <20210422021125.3417167-1-seanjc@google.com>
+ <20210422021125.3417167-4-seanjc@google.com>
+ <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
+ <YIGhC/1vlIAZfwzm@google.com>
+ <882d8bb4-8d40-1b4d-0742-4a4f2c307e5b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2104221808170.44318@angie.orcam.me.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <882d8bb4-8d40-1b4d-0742-4a4f2c307e5b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 10:27 AM, Maciej W. Rozycki wrote:
-> On Wed, 21 Apr 2021, Khalid Aziz wrote:
+On Thu, Apr 22, 2021, Paolo Bonzini wrote:
+> On 22/04/21 18:15, Sean Christopherson wrote:
+> > > Support for 5-level page tables on NPT is not hard to fix and could be
+> > > tested by patching QEMU.  However, the !NPT case would also have to be fixed
+> > > by extending the PDP and PML4 stacking trick to a PML5.
+> > Isn't that backwards?  It's the nested NPT case that requires the stacking trick.
+> > When !NPT is disabled in L0 KVM, 32-bit guests are run with PAE paging.  Maybe
+> > I'm misunderstanding what you're suggesting.
 > 
->>>  Verifying actual ISA operations (third-party DMA, etc.) cannot be made 
->>> this way, but as I understand the issue there is merely with passing data 
->>> structures around and that may not require too much attention beyond 
->>> getting things syntactically correct, which I gather someone forgot to do 
->>> with a change made a while ago.  So that should be doable as well.
->>
->> In theory this sounds reasonable, but without being able to test with a
->> real hardware I would be concerned about making this change.
-> 
->  Sometimes you have little choice really and that would be less disruptive 
-> than dropping support altogether.  Even if there's a small issue somewhere 
-> it's easier to fix by a competent developer who actually gets the hands on 
-> a piece of hardware than bringing back old code that has been removed and 
-> consequently not updated according to internal API evolution, etc.
+> Yes, you're right.  NPT is easy but we would have to guess what the spec
+> would say about MAXPHYADDR, while nNPT would require the stacking of a PML5.
+> Either way, blocking KVM is the easiest thing todo.
 
-We are talking about removing support for BT-445S with firmware version
-older than 3.37. That is a very specific case. To continue support for
-this very specific case, we have to add new code to use local bounce
-buffer and we have no hardware to verify this new code. This will be new
-code whether we add it now or later after we find someone even has this
-very old card with old firmware. I would prefer to remove support for
-now and add new code to add support for firmware version older than 3.37
-back only if there is a need later. For now anyone who is using a
-BT-445S and has updated firmware on their card will not see a change.
+How about I fold that into the s/lm_root/pml4_root rename[*]?  I.e. make the
+blocking of PML5 a functional change, and the rename an opportunistic change?
 
---
-Khalid
+[*] https://lkml.kernel.org/r/20210318201131.3242619-1-seanjc@google.com
