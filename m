@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34EE36895C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52117368963
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239913AbhDVXbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 19:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60244 "EHLO mail.kernel.org"
+        id S239849AbhDVXdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 19:33:35 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36744 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236851AbhDVXbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:31:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 904CC61417;
-        Thu, 22 Apr 2021 23:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619134236;
-        bh=Oag/qHmdRa6QX9ANpkVAVsvFpxx7M8p3mEORxwqYcC4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=VV+Jhmqvm45TuZAsdwGuDIzsSSlimGhG35iIwWxas9DDJgMlNrKxQl/RxpXB04gRb
-         IFK/HYgkASjCo8H09q+xrOOE3VqPTrJCx9Y9cx9jWfK07WYiVsk5/XZHzXKuTacJAE
-         j8uJ30/GvloxHsMmAgcs6Z59ZgwfslXGa/aokvYbSoisJI6qbWhBYLDW97imbzJwhh
-         VcqIQnJKoqYM5rQKPAIKEcHlCAwf/PTR9dYVVJ6Bu1vlA0YPetH/mRxFQGSJlwy2S7
-         zq3VOqvraueSaSsw1gWNW5MbiXRFwAhyZg7VgMd0H7vyBf+A5ybSBfB3l5IQn5I8h9
-         r7dr70NtMez+w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 84FB160A37;
-        Thu, 22 Apr 2021 23:30:36 +0000 (UTC)
-Subject: Re: [GIT PULL] virtio: last minute fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210422182016-mutt-send-email-mst@kernel.org>
-References: <20210422182016-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210422182016-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-X-PR-Tracked-Commit-Id: be286f84e33da1a7f83142b64dbd86f600e73363
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 18a3c5f7abfdf97f88536d35338ebbee119c355c
-Message-Id: <161913423647.3750.12332768319066444186.pr-tracker-bot@kernel.org>
-Date:   Thu, 22 Apr 2021 23:30:36 +0000
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com, elic@nvidia.com, jasowang@redhat.com,
-        lkp@intel.com, mst@redhat.com, stable@vger.kernel.org,
-        xieyongji@bytedance.com
+        id S235977AbhDVXdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 19:33:33 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lZioX-000YlM-A7; Fri, 23 Apr 2021 01:32:53 +0200
+Date:   Fri, 23 Apr 2021 01:32:53 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     netdev@vger.kernel.org, olteanv@gmail.com, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 4/9] net: dsa: microchip: add DSA support for
+ microchip lan937x
+Message-ID: <YIIHpfW4nF/H/GJe@lunn.ch>
+References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
+ <20210422094257.1641396-5-prasanna.vengateshan@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422094257.1641396-5-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 22 Apr 2021 18:20:16 -0400:
+> +static void lan937x_r_mib_cnt(struct ksz_device *dev, int port, u16 addr,
+> +			      u64 *cnt)
+> +{
+> +	unsigned int val;
+> +	u32 data;
+> +	int ret;
+> +
+> +	/* Enable MIB Counter read*/
+> +	data = MIB_COUNTER_READ;
+> +	data |= (addr << MIB_COUNTER_INDEX_S);
+> +	lan937x_pwrite32(dev, port, REG_PORT_MIB_CTRL_STAT__4, data);
+> +
+> +	ret = regmap_read_poll_timeout(dev->regmap[2],
+> +				       PORT_CTRL_ADDR(port,
+> +						      REG_PORT_MIB_CTRL_STAT__4),
+> +					   val, !(val & MIB_COUNTER_READ), 10, 1000);
+> +	/* failed to read MIB. get out of loop */
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+Another loop which is not a loop. Please review your comments and
+check they make sense.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/18a3c5f7abfdf97f88536d35338ebbee119c355c
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+      Andrew
