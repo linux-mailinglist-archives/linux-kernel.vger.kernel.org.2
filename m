@@ -2,223 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E1B3684F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CA43684FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbhDVQhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236333AbhDVQhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:37:01 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7D5C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:36:25 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id y1so8164108plg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:36:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bHrSpjoxi7GzA2ZaNPeafU+dF7Tz3gc6DEgzLNKIcQo=;
-        b=c+u2ELcovy3fr4Etm23Uo++9pf9NP/AK9ri6yWndwYuUV/l+N8onGmAdCr9SFeUGF0
-         1I0IMWjpbi9R5s7axnFu/WuA+q9P9+mgT4NxSG7pjcammnBKaKZv2zDJNwIHXtzw12jL
-         QS0GgnXZxPsSy60/gzArLZgGJ0iNay/7gbng1pKXS80YZDhjrtFnh89rRCEczInY0Lto
-         yrQ/I9yFMlB0YrWvw/5Y0GJLF2x5Q4FfP8N6f295ZrF4gWNq4cGJZ4aTz5BkG4e+v0Aw
-         Ik3xNWP3tQho6N+zz2JR2WTP1eXBGgYNUY9TJAdKmAepMD9cl/auktqVtvgrPsBkEIb0
-         bI6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bHrSpjoxi7GzA2ZaNPeafU+dF7Tz3gc6DEgzLNKIcQo=;
-        b=C2KLhxvwqUPBhwizsDQ0U3gr3dLd/u3bNv8fFcQaNbCVfWSktlLVpaSCUVXIHjMpzR
-         uyYR2WFGtcvxIXhhK8pZrRK9G48OnoHDMF1Ei3mle6KrGY6yZZCH331Jx2245uI/7nxr
-         9QPZziUIhl7QgWX9wWaEAqAGIhOMvnKDOCIG6AkOlNUxkNPcTMFZIZnl7Hfmvwldhwu2
-         Qh87GjIl3IwuVxUTmOLdfM+hkULxpVmoMbuZhifRggjxtMgERyK7+CUdpXUE0DFGzrG6
-         S5x87+4ikcFuaUkNzUTvJWTSwcpVIEviyEPLeXfwPQQ5mxrwywK9ioXj+rHoHvj99zGy
-         ad1Q==
-X-Gm-Message-State: AOAM531lvcAP5p79yY08f1eqZi8Rvu0qzh+ZE2JPFqMXbIJ4PixW5I05
-        cvf/K7cFr984fP/CKgLR/gS9UpbMky4UpA==
-X-Google-Smtp-Source: ABdhPJwcne8lKdAjcKufpGfTQxkYk0+8i7CJ1Jsc8uJOavtk9sRka/jP3LwbnsSHXkt8FtXafvsWgQ==
-X-Received: by 2002:a17:902:d68c:b029:ea:dfbf:9f4b with SMTP id v12-20020a170902d68cb02900eadfbf9f4bmr4549079ply.12.1619109384949;
-        Thu, 22 Apr 2021 09:36:24 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id r11sm2072768pff.192.2021.04.22.09.36.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 09:36:24 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:36:22 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v2 5/7] rpmsg: char: Introduce a rpmsg driver for the
- rpmsg char device
-Message-ID: <20210422163622.GC1256950@xps15>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
- <20210413134458.17912-6-arnaud.pouliquen@foss.st.com>
- <20210421174053.GA1223348@xps15>
- <47015357-b006-1c32-f63f-d4fcac054d6f@foss.st.com>
+        id S237782AbhDVQhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232670AbhDVQhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:37:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B46C261424;
+        Thu, 22 Apr 2021 16:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619109406;
+        bh=fg/L0LsFWhXL8NfM+puv8P931c9U8iaZWIiB+Tj8fLo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=udBiQfP6XCu90KZgEaUcdamYI7R3kLPssNs5hNlOe5Trdpw62zN2Db/SKecMXLh7m
+         ZGdnDV8TtsQ4oD/XrdRHwPicM0p/pLZ+KZjDMwfwhXd0DCSXAfodGw0u8nEV06tAuF
+         PgezMQtdLtCD9K7MVHK8maarxjUeOPhPPD/RmBrkamKcCMtRHovlgU1NQd3U+ouS6c
+         B8uGz3dStaP5SG90vrPV042SqGI94WHO4NdwCp0D/1mWxiX5uNqoPGDzzJLtCkKl7h
+         Yx38vT7faP98MjTuvpNdA+UzNJDNp1TWc+1StQz5d3I3bZlfdcOItldPkz22GFQ50+
+         8PpmpzNL1t7Cw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 530485C00B4; Thu, 22 Apr 2021 09:36:46 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 09:36:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the rcu tree
+Message-ID: <20210422163646.GG975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210422141016.656f50bc@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <47015357-b006-1c32-f63f-d4fcac054d6f@foss.st.com>
+In-Reply-To: <20210422141016.656f50bc@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:58:27AM +0200, Arnaud POULIQUEN wrote:
-> On 4/21/21 7:40 PM, Mathieu Poirier wrote:
-> > Good day Arnaud,
-> > 
-> > On Tue, Apr 13, 2021 at 03:44:56PM +0200, Arnaud Pouliquen wrote:
-> >> A rpmsg char device allows to probe the endpoint device on a remote name
-> >> service announcement.
-> >>
-> >> With this patch the /dev/rpmsgX interface is created either by a user
-> >> application or by the remote firmware.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >>
-> >> ---
-> >> update from V1:
-> >>  - add missing unregister_rpmsg_driver call on module exit.
-> >>
-> >> ---
-> >>  drivers/rpmsg/rpmsg_char.c | 59 +++++++++++++++++++++++++++++++++++++-
-> >>  1 file changed, 58 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> >> index a64249d83172..4606787b7011 100644
-> >> --- a/drivers/rpmsg/rpmsg_char.c
-> >> +++ b/drivers/rpmsg/rpmsg_char.c
-> >> @@ -26,6 +26,8 @@
-> >>  #include "rpmsg_char.h"
-> >>  #include "rpmsg_internal.h"
-> >>  
-> >> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-> >> +
-> > 
-> > Why not simply call it rpmsg-char?
+On Thu, Apr 22, 2021 at 02:10:16PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> I would avoid to link the rpmsg name service to the Linux Kernel device.
+> After merging the rcu tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+> 
+> In file included from kernel/rcu/update.c:584:
+> kernel/rcu/tasks.h:1404:20: error: static declaration of 'show_rcu_tasks_gp_kthreads' follows non-static declaration
+>  1404 | static inline void show_rcu_tasks_gp_kthreads(void) {}
+>       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from kernel/rcu/update.c:49:
+> kernel/rcu/rcu.h:440:6: note: previous declaration of 'show_rcu_tasks_gp_kthreads' was here
+>   440 | void show_rcu_tasks_gp_kthreads(void);
+>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   4bf02dd6048d ("tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline")
+> 
+> I have used the rcu tree from next-20210421 for today.
 
-To me that's exactly what we want to do...  Am I missing something?
+Well, that is one commit that isn't going into the upcoming merge window!
 
-> 
-> > 
-> >>  static dev_t rpmsg_major;
-> >>  
-> >>  static DEFINE_IDA(rpmsg_ept_ida);
-> >> @@ -403,13 +405,67 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
-> >>  }
-> >>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
-> >>  
-> >> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> >> +{
-> >> +	struct rpmsg_channel_info chinfo;
-> >> +	struct rpmsg_eptdev *eptdev;
-> >> +
-> >> +	if (!rpdev->ept)
-> >> +		return -EINVAL;
-> >> +
-> >> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
-> >> +	chinfo.src = rpdev->src;
-> >> +	chinfo.dst = rpdev->dst;
-> >> +
-> >> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo, NULL);
-> >> +	if (IS_ERR(eptdev))
-> >> +		return PTR_ERR(eptdev);
-> >> +
-> >> +	/* Set the private field of the default endpoint to retrieve context on callback. */
-> >> +	rpdev->ept->priv = eptdev;
-> > 
-> > This is already done in rpmsg_create_ept() when rpmsg_eptdev_open() is called.
-> > 
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
-> >> +	if (ret)
-> >> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-> >> +}
-> >> +
-> >> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-> >> +	{ .name	= RPMSG_CHAR_DEVNAME },
-> >> +	{ },
-> >> +};
-> >> +
-> >> +static struct rpmsg_driver rpmsg_chrdev_driver = {
-> >> +	.probe = rpmsg_chrdev_probe,
-> >> +	.remove = rpmsg_chrdev_remove,
-> >> +	.id_table = rpmsg_chrdev_id_table,
-> >> +	.callback = rpmsg_ept_cb,
-> > 
-> > Not sure why we need a callback associated to this driver when
-> > rpmsg_eptdev_open() already creates and rpmsg_endpoint.  To me the only thing
-> > having a callback provides is the association between the rpmsg_device and the
-> > rpmsg_endpoint[1] that happens in rpmsg_dev_probe().  The QC folks already do
-> > this association in their platform code[2].  Since this is not done in
-> > __rpmsg_create_ept() a check for rpdev->ept == NULL could be done in
-> > rpmsg_eptdev_open() and do the assignment there. 
-> > 
-> > [1]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/rpmsg_core.c#L513  
-> > [2]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/qcom_glink_native.c#L1623
-> > 
-> 
-> That's a good point! When I started the redesign, I faced some issues with the
-> approach you propose. But as I can not remember the reason and because the code
-> has evolved, i need to re-think about this.
-> 
+I have (allegedly) fixed it with attribution, but also moved it out of
+my -next pile.  I will update rcu/next after a quick round of tests.
 
-Glad to see we're on the same page.  I stared at this code for a very long time,
-thinking there was some kind of bigger picture I wasn't getting.
+Apologies for the hassle!
 
-
-> Thanks,
-> Arnaud
-> 
-> 
-> >> +	.drv = {
-> >> +		.name = "rpmsg_chrdev",
-> >> +	},
-> >> +};
-> >> +
-> >>  static int rpmsg_chrdev_init(void)
-> >>  {
-> >>  	int ret;
-> >>  
-> >>  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_char");
-> >> -	if (ret < 0)
-> >> +	if (ret < 0) {
-> >>  		pr_err("rpmsg: failed to allocate char dev region\n");
-> >> +		return ret;
-> >> +	}
-> >> +
-> >> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> >> +	if (ret < 0) {
-> >> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-> >> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> +	}
-> >>  
-> >>  	return ret;
-> >>  }
-> >> @@ -417,6 +473,7 @@ postcore_initcall(rpmsg_chrdev_init);
-> >>  
-> >>  static void rpmsg_chrdev_exit(void)
-> >>  {
-> >> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
-> >>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >>  }
-> >>  module_exit(rpmsg_chrdev_exit);
-> >> -- 
-> >> 2.17.1
-> >>
+							Thanx, Paul
