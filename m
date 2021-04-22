@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78274367B28
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC72367B2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhDVHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        id S235059AbhDVHgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhDVHem (ORCPT
+        with ESMTP id S230316AbhDVHgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:34:42 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A3DC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:34:05 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id m7so39876302ljp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gEEBMhBSAcHjqpIEk9kFgoNJRNFl4oJ65WL8v6C0U/Q=;
-        b=XaPSpzGVmkqEnmJDUT77EMq4WzCHQRYg1yM2aezvvn5ZehdvJNiAk5hyioPmv1LQNQ
-         /belzPQmgfBGoGHDy+WpV45r8gF8SChbFyqVmHm06rX9ISBFFPLgIgCl1XPIU4yQ2Edm
-         B+4mbb2rOKdfyqUIPfLPSRTgyQgmlXS9bMHlvWDXRKpkgAlzt3rFMOoLLPadU8FjrADy
-         ER9moym8M466YphDdl5nwD7N+5/DngLMgnAUHtIIcnERRZmKmTD8hkwfLtvMQr9muDqG
-         MrZ/p0J6bqUBBPbn9tA7l3Yv3G/bRY6oWhIJl+weuJzPQjNnm3nRwpaNyFKBwrNWub1h
-         L7Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gEEBMhBSAcHjqpIEk9kFgoNJRNFl4oJ65WL8v6C0U/Q=;
-        b=ksPC8DoN1cwISQYxvpf2K9K1Ax5+aoQHlf930Tcu5sgb6u52s6TY6WyluXnBeIPzal
-         vuXy740/QPl0IE0E3MKPasWvr7ZN3Kl27tOrzf/AcNyY9ghV+0Gtq+l+YpiaDUFYaW91
-         ZGaOf493byjbPLEJoJkL91NRwlFk5/SFLSIWQPoKit+2+HJ7QbYPxZ0sSY8UpePyi+Bm
-         l+iFrIvIE5RIksqczRYS7HStb6ipdUoeufbQ1IqD3DYcX2gsMs+CbB5xgGJ9vmlmqKRT
-         WXFp3ASJnurf438MYPeVOVI7tAOlGRqJwKRe/GZMvmnd1aESwE5iG855UHkagV+aW56a
-         tdZg==
-X-Gm-Message-State: AOAM530fnZoyxza/IOBre1zu0SDNzuy0ifqSLgz1sZqQ18W1X0RqVwcW
-        KTmdJXhJtbOdDA17xUn80QqQiYMEQaQriBRFyhgrgVohnTUE9Q==
-X-Google-Smtp-Source: ABdhPJzM21a0QPKLw9KWd9aRpGtkmgDqKm5rlTq2WeW4y1O+2yPBHNvBaQv/qH7MZ1IFwlGCeydzjuiy6pXKTWze3p4=
-X-Received: by 2002:a2e:91c3:: with SMTP id u3mr1614741ljg.106.1619076844002;
- Thu, 22 Apr 2021 00:34:04 -0700 (PDT)
+        Thu, 22 Apr 2021 03:36:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F0BC06174A;
+        Thu, 22 Apr 2021 00:36:02 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 07:36:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619076961;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ygaHawp8T/kH373vVmhcmax1kMu0V4pX0+2ZN2xTwBM=;
+        b=0QoGKYrpZGYtQRY/8RfcgQu65VvETTXQcHaAmWzLNXMsDDz1mnTYEha7P6JHur9C781uTI
+        AWKREpCOtgozpw/SROB2NG0oOrvKtSSzwdv8GIYk+Vizf2uOnYwQbas96OCyD6HMoliGPV
+        xzQvDuUTTH1z3nTNES3lqzxceXq3cpW63Fyrmgzm8lLfNEdXKKwlSjZvXCwMxjKGUlbRrL
+        cyZdu3RyVxmzJbpJCjU9Q6Uv2Rds2q2k7D2LQc5lPzSwwCQjJTyMAzW/ume+Pm7FMyP09f
+        MeThcewXpRaCxqi9Fr/ZDP1Q1C7F5DV1WcKFrVyogio5XfTztWxs/uDPk805cw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619076961;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ygaHawp8T/kH373vVmhcmax1kMu0V4pX0+2ZN2xTwBM=;
+        b=1a84TXPcwE0uJqUvxk35nVxxx2zZ3najR9b0DQzM3uBlfZsbQT+IHpG2/IV7MrWUq0yHuz
+        2bRaZMUEImawcOAA==
+From:   "tip-bot2 for Rik van Riel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched,fair: skip newidle_balance if a wakeup is pending
+Cc:     Rik van Riel <riel@surriel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210420120705.5c705d4b@imladris.surriel.com>
+References: <20210420120705.5c705d4b@imladris.surriel.com>
 MIME-Version: 1.0
-References: <20210422155355.471c7751@canb.auug.org.au> <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
-In-Reply-To: <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Thu, 22 Apr 2021 00:33:47 -0700
-Message-ID: <CAHVum0eQX8+HCJ3F-G9nzSVMy4V8Cg58LtY=jGPRJ77E-MN1fQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the cgroup tree with the kvm tree
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>,
-        KVM <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161907696062.29796.108437696048031441.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:34 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 22/04/21 07:53, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Today's linux-next merge of the cgroup tree got conflicts in:
-> >
-> >    arch/x86/kvm/svm/sev.c
-> >
-> > between commit:
-> >
-> >    9fa1521daafb ("KVM: SVM: Do not set sev->es_active until KVM_SEV_ES_INIT completes")
-> >
-> > from the kvm tree and commit:
-> >
-> >    7aef27f0b2a8 ("svm/sev: Register SEV and SEV-ES ASIDs to the misc controller")
-> >
-> > from the cgroup tree.
-> >
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> >
->
-> Tejun, please don't commit patches to other tree without an Acked-by
-> from the maintainer (which I wouldn't have provided, as the right way to
-> go would have been a topic branch).
->
-> Fortunately these patches are at the bottom of your tree.  If it's okay,
-> I'll just pull from there "as if" you had provided a topic branch all
-> the time.
->
-> Thanks,
->
-> Paolo
->
+The following commit has been merged into the sched/core branch of tip:
 
-First of all, I am sorry that my patch series has caused this trouble to
-all of you. I am not aware of the correct way to submit a patch series
-which changes files in more than one maintainer's territory. Any
-guidance for the future will be helpful.
+Commit-ID:     9c9f520a14670ad59da2f700660f7601ec9e0b07
+Gitweb:        https://git.kernel.org/tip/9c9f520a14670ad59da2f700660f7601ec9e0b07
+Author:        Rik van Riel <riel@surriel.com>
+AuthorDate:    Tue, 20 Apr 2021 12:07:05 -04:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 21 Apr 2021 13:55:43 +02:00
 
-Paolo, Stephen,
-We need a little more fix in the sev_asid_free() function for Stephen's
-changes to work correctly as es_active is used in that function also.
+sched,fair: skip newidle_balance if a wakeup is pending
 
-Is there a repo and branch where I can see the final state of merges
-and then I can send my patch against that?
+The try_to_wake_up function has an optimization where it can queue
+a task for wakeup on its previous CPU, if the task is still in the
+middle of going to sleep inside schedule().
 
-Thanks
-Vipin
+Once schedule() re-enables IRQs, the task will be woken up with an
+IPI, and placed back on the runqueue.
+
+If we have such a wakeup pending, there is no need to search other
+CPUs for runnable tasks. Just skip (or bail out early from) newidle
+balancing, and run the just woken up task.
+
+For a memcache like workload test, this reduces total CPU use by
+about 2%, proportionally split between user and system time,
+and p99 and p95 application response time by 10% on average.
+The schedstats run_delay number shows a similar improvement.
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210420120705.5c705d4b@imladris.surriel.com
+---
+ kernel/sched/fair.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1d75af1..83cd2bd 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10592,6 +10592,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	u64 curr_cost = 0;
+ 
+ 	update_misfit_status(NULL, this_rq);
++
++	/*
++	 * There is a task waiting to run. No need to search for one.
++	 * Return 0; the task will be enqueued when switching to idle.
++	 */
++	if (this_rq->ttwu_pending)
++		return 0;
++
+ 	/*
+ 	 * We must set idle_stamp _before_ calling idle_balance(), such that we
+ 	 * measure the duration of idle_balance() as idle time.
+@@ -10657,7 +10665,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 		 * Stop searching for tasks to pull if there are
+ 		 * now runnable tasks on this rq.
+ 		 */
+-		if (pulled_task || this_rq->nr_running > 0)
++		if (pulled_task || this_rq->nr_running > 0 ||
++		    this_rq->ttwu_pending)
+ 			break;
+ 	}
+ 	rcu_read_unlock();
+@@ -10684,7 +10693,12 @@ out:
+ 	if (time_after(this_rq->next_balance, next_balance))
+ 		this_rq->next_balance = next_balance;
+ 
+-	if (pulled_task)
++	/*
++	 * If we are no longer idle, do not let the time spent here pull
++	 * down this_rq->avg_idle. That could lead to newidle_balance not
++	 * doing enough work, and the CPU actually going idle.
++	 */
++	if (pulled_task || this_rq->ttwu_pending)
+ 		this_rq->idle_stamp = 0;
+ 	else
+ 		nohz_newidle_balance(this_rq);
