@@ -2,140 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A541367E22
+	by mail.lfdr.de (Postfix) with ESMTP id E7B5B367E23
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbhDVJtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:49:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57797 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235766AbhDVJtV (ORCPT
+        id S235794AbhDVJtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:49:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52823 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235766AbhDVJtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:49:21 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-3-u9EizjiyOa6oT5HDclJV4g-1; Thu, 22 Apr 2021 10:48:43 +0100
-X-MC-Unique: u9EizjiyOa6oT5HDclJV4g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 22 Apr 2021 10:48:42 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Thu, 22 Apr 2021 10:48:42 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marco Elver' <elver@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>
-CC:     "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "glider@google.com" <glider@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "christian@brauner.io" <christian@brauner.io>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pcc@google.com" <pcc@google.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH tip 1/2] signal, perf: Fix siginfo_t by avoiding u64 on
- 32-bit architectures
-Thread-Topic: [PATCH tip 1/2] signal, perf: Fix siginfo_t by avoiding u64 on
- 32-bit architectures
-Thread-Index: AQHXN0MFjTlB/ZNe8Eu7kYRWV5A4q6rAQy8Q
-Date:   Thu, 22 Apr 2021 09:48:42 +0000
-Message-ID: <d480a4f56d544fb98eb1cdd62f44ae91@AcuMS.aculab.com>
-References: <20210422064437.3577327-1-elver@google.com>
-In-Reply-To: <20210422064437.3577327-1-elver@google.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 22 Apr 2021 05:49:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619084943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i/5Gq89TQ8eSonTVzU9HaCA0fJ/FKsU/+NWQr/frBeo=;
+        b=OAAbjJwpF7vI/YbwOwnTElbtR1eSYehu4hpGhMAXq3pxnXOr/pOHPSXhuhieBUpONw/M8A
+        07bjB3e0M165fiafrgyh9RoNqAwzNvp45lnCzqUDCHy1Yyq0wv4lHIE8/dpk3P+8rTzZnQ
+        AFldqdND571wENHHdsgpl8WLMI3nFKc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-nXX5VaNkOXWn7MQTBzH_vw-1; Thu, 22 Apr 2021 05:49:00 -0400
+X-MC-Unique: nXX5VaNkOXWn7MQTBzH_vw-1
+Received: by mail-ed1-f72.google.com with SMTP id c13-20020a05640227cdb0290385526e5de5so6381441ede.21
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:49:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=i/5Gq89TQ8eSonTVzU9HaCA0fJ/FKsU/+NWQr/frBeo=;
+        b=oP5wgJcW5ajXlKjsehN6X7MG4GEGygxFGoQco7oXuoz2uFMttUnhNWay0Cr1Ieegwj
+         gpKCpe90FHve03dFbd6rgjeL7ug+5lVu+eH1vEaFJRSzX5wRLB1+Uu0BF+1kOaz3l6KM
+         mmMTZmjU5P4LkzjxSBG85A+6FwRNrCmjzcuK2mtIhXB0u/sMXmACUWM6lRcZQ0cx+lWw
+         xmYYXxo8gwe1t26+j3HD9DjxwR5oq+1DQiyk5/igudW1auwy5VKapavxRakE2ZnbvFmd
+         1edOnTMq8rpMoQ62S7XMvjUVpt0P8jefBmADJq31a1ZLdE01ePvNhyJftTe1K0kNzKkL
+         xFUg==
+X-Gm-Message-State: AOAM530GqxdsJSbDlfqtr3pc8G10eTkZGMjt+xcKSMZNN5nUdv06o7XJ
+        7X1fNNtAXcOO4ffJB/1Vlbs2oG+w9sKOvz4R+Z2bKtvbcfunUnSrn9yiRyVUZPbbfUYrU0xSfgC
+        IyjNa7cRPOIi3t67IenSJ79tLzLr+wVrNANi8ohPCInsIyIC2p1z6YyMMTDti8hO4vjtHBM9J
+X-Received: by 2002:a17:906:5248:: with SMTP id y8mr2446636ejm.150.1619084939586;
+        Thu, 22 Apr 2021 02:48:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxN0KGC+uFplWH3S1KmpmvQ0JE4rXTw4tByTJ+BoE7pMHuIjlW4Xwi9rQIDuZ9U57m2v0ap4g==
+X-Received: by 2002:a17:906:5248:: with SMTP id y8mr2446607ejm.150.1619084939305;
+        Thu, 22 Apr 2021 02:48:59 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23eb0.dip0.t-ipconnect.de. [79.242.62.176])
+        by smtp.gmail.com with ESMTPSA id t14sm1537588ejj.77.2021.04.22.02.48.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 02:48:59 -0700 (PDT)
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+ <ce4f8045-2481-103f-f418-28cb43c7c7ff@redhat.com>
+ <YIFFIiuy+z3WLHDi@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <61523566-f302-1051-9565-b1e129c6cac0@redhat.com>
+Date:   Thu, 22 Apr 2021 11:48:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <YIFFIiuy+z3WLHDi@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWFyY28gRWx2ZXINCj4gU2VudDogMjIgQXByaWwgMjAyMSAwNzo0NQ0KPiANCj4gT24g
-c29tZSBhcmNoaXRlY3R1cmVzLCBsaWtlIEFybSwgdGhlIGFsaWdubWVudCBvZiBhIHN0cnVjdHVy
-ZSBpcyB0aGF0IG9mDQo+IGl0cyBsYXJnZXN0IG1lbWJlci4NCg0KVGhhdCBpcyB0cnVlIGV2ZXJ5
-d2hlcmUuDQooQXBhcnQgZnJvbSBvYnNjdXJlIEFCSSB3aGVyZSBzdHJ1Y3R1cmUgaGF2ZSBhdCBs
-ZWFzdCA0IGJ5dGUgYWxpZ25tZW50ISkNCg0KPiBUaGlzIG1lYW5zIHRoYXQgdGhlcmUgaXMgbm8g
-cG9ydGFibGUgd2F5IHRvIGFkZCA2NC1iaXQgaW50ZWdlcnMgdG8NCj4gc2lnaW5mb190IG9uIDMy
-LWJpdCBhcmNoaXRlY3R1cmVzLCBiZWNhdXNlIHNpZ2luZm9fdCBkb2VzIG5vdCBjb250YWluDQo+
-IGFueSA2NC1iaXQgaW50ZWdlcnMgb24gMzItYml0IGFyY2hpdGVjdHVyZXMuDQoNClVoPw0KDQpU
-aGUgYWN0dWFsIHByb2JsZW0gaXMgdGhhdCBhZGRpbmcgYSA2NC1iaXQgYWxpZ25lZCBpdGVtIHRv
-IHRoZSB1bmlvbg0KZm9yY2VzIHRoZSB1bmlvbiB0byBiZSA4IGJ5dGUgYWxpZ25lZCBhbmQgYWRk
-cyBhIDQgYnl0ZSBwYWQgYmVmb3JlIGl0DQooYW5kIHBvc3NpYmx5IGFub3RoZXIgb25lIGF0IHRo
-ZSBlbmQgb2YgdGhlIHN0cnVjdHVyZSkuDQoNCj4gSW4gdGhlIGNhc2Ugb2YgdGhlIHNpX3BlcmYg
-ZmllbGQsIHdvcmQgc2l6ZSBpcyBzdWZmaWNpZW50IHNpbmNlIHRoZXJlIGlzDQo+IG5vIGV4YWN0
-IHJlcXVpcmVtZW50IG9uIHNpemUsIGdpdmVuIHRoZSBkYXRhIGl0IGNvbnRhaW5zIGlzIHVzZXIt
-ZGVmaW5lZA0KPiB2aWEgcGVyZl9ldmVudF9hdHRyOjpzaWdfZGF0YS4gT24gMzItYml0IGFyY2hp
-dGVjdHVyZXMsIGFueSBleGNlc3MgYml0cw0KPiBvZiBwZXJmX2V2ZW50X2F0dHI6OnNpZ19kYXRh
-IHdpbGwgdGhlcmVmb3JlIGJlIHRydW5jYXRlZCB3aGVuIGNvcHlpbmcNCj4gaW50byBzaV9wZXJm
-Lg0KDQpJcyB0aGF0IHJpZ2h0IG9uIEJFIGFyY2hpdGVjdHVyZXM/DQoNCj4gU2luY2UgdGhpcyBm
-aWVsZCBpcyBpbnRlbmRlZCB0byBkaXNhbWJpZ3VhdGUgZXZlbnRzIChlLmcuIGVuY29kaW5nDQo+
-IHJlbGV2YW50IGluZm9ybWF0aW9uIGlmIHRoZXJlIGFyZSBtb3JlIGV2ZW50cyBvZiB0aGUgc2Ft
-ZSB0eXBlKSwgMzIgYml0cw0KPiBzaG91bGQgcHJvdmlkZSBlbm91Z2ggZW50cm9weSB0byBkbyBz
-byBvbiAzMi1iaXQgYXJjaGl0ZWN0dXJlcy4NCg0KV2hhdCBpcyB0aGUgc2l6ZSBvZiB0aGUgZmll
-bGQgdXNlZCB0byBzdXBwbHkgdGhlIGRhdGE/DQpUaGUgc2l6ZSBvZiB0aGUgcmV0dXJuZWQgaXRl
-bSByZWFsbHkgb3VnaHQgdG8gbWF0Y2guDQoNCk11Y2ggYXMgSSBoYXRlIF9fcGFja2VkLCB5b3Ug
-Y291bGQgYWRkIF9fcGFja2VkIHRvIHRoZQ0KZGVmaW5pdGlvbiBvZiB0aGUgc3RydWN0dXJlIG1l
-bWJlciBfcGVyZi4NClRoZSBjb21waWxlciB3aWxsIHJlbW92ZSB0aGUgcGFkZGluZyBiZWZvcmUg
-aXQgYW5kIHdpbGwNCmFzc3VtZSBpdCBoYXMgdGhlIGFsaWdubWVudCBvZiB0aGUgcHJldmlvdXMg
-aXRlbS4NCg0KU28gaXQgd2lsbCBuZXZlciB1c2UgYnl0ZSBhY2Nlc3Nlcy4NCg0KCURhdmlkDQoN
-Cj4gDQo+IEZvciA2NC1iaXQgYXJjaGl0ZWN0dXJlcywgbm8gY2hhbmdlIGlzIGludGVuZGVkLg0K
-PiANCj4gRml4ZXM6IGZiNmNjMTI3ZTBiNiAoInNpZ25hbDogSW50cm9kdWNlIFRSQVBfUEVSRiBz
-aV9jb2RlIGFuZCBzaV9wZXJmIHRvIHNpZ2luZm8iKQ0KPiBSZXBvcnRlZC1ieTogTWFyZWsgU3p5
-cHJvd3NraSA8bS5zenlwcm93c2tpQHNhbXN1bmcuY29tPg0KPiBUZXN0ZWQtYnk6IE1hcmVrIFN6
-eXByb3dza2kgPG0uc3p5cHJvd3NraUBzYW1zdW5nLmNvbT4NCj4gUmVwb3J0ZWQtYnk6IEpvbiBI
-dW50ZXIgPGpvbmF0aGFuaEBudmlkaWEuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBNYXJjbyBFbHZl
-ciA8ZWx2ZXJAZ29vZ2xlLmNvbT4NCj4gLS0tDQo+IA0KPiBOb3RlOiBJIGFkZGVkIHN0YXRpY19h
-c3NlcnQoKXMgdG8gdmVyaWZ5IHRoZSBzaWdpbmZvX3QgbGF5b3V0IHRvDQo+IGFyY2gvYXJtIGFu
-ZCBhcmNoL2FybTY0LCB3aGljaCBjYXVnaHQgdGhlIHByb2JsZW0uIEknbGwgc2VuZCB0aGVtDQo+
-IHNlcGFyYXRlbHkgdG8gYXJtJmFybTY0IG1haW50YWluZXJzIHJlc3BlY3RpdmVseS4NCj4gLS0t
-DQo+ICBpbmNsdWRlL2xpbnV4L2NvbXBhdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8IDIgKy0NCj4gIGluY2x1ZGUvdWFwaS9hc20tZ2VuZXJpYy9zaWdpbmZvLmggICAgICAgICAg
-ICAgICAgICAgIHwgMiArLQ0KPiAgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcGVyZl9ldmVudHMv
-c2lndHJhcF90aHJlYWRzLmMgfCAyICstDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9u
-cygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2Nv
-bXBhdC5oIGIvaW5jbHVkZS9saW51eC9jb21wYXQuaA0KPiBpbmRleCBjODgyMWQ5NjY4MTIuLmYw
-ZDJkZDM1ZDQwOCAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9jb21wYXQuaA0KPiArKysg
-Yi9pbmNsdWRlL2xpbnV4L2NvbXBhdC5oDQo+IEBAIC0yMzcsNyArMjM3LDcgQEAgdHlwZWRlZiBz
-dHJ1Y3QgY29tcGF0X3NpZ2luZm8gew0KPiAgCQkJCQl1MzIgX3BrZXk7DQo+ICAJCQkJfSBfYWRk
-cl9wa2V5Ow0KPiAgCQkJCS8qIHVzZWQgd2hlbiBzaV9jb2RlPVRSQVBfUEVSRiAqLw0KPiAtCQkJ
-CWNvbXBhdF91NjQgX3BlcmY7DQo+ICsJCQkJY29tcGF0X3Vsb25nX3QgX3BlcmY7DQo+ICAJCQl9
-Ow0KPiAgCQl9IF9zaWdmYXVsdDsNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3VhcGkvYXNt
-LWdlbmVyaWMvc2lnaW5mby5oIGIvaW5jbHVkZS91YXBpL2FzbS1nZW5lcmljL3NpZ2luZm8uaA0K
-PiBpbmRleCBkMGJiOTEyNWM4NTMuLjAzZDZmNmQyYzFmZSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVk
-ZS91YXBpL2FzbS1nZW5lcmljL3NpZ2luZm8uaA0KPiArKysgYi9pbmNsdWRlL3VhcGkvYXNtLWdl
-bmVyaWMvc2lnaW5mby5oDQo+IEBAIC05Miw3ICs5Miw3IEBAIHVuaW9uIF9fc2lmaWVsZHMgew0K
-PiAgCQkJCV9fdTMyIF9wa2V5Ow0KPiAgCQkJfSBfYWRkcl9wa2V5Ow0KPiAgCQkJLyogdXNlZCB3
-aGVuIHNpX2NvZGU9VFJBUF9QRVJGICovDQo+IC0JCQlfX3U2NCBfcGVyZjsNCj4gKwkJCXVuc2ln
-bmVkIGxvbmcgX3BlcmY7DQo+ICAJCX07DQo+ICAJfSBfc2lnZmF1bHQ7DQo+IA0KPiBkaWZmIC0t
-Z2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcGVyZl9ldmVudHMvc2lndHJhcF90aHJlYWRz
-LmMNCj4gYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9wZXJmX2V2ZW50cy9zaWd0cmFwX3RocmVh
-ZHMuYw0KPiBpbmRleCA5YzBmZDQ0MmRhNjAuLjc4ZGRmNWUxMTYyNSAxMDA2NDQNCj4gLS0tIGEv
-dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcGVyZl9ldmVudHMvc2lndHJhcF90aHJlYWRzLmMNCj4g
-KysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvcGVyZl9ldmVudHMvc2lndHJhcF90aHJlYWRz
-LmMNCj4gQEAgLTQ0LDcgKzQ0LDcgQEAgc3RhdGljIHN0cnVjdCB7DQo+ICB9IGN0eDsNCj4gDQo+
-ICAvKiBVbmlxdWUgdmFsdWUgdG8gY2hlY2sgc2lfcGVyZiBpcyBjb3JyZWN0bHkgc2V0IGZyb20g
-cGVyZl9ldmVudF9hdHRyOjpzaWdfZGF0YS4gKi8NCj4gLSNkZWZpbmUgVEVTVF9TSUdfREFUQShh
-ZGRyKSAofih1aW50NjRfdCkoYWRkcikpDQo+ICsjZGVmaW5lIFRFU1RfU0lHX0RBVEEoYWRkcikg
-KH4odW5zaWduZWQgbG9uZykoYWRkcikpDQo+IA0KPiAgc3RhdGljIHN0cnVjdCBwZXJmX2V2ZW50
-X2F0dHIgbWFrZV9ldmVudF9hdHRyKGJvb2wgZW5hYmxlZCwgdm9sYXRpbGUgdm9pZCAqYWRkcikN
-Cj4gIHsNCj4gLS0NCj4gMi4zMS4xLjQ5OC5nNmMxZWJhOGVlM2QtZ29vZw0KDQotDQpSZWdpc3Rl
-cmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtl
-eW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 22.04.21 11:42, Mike Rapoport wrote:
+> On Thu, Apr 22, 2021 at 11:03:50AM +0200, David Hildenbrand wrote:
+>> On 22.04.21 09:50, Anshuman Khandual wrote:
+>>> Platforms like arm and arm64 have redefined pfn_valid() because their early
+>>> memory sections might have contained memmap holes after freeing parts of it
+>>> during boot, which should be skipped while validating a pfn for struct page
+>>> backing. This scenario on certain platforms where memmap is not continuous,
+>>> could be captured with a new option CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES.
+>>> Then the generic pfn_valid() can be improved to accommodate such platforms.
+>>> This reduces overall code footprint and also improves maintainability.
+>>>
+>>> free_unused_memmap() and pfn_to_online_page() have been updated to include
+>>> such cases. This also exports memblock_is_memory() for all drivers that use
+>>> pfn_valid() but lack required visibility. After the new config is in place,
+>>> drop CONFIG_HAVE_ARCH_PFN_VALID from arm64 platforms.
+>>>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: Mike Rapoport <rppt@kernel.org>
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: linux-mm@kvack.org
+>>> Suggested-by: David Hildenbrand <david@redhat.com>
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> This patch applies on the latest mainline kernel after Mike's series
+>>> regarding arm64 based pfn_valid().
+>>>
+>>> https://lore.kernel.org/linux-mm/20210422061902.21614-1-rppt@kernel.org/T/#t
+>>>
+>>> Changes in RFC V2:
+>>>
+>>> - Dropped support for arm (32 bit)
+>>> - Replaced memblock_is_map_memory() check with memblock_is_memory()
+>>> - MEMBLOCK_NOMAP memory are no longer skipped for pfn_valid()
+>>> - Updated pfn_to_online_page() per David
+>>> - Updated free_unused_memmap() to preserve existing semantics per Mike
+>>> - Exported memblock_is_memory() instead of memblock_is_map_memory()
+>>>
+>>> Changes in RFC V1:
+>>>
+>>> - https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
+>>>
+>>>    arch/arm64/Kconfig            |  2 +-
+>>>    arch/arm64/include/asm/page.h |  1 -
+>>>    arch/arm64/mm/init.c          | 41 -----------------------------------
+>>>    include/linux/mmzone.h        | 18 ++++++++++++++-
+>>>    mm/Kconfig                    |  9 ++++++++
+>>>    mm/memblock.c                 |  8 +++++--
+>>>    mm/memory_hotplug.c           |  5 +++++
+>>>    7 files changed, 38 insertions(+), 46 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>> index b4a9b493ce72..4cdc3570ffa9 100644
+>>> --- a/arch/arm64/Kconfig
+>>> +++ b/arch/arm64/Kconfig
+>>> @@ -144,7 +144,6 @@ config ARM64
+>>>    	select HAVE_ARCH_KGDB
+>>>    	select HAVE_ARCH_MMAP_RND_BITS
+>>>    	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+>>> -	select HAVE_ARCH_PFN_VALID
+>>>    	select HAVE_ARCH_PREL32_RELOCATIONS
+>>>    	select HAVE_ARCH_SECCOMP_FILTER
+>>>    	select HAVE_ARCH_STACKLEAK
+>>> @@ -167,6 +166,7 @@ config ARM64
+>>>    		if $(cc-option,-fpatchable-function-entry=2)
+>>>    	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+>>>    		if DYNAMIC_FTRACE_WITH_REGS
+>>> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
+>>>    	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>>>    	select HAVE_FAST_GUP
+>>>    	select HAVE_FTRACE_MCOUNT_RECORD
+>>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+>>> index 75ddfe671393..fcbef3eec4b2 100644
+>>> --- a/arch/arm64/include/asm/page.h
+>>> +++ b/arch/arm64/include/asm/page.h
+>>> @@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+>>>    typedef struct page *pgtable_t;
+>>> -int pfn_valid(unsigned long pfn);
+>>>    int pfn_is_map_memory(unsigned long pfn);
+>>>    #include <asm/memory.h>
+>>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>>> index f431b38d0837..5731a11550d8 100644
+>>> --- a/arch/arm64/mm/init.c
+>>> +++ b/arch/arm64/mm/init.c
+>>> @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+>>>    	free_area_init(max_zone_pfns);
+>>>    }
+>>> -int pfn_valid(unsigned long pfn)
+>>> -{
+>>> -	phys_addr_t addr = PFN_PHYS(pfn);
+>>> -
+>>> -	/*
+>>> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
+>>> -	 * pfn. Else it might lead to false positives when
+>>> -	 * some of the upper bits are set, but the lower bits
+>>> -	 * match a valid pfn.
+>>> -	 */
+>>> -	if (PHYS_PFN(addr) != pfn)
+>>> -		return 0;
+>>> -
+>>> -#ifdef CONFIG_SPARSEMEM
+>>> -{
+>>> -	struct mem_section *ms;
+>>> -
+>>> -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>>> -		return 0;
+>>> -
+>>> -	ms = __pfn_to_section(pfn);
+>>> -	if (!valid_section(ms))
+>>> -		return 0;
+>>> -
+>>> -	/*
+>>> -	 * ZONE_DEVICE memory does not have the memblock entries.
+>>> -	 * memblock_is_memory() check for ZONE_DEVICE based
+>>> -	 * addresses will always fail. Even the normal hotplugged
+>>> -	 * memory will never have MEMBLOCK_NOMAP flag set in their
+>>> -	 * memblock entries. Skip memblock search for all non early
+>>> -	 * memory sections covering all of hotplug memory including
+>>> -	 * both normal and ZONE_DEVICE based.
+>>> -	 */
+>>> -	if (!early_section(ms))
+>>> -		return pfn_section_valid(ms, pfn);
+>>> -}
+>>> -#endif
+>>> -	return memblock_is_memory(addr);
+>>> -}
+>>> -EXPORT_SYMBOL(pfn_valid);
+>>> -
+>>>    int pfn_is_map_memory(unsigned long pfn)
+>>>    {
+>>>    	phys_addr_t addr = PFN_PHYS(pfn);
+>>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>>> index 961f0eeefb62..18bf71665211 100644
+>>> --- a/include/linux/mmzone.h
+>>> +++ b/include/linux/mmzone.h
+>>> @@ -1421,10 +1421,22 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>>>     *
+>>>     * Return: 1 for PFNs that have memory map entries and 0 otherwise
+>>>     */
+>>> +bool memblock_is_memory(phys_addr_t addr);
+>>> +
+>>>    static inline int pfn_valid(unsigned long pfn)
+>>>    {
+>>> +	phys_addr_t addr = PFN_PHYS(pfn);
+>>>    	struct mem_section *ms;
+>>> +	/*
+>>> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+>>> +	 * pfn. Else it might lead to false positives when
+>>> +	 * some of the upper bits are set, but the lower bits
+>>> +	 * match a valid pfn.
+>>> +	 */
+>>> +	if (PHYS_PFN(addr) != pfn)
+>>> +		return 0;
+>>> +
+>>>    	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>>>    		return 0;
+>>>    	ms = __nr_to_section(pfn_to_section_nr(pfn));
+>>> @@ -1434,7 +1446,11 @@ static inline int pfn_valid(unsigned long pfn)
+>>>    	 * Traditionally early sections always returned pfn_valid() for
+>>>    	 * the entire section-sized span.
+>>>    	 */
+>>> -	return early_section(ms) || pfn_section_valid(ms, pfn);
+>>> +	if (early_section(ms))
+>>> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+>>> +			memblock_is_memory(pfn << PAGE_SHIFT) : 1;
+>>> +
+>>> +	return pfn_section_valid(ms, pfn);
+>>>    }
+>>>    #endif
+>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>> index 24c045b24b95..db7128111874 100644
+>>> --- a/mm/Kconfig
+>>> +++ b/mm/Kconfig
+>>> @@ -135,6 +135,15 @@ config HAVE_FAST_GUP
+>>>    config ARCH_KEEP_MEMBLOCK
+>>>    	bool
+>>> +config HAVE_EARLY_SECTION_MEMMAP_HOLES
+>>> +	depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
+>>> +	def_bool n
+>>> +	help
+>>> +	  Early sections on certain platforms might have some memory ranges that
+>>> +	  are not backed with struct page mappings. When subscribed, this option
+>>> +	  enables special handling for those memory ranges in certain situations
+>>> +	  such as pfn_valid().
+>>> +
+>>>    # Keep arch NUMA mapping infrastructure post-init.
+>>>    config NUMA_KEEP_MEMINFO
+>>>    	bool
+>>> diff --git a/mm/memblock.c b/mm/memblock.c
+>>> index 3abf2c3fea7f..93f8a9c8428d 100644
+>>> --- a/mm/memblock.c
+>>> +++ b/mm/memblock.c
+>>> @@ -1740,6 +1740,7 @@ bool __init_memblock memblock_is_memory(phys_addr_t addr)
+>>>    {
+>>>    	return memblock_search(&memblock.memory, addr) != -1;
+>>>    }
+>>> +EXPORT_SYMBOL(memblock_is_memory);
+>>>    bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
+>>>    {
+>>> @@ -1931,8 +1932,11 @@ static void __init free_unused_memmap(void)
+>>>    	unsigned long start, end, prev_end = 0;
+>>>    	int i;
+>>> -	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
+>>> -	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>>> +	if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>>> +		return;
+>>> +
+>>> +	if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) &&
+>>> +	    !IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID))
+>>>    		return;
+>>>    	/*
+>>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>>> index 0cdbbfbc5757..8c78b6a3d888 100644
+>>> --- a/mm/memory_hotplug.c
+>>> +++ b/mm/memory_hotplug.c
+>>> @@ -309,6 +309,11 @@ struct page *pfn_to_online_page(unsigned long pfn)
+>>>    	 * Save some code text when online_section() +
+>>>    	 * pfn_section_valid() are sufficient.
+>>>    	 */
+>>> +	if (IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES)) {
+>>> +		if (early_section(ms) && !memblock_is_memory(PFN_PHYS(pfn)))
+>>> +			return NULL;
+>>> +	}
+>>> +
+>>>    	if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) && !pfn_valid(pfn))
+>>>    		return NULL;
+>>>
+>>
+>> What about doing one step at a time and switching only over to generic
+>> pfn_valid() in case of CONFIG_SPARSEMEM? (meaning: freeing the memmap only
+>> with !CONFIG_SPARSEMEM)
+> 
+> The "generic" pfn_valid() is only available with CONFIG_SPARSEMEM.
+> With FLATMEM it's wild west:
+> 
+> $ git grep -w "define pfn_valid" arch/*/include/asm/ | wc -l
+> 22
+> 
+> This would actually mean that we still need arm64::pfn_valid() for the
+> FLATMEM case.
+
+Right, which is the case on x86 etc. as well. (I was assuming that this 
+patch was missing something)
+
+> 
+>> IOW, avoiding having to adjust generic pfn_valid()/pfn_to_online_page() at
+>> all. Am i missing something or should that be possible?
+> 
+> We are back again to the question "should arm64 free its memmap".
+> If the answer is no, we don't need arm64::pfn_valid() for SPARSEMEM at all.
+> If the answer is yes, Anshuman's patch is way better than a custom
+> pfn_valid().
+
+Well, I propose something in between: stop freeing with SPARSEMEM, 
+continue freeing with FLATMEM.
+
+-- 
+Thanks,
+
+David / dhildenb
 
