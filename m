@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441203677D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F953677D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhDVDQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 23:16:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32523 "EHLO mga07.intel.com"
+        id S232618AbhDVDRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 23:17:53 -0400
+Received: from mga18.intel.com ([134.134.136.126]:13574 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhDVDQ2 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:16:28 -0400
-IronPort-SDR: zO0X58vMnOVFyyTzBIFrhmrAwEAqF+fkAxJzevMkWvcwOaxLSVNoEr50MXrNyM2H8eft3eJMP9
- uyHOEAqbaOJw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="259771689"
+        id S230319AbhDVDRw (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 23:17:52 -0400
+IronPort-SDR: Nxk6rqJcb7PUioFo0/usAp2hnew/lxj9/Ruoej77wLXehvbvUpZZlZTIKzALUJUCWq2AEfObPh
+ ozVhBx9LAWDA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="183304368"
 X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="259771689"
+   d="scan'208";a="183304368"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:15:54 -0700
-IronPort-SDR: NygI/7rm9wa3PRWPXAjbCwvzi+zpkbKu21d2Vb4wIMwrEe7nt2JKC4O8WV9gP37j3VbRZO+101
- 8pxOqjxZNFsA==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:16:58 -0700
+IronPort-SDR: fUPT+MPQOVG0IKK0A+jG6q2HwBfctbodIzmZWE9HHhnq1ufrWWa7KvfFpuFyHrUbARVZtaC4OZ
+ jVcwM3XKa3lA==
 X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="427756521"
+   d="scan'208";a="427756783"
 Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:15:51 -0700
-Subject: Re: [PATCH v4 23/25] perf tests: Support 'Session topology' test for
- hybrid
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:16:55 -0700
+Subject: Re: [PATCH v4 24/25] perf tests: Support 'Convert perf time to TSC'
+ test for hybrid
 To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com,
         Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com
 References: <20210416140517.18206-1-yao.jin@linux.intel.com>
- <20210416140517.18206-24-yao.jin@linux.intel.com> <YIBu7gUSTqremQ2K@krava>
+ <20210416140517.18206-25-yao.jin@linux.intel.com> <YIBu/DyPmMf1Mta4@krava>
 From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <fb105c0c-1a4f-de24-093e-02cf1211bd93@linux.intel.com>
-Date:   Thu, 22 Apr 2021 11:15:50 +0800
+Message-ID: <fd34b4fb-817b-0cf5-f8ce-7d860748e9a6@linux.intel.com>
+Date:   Thu, 22 Apr 2021 11:16:53 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YIBu7gUSTqremQ2K@krava>
+In-Reply-To: <YIBu/DyPmMf1Mta4@krava>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,58 +50,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Jiri,
 
 On 4/22/2021 2:29 AM, Jiri Olsa wrote:
-> On Fri, Apr 16, 2021 at 10:05:15PM +0800, Jin Yao wrote:
->> Force to create one event "cpu_core/cycles/" by default,
->> otherwise in evlist__valid_sample_type, the checking of
->> 'if (evlist->core.nr_entries == 1)' would be failed.
+> On Fri, Apr 16, 2021 at 10:05:16PM +0800, Jin Yao wrote:
+>> Since for "cycles:u' on hybrid platform, it creates two "cycles".
+>> So the second evsel in evlist also needs initialization.
 >>
->>    # ./perf test 41
->>    41: Session topology                                                : Ok
+>> With this patch,
+>>
+>>    # ./perf test 71
+>>    71: Convert perf time to TSC                                        : Ok
 >>
 >> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 >> ---
->>   tools/perf/tests/topology.c | 10 +++++++++-
->>   1 file changed, 9 insertions(+), 1 deletion(-)
+>>   tools/perf/tests/perf-time-to-tsc.c | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
 >>
->> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
->> index 050489807a47..30b4acb08d35 100644
->> --- a/tools/perf/tests/topology.c
->> +++ b/tools/perf/tests/topology.c
->> @@ -8,6 +8,7 @@
->>   #include "session.h"
->>   #include "evlist.h"
->>   #include "debug.h"
+>> diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
+>> index 680c3cffb128..72f268c6cc5d 100644
+>> --- a/tools/perf/tests/perf-time-to-tsc.c
+>> +++ b/tools/perf/tests/perf-time-to-tsc.c
+>> @@ -20,6 +20,7 @@
+>>   #include "tsc.h"
+>>   #include "mmap.h"
+>>   #include "tests.h"
 >> +#include "pmu.h"
->>   #include <linux/err.h>
 >>   
->>   #define TEMPL "/tmp/perf-test-XXXXXX"
->> @@ -40,7 +41,14 @@ static int session_write_header(char *path)
->>   	session = perf_session__new(&data, false, NULL);
->>   	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
->>   
->> -	session->evlist = evlist__new_default();
->> +	if (!perf_pmu__has_hybrid()) {
->> +		session->evlist = evlist__new_default();
->> +	} else {
->> +		struct parse_events_error err;
+>>   #define CHECK__(x) {				\
+>>   	while ((x) < 0) {			\
+>> @@ -66,6 +67,10 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
+>>   	u64 test_tsc, comm1_tsc, comm2_tsc;
+>>   	u64 test_time, comm1_time = 0, comm2_time = 0;
+>>   	struct mmap *md;
+>> +	bool hybrid = false;
 >> +
->> +		session->evlist = evlist__new();
+>> +	if (perf_pmu__has_hybrid())
+>> +		hybrid = true;
+>>   
+>>   	threads = thread_map__new(-1, getpid(), UINT_MAX);
+>>   	CHECK_NOT_NULL__(threads);
+>> @@ -88,6 +93,17 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
+>>   	evsel->core.attr.disabled = 1;
+>>   	evsel->core.attr.enable_on_exec = 0;
+>>   
+>> +	/*
+>> +	 * For hybrid "cycles:u", it creates two events.
+>> +	 * Init the second evsel here.
+>> +	 */
+>> +	if (hybrid) {
 > 
-> you should ASSERT session->evlist in here
-> 
-> jirka
+> same, don't see the reason for 'hybrid' variable
 > 
 
-OK, will add "ASSERT session->evlist" in next version.
+OK, will use 'if (perf_pmu__has_hybrid())' instead.
 
 Thanks
 Jin Yao
 
->> +		parse_events(session->evlist, "cpu_core/cycles/", &err);
+> jirka
+> 
+>> +		evsel = evsel__next(evsel);
+>> +		evsel->core.attr.comm = 1;
+>> +		evsel->core.attr.disabled = 1;
+>> +		evsel->core.attr.enable_on_exec = 0;
 >> +	}
->>   	TEST_ASSERT_VAL("can't get evlist", session->evlist);
+>> +
+>>   	CHECK__(evlist__open(evlist));
 >>   
->>   	perf_header__set_feat(&session->header, HEADER_CPU_TOPOLOGY);
+>>   	CHECK__(evlist__mmap(evlist, UINT_MAX));
 >> -- 
 >> 2.17.1
 >>
