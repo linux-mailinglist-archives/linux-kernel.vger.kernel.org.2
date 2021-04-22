@@ -2,105 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294653681CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91B83681DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236480AbhDVNuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:50:17 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59667 "EHLO ozlabs.org"
+        id S236824AbhDVNvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:51:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37672 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhDVNuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:50:16 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S236672AbhDVNvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:51:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619099436; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=XwhPh738afT0XtUTkLSfNf4BglrM20PtCnb4uR8+91s=; b=TxUe+vB6TL3uE5oW+cLzZklXXdFkwZ7s5ZpsQKgeqFw0eIveRe0Br/+s1Irv4mGaI1WLS2H6
+ xhAm+f2JPYuJ2nUWWjyoS6XZua0QahU7bhPIOMnaox/ESvy5/5azs+FZ2RgsTKJUxijt7w5q
+ HnPUadgEZMFaxMURD2qjevklXqo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60817f1887ce1fbb565adb1c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 13:50:16
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E35E7C4323A; Thu, 22 Apr 2021 13:50:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQzLS4gwsz9sW5;
-        Thu, 22 Apr 2021 23:49:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1619099380;
-        bh=PhzqVOhEd/h/0Fbbb3BAwftaycIPw8RDL50QyqE12IM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=opAHDFQP4CkPQG2bXglbuqBieFuhtxeywVbuoUy6F6KRrIYll/aQ4VCFGZ+1SK9ww
-         qkC27cYMIYRHgi8TycPRBwvXaDwBGTnXMQvEVQhwKjswSnF0TiXP9XoXJJH8uAMdxR
-         lMSsBJYzwnLenDSlSt5RcjvvzILAWNdsjd3NeCn1uh6z9wZ4h29Ve3grGN/tFByXrh
-         laZUoPJjgJvzIviuLVCQoLLfZr/DN4nqji6OiiVCjJx3TKVyz53aJyIcQrAkkTTzmJ
-         lKYWFa+XMX4Vq2TMF7e9f3rRkMEJ3MQkjQhp4H2W940Tex0j4MPNi8CrUl2AaEhvuK
-         7NueaXiSceWgg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH 1/2] vfio/pci: remove vfio_pci_nvlink2
-In-Reply-To: <20210412082304.5e7c0a80@omen>
-References: <20210326061311.1497642-1-hch@lst.de>
- <20210326061311.1497642-2-hch@lst.de> <20210406133805.715120bd@omen>
- <87y2dndelm.fsf@mpe.ellerman.id.au> <20210412082304.5e7c0a80@omen>
-Date:   Thu, 22 Apr 2021 23:49:31 +1000
-Message-ID: <87h7jybf9w.fsf@mpe.ellerman.id.au>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A259C433D3;
+        Thu, 22 Apr 2021 13:50:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4A259C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath9k-devel@qca.qualcomm.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath9k: Fix kernel NULL pointer dereference during ath_reset_internal()
+References: <20210402122653.24014-1-pali@kernel.org>
+Date:   Thu, 22 Apr 2021 16:50:11 +0300
+In-Reply-To: <20210402122653.24014-1-pali@kernel.org> ("Pali \=\?utf-8\?Q\?Roh\?\=
+ \=\?utf-8\?Q\?\=C3\=A1r\=22's\?\= message
+        of "Fri, 2 Apr 2021 14:26:53 +0200")
+Message-ID: <87eef2jung.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Williamson <alex.williamson@redhat.com> writes:
-> On Mon, 12 Apr 2021 19:41:41 +1000
-> Michael Ellerman <mpe@ellerman.id.au> wrote:
+Pali Roh=C3=A1r <pali@kernel.org> writes:
+
+> Function ath9k_hw_reset() is dereferencing chan structure pointer, so it
+> needs to be non-NULL pointer.
 >
->> Alex Williamson <alex.williamson@redhat.com> writes:
->> > On Fri, 26 Mar 2021 07:13:10 +0100
->> > Christoph Hellwig <hch@lst.de> wrote:
->> >  
->> >> This driver never had any open userspace (which for VFIO would include
->> >> VM kernel drivers) that use it, and thus should never have been added
->> >> by our normal userspace ABI rules.
->> >> 
->> >> Signed-off-by: Christoph Hellwig <hch@lst.de>
->> >> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> >> ---
->> >>  drivers/vfio/pci/Kconfig            |   6 -
->> >>  drivers/vfio/pci/Makefile           |   1 -
->> >>  drivers/vfio/pci/vfio_pci.c         |  18 -
->> >>  drivers/vfio/pci/vfio_pci_nvlink2.c | 490 ----------------------------
->> >>  drivers/vfio/pci/vfio_pci_private.h |  14 -
->> >>  include/uapi/linux/vfio.h           |  38 +--
->> >>  6 files changed, 4 insertions(+), 563 deletions(-)
->> >>  delete mode 100644 drivers/vfio/pci/vfio_pci_nvlink2.c  
->> >
->> > Hearing no objections, applied to vfio next branch for v5.13.  Thanks,  
->> 
->> Looks like you only took patch 1?
->> 
->> I can't take patch 2 on its own, that would break the build.
->> 
->> Do you want to take both patches? There's currently no conflicts against
->> my tree. It's possible one could appear before the v5.13 merge window,
->> though it would probably just be something minor.
->> 
->> Or I could apply both patches to my tree, which means patch 1 would
->> appear as two commits in the git history, but that's not a big deal.
+> Function ath9k_stop() already contains code which sets ah->curchan to val=
+id
+> non-NULL pointer prior calling ath9k_hw_reset() function.
 >
-> I've already got a conflict in my next branch with patch 1, so it's
-> best to go through my tree.  Seems like a shared branch would be
-> easiest to allow you to merge and manage potential conflicts against
-> patch 2, I've pushed a branch here:
+> Add same code pattern also into ath_reset_internal() function to prevent
+> kernel NULL pointer dereference in ath9k_hw_reset() function.
 >
-> https://github.com/awilliam/linux-vfio.git v5.13/vfio/nvlink
+> This change fixes kernel NULL pointer dereference in ath9k_hw_reset() whi=
+ch
+> is caused by calling ath9k_hw_reset() from ath_reset_internal() with NULL
+> chan structure.
+>
+>     [   45.334305] Unable to handle kernel NULL pointer dereference at vi=
+rtual address 0000000000000008
+>     [   45.344417] Mem abort info:
+>     [   45.347301]   ESR =3D 0x96000005
+>     [   45.350448]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+>     [   45.356166]   SET =3D 0, FnV =3D 0
+>     [   45.359350]   EA =3D 0, S1PTW =3D 0
+>     [   45.362596] Data abort info:
+>     [   45.365756]   ISV =3D 0, ISS =3D 0x00000005
+>     [   45.369735]   CM =3D 0, WnR =3D 0
+>     [   45.372814] user pgtable: 4k pages, 39-bit VAs, pgdp=3D00000000068=
+5d000
+>     [   45.379663] [0000000000000008] pgd=3D0000000000000000, p4d=3D00000=
+00000000000, pud=3D0000000000000000
+>     [   45.388856] Internal error: Oops: 96000005 [#1] SMP
+>     [   45.393897] Modules linked in: ath9k ath9k_common ath9k_hw
+>     [   45.399574] CPU: 1 PID: 309 Comm: kworker/u4:2 Not tainted 5.12.0-=
+rc2-dirty #785
+>     [   45.414746] Workqueue: phy0 ath_reset_work [ath9k]
+>     [   45.419713] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=3D--)
+>     [   45.425910] pc : ath9k_hw_reset+0xc4/0x1c48 [ath9k_hw]
+>     [   45.431234] lr : ath9k_hw_reset+0xc0/0x1c48 [ath9k_hw]
+>     [   45.436548] sp : ffffffc0118dbca0
+>     [   45.439961] x29: ffffffc0118dbca0 x28: 0000000000000000
+>     [   45.445442] x27: ffffff800dee4080 x26: 0000000000000000
+>     [   45.450923] x25: ffffff800df9b9d8 x24: 0000000000000000
+>     [   45.456404] x23: ffffffc0115f6000 x22: ffffffc008d0d408
+>     [   45.461885] x21: ffffff800dee5080 x20: ffffff800df9b9d8
+>     [   45.467366] x19: 0000000000000000 x18: 0000000000000000
+>     [   45.472846] x17: 0000000000000000 x16: 0000000000000000
+>     [   45.478326] x15: 0000000000000010 x14: ffffffffffffffff
+>     [   45.483807] x13: ffffffc0918db94f x12: ffffffc011498720
+>     [   45.489289] x11: 0000000000000003 x10: ffffffc0114806e0
+>     [   45.494770] x9 : ffffffc01014b2ec x8 : 0000000000017fe8
+>     [   45.500251] x7 : c0000000ffffefff x6 : 0000000000000001
+>     [   45.505733] x5 : 0000000000000000 x4 : 0000000000000000
+>     [   45.511213] x3 : 0000000000000000 x2 : ffffff801fece870
+>     [   45.516693] x1 : ffffffc00eded000 x0 : 000000000000003f
+>     [   45.522174] Call trace:
+>     [   45.524695]  ath9k_hw_reset+0xc4/0x1c48 [ath9k_hw]
+>     [   45.529653]  ath_reset_internal+0x1a8/0x2b8 [ath9k]
+>     [   45.534696]  ath_reset_work+0x2c/0x40 [ath9k]
+>     [   45.539198]  process_one_work+0x210/0x480
+>     [   45.543339]  worker_thread+0x5c/0x510
+>     [   45.547115]  kthread+0x12c/0x130
+>     [   45.550445]  ret_from_fork+0x10/0x1c
+>     [   45.554138] Code: 910922c2 9117e021 95ff0398 b4000294 (b9400a61)
+>     [   45.560430] ---[ end trace 566410ba90b50e8b ]---
+>     [   45.565193] Kernel panic - not syncing: Oops: Fatal exception in i=
+nterrupt
+>     [   45.572282] SMP: stopping secondary CPUs
+>     [   45.576331] Kernel Offset: disabled
+>     [   45.579924] CPU features: 0x00040002,0000200c
+>     [   45.584416] Memory Limit: none
+>     [   45.587564] Rebooting in 3 seconds..
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> Cc: stable@vger.kernel.org
 
-Thanks.
+In what scenarios do you see this bug? Please describe the use case to bett=
+er
+understand when and how this happens. I guess this is a rare problem as nob=
+ody
+else has reported it?
 
-My next is based on rc2, so I won't pull that in directly, because I
-don't want to pull all of rc6 in with it.
+I can add that info to the commit log.
 
-I'll put it in a topic branch and merge it into my next after my first
-pull has gone to Linus.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-cheers
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
