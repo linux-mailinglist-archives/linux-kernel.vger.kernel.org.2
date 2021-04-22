@@ -2,132 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A460F367ABA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03435367ABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234927AbhDVHNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhDVHNh (ORCPT
+        id S234980AbhDVHPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:15:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229655AbhDVHPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:13:37 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A47C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:13:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id mh2so45638184ejb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vdeyx2EiZ4VVtfgSkJvRIr5ICOqaF5aOZ8liQEySarM=;
-        b=YPV3CqMEfMbRawW5v7Mh0/kDQEEeiRidIc6BFfEJ7Cy2RPnOBKpjJ3meCyg3B3dj7Y
-         T23HcXybLv+3EUDMj25ODMxPRP8kuUreNtyZ4Ci8dIhpAMxALrSBE8jJrGWzTXmhxYZb
-         Ua7sq7Z+p4ds57CAyxWZL0TtBlqKP20dnp5kg=
+        Thu, 22 Apr 2021 03:15:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619075672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IogrsY3cJq5WADFY6TutrJbboIoUZaCtFj92TrOe82w=;
+        b=LBqY6Ps370YIuphmeZ8KEk/wdwr98PH08NobF4i13eIhJigTxuN2wAU95vezaGFbE5VkMJ
+        8rAAzB6Bt2RGOyBDnKx99opemXckzHED3i81vEvovge0VikZeolzr6aZvPVkLWf2ryzBmL
+        LrPviXEfzZiodEvrnzbECXbbZ/PbuFU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-fqXwljOnMtiNjlQ3GM-frA-1; Thu, 22 Apr 2021 03:14:30 -0400
+X-MC-Unique: fqXwljOnMtiNjlQ3GM-frA-1
+Received: by mail-ed1-f71.google.com with SMTP id t11-20020aa7d4cb0000b0290382e868be07so16216317edr.20
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:14:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Vdeyx2EiZ4VVtfgSkJvRIr5ICOqaF5aOZ8liQEySarM=;
-        b=GU5yqtiVVMLg+bZ4e/VPz5ap/KX+vZZpHdXc6xbKRgrszoLfG59buDt5hWTVvn5W2V
-         6bWsa4hvtn60/ePs3kjln/ay0LYqnjee3Hvuqlt1F5BqufzcHyqWB1NDKDA0OJTv6N+X
-         32p7uW1ui5oo3sH6S326f/eUk7qaWJi4yTqr6ZbIzx/dSOk5IhRrUs3gRfeTBJzSHuIL
-         TTngr/nKc7TtP8Wriq4ic5dofMDDaCT7MVCcmbHWX8Bbcy3+XmUz+H2A8SW2etOVUow5
-         RjJdSVOQsRYJ9lvt5ssJwE01tMh1u2zDDnXREtcP0v4oLesevsXSOIhgSIoug01ghHmk
-         uW3w==
-X-Gm-Message-State: AOAM531Or9VwYKKEs4mX/BAp+MeKaKWlJNTWmq6PiVgerzmxdnV3v9sl
-        0ejJRILgJd0K9HPRp8t94vRnfA==
-X-Google-Smtp-Source: ABdhPJzmo155Rt45+yFK2rxmK+jof0hG9KwOE3VJP8U8oPglLPeWzFmQpm5PJGsvjv1Y0WrrLAtA/g==
-X-Received: by 2002:a17:906:9990:: with SMTP id af16mr1776543ejc.195.1619075581971;
-        Thu, 22 Apr 2021 00:13:01 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id ca1sm1248712edb.76.2021.04.22.00.13.00
+        bh=IogrsY3cJq5WADFY6TutrJbboIoUZaCtFj92TrOe82w=;
+        b=Yq/DhYb2ijhw60TL5EMkCVKtsW1XjLHxU4zk0NVzB7UDKTeaNSNl/cy02rsU7KpL4U
+         3sLQqKvHKVenoVOVj9F8DMGJ+3Y1tZGambIjlj5UhFjvDsOjDYEFP1/YUsr4L/QYlVA2
+         H5dgQfqkIEpPFaPZTFGTaOH/llYC4l7MDz5v9Gg1EcrNP/yR1RsEJUL2eJj1K6w3CMJO
+         zjMpn9/iwEI0YI5jU2EVgGROnRSxJt7MaKRRTFopmiMharNaFzNoxjxQ3FOxhFyzRX7W
+         GEwHVPrkcV5slidsl2+BE6FTcOAIfvFRs7WdpEycNrSiGsjNxBf0NbEuSKTAEY+XwbuK
+         dypw==
+X-Gm-Message-State: AOAM533N8fJ9QjG/sQH/CKxXkro295aBMwjUyrAJn5e/fNWOHMfGDoPL
+        r1kb2gZFq37fjOnMUxtneB7amj0FmWk6y4Q5GWlLX16vTTYEN2aJP/N7XJW14SHYy58j2FSEdiP
+        hk4arSu/r0aNIhnO7jyj96Qf2
+X-Received: by 2002:a17:906:cc48:: with SMTP id mm8mr1958968ejb.58.1619075668625;
+        Thu, 22 Apr 2021 00:14:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwip4qdfn29LT5Urrukkg+Xlat6rXN10GBboYd0g+NCnt5pXUXcX3xQ7cHMVL1uQIIrAYE2ng==
+X-Received: by 2002:a17:906:cc48:: with SMTP id mm8mr1958936ejb.58.1619075668395;
+        Thu, 22 Apr 2021 00:14:28 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q12sm1236568ejy.91.2021.04.22.00.14.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 00:13:01 -0700 (PDT)
-Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
- <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk>
-Date:   Thu, 22 Apr 2021 09:13:00 +0200
+        Thu, 22 Apr 2021 00:14:27 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Wei Huang <wei.huang2@amd.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210422021125.3417167-1-seanjc@google.com>
+ <20210422021125.3417167-4-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v5 03/15] KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
+Message-ID: <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
+Date:   Thu, 22 Apr 2021 09:14:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210422021125.3417167-4-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/2021 05.32, Andrii Nakryiko wrote:
-> On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->>
->> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
->> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
->> snprintf() does not guarantee a nul-terminated string is when it is
->> given a buffer size of 0 (which of course prevents it from writing
->> anything at all to the buffer).
->>
->> Remove it before it gets cargo-culted elsewhere.
->>
->> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
->> ---
->>  kernel/trace/bpf_trace.c | 3 ---
->>  1 file changed, 3 deletions(-)
->>
+On 22/04/21 04:11, Sean Christopherson wrote:
+> Disable SEV and SEV-ES if NPT is disabled.  While the APM doesn't clearly
+> state that NPT is mandatory, it's alluded to by:
 > 
-> The change looks good to me, but please rebase it on top of the
-> bpf-next tree. This is not a bug, so it doesn't have to go into the
-> bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
+>    The guest page tables, managed by the guest, may mark data memory pages
+>    as either private or shared, thus allowing selected pages to be shared
+>    outside the guest.
+> 
+> And practically speaking, shadow paging can't work since KVM can't read
+> the guest's page tables.
+> 
+> Fixes: e9df09428996 ("KVM: SVM: Add sev module_param")
+> Cc: Brijesh Singh <brijesh.singh@amd.com
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 30 +++++++++++++++---------------
+>   1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index fed153314aef..0e8489908216 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -970,7 +970,21 @@ static __init int svm_hardware_setup(void)
+>   		kvm_enable_efer_bits(EFER_SVME | EFER_LMSLE);
+>   	}
+>   
+> -	if (IS_ENABLED(CONFIG_KVM_AMD_SEV) && sev) {
+> +	/*
+> +	 * KVM's MMU doesn't support using 2-level paging for itself, and thus
+> +	 * NPT isn't supported if the host is using 2-level paging since host
+> +	 * CR4 is unchanged on VMRUN.
+> +	 */
+> +	if (!IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_X86_PAE))
+> +		npt_enabled = false;
 
-Thanks for the pointer. Looking in next-20210420, it seems to me that
+Unrelated, but since you're moving this code: should we be pre-scient 
+and tackle host 5-level paging as well?
 
-commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
-Author: Florent Revest <revest@chromium.org>
-Date:   Mon Apr 19 17:52:38 2021 +0200
+Support for 5-level page tables on NPT is not hard to fix and could be 
+tested by patching QEMU.  However, the !NPT case would also have to be 
+fixed by extending the PDP and PML4 stacking trick to a PML5.
 
-    bpf: Factorize bpf_trace_printk and bpf_seq_printf
+However, without real hardware to test on I'd be a bit wary to do it. 
+Looking at 5-level EPT there might be other issues (e.g. what's the 
+guest MAXPHYADDR) and I would prefer to see what AMD comes up with 
+exactly in the APM.  So I would just block loading KVM on hypothetical 
+AMD hosts with CR4.LA57=1.
 
-is buggy. In particular, these two snippets:
+Paolo
 
-+#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-+       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
-+        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
-+         ? (u64)args[arg_nb]                                           \
-+         : (u32)args[arg_nb])
+> +	if (!boot_cpu_has(X86_FEATURE_NPT))
+> +		npt_enabled = false;
+> +
+> +	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
+> +	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
+> +
+> +	if (IS_ENABLED(CONFIG_KVM_AMD_SEV) && sev && npt_enabled) {
+>   		sev_hardware_setup();
+>   	} else {
+>   		sev = false;
+> @@ -985,20 +999,6 @@ static __init int svm_hardware_setup(void)
+>   			goto err;
+>   	}
+>   
+> -	/*
+> -	 * KVM's MMU doesn't support using 2-level paging for itself, and thus
+> -	 * NPT isn't supported if the host is using 2-level paging since host
+> -	 * CR4 is unchanged on VMRUN.
+> -	 */
+> -	if (!IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_X86_PAE))
+> -		npt_enabled = false;
+> -
+> -	if (!boot_cpu_has(X86_FEATURE_NPT))
+> -		npt_enabled = false;
+> -
+> -	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
+> -	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
+> -
+>   	if (nrips) {
+>   		if (!boot_cpu_has(X86_FEATURE_NRIPS))
+>   			nrips = false;
+> 
 
-
-+       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
-mod),
-+               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
-args, mod));
-
-Regardless of the casts done in that macro, the type of the resulting
-expression is that resulting from C promotion rules. And (foo ? (u64)bla
-: (u32)blib) has type u64, which is thus the type the compiler uses when
-building the vararg list being passed into snprintf(). C simply doesn't
-allow you to change types at run-time in this way.
-
-It probably works fine on x86-64, which passes the first six or so
-argument in registers, va_start() puts those registers into the va_list
-opaque structure, and when it comes time to do a va_arg(int), just the
-lower 32 bits are used. It is broken on i386 and other architectures
-where arguments are passed on the stack (and for x86-64 as well had
-there been a few more arguments) and va_arg(ap, int) is essentially ({
-int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
-direction etc., that's not really relevant here].
-
-Rasmus
