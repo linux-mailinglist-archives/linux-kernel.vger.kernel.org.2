@@ -2,160 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393A636865A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A867236865D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238241AbhDVSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDVSGR (ORCPT
+        id S236827AbhDVSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:07:55 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:55984 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236058AbhDVSHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:06:17 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C26C06174A;
-        Thu, 22 Apr 2021 11:05:41 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id n140so46627394oig.9;
-        Thu, 22 Apr 2021 11:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=17m0G7DImnLvNaA0ALmee3EGwU+5fWnJUzbWancxTSI=;
-        b=owTpyRcQwbSTb/u9rOV3Ef/i1PgEh57DdgCyWP088HtpsxxA3m3T3ayh+B8f8FzBDa
-         +J1dOck59tmd6m5CV3rpDl7gsoaMpuYHDRNAmYpqG6oe/e/fPq+Pcqe/eCzvd5C5sTRG
-         H1NkNEHWr7SqxCJVSL8H5roJwtfqhSalAM/nNUmfwgV5ib7aEcXpRK1iISPaIK1/jGNS
-         EVVt/wnvYYrl3hds1I1AZvAMmXDQV2b3s9XVVH4Q57iuk1NofSfYfd/qZaZkrig+hu5/
-         olgZljXWWd4VC6TI0YHlMhbxd75knYX8tW0TvYgXUA/EeMcNrakN5O/XErk7wgNWsjTD
-         rl0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=17m0G7DImnLvNaA0ALmee3EGwU+5fWnJUzbWancxTSI=;
-        b=tXXY7eTgVNu/dSEbvhvu4EiAduXZSamH82ydZEE/WUPRS093KmR50zNbYOqq2ZRNF5
-         lrMxKVrqt6lElI4ihReAgjDjQn6NAeaXI5GB2IFConERmJxPXHN59QFwI89wdV1DQQAo
-         +PYrurYNI3z/gxmDUqvGvNin2W5fgMzZMLccd/6gOH4nZb3BJCP7O26ewBFkUUd5Y5a1
-         hzbxWIvrNgV//rs36ufuKj3uTS/Q1yrTZt8yn2LrQJrgOVip+ZJUrKAkFrRw3vivkJ7d
-         CU7XH3ZRiIsewGb8hmQrLsp1TFBB4lv0CG/pS13suzDVJybd8Cpb+CZ19D7imVw/NFuA
-         LlDA==
-X-Gm-Message-State: AOAM532dfvlXbpxrn5Q7FErONySJ/0CvH3P8SmgOba++A1tpVHaliGlp
-        /wjuS2+sZxh/EbIXmTVqMxxJWOkP1so=
-X-Google-Smtp-Source: ABdhPJw0god0XZwiUQLDg7+c+UlduCOc32cSMSxfM6LoUI9lD3N+e/ZhfW9tOQD81embb2byHZoMvg==
-X-Received: by 2002:a05:6808:1302:: with SMTP id y2mr3180685oiv.86.1619114741346;
-        Thu, 22 Apr 2021 11:05:41 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h9sm784695otr.67.2021.04.22.11.05.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 22 Apr 2021 11:05:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 22 Apr 2021 11:05:39 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Francesco Zanella <francesco.zanella@vimar.com>
-Cc:     linux-watchdog@vger.kernel.org, wim@linux-watchdog.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Thu, 22 Apr 2021 14:07:52 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id 351A3A3D0D;
+        Thu, 22 Apr 2021 18:07:17 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id X_r-WUZfsmQL; Thu, 22 Apr 2021 18:07:17 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id DDC6E9FF33;
+        Thu, 22 Apr 2021 18:07:08 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 9ACAB3EE3E;
+        Thu, 22 Apr 2021 12:07:07 -0600 (MDT)
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Ondrej Zary <linux@zary.sk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] watchdog: gpio_wdt: add "start-at-boot" feature
-Message-ID: <20210422180539.GB107132@roeck-us.net>
-References: <20210421162621.24910-1-francesco.zanella@vimar.com>
- <20210421162621.24910-3-francesco.zanella@vimar.com>
- <20210421164228.GB110463@roeck-us.net>
- <1b53153c-e890-cf3c-74f7-9106965c23fe@vimar.com>
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+ <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org>
+ <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk>
+ <202104182221.21533.linux@zary.sk>
+ <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
+ <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk>
+ <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org>
+ <alpine.DEB.2.21.2104200456100.44318@angie.orcam.me.uk>
+ <b23c0a0e-d95b-b941-1cc2-1a8bcf44401a@gonehiking.org>
+ <alpine.DEB.2.21.2104221808170.44318@angie.orcam.me.uk>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
+ Y2021
+Message-ID: <0a4d979b-e3f8-959d-fb9a-3a0fcea42141@gonehiking.org>
+Date:   Thu, 22 Apr 2021 12:07:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b53153c-e890-cf3c-74f7-9106965c23fe@vimar.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <alpine.DEB.2.21.2104221808170.44318@angie.orcam.me.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 06:28:40PM +0200, Francesco Zanella wrote:
+On 4/22/21 10:27 AM, Maciej W. Rozycki wrote:
+> On Wed, 21 Apr 2021, Khalid Aziz wrote:
 > 
+>>>  Verifying actual ISA operations (third-party DMA, etc.) cannot be made 
+>>> this way, but as I understand the issue there is merely with passing data 
+>>> structures around and that may not require too much attention beyond 
+>>> getting things syntactically correct, which I gather someone forgot to do 
+>>> with a change made a while ago.  So that should be doable as well.
+>>
+>> In theory this sounds reasonable, but without being able to test with a
+>> real hardware I would be concerned about making this change.
 > 
-> On 21/04/21 18:42, Guenter Roeck wrote:
-> > On Wed, Apr 21, 2021 at 06:26:21PM +0200, Francesco Zanella wrote:
-> >> If "start-at-boot" property is present in the device tree, start pinging
-> >> hw watchdog at probe, in order to take advantage of kernel configs:
-> >> - WATCHDOG_HANDLE_BOOT_ENABLED: Avoid possible reboot if hw watchdog was
-> >>   been enabled before the kernel (by uboot for example) and userspace
-> >>   doesn't take control of /dev/watchdog in time;
-> >> - WATCHDOG_OPEN_TIMEOUT: Reboot if userspace doesn't take control of
-> >>   /dev/watchdog within the timeout.
-> >>
-> >> Signed-off-by: Francesco Zanella <francesco.zanella@vimar.com>
-> >> ---
-> >>  drivers/watchdog/gpio_wdt.c | 6 +++++-
-> >>  1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/watchdog/gpio_wdt.c b/drivers/watchdog/gpio_wdt.c
-> >> index 0923201ce874..1e6f0322ab7a 100644
-> >> --- a/drivers/watchdog/gpio_wdt.c
-> >> +++ b/drivers/watchdog/gpio_wdt.c
-> >> @@ -31,6 +31,7 @@ struct gpio_wdt_priv {
-> >>  	struct gpio_desc	*gpiod;
-> >>  	bool			state;
-> >>  	bool			always_running;
-> >> +	bool			start_at_boot;
-> >>  	unsigned int		hw_algo;
-> >>  	struct watchdog_device	wdd;
-> >>  };
-> >> @@ -147,6 +148,9 @@ static int gpio_wdt_probe(struct platform_device *pdev)
-> >>  	priv->always_running = of_property_read_bool(np,
-> >>  						     "always-running");
-> >>  
-> >> +	priv->start_at_boot = of_property_read_bool(np,
-> >> +						    "start-at-boot");
-> >> +
-> >>  	watchdog_set_drvdata(&priv->wdd, priv);
-> >>  
-> >>  	priv->wdd.info		= &gpio_wdt_ident;
-> >> @@ -161,7 +165,7 @@ static int gpio_wdt_probe(struct platform_device *pdev)
-> >>  
-> >>  	watchdog_stop_on_reboot(&priv->wdd);
-> >>  
-> >> -	if (priv->always_running)
-> >> +	if (priv->always_running || priv->start_at_boot)
-> >>  		gpio_wdt_start(&priv->wdd);
-> > 
-> > So the only real difference to always_running is that always_running
-> > doesn't stop the watchdog on close but keeps it running.
-> > 
-> > Does that really warrant another property ? Why not just use
-> > always-running ?
-> > 
-> > The special use case of being able to stop the watchdog doesn't seem
-> > to be worth the trouble. Please explain your use case.
-> > 
-> > Guenter
-> > 
-> 
-> You got the point.
-> I would like to be able to stop the watchdog when I want.
-> From my point of view always_running is used in the very special
-> case when the wdt chip can't be stopped.
-> I want a normal wdt that can be stopped (for example during a system
-> update), but I want it to start at boot for the 2 reasons that I
-> explained before:
-> - I need continuity in hw wdt pinging because I start in uboot,
->   so I take advantage of WATCHDOG_HANDLE_BOOT_ENABLED that makes
->   the kernel to do that job; but it is triggered only if it is
->   started at probe, if I'm not wrong.
+>  Sometimes you have little choice really and that would be less disruptive 
+> than dropping support altogether.  Even if there's a small issue somewhere 
+> it's easier to fix by a competent developer who actually gets the hands on 
+> a piece of hardware than bringing back old code that has been removed and 
+> consequently not updated according to internal API evolution, etc.
 
-That depends. If the driver can read the current state (ie if
-it can detect if the watchdog is running) it can report it
-to the watchdog core accordingly. That would be the preferred
-mechanism. Everything else is just a workaround for bad hardware
-(bad as in "it doesn't report its state").
+We are talking about removing support for BT-445S with firmware version
+older than 3.37. That is a very specific case. To continue support for
+this very specific case, we have to add new code to use local bounce
+buffer and we have no hardware to verify this new code. This will be new
+code whether we add it now or later after we find someone even has this
+very old card with old firmware. I would prefer to remove support for
+now and add new code to add support for firmware version older than 3.37
+back only if there is a need later. For now anyone who is using a
+BT-445S and has updated firmware on their card will not see a change.
 
-Guenter
-
-> - I would like to monitor with the wdt also the kernel at boot,
->   and more importantly handle the case when the userspace app
->   doesn't take control of /dev/watchdog for whatever reason
->   within the timeout set with WATCHDOG_OPEN_TIMEOUT.
-> 
-> Hope that this explain my target.
-> Thanks for your attention,
-> 
-> Francesco
+--
+Khalid
