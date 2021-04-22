@@ -2,136 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F154D368458
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA3536845A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236439AbhDVQC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbhDVQCy (ORCPT
+        id S236455AbhDVQEq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 12:04:46 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:32784 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236169AbhDVQEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:02:54 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A04C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:02:17 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id q2so48499pfk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TfyJ6MVZHZT4qYZs+QTfqHo5PYcAw3/WGKzKHmsNF7Q=;
-        b=AC8rkw3fEGKaCuZyZ6x2cTZBIIiTsrNr+cOHoTXvzbovKivVSx+wAcBZ6QCSyXz3FH
-         /2vaEl+ACQxujSmOl1iOoojBXkqdrWfjQeMmaSst7e6knIWot/a2tISkGD8+yjA6blrw
-         u9mcnSr5jthgkA5MGFcFz+Vz/suvZwMX0bYHkIcC9NL8oEPLMlWbxgtcZDHk9XRkfAez
-         0Rw3x++aTP4P+gstc7zuX55DTQMCoIQFtVKfQ68xubefZoQcu5oBX0aMErfn2srMeNq1
-         JVze+kHDRRSl24IcVZ83yC3Wisfv2ojx3SDCh+VR5o7eavBAOqdC1QfNVoVNif0XUm3s
-         qfhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TfyJ6MVZHZT4qYZs+QTfqHo5PYcAw3/WGKzKHmsNF7Q=;
-        b=Pll+EDwvbttVhWDE39v7eSIY70hbaYLHQaq/vuhflMabfYlfIKtkh3xiYzAVrkfYdd
-         GmziRPW6x/VbycHJQbfrF77Go1w0d3+yf9y/XTi+JdRsR4LDsdmORXD0YAdklYN/w9Dt
-         iuKC6DMEuVLVh4sYrpciYmCDv5iPo0x4UABMfWGfme0cId2lUqzuBhR3iHJuIzNKotz6
-         aYJlfyD38iPCkXAPORZ2rbh8t+APVUlkwnPHoqCMIQFF1uireD9Iq+KlekPAX7jBDSYY
-         r8PGWm+0McXscZ+tbw5DYCPDZQsCYES6P7I/bDMIDPHgCDgaqaqwGCTsR62ZRHhwbwh0
-         Syuw==
-X-Gm-Message-State: AOAM53027ClFpqNh+vdWEPrRjQWTak28PEGuqSmL/5papN9gKUJSobnt
-        2E1yHzxbC0nvsWxHrTc6j1ZoUg==
-X-Google-Smtp-Source: ABdhPJwT1O+t/p4an/2vRkDCCDoUTyVwUm0awyHzCOC6sIXQaBs6y7uc90epxfOrDrLmNNplO5oroA==
-X-Received: by 2002:a63:1a5e:: with SMTP id a30mr4307155pgm.156.1619107336834;
-        Thu, 22 Apr 2021 09:02:16 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id p10sm2761023pgn.85.2021.04.22.09.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 09:02:16 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 16:02:12 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v5 00/15] KVM: SVM: Misc SEV cleanups
-Message-ID: <YIGeBHEZ27zIDByF@google.com>
-References: <20210422021125.3417167-1-seanjc@google.com>
- <e32cb350-9fbe-5abd-930a-e820a4f4930b@redhat.com>
+        Thu, 22 Apr 2021 12:04:39 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-ufYayBnTNhuXUT5o0X5VwA-1; Thu, 22 Apr 2021 12:03:59 -0400
+X-MC-Unique: ufYayBnTNhuXUT5o0X5VwA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D65E81B2C9B3;
+        Thu, 22 Apr 2021 16:03:36 +0000 (UTC)
+Received: from hog (unknown [10.40.192.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5CA06091B;
+        Thu, 22 Apr 2021 16:03:34 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 18:03:32 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Phillip Potter <phil@philpotter.co.uk>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, edumazet@google.com
+Subject: Re: [PATCH] net: geneve: modify IP header check in geneve6_xmit_skb
+Message-ID: <YIGeVLyfa2MrAZym@hog>
+References: <20210421231100.7467-1-phil@philpotter.co.uk>
+ <20210422003942.GF4841@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210422003942.GF4841@breakpoint.cc>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=sd@queasysnail.net
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: queasysnail.net
+Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e32cb350-9fbe-5abd-930a-e820a4f4930b@redhat.com>
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Paolo Bonzini wrote:
-> > Paolo Bonzini (1):
-> >    KVM: SEV: Mask CPUID[0x8000001F].eax according to supported features
-> > 
-> > Sean Christopherson (14):
-> >    KVM: SVM: Zero out the VMCB array used to track SEV ASID association
-> >    KVM: SVM: Free sev_asid_bitmap during init if SEV setup fails
-> >    KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
-> >    KVM: SVM: Move SEV module params/variables to sev.c
-> >    x86/sev: Drop redundant and potentially misleading 'sev_enabled'
-> >    KVM: SVM: Append "_enabled" to module-scoped SEV/SEV-ES control
-> >      variables
-> >    KVM: SVM: Condition sev_enabled and sev_es_enabled on
-> >      CONFIG_KVM_AMD_SEV=y
-> >    KVM: SVM: Enable SEV/SEV-ES functionality by default (when supported)
-> >    KVM: SVM: Unconditionally invoke sev_hardware_teardown()
-> >    KVM: SVM: Explicitly check max SEV ASID during sev_hardware_setup()
-> >    KVM: SVM: Move SEV VMCB tracking allocation to sev.c
-> >    KVM: SVM: Drop redundant svm_sev_enabled() helper
-> >    KVM: SVM: Remove an unnecessary prototype declaration of
-> >      sev_flush_asids()
-> >    KVM: SVM: Skip SEV cache flush if no ASIDs have been used
-> > 
-> >   arch/x86/include/asm/mem_encrypt.h |  1 -
-> >   arch/x86/kvm/cpuid.c               |  8 ++-
-> >   arch/x86/kvm/cpuid.h               |  1 +
-> >   arch/x86/kvm/svm/sev.c             | 80 ++++++++++++++++++++++--------
-> >   arch/x86/kvm/svm/svm.c             | 57 +++++++++------------
-> >   arch/x86/kvm/svm/svm.h             |  9 +---
-> >   arch/x86/mm/mem_encrypt.c          | 12 ++---
-> >   arch/x86/mm/mem_encrypt_identity.c |  1 -
-> >   8 files changed, 97 insertions(+), 72 deletions(-)
-> > 
+2021-04-22, 02:39:42 +0200, Florian Westphal wrote:
+> Phillip Potter <phil@philpotter.co.uk> wrote:
+> > Modify the check in geneve6_xmit_skb to use the size of a struct iphdr
+> > rather than struct ipv6hdr. This fixes two kernel selftest failures
+> > introduced by commit 6628ddfec758
+> > ("net: geneve: check skb is large enough for IPv4/IPv6 header"), without
+> > diminishing the fix provided by that commit.
 > 
-> Queued except for patch 6, send that separately since it's purely x86 and
-> maintainers will likely not notice it inside this thread.  You probably want
-> to avoid conflicts by waiting for the migration patches, though.
+> What errors?
+> 
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >  drivers/net/geneve.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+> > index 42f31c681846..a57a5e6f614f 100644
+> > --- a/drivers/net/geneve.c
+> > +++ b/drivers/net/geneve.c
+> > @@ -988,7 +988,7 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+> >  	__be16 sport;
+> >  	int err;
+> >  
+> > -	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
+> > +	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
+> >  		return -EINVAL;
+> 
+> Seems this is papering over some bug, this change makes no sense to
+> me.  Can you please explain this?
 
-It can't be sent separately, having both the kernel's sev_enabled and KVM's
-sev_enabled doesn't build with CONFIG_AMD_MEM_ENCRYPT=y:
+I'm not sure the original commit (6628ddfec758 ("net: geneve: check
+skb is large enough for IPv4/IPv6 header")) is correct either. GENEVE
+isn't limited to carrying IP, I think an ethernet header with not much
+else on top should be valid.
 
-arch/x86/kvm/svm/sev.c:33:13: error: static declaration of ‘sev_enabled’ follows non-static declaration
-   33 | static bool sev_enabled = true;
-      |             ^~~~~~~~~~~
-In file included from include/linux/mem_encrypt.h:17,
-                 from arch/x86/include/asm/page_types.h:7,
-                 from arch/x86/include/asm/page.h:9,
-                 from arch/x86/include/asm/thread_info.h:12,
-                 from include/linux/thread_info.h:58,
-                 from arch/x86/include/asm/preempt.h:7,
-                 from include/linux/preempt.h:78,
-                 from include/linux/percpu.h:6,
-                 from include/linux/context_tracking_state.h:5,
-                 from include/linux/hardirq.h:5,
-                 from include/linux/kvm_host.h:7,
-                 from arch/x86/kvm/svm/sev.c:11:
-arch/x86/include/asm/mem_encrypt.h:23:13: note: previous declaration of ‘sev_enabled’ was here
-   23 | extern bool sev_enabled;
-      |             ^~~~~~~~~~~
-make[3]: *** [scripts/Makefile.build:271: arch/x86/kvm/svm/sev.o] Error 1
+-- 
+Sabrina
+
