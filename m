@@ -2,251 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD80368286
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF6636828A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236943AbhDVOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbhDVOhk (ORCPT
+        id S236587AbhDVOkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:40:06 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10200 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236510AbhDVOkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:37:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770FDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:37:05 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lZaRq-000211-A4; Thu, 22 Apr 2021 16:36:54 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lZaRo-0003px-Pz; Thu, 22 Apr 2021 16:36:52 +0200
-Date:   Thu, 22 Apr 2021 16:36:52 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Juergen Borleis <jbe@pengutronix.de>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] leds: trigger/tty: feature data direction
-Message-ID: <20210422143652.wjtk7bz2f556jiru@pengutronix.de>
-References: <20210422074702.8831-1-jbe@pengutronix.de>
+        Thu, 22 Apr 2021 10:40:01 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MEYqt7046890;
+        Thu, 22 Apr 2021 10:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=bWvD20q4YhRTe5N3/qrevWFZh7UJjKlLEbSTpGJIUuA=;
+ b=oz1DJdrpI9VGdl3dHhwBMAtDPNwPTYJug1TMeShuh0waSzuJ0B3e9WXPG0wkXzDQcyOv
+ vcfiPY/hfKZcK3BCl7KPZm7Noqrb52qjF9bqiCaISD288958IlnRuGOMHA0tSqOtfOcu
+ Rmlz/tM32MkJqsLuXJDFMGspLvVkgyUjAjbX0PIFOg7JATNUxerSyIa3KA7pDYvll15q
+ yordJfQnVBP50+t2/wGoCComPnMzw7QmJKgAKdP66oQBKMky52qnoLGpXehQDbcAWISJ
+ SCaXwX0p5/RgPFHlAlMzl1/fAzpA3WcnH0EHGePaaw6AAJZP2F0Zb8V7FUqWlyGh9lH+ Cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 383aqvrtnk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 10:38:30 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13MEZhWN051717;
+        Thu, 22 Apr 2021 10:38:30 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 383aqvrtmc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 10:38:30 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13MEMmLL032429;
+        Thu, 22 Apr 2021 14:38:28 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 37yqa89m08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 14:38:28 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13MEcPFJ20709722
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Apr 2021 14:38:25 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E72EB52059;
+        Thu, 22 Apr 2021 14:38:24 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 807F552052;
+        Thu, 22 Apr 2021 14:38:24 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Michael Tokarev <mjt@tls.msk.ru>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>, gor@linux.ibm.com
+Subject: Re: [PATCH v3 9/9] KVM: Move instrumentation-safe annotations for
+ enter/exit to x86 code
+References: <20210415222106.1643837-1-seanjc@google.com>
+        <20210415222106.1643837-10-seanjc@google.com>
+        <0c74158d-279a-5afa-0778-822c77ac8dc2@de.ibm.com>
+Date:   Thu, 22 Apr 2021 16:38:24 +0200
+In-Reply-To: <0c74158d-279a-5afa-0778-822c77ac8dc2@de.ibm.com> (Christian
+        Borntraeger's message of "Wed, 21 Apr 2021 10:09:11 +0200")
+Message-ID: <yt9d4kfypeov.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ot3yk6y67ms7lokt"
-Content-Disposition: inline
-In-Reply-To: <20210422074702.8831-1-jbe@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: S77gfyvLqOXBp7fwBctyyEw_3Fzv7DwJ
+X-Proofpoint-ORIG-GUID: C7nzDPw_32BELsJPSSQ7R73hhq1Ii59_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_06:2021-04-22,2021-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 impostorscore=0 adultscore=0 phishscore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104220118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Christian Borntraeger <borntraeger@de.ibm.com> writes:
 
---ot3yk6y67ms7lokt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 16.04.21 00:21, Sean Christopherson wrote:
+>> Drop the instrumentation_{begin,end}() annonations from the common KVM
+>> guest enter/exit helpers, and massage the x86 code as needed to preserve
+>> the necessary annotations.  x86 is the only architecture whose transition
+>> flow is tagged as noinstr, and more specifically, it is the only
+>> architecture for which instrumentation_{begin,end}() can be non-empty.
+>> No other architecture supports CONFIG_STACK_VALIDATION=y, and s390
+>> is the
+>> only other architecture that support CONFIG_DEBUG_ENTRY=y.  For
+>> instrumentation annontations to be meaningful, both aformentioned configs
+>> must be enabled.
+>> Letting x86 deal with the annotations avoids unnecessary nops by
+>> squashing back-to-back instrumention-safe sequences.
+>
+> We have considered implementing objtool for s390. Not sure where we
+> stand and if we will do this or not. Sven/Heiko?
 
-Hello J=FCrgen,
-
-On Thu, Apr 22, 2021 at 09:47:02AM +0200, Juergen Borleis wrote:
-> The current implementation just signals a visible feedback on all kind of
-> activity on the corresponding TTY. But sometimes it is useful to see what
-> kind of activity just happens. This change adds the capability to filter
-> the direction of TTY's data flow. It enables a user to forward both
-> directions to separate LEDs for tx and rx on demand. Default behavior is
-> still both directions.
->=20
-> Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
-> ---
->  Documentation/leds/ledtrig-tty.rst | 47 ++++++++++++++++++++++++++
-
-I think putting the change to the documentation into a separate patch is
-a good idea as it explains the usage in general and not only adapts it
-to the changes to the source. Other than that: Thanks for this document.
-
->  drivers/leds/trigger/ledtrig-tty.c | 53 +++++++++++++++++++++++++++++-
->  2 files changed, 99 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/leds/ledtrig-tty.rst
->=20
-> diff --git a/Documentation/leds/ledtrig-tty.rst b/Documentation/leds/ledt=
-rig-tty.rst
-> new file mode 100644
-> index 00000000..6fc765c
-> --- /dev/null
-> +++ b/Documentation/leds/ledtrig-tty.rst
-> @@ -0,0 +1,47 @@
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +LED TTY Trigger
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +This LED trigger flashes the LED whenever some data flows are happen on =
-the
-> +corresponding TTY device. The TTY device can be freely selected, as well=
- as the
-> +data flow direction.
-> +
-> +TTY trigger can be enabled and disabled from user space on led class dev=
-ices,
-> +that support this trigger as shown below::
-> +
-> +	echo tty > trigger
-> +	echo none > trigger
-> +
-> +This trigger exports two properties, 'ttyname' and 'dirfilter'. When the
-> +tty trigger is activated both properties are set to default values, whic=
-h means
-> +no related TTY device yet and the LED would flash on both directions.
-> +
-> +Selecting a corresponding trigger TTY::
-> +
-> +	echo ttyS0 > ttyname
-> +
-> +This LED will now flash on data flow in both directions of 'ttyS0'.
-> +
-> +Selecting a direction::
-> +
-> +	echo in > dirfilter
-> +	echo out > dirfilter
-> +	echo inout > dirfilter
-> +
-> +This selection will flash the LED on data flow in the selected direction.
-> +
-> +Example
-> +=3D=3D=3D=3D=3D=3D=3D
-> +
-> +With the 'dirfilter' property one can use two LEDs to give a user a sepa=
-rate
-> +visual feedback about data flow.
-> +
-> +Flash on data send on one LED::
-> +
-> +	echo ttyS0 > ttyname
-> +	echo out > dirfilter
-> +
-> +Flash on data receive on a second LED::
-> +
-> +	echo ttyS0 > ttyname
-> +	echo in > dirfilter
-> diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/le=
-dtrig-tty.c
-> index f62db7e..d3bd231 100644
-> --- a/drivers/leds/trigger/ledtrig-tty.c
-> +++ b/drivers/leds/trigger/ledtrig-tty.c
-> @@ -14,6 +14,8 @@ struct ledtrig_tty_data {
->  	const char *ttyname;
->  	struct tty_struct *tty;
->  	int rx, tx;
-> +	unsigned indirection:1;
-> +	unsigned outdirection:1;
->  };
-> =20
->  static void ledtrig_tty_restart(struct ledtrig_tty_data *trigger_data)
-> @@ -76,6 +78,47 @@ static ssize_t ttyname_store(struct device *dev,
->  }
->  static DEVICE_ATTR_RW(ttyname);
-> =20
-> +static ssize_t dirfilter_show(struct device *dev,
-> +			      struct device_attribute *attr, char *buf)
-> +{
-> +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
-> +
-> +	if (trigger_data->indirection)
-> +		return (ssize_t)sprintf(buf, "in\n");
-> +	if (trigger_data->outdirection)
-> +		return (ssize_t)sprintf(buf, "out\n");
-> +	return (ssize_t)sprintf(buf, "inout\n");
-
-I would prefer to call this TX and RX to match the UART lines. This
-would then allow to expand the trigger to also blink on handshaking
-signals or RI. Then maybe a file per signal is sensible?
-
-> +}
-> +
-> +static ssize_t dirfilter_store(struct device *dev,
-> +			       struct device_attribute *attr, const char *buf,
-> +			       size_t size)
-> +{
-> +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
-> +	ssize_t ret =3D size;
-> +
-> +	if (size > 0 && buf[size - 1] =3D=3D '\n')
-> +		size -=3D 1;
-> +
-> +	if (size) {
-> +		if (!strncmp(buf, "in", size)) {
-> +			trigger_data->indirection =3D 1;
-> +			trigger_data->outdirection =3D 0;
-> +			return ret;
-> +		}
-> +		if (!strncmp(buf, "out", size)) {
-> +			trigger_data->indirection =3D 0;
-> +			trigger_data->outdirection =3D 1;
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	trigger_data->indirection =3D 0;
-> +	trigger_data->outdirection =3D 0;
-
-It would be natural to have these two =3D 1 if "inout" is written.
-
-> +	return ret;
-> +}
-> +static DEVICE_ATTR_RW(dirfilter);
-> +
->  static void ledtrig_tty_work(struct work_struct *work)
->  {
->  	struct ledtrig_tty_data *trigger_data =3D
-> @@ -122,7 +165,14 @@ static void ledtrig_tty_work(struct work_struct *wor=
-k)
-> =20
->  	if (icount.rx !=3D trigger_data->rx ||
->  	    icount.tx !=3D trigger_data->tx) {
-> -		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-> +		if (trigger_data->indirection) {
-> +			if (icount.rx !=3D trigger_data->rx)
-> +				led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-> +		} else if (trigger_data->outdirection) {
-> +			if (icount.tx !=3D trigger_data->tx)
-> +				led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-> +		} else
-> +			led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-
-With the above suggestion, this can be simplified to:
-
-	if ((icount.rx !=3D trigger_data->rx && trigger_data->indirection) ||
-	    (icount.tx !=3D trigger_data->tx && trigger_data->outdirection)) {
-		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
-	    =09
-		...
-	=09
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ot3yk6y67ms7lokt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCBigEACgkQwfwUeK3K
-7Am48Qf9Hbki5LcmN2GsB8VCLWllTfrVpXEKQbys3S/NGhfSC39Gxy5UyKs1f03y
-PuuhBjXijCYjfGRFzjCjm3t+hrMoxO0G6QWNm75duBcm8vl9Wsrwoij/jdvY1xBw
-2hzTlIVQ5yCQRYvV5Dgb5J+aQRgXEyAASlbVRapdeEbMbFtfFrXYLngCtOrAEt5Q
-hYdKdDYJHn+8EXtUpdWKmA/tRq+0THDA3SnkMq1WZos35A7at8ejg2vjYENsF6vI
-7RzUFXx/8kPwZjYAC6ZHUh+TN9Xc7pX+QkIQZ/xpfln9KfwWu5Au8+X/RBokAt9Q
-M94QwPvy+EedxFy4ZlLcSDbw83lgww==
-=3hZR
------END PGP SIGNATURE-----
-
---ot3yk6y67ms7lokt--
+We are planning to support objtool on s390. Vasily is working on it -
+maybe he has some thoughts about this.
