@@ -2,115 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AE4368301
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5D2368306
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237813AbhDVPIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237747AbhDVPIj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:08:39 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF62C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 08:08:02 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id w6so17354489pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 08:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Oihop7JLhBVaA4GdmD12GWAGpSdFMpgp2Nm7icLJcM0=;
-        b=Z6L09iP0KOHbFoUbH1jfA1pVZsLLCAS6Sf3f8881hysiqAhsbSq7V4v9VkZZxNn9kK
-         zfIs3dH2fyGLFc7KUmOOZMtiCy+BnSlZbhET50zkO5SN2ATaiiFnFPBRS93LQL5XUTtb
-         OC8ikFPUc6FTh7dnEC/wKQuSMfXKbZSLeWU1axMvQQYsAN29VaCLBMfcMejw6x47uV6o
-         EMSQw9gOJNBl6Y4cpb8dfolMDiclsvDJfnAkmWxM9rySSuX24M8nZHetRo0/cN5NQMsj
-         4cWFELdC3RacRwk3x525HQvoQIl5LrgEmvD8u0Gur53mXDwr2FfZfeWR3dW2KU/1jMdr
-         J9xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Oihop7JLhBVaA4GdmD12GWAGpSdFMpgp2Nm7icLJcM0=;
-        b=TU+rMBGukKS7s2oV3MppFXvcFUkQZpWJKczx1FY4/VIroOpLniCL3hVvkGRICJyx3O
-         g6k9JYTNyhbdsgZMP2R7MLAIRMK/xGeqa5iKHH2Pdxebqgu+WRE5smuuGJNpYn1LFuHP
-         RM+EdKCO3ZelE3szbV8OWqA/oqlBnl0o+lvrNoOGL/1+FgxKZqUrovGt+PmZ02l4Hsjq
-         OwTOhsf4XDdn5890BbOyQrMoFoSfhUn3TtK8+wFohM0u5WGKQM70HUk/qqVR86d+Xvf+
-         UDYAqH0UhqSlhLoD5uA64v3nwaeTc/1dJ7dRXm+R3DAK5geDYxr7x1INpLTJXwSqXHTZ
-         ROkA==
-X-Gm-Message-State: AOAM530k0pWKU+RYuE4zN7reaNDtQuS7sJNwL5JVXFPpbV1cp9JXvsCS
-        JTUqSJ/Jty/tvaG8WdhxJi3hMQ==
-X-Google-Smtp-Source: ABdhPJzlADuO7DWMA4vxQWWSdprkRQzNUrfqmzcx4b2dRRv9SM88Pz9tWkChQKFdmhOhGrWqDiQMtg==
-X-Received: by 2002:a63:581:: with SMTP id 123mr4047247pgf.430.1619104082326;
-        Thu, 22 Apr 2021 08:08:02 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id ch21sm5253715pjb.8.2021.04.22.08.08.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 08:08:01 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 15:07:57 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        id S237440AbhDVPKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:10:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236397AbhDVPKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:10:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619104210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=DE3ajipCLGOoeJxse+uDWjYBYGnyKVCVQDv9OtWAWVI=;
+        b=YlnwiUJh4StAZX+XIutv314AStIgqEqhikMDiBZkbNqgG1wcxmZslPpvM3mPjQUuOyZq7e
+        8ozA0Mrkd+QJ0dJrUEi99VaukzQmizcyv+cZxSv4fcLOcPbKJLDYF8wXH2UNengKHDlTaR
+        iJusQ+0aBJtbRK3RqPELQGNfl41Fisc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C4992B16C;
+        Thu, 22 Apr 2021 15:10:10 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] KVM: x86: simplify zero'ing of entry->ebx
-Message-ID: <YIGRTfMm0MfypN22@google.com>
-References: <20210422141129.250525-1-colin.king@canonical.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 0/3] xen: remove some checks for always present Xen features
+Date:   Thu, 22 Apr 2021 17:10:04 +0200
+Message-Id: <20210422151007.2205-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422141129.250525-1-colin.king@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently entry->ebx is being zero'd by masking itself with zero.
-> Simplify this by just assigning zero, cleans up static analysis
-> warning.
-> 
-> Addresses-Coverity: ("Bitwise-and with zero")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  arch/x86/kvm/cpuid.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 57744a5d1bc2..9bcc2ff4b232 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -851,7 +851,7 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->  		entry->eax &= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT |
->  			      SGX_ATTR_PROVISIONKEY | SGX_ATTR_EINITTOKENKEY |
->  			      SGX_ATTR_KSS;
-> -		entry->ebx &= 0;
-> +		entry->ebx = 0;
+Some features of Xen can be assumed to be always present, so add a
+central check to verify this being true and remove the other checks.
 
-I 100% understand the code is funky, but using &= is intentional.  ebx:eax holds
-a 64-bit value that is a effectively a set of feature flags.  While the upper
-32 bits are extremely unlikely to be used any time soon, if a feature comes
-along then the correct behavior would be:
+Juergen Gross (3):
+  xen: check required Xen features
+  xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv guests
+  xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guests
 
-		entry->ebx &= SGX_ATTR_FANCY_NEW_FEATURE;
+ arch/x86/xen/enlighten_pv.c | 12 ++----------
+ arch/x86/xen/mmu_pv.c       |  4 ++--
+ drivers/xen/features.c      | 18 ++++++++++++++++++
+ drivers/xen/gntdev.c        | 36 ++----------------------------------
+ 4 files changed, 24 insertions(+), 46 deletions(-)
 
-While directly setting entry->ebx would be incorrect.  The idea is to set up a
-future developer for success so that they don't forget to add the "&".
+-- 
+2.26.2
 
-TL;DR: I'd prefer to keep this as is, even though it's rather ridiculous.
-
->  		break;
->  	/* Intel PT */
->  	case 0x14:
-> -- 
-> 2.30.2
-> 
