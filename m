@@ -2,179 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73373367D09
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4492D367D12
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhDVI6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:58:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56255 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhDVI63 (ORCPT
+        id S235514AbhDVJAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:00:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16489 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235387AbhDVJAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:58:29 -0400
-Received: from mail-lf1-f69.google.com ([209.85.167.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lZV9l-0005uu-Uy
-        for linux-kernel@vger.kernel.org; Thu, 22 Apr 2021 08:57:54 +0000
-Received: by mail-lf1-f69.google.com with SMTP id h3-20020a0565123383b02901ae5c4072deso4733948lfg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:57:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uhKCITlC8z0lLRtKu0vRLYsI5e5s6htEBYCstI+rfV0=;
-        b=pIy6o9UnkeHuJOkXwkJ7XsSdfZ/+rBUeLSLOYs7De5t/G3Yw2UrSDq61R/vEAG7+6n
-         V+GEFtS5ZTZlC1mj5HP9cEx9L3w6mbwCG8ccY4NWOi2JAhr894xG0ClgAqpj/MWE08Hx
-         LzGlOfIC1FCe5XYUga39XjSKBZbmP1wkj+Z8aGcsmpXAxuKNG/F4Wr4uCzozzs2qikph
-         arabYiJKgh7uCs7zrwkLENsJZBluu41XXz/XwilBMRlQF0vWaUeNkQhmUQVEdehJcFzS
-         wpG5kA0X0Kf3vUjUXrSAwEFQUKJt/tF0YwLne2Q+stOWZXe6GsYpWAinl4+mt1DLffgo
-         Y9Yg==
-X-Gm-Message-State: AOAM532uB7F7gdZZMg0wIlrWAtimPhSTIscy3s2bmLB7JXaNuwekDOVN
-        Rek33zTIak44QrtF9g0Bwz6d1uUPFq1taHO8vdtvS0lOOOyaQRAYefmcm9Ov6M5fj/5OvC2/Ev9
-        iJa7nPm0wuWrsPY8HO85uTWUmCZ/KHpHPEqUA32lDYmOu6psZcPgptpUnnQ==
-X-Received: by 2002:a2e:97c6:: with SMTP id m6mr1782295ljj.403.1619081873363;
-        Thu, 22 Apr 2021 01:57:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxf1VedjgFvgDyRthjvX0RdF1wlywxyF26kdMlppzEwkoidctA07kTG4IOcwZiQDCy/WaMCHpJ3r4j8aPuJjio=
-X-Received: by 2002:a2e:97c6:: with SMTP id m6mr1782284ljj.403.1619081873008;
- Thu, 22 Apr 2021 01:57:53 -0700 (PDT)
+        Thu, 22 Apr 2021 05:00:16 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FQrs91QNnzrgC8;
+        Thu, 22 Apr 2021 16:57:17 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 22 Apr 2021 16:59:29 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2 0/3] dt-bindings: serial: pl011: Fix some dtbs_check warnings
+Date:   Thu, 22 Apr 2021 16:58:34 +0800
+Message-ID: <20210422085837.513-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20210401131252.531935-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210401131252.531935-1-kai.heng.feng@canonical.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 22 Apr 2021 16:57:41 +0800
-Message-ID: <CAAd53p5rtZW_yqV2S77g34Dv9m9941yoBM6a_6fAvKpEuzXJ9g@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: Coalesce contiguous regions for host bridges
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 9:12 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> Built-in graphics on HP EliteDesk 805 G6 doesn't work because graphics
-> can't get the BAR it needs:
-> [    0.611504] pci_bus 0000:00: root bus resource [mem 0x10020200000-0x100303fffff window]
-> [    0.611505] pci_bus 0000:00: root bus resource [mem 0x10030400000-0x100401fffff window]
-> ...
-> [    0.638083] pci 0000:00:08.1:   bridge window [mem 0xd2000000-0xd23fffff]
-> [    0.638086] pci 0000:00:08.1:   bridge window [mem 0x10030000000-0x100401fffff 64bit pref]
-> [    0.962086] pci 0000:00:08.1: can't claim BAR 15 [mem 0x10030000000-0x100401fffff 64bit pref]: no compatible bridge window
-> [    0.962086] pci 0000:00:08.1: [mem 0x10030000000-0x100401fffff 64bit pref] clipped to [mem 0x10030000000-0x100303fffff 64bit pref]
-> [    0.962086] pci 0000:00:08.1:   bridge window [mem 0x10030000000-0x100303fffff 64bit pref]
-> [    0.962086] pci 0000:07:00.0: can't claim BAR 0 [mem 0x10030000000-0x1003fffffff 64bit pref]: no compatible bridge window
-> [    0.962086] pci 0000:07:00.0: can't claim BAR 2 [mem 0x10040000000-0x100401fffff 64bit pref]: no compatible bridge window
->
-> However, the root bus has two contiguous regions that can contain the
-> child resource requested.
->
-> Bjorn Helgaas pointed out that we can simply coalesce contiguous regions
-> for host bridges, since host bridge don't have _SRS. So do that
-> accordingly to make child resource can be contained. This change makes
-> the graphics works on the system in question.
->
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212013
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+v1 --> v2:
+1) Change to reference the kernel-defined serial.yaml
+2) Move the new added "label: true" into /schemas/serial/serial.yaml
 
-A gentle ping...
+Zhen Lei (3):
+  dt-bindings: serial: Normalize the node name of the serial port
+  dt-bindings: serial: pl011: Change to reference the kernel-defined
+    serial.yaml
+  dt-bindings: serial: Add label property in serial.yaml
 
-> ---
-> v2:
->  - Coalesce all contiguous regresion in pci_register_host_bridge(), if
->    conditions are met.
->
->  drivers/pci/probe.c | 49 +++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 45 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 953f15abc850..3607ce7402b4 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -19,6 +19,7 @@
->  #include <linux/hypervisor.h>
->  #include <linux/irqdomain.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/list_sort.h>
->  #include "pci.h"
->
->  #define CARDBUS_LATENCY_TIMER  176     /* secondary latency timer */
-> @@ -874,14 +875,30 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
->         dev_set_msi_domain(&bus->dev, d);
->  }
->
-> +static int res_cmp(void *priv, struct list_head *a, struct list_head *b)
-> +{
-> +       struct resource_entry *entry1, *entry2;
-> +
-> +       entry1 = container_of(a, struct resource_entry, node);
-> +       entry2 = container_of(b, struct resource_entry, node);
-> +
-> +       if (entry1->res->flags != entry2->res->flags)
-> +               return entry1->res->flags > entry2->res->flags;
-> +
-> +       if (entry1->offset != entry2->offset)
-> +               return entry1->offset > entry2->offset;
-> +
-> +       return entry1->res->start > entry2->res->start;
-> +}
-> +
->  static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->  {
->         struct device *parent = bridge->dev.parent;
-> -       struct resource_entry *window, *n;
-> +       struct resource_entry *window, *next, *n;
->         struct pci_bus *bus, *b;
-> -       resource_size_t offset;
-> +       resource_size_t offset, next_offset;
->         LIST_HEAD(resources);
-> -       struct resource *res;
-> +       struct resource *res, *next_res;
->         char addr[64], *fmt;
->         const char *name;
->         int err;
-> @@ -959,11 +976,35 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->         if (nr_node_ids > 1 && pcibus_to_node(bus) == NUMA_NO_NODE)
->                 dev_warn(&bus->dev, "Unknown NUMA node; performance will be reduced\n");
->
-> +       /* Sort and coalesce contiguous windows */
-> +       list_sort(NULL, &resources, res_cmp);
-> +       resource_list_for_each_entry_safe(window, n, &resources) {
-> +               if (list_is_last(&window->node, &resources))
-> +                       break;
-> +
-> +               next = list_next_entry(window, node);
-> +               offset = window->offset;
-> +               res = window->res;
-> +               next_offset = next->offset;
-> +               next_res = next->res;
-> +
-> +               if (res->flags != next_res->flags || offset != next_offset)
-> +                       continue;
-> +
-> +               if (res->end + 1 == next_res->start) {
-> +                       next_res->start = res->start;
-> +                       res->flags = res->start = res->end = 0;
-> +               }
-> +       }
-> +
->         /* Add initial resources to the bus */
->         resource_list_for_each_entry_safe(window, n, &resources) {
-> -               list_move_tail(&window->node, &bridge->windows);
->                 offset = window->offset;
->                 res = window->res;
-> +               if (!res->end)
-> +                       continue;
-> +
-> +               list_move_tail(&window->node, &bridge->windows);
->
->                 if (res->flags & IORESOURCE_BUS)
->                         pci_bus_insert_busn_res(bus, bus->number, res->end);
-> --
-> 2.30.2
->
+ Documentation/devicetree/bindings/serial/pl011.yaml  | 4 ++--
+ Documentation/devicetree/bindings/serial/serial.yaml | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+-- 
+2.21.1
+
+
