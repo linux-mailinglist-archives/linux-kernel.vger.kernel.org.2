@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4720B368719
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E280A36871F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238668AbhDVTWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
+        id S238805AbhDVTXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236668AbhDVTWK (ORCPT
+        with ESMTP id S238142AbhDVTXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:22:10 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28734C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:21:35 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id z16so33524784pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:21:35 -0700 (PDT)
+        Thu, 22 Apr 2021 15:23:20 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF020C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:22:44 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso20729372otl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:22:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L67ALFFmot+NMgvYIfYllNjpngT6fRjIvKK8Ya35Duo=;
-        b=UXe3BeIdc9I17JF1X8VpKUYyHU0qLrmwt/Lb3nH2kMSYSH8GRuS7HaFJUHUdaYPpzF
-         Om5ObbIz+MsO+gTAJdX6KSJU/3XTMwUELFKIj7hfAL5aS3FOPS6Rv1n78adzCASJCoqe
-         EdyDir1tZ6fQxT3MjYPtUTj5ZgAeOT4oUvK2Q=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=66cEbil9eINHpcRrkzmgQxcSDhUEl5mJfXPxp3tOEXI=;
+        b=IuMg6mQeBwJh4wTwLnveFoFpVCocNbp/3EC4dwCMijoPhLgQM2OBh4NUIZQwRzsLzW
+         yYUK/yBVD+pjy3xQqUyrjYIWcB65J/+htg7XP2EYaEZ6LluevaV3OfGb5DqbxPWkexz9
+         e9Hr4nzsad9879fuUtXEkkmYIvolaJX/qO07bJ9/pH2oCxyYlNvUU180O1hr+XS7qAcP
+         HOJ0PnJLi5S79sK+mXpRHBp5AzAf3NweX5pKLSbi3BCQUEnEGKeNSulp4rqrWsDneIsn
+         DjK05zqJ25SPj0NRq+FOEEn5/fGxMyOzXla900ECNgIHH6ZPofKnTKl0LWDF6GSoFUf9
+         WWWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L67ALFFmot+NMgvYIfYllNjpngT6fRjIvKK8Ya35Duo=;
-        b=JZnICoPP+TEwlqYBmklve3OHsWu54Ou3ZEaLQwRSTSw24rAV6H4BBjGX4gPJ7Z48DH
-         r6+nyj5t0igXnZVehO3oeKx8m5TjVH9Uwrqn7Ia/2MdBr4jMgOrLjTaFyvJLCplqcf+F
-         t25IBPc8YSG3fGHOU3cSy9LbVigw3CLmkEi4M39UPTVblhpPmB2V5k4HRt3SPKsK3Nnq
-         WOTjsGPOu0JDWsmprnv0/HitZYdziGtTGFBZFqLgp/zmolaw5F8ITbqk8UZb3G9GKU7y
-         eGnaBnDm+1+kCnhcIIIAVb7Tj0IInha/4oZ152oAWeZm3F/mvp+xdXUI67k3y9SBx8Vj
-         uEAg==
-X-Gm-Message-State: AOAM531fm4KxgY9AnbSYbRSkfjLN+MqrCajZ/NyevWj6pNPfYDlXGzAF
-        MoiI8sHkI994RftRcdQivPfZIA==
-X-Google-Smtp-Source: ABdhPJxF1q1uHLoaMBm/Wwy3ZTXxncyGfUjtXwScEhQ/0nJumHLrcpcZ6ei3qpt1GdbNikZYzw5Iww==
-X-Received: by 2002:a63:4c4b:: with SMTP id m11mr178690pgl.245.1619119294612;
-        Thu, 22 Apr 2021 12:21:34 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b21sm3052029pji.39.2021.04.22.12.21.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 12:21:34 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 12:21:33 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Joe Perches <joe@perches.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <jroedel@suse.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/boot/compressed: enable -Wundef
-Message-ID: <202104221221.44A0CCD70D@keescook>
-References: <20210422190450.3903999-1-ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66cEbil9eINHpcRrkzmgQxcSDhUEl5mJfXPxp3tOEXI=;
+        b=kQA1UXf2OxKZBjeh95L0wJAV/BXXRSmkoyqzGHdxz3iFmp49i1Ts8dBPFbsbt0IksO
+         iWBhmC18/xLvEVHYn/LfWP+inZjXo5nCSVP2Ct6pwfVrNc7HgJKE1hD5KX1fU+uMR3by
+         quWASjaqqiqsbHYJxDiKMnK5GGKWuN0feT82YS19jaE/YcacGVT4MiwkkPU1doNL/Fj0
+         vjlXXu9QvngL1HZHjBz/Dz6smMOAcJAROdBXLbI5wlwbtd1Q2IRoLCmYMNUP/BlozP8L
+         EUc0HNzAca69fAjjAk6qEWfqCVQF1iqJ+Z/4WPtdUqveX89uhSAiUQZ0CxBc8Exr4/ja
+         Vczg==
+X-Gm-Message-State: AOAM532sBrpiGK+2dGB7q4nSGnI40OTjTmni98fLf0PISIdJ2Az2V2oR
+        YwWS3R7szm0DXH0unMf+r4uDeSDI2dUmX6CqB/iAmw==
+X-Google-Smtp-Source: ABdhPJwx2fYflGjsAzNwa66QYD0lhZUtecFrQpiV3owpBNe0jgxddvCCKETq2D5XKlLBMFEXtVDQDJOt9zvi59YXxn4=
+X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr83098otn.233.1619119364007;
+ Thu, 22 Apr 2021 12:22:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422190450.3903999-1-ndesaulniers@google.com>
+References: <20210422064437.3577327-1-elver@google.com> <d480a4f56d544fb98eb1cdd62f44ae91@AcuMS.aculab.com>
+ <CANpmjNNjkQdziFZDkPy5EnwCF+VyBWKXEwCDgNpxHGZd+BLQag@mail.gmail.com>
+In-Reply-To: <CANpmjNNjkQdziFZDkPy5EnwCF+VyBWKXEwCDgNpxHGZd+BLQag@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 22 Apr 2021 21:22:31 +0200
+Message-ID: <CANpmjNNHRmaxawVKNe8Oe=pnEgoJG6iqevHNJRa4EoeFtS5fYQ@mail.gmail.com>
+Subject: Re: [PATCH tip 1/2] signal, perf: Fix siginfo_t by avoiding u64 on
+ 32-bit architectures
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "glider@google.com" <glider@google.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "christian@brauner.io" <christian@brauner.io>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "pcc@google.com" <pcc@google.com>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:04:42PM -0700, Nick Desaulniers wrote:
-> A discussion around -Wundef showed that there were still a few boolean
-> Kconfigs where #if was used rather than #ifdef to guard different code.
-> Kconfig doesn't define boolean configs, which can result in -Wundef
-> warnings.
-> 
-> arch/x86/boot/compressed/Makefile resets the CFLAGS used for this
-> directory, and doesn't re-enable -Wundef as the top level Makefile does.
-> If re-added, with RANDOMIZE_BASE and X86_NEED_RELOCS disabled, the
-> following warnings are visible.
-> 
-> arch/x86/boot/compressed/misc.h:82:5: warning: 'CONFIG_RANDOMIZE_BASE'
-> is not defined, evaluates to 0 [-Wundef]
->     ^
-> arch/x86/boot/compressed/misc.c:175:5: warning: 'CONFIG_X86_NEED_RELOCS'
-> is not defined, evaluates to 0 [-Wundef]
->     ^
-> 
-> Simply fix these and re-enable this warning for this directory.
-> 
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: Joe Perches <joe@perches.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/570
-> Link: https://lore.kernel.org/lkml/67f6cd269684c9aa8463ff4812c3b4605e6739c3.camel@perches.com/
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Thu, 22 Apr 2021 at 12:17, Marco Elver <elver@google.com> wrote:
+> On Thu, 22 Apr 2021 at 11:48, David Laight <David.Laight@aculab.com> wrote:
+> >
+> > From: Marco Elver
+> > > Sent: 22 April 2021 07:45
+> > >
+> > > On some architectures, like Arm, the alignment of a structure is that of
+> > > its largest member.
+> >
+> > That is true everywhere.
+> > (Apart from obscure ABI where structure have at least 4 byte alignment!)
+>
+> For instance, x86 didn't complain, nor did m68k. Both of them have
+> compile-time checks for the layout (I'm adding those for Arm
+> elsewhere).
+[...]
+> > Much as I hate __packed, you could add __packed to the
+> > definition of the structure member _perf.
+> > The compiler will remove the padding before it and will
+> > assume it has the alignment of the previous item.
+> >
+> > So it will never use byte accesses.
+>
+> Sure __packed works for Arm. But I think there's no precedent using
+> this on siginfo_t, possibly for good reasons? I simply can't find
+> evidence that this is portable on *all* architectures and for *all*
+> possible definitions of siginfo_t, including those that live in things
+> like glibc.
+>
+> Can we confirm that __packed is fine to add to siginfo_t on *all*
+> architectures for *all* possible definitions of siginfo_t? I currently
+> can't. And given it's outside the scope of the C standard (as of C11
+> we got _Alignas, but that doesn't help I think), I'd vote to not
+> venture too far for code that should be portable especially things as
+> important as siginfo_t, and has definitions *outside* the kernel (I
+> know we do lots of non-standard things, but others might not).
 
-Thanks!
+After thinking about this all afternoon, you convinced me that the
+commit message wasn't great, and this should be in the commit message,
+too: https://lkml.kernel.org/r/20210422191823.79012-1-elver@google.com
 
-Acked-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Thanks,
+-- Marco
