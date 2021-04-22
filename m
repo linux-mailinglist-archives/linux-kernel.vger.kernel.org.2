@@ -2,127 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E2C368821
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D8E368823
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239320AbhDVUjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:39:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236992AbhDVUjt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:39:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619123952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cNpLvi6EdAaudYQUjNEEJ6bmi8/lRMsChihQZX3u/nI=;
-        b=THey2O8FKxkdsYJm8XVkVJ/okMJNlEuCeBq7dYJzFlfB3CtQEKnKV+BCj5agkN/vryKJ9x
-        Yo/e+gGzCw0kX3X8k8hTyrpxcSv50OCPO0RSjF1V9MpruX/5eA/0HZU17ZhqFp2yY8HgU1
-        zwJPHE2zPr9WChN1VT2s5371d/pf8E8=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-2ATVN6IENzKRVDNiTR_ZLw-1; Thu, 22 Apr 2021 16:39:10 -0400
-X-MC-Unique: 2ATVN6IENzKRVDNiTR_ZLw-1
-Received: by mail-qv1-f71.google.com with SMTP id o7-20020a0cf4c70000b02901a53a28706fso11458985qvm.19
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:39:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=cNpLvi6EdAaudYQUjNEEJ6bmi8/lRMsChihQZX3u/nI=;
-        b=CA39oR6jTKjJN7VKt04WbQpCfFIhhQWw2mlsGtOdUCKKvaLewVKlS2Vh8YCKa5tU8v
-         hXT01lYd0kXxPSNKs15Q5RARVP7oIqIi3ZzLkdC5V4csaODYhdoV4zgBcPODpWF1bzja
-         KrAEFwCctcLCjkqEg+pNoHOvcafs+IrNofXyFQVxnbw+q1PLaf+9LAN9r+ogec4eLu+8
-         TQysI5G6WKn7shZ8NZOXos4sm12/WO5eY3nmp/YOLMMeq1dPEJzlAh7HuMEcy3hleOyp
-         5IK5RPmdSJA2Cc82dLY4Mzy3OPVnhr1ud59qiKWUm44r0/zyBIQ16az9WSdOelXUCovP
-         yAjQ==
-X-Gm-Message-State: AOAM533Ite7WvYs4KF8ef/jUNdP1YKRYuHZsx5qMIbBWXUJ1hIFDx2ZA
-        AUo2foobv0oKTM9s5t/aJypk++bXkGg2lKThZJXflxxDqsgnTSy8UFIs5AG08agFy9o7gG5uIPS
-        cxVD3oSbJkCsB9r49s8dx22xh
-X-Received: by 2002:a0c:e14e:: with SMTP id c14mr617271qvl.36.1619123949709;
-        Thu, 22 Apr 2021 13:39:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcGeYSvpo24gXWSguEVi9JQ7kiE7Jqh/3hwJUN+VQ7PimQTarKqFfkP4TIFwc1yNxophk9lw==
-X-Received: by 2002:a0c:e14e:: with SMTP id c14mr617245qvl.36.1619123949525;
-        Thu, 22 Apr 2021 13:39:09 -0700 (PDT)
-Received: from localhost.localdomain ([2601:184:417f:70c0::42e6])
-        by smtp.gmail.com with ESMTPSA id x20sm2989311qkf.42.2021.04.22.13.39.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 13:39:09 -0700 (PDT)
-Subject: Re: [PATCH v2 0/6] kunit: Fix formatting of KUNIT tests to meet the
- standard
-To:     Theodore Ts'o <tytso@mit.edu>, brendanhiggins@google.com,
-        davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        linux-ext4@vger.kernel.org, netdev@vger.kernel.org,
-        rafael@kernel.org, linux-m68k@vger.kernel.org,
-        geert@linux-m68k.org, mathew.j.martineau@linux.intel.com,
-        davem@davemloft.net, broonie@kernel.org, skhan@linuxfoundation.org,
-        mptcp@lists.linux.dev
-References: <cover.1618388989.git.npache@redhat.com>
- <YHyK+5xJEMcDDhVy@mit.edu>
-From:   Nico Pache <npache@redhat.com>
-Message-ID: <dbe6abeb-0082-e309-1208-9c43c6f127ae@redhat.com>
-Date:   Thu, 22 Apr 2021 16:39:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239239AbhDVUl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:41:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61374 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236896AbhDVUl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 16:41:56 -0400
+IronPort-SDR: VLsPP6NajfGaLOVXOEZU9uXSTI+jDxwTfvKftjg1EULE9KIzYV90acKfrAARZ+7zK9WhpjduKC
+ UwGTRxfbO5fw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="281297996"
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="281297996"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 13:41:21 -0700
+IronPort-SDR: p4C9qSMY9GsJU9kPMQIbJaL0zM5ExKQxbS2h4MTZswzUF+gQOaLI7zcOdePLDrvwLqq1tolcZ3
+ Sa102fPpqOVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="384890541"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 22 Apr 2021 13:41:19 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lZg8U-0004Kd-St; Thu, 22 Apr 2021 20:41:18 +0000
+Date:   Fri, 23 Apr 2021 04:40:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS WITH WARNING
+ 2ea46c6fc9452ac100ad907b051d797225847e33
+Message-ID: <6081df35.4e9jrx0YrBccQyiw%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <YHyK+5xJEMcDDhVy@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/18/21 3:39 PM, Theodore Ts'o wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+branch HEAD: 2ea46c6fc9452ac100ad907b051d797225847e33  cpumask/hotplug: Fix cpu_dying() state tracking
 
-> On Wed, Apr 14, 2021 at 04:58:03AM -0400, Nico Pache wrote:
->> There are few instances of KUNIT tests that are not properly defined.
->> This commit focuses on correcting these issues to match the standard
->> defined in the Documentation.
-> The word "standard" seems to be over-stating things.  The
-> documentation currently states, "they _usually_ have config options
-> ending in ``_KUNIT_TEST'' (emphasis mine).  I can imagine that there
-> might be some useful things we can do from a tooling perspective if we
-> do standardize things, but if you really want to make it a "standard",
-> we should first update the manpage to say so, 
+Warning in current branch:
 
-KUNIT Maintainers, should we go ahead and make this the "standard"?
+kernel/sched/fair.c:637:5: warning: no previous prototype for 'sched_update_scaling' [-Wmissing-prototypes]
+kernel/sched/fair.c:637:5: warning: no previous prototype for function 'sched_update_scaling' [-Wmissing-prototypes]
 
-As Ted has stated...  consistency with 'grep' is my desired outcome.
+Warning ids grouped by kconfigs:
 
-> and explain why (e.g.,
-> so that we can easily extract out all of the kunit test modules, and
-> perhaps paint a vision of what tools might be able to do with such a
-> standard).
->
-> Alternatively, the word "standard" could perhaps be changed to
-> "convention", which I think more accurately defines how things work at
-> the moment.Nico Pache (6):
->   kunit: ASoC: topology: adhear to KUNIT formatting standard
->   kunit: software node: adhear to KUNIT formatting standard
->   kunit: ext4: adhear to KUNIT formatting standard
->   kunit: lib: adhear to KUNIT formatting standard
->   kunit: mptcp: adhear to KUNIT formatting standard
->   m68k: update configs to match the proper KUNIT syntax
->
-> Also, "adhear" is not the correct spelling; the correct spelling is
-> "adhere" (from the Latin verb "adhaerere", "to stick", as in "to hold
-> fast or stick by as if by gluing", which then became "to bind oneself
-> to the observance of a set of rules or standards or practices").
->
->        		       	      	       		 - Ted
+gcc_recent_errors
+|-- arm-bcm2835_defconfig
+|   `-- kernel-sched-fair.c:warning:no-previous-prototype-for-sched_update_scaling
+|-- h8300-randconfig-r025-20210421
+|   `-- kernel-sched-fair.c:warning:no-previous-prototype-for-sched_update_scaling
+|-- m68k-allmodconfig
+|   `-- kernel-sched-fair.c:warning:no-previous-prototype-for-sched_update_scaling
+|-- m68k-allyesconfig
+|   `-- kernel-sched-fair.c:warning:no-previous-prototype-for-sched_update_scaling
+`-- nds32-allyesconfig
+    `-- kernel-sched-fair.c:warning:no-previous-prototype-for-sched_update_scaling
 
-Whoops... Made that mistake in my v1 and inadvertently copied it over
+clang_recent_errors
+|-- x86_64-randconfig-a012-20210421
+|   `-- kernel-sched-fair.c:warning:no-previous-prototype-for-function-sched_update_scaling
+|-- x86_64-randconfig-a013-20210421
+|   `-- kernel-sched-fair.c:warning:no-previous-prototype-for-function-sched_update_scaling
+`-- x86_64-randconfig-a014-20210421
+    `-- kernel-sched-fair.c:warning:no-previous-prototype-for-function-sched_update_scaling
 
-to all the patches.
+elapsed time: 722m
 
+configs tested: 182
+configs skipped: 2
 
-Cheers!
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                            lart_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                          malta_defconfig
+sh                             shx3_defconfig
+um                                  defconfig
+powerpc                      ppc44x_defconfig
+mips                           jazz_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        mvebu_v7_defconfig
+arm                         lpc32xx_defconfig
+arc                        nsimosci_defconfig
+m68k                            q40_defconfig
+powerpc                          allyesconfig
+arc                           tb10x_defconfig
+arm                        multi_v5_defconfig
+arm                      footbridge_defconfig
+alpha                               defconfig
+h8300                    h8300h-sim_defconfig
+xtensa                              defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                      ep88xc_defconfig
+arc                      axs103_smp_defconfig
+powerpc                 linkstation_defconfig
+arm                         s5pv210_defconfig
+sparc                       sparc32_defconfig
+sh                              ul2_defconfig
+powerpc                     asp8347_defconfig
+ia64                          tiger_defconfig
+mips                        nlm_xlr_defconfig
+mips                  decstation_64_defconfig
+m68k                         apollo_defconfig
+sh                   sh7770_generic_defconfig
+mips                            e55_defconfig
+sh                        sh7757lcr_defconfig
+sh                          lboxre2_defconfig
+m68k                          hp300_defconfig
+mips                           xway_defconfig
+powerpc                  storcenter_defconfig
+mips                           ci20_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                          rm200_defconfig
+powerpc                      acadia_defconfig
+nds32                               defconfig
+sh                          sdk7780_defconfig
+sh                            titan_defconfig
+sh                           se7724_defconfig
+arm                          pcm027_defconfig
+arm                        magician_defconfig
+ia64                            zx1_defconfig
+mips                      maltasmvp_defconfig
+arm                         cm_x300_defconfig
+arm                         bcm2835_defconfig
+arm                        keystone_defconfig
+ia64                         bigsur_defconfig
+s390                          debug_defconfig
+x86_64                           alldefconfig
+m68k                         amcore_defconfig
+mips                       capcella_defconfig
+um                            kunit_defconfig
+arm                        oxnas_v6_defconfig
+arm                           sama5_defconfig
+mips                     cu1000-neo_defconfig
+arm                           u8500_defconfig
+sh                           se7343_defconfig
+mips                           ip32_defconfig
+mips                        maltaup_defconfig
+mips                        bcm47xx_defconfig
+powerpc                 canyonlands_defconfig
+arc                        vdk_hs38_defconfig
+powerpc                     tqm5200_defconfig
+powerpc               mpc834x_itxgp_defconfig
+mips                     loongson1b_defconfig
+arc                          axs101_defconfig
+mips                     decstation_defconfig
+arm                       aspeed_g5_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                         mv78xx0_defconfig
+arc                              allyesconfig
+mips                      pistachio_defconfig
+arm                          pxa910_defconfig
+mips                             allyesconfig
+powerpc                     skiroot_defconfig
+mips                      maltaaprp_defconfig
+mips                         tb0287_defconfig
+um                             i386_defconfig
+arm                           spitz_defconfig
+powerpc                     kmeter1_defconfig
+arm                         nhk8815_defconfig
+powerpc                      walnut_defconfig
+powerpc                     rainier_defconfig
+arm                           stm32_defconfig
+powerpc                     mpc83xx_defconfig
+arm                        trizeps4_defconfig
+nds32                             allnoconfig
+mips                 decstation_r4k_defconfig
+i386                             alldefconfig
+arc                                 defconfig
+powerpc                 xes_mpc85xx_defconfig
+sh                           sh2007_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                       omap2plus_defconfig
+arm                      tct_hammer_defconfig
+m68k                        mvme16x_defconfig
+sh                           se7722_defconfig
+openrisc                         alldefconfig
+sh                            migor_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210421
+x86_64               randconfig-a002-20210421
+x86_64               randconfig-a001-20210421
+x86_64               randconfig-a005-20210421
+x86_64               randconfig-a006-20210421
+x86_64               randconfig-a003-20210421
+i386                 randconfig-a005-20210421
+i386                 randconfig-a002-20210421
+i386                 randconfig-a001-20210421
+i386                 randconfig-a006-20210421
+i386                 randconfig-a004-20210421
+i386                 randconfig-a003-20210421
+x86_64               randconfig-a015-20210422
+x86_64               randconfig-a016-20210422
+x86_64               randconfig-a011-20210422
+x86_64               randconfig-a014-20210422
+x86_64               randconfig-a012-20210422
+x86_64               randconfig-a013-20210422
+i386                 randconfig-a012-20210421
+i386                 randconfig-a014-20210421
+i386                 randconfig-a011-20210421
+i386                 randconfig-a013-20210421
+i386                 randconfig-a015-20210421
+i386                 randconfig-a016-20210421
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
--- Nico
+clang tested configs:
+x86_64               randconfig-a015-20210421
+x86_64               randconfig-a016-20210421
+x86_64               randconfig-a011-20210421
+x86_64               randconfig-a014-20210421
+x86_64               randconfig-a013-20210421
+x86_64               randconfig-a012-20210421
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
