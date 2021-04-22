@@ -2,90 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BD43684CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4783684D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237379AbhDVQ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:27:54 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:39470 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236648AbhDVQ1x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:27:53 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id CD53292009C; Thu, 22 Apr 2021 18:27:17 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id C802A92009B;
-        Thu, 22 Apr 2021 18:27:17 +0200 (CEST)
-Date:   Thu, 22 Apr 2021 18:27:17 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Khalid Aziz <khalid@gonehiking.org>
-cc:     Ondrej Zary <linux@zary.sk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        id S236629AbhDVQ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:29:10 -0400
+Received: from mail-eopbgr40077.outbound.protection.outlook.com ([40.107.4.77]:28225
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236236AbhDVQ3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:29:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PFYYpSBbtSgLVdyo2uy+TCLnASJnK5KRgdbZsqVnUfFOWD4rku83/qyVFnsNUgR6pQDgVQuVv4p7OphGhJgqBsIiMU5gg3n/0r1elzpwu5DFjYpuGpWlFHXvG029NzCaqo6aH1sUisHY1oFSy2nKN9loHuIut1zHm9/N/9YAnEApn3bnewiqJByT09HYqr8bFPF4CehiMN3JZClXO2OdJO7wvrmrhBbJpNFTmr9PUQiEInYPUDgwJ70W5peqOLEaNUnl3gFpQkgRT8rtphHziQ01nb2OoH5vb6pXcHCx8ihVTiLPwssZ/IzWn8GLRNLEDayjSpQtUPQXOJ6WJn5Ufw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KuodW1vifscfHn0aoKde1pLfMR+536/hpaY+0TrNnBA=;
+ b=LE+iiFCYPsKB42K//WGhtAvBZYNAdyNj0FwO8yFZopM8+AA7VpydKWV58lonzBMQ5yvcxGdLk3XjFVGFff1MuxjUUMAuXGlZZXwQO3HPwLv35bTA0b4sG8UU8po0cfNgGcD0qvJ1ElspxXUwQL6AqVlqzKJ1csTaLw3KRc9MBlq8N33sm8kQst8TTJyw60jbFU4LmwqC6rFp/1/ev5e6LhIfr4UyqVGVgAgE5+v+OUh5ZXIbH70QHgCgMmeYVWCORYwThyLagVYdJi48iMywUWT5tb78gt04Gt+ZHZuwjAJWUbvDLDeHzZB73XWorkbPLtwxnfBIutHJ6cHjdVhdbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vimar.com; dmarc=pass action=none header.from=vimar.com;
+ dkim=pass header.d=vimar.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Vimargroup.onmicrosoft.com; s=selector2-Vimargroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KuodW1vifscfHn0aoKde1pLfMR+536/hpaY+0TrNnBA=;
+ b=XJgpTU7Xd55lLZN5XZELL6nBmaAhZBD77Yfw989or8FmObIo700gU/LfzLusXAFyra8FIqLDIeSR4y2UGq76vzU85+alrjZMLAL2eMPjH+2BaaeoU0VbK5iETsn8EkPUDSW2WiQ+Plza38lO/8o+RVRUaiwagQxrlCMvmyMREI0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=vimar.com;
+Received: from AM6PR08MB2981.eurprd08.prod.outlook.com (2603:10a6:209:44::22)
+ by AM6PR08MB3718.eurprd08.prod.outlook.com (2603:10a6:20b:81::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Thu, 22 Apr
+ 2021 16:28:23 +0000
+Received: from AM6PR08MB2981.eurprd08.prod.outlook.com
+ ([fe80::9de3:7ce3:f155:8eda]) by AM6PR08MB2981.eurprd08.prod.outlook.com
+ ([fe80::9de3:7ce3:f155:8eda%4]) with mapi id 15.20.4065.020; Thu, 22 Apr 2021
+ 16:28:23 +0000
+Subject: Re: [PATCH 1/2] dt-bindings: watchdog: gpio-wdt: add "start-at-boot"
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, wim@linux-watchdog.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
- Y2021
-In-Reply-To: <b23c0a0e-d95b-b941-1cc2-1a8bcf44401a@gonehiking.org>
-Message-ID: <alpine.DEB.2.21.2104221808170.44318@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk> <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org> <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk> <202104182221.21533.linux@zary.sk> <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
- <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk> <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org> <alpine.DEB.2.21.2104200456100.44318@angie.orcam.me.uk> <b23c0a0e-d95b-b941-1cc2-1a8bcf44401a@gonehiking.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+References: <20210421162621.24910-1-francesco.zanella@vimar.com>
+ <20210421162621.24910-2-francesco.zanella@vimar.com>
+ <20210421163748.GA110463@roeck-us.net>
+From:   Francesco Zanella <francesco.zanella@vimar.com>
+Message-ID: <49dc0cc4-c86b-3e47-f366-009406bc68a6@vimar.com>
+Date:   Thu, 22 Apr 2021 18:28:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210421163748.GA110463@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [151.71.13.13]
+X-ClientProxiedBy: MR2P264CA0128.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:500:30::20) To AM6PR08MB2981.eurprd08.prod.outlook.com
+ (2603:10a6:209:44::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.150] (151.71.13.13) by MR2P264CA0128.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500:30::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 16:28:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 924d6800-82fe-4819-e174-08d905aba623
+X-MS-TrafficTypeDiagnostic: AM6PR08MB3718:
+X-Microsoft-Antispam-PRVS: <AM6PR08MB3718F251D49C3AC0766F3515E9469@AM6PR08MB3718.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Tzb1fD5w1T3UuUoc8/fARSKHKIANRg0GK9K5Eu8OZJHBgrrnRbYFTaLvGVWvZ8J1Jh4HNXDXhhz+dqB4J0luCG0mPK/FQcGbIxj2wXUN7UPlpW9vJ5tdiRoeK4sEt3vEgzvI2ekOlAy5c2XBIF8mcJieCKnspgCrGg/AvAkBeSSEUCQWiN32U8ey/Jdr4/bMxAA350I+MtqKzvZP3CK32T2uwvInyJ3KrpN6EAeC+xb/NoVCmFx0G21eDfdJeV2gJf7abOkYYVHSiG6zcm+seeMhZajRQwxnZeceEH2fFNfwi4K5NLiTWXfrTy9URvFz3i9lIiQAG0yeKonU+QMb/0O2psJaaZojVZCulhORo6GJCXBj37sZht3nx1efSYfWoiHu1vEogqzp6ildsu/QxMwnQJJnnX1UYRutR0yB5KpZMnRTrBPJWgS74lYR4T60d2uhNofmM/hg3muX4MPaB1Z4Rv6deHH2BGBg7fRBq53V9JL5al5oABc41LvqqcY2HlKvjoRwrVSsrZbWYWlpHyPpgE5eBHAomKlox0QrH50LuQCQXj3QMQ1th747StPxzh06HTHHev5mZ2mblkZ8wHRlOqr3BXCc1V7RC2ZMN6ptIWvC5B278Dy10R8bQMkuwk+nS1JYuGRwntwze+Pq1CcUbIukyctZe9bUtI8YnCO/tlgn5Hr/uvLkmrds7fQR00ohbCZcG7+MLzF+EXW044wdXIw3DJiLhI3p2ElQw9g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB2981.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39830400003)(396003)(136003)(376002)(346002)(366004)(8676002)(66946007)(186003)(8936002)(16526019)(44832011)(38350700002)(6666004)(478600001)(316002)(86362001)(66556008)(66476007)(26005)(6916009)(31686004)(2616005)(83380400001)(6486002)(53546011)(31696002)(4326008)(52116002)(16576012)(36756003)(2906002)(5660300002)(956004)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dU85TGUvTjVDQWx2VzJSMU5SNE4vanRoSWl1VTdaOXc5cFEwWHdnMFZheTVV?=
+ =?utf-8?B?VC9xMDJnV0ROYVY1RjQyVXMzbVVnVGd6WUJiSXRlYU1vaURMWnlkZENDNVBX?=
+ =?utf-8?B?Y0xBZ1B4MXVkdFd5UTU5YmtqT0JlVHZPNklNTmNoYWt3TjhjdUxCazQ4Z2ox?=
+ =?utf-8?B?WEphakk3VHVEb25ROGVET0xrL05MdzdJTWFWcVZXM29QbEhsREdOT2ZlRkNy?=
+ =?utf-8?B?aEthNEdvaFlBbmM1QklPU0dObUdPVHpvRE9oVHlxWkJmUGZSbU5Fc0tacXF2?=
+ =?utf-8?B?RkNxUkhPeUM2YmhjNk1pNHhudnM5aVRMSndrWVEya0xYM2VJS0Fvcm9ZNjBm?=
+ =?utf-8?B?WFVhK3M0aDJtbDcwR0pPN0xXNEk1RzhBWlFLc20veHc0cXpVOU16UzNzeWZl?=
+ =?utf-8?B?V2xzODB5LzBnOTNOUFVaYmY1d001RldlejZKYTBZVGF1Vko0SkpZN0tGT1Jp?=
+ =?utf-8?B?c2VQTnpOS1FWb0hoWTI1L3J6NzY5akNCU1NZVlE1a3VnQlFudDc3Q1VUNlJY?=
+ =?utf-8?B?M01wU0prVlVNUElUQmZjZEVCUUcwZVNTcUU5bmZrWnlyeE8vb2pvc1RyelpR?=
+ =?utf-8?B?WWpuUzEraW8ydzlBRndzNzh0cndJV3ArSmIxaHVkRTRWdURIL3IyU2FCWi9M?=
+ =?utf-8?B?MnZsendreHB3TWtZd1JCR1Jyb2U3T0FSQlV4bWVOZG1lY1pyN1R0YzI3UjN2?=
+ =?utf-8?B?QndPSVdiOWx1SXZtVHV2V1BSSUd0THlMWS82Ylk1R0VTODZVQ1FOTXE3eFd5?=
+ =?utf-8?B?S3gxVmpVaGNVMCs1Mk52UklYZy9Ma2RMOEVYanNyVTZJanVlRjVDQWtFVWNC?=
+ =?utf-8?B?bjFvc1RNNDltbkYwcFkrQmovQTV0Z2VSdDdtK0NDRm1yT0pkc3hNWDNxbFBF?=
+ =?utf-8?B?ZzlpaFo5V1JBbUk1WFl3THl5dUJZUjUxV0Q2Y2hCdHYweGNnQ01wVm42RzdX?=
+ =?utf-8?B?czNZU0lQdFpqSGRWUjRDVFMxZXJDaXkyUExtSS9OTjRlcU9WbGgzMnU0TmlP?=
+ =?utf-8?B?cDhtSGUyc3l0TVk4TENOa2xJdlVpcFVuaHRPRUsvSTNYc3EzQ2xJVm9PdGcv?=
+ =?utf-8?B?ODNQTHNHaVMrTXhTOW9QcWw0UWtldGZmSVUzU3hVNEROaW55VXBJTi9EaEtW?=
+ =?utf-8?B?UTBCNElqVjVETmFuNXczYVAydmtiUkxzakRWY2R6N0x4R1pqK1N2eHlFaVNa?=
+ =?utf-8?B?Z0FzZTR1TEpnVWlWbTRpd2ZsckpBOE5YSGd4WndjaHVxeklCMTlTdHdZU2tV?=
+ =?utf-8?B?eHlmK0pNK3BVN1d3cGtNWWpORFJjNDFBOHFPRkpCTG40N25oaUhtTnFGQUpx?=
+ =?utf-8?B?TmZUUFRFY2JtT1NkZ0s0aDhNc3pqT3pDNzF2Qk1lNldEbmNqbEcyRlJ3VGg5?=
+ =?utf-8?B?YUE4Y0IwY00yWHdCaHNlRERYbFBmRDRtMXlZVFpwcHRJNnQ4djFhV1lsL01k?=
+ =?utf-8?B?a2M3TnExSmU1aWpYdzRnVnhOeU1jODJia0w0b0p4b0FwTU03UEwzV3pOczRQ?=
+ =?utf-8?B?eFNOcHFhdXZIbTdTZHhBUTBkRDVpRm9MVW5rTXlWRzQyY1o5RFN4NExrSHJl?=
+ =?utf-8?B?SmZ0dUtxd0FuKzhIdjNyRm9FZnNZSmZwOXJURGhLM0c4aUlXb2U2VDUxakl2?=
+ =?utf-8?B?SldkeGhUV2hoNno4bDB0OEM2V21OWTIvVkhDYWdTa0EwZG5KSVdndlMrWTdT?=
+ =?utf-8?B?ekgwaG5ZZFlDNGo5MXZUenliZng0OXRMajQ2S2VCYTNqK0Fra2puaCsyeGtx?=
+ =?utf-8?Q?AJaG+iOOxHBiO8otD4KYHr5D9hgjf6FfzzTNFd8?=
+X-OriginatorOrg: vimar.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 924d6800-82fe-4819-e174-08d905aba623
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB2981.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 16:28:23.5331
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a1f008bc-d59b-4c66-8f87-60fd9af15c7f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CTajzLX0JHB4/+m/enAx9DroMvb2xHVD3jy6Mg3fc8UIdMi+rY8B1Uok+ZbJtVu+JGRQtQn7U0Ik7djwgDGAzugPiANmYpm2pfip+Fc4xhY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3718
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021, Khalid Aziz wrote:
 
-> >  Verifying actual ISA operations (third-party DMA, etc.) cannot be made 
-> > this way, but as I understand the issue there is merely with passing data 
-> > structures around and that may not require too much attention beyond 
-> > getting things syntactically correct, which I gather someone forgot to do 
-> > with a change made a while ago.  So that should be doable as well.
+
+On 21/04/21 18:37, Guenter Roeck wrote:
+> On Wed, Apr 21, 2021 at 06:26:20PM +0200, Francesco Zanella wrote:
+>> Documentation for new device tree property "start-at-boot".
+>>
+>> Signed-off-by: Francesco Zanella <francesco.zanella@vimar.com>
+>> ---
+>>  Documentation/devicetree/bindings/watchdog/gpio-wdt.txt | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt b/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+>> index 198794963786..cdaf7f0602e8 100644
+>> --- a/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+>> +++ b/Documentation/devicetree/bindings/watchdog/gpio-wdt.txt
+>> @@ -17,6 +17,13 @@ Optional Properties:
+>>  - always-running: If the watchdog timer cannot be disabled, add this flag to
+>>    have the driver keep toggling the signal without a client. It will only cease
+>>    to toggle the signal when the device is open and the timeout elapsed.
+>> +- start-at-boot: Start pinging hw watchdog at probe, in order to take advantage
+>> +  of kernel configs:
+>> +  - WATCHDOG_HANDLE_BOOT_ENABLED: Avoid possible reboot if hw watchdog was been
+>> +    enabled before the kernel (by uboot for example) and userspace doesn't take
+>> +    control of /dev/watchdog in time;
+>> +  - WATCHDOG_OPEN_TIMEOUT: Reboot if userspace doesn't take control of
+>> +    /dev/watchdog within the timeout.
 > 
-> In theory this sounds reasonable, but without being able to test with a
-> real hardware I would be concerned about making this change.
-
- Sometimes you have little choice really and that would be less disruptive 
-than dropping support altogether.  Even if there's a small issue somewhere 
-it's easier to fix by a competent developer who actually gets the hands on 
-a piece of hardware than bringing back old code that has been removed and 
-consequently not updated according to internal API evolution, etc.
-
- I had this issue with the defxx driver with which for years I didn't have 
-a specimen of the EISA variant of the hardware handled.  I did my best to 
-maintain EISA support however and while indeed I made a few of mistakes on 
-the way, they were easy to straighten out once I finally did get my hands 
-on an EISA piece.
-
-> >  NB as noted before I only have a BT-958 readily wired for operation.  I 
-> > don't expect I have any other BusLogic hardware, but I may yet have to 
-> > double-check a stash of hardware I have accumulated over the years.  But 
-> > that is overseas, so I won't be able to get at it before we're at least 
-> > somewhat closer to normality.  If all else fails I could possibly buy one.
-> > 
-> >  I have respun the series now as promised.  Does your BT-757 adapter avoid 
-> > the issue with trailing allocation somehow?
+> You are not supposed to refer to Linux kernel details in devicetree
+> bindings documents.
 > 
-> Well, my only test machine with a legacy PCI slot died some time back. I
-> have been working on putting together a replacement and have now been
-> able to get a working machine with a BT-950 adapter. I have not seen
-> issue with trailing allocation upto 5.12-rc8. I am going to try the top
-> of tree as well to make sure I do not run into this issue.
+> Guenter
+> 
+>>  
+>>  Example:
+>>  	watchdog: watchdog {
+>> -- 
+>> 2.17.1
+>>
 
- I guess you won't see the issue with a FlashPoint adapter as they work in 
-a different manner.  I think your EISA MultiMaster device is more likely 
-to have a problem here.
+OK, I'm sorry. I will resend the patch series without kernel configs
+references in documents.
 
- And AFAICT most SCSI commands (or at least the older ones which used to 
-be there when development was still active with the MultiMaster devices) 
-return exactly as much data as requested, so I guess the issue may have 
-gone unnoticed.  I'll see if I can find some time to investigate this 
-further now that we have proper documentation available, but meanwhile I 
-do hope the workaround I have come up with 18 years ago already is good 
-enough to keep it.
-
-  Maciej
+Francesco
