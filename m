@@ -2,149 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FA536844D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD63368455
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237421AbhDVP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236459AbhDVP7W (ORCPT
+        id S236449AbhDVQBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:01:53 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:36763 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhDVQBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:59:22 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52B3C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 08:58:46 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id a12so32004768pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 08:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=44uFSIKvqnC7V+9ZchehMmm34h8scMBiFWmZbyka+5I=;
-        b=cMiEjZ1B9JMl8QATUXKRwJxkhvh5LCCEJA1EPShkG5o7xzgME4hzquSiFFSCVuKw2B
-         JwqtwHPEYESxOMlFUI13tzjNMcegmUV0xlrg7yIb5Lufn8Xs7oHPzAVXKxjmZ5dCaIaE
-         WxOPyIfhTTJOjVnJBqbDuuJgKDln1FmrMMl47T1/auyzw7U/kpQP59IyvNwBc9yG9R7t
-         +pHBoVsBV4aBkuFKMOXvL0zjFOIiAWYMizug6eGhWegiGoawjtuixtlUfUmXdU3kyJV9
-         CWOPOpkD6ro5l8Ipa0biA6w1HVaySW3pP9NchcMgAXZnHRsiz9ZRoH3FA7TtCV514owb
-         /Dgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=44uFSIKvqnC7V+9ZchehMmm34h8scMBiFWmZbyka+5I=;
-        b=MNU4AHqYWd6Wc6yNMKdI8AhoNlmxLq6wZMja4bPiJuTnK32IPrZDrvGK94B/jEh1lC
-         jy8IV4gZksLYZgVamesv4/bZEHHXA+HAXE08b1VdwQbnRo4vLJCUEi3dNYjGxqlyXo67
-         HpkrBtfHPTpRCe1Hqq88mcuBP7JSLy7yYhjMsLlXUhYsIPkwsW3u/rFcL6wIQmTBjnZ6
-         X0YblI7SVV84S+29sMlQc6mIAWumJY3fEiYStT5+5D82BollOOi1JzB12aoOMNiNuxxX
-         FY8wJAsQqMCr01cXDznNEITeM5WNwRsOl1V1ApPulsn4KRbEauL9Y2H7hCFNaJw73m4P
-         WY6A==
-X-Gm-Message-State: AOAM530ZTAf7FH0bI9m0BfpK0LwQT/1Wajicb8/VzFjZ4bZLGRET60sZ
-        +0HQjd/06itwEh3jnQ6WVbpkGg==
-X-Google-Smtp-Source: ABdhPJxhKU670JBxP1/tcRbCpUbeXzYl86y/mGbDNHJh9ApJICeW/4m3bDFRQbbY/jHbJnkmJZQJdw==
-X-Received: by 2002:a65:45cf:: with SMTP id m15mr4170458pgr.7.1619107126146;
-        Thu, 22 Apr 2021 08:58:46 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id n11sm2818575pff.96.2021.04.22.08.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 08:58:45 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 15:58:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Kenta Ishiguro <kentaishiguro@sslab.ics.keio.ac.jp>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Hildenbrand <david@redhat.com>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Aublin <pl@sslab.ics.keio.ac.jp>,
-        =?utf-8?B?5rKz6YeO5YGl5LqM?= <kono@sslab.ics.keio.ac.jp>
-Subject: Re: [RFC PATCH 0/2] Mitigating Excessive Pause-Loop Exiting in
- VM-Agnostic KVM
-Message-ID: <YIGdMZIVHVp3y/J0@google.com>
-References: <20210421150831.60133-1-kentaishiguro@sslab.ics.keio.ac.jp>
- <YIBQmMih1sNb5/rg@google.com>
- <CANRm+CxMf=kwDRQE-BNbhgCARuV3fuKpDbEV2oWTeKuGhUYd+w@mail.gmail.com>
-MIME-Version: 1.0
+        Thu, 22 Apr 2021 12:01:51 -0400
+X-Greylist: delayed 36434 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 12:01:50 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1619107256; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=p08xucsc79c7YwfwHDwDriyxDLhleGMcxJ+93tArEIE6s4NII3ezUj4xlLxWHzZCFr
+    1woN6AuD+FtLVNI4UWoqSUkZUeCdrlpR29pk3q3IGvtZsXynthsKmP3bMPO2pemOm1aV
+    Xd/QDsPtzlfKUcM1WoxHN12qRsGj4xOCeYa/noS+VElqSMkJi1PVeIMf7HzDctZrbAyx
+    MvZ3Tu+41Exe5KWC6VoPBdqmk7qrg8CufIDF29OEePYjcGK0wVGCh1JbhfaD/NV9Yl1s
+    J78pcGgmFwvLGfdQgcUTYPYD+n2EAhGwoa44Zy3ZYui6Kxk7Hurxz+A7NMutvSWRbNH1
+    mCkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619107256;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=ZyNPkTwiV2jIS8aDjRLvGkiqHGZxdhiz3b1aL19REv4=;
+    b=oMyrFc1g2nxPO5d+r48w7SnUrdZkAS6CMDaBCOKdHU+5POLc23/ixvfGbB6BXczMug
+    B2fucr239d/hODdkpUWVIZjf62tdpSDgC+z4ZrIEtjc98fgUFMJFft0iDCO3c1oKqx6e
+    FjLichMf27AOIOnupg3UwPnGIl/p6nt8mXTkPrOKPXMgkQNSQquPAAVIDiVClEOKvWTE
+    aI2tmLWv15KUEM/h4buEdIye6HmWZhGfb6YGkxA4COBE82gizEEIkuW5Xp/92r+IZBoh
+    mbEpRXZ2LUp39BYIGUSdxgXK57LbM9NUGsBqYxM9C33NAGtvHwCooGd69lYf109begKz
+    uTsg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619107256;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=ZyNPkTwiV2jIS8aDjRLvGkiqHGZxdhiz3b1aL19REv4=;
+    b=pIPaEtDr8/G2QyvR/eszHcaETXjirAVn8BnS57we+Xsfgl4cFFlI1uiR2uKwfojf0B
+    0HUvXu077kz3bovCdhnr1vmg4XnDX53FQKMvwaduKmN7u4jwZtq/DR3JHJAJnX0UI92M
+    CKdVLyRA4YY+vzEhSJ5nBcvzOdR67PXZdzR4tm5xPVpTGOzm6FkAfHpLW2xzCRRE5B+y
+    Yb/QzDLDzX+9WJbnsiMaYkSiThZ51ptC7YEvxnYIn6x1yivWDw7OHPPIQvxaJeiQLAOu
+    SXqMUxP5rOyl6i+0VjOduBHTv8vOD0YonAKaKYk66DiapWdj1Z2qIGt1iS9fBIqmjhIY
+    yhJA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmMhw43rAaY="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.24.3 DYNA|AUTH)
+    with ESMTPSA id Q01a92x3MG0tYG8
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 22 Apr 2021 18:00:55 +0200 (CEST)
+Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANRm+CxMf=kwDRQE-BNbhgCARuV3fuKpDbEV2oWTeKuGhUYd+w@mail.gmail.com>
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <2d636696-35f0-4731-b1c3-5445a57964fb@www.fastmail.com>
+Date:   Thu, 22 Apr 2021 18:00:55 +0200
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        linux-arch@vger.kernel.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Lubomir Rintel <lkundrak@v3.sk>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com>
+References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk> <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com> <2d636696-35f0-4731-b1c3-5445a57964fb@www.fastmail.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Wanpeng Li wrote:
-> On Thu, 22 Apr 2021 at 09:45, Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Thu, Apr 22, 2021, Kenta Ishiguro wrote:
-> > > To solve problems (2) and (3), patch 2 monitors IPI communication between
-> > > vCPUs and leverages the relationship between vCPUs to select boost
-> > > candidates.  The "[PATCH] KVM: Boost vCPU candidiate in user mode which is
-> > > delivering interrupt" patch
-> > > (https://lore.kernel.org/kvm/CANRm+Cy-78UnrkX8nh5WdHut2WW5NU=UL84FRJnUNjsAPK+Uww@mail.gmail.com/T/)
-> > > seems to be effective for (2) while it only uses the IPI receiver
-> > > information.
-> >
-> > On the IPI side of thing, I like the idea of explicitly tracking the IPIs,
-> > especially if we can simplify the implementation, e.g. by losing the receiver
-> > info and making ipi_received a bool.  Maybe temporarily table Wanpeng's patch
-> > while this approach is analyzed?
-> 
-> Hi all,
-> 
-> I evaluate my patch
+Hi,
 
-Thanks for doing the testing, much appreciated!
+> Am 22.04.2021 um 15:39 schrieb Jiaxun Yang <jiaxun.yang@flygoat.com>:
+>=20
+>=20
+>=20
+> On Thu, Apr 22, 2021, at 1:53 PM, H. Nikolaus Schaller wrote:
+>> Hi,
+>>=20
+>>> Am 21.04.2021 um 21:04 schrieb Maciej W. Rozycki =
+<macro@orcam.me.uk>:
+>>>=20
+>>> On Wed, 21 Apr 2021, H. Nikolaus Schaller wrote:
+>>>=20
+>>>>> In the end I have included four patches on this occasion: 1/4 is =
+the test=20
+>>>>> module, 2/4 is an inline documentation fix/clarification for the =
+`do_div'=20
+>>>>> wrapper, 3/4 enables the MIPS `__div64_32' backend and 4/4 adds a =
+small=20
+>>>>> performance improvement to it.
+>>>>=20
+>>>> How can I apply them to the kernel? There is something wrong which =
+makes
+>>>> git am fail.
+>>>=20
+>>> I don't know.  The changes were made against vanilla 5.12-rc7, but =
+then=20
+>>> the pieces affected have not changed for ages.  FWIW I can `git am' =
+the=20
+>>> series as received back just fine.
+>>=20
+>> Please can you point me to some download/pull/gitweb? It seems as if =
+the series
+>> also did not appear at =
+https://patchwork.kernel.org/project/linux-mips/list/
+>>=20
+>=20
+> You may try download raw from:
+>=20
+> =
+https://lore.kernel.org/linux-mips/E6326E8A-50DA-4F81-9865-F29EE0E298A9@go=
+ldelico.com/T/#t
 
-> (https://lore.kernel.org/kvm/1618542490-14756-1-git-send-email-wanpengli@tencent.com),
-> Kenta's patch 2 and Sean's suggestion. The testing environment is
-> pbzip2 in 96 vCPUs VM in over-subscribe scenario (The host machine is
-> 2 socket, 48 cores, 96 HTs Intel CLX box).
+I simply tried again and it seems that I had tried to git am it on top =
+of the
+patches from Huacai which of course fails.
 
-Are the vCPUs affined in any way?  How many VMs are running?  Are there other
-workloads in the host?  Not criticising, just asking so that others can reproduce
-your setup.
+Now I could run the tests:
 
-> Note: the Kenta's scheduler hacking is not applied. The score of my patch is
-> the most stable and the best performance.
+from [PATCH 4/4]:
 
-On the other hand, Kenta's approach has the advantage of working for both Intel
-and AMD.  But I'm also not very familiar with AMD's AVIC, so I don't know if it's
-feasible to implement a performant equivalent in svm_dy_apicv_has_pending_interrupt().
+> This has passed correctness verification with test_div64 and reduced =
+the
+> module's average execution time down to 1.0445s and 0.2619s from =
+1.0668s
+> and 0.2629s respectively for an R3400 CPU @40MHz and a 5Kc CPU =
+@160MHz.
 
-Kenda's patch is also flawed as it doesn't scale to 96 vCPUs; vCPUs 64-95 will
-never get boosted.
+test only [PATCH 1/4 and 2/4]:
 
-> Wanpeng's patch
-> 
-> The average: vanilla -> boost: 69.124 -> 61.975, 10.3%
-> 
-> * Wall Clock: 61.695359 seconds
-> * Wall Clock: 63.343579 seconds
-> * Wall Clock: 61.567513 seconds
-> * Wall Clock: 62.144722 seconds
-> * Wall Clock: 61.091442 seconds
-> * Wall Clock: 62.085912 seconds
-> * Wall Clock: 61.311954 seconds
-> 
-> Kenta' patch
-> 
-> The average: vanilla -> boost: 69.148 -> 64.567, 6.6%
-> 
-> * Wall Clock:  66.288113 seconds
-> * Wall Clock:  61.228642 seconds
-> * Wall Clock:  62.100524 seconds
-> * Wall Clock:  68.355473 seconds
-> * Wall Clock:  64.864608 seconds
-> 
-> Sean's suggestion:
-> 
-> The average: vanilla -> boost: 69.148 -> 66.505, 3.8%
-> 
-> * Wall Clock: 60.583562 seconds
-> * Wall Clock: 58.533960 seconds
-> * Wall Clock: 70.103489 seconds
-> * Wall Clock: 74.279028 seconds
-> * Wall Clock: 69.024194 seconds
+[  256.301140] test_div64: Completed 64bit/32bit division and modulo =
+test, 0.291154944s elapsed
+
++ [PATCH 3/4]
+
+[ 1698.698920] test_div64: Completed 64bit/32bit division and modulo =
+test, 0.132142865s elapsed
+
++ [PATCH 4/4]
+
+[  466.818349] test_div64: Completed 64bit/32bit division and modulo =
+test, 0.134429075s elapsed
+
+So the new code is indeed faster than the default implementation.
+[PATCH 4/4] has no significant influence (wouldn't say it is slower =
+because timer resolution
+isn't very high on this machine and the kernel has some scheduling issue =
+[1]).
+
+Anyways the JZ4730 can boot and works with these patches included.
+
+BR and thanks,
+Nikolaus Schaller
+
+
+[1] we are preparing full support for the JZ4730 based Skytone Alpha =
+machine. Most features
+are working except sound/I2S. I2C is a little unreliable and Ethernet =
+has hickups. And scheduling
+which indicates some fundamental IRQ or timer issue we could not yet =
+identify.
+
+So if anyone happens to have such a machine and can help debugging, =
+please contact me.
+
