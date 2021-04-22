@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CDC368682
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E7B368690
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236962AbhDVSYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:24:00 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:33313 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236459AbhDVSX4 (ORCPT
+        id S238463AbhDVS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238699AbhDVS35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:23:56 -0400
-Received: by mail-ot1-f47.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso20560945otl.0;
-        Thu, 22 Apr 2021 11:23:20 -0700 (PDT)
+        Thu, 22 Apr 2021 14:29:57 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA64C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:29:22 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id l19so34805637ilk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:29:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IbyceF9eui++TAtaSZCeZk5izUprZMiF7QKSv4IUobA=;
+        b=wFbJIb87LPilAH04qOvCl1m//akK+exnwlHVZTVvemwMBA6BxEytxRdZvZuT1Vut8Y
+         /hlyWUZEQwaZ8dv6gZ6Nm3zJUeuqxhs6csXnOwf1mp7ZrLo3ZVvmPWEQ/aVX1NIbafj7
+         lrTqpo83oxozY6x1fEVyGMdK32GgDkBCEx1yFzxxrmC8TIXAf5PqlHfhs9TP9vSXWZPB
+         CvvW+rBpDSZN/T4YYy8zg2+RzffPIu/2hz0FvVHV8Onqti5uLSDPKoyDiZX/mJUv9S+L
+         LiZNoFpulV9KdU+8Bv0hQ0r+4FiYgwtHhuez87M+pLnZHO99w5BwQiU/Tdsm6lx8ih71
+         e18w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=Kfjgir2jOtQK1x6004nR19DHTf75FNTXdXjs+LH2Wow=;
-        b=WQ9qFtHnGMKf1JkvV0xn2zeSD4M4zkZC1kTiaL5PahNUhmMMv2qngKZVpK5+VqOiYO
-         gI+1TJB3QeXJCXtMTY3LRc5bB5H2d+vbTHKR8Zi/puaLGg4Ihv7CXnPWImtO/jJWA7Cd
-         cRvo4XEiONmBSLS7InUhCHiDIyaueSs7BEGlugVRbYJ1cQmCtGYogoCa4YjwZRyHqVRR
-         0IZ9o94Wz1LFOqO+p4iK+YTYGwiTpxWLLrFqbCbjPiKQeJuCmWqln8fYtb5NJazJVWn5
-         2fTMpOtSzvOBdDOksfXen972pQqFT8zqVqyvNYfD7zi4rXyH6R0vegq/m8QGdivwe5xh
-         kr4A==
-X-Gm-Message-State: AOAM5305tGu4Oe13ZDb0Le9RwcoyP3483WF6c42JWzPmWhx85/NRf3Fg
-        zSXxqkKsflxqt8HVlPDBxQ==
-X-Google-Smtp-Source: ABdhPJyGCuzyghMGKjJ456DxWv1WcfQmZOMj8W9miNjN1WAOrW2zrouvyWVlcSWe/bKnLEWrZOX0Pg==
-X-Received: by 2002:a05:6830:23a5:: with SMTP id m5mr3969855ots.127.1619115800607;
-        Thu, 22 Apr 2021 11:23:20 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k24sm681802oic.51.2021.04.22.11.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 11:23:19 -0700 (PDT)
-Received: (nullmailer pid 3355877 invoked by uid 1000);
-        Thu, 22 Apr 2021 18:23:18 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210422145330.73452-2-tsbogend@alpha.franken.de>
-References: <20210422145330.73452-1-tsbogend@alpha.franken.de> <20210422145330.73452-2-tsbogend@alpha.franken.de>
-Subject: Re: [PATCH v4 2/2] dt-bindings: interrupt-controller: Add IDT 79RC3243x Interrupt Controller
-Date:   Thu, 22 Apr 2021 13:23:18 -0500
-Message-Id: <1619115798.231872.3355876.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IbyceF9eui++TAtaSZCeZk5izUprZMiF7QKSv4IUobA=;
+        b=N62cfmqIP0+usVGdMucIHU90lsKyjQdtuph4yERnBQiMqTs+zN1TW5PBmpNK6Xb4Bx
+         Iz1IfAbpEpDnZNbhGQ+YhGZ4eNOcggSUCKWiNaaQP4J9fjbRNHHAGPwCntTbrJIM7OcN
+         ouoEJyciVFmBr1Ho/XYM22+QM7P3Bby94qMMDhRYFtISsYI/FRKh9cbnVf/+qVIb9//P
+         JrDkSDtKx/g4OM6rpYkjJ9HZ7gM2TB4Ol3FA6LPczcQi3gUbaJolyeGDXIN4S6+0XAzx
+         0ZMnII/9YugvxQrfHWDI5NIlrkssuiORuxZz9bUfZX+WIwv0Aco62XIttP/xgzfvM/X/
+         ll8A==
+X-Gm-Message-State: AOAM531L8CA/iGxLLLp05YVOrxwAhbx+/JQlaNJ5fzjL/w/4MVoT40bT
+        Xzdl8dLKlu6tMr1zWMCIMPSkxbIzRHTvfA==
+X-Google-Smtp-Source: ABdhPJyY9eJZp9VAetK5Q0+RdfAXkpq38nHagsnhZeEz9s729SPJ5vt8aH5CMSfLEBwViFdbG+qADA==
+X-Received: by 2002:a05:6e02:168f:: with SMTP id f15mr4222568ila.264.1619116161690;
+        Thu, 22 Apr 2021 11:29:21 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id u9sm1422138ilg.69.2021.04.22.11.29.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 11:29:21 -0700 (PDT)
+Subject: Re: [PATCH] net: qualcomm: rmnet: Allow partial updates of IFLA_FLAGS
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        Sean Tranchetti <stranche@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniele Palmas <dnlplm@gmail.com>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Loic Poulain <loic.poulain@linaro.org>
+References: <20210422182045.1040966-1-bjorn.andersson@linaro.org>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <76db0c51-15be-2d27-00a7-c9f8dc234816@linaro.org>
+Date:   Thu, 22 Apr 2021 13:29:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210422182045.1040966-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 16:53:29 +0200, Thomas Bogendoerfer wrote:
-> Document DT bindings for IDT 79RC3243x Interrupt Controller.
+On 4/22/21 1:20 PM, Bjorn Andersson wrote:
+> The idiomatic way to handle the changelink flags/mask pair seems to be
+> allow partial updates of the driver's link flags. In contrast the rmnet
+> driver masks the incoming flags and then use that as the new flags.
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Change the rmnet driver to follow the common scheme, before the
+> introduction of IFLA_RMNET_FLAGS handling in iproute2 et al.
+
+I like this a lot.  It should have been implemented this way
+to begin with; there's not much point to have the mask if
+it's only applied to the passed-in value.
+
+KS, are you aware of *any* existing user space code that
+would not work correctly if this were accepted?
+
+I.e., the way it was (is), the value passed in *assigns*
+the data format flags.  But with Bjorn's changes, the
+data format flags would be *updated* (i.e., any bits not
+set in the mask field would remain with their previous
+value).
+
+Reviewed-by: Alex Elder <elder@linaro.org>
+
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-> Changes in v4:
->   - renamed to idt,32434-pic
+>   drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Changes in v3:
->   - fixed compatible string in example
+> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> index 8d51b0cb545c..2c8db2fcc53d 100644
+> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c
+> @@ -336,7 +336,8 @@ static int rmnet_changelink(struct net_device *dev, struct nlattr *tb[],
+>   
+>   		old_data_format = port->data_format;
+>   		flags = nla_data(data[IFLA_RMNET_FLAGS]);
+> -		port->data_format = flags->flags & flags->mask;
+> +		port->data_format &= ~flags->mask;
+> +		port->data_format |= flags->flags & flags->mask;
+>   
+>   		if (rmnet_vnd_update_dev_mtu(port, real_dev)) {
+>   			port->data_format = old_data_format;
 > 
-> Changes in v2:
->   - added dt binding doc
-> 
->  .../interrupt-controller/idt,32434-pic.yaml   | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.example.dt.yaml: interrupt-controller@3800c: 'interrupts' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/interrupt-controller/idt,32434-pic.yaml
-
-See https://patchwork.ozlabs.org/patch/1469240
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
 
