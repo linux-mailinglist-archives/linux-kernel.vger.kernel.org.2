@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051FC367990
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30F9367996
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhDVF41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 01:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhDVF40 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 01:56:26 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE32BC06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 22:55:51 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id i12so13741936qke.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 22:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Yd2gs0ulaQk3ryBAG/T9ZY2Wi9SgLd9cQYKXihYv8FY=;
-        b=qgLnNEFAyhsCr5cTqAilhCCR88xu+Lo0ZCHkoYuo9qoV9qF5+bl0g2GDlTmSFyksax
-         ac+CqrVtJ4ALOfyvVhbTdPiah0c0VuiBGi8wYRpGPinVYsDjJbXJE5s//i9QIYjdeYdU
-         LM0uyBCx6cLA8P4esZfCYogttHX/0pJrFcX9MeLotQzuNT4H7z7XqntpI2jcW//5pxdq
-         3jWYc4yiEbbY365WjsxyBm81g2fUS35RYgRJRARaOalJlPngmh2neZzzi4sa0NUbmRUj
-         F50jwME1yvUTFGtN9FO4UmbErfRtmFuW77Q9nsSBUeJGvk9mVMXDyipPC9PhhiGmcRu9
-         xEKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Yd2gs0ulaQk3ryBAG/T9ZY2Wi9SgLd9cQYKXihYv8FY=;
-        b=cDFhzw/kJEUTyL0bInHQIKrC0zXxLqJO2i2QbBWJ/9amc2gLFJktK7cQ/1MoiDdta5
-         2X0snTvacIlRklXL07YI3yoVq+6znYYx9bdxB3yg3vtznMbjX+Z4lNpy52Ezh+cRDHGb
-         habtc/ddQJi7mpoh+yKi86nWfQErs+2b8qwJiLGWMwlkMNJf39wQ+1WdXWDLkDL12/XK
-         9T6dXGxdfXKEZJ+EmRe4rw2MeHeUWHN332ZFWSm8pjxxArQR+zNczSCKtNAMnFAy11w3
-         Yg3jLpqbsi+mR63hoT8kP4Gpagq9Zfxs4Ldnyf8gvO/KnB1RPoGt0LHFrdETZnSrlCEk
-         a+QA==
-X-Gm-Message-State: AOAM533/mUoOXuTCC3+gHjwmcNTlPLmBCdJqe4uk6bDP70dY0lPDZmYW
-        e4I9G0vur08PxvIrj0h5K/WpOQ==
-X-Google-Smtp-Source: ABdhPJwTn+aHqXWQgw/QpAWr54vJAvqSR/wNms5ahjY3dZ7KwzD9PAegW91quU4DGMZ0H997GGZ9kQ==
-X-Received: by 2002:a05:620a:4143:: with SMTP id k3mr1849181qko.497.1619070950786;
-        Wed, 21 Apr 2021 22:55:50 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i21sm1505944qtr.94.2021.04.21.22.55.49
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 21 Apr 2021 22:55:50 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 22:55:37 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] mm/filemap: fix mapping_seek_hole_data on THP &
- 32-bit
-In-Reply-To: <20210422011631.GL3596236@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2104212253000.4412@eggly.anvils>
-References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils> <alpine.LSU.2.11.2104211737410.3299@eggly.anvils> <20210422011631.GL3596236@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S234806AbhDVF6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 01:58:08 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44511 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229923AbhDVF6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 01:58:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQmsh0Pskz9sTD;
+        Thu, 22 Apr 2021 15:57:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619071048;
+        bh=sg9p+Yym4WtkPibvGln+BlE8RicUroqClBfSKpfPyY4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GoNHdzV6ijIt79lu9nIC7atw6SkqgdrUYlZMQG+2IVvYcZ2YILdsnp8M7pBwDa0Eh
+         F8yOEsmioe9+Z2r4NidAS53Zasklj07lfrG3L6uxav2x4Htz6PkAzaj/xt2pCVF2R9
+         BRa5AKLF6ClDLBEOxYS3lNuod1i52YtAfzUNFntDiefwsEQCEDZVRTt7vl3xMw/a04
+         Ff+ug+rI0WoGfEURpOIulmEm65pPtnQVApfLY6Tl7gRWiWG0UBPx2l4XxNdvBQN6O8
+         yM4955hchw2rH8y+j8IiZu5sCDyEKrRbCvbo2+J8dJ4d4mGbnGRAL02eqI4DsEA+nu
+         3yd7Ls7aMlFDg==
+Date:   Thu, 22 Apr 2021 15:57:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        KVM <kvm@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nathan Tempelman <natet@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+Subject: linux-next: manual merge of the cgroup tree with the kvm tree
+Message-ID: <20210422155727.70ca2e49@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; boundary="Sig_/1EmnoDOHwrH+rqAlBqfORKI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021, Matthew Wilcox wrote:
-> On Wed, Apr 21, 2021 at 05:39:14PM -0700, Hugh Dickins wrote:
-> > No problem on 64-bit without huge pages, but xfstests generic/285
-> > and other SEEK_HOLE/SEEK_DATA tests have regressed on huge tmpfs,
-> > and on 32-bit architectures, with the new mapping_seek_hole_data().
-> > Several different bugs turned out to need fixing.
-> > 
-> > u64 casts added to stop unfortunate sign-extension when shifting
-> > (and let's use shifts throughout, rather than mixed with * and /).
-> 
-> That confuses me.  loff_t is a signed long long, but it can't be negative
-> (... right?)  So how does casting it to an u64 before dividing by
-> PAGE_SIZE help?
+--Sig_/1EmnoDOHwrH+rqAlBqfORKI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That is a good question. Sprinkling u64s was the first thing I tried,
-and I'd swear that it made a good difference at the time; but perhaps
-that was all down to just the one on xas.xa_index << PAGE_SHIFT. Or
-is it possible that one of the other bugs led to a negative loff_t,
-and the casts got better behaviour out of that? Doubtful.
+Hi all,
 
-What I certainly recall from yesterday was leaving out one (which?)
-of the casts as unnecessary, and wasting quite a bit of time until I
-put it back in. Did I really choose precisely the only one necessary?
+Today's linux-next merge of the cgroup tree got a conflict in:
 
-Taking most of them out did give me good quick runs just now: I'll
-go over them again and try full runs on all machines. You'll think me
-crazy, but yesterday's experience leaves me reluctant to change without
-full testing - but agree it's not good to leave ignorant magic in.
+  arch/x86/kvm/svm/svm.h
 
-> 
-> > Use round_up() when advancing pos, to stop assuming that pos was
-> > already THP-aligned when advancing it by THP-size.  (But I believe
-> > this use of round_up() assumes that any THP must be THP-aligned:
-> > true while tmpfs enforces that alignment, and is the only fs with
-> > FS_THP_SUPPORT; but might need to be generalized in the future?
-> > If I try to generalize it right now, I'm sure to get it wrong!)
-> 
-> No generalisation needed in future.  Folios must be naturally aligned
-> within a file.
+between commit:
 
-Thanks for the info: I did search around in your various patch series
-from last October, and failed to find a decider there: I imagined that
-when you started on compound pages for more efficient I/O, there would
-be no necessity to align them (whereas huge pmd mappings of shared
-files make the alignment important). Anyway, assuming natural alignment
-is easiest - but it's remarkable how few places need to rely on it.
+  54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
 
-> 
-> > @@ -2681,7 +2681,8 @@ loff_t mapping_seek_hole_data(struct add
-> >  
-> >  	rcu_read_lock();
-> >  	while ((page = find_get_entry(&xas, max, XA_PRESENT))) {
-> > -		loff_t pos = xas.xa_index * PAGE_SIZE;
-> > +		loff_t pos = (u64)xas.xa_index << PAGE_SHIFT;
-> > +		unsigned int seek_size;
-> 
-> I've been preferring size_t for 'number of bytes in a page' because
-> I'm sure somebody is going to want a page larger than 2GB in the next
-> ten years.
+from the kvm tree and commit:
 
-Ah, there I was simply following what the author of seek_page_size()
-had chosen, and I think that's the right thing to do in today's tree:
-let's see who that author was... hmm, someone called Matthew Wilcox :)
+  7aef27f0b2a8 ("svm/sev: Register SEV and SEV-ES ASIDs to the misc control=
+ler")
+
+from the cgroup tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kvm/svm/svm.h
+index 454da1c1d9b7,9806aaebc37f..000000000000
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@@ -68,7 -65,7 +68,8 @@@ struct kvm_sev_info=20
+  	unsigned long pages_locked; /* Number of pages locked */
+  	struct list_head regions_list;  /* List of registered regions */
+  	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
+ +	struct kvm *enc_context_owner; /* Owner of copied encryption context */
++ 	struct misc_cg *misc_cg; /* For misc cgroup accounting */
+  };
+ =20
+  struct kvm_svm {
+
+--Sig_/1EmnoDOHwrH+rqAlBqfORKI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCBEEcACgkQAVBC80lX
+0Gx3BQgAnXwVvX8Ls+1RuPeLhvaMyLudVx1yoD16tvrM32rMfif/wEZqCrmk1gHO
+J01gSUM07C/90ykbQUHCK5jiB2cHjDeeMp7jKf8gBSuV/R/Lx6SppgX5CwaGCz7g
+2ycCeRpfgPHUTYaDRXlrRrPxkrU+6pmVNrJpuq4zp6dw1ooe4ICBPWihSF4dBRdv
+QmS8WtPc7lupsaouWdkZXvv+rSKJY3VVQP8PfjdKrEZQrcV9iSFglOvtux3caESI
+AdoEeO2LJ8Vx5sP3AyKM9/FsmbLv1IWrNHxpmR0llzyURdnHQPQTDaOkSqtSyXGk
+HmCHkcPCnfVPuUusgzpTjYnsPln7Vg==
+=dNwJ
+-----END PGP SIGNATURE-----
+
+--Sig_/1EmnoDOHwrH+rqAlBqfORKI--
