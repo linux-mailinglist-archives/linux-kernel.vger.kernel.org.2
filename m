@@ -2,105 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF28E368332
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC24C36832E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237812AbhDVPSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:18:45 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:2532 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237782AbhDVPSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:18:44 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MF0mV9014176;
-        Thu, 22 Apr 2021 15:17:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Rek5ib4KVkGbLgWvvgyJ8gG8LHrGGTA42+yAkTTjZB8=;
- b=Lp5D/9zDRUNAd17IvFiGGCilm6fRBIoIpwsCA32ni0624BekcnXwxd2dHIu4Du7zpRMG
- KvDjBCbqtGGBCjWJ+SPT7RrSvZf7Sa4sDg542lOAVLe5i6ZNQbzjQhCgxVbFM1jBr1wN
- POw1UT63GuorRIsuPSxZDA/T2tGPSa/+tsLclCvrh+nbz2cOyXbFrnw3As4S5h2S5ghO
- WNvz+7sX/B0RIE0dkOOwxaUsjVSKMfwxp2DixGh8x2iXO7At3T45i7E1uavMULERoAd2
- ou25zuhgPJ5fboP9RdWqgmmPsXtj8Ou/8PttD2tOVW3wgYZ2shHls0IuIzpwhL9gekls UA== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 382uth0bfc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 15:17:53 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13MFHrZT192830;
-        Thu, 22 Apr 2021 15:17:53 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3809m2ekqh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 15:17:53 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13MFGMdT184396;
-        Thu, 22 Apr 2021 15:17:52 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3809m2ekq5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 15:17:52 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13MFHmuR002595;
-        Thu, 22 Apr 2021 15:17:48 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Apr 2021 08:17:48 -0700
-Date:   Thu, 22 Apr 2021 18:17:40 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        Marco Cesati <marcocesati@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: avoid bogus gcc warning
-Message-ID: <20210422151740.GI1981@kadam>
-References: <20210422133219.1689027-1-arnd@kernel.org>
+        id S236552AbhDVPST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:18:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32780 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236545AbhDVPSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:18:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619104661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2BYuXXN8/OBblmoa+ncdX77EGf3yTri3xgSGi8hCO4M=;
+        b=G2kvM2OokcZFDI+FtrkbP0dxr2tiAsqA9mhbVx3ZSGH/lyej58Y7L/EKacGsZXKRK0yVVQ
+        eaXzXtQ3zdN+VpPTEOEffEhAEzKBzW/4ZPLs3B3TT9DX9+CbX0IVpN4K1zkd46eYCjZn2z
+        avuSj8oseGASAOpWUGcseVnio8RVJns=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C4394B16D;
+        Thu, 22 Apr 2021 15:17:41 +0000 (UTC)
+Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
+ features
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+References: <20210422151007.2205-1-jgross@suse.com>
+ <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
+Date:   Thu, 22 Apr 2021 17:17:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422133219.1689027-1-arnd@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: Evf3bBxuuGAjpX92Ko6vLzYXNqckTjTo
-X-Proofpoint-GUID: Evf3bBxuuGAjpX92Ko6vLzYXNqckTjTo
+In-Reply-To: <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="L5W1K6enWIN9DczrZcMznw5E6clpitwqr"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 03:32:04PM +0200, Arnd Bergmann wrote:
-> @@ -762,7 +764,6 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
->  		}
->  
->  	}
-> -
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--L5W1K6enWIN9DczrZcMznw5E6clpitwqr
+Content-Type: multipart/mixed; boundary="L39QdbBzx0NA6TykYKoUbdrBG8EpRQ9x7";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, xen-devel@lists.xenproject.org
+Message-ID: <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
+Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
+ features
+References: <20210422151007.2205-1-jgross@suse.com>
+ <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+In-Reply-To: <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
 
-Since you're going to need to redo this, then please don't do this
-unrelated whitespace change.
+--L39QdbBzx0NA6TykYKoUbdrBG8EpRQ9x7
+Content-Type: multipart/mixed;
+ boundary="------------8D502D4FB9C60FE2573AA119"
+Content-Language: en-US
 
->  exit:
->  
->  	return ret;
-> @@ -885,8 +886,10 @@ static int rtw_cfg80211_set_encryption(struct net_device *dev, struct ieee_param
->  					if (strcmp(param->u.crypt.alg, "TKIP") == 0 || strcmp(param->u.crypt.alg, "CCMP") == 0)
->  					{
->  						memcpy(padapter->securitypriv.dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
-> +#if 1
+This is a multi-part message in MIME format.
+--------------8D502D4FB9C60FE2573AA119
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-These seems unintetional?
+On 22.04.21 17:16, Jan Beulich wrote:
+> On 22.04.2021 17:10, Juergen Gross wrote:
+>> Some features of Xen can be assumed to be always present, so add a
+>> central check to verify this being true and remove the other checks.
+>>
+>> Juergen Gross (3):
+>>    xen: check required Xen features
+>>    xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv gues=
+ts
+>>    xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guests
+>=20
+> I wonder whether it's a good idea to infer feature presence from
+> version numbers. If (at some point in the past) you had inferred
+> gnttab v2 being available by version, this would have been broken
+> by its availability becoming controllable by a command line option
+> in Xen.
 
->  						memcpy(padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
->  						memcpy(padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
-> +#endif
->  	                                        padapter->securitypriv.binstallGrpkey = true;
->  
->  						padapter->securitypriv.dot118021XGrpKeyid = param->u.crypt.idx;
+I'm testing the feature to be really present when booting and issue a
+message if it is not there.
 
-regards,
-dan carpenter
+Juergen
 
+--------------8D502D4FB9C60FE2573AA119
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------8D502D4FB9C60FE2573AA119--
+
+--L39QdbBzx0NA6TykYKoUbdrBG8EpRQ9x7--
+
+--L5W1K6enWIN9DczrZcMznw5E6clpitwqr
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCBk5QFAwAAAAAACgkQsN6d1ii/Ey9s
+iAf/QCx3nIoXECUQROeEqv+AKRuwsqtLQSyNjGf21B0piVvFiuMxgIyRS3e1lTATZQsfaJlR8abV
+SWCHJQ6d+sq7gPQlWIaduFO0mXXPldRpTzNFZOwFz5uXceFCfxPBpL71Jcq63VU59YPIMKNDMPSk
+AEpNNwOLwRC0pYnDuuiECxxRd7CQiMgP4gEARwLnu48E8aTsoSV/ZEqtM1PDD7PHYaXEPetzCEtE
+MAGuuLWSX4JEAwxXD1c6ASuT+Q5ab0ubc0NKE7CwQpJGCo+Y6ePvLC9XL6UGijH718T7j9oq+SxQ
+GGQp/zjrEh96XvCksDKTPmFyTtETXNx4f/S05i08ag==
+=lQtO
+-----END PGP SIGNATURE-----
+
+--L5W1K6enWIN9DczrZcMznw5E6clpitwqr--
