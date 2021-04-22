@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EF3367A26
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BA0367A45
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234941AbhDVGsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234913AbhDVGsB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:48:01 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80B1C06138E
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:47:26 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id l17so13540883oil.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wTjjN5jAG5wIij1DihAnfF2YGoCBK9l6YKfTSDtQuuw=;
-        b=lA/wdfNnxbUzsB2aSrzU1nhguY4+P6Aj7qnVqkf5OhF3sIXJOlTSGd9kiMXUAzxysb
-         W9QxSlfFJL7eB48TdEIbZwylUsW48RfPkIAqFU/rp2hCT5QWBBzk8WEoWFAagDOwQM/e
-         Vrf8OGXAY/yBa15JsD4ffNk5Yq521ogLASDGN+9A73YZBNVlqNihiexcQD9WoaQ67iJR
-         TgLFSLgTG6X7ptC8ZGmhj9i5I1DB7ubEaF0JWBSUgGG1mljq/HcUXyo9XgxL9gMNrINK
-         2XsvC7sxwvCG4Rb/UT4z60h0z7UJ36wu/Uh+Ls0nO6/f21RJ61u0O+KXLP+C5dPrvvs4
-         eLHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wTjjN5jAG5wIij1DihAnfF2YGoCBK9l6YKfTSDtQuuw=;
-        b=COxbqAth/xFHIHMTfzEH+zQhSW5B77BuHRMsmgf5eKiOXK2VPIekHQGmQ19d9uiKfo
-         Vl2nNRGy9B3fCyUg8ooR1PQKGzQZSxbrbruaA1uoEYwk/HurJmASbXsopfTo8iYo0fwY
-         ct2cVV2DZ2oIzPN45iqBIxWKP8uDQQo2aOi5nUeYJsVfexXYHwITWOcLvZOqbH30KRbX
-         q6WU9hfVcpbDGnaDxT6i0mk9UbIOi9snaOW7VCQL2TFvf4F0oHhOrge4F5LykdWPLfwN
-         GAFseEg3RNmDKwUQPwJRJIWIMcbNZHP/6tQZy2FhRrPQHK/amcov4Fv+qfjp+NW9ql7/
-         B9Nw==
-X-Gm-Message-State: AOAM532qkUF74hpbM/Z25Tpq4WteVRHSGS1tUqpgJYGky2yZ2U8yRszu
-        u9Q3Ow51xx5uJcaHzYdccQ5xdfROPlVfeXMH6uwriQ==
-X-Google-Smtp-Source: ABdhPJz+a6SHZEXyLt9Z7/nm+V2v7tz51a75rL/rIBsZOOdAAJeD+/znnbrUP8V+l4NnAp+N+L56r3GGMKmOwrilkZY=
-X-Received: by 2002:aca:408a:: with SMTP id n132mr1231205oia.70.1619074045847;
- Wed, 21 Apr 2021 23:47:25 -0700 (PDT)
+        id S234734AbhDVGzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:55:43 -0400
+Received: from mout02.posteo.de ([185.67.36.142]:58981 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhDVGzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 02:55:09 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 02:55:09 EDT
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 57C8C2400FC
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 08:47:24 +0200 (CEST)
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FQnzH0cm6z6tmV;
+        Thu, 22 Apr 2021 08:47:22 +0200 (CEST)
+Subject: Re: [PATCH 120/190] Revert "tty: atmel_serial: fix a potential NULL
+ pointer dereference"
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>,
+        Richard Genoud <richard.genoud@gmail.com>,
+        stable <stable@vger.kernel.org>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-121-gregkh@linuxfoundation.org>
+ <57f44dfa-a502-ee4f-6d53-0ab7cba00e1b@kernel.org>
+From:   Richard Genoud <richard.genoud@gmail.com>
+Message-ID: <ad76449f-0603-a156-85d6-37d3c906b4cc@posteo.net>
+Date:   Thu, 22 Apr 2021 06:47:20 +0000
 MIME-Version: 1.0
-References: <CANpmjNM8wEJngK=J8Lt9npkZgrSWoRsqkdajErWEoY_=M1GW5A@mail.gmail.com>
- <43f8a3bf-34c5-0fc9-c335-7f92eaf23022@samsung.com> <dccaa337-f3e5-08e4-fe40-a603811bb13e@samsung.com>
- <CANpmjNP6-yKpxHqYFiA8Up-ujBQaeP7xyq1BrsV-NqMjJ-uHAQ@mail.gmail.com>
- <740077ce-efe1-b171-f807-bc5fd95a32ba@samsung.com> <f114ff4a-6612-0935-12ac-0e2ac18d896c@samsung.com>
- <CANpmjNM6bQpc49teN-9qQhCXoJXaek5stFGR2kPwDroSFBc0fw@mail.gmail.com>
- <cf6ed5cd-3202-65ce-86bc-6f1eba1b7d17@samsung.com> <CANpmjNPr_JtRC762ap8PQVmsFNY5YhHvOk0wNcPHq=ZQt-qxYg@mail.gmail.com>
- <YIBSg7Vi+U383dT7@elver.google.com> <CGME20210421182355eucas1p23b419002936ab5f1ffc25652135cc152@eucas1p2.samsung.com>
- <YIBtr2w/8KhOoiUA@elver.google.com> <dd99b921-3d79-a21f-8942-40fa5bf53190@samsung.com>
-In-Reply-To: <dd99b921-3d79-a21f-8942-40fa5bf53190@samsung.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 22 Apr 2021 08:47:13 +0200
-Message-ID: <CANpmjNPbMOUd_Wh5aHGdH8WLrYpyBFUpwx6g3Kj2D6eevvaU8w@mail.gmail.com>
-Subject: Re: [PATCH v4 05/10] signal: Introduce TRAP_PERF si_code and si_perf
- to siginfo
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <57f44dfa-a502-ee4f-6d53-0ab7cba00e1b@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 at 08:12, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
-[...]
-> > So I think we just have to settle on 'unsigned long' here. On many
-> > architectures, like 32-bit Arm, the alignment of a structure is that of
-> > its largest member. This means that there is no portable way to add
-> > 64-bit integers to siginfo_t on 32-bit architectures.
-> >
-> > In the case of the si_perf field, word size is sufficient since the data
-> > it contains is user-defined. On 32-bit architectures, any excess bits of
-> > perf_event_attr::sig_data will therefore be truncated when copying into
-> > si_perf.
-> >
-> > Feel free to test the below if you have time, but the below lets me boot
-> > 32-bit arm which previously timed out. It also passes all the
-> > static_asserts() I added (will send those as separate patches).
-> >
-> > Once I'm convinced this passes all others tests too, I'll send a patch.
->
-> This fixes the issue I've observed on my test systems. Feel free to add:
->
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
->
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Thank you for testing! It's been sent:
-https://lkml.kernel.org/r/20210422064437.3577327-1-elver@google.com
 
-Thanks,
--- Marco
+Le 22/04/2021 à 07:18, Jiri Slaby a écrit :
+> On 21. 04. 21, 14:59, Greg Kroah-Hartman wrote:
+>> This reverts commit c85be041065c0be8bc48eda4c45e0319caf1d0e5.
+>>
+>> Commits from @umn.edu addresses have been found to be submitted in "bad
+>> faith" to try to test the kernel community's ability to review "known
+>> malicious" changes.  The result of these submissions can be found in a
+>> paper published at the 42nd IEEE Symposium on Security and Privacy
+>> entitled, "Open Source Insecurity: Stealthily Introducing
+>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+>> of Minnesota) and Kangjie Lu (University of Minnesota).
+>>
+>> Because of this, all submissions from this group must be reverted from
+>> the kernel tree and will need to be re-reviewed again to determine if
+>> they actually are a valid fix.  Until that work is complete, remove this
+>> change to ensure that no problems are being introduced into the
+>> codebase.
+>>
+>> Cc: Kangjie Lu <kjlu@umn.edu>
+>> Cc: Richard Genoud <richard.genoud@gmail.com>
+>> Cc: stable <stable@vger.kernel.org>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> ---
+>>   drivers/tty/serial/atmel_serial.c | 4 ----
+>>   1 file changed, 4 deletions(-)
+>>
+>> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+>> index a24e5c2b30bc..9786d8e5f04f 100644
+>> --- a/drivers/tty/serial/atmel_serial.c
+>> +++ b/drivers/tty/serial/atmel_serial.c
+>> @@ -1256,10 +1256,6 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
+>>                        sg_dma_len(&atmel_port->sg_rx)/2,
+>>                        DMA_DEV_TO_MEM,
+>>                        DMA_PREP_INTERRUPT);
+>> -    if (!desc) {
+>> -        dev_err(port->dev, "Preparing DMA cyclic failed\n");
+>> -        goto chan_err;
+>> -    }
+> 
+> I cannot find anything malicious in the original fix:
+> * port->dev is valid for dev_err
+> * dmaengine_prep_dma_cyclic returns NULL in case of error
+> * chan_err invokes atmel_release_rx_dma which undoes the previous initialization code.
+> 
+> Hence a NACK from me for the revert.
+
+I agree with your NACK.
+Back at the time (march 2019), I reviewed the changed and asked for a 2nd version and
+I didn't found anything suspicious.
+But the more eyes, the better.
+
+cf http://lkml.iu.edu/hypermail/linux/kernel/1903.1/05858.html
+
+> 
+>>       desc->callback = atmel_complete_rx_dma;
+>>       desc->callback_param = port;
+>>       atmel_port->desc_rx = desc;
+>>
+> 
+> 
