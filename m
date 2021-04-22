@@ -2,187 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CD5367B9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DE0367BA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhDVH7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S235166AbhDVH7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhDVH7W (ORCPT
+        with ESMTP id S235133AbhDVH7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:59:22 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D60BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:58:48 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x7so43751106wrw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kf6gsxqxNpN3Lm3SbeRjTYefxpY3XJBMkCmIX6J25y4=;
-        b=PYul1bn3yexdXahhBqWZTF/Sa1sV9GlStt10ZBj9QH7RNxxi7o/QdCG4X37Qn1KNLf
-         8GeHvMD+q2WaJkHFDWmZ1jU30AHsW5RyXpgbi+6Xo6ohjW4u2HvJSMQhtLLcoesYarjr
-         +NfR3T+9KQpleMiJOFRt9/2JCzVsPuq0fCglvITtUFihTstUMlf9s/ZZyD4QgZgMcefj
-         /QFiWR3zYzaadScM3lwGtMQ/H4e9tpvenCHUacZMmyrnhqOv7Q1PXPZ4IV40H1iA45SI
-         5Dqt+jtYroWYb/VnywRnmKj9dzPzm0xdl9GbgVc3eQ2KI7j2ILxDsGMeY5+i12RrsIX/
-         Lb7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kf6gsxqxNpN3Lm3SbeRjTYefxpY3XJBMkCmIX6J25y4=;
-        b=GuGkTxyuUgwSE4+LFIwLKEyDzqseKu9pQanDlpZ7pZaSx3+OnmizWpNb4n/UCEvdPi
-         /rbQ5ByX5/hHp7VmksPBORhnOaBQ3KUtAH+uaG4lME9NflvS8Q/7mGqShY3/6l/jOPr3
-         BfWtL5p31+4yqXBk+LCmzLiuYQDNvViuAOjECQ4cebSfudAJz5f8bujbC46I2YnFLasP
-         +YCAOQVurCli7/jpIgo5T8m/95HAioJuVmVOJMvCsVf54YXMIldidgRpk4cgVlC1swt4
-         YK1BUGX8WgQifNMqPugYoYAIpS/zDpIXIHP5uwzumMGi/5pJzY83RNfodfxzVhTvmaoR
-         qhxw==
-X-Gm-Message-State: AOAM532IVv+0z6Gr4N1o4XihJUUSbCyzqW4pHZeT0U6nD1NY9zhbHK1J
-        xZqCmk44L1hek6z3a520PcUMcQ==
-X-Google-Smtp-Source: ABdhPJxVgtke38xD1dnxDE+rhklJfkCiRbSCSBv7OOAz4ajCMImvrFxR7SU6+HHGbAnk9sTNqJdJhQ==
-X-Received: by 2002:adf:f588:: with SMTP id f8mr2409505wro.277.1619078326991;
-        Thu, 22 Apr 2021 00:58:46 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e88d:2580:c20:b786? ([2a01:e34:ed2f:f020:e88d:2580:c20:b786])
-        by smtp.googlemail.com with ESMTPSA id t14sm2200498wrz.55.2021.04.22.00.58.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 00:58:46 -0700 (PDT)
-Subject: Re: [PATCH v3 3/3] thermal: create a helper __thermal_cdev_update()
- without a lock
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com
-References: <20210421174145.8213-1-lukasz.luba@arm.com>
- <20210421174145.8213-4-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <3d08d5cf-9e3b-ae26-cfd5-bf9a40d11643@linaro.org>
-Date:   Thu, 22 Apr 2021 09:58:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 22 Apr 2021 03:59:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876B9C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:58:57 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1lZUEf-00062I-8O; Thu, 22 Apr 2021 09:58:53 +0200
+Received: from [2a0a:edc0:0:900:2e4d:54ff:fe67:bfa5] (helo=ginster)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1lZUEe-0000K0-JG; Thu, 22 Apr 2021 09:58:52 +0200
+Received: from jbe by ginster with local (Exim 4.92)
+        (envelope-from <jbe@pengutronix.de>)
+        id 1lZUEe-0002RY-IT; Thu, 22 Apr 2021 09:58:52 +0200
+From:   Juergen Borleis <jbe@pengutronix.de>
+To:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH] USB: serial: ftdi_sio: add IDs for IDS GmbH Products
+Date:   Thu, 22 Apr 2021 09:58:52 +0200
+Message-Id: <20210422075852.9351-1-jbe@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210421174145.8213-4-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: jbe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/2021 19:41, Lukasz Luba wrote:
-> There is a need to have a helper function which updates cooling device
-> state from the governors code. With this change governor can use
-> lock and unlock while calling helper function. This avoid unnecessary
-> second time lock/unlock which was in previous solution present in
-> governor implementation. This new helper function must be called
-> with mutex 'cdev->lock' hold.
-> 
-> The changed been discussed and part of code presented in thread:
-> https://lore.kernel.org/linux-pm/20210419084536.25000-1-lukasz.luba@arm.com/
-> 
-> Co-developed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  drivers/thermal/gov_power_allocator.c |  5 +----
->  drivers/thermal/thermal_core.h        |  1 +
->  drivers/thermal/thermal_helpers.c     | 28 +++++++++++++++++----------
+From: Dominik Andreas Schorpp <dominik.a.schorpp@ids.de>
 
-Why not add this patch first (without the ipa changes) and then replace
-patch 2 by using the new function ? That will prevent to go back and forth.
+Add the IDS GmbH Vendor ID and the Product IDs for SI31A (2xRS232)
+and CM31A (LoRaWAN Modem).
 
+Signed-off-by: Dominik Andreas Schorpp <dominik.a.schorpp@ids.de>
+Signed-off-by: Juergen Borleis <jbe@pengutronix.de>
+---
+ drivers/usb/serial/ftdi_sio.c     | 3 +++
+ drivers/usb/serial/ftdi_sio_ids.h | 7 +++++++
+ 2 files changed, 10 insertions(+)
 
->  3 files changed, 20 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index f379f1aaa3b5..a6cdb2e892da 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -595,12 +595,9 @@ static void allow_maximum_power(struct thermal_zone_device *tz, bool update)
->  		cdev->ops->get_requested_power(cdev, &req_power);
->  
->  		if (update)
-> -			instance->cdev->updated = false;
-> +			__thermal_cdev_update(instance->cdev);
->  
->  		mutex_unlock(&instance->cdev->lock);
-> -
-> -		if (update)
-> -			thermal_cdev_update(instance->cdev);
->  	}
->  	mutex_unlock(&tz->lock);
->  }
-> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-> index 86b8cef7310e..726e327b4205 100644
-> --- a/drivers/thermal/thermal_core.h
-> +++ b/drivers/thermal/thermal_core.h
-> @@ -66,6 +66,7 @@ static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
->  }
->  
->  void thermal_cdev_update(struct thermal_cooling_device *);
-> +void __thermal_cdev_update(struct thermal_cooling_device *cdev);
->  
->  /**
->   * struct thermal_trip - representation of a point in temperature domain
-> diff --git a/drivers/thermal/thermal_helpers.c b/drivers/thermal/thermal_helpers.c
-> index 7f50f412e02a..3d7fd46104de 100644
-> --- a/drivers/thermal/thermal_helpers.c
-> +++ b/drivers/thermal/thermal_helpers.c
-> @@ -192,18 +192,12 @@ static void thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev,
->  	thermal_cooling_device_stats_update(cdev, target);
->  }
->  
-> -void thermal_cdev_update(struct thermal_cooling_device *cdev)
-> +
-> +void __thermal_cdev_update(struct thermal_cooling_device *cdev)
->  {
->  	struct thermal_instance *instance;
->  	unsigned long target = 0;
->  
-> -	mutex_lock(&cdev->lock);
-> -	/* cooling device is updated*/
-> -	if (cdev->updated) {
-> -		mutex_unlock(&cdev->lock);
-> -		return;
-> -	}
-> -
->  	/* Make sure cdev enters the deepest cooling state */
->  	list_for_each_entry(instance, &cdev->thermal_instances, cdev_node) {
->  		dev_dbg(&cdev->device, "zone%d->target=%lu\n",
-> @@ -216,11 +210,25 @@ void thermal_cdev_update(struct thermal_cooling_device *cdev)
->  
->  	thermal_cdev_set_cur_state(cdev, target);
->  
-> -	cdev->updated = true;
-> -	mutex_unlock(&cdev->lock);
->  	trace_cdev_update(cdev, target);
->  	dev_dbg(&cdev->device, "set to state %lu\n", target);
->  }
-> +
-> +/**
-> + * thermal_cdev_update - update cooling device state if needed
-> + * @cdev:	pointer to struct thermal_cooling_device
-> + *
-> + * Update the cooling device state if there is a need.
-> + */
-> +void thermal_cdev_update(struct thermal_cooling_device *cdev)
-> +{
-> +	mutex_lock(&cdev->lock);
-> +	if (!cdev->updated) {
-> +		__thermal_cdev_update(cdev);
-> +		cdev->updated = true;
-> +	}
-> +	mutex_unlock(&cdev->lock);
-> +}
->  EXPORT_SYMBOL(thermal_cdev_update);
->  
->  /**
-> 
-
-
+diff --git a/drivers/usb/serial/ftdi_sio.c b/drivers/usb/serial/ftdi_sio.c
+index c867592..5a725ff 100644
+--- a/drivers/usb/serial/ftdi_sio.c
++++ b/drivers/usb/serial/ftdi_sio.c
+@@ -1034,6 +1034,9 @@ static const struct usb_device_id id_table_combined[] = {
+ 	/* Sienna devices */
+ 	{ USB_DEVICE(FTDI_VID, FTDI_SIENNA_PID) },
+ 	{ USB_DEVICE(ECHELON_VID, ECHELON_U20_PID) },
++	/* IDS GmbH devices */
++	{ USB_DEVICE(IDS_VID, IDS_SI31A_PID) },
++	{ USB_DEVICE(IDS_VID, IDS_CM31A_PID) },
+ 	/* U-Blox devices */
+ 	{ USB_DEVICE(UBLOX_VID, UBLOX_C099F9P_ZED_PID) },
+ 	{ USB_DEVICE(UBLOX_VID, UBLOX_C099F9P_ODIN_PID) },
+diff --git a/drivers/usb/serial/ftdi_sio_ids.h b/drivers/usb/serial/ftdi_sio_ids.h
+index 3d47c6d..d854e04 100644
+--- a/drivers/usb/serial/ftdi_sio_ids.h
++++ b/drivers/usb/serial/ftdi_sio_ids.h
+@@ -1567,6 +1567,13 @@
+ #define UNJO_VID			0x22B7
+ #define UNJO_ISODEBUG_V1_PID		0x150D
+ 
++/*
++ * IDS GmbH
++ */
++#define IDS_VID				0x2CAF
++#define IDS_SI31A_PID			0x13A2
++#define IDS_CM31A_PID			0x13A3
++
+ /*
+  * U-Blox products (http://www.u-blox.com).
+  */
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.20.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
