@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ED33687FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E3936880E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239629AbhDVUbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239582AbhDVUa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:30:59 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D559AC06138E
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:30:17 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id n127so12991389wmb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qTXaC1wPEXm+1mH+sfanrRo5t3eGOrK+943dNeKI5PI=;
-        b=Mv1iID0++5aYuTRy8gJ7E446Qv3c1dwpyzCp3Mw1OzqQP4kK6ul9Pmc8MVTClhG9JX
-         jhUKGNk+E3O1WnKLWVgur3xmReqG7fgI2v1KmiRyjWwOacMJKqlUMcuptfi81vpfGz6P
-         9E/I7ev22JkBQ5v/g2pzGvucaGbveYuWUNy6cku2cLea3+3iAudaCGxA0PPt/7lFSjWo
-         JU3k9T+T7gqmzXf6xA3fssPYENofZtpVgYjL3phbSEEVjgryh+kx6JK491tZ0w+jiz/p
-         89qch0L5tgYKE7min2nIa3kNjExfwTIrouuucOrkXIDBbzlTXX7d46phlc353HcOsNtk
-         /6Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qTXaC1wPEXm+1mH+sfanrRo5t3eGOrK+943dNeKI5PI=;
-        b=ZCh4JeCjVcnAgLL93ulv+DmQxbyqi9CBK1BnoUO7uJRX4s8j0TtatZbue9I4gZgPrU
-         IRL/VIaIc6mpmvELnkMPCmDadBnzHfpsNs0YADKAzgeV+kpVuoW4ivIaX6odom+yRLys
-         Q86lfX4JykW2vL+sTRiEu7cxD6PtnI75zK+Pa9CdFOiGscCw0CA9f3R8odD9uz88xW+2
-         rXhNph38hE9kIgv6ABdUpr0vF+xVnm4X7SmfhWOMjkxjSkvKEgrKSLJcFyaH1nhMuB6z
-         MKU/xevTRnXZDkroo3uuC6TuR8dUv6st4rFHuEbziCrriZBf+xXVY58SCepNyQF+6Lbl
-         q9Qw==
-X-Gm-Message-State: AOAM533kkB1mK8l/T09Z5DVPYcu3zRsCEym/IDpcPnZSgyZbWL0ukX+2
-        f+OV89Rz2HCVxnr6pba0qfcwHla7YE+5rfWWDFh5mUv6M96Trw==
-X-Google-Smtp-Source: ABdhPJwKfuvvO29EX0aKtGbGqfFKejpXbrFZXDhFroou6tGq5CzaaGIbXZ4Zbm90HzwU/UO29cN87tsZx2XgC5tWBME=
-X-Received: by 2002:a7b:ce8a:: with SMTP id q10mr561453wmj.101.1619123416372;
- Thu, 22 Apr 2021 13:30:16 -0700 (PDT)
+        id S239787AbhDVUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:31:57 -0400
+Received: from mail-mw2nam12on2045.outbound.protection.outlook.com ([40.107.244.45]:49803
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239664AbhDVUbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 16:31:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F0kRd1EKPT5d+Gw83lkX4zPpSVhwjdfr83ewU+4afBpJDjIXKU3O089tms4HzyNeFKn7cKccwfZCPo0i3aug79dSX8Iz0G7e7ZHycklCQ6tGKFtLyys3TUyW//CxXDTVp3KDbB5EoPgBf/RgYBn+GJQM5v4MTh5xnK/TS7yJD96lXI4bEkYDGTwWkLbhAI17CpyrQPkl5ytzVrJph9kPnS/UslbL2xEzESOZSVEp9O0ss2TVjvbzmRFJeOciUqbKX6sZVTdnhLQxzhCpjhT5lDIw1m9EbqZ04EvCvCmwcId2R94bmwn0CtlKd58MRZy8IBwOpnluMKUCCTThxjwWCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z6S8lXDInWFaqTFEEZimN8g5hMJcs3Sm9N4Gcd+FskI=;
+ b=oVN5ulDQ+ILV9MS03BOZwxPu9m/tGCmHLaTAJ88PQ/kpGAMmaBqPC0GvFnEpQfzM26oNFoO++k9e22xf/Lq7DA53HDpv+uvT9/xihv0Q6scdc7t1bUhhMgnH5T1YUVJZOLrQMGdzJCkOKBKSZRGKLSGPOL2HATSMJDKXAllld7vXok22pwSmUtfWegv+Q/ySUy0vThGFjyjU2E9emVI+JHAZGkzji8YotAdg5cKjumAK6kVGFx4hSJvN6NRUOWvEplVkJJL/do2LqUpj4XjyQrAi0CZXxw8wkUZKxy0A4indGYowxS8eDs9jNjDEyYsjv9vNq+mSf6aM0BxnIRzPFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z6S8lXDInWFaqTFEEZimN8g5hMJcs3Sm9N4Gcd+FskI=;
+ b=cGCM6b5RRpC8x/Znslczax9MqRL0jApFRLe1Pu+S5Bdf/EW41SzX/WsVPMTIy669Q6HkSo42x8B6kArpMlcm6sEj6m/2NeeW/SQEAPUd8hrbzeD9r8fn/kyUxsru2kDEEbyZco0ugpiDn3fPd/vEVMi/LaxGGI7yRwPA7VSZw3zcJhHjdew5cJfnHZtAHaCrQhe/ekrSz1x3IwvH4zz2TLxQ5SlWnGeLdHVJVFHVFD5EBX/vblW+xY2H6wLUu6OdeYB8uEmVBEj2+cYCa/jClgupv0QNBs+1+msxzYzGAVj0gB06KRjYIFi+InJq8cQrw0UEpvmTF7U8hzFrlbufpw==
+Received: from BN6PR22CA0033.namprd22.prod.outlook.com (2603:10b6:404:37::19)
+ by BN7PR12MB2721.namprd12.prod.outlook.com (2603:10b6:408:2b::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 22 Apr
+ 2021 20:31:19 +0000
+Received: from BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:37:cafe::e2) by BN6PR22CA0033.outlook.office365.com
+ (2603:10b6:404:37::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend
+ Transport; Thu, 22 Apr 2021 20:31:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ BN8NAM11FT010.mail.protection.outlook.com (10.13.177.53) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 20:31:18 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 20:30:53 +0000
+Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Apr 2021 20:30:53 +0000
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <sudeep.holla@arm.com>, <souvik.chakravarty@arm.com>,
+        <thierry.reding@gmail.com>, <skomatineni@nvidia.com>,
+        <mark.rutland@arm.com>, <lorenzo.pieralisi@arm.com>,
+        <daniel.lezcano@linaro.org>, <robh+dt@kernel.org>
+CC:     <jonathanh@nvidia.com>, <ksitaraman@nvidia.com>,
+        <sanjayc@nvidia.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [RFC PATCH 0/4] Support for passing runtime state idle time to TF-A
+Date:   Thu, 22 Apr 2021 13:30:44 -0700
+Message-ID: <1619123448-10138-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com> <YIGuvh70JbE1Cx4U@google.com>
- <a085478d-5118-cdff-c611-1649fce7a650@linux.intel.com>
-In-Reply-To: <a085478d-5118-cdff-c611-1649fce7a650@linux.intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 22 Apr 2021 14:30:04 -0600
-Message-ID: <CAOUHufbVmsvWQ-_PSn8CCanuJqRR6Tmj01s17WvKsc3pRa87xw@mail.gmail.com>
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by too_many_isolated()
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, wfg@mail.ustc.edu.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2b4f9269-0ccb-477b-b99a-08d905cd95f2
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2721:
+X-Microsoft-Antispam-PRVS: <BN7PR12MB2721709EF992158DD9FADE1AC2469@BN7PR12MB2721.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u/kUcv4pRbNvK+M7X9riqq9vQ59PqytsacQUQnSpEXHA0Y0iEcavj9Citu2/n90FDV88uNeBxgRIqP7TR56Xob7uZkIyxDc0fXWG6MScdlgHwEgrdzZHSZdv/xvzZhmpH7Y6K+kZZ+a2Y1Uv8LFeVXTzEuqXM/t3nFet6XigP7iL1aGbqNF1kRc6sQDXncpMDlCqH7LT2sD0M6oNZ1lZOLTN+u+nuNHopigDz+jLQhDPOwIbsOX4hKGCrzEcJbpcT4XRN+4d0g2ytZ/fwDSA+6hA8odFJxHyU6MSWVPaa8wFHIkOoSN2Au4FP+hT1NgRWf/QxqTa9VBI++8C4Djj0lindnu9xphosba74y9tjJGuTlRUiY21Ocqln4rm1H06fyoShQTmTS+LCi7vMv2i7wecfuVhAMtOI7QwOvntNqmNwq54Urib8dF2L17BuSjldHmJqdmWW8xEtBXBBEEWoV9Z0yOGR1i/kp1qpKHUvdpXV0YMay/imygYDIsolA3Fk3+hi5f7Cva10TFAhmqq9/aC7lpflTVVnaEqQUbAN3KvmNxjJJTdjb7xGCVTcNEhUWgov7aLyI1IL91Zx6JM88nfpw541Rhwk7CFb4/YCjne84TUSvXmlWGA1eKdVzBM5SU12QRaSN1HuUl2NfuDc3MYh2WpRyV2Z7glE2RtrqQ=
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(46966006)(36840700001)(186003)(36906005)(316002)(83380400001)(7416002)(2616005)(2906002)(478600001)(86362001)(8676002)(6666004)(7696005)(70206006)(356005)(47076005)(26005)(70586007)(5660300002)(54906003)(336012)(426003)(36756003)(82740400003)(36860700001)(4326008)(8936002)(7636003)(110136005)(82310400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 20:31:18.9853
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b4f9269-0ccb-477b-b99a-08d905cd95f2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2721
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 2:17 PM Tim Chen <tim.c.chen@linux.intel.com> wrote:
->
->
->
-> On 4/22/21 10:13 AM, Yu Zhao wrote:
->
-> > @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
-> >  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
-> >                               gfp_t gfp_mask, nodemask_t *nodemask)
-> >  {
-> > +     int nr_cpus;
-> >       unsigned long nr_reclaimed;
-> >       struct scan_control sc = {
-> >               .nr_to_reclaim = SWAP_CLUSTER_MAX,
-> > @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
-> >       set_task_reclaim_state(current, &sc.reclaim_state);
-> >       trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
-> >
-> > +     nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
-> > +     while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
-> > +             if (schedule_timeout_killable(HZ / 10))
->
-> 100 msec seems like a long time to wait.  The original code in shrink_inactive_list
-> choose 100 msec sleep because the sleep happens only once in the while loop and 100 msec was
-> used to check for stalling.  In this case the loop can go on for a while and the
-> #reclaimers can go down below the sooner than 100 msec. Seems like it should be checked
-> more often.
+Tegra194 and Tegra186 platforms use separate MCE firmware for CPUs which is
+in charge of deciding on state transition based on target state, state idle
+time, and some other Tegra CPU core cluster states information.
 
-You are not looking at the original code -- the original code sleeps
-indefinitely. It was changed by commit db73ee0d46 to fix a problem
-that doesn't apply to the code above.
+Current PSCI specification don't have function defined for passing runtime
+state idle time predicted by governor (based on next events and state target
+residency) to ARM trusted firmware.
 
-HZ/10 is purely arbitrary but that's ok because we assume normally
-nobody hits it. If you do often, we need to figure out why and how not
-to hit it so often.
+With the support of adding new PSCI function to allow passing runtime state
+idle time from kernel to ARM trusted firmware, Tegra194 platforms can use
+generic psci cpuidle driver rather than having Tegra specific cpuidle driver.
+
+During Tegra specific cpuidle driver V1 review, Sudeep Holla from ARM also
+suggested to use generic cpuidle driver by generalizing the need of runtime
+state idle time.
+
+So had internal discussion between ARM and NVIDIA on adding new PSCI function
+to allow passing runtime state idle time from kernel to TF-A through PSCI and
+once this implementation is accepted by upstream, ARM will look into further
+to update PSCI specification for this new PSCI function.
+
+So sending these patches as RFC as new PSCI function added in this series is
+not part of PSCI specification and once this implementation is accepted by ARM
+and upstream community, ARM can help to take this forward to add to PSCI
+specification.
+
+To keep the backward compatibility we can't update CPU_SUSPEND function to pass
+state idle time argument. So added seperate function for passing state idle time
+and serializing this with cpu suspend state enter.
+
+Once this approach is agreed, we can either use this way of separate PSCI
+function for passing state idle time or with PSCI specification update we can
+use same CPU_SUSPEND function with extra argument for state idle time which can
+be decided later for final patches based on discussion with ARM.
+
+
+Sowjanya Komatineni (4):
+  firmware/psci: add support for PSCI function SET_STATE_IDLE_TIME
+  cpuidle: menu: add idle_time to cpuidle_state
+  cpuidle: psci: pass state idle time before state enter callback
+  arm64: dts: tegra194: Add CPU idle states
+
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi | 19 +++++++++++++++++++
+ drivers/cpuidle/cpuidle-psci.c           | 11 +++++++++++
+ drivers/cpuidle/governors/menu.c         |  7 ++++++-
+ drivers/firmware/psci/psci.c             |  9 +++++++++
+ include/linux/cpuidle.h                  |  1 +
+ include/linux/psci.h                     |  1 +
+ include/uapi/linux/psci.h                |  2 ++
+ 7 files changed, 49 insertions(+), 1 deletion(-)
+
+-- 
+2.7.4
+
