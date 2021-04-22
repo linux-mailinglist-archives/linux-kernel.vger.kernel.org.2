@@ -2,120 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE1E367B94
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2243B367B96
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235257AbhDVH4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:56:24 -0400
-Received: from mga09.intel.com ([134.134.136.24]:8505 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235216AbhDVH4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:56:22 -0400
-IronPort-SDR: OqLHi50YqvrKXDavl7Q9poUmzrRFeUhwvjPM4WyPfGLCp4pRFCrZ4aqKCDbxeOcOXKhnH1xQjr
- DEwIBj8nrneg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195956917"
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="195956917"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 00:55:30 -0700
-IronPort-SDR: AnLohqrXKePUG3FK/r/YhrgSUVOLhDx35E99eZ0bP/F835kQJLLCBvwb72EMuNWCFRIPT1SolH
- iNkXSTlJh7fQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="421282417"
-Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Apr 2021 00:55:26 -0700
-From:   mohammad.athari.ismail@intel.com
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Chuah@vger.kernel.org, Kim Tatt <kim.tatt.chuah@intel.com>
-Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Tan Tee Min <tee.min.tan@intel.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mohammad.athari.ismail@intel.com
-Subject: [PATCH net-next 2/2] stmmac: intel: Enable HW descriptor prefetch by default
-Date:   Thu, 22 Apr 2021 15:55:01 +0800
-Message-Id: <20210422075501.20207-3-mohammad.athari.ismail@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210422075501.20207-1-mohammad.athari.ismail@intel.com>
-References: <20210422075501.20207-1-mohammad.athari.ismail@intel.com>
+        id S235281AbhDVH42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:56:28 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58946 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235216AbhDVH4Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 03:56:25 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13M7pi6m028057;
+        Thu, 22 Apr 2021 09:55:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=N4MWjyc0bM4LAtkX7Rna0gAk3kCIImrI9vNDz5vtYVg=;
+ b=eaaclqUMCEachXBKXXgUbKyMx0jbR4LQahwEw9ROMpu943SEfCDsdrwP+UcjP1sHWccr
+ LR2aF8FGuGIhOCBPn8oMT/8BecPWs2s5hTO7D6wxwnJCawxh7l/3lYZFHhdUzpHixGuU
+ tSAGuFvY1pHi5I3xEyU1zuGJ3+hHp1RSxMdfM8dueimizG98+IKBY5O/P6ZVhp9PrSYN
+ qrx4FLh0FAYF12g6rbXS/prXdXwRvbeIZ560b240kY3Pjs0UF0n+F4yfwZ4RpFGGdgA0
+ jsktdJ7qv+dUcUbbDLGSN5so24lT2hHhZNr3HCWTl/qoyiiImNVZpUUdDZGe72gIfW0v CQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 382bumqtkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 09:55:49 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E2149100034;
+        Thu, 22 Apr 2021 09:55:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D069F21E67B;
+        Thu, 22 Apr 2021 09:55:48 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 09:55:48 +0200
+Subject: Re: [PATCH v2 1/7] rpmsg: char: Export eptdev create an destroy
+ functions
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
+ <20210413134458.17912-2-arnaud.pouliquen@foss.st.com>
+ <20210421175219.GD1223348@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <b5231124-a09f-ba2f-9246-3bfd4dfd39c4@foss.st.com>
+Date:   Thu, 22 Apr 2021 09:55:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210421175219.GD1223348@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_01:2021-04-21,2021-04-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+hello Mathieu
 
-Enable HW descriptor prefetch by default by setting plat->dma_cfg->dche =
-true in intel_mgbe_common_data(). Need to be noted that this capability
-only be supported in DWMAC core version 5.20 onwards. In stmmac, there is
-a checking to check the core version. If the core version is below 5.20,
-this capability wouldn`t be configured.
+On 4/21/21 7:52 PM, Mathieu Poirier wrote:
+> On Tue, Apr 13, 2021 at 03:44:52PM +0200, Arnaud Pouliquen wrote:
+>> To prepare the split of the code related to the control (ctrldev)
+>> and the endpoint (eptdev) devices in 2 separate files:
+>>
+>> - Rename and export the functions in rpmsg_char.h.
+>>
+>> - Suppress the dependency with the rpmsg_ctrldev struct in the
+>>   rpmsg_chrdev_create_eptdev function.
+>>
+>> - The rpmsg class is provided as parameter in rpmsg_chrdev_create_eptdev,
+>>   because the class is associated to the control part.
+>>
+>> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_char.c | 19 +++++++++------
+>>  drivers/rpmsg/rpmsg_char.h | 50 ++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 61 insertions(+), 8 deletions(-)
+>>  create mode 100644 drivers/rpmsg/rpmsg_char.h
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>> index 2bebc9b2d163..b9df8dc4365f 100644
+>> --- a/drivers/rpmsg/rpmsg_char.c
+>> +++ b/drivers/rpmsg/rpmsg_char.c
+>> @@ -1,5 +1,6 @@
+>>  // SPDX-License-Identifier: GPL-2.0
+>>  /*
+>> + * Copyright (C) 2021, STMicroelectronics
+>>   * Copyright (c) 2016, Linaro Ltd.
+>>   * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
+>>   * Copyright (c) 2012, PetaLogix
+>> @@ -22,6 +23,7 @@
+>>  #include <linux/uaccess.h>
+>>  #include <uapi/linux/rpmsg.h>
+>>  
+>> +#include "rpmsg_char.h"
+>>  #include "rpmsg_internal.h"
+>>  
+>>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>> @@ -78,7 +80,7 @@ struct rpmsg_eptdev {
+>>  	wait_queue_head_t readq;
+>>  };
+>>  
+>> -static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+>> +int rpmsg_chrdev_destroy_eptdev(struct device *dev, void *data)
+> 
+> Shouldn't this be rpmsg_chrdev_eptdev_destroy()?  I've been wondering about the
+> flipping of destroy and eptdev...  The same for rpmsg_chrdev_create_eptdev().
 
-Below is the iperf result comparison between HW descriptor prefetch
-disabled(DCHE=0b) and enabled(DCHE=1b). Tested on Intel Elkhartlake
-platform with DWMAC Core 5.20. Observed line rate performance
-improvement with HW descriptor prefetch enabled.
+As the function is exported i prefered to follow name srtructure that is
+commonly used: <module>_<action>_<object>
 
-DCHE = 0b
-[  5] local 169.254.1.162 port 42123 connected to 169.254.244.142 port 5201
-[ ID] Interval           Transfer     Bitrate         Total Datagrams
-[  5]   0.00-1.00   sec  96.7 MBytes   811 Mbits/sec  70050
-[  5]   1.00-2.00   sec  96.5 MBytes   809 Mbits/sec  69850
-[  5]   2.00-3.00   sec  96.3 MBytes   808 Mbits/sec  69720
-[  5]   3.00-4.00   sec  95.9 MBytes   804 Mbits/sec  69450
-[  5]   4.00-5.00   sec  96.0 MBytes   806 Mbits/sec  69530
-[  5]   5.00-6.00   sec  96.8 MBytes   812 Mbits/sec  70080
-[  5]   6.00-7.00   sec  96.9 MBytes   813 Mbits/sec  70140
-[  5]   7.00-8.00   sec  96.8 MBytes   812 Mbits/sec  70080
-[  5]   8.00-9.00   sec  97.0 MBytes   814 Mbits/sec  70230
-[  5]   9.00-10.00  sec  96.9 MBytes   813 Mbits/sec  70170
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
-[  5]   0.00-10.00  sec   966 MBytes   810 Mbits/sec  0.000 ms  0/699300 (0%)  sender
-[  5]   0.00-10.00  sec   966 MBytes   810 Mbits/sec  0.011 ms  0/699265 (0%)  receiver
+But it is not a rule, so please just tell me if you prefer that i rename the
+functions  rpmsg_chrdev_eptdev_xxxx?
 
-DCHE = 1b
-[  5] local 169.254.1.162 port 49740 connected to 169.254.244.142 port 5201
-[ ID] Interval           Transfer     Bitrate         Total Datagrams
-[  5]   0.00-1.00   sec  97.9 MBytes   821 Mbits/sec  70880
-[  5]   1.00-2.00   sec  98.1 MBytes   823 Mbits/sec  71060
-[  5]   2.00-3.00   sec  98.2 MBytes   824 Mbits/sec  71140
-[  5]   3.00-4.00   sec  98.2 MBytes   824 Mbits/sec  71090
-[  5]   4.00-5.00   sec  98.1 MBytes   823 Mbits/sec  71050
-[  5]   5.00-6.00   sec  98.1 MBytes   823 Mbits/sec  71040
-[  5]   6.00-7.00   sec  98.1 MBytes   823 Mbits/sec  71050
-[  5]   7.00-8.00   sec  98.2 MBytes   824 Mbits/sec  71140
-[  5]   8.00-9.00   sec  98.2 MBytes   824 Mbits/sec  71120
-[  5]   9.00-10.00  sec  98.3 MBytes   824 Mbits/sec  71150
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
-[  5]   0.00-10.00  sec   981 MBytes   823 Mbits/sec  0.000 ms  0/710720 (0%)  sender
-[  5]   0.00-10.00  sec   981 MBytes   823 Mbits/sec  0.041 ms  0/710650 (0%) receiver
+Thanks,
+Arnaud
 
-Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 4bd038acb1b9..80728a4c0e3f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -471,6 +471,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	plat->dma_cfg->fixed_burst = 0;
- 	plat->dma_cfg->mixed_burst = 0;
- 	plat->dma_cfg->aal = 0;
-+	plat->dma_cfg->dche = true;
- 
- 	plat->axi = devm_kzalloc(&pdev->dev, sizeof(*plat->axi),
- 				 GFP_KERNEL);
--- 
-2.17.1
-
+> 
+> With that:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
+>>  {
+>>  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
+>>  
+>> @@ -97,6 +99,7 @@ static int rpmsg_eptdev_destroy(struct device *dev, void *data)
+>>  
+>>  	return 0;
+>>  }
+>> +EXPORT_SYMBOL(rpmsg_chrdev_destroy_eptdev);
+>>  
+>>  static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
+>>  			void *priv, u32 addr)
+>> @@ -280,7 +283,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
+>>  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
+>>  		return -EINVAL;
+>>  
+>> -	return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
+>> +	return rpmsg_chrdev_destroy_eptdev(&eptdev->dev, NULL);
+>>  }
+>>  
+>>  static const struct file_operations rpmsg_eptdev_fops = {
+>> @@ -339,10 +342,9 @@ static void rpmsg_eptdev_release_device(struct device *dev)
+>>  	kfree(eptdev);
+>>  }
+>>  
+>> -static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>> -			       struct rpmsg_channel_info chinfo)
+>> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
+>> +			       struct rpmsg_channel_info chinfo, struct class *rpmsg_class)
+>>  {
+>> -	struct rpmsg_device *rpdev = ctrldev->rpdev;
+>>  	struct rpmsg_eptdev *eptdev;
+>>  	struct device *dev;
+>>  	int ret;
+>> @@ -362,7 +364,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>>  
+>>  	device_initialize(dev);
+>>  	dev->class = rpmsg_class;
+>> -	dev->parent = &ctrldev->dev;
+>> +	dev->parent = parent;
+>>  	dev->groups = rpmsg_eptdev_groups;
+>>  	dev_set_drvdata(dev, eptdev);
+>>  
+>> @@ -405,6 +407,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+>>  
+>>  	return ret;
+>>  }
+>> +EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
+>>  
+>>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
+>>  {
+>> @@ -444,7 +447,7 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>>  	chinfo.src = eptinfo.src;
+>>  	chinfo.dst = eptinfo.dst;
+>>  
+>> -	return rpmsg_eptdev_create(ctrldev, chinfo);
+>> +	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo, rpmsg_class);
+>>  };
+>>  
+>>  static const struct file_operations rpmsg_ctrldev_fops = {
+>> @@ -530,7 +533,7 @@ static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+>>  	int ret;
+>>  
+>>  	/* Destroy all endpoints */
+>> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_eptdev_destroy);
+>> +	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
+>>  	if (ret)
+>>  		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
+>>  
+>> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
+>> new file mode 100644
+>> index 000000000000..379d2ae2bee8
+>> --- /dev/null
+>> +++ b/drivers/rpmsg/rpmsg_char.h
+>> @@ -0,0 +1,50 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +/*
+>> + * Copyright (C) STMicroelectronics 2021.
+>> + */
+>> +
+>> +#ifndef __RPMSG_CHRDEV_H__
+>> +#define __RPMSG_CHRDEV_H__
+>> +
+>> +#if IS_REACHABLE(CONFIG_RPMSG_CHAR)
+>> +/**
+>> + * rpmsg_chrdev_create_eptdev() - register char device based on an endpoint
+>> + * @rpdev:  prepared rpdev to be used for creating endpoints
+>> + * @parent: parent device
+>> + * @chinfo: assiated endpoint channel information.
+>> + *
+>> + * This function create a new rpmsg char endpoint device to instantiate a new
+>> + * endpoint based on chinfo information.
+>> + */
+>> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
+>> +			       struct rpmsg_channel_info chinfo, struct class *rpmsg_class);
+>> +
+>> +/**
+>> + * rpmsg_chrdev_destroy_eptdev() - destroy created char device endpoint.
+>> + * @data: private data associated to the endpoint device
+>> + *
+>> + * This function destroys a rpmsg char endpoint device created by the RPMSG_DESTROY_EPT_IOCTL
+>> + * control.
+>> + */
+>> +int rpmsg_chrdev_destroy_eptdev(struct device *dev, void *data);
+>> +
+>> +#else  /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
+>> +
+>> +static inline int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
+>> +					     struct rpmsg_channel_info chinfo,
+>> +					     struct class *rpmsg_class)
+>> +{
+>> +	return -EINVAL;
+>> +}
+>> +
+>> +static inline int rpmsg_chrdev_destroy_eptdev(struct device *dev, void *data)
+>> +{
+>> +	/* This shouldn't be possible */
+>> +	WARN_ON(1);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +#endif /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
+>> +
+>> +#endif /*__RPMSG_CHRDEV_H__ */
+>> -- 
+>> 2.17.1
+>>
