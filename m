@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D913687C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1773687CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239070AbhDVUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:18:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:24924 "EHLO mga11.intel.com"
+        id S239156AbhDVUUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:20:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236915AbhDVUST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:18:19 -0400
-IronPort-SDR: bKEUz33tqiFtJA1jg8uicjjAu5asfatWLiSYvNnnVoMSvu+veNwi1S5WJy/3iM047puPqV0kRl
- zijJOgTVh2Ng==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="192778300"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="192778300"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 13:17:43 -0700
-IronPort-SDR: cGN1FiVr7rRdcgpr4pABfyQNa2TqI8SwHnvF0YAmf33j9kE5ZlJ1fIFzUW0D4ngpaW3CUaR7lt
- idK8Dg5iHbyA==
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="428105376"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.72.4])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 13:17:42 -0700
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
- too_many_isolated()
-To:     Yu Zhao <yuzhao@google.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, wfg@mail.ustc.edu.cn
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com>
- <YIGuvh70JbE1Cx4U@google.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <a085478d-5118-cdff-c611-1649fce7a650@linux.intel.com>
-Date:   Thu, 22 Apr 2021 13:17:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S236896AbhDVUUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 16:20:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91DEC60BBB;
+        Thu, 22 Apr 2021 20:19:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619122787;
+        bh=pdRsc4FICGEMSWS9jEaCj4oziHTjotNknXiAZpjKryU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EGSr2oJERuzEyuPj2cTR6pIK06e+9W2PVn6+eiB/pNPjen/Mc+OKxJnDb347At4SA
+         10+0M774zzTZXU2MPJBONaJPEPkupXzcgC/ZYa+Unc4XP0AuIpYGPGAT3PVruWGqh/
+         RYQ+m/7OJ8ljB5z8Mx5iLOlUZz+XlzRfKcJKYu/Z/yI/BeDdXpTmSSf3o+mzDoXGo7
+         6z3gp1r/q7qcLT2V0JmD25rWhlb1u7ieI1sCuJxtuENOX1DlBP1joi/sKfvC5JuTjy
+         I+/QL3qjp2+dfQoid4F/VlzabHDaaLoWZmUVeQlitNP87uwIkMH4Sdm3eNw1ldZnYg
+         czfKN15eJWhVA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] kbuild: Add $(KBUILD_HOSTLDFLAGS) to 'has_libelf' test
+Date:   Thu, 22 Apr 2021 13:19:14 -0700
+Message-Id: <20210422201914.3682494-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.1.362.g311531c9de
 MIME-Version: 1.0
-In-Reply-To: <YIGuvh70JbE1Cx4U@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Normally, invocations of $(HOSTCC) include $(KBUILD_HOSTLDFLAGS), which
+in turn includes $(HOSTLDFLAGS), which allows users to pass in their own
+flags when linking. However, the 'has_libelf' test does not, meaning
+that if a user requests a specific linker via HOSTLDFLAGS=-fuse-ld=...,
+it is not respected and the build might error.
 
+For example, if a user building with clang wants to use all of the LLVM
+tools without any GNU tools, they might remove all of the GNU tools from
+their system or PATH then build with
 
-On 4/22/21 10:13 AM, Yu Zhao wrote:
+$ make HOSTLDFLAGS=-fuse-ld=lld LLVM=1 LLVM_IAS=1
 
-> @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
->  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  				gfp_t gfp_mask, nodemask_t *nodemask)
->  {
-> +	int nr_cpus;
->  	unsigned long nr_reclaimed;
->  	struct scan_control sc = {
->  		.nr_to_reclaim = SWAP_CLUSTER_MAX,
-> @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  	set_task_reclaim_state(current, &sc.reclaim_state);
->  	trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
->  
-> +	nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
-> +	while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
-> +		if (schedule_timeout_killable(HZ / 10))
+which says use all of the LLVM tools, the integrated assembler, and
+ld.lld for linking host executables. Without this change, the build will
+error because $(HOSTCC) uses its default linker, rather than the one
+requested via -fuse-ld=..., which is GNU ld in clang's case in a default
+configuration.
 
-100 msec seems like a long time to wait.  The original code in shrink_inactive_list
-choose 100 msec sleep because the sleep happens only once in the while loop and 100 msec was
-used to check for stalling.  In this case the loop can go on for a while and the 
-#reclaimers can go down below the sooner than 100 msec. Seems like it should be checked
-more often.
+error: Cannot generate ORC metadata for CONFIG_UNWINDER_ORC=y, please
+install libelf-dev, libelf-devel or elfutils-libelf-devel
+make[1]: *** [Makefile:1260: prepare-objtool] Error 1
 
-Tim
+Add $(KBUILD_HOSTLDFLAGS) to the 'has_libelf' test so that the linker
+choice is respected.
 
-> +			return SWAP_CLUSTER_MAX;
-> +	}
-> +
->  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
->  
-> +	if (nr_cpus)
-> +		atomic_dec(&pgdat->nr_reclaimers);
-> +
->  	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
->  	set_task_reclaim_state(current, NULL);
-> 
+Link: https://github.com/ClangBuiltLinux/linux/issues/479
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index bc19584fee59..1535b32c8baa 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1092,7 +1092,7 @@ export mod_sign_cmd
+ HOST_LIBELF_LIBS = $(shell pkg-config libelf --libs 2>/dev/null || echo -lelf)
+ 
+ has_libelf = $(call try-run,\
+-               echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
++               echo "int main() {}" | $(HOSTCC) $(KBUILD_HOSTLDFLAGS) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
+ 
+ ifdef CONFIG_STACK_VALIDATION
+   ifeq ($(has_libelf),1)
+
+base-commit: bf05bf16c76bb44ab5156223e1e58e26dfe30a88
+-- 
+2.31.1.362.g311531c9de
+
