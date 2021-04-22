@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC8D367FD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C2F367FDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbhDVLxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235977AbhDVLxr (ORCPT
+        id S236043AbhDVL5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:57:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26820 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235957AbhDVL5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:53:47 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124B0C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:53:13 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id o16so9793506plg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oJ5PI+C0iW8MjYYI+zo8bYrw6tKqKNz0a6ReKOiPnic=;
-        b=lmakWLsF6TnHDfCWNmOebmdaXTVSd+Ue3lQGW11wPhnGii6yOhFeyOfN624e123ffU
-         SU7E25BrieeLyV6AoyJAbzxyyGrF3Z4qQndsw1u6oN49cOPYCUVsRVYaCmLi/to43fCm
-         iTEFO43zkfbW+mgE/GspzhP2qmxiA4ucj+Qc7EXtWjRf+9xuMxxYleBmbqClQxt3N4uk
-         VgQqgaWuR4te2sL5t0qmqCSYMjkAeSBpNgLLUReZUrCem9SOr8N5JaFWTW7VRwoqBT8f
-         bq0IvwZoFt/rv1mwAF0DUJkJBKXBAOKjt0HMulPFKq2hDIefHxm55/A1y8Fztd1V/xTd
-         XkIQ==
+        Thu, 22 Apr 2021 07:57:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619092586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r/EfgkIAyveAD+413kdmsLTagFR2+ozoz9ZwbDock6Y=;
+        b=WNBUCXWitlicQ+JZur8/QFWY/+YqewEfAPrZo32aP3kCbowhO9YrSV6U1Ot0Qvw2eRjUpA
+        51EdtVasxIlBdzWLKbsrnUk62cI4WHXHx6XAIvunDeZqHtFgPO8gvDxZpkE+yPN/+xURrm
+        12tXpJrADoQb7qb5rCUItCP4W48QKOA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-nnKV-7_sPlKvtm5prfgw7A-1; Thu, 22 Apr 2021 07:56:24 -0400
+X-MC-Unique: nnKV-7_sPlKvtm5prfgw7A-1
+Received: by mail-ej1-f72.google.com with SMTP id d11-20020a170906370bb029037c87968c04so7109751ejc.17
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:56:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oJ5PI+C0iW8MjYYI+zo8bYrw6tKqKNz0a6ReKOiPnic=;
-        b=aqpMrwhXuuKhsdfVQWF1Y+tKoMyMYWVdwsymzqps7zWTcjAahhfJOO+kb9TmtqKWZo
-         ufJfVA1fImApSMu5GciU4jBSkF5JhAdTJ0QmIjQCoZDmrvdoChfxsu0P5JltqvOk95Tf
-         CaZmdIa6e0MbixrulHwbTDTeAY3IYsz/1nQc8Bm5NhV6hrR//r+RV8b/2ptA4a6JfbO7
-         Wj3EIGCeBgBb+2KVf+9du4qBa7pXJKpU72x1wB1goSZjRuWat+z96nB1nvRyUTCrgqQp
-         xkgWYzOlyJIfaSX+L/8ZGlnPHtENEy7RgvvIStj+4GWxN7V4w+k42KDsmiwRzwwKJBB2
-         B4TA==
-X-Gm-Message-State: AOAM532X9bCng0NguDW9wgPiDKFR5XJW240DJnCLZYfjuinnVYGklyEi
-        4qHP66k9HDJ0V/e5eD1mIlnnrQ==
-X-Google-Smtp-Source: ABdhPJyvBI8w/qg0ggMAj7JbYXljgRJdzULHT3v2Qs3Quk1T927HwoNiaZ91ja0QjHP9y+WyYKYtVA==
-X-Received: by 2002:a17:90b:33c6:: with SMTP id lk6mr3636650pjb.37.1619092392514;
-        Thu, 22 Apr 2021 04:53:12 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id d21sm2254101pjx.24.2021.04.22.04.53.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 04:53:11 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 17:23:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 2/2] thermal/core: Remove unused EXPORT_SYMBOLS
-Message-ID: <20210422115309.atwqchh2fxpnpvtt@vireshk-i7>
-References: <20210422113457.51578-1-daniel.lezcano@linaro.org>
- <20210422113457.51578-2-daniel.lezcano@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=r/EfgkIAyveAD+413kdmsLTagFR2+ozoz9ZwbDock6Y=;
+        b=KaOxFfbwSWzAxPT8toMoP3fnzfO04nBS0SCmPT00GorMe8iiEVRDrRf2UOouQYT45g
+         37qiyx4cnaTjYgIrxkJobDLwHxnvdjgyeuv6nfWk92TtHFmQ5dN4HvJvLAz3gurDZmTv
+         Et1mjUuvfb2SS5fEn/2h8OOiNrIHgQPGRrfkap4jxNd8p2BljRte5zaU9mjpu0hzQKAA
+         Zi4y9uMk0v0m5YXUcMOFW6WcHxHnL7iZIDLZ/q2veyjTZgiWiIxaBmFJX1AhK2mBMygN
+         utcSGJsJYGIiB/KC6OVz/nnBxgXVPpnLtgh9WYzAHvsPYhz0fQ4ha1AHlGEoZPBbOAHU
+         dAtg==
+X-Gm-Message-State: AOAM5313fvkDSXDyFmoSSPDu+Hfv3flOTKpayMScXmdnYfJjBfrLE+4u
+        EWxFWsy8K0bRZ0b7iZptV0dsXpnzd8onvLFTEGGu/5DNH/bQhxkWaJJjwy4PkLHurvFhUF5Xha4
+        4/sQRs6WI7LI3OV2E7WGquWYh
+X-Received: by 2002:a17:906:4746:: with SMTP id j6mr3036121ejs.39.1619092583640;
+        Thu, 22 Apr 2021 04:56:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCeeqN0ifqMSMQ2inHAeNFtxH8+83gzY3wP7UhM9Zgkyaq44qYqtN6tKTnJVbhKUD424wd2A==
+X-Received: by 2002:a17:906:4746:: with SMTP id j6mr3036108ejs.39.1619092583465;
+        Thu, 22 Apr 2021 04:56:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b18sm1771934eju.22.2021.04.22.04.56.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 04:56:22 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the cgroup tree with the kvm tree
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, KVM <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+References: <20210422155355.471c7751@canb.auug.org.au>
+ <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
+ <YIFiiYtgL7/uvzng@slm.duckdns.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <58697cc7-cb94-19f0-0b60-759ec8fdbae8@redhat.com>
+Date:   Thu, 22 Apr 2021 13:56:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422113457.51578-2-daniel.lezcano@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <YIFiiYtgL7/uvzng@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-04-21, 13:34, Daniel Lezcano wrote:
-> The functions exported in the thermal_helpers.c file are only used by
-> the governors and those are not compilable as module.
+On 22/04/21 13:48, Tejun Heo wrote:
+> Hello, Paolo.
 > 
-> Remove the EXPORT_SYMBOL as no module code needs them.
+> On Thu, Apr 22, 2021 at 08:34:15AM +0200, Paolo Bonzini wrote:
+>> Tejun, please don't commit patches to other tree without an Acked-by from
+>> the maintainer (which I wouldn't have provided, as the right way to go would
+>> have been a topic branch).
 > 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  .../driver-api/thermal/sysfs-api.rst          | 28 +------------------
->  drivers/thermal/thermal_helpers.c             |  3 --
->  2 files changed, 1 insertion(+), 30 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
-> index 4b638c14bc16..c35266bbc119 100644
-> --- a/Documentation/driver-api/thermal/sysfs-api.rst
-> +++ b/Documentation/driver-api/thermal/sysfs-api.rst
-> @@ -711,33 +711,7 @@ method, the sys I/F structure will be built like this::
->      |---temp1_input:		37000
->      |---temp1_crit:		100000
->  
-> -4. Export Symbol APIs
-> -=====================
-> -
-> -4.1. get_tz_trend
-> ------------------
-> -
-> -This function returns the trend of a thermal zone, i.e the rate of change
-> -of temperature of the thermal zone. Ideally, the thermal sensor drivers
-> -are supposed to implement the callback. If they don't, the thermal
-> -framework calculated the trend by comparing the previous and the current
-> -temperature values.
-> -
-> -4.2. get_thermal_instance
-> --------------------------
-> -
-> -This function returns the thermal_instance corresponding to a given
-> -{thermal_zone, cooling_device, trip_point} combination. Returns NULL
-> -if such an instance does not exist.
-> -
-> -4.3. thermal_cdev_update
-> -------------------------
-> -
-> -This function serves as an arbitrator to set the state of a cooling
-> -device. It sets the cooling device to the deepest cooling state if
-> -possible.
-> -
-> -5. thermal_emergency_poweroff
-> +4. thermal_emergency_poweroff
->  =============================
->  
->  On an event of critical trip temperature crossing. Thermal framework
-> diff --git a/drivers/thermal/thermal_helpers.c b/drivers/thermal/thermal_helpers.c
-> index 7f50f412e02a..0ecf2c66aa76 100644
-> --- a/drivers/thermal/thermal_helpers.c
-> +++ b/drivers/thermal/thermal_helpers.c
-> @@ -39,7 +39,6 @@ int get_tz_trend(struct thermal_zone_device *tz, int trip)
->  
->  	return trend;
->  }
-> -EXPORT_SYMBOL(get_tz_trend);
->  
->  struct thermal_instance *
->  get_thermal_instance(struct thermal_zone_device *tz,
-> @@ -63,7 +62,6 @@ get_thermal_instance(struct thermal_zone_device *tz,
->  
->  	return target_instance;
->  }
-> -EXPORT_SYMBOL(get_thermal_instance);
->  
->  /**
->   * thermal_zone_get_temp() - returns the temperature of a thermal zone
-> @@ -221,7 +219,6 @@ void thermal_cdev_update(struct thermal_cooling_device *cdev)
->  	trace_cdev_update(cdev, target);
->  	dev_dbg(&cdev->device, "set to state %lu\n", target);
->  }
-> -EXPORT_SYMBOL(thermal_cdev_update);
->  
->  /**
->   * thermal_zone_get_slope - return the slope attribute of the thermal zone
+> My apologies, for some reason, I was incorrectly assuming it was all dandy
+> on the kvm side.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+It was, just full of conflicts. :)  It's only a process thing and not a 
+problem with the code.
 
--- 
-viresh
+>> Fortunately these patches are at the bottom of your tree.  If it's okay,
+>> I'll just pull from there "as if" you had provided a topic branch all the
+>> time.
+> 
+> I'd be happy with however you wanna resolve it. Please let me know if
+> there's anything I can do to help.
+
+Great, I've pulled from your tree then.  Stephen, that will also fix the 
+conflicts with Linus's tree, since Tejun's merge base was newer than mine.
+
+Paolo
+
