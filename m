@@ -2,78 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19547368812
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9C2368814
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbhDVUdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:33:50 -0400
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:35741 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236851AbhDVUds (ORCPT
+        id S239250AbhDVUeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:34:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46800 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236851AbhDVUep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:33:48 -0400
-Received: by mail-pg1-f171.google.com with SMTP id q10so33658896pgj.2;
-        Thu, 22 Apr 2021 13:33:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vC1xHAkIho9Ukh7HvWx1fHpYYEd6QZIs9EuEZLrOjWc=;
-        b=rGUHO6bnbIhBCUa0/oTssTE4wEitc6hOLPN4I/sle2cUrru4ogTuk3frWvWoj3VnSY
-         RJj2V2faEoOIpd6ylXVF6S2fccsN3futIMlhheiH8KipbB/EzTyLKb+mBjTHPYqqLRR5
-         BSEzn8FksRyEjTG8P2Y0TJJTawhkkY6yX+MxO28P7B5YGbY3L4aK/czzF4t/VDsPk98p
-         Pgqe3pG7fTq85cHWp2LvbTxDroeU/4aH5v4G0oyGqyYa+13cturukEvkQdG9lr2hixZb
-         4yO6UsvuNjtr18O21UYTXxZcDoCQeTpZ/jA3NGqBGmoVq1XnbadK7IUtEi8uxzmU8xHr
-         zs8Q==
-X-Gm-Message-State: AOAM530rzQ26uQKmQJkyRnf325AYaBS9cZ0I79k72JVYSiAPFzAYqmm+
-        SZOrcK3sSwlPBvS6/XIj1SA=
-X-Google-Smtp-Source: ABdhPJyMJ/uLJQk1wQG9xNa9F+ZBhYVee6nt0vIriteXQf9/rdrgvygHEGYLOmQIQIRBfjW0sMkEjw==
-X-Received: by 2002:a63:3812:: with SMTP id f18mr457024pga.380.1619123592619;
-        Thu, 22 Apr 2021 13:33:12 -0700 (PDT)
-Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id a7sm2768706pfg.65.2021.04.22.13.33.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 13:33:11 -0700 (PDT)
-Subject: Re: [PATCH v8] bio: limit bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
-        gregkh@linuxfoundation.org, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-References: <CGME20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a@epcas1p1.samsung.com>
- <20210421094745.29660-1-nanich.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <8799c4da-a07f-1837-2fa8-f968469742f0@acm.org>
-Date:   Thu, 22 Apr 2021 13:33:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 22 Apr 2021 16:34:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619123649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bPsR9zAvMT1rXu00S7RjYydgHJfjQUx3EMwYfq9HIMg=;
+        b=TcMfLho5m38TIHVTYBOXxyy+xXPCqiyBVDELfsR0fxA+f1X80I8RuUettw3e6JJGcK9rbk
+        TQTPYSCwSFbN4j1bCUniSnA83FEIWcUb/tarQtOXuZhW6EqGYUOnyEfapzDa7VEkwhDnJF
+        pyKDObpLHToGxOMCXQ9SjJ/zsBhjqWQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-x7oK4LyIMbOEnxlHSgLzJA-1; Thu, 22 Apr 2021 16:34:05 -0400
+X-MC-Unique: x7oK4LyIMbOEnxlHSgLzJA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBAD4343A2;
+        Thu, 22 Apr 2021 20:34:02 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E5CFD60C17;
+        Thu, 22 Apr 2021 20:33:58 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 16:33:56 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     chukaiping <chukaiping@baidu.com>
+Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
+        bhe@redhat.com, khalid.aziz@oracle.com, iamjoonsoo.kim@lge.com,
+        mateusznosek0@gmail.com, sh_def@163.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm/compaction:let proactive compaction order
+ configurable
+Message-ID: <YIHdtI7gMmIxewGG@optiplex-fbsd>
+References: <1618989713-20962-1-git-send-email-chukaiping@baidu.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421094745.29660-1-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618989713-20962-1-git-send-email-chukaiping@baidu.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 2:47 AM, Changheun Lee wrote:
-> bio size can grow up to 4GB when muli-page bvec is enabled.
-> but sometimes it would lead to inefficient behaviors.
-> in case of large chunk direct I/O, - 32MB chunk read in user space -
-> all pages for 32MB would be merged to a bio structure if the pages
-> physical addresses are contiguous. it makes some delay to submit
-> until merge complete. bio max size should be limited to a proper size.
+On Wed, Apr 21, 2021 at 03:21:53PM +0800, chukaiping wrote:
+> Currently the proactive compaction order is fixed to
+> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+> normal 4KB memory, but it's too high for the machines with small
+> normal memory, for example the machines with most memory configured
+> as 1GB hugetlbfs huge pages. In these machines the max order of
+> free pages is often below 9, and it's always below 9 even with hard
+> compaction. This will lead to proactive compaction be triggered very
+> frequently. In these machines we only care about order of 3 or 4.
+> This patch export the oder to proc and let it configurable
+> by user, and the default value is still COMPACTION_HPAGE_ORDER.
+> 
+> Signed-off-by: chukaiping <chukaiping@baidu.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> 
+> Changes in v2:
+>     - fix the compile error in ia64 and powerpc
+>     - change the hard coded max order number from 10 to MAX_ORDER - 1
+> 
+>  include/linux/compaction.h |    1 +
+>  kernel/sysctl.c            |   11 +++++++++++
+>  mm/compaction.c            |   14 +++++++++++---
+>  3 files changed, 23 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index ed4070e..151ccd1 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+>  #ifdef CONFIG_COMPACTION
+>  extern int sysctl_compact_memory;
+>  extern unsigned int sysctl_compaction_proactiveness;
+> +extern unsigned int sysctl_compaction_order;
+>  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>  			void *buffer, size_t *length, loff_t *ppos);
+>  extern int sysctl_extfrag_threshold;
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 62fbd09..a607d4d 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -195,6 +195,8 @@ enum sysctl_writes_mode {
+>  #endif /* CONFIG_SMP */
+>  #endif /* CONFIG_SCHED_DEBUG */
+>  
+> +static int max_buddy_zone = MAX_ORDER - 1;
+> +
 
-Hi Christoph, Ming and Damien,
+This should go into the #ifdef CONFIG_COMPACTION section
+below
 
-Can one of you take a look at this patch?
+>  #ifdef CONFIG_COMPACTION
+>  static int min_extfrag_threshold;
+>  static int max_extfrag_threshold = 1000;
+> @@ -2871,6 +2873,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+>  		.extra2		= &one_hundred,
+>  	},
+>  	{
+> +		.procname       = "compaction_order",
+> +		.data           = &sysctl_compaction_order,
+> +		.maxlen         = sizeof(sysctl_compaction_order),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1         = SYSCTL_ZERO,
+> +		.extra2         = &max_buddy_zone,
+> +	},
+> +	{
+>  		.procname	= "extfrag_threshold",
+>  		.data		= &sysctl_extfrag_threshold,
+>  		.maxlen		= sizeof(int),
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f447..bfd1d5e 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+>  
+>  /*
+>   * A zone's fragmentation score is the external fragmentation wrt to the
+> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
+> + * sysctl_compaction_order. It returns a value in the range [0, 100].
+>   */
+>  static unsigned int fragmentation_score_zone(struct zone *zone)
+>  {
+> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+> +	return extfrag_for_order(zone, sysctl_compaction_order);
+>  }
+>  
+>  /*
+>   * A weighted zone's fragmentation score is the external fragmentation
+> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
+> + * wrt to the sysctl_compaction_order scaled by the zone's size. It
+>   * returns a value in the range [0, 100].
+>   *
+>   * The scaling factor ensures that proactive compaction focuses on larger
+> @@ -2666,6 +2666,7 @@ static void compact_nodes(void)
+>   * background. It takes values in the range [0, 100].
+>   */
+>  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+> +unsigned int __read_mostly sysctl_compaction_order;
+>  
+>  /*
+>   * This is the entry point for compacting all nodes via
+> @@ -2958,6 +2959,13 @@ static int __init kcompactd_init(void)
+>  	int nid;
+>  	int ret;
+>  
+> +	/*
+> +	 * move the initialization of sysctl_compaction_order to here to
+> +	 * eliminate compile error in ia64 and powerpc architecture because
+> +	 * COMPACTION_HPAGE_ORDER is a variable in this architecture
+> +	 */
 
-Thanks,
+This comment block belongs to your commit log, instead.
 
-Bart.
+
+Cheers,
+-- Rafael
+
+> +	sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
+> +
+>  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+>  					"mm/compaction:online",
+>  					kcompactd_cpu_online, NULL);
+> -- 
+> 1.7.1
+> 
+> 
+
