@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB13036814E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA3A36815C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236401AbhDVNPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:15:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51862 "EHLO mail.kernel.org"
+        id S236280AbhDVNV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:21:26 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:39666 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhDVNPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:15:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E9261426;
-        Thu, 22 Apr 2021 13:15:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619097313;
-        bh=qYbinlozbiPMkWqTzsC8oiOShV5c2Xd4JeYWmDaKed4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PDsdJBagcHSbWpTjPwuiLei0YCvMarWaL7fAepN/1GASOs2Zj56wgx7Ogk8EfXlwo
-         TW94TS+Q9iO86l9hnZ5aPlFBa4/2XkrQtVhOCIex57/1xAXeA60IKo1FDqfktSk3HG
-         jJjH84uHWWe6iDEmMTMlgCuHgcxjORT0EMdOcUlel45yCUARSpCSwO1poNcENrK6Vp
-         78ixzp1+vPzxQ6DxGfauV/SIirULq8s9fbKCv//4+AGM0RdNzelP0m6qgnwppA4pxL
-         yGC8uZerTWRQ7nr5WIQFHlvF7/1DrngxzX/dqCS/YrpLo8TboyPVn1rc/4WtONSJyA
-         tGt5NmLyWAHnQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lZZAs-0008SM-8K; Thu, 22 Apr 2021 15:15:18 +0200
-Date:   Thu, 22 Apr 2021 15:15:18 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-serial@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] tty: serial: jsm: remove redundant assignments of
- several variables
-Message-ID: <YIF25kxW99LfysdQ@hovoldconsulting.com>
-References: <20210422121115.246625-1-colin.king@canonical.com>
- <YIFxfH4MXc1ekn4f@hovoldconsulting.com>
- <c9497e47-cdfb-7be0-ad35-648ea5d68268@canonical.com>
- <YIFydeoE/WRfPcvA@hovoldconsulting.com>
- <0b9086b4-8da8-c18e-ad22-1f52d6ed0686@canonical.com>
+        id S235830AbhDVNVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:21:24 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 47600BEE; Thu, 22 Apr 2021 08:20:48 -0500 (CDT)
+Date:   Thu, 22 Apr 2021 08:20:48 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH v3.4] capabilities: require CAP_SETFCAP to map uid 0
+Message-ID: <20210422132048.GA25068@mail.hallyn.com>
+References: <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com>
+ <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com>
+ <20210419122514.GA20598@mail.hallyn.com>
+ <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
+ <20210420034208.GA2830@mail.hallyn.com>
+ <20210420083129.exyn7ptahx2fg72e@wittgenstein>
+ <20210420134334.GA11582@mail.hallyn.com>
+ <m15z0fphwt.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0b9086b4-8da8-c18e-ad22-1f52d6ed0686@canonical.com>
+In-Reply-To: <m15z0fphwt.fsf@fess.ebiederm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:01:36PM +0100, Colin Ian King wrote:
-> On 22/04/2021 13:56, Johan Hovold wrote:
-> > On Thu, Apr 22, 2021 at 01:53:03PM +0100, Colin Ian King wrote:
-> >> On 22/04/2021 13:52, Johan Hovold wrote:
-> >>> On Thu, Apr 22, 2021 at 01:11:15PM +0100, Colin King wrote:
-> >>>> From: Colin Ian King <colin.king@canonical.com>
-> >>>>
-> >>>> Several variables are being assigned with values that are never
-> >>>> read and being updated later with a new value. The initializations
-> >>>> are redundant and can be removed.
-> >>>>
-> >>>> Addresses-Coverity: ("Unused value")
-> >>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >>>> ---
-> >>>>  drivers/tty/serial/jsm/jsm_cls.c | 6 ++----
-> >>>>  1 file changed, 2 insertions(+), 4 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/tty/serial/jsm/jsm_cls.c b/drivers/tty/serial/jsm/jsm_cls.c
-> >>>> index b507a2cec926..b58ea4344aaf 100644
-> >>>> --- a/drivers/tty/serial/jsm/jsm_cls.c
-> >>>> +++ b/drivers/tty/serial/jsm/jsm_cls.c
-> >>>> @@ -349,8 +349,8 @@ static void cls_assert_modem_signals(struct jsm_channel *ch)
-> >>>>  
-> >>>>  static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
-> >>>>  {
-> >>>> -	int qleft = 0;
-> >>>> -	u8 linestatus = 0;
-> >>>> +	int qleft;
-> >>>> +	u8 linestatus;
-> >>>>  	u8 error_mask = 0;
-> >>>>  	u16 head;
-> >>>>  	u16 tail;
-> >>>> @@ -365,8 +365,6 @@ static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
-> >>>>  	head = ch->ch_r_head & RQUEUEMASK;
-> >>>>  	tail = ch->ch_r_tail & RQUEUEMASK;
-> >>>>  
-> >>>> -	/* Get our cached LSR */
-> >>>> -	linestatus = ch->ch_cached_lsr;
-> >>>>  	ch->ch_cached_lsr = 0;
-> >>>
-> >>> Why leave this assignment in? Looks like this was all copy-pasta, but
-> >>> this assignment makes even less sense now that you remove the comment
-> >>> and load.
-> >>
-> >> Which assignment are you referring to?
-> > 
-> > The one just above my comment: 
-> > 
-> > 	ch->ch_cached_lsr = 0;
+On Wed, Apr 21, 2021 at 02:16:34PM -0500, Eric W. Biederman wrote:
+> "Serge E. Hallyn" <serge@hallyn.com> writes:
 > 
-> that cached value is being used in jsm_neo.c, so removing the zero'ing
-> may cause some issues.
+> > +/**
+> > + * verify_root_map() - check the uid 0 mapping
+> > + * @file: idmapping file
+> > + * @map_ns: user namespace of the target process
+> > + * @new_map: requested idmap
+> > + *
+> > + * If a process requests mapping parent uid 0 into the new ns, verify that the
+> > + * process writing the map had the CAP_SETFCAP capability as the target process
+> > + * will be able to write fscaps that are valid in ancestor user namespaces.
+> > + *
+> > + * Return: true if the mapping is allowed, false if not.
+> > + */
+> > +static bool verify_root_map(const struct file *file,
+> > +			    struct user_namespace *map_ns,
+> > +			    struct uid_gid_map *new_map)
+> > +{
+> > +	int idx;
+> > +	const struct user_namespace *file_ns = file->f_cred->user_ns;
+> > +	struct uid_gid_extent *extent0 = NULL;
+> > +
+> > +	for (idx = 0; idx < new_map->nr_extents; idx++) {
+> > +		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+> > +			extent0 = &new_map->extent[idx];
+> > +		else
+> > +			extent0 = &new_map->forward[idx];
+> > +		if (extent0->lower_first == 0)
+> > +			break;
+> > +
+> > +		extent0 = NULL;
+> > +	}
+> > +
+> > +	if (!extent0)
+> > +		return true;
+> > +
+> > +	if (map_ns == file_ns) {
+> > +		/* The process unshared its ns and is writing to its own
+> > +		 * /proc/self/uid_map.  User already has full capabilites in
+> > +		 * the new namespace.  Verify that the parent had CAP_SETFCAP
+> > +		 * when it unshared.
+> > +		 * */
+> > +		if (!file_ns->parent_could_setfcap)
+> > +			return false;
+> > +	} else {
+> > +		/* Process p1 is writing to uid_map of p2, who is in a child
+> > +		 * user namespace to p1's.  Verify that the opener of the map
+> > +		 * file has CAP_SETFCAP against the parent of the new map
+> > +		 * namespace */
+> > +		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
+> > +			return false;
+> > +	}
+> 
+> Is there any reason this permission check is not simply:
+> 
+> 	return map_ns->parent_could_setfcap ||
+>                file_ns_capable(file, map_ns->parent, CAP_SETFCAP);
+>
+> That is why don't we allow any mapping (that is otherwise valid) in user
+> namespaces whose creator had the permission to call CAP_SETFCAP?
 
-That's for you to determine, right? Only doing half of a clean may
-actually be worse than doing nothing at all. At least now it's somewhat
-clear why that statement is there.
+Well I guess the question is exactly who has to have the privilege.
 
-The jsm_neo.c implements support for a different class of devices and
-only those actually use ch_cached_lsr AFAICT.
+If task X does the unshare and its sibling task Y writes the mapping
+(technically, opens the map file), do we want to say that it suffices
+for *either* X or Y to have CAP_SETFCAP?  I was thinking we want to
+require task Y to have the privilege.  Task X having it would not
+suffice.
 
-It would be good if you include some context in the commit message such
-as which commit added this code and that it has never been used.
+> Why limit the case of using the creators permissions to only the case of
+> mapping just a single uid (that happens to be the current euid) in the
+> user namespace?
+> 
+> I don't see any safety reasons for the map_ns == file_ns test.
+> 
+> 
+> 
+> Is the file_ns_capable check for CAP_SETFCAP actually needed?  AKA could
+> the permission check be simplified to:
+> 
+> 	return map_ns->parent_could_setfcap;
 
-Johan
+Currently uid 1000 can create a new user namespace, then have a fully privileged
+root process in uid 1000's peer userns write a 0 mapping.  With just this
+check, that would not be possible.
+
+> That would be a much easier rule to explain to people.
+> 
+> I seem to remember distributions at least trying to make newuidmap have
+> just CAP_SETUID and newgidmap have just CAP_SETGID.  Such a simplified
+> check would facilitate that.
+
+Yes they would have to add an additional CAP_SETFCAP.
