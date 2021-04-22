@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B2B3688B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD8B3688B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237018AbhDVVqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:46:46 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41101 "EHLO ozlabs.org"
+        id S238818AbhDVVrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:47:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1514 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235977AbhDVVqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:46:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FR9wJ0FVSz9sT6;
-        Fri, 23 Apr 2021 07:46:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619127968;
-        bh=+/GdKVMvzu8DR/MyPFYQEvspu6EJiuISmlwNSYEWz+c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kywH3SX3KG3s8jvc4+zM/gffL8ZNAZEF6i7zi75MnxVsco60eiRVlmAniKPtb5jgy
-         KgrQQVP/ka+F/W09vQ+aP2A4++GW7Ix9eoljs+3+zCGpZrdegen2C3hdY/IQSvbWHL
-         6+s3msrEuDDhztAammYUFcVSoyPUvKOpmYmnVh1Fwu8R5ldFgA9z2KbSuv9qYbQh/p
-         jUtIdMjUDQVsYck74WwaXa2QJB9CYLSsTpKv4Jolm0q90Vlm89DSAMTxiuo2C/BktF
-         Pzuflv60NYjekot+2KKuLq2UZKReRCP3fNTt487dIp/2AKKNxMb5TqP7egN8gsPpqB
-         4ebFDM4py66qQ==
-Date:   Fri, 23 Apr 2021 07:46:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the thermal tree
-Message-ID: <20210423074607.6de179ee@canb.auug.org.au>
+        id S235977AbhDVVrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 17:47:51 -0400
+IronPort-SDR: cQjrM/f+uLMWloLseWQGiakuo8FZ0ORNLGzQXxt32i1QA6XBCtJZBlJGVUHVVvUXDo1hl7nXWp
+ sdwMKhM7Sc+g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="281306569"
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="281306569"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 14:47:16 -0700
+IronPort-SDR: qaoU98k/mhRZoQ1fRosIOisWuC5+QkRFINfykCIsfg670jutDn024bnoGUHyLMG6SqJCwdbSLb
+ 9LkPHOlIgvLA==
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="455965113"
+Received: from eassadia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.4.68])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 14:47:15 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v2 0/3] Add multiprocessor wake-up support
+Date:   Thu, 22 Apr 2021 14:47:05 -0700
+Message-Id: <20210422214708.716164-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=w6zSSooCZachU3bL9fqNb7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=w6zSSooCZachU3bL9fqNb7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add multiprocessor wakeup support using MADT ACPI table for x86
+platforms. It uses mailbox based mechanism to wake up the APs. You
+can get more details about the ACPI table and mailbox protocol in
+Guest-Host-Communication Interface (GHCI) for Intel Trust Domain
+Extensions (Intel TDX) specification document (sec 4.1)
 
-Hi all,
+https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
 
-Commits
+Changes since v1:
+ * Removed signoff from Rob and Erik.
 
-  4e1de36ef598 ("thermal/core/power_allocator: Update once cooling devices =
-when temp is low")
-  5a015faf21c4 ("thermal/core/power_allocator: Maintain the device statisti=
-cs from going stale")
+Kuppuswamy Sathyanarayanan (3):
+  ACPICA: ACPI 6.4: MADT: add Multiprocessor Wakeup Mailbox Structure
+  ACPI/table: Print MADT Wake table information
+  x86/acpi, x86/boot: Add multiprocessor wake-up support
 
-are missing a Signed-off-by from their committer.
+ arch/x86/include/asm/apic.h     |  3 ++
+ arch/x86/kernel/acpi/boot.c     | 56 +++++++++++++++++++++++++++++++++
+ arch/x86/kernel/apic/probe_32.c |  8 +++++
+ arch/x86/kernel/apic/probe_64.c |  8 +++++
+ drivers/acpi/tables.c           | 11 +++++++
+ include/acpi/actbl2.h           | 14 +++++++++
+ 6 files changed, 100 insertions(+)
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+2.25.1
 
---Sig_/=w6zSSooCZachU3bL9fqNb7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCB7p8ACgkQAVBC80lX
-0Gwquwf/c+bbgywNrnvk5yirGAwxQRya0kFzRgAQO57nqbIGDZ58GOWGQa3HaxsM
-1RbpCalVBXkyvtxSKoAf9puOoADilO5f6TRTEwNK3QX+wqH3m8tXwdABS+ZKR8DB
-K4XVaVAL0rKlzrXB92cV/0732FuyOdd8OR8MRks+wu1MLsTr5HOE8ZRAoRnpn7vj
-X9KuH1+4Gy3rTyEStYg3mgjJ2QHyFfBFAWmuSR1lYF5SffmqOWlHRGQ845PByrjE
-oZUSIS88VMuzwHvKiEohr2ak7bCMiPCcYL9iBhLeY8atRsUgJYyL/Bcpgae3YsU3
-Vrn//x2u2O6QWf3cp2rbWq90eBbLig==
-=30QN
------END PGP SIGNATURE-----
-
---Sig_/=w6zSSooCZachU3bL9fqNb7--
