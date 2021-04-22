@@ -2,129 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB37367BDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51EB367BE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235366AbhDVIOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
+        id S235217AbhDVIPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235004AbhDVION (ORCPT
+        with ESMTP id S230365AbhDVIPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:14:13 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF17AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:13:38 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id n4-20020a05600c4f84b029013151278decso2595546wmq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:13:38 -0700 (PDT)
+        Thu, 22 Apr 2021 04:15:53 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA03C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:15:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso530200pjs.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=y+2orF1pTAhlEapNdeXUHEPMIxuWbRepsrCfwxwKqPQ=;
-        b=gHnwqNUV9ImgCFezmiVa76pK8wVFkRrxerF84m3fGkLrmxRPS22ANeM2+wardiWMau
-         TIACxgmBON1oew/9mDWdVzRInBo7wiaCjCKjux8OlAWeeO77boWwGStL+p6m1yNjeC3R
-         wCI3YUFG5nSBBAvTADfTufzcNHi3gNchFusrA=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FvJrG6v4LzxdU4oF5EoFjO30pTB4A85M49SYo7WPBCw=;
+        b=AMMWTSQCSdwHsUUdJCOC7YgUNrGXxRc8ufe8ShxXHlWgfWfBk0oS2HBubv7AQuSAMq
+         M0urTLFpK7JN5/zRDUB5Fe/pClBUqpuo+IAb+avdRaxLPwR3C9WYDtIQPHvIq7nNv2DT
+         9Un/y51JxY/e6QYvwfJXjQ/aVxL0I13goxqlM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=y+2orF1pTAhlEapNdeXUHEPMIxuWbRepsrCfwxwKqPQ=;
-        b=DUXogvyes+6paQpeyG42sDYxoOmk6JVYgQf7/ONLdDxzvTzvTutVufKlafAUZx6318
-         66sqwVHlpgRlD0NfAMiBf5FBXGc7Reu/xpDTlumJHn0unzd9SSfQEb4wBVmxjyygfeNT
-         UERdWW1yWRIcliveb9bcBBMqMRd3JhkaNRzCAygSjB7xZ5gMsM/F0ABsS/aYzvUcwFcM
-         XKZ9ZszTq2pbUF3oWylURNjP9fLY+rQbK8k1Hecu192QSvVuegPgoFptL38GNw3ATN2D
-         yE2qM9ltXsR+A3AcIAE4NL9PiVWnxj9BEMvpIf6yDbgiM4fnIjpf6+jkbQuLyyvIz0V4
-         F0LA==
-X-Gm-Message-State: AOAM533xnjpbXDCj3Mzoj5CDlqVR7fFVBGBjQpCKa7cshMKPdDvEcVI0
-        vbBxng94lTBlfTvE5CIpCuNGDw==
-X-Google-Smtp-Source: ABdhPJxj8Wjmw9peJ0Dkkr6S5qwG/1RIJTJQvvdMp6AsnTRfP/VbwnRDvQEbFil5LrRoQEP2bPFE4A==
-X-Received: by 2002:a1c:4b11:: with SMTP id y17mr2401274wma.72.1619079217522;
-        Thu, 22 Apr 2021 01:13:37 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b12sm20494903wmj.1.2021.04.22.01.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 01:13:37 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:13:35 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, dri-devel@lists.freedesktop.org,
-        jgg@ziepe.ca, jaharkes@cs.cmu.edu, akpm@linux-foundation.org,
-        miklos@szeredi.hu, coda@cs.cmu.edu
-Subject: Re: [PATCH 2/2] ovl: fix reference counting in ovl_mmap error path
-Message-ID: <YIEwL09isbCIM82+@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, dri-devel@lists.freedesktop.org,
-        jgg@ziepe.ca, jaharkes@cs.cmu.edu, akpm@linux-foundation.org,
-        miklos@szeredi.hu, coda@cs.cmu.edu
-References: <20210421132012.82354-1-christian.koenig@amd.com>
- <20210421132012.82354-2-christian.koenig@amd.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FvJrG6v4LzxdU4oF5EoFjO30pTB4A85M49SYo7WPBCw=;
+        b=s9ZH6RPEs1LYQcR5MoAInSdgy24S6H3ynjXbrrsN3wiXT8EK6S9tFWrHff7li+vUyn
+         TMIPEuM/ww9yO7702/BYF60iscDf5XwfKYvomV91XEIvUA0cPy73rWbf6aeBL6Jyk+6b
+         qT+ieqZFVuClvi3aTENLJL7wVuBaFrKuxSdWn9MnMhsOwjq1RFFHNbxU+oT1fCLbp/jL
+         Qy8dYyb9eeB8Nxc3eW8KzrcNCDUq5HGEyWAY+GwP+tYIEoKLXjFzs99uCt0iiyyblPNl
+         gsdkkdJKaIIc4vbA+TucylRH2MoSppeLPNiTiQK/9a06tpjZLyyzMOkkG9h+n3wRAWTI
+         8dTQ==
+X-Gm-Message-State: AOAM532yDZDL+9nXku4Hg9Doa/NZyV9I3cbtixM//1u7a++uTZCTvwAj
+        nO+KjGpAmf2v+u3IOwaLlPfSvA==
+X-Google-Smtp-Source: ABdhPJyk2JPTp3iko6u7v5EX3M6TzCT5gzjwwnFh5uBqfgtgyUVxzY91nyUWyB+4tQ6Gme84DA/b2g==
+X-Received: by 2002:a17:902:edd5:b029:e9:7477:5f0a with SMTP id q21-20020a170902edd5b02900e974775f0amr2141960plk.81.1619079318644;
+        Thu, 22 Apr 2021 01:15:18 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:1a8e:1bde:f79e:c302])
+        by smtp.gmail.com with UTF8SMTPSA id r1sm1538054pjo.26.2021.04.22.01.15.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 01:15:18 -0700 (PDT)
+From:   Claire Chang <tientzu@chromium.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, jxgao@google.com,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+Subject: [PATCH v5 00/16] Restricted DMA
+Date:   Thu, 22 Apr 2021 16:14:52 +0800
+Message-Id: <20210422081508.3942748-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210421132012.82354-2-christian.koenig@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 03:20:12PM +0200, Christian König wrote:
-> mmap_region() now calls fput() on the vma->vm_file.
-> 
-> Fix this by using vma_set_file() so it doesn't need to be
-> handled manually here any more.
-> 
-> Signed-off-by: Christian König <christian.koenig@amd.com>
-> Fixes: 1527f926fd04 ("mm: mmap: fix fput in error path v2")
-> CC: stable@vger.kernel.org # 5.11+
-> ---
->  fs/overlayfs/file.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index dbfb35fb0ff7..3847cdc069b5 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -430,20 +430,11 @@ static int ovl_mmap(struct file *file, struct vm_area_struct *vma)
->  	if (WARN_ON(file != vma->vm_file))
->  		return -EIO;
->  
-> -	vma->vm_file = get_file(realfile);
-> +	vma_set_file(vma, realfile);
+This series implements mitigations for lack of DMA access control on
+systems without an IOMMU, which could result in the DMA accessing the
+system memory at unexpected times and/or unexpected addresses, possibly
+leading to data leakage or corruption.
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+not behind an IOMMU. As PCI-e, by design, gives the device full access to
+system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+full chain of exploits; [2], [3]).
 
->  
->  	old_cred = ovl_override_creds(file_inode(file)->i_sb);
->  	ret = call_mmap(vma->vm_file, vma);
->  	revert_creds(old_cred);
-> -
-> -	if (ret) {
-> -		/* Drop reference count from new vm_file value */
-> -		fput(realfile);
-> -	} else {
-> -		/* Drop reference count from previous vm_file value */
-> -		fput(file);
-> -	}
-> -
->  	ovl_file_accessed(file);
->  
->  	return ret;
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+To mitigate the security concerns, we introduce restricted DMA. Restricted
+DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+specially allocated region and does memory allocation from the same region.
+The feature on its own provides a basic level of protection against the DMA
+overwriting buffer contents at unexpected times. However, to protect
+against general data leakage and system memory corruption, the system needs
+to provide a way to restrict the DMA to a predefined memory region (this is
+usually done at firmware level, e.g. MPU in ATF on some ARM platforms [4]).
+
+[1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+[1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+[2] https://blade.tencent.com/en/advisories/qualpwn/
+[3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+[4] https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+
+v5:
+  Rebase on latest linux-next
+
+v4:
+  - Fix spinlock bad magic
+  - Use rmem->name for debugfs entry
+  - Address the comments in v3
+
+v3:
+  Using only one reserved memory region for both streaming DMA and memory
+  allocation.
+  https://lore.kernel.org/patchwork/cover/1360992/
+
+v2:
+  Building on top of swiotlb.
+  https://lore.kernel.org/patchwork/cover/1280705/
+
+v1:
+  Using dma_map_ops.
+  https://lore.kernel.org/patchwork/cover/1271660/
+
+Claire Chang (16):
+  swiotlb: Fix the type of index
+  swiotlb: Refactor swiotlb init functions
+  swiotlb: Refactor swiotlb_create_debugfs
+  swiotlb: Add DMA_RESTRICTED_POOL
+  swiotlb: Add restricted DMA pool initialization
+  swiotlb: Add a new get_io_tlb_mem getter
+  swiotlb: Update is_swiotlb_buffer to add a struct device argument
+  swiotlb: Update is_swiotlb_active to add a struct device argument
+  swiotlb: Bounce data from/to restricted DMA pool if available
+  swiotlb: Move alloc_size to find_slots
+  swiotlb: Refactor swiotlb_tbl_unmap_single
+  dma-direct: Add a new wrapper __dma_direct_free_pages()
+  swiotlb: Add restricted DMA alloc/free support.
+  dma-direct: Allocate memory from restricted DMA pool if available
+  dt-bindings: of: Add restricted DMA pool
+  of: Add plumbing for restricted DMA pool
+
+ .../reserved-memory/reserved-memory.txt       |  24 ++
+ drivers/gpu/drm/i915/gem/i915_gem_internal.c  |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_ttm.c         |   2 +-
+ drivers/iommu/dma-iommu.c                     |  12 +-
+ drivers/of/address.c                          |  25 ++
+ drivers/of/device.c                           |   3 +
+ drivers/of/of_private.h                       |   5 +
+ drivers/pci/xen-pcifront.c                    |   2 +-
+ drivers/xen/swiotlb-xen.c                     |   2 +-
+ include/linux/device.h                        |   4 +
+ include/linux/swiotlb.h                       |  41 ++-
+ kernel/dma/Kconfig                            |  14 +
+ kernel/dma/direct.c                           |  57 +++--
+ kernel/dma/direct.h                           |   9 +-
+ kernel/dma/swiotlb.c                          | 242 +++++++++++++-----
+ 15 files changed, 347 insertions(+), 97 deletions(-)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.31.1.368.gbe11c130af-goog
+
