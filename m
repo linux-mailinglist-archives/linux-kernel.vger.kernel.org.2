@@ -2,216 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26407368888
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EBD368889
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239597AbhDVVZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:25:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28428 "EHLO mga14.intel.com"
+        id S239616AbhDVVZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:25:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237012AbhDVVY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:24:59 -0400
-IronPort-SDR: 7c2aut1Mt5AfAwhJiRDKpbNZNT0V/MYJh9muKxWYCzB5ss0mkTaxB0jL3z633N3tgcDzRg48yV
- 9tytJPZbrANA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="195532507"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="195532507"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 14:24:23 -0700
-IronPort-SDR: +KcfyJpsxkujIjJ3oqsT5/WNybnidSPLrxoKvilZ/cV7JDaKRE+dZAd/qvZYm5SFUL7XSRMr8P
- eFwnZLry7VoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="446395385"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Apr 2021 14:24:22 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lZgo9-0004Lb-SN; Thu, 22 Apr 2021 21:24:21 +0000
-Date:   Fri, 23 Apr 2021 05:23:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- fb9daa6b26d01dbfb28b5306cc3ef6c6976dd72b
-Message-ID: <6081e94d.J+oxXrXpzKQznrzL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S237012AbhDVVZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 17:25:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98671613C8;
+        Thu, 22 Apr 2021 21:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619126688;
+        bh=f+vvShruruWZfqYEMOI/jzf0NuPCjMw+s3DP5F89rww=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VJK5oJhGqgtJLAw2nzqkKh9EuquI3Dy2B/kJTLoKujutm83nv8ivPI20OMU+o1kP5
+         k71LgEXbS5BerdpXaTwGxKYqZ8cGxynUEu+mLrm0TDaLo/ALAnaVnDKkOR7lx7USxk
+         Ep/FDwW8VaNA0Wb0snIR356rJ6PN87oaathVnnjWBznIWr0lPzU1oJt1ngEv5DNWx/
+         WhSRqbHcOAbUtuI9T7RKZDEhJKhnN5cE3zWFB/jAW6iptfVnyseOcB8QGp5qCfQuzK
+         WALJbfaKa9wiFAe7d2w0kQOGBZVA/5ebIbOEDTP/moo0W92bl4eSk/a6nWaglrV4FF
+         DFotlHUj9hGhA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2BBDB5C052F; Thu, 22 Apr 2021 14:24:48 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 14:24:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] sched/isolation: reconcile rcu_nocbs= and nohz_full=
+Message-ID: <20210422212448.GJ975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210419042659.1134916-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210419042659.1134916-1-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: fb9daa6b26d01dbfb28b5306cc3ef6c6976dd72b  Merge branch 'perf/urgent'
+On Mon, Apr 19, 2021 at 12:26:59AM -0400, Paul Gortmaker wrote:
+> We have a mismatch between RCU and isolation -- in relation to what is
+> considered the maximum valid CPU number.
+> 
+> This matters because nohz_full= and rcu_nocbs= are joined at the hip; in
+> fact the former will enforce the latter.  So we don't want a CPU mask to
+> be valid for one and denied for the other.
+> 
+> The difference 1st appeared as of v4.15; further details are below.
 
-elapsed time: 724m
+I pulled this into -rcu for testing and further review.
 
-configs tested: 154
-configs skipped: 2
+If it should instead go through some other tree:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                      ep88xc_defconfig
-arc                      axs103_smp_defconfig
-powerpc                 linkstation_defconfig
-arm                         s5pv210_defconfig
-sparc                       sparc32_defconfig
-sh                              ul2_defconfig
-powerpc                     asp8347_defconfig
-ia64                          tiger_defconfig
-mips                        nlm_xlr_defconfig
-mips                  decstation_64_defconfig
-m68k                         apollo_defconfig
-sh                   sh7770_generic_defconfig
-mips                            e55_defconfig
-sh                        sh7757lcr_defconfig
-sh                          lboxre2_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                          rm200_defconfig
-arc                           tb10x_defconfig
-sh                           se7724_defconfig
-arm                          pcm027_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        magician_defconfig
-ia64                            zx1_defconfig
-mips                      maltasmvp_defconfig
-s390                          debug_defconfig
-x86_64                           alldefconfig
-m68k                         amcore_defconfig
-mips                       capcella_defconfig
-um                            kunit_defconfig
-arm                        oxnas_v6_defconfig
-arm                         cm_x300_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                      mgcoge_defconfig
-arc                        nsim_700_defconfig
-powerpc                         wii_defconfig
-mips                         rt305x_defconfig
-powerpc                      chrp32_defconfig
-arm                         mv78xx0_defconfig
-arc                              alldefconfig
-powerpc                      ppc40x_defconfig
-xtensa                  cadence_csp_defconfig
-mips                        maltaup_defconfig
-mips                        bcm47xx_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                      ppc44x_defconfig
-mips                         tb0287_defconfig
-um                             i386_defconfig
-arm                           spitz_defconfig
-powerpc                     kmeter1_defconfig
-arm                         nhk8815_defconfig
-powerpc                      walnut_defconfig
-powerpc                     rainier_defconfig
-arm                           stm32_defconfig
-powerpc                     mpc83xx_defconfig
-arm                        trizeps4_defconfig
-powerpc                         ps3_defconfig
-arm                    vt8500_v6_v7_defconfig
-nios2                         3c120_defconfig
-arm                          gemini_defconfig
-arm                            dove_defconfig
-arm                        neponset_defconfig
-nds32                             allnoconfig
-mips                 decstation_r4k_defconfig
-mips                      maltaaprp_defconfig
-sh                           se7722_defconfig
-openrisc                         alldefconfig
-powerpc                      acadia_defconfig
-sh                            migor_defconfig
-um                           x86_64_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                           u8500_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210421
-x86_64               randconfig-a002-20210421
-x86_64               randconfig-a001-20210421
-x86_64               randconfig-a005-20210421
-x86_64               randconfig-a006-20210421
-x86_64               randconfig-a003-20210421
-i386                 randconfig-a005-20210421
-i386                 randconfig-a002-20210421
-i386                 randconfig-a001-20210421
-i386                 randconfig-a006-20210421
-i386                 randconfig-a004-20210421
-i386                 randconfig-a003-20210421
-x86_64               randconfig-a015-20210422
-x86_64               randconfig-a016-20210422
-x86_64               randconfig-a011-20210422
-x86_64               randconfig-a014-20210422
-x86_64               randconfig-a012-20210422
-x86_64               randconfig-a013-20210422
-i386                 randconfig-a012-20210421
-i386                 randconfig-a014-20210421
-i386                 randconfig-a011-20210421
-i386                 randconfig-a013-20210421
-i386                 randconfig-a015-20210421
-i386                 randconfig-a016-20210421
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210421
-x86_64               randconfig-a016-20210421
-x86_64               randconfig-a011-20210421
-x86_64               randconfig-a014-20210421
-x86_64               randconfig-a013-20210421
-x86_64               randconfig-a012-20210421
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> As it is confusing to anyone who isn't looking at the code regularly, a
+> reminder is in order; three values exist here:
+> 
+> CONFIG_NR_CPUS	- compiled in maximum cap on number of CPUs supported.
+> nr_cpu_ids 	- possible # of CPUs (typically reflects what ACPI says)
+> cpus_present	- actual number of present/detected/installed CPUs.
+> 
+> For this example, I'll refer to NR_CPUS=64 from "make defconfig" and
+> nr_cpu_ids=6 for ACPI reporting on a board that could run a six core,
+> and present=4 for a quad that is physically in the socket.  From dmesg:
+> 
+>  smpboot: Allowing 6 CPUs, 2 hotplug CPUs
+>  setup_percpu: NR_CPUS:64 nr_cpumask_bits:64 nr_cpu_ids:6 nr_node_ids:1
+>  rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=6.
+>  smp: Brought up 1 node, 4 CPUs
+> 
+> And from userspace, see:
+> 
+>    paul@trash:/sys/devices/system/cpu$ cat present
+>    0-3
+>    paul@trash:/sys/devices/system/cpu$ cat possible
+>    0-5
+>    paul@trash:/sys/devices/system/cpu$ cat kernel_max
+>    63
+> 
+> Everything is fine if we boot 5x5 for rcu/nohz:
+> 
+>   Command line: BOOT_IMAGE=/boot/bzImage nohz_full=2-5 rcu_nocbs=2-5 root=/dev/sda1 ro
+>   NO_HZ: Full dynticks CPUs: 2-5.
+>   rcu: 	Offload RCU callbacks from CPUs: 2-5.
+> 
+> ..even though there is no CPU 4 or 5.  Both RCU and nohz_full are OK.
+> Now we push that > 6 but less than NR_CPU and with 15x15 we get:
+> 
+>   Command line: BOOT_IMAGE=/boot/bzImage rcu_nocbs=2-15 nohz_full=2-15 root=/dev/sda1 ro
+>   rcu: 	Note: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.
+>   rcu: 	Offload RCU callbacks from CPUs: 2-5.
+> 
+> These are both functionally equivalent, as we are only changing flags on
+> phantom CPUs that don't exist, but note the kernel interpretation changes.
+> And worse, it only changes for one of the two - which is the problem.
+> 
+> RCU doesn't care if you want to restrict the flags on phantom CPUs but
+> clearly nohz_full does after this change from v4.15 (edb9382175c3):
+> 
+> -       if (cpulist_parse(str, non_housekeeping_mask) < 0) {
+> -               pr_warn("Housekeeping: Incorrect nohz_full cpumask\n");
+> +       err = cpulist_parse(str, non_housekeeping_mask);
+> +       if (err < 0 || cpumask_last(non_housekeeping_mask) >= nr_cpu_ids) {
+> +               pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
+> 
+> To be clear, the sanity check on "possible" (nr_cpu_ids) is new here.
+> 
+> The goal was reasonable ; not wanting housekeeping to land on a
+> not-possible CPU, but note two things:
+> 
+> 1) this is an exclusion list, not an inclusion list; we are tracking
+> non_housekeeping CPUs; not ones who are explicitly assigned housekeeping
+> 
+> 2) we went one further in 9219565aa890 - ensuring that housekeeping was
+> sanity checking against present and not just possible CPUs.
+> 
+> To be clear, this means the check added in v4.15 is doubly redundant.
+> And more importantly, overly strict/restrictive.
+> 
+> We care now, because the bitmap boot arg parsing now knows that a value
+> of "N" is NR_CPUS; the size of the bitmap, but the bitmap code doesn't
+> know anything about the subtleties of our max/possible/present CPU
+> specifics as outlined above.
+> 
+> So drop the check added in v4.15 (edb9382175c3) and make RCU and
+> nohz_full both in alignment again on NR_CPUS so "N" works for both,
+> and then they can fall back to nr_cpu_ids internally just as before.
+> 
+>   Command line: BOOT_IMAGE=/boot/bzImage nohz_full=2-N rcu_nocbs=2-N root=/dev/sda1 ro
+>   NO_HZ: Full dynticks CPUs: 2-5.
+>   rcu: 	Offload RCU callbacks from CPUs: 2-5.
+> 
+> As shown above, with this change, RCU and nohz_full are in sync, even
+> with the use of the "N" placeholder.  Same result is achieved with "15".
+> 
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> 
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 5a6ea03f9882..7f06eaf12818 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -81,11 +81,9 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
+>  {
+>  	cpumask_var_t non_housekeeping_mask;
+>  	cpumask_var_t tmp;
+> -	int err;
+>  
+>  	alloc_bootmem_cpumask_var(&non_housekeeping_mask);
+> -	err = cpulist_parse(str, non_housekeeping_mask);
+> -	if (err < 0 || cpumask_last(non_housekeeping_mask) >= nr_cpu_ids) {
+> +	if (cpulist_parse(str, non_housekeeping_mask) < 0) {
+>  		pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
+>  		free_bootmem_cpumask_var(non_housekeeping_mask);
+>  		return 0;
+> -- 
+> 2.25.1
+> 
