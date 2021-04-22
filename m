@@ -2,139 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D19368653
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBA1368656
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238455AbhDVSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55874 "EHLO
+        id S236795AbhDVSFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbhDVSEC (ORCPT
+        with ESMTP id S236287AbhDVSFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:04:02 -0400
+        Thu, 22 Apr 2021 14:05:35 -0400
 Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425E2C06174A;
-        Thu, 22 Apr 2021 11:03:26 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id y32so33373807pga.11;
-        Thu, 22 Apr 2021 11:03:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9089FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:04:58 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id z16so33380666pga.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=k0VIW98Anrjot9UIkwH/dJvo32+FqeAF8F46I+kX+Io=;
-        b=MytkApmmOFn5AU3TxwS/Obi5niW22MPciW9RlXaXerbbHPUXMMmTaUAzLJgma/w1fp
-         IyXNfCr9sOxx+nhZqBIW9kAL6BtXcRXbVHz7y4aFHPZgK81TRCblAXdaMBrWdh9oUzi6
-         2KVKv4JWS5dTtDfTIC6muxOcX72GAKK/xPeNc2nExGeu9b1+Nkt8CVepBpJ0/rr60ETi
-         I0M7My07X9mFWZPfwcplIx/XqzgIZIFez2tBBUkU65AiPFjCWifmfuQ/RNRJ20XUxOX5
-         G1yRvCBoPzo3bKnLV2MzscNeeDjL1+9/rrlLpsETxrqyceF9mEBStH3NzGKb62RT6n3F
-         Cgbw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8DyCq2os32b/ZRYdNBKzb//1RkdLowyIWLVKKhCF2PA=;
+        b=HGV9QCo1og7yK9vy+06kusMk4C4C0iyhIm/rxx6EmD/OOC9gQOMKVXWssLLl4HmsfL
+         U+xHZngoKH6ToiI8LVc1ftY6d5QuSPB84p5PzvNJhRX2pnHLI4cqOFuaoHi9C+UnfiY3
+         8PCLSP8NeZ6ourTHYXWEAOElYqAYkMFOPFECiGpwxqIxAKeTCEjjwaNH9Qsrlb+4AtQ/
+         JmRrNW7U3a2nRru5wGA02I3eFIH1cwGKNZog/6xiKTU8S/XlKW5uAtRiPWe4rFdAzSet
+         CZ85My4JJ5cTDaImWSHFps6pcjFJBsiz7UC3Ugnidmd10N60yfhfbaBx4/8kG2TOzw5V
+         t7aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=k0VIW98Anrjot9UIkwH/dJvo32+FqeAF8F46I+kX+Io=;
-        b=nqIkN7wUOdvE5y1/TaBtbtW0BCYXRKLKSGMamzdinWS6zgCsC5Q4MgBC+pO7zBdCBL
-         Cl0PeVWQwzPwgiGYli9SuYKnZJWZByCVwI7q3b4kYmBO1IsVkXv/JNF0E1lJnb7enoMB
-         rVbz3hnawEfGVS7+9CKE9jeJVb9+stsKUwbrEgZ10BCbdlj0roSIdNghC2XtFDdhipSp
-         amR0rXqtp7YOi5oUrqjdVdJVMGksAGCZKr2ABoQLy7D44wwiRrbdo/BKypqBC+tBiFrE
-         +80y6nYog638sp4P0oNNpwziS8E0CvdhKZfXvej+Ro2rJNQY59x9VMEI4JnIsx09cWlF
-         lfhg==
-X-Gm-Message-State: AOAM530sK9cXX0YjFZU08PjFbmERuH3cp5WSuRJywEMpwyQ/m3VaD+TV
-        cWowzgL26Cwp8fbThELZsC4=
-X-Google-Smtp-Source: ABdhPJw+sb072t/853L36S0k1UACj69vXg/3sPhkUxrxdMrs9IKOG7ppAzhXceTmAX70EhKUtlh6Aw==
-X-Received: by 2002:a65:5808:: with SMTP id g8mr4657870pgr.137.1619114605600;
-        Thu, 22 Apr 2021 11:03:25 -0700 (PDT)
-Received: from localhost ([122.172.37.94])
-        by smtp.gmail.com with ESMTPSA id 22sm5698913pjl.31.2021.04.22.11.03.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8DyCq2os32b/ZRYdNBKzb//1RkdLowyIWLVKKhCF2PA=;
+        b=HXvPlandZVDgaBtemCfvMiMDtuqwkwxAXtXY3h+SjzOuvjNOark0DtsLEJjuZ/eQM1
+         VB6EoV/yITx5wJGnj3+LoWmI3YuE17dG1QQq44GOINo7ZbaolqjSHZYmjWH2uCli63lM
+         crLZU++0wymDj1gKM/kDFOofbWZvLkG17d4GMfUV/Xrgorz2oRkIfA7/TanO/61dvrYz
+         VlFTeowJ+Lv4L4CNTcqMv6kH7sTLH2xhKbdl14DxSkRLwh2O4durFzTc8RaQIde2W16D
+         dpIjW0ZXGWArVLM9YwOKBvxayyuDF0rjimBnKZyA0E21CQ26MNxfI8L7QteAkssgpLgG
+         90cg==
+X-Gm-Message-State: AOAM533hY/HnNsgM07vivWLr8hlXp5eTdC6GkvBDxBozHfElp6ZdA1PZ
+        bp9M1GPD0O2LfHYdBEH31hq33g==
+X-Google-Smtp-Source: ABdhPJxzJk0/sfz834RgXlWUfIvDG1YLrHWPOrAQK4/gxBQuAPVSSE51shnGQjktSlxxUzCBC5uHuw==
+X-Received: by 2002:aa7:9add:0:b029:260:8c8a:91fb with SMTP id x29-20020aa79add0000b02902608c8a91fbmr4745676pfp.21.1619114698034;
+        Thu, 22 Apr 2021 11:04:58 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id d4sm5309906pjz.49.2021.04.22.11.04.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 11:03:25 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 23:33:22 +0530
-From:   Anupama K Patil <anupamakpatil123@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, Adam <developer@arusty.dev>,
-        bkkarthik@pesu.pes.edu, gregkh@linuxfoundation.org,
-        kernelnewbies@kernelnewbies.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] drivers: pnp: proc.c: Removed unnecessary varibles
-Message-ID: <20210422180322.7wlyg63kv3n2k6id@ubuntu>
+        Thu, 22 Apr 2021 11:04:56 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 12:04:55 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        psodagud@codeaurora.org, eberman@codeaurora.org
+Subject: Re: [PATCH] remoteproc: core: Move cdev add before device add
+Message-ID: <20210422180455.GE1256950@xps15>
+References: <1618946805-26970-1-git-send-email-sidgup@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qzysk5dfjuwhgqni"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1618946805-26970-1-git-send-email-sidgup@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Siddharth,
 
---qzysk5dfjuwhgqni
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 20, 2021 at 12:26:45PM -0700, Siddharth Gupta wrote:
+> When cdev_add is called after device_add has been called there is no
+> way for the userspace to know about the addition of a cdev as cdev_add
+> itself doesn't trigger a uevent notification, or for the kernel to
+> know about the change to devt. This results in two problems:
+>  - mknod is never called for the cdev and hence no cdev appears on
+>    devtmpfs.
+>  - sysfs links to the new cdev are not established.
+> 
+> Based on how cdev_device_add[1] is written, it appears that the correct
 
-de, e are two variables of the type 'struct proc_dir_entry'
-which can be removed to save memory. This also fixes a coding style
-issue reported by checkpatch where we are suggested to make assignment
-outside the if statement.
+Please don't add this kind of reference to the change log as it will become
+invalid with time.
 
-Signed-off-by: Anupama K Patil <anupamakpatil123@gmail.com>
----
- drivers/pnp/isapnp/proc.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+> way to use these APIs is to call cdev_add before device_add is called.
+> Since the cdev is an optional feature for remoteproc we cannot directly
+> use the existing API.
 
-diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
-index 785a796430fa..1ae458c02656 100644
---- a/drivers/pnp/isapnp/proc.c
-+++ b/drivers/pnp/isapnp/proc.c
-@@ -57,21 +57,20 @@ static const struct proc_ops isapnp_proc_bus_proc_ops =
-=3D {
- static int isapnp_proc_attach_device(struct pnp_dev *dev)
- {
- 	struct pnp_card *bus =3D dev->card;
--	struct proc_dir_entry *de, *e;
- 	char name[16];
-=20
--	if (!(de =3D bus->procdir)) {
-+	if (!bus->procdir) {
- 		sprintf(name, "%02x", bus->number);
--		de =3D bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
--		if (!de)
-+		bus->procdir =3D proc_mkdir(name, isapnp_proc_bus_dir);
-+		if (!bus->procdir)
- 			return -ENOMEM;
- 	}
- 	sprintf(name, "%02x", dev->number);
--	e =3D dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, de,
-+	dev->procent =3D proc_create_data(name, S_IFREG | S_IRUGO, bus->procdir,
- 					    &isapnp_proc_bus_proc_ops, dev);
--	if (!e)
-+	if (!dev->procent)
- 		return -ENOMEM;
--	proc_set_size(e, 256);
-+	proc_set_size(dev->procent, 256);
- 	return 0;
- }
-=20
---=20
-2.25.1
+Please explain why the existing API can't be used directly.
+
+> Hence moving rproc_char_device_add() before
+> device_add() in rproc_add().
+> 
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/char_dev.c#n537
+> 
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 626a6b90f..562355a 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -2316,6 +2316,11 @@ int rproc_add(struct rproc *rproc)
+>  	struct device *dev = &rproc->dev;
+>  	int ret;
+>  
+> +	/* add char device for this remoteproc */
+> +	ret = rproc_char_device_add(rproc);
+> +	if (ret < 0)
+> +		return ret;
+> +
+
+I have tested this change and it works.  So how did it work before?
+
+>  	ret = device_add(dev);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -2329,11 +2334,6 @@ int rproc_add(struct rproc *rproc)
+>  	/* create debugfs entries */
+>  	rproc_create_debug_dir(rproc);
+>  
+> -	/* add char device for this remoteproc */
+> -	ret = rproc_char_device_add(rproc);
+> -	if (ret < 0)
+> -		return ret;
+> -
+
+While reviewing this patch I had another look at rproc_add() and noticed it
+doesn't clean up after itself in case of failure.  If any of the conditions
+aren't met the function returns but rproc_delete_debug_dir(),
+rproc_char_device_remove() and device_del() aren't called.  Please fix that as
+part of your next revision.
+
+Thanks,
+Mathieu
 
 
---qzysk5dfjuwhgqni
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAEBCgAdFiEEDSQZGCDcREXgcOjQtGmOOZV75b4FAmCBumQACgkQtGmOOZV7
-5b77bQwAxwDa39VD4CMPQRKu/YD6PMA4RdJGz+xlci6C5d2/J6CBf+U1Pb3Br+qd
-mHciKRDUOxDk36Qi8ChbR98rOyX+KljGd6JdbIJTDlxMdRE6qRn9Ab7oC+bsoYKa
-emq8RUJJ8u3NzRkYfoPva6vg0HeNKNGseMyGWa+dFwMql30J9PhGf8ObfN4MSTEL
-FHdKlFWF8vZR/pMOSg7/VxhoOCR+H2YtmFxE2h1CKxDzh2RmcU+wLvbuFVTrrD9A
-rKdTf/Knfya5mrgNCr+CDDLttTWg5CzXki2rEGO1suBNZB8MChrot/6SEtnqeaMz
-dnIuZq5pH91A4/ZSQKYyYNJhtwfcbxO5gagsiwV+Q5BJ0VuDE4L+E6jyvn75HD18
-N9Gc3Ey3juPXQbWkK2f8QcJTIXUdlVzhWNDIDorbozgm03Xh/EWK+AoSfxyRxxKQ
-DEzGmJgOWfh5BKFUBwSH8GG0WmpoWPfJnyJ0ZPSONLfxZz7hVy5LFhLVg/5fmyXG
-GS6WBizO
-=Bmv6
------END PGP SIGNATURE-----
-
---qzysk5dfjuwhgqni--
+>  	/* if rproc is marked always-on, request it to boot */
+>  	if (rproc->auto_boot) {
+>  		ret = rproc_trigger_auto_boot(rproc);
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
