@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260563685FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0443685F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238305AbhDVRbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236668AbhDVRb1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S238801AbhDVRb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 22 Apr 2021 13:31:27 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FBDC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:30:52 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j18so73436509lfg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:30:52 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238811AbhDVRbQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 13:31:16 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD1DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:30:28 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so3551620wmi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BW8SV/DH+Hd+lRiZNd1pf62iBo2iQ9Y0qPuGyJQ35mA=;
-        b=rdk2wopYDE0eWgLYwt73ZshFCETVmNf7SBznWmE2R94jyJkSHk6QOuYrWJiUgmHjdF
-         jmdltOdVm3e+vt6Jj9ee+dVaRR8EF4NmeE+nMhiKl+0fbMMzfESshj2iJP6o3wdQcGUJ
-         UnKlLXSHfQevKKqIpkJG/A02IDnmvltmxT7x+cCWcxKimi9OFIQGe6rxbAfsMQ2aiDN3
-         K0bl63QpBRSb69zGx0nqIaJ4bChFQC+qoyh+ERxRu51tVQu1+bWH+jeHLvGpWEtwdsNS
-         HEYb5aOVHOUWujUvxjg9nCl3R4kH0YWrfHGWSC5YG+zKpDVujEy/F6BH0cTb6tCdzxJj
-         aIRw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4QXov8+7rUzewmTRTWrRhYMtm+anFxfbv41xdyEG7qc=;
+        b=m0sj4q5/CBU/FR+dyA/rciylWzJVhQUZpC91BvnlIorWPdHSzb+xYmv56yIujbvxdF
+         kfN3BKtn2lAoFD4yut3Bf2C/pyDs5AtJ8JR5QeSDeiSdQvyW8eZdvCo07HDw7cypZxhX
+         9nI1yy+DirOIiAMmEMfEe3S9XhmLM2y5GXjaSG6xaAi1dFYgKPwolbY1R+Q/yjXC/psB
+         KIm5nZtAuLr1pksmYZhSlF7EQli6Ig5un+fKD6a+yYGfYzSfPCSY2QRhM/cNMWlNYUDH
+         cmPgL25fhBAX9WbKbJcp1APp4qcN4C5gvlC5BT0ZBHEhaNXPRYJzaSXvN29lM+5hD7Tt
+         zQZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BW8SV/DH+Hd+lRiZNd1pf62iBo2iQ9Y0qPuGyJQ35mA=;
-        b=lR/lTDuRpuo1MgkdbBtUMrkZw1tWzfPuUU/Sy1ZdtaI2pmC5078K4fxHzres8xVCED
-         cmVdexAuk4a5YBKiV13qAx6+cgXHxVRwrRdK7C38xgG9bjcvNaB3v5W+M7gxMiBieZjm
-         GcRF9g7wanidCdtVsTw3L92JXL1l8t8P1pcWZdqEMjNWw/0HDkscGDQCXAbD1qpHy3K/
-         q6biYcBFEi4tddTtExMP2QXhCa3V4zlFT8rbM8k+w+SOzsWYV+DvnLiRmUNg0Zju58k/
-         IToVumDtX1mjMtpfyUjb61dE1QVLFvCM1hdmy7LNlIgQcy5/ZTAk2/VFtVxk7AKhO2Vr
-         Rfeg==
-X-Gm-Message-State: AOAM533AzvK1YTm1W/JQD9PWoSuHbVWFCqP56w3wC7a96eqmAHK+c94X
-        546K4q+HvnAeN7ZbC7u52EiOHuFEPa3/CmHsge0PAwgv9wZP1Q==
-X-Google-Smtp-Source: ABdhPJwVyT0CMNqbjZ5KC/EMc7MwR0KTKJxElOY3HK9AYnjWGn8QctOWGhEOI8p49uRRjxNG6O30lQHfUugj1ddAQrc=
-X-Received: by 2002:ac2:4908:: with SMTP id n8mr3203044lfi.576.1619112650646;
- Thu, 22 Apr 2021 10:30:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4QXov8+7rUzewmTRTWrRhYMtm+anFxfbv41xdyEG7qc=;
+        b=ZeF8D34ZqZ4iKycOjubNCLmnCdIQ30JAW21aOsqTNPeK+THKHELbIJa5VDySADuTna
+         8EwkqdKannIOE1no2vAIWL9WOcodULgbsd2IqGg1+TYa1JIqTMvDssOi4mgzP0tD1NNg
+         4GIWk/DaNrqyp6xDoCogcuycnK8aXCDdXElMGjbrZFi99WKjaNhtNIBJ7xNhWnsMMbUO
+         Eh5Z5TMZjGIl85GuE1lJAGVd0AclKMQ7dNP0WstX4FEpDXpwVXMyXIPfzwe5s6bhgQWG
+         OTB+jasAX1wrh3xrf3lDhMgBmMSbywvbShzgm0Y1+gbNyNjNspu+QU5ApuBAozFYAccn
+         C7MA==
+X-Gm-Message-State: AOAM531LGa1KrHUqPqV5uBUhXRb5KHwWjcUOh2hvUJgL8gx0TyfsEPCT
+        Nlkk+RHaBX3mtr1FuOSzAz00zP0M/7yYbZ01
+X-Google-Smtp-Source: ABdhPJxPIeB3GZzGT/Ve4oEY86nOXitLuw8ZGplll19/S+crpbfoPhgyW3s8+6UwI295EDTsIgIhsw==
+X-Received: by 2002:a1c:1f92:: with SMTP id f140mr4891204wmf.108.1619112626744;
+        Thu, 22 Apr 2021 10:30:26 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:2191:9b4c:c38f:a1a9? ([2a01:e34:ed2f:f020:2191:9b4c:c38f:a1a9])
+        by smtp.googlemail.com with ESMTPSA id i12sm4683767wrm.77.2021.04.22.10.30.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 10:30:26 -0700 (PDT)
+Subject: Re: [PATCH v4 0/3] Improve IPA mechanisms in low temperature state
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com
+References: <20210422114308.29684-1-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <423f5f3a-aa3c-dbcd-6783-3bfe04f9781f@linaro.org>
+Date:   Thu, 22 Apr 2021 19:30:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210422155355.471c7751@canb.auug.org.au> <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
- <CAHVum0eQX8+HCJ3F-G9nzSVMy4V8Cg58LtY=jGPRJ77E-MN1fQ@mail.gmail.com>
- <e6256bd5-ca11-13c1-c950-c4761edbcf4d@redhat.com> <CAHVum0cVMd-SxmjKAJyJXO7SR68GKXQ7WTqyqWVfq1MMVd+oLQ@mail.gmail.com>
- <13e21724-bbe5-0fb0-82b6-35f87fe4c639@redhat.com>
-In-Reply-To: <13e21724-bbe5-0fb0-82b6-35f87fe4c639@redhat.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Thu, 22 Apr 2021 10:30:12 -0700
-Message-ID: <CAHVum0e25jKjUPiQR5+QR4x9_4CzBWNzv3=95=PyZ75Y=JMYHw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the cgroup tree with the kvm tree
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>,
-        KVM <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210422114308.29684-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 10:19 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 22/04/21 19:09, Vipin Sharma wrote:
-> > On Thu, Apr 22, 2021 at 12:47 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >> You can check the current state of the merge in the queue branch of the
-> >> KVM tree.  This is what I plan to merge if Tejun agrees.  That would be
-> >> helpful indeed!
-> >
-> > Merge looks fine from my patch perspective. However, one thing is missing:
-> >
-> > In sev_guest_init() after sev_asid_free() call we should also write
-> > set sev->es_false = false.
-> >
-> > Without this the main intent of Sean's patch will be missing in the merge.
->
-> So this:
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 3539201278bd..2632852be856 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -224,7 +224,7 @@ static int sev_guest_init(struct kvm *kvm, struct
-> kvm_sev_cmd *argp)
->         sev->es_active = es_active;
->         asid = sev_asid_new(sev);
->         if (asid < 0)
-> -               return ret;
-> +               goto e_no_asid;
->         sev->asid = asid;
->
->         ret = sev_platform_init(&argp->error);
-> @@ -240,6 +240,8 @@ static int sev_guest_init(struct kvm *kvm, struct
-> kvm_sev_cmd *argp)
->   e_free:
->         sev_asid_free(sev);
->         sev->asid = 0;
-> +e_no_asid:
-> +       sev->es_active = false;
->         return ret;
->   }
->
->
-> Sounds good, I'll squash it and push to kvm.git.
->
-> Paolo
+On 22/04/2021 13:43, Lukasz Luba wrote:
+> Hi all,
+> 
+> This v4 patch set aims to address the issues present in IPA when the
+> temperature is below the first trip point and cooling devices are not
+> throttled.
+> The last patch 1/3 is co-developed by Daniel, who presented the code
+> during v2 review. I have created a helper function based on his idea,
+> which can now be used inside IPA governor lock protected code. 
+> The patch 2/3 adds a basic check of cooling devices power to keep the
+> internal statistics fresh. This allows to avoid issue when the statistics
+> cover very long period, because they were not maintained.
+> The patch 3/3 addresses an issue described in bugzilla [1], which is:
+> unnecessary updating cooling devices when their state has not changed
+> because they are not throttled. This update triggers sending an event,
+> which should be avoided. Thus, patch 2/3 adds a tracking mechanism if
+> the update was triggered and makes sure it will be done only once when
+> the temperature continue to stay below first trip point.
+> 
+> changelog:
+> v4:
+> - reordered the patches, patch 3/3 from v3 is now 1/3 
+> v3:
+> - new patch 3/3 co-developed with Daniel
+> v2:
+> - patch 2/2 uses now simple 'update' bool flag and information from
+>   'tz->last_temperature'
+> - patch 1/2 has small change in the comment
+> - re-based on top of today's thermal/next branch
+> 
+> Regards,
+> Lukasz Luba
+> 
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=212501
+> 
+> Lukasz Luba (3):
+>   thermal: create a helper __thermal_cdev_update() without a lock
+>   thermal: power_allocator: maintain the device statistics from going
+>     stale
+>   thermal: power_allocator: update once cooling devices when temp is low
+> 
+>  drivers/thermal/gov_power_allocator.c | 21 +++++++++++++++++----
+>  drivers/thermal/thermal_core.h        |  1 +
+>  drivers/thermal/thermal_helpers.c     | 27 +++++++++++++++++----------
+>  3 files changed, 35 insertions(+), 14 deletions(-)
 
-Thanks. This looks good.
+Applied, thanks
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
