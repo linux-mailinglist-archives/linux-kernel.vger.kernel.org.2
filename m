@@ -2,94 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621A93682BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0873682C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237429AbhDVOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:52:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:58050 "EHLO mga14.intel.com"
+        id S236488AbhDVOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:54:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34986 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236019AbhDVOwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:52:31 -0400
-IronPort-SDR: eEF/14Cst16qjgmdqOckBhgIdgISUIsFeotAkwmtobMBz1c2bPO4yIRHB2SIPZfCavKYphmSu2
- jpgz29AJ3vRg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="195455552"
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="195455552"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 07:51:56 -0700
-IronPort-SDR: 7ThSNZxN7/DzyQgxwuyvs2UwLBv5+Npjjt4tBmB3pqEMo2OeDtsP032DXqUh7QyXbL0WJvprKc
- ZQSHgHTKjOrQ==
-X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
-   d="scan'208";a="427976473"
-Received: from rlocatel-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.36.200])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 07:51:50 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Subject: Re: [PATCH] vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV
-In-Reply-To: <20210422135810.GG2047089@ziepe.ca>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210422133547.1861063-1-arnd@kernel.org> <20210422135810.GG2047089@ziepe.ca>
-Date:   Thu, 22 Apr 2021 17:51:47 +0300
-Message-ID: <87sg3i74os.fsf@intel.com>
+        id S236019AbhDVOyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 10:54:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1FA29B16A;
+        Thu, 22 Apr 2021 14:53:31 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] irqchip: Add support for IDT 79rc3243x interrupt controller
+Date:   Thu, 22 Apr 2021 16:53:28 +0200
+Message-Id: <20210422145330.73452-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+IDT 79rc3243x SoCs have rather simple interrupt controllers connected
+to the MIPS CPU interrupt lines. Each of them has room for up to
+32 interrupts.
 
-Cc: gvt list & maintainers
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+Changes in v4:
+  - changed comaptible string to idt,32434-pic
 
-On Thu, 22 Apr 2021, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> On Thu, Apr 22, 2021 at 03:35:33PM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> The Kconfig dependency is incomplete since DRM_I915_GVT is a 'bool'
->> symbol that depends on the 'tristate' VFIO_MDEV. This allows a
->> configuration with VFIO_MDEV=m, DRM_I915_GVT=y and DRM_I915=y that
->> causes a link failure:
->> 
->> x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `available_instances_show':
->> gvt.c:(.text+0x67a): undefined reference to `mtype_get_parent_dev'
->> x86_64-linux-ld: gvt.c:(.text+0x6a5): undefined reference to `mtype_get_type_group_id'
->> x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `description_show':
->> gvt.c:(.text+0x76e): undefined reference to `mtype_get_parent_dev'
->> x86_64-linux-ld: gvt.c:(.text+0x799): undefined reference to `mtype_get_type_group_id'
->> 
->> Clarify the dependency by specifically disallowing the broken
->> configuration. If VFIO_MDEV is built-in, it will work, but if
->> VFIO_MDEV=m, the i915 driver cannot be built-in here.
->> 
->> Fixes: 07e543f4f9d1 ("vfio/gvt: Make DRM_I915_GVT depend on VFIO_MDEV")
->> Fixes: 9169cff168ff ("vfio/mdev: Correct the function signatures for the mdev_type_attributes")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->>  drivers/gpu/drm/i915/Kconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Oh kconfig stuff like this makes my head hurt, thanks for finding it
->
-> I also can't see an alternative to this ugly thing, besides having the
-> i915 guys properly modularize this code someday
->
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->
-> Jason
+ drivers/irqchip/Kconfig        |   5 ++
+ drivers/irqchip/Makefile       |   1 +
+ drivers/irqchip/irq-idt3243x.c | 124 +++++++++++++++++++++++++++++++++
+ 3 files changed, 130 insertions(+)
+ create mode 100644 drivers/irqchip/irq-idt3243x.c
 
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index e74fa206240a..55562b36bf3c 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -586,4 +586,9 @@ config MST_IRQ
+ 	help
+ 	  Support MStar Interrupt Controller.
+ 
++config IRQ_IDT3243X
++	bool
++	select GENERIC_IRQ_CHIP
++	select IRQ_DOMAIN
++
+ endmenu
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index c59b95a0532c..341891443eec 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
+ obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
+ obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
+ obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
++obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
+diff --git a/drivers/irqchip/irq-idt3243x.c b/drivers/irqchip/irq-idt3243x.c
+new file mode 100644
+index 000000000000..f0996820077a
+--- /dev/null
++++ b/drivers/irqchip/irq-idt3243x.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for IDT/Renesas 79RC3243x Interrupt Controller.
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqchip.h>
++#include <linux/irqchip/chained_irq.h>
++#include <linux/irqdomain.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++
++#define IDT_PIC_NR_IRQS		32
++
++#define IDT_PIC_IRQ_PEND		0x00
++#define IDT_PIC_IRQ_MASK		0x08
++
++struct idt_pic_data {
++	void __iomem *base;
++	struct irq_domain *irq_domain;
++	struct irq_chip_generic *gc;
++};
++
++static void idt_irq_dispatch(struct irq_desc *desc)
++{
++	struct idt_pic_data *idtpic = irq_desc_get_handler_data(desc);
++	struct irq_chip *host_chip = irq_desc_get_chip(desc);
++	u32 pending, hwirq, virq;
++
++	chained_irq_enter(host_chip, desc);
++
++	pending = irq_reg_readl(idtpic->gc, IDT_PIC_IRQ_PEND);
++	pending &= ~idtpic->gc->mask_cache;
++	while (pending) {
++		hwirq = __fls(pending);
++		virq = irq_linear_revmap(idtpic->irq_domain, hwirq);
++		if (virq)
++			generic_handle_irq(virq);
++		pending &= ~(1 << hwirq);
++	}
++
++	chained_irq_exit(host_chip, desc);
++}
++
++static int idt_pic_init(struct device_node *of_node, struct device_node *parent)
++{
++	struct irq_domain *domain;
++	struct idt_pic_data *idtpic;
++	struct irq_chip_generic *gc;
++	struct irq_chip_type *ct;
++	unsigned int parent_irq;
++	int ret = 0;
++
++	idtpic = kzalloc(sizeof(*idtpic), GFP_KERNEL);
++	if (!idtpic) {
++		ret = -ENOMEM;
++		goto out_err;
++	}
++
++	parent_irq = irq_of_parse_and_map(of_node, 0);
++	if (!parent_irq) {
++		pr_err("Failed to map parent IRQ!\n");
++		ret = -EINVAL;
++		goto out_free;
++	}
++
++	idtpic->base = of_iomap(of_node, 0);
++	if (!idtpic->base) {
++		pr_err("Failed to map base address!\n");
++		ret = -ENOMEM;
++		goto out_unmap_irq;
++	}
++
++	domain = irq_domain_add_linear(of_node, IDT_PIC_NR_IRQS,
++				       &irq_generic_chip_ops, NULL);
++	if (!domain) {
++		pr_err("Failed to add irqdomain!\n");
++		ret = -ENOMEM;
++		goto out_iounmap;
++	}
++	idtpic->irq_domain = domain;
++
++	ret = irq_alloc_domain_generic_chips(domain, 32, 1, "IDTPIC",
++					     handle_level_irq, 0,
++					     IRQ_NOPROBE | IRQ_LEVEL, 0);
++	if (ret)
++		goto out_domain_remove;
++
++	gc = irq_get_domain_generic_chip(domain, 0);
++	gc->reg_base = idtpic->base;
++	gc->private = idtpic;
++
++	ct = gc->chip_types;
++	ct->regs.mask = IDT_PIC_IRQ_MASK;
++	ct->chip.irq_mask = irq_gc_mask_set_bit;
++	ct->chip.irq_unmask = irq_gc_mask_clr_bit;
++	idtpic->gc = gc;
++
++	/* Mask interrupts. */
++	writel(0xffffffff, idtpic->base + IDT_PIC_IRQ_MASK);
++	gc->mask_cache = 0xffffffff;
++
++	irq_set_chained_handler_and_data(parent_irq,
++					 idt_irq_dispatch, idtpic);
++
++	return 0;
++
++out_domain_remove:
++	irq_domain_remove(domain);
++out_iounmap:
++	iounmap(idtpic->base);
++out_unmap_irq:
++	irq_dispose_mapping(parent_irq);
++out_free:
++	kfree(idtpic);
++out_err:
++	pr_err("Failed to initialize! (errno = %d)\n", ret);
++	return ret;
++}
++
++IRQCHIP_DECLARE(idt_pic, "idt,32434-pic", idt_pic_init);
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.29.2
+
