@@ -2,155 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8522A368798
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A8936879D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239377AbhDVUDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S239437AbhDVUDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239266AbhDVUDX (ORCPT
+        with ESMTP id S239401AbhDVUDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:03:23 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21D0C06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:02:47 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id w3so70662420ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:02:47 -0700 (PDT)
+        Thu, 22 Apr 2021 16:03:42 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7343BC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:03:07 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id lt13so13048555pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SnOhfJ0MT6ulL904pALJzBTQTb9USKkGTJS+7NkOyis=;
-        b=HKabR5piWEgdGIAykFLARdkWPmGYFMfK+iS66IATF5kRzw62WtmXm/qQ6nF3CQgVuD
-         8jE5ryHkAxcp3IH5Bgw0TsCrpTsclSxnWAqR8X557uaJdvt0vghjyZZxmRsGGVAPk4Vn
-         EwK+FfoqgHgD+dfPTvOKwkCKT4+IUJQ8ZgsNC3TrtKzY+sbm+q7vx2RT7xo2Anzd3FDr
-         J61YTGtCjUb9F7cItsay+G1jlZnBxlUjeGamegFb7G8XWsF95CBNoRQl981CacltgfmC
-         kLKX1Drgw3XHjl6Inl33WxFy2fBkCa0Ae1XfLmzqJ4yI6z3CbLQ0pQiSi1mtAVIP4XhJ
-         eQXQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PquUgnAHmzPPEM2hTMuE5X7Or48hZxa0Iq7nE5kZVAs=;
+        b=AVQrLhmn18k7xc+K7EYwaEQdFLa3btb1xFBVHxS7g8oiqJ+iocAPRpYPHg5F2hFb8F
+         fdal1gYwrnAHspZmUgT68PGGRbp7l/rTHHTVhDlx4z9BF5fOl47/nU0LmPzLjSQuGiVV
+         Vdz5xc3eAgJELCuAkHZnlr3iVVwCxV/dDxFJTS6cF95ieSkIxvX7QKKjARrI9jtgGyt3
+         Krp7KaakqgpURkJLChowc+Hsq/hCwTb3+UXDCgQcauituJaSPsW+YPTInyR0T4DjlyJI
+         d2lqDWABMHzMNPP3CCDtG2oghR7pKrRWt7Sw0foJTlx7vazYheX4tTtTKPuD408mpxPr
+         vhiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SnOhfJ0MT6ulL904pALJzBTQTb9USKkGTJS+7NkOyis=;
-        b=ArJGhY/iFaMRpmv0Iem4sTLdGQKMxWclnB0BDO/V52YPNDH2O2BJxGkWOJ9dXjhAXv
-         hIv4pSDBZv0PH9uzqYW+qW5zm1qNAYzHOS5RVzciuESYvg39zCdpnX/YoydCcFpvoyhr
-         AtLDWYjTPUgNH9nmpFVZ04EltQn6g8ceJyWIZzjkMLNxJHIzku3weBVnt43d/VelvLaO
-         WMaB8PutsArQDCjQfmzp246mlo0aTWnIY022IkXEAdy9cE0ZT6kh/CyesTNhUh0nkDGo
-         4zOYzT5flNzwQGykQE9IJ3yF+CfMkbJtR49Jx2u9oV3Wfi9NNGersk4FaVwqMSNQIIaV
-         udfg==
-X-Gm-Message-State: AOAM5302IpxMtyPBCO6n4eLhFQrCwnwSSWxo716iIssUBjI3ky6qoPjK
-        tmJRu+ZO2PxY7uD2QgZ7ETm2GKt1fg==
-X-Google-Smtp-Source: ABdhPJwadBampMttNxzQRSAo9aj/jzDsuXhr9dzGvbkB+Bo5yIT4L3CKFuVgfE3y3RW7IQuBC+wIhg==
-X-Received: by 2002:a17:906:b7c4:: with SMTP id fy4mr355199ejb.489.1619121766732;
-        Thu, 22 Apr 2021 13:02:46 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.248.145])
-        by smtp.gmail.com with ESMTPSA id u15sm2936199edx.34.2021.04.22.13.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 13:02:46 -0700 (PDT)
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [PATCH 4/4] sched: make multiple runqueue task counters 32-bit
-Date:   Thu, 22 Apr 2021 23:02:28 +0300
-Message-Id: <20210422200228.1423391-4-adobriyan@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210422200228.1423391-1-adobriyan@gmail.com>
-References: <20210422200228.1423391-1-adobriyan@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PquUgnAHmzPPEM2hTMuE5X7Or48hZxa0Iq7nE5kZVAs=;
+        b=L1mv3LIzro/pCDIQggqv7sQdtYipCo71ud6CHUgzvC421X7WJZSrp7EPJt3QN3l696
+         sjvLkVgp1T2jEzr89F/+I4jwVq+rjgZcefCWDClliDYuf9HkV3jNmT/2QQ7DD6iyU563
+         cWYPcnOvib2NidAUUk38QkBtvnIFk1fywfi7rzroWZWRClGd+v3vfAIc5OhRRt73K1Bg
+         OHb6+uFyJEr6lVFSNF/+sHP5ju8S/aAN02O3bl3Wc6XlFMa0pbeF4LSgpkKzdcLjKxpb
+         wt3vICvl0k7ZhYTYvkKywgMViNdnjyh/0sSRXtYljajtWxS1lXvUdFVYJBcwMBVpRQeU
+         SwLg==
+X-Gm-Message-State: AOAM5334kLjtq+uTxaXcQCKFeNbeLAwm15SAkxu0Xf0JD9LE2vLZ0+Y2
+        ynIH9Ijvw8io8tTTTCS6H+9Hcz4zM8Ofl5v2Hgeu5Q==
+X-Google-Smtp-Source: ABdhPJzUKUFs1pX8iuh6hcmAcZecFWy1IkjZKdFpyI/qO54h34Q91x1E2fjAgDSfsp2Hul6tHHaZn4XvRi0LRmQbwtQ=
+X-Received: by 2002:a17:902:7892:b029:ea:b8a9:6190 with SMTP id
+ q18-20020a1709027892b02900eab8a96190mr207069pll.80.1619121786805; Thu, 22 Apr
+ 2021 13:03:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210421183210.2557462-1-dlatypov@google.com>
+In-Reply-To: <20210421183210.2557462-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 22 Apr 2021 13:02:55 -0700
+Message-ID: <CAFd5g47P4atPPV5C0iBFV8kZm1vUgzST-ghLMm4nq2Qc-=C9Ow@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make
+On Wed, Apr 21, 2021 at 11:32 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Add in:
+> * kunit_kmalloc_array() and wire up kunit_kmalloc() to be a special
+> case of it.
+> * kunit_kcalloc() for symmetry with kunit_kzalloc()
+>
+> This should using KUnit more natural by making it more similar to the
+> existing *alloc() APIs.
+>
+> And while we shouldn't necessarily be writing unit tests where overflow
+> should be a concern, it can't hurt to be safe.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-	struct dl_rq::dl_nr_migratory
-	struct dl_rq::dl_nr_running
+Aside from the copy and paste issue that David already pointed out, LGTM.
 
-	struct rt_rq::rt_nr_boosted
-	struct rt_rq::rt_nr_migratory
-	struct rt_rq::rt_nr_total
-
-	struct rq::nr_uninterruptible
-
-32-bit.
-
-If total number of tasks can't exceed 2**32 (and less due to futex pid
-limits), then per-runqueue counters can't as well.
-
-This patchset has been sponsored by REX Prefix Eradication Society.
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
- kernel/sched/loadavg.c |  2 +-
- kernel/sched/sched.h   | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/sched/loadavg.c b/kernel/sched/loadavg.c
-index d2a655643a02..aef8072cfebe 100644
---- a/kernel/sched/loadavg.c
-+++ b/kernel/sched/loadavg.c
-@@ -81,7 +81,7 @@ long calc_load_fold_active(struct rq *this_rq, long adjust)
- 	long nr_active, delta = 0;
- 
- 	nr_active = this_rq->nr_running - adjust;
--	nr_active += (long)this_rq->nr_uninterruptible;
-+	nr_active += (int)this_rq->nr_uninterruptible;
- 
- 	if (nr_active != this_rq->calc_load_active) {
- 		delta = nr_active - this_rq->calc_load_active;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 10a1522b1e30..730c81a54ed1 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -622,8 +622,8 @@ struct rt_rq {
- 	} highest_prio;
- #endif
- #ifdef CONFIG_SMP
--	unsigned long		rt_nr_migratory;
--	unsigned long		rt_nr_total;
-+	unsigned int		rt_nr_migratory;
-+	unsigned int		rt_nr_total;
- 	int			overloaded;
- 	struct plist_head	pushable_tasks;
- 
-@@ -637,7 +637,7 @@ struct rt_rq {
- 	raw_spinlock_t		rt_runtime_lock;
- 
- #ifdef CONFIG_RT_GROUP_SCHED
--	unsigned long		rt_nr_boosted;
-+	unsigned int		rt_nr_boosted;
- 
- 	struct rq		*rq;
- 	struct task_group	*tg;
-@@ -654,7 +654,7 @@ struct dl_rq {
- 	/* runqueue is an rbtree, ordered by deadline */
- 	struct rb_root_cached	root;
- 
--	unsigned long		dl_nr_running;
-+	unsigned int		dl_nr_running;
- 
- #ifdef CONFIG_SMP
- 	/*
-@@ -668,7 +668,7 @@ struct dl_rq {
- 		u64		next;
- 	} earliest_dl;
- 
--	unsigned long		dl_nr_migratory;
-+	unsigned int		dl_nr_migratory;
- 	int			overloaded;
- 
- 	/*
-@@ -946,7 +946,7 @@ struct rq {
- 	 * one CPU and if it got migrated afterwards it may decrease
- 	 * it on another CPU. Always updated under the runqueue lock:
- 	 */
--	unsigned long		nr_uninterruptible;
-+	unsigned int		nr_uninterruptible;
- 
- 	struct task_struct __rcu	*curr;
- 	struct task_struct	*idle;
--- 
-2.30.2
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
