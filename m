@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76AD3676B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D706A3676B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239002AbhDVBR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 21:17:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36429 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234970AbhDVBR2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 21:17:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619054214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XFnN2bqFK9UPgJTphfDgcHT3qr8qmbD8e/7QuCKFZRE=;
-        b=MeYN+0g+7TceWsVVFkglApTZJZpLVKP/c7jgbrMgigFvQWqGLgCSnN5iUKXgh9iqYWPak4
-        97A40VulXDKdKygQnW81n8w+DX2tWwVFvlbHJvJi3+Ii4sXo5VXrh2GEFkVSOX2WUV1zlx
-        dlSh0WC0RjtBrMUwQMjmNVkxhCmaaeg=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-mQGnjFGFN1qn0z6xgy883A-1; Wed, 21 Apr 2021 21:16:52 -0400
-X-MC-Unique: mQGnjFGFN1qn0z6xgy883A-1
-Received: by mail-qk1-f197.google.com with SMTP id r129-20020a375d870000b029029db870f0easo10895893qkb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XFnN2bqFK9UPgJTphfDgcHT3qr8qmbD8e/7QuCKFZRE=;
-        b=NUyJyfk/K7o6/Y/GvxTzAov6WGNV0hsr4Wy5e+IPD4ghkz/7iYBf30W1C9Qxp8GUO5
-         meyee7OywBjKtuha8sBxrudFIu2sYcrsGDzx9vJQUmrgZnc2CT71byPQIJjFSWYU+xCO
-         KSetJ3FkRW5Q/4WZBkuJ83p6Z/hTEoTVPzE4iSTDhMNSOGmyLYVf2jrDpfj33sQc9ocE
-         Kjq1sEilYDLxdOudrjR7EQVW1VRyhc6jSBX6LK0mKRz9trpazgCTeXAHb+uq3xTFHih2
-         3u+Ve5bsyScL8Il79lQCNd6acXU4HuPFA3rjhlobY0CYKv9SM1KWNLmLxGOnQU1d43QJ
-         uh3Q==
-X-Gm-Message-State: AOAM532gZZQLyTzXrV7QmL3E3+N/dY6WVrH61K/Y2pFBzEwCHf4ZO4md
-        JJsun0O5oujzpINXei8qgnwLoh4LqtD9Df2zntuCQMfQG9UdRaIok6YEQ58nsHaGZAj+/6iO/Be
-        sAnOHS4HkRlueegnk5WsdlD9t
-X-Received: by 2002:a37:8744:: with SMTP id j65mr1180684qkd.304.1619054212097;
-        Wed, 21 Apr 2021 18:16:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyFgO+vn1DxvxP6Cy9Getpc/El869jXk+gall8+vOS1iR3TOOVL3Cg0Yrodm7EDBFytZ5fJfg==
-X-Received: by 2002:a37:8744:: with SMTP id j65mr1180669qkd.304.1619054211912;
-        Wed, 21 Apr 2021 18:16:51 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-77-184-145-104-227.dsl.bell.ca. [184.145.104.227])
-        by smtp.gmail.com with ESMTPSA id j9sm1142078qkm.10.2021.04.21.18.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 18:16:51 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 21:16:50 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 00/23] userfaultfd-wp: Support shmem and hugetlbfs
-Message-ID: <20210422011650.GC6404@xz-x1>
-References: <20210323004912.35132-1-peterx@redhat.com>
- <20210421160352.GJ4440@xz-x1>
- <e75874bf-188b-0aeb-c548-01fc3e33bad4@oracle.com>
+        id S239610AbhDVBT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 21:19:28 -0400
+Received: from mga14.intel.com ([192.55.52.115]:22442 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234970AbhDVBT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 21:19:26 -0400
+IronPort-SDR: TayZT3Y70wM/gE5nrSFGpiqHqe5JfvXefU2419e0UWwac69mCskqlcAvQ+o6HMmdJKU6vnDOYJ
+ SGQJamWcsccA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195363039"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="195363039"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 18:18:52 -0700
+IronPort-SDR: nnmpHPoD1JWEAFnLt2mNlW4tqI85WpxTTu5jISRn6lWir05mjwaI3ahzszhVSAkmloK+eV5AfG
+ 97q0Vm2FOYIQ==
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="427730533"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.255.29.162]) ([10.255.29.162])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 18:18:49 -0700
+Subject: Re: [PATCH RESEND 1/2] perf/x86: Skip checking MSR for MSR 0x0
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210421021825.37872-1-like.xu@linux.intel.com>
+ <YIBFCOz9R966xAVZ@google.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <8b799e26-f8b0-adeb-b8a6-331087c0d4be@linux.intel.com>
+Date:   Thu, 22 Apr 2021 09:18:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e75874bf-188b-0aeb-c548-01fc3e33bad4@oracle.com>
+In-Reply-To: <YIBFCOz9R966xAVZ@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:39:38PM -0700, Mike Kravetz wrote:
-> Sorry Peter, always get preempted with something else.
+On 2021/4/21 23:30, Sean Christopherson wrote:
+> On Wed, Apr 21, 2021, Like Xu wrote:
+>> The Architecture LBR does not have MSR_LBR_TOS (0x000001c9).
+>> When ARCH_LBR we don't set lbr_tos, the failure from the
+>> check_msr() against MSR 0x000 will make x86_pmu.lbr_nr = 0,
+>> thereby preventing the initialization of the guest LBR.
+>>
+>> Fixes: 47125db27e47 ("perf/x86/intel/lbr: Support Architectural LBR")
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>>   arch/x86/events/intel/core.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> index 5272f349dca2..5036496caa60 100644
+>> --- a/arch/x86/events/intel/core.c
+>> +++ b/arch/x86/events/intel/core.c
+>> @@ -4751,10 +4751,10 @@ static bool check_msr(unsigned long msr, u64 mask)
+>>   	u64 val_old, val_new, val_tmp;
+>>   
+>>   	/*
+>> -	 * Disable the check for real HW, so we don't
+>> +	 * Disable the check for real HW or non-sense msr, so we don't
+> 
+> I think this should be "undefined MSR" or something along those lines.  MSR 0x0
+> is a "real" MSR, on Intel CPUs it's an alias for IA32_MC0_ADDR; at least it's
+> supposed to be, most/all Intel CPUs incorrectly alias it to IA32_MC0_CTL.
 
-No worry.
+Thank you, Sean.
+
+<idle>-0       [000] dN.. 38980.032347: read_msr: 0, value fff
+
+Do we have a historic story or specification for this kind of alias ?
+
+#define MSR_IA32_MC0_ADDR               0x00000402
+#define MSR_IA32_MC0_CTL                0x00000400
 
 > 
-> I'll start looking at the hugetlb specific changes and back my way into
-> swap special pte support.  I feel qualified to review the hugetlb stuff
-> and hope others will join in on the common infrastructure changes.
-
-That'll be great; thanks Mike!
-
--- 
-Peter Xu
+> Anyways, my point is that if your definition of "nonsense" is any MSR that is
+> not a valid perf MSR, then this check is woefully incompletely.  If your
+> definition is a nonsensical value, then this comment is simply wrong.
+> 
+> What you're really looking for is precisely the case where the MSR was zero
+> initialized and never defined.
+> 
+>>   	 * mess with potentionaly enabled registers:
+>>   	 */
+>> -	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
+>> +	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR) || !msr)
+>>   		return true;
+>>   
+>>   	/*
+>> -- 
+>> 2.30.2
+>>
 
