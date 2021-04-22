@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2F1367F38
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A498D367F40
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235951AbhDVLEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:04:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230285AbhDVLEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:04:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E08613C2;
-        Thu, 22 Apr 2021 11:03:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619089437;
-        bh=Ug67xf4sAZoT+t7tvOpFzhVkyHygukWWZi62Oc8MbT0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nfY6kRKN1KrWhcH2ovJGuoy/ZJaCuIsWkTeNN07v2QOwffeOZiRG+ys73/pdVNXd5
-         HF+GYBuFxjepf6x7sa0TbGe3l92oenCk9p3jUsikC0uiD5UwFr6g1L/qYAkED83yJG
-         FIk3vyRmtthc78sHx/Q4qoL5NCc5hYjmXY3tq68BEq5TzGlBiD8d3bIFL1/M0p6ZdO
-         Z0AVzBoWBlJknSmV2kE7elreh6Na7Pzzd6/0yKEDpDxFjEs1HqUgkyu4Sj7KzGktuS
-         74+8rFnUs5oc2p49CsRsMq0bztAyHoIuBu8/EdIDE2Usf1AIgQZsy6iBpezsg6eJFl
-         R/b1lgvzKk+xQ==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jens Axboe <axboe@kernel.dk>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: prevent a ternary sign expansion bug
-In-Reply-To: <YIE7RrBPLWc3XtMg@mwanda>
-References: <YIE7RrBPLWc3XtMg@mwanda>
-Date:   Thu, 22 Apr 2021 14:03:49 +0300
-Message-ID: <87im4emvhm.fsf@kernel.org>
+        id S235965AbhDVLG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:06:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60122 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230285AbhDVLGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:06:23 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lZX9U-0007S9-MP; Thu, 22 Apr 2021 11:05:44 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atomisp: remove redundant initializations of several variables
+Date:   Thu, 22 Apr 2021 12:05:44 +0100
+Message-Id: <20210422110544.244609-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+From: Colin Ian King <colin.king@canonical.com>
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
+Several variables are being initialized with values that is never
+read and being updated later with a new value. The initializations
+are redundant and can be removed.
 
-> The problem is that "req->actual" is a u32, "req->status" is an int, and
-> iocb->ki_complete() takes a long.  We would expect that a negative error
-> code in "req->status" would translate to a negative long value.
->
-> But what actually happens is that because "req->actual" is a u32, the
-> error codes is type promoted to a high positive value and then remains
-> a positive value when it is cast to long.  (No sign expansion).
->
-> We can fix this by casting "req->status" to long.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/staging/media/atomisp/i2c/atomisp-gc2235.c        | 2 +-
+ drivers/staging/media/atomisp/i2c/atomisp-ov2722.c        | 2 +-
+ drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c | 2 +-
+ drivers/staging/media/atomisp/pci/sh_css.c                | 4 ++--
+ drivers/staging/media/atomisp/pci/sh_css_params.c         | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-I'm just going to assume your type promotion rank is correct :-)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+index 78147ffb6099..f1ab7a0cab32 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
+@@ -548,7 +548,7 @@ static int is_init;
+ 
+ static int power_ctrl(struct v4l2_subdev *sd, bool flag)
+ {
+-	int ret = -1;
++	int ret;
+ 	struct gc2235_device *dev = to_gc2235_sensor(sd);
+ 
+ 	if (!dev || !dev->platform_data)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+index 1209492c1826..17af178cd54c 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+@@ -673,7 +673,7 @@ static int power_ctrl(struct v4l2_subdev *sd, bool flag)
+ static int gpio_ctrl(struct v4l2_subdev *sd, bool flag)
+ {
+ 	struct ov2722_device *dev = to_ov2722_sensor(sd);
+-	int ret = -1;
++	int ret;
+ 
+ 	if (!dev || !dev->platform_data)
+ 		return -ENODEV;
+diff --git a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
+index e698b63d6cb7..769dc122f266 100644
+--- a/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
++++ b/drivers/staging/media/atomisp/i2c/ov5693/atomisp-ov5693.c
+@@ -932,7 +932,7 @@ static int ov5693_q_exposure(struct v4l2_subdev *sd, s32 *value)
+ static int ad5823_t_focus_vcm(struct v4l2_subdev *sd, u16 val)
+ {
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+-	int ret = -EINVAL;
++	int ret;
+ 	u8 vcm_code;
+ 
+ 	ret = ad5823_i2c_read(client, AD5823_REG_VCM_CODE_MSB, &vcm_code);
+diff --git a/drivers/staging/media/atomisp/pci/sh_css.c b/drivers/staging/media/atomisp/pci/sh_css.c
+index 27dd8ce8ba0a..f6edb6171612 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css.c
++++ b/drivers/staging/media/atomisp/pci/sh_css.c
+@@ -6259,7 +6259,7 @@ allocate_delay_frames(struct ia_css_pipe *pipe) {
+ 	unsigned int dvs_frame_delay = 0;
+ 	struct ia_css_frame_info ref_info;
+ 	int err = 0;
+-	enum ia_css_pipe_id mode = IA_CSS_PIPE_ID_VIDEO;
++	enum ia_css_pipe_id mode;
+ 	struct ia_css_frame **delay_frames = NULL;
+ 
+ 	IA_CSS_ENTER_PRIVATE("");
+@@ -8764,7 +8764,7 @@ int
+ ia_css_pipe_create_extra(const struct ia_css_pipe_config *config,
+ 			    const struct ia_css_pipe_extra_config *extra_config,
+ 			    struct ia_css_pipe **pipe) {
+-	int err = -EINVAL;
++	int err;
+ 	struct ia_css_pipe *internal_pipe = NULL;
+ 	unsigned int i;
+ 
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_params.c b/drivers/staging/media/atomisp/pci/sh_css_params.c
+index 644e14575987..470a7af68ac1 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_params.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_params.c
+@@ -3225,7 +3225,7 @@ sh_css_param_update_isp_params(struct ia_css_pipe *curr_pipe,
+ 	int err = 0;
+ 	ia_css_ptr cpy;
+ 	int i;
+-	unsigned int raw_bit_depth = 10;
++	unsigned int raw_bit_depth;
+ 	unsigned int isp_pipe_version = SH_CSS_ISP_PIPE_VERSION_1;
+ 	bool acc_cluster_params_changed = false;
+ 	unsigned int thread_id, pipe_num;
+-- 
+2.30.2
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmCBWBURHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYx6w/+Py/HPvuGhdSzyKkaLoCoZfzX+h1RwGMy
-zjhH1vTq+5wFLGPtfF9n2dXKmeS/mT584Zdis1J7bZloUxPk8sPfkel581pfPdR+
-Ti7g5JgTY2h8Jizidq+435cKlSXLNnubJCP8dcXUkk6IVFsny2I2IhOFm4cwt79Y
-zWqwtByhMFOPCSMLO/01Psuemv9aQLV42Du8kR9HZgIMixEiEyiSCa5Ad6WpbL2T
-VkSK1STs6N0n9h46O/2iOlfPdAMTqOW8MvkANGtugRBqlmIAWoZGWEx/rXDxogvK
-XWIohCUhr+PvO16ztiNEAT9gsrBkVq/5bCStW2HI8wxBUI9E7q+kKHzrUNDiz20F
-CHax9DNJOFcuP/0OUCV/a+qFBAymc5R2ADLFS7xOKj6taXMA+rhiOrd4htQMhfof
-FG5QWK6XkiPYgD5UhoWd2FsP5M0/7KI34lNi1miCLXrIhov5oKhf5L3RoUO7fzFa
-BzSbh8xT5GwHRukMaJym/NwgEEyt1A5mXDx43Q2HXLepxg47+qJADkTHgwcJ8YQU
-JLpGH3kxfKVBR/w4PtTyaaLnZglbQBCaMnTZ919Was7RMZm+8zNd9RXl77LGpPAI
-9acykfYZz2ajg1J4o8VI3jdAXonZDmDxSEicoxcv4dPbqn1fuPMI2LeDmz4MjyEz
-17Obpk231OM=
-=TCW6
------END PGP SIGNATURE-----
---=-=-=--
