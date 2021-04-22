@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F4636764A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0292F367668
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343941AbhDVAiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 20:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S1344059AbhDVAjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 20:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343905AbhDVAiM (ORCPT
+        with ESMTP id S244292AbhDVAjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:38:12 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB811C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:37:36 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 66so5220212qkf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:37:36 -0700 (PDT)
+        Wed, 21 Apr 2021 20:39:40 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB36C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:39:04 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 4so9599898lfp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:39:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=zQ3oRqFEaYwUupWBz0Ob+9p/m78IpqRSVRzOwl1NExU=;
-        b=YA4YGWCqTJFmMsrOHxlI/UdbFCODBETZ0PKicjaq8W+MO7k74dvfKTRVJ5blFY7Bat
-         i4hOjfxV+MY28sfBh7CZQ2S4mSLZcTJzzwU5phkRvU0O95Qp8gQvGugTxKyjvJOTEZ/4
-         vYnaIZGmMbA1ipt0DA1S73cMSVJRkDXPuK3n2oFOkJI7QjXuQVL9NNaBxfT3GSKYDU1h
-         THOWkOTIgOZnvrWCMm3JEH/LYbRfEoVLD6GZib4mLzDzIvE8WRoIKI7csn9sKv8qET9b
-         wuHpi3aE4SL8MkROICgmJxe7MRbe0q72Zyp7h8cUbriKNb5YqtAekLueCKKnBVBzNGPt
-         AV/A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YtZuY+Qe3tPYFoELBmvxSJOd7sSfQjqqJhXvG/Slrwk=;
+        b=Itbw7CndvF5ZKecqeCy8pddawQ6qg/Vl0A8SYW2+djcLLsGOvRxHR3O1pZW4p0rSuZ
+         q9jShETfEwMuKX85xvCTIn4w98BR1G7Jmmy8zh3jaB5pu1EQBM+uvvWJEVV0uBw/xDtH
+         eEIUXOmEl1xehACaVc6T4RTLFsx6i3k1aQIUPeRFR/CivpXT4VSSkLbkp6HZhAtfjerG
+         blUSuuLcENqfKMI50mLbg9bgDFTKgbtayFnRtvQElnA41vftU2l8TXUpkuldJeqEeqxy
+         y486OIMgN28IZJRzg6vraEqEzdR8agCzdK36K01U9SMHZqy2LBnrybMdb18NPYDtYOtW
+         SmgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=zQ3oRqFEaYwUupWBz0Ob+9p/m78IpqRSVRzOwl1NExU=;
-        b=f67f1AnZD8WqT9jSZYDwcDFaURSB+uQgCGvrgqpkhW/cGFJCOxSP8ZNL5dCAAPdpSn
-         /13jjRg5acm0ENYyWDqxRv/VZXTs4JfpltB3dAgMKzIC8YYpOi3DdCIht9CjbCWXQBeB
-         8PYxcZVKcEJ0ywPyE2K+rxPo0721/s+qW1BsVSF5Djjh39pIf7kbv/sQ4MTan87uOodY
-         xSFDQk1c6xmbqbp+h7Ubo6fKsVdIcsLo9QYOfOJ0OzYU0k+m498C6BE35/zz4+9OWBhG
-         yuqKgQuzA3GOZSX9oj9L2d3/pSd+NBIxLKDVtvr03VQxQQvOuMlRIJwUsUNSZfH2rtZM
-         TWHA==
-X-Gm-Message-State: AOAM531v4A3aBMEOPp+Ny0Uos9i3f3Hr3L2D27euEoeGrs3Fr4DqfdPJ
-        wXkcTy1uRdr9+EReLRJ53j66vg==
-X-Google-Smtp-Source: ABdhPJxhPr50cgrqI2sPQlTusR7MLgOC52sKYJ/5T1GklWlbSpBpN1INHypgW+5A+R7wJBx4RtPRvg==
-X-Received: by 2002:a37:8bc1:: with SMTP id n184mr1021888qkd.268.1619051855892;
-        Wed, 21 Apr 2021 17:37:35 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h65sm933294qkc.128.2021.04.21.17.37.34
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 21 Apr 2021 17:37:35 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 17:37:33 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 1/2] mm/filemap: fix find_lock_entries hang on 32-bit THP
-In-Reply-To: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2104211735430.3299@eggly.anvils>
-References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YtZuY+Qe3tPYFoELBmvxSJOd7sSfQjqqJhXvG/Slrwk=;
+        b=LqbfQlwUQgBphxHke2JWXloacx1ax/FghtBoQ7wW00ALzABIgSSTvAsv15zyfSJJTZ
+         5xvyxNEeSIxd06ZJ6px1JdTUaohbqopteCd8fo1I4Sk9n5XwOYg5Luwl2LFi/9XOz3jR
+         WyA/zUb7iapMHFdOr5ETP+SZgwBzWjZJeum4RdMQk3Pzd15gEGvMyQbnCEF9qXyGKkuI
+         FP6hOZt4w0NC7MiexJ9Ywk7QgZXIW7awXbnjG4MbReAcvYg3ev5tUKEkp/b6RTfzntHL
+         xk6awR4s2uztk9xE12GNxjRvBMqbiZSc3ETHUl1Yke9799XqoaafdjwqbdsFDhgwHW5D
+         NNTA==
+X-Gm-Message-State: AOAM531p9JS8yhmhmQ31zLiQP1BWN5MB5zznouRDy6wsrm7Z0+/rR9tZ
+        /8cwPuX623KSLIu88ARBw6kT6uAdDHJO1t8DxLlEOw==
+X-Google-Smtp-Source: ABdhPJzJMRjp/2v0gT0Psu0Qt1Ah73A49pOXUCbvI1fLocklY+PxwLeDkxSEqzCYYgbpLOVCppUc2MZB9h1jtatLRKU=
+X-Received: by 2002:a19:c38c:: with SMTP id t134mr604670lff.29.1619051943391;
+ Wed, 21 Apr 2021 17:39:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210421234820.32211-1-digetx@gmail.com>
+In-Reply-To: <20210421234820.32211-1-digetx@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 22 Apr 2021 02:38:52 +0200
+Message-ID: <CACRpkda_tfuXH=kE+SbY1BC1rXsYUkQigtkWQ8Dz29JX-SaemA@mail.gmail.com>
+Subject: Re: [PATCH v1] iio: gyro: mpu3050: Fix reported temperature value
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No problem on 64-bit, or without huge pages, but xfstests generic/308
-hung uninterruptibly on 32-bit huge tmpfs.  Since 4.13's 0cc3b0ec23ce
-("Clarify (and fix) MAX_LFS_FILESIZE macros"), MAX_LFS_FILESIZE is
-only a PAGE_SIZE away from wrapping 32-bit xa_index to 0, so the new
-find_lock_entries() has to be extra careful when handling a THP.
+On Thu, Apr 22, 2021 at 1:49 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 
-Fixes: 5c211ba29deb ("mm: add and use find_lock_entries")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
+> The raw temperature value is a signed 16bit integer. The sign casting
+> is missed in the code, which results in a wrong temperature reported by
+> userspace tools, fix it.
+>
+> Cc: stable@vger.kernel.org
+> Link: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
+> Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+> Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # Asus TF201
+> Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
- mm/filemap.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
++/- Andy's comments:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
---- 5.12-rc8/mm/filemap.c	2021-02-26 19:42:39.812156085 -0800
-+++ linux/mm/filemap.c	2021-04-20 23:20:20.509464440 -0700
-@@ -1969,8 +1969,14 @@ unlock:
- put:
- 		put_page(page);
- next:
--		if (!xa_is_value(page) && PageTransHuge(page))
--			xas_set(&xas, page->index + thp_nr_pages(page));
-+		if (!xa_is_value(page) && PageTransHuge(page)) {
-+			unsigned int nr_pages = thp_nr_pages(page);
-+
-+			/* Final THP may cross MAX_LFS_FILESIZE on 32-bit */
-+			xas_set(&xas, page->index + nr_pages);
-+			if (xas.xa_index < nr_pages)
-+				break;
-+		}
- 	}
- 	rcu_read_unlock();
- 
+I never thought this driver would have so many users (3 people signed
+testing it!) but I realize it is more widely deployed than I thought.
+
+I have totally ignored the MPU3050's ability to act as a "sensor hub"
+and talk to accelerometers and magnetometers directly. I always
+thought it would be better to just route the I2C right through it and
+put Linux in direct control, but I realize this was not Invensese's
+intention. I don't know if it can be actually utilized in some generic
+way, all kernels using that have separate hacky drivers for all the
+sub-sensors duplicating the kernel drivers we already have ...
+
+Yours,
+Linus Walleij
