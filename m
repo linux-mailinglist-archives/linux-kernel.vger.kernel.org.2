@@ -2,121 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E171C3678CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3AF3678CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 06:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhDVEnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 00:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhDVEnp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 00:43:45 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6932C06174A;
-        Wed, 21 Apr 2021 21:43:10 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQlCv3cjKz9sRf;
-        Thu, 22 Apr 2021 14:43:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619066588;
-        bh=Syn3qr1PGDyaL7XmaVT1PyuJyg2wGJIrvrm3IwZB9/I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sjr939eeh1tu6S1HQ8xL1IF2UkOCCXHcRufsWcYgvMEgeihcYVUu+EmAVscVkXzva
-         oPS4d2exLKuT1tf63ti42cBKqoWUUwuZuSj0NYjg28ARw+GmywYsOVGF0QbxH9aJsJ
-         Ta8wJcASNcTEBOjOKx0F4HCSXOd9C1bKttVO7yXOzR0W3xKGmVHQNtwrRvsNTlTK/z
-         qcWualdC+PUqz36zvQGaTxNbj3zx/qG1v4eOvisK+T2ZSVnEVn6nMIVr/1uXywf2ut
-         cEI9C8rPR7we+t0WXUiYO62mQm8yxC2aYXibSZGcSeHFExjOuN3qIWb1isZuyoICVG
-         yle9h+UC440iQ==
-Date:   Thu, 22 Apr 2021 14:43:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Jianyong Wu <jianyong.wu@arm.com>, Kai Huang <kai.huang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Nathan Tempelman <natet@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: linux-next: manual merge of the kvm-arm tree with the kvm tree
-Message-ID: <20210422144306.3ec8cfdb@canb.auug.org.au>
+        id S230119AbhDVEoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 00:44:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231442AbhDVEoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 00:44:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E4161430;
+        Thu, 22 Apr 2021 04:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619066612;
+        bh=xrFLSgN/hEMTADzzrOny6qI7RFQr1Z8JPO+U3E7f2Jg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bdF6j9/oR1P54eoaXetC/4kKR4q5gS4G9Htd7nugaDrZMzNzqyN0gMpAPafGyzqtY
+         qt60i/jZCF0O5MdeMUmt1yy2B8h4gPILp4u1EACiJz5d/oBJuMIX1oqnPt2tvNeEMJ
+         BuDrdsWz6jQ4hr/+0Qm/FHLDsDYfLEP6QNE2UPI2hxC3JFK72bIImyGX1PlVhnPNb9
+         nF8tu8i58m9gS4w56vt72HkcXOwZsp6WT/JZ9lBqhp5S6KQoE9CGpGyDxGHMRlrV2W
+         wTob3FYqT6VjFdYvktceKRgv0SBKYbxKN5G+6r6l90/NX0hbPl7zl6HcHYZ07sUVXR
+         VtNarwvVGgQsQ==
+Date:   Wed, 21 Apr 2021 23:43:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Jubin Zhong <zhongjubin@huawei.com>
+Subject: Re: [PATCH 020/190] Revert "PCI: Fix pci_create_slot() reference
+ count leak"
+Message-ID: <20210422044331.GA2907704@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sb04XD1HIWOi_j8MCbcn=hh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-21-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sb04XD1HIWOi_j8MCbcn=hh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+[+cc Jiri, Jubin (author of 4684709bf81a)]
 
-Hi all,
+On Wed, Apr 21, 2021 at 02:58:15PM +0200, Greg Kroah-Hartman wrote:
+> This reverts commit 8a94644b440eef5a7b9c104ac8aa7a7f413e35e5.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: https
+> Cc: Qiushi Wu <wu000273@umn.edu>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+Please do not apply this revert.
 
-  include/uapi/linux/kvm.h
+Prior to 8a94644b440e ("PCI: Fix pci_create_slot() reference count
+leak"), we essentially had this:
 
-between commits:
+  err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
+  if (err)
+    kfree(slot);
+    return ERR_PTR(err);
 
-  8b13c36493d8 ("KVM: introduce KVM_CAP_SET_GUEST_DEBUG2")
-  fe7e948837f3 ("KVM: x86: Add capability to grant VM access to privileged =
-SGX attribute")
-  54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
+  INIT_LIST_HEAD(&slot->list);
+  list_add(&slot->list, &parent->slots);
 
-from the kvm tree and commit:
+That was incorrect because if kobject_init_and_add() fails,
+kobject_put() must be called to clean up the object (per the function
+comment).  For pci_slot_ktype, the release function is
+pci_slot_release():
 
-  3bf725699bf6 ("KVM: arm64: Add support for the KVM PTP service")
+  pci_slot_release
+    list_del(&slot->list);
+    kfree(slot);
 
-from the kvm-arm tree.
+After 8a94644b440e, we had:
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+  err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
+  if (err)
+    kobject_put(&slot->kobj);
+    return ERR_PTR(err);
 
---=20
-Cheers,
-Stephen Rothwell
+  INIT_LIST_HEAD(&slot->list);
+  list_add(&slot->list, &parent->slots);
 
-diff --cc include/uapi/linux/kvm.h
-index d76533498543,0e0f70c0d0dc..000000000000
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@@ -1078,9 -1078,7 +1078,10 @@@ struct kvm_ppc_resize_hpt=20
-  #define KVM_CAP_DIRTY_LOG_RING 192
-  #define KVM_CAP_X86_BUS_LOCK_EXIT 193
-  #define KVM_CAP_PPC_DAWR1 194
- -#define KVM_CAP_PTP_KVM 195
- +#define KVM_CAP_SET_GUEST_DEBUG2 195
- +#define KVM_CAP_SGX_ATTRIBUTE 196
- +#define KVM_CAP_VM_COPY_ENC_CONTEXT_FROM 197
-++#define KVM_CAP_PTP_KVM 198
- =20
-  #ifdef KVM_CAP_IRQ_ROUTING
- =20
+This fixed one bug but exposed another: we correctly clean up the
+object by calling kobject_put() which calls pci_slot_release(), but 
+that dereferences slot->list, which hasn't been initialized yet.
 
---Sig_/sb04XD1HIWOi_j8MCbcn=hh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+But 4684709bf81a ("PCI: Fix pci_slot_release() NULL pointer
+dereference") fixed that problem by making it this:
 
------BEGIN PGP SIGNATURE-----
+  INIT_LIST_HEAD(&slot->list);
+  list_add(&slot->list, &parent->slots);
+  err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
+  if (err)
+    kobject_put(&slot->kobj);
+    return ERR_PTR(err);
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCA/toACgkQAVBC80lX
-0GyQ5Af/cJPoH5o4xEZAM/aCQpJpa8WwLJWn6uRoukB9Srn499nhUOcvtvLhHM/H
-ssXkz+SjsQcYB7zUbRXUEVA0qHuRdhMdvs2lNP3HiltO2JIBv8iXKcNMUg4AssN+
-FjTjJmBKS7SQPAu8E8r4OhkZX7kWr2bN3C4xYCkTwEv5DaMwx9UFpyey1fUkR9BY
-RrViKUU3C0fs/KLQD08YGwEk9Zm4jakwkRkHWnqPEKRl6Clcex8HiOq2gK2DIPo4
-SFtw5u2DuIm35EG8d1DoecHEfi/uN7zy33YTOxhxV+mlu2dr52Y/ltNRFHoi3rcU
-5kdZ/+mOt0fDdWA6x+QWU4bb9700bQ==
-=kKxv
------END PGP SIGNATURE-----
+This correctly initializes slot->list and cleans up if
+kobject_init_and_add() fails.
 
---Sig_/sb04XD1HIWOi_j8MCbcn=hh--
+But if we apply this revert, we'll have this:
+
+  INIT_LIST_HEAD(&slot->list);
+  list_add(&slot->list, &parent->slots);
+  err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, ...);
+  if (err)
+    kfree(slot);
+    return ERR_PTR(err);
+
+Now we kfree(slot), but we don't call kobject_put(), so we don't
+remove it from the list, so the list is now corrupted because one of
+its entries has been deallocated.
+
+Bjorn
+
+> ---
+>  drivers/pci/slot.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
+> index d627dd9179b4..c190e09af356 100644
+> --- a/drivers/pci/slot.c
+> +++ b/drivers/pci/slot.c
+> @@ -268,7 +268,6 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+>  	slot_name = make_slot_name(name);
+>  	if (!slot_name) {
+>  		err = -ENOMEM;
+> -		kfree(slot);
+>  		goto err;
+>  	}
+>  
+> @@ -277,10 +276,8 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+>  
+>  	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
+>  				   "%s", slot_name);
+> -	if (err) {
+> -		kobject_put(&slot->kobj);
+> +	if (err)
+>  		goto err;
+> -	}
+>  
+>  	down_read(&pci_bus_sem);
+>  	list_for_each_entry(dev, &parent->devices, bus_list)
+> @@ -296,6 +293,7 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+>  	mutex_unlock(&pci_slot_mutex);
+>  	return slot;
+>  err:
+> +	kfree(slot);
+>  	slot = ERR_PTR(err);
+>  	goto out;
+>  }
+> -- 
+> 2.31.1
+> 
