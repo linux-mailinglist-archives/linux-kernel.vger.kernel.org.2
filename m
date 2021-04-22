@@ -2,290 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C55436814B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB13036814E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbhDVNOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhDVNOT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:14:19 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBCCC06174A;
-        Thu, 22 Apr 2021 06:13:43 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id x12so47956994ejc.1;
-        Thu, 22 Apr 2021 06:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3hsr6lCLd7JFlK9taoygzcaxUpuGrqlvJuCbv9uQLPQ=;
-        b=faywr3P7WFufLom1rX2WOmWEReYjumYY9+Q6qWzuIDUblJZ2Hxu+9YJPrj+Eikd4cf
-         RHkz3e/YFfIXC6Us+iaAW/hnfF7gtQ4tegZIM1gbbESI19XyOjf+9s60ZhU4khOVRGSz
-         TMU4rRlg+LNAyMKzX5rNrDsMZ6AA80QzwLWnt5ac/tggOvuZN901ZZ5Ah1lUv4DWXVUB
-         1pRQyRooIodQOoPK0gLLq2miQkvc1pgNe82optlJgVzv+pSvAmJzpXJU5kYuuEE0BqEF
-         XVYqJJZbvEGytp0OI/5zaAbSILvPtqeY+DNHFIALp6cCINm1R5CtzQXunT4f7g7+06PB
-         n9fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3hsr6lCLd7JFlK9taoygzcaxUpuGrqlvJuCbv9uQLPQ=;
-        b=Mg9DjCt/km9aTNwgno/dtwzuDCCpsvf5ov84F8xjqKMlxtHhFeGDB5fslv9/gSosIF
-         deIkQJsX0HlFD5gvqYx8jWm+BUa5QRVOKNAQq5iH/g9k7lFBiz3TgB4AwdOAt+FXRhpc
-         t8yDXoPSMmZLdXQLy8SQaF3MmS4AIyHJkgZyH9eQwYEAbUWKYqmnjgGPNa/uDmEag0ti
-         hVQ7VMV5xwuxUiarkHF8AlXYjKYMw7iFr4Y7gHYIaPECwwrfDcFQ0LGT1XqcslgWFCGP
-         9tiDrQnbeNVt/vVrShu/uv8KcDQAMN0PLiR8kDRXCxg0mEUoJurlumufJgRSNi3F5KKT
-         osbg==
-X-Gm-Message-State: AOAM531CavmZm7ro1SScYD/irON/lCnEK/s0KPXo+9N6t41mQpLHaWgm
-        t/A4sdfAjGyoORLEreuu0tU=
-X-Google-Smtp-Source: ABdhPJzXCfbHhFUzaYpljXPt1Ch/X5HDXhU8dNkH2BmhotD1eZOoiPgxt8o6p0gUe9CTiF8IOY5I3g==
-X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr3312469ejb.118.1619097222388;
-        Thu, 22 Apr 2021 06:13:42 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id f22sm1828519ejr.35.2021.04.22.06.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 06:13:41 -0700 (PDT)
-Subject: Re: [PATCH 1/3] dt-bindings: iommu: rockchip: Convert IOMMU to DT
- schema
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, xxm@rock-chips.com
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20210422072442.111070-1-benjamin.gaignard@collabora.com>
- <20210422072442.111070-2-benjamin.gaignard@collabora.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <c2087946-0dfb-b66e-bcb9-5bba5fd098bf@gmail.com>
-Date:   Thu, 22 Apr 2021 15:13:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S236401AbhDVNPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:15:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230005AbhDVNPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:15:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E9261426;
+        Thu, 22 Apr 2021 13:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619097313;
+        bh=qYbinlozbiPMkWqTzsC8oiOShV5c2Xd4JeYWmDaKed4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PDsdJBagcHSbWpTjPwuiLei0YCvMarWaL7fAepN/1GASOs2Zj56wgx7Ogk8EfXlwo
+         TW94TS+Q9iO86l9hnZ5aPlFBa4/2XkrQtVhOCIex57/1xAXeA60IKo1FDqfktSk3HG
+         jJjH84uHWWe6iDEmMTMlgCuHgcxjORT0EMdOcUlel45yCUARSpCSwO1poNcENrK6Vp
+         78ixzp1+vPzxQ6DxGfauV/SIirULq8s9fbKCv//4+AGM0RdNzelP0m6qgnwppA4pxL
+         yGC8uZerTWRQ7nr5WIQFHlvF7/1DrngxzX/dqCS/YrpLo8TboyPVn1rc/4WtONSJyA
+         tGt5NmLyWAHnQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lZZAs-0008SM-8K; Thu, 22 Apr 2021 15:15:18 +0200
+Date:   Thu, 22 Apr 2021 15:15:18 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-serial@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] tty: serial: jsm: remove redundant assignments of
+ several variables
+Message-ID: <YIF25kxW99LfysdQ@hovoldconsulting.com>
+References: <20210422121115.246625-1-colin.king@canonical.com>
+ <YIFxfH4MXc1ekn4f@hovoldconsulting.com>
+ <c9497e47-cdfb-7be0-ad35-648ea5d68268@canonical.com>
+ <YIFydeoE/WRfPcvA@hovoldconsulting.com>
+ <0b9086b4-8da8-c18e-ad22-1f52d6ed0686@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210422072442.111070-2-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b9086b4-8da8-c18e-ad22-1f52d6ed0686@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On Thu, Apr 22, 2021 at 02:01:36PM +0100, Colin Ian King wrote:
+> On 22/04/2021 13:56, Johan Hovold wrote:
+> > On Thu, Apr 22, 2021 at 01:53:03PM +0100, Colin Ian King wrote:
+> >> On 22/04/2021 13:52, Johan Hovold wrote:
+> >>> On Thu, Apr 22, 2021 at 01:11:15PM +0100, Colin King wrote:
+> >>>> From: Colin Ian King <colin.king@canonical.com>
+> >>>>
+> >>>> Several variables are being assigned with values that are never
+> >>>> read and being updated later with a new value. The initializations
+> >>>> are redundant and can be removed.
+> >>>>
+> >>>> Addresses-Coverity: ("Unused value")
+> >>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> >>>> ---
+> >>>>  drivers/tty/serial/jsm/jsm_cls.c | 6 ++----
+> >>>>  1 file changed, 2 insertions(+), 4 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/tty/serial/jsm/jsm_cls.c b/drivers/tty/serial/jsm/jsm_cls.c
+> >>>> index b507a2cec926..b58ea4344aaf 100644
+> >>>> --- a/drivers/tty/serial/jsm/jsm_cls.c
+> >>>> +++ b/drivers/tty/serial/jsm/jsm_cls.c
+> >>>> @@ -349,8 +349,8 @@ static void cls_assert_modem_signals(struct jsm_channel *ch)
+> >>>>  
+> >>>>  static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
+> >>>>  {
+> >>>> -	int qleft = 0;
+> >>>> -	u8 linestatus = 0;
+> >>>> +	int qleft;
+> >>>> +	u8 linestatus;
+> >>>>  	u8 error_mask = 0;
+> >>>>  	u16 head;
+> >>>>  	u16 tail;
+> >>>> @@ -365,8 +365,6 @@ static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
+> >>>>  	head = ch->ch_r_head & RQUEUEMASK;
+> >>>>  	tail = ch->ch_r_tail & RQUEUEMASK;
+> >>>>  
+> >>>> -	/* Get our cached LSR */
+> >>>> -	linestatus = ch->ch_cached_lsr;
+> >>>>  	ch->ch_cached_lsr = 0;
+> >>>
+> >>> Why leave this assignment in? Looks like this was all copy-pasta, but
+> >>> this assignment makes even less sense now that you remove the comment
+> >>> and load.
+> >>
+> >> Which assignment are you referring to?
+> > 
+> > The one just above my comment: 
+> > 
+> > 	ch->ch_cached_lsr = 0;
+> 
+> that cached value is being used in jsm_neo.c, so removing the zero'ing
+> may cause some issues.
 
-Please check robh/dtbs-check failed build log at
+That's for you to determine, right? Only doing half of a clean may
+actually be worse than doing nothing at all. At least now it's somewhat
+clear why that statement is there.
 
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210422072442.111070-2-benjamin.gaignard@collabora.com/
+The jsm_neo.c implements support for a different class of devices and
+only those actually use ch_cached_lsr AFAICT.
 
-make ARCH=arm64 dt_binding_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-
-
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-
-Test if all notifications are gone.
-
-===
-
-YAML also checks extra properties like "power-domains" not yet included
-but needed for rk3568.
-Add them in a separate patch.
-
-===
-
-rk3229-evb.dt.yaml: iommu@20030480: 'iommu-cells' does not match any of
-the regexes
-
-Change a rk322x.dtsi property to #iommu-cells in a separate patch.
-
-===
-
-rk3229-xms6.dt.yaml: iommu@20030480: reg: [[537068672, 64], [537068736,
-64]] is too long
-
-Change reg minItems maxItems.
-
-===
+It would be good if you include some context in the commit message such
+as which commit added this code and that it has never been used.
 
 Johan
-
-On 4/22/21 9:24 AM, Benjamin Gaignard wrote:
-> Convert Rockchip IOMMU to DT schema
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../bindings/iommu/rockchip,iommu.txt         | 38 ----------
->  .../bindings/iommu/rockchip,iommu.yaml        | 76 +++++++++++++++++++
->  2 files changed, 76 insertions(+), 38 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
->  create mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.txt b/Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
-> deleted file mode 100644
-> index 6ecefea1c6f9..000000000000
-> --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
-> +++ /dev/null
-> @@ -1,38 +0,0 @@
-> -Rockchip IOMMU
-> -==============
-> -
-> -A Rockchip DRM iommu translates io virtual addresses to physical addresses for
-> -its master device.  Each slave device is bound to a single master device, and
-> -shares its clocks, power domain and irq.
-> -
-> -Required properties:
-> -- compatible      : Should be "rockchip,iommu"
-> -- reg             : Address space for the configuration registers
-> -- interrupts      : Interrupt specifier for the IOMMU instance
-> -- interrupt-names : Interrupt name for the IOMMU instance
-> -- #iommu-cells    : Should be <0>.  This indicates the iommu is a
-> -                    "single-master" device, and needs no additional information
-> -                    to associate with its master device.  See:
-> -                    Documentation/devicetree/bindings/iommu/iommu.txt
-> -- clocks          : A list of clocks required for the IOMMU to be accessible by
-> -                    the host CPU.
-> -- clock-names     : Should contain the following:
-> -	"iface" - Main peripheral bus clock (PCLK/HCL) (required)
-> -	"aclk"  - AXI bus clock (required)
-> -
-> -Optional properties:
-> -- rockchip,disable-mmu-reset : Don't use the mmu reset operation.
-> -			       Some mmu instances may produce unexpected results
-> -			       when the reset operation is used.
-> -
-> -Example:
-> -
-> -	vopl_mmu: iommu@ff940300 {
-> -		compatible = "rockchip,iommu";
-> -		reg = <0xff940300 0x100>;
-> -		interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-> -		interrupt-names = "vopl_mmu";
-> -		clocks = <&cru ACLK_VOP1>, <&cru HCLK_VOP1>;
-> -		clock-names = "aclk", "iface";
-> -		#iommu-cells = <0>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> new file mode 100644
-> index 000000000000..ab128f8e4c73
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> @@ -0,0 +1,76 @@
-
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-
-GPL-2.0
-This is a conversion of an existing document.
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iommu/rockchip,iommu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip IOMMU
-> +
-> +maintainers:
-> +  - Simon Xue <xxm@rock-chips.com>
-
-  - Heiko Stuebner <heiko@sntech.de>
-
-Add someone that can respond in a short time in case rob+dt wants to
-delete something.
-
-> +
-> +description: |+
-> +  A Rockchip DRM iommu translates io virtual addresses to physical addresses for
-
-> +  its master device. Each slave device is bound to a single master device, and
-
-No comma "," before "and"
-
-> +  shares its clocks, power domain and irq.
-> +
-> +  For information on assigning IOMMU controller to its peripheral devices,
-> +  see generic IOMMU bindings.
-> +
-> +properties:
-> +  compatible:
-> +    const: rockchip,iommu
-> +
-> +  reg:
-
-> +    maxItems: 1
-
-minItems: 1
-maxItems: 2
-
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-names:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Core clock
-> +      - description: Interface clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: aclk
-> +      - const: iface
-> +
-> +  "#iommu-cells":
-> +    const: 0
-> +
-
-  power-domains:
-    maxItems: 1
-
-Add in separate patch for review by rob+bt
-
-> +  rockchip,disable-mmu-reset:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-
-> +      Don't use the mmu reset operation.
-
-Do not use ....
-
-The use of "'" in a YAML description gives problems in some text
-highlighters. Try to avoid.
-
-> +      Some mmu instances may produce unexpected results
-> +      when the reset operation is used.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - "#iommu-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3399-cru.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    vopl_mmu: iommu@ff940300 {
-> +      compatible = "rockchip,iommu";
-> +      reg = <0xff940300 0x100>;
-> +      interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-> +      interrupt-names = "vopl_mmu";
-> +      clocks = <&cru ACLK_VOP1>, <&cru HCLK_VOP1>;
-> +      clock-names = "aclk", "iface";
-> +      #iommu-cells = <0>;
-> +    };
-> 
-
