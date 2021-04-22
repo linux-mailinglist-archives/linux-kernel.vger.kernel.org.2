@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41A33681A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9D13681A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236426AbhDVNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
+        id S236473AbhDVNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236333AbhDVNno (ORCPT
+        with ESMTP id S236254AbhDVNo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:43:44 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72484C06174A;
-        Thu, 22 Apr 2021 06:43:09 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id h8so13371292edb.2;
-        Thu, 22 Apr 2021 06:43:09 -0700 (PDT)
+        Thu, 22 Apr 2021 09:44:29 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D48C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:43:53 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j18so72271491lfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:43:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/X+gdpa7nitmW2LfUzsCx+59dgi99zMR2DugLsgYeVY=;
-        b=r6lLcdebfCTFu2pd9lwHbs5JefCnwomGDE9DWqi02d0FlvcgrAdgFei4gyN/l4l3DM
-         Z6UveAIULr/vdBT1XOOYKMn0ZLPA9ndTj456Va2XnM0COfIaYdof/AOGH++/PYKX96QX
-         lMtucwWwqedRrVOfMxMrOCTY6alMO1JvDK5da0gX4iYmuFGpUj1va5GWG4ukBwMgCj6l
-         +td0fxi3r2K8ICwb1k+L80907KZPKnksmc/r3Zc2nU1rx+uF5PkNsX61BtsFkuaIOlWZ
-         NZawvZ1qXxpQfV8j/+36qIMqUSUbTKe4BTrnhzsVH5rNSjX2bjaoXxRe5s/YRNfKdCYi
-         /fbg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=wIyg2GUygQADS0eUtcX7ugYOAZAbRSLVkr0bewDkhhE=;
+        b=U6lNDDcds7fRHXvMPIDhBL90TH/4aTaDhe6/Y4WSihHMniN0B1MJj31UcIZvm691qS
+         2fKXD61zPu0s5Y/7pqwrj8+l/3pfKOEykFIgPOWhLdEfo1X3+IMBCZNPfXIRFDyYyRIB
+         j0ftoUP0IjI3ZF5+4oJolp4x/ACoWf2Y2iXAVePDA+9sHp23dGKJlencxktuwek174A4
+         izDcyzk8lbekH0fepW117SUceWEvYmXV/UTm0lsEi5jzSS0rXg/osksj4pfjvAP0pyZi
+         GPmaXSyTZ2S1+Qu8P9jkvZwfvkJd5gOsklvrK3L5RfJJVzo+a6+HE/+XHJRZkYoD3JNo
+         weUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/X+gdpa7nitmW2LfUzsCx+59dgi99zMR2DugLsgYeVY=;
-        b=c14pTchRViLX5a5ht/SX0rIuO16TCwwA23Ueg7tOwdULgzyC9eqz/R93+t45CpXIvB
-         5L7IXvjbc9jOk3maZ03j7sYXlUqohPtRTAnYJoCky50NtHZGNn0TEEgmeO+Diq4nuJoX
-         pzIiDkuGpQC63vz9qnF9MUM8oxJw/pZgZxZcwzQkkZ7Yrx3pGzGVsZpMczrAzUknu05Z
-         QydmiATdnTUgC79jsFNg7Pn5wmgT0bjxbrSJ5qpk22L6XJzHZ+MYx9kBukUzrkhCW3Cg
-         0FMOeH7On0vn4/HV2+6LINUERwWhyQjiX2ORsb4jXu92w++Ebkgi63xfv44zAke8EleG
-         daoA==
-X-Gm-Message-State: AOAM530S8smhjc/qJqu+cF+zS4Pq6+t40jv5qAzFK1B20WMLUg0x03R6
-        VJg0hX3i2dLmo3/1+pyJ5Yo=
-X-Google-Smtp-Source: ABdhPJxni7A19BFMdj/QOaNYmYXKzoN9GGJkUu7R1VHY8fFW0VN7v9e3beuiEtbxdpyntwIAaKM2TQ==
-X-Received: by 2002:a05:6402:4314:: with SMTP id m20mr3862131edc.5.1619098988214;
-        Thu, 22 Apr 2021 06:43:08 -0700 (PDT)
-Received: from agape.jhs (na-19-64-241.service.infuturo.it. [151.19.64.241])
-        by smtp.gmail.com with ESMTPSA id hg19sm1931269ejc.24.2021.04.22.06.43.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 06:43:07 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 15:43:04 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Deepak R Varma <drv@mailo.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com
-Subject: Re: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
-Message-ID: <20210422134302.GA1388@agape.jhs>
-References: <20210422103037.GA239298@localhost>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=wIyg2GUygQADS0eUtcX7ugYOAZAbRSLVkr0bewDkhhE=;
+        b=mrUydjbGbAXXqev7sLb2mmiuL/Fn0zKzP+Adz6k+UJ2HDrl65hpruHMaAhAW72TqZO
+         Be1S8VeRLPaOvC9Wqmy8iUBMJFGI22VshBepspH+QWYIDBTj2CfLDj4uHD5KfGjELLl2
+         JNUCtOP3Ic/KDh7hjZumK5rL0Eeqa2qhvnlD47SC0WnC4quwvfeRYmA66FI2edrWfTg9
+         uIRO+vMxMTkFk3taAeqYDvF6JujqzFu+Ol4RK8th8w3TBkh8+6zVa69btsDXv5UDPaAo
+         lWXOcs/3FUu5XZ3t0R5wgxJ5LW6Dg08P4K4E0WDZ4wjNQICBQMiaF+lMEmkI35kibk79
+         mb8w==
+X-Gm-Message-State: AOAM532uhG9Vmc08PezyE40PUgb6Du/5V8Q5ZdmTGYbTcL1szDRDx7gS
+        37WsR0isywgS7HfskXb4KxWIS4huStSmV685dNU=
+X-Google-Smtp-Source: ABdhPJy+m/KSBt0K/G5Mc5bpm55RYk3zUpx/KzUO27DFfDJ9//kWBH4bO2hyxrUIOmLC9cyqdy9nYHbqV0XAwHqMNOQ=
+X-Received: by 2002:a05:6512:790:: with SMTP id x16mr2525153lfr.167.1619099032440;
+ Thu, 22 Apr 2021 06:43:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422103037.GA239298@localhost>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: greenarcsafeties@gmail.com
+Received: by 2002:ab3:644f:0:0:0:0:0 with HTTP; Thu, 22 Apr 2021 06:43:51
+ -0700 (PDT)
+From:   Peter Schulman <schulman.pet@gmail.com>
+Date:   Thu, 22 Apr 2021 14:43:51 +0100
+X-Google-Sender-Auth: QvapMg_upxBMdcQtZU8vda9YREQ
+Message-ID: <CACduR+L-M9gf0ZB28mw1YyPk5MQQaBLT2NK6XP1OGH-XtYWrfg@mail.gmail.com>
+Subject: Re: Proposal With Jeffery & Schulman
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:00:37PM +0530, Deepak R Varma wrote:
-> It is recommended to use driver model diagnostic macros dev_*() instead
-> of pr_*() since the former ensures that the log messages are always
-> associated with the corresponding device and driver.
-> 
-> Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> Signed-off-by: Deepak R Varma <drv@mailo.com>
-> ---
-> 
-> Note: There are few more pr_into() calls that I have not replaced since
-> they are very basic (entry and exit) and temporary. They can be removed 
-> if the APIs are fully tested. See this example:
-> 	pr_info("%s S\n", __func__);
-> 
-> Let me know if I should remove them and resubmit this patch.
-> 
+-- 
+Hello ,
 
-Hi Deepak,
+I sent you an email before about an inheritance without hearing from you.
+Let me reintroduce my email again to you and please reply immediately.
 
-usually log functions saying "we are here in the code" are not needed,
-ftrace is designed for function tracing and other useful things.
+My name is Mr. Peter Schulman the principal attorney at Jeffery & Schulman
+Law Office based in Canada. I am contacting you because of my deceased
+client who died leaving some funds with a bank in Europe in the sum of
+9,850,000 USD. I want to announce you as a heir/beneficiary to the fund.
 
-I think this patch is aimed for substitution which is logically
-different from deletion of function calls.
+You don't have to worry, this transaction will be done legally without any
+problem. If you are interested, I can give you more information about my
+proposal as soon as i get your reply.
 
-pr_info deletions can be provided in a separate patch.
+Regards,
+Best Regards,
 
-Thank you,
+Mr. Peter Schulman
+Senior Partner | Project Manager | Litigation
 
-fabio
+Jeffery & Schulman Law Office
+1230 Bay Street
+Suite 810 Toronto
+Ontario, M5R 2A7
