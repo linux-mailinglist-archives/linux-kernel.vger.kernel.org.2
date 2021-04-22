@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A123682DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7BF3682E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhDVPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbhDVPAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:00:09 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70248C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:59:34 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id q4so5656671qtn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=L8B1S1807Ti9iRmhUOx0J5m9UzOaeU1e5mQqlxKoCgI=;
-        b=QODpvOCqkEBYRaCtW46brCzr6RvYiSSBUmPlBopHsKHFym7LgqsMbTGfgebDlEjU16
-         TFsHhWJ4u/faxda2EK0WsDqH5MI1sSQxEYojrgrtZUmLmoFXcXyT3PCud2L2uvLHIPYy
-         XO57Q72FmNnr+KAGVdKZL/ta4iqA7wATM8nDU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L8B1S1807Ti9iRmhUOx0J5m9UzOaeU1e5mQqlxKoCgI=;
-        b=mWL8tq8y0n5xBE+Eq2+ADnbsgZTMcSzuB62Ox9cufQUM/3/p5ZZTs/10ynvywEM/wV
-         DaGoH84QfUfV0ZWmAxCQeg1hdvVJjTD+GjyEFKGrSvF18AAuPRJ4T4Qyld93dneJfqaU
-         4z09Mb63QZeOJRe1JSn+nz5oCh70Q0JpNEz68BGLEkyGwUgdutG0Cuwx5HYNr5O0nIKo
-         6wHLkPBlYQzGQ+brr8okM3vzCdltoi309iOfC0MmjEB3tFh25j5aJ8PL/iHA8zoi6pne
-         oMpWlwnqnve4b2HDESdrQxrjsbVDvxGcGPTENxVVNNQYwiBK80rMSBKhooF6/dqZinar
-         hIOA==
-X-Gm-Message-State: AOAM530mBsUiPbxkJ/rMKuYvQI2BMt3xRaWpDnQEUAGl0xhcYW1++JK4
-        M63oZnMK437J0frfFhaxpiP9hqoncUvGzHRk7XI=
-X-Google-Smtp-Source: ABdhPJzziz24P1yVX9II5mG6lu4Z8l204HWT6N8NAnGWdFg098ClXqG4i5YEPB6C5vMBNVmeCXDH7w==
-X-Received: by 2002:ac8:4c8f:: with SMTP id j15mr3542001qtv.318.1619103573645;
-        Thu, 22 Apr 2021 07:59:33 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:7297])
-        by smtp.gmail.com with ESMTPSA id h7sm2243820qtj.15.2021.04.22.07.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 07:59:33 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 15:59:31 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Joe Perches <joe@perches.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v5] printk: Userspace format enumeration support
-Message-ID: <YIGPUzFFj1lduVg2@chrisdown.name>
-References: <YEgvR6Wc1xt0qupy@chrisdown.name>
- <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
- <YFDAfPCnS204jiD5@chrisdown.name>
- <YFHAdUB4lu4mJ9Ar@alley>
- <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
- <YFMvfawY+0CncS8G@alley>
- <YHmXi303WxVZzVwI@chrisdown.name>
- <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
- <YIAlM2jXadciFfGW@chrisdown.name>
- <54e5b0ab49002e0dd92e9d44ef62ff08641e330c.camel@perches.com>
+        id S236663AbhDVPF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:05:26 -0400
+Received: from mail-eopbgr690053.outbound.protection.outlook.com ([40.107.69.53]:4161
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232670AbhDVPFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:05:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fXUrXJhs52xekZYmEeTD725q6/Fby/u2/8c47jm7nvnW3/xqq8k0CmLbyZa/8xjTxjQTgx9rz/kZ0GY79ukIJi0auuIschKZthc5jt/igoftmxTje+yBS1aNSy+c+tq0XtE3W7LJ/GDatX5he9+QOJoUvkaBS2m9E2xaJ+4pwtk315CjtB/JnSt+YowfcBV//Sw5sznLkgpqVhClV4irVlX8JPVzkfJL5WZ11lBa5Io4f+fxrrT6LE2OoAdbh01lopaGf6LZVoDFqJjKPu0mBkSk+b91Qyem942mrie9C/IACcOfJkOFWQU856sWholEc4+zbC1QX9hVXmWcmLd6lg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WSqcADhvlVJ7LO0LRcox2vn8jpKEVTOjLBlNWYARao8=;
+ b=NticaE/O+TOQQr/02I9PPxkdnSN15XlV1/JIrczvzzhJe2+7owCY20elKY/YBOiOTEYET5EAxfJvmxgBfy4JUvpHEoUS/seeQioLHcHvd+bdizGH8ZQvqoNyFNN049yKekwknSH5eAfOjpayTtu1A5ZwjgllimlvLTTJbXYJFyKtrEdnIgytx3YO62jU/77j7Ns7+bK7moNjSpHg57l+eGeLzHHseNK6sNwiTzMEROrg4fbGywcnSpLihIg6B8X4NQ9gi9QIswIuf6cRoRdALiL07Q+mKjEeJRt7i+3uJsICTb1QE2yl6RpB4mql2ty6K2KEJlLzCJMCOdjxTVNbYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WSqcADhvlVJ7LO0LRcox2vn8jpKEVTOjLBlNWYARao8=;
+ b=JNyVv/PABV8SjM6+GBmsOEcZqwkRWtBeIBolgQ+P1xiLzLrZqf8u27E0i4DTf6PUwoSwiKFfdGP4LtZWyE0y38to1SqWVODLn1NNaSQQ+r/G7o26RV1ru+2MluolaqStUnkhHThdAJBdffUUxq9nMyXuU8I8Z0o+Hro9BbD8v2riOHlQ0N96618XLMJtkTFjEKEM5T2gvP63dJxy44G44tRqkL/x8iTE+c9yN/2OqJUX/0CBwQT3EmQVhDaKs3Uz7VotWAlxbWQxK1JaWbUUPEBp0OdqS5KyTeaJzKArveyOReWPf8AV0BWXBQfEOSCvGqjflfO6/HZShD6vEtHkGw==
+Received: from BN8PR04CA0016.namprd04.prod.outlook.com (2603:10b6:408:70::29)
+ by CH2PR12MB4039.namprd12.prod.outlook.com (2603:10b6:610:a8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 22 Apr
+ 2021 15:04:46 +0000
+Received: from BN8NAM11FT045.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:70:cafe::73) by BN8PR04CA0016.outlook.office365.com
+ (2603:10b6:408:70::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
+ Transport; Thu, 22 Apr 2021 15:04:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT045.mail.protection.outlook.com (10.13.177.47) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 15:04:46 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 08:04:45 -0700
+Received: from sumitg-l4t.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Apr 2021 15:04:40 +0000
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <eric.auger@redhat.com>
+CC:     <alex.williamson@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <jean-philippe@linaro.org>,
+        <jiangkunkun@huawei.com>, <joro@8bytes.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>,
+        <lushenming@huawei.com>, <maz@kernel.org>, <robin.murphy@arm.com>,
+        <tn@semihalf.com>, <vivek.gautam@arm.com>, <vsethi@nvidia.com>,
+        <wangxingang5@huawei.com>, <will@kernel.org>,
+        <zhangfei.gao@linaro.org>, <zhukeqian1@huawei.com>,
+        <vdumpa@nvidia.com>, <sumitg@nvidia.com>
+Subject: Re: [PATCH v14 00/13] SMMUv3 Nested Stage Setup (IOMMU part)
+Date:   Thu, 22 Apr 2021 20:34:38 +0530
+Message-ID: <1619103878-6664-1-git-send-email-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <f99d8af1-425b-f1d5-83db-20e32b856143@redhat.com>
+References: <f99d8af1-425b-f1d5-83db-20e32b856143@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <54e5b0ab49002e0dd92e9d44ef62ff08641e330c.camel@perches.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 02cb4a85-3f6a-42dc-d239-08d9059ff7ed
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4039:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB4039EE93B47B1378B1A539B2B9469@CH2PR12MB4039.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aS7IBfHHoR+5HubceEs+Qh/RrdKpvrqz7PiCvNrgIZPXqgjJRsnzC4YrjGid1lVDvr2tM0N9zR0SSA1meD7MTA3FAWhVzpBNTmvN422T+yqoIbeSoWaMHlTGFEqWj8OSnQYd/K3XSi8TAP4Z4Hw8I6NmTj1kxFFlmerzTnVWYLdfP7F+2OSqxInSVBC/G/nJIO4x2CcJsMCO2Bbp1fb+p7rzN2lreXXgzLCNclRNznARX+fbjGV/rma60puwynxQkHyrFXE+QPOaiwhpibD79XsFmjl/vLLbdlrruienLV1aa9V8/aqS93DCsh8E0fdC4Xwn0zFW4mpBvTKtZbBmMdejFo4dUQdCzlTgpLQosOzSK08MURkmPkuJgy5eqG3c/8z0ZONXUQfHyD9pf1eL6WIBkzvdLdkE4GtFOvG2/FtHFNNEhGT7U69t66zFaLTE28eeg1f8eqC3OcaM7acW4Aj8bkHXPNzlHIgtjFgWmXnwtNdcfUfXIMBAOTNsEKoLfEweclxFMOIVO+noxc4VEvWw8r7lS5MzgtD7+RiJdjITOZFkCLTlXzDeVnpzEsHUgQ5dR37QB5bTR92gAt3ATjveQ2XE7vJwFOCSpRalCWXXaVQrVgP8pxsSkQllzFQwrQrBtKx3ThKCdPwKoGMR0w==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(396003)(36840700001)(46966006)(36756003)(558084003)(186003)(7416002)(426003)(26005)(8936002)(107886003)(8676002)(316002)(2906002)(6916009)(356005)(336012)(70206006)(82740400003)(70586007)(7636003)(83380400001)(36860700001)(82310400003)(4326008)(47076005)(7696005)(2616005)(5660300002)(54906003)(86362001)(478600001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 15:04:46.5264
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02cb4a85-3f6a-42dc-d239-08d9059ff7ed
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT045.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches writes:
->You really should evaluate the utility of log level monitoring and
->reconsider adding some compiler extension use of __printf to generate
->this format tracking ability.
+Hi Eric,
+I have validated the v14 of the patch series from branch "jean_sva_current_2stage_v14".
+Verfied nested translations with NVMe PCI device assigned to Qemu 5.2 Guest.
+Had to revert patch "mm: notify remote TLBs when dirtying a PTE".
 
-Asking again, because you're repeating what you said last time without any 
-further clarification: how is __printf tracking supposed to be sufficient? That 
-tells one which arguments will have printf semantics, so sure, one can get the 
-format, but (for example) you don't have any access to information about the 
-log level, which is essential since otherwise it's not known whether the printk 
-is capable of being emitted or not. Without that, you're suggesting replacing a 
-functioning implementation with a "solution" which is not fit for the intended 
-purpose.
-
-For the use case described in the changelog, more or less all of the essential 
-printks that must be monitored use printk() infrastructure directly. We're not 
-trying to monitor the world here when we have plenty of better metrics. I'm 
-sure there will be others which come up with time, but this doesn't have to 
-cover every single possible subsystem's fancy printk-like out of the gate.
+Tested-by: Sumit Gupta <sumitg@nvidia.com>
