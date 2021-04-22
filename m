@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC75367B6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCEA367B73
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhDVHs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:48:58 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:48816 "EHLO fornost.hmeau.com"
+        id S235231AbhDVHt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:49:58 -0400
+Received: from mga09.intel.com ([134.134.136.24]:8025 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235099AbhDVHsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:48:55 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lZU4H-00038P-Vf; Thu, 22 Apr 2021 17:48:11 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 22 Apr 2021 17:48:09 +1000
-Date:   Thu, 22 Apr 2021 17:48:09 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sebastian Siewior <sebastian@breakpoint.cc>,
-        Jussi Kivilinna <jussi.kivilinna@mbnet.fi>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: camellia: drop duplicate "depends on CRYPTO"
-Message-ID: <20210422074809.GK14354@gondor.apana.org.au>
-References: <20210418003929.5065-1-rdunlap@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210418003929.5065-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230285AbhDVHty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 03:49:54 -0400
+IronPort-SDR: Pa91toOnpxRajShzMOiOSMvAs87/gN7aSRUJabAbiByFiuPq3lYdZQbqL66h3mUk8/KoDDS3q7
+ OB4C4ewb4odA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195956137"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="195956137"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 00:49:19 -0700
+IronPort-SDR: CtZAtxYrpalam1QJw4BNM4q/i6wfpcPi/+QQm6biF6EyaTTNjdkCQrc2K3CsPsbwUzsIjTRVRz
+ uYF6Ej2hqzfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="427830736"
+Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
+  by orsmga008.jf.intel.com with ESMTP; 22 Apr 2021 00:49:07 -0700
+From:   mohammad.athari.ismail@intel.com
+To:     Jose Abreu <joabreu@synopsys.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>, vee.khee.wong@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mohammad.athari.ismail@intel.com
+Subject: [PATCH net-next] net: pcs: Enable pre-emption packet for 10/100Mbps
+Date:   Thu, 22 Apr 2021 15:48:51 +0800
+Message-Id: <20210422074851.17375-1-mohammad.athari.ismail@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 05:39:29PM -0700, Randy Dunlap wrote:
-> All 5 CAMELLIA crypto driver Kconfig symbols have a duplicate
-> "depends on CRYPTO" line but they are inside an
-> "if CRYPTO"/"endif # if CRYPTO" block, so drop the duplicate "depends"
-> lines.
-> 
-> These 5 symbols still depend on CRYPTO.
-> 
-> Fixes: 584fffc8b196 ("[CRYPTO] kconfig: Ordering cleanup")
-> Fixes: 0b95ec56ae19 ("crypto: camellia - add assembler implementation for x86_64")
-> Fixes: d9b1d2e7e10d ("crypto: camellia - add AES-NI/AVX/x86_64 assembler implementation of camellia cipher")
-> Fixes: f3f935a76aa0 ("crypto: camellia - add AVX2/AES-NI/x86_64 assembler implementation of camellia cipher")
-> Fixes: c5aac2df6577 ("sparc64: Add DES driver making use of the new des opcodes.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Sebastian Siewior <sebastian@breakpoint.cc>
-> Cc: Jussi Kivilinna <jussi.kivilinna@mbnet.fi>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-crypto@vger.kernel.org
-> ---
->  crypto/Kconfig |    5 -----
->  1 file changed, 5 deletions(-)
+From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
 
-Patch applied.  Thanks.
+Set VR_MII_DIG_CTRL1 bit-6(PRE_EMP) to enable pre-emption packet for
+10/100Mbps by default. This setting doesn`t impact pre-emption
+capability for other speeds.
+
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+---
+ drivers/net/pcs/pcs-xpcs.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+index 944ba105cac1..2dbc1d46821e 100644
+--- a/drivers/net/pcs/pcs-xpcs.c
++++ b/drivers/net/pcs/pcs-xpcs.c
+@@ -66,6 +66,7 @@
+ 
+ /* VR_MII_DIG_CTRL1 */
+ #define DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW		BIT(9)
++#define DW_VR_MII_DIG_CTRL1_PRE_EMP		BIT(6)
+ 
+ /* VR_MII_AN_CTRL */
+ #define DW_VR_MII_AN_CTRL_TX_CONFIG_SHIFT	3
+@@ -666,6 +667,10 @@ static int xpcs_config_aneg_c37_sgmii(struct mdio_xpcs_args *xpcs)
+ 	 *	 PHY about the link state change after C28 AN is completed
+ 	 *	 between PHY and Link Partner. There is also no need to
+ 	 *	 trigger AN restart for MAC-side SGMII.
++	 *
++	 * For pre-emption, the setting is :-
++	 * 1) VR_MII_DIG_CTRL1 Bit(6) [PRE_EMP] = 1b (Enable pre-emption packet
++	 *    for 10/100Mbps)
+ 	 */
+ 	ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_AN_CTRL);
+ 	if (ret < 0)
+@@ -686,7 +691,7 @@ static int xpcs_config_aneg_c37_sgmii(struct mdio_xpcs_args *xpcs)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret |= DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
++	ret |= (DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW | DW_VR_MII_DIG_CTRL1_PRE_EMP);
+ 
+ 	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
+ }
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.17.1
+
