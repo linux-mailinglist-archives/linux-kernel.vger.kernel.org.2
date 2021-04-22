@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A603675FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43B03675FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343809AbhDVABB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 20:01:01 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:34494 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234886AbhDVAA5 (ORCPT
+        id S1343819AbhDVABW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 20:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234886AbhDVABV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:00:57 -0400
-Received: by mail-ej1-f51.google.com with SMTP id x12so45242662ejc.1;
-        Wed, 21 Apr 2021 17:00:23 -0700 (PDT)
+        Wed, 21 Apr 2021 20:01:21 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BF8C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:00:46 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a25so36439552ljm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 17:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vP82rZfUtsib5WAxJoWL80HDlGBtl+Yr06vR/s2yI1A=;
+        b=b8KEuQwfbdeJskL9p/vOI78uX4NjwjHug3dN5Ue7OmHjsvKYodnvrpqZrePOxEjpE5
+         v1whTg/4eYEPGolNo+qE8yOy3s01g40WqTbzYlOyCKKsMGtKdMekTlOwg2dkUDzToeJy
+         9tarCQ9Eq7tyAWygFSBzJktoHU7tYcCWBJybY+JRrJ727yzKHnsDMQ/R9dwnEYuKqCFm
+         7iYwGvRxgKCGt8CAC1yhT54syIFkK8doun/ZWKVjg0wTYpFDR0d1iHyUCu2cJuy4U54k
+         mfedzddMQzJqtSLcQbk7KJjEFskhOKq2ddl+T4ZPJbVOE8sIFuTEBlluag5/0U6fKHKB
+         +VIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=2JL2V3NXWQBb90Vo2vfBCKJ+qrXt9jjeoFCM0+9Pju4=;
-        b=uknmiXyDqOxsbLXClhY3Xaso76D8f9kGJATScB7oUdGdD6SrBeKxmoRLu3KK9r6Ri2
-         KdNqsQuCVhBL0Z+Oa7Iipwu56h8fwjbA0k0A+FcgwpJq206YgHO/PjAcdRta5AwrdTiS
-         HjbK7xF928wNrJZ3e5LLBk+nLzFAqJSojiEFgJBvwQF44Sn2V1yb1yURpnjtNNS6re12
-         lIJzPcJfkF4f8xtczGSPx8nLBWBE0+Q0Oe6nwe+sx25V8Nyo10QrdrP/piE4QNUkyozu
-         o6mQliAbvqwS64yuOqUNQVt9lJzx5+6Ek/Xjix9IoyAjEWgkEI7NsRRTlu4+JZy8Gh1v
-         kXjw==
-X-Gm-Message-State: AOAM530lQzD86IR9OIh94DyXeZMVIikKDplYzloIi8j1dWcI748LLI9/
-        E7EZbMQkTR8BYzYEOeXWWSOT/7RVqOk=
-X-Google-Smtp-Source: ABdhPJzQ+erOow4g+dooyi0nIoT8MkLLs1Srco76KRIRA37xQp412xwh7QMRV0pPPDykkYmEt5Sm6A==
-X-Received: by 2002:a17:906:11d8:: with SMTP id o24mr402423eja.386.1619049623031;
-        Wed, 21 Apr 2021 17:00:23 -0700 (PDT)
-Received: from localhost (net-188-216-18-127.cust.vodafonedsl.it. [188.216.18.127])
-        by smtp.gmail.com with ESMTPSA id g20sm624674edu.91.2021.04.21.17.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 17:00:21 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 01:59:57 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Subject: Re: [PATCH 126/190] Revert "net: openvswitch: fix a NULL pointer
- dereference"
-Message-ID: <20210422015957.4f6d4dfa@linux.microsoft.com>
-In-Reply-To: <20210421130105.1226686-127-gregkh@linuxfoundation.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
-        <20210421130105.1226686-127-gregkh@linuxfoundation.org>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vP82rZfUtsib5WAxJoWL80HDlGBtl+Yr06vR/s2yI1A=;
+        b=nBTtx+E+vAuU3wYGl6jAqVdcOEHufHGqUuXfhu6Weqvmk3SYrtCKC/QvB3l1WnUPG9
+         VQ15oXnkzEWmHFww7v1Kr5p3ogzj574+sBmx45/nkPpW9WRCpE5hHyejU3LtJ+gpr7Or
+         /WUJBEniw7b4DMozAS+oaNPVEAZK8l51aXM9Tai5vVZBo3l/D2Ai/R+6XE6gA9IkDPz4
+         tAobYcfI1oaDwF3m+UWSd+M9xmQU+36KZWT2EykFDjs9BRboU36Oiv/WxMIPjV//FkY3
+         Ei3u4oz8OEBLWyUaWAUxsaGeSvK9JOap0mFYA298C+8sGAzaHESqRUiN52m0MHZAfv+t
+         TsRA==
+X-Gm-Message-State: AOAM532zuly4MCPq7bIzjNjohEkYoXkaS43CoxfdyyswL9FiimvHWv12
+        AhHtc3Zw7apqztehQrooD7g1R0+PZH2vMXa8mXpqbQ==
+X-Google-Smtp-Source: ABdhPJyukDxnvl+KqgkeR2DwdKiQpsKRoXappdMdqijpppQIzbKoCm6kCuY2SoJuGKoITL7V7AoVQFVljVqGIng7XnA=
+X-Received: by 2002:a2e:555:: with SMTP id 82mr542235ljf.200.1619049645095;
+ Wed, 21 Apr 2021 17:00:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1618485193-5403-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+In-Reply-To: <1618485193-5403-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 22 Apr 2021 02:00:34 +0200
+Message-ID: <CACRpkdZie6KTqhRJTr14R5KA7hUXUqjiwgO2Am5-gZHN+Je-Gw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] Add ZynqMP pinctrl driver
+To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>, saikrishna12468@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 15:00:01 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Thu, Apr 15, 2021 at 1:15 PM Sai Krishna Potthuri
+<lakshmi.sai.krishna.potthuri@xilinx.com> wrote:
 
-> This reverts commit 6f19893b644a9454d85e593b5e90914e7a72b7dd.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in
-> "bad faith" to try to test the kernel community's ability to review
-> "known malicious" changes.  The result of these submissions can be
-> found in a paper published at the 42nd IEEE Symposium on Security and
-> Privacy entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu
-> (University of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove
-> this change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  net/openvswitch/datapath.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
-> index 9d6ef6cb9b26..99e63f4bbcaf 100644
-> --- a/net/openvswitch/datapath.c
-> +++ b/net/openvswitch/datapath.c
-> @@ -443,10 +443,6 @@ static int queue_userspace_packet(struct
-> datapath *dp, struct sk_buff *skb, 
->  	upcall = genlmsg_put(user_skb, 0, 0, &dp_packet_genl_family,
->  			     0, upcall_info->cmd);
-> -	if (!upcall) {
-> -		err = -EINVAL;
-> -		goto out;
-> -	}
->  	upcall->dp_ifindex = dp_ifindex;
->  
->  	err = ovs_nla_put_key(key, key, OVS_PACKET_ATTR_KEY, false,
-> user_skb);
+> Add support for Xilinx ZynqMP pinctrl driver and also update
+> the Xilinx firmware driver to support pinctrl functionality.
+> This driver queries the pin information from the firmware and
+> allow configuring the pins as per the request.
+>
+> changes in v5:
 
-This patch seems good to me, but given the situation I'd like another
-pair of eyes on it, at least.
+v5 looks fine but does not apply to my tree, I applied patch 2
+(the DT binding) as that is pretty much stand-alone though,
+why not.
 
-Regards,
--- 
-per aspera ad upstream
+Please rebase the code on my "devel" branch in the pinctrl
+tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=devel
+and resend.
+
+Yours,
+Linus Walleij
