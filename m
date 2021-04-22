@@ -2,74 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B245D368004
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D88936800A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236348AbhDVMEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:04:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33584 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236001AbhDVMEt (ORCPT
+        id S236159AbhDVMGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:06:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236152AbhDVMGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:04:49 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lZY44-00040i-Ua; Thu, 22 Apr 2021 12:04:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: mtk_thermal: remove redundant initializations of several variables
-Date:   Thu, 22 Apr 2021 13:04:12 +0100
-Message-Id: <20210422120412.246291-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 22 Apr 2021 08:06:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619093161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c+A0xZ5eON9gs40KcP02cAVAi5lehO7xjvA952SuU50=;
+        b=hfbyeY0y5NvYe2aOAChe4rNAuffis4dyvCiMGrX8yVsOZ7pHCEwmtXcxMfKVDEzk9A5AEF
+        fVtNOT7iWHdUoXQWxVUuoGPQBdxXYKU+2J+jKsoDTrFaPtLTL+swCZTMGJAExeJPB9BrF5
+        u2xo+9TDKdPf4xoHwanW3vZOFGbHkN0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-456-qLUcPzZQMhiqprCnC6ZAMw-1; Thu, 22 Apr 2021 08:05:50 -0400
+X-MC-Unique: qLUcPzZQMhiqprCnC6ZAMw-1
+Received: by mail-ej1-f70.google.com with SMTP id ji8-20020a1709079808b029037c921a9ea0so7100825ejc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:05:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c+A0xZ5eON9gs40KcP02cAVAi5lehO7xjvA952SuU50=;
+        b=abwXYr1bi4K6i78VibulvI/U5N4unKVqCEbL4Eqjlc0czRhF0ke29bw9Vy1Softfxo
+         j97KF8SJOGC+fDg+07BOR7rm/XFfi1SEwS4N9dqav2muhyUCaKwOb7DR6/OLx70M/12N
+         0NCojdPuaI97Kuvd90u1+i6npOQ5oU9+wKoLfH7vQzu8JNK9uyRPzoPuk+NJuF7SGYCA
+         JPe+luLiIxTf/uUku5T68wANsHdzMfP3BUFl3F64R9X5xcZGH4KCB2caH2Xvq6RuwMx6
+         4toCP8maM4Tf3nMXtfcDoD2IS2V9YF/aX/PEHEHWFKSHCnHoNRI7TV5t7razh8PzzaV4
+         JnfQ==
+X-Gm-Message-State: AOAM533Hl7gF+IabOlw94OBNj6enMYN/Q3n3VwgGMEomCApkoul+4sNi
+        u+S2ubu4NPsTnSCL553APLGgttwIhR1B/j0l1EFZdDfVFjP+4h8nJHK2BzGm9y8cJHwJt7DStk9
+        lf5SuJjtUzRmtQr62M86eFHfh
+X-Received: by 2002:a05:6402:518f:: with SMTP id q15mr3555967edd.150.1619093148984;
+        Thu, 22 Apr 2021 05:05:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHYTK5pAXzuEAOvEmisI4JPTFwduN7yH62H3LcAZVLil7SqA/MJQaMi1/DFq2E4jZoH7QKhw==
+X-Received: by 2002:a05:6402:518f:: with SMTP id q15mr3555957edd.150.1619093148838;
+        Thu, 22 Apr 2021 05:05:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n13sm1745261ejx.27.2021.04.22.05.05.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 05:05:47 -0700 (PDT)
+Subject: Re: [PATCH v5 06/15] x86/sev: Drop redundant and potentially
+ misleading 'sev_enabled'
+To:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210422021125.3417167-1-seanjc@google.com>
+ <20210422021125.3417167-7-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8f1fa7e0-b940-6d1d-1a74-11014901fc0d@redhat.com>
+Date:   Thu, 22 Apr 2021 14:05:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422021125.3417167-7-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 22/04/21 04:11, Sean Christopherson wrote:
+> Drop the sev_enabled flag and switch its one user over to sev_active().
+> sev_enabled was made redundant with the introduction of sev_status in
+> commit b57de6cd1639 ("x86/sev-es: Add SEV-ES Feature Detection").
+> sev_enabled and sev_active() are guaranteed to be equivalent, as each is
+> true iff 'sev_status & MSR_AMD64_SEV_ENABLED' is true, and are only ever
+> written in tandem (ignoring compressed boot's version of sev_status).
+> 
+> Removing sev_enabled avoids confusion over whether it refers to the guest
+> or the host, and will also allow KVM to usurp "sev_enabled" for its own
+> purposes.
+> 
+> No functional change intended.
+> 
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Several variables are being initialized with values that is never
-read and being updated later with a new value. The initializations
-are redundant and can be removed.
+Boris or another x86 maintainer, can you ack this small patch?  We would 
+like to use sev_enabled as a static variable in KVM.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/thermal/mtk_thermal.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Paolo
 
-diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-index 149c6d7fd5a0..97e8678ccf0e 100644
---- a/drivers/thermal/mtk_thermal.c
-+++ b/drivers/thermal/mtk_thermal.c
-@@ -573,12 +573,12 @@ static int raw_to_mcelsius_v1(struct mtk_thermal *mt, int sensno, s32 raw)
- 
- static int raw_to_mcelsius_v2(struct mtk_thermal *mt, int sensno, s32 raw)
- {
--	s32 format_1 = 0;
--	s32 format_2 = 0;
--	s32 g_oe = 1;
--	s32 g_gain = 1;
--	s32 g_x_roomt = 0;
--	s32 tmp = 0;
-+	s32 format_1;
-+	s32 format_2;
-+	s32 g_oe;
-+	s32 g_gain;
-+	s32 g_x_roomt;
-+	s32 tmp;
- 
- 	if (raw == 0)
- 		return 0;
--- 
-2.30.2
+> ---
+>   arch/x86/include/asm/mem_encrypt.h |  1 -
+>   arch/x86/mm/mem_encrypt.c          | 12 +++++-------
+>   arch/x86/mm/mem_encrypt_identity.c |  1 -
+>   3 files changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+> index 31c4df123aa0..9c80c68d75b5 100644
+> --- a/arch/x86/include/asm/mem_encrypt.h
+> +++ b/arch/x86/include/asm/mem_encrypt.h
+> @@ -20,7 +20,6 @@
+>   
+>   extern u64 sme_me_mask;
+>   extern u64 sev_status;
+> -extern bool sev_enabled;
+>   
+>   void sme_encrypt_execute(unsigned long encrypted_kernel_vaddr,
+>   			 unsigned long decrypted_kernel_vaddr,
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index 4b01f7dbaf30..be384d8d0543 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -44,8 +44,6 @@ EXPORT_SYMBOL(sme_me_mask);
+>   DEFINE_STATIC_KEY_FALSE(sev_enable_key);
+>   EXPORT_SYMBOL_GPL(sev_enable_key);
+>   
+> -bool sev_enabled __section(".data");
+> -
+>   /* Buffer used for early in-place encryption by BSP, no locking needed */
+>   static char sme_early_buffer[PAGE_SIZE] __initdata __aligned(PAGE_SIZE);
+>   
+> @@ -373,15 +371,15 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
+>    * up under SME the trampoline area cannot be encrypted, whereas under SEV
+>    * the trampoline area must be encrypted.
+>    */
+> -bool sme_active(void)
+> -{
+> -	return sme_me_mask && !sev_enabled;
+> -}
+> -
+>   bool sev_active(void)
+>   {
+>   	return sev_status & MSR_AMD64_SEV_ENABLED;
+>   }
+> +
+> +bool sme_active(void)
+> +{
+> +	return sme_me_mask && !sev_active();
+> +}
+>   EXPORT_SYMBOL_GPL(sev_active);
+>   
+>   /* Needs to be called from non-instrumentable code */
+> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+> index 6c5eb6f3f14f..0c2759b7f03a 100644
+> --- a/arch/x86/mm/mem_encrypt_identity.c
+> +++ b/arch/x86/mm/mem_encrypt_identity.c
+> @@ -545,7 +545,6 @@ void __init sme_enable(struct boot_params *bp)
+>   
+>   		/* SEV state cannot be controlled by a command line option */
+>   		sme_me_mask = me_mask;
+> -		sev_enabled = true;
+>   		physical_mask &= ~sme_me_mask;
+>   		return;
+>   	}
+> 
 
