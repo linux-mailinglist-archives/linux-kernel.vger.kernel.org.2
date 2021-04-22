@@ -2,263 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D88368712
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3528368715
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238871AbhDVTTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
+        id S238909AbhDVTTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238768AbhDVTTX (ORCPT
+        with ESMTP id S236665AbhDVTTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:19:23 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B30C06174A;
-        Thu, 22 Apr 2021 12:18:48 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id y1so8383186plg.11;
-        Thu, 22 Apr 2021 12:18:48 -0700 (PDT)
+        Thu, 22 Apr 2021 15:19:41 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0EDC06174A;
+        Thu, 22 Apr 2021 12:19:06 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c3so13622853pfo.3;
+        Thu, 22 Apr 2021 12:19:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5Za5n3a0YABSf07Khq0oVNO/kC0EVX6Kl40bV12WKk8=;
-        b=d4XVUb+9XJDQHLYmpREVNXpjl4iZax1b5RAXppZ7XAO2V7pW4gbddcOvFdixE0ergO
-         Olh5glGIwWBGUS9Ud3cDuXRZ6O6FZPIVViVpPjV5WABSqe7xCrCuRMz1sKjQX4BUdm4U
-         ghNb265AlK6a229T2GMlSlm75a0pKttYM2ib32PVaYgZRdqB6aRt1qwGjg5A5CRKel4C
-         aWr8p7F7P+HkJgt0QfihtxXketiu4gsWRIKSFfNENTNch7jTlgvYC/1EvOSI3GOM0+Y4
-         Lr/fr6UCW5TZwZrmk/VABEgqQOC0ZYVaGtqXHQhVJVzWRt+itIOks6+eW4v9Zq1ZD2td
-         Seng==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=38eT4zmx6So0dvrnVuRno8GmYgLrTi3eEBF9zw6nSv4=;
+        b=h4ZMMWKToTUIAi/o4m8M+K3JmkeSuKzSTJJX1InSHg+px1GRl/CAZvH3YTfA6Y0h/y
+         YR2EJpd76Qn8/MdmvRvLFtMctzEn/0d9kRMJizGtVlzTMyM3xC+GHofWUhXotlz4fUz6
+         9Ig9sY33JoxPQGEMOv2cAFJ+i5LfC9h721uDhLcHrBjpI0JGpiMewEwPB9IzInSe5PS3
+         KsEJ/Mt+Mi50IVdAHfQUnUmr+CbvHek/y/9e+7sEhLwdWraDGy+reaom58UljMSSSxr4
+         8roJMJeAGZVLmPNgz9Ct4L4cyQTWa8mpupGl4o0PH2Och2ZjkLNf8EJ4zU8+O+AC2/2t
+         hZQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5Za5n3a0YABSf07Khq0oVNO/kC0EVX6Kl40bV12WKk8=;
-        b=VPNCq+pfX4XaxlChtnLKasUd6GbHSmdF4+rmDAjBJ5AcLenk8q5Dv6pwD0yBhsT0KI
-         sVCalWRnyHAtm3p7l/aNiOOI4mtrWPEKTacuzm1Ry0UTszNrEUCQaSH1MVfRWlSFGSSx
-         Y2sroKY5qRC3aNWCKgIrkZ0Pb2rtGJ8GgJTbcJqABaxohXXmGD8moJ8K2blehieTBoIA
-         fT7sWNGvnj23y2Pio4knS2iFWJDm1CXGmlIMekZ0F2GId+JgC6RIjhM4ZzT32FpL0TGz
-         IG8kf2HOGrDoyz7Gc1hSkb3nYl9KNmicM9dsACd0sKZ1hI2KY+wKnJOn1dUeS4NGdwjW
-         cMEQ==
-X-Gm-Message-State: AOAM5310bicHvjKtHdvka3Q8Im1KmATWrNTYFo09UtSAdKv2XQqWnrZN
-        zT2Qwa4SfBUGLxg7GSdn0wxcRBnr5fbtuA==
-X-Google-Smtp-Source: ABdhPJx+GNvMPhj15qxg395ej+yjJHsEM25MarkleNyHuF3vfTq3EGOCl6/QUyLO1AiWHixRkucHxA==
-X-Received: by 2002:a17:90b:1948:: with SMTP id nk8mr298832pjb.154.1619119127714;
-        Thu, 22 Apr 2021 12:18:47 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:7d79:366e:c8a9:ca38])
-        by smtp.googlemail.com with ESMTPSA id t19sm8228505pjs.1.2021.04.22.12.18.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=38eT4zmx6So0dvrnVuRno8GmYgLrTi3eEBF9zw6nSv4=;
+        b=DMivsZMYNLgGQGOCduq2tIhyr8vPqG5KL0/jvyBYJwyLyznd6mj+4czHDbT1iQqkC7
+         84gliOvmpR2bwS9O2d3AgH9+GGnxAX/IXGwP9kg3VpMQIsHRvJk/G/2vlU+eTZZggm0d
+         Nl98LAWoLl4Fk/f/kTnL7wSzRemKIMZ0GxT8dHD+52ni6CrGKQWbWNF5dXF2cqRdm8EN
+         d5cuW0MebJWibxdXT2qXxD4ElST06BEhfe+VtSbMRbDKTHb0k7bcXlwte9zPRxmgqCuh
+         HhXO2ZLIHfQEbiZctf65U5FlQt4E0X/mL29/AcpqSTcUk03LOOP6cwG2Fvz/aWDvvtMn
+         yaDg==
+X-Gm-Message-State: AOAM5316pkljBaWPgwf7AhsPpMnUd6vN9f8BKqkKTPQiiK/2+exW8mVN
+        d+cKsbPpNvotB2AfYAuTp0A=
+X-Google-Smtp-Source: ABdhPJxPzQ33nkd8N3tZMgrWd+CQkaFjCBDlXGTAnTnWQ9qO+F0/EFsBs2WPpKmVwGoRrLdtcrJw4Q==
+X-Received: by 2002:aa7:9d81:0:b029:248:c39c:3f26 with SMTP id f1-20020aa79d810000b0290248c39c3f26mr241930pfq.55.1619119145846;
+        Thu, 22 Apr 2021 12:19:05 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id h8sm2898642pjt.17.2021.04.22.12.18.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 12:18:47 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     corbet@lwn.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] scripts: kernel-doc: reduce repeated regex expressions into variables
-Date:   Fri, 23 Apr 2021 00:48:39 +0530
-Message-Id: <20210422191839.6119-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 22 Apr 2021 12:19:05 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 22:18:53 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 3/9] net: dsa: tag_ksz: add tag handling for
+ Microchip LAN937x
+Message-ID: <20210422191853.luobzcuqsouubr7d@skbuf>
+References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
+ <20210422094257.1641396-4-prasanna.vengateshan@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422094257.1641396-4-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some regex expressions in the kernel-doc script, which are used
-repeatedly in the script.
+On Thu, Apr 22, 2021 at 03:12:51PM +0530, Prasanna Vengateshan wrote:
+> The Microchip LAN937X switches have a tagging protocol which is
+> very similar to KSZ tagging. So that the implementation is added to
+> tag_ksz.c and reused common APIs
+> 
+> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+> ---
+>  include/net/dsa.h |  2 ++
+>  net/dsa/Kconfig   |  4 ++--
+>  net/dsa/tag_ksz.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 62 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/net/dsa.h b/include/net/dsa.h
+> index 507082959aa4..98c1ab6dc4dc 100644
+> --- a/include/net/dsa.h
+> +++ b/include/net/dsa.h
+> @@ -50,6 +50,7 @@ struct phylink_link_state;
+>  #define DSA_TAG_PROTO_OCELOT_8021Q_VALUE	20
+>  #define DSA_TAG_PROTO_SEVILLE_VALUE		21
+>  #define DSA_TAG_PROTO_BRCM_LEGACY_VALUE		22
+> +#define DSA_TAG_PROTO_LAN937X_VALUE		23
+>  
+>  enum dsa_tag_protocol {
+>  	DSA_TAG_PROTO_NONE		= DSA_TAG_PROTO_NONE_VALUE,
+> @@ -75,6 +76,7 @@ enum dsa_tag_protocol {
+>  	DSA_TAG_PROTO_XRS700X		= DSA_TAG_PROTO_XRS700X_VALUE,
+>  	DSA_TAG_PROTO_OCELOT_8021Q	= DSA_TAG_PROTO_OCELOT_8021Q_VALUE,
+>  	DSA_TAG_PROTO_SEVILLE		= DSA_TAG_PROTO_SEVILLE_VALUE,
+> +	DSA_TAG_PROTO_LAN937X		= DSA_TAG_PROTO_LAN937X_VALUE,
+>  };
+>  
+>  struct packet_type;
+> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+> index cbc2bd643ab2..888eb79a85f2 100644
+> --- a/net/dsa/Kconfig
+> +++ b/net/dsa/Kconfig
+> @@ -97,10 +97,10 @@ config NET_DSA_TAG_MTK
+>  	  Mediatek switches.
+>  
+>  config NET_DSA_TAG_KSZ
+> -	tristate "Tag driver for Microchip 8795/9477/9893 families of switches"
+> +	tristate "Tag driver for Microchip 8795/937x/9477/9893 families of switches"
+>  	help
+>  	  Say Y if you want to enable support for tagging frames for the
+> -	  Microchip 8795/9477/9893 families of switches.
+> +	  Microchip 8795/937x/9477/9893 families of switches.
+>  
+>  config NET_DSA_TAG_RTL4_A
+>  	tristate "Tag driver for Realtek 4 byte protocol A tags"
+> diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+> index 4820dbcedfa2..a67f21bdab8f 100644
+> --- a/net/dsa/tag_ksz.c
+> +++ b/net/dsa/tag_ksz.c
+> @@ -190,10 +190,68 @@ static const struct dsa_device_ops ksz9893_netdev_ops = {
+>  DSA_TAG_DRIVER(ksz9893_netdev_ops);
+>  MODULE_ALIAS_DSA_TAG_DRIVER(DSA_TAG_PROTO_KSZ9893);
+>  
+> +/* For xmit, 2 bytes are added before FCS.
+> + * ---------------------------------------------------------------------------
+> + * DA(6bytes)|SA(6bytes)|....|Data(nbytes)|tag0(1byte)|tag1(1byte)|FCS(4bytes)
+> + * ---------------------------------------------------------------------------
+> + * tag0 : represents tag override, lookup and valid
+> + * tag1 : each bit represents port (eg, 0x01=port1, 0x02=port2, 0x80=port8)
+> + *
+> + * For rcv, 1 byte is added before FCS.
+> + * ---------------------------------------------------------------------------
+> + * DA(6bytes)|SA(6bytes)|....|Data(nbytes)|tag0(1byte)|FCS(4bytes)
+> + * ---------------------------------------------------------------------------
+> + * tag0 : zero-based value represents port
+> + *	  (eg, 0x00=port1, 0x02=port3, 0x07=port8)
+> + */
+> +#define LAN937X_INGRESS_TAG_LEN		2
+> +
+> +#define LAN937X_TAIL_TAG_OVERRIDE	BIT(11)
 
-Reduce such expressions into variables, which can be used everywhere.
+I had to look up the datasheet, to see what this is, because "override"
+can mean many things, not all of them are desirable.
 
-A quick manual check found that no errors and warnings were added/removed
-in this process.
+Port Blocking Override
+When set, packets will be sent from the specified port(s) regardless, and any port
+blocking (see Port Transmit Enable in Port MSTP State Register) is ignored.
 
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/kernel-doc | 89 ++++++++++++++++++++++++++--------------------
- 1 file changed, 50 insertions(+), 39 deletions(-)
+Do you think you can name it LAN937X_TAIL_TAG_BLOCKING_OVERRIDE? I know
+it's longer, but it's also more suggestive.
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 2a85d34fdcd0..579c9fdd275f 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -406,6 +406,7 @@ my $doc_inline_sect = '\s*\*\s*(@\s*[\w][\w\.]*\s*):(.*)';
- my $doc_inline_end = '^\s*\*/\s*$';
- my $doc_inline_oneline = '^\s*/\*\*\s*(@[\w\s]+):\s*(.*)\s*\*/\s*$';
- my $export_symbol = '^\s*EXPORT_SYMBOL(_GPL)?\s*\(\s*(\w+)\s*\)\s*;';
-+my $pointer_function = qr{([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)};
- 
- my %parameterdescs;
- my %parameterdesc_start_lines;
-@@ -694,7 +695,7 @@ sub output_function_man(%) {
- 	    $post = ");";
- 	}
- 	$type = $args{'parametertypes'}{$parameter};
--	if ($type =~ m/([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)/) {
-+	if ($type =~ m/$pointer_function/) {
- 	    # pointer-to-function
- 	    print ".BI \"" . $parenth . $1 . "\" " . " \") (" . $2 . ")" . $post . "\"\n";
- 	} else {
-@@ -974,7 +975,7 @@ sub output_function_rst(%) {
- 	$count++;
- 	$type = $args{'parametertypes'}{$parameter};
- 
--	if ($type =~ m/([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)/) {
-+	if ($type =~ m/$pointer_function/) {
- 	    # pointer-to-function
- 	    print $1 . $parameter . ") (" . $2 . ")";
- 	} else {
-@@ -1210,8 +1211,14 @@ sub dump_struct($$) {
-     my $decl_type;
-     my $members;
-     my $type = qr{struct|union};
-+    my $packed = qr{__packed};
-+    my $aligned = qr{__aligned};
-+    my $cacheline_aligned_in_smp = qr{____cacheline_aligned_in_smp};
-+    my $cacheline_aligned = qr{____cacheline_aligned};
-+    my $attribute = qr{__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)}i;
-     # For capturing struct/union definition body, i.e. "{members*}qualifiers*"
--    my $definition_body = qr{\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*};
-+    my $definition_body = qr{\{(.*)\}(?:\s*(?:$packed|$aligned|$cacheline_aligned_in_smp|$cacheline_aligned|$attribute))*};
-+    my $struct_members = qr{($type)([^\{\};]+)\{([^\{\}]*)\}([^\{\}\;]*)\;};
- 
-     if ($x =~ /($type)\s+(\w+)\s*$definition_body/) {
- 	$decl_type = $1;
-@@ -1235,27 +1242,27 @@ sub dump_struct($$) {
- 	# strip comments:
- 	$members =~ s/\/\*.*?\*\///gos;
- 	# strip attributes
--	$members =~ s/\s*__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)/ /gi;
--	$members =~ s/\s*__aligned\s*\([^;]*\)/ /gos;
--	$members =~ s/\s*__packed\s*/ /gos;
-+	$members =~ s/\s*$attribute/ /gi;
-+	$members =~ s/\s*$aligned\s*\([^;]*\)/ /gos;
-+	$members =~ s/\s*$packed\s*/ /gos;
- 	$members =~ s/\s*CRYPTO_MINALIGN_ATTR/ /gos;
--	$members =~ s/\s*____cacheline_aligned_in_smp/ /gos;
--	$members =~ s/\s*____cacheline_aligned/ /gos;
-+	$members =~ s/\s*$cacheline_aligned_in_smp/ /gos;
-+	$members =~ s/\s*$cacheline_aligned/ /gos;
- 
-+	my $args = qr{([^,)]+)};
- 	# replace DECLARE_BITMAP
- 	$members =~ s/__ETHTOOL_DECLARE_LINK_MODE_MASK\s*\(([^\)]+)\)/DECLARE_BITMAP($1, __ETHTOOL_LINK_MODE_MASK_NBITS)/gos;
--	$members =~ s/DECLARE_BITMAP\s*\(([^,)]+),\s*([^,)]+)\)/unsigned long $1\[BITS_TO_LONGS($2)\]/gos;
-+	$members =~ s/DECLARE_BITMAP\s*\($args,\s*$args\)/unsigned long $1\[BITS_TO_LONGS($2)\]/gos;
- 	# replace DECLARE_HASHTABLE
--	$members =~ s/DECLARE_HASHTABLE\s*\(([^,)]+),\s*([^,)]+)\)/unsigned long $1\[1 << (($2) - 1)\]/gos;
-+	$members =~ s/DECLARE_HASHTABLE\s*\($args,\s*$args\)/unsigned long $1\[1 << (($2) - 1)\]/gos;
- 	# replace DECLARE_KFIFO
--	$members =~ s/DECLARE_KFIFO\s*\(([^,)]+),\s*([^,)]+),\s*([^,)]+)\)/$2 \*$1/gos;
-+	$members =~ s/DECLARE_KFIFO\s*\($args,\s*$args,\s*$args\)/$2 \*$1/gos;
- 	# replace DECLARE_KFIFO_PTR
--	$members =~ s/DECLARE_KFIFO_PTR\s*\(([^,)]+),\s*([^,)]+)\)/$2 \*$1/gos;
--
-+	$members =~ s/DECLARE_KFIFO_PTR\s*\($args,\s*$args\)/$2 \*$1/gos;
- 	my $declaration = $members;
- 
- 	# Split nested struct/union elements as newer ones
--	while ($members =~ m/(struct|union)([^\{\};]+)\{([^\{\}]*)\}([^\{\}\;]*)\;/) {
-+	while ($members =~ m/$struct_members/) {
- 		my $newmember;
- 		my $maintype = $1;
- 		my $ids = $4;
-@@ -1315,7 +1322,7 @@ sub dump_struct($$) {
- 				}
- 			}
- 		}
--		$members =~ s/(struct|union)([^\{\};]+)\{([^\{\}]*)\}([^\{\}\;]*)\;/$newmember/;
-+		$members =~ s/$struct_members/$newmember/;
- 	}
- 
- 	# Ignore other nested elements, like enums
-@@ -1555,8 +1562,9 @@ sub create_parameterlist($$$$) {
-     my $param;
- 
-     # temporarily replace commas inside function pointer definition
--    while ($args =~ /(\([^\),]+),/) {
--	$args =~ s/(\([^\),]+),/$1#/g;
-+    my $arg_expr = qr{\([^\),]+};
-+    while ($args =~ /$arg_expr,/) {
-+	$args =~ s/($arg_expr),/$1#/g;
-     }
- 
-     foreach my $arg (split($splitter, $args)) {
-@@ -1808,8 +1816,11 @@ sub dump_function($$) {
-     # - parport_register_device (function pointer parameters)
-     # - atomic_set (macro)
-     # - pci_match_device, __copy_to_user (long return type)
-+    my $name = qr{[a-zA-Z0-9_~:]+};
-+    my $prototype_end1 = qr{\(([^\(]*)\)};
-+    my $prototype_end2 = qr{\(([^\{]*)\)};
- 
--    if ($define && $prototype =~ m/^()([a-zA-Z0-9_~:]+)\s+/) {
-+    if ($define && $prototype =~ m/^()($name)\s+/) {
-         # This is an object-like macro, it has no return type and no parameter
-         # list.
-         # Function-like macros are not allowed to have spaces between
-@@ -1817,23 +1828,23 @@ sub dump_function($$) {
-         $return_type = $1;
-         $declaration_name = $2;
-         $noret = 1;
--    } elsif ($prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/)  {
-+    } elsif ($prototype =~ m/^()($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^(\w+)\s+($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^(\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^(\w+\s+\w+)\s+($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end1/ ||
-+	$prototype =~ m/^()($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+)\s+($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*($name)\s*$prototype_end2/ ||
-+	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*($name)\s*$prototype_end2/)  {
- 	$return_type = $1;
- 	$declaration_name = $2;
- 	my $args = $3;
-@@ -2110,12 +2121,12 @@ sub process_name($$) {
-     } elsif (/$doc_decl/o) {
- 	$identifier = $1;
- 	my $is_kernel_comment = 0;
--	my $decl_start = qr{\s*\*};
-+	my $decl_start = qr{$doc_com};
- 	# test for pointer declaration type, foo * bar() - desc
- 	my $fn_type = qr{\w+\s*\*\s*}; 
- 	my $parenthesis = qr{\(\w*\)};
- 	my $decl_end = qr{[-:].*};
--	if (/^$decl_start\s*([\w\s]+?)$parenthesis?\s*$decl_end?$/) {
-+	if (/^$decl_start([\w\s]+?)$parenthesis?\s*$decl_end?$/) {
- 	    $identifier = $1;
- 	}
- 	if ($identifier =~ m/^(struct|union|enum|typedef)\b\s*(\S*)/) {
-@@ -2125,8 +2136,8 @@ sub process_name($$) {
- 	}
- 	# Look for foo() or static void foo() - description; or misspelt
- 	# identifier
--	elsif (/^$decl_start\s*$fn_type?(\w+)\s*$parenthesis?\s*$decl_end?$/ ||
--	    /^$decl_start\s*$fn_type?(\w+.*)$parenthesis?\s*$decl_end$/) {
-+	elsif (/^$decl_start$fn_type?(\w+)\s*$parenthesis?\s*$decl_end?$/ ||
-+	    /^$decl_start$fn_type?(\w+.*)$parenthesis?\s*$decl_end$/) {
- 	    $identifier = $1;
- 	    $decl_type = 'function';
- 	    $identifier =~ s/^define\s+//;
--- 
-2.17.1
+> +#define LAN937X_TAIL_TAG_LOOKUP		BIT(12)
+> +#define LAN937X_TAIL_TAG_VALID		BIT(13)
+> +#define LAN937X_TAIL_TAG_PORT_MASK	7
+> +
+> +static struct sk_buff *lan937x_xmit(struct sk_buff *skb,
+> +				    struct net_device *dev)
+> +{
+> +	struct dsa_port *dp = dsa_slave_to_port(dev);
+> +	__be16 *tag;
+> +	u8 *addr;
+> +	u16 val;
+> +
+> +	tag = skb_put(skb, LAN937X_INGRESS_TAG_LEN);
 
+Here we go again.. why is it called INGRESS_TAG_LEN if it is used during
+xmit, and only during xmit?
+
+> +	addr = skb_mac_header(skb);
+
+My personal choice would have been:
+
+	const struct ethhdr *hdr = eth_hdr(skb);
+
+	if (is_link_local_ether_addr(hdr->h_dest))
+
+> +
+> +	val = BIT(dp->index);
+> +
+> +	if (is_link_local_ether_addr(addr))
+> +		val |= LAN937X_TAIL_TAG_OVERRIDE;
+> +
+> +	/* Tail tag valid bit - This bit should always be set by the CPU*/
+> +	val |= LAN937X_TAIL_TAG_VALID;
+> +
+> +	*tag = cpu_to_be16(val);
+> +
+> +	return skb;
+> +}
+> +
+> +static const struct dsa_device_ops lan937x_netdev_ops = {
+> +	.name	= "lan937x",
+> +	.proto	= DSA_TAG_PROTO_LAN937X,
+> +	.xmit	= lan937x_xmit,
+> +	.rcv	= ksz9477_rcv,
+> +	.overhead = LAN937X_INGRESS_TAG_LEN,
+> +	.tail_tag = true,
+> +};
+> +
+> +DSA_TAG_DRIVER(lan937x_netdev_ops);
+> +MODULE_ALIAS_DSA_TAG_DRIVER(DSA_TAG_PROTO_LAN937X);
+> +
+>  static struct dsa_tag_driver *dsa_tag_driver_array[] = {
+>  	&DSA_TAG_DRIVER_NAME(ksz8795_netdev_ops),
+>  	&DSA_TAG_DRIVER_NAME(ksz9477_netdev_ops),
+>  	&DSA_TAG_DRIVER_NAME(ksz9893_netdev_ops),
+> +	&DSA_TAG_DRIVER_NAME(lan937x_netdev_ops),
+>  };
+>  
+>  module_dsa_tag_drivers(dsa_tag_driver_array);
+> -- 
+> 2.27.0
+> 
