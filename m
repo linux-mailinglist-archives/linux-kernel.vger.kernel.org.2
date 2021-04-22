@@ -2,174 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFBD3684E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D253C3684E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237950AbhDVQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        id S238005AbhDVQdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236662AbhDVQcz (ORCPT
+        with ESMTP id S237972AbhDVQdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:32:55 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380C2C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:32:20 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id s20so7968855plr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cozMNl4x0aoDfS151vd4k3rQFwhI4XY6oBVsQT9uHNQ=;
-        b=Nn248TtiVAoPlwvqR27j4chs/hwfU/A16DV50RupiPpu/t46mpFxp07L1eIAVXAFq0
-         8+rmYuoevJMFuOBc5+rZWv1sO8jgLjU+X9MnOuov5H40vc9O1B4o4OBAn8eCt2znBw1K
-         zsk7pAdtxtX03L2SPZyca9kC6Z3QehisnxckskRcBVm8N0f74qMvAe4uQY98nltmGMzk
-         CLovQr/wxoJiiiNJFkqzQg8weB/t6DHb50ktkSUh/aCPxYY1OK1TdwASNC473IReV9IP
-         svTny4CV8QwOCqW6DpLkWfXrj+SBEtz1CB5pqT4zH/CCAPWS+dp3L4fNyC3i3UOulnK8
-         qszA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cozMNl4x0aoDfS151vd4k3rQFwhI4XY6oBVsQT9uHNQ=;
-        b=R9cAKJQL3aGpKiOH2bV2DDKNrH8qucnQbaGNADSIj1DliHz9rpbWmkccFDkUTNcLTN
-         VyPjm6dW8VifouhHYuT3oilnmez7Fv9e0+8Y7RQuPMJ3s6C2tjCDV0aWEryBT+Kg+SOb
-         PMuHIOb8ISr4V1hrCVo7RVVSOZOp3xoXDLFqXvA1uqAvbUiqg5UsVH+fSMp7ezdvNTy8
-         SxkTY7NG28Hguc9vERP6Ha/jEIPanSdOBMA7zUk6kpYTz0P8f/YP/clY0vdwij8Ty8BM
-         ppKSQ0HC9tBUqrljAGy10igWbIjXMX4+TmCVfscpreYfkcJsjW/KSdkpHiGTPxtzpmJX
-         4s7A==
-X-Gm-Message-State: AOAM530i/i8sEa+z4YFzGT+YwO5I4qhWDBqPLIQQsW7PuDTAA1w1ZGwn
-        OuLuqy+9M95uXVhywNalkF+m03Vf2TBUXg==
-X-Google-Smtp-Source: ABdhPJzF2Qsbwpp8tTcZe/nkV/+BMAURDtxF0quVJv8hmQraI3YmZbIo9O4WxwfiFlKpAnHrEPwrdA==
-X-Received: by 2002:a17:90a:a78c:: with SMTP id f12mr873180pjq.219.1619109139744;
-        Thu, 22 Apr 2021 09:32:19 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z188sm2717992pgb.89.2021.04.22.09.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 09:32:19 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:32:17 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v2 2/7] rpmsg: Move the rpmsg control device from
- rpmsg_char to rpmsg_ctrl
-Message-ID: <20210422163217.GB1256950@xps15>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
- <20210413134458.17912-3-arnaud.pouliquen@foss.st.com>
- <20210421180455.GE1223348@xps15>
- <bb376229-006f-af16-2006-4ef9edea87f5@foss.st.com>
+        Thu, 22 Apr 2021 12:33:08 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B42C06174A;
+        Thu, 22 Apr 2021 09:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=HBW9pi1AtwAKNZXHGCpKKjsedA+rzUKisGIAxuDRPPE=; b=KPw58ASa5uatO+OME3CXuHpLgP
+        fO2sTkNeWLtDXLbD0fyJZm8OxTjbxJjjBBy5Ed1OPurDQrwSjaKjh0F2ZwsTI0YUbbadhQbwKWgqf
+        IL5nAwmi8tLxwgZtYq5aWPOIh4tCEGVkpwpr+XOVOyNXdKJ7lpDn1SUqFw+2HIQUqN2zL/OIh9aPS
+        fSuu+f+82Wf4XmxD6OspvX/fOpWhhNP3l1wVI/VAA2D8HwgmuUtcXH424UU+kkzRgSHHgfRn5r7IF
+        a5E+yguRdBE5GPwqDHNG7Ys5uij5+qiGUDn/8ewV5W9dQ+bgHNjS5qYzxS9zZsLUR7btA0nU3Jn7R
+        1NQln+Mg==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZcFj-00H5cH-CO; Thu, 22 Apr 2021 16:32:31 +0000
+Subject: Re: [PATCH] Input: rework USB Kconfig dependencies
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210422133647.1877425-1-arnd@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <74e04402-58b3-b1e5-4f72-9fe227f21b35@infradead.org>
+Date:   Thu, 22 Apr 2021 09:32:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb376229-006f-af16-2006-4ef9edea87f5@foss.st.com>
+In-Reply-To: <20210422133647.1877425-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:56:41AM +0200, Arnaud POULIQUEN wrote:
+On 4/22/21 6:36 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> A lot of input drivers traditionally depend on CONFIG_USB_ARCH_HAS_HCD
+> and select CONFIG_USB. This works but is different from almost every
+> other subsystem in the kernel.
 > 
-> On 4/21/21 8:04 PM, Mathieu Poirier wrote:
-> > On Tue, Apr 13, 2021 at 03:44:53PM +0200, Arnaud Pouliquen wrote:
-> >> Create the rpmsg_ctrl.c module and move the code related to the
-> >> rpmsg_ctrldev device in this new module.
-> >>
-> >> Add the dependency between rpmsg_char and rpmsg_ctrl in the
-> >> kconfig file.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >> ---
-> >> update from v1:
-> >> - keep "rpmsg_chrdev" driver name in rpmsg_ctrl, driver will be renamed
-> >>   in next path that renames the rpmsg_chrdev_create_eptdev.
-> >> - rename the chardev regions
-> >> - move RPMSG_DEV_MAX to rpmsg_char.h
-> >> ---
-> >>  drivers/rpmsg/Kconfig      |   9 ++
-> >>  drivers/rpmsg/Makefile     |   1 +
-> >>  drivers/rpmsg/rpmsg_char.c | 181 +----------------------------
-> >>  drivers/rpmsg/rpmsg_char.h |   2 +
-> >>  drivers/rpmsg/rpmsg_ctrl.c | 231 +++++++++++++++++++++++++++++++++++++
-> >>  5 files changed, 245 insertions(+), 179 deletions(-)
-> >>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
-> >>
-> >> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> >> index 0b4407abdf13..d822ec9ec692 100644
-> >> --- a/drivers/rpmsg/Kconfig
+> I found this when debugging a build failure in the RC subsystem that
+> had the same logic.
 > 
-> snip[...]
+> The problem here is that CONFIG_USB_ARCH_HAS_HCD no longer has
+> a meaning since the host controller support has been changed to
+> use machine specific loadable modules for the USB host. Selecting
+> a subsystem that a driver needs is confusing and can lead to
+> recursive dependency chains in Kconfig.
 > 
-> >> +static int rpmsg_ctrldev_init(void)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_ctrl");
-> >> +	if (ret < 0) {
-> >> +		pr_err("rpmsg: failed to allocate char dev region\n");
-> >> +		return ret;
-> >> +	}
-> >> +
-> >> +	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
-> > 
-> > This class thing really bothers me.  Keeping this here means that rpmsg_eptdevs
-> > created from user space will be associated to this rpmsg_class but those created
-> > from the name service won't.  As such I propose to move this to rpmsg_char and
-> > simply not associate the control device to the class.
-> > 
-> > Otherwise we'd have to introduce some mechanic only to deal with the creation of
-> > the class and I don't think it is worth.  We can revise that approach if someone
-> > complains we broke their user space. 
+> In both cases, the normal logic is to specify 'depends on USB'.
 > 
-> I agree with that as it was my first proposed approach here [1]
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Yeah, sorry about that.  This patch review process is not an exact science...
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
+Thanks.
+
+> ---
+>  drivers/input/joystick/Kconfig    |  6 ++----
+>  drivers/input/misc/Kconfig        | 15 +++++----------
+>  drivers/input/mouse/Kconfig       |  9 +++------
+>  drivers/input/tablet/Kconfig      | 15 +++++----------
+>  drivers/input/touchscreen/Kconfig |  3 +--
+>  5 files changed, 16 insertions(+), 32 deletions(-)
 > 
-> [1] https://www.spinics.net/lists/linux-arm-msm/msg81194.html
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > 
-> >> +	if (IS_ERR(rpmsg_class)) {
-> >> +		pr_err("failed to create rpmsg class\n");
-> >> +		ret = PTR_ERR(rpmsg_class);
-> >> +		goto free_region;
-> >> +	}
-> >> +
-> >> +	ret = register_rpmsg_driver(&rpmsg_ctrldev_driver);
-> >> +	if (ret < 0) {
-> >> +		pr_err("rpmsg ctrl: failed to register rpmsg driver\n");
-> >> +		goto free_class;
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +
-> >> +free_class:
-> >> +	class_destroy(rpmsg_class);
-> >> +free_region:
-> >> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> +
-> >> +	return ret;
-> >> +}
-> >> +postcore_initcall(rpmsg_ctrldev_init);
-> >> +
-> >> +static void rpmsg_ctrldev_exit(void)
-> >> +{
-> >> +	unregister_rpmsg_driver(&rpmsg_ctrldev_driver);
-> >> +	class_destroy(rpmsg_class);
-> >> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> +}
-> >> +module_exit(rpmsg_ctrldev_exit);
-> >> +
-> >> +MODULE_DESCRIPTION("rpmsg control interface");
-> >> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
-> >> +MODULE_LICENSE("GPL v2");
-> >> -- 
-> >> 2.17.1
-> >>
+
+
+-- 
+~Randy
+
