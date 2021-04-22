@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0892B36766D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E929D367677
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236417AbhDVAmQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Apr 2021 20:42:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhDVAmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:42:15 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36BF06140F;
-        Thu, 22 Apr 2021 00:41:41 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 20:41:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] static_call: Fix unused variable warning
-Message-ID: <20210421204139.669f5c22@oasis.local.home>
-In-Reply-To: <20210422003334.139452-1-linux@roeck-us.net>
-References: <20210422003334.139452-1-linux@roeck-us.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S237676AbhDVAo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 20:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhDVAox (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 20:44:53 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CC1C06174A;
+        Wed, 21 Apr 2021 17:44:19 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZNRw-007B5f-KZ; Thu, 22 Apr 2021 00:44:08 +0000
+Date:   Thu, 22 Apr 2021 00:44:08 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Aditya Pakki <pakki001@umn.edu>
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fuse: Avoid potential use after free
+Message-ID: <YIDG2MOSITJxJBqd@zeniv-ca.linux.org.uk>
+References: <20210406235332.2206460-1-pakki001@umn.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406235332.2206460-1-pakki001@umn.edu>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Second patch with the exact same update. Perhaps we should take one
-before we get more of them ;-)
-
-https://lore.kernel.org/lkml/20210416194300.3952208-1-cmllamas@google.com/
-
--- Steve
-
-
-On Wed, 21 Apr 2021 17:33:34 -0700
-Guenter Roeck <linux@roeck-us.net> wrote:
-
-> If CONFIG_MODULES=n, the following build warning is reported.
+On Tue, Apr 06, 2021 at 06:53:32PM -0500, Aditya Pakki wrote:
+> In virtio_fs_get_tree, after fm is freed, it is again freed in case
+> s_root is NULL and virtio_fs_fill_super() returns an error. To avoid
+> a double free, set fm to NULL.
 > 
-> kernel/static_call.c: In function ‘__static_call_update’:
-> kernel/static_call.c:153:18: warning: unused variable ‘mod’
-> 
-> Mark the variable as __maybe_unused to fix the problem.
-> 
-> Fixes: 9183c3f9ed71 ("static_call: Add inline static call infrastructure")
-> Reported-by: Zach Reizner <zachr@google.com>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 > ---
->  kernel/static_call.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/fuse/virtio_fs.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/kernel/static_call.c b/kernel/static_call.c
-> index 2c5950b0b90e..8211a34251f8 100644
-> --- a/kernel/static_call.c
-> +++ b/kernel/static_call.c
-> @@ -150,7 +150,7 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
->  
->  	for (site_mod = &first; site_mod; site_mod = site_mod->next) {
->  		bool init = system_state < SYSTEM_RUNNING;
-> -		struct module *mod = site_mod->mod;
-> +		struct module __maybe_unused *mod = site_mod->mod;
->  
->  		if (!site_mod->sites) {
->  			/*
+> diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+> index 4ee6f734ba83..a7484c1539bf 100644
+> --- a/fs/fuse/virtio_fs.c
+> +++ b/fs/fuse/virtio_fs.c
+> @@ -1447,6 +1447,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+>  	if (fsc->s_fs_info) {
+>  		fuse_conn_put(fc);
+>  		kfree(fm);
+> +		fm = NULL;
+>  	}
+>  	if (IS_ERR(sb))
+>  		return PTR_ERR(sb);
 
+NAK.  The only cases when sget_fc() returns without having ->s_fs_info
+zeroed are when it has successfull grabbed a reference to existing live
+superblock or when it has failed.  In the former case we proceed straight
+to
+        fsc->root = dget(sb->s_root);
+	return 0;
+and in the latter we bugger off on IS_ERR(sb).  No double-free in either
+case.  Said that, the logics in there (especially around the cleanups
+on virtio_fs_fill_super() failures) is bloody convoluted, but sorting
+that out would take a lot more RTFS than I'm willing to start right now.
+
+In any case, this patch does not fix any bugs and does not make the
+thing easier to follow, so...
+
+NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
