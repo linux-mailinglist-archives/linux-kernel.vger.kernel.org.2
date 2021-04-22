@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6564F3683F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1483E36841A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238335AbhDVPnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:43:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39280 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237993AbhDVPmq (ORCPT
+        id S237751AbhDVPqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236485AbhDVPq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:42:46 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619106130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TlPW80ZD1S7l4GGiUYfpnDcgBS6YV2GnyPaBBzf4Ybs=;
-        b=opKPnWROLG6bMR0stYFDgk1fQftfqthvrIubpCxW1tflDjDIF32LMsSFgV7tovinvT/NJF
-        f7ZVijRxQe0ZBXiKV71gNku+yPsYWIRgxo0tjja8WXWXTUT6Sohi4lfV51r++AFCDwIUcl
-        Jckns4q99s4cEy7UQe44wVezAVINPdzUYV02OFTlzMWiGSySo5XPjqu1SX8bCu+BvdCGtW
-        tfMYpouZBk92OTW3N43EDnSrIhX7VWDkWcgP+h4WJ8HDFMqolfOV8PDZNLW5OqXI9hK8fa
-        K4RfyxSeDtoZ5RyNIXnSvdNnh7b750nXRTTajP8WAPKk/d6lw1+BqGTmXTa1AA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619106130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TlPW80ZD1S7l4GGiUYfpnDcgBS6YV2GnyPaBBzf4Ybs=;
-        b=CW1w9NeP1jjagLZEkywhcLwJIY0u65aqwTTznQvS39q80LuLIeafCZxxWK+4CG3MyEbCz3
-        6BX/k6uH9mHsxwDw==
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Chris Friesen <chris.friesen@windriver.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [IRQ] IRQ affinity not working properly?
-In-Reply-To: <fdebec53-097a-d28f-96ec-cfe8d7ef8412@redhat.com>
-References: <a0d5551e-761b-1571-b8e1-5586ec4d9f3b@windriver.com> <87blb3ce29.ffs@nanos.tec.linutronix.de> <fdebec53-097a-d28f-96ec-cfe8d7ef8412@redhat.com>
-Date:   Thu, 22 Apr 2021 17:42:10 +0200
-Message-ID: <87bla6xr59.ffs@nanos.tec.linutronix.de>
+        Thu, 22 Apr 2021 11:46:26 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FB1C061367;
+        Thu, 22 Apr 2021 08:44:06 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y4so32693675lfl.10;
+        Thu, 22 Apr 2021 08:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m57p73/6EC8FlSnir1szkJ7jqEqfWVCfqYqX+nVjqck=;
+        b=ve0MpZs6IKHSbgFFzkqP8d/fRYxjCj8eKWRw/2nI3/b3bSMBpQZW7jykiRUl2W4ohk
+         fpYIFUWyKzepqpAy6OIsMBPXqG+sMr9RG0dbdIIaIm3S8my4nvlG+yl+CjfS+fC9WhFY
+         4wPmYlDHlBkDfLalCkyE0HUJWnfOqNKYJrRtfw60ZUJz9cx6XbNslm91T3mMUpM4kz+z
+         WLmgdo8kjSfIn9KBK98b2e+a1z/Fv7Yv+8lE3jpZOVMGV62AreEmsgBC2kuGQZBFvsvS
+         cA6BOJLlXVUZEr2CP6yDgdrTlgLYAl5mmHmKlW1TRMS55mNrIfry5xwVQpvjVTVthfjU
+         zj6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m57p73/6EC8FlSnir1szkJ7jqEqfWVCfqYqX+nVjqck=;
+        b=LhMtdh4XHixxtdvq3UAnxItt0zq26scjcR2edeYwRI1m0dvXWYDEuXt/21kVuoml+L
+         wHdj6d1p/ICbOsbxrS3aB970bul1yFkjzQKC6md8JyRueWhg3xfRY/en6dtk1DisOfpQ
+         /rkTzpwpC87dh8Xbpvq9C9aQiNjFFczyxgVsLb8wl1YumtbXyTB281YbLL8YucS6JrS5
+         RVG3fPnkLRBGWLjmL1NhZj9a0AY/JBwlOoYhVWGTfgbflH/uo8XUrWoz/bkn0T1lt7Pd
+         iPOHzAa3rsWZKIPqPazXhrk7RbAB726CxiHSB/SWa4vkT6m0ug1fQg/lG+XnMKOBaBui
+         jvLQ==
+X-Gm-Message-State: AOAM533DBWi8E8kVA+2++Uaxx+uOFKQsV+685+R9kp/Qj3JMMSsZeDnF
+        uqo8+uth/Owtqf4DG4LAOqhLVKyMMoorNLPA7Eg=
+X-Google-Smtp-Source: ABdhPJzbTnyFdLToRPn2UfW0jXnyOg5pUZxzOADTdRr+UIwZzwthDRI8BqzV/Y/zZ2GbShl+AwIDD+FAS9LALPLY1Tc=
+X-Received: by 2002:a05:6512:2026:: with SMTP id s6mr3051615lfs.214.1619106245393;
+ Thu, 22 Apr 2021 08:44:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+ <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
+ <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
+ <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk> <CABRcYmLU0f9eSvsjBogKmc_FK8qykfR1pNx9VCW8Scjj4-VQQg@mail.gmail.com>
+ <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com>
+In-Reply-To: <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 22 Apr 2021 08:43:54 -0700
+Message-ID: <CAADnVQ+wFcjMzs2G1VAKW5WnFtcBgKMeJcK3ouKJYCR7GdvfWw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+To:     Florent Revest <revest@chromium.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21 2021 at 09:31, Nitesh Narayan Lal wrote:
-> On 3/28/21 2:45 PM, Thomas Gleixner wrote:
->> On Fri, Jan 29 2021 at 13:17, Chris Friesen wrote:
->>> I have a CentOS 7 linux system with 48 logical CPUs and a number of
+On Thu, Apr 22, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > I was having a stroll through lib/vsprintf.c and noticed bstr_printf:
+> >
+> >  * This function like C99 vsnprintf, but the difference is that vsnprintf gets
+> >  * arguments from stack, and bstr_printf gets arguments from @bin_buf which is
+> >  * a binary buffer that generated by vbin_printf.
+> >
+> > Maybe it would be easier to just build our argument buffer similarly
+> > to what vbin_printf does.
 >
-> <snip>
->
->>> IR-PCI-MSI-edge      iavf-net1-TxRx-3
->>> 961:          0          0          0          0 28492         0 
->>> IR-PCI-MSI-edge iavf-0000:b5:02.7:mbx
->>> 962:          0          0          0          0 435608         0 
->>> IR-PCI-MSI-edge      iavf-net1-TxRx-0
->>> 963:          0          0          0          0 394832         0 
->>> IR-PCI-MSI-edge      iavf-net1-TxRx-1
->>> 964:          0          0          0          0 398414         0 
->>> IR-PCI-MSI-edge      iavf-net1-TxRx-2
->>> 965:          0          0          0          0 192847         0 
->>> IR-PCI-MSI-edge      iavf-net1-TxRx-3
->>>
->>> There were IRQs coming in on the "iavf-0000:b5:02.7:mbx" interrupt at 
->>> roughly 1 per second without any traffic, while the interrupt rate on 
->>> the "iavf-net1-TxRx-<X>" seemed to be related to traffic.
->>>
->>> Is this expected?  It seems like the IRQ subsystem is not respecting the 
->>> configured SMP affinity for the interrupt in question.  I've also seen 
->>> the same behaviour with igb interrupts.
->> No it's not expected. Do you see the same behaviour with a recent
->> mainline kernel, i.e. 5.10 or 5.11?
->>
->>
-> Jesse pointed me to this thread and apologies that it took a while for me
-> to respond here.
->
-> I agree it will be interesting to see with which kernel version Chris is
-> reproducing the issue.
+> I've been experimenting with this idea and it is quite promising :) it
+> also makes the code much cleaner, I find. I'll send a series asap.
 
-And the output of
+You mean to use bstr_printf internally ? That could work indeed.
+Make sure CONFIG_BINARY_PRINTF is selected.
+CONFIG_TRACING does it already.
 
- /proc/irq/$NUMBER/smp_affinity_list
- /proc/irq/$NUMBER/effective_affinity_list
+> BPF maintainers: should we fix forward or do you prefer reverting the
+> snprintf series and then re-applying another snprintf series without
+> the regression in bpf_trace_printk that mangles some argument types ?
+> (bpf_seq_printf has always been like that so no regression there)
 
-> Initially, I thought that this issue is the same as the one that we have
-> been discussing in another thread [1].
->
-> However, in that case, the smp affinity mask itself is incorrect and doesn't
-> follow the default smp affinity mask (with irqbalance disabled).
-
-That's the question...
-
-Thanks,
-
-        tglx
+Pls send it as a follow up.
+Along with another patch to clean verifier bits we discussed.
+The merge window is approaching, so it has to be done asap.
