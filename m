@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15F1368027
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E52636802A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236195AbhDVMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:20:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35802 "EHLO mx2.suse.de"
+        id S236221AbhDVMVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:21:30 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35564 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235232AbhDVMUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:20:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6F664AF1A;
-        Thu, 22 Apr 2021 12:19:54 +0000 (UTC)
-Subject: Re: [PATCH 1/9] mm/page_alloc: Split per cpu page lists and zone
- stats
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210422111441.24318-1-mgorman@techsingularity.net>
- <20210422111441.24318-2-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <45156f57-2fa9-71c8-aea5-d06d457c0236@suse.cz>
-Date:   Thu, 22 Apr 2021 14:19:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235977AbhDVMV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:21:29 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lZYK8-000Ujw-Tx; Thu, 22 Apr 2021 14:20:48 +0200
+Date:   Thu, 22 Apr 2021 14:20:48 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next 14/14] net: ethernet: mtk_eth_soc: use iopoll.h
+ macro for DMA init
+Message-ID: <YIFqIJpAJKUrXQVS@lunn.ch>
+References: <20210422040914.47788-1-ilya.lipnitskiy@gmail.com>
+ <20210422040914.47788-15-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210422111441.24318-2-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422040914.47788-15-ilya.lipnitskiy@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 1:14 PM, Mel Gorman wrote:
-> The per-cpu page allocator lists and the per-cpu vmstat deltas are stored
-> in the same struct per_cpu_pages even though vmstats have no direct impact
-> on the per-cpu page lists. This is inconsistent because the vmstats for a
-> node are stored on a dedicated structure. The bigger issue is that the
-> per_cpu_pages structure is not cache-aligned and stat updates either
-> cache conflict with adjacent per-cpu lists incurring a runtime cost or
-> padding is required incurring a memory cost.
+On Wed, Apr 21, 2021 at 09:09:14PM -0700, Ilya Lipnitskiy wrote:
+> Replace a tight busy-wait loop without a pause with a standard
+> readx_poll_timeout_atomic routine with a 5 us poll period.
 > 
-> This patch splits the per-cpu pagelists and the vmstat deltas into separate
-> structures. It's mostly a mechanical conversion but some variable renaming
-> is done to clearly distinguish the per-cpu pages structure (pcp) from
-> the vmstats (pzstats).
+> Tested by booting a MT7621 device to ensure the driver initializes
+> properly.
 > 
-> Superficially, this appears to increase the size of the per_cpu_pages
-> structure but the movement of expire fills a structure hole so there is
-> no impact overall.
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> ---
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 29 +++++++++------------
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.h |  2 +-
+>  2 files changed, 14 insertions(+), 17 deletions(-)
 > 
-> [lkp@intel.com: Check struct per_cpu_zonestat has a non-zero size]
-> [vbabka@suse.cz: Init zone->per_cpu_zonestats properly]
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index 8c863322587e..720d73d0c007 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -2037,25 +2037,22 @@ static int mtk_set_features(struct net_device *dev, netdev_features_t features)
+>  /* wait for DMA to finish whatever it is doing before we start using it again */
+>  static int mtk_dma_busy_wait(struct mtk_eth *eth)
+>  {
+> -	unsigned long t_start = jiffies;
+> +	u32 val;
+> +	int ret;
+> +	unsigned int reg;
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Nit:
+
+Reverse christmass tree.
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
