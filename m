@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A26368200
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0A9368204
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236792AbhDVN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        id S236853AbhDVN6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236365AbhDVN5s (ORCPT
+        with ESMTP id S236283AbhDVN6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:57:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF46C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:57:13 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQzWC0CQdz9sV5;
-        Thu, 22 Apr 2021 23:57:10 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1619099831;
-        bh=vodDxdbMHgKzn3FZqqPkJFp2BSw+/poOlMN5woeQ7h0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=IEwQvqr/Wt41NgGFe3I7tXI15JSRIevFn6iZ4x7dJw0jcqAg4bZGErLrd07H+5EmW
-         AcBhGpeD+pnKR/qEvozsJtBK4SljBcFM4Jsxba3rVro0eStGCBMcfVCMnAE2/Mz+oB
-         ahVxX/N8fMH3oA0mCMIQ7znIo04lmgO7X2AH5oH4DBwdehc9o8ovtW3eIckb8/KoSO
-         nwLfxz5xAurz6mZG2AZmAj7LoksQ+TVPK7z5Dx+fWoWX9NrPeN/ciX+m7hCF9yhh5F
-         h2ojbV+o3+PB3xv6rMt3g0HpjQILWBvKT1WtLN8GbHWU+RFjHdAqoKVy62MEowbgKn
-         ncxCNaD6WoakA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] powerpc/kconfig: Restore alphabetic order of the
- selects under CONFIG_PPC
-In-Reply-To: <361ee3fc5009c709ae0ca592249bb0702c6ef073.1619024780.git.christophe.leroy@csgroup.eu>
-References: <361ee3fc5009c709ae0ca592249bb0702c6ef073.1619024780.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 22 Apr 2021 23:57:09 +1000
-Message-ID: <87eef2bex6.fsf@mpe.ellerman.id.au>
+        Thu, 22 Apr 2021 09:58:47 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70505C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:58:12 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id j3so22014880qvs.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pDNnkJPb2aQUATNCDosNiyczROSb5OwKI26xW7uSy28=;
+        b=R4gYl8V9m76fiz5yMnlKUIbRJene//D0v8wbWVpqrHO13nHZEo37aC7E7PIRJDsGeq
+         sfEgLFCT2klfSqwCXqz/IIT5X254leclwQZtLDrL5ONQafBUy+aPNsgEqJaO2mHBQd+o
+         J6RM68h3qBw9hnHl99j17M1JzZwY8v7XBzy2Vqmjkfj5ZpIo5PXCfF2+jRZvl1eK0U0T
+         dAGIPAH1bZDSJM82Et7l7ckY/uUPPqg4j3zspAHhT4ef2sCzxSwX6Eqvy8o0Slrchqoe
+         lRX0E3VLVB0FKsqQ1xfL9ZlggAqn1sJTeHZ9Dee+xWmyAbNz1Tg07GG2m2Scla4qFYtg
+         2JKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pDNnkJPb2aQUATNCDosNiyczROSb5OwKI26xW7uSy28=;
+        b=B4QeV/Nop9iza2xnPuCzRPr3MQKny+7uXkkyYDa2pewd0NAmPBQS2new3bxDJD7eWK
+         oMX6o6DsQv3P36S8VNYGVIfhxTWRdBqeNeJUhQStPIS9hXVIYmaen3g8VZED1pSU1cIA
+         kGT0ZAmFYahOxIU/6TGZZvSc1vQhSLozJm2LJ0OZ/7pOZyrg02LsJvKyfO5QXJ3JdEdX
+         bzKNF3EAUg4r7D7fGAZDZbkNzzR9xRqvpazbgD6iLr8i+BFfo0Sf/45pWjPiooTy/PJS
+         l8xui0Ofvw4+GC8o/5PDH+sv8AIhTDO5pZwClWdc9GmxPCadYrMc+DONcgQAQIygQ0la
+         DHVw==
+X-Gm-Message-State: AOAM532/ZiiqdRcc9j+7K2CMq1vj/k1x3uJ9VM0RQdG4GD1K9e+iqUxb
+        Bemnzf7RQjUvwZkbQLUz7c/ZjQ==
+X-Google-Smtp-Source: ABdhPJyZJdGFuL+vpCjOqy7YRTYsaeQhy9BH3TnGMSu3vmr9Ghy8k0VdVdtgLaCfy2MyMPaAm45r2w==
+X-Received: by 2002:a05:6214:2a9:: with SMTP id m9mr3807764qvv.39.1619099891662;
+        Thu, 22 Apr 2021 06:58:11 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id r25sm2278007qtm.18.2021.04.22.06.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 06:58:11 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lZZqM-00A2d6-Nq; Thu, 22 Apr 2021 10:58:10 -0300
+Date:   Thu, 22 Apr 2021 10:58:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV
+Message-ID: <20210422135810.GG2047089@ziepe.ca>
+References: <20210422133547.1861063-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422133547.1861063-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Commit a7d2475af7ae ("powerpc: Sort the selects under CONFIG_PPC")
-> sorted all selects under CONFIG_PPC.
->
-> 4 years later, several items have been introduced at wrong place,
-> a few other have been renamed without moving them to their correct
-> place.
->
-> Reorder them now.
->
-> While we are at it, simplify the test for a couple of them:
-> - PPC_64 && PPC_PSERIES is simplified in PPC_PSERIES
-> - PPC_64 && PPC_BOOK3S is simplified in PPC_BOOK3S_64
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Thu, Apr 22, 2021 at 03:35:33PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The Kconfig dependency is incomplete since DRM_I915_GVT is a 'bool'
+> symbol that depends on the 'tristate' VFIO_MDEV. This allows a
+> configuration with VFIO_MDEV=m, DRM_I915_GVT=y and DRM_I915=y that
+> causes a link failure:
+> 
+> x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `available_instances_show':
+> gvt.c:(.text+0x67a): undefined reference to `mtype_get_parent_dev'
+> x86_64-linux-ld: gvt.c:(.text+0x6a5): undefined reference to `mtype_get_type_group_id'
+> x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `description_show':
+> gvt.c:(.text+0x76e): undefined reference to `mtype_get_parent_dev'
+> x86_64-linux-ld: gvt.c:(.text+0x799): undefined reference to `mtype_get_type_group_id'
+> 
+> Clarify the dependency by specifically disallowing the broken
+> configuration. If VFIO_MDEV is built-in, it will work, but if
+> VFIO_MDEV=m, the i915 driver cannot be built-in here.
+> 
+> Fixes: 07e543f4f9d1 ("vfio/gvt: Make DRM_I915_GVT depend on VFIO_MDEV")
+> Fixes: 9169cff168ff ("vfio/mdev: Correct the function signatures for the mdev_type_attributes")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> v2: Rebased on d20f726744a0 ("Automatic merge of 'next' into merge (2021-04-21 22:57)")
+>  drivers/gpu/drm/i915/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This will conflict badly with other things in linux-next if I merge it
-now.
+Oh kconfig stuff like this makes my head hurt, thanks for finding it
 
-The best time to do this is just before rc1. I'll try to remember :)
+I also can't see an alternative to this ugly thing, besides having the
+i915 guys properly modularize this code someday
 
-cheers
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Jason
