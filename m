@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A972A36822C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9AE36822D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236988AbhDVOKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
+        id S237043AbhDVOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236341AbhDVOKd (ORCPT
+        with ESMTP id S236975AbhDVOKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:10:33 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521B9C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:09:57 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id h15so14086147pfv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:09:57 -0700 (PDT)
+        Thu, 22 Apr 2021 10:10:34 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ADBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:09:59 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id s20so7755478plr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:09:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i/gDYokLkAPezwBUXb2BsOr5s2Af3W3ok0V9LpWquAU=;
-        b=N7ENIt8Xs1yz0f7dPTt2wNX8vJT0WXdfihgGZ458k3u9hTanbU2jzxaWIeLrhxQn/d
-         iOcNH+djBrtHU4Kqx0jkHYue8jOjGc6FRX17eO6QUbmnPsDWtQQctwdYvUMwn3Hfzodg
-         i0NXr9LIBghXDvgk/j0lnsClK5w1kj/1Gu0VM=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BUQtN/I+EDS4RtvAAmZnEOQmRyFVPsDaWOFvWef9gus=;
+        b=m405sN+jsIKKqYpelEt0LNiff9JTDxA9Eel+hymId7NuhOeBSniqqwsAJnLNdtlY8I
+         GzwY7TnfQYG6tdhZsF9PnG/g64ql7vxy28mWXS+G0TEFfft8EbW+3Mo+oqhbodfNetqJ
+         e33ijCit5j4TesiVTu/CSZxQeZPtkbDL8Sv1k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i/gDYokLkAPezwBUXb2BsOr5s2Af3W3ok0V9LpWquAU=;
-        b=jnDXnUejqQ3RIOfxqfbHHTNbV6knRboE+bg5dnZ5e2/H4GQ9PhtDO47/lOoqYrdTlc
-         Jsa0qf5PBuAkrSQpYNkLxjq1QHDNjt5qV+xgCTtW06DqEAfCIAYkLENlvKU2xTu897Vy
-         xoFR8q80vUSMcT7k1+PNe7L8gfZsJBjtfwFa6NMLb7G7RCDd08Lqu4dF8LImxfsrG1Tw
-         MO5AWmn5UoHIDvyUH1ycx+bpt9erebXC/la4DQ0FxEIm8nF20N5WkB3vxHGmio8c9nTN
-         JuUBhp9PDN/dDzju6be2bR64LXjL0M0+vOn0bk07YAJiMlNj0Sz+YBbVF2DvMPXENFhf
-         60og==
-X-Gm-Message-State: AOAM5300Y7lNYU3l8JmwJbBwjeYJw/2H/9+YZH+L9dmdEg4+GDrAZ69b
-        yv9pmm9pqv3fKOAkZT9fvQF61w==
-X-Google-Smtp-Source: ABdhPJyoDqs9mOArEmPY462NVPxiecr+xvGgEdEMAjNbX9P5K0PrbQakJOQWzfjdkXTJ7aeqkMpwWA==
-X-Received: by 2002:a63:1214:: with SMTP id h20mr3698845pgl.207.1619100596840;
-        Thu, 22 Apr 2021 07:09:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BUQtN/I+EDS4RtvAAmZnEOQmRyFVPsDaWOFvWef9gus=;
+        b=QCEl8BuyqOzOaLQFy+bIB/7apfFzK644JzmE7rymrku0iX+McUvRk25pn1KUZ5V3l4
+         4yFNMjH1CoVZc6/meEbIQMMcv+iAak/nSbR6vhahKUj+i1/gkgFI6tuRM3L3exJ3uDrh
+         dr4NluXbi9CKZbtTz/KKad9N0sidjmrcOpBdPap6RcoFhVb1c2s/NNNGGUw9e70XBRQM
+         0KVKIc8agi59FLM2F1xF9j9VBsLjslAT2TC98Cx+RmWl+O60mdf7qZqGf5UMgWTeywEB
+         vhvqtENKys1mzDB4vhnperSF50fK4Lf+aGPESNVukx3fiqwCM9V3pXvNYnKAeJQh8zHu
+         vnmg==
+X-Gm-Message-State: AOAM530ffO+Bc2SPLjyYIZULu9/AyvtrSOmq93SfetaEIBZV6NRVnodc
+        69oZP33n5twDDNG0wdvLYeY+yQ==
+X-Google-Smtp-Source: ABdhPJw3kSgPde9ZOzM0kdFE70SeNfH0jf8NhTpk/jrK2Bo1OaaYS2GMKA4tRypu1GDE76E+p/tTOg==
+X-Received: by 2002:a17:90a:f309:: with SMTP id ca9mr239059pjb.200.1619100599585;
+        Thu, 22 Apr 2021 07:09:59 -0700 (PDT)
 Received: from shiro.work (p345188-ipngn200408sizuokaden.shizuoka.ocn.ne.jp. [124.98.97.188])
-        by smtp.googlemail.com with ESMTPSA id p12sm5278968pjo.4.2021.04.22.07.09.54
+        by smtp.googlemail.com with ESMTPSA id p12sm5278968pjo.4.2021.04.22.07.09.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 07:09:56 -0700 (PDT)
+        Thu, 22 Apr 2021 07:09:59 -0700 (PDT)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     olof@lixom.net, arnd@kernel.org, w@1wt.eu,
         Daniel Palmer <daniel@0x0f.com>
-Subject: [RFC PATCH 0/2] ARM: mstar: Internal bus madness
-Date:   Thu, 22 Apr 2021 23:09:43 +0900
-Message-Id: <20210422140945.4131092-1-daniel@0x0f.com>
+Subject: [RFC PATCH 1/2] ARM: mstar: Add header with macros for RIU register access
+Date:   Thu, 22 Apr 2021 23:09:44 +0900
+Message-Id: <20210422140945.4131092-2-daniel@0x0f.com>
 X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210422140945.4131092-1-daniel@0x0f.com>
+References: <20210422140945.4131092-1-daniel@0x0f.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MStar/SigmaStar SoCs have some very weird internal
-bus bridges called RIU and XIU. These seem to be a left
-over from when the CPU core was 8051 or MIPS.
+Registers connected to the CPU via "RIU" (Maybe Register Interface
+Unit) are 16bits wide with a 32bit stride.
 
-Basically they act as a bridge between the ARM CPU and the
-lump of standard peripherals (ethernet, usb, sd host etc)
-that has been used throughout all of their designs.
+For IPs that came from 3rd parties that have natively 32bit
+registers they are annoyingly mapped with the 32bit register
+split into two 16bit registers.
 
-RIU has 16bit registers 32bits apart from the CPU view while
-XIU has 32bit registers 64bits apart from the CPU view.
-Older chips (MSC313) only have RIU, newer chips (MSC313E)
-have both RIU and XIU with some IPs accessible via RIU with
-the original address and via XIU with an additional address.
-To make things really fun some IPs (memory mapped ethernet PHY)
-have registers that are completely accessible via RIU but only
-partially accessible via XIU.
+This means that any existing driver (i.e. the usb and ethernet)
+cannot be used as is and needs to use a special readl()/writel()
+to fix up the address of the register that needs to be accessed,
+do two readw()/writel()s and stitch the values together.
 
-The main issue is for non-MStar IPs connected to these bridges.
-All of the MStar IPs seem to have 16bit registers but the
-ethernet controller and usb controller are third party and
-have 32bit registers.
+To avoid having this code in every driver add a header with an
+implementation of readl()/writel() that patches over the insanity.
 
-The kernel drivers expect the registers to be at normal
-offsets and not broken into two parts so they don't work
-out of the box here.
-
-I want to hide this stuff as much as possible so it seemed
-like a good idea to hide it in a header and use the headers
-in the unfortunate drivers.
-
-RFC because maybe this isn't the right approach and I'm
-sure the two readw()/writew()s for RIU need to be protected
-somehow but I wasn't sure how.
-
-Daniel Palmer (2):
-  ARM: mstar: Add header with macros for RIU register access
-  ARM: mstar: Add header with macros for XIU register access
-
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
  MAINTAINERS             |  1 +
  include/soc/mstar/riu.h | 28 ++++++++++++++++++++++++++++
- include/soc/mstar/xiu.h | 22 ++++++++++++++++++++++
- 3 files changed, 51 insertions(+)
+ 2 files changed, 29 insertions(+)
  create mode 100644 include/soc/mstar/riu.h
- create mode 100644 include/soc/mstar/xiu.h
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 19dc2eb0d93b..9600291e73a7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2155,6 +2155,7 @@ F:	drivers/gpio/gpio-msc313.c
+ F:	drivers/pinctrl/pinctrl-msc313.c
+ F:	include/dt-bindings/clock/mstar-*
+ F:	include/dt-bindings/gpio/msc313-gpio.h
++F:	include/soc/mstar/
+ 
+ ARM/NEC MOBILEPRO 900/c MACHINE SUPPORT
+ M:	Michael Petchkovsky <mkpetch@internode.on.net>
+diff --git a/include/soc/mstar/riu.h b/include/soc/mstar/riu.h
+new file mode 100644
+index 000000000000..5aeea9c1e7eb
+--- /dev/null
++++ b/include/soc/mstar/riu.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++
++#ifndef _SOC_MSTAR_RIU_H_
++#define _SOC_MSTAR_RIU_H_
++
++#include <linux/io.h>
++
++static inline u32 riu_readl(__iomem void *base, unsigned int offset)
++{
++	__iomem void *reg = base + (offset * 2);
++
++	return readw_relaxed(reg + 4) << 16 | readw_relaxed(reg);
++}
++
++static inline void riu_writel(__iomem void *base, unsigned int offset, u32 value)
++{
++	__iomem void *reg = base + (offset * 2);
++
++	/*
++	 * Do not change this order. For EMAC at least
++	 * the write order must be the lower half and then
++	 * the upper half otherwise it doesn't work.
++	 */
++	writew_relaxed(value, reg);
++	writew_relaxed(value >> 16, reg + 4);
++}
++
++#endif
 -- 
 2.31.0
 
