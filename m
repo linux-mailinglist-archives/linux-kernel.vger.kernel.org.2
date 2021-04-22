@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29D6367B21
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148BD367B25
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbhDVHbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:31:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235037AbhDVHbp (ORCPT
+        id S235137AbhDVHcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:32:45 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51035 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231262AbhDVHcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:31:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619076670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XgTehN3/NyaVKZ7FW4MkOjMjlpGG8PCtMVmQI1FgYuU=;
-        b=fiPRNTVeOWIDv3vtpoxI76hUt1yf5t88HPT2gW6OitWd6Qd0RSi7t09PRvU+eTBd0kmT0D
-        sUJ5I3EkRniSIvz1EWX5Fat3Co5KPFd/OzE6PEPBCXBOlpyffz3EjNS62Qs542Tu5H2FK4
-        TZnRH3DaATkUEbg+tirkuMe+U78vdsQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-kjztQR0QOd6ghpqQhD73jQ-1; Thu, 22 Apr 2021 03:30:05 -0400
-X-MC-Unique: kjztQR0QOd6ghpqQhD73jQ-1
-Received: by mail-ed1-f69.google.com with SMTP id v5-20020a0564023485b029037ff13253bcso16243259edc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:30:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XgTehN3/NyaVKZ7FW4MkOjMjlpGG8PCtMVmQI1FgYuU=;
-        b=SiUpzaHxb9/XsYs7sDyH4R4krysgGCKtC9ykTVOUHwkCVd38w3FuXZqKYQto+ggeir
-         wDx6V1kQ9to38BmgLX9kg9npQvdSNP+7meR8BzBH1Ia4z4GFC775f+RATDibSVKG4dgP
-         QmrmmGE8ZcK6ruaGMbzInsfKi9snXWg2zTDDzHJhlBZ2T5HUazVpNEgbECszs75U0zj3
-         4MypUo+8e07ODUosO+HS47RY3V2pWz7LD08aDrNWMvrHY6eaXb5zNPEZZWAmv+9WJ3YX
-         X1EbtEy9uw99tiy6wRLFjqd6WkFQp7JZ4kbua7qNdebU99yzWuHQ0T8XQkjVz4n7iAX9
-         71Lw==
-X-Gm-Message-State: AOAM533kjJYc/cQmH6H1AydWcBUhZzO+AgKWQIQ7LH0iaLwFe8h6zsE8
-        4Tl5W1ttl6a+uncMSx9frYFPji65GOeOg4DXiGIsegVVePffCDhA0KdaJNfd0LNsPII76zdXYVQ
-        QAk8/38SUp2k8DGRvXVMqbviY
-X-Received: by 2002:a05:6402:451:: with SMTP id p17mr2050250edw.223.1619076604149;
-        Thu, 22 Apr 2021 00:30:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiNMCMSKUrm1BcR/2l+x4SSrt+dlYKfzqOC2tNMELsxcx0vTAuCEjJNb0Lu5qru537VaKKnw==
-X-Received: by 2002:a05:6402:451:: with SMTP id p17mr2050227edw.223.1619076603937;
-        Thu, 22 Apr 2021 00:30:03 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z17sm1297427edx.36.2021.04.22.00.30.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 00:30:03 -0700 (PDT)
-Subject: Re: [PATCH v5 15/15] KVM: SVM: Skip SEV cache flush if no ASIDs have
- been used
-To:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210422021125.3417167-1-seanjc@google.com>
- <20210422021125.3417167-16-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a7e15de5-5b04-7a33-1d7d-81edf07193ba@redhat.com>
-Date:   Thu, 22 Apr 2021 09:30:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 22 Apr 2021 03:32:43 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13M7RMLf020720;
+        Thu, 22 Apr 2021 09:31:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=wTJYNLz+GeIRx9UYWWVLcnY81+zxFAKyL59IOj+tgpk=;
+ b=LY/jstysQPl3u7xXFTEOpByLaLm1oYHRFir4cFClLkEt75V/f/T5PpCY9HTqIAdPW/c5
+ eR7X4IgRsNiaRIoroxxRmMWXfbIsEGDRp97wBeDz0Weny/nZ/ZDzyHtnPUpg4PiKmGgm
+ UbiowOdNdV8KQifSXNJD+p5P6uUq7WsHDeQxCrRv5ZRN7GMiqxqMbrswpDnd+UPgp0p8
+ 9vwcHe0d0wYTqd3dtc7fUfhj2CYc5Jdxf4xHN8P6eGqcK5hQCanarYS2u+aXoJUl5SRz
+ DQ0vh5ml/EuoR78PtkbgDo+6xdZm9hfmSwTj1yeB1h1HEvKy0eS58LaenJcLuxLT8cJL mw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 382fften23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 09:31:47 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7CDE310002A;
+        Thu, 22 Apr 2021 09:31:46 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6B5A321F0AA;
+        Thu, 22 Apr 2021 09:31:46 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 09:31:45 +0200
+Subject: Re: [PATCH] spi: stm32-qspi: fix debug format string
+To:     Arnd Bergmann <arnd@kernel.org>, Mark Brown <broonie@kernel.org>
+CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210421140653.3964725-1-arnd@kernel.org>
+ <20210421150510.GA36785@sirena.org.uk>
+ <CAK8P3a0CWp_H-tm2QcZyH1FDXwzMgxY_9dc1Y8pA28MQKT-q=A@mail.gmail.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <b970a557-b869-c867-3825-370a36feef68@foss.st.com>
+Date:   Thu, 22 Apr 2021 09:30:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210422021125.3417167-16-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAK8P3a0CWp_H-tm2QcZyH1FDXwzMgxY_9dc1Y8pA28MQKT-q=A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_01:2021-04-21,2021-04-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 04:11, Sean Christopherson wrote:
-> +	int ret, pos, error = 0;
-> +
-> +	/* Check if there are any ASIDs to reclaim before performing a flush */
-> +	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-> +	if (pos >= max_asid)
-> +		return -EBUSY;
+Hi Mark, Arnd
 
-There's a tiny bug here which would cause sev_flush_asids to return 0
-if there are reclaimed SEV ASIDs and the caller is looking for an SEV-ES
-ASID, or vice versa.  The bug used to be in __sev_recycle_asids, you're
-just moving the code.
+Regarding this issue, how do you prefer to proceed ? 
 
-It's not a big deal because sev_asid_new only retries once, but we might
-as well fix it:
+Patrice
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 02b3426a9e39..403c6991e67c 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -74,12 +74,13 @@ struct enc_region {
-  	unsigned long size;
-  };
-  
-+/* Called with the sev_bitmap_lock held, or on shutdown  */
-  static int sev_flush_asids(int min_asid, int max_asid)
-  {
-  	int ret, pos, error = 0;
-  
-  	/* Check if there are any ASIDs to reclaim before performing a flush */
--	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-+	pos = find_next_bit(sev_reclaim_asid_bitmap, max_asid, min_asid);
-  	if (pos >= max_asid)
-  		return -EBUSY;
-  
-
-Paolo
-
->   	/*
->   	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-> @@ -87,14 +92,7 @@ static inline bool is_mirroring_enc_context(struct kvm *kvm)
->   /* Must be called with the sev_bitmap_lock held */
->   static bool __sev_recycle_asids(int min_asid, int max_asid)
->   {
-> -	int pos;
-> -
-> -	/* Check if there are any ASIDs to reclaim before performing a flush */
-> -	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-> -	if (pos >= max_asid)
-> -		return false;
-> -
-> -	if (sev_flush_asids())
-> +	if (sev_flush_asids(min_asid, max_asid))
->   		return false;
->   
->   	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
-> @@ -1846,10 +1844,11 @@ void sev_hardware_teardown(void)
->   	if (!sev_enabled)
->   		return;
->   
-> +	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
-> +	sev_flush_asids(0, max_sev_asid);
-> +
->   	bitmap_free(sev_asid_bitmap);
->   	bitmap_free(sev_reclaim_asid_bitmap);
-> -
-> -	sev_flush_asids();
->   }
->   
->   int sev_cpu_init(struct svm_cpu_data *sd)
+On 4/21/21 5:22 PM, Arnd Bergmann wrote:
+> On Wed, Apr 21, 2021 at 5:05 PM Mark Brown <broonie@kernel.org> wrote:
+>>
+>> On Wed, Apr 21, 2021 at 04:06:48PM +0200, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> Printing size_t needs a special %zd format modifier to avoid a
+>>> warning like:
+>>
+>> This doesn't apply against current code, please check and resend.
 > 
-
+> It appears that you just applied 1b8a7d4282c0 ("spi: stm32-qspi:
+> Fix compilation warning in ARM64") after today's linux-next was
+> cut.
+> 
+> I suspect Patrice's patch now causes a warning on all architectures
+> on which size_t is defined as 'unsigned int'.
+> 
+>        Arnd
+> 
