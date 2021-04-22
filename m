@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D311368084
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E86B368087
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236204AbhDVMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:32:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34593 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235791AbhDVMcg (ORCPT
+        id S236183AbhDVMeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhDVMeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:32:36 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lZYUx-0006X3-4m; Thu, 22 Apr 2021 12:31:59 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Philip Yang <Philip.Yang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amdkfd: fix uint32 variable compared to less than zero
-Date:   Thu, 22 Apr 2021 13:31:58 +0100
-Message-Id: <20210422123158.247332-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 22 Apr 2021 08:34:18 -0400
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36A1C06174A;
+        Thu, 22 Apr 2021 05:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=B7Q4T6dJAsdsQ+Ix5yA7JOmBt+U9csvMzUwRnH4jDQU=; b=og3af5XO5faTW0xLx1tDv9FdVv
+        7pDXIJug5QDv2LZlIJDJU2Yn3RvRtsrsMqcA61T8C+Ra849DZN3EAJurepVm7qpPRR5EcMB/HxIMf
+        6J+2uOyl3Bys4hgd1nldqZg9u64987ep5WQmqZlhP28vlNodwXutRz10l3RuNQTDZnSo=;
+Received: from p4ff13bc6.dip0.t-ipconnect.de ([79.241.59.198] helo=nf.local)
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <nbd@nbd.name>)
+        id 1lZYWS-0004UX-1s; Thu, 22 Apr 2021 14:33:32 +0200
+Subject: Re: [PATCH net-next 05/14] net: ethernet: mtk_eth_soc: reduce MDIO
+ bus access latency
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210422040914.47788-1-ilya.lipnitskiy@gmail.com>
+ <20210422040914.47788-6-ilya.lipnitskiy@gmail.com>
+From:   Felix Fietkau <nbd@nbd.name>
+Message-ID: <d96206db-96e2-1eb7-6b19-47c9596ccfea@nbd.name>
+Date:   Thu, 22 Apr 2021 14:33:31 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422040914.47788-6-ilya.lipnitskiy@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Currently the call to kfd_process_gpuidx_from_gpuid is returning an
-int value and this is being assigned to a uint32_t variable gpuidx
-and this is being checked for a negative error return which is always
-going to be false. Fix this by making gpuidx an int32_t. This makes
-gpuidx also type consistent with the use of gpuidx from the callers.
+On 2021-04-22 06:09, Ilya Lipnitskiy wrote:
+> From: Felix Fietkau <nbd@nbd.name>
+> 
+> usleep_range often ends up sleeping much longer than the 10-20us provided
+> as a range here. This causes significant latency in mdio bus acceses,
+> which easily adds multiple seconds to the boot time on MT7621 when polling
+> DSA slave ports.
+> 
+> Use udelay via readx_poll_timeout_atomic, since the MDIO access does not
+> take much time
+> 
+> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> [Ilya: use readx_poll_timeout_atomic instead of cond_resched]
+I still prefer the cond_resched() variant. On a fully loaded system, I'd
+prefer to let the MDIO access take longer instead of wasting cycles on
+udelay.
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: cda0f85bfa5e ("drm/amdkfd: refine migration policy with xnack on")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index 0e0b4ffd20ab..bf3c8de85b4a 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -1330,7 +1330,7 @@ static void svm_range_unreserve_bos(struct svm_validate_context *ctx)
-  */
- static int svm_range_validate_and_map(struct mm_struct *mm,
- 				      struct svm_range *prange,
--				      uint32_t gpuidx, bool intr, bool wait)
-+				      int32_t gpuidx, bool intr, bool wait)
- {
- 	struct svm_validate_context ctx;
- 	struct hmm_range *hmm_range;
--- 
-2.30.2
-
+- Felix
