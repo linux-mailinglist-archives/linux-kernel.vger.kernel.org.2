@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E20036858E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8722936858F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238307AbhDVRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        id S238476AbhDVRKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDVRKd (ORCPT
+        with ESMTP id S236651AbhDVRKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:10:33 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3F8C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:09:58 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y4so33108359lfl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:09:57 -0700 (PDT)
+        Thu, 22 Apr 2021 13:10:34 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F1DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:09:59 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id t14so16168288lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:09:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h95AgVCanHu12dn3zoUEpFIcw5KfHCuizquP4MnVNqg=;
-        b=fixtjA3UBcVQHNqWWgY4qX0wbRH5p3DyUwfPTt6l3x0WuXsyvmVDdsSg8MRSHQaexl
-         FCwbTiiKeRgKySUlwTrLQ1hPk9LvLCWZG8q+0EXSQBiq3fgYhw8OtWSVn9pBfWKNOdWL
-         LVjdzwb462+SdktnG6vMMmVezVOs54IuS7+GxFeOZAlhgGXkVopAPwa6lid5qH8kVP9a
-         NdjU2SGDHC2nv1rOyBHjEND8BQpPuuThLU8/hE7pKgBuMC/zaUJTy4tOHMUbveyPXnSr
-         rWYvhC8YL/yuxmS8ZNscGZj3xLhqP3sL4pJkJA3ig/JRLWxfJ58C8GhfX52Jl4aaOMeF
-         mIkA==
+        bh=7k0hnNuOG3QRzXOhhHlFC+IlgbwmTQXTG7uqldPEFX4=;
+        b=UG9HTnyqjD2eRDdyDn5/wwES3kEbUb3/iOm5X2ZMSmkYyNJ34qt3Nh03sG97Y3Cpb7
+         8STzfjT03MF4NWdNt/UclyvnG7v7z+kSGpXFy/2o96xIXRoc/kpiuS4DPf8no64hBnXj
+         /eWS1vm8pfm6M64EHAcNYGWxDUJ9yeFo6zKwtMxKP3Tei9SWn0nQh2j08f9oTOUlsN2H
+         8AtuEdJroDLuKSpy4JBVB39B/d7mcDcbNHsy5KVNL9xMsVbgmo+ZpNac1QoROLXPC7Cu
+         G7W6QZFFdFn1OiLlm1BYg9IY/oybgyAsJt0vFwkU2vgBMLwUks2ebeMN3PPpt/rlDVrF
+         e6uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h95AgVCanHu12dn3zoUEpFIcw5KfHCuizquP4MnVNqg=;
-        b=IR1hosVnLBLTFq53ww06Mt5Ueti+2Tv7/JoXJ4iZVPxHXN/1KaKbyOTZ7MmFhDK2kK
-         PBIpLrXiPDrs/y86tT4HQ/R+eCqXGtnjMX6jsQSUoa0RpaCVWGRB8cWA7vPCOmVT+NWd
-         27dcTVT2BcrQV4E8/Z9m4L1Ia3Z2mRyBtCXuGOOC/s5fPux/NU9nrVBYN2f9f5pzw2xg
-         1PjrqYhmdrPwkTFMV7MwY1gFOqbUPA5EBi+Jb3Wo329SjlZoQ6uFOn2X032iJs6ToYY4
-         xUcf213HQhFX0U1mnAuEuOQxznquiGpRFgz2LxOSSwOd1tr2JsYTxL6ulhVmgjj1DhoF
-         f9gQ==
-X-Gm-Message-State: AOAM532ubU5fYMHlVm7EN2/oOc4oWzeqxNyuT5iKyqEFgUCQ/F4SG+Y1
-        SjWvp16kiPDazEIBqarGbIJtxp0EoZvuCiRhWZ2V+A==
-X-Google-Smtp-Source: ABdhPJzSZyTEFgmh0FIZQYJ8ZkMxIoKaf6ErQRqkUiuDAKb9iJcaDqNkIBwT6uBHgF2hYV6GXbmvVCgsU72nlEvPgBw=
-X-Received: by 2002:a05:6512:314c:: with SMTP id s12mr3185329lfi.53.1619111396278;
- Thu, 22 Apr 2021 10:09:56 -0700 (PDT)
+        bh=7k0hnNuOG3QRzXOhhHlFC+IlgbwmTQXTG7uqldPEFX4=;
+        b=Mb3dkP5Nzrc5I96THeNDHOn23IKd7FE3Del3qfSV3PRDEJlsmeL3Ebwn0ogIuR/z5H
+         p5Yk7bkNb/phelhr4YE2YQrkJWo1YaczQy073LeCUk9nhqiHAihSV8EXx+EATLltSXyX
+         i5VXgoF4YEA2WqAZXFYdmrjqIDo+pf7WTBbIUYndOBmIt5nLSadGcR0E7LfeWLjITYZ8
+         ES0cvV/ZbRDdLO7G413hstxqDCBk96mUWqvVtliDAwCR9v0X6KIbtUy6hKfaIbgvZT37
+         lEcbT5Urx7CHSuewXqLvzq7yEXIfEfN9NSoSNVBP2kSjMoM2mSTTji0NzGrEsDQ+9JwQ
+         fItQ==
+X-Gm-Message-State: AOAM530WgEhv8IPJ9r1RfJxHGMYfe73TV4UWtXuHtB8DmWQn7lm3kl8K
+        s6DrHHbJ9IZtvTronImkMKGRasGcyKs+4XCEsWHBug==
+X-Google-Smtp-Source: ABdhPJydGs0qRCEWgyCtCehMM4IgVNNvDuwXDx2BM1/gklS9Da8tHIoxO8T4is4zSl9yxtw2NjEULfKD7FWKgtezToM=
+X-Received: by 2002:a19:a416:: with SMTP id q22mr3434882lfc.305.1619111397911;
+ Thu, 22 Apr 2021 10:09:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210422155355.471c7751@canb.auug.org.au> <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
- <CAHVum0eQX8+HCJ3F-G9nzSVMy4V8Cg58LtY=jGPRJ77E-MN1fQ@mail.gmail.com> <e6256bd5-ca11-13c1-c950-c4761edbcf4d@redhat.com>
-In-Reply-To: <e6256bd5-ca11-13c1-c950-c4761edbcf4d@redhat.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Thu, 22 Apr 2021 10:09:18 -0700
-Message-ID: <CAHVum0cVMd-SxmjKAJyJXO7SR68GKXQ7WTqyqWVfq1MMVd+oLQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the cgroup tree with the kvm tree
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>,
-        KVM <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>
+References: <20210422130236.0bb353df@imladris.surriel.com>
+In-Reply-To: <20210422130236.0bb353df@imladris.surriel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 22 Apr 2021 19:09:46 +0200
+Message-ID: <CAKfTPtBM=H53Vu+qXZROBwV6UAuNzf-m6eJBk=cPGS4aoQxzyg@mail.gmail.com>
+Subject: Re: [PATCH v4] sched,fair: Skip newidle_balance if a wakeup is pending
+To:     Rik van Riel <riel@surriel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:47 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> You can check the current state of the merge in the queue branch of the
-> KVM tree.  This is what I plan to merge if Tejun agrees.  That would be
-> helpful indeed!
+On Thu, 22 Apr 2021 at 19:02, Rik van Riel <riel@surriel.com> wrote:
+>
+> The try_to_wake_up function has an optimization where it can queue
+> a task for wakeup on its previous CPU, if the task is still in the
+> middle of going to sleep inside schedule().
+>
+> Once schedule() re-enables IRQs, the task will be woken up with an
+> IPI, and placed back on the runqueue.
+>
+> If we have such a wakeup pending, there is no need to search other
+> CPUs for runnable tasks. Just skip (or bail out early from) newidle
+> balancing, and run the just woken up task.
+>
+> For a memcache like workload test, this reduces total CPU use by
+> about 2%, proportionally split between user and system time,
+> and p99 and p95 application response time by 10% on average.
+> The schedstats run_delay number shows a similar improvement.
+>
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 
-Merge looks fine from my patch perspective. However, one thing is missing:
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-In sev_guest_init() after sev_asid_free() call we should also write
-set sev->es_false = false.
-
-Without this the main intent of Sean's patch will be missing in the merge.
-
-I can send you the patch but just wanted to know if that will be right because
-originally it is Sean's fix and I am not sure how to give him credit
-in my patch.
-May be Reported-By?
-
-Thanks
-Vipin
+> ---
+>  kernel/sched/fair.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 69680158963f..6a18688a37f8 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10594,6 +10594,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>         u64 curr_cost = 0;
+>
+>         update_misfit_status(NULL, this_rq);
+> +
+> +       /*
+> +        * There is a task waiting to run. No need to search for one.
+> +        * Return 0; the task will be enqueued when switching to idle.
+> +        */
+> +       if (this_rq->ttwu_pending)
+> +               return 0;
+> +
+>         /*
+>          * We must set idle_stamp _before_ calling idle_balance(), such that we
+>          * measure the duration of idle_balance() as idle time.
+> @@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+>                  * Stop searching for tasks to pull if there are
+>                  * now runnable tasks on this rq.
+>                  */
+> -               if (pulled_task || this_rq->nr_running > 0)
+> +               if (pulled_task || this_rq->nr_running > 0 ||
+> +                   this_rq->ttwu_pending)
+>                         break;
+>         }
+>         rcu_read_unlock();
+> --
+> 2.25.4
+>
+>
