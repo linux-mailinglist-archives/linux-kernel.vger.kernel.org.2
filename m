@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995AF367745
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E85367746
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234357AbhDVCNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:13:49 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5900 "EHLO mga11.intel.com"
+        id S233822AbhDVCOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:14:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233995AbhDVCNl (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:13:41 -0400
-IronPort-SDR: wNA4ATyRRg6im9G731KfQR9JkZRUu2KtJAt49w+1Uyn2PRoalPTgCkjEDvRufQH5tlF9ylElmb
- d/jKuKHFSwtg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="192624509"
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="192624509"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 19:12:55 -0700
-IronPort-SDR: LlSu5dkz4GBFUscexfF7wvE8xtRcea8gJA2lkEviyLQMex/M4h+Olg97ml9uzpsSzO+58hUtMl
- wQKu38Mi7BNQ==
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="463785805"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 19:12:52 -0700
-Subject: Re: [PATCH v4 14/25] perf stat: Add default hybrid events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210416140517.18206-1-yao.jin@linux.intel.com>
- <20210416140517.18206-15-yao.jin@linux.intel.com> <YIBvGk7qZiqMHxkt@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <59ded117-6f3c-f11f-8fe3-6b0e8f68c823@linux.intel.com>
-Date:   Thu, 22 Apr 2021 10:12:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S231958AbhDVCOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:14:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82406613A9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619057622;
+        bh=Yw7K9IjVKeA1ve5XeFqKI9e8FmeRsydmEaXBh4ITgOE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MdqXnfphixpyQ3qeRIwYn7HO4Mf4dPu26iLeck6sChFNz9Bw/LrvnJMUfbkt0+y1f
+         TC9AiGYqq3zhyMT+os6NEe+NH8ZKwXHaSimWqJQZKc4YwKWO8z7BU7zX1JoogJzupl
+         s9qSpOOmxMGuBIU1S3mwadUjVjvyEbouvowgrD3r1NrHTOvPJvCOtuz3qEOjeJkFCw
+         KIuLpH9aRd4zq34p3dB2OWy5siVK8q2mHHvSWCMnG8nAGQ5ygezEwP02a8bA6/FVEv
+         55+8aZYSIPb2DMqTmELscSMO+S5a1TZIt2jzgHwNQ2L78TlL94J1gBjZx+Xb8v9zK6
+         CRg2xNnrQAn9Q==
+Received: by mail-ed1-f46.google.com with SMTP id bx20so50441967edb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:13:42 -0700 (PDT)
+X-Gm-Message-State: AOAM532mzKKuFpA5llTJbsg7ukGcWr4H1FQWHECfD3aqpKazut5K9TGg
+        akxnw5/OUYy9Cdes1uFsRwL0TQR9R3Kl+HzDow==
+X-Google-Smtp-Source: ABdhPJzwI8F/F+Wc8pu5UrW5JX71y3qdUywFKV19rtT5/YxTMHIQDMYNWVbo6u510fJD5+wLnQ/xCbC/EXZDdbLFnvI=
+X-Received: by 2002:a05:6402:34c8:: with SMTP id w8mr1030755edc.194.1619057620994;
+ Wed, 21 Apr 2021 19:13:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YIBvGk7qZiqMHxkt@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-98-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-98-gregkh@linuxfoundation.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 21 Apr 2021 21:13:29 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
+Message-ID: <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
+Subject: Re: [PATCH 097/190] Revert "video: imsttfb: fix potential NULL
+ pointer dereferences"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On 4/22/2021 2:29 AM, Jiri Olsa wrote:
-> On Fri, Apr 16, 2021 at 10:05:06PM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
->> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->> index 1255af4751c2..0351b99d17a7 100644
->> --- a/tools/perf/builtin-stat.c
->> +++ b/tools/perf/builtin-stat.c
->> @@ -1145,6 +1145,13 @@ static int parse_stat_cgroups(const struct option *opt,
->>   	return parse_cgroups(opt, str, unset);
->>   }
->>   
->> +static int add_default_hybrid_events(struct evlist *evlist)
->> +{
->> +	struct parse_events_error err;
->> +
->> +	return parse_events(evlist, "cycles,instructions,branches,branch-misses", &err);
->> +}
->> +
->>   static struct option stat_options[] = {
->>   	OPT_BOOLEAN('T', "transaction", &transaction_run,
->>   		    "hardware transaction statistics"),
->> @@ -1626,6 +1633,12 @@ static int add_default_attributes(void)
->>     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_INSTRUCTIONS	},
->>     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_MISSES		},
->>   
->> +};
->> +	struct perf_event_attr default_sw_attrs[] = {
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_TASK_CLOCK		},
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CONTEXT_SWITCHES	},
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CPU_MIGRATIONS		},
->> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_PAGE_FAULTS		},
-> 
-> hum, why not use default_attrs0, it's the same, no?
-> 
-
-The default_attrs0 has one more item " {.type = PERF_TYPE_HARDWARE, .config = 
-PERF_COUNT_HW_CPU_CYCLES },"
-
-So I have to only pick out the sw attrs and save them to default_sw_attrs.
-
->>   };
->>   
->>   /*
->> @@ -1863,6 +1876,14 @@ static int add_default_attributes(void)
->>   	}
->>   
->>   	if (!evsel_list->core.nr_entries) {
->> +		if (perf_pmu__has_hybrid()) {
->> +			if (evlist__add_default_attrs(evsel_list,
->> +						      default_sw_attrs) < 0) {
->> +				return -1;
->> +			}
->> +			return add_default_hybrid_events(evsel_list);
-> 
-> please do it the same way like when topdown calls parse events,
-> we don't need to check for cycles, but please check result and
-> display the error
-> 
-
-Something like this?
-
-err = parse_events(evsel_list, "cycles,instructions,branches,branch-misses", &errinfo);
-if (err) {
-	fprintf(stderr,...);
-	parse_events_print_error(&errinfo, ...);
-	return -1;
-}
-
-> 
->> +		}
->> +
->>   		if (target__has_cpu(&target))
->>   			default_attrs0[0].config = PERF_COUNT_SW_CPU_CLOCK;
-> 
-> also you still want this change for hybrid pmus as well
-> 
-
-Yes, the default_sw_attr only uses 'PERF_COUNT_SW_TASK_CLOCK', we do need to change it to 
-PERF_COUNT_SW_CPU_CLOCK for system wide.
-
-> thanks,
-> jirka
+On Wed, Apr 21, 2021 at 8:05 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
+> This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
+>
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+>
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+>
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: Finn Thain <fthain@telegraphics.com.au>
+> Cc: Rob Herring <robh@kernel.org>
 
-Thanks
-Jin Yao
+Sigh, get_maintainers.pl likes to punish people for treewide clean-ups...
 
->>   
->> -- 
->> 2.17.1
->>
-> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/video/fbdev/imsttfb.c | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/imsttfb.c b/drivers/video/fbdev/imsttfb.c
+> index 3ac053b88495..e04411701ec8 100644
+> --- a/drivers/video/fbdev/imsttfb.c
+> +++ b/drivers/video/fbdev/imsttfb.c
+> @@ -1512,11 +1512,6 @@ static int imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>         info->fix.smem_start = addr;
+>         info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
+>                                             0x400000 : 0x800000);
+> -       if (!info->screen_base) {
+> -               release_mem_region(addr, size);
+> -               framebuffer_release(info);
+> -               return -ENOMEM;
+> -       }
+
+The original change appears to be valid, but incomplete...
+
+>         info->fix.mmio_start = addr + 0x800000;
+>         par->dc_regs = ioremap(addr + 0x800000, 0x1000);
+
+...because what about cleanup when this ioremap fails.
+
+>         par->cmap_regs_phys = addr + 0x840000;
+
+Then again, if anyone really cared about this driver and h/w (a
+PowerMac era PCI display card), it would not still be using fbdev and
+would use devm_* apis.
+
+Rob
