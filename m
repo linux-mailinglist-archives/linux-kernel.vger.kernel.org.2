@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9557368953
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34EE36895C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239851AbhDVX3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 19:29:13 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36726 "EHLO vps0.lunn.ch"
+        id S239913AbhDVXbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 19:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235977AbhDVX3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:29:12 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lZikE-000YjU-Sh; Fri, 23 Apr 2021 01:28:26 +0200
-Date:   Fri, 23 Apr 2021 01:28:26 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
-        netdev@vger.kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 4/9] net: dsa: microchip: add DSA support for
- microchip lan937x
-Message-ID: <YIIGmpea6Mf0yzYS@lunn.ch>
-References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
- <20210422094257.1641396-5-prasanna.vengateshan@microchip.com>
- <20210422195921.utxdh5dn4ddltxkf@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422195921.utxdh5dn4ddltxkf@skbuf>
+        id S236851AbhDVXbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 19:31:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 904CC61417;
+        Thu, 22 Apr 2021 23:30:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619134236;
+        bh=Oag/qHmdRa6QX9ANpkVAVsvFpxx7M8p3mEORxwqYcC4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=VV+Jhmqvm45TuZAsdwGuDIzsSSlimGhG35iIwWxas9DDJgMlNrKxQl/RxpXB04gRb
+         IFK/HYgkASjCo8H09q+xrOOE3VqPTrJCx9Y9cx9jWfK07WYiVsk5/XZHzXKuTacJAE
+         j8uJ30/GvloxHsMmAgcs6Z59ZgwfslXGa/aokvYbSoisJI6qbWhBYLDW97imbzJwhh
+         VcqIQnJKoqYM5rQKPAIKEcHlCAwf/PTR9dYVVJ6Bu1vlA0YPetH/mRxFQGSJlwy2S7
+         zq3VOqvraueSaSsw1gWNW5MbiXRFwAhyZg7VgMd0H7vyBf+A5ybSBfB3l5IQn5I8h9
+         r7dr70NtMez+w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 84FB160A37;
+        Thu, 22 Apr 2021 23:30:36 +0000 (UTC)
+Subject: Re: [GIT PULL] virtio: last minute fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210422182016-mutt-send-email-mst@kernel.org>
+References: <20210422182016-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210422182016-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+X-PR-Tracked-Commit-Id: be286f84e33da1a7f83142b64dbd86f600e73363
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 18a3c5f7abfdf97f88536d35338ebbee119c355c
+Message-Id: <161913423647.3750.12332768319066444186.pr-tracker-bot@kernel.org>
+Date:   Thu, 22 Apr 2021 23:30:36 +0000
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com, elic@nvidia.com, jasowang@redhat.com,
+        lkp@intel.com, mst@redhat.com, stable@vger.kernel.org,
+        xieyongji@bytedance.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +
-> > +		lan937x_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
-> > +
-> > +		/* clear MII selection & set it based on interface later */
-> > +		data8 &= ~PORT_MII_SEL_M;
-> > +
-> > +		/* configure MAC based on p->interface */
-> > +		switch (p->interface) {
-> > +		case PHY_INTERFACE_MODE_MII:
-> > +			lan937x_set_gbit(dev, false, &data8);
-> > +			data8 |= PORT_MII_SEL;
-> > +			break;
-> > +		case PHY_INTERFACE_MODE_RMII:
-> > +			lan937x_set_gbit(dev, false, &data8);
-> > +			data8 |= PORT_RMII_SEL;
-> > +			break;
-> > +		default:
-> > +			lan937x_set_gbit(dev, true, &data8);
-> > +			data8 |= PORT_RGMII_SEL;
-> > +
-> > +			data8 &= ~PORT_RGMII_ID_IG_ENABLE;
-> > +			data8 &= ~PORT_RGMII_ID_EG_ENABLE;
-> > +
-> > +			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> > +			    p->interface == PHY_INTERFACE_MODE_RGMII_RXID)
-> > +				data8 |= PORT_RGMII_ID_IG_ENABLE;
-> > +
-> > +			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> > +			    p->interface == PHY_INTERFACE_MODE_RGMII_TXID)
-> > +				data8 |= PORT_RGMII_ID_EG_ENABLE;
-> 
-> This is interesting. If you have an RGMII port connected to an external
-> PHY, how do you ensure that either the lan937x driver, or the PHY driver,
-> but not both, enable RGMII delays?
+The pull request you sent on Thu, 22 Apr 2021 18:20:16 -0400:
 
-What generally happens is the MAC adds no delays, and the PHY acts
-upon the interface mode, inserting delays as requested.
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-There are a very small number of exceptions to this, for boards which
-have a PHY which cannot do delays, and the MAC can. If i remember
-correctly, this pretty much limited to one MAC vendor. In that case,
-the MAC adds delays, if the interface mode requests it, and it always
-passes PHY_INTERFACE_MODE_RGMII to the PHY so it does not add delays.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/18a3c5f7abfdf97f88536d35338ebbee119c355c
 
-So what needs to be looked at here is what is passed to the phy
-connect call? passing p->interface is definitely wrong if the MAC is
-acting on it.
+Thank you!
 
-If even if the connect is correct, i would still prefer the MAC not do
-the delays, let the PHY do it, like nearly every other setup.
-
-	Andrew
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
