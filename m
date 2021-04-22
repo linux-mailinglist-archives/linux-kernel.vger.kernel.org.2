@@ -2,150 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A7D367A40
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328BD367A4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhDVGxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231148AbhDVGxw (ORCPT
+        id S234841AbhDVG40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:56:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31198 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234816AbhDVG4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:53:52 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726E7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:53:17 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id a18so9318868qtj.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=iAm0246eJyOaq+VpTTXw3YrglwQ5iHG6TngAXGPaQRw=;
-        b=ekJ/GDgCQ9NOq6O1EftMPEmUOhEniGvpya5e8SR/jPXE4pX8ffj0wdPdXZLh01njBa
-         5XU/c3Q1akLwfalBI/qlBGDXoAcS2ORsCDH7bjHm9JVWTzlEPrD/SEMvqoF4doKvliTI
-         jf/0t33qLbsc1cnKZUu0t9s4kLhtz//kDPu8Syi2N5/q1+hkzD7CIZno6oIUccb78LdK
-         PEBpEz7jKknpO7H1rk37NZ8UD6oe8OeGfS03+d35bWJIM+cORsoc0v8lzmSqt9HcSw1p
-         F98iYt29KP018HS+tFvrSjv1TawFoFTeYxyhJ9oelRS4dBqCN+PP0m1eop5mtpTuXAv1
-         DFMA==
+        Thu, 22 Apr 2021 02:56:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619074529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m/pu0p1gTOS1PS7XsxBUkS37Pa/ylXdidImYYckq7UY=;
+        b=BPooJ18AJeCRJZAJxL77fUiuX4MEWwHGHeebEncrkVe52t7wqGwLlPhakAXm0FvVwAlbQY
+        HOaCx6AMHWrR4OdFbczr5yHkAT8yFAALBJxM8OaOmzLkN8+MGdDrImHOTDxdxXVxEc5LLW
+        Bs6o346BYb5rp69AQbZqjzCeJ9C0QsY=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-wCTrgDh_Nm6R13nWlnEPGA-1; Thu, 22 Apr 2021 02:55:27 -0400
+X-MC-Unique: wCTrgDh_Nm6R13nWlnEPGA-1
+Received: by mail-ed1-f71.google.com with SMTP id l22-20020a0564021256b0290384ebfba68cso12364826edw.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:55:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iAm0246eJyOaq+VpTTXw3YrglwQ5iHG6TngAXGPaQRw=;
-        b=ZNTPrdtPqFjzNJblMh/y2BiHlMy3qZj3YfpxNhRC4UiNaE2hCqQcoQdMeGvQQEcpen
-         +8GgHKisDwrgBF6wJzwzdcQNuAdvyZ9OC/xIZWkzpkbhtB01mMQAE92Bm0ies8DrE7gv
-         ur/6/koRZIlmPN4Sn0R7723bQZ7+G3IMLAHfSvjfJo78X8bEcBvw1Rg9PxawttiR2HlQ
-         enxelKRgECTO+w96qqBYNMXoi5F7bEI+ng4m5dAMKAtDBAbeHskUNQaB7bRb1A/ViujW
-         s57k7wPW0tE4kIvgnHtS001j44g1ho0MC0JMjwHeaI99VYozQobtnoPrOPmf/xaFd0/r
-         nYsg==
-X-Gm-Message-State: AOAM530cuH40bEUx9OozKyUL9rwVR706kXZ3+bUfQDJE78XxK0nruXcP
-        ZvMk2BtVo5SPudSE0xiWN0/rN1se354=
-X-Google-Smtp-Source: ABdhPJz6IVp3/kP3Nos6ocKWVEplVJWfejg+HRZjVHCd8geVXas43GYZo3VQvrSby2xDEgzF1C+HFA==
-X-Received: by 2002:ac8:7089:: with SMTP id y9mr1695704qto.207.1619074396738;
-        Wed, 21 Apr 2021 23:53:16 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
-        by smtp.gmail.com with ESMTPSA id d4sm1761854qtp.23.2021.04.21.23.53.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 23:53:16 -0700 (PDT)
-Message-ID: <2f985cdb2a62c52ce2a26118f1966c00176cc4b9.camel@gmail.com>
-Subject: Re: [PATCH 1/1] powerpc/kernel/iommu: Align size for
- IOMMU_PAGE_SIZE() to save TCEs
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Thu, 22 Apr 2021 03:53:13 -0300
-In-Reply-To: <20210318174414.684630-1-leobras.c@gmail.com>
-References: <20210318174414.684630-1-leobras.c@gmail.com>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        bh=m/pu0p1gTOS1PS7XsxBUkS37Pa/ylXdidImYYckq7UY=;
+        b=rfnYOSjXoPh/T/rmCIgYcf17a4hnEmuEsAJt6YGZ7lTjJynU7oZNCV4H8rPmV71RIt
+         0Zp3rKpCGGIlHoX4UkMR0CKmS/AyYqNMIH7sNPPb5f/flOatL2VAR+YawZn5NjV4LWMs
+         jR7M4oTF3XWm+wYFGIThhEDIbR32IG6bLKG/Vfh+DtdXwsVKpVwBfExgMnex1zHjkkKf
+         wSGkfLS0YW3GrPg9EDiiX0SpH8DeRE0/ZUDF94XLEjcYPjSHC/UZ5heim74w5EvIdtqS
+         3o3P214UCtHwPo+eNettNeLiBrDT/+b2kCx+2la0odG9XV/UY4qe23bsilZBS/ZpjThh
+         By+A==
+X-Gm-Message-State: AOAM530xEOVt8JEGO6ET8FCqNNG28hC1N6wjd+ycpalr6m7Cc+SW0SXZ
+        QHTQbbg8hwHGqXZlFa0PLrtI1Qzd5lP9pimKfJyO0QeXYLCKeWEz/+cXd67yg2/k1e9Q6tl9q0m
+        JOdRDZkbMKmDjlN4hxVipnFi/
+X-Received: by 2002:a17:906:c04:: with SMTP id s4mr1797005ejf.410.1619074526450;
+        Wed, 21 Apr 2021 23:55:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzht7VAajXmdGxeQ1H5uS6egzt5iz8Mx+EaCVwvzRSrQ0cjkFg+yduXRXej/91oj8T45q0gqQ==
+X-Received: by 2002:a17:906:c04:: with SMTP id s4mr1796986ejf.410.1619074526298;
+        Wed, 21 Apr 2021 23:55:26 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id mj7sm1181802ejb.39.2021.04.21.23.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 23:55:25 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] KVM: x86: Fixes for (benign?) truncation bugs
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Woodhouse <dwmw@amazon.co.uk>
+References: <20210422022128.3464144-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <61e0dd04-a91a-1946-d694-2ed2fce4abb5@redhat.com>
+Date:   Thu, 22 Apr 2021 08:55:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422022128.3464144-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 22/04/21 04:21, Sean Christopherson wrote:
+> Patches 01 and 02 fix theoretical bugs related to loading CRs through
+> the emulator.  The rest of the patches are a bunch of small fixes for
+> cases where KVM reads/writes a 64-bit register outside of 64-bit mode.
+> 
+> I stumbled on this when puzzling over commit 0107973a80ad ("KVM: x86:
+> Introduce cr3_lm_rsvd_bits in kvm_vcpu_arch"), which stated that SEV
+> guests failed to boot on PCID-enabled hosts.  Why only PCID hosts?
+> 
+> After much staring, I realized that the initial CR3 load in
+> rsm_enter_protected_mode() would skip the MAXPHYADDR check due to the
+> vCPU not being in long mode.  But due to the ordering problems with
+> PCID, when PCID is enabled in the guest, the second load of CR3 would
+> be done with long mode enabled and thus hit the SEV C-bit bug.
+> 
+> Changing kvm_set_cr3() made me look at the callers, and seeing that
+> SVM didn't properly truncate the value made me look at everything else,
+> and here we are.
+> 
+> Note, I strongly suspect the emulator still has bugs.  But, unless the
+> guest is deliberately trying to hit these types of bugs, even the ones
+> fixed here, they're likely benign.  I figured I was more likely to break
+> something than I was to fix something by diving into the emulator, so I
+> left it alone.  For now. :-)
+> 
+> v2: Rebase to kvm/queue, commit 89a22e37c8c2 ("KVM: avoid "deadlock"
+>      between install_new_memslots and MMU notifier")
+> 
+> v1: https://lkml.kernel.org/r/20210213010518.1682691-1-seanjc@google.com
+> 
+> Sean Christopherson (9):
+>    KVM: x86: Remove emulator's broken checks on CR0/CR3/CR4 loads
+>    KVM: x86: Check CR3 GPA for validity regardless of vCPU mode
+>    KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+>    KVM: VMX: Truncate GPR value for DR and CR reads in !64-bit mode
+>    KVM: nVMX: Truncate bits 63:32 of VMCS field on nested check in
+>      !64-bit
+>    KVM: nVMX: Truncate base/index GPR value on address calc in !64-bit
+>    KVM: x86/xen: Drop RAX[63:32] when processing hypercall
+>    KVM: SVM: Use default rAX size for INVLPGA emulation
+>    KVM: x86: Rename GPR accessors to make mode-aware variants the
+>      defaults
+> 
+>   arch/x86/kvm/emulate.c        | 68 +----------------------------------
+>   arch/x86/kvm/kvm_cache_regs.h | 19 ++++++----
+>   arch/x86/kvm/svm/svm.c        | 12 +++++--
+>   arch/x86/kvm/vmx/nested.c     | 14 ++++----
+>   arch/x86/kvm/vmx/vmx.c        |  6 ++--
+>   arch/x86/kvm/x86.c            | 19 ++++++----
+>   arch/x86/kvm/x86.h            |  8 ++---
+>   7 files changed, 48 insertions(+), 98 deletions(-)
+> 
 
-This patch was also reviewed when it was part of another patchset:
-http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20200911170738.82818-4-leobras.c@gmail.com/
+Queued, thanks.
 
-On Thu, 2021-03-18 at 14:44 -0300, Leonardo Bras wrote:
-> Currently both iommu_alloc_coherent() and iommu_free_coherent() align the
-> desired allocation size to PAGE_SIZE, and gets system pages and IOMMU
-> mappings (TCEs) for that value.
-> 
-> When IOMMU_PAGE_SIZE < PAGE_SIZE, this behavior may cause unnecessary
-> TCEs to be created for mapping the whole system page.
-> 
-> Example:
-> - PAGE_SIZE = 64k, IOMMU_PAGE_SIZE() = 4k
-> - iommu_alloc_coherent() is called for 128 bytes
-> - 1 system page (64k) is allocated
-> - 16 IOMMU pages (16 x 4k) are allocated (16 TCEs used)
-> 
-> It would be enough to use a single TCE for this, so 15 TCEs are
-> wasted in the process.
-> 
-> Update iommu_*_coherent() to make sure the size alignment happens only
-> for IOMMU_PAGE_SIZE() before calling iommu_alloc() and iommu_free().
-> 
-> Also, on iommu_range_alloc(), replace ALIGN(n, 1 << tbl->it_page_shift)
-> with IOMMU_PAGE_ALIGN(n, tbl), which is easier to read and does the
-> same.
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
->  arch/powerpc/kernel/iommu.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-> index 5b69a6a72a0e..3329ef045805 100644
-> --- a/arch/powerpc/kernel/iommu.c
-> +++ b/arch/powerpc/kernel/iommu.c
-> @@ -851,6 +851,7 @@ void *iommu_alloc_coherent(struct device *dev, struct iommu_table *tbl,
->  	unsigned int order;
->  	unsigned int nio_pages, io_order;
->  	struct page *page;
-> +	size_t size_io = size;
->  
-> 
->  	size = PAGE_ALIGN(size);
->  	order = get_order(size);
-> @@ -877,8 +878,9 @@ void *iommu_alloc_coherent(struct device *dev, struct iommu_table *tbl,
->  	memset(ret, 0, size);
->  
-> 
->  	/* Set up tces to cover the allocated range */
-> -	nio_pages = size >> tbl->it_page_shift;
-> -	io_order = get_iommu_order(size, tbl);
-> +	size_io = IOMMU_PAGE_ALIGN(size_io, tbl);
-> +	nio_pages = size_io >> tbl->it_page_shift;
-> +	io_order = get_iommu_order(size_io, tbl);
->  	mapping = iommu_alloc(dev, tbl, ret, nio_pages, DMA_BIDIRECTIONAL,
->  			      mask >> tbl->it_page_shift, io_order, 0);
->  	if (mapping == DMA_MAPPING_ERROR) {
-> @@ -893,10 +895,9 @@ void iommu_free_coherent(struct iommu_table *tbl, size_t size,
->  			 void *vaddr, dma_addr_t dma_handle)
->  {
->  	if (tbl) {
-> -		unsigned int nio_pages;
-> +		size_t size_io = IOMMU_PAGE_ALIGN(size, tbl);
-> +		unsigned int nio_pages = size_io >> tbl->it_page_shift;
->  
-> 
-> -		size = PAGE_ALIGN(size);
-> -		nio_pages = size >> tbl->it_page_shift;
->  		iommu_free(tbl, dma_handle, nio_pages);
->  		size = PAGE_ALIGN(size);
->  		free_pages((unsigned long)vaddr, get_order(size));
-
+Paolo
 
