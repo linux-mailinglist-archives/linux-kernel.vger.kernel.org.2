@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD52436854E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A57368550
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238111AbhDVQzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S238154AbhDVQ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDVQzm (ORCPT
+        with ESMTP id S236287AbhDVQ4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:55:42 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5F36C06174A;
-        Thu, 22 Apr 2021 09:55:07 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 8917892009C; Thu, 22 Apr 2021 18:55:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 82EC392009B;
-        Thu, 22 Apr 2021 18:55:06 +0200 (CEST)
-Date:   Thu, 22 Apr 2021 18:55:06 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        linux-arch@vger.kernel.org,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
-In-Reply-To: <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com>
-Message-ID: <alpine.DEB.2.21.2104221828200.44318@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk> <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com>
- <2d636696-35f0-4731-b1c3-5445a57964fb@www.fastmail.com> <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 22 Apr 2021 12:56:21 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0566DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:55:47 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id y22-20020a17090a8b16b0290150ae1a6d2bso1302533pjn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n6a5jB5vsbHsHNaYOEmKOrdM81c54DldKWj75CigVaQ=;
+        b=CjG6FHmsUDSpGnoGadKDSnlkzv2/jjuV0fuispVRiMf3RBQ8H5atKOj3kVxiyUNJAY
+         C3bdxafd0iyjFSFiEZGGEo7fQDYXPDA/mU0z/1F1mM/1/yeJCnpZNb7vz9qHKN327ru4
+         jMi/sJYa3DcnmJb6ejURqm9/1MXxl/i/s6wGijsRe0EjdrmCJhHJ98/dIuKDnMBjETZR
+         SHuABpIOvHYMd3rQYezi8pOpws3EeDlHv1ADgiNkx5Jv9/R8lsPO06f2Ax4SVCSDgaPT
+         DXMlkjNlIhfzi8Tbf768prYzfzYjIr0UmAGOjVSI+WnG7c+D1cnp8dw4a6D/olTbcSZn
+         fwWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n6a5jB5vsbHsHNaYOEmKOrdM81c54DldKWj75CigVaQ=;
+        b=XvbFb0qtFH2+GclJecdBRGZCHL71dizsVokIdStxM4LumYIJWKVuCs/YgZJqX0D5KC
+         AuKNX4qPHYocEwfJugSXlBQckG38b15Daex4gzo58JrtFNNCGvO7PjXUJFVvl8IlUvS4
+         DG74D4RsvqAz7x2Ul85GU2QIoajh3X3Q9OX+GW7EF5w5+nzgAyPb5VNirZmy1cdd80u2
+         gEPEDSYBfhmP/rLlQv4s3b+iQ3xDARXu/AZH0PNgc8k6CysnUiyEPA/fiv7eVWnzj60H
+         +O2jYtlfukgPvDa+u1KNJ4qpZQRO46tQkmw+EuGNEdf16o5ZmuPDGRZShvUMmmw7dFKq
+         SzIw==
+X-Gm-Message-State: AOAM530TLRyzLIAATPpkR4Qy9yeFFSmZgJJRKHbjGSPYVErsso6Fvu/9
+        h/Io7mJzC/vCFvtJyngbqiHVXg==
+X-Google-Smtp-Source: ABdhPJz0rv8gCpduJab4WDKbQoF49ie8V+7gtLo01+J9NCXu4kC15THjV7jhMSoCeM20fugpo0NFdw==
+X-Received: by 2002:a17:90a:bb85:: with SMTP id v5mr5059337pjr.106.1619110546372;
+        Thu, 22 Apr 2021 09:55:46 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h11sm2638815pjs.52.2021.04.22.09.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 09:55:45 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 16:55:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Woodhouse <dwmw@amazon.co.uk>
+Subject: Re: [PATCH v2 2/9] KVM: x86: Check CR3 GPA for validity regardless
+ of vCPU mode
+Message-ID: <YIGqjoHwG+7rHWyp@google.com>
+References: <20210422022128.3464144-1-seanjc@google.com>
+ <20210422022128.3464144-3-seanjc@google.com>
+ <8716951d-cddb-d5f9-e7e2-b651120a51e7@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8716951d-cddb-d5f9-e7e2-b651120a51e7@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021, H. Nikolaus Schaller wrote:
-
-> > This has passed correctness verification with test_div64 and reduced the
-> > module's average execution time down to 1.0445s and 0.2619s from 1.0668s
-> > and 0.2629s respectively for an R3400 CPU @40MHz and a 5Kc CPU @160MHz.
+On Thu, Apr 22, 2021, Paolo Bonzini wrote:
+> On 22/04/21 04:21, Sean Christopherson wrote:
+> > Check CR3 for an invalid GPA even if the vCPU isn't in long mode.  For
+> > bigger emulation flows, notably RSM, the vCPU mode may not be accurate
+> > if CR0/CR4 are loaded after CR3.  For MOV CR3 and similar flows, the
+> > caller is responsible for truncating the value.
+> > 
+> > Note, SMRAM.CR3 is read-only, so this is mostly a theoretical bug since
+> > KVM will not have stored an illegal CR3 into SMRAM during SMI emulation.
 > 
-> test only [PATCH 1/4 and 2/4]:
-> 
-> [  256.301140] test_div64: Completed 64bit/32bit division and modulo test, 0.291154944s elapsed
-> 
-> + [PATCH 3/4]
-> 
-> [ 1698.698920] test_div64: Completed 64bit/32bit division and modulo test, 0.132142865s elapsed
-> 
-> + [PATCH 4/4]
-> 
-> [  466.818349] test_div64: Completed 64bit/32bit division and modulo test, 0.134429075s elapsed
-> 
-> So the new code is indeed faster than the default implementation.
-> [PATCH 4/4] has no significant influence (wouldn't say it is slower because timer resolution
-> isn't very high on this machine and the kernel has some scheduling issue [1]).
+> Well, the guest could have changed it...
 
- Have you used it as a module or at bootstrap?  I have noticed that at 
-bootstrap the initialisation of the random number generator sometimes 
-interferes with the benchmark, which happens when there's an intervening 
-message produced, e.g.:
+That's what I tried to address with "SMRAM.CR3 is read-only".  Both Intel and
+AMD state that modifying read-only fields will result in unpredictable behavior,
+i.e. KVM going into the weeds would be within spec.  IIRC, there's no real
+danger to the host, it'll "just" fail VM-Enter.
 
-test_div64: Starting 64bit/32bit division and modulo test
-random: fast init done
-test_div64: Completed 64bit/32bit division and modulo test, 1.069906272s elapsed
+SDM:
+  Some register images are read-only, and must not be modified (modifying these
+  registers will result in unpredictable behavior)
 
-I think it can be worked around by configuration changes so that more 
-stuff is run between the RNG and the test module, but instead I have 
-simply inserted:
+APM:
 
-	mdelay(5000);
-
-at the beginning of `test_div64_init' instead, as for historical reasons I 
-haven't got the systems involved set up for modules (beyond Linux 2.4) at 
-this time.
-
- NB I have run the benchmark five times with each change and system and 
-with the RNG taken out of the picture results were very stable as any 
-fluctuation only started at the fifth decimal digit.  Both the DECstation 
-(the model I used anyway) and the Malta have a high-resolution clock 
-source though, the I/O ASIC free-running counter register at 25MHz (used 
-by David L. Mills, the original author of the NTP suite, for his reference 
-implementation) and the CP0 Count register at 80MHz respectively.
-
- I would expect your JZ4730 device to have the CP0 Count register as well, 
-as it has been architectural ever since MIPS III really, or is your system 
-SMP with CP0 Count registers out of sync across CPUs due to sleep modes or 
-whatever?
-
- Thanks for sharing your figures.
-
-> [1] we are preparing full support for the JZ4730 based Skytone Alpha machine. Most features
-> are working except sound/I2S. I2C is a little unreliable and Ethernet has hickups. And scheduling
-> which indicates some fundamental IRQ or timer issue we could not yet identify.
-
- Good luck with that!
-
-  Maciej
+  Software should not modify offsets specified as read-only or reserved,
+  otherwise unpredictable results can occur.
