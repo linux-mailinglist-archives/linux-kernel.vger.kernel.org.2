@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F118368320
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55290368323
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237618AbhDVPPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236893AbhDVPPf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:15:35 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C7EC06174A;
-        Thu, 22 Apr 2021 08:15:01 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id y32so33044445pga.11;
-        Thu, 22 Apr 2021 08:15:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RHIZEjGySYdq+Z1v6q34x38LxGZ3mTIQiHyS1ORws1o=;
-        b=NQR23WRcMJxXLn5zajba5CVVOJ4lyRVzs4T2oFNlKQgf0HfoBvkEuTLjcUpNz7c9nm
-         j2T66WBiRdFKyGk/1KrEne3Tj6iw2L2Pyt4iUz3/+Eqlyq+toxvFgyUVqD+e/Ka0P/+G
-         fcH+1JlZLRyB+TUZ1NpgYPAqsDffJEiBhw5Aglau0K/xVjJUy8FtlwnJOrs6oG0iVXku
-         8lYRGtvimLbBCm3UCNxI8te4U23kwESA2V3Zov1OscPrVLmzq7dn865jJyYVGtaiOOHc
-         ZSgd/KyipqzPS/kDliSenTVkdIE3ftZt+yCAlq2mSs2DyepkBU4IiBmYUA89QTgbNOLb
-         xBgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RHIZEjGySYdq+Z1v6q34x38LxGZ3mTIQiHyS1ORws1o=;
-        b=KMdYsH7+UFlmOS9xWrsBZ8Fcwys6pAot9xETBtVs8YJxgHS08A17d0AuaOIIz3RlLp
-         /UJfktLL3pDh0KFt8gZQfopsCOdkRRfAwuCqFbebs2O/aNuKod2Uickrcjw3kWq0D9aT
-         Tbgo/6rDElwsy7zpaavhe9iy1ifi3Up5UjnzDjICYIxPF6Qd0z9R1wUvxCRmsfNdfV59
-         35+u9y4emfe700ZprqXAPb5SUqUe1/MF82d3BBXCQ1zrxqZcGK31/X61I9ijC+E2dZR4
-         vogKBrulKBKL8w41rpeDp5Nlwp/O/PkbzddbhpUcZSAvyUmjORrXxnFrJ6B0I6tnrxYF
-         pIPw==
-X-Gm-Message-State: AOAM533/8orh78m8e3InpCuBUCA+D2k1qz26/bY+8lBEIIwteY/e2kvu
-        u9JsHSY6bFzPUWpBBHFfK3M=
-X-Google-Smtp-Source: ABdhPJz7ZA/kYC0E3k4v1Vtk6zDuODL6XzhQUdCQPBDovUVYrdhxnlss9NgdTMzHGEZKjB91wjABdA==
-X-Received: by 2002:a62:52c7:0:b029:255:e78e:5069 with SMTP id g190-20020a6252c70000b0290255e78e5069mr3643997pfb.45.1619104500681;
-        Thu, 22 Apr 2021 08:15:00 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id c125sm2362195pfa.74.2021.04.22.08.14.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 08:15:00 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 18:14:51 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Walle <michael@walle.cc>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: Re: [PATCH] [net-next] net: enetc: fix link error again
-Message-ID: <20210422151451.hp6w2jlgdt53lq4j@skbuf>
-References: <20210422133518.1835403-1-arnd@kernel.org>
+        id S236893AbhDVPQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:16:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233106AbhDVPQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:16:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DE9A61077;
+        Thu, 22 Apr 2021 15:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619104554;
+        bh=8QU0e3aDFsJV+2WSG378IPXXZatKl7pXZ0rVgBfEI3U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oV1nCyMvUT1Cdv6yVlCM6yULq1mvxTleVKIdV7SI2rL8H1Isp7Sp338dIUTvD31bh
+         P8tLjUY8mfPg13dlt3QIdKj/cKliUGIAh9nzIup1U6LHCHHLbYM3dUJ2P/w6G3qx7N
+         YqATvV1atxrFjiIYZ400lf1knn/vWDiwwGtygeylF3U4S+DXsahASo4cknuv+4qlG6
+         T/7qX+obDwJ0kjQdfM6uCtbI8R4U8GNU4g8Vt47Gp0EfICOM7XlCba60Pb24fESFKp
+         XSibCggCO9RbPyqbE/UAwj54DA0nC+bYQh+l6UpFw3atq/nXdQs9xusBpdvjHJiTIl
+         rtbDlMk8/GvJw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Claudius Heine <ch@denx.de>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] rtc: bd70528: fix BD71815 watchdog dependency
+Date:   Thu, 22 Apr 2021 17:15:21 +0200
+Message-Id: <20210422151545.2403356-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422133518.1835403-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 03:35:11PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A link time bug that I had fixed before has come back now that
-> another sub-module was added to the enetc driver:
-> 
-> ERROR: modpost: "enetc_ierb_register_pf" [drivers/net/ethernet/freescale/enetc/fsl-enetc.ko] undefined!
-> 
-> The problem is that the enetc Makefile is not actually used for
-> the ierb module if that is the only built-in driver in there
-> and everything else is a loadable module.
-> 
-> Fix it by always entering the directory this time, regardless
-> of which symbols are configured. This should reliably fix the
-> problem and prevent it from coming back another time.
-> 
-> Fixes: 112463ddbe82 ("net: dsa: felix: fix link error")
-> Fixes: e7d48e5fbf30 ("net: enetc: add a mini driver for the Integrated Endpoint Register Block")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/ethernet/freescale/Makefile | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/freescale/Makefile b/drivers/net/ethernet/freescale/Makefile
-> index 67c436400352..de7b31842233 100644
-> --- a/drivers/net/ethernet/freescale/Makefile
-> +++ b/drivers/net/ethernet/freescale/Makefile
-> @@ -24,6 +24,4 @@ obj-$(CONFIG_FSL_DPAA_ETH) += dpaa/
->  
->  obj-$(CONFIG_FSL_DPAA2_ETH) += dpaa2/
->  
-> -obj-$(CONFIG_FSL_ENETC) += enetc/
-> -obj-$(CONFIG_FSL_ENETC_MDIO) += enetc/
-> -obj-$(CONFIG_FSL_ENETC_VF) += enetc/
-> +obj-y += enetc/
-> -- 
-> 2.29.2
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-I feel so bad that I'm incapable of troubleshooting even the most
-elementary Kconfig issues... I did not even once think of opening that
-Makefile.
+The added Kconfig dependency is slightly incorrect, which can
+lead to a link failure when the watchdog is a loadable module:
 
-Acked-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_rtc_based_timers':
+rtc-bd70528.c:(.text+0x6cc): undefined reference to `bd70528_wdt_set'
+arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_time':
+rtc-bd70528.c:(.text+0xaa0): undefined reference to `bd70528_wdt_lock'
+arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0xab8): undefined reference to `bd70528_wdt_unlock'
+arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_alm_enable':
+rtc-bd70528.c:(.text+0xfc0): undefined reference to `bd70528_wdt_lock'
+arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0x1030): undefined reference to `bd70528_wdt_unlock'
+
+The problem is that it allows to be built-in if MFD_ROHM_BD71828
+is built-in, even when the watchdog is a loadable module.
+
+Rework this so that having the watchdog as a loadable module always
+forces the rtc to be a module as well instead of built-in,
+regardless of bd71828.
+
+Fixes: c56dc069f268 ("rtc: bd70528: Support RTC on ROHM BD71815")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: Fix as suggested by Guenter Roeck, reword description
+---
+ drivers/rtc/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index d8c13fded164..914497abeef9 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -502,7 +502,8 @@ config RTC_DRV_M41T80_WDT
+ 
+ config RTC_DRV_BD70528
+ 	tristate "ROHM BD70528, BD71815 and BD71828 PMIC RTC"
+-	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528 && (BD70528_WATCHDOG || !BD70528_WATCHDOG)
++	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528
++	depends on BD70528_WATCHDOG || !BD70528_WATCHDOG
+ 	help
+ 	  If you say Y here you will get support for the RTC
+ 	  block on ROHM BD70528, BD71815 and BD71828 Power Management IC.
+-- 
+2.29.2
+
