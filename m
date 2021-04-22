@@ -2,176 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817A936777C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE57367782
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhDVCcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:32:05 -0400
-Received: from mail-eopbgr760123.outbound.protection.outlook.com ([40.107.76.123]:21134
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230259AbhDVCb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:31:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G6x5121hdmyGi/UoWmqD12g1Q4LSV0hgQzEzzvHAINN9p9vQWICWsfrdu9LTIjFVetoMYdD+klnfsi5euEEPWlLnxB1z/qv+SnSuHAMvXXJtcDSK0k1+f8C26R5eO4TRQI5MBx7iVMshsgKZ/frIlQhM2xsBYi8tse+8TYyOcGg8G0/oFPe5sCUzq5tlWxneKlrmPGZeVbHqi6dkHz61kM2Wa17NXm4z6OdAh9i9AHxXpeHJ2NBB/q5qFK2napGhb8Cp4ir2Z/7/xCj3D03JfLmqnfX59hg6dQngg4MqHe6iVhqXqPpw43aksjlDPk2GYLdk2Ge2zaX6q4Lnyt8X+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aSmKIosZ1KWHkSkh6/BOsrkDxKXU9buulbMbhyeu6xE=;
- b=Av7LmtInlpM3KEaFO2+thZG+Gbpjt1m5HQayl+W6261Wv14hJbaGobQRNom1c523EIRsuW3H4GSw1epdGfsJ9Xrt+y7ULcQB5HpIMgwQcmqsGr+8vektS7QXgCzi5MSWXuROSIXWRj+6EZjwR8iZuoFqyNSVf79jhUP6SOgI8hgXAplIprx3mIKiY/n8uRpEHIrboswPAL03ZTl1JrdN+oyB33i07A7yv9NnlejI0BvVgvWz72awTFMHZKE7MEq/+8wmy7FjSfDeoqd3aSECKwJt248J8gwzz3+qvmduF212EbLKkcoNut3TE5IT4o5rXuBYZvkXj3lE7wSp018hZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aSmKIosZ1KWHkSkh6/BOsrkDxKXU9buulbMbhyeu6xE=;
- b=jrhEOS2jHifTcftIMHNUd2kUDU55bq343GbJ5w5OFjYFkAzX1uMBuhg08QQ2jsysy0FxhLwR7FJywhUzZi8pC6vNGRMSYA2CdN73/wsDCF3gtM3KyMsTkpriuloGXGPqtAVIoHn5ddhogEKCq5VsrHbejuv/x+LNxhRX2xXwTWo=
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- (2603:10b6:302:10::24) by MWHPR21MB0637.namprd21.prod.outlook.com
- (2603:10b6:300:127::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.5; Thu, 22 Apr
- 2021 02:31:23 +0000
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4065.008; Thu, 22 Apr 2021
- 02:31:23 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] PCI: hv: Fix a race condition when removing the device
-Thread-Topic: [PATCH] PCI: hv: Fix a race condition when removing the device
-Thread-Index: AQHXNVHtsv1pPhn/lUymN/4kjb1Ps6q/O9jQgAAqeACAABF+EIAAVhsw
-Date:   Thu, 22 Apr 2021 02:31:23 +0000
-Message-ID: <MW2PR2101MB0892B264810E6E6E54A96C4DBF469@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <1618860054-928-1-git-send-email-longli@linuxonhyperv.com>
- <MWHPR21MB1593CAEAFB8988ECB93BE6E3D7479@MWHPR21MB1593.namprd21.prod.outlook.com>
- <BYAPR21MB12711AF8B782FAA4B492D0CFCE479@BYAPR21MB1271.namprd21.prod.outlook.com>
- <MWHPR21MB15933F28861A2C448C3F233DD7479@MWHPR21MB1593.namprd21.prod.outlook.com>
-In-Reply-To: <MWHPR21MB15933F28861A2C448C3F233DD7479@MWHPR21MB1593.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0c2cd82d-a9ce-4184-9a5b-6c1855cc9093;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-21T17:24:53Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:8b00:6b90:688b:1c6e:a2b1:f6c7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a973216a-8340-4883-71f2-08d90536b8e4
-x-ms-traffictypediagnostic: MWHPR21MB0637:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR21MB0637F25659A253D7362F1214BF469@MWHPR21MB0637.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SlNA6XE8sScjC31HUGDStsH63TJYdxXBixMYb4rZO6ruJsj4HwbiRnVvxPUDsjUvZjS9Ctaqt1XnW57JDdEKciLrwpaoL+r2cQyvpDlvO/sGza4LVWxb1LGruSu50/QsI/5h08p+lpjctYYRgdCMUdgZUTnT1IF7rvAWuXyo0tEAZQ7x9/2yo6AuxdEZ7xii9CLSlJhyJFLCaV1bfLAerJMw9RgI01tpu9bLgkomB0dbgjOdJsiw6jiIpnJWItxQ4VkjbiveGt1vvN3/CxmR1wBCthlElbYr2MOCI2gxi4Hx+FtGK6VavKya/5HK12yj/tmRxt7rPp2KaljDcFptlW9EhRAbY2lLwKC4hvcfbeAOMi++5HDS/A0w/m7OfrJTHU58sRG2z7M17wTc2/a8Af7vcd1nG8WFCjIWVuHgfkA8EsW7flkbiPGMs6QAI5Z8Y8rHfFKipfR2FVkQl7C4kuUtRyuHHApJ2xIjofup3rm/ICfXiwfGcyKq8ziC5slMS8YXTudht9+MyGjkfBMiSkdQXCY4jab0Pp1flZSjvDPe5Ps4/q7+FO5dnzylZJ//T23dTQblFr3YNrGK27pzIdQexgNEzZC/Apuphn+wJ4GwD3o/9XImR5NJWc62s8GpEHsfcPLg9pERRHqSwTnVrg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(5660300002)(55016002)(9686003)(8990500004)(10290500003)(52536014)(478600001)(2906002)(186003)(8936002)(110136005)(33656002)(8676002)(921005)(122000001)(38100700002)(76116006)(86362001)(7696005)(316002)(64756008)(66476007)(66446008)(66946007)(66556008)(82960400001)(82950400001)(6506007)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kL8O+n8Xx3LOj2UgUhB8lqREY7s54oubozQWnKNLMbT7gaN808hM3c692c+Z?=
- =?us-ascii?Q?2uqyEDcK93vNMcdsM5mSNk5BZOGVtDJmmzovnOEW+LoBBao3jizZtWoe9/gR?=
- =?us-ascii?Q?hrqq5aGv8shGg1iObUI6RydIabSHzGotjyZk9kAHh/3ZojUX2VmkIvgx9ht8?=
- =?us-ascii?Q?n/1mP2NuCDuwcVk2eExQRoMd0gLz8EBz8j1nUQtWtgB4NhDS5z8bmHSAOubz?=
- =?us-ascii?Q?Fxb1adlz72xi8sd1Fvma+wakm9u9X0Yv6//yGZh0kXPt9LliXJQ1SXqZHaGq?=
- =?us-ascii?Q?uTY20SPDRLnBTi+GYsCwI1jb1dm74gxLBQP8x73XfroSobPG5de8G8pr/5zU?=
- =?us-ascii?Q?IZ+E0v4JWMm+8E2vmcLgwUw8nYMf7Rudd9CLFTv4QT+z+6QJAiDFzfG1Yubk?=
- =?us-ascii?Q?6oWddHgiQE/vGnzh3oIZbkPgDJsVVz67GJzQMfGIajjrBtmcdFfFEbF+j99c?=
- =?us-ascii?Q?B2g9JnCHKNnNs+J18PvJoa3MO5XCaT4J3171HT7OcSJEoaa23D+hkBs8G9As?=
- =?us-ascii?Q?nrHbI20ibDU4xO7aKsVQlgMH/3a0Dzd2HwYUdRQYXNfasp889gm3Zii4Ex1D?=
- =?us-ascii?Q?XBqUBjhKnaJN3tmncwQFT0KGEKQ2zt3DFVxLI35sM3DBcgPU1OK47XBbesmv?=
- =?us-ascii?Q?VyLTUkSXkQbTnY4zMy0OJFBMeAO0zeUpWvyhkM+OEYNgItzzjVk5VV1VMVbp?=
- =?us-ascii?Q?czeflfREuE3SYeQbsDO989ZY2X2sjpz9VaXTkHSXk0NkjYHvhTVMvez0F6iY?=
- =?us-ascii?Q?Js8MivEEJSTWCBg9qhz7Oa185i6mrT4BJCeynwZB81M7NI/eYCAw7LdMyM7b?=
- =?us-ascii?Q?HLDRHFLC740CBVayjO49lidIFM+jbJgWIRkU8iGgqc/RNHU9ljquh+VD5sxO?=
- =?us-ascii?Q?FzFwzpD/QP80fQy8LMCYzX02scWaxICHG0qOaL83os80RX/dIQrw2ITvGHq9?=
- =?us-ascii?Q?d33jVpQ/tWitpz2hW8CKfuwGLGNMoTwN7DzWw2VLHwaJCSK4NI5+hBEqTGMh?=
- =?us-ascii?Q?MDgIDLlrzu0GtchGqaW3mPRH6bInrzFXiiHWyHH6USB3yHICwW3e5qm0+MfS?=
- =?us-ascii?Q?epmSKwGXsrEp1i0GhNdTc2nk+8rlIoSI9i8qOBzoGSIrGcA4GGEcxEJpeQqn?=
- =?us-ascii?Q?TKrmPhWHHhLoMaHAAYOlqNa09OKvPO7M6yvFT0ec/v/woXgMmqkRYGOsWw7p?=
- =?us-ascii?Q?sBNuWsZV2j4Zyw7QMBSCww/eptBsbGIP9UPgGBsHengah8cgNFwQxW8PDbod?=
- =?us-ascii?Q?YesLhLVep5sednO+rpKMFG2t48P/tX6VKuOfbdWDZd4m/hjidFvXlSG70mu7?=
- =?us-ascii?Q?tKPodlDaD551tqNJNpPzik1YMXCB/eO1mgjh4FvgorF0Rkf5HV2yVCFeZzMU?=
- =?us-ascii?Q?oPXbxJ+V6Go2Nx6nZSfJduq8N6ks?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231363AbhDVCgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:36:00 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:52805 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232618AbhDVCf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:35:59 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7D7F8806CB;
+        Thu, 22 Apr 2021 14:35:22 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1619058922;
+        bh=DL/UBWOxAtSCtMbPw60emaKmBVxBvcAtepOpozBePfI=;
+        h=From:To:Cc:Subject:Date;
+        b=N9IZQY7iksPVeErXXoO/q1/pXOjzjDrQoztZbt+ZURcQPg2yxIpO6rzkhdql4ZVin
+         9w0woXeZx4jr7laMJt2wRPEZ/WEFl/gPO4gXk7wnxKXeVNFoPSs9pLNHcF5arFmXms
+         D3vjC8094b6k2AukucWu6pvzd+J6U/nTUZXEsiD1+o5B9PmeDCDy5B80E/nyR2mkmA
+         kJvfBjmPxOcIgDQbRUJPtwhAewKqJLg62cGgBmab1nUF7WNkQdtGbqvh0l8Llnrm/p
+         Flb3jraiYvqVPPzcyjRWQcPC6Ebq0eSV67AqH2azBWK5KsEw7l/IsTgLktxmOGxje8
+         5zHVunDmA1QJQ==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6080e0ea0000>; Thu, 22 Apr 2021 14:35:22 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by smtp (Postfix) with ESMTP id 41B3113EED4;
+        Thu, 22 Apr 2021 14:35:44 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id 0DAA3242946; Thu, 22 Apr 2021 14:35:22 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org
+Cc:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org (open list:NETFILTER),
+        coreteam@netfilter.org (open list:NETFILTER),
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] net: netfilter: Add RFC-7597 Section 5.1 PSID support
+Date:   Thu, 22 Apr 2021 14:35:05 +1200
+Message-Id: <20210422023506.4651-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a973216a-8340-4883-71f2-08d90536b8e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2021 02:31:23.5968
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3wCuUjb1hi7mh1KOasvGCWUfnW0tGnCeM05Tm3a+TEQmRgneNwkrjd+CWGn8EwsdxAqctmKfGmci3MMS5YW6tQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0637
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=3YhXtTcJ-WEA:10 a=hliHO8vvrjb_GgMcktUA:9 a=vbNtKFaLgyoh1_7v:21 a=9_ocApIY7FPKfsiY:21
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Michael Kelley <mikelley@microsoft.com>
-> Sent: Wednesday, April 21, 2021 2:06 PM
->  ...
-> > Yes I think put_hvpcibus() and get_hvpcibus() can be removed, as we hav=
-e
-> > changed to use
-> > a dedicated workqueue for hbus since they were introduced.
-> >
-> > But we still need to call tasklet_disable/enable() the same way
-> > hv_pci_suspend() does, the
-> > reason is that we need to protect hbus->state. This value needs to be
-> consistent for the
-> > driver. For example, a CPU may decide to schedule a work on a work queu=
-e
-> that we just
-> > flushed or destroyed, by reading the wrong hbus->state.
-> >
->=20
-> Yes, I would agree the tasklet disable/enable are needed, especially sinc=
-e
-> tasklet_disable()
-> is what ensures that the tasklet is not currently running.
->=20
-> If the hbus ref counting isn't needed any longer, I would strongly recomm=
-end
-> adding
-> a patch to the series that removes it.  This synchronization stuff is har=
-d
-> enough to
-> understand and reason about; having a leftover mechanism that doesn't rea=
-lly
-> do
-> anything useful makes it nearly impossible. :-)
->=20
-> Dexuan -- I'm hoping you can take a look as well and see if you agree.
->=20
-> Michael
+This adds support for masquerading into a smaller subset of ports -
+defined by the PSID values from RFC-7597 Section 5.1. This is part of
+the support for MAP-E and Lightweight 4over6, which allows multiple
+devices to share an IPv4 address by splitting the L4 port / id into
+ranges.
 
-I also think we can remove the reference counting.
+Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+---
+ include/net/netfilter/nf_conntrack.h          |   2 +
+ .../netfilter/nf_conntrack_tuple_common.h     |   5 +
+ include/uapi/linux/netfilter/nf_nat.h         |   3 +-
+ net/netfilter/nf_nat_core.c                   | 101 ++++++++++++++++--
+ net/netfilter/nf_nat_ftp.c                    |  23 ++--
+ net/netfilter/nf_nat_helper.c                 |  15 ++-
+ 6 files changed, 120 insertions(+), 29 deletions(-)
 
-But it looks like there is still race in hv_pci_remove() even with Long's
-patch: in hv_pci_remove(), we disable the tasklet, change hbus->state to
-hv_pcibus_removing, re-enable the tasklet and flush hbus->wq, and set
-hbus->state to hv_pcibus_removed -- what if the channel callback runs
-again? -- now hbus->state is no longer hv_pcibus_removing, so
-hv_pci_devices_present() -> hv_pci_start_relations_work() and
-hv_pci_eject_device() can still add new work items to hbus->wq, and the new
-work items may race with the vmbus_close().
-
-It looks like we should remove the state hv_pcibus_removed?
-
-Thanks,
--- Dexuan
+diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter=
+/nf_conntrack.h
+index 439379ca9ffa..d63d38aa7188 100644
+--- a/include/net/netfilter/nf_conntrack.h
++++ b/include/net/netfilter/nf_conntrack.h
+@@ -92,6 +92,8 @@ struct nf_conn {
+ 	/* If we were expected by an expectation, this will be it */
+ 	struct nf_conn *master;
+=20
++	struct nf_nat_range2 *range;
++
+ #if defined(CONFIG_NF_CONNTRACK_MARK)
+ 	u_int32_t mark;
+ #endif
+diff --git a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h b/i=
+nclude/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+index 64390fac6f7e..36d16d47c2b0 100644
+--- a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
++++ b/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+@@ -39,6 +39,11 @@ union nf_conntrack_man_proto {
+ 	struct {
+ 		__be16 key;	/* GRE key is 32bit, PPtP only uses 16bit */
+ 	} gre;
++	struct {
++		unsigned char psid_length;
++		unsigned char offset;
++		__be16 psid;
++	} psid;
+ };
+=20
+ #define CTINFO2DIR(ctinfo) ((ctinfo) >=3D IP_CT_IS_REPLY ? IP_CT_DIR_REP=
+LY : IP_CT_DIR_ORIGINAL)
+diff --git a/include/uapi/linux/netfilter/nf_nat.h b/include/uapi/linux/n=
+etfilter/nf_nat.h
+index a64586e77b24..660e53ffdb57 100644
+--- a/include/uapi/linux/netfilter/nf_nat.h
++++ b/include/uapi/linux/netfilter/nf_nat.h
+@@ -12,6 +12,7 @@
+ #define NF_NAT_RANGE_PROTO_RANDOM_FULLY		(1 << 4)
+ #define NF_NAT_RANGE_PROTO_OFFSET		(1 << 5)
+ #define NF_NAT_RANGE_NETMAP			(1 << 6)
++#define NF_NAT_RANGE_PSID			(1 << 7)
+=20
+ #define NF_NAT_RANGE_PROTO_RANDOM_ALL		\
+ 	(NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PROTO_RANDOM_FULLY)
+@@ -20,7 +21,7 @@
+ 	(NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED |	\
+ 	 NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PERSISTENT |	\
+ 	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET | \
+-	 NF_NAT_RANGE_NETMAP)
++	 NF_NAT_RANGE_NETMAP | NF_NAT_RANGE_PSID)
+=20
+ struct nf_nat_ipv4_range {
+ 	unsigned int			flags;
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index b7c3c902290f..7730ce4ca9a9 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -232,13 +232,33 @@ static bool nf_nat_inet_in_range(const struct nf_co=
+nntrack_tuple *t,
+ static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
+ 			     enum nf_nat_manip_type maniptype,
+ 			     const union nf_conntrack_man_proto *min,
+-			     const union nf_conntrack_man_proto *max)
++			     const union nf_conntrack_man_proto *max,
++			     bool is_psid)
+ {
+ 	__be16 port;
+=20
++	int m =3D 0;
++	u16 offset_mask =3D 0;
++	u16 psid_mask =3D 0;
++
++	/* In this case we are in PSID mode and the rules are all different */
++	if (is_psid) {
++		/* m =3D number of bits in each valid range */
++		m =3D 16 - min->psid.psid_length - min->psid.offset;
++		offset_mask =3D ((1 << min->psid.offset) - 1) <<
++				(16 - min->psid.offset);
++		psid_mask =3D ((1 << min->psid.psid_length) - 1) << m;
++	}
++
+ 	switch (tuple->dst.protonum) {
+ 	case IPPROTO_ICMP:
+ 	case IPPROTO_ICMPV6:
++		if (is_psid) {
++			return ((ntohs(tuple->src.u.icmp.id) & offset_mask) !=3D
++				0) &&
++				((ntohs(tuple->src.u.icmp.id) & psid_mask) =3D=3D
++				min->psid.psid);
++		}
+ 		return ntohs(tuple->src.u.icmp.id) >=3D ntohs(min->icmp.id) &&
+ 		       ntohs(tuple->src.u.icmp.id) <=3D ntohs(max->icmp.id);
+ 	case IPPROTO_GRE: /* all fall though */
+@@ -252,6 +272,11 @@ static bool l4proto_in_range(const struct nf_conntra=
+ck_tuple *tuple,
+ 		else
+ 			port =3D tuple->dst.u.all;
+=20
++		if (is_psid) {
++			return ((ntohs(port) & offset_mask) !=3D 0) &&
++				(((ntohs(port) & psid_mask) >> m) =3D=3D
++				  min->psid.psid);
++		}
+ 		return ntohs(port) >=3D ntohs(min->all) &&
+ 		       ntohs(port) <=3D ntohs(max->all);
+ 	default:
+@@ -274,9 +299,9 @@ static int in_range(const struct nf_conntrack_tuple *=
+tuple,
+=20
+ 	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED))
+ 		return 1;
+-
+ 	return l4proto_in_range(tuple, NF_NAT_MANIP_SRC,
+-				&range->min_proto, &range->max_proto);
++				&range->min_proto, &range->max_proto,
++				range->flags & NF_NAT_RANGE_PSID);
+ }
+=20
+ static inline int
+@@ -397,10 +422,10 @@ find_best_ips_proto(const struct nf_conntrack_zone =
+*zone,
+  *
+  * Per-protocol part of tuple is initialized to the incoming packet.
+  */
+-static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple=
+,
+-					const struct nf_nat_range2 *range,
+-					enum nf_nat_manip_type maniptype,
+-					const struct nf_conn *ct)
++void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
++				 const struct nf_nat_range2 *range,
++				 enum nf_nat_manip_type maniptype,
++				 const struct nf_conn *ct)
+ {
+ 	unsigned int range_size, min, max, i, attempts;
+ 	__be16 *keyptr;
+@@ -457,6 +482,50 @@ static void nf_nat_l4proto_unique_tuple(struct nf_co=
+nntrack_tuple *tuple,
+ 		return;
+ 	}
+=20
++	if (range->flags & NF_NAT_RANGE_PSID) {
++		/* Find the non-PSID parts of the port.
++		 * To do this we look for an unused port that is
++		 * comprised of [t_chunk|PSID|b_chunk]. The size of
++		 * these pieces is defined by the psid_length and
++		 * offset.
++		 */
++		int m =3D 16 - range->min_proto.psid.psid_length -
++		    range->min_proto.psid.offset;
++		int available;
++		int range_count =3D ((1 << range->min_proto.psid.offset) - 1);
++
++		/* Calculate the size of the bottom block */
++		range_size =3D (1 << m);
++
++		/* Calculate the total IDs to check */
++		available =3D range_size * range_count;
++		if (!available)
++			available =3D range_size;
++
++		off =3D ntohs(*keyptr);
++		for (i =3D 0;; ++off) {
++			int b_chunk =3D off % range_size;
++			int t_chunk =3D 0;
++
++			/* Move up to avoid the all-zeroes reserved chunk
++			 * (if there is one).
++			 */
++			if (range->min_proto.psid.offset > 0) {
++				t_chunk =3D (off >> m) % range_count;
++				++t_chunk;
++				t_chunk <<=3D (m +
++					     range->min_proto.psid.psid_length);
++			}
++
++			*keyptr =3D htons(t_chunk |
++					 (range->min_proto.psid.psid << m)
++					 | b_chunk);
++
++			if (++i >=3D available || !nf_nat_used_tuple(tuple, ct))
++				return;
++		}
++	}
++
+ 	/* If no range specified... */
+ 	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
+ 		/* If it's dst rewrite, can't change port */
+@@ -566,11 +635,18 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
+=20
+ 	/* Only bother mapping if it's not already in range and unique */
+ 	if (!(range->flags & NF_NAT_RANGE_PROTO_RANDOM_ALL)) {
+-		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
++		/* Now that the PSID mode is present we always need to check
++		 * to see if the source ports are in range.
++		 */
++		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED ||
++		    (range->flags & NF_NAT_RANGE_PSID &&
++		    !in_range(orig_tuple, range))) {
+ 			if (!(range->flags & NF_NAT_RANGE_PROTO_OFFSET) &&
+ 			    l4proto_in_range(tuple, maniptype,
+-			          &range->min_proto,
+-			          &range->max_proto) &&
++					     &range->min_proto,
++					     &range->max_proto,
++					     range->flags &
++					     NF_NAT_RANGE_PSID) &&
+ 			    (range->min_proto.all =3D=3D range->max_proto.all ||
+ 			     !nf_nat_used_tuple(tuple, ct)))
+ 				return;
+@@ -623,6 +699,11 @@ nf_nat_setup_info(struct nf_conn *ct,
+ 			   &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
+=20
+ 	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
++	if (range) {
++		if (!ct->range)
++			ct->range =3D kmalloc(sizeof(*ct->range), 0);
++		memcpy(ct->range, range, sizeof(*ct->range));
++	}
+=20
+ 	if (!nf_ct_tuple_equal(&new_tuple, &curr_tuple)) {
+ 		struct nf_conntrack_tuple reply;
+diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
+index aace6768a64e..006b7e1836ff 100644
+--- a/net/netfilter/nf_nat_ftp.c
++++ b/net/netfilter/nf_nat_ftp.c
+@@ -17,6 +17,10 @@
+ #include <net/netfilter/nf_conntrack_helper.h>
+ #include <net/netfilter/nf_conntrack_expect.h>
+ #include <linux/netfilter/nf_conntrack_ftp.h>
++void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
++				 const struct nf_nat_range2 *range,
++				 enum nf_nat_manip_type maniptype,
++				 const struct nf_conn *ct);
+=20
+ #define NAT_HELPER_NAME "ftp"
+=20
+@@ -86,19 +90,12 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	 * this one. */
+ 	exp->expectfn =3D nf_nat_follow_master;
+=20
+-	/* Try to get same port: if not, try to change it. */
+-	for (port =3D ntohs(exp->saved_proto.tcp.port); port !=3D 0; port++) {
+-		int ret;
+-
+-		exp->tuple.dst.u.tcp.port =3D htons(port);
+-		ret =3D nf_ct_expect_related(exp, 0);
+-		if (ret =3D=3D 0)
+-			break;
+-		else if (ret !=3D -EBUSY) {
+-			port =3D 0;
+-			break;
+-		}
+-	}
++	/* Find a port that matches the MASQ rule. */
++	nf_nat_l4proto_unique_tuple(&exp->tuple, ct->range,
++				    dir ? NF_NAT_MANIP_SRC : NF_NAT_MANIP_DST,
++				    ct);
++	port =3D ntohs(exp->tuple.dst.u.tcp.port);
++	nf_ct_expect_related(exp, 0);
+=20
+ 	if (port =3D=3D 0) {
+ 		nf_ct_helper_log(skb, ct, "all ports in use");
+diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.=
+c
+index a263505455fc..090153475d4d 100644
+--- a/net/netfilter/nf_nat_helper.c
++++ b/net/netfilter/nf_nat_helper.c
+@@ -184,11 +184,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
+ 	/* This must be a fresh one. */
+ 	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
+=20
+-	/* Change src to where master sends to */
+-	range.flags =3D NF_NAT_RANGE_MAP_IPS;
+-	range.min_addr =3D range.max_addr
+-		=3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
+-	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
++	if (exp->master && exp->master->range && !exp->dir) {
++		range =3D *exp->master->range;
++		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
++	} else {
++		/* Change src to where master sends to */
++		range.flags =3D NF_NAT_RANGE_MAP_IPS;
++		range.min_addr =3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++		range.max_addr =3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
++	}
+=20
+ 	/* For DST manip, map port here to where it's expected. */
+ 	range.flags =3D (NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED);
+--=20
+2.31.1
 
