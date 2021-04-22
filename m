@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F15367FF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B67367FF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236191AbhDVMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:02:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
+        id S236237AbhDVMCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:02:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236165AbhDVMCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F7216145B;
-        Thu, 22 Apr 2021 12:02:12 +0000 (UTC)
+        id S236186AbhDVMCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:02:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2FCF613FA;
+        Thu, 22 Apr 2021 12:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619092934;
-        bh=+z6iEVB6WBColAXK43QQx8UoNC1wJ0ztdOjphulwwgk=;
+        s=k20201202; t=1619092936;
+        bh=ybvxpwgzpYW4yZF9YvvxKaXAx/OBphRGXXx4PIbqQw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u445njB3fPAqnGN5yfEIbFR66CcrnXY+iNd/3dAnMVmQTMxXOHNZMEWhSeX2Pd8Y5
-         YZ5DGhyjEXKJsJM4S2jQj4rNU/P/wCNsJNdASYyF1gP7yghC2Rvo4COfChXzVG3+9R
-         fi4ifctabQvH91D/2wuAEBPA0UCCCrGaAWlCL6a1gHO1rDD74IZYIKro7U6gSx8vu8
-         2NP25RPyglrhqwMkr/5mtqIyRdUi4dClXWJTspoutzb6+VYV/qknKPujit73WuHMpu
-         M7gyw1LxTiFrOG1W2MkVvUuTZH1Rtog6POS+0aHOZvNVafUeZ0w9mZiqmYBbokN3Q9
-         aWc+Oujsk8BWw==
+        b=uPHDA6dDTiDuGZw6+M2gJKhICMTo2R3iGsdsE3QFumEVu/bqPmLZe2Vu55o2XcwsV
+         BKVHjYe78DyG0joF6Ar/OowNYztd85qrl3CGFSalFaoZ8vXNenSm1L0DxmhPhPDOmE
+         UodNwNYNRMdRzzDUK950Ww1ozWO3dJGeZ4xDNarinGLfJB8ua4tAJHLNe3YE/o/RM0
+         ctK4RQTjoEQB+nEstCpwlqnLDPhL68PY56QhPKtDXMwikKHfHbaP9L9PhPk7rQLcXC
+         ykx9/hrTE3TLELDQyA/wJaYBGjD3laV7KI95q9s2ZkMdUMaob/uxPnyTtptbcJsSzJ
+         ID4K0S/jmTrIg==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
         Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [PATCH 4/8] tick/nohz: Update idle_exittime on actual idle exit
-Date:   Thu, 22 Apr 2021 14:01:54 +0200
-Message-Id: <20210422120158.33629-5-frederic@kernel.org>
+Subject: [PATCH 5/8] tick/nohz: Update nohz_full Kconfig help
+Date:   Thu, 22 Apr 2021 14:01:55 +0200
+Message-Id: <20210422120158.33629-6-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210422120158.33629-1-frederic@kernel.org>
 References: <20210422120158.33629-1-frederic@kernel.org>
@@ -43,82 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunfeng Ye <yeyunfeng@huawei.com>
+CONFIG_NO_HZ_FULL behaves just like CONFIG_NO_HZ_IDLE by default.
+Reassure distros about it.
 
-The idle_exittime field of tick_sched is used to record the time when
-the idle state was left. but currently the idle_exittime is updated in
-the function tick_nohz_restart_sched_tick(), which is not always in idle
-state when nohz_full is configured:
-
-  tick_irq_exit
-    tick_nohz_irq_exit
-      tick_nohz_full_update_tick
-        tick_nohz_restart_sched_tick
-          ts->idle_exittime = now;
-
-It's thus overwritten by mistake on nohz_full tick restart. Move the
-update to the appropriate idle exit path instead.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Yunfeng Ye <yeyunfeng@huawei.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Marcelo Tosatti <mtosatti@redhat.com>
 Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ kernel/time/Kconfig | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 31efd55ed302..ffc13b9dfbe3 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -921,8 +921,6 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
- 	 * Cancel the scheduled timer and restore the tick
- 	 */
- 	ts->tick_stopped  = 0;
--	ts->idle_exittime = now;
--
- 	tick_nohz_restart(ts, now);
- }
+diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
+index 83e158d016ba..6649e1d2dba5 100644
+--- a/kernel/time/Kconfig
++++ b/kernel/time/Kconfig
+@@ -117,13 +117,14 @@ config NO_HZ_FULL
+ 	 the task mostly runs in userspace and has few kernel activity.
  
-@@ -1190,10 +1188,13 @@ unsigned long tick_nohz_get_idle_calls(void)
- 	return ts->idle_calls;
- }
+ 	 You need to fill up the nohz_full boot parameter with the
+-	 desired range of dynticks CPUs.
++	 desired range of dynticks CPUs to use it. This is implemented at
++	 the expense of some overhead in user <-> kernel transitions:
++	 syscalls, exceptions and interrupts.
  
--static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
-+static void tick_nohz_account_idle_time(struct tick_sched *ts,
-+					ktime_t now)
- {
- 	unsigned long ticks;
+-	 This is implemented at the expense of some overhead in user <-> kernel
+-	 transitions: syscalls, exceptions and interrupts. Even when it's
+-	 dynamically off.
++	 By default, without passing nohz_full parameter, this behaves just
++	 like NO_HZ_IDLE.
  
-+	ts->idle_exittime = now;
-+
- 	if (vtime_accounting_enabled_this_cpu())
- 		return;
- 	/*
-@@ -1214,8 +1215,9 @@ void tick_nohz_idle_restart_tick(void)
- 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+-	 Say N.
++	 If you're a distro say Y.
  
- 	if (ts->tick_stopped) {
--		tick_nohz_restart_sched_tick(ts, ktime_get());
--		tick_nohz_account_idle_ticks(ts);
-+		ktime_t now = ktime_get();
-+		tick_nohz_restart_sched_tick(ts, now);
-+		tick_nohz_account_idle_time(ts, now);
- 	}
- }
+ endchoice
  
-@@ -1226,7 +1228,7 @@ static void tick_nohz_idle_update_tick(struct tick_sched *ts, ktime_t now)
- 	else
- 		tick_nohz_restart_sched_tick(ts, now);
- 
--	tick_nohz_account_idle_ticks(ts);
-+	tick_nohz_account_idle_time(ts, now);
- }
- 
- /**
 -- 
 2.25.1
 
