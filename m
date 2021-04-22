@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EAB368893
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DD0368894
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239524AbhDVV3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237070AbhDVV3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:29:46 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C832EC06174A;
-        Thu, 22 Apr 2021 14:29:09 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 65so53243809ybc.4;
-        Thu, 22 Apr 2021 14:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=loqGhmjoo7B1jLi+p/76FpRCD8XLvuYJzJOLuM3m3c8=;
-        b=Su94ZazL5a1+FJKlC8MHGSEvcxJh3tH6xyp1KYMte8Bu0rfLKr52Ujx3l84o/DB86j
-         0qYkV2jSKbuj7nAeqADPq0/FeICK/eKX9IQIVYxF1AgSf1XGvKBZOL6bgIyg7+iKaL4N
-         IlHRw4hUOUijpzvlazto6VThw9toY7sVS/uefTXN+UbHtbIEeCsy1wkvI9+VZ1w3El6y
-         vzAhMbfOkHUNM09gu4d5myC/X8eWcBWSsvqsEO3M7kOAQhFekoY37tBKD/xFF+qGgpl0
-         HSv3Tofhar2BY7xgpwSDIb+TGyM1KQb97E+a6aC0Fagydtd4ewgdUi2iuvB+e2dIR1Vr
-         +wrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=loqGhmjoo7B1jLi+p/76FpRCD8XLvuYJzJOLuM3m3c8=;
-        b=AVClBHFar5ZMyfBjtxa9D9wTDwAddSAHZoT4R1oecSmnNUU9DB/V/92iS4/jdET9Fc
-         NNlD3XKFxFtjoUroXPOAqt/2zPImZ9PhlF3LET/7h1i82gWIrz3ItkxU3Y3lFx/Amsq0
-         8BdT6IL5x0qeR/EFD3gXIkDYPpRrs3AR4KKPo4EtL2eRri1dESxI1jM1OQgg8B0KyESe
-         LKuJ6g/KCzxjhMt9P6ZrMpFIj1uHvNv40vkYSW0dUcd17QnHAzMHC3Auu+cQr/+QVJ6U
-         AUiPTnx6Qqod680jEmPZNCm1G5fd3YVxd5G9B2lVbIqHgMi0fo1qrEwX6Mc9nvt8uYmi
-         Qwlg==
-X-Gm-Message-State: AOAM532KUzOYgeCcWzjhVWOfiUq/EDyQsaRa0UHtD/BUDfdq3oHDR6hg
-        MYBNvHVRM5psW6leApYgxxjUXwzQqS5Udcd3Xdc=
-X-Google-Smtp-Source: ABdhPJzMoC0mHuCojvPzrjPP+5pxCx/LDOhg/mgf8WZz/o6ClLDV/nlCMx68GFFCO9q+4qmQ42E/7tkk151elzpcFpQ=
-X-Received: by 2002:a25:818f:: with SMTP id p15mr949715ybk.135.1619126948986;
- Thu, 22 Apr 2021 14:29:08 -0700 (PDT)
+        id S239637AbhDVVaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:30:03 -0400
+Received: from mail-eopbgr60090.outbound.protection.outlook.com ([40.107.6.90]:5604
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237018AbhDVVaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 17:30:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WJ4xSryzTpD/VOr8zvLL0aC4h9z7xRA/yA/qfb+12M1Qj3l2F2rJDAKAh3e+ecpOeXJZlEfYIuYuIWlUQw1D7jBJUSbg5O24R/IwWITQ1zTlrhXlL/r9ygkDTKQ4M+MYPsZELjoKusvTRrq6RpBs4sSQ097gCFPAehvILVwvGSd3txhUIiiuND3Ygr/RzYo5vwTC+x3q4/c39Bc3KuKP3KxNUGKRibImW9eIScn91fHjHglwMYZGgTi6v7ANKdygtEjeFCpFLPXEUb/xYqbZB3e+sASsd8/ZN/Ju+8IExY6YTt7+v+oQdZJtO2BdryZLs1o2DdJUIZbHf9OvZDunxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HBH5UNm1d8wm+0J/cCay0NSFQa3oQxJNocLJ0p4N9X0=;
+ b=P27sFzLMY0yFJfZzguboPPEI6JkKoltvSuomqEhsbSBC1jmku8QK8q34/okqjRrWynAPV5/W/GapzdY05amibDCo46BQ/notWTD15FQpR5r7HhV8QTxCOQj4GI9MWmhTYljHXSHgBazpwZ7aGV9xhTP2vg/J3EyQtu1jXZHZ1e69LohhJej2PwNsDELyAJ2zr9PXpSaV8W96t8HfsMm2DX3KWFk9GHMPyu2BAM6bY+xEAHiSnwkssBwP22GIVRQFVzyfDobXxKPD1uJhADC3bSuKWIi9bPFIKZjr7z93TERONBRQUf84YTWenFJ1NOEmx+hDEp8rCudcQbMr+34Ljw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HBH5UNm1d8wm+0J/cCay0NSFQa3oQxJNocLJ0p4N9X0=;
+ b=oipBULU1Aa2Rb6ZImkhMa70xL0vBRjVO9a6ZTvdt/RIjJVg20qifL1xtDNta9L6AnKzUdlAJqQZnmVVsjMXGoA/arhWxTtzsKBOxpAkgDFazTJ3MLYyDFH38Slt9XRGgoRfKCeN5NaATncrsn08Ho5gy/focVq2mhwo7AuD0zEk=
+Authentication-Results: umn.edu; dkim=none (message not signed)
+ header.d=none;umn.edu; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB9PR02MB7354.eurprd02.prod.outlook.com (2603:10a6:10:25c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 22 Apr
+ 2021 21:29:25 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908%3]) with mapi id 15.20.4065.020; Thu, 22 Apr 2021
+ 21:29:25 +0000
+To:     gregkh@linuxfoundation.org
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, wang6495@umn.edu
+References: <20210421130105.1226686-168-gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 167/190] Revert "gdrom: fix a memory leak bug"
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <23ffd3c5-0095-6a95-8c30-2b6f67377ce7@axentia.se>
+Date:   Thu, 22 Apr 2021 23:29:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+In-Reply-To: <20210421130105.1226686-168-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [85.229.94.233]
+X-ClientProxiedBy: HE1PR06CA0128.eurprd06.prod.outlook.com
+ (2603:10a6:7:16::15) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
-In-Reply-To: <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 22 Apr 2021 23:28:57 +0200
-Message-ID: <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.229.94.233) by HE1PR06CA0128.eurprd06.prod.outlook.com (2603:10a6:7:16::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Thu, 22 Apr 2021 21:29:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c953d7a0-6d69-4068-a592-08d905d5b386
+X-MS-TrafficTypeDiagnostic: DB9PR02MB7354:
+X-Microsoft-Antispam-PRVS: <DB9PR02MB73547E75AEB7CDDD263D88A9BC469@DB9PR02MB7354.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S/VhS+6LfApOpFGFBO3yjessCZdFg4MO8K/uiX+kKPzJtyjBq5sD2r40klI7oy+5YPnkvgaQdLdNLXwtgMy6BmTrzXOy+BSJ9Xf+SaBd5XL4p5dvGdyItGANEczHNDA2i24efKWZrZbePkAWZriPQheprO4YKybY0Dx317aRj5Uro8zhLJ9CyAkwz6U7tjbO2Ohf6yInXdx96eajObsjnQPjYAS4tdS5bwJCIdcjOuTfrAJzDaEQk5Y0Ss7GoaS9OfUiHd+qnXzZJ1CS3c3l+OH470lhLjSQGUdx+nE9ewGdN0/QLjNsS+5puMYzrFaKe97P96H6xWDtAjQSYv6zelLKAnmR8lLcMl/jfsW7eY4hV63aw/zYm1JDkapDtqwz2+0nrV76xTEGCd3QKtVmWWKmWHUjDX50SiXGLXEgf+UiS5lyCA9YkzW2CeQ65dVkR63mxLHSPOcs9VmtUNfXhNgXDE1MqWlA29fFybs5w/TP2oOHvsXWnrVkibiBKpbWkS7EA7dQwRrhIlgYq3247PMyYTIGz/dOeJINHzqy2FrtLZh6mVl9rJ8Cp6quOohCGqD+M+Tp3+dXZ/NdEJaQ+qWbecHZ/a0DjXf/6Dn4Rdxmp/YXRvwtEPO7lcxuai+J9vM8yQq/gU42Uekp5bh52qZLz7G6OUQ8MKv1rXOLHXGBtTDIlUDMHVoyHxvuzD6m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(346002)(366004)(39830400003)(8676002)(2616005)(36756003)(316002)(956004)(4326008)(16576012)(6916009)(8936002)(16526019)(31686004)(186003)(26005)(2906002)(86362001)(36916002)(38100700002)(4744005)(6486002)(66946007)(31696002)(5660300002)(478600001)(66556008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VjZCajQxZm1rQ1pvSmJJcTM5TlVrdVlQRVJHRjdXM25vZkZwUVF1cVlaM2p3?=
+ =?utf-8?B?MkJNMnQwWWQ4TEoxWnR6Mmo5Z1BISDRIVm1XaTkyc2c5dHNocEVzRnJUQ3pH?=
+ =?utf-8?B?TXRsa1ZNS2wrWDYvbFd1Z0s5RnJsNGJOcFFzVHRKZVVpV1pha1hpMFNxTEZK?=
+ =?utf-8?B?VVl1M0ZVdjJYZ21SdDJwT2hERXJpajlGcHA4SHFQNHpTRXIzQXNZNkZnK0Qw?=
+ =?utf-8?B?THBhV1BtQVZJZWQ0d1RQdUovOS8xSVZwTDdNNCsvTmtWdTZlVXBZTUsvWVFK?=
+ =?utf-8?B?bVdrUm5mNXVld0dLbk42Y25WKyt4M1M5TWlQWDIxcXRrZlNPOFUxSjJGV3Rn?=
+ =?utf-8?B?QjF3ZXdsVVZ2MnUrQmFDMUR3OVFlWlY3K01FUExGTUFaVUVMalFtWTNzbEVQ?=
+ =?utf-8?B?SXFwTHpLYTREbnVwK2F5VUVnT1REWTUzWVdHUU5BR3ZvdVAwdXVrcWN2NUYy?=
+ =?utf-8?B?S1JLcWZxZU1wZytpVG1VNEg1V1RVWW0vNmQ1VzZvV2RMTFRRNXFheHpLKzkx?=
+ =?utf-8?B?MkZXc3hubW5GaGZuVzlNOUpNcjhyTHcrNVJkQ0h6VlRKTDRHVCtkRUJlQ0M0?=
+ =?utf-8?B?ZXhmQ01ibTdVTnJZV21ZZDBnL2s2Tms3VlN0Q0lrR1FRT053bU9KSXY5UExk?=
+ =?utf-8?B?UW1GNG9HelFYa0lhblgwaW1hNC9jOUxQNmwzTGNJM3FNa1lyTGxvNjFrcVFN?=
+ =?utf-8?B?ZUY5SlM0OElpa0VCT2UreHcvbk0ydGJJN2Vaa0FmT0xpZUkrT1BZL2xML21Q?=
+ =?utf-8?B?elUvQzlSWmlPWm1WRnRtQnBiLy9Rbi9lejN2NDVROUhBbnJIalpScjB3SmxJ?=
+ =?utf-8?B?ckpSZTd1bm11UzVnV2NhR3pWUC9ySTA4cmFZYzcvZG5oVWppZmRtb08wSEpM?=
+ =?utf-8?B?WEs2OGU0UlJhMHhkMGxDbDBxbTIwbnlpbnJIU1VBMVVVdzkzRUZrUEt3OTZa?=
+ =?utf-8?B?U1NOdGlkSXNCVG9WalNXR0VkeVR3b2wrV1A1WUpiU1U1RkhydDR0aGdtZzhr?=
+ =?utf-8?B?R2lTRktyZ1lTU0pQUnBNTDNlUXEvcWcrT0k2ZXB4TllTYWJGQkVuRFBwVEgy?=
+ =?utf-8?B?TDQ5TDFsQmt2amNBakcrZnZGdnhsS1llbEIyc2JGMEJ5QVIwSHViWmNDUGwz?=
+ =?utf-8?B?VmMra1hVQU9kUUhCUTJkTGxlQ0JOcTZYdnNISC9pTjQxZHQwdUdhL2c1NCsv?=
+ =?utf-8?B?V1lPRGk3dUlYeUV6czZvcHFOQzlTaWdnMGpwWGd0bTJTMHhHaldSeDFPbVI4?=
+ =?utf-8?B?RFZ2SjN4N2dNS3hUOGs3VnQ4Qld4dXZCNjlCS1hMT0lzSmx6YThkZWQvN2th?=
+ =?utf-8?B?bm1wS2k2NHAvSURoMHduZ2hLSUszL2xkTFN6TlBDVVI1RUpxN0tzaWJqZWpx?=
+ =?utf-8?B?bUNpMFBLRUI5WDR3MDl6bTE3emhwUTFKRDVFK1F0SUlpSC94VU8zaXJ0WG53?=
+ =?utf-8?B?amowWjV5QngyeEdLR1IzTkI0Z0JEQlI4QW5hbXJrY3VtR1l4TUswbFRaVlI3?=
+ =?utf-8?B?N1hGS2lPdmFScVRabnI2NkJhcWdPYXlEVzY1N2tBamd0YnMwZVBDU0JzZTEr?=
+ =?utf-8?B?WEhxSjJ5YVJTb20zUmpVUGc3eHRJZUhIMnZLS1R6cDFxbG84MWM4U3ZMV0Ex?=
+ =?utf-8?B?Z245SzNjRFR6ZE5sVVFtTkdZVzdwRWhCd1c4TTQxY3pJOVRFWUlHblJkWnZv?=
+ =?utf-8?B?SWYzam9OdDgrdC82RnRvM1JCeUhVelFVOTkrYkFvQmp5WHNGUGFqVFNaalZ6?=
+ =?utf-8?Q?h5IwESY9Td5IkzsnuSeYn1348xvS2yeERkIviwC?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: c953d7a0-6d69-4068-a592-08d905d5b386
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 21:29:25.0862
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uzX/OTP8jjKvixtnhWYjz2NsGUaFlTPU5iYd4IJODmD/1cSc89VIfMPLh3NzpQbn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7354
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+> This reverts commit 093c48213ee37c3c3ff1cf5ac1aa2a9d8bc66017.
 
-Thanks for all those very good questions (and thanks for the positive
-tone!). I will try to complement Wedson's answer in a couple places.
+The reverted patch looks fishy.
 
-On Thu, Apr 22, 2021 at 12:03 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> But as subsystem maintainer I'd like a clear picture of this wrapper
-> overhead, what does it usually entail? A typical kernel API has
-> vtable and a few variables, not much more than that.
+gc.cd_info is kzalloc:ed on probe. In case probe fails after this allocation, the
+memory is kfree:d but the variable is NOT zeroed out.
 
-If you mean runtime-overhead, i.e. performance, it should be very
-small or even zero. It should be possible to perform LTO across
-languages too.
+AFAICT, the above leads to a double-free on exit by the added line.
 
-If you mean source code overhead, or cognitive overhead, then it is
-quite a bit, yes. Please see below.
+I believe gd.cd_info should be kfree:d on remove instead.
 
-> It becomes obvious that as subsystem maintainer for the Linux kernel
-> a casual drive-by experience with Rust is not going to suffice by far.
->
-> All subsystem maintainers are expected to understand and maintain
-> wrappers like these, right? That means all subsystem maintainers need
-> to be elevated to understand the above without effort if you wake them
-> up in their sleep at 4 in the morning.
+However, might not gc.toc also be kfree:d twice for similar reasons?
 
-I would say so, at least if longer-term a substantial amount of new
-drivers are written in Rust. That is why I mentioned this as the very
-first thing in the RFC. Rust does require some learning to use, even
-by C experts.
-
-Having said that, someone that is already a kernel developer and/or a
-C expert is in a very good position to learn how Rust approaches
-things and the main "new" concepts it introduces.
-
-In the end, Rust is addressing some of the familiar problems that we
-face when programming in C and C++.
-
-> Get me right, we are of course good at doing really complicated stuff,
-> that's what engineers do. But we are not Iron Man. We need a clear
-> way into understanding and maintaining wrappers and we need support
-> with it when we don't understand it, so the kernel would need a Rust
-> wrapper maintainer that we can trust to stay around for the long term,
-> i.e. until their retirement, while actively teaching others for decades.
-> For an example see how RCU is maintained.
-
-I hear you! I do not think it will take decades for kernel developers
-to get up to speed, but I agree that having some help/backup is a very
-good idea in the beginning.
-
-Our hope is that, if Rust advantages prove themselves, then it will
-the subsystem maintainers the ones that will want to create and
-maintain the wrappers so that drivers in their tree are easier to
-maintain and less prone to mistakes ;-)
+I could easily be mistaken.
 
 Cheers,
-Miguel
+Peter
