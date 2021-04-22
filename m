@@ -2,158 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96779367F80
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18E2367F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbhDVLXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:23:05 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:44107 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235800AbhDVLXB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:23:01 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210422112225euoutp02427c8890c1aba27d8b4efa770551ef51~4KkXqEemK1041110411euoutp02N;
-        Thu, 22 Apr 2021 11:22:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210422112225euoutp02427c8890c1aba27d8b4efa770551ef51~4KkXqEemK1041110411euoutp02N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619090545;
-        bh=RCk1c5nb42Yq1gBpLLt/4jM+gh8BHprbEbMGJXNMcE8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ObVyxZ4o74LLIUJKcZ3IucQ2i8V5EF5NrytYeyjQi7NkcZNE0E+6GKWr3qowqfxdL
-         QfChP1JMsWCtVWz2w/DezobzpWmT/sRVcHxlSHORgZxda4fpFSv7fqUQGJy/nRqm4e
-         Lz9/ohxAnuX7IH3FcQnb61Tyfvu1jD7e1kZshcH0=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210422112225eucas1p150a9b8a1313a3b1c8af0977505fb3ae7~4KkXWvk510065600656eucas1p1j;
-        Thu, 22 Apr 2021 11:22:25 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id FE.9E.09439.17C51806; Thu, 22
-        Apr 2021 12:22:25 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210422112224eucas1p283ca7aeaa25ab514b9743a11e63a76e0~4KkWUNTTJ2841528415eucas1p2L;
-        Thu, 22 Apr 2021 11:22:24 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210422112224eusmtrp29969c9fb814fdec203d72ff0076a98bf~4KkWTX0OP2526525265eusmtrp2m;
-        Thu, 22 Apr 2021 11:22:24 +0000 (GMT)
-X-AuditID: cbfec7f5-c03ff700000024df-3b-60815c71c257
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 96.4D.08705.07C51806; Thu, 22
-        Apr 2021 12:22:24 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210422112224eusmtip16d4de17ccd0641dc71958986bd0756be~4KkWGSUZ61838218382eusmtip1e;
-        Thu, 22 Apr 2021 11:22:24 +0000 (GMT)
-From:   =?utf-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkie?= =?utf-8?Q?wicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2] hwrng: exynos - Fix runtime PM imbalance on error
-Date:   Thu, 22 Apr 2021 13:22:15 +0200
-In-Reply-To: <bc20ae4c-3e62-7b07-506c-ce8d90f65754@canonical.com> (Krzysztof
-        Kozlowski's message of "Thu, 22 Apr 2021 12:46:42 +0200")
-Message-ID: <dleftj35vi7ee0.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S236057AbhDVLX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:23:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:50162 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235978AbhDVLXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:23:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6DA513A1;
+        Thu, 22 Apr 2021 04:22:49 -0700 (PDT)
+Received: from [10.163.75.151] (unknown [10.163.75.151])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 288603F774;
+        Thu, 22 Apr 2021 04:22:46 -0700 (PDT)
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-mm@kvack.org, david@redhat.com, akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+ <YIEzaQF8fVtNgU0E@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <6096b004-aaeb-d814-87e4-92ec1b180f1d@arm.com>
+Date:   Thu, 22 Apr 2021 16:53:36 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKKsWRmVeSWpSXmKPExsWy7djP87qFMY0JBuvfilpsnLGe1aL7lYzF
-        xrc/mCw2Pb7GanH/3k8mi8u75rBZzDi/j8li7ZG77BYLtvUxOnB6zGroZfPYdkDVY/OSeo++
-        LasYPfpebmD0+LxJLoAtissmJTUnsyy1SN8ugStj2vnljAVX+SoenVzP3MDYxNvFyMkhIWAi
-        caF/IlMXIxeHkMAKRonmJ+uZIZwvjBLTO1exQzifGSUmnz3NCNPS9+gaI0RiOaPEzym9UC3P
-        GSUWf97CAlLFJmAv0X9kH5gtImAtcXTrfLAiZoFnTBKv3u9gAkkIC3hKzG4+xApiswioSlza
-        dQCsiFOgg1Hi88ceNpAEr4C5xN6Ff8AmiQpYSmx5cZ8dIi4ocXLmE7A4s0CuxMzzb8BukhDo
-        5pTY/bORGeJYF4kn51pZIWxhiVfHt7BD2DIS/3fOB7qCA8iul5g8yQyit4dRYtucHywQNdYS
-        d879YoOwHSV2tz5mh6jnk7jxVhBiL5/EpG3TmSHCvBIdbUIQ1SoS6/r3QE2Rkuh9tQIadB4S
-        v+8cYoGE1hRGiQVLNrNPYFSYheSdWUjemQU0lllAU2L9Ln2IsLbEsoWvmSFsW4l1696zLGBk
-        XcUonlpanJueWmycl1quV5yYW1yal66XnJ+7iRGYuk7/O/51B+OKVx/1DjEycTAeYlQBan60
-        YfUFRimWvPy8VCUR3rXFDQlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeXdtXRMvJJCeWJKanZpa
-        kFoEk2Xi4JRqYNLdfLjuYF3wrCcPbMyezdMxeSj2KPHZ7uS0vdn7PooXFYSf+eXH+XXpxC0B
-        K4uV/tw1zp0rc08pJH9LL++0HqX4GX2CfOvV779SjX5nYTqpPaXjx5l7R/ZPOMbydbuMIsNO
-        S8a+2UJzsqyVqn95dLGtbRXk9L76V6yy2l1d3PPBLmbR0AU7PDLNFl/ua+cQlpl93HXf56uv
-        Vnoar1dpvb2cc2av2XzXtJsP2OwErWZPumDLtC1k4pmYI/s6rj9ayyGnXPUs+Oj26zdDBO/O
-        2nTijF997avU6TNPX26aLRt548XfK6Jrcj7zCamxrBFd+G7pbLVZppqz/tSzGs06v9G2zYq5
-        fvfW5rnl/xPXTUtUYinOSDTUYi4qTgQAdBdfAdgDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsVy+t/xu7oFMY0JBqtnClhsnLGe1aL7lYzF
-        xrc/mCw2Pb7GanH/3k8mi8u75rBZzDi/j8li7ZG77BYLtvUxOnB6zGroZfPYdkDVY/OSeo++
-        LasYPfpebmD0+LxJLoAtSs+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbKyFRJ384m
-        JTUnsyy1SN8uQS9j2vnljAVX+SoenVzP3MDYxNvFyMkhIWAi0ffoGmMXIxeHkMBSRokFryay
-        dzFyACWkJFbOTYeoEZb4c62LDaLmKaPEx3Nz2UESbAL2Ev1H9rGA2CIC1hJHt85nBiliFnjB
-        JHH/2S1WkISwgKfE7OZDYLaQgIPEhAubmEBsFgFViUu7DoA1cAp0MEp8/tjDBpLgFTCX2Lvw
-        D9hUUQFLiS0v7rNDxAUlTs58AhZnFsiW+Lr6OfMERoFZSFKzkKRmAT3BLKApsX6XPkRYW2LZ
-        wtfMELatxLp171kWMLKuYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIy6bcd+bt7BOO/VR71D
-        jEwcjIcYVYA6H21YfYFRiiUvPy9VSYR3bXFDghBvSmJlVWpRfnxRaU5q8SFGU6DfJjJLiSbn
-        A9NBXkm8oZmBqaGJmaWBqaWZsZI479a5a+KFBNITS1KzU1MLUotg+pg4OKUamAwucwdHnfHN
-        OMH2aA232q250UUxjWZ3xcPPiK2tkyxcFWb8RfxQzroVms0VV/PTZsv+Lf/H91KvvEkr9E62
-        y0fZ5x9udNluTJGsfZzYxrfH1YOf/e+e518Es44L7mFuXf/qpivzi5QVO2efT7+3JcJckH/b
-        Vsnn26f+lZUsen7R7IX0+XV7FJ/GJ/z2P/D4y2udCzqR97v3l1kJZGTEnjk2+/pM69OCnpvD
-        fB/eelkZGtdnvPsWy+FnL0QklM+8+WN9+Ej9mueS5v3zVjwQbrE+YcC5K1Bu3Zd1DRUTnCWf
-        tzZ1qFw8qcFrLsoqrs56RY/Z8ueZl1cTT/gaTraUWKJU8HOt14sSM/HIRWfLSpRYijMSDbWY
-        i4oTAVutjQhPAwAA
-X-CMS-MailID: 20210422112224eucas1p283ca7aeaa25ab514b9743a11e63a76e0
-X-Msg-Generator: CA
-X-RootMTR: 20210422112224eucas1p283ca7aeaa25ab514b9743a11e63a76e0
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210422112224eucas1p283ca7aeaa25ab514b9743a11e63a76e0
-References: <bc20ae4c-3e62-7b07-506c-ce8d90f65754@canonical.com>
-        <CGME20210422112224eucas1p283ca7aeaa25ab514b9743a11e63a76e0@eucas1p2.samsung.com>
+In-Reply-To: <YIEzaQF8fVtNgU0E@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+On 4/22/21 1:57 PM, Mike Rapoport wrote:
+> On Thu, Apr 22, 2021 at 01:20:23PM +0530, Anshuman Khandual wrote:
+>> Platforms like arm and arm64 have redefined pfn_valid() because their early
+>> memory sections might have contained memmap holes after freeing parts of it
+>> during boot, which should be skipped while validating a pfn for struct page
+>> backing. This scenario on certain platforms where memmap is not continuous,
+>> could be captured with a new option CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES.
+>> Then the generic pfn_valid() can be improved to accommodate such platforms.
+>> This reduces overall code footprint and also improves maintainability.
+>>
+>> free_unused_memmap() and pfn_to_online_page() have been updated to include
+>> such cases. This also exports memblock_is_memory() for all drivers that use
+>> pfn_valid() but lack required visibility. After the new config is in place,
+>> drop CONFIG_HAVE_ARCH_PFN_VALID from arm64 platforms.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Mike Rapoport <rppt@kernel.org>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> This patch applies on the latest mainline kernel after Mike's series
+>> regarding arm64 based pfn_valid().
+>>
+>> https://lore.kernel.org/linux-mm/20210422061902.21614-1-rppt@kernel.org/T/#t
+>>
+>> Changes in RFC V2:
+>>
+>> - Dropped support for arm (32 bit)
+>> - Replaced memblock_is_map_memory() check with memblock_is_memory()
+>> - MEMBLOCK_NOMAP memory are no longer skipped for pfn_valid()
+>> - Updated pfn_to_online_page() per David
+>> - Updated free_unused_memmap() to preserve existing semantics per Mike
+>> - Exported memblock_is_memory() instead of memblock_is_map_memory()
+>>
+>> Changes in RFC V1:
+>>
+>> - https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
+>>
+>>  arch/arm64/Kconfig            |  2 +-
+>>  arch/arm64/include/asm/page.h |  1 -
+>>  arch/arm64/mm/init.c          | 41 -----------------------------------
+>>  include/linux/mmzone.h        | 18 ++++++++++++++-
+>>  mm/Kconfig                    |  9 ++++++++
+>>  mm/memblock.c                 |  8 +++++--
+>>  mm/memory_hotplug.c           |  5 +++++
+>>  7 files changed, 38 insertions(+), 46 deletions(-)
+>>
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index b4a9b493ce72..4cdc3570ffa9 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -144,7 +144,6 @@ config ARM64
+>>  	select HAVE_ARCH_KGDB
+>>  	select HAVE_ARCH_MMAP_RND_BITS
+>>  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+>> -	select HAVE_ARCH_PFN_VALID
+>>  	select HAVE_ARCH_PREL32_RELOCATIONS
+>>  	select HAVE_ARCH_SECCOMP_FILTER
+>>  	select HAVE_ARCH_STACKLEAK
+>> @@ -167,6 +166,7 @@ config ARM64
+>>  		if $(cc-option,-fpatchable-function-entry=2)
+>>  	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+>>  		if DYNAMIC_FTRACE_WITH_REGS
+>> +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
+>>  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>>  	select HAVE_FAST_GUP
+>>  	select HAVE_FTRACE_MCOUNT_RECORD
+>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+>> index 75ddfe671393..fcbef3eec4b2 100644
+>> --- a/arch/arm64/include/asm/page.h
+>> +++ b/arch/arm64/include/asm/page.h
+>> @@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+>>  
+>>  typedef struct page *pgtable_t;
+>>  
+>> -int pfn_valid(unsigned long pfn);
+>>  int pfn_is_map_memory(unsigned long pfn);
+>>  
+>>  #include <asm/memory.h>
+>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>> index f431b38d0837..5731a11550d8 100644
+>> --- a/arch/arm64/mm/init.c
+>> +++ b/arch/arm64/mm/init.c
+>> @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+>>  	free_area_init(max_zone_pfns);
+>>  }
+>>  
+>> -int pfn_valid(unsigned long pfn)
+>> -{
+>> -	phys_addr_t addr = PFN_PHYS(pfn);
+>> -
+>> -	/*
+>> -	 * Ensure the upper PAGE_SHIFT bits are clear in the
+>> -	 * pfn. Else it might lead to false positives when
+>> -	 * some of the upper bits are set, but the lower bits
+>> -	 * match a valid pfn.
+>> -	 */
+>> -	if (PHYS_PFN(addr) != pfn)
+>> -		return 0;
+>> -
+>> -#ifdef CONFIG_SPARSEMEM
+>> -{
+>> -	struct mem_section *ms;
+>> -
+>> -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>> -		return 0;
+>> -
+>> -	ms = __pfn_to_section(pfn);
+>> -	if (!valid_section(ms))
+>> -		return 0;
+>> -
+>> -	/*
+>> -	 * ZONE_DEVICE memory does not have the memblock entries.
+>> -	 * memblock_is_memory() check for ZONE_DEVICE based
+>> -	 * addresses will always fail. Even the normal hotplugged
+>> -	 * memory will never have MEMBLOCK_NOMAP flag set in their
+>> -	 * memblock entries. Skip memblock search for all non early
+>> -	 * memory sections covering all of hotplug memory including
+>> -	 * both normal and ZONE_DEVICE based.
+>> -	 */
+>> -	if (!early_section(ms))
+>> -		return pfn_section_valid(ms, pfn);
+>> -}
+>> -#endif
+>> -	return memblock_is_memory(addr);
+>> -}
+>> -EXPORT_SYMBOL(pfn_valid);
+>> -
+>>  int pfn_is_map_memory(unsigned long pfn)
+>>  {
+>>  	phys_addr_t addr = PFN_PHYS(pfn);
+>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>> index 961f0eeefb62..18bf71665211 100644
+>> --- a/include/linux/mmzone.h
+>> +++ b/include/linux/mmzone.h
+>> @@ -1421,10 +1421,22 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+>>   *
+>>   * Return: 1 for PFNs that have memory map entries and 0 otherwise
+>>   */
+>> +bool memblock_is_memory(phys_addr_t addr);
+>> +
+>>  static inline int pfn_valid(unsigned long pfn)
+>>  {
+>> +	phys_addr_t addr = PFN_PHYS(pfn);
+>>  	struct mem_section *ms;
+>>  
+>> +	/*
+>> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+>> +	 * pfn. Else it might lead to false positives when
+>> +	 * some of the upper bits are set, but the lower bits
+>> +	 * match a valid pfn.
+>> +	 */
+>> +	if (PHYS_PFN(addr) != pfn)
+>> +		return 0;
+>> +
+>>  	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>>  		return 0;
+>>  	ms = __nr_to_section(pfn_to_section_nr(pfn));
+>> @@ -1434,7 +1446,11 @@ static inline int pfn_valid(unsigned long pfn)
+>>  	 * Traditionally early sections always returned pfn_valid() for
+>>  	 * the entire section-sized span.
+>>  	 */
+>> -	return early_section(ms) || pfn_section_valid(ms, pfn);
+>> +	if (early_section(ms))
+>> +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+>> +			memblock_is_memory(pfn << PAGE_SHIFT) : 1;
+> 
+> Nit: we already did 
+> 
+> 	addr = PFN_PHYS(pfn);
+> 
+> a few lines above :)
 
-It was <2021-04-22 czw 12:46>, when Krzysztof Kozlowski wrote:
-> On 22/04/2021 12:41, =C5=81ukasz Stelmach wrote:
->> pm_runtime_get_sync() increments the runtime PM usage counter even
->> the call returns an error code. Thus a pairing decrement is needed
->> on the error handling path to keep the counter balanced.
->
-> It's exactly the same as Dinghao's patch:
-> https://lore.kernel.org/linux-samsung-soc/20200522011659.26727-1-dinghao.=
-liu@zju.edu.cn/
-> which you reviewed. It has even the same commit msg
-> (although it's difficult to be creative here).
->
-> I think it's better to resend his patch instead.
+Yeah, will use the addr directly here.
 
-It isn't the same because it uses pm_runtime_put_noidle() as discussed
-here[1], applied here[2] and advised here[2]. Dinghao didn't prepare
-v3[4] for exynos.
+> 
+>> +
+>> +	return pfn_section_valid(ms, pfn);
+>>  }
+>>  #endif
+>>  
+>> diff --git a/mm/Kconfig b/mm/Kconfig
+>> index 24c045b24b95..db7128111874 100644
+>> --- a/mm/Kconfig
+>> +++ b/mm/Kconfig
+>> @@ -135,6 +135,15 @@ config HAVE_FAST_GUP
+>>  config ARCH_KEEP_MEMBLOCK
+>>  	bool
+>>  
+>> +config HAVE_EARLY_SECTION_MEMMAP_HOLES
+>> +	depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
+>> +	def_bool n
+>> +	help
+>> +	  Early sections on certain platforms might have some memory ranges that
+>> +	  are not backed with struct page mappings. When subscribed, this option
+>> +	  enables special handling for those memory ranges in certain situations
+>> +	  such as pfn_valid().
+>> +
+>>  # Keep arch NUMA mapping infrastructure post-init.
+>>  config NUMA_KEEP_MEMINFO
+>>  	bool
+>> diff --git a/mm/memblock.c b/mm/memblock.c
+>> index 3abf2c3fea7f..93f8a9c8428d 100644
+>> --- a/mm/memblock.c
+>> +++ b/mm/memblock.c
+>> @@ -1740,6 +1740,7 @@ bool __init_memblock memblock_is_memory(phys_addr_t addr)
+>>  {
+>>  	return memblock_search(&memblock.memory, addr) != -1;
+>>  }
+>> +EXPORT_SYMBOL(memblock_is_memory);
+> 
+> Please make it inside #ifdef CONFIG_ARCH_MEMBLOCK
+CONFIG_ARCH_KEEP_MEMBLOCK ? Wrap it around the EXPORT_SYMBOL() or the
+entire function memblock_is_memory().
 
-[1] https://lore.kernel.org/lkml/20200528065519.GA26960@gondor.apana.org.au/
-[2] https://lore.kernel.org/lkml/20200528072106.5191-1-dinghao.liu@zju.edu.=
-cn/
-[3] https://lore.kernel.org/lkml/20200616073142.GA30519@gondor.apana.org.au/
-[4] https://lore.kernel.org/lkml/20200522011659.26727-1-dinghao.liu@zju.edu=
-.cn/
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAmCBXGcACgkQsK4enJil
-gBC41wf+I2Ag6/aoSYFbS2TtgUWe6hv82FUuQNh+9N3E1lPAGI0qh5cw5v+8/tt1
-bzBh8rbyt4d/fr596hjueX2rZJwr98GCb8JRAvPczqXRysEnFlspW/GoeOaDVy8l
-tTPJq6PgNtqTVIx/C5xPoJXG9C8dO3Ozhvkb7CTIbVRTRvLAhm4B7307pv0rKobX
-+Ho4RCh+FtmpuIuTvwoUMG//I6cO+Oa5rbDjxK0YpEVc5vwVABYKo/JlvyyDp2pe
-vrSfuvVJ60ASoXysTfWax6FHa4hX2/1w86JT7CDQVH5JSI7yW9V/8Rg/dYxTpdee
-j5TXdZqMkGkVGUrhJ32USAj2EWvAzA==
-=ajv9
------END PGP SIGNATURE-----
---=-=-=--
+>   
+>>  bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
+>>  {
+>> @@ -1931,8 +1932,11 @@ static void __init free_unused_memmap(void)
+>>  	unsigned long start, end, prev_end = 0;
+>>  	int i;
+>>  
+>> -	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
+>> -	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>> +	if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+>> +		return;
+>> +
+>> +	if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) &&
+>> +	    !IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID))
+>>  		return;
+> 
+> Can you please add a comment that says that architecture should provide a
+> way to detect holes in the memory map to be able to free its part?
+I did not get that completely. If CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES is
+not subscribed, then the platform must provide a method that identifies these
+memmap holes and process them accordingly in pfn_valid() just to avoid null
+pointer dereference ? Also the comment should be placed after the second
+return statement, when its going to free unused memmap segments.
