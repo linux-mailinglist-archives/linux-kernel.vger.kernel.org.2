@@ -2,72 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547E1367927
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298FF36792B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbhDVFSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 01:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhDVFR7 (ORCPT
+        id S232824AbhDVFS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 01:18:56 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:45000 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhDVFSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 01:17:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCD3C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 22:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=nXccVF0VLMZZqdk7lBuIpC5btmCdWymL750DLlWAg2U=; b=v+a4qYbJcGUkAzXdGc2gUyofE8
-        2nPvYlXPhSOLZ9RTyLrSUgCS5S1V77rxhQU5vwocNJRytdpuRsRA/DYP2nFA8Vu8+2SSRvy5YW/+n
-        sCNcWpYXsbVJLutejf2O/VtM5EuQxra9W3WUK+UcVDc64oPy9ncE4CA5/pvoPtDth4oluTsN5a17I
-        UhWs5ZZLsjsEtiVQc5O3IINv5tHGoeFBU+ybFMQiNBQYElJbQrW8mL8rZ7cdVQYGXHjZp2hglO3Qe
-        2QZuxdmDw834j48rVSrwawFxfpvwOVzjvk9mETisPd0P+m6BXmgL0LMekv3BrWYZd/27v+YmLc3oA
-        WE3fEhJg==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZRhw-00HSwO-KM; Thu, 22 Apr 2021 05:17:01 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org
-Subject: [PATCH] ARC: kgdb: add 'fallthrough' to prevent a warning
-Date:   Wed, 21 Apr 2021 22:16:53 -0700
-Message-Id: <20210422051653.23078-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 22 Apr 2021 01:18:55 -0400
+Received: by mail-ej1-f50.google.com with SMTP id r20so17068709ejo.11;
+        Wed, 21 Apr 2021 22:18:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T68H21/yRSJllYAB5Jd1QXkWmcnbS65PN8kB5kpIvTw=;
+        b=ArGaNVf3Qa1SvPGAews7lpnzllRnzsXMnX9EuX+uzvaCvu07GH0VtfTWyqGfo7DzZu
+         i9Qitpa77BYIgbChPar0AMwObbDKZkE4jZO0+HRBRbvO4aY8bDxEMBQeMEx4d2/a5YkT
+         lPfEg0mfoqXK0EOCgrSaYZ9g16lbTLsE+/zBH0quNQroKesFxD8bqA1DAyYwg/kmMF8S
+         xm/+CllZBFFkt7G3IKIz5YjSry5pXZIdctvxKrLdp3oU1B8p0mpU252AF77mUj/drrSI
+         XxTf0v+OYn3tJFwP0VKCjZM9UdJJtNWzMb7ZX+4bRSt+90QPwjHpwxI+lLPivUiYfBCp
+         3YFg==
+X-Gm-Message-State: AOAM533cFpKbQ1/xT0NsdNAgi1l3pjEjO+ad7exTOzyzveiGj22su4e5
+        LsE3ttFZiryhGz/VGIxGfodIIF5QCR4=
+X-Google-Smtp-Source: ABdhPJwAinWUpP6VG4/USFR7HARR71YxsQ+f2ukAs14Oe5SYHLdnGc8xw+vphVJq1oq5nWQU0+Ty8w==
+X-Received: by 2002:a17:906:5052:: with SMTP id e18mr1447674ejk.112.1619068699923;
+        Wed, 21 Apr 2021 22:18:19 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id hq16sm1030375ejc.5.2021.04.21.22.18.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 22:18:19 -0700 (PDT)
+Subject: Re: [PATCH 120/190] Revert "tty: atmel_serial: fix a potential NULL
+ pointer dereference"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Kangjie Lu <kjlu@umn.edu>,
+        Richard Genoud <richard.genoud@gmail.com>,
+        stable <stable@vger.kernel.org>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-121-gregkh@linuxfoundation.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <57f44dfa-a502-ee4f-6d53-0ab7cba00e1b@kernel.org>
+Date:   Thu, 22 Apr 2021 07:18:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210421130105.1226686-121-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the 'fallthrough' macro to document that this switch case
-does indeed fall through to the next case.
+On 21. 04. 21, 14:59, Greg Kroah-Hartman wrote:
+> This reverts commit c85be041065c0be8bc48eda4c45e0319caf1d0e5.
+> 
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
+> 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Richard Genoud <richard.genoud@gmail.com>
+> Cc: stable <stable@vger.kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>   drivers/tty/serial/atmel_serial.c | 4 ----
+>   1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+> index a24e5c2b30bc..9786d8e5f04f 100644
+> --- a/drivers/tty/serial/atmel_serial.c
+> +++ b/drivers/tty/serial/atmel_serial.c
+> @@ -1256,10 +1256,6 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
+>   					 sg_dma_len(&atmel_port->sg_rx)/2,
+>   					 DMA_DEV_TO_MEM,
+>   					 DMA_PREP_INTERRUPT);
+> -	if (!desc) {
+> -		dev_err(port->dev, "Preparing DMA cyclic failed\n");
+> -		goto chan_err;
+> -	}
 
-../arch/arc/kernel/kgdb.c: In function 'kgdb_arch_handle_exception':
-../arch/arc/kernel/kgdb.c:141:6: warning: this statement may fall through [-Wimplicit-fallthrough=]
-  141 |   if (kgdb_hex2long(&ptr, &addr))
-      |      ^
-../arch/arc/kernel/kgdb.c:144:2: note: here
-  144 |  case 'D':
-      |  ^~~~
+I cannot find anything malicious in the original fix:
+* port->dev is valid for dev_err
+* dmaengine_prep_dma_cyclic returns NULL in case of error
+* chan_err invokes atmel_release_rx_dma which undoes the previous 
+initialization code.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: linux-snps-arc@lists.infradead.org
----
- arch/arc/kernel/kgdb.c |    1 +
- 1 file changed, 1 insertion(+)
+Hence a NACK from me for the revert.
 
---- linux-next-20210420.orig/arch/arc/kernel/kgdb.c
-+++ linux-next-20210420/arch/arc/kernel/kgdb.c
-@@ -140,6 +140,7 @@ int kgdb_arch_handle_exception(int e_vec
- 		ptr = &remcomInBuffer[1];
- 		if (kgdb_hex2long(&ptr, &addr))
- 			regs->ret = addr;
-+		fallthrough;
- 
- 	case 'D':
- 	case 'k':
+>   	desc->callback = atmel_complete_rx_dma;
+>   	desc->callback_param = port;
+>   	atmel_port->desc_rx = desc;
+> 
+
+
+-- 
+js
+suse labs
