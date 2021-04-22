@@ -2,36 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0562C368186
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A105736818F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhDVNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60466 "EHLO mail.kernel.org"
+        id S236467AbhDVNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231772AbhDVNgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:36:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 704D26145F;
-        Thu, 22 Apr 2021 13:35:24 +0000 (UTC)
+        id S236342AbhDVNgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:36:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBFFA6145B;
+        Thu, 22 Apr 2021 13:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619098525;
-        bh=gOyTabmowIFk54R1lQAVx74C3qCSRMhM7PYqCD3X3DY=;
+        s=k20201202; t=1619098556;
+        bh=d8G2H9mh1LJNBBM4BpJVdYdRdIV6lqbGhrLt219FUzY=;
         h=From:To:Cc:Subject:Date:From;
-        b=MsFRvZxPEo6o3ZIQbldBpWYg/Q9p/qhguiVdKYrA/SqYvnWr06qsXpc7WwkczdRu4
-         9sBb0nCScFrZ0SOPmtnzWj/zcUjZ3l2+tNOUSlXu2wPX1g0sY7NZkCa1Xo8Pr7zgAp
-         CfznyywFEXOCZVcZfTxOdCRVMsPVe1SOm+oXfM85TvA1I4ZG/yUhfWVBrwEx0pSeOO
-         LTCu8yiL5SqBH9JHS1RnOCJw0lhNPJAK3GhInsA4Qf6zGdb5IHW20vqLLncvVt2byQ
-         B42f3hmQy7GV9o9rg0x+xVOcv7LaGkOZ8W/gngGy5IedY+lkf71YMJslRkhN/M7pgO
-         kF1WCJR3SZTtA==
+        b=W7TO386JUSq/S336+os/0lgLShCElbkv53kGPxp6KQarPHhKpLiEjAnSGSGT6UEyg
+         aHtyuj/tasIYfMWfNt6jIYbB5vV2yR+JVUeZg+hrrgD1a6bwVra3yV2I7/EM6ne9dm
+         vw5h6CXpyeYL96pDBY3cIi8MJDU3tmlFugP8CliUVe1b1DaEY+E+9CP/vxLRg1+gEv
+         bBcBbDejf8MB1KqbmKJilHgGozMb9ObntzBfkw4fJg1JWDMDlzUJeE6BwupGlilB/L
+         +OfPEYXifqTBW10STFYS7v6ok/kWUGNxQ/NwHhvC1z6/hyn6jmBL9LcY1EU6MFUorX
+         zAtThf1ti9Zkg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [net-next] net: enetc: fix link error again
-Date:   Thu, 22 Apr 2021 15:35:11 +0200
-Message-Id: <20210422133518.1835403-1-arnd@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV
+Date:   Thu, 22 Apr 2021 15:35:33 +0200
+Message-Id: <20210422133547.1861063-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,38 +50,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-A link time bug that I had fixed before has come back now that
-another sub-module was added to the enetc driver:
+The Kconfig dependency is incomplete since DRM_I915_GVT is a 'bool'
+symbol that depends on the 'tristate' VFIO_MDEV. This allows a
+configuration with VFIO_MDEV=m, DRM_I915_GVT=y and DRM_I915=y that
+causes a link failure:
 
-ERROR: modpost: "enetc_ierb_register_pf" [drivers/net/ethernet/freescale/enetc/fsl-enetc.ko] undefined!
+x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `available_instances_show':
+gvt.c:(.text+0x67a): undefined reference to `mtype_get_parent_dev'
+x86_64-linux-ld: gvt.c:(.text+0x6a5): undefined reference to `mtype_get_type_group_id'
+x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `description_show':
+gvt.c:(.text+0x76e): undefined reference to `mtype_get_parent_dev'
+x86_64-linux-ld: gvt.c:(.text+0x799): undefined reference to `mtype_get_type_group_id'
 
-The problem is that the enetc Makefile is not actually used for
-the ierb module if that is the only built-in driver in there
-and everything else is a loadable module.
+Clarify the dependency by specifically disallowing the broken
+configuration. If VFIO_MDEV is built-in, it will work, but if
+VFIO_MDEV=m, the i915 driver cannot be built-in here.
 
-Fix it by always entering the directory this time, regardless
-of which symbols are configured. This should reliably fix the
-problem and prevent it from coming back another time.
-
-Fixes: 112463ddbe82 ("net: dsa: felix: fix link error")
-Fixes: e7d48e5fbf30 ("net: enetc: add a mini driver for the Integrated Endpoint Register Block")
+Fixes: 07e543f4f9d1 ("vfio/gvt: Make DRM_I915_GVT depend on VFIO_MDEV")
+Fixes: 9169cff168ff ("vfio/mdev: Correct the function signatures for the mdev_type_attributes")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/freescale/Makefile | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/gpu/drm/i915/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/Makefile b/drivers/net/ethernet/freescale/Makefile
-index 67c436400352..de7b31842233 100644
---- a/drivers/net/ethernet/freescale/Makefile
-+++ b/drivers/net/ethernet/freescale/Makefile
-@@ -24,6 +24,4 @@ obj-$(CONFIG_FSL_DPAA_ETH) += dpaa/
- 
- obj-$(CONFIG_FSL_DPAA2_ETH) += dpaa2/
- 
--obj-$(CONFIG_FSL_ENETC) += enetc/
--obj-$(CONFIG_FSL_ENETC_MDIO) += enetc/
--obj-$(CONFIG_FSL_ENETC_VF) += enetc/
-+obj-y += enetc/
+diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+index 7a5b7a93d33e..791cc9556863 100644
+--- a/drivers/gpu/drm/i915/Kconfig
++++ b/drivers/gpu/drm/i915/Kconfig
+@@ -111,7 +111,7 @@ config DRM_I915_GVT
+ 	bool "Enable Intel GVT-g graphics virtualization host support"
+ 	depends on DRM_I915
+ 	depends on 64BIT
+-	depends on VFIO_MDEV
++	depends on VFIO_MDEV=y || VFIO_MDEV=DRM_I915
+ 	default n
+ 	help
+ 	  Choose this option if you want to enable Intel GVT-g graphics
 -- 
 2.29.2
 
