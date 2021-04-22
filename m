@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D2A36823B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4479A368248
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhDVOMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:12:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38375 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236357AbhDVOMi (ORCPT
+        id S237099AbhDVOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236333AbhDVOQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:12:38 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lZa3F-0007PO-FD; Thu, 22 Apr 2021 14:11:29 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] KVM: x86: simplify zero'ing of entry->ebx
-Date:   Thu, 22 Apr 2021 15:11:29 +0100
-Message-Id: <20210422141129.250525-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 22 Apr 2021 10:16:51 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C384DC06174A;
+        Thu, 22 Apr 2021 07:16:14 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 4BC1C1F4323A
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, xxm@rock-chips.com
+Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v2 0/4] Add driver for rk356x
+Date:   Thu, 22 Apr 2021 16:15:58 +0200
+Message-Id: <20210422141602.350746-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This series adds the IOMMU driver for rk356x SoC.
+Since a new compatible is needed to distinguish this second version of 
+IOMMU hardware block from the first one, it is an opportunity to convert
+the binding to DT schema.
 
-Currently entry->ebx is being zero'd by masking itself with zero.
-Simplify this by just assigning zero, cleans up static analysis
-warning.
+version 2:
+ - Fix iommu-cells typo in rk322x.dtsi
+ - Change maintainer
+ - Change reg maxItems
+ - Add power-domains property
 
-Addresses-Coverity: ("Bitwise-and with zero")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Benjamin Gaignard (3):
+  dt-bindings: iommu: rockchip: Convert IOMMU to DT schema
+  dt-bindings: iommu: rockchip: Add compatible for v2
+  ARM: dts: rockchip: rk322x: Fix iommu-cells properties name
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 57744a5d1bc2..9bcc2ff4b232 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -851,7 +851,7 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 		entry->eax &= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT |
- 			      SGX_ATTR_PROVISIONKEY | SGX_ATTR_EINITTOKENKEY |
- 			      SGX_ATTR_KSS;
--		entry->ebx &= 0;
-+		entry->ebx = 0;
- 		break;
- 	/* Intel PT */
- 	case 0x14:
+Simon Xue (1):
+  iommu: rockchip: Add support iommu v2
+
+ .../bindings/iommu/rockchip,iommu.txt         |  38 --
+ .../bindings/iommu/rockchip,iommu.yaml        |  84 ++++
+ arch/arm/boot/dts/rk322x.dtsi                 |   6 +-
+ drivers/iommu/rockchip-iommu.c                | 422 +++++++++++++++++-
+ 4 files changed, 493 insertions(+), 57 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
+ create mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+
 -- 
-2.30.2
+2.25.1
 
