@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E280A36871F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC783368721
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238805AbhDVTXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
+        id S238844AbhDVTXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238142AbhDVTXU (ORCPT
+        with ESMTP id S236810AbhDVTXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:23:20 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF020C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:22:44 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso20729372otl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:22:44 -0700 (PDT)
+        Thu, 22 Apr 2021 15:23:46 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7920CC06174A;
+        Thu, 22 Apr 2021 12:23:11 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id r128so46915693lff.4;
+        Thu, 22 Apr 2021 12:23:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=66cEbil9eINHpcRrkzmgQxcSDhUEl5mJfXPxp3tOEXI=;
-        b=IuMg6mQeBwJh4wTwLnveFoFpVCocNbp/3EC4dwCMijoPhLgQM2OBh4NUIZQwRzsLzW
-         yYUK/yBVD+pjy3xQqUyrjYIWcB65J/+htg7XP2EYaEZ6LluevaV3OfGb5DqbxPWkexz9
-         e9Hr4nzsad9879fuUtXEkkmYIvolaJX/qO07bJ9/pH2oCxyYlNvUU180O1hr+XS7qAcP
-         HOJ0PnJLi5S79sK+mXpRHBp5AzAf3NweX5pKLSbi3BCQUEnEGKeNSulp4rqrWsDneIsn
-         DjK05zqJ25SPj0NRq+FOEEn5/fGxMyOzXla900ECNgIHH6ZPofKnTKl0LWDF6GSoFUf9
-         WWWw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e0qtyejBNKzVyasn4Fe/BMcM/76qCIWOHv2Y82nNLWI=;
+        b=Tdmy9zQyWhw7hnnO0VhduA8oxlvWOkcJRDSIyRRniTAiJHGe0XVOenYhm2AyhfRIqm
+         mrLNvK22x7sadJEj3AdfnKdzhmDu3GxgQw0wpTGPHJQ/VnmOy4GpScjDH+magYtO3T9q
+         aK9Ds1nqMCUaEvynlDK0UTtMkOCQSBVXpmtZqngVNEAJL/tBtbGP1Cttg+zmk6uYXvQt
+         pi2z9ZNo4/ljXgXK0xIP7U7G5FhrfKV5AX+7+y+6EnS50V9ma1ikrbyNigjP0xyERqdM
+         Gp2SmaUn3bB/+220sXV3XlNG7S+1oVGTYKRB6lufkqw0ilJSfEGwWtJjr58zeW9O4rRe
+         g77g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66cEbil9eINHpcRrkzmgQxcSDhUEl5mJfXPxp3tOEXI=;
-        b=kQA1UXf2OxKZBjeh95L0wJAV/BXXRSmkoyqzGHdxz3iFmp49i1Ts8dBPFbsbt0IksO
-         iWBhmC18/xLvEVHYn/LfWP+inZjXo5nCSVP2Ct6pwfVrNc7HgJKE1hD5KX1fU+uMR3by
-         quWASjaqqiqsbHYJxDiKMnK5GGKWuN0feT82YS19jaE/YcacGVT4MiwkkPU1doNL/Fj0
-         vjlXXu9QvngL1HZHjBz/Dz6smMOAcJAROdBXLbI5wlwbtd1Q2IRoLCmYMNUP/BlozP8L
-         EUc0HNzAca69fAjjAk6qEWfqCVQF1iqJ+Z/4WPtdUqveX89uhSAiUQZ0CxBc8Exr4/ja
-         Vczg==
-X-Gm-Message-State: AOAM532sBrpiGK+2dGB7q4nSGnI40OTjTmni98fLf0PISIdJ2Az2V2oR
-        YwWS3R7szm0DXH0unMf+r4uDeSDI2dUmX6CqB/iAmw==
-X-Google-Smtp-Source: ABdhPJwx2fYflGjsAzNwa66QYD0lhZUtecFrQpiV3owpBNe0jgxddvCCKETq2D5XKlLBMFEXtVDQDJOt9zvi59YXxn4=
-X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr83098otn.233.1619119364007;
- Thu, 22 Apr 2021 12:22:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e0qtyejBNKzVyasn4Fe/BMcM/76qCIWOHv2Y82nNLWI=;
+        b=i3qJCb6AZA7PgpxYu1btfawWOigIfrRTxNxG3GHn4Ok7h3x86o0enT1u6EP+8ANx8O
+         c4Leu3zj4RUKd/GhqjSUvUg8wxuuH5Wr9qXvuqtwgiBHIqyndJaqa030lXl5qwLQXPYs
+         a/ZsvMZEQnAhMEV+jck2Ba88qKlonRf/juOZ12B4bi5M+yUlji8yf+OovTzZsmXap1hb
+         lZjWKNRPA5vM0EFeXwfN0yBm4uTEFQOA2fK+h4B7R9MctRlbu7qdmBatJxIRcLZSKASv
+         X5SJ/bN2OVgkRSt13W3E29hS0YgZKoMxevRWOUkS4PQUY0P/oIcIzG7n5dy9SOfwq+nj
+         ElRA==
+X-Gm-Message-State: AOAM5312F4eXbyol2JCP3XZYKKfmdN0LJdApPEtcWgy1aTlxHCrwo9IJ
+        YtlS4/5mWAcr4kv8W3sHGylA02fu0cw=
+X-Google-Smtp-Source: ABdhPJzAqO9/q1cmEHfiCyXt8qiAuhD3vSrlqaW/Ezyg2zFVlBkgxMJU5FJuec/Ge7mWFLyRc6ieWQ==
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr3421761lft.487.1619119389723;
+        Thu, 22 Apr 2021 12:23:09 -0700 (PDT)
+Received: from localhost.localdomain (31-211-229-121.customers.ownit.se. [31.211.229.121])
+        by smtp.gmail.com with ESMTPSA id e9sm347493lft.150.2021.04.22.12.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 12:23:09 -0700 (PDT)
+From:   =?UTF-8?q?Martin=20=C3=85gren?= <martin.agren@gmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] uio/uio_pci_generic: fix return value changed in refactoring
+Date:   Thu, 22 Apr 2021 21:22:40 +0200
+Message-Id: <20210422192240.1136373-1-martin.agren@gmail.com>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901
 MIME-Version: 1.0
-References: <20210422064437.3577327-1-elver@google.com> <d480a4f56d544fb98eb1cdd62f44ae91@AcuMS.aculab.com>
- <CANpmjNNjkQdziFZDkPy5EnwCF+VyBWKXEwCDgNpxHGZd+BLQag@mail.gmail.com>
-In-Reply-To: <CANpmjNNjkQdziFZDkPy5EnwCF+VyBWKXEwCDgNpxHGZd+BLQag@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 22 Apr 2021 21:22:31 +0200
-Message-ID: <CANpmjNNHRmaxawVKNe8Oe=pnEgoJG6iqevHNJRa4EoeFtS5fYQ@mail.gmail.com>
-Subject: Re: [PATCH tip 1/2] signal, perf: Fix siginfo_t by avoiding u64 on
- 32-bit architectures
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "glider@google.com" <glider@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "christian@brauner.io" <christian@brauner.io>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pcc@google.com" <pcc@google.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 at 12:17, Marco Elver <elver@google.com> wrote:
-> On Thu, 22 Apr 2021 at 11:48, David Laight <David.Laight@aculab.com> wrote:
-> >
-> > From: Marco Elver
-> > > Sent: 22 April 2021 07:45
-> > >
-> > > On some architectures, like Arm, the alignment of a structure is that of
-> > > its largest member.
-> >
-> > That is true everywhere.
-> > (Apart from obscure ABI where structure have at least 4 byte alignment!)
->
-> For instance, x86 didn't complain, nor did m68k. Both of them have
-> compile-time checks for the layout (I'm adding those for Arm
-> elsewhere).
-[...]
-> > Much as I hate __packed, you could add __packed to the
-> > definition of the structure member _perf.
-> > The compiler will remove the padding before it and will
-> > assume it has the alignment of the previous item.
-> >
-> > So it will never use byte accesses.
->
-> Sure __packed works for Arm. But I think there's no precedent using
-> this on siginfo_t, possibly for good reasons? I simply can't find
-> evidence that this is portable on *all* architectures and for *all*
-> possible definitions of siginfo_t, including those that live in things
-> like glibc.
->
-> Can we confirm that __packed is fine to add to siginfo_t on *all*
-> architectures for *all* possible definitions of siginfo_t? I currently
-> can't. And given it's outside the scope of the C standard (as of C11
-> we got _Alignas, but that doesn't help I think), I'd vote to not
-> venture too far for code that should be portable especially things as
-> important as siginfo_t, and has definitions *outside* the kernel (I
-> know we do lots of non-standard things, but others might not).
+Commit ef84928cff58 ("uio/uio_pci_generic: use device-managed function
+equivalents") was able to simplify various error paths thanks to no
+longer having to clean up on the way out. Some error paths were dropped,
+others were simplified. In one of those simplifications, the return
+value was accidentally changed from -ENODEV to -ENOMEM. Restore the old
+return value.
 
-After thinking about this all afternoon, you convinced me that the
-commit message wasn't great, and this should be in the commit message,
-too: https://lkml.kernel.org/r/20210422191823.79012-1-elver@google.com
+Fixes: ef84928cff58 ("uio/uio_pci_generic: use device-managed function equivalents")
+Signed-off-by: Martin Ågren <martin.agren@gmail.com>
+---
+ This is my first contribution to the Linux kernel. Hints, suggestions,
+ corrections and any other feedback welcome.
 
-Thanks,
--- Marco
+ drivers/uio/uio_pci_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
+index c7d681fef198..3bb0b0075467 100644
+--- a/drivers/uio/uio_pci_generic.c
++++ b/drivers/uio/uio_pci_generic.c
+@@ -81,9 +81,9 @@ static int probe(struct pci_dev *pdev,
+ 		return err;
+ 	}
+ 
+ 	if (pdev->irq && !pci_intx_mask_supported(pdev))
+-		return -ENOMEM;
++		return -ENODEV;
+ 
+ 	gdev = devm_kzalloc(&pdev->dev, sizeof(struct uio_pci_generic_dev), GFP_KERNEL);
+ 	if (!gdev)
+ 		return -ENOMEM;
+-- 
+2.31.1.527.g47e6f16901
+
