@@ -2,105 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BA0367A45
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6824367A28
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbhDVGzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:55:43 -0400
-Received: from mout02.posteo.de ([185.67.36.142]:58981 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229629AbhDVGzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:55:09 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 02:55:09 EDT
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 57C8C2400FC
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 08:47:24 +0200 (CEST)
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4FQnzH0cm6z6tmV;
-        Thu, 22 Apr 2021 08:47:22 +0200 (CEST)
-Subject: Re: [PATCH 120/190] Revert "tty: atmel_serial: fix a potential NULL
- pointer dereference"
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S234963AbhDVGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:48:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55458 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234877AbhDVGsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 02:48:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619074063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H/ET1kgjZaDP9QqqrVOtr2KWqSYP34uoIbTEzMVDfWs=;
+        b=XeNsM6SXirhocHOfc7SigLtyrW5DR9k30ghZnzDn+0HZHNJ8mYGHM5iAB+P8q+gmFhyhY+
+        LLvsJZ9tp2G1R5S50vxGkyx25L3qkct78YFJ0OmjDbb8meB3qbKn4r8sTmboHZhWeMxZk6
+        qLHe0TNmDi3rNmIzJUAZkvnUay6QME0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-mw3JQj-iMMq4OxDFqrLQ9w-1; Thu, 22 Apr 2021 02:47:39 -0400
+X-MC-Unique: mw3JQj-iMMq4OxDFqrLQ9w-1
+Received: by mail-ed1-f70.google.com with SMTP id r14-20020a50d68e0000b0290385504d6e4eso6278337edi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:47:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H/ET1kgjZaDP9QqqrVOtr2KWqSYP34uoIbTEzMVDfWs=;
+        b=AAW7kZhBXGKt5yJxxmAg/EP6EFOapM5tZlcoKfSupYGH8b6pvAUno1Uqz2pUlcnWFe
+         lPZsxaHXOSlYOCZK0FP862KQjqYSeS4zb3k3y8vUfQ639j9htl5AnjIRc2UUMu+ReCTH
+         H5d4lvlYnmCWB31Ai3mqt0jtzG5L3nRO6TutnAxTbKUfM7USz/jlURBgavz2EzBkvcJh
+         xhlaZANQWr1WgGB0XHNxw5dFOHdEctyDX8ibhZe3cGVlvvHTUg/ZDpvMHUo5zw3fTYBQ
+         Xtxi49rFOcA+KtOcYRFh9wy0cdWAeTZKQkKLMcFGjFuEpvWfm6tNyYBJYXZjcU3TVX2E
+         zXTA==
+X-Gm-Message-State: AOAM533/UGqdFsJHww7JCT7ZOersgztcDbmwPKst0pj4o6hbSHhFN78M
+        U+T1ODtEMMluIRgfbCB7r99lWF42QMlFsU84dQ4FCX90uA8GMcLH8bsmCnox0Ra7GS7It2sHPL9
+        qQDGmo/Awjd+SFvWnM9SvUFMy/yfieWyiDu8kTKzUiGuhBXsyq9T/uzhnWhuelVD8WSaNi1gfQ/
+        /R
+X-Received: by 2002:aa7:c78a:: with SMTP id n10mr1825579eds.239.1619074058489;
+        Wed, 21 Apr 2021 23:47:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoJOqKtEBxatEzxvvjy30R07QI7/KsZ8ywRC/exj0FTv9gLrgGET0BkO/O7mmUYWwGuAiJTQ==
+X-Received: by 2002:aa7:c78a:: with SMTP id n10mr1825552eds.239.1619074058194;
+        Wed, 21 Apr 2021 23:47:38 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k9sm1244989eje.102.2021.04.21.23.47.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Apr 2021 23:47:37 -0700 (PDT)
+Subject: Re: [PATCH] KVM: VMX: Intercept FS/GS_BASE MSR accesses for 32-bit
+ KVM
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Kangjie Lu <kjlu@umn.edu>,
-        Richard Genoud <richard.genoud@gmail.com>,
-        stable <stable@vger.kernel.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-121-gregkh@linuxfoundation.org>
- <57f44dfa-a502-ee4f-6d53-0ab7cba00e1b@kernel.org>
-From:   Richard Genoud <richard.genoud@gmail.com>
-Message-ID: <ad76449f-0603-a156-85d6-37d3c906b4cc@posteo.net>
-Date:   Thu, 22 Apr 2021 06:47:20 +0000
+References: <20210422023831.3473491-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e38e22bd-933e-ff44-f398-63e0c3a6e25a@redhat.com>
+Date:   Thu, 22 Apr 2021 08:47:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <57f44dfa-a502-ee4f-6d53-0ab7cba00e1b@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422023831.3473491-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 22/04/2021 à 07:18, Jiri Slaby a écrit :
-> On 21. 04. 21, 14:59, Greg Kroah-Hartman wrote:
->> This reverts commit c85be041065c0be8bc48eda4c45e0319caf1d0e5.
->>
->> Commits from @umn.edu addresses have been found to be submitted in "bad
->> faith" to try to test the kernel community's ability to review "known
->> malicious" changes.  The result of these submissions can be found in a
->> paper published at the 42nd IEEE Symposium on Security and Privacy
->> entitled, "Open Source Insecurity: Stealthily Introducing
->> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
->> of Minnesota) and Kangjie Lu (University of Minnesota).
->>
->> Because of this, all submissions from this group must be reverted from
->> the kernel tree and will need to be re-reviewed again to determine if
->> they actually are a valid fix.  Until that work is complete, remove this
->> change to ensure that no problems are being introduced into the
->> codebase.
->>
->> Cc: Kangjie Lu <kjlu@umn.edu>
->> Cc: Richard Genoud <richard.genoud@gmail.com>
->> Cc: stable <stable@vger.kernel.org>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>   drivers/tty/serial/atmel_serial.c | 4 ----
->>   1 file changed, 4 deletions(-)
->>
->> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
->> index a24e5c2b30bc..9786d8e5f04f 100644
->> --- a/drivers/tty/serial/atmel_serial.c
->> +++ b/drivers/tty/serial/atmel_serial.c
->> @@ -1256,10 +1256,6 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
->>                        sg_dma_len(&atmel_port->sg_rx)/2,
->>                        DMA_DEV_TO_MEM,
->>                        DMA_PREP_INTERRUPT);
->> -    if (!desc) {
->> -        dev_err(port->dev, "Preparing DMA cyclic failed\n");
->> -        goto chan_err;
->> -    }
+On 22/04/21 04:38, Sean Christopherson wrote:
+> Disable pass-through of the FS and GS base MSRs for 32-bit KVM.  Intel's
+> SDM unequivocally states that the MSRs exist if and only if the CPU
+> supports x86-64.  FS_BASE and GS_BASE are mostly a non-issue; a clever
+> guest could opportunistically use the MSRs without issue.  KERNEL_GS_BASE
+> is a bigger problem, as a clever guest would subtly be broken if it were
+> migrated, as KVM disallows software access to the MSRs, and unlike the
+> direct variants, KERNEL_GS_BASE needs to be explicitly migrated as it's
+> not captured in the VMCS.
 > 
-> I cannot find anything malicious in the original fix:
-> * port->dev is valid for dev_err
-> * dmaengine_prep_dma_cyclic returns NULL in case of error
-> * chan_err invokes atmel_release_rx_dma which undoes the previous initialization code.
-> 
-> Hence a NACK from me for the revert.
+> Fixes: 25c5f225beda ("KVM: VMX: Enable MSR Bitmap feature")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-I agree with your NACK.
-Back at the time (march 2019), I reviewed the changed and asked for a 2nd version and
-I didn't found anything suspicious.
-But the more eyes, the better.
+I added an explicit note that this is not for stable kernels.  The 
+clever guest breaking after migration is the clever guest's problem.
 
-cf http://lkml.iu.edu/hypermail/linux/kernel/1903.1/05858.html
+> ---
+> 
+> Note, this breaks kvm-unit-tests on 32-bit KVM VMX due to the boot code
+> using WRMSR(MSR_GS_BASE).  But, the tests are already broken on SVM, and
+> have always been broken on SVM, which is honestly the main reason I
+> didn't just turn a blind eye.  :-)  I post the fix shortly.
 
+Fair enough.  Queued, thanks.
+
+>   arch/x86/kvm/vmx/nested.c | 2 ++
+>   arch/x86/kvm/vmx/vmx.c    | 4 ++++
+>   2 files changed, 6 insertions(+)
 > 
->>       desc->callback = atmel_complete_rx_dma;
->>       desc->callback_param = port;
->>       atmel_port->desc_rx = desc;
->>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 8b111682fe5c..0f8c118ebc35 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -614,6 +614,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>   	}
+>   
+>   	/* KVM unconditionally exposes the FS/GS base MSRs to L1. */
+> +#ifdef CONFIG_X86_64
+>   	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
+>   					     MSR_FS_BASE, MSR_TYPE_RW);
+>   
+> @@ -622,6 +623,7 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>   
+>   	nested_vmx_disable_intercept_for_msr(msr_bitmap_l1, msr_bitmap_l0,
+>   					     MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
+> +#endif
+>   
+>   	/*
+>   	 * Checking the L0->L1 bitmap is trying to verify two things:
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 6501d66167b8..b58dc2d454f1 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -157,9 +157,11 @@ static u32 vmx_possible_passthrough_msrs[MAX_POSSIBLE_PASSTHROUGH_MSRS] = {
+>   	MSR_IA32_SPEC_CTRL,
+>   	MSR_IA32_PRED_CMD,
+>   	MSR_IA32_TSC,
+> +#ifdef CONFIG_X86_64
+>   	MSR_FS_BASE,
+>   	MSR_GS_BASE,
+>   	MSR_KERNEL_GS_BASE,
+> +#endif
+>   	MSR_IA32_SYSENTER_CS,
+>   	MSR_IA32_SYSENTER_ESP,
+>   	MSR_IA32_SYSENTER_EIP,
+> @@ -6969,9 +6971,11 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>   	bitmap_fill(vmx->shadow_msr_intercept.write, MAX_POSSIBLE_PASSTHROUGH_MSRS);
+>   
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_IA32_TSC, MSR_TYPE_R);
+> +#ifdef CONFIG_X86_64
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_FS_BASE, MSR_TYPE_RW);
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_GS_BASE, MSR_TYPE_RW);
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_KERNEL_GS_BASE, MSR_TYPE_RW);
+> +#endif
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_IA32_SYSENTER_CS, MSR_TYPE_RW);
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_IA32_SYSENTER_ESP, MSR_TYPE_RW);
+>   	vmx_disable_intercept_for_msr(vcpu, MSR_IA32_SYSENTER_EIP, MSR_TYPE_RW);
 > 
-> 
+
