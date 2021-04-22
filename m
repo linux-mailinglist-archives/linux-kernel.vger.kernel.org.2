@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF1A367A3D
+	by mail.lfdr.de (Postfix) with ESMTP id E7757367A3F
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhDVGwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:52:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44550 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230316AbhDVGwe (ORCPT
+        id S234899AbhDVGx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235037AbhDVGxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:52:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619074320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=srX3P7/j1Ug/AsNRwDkwCn+8YJjPvhxGiEWP6pFAMhU=;
-        b=PMfPNIOqOxuUZcaJgvCBZ+H6Q0tQDL+kcJHEPZzJ1TTZXEQQmw0KutkdAjTOdI7l3m5rbA
-        hJMVODPsKhFwLxEU2DKKVKBPlfvZEWioVek9YXlY6FDUnuJ8eay8GIc9t/CYQJEzUrhS0c
-        Ms6pjnU8g3vW3GIt6xWD3GI1an5u46M=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-yf_7ixLGMIqQ4u_DoVrN5A-1; Thu, 22 Apr 2021 02:51:58 -0400
-X-MC-Unique: yf_7ixLGMIqQ4u_DoVrN5A-1
-Received: by mail-ej1-f72.google.com with SMTP id d11-20020a170906370bb029037c87968c04so6848949ejc.17
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:51:58 -0700 (PDT)
+        Thu, 22 Apr 2021 02:53:17 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725BDC061343;
+        Wed, 21 Apr 2021 23:52:27 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id o9-20020a1c41090000b029012c8dac9d47so2584845wma.1;
+        Wed, 21 Apr 2021 23:52:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4Mr+n7ZQ3cZFYLCKc8MLozw5D9Em36zAwZCuEwbAFBs=;
+        b=PTcqXGzYbqtq9HA89/Giwu3cBu7geqyM810zNixuMHsF3K9ttvmSrqU64g2znksMH6
+         3bllN0oMbvJxaDy7AZWDgNTdwv+3ZzKdTWBHYtmsI2LDzJ0m90d6WwHh6lVB/dvbIOuB
+         Sv+dqcTOOdgdk6f6B2ckw3SduKqIfImSO0oy8SHVVqBSXqDhqlSlOqsAGTCe/DVG79cj
+         FAJy5c1j1Se+o2uOyRnBZaaf6YOUtd+cqPmo5s4E3h1qHveLqYRX6UnJIfFqVbpwJX1s
+         8LpT898HeXPwK9Sa++Hpyi8glA9+4mbu1AsNEeouIVpK26fFpR1JU+8ypWsheGfXFaOj
+         Cx4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=srX3P7/j1Ug/AsNRwDkwCn+8YJjPvhxGiEWP6pFAMhU=;
-        b=LdW/o+pYXqCLJ8L2eDW0m5ayLhttXhlXj306AQYFsHHqpuhSyZK5TIZtLKy4/dXS1x
-         Kh9NlXvKUj37lzgxHDoF7gHsIDKJbYLaHkn5W3p0A8gZLERGUtxHj28t6lG+rEG929L4
-         0DV+L1PrH3qguKbJRrTVSmwMdpfXgYPjRk8hs6RvP4a/tcYW7NkMXJ9gsgHZjZ3cNR2U
-         F6bdsau9HzfOQyJKseQc9KMZLyUrvzh4Va9/QMSsu4un62moCgMa+cz0BXvzhxm5J+Yr
-         Il75Sj9+PdFaimfliJDiJMmOxucTgYD27kogopIeAs2Ir+efWPtlPIMEQ51ZDadYa/sb
-         XP4g==
-X-Gm-Message-State: AOAM5336EBdwa5WuwQFa3xFWwzyLnks9GA5xwmQZKLucIKUFXkPfFY0y
-        C/yZgeTrNkhyXhP1b9ohcLCs/K/Pl3EisrWLPKp1o9aMuKwTpclKPYBuZoRcCii5p6Vj8mR7Hl3
-        QP+kwF2RggteiD6ZROm3+amVk
-X-Received: by 2002:aa7:d541:: with SMTP id u1mr1899735edr.95.1619074316456;
-        Wed, 21 Apr 2021 23:51:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyukGSxp6sRIjWFCtnKctYs0NzNqZO41qCrVqWZoH/w4RWbB+WlgB+1lrE6MWowoiPY7KTKqw==
-X-Received: by 2002:aa7:d541:: with SMTP id u1mr1899728edr.95.1619074316248;
-        Wed, 21 Apr 2021 23:51:56 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r17sm1191531edt.70.2021.04.21.23.51.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 23:51:55 -0700 (PDT)
-Subject: Re: [PATCH v2 2/9] KVM: x86: Check CR3 GPA for validity regardless of
- vCPU mode
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>
-References: <20210422022128.3464144-1-seanjc@google.com>
- <20210422022128.3464144-3-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8716951d-cddb-d5f9-e7e2-b651120a51e7@redhat.com>
-Date:   Thu, 22 Apr 2021 08:51:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4Mr+n7ZQ3cZFYLCKc8MLozw5D9Em36zAwZCuEwbAFBs=;
+        b=tJsLZ6Q4gpsny8Kbx7/NgBtEFmhUaD537RABQg0awrj8bJC7Ra1IZaEa2w//xy5sdL
+         qD2kYE1dLMMvyY0FuUR+NnPMMeACy11lZ8d8WWGiBQgjQ50ne+pcHIhizUgVZ0bz7sF7
+         4svmRuo9/20WY+sFJ9iPIl4r+MifJUwk++3fbmplwzPINsCQSCGZq5j5daqZTrFBHrDS
+         9wKBx0KQrB+sF5XLwnQ9rjGfUAnSLtUSOVm85v8JKcmSZsCiSb0DGxiQeozGe7cdFFRu
+         oL81NB/R35cpI0UB5aQM2fedsn4Gz55gLM6C4E/AB7se5AnuFLvBVkAog0Hx4OpvX27S
+         ZnDA==
+X-Gm-Message-State: AOAM5319LSOoMvvnfHzXp71BZ7CUGiEOC9/kJLMmccZ78ZWCtJejV8pp
+        yMOQPIBp0DvXDgnvdkC8LkQ=
+X-Google-Smtp-Source: ABdhPJyVX/Mx6WDBKnlla2+e7c/JaAz/PfBMvtW7Rja4vz/A/dPhSnPaqO35XxD4PDJdlIjI5jzeWw==
+X-Received: by 2002:a1c:9d85:: with SMTP id g127mr13658126wme.62.1619074345858;
+        Wed, 21 Apr 2021 23:52:25 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id v2sm1972259wrr.26.2021.04.21.23.52.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 23:52:25 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 08:52:23 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-crypto@vger.kernel.org, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: cortina/gemini: hwrng: what is its quality ?
+Message-ID: <YIEdJ3G/QwA8/BEU@Red>
+References: <YICFBQ8mQRJ4zSh9@Red>
+ <20210422001430.GA4246@gondor.apana.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210422022128.3464144-3-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422001430.GA4246@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 04:21, Sean Christopherson wrote:
-> Check CR3 for an invalid GPA even if the vCPU isn't in long mode.  For
-> bigger emulation flows, notably RSM, the vCPU mode may not be accurate
-> if CR0/CR4 are loaded after CR3.  For MOV CR3 and similar flows, the
-> caller is responsible for truncating the value.
+Le Thu, Apr 22, 2021 at 10:14:30AM +1000, Herbert Xu a écrit :
+> On Wed, Apr 21, 2021 at 10:03:17PM +0200, Corentin Labbe wrote:
+> > hello
+> > 
+> > I work on the crypto part of the cortina/gemini SL3516 SoC.
+> > The datasheet mention a HWRNG in its IP but really briefly:
+> > """
+> > The implementation is a 32-bit Hardware Random Number Generator that has a uniformed
+> > distribution between 0 and 2^32 -1. The hardware randomness is created by sampling data from
+> > different clock domains, and feeding it as input to the 32-bit maximum length LFSR (Linear Feedback
+> > Shift Register)
+> > """
+> > 
+> > Piping its output to rngtest give:
+> > dd if=/dev/hwrng count=2000 bs=2048 | rngtest
+> > rngtest 6.11
+> > rngtest: starting FIPS tests...
+> > rngtest: entropy source drained
+> > rngtest: bits received from input: 32768000
+> > rngtest: FIPS 140-2 successes: 1191
+> > rngtest: FIPS 140-2 failures: 447
+> > rngtest: FIPS 140-2(2001-10-10) Monobit: 183
+> > rngtest: FIPS 140-2(2001-10-10) Poker: 116
+> > rngtest: FIPS 140-2(2001-10-10) Runs: 346
+> > 2000+0 records in
+> > 2000+0 records out
+> > rngtest: FIPS 140-2(2001-10-10) Long run: 0
+> > rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+> > rngtest: input channel speed: (min=303.606; avg=3143.352; max=9712.208)Kibits/s
+> > rngtest: FIPS tests speed: (min=7.104; avg=10.332; max=10.638)Mibits/s
+> > rngtest: Program run time: 13303224 microseconds
+> > 
+> > That's a quite number of failure.
+> > Can the hwrng still be used with some "hwrng->quality" setting ?
+> > Or it is just too many failure to be used ?
 > 
-> Note, SMRAM.CR3 is read-only, so this is mostly a theoretical bug since
-> KVM will not have stored an illegal CR3 into SMRAM during SMI emulation.
-
-Well, the guest could have changed it...
-
-Paolo
-
-> Fixes: 660a5d517aaa ("KVM: x86: save/load state on SMM switch")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/x86.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
+> If in doubt just leave it zero and the admin can override it if
+> necessary.
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c9ba6f2d9bcd..63af93211871 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1078,10 +1078,15 @@ int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
->   		return 0;
->   	}
->   
-> -	if (is_long_mode(vcpu) && kvm_vcpu_is_illegal_gpa(vcpu, cr3))
-> +	/*
-> +	 * Do not condition the GPA check on long mode, this helper is used to
-> +	 * stuff CR3, e.g. for RSM emulation, and there is no guarantee that
-> +	 * the current vCPU mode is accurate.
-> +	 */
-> +	if (kvm_vcpu_is_illegal_gpa(vcpu, cr3))
->   		return 1;
-> -	else if (is_pae_paging(vcpu) &&
-> -		 !load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))
-> +
-> +	if (is_pae_paging(vcpu) && !load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))
->   		return 1;
->   
->   	kvm_mmu_new_pgd(vcpu, cr3, skip_tlb_flush, skip_tlb_flush);
-> 
+
+But as an admin, what value I can set ?
+If I do a rule-of-3, success rate is 73%.
+So does a quality of 730 is ok ?
 
