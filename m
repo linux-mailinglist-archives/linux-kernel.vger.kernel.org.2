@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D81368166
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5E936816C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236173AbhDVNYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:24:16 -0400
-Received: from pb-smtp1.pobox.com ([64.147.108.70]:54883 "EHLO
-        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235977AbhDVNYP (ORCPT
+        id S236250AbhDVN1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:27:19 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:43549 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230005AbhDVN1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:24:15 -0400
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id B8A2CAEB45;
-        Thu, 22 Apr 2021 09:23:38 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=IHEioMIcY0x1gzYXzQkbjXJ/piZfbnD+SYraRy
-        ofoNA=; b=hXUfreNxW6Ty7yuAcA+43Vf8fxuJzevi1Gjyf8ZYUc3FfCzWhBKLlp
-        WvWD+88iYs4F9jfg7W9+hTXRI5bPB+1N8YB2b8U6fst7vAyfAj4SGZgl/6QwL1Bq
-        nGKaR4nbFsqxSMp6toZoxkiZr1Y6pI8oAjq2/R6GDK2tNgVqF+rzk=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id AEA08AEB43;
-        Thu, 22 Apr 2021 09:23:38 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=IHEioMIcY0x1gzYXzQkbjXJ/piZfbnD+SYraRyofoNA=; b=sm1NRETDPzLjqfAmKJaKz+C0T87Hj7zoxJwfmZaGM9arRAKViU8RpLgl2DuPqZF5+wEH2Pyb6UVYmW736TDVQn0sfcWolWireE8+hJHCooV8FnOXCSVwhA41cStje5Plw3efP0j89WARwskU6fL2sgqD6tY4X79caJUZSfLsA9w=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 1F421AEB42;
-        Thu, 22 Apr 2021 09:23:38 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 1B9F02DA0061;
-        Thu, 22 Apr 2021 09:23:37 -0400 (EDT)
-Date:   Thu, 22 Apr 2021 09:23:37 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     lizhe <lizhe67@huawei.com>
-cc:     linux-kernel@vger.kernel.org, wangfangpeng1@huawei.com,
-        zhongjubin@huawei.com
-Subject: Re: [PATCH] cramfs: fix potential "unable to mount root fs"
- problem
-In-Reply-To: <20210422110619.90196-1-lizhe67@huawei.com>
-Message-ID: <p3554720-q5q8-nqo8-n01o-847oq81s6364@syhkavp.arg>
-References: <20210422110619.90196-1-lizhe67@huawei.com>
+        Thu, 22 Apr 2021 09:27:18 -0400
+Received: by mail-ot1-f47.google.com with SMTP id i26-20020a9d625a0000b02902a2119f7613so5305212otk.10;
+        Thu, 22 Apr 2021 06:26:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P6+9wENIjOSGm0rNZssrWwc+3q+P9ydCyEXK+E2E3rI=;
+        b=Pqxwj7VlId/HEP6i185weLdxHDvpBKe1oJpRZS03j9HH3ULKjZSgFIvbCIjgYLv0Vp
+         4C3KJWM4/XhbjP05pEFBda8BZ0/yyyuCvX+LEFbnbIP08Ytd5mjmpvyDiUWlLTsOw/eW
+         oB2sXpm3us1TQPsT3Yocgq1VvXHENy/VjEAKBKLpjUz266jN6cVO8THf/FTzjs47Fv3N
+         zPoSYcbNRczOgEp8HeyFV+Tkh8PEmDCYw8soXDs4auIikxjdIxCOjcId5c0WIixcCAJy
+         YIB1OBr6J2Pw72guEqxxwnR7nfyR8CuYuaj0PjwGmFC5Qp0RBawwLmlzHrMSV6794bas
+         4ABg==
+X-Gm-Message-State: AOAM532WyU4H/2QSSP6gCOyZy9T3t9GJFrv5mYkGUzW8Y0eJKlChQ4Kc
+        xDisISkrNqiGgE0ggrTbCUIdcyO0ba8BofqBTNs=
+X-Google-Smtp-Source: ABdhPJyY6NJtdIXc773L+QTLvHiKMQ+H0AThT/TKlpZoEEWVZQ/ZvoW7JrMss8sej1qYm6BRJf07ULO6tX6Dg5ZjE7g=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr2846251otb.260.1619098003827;
+ Thu, 22 Apr 2021 06:26:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: F2937AF6-A36D-11EB-93A3-D152C8D8090B-78420484!pb-smtp1.pobox.com
+References: <20210416124352.2049258-1-colin.king@canonical.com>
+In-Reply-To: <20210416124352.2049258-1-colin.king@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 22 Apr 2021 15:26:32 +0200
+Message-ID: <CAJZ5v0ge7e68vTB3vvcz9OThp32X0=+XaQPrPQCGf0xM9uCi0Q@mail.gmail.com>
+Subject: Re: [PATCH] PM / wakeup: remove redundant assignment to variable retval
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021, lizhe wrote:
-
-> We may encounter panic problem without "rootfstype=" options in
-> bootargs. The logs are listed below.
-> 
-> [0.551962] RAMDISK: squashfs filesystem found at block 0
-> [0.551977] RAMDISK: Loading 18117KiB [1 disk] into ram disk...
-> [0.719465] done.
-> [0.748379] VFS: Cannot open root device "ram0" or unknown-block(1,0): error -92
-> [0.748390] Please append a correct "root=" boot option; here are the available partitions:
-> [0.748408] 0100           65536 ram0
-> [0.748413]  (driver?)
-> [0.748430] 0101           65536 ram1
-> [0.748434]  (driver?)
-> [0.748450] 0102
-> [0.748454]  (driver?)
-> [0.748470] 0103           65536 ram3
-> [0.748475]  (driver?)
-> [0.748498] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(1,0)
-> [0.847579] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0 #68
-> [0.847598] Call trace:
-> [0.847616]  dump_backtrace+0x0/0x1f8
-> [0.847627]  show_stack+0x30/0x40
-> [0.847638]  dump_stack+0xdc/0x13c
-> [0.847650]  panic+0x144/0x35c
-> [0.847665]  mount_block_root+0x2c0/0x36c
-> [0.847676]  mount_root+0x7c/0x90
-> [0.847686]  prepare_namespace+0x178/0x188
-> [0.847697]  kernel_init_freeable+0x220/0x28c
-> [0.847708]  kernel_init+0x1c/0xf8
-> [0.847719]  ret_from_fork+0x10/0x30
-> 
-> If we set CONFIG_CRAMFS_MTD and CONFIG_CRAMFS_BLOCKDEV to n,
-> CONFIG_CRAMFS to y, function cramfs_get_tree return -ENOPROTOOPT,
-> which breaks loops in function mount_block_root and we have no
-> chance to try other filesystem type. In my opinion, ENOPROTOOPT
-> is not an appropriate return value for cramfs mount function, so
-> change it to EINVAL.
-> 
-> Fixes: 99c18ce58 (cramfs: direct memory access support)
-> Signed-off-by: lizhe <lizhe67@huawei.com>
-
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-
-Please send this to Al Viro for merging.
-
-
+On Fri, Apr 16, 2021 at 2:44 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable retval is being initialized with a value that is
+> never read and it is being updated later with a new value. The
+> initialization is redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  fs/cramfs/inode.c | 2 +-
+>  drivers/base/power/wakeup_stats.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> index 2be6526..9942955 100644
-> --- a/fs/cramfs/inode.c
-> +++ b/fs/cramfs/inode.c
-> @@ -951,7 +951,7 @@ static const struct super_operations cramfs_ops = {
->  
->  static int cramfs_get_tree(struct fs_context *fc)
+>
+> diff --git a/drivers/base/power/wakeup_stats.c b/drivers/base/power/wakeup_stats.c
+> index 5ade7539ac02..924fac493c4f 100644
+> --- a/drivers/base/power/wakeup_stats.c
+> +++ b/drivers/base/power/wakeup_stats.c
+> @@ -137,7 +137,7 @@ static struct device *wakeup_source_device_create(struct device *parent,
+>                                                   struct wakeup_source *ws)
 >  {
-> -	int ret = -ENOPROTOOPT;
-> +	int ret = -EINVAL;
->  
->  	if (IS_ENABLED(CONFIG_CRAMFS_MTD)) {
->  		ret = get_tree_mtd(fc, cramfs_mtd_fill_super);
-> -- 
-> 2.7.4
-> 
-> 
+>         struct device *dev = NULL;
+> -       int retval = -ENODEV;
+> +       int retval;
+>
+>         dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+>         if (!dev) {
+> --
+
+Applied as 5.13 material, thanks!
