@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AD33687F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9043687F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239573AbhDVUas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        id S239643AbhDVUaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239521AbhDVUap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:30:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6902361452;
+        id S239528AbhDVUaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 16:30:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 73AC96145C;
         Thu, 22 Apr 2021 20:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1619123410;
-        bh=JukiFRGK6i/THosdXLaBbYLwOgcw1OfMiE7Ov1RoYKk=;
+        bh=yNYeqL66XO0WHxOM7CSJy+F6m+c9yd6RuSsrv6TGDyM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rjOwWHkVpFVMQzLSdqB9bRzjtAZT/6QBEyhKxxTxyzEcnHHc1tvHVvdTxAwYTJ22N
-         uX19bWNKJP2zU3lf89RHPQrUz6SVD+3YNLvyxZpTYqPOWkmE6uXmxnRC8RlZxViT+x
-         2B165wYnP/2isRE6Ogzp4xYFzLFEUZEsNxnw19ndTU2MT9K898iOuzG7kF8Wp/NJxR
-         Kyp53a5KAhP6M26rSI9nzQtrkoEobqEyDmPMABbjvv9v5z4V/HfHyBZ84yGdah+n3u
-         7BW7vtS+hoWCqv7HcQTnymSu8O6Tk3FFT27aKrNN7r0vDkpWa0a+HaTzUoL89RD+tW
-         CnhGBsk+cneKw==
+        b=DqqQHWWyNkXX0Lg0GMb912KbFhITeFfgk3SIK0mQzzBtv0VTNa/ZpKp/937o5r/7w
+         XPMdzhf/obq2mleYjYI6dPO93BNYf+S57bulqHj7GvsjpinOVYMb944hJYJPkExxWa
+         vKSd920wPqsbwm8m2sKo1UCLeN1Yip+mf6rIeOr3c8sziMCmgV3qF7d98AIXW9WUST
+         w4XotVMwy/yI2knyHlKShGdvpKKo33bjUfK9dQUSgAajZo1JzKdLTIXbIcz4Th5QMF
+         TIuvymvGRg+7R34rS4cF0k0NJUjyE3rJ2WQeRo2qH37k5Ew/oWL1TIYwoJv/bVSqwx
+         sC1MipJZzDH3Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 601D460A52;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6A3DC60A5C;
         Thu, 22 Apr 2021 20:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] [net-next] net: enetc: fix link error again
+Subject: Re: [PATCH] net: mana: fix PCI_HYPERV dependency
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161912341038.26269.8574616541173357004.git-patchwork-notify@kernel.org>
+Message-Id: <161912341043.26269.9754111043829320260.git-patchwork-notify@kernel.org>
 Date:   Thu, 22 Apr 2021 20:30:10 +0000
-References: <20210422133518.1835403-1-arnd@kernel.org>
-In-Reply-To: <20210422133518.1835403-1-arnd@kernel.org>
+References: <20210422133444.1793327-1-arnd@kernel.org>
+In-Reply-To: <20210422133444.1793327-1-arnd@kernel.org>
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, arnd@arndb.de,
-        vladimir.oltean@nxp.com, netdev@vger.kernel.org,
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
+        kuba@kernel.org, arnd@arndb.de, shacharr@microsoft.com,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,19 +49,26 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 22 Apr 2021 15:35:11 +0200 you wrote:
+On Thu, 22 Apr 2021 15:34:34 +0200 you wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> A link time bug that I had fixed before has come back now that
-> another sub-module was added to the enetc driver:
+> The MANA driver causes a build failure in some configurations when
+> it selects an unavailable symbol:
 > 
-> ERROR: modpost: "enetc_ierb_register_pf" [drivers/net/ethernet/freescale/enetc/fsl-enetc.ko] undefined!
+> WARNING: unmet direct dependencies detected for PCI_HYPERV
+>   Depends on [n]: PCI [=y] && X86_64 [=y] && HYPERV [=n] && PCI_MSI [=y] && PCI_MSI_IRQ_DOMAIN [=y] && SYSFS [=y]
+>   Selected by [y]:
+>   - MICROSOFT_MANA [=y] && NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_MICROSOFT [=y] && PCI_MSI [=y] && X86_64 [=y]
+> drivers/pci/controller/pci-hyperv.c: In function 'hv_irq_unmask':
+> drivers/pci/controller/pci-hyperv.c:1217:9: error: implicit declaration of function 'hv_set_msi_entry_from_desc' [-Werror=implicit-function-declaration]
+>  1217 |         hv_set_msi_entry_from_desc(&params->int_entry.msi_entry, msi_desc);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next] net: enetc: fix link error again
-    https://git.kernel.org/netdev/net-next/c/74c97ea3b61e
+  - net: mana: fix PCI_HYPERV dependency
+    https://git.kernel.org/netdev/net-next/c/45b102dd8149
 
 You are awesome, thank you!
 --
