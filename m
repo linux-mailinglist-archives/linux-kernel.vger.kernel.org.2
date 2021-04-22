@@ -2,104 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40B6368344
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877A6368348
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237540AbhDVP0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58022 "EHLO mail.kernel.org"
+        id S237575AbhDVP1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:27:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237431AbhDVP0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:26:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C73B61450;
-        Thu, 22 Apr 2021 15:26:13 +0000 (UTC)
+        id S233106AbhDVP1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:27:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 599BE61425;
+        Thu, 22 Apr 2021 15:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619105173;
-        bh=xX6LHIsRNYix3onntFIfW+HfRKfpkeI2B6kAC3uJGjo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=NL/wD7kcp0LWQl8BHPTRtH4K8sjhyKxz8dKu6JJ9zex8W02AVjrKwc5oGH2wjR5Ft
-         V963FDtSwb1VGuEUtLls82/088eRox+90An9FjfNvkS7cRXfmO5OCtgIXcz0yivw34
-         xsv0pms4da82pN0nCDee+PRiM6J/sNMWp7XJ/Nmitq5KztZWojtLacg9DCQUzylJnW
-         4d1XR5X8B1YxODY0iCMTdUPJhb0uEnVHEZHc9S0U/9j/FMHGX1vRpVvW1dWu3BU5Yg
-         7GfPfdUrnmlLb0XUE+0lhUgmcIQBvVpnv+fgmyWuQLw/9ZRiG/UbHJFgHswa2yzZT3
-         IJv7sjAqo/Xug==
-Date:   Thu, 22 Apr 2021 08:26:12 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Juergen Gross <jgross@suse.com>
-cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 1/3] xen: check required Xen features
-In-Reply-To: <20210422151007.2205-2-jgross@suse.com>
-Message-ID: <alpine.DEB.2.21.2104220823160.5018@sstabellini-ThinkPad-T480s>
-References: <20210422151007.2205-1-jgross@suse.com> <20210422151007.2205-2-jgross@suse.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        s=k20201202; t=1619105219;
+        bh=D7KfCFzGAXfSiVjykaMhGcZeZD8ao0rmc2lGUMULQ/8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=t16c5KWvSSMCty9AWGC3U/3TurriqOBPUDvaAY9Ttk2mUQzTnvMHpkdOte1TRMhKr
+         ZzYgwI4889QgG23HmuHzhE3TxmFhHthrAkuXMNzV7bd6Ga+kyKahXRvAZc3H3ZueRY
+         mvKOVcg4YAz27o8Wlz/yEZ5D+dxSvMNWBTHyPG6Cvq791cjXmFj1z6zRyKoWKW+70w
+         EYwOuLf6fyqPUuVzupCMrmSoVArEgr6GP0Nm8S+NcLzdaK9xL3taC5B10puD2x/v17
+         TrqCRM1daPV7GKsFeeDbAte+tweD/VYIvBbtsTN44W7atwM1q1hWi+u/6Oon+2HMuY
+         DXS0CQypwYgmg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Marco Cesati <marcocesati@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] staging: rtl8723bs: avoid bogus gcc warning
+Date:   Thu, 22 Apr 2021 17:26:19 +0200
+Message-Id: <20210422152648.2891996-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021, Juergen Gross wrote:
-> Linux kernel is not supported to run on Xen versions older than 4.0.
-> 
-> Add tests for required Xen features always being present in Xen 4.0
-> and newer.
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  drivers/xen/features.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/drivers/xen/features.c b/drivers/xen/features.c
-> index 25c053b09605..60503299c9bc 100644
-> --- a/drivers/xen/features.c
-> +++ b/drivers/xen/features.c
-> @@ -9,13 +9,26 @@
->  #include <linux/types.h>
->  #include <linux/cache.h>
->  #include <linux/export.h>
-> +#include <linux/printk.h>
->  
->  #include <asm/xen/hypercall.h>
->  
-> +#include <xen/xen.h>
->  #include <xen/interface/xen.h>
->  #include <xen/interface/version.h>
->  #include <xen/features.h>
->  
-> +/*
-> + * Linux kernel expects at least Xen 4.0.
-> + *
-> + * Assume some features to be available for that reason (depending on guest
-> + * mode, of course).
-> + */
-> +#define chk_feature(f) {						\
-> +		if (!xen_feature(f))					\
-> +			pr_err("Xen: feature %s not available!\n", #f);	\
-> +	}
+From: Arnd Bergmann <arnd@arndb.de>
 
-I think this could be done as a static inline function in
-include/xen/features.h. That way it would be available everywhere. Also,
-static inlines are better than macro when it is possible to use them in
-terms of code safety.
+gcc gets confused by some of the type casts and produces an
+apparently senseless warning about an out-of-bound memcpy to
+an unrelated array in the same structure:
 
+drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c: In function 'rtw_cfg80211_ap_set_encryption':
+cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
+In file included from drivers/staging/rtl8723bs/include/drv_types.h:32,
+                 from drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:10:
+drivers/staging/rtl8723bs/include/rtw_security.h:98:15: note: at offset [184, 4264] into destination object 'dot11AuthAlgrthm' of size 4
+   98 |         u32   dot11AuthAlgrthm;         /*  802.11 auth, could be open, shared, 8021x and authswitch */
+      |               ^~~~~~~~~~~~~~~~
+cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
+drivers/staging/rtl8723bs/include/rtw_security.h:98:15: note: at offset [264, 4344] into destination object 'dot11AuthAlgrthm' of size 4
 
->  u8 xen_features[XENFEAT_NR_SUBMAPS * 32] __read_mostly;
->  EXPORT_SYMBOL_GPL(xen_features);
->  
-> @@ -31,4 +44,9 @@ void xen_setup_features(void)
->  		for (j = 0; j < 32; j++)
->  			xen_features[i * 32 + j] = !!(fi.submap & 1<<j);
->  	}
-> +
-> +	if (xen_pv_domain()) {
-> +		chk_feature(XENFEAT_mmu_pt_update_preserve_ad);
-> +		chk_feature(XENFEAT_gnttab_map_avail_bits);
-> +	}
->  }
-> -- 
-> 2.26.2
-> 
+This is a known gcc bug, and the patch here is only a workaround,
+but the approach of using a temporary variable to hold a pointer
+to the key also improves readability in addition to avoiding the
+warning, so overall this should still help.
+
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99673
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: revert unrelated changes in the patch, pointed out by
+    Dan Carpenter
+---
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 23 +++++++++++--------
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    | 21 +++++++++--------
+ 2 files changed, 25 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 89a21eb63c0a..98cbd2fce5cf 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -523,6 +523,9 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct security_priv *psecuritypriv =  &(padapter->securitypriv);
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
++	char *grpkey = padapter->securitypriv.dot118021XGrpKey[param->u.crypt.idx].skey;
++	char *txkey = padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey;
++	char *rxkey = padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey;
+ 
+ 	param->u.crypt.err = 0;
+ 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
+@@ -605,7 +608,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 		{
+ 			if (strcmp(param->u.crypt.alg, "WEP") == 0)
+ 			{
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 				if (param->u.crypt.key_len == 13)
+@@ -618,12 +621,12 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 			{
+ 				psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 				/* set mic key */
+-				memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+-				memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++				memcpy(txkey, &(param->u.crypt.key[16]), 8);
++				memcpy(rxkey, &(param->u.crypt.key[24]), 8);
+ 
+ 				psecuritypriv->busetkipkey = true;
+ 
+@@ -632,7 +635,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 			{
+ 				psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 			}
+ 			else
+ 			{
+@@ -709,7 +712,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 			{
+ 				if (strcmp(param->u.crypt.alg, "WEP") == 0)
+ 				{
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 					if (param->u.crypt.key_len == 13)
+@@ -721,12 +724,12 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 				{
+ 					psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 					/* set mic key */
+-					memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+-					memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++					memcpy(txkey, &(param->u.crypt.key[16]), 8);
++					memcpy(rxkey, &(param->u.crypt.key[24]), 8);
+ 
+ 					psecuritypriv->busetkipkey = true;
+ 
+@@ -735,7 +738,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 				{
+ 					psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 				}
+ 				else
+ 				{
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+index 816033b6847c..af77f03df7d0 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+@@ -2963,6 +2963,9 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct security_priv *psecuritypriv = &(padapter->securitypriv);
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
++	char *txkey = padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey;
++	char *rxkey = padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey;
++	char *grpkey = psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey;
+ 
+ 	param->u.crypt.err = 0;
+ 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
+@@ -3064,7 +3067,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 	if (!psta && check_fwstate(pmlmepriv, WIFI_AP_STATE)) { /*  group key */
+ 		if (param->u.crypt.set_tx == 1) {
+ 			if (strcmp(param->u.crypt.alg, "WEP") == 0) {
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 				if (param->u.crypt.key_len == 13)
+@@ -3073,11 +3076,11 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 			} else if (strcmp(param->u.crypt.alg, "TKIP") == 0) {
+ 				psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 				/* set mic key */
+-				memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
++				memcpy(txkey, &(param->u.crypt.key[16]), 8);
+ 				memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
+ 
+ 				psecuritypriv->busetkipkey = true;
+@@ -3086,7 +3089,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 			else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
+ 				psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 			} else {
+ 				psecuritypriv->dot118021XGrpPrivacy = _NO_PRIVACY_;
+ 			}
+@@ -3142,7 +3145,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 
+ 			} else { /* group key??? */
+ 				if (strcmp(param->u.crypt.alg, "WEP") == 0) {
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 					if (param->u.crypt.key_len == 13)
+@@ -3150,19 +3153,19 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 				} else if (strcmp(param->u.crypt.alg, "TKIP") == 0) {
+ 					psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 					/* set mic key */
+-					memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+-					memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++					memcpy(txkey, &(param->u.crypt.key[16]), 8);
++					memcpy(rxkey, &(param->u.crypt.key[24]), 8);
+ 
+ 					psecuritypriv->busetkipkey = true;
+ 
+ 				} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
+ 					psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 				} else {
+ 					psecuritypriv->dot118021XGrpPrivacy = _NO_PRIVACY_;
+ 				}
+-- 
+2.29.2
+
