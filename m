@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C4C36882A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE2D36882E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhDVUov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
+        id S239318AbhDVUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236915AbhDVUoq (ORCPT
+        with ESMTP id S236896AbhDVUrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:44:46 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F6FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:44:11 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e14so15260975ils.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:44:11 -0700 (PDT)
+        Thu, 22 Apr 2021 16:47:21 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AEAC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:46:46 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id u20so15573703qku.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nOVUzQo28LSmmOywgwII2KjmCVG7Xd72Uk6n1ovFEEU=;
-        b=hgkjm6Yy7LFV+uhtOxWUPnxLDrPdElrGvi/37J10Anx0hv90CZlp6OZi4CqyH691DY
-         HQ2mwPJfor7IydDNoOxxXKp86qUQeiKfqW8X530mWWDC1FqSE9OjmIZGUL/EtsucHgQ1
-         61McCXDUDB45BVjFs1IjZQ7t/gT+A3erFVphjjfeyJ4o0hnvkpCVQMIs9PMAtljPsHtF
-         cschpfVgVnduRkWcV6c2+LwIGBuW9crUzzJJGejpBg/G0c4+JyuiDqcKkvZ21fafTqSh
-         VX78L1CYXfBFpW4g/lENozy4IOVPQqMl5iQYk5f+QgtEhmufl5qcWx+XKva6Ohavv1u+
-         +5iA==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=q4jCK/oxeOAevJ+QQnM3lBiBwG2OGtnOoyI45WiPj/0=;
+        b=bm4tK+1+ztG0fhpXNYfdvm16338ubpObJL9yXAF6z5QbYek+XJkIPN5icxfAhQHZa9
+         5vHU3s4lI+K4LhMXS4o7k/nfFp4h1T2D/2idlxRt2E+KH+8MEGjnqj6WbRW/Occrn1ub
+         GMWABtxA3Qa0pH+5bHwmHxHV0ytVM5PRa+hCytRC60NI1y2hUOh7ieNd8+12D82HvYI5
+         pTvN2mA66wfz1vd/dws+vtpU3kad6SV58lBRADz1VW6ZlvOvb8n4NfQv/NWfbrGmF8zN
+         oD/0RCCjhIsKhandoRbU8KeYRvL+FzxbFIC6PK27w2Mg/ng/a/zrM37IDErgPKI7m1v0
+         /uOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nOVUzQo28LSmmOywgwII2KjmCVG7Xd72Uk6n1ovFEEU=;
-        b=OD4CBh+ha55bSo3rB9drTSG8/7ZnwWIPnvRtn6G67LNLLopDEbNcv4IjYrDBVKHBX1
-         ChcuHhkp3TH70YqQeDIsbIsByiWBS4wkPGKquWqklpnLpOT1cM208yBo8pRgVxhD1c33
-         om9ju4SEDrvsRLWZYmD4tU6qNW3GfQ/LfG05L4xIB9AQ0fIIVYQ2rCowGalHylC1MofY
-         Us1O3NVWkwovnY2woMPyXonOr8KdQC6R8ERRSSoPmmG7WvI6D50wOJTRBRhQEizQt/gO
-         1N3OpFxsxtwn8hBMwBbM/d5mh63esDzUxB82dOgy10OxHnQrA9BJihHmD2dpJG9aVvpj
-         KxVw==
-X-Gm-Message-State: AOAM531PsoNzDAf0ffIwEq02FLahFYiXvxIwdq+XLD85zFOKB0hiZsI0
-        MY4H1OgL8GAnqhcQP9Bod/Z0f/gN4VCZJhxCk3M4wQ==
-X-Google-Smtp-Source: ABdhPJzOfuDd+VaeLoWWEJ7JfcwiHjgPKDRNXvR0rgVM7ltI1MeifPRy8GrOu3wBbR28sgNnwsC0+15JZf/uoRTfN0E=
-X-Received: by 2002:a92:6011:: with SMTP id u17mr284362ilb.274.1619124250722;
- Thu, 22 Apr 2021 13:44:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=q4jCK/oxeOAevJ+QQnM3lBiBwG2OGtnOoyI45WiPj/0=;
+        b=jCZVFa4hKOIqe5Utb8ClzOmXFddT/97kUXcAAcyLTGGo3/thofHe0ox/Hyiv5ujTS6
+         cBrOVvmD07wTHntaJEoulw4dtrX8SVSPXQU2z5MfBD1g3vLto+6ENXy9argxs820aVai
+         G90XlhLFjs3exHuux7x3cgraGn86RWxnlrZ5iHq6zfTcbwawrDlMAxoiZ69orFV/C1QH
+         jnLoC3jtDtAHHN0lXJkDMATRSoIeM1oNtz5zoqB9AHQt2G33daqTgDvpJM1LQmieTvQy
+         xBmmXd3k79w+Axr6lcGU7sVS+OqzQENEqiiVTYk9rOlJiXbFRsSs7Tu7vhOBTrh8MR7d
+         gu9g==
+X-Gm-Message-State: AOAM531CRF+ZOZLwTUG5xuOkN/4u4FNntoZDR6JXojeVHbPU5kkbR7eL
+        L8V99tdgig88nkioiLC5VnYyJQ==
+X-Google-Smtp-Source: ABdhPJy6B2uOuY8nlYlMlbZzimxyQS3rpI5s21XxaofwWAhrWMOPI3vCjUBaibuvfPrpBMjoQH4Omg==
+X-Received: by 2002:a37:b103:: with SMTP id a3mr652299qkf.261.1619124405346;
+        Thu, 22 Apr 2021 13:46:45 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id m124sm2975451qkc.70.2021.04.22.13.46.43
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 22 Apr 2021 13:46:45 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 13:46:34 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Dave Chinner <dchinner@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/2] mm/filemap: fix mapping_seek_hole_data on THP &
+ 32-bit
+In-Reply-To: <alpine.LSU.2.11.2104212253000.4412@eggly.anvils>
+Message-ID: <alpine.LSU.2.11.2104221338410.1170@eggly.anvils>
+References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils> <alpine.LSU.2.11.2104211737410.3299@eggly.anvils> <20210422011631.GL3596236@casper.infradead.org> <alpine.LSU.2.11.2104212253000.4412@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <20210421183222.2557747-1-dlatypov@google.com> <d7b2b598-7087-0445-4647-8521f3238dc2@redhat.com>
-In-Reply-To: <d7b2b598-7087-0445-4647-8521f3238dc2@redhat.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 22 Apr 2021 13:43:59 -0700
-Message-ID: <CAGS_qxp6jNDaEjsZKPeJJVYasXqrfvY5KK0QhXaBh68S7anMRQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] lib/test: convert lib/test_list_sort.c to use KUnit
-To:     Nico Pache <npache@redhat.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 1:16 PM Nico Pache <npache@redhat.com> wrote:
->
-> Hi,
->
-> Can we change this to CONFIG_LIST_SORT_KUNIT_TEST to follow the convention used by other KUNIT tests?
+On Wed, 21 Apr 2021, Hugh Dickins wrote:
+> On Thu, 22 Apr 2021, Matthew Wilcox wrote:
+> > On Wed, Apr 21, 2021 at 05:39:14PM -0700, Hugh Dickins wrote:
+> > > No problem on 64-bit without huge pages, but xfstests generic/285
+> > > and other SEEK_HOLE/SEEK_DATA tests have regressed on huge tmpfs,
+> > > and on 32-bit architectures, with the new mapping_seek_hole_data().
+> > > Several different bugs turned out to need fixing.
+> > > 
+> > > u64 casts added to stop unfortunate sign-extension when shifting
+> > > (and let's use shifts throughout, rather than mixed with * and /).
+> > 
+> > That confuses me.  loff_t is a signed long long, but it can't be negative
+> > (... right?)  So how does casting it to an u64 before dividing by
+> > PAGE_SIZE help?
+> 
+> That is a good question. Sprinkling u64s was the first thing I tried,
+> and I'd swear that it made a good difference at the time; but perhaps
+> that was all down to just the one on xas.xa_index << PAGE_SHIFT. Or
+> is it possible that one of the other bugs led to a negative loff_t,
+> and the casts got better behaviour out of that? Doubtful.
+> 
+> What I certainly recall from yesterday was leaving out one (which?)
+> of the casts as unnecessary, and wasting quite a bit of time until I
+> put it back in. Did I really choose precisely the only one necessary?
+> 
+> Taking most of them out did give me good quick runs just now: I'll
+> go over them again and try full runs on all machines. You'll think me
+> crazy, but yesterday's experience leaves me reluctant to change without
+> full testing - but agree it's not good to leave ignorant magic in.
 
-I mentioned this in the commit description briefly, but I don't know
-who is using this test. Nor do I really know who to ask.
-So I didn't want to risk breaking anyone's workflow for now (more than
-now requiring them to set CONFIG_KUNIT=y/m).
+And you'll be unsurprised to hear that the test runs went fine,
+with all but one of those u64 casts removed. And I did locate the
+version of filemap.c where I'd left out one "unnecessary" cast:
+I had indeed chosen to remove the only one that's necessary.
 
-Side note: maybe CONFIG_KUNIT can default to =y when DEBUG_KERNEL is set?
-Then there'd be even less change than how this worked before...
+v2 coming up now, thanks,
 
-If it's not a concern, I'll happily update the file name and config
-option to follow the conventions.
+Hugh
 
->
-> Maintainers? thoughts? I recently posted patches to convert some of the other tests that break this format [1].
->
-> Cheers,
->
-> -- Nico
->
-> [1] - https://lkml.org/lkml/2021/4/14/310
->
-> On 4/21/21 2:32 PM, Daniel Latypov wrote:
-> > [SNIP...]
-> >  config TEST_LIST_SORT
-> > -     tristate "Linked list sorting test"
-> > -     depends on DEBUG_KERNEL || m
-> > +     tristate "Linked list sorting test" if !KUNIT_ALL_TESTS
-> > +     depends on KUNIT
-> > +     default KUNIT_ALL_TESTS
-> > [SNAP...]
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/d7b2b598-7087-0445-4647-8521f3238dc2%40redhat.com.
