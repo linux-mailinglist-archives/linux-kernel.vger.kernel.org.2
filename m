@@ -2,168 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C2A36781A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51601367820
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbhDVDuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 23:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhDVDuL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:50:11 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B213C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 20:49:37 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id j7so22471667pgi.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 20:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KlLhNuqFuzAH3Dvaau9RXCpdk7wAfkXaC/QsSXDFqAI=;
-        b=lOEkPYQi9bBU+LVprM/puFZ5zkeovcvDT4PZOtupVJu7etYqUXQ8HKLZXR5LoYY+s7
-         64kdrulRwsmfSLRGYjKmtKdtG8Z3+8sZiSBupH5WBRipImvAqPXSKSHYYpC1h0eyAbdy
-         MQJTNX8tO3ZxpsxAgmmluMqgqxWC2VoghvCyXOi1N+OKJrvo2iW7APMWpfpRAeT3Ku6i
-         MkpKVoMLD3sBQq5Vkp4AVqm80/trIS5+ylJC74J/HZTKEJVvFvsz1wakXeYkQ3Wmfc1F
-         Y6SS45I1Wzyq0bac6VmDi5nLKHC1HfIElsvqPmx2XbzORt6spcWEjc4tlUAy1oKs/1Ma
-         lGYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KlLhNuqFuzAH3Dvaau9RXCpdk7wAfkXaC/QsSXDFqAI=;
-        b=EKfDTCK4XxUtGxUJtmWrMFYY2XvM7rGrUG1BapRK7EyytR2vh5aq/9xhs1i80t+yAl
-         lu9iT5wUBlVz8mmIhZr5ibh96kr/aHcW/biTTmRpwZmUbmBsXIS/O7KqXnXsuH2HGSxn
-         LShGBNxcJnzRN18TiVLDR95Lz5WMTIZI9Vm7WovMEGXN6tMnVBNGDc6VWCXnE7gU9NYX
-         9pS1ggDXIw4HCCJs/nGUOH1TCr+phylVEpWivuyA62OkGAGM/ORWRTxtYQtWlW4hSZJa
-         zPPxBEZ6RgcPghni8M12vWZo04W/hCCHGgipRkZWzCBa3g6ExBb2SLp0Spla0QfyS7Rl
-         cNtg==
-X-Gm-Message-State: AOAM532nkWY6Rd8adOSPEA/vxhpn19SukdrTz+LjUEbLusq6Zx1hS8XG
-        y0n4LMEUR/RvAMFXO6r8s7Me3Q==
-X-Google-Smtp-Source: ABdhPJym7+h50FogD5nM2qAbk/SlBPGipAUlsCRbWIm5H3VkrKDoP+0peLdasUkLw24eRrtr2OV+pQ==
-X-Received: by 2002:aa7:80c9:0:b029:249:cac5:e368 with SMTP id a9-20020aa780c90000b0290249cac5e368mr1393699pfn.12.1619063376568;
-        Wed, 21 Apr 2021 20:49:36 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id i66sm719546pgd.8.2021.04.21.20.49.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 20:49:35 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 11:49:29 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        coresight@lists.linaro.org, linux-pci@vger.kernel.org,
-        helgaas@kernel.org, gregkh@linuxfoundation.org,
-        lorenzo.pieralisi@arm.com, will@kernel.org, mark.rutland@arm.com,
-        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, jonathan.cameron@huawei.com,
-        song.bao.hua@hisilicon.com, john.garry@huawei.com,
-        prime.zeng@huawei.com, liuqi115@huawei.com,
-        zhangshaokun@hisilicon.com, linuxarm@huawei.com
-Subject: Re: [PATCH RESEND 0/4] Add support for HiSilicon PCIe Tune and Trace
- device
-Message-ID: <20210422034929.GA13004@leoy-ThinkPad-X240s>
-References: <1618654631-42454-1-git-send-email-yangyicong@hisilicon.com>
- <8735vpf20c.fsf@ashishki-desk.ger.corp.intel.com>
- <628f2f4a-03ce-a646-bf27-d6836baca425@hisilicon.com>
+        id S234728AbhDVD5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 23:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhDVD5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 23:57:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F9E613E0;
+        Thu, 22 Apr 2021 03:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619063834;
+        bh=QlWwdprMt2Kc9yJ/6D6n6mMFBdEaVscgEP+0IDmaR/M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WJdgWqQWfv0ItM4Ef4GhFlh6L1uueZBCKq1vci709noRw1y8S/VEHAlxDJpR0a80g
+         LUX4NxExeLP8rKkzj7JoK+FG4M/S2/4wtaMHf2DUDbH+TeXmqHBmS0PGvdlhX5HSzt
+         bUq1C2hBxJhe4I09ngf78I6DgxLpYkuH7kKogZUc6hQqrKR/6Uc71+AM+tvK2F8UNv
+         pnRiKMdVdUzF2yslSDcWlu4NUXR2V/beF/ja7TYohDTUlfabEn4gNzTNjcKxH4Hkn9
+         Uf1gdFfM5rr7Cchbl8CDNZ993lItzgllORf5/R767XPISc21LDDuCuulFZxyWxQMa8
+         obnJrXEJEkIuA==
+Date:   Thu, 22 Apr 2021 06:57:10 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Aditya Pakki <pakki001@umn.edu>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
+Message-ID: <YID0Fg3f0PzckJI9@unreal>
+References: <20210407001658.2208535-1-pakki001@umn.edu>
+ <YH5/i7OvsjSmqADv@kroah.com>
+ <20210420171008.GB4017@fieldses.org>
+ <YH+zwQgBBGUJdiVK@unreal>
+ <CAFX2JfnGCbanTaGurArBw-5F2MynPD=GpwkfU6wVoNKr9ffzRg@mail.gmail.com>
+ <YIAzfsMx6bn5Twu8@unreal>
+ <YIBJXjCbJ1ntH1RF@mit.edu>
+ <YIBiQ3p9z7y6PeqT@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <628f2f4a-03ce-a646-bf27-d6836baca425@hisilicon.com>
+In-Reply-To: <YIBiQ3p9z7y6PeqT@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 09:03:18PM +0800, Yicong Yang wrote:
-> On 2021/4/17 21:56, Alexander Shishkin wrote:
-> > Yicong Yang <yangyicong@hisilicon.com> writes:
+On Wed, Apr 21, 2021 at 08:34:59PM +0300, Mike Rapoport wrote:
+> On Wed, Apr 21, 2021 at 11:48:46AM -0400, Theodore Ts'o wrote:
+> > On Wed, Apr 21, 2021 at 05:15:26PM +0300, Leon Romanovsky wrote:
+> > > > This thread is the first I'm hearing about this. I wonder if there is
+> > > > a good way of alerting the entire kernel community (including those
+> > > > only subscribed to subsystem mailing lists) about what's going on? It
+> > > > seems like useful information to have to push back against these
+> > > > patches.
+> 
+> Heh, I've got this information from google news feed on my phone :)
+>  
+> > > IMHO, kernel users ML is good enough for that.
 > > 
-> >> The reason for not using perf is because there is no current support
-> >> for uncore tracing in the perf facilities.
-> > 
-> > Not unless you count
-> > 
-> > $ perf list|grep -ic uncore
-> > 77
-> > 
+> > The problem is that LKML is too high traffic for a lot of people to
+> > want to follow.
 > 
-> these are uncore events probably do not support sampling.
+> I think Leon meant kernel.org users ML (users@linux.kernel.org). Along with
+> ksummut-discuss it'll reach most maintainers, IMHO.
+
+Exactly.
+
+Thanks
+
+>  
+> > There are some people who have used the kernel summit discuss list
+> > (previously ksummit-discuss@lists.linux-foundation.org, now
+> > ksummit@lists.linux.dev) as a place where most maintainers tend to be
+> > subscribed, although that's not really a guarantee, either.  (Speaking
+> > of which, how to handle groups who submit patches in bad faith a good
+> > Maintainer Summit topic for someone to propose...)
 > 
-> I tried on x86:
-> 
-> # ./perf record -e uncore_imc_0/cas_count_read/
-> Error:
-> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_imc_0/cas_count_read/).
-> /bin/dmesg | grep -i perf may provide additional information.
-> 
-> For HiSilicon uncore PMUs, we don't support uncore sampling:
-> 
-> 'The current driver does not support sampling. So "perf record" is unsupported. ' [1]
-> 
-> and also in another PMU:
-> 
-> 'PMU doesn't support process specific events and cannot be used in sampling mode.' [2]
-> 
-> [1] Documentation/admin-guide/perf/hisi-pmu.rst
-> [2] Documentation/admin-guide/perf/arm_dsu_pmu.rst
-
-I did some debugging for this, and yes, it's related with the event
-doesn't support sampling for these x86 uncore events.
-
-So I can use below commands for the uncore event
-'uncore_imc/data_reads/' in my experiment:
-
-  # perf record -e 'uncore_imc/data_reads/' --no-samples -- ls
-  # perf stat -e 'uncore_imc/data_reads/' -- ls
-
-For your case, I think you need to write the callback
-pmu::event_init(), it should not forbid any tracing even if set
-sampling, just like other perf event drive for support AUX tracing.
-
-> >> We have our own format
-> >> of data and don't need perf doing the parsing.
-> > 
-> > Perf has AUX buffers, which are used for all kinds of own formats.
-> > 
-> 
-> ok. we thought perf will break the data format but AUX buffers seems won't.
-> do we need to add full support for tracing as well as parsing or it's ok for
-> not parsing it through perf?
-
-IMHO, this could divide into two parts.  The first part is to enable
-perf drive with support AUX tracing, and perf tool can capture the trace
-data.  The second part is to add the decoder in the perf tool so that
-the developers can *consume* the trace data; for the decoder, you
-could refer the codes:
-
-  tools/perf/util/intel-pt-decoder/
-  tools/perf/util/cs-etm-decoder/
-
-Or Arm SPE case:
-
-  tools/perf/util/arm-spe-decoder/
-
-> >> A similar approach for implementing this function is ETM, which use
-> >> sysfs for configuring and a character device for dumping data.
-> > 
-> > And also perf. One reason ETM has a sysfs interface is because the
-> > driver predates perf's AUX buffers. Can't say if it's the only
-> > reason. I'm assuming you're talking about Coresight ETM.
-
-I am not the best person to give background for this.  Mathieu or Mike
-could give more info for this.  From my undersanding, Sysfs nodes can
-be used as knobs for configuration, but it's difficult for profiling.
-
-Let's think about for the profiling, if one developer uses the Sysfs
-for the setting and read out the trace data, these informations are
-discrete.  If another developer wants to review the profiling result,
-then all these info need to be shared together.
-
-So we can benefit much from the perf tool for the usage, since all the
-profiling context will be gathered (DSOs, hardware configuration which
-can be saved into metadata), so the final profiling file can be easily
-shared and more friendly for reviewing.
-
-Thanks,
-Leo
+> -- 
+> Sincerely yours,
+> Mike.
