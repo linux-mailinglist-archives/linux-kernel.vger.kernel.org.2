@@ -2,189 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A9836771E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED6E367723
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhDVCGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:06:46 -0400
-Received: from mail-co1nam11on2064.outbound.protection.outlook.com ([40.107.220.64]:14765
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229706AbhDVCGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:06:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=laKwhS/DCoQKKsZGdlIIyTcytB6yf49Fh/HZ49DGdyeOyzoNAi6xG5odfqG0/KL56y3bvniRT1c2YDoHPDQyO9JpGHFT8N5DKXUPibI47RaauNdqzSmizxcKthaMo0VqWyFEVkydR4of0KI1+UUF2lXgp7ngzgJroObS27LwLYvLPGW8KK0VDp99FFVZMohHsO23PmLpKwl6BWgcKRucpj6pWncWIoN03Eq3perP4qZIHb6kaAsaQX7JKzZeWngSPnwdQPLp9qkKm8ay8PktMPrkYW8TBMoK5pgGgOqbIbT8NJ+U+F/tDYvUrqbDPHw1IgLPBIVSZdrZBvjn9xxuVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=48MLJ+Z9LrNEApYFNpsdTDRXfLqxXmLsvIPdhJreLl0=;
- b=c5XeaYUzQbkY7rEsGwNYDwFf9UOURdUZtu0T94Em4tlC9A1o9CS3fdPbMom1Ub3shIxIZhGO19v8N+5Q6lbGi41uy77hxbkvSQhqkFduD6uhlRifKJ0GEvVeEUvYt+FvVIhahAk4hEmfERBTMzTZmCH0B3Tfk0aBZjHhZRe/mMhcTlP7XNC+nHKyrtA/HbIQSNVvaOFjXYZ5AKAE0jd+7zMhZ2n1mk/O2hsnnrex/FUtbfW8R2SmJZrTU06jHaeW3V0VocAGi6tojGwC43Un12zNxvjgWUmcaFDIDJEIDJkHj8gxJ/njCzqjrxmcUEHkORdIbaFEpESHX276m8s+Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=48MLJ+Z9LrNEApYFNpsdTDRXfLqxXmLsvIPdhJreLl0=;
- b=e/CKZoKR0ycEO37WMohDtFtjc5hmAEUT+ywDCDkrLz9OESAv0Evl/invgGIjKlSxThai+MFzTA87fyunqEbyrWV9Z+DVgYjVU8in20kBaF1dzZY8qo7sG/hM2lkJzu2Yohz5OGUTJHmcvdGnQ9Xlq/AEn73ki8hTpX+H1c2Nc0eEBE47IsSIH6Lef1BcdBPAeGM/xUgRdAAlkhlTuzJYDUSYf4Kh6zPqikcISRFqxwQPrg0JrocWxqBsPPRnVkz5CIYAzSPSRQSxorW8eJ2kBqVm8XZHk0nLw/dYyZTxPxqfn5J/1RgDBoNfVbjinQQM7E4XWSMqXkqvl1mIYa6lxg==
-Received: from DM5PR22CA0005.namprd22.prod.outlook.com (2603:10b6:3:101::15)
- by BL0PR12MB2451.namprd12.prod.outlook.com (2603:10b6:207:4e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Thu, 22 Apr
- 2021 02:06:09 +0000
-Received: from DM6NAM11FT045.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:101:cafe::30) by DM5PR22CA0005.outlook.office365.com
- (2603:10b6:3:101::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
- Transport; Thu, 22 Apr 2021 02:06:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT045.mail.protection.outlook.com (10.13.173.123) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4065.21 via Frontend Transport; Thu, 22 Apr 2021 02:06:08 +0000
-Received: from [10.19.101.193] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
- 2021 02:06:06 +0000
-Subject: Re: [PATCH 2/2] usb: xhci: tegra: mark PM functions as __maybe_unused
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, <linux-usb@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210421135613.3560777-1-arnd@kernel.org>
- <20210421135613.3560777-2-arnd@kernel.org>
-X-Nvconfidentiality: public
-From:   JC Kuo <jckuo@nvidia.com>
-Organization: NVIDIA
-Message-ID: <f7369c80-8455-44cd-7d34-dfe1975a3b58@nvidia.com>
-Date:   Thu, 22 Apr 2021 10:06:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232157AbhDVCLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:11:30 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:38690 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230319AbhDVCL3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:11:29 -0400
+X-UUID: db0207a1956544dca90c22d29a20a729-20210422
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NWZUJCNxO3pM4ccYtxmcJrgXOTaZ34GcudHZtUurBwQ=;
+        b=CldFiwWtGyWbCDmJbKW5uJSibt8Wb7kWsL5lV8bQWynjIXRDReYkbEBySpoNB2aAsS4/8RovKmCKVZZ0/qlIv07M+xE2wrlkpSowcZ7Vc772VNgLmctogf7KYmx2go+5xonTS9vRxzYsnc36s3/Xk/19lPn9NfS9X2Jc3NqXdFA=;
+X-UUID: db0207a1956544dca90c22d29a20a729-20210422
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1414987183; Thu, 22 Apr 2021 10:10:49 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
+ 2021 10:10:47 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Apr 2021 10:10:46 +0800
+Message-ID: <1619057446.27999.2.camel@mhfsdcap03>
+Subject: Re: [PATCH v4 4/4] pinctrl: add rsel setting on MT8195
+From:   zhiyong tao <zhiyong.tao@mediatek.com>
+To:     Sean Wang <sean.wang@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Hui Liu =?UTF-8?Q?=28=E5=88=98=E8=BE=89=29?= 
+        <Hui.Liu@mediatek.com>,
+        Eddie Huang =?UTF-8?Q?=28=E9=BB=83=E6=99=BA=E5=82=91=29?= 
+        <eddie.huang@mediatek.com>,
+        Po Xu =?UTF-8?Q?=28=E5=BE=90=E5=9D=A1=29?= 
+        <ot_po.xu@mediatek.com>,
+        "Biao Huang =?UTF-8?Q?=28=E9=BB=84=E5=BD=AA=29?=" 
+        <Biao.Huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        Sean Wang <Sean.Wang@mediatek.com>,
+        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
+        <seiya.wang@mediatek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Date:   Thu, 22 Apr 2021 10:10:46 +0800
+In-Reply-To: <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
+References: <20210413055702.27535-1-zhiyong.tao@mediatek.com>
+         <20210413055702.27535-5-zhiyong.tao@mediatek.com>
+         <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210421135613.3560777-2-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d1731512-ef3a-44fe-9209-08d9053331e4
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2451:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB24514D0A123E8D65FEB3F530D0469@BL0PR12MB2451.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PvDV7dZw+7WLMqEFzZ9fkehnwRam6h2oS6xT+JkbCvSBVO5TliHotIp0YyICGTqG+Ts2nS6+469p/eFZ8h4Dw/68jx22nN1BHGX492Gn8Tr98v6YYhY8CzTJz5HnosuXWxMZDRQF3PlQk3Mc8KU0hZj2P0m2iREV2i6gr0Ks+cBcMgPpp0pJm6xYj9zQUgi13ud1862P4hMK2nWJ5gRBYxUHGu8+wV0p5belImqOEAGLVAKzLoVn3i/rMpEnVGG5LPJaTRYL8TMlS6+Yl9eZfb/JCt7quQCRx8dI2XsWYpB4AmAa0o4lNNwWjVVsE5SF8g3Y2qfVI6r6ERZ6LiZMP3cpOwepLmc7gZSisGVKmmCehIcvpJmbdTPNyHz+dmXeURC5Uyy/x1hEXS8gUfqI6ILOgg3G7NdNj2VkK5TfXLZZvqL0HDJyJPeYDvyumxmsZNzm2MFESDYBhWvOKJZ8B0fddKgtbNPlI652KJoU427OqbybRQ/fnAOUrzSbBfA3Qb4lYlg/KSwex8TGpULlIStw6dw7/UJ/DxclYohzi58TM5Ob17T53/cJHS6ZjQVZuPfeggGUnoJd6zHUM9vd3hQGEfA8gx2M3dceBlAZKH8sjHk3jw9agZ5TrWE0WAekf0E+XP+VjpdaNhPLJDTw616tKDClg9R5zGSHw3puyjTpQZHDcxYJbR49BNMdaepE
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(136003)(46966006)(36840700001)(53546011)(8936002)(16526019)(70586007)(110136005)(31696002)(186003)(478600001)(26005)(82740400003)(36916002)(36860700001)(2906002)(356005)(36756003)(82310400003)(31686004)(8676002)(5660300002)(316002)(2616005)(426003)(83380400001)(4326008)(54906003)(86362001)(36906005)(47076005)(70206006)(336012)(16576012)(6636002)(7636003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 02:06:08.7010
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1731512-ef3a-44fe-9209-08d9053331e4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT045.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2451
+X-TM-SNTS-SMTP: D12B029E0DF7614013281B6D52E7723B0881247E94195CE17C8D141C4811031E2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-Thanks for the fix.
+T24gVHVlLCAyMDIxLTA0LTIwIGF0IDExOjUwICswODAwLCBTZWFuIFdhbmcgd3JvdGU6DQo+IE9u
+IE1vbiwgQXByIDEyLCAyMDIxIGF0IDEwOjU3IFBNIFpoaXlvbmcgVGFvIDx6aGl5b25nLnRhb0Bt
+ZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPHNuaXA+DQo+ID4gQEAgLTE3Niw2ICsxODAsMTIg
+QEAgc3RhdGljIGludCBtdGtfcGluY29uZl9nZXQoc3RydWN0IHBpbmN0cmxfZGV2ICpwY3RsZGV2
+LA0KPiA+ICAgICAgICAgICAgICAgICBlbHNlDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
+ZXJyID0gLUVOT1RTVVBQOw0KPiA+ICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiArICAgICAg
+IGNhc2UgTVRLX1BJTl9DT05GSUdfUlNFTDoNCj4gPiArICAgICAgICAgICAgICAgaWYgKGh3LT5z
+b2MtPnJzZWxfZ2V0KQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGVyciA9IGh3LT5zb2Mt
+PnJzZWxfZ2V0KGh3LCBkZXNjLCAmcmV0KTsNCj4gPiArICAgICAgICAgICAgICAgZWxzZQ0KPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgIGVyciA9IC1FT1BOT1RTVVBQOw0KPiANCj4gSSB0aGlu
+ayB0aGF0IHNob3VsZCB3YW50IHRvIGJlIC1FTk9UU1VQUCB0byBhbGlnbiBvdGhlciBvY2N1cnJl
+bmNlcy4NCj09PkhpIHNlYW4sDQpDYW4geW91IGdpdmUgbWUgc29tZSBzdWdnZXN0aW9uPyAtRU5P
+UEFSQU0gb3IgLUVCQURUWVBFPw0KDQpUaGFua3MuDQo+IA0KPiA+ICsgICAgICAgICAgICAgICBi
+cmVhazsNCj4gPiAgICAgICAgIGRlZmF1bHQ6DQo+ID4gICAgICAgICAgICAgICAgIGVyciA9IC1F
+Tk9UU1VQUDsNCj4gPiAgICAgICAgIH0NCj4gPiBAQCAtMjk1LDYgKzMwNSwxMiBAQCBzdGF0aWMg
+aW50IG10a19waW5jb25mX3NldChzdHJ1Y3QgcGluY3RybF9kZXYgKnBjdGxkZXYsIHVuc2lnbmVk
+IGludCBwaW4sDQo+ID4gICAgICAgICAgICAgICAgIGVsc2UNCj4gPiAgICAgICAgICAgICAgICAg
+ICAgICAgICBlcnIgPSAtRU5PVFNVUFA7DQo+ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+
+ICsgICAgICAgY2FzZSBNVEtfUElOX0NPTkZJR19SU0VMOg0KPiA+ICsgICAgICAgICAgICAgICBp
+ZiAoaHctPnNvYy0+cnNlbF9zZXQpDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZXJyID0g
+aHctPnNvYy0+cnNlbF9zZXQoaHcsIGRlc2MsIGFyZyk7DQo+ID4gKyAgICAgICAgICAgICAgIGVs
+c2UNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBlcnIgPSAtRU9QTk9UU1VQUDsNCj4gDQo+
+IERpdHRvDQo+IA0KPiA+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gPiAgICAgICAgIGRlZmF1
+bHQ6DQo+ID4gICAgICAgICAgICAgICAgIGVyciA9IC1FTk9UU1VQUDsNCj4gPiAgICAgICAgIH0N
+Cj4gPiAtLQ0KPiA+IDIuMTguMA0KPiA+DQoNCg==
 
-Reviewed-by: JC Kuo <jckuo@nvidia.com>
-
-
-On 4/21/21 9:56 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The added #ifdefs in the PM rework were almost correct, but still
-> cause warnings in some randconfig builds:
-> 
-> drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined but not used [-Werror=unused-function]
->  2147 | static int tegra_xusb_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~
-> drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' defined but not used [-Werror=unused-function]
->  2105 | static int tegra_xusb_suspend(struct device *dev)
-> 
-> Replace the #ifdef checks with simpler __maybe_unused annotations to
-> reliably shut up these warnings.
-> 
-> Fixes: d64d362f1d8b ("usb: xhci: tegra: Enable ELPG for runtime/system PM")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/usb/host/xhci-tegra.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
-> index ce97ff054c68..adead2377149 100644
-> --- a/drivers/usb/host/xhci-tegra.c
-> +++ b/drivers/usb/host/xhci-tegra.c
-> @@ -1787,7 +1787,6 @@ static int tegra_xusb_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -#if IS_ENABLED(CONFIG_PM) || IS_ENABLED(CONFIG_PM_SLEEP)
->  static bool xhci_hub_ports_suspended(struct xhci_hub *hub)
->  {
->  	struct device *dev = hub->hcd->self.controller;
-> @@ -2102,7 +2101,7 @@ static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool runtime)
->  	return err;
->  }
->  
-> -static int tegra_xusb_suspend(struct device *dev)
-> +static __maybe_unused int tegra_xusb_suspend(struct device *dev)
->  {
->  	struct tegra_xusb *tegra = dev_get_drvdata(dev);
->  	int err;
-> @@ -2144,7 +2143,7 @@ static int tegra_xusb_suspend(struct device *dev)
->  	return err;
->  }
->  
-> -static int tegra_xusb_resume(struct device *dev)
-> +static __maybe_unused int tegra_xusb_resume(struct device *dev)
->  {
->  	struct tegra_xusb *tegra = dev_get_drvdata(dev);
->  	int err;
-> @@ -2174,10 +2173,8 @@ static int tegra_xusb_resume(struct device *dev)
->  
->  	return 0;
->  }
-> -#endif
->  
-> -#ifdef CONFIG_PM
-> -static int tegra_xusb_runtime_suspend(struct device *dev)
-> +static __maybe_unused int tegra_xusb_runtime_suspend(struct device *dev)
->  {
->  	struct tegra_xusb *tegra = dev_get_drvdata(dev);
->  	int ret;
-> @@ -2190,7 +2187,7 @@ static int tegra_xusb_runtime_suspend(struct device *dev)
->  	return ret;
->  }
->  
-> -static int tegra_xusb_runtime_resume(struct device *dev)
-> +static __maybe_unused int tegra_xusb_runtime_resume(struct device *dev)
->  {
->  	struct tegra_xusb *tegra = dev_get_drvdata(dev);
->  	int err;
-> @@ -2201,7 +2198,6 @@ static int tegra_xusb_runtime_resume(struct device *dev)
->  
->  	return err;
->  }
-> -#endif
->  
->  static const struct dev_pm_ops tegra_xusb_pm_ops = {
->  	SET_RUNTIME_PM_OPS(tegra_xusb_runtime_suspend,
-> 
