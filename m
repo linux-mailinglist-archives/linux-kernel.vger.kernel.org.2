@@ -2,109 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5827F3681DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775E03681E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236757AbhDVNvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236236AbhDVNvl (ORCPT
+        id S236872AbhDVNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:52:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21782 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236333AbhDVNwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:51:41 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ACBC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:51:07 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id o5so46317628qkb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs-cmu-edu.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=sc812S/XH0xi1daedR2N2rrASOXlL4IU8Kqiol/mJyg=;
-        b=ilf7MiKPmuLDCJimMx6HY09IjE0RtI8ZvwvdH6B6zfOQjt3XpT5zeEzYvZWEpLAdYN
-         HgsytpNQ77VJrUr18k2RiREzJkRdWu0QpLA0tkuRNsG9RJNB3q1uAdrnsyEo+VtE/bkz
-         B2jsPuMqREtLJPtddAk+Uo17G2/m8PXB2rUUgxU0rvhBi59tk2mXxC2MGCjH0Pjpp+VT
-         mX7+laaPBOMCRKCQqV4hxZwgrlInehA3Gism8b/RZbMqm7co4BAjldanO0P5uXETbut4
-         mzMIosKNAMoPho12DmysXBBsk5jjrFMiiqQDcmOd/Ypwjfkh2IjEZ9SeT0+ozvuXOA6A
-         QC1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=sc812S/XH0xi1daedR2N2rrASOXlL4IU8Kqiol/mJyg=;
-        b=kSqnlF5ZeXcbOdPLxdsAbde0+qsANLsDKsA/dbD693LIznTJX+AouU+jcbMO9XBetw
-         4oRMdbNOxuMlzg9iFdNP+or+yahCgZVftTDcrWUV5mOH/LndilrwKslaZBCxafmpWe9d
-         5uzy76I1ByP3wKiVsHDNvCmIYc1ygG9mFe3vSttU5SXOd2Yp7kdBVw2SyCwsU9ymOFnh
-         ZnJo1kDB2KTh18gzePu+YpaE3REuGLyDoU9TlEOmBDabZffu3QNWILR+CSGbkBEGgFcK
-         BiiQrsB7j1PfBWlW4KFDxDlpf044NbeVz7/mj+bpw0pLvNao4Z3c+VgCEVuYnuHv2JDs
-         vULg==
-X-Gm-Message-State: AOAM533S0mgQ5piLblrrEFiCC8cacZpVyfesSgBjS5RXhLjrftXDBWpX
-        TAjL4JkDalorWjT37Kg9KQeavw==
-X-Google-Smtp-Source: ABdhPJzopgVvvshO8HCJDMmm2d3/Wi7iBmogcMm1rcCSeWXZCE8qQJSe7zD8nyMnJxcAF1H8ro/U3g==
-X-Received: by 2002:a37:c202:: with SMTP id i2mr3647788qkm.296.1619099466408;
-        Thu, 22 Apr 2021 06:51:06 -0700 (PDT)
-Received: from cs.cmu.edu (tunnel29655-pt.tunnel.tserv13.ash1.ipv6.he.net. [2001:470:7:582::2])
-        by smtp.gmail.com with ESMTPSA id g1sm2207278qth.69.2021.04.22.06.51.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 06:51:05 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 09:51:03 -0400
-From:   Jan Harkes <jaharkes@cs.cmu.edu>
-To:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, coda@cs.cmu.edu,
-        miklos@szeredi.hu, akpm@linux-foundation.org, jgg@ziepe.ca
-Subject: Re: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error
- path
-Message-ID: <20210422135103.hif4a5znhzt4pc6f@cs.cmu.edu>
-References: <20210421132012.82354-1-christian.koenig@amd.com>
- <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
- <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
+        Thu, 22 Apr 2021 09:52:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619099504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JGmS/xLoW189jty2r0t6cwkKx1CTQrOOThGSNPhaRfs=;
+        b=F2JYgmG80NZS9kJzYxX2swQYeKtcoqm3j3lzGhA8OPYyyMYOiJSB5IKtBET314mSqr/n7p
+        01b70O5DI1bNvCqQRDPAICWiWXg0PlJHswqJDJs0FTTrr5ltEXE21yFfRfwwUTeYv40cys
+        79z47+7AToc1mq4PAc06s+zCnz4q5Sw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-D-9gXEBGPL-JfVdk-rKe9g-1; Thu, 22 Apr 2021 09:51:42 -0400
+X-MC-Unique: D-9gXEBGPL-JfVdk-rKe9g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7A82107ACF6;
+        Thu, 22 Apr 2021 13:51:39 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0935760938;
+        Thu, 22 Apr 2021 13:51:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <27c369a8f42bb8a617672b2dc0126a5c6df5a050.camel@kernel.org>
+References: <27c369a8f42bb8a617672b2dc0126a5c6df5a050.camel@kernel.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/30] iov_iter: Add ITER_XARRAY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2293709.1619099492.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 22 Apr 2021 14:51:32 +0100
+Message-ID: <2293710.1619099492@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:39:41PM +0200, Christian König wrote:
-> Am 22.04.21 um 14:27 schrieb Jan Harkes:
-> > Looks good to me.
-> > 
-> > I'm also maintaining an out of tree coda module build that people sometimes use, which has workarounds for differences between the various kernel versions.
-> > 
-> > Do you have a reference to the corresponding mmap_region change? If it is merged already I'll probably be able to find it. Is this mmap_region change expected to be backported to any lts kernels?
-> 
-> That is the following upstream commit in Linus tree:
-> 
-> commit 1527f926fd04490f648c42f42b45218a04754f87
-> Author: Christian König <christian.koenig@amd.com>
-> Date:   Fri Oct 9 15:08:55 2020 +0200
-> 
->     mm: mmap: fix fput in error path v2
-> 
-> But I don't think we should backport that.
-> 
-> And sorry for the noise. We had so many places which expected different
-> behavior that I didn't noticed that two occasions in the fs code actually
-> rely on the current behavior.
-> 
-> For your out of tree module you could make the code version independent by
-> setting the vma back to the original file in case of an error. That should
-> work with both behaviors in mmap_region.
+Jeff Layton <jlayton@kernel.org> wrote:
 
-Awesome, I'll give that a try, it may very well be a cleaner solution
-either way.
+> As a general note, iov_iter.c could really do with some (verbose)
+> comments explaining things. A kerneldoc header that explains the
+> arguments to iterate_all_kinds would sure make this easier to review.
 
-And thank you for following up after your original patch and finding
-the filesystems that mess around with those mappings. I'm sure it would
-have taken me a while to figure out why file refcounts would go weird
-for some people, especially because this only happens in the error path.
+Definitely.  But that really requires a separate patch.
 
-Jan
+> > @@ -1126,7 +1199,12 @@ void iov_iter_revert(struct iov_iter *i, size_t=
+ unroll)
+> >  		return;
+> >  	}
+> >  	unroll -=3D i->iov_offset;
+> > -	if (iov_iter_is_bvec(i)) {
+> > +	if (iov_iter_is_xarray(i)) {
+> > +		BUG(); /* We should never go beyond the start of the specified
+> > +			* range since we might then be straying into pages that
+> > +			* aren't pinned.
+> > +			*/
+> =
+
+> It's not needed now, but there are a lot of calls to iov_iter_revert in
+> the kernel, and going backward doesn't necessarily mean we'd be straying
+> into an unpinned range. xarray_start never changes; would it not be ok
+> to allow reverting as long as you don't move to a lower offset than that
+> point?
+
+This is handled starting a couple of lines above the start of the hunk:
+
+	if (unroll <=3D i->iov_offset) {
+		i->iov_offset -=3D unroll;
+		return;
+	}
+
+As long as the amount you want to unroll by doesn't exceed the amount you'=
+ve
+consumed of the iterator, it will allow you to do it.  The BUG is there to
+catch someone attempting to over-revert (and there's no way to return an
+error).
+
+> > +static ssize_t iter_xarray_copy_pages(struct page **pages, struct xar=
+ray *xa,
+> > +				       pgoff_t index, unsigned int nr_pages)
+> =
+
+> nit: This could use a different name -- I was expecting to see page
+> _contents_ copied here, but it's just populating the page array with
+> pointers.
+
+Fair point.  Um...  how about iter_xarray_populate_pages() or
+iter_xarray_list_pages()?
+
+> I think you've planned to remove iov_iter_for_each_range as well? I'll
+> assume that this is going away. It might be nice to post the latest
+> version of this patch with that change, just for posterity.
+
+I'll put that in a separate patch.
+
+> In any case, this all looks reasonable to me, modulo a few nits and a
+> general dearth of comments.
+> =
+
+> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+
+Thanks,
+David
 
