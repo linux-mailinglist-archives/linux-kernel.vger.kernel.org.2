@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F65E367756
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B6A367759
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhDVCWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:22:14 -0400
+        id S234394AbhDVCWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:22:17 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234193AbhDVCWK (ORCPT
+        with ESMTP id S234272AbhDVCWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:22:10 -0400
+        Wed, 21 Apr 2021 22:22:12 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3592CC06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l6-20020a5b05860000b02904e88b568042so18246800ybp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538C4C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:38 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id c1-20020a5b0bc10000b02904e7c6399b20so18253643ybr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=Uj1R8VprO2gM5yhQ4t81phLa7RLpkl0ODVfMpjrgkqY=;
-        b=Yy+DVFdlTw9aM63kzi9kxH+PoSHP60EBjg6elE5JzuACffosNEgEqvyAdgz5Ayrcb4
-         06oFMFgGTR/OsWrWTSS3Ti/McyLexYEpSsd24tHn4F8fXxCiixBc5TbMSXihtwSbSlhY
-         jjj/VMlfS+SHmZ+pxg5GX6iFDTAx0ImDLm8ghIc8XUcCAABgU55TKkwmlesHipKwnztg
-         bM6+kYiwC0/0DZv+3ilWx2xXtO6I0YrIY4IWdsc8YPHgb+ngiFSZBQVNpAUwFLCHs+JF
-         90Z7gYArMfYoL8ghMlubFK3otqSQS9MgJIh7LXokGYFY7WfQyhu2A1qoVOxRvQ2HSZ68
-         bVpA==
+        bh=dmzwSU4y73/4LEavmF/OYppkzQDl6f2ap4gCGRq/u7Q=;
+        b=B3uHZlKmU3bUpjY9s9zd6Sx6XXeDiQuHUft/ttYvoKDv4H0Cnwd7rFWo/uM9hjbt3V
+         MBjdIRB3khz9u7TdEcltObR7Lo5Uddix+Ii9jiFbzZp3k+RbQrh6ebnx835FjM97uRHG
+         1BrJzpSswjwDNvcGZD4NB3zGsvqDlsQpCkvTCP9hS0t1p/q0APq2YrkO5N0tHWC9Yj4a
+         dO2YhyKFS751IwMtb8ZaXa/sip0UyazMUZdAgpaZQIzS2bCGsUEjuqVNrM+HM50WUBqS
+         wshEYB7/Eqn2eas6GOseDUqTdF7C7dy6ltuyldoep44gUDAVSnvIuJvRkSbIhEvpUFlZ
+         HQCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=Uj1R8VprO2gM5yhQ4t81phLa7RLpkl0ODVfMpjrgkqY=;
-        b=ZmwJVK7C3BCm9EFaQlFUqTTNsifVpyMmFfat+E/B8dwmBQ18XDt6KCPHQK9l+smlvA
-         1GySNJEf3EXyNjwSUoPmRLL3kN/lyyjgOD+nN+QLXBu0gGkH8X4KYlvfz1Cd3mWSKpay
-         5tg9Rn0K3S7OnRK7w3TMbFU4SIqPLD/lfPHj7//cI7V9KXstKpHWinOh3wsgSgBKl7yY
-         lCeZRcAZSxF7E6ciombnv67zyCKpP38y3cF5ihF1hmQZJY7XAbVGsCb88d5uRt6EhcG5
-         6EeVcmRrb2PYpXq1Tl9UguzgyTX24ENdBmefWXzmZj8XWc2jewYm9742OcvAEflydil/
-         asBg==
-X-Gm-Message-State: AOAM532KqbgicO8IPCim67uhqyZ/6qM3nnwzA89P13QcEWcLrEmSKFRz
-        pSXq+jPcQAB7MDMwrdv/hywTDzBple8=
-X-Google-Smtp-Source: ABdhPJwyzZUT8XH+KgxDn0ZjmaqtN8tI1gG/eA2OAPLHcjfMH3kmb4Z1e2oRIfOD1RLf9qGNUh0UIYT0h50=
+        bh=dmzwSU4y73/4LEavmF/OYppkzQDl6f2ap4gCGRq/u7Q=;
+        b=KGYGNErwrR9/zC5dy6ercVmGbxhay9yezkZe3ui+m+mV9P5vOal9M30VCG/GOSP+kN
+         HprC58tqfHlps9qdws9iaf/+8mzpLYNTLWGM8dSn9M5k4dZfxk8a75voxRPVAqFO9jCS
+         OaDg9hPcRGjj2mg+9RcKHvIAToPikAimpPBI+Qxtjlpa7SpfCjxY5vGMXFdemNBpXXA1
+         mg4RwydVmoEJcKuRzSvzR/uJEGloLkIx2/k9oz4jUMCV7rfxXuNSbq8QrOxuTe8PD/cd
+         fUZbN/8AhD4Xcx/gKWTUO4nT9DfR9/w6P+9NjlOg2hCRuf6FKDArRmbKQfXaJOaytyft
+         LvnQ==
+X-Gm-Message-State: AOAM5300S85Wtkc+xSvWwja9pdhd6OJsRDKTujCDeZeM7xuELU70yZ1o
+        u/6l5P0C0Rab089Tl3ypLLjO7UY3PQg=
+X-Google-Smtp-Source: ABdhPJxCE4gUrvDEB867GR4YRgftu5sFnMM6G98+N8tTlWicY3XWd/UzALl3kkxUTKkrcP0iHY34ArIC5lo=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e012:374c:592:6194])
- (user=seanjc job=sendgmr) by 2002:a25:b6c5:: with SMTP id f5mr1365721ybm.407.1619058095408;
- Wed, 21 Apr 2021 19:21:35 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:11c5:: with SMTP id 188mr1415372ybr.322.1619058097612;
+ Wed, 21 Apr 2021 19:21:37 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 21 Apr 2021 19:21:21 -0700
+Date:   Wed, 21 Apr 2021 19:21:22 -0700
 In-Reply-To: <20210422022128.3464144-1-seanjc@google.com>
-Message-Id: <20210422022128.3464144-3-seanjc@google.com>
+Message-Id: <20210422022128.3464144-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210422022128.3464144-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v2 2/9] KVM: x86: Check CR3 GPA for validity regardless of
- vCPU mode
+Subject: [PATCH v2 3/9] KVM: SVM: Truncate GPR value for DR and CR accesses in
+ !64-bit mode
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,44 +69,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check CR3 for an invalid GPA even if the vCPU isn't in long mode.  For
-bigger emulation flows, notably RSM, the vCPU mode may not be accurate
-if CR0/CR4 are loaded after CR3.  For MOV CR3 and similar flows, the
-caller is responsible for truncating the value.
+Drop bits 63:32 on loads/stores to/from DRs and CRs when the vCPU is not
+in 64-bit mode.  The APM states bits 63:32 are dropped for both DRs and
+CRs:
 
-Note, SMRAM.CR3 is read-only, so this is mostly a theoretical bug since
-KVM will not have stored an illegal CR3 into SMRAM during SMI emulation.
+  In 64-bit mode, the operand size is fixed at 64 bits without the need
+  for a REX prefix. In non-64-bit mode, the operand size is fixed at 32
+  bits and the upper 32 bits of the destination are forced to 0.
 
-Fixes: 660a5d517aaa ("KVM: x86: save/load state on SMM switch")
+Fixes: 7ff76d58a9dc ("KVM: SVM: enhance MOV CR intercept handler")
+Fixes: cae3797a4639 ("KVM: SVM: enhance mov DR intercept handler")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/x86.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/x86/kvm/svm/svm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c9ba6f2d9bcd..63af93211871 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1078,10 +1078,15 @@ int kvm_set_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
- 		return 0;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index cd8c333ed2dc..6df12d7967db 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2462,7 +2462,7 @@ static int cr_interception(struct kvm_vcpu *vcpu)
+ 	err = 0;
+ 	if (cr >= 16) { /* mov to cr */
+ 		cr -= 16;
+-		val = kvm_register_read(vcpu, reg);
++		val = kvm_register_readl(vcpu, reg);
+ 		trace_kvm_cr_write(cr, val);
+ 		switch (cr) {
+ 		case 0:
+@@ -2508,7 +2508,7 @@ static int cr_interception(struct kvm_vcpu *vcpu)
+ 			kvm_queue_exception(vcpu, UD_VECTOR);
+ 			return 1;
+ 		}
+-		kvm_register_write(vcpu, reg, val);
++		kvm_register_writel(vcpu, reg, val);
+ 		trace_kvm_cr_read(cr, val);
+ 	}
+ 	return kvm_complete_insn_gp(vcpu, err);
+@@ -2574,11 +2574,11 @@ static int dr_interception(struct kvm_vcpu *vcpu)
+ 	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
+ 	if (dr >= 16) { /* mov to DRn  */
+ 		dr -= 16;
+-		val = kvm_register_read(vcpu, reg);
++		val = kvm_register_readl(vcpu, reg);
+ 		err = kvm_set_dr(vcpu, dr, val);
+ 	} else {
+ 		kvm_get_dr(vcpu, dr, &val);
+-		kvm_register_write(vcpu, reg, val);
++		kvm_register_writel(vcpu, reg, val);
  	}
  
--	if (is_long_mode(vcpu) && kvm_vcpu_is_illegal_gpa(vcpu, cr3))
-+	/*
-+	 * Do not condition the GPA check on long mode, this helper is used to
-+	 * stuff CR3, e.g. for RSM emulation, and there is no guarantee that
-+	 * the current vCPU mode is accurate.
-+	 */
-+	if (kvm_vcpu_is_illegal_gpa(vcpu, cr3))
- 		return 1;
--	else if (is_pae_paging(vcpu) &&
--		 !load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))
-+
-+	if (is_pae_paging(vcpu) && !load_pdptrs(vcpu, vcpu->arch.walk_mmu, cr3))
- 		return 1;
- 
- 	kvm_mmu_new_pgd(vcpu, cr3, skip_tlb_flush, skip_tlb_flush);
+ 	return kvm_complete_insn_gp(vcpu, err);
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
