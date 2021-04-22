@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233BF3680C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C123680C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236235AbhDVMpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:45:42 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:46885 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236172AbhDVMpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:45:40 -0400
-Received: by mail-il1-f199.google.com with SMTP id l6-20020a92d9460000b029014a4305aacaso18293886ilq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:45:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=MBoWTyERxFkVDTqj1W2YjlvsjGkP+FMvMXQ4/+ef/wM=;
-        b=K/esdNL8o8SxjYo9ShKV/fJeDJr9xkoIJEsfWBsA0Dg7lTNuLnmyNDNGTNUihQLRUB
-         572vaMBb/Ubo8UFOepST2SbbjE2exIo6PtoCj+vkiX6tfa8/8wCGP7gfhSjWM2ThOElw
-         ny41RBck3KtriURyo+cMPW9l3Uqh/fx1ZSVnKcdMRWwY9Gxthu/8avJJdpoRrEF0H56p
-         agTNRNRZpzH0R9JxykdAvX1vZkrzRJH/o0HJKIt6cuuYVbIWZxGrexnCMZvGXEaJWe0F
-         Tlbl/Ol0WvsGVoga2R1W5njJL//jxafdKSRtYytd05v+W2jGmnA5hJcYQ+z3KE9GKxoB
-         nd5g==
-X-Gm-Message-State: AOAM532IeNKbpi586mXUmVgkGFZm11mRH0ugyKfIkNumSTlwz3BqNCA7
-        uC1V3a1aaU/lgf+oq8dfqyrdzEthaoyN8RltqddrmNB6T8TU
-X-Google-Smtp-Source: ABdhPJyuN0BKB5Ti+jqSeP7iOBlhpvVRArVK5O0qvZ4zHfzGvQ2tuERMiugAJexNtsJ8Ew+33+T6hNfxGhe9A8lMfvbDBd3edu3v
+        id S236346AbhDVMqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:46:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35658 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236144AbhDVMqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:46:22 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lZYiD-000UwN-Aq; Thu, 22 Apr 2021 14:45:41 +0200
+Date:   Thu, 22 Apr 2021 14:45:41 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     netdev@vger.kernel.org, olteanv@gmail.com, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 2/9] net: phy: Add support for LAN937x T1 phy
+ driver
+Message-ID: <YIFv9Wcp94395Hbb@lunn.ch>
+References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
+ <20210422094257.1641396-3-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr2341220ila.230.1619095505244;
- Thu, 22 Apr 2021 05:45:05 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 05:45:05 -0700
-In-Reply-To: <94aa3e7fcbb225da66961a21c940406ada2bbd0b.camel@suse.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000729ab405c08f0c16@google.com>
-Subject: Re: [syzbot] memory leak in usb_set_configuration (2)
-From:   syzbot <syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, johan@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, oneukum@suse.com,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422094257.1641396-3-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> +#define PORT_T1_PHY_RESET	BIT(15)
+> +#define PORT_T1_PHY_LOOPBACK	BIT(14)
+> +#define PORT_T1_SPEED_100MBIT	BIT(13)
+> +#define PORT_T1_POWER_DOWN	BIT(11)
+> +#define PORT_T1_ISOLATE	BIT(10)
+> +#define PORT_T1_FULL_DUPLEX	BIT(8)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+These appear to be standard BMCR_ values. Please don't define your
+own.
 
-Reported-and-tested-by: syzbot+d1e69c888f0d3866ead4@syzkaller.appspotmail.com
+> +
+> +#define REG_PORT_T1_PHY_BASIC_STATUS 0x01
+> +
+> +#define PORT_T1_MII_SUPPRESS_CAPABLE	BIT(6)
+> +#define PORT_T1_LINK_STATUS		BIT(2)
+> +#define PORT_T1_EXTENDED_CAPABILITY	BIT(0)
+> +
+> +#define REG_PORT_T1_PHY_ID_HI 0x02
+> +#define REG_PORT_T1_PHY_ID_LO 0x03
 
-Tested on:
+MII_PHYSID1 and MII_PHYSID2
 
-commit:         9cdbf646 Merge tag 'io_uring-5.12-2021-04-16' of git://git..
-git tree:       https://github.com/google/kasan.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f23c86207baa4afe
-dashboard link: https://syzkaller.appspot.com/bug?extid=d1e69c888f0d3866ead4
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1699cf75d00000
+Please go through all these #defines and replace them with the
+standard ones Linux provides. You are obfusticating the code by not
+using what people already know.
 
-Note: testing is done by a robot and is best-effort only.
+      Andrew
