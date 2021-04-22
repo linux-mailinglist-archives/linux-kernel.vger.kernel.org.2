@@ -2,249 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB33E3680A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B783680B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236968AbhDVMja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236293AbhDVMhn (ORCPT
+        id S237105AbhDVMki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:40:38 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3951 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237269AbhDVMkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:37:43 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2980C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:37:07 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id j12so23774931ils.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A665ErDKUdmsQDlfh0SCMscZakL4a8DB0rDSnVVLJ5g=;
-        b=cbO5PaTxCYtLcvQnj3TKsFgXHTI0X/UzwDrcZiH6jvdvJiF4FedjajAB44bF46M8pJ
-         6eE+oYtoHZkmwd5EhBEY/eJpHH6TIlz1FsIp4motwyZf24wj4xp3SJzhrypsr5IVtVaa
-         XvkYCzm3IR/LOXTj1UTalPBhojQDkssRcW7ZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A665ErDKUdmsQDlfh0SCMscZakL4a8DB0rDSnVVLJ5g=;
-        b=PD6hobALTvQdri6K1fAuvt4oKO2OWlYwaCreq2DvF9MKBq9G11l6vlztOZitWW1bMR
-         fGyxjjNDhAxpiE/GH6Ey5T8PIEql1TkY6q03WDCygThPdGlAk7Ayx/vGESeG++L6sHTL
-         Gp0FpTeFhAMNuhaTOE/Zg89dvRa/07t2YR+0Du6YP5Hh8zFztsCy1YBZFXUYtkVMygQJ
-         xE1mMLYndYTe7kl4O3e3IlxdNx0+AdLTZKhThi4nN0L6m4k8+wG5nv4RIUQrD+IXQorC
-         HHn1M8XpjM5G+70zW1s9qYoG4Yt+yCo8qxK5bUGbFaMzhWNeZe1jfqVyp4+6q4LWZS2U
-         SK3g==
-X-Gm-Message-State: AOAM531GiauugtUAC56mZhGoCZR4KFp4tGpaU4PGCBBC09xuAV14ocy3
-        BQBMy7izGx6C4KqFzhaNh/sCBtd+N8d7UWzCYwlVX3fzOJA/oA==
-X-Google-Smtp-Source: ABdhPJyiG/f5qhwUvdtkH0ZkVZ7NdNUmooZC7RMWMCIvCpKoFeMRhcZRV8C37SD3oGPQWOgsiKQoEqMcu1DNtJJ1Mc8=
-X-Received: by 2002:a05:6e02:219d:: with SMTP id j29mr2669565ila.204.1619095027316;
- Thu, 22 Apr 2021 05:37:07 -0700 (PDT)
+        Thu, 22 Apr 2021 08:40:10 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FQxkn6sj5z5t5K;
+        Thu, 22 Apr 2021 20:37:05 +0800 (CST)
+Received: from dggemi705-chm.china.huawei.com (10.3.20.104) by
+ DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 22 Apr 2021 20:39:29 +0800
+Received: from dggemi757-chm.china.huawei.com (10.1.198.143) by
+ dggemi705-chm.china.huawei.com (10.3.20.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 22 Apr 2021 20:39:29 +0800
+Received: from dggemi757-chm.china.huawei.com ([10.9.49.199]) by
+ dggemi757-chm.china.huawei.com ([10.9.49.199]) with mapi id 15.01.2176.012;
+ Thu, 22 Apr 2021 20:39:29 +0800
+From:   linruizhe <linruizhe@huawei.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "edubezval@gmail.com" <edubezval@gmail.com>,
+        "j-keerthy@ti.com" <j-keerthy@ti.com>,
+        "amitk@kernel.org" <amitk@kernel.org>,
+        "eballetbo@gmail.com" <eballetbo@gmail.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjNdIHRoZXJtYWw6IHRpLXNvYy10aGVybWFsOiBS?=
+ =?utf-8?Q?emove_unused_variable_'val'?=
+Thread-Topic: [PATCH v3] thermal: ti-soc-thermal: Remove unused variable 'val'
+Thread-Index: AQHXNopQkdph70A1h02cCOdJ6yn6yaq+I1+AgAAEiYCAAAiwgIAAIVsAgAIolBA=
+Date:   Thu, 22 Apr 2021 12:39:29 +0000
+Message-ID: <7871516e6f824f35929c4ed87cbc08c4@huawei.com>
+References: <20210421084256.57591-1-linruizhe@huawei.com>
+ <YH/nK6xshH+lW7e0@kroah.com>
+ <8e66040e-4330-d4f0-afbb-8cae62a5082e@linaro.org>
+ <YH/yQ5Hd+30DH4p/@atomide.com>
+ <3116672d-4ff3-a065-f76c-1ae820e1ff95@linaro.org>
+In-Reply-To: <3116672d-4ff3-a065-f76c-1ae820e1ff95@linaro.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.110.254]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
- <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
- <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
- <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk>
-In-Reply-To: <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 22 Apr 2021 14:36:56 +0200
-Message-ID: <CABRcYmLU0f9eSvsjBogKmc_FK8qykfR1pNx9VCW8Scjj4-VQQg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:09 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 22/04/2021 11.23, Florent Revest wrote:
-> > On Thu, Apr 22, 2021 at 9:13 AM Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk> wrote:
-> >>
-> >> On 22/04/2021 05.32, Andrii Nakryiko wrote:
-> >>> On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
-> >>> <linux@rasmusvillemoes.dk> wrote:
-> >>>>
-> >>>> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
-> >>>> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
-> >>>> snprintf() does not guarantee a nul-terminated string is when it is
-> >>>> given a buffer size of 0 (which of course prevents it from writing
-> >>>> anything at all to the buffer).
-> >>>>
-> >>>> Remove it before it gets cargo-culted elsewhere.
-> >>>>
-> >>>> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> >>>> ---
-> >>>>  kernel/trace/bpf_trace.c | 3 ---
-> >>>>  1 file changed, 3 deletions(-)
-> >>>>
-> >>>
-> >>> The change looks good to me, but please rebase it on top of the
-> >>> bpf-next tree. This is not a bug, so it doesn't have to go into the
-> >>> bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
-> >
-> > FWIW the idea of the patch also looks good to me :)
-> >
-> >> Thanks for the pointer. Looking in next-20210420, it seems to me that
-> >>
-> >> commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
-> >> Author: Florent Revest <revest@chromium.org>
-> >> Date:   Mon Apr 19 17:52:38 2021 +0200
-> >>
-> >>     bpf: Factorize bpf_trace_printk and bpf_seq_printf
-> >>
-> >> is buggy. In particular, these two snippets:
-> >>
-> >> +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-> >> +       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
-> >> +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
-> >> +         ? (u64)args[arg_nb]                                           \
-> >> +         : (u32)args[arg_nb])
-> >>
-> >>
-> >> +       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
-> >> mod),
-> >> +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
-> >> args, mod));
-> >>
-> >> Regardless of the casts done in that macro, the type of the resulting
-> >> expression is that resulting from C promotion rules. And (foo ? (u64)bla
-> >> : (u32)blib) has type u64, which is thus the type the compiler uses when
-> >> building the vararg list being passed into snprintf(). C simply doesn't
-> >> allow you to change types at run-time in this way.
-> >>
-> >> It probably works fine on x86-64, which passes the first six or so
-> >> argument in registers, va_start() puts those registers into the va_list
-> >> opaque structure, and when it comes time to do a va_arg(int), just the
-> >> lower 32 bits are used. It is broken on i386 and other architectures
-> >> where arguments are passed on the stack (and for x86-64 as well had
-> >> there been a few more arguments) and va_arg(ap, int) is essentially ({
-> >> int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
-> >> direction etc., that's not really relevant here].
-> >>
-> >> Rasmus
-> >
-> > Thank you Rasmus :)
->
->
-> I think you were lucky (or unlucky, depending on how you look at it)
-> with your test case
->
-> +       num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-> +                               "%d %u %x %li %llu %lX",
-> +                               -8, 9, 150, -424242, 1337, 0xDABBAD00);
->
-> because it just so happens that the eventual snprintf() call uses three
-> arguments for itself, so the first three 32-bit arguments end up being
-> passed via registers, while the 64 bit arguments are passed via the
-> stack. Can I get you to test what would happen if you interchanged
-> these, i.e. changed the test case to do
->
-> +       num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-> +                               "%li %llu %lX %d %u %x",
-> +                               -424242, 1337, 0xDABBAD00, -8, 9, 150);
->
-> (or just add a few more expects-a-32-bit argument format specifiers and
-> corresponding arguments). My guess is that up until formatting -8 it
-> goes well, but when vsnprintf() is to grab the argument corresponding to
-> %u, it will get the 0xffffffff from the upper half of (u64)-8.
-
-I will need to come up with a repro and let you know yes :)
-
-> > It seems that we went offtrack in
-> > https://lore.kernel.org/bpf/CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com/
-> > and we do need something like "88a5c690b6 bpf: fix bpf_trace_printk on
-> > 32 bit archs". Thinking about it again, it's clearer now why the
-> > __BPF_TP_EMIT macro emits 2^3=8 different __trace_printk() indeed.
->
-> Isn't it 3^3 = 27, or has that been reduced in -next compared to Linus'
-> master? Doesn't matter much, just curious.
->
-> > In the case of bpf_trace_printk with a maximum of 3 args, it's
-> > relatively cheap; but for bpf_seq_printf and bpf_snprintf which accept
-> > up to 12 arguments, that would be 2^12=4096 calls.
->
-> Yeah, that doesn't scale at all.
->
->  Until now
-> > bpf_seq_printf has just ignored this problem and just considered
-> > everything as u64, I wonder if that'd be the best approach for these
-> > two helpers anyway.
-> >
->
-> [wild handwaving ahead]
->
-> One possibility, if one is willing to get hands dirty and dig into ABI
-> details on various arches, is to create a
->
->   struct fake_va_list {
->     union {
->       va_list      ap; /* opaque, compiler-provided */
->       arch_va_list _ap; /* arch-provided, must match layout of ap */
->     };
->     void *stack;
->   };
->
-> Then do
->
->   struct fake_va_list fva;
->   u64 buf[24]; /* or whatever you want to support, can be different in
-> different functions */
->
->   fake_va_init(&fva, buf);
->   /* various C code, parsing format string etc. */
->   if (arg[i] is really 32 bits)
->     fake_va_push(&fva, (u32)arg[i]);
->   else
->     fake_va_push(&fva, (u64)arg[i]);
->   /* etc. */
->   ...
->   vsnprintf(out, size, fmt, fva.va);
->
-> On arches like x86-64, where va_list is really a typedef for a
-> one-element array of
->
-> struct __va_list_tag {
->         unsigned int               gp_offset;
->         unsigned int               fp_offset;
->         void *                     overflow_arg_area;
->         void *                     reg_save_area;
-> };
->
->
-> fake_va_init() would make the va_list look like the reg_save_area is
-> already used (i.e., set gp_offset to 48), and initialize both
-> ->_ap.overflow_arg_area and ->stack to point at the given buffer.
-> fake_va_push() would use and update stack appropriately. For 32 bit x86,
-> va_list is really just a pointer, so fake_va_init would essentially just
-> do "fva->_ap = fva->stack = buf", and fake_va_push() would again just
-> need to manipulate ->stack.
->
-> It's not pretty, but I don't think it necessarily requires too much
-> arch-specific work (fake_va_push() could be common, perhaps just with a
-> arch define to say whether 64 bit arguments need ->stack to first be
-> up-aligned to an 8 byte boundary).
->
-> Rasmus
-
-Creative! :D I think these arch-specific structures would be a hard
-sell though ahah.
-
-I was having a stroll through lib/vsprintf.c and noticed bstr_printf:
-
- * This function like C99 vsnprintf, but the difference is that vsnprintf gets
- * arguments from stack, and bstr_printf gets arguments from @bin_buf which is
- * a binary buffer that generated by vbin_printf.
-
-Maybe it would be easier to just build our argument buffer similarly
-to what vbin_printf does.
+SGkgRGFuaWVsLA0KDQpEbyBJIG5lZWQgdG8gbWFrZSBtb3JlIGNoYW5nZXMgdG8gdGhpcyBwYXRj
+aD8NCg0KVGhhbmtzDQogDQogIC1MaW4gUnVpemhlDQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0N
+CuWPkeS7tuS6ujogRGFuaWVsIExlemNhbm8gW21haWx0bzpkYW5pZWwubGV6Y2Fub0BsaW5hcm8u
+b3JnXSANCuWPkemAgeaXtumXtDogMjAyMeW5tDTmnIgyMeaXpSAxOTozNw0K5pS25Lu25Lq6OiBU
+b255IExpbmRncmVuIDx0b255QGF0b21pZGUuY29tPg0K5oqE6YCBOiBHcmVnIEtIIDxncmVna2hA
+bGludXhmb3VuZGF0aW9uLm9yZz47IGxpbnJ1aXpoZSA8bGlucnVpemhlQGh1YXdlaS5jb20+OyBy
+dWkuemhhbmdAaW50ZWwuY29tOyBlZHViZXp2YWxAZ21haWwuY29tOyBqLWtlZXJ0aHlAdGkuY29t
+OyBhbWl0a0BrZXJuZWwub3JnOyBlYmFsbGV0Ym9AZ21haWwuY29tOyBsaW51eC1wbUB2Z2VyLmtl
+cm5lbC5vcmc7IGxpbnV4LW9tYXBAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5r
+ZXJuZWwub3JnDQrkuLvpopg6IFJlOiBbUEFUQ0ggdjNdIHRoZXJtYWw6IHRpLXNvYy10aGVybWFs
+OiBSZW1vdmUgdW51c2VkIHZhcmlhYmxlICd2YWwnDQoNCg0KSGkgVG9ueSwNCg0KdGhhbmtzIGZv
+ciB0ZXN0aW5nDQoNCiAgLS0gRGFuaWVsDQoNCk9uIDIxLzA0LzIwMjEgMTE6MzcsIFRvbnkgTGlu
+ZGdyZW4gd3JvdGU6DQo+ICogRGFuaWVsIExlemNhbm8gPGRhbmllbC5sZXpjYW5vQGxpbmFyby5v
+cmc+IFsyMTA0MjEgMDk6MDddOg0KPj4gT24gMjEvMDQvMjAyMSAxMDo0OSwgR3JlZyBLSCB3cm90
+ZToNCj4+PiBPbiBXZWQsIEFwciAyMSwgMjAyMSBhdCAwNDo0Mjo1NlBNICswODAwLCBMaW4gUnVp
+emhlIHdyb3RlOg0KPj4+PiBUaGUgdmFyaWFibGUgJ3ZhbCdpbiBmdW5jdGlvbiB0aV9iYW5kZ2Fw
+X3Jlc3RvcmVfY3R4dCBpcyB0aGUgDQo+Pj4+IHJlZ2lzdGVyIHZhbHVlIG9mIHJlYWQgYmFuZGdh
+cCByZWdpc3RlcnMuIFRoaXMgZnVuY3Rpb24gaXMgdG8gDQo+Pj4+IHJlc3RvcmUgdGhlIGNvbnRl
+eHQuIEJ1dCB0aGVyZSBpcyBubyBvcGVyYXRpb24gb24gdGhlIHJldHVybiB2YWx1ZSANCj4+Pj4g
+b2YgdGhpcyByZWdpc3Rlciwgc28gdGhpcyBibG9jayBpcyByZWR1bmRhbnQuIEh1bGsgcm9ib3Qg
+c2NhbnMgdGhpcyANCj4+Pj4gd2FybmluZy5UaGlzIGNvbW1pdCByZW1vdmUgdGhlIGRlYWQgY29k
+ZS4NCj4+Pj4NCj4+Pj4gUmVwb3J0ZWQtYnk6IEh1bGsgUm9ib3QgPGh1bGtjaUBodWF3ZWkuY29t
+Pg0KPj4+PiBGaXhlczogYjg3ZWE3NTlhNGNjICgic3RhZ2luZzogb21hcC10aGVybWFsOiBmaXgg
+Y29udGV4dCByZXN0b3JlIA0KPj4+PiBmdW5jdGlvbiIpDQo+Pj4+IFNpZ25lZC1vZmYtYnk6IExp
+biBSdWl6aGUgPGxpbnJ1aXpoZUBodWF3ZWkuY29tPg0KPj4+PiAtLS0NCj4+Pj4gdjM6DQo+Pj4+
+IC1BZGQgRml4ZXMgdGFnIGFuZCBtb3JlIGFjY3VyYXRlIGNvbW1pdCBtZXNzYWdlIGluIHRoaXMg
+cGF0Y2guDQo+Pj4+IHYyOg0KPj4+PiAtQXMgc3VnZ2VzdCByZW1vdmUgdGhlIHdob2xlIHVudWVz
+ZWQgYmxvY2sgaW4gZnVjdGlvbiAgDQo+Pj4+IHRpX2JhbmRnYXBfcmVzdG9yZV9jdHh0DQo+Pj4+
+DQo+Pj4+ICBkcml2ZXJzL3RoZXJtYWwvdGktc29jLXRoZXJtYWwvdGktYmFuZGdhcC5jIHwgNCAt
+LS0tDQo+Pj4+ICAxIGZpbGUgY2hhbmdlZCwgNCBkZWxldGlvbnMoLSkNCj4+Pj4NCj4+Pj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvdGhlcm1hbC90aS1zb2MtdGhlcm1hbC90aS1iYW5kZ2FwLmMgDQo+
+Pj4+IGIvZHJpdmVycy90aGVybWFsL3RpLXNvYy10aGVybWFsL3RpLWJhbmRnYXAuYw0KPj4+PiBp
+bmRleCBkODFhZjg5MTY2ZDIuLjY4NGZmYjY0NWFhOSAxMDA2NDQNCj4+Pj4gLS0tIGEvZHJpdmVy
+cy90aGVybWFsL3RpLXNvYy10aGVybWFsL3RpLWJhbmRnYXAuYw0KPj4+PiArKysgYi9kcml2ZXJz
+L3RoZXJtYWwvdGktc29jLXRoZXJtYWwvdGktYmFuZGdhcC5jDQo+Pj4+IEBAIC0xMTQyLDE0ICsx
+MTQyLDEwIEBAIHN0YXRpYyBpbnQgdGlfYmFuZGdhcF9yZXN0b3JlX2N0eHQoc3RydWN0IHRpX2Jh
+bmRnYXAgKmJncCkNCj4+Pj4gIAlmb3IgKGkgPSAwOyBpIDwgYmdwLT5jb25mLT5zZW5zb3JfY291
+bnQ7IGkrKykgew0KPj4+PiAgCQlzdHJ1Y3QgdGVtcF9zZW5zb3JfcmVnaXN0ZXJzICp0c3I7DQo+
+Pj4+ICAJCXN0cnVjdCB0ZW1wX3NlbnNvcl9yZWd2YWwgKnJ2YWw7DQo+Pj4+IC0JCXUzMiB2YWwg
+PSAwOw0KPj4+PiAgDQo+Pj4+ICAJCXJ2YWwgPSAmYmdwLT5yZWd2YWxbaV07DQo+Pj4+ICAJCXRz
+ciA9IGJncC0+Y29uZi0+c2Vuc29yc1tpXS5yZWdpc3RlcnM7DQo+Pj4+ICANCj4+Pj4gLQkJaWYg
+KFRJX0JBTkRHQVBfSEFTKGJncCwgQ09VTlRFUikpDQo+Pj4+IC0JCQl2YWwgPSB0aV9iYW5kZ2Fw
+X3JlYWRsKGJncCwgdHNyLT5iZ2FwX2NvdW50ZXIpOw0KPj4+DQo+Pj4gQXJlIHlvdSBzdXJlIHRo
+YXQgdGhpcyBoYXJkd2FyZSBkb2VzIG5vdCByZXF1aXJlIHRoaXMgcmVhZCB0byBoYXBwZW4gDQo+
+Pj4gaW4gb3JkZXIgZm9yIGl0IHRvIHdvcmsgcHJvcGVybHk/DQo+Pg0KPj4gWWVzLCBpbml0aWFs
+bHkgd2UgaGFkIHRoZSBzYW1lIGNvbmNlcm4gYnV0IHdlIHdlcmUgdW5hYmxlIHRvIGZpbmQgDQo+
+PiBhbnl0aGluZyBzcGVjaWZpYyBpbiB0aGUgaGlzdG9yeS4gVGhlIGNvbW1pdCBtZW50aW9uZWQg
+YWJvdmUgcmVtb3ZlZCANCj4+IHRoZSB1c2VyIG9mIHRoZSAndmFsJyBjb2RlIGJ1dCB3aXRob3V0
+IHJlbW92aW5nIHRoaXMgYmxvY2sgb2YgY29kZS4NCj4+DQo+PiBXaGVuIGxvb2tpbmcgYXQgdGhl
+IGN1cnJlbnQgY29kZSwgaXQgcmVhbGx5IGxvb2tzIGxpa2UgYW4gb3ZlcnNpZ2h0Lg0KPiANCj4g
+WWVzIHNvIGl0IHNlZW1zLg0KPiANCj4+IFRoZXJlIGlzIG5vdGhpbmcgaW4gdGhlIGNvbW1pdCdz
+IGNoYW5nZWxvZyByZWZlcnJpbmcgdG8gYSBuZWVkIG9mIA0KPj4gcmVhZGluZyB0aGUgY291bnRl
+ciByZWdpc3RlciBidXQgcGVyaGFwcyBJJ20gd3JvbmcgYmVjYXVzZSBJJ20gbm90IA0KPj4gc3Vy
+ZSB0byB1bmRlcnN0YW5kIGNvcnJlY3RseSB0aGUgY2hhbmdlbG9nLg0KPj4NCj4+PiBMb3RzIG9m
+IGhhcmR3YXJlIGRvZXMgbmVlZCB0aGlzLCBoYXZlIHlvdSB0ZXN0ZWQgdGhpcz8NCj4gDQo+IEkg
+anVzdCB0ZXN0ZWQgdGhpcyBvbiBvbWFwMyBsb2dpY3BkIHRvcnBlZG8gZGV2a2l0IHRoYXQgY2Fu
+IGRvIG9mZiANCj4gZHVyaW5nIGlkbGUgYW5kIHJlYWRpbmcgL3N5cy9jbGFzcy90aGVybWFsL3Ro
+ZXJtYWxfem9uZTAvdGVtcCB3b3Jrcy4gDQo+IFNvIGZlZWwgZnJlZSB0byBhZGQ6DQo+IA0KPiBS
+ZXZpZXdlZC1ieTogVG9ueSBMaW5kZ3JlbiA8dG9ueUBhdG9taWRlLmNvbT4NCj4gVGVzdGVkLWJ5
+OiBUb255IExpbmRncmVuIDx0b255QGF0b21pZGUuY29tPg0KDQpUaGFua3MgZm9yIHRlc3RpbmcN
+Cg0KDQotLQ0KPGh0dHA6Ly93d3cubGluYXJvLm9yZy8+IExpbmFyby5vcmcg4pSCIE9wZW4gc291
+cmNlIHNvZnR3YXJlIGZvciBBUk0gU29Dcw0KDQpGb2xsb3cgTGluYXJvOiAgPGh0dHA6Ly93d3cu
+ZmFjZWJvb2suY29tL3BhZ2VzL0xpbmFybz4gRmFjZWJvb2sgfCA8aHR0cDovL3R3aXR0ZXIuY29t
+LyMhL2xpbmFyb29yZz4gVHdpdHRlciB8IDxodHRwOi8vd3d3LmxpbmFyby5vcmcvbGluYXJvLWJs
+b2cvPiBCbG9nDQo=
