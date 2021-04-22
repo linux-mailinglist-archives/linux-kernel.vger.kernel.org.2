@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C3A36830B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CB836830C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236517AbhDVPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:10:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51992 "EHLO mx2.suse.de"
+        id S237630AbhDVPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:10:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52034 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236563AbhDVPKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236564AbhDVPKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Apr 2021 11:10:46 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
@@ -17,22 +17,26 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dGYTI5hb6XF/TrVV+tK4E4xlOyG7i9BsqrnGlynZSJM=;
-        b=rkqpNHxQEq8IWYLVp0llAxNQCop0wQDhH19sDYwFQ1gk0VAjV4ZLRAnd/O5DophQu1UYRk
-        pEiSJ2EiOmjVHzPlg2XnZBk5IWyblvtmK0qwMpFZl7499bg6QnKLQwCytl7FzyMM9fxSya
-        SXO1bDbx/20HgyDjak27WeKH3lnP8Hs=
+        bh=BkJA52UJuORwrXbRo8O+/xjjRU0ufo7MZuM5MyCQmjA=;
+        b=CajF134GHN/RbxqiBB/w3atAlNOGdArNwDekAEHKBqOq4v1nRKEOWd8ExSJVO7QyBQRCth
+        ZYn38ypxpyNUQTUfJkWfB0bemGaMLUEISnXe/il8XYc243is2loOvk16Dkjt14VllIaXmm
+        lVEWuVR4bDQVCE/f9TeGxpHMvzi/l98=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E9411B16D;
-        Thu, 22 Apr 2021 15:10:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 347DEB173;
+        Thu, 22 Apr 2021 15:10:11 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 1/3] xen: check required Xen features
-Date:   Thu, 22 Apr 2021 17:10:05 +0200
-Message-Id: <20210422151007.2205-2-jgross@suse.com>
+Subject: [PATCH 2/3] xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv guests
+Date:   Thu, 22 Apr 2021 17:10:06 +0200
+Message-Id: <20210422151007.2205-3-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210422151007.2205-1-jgross@suse.com>
 References: <20210422151007.2205-1-jgross@suse.com>
@@ -42,57 +46,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux kernel is not supported to run on Xen versions older than 4.0.
-
-Add tests for required Xen features always being present in Xen 4.0
-and newer.
+XENFEAT_mmu_pt_update_preserve_ad is always set in Xen 4.0 and newer.
+Remove coding assuming it might be zero.
 
 Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- drivers/xen/features.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ arch/x86/xen/enlighten_pv.c | 12 ++----------
+ arch/x86/xen/mmu_pv.c       |  4 ++--
+ 2 files changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/xen/features.c b/drivers/xen/features.c
-index 25c053b09605..60503299c9bc 100644
---- a/drivers/xen/features.c
-+++ b/drivers/xen/features.c
-@@ -9,13 +9,26 @@
- #include <linux/types.h>
- #include <linux/cache.h>
- #include <linux/export.h>
-+#include <linux/printk.h>
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index dc0a337f985b..e754927feac7 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -116,9 +116,8 @@ static void __init xen_banner(void)
+ 	HYPERVISOR_xen_version(XENVER_extraversion, &extra);
  
- #include <asm/xen/hypercall.h>
- 
-+#include <xen/xen.h>
- #include <xen/interface/xen.h>
- #include <xen/interface/version.h>
- #include <xen/features.h>
- 
-+/*
-+ * Linux kernel expects at least Xen 4.0.
-+ *
-+ * Assume some features to be available for that reason (depending on guest
-+ * mode, of course).
-+ */
-+#define chk_feature(f) {						\
-+		if (!xen_feature(f))					\
-+			pr_err("Xen: feature %s not available!\n", #f);	\
-+	}
-+
- u8 xen_features[XENFEAT_NR_SUBMAPS * 32] __read_mostly;
- EXPORT_SYMBOL_GPL(xen_features);
- 
-@@ -31,4 +44,9 @@ void xen_setup_features(void)
- 		for (j = 0; j < 32; j++)
- 			xen_features[i * 32 + j] = !!(fi.submap & 1<<j);
- 	}
-+
-+	if (xen_pv_domain()) {
-+		chk_feature(XENFEAT_mmu_pt_update_preserve_ad);
-+		chk_feature(XENFEAT_gnttab_map_avail_bits);
-+	}
+ 	pr_info("Booting paravirtualized kernel on %s\n", pv_info.name);
+-	printk(KERN_INFO "Xen version: %d.%d%s%s\n",
+-	       version >> 16, version & 0xffff, extra.extraversion,
+-	       xen_feature(XENFEAT_mmu_pt_update_preserve_ad) ? " (preserve-AD)" : "");
++	pr_info("Xen version: %d.%d%s (preserve-AD)\n",
++		version >> 16, version & 0xffff, extra.extraversion);
  }
+ 
+ static void __init xen_pv_init_platform(void)
+@@ -1303,13 +1302,6 @@ asmlinkage __visible void __init xen_start_kernel(void)
+ 	xen_init_apic();
+ #endif
+ 
+-	if (xen_feature(XENFEAT_mmu_pt_update_preserve_ad)) {
+-		pv_ops.mmu.ptep_modify_prot_start =
+-			xen_ptep_modify_prot_start;
+-		pv_ops.mmu.ptep_modify_prot_commit =
+-			xen_ptep_modify_prot_commit;
+-	}
+-
+ 	machine_ops = xen_machine_ops;
+ 
+ 	/*
+diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+index cf2ade864c30..359c711336a8 100644
+--- a/arch/x86/xen/mmu_pv.c
++++ b/arch/x86/xen/mmu_pv.c
+@@ -2100,8 +2100,8 @@ static const struct pv_mmu_ops xen_mmu_ops __initconst = {
+ 	.set_pte = xen_set_pte_init,
+ 	.set_pmd = xen_set_pmd_hyper,
+ 
+-	.ptep_modify_prot_start = __ptep_modify_prot_start,
+-	.ptep_modify_prot_commit = __ptep_modify_prot_commit,
++	.ptep_modify_prot_start = xen_ptep_modify_prot_start,
++	.ptep_modify_prot_commit = xen_ptep_modify_prot_commit,
+ 
+ 	.pte_val = PV_CALLEE_SAVE(xen_pte_val),
+ 	.pgd_val = PV_CALLEE_SAVE(xen_pgd_val),
 -- 
 2.26.2
 
