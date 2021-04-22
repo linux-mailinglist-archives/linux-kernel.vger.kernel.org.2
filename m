@@ -2,197 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FB23681D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5827F3681DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbhDVNvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S236757AbhDVNvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236236AbhDVNvD (ORCPT
+        with ESMTP id S236236AbhDVNvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:51:03 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49FAC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:50:28 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id j5so43912171wrn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:50:28 -0700 (PDT)
+        Thu, 22 Apr 2021 09:51:41 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31ACBC06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:51:07 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id o5so46317628qkb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oHHIrNwlKJzcfE+FQHO0ug1i1bvvW4iwkAqPABTWDx8=;
-        b=zM0XDyuSfWKqk8T2mOWATqJLBD9+YMYFOM50SXN/r8AChLMjV5otaPIEX3GoTpDd/6
-         /P8O3EyBFs3BnjevYogqHiA404amx6PnyXGOusV0IwoOyvBfVdt3cW3by0wyodERpQb9
-         0RYY0fhp3UYGR4mvofHhPyr9e9l9Wn+u7Ze9wzafF09BN0lLEH8WtALjQ6xF/mYvxHUG
-         zFXVyb91Ty7DC+k4Eo9Se025Zgbk23QACt58LWvRy/SR6Xr/2ej1v3Fr4QqfA19iaWuX
-         CAa2hgzpgaBFcOQ0gnPV9ZvNlV4COA0QiJOdeYks/HrT2Hd28JlAlLUhNv8sXkxI+v0n
-         bhvA==
+        d=cs-cmu-edu.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=sc812S/XH0xi1daedR2N2rrASOXlL4IU8Kqiol/mJyg=;
+        b=ilf7MiKPmuLDCJimMx6HY09IjE0RtI8ZvwvdH6B6zfOQjt3XpT5zeEzYvZWEpLAdYN
+         HgsytpNQ77VJrUr18k2RiREzJkRdWu0QpLA0tkuRNsG9RJNB3q1uAdrnsyEo+VtE/bkz
+         B2jsPuMqREtLJPtddAk+Uo17G2/m8PXB2rUUgxU0rvhBi59tk2mXxC2MGCjH0Pjpp+VT
+         mX7+laaPBOMCRKCQqV4hxZwgrlInehA3Gism8b/RZbMqm7co4BAjldanO0P5uXETbut4
+         mzMIosKNAMoPho12DmysXBBsk5jjrFMiiqQDcmOd/Ypwjfkh2IjEZ9SeT0+ozvuXOA6A
+         QC1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oHHIrNwlKJzcfE+FQHO0ug1i1bvvW4iwkAqPABTWDx8=;
-        b=LsfTb0wZ+wE+CtVEWuhMCjmdhbFm6gCUW3qlaRQhN63KL5EEyKjGPlbsyioUkwOJGW
-         N9pZReURgU3EYmcsFSPKRbBRpyhYRJdhVX7HhNihyoVK1tDSymDNWpVrElXCtysRdFQA
-         k8Qlvs+2rf85qbfUfXXz6wd6EJf9/3FyIPC7xqvoM0IRlZmXo8w3pQ8kxC7Sy53/bG/K
-         g2K+oZbK1bEFaxV2H8kNtIrheZCayI2g7SeCciz4KI5q+Zwxv2ecfXZ8pJECuLhbxXDn
-         rXc+YPmXRGQW5wr+KstBOP3hWts96p7y3Tao9NgeNefxJ5iHgH4sBgy4eo+KQvp6+YH3
-         Nbkw==
-X-Gm-Message-State: AOAM530OH4c+wv1yicgAITp68OFSnTev1Iay72XSP3zvB7bDDBHwaVVJ
-        psW63/8fl33Y+DFVMhpF+3QW570GqUqUNLd2
-X-Google-Smtp-Source: ABdhPJz25Rlr80wY378JDir9MgjKiQXY7Ns4Ol4LX7W8HILcAyeWDo+USHtF9Fp2Uoxukt/6AnIdNw==
-X-Received: by 2002:a5d:4251:: with SMTP id s17mr4298450wrr.174.1619099427307;
-        Thu, 22 Apr 2021 06:50:27 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e88d:2580:c20:b786? ([2a01:e34:ed2f:f020:e88d:2580:c20:b786])
-        by smtp.googlemail.com with ESMTPSA id h2sm3623846wmc.24.2021.04.22.06.50.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 06:50:26 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIIHYzXSB0aGVybWFsOiB0aS1zb2MtdGhl?=
- =?UTF-8?Q?rmal=3a_Remove_unused_variable_=27val=27?=
-To:     linruizhe <linruizhe@huawei.com>, Tony Lindgren <tony@atomide.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "edubezval@gmail.com" <edubezval@gmail.com>,
-        "j-keerthy@ti.com" <j-keerthy@ti.com>,
-        "amitk@kernel.org" <amitk@kernel.org>,
-        "eballetbo@gmail.com" <eballetbo@gmail.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210421084256.57591-1-linruizhe@huawei.com>
- <YH/nK6xshH+lW7e0@kroah.com>
- <8e66040e-4330-d4f0-afbb-8cae62a5082e@linaro.org>
- <YH/yQ5Hd+30DH4p/@atomide.com>
- <3116672d-4ff3-a065-f76c-1ae820e1ff95@linaro.org>
- <7871516e6f824f35929c4ed87cbc08c4@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c7d67490-06cd-f15a-3972-3db4d5812a69@linaro.org>
-Date:   Thu, 22 Apr 2021 15:50:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=sc812S/XH0xi1daedR2N2rrASOXlL4IU8Kqiol/mJyg=;
+        b=kSqnlF5ZeXcbOdPLxdsAbde0+qsANLsDKsA/dbD693LIznTJX+AouU+jcbMO9XBetw
+         4oRMdbNOxuMlzg9iFdNP+or+yahCgZVftTDcrWUV5mOH/LndilrwKslaZBCxafmpWe9d
+         5uzy76I1ByP3wKiVsHDNvCmIYc1ygG9mFe3vSttU5SXOd2Yp7kdBVw2SyCwsU9ymOFnh
+         ZnJo1kDB2KTh18gzePu+YpaE3REuGLyDoU9TlEOmBDabZffu3QNWILR+CSGbkBEGgFcK
+         BiiQrsB7j1PfBWlW4KFDxDlpf044NbeVz7/mj+bpw0pLvNao4Z3c+VgCEVuYnuHv2JDs
+         vULg==
+X-Gm-Message-State: AOAM533S0mgQ5piLblrrEFiCC8cacZpVyfesSgBjS5RXhLjrftXDBWpX
+        TAjL4JkDalorWjT37Kg9KQeavw==
+X-Google-Smtp-Source: ABdhPJzopgVvvshO8HCJDMmm2d3/Wi7iBmogcMm1rcCSeWXZCE8qQJSe7zD8nyMnJxcAF1H8ro/U3g==
+X-Received: by 2002:a37:c202:: with SMTP id i2mr3647788qkm.296.1619099466408;
+        Thu, 22 Apr 2021 06:51:06 -0700 (PDT)
+Received: from cs.cmu.edu (tunnel29655-pt.tunnel.tserv13.ash1.ipv6.he.net. [2001:470:7:582::2])
+        by smtp.gmail.com with ESMTPSA id g1sm2207278qth.69.2021.04.22.06.51.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 06:51:05 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 09:51:03 -0400
+From:   Jan Harkes <jaharkes@cs.cmu.edu>
+To:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, coda@cs.cmu.edu,
+        miklos@szeredi.hu, akpm@linux-foundation.org, jgg@ziepe.ca
+Subject: Re: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error
+ path
+Message-ID: <20210422135103.hif4a5znhzt4pc6f@cs.cmu.edu>
+References: <20210421132012.82354-1-christian.koenig@amd.com>
+ <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
+ <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <7871516e6f824f35929c4ed87cbc08c4@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 22, 2021 at 02:39:41PM +0200, Christian K�nig wrote:
+> Am 22.04.21 um 14:27 schrieb Jan Harkes:
+> > Looks good to me.
+> > 
+> > I'm also maintaining an out of tree coda module build that people sometimes use, which has workarounds for differences between the various kernel versions.
+> > 
+> > Do you have a reference to the corresponding mmap_region change? If it is merged already I'll probably be able to find it. Is this mmap_region change expected to be backported to any lts kernels?
+> 
+> That is the following upstream commit in Linus tree:
+> 
+> commit 1527f926fd04490f648c42f42b45218a04754f87
+> Author: Christian K�nig <christian.koenig@amd.com>
+> Date:�� Fri Oct 9 15:08:55 2020 +0200
+> 
+> ��� mm: mmap: fix fput in error path v2
+> 
+> But I don't think we should backport that.
+> 
+> And sorry for the noise. We had so many places which expected different
+> behavior that I didn't noticed that two occasions in the fs code actually
+> rely on the current behavior.
+> 
+> For your out of tree module you could make the code version independent by
+> setting the vma back to the original file in case of an error. That should
+> work with both behaviors in mmap_region.
 
-Hi Lin,
+Awesome, I'll give that a try, it may very well be a cleaner solution
+either way.
 
+And thank you for following up after your original patch and finding
+the filesystems that mess around with those mappings. I'm sure it would
+have taken me a while to figure out why file refcounts would go weird
+for some people, especially because this only happens in the error path.
 
-On 22/04/2021 14:39, linruizhe wrote:
-> Hi Daniel,
-> 
-> Do I need to make more changes to this patch?
+Jan
 
-No, it is fine. I've applied it.
-
-Thanks
-
-  -- Daniel
-
-
-> Thanks
->  
->   -Lin Ruizhe
-> 
-> -----邮件原件-----
-> 发件人: Daniel Lezcano [mailto:daniel.lezcano@linaro.org] 
-> 发送时间: 2021年4月21日 19:37
-> 收件人: Tony Lindgren <tony@atomide.com>
-> 抄送: Greg KH <gregkh@linuxfoundation.org>; linruizhe <linruizhe@huawei.com>; rui.zhang@intel.com; edubezval@gmail.com; j-keerthy@ti.com; amitk@kernel.org; eballetbo@gmail.com; linux-pm@vger.kernel.org; linux-omap@vger.kernel.org; linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH v3] thermal: ti-soc-thermal: Remove unused variable 'val'
-> 
-> 
-> Hi Tony,
-> 
-> thanks for testing
-> 
->   -- Daniel
-> 
-> On 21/04/2021 11:37, Tony Lindgren wrote:
->> * Daniel Lezcano <daniel.lezcano@linaro.org> [210421 09:07]:
->>> On 21/04/2021 10:49, Greg KH wrote:
->>>> On Wed, Apr 21, 2021 at 04:42:56PM +0800, Lin Ruizhe wrote:
->>>>> The variable 'val'in function ti_bandgap_restore_ctxt is the 
->>>>> register value of read bandgap registers. This function is to 
->>>>> restore the context. But there is no operation on the return value 
->>>>> of this register, so this block is redundant. Hulk robot scans this 
->>>>> warning.This commit remove the dead code.
->>>>>
->>>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>>> Fixes: b87ea759a4cc ("staging: omap-thermal: fix context restore 
->>>>> function")
->>>>> Signed-off-by: Lin Ruizhe <linruizhe@huawei.com>
->>>>> ---
->>>>> v3:
->>>>> -Add Fixes tag and more accurate commit message in this patch.
->>>>> v2:
->>>>> -As suggest remove the whole unuesed block in fuction  
->>>>> ti_bandgap_restore_ctxt
->>>>>
->>>>>  drivers/thermal/ti-soc-thermal/ti-bandgap.c | 4 ----
->>>>>  1 file changed, 4 deletions(-)
->>>>>
->>>>> diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c 
->>>>> b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
->>>>> index d81af89166d2..684ffb645aa9 100644
->>>>> --- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
->>>>> +++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
->>>>> @@ -1142,14 +1142,10 @@ static int ti_bandgap_restore_ctxt(struct ti_bandgap *bgp)
->>>>>  	for (i = 0; i < bgp->conf->sensor_count; i++) {
->>>>>  		struct temp_sensor_registers *tsr;
->>>>>  		struct temp_sensor_regval *rval;
->>>>> -		u32 val = 0;
->>>>>  
->>>>>  		rval = &bgp->regval[i];
->>>>>  		tsr = bgp->conf->sensors[i].registers;
->>>>>  
->>>>> -		if (TI_BANDGAP_HAS(bgp, COUNTER))
->>>>> -			val = ti_bandgap_readl(bgp, tsr->bgap_counter);
->>>>
->>>> Are you sure that this hardware does not require this read to happen 
->>>> in order for it to work properly?
->>>
->>> Yes, initially we had the same concern but we were unable to find 
->>> anything specific in the history. The commit mentioned above removed 
->>> the user of the 'val' code but without removing this block of code.
->>>
->>> When looking at the current code, it really looks like an oversight.
->>
->> Yes so it seems.
->>
->>> There is nothing in the commit's changelog referring to a need of 
->>> reading the counter register but perhaps I'm wrong because I'm not 
->>> sure to understand correctly the changelog.
->>>
->>>> Lots of hardware does need this, have you tested this?
->>
->> I just tested this on omap3 logicpd torpedo devkit that can do off 
->> during idle and reading /sys/class/thermal/thermal_zone0/temp works. 
->> So feel free to add:
->>
->> Reviewed-by: Tony Lindgren <tony@atomide.com>
->> Tested-by: Tony Lindgren <tony@atomide.com>
-> 
-> Thanks for testing
-> 
-> 
-> --
-> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-> 
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook | <http://twitter.com/#!/linaroorg> Twitter | <http://www.linaro.org/linaro-blog/> Blog
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
