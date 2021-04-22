@@ -2,230 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB9A36834F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF39368352
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbhDVP3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:29:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40504 "EHLO mx2.suse.de"
+        id S237595AbhDVPa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:30:28 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:12447 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237782AbhDVP3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:29:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619105317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S2s8d3b/btx56QtdjB6CaPjK6sRnOI8xTAb1jIG6CP4=;
-        b=gKlHsP004cKaavaGty6eAilBjsn32BXi8GxNGVNZQ3Auye5rclIv+J2+hr/DRgp9ycm/5p
-        d+yaCMu/Ey3L7YXJPsv4RmCUkmWDiqvR37XCdiQDqbKN8A1n47Z524DZsSmVlMnBYAFZH2
-        S8jHh3sSdJd36D2YHnCG5DZycpoWJTQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B83C8B173;
-        Thu, 22 Apr 2021 15:28:37 +0000 (UTC)
-Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
- features
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-References: <20210422151007.2205-1-jgross@suse.com>
- <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
- <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
- <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <ee2bc5f9-58ea-bad3-1343-2156d2b80ad3@suse.com>
-Date:   Thu, 22 Apr 2021 17:28:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S236357AbhDVPa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:30:27 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FR1Z63sbxz9v4h8;
+        Thu, 22 Apr 2021 17:29:50 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id PXz2z_EasiGH; Thu, 22 Apr 2021 17:29:50 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FR1Z630KCz9v4gH;
+        Thu, 22 Apr 2021 17:29:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 94CFF8B846;
+        Thu, 22 Apr 2021 17:29:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id XVqJnCmN8KZl; Thu, 22 Apr 2021 17:29:51 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 01DF98B845;
+        Thu, 22 Apr 2021 17:29:50 +0200 (CEST)
+Subject: Re: [PATCH 2/2] powerpc: Print esr register when hitting Program
+ Interrupt
+To:     Xiongwei Song <sxwjean@me.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
+        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
+        aneesh.kumar@linux.ibm.com, 0x7f454c46@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+References: <20210422151022.17868-1-sxwjean@me.com>
+ <20210422151022.17868-2-sxwjean@me.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ac6cf0ae-7565-180e-03b2-5e72f89a823a@csgroup.eu>
+Date:   Thu, 22 Apr 2021 17:29:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO"
+In-Reply-To: <20210422151022.17868-2-sxwjean@me.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO
-Content-Type: multipart/mixed; boundary="I3qPelmf7Vi6Vq6oeYr6pX5DdsUKm5jN6";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
- x86@kernel.org, xen-devel@lists.xenproject.org
-Message-ID: <ee2bc5f9-58ea-bad3-1343-2156d2b80ad3@suse.com>
-Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
- features
-References: <20210422151007.2205-1-jgross@suse.com>
- <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
- <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
- <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
-In-Reply-To: <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
-
---I3qPelmf7Vi6Vq6oeYr6pX5DdsUKm5jN6
-Content-Type: multipart/mixed;
- boundary="------------C85339484172C36ACC5E171B"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------C85339484172C36ACC5E171B
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 22.04.21 17:23, Jan Beulich wrote:
-> On 22.04.2021 17:17, Juergen Gross wrote:
->> On 22.04.21 17:16, Jan Beulich wrote:
->>> On 22.04.2021 17:10, Juergen Gross wrote:
->>>> Some features of Xen can be assumed to be always present, so add a
->>>> central check to verify this being true and remove the other checks.=
-
->>>>
->>>> Juergen Gross (3):
->>>>     xen: check required Xen features
->>>>     xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv g=
-uests
->>>>     xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guest=
-s
->>>
->>> I wonder whether it's a good idea to infer feature presence from
->>> version numbers. If (at some point in the past) you had inferred
->>> gnttab v2 being available by version, this would have been broken
->>> by its availability becoming controllable by a command line option
->>> in Xen.
->>
->> I'm testing the feature to be really present when booting and issue a
->> message if it is not there.
->=20
-> And how does this help if the feature really isn't there yet other code=
-
-> assumes it is?
-
-Did you look at the features I'm testing? Those are really just low
-level additions I can't imagine will ever be removed again.
 
 
-Juergen
+Le 22/04/2021 à 17:10, Xiongwei Song a écrit :
+> From: Xiongwei Song <sxwjean@gmail.com>
+> 
+> The esr register has the details of Program Interrupt on BookE/4xx cpus,
+> printing its value is helpful.
+> 
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> ---
+>   arch/powerpc/kernel/process.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+> index 5c3830837f3a..664aecf8ee2e 100644
+> --- a/arch/powerpc/kernel/process.c
+> +++ b/arch/powerpc/kernel/process.c
+> @@ -1459,6 +1459,7 @@ static bool interrupt_detail_printable(int trap)
+>   	case INTERRUPT_MACHINE_CHECK:
+>   	case INTERRUPT_DATA_STORAGE:
+>   	case INTERRUPT_ALIGNMENT:
+> +	case INTERRUPT_PROGRAM:
 
---------------C85339484172C36ACC5E171B
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+With this, it will also print the DSISR on 8xx/6xx so it will print garbage.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+8xx/6xx provide the information in SRR1. If you want to proceed, you have to do the same as in ISI: 
+Copy the content of SRR1 into regs->dsisr in the assembly handler in head_book3s_32.S and in the 
+instruction TLB error handler in head_8xx.S
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------C85339484172C36ACC5E171B--
-
---I3qPelmf7Vi6Vq6oeYr6pX5DdsUKm5jN6--
-
---9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCBliQFAwAAAAAACgkQsN6d1ii/Ey8R
-kAf/Yn8ZB8bHah0fvuPFH2DhwdOi6paaQoWP1M7PTJteX5Rw+3lPCM4q18Rh+r9AQZu67wVkCwwR
-HTTaSwvOA6t5bfLroJcyDz6EEPa8PogSjCljSEUCJbU2nWD1t/OzMuozAr0iZ1LM1MHmojKDjfy1
-xdKUtbfkObaaHTuV/yqsMrncDAT0GQGDtDbyG6qWex94a304g6Sh1b0khyuje+r9E7ozVwsKiH74
-96Ta6f2fvb43kmQLd/ol/SeMzDnuOjLGHiDKx/jZbq1/Lqf1LAIYhtLv+lPKzVZgUoNaLttToN6K
-IluqnFluwQ7FehfJYbClQLmkdi+OhFCyDowQMYLaEg==
-=5oYG
------END PGP SIGNATURE-----
-
---9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO--
+>   		return true;
+>   	default:
+>   		return false;
+> 
