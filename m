@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A455367E95
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C27C367E98
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235931AbhDVKZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:25:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48132 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235906AbhDVKZF (ORCPT
+        id S235848AbhDVK0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:26:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20594 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235800AbhDVK0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:25:05 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MA42c1032649;
-        Thu, 22 Apr 2021 06:24:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=fJ9TjVWCyOxpcyioWbiBTZ91SlMHjIjT46uJCacDjxk=;
- b=d5ssH/mPdZX6hMN3eQoitebuzUUHDBTkFQC4U7BQH7qj3PEEufwH0GFux5I9oeaCdVkZ
- JXx3XQUuAoS9Hm/gD5Y64jwIs0IxbIgrqdcIU/12FjcIz80ducxgbT1dhjfkVR6F+wyx
- HFKhONiuOhxx2b7yLe7qQ1R7Ck9Xd3GnQ0YPj+p1onceBBKqEn6xdLOhQwo8rSf09D8m
- C2m2PAIB0mqEhGvsMIJ17qfbnH6YjjTRjv975HtTaLf6nCsWIfyg9+9/pBwxfwHk7OYb
- VrV02umiAHPIqPlJpoalpZ+N0sER3TfEaU0TIiA3VGPVJnNjKxWwg0yFBt5nt7KSv9XU ng== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38347rnv04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 06:24:18 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13MALxXw020437;
-        Thu, 22 Apr 2021 10:24:16 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 37yt2rtrhv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 10:24:15 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13MANolZ30540132
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 10:23:50 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 84224AE053;
-        Thu, 22 Apr 2021 10:24:13 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 49D95AE055;
-        Thu, 22 Apr 2021 10:24:10 +0000 (GMT)
-Received: from saptagiri.in.ibm.com (unknown [9.199.63.107])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Apr 2021 10:24:10 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: [PATCH 10/10] powerpc/smp: Add fallback flag to powerpc MC domain
-Date:   Thu, 22 Apr 2021 15:53:26 +0530
-Message-Id: <20210422102326.35889-11-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
-References: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
+        Thu, 22 Apr 2021 06:26:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619087135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5tAr4cbHX1kFNkbpcO64MqXs1SkyHznjECtrNCMwaGw=;
+        b=OaNvweDX55n3zL7ypdqypncsSbNCkWFgY+ZwWETMuNpFlahMtcS613xc8hgqfcW7oIhbdw
+        3am0Cn/5sxMv3cAuxz6SouMD+0UvcBqJOMPtSFlZKkSuF/q4DgzyFYmzYDPrMJ5SNL7HJM
+        bbET/pvGWm+YIuCKBGtCfQ/N7OUnt7w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-TIHJWnvmNHmgjquXhutEzw-1; Thu, 22 Apr 2021 06:25:32 -0400
+X-MC-Unique: TIHJWnvmNHmgjquXhutEzw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAA8F1006C8B;
+        Thu, 22 Apr 2021 10:25:30 +0000 (UTC)
+Received: from krava (unknown [10.40.195.33])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 745695C1D5;
+        Thu, 22 Apr 2021 10:25:28 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 12:25:27 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v4 14/25] perf stat: Add default hybrid events
+Message-ID: <YIFPF/RFVJmztd5b@krava>
+References: <20210416140517.18206-1-yao.jin@linux.intel.com>
+ <20210416140517.18206-15-yao.jin@linux.intel.com>
+ <YIBvGk7qZiqMHxkt@krava>
+ <59ded117-6f3c-f11f-8fe3-6b0e8f68c823@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Ywdy0kJRbLxX37bcS-uefQHxleg7Lo4i
-X-Proofpoint-ORIG-GUID: Ywdy0kJRbLxX37bcS-uefQHxleg7Lo4i
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-22_04:2021-04-21,2021-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 mlxscore=0 malwarescore=0 spamscore=0
- adultscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- mlxlogscore=767 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104220084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59ded117-6f3c-f11f-8fe3-6b0e8f68c823@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Power 10 supports MC domain. Cores within the MC domain
-aka hemisphere have lesser cache access latency compared to cache access
-latency for cores across the neighbouring MC. Last level of cache for a
-Power 10 is at Core (4 threads).
-Now that scheduler supports fallback LLC domain, mark MC domain with
-SD_FALLBACK_LLC flag. With this each SMT 4 core forms a pair (as
-fallback LLC) with another SMT 4 core within the MC domain.
+On Thu, Apr 22, 2021 at 10:12:49AM +0800, Jin, Yao wrote:
+> Hi Jiri,
+> 
+> On 4/22/2021 2:29 AM, Jiri Olsa wrote:
+> > On Fri, Apr 16, 2021 at 10:05:06PM +0800, Jin Yao wrote:
+> > 
+> > SNIP
+> > 
+> > > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> > > index 1255af4751c2..0351b99d17a7 100644
+> > > --- a/tools/perf/builtin-stat.c
+> > > +++ b/tools/perf/builtin-stat.c
+> > > @@ -1145,6 +1145,13 @@ static int parse_stat_cgroups(const struct option *opt,
+> > >   	return parse_cgroups(opt, str, unset);
+> > >   }
+> > > +static int add_default_hybrid_events(struct evlist *evlist)
+> > > +{
+> > > +	struct parse_events_error err;
+> > > +
+> > > +	return parse_events(evlist, "cycles,instructions,branches,branch-misses", &err);
+> > > +}
+> > > +
+> > >   static struct option stat_options[] = {
+> > >   	OPT_BOOLEAN('T', "transaction", &transaction_run,
+> > >   		    "hardware transaction statistics"),
+> > > @@ -1626,6 +1633,12 @@ static int add_default_attributes(void)
+> > >     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_INSTRUCTIONS	},
+> > >     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_MISSES		},
+> > > +};
+> > > +	struct perf_event_attr default_sw_attrs[] = {
+> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_TASK_CLOCK		},
+> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CONTEXT_SWITCHES	},
+> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CPU_MIGRATIONS		},
+> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_PAGE_FAULTS		},
+> > 
+> > hum, why not use default_attrs0, it's the same, no?
+> > 
+> 
+> The default_attrs0 has one more item " {.type = PERF_TYPE_HARDWARE, .config
+> = PERF_COUNT_HW_CPU_CYCLES },"
+> 
+> So I have to only pick out the sw attrs and save them to default_sw_attrs.
+> 
+> > >   };
+> > >   /*
+> > > @@ -1863,6 +1876,14 @@ static int add_default_attributes(void)
+> > >   	}
+> > >   	if (!evsel_list->core.nr_entries) {
+> > > +		if (perf_pmu__has_hybrid()) {
+> > > +			if (evlist__add_default_attrs(evsel_list,
+> > > +						      default_sw_attrs) < 0) {
+> > > +				return -1;
+> > > +			}
+> > > +			return add_default_hybrid_events(evsel_list);
+> > 
+> > please do it the same way like when topdown calls parse events,
+> > we don't need to check for cycles, but please check result and
+> > display the error
+> > 
+> 
+> Something like this?
+> 
+> err = parse_events(evsel_list, "cycles,instructions,branches,branch-misses", &errinfo);
+> if (err) {
+> 	fprintf(stderr,...);
+> 	parse_events_print_error(&errinfo, ...);
+> 	return -1;
+> }
 
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Parth Shah <parth@linux.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Rik van Riel <riel@surriel.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- arch/powerpc/kernel/smp.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+yes
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 5a4d59a1070d..bc6386055cbe 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -950,6 +950,11 @@ static int powerpc_shared_cache_flags(void)
- 	return SD_SHARE_PKG_RESOURCES;
- }
- 
-+static int powerpc_mc_flags(void)
-+{
-+	return SD_FALLBACK_LLC;
-+}
-+
- /*
-  * We can't just pass cpu_l2_cache_mask() directly because
-  * returns a non-const pointer and the compiler barfs on that.
-@@ -986,7 +991,7 @@ static struct sched_domain_topology_level powerpc_topology[] = {
- 	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
- #endif
- 	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
--	{ cpu_mc_mask, SD_INIT_NAME(MC) },
-+	{ cpu_mc_mask, powerpc_mc_flags, SD_INIT_NAME(MC) },
- 	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
- 	{ NULL, },
- };
--- 
-2.18.2
+jirka
 
