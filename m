@@ -2,158 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE7D3685D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02053685D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236747AbhDVR0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:26:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23846 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236651AbhDVR0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:26:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619112373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mgrykvHsm4oUpPb5SrWHqatA+LCGse7E/iLZHkfS3uU=;
-        b=AwHNFgejMr0/Q7ilnDby/UUL+2iacKZZbpVA7teD50COtXT76oP57VrNwNhUr5nJSgCIeR
-        pD3YyDGZnDhjluXSIc4mhrbXzC1JRwul93baqWErdIDSbeXKYkOs0CZnF9S9iEiYMAXoUV
-        b6Q03qbTYVU53p5EpDRXFcNTl42FqH8=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-K8RL2KTlPEOPmuuO-V1y_A-1; Thu, 22 Apr 2021 13:26:11 -0400
-X-MC-Unique: K8RL2KTlPEOPmuuO-V1y_A-1
-Received: by mail-qt1-f197.google.com with SMTP id h12-20020ac8744c0000b02901ba644d864fso5693170qtr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:26:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mgrykvHsm4oUpPb5SrWHqatA+LCGse7E/iLZHkfS3uU=;
-        b=Js1IXEgMWP2tm9M6SKDky7XYN8Q1+TpJilv2EUl5T4mwJycKrvnYukq4xKqOWccl+7
-         qOTWiYyY4prZGEZlQDUzmKyniEn8XLb4/iX3uILJApqTIxMor/JAlFaC12FjTN56RG4H
-         EXlcRvAKrjgfMM1gMFHBtiiZH4fjvrPyZ539w9ZiOds5IXjO0wa5MJlJpSVIc/PA2/3X
-         EkXtprBW+XLBmjTK/HxOlnHRRkPvxdklCXReiRePXs0gM5bTjRyNabgw4UXcwXX7THMz
-         4xbY3bFSyndfPS47NxIRnrXSGTQNmD8F3XbNh25KIP6bCOQLRxgh4pzpnF0h6pEbVaCC
-         hBrA==
-X-Gm-Message-State: AOAM531ylwkrb6xO5AfAMFhD4uaG9PYf4VmHrVsHWix8Ebb7/ZsmYPte
-        siLe+nLm55a3OdLA+tCKI86CJwPuWdO70WKbamZDZ9aW50XShxbd231j6CunDmBRpzdzRnin3vs
-        rYjZQfgvwXaUGPgPfJB5POIRi
-X-Received: by 2002:ac8:7c56:: with SMTP id o22mr4302547qtv.80.1619112370992;
-        Thu, 22 Apr 2021 10:26:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxkAIa2KVsCjc+o4m54OgLpYmLkfXn5KxqfvRsNce+1rON88VeWZ7f2X+FnoyZX0tyaFOleXA==
-X-Received: by 2002:ac8:7c56:: with SMTP id o22mr4302510qtv.80.1619112370733;
-        Thu, 22 Apr 2021 10:26:10 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id z11sm2504070qkz.84.2021.04.22.10.26.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 10:26:10 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH-next v5 3/4] mm/memcg: Improve refill_obj_stock()
- performance
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210420192907.30880-1-longman@redhat.com>
- <20210420192907.30880-4-longman@redhat.com>
- <YIC7dh0+nQDFmU+T@carbon.dhcp.thefacebook.com>
-Message-ID: <d17f1c19-fc1b-df92-8361-fa6b88170861@redhat.com>
-Date:   Thu, 22 Apr 2021 13:26:08 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S238183AbhDVR1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:27:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:54308 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236651AbhDVR1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 13:27:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72A18D6E;
+        Thu, 22 Apr 2021 10:26:40 -0700 (PDT)
+Received: from [10.57.27.187] (unknown [10.57.27.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 137D93F694;
+        Thu, 22 Apr 2021 10:26:37 -0700 (PDT)
+Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, qperret@google.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        dietmar.eggemann@arm.com
+References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+ <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <158a3969-6ef2-a532-7ae1-07e3d7fecfe5@arm.com>
+Date:   Thu, 22 Apr 2021 18:26:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <YIC7dh0+nQDFmU+T@carbon.dhcp.thefacebook.com>
+In-Reply-To: <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 7:55 PM, Roman Gushchin wrote:
-> On Tue, Apr 20, 2021 at 03:29:06PM -0400, Waiman Long wrote:
->> There are two issues with the current refill_obj_stock() code. First of
->> all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
->> atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
->> and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
->> be used again which leads to another call to drain_obj_stock() and
->> obj_cgroup_get() as well as atomically retrieve the available byte from
->> obj_cgroup. That is costly. Instead, we should just uncharge the excess
->> pages, reduce the stock bytes and be done with it. The drain_obj_stock()
->> function should only be called when obj_cgroup changes.
-> I really like this idea! Thanks!
->
-> However, I wonder if it can implemented simpler by splitting drain_obj_stock()
-> into two functions:
->       empty_obj_stock() will flush cached bytes, but not reset the objcg
->       drain_obj_stock() will call empty_obj_stock() and then reset objcg
->
-> Then we simple can replace the second drain_obj_stock() in
-> refill_obj_stock() with empty_obj_stock(). What do you think?
-
-Actually the problem is the flushing cached bytes to 
-objcg->nr_charged_bytes that can become a performance bottleneck in a 
-multithreaded testing scenario. See my description in the latter half of 
-my cover-letter.
-
-For cgroup v2, update the page charge will mostly update the per-cpu 
-page charge stock. Flushing the remaining byte charge, however, will 
-cause the obgcg to became the single contended cacheline for all the 
-cpus that need to flush the byte charge. That is why I only update the 
-page charge and left the remaining byte charge stayed put in the object 
-stock.
-
->
->> Secondly, when charging an object of size not less than a page in
->> obj_cgroup_charge(), it is possible that the remaining bytes to be
->> refilled to the stock will overflow a page and cause refill_obj_stock()
->> to uncharge 1 page. To avoid the additional uncharge in this case,
->> a new overfill flag is added to refill_obj_stock() which will be set
->> when called from obj_cgroup_charge().
->>
->> A multithreaded kmalloc+kfree microbenchmark on a 2-socket 48-core
->> 96-thread x86-64 system with 96 testing threads were run.  Before this
->> patch, the total number of kilo kmalloc+kfree operations done for a 4k
->> large object by all the testing threads per second were 4,304 kops/s
->> (cgroup v1) and 8,478 kops/s (cgroup v2). After applying this patch, the
->> number were 4,731 (cgroup v1) and 418,142 (cgroup v2) respectively. This
->> represents a performance improvement of 1.10X (cgroup v1) and 49.3X
->> (cgroup v2).
-> This part looks more controversial. Basically if there are N consequent
-> allocations of size (PAGE_SIZE + x), the stock will end up with (N * x)
-> cached bytes, right? It's not the end of the world, but do we really
-> need it given that uncharging a page is also cached?
-
-Actually the maximum charge that can be accumulated in (2*PAGE_SIZE + x 
-- 1) since a following consume_obj_stock() will use those bytes once the 
-byte charge is not less than (PAGE_SIZE + x).
-
-Yes, the page charge is cached for v2, but it is not the case for v1. 
-See the benchmark data in the cover-letter.
-
-Cheers,
-Longman
+Hi Vincent,
 
 
+On 4/8/21 6:10 PM, Vincent Donnefort wrote:
+> Some SoCs, such as the sd855 have OPPs within the same performance domain,
+> whose cost is higher than others with a higher frequency. Even though
+> those OPPs are interesting from a cooling perspective, it makes no sense
+> to use them when the device can run at full capacity. Those OPPs handicap
+> the performance domain, when choosing the most energy-efficient CPU and
+> are wasting energy. They are inefficient.
+> 
+> Hence, add support for such OPPs to the Energy Model, which creates for
+> each OPP a performance state. The Energy Model can now be read using the
+> regular table, which contains all performance states available, or using
+> an efficient table, where inefficient performance states (and by
+> extension, inefficient OPPs) have been removed.
+> 
+> Currently, the efficient table is used in two paths. Schedutil, and
+> find_energy_efficient_cpu(). We have to modify both paths in the same
+> patch so they stay synchronized. The thermal framework still relies on
+> the original table and hence, DevFreq devices won't create the efficient
+> table.
+> 
+> As used in the hot-path, the efficient table is a lookup table, generated
+> dynamically when the perf domain is created. The complexity of searching
+> a performance state is hence changed from O(n) to O(1). This also
+> speeds-up em_cpu_energy() even if no inefficient OPPs have been found.
+> 
+> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> 
+
+I know we have discussed it internally, but I thought it would be good 
+to send it also to LKML. The concept of inefficient OPPs makes perfect
+sense. It doesn't cause that the CPU would not run on some inefficient
+OPP when thermal forces it. The lookup table which is now used, makes
+also sense because if we have example configuration:
+1prime + 2bigs + 4littles and they have separate freq domains,
+there might be a use case when we call 7 times em_cpu_energy()
+(in a single feec()) which does this O(nr_opps) search, while
+we can have 7 times O(1) lookups.
+In your some other email the results are showing improvements
+(especially for big core) and no regression.
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Regards,
+Lukasz
