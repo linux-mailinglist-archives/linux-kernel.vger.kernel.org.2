@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BE936862D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072BE368630
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236823AbhDVRpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbhDVRpm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:45:42 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378CFC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:45:07 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id lt13so12846314pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a/ccmlK2SC2bFrmvJC8izkh8L57aGgHSLoN7bzusakc=;
-        b=XBThIrflRQA3fgbEWX8gOjDQIuHreDNWe3wFiwgDIEWqE846XRJL+Amq1Wqsu+BUVP
-         dllJKnRrsSYGsSQR7TLehlrcw1PeqX73rVmr66wC7bXwXkuHP2SUfviOg4RisDHxPEUb
-         ffgqf7oc0PCVSEDXQ/BLKsfVlvnktjo1sMQJE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a/ccmlK2SC2bFrmvJC8izkh8L57aGgHSLoN7bzusakc=;
-        b=drqoo688zifmvsW/FnFDxtHsM0Yb5CQbV22VqCM4mhoC6bp5gWPmK25/q57GQiqEfU
-         BLYTj93IdCq2UAR513ysfunHvmYjHm1Wv2mdpIJRGp8sTL3xHmxWI1inMwC1DwofbVlA
-         2g4Jj2VmgOck84TayZTbO+RSafIN8ATvaWzJfl+Ft2S/yJQbt1RWLSYcxpFBulbvALXM
-         MafsuvPl0cc6YK/tDLEOjh7/AKlGU+R9V0ihfWl/21aKusc+zBlDFVoG1j1LzfPN/lk/
-         jwl1EJVjWAe8HE3vR3qqnvwmc4RnVgXZO3dGR7zrnTMwQo6pKOTPHJvEVQDGkWQgeUto
-         nOpA==
-X-Gm-Message-State: AOAM532x4IRHzY9KTY/fgy+9UmQkr8vG5Qxd3bHlzdlMl6WLPuhrAkoL
-        x6gPMLOBF+mvOj84hHlbXivkng==
-X-Google-Smtp-Source: ABdhPJzBjWu8RWw2bEU+LvfjTh9NYw4eIo6vp5pvYVW7q6jfIzHVgRHbByOj8TQ64v427KWpqBDA6Q==
-X-Received: by 2002:a17:902:ce85:b029:eb:46e1:2da2 with SMTP id f5-20020a170902ce85b02900eb46e12da2mr2687plg.38.1619113506760;
-        Thu, 22 Apr 2021 10:45:06 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:acff:4f9f:d039:23ff])
-        by smtp.gmail.com with UTF8SMTPSA id i18sm2640082pfq.59.2021.04.22.10.45.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 10:45:06 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:45:05 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajeshwari <rkambl@codeaurora.org>
-Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanm@codeaurora.org
-Subject: Re: [PATCH V1 2/2] dt-bindings: thermal: tsens: Add configuration in
- yaml
-Message-ID: <YIG2IckKRBHqzpu3@google.com>
-References: <1619005442-16485-1-git-send-email-rkambl@codeaurora.org>
- <1619005442-16485-3-git-send-email-rkambl@codeaurora.org>
+        id S236848AbhDVRrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:47:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:54604 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236659AbhDVRrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 13:47:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0A1A1063;
+        Thu, 22 Apr 2021 10:46:38 -0700 (PDT)
+Received: from bogus (unknown [10.57.52.142])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C88EF3F694;
+        Thu, 22 Apr 2021 10:46:37 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 18:46:31 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] firmware: arm_scpi: prevent ternary sign expansion bug
+Message-ID: <20210422174631.aruiqqqx3szboqdp@bogus>
+References: <YIE7pdqV/h10tEAK@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619005442-16485-3-git-send-email-rkambl@codeaurora.org>
+In-Reply-To: <YIE7pdqV/h10tEAK@mwanda>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 05:14:02PM +0530, Rajeshwari wrote:
+(dropping Tixy as I am sure it will bounce, he left/retired from Linaro
+long back)
 
-> Subject: dt-bindings: thermal: tsens: Add configuration in yaml
+On Thu, Apr 22, 2021 at 12:02:29PM +0300, Dan Carpenter wrote:
+> How type promotion works in ternary expressions is a bit tricky.
+> The problem is that scpi_clk_get_val() returns longs, "ret" is a int
+> which holds a negative error code, and le32_to_cpu() is an unsigned int.
 
-This subject isn't really useful. The fact that the format of the
-binding is yaml is irrelevant here. What is important is that you
-are adding the compatible string for the SC7280 to the TSENS
-binding. This should be reflected in the subject.
+Agreed.
 
-Also this is patch [2/2] and patch [1/2] adds DT entries with the new
-compatible string. The binding should be defined before adding new
-entries, hence the order of the patches should be inversed.
+> We want the negative error code to be cast to a negative long.  But
+> because le32_to_cpu() is an u32 then "ret" is type promoted to u32 and
+> becomes a high positive and then it is promoted to long and it is still
+> a high positive value.
+>
+
+Thanks a lot for finding and fixing the bug!
+
+> Fix this by getting rid of the ternary.
+>
+> Fixes: 8cb7cf56c9fe ("firmware: add support for ARM System Control and Power Interface(SCPI) protocol")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/firmware/arm_scpi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
+> index d0dee37ad522..3bf61854121d 100644
+> --- a/drivers/firmware/arm_scpi.c
+> +++ b/drivers/firmware/arm_scpi.c
+> @@ -552,8 +552,10 @@ static unsigned long scpi_clk_get_val(u16 clk_id)
+>
+>  	ret = scpi_send_message(CMD_GET_CLOCK_VALUE, &le_clk_id,
+>  				sizeof(le_clk_id), &rate, sizeof(rate));
+> +	if (ret)
+> +		return ret;
+
+This could be still an issue, ideally I would prefer to pass the return
+value via argument pointer and always return success/failure as return
+value. Can't remember any reason for this. Since this is old interface
+with limited platform to test, I think returning 0 as clock rate on error
+should be fine as Cristain suggested. If you agree with that, I can
+fix up when applying. 
+
+If you don't, we can look at changing the scpi interface to clock driver
+which will anyway need to do the same(i.e. send 0 in case of error)
+
+Let me know.
+
+--
+Regards,
+Sudeep
