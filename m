@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E11D36817A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3985136817B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbhDVNdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59080 "EHLO mail.kernel.org"
+        id S236402AbhDVNeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:34:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhDVNdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4086E6145C;
-        Thu, 22 Apr 2021 13:33:14 +0000 (UTC)
+        id S230005AbhDVNeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:34:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B04246145D;
+        Thu, 22 Apr 2021 13:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619098396;
-        bh=OhKyg/Fldv5I1xF4E06/ZwuVoCgL3MDDc7XVUldqtl0=;
+        s=k20201202; t=1619098426;
+        bh=t0BYMH9xcCAjPvr3dKnR2jagiZDPjThmRe480mlqi6c=;
         h=From:To:Cc:Subject:Date:From;
-        b=XPpSJ33rA0JIvd53op7hDBIK0sjoFaHJAOkhlH8EErBhXBVZ67dt6yvX61a0aT7NM
-         bWJZXvLjYLQsQg6L9OksHREK96lIw8TE1R3ovFarQG9Ye6z+cmLxAl5USXX/N0Unbq
-         3iybqyq7HsACVqeAIyWweUJskilihgBKeAqWDMa8ErpSCW1aL2UtbY6f8mE/2P/MoL
-         Nr4jIKf9uBKBWf86hTi9QY6haFY63l2YKTbe9l9MVQ/db6ajbMzL73GUnZfIxJWjWb
-         uUz40wr2jB0q+SqxFx05g3kGzfWFKrutHj/kcSxhr6R0l9NCn0UhY4PU3MFFOw9noq
-         z9I/PDsRILQkg==
+        b=nQMbtwnCnIgGYk3xZ3/grusI8phMVT8ff4ZhZrjvBCsu3v7MLr8bduOyneaaNtEwE
+         /aM+gZjej9VOsTadtjsUlGaKxRXvTaE8XJkRNQhGcIwlzgkKDR9K4ufhugHHNKVJh2
+         2fepBVLnfILj+01bvKmi1QyjvuC2mFZx3BOz/IA1MGuPqMAyw51dUhpfJE5TvZAwjb
+         +t5zNdOxHVBCv8WECf/i4+SvduVfxt9eSlLt2tmzyvBL6j2+dr5j3y3D3l9KNSrRnN
+         5eucFOiQV9vat9UXUMEIkSHkCJNgulctxOuSQWrPkkP9M0HdTqQa/qMdPnt/DUpeeY
+         ySa4B57PJjevA==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-rtc@vger.kernel.org,
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-power@fi.rohmeurope.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: bd70528: fix BD71815 watchdog dependency
-Date:   Thu, 22 Apr 2021 15:32:43 +0200
-Message-Id: <20210422133307.1710832-1-arnd@kernel.org>
+Subject: [PATCH] regulator: bd71815: include <linux/of.h> and <linux/gpio/consumer.h>
+Date:   Thu, 22 Apr 2021 15:33:25 +0200
+Message-Id: <20210422133338.1734640-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,45 +42,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The added Kconfig dependency is slightly incorrect, which can
-lead to a link failure when the watchdog is a loadable module:
+The new driver causes a build failure because of a missing includes:
 
-arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_rtc_based_timers':
-rtc-bd70528.c:(.text+0x6cc): undefined reference to `bd70528_wdt_set'
-arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_set_time':
-rtc-bd70528.c:(.text+0xaa0): undefined reference to `bd70528_wdt_lock'
-arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0xab8): undefined reference to `bd70528_wdt_unlock'
-arm-linux-gnueabi-ld: drivers/rtc/rtc-bd70528.o: in function `bd70528_alm_enable':
-rtc-bd70528.c:(.text+0xfc0): undefined reference to `bd70528_wdt_lock'
-arm-linux-gnueabi-ld: rtc-bd70528.c:(.text+0x1030): undefined reference to `bd70528_wdt_unlock'
+drivers/regulator/bd71815-regulator.c: In function 'buck12_set_hw_dvs_levels':
+drivers/regulator/bd71815-regulator.c:210:13: error: implicit declaration of function 'of_find_property' [-Werror=implicit-function-declaration]
+  210 |         if (of_find_property(np, "rohm,dvs-run-voltage", NULL) ||
+      |             ^~~~~~~~~~~~~~~~
+drivers/regulator/bd71815-regulator.c: At top level:
+drivers/regulator/bd71815-regulator.c:461:37: error: implicit declaration of function 'of_match_ptr' [-Werror=implicit-function-declaration]
+  461 |                         .of_match = of_match_ptr(#_name),               \
+      |                                     ^~~~~~~~~~~~
+drivers/regulator/bd71815-regulator.c: In function 'bd7181x_probe':
+drivers/regulator/bd71815-regulator.c:590:19: error: implicit declaration of function 'devm_gpiod_get_from_of_node' [-Werror=implicit-function-declaration]
+  590 |         ldo4_en = devm_gpiod_get_from_of_node(&pdev->dev,
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/regulator/bd71815-regulator.c:593:50: error: 'GPIOD_ASIS' undeclared (first use in this function); did you mean 'GPIOF_IN'?
+  593 |                                                  GPIOD_ASIS, "ldo4-en");
+      |                                                  ^~~~~~~~~~
+      |                                                  GPIOF_IN
 
-The problem is that it allows to be built-in if any of the other
-drivers are built-in, even when the watchdog is a loadable module.
-
-Rework this so that having the watchdog as a loadable module always
-forces the rtc to be a module as well instead of built-in, regardless
-of the other ones.
-
-Fixes: c56dc069f268 ("rtc: bd70528: Support RTC on ROHM BD71815")
+Fixes: 1aad39001e85 ("regulator: Support ROHM BD71815 regulators")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/rtc/Kconfig | 3 ++-
+As found yesterday with another patch I sent for this driver,
+it is apparently not part of the regulator tree but only merged
+through Lee's mfd tree.
+---
+ drivers/regulator/bd71815-regulator.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index d8c13fded164..91cc106e2bf6 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -502,7 +502,8 @@ config RTC_DRV_M41T80_WDT
+diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
+index a4e8d5e36b40..5be2b01632a0 100644
+--- a/drivers/regulator/bd71815-regulator.c
++++ b/drivers/regulator/bd71815-regulator.c
+@@ -16,9 +16,10 @@
+ #include <linux/regulator/driver.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/mfd/rohm-generic.h>
+ #include <linux/mfd/rohm-bd71815.h>
++#include <linux/of.h>
+ #include <linux/regulator/of_regulator.h>
  
- config RTC_DRV_BD70528
- 	tristate "ROHM BD70528, BD71815 and BD71828 PMIC RTC"
--	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528 && (BD70528_WATCHDOG || !BD70528_WATCHDOG)
-+	depends on MFD_ROHM_BD71828 || MFD_ROHM_BD70528 || BD70528_WATCHDOG
-+	depends on BD70528_WATCHDOG || !BD70528_WATCHDOG
- 	help
- 	  If you say Y here you will get support for the RTC
- 	  block on ROHM BD70528, BD71815 and BD71828 Power Management IC.
+ struct bd71815_regulator {
 -- 
 2.29.2
 
