@@ -2,47 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F859367919
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72E736791F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhDVFKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 01:10:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229568AbhDVFJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 01:09:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A4BB60FD7;
-        Thu, 22 Apr 2021 05:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619068161;
-        bh=KSAJXbhBRfmfvbY0Tr0Gz0HRPEGUOgbDF+fPPVwogAg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=IsCY7bT47aoR/3f6xrVU968WF8bTPn8s342OwkZfiUhNTlQFJEp+sIWAStAhfTBL6
-         R/SuaTiLxCAo0VrlOnoKxW+X8OKrZv2Y+m6koROw4FXD6ukv4kISF7Lh6hh7KOMhbm
-         h7PyuQSfyGsxbZJYS2xRR4eZgfZAjpRXF8v4KdhXu5Gx3yNbkaOj9XqhTeHA7S2Muo
-         KI2Cn/N183FHvViGOP1mkllxYQ4wQFmn7BImubyQFRJCRA8R39KA3MNbd0Wh9f5vrh
-         AhYB9NNyDh54fRVyGUE5+2/2uZohakf1avz+vEMcVpIGGT7AoeLKhSctga5Kkv/TES
-         p2g5V8fEpfBBA==
-Date:   Thu, 22 Apr 2021 00:09:19 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
+        id S231657AbhDVFOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 01:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhDVFOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 01:14:23 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2E5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 22:13:49 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so318105pjh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 22:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3jzoNMjqJu4u6e3k4lUJ1/0TMWqKsbwyKg5j36YKTrc=;
+        b=mI5DCWnPqLY5ZZEmZEtjgpUCoX2ZiJ9sCPHMglKA0Oa2l6g3m3J4Gf17W5LdDADZqR
+         ND0foHG1ICIGQUSUp70iV5gVk5SJDitBdpkrj1KsA90RHn3mcMlmZIKYkGwNEnSo+VeK
+         EFMmhaFO7gtKUoeENJoM6dsuRe+lUFOxsAe8d0obNVjADEA8v+h9u+cUBF9D86MlL9Ik
+         3Qf1P9PDj8cto15MqQiz5iuypbS2xR1s6ssxJOZItN9S3gB0RaohzGhzuZCfgPqMAGTN
+         0BZugJIbQUeAlXtDJe6gOsT/Ei1AIUVp9GcUVgXd139wOzk+unx8aBa/URmhibk5QJBY
+         3VsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3jzoNMjqJu4u6e3k4lUJ1/0TMWqKsbwyKg5j36YKTrc=;
+        b=VJzScIzjZPh4NGDaPKRvTFmtNHJpwIB6yroQhH8ikO7k1GlYnm4Y3Srd7fsvBH6p0T
+         EuvEYyMXpk1z2QZiHFjeRMBzbOO77W7pDML5VVI7twIFmp6dSxsmaJoVY3DbW4K4Q74V
+         LxxiwEAKRFQ+CC//g+QqJkkG1j4jZSIqbRtnqY0V7/oRY/2ebUeaEgnzQwShrxbHuZWA
+         n93y0tWG4tiyKR2fWZB/eA+GE3b3rEI/uNyhTzxDo67AqNyAcn+yiPvPOO5oknvQA6fW
+         FpKfuKznfR4aoaj1IW6zcf5PxZTCu7x9CgGw5VGGcbaYmpic5c5DQNto0tY1trLuej4u
+         AX5w==
+X-Gm-Message-State: AOAM532GeN7+D3/tMXOoPjJIGyu/OhS0+V3yxLN5w6F3yhvoWYemBmtb
+        gcH7EoNSkvWRPj3jy1RhGSJRq2q9KUiq8Q==
+X-Google-Smtp-Source: ABdhPJxXRxrlho+Ufg/M4/EdmndPqzudFYgmXTCKp2YCfVVy0JNCVi9YZ/uaiCn2kLDvSP9ji/wx2A==
+X-Received: by 2002:a17:90a:2807:: with SMTP id e7mr2002621pjd.181.1619068428867;
+        Wed, 21 Apr 2021 22:13:48 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id o4sm847144pfk.15.2021.04.21.22.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 22:13:48 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 10:43:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Wenwen Wang <wang6495@umn.edu>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 086/190] Revert "x86/PCI: Fix PCI IRQ routing table
- memory leak"
-Message-ID: <20210422050919.GA2913711@bjorn-Precision-5520>
+Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>
+Subject: Re: [PATCH 100/190] Revert "staging: greybus: audio_manager: fix a
+ missing check of ida_simple_get"
+Message-ID: <20210422051345.gmxlylb5ykal7xqv@vireshk-i7>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-101-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-87-gregkh@linuxfoundation.org>
+In-Reply-To: <20210421130105.1226686-101-gregkh@linuxfoundation.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:59:21PM +0200, Greg Kroah-Hartman wrote:
-> This reverts commit ea094d53580f40c2124cef3d072b73b2425e7bfd.
+On 21-04-21, 14:59, Greg Kroah-Hartman wrote:
+> This reverts commit b5af36e3e5aa074605a4d90a89dd8f714b30909b.
 > 
 > Commits from @umn.edu addresses have been found to be submitted in "bad
 > faith" to try to test the kernel community's ability to review "known
@@ -58,86 +84,32 @@ On Wed, Apr 21, 2021 at 02:59:21PM +0200, Greg Kroah-Hartman wrote:
 > change to ensure that no problems are being introduced into the
 > codebase.
 > 
-> Cc: Wenwen Wang <wang6495@umn.edu>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Kangjie Lu <kjlu@umn.edu>
+> Cc: Vaibhav Agarwal <vaibhav.sr@gmail.com>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-I would prefer that you not apply this revert.
-
-Prior to ea094d53580f ("x86/PCI: Fix PCI IRQ routing table memory
-leak"), we had essentially this:
-
-  pcibios_irq_init()
-    pirq_table = pcibios_get_irq_routing_table();  # kmallocs
-    if (pirq_table) {
-      if (io_apic_assign_pci_irqs)
-	pirq_table = NULL;
-    }
-
-So if we called pcibios_get_irq_routing_table(), we kmalloced some
-space and then (if io_apic_assign_pci_irqs) threw away the pointer,
-which leaks the pointer as the commit log says.
-
-After ea094d53580f, we have:
-
-  pcibios_irq_init()
-    rtable = NULL;
-    pirq_table = pcibios_get_irq_routing_table();  # kmallocs
-    rtable = pirq_table;
-    if (pirq_table) {
-      if (io_apic_assign_pci_irqs) {
-        kfree(rtable);
-	pirq_table = NULL;
-      }
-    }
-
-which seems right to me.
-
-Bjorn
-
 > ---
->  arch/x86/pci/irq.c | 10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
+>  drivers/staging/greybus/audio_manager.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/arch/x86/pci/irq.c b/arch/x86/pci/irq.c
-> index d3a73f9335e1..52e55108404e 100644
-> --- a/arch/x86/pci/irq.c
-> +++ b/arch/x86/pci/irq.c
-> @@ -1119,8 +1119,6 @@ static const struct dmi_system_id pciirq_dmi_table[] __initconst = {
+> diff --git a/drivers/staging/greybus/audio_manager.c b/drivers/staging/greybus/audio_manager.c
+> index 9a3f7c034ab4..7c7ca671876d 100644
+> --- a/drivers/staging/greybus/audio_manager.c
+> +++ b/drivers/staging/greybus/audio_manager.c
+> @@ -45,9 +45,6 @@ int gb_audio_manager_add(struct gb_audio_manager_module_descriptor *desc)
+>  	int err;
 >  
->  void __init pcibios_irq_init(void)
->  {
-> -	struct irq_routing_table *rtable = NULL;
+>  	id = ida_simple_get(&module_id, 0, 0, GFP_KERNEL);
+> -	if (id < 0)
+> -		return id;
 > -
->  	DBG(KERN_DEBUG "PCI: IRQ init\n");
->  
->  	if (raw_pci_ops == NULL)
-> @@ -1131,10 +1129,8 @@ void __init pcibios_irq_init(void)
->  	pirq_table = pirq_find_routing_table();
->  
->  #ifdef CONFIG_PCI_BIOS
-> -	if (!pirq_table && (pci_probe & PCI_BIOS_IRQ_SCAN)) {
-> +	if (!pirq_table && (pci_probe & PCI_BIOS_IRQ_SCAN))
->  		pirq_table = pcibios_get_irq_routing_table();
-> -		rtable = pirq_table;
-> -	}
->  #endif
->  	if (pirq_table) {
->  		pirq_peer_trick();
-> @@ -1149,10 +1145,8 @@ void __init pcibios_irq_init(void)
->  		 * If we're using the I/O APIC, avoid using the PCI IRQ
->  		 * routing table
->  		 */
-> -		if (io_apic_assign_pci_irqs) {
-> -			kfree(rtable);
-> +		if (io_apic_assign_pci_irqs)
->  			pirq_table = NULL;
-> -		}
->  	}
->  
->  	x86_init.pci.fixup_irqs();
-> -- 
-> 2.31.1
-> 
+>  	err = gb_audio_manager_module_create(&module, manager_kset,
+>  					     id, desc);
+>  	if (err) {
+
+FWIW, this patch was doing the right thing IMO. So we may not want to
+revert it.
+
+-- 
+viresh
