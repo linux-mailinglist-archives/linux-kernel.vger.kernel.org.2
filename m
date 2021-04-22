@@ -2,105 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5712E367AB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A460F367ABA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhDVHMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:12:37 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:43863 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhDVHMg (ORCPT
+        id S234927AbhDVHNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhDVHNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:12:36 -0400
-Received: by mail-ua1-f41.google.com with SMTP id a8so10787011uan.10;
-        Thu, 22 Apr 2021 00:12:01 -0700 (PDT)
+        Thu, 22 Apr 2021 03:13:37 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A47C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:13:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id mh2so45638184ejb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Vdeyx2EiZ4VVtfgSkJvRIr5ICOqaF5aOZ8liQEySarM=;
+        b=YPV3CqMEfMbRawW5v7Mh0/kDQEEeiRidIc6BFfEJ7Cy2RPnOBKpjJ3meCyg3B3dj7Y
+         T23HcXybLv+3EUDMj25ODMxPRP8kuUreNtyZ4Ci8dIhpAMxALrSBE8jJrGWzTXmhxYZb
+         Ua7sq7Z+p4ds57CAyxWZL0TtBlqKP20dnp5kg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MnlsbYYFiDldp+3bllzRvToouY6x7yofcE/PI7JdOxM=;
-        b=X6pF5DEHZjrasgVQ0tuuW9+iH6oh7+S/L4Pn6t9UIptmpV1YGJlNNV4PVuYwRBc1jd
-         jr+XFMtHPC+pKJQ3cMykni/THQ+hiXMy3850A3rTqsMcB9KASUnAZpxN+seBLB/6II2L
-         pwbaKJAkeAcxOo3xTnYCzZ0LbPKdYzJCWTYSRGKqCncqiDTpi09h0t0Eukl0GxiJMU2c
-         qoMcPqWlhd7OpUINj8RwWa/JRJtwPfQbr+JSk45RFV28nDIJGcPdLo1grROwbc+qIj7p
-         iUYHPrh0YKd+B1VcFnhF76/9P3Hau/Rr38SASEJqwgSaqt9McAGBqbgeYEkPV6fIXzys
-         WHDA==
-X-Gm-Message-State: AOAM533pBA3AO4FyEWoduqUQfXiSEU2qhmlKb9SQstFxdvHybwPc1nSX
-        RTSpJ3qqzwJD7o0zRgeAyRDFYmLv4wGWTHneVXYsYy7gaoE=
-X-Google-Smtp-Source: ABdhPJzlZzpafkkH3lhkrdeG76hYFiRXOGcI1VYaAi8U4UNlmcyPuLSEVGePT1hAZ1A8OP8+r1ZKJwNbJjmKRPY3cGo=
-X-Received: by 2002:ab0:6306:: with SMTP id a6mr1141667uap.2.1619075521369;
- Thu, 22 Apr 2021 00:12:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vdeyx2EiZ4VVtfgSkJvRIr5ICOqaF5aOZ8liQEySarM=;
+        b=GU5yqtiVVMLg+bZ4e/VPz5ap/KX+vZZpHdXc6xbKRgrszoLfG59buDt5hWTVvn5W2V
+         6bWsa4hvtn60/ePs3kjln/ay0LYqnjee3Hvuqlt1F5BqufzcHyqWB1NDKDA0OJTv6N+X
+         32p7uW1ui5oo3sH6S326f/eUk7qaWJi4yTqr6ZbIzx/dSOk5IhRrUs3gRfeTBJzSHuIL
+         TTngr/nKc7TtP8Wriq4ic5dofMDDaCT7MVCcmbHWX8Bbcy3+XmUz+H2A8SW2etOVUow5
+         RjJdSVOQsRYJ9lvt5ssJwE01tMh1u2zDDnXREtcP0v4oLesevsXSOIhgSIoug01ghHmk
+         uW3w==
+X-Gm-Message-State: AOAM531Or9VwYKKEs4mX/BAp+MeKaKWlJNTWmq6PiVgerzmxdnV3v9sl
+        0ejJRILgJd0K9HPRp8t94vRnfA==
+X-Google-Smtp-Source: ABdhPJzmo155Rt45+yFK2rxmK+jof0hG9KwOE3VJP8U8oPglLPeWzFmQpm5PJGsvjv1Y0WrrLAtA/g==
+X-Received: by 2002:a17:906:9990:: with SMTP id af16mr1776543ejc.195.1619075581971;
+        Thu, 22 Apr 2021 00:13:01 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id ca1sm1248712edb.76.2021.04.22.00.13.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 00:13:01 -0700 (PDT)
+Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+ <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk>
+Date:   Thu, 22 Apr 2021 09:13:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210421143115.22797-1-johan@kernel.org> <202104220355.v8nwWx2T-lkp@intel.com>
-In-Reply-To: <202104220355.v8nwWx2T-lkp@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 22 Apr 2021 09:11:50 +0200
-Message-ID: <CAMuHMdXKWDB89Hm-LQcpfTq=0yjm_xvQsQiD4QuEtW=yVymuRw@mail.gmail.com>
-Subject: Re: [PATCH] serial: extend compile-test coverage
-To:     kernel test robot <lkp@intel.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 3:20 AM kernel test robot <lkp@intel.com> wrote:
-> I love your patch! Perhaps something to improve:
->
-> [auto build test WARNING on tty/tty-testing]
-> [also build test WARNING on usb/usb-testing v5.12-rc8 next-20210421]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Johan-Hovold/serial-extend-compile-test-coverage/20210421-234950
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-> config: x86_64-randconfig-a014-20210421 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project d87b9b81ccb95217181ce75515c6c68bbb408ca4)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://github.com/0day-ci/linux/commit/c010530fa587261662c6abdb59ade994645dcfa8
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Johan-Hovold/serial-extend-compile-test-coverage/20210421-234950
->         git checkout c010530fa587261662c6abdb59ade994645dcfa8
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/tty/serial/serial_txx9.c:987:12: warning: no previous prototype for function 'early_serial_txx9_setup' [-Wmissing-prototypes]
->    int __init early_serial_txx9_setup(struct uart_port *port)
->               ^
->    drivers/tty/serial/serial_txx9.c:987:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    int __init early_serial_txx9_setup(struct uart_port *port)
->    ^
->    static
->    1 warning generated.
+On 22/04/2021 05.32, Andrii Nakryiko wrote:
+> On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
+>> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
+>> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
+>> snprintf() does not guarantee a nul-terminated string is when it is
+>> given a buffer size of 0 (which of course prevents it from writing
+>> anything at all to the buffer).
+>>
+>> Remove it before it gets cargo-culted elsewhere.
+>>
+>> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+>> ---
+>>  kernel/trace/bpf_trace.c | 3 ---
+>>  1 file changed, 3 deletions(-)
+>>
+> 
+> The change looks good to me, but please rebase it on top of the
+> bpf-next tree. This is not a bug, so it doesn't have to go into the
+> bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
 
-This function is called from arch/mips/txx9/generic/setup.c, and does
-have a forward declaration in arch/mips/include/asm/txx9/generic.h.
-Unfortunately the latter cannot be included from the driver, unless
-the || COMPILE_TEST is dropped again.
+Thanks for the pointer. Looking in next-20210420, it seems to me that
 
-Gr{oetje,eeting}s,
+commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
+Author: Florent Revest <revest@chromium.org>
+Date:   Mon Apr 19 17:52:38 2021 +0200
 
-                        Geert
+    bpf: Factorize bpf_trace_printk and bpf_seq_printf
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+is buggy. In particular, these two snippets:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
++#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
++       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
++        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
++         ? (u64)args[arg_nb]                                           \
++         : (u32)args[arg_nb])
+
+
++       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
+mod),
++               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
+args, mod));
+
+Regardless of the casts done in that macro, the type of the resulting
+expression is that resulting from C promotion rules. And (foo ? (u64)bla
+: (u32)blib) has type u64, which is thus the type the compiler uses when
+building the vararg list being passed into snprintf(). C simply doesn't
+allow you to change types at run-time in this way.
+
+It probably works fine on x86-64, which passes the first six or so
+argument in registers, va_start() puts those registers into the va_list
+opaque structure, and when it comes time to do a va_arg(int), just the
+lower 32 bits are used. It is broken on i386 and other architectures
+where arguments are passed on the stack (and for x86-64 as well had
+there been a few more arguments) and va_arg(ap, int) is essentially ({
+int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
+direction etc., that's not really relevant here].
+
+Rasmus
