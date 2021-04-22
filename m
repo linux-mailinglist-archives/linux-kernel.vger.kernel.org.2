@@ -2,111 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E85367746
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85949367747
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhDVCOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:14:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231958AbhDVCOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:14:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82406613A9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619057622;
-        bh=Yw7K9IjVKeA1ve5XeFqKI9e8FmeRsydmEaXBh4ITgOE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MdqXnfphixpyQ3qeRIwYn7HO4Mf4dPu26iLeck6sChFNz9Bw/LrvnJMUfbkt0+y1f
-         TC9AiGYqq3zhyMT+os6NEe+NH8ZKwXHaSimWqJQZKc4YwKWO8z7BU7zX1JoogJzupl
-         s9qSpOOmxMGuBIU1S3mwadUjVjvyEbouvowgrD3r1NrHTOvPJvCOtuz3qEOjeJkFCw
-         KIuLpH9aRd4zq34p3dB2OWy5siVK8q2mHHvSWCMnG8nAGQ5ygezEwP02a8bA6/FVEv
-         55+8aZYSIPb2DMqTmELscSMO+S5a1TZIt2jzgHwNQ2L78TlL94J1gBjZx+Xb8v9zK6
-         CRg2xNnrQAn9Q==
-Received: by mail-ed1-f46.google.com with SMTP id bx20so50441967edb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:13:42 -0700 (PDT)
-X-Gm-Message-State: AOAM532mzKKuFpA5llTJbsg7ukGcWr4H1FQWHECfD3aqpKazut5K9TGg
-        akxnw5/OUYy9Cdes1uFsRwL0TQR9R3Kl+HzDow==
-X-Google-Smtp-Source: ABdhPJzwI8F/F+Wc8pu5UrW5JX71y3qdUywFKV19rtT5/YxTMHIQDMYNWVbo6u510fJD5+wLnQ/xCbC/EXZDdbLFnvI=
-X-Received: by 2002:a05:6402:34c8:: with SMTP id w8mr1030755edc.194.1619057620994;
- Wed, 21 Apr 2021 19:13:40 -0700 (PDT)
+        id S231666AbhDVCRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230259AbhDVCRH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:17:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9859FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=JuQAmZqUk3bRNh1XZwrWFpM3HTNgjK1ts7jiO0LN48c=; b=F777hQDbPDuiwIs+waU1S9C5+L
+        GpkOWCurFKa85QLdjS7vbpkS0e0K1ZTM3/tsgOmM3RPY+HQuALOiCu3yZB/pAxHlUTwOtTFmMsK/E
+        MQGXlT35VrZGI96F7+HEyUdwjsU2BnpQ1JuZW4xvvAEkfn99IvHVJK7c17ByrWuIYAhRydSvXR/rE
+        q8MDIsSTCvBZUyOr4yRlbNcbCwky9aRcxVV1waGaAL5qMZqWr6aGS1wEzWmBB50PTx5opG/bJzcUZ
+        43lkYfB0WP4Cx3GXnrEwn2mP7hRZeSoXVMDWLB4rMd/lSquSnfWOD1HYIsI1NO5sZ7P0RCdUXQxPp
+        3Vsa/e3A==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZOsy-00HK4T-D3; Thu, 22 Apr 2021 02:16:12 +0000
+Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+References: <202102271820.WlZCxtzY-lkp@intel.com>
+ <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
+ <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
+ <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
+ <fce1f2a1-a4ea-03d1-20ab-f0c716884819@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bcc70465-78fa-3b2e-6506-2b9917f21e0d@infradead.org>
+Date:   Wed, 21 Apr 2021 19:16:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-98-gregkh@linuxfoundation.org>
-In-Reply-To: <20210421130105.1226686-98-gregkh@linuxfoundation.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 21 Apr 2021 21:13:29 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
-Message-ID: <CAL_JsqKoqh=-8UHk9JkCgK1fC7bVjVLNehHUM=R_g6fDan3dHg@mail.gmail.com>
-Subject: Re: [PATCH 097/190] Revert "video: imsttfb: fix potential NULL
- pointer dereferences"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kangjie Lu <kjlu@umn.edu>, Aditya Pakki <pakki001@umn.edu>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fce1f2a1-a4ea-03d1-20ab-f0c716884819@csgroup.eu>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 8:05 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
->
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
->
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
->
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Finn Thain <fthain@telegraphics.com.au>
-> Cc: Rob Herring <robh@kernel.org>
+On 4/21/21 1:43 AM, Christophe Leroy wrote:
+> 
+> 
+> Le 18/04/2021 à 19:15, Randy Dunlap a écrit :
+>> On 4/18/21 3:43 AM, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 18/04/2021 à 02:02, Randy Dunlap a écrit :
+>>>> HI--
+>>>>
+>>>> I no longer see this build error.
+>>>
+>>> Fixed by https://github.com/torvalds/linux/commit/acdad8fb4a1574323db88f98a38b630691574e16
+>>>
+>>>> However:
+>>>>
 
-Sigh, get_maintainers.pl likes to punish people for treewide clean-ups...
+...
 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/video/fbdev/imsttfb.c | 5 -----
->  1 file changed, 5 deletions(-)
->
-> diff --git a/drivers/video/fbdev/imsttfb.c b/drivers/video/fbdev/imsttfb.c
-> index 3ac053b88495..e04411701ec8 100644
-> --- a/drivers/video/fbdev/imsttfb.c
-> +++ b/drivers/video/fbdev/imsttfb.c
-> @@ -1512,11 +1512,6 @@ static int imsttfb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->         info->fix.smem_start = addr;
->         info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
->                                             0x400000 : 0x800000);
-> -       if (!info->screen_base) {
-> -               release_mem_region(addr, size);
-> -               framebuffer_release(info);
-> -               return -ENOMEM;
-> -       }
+>>>>
+>>>> I do see this build error:
+>>>>
+>>>> powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
+>>>> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
+>>>>
+>>>> when either
+>>>> CONFIG_KERNEL_LZO=y
+>>>> or
+>>>> CONFIG_KERNEL_LZMA=y
+>>>>
+>>>> but the build succeeds when either
+>>>> CONFIG_KERNEL_GZIP=y
+>>>> or
+>>>> CONFIG_KERNEL_XZ=y
+>>>>
+>>>> I guess that is due to arch/powerpc/boot/decompress.c doing this:
+>>>>
+>>>> #ifdef CONFIG_KERNEL_GZIP
+>>>> #    include "decompress_inflate.c"
+>>>> #endif
+>>>>
+>>>> #ifdef CONFIG_KERNEL_XZ
+>>>> #    include "xz_config.h"
+>>>> #    include "../../../lib/decompress_unxz.c"
+>>>> #endif
+>>>>
+>>>>
+>>>> It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
+>>>> to be set/enabled (maybe unless a uImage is being built?).
+>>>
+>>>
+>>> Can you test by https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/ ?
+>>
+>> Hi Christophe,
+>>
+>> I get build errors for both LZO and LZMA:
+>>
+> 
+> Can you check with the following changes on top of my patch:
+> 
+> diff --git a/lib/decompress_unlzo.c b/lib/decompress_unlzo.c
+> index a8dbde4b32d4..f06f925385c0 100644
+> --- a/lib/decompress_unlzo.c
+> +++ b/lib/decompress_unlzo.c
+> @@ -23,13 +23,15 @@
+>  #include <linux/decompress/unlzo.h>
+>  #endif
+> 
+> -#include <linux/lzo.h>
+>  #ifdef __KERNEL__
+>  #include <linux/types.h>
+> +#endif
+> +#include <linux/lzo.h>
+> +#ifdef __KERNEL__
+>  #include <linux/decompress/mm.h>
+> +#include <linux/compiler.h>
+>  #endif
+> 
+> -#include <linux/compiler.h>
+>  #include <asm/unaligned.h>
+> 
+>  static const unsigned char lzop_magic[] = {
 
-The original change appears to be valid, but incomplete...
+Hi Christophe,
+Sorry for the delay -- it's been a very busy day here.
 
->         info->fix.mmio_start = addr + 0x800000;
->         par->dc_regs = ioremap(addr + 0x800000, 0x1000);
+For CONFIG_KERNEL_LZMA=y, I get a couple of warnings:
 
-...because what about cleanup when this ioremap fails.
+  BOOTCC  arch/powerpc/boot/decompress.o
+In file included from ../arch/powerpc/boot/decompress.c:38:
+../arch/powerpc/boot/../../../lib/decompress_unlzma.c: In function 'unlzma':
+../arch/powerpc/boot/../../../lib/decompress_unlzma.c:582:21: warning: pointer targets in passing argument 3 of 'rc_init' differ in signedness [-Wpointer-sign]
+  582 |  rc_init(&rc, fill, inbuf, in_len);
+      |                     ^~~~~
+      |                     |
+      |                     unsigned char *
+../arch/powerpc/boot/../../../lib/decompress_unlzma.c:107:18: note: expected 'char *' but argument is of type 'unsigned char *'
+  107 |            char *buffer, long buffer_size)
+      |            ~~~~~~^~~~~~
 
->         par->cmap_regs_phys = addr + 0x840000;
 
-Then again, if anyone really cared about this driver and h/w (a
-PowerMac era PCI display card), it would not still be using fbdev and
-would use devm_* apis.
+and for CONFIG_KERNEL_LZO=y, this one warning:
 
-Rob
+  BOOTCC  arch/powerpc/boot/decompress.o
+In file included from ../arch/powerpc/boot/decompress.c:43:
+../arch/powerpc/boot/../../../lib/decompress_unlzo.c: In function 'parse_header':
+../arch/powerpc/boot/../../../lib/decompress_unlzo.c:51:5: warning: variable 'level' set but not used [-Wunused-but-set-variable]
+   51 |  u8 level = 0;
+      |     ^~~~~
+
+Note: the patch above did not apply cleanly for me so any problems
+above could be due to my mangling the patch.
+The patch that I used is below.
+
+Thanks.
+---
+---
+ lib/decompress_unlzo.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+--- linux-next-20210421.orig/lib/decompress_unlzo.c
++++ linux-next-20210421/lib/decompress_unlzo.c
+@@ -23,13 +23,16 @@
+ #include <linux/decompress/unlzo.h>
+ #endif
+ 
+-#include <linux/lzo.h>
+ #ifdef __KERNEL__
+ #include <linux/types.h>
+-#include <linux/decompress/mm.h>
+ #endif
++#include <linux/lzo.h>
+ 
++#ifdef __KERNEL__
++#include <linux/decompress/mm.h>
+ #include <linux/compiler.h>
++#endif
++
+ #include <asm/unaligned.h>
+ 
+ static const unsigned char lzop_magic[] = {
+
