@@ -2,90 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE77367A77
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AB3367A7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbhDVHBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:01:01 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17812 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhDVHA7 (ORCPT
+        id S230404AbhDVHDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:03:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229629AbhDVHDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:00:59 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FQpCV628sz7vy7;
-        Thu, 22 Apr 2021 14:57:58 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 22 Apr 2021 15:00:20 +0800
-Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-To:     Mike Rapoport <rppt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        "Marc Zyngier" <maz@kernel.org>,
+        Thu, 22 Apr 2021 03:03:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619074967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U1sBIWc97pwUoI/Y/7htamKNpDUssIIcTnKBNjle2Og=;
+        b=bS/r7X2ZtS35AxyCjt2XmKu3FN5Qu4wjNHzFlu0/mrmw/orhaL4AMMs8mH1DlJ0I7v/juT
+        GRJSpPyX3sVCJOUO/kZHyrJJfvuT+eUV4xk4C1Mqubm0VZN5d2p5gtYhKyzOUvl3cos2or
+        SO2Ese9g6bm33YpHBXDzipPBbTHPiUo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-D0DmNPObOyO3AM4PS_N7IQ-1; Thu, 22 Apr 2021 03:02:13 -0400
+X-MC-Unique: D0DmNPObOyO3AM4PS_N7IQ-1
+Received: by mail-ed1-f70.google.com with SMTP id l22-20020a0564021256b0290384ebfba68cso12374507edw.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:02:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=U1sBIWc97pwUoI/Y/7htamKNpDUssIIcTnKBNjle2Og=;
+        b=EalOo+eIN5OYn4b1MZBPg0NVQ29DNpmq5zat/uxbBOdsdv3oCmiXstk9ckDy5sY3cz
+         0gykJ7CVn/rjD6fefTmhuNUedYmG/fg3UhTBoMoi3A93C0sfVKMjU8sApUQ2NfENcHEA
+         swUEcFeudQ1fXbrPbmmWZWZm/4bpaDNQkLha/Loj4Njb5SvlUUPrvM9uk5dhgCrlE9sh
+         vijsS2Oj7vwZ9SU/hfcGvn2DvvInwf3CGDzjnPyNRSyvo9Om2Y6nz2ZmcvW7t0Y05wh8
+         ihRIDpdKE8Bn5Ny8ZpA6j9A48C/xT9BI3nL4v3OHCHGwEvg56PwcfVvvSF+OoySuweSq
+         0IuA==
+X-Gm-Message-State: AOAM532Ff/fToS+JIu9DANDo5MGUbE6latYL4E+a/xIXvv7/wnzk4rcn
+        oifU9zG/7+7ArCCx0GxiMcVbBnVQFwCECo0Ttebuao2+zaQlPZWEqr/QGqU58gIT0a+lqwGbNkq
+        zKCG8+LTGh1/i760JdOxcH9gD
+X-Received: by 2002:a05:6402:54f:: with SMTP id i15mr1922178edx.365.1619074932130;
+        Thu, 22 Apr 2021 00:02:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwW6HSmx2bqE6mJ1T+jSutBTgTnXdsbeh+wMEVf31ITrNbtI2a0LDOgDf0Ru09R/HBq590CVw==
+X-Received: by 2002:a05:6402:54f:: with SMTP id i15mr1922156edx.365.1619074931964;
+        Thu, 22 Apr 2021 00:02:11 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n13sm1196993ejx.27.2021.04.22.00.02.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 00:02:11 -0700 (PDT)
+Subject: Re: [PATCH 0/5] KVM: x86: Use kernel x86 cpuid utilities in KVM
+ selftests
+To:     Ricardo Koller <ricarkol@google.com>
+Cc:     kvm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
-Date:   Thu, 22 Apr 2021 15:00:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210422005626.564163-1-ricarkol@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c4524e4a-55c7-66f9-25d6-d397f11d25a8@redhat.com>
+Date:   Thu, 22 Apr 2021 09:02:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210421065108.1987-1-rppt@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422005626.564163-1-ricarkol@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22/04/21 02:56, Ricardo Koller wrote:
+> The kernel has a set of utilities and definitions to deal with x86 cpu
+> features.  The x86 KVM selftests don't use them, and instead have
+> evolved to use differing and ad-hoc methods for checking features. The
+> advantage of the kernel feature definitions is that they use a format
+> that embeds the info needed to extract them from cpuid (function, index,
+> and register to use).
+> 
+> The first 3 patches massage the related cpuid header files in the kernel
+> side, then copy them into tools/ so they can be included by selftests.
+> The last 2 patches replace the tests checking for cpu features to use
+> the definitions and utilities introduced from the kernel.
 
-On 2021/4/21 14:51, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Hi,
->
-> These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
-> pfn_valid_within() to 1.
->
-> The idea is to mark NOMAP pages as reserved in the memory map and restore
-> the intended semantics of pfn_valid() to designate availability of struct
-> page for a pfn.
->
-> With this the core mm will be able to cope with the fact that it cannot use
-> NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
-> will be treated correctly even without the need for pfn_valid_within.
->
-> The patches are only boot tested on qemu-system-aarch64 so I'd really
-> appreciate memory stress tests on real hardware.
->
-> If this actually works we'll be one step closer to drop custom pfn_valid()
-> on arm64 altogether.
+I queued the first, but I am not sure about the rest.
 
-Hi Mike，I have a question, without HOLES_IN_ZONE, the pfn_valid_within() 
-in move_freepages_block()->move_freepages()
-will be optimized, if there are holes in zone, the 'struce page'(memory 
-map) for pfn range of hole will be free by
-free_memmap(), and then the page traverse in the zone(with holes) from 
-move_freepages() will meet the wrong page，
-then it could panic at PageLRU(page) test, check link[1],
+An alternative is to copy over the code from kvm-unit-tests which 
+encodes the leaf/subleaf/register/bit values into the X86_FEATURE_* 
+value.  Sharing code with kvm-unit-tests is probably simpler than adding 
+#ifdef __KERNEL__ and keeping the headers in sync.
 
-"The idea is to mark NOMAP pages as reserved in the memory map", I see 
-the patch2 check memblock_is_nomap() in memory region
-of memblock, but it seems that memblock_mark_nomap() is not called(maybe 
-I missed), then memmap_init_reserved_pages() won't
-work, so should the HOLES_IN_ZONE still be needed for generic mm code?
+Paolo
 
-[1] 
-https://lore.kernel.org/linux-arm-kernel/541193a6-2bce-f042-5bb2-88913d5f1047@arm.com/
+> Thanks,
+> Ricardo
+> 
+> Ricardo Koller (5):
+>    KVM: x86: Move reverse CPUID helpers to separate header file
+>    x86/cpu: Expose CPUID regs, leaf and index definitions to tools
+>    tools headers x86: Copy cpuid helpers from the kernel
+>    KVM: selftests: Introduce utilities for checking x86 features
+>    KVM: selftests: Use kernel x86 cpuid features format
+> 
+>   arch/x86/events/intel/pt.c                    |   1 +
+>   arch/x86/include/asm/cpufeature.h             |  23 +-
+>   arch/x86/include/asm/processor.h              |  11 -
+>   arch/x86/kernel/cpu/scattered.c               |   2 +-
+>   arch/x86/kernel/cpuid.c                       |   2 +-
+>   arch/x86/kvm/cpuid.h                          | 177 +-----------
+>   arch/x86/kvm/reverse_cpuid.h                  | 185 +++++++++++++
+>   tools/arch/x86/include/asm/cpufeature.h       | 257 ++++++++++++++++++
+>   tools/arch/x86/include/asm/cpufeatures.h      |   3 +
+>   .../selftests/kvm/include/x86_64/cpuid.h      |  61 +++++
+>   .../selftests/kvm/include/x86_64/processor.h  |  16 --
+>   .../kvm/include/x86_64/reverse_cpuid.h        | 185 +++++++++++++
+>   .../selftests/kvm/include/x86_64/svm_util.h   |  11 +-
+>   tools/testing/selftests/kvm/lib/x86_64/svm.c  |   6 +-
+>   tools/testing/selftests/kvm/lib/x86_64/vmx.c  |   5 +-
+>   tools/testing/selftests/kvm/steal_time.c      |   5 +-
+>   .../kvm/x86_64/cr4_cpuid_sync_test.c          |  23 +-
+>   .../selftests/kvm/x86_64/set_sregs_test.c     |  25 +-
+>   .../selftests/kvm/x86_64/vmx_pmu_msrs_test.c  |   8 +-
+>   .../kvm/x86_64/vmx_set_nested_state_test.c    |   5 +-
+>   .../selftests/kvm/x86_64/xss_msr_test.c       |  10 +-
+>   21 files changed, 749 insertions(+), 272 deletions(-)
+>   create mode 100644 arch/x86/kvm/reverse_cpuid.h
+>   create mode 100644 tools/arch/x86/include/asm/cpufeature.h
+>   create mode 100644 tools/testing/selftests/kvm/include/x86_64/cpuid.h
+>   create mode 100644 tools/testing/selftests/kvm/include/x86_64/reverse_cpuid.h
+> 
 
