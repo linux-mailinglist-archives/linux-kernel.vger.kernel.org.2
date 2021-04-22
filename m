@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B056367FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53345367FF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236081AbhDVMCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:02:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        id S236139AbhDVMCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235957AbhDVMCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:02:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E03D861164;
-        Thu, 22 Apr 2021 12:02:03 +0000 (UTC)
+        id S235957AbhDVMCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:02:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F2E061450;
+        Thu, 22 Apr 2021 12:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619092925;
-        bh=rkCq6YOyLHab1KE6vI7NiCXSOcxoEXY9r+QmW7Dd6DE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XpIdIxw0hzCja5ovJ6LOCRuVYlPr9Bzbsk1Fz6YCfMyFMk1hJNSY/ls3vhmcVpstc
-         U1iVTyg5FBOXsfNayGUx4ssoaNiASgxQUW1zmb0+Yofan5d3N7VF9kx4jO9cGCv0Cu
-         pD9rv43vWfQr+Vjtqvy37ebs023Bl3FehjVals2cpf9E5T18ZEOvVDOOW/13RKYFT0
-         PvVcIBvcIAfNk5Kf/Qrs05F+a9Tunmn4kG3rkvq5fE9g5shY6Y7/yaRaoGOtI4wDze
-         STc1mNvzRMhzaJJFr7u5Zv6Z5AC7I0/fuZ3YF/GKlpdwQFjB/+U0bFaIje9XInq4y3
-         KlBCP6DI+0cVw==
+        s=k20201202; t=1619092927;
+        bh=C6y1/7eO/16KsPWRmwyMX9yPizdRZz7an8PRE8nlY2w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Nwb39BYO3fuNC/SIA+ZOT4unQwGXqx6nELGRvoOHK5LnbZFL36csdnfSirgXSx2y/
+         l3bucsLi2Lv6hY18V9aHHP630qPXv/ObY4OZwGnc8bHD7fbxeQg3Pcp+7/6nQIyOAg
+         +pBbL0KN5vQt/wgRWYq+5wlVZD+ZVHsTUSmCpM68VYkEPNPxUw6pItr1av2w6q9UjK
+         294UPz1edQ5qbOIVs6RQBYWvyjae32T+zNLrKgT+Nt4yHgOt96gaD9ibXZRMCLaVBG
+         8UP6QhTOfm1fOpX19P2A+Xj27M4LwWqI6cPgAM6hMdUBHKK6vOQFQdk87uzsvKYkVF
+         3lnhL4ELh4DFA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
         "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
         Yunfeng Ye <yeyunfeng@huawei.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [PATCH 0/8] tick/nohz updates v2
-Date:   Thu, 22 Apr 2021 14:01:50 +0200
-Message-Id: <20210422120158.33629-1-frederic@kernel.org>
+Subject: [PATCH 1/8] tick/nohz: Evaluate the CPU expression after the static key
+Date:   Thu, 22 Apr 2021 14:01:51 +0200
+Message-Id: <20210422120158.33629-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210422120158.33629-1-frederic@kernel.org>
+References: <20210422120158.33629-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set brings various interrupts reducing while running in nohz_full:
+From: Peter Zijlstra <peterz@infradead.org>
 
-* Remove one tick interrupt while waking up from idle to a user task
-  running in nohz_full mode. (thanks Yunfeng Ye).
+When tick_nohz_full_cpu() is called with smp_processor_id(), the latter
+is unconditionally evaluated whether the static key is on or off. It is
+not necessary in the off-case though, so make sure the cpu expression
+is executed at the last moment.
 
-* Reduce IPIs when running posix cpu timers, only relevant tasks should
-  be interrupted now instead of all tick nohz CPUs (thanks Marcelo)
+Illustrate with the following test function:
 
-And a few other cleanups and improvement.
+	int tick_nohz_test(void)
+	{
+		return tick_nohz_full_cpu(smp_processor_id());
+	}
 
-Changes since last take:
+The resulting code before was:
 
-- Remove "tick/nohz: Prevent tick_nohz_get_sleep_length() from returning negative value"
-  since the issue has been solve on the cpuidle side.
+	mov    %gs:0x7eea92d1(%rip),%eax   # smp_processor_id() fetch
+	nopl   0x0(%rax,%rax,1)
+	xor    %eax,%eax
+	retq
+	cmpb   $0x0,0x29d393a(%rip)        # <tick_nohz_full_running>
+	je     tick_nohz_test+0x29         # jump to below eax clear
+	mov    %eax,%eax
+	bt     %rax,0x29d3936(%rip)        # <tick_nohz_full_mask>
+	setb   %al
+	movzbl %al,%eax
+	retq
+	xor    %eax,%eax
+	retq
 
-- Remove "timer: Report ignored local enqueue in nohz mode"
-  and hope that objtool will spot the future offenders.
+Now it becomes:
 
-- Changed "tick/nohz: Add tick_nohz_full_this_cpu()" and provide with
-  "tick/nohz: Evaluate the CPU expression after the static key" (please
-  add your SOB on this one).
+	nopl   0x0(%rax,%rax,1)
+	xor    %eax,%eax
+	retq
+	cmpb   $0x0,0x29d3871(%rip)        # <tick_nohz_full_running>
+	je     tick_nohz_test+0x29         # jump to below eax clear
+	mov    %gs:0x7eea91f0(%rip),%eax   # smp_processor_id() fetch, after static key
+	mov    %eax,%eax
+	bt     %rax,0x29d3866(%rip)        # <tick_nohz_full_mask>
+	setb   %al
+	movzbl %al,%eax
+	retq
+	xor    %eax,%eax
+	retq
 
-git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-	timers/nohz-v2
-
-HEAD: 4546d43a9938f6c7eec024f005cb240b8b73637b
-
-Thanks,
-	Frederic
+Not-Yet-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Cc: Yunfeng Ye <yeyunfeng@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
+ include/linux/tick.h | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-Frederic Weisbecker (3):
-      tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-      tick/nohz: Update nohz_full Kconfig help
-      tick/nohz: Only wakeup a single target cpu when kicking a task
+diff --git a/include/linux/tick.h b/include/linux/tick.h
+index 7340613c7eff..2258984a0e8a 100644
+--- a/include/linux/tick.h
++++ b/include/linux/tick.h
+@@ -185,13 +185,17 @@ static inline bool tick_nohz_full_enabled(void)
+ 	return tick_nohz_full_running;
+ }
+ 
+-static inline bool tick_nohz_full_cpu(int cpu)
+-{
+-	if (!tick_nohz_full_enabled())
+-		return false;
+-
+-	return cpumask_test_cpu(cpu, tick_nohz_full_mask);
+-}
++/*
++ * Check if a CPU is part of the nohz_full subset. Arrange for evaluating
++ * the cpu expression (typically smp_processor_id()) _after_ the static
++ * key.
++ */
++#define tick_nohz_full_cpu(_cpu) ({					\
++	bool __ret = false;						\
++	if (tick_nohz_full_enabled())					\
++		__ret = cpumask_test_cpu((_cpu), tick_nohz_full_mask);	\
++	__ret;								\
++})
+ 
+ static inline void tick_nohz_full_add_cpus_to(struct cpumask *mask)
+ {
+-- 
+2.25.1
 
-Marcelo Tosatti (2):
-      tick/nohz: Change signal tick dependency to wakeup CPUs of member tasks
-      tick/nohz: Kick only _queued_ task whose tick dependency is updated
-
-Yunfeng Ye (2):
-      tick/nohz: Conditionally restart tick on idle exit
-      tick/nohz: Update idle_exittime on actual idle exit
-
-Peter Zijlstra (1):
-      tick/nohz: Evaluate the CPU expression after the static key
-
-
- include/linux/sched.h          |   2 +
- include/linux/tick.h           |  26 +++++----
- kernel/sched/core.c            |   5 ++
- kernel/time/Kconfig            |  11 ++--
- kernel/time/posix-cpu-timers.c |   4 +-
- kernel/time/tick-sched.c       | 122 +++++++++++++++++++++++++++++------------
- 6 files changed, 117 insertions(+), 53 deletions(-)
