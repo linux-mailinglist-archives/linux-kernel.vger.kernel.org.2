@@ -2,118 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA49367E4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36328367E46
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbhDVKDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:03:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24712 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235704AbhDVKDf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619085780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xNNORhYicU7gfoyOCuO0kweWS4Sw8ld/VVblR3G06wg=;
-        b=Rh4v+YxFnMEngod4L53ym1QpbhxpXQ8iNAQd+sJum8lPSE0UvqVbuzyCm8Bvj4xudfWZIG
-        ILij7JobfNtKV3lIziGXnGbACDFJpeJm3FGYPS//7kT2g0BVWLQr9Bz/t9oqqlr/i1iiug
-        Drk7RXuA9gy4+8bC4q2rjn0H9/gEir8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-MR4gu6LfMVa9g70VsHwWfg-1; Thu, 22 Apr 2021 06:02:21 -0400
-X-MC-Unique: MR4gu6LfMVa9g70VsHwWfg-1
-Received: by mail-ed1-f70.google.com with SMTP id bf25-20020a0564021a59b0290385169cebf8so9083353edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:02:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xNNORhYicU7gfoyOCuO0kweWS4Sw8ld/VVblR3G06wg=;
-        b=kzqlzla/33b7xHF+1p7ziy4qt1bbEs8HaJn1ccduCubuVkRxHizp4L9j6FCUGgN6dM
-         X7k0SlSqpSyfvPCcMgBWnh7glyBzfAT667hDz3Nj1u+h8KVhGZK+YqqP5de0rZ8mdp1Y
-         /h4xhgxt17X917PU8INCv/Zbt3m03Smk9AOlFSpPihK8vGvNO0YMt1hcX3zoZ5BMrtrG
-         n7RkeZuEpW3qULeGLLEZe14yrQSW6752vkw0tGK60jZd/08PIXibTEvqOWFY39GhzPDC
-         1TKqy4G0mSw/0gihI9pvp0G0DKSA8v1Hh+AVO2Ypg7huSzrY6Pu0UBOAbSqB+Q0ydUmV
-         j92w==
-X-Gm-Message-State: AOAM5305saLiNDcnuxsnR4+tVjTeNqs1dwm/+eZFxL0PB1NTMngt8NpL
-        JgSRmcXSnmk/Nd03su9OvG+Yo5pSikDjYL2RZquA04cHztr8ujMAxoi+RG8fiIEAa3pDmsOjRJw
-        vTrBIvBrsWKoe182hwpxdst6V
-X-Received: by 2002:a17:906:704a:: with SMTP id r10mr2573013ejj.312.1619085740354;
-        Thu, 22 Apr 2021 03:02:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwoHUf/42/0fX52T0AvMJggbGbBnbTG84Gu4+wvT51LpZ70eW/cmD2f8ZCtTt0nyd7+UiYVVg==
-X-Received: by 2002:a17:906:704a:: with SMTP id r10mr2572977ejj.312.1619085740170;
-        Thu, 22 Apr 2021 03:02:20 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id l15sm1662876edb.48.2021.04.22.03.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 03:02:19 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 12:02:17 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Alexander Popov <alex.popov@linux.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [RFC PATCH v8 00/19] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210422100217.jmpgevtrukqyukfo@steredhat>
-References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
- <20210421095213.25hnfi2th7gzyzt2@steredhat>
- <2c3d0749-0f41-e064-0153-b6130268add2@kaspersky.com>
- <20210422084638.bvblk33b4oi6cec6@steredhat>
- <bfefdd94-a84f-8bed-331e-274654a7426f@kaspersky.com>
+        id S235808AbhDVKDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235755AbhDVKD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:03:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D2161131;
+        Thu, 22 Apr 2021 10:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619085754;
+        bh=HkPE5rnmVLS4AHdydPD62qofAjx8DHdPJ968fhV+dxI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=131JaMt1q/KG3BQZw49Ze+akwz3yKn4UWo9wEiavnX7LVkZKxz1TNGfj9EfVAKjkv
+         fSSA4/TEgVeCjGmmcPaIZIo0T6RCdR5QUHBjyLcEqrl66GB3BLtbezhz3G57EIITN1
+         VmmjnvzskU9KPZ0LQAqRPrwDujTSjAno9FyB2Z68=
+Date:   Thu, 22 Apr 2021 12:02:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Samo =?utf-8?B?UG9nYcSNbmlr?= <samo_pogacnik@t-2.net>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
+Message-ID: <YIFJt9csgZlFkqpT@kroah.com>
+References: <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+ <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+ <YHQkeZVs3pmyie9e@kroah.com>
+ <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
+ <YHQ3Zy9gRdZsu77w@kroah.com>
+ <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
+ <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
+ <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
+ <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
+ <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bfefdd94-a84f-8bed-331e-274654a7426f@kaspersky.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:40:17PM +0300, Arseny Krasnov wrote:
->On 22.04.2021 11:46, Stefano Garzarella wrote:
->> On Wed, Apr 21, 2021 at 06:06:28PM +0300, Arseny Krasnov wrote:
->>> Thank You, i'll prepare next version. Main question is: does this
->>> approach(no SEQ_BEGIN, SEQ_END, 'msg_len' and 'msg_id') considered
->>> good? In this case it will be easier to prepare final version, because
->>> is smaller and more simple than previous logic. Also patch to spec
->>> will be smaller.
->> Yes, it's definitely much better than before.
->>
->> The only problem I see is that we add some overhead per fragment
->> (header). We could solve that with the mergeable buffers that Jiang is
->> considering for DGRAM.
->
->If we are talking about receive, i think, i can reuse merge logic for
+On Sun, Apr 18, 2021 at 01:16:05PM +0200, Samo Pogačnik wrote:
+> Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
+> > syzbot is reporting hung task due to flood of
+> > 
+> >   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+> >            port->count);
+> > 
+> > message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
+> > decrementing port->count due to tty_hung_up_p() == true.
+> > 
+> > ----------
+> > #include <sys/types.h>
+> > #include <sys/stat.h>
+> > #include <fcntl.h>
+> > #include <sys/ioctl.h>
+> > #include <unistd.h>
+> > 
+> > int main(int argc, char *argv[])
+> > {
+> > 	int i;
+> > 	int fd[10];
+> > 
+> > 	for (i = 0; i < 10; i++)
+> > 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
+> > 	ioctl(fd[0], TIOCVHANGUP);
+> > 	for (i = 0; i < 10; i++)
+> > 		close(fd[i]);
+> > 	close(open("/dev/ttyprintk", O_WRONLY));
+> > 	return 0;
+> > }
+> > ----------
+> > 
+> > When TTY hangup happens, port->count needs to be reset via
+> > "struct tty_operations"->hangup callback.
+> > 
+> > [1] 
+> > https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
+> > 
+> > Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+> > Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
+> > Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> > Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
+> > ---
+> >  drivers/char/ttyprintk.c | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+> > index 6a0059e508e3..93f5d11c830b 100644
+> > --- a/drivers/char/ttyprintk.c
+> > +++ b/drivers/char/ttyprintk.c
+> > @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
+> >  	return 0;
+> >  }
+> >  
+> > +/*
+> > + * TTY operations hangup function.
+> > + */
+> > +static void tpk_hangup(struct tty_struct *tty)
+> > +{
+> > +	struct ttyprintk_port *tpkp = tty->driver_data;
+> > +
+> > +	tty_port_hangup(&tpkp->port);
+> > +}
+> > +
+> >  static const struct tty_operations ttyprintk_ops = {
+> >  	.open = tpk_open,
+> >  	.close = tpk_close,
+> >  	.write = tpk_write,
+> >  	.write_room = tpk_write_room,
+> >  	.ioctl = tpk_ioctl,
+> > +	.hangup = tpk_hangup,
+> >  };
+> >  
+> >  static const struct tty_port_operations null_ops = { };
+> 
+> Using the supplied test code, i've tested the patch on my desktop running the
+> 5.4 kernel. After applying the patch, the kernel warnings like "ttyprintk:
+> tty_port_close_start: tty->count = 1 port count = 11" do not appear any more,
+> when the test code is run.
+> I think the patch is ok.
 
-Yep, for TX the guest can potentially enqueue a big buffer.
-Maybe it's still worth keeping a maximum size and fragmenting as we do 
-now.
+Thanks for the review, I'll go queue this up.
 
->
->stream sockets, the only difference is that buffers are mergeable
->until previous EOR(e.g. previous message) bit is found in rx queue.
->
-
-I got a little lost.
-Can you elaborate more?
-
-Thanks,
-Stefano
-
+greg k-h
