@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD08E367993
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134C436798F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234772AbhDVF5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 01:57:18 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:27137 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhDVF5Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 01:57:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1619070821; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=rPyMclrcyXjikgCizOTOKwmjWlDvJU8yNPd1WpjVxHE5FGC1ZZ9sRf8tREmuVOwOMQ
-    5bO4oB+YqGGzTarvrJUtcmnz+ji7vaieRjQT3gbWWRaFL8mGca1/X0WL1RJTNukF3/BK
-    5PzvHRYBCSsfLM80hTuJTWOM4wcrbgC9MU1UCcOiZnGvhcrH3RZN2ar4bH9B/+W+3gXC
-    SbiZ1hAqHSEy7KQrApsMTTViYMsDKtkcDn4PKyHMatKplF2fedO2XshXSz//r35wp2gy
-    HWESY1kGMKMukfxTby44T56ZwSTPgDjSGEgyQIfLIvQiwCUOcy4s5Yv2bs1Yyn3M+dJX
-    C8Pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619070821;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=FCcKJytuI9ww62Y/8WAyJgU7+PYDFqbFjjn+P8bSgEU=;
-    b=R9QmisRz8IYq728FnS6Iy7pWC+rrDeukNtlTvD3jTVIvPm9WeNywRoe+XOWq+MBezj
-    NYalcZ0ms3j/ntHwUFKPLOPFWE8+nZbhhqpGimxkt22MJ3p3Aw96KPt0oQIQpkPzc4Ht
-    xVzrP9m5GoFvbu7VxLa/8r1tShk2fBraT0BGWij0cvUHLTNT6PBf3gHa4wxOI9bvCpJD
-    3iiZst5hFqbaaCjmlTSnPlrm8HVBAYpDDsJctX88idurGwfxdRuGMcLlb2usXsBEgI72
-    VAWyBaYi5GcnQPPrs+DxgsY9tjOOR9NfTKOLZbkXNWsLZMzO3TfGNi7n1R7qj43yQ8M2
-    oWVA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619070821;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=FCcKJytuI9ww62Y/8WAyJgU7+PYDFqbFjjn+P8bSgEU=;
-    b=dY0oZNH9WAIYrJiNfv/n3aqOKW09h9Ne6kLERU5KWUrWRqMG+YbZpaOx+lwnh5U4TR
-    wa+SC8pInV5twOSKOU1GWA8N/LFE4WaDI5dDrfeY4lyo7vVregH6r+wQksTQUa5Vn669
-    VTM08GVT45AGXVOHQbuHS2vMHFYKwrgYCYqpYeZqK6JoB4mpj/HmvtmCslra/MF7zmm3
-    vdOYdyOBMHFKTBUXKdx/KBcWdqJLZhThSr9Dghzrak7erD6H+XnVxTucO95eVTFc0KlA
-    fVXoEXBEKLgo5WBziZ3iUytSCbJm0AOWcpLTKxYNA2LCXLPgkb1KfDCN9lQ9l9mFyEoM
-    R5gw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmMhw43rAaY="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.24.3 DYNA|AUTH)
-    with ESMTPSA id Q01a92x3M5reUYg
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 22 Apr 2021 07:53:40 +0200 (CEST)
-Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk>
-Date:   Thu, 22 Apr 2021 07:53:39 +0200
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-arch@vger.kernel.org,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com>
-References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-X-Mailer: Apple Mail (2.3124)
+        id S234831AbhDVFym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 01:54:42 -0400
+Received: from ozlabs.org ([203.11.71.1]:49913 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234806AbhDVFyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 01:54:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FQmnc44mMz9sTD;
+        Thu, 22 Apr 2021 15:53:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619070837;
+        bh=BGZPYQkkrhZBKQnH/8AnrujpEbYer6hDxMUZS72H6e4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=f8Sdg2jpgOZm3ETvhaBqhzh2fGNRPvOH7HcJ3kGq4wesKkELDZfgncJMVkZgLt+eD
+         vS0ipQpTq9oSNkn3RMTcafzsQcnniCKxHwdtIQtEj+/4RFPLLCgJczSW7p2fDBsFUX
+         zMiAhsPM8BG9G6NZTpW/CmfvxtUQVlaYHJHakw73VlEP1PMBc5C5QYPtLAoxHpft5T
+         yYlGniklQBz66onN7adQBYUATthJgSSF3ZK6pZb5FQdkrtx8jvGEne7lf5omuF3rEZ
+         kdD9hno/3KeaB1M9/Zosbijzwyn7rFr7AeVjnVkqUfFZgPKeV/ProH9Ddy9mwQE00m
+         ljcErt3QFNm8g==
+Date:   Thu, 22 Apr 2021 15:53:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tejun Heo <tj@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        KVM <kvm@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+Subject: linux-next: manual merge of the cgroup tree with the kvm tree
+Message-ID: <20210422155355.471c7751@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/ps.N23AYUV.7aL720N9crLb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/ps.N23AYUV.7aL720N9crLb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Am 21.04.2021 um 21:04 schrieb Maciej W. Rozycki <macro@orcam.me.uk>:
->=20
-> On Wed, 21 Apr 2021, H. Nikolaus Schaller wrote:
->=20
->>> In the end I have included four patches on this occasion: 1/4 is the =
-test=20
->>> module, 2/4 is an inline documentation fix/clarification for the =
-`do_div'=20
->>> wrapper, 3/4 enables the MIPS `__div64_32' backend and 4/4 adds a =
-small=20
->>> performance improvement to it.
->>=20
->> How can I apply them to the kernel? There is something wrong which =
-makes
->> git am fail.
->=20
-> I don't know.  The changes were made against vanilla 5.12-rc7, but =
-then=20
-> the pieces affected have not changed for ages.  FWIW I can `git am' =
-the=20
-> series as received back just fine.
+Hi all,
 
-Please can you point me to some download/pull/gitweb? It seems as if the =
-series
-also did not appear at =
-https://patchwork.kernel.org/project/linux-mips/list/
+Today's linux-next merge of the cgroup tree got conflicts in:
 
->=20
->>> These changes have been verified with a DECstation system with an =
-R3400=20
->>> MIPS I processor @40MHz and a MTI Malta system with a 5Kc MIPS64 =
-processor=20
->>> @160MHz.
->>=20
->> I'd like to test on ~320 MHz JZ4730.
->=20
-> Sure, I'd love to hear how this code performs with other =
-implementations. =20
->=20
->  Maciej
+  arch/x86/kvm/svm/sev.c
 
-BR and thanks,
-Nikolaus Schaller=
+between commit:
+
+  9fa1521daafb ("KVM: SVM: Do not set sev->es_active until KVM_SEV_ES_INIT =
+completes")
+
+from the kvm tree and commit:
+
+  7aef27f0b2a8 ("svm/sev: Register SEV and SEV-ES ASIDs to the misc control=
+ler")
+
+from the cgroup tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kvm/svm/sev.c
+index 63923fa0b172,214eefb20414..000000000000
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@@ -93,10 -103,21 +109,21 @@@ static bool __sev_recycle_asids(int min
+  	return true;
+  }
+ =20
+ -static int sev_asid_new(struct kvm_sev_info *sev)
+ +static int sev_asid_new(bool es_active)
+  {
+- 	int pos, min_asid, max_asid;
++ 	int pos, min_asid, max_asid, ret;
+  	bool retry =3D true;
++ 	enum misc_res_type type;
++=20
++ 	type =3D sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
++ 	WARN_ON(sev->misc_cg);
++ 	sev->misc_cg =3D get_current_misc_cg();
++ 	ret =3D misc_cg_try_charge(type, sev->misc_cg, 1);
++ 	if (ret) {
++ 		put_misc_cg(sev->misc_cg);
++ 		sev->misc_cg =3D NULL;
++ 		return ret;
++ 	}
+ =20
+  	mutex_lock(&sev_bitmap_lock);
+ =20
+@@@ -182,17 -224,16 +221,17 @@@ static int sev_guest_init(struct kvm *k
+  	if (unlikely(sev->active))
+  		return ret;
+ =20
+ -	asid =3D sev_asid_new(sev);
+ +	asid =3D sev_asid_new(es_active);
+  	if (asid < 0)
+  		return ret;
++ 	sev->asid =3D asid;
+ =20
+  	ret =3D sev_platform_init(&argp->error);
+  	if (ret)
+  		goto e_free;
+ =20
+  	sev->active =3D true;
+ +	sev->es_active =3D es_active;
+- 	sev->asid =3D asid;
+  	INIT_LIST_HEAD(&sev->regions_list);
+ =20
+  	return 0;
+
+--Sig_/ps.N23AYUV.7aL720N9crLb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCBD3MACgkQAVBC80lX
+0GwCVQgAhfLvp18AoPRyOZvFXbln4d0aRLDgCePUCfP5536Ola/QEKtOi0oCnnyx
+cQpqdNBh7L/zcaCrVvofNT+COH6mF/gGGXjguMy5BUylZRKCTujNO0s91SVt1x0T
+2Ng7cAJo0EvMA+M2/HiR8aKr72+IFj7HSzt6el7kPss+zgnvcI9nClCCpPysZbXu
+A6xqleyTzWMiiS8avVnLGYSsCvS7zxOuh82C6eh4eSZwg8oB61kUVQI1EP0TsJ+H
+Wb9qznPIjBraQTVI6ao7ci6FbdBpBUiRhYzkevSea97Q5wEA49STzr2t6/c3jGEh
+sgk9MPXoAxeRhaxG2Sy6JK/XYgciRw==
+=BrK3
+-----END PGP SIGNATURE-----
+
+--Sig_/ps.N23AYUV.7aL720N9crLb--
