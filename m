@@ -2,127 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2F536780D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF796367814
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhDVDji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 23:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhDVDjh (ORCPT
+        id S234495AbhDVDq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 23:46:59 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:6818 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhDVDqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:39:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C6BC06174A;
-        Wed, 21 Apr 2021 20:39:03 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id d27so13092676lfv.9;
-        Wed, 21 Apr 2021 20:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VP8GAy3QUOP5pLm9gOH29FVZqOy2Igp9fnVns6wgjaQ=;
-        b=q2egpGUSEu94r+86jOd+OpqUGzK04O0I5fLB1WqbUDu4FxKzKOLeNJl/cA8xtXCi9K
-         YFtt2A4TvrycsV4F3OzOqK8NJkcgvkZBBy5TQFU5NU2/21poX5HlJ0QLnTv0k+br9QtW
-         A9Ujl6KgRCUFKARf/f3J+ToDtStEVJrlx0IZG1vH88Hiy8rCjGxp//iC52VHvVbndJIA
-         tm/vnOW18Hu07u4vujtHNC4334a/uRXI772JvEknw3zq1R3vHfP9k8qADlCzdtTSQ3sd
-         HLcd9FEqxhiil27JUVEGgFozkhg1EEJmGCexyQvmXVs+GrKv6FAjVcEb80bGe89RHg7P
-         hRjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VP8GAy3QUOP5pLm9gOH29FVZqOy2Igp9fnVns6wgjaQ=;
-        b=JryrgV+vmn/nqOAMO5meGTHk/zfFn6lfDu4VL2A1svIJzuRSjNZrW7ALlGmrgp3Y/I
-         Ud529mFi7abhDQeQFRE0h/EtS3tTL23XfyPZCBENEJqoMDPCynC6uCkyariIixtw7zzW
-         2cmurbFQOXkCiTYV2G08DhaXvqv5w7Xr0G/Wjr1ryAUTgGekMvnJQrdn0IJXk04ck5zU
-         G06LbngNgxK19IeOWQKh1srmIgnGX+ETRk9jNDBRfHrIMT9HkvMiHlIZUokAzGtYALYJ
-         cwhEZb79gSvEo8k4tf8ayEnDrmPpV2o4guCukks928JW62HZZ8edUN05R7N5CqmTAb7e
-         T58g==
-X-Gm-Message-State: AOAM531HWnHk8xNdkiZHUget5zHjAbCl61yEIvdt2gZGYTcww2nnKn4l
-        3+PZNICyz82lslF/5fpEt60=
-X-Google-Smtp-Source: ABdhPJy7tt36a/JJ5Zw/e7o7Xg8ZqCkUztIp7TaFICnS93exvuEpR0l1kPDyAywNvxkEtpHnTPPjCQ==
-X-Received: by 2002:ac2:5313:: with SMTP id c19mr928963lfh.654.1619062742072;
-        Wed, 21 Apr 2021 20:39:02 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
-        by smtp.gmail.com with ESMTPSA id u21sm134227lfc.68.2021.04.21.20.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 20:39:01 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iio: gyro: mpu3050: Fix reported temperature value
-Date:   Thu, 22 Apr 2021 06:38:41 +0300
-Message-Id: <20210422033841.22211-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 21 Apr 2021 23:46:55 -0400
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 25A0E282E70;
+        Thu, 22 Apr 2021 11:46:18 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AJYA1QBSDhatYsq-n3vbqqrl.3.1619063178146.Hmail.wangqing@vivo.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWNiAxLzJdIHdhdGNoZG9nOiBtdGs6IHN1cHBvcnQgcHJlLXRpbWVvdXQgd2hlbiB0aGUgYmFyayBpcnEgaXMgYXZhaWxhYmxl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <740481ed-97e0-3439-1af2-bc54cdb28536@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 22 Apr 2021 11:46:18 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Thu, 22 Apr 2021 11:46:18 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGR4ZS1ZJSU8fGUJKS0kYHxlVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1IS09OS0tDS05CN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MSI6Sio5KD8TGg8iCApWFUgNGQoKCRdVSFVKTUpCS01ISkxDTktMVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBQkhPQjcG
+X-HM-Tid: 0a78f7af83ad9395kuws25a0e282e70
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The raw temperature value is a 16-bit signed integer. The sign casting
-is missing in the code, which results in a wrong temperature reported
-by userspace tools, fix it.
-
-Cc: stable@vger.kernel.org
-Fixes: 3904b28efb2c ("iio: gyro: Add driver for the MPU-3050 gyroscope")
-Datasheet: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
-Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
-Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # Asus TF201
-Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
-Reviewed-by: Andy Shevchenko <Andy.Shevchenko@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
-
-Changelog:
-
-v2: - Replaced "signed 16bit integer" wording with "16-bit signed integer",
-      replaced "Link" tag with the "Datasheet" and added "Fixes" tag as was
-      suggested by Andy Shevchenko.
-
-    - Added r-b from Andy Shevchenko and Linus Walleij.
-
- drivers/iio/gyro/mpu3050-core.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iio/gyro/mpu3050-core.c b/drivers/iio/gyro/mpu3050-core.c
-index ac90be03332a..ce9d1d3687f5 100644
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -272,7 +272,16 @@ static int mpu3050_read_raw(struct iio_dev *indio_dev,
- 	case IIO_CHAN_INFO_OFFSET:
- 		switch (chan->type) {
- 		case IIO_TEMP:
--			/* The temperature scaling is (x+23000)/280 Celsius */
-+			/*
-+			 * The temperature scaling is (x+23000)/280 Celsius,
-+			 * where 23000 includes room temperature offset of
-+			 * +35C, 280 is the precision scale and x is the 16-bit
-+			 * signed integer which corresponds to the temperature
-+			 * range of -40C..85C.
-+			 *
-+			 * Temperature value itself represents temperature of
-+			 * the sensor die.
-+			 */
- 			*val = 23000;
- 			return IIO_VAL_INT;
- 		default:
-@@ -329,7 +338,7 @@ static int mpu3050_read_raw(struct iio_dev *indio_dev,
- 				goto out_read_raw_unlock;
- 			}
- 
--			*val = be16_to_cpu(raw_val);
-+			*val = (s16)be16_to_cpu(raw_val);
- 			ret = IIO_VAL_INT;
- 
- 			goto out_read_raw_unlock;
--- 
-2.30.2
-
+Cj5PbiA0LzIxLzIxIDc6NDUgUE0sIFdhbmcgUWluZyB3cm90ZToKPj4gVXNlIHRoZSBiYXJrIGlu
+dGVycnVwdCBhcyB0aGUgcHJldGltZW91dCBub3RpZmllciBpZiBhdmFpbGFibGUuCj4+IAo+PiBX
+aGVuIHRoZSB3YXRjaGRvZyB0aW1lciBleHBpcmVzIGluIGR1YWwgbW9kZSwgYW4gaW50ZXJydXB0
+IHdpbGwgYmUKPj4gdHJpZ2dlcmVkIGZpcnN0LCB0aGVuIHRoZSB0aW1pbmcgcmVzdGFydHMuIFRo
+ZSByZXNldCBzaWduYWwgd2lsbCBiZQo+PiBpbml0aWF0ZWQgd2hlbiB0aGUgdGltZXIgZXhwaXJl
+cyBhZ2Fpbi4KPj4gCj4+IFRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBh
+dCB0aW1lb3V0LXNlYy8yLgo+PiAKPj4gVjI6Cj4+IC0gcGFuaWMoKSBieSBkZWZhdWx0IGlmIFdB
+VENIRE9HX1BSRVRJTUVPVVRfR09WIGlzIG5vdCBlbmFibGVkLgo+PiAKPj4gVjM6Cj4+IC0gTW9k
+aWZ5IHRoZSBwcmV0aW1lb3V0IGJlaGF2aW9yLCBtYW51YWxseSByZXNldCBhZnRlciB0aGUgcHJl
+dGltZW91dAo+PiAtIGlzIHByb2Nlc3NlZCBhbmQgd2FpdCB1bnRpbCB0aW1lb3V0Lgo+PiAKPj4g
+VjQ6Cj4+IC0gUmVtb3ZlIHByZXRpbWVvdXQgcmVsYXRlZCBwcm9jZXNzaW5nLiAKPj4gLSBBZGQg
+ZHVhbCBtb2RlIGNvbnRyb2wgc2VwYXJhdGVseS4KPj4gCj4+IFY1Ogo+PiAtIEZpeCBzb21lIGZv
+cm1hdHRpbmcgYW5kIHByaW50aW5nIHByb2JsZW1zLgo+PiAKPj4gVjY6Cj4+IC0gUmVhbGl6ZSBw
+cmV0aW1lb3V0IHByb2Nlc3NpbmcgdGhyb3VnaCBkdWFsbW9kZS4KPj4gCj4+IFNpZ25lZC1vZmYt
+Ynk6IFdhbmcgUWluZyA8d2FuZ3FpbmdAdml2by5jb20+Cj4+IC0tLQo+PiAgZHJpdmVycy93YXRj
+aGRvZy9tdGtfd2R0LmMgfCA1MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKy0tLS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlv
+bnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYyBiL2Ry
+aXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jCj4+IGluZGV4IDk3Y2E5OTMuLmViYzY0OGIKPj4gLS0t
+IGEvZHJpdmVycy93YXRjaGRvZy9tdGtfd2R0LmMKPj4gKysrIGIvZHJpdmVycy93YXRjaGRvZy9t
+dGtfd2R0LmMKPj4gQEAgLTI1LDYgKzI1LDcgQEAKPj4gICNpbmNsdWRlIDxsaW51eC9yZXNldC1j
+b250cm9sbGVyLmg+Cj4+ICAjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4KPj4gICNpbmNsdWRlIDxs
+aW51eC93YXRjaGRvZy5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPgo+PiAgCj4+
+ICAjZGVmaW5lIFdEVF9NQVhfVElNRU9VVAkJMzEKPj4gICNkZWZpbmUgV0RUX01JTl9USU1FT1VU
+CQkxCj4+IEBAIC0xODQsMTUgKzE4NSwyMiBAQCBzdGF0aWMgaW50IG10a193ZHRfc2V0X3RpbWVv
+dXQoc3RydWN0IHdhdGNoZG9nX2RldmljZSAqd2R0X2RldiwKPj4gIHsKPj4gIAlzdHJ1Y3QgbXRr
+X3dkdF9kZXYgKm10a193ZHQgPSB3YXRjaGRvZ19nZXRfZHJ2ZGF0YSh3ZHRfZGV2KTsKPj4gIAl2
+b2lkIF9faW9tZW0gKndkdF9iYXNlID0gbXRrX3dkdC0+d2R0X2Jhc2U7Cj4+ICsJdW5zaWduZWQg
+aW50IHRpbWVvdXRfaW50ZXJ2YWw7Cj4+ICAJdTMyIHJlZzsKPj4gIAo+PiAtCXdkdF9kZXYtPnRp
+bWVvdXQgPSB0aW1lb3V0Owo+PiArCXRpbWVvdXRfaW50ZXJ2YWwgPSB3ZHRfZGV2LT50aW1lb3V0
+ID0gdGltZW91dDsKPj4gKwkvKgo+PiArCSAqIEluIGR1YWwgbW9kZSwgaXJxIHdpbGwgYmUgdHJp
+Z2dlcmVkIGF0IHRpbWVvdXQvMgo+PiArCSAqIHRoZSByZWFsIHRpbWVvdXQgb2NjdXJzIGF0IHRp
+bWVvdXQKPj4gKwkgKi8KPj4gKwlpZiAod2R0X2Rldi0+cHJldGltZW91dCkKPj4gKwkJdGltZW91
+dF9pbnRlcnZhbCA9IHdkdF9kZXYtPnByZXRpbWVvdXQgPSB0aW1lb3V0LzI7Cj4KPlBsZWFzZSBy
+dW4gY2hlY2twYXRjaCAtLXN0cmljdCBhbmQgZml4IHdoYXQgaXQgcmVwb3J0cy4KPkFsc28sIHRo
+ZXJlIHNob3VsZCBiZSBhIHNldF9wcmV0aW1lb3V0IGZ1bmN0aW9uIHRvIHNldCB0aGUKPnByZXRp
+bWVvdXQuIEl0IGlzIG9rIHRvIHVwZGF0ZSBpdCBoZXJlLCBidXQgaXQgc2hvdWxkIGJlIHNldAo+
+aW4gaXRzIG93biBmdW5jdGlvbiB0byBtYWtlIHN1cmUgdGhhdCB0aGUgYWN0dWFsIHZhbHVlCj5p
+cyByZXBvcnRlZCBiYWNrIHRvIHVzZXJzcGFjZS4KPgo+VGhhbmtzLAo+R3VlbnRlcgoKVGhlIHJl
+YXNvbiB3aHkgdGhlIHNldF9wcmV0aW1lb3V0IGludGVyZmFjZSBpcyBub3QgcHJvdmlkZWQgaXMg
+CmJlY2F1c2UgdGhlIHByZXRpbWVvdXQgaXMgZml4ZWQgYWZ0ZXIgdGhlIHRpbWVvdXQgaXMgc2V0
+LCAgd2UgbmVlZAp0byBtb2RpZnkgdGltZW91dCBhZnRlciBzZXR0aW5nIHByZXRpbWVvdXQsIHdo
+aWNoIGlzIHB1enpsaW5nLgoKSSB3aWxsIHBvaW50IG91dCB0aGlzIGJlaGF2aW9yIGluIHRoZSBk
+b2MgYW5kIGNvbW1lbnRzLApvciBpbXBsZW1lbnQgdGhlIHNldF9wcmV0aW1lb3V0IGludGVyZmFj
+ZSBvbmx5IGFzIGEgcHJpbnQgcHJvbXB0LgpXaGF0IGRvIHlvdSB0aGluayBvZiBpdD8KClRoYW5r
+cywKUWluZwo+Cj4+ICAKPj4gIAkvKgo+PiAgCSAqIE9uZSBiaXQgaXMgdGhlIHZhbHVlIG9mIDUx
+MiB0aWNrcwo+PiAgCSAqIFRoZSBjbG9jayBoYXMgMzIgS0h6Cj4+ICAJICovCj4+IC0JcmVnID0g
+V0RUX0xFTkdUSF9USU1FT1VUKHRpbWVvdXQgPDwgNikgfCBXRFRfTEVOR1RIX0tFWTsKPj4gKwly
+ZWcgPSBXRFRfTEVOR1RIX1RJTUVPVVQodGltZW91dF9pbnRlcnZhbCA8PCA2KSB8IFdEVF9MRU5H
+VEhfS0VZOwo+PiAgCWlvd3JpdGUzMihyZWcsIHdkdF9iYXNlICsgV0RUX0xFTkdUSCk7Cj4+ICAK
+Pj4gIAltdGtfd2R0X3Bpbmcod2R0X2Rldik7Cj4+IEBAIC0yMzksMTMgKzI0NywyNSBAQCBzdGF0
+aWMgaW50IG10a193ZHRfc3RhcnQoc3RydWN0IHdhdGNoZG9nX2RldmljZSAqd2R0X2RldikKPj4g
+IAkJcmV0dXJuIHJldDsKPj4gIAo+PiAgCXJlZyA9IGlvcmVhZDMyKHdkdF9iYXNlICsgV0RUX01P
+REUpOwo+PiAtCXJlZyAmPSB+KFdEVF9NT0RFX0lSUV9FTiB8IFdEVF9NT0RFX0RVQUxfRU4pOwo+
+PiArCWlmICh3ZHRfZGV2LT5wcmV0aW1lb3V0KQo+PiArCQlyZWcgfD0gKFdEVF9NT0RFX0lSUV9F
+TiB8IFdEVF9NT0RFX0RVQUxfRU4pOwo+PiArCWVsc2UKPj4gKwkJcmVnICY9IH4oV0RUX01PREVf
+SVJRX0VOIHwgV0RUX01PREVfRFVBTF9FTik7Cj4+ICAJcmVnIHw9IChXRFRfTU9ERV9FTiB8IFdE
+VF9NT0RFX0tFWSk7Cj4+ICAJaW93cml0ZTMyKHJlZywgd2R0X2Jhc2UgKyBXRFRfTU9ERSk7Cj4+
+ICAKPj4gIAlyZXR1cm4gMDsKPj4gIH0KPj4gIAo+PiArc3RhdGljIGlycXJldHVybl90IG10a193
+ZHRfaXNyKGludCBpcnEsIHZvaWQgKmFyZykKPj4gK3sKPj4gKwlzdHJ1Y3Qgd2F0Y2hkb2dfZGV2
+aWNlICp3ZGQgPSBhcmc7Cj4+ICsKPj4gKwl3YXRjaGRvZ19ub3RpZnlfcHJldGltZW91dCh3ZGQp
+Owo+PiArCj4+ICsJcmV0dXJuIElSUV9IQU5ETEVEOwo+PiArfQo+PiArCj4+ICBzdGF0aWMgY29u
+c3Qgc3RydWN0IHdhdGNoZG9nX2luZm8gbXRrX3dkdF9pbmZvID0gewo+PiAgCS5pZGVudGl0eQk9
+IERSVl9OQU1FLAo+PiAgCS5vcHRpb25zCT0gV0RJT0ZfU0VUVElNRU9VVCB8Cj4+IEBAIC0yNTMs
+NiArMjczLDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgd2F0Y2hkb2dfaW5mbyBtdGtfd2R0X2lu
+Zm8gPSB7Cj4+ICAJCQkgIFdESU9GX01BR0lDQ0xPU0UsCj4+ICB9Owo+PiAgCj4+ICtzdGF0aWMg
+Y29uc3Qgc3RydWN0IHdhdGNoZG9nX2luZm8gbXRrX3dkdF9wdF9pbmZvID0gewo+PiArCS5pZGVu
+dGl0eQk9IERSVl9OQU1FLAo+PiArCS5vcHRpb25zCT0gV0RJT0ZfU0VUVElNRU9VVCB8Cj4+ICsJ
+CQkgIFdESU9GX1BSRVRJTUVPVVQgfAo+PiArCQkJICBXRElPRl9LRUVQQUxJVkVQSU5HIHwKPj4g
+KwkJCSAgV0RJT0ZfTUFHSUNDTE9TRSwKPj4gK307Cj4+ICsKPj4gIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgd2F0Y2hkb2dfb3BzIG10a193ZHRfb3BzID0gewo+PiAgCS5vd25lcgkJPSBUSElTX01PRFVM
+RSwKPj4gIAkuc3RhcnQJCT0gbXRrX3dkdF9zdGFydCwKPj4gQEAgLTI2Nyw3ICsyOTUsNyBAQCBz
+dGF0aWMgaW50IG10a193ZHRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPj4g
+IAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Owo+PiAgCXN0cnVjdCBtdGtfd2R0X2Rl
+diAqbXRrX3dkdDsKPj4gIAljb25zdCBzdHJ1Y3QgbXRrX3dkdF9kYXRhICp3ZHRfZGF0YTsKPj4g
+LQlpbnQgZXJyOwo+PiArCWludCBlcnIsIGlycTsKPj4gIAo+PiAgCW10a193ZHQgPSBkZXZtX2t6
+YWxsb2MoZGV2LCBzaXplb2YoKm10a193ZHQpLCBHRlBfS0VSTkVMKTsKPj4gIAlpZiAoIW10a193
+ZHQpCj4+IEBAIC0yNzksNyArMzA3LDIyIEBAIHN0YXRpYyBpbnQgbXRrX3dkdF9wcm9iZShzdHJ1
+Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiAgCWlmIChJU19FUlIobXRrX3dkdC0+d2R0X2Jh
+c2UpKQo+PiAgCQlyZXR1cm4gUFRSX0VSUihtdGtfd2R0LT53ZHRfYmFzZSk7Cj4+ICAKPj4gLQlt
+dGtfd2R0LT53ZHRfZGV2LmluZm8gPSAmbXRrX3dkdF9pbmZvOwo+PiArCWlycSA9IHBsYXRmb3Jt
+X2dldF9pcnEocGRldiwgMCk7Cj4+ICsJaWYgKGlycSA+IDApIHsKPj4gKwkJZXJyID0gZGV2bV9y
+ZXF1ZXN0X2lycSgmcGRldi0+ZGV2LCBpcnEsIG10a193ZHRfaXNyLCAwLCAid2R0X2JhcmsiLAo+
+PiArCQkJCQkJCSZtdGtfd2R0LT53ZHRfZGV2KTsKPj4gKwkJaWYgKGVycikKPj4gKwkJCXJldHVy
+biBlcnI7Cj4+ICsKPj4gKwkJbXRrX3dkdC0+d2R0X2Rldi5pbmZvID0gJm10a193ZHRfcHRfaW5m
+bzsKPj4gKwkJbXRrX3dkdC0+d2R0X2Rldi5wcmV0aW1lb3V0ID0gV0RUX01BWF9USU1FT1VULzI7
+Cj4+ICsJfSBlbHNlIHsKPj4gKwkJaWYgKGlycSA9PSAtRVBST0JFX0RFRkVSKQo+PiArCQkJcmV0
+dXJuIC1FUFJPQkVfREVGRVI7Cj4+ICsKPj4gKwkJbXRrX3dkdC0+d2R0X2Rldi5pbmZvID0gJm10
+a193ZHRfaW5mbzsKPj4gKwl9Cj4+ICsKPj4gIAltdGtfd2R0LT53ZHRfZGV2Lm9wcyA9ICZtdGtf
+d2R0X29wczsKPj4gIAltdGtfd2R0LT53ZHRfZGV2LnRpbWVvdXQgPSBXRFRfTUFYX1RJTUVPVVQ7
+Cj4+ICAJbXRrX3dkdC0+d2R0X2Rldi5tYXhfaHdfaGVhcnRiZWF0X21zID0gV0RUX01BWF9USU1F
+T1VUICogMTAwMDsKPj4gCj4KDQoNCg==
