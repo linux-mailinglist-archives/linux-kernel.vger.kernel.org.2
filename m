@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D03367E7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D4C367E73
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235828AbhDVKSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:18:03 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:47766 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235809AbhDVKSB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:18:01 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210422101725euoutp01eff765653d8366b59e97ea76166c07ac~4JrnUhy7n1728217282euoutp01C
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:17:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210422101725euoutp01eff765653d8366b59e97ea76166c07ac~4JrnUhy7n1728217282euoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619086645;
-        bh=P1yzkGOkcnvwxAl/j9BN4l/zvJWfv1wrbb1pE4xRYuM=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=RcUhcTXN1DSYB74xXQfJEQ4+3eU85kNobs/vbNmi9iZzthxc9sGKKvkt3Z2raapF7
-         /GwjJsy3H73qGhmh/3wxg2LEj7S7gQkWQJhFQvN65HmxyVbk6/HL2lfNuLnEhnRyYu
-         Dqi5/lnR+GHzuUsHlwBZtdhRlQcPpOXNigI83GEA=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210422101724eucas1p24cc33a8c94a8771cfe703895822760de~4JrmqwteE2135021350eucas1p2E;
-        Thu, 22 Apr 2021 10:17:24 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id CF.0B.09444.43D41806; Thu, 22
-        Apr 2021 11:17:24 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207~4Jrl9yJHG1714217142eucas1p1O;
-        Thu, 22 Apr 2021 10:17:24 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210422101724eusmtrp298a6611e5e2ac13712205d842e700acc~4Jrl86WF62586025860eusmtrp2K;
-        Thu, 22 Apr 2021 10:17:24 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-73-60814d34a820
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id AE.23.08705.33D41806; Thu, 22
-        Apr 2021 11:17:24 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210422101723eusmtip2d58a0b0baa6994b96081725352605b63~4JrlubzJW2583225832eusmtip27;
-        Thu, 22 Apr 2021 10:17:23 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH] hwrng: exynos - Fix runtime PM imbalance on error
-Date:   Thu, 22 Apr 2021 12:17:05 +0200
-Message-Id: <20210422101705.15617-1-l.stelmach@samsung.com>
-X-Mailer: git-send-email 2.26.2
+        id S235804AbhDVKRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:17:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:49446 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234773AbhDVKRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:17:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27A0811D4;
+        Thu, 22 Apr 2021 03:17:13 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25D053F774;
+        Thu, 22 Apr 2021 03:17:12 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 11:17:09 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Jon Medhurst (Tixy)" <tixy@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] firmware: arm_scpi: prevent ternary sign expansion bug
+Message-ID: <20210422101709.GF43717@e120937-lin>
+References: <YIE7pdqV/h10tEAK@mwanda>
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEKsWRmVeSWpSXmKPExsWy7djPc7omvo0JBk//GVtsnLGe1aL7lYzF
-        xrc/mCxuHlrBaLHp8TVWi/v3fjJZXN41h81ixvl9TBZrj9xlt1iwrY/RgctjVkMvm8e2A6oe
-        m5fUe/RtWcXo0fdyA6PH501yAWxRXDYpqTmZZalF+nYJXBmL9u9jLfjGVTH93Cr2BsZpnF2M
-        nBwSAiYS+9rXsncxcnEICaxglPhxdwcbhPOFUeLz40eMEM5nRomuV3OZYFq6Ju1igkgsZ5T4
-        NW02VMtzRonf558wg1SxCThK9C89wQqSEBGYxCSxct4PsFnMAvsYJXbemwJWJSzgJPH0dBuQ
-        zcHBIqAq0XMnHcTkFbCW2DHVD2KbvET78u1sIDavgKDEyZlPWEBsfgEtiTVN18FsZqCa5q2z
-        mUHGSwg84JC4+OwtO0Szi8Sh5l5GCFtY4tXxLVBxGYn/O+czgeySEKiXmDzJDKK3h1Fi25wf
-        LBA11hJ3zv1iA6lhFtCUWL9LHyLsKNE0fTIjRCufxI23ghAn8ElM2jadGSLMK9HRJgRRrSKx
-        rn8P1EApid5XK6CO8ZC4efgt0wRGxVlIHpuF5JlZCHsXMDKvYhRPLS3OTU8tNspLLdcrTswt
-        Ls1L10vOz93ECExGp/8d/7KDcfmrj3qHGJk4GA8xSnAwK4nwri1uSBDiTUmsrEotyo8vKs1J
-        LT7EKM3BoiTOm7RlTbyQQHpiSWp2ampBahFMlomDU6qBKf5K99Ir+fFrXdYnZdj1K/4IT1jp
-        tj7jpaK1+527NdylH9nEjKzn/FFibN+qXn23kuVt/t4VukrKD65pr3J9G3T6X7H9ifvz93e8
-        uaw2m2/q5cap0w4dnBbD/9uc0/B/6KrC9bFbdx52+/A88eH57NsHRG9l3r1Ze6yu5FD/6YcB
-        Wj/W5d68de7GnaUVB3bf0WiZuiu4Xb1hqozfsauyJ0NCCi8lexyYXjbvD8/KuBub24wD3+/N
-        6F0ts+g1Y0j/heRvNTU2vtbHYyp3B8/4omEZYLDf7fujOQ0XmJYudFM+w8Wte/7Vr/ViV0wr
-        467o3Nh6eJuDd6bN/vQnqkcl38eKvI9p+pGkNNPG8OKsuclKLMUZiYZazEXFiQA7EitGtQMA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsVy+t/xe7omvo0JBjOfM1psnLGe1aL7lYzF
-        xrc/mCxuHlrBaLHp8TVWi/v3fjJZXN41h81ixvl9TBZrj9xlt1iwrY/RgctjVkMvm8e2A6oe
-        m5fUe/RtWcXo0fdyA6PH501yAWxRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZG
-        pkr6djYpqTmZZalF+nYJehmL9u9jLfjGVTH93Cr2BsZpnF2MnBwSAiYSXZN2MXUxcnEICSxl
-        lNjyeC9rFyMHUEJKYuXcdIgaYYk/17rYQGwhgaeMEss7REBsNgFHif6lJ1hBekUEpjFJnF12
-        CsxhFtjHKLH/6GJ2kCphASeJp6fbmEGGsgioSvTcSQcxeQWsJXZM9YOYLy/Rvnw72HxeAUGJ
-        kzOfsICUMAuoS6yfJwQS5hfQkljTdJ0FxGYGKm/eOpt5AqPALCQdsxA6ZiGpWsDIvIpRJLW0
-        ODc9t9hQrzgxt7g0L10vOT93EyMwjrYd+7l5B+O8Vx/1DjEycTAeYpTgYFYS4V1b3JAgxJuS
-        WFmVWpQfX1Sak1p8iNEU6P6JzFKiyfnASM4riTc0MzA1NDGzNDC1NDNWEufdOndNvJBAemJJ
-        anZqakFqEUwfEwenVANTfxzfQqmSsqlOD9cdWvDy1RnW3jttHO5O2138s+rE+6WzXHO9ZBf/
-        dn+womBKvf+ZD4l2j3eFr1EVUyub+cop/eJUw7vnH7O8mnf16IoP657KpVtPYmB7eclZTX15
-        9Wqmr2frWH62HHx6UHmHyAam/2yhTMEmPG94Vq7rZixjlfqeUWB8ftmll6kRez9v7Wwp/r17
-        o9TvTZ3WTKcjRWra/WJPNxhri25Xcr5+3M/D9gqj78S1nOd2r8tW0frgIuIXcemH9Mp7Gy+n
-        TI3tazRllVLeMqNc5Xm98B2OJL/swpJ3zwLbU6vaZ893nPDex70kIfyo9s2Ip++/iRqdfcK+
-        pvyW2LTOuQIpN/ZITM9WYinOSDTUYi4qTgQARlr7viwDAAA=
-X-CMS-MailID: 20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207
-References: <CGME20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207@eucas1p1.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIE7pdqV/h10tEAK@mwanda>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a pairing decrement is needed
-on the error handling path to keep the counter balanced.
+Hi,
 
-Change-Id: I028915fbee9e4a050a1313119872d6043696632d
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
----
- drivers/char/hw_random/exynos-trng.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+On Thu, Apr 22, 2021 at 12:02:29PM +0300, Dan Carpenter wrote:
+> How type promotion works in ternary expressions is a bit tricky.
+> The problem is that scpi_clk_get_val() returns longs, "ret" is a int
+> which holds a negative error code, and le32_to_cpu() is an unsigned int.
+> We want the negative error code to be cast to a negative long.  But
+> because le32_to_cpu() is an u32 then "ret" is type promoted to u32 and
+> becomes a high positive and then it is promoted to long and it is still
+> a high positive value.
+> 
+> Fix this by getting rid of the ternary.
 
-diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
-index 8e1fe3f8dd2d..9f455d952e87 100644
---- a/drivers/char/hw_random/exynos-trng.c
-+++ b/drivers/char/hw_random/exynos-trng.c
-@@ -142,13 +142,13 @@ static int exynos_trng_probe(struct platform_device *pdev)
- 	if (IS_ERR(trng->clk)) {
- 		ret = PTR_ERR(trng->clk);
- 		dev_err(&pdev->dev, "Could not get clock.\n");
--		goto err_clock;
-+		goto err_pm_get;
- 	}
- 
- 	ret = clk_prepare_enable(trng->clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not enable the clk.\n");
--		goto err_clock;
-+		goto err_pm_get;
- 	}
- 
- 	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
-@@ -164,10 +164,8 @@ static int exynos_trng_probe(struct platform_device *pdev)
- err_register:
- 	clk_disable_unprepare(trng->clk);
- 
--err_clock:
--	pm_runtime_put_sync(&pdev->dev);
--
- err_pm_get:
-+	pm_runtime_put_noidle(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
- 	return ret;
--- 
-2.26.2
+I wonder how/if the callers up in the stack check/expect ever effectively for a
+2-complement negative value inside the returned unsigned long...given that this
+plugs finally into CLK framework struct clk_ops.recalc_rate via clk-scpi.c which
+also expects unsigned long....but that's another story.
 
+FWIW regarding this patch:
+
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+
+Thanks
+
+Cristian
+
+> 
+> Fixes: 8cb7cf56c9fe ("firmware: add support for ARM System Control and Power Interface(SCPI) protocol")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/firmware/arm_scpi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
+> index d0dee37ad522..3bf61854121d 100644
+> --- a/drivers/firmware/arm_scpi.c
+> +++ b/drivers/firmware/arm_scpi.c
+> @@ -552,8 +552,10 @@ static unsigned long scpi_clk_get_val(u16 clk_id)
+>  
+>  	ret = scpi_send_message(CMD_GET_CLOCK_VALUE, &le_clk_id,
+>  				sizeof(le_clk_id), &rate, sizeof(rate));
+> +	if (ret)
+> +		return ret;
+>  
+> -	return ret ? ret : le32_to_cpu(rate);
+> +	return le32_to_cpu(rate);
+>  }
+>  
+>  static int scpi_clk_set_val(u16 clk_id, unsigned long rate)
+> -- 
+> 2.30.2
+> 
