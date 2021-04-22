@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50BE3680F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D872C3680F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbhDVM6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:58:50 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35420 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhDVM6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:58:48 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lZYuI-0000Mv-QL; Thu, 22 Apr 2021 12:58:10 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] soc: qcom-geni-se: remove redundant initialization to variable line
-Date:   Thu, 22 Apr 2021 13:58:10 +0100
-Message-Id: <20210422125810.248166-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S236362AbhDVM7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:59:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230005AbhDVM7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:59:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CB661424;
+        Thu, 22 Apr 2021 12:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619096350;
+        bh=UjMAOd2UY1Y84zIa/x0wRbJZbLQX/kFg0f6APiYraiw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYosfNU8EEAgG1j3LOtzhMky4usmFyOUV5AG64cPFjg3fc2ckgRR4jVwbFa8ovqhJ
+         UZLs4iOOp4PExPkyrg0TcEsvGruBhtmNv6RWd47aRwCDsAlhmzFtTsgPzKWuTTA3PU
+         9Gye/+s1byQMhPz0jxz1PTJbnjmGdFZ2jhAJHmyncGDjD94tQPW4juXiBIZ3i3t7vB
+         53QrI9nt1RHgAgiqtteGS1Y+9zBVSyx1WK5R/nB8uC43DShl7QCL6seYgj/1dnH1YA
+         IE5VSvpDiIUPfQ2Vb504FmeFB0vK/Ghz/iOpj8Y3IUaRXndSBPDMb//++Z6hkLm/OP
+         AvLRfcDe3pA8Q==
+Date:   Thu, 22 Apr 2021 13:59:04 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Julien Grall <julien.grall@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH 1/3] arm64: armv8_deprecated: Fix swp_handler() signal
+ generation
+Message-ID: <20210422125903.GD1521@willie-the-truck>
+References: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Apr 20, 2021 at 04:50:12PM +0000, Liam Howlett wrote:
+> arm64_notify_segfault() was written to decide on the si_code from the
+> assembly emulation of the swp_handler(), but was also used for the
+> signal generation from failed access_ok() and unaligned instructions.
+> 
+> When access_ok() fails, there is no need to search for the offending
+> address in the VMA space.  Instead, simply set the error to SIGSEGV with
+> si_code SEGV_ACCERR.
+> 
+> Change the return code from emulate_swpX() when there is an unaligned
+> pointer so the caller can differentiate from the EFAULT.  It is
+> unnecessary to search the VMAs in the case of an unaligned pointer.
+> This change uses SIGSEGV and SEGV_ACCERR instead of SIGBUS to keep with
+> what was returned before.
+> 
+> Fixes: bd35a4adc413 (arm64: Port SWP/SWPB emulation support from arm)
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> ---
+>  arch/arm64/kernel/armv8_deprecated.c | 20 +++++++++++++-------
 
-The variable line being initialized with a value that is never read
-and it is being updated later with a new value. The initialization is
-redundant and can be removed.
+Can you give an example of something that is fixed by this, please? At first
+glance, it doesn't look like it changes the user-visible behaviour.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/tty/serial/qcom_geni_serial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We should also be compatible with arch/arm/ here (see set_segfault()).
 
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 99375d99f6fa..c5f2a4fa2bb1 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -1338,7 +1338,7 @@ static const struct uart_ops qcom_geni_uart_pops = {
- static int qcom_geni_serial_probe(struct platform_device *pdev)
- {
- 	int ret = 0;
--	int line = -1;
-+	int line;
- 	struct qcom_geni_serial_port *port;
- 	struct uart_port *uport;
- 	struct resource *res;
--- 
-2.30.2
-
+Will
