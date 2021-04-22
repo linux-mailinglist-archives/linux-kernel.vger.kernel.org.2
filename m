@@ -2,184 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B89367772
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66062367776
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbhDVCZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:25:58 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:44400 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234442AbhDVCZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:25:55 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT+5n3oBgwxoMAA--.4114S6;
-        Thu, 22 Apr 2021 10:25:12 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, Baoquan He <bhe@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jinyang He <hejinyang@loongson.cn>, kexec@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] mips: kdump: Reserve old memory to avoid the destruction of production kernel data
-Date:   Thu, 22 Apr 2021 10:24:34 +0800
-Message-Id: <1619058274-6996-5-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1619058274-6996-1-git-send-email-tangyouling@loongson.cn>
-References: <1619058274-6996-1-git-send-email-tangyouling@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxT+5n3oBgwxoMAA--.4114S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFWUKw1DZFyDCF4xAw17GFg_yoWrXFy5pr
-        4xG34SkF4DG3Z7W3yfA3s5uryrZa1S9FWjgrZrJr95Za18Arn3Zr10v3WSqry7KrWDCF1j
-        vF40qF1093y7AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBC14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4U
-        JVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7V
-        C0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j
-        6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr
-        1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWU
-        JVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7V
-        AKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42
-        IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUrCztUUUUU
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S234078AbhDVC34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:29:56 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:15116 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhDVC3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:29:53 -0400
+IronPort-SDR: FSYH2RRRl1t5f8BSD9MiwQ2Q4YvK8MlVffQp/6fxVYydPvKTnLp0vg0IM0S0X4cea3HRk+BBrL
+ ysfojmOm1yNiCmYeuUTAL4Xb0B61EZH68AjZ6NZJH8K6Q/vbOQNYWooHpXh1FuXmRSHxKRO15/
+ A/5n3S/cihFEd+L7NZ6z6yIWSiRZWcRWJPZ6XRMGUsSbqYJVBprEIBVTu0QEJFwIN4NoKDLi1A
+ qeXtnuWKl7OumUzfRAVUtrESWDMPztMVD4/A8KQMFgL4fhcyhEyGvArUDXf4G6FTxbSPJVRj5j
+ tqk=
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="47846209"
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by labrats.qualcomm.com with ESMTP; 21 Apr 2021 19:29:20 -0700
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 21 Apr 2021 19:29:19 -0700
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 3E9022115E; Wed, 21 Apr 2021 19:29:19 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v5 1/2] scsi: ufs: Introduce hba performance monitor sysfs nodes
+Date:   Wed, 21 Apr 2021 19:28:39 -0700
+Message-Id: <1619058521-35307-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1619058521-35307-1-git-send-email-cang@codeaurora.org>
+References: <1619058521-35307-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhc@lemote.com>
+Add a new sysfs group which has nodes to monitor data/request transfer
+performance. This sysfs group has nodes showing total sectors/requests
+transferred, total busy time spent and max/min/avg/sum latencies. This
+group can be enhanced later to show more UFS driver layer performance
+statistics data during runtime.
 
-Memory layout:
-
-+---------+ end_pfn(e0+128M)
-|         |
-+---------+ e0
-|         |
-|         |
-|         |
-+---------+ e1(crashk_res.start)
-|         |
-|         |
-|         |
-+---------+ s1(crashk_res.start)
-|         |
-+---------+ s0(start_pfn)
-
-[1] When producing the kernel:
-Reserve the crashkernel space through crashkernel="YM@XM", so that
-[s1, e1] is reserved for the capture kernel.
-
-If the available memory range is greater than 1G, an additional 128M
-range is reserved from top to bottom for the capture kernel (ie
-[e0, end_pfn] range). The advantage of this is that it can make more
-memory available to the capture kernel and avoid triggering insufficient
-memory, resulting in panic.
-
-[2] When capturing the kernel:
-Finally, the "mem=" parameter is automatically added through kexec-tools
-(the "mem=" parameter actually comes from the "crashkernel=" parameter,
-and the scope is the same).
-
-It is necessary to reserve the available memory area of the previous
-production kernel to avoid the captured data of the production kernel
-from being destroyed. If this area in the memory is not reserved, the
-captured data will be destroyed, the generated vmcore file is invalid
-and cannot be parsed by the crash-utility.
-
-[3] Only consider the memory situation of kdump operation as follows:
-1. Production kernel:
-memblock.reserve: [s1, e1] and [e0, end_pfn] (Memory is reserved)
-memblock.memory:  [s0, s1] and [e1, e0]      (Memory available)
-
-2. Capture kernel:
-memblock.reserve: [s0, s1] and [e1, e0]      (Memory is reserved)
-memblock.memory:  [s1, e1] and [e0, end_pfn] (Memory available)
-
-In conclusion，[s0, s1] and [e1, e0] memory areas should be reserved.
-
-Signed-off-by: Huacai Chen <chenhuacai@kernel.org>
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Signed-off-by: Can Guo <cang@codeaurora.org>
 ---
-v2:
- - New patch.
+ drivers/scsi/ufs/ufs-sysfs.c | 237 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshcd.c    |  62 +++++++++++
+ drivers/scsi/ufs/ufshcd.h    |  21 ++++
+ 3 files changed, 320 insertions(+)
 
- arch/mips/kernel/setup.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index af2c860..aa89f28 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -55,6 +55,8 @@ EXPORT_SYMBOL(cpu_data);
- struct screen_info screen_info;
- #endif
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index acc54f5..348df0e 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -278,6 +278,242 @@ static const struct attribute_group ufs_sysfs_default_group = {
+ 	.attrs = ufs_sysfs_ufshcd_attrs,
+ };
  
-+static phys_addr_t crashmem_start, crashmem_size;
++static ssize_t monitor_enable_show(struct device *dev,
++				   struct device_attribute *attr, char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
 +
- /*
-  * Setup information
-  *
-@@ -367,6 +369,11 @@ static int __init early_parse_mem(char *p)
- 
- 	memblock_add_node(start, size, pa_to_nid(start));
- 
-+	if (strstr(boot_command_line, "elfcorehdr") && start && size) {
-+		crashmem_start = start;
-+		crashmem_size = size;
++	return sysfs_emit(buf, "%d\n", hba->monitor.enabled);
++}
++
++static ssize_t monitor_enable_store(struct device *dev,
++				    struct device_attribute *attr,
++				    const char *buf, size_t count)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	unsigned long value, flags;
++
++	if (kstrtoul(buf, 0, &value))
++		return -EINVAL;
++
++	value = !!value;
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (value == hba->monitor.enabled)
++		goto out_unlock;
++
++	if (!value) {
++		memset(&hba->monitor, 0, sizeof(hba->monitor));
++	} else {
++		hba->monitor.enabled = true;
++		hba->monitor.enabled_ts = ktime_get();
 +	}
 +
- 	return 0;
- }
- early_param("mem", early_parse_mem);
-@@ -525,6 +532,36 @@ static void reserve_crashm_region(int node, unsigned long s0, unsigned long e0)
- }
- #endif /* !defined(CONFIG_KEXEC)  */
- 
-+/*
-+ * After the kdump operation is performed to enter the capture kernel, the
-+ * memory area used by the previous production kernel should be reserved to
-+ * avoid destroy to the captured data.
-+ */
-+static void reserve_oldmem_region(int node, unsigned long s0, unsigned long e0)
++out_unlock:
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	return count;
++}
++
++static ssize_t monitor_chunk_size_show(struct device *dev,
++				   struct device_attribute *attr, char *buf)
 +{
-+	unsigned long s1, e1;
++	struct ufs_hba *hba = dev_get_drvdata(dev);
 +
-+	if (!is_kdump_kernel())
-+		return;
++	return sysfs_emit(buf, "%lu\n", hba->monitor.chunk_size);
++}
 +
-+	if ((e0 - s0) > (SZ_1G >> PAGE_SHIFT))
-+		e0 = e0 - (SZ_128M >> PAGE_SHIFT);
++static ssize_t monitor_chunk_size_store(struct device *dev,
++				    struct device_attribute *attr,
++				    const char *buf, size_t count)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	unsigned long value, flags;
 +
-+	/* crashmem_start is crashk_res reserved by primary production kernel */
-+	s1 = PFN_UP(crashmem_start);
-+	e1 = PFN_DOWN(crashmem_start + crashmem_size);
++	if (kstrtoul(buf, 0, &value))
++		return -EINVAL;
 +
-+	if (s1 == 0)
-+		return;
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	/* Only allow chunk size change when monitor is disabled */
++	if (!hba->monitor.enabled)
++		hba->monitor.chunk_size = value;
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	return count;
++}
 +
-+	if (node == 0) {
-+		memblock_reserve(PFN_PHYS(s0), (s1 - s0) << PAGE_SHIFT);
-+		memblock_reserve(PFN_PHYS(e1), (e0 - e1) << PAGE_SHIFT);
-+	} else {
-+		memblock_reserve(PFN_PHYS(s0), (e0 - s0) << PAGE_SHIFT);
++static ssize_t read_total_sectors_show(struct device *dev,
++				       struct device_attribute *attr, char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%lu\n", hba->monitor.nr_sec_rw[READ]);
++}
++
++static ssize_t read_total_busy_show(struct device *dev,
++				    struct device_attribute *attr, char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.total_busy[READ]));
++}
++
++static ssize_t read_nr_requests_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%lu\n", hba->monitor.nr_req[READ]);
++}
++
++static ssize_t read_req_latency_avg_show(struct device *dev,
++					 struct device_attribute *attr,
++					 char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	struct ufs_hba_monitor *m = &hba->monitor;
++
++	return sysfs_emit(buf, "%llu\n", div_u64(ktime_to_us(m->lat_sum[READ]),
++						 m->nr_req[READ]));
++}
++
++static ssize_t read_req_latency_max_show(struct device *dev,
++					 struct device_attribute *attr,
++					 char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.lat_max[READ]));
++}
++
++static ssize_t read_req_latency_min_show(struct device *dev,
++					 struct device_attribute *attr,
++					 char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.lat_min[READ]));
++}
++
++static ssize_t read_req_latency_sum_show(struct device *dev,
++					 struct device_attribute *attr,
++					 char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.lat_sum[READ]));
++}
++
++static ssize_t write_total_sectors_show(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%lu\n", hba->monitor.nr_sec_rw[WRITE]);
++}
++
++static ssize_t write_total_busy_show(struct device *dev,
++				     struct device_attribute *attr, char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.total_busy[WRITE]));
++}
++
++static ssize_t write_nr_requests_show(struct device *dev,
++				      struct device_attribute *attr, char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%lu\n", hba->monitor.nr_req[WRITE]);
++}
++
++static ssize_t write_req_latency_avg_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	struct ufs_hba_monitor *m = &hba->monitor;
++
++	return sysfs_emit(buf, "%llu\n", div_u64(ktime_to_us(m->lat_sum[WRITE]),
++						 m->nr_req[WRITE]));
++}
++
++static ssize_t write_req_latency_max_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.lat_max[WRITE]));
++}
++
++static ssize_t write_req_latency_min_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.lat_min[WRITE]));
++}
++
++static ssize_t write_req_latency_sum_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++
++	return sysfs_emit(buf, "%llu\n",
++			  ktime_to_us(hba->monitor.lat_sum[WRITE]));
++}
++
++static DEVICE_ATTR_RW(monitor_enable);
++static DEVICE_ATTR_RW(monitor_chunk_size);
++static DEVICE_ATTR_RO(read_total_sectors);
++static DEVICE_ATTR_RO(read_total_busy);
++static DEVICE_ATTR_RO(read_nr_requests);
++static DEVICE_ATTR_RO(read_req_latency_avg);
++static DEVICE_ATTR_RO(read_req_latency_max);
++static DEVICE_ATTR_RO(read_req_latency_min);
++static DEVICE_ATTR_RO(read_req_latency_sum);
++static DEVICE_ATTR_RO(write_total_sectors);
++static DEVICE_ATTR_RO(write_total_busy);
++static DEVICE_ATTR_RO(write_nr_requests);
++static DEVICE_ATTR_RO(write_req_latency_avg);
++static DEVICE_ATTR_RO(write_req_latency_max);
++static DEVICE_ATTR_RO(write_req_latency_min);
++static DEVICE_ATTR_RO(write_req_latency_sum);
++
++static struct attribute *ufs_sysfs_monitor_attrs[] = {
++	&dev_attr_monitor_enable.attr,
++	&dev_attr_monitor_chunk_size.attr,
++	&dev_attr_read_total_sectors.attr,
++	&dev_attr_read_total_busy.attr,
++	&dev_attr_read_nr_requests.attr,
++	&dev_attr_read_req_latency_avg.attr,
++	&dev_attr_read_req_latency_max.attr,
++	&dev_attr_read_req_latency_min.attr,
++	&dev_attr_read_req_latency_sum.attr,
++	&dev_attr_write_total_sectors.attr,
++	&dev_attr_write_total_busy.attr,
++	&dev_attr_write_nr_requests.attr,
++	&dev_attr_write_req_latency_avg.attr,
++	&dev_attr_write_req_latency_max.attr,
++	&dev_attr_write_req_latency_min.attr,
++	&dev_attr_write_req_latency_sum.attr,
++	NULL
++};
++
++static const struct attribute_group ufs_sysfs_monitor_group = {
++	.name = "monitor",
++	.attrs = ufs_sysfs_monitor_attrs,
++};
++
+ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
+ 				  enum desc_idn desc_id,
+ 				  u8 desc_index,
+@@ -881,6 +1117,7 @@ static const struct attribute_group ufs_sysfs_attributes_group = {
+ 
+ static const struct attribute_group *ufs_sysfs_groups[] = {
+ 	&ufs_sysfs_default_group,
++	&ufs_sysfs_monitor_group,
+ 	&ufs_sysfs_device_descriptor_group,
+ 	&ufs_sysfs_interconnect_descriptor_group,
+ 	&ufs_sysfs_geometry_descriptor_group,
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 80620c8..6da1da8 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2028,6 +2028,64 @@ static void ufshcd_clk_scaling_update_busy(struct ufs_hba *hba)
+ 		scaling->is_busy_started = false;
+ 	}
+ }
++
++static inline int ufshcd_monitor_opcode2dir(u8 opcode)
++{
++	if (opcode == READ_6 || opcode == READ_10 || opcode == READ_16)
++		return READ;
++	else if (opcode == WRITE_6 || opcode == WRITE_10 || opcode == WRITE_16)
++		return WRITE;
++	else
++		return -EINVAL;
++}
++
++static inline bool ufshcd_should_inform_monitor(struct ufs_hba *hba,
++						struct ufshcd_lrb *lrbp)
++{
++	struct ufs_hba_monitor *m = &hba->monitor;
++
++	return (m->enabled && lrbp && lrbp->cmd &&
++		(!m->chunk_size || m->chunk_size == lrbp->cmd->sdb.length) &&
++		ktime_before(hba->monitor.enabled_ts, lrbp->issue_time_stamp));
++}
++
++static void ufshcd_start_monitor(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	int dir = ufshcd_monitor_opcode2dir(*lrbp->cmd->cmnd);
++
++	if (dir >= 0 && hba->monitor.nr_queued[dir]++ == 0)
++		hba->monitor.busy_start_ts[dir] = ktime_get();
++}
++
++static void ufshcd_update_monitor(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	int dir = ufshcd_monitor_opcode2dir(*lrbp->cmd->cmnd);
++
++	if (dir >= 0 && hba->monitor.nr_queued[dir] > 0) {
++		struct request *req = lrbp->cmd->request;
++		struct ufs_hba_monitor *m = &hba->monitor;
++		ktime_t now, inc, lat;
++
++		now = lrbp->compl_time_stamp;
++		inc = ktime_sub(now, m->busy_start_ts[dir]);
++		m->total_busy[dir] = ktime_add(m->total_busy[dir], inc);
++		m->nr_sec_rw[dir] += blk_rq_sectors(req);
++
++		/* Update latencies */
++		m->nr_req[dir]++;
++		lat = ktime_sub(now, lrbp->issue_time_stamp);
++		m->lat_sum[dir] += lat;
++		if (m->lat_max[dir] < lat || !m->lat_max[dir])
++			m->lat_max[dir] = lat;
++		if (m->lat_min[dir] > lat || !m->lat_min[dir])
++			m->lat_min[dir] = lat;
++
++		m->nr_queued[dir]--;
++		/* Push forward the busy start of monitor */
++		m->busy_start_ts[dir] = now;
 +	}
 +}
 +
- static void __init check_kernel_sections_mem(void)
- {
- 	phys_addr_t start = __pa_symbol(&_text);
-@@ -696,6 +733,7 @@ static void __init arch_mem_init(char **cmdline_p)
- 	for_each_online_node(node) {
- 		get_pfn_range_for_nid(node, &start_pfn, &end_pfn);
- 		reserve_crashm_region(node, start_pfn, end_pfn);
-+		reserve_oldmem_region(node, start_pfn, end_pfn);
- 	}
+ /**
+  * ufshcd_send_command - Send SCSI or device management commands
+  * @hba: per adapter instance
+@@ -2044,6 +2102,8 @@ void ufshcd_send_command(struct ufs_hba *hba, unsigned int task_tag)
+ 	ufshcd_add_command_trace(hba, task_tag, UFS_CMD_SEND);
+ 	ufshcd_clk_scaling_start_busy(hba);
+ 	__set_bit(task_tag, &hba->outstanding_reqs);
++	if (unlikely(ufshcd_should_inform_monitor(hba, lrbp)))
++		ufshcd_start_monitor(hba, lrbp);
+ 	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TRANSFER_REQ_DOOR_BELL);
+ 	/* Make sure that doorbell is committed immediately */
+ 	wmb();
+@@ -5098,6 +5158,8 @@ static void __ufshcd_transfer_req_compl(struct ufs_hba *hba,
+ 		lrbp->compl_time_stamp = ktime_get();
+ 		cmd = lrbp->cmd;
+ 		if (cmd) {
++			if (unlikely(ufshcd_should_inform_monitor(hba, lrbp)))
++				ufshcd_update_monitor(hba, lrbp);
+ 			ufshcd_add_command_trace(hba, index, UFS_CMD_COMP);
+ 			result = ufshcd_transfer_rsp_status(hba, lrbp);
+ 			scsi_dma_unmap(cmd);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 18e56c1..2bfe20e 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -645,6 +645,25 @@ struct ufs_hba_variant_params {
+ 	u32 wb_flush_threshold;
+ };
  
- 	device_tree_init();
++struct ufs_hba_monitor {
++	unsigned long chunk_size;
++
++	unsigned long nr_sec_rw[2];
++	ktime_t total_busy[2];
++
++	unsigned long nr_req[2];
++	/* latencies*/
++	ktime_t lat_sum[2];
++	ktime_t lat_max[2];
++	ktime_t lat_min[2];
++
++	u32 nr_queued[2];
++	ktime_t busy_start_ts[2];
++
++	ktime_t enabled_ts;
++	bool enabled;
++};
++
+ /**
+  * struct ufs_hba - per adapter private structure
+  * @mmio_base: UFSHCI base register address
+@@ -832,6 +851,8 @@ struct ufs_hba {
+ 	struct request_queue	*bsg_queue;
+ 	struct delayed_work rpm_dev_flush_recheck_work;
+ 
++	struct ufs_hba_monitor	monitor;
++
+ #ifdef CONFIG_SCSI_UFS_CRYPTO
+ 	union ufs_crypto_capabilities crypto_capabilities;
+ 	union ufs_crypto_cap_entry *crypto_cap_array;
 -- 
-2.1.0
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
