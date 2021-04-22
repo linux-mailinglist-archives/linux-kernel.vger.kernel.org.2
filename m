@@ -2,71 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 843A3367E2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA61F367E34
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbhDVJzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:55:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:49222 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhDVJzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:55:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C9B211D4;
-        Thu, 22 Apr 2021 02:55:18 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDC8C3F774;
-        Thu, 22 Apr 2021 02:55:15 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
-        yu.c.chen@intel.com
-Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8% regression
-In-Reply-To: <20210422074742.GE31382@xsang-OptiPlex-9020>
-References: <20210414052151.GB21236@xsang-OptiPlex-9020> <87im4on5u5.mognet@arm.com> <20210421032022.GA13430@xsang-OptiPlex-9020> <87bla8ue3e.mognet@arm.com> <20210422074742.GE31382@xsang-OptiPlex-9020>
-Date:   Thu, 22 Apr 2021 10:55:10 +0100
-Message-ID: <87wnsutzi9.mognet@arm.com>
+        id S235713AbhDVJ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235611AbhDVJ7J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 05:59:09 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1F7C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:58:34 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id z25so10620206qtn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sVnJbmEkfxXnJEPDJlf6F38sWKPScLpz9CDnrIopbyM=;
+        b=TYedG1fJacOD+Bb2QwT7pOSedLhckqpyaM0TQ7zNMtmFymonWhNGx6n+SCybHM7wQl
+         vzx52vqKLK2h2i8TmhMnXI++DcjCn1EAiUxqh9sg1tH/d3AlIfExRhooaIjGLQBAnjnC
+         rvoWcAkXVIyMev4qGuGtMx7TPcNrWFp+eM9oSuZxLs8AiXK3a44jiCgz6BoZ4WaxJ3T0
+         TTFULShEdpyq7JmNnZHkA+XUvZ4KpularJ70h7K9j+jFEXywTLkrQ+EzalCs5xrXM7Cf
+         NX1wuP05h8WWOFsFbC0ezeu8OfwoGi/IQnL5GGHJWZQsA4I7qjQmR+XSD12pyKINfFnd
+         aGnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sVnJbmEkfxXnJEPDJlf6F38sWKPScLpz9CDnrIopbyM=;
+        b=W+Q9uRMOoLRI065lCeEQDJMohC+L3gNqfYcmIXLq7g6Juigv7r8OZCQ0ojm2SAeuWS
+         QZOY9LwtWTAiRF5/rm6wNZ6VFYBfY6NdIMwL48VJVuu/UPr1E4tc37oELD0slo4pc7x7
+         7gCdL4NPPRJHo7hy7CYLPPLfE9iTXNgd+qHpmypcY0J/vrf+EFBvIZQYUhq2CbJ/aRFU
+         EKB29hy21uTiviRGo4Ph5UU6Sn9aUAXJ304Xk1daIPRj80DDxTD5AA0R/49khjgjN4/o
+         TP+82OCVjV15szDXPTvLbYqNbNqOSZcloCjhtsU5XwOcGgiDbaS0OByg4wALd57s6tof
+         LKpw==
+X-Gm-Message-State: AOAM531I1GvLrYdH1VTwjJMqaC/rne6eMvsVcEcCmQeVS0eaSBjc960i
+        z2JfJ1KSbp7HKkY15fGe1PKciGkgreg84n1v84oOUw==
+X-Google-Smtp-Source: ABdhPJyJ8oT1MqeUdOl5WYqQqJBPncgbwFNVWPDlaBH7Gtho0a7YHGMvC3uCjojGUnpUotMf6LpoilEeGPbiM39X5EM=
+X-Received: by 2002:ac8:5c92:: with SMTP id r18mr2284877qta.66.1619085513632;
+ Thu, 22 Apr 2021 02:58:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CGME20210422081531epcas5p23d6c72ebf28a23b2efc150d581319ffa@epcas5p2.samsung.com>
+ <1619079317-1131-1-git-send-email-maninder1.s@samsung.com>
+In-Reply-To: <1619079317-1131-1-git-send-email-maninder1.s@samsung.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 22 Apr 2021 11:58:22 +0200
+Message-ID: <CACT4Y+azDLjbNH0A8_G-yG4qg964f-sGiBNvfatYuTk5aBu9aw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/kasan: avoid duplicate KASAN issues from reporting
+To:     Maninder Singh <maninder1.s@samsung.com>
+Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        Vaneet Narang <v.narang@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 15:47, Oliver Sang wrote:
-> hi, Valentin Schneider,
+On Thu, Apr 22, 2021 at 11:17 AM Maninder Singh <maninder1.s@samsung.com> wrote:
 >
-> On Wed, Apr 21, 2021 at 11:27:49AM +0100, Valentin Schneider wrote:
->> On 21/04/21 11:20, Oliver Sang wrote:
->> > what's the machine model you used upon which the regression cannot be reproduced?
->> > we could check if we have similar model then re-check on the our machine.
->> >
->> 
->> I tested this on:
->> o Ampere eMAG (arm64, 32 cores)
->> o 2-socket Xeon E5-2690 (x86, 40 cores)
->> 
->> and found at worse a -0.3% regression and at best a 2% improvement. I know
->> that x86 box is somewhat ancient, but it's been my go-to "have I broken
->> x86?" test victim for a while :-)
+> when KASAN multishot is ON and some buggy code hits same code path
+> of KASAN issue repetetively, it can flood logs on console.
 >
-> we don't have exactly 2-socket Xeon E5-2690 model, but we have one:
-> Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz (2-socket, 48 cores with 112G memory)
-> the test on it shows the regression is existing, too. but smaller (-5.3%)
-> hope it's helpful
+> Check for allocaton, free and backtrace path at time of KASAN error,
+> if these are same then it is duplicate error and avoid these prints
+> from KASAN.
 >
+> Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> ---
+>  mm/kasan/kasan.h  |  6 +++++
+>  mm/kasan/report.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 73 insertions(+)
+>
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 78cf99247139..d14ccce246ba 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -102,6 +102,12 @@ struct kasan_access_info {
+>         unsigned long ip;
+>  };
+>
+> +struct kasan_record {
+> +       depot_stack_handle_t    bt_handle;
+> +       depot_stack_handle_t    alloc_handle;
+> +       depot_stack_handle_t    free_handle;
+> +};
 
-It is, thank you for trying this out on another system and figuring out
-it's still visible! I'll go find myself some other x86 box and dig into it;
-I'd rather not leave this hanging for too long.
+Hi Maninder,
+
+There is no need to declare this in the header, it can be declared
+more locally in report.h.
+
+> +
+>  /* The layout of struct dictated by compiler */
+>  struct kasan_source_location {
+>         const char *filename;
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 87b271206163..4576de76991b 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -39,6 +39,10 @@ static unsigned long kasan_flags;
+>  #define KASAN_BIT_REPORTED     0
+>  #define KASAN_BIT_MULTI_SHOT   1
+>
+> +#define MAX_RECORDS            (200)
+
+s/MAX_RECORDS/KASAN_MAX_RECORDS/
+
+> +static struct kasan_record kasan_records[MAX_RECORDS];
+
+Since all fields in kasan_record are stack handles, the code will be
+simpler and more uniform, if we store just an array of handles w/o
+distinguishing between alloc/free/access.
+
+> +static int stored_kasan_records;
+> +
+>  bool kasan_save_enable_multi_shot(void)
+>  {
+>         return test_and_set_bit(KASAN_BIT_MULTI_SHOT, &kasan_flags);
+> @@ -360,6 +364,65 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
+>         end_report(&flags, (unsigned long)object);
+>  }
+>
+> +/*
+> + * @save_report()
+> + *
+> + * returns false if same record is already saved.
+
+s/same/the same/
+
+> + * returns true if its new record and saved in database of KASAN.
+
+s/its/it's/
+s/database/the database/
+
+> + */
+> +static bool save_report(void *addr, struct kasan_access_info *info, u8 tag, unsigned long *flags)
+> +{
+> +       struct kasan_record record = {0};
+> +       depot_stack_handle_t bt_handle;
+> +       int i = 0;
+> +       const char *bug_type;
+> +       struct kasan_alloc_meta *alloc_meta;
+> +       struct kasan_track *free_track;
+> +       struct page *page;
+> +       bool ret = true;
+> +
+> +       kasan_disable_current();
+> +       spin_lock_irqsave(&report_lock, *flags);
+
+Reusing the caller flags looks strange, do we need it?
+But also the very next function start_report() also does the same
+dance: kasan_disable_current/spin_lock_irqsave. It feels reasonable to
+lock once, check for dups and return early if it's a dup.
+
+> +       bug_type = kasan_get_bug_type(info);
+> +       page = kasan_addr_to_page(addr);
+> +       bt_handle = kasan_save_stack(GFP_KERNEL);
+
+ASsign directly to record.bt_handle.
+
+> +       if (page && PageSlab(page)) {
+> +               struct kmem_cache *cache = page->slab_cache;
+> +               void *object = nearest_obj(cache, page, addr);
+
+Since you already declare new var in this block, move
+alloc_meta/free_track here as well.
+
+> +
+> +               alloc_meta = kasan_get_alloc_meta(cache, object);
+> +               free_track = kasan_get_free_track(cache, object, tag);
+> +               record.alloc_handle = alloc_meta->alloc_track.stack;
+> +               if (free_track)
+> +                       record.free_handle = free_track->stack;
+> +       }
+> +
+> +       record.bt_handle = bt_handle;
+> +
+> +       for (i = 0; i < stored_kasan_records; i++) {
+> +               if (record.bt_handle != kasan_records[i].bt_handle)
+> +                       continue;
+> +               if (record.alloc_handle != kasan_records[i].alloc_handle)
+> +                       continue;
+> +               if (!strncmp("use-after-free", bug_type, 15) &&
+
+Comparing strings is unreliable and will break in future. Compare
+handle with 0 instead, you already assume that 0 handle is "no
+handle".
+
+> +                       (record.free_handle != kasan_records[i].free_handle))
+> +                       continue;
+> +
+> +               ret = false;
+> +               goto done;
+> +       }
+> +
+> +       memcpy(&kasan_records[stored_kasan_records], &record, sizeof(struct kasan_record));
+> +       stored_kasan_records++;
+
+I think you just introduced an out-of-bounds write into KASAN, check
+for MAX_RECORDS ;)
+
+
+> +
+> +done:
+> +       spin_unlock_irqrestore(&report_lock, *flags);
+> +       kasan_enable_current();
+> +       return ret;
+> +}
+> +
+>  static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>                                 unsigned long ip)
+>  {
+> @@ -388,6 +451,10 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+>         info.is_write = is_write;
+>         info.ip = ip;
+>
+> +       if (addr_has_metadata(untagged_addr) &&
+
+Why addr_has_metadata check?
+The kernel will probably crash later anyway, but from point of view of
+this code, I don't see reasons to not dedup wild accesses.
+
+> +               !save_report(untagged_addr, &info, get_tag(tagged_addr), &flags))
+> +               return;
+> +
+>         start_report(&flags);
+>
+>         print_error_description(&info);
+> --
+> 2.17.1
+>
