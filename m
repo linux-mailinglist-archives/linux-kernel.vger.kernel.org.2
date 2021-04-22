@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC41367FFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B056367FF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236321AbhDVMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:04:43 -0400
-Received: from relay.smtp-ext.broadcom.com ([192.19.11.229]:60400 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235957AbhDVMEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:04:40 -0400
-X-Greylist: delayed 518 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 08:04:39 EDT
-Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 4DCEF40247;
-        Thu, 22 Apr 2021 04:55:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4DCEF40247
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1619092526;
-        bh=MJmqiV41U2U+lf1iaOAaPzOCORxFhqxk4vA0mywDQtQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=KdYxDWdEoeaJus0kWM1LfP5vphdVFNFOSHN4P+Cra42bgPbRoGlq3z6Inlg4Y8Z1j
-         7R+ZIN+zYgQ5Jb/78V4RMEzPiDy5CDS9smGwZZXuVGIvvUjaZkjZW6KjqB/DTXYsdu
-         eqg8ZIAdTFJng/9e+DDjFdPZOktgP8AGCxucN7Y8=
-Received: from [10.230.42.155] (unknown [10.230.42.155])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 9DF831874BD;
-        Thu, 22 Apr 2021 04:55:20 -0700 (PDT)
-Subject: Re: [PATCH] brcmfmac: Avoid GFP_ATOMIC when GFP_KERNEL is enough
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, chi-hsien.lin@infineon.com,
-        wright.feng@infineon.com, chung-hsien.hsu@infineon.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <b6e619415db4ee5de95389280d7195bb56e45f77.1618860716.git.christophe.jaillet@wanadoo.fr>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <e6f6acff-8ae8-f098-db91-8ebba9726ebc@broadcom.com>
-Date:   Thu, 22 Apr 2021 13:55:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S236081AbhDVMCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235957AbhDVMCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:02:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E03D861164;
+        Thu, 22 Apr 2021 12:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619092925;
+        bh=rkCq6YOyLHab1KE6vI7NiCXSOcxoEXY9r+QmW7Dd6DE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XpIdIxw0hzCja5ovJ6LOCRuVYlPr9Bzbsk1Fz6YCfMyFMk1hJNSY/ls3vhmcVpstc
+         U1iVTyg5FBOXsfNayGUx4ssoaNiASgxQUW1zmb0+Yofan5d3N7VF9kx4jO9cGCv0Cu
+         pD9rv43vWfQr+Vjtqvy37ebs023Bl3FehjVals2cpf9E5T18ZEOvVDOOW/13RKYFT0
+         PvVcIBvcIAfNk5Kf/Qrs05F+a9Tunmn4kG3rkvq5fE9g5shY6Y7/yaRaoGOtI4wDze
+         STc1mNvzRMhzaJJFr7u5Zv6Z5AC7I0/fuZ3YF/GKlpdwQFjB/+U0bFaIje9XInq4y3
+         KlBCP6DI+0cVw==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [PATCH 0/8] tick/nohz updates v2
+Date:   Thu, 22 Apr 2021 14:01:50 +0200
+Message-Id: <20210422120158.33629-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <b6e619415db4ee5de95389280d7195bb56e45f77.1618860716.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-04-2021 21:35, Christophe JAILLET wrote:
-> A workqueue is not atomic, so constraints can be relaxed here.
-> GFP_KERNEL can be used instead of GFP_ATOMIC.
+This set brings various interrupts reducing while running in nohz_full:
 
-Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+* Remove one tick interrupt while waking up from idle to a user task
+  running in nohz_full mode. (thanks Yunfeng Ye).
+
+* Reduce IPIs when running posix cpu timers, only relevant tasks should
+  be interrupted now instead of all tick nohz CPUs (thanks Marcelo)
+
+And a few other cleanups and improvement.
+
+Changes since last take:
+
+- Remove "tick/nohz: Prevent tick_nohz_get_sleep_length() from returning negative value"
+  since the issue has been solve on the cpuidle side.
+
+- Remove "timer: Report ignored local enqueue in nohz mode"
+  and hope that objtool will spot the future offenders.
+
+- Changed "tick/nohz: Add tick_nohz_full_this_cpu()" and provide with
+  "tick/nohz: Evaluate the CPU expression after the static key" (please
+  add your SOB on this one).
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	timers/nohz-v2
+
+HEAD: 4546d43a9938f6c7eec024f005cb240b8b73637b
+
+Thanks,
+	Frederic
+---
+
+Frederic Weisbecker (3):
+      tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+      tick/nohz: Update nohz_full Kconfig help
+      tick/nohz: Only wakeup a single target cpu when kicking a task
+
+Marcelo Tosatti (2):
+      tick/nohz: Change signal tick dependency to wakeup CPUs of member tasks
+      tick/nohz: Kick only _queued_ task whose tick dependency is updated
+
+Yunfeng Ye (2):
+      tick/nohz: Conditionally restart tick on idle exit
+      tick/nohz: Update idle_exittime on actual idle exit
+
+Peter Zijlstra (1):
+      tick/nohz: Evaluate the CPU expression after the static key
+
+
+ include/linux/sched.h          |   2 +
+ include/linux/tick.h           |  26 +++++----
+ kernel/sched/core.c            |   5 ++
+ kernel/time/Kconfig            |  11 ++--
+ kernel/time/posix-cpu-timers.c |   4 +-
+ kernel/time/tick-sched.c       | 122 +++++++++++++++++++++++++++++------------
+ 6 files changed, 117 insertions(+), 53 deletions(-)
