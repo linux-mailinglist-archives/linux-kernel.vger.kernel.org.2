@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C21367A12
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AC1367A19
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234869AbhDVGoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S234898AbhDVGpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhDVGoo (ORCPT
+        with ESMTP id S229547AbhDVGpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:44:44 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F045BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:44:09 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id z1so50107905ybf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:44:09 -0700 (PDT)
+        Thu, 22 Apr 2021 02:45:31 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05AFC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:44:57 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id f7-20020a0562141d27b029019a6fd0a183so15225113qvd.23
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gKq7UYoOSXgKxRcRDCrnBQBW0R0+/HzGQMv1jLYzZ5E=;
-        b=Rbo5NtMvsmOiDCI5wGzUZG7Cx3weSWIyWVAqMvlEY5pQ3dIVHjUEL/lfPaq1u6nx1m
-         YasAzRo0LgycAKz8t8r49d/C4O4vM5ePvNes9asR548snpcTtg4U8HfDk7MW5FbF7bZi
-         yJYCcFHxWvDGHqfAOZlEQAHpNMttcPC3heEB+9bzA5VAAIjFHMbFTxY589mlZzPyBrG2
-         swNZ7iurbtdo9hxyWdbIvUM9YNoCM9L9zwga8BLpPFsg+dHNnYNOf+rdqJQ0IwloIcgl
-         zRYfdUDUkGcFRfpgpQoU/n0k070/p7H3Ctfk/j5UgGSz/xNVe+CVd62xa1QOJ+2AVCgp
-         op1A==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=l+qKKt5CthNo7gsKeiDmyb/kZ1TcAtPvmD2Gk6Cbjnk=;
+        b=b1iMBV9GjdZUYj2yI91PEybzTlsso3VQDe8xFMroa8ouR/ttvj3knfM95AcNp1o84N
+         g3TViOskADOkMIRz01ZVq4DUjQZyZYMngikbAuJ1Osp/zLsc28t3HSQ2FpA3Ga3BsWKu
+         rb2XTXvhd8z9TEDkexQdPsGGr/zaZNAV6mlSti35luArLtEty+Y9rHswJOSwg9ygNTBn
+         9XompmxpjhsB013aKMMkXTACZtH8PEBV7p+ZV1Z6tknsyI8DvVaQ5ujGbpl8USHDp0AC
+         rCRYL7yckdt0n+qQPGJ5E8F2K6ndnfTtbd1GP0VFWMkO0OHeIaswtKYYuDFLF5XwBoce
+         3B2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gKq7UYoOSXgKxRcRDCrnBQBW0R0+/HzGQMv1jLYzZ5E=;
-        b=sdW+/oKOCHnuAravWqlPSPr4czV80zShHBr9ga1tDEcHCMk6JkWF0/PoAfq0cBHmB0
-         6zaDm8Zxk1ccRtoG1oVA8690cwv/pmSksS/yImPdVTk8HD6lNIQjtKnZ8SCdEDpho4iV
-         oo3cMXwSeFTwhLDP/0nOKQO+fjYDp3ALKeIq3owGfKGpbMNKK/9kNZGcEMXK65QX+h0x
-         ZiXGUIExFvWOvTrT6wKCj24tbPLDbVfF8O2zp6maXzgSSrY25ha0FUEhaThMhhQkpZPl
-         fKydfStwoUXB8T1fnvE7lrjBhRimzkUzPEb3ysDk8r7qoBLfJlazLzGK1Q60tOz7E5GO
-         PbAg==
-X-Gm-Message-State: AOAM532oQ4bl7nJkh03GFI9ftTAqbwY9wAjyGz8ZCmYRu/ijz6sn7rpw
-        O1hIjkJgoyIf5zyHQhTGUlAOa3M3F9iDw7dfglbLJA==
-X-Google-Smtp-Source: ABdhPJxKTccQQ6mqU/IMIPgQBapIGJNrTFPxW3lmAO3lgf3JVA9Tgh31F3rfqhaTM2YIJYjncsgdqTfv7AHeOUK3Uos=
-X-Received: by 2002:a25:cf08:: with SMTP id f8mr2769265ybg.132.1619073848914;
- Wed, 21 Apr 2021 23:44:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210421231100.7467-1-phil@philpotter.co.uk>
-In-Reply-To: <20210421231100.7467-1-phil@philpotter.co.uk>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 22 Apr 2021 08:43:57 +0200
-Message-ID: <CANn89iJwipuJ6tTj5XjnvXnAB3N+dF=8oeCMSUyt+A_cUbr-pw@mail.gmail.com>
-Subject: Re: [PATCH] net: geneve: modify IP header check in geneve6_xmit_skb
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=l+qKKt5CthNo7gsKeiDmyb/kZ1TcAtPvmD2Gk6Cbjnk=;
+        b=m1Uja+50jmZu6z2z1oVd8g/sPiKNG7mKf5G93H6cU/b2bahEGJLrRCuZZV231pKLOt
+         14CAu70Z0JUBczkPojVKajZ0MACwhNSvNaxV8icbg/vcvQjnySsO1kaQK+b6nl4hPhY7
+         sokMH9eUHcLRlRUYWAQMPqoZr91500PIUUTkM13exyIj0acgCyN7YCHg2F/hGc/yjQS2
+         Oc1nSuA8mioJ+fnB4wbk2jixdDX9F7XxdGsI0qbEbkg6DerEG2rqJvWiy4uA7A7vylsX
+         D70DGRbP8W8G7BAZaPR5K604/F1MFoCRvoPVo2v9V/XfP2QdB3vETvjR5YpMcidISBrZ
+         V1Gw==
+X-Gm-Message-State: AOAM530a3QcDqLK0XWr70uqauMkoSCuFdEN6PsTYfj2r0YH3JaogaXbi
+        8hb4I3wvGgw8OfiiAUl2wGa6y/mbEw==
+X-Google-Smtp-Source: ABdhPJxKnTjrg7o9jl1LZdW4wy1+iae01OymOtOg+SLBRFzgbEQoqfWU08/k6ULzAeLc86G4rUyFprUPpg==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6273:c89a:6562:e1ba])
+ (user=elver job=sendgmr) by 2002:a0c:f454:: with SMTP id h20mr1734578qvm.40.1619073896837;
+ Wed, 21 Apr 2021 23:44:56 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 08:44:36 +0200
+Message-Id: <20210422064437.3577327-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH tip 1/2] signal, perf: Fix siginfo_t by avoiding u64 on 32-bit architectures
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, peterz@infradead.org, mingo@redhat.com,
+        tglx@linutronix.de
+Cc:     m.szyprowski@samsung.com, jonathanh@nvidia.com, dvyukov@google.com,
+        glider@google.com, arnd@arndb.de, christian@brauner.io,
+        axboe@kernel.dk, pcc@google.com, oleg@redhat.com,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 1:11 AM Phillip Potter <phil@philpotter.co.uk> wrote:
->
-> Modify the check in geneve6_xmit_skb to use the size of a struct iphdr
-> rather than struct ipv6hdr. This fixes two kernel selftest failures
-> introduced by commit 6628ddfec758
-> ("net: geneve: check skb is large enough for IPv4/IPv6 header"), without
-> diminishing the fix provided by that commit.
->
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+On some architectures, like Arm, the alignment of a structure is that of
+its largest member.
 
-SGTM, but _please_ add a Fixes: tag, since stable teams now depend on this,
-more than human parsing the changelog.
+This means that there is no portable way to add 64-bit integers to
+siginfo_t on 32-bit architectures, because siginfo_t does not contain
+any 64-bit integers on 32-bit architectures.
 
-Fixes: 6628ddfec758 ("net: geneve: check skb is large enough for
-IPv4/IPv6 header")
+In the case of the si_perf field, word size is sufficient since there is
+no exact requirement on size, given the data it contains is user-defined
+via perf_event_attr::sig_data. On 32-bit architectures, any excess bits
+of perf_event_attr::sig_data will therefore be truncated when copying
+into si_perf.
 
-> ---
->  drivers/net/geneve.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-> index 42f31c681846..a57a5e6f614f 100644
-> --- a/drivers/net/geneve.c
-> +++ b/drivers/net/geneve.c
-> @@ -988,7 +988,7 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
->         __be16 sport;
->         int err;
->
-> -       if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
-> +       if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
->                 return -EINVAL;
->
->         sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
-> --
-> 2.30.2
->
+Since this field is intended to disambiguate events (e.g. encoding
+relevant information if there are more events of the same type), 32 bits
+should provide enough entropy to do so on 32-bit architectures.
+
+For 64-bit architectures, no change is intended.
+
+Fixes: fb6cc127e0b6 ("signal: Introduce TRAP_PERF si_code and si_perf to siginfo")
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+
+Note: I added static_assert()s to verify the siginfo_t layout to
+arch/arm and arch/arm64, which caught the problem. I'll send them
+separately to arm&arm64 maintainers respectively.
+---
+ include/linux/compat.h                                | 2 +-
+ include/uapi/asm-generic/siginfo.h                    | 2 +-
+ tools/testing/selftests/perf_events/sigtrap_threads.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index c8821d966812..f0d2dd35d408 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -237,7 +237,7 @@ typedef struct compat_siginfo {
+ 					u32 _pkey;
+ 				} _addr_pkey;
+ 				/* used when si_code=TRAP_PERF */
+-				compat_u64 _perf;
++				compat_ulong_t _perf;
+ 			};
+ 		} _sigfault;
+ 
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index d0bb9125c853..03d6f6d2c1fe 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -92,7 +92,7 @@ union __sifields {
+ 				__u32 _pkey;
+ 			} _addr_pkey;
+ 			/* used when si_code=TRAP_PERF */
+-			__u64 _perf;
++			unsigned long _perf;
+ 		};
+ 	} _sigfault;
+ 
+diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c b/tools/testing/selftests/perf_events/sigtrap_threads.c
+index 9c0fd442da60..78ddf5e11625 100644
+--- a/tools/testing/selftests/perf_events/sigtrap_threads.c
++++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
+@@ -44,7 +44,7 @@ static struct {
+ } ctx;
+ 
+ /* Unique value to check si_perf is correctly set from perf_event_attr::sig_data. */
+-#define TEST_SIG_DATA(addr) (~(uint64_t)(addr))
++#define TEST_SIG_DATA(addr) (~(unsigned long)(addr))
+ 
+ static struct perf_event_attr make_event_attr(bool enabled, volatile void *addr)
+ {
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
