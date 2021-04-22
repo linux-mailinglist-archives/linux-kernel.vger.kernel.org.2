@@ -2,134 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEC736780B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2F536780D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbhDVDgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 23:36:55 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:59748 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234733AbhDVDgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:36:50 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv+4i74BgpyMMAA--.4298S2;
-        Thu, 22 Apr 2021 11:36:02 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next v3] bpf: Fix some invalid links in bpf_devel_QA.rst
-Date:   Thu, 22 Apr 2021 11:36:00 +0800
-Message-Id: <1619062560-30483-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxv+4i74BgpyMMAA--.4298S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuryDGr45XFW7Kr43GrW3KFg_yoW5tF1xpa
-        1fJw4a9r18Wr1fW3ykGr4UCrySqas3GayUCFn7JrZ5Zw1jvF92qr4S9r4rXa98Gryq9F43
-        A34SkryY9a18ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1U
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-        VFxhVjvjDU0xZFpf9x0JUa0PhUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S234615AbhDVDji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 23:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhDVDjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 23:39:37 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C6BC06174A;
+        Wed, 21 Apr 2021 20:39:03 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id d27so13092676lfv.9;
+        Wed, 21 Apr 2021 20:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VP8GAy3QUOP5pLm9gOH29FVZqOy2Igp9fnVns6wgjaQ=;
+        b=q2egpGUSEu94r+86jOd+OpqUGzK04O0I5fLB1WqbUDu4FxKzKOLeNJl/cA8xtXCi9K
+         YFtt2A4TvrycsV4F3OzOqK8NJkcgvkZBBy5TQFU5NU2/21poX5HlJ0QLnTv0k+br9QtW
+         A9Ujl6KgRCUFKARf/f3J+ToDtStEVJrlx0IZG1vH88Hiy8rCjGxp//iC52VHvVbndJIA
+         tm/vnOW18Hu07u4vujtHNC4334a/uRXI772JvEknw3zq1R3vHfP9k8qADlCzdtTSQ3sd
+         HLcd9FEqxhiil27JUVEGgFozkhg1EEJmGCexyQvmXVs+GrKv6FAjVcEb80bGe89RHg7P
+         hRjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VP8GAy3QUOP5pLm9gOH29FVZqOy2Igp9fnVns6wgjaQ=;
+        b=JryrgV+vmn/nqOAMO5meGTHk/zfFn6lfDu4VL2A1svIJzuRSjNZrW7ALlGmrgp3Y/I
+         Ud529mFi7abhDQeQFRE0h/EtS3tTL23XfyPZCBENEJqoMDPCynC6uCkyariIixtw7zzW
+         2cmurbFQOXkCiTYV2G08DhaXvqv5w7Xr0G/Wjr1ryAUTgGekMvnJQrdn0IJXk04ck5zU
+         G06LbngNgxK19IeOWQKh1srmIgnGX+ETRk9jNDBRfHrIMT9HkvMiHlIZUokAzGtYALYJ
+         cwhEZb79gSvEo8k4tf8ayEnDrmPpV2o4guCukks928JW62HZZ8edUN05R7N5CqmTAb7e
+         T58g==
+X-Gm-Message-State: AOAM531HWnHk8xNdkiZHUget5zHjAbCl61yEIvdt2gZGYTcww2nnKn4l
+        3+PZNICyz82lslF/5fpEt60=
+X-Google-Smtp-Source: ABdhPJy7tt36a/JJ5Zw/e7o7Xg8ZqCkUztIp7TaFICnS93exvuEpR0l1kPDyAywNvxkEtpHnTPPjCQ==
+X-Received: by 2002:ac2:5313:: with SMTP id c19mr928963lfh.654.1619062742072;
+        Wed, 21 Apr 2021 20:39:02 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-103.dynamic.spd-mgts.ru. [109.252.193.103])
+        by smtp.gmail.com with ESMTPSA id u21sm134227lfc.68.2021.04.21.20.39.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 20:39:01 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iio: gyro: mpu3050: Fix reported temperature value
+Date:   Thu, 22 Apr 2021 06:38:41 +0300
+Message-Id: <20210422033841.22211-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist some errors "404 Not Found" when I click the link
-of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-in the documentation "HOWTO interact with BPF subsystem" [4].
+The raw temperature value is a 16-bit signed integer. The sign casting
+is missing in the code, which results in a wrong temperature reported
+by userspace tools, fix it.
 
-As Alexei Starovoitov suggested, just remove "MAINTAINERS" and
-"samples/bpf/" links and use correct link of "selftests".
-
-[1] https://www.kernel.org/doc/html/MAINTAINERS
-[2] https://www.kernel.org/doc/html/samples/bpf/
-[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
-
-Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: stable@vger.kernel.org
+Fixes: 3904b28efb2c ("iio: gyro: Add driver for the MPU-3050 gyroscope")
+Datasheet: https://www.cdiweb.com/datasheets/invensense/mpu-3000a.pdf
+Tested-by: Maxim Schwalm <maxim.schwalm@gmail.com> # Asus TF700T
+Tested-by: Svyatoslav Ryhel <clamor95@gmail.com> # Asus TF201
+Reported-by: Svyatoslav Ryhel <clamor95@gmail.com>
+Reviewed-by: Andy Shevchenko <Andy.Shevchenko@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
 
-v3: Remove "MAINTAINERS" and "samples/bpf/" links and
-    use correct link of "selftests"
+Changelog:
 
-v2: Add Fixes: tag
+v2: - Replaced "signed 16bit integer" wording with "16-bit signed integer",
+      replaced "Link" tag with the "Datasheet" and added "Fixes" tag as was
+      suggested by Andy Shevchenko.
 
- Documentation/bpf/bpf_devel_QA.rst | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+    - Added r-b from Andy Shevchenko and Linus Walleij.
 
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 2ed89ab..d05e67e 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -29,7 +29,7 @@ list:
- This may also include issues related to XDP, BPF tracing, etc.
+ drivers/iio/gyro/mpu3050-core.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/gyro/mpu3050-core.c b/drivers/iio/gyro/mpu3050-core.c
+index ac90be03332a..ce9d1d3687f5 100644
+--- a/drivers/iio/gyro/mpu3050-core.c
++++ b/drivers/iio/gyro/mpu3050-core.c
+@@ -272,7 +272,16 @@ static int mpu3050_read_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_OFFSET:
+ 		switch (chan->type) {
+ 		case IIO_TEMP:
+-			/* The temperature scaling is (x+23000)/280 Celsius */
++			/*
++			 * The temperature scaling is (x+23000)/280 Celsius,
++			 * where 23000 includes room temperature offset of
++			 * +35C, 280 is the precision scale and x is the 16-bit
++			 * signed integer which corresponds to the temperature
++			 * range of -40C..85C.
++			 *
++			 * Temperature value itself represents temperature of
++			 * the sensor die.
++			 */
+ 			*val = 23000;
+ 			return IIO_VAL_INT;
+ 		default:
+@@ -329,7 +338,7 @@ static int mpu3050_read_raw(struct iio_dev *indio_dev,
+ 				goto out_read_raw_unlock;
+ 			}
  
- Given netdev has a high volume of traffic, please also add the BPF
--maintainers to Cc (from kernel MAINTAINERS_ file):
-+maintainers to Cc (from kernel ``MAINTAINERS`` file):
+-			*val = be16_to_cpu(raw_val);
++			*val = (s16)be16_to_cpu(raw_val);
+ 			ret = IIO_VAL_INT;
  
- * Alexei Starovoitov <ast@kernel.org>
- * Daniel Borkmann <daniel@iogearbox.net>
-@@ -234,11 +234,11 @@ be subject to change.
- 
- Q: samples/bpf preference vs selftests?
- ---------------------------------------
--Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
--selftests_ ?
-+Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
-+selftests_?
- 
- A: In general, we prefer additions to BPF kernel selftests_ rather than
--`samples/bpf/`_. The rationale is very simple: kernel selftests are
-+``samples/bpf/``. The rationale is very simple: kernel selftests are
- regularly run by various bots to test for kernel regressions.
- 
- The more test cases we add to BPF selftests, the better the coverage
-@@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
- not that BPF kernel selftests cannot demo how a specific feature can
- be used.
- 
--That said, `samples/bpf/`_ may be a good place for people to get started,
-+That said, ``samples/bpf/`` may be a good place for people to get started,
- so it might be advisable that simple demos of features could go into
--`samples/bpf/`_, but advanced functional and corner-case testing rather
-+``samples/bpf/``, but advanced functional and corner-case testing rather
- into kernel selftests.
- 
- If your sample looks like a test case, then go for BPF kernel selftests
-@@ -645,10 +645,9 @@ when:
- 
- .. Links
- .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
--.. _MAINTAINERS: ../../MAINTAINERS
- .. _netdev-FAQ: ../networking/netdev-FAQ.rst
--.. _samples/bpf/: ../../samples/bpf/
--.. _selftests: ../../tools/testing/selftests/bpf/
-+.. _selftests:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
- .. _Documentation/dev-tools/kselftest.rst:
-    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
- .. _Documentation/bpf/btf.rst: btf.rst
+ 			goto out_read_raw_unlock;
 -- 
-2.1.0
+2.30.2
 
