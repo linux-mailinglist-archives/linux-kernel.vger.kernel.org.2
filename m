@@ -2,63 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1590A367CC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35318367CD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235459AbhDVIqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhDVIqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:46:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E98DD613DE;
-        Thu, 22 Apr 2021 08:46:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619081170;
-        bh=4nheqwl05OYDRXeZyfMJy6aYK1NXONMSey8HL0+Zb9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PvJpDtJegEqOa0Gd7QypJCSiRy/z84tE2k+DG4b7G8Z84NqqMouJ1TDqP+F9aZdmG
-         /v/G2Z6WXt5hUeHrgeqf2JyrABxWl6I5tyZ3macKHTFj2QQ14OASQliwZezOgg1arb
-         s8eROn+lnAu0DHmvTih4kHCbLHHUBArZLkQzlUqo=
-Date:   Thu, 22 Apr 2021 10:46:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Ikjoon Jang <ikjn@chromium.org>, Yaqii Wu <Yaqii.Wu@mediatek.com>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] usb: xhci-mtk: remove unnecessary assignments in
- periodic TT scheduler
-Message-ID: <YIE3z7qYNtk7G/VB@kroah.com>
-References: <20210330080617.3746932-1-ikjn@chromium.org>
- <20210330160508.1.I797d214790033d0402d19ff6b47a34aff60d3062@changeid>
- <1617179455.2752.1.camel@mhfsdcap03>
- <YGq2YfURFApdJLxb@kroah.com>
- <1617675492.22435.4.camel@mhfsdcap03>
+        id S235596AbhDVIsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235075AbhDVIsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:48:05 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1617FC06174A;
+        Thu, 22 Apr 2021 01:47:30 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id s7so43850429wru.6;
+        Thu, 22 Apr 2021 01:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lR3tEJkc0UfX+rxeKczp/hoK1T+iX+xo4rtGRKTZLtc=;
+        b=Fpfx6yCuo2IVunfhJrPBTeRrVDVlIPPskGp8xhklUUnsPp+F8+U5URXmI91VZB3C+v
+         3e9kYzhPE5BPLWXLmsH5fpR2ze9Xze+ouvGO+lT/cuR5WHOGhFm9hhlR4fRrasGmqKN5
+         Cns/ACg0NTfqejj40M+VsQguSf/hiW7MIycqUpiWHi4R2NuiHbMUcz4kBJf9mdGVfbAU
+         PA0NcqZ/E4jb57glx9D+U3X8OXuj3DcoSLDxQWulRXWeHQKhqQFlwNA6Q7rWOd7+3RbH
+         1KbIaJgAzeKpB5LsB7l3pFH0qqRatf8Sof7X/cLiuGZ+uG+TZ9IPbZLtAmeUE3JDDIzc
+         3L6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lR3tEJkc0UfX+rxeKczp/hoK1T+iX+xo4rtGRKTZLtc=;
+        b=ddwQIZJyTDIsBnalf+gcYehommASDKl2FCgr2kG4cMSlbyN+4lNSJJt1ZcPUJJsvYn
+         exdYiaQWjlTzboday9r9rn+cNIsaL1/zWVHhHLaaJzmhkKxqwz/OHOMoPPEJEdH06YLk
+         SXctfghVv1jddH4ALPh/F4Q1Jkr67MV5+To+Qv01Vw/vuD13hhEKv82DHo3zVF9HN2GT
+         HXBe6MfxejknDK1gE9YqJVz+ZeQxi0ApzWwcGVuwEhB5+ZPfxzVfgbjMSMwC105XSTXD
+         zqpXQWez/oWZebyaukk+wgyU0UIiY12Xb+ggvjRWE1mV1MgM9od/LOyFmoN/xMT1aeMu
+         xOxw==
+X-Gm-Message-State: AOAM531R5yRQUFWiX9NoWuTzld9KEIupQs62vyizbJLLi2SZit5l84sO
+        9uKxNkPsisfWi3XWusxwNojcaUW+g3k=
+X-Google-Smtp-Source: ABdhPJxUtbUrA6Vj59sfZ+ei3QmXVEwECWDmlGEynB2ck9WovZUz6mfDCiTHoGgRVDMLxrbSHrMsKA==
+X-Received: by 2002:a5d:564a:: with SMTP id j10mr2779707wrw.108.1619081248595;
+        Thu, 22 Apr 2021 01:47:28 -0700 (PDT)
+Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
+        by smtp.gmail.com with ESMTPSA id v4sm2300553wme.14.2021.04.22.01.47.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 01:47:28 -0700 (PDT)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>
+Subject: [PATCH] lib/fs: fix issue when {name, open}_to_handle_at() is not implemented
+Date:   Thu, 22 Apr 2021 10:46:13 +0200
+Message-Id: <20210422084612.26374-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617675492.22435.4.camel@mhfsdcap03>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 10:18:12AM +0800, Chunfeng Yun wrote:
-> On Mon, 2021-04-05 at 09:04 +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Mar 31, 2021 at 04:30:55PM +0800, Chunfeng Yun wrote:
-> > > cc Yaqii Wu <Yaqii.Wu@mediatek.com>
-> > > 
-> > > I'll test it , thanks
-> > 
-> > Did you test this series and find any problems?  If not, I'll go queue
-> > these up...
-> Yes, found an issue on the start-split transaction, but not found the
-> root cause yet :(
+With commit d5e6ee0dac64b64e the usage of functions name_to_handle_at() and
+open_by_handle_at() are introduced. But these function are not available
+e.g. in uclibc-ng < 1.0.35. To have a backward compatibility check for the
+availability in the configure script and in case of absence do a direct
+syscall.
 
-So you are objecting to these being merged at this point in time?  Can
-you provide feedback to the author about what is wrong?
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+---
+ configure | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/fs.c  | 25 ++++++++++++++++++++++++
+ 2 files changed, 83 insertions(+)
 
-thanks,
+diff --git a/configure b/configure
+index 2c363d3b..f1be9977 100755
+--- a/configure
++++ b/configure
+@@ -202,6 +202,58 @@ EOF
+     rm -f $TMPDIR/setnstest.c $TMPDIR/setnstest
+ }
+ 
++check_name_to_handle_at()
++{
++
++    cat >$TMPDIR/name_to_handle_at_test.c <<EOF
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++int main(int argc, char **argv)
++{
++	struct file_handle *fhp;
++	int mount_id, flags, dirfd;
++	char *pathname;
++	name_to_handle_at(dirfd, pathname, fhp, &mount_id, flags);
++	return 0;
++}
++EOF
++
++    if $CC -I$INCLUDE -o $TMPDIR/name_to_handle_at_test $TMPDIR/name_to_handle_at_test.c >/dev/null 2>&1; then
++	echo "IP_CONFIG_NAME_TO_HANDLE_AT:=y" >>$CONFIG
++	echo "yes"
++	echo "CFLAGS += -DHAVE_NAME_TO_HANDLE_AT" >>$CONFIG
++    else
++	echo "no"
++    fi
++    rm -f $TMPDIR/name_to_handle_at_test.c $TMPDIR/name_to_handle_at_test
++}
++
++check_open_by_handle_at()
++{
++
++    cat >$TMPDIR/open_by_handle_at_test.c <<EOF
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++int main(int argc, char **argv)
++{
++	struct file_handle *fhp;
++	int mount_fd;
++	open_by_handle_at(mount_fd, fhp, O_RDONLY);
++	return 0;
++}
++EOF
++    if $CC -I$INCLUDE -o $TMPDIR/open_by_handle_at_test $TMPDIR/open_by_handle_at_test.c >/dev/null 2>&1; then
++	echo "IP_CONFIG_OPEN_BY_HANDLE_AT:=y" >>$CONFIG
++	echo "yes"
++	echo "CFLAGS += -DHAVE_OPEN_BY_HANDLE_AT" >>$CONFIG
++    else
++	echo "no"
++    fi
++    rm -f $TMPDIR/open_by_handle_at_test.c $TMPDIR/open_by_handle_at_test
++}
++
+ check_ipset()
+ {
+     cat >$TMPDIR/ipsettest.c <<EOF
+@@ -492,6 +544,12 @@ fi
+ echo -n "libc has setns: "
+ check_setns
+ 
++echo -n "libc has name_to_handle_at: "
++check_name_to_handle_at
++
++echo -n "libc has open_by_handle_at: "
++check_open_by_handle_at
++
+ echo -n "SELinux support: "
+ check_selinux
+ 
+diff --git a/lib/fs.c b/lib/fs.c
+index ee0b130b..c561d85b 100644
+--- a/lib/fs.c
++++ b/lib/fs.c
+@@ -30,6 +30,31 @@
+ /* if not already mounted cgroup2 is mounted here for iproute2's use */
+ #define MNT_CGRP2_PATH  "/var/run/cgroup2"
+ 
++
++#if (!defined HAVE_NAME_TO_HANDLE_AT && !defined HAVE_OPEN_BY_HANDLE_AT)
++struct file_handle {
++	unsigned handle_bytes;
++	int handle_type;
++	unsigned char f_handle[];
++};
++#endif
++
++#ifndef HAVE_NAME_TO_HANDLE_AT
++int name_to_handle_at(int dirfd, const char *pathname,
++	struct file_handle *handle, int *mount_id, int flags)
++{
++	return syscall(name_to_handle_at, 5, dirfd, pathname, handle,
++	               mount_id, flags);
++}
++#endif
++
++#ifndef HAVE_OPEN_BY_HANDLE_AT
++int open_by_handle_at(int mount_fd, struct file_handle *handle, int flags)
++{
++	return syscall(open_by_handle_at, 3, mount_fd, handle, flags);
++}
++#endif
++
+ /* return mount path of first occurrence of given fstype */
+ static char *find_fs_mount(const char *fs_to_find)
+ {
+-- 
+2.30.0
 
-greg k-h
