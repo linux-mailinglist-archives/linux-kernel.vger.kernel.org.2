@@ -2,223 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C10367E7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15482367E84
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235809AbhDVKSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235831AbhDVKSI (ORCPT
+        id S235784AbhDVKU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:20:26 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16150 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235513AbhDVKUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:18:08 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF80C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:17:33 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id y14-20020a056830208eb02902a1c9fa4c64so5148133otq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2gsWkNJIVwwQTgMpqGzbaIUC/BfooyEOt1c03CyO1cY=;
-        b=nyhWc3nG16c5O7B6dKi3NLerpDx5GqVjW+Qclbscghcf8oR9qZpmNp+w/Q7RVYm2Ai
-         KskmX3pdAVoxtxJx6AFVSC5ZLN7rDB/oYhB6pjj4c/iMKbF9M+/0rEg2ultB/5WMeETK
-         pMn0nr5Pv3+uO7smK4g0KQ6ccBcqGigtyhBPUNkPIdAPdJhuNveeF28QzymwnaqCnLMB
-         jdtX5jFHxADLR64TQ3C0KTO/jZQLoIZ24ZAxNjHaVr6qfKXQoWjqkNzNiZgevpphukoQ
-         qHmcHLJqprq7flb559GGD7AbSQOIjA6T3bMld5w3xhIPZglPfcAs8Uccxn83EbPWmrw6
-         vrpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2gsWkNJIVwwQTgMpqGzbaIUC/BfooyEOt1c03CyO1cY=;
-        b=AiSTeBNew3r38hy7xa5az8klW4ToMizz9epoGgeoKLAEzjFasv/Rh1uCosDErwtJQC
-         EsxqWSZXICBQ3n/B4vF22KT5Z6b4rAgBbx3Xgdl3kQijDuSGr44yFYIlHpaYSJsMPPxK
-         350ARdQa0KS+EXczDSfSR6H6cOgEJ/sxuxnZEHHiGXtBBsnsGg3dvjtD3OmUuhMnV/Q3
-         QooltFD57CsRYldW9FY0c1o7Dyab3N+wPqBMpAowaubifCA+8zPPDJ0VL6JhCAK1P9Ua
-         Xz/OPT0jucS/aIo1Rc5xly7zu/Wl622wvKkJyyQ6qLlylbXnTVtC+tNAJL/DLR3+BHkG
-         nUzg==
-X-Gm-Message-State: AOAM531/qfwC+KUfgpAVidFQPsWHJ/Q1AtnuI7TGLMFwS7aSQ0AWHKOq
-        x15ifxcTG0TYEwFNMekQ6kioAZbdb0d0j/+lOfUmSg==
-X-Google-Smtp-Source: ABdhPJxE0Q9zjfZ2NyvLvVX/ipAnmDUW+kGMT83HQSuGBnKtxTQRMuOnT8fvNvc4WWAEH2PyCVnl8mQRX05kY3DubhQ=
-X-Received: by 2002:a05:6830:241b:: with SMTP id j27mr2248529ots.17.1619086652316;
- Thu, 22 Apr 2021 03:17:32 -0700 (PDT)
+        Thu, 22 Apr 2021 06:20:24 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FQtcv0LT0zpZh0;
+        Thu, 22 Apr 2021 18:16:47 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 22 Apr 2021 18:19:38 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: drop inplace IO if fs status is abnormal
+Date:   Thu, 22 Apr 2021 18:19:25 +0800
+Message-ID: <20210422101925.108345-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210422064437.3577327-1-elver@google.com> <d480a4f56d544fb98eb1cdd62f44ae91@AcuMS.aculab.com>
-In-Reply-To: <d480a4f56d544fb98eb1cdd62f44ae91@AcuMS.aculab.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 22 Apr 2021 12:17:20 +0200
-Message-ID: <CANpmjNNjkQdziFZDkPy5EnwCF+VyBWKXEwCDgNpxHGZd+BLQag@mail.gmail.com>
-Subject: Re: [PATCH tip 1/2] signal, perf: Fix siginfo_t by avoiding u64 on
- 32-bit architectures
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "glider@google.com" <glider@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "christian@brauner.io" <christian@brauner.io>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "pcc@google.com" <pcc@google.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 at 11:48, David Laight <David.Laight@aculab.com> wrote:
->
-> From: Marco Elver
-> > Sent: 22 April 2021 07:45
-> >
-> > On some architectures, like Arm, the alignment of a structure is that of
-> > its largest member.
->
-> That is true everywhere.
-> (Apart from obscure ABI where structure have at least 4 byte alignment!)
+If filesystem has cp_error or need_fsck status, let's drop inplace IO
+to avoid further corruption of fs data.
 
-For instance, x86 didn't complain, nor did m68k. Both of them have
-compile-time checks for the layout (I'm adding those for Arm
-elsewhere).
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/segment.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-> > This means that there is no portable way to add 64-bit integers to
-> > siginfo_t on 32-bit architectures, because siginfo_t does not contain
-> > any 64-bit integers on 32-bit architectures.
->
-> Uh?
->
-> The actual problem is that adding a 64-bit aligned item to the union
-> forces the union to be 8 byte aligned and adds a 4 byte pad before it
-> (and possibly another one at the end of the structure).
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 6e740ecf0814..3de119e5c934 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3551,7 +3551,13 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+ 		set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 		f2fs_warn(sbi, "%s: incorrect segment(%u) type, run fsck to fix.",
+ 			  __func__, segno);
+-		return -EFSCORRUPTED;
++		err = -EFSCORRUPTED;
++		goto drop_bio;
++	}
++
++	if (is_sbi_flag_set(sbi, SBI_NEED_FSCK) || f2fs_cp_error(sbi)) {
++		err = -EIO;
++		goto drop_bio;
+ 	}
+ 
+ 	stat_inc_inplace_blocks(fio->sbi);
+@@ -3565,6 +3571,15 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+ 		f2fs_update_iostat(fio->sbi, fio->io_type, F2FS_BLKSIZE);
+ 	}
+ 
++	return err;
++drop_bio:
++	if (fio->bio) {
++		struct bio *bio = *(fio->bio);
++
++		bio->bi_status = BLK_STS_IOERR;
++		bio_endio(bio);
++		fio->bio = NULL;
++	}
+ 	return err;
+ }
+ 
+-- 
+2.29.2
 
-Yes, which means there's no portable way (without starting to add
-attributes that are outside the C std) to add 64-bit integers to
-siginfo_t without breaking the ABI on 32-bit architectures.
-
-> > In the case of the si_perf field, word size is sufficient since there is
-> > no exact requirement on size, given the data it contains is user-defined
-> > via perf_event_attr::sig_data. On 32-bit architectures, any excess bits
-> > of perf_event_attr::sig_data will therefore be truncated when copying
-> > into si_perf.
->
-> Is that right on BE architectures?
-
-We effectively do
-
-  u64 sig_data = ...;
-  unsigned long si_perf = sig_data;
-
-Since the user decides what to place into perf_event_attr::sig_data,
-whatever ends up in si_perf is fully controllable by the user, who
-knows which arch they're on. So I do not think this is a problem.
-
-> > Since this field is intended to disambiguate events (e.g. encoding
-> > relevant information if there are more events of the same type), 32 bits
-> > should provide enough entropy to do so on 32-bit architectures.
->
-> What is the size of the field used to supply the data?
-> The size of the returned item really ought to match.
-
-It's u64, but because perf_event_attr wants fixed size fields, this
-can't change.
-
-> Much as I hate __packed, you could add __packed to the
-> definition of the structure member _perf.
-> The compiler will remove the padding before it and will
-> assume it has the alignment of the previous item.
->
-> So it will never use byte accesses.
-
-Sure __packed works for Arm. But I think there's no precedent using
-this on siginfo_t, possibly for good reasons? I simply can't find
-evidence that this is portable on *all* architectures and for *all*
-possible definitions of siginfo_t, including those that live in things
-like glibc.
-
-Can we confirm that __packed is fine to add to siginfo_t on *all*
-architectures for *all* possible definitions of siginfo_t? I currently
-can't. And given it's outside the scope of the C standard (as of C11
-we got _Alignas, but that doesn't help I think), I'd vote to not
-venture too far for code that should be portable especially things as
-important as siginfo_t, and has definitions *outside* the kernel (I
-know we do lots of non-standard things, but others might not).
-
-Thanks,
--- Marco
-
->         David
->
-> >
-> > For 64-bit architectures, no change is intended.
-> >
-> > Fixes: fb6cc127e0b6 ("signal: Introduce TRAP_PERF si_code and si_perf to siginfo")
-> > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Reported-by: Jon Hunter <jonathanh@nvidia.com>
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-> >
-> > Note: I added static_assert()s to verify the siginfo_t layout to
-> > arch/arm and arch/arm64, which caught the problem. I'll send them
-> > separately to arm&arm64 maintainers respectively.
-> > ---
-> >  include/linux/compat.h                                | 2 +-
-> >  include/uapi/asm-generic/siginfo.h                    | 2 +-
-> >  tools/testing/selftests/perf_events/sigtrap_threads.c | 2 +-
-> >  3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/compat.h b/include/linux/compat.h
-> > index c8821d966812..f0d2dd35d408 100644
-> > --- a/include/linux/compat.h
-> > +++ b/include/linux/compat.h
-> > @@ -237,7 +237,7 @@ typedef struct compat_siginfo {
-> >                                       u32 _pkey;
-> >                               } _addr_pkey;
-> >                               /* used when si_code=TRAP_PERF */
-> > -                             compat_u64 _perf;
-> > +                             compat_ulong_t _perf;
-> >                       };
-> >               } _sigfault;
-> >
-> > diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-> > index d0bb9125c853..03d6f6d2c1fe 100644
-> > --- a/include/uapi/asm-generic/siginfo.h
-> > +++ b/include/uapi/asm-generic/siginfo.h
-> > @@ -92,7 +92,7 @@ union __sifields {
-> >                               __u32 _pkey;
-> >                       } _addr_pkey;
-> >                       /* used when si_code=TRAP_PERF */
-> > -                     __u64 _perf;
-> > +                     unsigned long _perf;
-> >               };
-> >       } _sigfault;
-> >
-> > diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c
-> > b/tools/testing/selftests/perf_events/sigtrap_threads.c
-> > index 9c0fd442da60..78ddf5e11625 100644
-> > --- a/tools/testing/selftests/perf_events/sigtrap_threads.c
-> > +++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
-> > @@ -44,7 +44,7 @@ static struct {
-> >  } ctx;
-> >
-> >  /* Unique value to check si_perf is correctly set from perf_event_attr::sig_data. */
-> > -#define TEST_SIG_DATA(addr) (~(uint64_t)(addr))
-> > +#define TEST_SIG_DATA(addr) (~(unsigned long)(addr))
-> >
-> >  static struct perf_event_attr make_event_attr(bool enabled, volatile void *addr)
-> >  {
-> > --
-> > 2.31.1.498.g6c1eba8ee3d-goog
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
