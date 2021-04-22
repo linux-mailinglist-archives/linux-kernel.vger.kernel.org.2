@@ -2,156 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A4136890A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 00:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEE6368915
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 00:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236989AbhDVWe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 18:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhDVWe1 (ORCPT
+        id S237135AbhDVWi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 18:38:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21218 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236660AbhDVWi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 18:34:27 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED407C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 15:33:50 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id l9so3435412ilh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 15:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jcnNcy3xEzSBfglTcOYjFIN3PxQZlBAWD1DKw9DY21M=;
-        b=K0kdLys4ozVg1KxW2mM79QNCe1oDKQG1Lf40Pyu7KkT5gP6tVLsF8Z92X6TTxaPiiU
-         1lxo1GoQTQPK9n5ks+2otp9uE2QITAUscik37LBQRgX5ZGn3QqXWi41/LAV5tKRQAKeL
-         wGjQrh8FSyP+rY5Lh8X3oeZ9cNJ7fZ9iafDhE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jcnNcy3xEzSBfglTcOYjFIN3PxQZlBAWD1DKw9DY21M=;
-        b=Xh9k7c6J70sRpMIO7CsrD6QbH4Jcg4YB6WP6EGpkk/KwRY9/9qzDGY1Zvqf+fK5Q/D
-         +7lVRwtKSfF9hY5WaKkDWgmtpU9awlcVUhFNj6+Fm8yufc1YRfO90ypDN1o/Elz4GEdV
-         voPe1am0wsn4i9Z82AijI0mNqVAJH7EVcxvGlZhYJ/eNZ2sLdZQYozElQW0d66wBNIGP
-         rkBJ2U9bYKGOaZmkoshLd8ePuEbFPw/4Rx8q8WI/yQXIFhtPUXqPfvQcgQiA9tn3RWJQ
-         uZULGlXTrUz+5DzIY7MiKnVZlGqhSIJohMly9FewSqffrWTu7CbiUuIoZYqNX+M/Kr73
-         ORqQ==
-X-Gm-Message-State: AOAM532FpvDWG5f0/WSA4a3yfgn0LXvhy34VX5AF0Kxdd7ivOQI0Tqsj
-        LoSoPxY3IA7HlHfuLHwwZPDdpygD3WwhaPjf+JB6
-X-Google-Smtp-Source: ABdhPJwtRG38ji/buQ1uGL0nlGipaF8+BvqUnB6p4XjEXGNFBHm4wLKN7FtAIzgH/UuiZTO7zEgDCEsJjX0Y6wGBGTQ=
-X-Received: by 2002:a92:1304:: with SMTP id 4mr591258ilt.126.1619130830378;
- Thu, 22 Apr 2021 15:33:50 -0700 (PDT)
+        Thu, 22 Apr 2021 18:38:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619131101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5CPnCdS+3PHW7WBSNl+13JosLwiUy7b8OWDjwQeL9f4=;
+        b=UvVtUoz6iTK73Xi6pmzNu7OsuSTlLjVhiCUxzt80uSnvu09HfvH9CVbfcdRfvryTmf6Mna
+        x/PQArZQQw3eOt6JAo2JMHdQweTf2+uf3e9lEjQXIiiT1S5o21fQJEqTLmu8TLV115PdnT
+        8DemSKpLt08LXWnIMzv4Zz7n5oi0xlA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-PF18o9DVPMqUKrlxOJ_yGQ-1; Thu, 22 Apr 2021 18:38:17 -0400
+X-MC-Unique: PF18o9DVPMqUKrlxOJ_yGQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 061641927802;
+        Thu, 22 Apr 2021 22:38:15 +0000 (UTC)
+Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A03459469;
+        Thu, 22 Apr 2021 22:38:08 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 16:38:08 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210422163808.2d173225@redhat.com>
+In-Reply-To: <20210422200024.GC1370958@nvidia.com>
+References: <20210416094547.1774e1a3@redhat.com>
+        <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210421162307.GM1370958@nvidia.com>
+        <20210421105451.56d3670a@redhat.com>
+        <20210421175203.GN1370958@nvidia.com>
+        <20210421133312.15307c44@redhat.com>
+        <20210421230301.GP1370958@nvidia.com>
+        <20210422111337.6ac3624d@redhat.com>
+        <20210422175715.GA1370958@nvidia.com>
+        <20210422133747.23322269@redhat.com>
+        <20210422200024.GC1370958@nvidia.com>
 MIME-Version: 1.0
-References: <20210303200253.1827553-1-atish.patra@wdc.com> <mhng-13c067eb-0011-408d-83f4-2950c1e791fa@palmerdabbelt-glaptop>
- <CAOnJCUKtt3LF0zh6dKAAUtbCKsYCMby5TasA59fY2hpODX3vnQ@mail.gmail.com>
-In-Reply-To: <CAOnJCUKtt3LF0zh6dKAAUtbCKsYCMby5TasA59fY2hpODX3vnQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 22 Apr 2021 15:33:39 -0700
-Message-ID: <CAOnJCUKvyDPO55QtPXDhCMKYBb70WpR01jM1F=ddA=pmFJo5_Q@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] Add Microchip PolarFire Soc Support
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Atish Patra <Atish.Patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>, Conor.Dooley@microchip.com,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Ivan.Griffin@microchip.com, Lewis.Hanly@microchip.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 8:26 PM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Mon, Mar 29, 2021 at 9:17 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >
-> > On Wed, 03 Mar 2021 12:02:48 PST (-0800), Atish Patra wrote:
-> > > This series adds minimal support for Microchip Polar Fire Soc Icicle kit.
-> > > It is rebased on v5.12-rc1 and depends on clock support.
-> > > Only MMC and ethernet drivers are enabled via this series.
-> > > The idea here is to add the foundational patches so that other drivers
-> > > can be added to on top of this. The device tree may change based on
-> > > feedback on bindings of individual driver support patches.
-> > >
-> > > This series has been tested on Qemu and Polar Fire Soc Icicle kit.
-> > > It depends on the updated clock-series[2] and macb fix[3].
-> > > The series is also tested by Lewis from Microchip.
-> > >
-> > > The series can also be found at.
-> > > https://github.com/atishp04/linux/tree/polarfire_support_upstream_v4
-> > >
-> > > [1] https://lists.nongnu.org/archive/html/qemu-devel/2020-10/msg08582.html
-> > > [2] https://www.spinics.net/lists/linux-clk/msg54579.html
-> > >
-> > > Changes from v3->v4:
-> > > 1. Fixed few DT specific issues.
-> > > 2. Rebased on top of new clock driver.
-> > > 3. SD card functionality is verified.
-> > >
-> > > Changes from v2->v3:
-> > > 1. Fixed a typo in dt binding.
-> > > 2. Included MAINTAINERS entry for PolarFire SoC.
-> > > 3. Improved the dts file by using lowercase clock names and keeping phy
-> > >    details in board specific dts file.
-> > >
-> > > Changes from v1->v2:
-> > > 1. Modified the DT to match the device tree in U-Boot.
-> > > 2. Added both eMMC & SDcard entries in DT. However, SD card is only enabled
-> > >    as it allows larger storage option for linux distros.
-> > >
-> > > Atish Patra (4):
-> > > RISC-V: Add Microchip PolarFire SoC kconfig option
-> > > dt-bindings: riscv: microchip: Add YAML documentation for the
-> > > PolarFire SoC
-> > > RISC-V: Initial DTS for Microchip ICICLE board
-> > > RISC-V: Enable Microchip PolarFire ICICLE SoC
-> > >
-> > > Conor Dooley (1):
-> > > MAINTAINERS: add microchip polarfire soc support
-> > >
-> > > .../devicetree/bindings/riscv/microchip.yaml  |  27 ++
-> > > MAINTAINERS                                   |   8 +
-> > > arch/riscv/Kconfig.socs                       |   7 +
-> > > arch/riscv/boot/dts/Makefile                  |   1 +
-> > > arch/riscv/boot/dts/microchip/Makefile        |   2 +
-> > > .../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
-> > > .../boot/dts/microchip/microchip-mpfs.dtsi    | 329 ++++++++++++++++++
-> > > arch/riscv/configs/defconfig                  |   4 +
-> > > 8 files changed, 450 insertions(+)
-> > > create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
-> > > create mode 100644 arch/riscv/boot/dts/microchip/Makefile
-> > > create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> > > create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> >
-> > I had this left in my inbox waiting for either some reviews to come in or a v2,
-> > but I don't see any.  Did I miss something?
-> >
-> Sorry for the late reply. I am on vacation until May. I think I saw
-> all the patches have already been reviewed.
-> Let me know if it is not the case.
->
-I cross checked and all the patches are reviewed-by.
-@palmer: Is it possible to take this series for 5.13 MW ?
+On Thu, 22 Apr 2021 17:00:24 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
->
->
->
-> --
-> Regards,
-> Atish
+> On Thu, Apr 22, 2021 at 01:37:47PM -0600, Alex Williamson wrote:
+> 
+> > If by "classic" you mean conventional PCI bus, then this is much worse
+> > than simply "at risk".  The IOMMU cannot differentiate devices behind a
+> > PCIe-to-PCI bridge, so the moment you turn on the IOMMU context for the
+> > NIC, the address space for your HBA is pulled out from under it.    
+> 
+> Yes, I understand this, but this is fine and not really surprising if
+> the HD device is just forced to remain "unusued"
+> 
+> To my mind the bigger issue is the NIC now has access to the HD and
+> nobody really raised an alarm unless the HD happened to have a kernel
+> driver bound.
+> 
+> > the vfio world, the NIC and HBA are grouped and managed together, the
+> > user cannot change the IOMMU context of a group unless all of the
+> > devices in the group are "viable", ie. they are released from any host
+> > drivers.  
+> 
+> Yes, I don't propose to change any of that, I just suggest to make the
+> 'change the IOMMU context" into "join a /dev/ioasid fd"
+> 
+> All devices in the group have to be joined to the same ioasid or, with
+> the flag, left "unused" with no kernel driver. 
+> 
+> This is the same viability test VFIO is doing now, just moved slightly
+> in the programming flow.
+> 
+> > vfio users are extremely aware of grouping, they understand the model,
+> > if not always the reason for the grouping.  You only need to look at
+> > r/VFIO to find various lsgroup scripts and kernel patches to manipulate
+> > grouping.  The visibility to the user is valuable imo.  
+> 
+> I don't propose to remove visibility, sysfs and the lsgroup scripts
+> should all still be there.
+> 
+> I'm just acknowledging reality that the user command line experiance
+> we have is focused on single BDFs not on groups. The user only sees
+> the group idea when things explode, so why do we have it as such an
+> integral part of the programming model?
 
+Because it's fundamental to the isolation of the device?  What you're
+proposing doesn't get around the group issue, it just makes it implicit
+rather than explicit in the uapi.  For what?  Some ideal notion that
+every device should be isolated at the expense of userspace drivers
+that then fail randomly because they didn't take into account groups
+because it's not part of the uapi?
 
+> > >    ioctl(vifo_device_fd, JOIN_IOASID_FD, ioasifd)
+> > >    [..]
+> > >    ioctl(vfio_device, ATTACH_IOASID, gpa_ioasid_id) == ENOPERM
+> > > 
+> > > I would feel comfortable if the ATTACH_IOASID fails by default if all
+> > > devices in the group have not been joined to the same ioasidfd.  
+> > 
+> > And without a group representation to userspace, how would a user know
+> > to resolve that?  
+> 
+> Userspace can continue to read sysfs files that show the group
+> relation.
+> 
+> I'm only talking about the group char device and FD.
+> 
+> > So the group still exist in sysfs, they just don't have vfio
+> > representations?  An implicit grouping does what, automatically unbind
+> > the devices, so an admin gives a user access to the NIC but their HBA
+> > device disappears because they were implicitly linked?    
+> 
+> It does exactly the same thing as opening the VFIO group FD and
+> instantiating a single device FD does today.
+> 
+> Most software, like dpdk, automatically deduces the VFIO group from
+> the commandline BDF, I'm mainly suggesting we move that deduction from
+> userspace software to kernel software.
+> 
+> > basis ownership on the group, if a user owns the group but the group is
+> > not viable because a device is still bound to another kernel driver,
+> > the use can't do anything.  Implicitly snarfing up subtly affected
+> > devices is bad.  
+> 
+> The user would get an /dev/ioasid join failure just like they get a
+> failure from VFIO_GROUP_SET_CONTAINER (?) today that reflects the
+> group is not viable.
+> 
+> Otherwise what is the alternative?
+> 
+> How do we model the VFIO group security concept to something like
+> VDPA?
 
--- 
-Regards,
-Atish
+Is it really a "VFIO group security concept"?  We're reflecting the
+reality of the hardware, not all devices are fully isolated.  An IOMMU
+group is the smallest set of devices we believe are isolated from all
+other sets of devices.  VFIO groups simply reflect that notion of an
+IOMMU group.  This is the reality that any userspace driver needs to
+play in, it doesn't magically go away because we drop the group file
+descriptor.  It only makes the uapi more difficult to use correctly
+because userspace drivers need to go outside of the uapi to have any
+idea that this restriction exists.  Thanks,
+
+Alex
+
