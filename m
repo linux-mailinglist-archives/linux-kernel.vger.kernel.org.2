@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6C3367E26
+	by mail.lfdr.de (Postfix) with ESMTP id EE4C9367E28
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbhDVJtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:49:55 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:34685 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235801AbhDVJtx (ORCPT
+        id S230341AbhDVJvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:51:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54197 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234773AbhDVJvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:49:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UWOJIrC_1619084948;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UWOJIrC_1619084948)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 22 Apr 2021 17:49:17 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] kallsyms: Remove function arch_get_kallsym()
-Date:   Thu, 22 Apr 2021 17:49:06 +0800
-Message-Id: <1619084946-28509-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 22 Apr 2021 05:51:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619085065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DL0LvSptSw1OR4qFWXug2ce4aufBqHnVMVGyRJFHbIA=;
+        b=axty2cdODH4fwdxLxf/bqyUaK5pW6U+LM3/BBDdfnlm0hIb5meup15R35MGTPrNRYwbnMM
+        I+l2DSA9aUKGRF0+gm5WxD11emDkvDH042XsV12/fccgz8CmVEhRaHPWZ5YV6La/wjO3xk
+        KI16jZwB/wnjo6PhptLm2IvWUzhAU5k=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-hfg8RlnwP42J5Cymk0vGrg-1; Thu, 22 Apr 2021 05:51:02 -0400
+X-MC-Unique: hfg8RlnwP42J5Cymk0vGrg-1
+Received: by mail-ed1-f72.google.com with SMTP id m18-20020a0564025112b0290378d2a266ebso16425911edd.15
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 02:51:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=DL0LvSptSw1OR4qFWXug2ce4aufBqHnVMVGyRJFHbIA=;
+        b=hQfW8StRyxRcCDyflVvAmTSNY+Cjk4Csv63/H4zvtksnZID+Tf4PagHaaZrGJrwhew
+         llY8sEAcUfnkCaUr9O+PHWD4tzuBIi4rhDYes40uZ907XvTUvleHu5qRD5Z8Lt8A1yEw
+         sk02iir6rL1cXU4SDd4BkqZZivgN1h0zBMELoLwNfzXUcbk6HT+EIk8VukS5q94vrbtr
+         JWfSz7vK3SYy8CfBu2c2pyc6lt6XtMOUk10ctU5XyihDwOCgzXyHENZmIxN+Pi/NAIaO
+         iapX8t/wr8wgbH6lFsXjivNv+KSfgsfjl2V4yzcOkfJ4PD7+cHvCHp0STm0YkZgLI0ca
+         x/hg==
+X-Gm-Message-State: AOAM531DCDdToC3kZUpMcFHeUrTvFIvIPvz+p4lpEKuyEx6sTVCrQ25Y
+        syOr4672j5HkB+WEGxEWPkItaB/bj7UxJs5m8utVEunoxotlnn2Af7M3KJFE3KNxHDbPHLGsuLk
+        y2aWf4JQx9FtpobGzsiR+i3f+
+X-Received: by 2002:a17:906:b104:: with SMTP id u4mr2464640ejy.211.1619085061441;
+        Thu, 22 Apr 2021 02:51:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7MByC5DDDsRQtir8pa2yWMLJwpIC7olJd5ApG1r7karH2maV0p/pxOZNSl2zWI2710X64CQ==
+X-Received: by 2002:a17:906:b104:: with SMTP id u4mr2464626ejy.211.1619085061232;
+        Thu, 22 Apr 2021 02:51:01 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id l9sm1464525ejz.96.2021.04.22.02.51.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 02:51:00 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 7/9] KVM: x86/xen: Drop RAX[63:32] when processing
+ hypercall
+In-Reply-To: <20210422022128.3464144-8-seanjc@google.com>
+References: <20210422022128.3464144-1-seanjc@google.com>
+ <20210422022128.3464144-8-seanjc@google.com>
+Date:   Thu, 22 Apr 2021 11:51:00 +0200
+Message-ID: <877dkuhcl7.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Sean Christopherson <seanjc@google.com> writes:
 
-kernel/kallsyms.c:457:12: warning: symbol 'arch_get_kallsym' was not
-declared. Should it be static?
+> Truncate RAX to 32 bits, i.e. consume EAX, when retrieving the hypecall
+> index for a Xen hypercall.  Per Xen documentation[*], the index is EAX
+> when the vCPU is not in 64-bit mode.
+>
+> [*] http://xenbits.xenproject.org/docs/sphinx-unstable/guest-guide/x86/hypercall-abi.html
+>
+> Fixes: 23200b7a30de ("KVM: x86/xen: intercept xen hypercalls if enabled")
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/xen.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+> index ae17250e1efe..7f27bb65a572 100644
+> --- a/arch/x86/kvm/xen.c
+> +++ b/arch/x86/kvm/xen.c
+> @@ -673,7 +673,7 @@ int kvm_xen_hypercall(struct kvm_vcpu *vcpu)
+>  	bool longmode;
+>  	u64 input, params[6];
+>  
+> -	input = (u64)kvm_register_read(vcpu, VCPU_REGS_RAX);
+> +	input = (u64)kvm_register_readl(vcpu, VCPU_REGS_RAX);
+>  
+>  	/* Hyper-V hypercalls get bit 31 set in EAX */
+>  	if ((input & 0x80000000) &&
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -Remove function arch_get_kallsym().
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
- kernel/kallsyms.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+Alternatively, as a minor optimization, you could've used '!longmode'
+check below, something like:
 
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 8043a90..49c4268 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -454,24 +454,10 @@ struct kallsym_iter {
- 	int show_value;
- };
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index ae17250e1efe..7df1498d3a41 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -682,6 +682,7 @@ int kvm_xen_hypercall(struct kvm_vcpu *vcpu)
  
--int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
--			    char *type, char *name)
--{
--	return -EINVAL;
--}
--
- static int get_ksymbol_arch(struct kallsym_iter *iter)
- {
--	int ret = arch_get_kallsym(iter->pos - kallsyms_num_syms,
--				   &iter->value, &iter->type,
--				   iter->name);
--
--	if (ret < 0) {
--		iter->pos_arch_end = iter->pos;
--		return 0;
--	}
--
--	return 1;
-+	iter->pos_arch_end = iter->pos;
-+	return 0;
- }
- 
- static int get_ksymbol_mod(struct kallsym_iter *iter)
+        longmode = is_64_bit_mode(vcpu);
+        if (!longmode) {
++               input = (u32)input;
+                params[0] = (u32)kvm_rbx_read(vcpu);
+                params[1] = (u32)kvm_rcx_read(vcpu);
+                params[2] = (u32)kvm_rdx_read(vcpu);
+
 -- 
-1.8.3.1
+Vitaly
 
