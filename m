@@ -2,182 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F68367972
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B421367983
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 07:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234780AbhDVFqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 01:46:42 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42618 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhDVFql (ORCPT
+        id S230128AbhDVFwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 01:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhDVFwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 01:46:41 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 9BEAA20B8001; Wed, 21 Apr 2021 22:46:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9BEAA20B8001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1619070367;
-        bh=mBaXxQzwW6dyzKSyTwDokgBZXg4uELvelQozUDwHcN0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ABrF5OdHjAr+t7cS/zOTl9NQaiVdJkbBABO+vZv+2IT+6l2ELKGUwO3qyEpIvknBG
-         NoGn2vqMYNWQecefrzri3eGf9HhIo/n/3MwdSZKu5q00BwLdD+H6D/vbNgCzbRZEIv
-         xuWqWZWEkWF/4PxLATzclPH1zAOJaOiEwD2bsMRc=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
+        Thu, 22 Apr 2021 01:52:08 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD23C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 22:51:34 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZSFL-007EQm-Jb; Thu, 22 Apr 2021 05:51:27 +0000
+Date:   Thu, 22 Apr 2021 05:51:27 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Aditya Pakki <pakki001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>, x86@kernel.org,
         Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-Subject: [Patch v2 2/2] PCI: hv: Remove unused refcount and supporting functions for handling bus device removal
-Date:   Wed, 21 Apr 2021 22:45:46 -0700
-Message-Id: <1619070346-21557-2-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1619070346-21557-1-git-send-email-longli@linuxonhyperv.com>
-References: <1619070346-21557-1-git-send-email-longli@linuxonhyperv.com>
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jiri Kosina <jikos@kernel.org>, Will Deacon <will@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hovold <johan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH 000/190] Revertion of all of the umn.edu commits
+Message-ID: <YIEO3+jdF6FgcWz7@zeniv-ca.linux.org.uk>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On Wed, Apr 21, 2021 at 02:57:55PM +0200, Greg Kroah-Hartman wrote:
 
-With the new method of flushing/stopping the workqueue before doing bus
-removal, the old mechanisum of using refcount and wait for completion
-is no longer needed. Remove those dead code.
+> I'll take this through my tree, so no need for any maintainer to worry
+> about this, but they should be aware that future submissions from anyone
+> with a umn.edu address should be by default-rejected unless otherwise
+> determined to actually be a valid fix (i.e. they provide proof and you
+> can verify it, but really, why waste your time doing that extra work?)
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/pci/controller/pci-hyperv.c | 34 +++--------------------------
- 1 file changed, 3 insertions(+), 31 deletions(-)
+Frankly, the last bit is nonsense.  If nothing else, consider the situation
+when somebody from UMN (which is a lot bigger than the group in question,
+but hell with it - somebody really from that group) posts an analysis of
+a real bug, along with a correct fix.  With valid proof of correctness.
+What should we do?  Leave the bug in place?  Unattractive, to put it
+mildly.  Write a fix and try to make it different from theirs?  Not always
+feasible.  Write a fix without looking at theirs and commit it?  And if it
+happens to coincide with theirs, then what?
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index fc948a2ed703..e6b4ee323068 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -452,7 +452,6 @@ struct hv_pcibus_device {
- 	/* Protocol version negotiated with the host */
- 	enum pci_protocol_version_t protocol_version;
- 	enum hv_pcibus_state state;
--	refcount_t remove_lock;
- 	struct hv_device *hdev;
- 	resource_size_t low_mmio_space;
- 	resource_size_t high_mmio_space;
-@@ -460,7 +459,6 @@ struct hv_pcibus_device {
- 	struct resource *low_mmio_res;
- 	struct resource *high_mmio_res;
- 	struct completion *survey_event;
--	struct completion remove_event;
- 	struct pci_bus *pci_bus;
- 	spinlock_t config_lock;	/* Avoid two threads writing index page */
- 	spinlock_t device_list_lock;	/* Protect lists below */
-@@ -593,9 +591,6 @@ static void put_pcichild(struct hv_pci_dev *hpdev)
- 		kfree(hpdev);
- }
- 
--static void get_hvpcibus(struct hv_pcibus_device *hv_pcibus);
--static void put_hvpcibus(struct hv_pcibus_device *hv_pcibus);
--
- /*
-  * There is no good way to get notified from vmbus_onoffer_rescind(),
-  * so let's use polling here, since this is not a hot path.
-@@ -2067,10 +2062,8 @@ static void pci_devices_present_work(struct work_struct *work)
- 	}
- 	spin_unlock_irqrestore(&hbus->device_list_lock, flags);
- 
--	if (!dr) {
--		put_hvpcibus(hbus);
-+	if (!dr)
- 		return;
--	}
- 
- 	/* First, mark all existing children as reported missing. */
- 	spin_lock_irqsave(&hbus->device_list_lock, flags);
-@@ -2153,7 +2146,6 @@ static void pci_devices_present_work(struct work_struct *work)
- 		break;
- 	}
- 
--	put_hvpcibus(hbus);
- 	kfree(dr);
- }
- 
-@@ -2194,12 +2186,10 @@ static int hv_pci_start_relations_work(struct hv_pcibus_device *hbus,
- 	list_add_tail(&dr->list_entry, &hbus->dr_list);
- 	spin_unlock_irqrestore(&hbus->device_list_lock, flags);
- 
--	if (pending_dr) {
-+	if (pending_dr)
- 		kfree(dr_wrk);
--	} else {
--		get_hvpcibus(hbus);
-+	else
- 		queue_work(hbus->wq, &dr_wrk->wrk);
--	}
- 
- 	return 0;
- }
-@@ -2342,8 +2332,6 @@ static void hv_eject_device_work(struct work_struct *work)
- 	put_pcichild(hpdev);
- 	put_pcichild(hpdev);
- 	/* hpdev has been freed. Do not use it any more. */
--
--	put_hvpcibus(hbus);
- }
- 
- /**
-@@ -2367,7 +2355,6 @@ static void hv_pci_eject_device(struct hv_pci_dev *hpdev)
- 	hpdev->state = hv_pcichild_ejecting;
- 	get_pcichild(hpdev);
- 	INIT_WORK(&hpdev->wrk, hv_eject_device_work);
--	get_hvpcibus(hbus);
- 	queue_work(hbus->wq, &hpdev->wrk);
- }
- 
-@@ -2967,17 +2954,6 @@ static int hv_send_resources_released(struct hv_device *hdev)
- 	return 0;
- }
- 
--static void get_hvpcibus(struct hv_pcibus_device *hbus)
--{
--	refcount_inc(&hbus->remove_lock);
--}
--
--static void put_hvpcibus(struct hv_pcibus_device *hbus)
--{
--	if (refcount_dec_and_test(&hbus->remove_lock))
--		complete(&hbus->remove_event);
--}
--
- #define HVPCI_DOM_MAP_SIZE (64 * 1024)
- static DECLARE_BITMAP(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
- 
-@@ -3097,14 +3073,12 @@ static int hv_pci_probe(struct hv_device *hdev,
- 	hbus->sysdata.domain = dom;
- 
- 	hbus->hdev = hdev;
--	refcount_set(&hbus->remove_lock, 1);
- 	INIT_LIST_HEAD(&hbus->children);
- 	INIT_LIST_HEAD(&hbus->dr_list);
- 	INIT_LIST_HEAD(&hbus->resources_for_children);
- 	spin_lock_init(&hbus->config_lock);
- 	spin_lock_init(&hbus->device_list_lock);
- 	spin_lock_init(&hbus->retarget_msi_interrupt_lock);
--	init_completion(&hbus->remove_event);
- 	hbus->wq = alloc_ordered_workqueue("hv_pci_%x", 0,
- 					   hbus->sysdata.domain);
- 	if (!hbus->wq) {
-@@ -3332,8 +3306,6 @@ static int hv_pci_remove(struct hv_device *hdev)
- 	hv_pci_free_bridge_windows(hbus);
- 	irq_domain_remove(hbus->irq_domain);
- 	irq_domain_free_fwnode(hbus->sysdata.fwnode);
--	put_hvpcibus(hbus);
--	wait_for_completion(&hbus->remove_event);
- 
- 	hv_put_dom_num(hbus->sysdata.domain);
- 
--- 
-2.27.0
+FWIW, I do believe their claims that they tried to avoid introducing bugs
+and creating problems in general.  So did RT[F]M, for that matter.
+However, the very nature of their "experiment"[1] required deflecting
+review.  With obvious effects...
 
+[1] I won't go into its value, relevance of threat model, etc. at the
+moment - proper comments on that paper will take more time than I'm likely
+to have during the next couple of weeks.
