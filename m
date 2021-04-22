@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E0F367CA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3300D367CC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhDVIjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:39:08 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:34362 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235469AbhDVIjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:39:06 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 907F61A0A22;
-        Thu, 22 Apr 2021 10:38:31 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 456D91A1A53;
-        Thu, 22 Apr 2021 10:38:29 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3BD5F40366;
-        Thu, 22 Apr 2021 10:38:02 +0200 (CEST)
-From:   Guanhua Gao <guanhua.gao@nxp.com>
-To:     Vinod Koul <vkoul@kernel.org>, Yi Zhao <yi.zhao@nxp.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guanhua Gao <guanhua.gao@nxp.com>
-Subject: [PATCH v2 1/3] dmaengine: fsl-dpaa2-qdma: Fix the size of dma pools
-Date:   Thu, 22 Apr 2021 16:44:12 +0800
-Message-Id: <20210422084412.796-1-guanhua.gao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S235527AbhDVIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:45:24 -0400
+Received: from mail-vs1-f45.google.com ([209.85.217.45]:39500 "EHLO
+        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235075AbhDVIpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:45:23 -0400
+Received: by mail-vs1-f45.google.com with SMTP id u22so11531682vsu.6;
+        Thu, 22 Apr 2021 01:44:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T0fU5qslefbtid2ADh8Sf4KN4eXAD2ag5kzSkHvSWVs=;
+        b=XZ1r11NOvoJj8SphJkOS16XjykcZS5cSMggFU5OItapEyUZQvDNsN/ZKAKlZOJNuG0
+         IuoY5C5sBay2neWiOzV40aeUOyGuYE5242+Wdm++h7KUbgdbHc+HtaZttdLAhIEv9eyR
+         /4MaOirF+L72PzRSQ6JvHZdCts2P8ABVBGr1ofFrJLp9tKeCoA1ZkUUBr95ZDqkB+lVP
+         SZWFDmIgyynGziKPzPmIkwGtNJTnR/LIp3w3VWDEtgIugsVA2lyj5sJIwPNG+WmTTLDe
+         +6v2W/o6Fv8z3HCv0aQlRovGXlmZpAnacDdojTgCHKA4A49ox2jOXuAgcfr/yIQEFKQm
+         6PCQ==
+X-Gm-Message-State: AOAM532zUUc+rHIu5dmN5Y8uZOJebGnXMCZc+ETl5gKCS/3QP2C7cbuQ
+        n11rSSnubVcxkg5RDmHcKLIn7BDBBPSYDfgMo1I=
+X-Google-Smtp-Source: ABdhPJyJ9IDw6C8EF+yN8bZlEKCyggiRyM4LIMEj26kwBUuNghgY/w9zZKt2qR2VGPo69/FnaG3z4yNdcuqEoJzxPeI=
+X-Received: by 2002:a05:6102:814:: with SMTP id g20mr1445671vsb.42.1619081086781;
+ Thu, 22 Apr 2021 01:44:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210324223713.1334666-1-frowand.list@gmail.com>
+ <20210327174035.GA291160@robh.at.kernel.org> <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
+In-Reply-To: <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 22 Apr 2021 10:44:35 +0200
+Message-ID: <CAMuHMdXpGKMi-xv6hZQmmEw0JO=Q0WuvUzwJ2v0O28Tx5uW+sg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
+ to .dtso
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of long format of qDMA command descriptor, there are one frame
-descriptor, three entries in the frame list and two data entries. So the
-size of dma_pool_create for these three fields should be the same with
-the total size of entries respectively, or the contents may be overwritten
-by the next allocated descriptor.
+Hi Frank, Rob,
 
-Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
----
-Change in v2:
- - Add comments for changes.
- - Update copyright year.
+On Mon, Mar 29, 2021 at 9:23 PM Frank Rowand <frowand.list@gmail.com> wrote:
+> On 3/27/21 12:40 PM, Rob Herring wrote:
+> > On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.com wrote:
+> >> From: Frank Rowand <frank.rowand@sony.com>
+> >>
+> >> Add Makefile rule to build .dtbo.o assembly file from overlay .dtso
+> >> source file.
+> >>
+> >> Rename unittest .dts overlay source files to use .dtso suffix.
+> >
+> > I'm pretty lukewarm on .dtso...
+>
+> I was originally also, but I'm warming up to it.
 
- drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+What's the status of this?
+v5.12 (introducing the concept of dtbo) is around the corner, and it
+would be best to decide on dts or dtso before its release.
 
-diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-index 4ec909e0b810..de3eff3f3de3 100644
---- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-+++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--// Copyright 2019 NXP
-+// Copyright 2019-2021 NXP
- 
- #include <linux/init.h>
- #include <linux/module.h>
-@@ -32,21 +32,29 @@ static int dpaa2_qdma_alloc_chan_resources(struct dma_chan *chan)
- 	struct dpaa2_qdma_engine *dpaa2_qdma = dpaa2_chan->qdma;
- 	struct device *dev = &dpaa2_qdma->priv->dpdmai_dev->dev;
- 
-+	/* dma pool for compound command descriptor */
- 	dpaa2_chan->fd_pool = dma_pool_create("fd_pool", dev,
- 					      sizeof(struct dpaa2_fd),
- 					      sizeof(struct dpaa2_fd), 0);
- 	if (!dpaa2_chan->fd_pool)
- 		goto err;
- 
--	dpaa2_chan->fl_pool = dma_pool_create("fl_pool", dev,
--					      sizeof(struct dpaa2_fl_entry),
--					      sizeof(struct dpaa2_fl_entry), 0);
-+	/*
-+	 * dma pool for descriptor entry, source data entry, and
-+	 * destination data entry.
-+	 */
-+	dpaa2_chan->fl_pool =
-+		dma_pool_create("fl_pool", dev,
-+				 sizeof(struct dpaa2_fl_entry) * 3,
-+				 sizeof(struct dpaa2_fl_entry), 0);
-+
- 	if (!dpaa2_chan->fl_pool)
- 		goto err_fd;
- 
-+	/* dma pool for source descriptor and destination descriptor */
- 	dpaa2_chan->sdd_pool =
- 		dma_pool_create("sdd_pool", dev,
--				sizeof(struct dpaa2_qdma_sd_d),
-+				sizeof(struct dpaa2_qdma_sd_d) * 2,
- 				sizeof(struct dpaa2_qdma_sd_d), 0);
- 	if (!dpaa2_chan->sdd_pool)
- 		goto err_fl;
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
