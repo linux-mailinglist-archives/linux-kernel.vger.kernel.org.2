@@ -2,126 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4AF368338
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFB736833C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhDVPVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:21:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35512 "EHLO mx2.suse.de"
+        id S237696AbhDVPX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237540AbhDVPVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:21:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 183F4B172;
-        Thu, 22 Apr 2021 15:21:01 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] dt-bindings: gpio: Add devicetree binding for IDT 79RC32434 GPIO controller
-Date:   Thu, 22 Apr 2021 17:20:54 +0200
-Message-Id: <20210422152055.85544-2-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210422152055.85544-1-tsbogend@alpha.franken.de>
-References: <20210422152055.85544-1-tsbogend@alpha.franken.de>
+        id S236545AbhDVPX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:23:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A306143B;
+        Thu, 22 Apr 2021 15:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619104971;
+        bh=S23DvyFbD937/eRF/yGO4YHwePp1UxxeFZXs819frVc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mr3fVlfvk0nnjFaRFExNjCMBOWYrHkqslozgig1GNjDf9RcZW4QWxxj1SHB1k8j96
+         lfTJFpRjntxMl+Tlgbk3Xd586MBzTNodrXsqbGFGD44SFmjSU7StGSBQHjkmNBpnjb
+         xenenO+8l4HllQZgGNfh0/+/kS+gU8PMpRmvlnDQqTD9zf/ubaNeIvJmVX9O9oqwKI
+         WVdSx04CXu26Mis7ajCZEerdVz/VMEQIroyonS9pxVZyeyGfx2j4m7CNxlxCzmd3yz
+         dlhKYv+LZPUBIlZskHVL3ilQam4QgVaRV9XmAAJWlfYFEPjooK/UCKeQeoPwT3d3Ps
+         hQKzmTQc8/PcQ==
+Received: by mail-wm1-f49.google.com with SMTP id n127so12522778wmb.5;
+        Thu, 22 Apr 2021 08:22:51 -0700 (PDT)
+X-Gm-Message-State: AOAM5301QPx1jZq7saA//nBmf5OdB9LrQ9XQvDd085mu6wie763GhW12
+        y1S46uDkqWSQt25VBWHMYer0itRRcLHbpYWaQ0A=
+X-Google-Smtp-Source: ABdhPJyoqMZkh2iVaSsCHD5prrldh89au5x5VTTB0Au5qmjidvSi0VHRgBUmYUlk+xcZBjT7RFhcntH4fy5u8AwRCjg=
+X-Received: by 2002:a7b:c14a:: with SMTP id z10mr562999wmi.75.1619104969636;
+ Thu, 22 Apr 2021 08:22:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210422133518.1835403-1-arnd@kernel.org> <20210422151451.hp6w2jlgdt53lq4j@skbuf>
+In-Reply-To: <20210422151451.hp6w2jlgdt53lq4j@skbuf>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 22 Apr 2021 17:22:29 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2FvQer9ryjWyeXpHg=umcV2_aULN04mA4w+zeKNGbhcA@mail.gmail.com>
+Message-ID: <CAK8P3a2FvQer9ryjWyeXpHg=umcV2_aULN04mA4w+zeKNGbhcA@mail.gmail.com>
+Subject: Re: [PATCH] [net-next] net: enetc: fix link error again
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add YAML devicetree binding for IDT 79RC32434 GPIO controller
+On Thu, Apr 22, 2021 at 5:15 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+>> The problem is that the enetc Makefile is not actually used for
+>> the ierb module if that is the only built-in driver in there
+>> and everything else is a loadable module.
+>
+> I feel so bad that I'm incapable of troubleshooting even the most
+> elementary Kconfig issues... I did not even once think of opening that
+> Makefile.
+>
+> Acked-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
-Changes in v3:
- - renamed to idt,32434-gpio
- - drop ngpio description
- - use gpio0: gpio@50004 in example
+No worries, this is a particularly nasty way Kconfig can go wrong, I thing
+most kernel developers would struggle with this.
 
- .../devicetree/bindings/gpio/idt,32434.yaml   | 71 +++++++++++++++++++
- 1 file changed, 71 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/gpio/idt,32434.yaml
-
-diff --git a/Documentation/devicetree/bindings/gpio/idt,32434.yaml b/Documentation/devicetree/bindings/gpio/idt,32434.yaml
-new file mode 100644
-index 000000000000..bdbbe01855e0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/idt,32434.yaml
-@@ -0,0 +1,71 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/idt,32434.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: IDT 79RC32434 GPIO controller
-+
-+maintainers:
-+  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-+
-+properties:
-+  compatible:
-+    const: idt,32434-gpio
-+
-+  reg:
-+    maxItems: 2
-+
-+  reg-names:
-+    items:
-+      - const: gpio
-+      - const: pic
-+
-+  gpio-controller: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  ngpios:
-+    minimum: 1
-+    maximum: 32
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - gpio-controller
-+  - "#gpio-cells"
-+  - ngpios
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio0: gpio@50004 {
-+        compatible = "idt,32434-gpio";
-+        reg = <0x50004 0x10>, <0x38030 0x0c>;
-+        reg-names = "gpio", "pic";
-+
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+
-+        interrupt-parent = <&cpuintc>;
-+        interrupts = <6>;
-+
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+
-+        ngpios = <14>;
-+    };
--- 
-2.29.2
-
+       Arnd
