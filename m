@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A327B368224
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD2036822B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236463AbhDVOKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:10:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:34128 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236092AbhDVOKJ (ORCPT
+        id S236922AbhDVOK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:10:28 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54476 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236341AbhDVOK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:10:09 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-282-h23dZCneOHWWwBdb6SzMnw-1; Thu, 22 Apr 2021 15:09:31 +0100
-X-MC-Unique: h23dZCneOHWWwBdb6SzMnw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 22 Apr 2021 15:09:31 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Thu, 22 Apr 2021 15:09:30 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Walleij' <linus.walleij@linaro.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        "ojeda@kernel.org" <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 00/13] [RFC] Rust support
-Thread-Topic: [PATCH 00/13] [RFC] Rust support
-Thread-Index: AQHXN17Az8CFzDjGVk2RBMeMGwuyearAkXcA
-Date:   Thu, 22 Apr 2021 14:09:30 +0000
-Message-ID: <b6bddd3ea41644b0a353b8a4b7028bdc@AcuMS.aculab.com>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com>
- <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
-In-Reply-To: <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 22 Apr 2021 10:10:27 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13ME9adJ069314;
+        Thu, 22 Apr 2021 09:09:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1619100576;
+        bh=6vtsHCiE+UhV1jEh9jWHoCYucvxbpDiXX+TJ66u1Jlw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=pyNONRIlt5oHfMqBuBKAkQ29DULpNbQCNhTh5l6Bbktxc5jyvHnYznc76EqUnUt1T
+         goQ/IclTyHw7XZWoFargojo9GgxnTkm4GMVQmmGdZnOxf/Bt39GWBCuBeGUhYPmVy8
+         Jh+0k6ijf7TmWSxqOxjtcBdK2gfeDJ6Urliw2WBo=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13ME9ZXA053552
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 22 Apr 2021 09:09:36 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 22
+ Apr 2021 09:09:35 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 22 Apr 2021 09:09:35 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13ME9ZwN033089;
+        Thu, 22 Apr 2021 09:09:35 -0500
+Date:   Thu, 22 Apr 2021 09:09:35 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/4] dt-bindings: clock: Convert ti,sci-clk to json schema
+Message-ID: <20210422140935.lzsp6s2ugyvi2icu@iodize>
+References: <20210416063721.20538-1-nm@ti.com>
+ <20210416063721.20538-3-nm@ti.com>
+ <161861731160.46595.786611690053722257@swboyd.mtv.corp.google.com>
+ <20210417125127.vigq23mdoodje6b5@velcro>
+ <20210421223145.GB1705110@robh.at.kernel.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210421223145.GB1705110@robh.at.kernel.org>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgV2FsbGVpag0KPiBTZW50OiAyMiBBcHJpbCAyMDIxIDExOjAzDQouLi4NCj4g
-SSBnbyB0byBwYXRjaCAxMi8xMyBhbmQgSSBzZWUgdGhpbmdzIGxpa2UgdGhpczoNCj4gDQo+ICsv
-Ly8gQSBkZXNjcmlwdG9yIG9mIHdyYXBwZWQgbGlzdCBlbGVtZW50cy4NCj4gK3B1YiB0cmFpdCBH
-ZXRMaW5rc1dyYXBwZWQ6IEdldExpbmtzIHsNCj4gKyAgICAvLy8gU3BlY2lmaWVzIHdoaWNoIHdy
-YXBwZXIgKGUuZy4sIGBCb3hgIGFuZCBgQXJjYCkgd3JhcHMgdGhlIGxpc3QgZW50cmllcy4NCj4g
-KyAgICB0eXBlIFdyYXBwZWQ6IFdyYXBwZXI8U2VsZjo6RW50cnlUeXBlPjsNCj4gK30NCj4gKw0K
-PiAraW1wbDxUOiA/U2l6ZWQ+IEdldExpbmtzV3JhcHBlZCBmb3IgQm94PFQ+DQo+ICt3aGVyZQ0K
-PiArICAgIEJveDxUPjogR2V0TGlua3MsDQo+ICt7DQo+ICsgICAgdHlwZSBXcmFwcGVkID0gQm94
-PDxCb3g8VD4gYXMgR2V0TGlua3M+OjpFbnRyeVR5cGU+Ow0KPiArfQ0KPiArDQo+ICtpbXBsPFQ6
-IEdldExpbmtzICsgP1NpemVkPiBHZXRMaW5rcyBmb3IgQm94PFQ+IHsNCj4gKyAgICB0eXBlIEVu
-dHJ5VHlwZSA9IFQ6OkVudHJ5VHlwZTsNCj4gKyAgICBmbiBnZXRfbGlua3MoZGF0YTogJlNlbGY6
-OkVudHJ5VHlwZSkgLT4gJkxpbmtzPFNlbGY6OkVudHJ5VHlwZT4gew0KPiArICAgICAgICA8VCBh
-cyBHZXRMaW5rcz46OmdldF9saW5rcyhkYXRhKQ0KPiArICAgIH0NCj4gK30NCj4gDQo+IE15IEdv
-ZC4gTG9zZSB0aGUgaG9ycmlibGUgQ2FtZWxDYXNlIHRvIGJlZ2luIHdpdGguIEkgaG9wZSB0aGUN
-Cj4gbGFuZ3VhZ2Ugc3BlYyBkb2VzIG5vdCBtYW5kYXRlIHRoYXQgYmVjYXVzZSBvdXIga2VybmVs
-IEMgc3R5bGUNCj4gZG9lcyBub3QgdXNlIGl0Lg0KDQpUaGF0Og0KDQoxKSBMb29rcyBhcyB0aG91
-Z2ggaXQgY291bGQgYmUgZ2VuZXJhdGVkIGJ5IHRva2VuIHBhc3RpbmcgaW4gYSAjZGVmaW5lLg0K
-MikgU2VlbXMgdG8gYmUgZnVsbCBvZiB3aGF0IGxvb2sgbGlrZSBjYXN0cy4NCg0KSSByZWFsbHkg
-d291bGRuJ3Qgd2FudCB0byBidW1wIGludG8gbXVsdGlwbGUgY29waWVzIG9mIGl0Lg0KDQpUaGUg
-b3RoZXIgaXNzdWUgaXMgdGhhdCAoYWxsIG1vc3QpIGFsbCB1c2VzIG9mIGEgc3ltYm9sDQpjYW4g
-YmUgZm91bmQgYnkgcnVubmluZzoNCiAgIGdyZXAgLXIgLS1pbmNsdWRlICcqLltjaHNTXScgJ1w8
-c3ltYm9sXD4nIC4NCm9mdGVuIHVzZWQgYXM6DQogICB2aSBgZ3JlcCAtbCAtciAnXDxzeW1ib2xc
-PicgLmANCg0KQnV0IGl0IGxvb2tzIGxpa2UgdGhlIHJ1c3Qgd3JhcHBlcnMgYXJlIGdvaW5nIHRv
-IGJyZWFrIHRoYXQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
-IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
-Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 17:31-20210421, Rob Herring wrote:
+[...]
 
+> > > > +allOf:
+> > > > +  - $ref: /schemas/clock/clock.yaml#
+> > > 
+> > > Is this needed?
+> 
+> No. It is already applied to every node.
+> 
+> > https://github.com/devicetree-org/dt-schema/blob/master/schemas/clock/clock.yaml
+> > This standardizes provider properties like '#clock-cells' etc, allowing
+> > you to add more stricter checks or controls in the future if necessary.
+> > 
+> > while:
+> > 
+> > https://github.com/devicetree-org/dt-schema/blob/master/meta-schemas/clocks.yaml
+> > is more a consumer node description.
+> 
+> No, the meta-schema is what checks the schemas just as the schemas check 
+> dts files.
+
+
+I will drop and respin. thanks for explaining.
+
+> 
+> > Should I have picked a different yaml as base for a standard clock-controller
+> > base?
+> > 
+> > > 
+> > > > +
+> > > > +description: |
+> > > > +  Some TI SoCs contain a system controller (like the Power Management Micro
+> > > > +  Controller (PMMC) on Keystone 66AK2G SoC) that are responsible for controlling
+> > > > +  the state of the various hardware modules present on the SoC. Communication
+> > > > +  between the host processor running an OS and the system controller happens
+> > > > +  through a protocol called TI System Control Interface (TI-SCI protocol).
+> > > > +
+> > > > +  This clock controller node uses the TI SCI protocol to perform various clock
+> > > > +  management of various hardware modules (devices) present on the SoC. This
+> > > > +  node must be a child node of the associated TI-SCI system controller node.
+> > > > +
+> > > > +properties:
+> > > > +  $nodename:
+> > > > +    pattern: "^clock-controller$"
+> > > 
+> > > Is this nodename pattern check required?
+> > 
+> > I'd like the definition on rails and not subject to interpretation, and
+> > restrict the kind of subnodes under TISCI controller node.
+> 
+> If this schema was standalone and not defined as part of another, then 
+> yes it would be required. In your case, you can enforce the node name 
+> from the parent schema. For consistency though, it would be better to 
+> just always require $nodename. 
+> 
+> Actually, this schema will be applied twice. On it's own matching the 
+> compatible string and by the parent schema. You can prevent that with 
+> 'select: false'. I don't mind the double validation as if the parent 
+> node had a compatible typo you'd get zero validation.
+
+Sure. I will keep nodename.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
