@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899393680AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B7E36809F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237359AbhDVMkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
+        id S236513AbhDVMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236757AbhDVMi5 (ORCPT
+        with ESMTP id S236125AbhDVMh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:38:57 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0805BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:38:22 -0700 (PDT)
+        Thu, 22 Apr 2021 08:37:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D693C06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=a6njO43jSaonKc+5YUYXd6HmtS5fmuoE9MQ8zUzxLwQ=; b=lwr63Ghjd5dLB71he7ilrCe+a5
-        4R1M59hKYWKKgczx4CsPRkDNYcep42PfA0HUqIl/0avAFho/k2MbGyD8VBWhtQRrL26pkwTjlTHRx
-        VKXdVt8BCD1h7krcGquU9LTTewF87/C57nixrhN22InKQciPENL0iEIyyyOsCDvfUSrTiqegqngUm
-        LIP/aUuA7K4tUAkr6hYk7OetrzbugONDgmlQeMe1FonkcVLXflb1Ynpl8g1CdkeJWz1AZ/5qCTmR4
-        AjZfV1pYHUpKGzRuuw4Deb/ihbV4DkTSTimR9Bzrp7w2FGDc6I7Mp8MdRpejgpcrXsltmx9r12fBY
-        Paz8DdaQ==;
+        bh=3/T0DZIFV1YxzTahdT76QsI+nGR+hXoMehH2C9Hs8wg=; b=EqVTXKN5z4Ov7vkDfaOfc9/ys/
+        e8VCKxDYGo1ttaeKt9IQF8wf70UaE9eh5TYLeaxLa0yZGY6ylGGkKxugJVrIMroXUQ3bQEjDGLL2D
+        /pvZx1TIGV7b9nvkKqiUUTc/1fH5dIYDqIpmdTV0w5BZzfjXdPrkXOWt98brIfdCP8g3MJAMm9P/T
+        d04I2NrBboHM5x4H6lS5PJm0e/V4eL2ddP8zSi1FfYjgKIiy8agw8olz5HW7CcDn7yGoBg7Sm8wlL
+        RYh2+DkwVMGw0TSGRQD7XK1oRKnUKJLRpaFJahlExUlBuWG8Ar8I2TG/bfVWO6pMaaPfIvbsAprxa
+        G19073mg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZYZ2-00GiYy-Mq; Thu, 22 Apr 2021 12:38:13 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZYZ2-000ICF-GU; Thu, 22 Apr 2021 12:36:22 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 777D930031D;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C33A30031E;
         Thu, 22 Apr 2021 14:35:22 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 536C62C67A900; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
-Message-ID: <20210422123308.617407840@infradead.org>
+        id 589FE2C67A901; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
+Message-ID: <20210422123308.678425748@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 22 Apr 2021 14:05:10 +0200
+Date:   Thu, 22 Apr 2021 14:05:11 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
         mingo@kernel.org, vincent.guittot@linaro.org,
         valentin.schneider@arm.com, mgorman@suse.de
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, Vineeth Pillai <viremana@linux.microsoft.com>
-Subject: [PATCH 11/19] sched/fair: Fix forced idle sibling starvation corner case
+        tglx@linutronix.de
+Subject: [PATCH 12/19] sched: Fix priority inversion of cookied task with sibling
 References: <20210422120459.447350175@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,139 +53,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineeth Pillai <viremana@linux.microsoft.com>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-If there is only one long running local task and the sibling is
-forced idle, it  might not get a chance to run until a schedule
-event happens on any cpu in the core.
+The rationale is as follows. In the core-wide pick logic, even if
+need_sync == false, we need to go look at other CPUs (non-local CPUs)
+to see if they could be running RT.
 
-So we check for this condition during a tick to see if a sibling
-is starved and then give it a chance to schedule.
+Say the RQs in a particular core look like this:
 
-Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+Let CFS1 and CFS2 be 2 tagged CFS tags.
+Let RT1 be an untagged RT task.
+
+	rq0		rq1
+	CFS1 (tagged)	RT1 (no tag)
+	CFS2 (tagged)
+
+Say schedule() runs on rq0. Now, it will enter the above loop and
+pick_task(RT) will return NULL for 'p'. It will enter the above if()
+block and see that need_sync == false and will skip RT entirely.
+
+The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+
+	rq0             rq1
+	CFS1            IDLE
+
+When it should have selected:
+
+	rq0             rq1
+	IDLE            RT
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  | 15 ++++++++-------
- kernel/sched/fair.c  | 40 ++++++++++++++++++++++++++++++++++++++++
- kernel/sched/sched.h |  2 +-
- 3 files changed, 49 insertions(+), 8 deletions(-)
+ kernel/sched/core.c |   65 ++++++++++++++++++++--------------------------------
+ 1 file changed, 26 insertions(+), 39 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1bd0b0bbb040..52d0e83072a4 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5206,16 +5206,15 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+@@ -5425,6 +5425,15 @@ pick_next_task(struct rq *rq, struct tas
+ 	put_prev_task_balance(rq, prev, rf);
  
- 	/* reset state */
- 	rq->core->core_cookie = 0UL;
+ 	smt_mask = cpu_smt_mask(cpu);
++	need_sync = !!rq->core->core_cookie;
++
++	/* reset state */
++	rq->core->core_cookie = 0UL;
 +	if (rq->core->core_forceidle) {
 +		need_sync = true;
++		fi_before = true;
 +		rq->core->core_forceidle = false;
 +	}
+ 
+ 	/*
+ 	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
+@@ -5437,14 +5446,25 @@ pick_next_task(struct rq *rq, struct tas
+ 	 * 'Fix' this by also increasing @task_seq for every pick.
+ 	 */
+ 	rq->core->core_task_seq++;
+-	need_sync = !!rq->core->core_cookie;
+ 
+-	/* reset state */
+-	rq->core->core_cookie = 0UL;
+-	if (rq->core->core_forceidle) {
++	/*
++	 * Optimize for common case where this CPU has no cookies
++	 * and there are no cookied tasks running on siblings.
++	 */
++	if (!need_sync) {
++		for_each_class(class) {
++			next = class->pick_task(rq);
++			if (next)
++				break;
++		}
++
++		if (!next->core_cookie) {
++			rq->core_pick = NULL;
++			goto done;
++		}
+ 		need_sync = true;
+-		rq->core->core_forceidle = false;
+ 	}
++
  	for_each_cpu(i, smt_mask) {
  		struct rq *rq_i = cpu_rq(i);
  
- 		rq_i->core_pick = NULL;
- 
--		if (rq_i->core_forceidle) {
--			need_sync = true;
--			rq_i->core_forceidle = false;
--		}
+@@ -5474,31 +5494,8 @@ pick_next_task(struct rq *rq, struct tas
+ 			 * core.
+ 			 */
+ 			p = pick_task(rq_i, class, max);
+-			if (!p) {
+-				/*
+-				 * If there weren't no cookies; we don't need to
+-				 * bother with the other siblings.
+-				 * If the rest of the core is not running a tagged
+-				 * task, i.e.  need_sync == 0, and the current CPU
+-				 * which called into the schedule() loop does not
+-				 * have any tasks for this class, skip selecting for
+-				 * other siblings since there's no point. We don't skip
+-				 * for RT/DL because that could make CFS force-idle RT.
+-				 */
+-				if (i == cpu && !need_sync && class == &fair_sched_class)
+-					goto next_class;
 -
- 		if (i != cpu)
- 			update_rq_clock(rq_i);
++			if (!p)
+ 				continue;
+-			}
+-
+-			/*
+-			 * Optimize the 'normal' case where there aren't any
+-			 * cookies and we don't need to sync up.
+-			 */
+-			if (i == cpu && !need_sync && !p->core_cookie) {
+-				next = p;
+-				goto done;
+-			}
+ 
+ 			rq_i->core_pick = p;
+ 
+@@ -5526,19 +5523,9 @@ pick_next_task(struct rq *rq, struct tas
+ 						cpu_rq(j)->core_pick = NULL;
+ 					}
+ 					goto again;
+-				} else {
+-					/*
+-					 * Once we select a task for a cpu, we
+-					 * should not be doing an unconstrained
+-					 * pick because it might starve a task
+-					 * on a forced idle cpu.
+-					 */
+-					need_sync = true;
+ 				}
+-
+ 			}
+ 		}
+-next_class:;
  	}
-@@ -5335,8 +5334,10 @@ next_class:;
- 		if (!rq_i->core_pick)
- 			continue;
  
--		if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running)
--			rq_i->core_forceidle = true;
-+		if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running &&
-+		    !rq_i->core->core_forceidle) {
-+			rq_i->core->core_forceidle = true;
-+		}
- 
- 		if (i == cpu) {
- 			rq_i->core_pick = NULL;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f53681cd263e..42965c4fd71f 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10692,6 +10692,44 @@ static void rq_offline_fair(struct rq *rq)
- 
- #endif /* CONFIG_SMP */
- 
-+#ifdef CONFIG_SCHED_CORE
-+static inline bool
-+__entity_slice_used(struct sched_entity *se, int min_nr_tasks)
-+{
-+	u64 slice = sched_slice(cfs_rq_of(se), se);
-+	u64 rtime = se->sum_exec_runtime - se->prev_sum_exec_runtime;
-+
-+	return (rtime * min_nr_tasks > slice);
-+}
-+
-+#define MIN_NR_TASKS_DURING_FORCEIDLE	2
-+static inline void task_tick_core(struct rq *rq, struct task_struct *curr)
-+{
-+	if (!sched_core_enabled(rq))
-+		return;
-+
-+	/*
-+	 * If runqueue has only one task which used up its slice and
-+	 * if the sibling is forced idle, then trigger schedule to
-+	 * give forced idle task a chance.
-+	 *
-+	 * sched_slice() considers only this active rq and it gets the
-+	 * whole slice. But during force idle, we have siblings acting
-+	 * like a single runqueue and hence we need to consider runnable
-+	 * tasks on this cpu and the forced idle cpu. Ideally, we should
-+	 * go through the forced idle rq, but that would be a perf hit.
-+	 * We can assume that the forced idle cpu has atleast
-+	 * MIN_NR_TASKS_DURING_FORCEIDLE - 1 tasks and use that to check
-+	 * if we need to give up the cpu.
-+	 */
-+	if (rq->core->core_forceidle && rq->cfs.nr_running == 1 &&
-+	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
-+		resched_curr(rq);
-+}
-+#else
-+static inline void task_tick_core(struct rq *rq, struct task_struct *curr) {}
-+#endif
-+
- /*
-  * scheduler tick hitting a task of our scheduling class.
-  *
-@@ -10715,6 +10753,8 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
- 
- 	update_misfit_status(curr, rq);
- 	update_overutilized_status(task_rq(curr));
-+
-+	task_tick_core(rq, curr);
- }
- 
- /*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 63b28e1843ee..be656ca8693d 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1069,12 +1069,12 @@ struct rq {
- 	unsigned int		core_enabled;
- 	unsigned int		core_sched_seq;
- 	struct rb_root		core_tree;
--	unsigned char		core_forceidle;
- 
- 	/* shared state */
- 	unsigned int		core_task_seq;
- 	unsigned int		core_pick_seq;
- 	unsigned long		core_cookie;
-+	unsigned char		core_forceidle;
- #endif
- };
- 
--- 
-2.29.2.299.gdc1121823c-goog
-
+ 	rq->core->core_pick_seq = rq->core->core_task_seq;
 
 
