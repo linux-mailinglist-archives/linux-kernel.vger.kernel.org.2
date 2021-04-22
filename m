@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3985136817B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86D6368180
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236402AbhDVNeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:34:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
+        id S236466AbhDVNfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhDVNeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B04246145D;
-        Thu, 22 Apr 2021 13:33:44 +0000 (UTC)
+        id S236424AbhDVNfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:35:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD1316145B;
+        Thu, 22 Apr 2021 13:34:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619098426;
-        bh=t0BYMH9xcCAjPvr3dKnR2jagiZDPjThmRe480mlqi6c=;
+        s=k20201202; t=1619098467;
+        bh=M4gtxOQ2wfWhXhavoI25WZyeG6DPnIuVBk7gtqGyo78=;
         h=From:To:Cc:Subject:Date:From;
-        b=nQMbtwnCnIgGYk3xZ3/grusI8phMVT8ff4ZhZrjvBCsu3v7MLr8bduOyneaaNtEwE
-         /aM+gZjej9VOsTadtjsUlGaKxRXvTaE8XJkRNQhGcIwlzgkKDR9K4ufhugHHNKVJh2
-         2fepBVLnfILj+01bvKmi1QyjvuC2mFZx3BOz/IA1MGuPqMAyw51dUhpfJE5TvZAwjb
-         +t5zNdOxHVBCv8WECf/i4+SvduVfxt9eSlLt2tmzyvBL6j2+dr5j3y3D3l9KNSrRnN
-         5eucFOiQV9vat9UXUMEIkSHkCJNgulctxOuSQWrPkkP9M0HdTqQa/qMdPnt/DUpeeY
-         ySa4B57PJjevA==
+        b=mHy/NX6btZoxdSzXT9qQFFWD3SKtJBkyd015oGHWEHuLQs8GNJqR8aRVljaqly5ue
+         L0Lvjo05BLOQou6rYdE0Dg2izYCtRDrhxFmNGqNrz4Le5fmy4MIX9gBJANIP3UPqTn
+         vqYOc43kD54cH1Ly1AEqwmsNbrD9oIXFswALdb6pgmeUFFFHR5Izk5Uf0hIWR5ZTwG
+         fxWLlbyxF5rOJQYIU0zDHqIGJNAooSECH/Pq0/3YrWPtAKTo/qng8wb3mAdP7qs1Xc
+         VdA6CDlNut/7agw2uWAJEnKWV7mQFzIwkRxlLYSCICrKSJKshDcL2tAvSIGcOu99cX
+         YVPqx1LbLFBxw==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-power@fi.rohmeurope.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: bd71815: include <linux/of.h> and <linux/gpio/consumer.h>
-Date:   Thu, 22 Apr 2021 15:33:25 +0200
-Message-Id: <20210422133338.1734640-1-arnd@kernel.org>
+        Dmitry Osipenko <digetx@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Qiushi Wu <wu000273@umn.edu>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: tegra: mark runtime-pm functions as __maybe_unused
+Date:   Thu, 22 Apr 2021 15:34:00 +0200
+Message-Id: <20210422133418.1757893-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,51 +46,124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The new driver causes a build failure because of a missing includes:
+A reorganization of the driver source led to two of them causing
+a compile time warning in some configurations:
 
-drivers/regulator/bd71815-regulator.c: In function 'buck12_set_hw_dvs_levels':
-drivers/regulator/bd71815-regulator.c:210:13: error: implicit declaration of function 'of_find_property' [-Werror=implicit-function-declaration]
-  210 |         if (of_find_property(np, "rohm,dvs-run-voltage", NULL) ||
-      |             ^~~~~~~~~~~~~~~~
-drivers/regulator/bd71815-regulator.c: At top level:
-drivers/regulator/bd71815-regulator.c:461:37: error: implicit declaration of function 'of_match_ptr' [-Werror=implicit-function-declaration]
-  461 |                         .of_match = of_match_ptr(#_name),               \
-      |                                     ^~~~~~~~~~~~
-drivers/regulator/bd71815-regulator.c: In function 'bd7181x_probe':
-drivers/regulator/bd71815-regulator.c:590:19: error: implicit declaration of function 'devm_gpiod_get_from_of_node' [-Werror=implicit-function-declaration]
-  590 |         ldo4_en = devm_gpiod_get_from_of_node(&pdev->dev,
-      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/regulator/bd71815-regulator.c:593:50: error: 'GPIOD_ASIS' undeclared (first use in this function); did you mean 'GPIOF_IN'?
-  593 |                                                  GPIOD_ASIS, "ldo4-en");
-      |                                                  ^~~~~~~~~~
-      |                                                  GPIOF_IN
+tegra/tegra20_spdif.c:36:12: error: 'tegra20_spdif_runtime_resume' defined but not used [-Werror=unused-function]
+   36 | static int tegra20_spdif_runtime_resume(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tegra/tegra20_spdif.c:27:12: error: 'tegra20_spdif_runtime_suspend' defined but not used [-Werror=unused-function]
+   27 | static int tegra20_spdif_runtime_suspend(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tegra/tegra30_ahub.c:64:12: error: 'tegra30_ahub_runtime_resume' defined but not used [-Werror=unused-function]
+   64 | static int tegra30_ahub_runtime_resume(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tegra/tegra30_ahub.c:43:12: error: 'tegra30_ahub_runtime_suspend' defined but not used [-Werror=unused-function]
+   43 | static int tegra30_ahub_runtime_suspend(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 1aad39001e85 ("regulator: Support ROHM BD71815 regulators")
+Mark these functions as __maybe_unused to avoid this kind of warning.
+
+Fixes: b5571449e618 ("ASoC: tegra30: ahub: Remove handing of disabled runtime PM")
+Fixes: c53b396f0dd4 ("ASoC: tegra20: spdif: Remove handing of disabled runtime PM")
+Fixes: 80ec4a4cb36d ("ASoC: tegra20: i2s: Remove handing of disabled runtime PM")
+Fixes: b5f6f781fcb2 ("ASoC: tegra30: i2s: Remove handing of disabled runtime PM")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-As found yesterday with another patch I sent for this driver,
-it is apparently not part of the regulator tree but only merged
-through Lee's mfd tree.
----
- drivers/regulator/bd71815-regulator.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/tegra/tegra20_i2s.c   | 4 ++--
+ sound/soc/tegra/tegra20_spdif.c | 4 ++--
+ sound/soc/tegra/tegra30_ahub.c  | 4 ++--
+ sound/soc/tegra/tegra30_i2s.c   | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
-index a4e8d5e36b40..5be2b01632a0 100644
---- a/drivers/regulator/bd71815-regulator.c
-+++ b/drivers/regulator/bd71815-regulator.c
-@@ -16,9 +16,10 @@
- #include <linux/regulator/driver.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/mfd/rohm-generic.h>
- #include <linux/mfd/rohm-bd71815.h>
-+#include <linux/of.h>
- #include <linux/regulator/of_regulator.h>
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index 1b27f81c10fe..b280ebd72591 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -34,7 +34,7 @@
  
- struct bd71815_regulator {
+ #define DRV_NAME "tegra20-i2s"
+ 
+-static int tegra20_i2s_runtime_suspend(struct device *dev)
++static __maybe_unused int tegra20_i2s_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
+ 
+@@ -45,7 +45,7 @@ static int tegra20_i2s_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int tegra20_i2s_runtime_resume(struct device *dev)
++static __maybe_unused int tegra20_i2s_runtime_resume(struct device *dev)
+ {
+ 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
+ 	int ret;
+diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+index 7b597ee63cb5..de698ff2a69c 100644
+--- a/sound/soc/tegra/tegra20_spdif.c
++++ b/sound/soc/tegra/tegra20_spdif.c
+@@ -24,7 +24,7 @@
+ 
+ #define DRV_NAME "tegra20-spdif"
+ 
+-static int tegra20_spdif_runtime_suspend(struct device *dev)
++static __maybe_unused int tegra20_spdif_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
+ 
+@@ -33,7 +33,7 @@ static int tegra20_spdif_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int tegra20_spdif_runtime_resume(struct device *dev)
++static __maybe_unused int tegra20_spdif_runtime_resume(struct device *dev)
+ {
+ 	struct tegra20_spdif *spdif = dev_get_drvdata(dev);
+ 	int ret;
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index d1718f3af3cd..4692c70ed933 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -40,7 +40,7 @@ static inline void tegra30_audio_write(u32 reg, u32 val)
+ 	regmap_write(ahub->regmap_ahub, reg, val);
+ }
+ 
+-static int tegra30_ahub_runtime_suspend(struct device *dev)
++static __maybe_unused int tegra30_ahub_runtime_suspend(struct device *dev)
+ {
+ 	regcache_cache_only(ahub->regmap_apbif, true);
+ 	regcache_cache_only(ahub->regmap_ahub, true);
+@@ -61,7 +61,7 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
+  * stopping streams should dynamically adjust the clock as required.  However,
+  * this is not yet implemented.
+  */
+-static int tegra30_ahub_runtime_resume(struct device *dev)
++static __maybe_unused int tegra30_ahub_runtime_resume(struct device *dev)
+ {
+ 	int ret;
+ 
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 8730ffa0f691..36344f0a64c1 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -36,7 +36,7 @@
+ 
+ #define DRV_NAME "tegra30-i2s"
+ 
+-static int tegra30_i2s_runtime_suspend(struct device *dev)
++static __maybe_unused int tegra30_i2s_runtime_suspend(struct device *dev)
+ {
+ 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
+ 
+@@ -47,7 +47,7 @@ static int tegra30_i2s_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int tegra30_i2s_runtime_resume(struct device *dev)
++static __maybe_unused int tegra30_i2s_runtime_resume(struct device *dev)
+ {
+ 	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
+ 	int ret;
 -- 
 2.29.2
 
