@@ -2,96 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED6E367723
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F3A367726
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhDVCLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:11:30 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:38690 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230319AbhDVCL3 (ORCPT
+        id S233959AbhDVCMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230000AbhDVCMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:11:29 -0400
-X-UUID: db0207a1956544dca90c22d29a20a729-20210422
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NWZUJCNxO3pM4ccYtxmcJrgXOTaZ34GcudHZtUurBwQ=;
-        b=CldFiwWtGyWbCDmJbKW5uJSibt8Wb7kWsL5lV8bQWynjIXRDReYkbEBySpoNB2aAsS4/8RovKmCKVZZ0/qlIv07M+xE2wrlkpSowcZ7Vc772VNgLmctogf7KYmx2go+5xonTS9vRxzYsnc36s3/Xk/19lPn9NfS9X2Jc3NqXdFA=;
-X-UUID: db0207a1956544dca90c22d29a20a729-20210422
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1414987183; Thu, 22 Apr 2021 10:10:49 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
- 2021 10:10:47 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Apr 2021 10:10:46 +0800
-Message-ID: <1619057446.27999.2.camel@mhfsdcap03>
-Subject: Re: [PATCH v4 4/4] pinctrl: add rsel setting on MT8195
-From:   zhiyong tao <zhiyong.tao@mediatek.com>
-To:     Sean Wang <sean.wang@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Hui Liu =?UTF-8?Q?=28=E5=88=98=E8=BE=89=29?= 
-        <Hui.Liu@mediatek.com>,
-        Eddie Huang =?UTF-8?Q?=28=E9=BB=83=E6=99=BA=E5=82=91=29?= 
-        <eddie.huang@mediatek.com>,
-        Po Xu =?UTF-8?Q?=28=E5=BE=90=E5=9D=A1=29?= 
-        <ot_po.xu@mediatek.com>,
-        "Biao Huang =?UTF-8?Q?=28=E9=BB=84=E5=BD=AA=29?=" 
-        <Biao.Huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
-        <seiya.wang@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Date:   Thu, 22 Apr 2021 10:10:46 +0800
-In-Reply-To: <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
-References: <20210413055702.27535-1-zhiyong.tao@mediatek.com>
-         <20210413055702.27535-5-zhiyong.tao@mediatek.com>
-         <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
+        Wed, 21 Apr 2021 22:12:03 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAB6C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:11:29 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id l6-20020a5b05860000b02904e88b568042so18219495ybp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=BgeeFXLae7p4tESr7C5iEIirYqJ/bWWbWSvsNXof9Mg=;
+        b=CjnWcAI4QFKQZG0WldgHzCpcPsyGBnmDdq6p48/9ZU0hDve7babqNP2g4IWXLZPNOI
+         Fmjug1K+dQvzxn7273w0d6QhBVhcbcGwlvwCc+2lWVD2Edgt9mOk9f0zjzmWK5w6DSh4
+         zq1EXDdUzDWXIs3JHD7WPkPnNPggOVy/6mtL/GZNZ9pKXYY5dqK0SP2hXONRMJkEdBJQ
+         6LYaXsuJP9ie+Qw1jtdvzCp/VfzpUa9ayL/PX+k+xbcXI6qVciRXg4Wp1WBe2G1tMJuG
+         Pc3v9mQ+54qYMP/CVqr4UyaVH7sJRYW7ri/3QZkFmjeATDhr+6sWIfGhppqZy+Zrn3aU
+         oHDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=BgeeFXLae7p4tESr7C5iEIirYqJ/bWWbWSvsNXof9Mg=;
+        b=pNCLzVS2RhbiKlL7AH4d5VOEQ1H3r3ZbZ8MyWNVC8o6UVJR1EERwlNLJe8QHj0FA9g
+         bBil7MrsbXeiuTtI7G7kDVJXENHsWbQNfsbmFxwIp+7YD60ghDOfT+enFk0NJ7n6BYIX
+         e83hNMQ41lS5zq2G2pQ/AgnVqUonPfaO7CzvUDn5hdJ9WNLJwBgt+LpSkIeElIQeHMr0
+         FhHYmKL3NUQ0tcq3aevFRQpEOcRkT6nvSQSdGSWrBMknn+lWF9TXe0G5bZQcIVJcnOjs
+         /oLdLmgZRPhmrGgshEuqXB+Ol7zocjcyGZt2WcGm4ngmsGNwayGDM1+nZZzV+hlth3fP
+         /WZQ==
+X-Gm-Message-State: AOAM531mapaUa5T8rrD22aBo6BB38HDClGmxL0+uDvwV314reNCQcFWY
+        EC2frE1AFG9iSFP++dB4usWkaQ6sP2I=
+X-Google-Smtp-Source: ABdhPJzALDiRE9aA270oh7sykTY9Efj6ng96S+sITefYvCrazk1t93p9SRCc0wcrZvcAgc0Fn9Uqi59VR/I=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e012:374c:592:6194])
+ (user=seanjc job=sendgmr) by 2002:a25:7085:: with SMTP id l127mr1381469ybc.293.1619057488960;
+ Wed, 21 Apr 2021 19:11:28 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 21 Apr 2021 19:11:10 -0700
+Message-Id: <20210422021125.3417167-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH v5 00/15] KVM: SVM: Misc SEV cleanups
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: D12B029E0DF7614013281B6D52E7723B0881247E94195CE17C8D141C4811031E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA0LTIwIGF0IDExOjUwICswODAwLCBTZWFuIFdhbmcgd3JvdGU6DQo+IE9u
-IE1vbiwgQXByIDEyLCAyMDIxIGF0IDEwOjU3IFBNIFpoaXlvbmcgVGFvIDx6aGl5b25nLnRhb0Bt
-ZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPHNuaXA+DQo+ID4gQEAgLTE3Niw2ICsxODAsMTIg
-QEAgc3RhdGljIGludCBtdGtfcGluY29uZl9nZXQoc3RydWN0IHBpbmN0cmxfZGV2ICpwY3RsZGV2
-LA0KPiA+ICAgICAgICAgICAgICAgICBlbHNlDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
-ZXJyID0gLUVOT1RTVVBQOw0KPiA+ICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiArICAgICAg
-IGNhc2UgTVRLX1BJTl9DT05GSUdfUlNFTDoNCj4gPiArICAgICAgICAgICAgICAgaWYgKGh3LT5z
-b2MtPnJzZWxfZ2V0KQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGVyciA9IGh3LT5zb2Mt
-PnJzZWxfZ2V0KGh3LCBkZXNjLCAmcmV0KTsNCj4gPiArICAgICAgICAgICAgICAgZWxzZQ0KPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgIGVyciA9IC1FT1BOT1RTVVBQOw0KPiANCj4gSSB0aGlu
-ayB0aGF0IHNob3VsZCB3YW50IHRvIGJlIC1FTk9UU1VQUCB0byBhbGlnbiBvdGhlciBvY2N1cnJl
-bmNlcy4NCj09PkhpIHNlYW4sDQpDYW4geW91IGdpdmUgbWUgc29tZSBzdWdnZXN0aW9uPyAtRU5P
-UEFSQU0gb3IgLUVCQURUWVBFPw0KDQpUaGFua3MuDQo+IA0KPiA+ICsgICAgICAgICAgICAgICBi
-cmVhazsNCj4gPiAgICAgICAgIGRlZmF1bHQ6DQo+ID4gICAgICAgICAgICAgICAgIGVyciA9IC1F
-Tk9UU1VQUDsNCj4gPiAgICAgICAgIH0NCj4gPiBAQCAtMjk1LDYgKzMwNSwxMiBAQCBzdGF0aWMg
-aW50IG10a19waW5jb25mX3NldChzdHJ1Y3QgcGluY3RybF9kZXYgKnBjdGxkZXYsIHVuc2lnbmVk
-IGludCBwaW4sDQo+ID4gICAgICAgICAgICAgICAgIGVsc2UNCj4gPiAgICAgICAgICAgICAgICAg
-ICAgICAgICBlcnIgPSAtRU5PVFNVUFA7DQo+ID4gICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+
-ICsgICAgICAgY2FzZSBNVEtfUElOX0NPTkZJR19SU0VMOg0KPiA+ICsgICAgICAgICAgICAgICBp
-ZiAoaHctPnNvYy0+cnNlbF9zZXQpDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZXJyID0g
-aHctPnNvYy0+cnNlbF9zZXQoaHcsIGRlc2MsIGFyZyk7DQo+ID4gKyAgICAgICAgICAgICAgIGVs
-c2UNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBlcnIgPSAtRU9QTk9UU1VQUDsNCj4gDQo+
-IERpdHRvDQo+IA0KPiA+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gPiAgICAgICAgIGRlZmF1
-bHQ6DQo+ID4gICAgICAgICAgICAgICAgIGVyciA9IC1FTk9UU1VQUDsNCj4gPiAgICAgICAgIH0N
-Cj4gPiAtLQ0KPiA+IDIuMTguMA0KPiA+DQoNCg==
+Minor bug fixes and refactorings of SEV related code, mainly to clean up
+the KVM code for tracking whether or not SEV and SEV-ES are enabled.  E.g.
+KVM has both sev_es and svm_sev_enabled(), and a global 'sev' flag while
+also using 'sev' as a local variable in several places.
+
+Based kvm/queue-ish, commit 0e91d1992235 ("KVM: SVM: Allocate SEV command
+structures on local stack"), to avoid the conflicting CPUID.0x8000_001F
+patch sitting in kvm/queue.
+
+v5:
+ - Use Paolo's version of the CPUID.0x8000_001F patch, with some of my
+   goo on top.  Paolo gets credit by introducing fewer bugs; v4 missed
+   the SEV/SEV-ES module params and used the wrong reverse-CPUID index...
+ - Add a patch to disable SEV/SEV-ES if NPT is disabled.
+ - Rebased, as above.
+v4:
+ - Reinstate the patch to override CPUID.0x8000_001F.
+ - Properly configure the CPUID.0x8000_001F override. [Paolo]
+ - Rebase to v5.12-rc1-dontuse.
+v3:
+ - Drop two patches: add a dedicated feature word for CPUID_0x8000001F,
+   and use the new word to mask host CPUID in KVM.  I'll send these as a
+   separate mini-series so that Boris can take them through tip.
+ - Add a patch to remove dependency on
+   CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT. [Boris / Paolo]
+ - Use kcalloc() instead of an open-coded equivalent. [Tom]
+ - Nullify sev_asid_bitmap when freeing it during setup. [Tom]
+ - Add a comment in sev_hardware_teardown() to document why it's safe to
+   query the ASID bitmap without taking the lock. [Tom]
+ - Collect reviews. [Tom and Brijesh]
+v2:
+ - Remove the kernel's sev_enabled instead of renaming it to sev_guest.
+ - Fix various build issues. [Tom]
+ - Remove stable tag from the patch to free sev_asid_bitmap.  Keeping the
+   bitmap on failure is truly only a leak once svm_sev_enabled() is
+   dropped later in the series.  It's still arguably a fix since KVM will
+   unnecessarily keep memory, but it's not stable material. [Tom]
+ - Collect one Ack. [Tom]
+
+v1:
+ - https://lkml.kernel.org/r/20210109004714.1341275-1-seanjc@google.com
+
+Paolo Bonzini (1):
+  KVM: SEV: Mask CPUID[0x8000001F].eax according to supported features
+
+Sean Christopherson (14):
+  KVM: SVM: Zero out the VMCB array used to track SEV ASID association
+  KVM: SVM: Free sev_asid_bitmap during init if SEV setup fails
+  KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
+  KVM: SVM: Move SEV module params/variables to sev.c
+  x86/sev: Drop redundant and potentially misleading 'sev_enabled'
+  KVM: SVM: Append "_enabled" to module-scoped SEV/SEV-ES control
+    variables
+  KVM: SVM: Condition sev_enabled and sev_es_enabled on
+    CONFIG_KVM_AMD_SEV=y
+  KVM: SVM: Enable SEV/SEV-ES functionality by default (when supported)
+  KVM: SVM: Unconditionally invoke sev_hardware_teardown()
+  KVM: SVM: Explicitly check max SEV ASID during sev_hardware_setup()
+  KVM: SVM: Move SEV VMCB tracking allocation to sev.c
+  KVM: SVM: Drop redundant svm_sev_enabled() helper
+  KVM: SVM: Remove an unnecessary prototype declaration of
+    sev_flush_asids()
+  KVM: SVM: Skip SEV cache flush if no ASIDs have been used
+
+ arch/x86/include/asm/mem_encrypt.h |  1 -
+ arch/x86/kvm/cpuid.c               |  8 ++-
+ arch/x86/kvm/cpuid.h               |  1 +
+ arch/x86/kvm/svm/sev.c             | 80 ++++++++++++++++++++++--------
+ arch/x86/kvm/svm/svm.c             | 57 +++++++++------------
+ arch/x86/kvm/svm/svm.h             |  9 +---
+ arch/x86/mm/mem_encrypt.c          | 12 ++---
+ arch/x86/mm/mem_encrypt_identity.c |  1 -
+ 8 files changed, 97 insertions(+), 72 deletions(-)
+
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
 
