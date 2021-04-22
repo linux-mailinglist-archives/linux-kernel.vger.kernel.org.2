@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06ED0368098
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E4C36809C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236307AbhDVMhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
+        id S236380AbhDVMi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235875AbhDVMhZ (ORCPT
+        with ESMTP id S235977AbhDVMhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Apr 2021 08:37:25 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D9EC06138B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD8EC06138C
         for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:36:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=xl87/Ue7tFX3S4O8U1a0BO5yF1FSNCP/Q+HkHsMp2BE=; b=r0SKiu6MsWDylXGRigUsrgdsua
-        05hiXXzp6iTn5dvMKC5Gfj36CGtDgl9K3klxwneq/ls3YBofYM68uOpS2x66chVIgOvyXIdm0X+ty
-        izi83vK0qj785dh+fnY9pDZqB6CrZijdnj0PEiP+zft6AB5qFVttNNHz/GZKbTgUA8ufAkYmutf/K
-        BHFfQ5tTXJisP3/a5a5UE4GOE6x3tHTG+LsVmVOhFtn+KklTz02gSSUKGx+cqYTGUCNpqJcCHXJxm
-        om1qUcux+cG6rNKeOxbkr6Dy6Kue8H0NzQtpydxoOJHBVLCS6Xs7YZNAHi8EtKq8/nTxtPqYg8cWk
-        98D5xqmQ==;
+        bh=xee/KxdDfh10tAHF4XV8VwAC0PEYKjFhCsBhBCtZeJQ=; b=T1Qkzl3WO8cxrMy8ySE2Jl8KNQ
+        ElT4E5FoCKm9qaSq1sdP6m39MfBTupr0ANkn7hlqnunV6MNZ4lPM3ei+RVJcRwxp06a9wgHiIHTN+
+        93AsaYCF6ymWhwk7RZmlRdIBg9C1L4NRfK1SUcTGdVDjur3Xrfmw1HwXP3JJJ+li7W8G5XBnwXZbA
+        hTieuhYKRGNXttfS7lJmYf1dMyS5hVR+lhq6yN0Ywz+TBho6XzMTbWMwnDs6T6SajVc6F04PfgPg3
+        l4ph2ghuGbAFBFQg6wKyWjDntif235dItDlXanCRIESZ0sbtD3cm7YvQIp0i8Ylz4M1/IupHpmkvy
+        jcN9UIgA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZYYF-000I8y-AR; Thu, 22 Apr 2021 12:35:48 +0000
+        id 1lZYYF-000I92-AD; Thu, 22 Apr 2021 12:35:48 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 69943300103;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70C443002F1;
         Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2A85A2C18940F; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
-Message-ID: <20210422123308.075967879@infradead.org>
+        id 3065E2C67967D; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
+Message-ID: <20210422123308.136465446@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 22 Apr 2021 14:05:01 +0200
+Date:   Thu, 22 Apr 2021 14:05:02 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
         mingo@kernel.org, vincent.guittot@linaro.org,
         valentin.schneider@arm.com, mgorman@suse.de
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         tglx@linutronix.de
-Subject: [PATCH 02/19] sched: Provide raw_spin_rq_*lock*() helpers
+Subject: [PATCH 03/19] sched: Wrap rq::lock access
 References: <20210422120459.447350175@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,97 +53,1029 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In prepration for playing games with rq->lock, add some rq_lock
-wrappers.
+In preparation of playing games with rq->lock, abstract the thing
+using an accessor.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  |   15 +++++++++++++++
- kernel/sched/sched.h |   50 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 65 insertions(+)
+ kernel/sched/core.c     |   70 ++++++++++++++++----------------
+ kernel/sched/cpuacct.c  |   12 ++---
+ kernel/sched/deadline.c |   22 +++++-----
+ kernel/sched/debug.c    |    4 -
+ kernel/sched/fair.c     |   35 +++++++---------
+ kernel/sched/idle.c     |    4 -
+ kernel/sched/pelt.h     |    2 
+ kernel/sched/rt.c       |   16 +++----
+ kernel/sched/sched.h    |  103 +++++++++++++++++++++++-------------------------
+ kernel/sched/topology.c |    4 -
+ 10 files changed, 135 insertions(+), 137 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -184,6 +184,21 @@ int sysctl_sched_rt_runtime = 950000;
-  *
-  */
+@@ -211,12 +211,12 @@ struct rq *__task_rq_lock(struct task_st
  
-+void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
-+{
-+	raw_spin_lock_nested(rq_lockp(rq), subclass);
-+}
-+
-+bool raw_spin_rq_trylock(struct rq *rq)
-+{
-+	return raw_spin_trylock(rq_lockp(rq));
-+}
-+
-+void raw_spin_rq_unlock(struct rq *rq)
-+{
-+	raw_spin_unlock(rq_lockp(rq));
-+}
-+
- /*
-  * __task_rq_lock - lock the rq @p resides on.
-  */
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1113,6 +1113,56 @@ static inline bool is_migration_disabled
+ 	for (;;) {
+ 		rq = task_rq(p);
+-		raw_spin_lock(&rq->lock);
++		raw_spin_rq_lock(rq);
+ 		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+ 			rq_pin_lock(rq, rf);
+ 			return rq;
+ 		}
+-		raw_spin_unlock(&rq->lock);
++		raw_spin_rq_unlock(rq);
+ 
+ 		while (unlikely(task_on_rq_migrating(p)))
+ 			cpu_relax();
+@@ -235,7 +235,7 @@ struct rq *task_rq_lock(struct task_stru
+ 	for (;;) {
+ 		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+ 		rq = task_rq(p);
+-		raw_spin_lock(&rq->lock);
++		raw_spin_rq_lock(rq);
+ 		/*
+ 		 *	move_queued_task()		task_rq_lock()
+ 		 *
+@@ -257,7 +257,7 @@ struct rq *task_rq_lock(struct task_stru
+ 			rq_pin_lock(rq, rf);
+ 			return rq;
+ 		}
+-		raw_spin_unlock(&rq->lock);
++		raw_spin_rq_unlock(rq);
+ 		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+ 
+ 		while (unlikely(task_on_rq_migrating(p)))
+@@ -327,7 +327,7 @@ void update_rq_clock(struct rq *rq)
+ {
+ 	s64 delta;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	if (rq->clock_update_flags & RQCF_ACT_SKIP)
+ 		return;
+@@ -626,7 +626,7 @@ void resched_curr(struct rq *rq)
+ 	struct task_struct *curr = rq->curr;
+ 	int cpu;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	if (test_tsk_need_resched(curr))
+ 		return;
+@@ -650,10 +650,10 @@ void resched_cpu(int cpu)
+ 	struct rq *rq = cpu_rq(cpu);
+ 	unsigned long flags;
+ 
+-	raw_spin_lock_irqsave(&rq->lock, flags);
++	raw_spin_rq_lock_irqsave(rq, flags);
+ 	if (cpu_online(cpu) || cpu == smp_processor_id())
+ 		resched_curr(rq);
+-	raw_spin_unlock_irqrestore(&rq->lock, flags);
++	raw_spin_rq_unlock_irqrestore(rq, flags);
+ }
+ 
+ #ifdef CONFIG_SMP
+@@ -1152,7 +1152,7 @@ static inline void uclamp_rq_inc_id(stru
+ 	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+ 	struct uclamp_bucket *bucket;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	/* Update task effective clamp */
+ 	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
+@@ -1192,7 +1192,7 @@ static inline void uclamp_rq_dec_id(stru
+ 	unsigned int bkt_clamp;
+ 	unsigned int rq_clamp;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	/*
+ 	 * If sched_uclamp_used was enabled after task @p was enqueued,
+@@ -1865,7 +1865,7 @@ static inline bool is_cpu_allowed(struct
+ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
+ 				   struct task_struct *p, int new_cpu)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	deactivate_task(rq, p, DEQUEUE_NOCLOCK);
+ 	set_task_cpu(p, new_cpu);
+@@ -2039,7 +2039,7 @@ int push_cpu_stop(void *arg)
+ 	struct task_struct *p = arg;
+ 
+ 	raw_spin_lock_irq(&p->pi_lock);
+-	raw_spin_lock(&rq->lock);
++	raw_spin_rq_lock(rq);
+ 
+ 	if (task_rq(p) != rq)
+ 		goto out_unlock;
+@@ -2069,7 +2069,7 @@ int push_cpu_stop(void *arg)
+ 
+ out_unlock:
+ 	rq->push_busy = false;
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ 	raw_spin_unlock_irq(&p->pi_lock);
+ 
+ 	put_task_struct(p);
+@@ -2122,7 +2122,7 @@ __do_set_cpus_allowed(struct task_struct
+ 		 * Because __kthread_bind() calls this on blocked tasks without
+ 		 * holding rq->lock.
+ 		 */
+-		lockdep_assert_held(&rq->lock);
++		lockdep_assert_rq_held(rq);
+ 		dequeue_task(rq, p, DEQUEUE_SAVE | DEQUEUE_NOCLOCK);
+ 	}
+ 	if (running)
+@@ -2463,7 +2463,7 @@ void set_task_cpu(struct task_struct *p,
+ 	 * task_rq_lock().
+ 	 */
+ 	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&p->pi_lock) ||
+-				      lockdep_is_held(&task_rq(p)->lock)));
++				      lockdep_is_held(rq_lockp(task_rq(p)))));
+ #endif
+ 	/*
+ 	 * Clearly, migrating tasks to offline CPUs is a fairly daft thing.
+@@ -3005,7 +3005,7 @@ ttwu_do_activate(struct rq *rq, struct t
+ {
+ 	int en_flags = ENQUEUE_WAKEUP | ENQUEUE_NOCLOCK;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	if (p->sched_contributes_to_load)
+ 		rq->nr_uninterruptible--;
+@@ -4016,7 +4016,7 @@ static void do_balance_callbacks(struct
+ 	void (*func)(struct rq *rq);
+ 	struct callback_head *next;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	while (head) {
+ 		func = (void (*)(struct rq *))head->func;
+@@ -4039,7 +4039,7 @@ static inline struct callback_head *spli
+ {
+ 	struct callback_head *head = rq->balance_callback;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	if (head)
+ 		rq->balance_callback = NULL;
+ 
+@@ -4056,9 +4056,9 @@ static inline void balance_callbacks(str
+ 	unsigned long flags;
+ 
+ 	if (unlikely(head)) {
+-		raw_spin_lock_irqsave(&rq->lock, flags);
++		raw_spin_rq_lock_irqsave(rq, flags);
+ 		do_balance_callbacks(rq, head);
+-		raw_spin_unlock_irqrestore(&rq->lock, flags);
++		raw_spin_rq_unlock_irqrestore(rq, flags);
+ 	}
+ }
+ 
+@@ -4089,10 +4089,10 @@ prepare_lock_switch(struct rq *rq, struc
+ 	 * do an early lockdep release here:
+ 	 */
+ 	rq_unpin_lock(rq, rf);
+-	spin_release(&rq->lock.dep_map, _THIS_IP_);
++	spin_release(&rq_lockp(rq)->dep_map, _THIS_IP_);
+ #ifdef CONFIG_DEBUG_SPINLOCK
+ 	/* this is a valid case when another task releases the spinlock */
+-	rq->lock.owner = next;
++	rq_lockp(rq)->owner = next;
  #endif
  }
  
-+static inline raw_spinlock_t *rq_lockp(struct rq *rq)
-+{
-+	return &rq->lock;
-+}
-+
-+static inline void lockdep_assert_rq_held(struct rq *rq)
-+{
-+	lockdep_assert_held(rq_lockp(rq));
-+}
-+
-+extern void raw_spin_rq_lock_nested(struct rq *rq, int subclass);
-+extern bool raw_spin_rq_trylock(struct rq *rq);
-+extern void raw_spin_rq_unlock(struct rq *rq);
-+
-+static inline void raw_spin_rq_lock(struct rq *rq)
-+{
-+	raw_spin_rq_lock_nested(rq, 0);
-+}
-+
-+static inline void raw_spin_rq_lock_irq(struct rq *rq)
-+{
-+	local_irq_disable();
-+	raw_spin_rq_lock(rq);
-+}
-+
-+static inline void raw_spin_rq_unlock_irq(struct rq *rq)
-+{
-+	raw_spin_rq_unlock(rq);
-+	local_irq_enable();
-+}
-+
-+static inline unsigned long _raw_spin_rq_lock_irqsave(struct rq *rq)
-+{
-+	unsigned long flags;
-+	local_irq_save(flags);
-+	raw_spin_rq_lock(rq);
-+	return flags;
-+}
-+
-+static inline void raw_spin_rq_unlock_irqrestore(struct rq *rq, unsigned long flags)
-+{
-+	raw_spin_rq_unlock(rq);
-+	local_irq_restore(flags);
-+}
-+
-+#define raw_spin_rq_lock_irqsave(rq, flags)	\
-+do {						\
-+	flags = _raw_spin_rq_lock_irqsave(rq);	\
-+} while (0)
-+
- #ifdef CONFIG_SCHED_SMT
- extern void __update_idle_core(struct rq *rq);
+@@ -4103,9 +4103,9 @@ static inline void finish_lock_switch(st
+ 	 * fix up the runqueue lock - which gets 'carried over' from
+ 	 * prev into current:
+ 	 */
+-	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
++	spin_acquire(&rq_lockp(rq)->dep_map, 0, 0, _THIS_IP_);
+ 	__balance_callbacks(rq);
+-	raw_spin_unlock_irq(&rq->lock);
++	raw_spin_rq_unlock_irq(rq);
+ }
  
+ /*
+@@ -5165,7 +5165,7 @@ static void __sched notrace __schedule(b
+ 
+ 		rq_unpin_lock(rq, &rf);
+ 		__balance_callbacks(rq);
+-		raw_spin_unlock_irq(&rq->lock);
++		raw_spin_rq_unlock_irq(rq);
+ 	}
+ }
+ 
+@@ -5707,7 +5707,7 @@ void rt_mutex_setprio(struct task_struct
+ 
+ 	rq_unpin_lock(rq, &rf);
+ 	__balance_callbacks(rq);
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ 
+ 	preempt_enable();
+ }
+@@ -7456,7 +7456,7 @@ void init_idle(struct task_struct *idle,
+ 	__sched_fork(0, idle);
+ 
+ 	raw_spin_lock_irqsave(&idle->pi_lock, flags);
+-	raw_spin_lock(&rq->lock);
++	raw_spin_rq_lock(rq);
+ 
+ 	idle->state = TASK_RUNNING;
+ 	idle->se.exec_start = sched_clock();
+@@ -7494,7 +7494,7 @@ void init_idle(struct task_struct *idle,
+ #ifdef CONFIG_SMP
+ 	idle->on_cpu = 1;
+ #endif
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ 	raw_spin_unlock_irqrestore(&idle->pi_lock, flags);
+ 
+ 	/* Set the preempt count _outside_ the spinlocks! */
+@@ -7660,7 +7660,7 @@ static void balance_push(struct rq *rq)
+ {
+ 	struct task_struct *push_task = rq->curr;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	SCHED_WARN_ON(rq->cpu != smp_processor_id());
+ 
+ 	/*
+@@ -7698,9 +7698,9 @@ static void balance_push(struct rq *rq)
+ 		 */
+ 		if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
+ 		    rcuwait_active(&rq->hotplug_wait)) {
+-			raw_spin_unlock(&rq->lock);
++			raw_spin_rq_unlock(rq);
+ 			rcuwait_wake_up(&rq->hotplug_wait);
+-			raw_spin_lock(&rq->lock);
++			raw_spin_rq_lock(rq);
+ 		}
+ 		return;
+ 	}
+@@ -7710,7 +7710,7 @@ static void balance_push(struct rq *rq)
+ 	 * Temporarily drop rq->lock such that we can wake-up the stop task.
+ 	 * Both preemption and IRQs are still disabled.
+ 	 */
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ 	stop_one_cpu_nowait(rq->cpu, __balance_push_cpu_stop, push_task,
+ 			    this_cpu_ptr(&push_work));
+ 	/*
+@@ -7718,7 +7718,7 @@ static void balance_push(struct rq *rq)
+ 	 * schedule(). The next pick is obviously going to be the stop task
+ 	 * which kthread_is_per_cpu() and will push this task away.
+ 	 */
+-	raw_spin_lock(&rq->lock);
++	raw_spin_rq_lock(rq);
+ }
+ 
+ static void balance_push_set(int cpu, bool on)
+@@ -8008,7 +8008,7 @@ static void dump_rq_tasks(struct rq *rq,
+ 	struct task_struct *g, *p;
+ 	int cpu = cpu_of(rq);
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	printk("%sCPU%d enqueued tasks (%u total):\n", loglvl, cpu, rq->nr_running);
+ 	for_each_process_thread(g, p) {
+@@ -8181,7 +8181,7 @@ void __init sched_init(void)
+ 		struct rq *rq;
+ 
+ 		rq = cpu_rq(i);
+-		raw_spin_lock_init(&rq->lock);
++		raw_spin_lock_init(&rq->__lock);
+ 		rq->nr_running = 0;
+ 		rq->calc_load_active = 0;
+ 		rq->calc_load_update = jiffies + LOAD_FREQ;
+--- a/kernel/sched/cpuacct.c
++++ b/kernel/sched/cpuacct.c
+@@ -112,7 +112,7 @@ static u64 cpuacct_cpuusage_read(struct
+ 	/*
+ 	 * Take rq->lock to make 64-bit read safe on 32-bit platforms.
+ 	 */
+-	raw_spin_lock_irq(&cpu_rq(cpu)->lock);
++	raw_spin_rq_lock_irq(cpu_rq(cpu));
+ #endif
+ 
+ 	if (index == CPUACCT_STAT_NSTATS) {
+@@ -126,7 +126,7 @@ static u64 cpuacct_cpuusage_read(struct
+ 	}
+ 
+ #ifndef CONFIG_64BIT
+-	raw_spin_unlock_irq(&cpu_rq(cpu)->lock);
++	raw_spin_rq_unlock_irq(cpu_rq(cpu));
+ #endif
+ 
+ 	return data;
+@@ -141,14 +141,14 @@ static void cpuacct_cpuusage_write(struc
+ 	/*
+ 	 * Take rq->lock to make 64-bit write safe on 32-bit platforms.
+ 	 */
+-	raw_spin_lock_irq(&cpu_rq(cpu)->lock);
++	raw_spin_rq_lock_irq(cpu_rq(cpu));
+ #endif
+ 
+ 	for (i = 0; i < CPUACCT_STAT_NSTATS; i++)
+ 		cpuusage->usages[i] = val;
+ 
+ #ifndef CONFIG_64BIT
+-	raw_spin_unlock_irq(&cpu_rq(cpu)->lock);
++	raw_spin_rq_unlock_irq(cpu_rq(cpu));
+ #endif
+ }
+ 
+@@ -253,13 +253,13 @@ static int cpuacct_all_seq_show(struct s
+ 			 * Take rq->lock to make 64-bit read safe on 32-bit
+ 			 * platforms.
+ 			 */
+-			raw_spin_lock_irq(&cpu_rq(cpu)->lock);
++			raw_spin_rq_lock_irq(cpu_rq(cpu));
+ #endif
+ 
+ 			seq_printf(m, " %llu", cpuusage->usages[index]);
+ 
+ #ifndef CONFIG_64BIT
+-			raw_spin_unlock_irq(&cpu_rq(cpu)->lock);
++			raw_spin_rq_unlock_irq(cpu_rq(cpu));
+ #endif
+ 		}
+ 		seq_puts(m, "\n");
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -157,7 +157,7 @@ void __add_running_bw(u64 dl_bw, struct
+ {
+ 	u64 old = dl_rq->running_bw;
+ 
+-	lockdep_assert_held(&(rq_of_dl_rq(dl_rq))->lock);
++	lockdep_assert_rq_held(rq_of_dl_rq(dl_rq));
+ 	dl_rq->running_bw += dl_bw;
+ 	SCHED_WARN_ON(dl_rq->running_bw < old); /* overflow */
+ 	SCHED_WARN_ON(dl_rq->running_bw > dl_rq->this_bw);
+@@ -170,7 +170,7 @@ void __sub_running_bw(u64 dl_bw, struct
+ {
+ 	u64 old = dl_rq->running_bw;
+ 
+-	lockdep_assert_held(&(rq_of_dl_rq(dl_rq))->lock);
++	lockdep_assert_rq_held(rq_of_dl_rq(dl_rq));
+ 	dl_rq->running_bw -= dl_bw;
+ 	SCHED_WARN_ON(dl_rq->running_bw > old); /* underflow */
+ 	if (dl_rq->running_bw > old)
+@@ -184,7 +184,7 @@ void __add_rq_bw(u64 dl_bw, struct dl_rq
+ {
+ 	u64 old = dl_rq->this_bw;
+ 
+-	lockdep_assert_held(&(rq_of_dl_rq(dl_rq))->lock);
++	lockdep_assert_rq_held(rq_of_dl_rq(dl_rq));
+ 	dl_rq->this_bw += dl_bw;
+ 	SCHED_WARN_ON(dl_rq->this_bw < old); /* overflow */
+ }
+@@ -194,7 +194,7 @@ void __sub_rq_bw(u64 dl_bw, struct dl_rq
+ {
+ 	u64 old = dl_rq->this_bw;
+ 
+-	lockdep_assert_held(&(rq_of_dl_rq(dl_rq))->lock);
++	lockdep_assert_rq_held(rq_of_dl_rq(dl_rq));
+ 	dl_rq->this_bw -= dl_bw;
+ 	SCHED_WARN_ON(dl_rq->this_bw > old); /* underflow */
+ 	if (dl_rq->this_bw > old)
+@@ -987,7 +987,7 @@ static int start_dl_timer(struct task_st
+ 	ktime_t now, act;
+ 	s64 delta;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	/*
+ 	 * We want the timer to fire at the deadline, but considering
+@@ -1097,9 +1097,9 @@ static enum hrtimer_restart dl_task_time
+ 		 * If the runqueue is no longer available, migrate the
+ 		 * task elsewhere. This necessarily changes rq.
+ 		 */
+-		lockdep_unpin_lock(&rq->lock, rf.cookie);
++		lockdep_unpin_lock(rq_lockp(rq), rf.cookie);
+ 		rq = dl_task_offline_migration(rq, p);
+-		rf.cookie = lockdep_pin_lock(&rq->lock);
++		rf.cookie = lockdep_pin_lock(rq_lockp(rq));
+ 		update_rq_clock(rq);
+ 
+ 		/*
+@@ -1731,7 +1731,7 @@ static void migrate_task_rq_dl(struct ta
+ 	 * from try_to_wake_up(). Hence, p->pi_lock is locked, but
+ 	 * rq->lock is not... So, lock it
+ 	 */
+-	raw_spin_lock(&rq->lock);
++	raw_spin_rq_lock(rq);
+ 	if (p->dl.dl_non_contending) {
+ 		sub_running_bw(&p->dl, &rq->dl);
+ 		p->dl.dl_non_contending = 0;
+@@ -1746,7 +1746,7 @@ static void migrate_task_rq_dl(struct ta
+ 			put_task_struct(p);
+ 	}
+ 	sub_rq_bw(&p->dl, &rq->dl);
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ }
+ 
+ static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
+@@ -2291,10 +2291,10 @@ static void pull_dl_task(struct rq *this
+ 		double_unlock_balance(this_rq, src_rq);
+ 
+ 		if (push_task) {
+-			raw_spin_unlock(&this_rq->lock);
++			raw_spin_rq_unlock(this_rq);
+ 			stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
+ 					    push_task, &src_rq->push_work);
+-			raw_spin_lock(&this_rq->lock);
++			raw_spin_rq_lock(this_rq);
+ 		}
+ 	}
+ 
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -576,7 +576,7 @@ void print_cfs_rq(struct seq_file *m, in
+ 	SEQ_printf(m, "  .%-30s: %Ld.%06ld\n", "exec_clock",
+ 			SPLIT_NS(cfs_rq->exec_clock));
+ 
+-	raw_spin_lock_irqsave(&rq->lock, flags);
++	raw_spin_rq_lock_irqsave(rq, flags);
+ 	if (rb_first_cached(&cfs_rq->tasks_timeline))
+ 		MIN_vruntime = (__pick_first_entity(cfs_rq))->vruntime;
+ 	last = __pick_last_entity(cfs_rq);
+@@ -584,7 +584,7 @@ void print_cfs_rq(struct seq_file *m, in
+ 		max_vruntime = last->vruntime;
+ 	min_vruntime = cfs_rq->min_vruntime;
+ 	rq0_min_vruntime = cpu_rq(0)->cfs.min_vruntime;
+-	raw_spin_unlock_irqrestore(&rq->lock, flags);
++	raw_spin_rq_unlock_irqrestore(rq, flags);
+ 	SEQ_printf(m, "  .%-30s: %Ld.%06ld\n", "MIN_vruntime",
+ 			SPLIT_NS(MIN_vruntime));
+ 	SEQ_printf(m, "  .%-30s: %Ld.%06ld\n", "min_vruntime",
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1107,7 +1107,7 @@ struct numa_group {
+ static struct numa_group *deref_task_numa_group(struct task_struct *p)
+ {
+ 	return rcu_dereference_check(p->numa_group, p == current ||
+-		(lockdep_is_held(&task_rq(p)->lock) && !READ_ONCE(p->on_cpu)));
++		(lockdep_is_held(rq_lockp(task_rq(p))) && !READ_ONCE(p->on_cpu)));
+ }
+ 
+ static struct numa_group *deref_curr_numa_group(struct task_struct *p)
+@@ -5328,7 +5328,7 @@ static void __maybe_unused update_runtim
+ {
+ 	struct task_group *tg;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(tg, &task_groups, list) {
+@@ -5347,7 +5347,7 @@ static void __maybe_unused unthrottle_of
+ {
+ 	struct task_group *tg;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(tg, &task_groups, list) {
+@@ -6874,7 +6874,7 @@ static void migrate_task_rq_fair(struct
+ 		 * In case of TASK_ON_RQ_MIGRATING we in fact hold the 'old'
+ 		 * rq->lock and can modify state directly.
+ 		 */
+-		lockdep_assert_held(&task_rq(p)->lock);
++		lockdep_assert_rq_held(task_rq(p));
+ 		detach_entity_cfs_rq(&p->se);
+ 
+ 	} else {
+@@ -7501,7 +7501,7 @@ static int task_hot(struct task_struct *
+ {
+ 	s64 delta;
+ 
+-	lockdep_assert_held(&env->src_rq->lock);
++	lockdep_assert_rq_held(env->src_rq);
+ 
+ 	if (p->sched_class != &fair_sched_class)
+ 		return 0;
+@@ -7599,7 +7599,7 @@ int can_migrate_task(struct task_struct
+ {
+ 	int tsk_cache_hot;
+ 
+-	lockdep_assert_held(&env->src_rq->lock);
++	lockdep_assert_rq_held(env->src_rq);
+ 
+ 	/*
+ 	 * We do not migrate tasks that are:
+@@ -7688,7 +7688,7 @@ int can_migrate_task(struct task_struct
+  */
+ static void detach_task(struct task_struct *p, struct lb_env *env)
+ {
+-	lockdep_assert_held(&env->src_rq->lock);
++	lockdep_assert_rq_held(env->src_rq);
+ 
+ 	deactivate_task(env->src_rq, p, DEQUEUE_NOCLOCK);
+ 	set_task_cpu(p, env->dst_cpu);
+@@ -7704,7 +7704,7 @@ static struct task_struct *detach_one_ta
+ {
+ 	struct task_struct *p;
+ 
+-	lockdep_assert_held(&env->src_rq->lock);
++	lockdep_assert_rq_held(env->src_rq);
+ 
+ 	list_for_each_entry_reverse(p,
+ 			&env->src_rq->cfs_tasks, se.group_node) {
+@@ -7740,7 +7740,7 @@ static int detach_tasks(struct lb_env *e
+ 	struct task_struct *p;
+ 	int detached = 0;
+ 
+-	lockdep_assert_held(&env->src_rq->lock);
++	lockdep_assert_rq_held(env->src_rq);
+ 
+ 	/*
+ 	 * Source run queue has been emptied by another CPU, clear
+@@ -7870,7 +7870,7 @@ static int detach_tasks(struct lb_env *e
+  */
+ static void attach_task(struct rq *rq, struct task_struct *p)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	BUG_ON(task_rq(p) != rq);
+ 	activate_task(rq, p, ENQUEUE_NOCLOCK);
+@@ -9781,7 +9781,7 @@ static int load_balance(int this_cpu, st
+ 		if (need_active_balance(&env)) {
+ 			unsigned long flags;
+ 
+-			raw_spin_lock_irqsave(&busiest->lock, flags);
++			raw_spin_rq_lock_irqsave(busiest, flags);
+ 
+ 			/*
+ 			 * Don't kick the active_load_balance_cpu_stop,
+@@ -9789,8 +9789,7 @@ static int load_balance(int this_cpu, st
+ 			 * moved to this_cpu:
+ 			 */
+ 			if (!cpumask_test_cpu(this_cpu, busiest->curr->cpus_ptr)) {
+-				raw_spin_unlock_irqrestore(&busiest->lock,
+-							    flags);
++				raw_spin_rq_unlock_irqrestore(busiest, flags);
+ 				goto out_one_pinned;
+ 			}
+ 
+@@ -9807,7 +9806,7 @@ static int load_balance(int this_cpu, st
+ 				busiest->push_cpu = this_cpu;
+ 				active_balance = 1;
+ 			}
+-			raw_spin_unlock_irqrestore(&busiest->lock, flags);
++			raw_spin_rq_unlock_irqrestore(busiest, flags);
+ 
+ 			if (active_balance) {
+ 				stop_one_cpu_nowait(cpu_of(busiest),
+@@ -10624,7 +10623,7 @@ static int newidle_balance(struct rq *th
+ 		goto out;
+ 	}
+ 
+-	raw_spin_unlock(&this_rq->lock);
++	raw_spin_rq_unlock(this_rq);
+ 
+ 	update_blocked_averages(this_cpu);
+ 	rcu_read_lock();
+@@ -10662,7 +10661,7 @@ static int newidle_balance(struct rq *th
+ 	}
+ 	rcu_read_unlock();
+ 
+-	raw_spin_lock(&this_rq->lock);
++	raw_spin_rq_lock(this_rq);
+ 
+ 	if (curr_cost > this_rq->max_idle_balance_cost)
+ 		this_rq->max_idle_balance_cost = curr_cost;
+@@ -11143,9 +11142,9 @@ void unregister_fair_sched_group(struct
+ 
+ 		rq = cpu_rq(cpu);
+ 
+-		raw_spin_lock_irqsave(&rq->lock, flags);
++		raw_spin_rq_lock_irqsave(rq, flags);
+ 		list_del_leaf_cfs_rq(tg->cfs_rq[cpu]);
+-		raw_spin_unlock_irqrestore(&rq->lock, flags);
++		raw_spin_rq_unlock_irqrestore(rq, flags);
+ 	}
+ }
+ 
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -455,10 +455,10 @@ struct task_struct *pick_next_task_idle(
+ static void
+ dequeue_task_idle(struct rq *rq, struct task_struct *p, int flags)
+ {
+-	raw_spin_unlock_irq(&rq->lock);
++	raw_spin_rq_unlock_irq(rq);
+ 	printk(KERN_ERR "bad: scheduling from the idle thread!\n");
+ 	dump_stack();
+-	raw_spin_lock_irq(&rq->lock);
++	raw_spin_rq_lock_irq(rq);
+ }
+ 
+ /*
+--- a/kernel/sched/pelt.h
++++ b/kernel/sched/pelt.h
+@@ -141,7 +141,7 @@ static inline void update_idle_rq_clock_
+ 
+ static inline u64 rq_clock_pelt(struct rq *rq)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	assert_clock_updated(rq);
+ 
+ 	return rq->clock_pelt - rq->lost_idle_time;
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -888,7 +888,7 @@ static int do_sched_rt_period_timer(stru
+ 		if (skip)
+ 			continue;
+ 
+-		raw_spin_lock(&rq->lock);
++		raw_spin_rq_lock(rq);
+ 		update_rq_clock(rq);
+ 
+ 		if (rt_rq->rt_time) {
+@@ -926,7 +926,7 @@ static int do_sched_rt_period_timer(stru
+ 
+ 		if (enqueue)
+ 			sched_rt_rq_enqueue(rt_rq);
+-		raw_spin_unlock(&rq->lock);
++		raw_spin_rq_unlock(rq);
+ 	}
+ 
+ 	if (!throttled && (!rt_bandwidth_enabled() || rt_b->rt_runtime == RUNTIME_INF))
+@@ -1894,10 +1894,10 @@ static int push_rt_task(struct rq *rq, b
+ 		 */
+ 		push_task = get_push_task(rq);
+ 		if (push_task) {
+-			raw_spin_unlock(&rq->lock);
++			raw_spin_rq_unlock(rq);
+ 			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
+ 					    push_task, &rq->push_work);
+-			raw_spin_lock(&rq->lock);
++			raw_spin_rq_lock(rq);
+ 		}
+ 
+ 		return 0;
+@@ -2122,10 +2122,10 @@ void rto_push_irq_work_func(struct irq_w
+ 	 * When it gets updated, a check is made if a push is possible.
+ 	 */
+ 	if (has_pushable_tasks(rq)) {
+-		raw_spin_lock(&rq->lock);
++		raw_spin_rq_lock(rq);
+ 		while (push_rt_task(rq, true))
+ 			;
+-		raw_spin_unlock(&rq->lock);
++		raw_spin_rq_unlock(rq);
+ 	}
+ 
+ 	raw_spin_lock(&rd->rto_lock);
+@@ -2243,10 +2243,10 @@ static void pull_rt_task(struct rq *this
+ 		double_unlock_balance(this_rq, src_rq);
+ 
+ 		if (push_task) {
+-			raw_spin_unlock(&this_rq->lock);
++			raw_spin_rq_unlock(this_rq);
+ 			stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
+ 					    push_task, &src_rq->push_work);
+-			raw_spin_lock(&this_rq->lock);
++			raw_spin_rq_lock(this_rq);
+ 		}
+ 	}
+ 
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -905,7 +905,7 @@ DECLARE_STATIC_KEY_FALSE(sched_uclamp_us
+  */
+ struct rq {
+ 	/* runqueue lock: */
+-	raw_spinlock_t		lock;
++	raw_spinlock_t		__lock;
+ 
+ 	/*
+ 	 * nr_running and cpu_load should be in the same cacheline because
+@@ -1115,7 +1115,7 @@ static inline bool is_migration_disabled
+ 
+ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
+ {
+-	return &rq->lock;
++	return &rq->__lock;
+ }
+ 
+ static inline void lockdep_assert_rq_held(struct rq *rq)
+@@ -1229,7 +1229,7 @@ static inline void assert_clock_updated(
+ 
+ static inline u64 rq_clock(struct rq *rq)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	assert_clock_updated(rq);
+ 
+ 	return rq->clock;
+@@ -1237,7 +1237,7 @@ static inline u64 rq_clock(struct rq *rq
+ 
+ static inline u64 rq_clock_task(struct rq *rq)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	assert_clock_updated(rq);
+ 
+ 	return rq->clock_task;
+@@ -1263,7 +1263,7 @@ static inline u64 rq_clock_thermal(struc
+ 
+ static inline void rq_clock_skip_update(struct rq *rq)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	rq->clock_update_flags |= RQCF_REQ_SKIP;
+ }
+ 
+@@ -1273,7 +1273,7 @@ static inline void rq_clock_skip_update(
+  */
+ static inline void rq_clock_cancel_skipupdate(struct rq *rq)
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 	rq->clock_update_flags &= ~RQCF_REQ_SKIP;
+ }
+ 
+@@ -1304,7 +1304,7 @@ extern struct callback_head balance_push
+  */
+ static inline void rq_pin_lock(struct rq *rq, struct rq_flags *rf)
+ {
+-	rf->cookie = lockdep_pin_lock(&rq->lock);
++	rf->cookie = lockdep_pin_lock(rq_lockp(rq));
+ 
+ #ifdef CONFIG_SCHED_DEBUG
+ 	rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
+@@ -1322,12 +1322,12 @@ static inline void rq_unpin_lock(struct
+ 		rf->clock_update_flags = RQCF_UPDATED;
+ #endif
+ 
+-	lockdep_unpin_lock(&rq->lock, rf->cookie);
++	lockdep_unpin_lock(rq_lockp(rq), rf->cookie);
+ }
+ 
+ static inline void rq_repin_lock(struct rq *rq, struct rq_flags *rf)
+ {
+-	lockdep_repin_lock(&rq->lock, rf->cookie);
++	lockdep_repin_lock(rq_lockp(rq), rf->cookie);
+ 
+ #ifdef CONFIG_SCHED_DEBUG
+ 	/*
+@@ -1348,7 +1348,7 @@ static inline void __task_rq_unlock(stru
+ 	__releases(rq->lock)
+ {
+ 	rq_unpin_lock(rq, rf);
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ }
+ 
+ static inline void
+@@ -1357,7 +1357,7 @@ task_rq_unlock(struct rq *rq, struct tas
+ 	__releases(p->pi_lock)
+ {
+ 	rq_unpin_lock(rq, rf);
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ 	raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+ }
+ 
+@@ -1365,7 +1365,7 @@ static inline void
+ rq_lock_irqsave(struct rq *rq, struct rq_flags *rf)
+ 	__acquires(rq->lock)
+ {
+-	raw_spin_lock_irqsave(&rq->lock, rf->flags);
++	raw_spin_rq_lock_irqsave(rq, rf->flags);
+ 	rq_pin_lock(rq, rf);
+ }
+ 
+@@ -1373,7 +1373,7 @@ static inline void
+ rq_lock_irq(struct rq *rq, struct rq_flags *rf)
+ 	__acquires(rq->lock)
+ {
+-	raw_spin_lock_irq(&rq->lock);
++	raw_spin_rq_lock_irq(rq);
+ 	rq_pin_lock(rq, rf);
+ }
+ 
+@@ -1381,7 +1381,7 @@ static inline void
+ rq_lock(struct rq *rq, struct rq_flags *rf)
+ 	__acquires(rq->lock)
+ {
+-	raw_spin_lock(&rq->lock);
++	raw_spin_rq_lock(rq);
+ 	rq_pin_lock(rq, rf);
+ }
+ 
+@@ -1389,7 +1389,7 @@ static inline void
+ rq_relock(struct rq *rq, struct rq_flags *rf)
+ 	__acquires(rq->lock)
+ {
+-	raw_spin_lock(&rq->lock);
++	raw_spin_rq_lock(rq);
+ 	rq_repin_lock(rq, rf);
+ }
+ 
+@@ -1398,7 +1398,7 @@ rq_unlock_irqrestore(struct rq *rq, stru
+ 	__releases(rq->lock)
+ {
+ 	rq_unpin_lock(rq, rf);
+-	raw_spin_unlock_irqrestore(&rq->lock, rf->flags);
++	raw_spin_rq_unlock_irqrestore(rq, rf->flags);
+ }
+ 
+ static inline void
+@@ -1406,7 +1406,7 @@ rq_unlock_irq(struct rq *rq, struct rq_f
+ 	__releases(rq->lock)
+ {
+ 	rq_unpin_lock(rq, rf);
+-	raw_spin_unlock_irq(&rq->lock);
++	raw_spin_rq_unlock_irq(rq);
+ }
+ 
+ static inline void
+@@ -1414,7 +1414,7 @@ rq_unlock(struct rq *rq, struct rq_flags
+ 	__releases(rq->lock)
+ {
+ 	rq_unpin_lock(rq, rf);
+-	raw_spin_unlock(&rq->lock);
++	raw_spin_rq_unlock(rq);
+ }
+ 
+ static inline struct rq *
+@@ -1479,7 +1479,7 @@ queue_balance_callback(struct rq *rq,
+ 		       struct callback_head *head,
+ 		       void (*func)(struct rq *rq))
+ {
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	if (unlikely(head->next || rq->balance_callback == &balance_push_callback))
+ 		return;
+@@ -2019,7 +2019,7 @@ static inline struct task_struct *get_pu
+ {
+ 	struct task_struct *p = rq->curr;
+ 
+-	lockdep_assert_held(&rq->lock);
++	lockdep_assert_rq_held(rq);
+ 
+ 	if (rq->push_busy)
+ 		return NULL;
+@@ -2249,7 +2249,7 @@ static inline int _double_lock_balance(s
+ 	__acquires(busiest->lock)
+ 	__acquires(this_rq->lock)
+ {
+-	raw_spin_unlock(&this_rq->lock);
++	raw_spin_rq_unlock(this_rq);
+ 	double_rq_lock(this_rq, busiest);
+ 
+ 	return 1;
+@@ -2268,20 +2268,22 @@ static inline int _double_lock_balance(s
+ 	__acquires(busiest->lock)
+ 	__acquires(this_rq->lock)
+ {
+-	int ret = 0;
++	if (rq_lockp(this_rq) == rq_lockp(busiest))
++		return 0;
+ 
+-	if (unlikely(!raw_spin_trylock(&busiest->lock))) {
+-		if (busiest < this_rq) {
+-			raw_spin_unlock(&this_rq->lock);
+-			raw_spin_lock(&busiest->lock);
+-			raw_spin_lock_nested(&this_rq->lock,
+-					      SINGLE_DEPTH_NESTING);
+-			ret = 1;
+-		} else
+-			raw_spin_lock_nested(&busiest->lock,
+-					      SINGLE_DEPTH_NESTING);
++	if (likely(raw_spin_rq_trylock(busiest)))
++		return 0;
++
++	if (rq_lockp(busiest) >= rq_lockp(this_rq)) {
++		raw_spin_rq_lock_nested(busiest, SINGLE_DEPTH_NESTING);
++		return 0;
+ 	}
+-	return ret;
++
++	raw_spin_rq_unlock(this_rq);
++	raw_spin_rq_lock(busiest);
++	raw_spin_rq_lock_nested(this_rq, SINGLE_DEPTH_NESTING);
++
++	return 1;
+ }
+ 
+ #endif /* CONFIG_PREEMPTION */
+@@ -2291,11 +2293,7 @@ static inline int _double_lock_balance(s
+  */
+ static inline int double_lock_balance(struct rq *this_rq, struct rq *busiest)
+ {
+-	if (unlikely(!irqs_disabled())) {
+-		/* printk() doesn't work well under rq->lock */
+-		raw_spin_unlock(&this_rq->lock);
+-		BUG_ON(1);
+-	}
++	lockdep_assert_irqs_disabled();
+ 
+ 	return _double_lock_balance(this_rq, busiest);
+ }
+@@ -2303,8 +2301,9 @@ static inline int double_lock_balance(st
+ static inline void double_unlock_balance(struct rq *this_rq, struct rq *busiest)
+ 	__releases(busiest->lock)
+ {
+-	raw_spin_unlock(&busiest->lock);
+-	lock_set_subclass(&this_rq->lock.dep_map, 0, _RET_IP_);
++	if (rq_lockp(this_rq) != rq_lockp(busiest))
++		raw_spin_rq_unlock(busiest);
++	lock_set_subclass(&rq_lockp(this_rq)->dep_map, 0, _RET_IP_);
+ }
+ 
+ static inline void double_lock(spinlock_t *l1, spinlock_t *l2)
+@@ -2345,16 +2344,16 @@ static inline void double_rq_lock(struct
+ 	__acquires(rq2->lock)
+ {
+ 	BUG_ON(!irqs_disabled());
+-	if (rq1 == rq2) {
+-		raw_spin_lock(&rq1->lock);
++	if (rq_lockp(rq1) == rq_lockp(rq2)) {
++		raw_spin_rq_lock(rq1);
+ 		__acquire(rq2->lock);	/* Fake it out ;) */
+ 	} else {
+-		if (rq1 < rq2) {
+-			raw_spin_lock(&rq1->lock);
+-			raw_spin_lock_nested(&rq2->lock, SINGLE_DEPTH_NESTING);
++		if (rq_lockp(rq1) < rq_lockp(rq2)) {
++			raw_spin_rq_lock(rq1);
++			raw_spin_rq_lock_nested(rq2, SINGLE_DEPTH_NESTING);
+ 		} else {
+-			raw_spin_lock(&rq2->lock);
+-			raw_spin_lock_nested(&rq1->lock, SINGLE_DEPTH_NESTING);
++			raw_spin_rq_lock(rq2);
++			raw_spin_rq_lock_nested(rq1, SINGLE_DEPTH_NESTING);
+ 		}
+ 	}
+ }
+@@ -2369,9 +2368,9 @@ static inline void double_rq_unlock(stru
+ 	__releases(rq1->lock)
+ 	__releases(rq2->lock)
+ {
+-	raw_spin_unlock(&rq1->lock);
+-	if (rq1 != rq2)
+-		raw_spin_unlock(&rq2->lock);
++	raw_spin_rq_unlock(rq1);
++	if (rq_lockp(rq1) != rq_lockp(rq2))
++		raw_spin_rq_unlock(rq2);
+ 	else
+ 		__release(rq2->lock);
+ }
+@@ -2394,7 +2393,7 @@ static inline void double_rq_lock(struct
+ {
+ 	BUG_ON(!irqs_disabled());
+ 	BUG_ON(rq1 != rq2);
+-	raw_spin_lock(&rq1->lock);
++	raw_spin_rq_lock(rq1);
+ 	__acquire(rq2->lock);	/* Fake it out ;) */
+ }
+ 
+@@ -2409,7 +2408,7 @@ static inline void double_rq_unlock(stru
+ 	__releases(rq2->lock)
+ {
+ 	BUG_ON(rq1 != rq2);
+-	raw_spin_unlock(&rq1->lock);
++	raw_spin_rq_unlock(rq1);
+ 	__release(rq2->lock);
+ }
+ 
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -467,7 +467,7 @@ void rq_attach_root(struct rq *rq, struc
+ 	struct root_domain *old_rd = NULL;
+ 	unsigned long flags;
+ 
+-	raw_spin_lock_irqsave(&rq->lock, flags);
++	raw_spin_rq_lock_irqsave(rq, flags);
+ 
+ 	if (rq->rd) {
+ 		old_rd = rq->rd;
+@@ -493,7 +493,7 @@ void rq_attach_root(struct rq *rq, struc
+ 	if (cpumask_test_cpu(rq->cpu, cpu_active_mask))
+ 		set_rq_online(rq);
+ 
+-	raw_spin_unlock_irqrestore(&rq->lock, flags);
++	raw_spin_rq_unlock_irqrestore(rq, flags);
+ 
+ 	if (old_rd)
+ 		call_rcu(&old_rd->rcu, free_rootdomain);
 
 
