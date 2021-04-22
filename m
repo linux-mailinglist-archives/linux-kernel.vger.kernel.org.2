@@ -2,144 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A643536828C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A2B368290
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237169AbhDVOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:40:09 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:17584 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236459AbhDVOkE (ORCPT
+        id S237311AbhDVOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236501AbhDVOkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:40:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619102369; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=RMf3EFzLqxN1uAcl/snGb/NnTMeGSO6NhHpgmnX57QQ=;
- b=NYpTLVj13p9HE70GBt/+qAZ0TEIU5xY0EZMDs6soaZFEm+GAHCrvorZ9R0PJYXwHWXxN1s7Z
- LqMuR83xhJbDdTAZW9EwCOGfaYrx9P9E9YWMoGs/0tkTfA+Yn/1FXic9fP9L0vxvQ3VbXsWb
- Nc6Po+lVhrlPRHU6pHFbi551Uus=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60818a8f2cbba8898039bc17 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 14:39:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DCAC0C433F1; Thu, 22 Apr 2021 14:39:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DDE4FC433F1;
-        Thu, 22 Apr 2021 14:39:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DDE4FC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Thu, 22 Apr 2021 10:40:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F91C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:39:49 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lZaUc-00028T-D1; Thu, 22 Apr 2021 16:39:46 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lZaUc-0003xQ-2x; Thu, 22 Apr 2021 16:39:46 +0200
+Date:   Thu, 22 Apr 2021 16:39:45 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Juergen Borleis <jbe@pengutronix.de>, kernel@pengutronix.de,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH] leds: trigger/tty: feature data direction
+Message-ID: <20210422143945.n5gqkeh2y2jm6ece@pengutronix.de>
+References: <20210422074702.8831-1-jbe@pengutronix.de>
+ <YIEuSPS11fkSwQ7N@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v3 1/2] wl3501_cs: Fix out-of-bounds warnings in
- wl3501_send_pkt
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org>
-References: <d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210422143910.DCAC0C433F1@smtp.codeaurora.org>
-Date:   Thu, 22 Apr 2021 14:39:10 +0000 (UTC)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pt2plmppneqtli76"
+Content-Disposition: inline
+In-Reply-To: <YIEuSPS11fkSwQ7N@kroah.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-> Fix the following out-of-bounds warnings by enclosing structure members
-> daddr and saddr into new struct addr, in structures wl3501_md_req and
-> wl3501_md_ind:
-> 
-> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
-> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
-> 
-> Refactor the code, accordingly:
-> 
-> $ pahole -C wl3501_md_req drivers/net/wireless/wl3501_cs.o
-> struct wl3501_md_req {
-> 	u16                        next_blk;             /*     0     2 */
-> 	u8                         sig_id;               /*     2     1 */
-> 	u8                         routing;              /*     3     1 */
-> 	u16                        data;                 /*     4     2 */
-> 	u16                        size;                 /*     6     2 */
-> 	u8                         pri;                  /*     8     1 */
-> 	u8                         service_class;        /*     9     1 */
-> 	struct {
-> 		u8                 daddr[6];             /*    10     6 */
-> 		u8                 saddr[6];             /*    16     6 */
-> 	} addr;                                          /*    10    12 */
-> 
-> 	/* size: 22, cachelines: 1, members: 8 */
-> 	/* last cacheline: 22 bytes */
-> };
-> 
-> $ pahole -C wl3501_md_ind drivers/net/wireless/wl3501_cs.o
-> struct wl3501_md_ind {
-> 	u16                        next_blk;             /*     0     2 */
-> 	u8                         sig_id;               /*     2     1 */
-> 	u8                         routing;              /*     3     1 */
-> 	u16                        data;                 /*     4     2 */
-> 	u16                        size;                 /*     6     2 */
-> 	u8                         reception;            /*     8     1 */
-> 	u8                         pri;                  /*     9     1 */
-> 	u8                         service_class;        /*    10     1 */
-> 	struct {
-> 		u8                 daddr[6];             /*    11     6 */
-> 		u8                 saddr[6];             /*    17     6 */
-> 	} addr;                                          /*    11    12 */
-> 
-> 	/* size: 24, cachelines: 1, members: 9 */
-> 	/* padding: 1 */
-> 	/* last cacheline: 24 bytes */
-> };
-> 
-> The problem is that the original code is trying to copy data into a
-> couple of arrays adjacent to each other in a single call to memcpy().
-> Now that a new struct _addr_ enclosing those two adjacent arrays
-> is introduced, memcpy() doesn't overrun the length of &sig.daddr[0]
-> and &sig.daddr, because the address of the new struct object _addr_
-> is used, instead.
-> 
-> This helps with the ongoing efforts to globally enable -Warray-bounds
-> and get us closer to being able to tighten the FORTIFY_SOURCE routines
-> on memcpy().
-> 
-> Link: https://github.com/KSPP/linux/issues/109
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+--pt2plmppneqtli76
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-2 patches applied to wireless-drivers-next.git, thanks.
+Hello Greg,
 
-820aa37638a2 wl3501_cs: Fix out-of-bounds warnings in wl3501_send_pkt
-bb43e5718d8f wl3501_cs: Fix out-of-bounds warnings in wl3501_mgmt_join
+On Thu, Apr 22, 2021 at 10:05:28AM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Apr 22, 2021 at 09:47:02AM +0200, Juergen Borleis wrote:
+> > +static ssize_t dirfilter_show(struct device *dev,
+> > +			      struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev=
+);
+> > +
+> > +	if (trigger_data->indirection)
+> > +		return (ssize_t)sprintf(buf, "in\n");
+> > +	if (trigger_data->outdirection)
+> > +		return (ssize_t)sprintf(buf, "out\n");
+> > +	return (ssize_t)sprintf(buf, "inout\n");
+>=20
+> sysfs_emit() please.
+>=20
+> And you are adding new sysfs files, that requires an update to
+> Documentation/ABI/ please do so.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org/
+I agree to these two suggestions.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> But why are you adding random new sysfs values to a class device?  That
+> feels really wrong.
 
+This is quite usual for triggers and there is IMHO no way around this.
+And it is also save as led_trigger_set() emits an uevent after a trigger
+was activated.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--pt2plmppneqtli76
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCBiq4ACgkQwfwUeK3K
+7An9WQf9HqPjIWCpV8lEEjlTUBeaJc2Pwfy9NYtrg6MaIZR/VB14IXJR8o2DfA0v
+ivVDNJTaSwZ6wgcxahH2CJ52PuZv8z240HwCQ8caOFYiGlwXoMaq3l+xE1pPOEfw
+UXY7BaNINxsvRwxpAWeoE33TQosTZlBq0mMga2ytAN6quHsmqK+TDAXdX1G5sTFs
+++rQiUHZJUi0s75yzDxo2qnWpAvXsq2hPWgvOQDvmPdwcz0A2jem15t7PndFd0HP
+J1qiuuZgq+azo5YHYOoYul+HuU3bKza5Qh+auHxF57WorQ2k7KEtr04D4bA/8dMr
+bTUpJgvaHy3BAKpkjQXmd5fLt1GgMw==
+=CpzT
+-----END PGP SIGNATURE-----
+
+--pt2plmppneqtli76--
