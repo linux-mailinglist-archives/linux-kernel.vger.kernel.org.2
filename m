@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A4B368583
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEB3368595
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238383AbhDVRIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:08:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50306 "EHLO
+        id S238584AbhDVRKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:10:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48484 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237829AbhDVRIk (ORCPT
+        by vger.kernel.org with ESMTP id S238441AbhDVRIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:08:40 -0400
+        Thu, 22 Apr 2021 13:08:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619111285;
+        s=mimecast20190719; t=1619111290;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6iyRCQCEGRHHV6y2IaFBtD9oS6jvBRER/Lqe7zRME5s=;
-        b=ZTN7K54dBx2v6RP8uOlKR3VRO0K9wvEW0xe4lNmtwzMYCGpCvw421/UMuALkKgafsgu1B6
-        2jDDWg1fXykj6OWBAX47sKgs1vlPcal13GBqXR3/u12CkOVKKWpfcLWsp8QojntkmzuO8l
-        dRRvzqFS7VS4DcZqM8bhT0Z6dUoqSqg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-465-2ey14UIJOzuK4QqUFlPTBw-1; Thu, 22 Apr 2021 13:08:01 -0400
-X-MC-Unique: 2ey14UIJOzuK4QqUFlPTBw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBB80A40C1;
-        Thu, 22 Apr 2021 17:07:58 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AE4F25C27C;
-        Thu, 22 Apr 2021 17:07:51 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 19:07:50 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next v4] bpf: Fix some invalid links in
- bpf_devel_QA.rst
-Message-ID: <20210422190750.7273292c@carbon>
-In-Reply-To: <87pmymcofa.fsf@meer.lwn.net>
-References: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
-        <87pmymcofa.fsf@meer.lwn.net>
+        bh=yC6jYB+ZSoRXAPzU+6mh57F+j0CveYL3H5XLHePHZGc=;
+        b=fj2uQJC7HNc6vG+FEifhvuHW4gsTNU+vWkBPbm9q7TNjtNW8kTyo8Oo+i5w2ex4+b+DylB
+        aFCqlsfpLgzsvZKC2zsUuHSOJVH04uqvrXs8Pb+pNZLZyVGzRC8un58dUL+XC1piYbJNE7
+        LFo9r03se1wRouC+/zLIME5GV+2A5zI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-gH5IqeuFP32497ir3sKcFA-1; Thu, 22 Apr 2021 13:08:08 -0400
+X-MC-Unique: gH5IqeuFP32497ir3sKcFA-1
+Received: by mail-ed1-f70.google.com with SMTP id f9-20020a50fe090000b02903839889635cso15132586edt.14
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:08:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yC6jYB+ZSoRXAPzU+6mh57F+j0CveYL3H5XLHePHZGc=;
+        b=aWjC4y4OUsop+TDmGjNcgo68M40AWs+qLpjgdhojfj1FJ/V21N5wxVmjjaEboO6zg0
+         Ey1csOD1dl8l3rW+/On1xKkrpktTERXN15pxpEKBWcvfdRjvxfb4twS5wCkQpDYEVDWS
+         Dyuw799YfOXrNF37FndRSfB7FNkCWeSg7x2YloOBQkyH5NStbLc+Fr8fHFyNI1UmQXky
+         lVq3L/ZtHrz1mEh/QXcPM7UmlI6cpbKLpxgRdoHzBReY8VsPDVKypTPDLo7wfDKzMwe9
+         89TQvSU4/WTWom7yfuqta9oSJBLUWWoQYVAVcVqkbygWBoqpNqRBek/VBqN2SbMoa5kH
+         MzGA==
+X-Gm-Message-State: AOAM532yYrCywly/g+K0hFztruE/Bi0W101PGAvqi4hJvPzdJoq/kWZ2
+        GIFZJ00r6PT45XSr88idnacEZw3kmqH/p7ogm4IXqpL8x7i9XHPh7GrepUFRx+dBeL8DVC2l1kg
+        W0+vCPSbazEMiYOaHaAu1+vbB
+X-Received: by 2002:aa7:d94c:: with SMTP id l12mr5122834eds.290.1619111287659;
+        Thu, 22 Apr 2021 10:08:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwQ0ak30i9v5JnaeacFr9s7EA6LuLRC3LEAdNab/++6Eo3It4oY6sQ3gt+tQlbj1cX61I6TSA==
+X-Received: by 2002:aa7:d94c:: with SMTP id l12mr5122798eds.290.1619111287447;
+        Thu, 22 Apr 2021 10:08:07 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d15sm2704139edu.86.2021.04.22.10.08.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 10:08:06 -0700 (PDT)
+Subject: Re: [PATCH v5 03/15] KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Wei Huang <wei.huang2@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210422021125.3417167-1-seanjc@google.com>
+ <20210422021125.3417167-4-seanjc@google.com>
+ <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
+ <YIGhC/1vlIAZfwzm@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <882d8bb4-8d40-1b4d-0742-4a4f2c307e5b@redhat.com>
+Date:   Thu, 22 Apr 2021 19:08:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YIGhC/1vlIAZfwzm@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 09:46:33 -0600
-Jonathan Corbet <corbet@lwn.net> wrote:
+On 22/04/21 18:15, Sean Christopherson wrote:
+>> Support for 5-level page tables on NPT is not hard to fix and could be
+>> tested by patching QEMU.  However, the !NPT case would also have to be fixed
+>> by extending the PDP and PML4 stacking trick to a PML5.
+>   
+> Isn't that backwards?  It's the nested NPT case that requires the stacking trick.
+> When !NPT is disabled in L0 KVM, 32-bit guests are run with PAE paging.  Maybe
+> I'm misunderstanding what you're suggesting.
 
-> Tiezhu Yang <yangtiezhu@loongson.cn> writes:
-> 
-> > There exist some errors "404 Not Found" when I click the link
-> > of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-> > in the documentation "HOWTO interact with BPF subsystem" [4].
-> >
-> > As Jesper Dangaard Brouer said, the links work if you are browsing
-> > the document via GitHub [5], so I think maybe it is better to use
-> > the corresponding GitHub links to fix the issues in the kernel.org
-> > official document [4], this change has no influence on GitHub and
-> > looks like more clear.  
-> 
-> No, we really don't want to link to GitHub, that's what we have
-> kernel.org for.
+Yes, you're right.  NPT is easy but we would have to guess what the spec 
+would say about MAXPHYADDR, while nNPT would require the stacking of a 
+PML5.  Either way, blocking KVM is the easiest thing todo.
 
-I fully agree.
-I actually liked V3 better.
-
-Back when I wrote the documentation with these links, the BPF doc was
-not well integrated with the kernels doc-system.  It is today, so it
-makes sense to remove the links (that happens to work on GitHub) as you
-did in V3.
-
-Today BPF documentation is nicely organized via this link:
- https://www.kernel.org/doc/html/latest/bpf/index.html
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Paolo
 
