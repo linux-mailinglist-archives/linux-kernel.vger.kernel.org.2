@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7003680AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BC53680B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237160AbhDVMjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S236758AbhDVMkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236235AbhDVMiU (ORCPT
+        with ESMTP id S236808AbhDVMjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:38:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39454C06138F
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:37:41 -0700 (PDT)
+        Thu, 22 Apr 2021 08:39:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43726C061343
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 05:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=+Ye2wvkCXO4SqQwbREkBBu6KXQLaEFWz7IIPlCakk5g=; b=o5PTcVfuDe9UOVII4zicchJ6rL
-        gwkG55ut2clmyOh3nXI2CHY149NmuwMXAEFLIIyFUTR1vlFIxuvJszHrNh/t8qhe/a58V3mbDwm8j
-        8Rye4SvDPTPgyNkGsN+CJ3gX3p8fAzofFZOicmfx91q5N11fwlyno+0E6kNGfN0ycPAUxSFTkBfC/
-        TNcUii8c5DRU/9GXOpBvA2OOqjF/Ewc1wikh8O5MrDZp0JstpRS2QEbl+F8u/G686ePwyzLpeBqBW
-        Vw5lhaiG72d9b1MJ+OIzWB5STVFGpFte4GlKqQIIKY3rkbY3unjLQbwY1RZGmt2d7bSWfPtxGFXCA
-        gOojyLvg==;
+        bh=xHm00EFRE7DKw0xx2JN0twL5mx9qMBKUDKZdW4RdMXg=; b=AlFfa3FQu6/d0XH8O6prBw8XyN
+        cBHY6Z9DCnEwlK+KdQloog3MuEaU1nQ4j97h7SGFtKoIg4kIsbH0zPiPYOGBcV9w1tVn6qt5N38ad
+        FLvaMr1M3cYUq3c8PnClyxViS11rMHjveRsYqLi+1HzvMoIH6Mt2AQ+86sE6hurSK8UvcxaPG56dX
+        RHTtV0q8TTkfkee1RB/Wtq4dOHkM7zzj2uub8plJspKjgrUZeBShkPKALJXNVQGQFySxtpT6RRRla
+        e8YbnuWYj7J/CiidLruogqQjJb2cZODjAmyzz9+bezVdRtQLFeOaJkWNuqanTgX+IcA3QayZ+uBhc
+        3cUjaecg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZYZM-000IDc-TA; Thu, 22 Apr 2021 12:36:36 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZYZM-00GicG-TT; Thu, 22 Apr 2021 12:38:33 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8300030032B;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 861C030032C;
         Thu, 22 Apr 2021 14:35:22 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7E2612C67A907; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
-Message-ID: <20210422123309.039845339@infradead.org>
+        id 851792C67A908; Thu, 22 Apr 2021 14:35:20 +0200 (CEST)
+Message-ID: <20210422123309.100860030@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 22 Apr 2021 14:05:17 +0200
+Date:   Thu, 22 Apr 2021 14:05:18 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
         mingo@kernel.org, vincent.guittot@linaro.org,
         valentin.schneider@arm.com, mgorman@suse.de
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         tglx@linutronix.de
-Subject: [PATCH 18/19] sched: prctl() core-scheduling interface
+Subject: [PATCH 19/19] kselftest: Add test for core sched prctl interface
 References: <20210422120459.447350175@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,234 +55,387 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chris Hyser <chris.hyser@oracle.com>
 
-This patch provides support for setting and copying core scheduling
-'task cookies' between threads (PID), processes (TGID), and process
-groups (PGID).
+Provides a selftest and examples of using the interface.
 
-The value of core scheduling isn't that tasks don't share a core,
-'nosmt' can do that. The value lies in exploiting all the sharing
-opportunities that exist to recover possible lost performance and that
-requires a degree of flexibility in the API.
-
->From a security perspective (and there are others), the thread,
-process and process group distinction is an existent hierarchal
-categorization of tasks that reflects many of the security concerns
-about 'data sharing'. For example, protecting against cache-snooping
-by a thread that can just read the memory directly isn't all that
-useful.
-
-With this in mind, subcommands to CREATE/SHARE (TO/FROM) provide a
-mechanism to create and share cookies. CREATE/SHARE_TO specify a
-target pid with enum pidtype used to specify the scope of the targeted
-tasks. For example, PIDTYPE_TGID will share the cookie with the
-process and all of it's threads as typically desired in a security
-scenario.
-
-API:
-
-  prctl(PR_SCHED_CORE, PR_SCHED_CORE_GET, tgtpid, pidtype, &cookie)
-  prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, tgtpid, pidtype, NULL)
-  prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, tgtpid, pidtype, NULL)
-  prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, srcpid, pidtype, NULL)
-
-where 'tgtpid/srcpid == 0' implies the current process and pidtype is
-kernel enum pid_type {PIDTYPE_PID, PIDTYPE_TGID, PIDTYPE_PGID, ...}.
-
-For return values, EINVAL, ENOMEM are what they say. ESRCH means the
-tgtpid/srcpid was not found. EPERM indicates lack of PTRACE permission
-access to tgtpid/srcpid. ENODEV indicates your machines lacks SMT.
-
-[peterz: complete rewrite]
+[peterz: updated to not use sched_debug]
 Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/sched.h            |    2 
- include/uapi/linux/prctl.h       |    8 ++
- kernel/sched/core_sched.c        |  114 +++++++++++++++++++++++++++++++++++++++
- kernel/sys.c                     |    5 +
- tools/include/uapi/linux/prctl.h |    8 ++
- 5 files changed, 137 insertions(+)
+ tools/testing/selftests/sched/.gitignore      |    1 
+ tools/testing/selftests/sched/Makefile        |   14 +
+ tools/testing/selftests/sched/config          |    1 
+ tools/testing/selftests/sched/cs_prctl_test.c |  338 ++++++++++++++++++++++++++
+ 4 files changed, 354 insertions(+)
+ create mode 100644 tools/testing/selftests/sched/.gitignore
+ create mode 100644 tools/testing/selftests/sched/Makefile
+ create mode 100644 tools/testing/selftests/sched/config
+ create mode 100644 tools/testing/selftests/sched/cs_prctl_test.c
 
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2173,6 +2173,8 @@ const struct cpumask *sched_trace_rd_spa
- #ifdef CONFIG_SCHED_CORE
- extern void sched_core_free(struct task_struct *tsk);
- extern void sched_core_fork(struct task_struct *p);
-+extern int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
-+				unsigned long uaddr);
- #else
- static inline void sched_core_free(struct task_struct *tsk) { }
- static inline void sched_core_fork(struct task_struct *p) { }
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -255,4 +255,12 @@ struct prctl_mm_map {
- # define SYSCALL_DISPATCH_FILTER_ALLOW	0
- # define SYSCALL_DISPATCH_FILTER_BLOCK	1
- 
-+/* Request the scheduler to share a core */
-+#define PR_SCHED_CORE			60
-+# define PR_SCHED_CORE_GET		0
-+# define PR_SCHED_CORE_CREATE		1 /* create unique core_sched cookie */
-+# define PR_SCHED_CORE_SHARE_TO		2 /* push core_sched cookie to pid */
-+# define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
-+# define PR_SCHED_CORE_MAX		4
+--- /dev/null
++++ b/tools/testing/selftests/sched/.gitignore
+@@ -0,0 +1 @@
++cs_prctl_test
+--- /dev/null
++++ b/tools/testing/selftests/sched/Makefile
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0+
 +
- #endif /* _LINUX_PRCTL_H */
---- a/kernel/sched/core_sched.c
-+++ b/kernel/sched/core_sched.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- 
-+#include <linux/prctl.h>
- #include "sched.h"
- 
- /*
-@@ -110,3 +111,116 @@ void sched_core_free(struct task_struct
- {
- 	sched_core_put_cookie(p->core_cookie);
- }
++ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
++CLANG_FLAGS += -no-integrated-as
++endif
 +
-+static void __sched_core_set(struct task_struct *p, unsigned long cookie)
++CFLAGS += -O2 -Wall -g -I./ -I../../../../usr/include/  -Wl,-rpath=./ \
++	  $(CLANG_FLAGS)
++LDLIBS += -lpthread
++
++TEST_GEN_FILES := cs_prctl_test
++TEST_PROGS := cs_prctl_test
++
++include ../lib.mk
+--- /dev/null
++++ b/tools/testing/selftests/sched/config
+@@ -0,0 +1 @@
++CONFIG_SCHED_DEBUG=y
+--- /dev/null
++++ b/tools/testing/selftests/sched/cs_prctl_test.c
+@@ -0,0 +1,338 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Use the core scheduling prctl() to test core scheduling cookies control.
++ *
++ * Copyright (c) 2021 Oracle and/or its affiliates.
++ * Author: Chris Hyser <chris.hyser@oracle.com>
++ *
++ *
++ * This library is free software; you can redistribute it and/or modify it
++ * under the terms of version 2.1 of the GNU Lesser General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This library is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
++ * for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with this library; if not, see <http://www.gnu.org/licenses>.
++ */
++
++#define _GNU_SOURCE
++#include <sys/eventfd.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sched.h>
++#include <sys/prctl.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <time.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#if __GLIBC_PREREQ(2, 30) == 0
++#include <sys/syscall.h>
++static pid_t gettid(void)
 +{
-+	cookie = sched_core_get_cookie(cookie);
-+	cookie = sched_core_update_cookie(p, cookie);
-+	sched_core_put_cookie(cookie);
++	return syscall(SYS_gettid);
 +}
-+
-+/* Called from prctl interface: PR_SCHED_CORE */
-+int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
-+			 unsigned long uaddr)
-+{
-+	unsigned long cookie = 0, id = 0;
-+	struct task_struct *task, *p;
-+	struct pid *grp;
-+	int err = 0;
-+
-+	if (!static_branch_likely(&sched_smt_present))
-+		return -ENODEV;
-+
-+	if (type > PIDTYPE_PGID || cmd >= PR_SCHED_CORE_MAX || pid < 0 ||
-+	    (cmd != PR_SCHED_CORE_GET && uaddr))
-+		return -EINVAL;
-+
-+	rcu_read_lock();
-+	if (pid == 0) {
-+		task = current;
-+	} else {
-+		task = find_task_by_vpid(pid);
-+		if (!task) {
-+			rcu_read_unlock();
-+			return -ESRCH;
-+		}
-+	}
-+	get_task_struct(task);
-+	rcu_read_unlock();
-+
-+	/*
-+	 * Check if this process has the right to modify the specified
-+	 * process. Use the regular "ptrace_may_access()" checks.
-+	 */
-+	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
-+		err = -EPERM;
-+		goto out;
-+	}
-+
-+	switch (cmd) {
-+	case PR_SCHED_CORE_GET:
-+		if (type != PIDTYPE_PID || uaddr & 7) {
-+			err = -EINVAL;
-+			goto out;
-+		}
-+		cookie = sched_core_clone_cookie(task);
-+		if (cookie) {
-+			/* XXX improve ? */
-+			ptr_to_hashval((void *)cookie, &id);
-+		}
-+		err = put_user(id, (u64 __user *)uaddr);
-+		goto out;
-+
-+	case PR_SCHED_CORE_CREATE:
-+		cookie = sched_core_alloc_cookie();
-+		if (!cookie) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
-+		break;
-+
-+	case PR_SCHED_CORE_SHARE_TO:
-+		cookie = sched_core_clone_cookie(current);
-+		break;
-+
-+	case PR_SCHED_CORE_SHARE_FROM:
-+		if (type != PIDTYPE_PID) {
-+			err = -EINVAL;
-+			goto out;
-+		}
-+		cookie = sched_core_clone_cookie(task);
-+		__sched_core_set(current, cookie);
-+		goto out;
-+
-+	default:
-+		err = -EINVAL;
-+		goto out;
-+	};
-+
-+	if (type == PIDTYPE_PID) {
-+		__sched_core_set(task, cookie);
-+		goto out;
-+	}
-+
-+	read_lock(&tasklist_lock);
-+	grp = task_pid_type(task, type);
-+
-+	do_each_pid_thread(grp, type, p) {
-+		if (!ptrace_may_access(p, PTRACE_MODE_READ_REALCREDS)) {
-+			err = -EPERM;
-+			goto out_tasklist;
-+		}
-+	} while_each_pid_thread(grp, type, p);
-+
-+	do_each_pid_thread(grp, type, p) {
-+		__sched_core_set(p, cookie);
-+	} while_each_pid_thread(grp, type, p);
-+out_tasklist:
-+	read_unlock(&tasklist_lock);
-+
-+out:
-+	sched_core_put_cookie(cookie);
-+	put_task_struct(task);
-+	return err;
-+}
-+
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -2534,6 +2534,11 @@ SYSCALL_DEFINE5(prctl, int, option, unsi
- 		error = set_syscall_user_dispatch(arg2, arg3, arg4,
- 						  (char __user *) arg5);
- 		break;
-+#ifdef CONFIG_SCHED_CORE
-+	case PR_SCHED_CORE:
-+		error = sched_core_share_pid(arg2, arg3, arg4, arg5);
-+		break;
 +#endif
- 	default:
- 		error = -EINVAL;
- 		break;
---- a/tools/include/uapi/linux/prctl.h
-+++ b/tools/include/uapi/linux/prctl.h
-@@ -255,4 +255,12 @@ struct prctl_mm_map {
- # define SYSCALL_DISPATCH_FILTER_ALLOW	0
- # define SYSCALL_DISPATCH_FILTER_BLOCK	1
- 
-+/* Request the scheduler to share a core */
++
++#ifndef PR_SCHED_CORE
 +#define PR_SCHED_CORE			60
 +# define PR_SCHED_CORE_GET		0
 +# define PR_SCHED_CORE_CREATE		1 /* create unique core_sched cookie */
 +# define PR_SCHED_CORE_SHARE_TO		2 /* push core_sched cookie to pid */
 +# define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
 +# define PR_SCHED_CORE_MAX		4
++#endif
 +
- #endif /* _LINUX_PRCTL_H */
++#define MAX_PROCESSES 128
++#define MAX_THREADS   128
++
++static const char USAGE[] = "cs_prctl_test [options]\n"
++"    options:\n"
++"	-P  : number of processes to create.\n"
++"	-T  : number of threads per process to create.\n"
++"	-d  : delay time to keep tasks alive.\n"
++"	-k  : keep tasks alive until keypress.\n";
++
++enum pid_type {PIDTYPE_PID = 0, PIDTYPE_TGID, PIDTYPE_PGID};
++
++const int THREAD_CLONE_FLAGS = CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES;
++
++static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4,
++		  unsigned long arg5)
++{
++	int res;
++
++	res = prctl(option, arg2, arg3, arg4, arg5);
++	printf("%d = prctl(%d, %ld, %ld, %ld, %lx)\n", res, option, (long)arg2, (long)arg3,
++	       (long)arg4, arg5);
++	return res;
++}
++
++#define STACK_SIZE (1024 * 1024)
++
++#define handle_error(msg) __handle_error(__FILE__, __LINE__, msg)
++static void __handle_error(char *fn, int ln, char *msg)
++{
++	printf("(%s:%d) - ", fn, ln);
++	perror(msg);
++	exit(EXIT_FAILURE);
++}
++
++static void handle_usage(int rc, char *msg)
++{
++	puts(USAGE);
++	puts(msg);
++	putchar('\n');
++	exit(rc);
++}
++
++static unsigned long get_cs_cookie(int pid)
++{
++	unsigned long long cookie;
++	int ret;
++
++	ret = prctl(PR_SCHED_CORE, PR_SCHED_CORE_GET, pid, PIDTYPE_PID,
++		    (unsigned long)&cookie);
++	if (ret) {
++		printf("Not a core sched system\n");
++		return -1UL;
++	}
++
++	return cookie;
++}
++
++struct child_args {
++	int num_threads;
++	int pfd[2];
++	int cpid;
++	int thr_tids[MAX_THREADS];
++};
++
++static int child_func_thread(void __attribute__((unused))*arg)
++{
++	while (1)
++		usleep(20000);
++	return 0;
++}
++
++static void create_threads(int num_threads, int thr_tids[])
++{
++	void *child_stack;
++	pid_t tid;
++	int i;
++
++	for (i = 0; i < num_threads; ++i) {
++		child_stack = malloc(STACK_SIZE);
++		if (!child_stack)
++			handle_error("child stack allocate");
++
++		tid = clone(child_func_thread, child_stack + STACK_SIZE, THREAD_CLONE_FLAGS, NULL);
++		if (tid == -1)
++			handle_error("clone thread");
++		thr_tids[i] = tid;
++	}
++}
++
++static int child_func_process(void *arg)
++{
++	struct child_args *ca = (struct child_args *)arg;
++
++	close(ca->pfd[0]);
++
++	create_threads(ca->num_threads, ca->thr_tids);
++
++	write(ca->pfd[1], &ca->thr_tids, sizeof(int) * ca->num_threads);
++	close(ca->pfd[1]);
++
++	while (1)
++		usleep(20000);
++	return 0;
++}
++
++static unsigned char child_func_process_stack[STACK_SIZE];
++
++void create_processes(int num_processes, int num_threads, struct child_args proc[])
++{
++	pid_t cpid;
++	int i;
++
++	for (i = 0; i < num_processes; ++i) {
++		proc[i].num_threads = num_threads;
++
++		if (pipe(proc[i].pfd) == -1)
++			handle_error("pipe() failed");
++
++		cpid = clone(child_func_process, child_func_process_stack + STACK_SIZE,
++			     SIGCHLD, &proc[i]);
++		proc[i].cpid = cpid;
++		close(proc[i].pfd[1]);
++	}
++
++	for (i = 0; i < num_processes; ++i) {
++		read(proc[i].pfd[0], &proc[i].thr_tids, sizeof(int) * proc[i].num_threads);
++		close(proc[i].pfd[0]);
++	}
++}
++
++void disp_processes(int num_processes, struct child_args proc[])
++{
++	int i, j;
++
++	printf("tid=%d, / tgid=%d / pgid=%d: %lx\n", gettid(), getpid(), getpgid(0),
++	       get_cs_cookie(getpid()));
++
++	for (i = 0; i < num_processes; ++i) {
++		printf("    tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].cpid, proc[i].cpid,
++		       getpgid(proc[i].cpid), get_cs_cookie(proc[i].cpid));
++		for (j = 0; j < proc[i].num_threads; ++j) {
++			printf("        tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].thr_tids[j],
++			       proc[i].cpid, getpgid(0), get_cs_cookie(proc[i].thr_tids[j]));
++		}
++	}
++	puts("\n");
++}
++
++static int errors;
++
++#define validate(v) _validate(__LINE__, v, #v)
++void _validate(int line, int val, char *msg)
++{
++	if (!val) {
++		++errors;
++		printf("(%d) FAILED: %s\n", line, msg);
++	} else {
++		printf("(%d) PASSED: %s\n", line, msg);
++	}
++}
++
++int main(int argc, char *argv[])
++{
++	struct child_args procs[MAX_PROCESSES];
++
++	int keypress = 0;
++	int num_processes = 2;
++	int num_threads = 3;
++	int delay = 0;
++	int res = 0;
++	int pidx;
++	int pid;
++	int opt;
++
++	while ((opt = getopt(argc, argv, ":hkT:P:d:")) != -1) {
++		switch (opt) {
++		case 'P':
++			num_processes = (int)strtol(optarg, NULL, 10);
++			break;
++		case 'T':
++			num_threads = (int)strtoul(optarg, NULL, 10);
++			break;
++		case 'd':
++			delay = (int)strtol(optarg, NULL, 10);
++			break;
++		case 'k':
++			keypress = 1;
++			break;
++		case 'h':
++			printf(USAGE);
++			exit(EXIT_SUCCESS);
++		default:
++			handle_usage(20, "unknown option");
++		}
++	}
++
++	if (num_processes < 1 || num_processes > MAX_PROCESSES)
++		handle_usage(1, "Bad processes value");
++
++	if (num_threads < 1 || num_threads > MAX_THREADS)
++		handle_usage(2, "Bad thread value");
++
++	if (keypress)
++		delay = -1;
++
++	srand(time(NULL));
++
++	/* put into separate process group */
++	if (setpgid(0, 0) != 0)
++		handle_error("process group");
++
++	printf("\n## Create a thread/process/process group hiearchy\n");
++	create_processes(num_processes, num_threads, procs);
++	disp_processes(num_processes, procs);
++	validate(get_cs_cookie(0) == 0);
++
++	printf("\n## Set a cookie on entire process group\n");
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, 0, PIDTYPE_PGID, 0) < 0)
++		handle_error("core_sched create failed -- PGID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) != 0);
++
++	/* get a random process pid */
++	pidx = rand() % num_processes;
++	pid = procs[pidx].cpid;
++
++	validate(get_cs_cookie(0) == get_cs_cookie(pid));
++	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Set a new cookie on entire process/TGID [%d]\n", pid);
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, pid, PIDTYPE_TGID, 0) < 0)
++		handle_error("core_sched create failed -- TGID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) != get_cs_cookie(pid));
++	validate(get_cs_cookie(pid) != 0);
++	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Copy the cookie of current/PGID[%d], to pid [%d] as PIDTYPE_PID\n",
++	       getpid(), pid);
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, pid, PIDTYPE_PID, 0) < 0)
++		handle_error("core_sched share to itself failed -- PID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) == get_cs_cookie(pid));
++	validate(get_cs_cookie(pid) != 0);
++	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Copy cookie from a thread [%d] to current/PGID [%d] as PIDTYPE_PID\n",
++	       procs[pidx].thr_tids[0], getpid());
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, procs[pidx].thr_tids[0],
++		   PIDTYPE_PID, 0) < 0)
++		handle_error("core_sched share from thread failed -- PID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
++	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Copy cookie from current [%d] to current as pidtype PGID\n", getpid());
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, 0, PIDTYPE_PGID, 0) < 0)
++		handle_error("core_sched share to self failed -- PGID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) == get_cs_cookie(pid));
++	validate(get_cs_cookie(pid) != 0);
++	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	if (errors) {
++		printf("TESTS FAILED. errors: %d\n", errors);
++		res = 10;
++	} else {
++		printf("SUCCESS !!!\n");
++	}
++
++	if (keypress)
++		getchar();
++	else
++		sleep(delay);
++
++	for (pidx = 0; pidx < num_processes; ++pidx)
++		kill(procs[pidx].cpid, 15);
++
++	return res;
++}
 
 
