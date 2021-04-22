@@ -2,1066 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9F836861B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD9A36861E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhDVRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbhDVRjT (ORCPT
+        id S238481AbhDVRj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:39:28 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:33456 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236754AbhDVRjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:39:19 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB683C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:38:44 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id o16so10292455plg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p3FIjDmByNJpV5r/HQcJB1I0sImsREoqD6PHj6H+QN8=;
-        b=k7gyShYPmx/dsAEsRQT7uIKxkMnirI85iwqlsEN6FXo12uFHD2ymub9gggtPanBt5T
-         UOnseZ5V6GKi0rm38bnfjE26VWtVLt//44LM8JGpvXQW63/gb3apoRud34x2IpwO+wIy
-         x5zAQto9BxrS8gy/FPYP5x22I/0V8fB9bfbIk=
+        Thu, 22 Apr 2021 13:39:22 -0400
+Received: by mail-oo1-f41.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so10135347ool.0;
+        Thu, 22 Apr 2021 10:38:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=p3FIjDmByNJpV5r/HQcJB1I0sImsREoqD6PHj6H+QN8=;
-        b=m9NXk8j1XVAHhyrH57xqu3YypMd1EvXEO3Q8C2bqfwofLS7GX1xRDk+PCS+MV46GMT
-         mas+87CyiB2u974ZKFy5X4x0Sh8WC05pSXk6izfP+kOy4eO/wgkA4K8MDhrCUrvgsZHN
-         Pl0Lg6ECi7XS8sBfquMYBMCc7GVJnJ6v791uywp9E4NE+UI6owr9xe4s6mFQg3mlKAa3
-         hH6449f13F+oUJCMpX1INu4Z+neHwI0wK80coO1R3Vbz9r8tAVdety6zF+frZYBQqp2W
-         oAf/ZfLI+VrOVeUMU7+VBj5A0anTso5e1pvE+FjHdXFtnIUqaTxH6SZvKznihP9jkR8n
-         ykQw==
-X-Gm-Message-State: AOAM530BYIbucVrKDoCK2RZ0EkOkJ8Dezjf+I6ShxSn/njCV8g//srwJ
-        70aWDWzGleywvJ5IFajwCv1JkQ==
-X-Google-Smtp-Source: ABdhPJwA1gaDoqetkq7QwsudGwOEsP9/RVTXYvHzP/QGxDmeV9ZWPfxs4r+cXQ11h7I0YhN7GXGamw==
-X-Received: by 2002:a17:903:4112:b029:ea:bfe5:5192 with SMTP id r18-20020a1709034112b02900eabfe55192mr4622954pld.14.1619113124073;
-        Thu, 22 Apr 2021 10:38:44 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:acff:4f9f:d039:23ff])
-        by smtp.gmail.com with UTF8SMTPSA id d12sm2779018pjj.50.2021.04.22.10.38.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 10:38:43 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:38:41 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajeshwari <rkambl@codeaurora.org>
-Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanm@codeaurora.org
-Subject: Re: [PATCH V1 1/2] ARM: dts: qcom:  Add device node support for
- TSENS in
-Message-ID: <YIG0oXfsq35SHBYB@google.com>
-References: <1619005442-16485-1-git-send-email-rkambl@codeaurora.org>
- <1619005442-16485-2-git-send-email-rkambl@codeaurora.org>
+        bh=tMVnVypmvdM6x0K9pdf9C+ZDup5EGo+8ylMsMxOJ0dM=;
+        b=jUVgvYDgYY7/6lBdZB7v17Y4UXOhNeHgAp2SNjivYk6i0UsJw7yzxGiABecnL5RIUF
+         muiHrJGHVmrsCiK3We5ZYuQRLh+WAi29bJcPQQfsgotRNHAF7eDqDQ80OBYqFTA8hY7z
+         5t7l+A5HGxMyBvSz5+SKcKjOi4ORekr7nvQEKwiGVzaOwCrRHZYBs/MisaNfYNQQslfY
+         W6Y+37DDYevkTi3PVKXtZPBuqWYTV+gWuAtvtVn8j7wHEaqhu8fZgEE5Qk94uYo/k8rJ
+         G1afdT+zNG3uHbPn1GeFMJ+cPyVZsGu1mFkJelrwjD7rOkezDBcygrB+iJkqw30aS/BV
+         HyRw==
+X-Gm-Message-State: AOAM531BKL00Dj/Mpkt+42P+vW2RQYfeSEZ6w+zF/FjRqDiIvlzEfvBJ
+        Lk1KPYdqibL5Y7GpXgkSkA==
+X-Google-Smtp-Source: ABdhPJwcgWM0XLWrK7WEs8CdBSkklMghctKgwcSHGZbx3s62U5GMyPjoEZD7BN22/aQxOKo2Wojj3w==
+X-Received: by 2002:a4a:96e3:: with SMTP id t32mr3235742ooi.14.1619113127295;
+        Thu, 22 Apr 2021 10:38:47 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r9sm688532ool.3.2021.04.22.10.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 10:38:46 -0700 (PDT)
+Received: (nullmailer pid 3297132 invoked by uid 1000);
+        Thu, 22 Apr 2021 17:38:44 -0000
+Date:   Thu, 22 Apr 2021 12:38:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, olteanv@gmail.com,
+        UNGLinuxDriver@microchip.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 1/9] dt-bindings: net: dsa: dt bindings for
+ microchip lan937x
+Message-ID: <20210422173844.GA3227277@robh.at.kernel.org>
+References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
+ <20210422094257.1641396-2-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1619005442-16485-2-git-send-email-rkambl@codeaurora.org>
+In-Reply-To: <20210422094257.1641396-2-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 05:14:01PM +0530, Rajeshwari wrote:
-
-> Subject: ARM: dts: qcom:  Add device node support for TSENS in
-
-The most important thing this patch does is to add the thermal zones,
-this should be reflected in the subject.
-
-Not strictly necessary, but I'd suggest a separate patch to add the
-TSENS nodes and then one for the thermal zones.
-
->
-> Add TSENS node, user thermal zone configurations, critical interrupt
-> and cooling maps for TSENS in SC7280.
+On Thu, Apr 22, 2021 at 03:12:49PM +0530, Prasanna Vengateshan wrote:
+> Documentation in .yaml format and updates to the MAINTAINERS
+> Also 'make dt_binding_check' is passed
 > 
-> Signed-off-by: Rajeshwari <rkambl@codeaurora.org>
+> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
 > ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 874 +++++++++++++++++++++++++++++++++++
->  1 file changed, 874 insertions(+)
+>  .../bindings/net/dsa/microchip,lan937x.yaml   | 142 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  2 files changed, 143 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 2cc4785..05b6cd7 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -12,6 +12,7 @@
->  #include <dt-bindings/power/qcom-aoss-qmp.h>
->  #include <dt-bindings/power/qcom-rpmpd.h>
->  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> +#include <dt-bindings/thermal/thermal.h>
->  
->  / {
->  	interrupt-parent = <&intc>;
-> @@ -70,6 +71,7 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_0>;
-> +			#cooling-cells = <2>;
->  			L2_0: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -88,6 +90,7 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_100>;
-> +			#cooling-cells = <2>;
->  			L2_100: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -103,6 +106,7 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_200>;
-> +			#cooling-cells = <2>;
->  			L2_200: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -118,6 +122,7 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_300>;
-> +			#cooling-cells = <2>;
->  			L2_300: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -133,6 +138,7 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_400>;
-> +			#cooling-cells = <2>;
->  			L2_400: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -148,6 +154,7 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_500>;
-> +			#cooling-cells = <2>;
->  			L2_500: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -163,6 +170,7 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_600>;
-> +			#cooling-cells = <2>;
->  			L2_600: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -178,6 +186,7 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_700>;
-> +			#cooling-cells = <2>;
->  			L2_700: l2-cache {
->  				compatible = "cache";
->  				next-level-cache = <&L3_0>;
-> @@ -825,6 +834,28 @@
->  			interrupt-controller;
->  		};
->  
-> +		tsens0: thermal-sensor@c263000 {
-> +			compatible = "qcom,sc7280-tsens","qcom,tsens-v2";
-> +			reg = <0 0x0c263000 0 0x1ff>, /* TM */
-> +				<0 0x0c222000 0 0x1ff>; /* SROT */
-> +			#qcom,sensors = <15>;
-> +			interrupts = <GIC_SPI 506 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "uplow","critical";
-> +			#thermal-sensor-cells = <1>;
-> +		};
+> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+> new file mode 100644
+> index 000000000000..22128a52d699
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/dsa/microchip,lan937x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +		tsens1: thermal-sensor@c265000 {
-> +			compatible = "qcom,sc7280-tsens","qcom,tsens-v2";
-> +			reg = <0 0x0c265000 0 0x1ff>, /* TM */
-> +				<0 0x0c223000 0 0x1ff>; /* SROT */
-> +			#qcom,sensors = <12>;
-> +			interrupts = <GIC_SPI 507 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 509 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "uplow","critical";
-> +			#thermal-sensor-cells = <1>;
-> +		};
+> +title: LAN937x Ethernet Switch Series Tree Bindings
 > +
->  		aoss_qmp: power-controller@c300000 {
->  			compatible = "qcom,sc7280-aoss-qmp";
->  			reg = <0 0x0c300000 0 0x100000>;
-> @@ -1118,6 +1149,849 @@
->  		};
->  	};
->  
-> +	thermal_zones: thermal-zones {
-> +		cpu0-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
+> +maintainers:
+> +  - UNGLinuxDriver@microchip.com
 > +
-> +			thermal-sensors = <&tsens0 1>;
+> +allOf:
+> +  - $ref: dsa.yaml#
 > +
-> +			trips {
-> +				cpu0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,lan9370
+> +      - microchip,lan9371
+> +      - microchip,lan9372
+> +      - microchip,lan9373
+> +      - microchip,lan9374
 > +
-> +				cpu0_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
+> +  reg:
+> +    maxItems: 1
 > +
-> +				cpu0_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
+> +  spi-max-frequency:
+> +    maximum: 50000000
+> +
+> +  reset-gpios:
+> +    description: Optional gpio specifier for a reset line
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    //Ethernet switch connected via spi to the host
 
-not super-important, but is a hysteresis actually needed for a critical
-trip point? The system is supposed to shut down when the critical trip
-point is reached, so I'd expect that the hysteresis doesn't do anything.
+If this is on SPI, why is it not under the spi bus node?
 
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu0_alert0>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu0_alert1>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu1-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 2>;
-> +
-> +			trips {
-> +				cpu1_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu1_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu1_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu1_alert0>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu1_alert1>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu2-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 3>;
-> +
-> +			trips {
-> +				cpu2_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu2_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu2_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu2_alert0>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu2_alert1>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu3-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 4>;
-> +
-> +			trips {
-> +				cpu3_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu3_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu3_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu3_alert0>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu3_alert1>;
-> +					cooling-device = <&CPU0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu4-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 7>;
-> +
-> +			trips {
-> +				cpu4_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu4_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu4_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu4_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu4_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu5-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 8>;
-> +
-> +			trips {
-> +				cpu5_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu5_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu5_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu5_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu5_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu6-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 9>;
-> +
-> +			trips {
-> +				cpu6_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu6_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu6_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu6_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu6_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu7-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 10>;
-> +
-> +			trips {
-> +				cpu7_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu7_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu7_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu7_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu7_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu8-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 11>;
-> +
-> +			trips {
-> +				cpu8_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu8_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu8_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu8_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu8_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu9-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 12>;
-> +
-> +			trips {
-> +				cpu9_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu9_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu9_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu9_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu9_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu10-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 13>;
-> +
-> +			trips {
-> +				cpu10_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu10_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu10_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu10_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu10_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu11-thermal {
-> +			polling-delay-passive = <250>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 14>;
-> +
-> +			trips {
-> +				cpu11_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu11_alert1: trip-point1 {
-> +					temperature = <95000>;
-> +					hysteresis = <2000>;
-> +					type = "passive";
-> +				};
-> +
-> +				cpu11_crit: cpu_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <1000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +
-> +			cooling-maps {
-> +				map0 {
-> +					trip = <&cpu11_alert0>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +				map1 {
-> +					trip = <&cpu11_alert1>;
-> +					cooling-device = <&CPU4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-> +							 <&CPU7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +				};
-> +			};
-> +		};
-> +
-> +		aoss0-thermal {
+> +    ethernet {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      fixed-link {
+> +        speed = <1000>;
+> +        full-duplex;
+> +      };
+> +    };
+> +
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      lan9374: switch@0 {
+> +        compatible = "microchip,lan9374";
+> +        reg = <0>;
+> +
+> +        spi-max-frequency = <44000000>;
+> +
+> +        ethernet-ports {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          port@0 {
+> +            reg = <0>;
+> +            label = "lan1";
+> +            phy-handle = <&t1phy0>;
+> +          };
+> +          port@1 {
+> +            reg = <1>;
+> +            label = "lan2";
+> +            phy-handle = <&t1phy1>;
+> +          };
+> +          port@2 {
+> +            reg = <2>;
+> +            label = "lan4";
+> +            phy-handle = <&t1phy2>;
+> +          };
+> +          port@3 {
+> +            reg = <3>;
+> +            label = "lan6";
+> +            phy-handle = <&t1phy3>;
+> +          };
+> +          port@4 {
+> +            reg = <4>;
+> +            phy-mode = "rgmii";
+> +            ethernet = <&ethernet>;
 
-Also not super-important, but I wonder what the order of the thermal
-zones should be. Currently this seems to be a mix of 'most important
-first', group certain things and order by sensor ID.
+You are missing 'ethernet' label.
 
-My initial suggestion would be to use alphabetical order, though that
-would put a few 'less important' zones before the CPUs. An possible
-alternative could be 'CPUs first' followed by alphabetical order.
+> +            fixed-link {
+> +              speed = <1000>;
+> +              full-duplex;
+> +            };
+> +          };
+> +          port@5 {
+> +            reg = <5>;
+> +            label = "lan7";
+> +            fixed-link {
+> +              speed = <1000>;
+> +              full-duplex;
+> +            };
+> +          };
+> +          port@6 {
+> +            reg = <6>;
+> +            label = "lan5";
+> +            phy-handle = <&t1phy4>;
+> +          };
+> +          port@7 {
+> +            reg = <7>;
+> +            label = "lan3";
+> +            phy-handle = <&t1phy5>;
+> +          };
+> +        };
+> +
+> +        mdio {
+> +          compatible = "microchip,lan937x-mdio";
 
-In any case, it's not really important, just wondered if there should
-be a specific ordering.
+You can just drop this to make the example pass. Or convert that binding 
+to schema.
 
-If you keep more or less the current order then it seems the aoss0
-and aoss1 should be grouped together.
-
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
 > +
-> +			thermal-sensors = <&tsens0 0>;
-> +
-> +			trips {
-> +				aoss0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				aoss0_crit: aoss0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		cpuss0-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 5>;
-> +
-> +			trips {
-> +				cpuss0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +				cpuss0_crit: cluster0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		cpuss1-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens0 6>;
-> +
-> +			trips {
-> +				cpuss1_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +				cpuss1_crit: cluster0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		gpuss0-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 1>;
-> +
-> +			trips {
-> +				gpuss0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				gpuss0_crit: gpuss0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		gpuss1-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 2>;
-> +
-> +			trips {
-> +				gpuss1_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				gpuss1_crit: gpuss1_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		aoss1-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 0>;
-> +
-> +			trips {
-> +				aoss1_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				aoss1_crit: aoss1_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		nspss0-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 3>;
-> +
-> +			trips {
-> +				nspss0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				nspss0_crit: nspss0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		nspss1-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 4>;
-> +
-> +			trips {
-> +				nspss1_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				nspss1_crit: nspss1_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		video-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 5>;
-> +
-> +			trips {
-> +				video_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				video_crit: video_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		ddr-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 6>;
-> +
-> +			trips {
-> +				ddr_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				ddr_crit: ddr_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		mdmss0-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 7>;
-> +
-> +			trips {
-> +				mdmss0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				mdmss0_crit: mdmss0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		mdmss1-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 8>;
-> +
-> +			trips {
-> +				mdmss1_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				mdmss1_crit: mdmss1_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		mdmss2-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 9>;
-> +
-> +			trips {
-> +				mdmss2_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				mdmss2_crit: mdmss2_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		mdmss3-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 10>;
-> +
-> +			trips {
-> +				mdmss3_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				mdmss3_crit: mdmss3_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +
-> +		camera0-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <0>;
-> +
-> +			thermal-sensors = <&tsens1 11>;
-> +
-> +			trips {
-> +				camera0_alert0: trip-point0 {
-> +					temperature = <90000>;
-> +					hysteresis = <2000>;
-> +					type = "hot";
-> +				};
-> +
-> +				camera0_crit: camera0_crit {
-> +					temperature = <110000>;
-> +					hysteresis = <2000>;
-> +					type = "critical";
-> +				};
-> +			};
-> +		};
-> +	};
-> +
->  	timer {
->  		compatible = "arm,armv8-timer";
->  		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
+> +          t1phy0: ethernet-phy@0{
+> +            reg = <0x0>;
+> +          };
+> +          t1phy1: ethernet-phy@1{
+> +            reg = <0x1>;
+> +          };
+> +          t1phy2: ethernet-phy@2{
+> +            reg = <0x2>;
+> +          };
+> +          t1phy3: ethernet-phy@3{
+> +            reg = <0x3>;
+> +          };
+> +          t1phy4: ethernet-phy@6{
+> +            reg = <0x6>;
+> +          };
+> +          t1phy5: ethernet-phy@7{
+> +            reg = <0x7>;
+> +          };
+> +        };
+> +      };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c3c8fa572580..a0fdfef8802a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11752,6 +11752,7 @@ M:	UNGLinuxDriver@microchip.com
+>  L:	netdev@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> +F:	Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+>  F:	drivers/net/dsa/microchip/*
+>  F:	include/linux/platform_data/microchip-ksz.h
+>  F:	net/dsa/tag_ksz.c
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
+> 2.27.0
 > 
