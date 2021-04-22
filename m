@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C73368019
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3868536801E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236165AbhDVMLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:11:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34001 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhDVMLv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:11:51 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lZYAt-0004lM-Am; Thu, 22 Apr 2021 12:11:15 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-serial@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] tty: serial: jsm: remove redundant assignments of several variables
-Date:   Thu, 22 Apr 2021 13:11:15 +0100
-Message-Id: <20210422121115.246625-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S236112AbhDVMRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:17:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57988 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235232AbhDVMQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:16:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AC4C1AF03;
+        Thu, 22 Apr 2021 12:16:23 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 14:16:18 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v5 06/15] x86/sev: Drop redundant and potentially
+ misleading 'sev_enabled'
+Message-ID: <20210422121618.GC6361@zn.tnic>
+References: <20210422021125.3417167-1-seanjc@google.com>
+ <20210422021125.3417167-7-seanjc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422021125.3417167-7-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Apr 21, 2021 at 07:11:16PM -0700, Sean Christopherson wrote:
+> Drop the sev_enabled flag and switch its one user over to sev_active().
+> sev_enabled was made redundant with the introduction of sev_status in
+> commit b57de6cd1639 ("x86/sev-es: Add SEV-ES Feature Detection").
+> sev_enabled and sev_active() are guaranteed to be equivalent, as each is
+> true iff 'sev_status & MSR_AMD64_SEV_ENABLED' is true, and are only ever
+> written in tandem (ignoring compressed boot's version of sev_status).
+> 
+> Removing sev_enabled avoids confusion over whether it refers to the guest
+> or the host, and will also allow KVM to usurp "sev_enabled" for its own
+> purposes.
+> 
+> No functional change intended.
+> 
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/mem_encrypt.h |  1 -
+>  arch/x86/mm/mem_encrypt.c          | 12 +++++-------
+>  arch/x86/mm/mem_encrypt_identity.c |  1 -
+>  3 files changed, 5 insertions(+), 9 deletions(-)
 
-Several variables are being assigned with values that are never
-read and being updated later with a new value. The initializations
-are redundant and can be removed.
+Acked-by: Borislav Petkov <bp@suse.de>
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/tty/serial/jsm/jsm_cls.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Thx.
 
-diff --git a/drivers/tty/serial/jsm/jsm_cls.c b/drivers/tty/serial/jsm/jsm_cls.c
-index b507a2cec926..b58ea4344aaf 100644
---- a/drivers/tty/serial/jsm/jsm_cls.c
-+++ b/drivers/tty/serial/jsm/jsm_cls.c
-@@ -349,8 +349,8 @@ static void cls_assert_modem_signals(struct jsm_channel *ch)
- 
- static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
- {
--	int qleft = 0;
--	u8 linestatus = 0;
-+	int qleft;
-+	u8 linestatus;
- 	u8 error_mask = 0;
- 	u16 head;
- 	u16 tail;
-@@ -365,8 +365,6 @@ static void cls_copy_data_from_uart_to_queue(struct jsm_channel *ch)
- 	head = ch->ch_r_head & RQUEUEMASK;
- 	tail = ch->ch_r_tail & RQUEUEMASK;
- 
--	/* Get our cached LSR */
--	linestatus = ch->ch_cached_lsr;
- 	ch->ch_cached_lsr = 0;
- 
- 	/* Store how much space we have left in the queue */
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
