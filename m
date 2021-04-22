@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1F6367CB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DC0367CB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235501AbhDVImp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:42:45 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45434 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhDVImo (ORCPT
+        id S235521AbhDVImx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:42:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16612 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235504AbhDVImw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:42:44 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E23B61C0B7A; Thu, 22 Apr 2021 10:42:08 +0200 (CEST)
-Date:   Thu, 22 Apr 2021 10:42:08 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Joseph Qi <jiangqi903@gmail.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 055/190] Revert "fs: ocfs: remove unnecessary assertion
- in dlm_migrate_lockres"
-Message-ID: <20210422084208.GB5316@amd>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-56-gregkh@linuxfoundation.org>
+        Thu, 22 Apr 2021 04:42:52 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FQrT352m5z16LhS;
+        Thu, 22 Apr 2021 16:39:51 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 22 Apr 2021 16:42:11 +0800
+Subject: Re: Linux 5.4.114
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
+CC:     <lwn@lwn.net>, <jslaby@suse.cz>
+References: <16190062428796@kroah.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <a7f3b698-1480-06c0-adc6-80a3f4aa21c9@huawei.com>
+Date:   Thu, 22 Apr 2021 16:42:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
-Content-Disposition: inline
-In-Reply-To: <20210421130105.1226686-56-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <16190062428796@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---IrhDeMKUP4DT/M7F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed 2021-04-21 14:58:50, Greg Kroah-Hartman wrote:
-> This reverts commit 67e2d2eb542338145a2e0b2336c1cdabd2424fd3.
->=20
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
+On 2021/4/21 19:57, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 5.4.114 kernel.
+> 
+> All users of the 5.4 kernel series must upgrade.
+> 
+> The updated 5.4.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-This patch is correct AFAICT.
-								Pavel
+Tested on arm64 and x86 for 5.4.114,
 
-> index f105746063ed..f89dcf9b6217 100644
-> --- a/fs/ocfs2/dlm/dlmmaster.c
-> +++ b/fs/ocfs2/dlm/dlmmaster.c
-> @@ -2554,6 +2554,8 @@ static int dlm_migrate_lockres(struct dlm_ctxt *dlm,
->  	if (!dlm_grab(dlm))
->  		return -EINVAL;
-> =20
-> +	BUG_ON(target =3D=3D O2NM_MAX_NODES);
-> +
->  	name =3D res->lockname.name;
->  	namelen =3D res->lockname.len;
-> =20
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.114
+Commit: a7eb81c1d11ae311c25db88c25a7d5228fe5680a
+Compiler: gcc version 7.3.0 (GCC)
 
---=20
-http://www.livejournal.com/~pavelmachek
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 5764
+passed: 5764
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
---IrhDeMKUP4DT/M7F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 5764
+passed: 5764
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
 
-iEYEARECAAYFAmCBNuAACgkQMOfwapXb+vIHpgCgwxP0uw6d6FX5YFQo7Bji0a4f
-y5QAoK02fHQWPtTd9l+6V7p0dk/6pQuM
-=mT4y
------END PGP SIGNATURE-----
-
---IrhDeMKUP4DT/M7F--
