@@ -2,181 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58AF368557
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8529E36855D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhDVQ6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:58:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236058AbhDVQ6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:58:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A4961445;
-        Thu, 22 Apr 2021 16:57:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619110663;
-        bh=wYp6m2cid2L7a8QcEzSJ/G5GF3Io5Y/imXwpcni9DUk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DEwntaGatZvUkGJ2neEmn7SOk/zoKA3aQADZThJprL81U4hJT2gEstRiCxTauuSNI
-         mJtWl7vzazKqhKA1+CBFbVdkKU0xfLBH/zxylm5cShKBDaxmtCczaPp/GeSQleQgAL
-         /9DLCiQxJkrv70NTzS4okufandJIa+7zYenNerT72vJ1cxp+wDYcM2MsoocKwTvGQG
-         lN6MaHnWBVpk/Nh1sIu6NdsWCAP8rbnrkx6n1U8x5s1XD2BJez/yg1YfynqSZTXumz
-         hWgRuUjKh1el05Dx09W1M6G6sp0zvBG8Vou5+VU52j+fM/INUbcENq2Y2bbTWu3d1l
-         i28g53n+SxLig==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 39E285C010F; Thu, 22 Apr 2021 09:57:43 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 09:57:43 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210420064934.GE31773@xsang-OptiPlex-9020>
- <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
- <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
+        id S238118AbhDVQ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:59:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56273 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236058AbhDVQ7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:59:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619110747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tnsoyaxSTba4CLrYhMvvI/m5yaJbsJVCTEUHiT030yM=;
+        b=HNowwqmuG0F2CNMCovieT70jDeMFIuCJNNg4FpTxXhOV+gHmAXL5pGNmywYvC+lAj1y5w6
+        lmUj4bZr5jWAGyON1e73AYYNWU1nOD51SMOJuSQE/Cc7sDbI23AZUIVmldd2PYjMmqy01I
+        UbdhiZbqqN6F3gKdVsluMDjn3uhJkzE=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-1L-sSsr4NKCRc2Wq_VRbOQ-1; Thu, 22 Apr 2021 12:58:55 -0400
+X-MC-Unique: 1L-sSsr4NKCRc2Wq_VRbOQ-1
+Received: by mail-qv1-f72.google.com with SMTP id f7-20020a0562141d27b029019a6fd0a183so16319241qvd.23
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:58:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tnsoyaxSTba4CLrYhMvvI/m5yaJbsJVCTEUHiT030yM=;
+        b=ocBokvm/759hD+m8Hvi77QHK26+7TEPVa79bShX7E0NF39xvf53dUmQAnlGoLN2NfO
+         o3zzXlZSb0AUP0qml4vtc2fbYnZk8GqTfz5zW/CT4eDNb8hiPpDvzSm/Wl6KmouTkIdn
+         bwl2iec+6PIZBJacuKSgpn3DWdMqaJnXuAHwL9XWZdUZkv1Cw4x7BaQKkrNRUh+ZhLIH
+         MOl8eje9+z0deYeJ/zJLVSKhvylc3Lyb1YHVpF1DahGqifhvUTuiB+8u13T2XQOmq+eW
+         ydfN10ep6eKkrln28cVWq1W/t+ibIjw1OQjB+KcoRZ57b6z2kyp5AvEuX6B3f23aYZMw
+         DvvA==
+X-Gm-Message-State: AOAM530q0dwBrT/KuYpVYGkxvQJkiS5v9wdaMxHkBZ9mTgGDzsS3h4zf
+        L+kbUzsMVMa/CM1R65LnMqRTXCL/RpmgMKaMZq/DKlqAfBIUSd/3X4UrsEuu6CiOReau/urH4r/
+        dIWgQOu1+7SsMIC+WbzvGa5KW
+X-Received: by 2002:a05:622a:301:: with SMTP id q1mr4076311qtw.48.1619110735146;
+        Thu, 22 Apr 2021 09:58:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyMMDzwOxnCBIZPqNlb6mS4q+6V6Etx8XVFSoCsq4jewANdy6F+FHMw0/YtsCSFKEaj7MWOhg==
+X-Received: by 2002:a05:622a:301:: with SMTP id q1mr4076276qtw.48.1619110734839;
+        Thu, 22 Apr 2021 09:58:54 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id d68sm2543373qkf.93.2021.04.22.09.58.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 09:58:54 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH-next v5 2/4] mm/memcg: Cache vmstat data in percpu
+ memcg_stock_pcp
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210420192907.30880-1-longman@redhat.com>
+ <20210420192907.30880-3-longman@redhat.com>
+ <YIC1HEKF8SQQdnxa@carbon.dhcp.thefacebook.com>
+Message-ID: <ded96eba-8c0c-1822-61b5-de0577b7ebab@redhat.com>
+Date:   Thu, 22 Apr 2021 12:58:52 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <YIC1HEKF8SQQdnxa@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 07:24:54AM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
-> > Hi Paul,
-> > 
-> > On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
-> > > 
-> > > 
-> > > On 4/21/2021 9:42 PM, Paul E. McKenney wrote:
-> > > >On Wed, Apr 21, 2021 at 02:07:19PM +0800, Xing, Zhengjun wrote:
-> > > >>
-> > > >>On 4/20/2021 10:05 PM, Paul E. McKenney wrote:
-> > > >>>On Tue, Apr 20, 2021 at 06:43:31AM -0700, Paul E. McKenney wrote:
-> > > >>>>On Tue, Apr 20, 2021 at 02:49:34PM +0800, kernel test robot wrote:
-> > > >>>>>Greeting,
-> > > >>>>>
-> > > >>>>>FYI, we noticed a -14.4% regression of stress-ng.opcode.ops_per_sec due to commit:
-> > > >>>>>
-> > > >>>>>
-> > > >>>>>commit: 6c52b5f3cfefd6e429efc4413fd25e3c394e959f ("clocksource: Reduce WATCHDOG_THRESHOLD")
-> > > >>>>>https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.13a
-> > > >>>>>
-> > > >>>>>
-> > > >>>>>in testcase: stress-ng
-> > > >>>>>on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
-> > > >>>>>with following parameters:
-> > > >>>>>
-> > > >>>>>	nr_threads: 10%
-> > > >>>>>	disk: 1HDD
-> > > >>>>>	testtime: 60s
-> > > >>>>>	fs: ext4
-> > > >>>>>	class: os
-> > > >>>>>	test: opcode
-> > > >>>>>	cpufreq_governor: performance
-> > > >>>>>	ucode: 0x5003006
-> > > >>>>Hmmm...  I will try a less-aggressive reduction.  Thank you for testing!
-> > > >>>But wait...  This code is only running twice per second.  It is very
-> > > >>>hard to believe that a clock-read retry twice per second is worth 2% of
-> > > >>>performance, let alone 14.4%.
-> > > >>>
-> > > >>>Is something else perhaps going on here?
-> > > >>>
-> > > >>>For example, did this run enable any of the new diagnositic clocksource.*
-> > > >>>kernel parameters?
-> > > >>>
-> > > >>>								Thanx, Paul
-> > > >>I attached the kernel log, the following logs are related with the
-> > > >>clocksource.
-> > > >>[    3.453206] clocksource: timekeeping watchdog on CPU1: Marking
-> > > >>clocksource 'tsc-early' as unstable because the skew is too large:
-> > > >>[    3.455197] clocksource:                       'hpet' wd_now: 288fcc0
-> > > >>wd_last: 1a8b333 mask: ffffffff
-> > > >>[    3.455199] clocksource:                       'tsc-early' cs_now:
-> > > >>1def309ebfdee cs_last: 1def2bd70d92c mask: ffffffffffffffff
-> > > >>[    3.455201] clocksource:                       No current clocksource.
-> > > >>[    3.457197] tsc: Marking TSC unstable due to clocksource watchdog
-> > > >>
-> > > >>6c52b5f3cf reduced WATCHDOG_THRESHOLD, then in clocksource_watchdog, the
-> > > >>warning logs are print, the TSC is marked as unstable.
-> > > >>/* Check the deviation from the watchdog clocksource. */
-> > > >Aha, so this system really does have an unstable TSC!  Which means that
-> > > >the patch is operating as designed.
-> > > >
-> > > >Or are you saying that this is a false positive?
-> > > >
-> > > >							Thanx, Paul
-> > > 
-> > > It happened during boot and before TSC calibration
-> > > (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
-> > > > WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
-> > > After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
-> > > WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
-> > > WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
-> > > by more than 1% to be marked unstable.
-> 
-> This is common code, so we do need an architecture-independent way to
-> handle this.
-> 
-> > As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
-> > times calibration of tsc, the first one of early quick calibration gives
-> > 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
-> > is about 2.5/1000 deviation for the first number, which just exceeds the
-> > 1/1000 threshold you set :)
-> 
-> Even my 2/1000 initial try would have caused this, then.  ;-)
-> 
-> But even 1/1000 deviation would cause any number of applications some
-> severe heartburn, so I am not at all happy with the thought of globally
-> increasing to (say) 3/1000.
-> 
-> > Following is the tsc freq info from kernel log
-> > 
-> > [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-> > [    0.000000] tsc: Detected 2100.000 MHz processor
-> > ...
-> > [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
-> 
-> So what are our options?
-> 
-> 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
-> 
-> 2.	#1, but add tsc-early into the watchdog list and set
-> 	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
-> 
-> 3.	Add a field to struct clocksource that, if non-zero, gives
-> 	the maximum drift in nanoseconds per half second (AKA
-> 	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
-> 	is used.  Set this to (say) 150,000ns for tsc-early.
-> 
-> 4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
-> 	which again is not a good approach given the real-world needs
-> 	of real-world applications.
-> 
-> 5.	Your ideas here.
+On 4/21/21 7:28 PM, Roman Gushchin wrote:
+> On Tue, Apr 20, 2021 at 03:29:05PM -0400, Waiman Long wrote:
+>> Before the new slab memory controller with per object byte charging,
+>> charging and vmstat data update happen only when new slab pages are
+>> allocated or freed. Now they are done with every kmem_cache_alloc()
+>> and kmem_cache_free(). This causes additional overhead for workloads
+>> that generate a lot of alloc and free calls.
+>>
+>> The memcg_stock_pcp is used to cache byte charge for a specific
+>> obj_cgroup to reduce that overhead. To further reducing it, this patch
+>> makes the vmstat data cached in the memcg_stock_pcp structure as well
+>> until it accumulates a page size worth of update or when other cached
+>> data change. Caching the vmstat data in the per-cpu stock eliminates two
+>> writes to non-hot cachelines for memcg specific as well as memcg-lruvecs
+>> specific vmstat data by a write to a hot local stock cacheline.
+>>
+>> On a 2-socket Cascade Lake server with instrumentation enabled and this
+>> patch applied, it was found that about 20% (634400 out of 3243830)
+>> of the time when mod_objcg_state() is called leads to an actual call
+>> to __mod_objcg_state() after initial boot. When doing parallel kernel
+>> build, the figure was about 17% (24329265 out of 142512465). So caching
+>> the vmstat data reduces the number of calls to __mod_objcg_state()
+>> by more than 80%.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>> ---
+>>   mm/memcontrol.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 83 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 7cd7187a017c..292b4783b1a7 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -782,8 +782,9 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
+>>   	rcu_read_unlock();
+>>   }
+>>   
+>> -void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>> -		     enum node_stat_item idx, int nr)
+>> +static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
+>> +				     struct pglist_data *pgdat,
+>> +				     enum node_stat_item idx, int nr)
+>>   {
+>>   	struct mem_cgroup *memcg;
+>>   	struct lruvec *lruvec;
+>> @@ -791,7 +792,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>>   	rcu_read_lock();
+>>   	memcg = obj_cgroup_memcg(objcg);
+>>   	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+>> -	mod_memcg_lruvec_state(lruvec, idx, nr);
+>> +	__mod_memcg_lruvec_state(lruvec, idx, nr);
+>>   	rcu_read_unlock();
+>>   }
+>>   
+>> @@ -2059,7 +2060,10 @@ struct memcg_stock_pcp {
+>>   
+>>   #ifdef CONFIG_MEMCG_KMEM
+>>   	struct obj_cgroup *cached_objcg;
+>> +	struct pglist_data *cached_pgdat;
+> I wonder if we want to have per-node counters instead?
+> That would complicate the initialization of pcp stocks a bit,
+> but might shave off some additional cpu time.
+> But we can do it later too.
+>
+A per node counter will certainly complicate the code and reduce the 
+performance benefit too. I got a pretty good hit rate of 80%+ with the 
+current code on a 2-socket system. The hit rate will probably drop when 
+there are more nodes. I will do some more investigation, but it will not 
+be for this patchset.
 
-Oh, and:
 
-6.	Improve the quick calibration to be better than one part per thousand.
+>>   	unsigned int nr_bytes;
+>> +	int nr_slab_reclaimable_b;
+>> +	int nr_slab_unreclaimable_b;
+>>   #endif
+>>   
+>>   	struct work_struct work;
+>> @@ -3008,6 +3012,63 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
+>>   	obj_cgroup_put(objcg);
+>>   }
+>>   
+>> +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>> +		     enum node_stat_item idx, int nr)
+>> +{
+>> +	struct memcg_stock_pcp *stock;
+>> +	unsigned long flags;
+>> +	int *bytes;
+>> +
+>> +	local_irq_save(flags);
+>> +	stock = this_cpu_ptr(&memcg_stock);
+>> +
+>> +	/*
+>> +	 * Save vmstat data in stock and skip vmstat array update unless
+>> +	 * accumulating over a page of vmstat data or when pgdat or idx
+>> +	 * changes.
+>> +	 */
+>> +	if (stock->cached_objcg != objcg) {
+>> +		drain_obj_stock(stock);
+>> +		obj_cgroup_get(objcg);
+>> +		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+>> +				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
+>> +		stock->cached_objcg = objcg;
+>> +		stock->cached_pgdat = pgdat;
+>> +	} else if (stock->cached_pgdat != pgdat) {
+>> +		/* Flush the existing cached vmstat data */
+>> +		if (stock->nr_slab_reclaimable_b) {
+>> +			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_RECLAIMABLE_B,
+>> +					  stock->nr_slab_reclaimable_b);
+>> +			stock->nr_slab_reclaimable_b = 0;
+>> +		}
+>> +		if (stock->nr_slab_unreclaimable_b) {
+>> +			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_UNRECLAIMABLE_B,
+>> +					  stock->nr_slab_unreclaimable_b);
+>> +			stock->nr_slab_unreclaimable_b = 0;
+>> +		}
+>> +		stock->cached_pgdat = pgdat;
+>> +	}
+>> +
+>> +	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
+>> +					       : &stock->nr_slab_unreclaimable_b;
+>> +	if (!*bytes) {
+>> +		*bytes = nr;
+>> +		nr = 0;
+>> +	} else {
+>> +		*bytes += nr;
+>> +		if (abs(*bytes) > PAGE_SIZE) {
+>> +			nr = *bytes;
+>> +			*bytes = 0;
+>> +		} else {
+>> +			nr = 0;
+>> +		}
+>> +	}
+> This part is a little bit hard to follow, how about something like this
+> (completely untested):
+>
+> {
+> 	stocked = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
+> 		: &stock->nr_slab_unreclaimable_b;
+> 	if (abs(*stocked + nr) > PAGE_SIZE) {
+> 		nr += *stocked;
+> 		*stocked = 0;
+> 	} else {
+> 		*stocked += nr;
+> 		nr = 0;
+> 	}
+> }
 
-> All in all, I am glad that I made the patch that decreases
-> WATCHDOG_MAX_SKEW be separate and at the end of the series.  ;-)
+That was done purposely to make sure that large object (>= 4k) will also 
+be cached once before flushing it out. I should have been more clear 
+about that by adding a comment about it. vmstat data isn't as critical 
+as memory charge and so I am allowing it to cache more than 4k in this case.
 
-							Thanx, Paul
+Cheers,
+Longman
+
