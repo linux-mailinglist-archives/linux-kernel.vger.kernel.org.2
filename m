@@ -2,92 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2077D3688D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 00:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA5E3688D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 00:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237167AbhDVWEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 18:04:22 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56421 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235977AbhDVWEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 18:04:21 -0400
-IronPort-SDR: 5ec561aa3oxhr3bed7DZIeqkcHQydcC+LTfpF134PXbX/ouYgOrGh+6PCP8/1q5bqqUZl+NTv+
- rwLaqjbPI1JQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="259934270"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="259934270"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 15:03:45 -0700
-IronPort-SDR: 6YatOzq15BNkNW1fBtVZO+Lh7wqMpQj2WX8FOMBioqgOtcM3VoA5nVeRqephVcyJpTSNMCJwtK
- xckjOpimz4dA==
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="401991792"
-Received: from eassadia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.4.68])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 15:03:44 -0700
-Subject: Re: [PATCH v2 0/3] Add multiprocessor wake-up support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-References: <20210422214708.716164-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210422220113.GG7021@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <54c5642c-f82c-e89c-2969-ad48358bfcaf@linux.intel.com>
-Date:   Thu, 22 Apr 2021 15:03:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239727AbhDVWEs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 18:04:48 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:60187 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238922AbhDVWEq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 18:04:46 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-256-gvvl59V8ObOmYuCwWGLDrg-1; Thu, 22 Apr 2021 23:04:08 +0100
+X-MC-Unique: gvvl59V8ObOmYuCwWGLDrg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 22 Apr 2021 23:04:07 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 22 Apr 2021 23:04:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Bae, Chang Seok'" <chang.seok.bae@intel.com>
+CC:     "bp@suse.de" <bp@suse.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "Dave.Martin@arm.com" <Dave.Martin@arm.com>,
+        "jannh@google.com" <jannh@google.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "carlos@redhat.com" <carlos@redhat.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v8 5/6] x86/signal: Detect and prevent an alternate signal
+ stack overflow
+Thread-Topic: [PATCH v8 5/6] x86/signal: Detect and prevent an alternate
+ signal stack overflow
+Thread-Index: AQHXNzOfB++Ln2WD/U+jOvjJUzWT2qrAORRggABxogCAAGjMcA==
+Date:   Thu, 22 Apr 2021 22:04:07 +0000
+Message-ID: <1955da4c211f4d4fbbf74a6b8bdae0f6@AcuMS.aculab.com>
+References: <20210422044856.27250-1-chang.seok.bae@intel.com>
+ <20210422044856.27250-6-chang.seok.bae@intel.com>
+ <854d6aefdf604b559e37e82669b5e67f@AcuMS.aculab.com>
+ <9C452E66-0C41-462B-9971-56825444AD65@intel.com>
+In-Reply-To: <9C452E66-0C41-462B-9971-56825444AD65@intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210422220113.GG7021@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/22/21 3:01 PM, Borislav Petkov wrote:
-> On Thu, Apr 22, 2021 at 02:47:05PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> Add multiprocessor wakeup support using MADT ACPI table for x86
->> platforms. It uses mailbox based mechanism to wake up the APs. You
->> can get more details about the ACPI table and mailbox protocol in
->> Guest-Host-Communication Interface (GHCI) for Intel Trust Domain
->> Extensions (Intel TDX) specification document (sec 4.1)
->>
->> https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
->>
->> Changes since v1:
->>   * Removed signoff from Rob and Erik.
-> 
-> For the future: please do not resend your patchset immediately but give
-> reviewers time to have a look at it.
-> 
-> Your current patchset comprises of only 3 patches - now imagine if it
-> were, 15, or 20 or more? Now also imagine if you were not the only one
-> submitter who would resend immediately... you'd soon have maintainers
-> drowning in email - not that they don't do so already anyway.
-> 
-> While waiting, you could read
-> 
-> Documentation/process/submitting-patches.rst
-
-Sorry for the trouble. I will keep it in mind for next submission.
+From: Bae, Chang Seok
+> Sent: 22 April 2021 17:31
 
 > 
-> for example.
+> On Apr 22, 2021, at 01:46, David Laight <David.Laight@ACULAB.COM> wrote:
+> > From: Chang S. Bae
+> >> Sent: 22 April 2021 05:49
+> >>
+> >> The kernel pushes context on to the userspace stack to prepare for the
+> >> user's signal handler. When the user has supplied an alternate signal
+> >> stack, via sigaltstack(2), it is easy for the kernel to verify that the
+> >> stack size is sufficient for the current hardware context.
+> >>
+> >> Check if writing the hardware context to the alternate stack will exceed
+> >> it's size. If yes, then instead of corrupting user-data and proceeding with
+> >> the original signal handler, an immediate SIGSEGV signal is delivered.
+> >
+> > What happens if SIGSEGV is caught?
 > 
-> Thx.
+> Boris pointed out the relevant notes before [1]. I think "unpredictable
+> results" is a somewhat vague statement but process termination is unavoidable
+> in this situation.
 > 
+> In the thread [1], a new signal number was discussed for the signal delivery
+> failure, but my takeaway is this SIGSEGV is still recognizable.
+> 
+> FWIW, Len summarized other possible approaches as well [2].
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Let's see...
+I use an on-stack buffer for the alternate stack and then setup
+siglongjmp() to return back from whatever ran out of stack space
+back to the processing loop.
+
+So my attempts to trap over-deep recursion cause the main stack
+to get corrupted - this is a normal stack overwrite that might
+be exploitable!
+
+Alternatively I used malloc() and we have a potentially exploitable
+heap overrun.
+
+The only thing the kernel can do is to immediately kill the process
+(possibly with a core dump).
+Since signals can get nested the kernel needs to ensure there
+is a reasonably amount of space left after the signal info is
+written to the alternate stack.
+
+> 
+> >> Refactor the stack pointer check code from on_sig_stack() and use the new
+> >> helper.
+> >>
+> >> While the kernel allows new source code to discover and use a sufficient
+> >> alternate signal stack size, this check is still necessary to protect
+> >> binaries with insufficient alternate signal stack size from data
+> >> corruption.
+> > ...
+> >> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+> >> index 3f6a0fcaa10c..ae60f838ebb9 100644
+> >> --- a/include/linux/sched/signal.h
+> >> +++ b/include/linux/sched/signal.h
+> >> @@ -537,6 +537,17 @@ static inline int kill_cad_pid(int sig, int priv)
+> >> #define SEND_SIG_NOINFO ((struct kernel_siginfo *) 0)
+> >> #define SEND_SIG_PRIV	((struct kernel_siginfo *) 1)
+> >>
+> >> +static inline int __on_sig_stack(unsigned long sp)
+> >> +{
+> >> +#ifdef CONFIG_STACK_GROWSUP
+> >> +	return sp >= current->sas_ss_sp &&
+> >> +		sp - current->sas_ss_sp < current->sas_ss_size;
+> >> +#else
+> >> +	return sp > current->sas_ss_sp &&
+> >> +		sp - current->sas_ss_sp <= current->sas_ss_size;
+> >> +#endif
+> >> +}
+> >> +
+> >
+> > Those don't look different enough.
+> 
+> The difference is on the SS_AUTODISARM flag check.  This refactoring was
+> suggested as on_sig_stack() brought confusion [3].
+
+I was just confused by the #ifdef.
+Whether %sp points to the last item or the next space is actually
+independent of the stack direction.
+A stack might usually use pre-decrement and post-increment but it
+doesn't have to.
+The stack pointer can't be right at one end of the alt-stack
+area (because that is the address you'd use when you switch to it),
+and if you are any where near the other end you are hosed.
+So a common test:
+	return (unsigned long)(sp - current->sas_ss_sp) < current->sas_ss_size;
+will always work.
+
+It isn't as though the stack pointer should be anywhere else
+other than the 'real' thread stack.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
