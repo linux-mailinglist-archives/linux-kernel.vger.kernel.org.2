@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4651B367F97
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3755367F9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235998AbhDVLdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44908 "EHLO mail.kernel.org"
+        id S236046AbhDVLfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:35:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:50284 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhDVLdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:33:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7AE61437;
-        Thu, 22 Apr 2021 11:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619091191;
-        bh=xDI5eBS6F8rcLcIPh61XOe2+dJaGm9SUWLO+i/3wDEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=klqkOjqP58KBuOUzOjZcbTqU+IHWbHLgD5mNITfHiV5MOR/IesC1BiJE+k7oi/Eqo
-         YNLecqUr1s9bsU3G9DerapMvLI2O/Gl3x6o0VMAuj5meWORdeGeqhjecXbABqYPv5N
-         pW2tA5dvxfqR4BbZMZQEt8GhQRshGm829PrAYSYznvMz7W/dkhUPe8J+5ckN4Hu5+1
-         ifdoxXowq0CI4Y7zd1ss7RF6YY0ZA1JGU5OgCFPCAaFyvsG3UgH4z9BKatpw3mWtTp
-         vGlqu1odNCkXTwQ46J+a0ZkqG8AXg4udisj4WuSHmRxDVWQ1ZfUIel1zrGjEXKqolL
-         zXeY39LnOvKtg==
-Date:   Thu, 22 Apr 2021 12:32:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: stm32-qspi: fix debug format string
-Message-ID: <20210422113243.GA4572@sirena.org.uk>
-References: <20210421140653.3964725-1-arnd@kernel.org>
- <20210421150510.GA36785@sirena.org.uk>
- <CAK8P3a0CWp_H-tm2QcZyH1FDXwzMgxY_9dc1Y8pA28MQKT-q=A@mail.gmail.com>
- <b970a557-b869-c867-3825-370a36feef68@foss.st.com>
+        id S230510AbhDVLfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:35:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B25D113A1;
+        Thu, 22 Apr 2021 04:34:55 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B75AC3F774;
+        Thu, 22 Apr 2021 04:34:54 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 12:34:52 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "Jon Medhurst (Tixy)" <tixy@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] firmware: arm_scpi: prevent ternary sign expansion bug
+Message-ID: <20210422113451.GG43717@e120937-lin>
+References: <YIE7pdqV/h10tEAK@mwanda>
+ <20210422101709.GF43717@e120937-lin>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b970a557-b869-c867-3825-370a36feef68@foss.st.com>
-X-Cookie: Jesus is my POSTMASTER GENERAL ...
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210422101709.GF43717@e120937-lin>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 22, 2021 at 11:17:09AM +0100, Cristian Marussi wrote:
+> Hi,
+> 
+> On Thu, Apr 22, 2021 at 12:02:29PM +0300, Dan Carpenter wrote:
+> > How type promotion works in ternary expressions is a bit tricky.
+> > The problem is that scpi_clk_get_val() returns longs, "ret" is a int
+> > which holds a negative error code, and le32_to_cpu() is an unsigned int.
+> > We want the negative error code to be cast to a negative long.  But
+> > because le32_to_cpu() is an u32 then "ret" is type promoted to u32 and
+> > becomes a high positive and then it is promoted to long and it is still
+> > a high positive value.
+> > 
+> > Fix this by getting rid of the ternary.
+> 
+> I wonder how/if the callers up in the stack check/expect ever effectively for a
+> 2-complement negative value inside the returned unsigned long...given that this
+> plugs finally into CLK framework struct clk_ops.recalc_rate via clk-scpi.c which
+> also expects unsigned long....but that's another story.
+> 
+> FWIW regarding this patch:
+> 
+> Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+> 
+> Thanks
+> 
+> Cristian
 
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+@Sudeep, as a second though, looking at .recalc_rate() definition inside
 
-On Thu, Apr 22, 2021 at 09:30:16AM +0200, Patrice CHOTARD wrote:
+include/linux/clk-provider.h:struct clk_ops 
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
+which is the direct caller of this SCPI clk function, I wonder if, instead,
+on error we should not return here just ZERO as the returned clock rate value
+as in:
 
-> Regarding this issue, how do you prefer to proceed ?=20
+	if (ret)
+		return 0;
 
-To repeat my original mail:
+given that the error code returned inside the unsigned long won't be ever
+considerd as such apparently, so not sure if it'd be worst to return a
+very big fake value or zero...
 
-> > On Wed, Apr 21, 2021 at 5:05 PM Mark Brown <broonie@kernel.org> wrote:
+Thanks
+Cristian
 
-> >> This doesn't apply against current code, please check and resend.
 
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCBXtoACgkQJNaLcl1U
-h9DZQwgAhkjv/7njL5nJTDc2PAZGesegUWMrkNDFhg1F/m51cNUxuvc8HAp7J/es
-m6enbXoKdkgnjrXhH5dxirBRFwssxZlcrG75ijEkdxrjMWbMapSGEzCtGm/QB+9r
-x+cCm7JbvSPF4CCnCjXC208uoSAfG6WPp/rLLKAWaY/WBaZyoQhvTJl5sp/MAMdC
-p4taxgGXF/h5E+TLy3HeBlaPTldnBgfxPql0UNWDkwsfjM3ti/HWmHQ2G5MiwdJ5
-zoasbWnlDJi3FDIWRF+qKIx1c6FraYEZCRe19dz2yWpLH2OblrFGqgFTkQG/5IxR
-hDvxq5PzgaZV7UrC49z5T9fLI00kQA==
-=H99h
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
+> > 
+> > Fixes: 8cb7cf56c9fe ("firmware: add support for ARM System Control and Power Interface(SCPI) protocol")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/firmware/arm_scpi.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
+> > index d0dee37ad522..3bf61854121d 100644
+> > --- a/drivers/firmware/arm_scpi.c
+> > +++ b/drivers/firmware/arm_scpi.c
+> > @@ -552,8 +552,10 @@ static unsigned long scpi_clk_get_val(u16 clk_id)
+> >  
+> >  	ret = scpi_send_message(CMD_GET_CLOCK_VALUE, &le_clk_id,
+> >  				sizeof(le_clk_id), &rate, sizeof(rate));
+> > +	if (ret)
+> > +		return ret;
+> >  
+> > -	return ret ? ret : le32_to_cpu(rate);
+> > +	return le32_to_cpu(rate);
+> >  }
+> >  
+> >  static int scpi_clk_set_val(u16 clk_id, unsigned long rate)
+> > -- 
+> > 2.30.2
+> > 
