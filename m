@@ -2,226 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770113684E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFBD3684E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237511AbhDVQcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:32:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:47939 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236662AbhDVQca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:32:30 -0400
-IronPort-SDR: b0bpm16eB0ZsV71xFQXAs/A77KcUfaMDiEiQEDBBQ7QYdZrciFdnAXlNePXRtNXtB16e8ZuSRr
- BjF5EQGyLWQg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="175406056"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="175406056"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 09:31:33 -0700
-IronPort-SDR: hP6DLBZjceLWCEY2NyHaKjVYmUnp2KwsgKSM5EpC34kDiWmii6s8n8qGvSHyNYlYzgEj65Hwui
- fOXJjTMKholw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="421432775"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Apr 2021 09:31:33 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 22 Apr 2021 09:31:32 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Thu, 22 Apr 2021 09:31:32 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.52) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Thu, 22 Apr 2021 09:31:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LrN72Htxe+u0VSOrwyXOFswWk7m9lPRTp/gXPEKsrC7mpDh7BhoqayKw4pEzmeXhoxcOHrcUUJNSHacjXw+8E1wb7VCO2Gpfdlh4Cv8Rt2UjWzbMascnwwHXM3KML56O8lweJ2e0FpxNIjir7dGH4BRVCAaY8lN/UpRomsivovZHOL5i6cF26t1kysmcWFzYLjPU4Xi+y6b5IH8spjysA/EVhHmkueDOIaWBYlJsKHzFHpFXnuGuhCRP4YOX/M3ywiZ70n+fIB8OjmKtLMfztn5gQ+49zdzFzhd7kqELtYWvh/fc/ufYkxyaiMIPMOmbb3S0J4G2mrWYUZ8naG4nkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h2z0kiawhcQYIOowgpDIFtUKOk0YF+McBLVtWnsl6f4=;
- b=oOIPmASxG05/V/uQaaeq0GgWfy5wSbeape7271cma7rKaNtO7b9SpyG4dZqf5TtZUnojJzDtr80tyiV1v0Smfk9KEO8TBVzsHiBoGSfW4e/MKR2UfsifN9Q44+HXTbyFncJW6gJLMMgz6Jv2ZZ6GEpZdDaWa4G2EQRTrBlhpUogZDDjJI725gnB+1tTpB5ZwkCiePnIHBA2trWQ3FgxSbtLcCPklbxVfFl30X757NiCpHINX8epovX0F5VhecBbnmWznCD4f88+/xUh/SUEvgfd/uE5nyOOKvfDh2uFRq7leJI31bdFJ42ZhfaWQtu4Ihu1sTyTvOE+euyeLorAgYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h2z0kiawhcQYIOowgpDIFtUKOk0YF+McBLVtWnsl6f4=;
- b=Gxdu83ycLk7h79roKRj1qjdN9IF8o2MB4OGpC2525P2Co+zrw02uPEhp9L3CRWXFB10uN9Urfb4jsM5Nwd+k6tRu9kH/cJwIdkxMi2CwUx2yYVtkSV14EL8T5PNkB/XUZij9szhzIiRmBOuSTK/fhgFRYI1DLeHxt+fTzgEAjQs=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB5159.namprd11.prod.outlook.com (2603:10b6:510:3c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Thu, 22 Apr
- 2021 16:31:26 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::8878:2a72:7987:673]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::8878:2a72:7987:673%5]) with mapi id 15.20.4065.023; Thu, 22 Apr 2021
- 16:31:26 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-CC:     "bp@suse.de" <bp@suse.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "Dave.Martin@arm.com" <Dave.Martin@arm.com>,
-        "jannh@google.com" <jannh@google.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "carlos@redhat.com" <carlos@redhat.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 5/6] x86/signal: Detect and prevent an alternate signal
- stack overflow
-Thread-Topic: [PATCH v8 5/6] x86/signal: Detect and prevent an alternate
- signal stack overflow
-Thread-Index: AQHXNzOQXxUM6Mub30elxTKCBjQG3arAOYAAgACB+IA=
-Date:   Thu, 22 Apr 2021 16:31:26 +0000
-Message-ID: <9C452E66-0C41-462B-9971-56825444AD65@intel.com>
-References: <20210422044856.27250-1-chang.seok.bae@intel.com>
- <20210422044856.27250-6-chang.seok.bae@intel.com>
- <854d6aefdf604b559e37e82669b5e67f@AcuMS.aculab.com>
-In-Reply-To: <854d6aefdf604b559e37e82669b5e67f@AcuMS.aculab.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: ACULAB.COM; dkim=none (message not signed)
- header.d=none;ACULAB.COM; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.189.248.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 73d1824b-59a5-4d8b-8915-08d905ac1320
-x-ms-traffictypediagnostic: PH0PR11MB5159:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB515949A33A88C1DE294806DCD8469@PH0PR11MB5159.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iOHan7eCQQtDCzHrjSNMwZm7CPIcAENnzkCVVLaAbqEUL3LpwcyfmEfLEKgl6QJU43XfeCkkev2Z0KsFwq5CqZpoUOGx1KgVpUiRF8C8NSWADwHaVI4Fkhu4aMsXmnPBQJOBdxuQhXgeFZfM1dbdVM9xX0eJWxPnb7Go8kFGbMUNdBi7dXno9Jo58jO41iDfg5e8CovzT+vrM2dnFObfwiUpArqbatvTnNedWk6wldyCiBlKcCx5huzgzHVl7cqJ+BlHjbnfTm+Yexc0Z8F+5FP4QbX8PIuSNgqTeQSMDwAk8PK/mIKfyI+mvix/BzLEifceWTDJ0Bl0oUz+gm6pDR8oqa/n+PVfD+ktSDfHUUIADQY1csqNen6OW2sB/D4Px+9tme+YtATyGLOf3ic4a1TTeyNTKufOnHyp1q/eQUn5rh+l7x1/+zdOnCPFwT3+HwDN0Hyca2zMpKOE4VfpLQQ0FOK0PC2sutaeD0qMANrmyF9W56l/dYZmS4bpEcb6ErAQithxVf5CWWWMKhh2IJhN3BxIfq8x11ZjSIrji6vjdE7nYfTRMoy7CIC2zmfQ5VmWjY/ovX2yX1ZYB5P/LbfHPSMrwU/1ZUaxpWUVpkOxvOtHOOFdTTOVLjIojuYl3vFgLILOZPz4DELu6OzG3NzPoDGxiigkJopIBKcJQHH9HIJ7T9E9lAUq0En3V/Nag7EuxTZBonntAcixageiJO150aC2bG8nMhSA4xtUlfCzX4xKnC2sB40bo5pjfSDg
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(136003)(376002)(396003)(346002)(36756003)(2616005)(6916009)(71200400001)(478600001)(66446008)(66556008)(8936002)(966005)(38100700002)(2906002)(122000001)(66476007)(186003)(5660300002)(53546011)(26005)(6506007)(8676002)(86362001)(4326008)(33656002)(76116006)(64756008)(6486002)(7416002)(54906003)(83380400001)(316002)(6512007)(66946007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?xTRKafSrXp7EIpE6Vu1HWYf4i/ujo5BqN+Ll7/uX92D5SadgZN2yemQXYNtA?=
- =?us-ascii?Q?XXec4xihQPDygUCyCxCIcs0E+x/ftg7K5KUJOIaJ+JRIg0mBFcdTn/eox4te?=
- =?us-ascii?Q?dECNgX4StgFELULVmVpKBpenwZ355uGJFy96mRt4I4uDXZFhGG6pNpqy9oDy?=
- =?us-ascii?Q?PJKyicMAvhngPPnygMK155JZGYGVIaAZcyu+hJxCQfqJq/vWvgeg43q76s//?=
- =?us-ascii?Q?cmUf8mgDT3PnhW6D4oX0QJOf3kfcABv6LlnZ72elNNobE+ZoeoT9metr/2vs?=
- =?us-ascii?Q?BorYO+lgMM8Qp/7OWMYll6ZSTVEOqhrTBhX+W/xCDojFADAQtSs7C9ps+ZrR?=
- =?us-ascii?Q?kKfOIZu5fTMS3ODhc2VAnUIST2kpdiZfZEm4kgL0e5wfKYIjg1AHk+veF7V0?=
- =?us-ascii?Q?uHZgmDgmLwIHDnpEZUNa0CCuX4JjO3Ybs5+GwH2aeMsiQdd+n6Nxq6DM4v5O?=
- =?us-ascii?Q?FB9DcOdOWdtqsCVaKi4QgdJRitYebKAfYU+DEBEg/bxLYOfSs/6RIaG2bTIb?=
- =?us-ascii?Q?KIBBYNRaWj2uULyJzEQEiyBLWnsrS4zvwJSng3/DgJB7zPHfZCfwV/lXwJ/w?=
- =?us-ascii?Q?9u4xwhXX4e3hN6Baf6117wXIdkWwpzdzzwOH0QT2flrohxypavRoc+bQQynD?=
- =?us-ascii?Q?8m0mxkH7Vi3o+qqBBCl6Zia73+8m/RY/hp5uvAVRI7gYei0+n6wToWEctB/J?=
- =?us-ascii?Q?q282zzoYQYBOZSiv7F+5XmWtZXAXK7pFyJyU/PiEreOige6ZfUzZc12Hj4oE?=
- =?us-ascii?Q?QId2r9V+6CvoB+fAAum1B9LGilY+l7LShUP7Mch3KYHfzYi8xWcpEAoTSJKX?=
- =?us-ascii?Q?ElPVWQVIu6Cso3cP5E5OTq810VVlCuEiOU15qFuiXvwfuFsJ+ysH/Wvw+erM?=
- =?us-ascii?Q?6XFKt1OW/iyrZtDTlfLcUbJ6k0zTpBOPyltJHzdWCFKFdYLheD/0LtNpoB5E?=
- =?us-ascii?Q?peVxRaskELfxwQ5YinZFH+KWzm1ioHSauoESgWuANJyJ8BQwRyRrhoLXm2z/?=
- =?us-ascii?Q?GAS5DuvY0tUsR8QkwwTzlXLUZVMpiVIasvzeBuToYxZ7ddzC4c868Pdeo4MF?=
- =?us-ascii?Q?Lp9Wn0DbN4FdB7KSjMi61EjKxq3UVmB0dg1SXKC9pt10IczIitc7xXdXAvk5?=
- =?us-ascii?Q?1Yz5qs6F5ukIRqciWW8fzTLcYmOkM90aRvp1KACDjdWIoi0X3AMgl5eq46NJ?=
- =?us-ascii?Q?FUK9HEXB1Ne9q05OsP83/hapjqE5epK7bjUPJkGBGcnvOr3VPiJcnsplAiKY?=
- =?us-ascii?Q?WCgd0ge/X8vc3w+XSghtyV9DfvqkAc6w7T90Y2ahxdYJ6k6x3BBlR7w6poEd?=
- =?us-ascii?Q?ZFv/JWpKqFhzMMI+qd4MEqWw?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D98A9DC7F23BCD4BB8AF09CC91F17005@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S237950AbhDVQc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236662AbhDVQcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:32:55 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380C2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:32:20 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id s20so7968855plr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cozMNl4x0aoDfS151vd4k3rQFwhI4XY6oBVsQT9uHNQ=;
+        b=Nn248TtiVAoPlwvqR27j4chs/hwfU/A16DV50RupiPpu/t46mpFxp07L1eIAVXAFq0
+         8+rmYuoevJMFuOBc5+rZWv1sO8jgLjU+X9MnOuov5H40vc9O1B4o4OBAn8eCt2znBw1K
+         zsk7pAdtxtX03L2SPZyca9kC6Z3QehisnxckskRcBVm8N0f74qMvAe4uQY98nltmGMzk
+         CLovQr/wxoJiiiNJFkqzQg8weB/t6DHb50ktkSUh/aCPxYY1OK1TdwASNC473IReV9IP
+         svTny4CV8QwOCqW6DpLkWfXrj+SBEtz1CB5pqT4zH/CCAPWS+dp3L4fNyC3i3UOulnK8
+         qszA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cozMNl4x0aoDfS151vd4k3rQFwhI4XY6oBVsQT9uHNQ=;
+        b=R9cAKJQL3aGpKiOH2bV2DDKNrH8qucnQbaGNADSIj1DliHz9rpbWmkccFDkUTNcLTN
+         VyPjm6dW8VifouhHYuT3oilnmez7Fv9e0+8Y7RQuPMJ3s6C2tjCDV0aWEryBT+Kg+SOb
+         PMuHIOb8ISr4V1hrCVo7RVVSOZOp3xoXDLFqXvA1uqAvbUiqg5UsVH+fSMp7ezdvNTy8
+         SxkTY7NG28Hguc9vERP6Ha/jEIPanSdOBMA7zUk6kpYTz0P8f/YP/clY0vdwij8Ty8BM
+         ppKSQ0HC9tBUqrljAGy10igWbIjXMX4+TmCVfscpreYfkcJsjW/KSdkpHiGTPxtzpmJX
+         4s7A==
+X-Gm-Message-State: AOAM530i/i8sEa+z4YFzGT+YwO5I4qhWDBqPLIQQsW7PuDTAA1w1ZGwn
+        OuLuqy+9M95uXVhywNalkF+m03Vf2TBUXg==
+X-Google-Smtp-Source: ABdhPJzF2Qsbwpp8tTcZe/nkV/+BMAURDtxF0quVJv8hmQraI3YmZbIo9O4WxwfiFlKpAnHrEPwrdA==
+X-Received: by 2002:a17:90a:a78c:: with SMTP id f12mr873180pjq.219.1619109139744;
+        Thu, 22 Apr 2021 09:32:19 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z188sm2717992pgb.89.2021.04.22.09.32.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 09:32:19 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 10:32:17 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 2/7] rpmsg: Move the rpmsg control device from
+ rpmsg_char to rpmsg_ctrl
+Message-ID: <20210422163217.GB1256950@xps15>
+References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
+ <20210413134458.17912-3-arnaud.pouliquen@foss.st.com>
+ <20210421180455.GE1223348@xps15>
+ <bb376229-006f-af16-2006-4ef9edea87f5@foss.st.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73d1824b-59a5-4d8b-8915-08d905ac1320
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2021 16:31:26.0998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Becq6QPv7PxhFES/3IqJm6F2CwN33EvicbxqjR+KgSdHzQ0vthJui5+AzA4qmsl52LZRIunvYCGtEyM3qMPayWhVYi5xN9ox6bl7Nf1Kurk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5159
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb376229-006f-af16-2006-4ef9edea87f5@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Apr 22, 2021, at 01:46, David Laight <David.Laight@ACULAB.COM> wrote:
-> From: Chang S. Bae
->> Sent: 22 April 2021 05:49
->>=20
->> The kernel pushes context on to the userspace stack to prepare for the
->> user's signal handler. When the user has supplied an alternate signal
->> stack, via sigaltstack(2), it is easy for the kernel to verify that the
->> stack size is sufficient for the current hardware context.
->>=20
->> Check if writing the hardware context to the alternate stack will exceed
->> it's size. If yes, then instead of corrupting user-data and proceeding w=
-ith
->> the original signal handler, an immediate SIGSEGV signal is delivered.
->=20
-> What happens if SIGSEGV is caught?
+On Thu, Apr 22, 2021 at 09:56:41AM +0200, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 4/21/21 8:04 PM, Mathieu Poirier wrote:
+> > On Tue, Apr 13, 2021 at 03:44:53PM +0200, Arnaud Pouliquen wrote:
+> >> Create the rpmsg_ctrl.c module and move the code related to the
+> >> rpmsg_ctrldev device in this new module.
+> >>
+> >> Add the dependency between rpmsg_char and rpmsg_ctrl in the
+> >> kconfig file.
+> >>
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >> update from v1:
+> >> - keep "rpmsg_chrdev" driver name in rpmsg_ctrl, driver will be renamed
+> >>   in next path that renames the rpmsg_chrdev_create_eptdev.
+> >> - rename the chardev regions
+> >> - move RPMSG_DEV_MAX to rpmsg_char.h
+> >> ---
+> >>  drivers/rpmsg/Kconfig      |   9 ++
+> >>  drivers/rpmsg/Makefile     |   1 +
+> >>  drivers/rpmsg/rpmsg_char.c | 181 +----------------------------
+> >>  drivers/rpmsg/rpmsg_char.h |   2 +
+> >>  drivers/rpmsg/rpmsg_ctrl.c | 231 +++++++++++++++++++++++++++++++++++++
+> >>  5 files changed, 245 insertions(+), 179 deletions(-)
+> >>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+> >>
+> >> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
+> >> index 0b4407abdf13..d822ec9ec692 100644
+> >> --- a/drivers/rpmsg/Kconfig
+> 
+> snip[...]
+> 
+> >> +static int rpmsg_ctrldev_init(void)
+> >> +{
+> >> +	int ret;
+> >> +
+> >> +	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_ctrl");
+> >> +	if (ret < 0) {
+> >> +		pr_err("rpmsg: failed to allocate char dev region\n");
+> >> +		return ret;
+> >> +	}
+> >> +
+> >> +	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+> > 
+> > This class thing really bothers me.  Keeping this here means that rpmsg_eptdevs
+> > created from user space will be associated to this rpmsg_class but those created
+> > from the name service won't.  As such I propose to move this to rpmsg_char and
+> > simply not associate the control device to the class.
+> > 
+> > Otherwise we'd have to introduce some mechanic only to deal with the creation of
+> > the class and I don't think it is worth.  We can revise that approach if someone
+> > complains we broke their user space. 
+> 
+> I agree with that as it was my first proposed approach here [1]
 
-Boris pointed out the relevant notes before [1]. I think "unpredictable
-results" is a somewhat vague statement but process termination is unavoidab=
-le
-in this situation.
+Yeah, sorry about that.  This patch review process is not an exact science...
 
-In the thread [1], a new signal number was discussed for the signal deliver=
-y
-failure, but my takeaway is this SIGSEGV is still recognizable.
-
-FWIW, Len summarized other possible approaches as well [2].
-
->> Refactor the stack pointer check code from on_sig_stack() and use the ne=
-w
->> helper.
->>=20
->> While the kernel allows new source code to discover and use a sufficient
->> alternate signal stack size, this check is still necessary to protect
->> binaries with insufficient alternate signal stack size from data
->> corruption.
-> ...
->> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
->> index 3f6a0fcaa10c..ae60f838ebb9 100644
->> --- a/include/linux/sched/signal.h
->> +++ b/include/linux/sched/signal.h
->> @@ -537,6 +537,17 @@ static inline int kill_cad_pid(int sig, int priv)
->> #define SEND_SIG_NOINFO ((struct kernel_siginfo *) 0)
->> #define SEND_SIG_PRIV	((struct kernel_siginfo *) 1)
->>=20
->> +static inline int __on_sig_stack(unsigned long sp)
->> +{
->> +#ifdef CONFIG_STACK_GROWSUP
->> +	return sp >=3D current->sas_ss_sp &&
->> +		sp - current->sas_ss_sp < current->sas_ss_size;
->> +#else
->> +	return sp > current->sas_ss_sp &&
->> +		sp - current->sas_ss_sp <=3D current->sas_ss_size;
->> +#endif
->> +}
->> +
->=20
-> Those don't look different enough.
-
-The difference is on the SS_AUTODISARM flag check.  This refactoring was
-suggested as on_sig_stack() brought confusion [3].
-
-Thanks,
-Chang
-
-[1] https://lore.kernel.org/lkml/20210414120608.GE10709@zn.tnic/
-[2] https://lore.kernel.org/lkml/CAJvTdKnpWL8y4N_BrCiK7fU0UXERwuuM8o84LUpp7=
-Watxd8STw@mail.gmail.com/
-[3] https://lore.kernel.org/lkml/20210325212733.GC32296@zn.tnic/
-
-
-
-
+> 
+> [1] https://www.spinics.net/lists/linux-arm-msm/msg81194.html
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> > 
+> >> +	if (IS_ERR(rpmsg_class)) {
+> >> +		pr_err("failed to create rpmsg class\n");
+> >> +		ret = PTR_ERR(rpmsg_class);
+> >> +		goto free_region;
+> >> +	}
+> >> +
+> >> +	ret = register_rpmsg_driver(&rpmsg_ctrldev_driver);
+> >> +	if (ret < 0) {
+> >> +		pr_err("rpmsg ctrl: failed to register rpmsg driver\n");
+> >> +		goto free_class;
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +
+> >> +free_class:
+> >> +	class_destroy(rpmsg_class);
+> >> +free_region:
+> >> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> >> +
+> >> +	return ret;
+> >> +}
+> >> +postcore_initcall(rpmsg_ctrldev_init);
+> >> +
+> >> +static void rpmsg_ctrldev_exit(void)
+> >> +{
+> >> +	unregister_rpmsg_driver(&rpmsg_ctrldev_driver);
+> >> +	class_destroy(rpmsg_class);
+> >> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> >> +}
+> >> +module_exit(rpmsg_ctrldev_exit);
+> >> +
+> >> +MODULE_DESCRIPTION("rpmsg control interface");
+> >> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
+> >> +MODULE_LICENSE("GPL v2");
+> >> -- 
+> >> 2.17.1
+> >>
