@@ -2,178 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5893A368518
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4590336851B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhDVQm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:42:58 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:46631 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232670AbhDVQm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:42:57 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MGVh1O014007;
-        Thu, 22 Apr 2021 18:42:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=HOjEh61/Klj7ndpxXpXLihV5ds/oRHH/s0w230vXJYg=;
- b=TbkGAHsEjuIFs6PdZzpQVBom1ntYo5s3Yv1/9KlJBPrriFYlC+E3wVWZrIfuj7CTRwaW
- h4FVKfmhY8OMRPnDgWaZb0ePojaaJ1Uyvp3M+6EKn8hKgxw1elBIGxBVIwcxNyYe148w
- LPX8hK1pRWcqLrfJ5Vtul1m2F0fN1nSwTNqE28YAzcjP4iVx9pgWZX5QYGSkYOrqfCTK
- 1ACKPGJy60Y/8qe2aEdlBo8gv9zn+yesVD2HYElnU/AZOI9qFUeZzfcsrudHQOkFvTN9
- Qnx/WWZGgssRK4AtbepgYFddU5ongDILoSIbw5mvpIHQmIt3xqzBpAArblT0/d2rFCs2 fg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3839s790hu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 18:42:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7922210002A;
-        Thu, 22 Apr 2021 18:42:19 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 636A724544F;
-        Thu, 22 Apr 2021 18:42:19 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
- 2021 18:41:53 +0200
-Subject: Re: [PATCH v2 2/7] rpmsg: Move the rpmsg control device from
- rpmsg_char to rpmsg_ctrl
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
- <20210413134458.17912-3-arnaud.pouliquen@foss.st.com>
- <20210421180455.GE1223348@xps15>
- <bb376229-006f-af16-2006-4ef9edea87f5@foss.st.com>
- <20210422163217.GB1256950@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <5e63d822-5e19-7ab0-6ec7-a9ace4bdb706@foss.st.com>
-Date:   Thu, 22 Apr 2021 18:41:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237928AbhDVQn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:43:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236058AbhDVQn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:43:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A69D61421;
+        Thu, 22 Apr 2021 16:42:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619109772;
+        bh=VWYw7Sltah44/Ja+aYGG6HIokHXaqHuG1J2aj6+8UXE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kkjlkA5BwtIFA0Y+oBUR75w0/8UGTUne77MWvBJ1Tp2WuttOhmmJB/TBJZAixXYA5
+         BK3yjl+Rio2Bpv3vsvCUSliRdOcElGAL4Gh2QUQcd5WTirA7BN6BoM36fHBuQoe/2o
+         U7+1KAsMt1eQvLAOeOc2ZeN0mDFvszZHWYnkiz8daQLKWmDZGKYufgiFqd2fWxGrNk
+         5xnWfCsVYNXjdSZgZLVkOzWZG1+JCTOXT8QGjUnmXG4//XdbcwTAwXt4ucXEAvQU7h
+         lOgOG1SXOY02wHMbe7vo6/UacWIaGDm1xRlO3r9SDvUJpmqwLqbBtEcWkJz7z3K3/D
+         hu8YTXI0YylGA==
+Date:   Thu, 22 Apr 2021 17:42:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Joe Burmeister <joe.burmeister@devtank.co.uk>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
+ beyond limit.
+Message-ID: <20210422164223.GA36209@sirena.org.uk>
+References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210422163217.GB1256950@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-22_11:2021-04-22,2021-04-22 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
+In-Reply-To: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
+X-Cookie: When in doubt, lead trump.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 4/22/21 6:32 PM, Mathieu Poirier wrote:
-> On Thu, Apr 22, 2021 at 09:56:41AM +0200, Arnaud POULIQUEN wrote:
->>
->>
->> On 4/21/21 8:04 PM, Mathieu Poirier wrote:
->>> On Tue, Apr 13, 2021 at 03:44:53PM +0200, Arnaud Pouliquen wrote:
->>>> Create the rpmsg_ctrl.c module and move the code related to the
->>>> rpmsg_ctrldev device in this new module.
->>>>
->>>> Add the dependency between rpmsg_char and rpmsg_ctrl in the
->>>> kconfig file.
->>>>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>> ---
->>>> update from v1:
->>>> - keep "rpmsg_chrdev" driver name in rpmsg_ctrl, driver will be renamed
->>>>   in next path that renames the rpmsg_chrdev_create_eptdev.
->>>> - rename the chardev regions
->>>> - move RPMSG_DEV_MAX to rpmsg_char.h
->>>> ---
->>>>  drivers/rpmsg/Kconfig      |   9 ++
->>>>  drivers/rpmsg/Makefile     |   1 +
->>>>  drivers/rpmsg/rpmsg_char.c | 181 +----------------------------
->>>>  drivers/rpmsg/rpmsg_char.h |   2 +
->>>>  drivers/rpmsg/rpmsg_ctrl.c | 231 +++++++++++++++++++++++++++++++++++++
->>>>  5 files changed, 245 insertions(+), 179 deletions(-)
->>>>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
->>>>
->>>> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
->>>> index 0b4407abdf13..d822ec9ec692 100644
->>>> --- a/drivers/rpmsg/Kconfig
->>
->> snip[...]
->>
->>>> +static int rpmsg_ctrldev_init(void)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_ctrl");
->>>> +	if (ret < 0) {
->>>> +		pr_err("rpmsg: failed to allocate char dev region\n");
->>>> +		return ret;
->>>> +	}
->>>> +
->>>> +	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
->>>
->>> This class thing really bothers me.  Keeping this here means that rpmsg_eptdevs
->>> created from user space will be associated to this rpmsg_class but those created
->>> from the name service won't.  As such I propose to move this to rpmsg_char and
->>> simply not associate the control device to the class.
->>>
->>> Otherwise we'd have to introduce some mechanic only to deal with the creation of
->>> the class and I don't think it is worth.  We can revise that approach if someone
->>> complains we broke their user space. 
->>
->> I agree with that as it was my first proposed approach here [1]
-> 
-> Yeah, sorry about that.  This patch review process is not an exact science...
+On Tue, Apr 20, 2021 at 09:34:02AM +0100, Joe Burmeister wrote:
+> It was previoulsy possible to have a device tree with more chips than
+> the driver supports and go off the end of CS arrays.
+>=20
+> This patches inforces CS limit but sets that limit to the max of the
+> default limit and what is in the device tree when driver is loaded.
 
-No worries, exploring alternatives is part of the upstream process  :)
+This doesn't apply against current code, please check and resend.
 
-> 
->>
->> [1] https://www.spinics.net/lists/linux-arm-msm/msg81194.html
->>
->> Thanks,
->> Arnaud
->>
->>>
->>>
->>>> +	if (IS_ERR(rpmsg_class)) {
->>>> +		pr_err("failed to create rpmsg class\n");
->>>> +		ret = PTR_ERR(rpmsg_class);
->>>> +		goto free_region;
->>>> +	}
->>>> +
->>>> +	ret = register_rpmsg_driver(&rpmsg_ctrldev_driver);
->>>> +	if (ret < 0) {
->>>> +		pr_err("rpmsg ctrl: failed to register rpmsg driver\n");
->>>> +		goto free_class;
->>>> +	}
->>>> +
->>>> +	return 0;
->>>> +
->>>> +free_class:
->>>> +	class_destroy(rpmsg_class);
->>>> +free_region:
->>>> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>> +
->>>> +	return ret;
->>>> +}
->>>> +postcore_initcall(rpmsg_ctrldev_init);
->>>> +
->>>> +static void rpmsg_ctrldev_exit(void)
->>>> +{
->>>> +	unregister_rpmsg_driver(&rpmsg_ctrldev_driver);
->>>> +	class_destroy(rpmsg_class);
->>>> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>> +}
->>>> +module_exit(rpmsg_ctrldev_exit);
->>>> +
->>>> +MODULE_DESCRIPTION("rpmsg control interface");
->>>> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
->>>> +MODULE_LICENSE("GPL v2");
->>>> -- 
->>>> 2.17.1
->>>>
+Also s/previoulsy/previously/ and s/inforces/enforces/
+
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCBp28ACgkQJNaLcl1U
+h9D2oQf/dFMngIVq1ZtQumO+zpDp+HuYqh2dCl8/it2x59tSXNC4kp9W3IxDOlTm
+n7Dkzo+NaHCFXWs1gwPIFlxBMGXnDDeFvX0Bmhd1lb/1MYvxEjrECMnGvYh8bcTG
+YoLIAX1lkQ+ycPb5zWZnKgMtk6jAAtFFDPIswtMGxR0tmqLHVDUO8WVHcwLGLivf
+A4qRhMW+QW2jGTQcVq3HJTcpNp//K7azHa805wvZ5odjanf6kT3mKxCY2lkl4ogl
+3KoHk0TThoCd9B1PmpQmgWFf4OROAL3zYJFbqe6hVvTns4YgYb/siX3MsWGGt1k9
+RgQH64s0I+XfsUjL8K5kt3w+ETA/OA==
+=L/zF
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
