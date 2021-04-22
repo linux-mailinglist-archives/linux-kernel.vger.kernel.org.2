@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD51C367BD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB37367BDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbhDVIOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:14:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235004AbhDVIOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:14:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84069613C3;
-        Thu, 22 Apr 2021 08:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619079212;
-        bh=rSQ9Upu9BoP/whD4fF5mnOc4VcFU2W0VWOHMc9fHiq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hEKbF6cDdurWC7e0dutGeYoymKMrW9KJfyNW8JIMfJS8crW8GYdkv+Znv+jD2JzlJ
-         OWxHmeAJs2PyRVTnmU4A/YYmpSxrx82M9gTMmH04/tWUDSdcb8z62cgxmyU0h0g/9Q
-         BxVVRGDC3HovR3KiCJr12Sw2b4IEujJ2RRkRoqNw=
-Date:   Thu, 22 Apr 2021 10:13:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 002/190] Revert "media: st-delta: Fix reference count
- leak in delta_run_work"
-Message-ID: <YIEwKeINI8VOG+S4@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-3-gregkh@linuxfoundation.org>
- <b6e00864-f28a-ee9a-ea53-d1a8aa8c42fb@xs4all.nl>
+        id S235366AbhDVIOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235004AbhDVION (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:14:13 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF17AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:13:38 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id n4-20020a05600c4f84b029013151278decso2595546wmq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=y+2orF1pTAhlEapNdeXUHEPMIxuWbRepsrCfwxwKqPQ=;
+        b=gHnwqNUV9ImgCFezmiVa76pK8wVFkRrxerF84m3fGkLrmxRPS22ANeM2+wardiWMau
+         TIACxgmBON1oew/9mDWdVzRInBo7wiaCjCKjux8OlAWeeO77boWwGStL+p6m1yNjeC3R
+         wCI3YUFG5nSBBAvTADfTufzcNHi3gNchFusrA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=y+2orF1pTAhlEapNdeXUHEPMIxuWbRepsrCfwxwKqPQ=;
+        b=DUXogvyes+6paQpeyG42sDYxoOmk6JVYgQf7/ONLdDxzvTzvTutVufKlafAUZx6318
+         66sqwVHlpgRlD0NfAMiBf5FBXGc7Reu/xpDTlumJHn0unzd9SSfQEb4wBVmxjyygfeNT
+         UERdWW1yWRIcliveb9bcBBMqMRd3JhkaNRzCAygSjB7xZ5gMsM/F0ABsS/aYzvUcwFcM
+         XKZ9ZszTq2pbUF3oWylURNjP9fLY+rQbK8k1Hecu192QSvVuegPgoFptL38GNw3ATN2D
+         yE2qM9ltXsR+A3AcIAE4NL9PiVWnxj9BEMvpIf6yDbgiM4fnIjpf6+jkbQuLyyvIz0V4
+         F0LA==
+X-Gm-Message-State: AOAM533xnjpbXDCj3Mzoj5CDlqVR7fFVBGBjQpCKa7cshMKPdDvEcVI0
+        vbBxng94lTBlfTvE5CIpCuNGDw==
+X-Google-Smtp-Source: ABdhPJxj8Wjmw9peJ0Dkkr6S5qwG/1RIJTJQvvdMp6AsnTRfP/VbwnRDvQEbFil5LrRoQEP2bPFE4A==
+X-Received: by 2002:a1c:4b11:: with SMTP id y17mr2401274wma.72.1619079217522;
+        Thu, 22 Apr 2021 01:13:37 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b12sm20494903wmj.1.2021.04.22.01.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 01:13:37 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 10:13:35 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, dri-devel@lists.freedesktop.org,
+        jgg@ziepe.ca, jaharkes@cs.cmu.edu, akpm@linux-foundation.org,
+        miklos@szeredi.hu, coda@cs.cmu.edu
+Subject: Re: [PATCH 2/2] ovl: fix reference counting in ovl_mmap error path
+Message-ID: <YIEwL09isbCIM82+@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, dri-devel@lists.freedesktop.org,
+        jgg@ziepe.ca, jaharkes@cs.cmu.edu, akpm@linux-foundation.org,
+        miklos@szeredi.hu, coda@cs.cmu.edu
+References: <20210421132012.82354-1-christian.koenig@amd.com>
+ <20210421132012.82354-2-christian.koenig@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <b6e00864-f28a-ee9a-ea53-d1a8aa8c42fb@xs4all.nl>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210421132012.82354-2-christian.koenig@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 10:02:32AM +0200, Hans Verkuil wrote:
-> Hi Greg,
+On Wed, Apr 21, 2021 at 03:20:12PM +0200, Christian König wrote:
+> mmap_region() now calls fput() on the vma->vm_file.
 > 
-> I re-reviewed all the patches in this series where I was CCed.
+> Fix this by using vma_set_file() so it doesn't need to be
+> handled manually here any more.
 > 
-> These are all good and fix real bugs and should be re-reverted:
+> Signed-off-by: Christian König <christian.koenig@amd.com>
+> Fixes: 1527f926fd04 ("mm: mmap: fix fput in error path v2")
+> CC: stable@vger.kernel.org # 5.11+
+> ---
+>  fs/overlayfs/file.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
 > 
-> [PATCH 002/190] Revert "media: st-delta: Fix reference count leak in delta_run_work"
-> [PATCH 003/190] Revert "media: sti: Fix reference count leaks"
-> [PATCH 004/190] Revert "media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync"
-> [PATCH 005/190] Revert "media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync"
-> [PATCH 006/190] Revert "media: exynos4-is: Fix a reference count leak"
-> [PATCH 008/190] Revert "media: stm32-dcmi: Fix a reference count leak"
-> [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count leak"
-> [PATCH 010/190] Revert "media: camss: Fix a reference count leak."
-> [PATCH 011/190] Revert "media: platform: fcp: Fix a reference count leak."
-> [PATCH 012/190] Revert "media: rockchip/rga: Fix a reference count leak."
-> [PATCH 013/190] Revert "media: rcar-vin: Fix a reference count leak."
-> [PATCH 014/190] Revert "media: rcar-vin: Fix a reference count leak."
-> [PATCH 052/190] Revert "media: media/saa7146: fix incorrect assertion in saa7146_buffer_finish"
-> [PATCH 056/190] Revert "media: davinci/vpfe_capture.c: Avoid BUG_ON for register failure"
-> [PATCH 057/190] Revert "media: saa7146: Avoid using BUG_ON as an assertion"
-> [PATCH 058/190] Revert "media: cx231xx: replace BUG_ON with recovery code"
-> [PATCH 102/190] Revert "media: video-mux: fix null pointer dereferences"
-> [PATCH 183/190] Revert "media: isif: fix a NULL pointer dereference bug"
-> 
-> This one can be dropped since it actually contains a bug, I'm fairly certain
-> that was unintentional:
-> 
-> [PATCH 007/190] Revert "media: ti-vpe: Fix a missing check and reference count leak"
-> 
-> I'll reply to that one separately.
-> 
-> This one can be dropped since it is not necessary:
-> 
-> [PATCH 073/190] Revert "media: rcar_drif: fix a memory disclosure"
-> 
-> The V4L2 core already zeroes this. Other drivers that use fmt.sdr also
-> memset this, but that should be dropped in those drivers as well. I'll
-> make a patch for that.
+> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> index dbfb35fb0ff7..3847cdc069b5 100644
+> --- a/fs/overlayfs/file.c
+> +++ b/fs/overlayfs/file.c
+> @@ -430,20 +430,11 @@ static int ovl_mmap(struct file *file, struct vm_area_struct *vma)
+>  	if (WARN_ON(file != vma->vm_file))
+>  		return -EIO;
+>  
+> -	vma->vm_file = get_file(realfile);
+> +	vma_set_file(vma, realfile);
 
-Wonderful, many thanks for doing this review, I'll be dropping these
-from the series.
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-greg k-h
+>  
+>  	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+>  	ret = call_mmap(vma->vm_file, vma);
+>  	revert_creds(old_cred);
+> -
+> -	if (ret) {
+> -		/* Drop reference count from new vm_file value */
+> -		fput(realfile);
+> -	} else {
+> -		/* Drop reference count from previous vm_file value */
+> -		fput(file);
+> -	}
+> -
+>  	ovl_file_accessed(file);
+>  
+>  	return ret;
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
