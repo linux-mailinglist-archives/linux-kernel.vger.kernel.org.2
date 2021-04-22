@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A8936879D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CBB36879B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbhDVUDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239401AbhDVUDm (ORCPT
+        id S239456AbhDVUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:03:43 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.119]:32971 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239426AbhDVUDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:03:42 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7343BC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:03:07 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id lt13so13048555pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PquUgnAHmzPPEM2hTMuE5X7Or48hZxa0Iq7nE5kZVAs=;
-        b=AVQrLhmn18k7xc+K7EYwaEQdFLa3btb1xFBVHxS7g8oiqJ+iocAPRpYPHg5F2hFb8F
-         fdal1gYwrnAHspZmUgT68PGGRbp7l/rTHHTVhDlx4z9BF5fOl47/nU0LmPzLjSQuGiVV
-         Vdz5xc3eAgJELCuAkHZnlr3iVVwCxV/dDxFJTS6cF95ieSkIxvX7QKKjARrI9jtgGyt3
-         Krp7KaakqgpURkJLChowc+Hsq/hCwTb3+UXDCgQcauituJaSPsW+YPTInyR0T4DjlyJI
-         d2lqDWABMHzMNPP3CCDtG2oghR7pKrRWt7Sw0foJTlx7vazYheX4tTtTKPuD408mpxPr
-         vhiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PquUgnAHmzPPEM2hTMuE5X7Or48hZxa0Iq7nE5kZVAs=;
-        b=L1mv3LIzro/pCDIQggqv7sQdtYipCo71ud6CHUgzvC421X7WJZSrp7EPJt3QN3l696
-         sjvLkVgp1T2jEzr89F/+I4jwVq+rjgZcefCWDClliDYuf9HkV3jNmT/2QQ7DD6iyU563
-         cWYPcnOvib2NidAUUk38QkBtvnIFk1fywfi7rzroWZWRClGd+v3vfAIc5OhRRt73K1Bg
-         OHb6+uFyJEr6lVFSNF/+sHP5ju8S/aAN02O3bl3Wc6XlFMa0pbeF4LSgpkKzdcLjKxpb
-         wt3vICvl0k7ZhYTYvkKywgMViNdnjyh/0sSRXtYljajtWxS1lXvUdFVYJBcwMBVpRQeU
-         SwLg==
-X-Gm-Message-State: AOAM5334kLjtq+uTxaXcQCKFeNbeLAwm15SAkxu0Xf0JD9LE2vLZ0+Y2
-        ynIH9Ijvw8io8tTTTCS6H+9Hcz4zM8Ofl5v2Hgeu5Q==
-X-Google-Smtp-Source: ABdhPJzUKUFs1pX8iuh6hcmAcZecFWy1IkjZKdFpyI/qO54h34Q91x1E2fjAgDSfsp2Hul6tHHaZn4XvRi0LRmQbwtQ=
-X-Received: by 2002:a17:902:7892:b029:ea:b8a9:6190 with SMTP id
- q18-20020a1709027892b02900eab8a96190mr207069pll.80.1619121786805; Thu, 22 Apr
- 2021 13:03:06 -0700 (PDT)
+        Thu, 22 Apr 2021 16:03:37 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id D1D673F29F
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 15:03:00 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id ZfXQlBJgRMGeEZfXQlVxpU; Thu, 22 Apr 2021 15:03:00 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=d/5pgn0pMDu8YtsMnk0jcfxUVg079cO2Qvp35naLjTM=; b=FqjaVKwRkgTWGoIjNppT5PAzvz
+        Faf5IKuEfZOR5uDeV/Ct+uMF24hXv9ZDUe04YCBYOVAkoTV2/n1gBVWGLN23NQI3rMbKcRV4A/7fg
+        G6hwB/0pyXGloe+gpEHQMr25zU7gN1DJ65PALPBQZAELVhb76HXUtateby7iMEu7TbePLjFK0nkr/
+        tuZnwpc0VQOcAhxkBuf7XaApXe9S5g02Y/jcBoz/FGhoFHiiXsCdqbz9a6q/cEP6iqu1cANZWYJL3
+        m222t0x3R7YXQX75o9IgYB4lspRzmocEx5CHEBVub2P8u+B8JeWihB45Uv7nQJn25a8XszI2TdFGa
+        UuoQqKgw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:58614 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lZfXN-003qnV-A4; Thu, 22 Apr 2021 15:02:57 -0500
+Subject: Re: [PATCH][next] wireless: wext-spy: Fix out-of-bounds warning
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+References: <20210421234337.GA127225@embeddedor>
+ <317099c78edb9fdde3db3f1e7c9a4f77529b281a.camel@sipsolutions.net>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <07fc2c3a-ffba-8dad-1ddf-d4da7482c65a@embeddedor.com>
+Date:   Thu, 22 Apr 2021 15:03:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210421183210.2557462-1-dlatypov@google.com>
-In-Reply-To: <20210421183210.2557462-1-dlatypov@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 22 Apr 2021 13:02:55 -0700
-Message-ID: <CAFd5g47P4atPPV5C0iBFV8kZm1vUgzST-ghLMm4nq2Qc-=C9Ow@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <317099c78edb9fdde3db3f1e7c9a4f77529b281a.camel@sipsolutions.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lZfXN-003qnV-A4
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:58614
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 7
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:32 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Add in:
-> * kunit_kmalloc_array() and wire up kunit_kmalloc() to be a special
-> case of it.
-> * kunit_kcalloc() for symmetry with kunit_kzalloc()
->
-> This should using KUnit more natural by making it more similar to the
-> existing *alloc() APIs.
->
-> And while we shouldn't necessarily be writing unit tests where overflow
-> should be a concern, it can't hurt to be safe.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-Aside from the copy and paste issue that David already pointed out, LGTM.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+On 4/22/21 02:04, Johannes Berg wrote:
+> On Wed, 2021-04-21 at 18:43 -0500, Gustavo A. R. Silva wrote:
+>>
+>>  	/* Just do it */
+>> -	memcpy(&(spydata->spy_thr_low), &(threshold->low),
+>> -	       2 * sizeof(struct iw_quality));
+>> +	memcpy(&spydata->spy_thr_low, &threshold->low, sizeof(threshold->low));
+>> +	memcpy(&spydata->spy_thr_high, &threshold->high, sizeof(threshold->high));
+>>
+> 
+> It would've been really simple to stick to 80 columns here (and
+> everywhere in the patch), please do that.
+> 
+> Also, why not just use struct assigments?
+> 
+> 	spydata->spy_thr_low = threshold->low;
+> 
+> etc.
+> Done: https://lore.kernel.org/lkml/20210422200032.GA168995@embeddedor/
+> Seems far simpler (and shorter lines).
+
+Done:
+	https://lore.kernel.org/lkml/20210422200032.GA168995@embeddedor/
+
+Thanks for the feedback.
+--
+Gustavo
