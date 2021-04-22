@@ -2,251 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A5B3686BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23973686C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236787AbhDVSsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:48:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:41697 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236058AbhDVSsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:48:05 -0400
-IronPort-SDR: IiJ5HXTMKkKvRxp6IGMy6DQBMIskOghDza73ahJTSbl7fY7pQ1EEnLNTZQeKbMMty+kyxEh4tT
- CorSV+/itsnQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="193834691"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="193834691"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 11:47:30 -0700
-IronPort-SDR: JJQ/lxh/3HszKyyPgfxZg20Bi+rP7OixMToAtyO0uAjl0L7zTrtDUV8AuCGjUAUdMW16mvYN/x
- 7XYYfQMJN4nw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="428074174"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 22 Apr 2021 11:47:29 -0700
-Received: from [10.254.71.167] (kliang2-MOBL.ccr.corp.intel.com [10.254.71.167])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 4783558090E;
-        Thu, 22 Apr 2021 11:47:28 -0700 (PDT)
-Subject: Re: [PATCH V5] perf/x86: Reset the dirty counter to prevent the leak
- for an RDPMC task
-To:     Rob Herring <robh@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, ak@linux.intel.com, acme@kernel.org,
-        mark.rutland@arm.com, luto@amacapital.net, eranian@google.com,
-        namhyung@kernel.org
-References: <1618957842-103858-1-git-send-email-kan.liang@linux.intel.com>
- <YH/eF4YWg73Lkcrr@hirez.programming.kicks-ass.net>
- <c683d70f-ae07-765d-1278-5771d1061cc0@linux.intel.com>
- <20210422175243.GA3281444@robh.at.kernel.org>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <232bd359-ce6f-4fcb-4b6d-a4b3e3333c13@linux.intel.com>
-Date:   Thu, 22 Apr 2021 14:47:26 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236885AbhDVSwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236459AbhDVSwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 14:52:43 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30790C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:52:07 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g8so73813448lfv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EFCZMZ6hzB2RWTdL7dl13NU/E83N9mJUw195cIoPTNg=;
+        b=ZFlo++KDSdJ3KzZUW2wpnPnWfV5B+ogeRTK4aG2B3kBTYdtINUwi1Vm5T5NTCH6C+8
+         xwXzI27ilMDt3bqU9IXZdk8cQyptsvbTj+G+B5ZsoW69PTz/JLQggtr3dfu0D5+Qm7vp
+         /9SuA+Z8C1lwWwu/PMjsU4Y1dvyE9fmY6jM4zjf4ito2m+A+26c6rlCKscRZLxxLvh5S
+         T+9D3gAcX1t/ZfDxN88vLdHT1CoN0LxfQLXCUfKitJVJh3RhH+LqzbciF7kPjFSUNWKb
+         90iTiOU9tE8j66uHSgOJJOq/XRWjjvfe0iv0E50whpmn5T5RfwwxXixE4NhaJUlHFgSN
+         ge/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EFCZMZ6hzB2RWTdL7dl13NU/E83N9mJUw195cIoPTNg=;
+        b=CDDLKPJH3Y1pBZuHanZfGh8NyLCuFmZoY3hZDhGmTVe7j+vKBq6LHQJx53bsT5W9DY
+         /2yks5GjkmNT+aVy2nza4O9yJreX1OpsgqKwUCojtykYVrcSwvLfPV4nk8ZLY007Y1YJ
+         BoUgN3nan9vImGzcasDODwl5Sbd121ehdc9YZUmT8ZgvtnzyhegYIHzAqC10jo1WgxoO
+         hGAH6EjRYg89P344poM8qTKw/xzBmyYgb9vXtYaBhqhON/Hk6tUx9lFTqGxG+ffzYhYy
+         NrJf8TMedvSjdpiaPmivudXFsSV9VYalFAHEpfNSJDIo39Unm55YrWMKOgmGKTBAcnrp
+         reCA==
+X-Gm-Message-State: AOAM532U0qppMZTWq3PQ3X22sZRXkM/CRD4DG/C7jMcPzsiUwI1HjvsR
+        lIeLHSlydRK+//j+XzPs7lYq6MwZzGL7hfT9y5sUcR6oHZuj2w==
+X-Google-Smtp-Source: ABdhPJwne+hptBVJuYjS9Z9NqksFnVrtUzFG41ZryRLcnEnoINDZM4fV3DjrKOdjEPHNPL6xeqwjvoTvtdF7e3Etox0=
+X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr3428130lfs.358.1619117525249;
+ Thu, 22 Apr 2021 11:52:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210422175243.GA3281444@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
+ <7b7a1c09-3d16-e199-15d2-ccea906d4a66@linux.intel.com> <YIGuvh70JbE1Cx4U@google.com>
+In-Reply-To: <YIGuvh70JbE1Cx4U@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 22 Apr 2021 11:51:53 -0700
+Message-ID: <CALvZod5a8LdhWPwCnxtPb4t=ZJJ3ZYDtLEV_RtV9EaY3E7MgaA@mail.gmail.com>
+Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by too_many_isolated()
+To:     Yu Zhao <yuzhao@google.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>, wfg@mail.ustc.edu.cn
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 22, 2021 at 10:13 AM Yu Zhao <yuzhao@google.com> wrote:
+>
+[...]
+>         spin_lock_irq(&lruvec->lru_lock);
+> @@ -3302,6 +3252,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
+>  unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>                                 gfp_t gfp_mask, nodemask_t *nodemask)
+>  {
+> +       int nr_cpus;
+>         unsigned long nr_reclaimed;
+>         struct scan_control sc = {
+>                 .nr_to_reclaim = SWAP_CLUSTER_MAX,
+> @@ -3334,8 +3285,17 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>         set_task_reclaim_state(current, &sc.reclaim_state);
+>         trace_mm_vmscan_direct_reclaim_begin(order, sc.gfp_mask);
+>
+> +       nr_cpus = current_is_kswapd() ? 0 : num_online_cpus();
 
+kswapd does not call this function (directly or indirectly).
 
-On 4/22/2021 1:52 PM, Rob Herring wrote:
-> On Wed, Apr 21, 2021 at 11:12:06AM -0400, Liang, Kan wrote:
->>
->>
->> On 4/21/2021 4:11 AM, Peter Zijlstra wrote:
->>>> @@ -2327,10 +2367,17 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
->>>>    static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
->>>>    {
->>>> +	unsigned long flags;
->>>>    	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
->>>>    		return;
->>>> +	if (x86_pmu.sched_task && event->hw.target) {
->>>> +		local_irq_save(flags);
->>>> +		perf_sched_cb_dec(event->ctx->pmu);
->>>> +		local_irq_restore(flags);
->>>> +	}
->>>> +
->>>>    	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
->>>>    		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
->>>>    }
->>> I don't understand how this can possibly be correct. Both
->>> perf_sched_cb_{inc,dec} modify strict per-cpu state, but the mapped
->>> functions happen on whatever random CPU of the moment whenever the task
->>> memory map changes.
->>>
->>> Suppose we mmap() on CPU0 and then exit on CPU1. Suppose the task does
->>> mmap() on CPU0 but then creates threads and runs on CPU1-4 concurrently
->>> before existing on CPU5.
->>>
->>> Could be I'm not seeing it due to having a snot-brain, please explain.
->>
->> You are right.
->> I implemented a new test case which mmap() on CPU 3, run and exit on CPU 0.
->> It can still read the counter values from other tasks on CPU 0.
-> 
-> Can you publish your tests? I'm working on arm64 user access support.
+> +       while (nr_cpus && !atomic_add_unless(&pgdat->nr_reclaimers, 1, nr_cpus)) {
 
-Does Arm support PDPMC?
+At most nr_nodes * nr_cpus direct reclaimers are allowed?
 
-Not sure whether I can post the codes. I guess I need to check and do 
-some modification before sharing the code.
+> +               if (schedule_timeout_killable(HZ / 10))
 
-The test case is very simple. The pseudo code is as below.
+trace_mm_vmscan_direct_reclaim_end() and set_task_reclaim_state(NULL)?
 
-BindToCpu(3);
-perf_open_and_enable()
-rdpmc_read(); #read all counters in CPU 3.
-BindToCpu(0);
-rdpmc_read(); #read all counters in CPU 0.
-perf_close();
+> +                       return SWAP_CLUSTER_MAX;
+> +       }
+> +
+>         nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
+>
+> +       if (nr_cpus)
+> +               atomic_dec(&pgdat->nr_reclaimers);
+> +
+>         trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
+>         set_task_reclaim_state(current, NULL);
 
-
-> 
->> Actually, I don't think we need perf_sched_cb_{inc,dec} and sched_task().
->>
->> The mm->context.perf_rdpmc_allowed will tell us if it's a RDPMC task.
->> I think a clean way should be to add a new check_leakage() method. When perf
->> schedules in a RDPMC task, we invoke the method and clear the dirty
->> counters.
->> (I use a generic name check_leakage for the method so it can be reused by
->> other ARCHs if possible.)
->>
->> The patch is as below. The new and old test cases are all passed. I will do
->> more tests.
->>
->> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
->> index c7fcc8d..229dd48 100644
->> --- a/arch/x86/events/core.c
->> +++ b/arch/x86/events/core.c
->> @@ -1624,6 +1624,8 @@ static void x86_pmu_del(struct perf_event *event, int
->> flags)
->>   	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
->>   		goto do_del;
->>
->> +	__set_bit(event->hw.idx, cpuc->dirty);
->> +
->>   	/*
->>   	 * Not a TXN, therefore cleanup properly.
->>   	 */
->> @@ -2631,6 +2633,37 @@ static int x86_pmu_check_period(struct perf_event
->> *event, u64 value)
->>   	return 0;
->>   }
->>
->> +static void x86_pmu_clear_dirty_counters(void)
->> +{
->> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->> +	int i;
->> +
->> +	 /* Don't need to clear the assigned counter. */
->> +	for (i = 0; i < cpuc->n_events; i++)
->> +		__clear_bit(cpuc->assign[i], cpuc->dirty);
->> +
->> +	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
->> +		return;
->> +
->> +	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
->> +		/* Metrics and fake events don't have corresponding HW counters. */
->> +		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
->> +			continue;
->> +		else if (i >= INTEL_PMC_IDX_FIXED)
->> +			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
->> +		else
->> +			wrmsrl(x86_pmu_event_addr(i), 0);
->> +	}
->> +
->> +	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
->> +}
->> +
->> +static void x86_pmu_check_leakage(void)
->> +{
->> +	if (READ_ONCE(x86_pmu.attr_rdpmc))
->> +		x86_pmu_clear_dirty_counters();
->> +}
->> +
->>   static int x86_pmu_aux_output_match(struct perf_event *event)
->>   {
->>   	if (!(pmu.capabilities & PERF_PMU_CAP_AUX_OUTPUT))
->> @@ -2675,6 +2708,7 @@ static struct pmu pmu = {
->>   	.sched_task		= x86_pmu_sched_task,
->>   	.swap_task_ctx		= x86_pmu_swap_task_ctx,
->>   	.check_period		= x86_pmu_check_period,
->> +	.check_leakage		= x86_pmu_check_leakage,
->>
->>   	.aux_output_match	= x86_pmu_aux_output_match,
->>
->> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
->> index 27fa85e..d6003e0 100644
->> --- a/arch/x86/events/perf_event.h
->> +++ b/arch/x86/events/perf_event.h
->> @@ -229,6 +229,7 @@ struct cpu_hw_events {
->>   	 */
->>   	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
->>   	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
->> +	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
->>   	int			enabled;
->>
->>   	int			n_events; /* the # of events in the below arrays */
->> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
->> index a763928..bcf3964 100644
->> --- a/include/linux/perf_event.h
->> +++ b/include/linux/perf_event.h
->> @@ -514,6 +514,11 @@ struct pmu {
->>   	 * Check period value for PERF_EVENT_IOC_PERIOD ioctl.
->>   	 */
->>   	int (*check_period)		(struct perf_event *event, u64 value); /* optional */
->> +
->> +	/*
->> +	 * Check and clear dirty counters to prevent potential leakage
->> +	 */
->> +	void (*check_leakage)		(void); /* optional */
->>   };
->>
->>   enum perf_addr_filter_action_t {
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 928b166..b496113 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -3822,6 +3822,12 @@ static void cpu_ctx_sched_in(struct perf_cpu_context
->> *cpuctx,
->>   	ctx_sched_in(ctx, cpuctx, event_type, task);
->>   }
->>
->> +static bool has_check_leakage(struct pmu *pmu)
->> +{
->> +	return pmu->check_leakage && current->mm &&
->> +	       atomic_read(&current->mm->context.perf_rdpmc_allowed);
-> 
-> context.perf_rdpmc_allowed is arch specific.
-
-Thanks. It's addressed in V6.
-
-> 
->> +}
->> +
->>   static void perf_event_context_sched_in(struct perf_event_context *ctx,
->>   					struct task_struct *task)
->>   {
->> @@ -3832,6 +3838,8 @@ static void perf_event_context_sched_in(struct
->> perf_event_context *ctx,
->>   	if (cpuctx->task_ctx == ctx) {
->>   		if (cpuctx->sched_cb_usage)
->>   			__perf_pmu_sched_task(cpuctx, true);
->> +		if (has_check_leakage(pmu))
->> +			pmu->check_leakage();
->>   		return;
->>   	}
-
-The above check is also removed in V6, because it's unnecessary for the 
-identical contexts.
-
-Thanks,
-Kan
+BTW I think this approach needs to be more sophisticated. What if a
+direct reclaimer within the reclaim is scheduled away and is out of
+CPU quota?
