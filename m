@@ -2,135 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775E03681E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE57A3681EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236872AbhDVNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:52:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21782 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236333AbhDVNwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:52:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619099504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JGmS/xLoW189jty2r0t6cwkKx1CTQrOOThGSNPhaRfs=;
-        b=F2JYgmG80NZS9kJzYxX2swQYeKtcoqm3j3lzGhA8OPYyyMYOiJSB5IKtBET314mSqr/n7p
-        01b70O5DI1bNvCqQRDPAICWiWXg0PlJHswqJDJs0FTTrr5ltEXE21yFfRfwwUTeYv40cys
-        79z47+7AToc1mq4PAc06s+zCnz4q5Sw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-D-9gXEBGPL-JfVdk-rKe9g-1; Thu, 22 Apr 2021 09:51:42 -0400
-X-MC-Unique: D-9gXEBGPL-JfVdk-rKe9g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7A82107ACF6;
-        Thu, 22 Apr 2021 13:51:39 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0935760938;
-        Thu, 22 Apr 2021 13:51:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <27c369a8f42bb8a617672b2dc0126a5c6df5a050.camel@kernel.org>
-References: <27c369a8f42bb8a617672b2dc0126a5c6df5a050.camel@kernel.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/30] iov_iter: Add ITER_XARRAY
+        id S236538AbhDVNxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:53:04 -0400
+Received: from mail-bn8nam11on2062.outbound.protection.outlook.com ([40.107.236.62]:37313
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236414AbhDVNxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:53:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NWQudN9NB3FcP7uCtOQ4/Kuro7T0AllO96QpW7lVkWxyaOzHNgt8q/KLxVedle5lGOCd5DH0AujBQZL8j7D2cC39cEtIitb8kC/t+r1GDHVWBueu3nbD1b9AgwgfevOy5JW7sX66+kFUDow6gsMEf7N9bglDQ+u58d5no7l7hR8liR+mxxSxO6vj6Y2tkZH2Yb1T0AvvKPTt+hvL2SpCWjAHInZfYwKKnEfTQb+rxACpT1IxossQGji5PLgSLfQTXU0YGhiI5gwFz+snmZH24JEiN2P8lEncAkaAsyLbVTO/ptHg2ADbUNQr28VngwnegfCWYL7E0W6r9x6ez+/Spg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/T9DpKdTjd9YTNZtoxKZZjXCzJb4K425xTc2wL0hNg=;
+ b=K5nZQnmasTJrAyLc1KU51zcfyAQ938joRFR8xslsxCsnvhFUBOzWXG/iRGStJRNNR4pEROAZBKQZic43+Wl3kPiEj+dqpmbksRU6cdzyqKH+k8A8bntW8GyZbSXarkwjifJDbK/wm9XY6FDAEPtcMACD7NnLoNDKk5VyNct0Zpdg7MjH0gMkOruSknTnuDJiInwFBNK0PmI2Z2LLwuRk3m1hblyH5NBiA8glRNkhbgPVKv17/YL0bKj1b7in5P9htYndzdPSvZ2Q2f77FnN3f/T7KenMp/1cP6B+wTVjHIGCfKoQNd28B+6Xb6/aZL3t1mi10ooRhZizYKE4RrJKZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/T9DpKdTjd9YTNZtoxKZZjXCzJb4K425xTc2wL0hNg=;
+ b=Ccm9D0JH4VzHG8p+FKCBC0x/jhJZY3XCqsCb8vwTL3jU6knK9Fw80hZomGzCLjxlA2YpP+1/xxzTM6ack6ENpUiL+Gy2AuEEW8ew7aLUYG7/oh9NIvaDjTUBV8MJ33JeLO2isd6Kn6ffRxpbBqiKLMTM3RshjpIDQLUJQFFAMpuBfW0qo0WQKU6oOhbc7Qw75LjuWwOxUxoqAqM49rwi9MtlCu6MS3NLTRfJorqzlFY/ha4IVm6ZY8sW5wZWp4PhzFi748XNZP6FV/pQWOQhBj5NjADkYKF2Y56k1kgcCdWoFcrwy5XK8ncqyuzhQBqOLLFeRgu6ZxAti0ky+YvOXg==
+Authentication-Results: ellerman.id.au; dkim=none (message not signed)
+ header.d=none;ellerman.id.au; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4299.namprd12.prod.outlook.com (2603:10b6:5:223::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Thu, 22 Apr
+ 2021 13:52:26 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4065.023; Thu, 22 Apr 2021
+ 13:52:26 +0000
+Date:   Thu, 22 Apr 2021 10:52:25 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH 1/2] vfio/pci: remove vfio_pci_nvlink2
+Message-ID: <20210422135225.GY1370958@nvidia.com>
+References: <20210326061311.1497642-1-hch@lst.de>
+ <20210326061311.1497642-2-hch@lst.de>
+ <20210406133805.715120bd@omen>
+ <87y2dndelm.fsf@mpe.ellerman.id.au>
+ <20210412082304.5e7c0a80@omen>
+ <87h7jybf9w.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7jybf9w.fsf@mpe.ellerman.id.au>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0284.namprd13.prod.outlook.com
+ (2603:10b6:208:2bc::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2293709.1619099492.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 22 Apr 2021 14:51:32 +0100
-Message-ID: <2293710.1619099492@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0284.namprd13.prod.outlook.com (2603:10b6:208:2bc::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.17 via Frontend Transport; Thu, 22 Apr 2021 13:52:26 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZZkn-00A2Ni-1h; Thu, 22 Apr 2021 10:52:25 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fcfa0a31-7711-4f94-308f-08d90595dcc9
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4299:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB42991DC94BFA7ED2F298BB5CC2469@DM6PR12MB4299.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g2jowWGXJ21/UrrtNxlj6HDbGJkbu3ECiU7iTOsPAKj6gQhPRpdh46jfuEp2EEJaiJZ8Ob58QVCrX4vaDoJC1qgqWbXqn19aAHUSSsHDkbth7AOYUZ2WQb8Q+voo6xbEALYHbxXU/NNNLG7+JBTF6U6iLZGZx+glfh/8/4c0kBg2yJAj9h656qmvZp7WlxmtPKcyFOmIbE/zjQXy6XKud3jY6nTRWUzl/BEkgSm/+Viy/S1fuYmxYbcnEU9dh0W5bv6ZZbgRyar+zvrTQWjfPjJzglaY2rQfa116y6quWCdMg2xRn5+THbN3mOjCjjxH7sg/XTVBiI4q+NWcqdU6dNi/CDxfffC0FHaBK91XA4eA7o48KNwvDddAZ/IMz3RF4TfUWNGK+nw+EJuPqSXnxIirD1tKAY+uO7Z7Dz6zWZZteFTdVRnuiHLtt/mYMornBXicWVThdV2GBix+RJ8mlHctH2qLbgTYezPO4hTq41+oZKhRFPRyXYC0IACsZxK/w+gvd0QWK4n5f7JO9/bB7CMKOSSJneLUJjwKTc1aYJeDWE7XI1yLs0YjnbjAK4vlLL/YCN8xFiP5RqgrxFdn7n6WZznH0LETrVp90CSeqD3DpX+t3VLkkNC3dfyMpkBGsgTZuGiu036GHnx0LJqYL/n/hGjQUrwDvv3365L9/C5Ck/ElP0KfnyJhKy0RtmYD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(366004)(396003)(66946007)(66556008)(966005)(1076003)(38100700002)(54906003)(66476007)(83380400001)(426003)(186003)(8936002)(7416002)(8676002)(4326008)(2616005)(33656002)(316002)(26005)(5660300002)(6916009)(86362001)(478600001)(36756003)(9746002)(9786002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MEfPBHhKO20gGRbwpNT4z2loyQrefFn/XDtC20qMlPlgvKTI8aV8sY20jWoR?=
+ =?us-ascii?Q?FTOIV9T6orA8uNfGrIg4jpsKg2QHodK2Ps/hKVb1QhOpjXrpFM+nRSZmlD3k?=
+ =?us-ascii?Q?H6zOBGSoOnlQDFPNow37ogOHoYDg/KU/bsrU3AHpSHe69Ny6+nj9a8f5Pe++?=
+ =?us-ascii?Q?dry3ndSJiuBdAUHFMzuYkpnlNktooUBkfics3z64Px+WX8EZak/3L9JJOmcQ?=
+ =?us-ascii?Q?pIRojGf8Ycm1y4Jky4Kf6TqpZ+mkMQiZBgJUKqUh5thzOszDCf/1qZbYsLMA?=
+ =?us-ascii?Q?PQRjDJmWO2WlBqC/cMP/E1KVDQvo2rWPhC0CCLvebkO3vNm4Pw3rOh75p2gP?=
+ =?us-ascii?Q?yG+TGrccx0Ebxn8N+yjkbuZzFC9BDYXR3NSPmp6C39JThmqisYvN6HvvGdbe?=
+ =?us-ascii?Q?BptIwuwrYlRCDnW1FgaO2Z9GDfKb/nRxd6SFaYuwle0k4Xh8BYpV5VGWK8UT?=
+ =?us-ascii?Q?lCNUZqFOlhBFbezm/MFa1LOx0y4kjACNq3MZig87He9cq9sIeilOxhw8etKT?=
+ =?us-ascii?Q?ekWq1qWKFLb3s5SzzKJ2v3oiAculKA4l5/Z+kD+bNdRG6advNcsZS2NyM+AF?=
+ =?us-ascii?Q?hMfb0INEAOexQmf2M6Z0R/1WWF2UQTH1vT19fhiLnTUnwbd00QgzK67qHGog?=
+ =?us-ascii?Q?p+qNMXt2x1K+Vap+GosBtRF5WlHI6sJdmvqLCs+w+ShprvUVs6hVkoz69yJV?=
+ =?us-ascii?Q?hOpAsC+GGICShG7ay/DjpTzgtvROSwQ/efYNhp5phzWuCRXug3B4l+hmwZ/h?=
+ =?us-ascii?Q?jxvZ9qYC1vZ/Kuv5HHKECTExrVauK7GofimM9XL1E6vsRHbFqeBHRoZhghLz?=
+ =?us-ascii?Q?hOGK8ASYWWq9AgipLv9TY51tEWGiR4bqdxyyrKnL1vY8eum9+b7T7lqmyZpJ?=
+ =?us-ascii?Q?eScEqTndqmdpgwJVEu58NRXq4Y1uQMR/+hMdPhkvvOcM+kf09EgecY1jBO7j?=
+ =?us-ascii?Q?ytmd2K74NlVyiu/E2oqbTdr5xmWMzl2GTju4aoCt2QLbkT+gCo4QOjzQENXy?=
+ =?us-ascii?Q?VjfuJn1dm/v6p6VcX6fDdPfl56LYVpCvbCKnWt7XlC3KMl7T4kDTDULYihsz?=
+ =?us-ascii?Q?/NQeNCsUFeNBmLsulk1qNJflTroD4644hZezgHovXdiWBqM03dB3NGhyMR0o?=
+ =?us-ascii?Q?jxca5J1ntnmFkf3s2Kt6EeHhv0IBmju7HBcRmsMjZNneI1Iag1RbnaKbqjQH?=
+ =?us-ascii?Q?xXwnQ/o9ZWudYwl3KeuTTKT/6vJ6Dc6FfAdLbhIvAhglnz7EgEo5eZWr8rj1?=
+ =?us-ascii?Q?UkJvOLadlgX6rfBJwRLvKbZ2YBchd1FK7Zmqgc760Y7hDgwhbETt8lmdkHKc?=
+ =?us-ascii?Q?z49AaSLJtGqZGaRTHIuLGrwv?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fcfa0a31-7711-4f94-308f-08d90595dcc9
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 13:52:26.3573
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9WPo9pPtxxsN0N6G/XVu7RO07E3auqp9hxic3aAA8sZPXzdLCcMUysnLaM8lOhgo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4299
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Layton <jlayton@kernel.org> wrote:
+On Thu, Apr 22, 2021 at 11:49:31PM +1000, Michael Ellerman wrote:
+> Alex Williamson <alex.williamson@redhat.com> writes:
+> > On Mon, 12 Apr 2021 19:41:41 +1000
+> > Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >
+> >> Alex Williamson <alex.williamson@redhat.com> writes:
+> >> > On Fri, 26 Mar 2021 07:13:10 +0100
+> >> > Christoph Hellwig <hch@lst.de> wrote:
+> >> >  
+> >> >> This driver never had any open userspace (which for VFIO would include
+> >> >> VM kernel drivers) that use it, and thus should never have been added
+> >> >> by our normal userspace ABI rules.
+> >> >> 
+> >> >> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> >> >> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >> >>  drivers/vfio/pci/Kconfig            |   6 -
+> >> >>  drivers/vfio/pci/Makefile           |   1 -
+> >> >>  drivers/vfio/pci/vfio_pci.c         |  18 -
+> >> >>  drivers/vfio/pci/vfio_pci_nvlink2.c | 490 ----------------------------
+> >> >>  drivers/vfio/pci/vfio_pci_private.h |  14 -
+> >> >>  include/uapi/linux/vfio.h           |  38 +--
+> >> >>  6 files changed, 4 insertions(+), 563 deletions(-)
+> >> >>  delete mode 100644 drivers/vfio/pci/vfio_pci_nvlink2.c  
+> >> >
+> >> > Hearing no objections, applied to vfio next branch for v5.13.  Thanks,  
+> >> 
+> >> Looks like you only took patch 1?
+> >> 
+> >> I can't take patch 2 on its own, that would break the build.
+> >> 
+> >> Do you want to take both patches? There's currently no conflicts against
+> >> my tree. It's possible one could appear before the v5.13 merge window,
+> >> though it would probably just be something minor.
+> >> 
+> >> Or I could apply both patches to my tree, which means patch 1 would
+> >> appear as two commits in the git history, but that's not a big deal.
+> >
+> > I've already got a conflict in my next branch with patch 1, so it's
+> > best to go through my tree.  Seems like a shared branch would be
+> > easiest to allow you to merge and manage potential conflicts against
+> > patch 2, I've pushed a branch here:
+> >
+> > https://github.com/awilliam/linux-vfio.git v5.13/vfio/nvlink
+> 
+> Thanks.
+> 
+> My next is based on rc2, so I won't pull that in directly, because I
+> don't want to pull all of rc6 in with it.
 
-> As a general note, iov_iter.c could really do with some (verbose)
-> comments explaining things. A kerneldoc header that explains the
-> arguments to iterate_all_kinds would sure make this easier to review.
+Linus is fine if you merge in rc's for development reasons. He doesn't
+like it when people just merge rc's without a purpose.
 
-Definitely.  But that really requires a separate patch.
+Merge rc7 to your tree then pull the nvlink topic is acceptable.
 
-> > @@ -1126,7 +1199,12 @@ void iov_iter_revert(struct iov_iter *i, size_t=
- unroll)
-> >  		return;
-> >  	}
-> >  	unroll -=3D i->iov_offset;
-> > -	if (iov_iter_is_bvec(i)) {
-> > +	if (iov_iter_is_xarray(i)) {
-> > +		BUG(); /* We should never go beyond the start of the specified
-> > +			* range since we might then be straying into pages that
-> > +			* aren't pinned.
-> > +			*/
-> =
+Or just do nothing because Alex will send it through his tree - this
+extra co-ordination is really only necessary if there are conflicts.
 
-> It's not needed now, but there are a lot of calls to iov_iter_revert in
-> the kernel, and going backward doesn't necessarily mean we'd be straying
-> into an unpinned range. xarray_start never changes; would it not be ok
-> to allow reverting as long as you don't move to a lower offset than that
-> point?
-
-This is handled starting a couple of lines above the start of the hunk:
-
-	if (unroll <=3D i->iov_offset) {
-		i->iov_offset -=3D unroll;
-		return;
-	}
-
-As long as the amount you want to unroll by doesn't exceed the amount you'=
-ve
-consumed of the iterator, it will allow you to do it.  The BUG is there to
-catch someone attempting to over-revert (and there's no way to return an
-error).
-
-> > +static ssize_t iter_xarray_copy_pages(struct page **pages, struct xar=
-ray *xa,
-> > +				       pgoff_t index, unsigned int nr_pages)
-> =
-
-> nit: This could use a different name -- I was expecting to see page
-> _contents_ copied here, but it's just populating the page array with
-> pointers.
-
-Fair point.  Um...  how about iter_xarray_populate_pages() or
-iter_xarray_list_pages()?
-
-> I think you've planned to remove iov_iter_for_each_range as well? I'll
-> assume that this is going away. It might be nice to post the latest
-> version of this patch with that change, just for posterity.
-
-I'll put that in a separate patch.
-
-> In any case, this all looks reasonable to me, modulo a few nits and a
-> general dearth of comments.
-> =
-
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
-
-Thanks,
-David
-
+Jason
