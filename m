@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F25F367B46
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DC1367B4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbhDVHmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:42:20 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17389 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhDVHmS (ORCPT
+        id S235145AbhDVHnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:43:20 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:41605 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229629AbhDVHnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:42:18 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FQq7g5J1TzjbVK;
-        Thu, 22 Apr 2021 15:39:43 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 22 Apr 2021 15:41:34 +0800
-Subject: Re: [PATCH v4 1/2] kvm/arm64: Remove the creation time's mapping of
- MMIO regions
-To:     Gavin Shan <gshan@redhat.com>
-References: <20210415140328.24200-1-zhukeqian1@huawei.com>
- <20210415140328.24200-2-zhukeqian1@huawei.com>
- <ad39c796-2778-df26-b0c6-231e7626a747@redhat.com>
- <bd4d2cfc-37b9-f20a-5a5c-ed352d1a46dc@huawei.com>
- <f13bfc39-bee6-4562-fefc-76051bbf9735@redhat.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
-        Santosh Shukla <sashukla@nvidia.com>
-Message-ID: <9eb47a6c-3c5c-cb4a-d1de-1a3ce1b60a87@huawei.com>
-Date:   Thu, 22 Apr 2021 15:41:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 22 Apr 2021 03:43:19 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4E26F5808C4;
+        Thu, 22 Apr 2021 03:42:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 22 Apr 2021 03:42:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=Y2uZyI8L7mwBH4ZmTva04VcYrJd
+        +Avrdul1smc1+xDU=; b=O1qhOriDbg1gc4HHAc4LQZEB5FlAuVIRZA1P2QVYVl1
+        nkBF0QbnVRi/Be1gUFeU52n/e4G7OBbHv+QzfByoWzzKUbWqpFr9exCSACw8Hoim
+        nBH4qETCaUlAyChOEzo+1VoQVPoQfJRMG7VUOmIi9sKNI7nWb0tfMyKk4xsLkR9u
+        xlhc8ajJvFph1raQcvy8z6HOeUz8EDlnz03uaeULJiTNJx6wpQn+LcVwiZt+YvmE
+        FADH03hmt7/g+r5Ds2a3PQ6j6WrUsWXmowGYzPiaCrDKfWcCFSN11Ee55NMkXAdG
+        Fme+jD2tYXlU3f2xba90ADpoaO0FqWze/0qpDVEhXQA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Y2uZyI
+        8L7mwBH4ZmTva04VcYrJd+Avrdul1smc1+xDU=; b=LWe32drje09tH+qtrZUhcp
+        VauMDfWuIRNIPo7rDUSiCpbMsQt6OdiLtKiiEf0UMHtaXZsaY+HpMW6GKUOiqMbD
+        H6O8PD9xDiJ/LFQKZQdP3Ook3LbmYQpRQbJpc/bEvXs6JgQS8TkmkeLtvDis/kcD
+        AMVs+KbC3EXKm0ExthMWXmbb+n1nz0FgcJUFJp1vEk/gs4zyMn/0G0PTLcN5i1Oh
+        Nuqj8wpQZz/VLAXUU0gzJNJcdsJJ8kBBoAgwN7Vhm3n2sOiOxN0nfpM7l5GVfmxX
+        yWZBN3GrSfjITdT9ejkBGhEFctyRgX3MWl8uP4gzLh0yVw1BHSU7TIgNuMiuoPYA
+        ==
+X-ME-Sender: <xms:8yiBYBmgcVOEK30AItgrb5u2YuoCYOvYe8IO9edgFGeUfkPz7nNH1w>
+    <xme:8yiBYM28OSpMHe6y3hAk8_2cMSkkySwnL1oeRpTZRrHxVBMG6qyOk8aoebj8PXuHF
+    wl0HcZhfvlB9mAVhQQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtledguddukecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:8yiBYHrpkaTBRZ0kkF_vYFh-FN5d7YybFgN39LYBUBC1kIjn82fXXg>
+    <xmx:8yiBYBlxP3dD9DWWcCGAJwvodFbPp9iiCGh8_RAaXVK9-3wG3X-JTw>
+    <xmx:8yiBYP1h7_Lfq1VL-G_eurYOnnftj2ioC4yEQvLRglqSjm4Eh_LjyQ>
+    <xmx:9CiBYIIk1q-kVgL96nL0dW6efvzQrv1r0eTioBpsb-K2fllp3pbEVw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 01E8024005B;
+        Thu, 22 Apr 2021 03:42:42 -0400 (EDT)
+Date:   Thu, 22 Apr 2021 09:42:40 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Samuel Holland <samuel@sholland.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-sunxi@lists.linux.dev,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andre Przywara <andre.przywara@arm.com>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: Document the Allwinner H6 DWC3 glue
+Message-ID: <20210422074240.c6gw7uckmceplksw@gilmour>
+References: <20210421042834.27309-1-samuel@sholland.org>
+ <20210421042834.27309-2-samuel@sholland.org>
+ <1619009508.513542.967209.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f13bfc39-bee6-4562-fefc-76051bbf9735@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7q4kh6ll5bnzmjiv"
+Content-Disposition: inline
+In-Reply-To: <1619009508.513542.967209.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
 
-On 2021/4/22 10:12, Gavin Shan wrote:
-> Hi Keqian,
-> 
-> On 4/21/21 4:28 PM, Keqian Zhu wrote:
->> On 2021/4/21 14:38, Gavin Shan wrote:
->>> On 4/16/21 12:03 AM, Keqian Zhu wrote:
->>>> The MMIO regions may be unmapped for many reasons and can be remapped
->>>> by stage2 fault path. Map MMIO regions at creation time becomes a
->>>> minor optimization and makes these two mapping path hard to sync.
->>>>
->>>> Remove the mapping code while keep the useful sanity check.
->>>>
->>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->>>> ---
->>>>    arch/arm64/kvm/mmu.c | 38 +++-----------------------------------
->>>>    1 file changed, 3 insertions(+), 35 deletions(-)
->>>>
->>>
->>> After removing the logic to create stage2 mapping for VM_PFNMAP region,
->>> I think the "do { } while" loop becomes unnecessary and can be dropped
->>> completely. It means the only sanity check is to see if the memory slot
->>> overflows IPA space or not. In that case, KVM_MR_FLAGS_ONLY can be
->>> ignored because the memory slot's base address and length aren't changed
->>> when we have KVM_MR_FLAGS_ONLY.
->> Maybe not exactly. Here we do an important sanity check that we shouldn't
->> log dirty for memslots with VM_PFNMAP.
->>
-> 
-> Yeah, Sorry that I missed that part. Something associated with Santosh's
-> patch. The flag can be not existing until the page fault happened on
-> the vma. In this case, the check could be not working properly.
-> 
->   [PATCH] KVM: arm64: Correctly handle the mmio faulting
-Yeah, you are right.
+--7q4kh6ll5bnzmjiv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If that happens, we won't try to use block mapping for memslot with VM_PFNMAP.
-But it keeps a same logic with old code.
+On Wed, Apr 21, 2021 at 07:51:48AM -0500, Rob Herring wrote:
+> On Tue, 20 Apr 2021 23:28:33 -0500, Samuel Holland wrote:
+> > The RST_BUS_XHCI reset line in the H6 affects both the DWC3 core and the
+> > USB3 PHY. This suggests the reset line controls the USB3 IP as a whole.
+> > Represent this by attaching the reset line to a glue layer device.
+> >=20
+> > Signed-off-by: Samuel Holland <samuel@sholland.org>
+> > ---
+> >  .../usb/allwinner,sun50i-h6-dwc3.yaml         | 75 +++++++++++++++++++
+> >  1 file changed, 75 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/usb/allwinner,sun=
+50i-h6-dwc3.yaml
+> >=20
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-1. When without dirty-logging, we won't try block mapping for it, and we'll
-finally know that it's device, so won't try to do adjust THP (Transparent Huge Page)
-for it.
-2. If userspace wrongly enables dirty logging for this memslot, we'll force_pte for it.
+I dropped these patches then
 
-Thanks,
-Keqian
+Maxime
+
+--7q4kh6ll5bnzmjiv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYIEo8AAKCRDj7w1vZxhR
+xazoAQCH2L/UHNa/dYDNOcBIPNJ0uLjrS3c1pZ3tepsZE6QEogD8DmQJhj3u0qZG
+oeNpiUsd/Vcks00432AVFH2gYuQuLwQ=
+=yve1
+-----END PGP SIGNATURE-----
+
+--7q4kh6ll5bnzmjiv--
