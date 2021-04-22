@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E851367A89
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF1B367A99
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhDVHG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:06:27 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:37341 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhDVHG0 (ORCPT
+        id S235001AbhDVHI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhDVHI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:06:26 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id AAFAD282E38;
-        Thu, 22 Apr 2021 15:05:49 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AHkAYwDkDhOuqx67*F9EB4r-.3.1619075149689.Hmail.wangqing@vivo.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWNiAxLzJdIHdhdGNoZG9nOiBtdGs6IHN1cHBvcnQgcHJlLXRpbWVvdXQgd2hlbiB0aGUgYmFyayBpcnEgaXMgYXZhaWxhYmxl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <26bed2e5-6ec8-72ae-ff2c-c707c00d5125@roeck-us.net>
+        Thu, 22 Apr 2021 03:08:26 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F2DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:07:49 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id z2so8397668qkb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 00:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hZ8JN3i4Kj5YpOQnOolDJMaTu+l/AsLN7rU+u4Ddbao=;
+        b=tNcJs0R0wv699ZcmUt/WV35IZaMJ4fjyER6d5VTIKQUJw36E7kLbOjuoSffdJ62qmx
+         PyhEvN/b8AtPlgUuoC0w8kk/ba2tr/6MouC8QKCjALVWPF4TYRLLgGUiexpyOh6qBozH
+         HlX/uCs/vcrm1CzpTb1iggA1Y4jsdtJ0+G7JBGF+JMZpjHav+iq9HCwwyOBJm8Gmri1A
+         96GWGLHThrhhFS70JbGPc0EseQ558LHlzl9gHetNRd5ln2Y9xokuWwZi9Rnc3/IlIgno
+         sM+dGTvg6sNKIjKrrIDI8wn2HLJh5P4ovBc8EOU8DsdhQYxI84tUblYttNf/5onUuz/9
+         cRJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hZ8JN3i4Kj5YpOQnOolDJMaTu+l/AsLN7rU+u4Ddbao=;
+        b=t4L4G4+Ic2+BIgHpLaZylIeEeqw6YRd64SPJerHv3Ybj+ma/N8rTT5hA7Wtf2rlq4P
+         F5Lmx8chpTQfoWjvuBt3/W33I7OX95kmscw05APb1d8gmJIhoMUJq0EtOFkYH41mYGUl
+         NWD6Mp7w0uJpELft0N9o6NtcQZrGChyqHzdeq7MmUmwUNeE7+19DhYasrACvNz63Hs6K
+         b/T1A3GIgAzfSoF8gJ535WK1TtwVgH90WhWYTIm1qbm99yVkXh/IkdZ/ciLPhbMStXPY
+         HaPEzaMm7REhIORjuMjgVfhG0l8B012acOLVCB5z+Pp/E6IvBaM7IcK048r23Wg0G9W5
+         SIDQ==
+X-Gm-Message-State: AOAM531ki8SQGMElnLePAm3p4sEDOV0pLucyx7pL6j9uqZ6BcSSLp4o1
+        JEfi2ooJmW37bwUGrmCyJN8=
+X-Google-Smtp-Source: ABdhPJxmMmwBHAC6MV1jGxKUHNNOegGk5bUlTkwUorBleYhiFdB6IDSc3N8e0pdtkPxvQAWJIsXHfA==
+X-Received: by 2002:ae9:ef8a:: with SMTP id d132mr2119249qkg.481.1619075269130;
+        Thu, 22 Apr 2021 00:07:49 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com.com ([177.35.200.187])
+        by smtp.gmail.com with ESMTPSA id w67sm1658329qkc.79.2021.04.22.00.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 00:07:48 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/11] DDW + Indirect Mapping
+Date:   Thu, 22 Apr 2021 04:07:11 -0300
+Message-Id: <20210422070721.463912-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 22 Apr 2021 15:05:49 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Thu, 22 Apr 2021 15:05:49 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGh4aGlYYGhpNTBlCGk0ZT0tVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1IS09OQk9CSENIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MxA6Igw*ED8TNA4KA01MUT1CPjlPCVZVSFVKTUpCS0xOSk5LSk9PVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBTUNOTDcG
-X-HM-Tid: 0a78f8662f879395kuwsaafad282e38
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA0LzIxLzIxIDg6NDYgUE0sIOeOi+aTjiB3cm90ZToKPj4gCj4+PiBPbiA0LzIxLzIxIDc6
-NDUgUE0sIFdhbmcgUWluZyB3cm90ZToKPj4+PiBVc2UgdGhlIGJhcmsgaW50ZXJydXB0IGFzIHRo
-ZSBwcmV0aW1lb3V0IG5vdGlmaWVyIGlmIGF2YWlsYWJsZS4KPj4+Pgo+Pj4+IFdoZW4gdGhlIHdh
-dGNoZG9nIHRpbWVyIGV4cGlyZXMgaW4gZHVhbCBtb2RlLCBhbiBpbnRlcnJ1cHQgd2lsbCBiZQo+
-Pj4+IHRyaWdnZXJlZCBmaXJzdCwgdGhlbiB0aGUgdGltaW5nIHJlc3RhcnRzLiBUaGUgcmVzZXQg
-c2lnbmFsIHdpbGwgYmUKPj4+PiBpbml0aWF0ZWQgd2hlbiB0aGUgdGltZXIgZXhwaXJlcyBhZ2Fp
-bi4KPj4+Pgo+Pj4+IFRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBhdCB0
-aW1lb3V0LXNlYy8yLgo+Pj4+Cj4+Pj4gVjI6Cj4+Pj4gLSBwYW5pYygpIGJ5IGRlZmF1bHQgaWYg
-V0FUQ0hET0dfUFJFVElNRU9VVF9HT1YgaXMgbm90IGVuYWJsZWQuCj4+Pj4KPj4+PiBWMzoKPj4+
-PiAtIE1vZGlmeSB0aGUgcHJldGltZW91dCBiZWhhdmlvciwgbWFudWFsbHkgcmVzZXQgYWZ0ZXIg
-dGhlIHByZXRpbWVvdXQKPj4+PiAtIGlzIHByb2Nlc3NlZCBhbmQgd2FpdCB1bnRpbCB0aW1lb3V0
-Lgo+Pj4+Cj4+Pj4gVjQ6Cj4+Pj4gLSBSZW1vdmUgcHJldGltZW91dCByZWxhdGVkIHByb2Nlc3Np
-bmcuIAo+Pj4+IC0gQWRkIGR1YWwgbW9kZSBjb250cm9sIHNlcGFyYXRlbHkuCj4+Pj4KPj4+PiBW
-NToKPj4+PiAtIEZpeCBzb21lIGZvcm1hdHRpbmcgYW5kIHByaW50aW5nIHByb2JsZW1zLgo+Pj4+
-Cj4+Pj4gVjY6Cj4+Pj4gLSBSZWFsaXplIHByZXRpbWVvdXQgcHJvY2Vzc2luZyB0aHJvdWdoIGR1
-YWxtb2RlLgo+Pj4+Cj4+Pj4gU2lnbmVkLW9mZi1ieTogV2FuZyBRaW5nIDx3YW5ncWluZ0B2aXZv
-LmNvbT4KPj4+PiAtLS0KPj4+PiAgZHJpdmVycy93YXRjaGRvZy9tdGtfd2R0LmMgfCA1MyArKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tCj4+Pj4gIDEgZmlsZSBj
-aGFuZ2VkLCA0OCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Pj4+Cj4+Pj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jIGIvZHJpdmVycy93YXRjaGRvZy9tdGtf
-d2R0LmMKPj4+PiBpbmRleCA5N2NhOTkzLi5lYmM2NDhiCj4+Pj4gLS0tIGEvZHJpdmVycy93YXRj
-aGRvZy9tdGtfd2R0LmMKPj4+PiArKysgYi9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYwo+Pj4+
-IEBAIC0yNSw2ICsyNSw3IEBACj4+Pj4gICNpbmNsdWRlIDxsaW51eC9yZXNldC1jb250cm9sbGVy
-Lmg+Cj4+Pj4gICNpbmNsdWRlIDxsaW51eC90eXBlcy5oPgo+Pj4+ICAjaW5jbHVkZSA8bGludXgv
-d2F0Y2hkb2cuaD4KPj4+PiArI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPgo+Pj4+ICAKPj4+
-PiAgI2RlZmluZSBXRFRfTUFYX1RJTUVPVVQJCTMxCj4+Pj4gICNkZWZpbmUgV0RUX01JTl9USU1F
-T1VUCQkxCj4+Pj4gQEAgLTE4NCwxNSArMTg1LDIyIEBAIHN0YXRpYyBpbnQgbXRrX3dkdF9zZXRf
-dGltZW91dChzdHJ1Y3Qgd2F0Y2hkb2dfZGV2aWNlICp3ZHRfZGV2LAo+Pj4+ICB7Cj4+Pj4gIAlz
-dHJ1Y3QgbXRrX3dkdF9kZXYgKm10a193ZHQgPSB3YXRjaGRvZ19nZXRfZHJ2ZGF0YSh3ZHRfZGV2
-KTsKPj4+PiAgCXZvaWQgX19pb21lbSAqd2R0X2Jhc2UgPSBtdGtfd2R0LT53ZHRfYmFzZTsKPj4+
-PiArCXVuc2lnbmVkIGludCB0aW1lb3V0X2ludGVydmFsOwo+Pj4+ICAJdTMyIHJlZzsKPj4+PiAg
-Cj4+Pj4gLQl3ZHRfZGV2LT50aW1lb3V0ID0gdGltZW91dDsKPj4+PiArCXRpbWVvdXRfaW50ZXJ2
-YWwgPSB3ZHRfZGV2LT50aW1lb3V0ID0gdGltZW91dDsKPj4+PiArCS8qCj4+Pj4gKwkgKiBJbiBk
-dWFsIG1vZGUsIGlycSB3aWxsIGJlIHRyaWdnZXJlZCBhdCB0aW1lb3V0LzIKPj4+PiArCSAqIHRo
-ZSByZWFsIHRpbWVvdXQgb2NjdXJzIGF0IHRpbWVvdXQKPj4+PiArCSAqLwo+Pj4+ICsJaWYgKHdk
-dF9kZXYtPnByZXRpbWVvdXQpCj4+Pj4gKwkJdGltZW91dF9pbnRlcnZhbCA9IHdkdF9kZXYtPnBy
-ZXRpbWVvdXQgPSB0aW1lb3V0LzI7Cj4+Pgo+Pj4gUGxlYXNlIHJ1biBjaGVja3BhdGNoIC0tc3Ry
-aWN0IGFuZCBmaXggd2hhdCBpdCByZXBvcnRzLgo+Pj4gQWxzbywgdGhlcmUgc2hvdWxkIGJlIGEg
-c2V0X3ByZXRpbWVvdXQgZnVuY3Rpb24gdG8gc2V0IHRoZQo+Pj4gcHJldGltZW91dC4gSXQgaXMg
-b2sgdG8gdXBkYXRlIGl0IGhlcmUsIGJ1dCBpdCBzaG91bGQgYmUgc2V0Cj4+PiBpbiBpdHMgb3du
-IGZ1bmN0aW9uIHRvIG1ha2Ugc3VyZSB0aGF0IHRoZSBhY3R1YWwgdmFsdWUKPj4+IGlzIHJlcG9y
-dGVkIGJhY2sgdG8gdXNlcnNwYWNlLgo+Pj4KPj4+IFRoYW5rcywKPj4+IEd1ZW50ZXIKPj4gCj4+
-IFRoZSByZWFzb24gd2h5IHRoZSBzZXRfcHJldGltZW91dCBpbnRlcmZhY2UgaXMgbm90IHByb3Zp
-ZGVkIGlzIAo+PiBiZWNhdXNlIHRoZSBwcmV0aW1lb3V0IGlzIGZpeGVkIGFmdGVyIHRoZSB0aW1l
-b3V0IGlzIHNldCwgIHdlIG5lZWQKPj4gdG8gbW9kaWZ5IHRpbWVvdXQgYWZ0ZXIgc2V0dGluZyBw
-cmV0aW1lb3V0LCB3aGljaCBpcyBwdXp6bGluZy4KPj4gCj4KPldoYXQgeW91IG5lZWQgdG8gZG8g
-aXMgdG8gc2V0IHByZXRpbWVvdXQgPSB0aW1lb3V0IC8gMiBpZiBhIHByZXRpbWVvdXQKPmlzIHNl
-dCB0byBhIHZhbHVlICE9IDAuIEp1c3QgbGlrZSB3ZSBhZGp1c3QgdGltZW91dCB0byB2YWxpZCB2
-YWx1ZXMKPndoZW4gc2V0LCB3ZSBhZGp1c3QgcHJldGltZW91dCBhcyB3ZWxsLiBJIGRvbid0IHNl
-ZSBhIHByb2JsZW0gd2l0aCB0aGF0Lgo+Cj5HdWVudGVyCgpUaGFua3MsIEd1ZW50ZXIuIEJ1dCB0
-aGlzIHdpbGwgY29tcGxpY2F0ZSB0aGUgc2l0dWF0aW9uOgpGaXJzdCwgc2V0X3ByZXRpbWVvdXQg
-d2lsbCBiZWNvbWUgYW4gaW50ZXJmYWNlIGZvciBkeW5hbWljYWxseSBlbmFibGUgYW5kCmRpc2Fi
-bGUgdGhlIHByZS10aW1lb3V0IGZ1bmMsIGluc3RlYWQgb2YgYWRqdXN0aW5nIHRoZSBwcmV0aW1l
-b3V0IHRpbWUuIAoKU2Vjb25kbHksIHdoZW4gdGhlIGlycSBpcyBub3QgcmVnaXN0ZXJlZCwgdGhl
-IHVzZXIgY2Fubm90IGJlIGFsbG93ZWQgdG8gc2V0CnRoZSBwcmV0aW1lb3V0IHRvIG5vbi16ZXJv
-LiBXaGVuIGlycSBpcyByZWdpc3RlcmVkLCBpdCBkb2Vzbid0IG1ha2UgYW55IHNlbnNlCnRvIHR1
-cm4gb2ZmIHByZS10aW1lb3V0IGZ1bmMuIAoKQmVjYXVzZSBvZiB0aGUgcGFydGljdWxhcml0eSBv
-ZiBkdWFsIG1vZGUsIEkgc3RpbGwgaW5zaXN0IG9uIGVuYWJsaW5nIHRoZQpwcmV0aW1lb3V0IG9y
-IG5vdCB0aHJvdWdoIGRldmljZXRyZWUuIEFuZCBsb29raW5nIGZvcndhcmQgdG8geW91ciBzdWdn
-ZXN0aW9ucy4KClRoYW5rcywKUWluZwoNCg0K
+So far it's assumed possible to map the guest RAM 1:1 to the bus, which
+works with a small number of devices. SRIOV changes it as the user can
+configure hundreds VFs and since phyp preallocates TCEs and does not
+allow IOMMU pages bigger than 64K, it has to limit the number of TCEs
+per a PE to limit waste of physical pages.
+
+As of today, if the assumed direct mapping is not possible, DDW creation
+is skipped and the default DMA window "ibm,dma-window" is used instead.
+
+Using the DDW instead of the default DMA window may allow to expand the
+amount of memory that can be DMA-mapped, given the number of pages (TCEs)
+may stay the same (or increase) and the default DMA window offers only
+4k-pages while DDW may offer larger pages (4k, 64k, 16M ...).
+
+Patch #1 replaces hard-coded 4K page size with a variable containing the
+correct page size for the window.
+
+Patch #2 introduces iommu_table_in_use(), and replace manual bit-field
+checking where it's used. It will be used for aborting enable_ddw() if
+there is any current iommu allocation and we are trying single window
+indirect mapping.
+
+Patch #3 introduces iommu_pseries_alloc_table() that will be helpful
+when indirect mapping needs to replace the iommu_table.
+
+Patch #4 adds helpers for adding DDWs in the list.
+
+Patch #5 refactors enable_ddw() so it returns if direct mapping is
+possible, instead of DMA offset. It helps for next patches on
+indirect DMA mapping and also allows DMA windows starting at 0x00.
+
+Patch #6 bring new helper to simplify enable_ddw(), allowing
+some reorganization for introducing indirect mapping DDW.
+
+Patch #7 adds new helper _iommu_table_setparms() and use it in other
+*setparams*() to fill iommu_table. It will also be used for creating a
+new iommu_table for indirect mapping.
+
+Patch #8 updates remove_dma_window() to accept different property names,
+so we can introduce a new property for indirect mapping.
+
+Patch #9 extracts find_existing_ddw_windows() into
+find_existing_ddw_windows_named(), and calls it by it's property name.
+This will be useful when the property for indirect mapping is created,
+so we can search the device-tree for both properties.
+
+Patch #10:
+Instead of destroying the created DDW if it doesn't map the whole
+partition, make use of it instead of the default DMA window as it improves
+performance. Also, update the iommu_table and re-generate the pools.
+It introduces a new property name for DDW with indirect DMA mapping.
+
+Patch #11:
+Does some renaming of 'direct window' to 'dma window', given the DDW
+created can now be also used in indirect mapping if direct mapping is not
+available.
+
+All patches were tested into an LPAR with an virtio-net interface that
+allows default DMA window and DDW to coexist.
+
+Leonardo Bras (11):
+  powerpc/pseries/iommu: Replace hard-coded page shift
+  powerpc/kernel/iommu: Add new iommu_table_in_use() helper
+  powerpc/pseries/iommu: Add iommu_pseries_alloc_table() helper
+  powerpc/pseries/iommu: Add ddw_list_new_entry() helper
+  powerpc/pseries/iommu: Allow DDW windows starting at 0x00
+  powerpc/pseries/iommu: Add ddw_property_create() and refactor
+    enable_ddw()
+  powerpc/pseries/iommu: Reorganize iommu_table_setparms*() with new
+    helper
+  powerpc/pseries/iommu: Update remove_dma_window() to accept property
+    name
+  powerpc/pseries/iommu: Find existing DDW with given property name
+  powerpc/pseries/iommu: Make use of DDW for indirect mapping
+  powerpc/pseries/iommu: Rename "direct window" to "dma window"
+
+ arch/powerpc/include/asm/iommu.h       |   1 +
+ arch/powerpc/include/asm/tce.h         |   8 -
+ arch/powerpc/kernel/iommu.c            |  65 ++--
+ arch/powerpc/platforms/pseries/iommu.c | 504 +++++++++++++++----------
+ 4 files changed, 338 insertions(+), 240 deletions(-)
+
+-- 
+2.30.2
+
