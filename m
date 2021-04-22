@@ -2,120 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9500B36830D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AC7368311
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237679AbhDVPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:10:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52052 "EHLO mx2.suse.de"
+        id S237856AbhDVPLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:11:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:47419 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236586AbhDVPKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:10:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619104211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gTxz0RbWnUOZh4apGxwrsu84odP0er4fykNXzBAMpag=;
-        b=OX0bucQn5aKzgc3RTioNoOR5BErPdayoju9pA5S5pCYLyODdOwrADpSziKmUf+9lpeLHq/
-        9Mf3LUt3Pz6e3HoQaDoc3vmW9oI3MwNlLswg5N8qCQBao4KAVZC3OEBWO7GVTKg5IwH9Ia
-        GF/vmkAWug36+NLP+GZgc6yX11cDe8o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63C6EB174;
+        id S237716AbhDVPLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:11:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619104227; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vDB0vKCMD4UXSX/CvhsInRXbDbGVtPaaZh08hxixUcE=;
+ b=cw0VyKxunMq5tOyfdGb2JZj0SJ67kPrYULYoEYiuKUSHA/eM85YMlKh4DsdZvcZXKy/7HxcZ
+ iSrB1S7J4tRpVQceu+qOwx8xQWbvFjmd2x74Lnm+UMJjWHA+y18zB7Ag6fr2ltCIjejqRXEY
+ LEXjTbXe+36T/Fv7jfQYCNuSEHc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 608191d5a817abd39a2a4767 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 15:10:13
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9CFA5C43217; Thu, 22 Apr 2021 15:10:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CAF9BC433D3;
         Thu, 22 Apr 2021 15:10:11 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 3/3] xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guests
-Date:   Thu, 22 Apr 2021 17:10:07 +0200
-Message-Id: <20210422151007.2205-4-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210422151007.2205-1-jgross@suse.com>
-References: <20210422151007.2205-1-jgross@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Apr 2021 20:40:11 +0530
+From:   rojay@codeaurora.org
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH] arm64: dts: sc7280: Add qspi, qupv3_0 and qupv3_1 nodes
+In-Reply-To: <CAD=FV=VuGPvUY8edN+PEuZS_pO+=3WHeJ-4J5tHDAPRnXJs0QA@mail.gmail.com>
+References: <20210311033957.8978-1-rojay@codeaurora.org>
+ <CAD=FV=VuGPvUY8edN+PEuZS_pO+=3WHeJ-4J5tHDAPRnXJs0QA@mail.gmail.com>
+Message-ID: <c395cc77aed847dfaa59b0c2eadce6bf@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XENFEAT_gnttab_map_avail_bits is always set in Xen 4.0 and newer.
-Remove coding assuming it might be zero.
+Hi Doug,
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- drivers/xen/gntdev.c | 36 ++----------------------------------
- 1 file changed, 2 insertions(+), 34 deletions(-)
+On 2021-03-12 03:24, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Mar 10, 2021 at 7:41 PM Roja Rani Yarubandi
+> <rojay@codeaurora.org> wrote:
+>> 
+>> +&qspi_cs0 {
+>> +       pinconf {
+>> +               pins = "gpio15";
+>> +               bias-disable;
+>> +       };
+> 
+> The "pinconf" / "pinmux" subnode shouldn't be used for new SoCs. See:
+> 
+> http://lore.kernel.org/r/CAD=FV=UY_AFRrAY0tef5jP698LEng6oN652LcX3B4nG=aWh0gA@mail.gmail.com
+> 
+> ...same feedback for this whole patch.
+> 
 
-diff --git a/drivers/xen/gntdev.c b/drivers/xen/gntdev.c
-index f01d58c7a042..93818816e137 100644
---- a/drivers/xen/gntdev.c
-+++ b/drivers/xen/gntdev.c
-@@ -266,20 +266,13 @@ static int find_grant_ptes(pte_t *pte, unsigned long addr, void *data)
- {
- 	struct gntdev_grant_map *map = data;
- 	unsigned int pgnr = (addr - map->vma->vm_start) >> PAGE_SHIFT;
--	int flags = map->flags | GNTMAP_application_map | GNTMAP_contains_pte;
-+	int flags = map->flags | GNTMAP_application_map | GNTMAP_contains_pte |
-+		    (1 << _GNTMAP_guest_avail0);
- 	u64 pte_maddr;
- 
- 	BUG_ON(pgnr >= map->count);
- 	pte_maddr = arbitrary_virt_to_machine(pte).maddr;
- 
--	/*
--	 * Set the PTE as special to force get_user_pages_fast() fall
--	 * back to the slow path.  If this is not supported as part of
--	 * the grant map, it will be done afterwards.
--	 */
--	if (xen_feature(XENFEAT_gnttab_map_avail_bits))
--		flags |= (1 << _GNTMAP_guest_avail0);
--
- 	gnttab_set_map_op(&map->map_ops[pgnr], pte_maddr, flags,
- 			  map->grants[pgnr].ref,
- 			  map->grants[pgnr].domid);
-@@ -288,14 +281,6 @@ static int find_grant_ptes(pte_t *pte, unsigned long addr, void *data)
- 	return 0;
- }
- 
--#ifdef CONFIG_X86
--static int set_grant_ptes_as_special(pte_t *pte, unsigned long addr, void *data)
--{
--	set_pte_at(current->mm, addr, pte, pte_mkspecial(*pte));
--	return 0;
--}
--#endif
--
- int gntdev_map_grant_pages(struct gntdev_grant_map *map)
- {
- 	int i, err = 0;
-@@ -1053,23 +1038,6 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
- 		err = vm_map_pages_zero(vma, map->pages, map->count);
- 		if (err)
- 			goto out_put_map;
--	} else {
--#ifdef CONFIG_X86
--		/*
--		 * If the PTEs were not made special by the grant map
--		 * hypercall, do so here.
--		 *
--		 * This is racy since the mapping is already visible
--		 * to userspace but userspace should be well-behaved
--		 * enough to not touch it until the mmap() call
--		 * returns.
--		 */
--		if (!xen_feature(XENFEAT_gnttab_map_avail_bits)) {
--			apply_to_page_range(vma->vm_mm, vma->vm_start,
--					    vma->vm_end - vma->vm_start,
--					    set_grant_ptes_as_special, NULL);
--		}
--#endif
- 	}
- 
- 	return 0;
--- 
-2.26.2
+Ok, will do the changes.
 
+>> +                       qup_spi0_default: qup-spi0-default {
+>> +                               pinmux {
+>> +                                       pins = "gpio0", "gpio1",
+>> +                                              "gpio2", "gpio3";
+>> +                                       function = "qup00";
+>> +                               };
+>> +                       };
+> 
+> Please split these SPI nodes as per the thread above, like:
+> 
+> tlmm: pinctrl@... {
+>   qup_spi0_data_clk: qup-spi0-data-clk {
+>     pins = "gpio0", "gpio1", "gpio2";
+>     function = "qup0";
+>   };
+> 
+>   qup_spi0_cs: qup-spi0-cs {
+>     pins = "gpio3";
+>     function = "qup0";
+>   };
+> 
+>   qup_spi0_cs_gpio: qup-spi0-cs-gpio {
+>     pins = "gpio3";
+>     function = "gpio";
+>   };
+> };
+> 
+> 
+>> +                       qup_uart0_default: qup-uart0-default {
+>> +                               pinmux {
+>> +                                       pins = "gpio0", "gpio1",
+>> +                                              "gpio2", "gpio3";
+>> +                                       function = "qup00";
+>> +                               };
+>> +                       };
+> 
+> I suspect things would actually be cleaner if we broke the uart lines
+> up since the boards tend to have to adjust pulls differently for each
+> line. With the new "no pinconf / pinmux" world it's pretty clean. It's
+> obviously up to Bjorn, but if it were me I'd request this in the SoC
+> file:
+> 
+> qup_uart0_cts: qup-uart0-cts {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> qup_uart0_rts: qup-uart0-rts {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> qup_uart0_rx: qup-uart0-rx {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> qup_uart0_tx: qup-uart0-tx {
+>   pins = "...";
+>   function = "qup00";
+> };
+> 
+> ...and now when the board file wants to adjust the pulls they can just
+> reference each one:
+> 
+> /*
+>  * Comments about why the UART0 pulls make sense.
+>  * Blah blah blah.
+>  */
+> 
+> &qup_uart0_cts {
+>   bias-pull-down;
+> };
+> 
+> &qup_uart0_rts {
+>   drive-strength = <2>;
+>   bias-disable;
+> };
+> 
+> &qup_uart0_rx {
+>   bias-pull-up;
+> };
+> 
+> &qup_uart0_tx {
+>   drive-strength = <2>;
+>   bias-disable;
+> };
+> 
+> 
+>> +               qspi: spi@88dc000 {
+> 
+> I believe the qspi node is sorted incorrectly. When I apply this to
+> the top of the Qualcomm tree it shows up after the "apps_smmu:
+> iommu@15000000" node. However:
+> 
+> 0x088dc000 < 0x15000000
+> 
+> ...which means it should be _before_.
+> 
+
+Sure, will move before apps_smmu
+
+Thanks,
+Roja
+> -Doug
