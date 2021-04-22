@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C2A36878D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B91136878E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 22:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239116AbhDVUCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 16:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236822AbhDVUB7 (ORCPT
+        id S237022AbhDVUDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 16:03:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57532 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236822AbhDVUDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 16:01:59 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3907C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:01:23 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id sd23so61959653ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 13:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iL1WsOQVTYMGLSrNemHFm1Wr4O/+l/TQ2XP4MbaIT84=;
-        b=CmFvXIcEhplHy1cMKEiKqrrqPheSSo1tQSdHL5LuMKhZpbjL0xzsjRbBEY7JGPNwgB
-         Rq2HDJXX7H9NUz+rdw7db6fYhPfq+H4AGu9PcMFUm5AhsIBYGkPErbJhrcfuYlbBPFYQ
-         HLRYZPoypAdPbIrrECtkBoFVczwlLhCcpX0aY3EAAk+3n7JPzT+V2jtReizvuenO7+j8
-         ASjo98WFatar+0BBXCjWu/epjHUSYjFmdVvwLdtR9NMGSyP556uJiaR9BXYmAkz6Dk++
-         VqnXUHcRFiLap4vdlP7I9NJWWERch31qrDZ1/V0QRI0/hvcEqMMe9fYP62kf6RyW0FIS
-         dLTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iL1WsOQVTYMGLSrNemHFm1Wr4O/+l/TQ2XP4MbaIT84=;
-        b=Vt24FiKYP9uE57TbwfhwhxQvrBAZzj5f98bFrpsdBLaTRXfJslHY9zUijRqpe9zqs9
-         jqQQdpDFQq4bQ3xXClG+yLkkpZYjPDZHPWOXO0vXOkQywJcMIBmgrbh/8rYDPIbc7nVb
-         XGgE/8XF15+IiCj3PVSwT+zLyLeMFTfTsi9fMEEM6w4HliW+PtMxNeZWHrYrUchUitGU
-         MUyGy2xKvcZFqyHCmSpU3pNCROA1j6WpGc4XKHhjg1ADENKbs/nGKm8y2AIfkrMHUfvR
-         tJw5ZrsM+gvvlZ2AKJFNyWKNoIHrkU3/9atpZq6gGFNbLRTZ1qNIqLm9EW2WjyQ+fuyN
-         HEEw==
-X-Gm-Message-State: AOAM530bweSl8d5LP9FcXAvEVWAF2+rEKCKPJqR8pCmpGD4lRnG3tBQ2
-        wB2e8L7LVnJBz/DFplSiUKTU/Vpfr6Ltw4mIjywmipG2dAc=
-X-Google-Smtp-Source: ABdhPJxheq+t6LYA8/KKx2YNYbEpR++dNjUtqeUQbiQdqjBErA0pDEeM018l9DULvaWGHbUk0fe1JMJaEi3JtxAjkBw=
-X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr359080ejf.341.1619121682614;
- Thu, 22 Apr 2021 13:01:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419213636.1514816-1-vgoyal@redhat.com> <20210419213636.1514816-3-vgoyal@redhat.com>
- <20210420093420.2eed3939@bahia.lan> <20210420140033.GA1529659@redhat.com>
- <CAPcyv4g2raipYhivwbiSvsHmSdgLO8wphh5dhY3hpjwko9G4Hw@mail.gmail.com> <20210422062458.GA4176641@infradead.org>
-In-Reply-To: <20210422062458.GA4176641@infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 22 Apr 2021 13:01:15 -0700
-Message-ID: <CAPcyv4h42yPKmWByBVkjgL_0LjBg3ZNYKLBJKgjixsdTzOpaiA@mail.gmail.com>
-Subject: Re: [Virtio-fs] [PATCH v3 2/3] dax: Add a wakeup mode parameter to put_unlocked_entry()
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, Greg Kurz <groug@kaod.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 22 Apr 2021 16:03:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619121747; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=a881ow+4PhxSX+A5ZfdVsrzB9Qul8Rd5g0XoSWyK3+o=; b=wLane1U+EGfUwpBCDkOtWjRmJ/7qJoDC2Gbu02ByRSpxjkmyJYrwzfGogxZDyK2+QuZU9UgN
+ hHeY7wa3aa1LZYDXQH/esTQWGIGS9Wr/7afo7PVR6/gFlPPDqNSnKAyB0jTeXydpig3uhYox
+ KnJpUvbn5Bk9b/rpThjUWjVOn2Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6081d652215b831afb7c3755 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 20:02:26
+ GMT
+Sender: sharathv=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 368F1C43460; Thu, 22 Apr 2021 20:02:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from svurukal-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sharathv)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48F80C433D3;
+        Thu, 22 Apr 2021 20:02:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 48F80C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sharathv@codeaurora.org
+From:   Sharath Chandra Vurukala <sharathv@codeaurora.org>
+To:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>
+Subject: [PATCH net-next v4 0/3] net: qualcomm: rmnet: Enable Mapv5
+Date:   Fri, 23 Apr 2021 01:32:08 +0530
+Message-Id: <1619121731-17782-1-git-send-email-sharathv@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 11:25 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Wed, Apr 21, 2021 at 12:09:54PM -0700, Dan Williams wrote:
-> > Can you get in the habit of not replying inline with new patches like
-> > this? Collect the review feedback, take a pause, and resend the full
-> > series so tooling like b4 and patchwork can track when a new posting
-> > supersedes a previous one. As is, this inline style inflicts manual
-> > effort on the maintainer.
->
-> Honestly I don't mind it at all.  If you shiny new tooling can't handle
-> it maybe you should fix your shiny new tooling instead of changing
-> everyones workflow?
+This series introduces the MAPv5 packet format.
 
-I think asking a submitter to resend a series is par for the course,
-especially for poor saps like me burdened by corporate email systems.
-Vivek, if this is too onerous a request just give me a heads up and
-I'll manually pull out the patch content from your replies.
+  Patch 0 documents the MAPv4/v5.
+  Patch 1 introduces the MAPv5 and the Inline checksum offload for RX/Ingress.
+  Patch 2 introduces the MAPv5 and the Inline checksum offload for TX/Egress.
+
+  A new checksum header format is used as part of MAPv5.For RX checksum offload,
+  the checksum is verified by the HW and the validity is marked in the checksum
+  header of MAPv5. For TX, the required metadata is filled up so hardware can
+  compute the checksum.
+
+  v1->v2:
+  - Fixed the compilation errors, warnings reported by kernel test robot.
+  - Checksum header definition is expanded to support big, little endian
+          formats as mentioned by Jakub.
+
+  v2->v3:
+  - Fixed compilation errors reported by kernel bot for big endian flavor.
+
+  v3->v4:
+  - Made changes to use masks instead of C bit-fields as suggested by Jakub/Alex.
+
+Sharath Chandra Vurukala (3):
+  docs: networking: Add documentation for MAPv5
+  net: ethernet: rmnet: Support for ingress MAPv5 checksum offload
+  net: ethernet: rmnet: Add support for MAPv5 egress packets
+
+ .../device_drivers/cellular/qualcomm/rmnet.rst     | 126 +++++++++++++++--
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |   4 +-
+ .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   |  29 ++--
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  11 +-
+ .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 151 ++++++++++++++++++++-
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |   3 +-
+ include/linux/if_rmnet.h                           |  27 +++-
+ include/uapi/linux/if_link.h                       |   2 +
+ 8 files changed, 318 insertions(+), 35 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
