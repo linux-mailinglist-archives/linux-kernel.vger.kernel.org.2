@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E78367C60
+	by mail.lfdr.de (Postfix) with ESMTP id 7259C367C61
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbhDVISj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:18:39 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:51561 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235317AbhDVISg (ORCPT
+        id S235317AbhDVISw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230241AbhDVISv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:18:36 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id ZUX7lpzxuvTEDZUXBlYAdn; Thu, 22 Apr 2021 10:18:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1619079481; bh=mTMU/0of4wIoN570cprmA87NZm1WxI2wK8H9SjvtidM=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=hvukjxxRER3z+kHHRCY5mGNZ7woiYyHws1xD6ufCpvCvI+Eot8XaalRcxS7D+/nlv
-         wZs9eMMhIv7J81C9QwjB1mVP0xBVV9a3EmPAsDQ0BMSr+lTKpa2BbAMppcHKZDpJ25
-         PqvSYHUMDvnna01VyjylzQkKM6yr0f2aKZQ5ZDcwMdKcknCE12PKxoQg4YIrxoRs2b
-         m/fGWP6xXTBvjkmjbswzbmTpEf0Z1H+nhOB7I6RfmkstxKT+y2x3pzwquykRPyERsj
-         pdNJoAPl1CKIKma5l+SEjYXLhyF2kdYu7Z2/rKvc+SwzVj6g5GXNn8k9hXrTYF9lj7
-         KABUCchZ8f6CA==
-Subject: Re: [PATCH 002/190] Revert "media: st-delta: Fix reference count leak
- in delta_run_work"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-3-gregkh@linuxfoundation.org>
- <b6e00864-f28a-ee9a-ea53-d1a8aa8c42fb@xs4all.nl> <YIEwKeINI8VOG+S4@kroah.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <3336ff98-f5a4-6206-087e-0cbbce4b3b26@xs4all.nl>
-Date:   Thu, 22 Apr 2021 10:17:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Thu, 22 Apr 2021 04:18:51 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E88C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:18:15 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id q123-20020a1c43810000b029012c7d852459so3775053wma.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4MknbIT7CWhKfazUcArL9gVzlWhfw/gbr5rLiB4UULY=;
+        b=KUQGn467FGS7Cc17n7B5Cei0400l5Y/+7iXKO/S25YkklcZ7Sdy8oeuoVFepS6pzqj
+         0UiQY5oaDYRMNvkWRrhTY3VmVE3eJUk018cJpsg4V9l8Rhd6+QRjHXaCETMdvyRE/j0b
+         0J54xHgYENwgVUkncDf62z6BM1/Fu6e1j85ss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=4MknbIT7CWhKfazUcArL9gVzlWhfw/gbr5rLiB4UULY=;
+        b=SgDFOa/sZHcd24Q96jW3QNSYRiPuIyJCSEO6PIm/kPma41tKQGu7jplrgzhmjDa5rt
+         PQFiCGbHCGdtdFJ9td71gBmQkr3SI/ZTb0suShUvJ6m8gLbpSO/y5Wd3wpW7N7/1HINV
+         kAF3d6bPVb/536gnsz4bd+PSri7ucJWf5GxpC4y9Gd22WKzf5K21diDC7UZOZVzwyiiW
+         OYbjN2d3kuzEFPFFqNVu6EuyrgIgbaOul5iu+gdFUWE4PM4codyA408bvQhM9/SDmKjV
+         uu9Os44ndTH9ICOrmdClpY7AjwvhGoCYG3euOtO3NBg3bBoFK/kEgKhng2R0Pc/TIsvT
+         b14Q==
+X-Gm-Message-State: AOAM530wzl2W0zV6FFyZ+u1jHq4333sHwx9w5LM8lJMsTcpw/gHYUUnL
+        +x/XEnS+HUthnNVRv+QYwGUIIg==
+X-Google-Smtp-Source: ABdhPJyYeg6+dBCeVaLicwbWWHGjEqMDmuiY+xd9mnZGLeW0ntlVLmyvlg4tFGdYnfahZaSVd24EWg==
+X-Received: by 2002:a7b:c769:: with SMTP id x9mr14123572wmk.124.1619079494623;
+        Thu, 22 Apr 2021 01:18:14 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id x2sm2474310wrg.31.2021.04.22.01.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 01:18:14 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 10:18:12 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/i915: Fix docbook descriptions for i915_cmd_parser
+Message-ID: <YIExRAHQvZmgL5S+@phenom.ffwll.local>
+Mail-Followup-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210421120353.544518-1-maarten.lankhorst@linux.intel.com>
+ <CAKMK7uFpoY7YMEMbftjq+P5XHR6L+F0KwFtbK7CtuUFy7HsLkQ@mail.gmail.com>
+ <9ae96fa1-6c91-4ec1-422d-8e0a95251bb7@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YIEwKeINI8VOG+S4@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCdHmo1iyKzoZ4R2mLJHJyJZ4fsZRdqfRjEmfqteDMU53g0/75wySmoPQNgL2Zg/CJevOe7MyqWZPbv7MXni4Fkd0u611928MkpnpYUyzJS4HnWSfb4m
- rzoRnao4I6Akm2NBSHa9+c2MKuAeYpFmzzkeBhjJQv/ox0J0gJkiSEkML8wnug59anZiptTo5S02THdCbx8zkcaQ+6WgAFBzptTEQNue7e9EFzu0y1R4O2bT
- HqccDAz2QOf3Bws3VVIlUNN1vpBVyXQ6dl2uIXBR2vjzD8L3AB1XFEgtHKmxhIHG84F4/wAw9WBvluO8/8RHmw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ae96fa1-6c91-4ec1-422d-8e0a95251bb7@linux.intel.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Apr 21, 2021 at 04:39:10PM +0200, Maarten Lankhorst wrote:
+> Op 21-04-2021 om 16:32 schreef Daniel Vetter:
+> > On Wed, Apr 21, 2021 at 2:03 PM Maarten Lankhorst
+> > <maarten.lankhorst@linux.intel.com> wrote:
+> >> Fixes the following htmldocs warnings:
+> >> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Excess function parameter 'trampoline' description in 'intel_engine_cmd_parser'
+> >> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'jump_whitelist' not described in 'intel_engine_cmd_parser'
+> >> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'shadow_map' not described in 'intel_engine_cmd_parser'
+> >> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Function parameter or member 'batch_map' not described in 'intel_engine_cmd_parser'
+> >> drivers/gpu/drm/i915/i915_cmd_parser.c:1420: warning: Excess function parameter 'trampoline' description in 'intel_engine_cmd_parser'
+> >>
+> >> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> >> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> >> ---
+> >>  drivers/gpu/drm/i915/i915_cmd_parser.c | 16 +++++++++++++++-
+> >>  1 file changed, 15 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/i915/i915_cmd_parser.c b/drivers/gpu/drm/i915/i915_cmd_parser.c
+> >> index e6f1e93abbbb..afb9b7516999 100644
+> >> --- a/drivers/gpu/drm/i915/i915_cmd_parser.c
+> >> +++ b/drivers/gpu/drm/i915/i915_cmd_parser.c
+> >> @@ -1369,6 +1369,18 @@ static int check_bbstart(u32 *cmd, u32 offset, u32 length,
+> >>         return 0;
+> >>  }
+> >>
+> >> +/**
+> >> + * intel_engine_cmd_parser_alloc_jump_whitelist() - preallocate jump whitelist for intel_engine_cmd_parser()
+> >> + * @batch_length: length of the commands in batch_obj
+> >> + * @trampoline: Whether jump trampolines are used.
+> >> + *
+> >> + * Preallocates a jump whitelist for parsing the cmd buffer in intel_engine_cmd_parser().
+> >> + * This has to be preallocated, because the command parser runs in signaling context,
+> >> + * and may not allocate any memory.
+> >> + *
+> >> + * Return: NULL or pointer to a jump whitelist, or ERR_PTR() on failure. Use
+> >> + * IS_ERR() to check for errors. Must bre freed() with kfree().
+> > IS_ERR_OR_NULL or needs an actual bugfix in the code since we're not
+> > consistent. Also s/bre/be/
+> We're sort of consistent, NULL is a valid return code. IS_ERR is only on faliure. :)
 
-On 22/04/2021 10:13, Greg Kroah-Hartman wrote:
-> On Thu, Apr 22, 2021 at 10:02:32AM +0200, Hans Verkuil wrote:
->> Hi Greg,
->>
->> I re-reviewed all the patches in this series where I was CCed.
->>
->> These are all good and fix real bugs and should be re-reverted:
->>
->> [PATCH 002/190] Revert "media: st-delta: Fix reference count leak in delta_run_work"
->> [PATCH 003/190] Revert "media: sti: Fix reference count leaks"
->> [PATCH 004/190] Revert "media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync"
->> [PATCH 005/190] Revert "media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync"
->> [PATCH 006/190] Revert "media: exynos4-is: Fix a reference count leak"
->> [PATCH 008/190] Revert "media: stm32-dcmi: Fix a reference count leak"
->> [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count leak"
->> [PATCH 010/190] Revert "media: camss: Fix a reference count leak."
->> [PATCH 011/190] Revert "media: platform: fcp: Fix a reference count leak."
->> [PATCH 012/190] Revert "media: rockchip/rga: Fix a reference count leak."
->> [PATCH 013/190] Revert "media: rcar-vin: Fix a reference count leak."
->> [PATCH 014/190] Revert "media: rcar-vin: Fix a reference count leak."
->> [PATCH 052/190] Revert "media: media/saa7146: fix incorrect assertion in saa7146_buffer_finish"
->> [PATCH 056/190] Revert "media: davinci/vpfe_capture.c: Avoid BUG_ON for register failure"
->> [PATCH 057/190] Revert "media: saa7146: Avoid using BUG_ON as an assertion"
->> [PATCH 058/190] Revert "media: cx231xx: replace BUG_ON with recovery code"
->> [PATCH 102/190] Revert "media: video-mux: fix null pointer dereferences"
->> [PATCH 183/190] Revert "media: isif: fix a NULL pointer dereference bug"
->>
+Maybe explain that and then Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Just to clarify and avoid ambiguities:
+Cheers, Daniel
 
->> This one can be dropped since it actually contains a bug, I'm fairly certain
-
-with 'This can be dropped' I meant: this can remain reverted.
-
->> that was unintentional:
->>
->> [PATCH 007/190] Revert "media: ti-vpe: Fix a missing check and reference count leak"
->>
->> I'll reply to that one separately.
->>
->> This one can be dropped since it is not necessary:
-
-Ditto.
-
-You probably understood what I meant, but I realized it was not very clear.
-
-Regards,
-
-	Hans
-
->>
->> [PATCH 073/190] Revert "media: rcar_drif: fix a memory disclosure"
->>
->> The V4L2 core already zeroes this. Other drivers that use fmt.sdr also
->> memset this, but that should be dropped in those drivers as well. I'll
->> make a patch for that.
+> > -Daniel
+> >
+> >> + */
+> >>  unsigned long *intel_engine_cmd_parser_alloc_jump_whitelist(u32 batch_length,
+> >>                                                             bool trampoline)
+> >>  {
+> >> @@ -1401,7 +1413,9 @@ unsigned long *intel_engine_cmd_parser_alloc_jump_whitelist(u32 batch_length,
+> >>   * @batch_offset: byte offset in the batch at which execution starts
+> >>   * @batch_length: length of the commands in batch_obj
+> >>   * @shadow: validated copy of the batch buffer in question
+> >> - * @trampoline: whether to emit a conditional trampoline at the end of the batch
+> >> + * @jump_whitelist: buffer preallocated with intel_engine_cmd_parser_alloc_jump_whitelist()
+> >> + * @shadow_map: mapping to @shadow vma
+> >> + * @batch_map: mapping to @batch vma
+> >>   *
+> >>   * Parses the specified batch buffer looking for privilege violations as
+> >>   * described in the overview.
+> >> --
+> >> 2.31.0
+> >>
+> >
 > 
-> Wonderful, many thanks for doing this review, I'll be dropping these
-> from the series.
-> 
-> greg k-h
-> 
 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
