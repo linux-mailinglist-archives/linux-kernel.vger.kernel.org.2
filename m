@@ -2,73 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54213367D17
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31A8367D0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbhDVJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:00:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17025 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235469AbhDVJAR (ORCPT
+        id S235446AbhDVI77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:59:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39904 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230285AbhDVI76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:00:17 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FQrrQ6WFZzPrBl;
-        Thu, 22 Apr 2021 16:56:38 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 22 Apr 2021 16:59:31 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 3/3] dt-bindings: serial: Add label property in serial.yaml
-Date:   Thu, 22 Apr 2021 16:58:37 +0800
-Message-ID: <20210422085837.513-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210422085837.513-1-thunder.leizhen@huawei.com>
-References: <20210422085837.513-1-thunder.leizhen@huawei.com>
+        Thu, 22 Apr 2021 04:59:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619081963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JfOVe3Y2pHcez7ttpJdj+ZOGuypmISBrFuEMjlM7SWw=;
+        b=VwtCojXtJjyScmH2v1ZPmj0X8wHD7NbKTXSoPtn5mJ5kmXNwtwCRzBZ6Er2j6QIFgln/gQ
+        hJGnZMUaZi40Vh+ibmTYmXpSegHYbj3nsX5bTNRVZFGNdknvwFPZIHpAbASRyN1hVACl3+
+        T4tt/dNd+3cZ8lgrS4AzmYLyj2cJQdg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-wOlUl2CiOTmPIkIts6VkwQ-1; Thu, 22 Apr 2021 04:59:19 -0400
+X-MC-Unique: wOlUl2CiOTmPIkIts6VkwQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6CAD1926DA0;
+        Thu, 22 Apr 2021 08:59:18 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-137.pek2.redhat.com [10.72.13.137])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3804360938;
+        Thu, 22 Apr 2021 08:59:12 +0000 (UTC)
+Subject: Re: [PATCH] vdpa/mlx5: Add support for doorbell bypassing
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        "Zhu, Lingshan" <lingshan.zhu@intel.com>
+References: <20210421104145.115907-1-elic@nvidia.com>
+ <e1885255-34f2-9e90-6478-ff0850a5a3d4@redhat.com>
+ <20210422060358.GA140698@mtl-vdi-166.wap.labs.mlnx>
+ <20210422080725.GB140698@mtl-vdi-166.wap.labs.mlnx>
+ <9d3d8976-800d-bb14-0a4a-c4b008f6872c@redhat.com>
+ <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <bdf10e38-8746-51cf-b460-a904a133329c@redhat.com>
+Date:   Thu, 22 Apr 2021 16:59:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210422083902.GA146406@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there is more than one serial port present, the property 'label'
-allows a custom name to be used for briefly describe the usage or position
-of each serial port.
 
-Without this "label" property, many dtbs_check warnings similar to the
-following are reported:
-arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
-serial@ffd74000: Additional properties are not allowed ('label' was unexpected)
-        From schema: Documentation/devicetree/bindings/serial/pl011.yaml
+在 2021/4/22 下午4:39, Eli Cohen 写道:
+> On Thu, Apr 22, 2021 at 04:21:45PM +0800, Jason Wang wrote:
+>> 在 2021/4/22 下午4:07, Eli Cohen 写道:
+>>> On Thu, Apr 22, 2021 at 09:03:58AM +0300, Eli Cohen wrote:
+>>>> On Thu, Apr 22, 2021 at 10:37:38AM +0800, Jason Wang wrote:
+>>>>> 在 2021/4/21 下午6:41, Eli Cohen 写道:
+>>>>>> Implement mlx5_get_vq_notification() to return the doorbell address.
+>>>>>> Size is set to one system page as required.
+>>>>>>
+>>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>>>> ---
+>>>>>>     drivers/vdpa/mlx5/core/mlx5_vdpa.h | 1 +
+>>>>>>     drivers/vdpa/mlx5/core/resources.c | 1 +
+>>>>>>     drivers/vdpa/mlx5/net/mlx5_vnet.c  | 6 ++++++
+>>>>>>     3 files changed, 8 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>> index b6cc53ba980c..49de62cda598 100644
+>>>>>> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+>>>>>> @@ -41,6 +41,7 @@ struct mlx5_vdpa_resources {
+>>>>>>     	u32 pdn;
+>>>>>>     	struct mlx5_uars_page *uar;
+>>>>>>     	void __iomem *kick_addr;
+>>>>>> +	u64 phys_kick_addr;
+>>>>>>     	u16 uid;
+>>>>>>     	u32 null_mkey;
+>>>>>>     	bool valid;
+>>>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+>>>>>> index 6521cbd0f5c2..665f8fc1710f 100644
+>>>>>> --- a/drivers/vdpa/mlx5/core/resources.c
+>>>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
+>>>>>> @@ -247,6 +247,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+>>>>>>     		goto err_key;
+>>>>>>     	kick_addr = mdev->bar_addr + offset;
+>>>>>> +	res->phys_kick_addr = kick_addr;
+>>>>>>     	res->kick_addr = ioremap(kick_addr, PAGE_SIZE);
+>>>>>>     	if (!res->kick_addr) {
+>>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>> index 10c5fef3c020..680751074d2a 100644
+>>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>>> @@ -1865,8 +1865,14 @@ static void mlx5_vdpa_free(struct vdpa_device *vdev)
+>>>>>>     static struct vdpa_notification_area mlx5_get_vq_notification(struct vdpa_device *vdev, u16 idx)
+>>>>>>     {
+>>>>>> +	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+>>>>>>     	struct vdpa_notification_area ret = {};
+>>>>>> +	struct mlx5_vdpa_net *ndev;
+>>>>>> +
+>>>>>> +	ndev = to_mlx5_vdpa_ndev(mvdev);
+>>>>>> +	ret.addr = (phys_addr_t)ndev->mvdev.res.phys_kick_addr;
+>>>>>> +	ret.size = PAGE_SIZE;
+>>>>> Note that the page will be mapped in to guest, so it's only safe if the
+>>>>> doorbeel exclusively own the page. This means if there're other registers in
+>>>>> the page, we can not let the doorbell bypass to work.
+>>>>>
+>>>>> So this is suspicious at least in the case of subfunction where we calculate
+>>>>> the bar length in mlx5_sf_dev_table_create() as:
+>>>>>
+>>>>> table->sf_bar_length = 1 << (MLX5_CAP_GEN(dev, log_min_sf_size) + 12);
+>>>>>
+>>>>> It looks to me this can only work for the arch with PAGE_SIZE = 4096,
+>>>>> otherwise we can map more into the userspace(guest).
+>>>>>
+>>>> Correct, so I guess I should return here 4096.
+>>
+>> I'm not quite sure but since the calculation of the sf_bar_length is doen
+>> via a shift of 12, it might be correct.
+>>
+>> And please double check if the doorbell own the page exclusively.
+> I am checking if it is safe to map the any part of the SF's BAR to
+> userspace without harming other functions. If this is true, I will check
+> if I can return PAGE_SIZE without compromising security.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- Documentation/devicetree/bindings/serial/serial.yaml | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
-index 71aec7fda07d..04ec229cbb4f 100644
---- a/Documentation/devicetree/bindings/serial/serial.yaml
-+++ b/Documentation/devicetree/bindings/serial/serial.yaml
-@@ -23,6 +23,8 @@ properties:
-   $nodename:
-     pattern: "^serial(@[0-9a-f,]+)?$"
- 
-+  label: true
-+
-   cts-gpios:
-     maxItems: 1
-     description:
--- 
-2.21.1
+It's usally not safe and a layer violation if other registers are placed 
+at the same page.
 
+
+>   I think we may
+> need to extend struct vdpa_notification_area to contain another field
+> offset which indicates the offset from addr where the actual doorbell
+> resides.
+
+
+The movitiaton of the current design is to be fit seamless into how Qemu 
+model doorbell layouts currently:
+
+1) page-per-vq, each vq has its own page aligned doorbell
+2) 2 bytes doorbell, each vq has its own 2 byte aligend doorbell
+
+Only 1) is support in vhost-vDPA (and vhost-user) since it's rather 
+simple and secure (page aligned) to be modelled and implemented via mmap().
+
+Exporting a complex layout is possbile but requires careful design.
+
+Actually, we had antoher option
+
+3) shared doorbell: all virtqueue shares a single page aligned doorbell
+
+This is not yet supported by Qemu.
+
+Thanks
+
+
+>>
+>>>> I also think that the check in vhost_vdpa_mmap() should verify that the
+>>>> returned size is not smaller than PAGE_SIZE because the returned address
+>>> Actually I think it's ok since you verify the size equals vma->vm_end -
+>>> vma->vm_start which must be at least PAGE_SIZE.
+>>
+>> Yes.
+>>
+>> Thanks
+>>
+>>
+>>>> might just be aligned to PAGE_SIZE. I think this should be enoght but
+>>>> maybe also use the same logic in vhost_vdpa_fault().
 
