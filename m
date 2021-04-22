@@ -2,103 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D89A367CA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6366F367CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhDVIhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:37:14 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2904 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbhDVIhL (ORCPT
+        id S235412AbhDVIgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235248AbhDVIgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:37:11 -0400
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FQrGy4nsKz6yhSP;
-        Thu, 22 Apr 2021 16:31:06 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Apr 2021 10:36:35 +0200
-Received: from localhost (10.52.123.71) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 22 Apr
- 2021 09:36:34 +0100
-Date:   Thu, 22 Apr 2021 09:35:05 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH 164/190] Revert "iio: ad9523: fix a missing check of
- return value"
-Message-ID: <20210422093505.00006f77@Huawei.com>
-In-Reply-To: <20210421130105.1226686-165-gregkh@linuxfoundation.org>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
-        <20210421130105.1226686-165-gregkh@linuxfoundation.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Thu, 22 Apr 2021 04:36:31 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF766C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:35:55 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id d21so32331671edv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=s/cffvQ0TVq9UxDXzdd2LQZUeEczDjN1Xnth6iUsGig=;
+        b=x4Gspg/q2I9oEmvUCCEpSE1b5ox2sUEqPUdnOLrcQE3vOppB6PQ6k9ZtofzZWjEb1a
+         3FM+8LzcyvfoDOVXVX2nLmOeRHWMFKPqVAw35Zd0ovSrELefjmKTQtc93IWZ29wFT2Xu
+         dszd++1QZeg4Uq62kbvQ8KtWlXfJOkXJHdwbeGAo3oCJ/uJkgivFSbEyHNPd+unBxtvN
+         Qbws78wMcY4LxGWHBHO1nZLpuXz+fYjJ18BaK3AzkoX/Vbg81raEKeruJgoWghxfe5iN
+         1g5oeGedVkhJLBP500FhtA+imSlVj+fa9sCjZuZgEDFKeVvLVdfzsstzfwBrpTGBlWH3
+         7Evw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s/cffvQ0TVq9UxDXzdd2LQZUeEczDjN1Xnth6iUsGig=;
+        b=lCaKTmMhx6MuXodCWp1w8pBAdLX5c8cXiCIgO/2m3KZfDcqRW+IhYFYfFEVjNOacFe
+         xwOvQG1drR19Uvygj14BiBBH1DMSzai6Fauk62G2pQXfbtI+XsIQTJFMwJsohcWJx3DT
+         aQAR7LANZuvhBZ5fu3WmArOVLgkGebIdhMeKGJKJHbQvt1cSp1jS38uMd7UXJhTjxCLR
+         mOIqQz2OUs15DGiImJFyNHxFrWTBhzlPeGTvh99ps0326hYSk1mlMYWEZbd3WFOzTaQT
+         lhQGSOHY3SZGYWsRBDBgJCF2/FwnxFnA0ts2FPrDVfCvFH15UG7FVzKNkONW80fBdlp6
+         HG7w==
+X-Gm-Message-State: AOAM532fuoGzUHGwSoL95dGmHav1QP28zyMfLcQdWTOuOj9n9BcYuwZw
+        p0akv4utTlVtzvNkJQRLUEI9V7E9z/VIHIeH
+X-Google-Smtp-Source: ABdhPJy5++Q5jV8wK05xdQAYd8mpIXSUhqXjhLrZbJJKic6rtCN+qkeWE87S9QEp6RKBdzG1jxC2bA==
+X-Received: by 2002:aa7:d3da:: with SMTP id o26mr2381639edr.147.1619080553981;
+        Thu, 22 Apr 2021 01:35:53 -0700 (PDT)
+Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
+        by smtp.gmail.com with ESMTPSA id u19sm1468911edy.23.2021.04.22.01.35.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 01:35:53 -0700 (PDT)
+Subject: Re: [PATCH] microblaze: add 'fallthrough' to memcpy/memset/memmove
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+References: <20210421022041.10689-1-rdunlap@infradead.org>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <2e96bc5b-2f2b-fcd5-ec38-8f0ca33dff60@monstr.eu>
+Date:   Thu, 22 Apr 2021 10:35:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <20210421022041.10689-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.71]
-X-ClientProxiedBy: lhreml712-chm.china.huawei.com (10.201.108.63) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Apr 2021 15:00:39 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This reverts commit ae0b3773721f08526c850e2d8dec85bdb870cd12.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Kangjie Lu <kjlu@umn.edu>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Checked. Original fix was correct.  As with others I don't mind how we handle
-this.  Can either drop the revert, or bring it back later.
+On 4/21/21 4:20 AM, Randy Dunlap wrote:
+> Fix "fallthrough" warnings in microblaze memcpy/memset/memmove
+> library functions.
+> 
+>   CC      arch/microblaze/lib/memcpy.o
+> ../arch/microblaze/lib/memcpy.c: In function 'memcpy':
+> ../arch/microblaze/lib/memcpy.c:70:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    70 |    --c;
+> ../arch/microblaze/lib/memcpy.c:71:3: note: here
+>    71 |   case 2:
+> ../arch/microblaze/lib/memcpy.c:73:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    73 |    --c;
+> ../arch/microblaze/lib/memcpy.c:74:3: note: here
+>    74 |   case 3:
+> ../arch/microblaze/lib/memcpy.c:178:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>   178 |   *dst++ = *src++;
+> ../arch/microblaze/lib/memcpy.c:179:2: note: here
+>   179 |  case 2:
+> ../arch/microblaze/lib/memcpy.c:180:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>   180 |   *dst++ = *src++;
+> ../arch/microblaze/lib/memcpy.c:181:2: note: here
+>   181 |  case 1:
+>   CC      arch/microblaze/lib/memset.o
+> ../arch/microblaze/lib/memset.c: In function 'memset':
+> ../arch/microblaze/lib/memset.c:71:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    71 |    --n;
+> ../arch/microblaze/lib/memset.c:72:3: note: here
+>    72 |   case 2:
+> ../arch/microblaze/lib/memset.c:74:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    74 |    --n;
+> ../arch/microblaze/lib/memset.c:75:3: note: here
+>    75 |   case 3:
+>   CC      arch/microblaze/lib/memmove.o
+> ../arch/microblaze/lib/memmove.c: In function 'memmove':
+> ../arch/microblaze/lib/memmove.c:92:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    92 |    --c;
+> ../arch/microblaze/lib/memmove.c:93:3: note: here
+>    93 |   case 2:
+> ../arch/microblaze/lib/memmove.c:95:4: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>    95 |    --c;
+> ../arch/microblaze/lib/memmove.c:96:3: note: here
+>    96 |   case 1:
+> ../arch/microblaze/lib/memmove.c:203:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>   203 |   *--dst = *--src;
+> ../arch/microblaze/lib/memmove.c:204:2: note: here
+>   204 |  case 3:
+> ../arch/microblaze/lib/memmove.c:205:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>   205 |   *--dst = *--src;
+> ../arch/microblaze/lib/memmove.c:206:2: note: here
+>   206 |  case 2:
+> ../arch/microblaze/lib/memmove.c:207:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+>   207 |   *--dst = *--src;
+> ../arch/microblaze/lib/memmove.c:208:2: note: here
+>   208 |  case 1:
+> 
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Michal Simek <monstr@monstr.eu>
+> ---
+>  arch/microblaze/lib/memcpy.c  |    4 ++++
+>  arch/microblaze/lib/memmove.c |    5 +++++
+>  arch/microblaze/lib/memset.c  |    2 ++
+>  3 files changed, 11 insertions(+)
+> 
+> --- linux-next-20210420.orig/arch/microblaze/lib/memcpy.c
+> +++ linux-next-20210420/arch/microblaze/lib/memcpy.c
+> @@ -68,9 +68,11 @@ void *memcpy(void *v_dst, const void *v_
+>  		case 1:
+>  			*dst++ = *src++;
+>  			--c;
+> +			fallthrough;
+>  		case 2:
+>  			*dst++ = *src++;
+>  			--c;
+> +			fallthrough;
+>  		case 3:
+>  			*dst++ = *src++;
+>  			--c;
+> @@ -176,8 +178,10 @@ void *memcpy(void *v_dst, const void *v_
+>  	switch (c) {
+>  	case 3:
+>  		*dst++ = *src++;
+> +		fallthrough;
+>  	case 2:
+>  		*dst++ = *src++;
+> +		fallthrough;
+>  	case 1:
+>  		*dst++ = *src++;
+>  	}
+> --- linux-next-20210420.orig/arch/microblaze/lib/memmove.c
+> +++ linux-next-20210420/arch/microblaze/lib/memmove.c
+> @@ -90,9 +90,11 @@ void *memmove(void *v_dst, const void *v
+>  		case 3:
+>  			*--dst = *--src;
+>  			--c;
+> +			fallthrough;
+>  		case 2:
+>  			*--dst = *--src;
+>  			--c;
+> +			fallthrough;
+>  		case 1:
+>  			*--dst = *--src;
+>  			--c;
+> @@ -201,10 +203,13 @@ void *memmove(void *v_dst, const void *v
+>  	switch (c) {
+>  	case 4:
+>  		*--dst = *--src;
+> +		fallthrough;
+>  	case 3:
+>  		*--dst = *--src;
+> +		fallthrough;
+>  	case 2:
+>  		*--dst = *--src;
+> +		fallthrough;
+>  	case 1:
+>  		*--dst = *--src;
+>  	}
+> --- linux-next-20210420.orig/arch/microblaze/lib/memset.c
+> +++ linux-next-20210420/arch/microblaze/lib/memset.c
+> @@ -69,9 +69,11 @@ void *memset(void *v_src, int c, __kerne
+>  		case 1:
+>  			*src++ = c;
+>  			--n;
+> +			fallthrough;
+>  		case 2:
+>  			*src++ = c;
+>  			--n;
+> +			fallthrough;
+>  		case 3:
+>  			*src++ = c;
+>  			--n;
+> 
+
+Applied.
 
 Thanks,
+Michal
 
-Jonathan
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
-> ---
->  drivers/iio/frequency/ad9523.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/frequency/ad9523.c b/drivers/iio/frequency/ad9523.c
-> index bdb0bc3b12dd..91eb47e27db0 100644
-> --- a/drivers/iio/frequency/ad9523.c
-> +++ b/drivers/iio/frequency/ad9523.c
-> @@ -944,14 +944,11 @@ static int ad9523_setup(struct iio_dev *indio_dev)
->  		}
->  	}
->  
-> -	for_each_clear_bit(i, &active_mask, AD9523_NUM_CHAN) {
-> -		ret = ad9523_write(indio_dev,
-> +	for_each_clear_bit(i, &active_mask, AD9523_NUM_CHAN)
-> +		ad9523_write(indio_dev,
->  			     AD9523_CHANNEL_CLOCK_DIST(i),
->  			     AD9523_CLK_DIST_DRIVER_MODE(TRISTATE) |
->  			     AD9523_CLK_DIST_PWR_DOWN_EN);
-> -		if (ret < 0)
-> -			return ret;
-> -	}
->  
->  	ret = ad9523_write(indio_dev, AD9523_POWER_DOWN_CTRL, 0);
->  	if (ret < 0)
+
 
