@@ -2,197 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819B936874F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EB736874C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239047AbhDVTig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:38:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40487 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239025AbhDVTif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:38:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619120279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=biOoOdkcB54+0RggxGqfQD/QFH+RgEKqiVLmKbv8Qt8=;
-        b=Pu09vGheXqQfCSTMH110QUwahN1ua1wGZwpuVPE9YPn+BbXO9jBdXjYJVP1zgGugDgD+lE
-        wSmkNEXwgxx/CO5HvD0A65fIKTF9ZGLJzYylwKBn6elpfQUiiYfAlcYNWvJzXFfohOijL+
-        4YRxcCUyFjqUpTiW4rivQDXqeFtXxkU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-Jm4NmWn3NMmQ8koJLzBOpw-1; Thu, 22 Apr 2021 15:37:56 -0400
-X-MC-Unique: Jm4NmWn3NMmQ8koJLzBOpw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30D138542C1;
-        Thu, 22 Apr 2021 19:37:53 +0000 (UTC)
-Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D5A360BE5;
-        Thu, 22 Apr 2021 19:37:47 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 13:37:47 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210422133747.23322269@redhat.com>
-In-Reply-To: <20210422175715.GA1370958@nvidia.com>
-References: <20210415230732.GG1370958@nvidia.com>
-        <20210416061258.325e762e@jacob-builder>
-        <20210416094547.1774e1a3@redhat.com>
-        <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210421162307.GM1370958@nvidia.com>
-        <20210421105451.56d3670a@redhat.com>
-        <20210421175203.GN1370958@nvidia.com>
-        <20210421133312.15307c44@redhat.com>
-        <20210421230301.GP1370958@nvidia.com>
-        <20210422111337.6ac3624d@redhat.com>
-        <20210422175715.GA1370958@nvidia.com>
+        id S238914AbhDVTic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:38:32 -0400
+Received: from mga03.intel.com ([134.134.136.65]:6642 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236822AbhDVTi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 15:38:29 -0400
+IronPort-SDR: xjDO0wzpRUaWC/crHF8HY8eAIj8tP5AXhhkfDcAWDzXMY4YtU5MBFSJ8I3QCep1gYVKVBE5NE7
+ usnTnmKe249w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="196018172"
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="196018172"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 12:37:53 -0700
+IronPort-SDR: c084a3DwTxrd4cRFs5MEbk1VHCCWVji+chDoc69xyO4Y/b1Wwf3c2Wb487mDuDslhrMnXIZ/K5
+ iLndgJcnenjA==
+X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
+   d="scan'208";a="384875596"
+Received: from anashraf-mobl.amr.corp.intel.com (HELO [10.213.177.111]) ([10.213.177.111])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 12:37:51 -0700
+Subject: Re: [PATCH 1/3] ACPICA: ACPI 6.4: MADT: add Multiprocessor Wakeup
+ Mailbox Structure
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+References: <20210422192442.706906-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210422192442.706906-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <98a81d5c-251b-bdb1-f5e4-5925de93f0d7@intel.com>
+Date:   Thu, 22 Apr 2021 12:37:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210422192442.706906-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 14:57:15 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > The security rule for isolation is that once a device is attached to a
-> > > /dev/ioasid fd then all other devices in that security group must be
-> > > attached to the same ioasid FD or left unused.  
-> > 
-> > Sounds like a group...  Note also that if those other devices are not
-> > isolated from the user's device, the user could manipulate "unused"
-> > devices via DMA.  So even unused devices should be within the same
-> > IOMMU context... thus attaching groups to IOMMU domains.  
+On 4/22/21 12:24 PM, Kuppuswamy Sathyanarayanan wrote:
+> ACPICA commit f1ee04207a212f6c519441e7e25397649ebc4cea
 > 
-> That is a very interesting point. So, say, in the classic PCI bus
-> world if I have a NIC and HD on my PCI bus and both are in the group,
-> I assign the NIC to a /dev/ioasid & VFIO then it is possible to use
-> the NIC to access the HD via DMA
+> Add Multiprocessor Wakeup Mailbox Structure definition. It is useful
+> in parsing MADT Wake table.
 > 
-> And here you want a more explicit statement that the HD is at risk by
-> using the NIC?
+> Link: https://github.com/acpica/acpica/commit/f1ee0420
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Bob Moore <robert.moore@intel.com>
+> Signed-off-by: Erik Kaneda <erik.kaneda@intel.com>
 
-If by "classic" you mean conventional PCI bus, then this is much worse
-than simply "at risk".  The IOMMU cannot differentiate devices behind a
-PCIe-to-PCI bridge, so the moment you turn on the IOMMU context for the
-NIC, the address space for your HBA is pulled out from under it.  In
-the vfio world, the NIC and HBA are grouped and managed together, the
-user cannot change the IOMMU context of a group unless all of the
-devices in the group are "viable", ie. they are released from any host
-drivers.
-
-> Honestly, I'm not sure the current group FD is actually showing that
-> very strongly - though I get the point it is modeled in the sysfs and
-> kind of implicit in the API - we evolved things in a way where most
-> actual applications are taking in a PCI BDF from the user, not a group
-> reference. So the actual security impact seems lost on the user.
-
-vfio users are extremely aware of grouping, they understand the model,
-if not always the reason for the grouping.  You only need to look at
-r/VFIO to find various lsgroup scripts and kernel patches to manipulate
-grouping.  The visibility to the user is valuable imo.
-
-> Along my sketch if we have:
-> 
->    ioctl(vifo_device_fd, JOIN_IOASID_FD, ioasifd)
->    [..]
->    ioctl(vfio_device, ATTACH_IOASID, gpa_ioasid_id) == ENOPERM
-> 
-> I would feel comfortable if the ATTACH_IOASID fails by default if all
-> devices in the group have not been joined to the same ioasidfd.
-
-And without a group representation to userspace, how would a user know
-to resolve that?
-
-> So in the NIC&HD example the application would need to do:
-> 
->    ioasid_fd = open("/dev/ioasid");
->    nic_device_fd = open("/dev/vfio/device0")
->    hd_device_fd = open("/dev/vfio/device1")
->    
->    ioctl(nic_device_fd, JOIN_IOASID_FD, ioasifd)
->    ioctl(hd_device_fd, JOIN_IOASID_FD, ioasifd)
->    [..]
->    ioctl(nice_device, ATTACH_IOASID, gpa_ioasid_id) == SUCCESS
-> 
-> Now the security relation is forced by the kernel to be very explicit.
-
-But not discoverable to the user.
-
-> However to keep current semantics, I'd suggest a flag on
-> JOIN_IOASID_FD called "IOASID_IMPLICIT_GROUP" which has the effect of
-> allowing the ATTACH_IOASID to succeed without the user having to
-> explicitly join all the group devices. This is analogous to the world
-> we have today of opening the VFIO group FD but only instantiating one
-> device FD.
-> 
-> In effect the ioasid FD becomes the group and the numbered IOASID's
-> inside the FD become the /dev/vfio/vfio objects - we don't end up with
-> fewer objects in the system, they just have different uAPI
-> presentations.
-> 
-> I'd envision applications like DPDK that are BDF centric to use the
-> first API with some '--allow-insecure-vfio' flag to switch on the
-> IOASID_IMPLICIT_GROUP. Maybe good applications would also print:
->   "Danger Will Robinson these PCI BDFs [...] are also at risk"
-> When the switch is used by parsing the sysfs
-
-So the group still exist in sysfs, they just don't have vfio
-representations?  An implicit grouping does what, automatically unbind
-the devices, so an admin gives a user access to the NIC but their HBA
-device disappears because they were implicitly linked?  That's why vfio
-basis ownership on the group, if a user owns the group but the group is
-not viable because a device is still bound to another kernel driver,
-the use can't do anything.  Implicitly snarfing up subtly affected
-devices is bad.
-
-> > > Thus /dev/ioasid also becomes the unit of security and the IOMMU
-> > > subsystem level becomes aware of and enforces the group security
-> > > rules. Userspace does not need to "see" the group  
-> > 
-> > What tools does userspace have to understand isolation of individual
-> > devices without groups?  
-> 
-> I think we can continue to show all of this group information in sysfs
-> files, it just doesn't require application code to open a group FD.
-> 
-> This becomes relavent the more I think about it - elmininating the
-> group and container FD uAPI by directly creating the device FD also
-> sidesteps questions about how to model these objects in a /dev/ioasid
-> only world. We simply don't have them at all so the answer is pretty
-> easy.
-
-I'm not sold.  Ideally each device would be fully isolated, then we
-could assume a 1:1 relation of group and device and collapse the model
-to work on devices.  We don't live in that world and I see a benefit to
-making that explicit in the uapi, even if that group fd might seem
-superfluous at times.  Thanks,
-
-Alex
+This SoB chain doesn't look right.  This is what it would have been if
+You sent it to Bob who sent it to Erik, who submitted it.
 
