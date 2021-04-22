@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5540E367744
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995AF367745
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbhDVCNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234548AbhDVCMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:12:35 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B171C06135C
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:12:01 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id z17-20020a0cf0110000b029019a84330150so14881030qvk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=CxobN34GNkA19G2Vph12+PTqHZch+dEzVbCgj+ROQB8=;
-        b=lAk04Jm/r7CGDxFvlXBFLbnmWqTdmHmbZY0IPLuHUWrY3GV+Lx9j5bfKpOYmLZD0DG
-         pHm7NOZxo7ybbsRm9on6Gt7VeXTKBWagFj2ASP4SNoIcwvON82Szdx/El/bF4oI+DTlD
-         CZpGxtyQLWOiZiMr6cbusboV02VQIFtsJ4GJRfe15UGx7/I0n3Cbzr3zauNvWXYkEj+Q
-         MmTkLzlyPS+A9OknS29sfT+7jChOCPec+gVZwNH7wQpqq07NUVqkb2C4ZGOXW5Ut1mYi
-         r13W8zAXvlOSue9UviJbdE/mztePapkakprwNeS2NdgkaYBTofxLbCUfL6AsTmDzmDX1
-         GzIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=CxobN34GNkA19G2Vph12+PTqHZch+dEzVbCgj+ROQB8=;
-        b=cOqSEgsjNeoVLFUqp/rrwHzHQ/jjhBZlVsCmXUWI4nDvi1ba1V8779xCf+g9Qv+jJS
-         qz69pSgsWwvs9+IJY62B7FTACaVLL9qQKjpoN+XigTFvL6zPdt16QzOYkutOjimgr8z2
-         frBHPHmIrnbPgqdbA5etrqjrOxcEwjBBfluIKiIhkdJs2UFean8RAfVI6/nhLoVDJgb4
-         YYedw4T93vuyYkqQUISpOBsigLnI+9viC8jh9T+Olj8HudHMfpggSphxlAraGzxL+Fli
-         Nu/jvnTSxbphfrKur2hAUZq7XNMdGhoKEQTjSGmeAceDtQCQZi6VARyk+tvjFsSM2gIf
-         JXVg==
-X-Gm-Message-State: AOAM530lMEhvk6gPF9c6DuaZpxd1ncAf08j4RNvB/TnVA4PBPAzhQUry
-        LcTv0cMUVOG6FOSfhb3bYSasZm8onJw=
-X-Google-Smtp-Source: ABdhPJyodOYiKyqtqbjR7u/XaYU4h4ztyCQswSqpqhstVtPxG4yFFXENRpREfEjIxnysbPpSa6qveEabSU0=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e012:374c:592:6194])
- (user=seanjc job=sendgmr) by 2002:a05:6214:12d3:: with SMTP id
- s19mr1171434qvv.26.1619057520374; Wed, 21 Apr 2021 19:12:00 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 21 Apr 2021 19:11:25 -0700
-In-Reply-To: <20210422021125.3417167-1-seanjc@google.com>
-Message-Id: <20210422021125.3417167-16-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210422021125.3417167-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v5 15/15] KVM: SVM: Skip SEV cache flush if no ASIDs have been used
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234357AbhDVCNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:13:49 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5900 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233995AbhDVCNl (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:13:41 -0400
+IronPort-SDR: wNA4ATyRRg6im9G731KfQR9JkZRUu2KtJAt49w+1Uyn2PRoalPTgCkjEDvRufQH5tlF9ylElmb
+ d/jKuKHFSwtg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="192624509"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="192624509"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 19:12:55 -0700
+IronPort-SDR: LlSu5dkz4GBFUscexfF7wvE8xtRcea8gJA2lkEviyLQMex/M4h+Olg97ml9uzpsSzO+58hUtMl
+ wQKu38Mi7BNQ==
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="463785805"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 19:12:52 -0700
+Subject: Re: [PATCH v4 14/25] perf stat: Add default hybrid events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210416140517.18206-1-yao.jin@linux.intel.com>
+ <20210416140517.18206-15-yao.jin@linux.intel.com> <YIBvGk7qZiqMHxkt@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <59ded117-6f3c-f11f-8fe3-6b0e8f68c823@linux.intel.com>
+Date:   Thu, 22 Apr 2021 10:12:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <YIBvGk7qZiqMHxkt@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Skip SEV's expensive WBINVD and DF_FLUSH if there are no SEV ASIDs
-waiting to be reclaimed, e.g. if SEV was never used.  This "fixes" an
-issue where the DF_FLUSH fails during hardware teardown if the original
-SEV_INIT failed.  Ideally, SEV wouldn't be marked as enabled in KVM if
-SEV_INIT fails, but that's a problem for another day.
+Hi Jiri,
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/sev.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+On 4/22/2021 2:29 AM, Jiri Olsa wrote:
+> On Fri, Apr 16, 2021 at 10:05:06PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>> index 1255af4751c2..0351b99d17a7 100644
+>> --- a/tools/perf/builtin-stat.c
+>> +++ b/tools/perf/builtin-stat.c
+>> @@ -1145,6 +1145,13 @@ static int parse_stat_cgroups(const struct option *opt,
+>>   	return parse_cgroups(opt, str, unset);
+>>   }
+>>   
+>> +static int add_default_hybrid_events(struct evlist *evlist)
+>> +{
+>> +	struct parse_events_error err;
+>> +
+>> +	return parse_events(evlist, "cycles,instructions,branches,branch-misses", &err);
+>> +}
+>> +
+>>   static struct option stat_options[] = {
+>>   	OPT_BOOLEAN('T', "transaction", &transaction_run,
+>>   		    "hardware transaction statistics"),
+>> @@ -1626,6 +1633,12 @@ static int add_default_attributes(void)
+>>     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_INSTRUCTIONS	},
+>>     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_MISSES		},
+>>   
+>> +};
+>> +	struct perf_event_attr default_sw_attrs[] = {
+>> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_TASK_CLOCK		},
+>> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CONTEXT_SWITCHES	},
+>> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CPU_MIGRATIONS		},
+>> +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_PAGE_FAULTS		},
+> 
+> hum, why not use default_attrs0, it's the same, no?
+> 
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 5cdfea8b1c47..d65193a4ea17 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -58,9 +58,14 @@ struct enc_region {
- 	unsigned long size;
- };
- 
--static int sev_flush_asids(void)
-+static int sev_flush_asids(int min_asid, int max_asid)
- {
--	int ret, error = 0;
-+	int ret, pos, error = 0;
-+
-+	/* Check if there are any ASIDs to reclaim before performing a flush */
-+	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
-+	if (pos >= max_asid)
-+		return -EBUSY;
- 
- 	/*
- 	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
-@@ -87,14 +92,7 @@ static inline bool is_mirroring_enc_context(struct kvm *kvm)
- /* Must be called with the sev_bitmap_lock held */
- static bool __sev_recycle_asids(int min_asid, int max_asid)
- {
--	int pos;
--
--	/* Check if there are any ASIDs to reclaim before performing a flush */
--	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
--	if (pos >= max_asid)
--		return false;
--
--	if (sev_flush_asids())
-+	if (sev_flush_asids(min_asid, max_asid))
- 		return false;
- 
- 	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
-@@ -1846,10 +1844,11 @@ void sev_hardware_teardown(void)
- 	if (!sev_enabled)
- 		return;
- 
-+	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
-+	sev_flush_asids(0, max_sev_asid);
-+
- 	bitmap_free(sev_asid_bitmap);
- 	bitmap_free(sev_reclaim_asid_bitmap);
--
--	sev_flush_asids();
- }
- 
- int sev_cpu_init(struct svm_cpu_data *sd)
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+The default_attrs0 has one more item " {.type = PERF_TYPE_HARDWARE, .config = 
+PERF_COUNT_HW_CPU_CYCLES },"
 
+So I have to only pick out the sw attrs and save them to default_sw_attrs.
+
+>>   };
+>>   
+>>   /*
+>> @@ -1863,6 +1876,14 @@ static int add_default_attributes(void)
+>>   	}
+>>   
+>>   	if (!evsel_list->core.nr_entries) {
+>> +		if (perf_pmu__has_hybrid()) {
+>> +			if (evlist__add_default_attrs(evsel_list,
+>> +						      default_sw_attrs) < 0) {
+>> +				return -1;
+>> +			}
+>> +			return add_default_hybrid_events(evsel_list);
+> 
+> please do it the same way like when topdown calls parse events,
+> we don't need to check for cycles, but please check result and
+> display the error
+> 
+
+Something like this?
+
+err = parse_events(evsel_list, "cycles,instructions,branches,branch-misses", &errinfo);
+if (err) {
+	fprintf(stderr,...);
+	parse_events_print_error(&errinfo, ...);
+	return -1;
+}
+
+> 
+>> +		}
+>> +
+>>   		if (target__has_cpu(&target))
+>>   			default_attrs0[0].config = PERF_COUNT_SW_CPU_CLOCK;
+> 
+> also you still want this change for hybrid pmus as well
+> 
+
+Yes, the default_sw_attr only uses 'PERF_COUNT_SW_TASK_CLOCK', we do need to change it to 
+PERF_COUNT_SW_CPU_CLOCK for system wide.
+
+> thanks,
+> jirka
+>
+
+Thanks
+Jin Yao
+
+>>   
+>> -- 
+>> 2.17.1
+>>
+> 
