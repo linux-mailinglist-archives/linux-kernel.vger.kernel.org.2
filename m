@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D34436825A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5075936825B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbhDVOVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S237399AbhDVOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236496AbhDVOU7 (ORCPT
+        with ESMTP id S237148AbhDVOU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Apr 2021 10:20:59 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4960C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:20:20 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id l9so2206471ilh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:20:20 -0700 (PDT)
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05DBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:20:23 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id c6so33927457qtc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:20:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WrJWKg8qXVKHqftlCgBjaSL6VbGyPelbV07Irtnhz3E=;
-        b=PCWwmxGZfVK0z3Ug+FWfoNd2U+c4S+UYgxKsD0KK3dTdpSGJEGkbB+E9NbscwSjo/3
-         2hzCpqnRXJDxpVWHipELFDknyxGNDrrf3V3fMhViaW8DreVLZYzhEiQJv2ODcj4xIcwk
-         MPhdeBbrZWxbj1JgVMVbT0FwXKEovnTKZvtqfIgkytBE7HPXsmArPC+J7DAmcUrVyiUQ
-         Y9MRkwVjGJKQ6PAq5FrRL0twGF521XkoMM2SxlGMuoYSLXRf5JNPcMu1ZIedj5szN7DB
-         NfIAVANcU5q/VuiGla0es/kmuTzjggNf2ZIRUrwdOU9rPUxd+ftEYb0O/wNJbm7M2Z+S
-         eBdg==
+        bh=ApfMOAte0C127jwHR+Rs3V/gkRXkrllStqF0YgW+bds=;
+        b=ewY3djZ7Yj9TRMXNThQvj1l8pcIa8qQSIZTdlgvtCYYmQMYwuJpPRVrXcw4c/2F54W
+         9otM/uMBOgbFqcfWq9+6pTEqgxxxZ2StRn/K+jZ3876ajMuksrS3enO0Y/4XigyrgMoB
+         y33e0ZHIWx4VmhHALFLfutQ4ifhzivpbv0iJtwO/1YCDQiAo/geAMcCMIoJkoB4zv5ay
+         3jS0xI5jY8Wes+SrQy9LWs51KxU7pNLLuCPc0Tck1ogCqG7mC4+Ch9x05YQKAn8Qo5IB
+         GVw8aCIiBnIbnrX7FvGcVnvci6Tq2lVB95eAjUOsZtv/x6yC7rFUUq3GDK/60+TZ4uHb
+         R8Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WrJWKg8qXVKHqftlCgBjaSL6VbGyPelbV07Irtnhz3E=;
-        b=FvW8kBpWVhb1SRFR3waBIvOtezEwVaqEeyVhzlf5YsTf9Rd61GAaOjnougRsawcT/j
-         +DL6Noc03roctp/MJcdIPJuqikoyG3d5Zim4vsQ0fXaNQHoEHON6qFY1NEXK7afh6njd
-         0FYFoVk4qHcgUqDGYxzdyb/r+OmaXSpeMORpzjiIPJZjcgl/gSTyWroI5z30BvWNcbL+
-         k12xj6SGOvLUZZzsBdKDTrTrCteB2FJRAuEng6T+icxze4aDRoE52pPU1ewup0WEBPdW
-         xEOodEg/T/+53WtXHFe8mseckZa8ObvqYykeqe7uiuJxmBFqrHjLoj015iVicLc3k+aD
-         IDUg==
-X-Gm-Message-State: AOAM531HzeYfHFW58w06cX7QZSXXkYPkK6p+YAMOvgRef/lX0BS4ZwmC
-        FSDjQMAVbnx5Fz09Q0g8dZAtuUbOtYPQZyix/N5s9w==
-X-Google-Smtp-Source: ABdhPJxbJaGqsMcVkUPZlR5G96zrmkfSg98YCugoJp2SR7YhsYZ7p2eqSFr3YJtw/Va5rrk31Oyfo74tjvpiOuEwABs=
-X-Received: by 2002:a92:d09:: with SMTP id 9mr2924207iln.229.1619101219892;
- Thu, 22 Apr 2021 07:20:19 -0700 (PDT)
+        bh=ApfMOAte0C127jwHR+Rs3V/gkRXkrllStqF0YgW+bds=;
+        b=g1vHYjGUfxg2YpNgdR4M2wMRYwS44OCmWb6QQCjQupauJGaZ+gOAIGqv5dJxZdraW7
+         kpKxoQcp8YPAo1GWlnsfdDjPiTvttGhkbNp0oQa1KXeprXM8lxzeq5SVEqJwurI7vFiY
+         c5fBUVNFn9G8FOjt++sA6QIH4kPyV3JkqKSW7XKwDX02RKgcJLRjm5tDceLbtcc4HMRX
+         HqSsEQSyZ48SFAtHwLkymWfrBgMQUbNT1CNdCoHQHEQScA7wdFjjDrJB3tFkar0NUTJl
+         t0gDfvbHOTVwlRhOeb1j+jbna4GWY61GXwD7nbfh7yDLGbDR7Xa5Mq5wmMOXCHnNe0nT
+         ZYrA==
+X-Gm-Message-State: AOAM530orvmxr2Z9AE8vxoFiXCTXftew9xQHNZUP2Al4hEZ5PVyB9Yrg
+        KIR/FpQTQIaVqupje+sdDqtcUdOFbWByOvZFAUw7AKJ2kCnlPQ==
+X-Google-Smtp-Source: ABdhPJzA2yNa5ia2nyaegY1JUCPWCSgm77x71L2cMONiFDl2MZ0YNIOrbO9kKiEJrfQhLlmDqophIt5kPGXScZMy+NY=
+X-Received: by 2002:a05:622a:5d0:: with SMTP id d16mr3357947qtb.290.1619101222962;
+ Thu, 22 Apr 2021 07:20:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAKD1Yr2qeXseNLcQ9r4niob02jGOXdVeta6OwWF3Ta1dyp1V2Q@mail.gmail.com>
- <87v98fxjtm.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87v98fxjtm.ffs@nanos.tec.linutronix.de>
-From:   Lorenzo Colitti <lorenzo@google.com>
-Date:   Thu, 22 Apr 2021 23:20:07 +0900
-Message-ID: <CAKD1Yr1u-UsP6s_4TX4HLTgHgYOrkqOajHr4vm6-rhhvFJsfyA@mail.gmail.com>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Will Deacon <will@kernel.org>
+References: <000000000000301a4d05bfe14b8f@google.com> <CACT4Y+ZT2m7t+o9=VYCE32U_1aUVJXRp_5KgJSdEZC1YXy=qgA@mail.gmail.com>
+ <CA+fCnZcWEuYeOx6-0LY+cqtGVbMx2OiyhEELErdfwaHGcUWHbQ@mail.gmail.com>
+ <b8162e95-fb2e-51f6-9d9b-a4d64873876e@i-love.sakura.ne.jp> <abcb019f-a78a-3c6d-e199-719176a394d6@i-love.sakura.ne.jp>
+In-Reply-To: <abcb019f-a78a-3c6d-e199-719176a394d6@i-love.sakura.ne.jp>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 22 Apr 2021 16:20:11 +0200
+Message-ID: <CACT4Y+ZvidVY5R4XqqW=b_j1Lbe2DnoKM2bPLgB4mS-CW10g1w@mail.gmail.com>
+Subject: Re: [syzbot] unexpected kernel reboot (4)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        syzbot <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 9:08 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> Just for comparison. In a VM I'm experimenting with right now the
-> reprogramming time is ~500ns which is still a lot of cycles, but
-> compared to 5us faster by an order of magnitude. And on the sane
-> machine bare metal its way faster and therefore less noticeable.
-
-FWIW, on this hardware, frtrace says that arming the arm64 architected
-timer takes 0.7us. Definitely better than 2-3us, but still not free.
-This is not a high-end desktop or server, but it's also not super
-slow, low-power hardware.
-
->  * The transmit should only be run if no skb data has been sent for a
->  * certain duration.
+On Thu, Apr 22, 2021 at 12:16 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
 >
-> which is useless word salad.
+> On 2021/04/15 1:16, Tetsuo Handa wrote:
+> > On 2021/04/15 0:39, Andrey Konovalov wrote:
+> >> On Wed, Apr 14, 2021 at 7:45 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >>>
+> >>> On Tue, Apr 13, 2021 at 11:27 PM syzbot
+> >>> <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com> wrote:
+> >>>>
+> >>>> Hello,
+> >>>>
+> >>>> syzbot found the following issue on:
+> >>>>
+> >>>> HEAD commit:    89698bec Merge tag 'm68knommu-for-v5.12-rc7' of git://git...
+> >>>> git tree:       upstream
+> >>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1243fcfed00000
+> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b234ddbbe2953747
+> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=9ce030d4c89856b27619
+> >>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173e92fed00000
+> >>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1735da2ed00000
+> >>>>
+> >>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >>>> Reported-by: syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com
+> >>>>
+> >>>> output_len: 0x000000000e74eb68
+> >>>> kernel_total_size: 0x000000000f226000
+> >>>> needed_size: 0x000000000f400000
+> >>>> trampoline_32bit: 0x000000000009d000
+> >>>> Decompressing Linux... Parsing ELF... done.
+> >>>> Booting the kernel.
+> >>>
+> >>> +linux-input
+> >>>
+> >>> The reproducer connects some USB HID device and communicates with the driver.
+> >>> Previously we observed reboots because HID devices can trigger reboot
+> >>> SYSRQ, but we disable it with "CONFIG_MAGIC_SYSRQ is not set".
+> >>> How else can a USB device reboot the machine? Is it possible to disable it?
+> >>> I don't see any direct includes of <linux/reboot.h> in drivers/usb/*
+> >>
+> >> This happens when a keyboard sends the Ctrl+Alt+Del sequence, see
+> >> fn_boot_it()->ctrl_alt_del() in drivers/tty/vt/keyboard.c.
+>
+> Hmm, maybe the reproducer I use and "#syz test:" uses differs.
+> But since "#syz test:" did not trigger the problem if
+> https://syzkaller.appspot.com/x/patch.diff?x=14ba0851d00000 is applied,
+> can we add
+>
+>         if (fork() == 0) {
+>                 char buf[20] = { };
+>                 int fd = open("/proc/sys/kernel/ctrl-alt-del", O_WRONLY);
+>                 write(fd, "0\n", 2);
+>                 close(fd);
+>                 fd = open("/proc/sys/kernel/cad_pid", O_WRONLY);
+>                 snprintf(buf, sizeof(buf) - 1, "%d\n", getpid());
+>                 write(fd, buf, strlen(buf));
+>                 close(fd);
+>         }
+>
+> to the common setup function? This will serve as a temporary workaround
+> until Linus accepts disable-specific-functionality changes.
+>
+> There is no need to keep the process referenced by /proc/sys/kernel/cad_pid alive,
+> for "struct pid" which can remain after the process terminates is saved there.
 
-You're the one who wrote that comment - see b1a31a5f5f27. You'll
-forgive me for being amused. :-)
+I've prepared this syzkaller change:
+https://github.com/google/syzkaller/pull/2550/files
 
-Thanks for the history/analysis/suggestions. I think it's a fact that
-this is a regression in performance: this particular code has
-performed well for a couple of years now. The fact that the good
-performance only existed due to a correctness bug in the hrtimer code
-definitely does make it harder to argue that the regression should be
-reverted.
-
-That said: if you have a fix for the double reprogram, then that fix
-should probably be applied? 0.5us is not free, and even if hrtimers
-aren't designed for frequent updates, touching the hardware twice as
-often does seem like a bad idea, since, as you point out, there's a
-*lot* of hardware that is slow.
-
-Separately, we're also going to look at making ncm better. (In defense
-of the original author, in 2014 I don't think anyone would even have
-dreamed of USB being fast enough for this to be a problem.) The first
-thing we're going to try to do is set the timer once per NTB instead
-of once per packet (so, 10x less). My initial attempt to do that
-causes the link to die after a while and I need to figure out why
-before I can send a patch up. I'm suspicious of the threading, which
-uses non-atomic variables (timer_force_tx, ncm->skb_tx_data) to
-synchronize control flow between the timer and the transmit function,
-which can presumably run on different CPUs. That seems wrong since
-either core could observe stale variables. But perhaps there are
-memory barriers that I'm not aware of.
-
-The idea of getting rid of the timer by doing aggregation based on
-transmit queue lengths seems like a much larger effort, but probably
-one that is required to actually improve performance substantially
-beyond what it is now.
+Re hibernation/suspend configs, you said disabling them is not
+helping, right? Does it still make sense to disable them?
+If these configs are enabled, we can at least find some bugs in the
+preparation for suspend code. However, as you noted, it will
+immediately lead to "lost connection".
+Ideally we somehow tweak hibernation/suspend to get to the
+hibernation/suspend point and then immediately and automatically
+resume. This way we could test both suspend and unsuspend code, which
+I assume can lead to bugs, and don't cause "lost connection" at the
+same time. I guess such a mode does not exist today... and I am not
+sure what happens with TCP connections after this.
