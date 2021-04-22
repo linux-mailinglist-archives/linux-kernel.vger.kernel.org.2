@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0F2367753
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0721B367754
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbhDVCWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
+        id S234184AbhDVCWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233990AbhDVCWG (ORCPT
+        with ESMTP id S234131AbhDVCWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:22:06 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82755C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:31 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id o187-20020a2528c40000b02904e567b4bf7eso18267930ybo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:31 -0700 (PDT)
+        Wed, 21 Apr 2021 22:22:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB569C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:33 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d89-20020a25a3620000b02904dc8d0450c6so18079100ybi.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 19:21:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=rT4lxch1DR2GkeTff1L00Dgn8Fdap0zTJCYmiCzUm04=;
-        b=cbcIiOk5g9BZdG2KVvbh+6RjHbqX9y7SeN0xmJONeDTbp0AU4mgpeZXGGc9onqiH7j
-         ALVukuNejcJXSE9ZZsuEOXPMZ99xqJmbGkeb6NBt2OgJLu/kFxOGfJ9EfvIR7xrzNpTV
-         aRubpMvyxW/RM1OS8WQKQgW4Ml+sha1KWodw1oDc3xgxIPvCvoWqZMPkQPuUkNslnPAk
-         3C5iA+ki2W8awuG+lwnOa+tAEh4ZaK31XnNSZ5fthc/NNQ5S7IA3gGMNJGZwcMr+bIDR
-         qb1U+4AF2f4X1HhS5v1oIv297Mf+ap3KPVfwObzRWk/ioW+d+Njju3yiAO1qw1nisDRV
-         iB/Q==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=mOGXDXzhpmjx3GQXAE3F8jbPyKEywOEsLX4Y9QabnGA=;
+        b=GU+uTAsFDPr0l/vq7k1GGUfFG0HY63xcX5Yc3k+1WVkUkhlV2oO5V1JwVX8bEE0aBS
+         mQndo+u+3ZaNchbjRiiF39LSRsv0my7vXosl7viM9rYXMSXfOZQBFzSd3S1x2aSDNnRK
+         IUv6ZDjZxwHZNRNH0rGz3IxcW/JQrdgrhrZUz0mfN47Jzwfd6t/AiR9LR+X3E+JPRVl9
+         h2oNFcwWD3p7tlB12ls6LLJ9kL24gUvlbuml5QTtbdoqKnhK0O1mRRWb8RB33UiQaKSu
+         BLV7RQhh19lOJwYLvKPpQv8TtmI4DDzoXyP8uUx7OnBZu/K22M+Dyk6WMgyaFdgYtyZa
+         XGyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=rT4lxch1DR2GkeTff1L00Dgn8Fdap0zTJCYmiCzUm04=;
-        b=KuXf9S6yzWK1Ya2ZJ6XgqqxK7zb5yYSv6/Kg/ybQj2dVfcOPDDG9Rh6P8qf9/HWU4b
-         LBu/IzmTGKnnezj6jsP9iwwbIFhTK1TVckA3YWPQSb8Lw8DI8EEZ7FgLHi8odzbsPnxa
-         utT7KvOEGPq6M8ecDdtR3hqsMXQpf+CUR48RMuLGZKuAvJ6wOILhZncO6IZ54+8WgV93
-         jlx/E+C14+ikf4s5HBvdbzFiBVZgocBHQn+shsto0tWLXktKb3BK6uci27v/54OPyZ3m
-         digrlFAvPWReMzN19nWrAawzrXHoi8D3/cjA3hJX8rTU05qqHMwnz/rT0F0aVh34ozpm
-         WtUA==
-X-Gm-Message-State: AOAM531MSeE/jhSPpyGL9r2EeKqbBipBoHuYyKUSEFDfyMjBRq9xXRie
-        XDhEka4WDvOY+STyaIwn671mhOgWqSM=
-X-Google-Smtp-Source: ABdhPJwPERXJ8ChGU08WyQVlfjTE3keyNalrjLGd3NiD+Dg08UYAQFyjxuxKTcJElOjwYxuZY+YCeKBIh/4=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=mOGXDXzhpmjx3GQXAE3F8jbPyKEywOEsLX4Y9QabnGA=;
+        b=m23dMdjugDN1gWdYhoJueB83+wEDg/XC/aqm23wvl9FfKqtoSp+EFckNSrB9cm/Bvi
+         5rRdrdHUBce1UanwB3uH2iwVMjJuIysBOdnp5w/sJvm+JZRAlpueP5qW/x/Lhn+iySkI
+         ucsLqBgIgqfuzj7PKztg8kTUOaUlXsgXjKZrZWlAquG3KVESLVVg+Etgu4Y9kAUkrWcz
+         lExmLhw91eJigR4/2ebpdn+ukycpiW+xxrxlrkFkV8+hnp801ucqzzRf7j+okaQkp0wb
+         OMN9dHUHGPZHCCmecKmfkO7GsMHShTDLxj0iOrO2xOlOapMTui3P7ractdEjudTEt0HH
+         9pPw==
+X-Gm-Message-State: AOAM532JSwPAKDF6v62n3RBANFg7FLR+dvWQbA7yz8igGmM/+ixseyHB
+        Yh0PItHzLmDXloOPo4p1zRAEUrd6CWk=
+X-Google-Smtp-Source: ABdhPJzk1VEX5RsnrgizC3w7WKpIWyjE7FzekhwM/pl5AX/kpTpBb+6bgSoManqeL0KyEcHO4He2vZribeE=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e012:374c:592:6194])
- (user=seanjc job=sendgmr) by 2002:a25:b098:: with SMTP id f24mr1441373ybj.210.1619058090787;
- Wed, 21 Apr 2021 19:21:30 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:e04b:: with SMTP id x72mr1418298ybg.337.1619058092969;
+ Wed, 21 Apr 2021 19:21:32 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 21 Apr 2021 19:21:19 -0700
-Message-Id: <20210422022128.3464144-1-seanjc@google.com>
+Date:   Wed, 21 Apr 2021 19:21:20 -0700
+In-Reply-To: <20210422022128.3464144-1-seanjc@google.com>
+Message-Id: <20210422022128.3464144-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210422022128.3464144-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v2 0/9] KVM: x86: Fixes for (benign?) truncation bugs
+Subject: [PATCH v2 1/9] KVM: x86: Remove emulator's broken checks on
+ CR0/CR3/CR4 loads
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -65,57 +69,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patches 01 and 02 fix theoretical bugs related to loading CRs through
-the emulator.  The rest of the patches are a bunch of small fixes for
-cases where KVM reads/writes a 64-bit register outside of 64-bit mode.
+Remove the emulator's checks for illegal CR0, CR3, and CR4 values, as
+the checks are redundant, outdated, and in the case of SEV's C-bit,
+broken.  The emulator manually calculates MAXPHYADDR from CPUID and
+neglects to mask off the C-bit.  For all other checks, kvm_set_cr*() are
+a superset of the emulator checks, e.g. see CR4.LA57.
 
-I stumbled on this when puzzling over commit 0107973a80ad ("KVM: x86:
-Introduce cr3_lm_rsvd_bits in kvm_vcpu_arch"), which stated that SEV
-guests failed to boot on PCID-enabled hosts.  Why only PCID hosts?
+Fixes: a780a3ea6282 ("KVM: X86: Fix reserved bits check for MOV to CR3")
+Cc: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/emulate.c | 68 +-----------------------------------------
+ 1 file changed, 1 insertion(+), 67 deletions(-)
 
-After much staring, I realized that the initial CR3 load in
-rsm_enter_protected_mode() would skip the MAXPHYADDR check due to the
-vCPU not being in long mode.  But due to the ordering problems with
-PCID, when PCID is enabled in the guest, the second load of CR3 would
-be done with long mode enabled and thus hit the SEV C-bit bug.
-
-Changing kvm_set_cr3() made me look at the callers, and seeing that
-SVM didn't properly truncate the value made me look at everything else,
-and here we are.
-
-Note, I strongly suspect the emulator still has bugs.  But, unless the
-guest is deliberately trying to hit these types of bugs, even the ones
-fixed here, they're likely benign.  I figured I was more likely to break
-something than I was to fix something by diving into the emulator, so I
-left it alone.  For now. :-)
-
-v2: Rebase to kvm/queue, commit 89a22e37c8c2 ("KVM: avoid "deadlock"
-    between install_new_memslots and MMU notifier")
-
-v1: https://lkml.kernel.org/r/20210213010518.1682691-1-seanjc@google.com
-
-Sean Christopherson (9):
-  KVM: x86: Remove emulator's broken checks on CR0/CR3/CR4 loads
-  KVM: x86: Check CR3 GPA for validity regardless of vCPU mode
-  KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
-  KVM: VMX: Truncate GPR value for DR and CR reads in !64-bit mode
-  KVM: nVMX: Truncate bits 63:32 of VMCS field on nested check in
-    !64-bit
-  KVM: nVMX: Truncate base/index GPR value on address calc in !64-bit
-  KVM: x86/xen: Drop RAX[63:32] when processing hypercall
-  KVM: SVM: Use default rAX size for INVLPGA emulation
-  KVM: x86: Rename GPR accessors to make mode-aware variants the
-    defaults
-
- arch/x86/kvm/emulate.c        | 68 +----------------------------------
- arch/x86/kvm/kvm_cache_regs.h | 19 ++++++----
- arch/x86/kvm/svm/svm.c        | 12 +++++--
- arch/x86/kvm/vmx/nested.c     | 14 ++++----
- arch/x86/kvm/vmx/vmx.c        |  6 ++--
- arch/x86/kvm/x86.c            | 19 ++++++----
- arch/x86/kvm/x86.h            |  8 ++---
- 7 files changed, 48 insertions(+), 98 deletions(-)
-
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index f7970ba6219f..f4273b8e31fa 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -4230,75 +4230,9 @@ static int check_cr_read(struct x86_emulate_ctxt *ctxt)
+ 
+ static int check_cr_write(struct x86_emulate_ctxt *ctxt)
+ {
+-	u64 new_val = ctxt->src.val64;
+-	int cr = ctxt->modrm_reg;
+-	u64 efer = 0;
+-
+-	static u64 cr_reserved_bits[] = {
+-		0xffffffff00000000ULL,
+-		0, 0, 0, /* CR3 checked later */
+-		CR4_RESERVED_BITS,
+-		0, 0, 0,
+-		CR8_RESERVED_BITS,
+-	};
+-
+-	if (!valid_cr(cr))
++	if (!valid_cr(ctxt->modrm_reg))
+ 		return emulate_ud(ctxt);
+ 
+-	if (new_val & cr_reserved_bits[cr])
+-		return emulate_gp(ctxt, 0);
+-
+-	switch (cr) {
+-	case 0: {
+-		u64 cr4;
+-		if (((new_val & X86_CR0_PG) && !(new_val & X86_CR0_PE)) ||
+-		    ((new_val & X86_CR0_NW) && !(new_val & X86_CR0_CD)))
+-			return emulate_gp(ctxt, 0);
+-
+-		cr4 = ctxt->ops->get_cr(ctxt, 4);
+-		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
+-
+-		if ((new_val & X86_CR0_PG) && (efer & EFER_LME) &&
+-		    !(cr4 & X86_CR4_PAE))
+-			return emulate_gp(ctxt, 0);
+-
+-		break;
+-		}
+-	case 3: {
+-		u64 rsvd = 0;
+-
+-		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
+-		if (efer & EFER_LMA) {
+-			u64 maxphyaddr;
+-			u32 eax, ebx, ecx, edx;
+-
+-			eax = 0x80000008;
+-			ecx = 0;
+-			if (ctxt->ops->get_cpuid(ctxt, &eax, &ebx, &ecx,
+-						 &edx, true))
+-				maxphyaddr = eax & 0xff;
+-			else
+-				maxphyaddr = 36;
+-			rsvd = rsvd_bits(maxphyaddr, 63);
+-			if (ctxt->ops->get_cr(ctxt, 4) & X86_CR4_PCIDE)
+-				rsvd &= ~X86_CR3_PCID_NOFLUSH;
+-		}
+-
+-		if (new_val & rsvd)
+-			return emulate_gp(ctxt, 0);
+-
+-		break;
+-		}
+-	case 4: {
+-		ctxt->ops->get_msr(ctxt, MSR_EFER, &efer);
+-
+-		if ((efer & EFER_LMA) && !(new_val & X86_CR4_PAE))
+-			return emulate_gp(ctxt, 0);
+-
+-		break;
+-		}
+-	}
+-
+ 	return X86EMUL_CONTINUE;
+ }
+ 
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
