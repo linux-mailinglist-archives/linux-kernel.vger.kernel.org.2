@@ -2,121 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C30368555
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58AF368557
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238216AbhDVQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236660AbhDVQ5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:57:12 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51A4C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:56:37 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id q10so33247387pgj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UFzFQdhQTmHz4oQ6RfQH6JCaTrTMSe+EImX4uIUHN0E=;
-        b=hfMHlb2tAGDCpRp6rUYXum4xsxawk5eNNnqK1TYeijET5DpgcH8OASPwJJs60T9Z5N
-         U36ExbgMboXgJjUyEd3dq5YyXMtrcP5FYro0Jd21YD98kgg9rPymMQSxVcu8/63ijAvt
-         SP0ZUUzhoZfY3IpcbkA5tYVLJYPpuMhErt9yH3L8gwWItgxbBjHfy/zaHXkAeSDm32XQ
-         WQWg8L4IBpUZWqMYHi0pMkZR68EhaducU3c9g0bbnNr+y0RA3wDbsLil5NZq4yK0n1M5
-         o0JyqOHTikRZPcbtwcJ5vwp4yuIsoOo3DkQTHq4OEKU6+8tevPJQmQxANyQ6cCDp+qfa
-         Yhtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UFzFQdhQTmHz4oQ6RfQH6JCaTrTMSe+EImX4uIUHN0E=;
-        b=bfIDwRZ1Kuf99psXaJpIkysjzxovmnvV59l3Td3NqshCDw0yQ9Hc7oVWfjhhy2oQ/0
-         a6KhqJykPobtuYU5lna4v042LF6u7e9ZwXE94BGztO4k7Iy/OlT28X88YnNh5Ag3oky0
-         J0fSnC6FKU4fb69XwydGMCJhfp98jouiT29GYEexS03vlChg8tujaTnYjBQjTgESmGoL
-         V0vG9m+kzUjqud+omz3IdRIc5lVAhBUi+HBg+KkBapzr1McNGaRoSu1Z45TxMcz6mrBZ
-         toC3fzyYfQdQjH2HIxFM/fFmRFRDLpDSXXgerRqXbCeFfxJwkryZpMRM7I4Iwj0f2MZ2
-         Trpg==
-X-Gm-Message-State: AOAM533M3Bz8lEREM8Ii30S3Zeicx9D30trdPESGf0cClBFOMAdJbjDP
-        0q5BdueAiN2eItCGkgbOIah2EA==
-X-Google-Smtp-Source: ABdhPJzxbKxbKh/MjTGRzoDqVZhktXmS/i9dIyByKzAYVlIEO8VJzYPR/7OK8Sjx6LwUs25y/alAHQ==
-X-Received: by 2002:aa7:8608:0:b029:258:838a:23bb with SMTP id p8-20020aa786080000b0290258838a23bbmr4107118pfn.37.1619110597162;
-        Thu, 22 Apr 2021 09:56:37 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id u25sm2543788pgk.34.2021.04.22.09.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 09:56:36 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:56:34 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V5 0/8] remoteproc: imx_rproc: support i.MX7ULP/8MN/8MP
-Message-ID: <20210422165634.GD1256950@xps15>
-References: <1618971622-30539-1-git-send-email-peng.fan@oss.nxp.com>
+        id S236713AbhDVQ6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:58:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236058AbhDVQ6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 12:58:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A4961445;
+        Thu, 22 Apr 2021 16:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619110663;
+        bh=wYp6m2cid2L7a8QcEzSJ/G5GF3Io5Y/imXwpcni9DUk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DEwntaGatZvUkGJ2neEmn7SOk/zoKA3aQADZThJprL81U4hJT2gEstRiCxTauuSNI
+         mJtWl7vzazKqhKA1+CBFbVdkKU0xfLBH/zxylm5cShKBDaxmtCczaPp/GeSQleQgAL
+         /9DLCiQxJkrv70NTzS4okufandJIa+7zYenNerT72vJ1cxp+wDYcM2MsoocKwTvGQG
+         lN6MaHnWBVpk/Nh1sIu6NdsWCAP8rbnrkx6n1U8x5s1XD2BJez/yg1YfynqSZTXumz
+         hWgRuUjKh1el05Dx09W1M6G6sp0zvBG8Vou5+VU52j+fM/INUbcENq2Y2bbTWu3d1l
+         i28g53n+SxLig==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 39E285C010F; Thu, 22 Apr 2021 09:57:43 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 09:57:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        lkp@lists.01.org, lkp@intel.com
+Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
+ -14.4% regression
+Message-ID: <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210420064934.GE31773@xsang-OptiPlex-9020>
+ <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
+ <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
+ <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
+ <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
+ <20210422074126.GA85095@shbuild999.sh.intel.com>
+ <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1618971622-30539-1-git-send-email-peng.fan@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 10:20:14AM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Thu, Apr 22, 2021 at 07:24:54AM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
+> > Hi Paul,
+> > 
+> > On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
+> > > 
+> > > 
+> > > On 4/21/2021 9:42 PM, Paul E. McKenney wrote:
+> > > >On Wed, Apr 21, 2021 at 02:07:19PM +0800, Xing, Zhengjun wrote:
+> > > >>
+> > > >>On 4/20/2021 10:05 PM, Paul E. McKenney wrote:
+> > > >>>On Tue, Apr 20, 2021 at 06:43:31AM -0700, Paul E. McKenney wrote:
+> > > >>>>On Tue, Apr 20, 2021 at 02:49:34PM +0800, kernel test robot wrote:
+> > > >>>>>Greeting,
+> > > >>>>>
+> > > >>>>>FYI, we noticed a -14.4% regression of stress-ng.opcode.ops_per_sec due to commit:
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>commit: 6c52b5f3cfefd6e429efc4413fd25e3c394e959f ("clocksource: Reduce WATCHDOG_THRESHOLD")
+> > > >>>>>https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.13a
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>in testcase: stress-ng
+> > > >>>>>on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
+> > > >>>>>with following parameters:
+> > > >>>>>
+> > > >>>>>	nr_threads: 10%
+> > > >>>>>	disk: 1HDD
+> > > >>>>>	testtime: 60s
+> > > >>>>>	fs: ext4
+> > > >>>>>	class: os
+> > > >>>>>	test: opcode
+> > > >>>>>	cpufreq_governor: performance
+> > > >>>>>	ucode: 0x5003006
+> > > >>>>Hmmm...  I will try a less-aggressive reduction.  Thank you for testing!
+> > > >>>But wait...  This code is only running twice per second.  It is very
+> > > >>>hard to believe that a clock-read retry twice per second is worth 2% of
+> > > >>>performance, let alone 14.4%.
+> > > >>>
+> > > >>>Is something else perhaps going on here?
+> > > >>>
+> > > >>>For example, did this run enable any of the new diagnositic clocksource.*
+> > > >>>kernel parameters?
+> > > >>>
+> > > >>>								Thanx, Paul
+> > > >>I attached the kernel log, the following logs are related with the
+> > > >>clocksource.
+> > > >>[    3.453206] clocksource: timekeeping watchdog on CPU1: Marking
+> > > >>clocksource 'tsc-early' as unstable because the skew is too large:
+> > > >>[    3.455197] clocksource:                       'hpet' wd_now: 288fcc0
+> > > >>wd_last: 1a8b333 mask: ffffffff
+> > > >>[    3.455199] clocksource:                       'tsc-early' cs_now:
+> > > >>1def309ebfdee cs_last: 1def2bd70d92c mask: ffffffffffffffff
+> > > >>[    3.455201] clocksource:                       No current clocksource.
+> > > >>[    3.457197] tsc: Marking TSC unstable due to clocksource watchdog
+> > > >>
+> > > >>6c52b5f3cf reduced WATCHDOG_THRESHOLD, then in clocksource_watchdog, the
+> > > >>warning logs are print, the TSC is marked as unstable.
+> > > >>/* Check the deviation from the watchdog clocksource. */
+> > > >Aha, so this system really does have an unstable TSC!  Which means that
+> > > >the patch is operating as designed.
+> > > >
+> > > >Or are you saying that this is a false positive?
+> > > >
+> > > >							Thanx, Paul
+> > > 
+> > > It happened during boot and before TSC calibration
+> > > (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
+> > > > WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
+> > > After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
+> > > WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
+> > > WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
+> > > by more than 1% to be marked unstable.
 > 
-> V5:
->  Add R-b tag
->  Move the change in detect mode of patch 5 to patch 7 Per Mathieu's
->  comments
+> This is common code, so we do need an architecture-independent way to
+> handle this.
 > 
-> V4:
->  Typo fix
->  patch 4: take state as a check condition
->  patch 5: move regmap lookup/attach to imx_rproc_detect_mode
->  patch 6: add imx_rproc_clk_enable for optional clk
->  patch 8: use switch/case in imx_rproc_detect_mode
-> V3:
->  Add A-b tag for Patch 1/2
->  Fix the checkpatch warning for Patch 6,8
+> > As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
+> > times calibration of tsc, the first one of early quick calibration gives
+> > 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
+> > is about 2.5/1000 deviation for the first number, which just exceeds the
+> > 1/1000 threshold you set :)
 > 
-> V2:
->  Patch 1/8, use fsl as vendor, typo fix
->  Because patchset [1] has v2 version, patch 5,6,7,8 are adapted that
->  change.
+> Even my 2/1000 initial try would have caused this, then.  ;-)
 > 
-> This patchset is to support i.MX7ULP/8MN/8MP, also includes a patch to
-> parse fsl,auto-boot
+> But even 1/1000 deviation would cause any number of applications some
+> severe heartburn, so I am not at all happy with the thought of globally
+> increasing to (say) 3/1000.
 > 
+> > Following is the tsc freq info from kernel log
+> > 
+> > [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+> > [    0.000000] tsc: Detected 2100.000 MHz processor
+> > ...
+> > [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
+> 
+> So what are our options?
+> 
+> 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
+> 
+> 2.	#1, but add tsc-early into the watchdog list and set
+> 	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
+> 
+> 3.	Add a field to struct clocksource that, if non-zero, gives
+> 	the maximum drift in nanoseconds per half second (AKA
+> 	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
+> 	is used.  Set this to (say) 150,000ns for tsc-early.
+> 
+> 4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
+> 	which again is not a good approach given the real-world needs
+> 	of real-world applications.
+> 
+> 5.	Your ideas here.
 
-One of the request I had from the last revision was to explicitly list what
-other patchset this work depends on and what branch it is based of, something I
-can't find here.
+Oh, and:
 
-As such I am dropping this set and won't look at another revision before May
-22nd.
+6.	Improve the quick calibration to be better than one part per thousand.
 
-> Peng Fan (8):
->   dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
->   dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
->   dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
->   remoteproc: imx_rproc: parse fsl,auto-boot
->   remoteproc: imx_rproc: initial support for mutilple start/stop method
->   remoteproc: imx_rproc: make clk optional
->   remoteproc: imx_rproc: support i.MX7ULP
->   remoteproc: imx_rproc: support i.MX8MN/P
-> 
->  .../bindings/remoteproc/fsl,imx-rproc.yaml    |  11 +-
->  drivers/remoteproc/imx_rproc.c                | 196 +++++++++++++++---
->  2 files changed, 173 insertions(+), 34 deletions(-)
-> 
-> -- 
-> 2.30.0
-> 
+> All in all, I am glad that I made the patch that decreases
+> WATCHDOG_MAX_SKEW be separate and at the end of the series.  ;-)
+
+							Thanx, Paul
