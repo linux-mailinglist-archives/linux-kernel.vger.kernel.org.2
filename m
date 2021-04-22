@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C0A367CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B32E367CBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbhDVInd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:43:33 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16149 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235156AbhDVInc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:43:32 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FQrT673ffzpYDt;
-        Thu, 22 Apr 2021 16:39:54 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 22 Apr 2021 16:42:52 +0800
-Subject: Re: Linux 5.10.32
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
-CC:     <lwn@lwn.net>, <jslaby@suse.cz>
-References: <161900624810248@kroah.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <d98d9a74-dae0-f5fd-41c4-740aa097089f@huawei.com>
-Date:   Thu, 22 Apr 2021 16:42:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S235545AbhDVInw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:43:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235156AbhDVInw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:43:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDD1461426;
+        Thu, 22 Apr 2021 08:43:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619080996;
+        bh=doOimx+KZm3Jwz7JUFrZDjSx/2XdjrMNoBga2za7QLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tZC57jpCX0UhevlgvfIB2H2yaoXP4U6C8WLYMEMYNShRO3noMWOKMbdSVFVjsIYns
+         LZmlNTA4Uz2bMNmdRjVbPEi6xNaV0EZ6sgQh+5ZktUcTIsja4YIZR+mfDXFQs3wI+D
+         u9Y/YXC6kIsFT8Ie/Vix6ZC199Gciq7DW8s2zyPI=
+Date:   Thu, 22 Apr 2021 10:43:13 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ashish Kalra <eashishkalra@gmail.com>
+Cc:     Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wlan-ng: silence incorrect type in argument 1
+ (different address spaces) warning
+Message-ID: <YIE3IffGcjrkz4ZE@kroah.com>
+References: <20210420090142.GA4086@ashish-NUC8i5BEH>
 MIME-Version: 1.0
-In-Reply-To: <161900624810248@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420090142.GA4086@ashish-NUC8i5BEH>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/4/21 19:57, Greg Kroah-Hartman wrote:
-> I'm announcing the release of the 5.10.32 kernel.
+On Tue, Apr 20, 2021 at 02:31:42PM +0530, Ashish Kalra wrote:
+> Upon running sparse, "warning: incorrect type in argument 1 (different address spaces)
+> is brought to notice for this file.let's add correct typecast to make it cleaner and
+> silence the Sparse warning.
 > 
-> All users of the 5.10 kernel series must upgrade.
+> Signed-off-by: Ashish Kalra <eashishkalra@gmail.com>
+> ---
+>  drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> The updated 5.10.y git tree can be found at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
-> and can be browsed at the normal kernel.org git web browser:
-> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+> index 6f9666dc0277..70570e8a5ad2 100644
+> --- a/drivers/staging/wlan-ng/p80211netdev.c
+> +++ b/drivers/staging/wlan-ng/p80211netdev.c
+> @@ -569,7 +569,7 @@ static int p80211knetdev_do_ioctl(struct net_device *dev,
+>  		goto bail;
+>  	}
+>  
+> -	msgbuf = memdup_user(req->data, req->len);
+> +	msgbuf = memdup_user((void __user *)req->data, req->len);
 
-Tested on arm64 and x86 for 5.10.32,
+Why isn't data being declared as a __user pointer to start with?  Why is
+the cast needed here?
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.32
-Commit: aea70bd5a45591de27aac367af94d184892c06ab
-Compiler: gcc version 7.3.0 (GCC)
+This feels wrong as if it is papering over the real problem.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 5764
-passed: 5764
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+thanks,
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 5764
-passed: 5764
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
-
+greg k-h
