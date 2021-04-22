@@ -2,177 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D2A367EA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B28367EAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235853AbhDVKbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:31:32 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:47252 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhDVKbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:31:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1619087446; bh=1Tw5TT8F9DngVu9o8wLUbiXpjBJmc/lFX8d3XeMY7LU=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
-         Content-Type;
-        b=Jlykn2+sLEuBucFyMUN/xRyiYSNSHv3VbV0DMCpxx9PxXFJ37I1hrsSvYGRysQQTr
-         oAh2DRyqFttLIxR186RgA5a8TWvFKgFT6VauzCRbjyiORQQpJTuI084i6FIw9j2+Bg
-         1FD4793wLQqKRmu+RWsTRVNTGMy8JfcrMQoBb2JI=
-Received: by 192.168.90.16 [192.168.90.16] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Thu, 22 Apr 2021 12:30:45 +0200 (CEST)
-X-EA-Auth: ST+X3GRd5i66RXwE6cSZZVlovvtaJy8OF8/no//J9UjmxgjOyJZtlDQeFvU73PcXkRXPbFGIuQlaeXAlgewTK47aJzLAEAoj
-Date:   Thu, 22 Apr 2021 16:00:37 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
-Subject: [PATCH] staging: media: atomisp: replace pr_info() by dev_info()
-Message-ID: <20210422103037.GA239298@localhost>
+        id S235755AbhDVKfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:35:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48393 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230270AbhDVKfQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:35:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619087681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pHa3hGYdY/NebgmfQ2FScrNOSdDh9EEW0ZZOOGb69Po=;
+        b=cKvfvtvq8/TdwYV3dXTrhxVER3t/kXMDJmC8n0yqtnY2Z/fs9xc8KNdJgfO9Z/I1EDmPGk
+        rm/SLu3/OaCkjc8yIUxVBG3gtTdnuMK+FiZp3jz0kgPidxHtsIhbdsBEM+mVAtF8Jw2DYn
+        oLb6ZmIxjW0/F0qOk/vRwJ8IAFLBukc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-OrIFWAa9NtW01yhnXDmygQ-1; Thu, 22 Apr 2021 06:34:38 -0400
+X-MC-Unique: OrIFWAa9NtW01yhnXDmygQ-1
+Received: by mail-ej1-f72.google.com with SMTP id o25-20020a1709061d59b029037c94676df5so7049554ejh.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:34:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pHa3hGYdY/NebgmfQ2FScrNOSdDh9EEW0ZZOOGb69Po=;
+        b=uLHkpyeACf4gDrG7hyM3zTuV8wEiX14ccV8OXFvgxZ1WGg0mzoej6CAeuZLpU16t5M
+         o/+fmCfopCKgN7+6yF6JVBV2I78DVz60/dtXywPrk1fSvCU1XxyKZgAXXEQrDcel20ZW
+         LMJ79mDHnyt8KhL4w4gSFpCjmD/3DFL4gDPqVcI0JVsEUWf5eTj3JqaH8es5dem5OoKP
+         tsKwUQ6oOYdOo42AgkF2H4abUQyW74p0g6MIRogQR2C1koXZJO8bAGSHLwo3EqdZU6qi
+         LbahK7+xLWoQyVy6Vo23I1Hy1wOri3i0SCY9LmAEoBaZsSeeQYC8RMEHpQUig9L/1U1n
+         PVOA==
+X-Gm-Message-State: AOAM533uHhtZ+yuUjsSJfgXl7w6SOm7OVkwtNuWDpuocouGyZVWopWnp
+        72GLuFF9n9t6Ow/viYMFc83deGki+kL/eDq6WhIeoobb9cnRdp5p0N64k/gt8PPBfZVcVf2+Ruu
+        C0bvCZLluy6Az3hIj0l93hzzj
+X-Received: by 2002:a17:906:f8cd:: with SMTP id lh13mr2651226ejb.387.1619087676853;
+        Thu, 22 Apr 2021 03:34:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkWR85Sr2lbGoFYqFOR9uUIDIZO4dTU54VFc2EDX4XSQdcooksddMIxISQPqCXuy4N/bhivg==
+X-Received: by 2002:a17:906:f8cd:: with SMTP id lh13mr2651207ejb.387.1619087676646;
+        Thu, 22 Apr 2021 03:34:36 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 16sm1642520ejw.0.2021.04.22.03.34.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 03:34:36 -0700 (PDT)
+Subject: Re: [PATCH] KVM: X86: Fix always skip to boost kernel lock holder
+ candidate for SEV-ES guests
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1619080459-30032-1-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a5dc4068-050e-b651-2e8a-8e90164694a6@redhat.com>
+Date:   Thu, 22 Apr 2021 12:34:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <1619080459-30032-1-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is recommended to use driver model diagnostic macros dev_*() instead
-of pr_*() since the former ensures that the log messages are always
-associated with the corresponding device and driver.
+On 22/04/21 10:34, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
+> 
+> Commit f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under
+> SEV-ES") prevents hypervisor accesses guest register state when the guest is
+> running under SEV-ES. The initial value of vcpu->arch.guest_state_protected
+> is false, it will not be updated in preemption notifiers after this commit which
+> means that the kernel spinlock lock holder will always be skipped to boost. Let's
+> fix it by always treating preempted is in the guest kernel mode, false positive
+> is better than skip completely.
+> 
+> Fixes: f1c6366e3043 (KVM: SVM: Add required changes to support intercepts under SEV-ES)
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>   arch/x86/kvm/x86.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d696a9f..e52ca09 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11151,6 +11151,9 @@ bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
+>   
+>   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+>   {
+> +	if (vcpu->arch.guest_state_protected)
+> +		return true;
+> +
+>   	return vcpu->arch.preempted_in_kernel;
+>   }
+>   
+> 
 
-Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Signed-off-by: Deepak R Varma <drv@mailo.com>
----
+Queued, thanks.
 
-Note: There are few more pr_into() calls that I have not replaced since
-they are very basic (entry and exit) and temporary. They can be removed 
-if the APIs are fully tested. See this example:
-	pr_info("%s S\n", __func__);
-
-Let me know if I should remove them and resubmit this patch.
-
-
- .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
- 1 file changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-index 7e4e123fdb52..27153ec6f65e 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-@@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 	/* pixel clock calculattion */
- 	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
- 	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
--	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
-+	dev_info(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
- 
- 	/* get integration time */
- 	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
-@@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 	if (ret)
- 		return ret;
- 	buf->crop_horizontal_start = val | (reg_val & 0xFF);
--	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
-+	dev_info(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
- 
- 	/* Getting crop_vertical_start */
- 	ret =  gc0310_read_reg(client, GC0310_8BIT,
-@@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 	if (ret)
- 		return ret;
- 	buf->crop_vertical_start = val | (reg_val & 0xFF);
--	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
-+	dev_info(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
- 
- 	/* Getting output_width */
- 	ret = gc0310_read_reg(client, GC0310_8BIT,
-@@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 	if (ret)
- 		return ret;
- 	buf->output_width = val | (reg_val & 0xFF);
--	pr_info("output_width=%d\n", buf->output_width);
-+	dev_info(&client->dev, "output_width=%d\n", buf->output_width);
- 
- 	/* Getting output_height */
- 	ret = gc0310_read_reg(client, GC0310_8BIT,
-@@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 	if (ret)
- 		return ret;
- 	buf->output_height = val | (reg_val & 0xFF);
--	pr_info("output_height=%d\n", buf->output_height);
-+	dev_info(&client->dev, "output_height=%d\n", buf->output_height);
- 
- 	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
- 	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
--	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
--	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
-+	dev_info(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
-+	dev_info(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
- 
- 	/* Getting line_length_pck */
- 	ret = gc0310_read_reg(client, GC0310_8BIT,
-@@ -389,8 +389,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 		return ret;
- 	sh_delay = reg_val;
- 	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
--	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
--		sh_delay, buf->line_length_pck);
-+	dev_info(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
-+		 sh_delay, buf->line_length_pck);
- 
- 	/* Getting frame_length_lines */
- 	ret = gc0310_read_reg(client, GC0310_8BIT,
-@@ -404,8 +404,8 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
- 		return ret;
- 	vert_blanking = val | (reg_val & 0xFF);
- 	buf->frame_length_lines = buf->output_height + vert_blanking;
--	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
--		buf->frame_length_lines);
-+	dev_info(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
-+		 buf->frame_length_lines);
- 
- 	buf->binning_factor_x = res->bin_factor_x ?
- 				res->bin_factor_x : 1;
-@@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
- 		dgain = gain / 2;
- 	}
- 
--	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
-+	dev_info(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
- 
- 	/* set analog gain */
- 	ret = gc0310_write_reg(client, GC0310_8BIT,
-@@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
- 	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 	int ret;
- 
--	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
-+	dev_info(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
- 
- 	/* set exposure */
- 	ret = gc0310_write_reg(client, GC0310_8BIT,
-@@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
- 		return -ENODEV;
- 	}
- 	id = ((((u16)high) << 8) | (u16)low);
--	pr_info("sensor ID = 0x%x\n", id);
-+	dev_info(&client->dev, "sensor ID = 0x%x\n", id);
- 
- 	if (id != GC0310_ID) {
- 		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
-@@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
- 	struct i2c_client *client = v4l2_get_subdevdata(sd);
- 	int ret;
- 
--	pr_info("%s S enable=%d\n", __func__, enable);
-+	dev_info(&client->dev, "%s S enable=%d\n", __func__, enable);
- 	mutex_lock(&dev->input_lock);
- 
- 	if (enable) {
--- 
-2.25.1
-
-
+Paolo
 
