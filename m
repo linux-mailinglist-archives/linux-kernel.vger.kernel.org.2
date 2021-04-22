@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C27C367E98
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D744367EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbhDVK0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:26:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20594 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235800AbhDVK0K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:26:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619087135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5tAr4cbHX1kFNkbpcO64MqXs1SkyHznjECtrNCMwaGw=;
-        b=OaNvweDX55n3zL7ypdqypncsSbNCkWFgY+ZwWETMuNpFlahMtcS613xc8hgqfcW7oIhbdw
-        3am0Cn/5sxMv3cAuxz6SouMD+0UvcBqJOMPtSFlZKkSuF/q4DgzyFYmzYDPrMJ5SNL7HJM
-        bbET/pvGWm+YIuCKBGtCfQ/N7OUnt7w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-TIHJWnvmNHmgjquXhutEzw-1; Thu, 22 Apr 2021 06:25:32 -0400
-X-MC-Unique: TIHJWnvmNHmgjquXhutEzw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAA8F1006C8B;
-        Thu, 22 Apr 2021 10:25:30 +0000 (UTC)
-Received: from krava (unknown [10.40.195.33])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 745695C1D5;
-        Thu, 22 Apr 2021 10:25:28 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 12:25:27 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v4 14/25] perf stat: Add default hybrid events
-Message-ID: <YIFPF/RFVJmztd5b@krava>
-References: <20210416140517.18206-1-yao.jin@linux.intel.com>
- <20210416140517.18206-15-yao.jin@linux.intel.com>
- <YIBvGk7qZiqMHxkt@krava>
- <59ded117-6f3c-f11f-8fe3-6b0e8f68c823@linux.intel.com>
+        id S235819AbhDVK1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:27:55 -0400
+Received: from mail-mw2nam10on2043.outbound.protection.outlook.com ([40.107.94.43]:48417
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230285AbhDVK1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:27:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j6A7SGDWRt2jksH8QmBCjtx+ejU2Ehg9Tkmjgaz1NJ5HpvrMitzlhTCUMmq1hwwu846rlvw2lGqeT3IGMDpruBD9fItGH/mxVSc3kYkRCLnMOZdZh/kzq5FExcuM0ki9nwjnUTRDEZA+jVd8ix0aFxvd4Xd6mde2ox4ydadVJ/A4PqOIYlTzDxBSbKraHvDIgHsWktLGO1OITwhwEBgYN5O6dkglKAfHS4FQp8bx0/vNCTfUIb8W0BnYY1kj8cQmooRT9As+k/5XZWnB5CVZaKqxMmSAfDk5hmoBlK2AYbnd+XSgj0PaVNsoImRC2nO2It2I6OTqM5gNcBbAnhLPeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kVkwLipJFaH9rdUTx0siAOd4Bbh7ja8Uh+oBoGMsinc=;
+ b=fsp9UYNgxLOEUbBL32Xsa493s8P94Vm/P+ZPaG0czVygQScnxhc6GzPRfkxNngjrjJxYtEUwVf4NvizJB8BaB2e3DixQQK2PwFBtX1hlo92ztogh3H4gVW9oXbeYPP9zabaoiGGKlJQOSOp7+xG8ggZJDOK148OIXKdljIViTB1QWXKAyEGzkQ95zF54WDm7KkAHZbWkZUsDZqHDKageMer4w1TcBCJ3iGbu/Xfd43ahB8f2tZ+avyGnx3i1Qr3YJm8G965OgKshcfSYrQ8EXjvQ87h+9M1HqwjHa8HyS/5NCjD9BQR/MnDj0W9qrGZ5RZurk7/FlJpFRXbtdwqCNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kVkwLipJFaH9rdUTx0siAOd4Bbh7ja8Uh+oBoGMsinc=;
+ b=m6oTqkl8bqxONhPMdEub/Gxnik7Rjnz+HgAlNw7cK+h/r7s5of65yye/VJahGwK4lHfBn1XXGbKQYn4yvf9Cxtp021cjnwDR1Uk7+xOGRz3HnVslvv7nUR5CCWJprzd/Di0YaFzxh6QM7dSKoc6JKEa7iqdaWJ3dgQwdlRq+gbI=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB2006.namprd11.prod.outlook.com (2603:10b6:903:2f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.21; Thu, 22 Apr
+ 2021 10:27:17 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.4042.024; Thu, 22 Apr 2021
+ 10:27:16 +0000
+From:   quanyang.wang@windriver.com
+To:     Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>
+Subject: [PATCH] spi: tools: make a symbolic link to the header file spi.h
+Date:   Thu, 22 Apr 2021 18:26:04 +0800
+Message-Id: <20210422102604.3034217-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2P15301CA0009.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::19) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59ded117-6f3c-f11f-8fe3-6b0e8f68c823@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2P15301CA0009.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.14 via Frontend Transport; Thu, 22 Apr 2021 10:27:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 49ed1ea0-3ace-4cb5-12b1-08d905793378
+X-MS-TrafficTypeDiagnostic: CY4PR11MB2006:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR11MB2006B2B5D7BFD54ABC937C75F0469@CY4PR11MB2006.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o8v5JcS9zAB+UPwWhwKwNYTsqpqPrZCGxZ6m+dTt0B4zjmaxF/mTeFbVnfo0CwywU37RJT82sSSf+xamVni/YRVAr6lqbLUvUSL0nwg/MJa59WZxN1VRfa/8yIG8WmIX1mwvNWV4c1t6C+oZAYGrkA84n2fcbWbJ+JgTEJ1v3TMDuQStuE9QfSJ1DqxoxEnhPotU2HKXmARHWfKFipUzedFvsfZPq5rpapKNSRSJBNtrL7F0QZztvYpvKUHH7LXFEy6+SnivMr1UAlm6olHUinFrWCEVU6fLLf0WVqxt2iRBttpRN5CHruxV1m57bAjlavivaTfQPmSRAMXB9YFmSW/OX5J1XkscK6txlZ+n3e02ZeP13amV8cNLi/abngAd93pvLbNLHKJItbNfV+F68sYby7dJTQXpVNCSCezL8J8+cGTZo84C3H8+0IDTnXkFzgf9kJ/9kyj3OXFgJ37EMtWJDkwseOSmBcOX1mUL2KzNfhZtl8NDBCPSAeF5ia5LHXJzfVsM3GTRc6/InxNkVu+pnNeAS6/Sv6ubeteyVwfDsyfMOLaeqCdaf2CKxi8O3gcZhIiMajUqzUrg1paXM7sxccL5DPlLUBP2dtuIHxic09wMKbacixkAzIpaLXJNTPsCNCVaem7zckEbbt2sog==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(39850400004)(396003)(83380400001)(186003)(107886003)(6506007)(478600001)(26005)(4326008)(66946007)(110136005)(8676002)(86362001)(6512007)(956004)(316002)(1076003)(5660300002)(2616005)(6666004)(66476007)(36756003)(6486002)(38350700002)(38100700002)(66556008)(52116002)(8936002)(2906002)(9686003)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ISsBk31Y+j1QnPcCj+JTPWR/M76y6RoxBodUpq3Bsv6MnqAeMwLUWyEYlaWV?=
+ =?us-ascii?Q?grDr/HD4pntfbcywMZQ6CEPfxCCCn81HMkHW6TB4p9jHwiHodsXzVV0wT8ts?=
+ =?us-ascii?Q?tRmL0xQJu3ruknwN5qQB4av9WYktVwUKxua+ErdRZXjmcOCd5W+wjyEsVgns?=
+ =?us-ascii?Q?48h6otZDZU5MgvQICOSxscosHRdj6yqNSydIAvtX+3W6djoD5HfkYqPKNT3l?=
+ =?us-ascii?Q?ofGLHW/uprJFPozpBIDnrDPXiAGrQY0rV9Gl65GnfYJR5XTGUlhuE3iiwtjo?=
+ =?us-ascii?Q?OxCiqoUDr6GzV2bk48y10CNixp3T2LJtxJmhkARkC8PBPaGXPUQdANiwiMgn?=
+ =?us-ascii?Q?GIEUZQrFMPjdqUXwvJEz9OLdASYmZY/XRidl47TP0X2Br787GnYGe0sl6WDs?=
+ =?us-ascii?Q?uwoj1aAylV+aJSViV8UEzc1PEvoKDUJKhqoz2L/eh/93Y7bD7sm4FVnZJI8t?=
+ =?us-ascii?Q?HOIEMXNUmifhXVcHSzoiYoArlZ7Zt09jOqLmtCLiWDKf8dv/fp9W7cnRMIHz?=
+ =?us-ascii?Q?cqofcl/y+Qwp6kRf9QPqZ417lFKneZU2v304+moAPhvXfSHJkpfZIsB8ciuC?=
+ =?us-ascii?Q?ZiJ4eOopf7iGyutqGRWcR/nquwlpeNBNyhPE7oDLsCawsatKDjt1616+U9Aq?=
+ =?us-ascii?Q?nuQ8jlC1REPRjnDhoGnCc4nlCDKeAfODAyXn6L9OTs52woNRNM0RX6W7LWVv?=
+ =?us-ascii?Q?riPDeNRfPdKIDnlzM1Jw045BMCIfvP7Nxuw7k/7JIOIHw6paydao88ASRucp?=
+ =?us-ascii?Q?+XFJrs/rPGh+MmJXoQzB1FyJ36G7XEKDdbqc8Oa5k8YF6C6nj+N64hnSQX9y?=
+ =?us-ascii?Q?+o7Um7k+ulpp8J7ToC7PjcGRIbVwV0dAUv6MO5doP4S/kFM7v8N8EPl6yWiB?=
+ =?us-ascii?Q?3otGEQySLj2H2+X4JY88NweQzdm17f3eTsXfu7tmihWRIh6/fZ8iigaeBbQz?=
+ =?us-ascii?Q?lwd1s7UeaAyHuwbY90+wLIuM0tI9feIpaZ9FdPdFc6svCPWeEJdqSl1Xuglb?=
+ =?us-ascii?Q?b9WRJEfHnMqmJL56X5XXNcwS62K5ZW1d67OplQlswqFAvFyS8Nrjthxpbv1z?=
+ =?us-ascii?Q?Z+6buOZUNDEwjh4XsTWac57/axyPN5oOLS28PKdwNT09p4E85UWBbYpHYFmO?=
+ =?us-ascii?Q?68aGFMvFo0HrcOZD4Bs1L9TKjig7p1JMImI++5R1kN9KoGvOFP0NFMTCxleC?=
+ =?us-ascii?Q?MFNQXbQuhGEZO4qi/F0siSggP7DMf1vPqjTBc5Y3Xywz+I0FPUlEugBlKbBw?=
+ =?us-ascii?Q?Cj2Sqf5dIjy5sSl58z/khTqwF+hOUf4FvdqZ15X+Zznkc84crgRi6VsjUCbn?=
+ =?us-ascii?Q?URpuWPI0kGyd/+7G4R1iCfF2?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49ed1ea0-3ace-4cb5-12b1-08d905793378
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2021 10:27:16.6232
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ibpPWjglXd8DtIFTmBcf0jmYjLinVKjb3pixLtdB+Fd262YzI9NGlzRzonK6UTTjpRtnYQ44doKbIhmdRujNaU99C8Nug2lAZ3J1BN6p3PU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB2006
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 10:12:49AM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 4/22/2021 2:29 AM, Jiri Olsa wrote:
-> > On Fri, Apr 16, 2021 at 10:05:06PM +0800, Jin Yao wrote:
-> > 
-> > SNIP
-> > 
-> > > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> > > index 1255af4751c2..0351b99d17a7 100644
-> > > --- a/tools/perf/builtin-stat.c
-> > > +++ b/tools/perf/builtin-stat.c
-> > > @@ -1145,6 +1145,13 @@ static int parse_stat_cgroups(const struct option *opt,
-> > >   	return parse_cgroups(opt, str, unset);
-> > >   }
-> > > +static int add_default_hybrid_events(struct evlist *evlist)
-> > > +{
-> > > +	struct parse_events_error err;
-> > > +
-> > > +	return parse_events(evlist, "cycles,instructions,branches,branch-misses", &err);
-> > > +}
-> > > +
-> > >   static struct option stat_options[] = {
-> > >   	OPT_BOOLEAN('T', "transaction", &transaction_run,
-> > >   		    "hardware transaction statistics"),
-> > > @@ -1626,6 +1633,12 @@ static int add_default_attributes(void)
-> > >     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_INSTRUCTIONS	},
-> > >     { .type = PERF_TYPE_HARDWARE, .config = PERF_COUNT_HW_BRANCH_MISSES		},
-> > > +};
-> > > +	struct perf_event_attr default_sw_attrs[] = {
-> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_TASK_CLOCK		},
-> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CONTEXT_SWITCHES	},
-> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_CPU_MIGRATIONS		},
-> > > +  { .type = PERF_TYPE_SOFTWARE, .config = PERF_COUNT_SW_PAGE_FAULTS		},
-> > 
-> > hum, why not use default_attrs0, it's the same, no?
-> > 
-> 
-> The default_attrs0 has one more item " {.type = PERF_TYPE_HARDWARE, .config
-> = PERF_COUNT_HW_CPU_CYCLES },"
-> 
-> So I have to only pick out the sw attrs and save them to default_sw_attrs.
-> 
-> > >   };
-> > >   /*
-> > > @@ -1863,6 +1876,14 @@ static int add_default_attributes(void)
-> > >   	}
-> > >   	if (!evsel_list->core.nr_entries) {
-> > > +		if (perf_pmu__has_hybrid()) {
-> > > +			if (evlist__add_default_attrs(evsel_list,
-> > > +						      default_sw_attrs) < 0) {
-> > > +				return -1;
-> > > +			}
-> > > +			return add_default_hybrid_events(evsel_list);
-> > 
-> > please do it the same way like when topdown calls parse events,
-> > we don't need to check for cycles, but please check result and
-> > display the error
-> > 
-> 
-> Something like this?
-> 
-> err = parse_events(evsel_list, "cycles,instructions,branches,branch-misses", &errinfo);
-> if (err) {
-> 	fprintf(stderr,...);
-> 	parse_events_print_error(&errinfo, ...);
-> 	return -1;
-> }
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-yes
+The header file spi.h in include/uapi/linux/spi is needed for spidev.h,
+so we also need make a symbolic link to it to eliminate the error message
+as below:
 
-jirka
+In file included from spidev_test.c:24:
+include/linux/spi/spidev.h:28:10: fatal error: linux/spi/spi.h: No such file or directory
+   28 | #include <linux/spi/spi.h>
+      |          ^~~~~~~~~~~~~~~~~
+compilation terminated.
+
+Fixes: f7005142dace ("spi: uapi: unify SPI modes into a single spi.h")
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ tools/spi/Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tools/spi/Makefile b/tools/spi/Makefile
+index ada881afb489..0aa6dbd31fb8 100644
+--- a/tools/spi/Makefile
++++ b/tools/spi/Makefile
+@@ -25,11 +25,12 @@ include $(srctree)/tools/build/Makefile.include
+ #
+ # We need the following to be outside of kernel tree
+ #
+-$(OUTPUT)include/linux/spi/spidev.h: ../../include/uapi/linux/spi/spidev.h
++$(OUTPUT)include/linux/spi: ../../include/uapi/linux/spi
+ 	mkdir -p $(OUTPUT)include/linux/spi 2>&1 || true
+ 	ln -sf $(CURDIR)/../../include/uapi/linux/spi/spidev.h $@
++	ln -sf $(CURDIR)/../../include/uapi/linux/spi/spi.h $@
+ 
+-prepare: $(OUTPUT)include/linux/spi/spidev.h
++prepare: $(OUTPUT)include/linux/spi
+ 
+ #
+ # spidev_test
+-- 
+2.25.1
 
