@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF57367C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAE1367C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235395AbhDVIQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
+        id S235401AbhDVIQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235353AbhDVIQS (ORCPT
+        with ESMTP id S235410AbhDVIQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:16:18 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE425C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:15:44 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a12so31141519pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:15:44 -0700 (PDT)
+        Thu, 22 Apr 2021 04:16:28 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D4BC06138D
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:15:53 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so530589pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:15:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C3ItV5y5XoEhSqi+d51HdmwBWLH2Hb4UsI3M8OVWu24=;
-        b=Cisfd6jfRp7ZntllQG9J21QpT0tbDCUmO7Sd4z/S5YfmrCvvZiaBUR0BPZFuQ5hvd/
-         gxJhZ2pu34BRLPXqvLavDRaBXVqLQLA1W1/STuSvpHuqa+BPpv9DUpeEZVvPd4m/EZM3
-         aXG1VDvl65ykf2+uaD2EnhVf7WefQlXtPpuHg=
+        bh=k4dyB3xlmvkfx6+ggy7Uv640xgq260Lfsxi7yqvhCZI=;
+        b=kLFGcuOQrccDqfD9J76t1/kDLyymEf5QZdonwnYtBNPLHycZjLGV1OskzqU8d8CBT2
+         dFZ2kyndUcgD1g6WATSmnvKXnlXdau6lSM6AakeoAvt1oeObRayZc+uNuTgzJ9Ur1iuG
+         1ryoegnb2fqqmY98GaQlrYL4hIv1GoXoL11Cg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C3ItV5y5XoEhSqi+d51HdmwBWLH2Hb4UsI3M8OVWu24=;
-        b=rIkUYZnIGLidYjbzRYC6z7oz4ux/268Z8deiJjtY4Iw0vGp2bvx+UE+tsUjDclL0ex
-         HQYdvCs2HUTCwgCLAxZm0vkySLwY/A2Huc6pSTqOgdrVnZawUnJ5i7Ur0GBwEhxDmcyX
-         LXkX4nsalHqUhnSrA17O1mUARnQMmR/labSRFOQPcqH/5NNkW8FLY40xJWcAYwDNilMn
-         kYwzvqfqllbTY9sli2B00fZEcFnLVrwVjfUbrdL7eTVnHYBf4u3VmSlauuf7po45jf8U
-         t8V7MB8hGxxeWJPpeKT2oLAv0IS48VV+Y73qD4VAF06m9SWLWDc1HlX+tekgGUm75YCi
-         CW1Q==
-X-Gm-Message-State: AOAM530MiwE9oOZ+9Ih8vnucLfVYdV7hCvtzxalQmtYpPhWnV2HSEs/R
-        dDhHEXz7WDOt89eG+ElYSiErMw==
-X-Google-Smtp-Source: ABdhPJxkEqOgBe8WdlOJ16Imv3NTakOO84xcsb4CT6RBz2bwANEVo+9MWgQ4ffM3wlaap5K1DgM+6A==
-X-Received: by 2002:a63:4106:: with SMTP id o6mr2436897pga.104.1619079344334;
-        Thu, 22 Apr 2021 01:15:44 -0700 (PDT)
+        bh=k4dyB3xlmvkfx6+ggy7Uv640xgq260Lfsxi7yqvhCZI=;
+        b=TNwhcsTLwPE/W8MhhqplSUKzQubEKCDw1LriSlR/v4EIMH2hDWukIWL0BCQQlO2AnY
+         YtsqqY6BA/4c9865cYT9Ectzj3WzVejJMUS/twKDgkicVkAuu9bow+0VqNMb2IcJ17wO
+         8KFlbPGW/7SFYWetcI3uHB6L+7hV2ohX4PymH/+kkZBfUkNCHisqY1ux84Go8ygnB2mE
+         uxpYTGlS6e3PzTRBUwNIe/BJGbgSs3CUbi/Y3S/EUzd7l/O+v47Et4poE4GtOKiZM11s
+         NM7ebjqfa96JpQuGPVxwbIVunHhuILNHP03RQqs4VKFsox1k3UGKOWEDeMNp6mvGDMA/
+         TctA==
+X-Gm-Message-State: AOAM5318CxvL4D308XMAT1O5s7KivP4Hm+XK7DZf5CRxPqg4XVqcNqJN
+        ToX8dfD0KEru7F69ZAdibRu0tw==
+X-Google-Smtp-Source: ABdhPJzaPOcvkpo4oh1A/JsjcQqzOO/tc1NI/mmGYHMg9yfM2pWhcv0q011OgU/0UUPri4B/30xsPg==
+X-Received: by 2002:a17:90b:14c4:: with SMTP id jz4mr2772455pjb.144.1619079353175;
+        Thu, 22 Apr 2021 01:15:53 -0700 (PDT)
 Received: from localhost ([2401:fa00:1:10:1a8e:1bde:f79e:c302])
-        by smtp.gmail.com with UTF8SMTPSA id n48sm1357349pfv.130.2021.04.22.01.15.37
+        by smtp.gmail.com with UTF8SMTPSA id bk6sm4233324pjb.10.2021.04.22.01.15.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 01:15:43 -0700 (PDT)
+        Thu, 22 Apr 2021 01:15:52 -0700 (PDT)
 From:   Claire Chang <tientzu@chromium.org>
 To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
@@ -79,9 +79,9 @@ Cc:     benh@kernel.crashing.org, paulus@samba.org,
         maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
         nouveau@lists.freedesktop.org, rodrigo.vivi@intel.com,
         thomas.hellstrom@linux.intel.com
-Subject: [PATCH v5 03/16] swiotlb: Refactor swiotlb_create_debugfs
-Date:   Thu, 22 Apr 2021 16:14:55 +0800
-Message-Id: <20210422081508.3942748-4-tientzu@chromium.org>
+Subject: [PATCH v5 04/16] swiotlb: Add DMA_RESTRICTED_POOL
+Date:   Thu, 22 Apr 2021 16:14:56 +0800
+Message-Id: <20210422081508.3942748-5-tientzu@chromium.org>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 In-Reply-To: <20210422081508.3942748-1-tientzu@chromium.org>
 References: <20210422081508.3942748-1-tientzu@chromium.org>
@@ -91,49 +91,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split the debugfs creation to make the code reusable for supporting
-different bounce buffer pools, e.g. restricted DMA pool.
+Add a new kconfig symbol, DMA_RESTRICTED_POOL, for restricted DMA pool.
 
 Signed-off-by: Claire Chang <tientzu@chromium.org>
 ---
- kernel/dma/swiotlb.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ kernel/dma/Kconfig | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 3f1adee35097..57a9adb920bf 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -660,18 +660,24 @@ EXPORT_SYMBOL_GPL(is_swiotlb_active);
+diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+index 77b405508743..3e961dc39634 100644
+--- a/kernel/dma/Kconfig
++++ b/kernel/dma/Kconfig
+@@ -80,6 +80,20 @@ config SWIOTLB
+ 	bool
+ 	select NEED_DMA_MAP_STATE
  
- #ifdef CONFIG_DEBUG_FS
- 
--static int __init swiotlb_create_debugfs(void)
-+static void swiotlb_create_debugfs(struct io_tlb_mem *mem, const char *name,
-+				   struct dentry *node)
- {
--	struct io_tlb_mem *mem = io_tlb_default_mem;
--
- 	if (!mem)
--		return 0;
--	mem->debugfs = debugfs_create_dir("swiotlb", NULL);
-+		return;
++config DMA_RESTRICTED_POOL
++	bool "DMA Restricted Pool"
++	depends on OF && OF_RESERVED_MEM
++	select SWIOTLB
++	help
++	  This enables support for restricted DMA pools which provide a level of
++	  DMA memory protection on systems with limited hardware protection
++	  capabilities, such as those lacking an IOMMU.
 +
-+	mem->debugfs = debugfs_create_dir(name, node);
- 	debugfs_create_ulong("io_tlb_nslabs", 0400, mem->debugfs, &mem->nslabs);
- 	debugfs_create_ulong("io_tlb_used", 0400, mem->debugfs, &mem->used);
-+}
++	  For more information see
++	  <Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt>
++	  and <kernel/dma/swiotlb.c>.
++	  If unsure, say "n".
 +
-+static int __init swiotlb_create_default_debugfs(void)
-+{
-+	swiotlb_create_debugfs(io_tlb_default_mem, "swiotlb", NULL);
-+
- 	return 0;
- }
- 
--late_initcall(swiotlb_create_debugfs);
-+late_initcall(swiotlb_create_default_debugfs);
- 
- #endif
+ #
+ # Should be selected if we can mmap non-coherent mappings to userspace.
+ # The only thing that is really required is a way to set an uncached bit
 -- 
 2.31.1.368.gbe11c130af-goog
 
