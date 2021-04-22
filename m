@@ -2,185 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BA93676E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986133676E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhDVBjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 21:39:23 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:48178 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229740AbhDVBjV (ORCPT
+        id S233957AbhDVBji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 21:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229740AbhDVBjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 21:39:21 -0400
-Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13M1X4Bl027863;
-        Thu, 22 Apr 2021 01:38:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pps0720;
- bh=mOINvh3zZ6jkb1AdcO+s78AOg6BJxaFTCsenJ68M2Ms=;
- b=ZgktpzlOHLT9MbQFa0Gg/A0JT7DXz1CI5+cnQ/4No0ytW8xx1KGy6WyJzapZGOFFBMV0
- +FiuZT7wHGCWxQMY4ZnARxqMwz0Ym/aKWt/yzWDBcMpRqs6xsYlR6zY+fGzKPnL7zYt/
- HS1P1QhwwRcvmdUq2XwDUYcb0BwrIxfwxHtkXUJjBAeUE1yArthmb+/DBBOwhCGl8qF0
- fOoUEUFLaTZXkxVZQHo/GTydJUDvVxkqMy2ISVKFx7aJ3HCY9p5JovaFag7NDigdWNE0
- rQLud7/Aq6grorzPKCzUiwZ3TMf56ybxOFdBw7n3EURBE6i02zc3VZtV9IkjzqAQV/uQ Eg== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 382wnfgnpf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 01:38:40 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 7142A5E;
-        Thu, 22 Apr 2021 01:38:39 +0000 (UTC)
-Received: from [16.99.148.179] (unknown [16.99.148.179])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 88FC64A;
-        Thu, 22 Apr 2021 01:38:38 +0000 (UTC)
-Subject: Re: arch/x86/kernel/apic/x2apic_uv_x.c:106 early_get_pnodeid() warn:
- inconsistent indenting
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-References: <202104211946.vkuV39N1-lkp@intel.com>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <84b4fbc3-0310-b7d7-f613-0eb4ae090e1e@hpe.com>
-Date:   Wed, 21 Apr 2021 18:38:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-In-Reply-To: <202104211946.vkuV39N1-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-X-Proofpoint-ORIG-GUID: XkiuS4G3kisLGnHN5y2M__-TaKZdiMex
-X-Proofpoint-GUID: XkiuS4G3kisLGnHN5y2M__-TaKZdiMex
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 21 Apr 2021 21:39:36 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F80EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:39:02 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id f29so31669668pgm.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 18:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lDybqHzK/y1yZn9qxvSa709b8RB7R+WkFygDl36Yj78=;
+        b=POndHXhhhdG4A4Iw/RN/PvqTsI2BwJLwLCst7FAczxc2onIIcGIqe3p+nsn/zy3Zgl
+         DJkW8YlEqXKWYo8s6dPFgh94FRQmASkCSUrvykku2a+g3142IAfNxQ1pp9sZQx1ZKI4h
+         do9lYfo6ntmVT/Nr8xcGUFzq6xFOHVEsMP6+bC9UuJCeMUhugReiGoZpMhy0CTyMiJA/
+         qnoBcQFiWhqtNQlJZ9PotPnUojyEbx0/M7dcU0UH1NNTSVfPTkwj3CN/X6uP3ex8Qhvz
+         dEoYOYxbyjuOKVkfkgSARFK4yY4Jeh0OIrBa7rZSNQQBUo30gNOcHzCEnWc9ABPpILG1
+         5ttg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lDybqHzK/y1yZn9qxvSa709b8RB7R+WkFygDl36Yj78=;
+        b=Ryzx05Gk25I6BTNjUhBXAE1FeJRcicJNI0nrjXBPo69FwgSPzvRB+CadI5KOnj+QDs
+         utlDnHpyKTj5e6M1AOxiOBsxqzPDI976tyMWNDcT0MyBgRLlJ25jiXPqyqkG6zy5SDT4
+         JtX+ZKJ+FOk71wy/d/mm4cNr+W1GjYHPcSWV9b8aQSJOSW7S6Wne5JnqV2OcyL/cDRjD
+         PmuFo8iGxGfK20IWVRYdllqNoU2SugCknichrm4246NoPB/Wzp205XSAYegiqOQwLq/d
+         RnXr33twla9yVikLZVXRPsUfjApPcTwdZg0z1fhdzdiF02PT7fsPYem04SXAVogrYUc7
+         eKuw==
+X-Gm-Message-State: AOAM533VNCFEnjnEYMAauAx6VKka+eRpvpLKx8g7R5ZsCDFD+G7FkuEo
+        GxWeffmn+V8XSW1yL9NHXA2Upw==
+X-Google-Smtp-Source: ABdhPJyHgDu1qcvMrtdOCrx4FXzU2PTqmcpHcb22EYzr0geSl2LrSLeEgL+gyW//YBqXnpW0VFwkOw==
+X-Received: by 2002:a63:f4e:: with SMTP id 14mr1038224pgp.236.1619055541467;
+        Wed, 21 Apr 2021 18:39:01 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t19sm6189077pjs.1.2021.04.21.18.39.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 18:39:00 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 01:38:56 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 1/2] perf/x86: Skip checking MSR for MSR 0x0
+Message-ID: <YIDTsMnSA8J5YwHJ@google.com>
+References: <20210421021825.37872-1-like.xu@linux.intel.com>
+ <YIBFCOz9R966xAVZ@google.com>
+ <8b799e26-f8b0-adeb-b8a6-331087c0d4be@linux.intel.com>
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-21_08:2021-04-21,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0
- phishscore=0 clxscore=1011 malwarescore=0 lowpriorityscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104220012
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b799e26-f8b0-adeb-b8a6-331087c0d4be@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm a bit confused.  I have this in my inbox that someone else has this 
-fix.  So will that fix be applied or should I send a separate one that 
-is essentially a duplicate?
+On Thu, Apr 22, 2021, Like Xu wrote:
+> On 2021/4/21 23:30, Sean Christopherson wrote:
+> > On Wed, Apr 21, 2021, Like Xu wrote:
+> > > The Architecture LBR does not have MSR_LBR_TOS (0x000001c9).
+> > > When ARCH_LBR we don't set lbr_tos, the failure from the
+> > > check_msr() against MSR 0x000 will make x86_pmu.lbr_nr = 0,
+> > > thereby preventing the initialization of the guest LBR.
+> > > 
+> > > Fixes: 47125db27e47 ("perf/x86/intel/lbr: Support Architectural LBR")
+> > > Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> > > Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> > > ---
+> > >   arch/x86/events/intel/core.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> > > index 5272f349dca2..5036496caa60 100644
+> > > --- a/arch/x86/events/intel/core.c
+> > > +++ b/arch/x86/events/intel/core.c
+> > > @@ -4751,10 +4751,10 @@ static bool check_msr(unsigned long msr, u64 mask)
+> > >   	u64 val_old, val_new, val_tmp;
+> > >   	/*
+> > > -	 * Disable the check for real HW, so we don't
+> > > +	 * Disable the check for real HW or non-sense msr, so we don't
+> > 
+> > I think this should be "undefined MSR" or something along those lines.  MSR 0x0
+> > is a "real" MSR, on Intel CPUs it's an alias for IA32_MC0_ADDR; at least it's
+> > supposed to be, most/all Intel CPUs incorrectly alias it to IA32_MC0_CTL.
+> 
+> Thank you, Sean.
+> 
+> <idle>-0       [000] dN.. 38980.032347: read_msr: 0, value fff
+> 
+> Do we have a historic story or specification for this kind of alias ?
 
-> ----- Forwarded message from Yang Li <yang.lee@linux.alibaba.com> -----
-> 
-> Date: Fri, 16 Apr 2021 18:10:40 +0800
-> From: Yang Li <yang.lee@linux.alibaba.com>
-> To: steve.wahl@hpe.com
-> CC: mike.travis@hpe.com, dimitri.sivanich@hpe.com, russ.anderson@hpe.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-> 	x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-> Subject: [PATCH] x86/platform/uv: Fix inconsistent indenting
-> X-Mailer: git-send-email 1.8.3.1
-> 
-> Kernel test robot throws below warning ->
-> 
-> smatch warnings:
-> arch/x86/kernel/apic/x2apic_uv_x.c:111 early_get_pnodeid() warn:
-> inconsistent indenting
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-> index 52bc217..3e7534e 100644
-> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
-> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-> @@ -108,7 +108,7 @@ static void __init early_get_pnodeid(void)
->  	} else if (UVH_RH_GAM_ADDR_MAP_CONFIG) {
->  		union uvh_rh_gam_addr_map_config_u  m_n_config;
->  
-> -	m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
-> +		m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
->  		uv_cpuid.n_skt = m_n_config.s.n_skt;
->  		if (is_uv(UV3))
->  			uv_cpuid.m_skt = m_n_config.s3.m_skt;
-> -- 
-> 1.8.3.1
-> 
-> 
-> ----- End forwarded message -----
+It's kinda documented in the SDM under "2.1 ARCHITECTURAL MSRS"
 
+  0H 0 IA32_P5_MC_ADDR (P5_MC_ADDR)  Pentium Processor (05_01H)
+  1H 1 IA32_P5_MC_TYPE (P5_MC_TYPE)  DF_DM = 05_01H
 
+The history is that very early machine check support only had a single "bank",
+with MSR 0x0 holding the address and MSR 0x1 holding the type.  When the MSRs were
+relocated to the 0x400 range, presumably to have room to grow the list, the MSRs
+were aliased to maintain backwards compatibility (again, an assumption).
 
-On 4/21/2021 4:03 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   1fe5501ba1abf2b7e78295df73675423bd6899a0
-> commit: 6c7794423a998478f6df0234d2dd5baa3ccbdb1d x86/platform/uv: Add UV5 direct references
-> date:   7 months ago
-> config: x86_64-randconfig-m001-20210421 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> smatch warnings:
-> arch/x86/kernel/apic/x2apic_uv_x.c:106 early_get_pnodeid() warn: inconsistent indenting
-> 
-> vim +106 arch/x86/kernel/apic/x2apic_uv_x.c
-> 
-> 1b9b89e7f16333 arch/x86/kernel/genx2apic_uv_x.c   Yinghai Lu   2008-07-21   91
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05   92  static void __init early_get_pnodeid(void)
-> 27229ca63269c1 arch/x86/kernel/apic/x2apic_uv_x.c Jack Steiner 2009-04-17   93  {
-> d8850ba425d982 arch/x86/kernel/apic/x2apic_uv_x.c Jack Steiner 2010-11-30   94  	int pnode;
-> 7a1110e861b266 arch/x86/kernel/apic/x2apic_uv_x.c Jack Steiner 2010-01-12   95
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05   96  	uv_cpuid.m_skt = 0;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05   97  	if (UVH_RH10_GAM_ADDR_MAP_CONFIG) {
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05   98  		union uvh_rh10_gam_addr_map_config_u  m_n_config;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05   99
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  100  		m_n_config.v = uv_early_read_mmr(UVH_RH10_GAM_ADDR_MAP_CONFIG);
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  101  		uv_cpuid.n_skt = m_n_config.s.n_skt;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  102  		uv_cpuid.nasid_shift = 0;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  103  	} else if (UVH_RH_GAM_ADDR_MAP_CONFIG) {
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  104  		union uvh_rh_gam_addr_map_config_u  m_n_config;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  105
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05 @106  	m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  107  		uv_cpuid.n_skt = m_n_config.s.n_skt;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  108  		if (is_uv(UV3))
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  109  			uv_cpuid.m_skt = m_n_config.s3.m_skt;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  110  		if (is_uv(UV2))
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  111  			uv_cpuid.m_skt = m_n_config.s2.m_skt;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  112  		uv_cpuid.nasid_shift = 1;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  113  	} else {
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  114  		unsigned long GAM_ADDR_MAP_CONFIG = 0;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  115
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  116  		WARN(GAM_ADDR_MAP_CONFIG == 0,
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  117  			"UV: WARN: GAM_ADDR_MAP_CONFIG is not available\n");
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  118  		uv_cpuid.n_skt = 0;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  119  		uv_cpuid.nasid_shift = 0;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  120  	}
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  121
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  122  	if (is_uv(UV4|UVY))
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  123  		uv_cpuid.gnode_shift = 2; /* min partition is 4 sockets */
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  124
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  125  	uv_cpuid.pnode_mask = (1 << uv_cpuid.n_skt) - 1;
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  126  	pnode = (uv_node_id >> uv_cpuid.nasid_shift) & uv_cpuid.pnode_mask;
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  127  	uv_cpuid.gpa_shift = 46;	/* Default unless changed */
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  128
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  129  	pr_info("UV: n_skt:%d pnmsk:%x pn:%x\n",
-> 6c7794423a9984 arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  130  		uv_cpuid.n_skt, uv_cpuid.pnode_mask, pnode);
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  131  }
-> 647128f1536efa arch/x86/kernel/apic/x2apic_uv_x.c Mike Travis  2020-10-05  132
-> 
-> :::::: The code at line 106 was first introduced by commit
-> :::::: 647128f1536efacca7bedf189790d24b22f03cca x86/platform/uv: Update UV MMRs for UV5
-> 
-> :::::: TO: Mike Travis <mike.travis@hpe.com>
-> :::::: CC: Borislav Petkov <bp@suse.de>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+Unfortunately, that backwards compatibility apparently didn't get tested, and MSR
+0x0 ended up aliased to 0x400 instead of 0x402.
+
+The only reason I'm aware of all this because SGX is soft disabled by ucode if
+any of the machine check banks are disabled by writing MCn_CTL.  Some folks found
+out the hard way way doing WRMSR with an uninitialized index, i.e. WRMSR(0),
+would disable SGX.
+
+If you want a good giggle, you can verify on pretty much any Intel silicon:
+
+  $ rdmsr 0x400
+  ff
+  $ wrmsr 0x0 0
+  $ rdmsr 0x400
+  0
+
+> #define MSR_IA32_MC0_ADDR               0x00000402
+> #define MSR_IA32_MC0_CTL                0x00000400
