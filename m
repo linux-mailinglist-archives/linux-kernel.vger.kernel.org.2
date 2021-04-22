@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B9A3676E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554223676E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 03:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhDVBi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 21:38:27 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:61025 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229536AbhDVBi0 (ORCPT
+        id S231408AbhDVBjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 21:39:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37770 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229740AbhDVBjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 21:38:26 -0400
-X-UUID: ce0917296e1646c48868f921555bebc4-20210422
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MaLMoD+Cx4c9RF+MQbi2VA+TR/HgeiidMjRq17YSzZA=;
-        b=kZEVYdDs8Qhv/q5mg4gK8nlswaAJk0caV4eWjDY24sDFmzwyWBhDLVxWn2De1oyoFmPHubHJraG0x44s/F96la2lPNw3dR+CzthLReUIJdMsqq2kQkN3vEUMTnG5xht8jvqSBFXjrPCnbhAMFbELsQ3HaxmiB2NC85zS1D0kf+k=;
-X-UUID: ce0917296e1646c48868f921555bebc4-20210422
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <zhiyong.tao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 925003886; Thu, 22 Apr 2021 09:37:42 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
- 2021 09:37:40 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Apr 2021 09:37:39 +0800
-Message-ID: <1619055459.27999.0.camel@mhfsdcap03>
-Subject: Re: [PATCH v4 0/4] Mediatek pinctrl patch on mt8195
-From:   zhiyong tao <zhiyong.tao@mediatek.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        <srv_heupstream@mediatek.com>, <hui.liu@mediatek.com>,
-        huang eddie <eddie.huang@mediatek.com>, <jg_poxu@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        "Sean Wang" <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Date:   Thu, 22 Apr 2021 09:37:39 +0800
-In-Reply-To: <CACRpkdYtjG3LbcMiHmODggWRecSWGSm34vpEtti9x9SKdV9_BA@mail.gmail.com>
-References: <20210413055702.27535-1-zhiyong.tao@mediatek.com>
-         <CACRpkdYtjG3LbcMiHmODggWRecSWGSm34vpEtti9x9SKdV9_BA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 21 Apr 2021 21:39:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619055523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bEXcWA7CNS2of+lIN30Rut/7LwiTIzDb1MLofL6cq6w=;
+        b=OUsm3xRnYHmCPI/xdP/R4WDKbLp1umHwXRAxwZM6r3IyrAh4o5bfMtN7QoWdMIokcXyqBk
+        vHNfcs9HhrnnkboZcfOds0wuBazxr4YNmxOnm3GwqKtHVC3q5lTyUFFsgu4cj0+HmSPkH8
+        03KJ+xG6aR/b5LhZtnNBNx+XQrrMeV4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-T20pXHdsNfimRRw2vN1tDQ-1; Wed, 21 Apr 2021 21:38:39 -0400
+X-MC-Unique: T20pXHdsNfimRRw2vN1tDQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B43987A826;
+        Thu, 22 Apr 2021 01:38:38 +0000 (UTC)
+Received: from T590 (ovpn-12-89.pek2.redhat.com [10.72.12.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E7CB62693;
+        Thu, 22 Apr 2021 01:38:29 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 09:38:28 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kashyap.desai@broadcom.com, dgilbert@interlog.com
+Subject: Re: [PATCH] scsi: core: Cap initial sdev queue depth at
+ shost.can_queue
+Message-ID: <YIDTlD2Mq+U36Oqz@T590>
+References: <1618848384-204144-1-git-send-email-john.garry@huawei.com>
+ <YH4aIECa/J/1uS5S@T590>
+ <bba5f248-523d-0def-1a3e-bafeb2b7633f@huawei.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 220BC1F69A6A5C846F04675CAF54A160A39F6A0D1C6092D1B2837A258212E0462000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bba5f248-523d-0def-1a3e-bafeb2b7633f@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA0LTIyIGF0IDAxOjUxICswMjAwLCBMaW51cyBXYWxsZWlqIHdyb3RlOg0K
-PiBPbiBUdWUsIEFwciAxMywgMjAyMSBhdCA3OjU3IEFNIFpoaXlvbmcgVGFvIDx6aGl5b25nLnRh
-b0BtZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gPiBUaGlzIHNlcmllcyBpbmNsdWRlcyA0IHBh
-dGNoZXM6DQo+ID4gMS5hZGQgcGluY3RybCBmaWxlIGFuZCBpbmRpbmcgZG9jdW1lbnQgb24gbXQ4
-MTk1Lg0KPiA+IDIuYWRkIHBpbmN0cmwgZHJpdmVyIG9uIE1UODE5NS4NCj4gPiAzLmFkZCBwaW5j
-dHJsIGRyaXZlIGZvciBJMkMgcmVsYXRlZCBwaW5zIG9uIE1UODE5NS4NCj4gPiA0LmFkZCBwaW5j
-dHJsIHJzZWwgc2V0dGluZyBvbiBNVDgxOTUuDQo+ID4NCj4gPiBDaGFuZ2VzIGluIHBhdGNoIHY0
-Og0KPiANCj4gUGF0Y2hlcyAxLCAyICYgMyBhcHBsaWVkIQ0KPiANCj4gTm93IHlvdSBvbmx5IG5l
-ZWQgdG8gcmVzZW5kIHBhdGNoIDQuDQo+IA0KPiBZb3VycywNCj4gTGludXMgV2FsbGVpag0KDQo9
-PT5UaGFua3MgZm9yIHlvdXIgY29tbWVudC4gd2Ugd2lsbCBzZW5kIG9ubHkgcGF0Y2ggNCBpbiBu
-ZXh0IHZlcnNpb24uDQoNCg0K
+On Tue, Apr 20, 2021 at 09:14:12AM +0100, John Garry wrote:
+> On 20/04/2021 01:02, Ming Lei wrote:
+> > On Tue, Apr 20, 2021 at 12:06:24AM +0800, John Garry wrote:
+> > > Function sdev_store_queue_depth() enforces that the sdev queue depth cannot
+> > > exceed shost.can_queue.
+> > > 
+> > > However, the LLDD may still set cmd_per_lun > can_queue, which leads to an
+> > > initial sdev queue depth greater than can_queue.
+> > > 
+> > > Stop this happened by capping initial sdev queue depth at can_queue.
+> > > 
+> > > Signed-off-by: John Garry <john.garry@huawei.com>
+> > > ---
+> > > Topic originally discussed at:
+> > > https://lore.kernel.org/linux-scsi/85dec8eb-8eab-c7d6-b0fb-5622747c5499@interlog.com/T/#m5663d0cac657d843b93d0c9a2374f98fc04384b9
+> > > 
+> > > Last idea there was to error/warn in scsi_add_host() for cmd_per_lun >
+> > 
+> 
+> Hi Ming,
+> 
+> > No, that isn't my suggestion.
+> 
+> Right, it was what I mentioned.
+> 
+> > 
+> > > can_queue. However, such a shost driver could still configure the sdev
+> > > queue depth to be sound value at .slave_configure callback, so now thinking
+> > > the orig patch better.
+> > 
+> > As I mentioned last time, why can't we fix ->cmd_per_lun in
+> > scsi_add_host() using .can_queue?
+> > 
+> 
+> I would rather not change the values which are provided from the driver. I
+> would rather take the original values and try to use them in a sane way.
+> 
+> I have not seen other places where driver shost config values are modified
+> by the core code.
+
+Wrt. .cmd_per_lun, I think it is safe to modify it into one correct
+depth because almost all drivers are just producer of .cmd_per_lun. And
+except for debug purpose, there are only three consumers of .cmd_per_lun
+in scsi, and all are for scsi_change_queue_depth():
+
+	process_message()
+	scsi_alloc_sdev()
+	virtscsi_change_queue_depth()
+
+
+Thanks,
+Ming
 
