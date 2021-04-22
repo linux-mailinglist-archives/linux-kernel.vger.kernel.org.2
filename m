@@ -2,61 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE5D368401
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2716368358
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239005AbhDVPoQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 11:44:16 -0400
-Received: from mail.rusoil.net ([188.128.114.25]:54304 "EHLO mail.rusoil.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238442AbhDVPm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:42:59 -0400
-X-Greylist: delayed 2518 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 11:42:58 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.rusoil.net (Postfix) with ESMTP id B143542669;
-        Thu, 22 Apr 2021 19:43:49 +0500 (YEKT)
-Received: from mail.rusoil.net ([127.0.0.1])
-        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Yl-jKkNMIqqc; Thu, 22 Apr 2021 19:43:49 +0500 (YEKT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.rusoil.net (Postfix) with ESMTP id 42E6D42799;
-        Thu, 22 Apr 2021 19:43:49 +0500 (YEKT)
-X-Virus-Scanned: amavisd-new at mail.rusoil.net
-Received: from mail.rusoil.net ([127.0.0.1])
-        by localhost (mail.rusoil.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yM5pBk4tPfGL; Thu, 22 Apr 2021 19:43:49 +0500 (YEKT)
-Received: from [91.224.92.185] (unknown [91.224.92.185])
-        by mail.rusoil.net (Postfix) with ESMTPSA id 085814277B;
-        Thu, 22 Apr 2021 19:43:47 +0500 (YEKT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Partner with us
-To:     Recipients <Blue@mail.rusoil.net>
-From:   Blue@mail.rusoil.net, Oak@mail.rusoil.net,
-        Mortgage@mail.rusoil.net, and@mail.rusoil.net,
-        Loans@mail.rusoil.net, "<Sharono@rusoil.net>"@mail.rusoil.net
-Date:   Thu, 22 Apr 2021 07:43:01 -0700
-Reply-To: info@bluelmtg.net
-Message-Id: <20210422144348.085814277B@mail.rusoil.net>
+        id S237789AbhDVPbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:31:38 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:41730 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233106AbhDVPbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:31:36 -0400
+Received: by mail-oo1-f46.google.com with SMTP id d16-20020a4a3c100000b02901f0590a614eso2227443ooa.8;
+        Thu, 22 Apr 2021 08:31:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=HTlnkyJ2bx5zva7MZ1v2kYWtL16cGGPmEHiXhdTzOHU=;
+        b=EzEwUI9DTgrtUEQoSY/ckO7miu6TK/4GpdX7I7IimXkPohTTXOqvS4be3LEvlkQe/V
+         nqGbnQ21fQP/SEGR0aEVqGK16uWBYHeKd+mHimf2BcMlC2ha64aI2RlZaYAAR16XqH85
+         RjzS0cd82EltzB/TnEeG1pjG/oHLUxNljlAXKRFwIl3GB0QOLveXQ7tliYl2ERjDCp5y
+         AVhio6OO66KWvFcSAgpZr+7IsDu8yS71jwcPLGoANL6rxX4Xdcek3s90BhY+1owI19DI
+         B7Anx7Jy8tqSLRshjYsxS+OsHPv84cK+06d+tUL7opLCJSkyZe4ztNJ49UOQRO8Fk+2D
+         siog==
+X-Gm-Message-State: AOAM530qWSSAPG8UaFpwXv0ygJooKWlAbRX5qybpS7r8TJlapiE+4P/k
+        gqC1owLV6hiiWv/GiKTZDA==
+X-Google-Smtp-Source: ABdhPJwqakckRYJVHwoIhYL2B1/ENLYjf63BtHWsSTRO8L+AxUf+NmRdpEGbtri7jdAiD6oKA1/hOQ==
+X-Received: by 2002:a4a:e08c:: with SMTP id w12mr2847550oos.48.1619105459963;
+        Thu, 22 Apr 2021 08:30:59 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id g26sm696687otr.73.2021.04.22.08.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 08:30:58 -0700 (PDT)
+Received: (nullmailer pid 3134281 invoked by uid 1000);
+        Thu, 22 Apr 2021 15:30:57 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     davem@davemloft.net, devicetree@vger.kernel.org,
+        vivien.didelot@gmail.com, olteanv@gmail.com, linux@armlinux.org.uk,
+        robh+dt@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        hkallweit1@gmail.com, f.fainelli@gmail.com, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com, andrew@lunn.ch
+In-Reply-To: <20210422094257.1641396-2-prasanna.vengateshan@microchip.com>
+References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com> <20210422094257.1641396-2-prasanna.vengateshan@microchip.com>
+Subject: Re: [PATCH v2 net-next 1/9] dt-bindings: net: dsa: dt bindings for microchip lan937x
+Date:   Thu, 22 Apr 2021 10:30:57 -0500
+Message-Id: <1619105457.718289.3134280.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I lead Operations at Blue Oak Mortagage and Loans , a Finance company based Istanbul, Turkey. After successfully financing over US$ 1 Billion in cross border transactions, we have now launched a Partnership Program.
- 
-Here’s a short overview of our offerings:
+On Thu, 22 Apr 2021 15:12:49 +0530, Prasanna Vengateshan wrote:
+> Documentation in .yaml format and updates to the MAINTAINERS
+> Also 'make dt_binding_check' is passed
+> 
+> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+> ---
+>  .../bindings/net/dsa/microchip,lan937x.yaml   | 142 ++++++++++++++++++
+>  MAINTAINERS                                   |   1 +
+>  2 files changed, 143 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+> 
 
-We are Currently Recruiting Agents that will extend our services Locally. 
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Salary structure is commission based. Fee of 1.5% for Loan Application under $500,000, 1.25% for $500,000 to $1,000,000, and 1% for over $1,000,000.
+yamllint warnings/errors:
 
-Please click on the Link below and complete the form, Our team will get in touch with you with more details.
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/net/dsa/microchip,lan937x.example.dt.yaml:0:0: /example-0/spi/switch@0/mdio: failed to match any schema with compatible: ['microchip,lan937x-mdio']
 
-https://www.bluelmtg.net/become-an-agent
+See https://patchwork.ozlabs.org/patch/1469135
 
-Thomas Michael
-tmichael@bluelmtg.net
-Human Resources Dept
-Blue Oak Mortgage and Loans
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
