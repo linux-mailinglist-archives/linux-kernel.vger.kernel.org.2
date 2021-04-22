@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF6636828A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A643536828C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236587AbhDVOkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:40:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10200 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236510AbhDVOkB (ORCPT
+        id S237169AbhDVOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:40:09 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:17584 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236459AbhDVOkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:40:01 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MEYqt7046890;
-        Thu, 22 Apr 2021 10:38:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=bWvD20q4YhRTe5N3/qrevWFZh7UJjKlLEbSTpGJIUuA=;
- b=oz1DJdrpI9VGdl3dHhwBMAtDPNwPTYJug1TMeShuh0waSzuJ0B3e9WXPG0wkXzDQcyOv
- vcfiPY/hfKZcK3BCl7KPZm7Noqrb52qjF9bqiCaISD288958IlnRuGOMHA0tSqOtfOcu
- Rmlz/tM32MkJqsLuXJDFMGspLvVkgyUjAjbX0PIFOg7JATNUxerSyIa3KA7pDYvll15q
- yordJfQnVBP50+t2/wGoCComPnMzw7QmJKgAKdP66oQBKMky52qnoLGpXehQDbcAWISJ
- SCaXwX0p5/RgPFHlAlMzl1/fAzpA3WcnH0EHGePaaw6AAJZP2F0Zb8V7FUqWlyGh9lH+ Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 383aqvrtnk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 10:38:30 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13MEZhWN051717;
-        Thu, 22 Apr 2021 10:38:30 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 383aqvrtmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 10:38:30 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13MEMmLL032429;
-        Thu, 22 Apr 2021 14:38:28 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 37yqa89m08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 14:38:28 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13MEcPFJ20709722
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 14:38:25 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E72EB52059;
-        Thu, 22 Apr 2021 14:38:24 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 807F552052;
-        Thu, 22 Apr 2021 14:38:24 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>, gor@linux.ibm.com
-Subject: Re: [PATCH v3 9/9] KVM: Move instrumentation-safe annotations for
- enter/exit to x86 code
-References: <20210415222106.1643837-1-seanjc@google.com>
-        <20210415222106.1643837-10-seanjc@google.com>
-        <0c74158d-279a-5afa-0778-822c77ac8dc2@de.ibm.com>
-Date:   Thu, 22 Apr 2021 16:38:24 +0200
-In-Reply-To: <0c74158d-279a-5afa-0778-822c77ac8dc2@de.ibm.com> (Christian
-        Borntraeger's message of "Wed, 21 Apr 2021 10:09:11 +0200")
-Message-ID: <yt9d4kfypeov.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Thu, 22 Apr 2021 10:40:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619102369; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=RMf3EFzLqxN1uAcl/snGb/NnTMeGSO6NhHpgmnX57QQ=;
+ b=NYpTLVj13p9HE70GBt/+qAZ0TEIU5xY0EZMDs6soaZFEm+GAHCrvorZ9R0PJYXwHWXxN1s7Z
+ LqMuR83xhJbDdTAZW9EwCOGfaYrx9P9E9YWMoGs/0tkTfA+Yn/1FXic9fP9L0vxvQ3VbXsWb
+ Nc6Po+lVhrlPRHU6pHFbi551Uus=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60818a8f2cbba8898039bc17 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 14:39:11
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DCAC0C433F1; Thu, 22 Apr 2021 14:39:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DDE4FC433F1;
+        Thu, 22 Apr 2021 14:39:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DDE4FC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: S77gfyvLqOXBp7fwBctyyEw_3Fzv7DwJ
-X-Proofpoint-ORIG-GUID: C7nzDPw_32BELsJPSSQ7R73hhq1Ii59_
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-22_06:2021-04-22,2021-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 impostorscore=0 adultscore=0 phishscore=0 suspectscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104220118
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v3 1/2] wl3501_cs: Fix out-of-bounds warnings in
+ wl3501_send_pkt
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org>
+References: <d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210422143910.DCAC0C433F1@smtp.codeaurora.org>
+Date:   Thu, 22 Apr 2021 14:39:10 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Borntraeger <borntraeger@de.ibm.com> writes:
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-> On 16.04.21 00:21, Sean Christopherson wrote:
->> Drop the instrumentation_{begin,end}() annonations from the common KVM
->> guest enter/exit helpers, and massage the x86 code as needed to preserve
->> the necessary annotations.  x86 is the only architecture whose transition
->> flow is tagged as noinstr, and more specifically, it is the only
->> architecture for which instrumentation_{begin,end}() can be non-empty.
->> No other architecture supports CONFIG_STACK_VALIDATION=y, and s390
->> is the
->> only other architecture that support CONFIG_DEBUG_ENTRY=y.  For
->> instrumentation annontations to be meaningful, both aformentioned configs
->> must be enabled.
->> Letting x86 deal with the annotations avoids unnecessary nops by
->> squashing back-to-back instrumention-safe sequences.
->
-> We have considered implementing objtool for s390. Not sure where we
-> stand and if we will do this or not. Sven/Heiko?
+> Fix the following out-of-bounds warnings by enclosing structure members
+> daddr and saddr into new struct addr, in structures wl3501_md_req and
+> wl3501_md_ind:
+> 
+> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
+> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
+> 
+> Refactor the code, accordingly:
+> 
+> $ pahole -C wl3501_md_req drivers/net/wireless/wl3501_cs.o
+> struct wl3501_md_req {
+> 	u16                        next_blk;             /*     0     2 */
+> 	u8                         sig_id;               /*     2     1 */
+> 	u8                         routing;              /*     3     1 */
+> 	u16                        data;                 /*     4     2 */
+> 	u16                        size;                 /*     6     2 */
+> 	u8                         pri;                  /*     8     1 */
+> 	u8                         service_class;        /*     9     1 */
+> 	struct {
+> 		u8                 daddr[6];             /*    10     6 */
+> 		u8                 saddr[6];             /*    16     6 */
+> 	} addr;                                          /*    10    12 */
+> 
+> 	/* size: 22, cachelines: 1, members: 8 */
+> 	/* last cacheline: 22 bytes */
+> };
+> 
+> $ pahole -C wl3501_md_ind drivers/net/wireless/wl3501_cs.o
+> struct wl3501_md_ind {
+> 	u16                        next_blk;             /*     0     2 */
+> 	u8                         sig_id;               /*     2     1 */
+> 	u8                         routing;              /*     3     1 */
+> 	u16                        data;                 /*     4     2 */
+> 	u16                        size;                 /*     6     2 */
+> 	u8                         reception;            /*     8     1 */
+> 	u8                         pri;                  /*     9     1 */
+> 	u8                         service_class;        /*    10     1 */
+> 	struct {
+> 		u8                 daddr[6];             /*    11     6 */
+> 		u8                 saddr[6];             /*    17     6 */
+> 	} addr;                                          /*    11    12 */
+> 
+> 	/* size: 24, cachelines: 1, members: 9 */
+> 	/* padding: 1 */
+> 	/* last cacheline: 24 bytes */
+> };
+> 
+> The problem is that the original code is trying to copy data into a
+> couple of arrays adjacent to each other in a single call to memcpy().
+> Now that a new struct _addr_ enclosing those two adjacent arrays
+> is introduced, memcpy() doesn't overrun the length of &sig.daddr[0]
+> and &sig.daddr, because the address of the new struct object _addr_
+> is used, instead.
+> 
+> This helps with the ongoing efforts to globally enable -Warray-bounds
+> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+> on memcpy().
+> 
+> Link: https://github.com/KSPP/linux/issues/109
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-We are planning to support objtool on s390. Vasily is working on it -
-maybe he has some thoughts about this.
+2 patches applied to wireless-drivers-next.git, thanks.
+
+820aa37638a2 wl3501_cs: Fix out-of-bounds warnings in wl3501_send_pkt
+bb43e5718d8f wl3501_cs: Fix out-of-bounds warnings in wl3501_mgmt_join
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/d260fe56aed7112bff2be5b4d152d03ad7b78e78.1618442265.git.gustavoars@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
