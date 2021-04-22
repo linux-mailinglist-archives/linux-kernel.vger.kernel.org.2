@@ -2,107 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC775367F4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C10367F4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbhDVLKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:10:49 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42466 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229972AbhDVLKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:10:46 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7+6AWYFgpFQMAA--.4507S2;
-        Thu, 22 Apr 2021 19:09:54 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next v4] bpf: Fix some invalid links in bpf_devel_QA.rst
-Date:   Thu, 22 Apr 2021 19:09:50 +0800
-Message-Id: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx7+6AWYFgpFQMAA--.4507S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1kJw1fKF1UKFyfZFW5Wrg_yoW8Kr1rpa
-        18Gr1a9r1Sgr1fXw4kKr4jvF4SvFs5Way7CFn7Jw1UZFyDZFykXr1S9rs8XanxGrykCFW5
-        ArnakryF9w18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
-        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-        C2KfnxnUUI43ZEXa7VUbG2NtUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S235992AbhDVLKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235955AbhDVLKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:10:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118B1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:10:11 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id u7so21535818plr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f/chTt+osIkWJLziQJ8wWSuoRfhyDdiRVm7MrtKaXiw=;
+        b=mKEimyLVIPVuavwkFK4Vb3mGCyutLIp6e9a8JjPK/FFPW99UQ93YReQbFuVbbvYOKh
+         ZqI1JiF6j/DGu+RKyl66iB+Fud+quoPHmOyvwLmRyq1B30khiYq/jT2O/0S91hsUOBWe
+         Y5/aJGO+b2YzcZVXEb61OVpKVm1fKq6EnN3qA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f/chTt+osIkWJLziQJ8wWSuoRfhyDdiRVm7MrtKaXiw=;
+        b=meNuH+vS1ii2nRIuJLAyMI1Xfxy6IDbaO6zSsQ69bDEEFlEqkvo4cH7k12OtmJcfKH
+         ZeeleyBlae2VcZad9LzudfeCZ3XFxsydOAL6GY7byFQroORm++hqxCMoJNZEskJL446+
+         W/qK1h+yw1FaM3SJz7iQLqXvYdWXuuZsQQI+1mLsMWKdjVXFv7ytVHTPj4zeuptWioQ0
+         mkOKh8yzZ1cOcejY25lyLl7k38AnnVxghM8sRYSMyBzbAdBRYI5tn0f816wnoPMKJkIs
+         Uy1zUVcTpYB1DifdXARMvSwoTdgwbWqke0f18N9jobmrQbMv8reTm+V0sp0PfPWOAzK4
+         R/xQ==
+X-Gm-Message-State: AOAM533GqkuL55FSw1NHVRLuEGuYK6ZuTN9XbN2Cb753cVtaFY6gOwwp
+        QqB4SKxdXU6gcD79btCD/FfgAQ==
+X-Google-Smtp-Source: ABdhPJzKmYE6lUmhguTsDYgVEbYMCSAPKAPA5tLk2yNfUIXlQfSHEfR7PN9tItvv7RCFRP5pYJ5+Kw==
+X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr16537781pjb.233.1619089810552;
+        Thu, 22 Apr 2021 04:10:10 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:daa5:b736:ed85:e08d])
+        by smtp.gmail.com with ESMTPSA id 1sm2004045pjx.46.2021.04.22.04.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 04:10:10 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        CK Hu <ck.hu@mediatek.com>, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/mediatek: clear pending flag when cmdq packet is done.
+Date:   Thu, 22 Apr 2021 19:10:04 +0800
+Message-Id: <20210422111004.1338867-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist some errors "404 Not Found" when I click the link
-of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-in the documentation "HOWTO interact with BPF subsystem" [4].
+From: CK Hu <ck.hu@mediatek.com>
 
-As Jesper Dangaard Brouer said, the links work if you are browsing
-the document via GitHub [5], so I think maybe it is better to use
-the corresponding GitHub links to fix the issues in the kernel.org
-official document [4], this change has no influence on GitHub and
-looks like more clear.
+In cmdq mode, packet may be flushed before it is executed, so
+the pending flag should be cleared after cmdq packet is done.
 
-[1] https://www.kernel.org/doc/html/MAINTAINERS
-[2] https://www.kernel.org/doc/html/samples/bpf/
-[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
-[5] https://github.com/torvalds/linux/blob/master/Documentation/bpf/bpf_devel_QA.rst
-
-Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c  | 56 +++++++++++++++++++++---
+ include/linux/mailbox/mtk-cmdq-mailbox.h |  1 +
+ 2 files changed, 51 insertions(+), 6 deletions(-)
 
-The initial aim is to fix the invalid links, sorry for the noisy.
-
-v4: Use the corresponding GitHub links
-
-v3: Remove "MAINTAINERS" and "samples/bpf/" links and
-    use correct link of "selftests"
-
-v2: Add Fixes: tag
-
- Documentation/bpf/bpf_devel_QA.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 2ed89ab..36a9b62 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -645,10 +645,10 @@ when:
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index 40df2c823187..051bf0eb00d3 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -224,6 +224,45 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(struct drm_crtc *crtc,
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ static void ddp_cmdq_cb(struct cmdq_cb_data data)
+ {
++	struct cmdq_pkt *pkt = (struct cmdq_pkt *)data.data;
++	struct mtk_drm_crtc *mtk_crtc = (struct mtk_drm_crtc *)pkt->crtc;
++	struct mtk_crtc_state *state = to_mtk_crtc_state(mtk_crtc->base.state);
++	unsigned int i;
++
++	if (data.sta == CMDQ_CB_ERROR)
++		goto destroy_pkt;
++
++	if (state->pending_config) {
++		state->pending_config = false;
++	}
++
++	if (mtk_crtc->pending_planes) {
++		for (i = 0; i < mtk_crtc->layer_nr; i++) {
++			struct drm_plane *plane = &mtk_crtc->planes[i];
++			struct mtk_plane_state *plane_state;
++
++			plane_state = to_mtk_plane_state(plane->state);
++
++			if (plane_state->pending.config)
++				plane_state->pending.config = false;
++		}
++		mtk_crtc->pending_planes = false;
++	}
++
++	if (mtk_crtc->pending_async_planes) {
++		for (i = 0; i < mtk_crtc->layer_nr; i++) {
++			struct drm_plane *plane = &mtk_crtc->planes[i];
++			struct mtk_plane_state *plane_state;
++
++			plane_state = to_mtk_plane_state(plane->state);
++
++			if (plane_state->pending.async_config)
++				plane_state->pending.async_config = false;
++		}
++		mtk_crtc->pending_async_planes = false;
++	}
++
++destroy_pkt:
+ 	cmdq_pkt_destroy(data.data);
+ }
+ #endif
+@@ -377,8 +416,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
+ 				    state->pending_height,
+ 				    state->pending_vrefresh, 0,
+ 				    cmdq_handle);
+-
+-		state->pending_config = false;
++		if (!cmdq_handle)
++			state->pending_config = false;
+ 	}
  
- .. Links
- .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
--.. _MAINTAINERS: ../../MAINTAINERS
-+.. _MAINTAINERS: https://github.com/torvalds/linux/blob/master/MAINTAINERS
- .. _netdev-FAQ: ../networking/netdev-FAQ.rst
--.. _samples/bpf/: ../../samples/bpf/
--.. _selftests: ../../tools/testing/selftests/bpf/
-+.. _samples/bpf/: https://github.com/torvalds/linux/tree/master/samples/bpf
-+.. _selftests: https://github.com/torvalds/linux/tree/master/tools/testing/selftests/bpf
- .. _Documentation/dev-tools/kselftest.rst:
-    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
- .. _Documentation/bpf/btf.rst: btf.rst
+ 	if (mtk_crtc->pending_planes) {
+@@ -398,9 +437,11 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
+ 				mtk_ddp_comp_layer_config(comp, local_layer,
+ 							  plane_state,
+ 							  cmdq_handle);
+-			plane_state->pending.config = false;
++			if (!cmdq_handle)
++				plane_state->pending.config = false;
+ 		}
+-		mtk_crtc->pending_planes = false;
++		if (!cmdq_handle)
++			mtk_crtc->pending_planes = false;
+ 	}
+ 
+ 	if (mtk_crtc->pending_async_planes) {
+@@ -420,9 +461,11 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
+ 				mtk_ddp_comp_layer_config(comp, local_layer,
+ 							  plane_state,
+ 							  cmdq_handle);
+-			plane_state->pending.async_config = false;
++			if (!cmdq_handle)
++				plane_state->pending.async_config = false;
+ 		}
+-		mtk_crtc->pending_async_planes = false;
++		if (!cmdq_handle)
++			mtk_crtc->pending_async_planes = false;
+ 	}
+ }
+ 
+@@ -475,6 +518,7 @@ static void mtk_drm_crtc_update_config(struct mtk_drm_crtc *mtk_crtc,
+ 		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
+ 		mtk_crtc_ddp_config(crtc, cmdq_handle);
+ 		cmdq_pkt_finalize(cmdq_handle);
++		cmdq_handle->crtc = mtk_crtc;
+ 		cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handle);
+ 	}
+ #endif
+diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mailbox/mtk-cmdq-mailbox.h
+index d5a983d65f05..c06b14ec03e5 100644
+--- a/include/linux/mailbox/mtk-cmdq-mailbox.h
++++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
+@@ -90,6 +90,7 @@ struct cmdq_pkt {
+ 	struct cmdq_task_cb	cb;
+ 	struct cmdq_task_cb	async_cb;
+ 	void			*cl;
++	void			*crtc;
+ };
+ 
+ u8 cmdq_get_shift_pa(struct mbox_chan *chan);
 -- 
-2.1.0
+2.31.1.498.g6c1eba8ee3d-goog
 
