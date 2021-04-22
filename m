@@ -2,114 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF0636811A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1319436811E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236386AbhDVNDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhDVNDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:03:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5123EC06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:03:17 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id a4so44735411wrr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 06:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZHLzNOHj90q7Oj3aQnNhu92h15Ny9i/xNLc3zPdfQ4g=;
-        b=WpphpWM7d4l8VUDnKXFsMAY2uU4Ft2tRsNLcpI2xJpUu4g0bNIaUUKE0gGVDhLiX/g
-         OjnVmquOzil9wscCXKdb84emGCUDQkMe4RFl4hJh8KN5Wd87NYtHx57Sv7BqWckv6n5b
-         mVKgWt6qQdgryA8hdzD2XfYDmSwjXZKn5xTSogNopKH/q3ToOfYDhJw1XORyZm3uCz19
-         LImQkK/2tVquZeYhYYgKPruClmVOtjO6X9iyj5D3O7rCfKE3B5QJfT3WgAaiUusI+dvP
-         QA4JMoLeJWEErqUPzSDb5DHeWxwyXkFsBjyqfLJOX31XqB42pSNoVWxe8TRRr0KNpNzp
-         Htbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZHLzNOHj90q7Oj3aQnNhu92h15Ny9i/xNLc3zPdfQ4g=;
-        b=Mnz2hwrQ8zIgl+a4lFPpb6yZCrFPBoLBZiwNvPEeaLTUOdVpdcP7tlvFlFRFAJoh9e
-         PXCXz8x91O7E/r8Vhlw9ZDDz+2wBw3FOyyErQUychpc++/frUkdFrlotKelhp71b3I9D
-         JFDMj5JVjD5uBAZEOH05Tk+WhHLfM7iwabfQIYCiL5b0Fuv2YRKVaoL2TRlLRCgk8kXb
-         +mxJKZeq4Lgn1oN1oIbi/zEFc/Z4Vv1d4NgBUSQrmNoXYaj4/ldw4H6rlrtEg/e+M7ac
-         s6xWdw6PujkRVp0G+NOjqkw84M1w3a34Pl/9e0R/vh+uQK6HVendqJqcCtECe1ckEEex
-         dx0w==
-X-Gm-Message-State: AOAM531Zt7MvHgzaGS2UAq9vgbWU4HFHi7fNdM8TnGQYwxUTvYrDpU4D
-        YTvQ5X2xC7P8r2St8ZW3iYshyQ==
-X-Google-Smtp-Source: ABdhPJzhRXkQSnlUedDmqIlV0CkRTeBNaGDZqXpCq7gzsxQIKyjCm9svb44UVutt3ylPh+tyhXcIWw==
-X-Received: by 2002:a5d:47ce:: with SMTP id o14mr4045996wrc.236.1619096595880;
-        Thu, 22 Apr 2021 06:03:15 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n18sm3369617wrw.11.2021.04.22.06.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 06:03:15 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 13:03:12 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        Android Kernel Team <kernel-team@android.com>,
-        Architecture Mailman List <boot-architecture@lists.linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
- reserved memory region
-Message-ID: <YIF0EIXylUJzIsTS@google.com>
-References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
- <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com>
- <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
- <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
- <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
- <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
- <YH/ixPnHMxNo08mJ@google.com>
- <cc8f96a4-6c85-b869-d3cf-5dc543982054@gmail.com>
- <498b8759-1a70-d80f-3a4d-39042b4f608e@gmail.com>
+        id S236410AbhDVNEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:04:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47678 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230005AbhDVNEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:04:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619096614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UMX8rj+pcEc6/XojbFh62HaWVLwaQEd+1bKoCKxPFkA=;
+        b=Eu4e4G6peBU/rnxHUzFMyC1GmuKI7w8Ttf5/JJQZoHGIN/Vzgt+t7xGDt530g9IcWHK8CX
+        6SF5E09+5SSGaRC60AFwhLRKzDQzaJ4LTbm2n5WdPSJxCRXom5fJv/daUbrJK3szXxXtry
+        8GpzcnWumcC/56MaWDVO/TkkB7EjKao=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 34179B016;
+        Thu, 22 Apr 2021 13:03:34 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 15:03:33 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     peter enderborg <peter.enderborg@sony.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Subject: Re: [RFC PATCH] Android OOM helper proof of concept
+Message-ID: <YIF0JZ2uLS4sV6hv@dhcp22.suse.cz>
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <YH54pyRWSi1zLMw4@dhcp22.suse.cz>
+ <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
+ <YH/RPydqhwXdyG80@dhcp22.suse.cz>
+ <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
+ <YIA2rB0wgqKzfUfi@dhcp22.suse.cz>
+ <e01ee3aa-cbcb-dae2-ebcc-aba8b01d8aef@sony.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <498b8759-1a70-d80f-3a4d-39042b4f608e@gmail.com>
+In-Reply-To: <e01ee3aa-cbcb-dae2-ebcc-aba8b01d8aef@sony.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 21 Apr 2021 at 08:17:28 (-0700), Florian Fainelli wrote:
-> 5.10.31 works correctly and shows the following for my platform:
-> 
-> 40000000-fdffefff : System RAM
->   40200000-40eaffff : Kernel code
->   40eb0000-4237ffff : reserved
->   42380000-425affff : Kernel data
->   45000000-450fffff : reserved
->   47000000-4704ffff : reserved
->   4761e000-47624fff : reserved
->   f8c00000-fdbfffff : reserved
-> fdfff000-ffffffff : reserved
-> 100000000-13fffffff : System RAM
->   13b000000-13effffff : reserved
->   13f114000-13f173fff : reserved
->   13f174000-13f774fff : reserved
->   13f775000-13f7e8fff : reserved
->   13f7eb000-13f7ecfff : reserved
->   13f7ed000-13f7effff : reserved
->   13f7f0000-13fffffff : reserved
+On Thu 22-04-21 14:33:45, peter enderborg wrote:
+[...]
+> I think we very much need a OOM killer that can help out,
+> but it is essential that it also play with android rules.
 
-OK, so if we're confident this works from 5.10 onwards, I would suggest
-to follow Ard's original suggestion to revert this patch from older
-LTSes as we're clearly missing something there.
-
-Thanks,
-Quentin
+This is completely off topic to the discussion here.
+-- 
+Michal Hocko
+SUSE Labs
