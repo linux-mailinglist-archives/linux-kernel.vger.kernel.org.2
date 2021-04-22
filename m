@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36328367E46
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9319B367E4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbhDVKDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:03:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235755AbhDVKD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:03:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D2161131;
-        Thu, 22 Apr 2021 10:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619085754;
-        bh=HkPE5rnmVLS4AHdydPD62qofAjx8DHdPJ968fhV+dxI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=131JaMt1q/KG3BQZw49Ze+akwz3yKn4UWo9wEiavnX7LVkZKxz1TNGfj9EfVAKjkv
-         fSSA4/TEgVeCjGmmcPaIZIo0T6RCdR5QUHBjyLcEqrl66GB3BLtbezhz3G57EIITN1
-         VmmjnvzskU9KPZ0LQAqRPrwDujTSjAno9FyB2Z68=
-Date:   Thu, 22 Apr 2021 12:02:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Samo =?utf-8?B?UG9nYcSNbmlr?= <samo_pogacnik@t-2.net>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-Message-ID: <YIFJt9csgZlFkqpT@kroah.com>
-References: <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
- <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
- <YHQkeZVs3pmyie9e@kroah.com>
- <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
- <YHQ3Zy9gRdZsu77w@kroah.com>
- <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
- <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
- <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
- <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
- <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
+        id S235842AbhDVKED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235817AbhDVKEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:04:00 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081E8C06138E
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:03:26 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o16so51133982ljp.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fi1nyojqm+ITv1jOfr1bYqtxzxCOpWmoUIo17W0BtvI=;
+        b=pPEh/5ux89ZxxJmLelA6aiTCu6nZP4KZan7I1fhxg5IM2mB/pMxqaykorlLBoHAAF4
+         BMwLxkvatGofd4g/7+fqs5W27wB9dZ9ZhACIq8AHx9wYErcvCBLxJQL0Waq9f9wS1u+g
+         ht4F4t5p/O9cXD7fTHrqQmB/HkFlmngsYDC/A3S/BdRExVGFpY72I+8AC343Vy6dWKl8
+         05OiqXHyputw/PXr55qoyVbKz9N21H9AnOjxyCORDXaFz5gzHgg7CJq7CDmr4EeoejnQ
+         ASEO0Ip6TWf9+beKJsxfqsnzWoOhq5DyC5nhFwIEVJ/tayxxWlrG2MAN38Bcw/RRaEKQ
+         hl3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fi1nyojqm+ITv1jOfr1bYqtxzxCOpWmoUIo17W0BtvI=;
+        b=lsNVISeeTTLxzZShKZ0C1naRjpx8542//JoxhXIRoU9hAD8n09jRNjlgtpwgA1Sz63
+         0ihr0jS+byDNX/w8+j1oiV7h2gJtIVlb04JsMGs4zvREOa4M64bt0crrg1SYfE4wIB1R
+         CW0b7N4or5aCqOVXrHuJ0kukJwRP5DsN+CoxH3QXdmySU4V8iaxeadUpGwo1oyJX+nPU
+         bEiaclurN84H0ke0Iiwz9nvdjEax+gQSC4dsP1SV74lSeUarj85PhDdj0r158mEe/QtJ
+         KIVd6TDvuB9bqmk2jbbaJbSo14AclvRBw+5oFSAnRs/nLASpiSUURROP01vbo3Ds0yuv
+         KYbg==
+X-Gm-Message-State: AOAM531eu7flAQN9GhETdBKmBl184mVj0uFy6mOULeDRuAz7Ejcv3ebk
+        /5vN/zktg3X2OQnaET+ln7Zluvb01lyAOfU9vAoSfA==
+X-Google-Smtp-Source: ABdhPJzdK6KgdWUAyHPUel0RqEsohUgn0il7lU/HJpySo22DK4nOdNaBNEQmaj5i8Gk/KaGKlqHxQcMn7KBTTYUGYQk=
+X-Received: by 2002:a05:651c:c1:: with SMTP id 1mr1859058ljr.467.1619085804376;
+ Thu, 22 Apr 2021 03:03:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com>
+In-Reply-To: <YHj02M3jMSweoP4l@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 22 Apr 2021 12:03:13 +0200
+Message-ID: <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Wedson Almeida Filho <wedsonaf@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 01:16:05PM +0200, Samo Pogačnik wrote:
-> Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
-> > syzbot is reporting hung task due to flood of
-> > 
-> >   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
-> >            port->count);
-> > 
-> > message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
-> > decrementing port->count due to tty_hung_up_p() == true.
-> > 
-> > ----------
-> > #include <sys/types.h>
-> > #include <sys/stat.h>
-> > #include <fcntl.h>
-> > #include <sys/ioctl.h>
-> > #include <unistd.h>
-> > 
-> > int main(int argc, char *argv[])
-> > {
-> > 	int i;
-> > 	int fd[10];
-> > 
-> > 	for (i = 0; i < 10; i++)
-> > 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
-> > 	ioctl(fd[0], TIOCVHANGUP);
-> > 	for (i = 0; i < 10; i++)
-> > 		close(fd[i]);
-> > 	close(open("/dev/ttyprintk", O_WRONLY));
-> > 	return 0;
-> > }
-> > ----------
-> > 
-> > When TTY hangup happens, port->count needs to be reset via
-> > "struct tty_operations"->hangup callback.
-> > 
-> > [1] 
-> > https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-> > 
-> > Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-> > Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
-> > Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> > Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
-> > ---
-> >  drivers/char/ttyprintk.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-> > index 6a0059e508e3..93f5d11c830b 100644
-> > --- a/drivers/char/ttyprintk.c
-> > +++ b/drivers/char/ttyprintk.c
-> > @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * TTY operations hangup function.
-> > + */
-> > +static void tpk_hangup(struct tty_struct *tty)
-> > +{
-> > +	struct ttyprintk_port *tpkp = tty->driver_data;
-> > +
-> > +	tty_port_hangup(&tpkp->port);
-> > +}
-> > +
-> >  static const struct tty_operations ttyprintk_ops = {
-> >  	.open = tpk_open,
-> >  	.close = tpk_close,
-> >  	.write = tpk_write,
-> >  	.write_room = tpk_write_room,
-> >  	.ioctl = tpk_ioctl,
-> > +	.hangup = tpk_hangup,
-> >  };
-> >  
-> >  static const struct tty_port_operations null_ops = { };
-> 
-> Using the supplied test code, i've tested the patch on my desktop running the
-> 5.4 kernel. After applying the patch, the kernel warnings like "ttyprintk:
-> tty_port_close_start: tty->count = 1 port count = 11" do not appear any more,
-> when the test code is run.
-> I think the patch is ok.
+Hi folks,
 
-Thanks for the review, I'll go queue this up.
+"we will do less critical stuff, like device drivers, first".
 
-greg k-h
+OK I mostly do device drivers. Kind of like it. So I'd like to provide
+feedback from that angle.
+
+On Fri, Apr 16, 2021 at 4:22 AM Wedson Almeida Filho
+<wedsonaf@google.com> wrote:
+
+> We don't intend to directly expose C data structures to Rust code (outside the
+> kernel crate). Instead, we intend to provide wrappers that expose safe
+> interfaces even though the implementation may use unsafe blocks. So we expect
+> the vast majority of Rust code to just care about the Rust memory model.
+
+I'm a bit worried about this.
+
+I am sure you are aware of this document:
+Documentation/process/stable-api-nonsense.rst
+
+We really like to change the internal APIs of the kernel, and it sounds to
+me like Rust really likes a rust-side-vs-C-side approach to APIs, requiring
+these wrappers to be written and maintained all over the place, and that
+is going to affect the mobility of the kernel-internal APIs and make them
+less mobile.
+
+If it means I need to write and review less patches related to NULL
+dereference and use-after-free etc etc, then it may very well be worth
+it.
+
+But as subsystem maintainer I'd like a clear picture of this wrapper
+overhead, what does it usually entail? A typical kernel API has
+vtable and a few variables, not much more than that.
+
+I go to patch 12/13 and I see things like this:
+
++/// A descriptor of wrapped list elements.
++pub trait GetLinksWrapped: GetLinks {
++    /// Specifies which wrapper (e.g., `Box` and `Arc`) wraps the list entries.
++    type Wrapped: Wrapper<Self::EntryType>;
++}
++
++impl<T: ?Sized> GetLinksWrapped for Box<T>
++where
++    Box<T>: GetLinks,
++{
++    type Wrapped = Box<<Box<T> as GetLinks>::EntryType>;
++}
++
++impl<T: GetLinks + ?Sized> GetLinks for Box<T> {
++    type EntryType = T::EntryType;
++    fn get_links(data: &Self::EntryType) -> &Links<Self::EntryType> {
++        <T as GetLinks>::get_links(data)
++    }
++}
+
+My God. Lose the horrible CamelCase to begin with. I hope the
+language spec does not mandate that because our kernel C style
+does not use it.
+
+It becomes obvious that as subsystem maintainer for the Linux kernel
+a casual drive-by experience with Rust is not going to suffice by far.
+
+All subsystem maintainers are expected to understand and maintain
+wrappers like these, right? That means all subsystem maintainers need
+to be elevated to understand the above without effort if you wake them
+up in their sleep at 4 in the morning.
+
+This makes me a bit sceptic.
+
+Get me right, we are of course good at doing really complicated stuff,
+that's what engineers do. But we are not Iron Man. We need a clear
+way into understanding and maintaining wrappers and we need support
+with it when we don't understand it, so the kernel would need a Rust
+wrapper maintainer that we can trust to stay around for the long term,
+i.e. until their retirement, while actively teaching others for decades.
+For an example see how RCU is maintained.
+
+Developing trust in the people Miguel and Wedson is going to be more
+important than trust in Google the company for this.
+
+Yours,
+Linus Walleij
