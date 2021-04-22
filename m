@@ -2,109 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2A336889C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DEA3688A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239710AbhDVVbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:31:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52052 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237012AbhDVVbd (ORCPT
+        id S239451AbhDVVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237048AbhDVVe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:31:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619127057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nGXUjW0OOazPOpzZD1uN6g662t8VP358/xyYRhHZVKU=;
-        b=A2wPPWE+mdyJCvv4lAAO0xO627Lv7qZuFroIEDmzTk6vd+kJGXFzc/Y0I/1/jFbXlG+gE2
-        8OGS2P7s9VogrZKAx7L4Mc3vnTknvLdsBNgOU4nbIVeeAnDqvRN4VJmtO+1dLLXPAQHf3B
-        rkchn/FzEFL8o9hn6JODUUJLJ8WWna8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-7Nf1smN9OpmMkDRV3jdueA-1; Thu, 22 Apr 2021 17:30:55 -0400
-X-MC-Unique: 7Nf1smN9OpmMkDRV3jdueA-1
-Received: by mail-qv1-f70.google.com with SMTP id el4-20020ad459c40000b029019a47ec7a9dso13095921qvb.21
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 14:30:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=nGXUjW0OOazPOpzZD1uN6g662t8VP358/xyYRhHZVKU=;
-        b=m12S+afp3mIcThPVHeocWKrPtEw/q+HB2N5HCc0U6AJ26JVgEPZ97RwkYoA+gJ5nLj
-         zJlO2uKd6rnTrBtay85xp9gZ8NCymKIaGk3ZYJ1PcYv0UtfGwPNNqT5icRMi9I+mz8jp
-         ovXs2FgHFidXP8zc+qwzZifYwIkBJI35Jic3quFVmSGfu1O/SYl0ud4zJeqzbCoGc7W8
-         nAMbeuoxdvmh1uzrlNGkkcGZk9KOZtBHbSGvYbcODMebNYuKnge4H2iVkGt/7g5CGFiO
-         JUg77adOZsRoleIF89OXmywtM47XwX2f1W7xXIOPeEbE16aoCczz5GwkBCUXYtX/ssUG
-         sNCg==
-X-Gm-Message-State: AOAM531HTN6CtIMjyKqTkuVsMq8OwGi0kTVVEdIbO/E5/XfEm41E3SKH
-        ZXPHyobUPQWY8Ctg9B8CPBSLp1QJg4LzGnLnVq7xaUa1zDB+fYzkL5zzI6E6sYTaBi0sikndGWZ
-        3tKiIPR6oRGf4FRAP7rJ8wHat
-X-Received: by 2002:a05:622a:54a:: with SMTP id m10mr565327qtx.298.1619127055272;
-        Thu, 22 Apr 2021 14:30:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGddjOvp+BMhmYr1Yf2ygOT9gDyiMyYmcUgID64jNhky8K5BaSrCaFhLaflCC9Tjriw52stA==
-X-Received: by 2002:a05:622a:54a:: with SMTP id m10mr565301qtx.298.1619127055097;
-        Thu, 22 Apr 2021 14:30:55 -0700 (PDT)
-Received: from localhost.localdomain ([2601:184:417f:70c0::42e6])
-        by smtp.gmail.com with ESMTPSA id 132sm3061295qkn.52.2021.04.22.14.30.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 14:30:54 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] bits: Add tests of GENMASK
-From:   Nico Pache <npache@redhat.com>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        akpm@linux-foundation.org
-Cc:     andy.shevchenko@gmail.com, arnd@arndb.de, emil.l.velikov@gmail.com,
-        geert@linux-m68k.org, keescook@chromium.org,
-        linus.walleij@linaro.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, syednwaris@gmail.com,
-        vilhelm.gray@gmail.com, yamada.masahiro@socionext.com
-References: <20200620213632.60c2c6b99ec9cf9392fa128d@linux-foundation.org>
- <20200621054210.14804-1-rikard.falkeborn@gmail.com>
- <20200621054210.14804-2-rikard.falkeborn@gmail.com>
- <935a7b98-ab4c-15af-3bf0-aa7c1f9de068@redhat.com>
-Message-ID: <6547e027-443f-3752-c14d-6f93d7df1e33@redhat.com>
-Date:   Thu, 22 Apr 2021 17:30:52 -0400
+        Thu, 22 Apr 2021 17:34:28 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75908C06174A;
+        Thu, 22 Apr 2021 14:33:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 528E41F43784
+Subject: Re: next/master bisection: baseline.dmesg.alert on bcm2837-rpi-3-b
+References: <60809bd4.1c69fb81.7752a.1894@mx.google.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernelci-results@groups.io
+Cc:     linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Message-ID: <bd28c734-4964-319f-fe4e-f6787ffe22fd@collabora.com>
+Date:   Thu, 22 Apr 2021 22:33:47 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <935a7b98-ab4c-15af-3bf0-aa7c1f9de068@redhat.com>
+In-Reply-To: <60809bd4.1c69fb81.7752a.1894@mx.google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was missing something... This was not my issue.
+Hi Tudor,
 
-Sorry for the noise!
+Please see the bisection report below about a NULL pointer
+dereference on RPi-3B with 64K pages.
 
--- Nico
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
 
-On 4/22/21 3:40 PM, Nico Pache wrote:
-> Hey,
->
-> Where is TEST_GENMASK_FAILURES being defined? This fails when compiling this
->
-> test as a module.
->
-> Am I missing something here?
->
-> Cheers!
->
-> -- Nico
->
-> On 6/21/20 1:42 AM, Rikard Falkeborn wrote:
->> [Snip...] 
->> +#ifdef TEST_GENMASK_FAILURES
->> +	/* these should fail compilation */
->> +	GENMASK(0, 1);
->> +	GENMASK(0, 10);
->> +	GENMASK(9, 10);
->> +#endif
->> [Snap..] 
->
+This is the kernel error message in the full boot log:
+
+  https://storage.kernelci.org/next/master/next-20210421/arm64/defconfig+CONFIG_ARM64_64K_PAGES=y/gcc-8/lab-baylibre/baseline-bcm2837-rpi-3-b.html#L336
+
+More details can be found here:
+
+  https://linux.kernelci.org/test/case/id/60801a28ecf57fef7d9b77af/
+
+
+Please let us know if you need any help to debug this issue or
+try a fix.
+
+Best wishes,
+Guillaume
+
+
+On 21/04/2021 22:40, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> 
+> next/master bisection: baseline.dmesg.alert on bcm2837-rpi-3-b
+> 
+> Summary:
+>   Start:      b74523885a71 Add linux-next specific files for 20210421
+>   Plain log:  https://storage.kernelci.org/next/master/next-20210421/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-bcm2837-rpi-3-b.txt
+>   HTML log:   https://storage.kernelci.org/next/master/next-20210421/arm64/defconfig+CONFIG_RANDOMIZE_BASE=y/gcc-8/lab-baylibre/baseline-bcm2837-rpi-3-b.html
+>   Result:     6579c8d97ad7 clk: Mark fwnodes when their clock provider is added
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       next
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   Branch:     master
+>   Target:     bcm2837-rpi-3-b
+>   CPU arch:   arm64
+>   Lab:        lab-baylibre
+>   Compiler:   gcc-8
+>   Config:     defconfig+CONFIG_RANDOMIZE_BASE=y
+>   Test case:  baseline.dmesg.alert
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit 6579c8d97ad7fc5671ee60234f3b8388abee5f77
+> Author: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Date:   Wed Feb 10 13:44:35 2021 +0200
+> 
+>     clk: Mark fwnodes when their clock provider is added
+>     
+>     This is a follow-up for:
+>     commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
+>     
+>     The above commit updated the deprecated of_clk_add_provider(),
+>     but missed to update the preferred of_clk_add_hw_provider().
+>     Update it now.
+>     
+>     Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>     Acked-by: Stephen Boyd <sboyd@kernel.org>
+>     Reviewed-by: Saravana Kannan <saravanak@google.com>
+>     Link: https://lore.kernel.org/r/20210210114435.122242-2-tudor.ambarus@microchip.com
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index 5052541a0986..60e12e0c036a 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -4615,6 +4615,8 @@ int of_clk_add_hw_provider(struct device_node *np,
+>  	if (ret < 0)
+>  		of_clk_del_provider(np);
+>  
+> +	fwnode_dev_initialized(&np->fwnode, true);
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(of_clk_add_hw_provider);
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [1fe5501ba1abf2b7e78295df73675423bd6899a0] Merge tag 'trace-v5.12-rc8' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace
+> git bisect good 1fe5501ba1abf2b7e78295df73675423bd6899a0
+> # bad: [b74523885a715463203d4ccc3cf8c85952d3701a] Add linux-next specific files for 20210421
+> git bisect bad b74523885a715463203d4ccc3cf8c85952d3701a
+> # good: [a59aa904b6f45af01f1f87179437e31ba98506fc] Merge remote-tracking branch 'crypto/master'
+> git bisect good a59aa904b6f45af01f1f87179437e31ba98506fc
+> # good: [58af1162bdd0819bbec853afb574190f2be62464] Merge remote-tracking branch 'tip/auto-latest'
+> git bisect good 58af1162bdd0819bbec853afb574190f2be62464
+> # bad: [2e490d45230a23b07b7b2dc5f89ec213b677b032] Merge remote-tracking branch 'vfio/next'
+> git bisect bad 2e490d45230a23b07b7b2dc5f89ec213b677b032
+> # bad: [5941c9263bb2b27b5018f66a6f4111a6ba659a49] Merge remote-tracking branch 'driver-core/driver-core-next'
+> git bisect bad 5941c9263bb2b27b5018f66a6f4111a6ba659a49
+> # good: [3fe24bd182cc22c8e7e577553ae8efe3b4236afe] Merge remote-tracking branch 'kvm/next'
+> git bisect good 3fe24bd182cc22c8e7e577553ae8efe3b4236afe
+> # good: [dbb7b6249662b1a303e275c2e0dcdbefbae681bc] Merge remote-tracking branch 'percpu/for-next'
+> git bisect good dbb7b6249662b1a303e275c2e0dcdbefbae681bc
+> # good: [e5b20246d0707a4deee2e172b55a73b05309c05d] Merge remote-tracking branch 'drivers-x86/for-next'
+> git bisect good e5b20246d0707a4deee2e172b55a73b05309c05d
+> # bad: [c8a9c285f136f0cc65ac8328cd1710b155ad3df8] debugfs: drop pointless nul-termination in debugfs_read_file_bool()
+> git bisect bad c8a9c285f136f0cc65ac8328cd1710b155ad3df8
+> # bad: [b82a7b018b93d282d0f1a41a854ca3d071e02759] platform/x86: gpd pocket fan: Clean-up by using managed work init
+> git bisect bad b82a7b018b93d282d0f1a41a854ca3d071e02759
+> # good: [b6f617df4fa936c1ab1831c2b23563f6c1add6c4] driver core: Update device link status properly for device_bind_driver()
+> git bisect good b6f617df4fa936c1ab1831c2b23563f6c1add6c4
+> # bad: [53f95c55349e75b73f69ce36b0ae2a83b3f28fde] devcoredump: avoid -Wempty-body warnings
+> git bisect bad 53f95c55349e75b73f69ce36b0ae2a83b3f28fde
+> # bad: [6579c8d97ad7fc5671ee60234f3b8388abee5f77] clk: Mark fwnodes when their clock provider is added
+> git bisect bad 6579c8d97ad7fc5671ee60234f3b8388abee5f77
+> # good: [ea718c699055c8566eb64432388a04974c43b2ea] Revert "Revert "driver core: Set fw_devlink=on by default""
+> git bisect good ea718c699055c8566eb64432388a04974c43b2ea
+> # first bad commit: [6579c8d97ad7fc5671ee60234f3b8388abee5f77] clk: Mark fwnodes when their clock provider is added
+> -------------------------------------------------------------------------------
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#10226): https://groups.io/g/kernelci-results/message/10226
+> Mute This Topic: https://groups.io/mt/82249004/924702
+> Group Owner: kernelci-results+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
 
