@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2716036849C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA693684B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237927AbhDVQPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235232AbhDVQPs (ORCPT
+        id S236616AbhDVQWY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 12:22:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:47292 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236236AbhDVQWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:15:48 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E12C06138B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:15:12 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id t22so23457250ply.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 09:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hPrnw+6gYREfgVmbG9la+vlv6dGyfI3xfHXyLaBNaY0=;
-        b=gScS+XjDdPxVnNlif6QF4Ktr6IKwhe4aH5TJDc6JBaZWQ2DitrRN8UJvq/dfOzR3DW
-         ovBVyy6Gxt0d3lGIoRzMFZH8FYMUXylkFbEjmxwf34wbaWdzDaDBYeRPjN2YUYgQi6uC
-         Srkldqp9AkSmKS2B0oY6zw+WrWSPFlxwVmfNI3r8ogY5WLnqS83VfFVc3/c/P8/aa9tQ
-         yzFBJCmdtRrmq3QmKB/eeLiiLCFbAVwsKJ4cY6aW4mz5w4F+Zw4ElhKDREydU31wRTCz
-         Y9Sf/N88Va6bZme1WGuaPYig4QnkAR4VXy+8/W7y+/DPmQ1r1sCTmEMxQnvMJQOIx22R
-         vFFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hPrnw+6gYREfgVmbG9la+vlv6dGyfI3xfHXyLaBNaY0=;
-        b=FtKFVmQHQoRcmPnkYSf1bgzd202j/Rf2bbIv7NOioqb0m7dAAkbyfGYIS7S8zRRawq
-         mey8WabM+iPdS8SsOYCc/yIzXxbLObsi2T1MS1ivvbxVe7gctXX+/f5qTkF/80udmgme
-         Uf3KZgaSDEejA3CWeWNMoDf1Vq3NtgDmS3utrERs8tZdVZHa1DYqTFS2gnIfNGGDn5o8
-         /u4d8JvUJm7cT0nbJLu0OI42WCRlMbju/sSn65QItU8fwO/e7+ExNU6nkLCJEP0PfNVq
-         LxZjexZtv53Sp4wHp5XTUnrUjAeO57Y/OY0h3mFl/K8191QKQns7NzAdGKyviOPe0jnZ
-         RQng==
-X-Gm-Message-State: AOAM530iIh3DF0OpR4zm9yGPKwFVtD/LBshzIOnXsr0MDtKTD8Hks3+8
-        0PNrFNbILJQkKc/slsLWmlvo1A==
-X-Google-Smtp-Source: ABdhPJyOayWFoLYWFT+Owff0/VHBrm9ci9acPCP3tukyJz3F7vgvr3XujaCyYBh0KIO5KKe033tbBg==
-X-Received: by 2002:a17:902:b117:b029:e6:81ed:8044 with SMTP id q23-20020a170902b117b02900e681ed8044mr4092540plr.13.1619108111612;
-        Thu, 22 Apr 2021 09:15:11 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h8sm2693759pjt.17.2021.04.22.09.15.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 09:15:11 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 16:15:07 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Wei Huang <wei.huang2@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v5 03/15] KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
-Message-ID: <YIGhC/1vlIAZfwzm@google.com>
-References: <20210422021125.3417167-1-seanjc@google.com>
- <20210422021125.3417167-4-seanjc@google.com>
- <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
+        Thu, 22 Apr 2021 12:22:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-270-mhKvP-dDOsuLyQ0QyQj3_Q-1; Thu, 22 Apr 2021 17:21:41 +0100
+X-MC-Unique: mhKvP-dDOsuLyQ0QyQj3_Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 22 Apr 2021 17:21:40 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 22 Apr 2021 17:21:40 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dan Carpenter' <dan.carpenter@oracle.com>,
+        Joel Stanley <joel@jms.id.au>
+CC:     Andrew Jeffery <andrew@aj.id.au>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        "John Wang" <wangzhiqiang.bj@bytedance.com>,
+        Brad Bishop <bradleyb@fuzziesquirrel.com>,
+        Patrick Venture <venture@google.com>,
+        "Benjamin Fair" <benjaminfair@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Lippert <rlippert@google.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH] soc: aspeed: fix a ternary sign expansion bug
+Thread-Topic: [PATCH] soc: aspeed: fix a ternary sign expansion bug
+Thread-Index: AQHXN1ec+IlNNgnl7EGootyN/jCOrarAtu4w
+Date:   Thu, 22 Apr 2021 16:21:40 +0000
+Message-ID: <59596244622c4a15ac8cc0747332d0be@AcuMS.aculab.com>
+References: <YIE90PSXsMTa2Y8n@mwanda>
+In-Reply-To: <YIE90PSXsMTa2Y8n@mwanda>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Paolo Bonzini wrote:
-> On 22/04/21 04:11, Sean Christopherson wrote:
-> > Disable SEV and SEV-ES if NPT is disabled.  While the APM doesn't clearly
-> > state that NPT is mandatory, it's alluded to by:
-> > 
-> >    The guest page tables, managed by the guest, may mark data memory pages
-> >    as either private or shared, thus allowing selected pages to be shared
-> >    outside the guest.
-> > 
-> > And practically speaking, shadow paging can't work since KVM can't read
-> > the guest's page tables.
-> > 
-> > Fixes: e9df09428996 ("KVM: SVM: Add sev module_param")
-> > Cc: Brijesh Singh <brijesh.singh@amd.com
-> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/svm/svm.c | 30 +++++++++++++++---------------
-> >   1 file changed, 15 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index fed153314aef..0e8489908216 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -970,7 +970,21 @@ static __init int svm_hardware_setup(void)
-> >   		kvm_enable_efer_bits(EFER_SVME | EFER_LMSLE);
-> >   	}
-> > -	if (IS_ENABLED(CONFIG_KVM_AMD_SEV) && sev) {
-> > +	/*
-> > +	 * KVM's MMU doesn't support using 2-level paging for itself, and thus
-> > +	 * NPT isn't supported if the host is using 2-level paging since host
-> > +	 * CR4 is unchanged on VMRUN.
-> > +	 */
-> > +	if (!IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_X86_PAE))
-> > +		npt_enabled = false;
+From: Dan Carpenter
+> Sent: 22 April 2021 10:12
 > 
-> Unrelated, but since you're moving this code: should we be pre-scient and
-> tackle host 5-level paging as well?
+> The intent here was to return negative error codes but it actually
+> returns positive values.  The problem is that type promotion with
+> ternary operations is quite complicated.
 > 
-> Support for 5-level page tables on NPT is not hard to fix and could be
-> tested by patching QEMU.  However, the !NPT case would also have to be fixed
-> by extending the PDP and PML4 stacking trick to a PML5.
+> "ret" is an int.  "copied" is a u32.  And the snoop_file_read() function
+> returns long.  What happens is that "ret" is cast to u32 and becomes
+> positive then it's cast to long and it's still positive.
+> 
+> Fix this by removing the ternary so that "ret" is type promoted directly
+> to long.
+> 
+> Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/soc/aspeed/aspeed-lpc-snoop.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> index 210455efb321..eceeaf8dfbeb 100644
+> --- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> +++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> @@ -94,8 +94,10 @@ static ssize_t snoop_file_read(struct file *file, char __user *buffer,
+>  			return -EINTR;
+>  	}
+>  	ret = kfifo_to_user(&chan->fifo, buffer, count, &copied);
+> +	if (ret)
+> +		return ret;
+> 
+> -	return ret ? ret : copied;
+> +	return copied;
 
-Isn't that backwards?  It's the nested NPT case that requires the stacking trick.
-When !NPT is disabled in L0 KVM, 32-bit guests are run with PAE paging.  Maybe
-I'm misunderstanding what you're suggesting.
- 
-> However, without real hardware to test on I'd be a bit wary to do it.
-> Looking at 5-level EPT there might be other issues (e.g. what's the guest
-> MAXPHYADDR) and I would prefer to see what AMD comes up with exactly in the
-> APM.  So I would just block loading KVM on hypothetical AMD hosts with
-> CR4.LA57=1.
+I wonder if changing it to:
+	return ret ? ret + 0L : copied;
 
-Agreed, I think blocking KVM makes the most sense.
+Might make people think in the future and not convert it back
+as an 'optimisation'.
+
+I much prefer adding 0 to a cast to fix integer types.
+In can go less wrong!
+
+IMHO there are far too many casts in the kernel sources.
+Especially the ones that are only there to appease sparse.
+A functional notation for those would remove some of
+the potential problems.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
