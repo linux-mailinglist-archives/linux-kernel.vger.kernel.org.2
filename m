@@ -2,152 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337323685DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57F63685DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238408AbhDVR1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:27:23 -0400
-Received: from mailout.easymail.ca ([64.68.200.34]:49454 "EHLO
-        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238241AbhDVR1W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:27:22 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id 7DFF1A25F0;
-        Thu, 22 Apr 2021 17:26:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5uPJ_vC_TAc3; Thu, 22 Apr 2021 17:26:46 +0000 (UTC)
-Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        by mailout.easymail.ca (Postfix) with ESMTPA id 1F35BA1981;
-        Thu, 22 Apr 2021 17:26:37 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id 2CEC53EE3E;
-        Thu, 22 Apr 2021 11:26:37 -0600 (MDT)
-Subject: Re: [PATCH v2 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <alpine.DEB.2.21.2104201934280.44318@angie.orcam.me.uk>
- <alpine.DEB.2.21.2104201940430.44318@angie.orcam.me.uk>
-From:   Khalid Aziz <khalid@gonehiking.org>
-Message-ID: <888a641e-3864-6d7b-11c2-4e3a4bf2c578@gonehiking.org>
-Date:   Thu, 22 Apr 2021 11:26:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2104201940430.44318@angie.orcam.me.uk>
-Content-Type: text/plain; charset=utf-8
+        id S238450AbhDVR2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:28:32 -0400
+Received: from mail-mw2nam10on2097.outbound.protection.outlook.com ([40.107.94.97]:53345
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236058AbhDVR2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 13:28:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jdJ5XKU2V7aqdgej4sO7M2mAJYeuVBEE8JDB8mB2adh5G19XPwsUJDjzQrZTu5Uk8XPwpH1tjrvrgplVZhOYFOxBmOKA8nqzy1c86dfjsuolS7o7JgeEyfktuh9eAtTlWpG/wx3+ujDHL26Rfqd3cY966TN3dXqHWTnTkH+hi3gmksY/RVRQz8yB0uKC1/fzZNaGiPIC8zH2SqST9gqr4WXKFLYPtQVcvJ68xf+0TsUpN1vPfmsXiBY/BfWH2BMvBnlAVIJoI2MHrrhsx6qvGff+P1wq0528VGn4i5/z8dMEjWdI3KYQnMCr6AXhPCIJGdGvpVBinXnkNtlkZ8dDng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MGrQTV3gTFgwhHi7CzQiMf0mbbCj9SPgO7EKdErjqac=;
+ b=l5napk6doeOKCONYw5f8lwEj0rP4BxVkB9U1USuhAiqDqofSkEH7PEsWEioGiMuCUvyqQjxpeuDSvEW6aCNINbcTNVGrG+ural1/uLPfpnpOJmUbUDLquJ8gpvpquKpUz4ASX8xNLrLwBtlJUSHAnyrLvlFDvIqa60lsy7hQbEGAJQnIamfbqAQ9H0yhNkZeYt79Fmp7eqfN9+EWy2RK464G2g/NOkyZSrAIkhL1s4Vo98hwn6txOVLnnpyMg+QcOMJxNBViHycBLFdEmcUc2dR2VKuhEEtQaBcGIvCnmIiEX/rspMcmwZiq5QsPV3v+6NiXC4ZNsroLsiT8eDy4MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MGrQTV3gTFgwhHi7CzQiMf0mbbCj9SPgO7EKdErjqac=;
+ b=SQEuHLJ8jLzt4XzcZXVKOYBgIvIfaT1eluLhu/3RJF7wBBvon36rpKQH2U5VKrzgKIhYAdnpRspDCacIhTCaY+12cW4avAkNt5yFbDSURPNNpoEdop9huHb9uI9TJtyyP56jaOYj0xjGPQSR56Pa+OY6oSrPSy3MLYRoS9iXd90=
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ (2603:10b6:302:10::24) by MWHPR21MB0639.namprd21.prod.outlook.com
+ (2603:10b6:300:127::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.5; Thu, 22 Apr
+ 2021 17:27:54 +0000
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4065.008; Thu, 22 Apr 2021
+ 17:27:54 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Arnd Bergmann <arnd@kernel.org>, KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Shachar Raindel <shacharr@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] net: mana: fix PCI_HYPERV dependency
+Thread-Topic: [PATCH] net: mana: fix PCI_HYPERV dependency
+Thread-Index: AQHXN3xJ/rfMR5JpBUSHXQTEKxwOSqrAyd+w
+Date:   Thu, 22 Apr 2021 17:27:54 +0000
+Message-ID: <MW2PR2101MB0892209BCEEE47259A7AE03BBF469@MW2PR2101MB0892.namprd21.prod.outlook.com>
+References: <20210422133444.1793327-1-arnd@kernel.org>
+In-Reply-To: <20210422133444.1793327-1-arnd@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a29a2ba8-a3e5-410d-85c3-cb51b8a26dc0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-22T17:24:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:8b00:6b90:753d:cc43:efdd:9f99]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d939df14-4fab-49e1-c87e-08d905b3f67b
+x-ms-traffictypediagnostic: MWHPR21MB0639:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB06397040E1BE84626A0519EDBF469@MWHPR21MB0639.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: t7Tk1cwpJBHrFTgHRgd6g/V9yGZvWQhBjVlRQO44Bna0c2xvvP1+CU6Q1kmNK9XWC1yQi5xoASf7lOf2a41y0J2N+61AmLcwwWaHb75iVxQHs7Mu5U9Yk7PxcXIZE1HGoUwZfokUpRvP9SwCjWt7AgTabKEu0ClkOatW+4Z5gFLA1VGq/nTUuKwXrKpifo45pptlmtX6fhrYNg7SWIny+NS5BabBiWB7itYxNpKY7dqdAR6baZi3Vz3x2pgWvZ4SD7mtcdj7pRmmmH/vSo4PrgGIRPezYL6SVWYdE1oENhEn4nI3FJF/4z7Bz0hitvkY09dqyJs0+AGY6vADAL6rGlkZe4gPcGU0MXPZ6j2kF+zFiS4FSRZHZYfdf20dyxxAtMW7fA87IQotQmHZ/Vu845fbfhqGtfH9JTiUH7cYYICnDEX+vxOJYbyt5L+ordfsNHkjalAeQ8+nP/8IOEBMC2SUMDDdxDzTsbgO7ArC33uVmRKrW5/a3m2XdHeZrWC8LWdN6Zxc+Mxk3z8B3ls37j0pM66EiSjEPgGqjtefODCgyceAGir1IyTnA4lHXQCjafLUCsuQhJFqhr6sNwnajP+A1BeImF9wBHpc7OBqFZk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(10290500003)(8990500004)(55016002)(9686003)(8676002)(33656002)(7696005)(86362001)(8936002)(76116006)(2906002)(66946007)(64756008)(66556008)(4326008)(5660300002)(66476007)(316002)(38100700002)(122000001)(71200400001)(82960400001)(6506007)(52536014)(82950400001)(66446008)(478600001)(186003)(83380400001)(110136005)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?0h5j+oEOoxkqYfDYTYo5CqsBGpGP92wGAauzHEDzT/sQXe361fHxCazaEv5A?=
+ =?us-ascii?Q?Fc/Bu0tQNZrOeLSEWAhVXu4vVI/lSAYRsZSArx9sfyqiYe9WXH95XW03eZJt?=
+ =?us-ascii?Q?r59nF/CAeEYBQZnD6Tvd5B+1OdpsWa0AGXmHIW3LFvNvHZ62SQj1GLM9vK0d?=
+ =?us-ascii?Q?2QNwWkngfS5S7TFZpQoO0yxFupnQ+ns0OuV1ZWqEc1TGB8+1lNSt7i3qJ3km?=
+ =?us-ascii?Q?m8ndsJVyM1IZZTc/MJaRNjXylxjtpuJRJ247sGjF9lISyzuHgCIq6qNJp2fg?=
+ =?us-ascii?Q?izXfYRt22vJ8izUacyDWXfyyY+M4zNi3zBXJurJ8wW5JvTvSrvVBvLRR7Jho?=
+ =?us-ascii?Q?AACqsaNtSb+TLYnRCTqF2lPPDUfSmFI35FCEkLjaEE9UsScBQJkFhCgXn5uo?=
+ =?us-ascii?Q?n0NGwEZ6g38F6R8sqlEnskRXSvjBFTsX/ckS5E5K2hHd9ckPeCh/o8LUxAEW?=
+ =?us-ascii?Q?jE9qV0zYDqoJJXzKkOjcrjNGC2eWyor+NwPD3yilJ6DI07mfYBPLtLLUMq5/?=
+ =?us-ascii?Q?iPYJ3C0fmF0L2OHIQ2+n1L7RHax9ejvnC3Ex3RuQxwc1xTmmXUC9BKGGoPuT?=
+ =?us-ascii?Q?A+r8XXqUtnCl0SvcT5fkmcuGghJhreWJj5pgZjccGkZNq5/BR30cDobnbpwO?=
+ =?us-ascii?Q?XbL9Bza0PP0VBLeW6cglQ5gNmfQ8Un+S3Lduj4J6VQI5clCliNdYKjmnvZ2K?=
+ =?us-ascii?Q?JExngcPYzGX/pKR8+UcYCo8M+lhUx7omK+cryJLIH9rXQCJEYSJF6vvUP5Kc?=
+ =?us-ascii?Q?ITn4sCGygJsWJAZTCWcIaIKqbORDW+cuAKIIic1ibvraIWMFLXPnWcS2gzkN?=
+ =?us-ascii?Q?PvV1m+SGyM16J1ettahaZLX7G2S86qH8E5fa97kRC0Iv5qjZRMnQm8WHCVk/?=
+ =?us-ascii?Q?8qqyEdmkA+S2fuSSr7F8rG8DqvZ4Xu0tELHYEmpPJHXWqnj+i41I9jlXuF/U?=
+ =?us-ascii?Q?XBn1A5hjzrMqgXN6kan5Si9dlO6QdKV0gGQ5rzQcXDxIY2gvbh7fcdygeNZN?=
+ =?us-ascii?Q?OMkZ0IticeBABGenoNtHORqkkLQtGzuMvR9EYX0LiUTbQikV17PZURCML3rX?=
+ =?us-ascii?Q?E8NBvhra5yHJi+CCR7MlonV5jXYGSrRQEItapSZim2Ia4OBxvF3EEL7uMnDh?=
+ =?us-ascii?Q?UUzJQb5TqL84mROxbE1izA2OLqGC2/qmqw+WFk0BTR5mZNBQfLJfrloF7UsB?=
+ =?us-ascii?Q?IEZ/VglvGGC0s6scdNU9xvL25+K+uZRNxQP6qZWkfvBe2pUMvBS2dKmT+HSx?=
+ =?us-ascii?Q?gVK9ey8+X2W/ilmD2FmDvg+SiIWa5hlmH6bND/wxKGiRtF1r4UxgQuFpnkPv?=
+ =?us-ascii?Q?tr62ythoWFLHpdEp0dgY7HxwE+Pm2IIeAF8w+ouenWd1BPWpg0Zn3uQe9xdD?=
+ =?us-ascii?Q?kn9VOEj9wTgtQTi03EdOHvkTxRhR?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d939df14-4fab-49e1-c87e-08d905b3f67b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2021 17:27:54.0928
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +rAZH2JfyjSEjXFFez8hR0GxeNJj2U0DGjdrA15V69Hr69IDMeLjCfq1QtN36u/icQfsEbtWhPUhowVM2Hvr+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0639
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/20/21 12:01 PM, Maciej W. Rozycki wrote:
-> Update BusLogic driver's messaging system to use `pr_cont' for 
-> continuation lines, bringing messy output:
-> 
-> pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-> scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-> scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-> scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-> scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
-> scsi0:   PCI Bus: 0, Device: 19, Address:
-> 0xE0012000,
-> Host Adapter SCSI ID: 7
-> scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
-> scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
-> scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
-> scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
-> scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
-> scsi0:   Tagged Queue Depth:
-> Automatic
-> , Untagged Queue Depth: 3
-> scsi0:   SCSI Bus Termination: Both Enabled
-> , SCAM: Disabled
-> 
-> scsi0: *** BusLogic BT-958 Initialized Successfully ***
-> scsi host0: BusLogic BT-958
-> 
-> back to order:
-> 
-> pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-> scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-> scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-> scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-> scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
-> scsi0:   PCI Bus: 0, Device: 19, Address: 0xE0012000, Host Adapter SCSI ID: 7
-> scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
-> scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
-> scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
-> scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
-> scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
-> scsi0:   Tagged Queue Depth: Automatic, Untagged Queue Depth: 3
-> scsi0:   SCSI Bus Termination: Both Enabled, SCAM: Disabled
-> scsi0: *** BusLogic BT-958 Initialized Successfully ***
-> scsi host0: BusLogic BT-958
-> 
-> Also diagnostic output such as with the `BusLogic=TraceConfiguration' 
-> parameter is affected and becomes vertical and therefore hard to read.  
-> This has now been corrected, e.g.:
-> 
-> pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-> blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
-> blogic_cmd(95) Status = 28: (Modify I/O Address)
-> blogic_cmd(91) Status = 30:  1 ==>  1: 01
-> blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
-> blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
-> scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-> scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-> blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
-> blogic_cmd(0B) Status = 30:  3 ==>  3: 00 08 07
-> blogic_cmd(0D) Status = 30: 34 ==> 34: 03 01 07 04 00 00 00 00 00 00 00 00 00 00 00 00 FF 42 44 46 FF 00 00 00 00 00 00 00 00 00 FF 00 FF 00
-> blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
-> blogic_cmd(84) Status = 30:  1 ==>  1: 37
-> blogic_cmd(8B) Status = 30:  5 ==>  5: 39 35 38 20 20
-> blogic_cmd(85) Status = 30:  1 ==>  1: 42
-> blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
-> blogic_cmd(91) Status = 30: 64 ==> 64: 41 46 3E 20 39 35 38 20 20 00 C4 00 04 01 07 2F 07 04 35 FF FF FF FF FF FF FF FF FF FF 01 00 FE FF 08 FF FF 00 00 00 00 00 00 00 01 00 01 00 00 FF FF 00 00 00 00 00 00 00 00 00 00 00 00 00 FC
-> scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-> 
-> etc.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
-> Cc: stable@vger.kernel.org # v4.9+
-> ---
-> No changes from v1.
-> ---
->  drivers/scsi/BusLogic.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> linux-buslogic-pr-cont.diff
-> Index: linux-macro-ide/drivers/scsi/BusLogic.c
-> ===================================================================
-> --- linux-macro-ide.orig/drivers/scsi/BusLogic.c
-> +++ linux-macro-ide/drivers/scsi/BusLogic.c
-> @@ -3603,7 +3603,7 @@ static void blogic_msg(enum blogic_msgle
->  			if (buf[0] != '\n' || len > 1)
->  				printk("%sscsi%d: %s", blogic_msglevelmap[msglevel], adapter->host_no, buf);
->  		} else
-> -			printk("%s", buf);
-> +			pr_cont("%s", buf);
->  	} else {
->  		if (begin) {
->  			if (adapter != NULL && adapter->adapter_initd)
-> @@ -3611,7 +3611,7 @@ static void blogic_msg(enum blogic_msgle
->  			else
->  				printk("%s%s", blogic_msglevelmap[msglevel], buf);
->  		} else
-> -			printk("%s", buf);
-> +			pr_cont("%s", buf);
->  	}
->  	begin = (buf[len - 1] == '\n');
->  }
-> 
+> From: Arnd Bergmann <arnd@kernel.org>
+> Sent: Thursday, April 22, 2021 6:35 AM
+>  ...
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> The MANA driver causes a build failure in some configurations when
+> it selects an unavailable symbol:
+>=20
+> WARNING: unmet direct dependencies detected for PCI_HYPERV
+>   Depends on [n]: PCI [=3Dy] && X86_64 [=3Dy] && HYPERV [=3Dn] && PCI_MSI=
+ [=3Dy]
+> && PCI_MSI_IRQ_DOMAIN [=3Dy] && SYSFS [=3Dy]
+>   Selected by [y]:
+>   - MICROSOFT_MANA [=3Dy] && NETDEVICES [=3Dy] && ETHERNET [=3Dy] &&
+> NET_VENDOR_MICROSOFT [=3Dy] && PCI_MSI [=3Dy] && X86_64 [=3Dy]
+> drivers/pci/controller/pci-hyperv.c: In function 'hv_irq_unmask':
+> drivers/pci/controller/pci-hyperv.c:1217:9: error: implicit declaration o=
+f
+> function 'hv_set_msi_entry_from_desc'
+> [-Werror=3Dimplicit-function-declaration]
+>  1217 |
+> hv_set_msi_entry_from_desc(&params->int_entry.msi_entry, msi_desc);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>=20
+> A PCI driver should never depend on a particular host bridge
+> implementation in the first place, but if we have this dependency
+> it's better to express it as a 'depends on' rather than 'select'.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Reviewed-by: Dexuan Cui <decui@microsoft.com>
+
