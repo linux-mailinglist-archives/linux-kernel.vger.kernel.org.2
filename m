@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8E2367B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4745B367B90
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 09:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235058AbhDVHzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 03:55:33 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:36353 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhDVHza (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:55:30 -0400
-Received: by mail-vs1-f54.google.com with SMTP id k124so22494273vsk.3;
-        Thu, 22 Apr 2021 00:54:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qpkaQhzeov50oc6KPA23GaI7TsaxSxtBoceUfcE/9Sk=;
-        b=tywHBSVswq9QdPocJKMHHTzng98YZoJ6kD73BWfoE8ENclGBfiiSwZ/EpQodHA5wWu
-         4fr48i8Wa+wzcBYCVcD+uHn78etjbcea4j9zM+lcoSJzVgk8Ob0lBz2wc3Ejc6zT3dxm
-         yPBYGWxoAN5XcoCw/Pc7MpTl16MubMmEdWfPZztR/Jdc0L5GUuZJTZeVlLvKUMawiUwW
-         kuJlCeNRPOCu0mdCBL5HNgs57YEbwGfHsj8/q0saAQUnM/+lbID1kJyMd8B8+PRe1+RN
-         4dHYPEC2+04v5TXUSssdqfZfbtXGa7EzR2xePRFB/2YwjZwIeBPohc85siqXk37xiMle
-         TtZg==
-X-Gm-Message-State: AOAM531H2EJA3i9i71pt8iP80KedYORikDGeRJ/AavcYHfQUjPKP8IPy
-        DnJNaCkMpDFf5yW+ENVmnjebNNqVlSNnZBf0AWE=
-X-Google-Smtp-Source: ABdhPJwtFhxUw98Gc7OKUPl72+O0w1pCgzfb4sHhqy/yR9VoWa6zB6EU9CZP8E0Jy7h3yyInAnQSGlXsvFAfH9ejdYA=
-X-Received: by 2002:a67:7c8c:: with SMTP id x134mr1512113vsc.40.1619078095714;
- Thu, 22 Apr 2021 00:54:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210421143115.22797-1-johan@kernel.org> <202104220355.v8nwWx2T-lkp@intel.com>
- <CAMuHMdXKWDB89Hm-LQcpfTq=0yjm_xvQsQiD4QuEtW=yVymuRw@mail.gmail.com>
- <YIEnr9g8AmYFuLPh@hovoldconsulting.com> <CAMuHMdV94SLyuyHUbrMue-0f_mTNn87WbWJu6an=aPFAjyHY8w@mail.gmail.com>
- <YIErSfPrBbUtJ5bf@hovoldconsulting.com>
-In-Reply-To: <YIErSfPrBbUtJ5bf@hovoldconsulting.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 22 Apr 2021 09:54:44 +0200
-Message-ID: <CAMuHMdViQbA9yr=V81AxD7yij44Ks3Z1q-j2E6kPQBFOXWK5iQ@mail.gmail.com>
-Subject: Re: [PATCH] serial: extend compile-test coverage
-To:     Johan Hovold <johan@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S235181AbhDVH4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 03:56:13 -0400
+Received: from mga09.intel.com ([134.134.136.24]:8505 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhDVH4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 03:56:12 -0400
+IronPort-SDR: 0aFG2SN2QrB3so2CtiAIhCWI1/fB3HBdhmoThuqMOFlFjP1TObkuZQgi3RHjLw6E4vkIyX3W5s
+ ud12VzmNBVHg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="195956882"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="195956882"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 00:55:22 -0700
+IronPort-SDR: NzzDXLHqu2L9ny8xkAuI5KpJ53WmVuRRYa4TXBeg0VGbwjgtGyJ9SCmJPHoPY87pGnjicHzuzi
+ WL7/NlHup3mQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="421282361"
+Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Apr 2021 00:55:17 -0700
+From:   mohammad.athari.ismail@intel.com
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Chuah@vger.kernel.org, Kim Tatt <kim.tatt.chuah@intel.com>
+Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>,
+        Tan Tee Min <tee.min.tan@intel.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mohammad.athari.ismail@intel.com
+Subject: [PATCH net-next 0/2] Enable DWMAC HW descriptor prefetch
+Date:   Thu, 22 Apr 2021 15:54:59 +0800
+Message-Id: <20210422075501.20207-1-mohammad.athari.ismail@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
 
-On Thu, Apr 22, 2021 at 9:52 AM Johan Hovold <johan@kernel.org> wrote:
-> On Thu, Apr 22, 2021 at 09:40:38AM +0200, Geert Uytterhoeven wrote:
-> > On Thu, Apr 22, 2021 at 9:37 AM Johan Hovold <johan@kernel.org> wrote:
-> > > On Thu, Apr 22, 2021 at 09:11:50AM +0200, Geert Uytterhoeven wrote:
-> > > > On Thu, Apr 22, 2021 at 3:20 AM kernel test robot <lkp@intel.com> wrote:
-> > > > > >> drivers/tty/serial/serial_txx9.c:987:12: warning: no previous prototype for function 'early_serial_txx9_setup' [-Wmissing-prototypes]
-> > > > >    int __init early_serial_txx9_setup(struct uart_port *port)
-> > > > >               ^
-> > > > >    drivers/tty/serial/serial_txx9.c:987:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> > > > >    int __init early_serial_txx9_setup(struct uart_port *port)
-> > > > >    ^
-> > > > >    static
-> > > > >    1 warning generated.
-> > > >
-> > > > This function is called from arch/mips/txx9/generic/setup.c, and does
-> > > > have a forward declaration in arch/mips/include/asm/txx9/generic.h.
-> > > > Unfortunately the latter cannot be included from the driver, unless
-> > > > the || COMPILE_TEST is dropped again.
-> > >
-> > > Thanks, Geert. I was just about to send a v2 without the txx9 hunk.
-> >
-> > well, I guess apart from this (W=1!) warning, this driver still
-> > compile-tests fine.
-> > Do we consider hard-to-fix W=1 warnings to be legitimate blockers
-> > for enabling compile-testing?
->
-> Since the build bots have enabled them (and people have turned it into a
-> crusade to suppress every W=1 warning by any means) I think it's
-> reasonable to not introduce new ones knowingly.
->
-> And I'm not too motivated right now to try to work around this one
-> myself. The idea here was just to enable COMPILE_TEST for drivers that
-> did not have any build-time dependencies.
+This patch series to add setting for HW descriptor prefetch for DWMAC version 5.20 onwards. For Intel platform, enable the capability by default.
 
-OK.
+Mohammad Athari Bin Ismail (2):
+  net: stmmac: Add HW descriptor prefetch setting for DWMAC Core 5.20
+    onwards
+  stmmac: intel: Enable HW descriptor prefetch by default
 
-Gr{oetje,eeting}s,
-
-                        Geert
+ drivers/net/ethernet/stmicro/stmmac/common.h      |  1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c |  1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c  | 10 ++++++++--
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.h  |  1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |  5 +++++
+ include/linux/stmmac.h                            |  1 +
+ 6 files changed, 17 insertions(+), 2 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
