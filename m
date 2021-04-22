@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EF5367CD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA461367CD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbhDVIsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbhDVIs3 (ORCPT
+        id S235609AbhDVIsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:48:09 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53178 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235514AbhDVIsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:48:29 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467C9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:47:53 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id r7so31936531wrm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 01:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vhe86cA9Lih/Xt94SXw0z79g/E1uDPv2HAfY3KSx+U8=;
-        b=QVQ0oK3P9q5+OKlOxd2cm20f+Pe+5e1RcMSaxC+9Gh0mXJKMsYMm7TE9eBkDByCvJk
-         z0t0VbWjfYIHDAGtcSzpLvKSkPXl/BV6E9PlCvPXDiKVnASbaWpqxRa49TmfmEiHGPhO
-         y0vxBUIf7EKTCWvPJvWApPxrMKOr8qz8XVCNI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=vhe86cA9Lih/Xt94SXw0z79g/E1uDPv2HAfY3KSx+U8=;
-        b=YRN5ADe3dHjnO4mqusaCXmKG1mNHQYLRJ2xIT7wfJSha75ym31ZQ5RLGXKag3Ji7DC
-         ulHkueYAVm0NmDZS52NhgSUDHkEO8b9jKry+y0CGwmKjRxT3Lh6O2nSsZ6wFOm7GUGbM
-         jwU1Fm9+93cD/OG+I7qW1O1DlrNmzMHac+FkptvksnfuHdTy1cs1ke+EMT/OMborxDF1
-         ffKnIzXexWsRycd8Z64QSUzAcdV+RNBuc7tJpRCfkSMeJSqeYsxdUTa49QQeBjkvMVXF
-         VZgp76mr+ECt0RSDb3+hf5GdL8FQACyRF8KG7QmHKTa4wC8gp72Kw7f6FQSdzBWRmGi8
-         Xw6w==
-X-Gm-Message-State: AOAM5320d9MPlG99KktlTakM+4y3ttrknSopCz9T2ItboIEfpyl2HQ28
-        IVDPs4l2IcYhwHTD1MwkZokeOQ==
-X-Google-Smtp-Source: ABdhPJzcm6kE7NQZCOW9L9xzUGFvRn8tmUaI48ZbsK+VB9ct0DWTuMUMU2ZRLQNrm2Aj2yX3VTR6QA==
-X-Received: by 2002:adf:fb43:: with SMTP id c3mr2731711wrs.360.1619081272055;
-        Thu, 22 Apr 2021 01:47:52 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id o62sm5253687wme.5.2021.04.22.01.47.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 01:47:51 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 10:47:25 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        melissa.srw@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH 3/3] drm: drm_connector.c: Use tabs for code indents
-Message-ID: <YIE4HTjVGbBPaRQG@phenom.ffwll.local>
-Mail-Followup-To: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, melissa.srw@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com
-References: <cover.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
- <0200474fbdb1149856308bccb8e467415f0b3d99.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
+        Thu, 22 Apr 2021 04:48:07 -0400
+X-UUID: 4e1c1a1297ef4dbab9f550b9931bb8b4-20210422
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=lgjhrko7voA+5hsxOvNsIZmAxBpH3ReDLI988ioHR74=;
+        b=NNpNuFmEI7BfsJbAS8ut/8um0gXfOx9LHIxK3l0Oru+J2hX+0/Z6cbz28QMZZu6rOY4RhRiFJLek8l5OFktMWHBFXFtlW2ajE+YZKzYjSDqmF6quPnqXJv2B60ikG4KZvMVZG3DXFK4c3kNht/L57zNpe2kB+cmdlbduBNJOxSk=;
+X-UUID: 4e1c1a1297ef4dbab9f550b9931bb8b4-20210422
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 321861852; Thu, 22 Apr 2021 16:47:29 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 22 Apr 2021 16:47:28 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Apr 2021 16:47:27 +0800
+Message-ID: <6db776994f939cd5403addeffdc78fc82bc98e7a.camel@mediatek.com>
+Subject: Re: [v3,1/3] thermal: mediatek: Relocate driver to mediatek folder
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, <linux-pm@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>
+CC:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>, <hsinyi@chromium.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 22 Apr 2021 16:47:28 +0800
+In-Reply-To: <836581c1-0738-8e42-b168-b54d0bd078a5@linaro.org>
+References: <20210312034018.17437-1-michael.kao@mediatek.com>
+         <20210312034018.17437-2-michael.kao@mediatek.com>
+         <836581c1-0738-8e42-b168-b54d0bd078a5@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0200474fbdb1149856308bccb8e467415f0b3d99.1618828127.git.martinsdecarvalhobeatriz@gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 08:42:49PM +0100, Beatriz Martins de Carvalho wrote:
-> Remove space and use tabs for indent the code to follow the
-> Linux kernel coding conventions.
-> Problem found by checkpatch
-> 
-> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+T24gVHVlLCAyMDIxLTA0LTIwIGF0IDIzOjIyICswMjAwLCBEYW5pZWwgTGV6Y2FubyB3cm90ZToN
+Cj4gT24gMTIvMDMvMjAyMSAwNDo0MCwgTWljaGFlbCBLYW8gd3JvdGU6DQo+ID4gQWRkIE1lZGlh
+dGVrIHByb3ByaWV0YXJ5IGZvbGRlciB0byB1cHN0cmVhbSBtb3JlIHRoZXJtYWwgem9uZSBhbmQN
+Cj4gPiBjb29sZXINCj4gPiBkcml2ZXJzLiBSZWxvY2F0ZSB0aGUgb3JpZ2luYWwgdGhlcm1hbCBj
+b250cm9sbGVyIGRyaXZlciB0byBpdCBhbmQNCj4gPiByZW5hbWUNCj4gPiBhcyBzb2NfdGVtcC5j
+IHRvIHNob3cgaXRzIHB1cnBvc2UgbW9yZSBjbGVhcmx5Lg0KPiANCj4gV2UgYWxyZWFkeSBrbm93
+IHRoZSBwdXJwb3NlIDopDQo+IA0KPiBzb2NfdGVtcCBnaXZlcyBubyBhZGRpdGlvbmFsIGluZm9y
+bWF0aW9uLg0KPiANCj4gRWl0aGVyIGtlZXAgdGhlIG5hbWUgb3IgZ2l2ZSB0aGUgaGFyZHdhcmUg
+c2Vuc29yIG5hbWUuIEl0IGlzIGEgZHJpdmVyDQo+IGRpcmVjdG9yeS4NCj4gDQoNCkRlYXIgRGFu
+aWVsLA0KVGhlIG5ldyB0aGVybWFsIGhhcmR3YXJlIGRlc2lnbiBjYWxsZWQgbHZ0cyAoTG93IHZv
+bHRhZ2UgdGhlcm1hbA0Kc2Vuc29yKS4NCkluc3RlYWQgb2Ygb3JpZ2luYWwgb25lIHVzaW5nIGF1
+eGFkYywgdGhlIGx2dHMgdXNlIGx2dHMgZGV2aWNlIHRvDQphY2Nlc3MgdGhlcm1hbCBzZW5vc3Jz
+Lg0KSXQgd2lsbCBzYXZlIHBvd2VyIGFuZCBiZSBtb3JlIGVmZmljaWVudC4NCldlIHVzZSB0aGUg
+Y29uZmlnIENPTkZJR19NVEtfVEhFUk1BTCBhbmQgQ09ORklHX01US19TT0NfVEhFUk1BTF9MVlRT
+WzFdDQp0byBzZWxlY3QgdGhlIGRpZmZlcmVudCBoYXJkd2FyZSBhcmNodGVjdHVyZS4NCg0KWzFd
+IFt2MywyLzNdIHRoZXJtYWw6IG1lZGlhdGVrOiBBZGQgTFZUUyBkcml2ZXJzIGZvciBTb0MgdGhl
+cmFtbCB6b25lcw0KDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgt
+bWVkaWF0ZWsvcGF0Y2gvMjAyMTAzMTIwMzQwMTguMTc0MzctMy1taWNoYWVsLmthb0BtZWRpYXRl
+ay5jb20vDQoNCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIEthbyA8bWljaGFlbC5rYW9AbWVk
+aWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3RoZXJtYWwvS2NvbmZpZyAgICAgICAg
+ICAgICAgICAgICAgICAgfCAxNCArKysrLS0tLS0tLQ0KPiA+ICBkcml2ZXJzL3RoZXJtYWwvTWFr
+ZWZpbGUgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQ0KPiA+ICBkcml2ZXJzL3RoZXJtYWwv
+bWVkaWF0ZWsvS2NvbmZpZyAgICAgICAgICAgICAgfCAyMw0KPiA+ICsrKysrKysrKysrKysrKysr
+KysNCj4gPiAgZHJpdmVycy90aGVybWFsL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgIHwg
+IDEgKw0KPiA+ICAuLi4ve210a190aGVybWFsLmMgPT4gbWVkaWF0ZWsvc29jX3RlbXAuY30gICAg
+fCAgMA0KPiANCj4gWyAuLi4gXQ0KPiANCj4gdnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2
+dnZ2dnZ2dnYNCj4gDQo+IA0KPiA+ICtjb25maWcgTVRLX1RIRVJNQUwNCj4gPiArCXRyaXN0YXRl
+ICJNZWRpYXRlayB0aGVybWFsIGRyaXZlcnMiDQo+ID4gKwlkZXBlbmRzIG9uIFRIRVJNQUxfT0YN
+Cj4gPiArCWhlbHANCj4gPiArCSAgVGhpcyBpcyB0aGUgb3B0aW9uIGZvciBNZWRpYXRlayB0aGVy
+bWFsIHNvZnR3YXJlDQo+ID4gKwkgIHNvbHV0aW9ucy4gUGxlYXNlIGVuYWJsZSBjb3JyZXNwb25k
+aW5nIG9wdGlvbnMgdG8NCj4gPiArCSAgZ2V0IHRlbXBlcmF0dXJlIGluZm9ybWF0aW9uIGZyb20g
+dGhlcm1hbCBzZW5zb3JzIG9yDQo+ID4gKwkgIHR1cm4gb24gdGhyb3R0bGUgbWVjaGFpc21zIGZv
+ciB0aGVybWFsIG1pdGlnYXRpb24uDQo+ID4gKw0KPiA+ICtpZiBNVEtfVEhFUk1BTA0KPiANCj4g
+DQo+IF5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eDQo+IA0KPiBBbGwgdGhl
+IGFib3ZlIG5vdCBuZWVkZWQuDQo+IA0KPiA+ICtjb25maWcgTVRLX1NPQ19USEVSTUFMDQo+ID4g
+Kwl0cmlzdGF0ZSAiVGVtcGVyYXR1cmUgc2Vuc29yIGRyaXZlciBmb3IgbWVkaWF0ZWsgU29DcyIN
+Cj4gPiArCWRlcGVuZHMgb24gSEFTX0lPTUVNDQo+ID4gKwlkZXBlbmRzIG9uIE5WTUVNDQo+ID4g
+KwlkZXBlbmRzIG9uIFJFU0VUX0NPTlRST0xMRVINCj4gPiArCWhlbHANCj4gPiArCSAgRW5hYmxl
+IHRoaXMgb3B0aW9uIGlmIHlvdSB3YW50IHRvIGdldCBTb0MgdGVtcGVyYXR1cmUNCj4gPiArCSAg
+aW5mb3JtYXRpb24gZm9yIE1lZGlhdGVrIHBsYXRmb3Jtcy4gVGhpcyBkcml2ZXINCj4gPiArCSAg
+Y29uZmlndXJlcyB0aGVybWFsIGNvbnRyb2xsZXJzIHRvIGNvbGxlY3QgdGVtcGVyYXR1cmUNCj4g
+PiArCSAgdmlhIEFVWEFEQyBpbnRlcmZhY2UuDQo+ID4gKw0KPiA+ICtlbmRpZg0KPiA+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL3RoZXJtYWwvbWVkaWF0ZWsvTWFrZWZpbGUNCj4gPiBiL2RyaXZlcnMv
+dGhlcm1hbC9tZWRpYXRlay9NYWtlZmlsZQ0KPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4g
+aW5kZXggMDAwMDAwMDAwMDAwLi5mNzUzMTNkZGNlNWUNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4g
+KysrIGIvZHJpdmVycy90aGVybWFsL21lZGlhdGVrL01ha2VmaWxlDQo+ID4gQEAgLTAsMCArMSBA
+QA0KPiA+ICtvYmotJChDT05GSUdfTVRLX1NPQ19USEVSTUFMKQkrPSBzb2NfdGVtcC5vDQo+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvdGhlcm1hbC9tdGtfdGhlcm1hbC5jDQo+ID4gYi9kcml2ZXJz
+L3RoZXJtYWwvbWVkaWF0ZWsvc29jX3RlbXAuYw0KPiA+IHNpbWlsYXJpdHkgaW5kZXggMTAwJQ0K
+PiA+IHJlbmFtZSBmcm9tIGRyaXZlcnMvdGhlcm1hbC9tdGtfdGhlcm1hbC5jDQo+ID4gcmVuYW1l
+IHRvIGRyaXZlcnMvdGhlcm1hbC9tZWRpYXRlay9zb2NfdGVtcC5jDQo+IA0KPiANCj4gDQo=
 
-Both of your patch sets applied to drm-misc-next for 5.14, thanks a lot.
--Daniel
-
-> ---
->  drivers/gpu/drm/drm_connector.c | 38 ++++++++++++++++-----------------
->  1 file changed, 19 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index 7631f76e7f34..38600c3a6ab2 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -1958,11 +1958,11 @@ int drm_connector_set_path_property(struct drm_connector *connector,
->  	int ret;
->  
->  	ret = drm_property_replace_global_blob(dev,
-> -	                                       &connector->path_blob_ptr,
-> -	                                       strlen(path) + 1,
-> -	                                       path,
-> -	                                       &connector->base,
-> -	                                       dev->mode_config.path_property);
-> +					       &connector->path_blob_ptr,
-> +					       strlen(path) + 1,
-> +					       path,
-> +					       &connector->base,
-> +					       dev->mode_config.path_property);
->  	return ret;
->  }
->  EXPORT_SYMBOL(drm_connector_set_path_property);
-> @@ -1988,11 +1988,11 @@ int drm_connector_set_tile_property(struct drm_connector *connector)
->  
->  	if (!connector->has_tile) {
->  		ret  = drm_property_replace_global_blob(dev,
-> -		                                        &connector->tile_blob_ptr,
-> -		                                        0,
-> -		                                        NULL,
-> -		                                        &connector->base,
-> -		                                        dev->mode_config.tile_property);
-> +							&connector->tile_blob_ptr,
-> +							0,
-> +							NULL,
-> +							&connector->base,
-> +							dev->mode_config.tile_property);
->  		return ret;
->  	}
->  
-> @@ -2003,11 +2003,11 @@ int drm_connector_set_tile_property(struct drm_connector *connector)
->  		 connector->tile_h_size, connector->tile_v_size);
->  
->  	ret = drm_property_replace_global_blob(dev,
-> -	                                       &connector->tile_blob_ptr,
-> -	                                       strlen(tile) + 1,
-> -	                                       tile,
-> -	                                       &connector->base,
-> -	                                       dev->mode_config.tile_property);
-> +					       &connector->tile_blob_ptr,
-> +					       strlen(tile) + 1,
-> +					       tile,
-> +					       &connector->base,
-> +					       dev->mode_config.tile_property);
->  	return ret;
->  }
->  EXPORT_SYMBOL(drm_connector_set_tile_property);
-> @@ -2076,10 +2076,10 @@ int drm_connector_update_edid_property(struct drm_connector *connector,
->  
->  	ret = drm_property_replace_global_blob(dev,
->  					       &connector->edid_blob_ptr,
-> -	                                       size,
-> -	                                       edid,
-> -	                                       &connector->base,
-> -	                                       dev->mode_config.edid_property);
-> +					       size,
-> +					       edid,
-> +					       &connector->base,
-> +					       dev->mode_config.edid_property);
->  	if (ret)
->  		return ret;
->  	return drm_connector_set_tile_property(connector);
-> -- 
-> 2.25.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
