@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E67F3688BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67773688BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhDVVuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:50:10 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1655 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236763AbhDVVuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:50:09 -0400
-IronPort-SDR: AKEY+wKDzhGHW/53nQ5MeHCv6BOHTlcvOnl2Q3qgbKQIwBfI3dyPM16n59eOtJX5ojKhDqcz12
- 4fv4JvBIT7VQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="281306828"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="281306828"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 14:49:34 -0700
-IronPort-SDR: 9v3Jnzo0sau8JhUvLa2YtbH0/lldGzL0vEapv3imVSDVBi8H6TblUsXIQ2t7l3Hpc7Vu6Y8Zmg
- SyP+3KoWw88g==
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="455965847"
-Received: from eassadia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.4.68])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 14:49:33 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Rafael J Wysocki <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
+        id S239482AbhDVVvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:51:13 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:45152 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236763AbhDVVvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 17:51:12 -0400
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MLmEfK004055;
+        Thu, 22 Apr 2021 21:50:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pps0720;
+ bh=iNdC/uGhdlQFKij68vl/US1UmD9Kxg0qHkSQJC+u0O8=;
+ b=dGxqzGaul4kf/ZlF+iKMxvC3Urj7S6nG3DizjZBL2kma3TaWoIIFJ3Fl3r+UbbaFvX/1
+ AoTNQ59cf1YYDF8he5ZKkfJn+WDqBSudxBVXgQlPTUGJkOq5Y4ndP1QRKvzLS7fqiKOQ
+ A7eqD0FeXOOvgLo7ysvFU34p+ZX1aFZUZOh8feZMtVFZ1pf68nF9/Sp7CWSrRqmocW3Z
+ S3zc9RZRWzGjls8OfbIpu9HW1aPxwl4WlROJOu6yMGdr3Re7aNj7DpM5VZvP1VxHVo/M
+ OJkiqo7URY0WeStsRWrWlSU/ltwrTFFOz+urycxdUanAdRZTD+p+Xi8yVkxfDE6doJTv DQ== 
+Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
+        by mx0b-002e3701.pphosted.com with ESMTP id 3830xc8jhd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Apr 2021 21:50:30 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3426.houston.hpe.com (Postfix) with ESMTP id 1930D4E;
+        Thu, 22 Apr 2021 21:50:29 +0000 (UTC)
+Received: from [16.99.148.179] (unknown [16.99.148.179])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 3FE5348;
+        Thu, 22 Apr 2021 21:50:28 +0000 (UTC)
+Subject: Re: arch/x86/kernel/apic/x2apic_uv_x.c:106 early_get_pnodeid() warn:
+ inconsistent indenting
+To:     Borislav Petkov <bp@suse.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
         linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH v2 1/1] ACPICA: Add SVKL table headers
-Date:   Thu, 22 Apr 2021 14:49:30 -0700
-Message-Id: <20210422214930.716596-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Yang Li <yang.lee@linux.alibaba.com>
+References: <202104211946.vkuV39N1-lkp@intel.com>
+ <84b4fbc3-0310-b7d7-f613-0eb4ae090e1e@hpe.com>
+ <20210422090652.GB6361@zn.tnic>
+From:   Mike Travis <mike.travis@hpe.com>
+Message-ID: <e2e957f1-06f4-29b5-b268-7fd77db25529@hpe.com>
+Date:   Thu, 22 Apr 2021 14:50:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422090652.GB6361@zn.tnic>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: TJqp4bz8Adqie1NvLIlAtPQZLWdzNj9l
+X-Proofpoint-ORIG-GUID: TJqp4bz8Adqie1NvLIlAtPQZLWdzNj9l
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-22_14:2021-04-22,2021-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 adultscore=0 clxscore=1015
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104220160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACPICA commit b5e6bcf69dbb9877481992d5ce86008cfb94f5b8
+Thanks Boris, I do have a clean up patch to remove more dead code 
+coming, I'll put this patch in that if that's okay?
 
-SVKL (Storage Volume Key Location Table) is used by BIOS/Firmware
-to share storage volume encryption key's with OS. It will be used
-by userspace to decrypt and mount encrypted drives.
-
-So add SVKL table signature and add it to known signatures array
-support SVKL.
-
-You can find details about the SVKL table in TDX specfication
-titled "Guest-Host-Communication Interface (GHCI) for Intel
-Trust Domain Extensions (Intel® TDX)", sec 4.4 and in ACPI
-specification r6.4, sec 5.2.6.
-
-https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
-
-Cc: Robert Moore <robert.moore@intel.com>
-Cc: Erik Kaneda <erik.kaneda@intel.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Link: https://github.com/acpica/acpica/commit/b5e6bcf6
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- include/acpi/actbl2.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-index d6478c430c99..83a9d8b68e3a 100644
---- a/include/acpi/actbl2.h
-+++ b/include/acpi/actbl2.h
-@@ -43,6 +43,7 @@
- #define ACPI_SIG_SDEI           "SDEI"	/* Software Delegated Exception Interface Table */
- #define ACPI_SIG_SDEV           "SDEV"	/* Secure Devices table */
- #define ACPI_SIG_NHLT           "NHLT"	/* Non-HDAudio Link Table */
-+#define ACPI_SIG_SVKL           "SVKL"	/* Storage Volume Key Location Table */
- 
- /*
-  * All tables must be byte-packed to match the ACPI specification, since
-@@ -1713,6 +1714,35 @@ struct acpi_sdev_pcie_path {
- 	u8 function;
- };
- 
-+/*******************************************************************************
-+ *
-+ * SVKL - Storage Volume Key Location Table (ACPI 6.4)
-+ *        Version 1
-+ *
-+ ******************************************************************************/
-+
-+struct acpi_table_svkl {
-+	struct acpi_table_header header;	/* Common ACPI table header */
-+	u32 count;
-+};
-+
-+struct acpi_svkl_header {
-+	u16 type;
-+	u16 format;
-+	u32 size;
-+	u64 address;
-+};
-+
-+enum acpi_svkl_type {
-+	ACPI_SVKL_TYPE_MAIN_STORAGE = 0,
-+	ACPI_SVKL_TYPE_RESERVED = 1	/* 1 and greater are reserved */
-+};
-+
-+enum acpi_svkl_format {
-+	ACPI_SVKL_FORMAT_RAW_BINARY = 0,
-+	ACPI_SVKL_FORMAT_RESERVED = 1	/* 1 and greater are reserved */
-+};
-+
- /* Reset to default packing */
- 
- #pragma pack()
--- 
-2.25.1
-
+On 4/22/2021 2:06 AM, Borislav Petkov wrote:
+> On Wed, Apr 21, 2021 at 06:38:37PM -0700, Mike Travis wrote:
+>> I'm a bit confused.  I have this in my inbox that someone else has this fix.
+>> So will that fix be applied or should I send a separate one that is
+>> essentially a duplicate?
+> 
+> I'm not even considering that fix because I'm tired of getting some
+> half-baked robot mails which only resemble patches. The obnoxiousness to
+> not have the decency to sit down and write a proper commit message is
+> getting totally out of control.
+> 
+> Apparently some people(?) think that sending robot output to real humans
+> *without* even vetting that output is a good idea so off to /dev/null it
+> goes.
+> 
+> If you want this fixed, you could do a proper patch with a sensible
+> commit message and I'll take it.
+> 
+> I'm tired of dumb robots.
+> 
+> Thx.
+> 
+> 
