@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBE8368865
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D41368869
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239553AbhDVVDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S239649AbhDVVEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236877AbhDVVDp (ORCPT
+        with ESMTP id S239483AbhDVVET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:03:45 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB60C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 14:03:09 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id r7so34130096wrm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 14:03:09 -0700 (PDT)
+        Thu, 22 Apr 2021 17:04:19 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE42C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 14:03:43 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j18so74342742lfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 14:03:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i7DD+/0KtDzlOaM9CNLggbeaur6RPNbh2vfq3OSjo4k=;
-        b=GVMAvXnjeI+4q2pu8ek5Clft9BpJalNSCU7fpRxYERIhVqUmfo5Bbp2Fit2GK684gd
-         58/VnHDidnXJqnvug2d8wdD7UZGXLimZ2/tthfF20o+au9dVHU1USkvO1uNVV2VU+ijl
-         YAF9m4GByK4p+ALe6IrwModahB+ycvddEiX+AiT2cjFlwkRADCEsvNH6GN0uv1qBMHmu
-         oVe8SWoERhbqtDQFG4L8MPl38Ys8nsTdr7PEq4Bd9ZYbIUnDo1Vh1DLJIfydyAycam6c
-         BUqohUL+sWqEutLAeah9++XJRQCYVlyXeoSLpWrYIKuLU1urB3EIsuNKTE0ABhQa4bcu
-         qncw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aAJ3wIqxiqvlLWO7wV14Gxdne6FOxL4p89moI9+JwaM=;
+        b=Le2cwmRFqg0tNhBF8yyb98ti3+8Tx7DQ6AIZX+DqlqrvIOehpmd6KTW+o2YLvfmuIU
+         HOWDpiEc9I7ZQR/qRq1IKWF1K8GAIFf5CtTKfR+sIs3GPl+8qla1Im8VX2+G8Ym6xJ9W
+         jbFaNVnKN3/ziZLkZKOfJD/vRDjJPcHXcM284=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i7DD+/0KtDzlOaM9CNLggbeaur6RPNbh2vfq3OSjo4k=;
-        b=ktblkabktGikO7djnbq1l3PH9Yhes8BPOrGJm/7138WhndJIOXUdV80jtIoPQzkc7q
-         RuZfOKKdDE3xEsZsT9HCBvq84pNAs2x95/fblIVsybDRusOjwlnAhUgo2CWHOjGUqhGn
-         /aZEDRIbY1aFISINbK0yABZJgT4iHuuzFWN0PiIVOBTGftqdfU0okFTjVaXfhZTHlDo2
-         OxhrwzKUGPtqLp8CYwZCIbeHBp6sNd56SCUsonEwP7SGsCLgMrIaUHyIY4gBw3T6tI6b
-         jnEEmTIewmUwnRku/ZML6rYIzIAM//SB1KtZUYyiRIwubKlGOTHInEdPjdp90wbngEnD
-         kKlg==
-X-Gm-Message-State: AOAM531hWQlhd8zjdQbm9Knp+bSfBAt3+cll3Bb49xTj2ddP8QTKOdP9
-        W+gFihY3pfgXRFxNlpwhpb2lVA==
-X-Google-Smtp-Source: ABdhPJyP4PM08VW2GpqI2yf2qrFoZbJ0W68KrhSrQELrsCW61J1Qx1koCs2sBy/5Ijbm2dMuuC8iVA==
-X-Received: by 2002:adf:f6c5:: with SMTP id y5mr331389wrp.121.1619125387926;
-        Thu, 22 Apr 2021 14:03:07 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id t6sm5417054wrx.38.2021.04.22.14.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 14:03:07 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 22:03:05 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Sabrina Dubroca <sd@queasysnail.net>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: geneve: modify IP header check in geneve6_xmit_skb
-Message-ID: <YIHkifgWY2zzvuZ9@equinox>
-References: <20210421231100.7467-1-phil@philpotter.co.uk>
- <20210422003942.GF4841@breakpoint.cc>
- <YIGeVLyfa2MrAZym@hog>
- <CANn89iJSy82k+5b-vgSE-tD7hc8MhM6Niu=eY8sg-b7LbULouQ@mail.gmail.com>
- <YIGv+UOHIl8c/JVk@hog>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aAJ3wIqxiqvlLWO7wV14Gxdne6FOxL4p89moI9+JwaM=;
+        b=uYcTbVeHKRCPFMWfTPvPwAe6f7K8rpvj/9p7GxQhnV5ugiZ+g92UsKIMoUjvz3ytZM
+         HiW3Ne7bUJ54ms64szTrSEq1es/6f7GXZCzQb10bVQGNRqVmo8E4RHaWA7rXEg0I8KyV
+         wPz21iJuRfeSef1zF7ynI+YMyzBlrIhLb0jNPBcFSP94hASJ3DA7cXogfuiLhnRUsjry
+         WpSaiakiM5i/OlVedbMu/05XKqESo7dsV16BBkYGHSYEJg4TxYAY0HUBdRSi9AUCyGj0
+         Vni8H9h7b6nSpw7a5nhrue8zH6qG9Malc/2QJ0J5YlMf7LOu1jHUQ1do6+Iyoy1GUzua
+         csZg==
+X-Gm-Message-State: AOAM533oUNVDlpKJlBHufMOu5OMPSudlSlpsP75x19bLqPDhWPudSop5
+        ZsgoXvtfUozh6U3/o77XCK6EDc8P//640Auq
+X-Google-Smtp-Source: ABdhPJxhnx0LzyfI1RExH4hctKjfCW/l2wDHcXIePwL93C/lMu7Du/3Zasy24U/tLQSAYuavP/DPwA==
+X-Received: by 2002:ac2:4c85:: with SMTP id d5mr200949lfl.79.1619125421796;
+        Thu, 22 Apr 2021 14:03:41 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id 200sm376482ljj.11.2021.04.22.14.03.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 14:03:41 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id t14so17165660lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 14:03:40 -0700 (PDT)
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr178740lft.487.1619125419929;
+ Thu, 22 Apr 2021 14:03:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIGv+UOHIl8c/JVk@hog>
+References: <3315246e429b385bbd08c8a509843e99dcc829e3.camel@HansenPartnership.com>
+In-Reply-To: <3315246e429b385bbd08c8a509843e99dcc829e3.camel@HansenPartnership.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 22 Apr 2021 14:03:23 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjLnjAaiXfbdNLtJYYyNLyp-Sz2_4XbfjTzKW7M8jzb3Q@mail.gmail.com>
+Message-ID: <CAHk-=wjLnjAaiXfbdNLtJYYyNLyp-Sz2_4XbfjTzKW7M8jzb3Q@mail.gmail.com>
+Subject: Re: [GIT PULL] KEYS: trusted fixes for 5.12-rc7
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        keyrings@vger.kernel.org, David Howells <dhowells@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 07:18:49PM +0200, Sabrina Dubroca wrote:
-> 2021-04-22, 18:52:10 +0200, Eric Dumazet wrote:
-> > On Thu, Apr 22, 2021 at 6:04 PM Sabrina Dubroca <sd@queasysnail.net> wrote:
-> > >
-> > > 2021-04-22, 02:39:42 +0200, Florian Westphal wrote:
-> > > > Phillip Potter <phil@philpotter.co.uk> wrote:
-> > > > > Modify the check in geneve6_xmit_skb to use the size of a struct iphdr
-> > > > > rather than struct ipv6hdr. This fixes two kernel selftest failures
-> > > > > introduced by commit 6628ddfec758
-> > > > > ("net: geneve: check skb is large enough for IPv4/IPv6 header"), without
-> > > > > diminishing the fix provided by that commit.
-> > > >
-> > > > What errors?
-> > > >
-> > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > > > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> > > > > ---
-> > > > >  drivers/net/geneve.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-> > > > > index 42f31c681846..a57a5e6f614f 100644
-> > > > > --- a/drivers/net/geneve.c
-> > > > > +++ b/drivers/net/geneve.c
-> > > > > @@ -988,7 +988,7 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
-> > > > >     __be16 sport;
-> > > > >     int err;
-> > > > >
-> > > > > -   if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
-> > > > > +   if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
-> > > > >             return -EINVAL;
-> > > >
-> > > > Seems this is papering over some bug, this change makes no sense to
-> > > > me.  Can you please explain this?
-> > >
-> > > I'm not sure the original commit (6628ddfec758 ("net: geneve: check
-> > > skb is large enough for IPv4/IPv6 header")) is correct either. GENEVE
-> > > isn't limited to carrying IP, I think an ethernet header with not much
-> > > else on top should be valid.
-> > 
-> > Maybe, but we still attempt to use ip_hdr() in this case, from
-> > geneve_get_v6_dst()
-> > 
-> > So there is something fishy.
-> 
-> In ip_tunnel_get_dsfield()? Only if there's IP in the packet. Other
-> tunnel types (except vxlan, which probably has the same problem as
-> geneve) ues pskb_inet_may_pull, that looks like what we need here as
-> well.
-> 
-> -- 
-> Sabrina
-> 
+On Thu, Apr 22, 2021 at 1:26 PM James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> I'm sending this in agreement with Mimi (as joint maintainers of
+> trusted keys) because Jarkko is off communing with the Reindeer or
+> whatever it is Finns do when on holiday.
 
-Dear Sabrina,
+"Communing with Reindeer" is unlikely except possibly as a euphemism
+for "drinking".
 
-Thank you for your feedback. I will try and rework the patch to fix my
-original commit using the technique you suggest.
+The traditional Finnish thing would be to go to a small cottage by a
+lake ("m=C3=B6kki") and relax while fishing, going to the sauna, and just
+getting away from it all.
 
-Regards,
-Phil
+But whether that's what Jarkko does, who knows? It's not quite the
+season for lake cottages yet - April in Finland is not generally the
+most pleasant weather...
+
+Pulled.
+
+          Linus
