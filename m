@@ -2,212 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2133D36872A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF6C36872C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 21:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238992AbhDVTZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 15:25:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:21022 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238922AbhDVTZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:25:23 -0400
-IronPort-SDR: QF52nW7z1qT2+pxZP1fkksnmTw//EtmhpZ5ZsfU3fYYhePSKCutRuKIgIH+G561DFFP+4LMVMb
- CmT3vBFqRYdQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="192770840"
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="192770840"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 12:24:48 -0700
-IronPort-SDR: DOjV3r9mPAPmMigIRxJirYgaubF+Z4PpEHcIugwr0W7lgblr0QjPkoLI/BOwyHZzCM78Bl5+PO
- P8KqlDQCLjag==
-X-IronPort-AV: E=Sophos;i="5.82,243,1613462400"; 
-   d="scan'208";a="464063728"
-Received: from eassadia-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.4.68])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 12:24:47 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Rafael J Wysocki <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 3/3] x86/acpi, x86/boot: Add multiprocessor wake-up support
-Date:   Thu, 22 Apr 2021 12:24:41 -0700
-Message-Id: <20210422192442.706906-4-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210422192442.706906-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210422192442.706906-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S238768AbhDVT1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 15:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236810AbhDVT1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 15:27:31 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8E3C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:26:56 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id l19so34941973ilk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eBG70xpgE0nxYlRE9dLDLJ0bfKjzKgRx+8AVp41HgW8=;
+        b=kEXuX9EEmT6mYjMkHFCvcbXqbmNHBC/izD8SgpGMA7TIkOs80wd9ptpLg2LB+hRyuj
+         Toe34f9xHnGx3T5U/UidwyTrIWVmQ0iQ0cXmaEjvIN3VbxD5mbMinIUUxBXCmKm0Pkio
+         GiRJl5n9grm+nNI9jq1gfCBjmWL85ehDde+uIOy/YZd81bvyTac0ystVuq6FalNRMGCR
+         mIPlPin6QiM3rpsjHWfDcOeMd4xXFDyZCSCpkzANcrwAj/B1w5kCOzAwA4lOOcq+oXnI
+         o5BYyBRzX/8F7zi/OhgjcPip9qh46s6nU22CfMs8UJt5/+fpmYTWJSzqKIPlNN8eq3lS
+         hKRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eBG70xpgE0nxYlRE9dLDLJ0bfKjzKgRx+8AVp41HgW8=;
+        b=lvhKesjT/Xnu4L2xggA8SCrHryy5lUi3w7lNJ2B9bXoZbbZNqTRPVqZh5DTbPzh0nw
+         6v1Xc6AsWAPquPuLdF0EPkKbm7ygEBk+UYeMevKBZwjdf7oXCof3b+C7kJ674IALJLLf
+         4ELRip0mMtk7BmBiMkKVeoOLP2zEYZpGlavnO9D1MrPCexdFYwlBKTSlnA+7sfd+46Qg
+         CKjeBhw6P9tl4h05xLkzW8I335kIEeau/6FRn9wJNVtKfd9hm56Yxr03F2QmUWdGNdua
+         yyyPyY8nvaQsk4LVXCVXwFamA9ZwVJVkerM7egmLWib9j5gqIp2s3kLWwu1SKu+dasXt
+         k/jQ==
+X-Gm-Message-State: AOAM530yPZdxz9vtXKYI7rELAHxJ38ZK+R9TCHRhsm9BxY33eLBln4oS
+        qwRjlR1q+6bj6NNrfl6Yksd9/SIitnFVvmZMz6XpAA==
+X-Google-Smtp-Source: ABdhPJwDnzLFeaMM3vjCSO3lZp7gcjwlzFJbkZbWJ0eVtVzU5k1Yg7tmuQq8lpaKfnSxiGBG64eQ1u51TtuwpUIFjTU=
+X-Received: by 2002:a92:6011:: with SMTP id u17mr29418ilb.274.1619119616029;
+ Thu, 22 Apr 2021 12:26:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210421183210.2557462-1-dlatypov@google.com> <CABVgOSnGC=15FXcRz0CKYTgY=-vFxWCWBGqLg7uGCNs8wgW2Dw@mail.gmail.com>
+In-Reply-To: <CABVgOSnGC=15FXcRz0CKYTgY=-vFxWCWBGqLg7uGCNs8wgW2Dw@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 22 Apr 2021 12:26:44 -0700
+Message-ID: <CAGS_qxr16JNasdZvqtBOcUZKhadWN8U85WHTWTM=iFxQsqWTpA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kunit: introduce kunit_kmalloc_array/kunit_kcalloc() helpers
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per ACPI specification r6.4, sec 5.2.12.19, a new sub
-structure – multiprocessor wake-up structure - is added to the
-ACPI Multiple APIC Description Table (MADT) to describe the
-information of the mailbox. If a platform firmware produces the
-multiprocessor wake-up structure, then OS may use this new
-mailbox-based mechanism to wake up the APs.
+On Wed, Apr 21, 2021 at 10:52 PM David Gow <davidgow@google.com> wrote:
+>
+> On Thu, Apr 22, 2021 at 2:32 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > Add in:
+> > * kunit_kmalloc_array() and wire up kunit_kmalloc() to be a special
+> > case of it.
+> > * kunit_kcalloc() for symmetry with kunit_kzalloc()
+> >
+> > This should using KUnit more natural by making it more similar to the
+> > existing *alloc() APIs.
+> >
+> > And while we shouldn't necessarily be writing unit tests where overflow
+> > should be a concern, it can't hurt to be safe.
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > ---
+>
+> This seems like a good addition to me: a bug and a couple of useless
+> asides below.
 
-Add ACPI MADT wake table parsing support for x86 platform and if
-MADT wake table is present, update apic->wakeup_secondary_cpu with
-new API which uses MADT wake mailbox to wake-up CPU.
+"bug" = the kzalloc/kcalloc mixup in doc comments?
+Not sure if I'm overlooking one of your replies.
 
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
- arch/x86/include/asm/apic.h     |  3 ++
- arch/x86/kernel/acpi/boot.c     | 56 +++++++++++++++++++++++++++++++++
- arch/x86/kernel/apic/probe_32.c |  8 +++++
- arch/x86/kernel/apic/probe_64.c |  8 +++++
- 4 files changed, 75 insertions(+)
+>
+> Apart from the "kzalloc"/"kcalloc" confusion in the comment below, this is
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> -- David
+>
+> >  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++----
+> >  lib/kunit/test.c     | 22 ++++++++++++----------
+> >  2 files changed, 44 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/include/kunit/test.h b/include/kunit/test.h
+> > index 49601c4b98b8..7fa0de4af977 100644
+> > --- a/include/kunit/test.h
+> > +++ b/include/kunit/test.h
+> > @@ -577,16 +577,30 @@ static inline int kunit_destroy_named_resource(struct kunit *test,
+> >  void kunit_remove_resource(struct kunit *test, struct kunit_resource *res);
+> >
+> >  /**
+> > - * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
+> > + * kunit_kmalloc_array() - Like kmalloc_array() except the allocation is *test managed*.
+> >   * @test: The test context object.
+> > + * @n: number of elements.
+> >   * @size: The size in bytes of the desired memory.
+> >   * @gfp: flags passed to underlying kmalloc().
+> >   *
+> > - * Just like `kmalloc(...)`, except the allocation is managed by the test case
+> > + * Just like `kmalloc_array(...)`, except the allocation is managed by the test case
+> >   * and is automatically cleaned up after the test case concludes. See &struct
+> >   * kunit_resource for more information.
+> >   */
+> > -void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp);
+> > +void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t flags);
+> > +
+> > +/**
+> > + * kunit_kmalloc() - Like kmalloc() except the allocation is *test managed*.
+> > + * @test: The test context object.
+> > + * @size: The size in bytes of the desired memory.
+> > + * @gfp: flags passed to underlying kmalloc().
+> > + *
+> > + * See kmalloc() and kunit_kmalloc_array() for more information.
+> > + */
+> > +static inline void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
+> > +{
+> > +       return kunit_kmalloc_array(test, 1, size, gfp);
+>
+> Do we want to implement kunit_kmalloc() in terms of kunit_kmalloc_array()?
+> It's interestingly backwards given that kmalloc_array() is implemented
+> in terms of kmalloc().
 
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 412b51e059c8..3e94e1f402ea 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -487,6 +487,9 @@ static inline unsigned int read_apic_id(void)
- 	return apic->get_apic_id(reg);
- }
- 
-+typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
-+extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
-+
- extern int default_apic_id_valid(u32 apicid);
- extern int default_acpi_madt_oem_check(char *, char *);
- extern void default_setup_apic_routing(void);
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index 14cd3186dc77..a4a6b97910e1 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -65,6 +65,9 @@ int acpi_fix_pin2_polarity __initdata;
- static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
- #endif
- 
-+static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-+static u64 acpi_mp_wake_mailbox_paddr;
-+
- #ifdef CONFIG_X86_IO_APIC
- /*
-  * Locks related to IOAPIC hotplug
-@@ -329,6 +332,29 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
- 	return 0;
- }
- 
-+static void acpi_mp_wake_mailbox_init(void)
-+{
-+	if (acpi_mp_wake_mailbox)
-+		return;
-+
-+	acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-+			sizeof(*acpi_mp_wake_mailbox), MEMREMAP_WB);
-+}
-+
-+static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-+{
-+	acpi_mp_wake_mailbox_init();
-+
-+	if (!acpi_mp_wake_mailbox)
-+		return -EINVAL;
-+
-+	WRITE_ONCE(acpi_mp_wake_mailbox->apic_id, apicid);
-+	WRITE_ONCE(acpi_mp_wake_mailbox->wakeup_vector, start_ip);
-+	WRITE_ONCE(acpi_mp_wake_mailbox->command, ACPI_MP_WAKE_COMMAND_WAKEUP);
-+
-+	return 0;
-+}
-+
- #endif				/*CONFIG_X86_LOCAL_APIC */
- 
- #ifdef CONFIG_X86_IO_APIC
-@@ -1086,6 +1112,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
- 	}
- 	return 0;
- }
-+
-+static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-+				      const unsigned long end)
-+{
-+	struct acpi_madt_multiproc_wakeup *mp_wake;
-+
-+	if (acpi_mp_wake_mailbox)
-+		return -EINVAL;
-+
-+	if (!IS_ENABLED(CONFIG_SMP))
-+		return -ENODEV;
-+
-+	mp_wake = (struct acpi_madt_multiproc_wakeup *) header;
-+	if (BAD_MADT_ENTRY(mp_wake, end))
-+		return -EINVAL;
-+
-+	acpi_table_print_madt_entry(&header->common);
-+
-+	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-+
-+	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
-+
-+	return 0;
-+}
- #endif				/* CONFIG_X86_LOCAL_APIC */
- 
- #ifdef	CONFIG_X86_IO_APIC
-@@ -1284,6 +1334,12 @@ static void __init acpi_process_madt(void)
- 
- 				smp_found_config = 1;
- 			}
-+
-+			/*
-+			 * Parse MADT MP Wake entry.
-+			 */
-+			acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
-+					      acpi_parse_mp_wake, 1);
- 		}
- 		if (error == -EINVAL) {
- 			/*
-diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index a61f642b1b90..d450014841b2 100644
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -207,3 +207,11 @@ int __init default_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
- 	}
- 	return 0;
- }
-+
-+void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
-+{
-+	struct apic **drv;
-+
-+	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
-+		(*drv)->wakeup_secondary_cpu = handler;
-+}
-diff --git a/arch/x86/kernel/apic/probe_64.c b/arch/x86/kernel/apic/probe_64.c
-index c46720f185c0..986dbb68d3c4 100644
---- a/arch/x86/kernel/apic/probe_64.c
-+++ b/arch/x86/kernel/apic/probe_64.c
-@@ -50,3 +50,11 @@ int __init default_acpi_madt_oem_check(char *oem_id, char *oem_table_id)
- 	}
- 	return 0;
- }
-+
-+void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
-+{
-+	struct apic **drv;
-+
-+	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
-+		(*drv)->wakeup_secondary_cpu = handler;
-+}
--- 
-2.25.1
+I didn't want to have the checked multiply in test.c, and figured the
+little bit of extra indirection probably won't hurt.
+(Insert hopes about sufficiently smart compilers optimizing out some of it).
 
+> The other option would be to have each kunit_* function wrap the
+> actual function that's called, but that would introduce a lot of code
+> duplication for a very small performance benefit.
+>
+> I'm happy with it the way it is now that I've looked through the
+> implementations, but I was a little uneasy at first that some of these
+> functions might not actually call the function they're theoretically
+> wrapping.
+>
+> > +}
+> >
+> >  /**
+> >   * kunit_kfree() - Like kfree except for allocations managed by KUnit.
+> > @@ -601,13 +615,27 @@ void kunit_kfree(struct kunit *test, const void *ptr);
+> >   * @size: The size in bytes of the desired memory.
+> >   * @gfp: flags passed to underlying kmalloc().
+> >   *
+> > - * See kzalloc() and kunit_kmalloc() for more information.
+> > + * See kzalloc() and kunit_kmalloc_array() for more information.
+> >   */
+> >  static inline void *kunit_kzalloc(struct kunit *test, size_t size, gfp_t gfp)
+> >  {
+> >         return kunit_kmalloc(test, size, gfp | __GFP_ZERO);
+> >  }
+> >
+> > +/**
+> > + * kunit_kzalloc() - Just like kunit_kmalloc_array(), but zeroes the allocation.
+>
+> The function is called kunit_kcalloc(), but the documentation comment
+> calls it kunit_kzalloc().
+> Copy + paste error from above?
+
+Good catch, fixed.
+
+>
+> > + * @test: The test context object.
+> > + * @n: number of elements.
+> > + * @size: The size in bytes of the desired memory.
+> > + * @gfp: flags passed to underlying kmalloc().
+> > + *
+> > + * See kcalloc() and kunit_kmalloc_array() for more information.
+> > + */
+> > +static inline void *kunit_kcalloc(struct kunit *test, size_t n, size_t size, gfp_t flags)
+> > +{
+> > +       return kunit_kmalloc_array(test, n, size, flags | __GFP_ZERO);
+> > +}
+> > +
+> >  void kunit_cleanup(struct kunit *test);
+> >
+> >  void kunit_log_append(char *log, const char *fmt, ...);
+> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> > index ec9494e914ef..052fccf69eef 100644
+> > --- a/lib/kunit/test.c
+> > +++ b/lib/kunit/test.c
+> > @@ -540,41 +540,43 @@ int kunit_destroy_resource(struct kunit *test, kunit_resource_match_t match,
+> >  }
+> >  EXPORT_SYMBOL_GPL(kunit_destroy_resource);
+> >
+> > -struct kunit_kmalloc_params {
+> > +struct kunit_kmalloc_array_params {
+> > +       size_t n;
+>
+> It's worth noting that we never actually use this after the resource
+> is created. kmalloc_array() discards 'n' after the overflow check and
+> multiply anyway.
+>
+> Of course, we don't need 'size' either, and we were already tracking
+> that. I guess it's just an overhead of the resource system, so nothing
+> worth actually changing here.
+
+Ack, yeah, we don't need any of these params after the allocation
+happens, including gfp.
+But we're not "tracking it:, I don't think?
+
+The _free() function calls `kfree(res->data)`, so we're only keeping
+around the pointer itself while the resource is alive.
+The context object is only around for the init call.
+
+It's also an object on the stack that goes out of scope after we
+return from kunit_kmalloc_array(), so I think we'd have a bug if we
+were trying to keep it around.
+
+>
+>
+>
+> >         size_t size;
+> >         gfp_t gfp;
+> >  };
+> >
+> > -static int kunit_kmalloc_init(struct kunit_resource *res, void *context)
+> > +static int kunit_kmalloc_array_init(struct kunit_resource *res, void *context)
+> >  {
+> > -       struct kunit_kmalloc_params *params = context;
+> > +       struct kunit_kmalloc_array_params *params = context;
+> >
+> > -       res->data = kmalloc(params->size, params->gfp);
+> > +       res->data = kmalloc_array(params->n, params->size, params->gfp);
+> >         if (!res->data)
+> >                 return -ENOMEM;
+> >
+> >         return 0;
+> >  }
+> >
+> > -static void kunit_kmalloc_free(struct kunit_resource *res)
+> > +static void kunit_kmalloc_array_free(struct kunit_resource *res)
+> >  {
+> >         kfree(res->data);
+> >  }
+> >
+> > -void *kunit_kmalloc(struct kunit *test, size_t size, gfp_t gfp)
+> > +void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
+> >  {
+> > -       struct kunit_kmalloc_params params = {
+> > +       struct kunit_kmalloc_array_params params = {
+> >                 .size = size,
+> > +               .n = n,
+> >                 .gfp = gfp
+> >         };
+> >
+> >         return kunit_alloc_resource(test,
+> > -                                   kunit_kmalloc_init,
+> > -                                   kunit_kmalloc_free,
+> > +                                   kunit_kmalloc_array_init,
+> > +                                   kunit_kmalloc_array_free,
+> >                                     gfp,
+> >                                     &params);
+> >  }
+> > -EXPORT_SYMBOL_GPL(kunit_kmalloc);
+> > +EXPORT_SYMBOL_GPL(kunit_kmalloc_array);
+> >
+> >  void kunit_kfree(struct kunit *test, const void *ptr)
+> >  {
+> >
+> > base-commit: 16fc44d6387e260f4932e9248b985837324705d8
+> > --
+> > 2.31.1.498.g6c1eba8ee3d-goog
+> >
