@@ -2,115 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D20367E9D
+	by mail.lfdr.de (Postfix) with ESMTP id A88C5367E9E
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235855AbhDVK1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235867AbhDVK0w (ORCPT
+        id S235881AbhDVK1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:27:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43438 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235802AbhDVK1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:26:52 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69346C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:26:16 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id r7so32241419wrm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 03:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vLEMp8aF3tYBke1OWNpVeQPKV5uE710GQQXiqwBZMEk=;
-        b=XDsq1JSqsubc7Q0X8WPoswRGyaacKlZ55tdtNMTD9ehUzmluYy93XDlSk4sd9nirDM
-         xbe7f36m52VqCI4G2JH5MYcOCyngvmExTH72QqbbA+ChQE4Sha1jr30ic5uL1EJ9Nm6b
-         lzvbUFfYmZHr3JOe8aY4v/AUhS3A7fiSufUXsAZymcM/xRu7HPObOj/dULqedx//fEa4
-         wS4vLJDj2nZ2lbbxNj8OKc+zb9Idc+aQn65jRE2dQN+zNHI4AstJnGU8tJ4kXvlkuwYm
-         oZXuJIKFqvJEs+AodE2ZIXIxqVDZolktmFMRaT34NJLljmtlGJgsxwapPmkX3BJJv+qm
-         lvkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vLEMp8aF3tYBke1OWNpVeQPKV5uE710GQQXiqwBZMEk=;
-        b=RGJmO3erwoZD4GmEhskrU4CYNCmdwZ0anlEDQQU9V//4df8HfbK+d/MlPMTiPlXHvo
-         1jmejBAQUWT4DvcpEREVXZwteq78Gb0pW7DTIb7VmMNUleNxFJTRqlAA773vVivelZ5N
-         ySGEhehDAQBodTIsRCV9dKVi8TFgOAqMKwbFgUSt6SsJERHorHTo/UwDNNK7o3wx2soE
-         4kt+crLrbKbAHzx5t3UujXMRGqINHu5axT0lajcctgTHk209F9/SE5qaO4h9nlqsJzQW
-         shQ1bcaCd42u0Dj4JQJqZopa2bQTfpM1/fZ9QMFn6AaEUapIvGeubrW0cXOxFCpEoJ2z
-         tKVQ==
-X-Gm-Message-State: AOAM530kUGZ32e2goFcyHVEKo/2TgKe410JAeAFZ4ocrAD+hCPEj1vBY
-        ChGN5GvE0Yce5/TIJNcHCTLOxA==
-X-Google-Smtp-Source: ABdhPJzqet+b3G/OqaI8TY71t835itdllLxYnmKuT8SeL9sDYPeuVHsklZpmIpg68EowvRePYoplYg==
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr3113044wrd.177.1619087175038;
-        Thu, 22 Apr 2021 03:26:15 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e88d:2580:c20:b786? ([2a01:e34:ed2f:f020:e88d:2580:c20:b786])
-        by smtp.googlemail.com with ESMTPSA id a72sm2584607wme.29.2021.04.22.03.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 03:26:14 -0700 (PDT)
-Subject: Re: [PATCH v3 3/3] thermal: create a helper __thermal_cdev_update()
- without a lock
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, rui.zhang@intel.com
-References: <20210421174145.8213-1-lukasz.luba@arm.com>
- <20210421174145.8213-4-lukasz.luba@arm.com>
- <3d08d5cf-9e3b-ae26-cfd5-bf9a40d11643@linaro.org>
- <eafc2eb1-5b0f-61b9-b992-339a5a962fbd@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <b6b27171-d43c-34d9-adac-20f4d7d21fc8@linaro.org>
-Date:   Thu, 22 Apr 2021 12:26:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 22 Apr 2021 06:27:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619087196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TdNX81TA2nsY/g2eFhNoJTLXu0bpy7LKXmWqnDKmCf0=;
+        b=AomGu56poyY3CqnKQpJfyGdOgruXqcsAOmnV9gU3zA7jA96MOiBmPutldZPQdub4TYO2R0
+        RLg+gt/Hj65rut/F2PIGCmXhk5V0LlK6GfC5UivDavxq45pXvsfP0xKUMf1YU3lnLrMmg4
+        SegnfDm5toZaKNKtf3Y67JT0VKdNQ38=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-BMDoKYB2NRmvajXvcqf-AQ-1; Thu, 22 Apr 2021 06:26:30 -0400
+X-MC-Unique: BMDoKYB2NRmvajXvcqf-AQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC3F7107ACCD;
+        Thu, 22 Apr 2021 10:26:28 +0000 (UTC)
+Received: from krava (unknown [10.40.195.33])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 88F33610F3;
+        Thu, 22 Apr 2021 10:26:23 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 12:26:22 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v4 15/25] perf stat: Filter out unmatched aggregation for
+ hybrid event
+Message-ID: <YIFPTrp/Fw8uEYQg@krava>
+References: <20210416140517.18206-1-yao.jin@linux.intel.com>
+ <20210416140517.18206-16-yao.jin@linux.intel.com>
+ <YIBvJLAvL0rWGhhP@krava>
+ <1da39794-bdc3-2a9d-4038-9e95e2c02660@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <eafc2eb1-5b0f-61b9-b992-339a5a962fbd@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1da39794-bdc3-2a9d-4038-9e95e2c02660@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/2021 10:21, Lukasz Luba wrote:
+On Thu, Apr 22, 2021 at 11:10:54AM +0800, Jin, Yao wrote:
+> Hi Jiri,
 > 
+> On 4/22/2021 2:29 AM, Jiri Olsa wrote:
+> > On Fri, Apr 16, 2021 at 10:05:07PM +0800, Jin Yao wrote:
+> > 
+> > SNIP
+> > 
+> > > diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+> > > index 5255d78b1c30..15eafd249e46 100644
+> > > --- a/tools/perf/util/stat-display.c
+> > > +++ b/tools/perf/util/stat-display.c
+> > > @@ -643,6 +643,20 @@ static void aggr_cb(struct perf_stat_config *config,
+> > >   	}
+> > >   }
+> > > +static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
+> > > +				   struct evsel *counter, struct aggr_cpu_id id)
+> > > +{
+> > > +	struct aggr_cpu_id s;
+> > > +
+> > > +	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
+> > > +		s = config->aggr_get_id(config, evsel__cpus(counter), i);
+> > > +		if (cpu_map__compare_aggr_cpu_id(s, id))
+> > > +			return true;
+> > > +	}
+> > > +
+> > > +	return false;
+> > > +}
+> > > +
+> > >   static void print_counter_aggrdata(struct perf_stat_config *config,
+> > >   				   struct evsel *counter, int s,
+> > >   				   char *prefix, bool metric_only,
+> > > @@ -656,6 +670,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
+> > >   	double uval;
+> > >   	ad.id = id = config->aggr_map->map[s];
+> > > +
+> > > +	if (perf_pmu__has_hybrid() &&
+> > > +	    !aggr_id_hybrid_matched(config, counter, id)) {
+> > > +		return;
+> > > +	}
+> > > +
+> > >   	ad.val = ad.ena = ad.run = 0;
+> > >   	ad.nr = 0;
+> > >   	if (!collect_data(config, counter, aggr_cb, &ad))
+> > 
+> > there's same check in aggr_cb, so it seems like we could just make check in here:
+> > 
+> > 	if (perf_pmu__has_hybrid() && ad.ena == 0)
+> > 		return;
+> > 
+> > without another extra loop
+> > 
+> > jirka
+> > 
 > 
-> On 4/22/21 8:58 AM, Daniel Lezcano wrote:
->> On 21/04/2021 19:41, Lukasz Luba wrote:
->>> There is a need to have a helper function which updates cooling device
->>> state from the governors code. With this change governor can use
->>> lock and unlock while calling helper function. This avoid unnecessary
->>> second time lock/unlock which was in previous solution present in
->>> governor implementation. This new helper function must be called
->>> with mutex 'cdev->lock' hold.
->>>
->>> The changed been discussed and part of code presented in thread:
->>> https://lore.kernel.org/linux-pm/20210419084536.25000-1-lukasz.luba@arm.com/
->>>
->>>
->>> Co-developed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>>   drivers/thermal/gov_power_allocator.c |  5 +----
->>>   drivers/thermal/thermal_core.h        |  1 +
->>>   drivers/thermal/thermal_helpers.c     | 28 +++++++++++++++++----------
->>
->> Why not add this patch first (without the ipa changes) and then replace
->> patch 2 by using the new function ? That will prevent to go back and
->> forth.
+> I guess you recommended the patch like this:
 > 
-> I thought that it would show also the motivation and usage in the
-> governor. I can had this patch as first in the set, but then I thought
-> about this example.
-> I can change it if you like in v4.
+>  static void print_counter_aggrdata(struct perf_stat_config *config,
+>                                    struct evsel *counter, int s,
+>                                    char *prefix, bool metric_only,
+> @@ -670,17 +656,14 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
+>         double uval;
+> 
+>         ad.id = id = config->aggr_map->map[s];
+>         ad.val = ad.ena = ad.run = 0;
+>         ad.nr = 0;
+>         if (!collect_data(config, counter, aggr_cb, &ad))
+>                 return;
+> 
+> +       if (perf_pmu__has_hybrid() && ad.ena == 0)
+> +               return;
+> +
+>         nr = ad.nr;
+>         ena = ad.ena;
+>         run = ad.run;
+> 
+> Yes, it works. The test log is,
 
-Yes, please. I think it is more logical.
+ok, great
 
+thanks,
+jirka
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> 
+> # perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+> S0-D0-C0           2          2,341,923      cpu_core/cycles/
+> S0-D0-C4           2          1,707,933      cpu_core/cycles/
+> S0-D0-C8           2            845,805      cpu_core/cycles/
+> S0-D0-C12          2          1,001,961      cpu_core/cycles/
+> S0-D0-C16          2            932,004      cpu_core/cycles/
+> S0-D0-C20          2          1,778,603      cpu_core/cycles/
+> S0-D0-C24          2            804,448      cpu_core/cycles/
+> S0-D0-C28          2            178,360      cpu_core/cycles/
+> 
+>        1.002264168 seconds time elapsed
+> 
+> Thanks
+> Jin Yao
+> 
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
