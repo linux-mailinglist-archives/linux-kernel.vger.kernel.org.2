@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9E03685B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE5A3685CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238495AbhDVRTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 13:19:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52764 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236660AbhDVRTd (ORCPT
+        id S236740AbhDVRYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:24:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54176 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDVRYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619111938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADOjI+NtzKDREhR9XOqO3+4p2xANO5KAda5fRT3OdLc=;
-        b=KDaZrGE+VgmYAgPul/Uq6muCvEAdNGhd4O55m55v9Yl1Q9/RLoqIhgAcDf4opXc3hHGgwy
-        OXcCyYkdNosZ+2cz0DWq3wLi5cNvkXa87qKX8Bt9/7f+npSTkmDIr45Z7kYzvby6z3V91T
-        pS8p/IF9fShne+xHsvAVPJy9E/l1SS4=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-3Fi3hZLFPImCTXRgmhln7A-1; Thu, 22 Apr 2021 13:18:56 -0400
-X-MC-Unique: 3Fi3hZLFPImCTXRgmhln7A-1
-Received: by mail-ej1-f70.google.com with SMTP id k5-20020a1709061c05b029037cb8a99e03so7434129ejg.16
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:18:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ADOjI+NtzKDREhR9XOqO3+4p2xANO5KAda5fRT3OdLc=;
-        b=ddQY9fXNXjkPOqUQZBrXOq3o1dkCoLkzatNHon/OoIzuw1ZvIheXVv1qxpDbpULwX5
-         nhmPW8PRGJyJJBBXqZQUxAdlyVeceq1cMLvtedCEiwVA3sv8MCda9qaYHtyv/ADkFXE4
-         il32vr0mXm3hOBx0n/cEfUNfmtjvLZdP8vCdLdwlCK3RUv67i2q9I7OTDZBuqrzayVZF
-         PyB7AD4RoWx5qNvpUCc671eFQfIyk7cPXTS0UkQrcg0NXj8kB4FskztX8Ah/cL3n1wr0
-         f5Azd2uMtbpFAQLLfXAixkqh/NzGUahRkddEp4S9JU/YZwBfqKzm1yFxI66LR6f156SM
-         Sm9A==
-X-Gm-Message-State: AOAM533jSKG8/9HNKUA9xOW9THlbZVkd8VscnPStY/bd/MTEXfeFFUeu
-        18gy33dL3MV5xEsN4MOKnO/5aXQW/aRdo9ltoRJkNWnHwRFUv/huM8hwauLs1kIdDndbF3+GhlM
-        dAAW9guJUhx2k+gGD/htE8IUj
-X-Received: by 2002:a05:6402:2d1:: with SMTP id b17mr5102574edx.144.1619111935692;
-        Thu, 22 Apr 2021 10:18:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQSo2/UymAR9WwM02biqe3scYUkK5iwwA1J3Ltc5U9Mqbf8AqNusfTqBC3ujEmYEUpbdN3Bg==
-X-Received: by 2002:a05:6402:2d1:: with SMTP id b17mr5102555edx.144.1619111935487;
-        Thu, 22 Apr 2021 10:18:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j9sm2563374eds.71.2021.04.22.10.18.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 10:18:54 -0700 (PDT)
-Subject: Re: linux-next: manual merge of the cgroup tree with the kvm tree
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>,
-        KVM <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>
-References: <20210422155355.471c7751@canb.auug.org.au>
- <124cf94f-e7f5-d6f3-7e7a-2685e1e7517f@redhat.com>
- <CAHVum0eQX8+HCJ3F-G9nzSVMy4V8Cg58LtY=jGPRJ77E-MN1fQ@mail.gmail.com>
- <e6256bd5-ca11-13c1-c950-c4761edbcf4d@redhat.com>
- <CAHVum0cVMd-SxmjKAJyJXO7SR68GKXQ7WTqyqWVfq1MMVd+oLQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <13e21724-bbe5-0fb0-82b6-35f87fe4c639@redhat.com>
-Date:   Thu, 22 Apr 2021 19:18:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 22 Apr 2021 13:24:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 3EF8B1F4361F
+Message-ID: <7d1f197d868ae84a8bc475f1f48178d2737518c1.camel@collabora.com>
+Subject: Re: [PATCH v1 4/5] arm64: dts: rockchip: add core dtsi for RK3568
+ SoC
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        cl@rock-chips.com
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com
+Date:   Thu, 22 Apr 2021 14:23:15 -0300
+In-Reply-To: <11131098.F0gNSz5aLb@diego>
+References: <20210421065921.23917-1-cl@rock-chips.com>
+         <20210421065921.23917-5-cl@rock-chips.com> <11131098.F0gNSz5aLb@diego>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-In-Reply-To: <CAHVum0cVMd-SxmjKAJyJXO7SR68GKXQ7WTqyqWVfq1MMVd+oLQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 19:09, Vipin Sharma wrote:
-> On Thu, Apr 22, 2021 at 12:47 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->> You can check the current state of the merge in the queue branch of the
->> KVM tree.  This is what I plan to merge if Tejun agrees.  That would be
->> helpful indeed!
+Hi Liang,
+
+I'm very impressed Rockchip is pushing patches so early, thanks a lot!
+
+See below.
+
+On Wed, 2021-04-21 at 11:13 +0200, Heiko Stübner wrote:
+> Hi Liang,
 > 
-> Merge looks fine from my patch perspective. However, one thing is missing:
+> Am Mittwoch, 21. April 2021, 08:59:20 CEST schrieb cl@rock-chips.com:
+> > From: Liang Chen <cl@rock-chips.com>
+> > 
+> > RK3568 is a high-performance and low power quad-core application processor
+> > designed for personal mobile internet device and AIoT equipments.
+> > 
+> > This patch add basic core dtsi file for it.
+> > 
+> > Signed-off-by: Liang Chen <cl@rock-chips.com>
 > 
-> In sev_guest_init() after sev_asid_free() call we should also write
-> set sev->es_false = false.
+> this is a first round of basic stuff :-) .
 > 
-> Without this the main intent of Sean's patch will be missing in the merge.
+> First of all, I really like the move of moving the pretty standardized
+> pinconfig entries to the rockchip-pinconf.dtsi .
+> 
+> (1) But please move this into a separate patch to make that more visible
+> and maybe even convert _some_ or all arm64 Rockchip socs to use that
+> as well
+> 
+> "arm64: dts: rockchip: add generic pinconfig settings used by most Rockchip socs
+> 
+> The pinconfig settings for Rockchip SoCs are pretty similar on all socs,
+> so move them to a shared dtsi to be included, instead of redefining them
+> for each soc"
+> 
+> (2) I also like the external rk3568-pinctrl approach with the dtsi getting
+> auto-generated. This will probably help us in keeping pinctrl settings
+> synchronous between mainline and the vendor kernel.
+> 
+> (3) From my basic understanding the rk3568 is basically a rk3566 + more
+> peripherals, so ideally they would share the basic ones in a rk3566.dtsi
+> which the rk3568.dtsi then could include and extend with its additional
+> peripherals.
+> 
+> With at least the pine64 boards being based on the rk3566, there probably
+> will be quite a mainline use of it as well.
+> 
+> Or is there something that would prevent this?
+> 
 
-So this:
+I agree with having a rk3566.dtsi, and rk3568.dtsi on top, instead of the
+other way around. We have some RK3566 boards here, so we can surely test
+the RK3566.dtsi patches very quickly.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 3539201278bd..2632852be856 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -224,7 +224,7 @@ static int sev_guest_init(struct kvm *kvm, struct 
-kvm_sev_cmd *argp)
-  	sev->es_active = es_active;
-  	asid = sev_asid_new(sev);
-  	if (asid < 0)
--		return ret;
-+		goto e_no_asid;
-  	sev->asid = asid;
+Also, it's fine if you want to send v2 with just these minimal peripherals.
+However, I think you could include GMAC and TS-ADC:
 
-  	ret = sev_platform_init(&argp->error);
-@@ -240,6 +240,8 @@ static int sev_guest_init(struct kvm *kvm, struct 
-kvm_sev_cmd *argp)
-  e_free:
-  	sev_asid_free(sev);
-  	sev->asid = 0;
-+e_no_asid:
-+	sev->es_active = false;
-  	return ret;
-  }
+https://lore.kernel.org/linux-rockchip/31c2e531-96d0-a1c1-644c-28c60eb40cf4@gmail.com/T/#t
+https://lore.kernel.org/linux-rockchip/20210421203409.40717-1-ezequiel@collabora.com/T/#t
 
+These should work right out of the box!
 
-Sounds good, I'll squash it and push to kvm.git.
-
-Paolo
+Thanks!
+Ezequiel
 
