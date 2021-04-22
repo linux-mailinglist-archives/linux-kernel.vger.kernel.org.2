@@ -2,377 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE57367782
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1CE367785
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 04:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhDVCgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 22:36:00 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:52805 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbhDVCf7 (ORCPT
+        id S234375AbhDVChY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 22:37:24 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:53574 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234140AbhDVChV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 22:35:59 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7D7F8806CB;
-        Thu, 22 Apr 2021 14:35:22 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1619058922;
-        bh=DL/UBWOxAtSCtMbPw60emaKmBVxBvcAtepOpozBePfI=;
-        h=From:To:Cc:Subject:Date;
-        b=N9IZQY7iksPVeErXXoO/q1/pXOjzjDrQoztZbt+ZURcQPg2yxIpO6rzkhdql4ZVin
-         9w0woXeZx4jr7laMJt2wRPEZ/WEFl/gPO4gXk7wnxKXeVNFoPSs9pLNHcF5arFmXms
-         D3vjC8094b6k2AukucWu6pvzd+J6U/nTUZXEsiD1+o5B9PmeDCDy5B80E/nyR2mkmA
-         kJvfBjmPxOcIgDQbRUJPtwhAewKqJLg62cGgBmab1nUF7WNkQdtGbqvh0l8Llnrm/p
-         Flb3jraiYvqVPPzcyjRWQcPC6Ebq0eSV67AqH2azBWK5KsEw7l/IsTgLktxmOGxje8
-         5zHVunDmA1QJQ==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6080e0ea0000>; Thu, 22 Apr 2021 14:35:22 +1200
-Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
-        by smtp (Postfix) with ESMTP id 41B3113EED4;
-        Thu, 22 Apr 2021 14:35:44 +1200 (NZST)
-Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
-        id 0DAA3242946; Thu, 22 Apr 2021 14:35:22 +1200 (NZST)
-From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-To:     pablo@netfilter.org
-Cc:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org (open list:NETFILTER),
-        coreteam@netfilter.org (open list:NETFILTER),
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] net: netfilter: Add RFC-7597 Section 5.1 PSID support
-Date:   Thu, 22 Apr 2021 14:35:05 +1200
-Message-Id: <20210422023506.4651-1-Cole.Dishington@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.31.1
+        Wed, 21 Apr 2021 22:37:21 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id 11DED9FEE6;
+        Thu, 22 Apr 2021 02:36:47 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo05-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo05-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jwBa7HQajX4Z; Thu, 22 Apr 2021 02:36:46 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 976309FE94;
+        Thu, 22 Apr 2021 02:36:38 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 679133EE45;
+        Wed, 21 Apr 2021 20:36:37 -0600 (MDT)
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Ondrej Zary <linux@zary.sk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+ <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org>
+ <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk>
+ <202104182221.21533.linux@zary.sk>
+ <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
+ <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk>
+ <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org>
+ <alpine.DEB.2.21.2104200456100.44318@angie.orcam.me.uk>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
+ Y2021
+Message-ID: <b23c0a0e-d95b-b941-1cc2-1a8bcf44401a@gonehiking.org>
+Date:   Wed, 21 Apr 2021 20:36:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=3YhXtTcJ-WEA:10 a=hliHO8vvrjb_GgMcktUA:9 a=vbNtKFaLgyoh1_7v:21 a=9_ocApIY7FPKfsiY:21
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+In-Reply-To: <alpine.DEB.2.21.2104200456100.44318@angie.orcam.me.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for masquerading into a smaller subset of ports -
-defined by the PSID values from RFC-7597 Section 5.1. This is part of
-the support for MAP-E and Lightweight 4over6, which allows multiple
-devices to share an IPv4 address by splitting the L4 port / id into
-ranges.
+On 4/20/21 12:02 PM, Maciej W. Rozycki wrote:
+> On Mon, 19 Apr 2021, Khalid Aziz wrote:
+> 
+>>>  Khalid: I have skimmed over these documents and I infer 24-bit addressing 
+>>> can be verified with any MultiMaster adapter, including ones that do have 
+>>> 32-bit addressing implemented, by using the legacy Initialize Mailbox HBA 
+>>> command.  That could be used to stop Christoph's recent changes for older 
+>>> adapter support removal and replace them with proper fixes for whatever 
+>>> has become broken.  Is that something you'd be willing as the driver's 
+>>> maintainer to look into, or shall I?
+>>
+>> Do you mean use OpCode 01 (INITIALIZE MAILBOX) to set a 24-bit address
+>> for mailbox in place of OpCode 81? Verifying the change would be a
+>> challenge. Do you have an old adapter to test it with? If you do, go
+>> ahead and make the changes. I will be happy to review. I have only a
+>> BT-757 adapter.
+> 
+>  Yes, but upon inspection it looks like our driver doesn't use that opcode 
+> and relies solely on 32-bit Mode Initialize Mailbox (0x81) even with ISA 
+> devices.  That makes sense as documentation indicates the firmware has 
+> been designed to be unified so that the same binary microcontroller code 
+> runs across all BusLogic MultiMaster devices.
+> 
+>  Anyway given the unified API it should be straightforward to simulate an 
+> older adapter with a newer one, except for host bus protocol differences.  
+> So verifying the workaround for broken BT-445S adapters continues to work 
+> once modernised is not going to be a problem as it can be unconditionally 
+> activated in a debug environment.  That would verify correct DMA bounce 
+> buffer operation under the new scheme.
+> 
+>  Verifying actual ISA operations (third-party DMA, etc.) cannot be made 
+> this way, but as I understand the issue there is merely with passing data 
+> structures around and that may not require too much attention beyond 
+> getting things syntactically correct, which I gather someone forgot to do 
+> with a change made a while ago.  So that should be doable as well.
 
-Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
-Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
----
- include/net/netfilter/nf_conntrack.h          |   2 +
- .../netfilter/nf_conntrack_tuple_common.h     |   5 +
- include/uapi/linux/netfilter/nf_nat.h         |   3 +-
- net/netfilter/nf_nat_core.c                   | 101 ++++++++++++++++--
- net/netfilter/nf_nat_ftp.c                    |  23 ++--
- net/netfilter/nf_nat_helper.c                 |  15 ++-
- 6 files changed, 120 insertions(+), 29 deletions(-)
+In theory this sounds reasonable, but without being able to test with a
+real hardware I would be concerned about making this change.
 
-diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter=
-/nf_conntrack.h
-index 439379ca9ffa..d63d38aa7188 100644
---- a/include/net/netfilter/nf_conntrack.h
-+++ b/include/net/netfilter/nf_conntrack.h
-@@ -92,6 +92,8 @@ struct nf_conn {
- 	/* If we were expected by an expectation, this will be it */
- 	struct nf_conn *master;
-=20
-+	struct nf_nat_range2 *range;
-+
- #if defined(CONFIG_NF_CONNTRACK_MARK)
- 	u_int32_t mark;
- #endif
-diff --git a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h b/i=
-nclude/uapi/linux/netfilter/nf_conntrack_tuple_common.h
-index 64390fac6f7e..36d16d47c2b0 100644
---- a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
-+++ b/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
-@@ -39,6 +39,11 @@ union nf_conntrack_man_proto {
- 	struct {
- 		__be16 key;	/* GRE key is 32bit, PPtP only uses 16bit */
- 	} gre;
-+	struct {
-+		unsigned char psid_length;
-+		unsigned char offset;
-+		__be16 psid;
-+	} psid;
- };
-=20
- #define CTINFO2DIR(ctinfo) ((ctinfo) >=3D IP_CT_IS_REPLY ? IP_CT_DIR_REP=
-LY : IP_CT_DIR_ORIGINAL)
-diff --git a/include/uapi/linux/netfilter/nf_nat.h b/include/uapi/linux/n=
-etfilter/nf_nat.h
-index a64586e77b24..660e53ffdb57 100644
---- a/include/uapi/linux/netfilter/nf_nat.h
-+++ b/include/uapi/linux/netfilter/nf_nat.h
-@@ -12,6 +12,7 @@
- #define NF_NAT_RANGE_PROTO_RANDOM_FULLY		(1 << 4)
- #define NF_NAT_RANGE_PROTO_OFFSET		(1 << 5)
- #define NF_NAT_RANGE_NETMAP			(1 << 6)
-+#define NF_NAT_RANGE_PSID			(1 << 7)
-=20
- #define NF_NAT_RANGE_PROTO_RANDOM_ALL		\
- 	(NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PROTO_RANDOM_FULLY)
-@@ -20,7 +21,7 @@
- 	(NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED |	\
- 	 NF_NAT_RANGE_PROTO_RANDOM | NF_NAT_RANGE_PERSISTENT |	\
- 	 NF_NAT_RANGE_PROTO_RANDOM_FULLY | NF_NAT_RANGE_PROTO_OFFSET | \
--	 NF_NAT_RANGE_NETMAP)
-+	 NF_NAT_RANGE_NETMAP | NF_NAT_RANGE_PSID)
-=20
- struct nf_nat_ipv4_range {
- 	unsigned int			flags;
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index b7c3c902290f..7730ce4ca9a9 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -232,13 +232,33 @@ static bool nf_nat_inet_in_range(const struct nf_co=
-nntrack_tuple *t,
- static bool l4proto_in_range(const struct nf_conntrack_tuple *tuple,
- 			     enum nf_nat_manip_type maniptype,
- 			     const union nf_conntrack_man_proto *min,
--			     const union nf_conntrack_man_proto *max)
-+			     const union nf_conntrack_man_proto *max,
-+			     bool is_psid)
- {
- 	__be16 port;
-=20
-+	int m =3D 0;
-+	u16 offset_mask =3D 0;
-+	u16 psid_mask =3D 0;
-+
-+	/* In this case we are in PSID mode and the rules are all different */
-+	if (is_psid) {
-+		/* m =3D number of bits in each valid range */
-+		m =3D 16 - min->psid.psid_length - min->psid.offset;
-+		offset_mask =3D ((1 << min->psid.offset) - 1) <<
-+				(16 - min->psid.offset);
-+		psid_mask =3D ((1 << min->psid.psid_length) - 1) << m;
-+	}
-+
- 	switch (tuple->dst.protonum) {
- 	case IPPROTO_ICMP:
- 	case IPPROTO_ICMPV6:
-+		if (is_psid) {
-+			return ((ntohs(tuple->src.u.icmp.id) & offset_mask) !=3D
-+				0) &&
-+				((ntohs(tuple->src.u.icmp.id) & psid_mask) =3D=3D
-+				min->psid.psid);
-+		}
- 		return ntohs(tuple->src.u.icmp.id) >=3D ntohs(min->icmp.id) &&
- 		       ntohs(tuple->src.u.icmp.id) <=3D ntohs(max->icmp.id);
- 	case IPPROTO_GRE: /* all fall though */
-@@ -252,6 +272,11 @@ static bool l4proto_in_range(const struct nf_conntra=
-ck_tuple *tuple,
- 		else
- 			port =3D tuple->dst.u.all;
-=20
-+		if (is_psid) {
-+			return ((ntohs(port) & offset_mask) !=3D 0) &&
-+				(((ntohs(port) & psid_mask) >> m) =3D=3D
-+				  min->psid.psid);
-+		}
- 		return ntohs(port) >=3D ntohs(min->all) &&
- 		       ntohs(port) <=3D ntohs(max->all);
- 	default:
-@@ -274,9 +299,9 @@ static int in_range(const struct nf_conntrack_tuple *=
-tuple,
-=20
- 	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED))
- 		return 1;
--
- 	return l4proto_in_range(tuple, NF_NAT_MANIP_SRC,
--				&range->min_proto, &range->max_proto);
-+				&range->min_proto, &range->max_proto,
-+				range->flags & NF_NAT_RANGE_PSID);
- }
-=20
- static inline int
-@@ -397,10 +422,10 @@ find_best_ips_proto(const struct nf_conntrack_zone =
-*zone,
-  *
-  * Per-protocol part of tuple is initialized to the incoming packet.
-  */
--static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple=
-,
--					const struct nf_nat_range2 *range,
--					enum nf_nat_manip_type maniptype,
--					const struct nf_conn *ct)
-+void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
-+				 const struct nf_nat_range2 *range,
-+				 enum nf_nat_manip_type maniptype,
-+				 const struct nf_conn *ct)
- {
- 	unsigned int range_size, min, max, i, attempts;
- 	__be16 *keyptr;
-@@ -457,6 +482,50 @@ static void nf_nat_l4proto_unique_tuple(struct nf_co=
-nntrack_tuple *tuple,
- 		return;
- 	}
-=20
-+	if (range->flags & NF_NAT_RANGE_PSID) {
-+		/* Find the non-PSID parts of the port.
-+		 * To do this we look for an unused port that is
-+		 * comprised of [t_chunk|PSID|b_chunk]. The size of
-+		 * these pieces is defined by the psid_length and
-+		 * offset.
-+		 */
-+		int m =3D 16 - range->min_proto.psid.psid_length -
-+		    range->min_proto.psid.offset;
-+		int available;
-+		int range_count =3D ((1 << range->min_proto.psid.offset) - 1);
-+
-+		/* Calculate the size of the bottom block */
-+		range_size =3D (1 << m);
-+
-+		/* Calculate the total IDs to check */
-+		available =3D range_size * range_count;
-+		if (!available)
-+			available =3D range_size;
-+
-+		off =3D ntohs(*keyptr);
-+		for (i =3D 0;; ++off) {
-+			int b_chunk =3D off % range_size;
-+			int t_chunk =3D 0;
-+
-+			/* Move up to avoid the all-zeroes reserved chunk
-+			 * (if there is one).
-+			 */
-+			if (range->min_proto.psid.offset > 0) {
-+				t_chunk =3D (off >> m) % range_count;
-+				++t_chunk;
-+				t_chunk <<=3D (m +
-+					     range->min_proto.psid.psid_length);
-+			}
-+
-+			*keyptr =3D htons(t_chunk |
-+					 (range->min_proto.psid.psid << m)
-+					 | b_chunk);
-+
-+			if (++i >=3D available || !nf_nat_used_tuple(tuple, ct))
-+				return;
-+		}
-+	}
-+
- 	/* If no range specified... */
- 	if (!(range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
- 		/* If it's dst rewrite, can't change port */
-@@ -566,11 +635,18 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
-=20
- 	/* Only bother mapping if it's not already in range and unique */
- 	if (!(range->flags & NF_NAT_RANGE_PROTO_RANDOM_ALL)) {
--		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED) {
-+		/* Now that the PSID mode is present we always need to check
-+		 * to see if the source ports are in range.
-+		 */
-+		if (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED ||
-+		    (range->flags & NF_NAT_RANGE_PSID &&
-+		    !in_range(orig_tuple, range))) {
- 			if (!(range->flags & NF_NAT_RANGE_PROTO_OFFSET) &&
- 			    l4proto_in_range(tuple, maniptype,
--			          &range->min_proto,
--			          &range->max_proto) &&
-+					     &range->min_proto,
-+					     &range->max_proto,
-+					     range->flags &
-+					     NF_NAT_RANGE_PSID) &&
- 			    (range->min_proto.all =3D=3D range->max_proto.all ||
- 			     !nf_nat_used_tuple(tuple, ct)))
- 				return;
-@@ -623,6 +699,11 @@ nf_nat_setup_info(struct nf_conn *ct,
- 			   &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
-=20
- 	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
-+	if (range) {
-+		if (!ct->range)
-+			ct->range =3D kmalloc(sizeof(*ct->range), 0);
-+		memcpy(ct->range, range, sizeof(*ct->range));
-+	}
-=20
- 	if (!nf_ct_tuple_equal(&new_tuple, &curr_tuple)) {
- 		struct nf_conntrack_tuple reply;
-diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
-index aace6768a64e..006b7e1836ff 100644
---- a/net/netfilter/nf_nat_ftp.c
-+++ b/net/netfilter/nf_nat_ftp.c
-@@ -17,6 +17,10 @@
- #include <net/netfilter/nf_conntrack_helper.h>
- #include <net/netfilter/nf_conntrack_expect.h>
- #include <linux/netfilter/nf_conntrack_ftp.h>
-+void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
-+				 const struct nf_nat_range2 *range,
-+				 enum nf_nat_manip_type maniptype,
-+				 const struct nf_conn *ct);
-=20
- #define NAT_HELPER_NAME "ftp"
-=20
-@@ -86,19 +90,12 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
- 	 * this one. */
- 	exp->expectfn =3D nf_nat_follow_master;
-=20
--	/* Try to get same port: if not, try to change it. */
--	for (port =3D ntohs(exp->saved_proto.tcp.port); port !=3D 0; port++) {
--		int ret;
--
--		exp->tuple.dst.u.tcp.port =3D htons(port);
--		ret =3D nf_ct_expect_related(exp, 0);
--		if (ret =3D=3D 0)
--			break;
--		else if (ret !=3D -EBUSY) {
--			port =3D 0;
--			break;
--		}
--	}
-+	/* Find a port that matches the MASQ rule. */
-+	nf_nat_l4proto_unique_tuple(&exp->tuple, ct->range,
-+				    dir ? NF_NAT_MANIP_SRC : NF_NAT_MANIP_DST,
-+				    ct);
-+	port =3D ntohs(exp->tuple.dst.u.tcp.port);
-+	nf_ct_expect_related(exp, 0);
-=20
- 	if (port =3D=3D 0) {
- 		nf_ct_helper_log(skb, ct, "all ports in use");
-diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.=
-c
-index a263505455fc..090153475d4d 100644
---- a/net/netfilter/nf_nat_helper.c
-+++ b/net/netfilter/nf_nat_helper.c
-@@ -184,11 +184,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
- 	/* This must be a fresh one. */
- 	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
-=20
--	/* Change src to where master sends to */
--	range.flags =3D NF_NAT_RANGE_MAP_IPS;
--	range.min_addr =3D range.max_addr
--		=3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
--	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
-+	if (exp->master && exp->master->range && !exp->dir) {
-+		range =3D *exp->master->range;
-+		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
-+	} else {
-+		/* Change src to where master sends to */
-+		range.flags =3D NF_NAT_RANGE_MAP_IPS;
-+		range.min_addr =3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
-+		range.max_addr =3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
-+		nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
-+	}
-=20
- 	/* For DST manip, map port here to where it's expected. */
- 	range.flags =3D (NF_NAT_RANGE_MAP_IPS | NF_NAT_RANGE_PROTO_SPECIFIED);
---=20
-2.31.1
+> 
+>  NB as noted before I only have a BT-958 readily wired for operation.  I 
+> don't expect I have any other BusLogic hardware, but I may yet have to 
+> double-check a stash of hardware I have accumulated over the years.  But 
+> that is overseas, so I won't be able to get at it before we're at least 
+> somewhat closer to normality.  If all else fails I could possibly buy one.
+> 
+>  I have respun the series now as promised.  Does your BT-757 adapter avoid 
+> the issue with trailing allocation somehow?
+> 
+
+Well, my only test machine with a legacy PCI slot died some time back. I
+have been working on putting together a replacement and have now been
+able to get a working machine with a BT-950 adapter. I have not seen
+issue with trailing allocation upto 5.12-rc8. I am going to try the top
+of tree as well to make sure I do not run into this issue.
+
+--
+Khalid
 
