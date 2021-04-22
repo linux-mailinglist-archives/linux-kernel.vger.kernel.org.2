@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67773688BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DD43688C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 23:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239482AbhDVVvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 17:51:13 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:45152 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236763AbhDVVvM (ORCPT
+        id S237132AbhDVV4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 17:56:53 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39264 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232844AbhDVV4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:51:12 -0400
-Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MLmEfK004055;
-        Thu, 22 Apr 2021 21:50:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pps0720;
- bh=iNdC/uGhdlQFKij68vl/US1UmD9Kxg0qHkSQJC+u0O8=;
- b=dGxqzGaul4kf/ZlF+iKMxvC3Urj7S6nG3DizjZBL2kma3TaWoIIFJ3Fl3r+UbbaFvX/1
- AoTNQ59cf1YYDF8he5ZKkfJn+WDqBSudxBVXgQlPTUGJkOq5Y4ndP1QRKvzLS7fqiKOQ
- A7eqD0FeXOOvgLo7ysvFU34p+ZX1aFZUZOh8feZMtVFZ1pf68nF9/Sp7CWSrRqmocW3Z
- S3zc9RZRWzGjls8OfbIpu9HW1aPxwl4WlROJOu6yMGdr3Re7aNj7DpM5VZvP1VxHVo/M
- OJkiqo7URY0WeStsRWrWlSU/ltwrTFFOz+urycxdUanAdRZTD+p+Xi8yVkxfDE6doJTv DQ== 
-Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
-        by mx0b-002e3701.pphosted.com with ESMTP id 3830xc8jhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 21:50:30 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g4t3426.houston.hpe.com (Postfix) with ESMTP id 1930D4E;
-        Thu, 22 Apr 2021 21:50:29 +0000 (UTC)
-Received: from [16.99.148.179] (unknown [16.99.148.179])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 3FE5348;
-        Thu, 22 Apr 2021 21:50:28 +0000 (UTC)
-Subject: Re: arch/x86/kernel/apic/x2apic_uv_x.c:106 early_get_pnodeid() warn:
- inconsistent indenting
-To:     Borislav Petkov <bp@suse.de>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Yang Li <yang.lee@linux.alibaba.com>
-References: <202104211946.vkuV39N1-lkp@intel.com>
- <84b4fbc3-0310-b7d7-f613-0eb4ae090e1e@hpe.com>
- <20210422090652.GB6361@zn.tnic>
-From:   Mike Travis <mike.travis@hpe.com>
-Message-ID: <e2e957f1-06f4-29b5-b268-7fd77db25529@hpe.com>
-Date:   Thu, 22 Apr 2021 14:50:27 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 22 Apr 2021 17:56:52 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lZhIs-000DUm-AJ; Thu, 22 Apr 2021 23:56:06 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lZhIs-000JP5-1R; Thu, 22 Apr 2021 23:56:06 +0200
+Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, shuah@kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <7ecb85e6-410b-65bb-a042-74045ee17c3f@iogearbox.net>
+Date:   Thu, 22 Apr 2021 23:56:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210422090652.GB6361@zn.tnic>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: TJqp4bz8Adqie1NvLIlAtPQZLWdzNj9l
-X-Proofpoint-ORIG-GUID: TJqp4bz8Adqie1NvLIlAtPQZLWdzNj9l
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-22_14:2021-04-22,2021-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104220160
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26148/Thu Apr 22 13:06:46 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Boris, I do have a clean up patch to remove more dead code 
-coming, I'll put this patch in that if that's okay?
+On 4/22/21 12:00 PM, Jiapeng Chong wrote:
+> Fix the following coccicheck warning:
+> 
+> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
+> comparing pointer to 0.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-On 4/22/2021 2:06 AM, Borislav Petkov wrote:
-> On Wed, Apr 21, 2021 at 06:38:37PM -0700, Mike Travis wrote:
->> I'm a bit confused.  I have this in my inbox that someone else has this fix.
->> So will that fix be applied or should I send a separate one that is
->> essentially a duplicate?
+How many more of those 'comparing pointer to 0' patches do you have?
+Right now we already merged the following with similar trivial pattern:
+
+  - ebda107e5f222a086c83ddf6d1ab1da97dd15810
+  - a9c80b03e586fd3819089fbd33c38fb65ad5e00c
+  - 04ea63e34a2ee85cfd38578b3fc97b2d4c9dd573
+
+Given they don't really 'fix' anything, I would like to reduce such
+patch cleanup churn on the bpf tree. Please _consolidate_ all other
+such occurrences into a _single_ patch for BPF selftests, and resubmit.
+
+Thanks!
+
+> ---
+>   tools/testing/selftests/bpf/progs/fentry_test.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I'm not even considering that fix because I'm tired of getting some
-> half-baked robot mails which only resemble patches. The obnoxiousness to
-> not have the decency to sit down and write a proper commit message is
-> getting totally out of control.
+> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
+> index 52a550d..d4247d6 100644
+> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
+> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
+> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+>   SEC("fentry/bpf_fentry_test8")
+>   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+>   {
+> -	if (arg->a == 0)
+> +	if (!arg->a)
+>   		test8_result = 1;
+>   	return 0;
+>   }
 > 
-> Apparently some people(?) think that sending robot output to real humans
-> *without* even vetting that output is a good idea so off to /dev/null it
-> goes.
-> 
-> If you want this fixed, you could do a proper patch with a sensible
-> commit message and I'll take it.
-> 
-> I'm tired of dumb robots.
-> 
-> Thx.
-> 
-> 
+
