@@ -2,249 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92A436857B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C752836857E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 19:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238336AbhDVRHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S236030AbhDVRHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 13:07:47 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:8606 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238206AbhDVRHf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Apr 2021 13:07:35 -0400
-Received: from mx.socionext.com ([202.248.49.38]:38326 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236660AbhDVRF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 13:05:57 -0400
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 23 Apr 2021 02:05:11 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 5B6A9205902A;
-        Fri, 23 Apr 2021 02:05:11 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 23 Apr 2021 02:05:11 +0900
-Received: from plum.e01.socionext.com (unknown [10.213.132.32])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id B095FB1D40;
-        Fri, 23 Apr 2021 02:05:10 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH v11 3/3] PCI: uniphier: Add misc interrupt handler to invoke PME and AER
-Date:   Fri, 23 Apr 2021 02:04:57 +0900
-Message-Id: <1619111097-10232-4-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1619111097-10232-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1619111097-10232-1-git-send-email-hayashi.kunihiko@socionext.com>
+ARC-Seal: i=1; a=rsa-sha256; t=1619111198; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=th4lh6hwjfD7YppPPMf+uOrTMTqW4GV7g/q6MkXuTBuzT2Ag2W3Blz5gLC6p4syMkN
+    EfGCREYcYWlJ0SmQ+a15eHEsPJDdedE2R6mr4dU2sCcz/bGBgtMnmP1FjqVMCu847dC2
+    pKJV2ccju9JKKGQ+Qncf6zLArqACuUt9bDvSGWLyoBEq0FxcG+0Ui1Yb0KMXidzEc8Qr
+    p9NGBDKg24hbGCvvPAzHofhX8Npuq33qjuDyyfd/GKiye8UreN99E2ZILBbC1itQSuQm
+    mriQWqVpQ0nDn47PJl5eUUAxJLDdliOPefkf5B2DGDdCDnrbZgxpE7+FnaSetg6jtwIn
+    bbFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619111198;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=RZEhjPMTimtcOAMcX8JWlzvK+WjQDhgXOxbfImygjNU=;
+    b=n+DFXBaRckaQUdmzb3uQ08PlykCEMLb0ZALFV/3JMJZRoZEPRTJaE3yF/SFfj8IcVr
+    Wek2q08FUZOncZDrQpsKNCDo4SpKDQcOO9R4Io9MTLmlqbiyYKim0XVrgpIPWA9Xz81P
+    MFmme/ZdVZ+xFxkhC85OhzJWNuSIURS3I5oYG69tKCOOEKjAAA3748ffW7Oapk2wocSp
+    m3bcAiIZtgVoquDB0iq415dNVgvwbsvtWX+sf90Kl7Dp41/vK4Y6IJOgJHSo8M+x/jjn
+    rGFfCvHHTCaC8Huz0A2Ke25UTkQnEhA4YQhX0MYbycgNShsfb3/EjenqOXNO0sSg2V+D
+    BPyg==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619111198;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=RZEhjPMTimtcOAMcX8JWlzvK+WjQDhgXOxbfImygjNU=;
+    b=n0iAFzbgPDMjLR1aswEeJsNWnXIRPDy7g2B3x23bgPhNwVFWRCemigEJ05HIUONGqU
+    J2vhu/v4qeFy1Ol1mRizPpo3O3zdyG4WKOau2E8GR9XsI6saj+m7VAwZyW1uXsRMerdk
+    C+sMBB9ibnqPhtUZ3UBr8YSMOWtNCHgS//6e7OFFJ96uRiiFMPIEGMG5DNCOWp1aZCAK
+    JrApMuHtuaK/iQdWVnk2ZIoCBQRsAls52W7orMXt43xkrQlW8RD6sln6fBbgUkOje41i
+    SNYrr4+5Sk+QnzFdUDzEe4fuPuwuJ2Nb+pd/FbRU/XQvJi9VLVd2JfV6VYlYpjd0SJic
+    vPew==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qOxWRk4dCylX7xo8GB7++2Zda3a+jmqyM0co2qg7zyOUbI="
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2001:16b8:2600:e600:a8e1:bb4:fe1c:cea8]
+    by smtp.strato.de (RZmta 47.24.3 AUTH)
+    with ESMTPSA id Q01a92x3MH6bYOb
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 22 Apr 2021 19:06:37 +0200 (CEST)
+Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <alpine.DEB.2.21.2104221828200.44318@angie.orcam.me.uk>
+Date:   Thu, 22 Apr 2021 19:06:36 +0200
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        linux-arch@vger.kernel.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Lubomir Rintel <lkundrak@v3.sk>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8FCB8F58-7F0A-4A9E-8BEA-7CCF09A43B63@goldelico.com>
+References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk> <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com> <2d636696-35f0-4731-b1c3-5445a57964fb@www.fastmail.com> <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com> <alpine.DEB.2.21.2104221828200.44318@angie.orcam.me.uk>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds misc interrupt handler to detect and invoke PME/AER event.
 
-In UniPhier PCIe controller, PME/AER signals are assigned to the same
-signal as MSI by the internal logic. These signals should be detected by
-the internal register, however, DWC MSI handler can't handle these signals.
+> Am 22.04.2021 um 18:55 schrieb Maciej W. Rozycki <macro@orcam.me.uk>:
+>=20
+>=20
+> Have you used it as a module or at bootstrap?
 
-DWC MSI handler calls .msi_host_isr() callback function, that detects
-PME/AER signals using the internal register and invokes the interrupt
-with PME/AER IRQ numbers.
+I did load it by insmod.
 
-These IRQ numbers is obtained by uniphier_pcie_port_get_irq() function,
-that finds the device that matches PME/AER from the devices associated
-with Root Port, and returns its IRQ number.
+> I would expect your JZ4730 device to have the CP0 Count register as =
+well,=20
+> as it has been architectural ever since MIPS III really, or is your =
+system=20
+> SMP with CP0 Count registers out of sync across CPUs due to sleep =
+modes or=20
+> whatever?
 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>
-Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- drivers/pci/controller/dwc/pcie-uniphier.c | 105 +++++++++++++++++++++++++----
- 1 file changed, 91 insertions(+), 14 deletions(-)
+It switches clocksource to some operating system timers on the SoC which
+may have an influence on the resolution (or precision).
 
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
-index 7e8bad3..dcd8fa8 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier.c
-@@ -21,6 +21,7 @@
- #include <linux/reset.h>
- 
- #include "pcie-designware.h"
-+#include "../../pcie/portdrv.h"
- 
- #define PCL_PINCTRL0			0x002c
- #define PCL_PERST_PLDN_REGEN		BIT(12)
-@@ -44,7 +45,9 @@
- #define PCL_SYS_AUX_PWR_DET		BIT(8)
- 
- #define PCL_RCV_INT			0x8108
-+#define PCL_RCV_INT_ALL_INT_MASK	GENMASK(28, 25)
- #define PCL_RCV_INT_ALL_ENABLE		GENMASK(20, 17)
-+#define PCL_RCV_INT_ALL_MSI_MASK	GENMASK(12, 9)
- #define PCL_CFG_BW_MGT_STATUS		BIT(4)
- #define PCL_CFG_LINK_AUTO_BW_STATUS	BIT(3)
- #define PCL_CFG_AER_RC_ERR_MSI_STATUS	BIT(2)
-@@ -68,6 +71,8 @@ struct uniphier_pcie_priv {
- 	struct reset_control *rst;
- 	struct phy *phy;
- 	struct irq_domain *legacy_irq_domain;
-+	int aer_irq;
-+	int pme_irq;
- };
- 
- #define to_uniphier_pcie(x)	dev_get_drvdata((x)->dev)
-@@ -164,7 +169,15 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
- 
- static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
- {
--	writel(PCL_RCV_INT_ALL_ENABLE, priv->base + PCL_RCV_INT);
-+	u32 val;
-+
-+	val = PCL_RCV_INT_ALL_ENABLE;
-+	if (pci_msi_enabled())
-+		val |= PCL_RCV_INT_ALL_INT_MASK;
-+	else
-+		val |= PCL_RCV_INT_ALL_MSI_MASK;
-+
-+	writel(val, priv->base + PCL_RCV_INT);
- 	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
- }
- 
-@@ -228,28 +241,51 @@ static const struct irq_domain_ops uniphier_intx_domain_ops = {
- 	.map = uniphier_pcie_intx_map,
- };
- 
--static void uniphier_pcie_irq_handler(struct irq_desc *desc)
-+static void uniphier_pcie_misc_isr(struct pcie_port *pp, bool is_msi)
- {
--	struct pcie_port *pp = irq_desc_get_handler_data(desc);
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
--	struct irq_chip *chip = irq_desc_get_chip(desc);
--	unsigned long reg;
--	u32 val, bit, virq;
-+	u32 val;
- 
--	/* INT for debug */
- 	val = readl(priv->base + PCL_RCV_INT);
- 
- 	if (val & PCL_CFG_BW_MGT_STATUS)
- 		dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
- 	if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
- 		dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
--	if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
--		dev_dbg(pci->dev, "Root Error\n");
--	if (val & PCL_CFG_PME_MSI_STATUS)
--		dev_dbg(pci->dev, "PME Interrupt\n");
-+
-+	if (is_msi) {
-+		if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS) {
-+			dev_dbg(pci->dev, "Root Error Status\n");
-+			if (priv->aer_irq)
-+				generic_handle_irq(priv->aer_irq);
-+		}
-+
-+		if (val & PCL_CFG_PME_MSI_STATUS) {
-+			dev_dbg(pci->dev, "PME Interrupt\n");
-+			if (priv->pme_irq)
-+				generic_handle_irq(priv->pme_irq);
-+		}
-+	}
- 
- 	writel(val, priv->base + PCL_RCV_INT);
-+}
-+
-+static void uniphier_pcie_msi_host_isr(struct pcie_port *pp)
-+{
-+	uniphier_pcie_misc_isr(pp, true);
-+}
-+
-+static void uniphier_pcie_irq_handler(struct irq_desc *desc)
-+{
-+	struct pcie_port *pp = irq_desc_get_handler_data(desc);
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	unsigned long reg;
-+	u32 val, bit, irq;
-+
-+	uniphier_pcie_misc_isr(pp, false);
- 
- 	/* INTx */
- 	chained_irq_enter(chip, desc);
-@@ -258,8 +294,8 @@ static void uniphier_pcie_irq_handler(struct irq_desc *desc)
- 	reg = FIELD_GET(PCL_RCV_INTX_ALL_STATUS, val);
- 
- 	for_each_set_bit(bit, &reg, PCI_NUM_INTX) {
--		virq = irq_linear_revmap(priv->legacy_irq_domain, bit);
--		generic_handle_irq(virq);
-+		irq = irq_linear_revmap(priv->legacy_irq_domain, bit);
-+		generic_handle_irq(irq);
- 	}
- 
- 	chained_irq_exit(chip, desc);
-@@ -317,8 +353,45 @@ static int uniphier_pcie_host_init(struct pcie_port *pp)
- 	return 0;
- }
- 
-+static int uniphier_pcie_port_get_irq(struct pcie_port *pp, u32 service)
-+{
-+	struct pci_dev *pcidev;
-+	int irq = 0;
-+
-+	if (!IS_ENABLED(CONFIG_PCIEAER) && !IS_ENABLED(CONFIG_PCIE_PME))
-+		return 0;
-+
-+	/*
-+	 * Finds the device that matches 'service' from the devices
-+	 * associated with Root Port, and returns its IRQ number.
-+	 */
-+	list_for_each_entry(pcidev, &pp->bridge->bus->devices, bus_list) {
-+		irq = pcie_port_service_get_irq(pcidev, service);
-+		if (irq)
-+			break;
-+	}
-+
-+	return irq;
-+}
-+
-+static int uniphier_pcie_host_init_complete(struct pcie_port *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
-+
-+	if (IS_ENABLED(CONFIG_PCIE_PME))
-+		priv->pme_irq =
-+			uniphier_pcie_port_get_irq(pp, PCIE_PORT_SERVICE_PME);
-+	if (IS_ENABLED(CONFIG_PCIEAER))
-+		priv->aer_irq =
-+			uniphier_pcie_port_get_irq(pp, PCIE_PORT_SERVICE_AER);
-+
-+	return 0;
-+}
-+
- static const struct dw_pcie_host_ops uniphier_pcie_host_ops = {
- 	.host_init = uniphier_pcie_host_init,
-+	.msi_host_isr = uniphier_pcie_msi_host_isr,
- };
- 
- static int uniphier_pcie_host_enable(struct uniphier_pcie_priv *priv)
-@@ -398,7 +471,11 @@ static int uniphier_pcie_probe(struct platform_device *pdev)
- 
- 	priv->pci.pp.ops = &uniphier_pcie_host_ops;
- 
--	return dw_pcie_host_init(&priv->pci.pp);
-+	ret = dw_pcie_host_init(&priv->pci.pp);
-+	if (ret)
-+		return ret;
-+
-+	return uniphier_pcie_host_init_complete(&priv->pci.pp);
- }
- 
- static const struct of_device_id uniphier_pcie_match[] = {
--- 
-2.7.4
+> Thanks for sharing your figures.
+
+It was a pleasure towards better MIPS support...
+
+>=20
+>> [1] we are preparing full support for the JZ4730 based Skytone Alpha =
+machine. Most features
+>> are working except sound/I2S. I2C is a little unreliable and Ethernet =
+has hickups. And scheduling
+>> which indicates some fundamental IRQ or timer issue we could not yet =
+identify.
+>=20
+> Good luck with that!
+
+BR and thanks,
+Niklaus
 
