@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF373682B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621A93682BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236584AbhDVOvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:51:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39504 "EHLO mail.kernel.org"
+        id S237429AbhDVOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:52:32 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58050 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236019AbhDVOvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:51:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B63461425;
-        Thu, 22 Apr 2021 14:51:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619103076;
-        bh=SABrBVqsF72QfA15qnobAparqW+KASuoIMcq/PiBNyQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ISEFHesJOLuYeLHcNDksC5KuWW+5nxW3X+DhvyEAmqF/uRFP5nQxuBuVn5L/aZiYr
-         2Cy7HQg4cBmEOyWy/aD5GewKDQib2hy0QHxelQ3fbslJekhlOKA8Vv0qamHl/sHAaa
-         zI+F9ko8twDY4PvNrgRcbc715vs98IxZn9EO2++8yAKRZVnQHsTjOXMbGsXu8pyu1S
-         7yxSntGlu+TorOs1Ps6BNrZ3UsK/LoNdK7xyDZJxRVyc4X1GriKhZAIkVarearMkBS
-         Ex8eq+2aZnRgx41OlNE2DBmA2pe7SPgzHIlqYkoZljNTB+4QBRADLXV1hfqWwTv8f7
-         U/aewDPyMcKtQ==
-Message-ID: <95de6e0ff902903cfc8825a4e0b7f1c64594630f.camel@kernel.org>
-Subject: Re: [PATCH v6 01/30] iov_iter: Add ITER_XARRAY
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 22 Apr 2021 10:51:13 -0400
-In-Reply-To: <2293710.1619099492@warthog.procyon.org.uk>
-References: <27c369a8f42bb8a617672b2dc0126a5c6df5a050.camel@kernel.org>
-         <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-         <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
-         <2293710.1619099492@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        id S236019AbhDVOwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 10:52:31 -0400
+IronPort-SDR: eEF/14Cst16qjgmdqOckBhgIdgISUIsFeotAkwmtobMBz1c2bPO4yIRHB2SIPZfCavKYphmSu2
+ jpgz29AJ3vRg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="195455552"
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="195455552"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 07:51:56 -0700
+IronPort-SDR: 7ThSNZxN7/DzyQgxwuyvs2UwLBv5+Npjjt4tBmB3pqEMo2OeDtsP032DXqUh7QyXbL0WJvprKc
+ ZQSHgHTKjOrQ==
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="427976473"
+Received: from rlocatel-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.36.200])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 07:51:50 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Subject: Re: [PATCH] vfio/gvt: fix DRM_I915_GVT dependency on VFIO_MDEV
+In-Reply-To: <20210422135810.GG2047089@ziepe.ca>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210422133547.1861063-1-arnd@kernel.org> <20210422135810.GG2047089@ziepe.ca>
+Date:   Thu, 22 Apr 2021 17:51:47 +0300
+Message-ID: <87sg3i74os.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-22 at 14:51 +0100, David Howells wrote:
-> Jeff Layton <jlayton@kernel.org> wrote:
-> 
-> > As a general note, iov_iter.c could really do with some (verbose)
-> > comments explaining things. A kerneldoc header that explains the
-> > arguments to iterate_all_kinds would sure make this easier to review.
-> 
-> Definitely.  But that really requires a separate patch.
-> 
 
-I suppose.
+Cc: gvt list & maintainers
 
-> > > @@ -1126,7 +1199,12 @@ void iov_iter_revert(struct iov_iter *i, size_t unroll)
-> > >  		return;
-> > >  	}
-> > >  	unroll -= i->iov_offset;
-> > > -	if (iov_iter_is_bvec(i)) {
-> > > +	if (iov_iter_is_xarray(i)) {
-> > > +		BUG(); /* We should never go beyond the start of the specified
-> > > +			* range since we might then be straying into pages that
-> > > +			* aren't pinned.
-> > > +			*/
-> > 
-> > It's not needed now, but there are a lot of calls to iov_iter_revert in
-> > the kernel, and going backward doesn't necessarily mean we'd be straying
-> > into an unpinned range. xarray_start never changes; would it not be ok
-> > to allow reverting as long as you don't move to a lower offset than that
-> > point?
-> 
-> This is handled starting a couple of lines above the start of the hunk:
-> 
-> 	if (unroll <= i->iov_offset) {
-> 		i->iov_offset -= unroll;
-> 		return;
-> 	}
-> 
-> As long as the amount you want to unroll by doesn't exceed the amount you've
-> consumed of the iterator, it will allow you to do it.  The BUG is there to
-> catch someone attempting to over-revert (and there's no way to return an
-> error).
-> 
+On Thu, 22 Apr 2021, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Thu, Apr 22, 2021 at 03:35:33PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The Kconfig dependency is incomplete since DRM_I915_GVT is a 'bool'
+>> symbol that depends on the 'tristate' VFIO_MDEV. This allows a
+>> configuration with VFIO_MDEV=m, DRM_I915_GVT=y and DRM_I915=y that
+>> causes a link failure:
+>> 
+>> x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `available_instances_show':
+>> gvt.c:(.text+0x67a): undefined reference to `mtype_get_parent_dev'
+>> x86_64-linux-ld: gvt.c:(.text+0x6a5): undefined reference to `mtype_get_type_group_id'
+>> x86_64-linux-ld: drivers/gpu/drm/i915/gvt/gvt.o: in function `description_show':
+>> gvt.c:(.text+0x76e): undefined reference to `mtype_get_parent_dev'
+>> x86_64-linux-ld: gvt.c:(.text+0x799): undefined reference to `mtype_get_type_group_id'
+>> 
+>> Clarify the dependency by specifically disallowing the broken
+>> configuration. If VFIO_MDEV is built-in, it will work, but if
+>> VFIO_MDEV=m, the i915 driver cannot be built-in here.
+>> 
+>> Fixes: 07e543f4f9d1 ("vfio/gvt: Make DRM_I915_GVT depend on VFIO_MDEV")
+>> Fixes: 9169cff168ff ("vfio/mdev: Correct the function signatures for the mdev_type_attributes")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>>  drivers/gpu/drm/i915/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Oh kconfig stuff like this makes my head hurt, thanks for finding it
+>
+> I also can't see an alternative to this ugly thing, besides having the
+> i915 guys properly modularize this code someday
+>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>
+> Jason
 
-Ahh thanks. I misread that bit. That makes sense. Sucks about having to
-BUG() there, but I'm not sure what else you can do.
-
-> > > +static ssize_t iter_xarray_copy_pages(struct page **pages, struct xarray *xa,
-> > > +				       pgoff_t index, unsigned int nr_pages)
-> > 
-> > nit: This could use a different name -- I was expecting to see page
-> > _contents_ copied here, but it's just populating the page array with
-> > pointers.
-> 
-> Fair point.  Um...  how about iter_xarray_populate_pages() or
-> iter_xarray_list_pages()?
-> 
-
-I like "populate" better.
-
-> > I think you've planned to remove iov_iter_for_each_range as well? I'll
-> > assume that this is going away. It might be nice to post the latest
-> > version of this patch with that change, just for posterity.
-> 
-> I'll put that in a separate patch.
-> 
-> > In any case, this all looks reasonable to me, modulo a few nits and a
-> > general dearth of comments.
-> > 
-> > Reviewed-by: Jeff Layton <jlayton@kernel.org>
-> 
-> Thanks,
-> David
-> 
-
-Cheers,
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Jani Nikula, Intel Open Source Graphics Center
