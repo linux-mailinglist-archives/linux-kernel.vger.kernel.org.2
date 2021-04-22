@@ -2,175 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06D836826A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E46368270
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237361AbhDVOZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:25:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236398AbhDVOZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:25:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EADD61437;
-        Thu, 22 Apr 2021 14:24:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619101495;
-        bh=emQLJLcVlBds4imQM3TDgPckp7ci6FjCBONsDx35vfc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=cWo+nnP6a7qQ4Jq3qIyin6TE/R//tY+ePgv8xKv1pT3pnn9MK+STwWJcC7Ryvoze7
-         21m8JsoI8wAAPzGA3R7iy2LlU6KzESyKVl+qlR1nXZ4ybKQbe7mx6TfUnSbIyBI6D9
-         tCHOqj42XJM2LDreube9Qf/qU5HCDKjD/L78GaA7p40WbP6/eRBMTya3Ea4tvqcRM8
-         NhMJBz1P4mcvEckjft946G0Kuvbw+6uyelAMfyzyusSoqgXHsZ99u03KxkK91XRFw7
-         bCNADVMvcnokozAjZqDpKuTvnxKrq79VMr7BAZKgx8Bn2E++H9W2vjZUZ+Yju2QWjo
-         vOQKvXHq5vecg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A11395C03C3; Thu, 22 Apr 2021 07:24:54 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 07:24:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210420064934.GE31773@xsang-OptiPlex-9020>
- <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
- <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
+        id S236710AbhDVO1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236398AbhDVO1x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 10:27:53 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7A2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:27:17 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a5so15097911ljk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YUbZYT4OBaB64X7LHgzjKFjOfvV90LK9Vn0x4eZD4WE=;
+        b=m03NQBJsiIYmZLHNAhp0ZNgR6JE1hvKR6rXrXKgEbpcm/xxcVWpyWKSe4UJSSFoEA0
+         6VERSKMt3H1owy6VkbUcLEpYa4p+4xzIUeG0QGSkO/4n+f5U0hQJcuEKfVa7RGzmuZDc
+         gs1Qs8aNheTNoYmGGp+2vAbMg2xCCtRdzRMSlQaC5Fo28MNBGDgSyPMkwk6copXCONZy
+         gohJAjVusy8MudtqtIcM1D/lHeYMhSVwV6qeQtp/AircejjDw5yUBk08fU3A2mZyrMX8
+         LEUxOeNIb2m0yU9EvunJ87XnZGy56PrEY71VEgmDdl12YHu9jtL4MBtBenFNr+/I+XRy
+         ev5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YUbZYT4OBaB64X7LHgzjKFjOfvV90LK9Vn0x4eZD4WE=;
+        b=NX6U6FjZXGFgLOyEXSlM5tonxvPqr9WZwjlVLOHNNLVv0HwMyiW5TUcJA4FQDt1WBx
+         3CLMufnRY5l6OEEprbF5f0OlXjvkpMl5bMZ7KNhSCo3y3H0QCQ1SewYErbTiSJqBMJX+
+         uYHVOzDcEtfdzyNCeJ/IZOtvGiqOpYXqqLLJixhqa6RNs3rR1zjIgsFD46mbk7Zadccs
+         UJj9zSMzO9mXZG1msKbbkzpgg87DkvynHoAqeQV1Pakmyf8EQqksLLJ4RciQ6IrTFA/D
+         Zqy6Jc5G59LxsVk0ghXlkqPp9tBNEWKahGiXAwmAeC3MZ0/diKsZSVCJOCMnL+w0sMQc
+         BcgA==
+X-Gm-Message-State: AOAM532RbEHrCTy94vnNVkUmfPeVU7iD4FXEf7+HwXwmEtYai/NKL4Mk
+        fQ4lshSTT4zkNV6ANAPI2dOC8NhpDD3J8sViL2xp6A==
+X-Google-Smtp-Source: ABdhPJxuPeU6YJj81GeUryMLJyMPTds2wqBiSmhpJSyCNeXFkuQsmGAZagAn1Y0AMi6ejQI0rH+KkH3+1wSZAPT7DXw=
+X-Received: by 2002:a2e:9cc1:: with SMTP id g1mr2742525ljj.0.1619101635457;
+ Thu, 22 Apr 2021 07:27:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422074126.GA85095@shbuild999.sh.intel.com>
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <699e51ba-825d-b243-8205-4d8cff478a66@sony.com> <CALvZod7AEjzWa6AR4Ym1jpfzT32hmepxvci6hXvNJTEQvcQqEw@mail.gmail.com>
+ <1f8d300b-9a8b-de09-6d5d-6a9c20c66d24@sony.com> <CALvZod5+5ycobmSt=NC3VJF4FRMFmBQEN7SQgipyTDbzHEbPUQ@mail.gmail.com>
+ <6eaa4c24-c565-bc5d-dbca-b73c72569a16@sony.com>
+In-Reply-To: <6eaa4c24-c565-bc5d-dbca-b73c72569a16@sony.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 22 Apr 2021 07:27:04 -0700
+Message-ID: <CALvZod5dr8Uy84wJ5-a=zyR52_k5AU64GtFAsJpBRE89DEt-yg@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     peter enderborg <Peter.Enderborg@sony.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
-> Hi Paul,
-> 
-> On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
-> > 
-> > 
-> > On 4/21/2021 9:42 PM, Paul E. McKenney wrote:
-> > >On Wed, Apr 21, 2021 at 02:07:19PM +0800, Xing, Zhengjun wrote:
-> > >>
-> > >>On 4/20/2021 10:05 PM, Paul E. McKenney wrote:
-> > >>>On Tue, Apr 20, 2021 at 06:43:31AM -0700, Paul E. McKenney wrote:
-> > >>>>On Tue, Apr 20, 2021 at 02:49:34PM +0800, kernel test robot wrote:
-> > >>>>>Greeting,
-> > >>>>>
-> > >>>>>FYI, we noticed a -14.4% regression of stress-ng.opcode.ops_per_sec due to commit:
-> > >>>>>
-> > >>>>>
-> > >>>>>commit: 6c52b5f3cfefd6e429efc4413fd25e3c394e959f ("clocksource: Reduce WATCHDOG_THRESHOLD")
-> > >>>>>https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.13a
-> > >>>>>
-> > >>>>>
-> > >>>>>in testcase: stress-ng
-> > >>>>>on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
-> > >>>>>with following parameters:
-> > >>>>>
-> > >>>>>	nr_threads: 10%
-> > >>>>>	disk: 1HDD
-> > >>>>>	testtime: 60s
-> > >>>>>	fs: ext4
-> > >>>>>	class: os
-> > >>>>>	test: opcode
-> > >>>>>	cpufreq_governor: performance
-> > >>>>>	ucode: 0x5003006
-> > >>>>Hmmm...  I will try a less-aggressive reduction.  Thank you for testing!
-> > >>>But wait...  This code is only running twice per second.  It is very
-> > >>>hard to believe that a clock-read retry twice per second is worth 2% of
-> > >>>performance, let alone 14.4%.
-> > >>>
-> > >>>Is something else perhaps going on here?
-> > >>>
-> > >>>For example, did this run enable any of the new diagnositic clocksource.*
-> > >>>kernel parameters?
-> > >>>
-> > >>>								Thanx, Paul
-> > >>I attached the kernel log, the following logs are related with the
-> > >>clocksource.
-> > >>[    3.453206] clocksource: timekeeping watchdog on CPU1: Marking
-> > >>clocksource 'tsc-early' as unstable because the skew is too large:
-> > >>[    3.455197] clocksource:                       'hpet' wd_now: 288fcc0
-> > >>wd_last: 1a8b333 mask: ffffffff
-> > >>[    3.455199] clocksource:                       'tsc-early' cs_now:
-> > >>1def309ebfdee cs_last: 1def2bd70d92c mask: ffffffffffffffff
-> > >>[    3.455201] clocksource:                       No current clocksource.
-> > >>[    3.457197] tsc: Marking TSC unstable due to clocksource watchdog
-> > >>
-> > >>6c52b5f3cf reduced WATCHDOG_THRESHOLD, then in clocksource_watchdog, the
-> > >>warning logs are print, the TSC is marked as unstable.
-> > >>/* Check the deviation from the watchdog clocksource. */
-> > >Aha, so this system really does have an unstable TSC!  Which means that
-> > >the patch is operating as designed.
-> > >
-> > >Or are you saying that this is a false positive?
-> > >
-> > >							Thanx, Paul
-> > 
-> > It happened during boot and before TSC calibration
-> > (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
-> > > WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
-> > After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
-> > WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
-> > WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
-> > by more than 1% to be marked unstable.
+On Wed, Apr 21, 2021 at 10:39 PM <Peter.Enderborg@sony.com> wrote:
+>
+> On 4/21/21 9:18 PM, Shakeel Butt wrote:
+> > On Wed, Apr 21, 2021 at 11:46 AM <Peter.Enderborg@sony.com> wrote:
+> >> On 4/21/21 8:28 PM, Shakeel Butt wrote:
+> >>> On Wed, Apr 21, 2021 at 10:06 AM peter enderborg
+> >>> <peter.enderborg@sony.com> wrote:
+> >>>> On 4/20/21 3:44 AM, Shakeel Butt wrote:
+> >>> [...]
+> >>>> I think this is the wrong way to go.
+> >>> Which one? Are you talking about the kernel one? We already talked out
+> >>> of that. To decide to OOM, we need to look at a very diverse set of
+> >>> metrics and it seems like that would be very hard to do flexibly
+> >>> inside the kernel.
+> >> You dont need to decide to oom, but when oom occurs you
+> >> can take a proper action.
+> > No, we want the flexibility to decide when to oom-kill. Kernel is very
+> > conservative in triggering the oom-kill.
+>
+> It wont do it for you. We use this code to solve that:
 
-This is common code, so we do need an architecture-independent way to
-handle this.
+Sorry what do you mean by "It wont do it for you"?
 
-> As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
-> times calibration of tsc, the first one of early quick calibration gives
-> 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
-> is about 2.5/1000 deviation for the first number, which just exceeds the
-> 1/1000 threshold you set :)
+[...]
+> int __init lowmemorykiller_register_oom_notifier(void)
+> {
+>     register_oom_notifier(&lowmemorykiller_oom_nb);
 
-Even my 2/1000 initial try would have caused this, then.  ;-)
+This code is using oom_notify_list. That is only called when the
+kernel has already decided to go for the oom-kill. My point was the
+kernel is very conservative in deciding to trigger the oom-kill and
+the applications can suffer for long. We already have solutions for
+this issue in the form of userspace oom-killers (Android's lmkd and
+Facebook's oomd) which monitors a diverse set of metrics to early
+detect the application suffering and trigger SIGKILLs to release the
+memory pressure on the system.
 
-But even 1/1000 deviation would cause any number of applications some
-severe heartburn, so I am not at all happy with the thought of globally
-increasing to (say) 3/1000.
-
-> Following is the tsc freq info from kernel log
-> 
-> [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-> [    0.000000] tsc: Detected 2100.000 MHz processor
-> ...
-> [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
-
-So what are our options?
-
-1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
-
-2.	#1, but add tsc-early into the watchdog list and set
-	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
-
-3.	Add a field to struct clocksource that, if non-zero, gives
-	the maximum drift in nanoseconds per half second (AKA
-	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
-	is used.  Set this to (say) 150,000ns for tsc-early.
-
-4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
-	which again is not a good approach given the real-world needs
-	of real-world applications.
-
-5.	Your ideas here.
-
-All in all, I am glad that I made the patch that decreases
-WATCHDOG_MAX_SKEW be separate and at the end of the series.  ;-)
-
-							Thanx, Paul
+BTW with the userspace oom-killers, we would like to avoid the kernel
+oom-killer and memory.swap.high has been introduced in the kernel for
+that purpose.
