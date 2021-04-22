@@ -2,154 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FEC367CC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0AF367CAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 10:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235481AbhDVIpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 04:45:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38740 "EHLO mx2.suse.de"
+        id S235490AbhDVIjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 04:39:16 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:34520 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229938AbhDVIpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 04:45:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619081086; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iiKTZO7MN5KaIv4s0PldYG1G2gdvZF2Bde6z/Wg/Lxs=;
-        b=rfvv5qZq0qZOEWjitR6GkxwWFqrrh7+kBsoIKmfQY1vT3nUZrtD2x52IkS9YXQwoqS59cQ
-        f/lkvY2Sj9ebqp5G3kZWwZkiJZyax3DfsbOgx/+tuwli16RQwVJS/4zbIlZV9zaBjBZyRh
-        WdQVPl5VYhDR+egIBPhtepR+5M4nxcY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 916EEB02A;
-        Thu, 22 Apr 2021 08:44:46 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 10:44:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix root_mem_cgroup
- charging
-Message-ID: <YIE3e3fVboWfIq7r@dhcp22.suse.cz>
-References: <20210421062644.68331-1-songmuchun@bytedance.com>
- <YH/Vf8SDRy7VR7ur@dhcp22.suse.cz>
- <CAMZfGtVpz1FvzmhWFzXAJE3wWBMJwdwU+JqQ6a8KeOhV3FGJ4Q@mail.gmail.com>
- <YIAimEdqpen3/38Z@dhcp22.suse.cz>
- <CAMZfGtUOXyK3RDZ+P0GaO4p-P0XatFB8ZbmXEFvfet1HSrdFog@mail.gmail.com>
- <YIDKDQxOq8IK82Rt@carbon.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIDKDQxOq8IK82Rt@carbon.dhcp.thefacebook.com>
+        id S235421AbhDVIjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:39:12 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AB6531A1A46;
+        Thu, 22 Apr 2021 10:38:36 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2DA401A1A4F;
+        Thu, 22 Apr 2021 10:38:34 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D288A40340;
+        Thu, 22 Apr 2021 10:38:27 +0200 (CEST)
+From:   Guanhua Gao <guanhua.gao@nxp.com>
+To:     Vinod Koul <vkoul@kernel.org>, Yi Zhao <yi.zhao@nxp.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guanhua Gao <guanhua.gao@nxp.com>
+Subject: [PATCH v2 3/3] dmaengine: fsl-dpaa2-qdma: Remove the macro of DPDMAI_MAX_QUEUE_NUM
+Date:   Thu, 22 Apr 2021 16:44:48 +0800
+Message-Id: <20210422084448.962-1-guanhua.gao@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21-04-21 17:57:49, Roman Gushchin wrote:
-> On Wed, Apr 21, 2021 at 09:39:03PM +0800, Muchun Song wrote:
-> > On Wed, Apr 21, 2021 at 9:03 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 21-04-21 17:50:06, Muchun Song wrote:
-> > > > On Wed, Apr 21, 2021 at 3:34 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Wed 21-04-21 14:26:44, Muchun Song wrote:
-> > > > > > The below scenario can cause the page counters of the root_mem_cgroup
-> > > > > > to be out of balance.
-> > > > > >
-> > > > > > CPU0:                                   CPU1:
-> > > > > >
-> > > > > > objcg = get_obj_cgroup_from_current()
-> > > > > > obj_cgroup_charge_pages(objcg)
-> > > > > >                                         memcg_reparent_objcgs()
-> > > > > >                                             // reparent to root_mem_cgroup
-> > > > > >                                             WRITE_ONCE(iter->memcg, parent)
-> > > > > >     // memcg == root_mem_cgroup
-> > > > > >     memcg = get_mem_cgroup_from_objcg(objcg)
-> > > > > >     // do not charge to the root_mem_cgroup
-> > > > > >     try_charge(memcg)
-> > > > > >
-> > > > > > obj_cgroup_uncharge_pages(objcg)
-> > > > > >     memcg = get_mem_cgroup_from_objcg(objcg)
-> > > > > >     // uncharge from the root_mem_cgroup
-> > > > > >     page_counter_uncharge(&memcg->memory)
-> > > > > >
-> > > > > > This can cause the page counter to be less than the actual value,
-> > > > > > Although we do not display the value (mem_cgroup_usage) so there
-> > > > > > shouldn't be any actual problem, but there is a WARN_ON_ONCE in
-> > > > > > the page_counter_cancel(). Who knows if it will trigger? So it
-> > > > > > is better to fix it.
-> > > > >
-> > > > > The changelog doesn't explain the fix and why you have chosen to charge
-> > > > > kmem objects to root memcg and left all other try_charge users intact.
-> > > >
-> > > > The object cgroup is special (because the page can reparent). Only the
-> > > > user of objcg APIs should be fixed.
-> > > >
-> > > > > The reason is likely that those are not reparented now but that just
-> > > > > adds an inconsistency.
-> > > > >
-> > > > > Is there any reason you haven't simply matched obj_cgroup_uncharge_pages
-> > > > > to check for the root memcg and bail out early?
-> > > >
-> > > > Because obj_cgroup_uncharge_pages() uncharges pages from the
-> > > > root memcg unconditionally. Why? Because some pages can be
-> > > > reparented to root memcg, in order to ensure the correctness of
-> > > > page counter of root memcg. We have to uncharge pages from
-> > > > root memcg. So we do not check whether the page belongs to
-> > > > the root memcg when it uncharges.
-> > >
-> > > I am not sure I follow. Let me ask differently. Wouldn't you
-> > > achieve the same if you simply didn't uncharge root memcg in
-> > > obj_cgroup_charge_pages?
-> > 
-> > I'm afraid not. Some pages should uncharge root memcg, some
-> > pages should not uncharge root memcg. But all those pages belong
-> > to the root memcg. We cannot distinguish between the two.
-> > 
-> > I believe Roman is very familiar with this mechanism (objcg APIs).
-> > 
-> > Hi Roman,
-> > 
-> > Any thoughts on this?
-> 
-> First, unfortunately we do export the root's counter on cgroup v1:
-> /sys/fs/cgroup/memory/memory.kmem.usage_in_bytes
-> But we don't ignore these counters for the root mem cgroup, so there
-> are no bugs here. (Otherwise, please, reproduce it). So it's all about
-> the potential warning in page_counter_cancel().
-> 
-> The patch looks technically correct to me. Not sure about __try_charge()
-> naming, we never use "__" prefix to do something with the root_mem_cgroup.
-> 
-> The commit message should be more clear and mention the following:
-> get_obj_cgroup_from_current() never returns a root_mem_cgroup's objcg,
-> so we never explicitly charge the root_mem_cgroup. And it's not
-> going to change.
-> It's all about a race when we got an obj_cgroup pointing at some non-root
-> memcg, but before we were able to charge it, the cgroup was gone, objcg was
-> reparented to the root and so we're skipping the charging. Then we store the
-> objcg pointer and later use to uncharge the root_mem_cgroup.
-> 
-> But honestly I'm not sure the problem is worth the time spent on the fix
-> and the discussion. It's a small race and it's generally hard to trigger
-> a kernel allocation racing with a cgroup deletion and then you need *a lot*
-> of such races and then maybe there will be a single warning printed without
-> *any* other consequences.
+The max number of queue supported by DPAA2 qdma is determined
+by the number of CPUs. Due to the number of CPUs are different
+in different LS2 platforms, we remove the macro of
+DPDMAI_MAX_QUEUE_NUM which is defined 8.
 
-Thanks for the clarification Roman! As I've said I am not a obj-cgroup
-accounting insider but it would make some sense to opt out from
-accounting in the uncharge path just from clarity point of view to match
-the charging path (rather than what the patch is proposing and special
-case the charging path and make it inconsistent with non obj-cgroup
-tracking. What do you think?
+Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
+---
+Change in v2:
+ - Add new patch.
 
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 43 +++++++++++++++++++++----
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h |  4 +--
+ drivers/dma/fsl-dpaa2-qdma/dpdmai.h     |  5 ---
+ 3 files changed, 39 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+index 86c7ec5dc74e..3875fbb9fac3 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
++++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+@@ -314,6 +314,8 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+ 	struct dpaa2_qdma_priv_per_prio *ppriv;
+ 	struct device *dev = &ls_dev->dev;
+ 	struct dpaa2_qdma_priv *priv;
++	struct dpdmai_rx_queue_attr *rx_queue_attr;
++	struct dpdmai_tx_queue_attr *tx_queue_attr;
+ 	int err = -EINVAL;
+ 	int i;
+ 
+@@ -335,33 +337,51 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+ 				    &priv->dpdmai_attr);
+ 	if (err) {
+ 		dev_err(dev, "dpdmai_get_attributes() failed\n");
+-		goto exit;
++		goto err_get_attr;
+ 	}
+ 
+ 	priv->num_pairs = priv->dpdmai_attr.num_of_queues;
++	rx_queue_attr = kcalloc(priv->num_pairs, sizeof(*rx_queue_attr),
++				GFP_KERNEL);
++	if (!rx_queue_attr) {
++		err = -ENOMEM;
++		goto err_get_attr;
++	}
++	priv->rx_queue_attr = rx_queue_attr;
++
++	tx_queue_attr = kcalloc(priv->num_pairs, sizeof(*tx_queue_attr),
++				GFP_KERNEL);
++	if (!tx_queue_attr) {
++		err = -ENOMEM;
++		goto err_tx_queue;
++	}
++	priv->tx_queue_attr = tx_queue_attr;
++
+ 	ppriv = kcalloc(priv->num_pairs, sizeof(*ppriv), GFP_KERNEL);
+ 	if (!ppriv) {
+ 		err = -ENOMEM;
+-		goto exit;
++		goto err_ppriv;
+ 	}
+ 	priv->ppriv = ppriv;
+ 
+ 	for (i = 0; i < priv->num_pairs; i++) {
+ 		err = dpdmai_get_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+-					  i, 0, &priv->rx_queue_attr[i]);
++					  i, 0, priv->rx_queue_attr + i);
+ 		if (err) {
+ 			dev_err(dev, "dpdmai_get_rx_queue() failed\n");
+ 			goto exit;
+ 		}
+-		ppriv->rsp_fqid = priv->rx_queue_attr[i].fqid;
++		ppriv->rsp_fqid = ((struct dpdmai_rx_queue_attr *)
++				   (priv->rx_queue_attr + i))->fqid;
+ 
+ 		err = dpdmai_get_tx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+-					  i, 0, &priv->tx_queue_attr[i]);
++					  i, 0, priv->tx_queue_attr + i);
+ 		if (err) {
+ 			dev_err(dev, "dpdmai_get_tx_queue() failed\n");
+ 			goto exit;
+ 		}
+-		ppriv->req_fqid = priv->tx_queue_attr[i].fqid;
++		ppriv->req_fqid = ((struct dpdmai_tx_queue_attr *)
++				   (priv->tx_queue_attr + i))->fqid;
+ 		ppriv->prio = DPAA2_QDMA_DEFAULT_PRIORITY;
+ 		ppriv->priv = priv;
+ 		ppriv->chan_id = i;
+@@ -370,6 +390,12 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+ 
+ 	return 0;
+ exit:
++	kfree(ppriv);
++err_ppriv:
++	kfree(priv->tx_queue_attr);
++err_tx_queue:
++	kfree(priv->rx_queue_attr);
++err_get_attr:
+ 	dpdmai_close(priv->mc_io, 0, ls_dev->mc_handle);
+ 	return err;
+ }
+@@ -733,6 +759,8 @@ static int dpaa2_qdma_probe(struct fsl_mc_device *dpdmai_dev)
+ 	dpaa2_dpmai_store_free(priv);
+ 	dpaa2_dpdmai_dpio_free(priv);
+ err_dpio_setup:
++	kfree(priv->rx_queue_attr);
++	kfree(priv->tx_queue_attr);
+ 	kfree(priv->ppriv);
+ 	dpdmai_close(priv->mc_io, 0, dpdmai_dev->mc_handle);
+ err_dpdmai_setup:
+@@ -763,6 +791,9 @@ static int dpaa2_qdma_remove(struct fsl_mc_device *ls_dev)
+ 	dpaa2_dpdmai_free_channels(dpaa2_qdma);
+ 
+ 	dma_async_device_unregister(&dpaa2_qdma->dma_dev);
++	kfree(priv->rx_queue_attr);
++	kfree(priv->tx_queue_attr);
++	kfree(priv->ppriv);
+ 	kfree(priv);
+ 	kfree(dpaa2_qdma);
+ 
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+index 0a405fb13452..38aed372214e 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
++++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+@@ -123,8 +123,8 @@ struct dpaa2_qdma_priv {
+ 	struct dpaa2_qdma_engine	*dpaa2_qdma;
+ 	struct dpaa2_qdma_priv_per_prio	*ppriv;
+ 
+-	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
+-	struct dpdmai_tx_queue_attr tx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
++	struct dpdmai_rx_queue_attr *rx_queue_attr;
++	struct dpdmai_tx_queue_attr *tx_queue_attr;
+ };
+ 
+ struct dpaa2_qdma_priv_per_prio {
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+index 0a87d37f7a92..f3a3eac97400 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
++++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+@@ -51,11 +51,6 @@
+  * Contains initialization APIs and runtime control APIs for DPDMAI
+  */
+ 
+-/*
+- * Maximum number of Tx/Rx queues per DPDMAI object
+- */
+-#define DPDMAI_MAX_QUEUE_NUM	8
+-
+ /**
+  * Maximum number of Tx/Rx priorities per DPDMAI object
+  */
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
