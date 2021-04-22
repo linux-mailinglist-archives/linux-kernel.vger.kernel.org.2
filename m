@@ -2,314 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFDF367E0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8C1367DEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235799AbhDVJox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:44:53 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:47602 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235924AbhDVJon (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:44:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1619084649; x=1650620649;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=P+qM5L/3Pmnzn2w9eKq6fcyXjaYNQ3hamPIMbpyEycM=;
-  b=N/dIELpC+iGeMbAsjcesHz99WXqBV7yQZkMDkDAIeHuKyIC3MpODFsOA
-   ZrKg1o0mO9LclmIGdJmG2hBN4Gl/+rQWv2U5fd8A+lfOSfF/YXI9AWhj5
-   EHvOzHhO+k1+A/O5OGViBJKYsbVsHbKKgZ41r61Rp+K2ntgCfWWlwRHyJ
-   134E9v0VXGYjbwM6eGYQwmgke2Yf+r/ZuwLYdKJzLT9mZ5/X8lvFqTjUI
-   EbL7+pfe4exnTQY+F48lDHkh+dcT1uB6nBLBrYpj5EaHBTd1WIDauplxK
-   x2D0gGCw2632DIRGYCagTH1wWY9+k2fDRvzLkVaKQXaJDEyz/Yr6uSuUl
-   g==;
-IronPort-SDR: zItV1dLqdhrJBctnqfO8KwC7xooPwAEf3pL1ku88H2FR6X4s46K4vgmxjKV8ZdfiBsTb8KPD0B
- Hh3lksaWKvyr4lSFaWI54FlbE3vQrD0V3wDHlVPrUWao2oyz9Q+gCgfG+F7WDa4wSeYvz31RNL
- VmiVmxo8j1vQA4VSICdpGxSd4CcJCA4/zGCOxYVh+23hRDxgtTFldzdK0QXs7WM+MR1NVjrhn5
- Lg/u2in2CuNc27In6Zw9jywTSUSjF+q1zEBgYc1CStBDF2ucOcV6RVnM56XCPhkXPlUpRYO/Xc
- 8KY=
-X-IronPort-AV: E=Sophos;i="5.82,242,1613458800"; 
-   d="scan'208";a="124117508"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Apr 2021 02:44:09 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Apr 2021 02:44:08 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 22 Apr 2021 02:44:02 -0700
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
-        <robh+dt@kernel.org>
-CC:     <UNGLinuxDriver@microchip.com>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2 net-next 9/9] net: dsa: microchip: add support for vlan operations
-Date:   Thu, 22 Apr 2021 15:12:57 +0530
-Message-ID: <20210422094257.1641396-10-prasanna.vengateshan@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
-References: <20210422094257.1641396-1-prasanna.vengateshan@microchip.com>
+        id S235613AbhDVJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:43:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230365AbhDVJnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 05:43:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29F0C6141C;
+        Thu, 22 Apr 2021 09:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619084586;
+        bh=3+PtUaQlS5Mbsu2aYYPHGVbUTy0AdZ2dMqSLbhefucM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ExgH1A77bzPQfp+leFiv3+CZ6n0aaYYarPAfj4KWbr4UGKchAFadsT+pFZpzvVv7i
+         BZdIaPGBCit9qqGpNx4Mg+WncHnHp4MZQwr98zsLqOVddy57UaP/1KgrHigY14qFB4
+         FBFmx5v9dpVVM948kR60OHkyASCqKgKSzyh+z/l/YOqOyORGZXxrQY9OJ8xiKNeYWc
+         e2J2MXW+qnwiZg07dhlFWjECJiOU2V+fHTSgve38RIhBgj/gWM9RRRBCz7cVkwMS21
+         lL31iXr52CUuqsTdNuRr3tVbc7AyRNQOKoqUZ16EvnWyiBsxfqWhcHP4yzhFbmnWCV
+         +6kY3+s6yo7JA==
+Date:   Thu, 22 Apr 2021 12:42:58 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC V2] mm: Enable generic pfn_valid() to handle early sections
+ with memmap holes
+Message-ID: <YIFFIiuy+z3WLHDi@kernel.org>
+References: <20210422061902.21614-1-rppt@kernel.org>
+ <1619077823-3819-1-git-send-email-anshuman.khandual@arm.com>
+ <ce4f8045-2481-103f-f418-28cb43c7c7ff@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce4f8045-2481-103f-f418-28cb43c7c7ff@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for VLAN add, del, prepare and filtering operations.
+On Thu, Apr 22, 2021 at 11:03:50AM +0200, David Hildenbrand wrote:
+> On 22.04.21 09:50, Anshuman Khandual wrote:
+> > Platforms like arm and arm64 have redefined pfn_valid() because their early
+> > memory sections might have contained memmap holes after freeing parts of it
+> > during boot, which should be skipped while validating a pfn for struct page
+> > backing. This scenario on certain platforms where memmap is not continuous,
+> > could be captured with a new option CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES.
+> > Then the generic pfn_valid() can be improved to accommodate such platforms.
+> > This reduces overall code footprint and also improves maintainability.
+> > 
+> > free_unused_memmap() and pfn_to_online_page() have been updated to include
+> > such cases. This also exports memblock_is_memory() for all drivers that use
+> > pfn_valid() but lack required visibility. After the new config is in place,
+> > drop CONFIG_HAVE_ARCH_PFN_VALID from arm64 platforms.
+> > 
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Mike Rapoport <rppt@kernel.org>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-mm@kvack.org
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > ---
+> > This patch applies on the latest mainline kernel after Mike's series
+> > regarding arm64 based pfn_valid().
+> > 
+> > https://lore.kernel.org/linux-mm/20210422061902.21614-1-rppt@kernel.org/T/#t
+> > 
+> > Changes in RFC V2:
+> > 
+> > - Dropped support for arm (32 bit)
+> > - Replaced memblock_is_map_memory() check with memblock_is_memory()
+> > - MEMBLOCK_NOMAP memory are no longer skipped for pfn_valid()
+> > - Updated pfn_to_online_page() per David
+> > - Updated free_unused_memmap() to preserve existing semantics per Mike
+> > - Exported memblock_is_memory() instead of memblock_is_map_memory()
+> > 
+> > Changes in RFC V1:
+> > 
+> > - https://patchwork.kernel.org/project/linux-mm/patch/1615174073-10520-1-git-send-email-anshuman.khandual@arm.com/
+> > 
+> >   arch/arm64/Kconfig            |  2 +-
+> >   arch/arm64/include/asm/page.h |  1 -
+> >   arch/arm64/mm/init.c          | 41 -----------------------------------
+> >   include/linux/mmzone.h        | 18 ++++++++++++++-
+> >   mm/Kconfig                    |  9 ++++++++
+> >   mm/memblock.c                 |  8 +++++--
+> >   mm/memory_hotplug.c           |  5 +++++
+> >   7 files changed, 38 insertions(+), 46 deletions(-)
+> > 
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index b4a9b493ce72..4cdc3570ffa9 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -144,7 +144,6 @@ config ARM64
+> >   	select HAVE_ARCH_KGDB
+> >   	select HAVE_ARCH_MMAP_RND_BITS
+> >   	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
+> > -	select HAVE_ARCH_PFN_VALID
+> >   	select HAVE_ARCH_PREL32_RELOCATIONS
+> >   	select HAVE_ARCH_SECCOMP_FILTER
+> >   	select HAVE_ARCH_STACKLEAK
+> > @@ -167,6 +166,7 @@ config ARM64
+> >   		if $(cc-option,-fpatchable-function-entry=2)
+> >   	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+> >   		if DYNAMIC_FTRACE_WITH_REGS
+> > +	select HAVE_EARLY_SECTION_MEMMAP_HOLES
+> >   	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+> >   	select HAVE_FAST_GUP
+> >   	select HAVE_FTRACE_MCOUNT_RECORD
+> > diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+> > index 75ddfe671393..fcbef3eec4b2 100644
+> > --- a/arch/arm64/include/asm/page.h
+> > +++ b/arch/arm64/include/asm/page.h
+> > @@ -37,7 +37,6 @@ void copy_highpage(struct page *to, struct page *from);
+> >   typedef struct page *pgtable_t;
+> > -int pfn_valid(unsigned long pfn);
+> >   int pfn_is_map_memory(unsigned long pfn);
+> >   #include <asm/memory.h>
+> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > index f431b38d0837..5731a11550d8 100644
+> > --- a/arch/arm64/mm/init.c
+> > +++ b/arch/arm64/mm/init.c
+> > @@ -217,47 +217,6 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+> >   	free_area_init(max_zone_pfns);
+> >   }
+> > -int pfn_valid(unsigned long pfn)
+> > -{
+> > -	phys_addr_t addr = PFN_PHYS(pfn);
+> > -
+> > -	/*
+> > -	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> > -	 * pfn. Else it might lead to false positives when
+> > -	 * some of the upper bits are set, but the lower bits
+> > -	 * match a valid pfn.
+> > -	 */
+> > -	if (PHYS_PFN(addr) != pfn)
+> > -		return 0;
+> > -
+> > -#ifdef CONFIG_SPARSEMEM
+> > -{
+> > -	struct mem_section *ms;
+> > -
+> > -	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+> > -		return 0;
+> > -
+> > -	ms = __pfn_to_section(pfn);
+> > -	if (!valid_section(ms))
+> > -		return 0;
+> > -
+> > -	/*
+> > -	 * ZONE_DEVICE memory does not have the memblock entries.
+> > -	 * memblock_is_memory() check for ZONE_DEVICE based
+> > -	 * addresses will always fail. Even the normal hotplugged
+> > -	 * memory will never have MEMBLOCK_NOMAP flag set in their
+> > -	 * memblock entries. Skip memblock search for all non early
+> > -	 * memory sections covering all of hotplug memory including
+> > -	 * both normal and ZONE_DEVICE based.
+> > -	 */
+> > -	if (!early_section(ms))
+> > -		return pfn_section_valid(ms, pfn);
+> > -}
+> > -#endif
+> > -	return memblock_is_memory(addr);
+> > -}
+> > -EXPORT_SYMBOL(pfn_valid);
+> > -
+> >   int pfn_is_map_memory(unsigned long pfn)
+> >   {
+> >   	phys_addr_t addr = PFN_PHYS(pfn);
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index 961f0eeefb62..18bf71665211 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -1421,10 +1421,22 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
+> >    *
+> >    * Return: 1 for PFNs that have memory map entries and 0 otherwise
+> >    */
+> > +bool memblock_is_memory(phys_addr_t addr);
+> > +
+> >   static inline int pfn_valid(unsigned long pfn)
+> >   {
+> > +	phys_addr_t addr = PFN_PHYS(pfn);
+> >   	struct mem_section *ms;
+> > +	/*
+> > +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> > +	 * pfn. Else it might lead to false positives when
+> > +	 * some of the upper bits are set, but the lower bits
+> > +	 * match a valid pfn.
+> > +	 */
+> > +	if (PHYS_PFN(addr) != pfn)
+> > +		return 0;
+> > +
+> >   	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+> >   		return 0;
+> >   	ms = __nr_to_section(pfn_to_section_nr(pfn));
+> > @@ -1434,7 +1446,11 @@ static inline int pfn_valid(unsigned long pfn)
+> >   	 * Traditionally early sections always returned pfn_valid() for
+> >   	 * the entire section-sized span.
+> >   	 */
+> > -	return early_section(ms) || pfn_section_valid(ms, pfn);
+> > +	if (early_section(ms))
+> > +		return IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) ?
+> > +			memblock_is_memory(pfn << PAGE_SHIFT) : 1;
+> > +
+> > +	return pfn_section_valid(ms, pfn);
+> >   }
+> >   #endif
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index 24c045b24b95..db7128111874 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -135,6 +135,15 @@ config HAVE_FAST_GUP
+> >   config ARCH_KEEP_MEMBLOCK
+> >   	bool
+> > +config HAVE_EARLY_SECTION_MEMMAP_HOLES
+> > +	depends on ARCH_KEEP_MEMBLOCK && SPARSEMEM_VMEMMAP
+> > +	def_bool n
+> > +	help
+> > +	  Early sections on certain platforms might have some memory ranges that
+> > +	  are not backed with struct page mappings. When subscribed, this option
+> > +	  enables special handling for those memory ranges in certain situations
+> > +	  such as pfn_valid().
+> > +
+> >   # Keep arch NUMA mapping infrastructure post-init.
+> >   config NUMA_KEEP_MEMINFO
+> >   	bool
+> > diff --git a/mm/memblock.c b/mm/memblock.c
+> > index 3abf2c3fea7f..93f8a9c8428d 100644
+> > --- a/mm/memblock.c
+> > +++ b/mm/memblock.c
+> > @@ -1740,6 +1740,7 @@ bool __init_memblock memblock_is_memory(phys_addr_t addr)
+> >   {
+> >   	return memblock_search(&memblock.memory, addr) != -1;
+> >   }
+> > +EXPORT_SYMBOL(memblock_is_memory);
+> >   bool __init_memblock memblock_is_map_memory(phys_addr_t addr)
+> >   {
+> > @@ -1931,8 +1932,11 @@ static void __init free_unused_memmap(void)
+> >   	unsigned long start, end, prev_end = 0;
+> >   	int i;
+> > -	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
+> > -	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+> > +	if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
+> > +		return;
+> > +
+> > +	if (!IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES) &&
+> > +	    !IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID))
+> >   		return;
+> >   	/*
+> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> > index 0cdbbfbc5757..8c78b6a3d888 100644
+> > --- a/mm/memory_hotplug.c
+> > +++ b/mm/memory_hotplug.c
+> > @@ -309,6 +309,11 @@ struct page *pfn_to_online_page(unsigned long pfn)
+> >   	 * Save some code text when online_section() +
+> >   	 * pfn_section_valid() are sufficient.
+> >   	 */
+> > +	if (IS_ENABLED(CONFIG_HAVE_EARLY_SECTION_MEMMAP_HOLES)) {
+> > +		if (early_section(ms) && !memblock_is_memory(PFN_PHYS(pfn)))
+> > +			return NULL;
+> > +	}
+> > +
+> >   	if (IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) && !pfn_valid(pfn))
+> >   		return NULL;
+> > 
+> 
+> What about doing one step at a time and switching only over to generic
+> pfn_valid() in case of CONFIG_SPARSEMEM? (meaning: freeing the memmap only
+> with !CONFIG_SPARSEMEM)
 
-It aligns with latest update of removing switchdev
-transactional logic from VLAN objects
+The "generic" pfn_valid() is only available with CONFIG_SPARSEMEM.
+With FLATMEM it's wild west:
 
-Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
----
- drivers/net/dsa/microchip/lan937x_main.c | 214 +++++++++++++++++++++++
- 1 file changed, 214 insertions(+)
+$ git grep -w "define pfn_valid" arch/*/include/asm/ | wc -l
+22
 
-diff --git a/drivers/net/dsa/microchip/lan937x_main.c b/drivers/net/dsa/microchip/lan937x_main.c
-index 7f6183dc0e31..35f3456c3506 100644
---- a/drivers/net/dsa/microchip/lan937x_main.c
-+++ b/drivers/net/dsa/microchip/lan937x_main.c
-@@ -14,6 +14,103 @@
- #include "ksz_common.h"
- #include "lan937x_dev.h"
- 
-+static int lan937x_wait_vlan_ctrl_ready(struct ksz_device *dev)
-+{
-+	unsigned int val;
-+
-+	return regmap_read_poll_timeout(dev->regmap[0], REG_SW_VLAN_CTRL,
-+					val, !(val & VLAN_START), 10, 1000);
-+}
-+
-+static int lan937x_get_vlan_table(struct ksz_device *dev, u16 vid,
-+				  u32 *vlan_table)
-+{
-+	int rc;
-+
-+	mutex_lock(&dev->vlan_mutex);
-+
-+	rc = ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_READ | VLAN_START);
-+	if (rc < 0)
-+		goto exit;
-+
-+	/* wait to be cleared */
-+	rc = lan937x_wait_vlan_ctrl_ready(dev);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_read32(dev, REG_SW_VLAN_ENTRY__4, &vlan_table[0]);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_read32(dev, REG_SW_VLAN_ENTRY_UNTAG__4, &vlan_table[1]);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_read32(dev, REG_SW_VLAN_ENTRY_PORTS__4, &vlan_table[2]);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write8(dev, REG_SW_VLAN_CTRL, 0);
-+	if (rc < 0)
-+		goto exit;
-+
-+exit:
-+	mutex_unlock(&dev->vlan_mutex);
-+
-+	return rc;
-+}
-+
-+static int lan937x_set_vlan_table(struct ksz_device *dev, u16 vid,
-+				  u32 *vlan_table)
-+{
-+	int rc;
-+
-+	mutex_lock(&dev->vlan_mutex);
-+
-+	rc = ksz_write32(dev, REG_SW_VLAN_ENTRY__4, vlan_table[0]);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write32(dev, REG_SW_VLAN_ENTRY_UNTAG__4, vlan_table[1]);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write32(dev, REG_SW_VLAN_ENTRY_PORTS__4, vlan_table[2]);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_START | VLAN_WRITE);
-+	if (rc < 0)
-+		goto exit;
-+
-+	/* wait to be cleared */
-+	rc = lan937x_wait_vlan_ctrl_ready(dev);
-+	if (rc < 0)
-+		goto exit;
-+
-+	rc = ksz_write8(dev, REG_SW_VLAN_CTRL, 0);
-+	if (rc < 0)
-+		goto exit;
-+
-+	/* update vlan cache table */
-+	dev->vlan_cache[vid].table[0] = vlan_table[0];
-+	dev->vlan_cache[vid].table[1] = vlan_table[1];
-+	dev->vlan_cache[vid].table[2] = vlan_table[2];
-+
-+exit:
-+	mutex_unlock(&dev->vlan_mutex);
-+
-+	return rc;
-+}
-+
- static int lan937x_read_table(struct ksz_device *dev, u32 *table)
- {
- 	int rc;
-@@ -190,6 +287,120 @@ static void lan937x_port_stp_state_set(struct dsa_switch *ds, int port,
- 	mutex_unlock(&dev->dev_mutex);
- }
- 
-+static int lan937x_port_vlan_filtering(struct dsa_switch *ds, int port,
-+				       bool flag,
-+				       struct netlink_ext_ack *extack)
-+{
-+	struct ksz_device *dev = ds->priv;
-+	int rc;
-+
-+	if (flag) {
-+		rc = lan937x_port_cfg(dev, port, REG_PORT_LUE_CTRL,
-+				      PORT_VLAN_LOOKUP_VID_0, true);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = lan937x_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE, true);
-+	} else {
-+		rc = lan937x_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE, false);
-+		if (rc < 0)
-+			return rc;
-+
-+		rc = lan937x_port_cfg(dev, port, REG_PORT_LUE_CTRL,
-+				      PORT_VLAN_LOOKUP_VID_0, false);
-+	}
-+
-+	return rc;
-+}
-+
-+static int lan937x_port_vlan_add(struct dsa_switch *ds, int port,
-+				 const struct switchdev_obj_port_vlan *vlan,
-+				 struct netlink_ext_ack *extack)
-+{
-+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct ksz_device *dev = ds->priv;
-+	u32 vlan_table[3];
-+	int rc;
-+
-+	rc = lan937x_get_vlan_table(dev, vlan->vid, vlan_table);
-+	if (rc < 0) {
-+		dev_err(dev->dev, "Failed to get vlan table\n");
-+		return rc;
-+	}
-+
-+	vlan_table[0] = VLAN_VALID | (vlan->vid & VLAN_FID_M);
-+
-+	/* set/clear switch port when updating vlan table registers */
-+	if (untagged)
-+		vlan_table[1] |= BIT(port);
-+	else
-+		vlan_table[1] &= ~BIT(port);
-+	vlan_table[1] &= ~(BIT(dev->cpu_port));
-+
-+	vlan_table[2] |= BIT(port) | BIT(dev->cpu_port);
-+
-+	rc = lan937x_set_vlan_table(dev, vlan->vid, vlan_table);
-+	if (rc < 0) {
-+		dev_err(dev->dev, "Failed to set vlan table\n");
-+		return rc;
-+	}
-+
-+	/* change PVID */
-+	if (vlan->flags & BRIDGE_VLAN_INFO_PVID) {
-+		rc = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID, vlan->vid);
-+
-+		if (rc < 0) {
-+			dev_err(dev->dev, "Failed to set pvid\n");
-+			return rc;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int lan937x_port_vlan_del(struct dsa_switch *ds, int port,
-+				 const struct switchdev_obj_port_vlan *vlan)
-+{
-+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct ksz_device *dev = ds->priv;
-+	u32 vlan_table[3];
-+	u16 pvid;
-+	int rc;
-+
-+	lan937x_pread16(dev, port, REG_PORT_DEFAULT_VID, &pvid);
-+	pvid &= 0xFFF;
-+
-+	rc = lan937x_get_vlan_table(dev, vlan->vid, vlan_table);
-+
-+	if (rc < 0) {
-+		dev_err(dev->dev, "Failed to get vlan table\n");
-+		return rc;
-+	}
-+	/* clear switch port number */
-+	vlan_table[2] &= ~BIT(port);
-+
-+	if (pvid == vlan->vid)
-+		pvid = 1;
-+
-+	if (untagged)
-+		vlan_table[1] &= ~BIT(port);
-+
-+	rc = lan937x_set_vlan_table(dev, vlan->vid, vlan_table);
-+	if (rc < 0) {
-+		dev_err(dev->dev, "Failed to set vlan table\n");
-+		return rc;
-+	}
-+
-+	rc = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID, pvid);
-+
-+	if (rc < 0) {
-+		dev_err(dev->dev, "Failed to set pvid\n");
-+		return rc;
-+	}
-+
-+	return 0;
-+}
-+
- static u8 lan937x_get_fid(u16 vid)
- {
- 	if (vid > ALU_FID_SIZE)
-@@ -955,6 +1166,9 @@ const struct dsa_switch_ops lan937x_switch_ops = {
- 	.port_bridge_flags	= lan937x_port_bridge_flags,
- 	.port_stp_state_set	= lan937x_port_stp_state_set,
- 	.port_fast_age		= ksz_port_fast_age,
-+	.port_vlan_filtering	= lan937x_port_vlan_filtering,
-+	.port_vlan_add		= lan937x_port_vlan_add,
-+	.port_vlan_del		= lan937x_port_vlan_del,
- 	.port_fdb_dump		= lan937x_port_fdb_dump,
- 	.port_fdb_add		= lan937x_port_fdb_add,
- 	.port_fdb_del		= lan937x_port_fdb_del,
+This would actually mean that we still need arm64::pfn_valid() for the
+FLATMEM case.
+
+> IOW, avoiding having to adjust generic pfn_valid()/pfn_to_online_page() at
+> all. Am i missing something or should that be possible?
+
+We are back again to the question "should arm64 free its memmap". 
+If the answer is no, we don't need arm64::pfn_valid() for SPARSEMEM at all.
+If the answer is yes, Anshuman's patch is way better than a custom
+pfn_valid().
+
 -- 
-2.27.0
-
+Sincerely yours,
+Mike.
