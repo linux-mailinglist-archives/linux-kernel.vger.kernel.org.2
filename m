@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FD3367E66
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D03367E7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235770AbhDVKRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:17:18 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:50317 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbhDVKRR (ORCPT
+        id S235828AbhDVKSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:18:03 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:47766 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235809AbhDVKSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:17:17 -0400
-Received: from fsav109.sakura.ne.jp (fsav109.sakura.ne.jp [27.133.134.236])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13MAGWOa001659;
-        Thu, 22 Apr 2021 19:16:32 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav109.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav109.sakura.ne.jp);
- Thu, 22 Apr 2021 19:16:32 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav109.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13MAGWPU001656
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 22 Apr 2021 19:16:32 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] unexpected kernel reboot (4)
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
-References: <000000000000301a4d05bfe14b8f@google.com>
- <CACT4Y+ZT2m7t+o9=VYCE32U_1aUVJXRp_5KgJSdEZC1YXy=qgA@mail.gmail.com>
- <CA+fCnZcWEuYeOx6-0LY+cqtGVbMx2OiyhEELErdfwaHGcUWHbQ@mail.gmail.com>
- <b8162e95-fb2e-51f6-9d9b-a4d64873876e@i-love.sakura.ne.jp>
-Message-ID: <abcb019f-a78a-3c6d-e199-719176a394d6@i-love.sakura.ne.jp>
-Date:   Thu, 22 Apr 2021 19:16:31 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 22 Apr 2021 06:18:01 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210422101725euoutp01eff765653d8366b59e97ea76166c07ac~4JrnUhy7n1728217282euoutp01C
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 10:17:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210422101725euoutp01eff765653d8366b59e97ea76166c07ac~4JrnUhy7n1728217282euoutp01C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1619086645;
+        bh=P1yzkGOkcnvwxAl/j9BN4l/zvJWfv1wrbb1pE4xRYuM=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=RcUhcTXN1DSYB74xXQfJEQ4+3eU85kNobs/vbNmi9iZzthxc9sGKKvkt3Z2raapF7
+         /GwjJsy3H73qGhmh/3wxg2LEj7S7gQkWQJhFQvN65HmxyVbk6/HL2lfNuLnEhnRyYu
+         Dqi5/lnR+GHzuUsHlwBZtdhRlQcPpOXNigI83GEA=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210422101724eucas1p24cc33a8c94a8771cfe703895822760de~4JrmqwteE2135021350eucas1p2E;
+        Thu, 22 Apr 2021 10:17:24 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id CF.0B.09444.43D41806; Thu, 22
+        Apr 2021 11:17:24 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207~4Jrl9yJHG1714217142eucas1p1O;
+        Thu, 22 Apr 2021 10:17:24 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210422101724eusmtrp298a6611e5e2ac13712205d842e700acc~4Jrl86WF62586025860eusmtrp2K;
+        Thu, 22 Apr 2021 10:17:24 +0000 (GMT)
+X-AuditID: cbfec7f4-dd5ff700000024e4-73-60814d34a820
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id AE.23.08705.33D41806; Thu, 22
+        Apr 2021 11:17:24 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210422101723eusmtip2d58a0b0baa6994b96081725352605b63~4JrlubzJW2583225832eusmtip27;
+        Thu, 22 Apr 2021 10:17:23 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH] hwrng: exynos - Fix runtime PM imbalance on error
+Date:   Thu, 22 Apr 2021 12:17:05 +0200
+Message-Id: <20210422101705.15617-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <b8162e95-fb2e-51f6-9d9b-a4d64873876e@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEKsWRmVeSWpSXmKPExsWy7djPc7omvo0JBk//GVtsnLGe1aL7lYzF
+        xrc/mCxuHlrBaLHp8TVWi/v3fjJZXN41h81ixvl9TBZrj9xlt1iwrY/RgctjVkMvm8e2A6oe
+        m5fUe/RtWcXo0fdyA6PH501yAWxRXDYpqTmZZalF+nYJXBmL9u9jLfjGVTH93Cr2BsZpnF2M
+        nBwSAiYS+9rXsncxcnEICaxglPhxdwcbhPOFUeLz40eMEM5nRomuV3OZYFq6Ju1igkgsZ5T4
+        NW02VMtzRonf558wg1SxCThK9C89wQqSEBGYxCSxct4PsFnMAvsYJXbemwJWJSzgJPH0dBuQ
+        zcHBIqAq0XMnHcTkFbCW2DHVD2KbvET78u1sIDavgKDEyZlPWEBsfgEtiTVN18FsZqCa5q2z
+        mUHGSwg84JC4+OwtO0Szi8Sh5l5GCFtY4tXxLVBxGYn/O+czgeySEKiXmDzJDKK3h1Fi25wf
+        LBA11hJ3zv1iA6lhFtCUWL9LHyLsKNE0fTIjRCufxI23ghAn8ElM2jadGSLMK9HRJgRRrSKx
+        rn8P1EApid5XK6CO8ZC4efgt0wRGxVlIHpuF5JlZCHsXMDKvYhRPLS3OTU8tNspLLdcrTswt
+        Ls1L10vOz93ECExGp/8d/7KDcfmrj3qHGJk4GA8xSnAwK4nwri1uSBDiTUmsrEotyo8vKs1J
+        LT7EKM3BoiTOm7RlTbyQQHpiSWp2ampBahFMlomDU6qBKf5K99Ir+fFrXdYnZdj1K/4IT1jp
+        tj7jpaK1+527NdylH9nEjKzn/FFibN+qXn23kuVt/t4VukrKD65pr3J9G3T6X7H9ifvz93e8
+        uaw2m2/q5cap0w4dnBbD/9uc0/B/6KrC9bFbdx52+/A88eH57NsHRG9l3r1Ze6yu5FD/6YcB
+        Wj/W5d68de7GnaUVB3bf0WiZuiu4Xb1hqozfsauyJ0NCCi8lexyYXjbvD8/KuBub24wD3+/N
+        6F0ts+g1Y0j/heRvNTU2vtbHYyp3B8/4omEZYLDf7fujOQ0XmJYudFM+w8Wte/7Vr/ViV0wr
+        467o3Nh6eJuDd6bN/vQnqkcl38eKvI9p+pGkNNPG8OKsuclKLMUZiYZazEXFiQA7EitGtQMA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsVy+t/xe7omvo0JBjOfM1psnLGe1aL7lYzF
+        xrc/mCxuHlrBaLHp8TVWi/v3fjJZXN41h81ixvl9TBZrj9xlt1iwrY/RgctjVkMvm8e2A6oe
+        m5fUe/RtWcXo0fdyA6PH501yAWxRejZF+aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZG
+        pkr6djYpqTmZZalF+nYJehmL9u9jLfjGVTH93Cr2BsZpnF2MnBwSAiYSXZN2MXUxcnEICSxl
+        lNjyeC9rFyMHUEJKYuXcdIgaYYk/17rYQGwhgaeMEss7REBsNgFHif6lJ1hBekUEpjFJnF12
+        CsxhFtjHKLH/6GJ2kCphASeJp6fbmEGGsgioSvTcSQcxeQWsJXZM9YOYLy/Rvnw72HxeAUGJ
+        kzOfsICUMAuoS6yfJwQS5hfQkljTdJ0FxGYGKm/eOpt5AqPALCQdsxA6ZiGpWsDIvIpRJLW0
+        ODc9t9hQrzgxt7g0L10vOT93EyMwjrYd+7l5B+O8Vx/1DjEycTAeYpTgYFYS4V1b3JAgxJuS
+        WFmVWpQfX1Sak1p8iNEU6P6JzFKiyfnASM4riTc0MzA1NDGzNDC1NDNWEufdOndNvJBAemJJ
+        anZqakFqEUwfEwenVANTfxzfQqmSsqlOD9cdWvDy1RnW3jttHO5O2138s+rE+6WzXHO9ZBf/
+        dn+womBKvf+ZD4l2j3eFr1EVUyub+cop/eJUw7vnH7O8mnf16IoP657KpVtPYmB7eclZTX15
+        9Wqmr2frWH62HHx6UHmHyAam/2yhTMEmPG94Vq7rZixjlfqeUWB8ftmll6kRez9v7Wwp/r17
+        o9TvTZ3WTKcjRWra/WJPNxhri25Xcr5+3M/D9gqj78S1nOd2r8tW0frgIuIXcemH9Mp7Gy+n
+        TI3tazRllVLeMqNc5Xm98B2OJL/swpJ3zwLbU6vaZ893nPDex70kIfyo9s2Ip++/iRqdfcK+
+        pvyW2LTOuQIpN/ZITM9WYinOSDTUYi4qTgQARlr7viwDAAA=
+X-CMS-MailID: 20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207
+References: <CGME20210422101724eucas1p13e2f002b63fe94ef2aa5268383f3a207@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/15 1:16, Tetsuo Handa wrote:
-> On 2021/04/15 0:39, Andrey Konovalov wrote:
->> On Wed, Apr 14, 2021 at 7:45 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>>
->>> On Tue, Apr 13, 2021 at 11:27 PM syzbot
->>> <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com> wrote:
->>>>
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    89698bec Merge tag 'm68knommu-for-v5.12-rc7' of git://git...
->>>> git tree:       upstream
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1243fcfed00000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b234ddbbe2953747
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=9ce030d4c89856b27619
->>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173e92fed00000
->>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1735da2ed00000
->>>>
->>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>> Reported-by: syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com
->>>>
->>>> output_len: 0x000000000e74eb68
->>>> kernel_total_size: 0x000000000f226000
->>>> needed_size: 0x000000000f400000
->>>> trampoline_32bit: 0x000000000009d000
->>>> Decompressing Linux... Parsing ELF... done.
->>>> Booting the kernel.
->>>
->>> +linux-input
->>>
->>> The reproducer connects some USB HID device and communicates with the driver.
->>> Previously we observed reboots because HID devices can trigger reboot
->>> SYSRQ, but we disable it with "CONFIG_MAGIC_SYSRQ is not set".
->>> How else can a USB device reboot the machine? Is it possible to disable it?
->>> I don't see any direct includes of <linux/reboot.h> in drivers/usb/*
->>
->> This happens when a keyboard sends the Ctrl+Alt+Del sequence, see
->> fn_boot_it()->ctrl_alt_del() in drivers/tty/vt/keyboard.c.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+the call returns an error code. Thus a pairing decrement is needed
+on the error handling path to keep the counter balanced.
 
-Hmm, maybe the reproducer I use and "#syz test:" uses differs.
-But since "#syz test:" did not trigger the problem if
-https://syzkaller.appspot.com/x/patch.diff?x=14ba0851d00000 is applied,
-can we add
+Change-Id: I028915fbee9e4a050a1313119872d6043696632d
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+ drivers/char/hw_random/exynos-trng.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-        if (fork() == 0) {
-                char buf[20] = { };
-                int fd = open("/proc/sys/kernel/ctrl-alt-del", O_WRONLY);
-                write(fd, "0\n", 2);
-                close(fd);
-                fd = open("/proc/sys/kernel/cad_pid", O_WRONLY);
-                snprintf(buf, sizeof(buf) - 1, "%d\n", getpid());
-                write(fd, buf, strlen(buf));
-                close(fd);
-        }
+diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
+index 8e1fe3f8dd2d..9f455d952e87 100644
+--- a/drivers/char/hw_random/exynos-trng.c
++++ b/drivers/char/hw_random/exynos-trng.c
+@@ -142,13 +142,13 @@ static int exynos_trng_probe(struct platform_device *pdev)
+ 	if (IS_ERR(trng->clk)) {
+ 		ret = PTR_ERR(trng->clk);
+ 		dev_err(&pdev->dev, "Could not get clock.\n");
+-		goto err_clock;
++		goto err_pm_get;
+ 	}
+ 
+ 	ret = clk_prepare_enable(trng->clk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not enable the clk.\n");
+-		goto err_clock;
++		goto err_pm_get;
+ 	}
+ 
+ 	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
+@@ -164,10 +164,8 @@ static int exynos_trng_probe(struct platform_device *pdev)
+ err_register:
+ 	clk_disable_unprepare(trng->clk);
+ 
+-err_clock:
+-	pm_runtime_put_sync(&pdev->dev);
+-
+ err_pm_get:
++	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+ 	return ret;
+-- 
+2.26.2
 
-to the common setup function? This will serve as a temporary workaround
-until Linus accepts disable-specific-functionality changes.
-
-There is no need to keep the process referenced by /proc/sys/kernel/cad_pid alive,
-for "struct pid" which can remain after the process terminates is saved there.
