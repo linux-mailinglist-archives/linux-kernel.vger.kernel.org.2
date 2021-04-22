@@ -2,234 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C55E368547
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD52436854E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 18:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhDVQya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 12:54:30 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:18338 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236459AbhDVQya (ORCPT
+        id S238111AbhDVQzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 12:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDVQzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 12:54:30 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MGq5TF018200;
-        Thu, 22 Apr 2021 18:53:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=EBYiS5O6HVn14SjBcZWFZ+4S7ILRBpaMYileQHLz1Zg=;
- b=GPIQ8HMySYd0FtxRdHXTo8ifY2P8v9xcpAcqUaRKOHj41eqbh6XMl681dXVnE+8l3qqS
- tZQgtE0FXgBkAI04Wl0q66oCCppnVog8+7ygy8LtFidXAkNeX6fix1JXG+Ps7ZcEd2xG
- /dX1EpFWRVXehYmkSUYnGim1rE8GDVJ3/3ofuc78kWxlk3cRlPI7G44D06Z4+Ht5Md5f
- q/onjCwhxyh6D6pGQGM/M40H6FO2zZxx9jaBpsNnenkXNUNaMsMBVQvonreOT+SbgCo0
- VpmI3zfD4vQpOXwqBvqdFoDSiXM7mC0qBk8nuPdyNHZ+aVntUzQBGISJWTUut6xZRMoM bQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 382fxqj5ex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 18:53:53 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D98810002A;
-        Thu, 22 Apr 2021 18:53:52 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3DCA1249F9F;
-        Thu, 22 Apr 2021 18:53:52 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Apr
- 2021 18:53:51 +0200
-Subject: Re: [PATCH v2 5/7] rpmsg: char: Introduce a rpmsg driver for the
- rpmsg char device
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
- <20210413134458.17912-6-arnaud.pouliquen@foss.st.com>
- <20210421174053.GA1223348@xps15>
- <47015357-b006-1c32-f63f-d4fcac054d6f@foss.st.com>
- <20210422163622.GC1256950@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <dcdd8857-ceea-8059-c15d-c37d1d1fc8bb@foss.st.com>
-Date:   Thu, 22 Apr 2021 18:53:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 22 Apr 2021 12:55:42 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5F36C06174A;
+        Thu, 22 Apr 2021 09:55:07 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 8917892009C; Thu, 22 Apr 2021 18:55:06 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 82EC392009B;
+        Thu, 22 Apr 2021 18:55:06 +0200 (CEST)
+Date:   Thu, 22 Apr 2021 18:55:06 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        linux-arch@vger.kernel.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Lubomir Rintel <lkundrak@v3.sk>
+Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
+In-Reply-To: <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com>
+Message-ID: <alpine.DEB.2.21.2104221828200.44318@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk> <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com>
+ <2d636696-35f0-4731-b1c3-5445a57964fb@www.fastmail.com> <895956F9-4EBC-4C8A-9BF2-7E457E96C1D7@goldelico.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210422163622.GC1256950@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-22_11:2021-04-22,2021-04-22 signatures=0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 22 Apr 2021, H. Nikolaus Schaller wrote:
 
-
-On 4/22/21 6:36 PM, Mathieu Poirier wrote:
-> On Thu, Apr 22, 2021 at 09:58:27AM +0200, Arnaud POULIQUEN wrote:
->> On 4/21/21 7:40 PM, Mathieu Poirier wrote:
->>> Good day Arnaud,
->>>
->>> On Tue, Apr 13, 2021 at 03:44:56PM +0200, Arnaud Pouliquen wrote:
->>>> A rpmsg char device allows to probe the endpoint device on a remote name
->>>> service announcement.
->>>>
->>>> With this patch the /dev/rpmsgX interface is created either by a user
->>>> application or by the remote firmware.
->>>>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>>
->>>> ---
->>>> update from V1:
->>>>  - add missing unregister_rpmsg_driver call on module exit.
->>>>
->>>> ---
->>>>  drivers/rpmsg/rpmsg_char.c | 59 +++++++++++++++++++++++++++++++++++++-
->>>>  1 file changed, 58 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->>>> index a64249d83172..4606787b7011 100644
->>>> --- a/drivers/rpmsg/rpmsg_char.c
->>>> +++ b/drivers/rpmsg/rpmsg_char.c
->>>> @@ -26,6 +26,8 @@
->>>>  #include "rpmsg_char.h"
->>>>  #include "rpmsg_internal.h"
->>>>  
->>>> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
->>>> +
->>>
->>> Why not simply call it rpmsg-char?
->>
->> I would avoid to link the rpmsg name service to the Linux Kernel device.
+> > This has passed correctness verification with test_div64 and reduced the
+> > module's average execution time down to 1.0445s and 0.2619s from 1.0668s
+> > and 0.2629s respectively for an R3400 CPU @40MHz and a 5Kc CPU @160MHz.
 > 
-> To me that's exactly what we want to do...  Am I missing something?
-
-A discussion started about a service layer in the OpenAMP library.
-"rpmsg-char" doesn't really make sense in OpenAMP, especially for
-OpenAMP<->openAMP communication.
-
-That's why I think a generic name would be more suitable.
-
-Regards,
-Arnaud
-
+> test only [PATCH 1/4 and 2/4]:
 > 
->>
->>>
->>>>  static dev_t rpmsg_major;
->>>>  
->>>>  static DEFINE_IDA(rpmsg_ept_ida);
->>>> @@ -403,13 +405,67 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->>>>  }
->>>>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->>>>  
->>>> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->>>> +{
->>>> +	struct rpmsg_channel_info chinfo;
->>>> +	struct rpmsg_eptdev *eptdev;
->>>> +
->>>> +	if (!rpdev->ept)
->>>> +		return -EINVAL;
->>>> +
->>>> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
->>>> +	chinfo.src = rpdev->src;
->>>> +	chinfo.dst = rpdev->dst;
->>>> +
->>>> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo, NULL);
->>>> +	if (IS_ERR(eptdev))
->>>> +		return PTR_ERR(eptdev);
->>>> +
->>>> +	/* Set the private field of the default endpoint to retrieve context on callback. */
->>>> +	rpdev->ept->priv = eptdev;
->>>
->>> This is already done in rpmsg_create_ept() when rpmsg_eptdev_open() is called.
->>>
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->>>> +{
->>>> +	int ret;
->>>> +
->>>> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
->>>> +	if (ret)
->>>> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
->>>> +}
->>>> +
->>>> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
->>>> +	{ .name	= RPMSG_CHAR_DEVNAME },
->>>> +	{ },
->>>> +};
->>>> +
->>>> +static struct rpmsg_driver rpmsg_chrdev_driver = {
->>>> +	.probe = rpmsg_chrdev_probe,
->>>> +	.remove = rpmsg_chrdev_remove,
->>>> +	.id_table = rpmsg_chrdev_id_table,
->>>> +	.callback = rpmsg_ept_cb,
->>>
->>> Not sure why we need a callback associated to this driver when
->>> rpmsg_eptdev_open() already creates and rpmsg_endpoint.  To me the only thing
->>> having a callback provides is the association between the rpmsg_device and the
->>> rpmsg_endpoint[1] that happens in rpmsg_dev_probe().  The QC folks already do
->>> this association in their platform code[2].  Since this is not done in
->>> __rpmsg_create_ept() a check for rpdev->ept == NULL could be done in
->>> rpmsg_eptdev_open() and do the assignment there. 
->>>
->>> [1]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/rpmsg_core.c#L513  
->>> [2]. https://elixir.bootlin.com/linux/v5.12-rc6/source/drivers/rpmsg/qcom_glink_native.c#L1623
->>>
->>
->> That's a good point! When I started the redesign, I faced some issues with the
->> approach you propose. But as I can not remember the reason and because the code
->> has evolved, i need to re-think about this.
->>
+> [  256.301140] test_div64: Completed 64bit/32bit division and modulo test, 0.291154944s elapsed
 > 
-> Glad to see we're on the same page.  I stared at this code for a very long time,
-> thinking there was some kind of bigger picture I wasn't getting.
+> + [PATCH 3/4]
 > 
+> [ 1698.698920] test_div64: Completed 64bit/32bit division and modulo test, 0.132142865s elapsed
 > 
->> Thanks,
->> Arnaud
->>
->>
->>>> +	.drv = {
->>>> +		.name = "rpmsg_chrdev",
->>>> +	},
->>>> +};
->>>> +
->>>>  static int rpmsg_chrdev_init(void)
->>>>  {
->>>>  	int ret;
->>>>  
->>>>  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg_char");
->>>> -	if (ret < 0)
->>>> +	if (ret < 0) {
->>>>  		pr_err("rpmsg: failed to allocate char dev region\n");
->>>> +		return ret;
->>>> +	}
->>>> +
->>>> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
->>>> +	if (ret < 0) {
->>>> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
->>>> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>> +	}
->>>>  
->>>>  	return ret;
->>>>  }
->>>> @@ -417,6 +473,7 @@ postcore_initcall(rpmsg_chrdev_init);
->>>>  
->>>>  static void rpmsg_chrdev_exit(void)
->>>>  {
->>>> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->>>>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>>>  }
->>>>  module_exit(rpmsg_chrdev_exit);
->>>> -- 
->>>> 2.17.1
->>>>
+> + [PATCH 4/4]
+> 
+> [  466.818349] test_div64: Completed 64bit/32bit division and modulo test, 0.134429075s elapsed
+> 
+> So the new code is indeed faster than the default implementation.
+> [PATCH 4/4] has no significant influence (wouldn't say it is slower because timer resolution
+> isn't very high on this machine and the kernel has some scheduling issue [1]).
+
+ Have you used it as a module or at bootstrap?  I have noticed that at 
+bootstrap the initialisation of the random number generator sometimes 
+interferes with the benchmark, which happens when there's an intervening 
+message produced, e.g.:
+
+test_div64: Starting 64bit/32bit division and modulo test
+random: fast init done
+test_div64: Completed 64bit/32bit division and modulo test, 1.069906272s elapsed
+
+I think it can be worked around by configuration changes so that more 
+stuff is run between the RNG and the test module, but instead I have 
+simply inserted:
+
+	mdelay(5000);
+
+at the beginning of `test_div64_init' instead, as for historical reasons I 
+haven't got the systems involved set up for modules (beyond Linux 2.4) at 
+this time.
+
+ NB I have run the benchmark five times with each change and system and 
+with the RNG taken out of the picture results were very stable as any 
+fluctuation only started at the fifth decimal digit.  Both the DECstation 
+(the model I used anyway) and the Malta have a high-resolution clock 
+source though, the I/O ASIC free-running counter register at 25MHz (used 
+by David L. Mills, the original author of the NTP suite, for his reference 
+implementation) and the CP0 Count register at 80MHz respectively.
+
+ I would expect your JZ4730 device to have the CP0 Count register as well, 
+as it has been architectural ever since MIPS III really, or is your system 
+SMP with CP0 Count registers out of sync across CPUs due to sleep modes or 
+whatever?
+
+ Thanks for sharing your figures.
+
+> [1] we are preparing full support for the JZ4730 based Skytone Alpha machine. Most features
+> are working except sound/I2S. I2C is a little unreliable and Ethernet has hickups. And scheduling
+> which indicates some fundamental IRQ or timer issue we could not yet identify.
+
+ Good luck with that!
+
+  Maciej
