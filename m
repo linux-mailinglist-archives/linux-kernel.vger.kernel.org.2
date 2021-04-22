@@ -2,126 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B06D36834E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB9A36834F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236548AbhDVP3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:29:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16151 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbhDVP3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:29:06 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FR1T26DV9zpZmV;
-        Thu, 22 Apr 2021 23:25:26 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 22 Apr 2021 23:28:24 +0800
-Subject: Re: [PATCH v2 0/4] arm64: drop pfn_valid_within() and simplify
- pfn_valid()
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "Will Deacon" <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
- <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
- <YIEl8aKr8Ly0Zd3O@kernel.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
-Date:   Thu, 22 Apr 2021 23:28:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S237916AbhDVP3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:29:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40504 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237782AbhDVP3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:29:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619105317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S2s8d3b/btx56QtdjB6CaPjK6sRnOI8xTAb1jIG6CP4=;
+        b=gKlHsP004cKaavaGty6eAilBjsn32BXi8GxNGVNZQ3Auye5rclIv+J2+hr/DRgp9ycm/5p
+        d+yaCMu/Ey3L7YXJPsv4RmCUkmWDiqvR37XCdiQDqbKN8A1n47Z524DZsSmVlMnBYAFZH2
+        S8jHh3sSdJd36D2YHnCG5DZycpoWJTQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B83C8B173;
+        Thu, 22 Apr 2021 15:28:37 +0000 (UTC)
+Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
+ features
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+References: <20210422151007.2205-1-jgross@suse.com>
+ <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+ <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
+ <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <ee2bc5f9-58ea-bad3-1343-2156d2b80ad3@suse.com>
+Date:   Thu, 22 Apr 2021 17:28:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YIEl8aKr8Ly0Zd3O@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+In-Reply-To: <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO
+Content-Type: multipart/mixed; boundary="I3qPelmf7Vi6Vq6oeYr6pX5DdsUKm5jN6";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, xen-devel@lists.xenproject.org
+Message-ID: <ee2bc5f9-58ea-bad3-1343-2156d2b80ad3@suse.com>
+Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
+ features
+References: <20210422151007.2205-1-jgross@suse.com>
+ <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+ <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
+ <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
+In-Reply-To: <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
 
-On 2021/4/22 15:29, Mike Rapoport wrote:
-> On Thu, Apr 22, 2021 at 03:00:20PM +0800, Kefeng Wang wrote:
->> On 2021/4/21 14:51, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
+--I3qPelmf7Vi6Vq6oeYr6pX5DdsUKm5jN6
+Content-Type: multipart/mixed;
+ boundary="------------C85339484172C36ACC5E171B"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------C85339484172C36ACC5E171B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 22.04.21 17:23, Jan Beulich wrote:
+> On 22.04.2021 17:17, Juergen Gross wrote:
+>> On 22.04.21 17:16, Jan Beulich wrote:
+>>> On 22.04.2021 17:10, Juergen Gross wrote:
+>>>> Some features of Xen can be assumed to be always present, so add a
+>>>> central check to verify this being true and remove the other checks.=
+
+>>>>
+>>>> Juergen Gross (3):
+>>>>     xen: check required Xen features
+>>>>     xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv g=
+uests
+>>>>     xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guest=
+s
 >>>
->>> Hi,
->>>
->>> These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
->>> pfn_valid_within() to 1.
->>>
->>> The idea is to mark NOMAP pages as reserved in the memory map and restore
->>> the intended semantics of pfn_valid() to designate availability of struct
->>> page for a pfn.
->>>
->>> With this the core mm will be able to cope with the fact that it cannot use
->>> NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
->>> will be treated correctly even without the need for pfn_valid_within.
->>>
->>> The patches are only boot tested on qemu-system-aarch64 so I'd really
->>> appreciate memory stress tests on real hardware.
->>>
->>> If this actually works we'll be one step closer to drop custom pfn_valid()
->>> on arm64 altogether.
->> Hi Mike，I have a question, without HOLES_IN_ZONE, the pfn_valid_within() in
->> move_freepages_block()->move_freepages()
->> will be optimized, if there are holes in zone, the 'struce page'(memory map)
->> for pfn range of hole will be free by
->> free_memmap(), and then the page traverse in the zone(with holes) from
->> move_freepages() will meet the wrong page，
->> then it could panic at PageLRU(page) test, check link[1],
-> First, HOLES_IN_ZONE name us hugely misleading, this configuration option
-> has nothing to to with memory holes, but rather it is there to deal with
-> holes or undefined struct pages in the memory map, when these holes can be
-> inside a MAX_ORDER_NR_PAGES region.
->
-> In general pfn walkers use pfn_valid() and pfn_valid_within() to avoid
-> accessing *missing* struct pages, like those that are freed at
-> free_memmap(). But on arm64 these tests also filter out the nomap entries
-> because their struct pages are not initialized.
->
-> The panic you refer to happened because there was an uninitialized struct
-> page in the middle of MAX_ORDER_NR_PAGES region because it corresponded to
-> nomap memory.
->
-> With these changes I make sure that such pages will be properly initialized
-> as PageReserved and the pfn walkers will be able to rely on the memory map.
->
-> Note also, that free_memmap() aligns the parts being freed on MAX_ORDER
-> boundaries, so there will be no missing parts in the memory map within a
-> MAX_ORDER_NR_PAGES region.
-
-Ok, thanks, we met a same panic like the link on arm32(without 
-HOLES_IN_ZONE),
-
-the scheme for arm64 could be suit for arm32, right?  I will try the 
-patchset with
-
-some changes on arm32 and give some feedback.
-
-Again, the stupid question, where will mark the region of memblock with
-
-MEMBLOCK_NOMAP flag ?
-
-
->   
->> "The idea is to mark NOMAP pages as reserved in the memory map", I see the
->> patch2 check memblock_is_nomap() in memory region
->> of memblock, but it seems that memblock_mark_nomap() is not called(maybe I
->> missed), then memmap_init_reserved_pages() won't
->> work, so should the HOLES_IN_ZONE still be needed for generic mm code?
+>>> I wonder whether it's a good idea to infer feature presence from
+>>> version numbers. If (at some point in the past) you had inferred
+>>> gnttab v2 being available by version, this would have been broken
+>>> by its availability becoming controllable by a command line option
+>>> in Xen.
 >>
->> [1] https://lore.kernel.org/linux-arm-kernel/541193a6-2bce-f042-5bb2-88913d5f1047@arm.com/
->>
+>> I'm testing the feature to be really present when booting and issue a
+>> message if it is not there.
+>=20
+> And how does this help if the feature really isn't there yet other code=
+
+> assumes it is?
+
+Did you look at the features I'm testing? Those are really just low
+level additions I can't imagine will ever be removed again.
+
+
+Juergen
+
+--------------C85339484172C36ACC5E171B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------C85339484172C36ACC5E171B--
+
+--I3qPelmf7Vi6Vq6oeYr6pX5DdsUKm5jN6--
+
+--9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCBliQFAwAAAAAACgkQsN6d1ii/Ey8R
+kAf/Yn8ZB8bHah0fvuPFH2DhwdOi6paaQoWP1M7PTJteX5Rw+3lPCM4q18Rh+r9AQZu67wVkCwwR
+HTTaSwvOA6t5bfLroJcyDz6EEPa8PogSjCljSEUCJbU2nWD1t/OzMuozAr0iZ1LM1MHmojKDjfy1
+xdKUtbfkObaaHTuV/yqsMrncDAT0GQGDtDbyG6qWex94a304g6Sh1b0khyuje+r9E7ozVwsKiH74
+96Ta6f2fvb43kmQLd/ol/SeMzDnuOjLGHiDKx/jZbq1/Lqf1LAIYhtLv+lPKzVZgUoNaLttToN6K
+IluqnFluwQ7FehfJYbClQLmkdi+OhFCyDowQMYLaEg==
+=5oYG
+-----END PGP SIGNATURE-----
+
+--9rkSk1vSn9FbOegTsaEK6WLbeoKsWPGaO--
