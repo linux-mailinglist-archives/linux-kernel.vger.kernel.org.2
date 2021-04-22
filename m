@@ -2,89 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57CE3677C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011D73677C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhDVDK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 23:10:57 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17022 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhDVDK4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:10:56 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FQj5L6t88zPtLX;
-        Thu, 22 Apr 2021 11:07:18 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.72) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 22 Apr 2021
- 11:10:17 +0800
-Subject: Re: [PATCH 1/1] dt-bindings: serial: Add label property for pl011
-To:     Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210415073105.3687-1-thunder.leizhen@huawei.com>
- <20210420200246.GA3717650@robh.at.kernel.org>
- <fa6c6079-8061-5774-8252-31956ac84ae2@huawei.com>
- <CAL_JsqKggh0XDCHg8E694Zjuz2yiJ6tkxHDBDsMM3Y_XiZxypA@mail.gmail.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <6491648e-aab1-72cb-c766-5c4eff331412@huawei.com>
-Date:   Thu, 22 Apr 2021 11:10:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S234453AbhDVDLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 23:11:40 -0400
+Received: from mga05.intel.com ([192.55.52.43]:58213 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229706AbhDVDLf (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 23:11:35 -0400
+IronPort-SDR: RlwyIpjHr6BCMWbLdKIROEAtYAPKDHpo4SNC6PH8266P1Pqnz4Ye3k8+kAiSoCZ/SucdxWHLHG
+ Haa0bV/401bg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="281147150"
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="281147150"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:11:00 -0700
+IronPort-SDR: fRAdjy9WupuSVeddIAiQlV3uBpgAyfTf6uuDaiv9baQJ/lPxOshpALS1Hb9+XZPGSDjQsQMMyE
+ ICd0G4UUlnsA==
+X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
+   d="scan'208";a="427755221"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:10:57 -0700
+Subject: Re: [PATCH v4 15/25] perf stat: Filter out unmatched aggregation for
+ hybrid event
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210416140517.18206-1-yao.jin@linux.intel.com>
+ <20210416140517.18206-16-yao.jin@linux.intel.com> <YIBvJLAvL0rWGhhP@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <1da39794-bdc3-2a9d-4038-9e95e2c02660@linux.intel.com>
+Date:   Thu, 22 Apr 2021 11:10:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKggh0XDCHg8E694Zjuz2yiJ6tkxHDBDsMM3Y_XiZxypA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YIBvJLAvL0rWGhhP@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jiri,
 
-
-On 2021/4/21 21:53, Rob Herring wrote:
-> On Wed, Apr 21, 2021 at 4:38 AM Leizhen (ThunderTown)
-> <thunder.leizhen@huawei.com> wrote:
->>
->>
->>
->> On 2021/4/21 4:02, Rob Herring wrote:
->>> On Thu, Apr 15, 2021 at 03:31:05PM +0800, Zhen Lei wrote:
->>>> When there is more than one pl011 serial port present, the label property
->>>> allows a custom name to be used for briefly describe the usage or position
->>>> of each serial port.
->>>>
->>>> Without this "label" property, many dtbs_check warnings similar to the
->>>> following are reported:
->>>> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dt.yaml: \
->>>> serial@ffd74000: Additional properties are not allowed ('label' was unexpected)
->>>>         From schema: Documentation/devicetree/bindings/serial/pl011.yaml
->>>
->>> I think this should go into serial.yaml instead.
->>
->> Yes，But if I add "label: true" into serial.yaml, it doesn't work. I haven't figured out why.
+On 4/22/2021 2:29 AM, Jiri Olsa wrote:
+> On Fri, Apr 16, 2021 at 10:05:07PM +0800, Jin Yao wrote:
 > 
-> Change the 'additionalProperties: false' to 'unevaluatedProperties: false'.
-
-Wow, it works. I admire you so much. You're a master.
-
+> SNIP
 > 
->> By the way, should "$ref: /schemas/serial.yaml#" be replaced with "$ref: /schemas/serial/serial.yaml#"?
+>> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+>> index 5255d78b1c30..15eafd249e46 100644
+>> --- a/tools/perf/util/stat-display.c
+>> +++ b/tools/perf/util/stat-display.c
+>> @@ -643,6 +643,20 @@ static void aggr_cb(struct perf_stat_config *config,
+>>   	}
+>>   }
+>>   
+>> +static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
+>> +				   struct evsel *counter, struct aggr_cpu_id id)
+>> +{
+>> +	struct aggr_cpu_id s;
+>> +
+>> +	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
+>> +		s = config->aggr_get_id(config, evsel__cpus(counter), i);
+>> +		if (cpu_map__compare_aggr_cpu_id(s, id))
+>> +			return true;
+>> +	}
+>> +
+>> +	return false;
+>> +}
+>> +
+>>   static void print_counter_aggrdata(struct perf_stat_config *config,
+>>   				   struct evsel *counter, int s,
+>>   				   char *prefix, bool metric_only,
+>> @@ -656,6 +670,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
+>>   	double uval;
+>>   
+>>   	ad.id = id = config->aggr_map->map[s];
+>> +
+>> +	if (perf_pmu__has_hybrid() &&
+>> +	    !aggr_id_hybrid_matched(config, counter, id)) {
+>> +		return;
+>> +	}
+>> +
+>>   	ad.val = ad.ena = ad.run = 0;
+>>   	ad.nr = 0;
+>>   	if (!collect_data(config, counter, aggr_cb, &ad))
 > 
-> Oh, yes! Looks like it should be fixed for the other serial schemas
-> too. There is a /schemas/serial.yaml schema from dt-schema which
-> predates the kernel one, but it just has the $nodename. The kernel one
-> is much more complete.
+> there's same check in aggr_cb, so it seems like we could just make check in here:
+> 
+> 	if (perf_pmu__has_hybrid() && ad.ena == 0)
+> 		return;
+> 
+> without another extra loop
+> 
+> jirka
+> 
 
-All right, I'll fix them all.
+I guess you recommended the patch like this:
 
-> 
-> Rob
-> 
-> .
-> 
+  static void print_counter_aggrdata(struct perf_stat_config *config,
+                                    struct evsel *counter, int s,
+                                    char *prefix, bool metric_only,
+@@ -670,17 +656,14 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
+         double uval;
 
+         ad.id = id = config->aggr_map->map[s];
+         ad.val = ad.ena = ad.run = 0;
+         ad.nr = 0;
+         if (!collect_data(config, counter, aggr_cb, &ad))
+                 return;
+
++       if (perf_pmu__has_hybrid() && ad.ena == 0)
++               return;
++
+         nr = ad.nr;
+         ena = ad.ena;
+         run = ad.run;
+
+Yes, it works. The test log is,
+
+# perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
+
+  Performance counter stats for 'system wide':
+
+S0-D0-C0           2          2,341,923      cpu_core/cycles/
+S0-D0-C4           2          1,707,933      cpu_core/cycles/
+S0-D0-C8           2            845,805      cpu_core/cycles/
+S0-D0-C12          2          1,001,961      cpu_core/cycles/
+S0-D0-C16          2            932,004      cpu_core/cycles/
+S0-D0-C20          2          1,778,603      cpu_core/cycles/
+S0-D0-C24          2            804,448      cpu_core/cycles/
+S0-D0-C28          2            178,360      cpu_core/cycles/
+
+        1.002264168 seconds time elapsed
+
+Thanks
+Jin Yao
