@@ -2,190 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F95368194
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134BD3681D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhDVNi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:38:56 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29862 "EHLO m43-7.mailgun.net"
+        id S236558AbhDVNuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:50:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236226AbhDVNix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:38:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619098699; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Z55UTxpXyLr3rTUJNaY6VLLVuJYlMNUJ66KfV5/0zQU=; b=AiQrV9vBUj9ayzNE1OkRGrkiyllX9Y1y5C5skyKoC9Ao9NN2ql71iMWNlf1HzYzn3/Y98M16
- KCI6VIN5e26ourlfUVIRvrTb+3nXjKReIfF3eplQUu2arG6x0gzSs8OQ7zljkU2x/TsRelYt
- 0jHHzX/CXMwEFWVVffubqbBfVS0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60817c4603cfff34527c920b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 13:38:14
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E1ABC43144; Thu, 22 Apr 2021 13:38:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4537CC433F1;
-        Thu, 22 Apr 2021 13:38:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4537CC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, vbabka@suse.cz, bhe@redhat.com,
-        nigupta@nvidia.com, khalid.aziz@oracle.com,
-        mateusznosek0@gmail.com, sh_def@163.com, iamjoonsoo.kim@lge.com,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        mhocko@suse.com, rientjes@google.com, mgorman@techsingularity.net
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, vinmenon@codeaurora.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm: compaction: improve /proc trigger for full node memory compaction
-Date:   Thu, 22 Apr 2021 19:07:58 +0530
-Message-Id: <1619098678-8501-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230005AbhDVNum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:50:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 108BD61405;
+        Thu, 22 Apr 2021 13:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619099407;
+        bh=2oJtReQyaeTSDvRLl66IrFTBKN7fQSwFZowLXmrUk3A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s/qaYH7gxGP5emtXWIcBUyRq5DVNZh7XFCprfMm9WtRj/ECsrUCPYxl6x7rM7hqaB
+         Bw1QtfNgid+lL2DECA6OFP0ThIwEg4Cdc9MYbZPFkHLgpk7yoGaitqpKOi6dCsXbqU
+         GhhZWJcdRi90RAZIFlooIllt2Rx76fu+Dqaa26UO1L9q5SpraU1lN4KpNjjMEzaIwj
+         D0tJX6+b1tCJA+5BdSkh+F+fBcxUgo9OBgujZKzjvMZZqTjgbWtdKf7Lg+/1DhlFMI
+         XCxSBhSELKCXlwuQe+VkAg9oNaMZJUM+0GoXVsbs42ydIJ8uuWke4EnfW/ZgctK/Oj
+         V7/AcMhVT1W/w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] spi: stm32-qspi: fix debug format string
+Date:   Thu, 22 Apr 2021 15:38:57 +0200
+Message-Id: <20210422134955.1988316-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing /proc/sys/vm/compact_memory interface do the full node
-compaction when user writes an arbitrary value to it and is targeted for
-the usecases like an app launcher prepares the system before the target
-application runs. The downside of it is that even if there are
-sufficient higher order pages left in the system for the targeted
-application to run, full node compaction will still be triggered thus
-wasting few CPU cycles. This problem can be solved if it is known when
-the sufficient higher order pages are available in the system thus full
-node compaction can be stopped in the middle. The proactive
-compaction[1] can give these details about the availability of higher
-order pages in the system(it checks for COMPACTION_HPAGE_ORDER pages,
-which usually be order-9) thus can be used to trigger for full node
-compaction.
+From: Arnd Bergmann <arnd@arndb.de>
 
-This patch adds a new /proc interface,
-/proc/sys/vm/proactive_compact_memory, and on write of an arbitrary
-value triggers the full node compaction but can be stopped in the middle
-if sufficient higher order(COMPACTION_HPAGE_ORDER) pages available in
-the system. The availability of pages that a user looking for can be
-given as input through /proc/sys/vm/compaction_proactiveness.
+Printing size_t needs a special %zx format modifier to avoid a
+warning like:
 
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
+drivers/spi/spi-stm32-qspi.c:481:41: note: format string is defined here
+  481 |         dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Patrice already tried to fix this, but picked %lx instead of %zx,
+which fixed some architectures but broke others in the same way.
+Using %zx works everywhere.
+
+Fixes: 18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")
+Fixes: 1b8a7d4282c0 ("spi: stm32-qspi: Fix compilation warning in ARM64")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/compaction.h |  3 +++
- kernel/sysctl.c            |  7 +++++++
- mm/compaction.c            | 25 ++++++++++++++++++++++---
- 3 files changed, 32 insertions(+), 3 deletions(-)
+ drivers/spi/spi-stm32-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index ed4070e..af8f6c5 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -82,9 +82,12 @@ static inline unsigned long compact_gap(unsigned int order)
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index 02691c1603d9..7e640ccc7e77 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -478,7 +478,7 @@ static ssize_t stm32_qspi_dirmap_read(struct spi_mem_dirmap_desc *desc,
+ 	 * all needed transfer information into struct spi_mem_op
+ 	 */
+ 	memcpy(&op, &desc->info.op_tmpl, sizeof(struct spi_mem_op));
+-	dev_dbg(qspi->dev, "%s len = 0x%lx offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
++	dev_dbg(qspi->dev, "%s len = 0x%zx offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
  
- #ifdef CONFIG_COMPACTION
- extern int sysctl_compact_memory;
-+extern int sysctl_proactive_compact_memory;
- extern unsigned int sysctl_compaction_proactiveness;
- extern int sysctl_compaction_handler(struct ctl_table *table, int write,
- 			void *buffer, size_t *length, loff_t *ppos);
-+extern int sysctl_proactive_compaction_handler(struct ctl_table *table,
-+		int write, void *buffer, size_t *length, loff_t *ppos);
- extern int sysctl_extfrag_threshold;
- extern int sysctl_compact_unevictable_allowed;
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 62fbd09..ceb5c61 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2862,6 +2862,13 @@ static struct ctl_table vm_table[] = {
- 		.proc_handler	= sysctl_compaction_handler,
- 	},
- 	{
-+		.procname       = "proactive_compact_memory",
-+		.data           = &sysctl_proactive_compact_memory,
-+		.maxlen         = sizeof(int),
-+		.mode           = 0200,
-+		.proc_handler   = sysctl_proactive_compaction_handler,
-+	},
-+	{
- 		.procname	= "compaction_proactiveness",
- 		.data		= &sysctl_compaction_proactiveness,
- 		.maxlen		= sizeof(sysctl_compaction_proactiveness),
-diff --git a/mm/compaction.c b/mm/compaction.c
-index e04f447..2b40b03 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2588,13 +2588,13 @@ enum compact_result try_to_compact_pages(gfp_t gfp_mask, unsigned int order,
-  * due to various back-off conditions, such as, contention on per-node or
-  * per-zone locks.
-  */
--static void proactive_compact_node(pg_data_t *pgdat)
-+static void proactive_compact_node(pg_data_t *pgdat, enum migrate_mode mode)
- {
- 	int zoneid;
- 	struct zone *zone;
- 	struct compact_control cc = {
- 		.order = -1,
--		.mode = MIGRATE_SYNC_LIGHT,
-+		.mode = mode,
- 		.ignore_skip_hint = true,
- 		.whole_zone = true,
- 		.gfp_mask = GFP_KERNEL,
-@@ -2657,6 +2657,17 @@ static void compact_nodes(void)
- 		compact_node(nid);
- }
- 
-+static void proactive_compact_nodes(void)
-+{
-+	int nid;
-+
-+	/* Flush pending updates to the LRU lists */
-+	lru_add_drain_all();
-+	for_each_online_node(nid)
-+		proactive_compact_node(NODE_DATA(nid), MIGRATE_SYNC);
-+}
-+
-+int sysctl_proactive_compact_memory;
- /* The written value is actually unused, all memory is compacted */
- int sysctl_compact_memory;
- 
-@@ -2680,6 +2691,14 @@ int sysctl_compaction_handler(struct ctl_table *table, int write,
- 	return 0;
- }
- 
-+int sysctl_proactive_compaction_handler(struct ctl_table *table, int write,
-+			void *buffer, size_t *length, loff_t *ppos)
-+{
-+	if (write)
-+		proactive_compact_nodes();
-+
-+	return 0;
-+}
- #if defined(CONFIG_SYSFS) && defined(CONFIG_NUMA)
- static ssize_t sysfs_compact_node(struct device *dev,
- 			struct device_attribute *attr,
-@@ -2881,7 +2900,7 @@ static int kcompactd(void *p)
- 				continue;
- 			}
- 			prev_score = fragmentation_score_node(pgdat);
--			proactive_compact_node(pgdat);
-+			proactive_compact_node(pgdat, MIGRATE_SYNC_LIGHT);
- 			score = fragmentation_score_node(pgdat);
- 			/*
- 			 * Defer proactive compaction if the fragmentation
+ 	op.data.nbytes = len;
+ 	op.addr.val = desc->info.offset + offs;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+2.29.2
 
