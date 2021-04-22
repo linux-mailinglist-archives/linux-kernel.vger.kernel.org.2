@@ -2,190 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E33936820F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC381368216
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 16:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236888AbhDVOC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 10:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236455AbhDVOC0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 10:02:26 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B62CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:01:52 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso33584100ott.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 07:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lIPVMbWMex4+CEHf783ANuAY9xJ1l5emMiGHyKfWye4=;
-        b=ZWzzvrUS55IqMJ+SMBoPNqChOoyYmCpeg2n2NXg+cHQdBdjBZ9kcsb8akEwLrgERaX
-         2Zc+JGKhyM/i1Z6598f4Fk4CB8Y+eQj2bIq2qD59phXE+5RVKhWL0Abj3YZfeLnQre15
-         u1snbt2TOdzcDyNYEGqRF3XEeoznDvxNW8Ef52CDxltF44X5D2u73gwltnh2UToI11SE
-         XbjmTwJYeiWdRJZd3XNXmdyEiIBHjhQP1EN+5svwkfw66MKJHCjIPmzRDAL2gbYUWSm1
-         qVIS+4VgkLaJFSRpPqYp3MzoMhUTU1Sm4v8ZuBCEBk4A9hyUY/fcSxpTPa7HitdKc+lg
-         PCYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lIPVMbWMex4+CEHf783ANuAY9xJ1l5emMiGHyKfWye4=;
-        b=dUqhx3PBCX1CQADZ1by9Ep3a+qmj/Z7H5IDjtHH46F2RnZ2yGYGDoFxmLGeRllPq4R
-         yZVVhzpwgAqyHrkr+7gxIe5o0PCIrQzwBXu8HgfFqRh/x/jIJgnjtTVZZMcmYd5t0GnR
-         zr+ZzLx0XgF30BpJybTCBV+W4xtRGyQMFk1h0RYT+FKLSHOPuC4xaOyRNSbQWSK5gSiw
-         WizkzGwEsQRAtNtdSvenE4ZQ6fHZA0TnC5NxCwVuOuyjtVoo1tbQpot7ThyVmhVly8qD
-         ntK3amzafYFsHEZ9/LuTZwsn59Vgqke848Lh9OOnZHenlMo6lWv0L3paq6cKPHscMQQw
-         W2vg==
-X-Gm-Message-State: AOAM530qqGW0xLqih9vzy6pXUVWUtYLhVQ5/fIu5sM31UcLpQ/mIHFxS
-        HmjtP2wEfEmMTqe/JoWa5L/NFvYs+Ro=
-X-Google-Smtp-Source: ABdhPJyAcW2lf+08b6t76hsNmPTsVBP6ZZ/Kd0j0lnP7fx/MSbHOHffs03s32qGse0UmAYJQCTqtoQ==
-X-Received: by 2002:a05:6830:241b:: with SMTP id j27mr2989210ots.17.1619100109689;
-        Thu, 22 Apr 2021 07:01:49 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x3sm679302otj.8.2021.04.22.07.01.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 07:01:49 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] static_call: Fix unused variable warning
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
-References: <20210422003334.139452-1-linux@roeck-us.net>
- <20210421204139.669f5c22@oasis.local.home>
- <YIEjrb7uO1KLgf3y@hirez.programming.kicks-ass.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <552a3a35-43c6-348e-ad46-1abb298cbfbc@roeck-us.net>
-Date:   Thu, 22 Apr 2021 07:01:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236940AbhDVOEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 10:04:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38180 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236396AbhDVOEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 10:04:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619100249; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=4HMCjdtvHaTSyjFKUDRAhNbN/Lc1AjfSDQkLeUEgxs4=;
+ b=BDni25yxqeQ52InxaV+gFXGIurAKI/vuhvYY6p8nbT0PYc0r9at7Mi3TTvFFZ5EycClZVIFS
+ dQrOc0Qh0wiA8aTerBGMMvn6Yc2IQ1Am3gv9P6VOy7zTHLoFnnO+jmHbwHUXn9pGWay7j+ip
+ Gt3yh058nJ9nKk+Czy/lR6Pljw4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6081823ae0e9c9a6b6e97aac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 14:03:38
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 66487C4338A; Thu, 22 Apr 2021 14:03:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 35198C433F1;
+        Thu, 22 Apr 2021 14:03:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 35198C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YIEjrb7uO1KLgf3y@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] ath11k: qmi: Fix spelling mistake "requeqst" ->
+ "request"
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210316091924.15627-1-colin.king@canonical.com>
+References: <20210316091924.15627-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210422140338.66487C4338A@smtp.codeaurora.org>
+Date:   Thu, 22 Apr 2021 14:03:38 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 12:20 AM, Peter Zijlstra wrote:
-> On Wed, Apr 21, 2021 at 08:41:39PM -0400, Steven Rostedt wrote:
->>
->> Second patch with the exact same update. Perhaps we should take one
->> before we get more of them ;-)
->>
-> 
-> I thought we already fixed that...
+Colin King <colin.king@canonical.com> wrote:
 
-Not in v5.12-rc8-6-g4bdafe832681, which is ToT right now.
+> There is a spelling mistake in an ath11k_warn message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Ah, I do see it in -next, but that doesn't help me in mainline,
-nor in stable branches where the patch introducing the problem
-has been backported to.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Guenter
+6dc89f070d28 ath11k: qmi: Fix spelling mistake "requeqst" -> "request"
 
-> 
-> ---
-> commit 7d95f22798ecea513f37b792b39fec4bcf20fec3
-> Author: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Date:   Fri Mar 26 11:50:23 2021 +0100
-> 
->     static_call: Fix unused variable warn w/o MODULE
->     
->     Here is the warning converted as error and reported by GCC:
->     
->       kernel/static_call.c: In function ‘__static_call_update’:
->       kernel/static_call.c:153:18: error: unused variable ‘mod’ [-Werror=unused-variable]
->         153 |   struct module *mod = site_mod->mod;
->             |                  ^~~
->       cc1: all warnings being treated as errors
->       make[1]: *** [scripts/Makefile.build:271: kernel/static_call.o] Error 1
->     
->     This is simply because since recently, we no longer use 'mod' variable
->     elsewhere if MODULE is unset.
->     
->     When using 'make tinyconfig' to generate the default kconfig, MODULE is
->     unset.
->     
->     There are different ways to fix this warning. Here I tried to minimised
->     the number of modified lines and not add more #ifdef. We could also move
->     the declaration of the 'mod' variable inside the if-statement or
->     directly use site_mod->mod.
->     
->     Fixes: 698bacefe993 ("static_call: Align static_call_is_init() patching condition")
->     Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
->     Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->     Link: https://lkml.kernel.org/r/20210326105023.2058860-1-matthieu.baerts@tessares.net
-> 
-> diff --git a/kernel/static_call.c b/kernel/static_call.c
-> index 2c5950b0b90e..723fcc9d20db 100644
-> --- a/kernel/static_call.c
-> +++ b/kernel/static_call.c
-> @@ -165,13 +165,13 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
->  
->  		stop = __stop_static_call_sites;
->  
-> -#ifdef CONFIG_MODULES
->  		if (mod) {
-> +#ifdef CONFIG_MODULES
->  			stop = mod->static_call_sites +
->  			       mod->num_static_call_sites;
->  			init = mod->state == MODULE_STATE_COMING;
-> -		}
->  #endif
-> +		}
->  
->  		for (site = site_mod->sites;
->  		     site < stop && static_call_key(site) == key; site++) {
-> 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210316091924.15627-1-colin.king@canonical.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
