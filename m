@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81C736819F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1DA3681A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhDVNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 09:43:12 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17390 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhDVNnJ (ORCPT
+        id S236474AbhDVNnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:43:55 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:26530 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236333AbhDVNny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:43:09 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FQz7z4j2RzlYWs;
-        Thu, 22 Apr 2021 21:40:31 +0800 (CST)
-Received: from [10.174.178.147] (10.174.178.147) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 22 Apr 2021 21:42:24 +0800
-Subject: Re: [PATCH 0/2] arm64: ACPI GTDT watchdog fixes
-To:     Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-CC:     dann frazier <dann.frazier@canonical.com>,
-        Fu Wei <wefu@redhat.com>, "Len Brown" <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@android.com>
-References: <20210421164317.1718831-1-maz@kernel.org>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <b20ed406-5ba4-337b-840d-fc805da642ad@huawei.com>
-Date:   Thu, 22 Apr 2021 21:42:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 22 Apr 2021 09:43:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619099000; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=dC0ZEqAmDS6CmHmLUxQbdaNlksibBx0m9qEKhioaIbE=;
+ b=hszTbjz0dzDEP2aa0dUzLX9Rfh4ZS5QZdpqcymN3/ntsSCSQnyOOW0dEeUt3+1cn/kbEV1GC
+ 4wuqGDzyVc99TCE36e01UBXGw+i866QFUB2bOa+9XwWFmpKrxING4XFuauYf6+8HQEP0jl8l
+ LyjcN0ZXaCC6qLSaODfD6B+fud4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60817d5c03cfff34528148b8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Apr 2021 13:42:52
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30E07C4338A; Thu, 22 Apr 2021 13:42:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD15DC433D3;
+        Thu, 22 Apr 2021 13:42:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD15DC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210421164317.1718831-1-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.147]
-X-CFilter-Loop: Reflected
+Subject: Re: [PATCH -next v2] drivers: net: CONFIG_ATH9K select LEDS_CLASS and
+ NEW_LEDS
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210330120533.102712-1-zhangjianhua18@huawei.com>
+References: <20210330120533.102712-1-zhangjianhua18@huawei.com>
+To:     Zhang Jianhua <zhangjianhua18@huawei.com>
+Cc:     <ath9k-devel@qca.qualcomm.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <zhangjianhua18@huawei.com>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <johnny.chenyi@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210422134251.30E07C4338A@smtp.codeaurora.org>
+Date:   Thu, 22 Apr 2021 13:42:51 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/22 0:43, Marc Zyngier wrote:
-> Dann recently reported that his ThunderX machine failed to boot since
-> 64b499d8df40 ("irqchip/gic-v3: Configure SGIs as standard
-> interrupts"), with a not so pretty crash while trying to send an IPI.
+Zhang Jianhua <zhangjianhua18@huawei.com> wrote:
+
+> If CONFIG_ATH9K=y, the following errors will be seen while compiling
+> gpio.c
 > 
-> It turned out to be caused by a mix of broken firmware and a buggy
-> GTDT watchdog driver. Both have forever been buggy, but the above
-> commit revealed that the error handling path of the driver was
-> probably the worse part of it all.
+> drivers/net/wireless/ath/ath9k/gpio.o: In function `ath_deinit_leds':
+> gpio.c:(.text+0x604): undefined reference to `led_classdev_unregister'
+> gpio.c:(.text+0x604): relocation truncated to fit: R_AARCH64_CALL26
+> against undefined symbol `led_classdev_unregister'
+> drivers/net/wireless/ath/ath9k/gpio.o: In function `ath_init_leds':
+> gpio.c:(.text+0x708): undefined reference to `led_classdev_register_ext'
+> gpio.c:(.text+0x708): relocation truncated to fit: R_AARCH64_CALL26
+> against undefined symbol `led_classdev_register_ext'
 > 
-> Anyway, this short series has two goals:
-> - handle broken firmware in a less broken way
-> - make sure that the route cause of the problem can be identified
->    quickly
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Tested on Kunpeng920 ARM64 server, didn't any issue after applying
-this patch set,
+Recently there was a related fix, I need more information about this problem.
+What is exactly causing this? Is this a recent regression or an old problem?
 
-Tested-by: Hanjun Guo <guohanjun@huawei.com>
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+Can someone review this?
 
-Thanks
-Hanjun
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210330120533.102712-1-zhangjianhua18@huawei.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
