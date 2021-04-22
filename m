@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A5836891D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 00:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B9C36891F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 00:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239584AbhDVWoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 18:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        id S239666AbhDVWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 18:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235502AbhDVWoB (ORCPT
+        with ESMTP id S232844AbhDVWov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 18:44:01 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68F6C06174A;
-        Thu, 22 Apr 2021 15:43:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FRCBL1VtYz9sVq;
-        Fri, 23 Apr 2021 08:43:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1619131402;
-        bh=tGDhXlcqsPi+4PD3P6gNEQXLlfiMF6uoIgpbyc09htw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mtYqWnI9tgVAEman9OrgJCbJp8As8EtUxf32wtCFt9G1qws4z0d85RIobYZ4Bw5tn
-         jClMky32l9WdZhhQHpIYrcl56UuHltUCso/3uqg1n6NnogH9OWLTUKSCyhHzVzShCy
-         HSN3ZK6U2mu8fgjBxeIPFeGRbYLfE0CoA8wZqGLbWAOSBoQtNwU1f8JZRjxB0TsOwp
-         dNX30DuJeF0r0nadrDe00Sr0AuV+f8ekGASsLTyfUWyGMMEsP99KRE6JqUvUn4/rSK
-         OlrPe6Nw76cRvfDmg/PyF3E0sIzI63EKR+R3NYAO5LnjhEI1U2SvSWtR/Hut34y1F4
-         LQowyiBs+RjdA==
-Date:   Fri, 23 Apr 2021 08:43:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Xie Yongji <xieyongji@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the vhost tree
-Message-ID: <20210423084319.5cf9dcd8@canb.auug.org.au>
+        Thu, 22 Apr 2021 18:44:51 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B2AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 15:44:16 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h36so20464961lfv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 15:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eVWWvugI8DB7tGc32EIZh1dbZnwGe5Bt+f006OvhJS0=;
+        b=J+EDgb6lx4Ai3flNJZAUBsqJDvUXLA67oGcIqHVqt7rpFgBUDYNJsQZ4o3h5AaNI3U
+         GBJgJVmfbnA5xfbL/uUHu/bVkU6Sj4caOjrq2RimVAS1IpWEHeNACHQ6BydOG9JyMNnn
+         rEw+vXuijPm+PTk0G/Ng9czw8gxh5Tyj32N1PN4cZPV1UTvXaDAZCqY5QOba6u74G4Ue
+         kEye3LPZtcdetcvoVY7Z07WlPTfZbdwmphfwX1vLe97GhJClaq9upYRf86HqJLT97uvh
+         RwbYzzRqbTBsKr0m+Vf2+aiNwKCTDeKAJrOKYp1I+CAPPQ477hnmGf9mlfzm9JUHeXu2
+         Tuyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eVWWvugI8DB7tGc32EIZh1dbZnwGe5Bt+f006OvhJS0=;
+        b=fLhM/XshoJost7d7Dp7dWqyU0bdnktPxxqMX6lHG1pxWYPsPxCkewSmZvtkxwwKpm8
+         4OXpYYXKLUInWDAfiGAIcxNqZJaFzhRDM/lvXjySIt8RJzrR4BJwXO6pB4uFPvznePu1
+         4oIEeajPrr00txCYUWv2RCSWeC7zjfmSa/F9GJf78912Ir6iUZushT5kmoluyWnyz2f/
+         DwXFJ0ML2PpEIB5dMhhz/AirNXy8BqXUnqHE3PoEKYrldrb07B46pPp+Gr5VdjyapSCW
+         0XD+S7kGaaumnFCvivdqjr3RFkZWNlfgicy1JvqepcG1LgyFeT4Q/quYi5KtVy+ttaMH
+         q3Gw==
+X-Gm-Message-State: AOAM5310WSUrSTrTC5dO+rxLXtcIpNTxWBXb3WBJEq5oFjbAH75T7gzI
+        fi9aBazPbwaZDYu6Ix06dV9jDBKqSa73jNRx96omtg==
+X-Google-Smtp-Source: ABdhPJwYSO43FuRfyDZjVX5z5UG55Qn0AtKaW1+5Fl21nVwrVVRCd3KaER5zMUSJFG13eTZoMQSkycXBXphkTb373o8=
+X-Received: by 2002:a05:6512:159:: with SMTP id m25mr454486lfo.73.1619131454440;
+ Thu, 22 Apr 2021 15:44:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=lD05Q2uvBU4fLcR7nhQ4XZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200901222523.1941988-1-ndesaulniers@google.com>
+ <20200901222523.1941988-2-ndesaulniers@google.com> <87blio1ilu.fsf@mpe.ellerman.id.au>
+ <CAKwvOd=ZeJU+vLUk2P7FpX35haj7AC50B9Yps4pyoGCpd7ueTw@mail.gmail.com> <3d837a36-a186-6789-7924-eaa97f056b68@csgroup.eu>
+In-Reply-To: <3d837a36-a186-6789-7924-eaa97f056b68@csgroup.eu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 22 Apr 2021 15:44:02 -0700
+Message-ID: <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] powerpc/vdso64: link vdso64 with linker
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=lD05Q2uvBU4fLcR7nhQ4XZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 2, 2020 at 11:02 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 02/09/2020 =C3=A0 19:41, Nick Desaulniers a =C3=A9crit :
+> > On Wed, Sep 2, 2020 at 5:14 AM Michael Ellerman <mpe@ellerman.id.au> wr=
+ote:
+> >>
+> >> Nick Desaulniers <ndesaulniers@google.com> writes:
+> >>> Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for o=
+rphan sections")
+> >>
+> >> I think I'll just revert that for v5.9 ?
+> >
+> > SGTM; you'll probably still want these changes with some modifications
+> > at some point; vdso32 did have at least one orphaned section, and will
+> > be important for hermetic builds.  Seeing crashes in supported
+> > versions of the tools ties our hands at the moment.
+> >
+>
+> Keeping the tool problem aside with binutils 2.26, do you have a way to
+> really link an elf32ppc object when  building vdso32 for PPC64 ?
 
-Hi all,
+Sorry, I'm doing a bug scrub and found
+https://github.com/ClangBuiltLinux/linux/issues/774 still open (and my
+reply to this thread still in Drafts; never sent). With my patches
+rebased:
+$ file arch/powerpc/kernel/vdso32/vdso32.so
+arch/powerpc/kernel/vdso32/vdso32.so: ELF 32-bit MSB shared object,
+PowerPC or cisco 4500, version 1 (SYSV), dynamically linked, stripped
 
-n commit
+Are you still using 2.26?
 
-  a9d064524fc3 ("vhost-vdpa: protect concurrent access to vhost device iotl=
-b")
+I'm not able to repro Nathan's reported issue from
+https://lore.kernel.org/lkml/20200902052123.GA2687902@ubuntu-n2-xlarge-x86/=
+,
+so I'm curious if I should resend the rebased patches as v2?
 
-Fixes tag
-
-  Fixes: 4c8cf318("vhost: introduce vDPA-based backend")
-
-has these problem(s):
-
-  - missing space between the SHA1 and the subject
-  - SHA1 should be at least 12 digits long
-
-Probably not worth rebaseing to fix, but can be avoided in the futre
-by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
-just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=lD05Q2uvBU4fLcR7nhQ4XZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCB/AcACgkQAVBC80lX
-0Gzd2wf7BfmDEWdJZ+iWdrrMRO/PfE0ndMo5PFI03O7/OWNzlhN6ehsnKuha8abw
-jVMLkAdiCYccwoKZPwCB19dCwIVudKt33eBEz/fZdgbZ5tiefw3rMxeXn3GWzQeq
-M7y2iDoCPi4IRCyX3ANKtz0O+LLnld7+wa+9C/glX95hefB8vtqUwSE0giWk13Xy
-YcRsE4PGwIZP0OozVkyIPNcpUA2bkiYEXWNUlJuRIREToYWf6jylwf7R2fCPeuaq
-fKpgcGUI+nYaRBW3Iqfty95SIfEuf2GUCnAh2FE1UuQKoy3Kx72nKSP51B2g8Tsg
-wUtf9dVI3+apZ/6JK1XNqfKCtgI2/Q==
-=cRUZ
------END PGP SIGNATURE-----
-
---Sig_/=lD05Q2uvBU4fLcR7nhQ4XZ--
+--
+Thanks,
+~Nick Desaulniers
