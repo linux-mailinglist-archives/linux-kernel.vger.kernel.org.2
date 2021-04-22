@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFB736833C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB9136833D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237696AbhDVPX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:23:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
+        id S236569AbhDVPY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:24:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37564 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236545AbhDVPX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A306143B;
-        Thu, 22 Apr 2021 15:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619104971;
-        bh=S23DvyFbD937/eRF/yGO4YHwePp1UxxeFZXs819frVc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mr3fVlfvk0nnjFaRFExNjCMBOWYrHkqslozgig1GNjDf9RcZW4QWxxj1SHB1k8j96
-         lfTJFpRjntxMl+Tlgbk3Xd586MBzTNodrXsqbGFGD44SFmjSU7StGSBQHjkmNBpnjb
-         xenenO+8l4HllQZgGNfh0/+/kS+gU8PMpRmvlnDQqTD9zf/ubaNeIvJmVX9O9oqwKI
-         WVdSx04CXu26Mis7ajCZEerdVz/VMEQIroyonS9pxVZyeyGfx2j4m7CNxlxCzmd3yz
-         dlhKYv+LZPUBIlZskHVL3ilQam4QgVaRV9XmAAJWlfYFEPjooK/UCKeQeoPwT3d3Ps
-         hQKzmTQc8/PcQ==
-Received: by mail-wm1-f49.google.com with SMTP id n127so12522778wmb.5;
-        Thu, 22 Apr 2021 08:22:51 -0700 (PDT)
-X-Gm-Message-State: AOAM5301QPx1jZq7saA//nBmf5OdB9LrQ9XQvDd085mu6wie763GhW12
-        y1S46uDkqWSQt25VBWHMYer0itRRcLHbpYWaQ0A=
-X-Google-Smtp-Source: ABdhPJyoqMZkh2iVaSsCHD5prrldh89au5x5VTTB0Au5qmjidvSi0VHRgBUmYUlk+xcZBjT7RFhcntH4fy5u8AwRCjg=
-X-Received: by 2002:a7b:c14a:: with SMTP id z10mr562999wmi.75.1619104969636;
- Thu, 22 Apr 2021 08:22:49 -0700 (PDT)
+        id S236367AbhDVPY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:24:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619105033; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Y9p6wqTZTpAuq62nsYavt+Zc+iTEKfVNYhmCcTHSvQ=;
+        b=ZKyT31pPnQGrhTHT6hyXQqNpkpth0+n/Q0Y7MkQ6POt6kyMIBgWt43T/8NdOPLBBsa/q/X
+        /JunfNY+sdKkGqDNYsOCgMMJOq1R2B/5DPIfZNdbJlg+WaavWcW0Vztxkq5eqe95bwpsa8
+        lqITg0PyYLTCyuqvrYD4RbK0ptvemHM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 77B9BAD8A;
+        Thu, 22 Apr 2021 15:23:53 +0000 (UTC)
+Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
+ features
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+References: <20210422151007.2205-1-jgross@suse.com>
+ <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+ <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <08e3fcf1-dabc-c550-f76c-47a78a12274b@suse.com>
+Date:   Thu, 22 Apr 2021 17:23:53 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210422133518.1835403-1-arnd@kernel.org> <20210422151451.hp6w2jlgdt53lq4j@skbuf>
-In-Reply-To: <20210422151451.hp6w2jlgdt53lq4j@skbuf>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 22 Apr 2021 17:22:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2FvQer9ryjWyeXpHg=umcV2_aULN04mA4w+zeKNGbhcA@mail.gmail.com>
-Message-ID: <CAK8P3a2FvQer9ryjWyeXpHg=umcV2_aULN04mA4w+zeKNGbhcA@mail.gmail.com>
-Subject: Re: [PATCH] [net-next] net: enetc: fix link error again
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 5:15 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->> The problem is that the enetc Makefile is not actually used for
->> the ierb module if that is the only built-in driver in there
->> and everything else is a loadable module.
->
-> I feel so bad that I'm incapable of troubleshooting even the most
-> elementary Kconfig issues... I did not even once think of opening that
-> Makefile.
->
-> Acked-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+On 22.04.2021 17:17, Juergen Gross wrote:
+> On 22.04.21 17:16, Jan Beulich wrote:
+>> On 22.04.2021 17:10, Juergen Gross wrote:
+>>> Some features of Xen can be assumed to be always present, so add a
+>>> central check to verify this being true and remove the other checks.
+>>>
+>>> Juergen Gross (3):
+>>>    xen: check required Xen features
+>>>    xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv guests
+>>>    xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guests
+>>
+>> I wonder whether it's a good idea to infer feature presence from
+>> version numbers. If (at some point in the past) you had inferred
+>> gnttab v2 being available by version, this would have been broken
+>> by its availability becoming controllable by a command line option
+>> in Xen.
+> 
+> I'm testing the feature to be really present when booting and issue a
+> message if it is not there.
 
-No worries, this is a particularly nasty way Kconfig can go wrong, I thing
-most kernel developers would struggle with this.
+And how does this help if the feature really isn't there yet other code
+assumes it is?
 
-       Arnd
+Jan
