@@ -2,127 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59C536817E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B9E368178
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 15:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhDVNer convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 09:34:47 -0400
-Received: from de-smtp-2.mimecast.com ([62.140.10.21]:56856 "EHLO
-        de-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236424AbhDVNem (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:34:42 -0400
-X-Greylist: delayed 543 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 09:34:41 EDT
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com
- (mail-lo2gbr01lp2058.outbound.protection.outlook.com [104.47.21.58]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-4-EQrGWWPOPj-ObeQanSyV-Q-1;
- Thu, 22 Apr 2021 15:18:07 +0200
-X-MC-Unique: EQrGWWPOPj-ObeQanSyV-Q-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWLP265MB2227.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:65::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.20; Thu, 22 Apr
- 2021 13:18:06 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4042.024; Thu, 22 Apr 2021
- 13:18:06 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-CC:     "pali@kernel.org" <pali@kernel.org>,
-        "huyue2@yulong.com" <huyue2@yulong.com>,
-        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>
-Subject: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
-Thread-Topic: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
-Thread-Index: AQHXN3kp02z8n6vh+UmW3TCHxA6qwg==
-Date:   Thu, 22 Apr 2021 13:18:06 +0000
-Message-ID: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 48f29805-56d5-48a4-37e9-08d905911116
-x-ms-traffictypediagnostic: CWLP265MB2227:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CWLP265MB222783FD5F922708675D84DBC4469@CWLP265MB2227.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:9508
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: /rHwmNMum3/Kb2ygps0elmbvuIa5+eFFrJPzuE5XI8n7Py+yoP6e5qr+MHflOhQ0LDY6nOwXN9AVLsBNZFNnMBkfSd+wajix3guO8g9uGB/5+Evik7lLQ5YukuFza1D2ulabODPeo76VbdlU/SLLpzeUPiNPCJgX2FrFixeKvXPwpX+/dGS/9/fiCmbl4lGtf27ao/zKLSLa7NnRgTKHXCfquC3kK/Fip7UUvLZXR7Npv1KeKyvHbX373lcodbvrGHqgRPoPHE8JlknfYPydoSZ/OVtaLt9NOadU6iY55csPEy9DvQEVEw9CjEqFHimdYRH3T+F7z6YNDnLZqdajhdjDfWy9vAseidvbOGd9//BkcQRWWk+afZMN1gOOvgqPPXKLu3Cwe3hW7atbLtuSqi73KD7cv8uGTMaR9QlC7FDvHjbEj/LsLmyprhxHK1OWVqcPWHDxK2EG7zcQbQczRA4laY8kAZrEsolcfiytXDgH1ZzKBL00JPKHlM2MtDpPJgjg8DM3OEQGhrNSiyIT4v5rATKxuIpd0VMhNlDH3ZdATYdIQWaYhS4k7/NA6TSkNJU3hF5I+wfMTYwlqiILjQEVev1ZPHzhQTtsiAHRWUA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(39830400003)(396003)(376002)(346002)(136003)(316002)(71200400001)(478600001)(64756008)(5660300002)(76116006)(9686003)(52536014)(122000001)(54906003)(66476007)(83380400001)(186003)(66556008)(33656002)(66946007)(7696005)(66446008)(91956017)(4326008)(8676002)(55016002)(26005)(86362001)(8936002)(38100700002)(6506007)(2906002)(110136005);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata: Q4+eKk3xRBTZQI7rV0MSM4ybS6x40B0BAS5rFFkqXLSN+V1DNOq1pezyvt9dBvfgcUXMETpv7UzwG6PJ6Fq938/H/NOuY0ZAIH1BqLZCnQZzp1m2+TThwESGtbJV87C9jjeAfKfsgZ3Jlczs4OBRWvlSUFc25+snzh9dwervVJk5jHHWzgkEbDFjDO/0KQUB5lx3y4Yl/yVysK/9ClkdUifvnAe/QSY8qvsQA9uC/v8CPlIys48uAnFpOolSEx25B0rcl46XBPa6+4qY84nn38IAxB0a8gNRvFH2kfK3MPGAp+XirfMgyGHWOMTbJ/zFJdYO/M5fhigzJ8SzHpysuRvhbebtPtyIVzf7QsX0C4h90N1SvWDl2aNbsm7OR7qWx9NLqm2aw44nwZmelE0rzS+7PA39gsTiQ6RquKIiwQRVbcX3In13/vV8wJqlOJSs/EOIpH4hIgKENJ9IOqNJyTbuSzeAv2tYFAjC1QDrhrQlj+QVwlKDoT66rvq2LNs8Z0cPDGPyFK65wwbVKfCBE3Sv62MJFfx45qtHDaZcUpFrey9KDgm+NW4uUhBGQCu2NDAVEL226oeyLC0WERaS/OoVgLq4adk1zzVUXSJ9fwHWUFFC/lr/Oj9aACbVnL9iI3XZvUd6BlE+l+IaXrCDVjQsUtXXtBpXztnSa42teaMEZNYii7hv6tz52yN2TSmF5LKFAgsK6L/5Haz5ECIS5wfCCSIiS7imgCcfUmCvC+Q=
+        id S236269AbhDVNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 09:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230005AbhDVNdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:33:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D15761452;
+        Thu, 22 Apr 2021 13:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619098348;
+        bh=HaYg8AntHpv2moTHkNC8VL3gq+V6YC01MWWFKsYaKOE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gIsPB8NKiJ3Q/siV51BwnYH1WT7Diwcj95eKIue6AKimohPmlbiw+DweMFMMnb9yG
+         DmuEod5nzMGepdF/FGr+bPa2lrX3F8N7h5vieS0RgMUnG1p+aLwd9xSAG263Xt+e9x
+         udMOPFz2/PsFcNSd6eVq9RPE8lDIhvrZDbyDzpVqa2QjRh42IT2BDdsmoOdxaI0QxG
+         lingcKYhyRgQ7pRRcn5S36Zs9ShclgnJAxbDq4B+czIVLYhiav/CZEDQcJgMPGQakR
+         sAG3xiMNBvjUO5N6q/dgmv1BMEq/ZkTWcS/PWMeRURHR2YxsQkgh98Ea7ZRBXkgM5/
+         bj/1bkO0YLHrA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Marco Cesati <marcocesati@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: avoid bogus gcc warning
+Date:   Thu, 22 Apr 2021 15:32:04 +0200
+Message-Id: <20210422133219.1689027-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48f29805-56d5-48a4-37e9-08d905911116
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2021 13:18:06.4153
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qLvYbNX7k2pwerQkKxkmn/g+52iI+355Pym5oCkYIy4fTiuYo2kuX2g5CD0AiTQF3PBYjgdc5zycArb9YnOzrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB2227
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore the reported capacity if the card otherwise reports UHS support.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Currently SDSC cards reporting UHS support except for the CCS do not run
-through the voltage switch.
-While strictly speaking a SDSC card cannot support UHS in compliance
-with the standard, there is no good reason to throttle them that way.
-Especially for pSLCs in practice such cards benefit greatly by this patch,
-as they can be new and UHS supporting, but must not lie about their CCS.
-The behaviour of linux-mmc for SDSC is deviating from the standard anyway
-in such a case, as the card is treated as UHS card not supporting the
-voltage switch in general.
-Such a card will come up as
-mmc0: new ultra high speed SDR25 SD card at address 0001.
-Thus the subsystem will support CMD23 and others to the card.
-But if we deviate from the standard anyway, then we might as well
-not throttle SDSC to 25MB/s.
+gcc gets confused by some of the type casts and produces an
+apparently senseless warning about an out-of-bound memcpy to
+an unrelated array in the same structure:
 
-Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c: In function 'rtw_cfg80211_ap_set_encryption':
+cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
+In file included from drivers/staging/rtl8723bs/include/drv_types.h:32,
+                 from drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:10:
+drivers/staging/rtl8723bs/include/rtw_security.h:98:15: note: at offset [184, 4264] into destination object 'dot11AuthAlgrthm' of size 4
+   98 |         u32   dot11AuthAlgrthm;         /*  802.11 auth, could be open, shared, 8021x and authswitch */
+      |               ^~~~~~~~~~~~~~~~
+cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
+drivers/staging/rtl8723bs/include/rtw_security.h:98:15: note: at offset [264, 4344] into destination object 'dot11AuthAlgrthm' of size 4
+
+This is a known gcc bug, and the patch here is only a workaround,
+but the approach of using a temporary variable to hold a pointer
+to the key also improves readability in addition to avoiding the
+warning, so overall this should still help.
+
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99673
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/mmc/core/sd.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 27 ++++++++++---------
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    | 21 ++++++++-------
+ 2 files changed, 27 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 6fa51a6ed058..281ca2da8e0b 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
- 		return err;
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 89a21eb63c0a..72ce3a3e7d5f 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -523,6 +523,9 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct security_priv *psecuritypriv =  &(padapter->securitypriv);
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
++	char *grpkey = padapter->securitypriv.dot118021XGrpKey[param->u.crypt.idx].skey;
++	char *txkey = padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey;
++	char *rxkey = padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey;
  
- 	/*
--	 * In case CCS and S18A in the response is set, start Signal Voltage
--	 * Switch procedure. SPI mode doesn't support CMD11.
-+	 * In case S18A in the response is set, start Signal Voltage Switch
-+	 * procedure. SPI mode doesn't support CMD11.
- 	 */
--	if (!mmc_host_is_spi(host) && rocr &&
--	   ((*rocr & 0x41000000) == 0x41000000)) {
-+	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
- 		err = mmc_set_uhs_voltage(host, pocr);
- 		if (err == -EAGAIN) {
- 			retries--;
+ 	param->u.crypt.err = 0;
+ 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
+@@ -605,7 +608,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 		{
+ 			if (strcmp(param->u.crypt.alg, "WEP") == 0)
+ 			{
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 				if (param->u.crypt.key_len == 13)
+@@ -618,12 +621,12 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 			{
+ 				psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 				/* set mic key */
+-				memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+-				memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++				memcpy(txkey, &(param->u.crypt.key[16]), 8);
++				memcpy(rxkey, &(param->u.crypt.key[24]), 8);
+ 
+ 				psecuritypriv->busetkipkey = true;
+ 
+@@ -632,7 +635,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 			{
+ 				psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 			}
+ 			else
+ 			{
+@@ -659,7 +662,6 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 		goto exit;
+ 
+ 	}
+-
+ 	if (psecuritypriv->dot11AuthAlgrthm == dot11AuthAlgrthm_8021X && psta) /*  psk/802_1x */
+ 	{
+ 		if (check_fwstate(pmlmepriv, WIFI_AP_STATE))
+@@ -709,7 +711,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 			{
+ 				if (strcmp(param->u.crypt.alg, "WEP") == 0)
+ 				{
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 					if (param->u.crypt.key_len == 13)
+@@ -721,12 +723,12 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 				{
+ 					psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 					/* set mic key */
+-					memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+-					memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++					memcpy(txkey, &(param->u.crypt.key[16]), 8);
++					memcpy(rxkey, &(param->u.crypt.key[24]), 8);
+ 
+ 					psecuritypriv->busetkipkey = true;
+ 
+@@ -735,7 +737,7 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 				{
+ 					psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 				}
+ 				else
+ 				{
+@@ -762,7 +764,6 @@ static int rtw_cfg80211_ap_set_encryption(struct net_device *dev, struct ieee_pa
+ 		}
+ 
+ 	}
+-
+ exit:
+ 
+ 	return ret;
+@@ -885,8 +886,10 @@ static int rtw_cfg80211_set_encryption(struct net_device *dev, struct ieee_param
+ 					if (strcmp(param->u.crypt.alg, "TKIP") == 0 || strcmp(param->u.crypt.alg, "CCMP") == 0)
+ 					{
+ 						memcpy(padapter->securitypriv.dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++#if 1
+ 						memcpy(padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+ 						memcpy(padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++#endif
+ 	                                        padapter->securitypriv.binstallGrpkey = true;
+ 
+ 						padapter->securitypriv.dot118021XGrpKeyid = param->u.crypt.idx;
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+index 816033b6847c..af77f03df7d0 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+@@ -2963,6 +2963,9 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	struct security_priv *psecuritypriv = &(padapter->securitypriv);
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
++	char *txkey = padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey;
++	char *rxkey = padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey;
++	char *grpkey = psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey;
+ 
+ 	param->u.crypt.err = 0;
+ 	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
+@@ -3064,7 +3067,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 	if (!psta && check_fwstate(pmlmepriv, WIFI_AP_STATE)) { /*  group key */
+ 		if (param->u.crypt.set_tx == 1) {
+ 			if (strcmp(param->u.crypt.alg, "WEP") == 0) {
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 				if (param->u.crypt.key_len == 13)
+@@ -3073,11 +3076,11 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 			} else if (strcmp(param->u.crypt.alg, "TKIP") == 0) {
+ 				psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 				/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 				/* set mic key */
+-				memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
++				memcpy(txkey, &(param->u.crypt.key[16]), 8);
+ 				memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
+ 
+ 				psecuritypriv->busetkipkey = true;
+@@ -3086,7 +3089,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 			else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
+ 				psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++				memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 			} else {
+ 				psecuritypriv->dot118021XGrpPrivacy = _NO_PRIVACY_;
+ 			}
+@@ -3142,7 +3145,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 
+ 			} else { /* group key??? */
+ 				if (strcmp(param->u.crypt.alg, "WEP") == 0) {
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					psecuritypriv->dot118021XGrpPrivacy = _WEP40_;
+ 					if (param->u.crypt.key_len == 13)
+@@ -3150,19 +3153,19 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
+ 				} else if (strcmp(param->u.crypt.alg, "TKIP") == 0) {
+ 					psecuritypriv->dot118021XGrpPrivacy = _TKIP_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 
+ 					/* DEBUG_ERR("set key length :param->u.crypt.key_len =%d\n", param->u.crypt.key_len); */
+ 					/* set mic key */
+-					memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
+-					memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
++					memcpy(txkey, &(param->u.crypt.key[16]), 8);
++					memcpy(rxkey, &(param->u.crypt.key[24]), 8);
+ 
+ 					psecuritypriv->busetkipkey = true;
+ 
+ 				} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
+ 					psecuritypriv->dot118021XGrpPrivacy = _AES_;
+ 
+-					memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
++					memcpy(grpkey, param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
+ 				} else {
+ 					psecuritypriv->dot118021XGrpPrivacy = _NO_PRIVACY_;
+ 				}
 -- 
-2.31.1
-
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+2.29.2
 
