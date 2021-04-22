@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5D2367D20
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795BA367D23
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 11:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235518AbhDVJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 05:03:36 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57848 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhDVJDe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 05:03:34 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M8evtu061731;
-        Thu, 22 Apr 2021 09:02:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=luKBrUqgQXuE6ecf9zdzvMeJVaBMF+rgQS18TT6YaPA=;
- b=rj5IDy98a1ehCtAM80zC/x0IcJiL/RU5XYtd39WlRaw4mq638nti628pFWfEZ2reVLa8
- TFf62VNjYkXNYjtwqvohr+SM3kxRfapDYyXbRdveDyNrWLrOb2okwKKtRdDVabvwJFqM
- mk3yhSiy5cdL+T07A8iMA1ni5GZmb4mhvkR+uZpQ0QV0mU1lNRZKOwK02df5MkwzxWs8
- 1akpvtqRId4zjOlvIWpfvk86yHfsFiybynPegOPAx4T/YbzdXEdC1o6RQq3TwAQRvsVK
- wHU31F+/K+BwDC6mNmxJ+j7lccu1jemHF/P1v9AJ4YO0oX68qDEnQYSR4AgpKkYzBOGu cw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37yveamdgf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 09:02:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13M9038W156046;
-        Thu, 22 Apr 2021 09:02:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 3809evjx53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 09:02:37 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13M92bRp170135;
-        Thu, 22 Apr 2021 09:02:37 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 3809evjx4s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 09:02:37 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13M92Zp4019604;
-        Thu, 22 Apr 2021 09:02:35 GMT
-Received: from mwanda (/10.175.205.56)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Apr 2021 09:02:35 +0000
-Date:   Thu, 22 Apr 2021 12:02:29 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        "Jon Medhurst (Tixy)" <tixy@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] firmware: arm_scpi: prevent ternary sign expansion bug
-Message-ID: <YIE7pdqV/h10tEAK@mwanda>
+        id S235483AbhDVJEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 05:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230316AbhDVJEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 05:04:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B1F461428;
+        Thu, 22 Apr 2021 09:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619082222;
+        bh=kOWQRTM3XWNMCkgPqM3/yz/0ND8MnHE7ApbWuhF7kNk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KI5I1b5+fKyD+23wRiFyiS2DQTo12S0lIBGNugxJwRjitycdwkXOGO+cl8XFLalL9
+         9N2QmoRYyF2lHbpNoSYXPnrRSL4VSg6FnpsGWMUzzILh3EnQFo4OcA7pIEOBlExgkr
+         ynEUXWwaA1b6tNgD6e85+sCz0DFKzp3/Fz532PPpuE2amH6cfpC0+TaIFsfAwGtRH2
+         JhUxuNlLqu0U+9MxSvy3ggKdRFZwWz6BN2nHhKiXzzbUS0QdVRFL3EuE8ZLuQCB6wF
+         KOQHiSQIv8th9BpI2F3kQ7WE7/7C7e3fa0If6roAejLx6CQsiABnNJ7D2L5+85Phg7
+         TosFc5lfGG7Rw==
+Date:   Thu, 22 Apr 2021 11:03:36 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kangjie Lu <kjlu@umn.edu>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Niklas =?UTF-8?B?U8O2ZGVybHVuZA==?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Subject: Re: [PATCH 073/190] Revert "media: rcar_drif: fix a memory
+ disclosure"
+Message-ID: <20210422110336.1d67678d@coco.lan>
+In-Reply-To: <c8dbe373-8910-5b34-ce71-cad1bcab2d71@xs4all.nl>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+        <20210421130105.1226686-74-gregkh@linuxfoundation.org>
+        <CAMuHMdVFf3_jo+oGPm4THhan3bVZx99omkG1LnAp=B4JTKhChA@mail.gmail.com>
+        <YICXdauWkNRezHgX@pendragon.ideasonboard.com>
+        <CAMuHMdXN_j49MeEv2wUW5JOeYbJYU7Gj1FtEv7s744mo0x1rWA@mail.gmail.com>
+        <c8dbe373-8910-5b34-ce71-cad1bcab2d71@xs4all.nl>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: 6Sb26I_pnSMvX2LJsvaeWNeSbcTLo0wR
-X-Proofpoint-ORIG-GUID: 6Sb26I_pnSMvX2LJsvaeWNeSbcTLo0wR
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9961 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- adultscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104220073
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How type promotion works in ternary expressions is a bit tricky.
-The problem is that scpi_clk_get_val() returns longs, "ret" is a int
-which holds a negative error code, and le32_to_cpu() is an unsigned int.
-We want the negative error code to be cast to a negative long.  But
-because le32_to_cpu() is an u32 then "ret" is type promoted to u32 and
-becomes a high positive and then it is promoted to long and it is still
-a high positive value.
+Em Thu, 22 Apr 2021 09:29:36 +0200
+Hans Verkuil <hverkuil-cisco@xs4all.nl> escreveu:
 
-Fix this by getting rid of the ternary.
+> On 22/04/2021 08:57, Geert Uytterhoeven wrote:
+> > Hi Laurent,
+> > 
+> > On Wed, Apr 21, 2021 at 11:22 PM Laurent Pinchart
+> > <laurent.pinchart@ideasonboard.com> wrote:  
+> >> On Wed, Apr 21, 2021 at 08:58:22PM +0200, Geert Uytterhoeven wrote:  
+> >>> On Wed, Apr 21, 2021 at 3:06 PM Greg Kroah-Hartman wrote:  
+> >>>> This reverts commit d39083234c60519724c6ed59509a2129fd2aed41.
+> >>>>
+> >>>> Commits from @umn.edu addresses have been found to be submitted in "bad
+> >>>> faith" to try to test the kernel community's ability to review "known
+> >>>> malicious" changes.  The result of these submissions can be found in a
+> >>>> paper published at the 42nd IEEE Symposium on Security and Privacy
+> >>>> entitled, "Open Source Insecurity: Stealthily Introducing
+> >>>> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> >>>> of Minnesota) and Kangjie Lu (University of Minnesota).
+> >>>>
+> >>>> Because of this, all submissions from this group must be reverted from
+> >>>> the kernel tree and will need to be re-reviewed again to determine if
+> >>>> they actually are a valid fix.  Until that work is complete, remove this
+> >>>> change to ensure that no problems are being introduced into the
+> >>>> codebase.
+> >>>>
+> >>>> Cc: Kangjie Lu <kjlu@umn.edu>
+> >>>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> >>>> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >>>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> >>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>  
+> >>>
+> >>> Upon a second look, I still see nothing wrong with the original commit.
+> >>> However, as I'm no v4l expert, I'd like to defer to the experts for final
+> >>> judgement.  
+> >>
+> >> It seems fine to me, but it also seems unneeded, as the V4L2 core clears
+> >> the whole f->fmt union before calling this operation. The revert will
+> >> this improve performance very slightly.  
+> > 
+> > Hmm, that means very recent commit f12b81e47f48940a ("media: core
+> > headers: fix kernel-doc warnings") is not fully correct, as it added
+> > kerneldoc stating this is the responsibility of the driver:
+> > 
+> > + * @reserved:          drivers and applications must zero this array  
+> 
+> Actually, it is the V4L2 core used by the driver that zeroes this. So
+> drivers don't need to do this, it's done for them. It used to be the
+> responsibility of the driver itself, but this was all moved to the core
+> framework a long time ago since, duh!, drivers always forgot this :-)
+> 
+> > 
+> > Anyway, it doesn't look like this umn.edu patch introduced a bug.  
+> 
+> I haven't seen any bugs introduced by the media patches from umn.edu.
 
-Fixes: 8cb7cf56c9fe ("firmware: add support for ARM System Control and Power Interface(SCPI) protocol")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/firmware/arm_scpi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Greg,
 
-diff --git a/drivers/firmware/arm_scpi.c b/drivers/firmware/arm_scpi.c
-index d0dee37ad522..3bf61854121d 100644
---- a/drivers/firmware/arm_scpi.c
-+++ b/drivers/firmware/arm_scpi.c
-@@ -552,8 +552,10 @@ static unsigned long scpi_clk_get_val(u16 clk_id)
- 
- 	ret = scpi_send_message(CMD_GET_CLOCK_VALUE, &le_clk_id,
- 				sizeof(le_clk_id), &rate, sizeof(rate));
-+	if (ret)
-+		return ret;
- 
--	return ret ? ret : le32_to_cpu(rate);
-+	return le32_to_cpu(rate);
- }
- 
- static int scpi_clk_set_val(u16 clk_id, unsigned long rate)
--- 
-2.30.2
+I also double-checked all media revert patches from:
 
+	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git umn.edu-reverts
+
+currently on this patch:
+	6f4747a872ad Revert "ethtool: fix a potential missing-check bug"
+
+That's a summary of what I found:
+
+All of those should be dropped from your tree:
+
+	84fdb5856edd	Revert "media: si2165: fix a missing check of return value"
+	867043f2206e	Revert "media: video-mux: fix null pointer dereferences"
+	78ae4b621297	Revert "media: cx231xx: replace BUG_ON with recovery code"
+	5be328a55817	Revert "media: saa7146: Avoid using BUG_ON as an assertion"
+	81ce83158d22	Revert "media: davinci/vpfe_capture.c: Avoid BUG_ON for register failure"
+	3319b39504b8	Revert "media: media/saa7146: fix incorrect assertion in saa7146_buffer_finish"
+	b393f7cb29a2	Revert "media: rcar-vin: Fix a reference count leak."
+	197bc5d03682	Revert "media: rcar-vin: Fix a reference count leak."
+	2fd9cf68bbb6	Revert "media: rockchip/rga: Fix a reference count leak."
+	d1e4614eca24	Revert "media: platform: fcp: Fix a reference count leak."
+	416e8a6ae07f	Revert "media: camss: Fix a reference count leak."
+	06b793ae497b	Revert "media: s5p-mfc: Fix a reference count leak"
+	8f9fc14a7cc9	Revert "media: stm32-dcmi: Fix a reference count leak"
+	556e1f86ba24	Revert "media: ti-vpe: Fix a missing check and reference count leak"
+	5f5b1722ad0d	Revert "media: exynos4-is: Fix a reference count leak"
+	f4c758c6c1cb	Revert "media: exynos4-is: Fix a reference count leak due to pm_runtime_get_sync"
+	beb717878c73	Revert "media: exynos4-is: Fix several reference count leaks due to pm_runtime_get_sync
+	7066ec748bfd	Revert "media: sti: Fix reference count leaks"
+	cdd117093b19	Revert "media: st-delta: Fix reference count leak in delta_run_work"
+
+As, after my re-check, they all seem to be addressing real issues. So,
+NACK on those.
+
+This patch (073/190):
+
+	899ab4671bc0	Revert "media: rcar_drif: fix a memory disclosure"
+
+While it doesn't hurt, it is useless, as the media core already
+prevents memory disclosure. So, it should be reverted.
+
+So, for patch 073/190:
+
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Thanks,
+Mauro
