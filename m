@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01E0367E92
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AE7367E94
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 12:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbhDVKZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 06:25:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13122 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235882AbhDVKY7 (ORCPT
+        id S235969AbhDVKZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 06:25:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29094 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235894AbhDVKZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:24:59 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MA3WrQ121685;
-        Thu, 22 Apr 2021 06:24:07 -0400
+        Thu, 22 Apr 2021 06:25:03 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13MA2mG6058566;
+        Thu, 22 Apr 2021 06:24:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=NwdiCSoWEIdzQJvlCZNtw8G55JGvITpjDvKPx4SiPzc=;
- b=sPWA8ZVCuWR4KIDJHv0HKH5knUlp30l6M18eO9lENd+M8FpWQVc+9GEj0cIGwli+Q+eA
- bGq7HuKK45rcJooq0WhM0TfS1gFraflJyyDd4PdGTmsq/mYQZ/MjtKr/8vZj+HiLRnHx
- eP1G265tM9j45YwTrV1pSvsDd7vO1eO8Yo+x3vc3/M4M/ICCEasxXrqW82MMZJpj4k+2
- TBTyXlPPl20x8bnLVV+Edi5axTSG3DLFgwHZdJM0819NgHdL05TiKj7BERRHI9/3HtVd
- l8qF67KDOLR0kvjF7tncVvBSQtLuTwqKdgsS+dFHgGQ0/cqpxHM2IAX82O+OfKxDXpzZ eQ== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3835n0367f-1
+ bh=K3w+q/f9wEPlYJ8QDR9RzlNfkWtMBB1ZfgOy5zZGMQQ=;
+ b=Pr8styM75fXaMYCrQwtAggKJj97ZgSJPjyS80PDC8x43/Cx65ZLELxh/KiahNXsYCA/n
+ GfuEHSEf8iX09tdw6qOAbgh1k/975HGVWhi6gevl2xdZDCY4LjBVqIE3/IZ8EmHDtIOp
+ hMxC8Gr57uktxPPCimNbbAwZD5X6aFvqNEzEQdjmHzrMiUWEy4NAstkeOOHDYOcP9kCs
+ S0hZDWi9ua2JxLIQwvVroj33TfejcCxwrTpPjdU4imcE/FrANIGJd0NZvpXzX+rgFZ+n
+ uYcZ6G+kJWug4+8XY4lF6Do42nAKV8IlsB2UEvuV4Gc73+e9YMehxuiYoJ3rCB3fYTdW pQ== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3835xxjs9n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 06:24:07 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13MANsZ7003309;
-        Thu, 22 Apr 2021 10:24:05 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 37yqa89hrc-1
+        Thu, 22 Apr 2021 06:24:10 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13MAN4Zh025271;
+        Thu, 22 Apr 2021 10:24:08 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 380hbf19py-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Apr 2021 10:24:05 +0000
+        Thu, 22 Apr 2021 10:24:08 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13MAO37n32113050
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13MANhCd26870100
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 10:24:03 GMT
+        Thu, 22 Apr 2021 10:23:43 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F39E7AE055;
-        Thu, 22 Apr 2021 10:24:02 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 58CE6AE04D;
+        Thu, 22 Apr 2021 10:24:06 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18AF5AE053;
-        Thu, 22 Apr 2021 10:24:00 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 5C2F5AE045;
+        Thu, 22 Apr 2021 10:24:03 +0000 (GMT)
 Received: from saptagiri.in.ibm.com (unknown [9.199.63.107])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Apr 2021 10:23:59 +0000 (GMT)
+        Thu, 22 Apr 2021 10:24:03 +0000 (GMT)
 From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 To:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
@@ -61,30 +61,32 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Gautham R Shenoy <ego@linux.vnet.ibm.com>,
         Parth Shah <parth@linux.ibm.com>
-Subject: [PATCH 07/10] sched/fair: Remove ifdefs in waker_affine_idler_llc
-Date:   Thu, 22 Apr 2021 15:53:23 +0530
-Message-Id: <20210422102326.35889-8-srikar@linux.vnet.ibm.com>
+Subject: [PATCH 08/10] sched/fair: Dont iterate if no idle CPUs
+Date:   Thu, 22 Apr 2021 15:53:24 +0530
+Message-Id: <20210422102326.35889-9-srikar@linux.vnet.ibm.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
 References: <20210422102326.35889-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: VArBeo0AGkIlGlzrzk5f6zHdjPCDQs3P
-X-Proofpoint-GUID: VArBeo0AGkIlGlzrzk5f6zHdjPCDQs3P
+X-Proofpoint-GUID: x3x5JBK00Z-v1h0AMdtUpcsLO3xqeMDr
+X-Proofpoint-ORIG-GUID: x3x5JBK00Z-v1h0AMdtUpcsLO3xqeMDr
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-22_04:2021-04-21,2021-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- mlxscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0
- mlxlogscore=776 malwarescore=0 phishscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104220084
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 suspectscore=0 impostorscore=0 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=922 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104220080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that idle callbacks are updating nr_busy_cpus, remove ifdefs in
-wake_affine_idler_llc
+Now that the nr_busy_cpus for a LLC are updated in idle callbacks,
+scheduler can detect if all threads of a LLC are busy. In such cases, it
+can avoid searching for idle CPUs in the LLC that can run the wakee
+thread.
 
 Cc: LKML <linux-kernel@vger.kernel.org>
 Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
@@ -98,39 +100,107 @@ Cc: Vincent Guittot <vincent.guittot@linaro.org>
 Cc: Rik van Riel <riel@surriel.com>
 Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 ---
- kernel/sched/fair.c | 4 ----
- 1 file changed, 4 deletions(-)
+ kernel/sched/fair.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 00bcf1d861b5..8f752f77b76f 100644
+index 8f752f77b76f..db5dc9875e4c 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -5870,9 +5870,7 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
+@@ -715,7 +715,7 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ #include "pelt.h"
+ #ifdef CONFIG_SMP
  
- static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_cpu, int sync)
+-static int select_idle_sibling(struct task_struct *p, int prev_cpu, int cpu);
++static int select_idle_sibling(struct task_struct *p, int prev_cpu, int cpu, bool idle);
+ static unsigned long task_h_load(struct task_struct *p);
+ static unsigned long capacity_of(int cpu);
+ 
+@@ -5868,7 +5868,8 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
+ 	return this_eff_load < prev_eff_load ? this_cpu : nr_cpumask_bits;
+ }
+ 
+-static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_cpu, int sync)
++static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_cpu,
++				int sync, bool *idle)
  {
--#ifdef CONFIG_NO_HZ_COMMON
  	int pnr_busy, pllc_size, tnr_busy, tllc_size;
--#endif
  	struct sched_domain_shared *tsds, *psds;
- 	int diff;
+@@ -5913,8 +5914,10 @@ static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_c
+ 	tllc_size = per_cpu(sd_llc_size, this_cpu);
+ 	pllc_size = per_cpu(sd_llc_size, prev_cpu);
  
-@@ -5909,7 +5907,6 @@ static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_c
+-	if (pnr_busy == pllc_size && tnr_busy == tllc_size)
++	if (pnr_busy == pllc_size && tnr_busy == tllc_size) {
++		*idle = false;
+ 		return nr_cpumask_bits;
++	}
+ 
+ 	diff = pnr_busy * tllc_size - tnr_busy * pllc_size;
+ 	if (diff > 0)
+@@ -5926,7 +5929,7 @@ static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_c
+ }
+ 
+ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+-		       int this_cpu, int prev_cpu, int sync)
++		       int this_cpu, int prev_cpu, int sync, bool *idle)
+ {
+ 	bool share_caches = cpus_share_cache(prev_cpu, this_cpu);
+ 	int target = nr_cpumask_bits;
+@@ -5935,7 +5938,7 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+ 		target = wake_affine_idle(this_cpu, prev_cpu);
+ 
+ 	else if (sched_feat(WA_IDLER_LLC) && !share_caches)
+-		target = wake_affine_idler_llc(p, this_cpu, prev_cpu, sync);
++		target = wake_affine_idler_llc(p, this_cpu, prev_cpu, sync, idle);
+ 
+ 	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
+ 		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
+@@ -6333,7 +6336,7 @@ static inline bool asym_fits_capacity(int task_util, int cpu)
+ /*
+  * Try and locate an idle core/thread in the LLC cache domain.
+  */
+-static int select_idle_sibling(struct task_struct *p, int prev, int target)
++static int select_idle_sibling(struct task_struct *p, int prev, int target, bool idle)
+ {
+ 	struct sched_domain *sd;
+ 	unsigned long task_util;
+@@ -6410,6 +6413,9 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
  		}
  	}
  
--#ifdef CONFIG_NO_HZ_COMMON
- 	tnr_busy = atomic_read(&tsds->nr_busy_cpus);
- 	pnr_busy = atomic_read(&psds->nr_busy_cpus);
++	if (!idle)
++		return target;
++
+ 	sd = rcu_dereference(per_cpu(sd_llc, target));
+ 	if (!sd)
+ 		return target;
+@@ -6818,6 +6824,7 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+ 	int want_affine = 0;
+ 	/* SD_flags and WF_flags share the first nibble */
+ 	int sd_flag = wake_flags & 0xF;
++	bool idle = true;
  
-@@ -5924,7 +5921,6 @@ static int wake_affine_idler_llc(struct task_struct *p, int this_cpu, int prev_c
- 		return this_cpu;
- 	if (diff < 0)
- 		return prev_cpu;
--#endif /* CONFIG_NO_HZ_COMMON */
+ 	if (wake_flags & WF_TTWU) {
+ 		record_wakee(p);
+@@ -6841,7 +6848,7 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+ 		if (want_affine && (tmp->flags & SD_WAKE_AFFINE) &&
+ 		    cpumask_test_cpu(prev_cpu, sched_domain_span(tmp))) {
+ 			if (cpu != prev_cpu)
+-				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync);
++				new_cpu = wake_affine(tmp, p, cpu, prev_cpu, sync, &idle);
  
- 	return nr_cpumask_bits;
- }
+ 			sd = NULL; /* Prefer wake_affine over balance flags */
+ 			break;
+@@ -6858,7 +6865,7 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
+ 		new_cpu = find_idlest_cpu(sd, p, cpu, prev_cpu, sd_flag);
+ 	} else if (wake_flags & WF_TTWU) { /* XXX always ? */
+ 		/* Fast path */
+-		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
++		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu, idle);
+ 
+ 		if (want_affine)
+ 			current->recent_used_cpu = cpu;
 -- 
 2.18.2
 
