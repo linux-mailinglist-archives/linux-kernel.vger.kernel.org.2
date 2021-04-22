@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBA4368667
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CDD368687
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236858AbhDVSMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236459AbhDVSM1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:12:27 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A236DC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:11:51 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id p2so17948738pgh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zOMECuegHtcnsOJsS2wVXJn/DWHnBqjlDGsQSl/szUM=;
-        b=ZM5n2Aq3FEeQFiME92sJqLFtyDxwACpCOvO7R+riBUfsI6FF2pOovYWEL8rUf7yu+z
-         b5PSN28LpI1YNx4znYaoZoxlw7qST4AAkqHlLQ4elw+XqqMsIsOSUieIImXevuj/iRMf
-         J+NMeG4xkE3cZHBEhlxrJ4Zg1IiYyFf88FBIy1OyRs7wi8n1aTh6jkQC8hWpldOsusQd
-         mY9Z3G1sSWAizF9/IOVLWqw7z5AW99XOoEl7Y5GcMPrtBsAUncVmMox2Ch0CmKPKNDDB
-         dm5DLcYK2bQUTX936PQRzo4uBsYYroypNX1B5oYNRpH23r3cQtN+SGMERQ6HsbwrNq4r
-         wcvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zOMECuegHtcnsOJsS2wVXJn/DWHnBqjlDGsQSl/szUM=;
-        b=hacF6D2LV4oZja/972nXXuLBzb+dWhnWS41HQmsA7gZxlpCm6y0SuVTUgAMCY78HO6
-         P4PNwKjiCASFF0erU7gK/8I+twue7LIyhgDIQslQ7Rtpiigc0E6GnGULkuim+prowwtb
-         OmmReL3MtDos784xGg9WJ2o4C+PJiZ8KVBg2qGBxVPUI17td6qerSSFA8aQCyk66Fit0
-         fIbX8dDteb31zOpzMgyD+6HX3EzoaqWQfr7P7+Yi6w53GaS2cRn4sjfOgo1EdVv2fXuf
-         NeBV+9MNULa6fkV1DipVWm3cqo3JSdUEAIEeKTFtB/TMX0+9iPZCsWLin/JE/ObXvlMZ
-         rorw==
-X-Gm-Message-State: AOAM533xPCyeZMP7JQORLD6LKRC4LWWrQM+nxHmVef3RQd60ZTTdBCpk
-        /RWcGzrCYCMaQK4b/pHyQoYsGg==
-X-Google-Smtp-Source: ABdhPJyUmvXutdMSvrTI4H44P0tv+nMUQbh213KsgOf9jCsnF0xA1ZF6jKYTW8kNrrAT+y3qpR58Bw==
-X-Received: by 2002:aa7:800a:0:b029:250:c8c5:64b3 with SMTP id j10-20020aa7800a0000b0290250c8c564b3mr4432744pfi.23.1619115111014;
-        Thu, 22 Apr 2021 11:11:51 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id ft3sm5556349pjb.54.2021.04.22.11.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 11:11:50 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 18:11:46 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Wei Huang <wei.huang2@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v5 03/15] KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
-Message-ID: <YIG8Ythi0UIbO+Up@google.com>
-References: <20210422021125.3417167-1-seanjc@google.com>
- <20210422021125.3417167-4-seanjc@google.com>
- <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
- <YIGhC/1vlIAZfwzm@google.com>
- <882d8bb4-8d40-1b4d-0742-4a4f2c307e5b@redhat.com>
+        id S238576AbhDVSZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:25:06 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:43435 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236752AbhDVSZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 14:25:05 -0400
+X-Greylist: delayed 543 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 14:25:04 EDT
+Date:   Thu, 22 Apr 2021 20:15:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1619115323;
+        bh=8/2LvTBRUC1FnK6i8quLf9TMNHN3/tPZPaXMbFRIYaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fRicIecdxlcOOVtjntJ6DZjL1ZrISy2Z2uzyEXgvnAplV690f+6Mmul8nbVPivgg4
+         1cC2XAL0XF+UQe8oZhI2r7z/HTvPWM96bi8pesZo7ynSut7ExgtIBsqMLz/IIoEL3j
+         LlRKlXJCXIzzjsPz++ZuzbJmnPF67SzLzayq9UCE=
+From:   thomas@weissschuh.net
+To:     Alexey Klimov <aklimov@redhat.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] platform/x86: gigabyte-wmi: add support for B550M AORUS
+ PRO-P
+Message-ID: <0cd70106-82d8-4f20-b885-9bf15f33c27a@t-8ch.de>
+References: <20210421234156.3942343-1-aklimov@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <882d8bb4-8d40-1b4d-0742-4a4f2c307e5b@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210421234156.3942343-1-aklimov@redhat.com>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+X-PGP-Key: https://t-8ch.de/pubkey.asc
+X-PGP-Key-Fingerprint: 187EF7CE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021, Paolo Bonzini wrote:
-> On 22/04/21 18:15, Sean Christopherson wrote:
-> > > Support for 5-level page tables on NPT is not hard to fix and could be
-> > > tested by patching QEMU.  However, the !NPT case would also have to be fixed
-> > > by extending the PDP and PML4 stacking trick to a PML5.
-> > Isn't that backwards?  It's the nested NPT case that requires the stacking trick.
-> > When !NPT is disabled in L0 KVM, 32-bit guests are run with PAE paging.  Maybe
-> > I'm misunderstanding what you're suggesting.
+Acked-by: Thomas Weißschuh <thomas@weissschuh.net>
+
+On Do, 2021-04-22T00:41+0100, Alexey Klimov wrote:
+> Date: Thu, 22 Apr 2021 00:41:56 +0100
+> From: Alexey Klimov <aklimov@redhat.com>
+> To: thomas@weissschuh.net
+> Cc: hdegoede@redhat.com, mgross@linux.intel.com,
+>  platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+> Subject: [PATCH] platform/x86: gigabyte-wmi: add support for B550M AORUS
+>  PRO-P
 > 
-> Yes, you're right.  NPT is easy but we would have to guess what the spec
-> would say about MAXPHYADDR, while nNPT would require the stacking of a PML5.
-> Either way, blocking KVM is the easiest thing todo.
-
-How about I fold that into the s/lm_root/pml4_root rename[*]?  I.e. make the
-blocking of PML5 a functional change, and the rename an opportunistic change?
-
-[*] https://lkml.kernel.org/r/20210318201131.3242619-1-seanjc@google.com
+> From: Alexey Klimov <klimov.linux@gmail.com>
+> 
+> From: Alexey Klimov <klimov.linux@gmail.com>
+> 
+> Add the B550M AORUS PRO-P motherboard description to
+> gigabyte_wmi_known_working_platforms.
+> 
+> Signed-off-by: Alexey Klimov <klimov.linux@gmail.com>
+> ---
+> 
+> The driver works fine on this motherboard with force_load=1 and
+> it seems that temperature values are correct.
+> 
+> gigabyte_wmi-virtual-0
+> Adapter: Virtual device
+> temp1:        +30.0°C  
+> temp2:        +35.0°C  
+> temp3:        +30.0°C  
+> temp4:        +32.0°C  
+> temp5:        +28.0°C  
+> temp6:        +42.0°C
+> 
+> The patch is created against review-hans branch on platform-drivers-x86.git
+> I am available for further testing on this board if required, feel free
+> to reach me. Thanks.
+> 
+>  drivers/platform/x86/gigabyte-wmi.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+> index e127a2077bbc..13d57434e60f 100644
+> --- a/drivers/platform/x86/gigabyte-wmi.c
+> +++ b/drivers/platform/x86/gigabyte-wmi.c
+> @@ -138,6 +138,10 @@ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
+>  		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>  		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
+>  	}},
+> +	{ .matches = {
+> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M AORUS PRO-P"),
+> +	}},
+>  	{ .matches = {
+>  		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>  		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
+> -- 
+> 2.31.1
+> 
