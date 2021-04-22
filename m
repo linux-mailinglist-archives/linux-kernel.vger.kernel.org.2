@@ -2,259 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE85136760D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88272367613
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 02:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343830AbhDVAIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 20:08:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34532 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244109AbhDVAIk (ORCPT
+        id S1343838AbhDVAKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 20:10:04 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55032 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235076AbhDVAKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 20:08:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619050086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=mn1x06C8aK1JJjUCmDoFCMm/tn5bYkvmPQTNKEL7/Vo=;
-        b=uuSoaXyQaJaiANPLtvwG5lPVrlLQTWdeYutjJDOf1GJWc7VjBTpiJ+OYfS0dhjBXLIudn4
-        V6YZpTcxwspCt8bD0UySo077DsiAUbRz7gzqyzAdhskExa/uLSzKl6+hpDfGaNy1rdBw4h
-        Cbdr5x7nMnqTe8bpwCruv9hsepf6BTnQ5pbbKrLQo4kcoZYORQlMe94QT3KePYgQPlsfNO
-        4JXEGHnVAhQQ5pyh3IgYdArSyPsC5rFqaE6IyeW+zbcntIBf3GetPXOaZTIeI/TmhgChKv
-        KcU1oCsQqExj1rt43bGuIkM1N0l3rwGSomixT9rUIqSQKr6J36KTul3nsQO8vw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619050086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=mn1x06C8aK1JJjUCmDoFCMm/tn5bYkvmPQTNKEL7/Vo=;
-        b=KtxN3bMgUazyJzI7cWx3FXfcNoY0WHi8hol0dXEyee2dPJSLGZnaA3JEq/jfwB0DJt5dFS
-        qLF3QfC03MSt1MAQ==
-To:     Lorenzo Colitti <lorenzo@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Maciej =?utf-8?Q?=C5=BBenczykows?= =?utf-8?Q?ki?= 
-        <zenczykowski@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-In-Reply-To: <CAKD1Yr2qeXseNLcQ9r4niob02jGOXdVeta6OwWF3Ta1dyp1V2Q@mail.gmail.com>
-Date:   Thu, 22 Apr 2021 02:08:05 +0200
-Message-ID: <87v98fxjtm.ffs@nanos.tec.linutronix.de>
+        Wed, 21 Apr 2021 20:10:03 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13M00pAL007547;
+        Wed, 21 Apr 2021 17:09:07 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=kQX9SwDx5Psw+ILxHA6YHKFa8tmyphGgCCgbYqxY02A=;
+ b=BtQFBgGi/o0bl2q+LZ5nStU+zAgg8dO3BlfWT4crbAwMfb7GsLvyIbLqzsGF8FcsghYV
+ WHirq7eF2+YyuZ4Lw3eEPZSOW/g+yLoIJ2jHHaiNdbq4pP7WGpvH1Z1bEYiTys/tVEPM
+ xKijlAJ+FkLa5tbnI5pZHfw/hrlpQAwd2H4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 382npsutpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 21 Apr 2021 17:09:07 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Apr 2021 17:09:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LDQwntw5P2pJIoXcEGVQ6FdXdY+lkJoAH0xPBBFKesVEYblJp21CXdFvzocS6sKio6U/GT2Bq9RzSZmAaoJoz5ghF0b0+Tt0EcO9ycZLOMpLaCdBjM/nGWoMaUFhGVLh2P9kq+9aopR8WCrwjUIm8AGNVcl4ElFGZqpA/GYiFsvxTSa5kKq980CANdhgnY8gfz4P40wsjAxxRdZ3g4lLJWc7FW3GBseWYuthlXFgpGruN/sRebPSz3xsnAi9dcJN1nz+OiZHLiowEOgu/MIlH7XWm5MGnmr+Qf5rPOhpPV0I+Tbve/i5QAif7T4DD3phe74ZrMCxSjySbovn77dVIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kQX9SwDx5Psw+ILxHA6YHKFa8tmyphGgCCgbYqxY02A=;
+ b=JjggYas+82MOGChs711f8SYD25+SdbCcvylJtinNKFq7Zlzh+FF1beC+acUzUv2cHHYJSm97TXMCSbhw8RL9A8GDBXDgCh1LI1Q2VW1KimUwoSPYmyTJfSDoqnSuXuHJrZAB0Ax2sCcNMZktW7pf8EuURCjvs1ZEnp5romIgRVs4orLn69F4VYXu4fhAv+2d1DuoWo0ChangsdS++aC4wtkOR/ZtiD9xTUsJFrSuqbWqwa8b3qhxfGuA8+7uGHzpt0SVXOhigdQ4zlnPr1sz1Tu7VKqi5QSihIN7MMA/7MEuG7LDsaD3ib9rFDSOHBatdJxzil6bWURFpH/DWl7JZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BY3PR15MB4897.namprd15.prod.outlook.com (2603:10b6:a03:3c0::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 22 Apr
+ 2021 00:08:58 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1ce0:8b27:f740:6b60]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1ce0:8b27:f740:6b60%4]) with mapi id 15.20.3933.040; Thu, 22 Apr 2021
+ 00:08:58 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Collin Fijalkovich <cfijalkovich@google.com>
+CC:     Suren Baghdasaryan <surenb@google.com>,
+        "hridya@google.com" <hridya@google.com>,
+        "kaleshsingh@google.com" <kaleshsingh@google.com>,
+        "hughd@google.com" <hughd@google.com>,
+        "timmurray@google.com" <timmurray@google.com>,
+        "william.kucharski@oracle.com" <william.kucharski@oracle.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm, thp: Relax the VM_DENYWRITE constraint on
+ file-backed THPs
+Thread-Topic: [PATCH v2] mm, thp: Relax the VM_DENYWRITE constraint on
+ file-backed THPs
+Thread-Index: AQHXKnknEhLdpDmfP0aTj6hRIe6caqq/wmuA
+Date:   Thu, 22 Apr 2021 00:08:58 +0000
+Message-ID: <16D17333-1BF1-412C-8EE9-95CF61F741B0@fb.com>
+References: <20210406000930.3455850-1-cfijalkovich@google.com>
+In-Reply-To: <20210406000930.3455850-1-cfijalkovich@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:c34b]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fd0e5b8e-10c3-4441-10ec-08d90522d352
+x-ms-traffictypediagnostic: BY3PR15MB4897:
+x-microsoft-antispam-prvs: <BY3PR15MB4897132D126942C9238CE744B3469@BY3PR15MB4897.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: O6z/xbcLHPHkml42J4mleSqJbKVxefN3zfaLoXzcWJcJ+o2k05kJWYotdK3+J3WZ8MfpYhm6ouUQrcO5zvRdjZTppxRUKdw65k6B/hl4OjoabVwa/sOLJLty8+T5fkfoQ/RrztBytG/rPqo0beVJYp8hxTeVHrpcnd9qY/kPyDY2/s0NUjYRRTy1JE9bP6CyimV4zR9UnxMcmOSegj7CwNtmIR3rD8kpvS7Dv7iyvurD2xGnWfnF4arqUSetED/tOtHW/1U8iH4zVIZTlEpZgIOeEHrHeCtRWKKq/7JvJOz2v1gdySgpiSyDT/ohf8MK04wuWWGXiLv82UAqw9iDqaAZZ2rpaGpblzAajErya19qp5wQKncO9xJR68q6eyRThuP4fEAfsAY5PtYrdJswNYPcxIpGVuiJL6h8XrEiQ8FvoGUB94eJoj27FZLjy5LGvh95vGtfNgJgsmnAoxdxBYkbCenUQzYKuAmHw5q2Cg2qY6gkZvq2hgyK7kjQuBo5GedK7GOwfKDgGaTo76UV+vqr+/oJHm2XNeL6qxWBV1cR1V/PgZgs5pgE3MtFdg19Emjwsx6OrsPYtwGUkWMBnkr8GztbGBX5XcSyb9lnKBb45sO8O55mZ2/4Ab+wwiEmQx38CKOXbKbCPZTGl8J69Vn5dNNmCJToE8+Cp7KhrnnfBXC46HEmg8vOx3qbd68P
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(39860400002)(396003)(346002)(91956017)(66946007)(64756008)(66556008)(5660300002)(316002)(66446008)(66476007)(2616005)(6506007)(54906003)(53546011)(76116006)(71200400001)(186003)(478600001)(7416002)(4326008)(36756003)(33656002)(8676002)(86362001)(6916009)(6512007)(122000001)(83380400001)(2906002)(38100700002)(8936002)(6486002)(21314003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?fsQuXuM8EE8yRb/1Rm7k1LaqJiS6JEkILYPVtcSHE/ZjNvViSkakXSecaVGJ?=
+ =?us-ascii?Q?FqBgntq76zxeuWBalD0CVNaHpJFozx7/VJogKx7NbYmS3NUOiZxwGt1/OL4X?=
+ =?us-ascii?Q?H2vphwQPfeI8+h87u37W++7OnPMr3NQ8AQTM5Vs5kRw4lgUACkiCyTUXkEdV?=
+ =?us-ascii?Q?DX9TSRUQbeEo+AUHkP23d+e9OfASbbNCTz+dzxM8uBmtWOX9fbsjiKg/6Q50?=
+ =?us-ascii?Q?AEZlgRch3lqZ9tRnMf7Q9el4dr6DpYzyrtQm9MOrfx5/YIHZ9dnLj4I5F2Qm?=
+ =?us-ascii?Q?DqnN18BADGRYh+CWxaXoU7QrzP784L21F6h2DkafcBU5sMRL51SY+hls0vev?=
+ =?us-ascii?Q?FX3rzkfhWPJyz9eXQ91vOgdHmMNb6v0bK6338GyNC+xgFerL535EVA+DIJZi?=
+ =?us-ascii?Q?Cu6QzdQ8NqdXyZ3DjVJozoW5oarBTEynpFWM+3WDNNCK4AIssy/o18IIjBqN?=
+ =?us-ascii?Q?Vu/IxVerqbuTF/Ub5bBsSwZyVEKFRjSlzqC/WRuWVhnwppOf4zQiXJLvYJW1?=
+ =?us-ascii?Q?sOjNwJlc21lydu4aEtE3+zm73d1uX6+tAE5WDf0F5WuidxVEQmHsgB7BCA9c?=
+ =?us-ascii?Q?17uU4cDoIVHkESgZDQ6i8ANQppn5/OcuNlBAUtWBgs1tog6vGrysI8quV1K5?=
+ =?us-ascii?Q?tbhV3htmQd8c2G3imgfLW1vklMQwUHhTOTSqyq356bnCJxzOL+XTCHQWXvYq?=
+ =?us-ascii?Q?rUL8cDCQrs3YgLCOl92OzV8UKuCT2ucdBgzQ/wvAgHWft/R8w4PnTMFZ0m+E?=
+ =?us-ascii?Q?j3psnlOaGsnRxz3HKELMIj5KLUjo6p1ZZwEzp70WvnWdgPVCLKwDrosFBe//?=
+ =?us-ascii?Q?vmsmv6nVAkEm/EDbUqrhxQ/1GzhqrGme+qG9DQjxbE1oJu+7NsVBtuKC+iFv?=
+ =?us-ascii?Q?N8tRkhO+/EwtITcMm67g4MQu66VS8cATRvwc32fHckm17YaKI86ySY2CCIRL?=
+ =?us-ascii?Q?3BD3HXCjG3AQOl1DrCgdU+6oNarawCSHrxhwyq34wT01dX1qVmOm9NdGzdMO?=
+ =?us-ascii?Q?ITb1UjVTFf/JywAUNf/GUAVKPKdmVUYyz8nTUvDxL7luCDJpqSUlqDjPNH/C?=
+ =?us-ascii?Q?IImcr7CG4/LYU2uGHf6M0b8g2YNnVOmDn61z7uBPomMfoEi0pQaQpItuuPn0?=
+ =?us-ascii?Q?OUAoaonUzAPpImQrg/S3hU9sGWGBPq8B9HR3EDkvCkzwdvcoTTroSLojiB6e?=
+ =?us-ascii?Q?FgWboQU5Qs+1RG2okard8GILeb5kLuXoYHTE3moqAsMTfbU25YE99pFd+hVb?=
+ =?us-ascii?Q?WxSjDBmbaOvyTFB9TNdl03veiSLW6eznd8QSlorS1wha/15Var7i8D4Fe0sD?=
+ =?us-ascii?Q?d3CHdrGX8VceKqJaWbfvEkpQpt4odh13WdJ1iIHdhIPXAteItn71f81Bbvca?=
+ =?us-ascii?Q?BsuOYFY=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D395478EFEFE084A9DA631861376CDC7@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd0e5b8e-10c3-4441-10ec-08d90522d352
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2021 00:08:58.0624
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Xces6YhD2jUbMMQ2XH5wJCTZrD/43PUkvr120GlzKp559CtWCebIXg+oRKu2h18sO63x7cBRRCwnungv9P2Raw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4897
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: iGpGaTnDlo9Kqe0WQsRnDZMbi8Oydbqe
+X-Proofpoint-ORIG-GUID: iGpGaTnDlo9Kqe0WQsRnDZMbi8Oydbqe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-21_08:2021-04-21,2021-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ adultscore=0 phishscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ bulkscore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104210159
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21 2021 at 23:08, Lorenzo Colitti wrote:
-> On Tue, Apr 20, 2021 at 11:19 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->>   1) hrtimer is contrary to timer_list not really suited for high
->>      frequency start/cancel/start/... cycles of a timer. It's optimized
->>      for the start and expire precisely case.
->
-> Ack. This is not what the f_ncm gadget code needs. It just needs a
-> timer to fire "about 300us after the last packet submitted". Under
-> load the timer will almost never fire since there will always be
-> another packet coming. So the speed of adding/updating the timer is
-> much more important than the accuracy. We will try to move it to
-> timer_list.
->
->>      I assume that's an ARM64 system. ARM64 CPUs have an architected per
->>      CPU timer where the reprogramming is pretty fast as it's next to
->>      the CPU, but who knows what your system is using.
->
-> This system appears to be using timer hardware that is... slow to
-> program (microseconds). We're looking at whether it's possible to use
-> the arch timer instead.
->
->> Now in the meantime I looked into __hrtimer_start_range_ns() whether
->> that double reprogram can be avoided without creating a total trainwreck
->> and imposing penalty on all sensible use cases. Completely untested
->> patch below should do the trick and it's not ugly enough that I hate it
->> with a passion.
->
-> I tested this and in my simple benchmark, the double calls are gone
-> and hrtimer_start calls tick_program_event approximately once (more
-> precisely, 90.06% of the time; sometimes it doesn't call it at all).
-> This is not enough to cancel the regression we're seeing because the
-> previous code would pretty much never call tick_program_event at all.
-> But it's definitely better.
 
-It's hardly a regression when the behaviour relies on a bug in the core
-code which should have never been there in the first place.
 
-If you look at what you are doing it's obvious that reprogramming has to
-take place quite often.
+> On Apr 5, 2021, at 5:09 PM, Collin Fijalkovich <cfijalkovich@google.com> =
+wrote:
+>=20
+> Transparent huge pages are supported for read-only non-shmem files,
+> but are only used for vmas with VM_DENYWRITE. This condition ensures that
+> file THPs are protected from writes while an application is running
+> (ETXTBSY).  Any existing file THPs are then dropped from the page cache
+> when a file is opened for write in do_dentry_open(). Since sys_mmap
+> ignores MAP_DENYWRITE, this constrains the use of file THPs to vmas
+> produced by execve().
+>=20
+> Systems that make heavy use of shared libraries (e.g. Android) are unable
+> to apply VM_DENYWRITE through the dynamic linker, preventing them from
+> benefiting from the resultant reduced contention on the TLB.
+>=20
+> This patch reduces the constraint on file THPs allowing use with any
+> executable mapping from a file not opened for write (see
+> inode_is_open_for_write()). It also introduces additional conditions to
+> ensure that files opened for write will never be backed by file THPs.
+>=20
+> Restricting the use of THPs to executable mappings eliminates the risk th=
+at
+> a read-only file later opened for write would encounter significant
+> latencies due to page cache truncation.
+>=20
+> The ld linker flag '-z max-page-size=3D(hugepage size)' can be used to
+> produce executables with the necessary layout. The dynamic linker must
+> map these file's segments at a hugepage size aligned vma for the mapping =
+to
+> be backed with THPs.
+>=20
+> Comparison of the performance characteristics of 4KB and 2MB-backed
+> libraries follows; the Android dex2oat tool was used to AOT compile an
+> example application on a single ARM core.
+>=20
+> 4KB Pages:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> count              event_name            # count / runtime
+> 598,995,035,942    cpu-cycles            # 1.800861 GHz
+> 81,195,620,851    raw-stall-frontend    # 244.112 M/sec
+> 347,754,466,597    iTLB-loads            # 1.046 G/sec
+>  2,970,248,900    iTLB-load-misses      # 0.854122% miss rate
+>=20
+> Total test time: 332.854998 seconds.
+>=20
+> 2MB Pages:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> count              event_name            # count / runtime
+> 592,872,663,047    cpu-cycles            # 1.800358 GHz
+> 76,485,624,143    raw-stall-frontend    # 232.261 M/sec
+> 350,478,413,710    iTLB-loads            # 1.064 G/sec
+>    803,233,322    iTLB-load-misses      # 0.229182% miss rate
+>=20
+> Total test time: 329.826087 seconds
+>=20
+> A check of /proc/$(pidof dex2oat64)/smaps shows THPs in use:
+>=20
+> /apex/com.android.art/lib64/libart.so
+> FilePmdMapped:      4096 kB
+>=20
+> /apex/com.android.art/lib64/libart-compiler.so
+> FilePmdMapped:      2048 kB
+>=20
+> Signed-off-by: Collin Fijalkovich <cfijalkovich@google.com>
 
-Your timeout is relative 300us and it's moved every N microseconds
-ahead. So if there is not much other hrtimer activity on that CPU which
-is often the case and the only other relevant hrtimer which is armed
-(and expires) is the tick, then it depends on the HZ setting how often
-reprogramming is required.
+Acked-by: Song Liu <song@kernel.org>
 
-Lets assume HZ=1000 and a rearm period of 20us, which means the timer is
-rearmed 50 times per tick and reprogramming is needed for each rearm
-before the tick timer becomes the first expiring timer, i.e. 300us
-before the tick. So 700/20 = 35 times per 1ms the hardware needs to be
-updated because the first expiry time moves 20us farther into the future
-on every update. That's 70%
-
-So depending on how long that takes on your machine 35 updates can be a
-significant amount of time.
-
-With HZ=250 that's 200 times rearming / tick and the reprogramming is
-then 3700/20 = 185 which is 92.5% which is close enough to the 90% you
-are seing...
-
-Now, if your timer hardware needs several microseconds to be programmed
-then it's obvious that you lose a lot of CPU time.
-
-Just for comparison. In a VM I'm experimenting with right now the
-reprogramming time is ~500ns which is still a lot of cycles, but
-compared to 5us faster by an order of magnitude. And on the sane
-machine bare metal its way faster and therefore less noticeable.
-
-The use case still sucks, but that's not a problem of hrtimers as they
-are not designed for this use case.
-
-Now looking at the usecase. The comment above the hrtimer callback,
-which is the only hint there, says:
-
- * The transmit should only be run if no skb data has been sent for a
- * certain duration.
-
-which is useless word salad.
-
-So looking at the commit which added that muck: 6d3865f9d41f ("usb:
-gadget: NCM: Add transmit multi-frame."). The changelog mutters:
-
-    It has a time out of 300ms to ensure that smaller number of packets
-    still maintain a normal latency.
-
-while the timeout is defined as:
-
-+#define TX_TIMEOUT_NSECS       300000
-
-which is clearly 300us and not 300ms. So much for useful information in
-changelogs.
-
-But at least the rest of the commit message gives a clue why this is
-useful:
-
-    This adds multi-frame support to the NCM NTB's for
-    the gadget driver. This allows multiple network
-    packets to be put inside a single USB NTB with a
-    maximum size of 16kB.
-
-So the timer ensures that for batching xmit packets into a single NTB
-the maximum delay is 300us if the NTB is not filled up on time.
-
-Though there is ZERO explanation why 300us is a sensible number and why
-it's a brilliant idea to use a hrtimer which is clearly documented to be
-not suitable for this.
-
-I'm pretty sure that the original author did not develop that on
-hardware which used a timer based on a hardware trainwreck, but alone
-the fact that:
-
- - rbtree reshuffling _is_ always required
- - high frequency reprogramming of the timer hardware might be required
- - in case that CONFIG_HIGH_RES_TIMERS is off or not enabled at runtime
-   for whatever reason this is still subject to the CONFIG_HZ setting
- 
-tells me that this is clearly well thought out and based on "works for
-me" engineering.
-
-Plus at the time when this was hacked up, the bug which was fixed by the
-commit you refer to, did not exist yet as it was introduced with the
-softirq based expiry changes years later.
-
-Back then the timer expiry was scheduling a tasklet to ensure that
-->ndo_start_xmit() is called from softirq context.
-
-The softirq based expiry changes which introduced the correctness bug
-removed that tasklet indirection.
-
-And going back to 4.14 yields the proof of this. The same microbenchmark
-as described above i.e. modifying the timer every 20us has exactly the
-same effect vs. reprogramming the clock event device:
-
- It's programmed twice on every hrtimer_start() ~90% of the time
-
-So no. The real regression was introduced with:
-
-  5da70160462e ("hrtimer: Implement support for softirq based hrtimers")
-
-and related changes, but that had not a negative effect on that USB
-driver usage, quite the contrary it papered over it.
-
-commit 46eb1701c0 fixed that regression and thereby unearthed the issue
-with that USB driver usage issue in combination with that timer
-hardware.
-
-If 5da70160462e et al. would not had introduced that bug then the
-problems with that hrtimer usage in combination with that timer hardware
-trainwreck would have been noticed way earlier. IOW it would never have
-worked at all.
-
-Aside of that any use case which does not use the _SOFT variant of
-hrtimers was not affected by 5da70160462e et al. Which in turn means
-that all !_SOFT usecases are not abusing hrtimers and NONE of the
-_SOFT usecases cares about correctness and accuracy at all.
-
-So pretty please stop claiming that this is a regression. It was broken
-forever, but papered over and therefore just not noticed.
-
-IOW, the problem was introduced with 6d3865f9d41f, i.e. 6+ years
-ago. The reasons why this pops up now are:
-
- - There was an unnoticed bug since 5da70160462e in the hrtimers code
-   for 3 years.
-
- - It's only observable on hardware which has abysmal per cpu timers
-
-TBH, I'm telling HW people for 15+ years now that clockevents and
-clocksources are performance critical and relevant for correctness, but
-obviously they don't listen. Otherwise we would not have code in tree
-which has comments like this:
-
-  hpet_clkevt_set_next_event(...)
-	 * HPETs are a complete disaster. The compare register is
-
-or any other clock event which is compare equal based and has to do read
-back based interrupt loss prevention like
-
-     pxa_osmr0_set_next_event() and other trainwrecks.
-
-Along with the insanities of watchdogs to monitor correctness and
-clocksources/events which stop to work when entering deep power states.
-
-Not to talk about gems like this:
-
-  exynos4_mct_write()
-	/* Wait maximum 1 ms until written values are applied */
-
-along with all the magic patches which make this the preferred device
-for the very wrong reasons.
-
-I have no idea which particular trainwreck you are dealing with because
-you didn't tell, but TBH I don't want to know at all. It's probably just
-another incarnation of broken which is not covered by the above, but
-fits nicely.
-
-That said, even if you manage to avoid the timer hardware trainwreck on
-which your system is depending on right now, then still the underlying
-problem remains that hrtimers are not the proper tool for high frequency
-modification and never will be.
-
-There are smarter approaches to that USB/NTB problem, but that's beyond
-the discussion at hand.
-
-Thanks,
-
-        tglx
-
+> ---
+> Changes v1 -> v2:
+> * commit message 'non-shmem filesystems' -> 'non-shmem files'
+> * Add performance testing data to commit message
+>=20
+> fs/open.c       | 13 +++++++++++--
+> mm/khugepaged.c | 16 +++++++++++++++-
+> 2 files changed, 26 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/open.c b/fs/open.c
+> index e53af13b5835..f76e960d10ea 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -852,8 +852,17 @@ static int do_dentry_open(struct file *f,
+> 	 * XXX: Huge page cache doesn't support writing yet. Drop all page
+> 	 * cache for this file before processing writes.
+> 	 */
+> -	if ((f->f_mode & FMODE_WRITE) && filemap_nr_thps(inode->i_mapping))
+> -		truncate_pagecache(inode, 0);
+> +	if (f->f_mode & FMODE_WRITE) {
+> +		/*
+> +		 * Paired with smp_mb() in collapse_file() to ensure nr_thps
+> +		 * is up to date and the update to i_writecount by
+> +		 * get_write_access() is visible. Ensures subsequent insertion
+> +		 * of THPs into the page cache will fail.
+> +		 */
+> +		smp_mb();
+> +		if (filemap_nr_thps(inode->i_mapping))
+> +			truncate_pagecache(inode, 0);
+> +	}
+>=20
+> 	return 0;
+>=20
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index a7d6cb912b05..4c7cc877d5e3 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -459,7 +459,8 @@ static bool hugepage_vma_check(struct vm_area_struct =
+*vma,
+>=20
+> 	/* Read-only file mappings need to be aligned for THP to work. */
+> 	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
+> -	    (vm_flags & VM_DENYWRITE)) {
+> +	    !inode_is_open_for_write(vma->vm_file->f_inode) &&
+> +	    (vm_flags & VM_EXEC)) {
+> 		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+> 				HPAGE_PMD_NR);
+> 	}
+> @@ -1872,6 +1873,19 @@ static void collapse_file(struct mm_struct *mm,
+> 	else {
+> 		__mod_lruvec_page_state(new_page, NR_FILE_THPS, nr);
+> 		filemap_nr_thps_inc(mapping);
+> +		/*
+> +		 * Paired with smp_mb() in do_dentry_open() to ensure
+> +		 * i_writecount is up to date and the update to nr_thps is
+> +		 * visible. Ensures the page cache will be truncated if the
+> +		 * file is opened writable.
+> +		 */
+> +		smp_mb();
+> +		if (inode_is_open_for_write(mapping->host)) {
+> +			result =3D SCAN_FAIL;
+> +			__mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
+> +			filemap_nr_thps_dec(mapping);
+> +			goto xa_locked;
+> +		}
+> 	}
+>=20
+> 	if (nr_none) {
+> --=20
+> 2.31.0.208.g409f899ff0-goog
+>=20
 
