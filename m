@@ -2,214 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC24C36832E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2F368333
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 17:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236552AbhDVPST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 11:18:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32780 "EHLO mx2.suse.de"
+        id S238013AbhDVPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 11:19:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34440 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236545AbhDVPSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:18:17 -0400
+        id S237954AbhDVPTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:19:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619104661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2BYuXXN8/OBblmoa+ncdX77EGf3yTri3xgSGi8hCO4M=;
-        b=G2kvM2OokcZFDI+FtrkbP0dxr2tiAsqA9mhbVx3ZSGH/lyej58Y7L/EKacGsZXKRK0yVVQ
-        eaXzXtQ3zdN+VpPTEOEffEhAEzKBzW/4ZPLs3B3TT9DX9+CbX0IVpN4K1zkd46eYCjZn2z
-        avuSj8oseGASAOpWUGcseVnio8RVJns=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C4394B16D;
-        Thu, 22 Apr 2021 15:17:41 +0000 (UTC)
-Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
- features
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
+        by mx2.suse.de (Postfix) with ESMTP id 5C5EEB170;
+        Thu, 22 Apr 2021 15:18:39 +0000 (UTC)
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-References: <20210422151007.2205-1-jgross@suse.com>
- <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
-Date:   Thu, 22 Apr 2021 17:17:40 +0200
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210422111441.24318-1-mgorman@techsingularity.net>
+ <20210422111441.24318-4-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 3/9] mm/vmstat: Convert NUMA statistics to basic NUMA
+ counters
+Message-ID: <ba72d967-aa4e-47e5-5f99-df3dd0bf21d2@suse.cz>
+Date:   Thu, 22 Apr 2021 17:18:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="L5W1K6enWIN9DczrZcMznw5E6clpitwqr"
+In-Reply-To: <20210422111441.24318-4-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---L5W1K6enWIN9DczrZcMznw5E6clpitwqr
-Content-Type: multipart/mixed; boundary="L39QdbBzx0NA6TykYKoUbdrBG8EpRQ9x7";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
- x86@kernel.org, xen-devel@lists.xenproject.org
-Message-ID: <b69df7d3-6fcb-a565-9ec5-a272b6163320@suse.com>
-Subject: Re: [PATCH 0/3] xen: remove some checks for always present Xen
- features
-References: <20210422151007.2205-1-jgross@suse.com>
- <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
-In-Reply-To: <df27aba6-c67e-d66e-f00e-75a1f76de921@suse.com>
+On 4/22/21 1:14 PM, Mel Gorman wrote:
+> NUMA statistics are maintained on the zone level for hits, misses, foreign
+> etc but nothing relies on them being perfectly accurate for functional
+> correctness. The counters are used by userspace to get a general overview
+> of a workloads NUMA behaviour but the page allocator incurs a high cost to
+> maintain perfect accuracy similar to what is required for a vmstat like
+> NR_FREE_PAGES. There even is a sysctl vm.numa_stat to allow userspace to
+> turn off the collection of NUMA statistics like NUMA_HIT.
+> 
+> This patch converts NUMA_HIT and friends to be NUMA events with similar
+> accuracy to VM events. There is a possibility that slight errors will be
+> introduced but the overall trend as seen by userspace will be similar.
+> The counters are no longer updated from vmstat_refresh context as it is
+> unnecessary overhead for counters that may never be read by userspace.
+> Note that counters could be maintained at the node level to save space
+> but it would have a user-visible impact due to /proc/zoneinfo.
+> 
+> [lkp@intel.com: Fix misplaced closing brace for !CONFIG_NUMA]
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
---L39QdbBzx0NA6TykYKoUbdrBG8EpRQ9x7
-Content-Type: multipart/mixed;
- boundary="------------8D502D4FB9C60FE2573AA119"
-Content-Language: en-US
+...
 
-This is a multi-part message in MIME format.
---------------8D502D4FB9C60FE2573AA119
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> @@ -731,26 +722,34 @@ static int fold_diff(int *zone_diff, int *numa_diff, int *node_diff)
+>  	}
+>  	return changes;
+>  }
+> -#else
+> -static int fold_diff(int *zone_diff, int *node_diff)
+> +
+> +#ifdef CONFIG_NUMA
+> +static void fold_vm_zone_numa_events(struct zone *zone)
+>  {
+> -	int i;
+> -	int changes = 0;
+> +	int zone_numa_events[NR_VM_NUMA_EVENT_ITEMS] = { 0, };
 
-On 22.04.21 17:16, Jan Beulich wrote:
-> On 22.04.2021 17:10, Juergen Gross wrote:
->> Some features of Xen can be assumed to be always present, so add a
->> central check to verify this being true and remove the other checks.
->>
->> Juergen Gross (3):
->>    xen: check required Xen features
->>    xen: assume XENFEAT_mmu_pt_update_preserve_ad being set for pv gues=
-ts
->>    xen: assume XENFEAT_gnttab_map_avail_bits being set for pv guests
->=20
-> I wonder whether it's a good idea to infer feature presence from
-> version numbers. If (at some point in the past) you had inferred
-> gnttab v2 being available by version, this would have been broken
-> by its availability becoming controllable by a command line option
-> in Xen.
+Should this be long? pzstats are, the global counters too, so seems weird to use
+int as intermediate sum counter.
 
-I'm testing the feature to be really present when booting and issue a
-message if it is not there.
+> +	int cpu;
+> +	enum numa_stat_item item;
+>  
+> -	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+> -		if (zone_diff[i]) {
+> -			atomic_long_add(zone_diff[i], &vm_zone_stat[i]);
+> -			changes++;
+> -	}
+> +	for_each_online_cpu(cpu) {
+> +		struct per_cpu_zonestat *pzstats;
+>  
+> -	for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+> -		if (node_diff[i]) {
+> -			atomic_long_add(node_diff[i], &vm_node_stat[i]);
+> -			changes++;
+> +		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+> +		for (item = 0; item < NR_VM_NUMA_EVENT_ITEMS; item++)
+> +			zone_numa_events[item] += xchg(&pzstats->vm_numa_event[item], 0);
+>  	}
+> -	return changes;
+> +
+> +	for (item = 0; item < NR_VM_NUMA_EVENT_ITEMS; item++)
+> +		zone_numa_event_add(zone_numa_events[item], zone, item);
+>  }
+> -#endif /* CONFIG_NUMA */
+> +
+> +void fold_vm_numa_events(void)
+> +{
+> +	struct zone *zone;
+> +
+> +	for_each_populated_zone(zone)
+> +		fold_vm_zone_numa_events(zone);
+> +}
+> +#endif
+>  
+>  /*
+>   * Update the zone counters for the current cpu.
+> @@ -774,15 +773,14 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+>  	struct zone *zone;
+>  	int i;
+>  	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
+> -#ifdef CONFIG_NUMA
+> -	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
+> -#endif
+>  	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
+>  	int changes = 0;
+>  
+>  	for_each_populated_zone(zone) {
+>  		struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+> +#ifdef CONFIG_NUMA
+>  		struct per_cpu_pages __percpu *pcp = zone->per_cpu_pageset;
+> +#endif
+>  
+>  		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
+>  			int v;
+> @@ -799,17 +797,6 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+>  			}
+>  		}
+>  #ifdef CONFIG_NUMA
+> -		for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++) {
+> -			int v;
+> -
+> -			v = this_cpu_xchg(pzstats->vm_numa_stat_diff[i], 0);
+> -			if (v) {
+> -
+> -				atomic_long_add(v, &zone->vm_numa_stat[i]);
+> -				global_numa_diff[i] += v;
+> -				__this_cpu_write(pcp->expire, 3);
+> -			}
+> -		}
+>  
+>  		if (do_pagesets) {
+>  			cond_resched();
+> @@ -857,12 +844,7 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+>  		}
+>  	}
+>  
+> -#ifdef CONFIG_NUMA
+> -	changes += fold_diff(global_zone_diff, global_numa_diff,
+> -			     global_node_diff);
+> -#else
+>  	changes += fold_diff(global_zone_diff, global_node_diff);
+> -#endif
+>  	return changes;
+>  }
+>  
+> @@ -877,9 +859,6 @@ void cpu_vm_stats_fold(int cpu)
+>  	struct zone *zone;
+>  	int i;
+>  	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
+> -#ifdef CONFIG_NUMA
+> -	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
+> -#endif
+>  	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
+>  
+>  	for_each_populated_zone(zone) {
+> @@ -887,7 +866,7 @@ void cpu_vm_stats_fold(int cpu)
+>  
+>  		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+>  
+> -		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+> +		for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
+>  			if (pzstats->vm_stat_diff[i]) {
+>  				int v;
+>  
+> @@ -896,17 +875,17 @@ void cpu_vm_stats_fold(int cpu)
+>  				atomic_long_add(v, &zone->vm_stat[i]);
+>  				global_zone_diff[i] += v;
+>  			}
+> -
+> +		}
+>  #ifdef CONFIG_NUMA
+> -		for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++)
+> -			if (pzstats->vm_numa_stat_diff[i]) {
+> +		for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++) {
+> +			if (pzstats->vm_numa_event[i]) {
+>  				int v;
 
-Juergen
+Also long?
 
---------------8D502D4FB9C60FE2573AA119
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+>  
+> -				v = pzstats->vm_numa_stat_diff[i];
+> -				pzstats->vm_numa_stat_diff[i] = 0;
+> -				atomic_long_add(v, &zone->vm_numa_stat[i]);
+> -				global_numa_diff[i] += v;
+> +				v = pzstats->vm_numa_event[i];
+> +				pzstats->vm_numa_event[i] = 0;
+> +				zone_numa_event_add(v, zone, i);
+>  			}
+> +		}
+>  #endif
+>  	}
+>  
+> @@ -926,11 +905,7 @@ void cpu_vm_stats_fold(int cpu)
+>  			}
+>  	}
+>  
+> -#ifdef CONFIG_NUMA
+> -	fold_diff(global_zone_diff, global_numa_diff, global_node_diff);
+> -#else
+>  	fold_diff(global_zone_diff, global_node_diff);
+> -#endif
+>  }
+>  
+>  /*
+> @@ -939,43 +914,36 @@ void cpu_vm_stats_fold(int cpu)
+>   */
+>  void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+>  {
+> -	int i;
+> +	int i, v;
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+And the 'v' here. Maybe keep using local to each loop below and make it long for
+the NUMA one?
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------8D502D4FB9C60FE2573AA119--
-
---L39QdbBzx0NA6TykYKoUbdrBG8EpRQ9x7--
-
---L5W1K6enWIN9DczrZcMznw5E6clpitwqr
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCBk5QFAwAAAAAACgkQsN6d1ii/Ey9s
-iAf/QCx3nIoXECUQROeEqv+AKRuwsqtLQSyNjGf21B0piVvFiuMxgIyRS3e1lTATZQsfaJlR8abV
-SWCHJQ6d+sq7gPQlWIaduFO0mXXPldRpTzNFZOwFz5uXceFCfxPBpL71Jcq63VU59YPIMKNDMPSk
-AEpNNwOLwRC0pYnDuuiECxxRd7CQiMgP4gEARwLnu48E8aTsoSV/ZEqtM1PDD7PHYaXEPetzCEtE
-MAGuuLWSX4JEAwxXD1c6ASuT+Q5ab0ubc0NKE7CwQpJGCo+Y6ePvLC9XL6UGijH718T7j9oq+SxQ
-GGQp/zjrEh96XvCksDKTPmFyTtETXNx4f/S05i08ag==
-=lQtO
------END PGP SIGNATURE-----
-
---L5W1K6enWIN9DczrZcMznw5E6clpitwqr--
+> -	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+> +	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
+>  		if (pzstats->vm_stat_diff[i]) {
+> -			int v = pzstats->vm_stat_diff[i];
+> +			v = pzstats->vm_stat_diff[i];
+>  			pzstats->vm_stat_diff[i] = 0;
+> -			atomic_long_add(v, &zone->vm_stat[i]);
+> -			atomic_long_add(v, &vm_zone_stat[i]);
+> +			zone_page_state_add(v, zone, i);
+>  		}
+> +	}
+>  
+>  #ifdef CONFIG_NUMA
+> -	for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++)
+> -		if (pzstats->vm_numa_stat_diff[i]) {
+> -			int v = pzstats->vm_numa_stat_diff[i];
+> -
+> -			pzstats->vm_numa_stat_diff[i] = 0;
+> -			atomic_long_add(v, &zone->vm_numa_stat[i]);
+> -			atomic_long_add(v, &vm_numa_stat[i]);
+> +	for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++) {
+> +		if (pzstats->vm_numa_event[i]) {
+> +			v = pzstats->vm_numa_event[i];
+> +			pzstats->vm_numa_event[i] = 0;
+> +			zone_numa_event_add(v, zone, i);
+>  		}
+> +	}
+>  #endif
+>  }
+>  #endif
+>  
+>  #ifdef CONFIG_NUMA
