@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B783680B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7C23680B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 14:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237105AbhDVMki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 08:40:38 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3951 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbhDVMkK (ORCPT
+        id S236926AbhDVMkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 08:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237399AbhDVMkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:40:10 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FQxkn6sj5z5t5K;
-        Thu, 22 Apr 2021 20:37:05 +0800 (CST)
-Received: from dggemi705-chm.china.huawei.com (10.3.20.104) by
- DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 22 Apr 2021 20:39:29 +0800
-Received: from dggemi757-chm.china.huawei.com (10.1.198.143) by
- dggemi705-chm.china.huawei.com (10.3.20.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 22 Apr 2021 20:39:29 +0800
-Received: from dggemi757-chm.china.huawei.com ([10.9.49.199]) by
- dggemi757-chm.china.huawei.com ([10.9.49.199]) with mapi id 15.01.2176.012;
- Thu, 22 Apr 2021 20:39:29 +0800
-From:   linruizhe <linruizhe@huawei.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "edubezval@gmail.com" <edubezval@gmail.com>,
-        "j-keerthy@ti.com" <j-keerthy@ti.com>,
-        "amitk@kernel.org" <amitk@kernel.org>,
-        "eballetbo@gmail.com" <eballetbo@gmail.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjNdIHRoZXJtYWw6IHRpLXNvYy10aGVybWFsOiBS?=
- =?utf-8?Q?emove_unused_variable_'val'?=
-Thread-Topic: [PATCH v3] thermal: ti-soc-thermal: Remove unused variable 'val'
-Thread-Index: AQHXNopQkdph70A1h02cCOdJ6yn6yaq+I1+AgAAEiYCAAAiwgIAAIVsAgAIolBA=
-Date:   Thu, 22 Apr 2021 12:39:29 +0000
-Message-ID: <7871516e6f824f35929c4ed87cbc08c4@huawei.com>
-References: <20210421084256.57591-1-linruizhe@huawei.com>
- <YH/nK6xshH+lW7e0@kroah.com>
- <8e66040e-4330-d4f0-afbb-8cae62a5082e@linaro.org>
- <YH/yQ5Hd+30DH4p/@atomide.com>
- <3116672d-4ff3-a065-f76c-1ae820e1ff95@linaro.org>
-In-Reply-To: <3116672d-4ff3-a065-f76c-1ae820e1ff95@linaro.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.110.254]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 22 Apr 2021 08:40:19 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7002EC061342;
+        Thu, 22 Apr 2021 05:39:44 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id h8so13116266edb.2;
+        Thu, 22 Apr 2021 05:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=/XBYAjJLx1qVHA3b0najgPrFujghsrg3OuSpsfyHHP4=;
+        b=ub6UevUX5WIjnc5xfmQaq6vLdQiQM/jYy6A76PwpHy8hflFs+jpEW34SwnK5IPGjEl
+         GT6Zxqdo5wVr3wdBkbIqyUqOwXW0tbBkz/usFLV4dWHp70M2MK9drZAaZhCQp2jmNZso
+         UKHhTJQ4ikTKayOMK58FXliLx9GjvX4MNsesAVYsZDoXkSR3Co2pSvrD6kaoo616v5CI
+         dX0rNxvf0SC6eKZMk+XncgG1k+e5mTwF2sWuD+VXlWxEvVyscxOYdQLoRK7IhZz7cxik
+         VzsBt8wLVezeNkwXAErl276mdIh0mxxSJSFIoXnC0sVmHJFwy6mjEkhpYLmxxL2Ua4Ig
+         JMqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/XBYAjJLx1qVHA3b0najgPrFujghsrg3OuSpsfyHHP4=;
+        b=FHvSE/ErNKWVYQcp31ywHx9Z5qyCWyEo8XlYZiKOawnpUGfdwlFhVh+gcAox3QioPc
+         5XfC6i87ksvYVZdjCAGowlGGJlNHZKRR0hqdsry8+G+yKUCJa9osahJN4S1eJVrjWcLU
+         RSJbqArG4X5yhxFzBWwyldOvzc619a0e45nsmaFj7NaFQRMmv9NkplAcQzUKK34q2tPa
+         bIsX8xIaSpjdZ9GI/3GfRhOMj3ljNlEAOvoLq7WVEmk5ZJjFlXAuh9zy1KkBW4NhEbK6
+         0XNDxYMoSGuA0TgDWXyYSfhTy0Uo4Z/3WECeDpGM3uu6cLs3C4lABA26+OQgQFHg3/xS
+         aEnw==
+X-Gm-Message-State: AOAM531nLI8kJ71RFxK+ZZLw/wso8tSwB+/Ty1ViCqSiQIvC814mfbTU
+        1xGAQOTXKyDHGh7RLln064w=
+X-Google-Smtp-Source: ABdhPJy0h2vBDFNtlTtJgHLJi2WJNAffXH4MoyYF2CIWypEpyOry+ISfMoFLwQeXV2HEScdFraYybQ==
+X-Received: by 2002:aa7:db9a:: with SMTP id u26mr3546514edt.292.1619095183258;
+        Thu, 22 Apr 2021 05:39:43 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:2fbd:d2a4:da7e:4526? ([2a02:908:1252:fb60:2fbd:d2a4:da7e:4526])
+        by smtp.gmail.com with ESMTPSA id bw26sm1757735ejb.119.2021.04.22.05.39.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 05:39:42 -0700 (PDT)
+Subject: Re: [PATCH 1/2] coda: fix reference counting in coda_file_mmap error
+ path
+To:     Jan Harkes <jaharkes@cs.cmu.edu>, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     coda@cs.cmu.edu, miklos@szeredi.hu, akpm@linux-foundation.org,
+        jgg@ziepe.ca
+References: <20210421132012.82354-1-christian.koenig@amd.com>
+ <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <f603f59b-ec52-7ad7-475a-fcf95902e145@gmail.com>
+Date:   Thu, 22 Apr 2021 14:39:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <91292A4A-5F97-4FF8-ABAD-42392A0756B5@cs.cmu.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGFuaWVsLA0KDQpEbyBJIG5lZWQgdG8gbWFrZSBtb3JlIGNoYW5nZXMgdG8gdGhpcyBwYXRj
-aD8NCg0KVGhhbmtzDQogDQogIC1MaW4gUnVpemhlDQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0N
-CuWPkeS7tuS6ujogRGFuaWVsIExlemNhbm8gW21haWx0bzpkYW5pZWwubGV6Y2Fub0BsaW5hcm8u
-b3JnXSANCuWPkemAgeaXtumXtDogMjAyMeW5tDTmnIgyMeaXpSAxOTozNw0K5pS25Lu25Lq6OiBU
-b255IExpbmRncmVuIDx0b255QGF0b21pZGUuY29tPg0K5oqE6YCBOiBHcmVnIEtIIDxncmVna2hA
-bGludXhmb3VuZGF0aW9uLm9yZz47IGxpbnJ1aXpoZSA8bGlucnVpemhlQGh1YXdlaS5jb20+OyBy
-dWkuemhhbmdAaW50ZWwuY29tOyBlZHViZXp2YWxAZ21haWwuY29tOyBqLWtlZXJ0aHlAdGkuY29t
-OyBhbWl0a0BrZXJuZWwub3JnOyBlYmFsbGV0Ym9AZ21haWwuY29tOyBsaW51eC1wbUB2Z2VyLmtl
-cm5lbC5vcmc7IGxpbnV4LW9tYXBAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5r
-ZXJuZWwub3JnDQrkuLvpopg6IFJlOiBbUEFUQ0ggdjNdIHRoZXJtYWw6IHRpLXNvYy10aGVybWFs
-OiBSZW1vdmUgdW51c2VkIHZhcmlhYmxlICd2YWwnDQoNCg0KSGkgVG9ueSwNCg0KdGhhbmtzIGZv
-ciB0ZXN0aW5nDQoNCiAgLS0gRGFuaWVsDQoNCk9uIDIxLzA0LzIwMjEgMTE6MzcsIFRvbnkgTGlu
-ZGdyZW4gd3JvdGU6DQo+ICogRGFuaWVsIExlemNhbm8gPGRhbmllbC5sZXpjYW5vQGxpbmFyby5v
-cmc+IFsyMTA0MjEgMDk6MDddOg0KPj4gT24gMjEvMDQvMjAyMSAxMDo0OSwgR3JlZyBLSCB3cm90
-ZToNCj4+PiBPbiBXZWQsIEFwciAyMSwgMjAyMSBhdCAwNDo0Mjo1NlBNICswODAwLCBMaW4gUnVp
-emhlIHdyb3RlOg0KPj4+PiBUaGUgdmFyaWFibGUgJ3ZhbCdpbiBmdW5jdGlvbiB0aV9iYW5kZ2Fw
-X3Jlc3RvcmVfY3R4dCBpcyB0aGUgDQo+Pj4+IHJlZ2lzdGVyIHZhbHVlIG9mIHJlYWQgYmFuZGdh
-cCByZWdpc3RlcnMuIFRoaXMgZnVuY3Rpb24gaXMgdG8gDQo+Pj4+IHJlc3RvcmUgdGhlIGNvbnRl
-eHQuIEJ1dCB0aGVyZSBpcyBubyBvcGVyYXRpb24gb24gdGhlIHJldHVybiB2YWx1ZSANCj4+Pj4g
-b2YgdGhpcyByZWdpc3Rlciwgc28gdGhpcyBibG9jayBpcyByZWR1bmRhbnQuIEh1bGsgcm9ib3Qg
-c2NhbnMgdGhpcyANCj4+Pj4gd2FybmluZy5UaGlzIGNvbW1pdCByZW1vdmUgdGhlIGRlYWQgY29k
-ZS4NCj4+Pj4NCj4+Pj4gUmVwb3J0ZWQtYnk6IEh1bGsgUm9ib3QgPGh1bGtjaUBodWF3ZWkuY29t
-Pg0KPj4+PiBGaXhlczogYjg3ZWE3NTlhNGNjICgic3RhZ2luZzogb21hcC10aGVybWFsOiBmaXgg
-Y29udGV4dCByZXN0b3JlIA0KPj4+PiBmdW5jdGlvbiIpDQo+Pj4+IFNpZ25lZC1vZmYtYnk6IExp
-biBSdWl6aGUgPGxpbnJ1aXpoZUBodWF3ZWkuY29tPg0KPj4+PiAtLS0NCj4+Pj4gdjM6DQo+Pj4+
-IC1BZGQgRml4ZXMgdGFnIGFuZCBtb3JlIGFjY3VyYXRlIGNvbW1pdCBtZXNzYWdlIGluIHRoaXMg
-cGF0Y2guDQo+Pj4+IHYyOg0KPj4+PiAtQXMgc3VnZ2VzdCByZW1vdmUgdGhlIHdob2xlIHVudWVz
-ZWQgYmxvY2sgaW4gZnVjdGlvbiAgDQo+Pj4+IHRpX2JhbmRnYXBfcmVzdG9yZV9jdHh0DQo+Pj4+
-DQo+Pj4+ICBkcml2ZXJzL3RoZXJtYWwvdGktc29jLXRoZXJtYWwvdGktYmFuZGdhcC5jIHwgNCAt
-LS0tDQo+Pj4+ICAxIGZpbGUgY2hhbmdlZCwgNCBkZWxldGlvbnMoLSkNCj4+Pj4NCj4+Pj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdGhlcm1hbC90aS1zb2MtdGhlcm1hbC90aS1iYW5kZ2FwLmMgDQo+
-Pj4+IGIvZHJpdmVycy90aGVybWFsL3RpLXNvYy10aGVybWFsL3RpLWJhbmRnYXAuYw0KPj4+PiBp
-bmRleCBkODFhZjg5MTY2ZDIuLjY4NGZmYjY0NWFhOSAxMDA2NDQNCj4+Pj4gLS0tIGEvZHJpdmVy
-cy90aGVybWFsL3RpLXNvYy10aGVybWFsL3RpLWJhbmRnYXAuYw0KPj4+PiArKysgYi9kcml2ZXJz
-L3RoZXJtYWwvdGktc29jLXRoZXJtYWwvdGktYmFuZGdhcC5jDQo+Pj4+IEBAIC0xMTQyLDE0ICsx
-MTQyLDEwIEBAIHN0YXRpYyBpbnQgdGlfYmFuZGdhcF9yZXN0b3JlX2N0eHQoc3RydWN0IHRpX2Jh
-bmRnYXAgKmJncCkNCj4+Pj4gIAlmb3IgKGkgPSAwOyBpIDwgYmdwLT5jb25mLT5zZW5zb3JfY291
-bnQ7IGkrKykgew0KPj4+PiAgCQlzdHJ1Y3QgdGVtcF9zZW5zb3JfcmVnaXN0ZXJzICp0c3I7DQo+
-Pj4+ICAJCXN0cnVjdCB0ZW1wX3NlbnNvcl9yZWd2YWwgKnJ2YWw7DQo+Pj4+IC0JCXUzMiB2YWwg
-PSAwOw0KPj4+PiAgDQo+Pj4+ICAJCXJ2YWwgPSAmYmdwLT5yZWd2YWxbaV07DQo+Pj4+ICAJCXRz
-ciA9IGJncC0+Y29uZi0+c2Vuc29yc1tpXS5yZWdpc3RlcnM7DQo+Pj4+ICANCj4+Pj4gLQkJaWYg
-KFRJX0JBTkRHQVBfSEFTKGJncCwgQ09VTlRFUikpDQo+Pj4+IC0JCQl2YWwgPSB0aV9iYW5kZ2Fw
-X3JlYWRsKGJncCwgdHNyLT5iZ2FwX2NvdW50ZXIpOw0KPj4+DQo+Pj4gQXJlIHlvdSBzdXJlIHRo
-YXQgdGhpcyBoYXJkd2FyZSBkb2VzIG5vdCByZXF1aXJlIHRoaXMgcmVhZCB0byBoYXBwZW4gDQo+
-Pj4gaW4gb3JkZXIgZm9yIGl0IHRvIHdvcmsgcHJvcGVybHk/DQo+Pg0KPj4gWWVzLCBpbml0aWFs
-bHkgd2UgaGFkIHRoZSBzYW1lIGNvbmNlcm4gYnV0IHdlIHdlcmUgdW5hYmxlIHRvIGZpbmQgDQo+
-PiBhbnl0aGluZyBzcGVjaWZpYyBpbiB0aGUgaGlzdG9yeS4gVGhlIGNvbW1pdCBtZW50aW9uZWQg
-YWJvdmUgcmVtb3ZlZCANCj4+IHRoZSB1c2VyIG9mIHRoZSAndmFsJyBjb2RlIGJ1dCB3aXRob3V0
-IHJlbW92aW5nIHRoaXMgYmxvY2sgb2YgY29kZS4NCj4+DQo+PiBXaGVuIGxvb2tpbmcgYXQgdGhl
-IGN1cnJlbnQgY29kZSwgaXQgcmVhbGx5IGxvb2tzIGxpa2UgYW4gb3ZlcnNpZ2h0Lg0KPiANCj4g
-WWVzIHNvIGl0IHNlZW1zLg0KPiANCj4+IFRoZXJlIGlzIG5vdGhpbmcgaW4gdGhlIGNvbW1pdCdz
-IGNoYW5nZWxvZyByZWZlcnJpbmcgdG8gYSBuZWVkIG9mIA0KPj4gcmVhZGluZyB0aGUgY291bnRl
-ciByZWdpc3RlciBidXQgcGVyaGFwcyBJJ20gd3JvbmcgYmVjYXVzZSBJJ20gbm90IA0KPj4gc3Vy
-ZSB0byB1bmRlcnN0YW5kIGNvcnJlY3RseSB0aGUgY2hhbmdlbG9nLg0KPj4NCj4+PiBMb3RzIG9m
-IGhhcmR3YXJlIGRvZXMgbmVlZCB0aGlzLCBoYXZlIHlvdSB0ZXN0ZWQgdGhpcz8NCj4gDQo+IEkg
-anVzdCB0ZXN0ZWQgdGhpcyBvbiBvbWFwMyBsb2dpY3BkIHRvcnBlZG8gZGV2a2l0IHRoYXQgY2Fu
-IGRvIG9mZiANCj4gZHVyaW5nIGlkbGUgYW5kIHJlYWRpbmcgL3N5cy9jbGFzcy90aGVybWFsL3Ro
-ZXJtYWxfem9uZTAvdGVtcCB3b3Jrcy4gDQo+IFNvIGZlZWwgZnJlZSB0byBhZGQ6DQo+IA0KPiBS
-ZXZpZXdlZC1ieTogVG9ueSBMaW5kZ3JlbiA8dG9ueUBhdG9taWRlLmNvbT4NCj4gVGVzdGVkLWJ5
-OiBUb255IExpbmRncmVuIDx0b255QGF0b21pZGUuY29tPg0KDQpUaGFua3MgZm9yIHRlc3RpbmcN
-Cg0KDQotLQ0KPGh0dHA6Ly93d3cubGluYXJvLm9yZy8+IExpbmFyby5vcmcg4pSCIE9wZW4gc291
-cmNlIHNvZnR3YXJlIGZvciBBUk0gU29Dcw0KDQpGb2xsb3cgTGluYXJvOiAgPGh0dHA6Ly93d3cu
-ZmFjZWJvb2suY29tL3BhZ2VzL0xpbmFybz4gRmFjZWJvb2sgfCA8aHR0cDovL3R3aXR0ZXIuY29t
-LyMhL2xpbmFyb29yZz4gVHdpdHRlciB8IDxodHRwOi8vd3d3LmxpbmFyby5vcmcvbGluYXJvLWJs
-b2cvPiBCbG9nDQo=
+Hi Jan,
+
+Am 22.04.21 um 14:27 schrieb Jan Harkes:
+> Looks good to me.
+>
+> I'm also maintaining an out of tree coda module build that people sometimes use, which has workarounds for differences between the various kernel versions.
+>
+> Do you have a reference to the corresponding mmap_region change? If it is merged already I'll probably be able to find it. Is this mmap_region change expected to be backported to any lts kernels?
+
+That is the following upstream commit in Linus tree:
+
+commit 1527f926fd04490f648c42f42b45218a04754f87
+Author: Christian König <christian.koenig@amd.com>
+Date:   Fri Oct 9 15:08:55 2020 +0200
+
+     mm: mmap: fix fput in error path v2
+
+But I don't think we should backport that.
+
+And sorry for the noise. We had so many places which expected different 
+behavior that I didn't noticed that two occasions in the fs code 
+actually rely on the current behavior.
+
+For your out of tree module you could make the code version independent 
+by setting the vma back to the original file in case of an error. That 
+should work with both behaviors in mmap_region.
+
+Thanks,
+Christian.
+
+>
+> Jan
+>
+> On April 21, 2021 9:20:11 AM EDT, "Christian König" <ckoenig.leichtzumerken@gmail.com> wrote:
+>> mmap_region() now calls fput() on the vma->vm_file.
+>>
+>> So we need to drop the extra reference on the coda file instead of the
+>> host file.
+>>
+>> Signed-off-by: Christian König <christian.koenig@amd.com>
+>> Fixes: 1527f926fd04 ("mm: mmap: fix fput in error path v2")
+>> CC: stable@vger.kernel.org # 5.11+
+>> ---
+>> fs/coda/file.c | 6 +++---
+>> 1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/coda/file.c b/fs/coda/file.c
+>> index 128d63df5bfb..ef5ca22bfb3e 100644
+>> --- a/fs/coda/file.c
+>> +++ b/fs/coda/file.c
+>> @@ -175,10 +175,10 @@ coda_file_mmap(struct file *coda_file, struct
+>> vm_area_struct *vma)
+>> 	ret = call_mmap(vma->vm_file, vma);
+>>
+>> 	if (ret) {
+>> -		/* if call_mmap fails, our caller will put coda_file so we
+>> -		 * should drop the reference to the host_file that we got.
+>> +		/* if call_mmap fails, our caller will put host_file so we
+>> +		 * should drop the reference to the coda_file that we got.
+>> 		 */
+>> -		fput(host_file);
+>> +		fput(coda_file);
+>> 		kfree(cvm_ops);
+>> 	} else {
+>> 		/* here we add redirects for the open/close vm_operations */
+
