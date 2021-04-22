@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7757367A3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A7D367A40
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234899AbhDVGx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S230232AbhDVGxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbhDVGxR (ORCPT
+        with ESMTP id S231148AbhDVGxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:53:17 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725BDC061343;
-        Wed, 21 Apr 2021 23:52:27 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id o9-20020a1c41090000b029012c8dac9d47so2584845wma.1;
-        Wed, 21 Apr 2021 23:52:27 -0700 (PDT)
+        Thu, 22 Apr 2021 02:53:52 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726E7C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:53:17 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id a18so9318868qtj.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Apr 2021 23:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4Mr+n7ZQ3cZFYLCKc8MLozw5D9Em36zAwZCuEwbAFBs=;
-        b=PTcqXGzYbqtq9HA89/Giwu3cBu7geqyM810zNixuMHsF3K9ttvmSrqU64g2znksMH6
-         3bllN0oMbvJxaDy7AZWDgNTdwv+3ZzKdTWBHYtmsI2LDzJ0m90d6WwHh6lVB/dvbIOuB
-         Sv+dqcTOOdgdk6f6B2ckw3SduKqIfImSO0oy8SHVVqBSXqDhqlSlOqsAGTCe/DVG79cj
-         FAJy5c1j1Se+o2uOyRnBZaaf6YOUtd+cqPmo5s4E3h1qHveLqYRX6UnJIfFqVbpwJX1s
-         8LpT898HeXPwK9Sa++Hpyi8glA9+4mbu1AsNEeouIVpK26fFpR1JU+8ypWsheGfXFaOj
-         Cx4w==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=iAm0246eJyOaq+VpTTXw3YrglwQ5iHG6TngAXGPaQRw=;
+        b=ekJ/GDgCQ9NOq6O1EftMPEmUOhEniGvpya5e8SR/jPXE4pX8ffj0wdPdXZLh01njBa
+         5XU/c3Q1akLwfalBI/qlBGDXoAcS2ORsCDH7bjHm9JVWTzlEPrD/SEMvqoF4doKvliTI
+         jf/0t33qLbsc1cnKZUu0t9s4kLhtz//kDPu8Syi2N5/q1+hkzD7CIZno6oIUccb78LdK
+         PEBpEz7jKknpO7H1rk37NZ8UD6oe8OeGfS03+d35bWJIM+cORsoc0v8lzmSqt9HcSw1p
+         F98iYt29KP018HS+tFvrSjv1TawFoFTeYxyhJ9oelRS4dBqCN+PP0m1eop5mtpTuXAv1
+         DFMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4Mr+n7ZQ3cZFYLCKc8MLozw5D9Em36zAwZCuEwbAFBs=;
-        b=tJsLZ6Q4gpsny8Kbx7/NgBtEFmhUaD537RABQg0awrj8bJC7Ra1IZaEa2w//xy5sdL
-         qD2kYE1dLMMvyY0FuUR+NnPMMeACy11lZ8d8WWGiBQgjQ50ne+pcHIhizUgVZ0bz7sF7
-         4svmRuo9/20WY+sFJ9iPIl4r+MifJUwk++3fbmplwzPINsCQSCGZq5j5daqZTrFBHrDS
-         9wKBx0KQrB+sF5XLwnQ9rjGfUAnSLtUSOVm85v8JKcmSZsCiSb0DGxiQeozGe7cdFFRu
-         oL81NB/R35cpI0UB5aQM2fedsn4Gz55gLM6C4E/AB7se5AnuFLvBVkAog0Hx4OpvX27S
-         ZnDA==
-X-Gm-Message-State: AOAM5319LSOoMvvnfHzXp71BZ7CUGiEOC9/kJLMmccZ78ZWCtJejV8pp
-        yMOQPIBp0DvXDgnvdkC8LkQ=
-X-Google-Smtp-Source: ABdhPJyVX/Mx6WDBKnlla2+e7c/JaAz/PfBMvtW7Rja4vz/A/dPhSnPaqO35XxD4PDJdlIjI5jzeWw==
-X-Received: by 2002:a1c:9d85:: with SMTP id g127mr13658126wme.62.1619074345858;
-        Wed, 21 Apr 2021 23:52:25 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id v2sm1972259wrr.26.2021.04.21.23.52.25
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=iAm0246eJyOaq+VpTTXw3YrglwQ5iHG6TngAXGPaQRw=;
+        b=ZNTPrdtPqFjzNJblMh/y2BiHlMy3qZj3YfpxNhRC4UiNaE2hCqQcoQdMeGvQQEcpen
+         +8GgHKisDwrgBF6wJzwzdcQNuAdvyZ9OC/xIZWkzpkbhtB01mMQAE92Bm0ies8DrE7gv
+         ur/6/koRZIlmPN4Sn0R7723bQZ7+G3IMLAHfSvjfJo78X8bEcBvw1Rg9PxawttiR2HlQ
+         enxelKRgECTO+w96qqBYNMXoi5F7bEI+ng4m5dAMKAtDBAbeHskUNQaB7bRb1A/ViujW
+         s57k7wPW0tE4kIvgnHtS001j44g1ho0MC0JMjwHeaI99VYozQobtnoPrOPmf/xaFd0/r
+         nYsg==
+X-Gm-Message-State: AOAM530cuH40bEUx9OozKyUL9rwVR706kXZ3+bUfQDJE78XxK0nruXcP
+        ZvMk2BtVo5SPudSE0xiWN0/rN1se354=
+X-Google-Smtp-Source: ABdhPJz6IVp3/kP3Nos6ocKWVEplVJWfejg+HRZjVHCd8geVXas43GYZo3VQvrSby2xDEgzF1C+HFA==
+X-Received: by 2002:ac8:7089:: with SMTP id y9mr1695704qto.207.1619074396738;
+        Wed, 21 Apr 2021 23:53:16 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
+        by smtp.gmail.com with ESMTPSA id d4sm1761854qtp.23.2021.04.21.23.53.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 23:52:25 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 08:52:23 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: cortina/gemini: hwrng: what is its quality ?
-Message-ID: <YIEdJ3G/QwA8/BEU@Red>
-References: <YICFBQ8mQRJ4zSh9@Red>
- <20210422001430.GA4246@gondor.apana.org.au>
+        Wed, 21 Apr 2021 23:53:16 -0700 (PDT)
+Message-ID: <2f985cdb2a62c52ce2a26118f1966c00176cc4b9.camel@gmail.com>
+Subject: Re: [PATCH 1/1] powerpc/kernel/iommu: Align size for
+ IOMMU_PAGE_SIZE() to save TCEs
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Thu, 22 Apr 2021 03:53:13 -0300
+In-Reply-To: <20210318174414.684630-1-leobras.c@gmail.com>
+References: <20210318174414.684630-1-leobras.c@gmail.com>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422001430.GA4246@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Thu, Apr 22, 2021 at 10:14:30AM +1000, Herbert Xu a �crit :
-> On Wed, Apr 21, 2021 at 10:03:17PM +0200, Corentin Labbe wrote:
-> > hello
-> > 
-> > I work on the crypto part of the cortina/gemini SL3516 SoC.
-> > The datasheet mention a HWRNG in its IP but really briefly:
-> > """
-> > The implementation is a 32-bit Hardware Random Number Generator that has a uniformed
-> > distribution between 0 and 2^32 -1. The hardware randomness is created by sampling data from
-> > different clock domains, and feeding it as input to the 32-bit maximum length LFSR (Linear Feedback
-> > Shift Register)
-> > """
-> > 
-> > Piping its output to rngtest give:
-> > dd if=/dev/hwrng count=2000 bs=2048 | rngtest
-> > rngtest 6.11
-> > rngtest: starting FIPS tests...
-> > rngtest: entropy source drained
-> > rngtest: bits received from input: 32768000
-> > rngtest: FIPS 140-2 successes: 1191
-> > rngtest: FIPS 140-2 failures: 447
-> > rngtest: FIPS 140-2(2001-10-10) Monobit: 183
-> > rngtest: FIPS 140-2(2001-10-10) Poker: 116
-> > rngtest: FIPS 140-2(2001-10-10) Runs: 346
-> > 2000+0 records in
-> > 2000+0 records out
-> > rngtest: FIPS 140-2(2001-10-10) Long run: 0
-> > rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-> > rngtest: input channel speed: (min=303.606; avg=3143.352; max=9712.208)Kibits/s
-> > rngtest: FIPS tests speed: (min=7.104; avg=10.332; max=10.638)Mibits/s
-> > rngtest: Program run time: 13303224 microseconds
-> > 
-> > That's a quite number of failure.
-> > Can the hwrng still be used with some "hwrng->quality" setting ?
-> > Or it is just too many failure to be used ?
-> 
-> If in doubt just leave it zero and the admin can override it if
-> necessary.
-> 
+Hello,
 
-But as an admin, what value I can set ?
-If I do a rule-of-3, success rate is 73%.
-So does a quality of 730 is ok ?
+This patch was also reviewed when it was part of another patchset:
+http://patchwork.ozlabs.org/project/linuxppc-dev/patch/20200911170738.82818-4-leobras.c@gmail.com/
+
+On Thu, 2021-03-18 at 14:44 -0300, Leonardo Bras wrote:
+> Currently both iommu_alloc_coherent() and iommu_free_coherent() align the
+> desired allocation size to PAGE_SIZE, and gets system pages and IOMMU
+> mappings (TCEs) for that value.
+> 
+> When IOMMU_PAGE_SIZE < PAGE_SIZE, this behavior may cause unnecessary
+> TCEs to be created for mapping the whole system page.
+> 
+> Example:
+> - PAGE_SIZE = 64k, IOMMU_PAGE_SIZE() = 4k
+> - iommu_alloc_coherent() is called for 128 bytes
+> - 1 system page (64k) is allocated
+> - 16 IOMMU pages (16 x 4k) are allocated (16 TCEs used)
+> 
+> It would be enough to use a single TCE for this, so 15 TCEs are
+> wasted in the process.
+> 
+> Update iommu_*_coherent() to make sure the size alignment happens only
+> for IOMMU_PAGE_SIZE() before calling iommu_alloc() and iommu_free().
+> 
+> Also, on iommu_range_alloc(), replace ALIGN(n, 1 << tbl->it_page_shift)
+> with IOMMU_PAGE_ALIGN(n, tbl), which is easier to read and does the
+> same.
+> 
+> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> ---
+>  arch/powerpc/kernel/iommu.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+> index 5b69a6a72a0e..3329ef045805 100644
+> --- a/arch/powerpc/kernel/iommu.c
+> +++ b/arch/powerpc/kernel/iommu.c
+> @@ -851,6 +851,7 @@ void *iommu_alloc_coherent(struct device *dev, struct iommu_table *tbl,
+>  	unsigned int order;
+>  	unsigned int nio_pages, io_order;
+>  	struct page *page;
+> +	size_t size_io = size;
+>  
+> 
+>  	size = PAGE_ALIGN(size);
+>  	order = get_order(size);
+> @@ -877,8 +878,9 @@ void *iommu_alloc_coherent(struct device *dev, struct iommu_table *tbl,
+>  	memset(ret, 0, size);
+>  
+> 
+>  	/* Set up tces to cover the allocated range */
+> -	nio_pages = size >> tbl->it_page_shift;
+> -	io_order = get_iommu_order(size, tbl);
+> +	size_io = IOMMU_PAGE_ALIGN(size_io, tbl);
+> +	nio_pages = size_io >> tbl->it_page_shift;
+> +	io_order = get_iommu_order(size_io, tbl);
+>  	mapping = iommu_alloc(dev, tbl, ret, nio_pages, DMA_BIDIRECTIONAL,
+>  			      mask >> tbl->it_page_shift, io_order, 0);
+>  	if (mapping == DMA_MAPPING_ERROR) {
+> @@ -893,10 +895,9 @@ void iommu_free_coherent(struct iommu_table *tbl, size_t size,
+>  			 void *vaddr, dma_addr_t dma_handle)
+>  {
+>  	if (tbl) {
+> -		unsigned int nio_pages;
+> +		size_t size_io = IOMMU_PAGE_ALIGN(size, tbl);
+> +		unsigned int nio_pages = size_io >> tbl->it_page_shift;
+>  
+> 
+> -		size = PAGE_ALIGN(size);
+> -		nio_pages = size >> tbl->it_page_shift;
+>  		iommu_free(tbl, dma_handle, nio_pages);
+>  		size = PAGE_ALIGN(size);
+>  		free_pages((unsigned long)vaddr, get_order(size));
+
 
