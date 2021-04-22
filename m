@@ -2,191 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C10367F4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF79367F5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 13:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235992AbhDVLKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 07:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235955AbhDVLKp (ORCPT
+        id S236021AbhDVLP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 07:15:29 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:49629 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229972AbhDVLP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:10:45 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118B1C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:10:11 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id u7so21535818plr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 04:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=f/chTt+osIkWJLziQJ8wWSuoRfhyDdiRVm7MrtKaXiw=;
-        b=mKEimyLVIPVuavwkFK4Vb3mGCyutLIp6e9a8JjPK/FFPW99UQ93YReQbFuVbbvYOKh
-         ZqI1JiF6j/DGu+RKyl66iB+Fud+quoPHmOyvwLmRyq1B30khiYq/jT2O/0S91hsUOBWe
-         Y5/aJGO+b2YzcZVXEb61OVpKVm1fKq6EnN3qA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=f/chTt+osIkWJLziQJ8wWSuoRfhyDdiRVm7MrtKaXiw=;
-        b=meNuH+vS1ii2nRIuJLAyMI1Xfxy6IDbaO6zSsQ69bDEEFlEqkvo4cH7k12OtmJcfKH
-         ZeeleyBlae2VcZad9LzudfeCZ3XFxsydOAL6GY7byFQroORm++hqxCMoJNZEskJL446+
-         W/qK1h+yw1FaM3SJz7iQLqXvYdWXuuZsQQI+1mLsMWKdjVXFv7ytVHTPj4zeuptWioQ0
-         mkOKh8yzZ1cOcejY25lyLl7k38AnnVxghM8sRYSMyBzbAdBRYI5tn0f816wnoPMKJkIs
-         Uy1zUVcTpYB1DifdXARMvSwoTdgwbWqke0f18N9jobmrQbMv8reTm+V0sp0PfPWOAzK4
-         R/xQ==
-X-Gm-Message-State: AOAM533GqkuL55FSw1NHVRLuEGuYK6ZuTN9XbN2Cb753cVtaFY6gOwwp
-        QqB4SKxdXU6gcD79btCD/FfgAQ==
-X-Google-Smtp-Source: ABdhPJzKmYE6lUmhguTsDYgVEbYMCSAPKAPA5tLk2yNfUIXlQfSHEfR7PN9tItvv7RCFRP5pYJ5+Kw==
-X-Received: by 2002:a17:90b:17c9:: with SMTP id me9mr16537781pjb.233.1619089810552;
-        Thu, 22 Apr 2021 04:10:10 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:daa5:b736:ed85:e08d])
-        by smtp.gmail.com with ESMTPSA id 1sm2004045pjx.46.2021.04.22.04.10.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 04:10:10 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        CK Hu <ck.hu@mediatek.com>, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/mediatek: clear pending flag when cmdq packet is done.
-Date:   Thu, 22 Apr 2021 19:10:04 +0800
-Message-Id: <20210422111004.1338867-1-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+        Thu, 22 Apr 2021 07:15:28 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id CF2C6F8394
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 12:14:51 +0100 (IST)
+Received: (qmail 9083 invoked from network); 22 Apr 2021 11:14:51 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.248])
+  by 81.17.254.9 with ESMTPA; 22 Apr 2021 11:14:51 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/9 v5] Use local_lock for pcp protection and reduce stat overhead
+Date:   Thu, 22 Apr 2021 12:14:32 +0100
+Message-Id: <20210422111441.24318-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: CK Hu <ck.hu@mediatek.com>
+Changelog since v4
+o Dropped local_lock embed patch due to complexity
+o Fix !NUMA build
+o Avoid adding pages with mt >= MIGRATE_PCPTYPES to non-existant per-cpu list
 
-In cmdq mode, packet may be flushed before it is executed, so
-the pending flag should be cleared after cmdq packet is done.
+Changelog since v3
+o Preserve NUMA_* counters after CPU hotplug
+o Drop "mm/page_alloc: Remove duplicate checks if migratetype should be isolated"
+o Add micro-optimisation tracking PFN during free_unref_page_list
+o Add Acks
 
-Signed-off-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c  | 56 +++++++++++++++++++++---
- include/linux/mailbox/mtk-cmdq-mailbox.h |  1 +
- 2 files changed, 51 insertions(+), 6 deletions(-)
+Changelog since v2
+o Fix zonestats initialisation
+o Merged memory hotplug fix separately
+o Embed local_lock within per_cpu_pages
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 40df2c823187..051bf0eb00d3 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -224,6 +224,45 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(struct drm_crtc *crtc,
- #if IS_REACHABLE(CONFIG_MTK_CMDQ)
- static void ddp_cmdq_cb(struct cmdq_cb_data data)
- {
-+	struct cmdq_pkt *pkt = (struct cmdq_pkt *)data.data;
-+	struct mtk_drm_crtc *mtk_crtc = (struct mtk_drm_crtc *)pkt->crtc;
-+	struct mtk_crtc_state *state = to_mtk_crtc_state(mtk_crtc->base.state);
-+	unsigned int i;
-+
-+	if (data.sta == CMDQ_CB_ERROR)
-+		goto destroy_pkt;
-+
-+	if (state->pending_config) {
-+		state->pending_config = false;
-+	}
-+
-+	if (mtk_crtc->pending_planes) {
-+		for (i = 0; i < mtk_crtc->layer_nr; i++) {
-+			struct drm_plane *plane = &mtk_crtc->planes[i];
-+			struct mtk_plane_state *plane_state;
-+
-+			plane_state = to_mtk_plane_state(plane->state);
-+
-+			if (plane_state->pending.config)
-+				plane_state->pending.config = false;
-+		}
-+		mtk_crtc->pending_planes = false;
-+	}
-+
-+	if (mtk_crtc->pending_async_planes) {
-+		for (i = 0; i < mtk_crtc->layer_nr; i++) {
-+			struct drm_plane *plane = &mtk_crtc->planes[i];
-+			struct mtk_plane_state *plane_state;
-+
-+			plane_state = to_mtk_plane_state(plane->state);
-+
-+			if (plane_state->pending.async_config)
-+				plane_state->pending.async_config = false;
-+		}
-+		mtk_crtc->pending_async_planes = false;
-+	}
-+
-+destroy_pkt:
- 	cmdq_pkt_destroy(data.data);
- }
- #endif
-@@ -377,8 +416,8 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 				    state->pending_height,
- 				    state->pending_vrefresh, 0,
- 				    cmdq_handle);
--
--		state->pending_config = false;
-+		if (!cmdq_handle)
-+			state->pending_config = false;
- 	}
- 
- 	if (mtk_crtc->pending_planes) {
-@@ -398,9 +437,11 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 				mtk_ddp_comp_layer_config(comp, local_layer,
- 							  plane_state,
- 							  cmdq_handle);
--			plane_state->pending.config = false;
-+			if (!cmdq_handle)
-+				plane_state->pending.config = false;
- 		}
--		mtk_crtc->pending_planes = false;
-+		if (!cmdq_handle)
-+			mtk_crtc->pending_planes = false;
- 	}
- 
- 	if (mtk_crtc->pending_async_planes) {
-@@ -420,9 +461,11 @@ static void mtk_crtc_ddp_config(struct drm_crtc *crtc,
- 				mtk_ddp_comp_layer_config(comp, local_layer,
- 							  plane_state,
- 							  cmdq_handle);
--			plane_state->pending.async_config = false;
-+			if (!cmdq_handle)
-+				plane_state->pending.async_config = false;
- 		}
--		mtk_crtc->pending_async_planes = false;
-+		if (!cmdq_handle)
-+			mtk_crtc->pending_async_planes = false;
- 	}
- }
- 
-@@ -475,6 +518,7 @@ static void mtk_drm_crtc_update_config(struct mtk_drm_crtc *mtk_crtc,
- 		cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
- 		mtk_crtc_ddp_config(crtc, cmdq_handle);
- 		cmdq_pkt_finalize(cmdq_handle);
-+		cmdq_handle->crtc = mtk_crtc;
- 		cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handle);
- 	}
- #endif
-diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mailbox/mtk-cmdq-mailbox.h
-index d5a983d65f05..c06b14ec03e5 100644
---- a/include/linux/mailbox/mtk-cmdq-mailbox.h
-+++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
-@@ -90,6 +90,7 @@ struct cmdq_pkt {
- 	struct cmdq_task_cb	cb;
- 	struct cmdq_task_cb	async_cb;
- 	void			*cl;
-+	void			*crtc;
- };
- 
- u8 cmdq_get_shift_pa(struct mbox_chan *chan);
+This series requires patches in Andrew's tree so for convenience, it's
+also available at
+
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v5r2
+
+The PCP (per-cpu page allocator in page_alloc.c) shares locking
+requirements with vmstat and the zone lock which is inconvenient and
+causes some issues. For example, the PCP list and vmstat share the
+same per-cpu space meaning that it's possible that vmstat updates dirty
+cache lines holding per-cpu lists across CPUs unless padding is used.
+Second, PREEMPT_RT does not want to disable IRQs for too long in the
+page allocator.
+
+This series splits the locking requirements and uses locks types more
+suitable for PREEMPT_RT, reduces the time when special locking is required
+for stats and reduces the time when IRQs need to be disabled on !PREEMPT_RT
+kernels.
+
+Why local_lock? PREEMPT_RT considers the following sequence to be unsafe
+as documented in Documentation/locking/locktypes.rst
+
+   local_irq_disable();
+   spin_lock(&lock);
+
+The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
+-> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). While it's possible to
+separate this out, it generally means there are points where we enable
+IRQs and reenable them again immediately. To prevent a migration and the
+per-cpu pointer going stale, migrate_disable is also needed. That is a
+custom lock that is similar, but worse, than local_lock. Furthermore,
+on PREEMPT_RT, it's undesirable to leave IRQs disabled for too long.
+By converting to local_lock which disables migration on PREEMPT_RT, the
+locking requirements can be separated and start moving the protections
+for PCP, stats and the zone lock to PREEMPT_RT-safe equivalent locking. As
+a bonus, local_lock also means that PROVE_LOCKING does something useful.
+
+After that, it's obvious that zone_statistics incurs too much overhead
+and leaves IRQs disabled for longer than necessary on !PREEMPT_RT
+kernels. zone_statistics uses perfectly accurate counters requiring IRQs
+be disabled for parallel RMW sequences when inaccurate ones like vm_events
+would do. The series makes the NUMA statistics (NUMA_HIT and friends)
+inaccurate counters that then require no special protection on !PREEMPT_RT.
+
+The bulk page allocator can then do stat updates in bulk with IRQs enabled
+which should improve the efficiency.  Technically, this could have been
+done without the local_lock and vmstat conversion work and the order
+simply reflects the timing of when different series were implemented.
+
+Finally, there are places where we conflate IRQs being disabled for the
+PCP with the IRQ-safe zone spinlock. The remainder of the series reduces
+the scope of what is protected by disabled IRQs on !PREEMPT_RT kernels.
+By the end of the series, page_alloc.c does not call local_irq_save so
+the locking scope is a bit clearer. The one exception is that modifying
+NR_FREE_PAGES still happens in places where it's known the IRQs are
+disabled as it's harmless for PREEMPT_RT and would be expensive to split
+the locking there.
+
+No performance data is included because despite the overhead of the stats,
+it's within the noise for most workloads on !PREEMPT_RT. However, Jesper
+Dangaard Brouer ran a page allocation microbenchmark on a E5-1650 v4 @
+3.60GHz CPU on the first version of this series. Focusing on the array
+variant of the bulk page allocator reveals the following.
+
+(CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
+ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
+
+         Baseline        Patched
+ 1       56.383          54.225 (+3.83%)
+ 2       40.047          35.492 (+11.38%)
+ 3       37.339          32.643 (+12.58%)
+ 4       35.578          30.992 (+12.89%)
+ 8       33.592          29.606 (+11.87%)
+ 16      32.362          28.532 (+11.85%)
+ 32      31.476          27.728 (+11.91%)
+ 64      30.633          27.252 (+11.04%)
+ 128     30.596          27.090 (+11.46%)
+
+While this is a positive outcome, the series is more likely to be
+interesting to the RT people in terms of getting parts of the PREEMPT_RT
+tree into mainline.
+
+ drivers/base/node.c    |  18 +--
+ include/linux/mmzone.h |  31 +++--
+ include/linux/vmstat.h |  65 ++++++-----
+ mm/mempolicy.c         |   2 +-
+ mm/page_alloc.c        | 255 ++++++++++++++++++++++++-----------------
+ mm/vmstat.c            | 255 ++++++++++++++++-------------------------
+ 6 files changed, 323 insertions(+), 303 deletions(-)
+
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+2.26.2
 
