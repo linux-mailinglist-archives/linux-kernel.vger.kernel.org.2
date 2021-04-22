@@ -2,144 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBA1368656
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393A636865A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 20:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236795AbhDVSFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 14:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S238241AbhDVSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 14:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDVSFf (ORCPT
+        with ESMTP id S236287AbhDVSGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:05:35 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9089FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:04:58 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id z16so33380666pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 11:04:58 -0700 (PDT)
+        Thu, 22 Apr 2021 14:06:17 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C26C06174A;
+        Thu, 22 Apr 2021 11:05:41 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id n140so46627394oig.9;
+        Thu, 22 Apr 2021 11:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8DyCq2os32b/ZRYdNBKzb//1RkdLowyIWLVKKhCF2PA=;
-        b=HGV9QCo1og7yK9vy+06kusMk4C4C0iyhIm/rxx6EmD/OOC9gQOMKVXWssLLl4HmsfL
-         U+xHZngoKH6ToiI8LVc1ftY6d5QuSPB84p5PzvNJhRX2pnHLI4cqOFuaoHi9C+UnfiY3
-         8PCLSP8NeZ6ourTHYXWEAOElYqAYkMFOPFECiGpwxqIxAKeTCEjjwaNH9Qsrlb+4AtQ/
-         JmRrNW7U3a2nRru5wGA02I3eFIH1cwGKNZog/6xiKTU8S/XlKW5uAtRiPWe4rFdAzSet
-         CZ85My4JJ5cTDaImWSHFps6pcjFJBsiz7UC3Ugnidmd10N60yfhfbaBx4/8kG2TOzw5V
-         t7aQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=17m0G7DImnLvNaA0ALmee3EGwU+5fWnJUzbWancxTSI=;
+        b=owTpyRcQwbSTb/u9rOV3Ef/i1PgEh57DdgCyWP088HtpsxxA3m3T3ayh+B8f8FzBDa
+         +J1dOck59tmd6m5CV3rpDl7gsoaMpuYHDRNAmYpqG6oe/e/fPq+Pcqe/eCzvd5C5sTRG
+         H1NkNEHWr7SqxCJVSL8H5roJwtfqhSalAM/nNUmfwgV5ib7aEcXpRK1iISPaIK1/jGNS
+         EVVt/wnvYYrl3hds1I1AZvAMmXDQV2b3s9XVVH4Q57iuk1NofSfYfd/qZaZkrig+hu5/
+         olgZljXWWd4VC6TI0YHlMhbxd75knYX8tW0TvYgXUA/EeMcNrakN5O/XErk7wgNWsjTD
+         rl0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8DyCq2os32b/ZRYdNBKzb//1RkdLowyIWLVKKhCF2PA=;
-        b=HXvPlandZVDgaBtemCfvMiMDtuqwkwxAXtXY3h+SjzOuvjNOark0DtsLEJjuZ/eQM1
-         VB6EoV/yITx5wJGnj3+LoWmI3YuE17dG1QQq44GOINo7ZbaolqjSHZYmjWH2uCli63lM
-         crLZU++0wymDj1gKM/kDFOofbWZvLkG17d4GMfUV/Xrgorz2oRkIfA7/TanO/61dvrYz
-         VlFTeowJ+Lv4L4CNTcqMv6kH7sTLH2xhKbdl14DxSkRLwh2O4durFzTc8RaQIde2W16D
-         dpIjW0ZXGWArVLM9YwOKBvxayyuDF0rjimBnKZyA0E21CQ26MNxfI8L7QteAkssgpLgG
-         90cg==
-X-Gm-Message-State: AOAM533hY/HnNsgM07vivWLr8hlXp5eTdC6GkvBDxBozHfElp6ZdA1PZ
-        bp9M1GPD0O2LfHYdBEH31hq33g==
-X-Google-Smtp-Source: ABdhPJxzJk0/sfz834RgXlWUfIvDG1YLrHWPOrAQK4/gxBQuAPVSSE51shnGQjktSlxxUzCBC5uHuw==
-X-Received: by 2002:aa7:9add:0:b029:260:8c8a:91fb with SMTP id x29-20020aa79add0000b02902608c8a91fbmr4745676pfp.21.1619114698034;
-        Thu, 22 Apr 2021 11:04:58 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d4sm5309906pjz.49.2021.04.22.11.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 11:04:56 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 12:04:55 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        psodagud@codeaurora.org, eberman@codeaurora.org
-Subject: Re: [PATCH] remoteproc: core: Move cdev add before device add
-Message-ID: <20210422180455.GE1256950@xps15>
-References: <1618946805-26970-1-git-send-email-sidgup@codeaurora.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=17m0G7DImnLvNaA0ALmee3EGwU+5fWnJUzbWancxTSI=;
+        b=tXXY7eTgVNu/dSEbvhvu4EiAduXZSamH82ydZEE/WUPRS093KmR50zNbYOqq2ZRNF5
+         lrMxKVrqt6lElI4ihReAgjDjQn6NAeaXI5GB2IFConERmJxPXHN59QFwI89wdV1DQQAo
+         +PYrurYNI3z/gxmDUqvGvNin2W5fgMzZMLccd/6gOH4nZb3BJCP7O26ewBFkUUd5Y5a1
+         hzbxWIvrNgV//rs36ufuKj3uTS/Q1yrTZt8yn2LrQJrgOVip+ZJUrKAkFrRw3vivkJ7d
+         CU7XH3ZRiIsewGb8hmQrLsp1TFBB4lv0CG/pS13suzDVJybd8Cpb+CZ19D7imVw/NFuA
+         LlDA==
+X-Gm-Message-State: AOAM532dfvlXbpxrn5Q7FErONySJ/0CvH3P8SmgOba++A1tpVHaliGlp
+        /wjuS2+sZxh/EbIXmTVqMxxJWOkP1so=
+X-Google-Smtp-Source: ABdhPJw0god0XZwiUQLDg7+c+UlduCOc32cSMSxfM6LoUI9lD3N+e/ZhfW9tOQD81embb2byHZoMvg==
+X-Received: by 2002:a05:6808:1302:: with SMTP id y2mr3180685oiv.86.1619114741346;
+        Thu, 22 Apr 2021 11:05:41 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h9sm784695otr.67.2021.04.22.11.05.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 22 Apr 2021 11:05:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 22 Apr 2021 11:05:39 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Francesco Zanella <francesco.zanella@vimar.com>
+Cc:     linux-watchdog@vger.kernel.org, wim@linux-watchdog.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] watchdog: gpio_wdt: add "start-at-boot" feature
+Message-ID: <20210422180539.GB107132@roeck-us.net>
+References: <20210421162621.24910-1-francesco.zanella@vimar.com>
+ <20210421162621.24910-3-francesco.zanella@vimar.com>
+ <20210421164228.GB110463@roeck-us.net>
+ <1b53153c-e890-cf3c-74f7-9106965c23fe@vimar.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1618946805-26970-1-git-send-email-sidgup@codeaurora.org>
+In-Reply-To: <1b53153c-e890-cf3c-74f7-9106965c23fe@vimar.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Siddharth,
-
-On Tue, Apr 20, 2021 at 12:26:45PM -0700, Siddharth Gupta wrote:
-> When cdev_add is called after device_add has been called there is no
-> way for the userspace to know about the addition of a cdev as cdev_add
-> itself doesn't trigger a uevent notification, or for the kernel to
-> know about the change to devt. This results in two problems:
->  - mknod is never called for the cdev and hence no cdev appears on
->    devtmpfs.
->  - sysfs links to the new cdev are not established.
+On Thu, Apr 22, 2021 at 06:28:40PM +0200, Francesco Zanella wrote:
 > 
-> Based on how cdev_device_add[1] is written, it appears that the correct
-
-Please don't add this kind of reference to the change log as it will become
-invalid with time.
-
-> way to use these APIs is to call cdev_add before device_add is called.
-> Since the cdev is an optional feature for remoteproc we cannot directly
-> use the existing API.
-
-Please explain why the existing API can't be used directly.
-
-> Hence moving rproc_char_device_add() before
-> device_add() in rproc_add().
 > 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/char_dev.c#n537
+> On 21/04/21 18:42, Guenter Roeck wrote:
+> > On Wed, Apr 21, 2021 at 06:26:21PM +0200, Francesco Zanella wrote:
+> >> If "start-at-boot" property is present in the device tree, start pinging
+> >> hw watchdog at probe, in order to take advantage of kernel configs:
+> >> - WATCHDOG_HANDLE_BOOT_ENABLED: Avoid possible reboot if hw watchdog was
+> >>   been enabled before the kernel (by uboot for example) and userspace
+> >>   doesn't take control of /dev/watchdog in time;
+> >> - WATCHDOG_OPEN_TIMEOUT: Reboot if userspace doesn't take control of
+> >>   /dev/watchdog within the timeout.
+> >>
+> >> Signed-off-by: Francesco Zanella <francesco.zanella@vimar.com>
+> >> ---
+> >>  drivers/watchdog/gpio_wdt.c | 6 +++++-
+> >>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/watchdog/gpio_wdt.c b/drivers/watchdog/gpio_wdt.c
+> >> index 0923201ce874..1e6f0322ab7a 100644
+> >> --- a/drivers/watchdog/gpio_wdt.c
+> >> +++ b/drivers/watchdog/gpio_wdt.c
+> >> @@ -31,6 +31,7 @@ struct gpio_wdt_priv {
+> >>  	struct gpio_desc	*gpiod;
+> >>  	bool			state;
+> >>  	bool			always_running;
+> >> +	bool			start_at_boot;
+> >>  	unsigned int		hw_algo;
+> >>  	struct watchdog_device	wdd;
+> >>  };
+> >> @@ -147,6 +148,9 @@ static int gpio_wdt_probe(struct platform_device *pdev)
+> >>  	priv->always_running = of_property_read_bool(np,
+> >>  						     "always-running");
+> >>  
+> >> +	priv->start_at_boot = of_property_read_bool(np,
+> >> +						    "start-at-boot");
+> >> +
+> >>  	watchdog_set_drvdata(&priv->wdd, priv);
+> >>  
+> >>  	priv->wdd.info		= &gpio_wdt_ident;
+> >> @@ -161,7 +165,7 @@ static int gpio_wdt_probe(struct platform_device *pdev)
+> >>  
+> >>  	watchdog_stop_on_reboot(&priv->wdd);
+> >>  
+> >> -	if (priv->always_running)
+> >> +	if (priv->always_running || priv->start_at_boot)
+> >>  		gpio_wdt_start(&priv->wdd);
+> > 
+> > So the only real difference to always_running is that always_running
+> > doesn't stop the watchdog on close but keeps it running.
+> > 
+> > Does that really warrant another property ? Why not just use
+> > always-running ?
+> > 
+> > The special use case of being able to stop the watchdog doesn't seem
+> > to be worth the trouble. Please explain your use case.
+> > 
+> > Guenter
+> > 
 > 
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> You got the point.
+> I would like to be able to stop the watchdog when I want.
+> From my point of view always_running is used in the very special
+> case when the wdt chip can't be stopped.
+> I want a normal wdt that can be stopped (for example during a system
+> update), but I want it to start at boot for the 2 reasons that I
+> explained before:
+> - I need continuity in hw wdt pinging because I start in uboot,
+>   so I take advantage of WATCHDOG_HANDLE_BOOT_ENABLED that makes
+>   the kernel to do that job; but it is triggered only if it is
+>   started at probe, if I'm not wrong.
+
+That depends. If the driver can read the current state (ie if
+it can detect if the watchdog is running) it can report it
+to the watchdog core accordingly. That would be the preferred
+mechanism. Everything else is just a workaround for bad hardware
+(bad as in "it doesn't report its state").
+
+Guenter
+
+> - I would like to monitor with the wdt also the kernel at boot,
+>   and more importantly handle the case when the userspace app
+>   doesn't take control of /dev/watchdog for whatever reason
+>   within the timeout set with WATCHDOG_OPEN_TIMEOUT.
 > 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 626a6b90f..562355a 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -2316,6 +2316,11 @@ int rproc_add(struct rproc *rproc)
->  	struct device *dev = &rproc->dev;
->  	int ret;
->  
-> +	/* add char device for this remoteproc */
-> +	ret = rproc_char_device_add(rproc);
-> +	if (ret < 0)
-> +		return ret;
-> +
-
-I have tested this change and it works.  So how did it work before?
-
->  	ret = device_add(dev);
->  	if (ret < 0)
->  		return ret;
-> @@ -2329,11 +2334,6 @@ int rproc_add(struct rproc *rproc)
->  	/* create debugfs entries */
->  	rproc_create_debug_dir(rproc);
->  
-> -	/* add char device for this remoteproc */
-> -	ret = rproc_char_device_add(rproc);
-> -	if (ret < 0)
-> -		return ret;
-> -
-
-While reviewing this patch I had another look at rproc_add() and noticed it
-doesn't clean up after itself in case of failure.  If any of the conditions
-aren't met the function returns but rproc_delete_debug_dir(),
-rproc_char_device_remove() and device_del() aren't called.  Please fix that as
-part of your next revision.
-
-Thanks,
-Mathieu
-
-
->  	/* if rproc is marked always-on, request it to boot */
->  	if (rproc->auto_boot) {
->  		ret = rproc_trigger_auto_boot(rproc);
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> Hope that this explain my target.
+> Thanks for your attention,
 > 
+> Francesco
