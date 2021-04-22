@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011D73677C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821FC3677C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 05:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhDVDLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Apr 2021 23:11:40 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58213 "EHLO mga05.intel.com"
+        id S234099AbhDVDMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Apr 2021 23:12:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:63752 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhDVDLf (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:11:35 -0400
-IronPort-SDR: RlwyIpjHr6BCMWbLdKIROEAtYAPKDHpo4SNC6PH8266P1Pqnz4Ye3k8+kAiSoCZ/SucdxWHLHG
- Haa0bV/401bg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="281147150"
+        id S229706AbhDVDMg (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 21 Apr 2021 23:12:36 -0400
+IronPort-SDR: ieKKV2TRJqlfNpDl2RBDPWx6YEsYoFTXf0NOHKHrNM5EL/ARxRuBiRBlTh1tVK50uaG4wRT6Um
+ vfhu6ubmFDXA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="216476611"
 X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="281147150"
+   d="scan'208";a="216476611"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:11:00 -0700
-IronPort-SDR: fRAdjy9WupuSVeddIAiQlV3uBpgAyfTf6uuDaiv9baQJ/lPxOshpALS1Hb9+XZPGSDjQsQMMyE
- ICd0G4UUlnsA==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:12:02 -0700
+IronPort-SDR: 71YyLgHbqlr+0jz6BnI6UTrKpbTh0fa4doueZ8Z1OX4zdJ3BYDBK427VmIIpz7GX5z7X569Rd2
+ V4xP8QdH8Bbg==
 X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="427755221"
+   d="scan'208";a="427755581"
 Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:10:57 -0700
-Subject: Re: [PATCH v4 15/25] perf stat: Filter out unmatched aggregation for
- hybrid event
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 20:11:59 -0700
+Subject: Re: [PATCH v4 20/25] perf tests: Skip 'Setup struct perf_event_attr'
+ test for hybrid
 To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com,
         Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com
 References: <20210416140517.18206-1-yao.jin@linux.intel.com>
- <20210416140517.18206-16-yao.jin@linux.intel.com> <YIBvJLAvL0rWGhhP@krava>
+ <20210416140517.18206-21-yao.jin@linux.intel.com> <YIBu9czPTYWePyak@krava>
 From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <1da39794-bdc3-2a9d-4038-9e95e2c02660@linux.intel.com>
-Date:   Thu, 22 Apr 2021 11:10:54 +0800
+Message-ID: <4e6b9806-3906-f0f1-b847-8c1c2b5cdce9@linux.intel.com>
+Date:   Thu, 22 Apr 2021 11:11:55 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YIBvJLAvL0rWGhhP@krava>
+In-Reply-To: <YIBu9czPTYWePyak@krava>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,96 +50,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Jiri,
 
 On 4/22/2021 2:29 AM, Jiri Olsa wrote:
-> On Fri, Apr 16, 2021 at 10:05:07PM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
->> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
->> index 5255d78b1c30..15eafd249e46 100644
->> --- a/tools/perf/util/stat-display.c
->> +++ b/tools/perf/util/stat-display.c
->> @@ -643,6 +643,20 @@ static void aggr_cb(struct perf_stat_config *config,
->>   	}
->>   }
+> On Fri, Apr 16, 2021 at 10:05:12PM +0800, Jin Yao wrote:
+>> For hybrid, the attr.type consists of pmu type id + original type.
+>> There will be much changes for this test. Now we temporarily
+>> skip this test case and TODO in future.
+>>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   tools/perf/tests/attr.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/tools/perf/tests/attr.c b/tools/perf/tests/attr.c
+>> index dd39ce9b0277..b37c35fb5a46 100644
+>> --- a/tools/perf/tests/attr.c
+>> +++ b/tools/perf/tests/attr.c
+>> @@ -34,6 +34,7 @@
+>>   #include "event.h"
+>>   #include "util.h"
+>>   #include "tests.h"
+>> +#include "pmu.h"
 >>   
->> +static bool aggr_id_hybrid_matched(struct perf_stat_config *config,
->> +				   struct evsel *counter, struct aggr_cpu_id id)
->> +{
->> +	struct aggr_cpu_id s;
->> +
->> +	for (int i = 0; i < evsel__nr_cpus(counter); i++) {
->> +		s = config->aggr_get_id(config, evsel__cpus(counter), i);
->> +		if (cpu_map__compare_aggr_cpu_id(s, id))
->> +			return true;
->> +	}
->> +
->> +	return false;
->> +}
->> +
->>   static void print_counter_aggrdata(struct perf_stat_config *config,
->>   				   struct evsel *counter, int s,
->>   				   char *prefix, bool metric_only,
->> @@ -656,6 +670,12 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
->>   	double uval;
+>>   #define ENV "PERF_TEST_ATTR"
 >>   
->>   	ad.id = id = config->aggr_map->map[s];
->> +
->> +	if (perf_pmu__has_hybrid() &&
->> +	    !aggr_id_hybrid_matched(config, counter, id)) {
->> +		return;
->> +	}
->> +
->>   	ad.val = ad.ena = ad.run = 0;
->>   	ad.nr = 0;
->>   	if (!collect_data(config, counter, aggr_cb, &ad))
+>> @@ -184,6 +185,9 @@ int test__attr(struct test *test __maybe_unused, int subtest __maybe_unused)
+>>   	char path_dir[PATH_MAX];
+>>   	char *exec_path;
+>>   
+>> +	if (perf_pmu__has_hybrid())
+>> +		return 0;
 > 
-> there's same check in aggr_cb, so it seems like we could just make check in here:
+> should return TEST_SKIP
 > 
-> 	if (perf_pmu__has_hybrid() && ad.ena == 0)
-> 		return;
-> 
-> without another extra loop
-> 
+
+Got it, thanks Jiri!
+
 > jirka
-> 
-
-I guess you recommended the patch like this:
-
-  static void print_counter_aggrdata(struct perf_stat_config *config,
-                                    struct evsel *counter, int s,
-                                    char *prefix, bool metric_only,
-@@ -670,17 +656,14 @@ static void print_counter_aggrdata(struct perf_stat_config *config,
-         double uval;
-
-         ad.id = id = config->aggr_map->map[s];
-         ad.val = ad.ena = ad.run = 0;
-         ad.nr = 0;
-         if (!collect_data(config, counter, aggr_cb, &ad))
-                 return;
-
-+       if (perf_pmu__has_hybrid() && ad.ena == 0)
-+               return;
-+
-         nr = ad.nr;
-         ena = ad.ena;
-         run = ad.run;
-
-Yes, it works. The test log is,
-
-# perf stat --per-core -e cpu_core/cycles/ -a -- sleep 1
-
-  Performance counter stats for 'system wide':
-
-S0-D0-C0           2          2,341,923      cpu_core/cycles/
-S0-D0-C4           2          1,707,933      cpu_core/cycles/
-S0-D0-C8           2            845,805      cpu_core/cycles/
-S0-D0-C12          2          1,001,961      cpu_core/cycles/
-S0-D0-C16          2            932,004      cpu_core/cycles/
-S0-D0-C20          2          1,778,603      cpu_core/cycles/
-S0-D0-C24          2            804,448      cpu_core/cycles/
-S0-D0-C28          2            178,360      cpu_core/cycles/
-
-        1.002264168 seconds time elapsed
+>
 
 Thanks
 Jin Yao
+
+>> +
+>>   	/* First try development tree tests. */
+>>   	if (!lstat("./tests", &st))
+>>   		return run_dir("./tests", "./perf");
+>> -- 
+>> 2.17.1
+>>
+> 
