@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743EB367A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31B2367A55
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Apr 2021 08:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbhDVGfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 02:35:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:7070 "EHLO mga05.intel.com"
+        id S234866AbhDVG5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 02:57:52 -0400
+Received: from mga12.intel.com ([192.55.52.136]:4938 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhDVGfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 02:35:33 -0400
-IronPort-SDR: +wiVnhqi3qWiQpkMQRa6OnEdSRjlXeMCw/bs+ArZELeQvzxf2bi4+p4ICZ54RVGDW0Qh/g4Oux
- nZB1SBaM85iA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="281164951"
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="281164951"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 23:34:58 -0700
-IronPort-SDR: N/VdHPgKMmnCktx4S1kk0xv2cVIku/kjvc542q4RO5SjiE13e4jhIuMmjIFzPAycFgCO8IQ/Tx
- lru/cqQLORNw==
+        id S230228AbhDVG5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 02:57:50 -0400
+IronPort-SDR: 9b+sdw+fkop3jHmyRzhmp7xe0AFpnM8DPTk7xvrfvkYJTsRFjSMzm0X/0Sg08dk92omC45sg+Q
+ QWdCpCLtCi6w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9961"; a="175324124"
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="175324124"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2021 23:57:15 -0700
+IronPort-SDR: bXP9vH/3TPL+LTZoljuDEuqrFrGNj+FIj1aJk4GAPJfoSqdZKHRBA3Tm4cH07SPn17hqxDvqgD
+ 0YM0kcGY9NVg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="453172193"
-Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Apr 2021 23:34:56 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Yu Kuai <yukuai3@huawei.com>, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, zhangxiaoxu5@huawei.com,
-        alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH] stm class: initialize static variable in declaration
-In-Reply-To: <20210407125358.4135345-1-yukuai3@huawei.com>
-References: <20210407125358.4135345-1-yukuai3@huawei.com>
-Date:   Thu, 22 Apr 2021 09:34:55 +0300
-Message-ID: <87o8e6esj4.fsf@ashishki-desk.ger.corp.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+X-IronPort-AV: E=Sophos;i="5.82,242,1613462400"; 
+   d="scan'208";a="427811135"
+Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
+  by orsmga008.jf.intel.com with ESMTP; 21 Apr 2021 23:57:13 -0700
+From:   Sia Jee Heng <jee.heng.sia@intel.com>
+To:     dri-devel@lists.freedesktop.org, Laurent.pinchart@ideasonboard.com,
+        narmstrong@baylibre.com, jonas@kwiboo.se, a.hajda@samsung.com
+Cc:     pierre-louis.bossart@linux.intel.com, jee.heng.sia@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] drm: bridge: adv7511: Support I2S IEC958 encoded PCM format
+Date:   Thu, 22 Apr 2021 14:40:15 +0800
+Message-Id: <20210422064015.15285-1-jee.heng.sia@intel.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Kuai <yukuai3@huawei.com> writes:
+Support IEC958 encoded PCM format for ADV7511 so that ADV7511 HDMI
+audio driver can accept the IEC958 data from the I2S input.
 
-> mutex lock can be initialized automatically with DEFINE_MUTEX()
-> rather than explicitly calling mutex_init().
->
-> list head can be initialized automatically with LIST_HEAD() rather
-> than explicitly calling INIT_LIST_HEAD().
->
-> srcu_struct can be initialized automatically with DEFINE_STATIC_SRCU()
-> rather than explicitly calling init_srcu_struct().
+Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+---
+ drivers/gpu/drm/bridge/adv7511/adv7511.h       | 1 +
+ drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-What's missing is the "why". We can do these or we can keep them as they
-are. Each choice has impact on .text/.data, for instance. Why is one
-preferred over the other?
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511.h b/drivers/gpu/drm/bridge/adv7511/adv7511.h
+index a9bb734366ae..05e3abb5a0c9 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511.h
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511.h
+@@ -191,6 +191,7 @@
+ #define ADV7511_I2S_FORMAT_I2S			0
+ #define ADV7511_I2S_FORMAT_RIGHT_J		1
+ #define ADV7511_I2S_FORMAT_LEFT_J		2
++#define ADV7511_I2S_IEC958_DIRECT		3
+ 
+ #define ADV7511_PACKET(p, x)	    ((p) * 0x20 + (x))
+ #define ADV7511_PACKET_SDP(x)	    ADV7511_PACKET(0, x)
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+index 45838bd08d37..61f4a38e7d2b 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+@@ -101,6 +101,10 @@ static int adv7511_hdmi_hw_params(struct device *dev, void *data,
+ 	case 20:
+ 		len = ADV7511_I2S_SAMPLE_LEN_20;
+ 		break;
++	case 32:
++		if (fmt->bit_fmt != SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE)
++			return -EINVAL;
++		fallthrough;
+ 	case 24:
+ 		len = ADV7511_I2S_SAMPLE_LEN_24;
+ 		break;
+@@ -112,6 +116,8 @@ static int adv7511_hdmi_hw_params(struct device *dev, void *data,
+ 	case HDMI_I2S:
+ 		audio_source = ADV7511_AUDIO_SOURCE_I2S;
+ 		i2s_format = ADV7511_I2S_FORMAT_I2S;
++		if (fmt->bit_fmt == SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE)
++			i2s_format = ADV7511_I2S_IEC958_DIRECT;
+ 		break;
+ 	case HDMI_RIGHT_J:
+ 		audio_source = ADV7511_AUDIO_SOURCE_I2S;
 
-Each patch should contain some form of analysis that shows that the
-author thought about why they made the patch in the first
-place.
+base-commit: e488b1023a4a4eab15b905871cf8e81f00336ed7
+-- 
+2.18.0
 
-And please learn not to spam the STMicro people with patches for System
-Trace Module. Sometimes the same acronym can mean multiple different
-things. This is another sign that the patch author spent zero time
-getting to know the code that they are patching.
-
-Regards,
---
-Alex
