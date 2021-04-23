@@ -2,313 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDDC368B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5642C368B95
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240187AbhDWD3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhDWD3i (ORCPT
+        id S240232AbhDWDa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:30:26 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17029 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhDWDaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:29:38 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B73C061574;
-        Thu, 22 Apr 2021 20:29:02 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 5-20020a9d09050000b029029432d8d8c5so18238745otp.11;
-        Thu, 22 Apr 2021 20:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1upb3UwlpjSwcPkYN75X6/2ZBEc2jskb7/XEm7owznc=;
-        b=iK4kZXJgnoW7pLY09tMdeK6JxkJQFX+eGaE+UJKX1PU6eSM2nwRl5MQ0mwMBYUZ4WD
-         7Z0uYPgnd3rbaHj/mbe0DNUc7dFgCWT/+D2htMGnOOWeZtEwIFz4jifH7MAHIygDqQe2
-         FRrVnjMeeoU0YPJ7xnftC9Oayo2h22cobD33A8YAW0u/Rs4oWp3e6lQlF+jmS0dcAKEZ
-         X+Vn+huAQBqIxZrUTLN5zykla5I7+z4eLdlq/UvuOmYB6WTYOkV99Vtuaa3UAo9JEOQ3
-         57eo5k3Colu2Wfg/9tk+kDTOgasF+WU4iotnQjt75gonIP95x2YlA4uRWrswnt1/MSCm
-         Vtlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=1upb3UwlpjSwcPkYN75X6/2ZBEc2jskb7/XEm7owznc=;
-        b=sLeh7AGochxe70BOcwzMiaLDZk9Lq38v+sIA4ydyW1/UFVViFsfiqampFiHCI4pREw
-         ULZwF7uoQfgX1HE2AQCyahUMikg4gBZQYaUw1cX3JKyFGBqktv/4RArbXWYcULJNHy+0
-         ziYmJy41/1Yr38wacNdSfr+WuDrfk6GjBX02bdLBYid2hUDleillwbMyy3GDLunoV8cc
-         82hBso7O/9xsplJ9pRPCyMlORF/2meWoPZX/toXWo0jtCwxt2ugBrqfsU6rz8pROjd8L
-         sz3xQxdOgof85eiZbK8zBCSx28QB9tbeaTpU2ro5aYCet525xDdHOXxr9VfjOYg3a7ju
-         Dyaw==
-X-Gm-Message-State: AOAM530v8OCdbsBhyvKm1UELP2IWU4EzmBGqOPvfulXdNcHhUI1yMoOa
-        xtru8OkaEVp97TQI3qPKQuRR4bTTwuQ=
-X-Google-Smtp-Source: ABdhPJwFtdIkfkoY5Bd1U8zGq9fOrQBvE8iO9A0LGo7xPIZCmtXV6EvbIjKOh1cgclTm70e15viNQg==
-X-Received: by 2002:a05:6830:120a:: with SMTP id r10mr1518868otp.47.1619148541567;
-        Thu, 22 Apr 2021 20:29:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t19sm1107255otm.40.2021.04.22.20.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 20:29:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH V7 1/2] watchdog: mtk: support pre-timeout when the bark
- irq is available
-To:     Wang Qing <wangqing@vivo.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1619146403-12769-1-git-send-email-wangqing@vivo.com>
- <1619146403-12769-2-git-send-email-wangqing@vivo.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <0de7e5c8-57a2-9b27-d8a8-ed7e0b394b02@roeck-us.net>
-Date:   Thu, 22 Apr 2021 20:28:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 22 Apr 2021 23:30:25 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FRKTK5RwJzPtVF;
+        Fri, 23 Apr 2021 11:26:45 +0800 (CST)
+Received: from [10.67.110.136] (10.67.110.136) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 23 Apr 2021 11:29:44 +0800
+Subject: Re: [RFC PATCH] irqchip/gic-v3: Do not enable irqs when handling
+ spurious interrups
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <tglx@linutronix.de>, <julien.thierry.kdev@gmail.com>,
+        <catalin.marinas@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20210416062217.25157-1-heying24@huawei.com>
+ <87y2dis4d7.wl-maz@kernel.org>
+ <cc4a6eee-8bdc-0fd1-66cb-365340f7405e@huawei.com>
+ <875z0eijxh.wl-maz@kernel.org>
+From:   He Ying <heying24@huawei.com>
+Message-ID: <47abc8a6-0f73-d1c0-789f-e979d4191ab2@huawei.com>
+Date:   Fri, 23 Apr 2021 11:29:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <1619146403-12769-2-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <875z0eijxh.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.136]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 7:53 PM, Wang Qing wrote:
-> Use the bark interrupt as the pretimeout notifier if available.
-> 
-> When the watchdog timer expires in dual mode, an interrupt will be
-> triggered first, then the timing restarts. The reset signal will be
-> initiated when the timer expires again.
-> 
-> The pretimeout notification shall occur at timeout-sec/2.
-> 
-> V2:
-> - panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
-> 
-> V3:
-> - Modify the pretimeout behavior, manually reset after the pretimeout
-> - is processed and wait until timeout.
-> 
-> V4:
-> - Remove pretimeout related processing. 
-> - Add dual mode control separately.
-> 
-> V5:
-> - Fix some formatting and printing problems.
-> 
-> V6:
-> - Realize pretimeout processing through dualmode.
-> 
-> V7:
-> - Add set_pretimeout().
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
->  drivers/watchdog/mtk_wdt.c | 76 +++++++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 71 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-> index 97ca993..ab3ac5d
-> --- a/drivers/watchdog/mtk_wdt.c
-> +++ b/drivers/watchdog/mtk_wdt.c
-> @@ -25,6 +25,7 @@
->  #include <linux/reset-controller.h>
->  #include <linux/types.h>
->  #include <linux/watchdog.h>
-> +#include <linux/interrupt.h>
->  
->  #define WDT_MAX_TIMEOUT		31
->  #define WDT_MIN_TIMEOUT		1
-> @@ -184,15 +185,23 @@ static int mtk_wdt_set_timeout(struct watchdog_device *wdt_dev,
->  {
->  	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdt_dev);
->  	void __iomem *wdt_base = mtk_wdt->wdt_base;
-> +	unsigned int timeout_interval = timeout;
->  	u32 reg;
->  
->  	wdt_dev->timeout = timeout;
+
+在 2021/4/22 20:27, Marc Zyngier 写道:
+> On Sat, 17 Apr 2021 03:01:54 +0100,
+> He Ying <heying24@huawei.com> wrote:
+>> Hello Marc,
+>>
+>>
+>> 在 2021/4/16 22:15, Marc Zyngier 写道:
+>>> [+ Mark]
+>>>
+>>> On Fri, 16 Apr 2021 07:22:17 +0100,
+>>> He Ying <heying24@huawei.com> wrote:
+>>>> We found this problem in our kernel src tree:
+>>>>
+>>>> [   14.816231] ------------[ cut here ]------------
+>>>> [   14.816231] kernel BUG at irq.c:99!
+>>>> [   14.816232] Internal error: Oops - BUG: 0 [#1] SMP
+>>>> [   14.816232] Process swapper/0 (pid: 0, stack limit = 0x(____ptrval____))
+>>>> [   14.816233] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      4.19.95-1.h1.AOS2.0.aarch64 #14
+>>>> [   14.816233] Hardware name: evb (DT)
+>>>> [   14.816234] pstate: 80400085 (Nzcv daIf +PAN -UAO)
+>>>> [   14.816234] pc : asm_nmi_enter+0x94/0x98
+>>>> [   14.816235] lr : asm_nmi_enter+0x18/0x98
+>>>> [   14.816235] sp : ffff000008003c50
+>>>> [   14.816235] pmr_save: 00000070
+>>>> [   14.816237] x29: ffff000008003c50 x28: ffff0000095f56c0
+>>>> [   14.816238] x27: 0000000000000000 x26: ffff000008004000
+>>>> [   14.816239] x25: 00000000015e0000 x24: ffff8008fb916000
+>>>> [   14.816240] x23: 0000000020400005 x22: ffff0000080817cc
+>>>> [   14.816241] x21: ffff000008003da0 x20: 0000000000000060
+>>>> [   14.816242] x19: 00000000000003ff x18: ffffffffffffffff
+>>>> [   14.816243] x17: 0000000000000008 x16: 003d090000000000
+>>>> [   14.816244] x15: ffff0000095ea6c8 x14: ffff8008fff5ab40
+>>>> [   14.816244] x13: ffff8008fff58b9d x12: 0000000000000000
+>>>> [   14.816245] x11: ffff000008c8a200 x10: 000000008e31fca5
+>>>> [   14.816246] x9 : ffff000008c8a208 x8 : 000000000000000f
+>>>> [   14.816247] x7 : 0000000000000004 x6 : ffff8008fff58b9e
+>>>> [   14.816248] x5 : 0000000000000000 x4 : 0000000080000000
+>>>> [   14.816249] x3 : 0000000000000000 x2 : 0000000080000000
+>>>> [   14.816250] x1 : 0000000000120000 x0 : ffff0000095f56c0
+>>>> [   14.816251] Call trace:
+>>>> [   14.816251]  asm_nmi_enter+0x94/0x98
+>>>> [   14.816251]  el1_irq+0x8c/0x180
+>>>> [   14.816252]  gic_handle_irq+0xbc/0x2e4
+>>>> [   14.816252]  el1_irq+0xcc/0x180
+>>>> [   14.816253]  arch_timer_handler_virt+0x38/0x58
+>>>> [   14.816253]  handle_percpu_devid_irq+0x90/0x240
+>>>> [   14.816253]  generic_handle_irq+0x34/0x50
+>>>> [   14.816254]  __handle_domain_irq+0x68/0xc0
+>>>> [   14.816254]  gic_handle_irq+0xf8/0x2e4
+>>>> [   14.816255]  el1_irq+0xcc/0x180
+>>>> [   14.816255]  arch_cpu_idle+0x34/0x1c8
+>>>> [   14.816255]  default_idle_call+0x24/0x44
+>>>> [   14.816256]  do_idle+0x1d0/0x2c8
+>>>> [   14.816256]  cpu_startup_entry+0x28/0x30
+>>>> [   14.816256]  rest_init+0xb8/0xc8
+>>>> [   14.816257]  start_kernel+0x4c8/0x4f4
+>>>> [   14.816257] Code: 940587f1 d5384100 b9401001 36a7fd01 (d4210000)
+>>>> [   14.816258] Modules linked in: start_dp(O) smeth(O)
+>>>> [   15.103092] ---[ end trace 701753956cb14aa8 ]---
+>>>> [   15.103093] Kernel panic - not syncing: Fatal exception in interrupt
+>>>> [   15.103099] SMP: stopping secondary CPUs
+>>>> [   15.103100] Kernel Offset: disabled
+>>>> [   15.103100] CPU features: 0x36,a2400218
+>>>> [   15.103100] Memory Limit: none
+>>> Urgh...
+>>>
+>>>> Our kernel src tree is based on 4.19.95 and backports arm64 pseudo-NMI
+>>>> patches but doesn't support nested NMI. Its top relative commit is
+>>>> commit 17ce302f3117 ("arm64: Fix interrupt tracing in the presence of NMIs").
+>>> Can you please reproduce it with mainline and without any backport?
+>>> It is hard to reason about something that isn't a vanilla kernel.
+>> I think our kernel is quite like v5.3 mainline. Reproducing it in
+>> v5.3 mainline may be a little difficult for us because our product
+>> needs some more self developed patches to work.
+> I don't really care about 5.3. What I care about is the tip of the
+> tree, and anything we fix there can trickle down to the previous
+> stable releases.
+
+I don't know if I give the tip of tree. I provide the Fixes tag
+
+"Fixes: 17ce302f3117 ("arm64: Fix interrupt tracing in the presence of 
+NMIs")".
+
+Is that sufficient to help?
+
+>
+>>>> I look into this issue and find that it's caused by 'BUG_ON(in_nmi())'
+>>>> in nmi_enter(). From the call trace, we find two 'el1_irqs' which
+>>>> means an interrupt preempts the other one and the new one is an NMI.
+>>>> Furthermore, by adding some prints, we find the first irq also calls
+>>>> nmi_enter(), but its priority is not GICD_INT_NMI_PRI and its irq number
+>>>> is 1023. It enables irq by calling gic_arch_enable_irqs() in
+>>>> gic_handle_irq(). At this moment, the second irq preempts the first irq
+>>>> and it's an NMI but current context is already in nmi. So that may be
+>>>> the problem.
+>>> I'm not sure I get it. From the stack trace, I see this:
+>>>
+>>> [   14.816251]  asm_nmi_enter+0x94/0x98
+>>> [   14.816251]  el1_irq+0x8c/0x180			(C)
+>>> [   14.816252]  gic_handle_irq+0xbc/0x2e4
+>>> [   14.816252]  el1_irq+0xcc/0x180			(B)
+>>> [   14.816253]  arch_timer_handler_virt+0x38/0x58
+>>> [   14.816253]  handle_percpu_devid_irq+0x90/0x240
+>>> [   14.816253]  generic_handle_irq+0x34/0x50
+>>> [   14.816254]  __handle_domain_irq+0x68/0xc0
+>>> [   14.816254]  gic_handle_irq+0xf8/0x2e4
+>>> [   14.816255]  el1_irq+0xcc/0x180			(A)
+>>>
+>>> which indicates that we preempted a timer interrupt (A) with another
+>>> IRQ (B), itself immediately preempted by another IRQ (C)? That's
+>>> indeed at least one too many.
+>>>
+>>> Can you please describe for each of (A), (B) and (C) whether they are
+>>> spurious or not, what their priorities are if they aren't spurious?
+>> Yes. I ignored interrupt (A). (B) is spurious and its priority is
+>> 0xa0 and PMR is 0x70. (C) is an NMI and its priority is 0x20. Note
+>> that GIC_PRIO_IRQON is 0xe0, GIC_PRIO_IRQOFF is 0x60,
+>> GICD_INT_DEF_PRI is 0xa0 and GICD_INT_NMI_PRI is 0x20 in our kernel.
+> If (B) is spurious (aka ICC_IAR1R_EL1 return 1023), then its
+> "priority" doesn't really exist, and I don't really get what you mean
+> by "its priority is 0xa0".  ICC_RPR_EL1 shouldn't change when Ack-ing
+> a spurious interrupt, because there is no change in GIC state at all.
+OK. By saying "its priority is 0xa0", I just mean ICC_RPR_EL1 is read as 
+0xa0.
+>
+> And if PMR is 0x70 at the point where you get (B), then I really can't
+> see how you can get an interrupt of priority 0xa0 anyway.
+
+Yes, it also confuses me. Perhaps ICC_RPR_EL1 changes when read, I think.
+
+>
+>
+>
+>>>> In my opinion, when handling spurious interrupts, we shouldn't enable irqs.
+>>>> My reason is that for spurious interrupts we may enter nmi context in
+>>>> el1_irq() because current PMR may be GIC_PRIO_IRQOFF. If we enable irqs
+>>>> at this time, another NMI may happen and preempt this spurious interrupt
+>>>> but the context is already in nmi. That causes a bug on if nested NMI is
+>>>> not supported. Even for nested nmi, I think it's not a normal scenario.
+>>> I would tend to agree that this isn't great. Actually, I'd probably
+>>> move the check for a spurious interrupt right after the read of
+>>> ICC_IAR1_EL1, because there is no real need to do anything else at
+>>> that point.
+>> So, we don't need to check NMI for spurious interrupts? Do you mean
+>> that spurious interrupts' can't be NMIs? Or even spurious interrups
+>> are NMIs, we shouldn't do anything for them? If so, I will move the
+>> check after the read of ICC_IAR1_EL1 and send a V2.
+> Spurious interrupts are not interrupts at all. It is either a level
+> interrupt that has been retired before being handled, or some other
+> transient effect (like an interrupt being moved from one CPU to
+> another), or even flaky HW. So doing anything based on a spurious
+> interrupt is definitely a potential bug, and I suggest this:
+>
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index eb0ee356a629..00404024d7cd 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -648,6 +648,10 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+>   
+>   	irqnr = gic_read_iar();
+>   
+> +	/* Check for special IDs first */
+> +	if ((irqnr >= 1020 && irqnr <= 1023))
+> +		return;
+> +
+>   	if (gic_supports_nmi() &&
+>   	    unlikely(gic_read_rpr() == GICD_INT_NMI_PRI)) {
+>   		gic_handle_nmi(irqnr, regs);
+> @@ -659,10 +663,6 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+>   		gic_arch_enable_irqs();
+>   	}
+>   
+> -	/* Check for special IDs first */
+> -	if ((irqnr >= 1020 && irqnr <= 1023))
+> -		return;
 > -
-> +	/*
-> +	 * In dual mode, irq will be triggered at timeout / 2
-> +	 * the real timeout occurs at timeout
-> +	 */
-> +	if (wdt_dev->pretimeout) {
-> +		wdt_dev->pretimeout = timeout / 2;
+>   	if (static_branch_likely(&supports_deactivate_key))
+>   		gic_write_eoir(irqnr);
+>   	else
+>
+> [...]
+Thanks for explaining it. I quite agree with your suggestion.
+>> In my opinion, since commit 17ce302f3117 ("arm64: Fix interrupt
+>> tracing in the presence of NMIs"), spurious interrups can enter nmi
+>> context in interrupt entry because PMR can be GIC_PRIO_IRQOFF for
+>> spurious interrupts. That means test_irqs_unmasked is not 0 and
+>> asm_nmi_enter is called.
+>>
+>>     (some el1_irq entry code from v5.3)
+>>     test_irqs_unmasked  res=x0, pmr=x20
+>>     cbz x0, 1f
+>>     bl asm_nmi_enter
+> That code has significantly changed upstream, and is now in C. I think
+> it still do the same thing though.
+Yes, you're right.
+>
+>> And it then calls gic_handle_irq(). It doesn't call gic_handle_nmi()
+>> because its priority is not GICD_INT_NMI_PRI.
+>>
+>> Then it enables irqs. If at that point another NMI comes and
+>> preempts it, which means NMI occurs in nmi context. That may cause a
+>> bug on if nested NMI is not supported.
+>>
+>>     (some gic_handle_irq code from v5.3)
+>>
+>>     irqnr = gic_read_iar();
+>>
+>>     if (gic_supports_nmi() &&
+>>         unlikely(gic_read_rpr() == GICD_INT_NMI_PRI)) {
+>>             gic_handle_nmi(irqnr,
+>> regs);                                   (C)
+>>             return;
+>>     }
+>>
+>>     if (gic_prio_masking_enabled()) {
+>>           gic_pmr_mask_irqs();
+>> gic_arch_enable_irqs(); (D)
+>>     }
+> I believe the above patch would fix the spurious interrupt issue you
+> have experienced. Please let me know, and post a v2 if this works for
+> you.
 
-min_timeout is set to 1. I don't this works well if timeout == 1.
-You'll either need to set min_timeout to 2, or handle that case.
+Fortunately, it works. I'll post a v2. Should I cc stable mail list?
 
-> +		timeout_interval = wdt_dev->pretimeout;
 
-timeout_interval is unnecessary. Just update timeout accordingly.
-It needs to take the situation of timeout == 1 into account, though.
-
-> +	}
->  	/*
->  	 * One bit is the value of 512 ticks
->  	 * The clock has 32 KHz
->  	 */
-> -	reg = WDT_LENGTH_TIMEOUT(timeout << 6) | WDT_LENGTH_KEY;
-> +	reg = WDT_LENGTH_TIMEOUT(timeout_interval << 6) | WDT_LENGTH_KEY;
->  	iowrite32(reg, wdt_base + WDT_LENGTH);
->  
->  	mtk_wdt_ping(wdt_dev);
-> @@ -239,13 +248,46 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
->  		return ret;
->  
->  	reg = ioread32(wdt_base + WDT_MODE);
-> -	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-> +	if (wdt_dev->pretimeout)
-> +		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-> +	else
-> +		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
->  	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
->  	iowrite32(reg, wdt_base + WDT_MODE);
->  
->  	return 0;
->  }
->  
-> +static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
-> +					unsigned int timeout)
-> +{
-> +	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdd);
-> +	void __iomem *wdt_base = mtk_wdt->wdt_base;
-> +	u32 reg = ioread32(wdt_base + WDT_MODE);
-> +
-> +	if (timeout && !wdd->pretimeout) {
-> +		wdd->pretimeout = wdd->timeout / 2;
-> +		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-> +	} else if (!timeout && wdd->pretimeout) {
-> +		wdd->pretimeout = 0;
-> +		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-> +	} else
-> +		return 0;
-> +
-> +	iowrite32(reg, wdt_base + WDT_MODE);
-
-What is the point of setting the mode here ? It will
-be set again in mtk_wdt_set_timeout(). Seems to me all
-you need to do here is to set wdd->pretimeout,
-then call mtk_wdt_set_timeout().
-
-Guenter
-
-> +
-> +	return mtk_wdt_set_timeout(wdd, wdd->timeout);
-> +}
-> +
-> +static irqreturn_t mtk_wdt_isr(int irq, void *arg)
-> +{
-> +	struct watchdog_device *wdd = arg;
-> +
-> +	watchdog_notify_pretimeout(wdd);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static const struct watchdog_info mtk_wdt_info = {
->  	.identity	= DRV_NAME,
->  	.options	= WDIOF_SETTIMEOUT |
-> @@ -253,12 +295,21 @@ static const struct watchdog_info mtk_wdt_info = {
->  			  WDIOF_MAGICCLOSE,
->  };
->  
-> +static const struct watchdog_info mtk_wdt_pt_info = {
-> +	.identity	= DRV_NAME,
-> +	.options	= WDIOF_SETTIMEOUT |
-> +			  WDIOF_PRETIMEOUT |
-> +			  WDIOF_KEEPALIVEPING |
-> +			  WDIOF_MAGICCLOSE,
-> +};
-> +
->  static const struct watchdog_ops mtk_wdt_ops = {
->  	.owner		= THIS_MODULE,
->  	.start		= mtk_wdt_start,
->  	.stop		= mtk_wdt_stop,
->  	.ping		= mtk_wdt_ping,
->  	.set_timeout	= mtk_wdt_set_timeout,
-> +	.set_pretimeout	= mtk_wdt_set_pretimeout,
->  	.restart	= mtk_wdt_restart,
->  };
->  
-> @@ -267,7 +318,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct mtk_wdt_dev *mtk_wdt;
->  	const struct mtk_wdt_data *wdt_data;
-> -	int err;
-> +	int err, irq;
->  
->  	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
->  	if (!mtk_wdt)
-> @@ -279,7 +330,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
->  	if (IS_ERR(mtk_wdt->wdt_base))
->  		return PTR_ERR(mtk_wdt->wdt_base);
->  
-> -	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq > 0) {
-> +		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
-> +					&mtk_wdt->wdt_dev);
-> +		if (err)
-> +			return err;
-> +
-> +		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
-> +		mtk_wdt->wdt_dev.pretimeout = WDT_MAX_TIMEOUT / 2;
-> +	} else {
-> +		if (irq == -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +
-> +		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
-> +	}
-> +
->  	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
->  	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
->  	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
-> 
+Thanks.
 
