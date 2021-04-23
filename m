@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE084369838
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A244E36983B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243313AbhDWRXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S232179AbhDWRZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWRXo (ORCPT
+        with ESMTP id S231684AbhDWRZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:23:44 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B555C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:23:07 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id 18so23500337qtz.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:23:07 -0700 (PDT)
+        Fri, 23 Apr 2021 13:25:02 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C32BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:24:24 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id p126so2844246yba.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:24:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=ab9jbz5NwGYvcWYzomBqApXdriLZ2AGZKnvLPb80Lgs=;
-        b=M88KIhhroqFdlNzBy1544DT7e2YEw9mbFHH30yeXQKwC6vbDM49367m9NJ573gXn6b
-         fpGXo25Pw/E/tc2chnR7vMVy/f9qg4dnq2G7z/dF5NMXj2Olh2noyPDUZshmLsuJopno
-         5cEWSCvSwG4hB5yoW+uHA5KqvLk4AfMXksRvqh408+FGsItAKv5soCRXegR7z+KPWgAK
-         unaifcX3LCr+yWUoKVpWklJ8tEnm7w3FNNuywP9KYILwfAFvi9WH4fOSiS3UoSBjqieX
-         36JdZug4uP0YfUDRvdBAQWDzpPzRij6QBdNnMdOifYTRMKeSrJ1GxUYGZ+7q2E4fND9b
-         rDwA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=/5suv8Csx7NUWMBP2A4K5t2yK5yhr4q0kUP8AiRexQw=;
+        b=nzcoeaauUbStSz02ErNih/hon4VunvmtoAZ42I7m/Fp8aaGH3PKQ7u+0y9yOE4kTcT
+         g9FB34jj/Ugyr8Yy88ho8Mh0UzTdTPDfI6xbklAODurYCXevQL0+zSLby6BG3iO/EW6k
+         LRU99E88qGQYoMkdutfkJOpYCu86mStTdINowZm2Uv03ivNsgIIqveTRh3BxJUbeqCUF
+         3Vg6r4XDGVbYuyW1uX+A/Eox3eOoy3pxyl5oypfrLq7ET/4T02NVSsgH2K7edpt2GZue
+         WIx9VI3QleHANlIvnS/FHSqooa5JixJkkfA5qe/H7NJSFbDyVr71xQE1vUAqES82+L8W
+         a6HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=ab9jbz5NwGYvcWYzomBqApXdriLZ2AGZKnvLPb80Lgs=;
-        b=Ln8ENLsQ+L5zf5OH/CPNRfdXlxj1QYZok/pK1eaYLsEbWcQWQ70oUiq407yDhlfC0d
-         Qzxa7DE4qlkCamQlJ9vl/nRDgEzsXuujb+F4zRwsyXCPQgwTrULqtm5LMrPn49muxgZI
-         8Sp0+0CC6zc2aRKoV4qKph/73cib08PxWlwNB77JZIvhrbrUCjXHMfsY2jmBmB01YvVR
-         0/J3S0KBsDG2lJvGCKs4QCTHVrBzpAhLCciLWLgYTU0JVc+HLeG8ZxknI7wVY+XwKJ8i
-         Cof0WNopFIxGErqIrvMJTquLvM6Lz58SQ8SjjqkBc+lIlmoIeTvm0hJlJ2cYpgVk0vvh
-         rzOw==
-X-Gm-Message-State: AOAM531mS4yoao75zUgb8C35SAgZFT8ggEs9sNhIOPurMSbxWmio6kuw
-        JvHN/H0JKsQiMO1ixQliCqTaRQ==
-X-Google-Smtp-Source: ABdhPJyhg1NrKyy0mU3GPwfYJ3XT8v6NxDjIEhss5wsoThfwS9AzwafUUTLOgb402Lq554oXOMhYBQ==
-X-Received: by 2002:ac8:6b49:: with SMTP id x9mr4808960qts.193.1619198586081;
-        Fri, 23 Apr 2021 10:23:06 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x85sm4852092qkb.44.2021.04.23.10.23.04
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 23 Apr 2021 10:23:05 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 10:22:51 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Dave Chinner <dchinner@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2 2/2] mm/filemap: fix mapping_seek_hole_data on THP &
- 32-bit
-In-Reply-To: <20210422160410.e9014b38b843d7a6ec06a9bb@linux-foundation.org>
-Message-ID: <alpine.LSU.2.11.2104231009520.18646@eggly.anvils>
-References: <alpine.LSU.2.11.2104211723580.3299@eggly.anvils> <alpine.LSU.2.11.2104211737410.3299@eggly.anvils> <20210422011631.GL3596236@casper.infradead.org> <alpine.LSU.2.11.2104212253000.4412@eggly.anvils> <alpine.LSU.2.11.2104221338410.1170@eggly.anvils>
- <alpine.LSU.2.11.2104221347240.1170@eggly.anvils> <20210422160410.e9014b38b843d7a6ec06a9bb@linux-foundation.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=/5suv8Csx7NUWMBP2A4K5t2yK5yhr4q0kUP8AiRexQw=;
+        b=luyWZlELa6iKf10BMRay/bPFFnwdforfV2lauk8X/BOPMaRLEPlAbHGnROBkjUANJ8
+         IzEDIYS+7ouX7Ei666GRd2ZTB4EkZSbFUWQXK6BNAxcNSw1ktI5OnoU7xYBrMV3Rzmxe
+         OpUTOAhkXgoxaD/L5FCcbRk4YMJgDsBvvuXwJaljJgcYf8OqU4koUnRO9l0LJJk+u/u3
+         0S2cpFSLOpdv3XuuhnzBD8eoj9ODIK13P3/D2Gs9lyqUnXHSJCBWOXs1Rg1ghJ9afkYw
+         gFAQqs3zhNVlCAnkqXKwfx/zCrzUPkUBK14TvFoypbUKFD213CthOQnJ5Ss1Qw/qqzNx
+         TDsg==
+X-Gm-Message-State: AOAM532Pcp8xRmtHXBjpDyPH8rOuxx6S+5GGUBPg1Oy1i+c65lbcrr6R
+        3LG5e3qVzrFWG+akltSSsVk/097YE3PQNtkF/TsPTbjZnvHNaQ==
+X-Google-Smtp-Source: ABdhPJwzHPLpgc1TmSEOddLRqC+jDx+TFJ8BhYtD/91G23vNd7ja1DxNTISPwu6GGLXx2QwOp+ZaT8DcH50m+QiWB9o=
+X-Received: by 2002:a25:8189:: with SMTP id p9mr6100048ybk.209.1619198663161;
+ Fri, 23 Apr 2021 10:24:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Reply-To: fredrickkone22@gmail.com
+Sender: woodmaskartistbf@gmail.com
+Received: by 2002:a05:7000:4b48:0:0:0:0 with HTTP; Fri, 23 Apr 2021 10:24:22
+ -0700 (PDT)
+From:   "Mr.fredrick Kone" <fredrickkone2@gmail.com>
+Date:   Fri, 23 Apr 2021 17:24:22 +0000
+X-Google-Sender-Auth: VHGvaXriQ1a9W1roWNZ593Ramzw
+Message-ID: <CAHZM4DudTfBSjLTbhThBgWe0t_Su0ar-hO_BTF7gJawJzC6+Rg@mail.gmail.com>
+Subject: DEAR FRIEND
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021, Andrew Morton wrote:
-> On Thu, 22 Apr 2021 13:48:57 -0700 (PDT) Hugh Dickins <hughd@google.com> wrote:
-> 
-> > Andrew, I'd have just sent a -fix.patch to remove the unnecessary u64s,
-> > but need to reword the commit message: so please replace yesterday's
-> > mm-filemap-fix-mapping_seek_hole_data-on-thp-32-bit.patch
-> > by this one - thanks.
-> 
-> Actually, I routinely update the base patch's changelog when queueing a -fix.
+DEAR FRIEND, I am Mr.Fredrick Kone, I work at a bank. I found your
+information from internet search when I was searching for a honest
+partner, I hope that you will not expose or betray this trust. I am in
+need of your help as a foreigner to claim an abandon fund sum of $15
+million U.S dollars. This money belonged to one of our customers from
+Thailand who died 26 December 2004 in Indian Ocean earthquake and
+tsunami while on vacation with his family. Unfortunately his
+beneficiaries also passed in the tragic disaster. We currently do not
+have anyone to claim the funds.
 
-And thank you for that, but if there's time, I think we would still
-prefer the final commit message to include corrections where Matthew
-enlightened me (that "sign-extension" claim came from my confusion):
+Please I would like you to keep this proposal between us. My proposal
+is that, you will have 40% of the above mentioned fund, while will
+have 60%. If you are interested kindly fill out below information and
+send it back to me for more details.
 
--u64 casts added to stop unfortunate sign-extension when shifting (and
--let's use shifts throughout, rather than mixed with * and /).
--
--Use round_up() when advancing pos, to stop assuming that pos was already
--THP-aligned when advancing it by THP-size.  (But I believe this use of
--round_up() assumes that any THP must be THP-aligned: true while tmpfs
--enforces that alignment, and is the only fs with FS_THP_SUPPORT; but might
--need to be generalized in the future?  If I try to generalize it right
--now, I'm sure to get it wrong!)
-+u64 cast to stop losing bits when converting unsigned long to loff_t
-+(and let's use shifts throughout, rather than mixed with * and /).
-+
-+Use round_up() when advancing pos, to stop assuming that pos was
-+already THP-aligned when advancing it by THP-size.  (This use of
-+round_up() assumes that any THP has THP-aligned index: true at present
-+and true going forward, but could be recoded to avoid the assumption.)
+Your full name.
+Your country.
+Your age.
+Your occupation.
+Your Phone number.
+Your address.
+A copy of your passport or ID card.
 
-Thanks,
-Hugh
+Regards,
+
+Mr.Fredrick Kone.
