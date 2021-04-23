@@ -2,177 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F58736920A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8425F36920D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242467AbhDWMZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:25:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45766 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242393AbhDWMZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:25:12 -0400
-Date:   Fri, 23 Apr 2021 12:24:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619180675;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R/gyr1lMkvwIWABkm0oft2MwHWjjX0MGvPtqErZws6k=;
-        b=hGBl7fUyNwt7Cs3kcyh8bedjUa0Bm2hAGRf26jPWrJS/Q/YWlfRsWKHMFw8L34IvljhJtW
-        Aaa5DvMmpQHesY/OoyLFGXaNa02rmqM2q+6o3DVdNtw4rszkLGP/8ohG9tSvDaQC89HLzu
-        ORPxYvdqP4W8hoPTXMeIBWsc6hzDJVP067jpUXfoSj3bI1Km4hHNveNXn1OR5jj3U2F6TQ
-        iCtCRowvmQHk8Wve9dxv787wVB6YkcKJ+kKXtcGdSuuYtKt4dFjohlK9pViMtBmyew7LWJ
-        fvSOeav1u02U/0TYDWIk/fBV6cRJJh+puFEdBELtw8b83iVzGb0QwhfA893agA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619180675;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=R/gyr1lMkvwIWABkm0oft2MwHWjjX0MGvPtqErZws6k=;
-        b=ONT5O0qQIrKxvBcug84BPrn2KXTHzouMNkf0Fb5OchPcBfZ/Jx0boLSLeHd4OT+jMsasrn
-        vPlH8ZUjsINOSyAQ==
-From:   "irqchip-bot for He Ying" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3: Do not enable irqs when
- handling spurious interrups
-Cc:     Mark Rutland <mark.rutland@arm.com>, He Ying <heying24@huawei.com>,
-        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org,
-        tglx@linutronix.de
-In-Reply-To: <20210423083516.170111-1-heying24@huawei.com>
-References: <20210423083516.170111-1-heying24@huawei.com>
+        id S242381AbhDWM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:26:03 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37858 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhDWM0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:26:02 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lZurx-000eHK-PO; Fri, 23 Apr 2021 14:25:13 +0200
+Date:   Fri, 23 Apr 2021 14:25:13 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/14] drivers: net: dsa: qca8k: tweak internal delay to
+ oem spec
+Message-ID: <YIK8qYGXG/R1du/C@lunn.ch>
+References: <20210423014741.11858-1-ansuelsmth@gmail.com>
+ <20210423014741.11858-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Message-ID: <161918067453.29796.494167512532062279.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423014741.11858-3-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On Fri, Apr 23, 2021 at 03:47:28AM +0200, Ansuel Smith wrote:
+> The original code had the internal dalay set to 1 for tx and 2 for rx.
 
-Commit-ID:     a97709f563a078e259bf0861cd259aa60332890a
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/a97709f563a078e259bf0861cd259aa60332890a
-Author:        He Ying <heying24@huawei.com>
-AuthorDate:    Fri, 23 Apr 2021 04:35:16 -04:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 23 Apr 2021 13:19:08 +01:00
+Do you have any idea what these values mean, in terms of pS?
 
-irqchip/gic-v3: Do not enable irqs when handling spurious interrups
+What value is being passed to the PHY? Since the MAC is providing the
+delays, you need to ensure the PHY is not adding a delay. Is there
+code doing this?
 
-We triggered the following error while running our 4.19 kernel
-with the pseudo-NMI patches backported to it:
-
-[   14.816231] ------------[ cut here ]------------
-[   14.816231] kernel BUG at irq.c:99!
-[   14.816232] Internal error: Oops - BUG: 0 [#1] SMP
-[   14.816232] Process swapper/0 (pid: 0, stack limit = 0x(____ptrval____))
-[   14.816233] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      4.19.95.aarch64 #14
-[   14.816233] Hardware name: evb (DT)
-[   14.816234] pstate: 80400085 (Nzcv daIf +PAN -UAO)
-[   14.816234] pc : asm_nmi_enter+0x94/0x98
-[   14.816235] lr : asm_nmi_enter+0x18/0x98
-[   14.816235] sp : ffff000008003c50
-[   14.816235] pmr_save: 00000070
-[   14.816237] x29: ffff000008003c50 x28: ffff0000095f56c0
-[   14.816238] x27: 0000000000000000 x26: ffff000008004000
-[   14.816239] x25: 00000000015e0000 x24: ffff8008fb916000
-[   14.816240] x23: 0000000020400005 x22: ffff0000080817cc
-[   14.816241] x21: ffff000008003da0 x20: 0000000000000060
-[   14.816242] x19: 00000000000003ff x18: ffffffffffffffff
-[   14.816243] x17: 0000000000000008 x16: 003d090000000000
-[   14.816244] x15: ffff0000095ea6c8 x14: ffff8008fff5ab40
-[   14.816244] x13: ffff8008fff58b9d x12: 0000000000000000
-[   14.816245] x11: ffff000008c8a200 x10: 000000008e31fca5
-[   14.816246] x9 : ffff000008c8a208 x8 : 000000000000000f
-[   14.816247] x7 : 0000000000000004 x6 : ffff8008fff58b9e
-[   14.816248] x5 : 0000000000000000 x4 : 0000000080000000
-[   14.816249] x3 : 0000000000000000 x2 : 0000000080000000
-[   14.816250] x1 : 0000000000120000 x0 : ffff0000095f56c0
-[   14.816251] Call trace:
-[   14.816251]  asm_nmi_enter+0x94/0x98
-[   14.816251]  el1_irq+0x8c/0x180                    (IRQ C)
-[   14.816252]  gic_handle_irq+0xbc/0x2e4
-[   14.816252]  el1_irq+0xcc/0x180                    (IRQ B)
-[   14.816253]  arch_timer_handler_virt+0x38/0x58
-[   14.816253]  handle_percpu_devid_irq+0x90/0x240
-[   14.816253]  generic_handle_irq+0x34/0x50
-[   14.816254]  __handle_domain_irq+0x68/0xc0
-[   14.816254]  gic_handle_irq+0xf8/0x2e4
-[   14.816255]  el1_irq+0xcc/0x180                    (IRQ A)
-[   14.816255]  arch_cpu_idle+0x34/0x1c8
-[   14.816255]  default_idle_call+0x24/0x44
-[   14.816256]  do_idle+0x1d0/0x2c8
-[   14.816256]  cpu_startup_entry+0x28/0x30
-[   14.816256]  rest_init+0xb8/0xc8
-[   14.816257]  start_kernel+0x4c8/0x4f4
-[   14.816257] Code: 940587f1 d5384100 b9401001 36a7fd01 (d4210000)
-[   14.816258] Modules linked in: start_dp(O) smeth(O)
-[   15.103092] ---[ end trace 701753956cb14aa8 ]---
-[   15.103093] Kernel panic - not syncing: Fatal exception in interrupt
-[   15.103099] SMP: stopping secondary CPUs
-[   15.103100] Kernel Offset: disabled
-[   15.103100] CPU features: 0x36,a2400218
-[   15.103100] Memory Limit: none
-
-which is cause by a 'BUG_ON(in_nmi())' in nmi_enter().
-
->From the call trace, we can find three interrupts (noted A, B, C above):
-interrupt (A) is preempted by (B), which is further interrupted by (C).
-
-Subsequent investigations show that (B) results in nmi_enter() being
-called, but that it actually is a spurious interrupt. Furthermore,
-interrupts are reenabled in the context of (B), and (C) fires with
-NMI priority. We end-up with a nested NMI situation, something
-we definitely do not want to (and cannot) handle.
-
-The bug here is that spurious interrupts should never result in any
-state change, and we should just return to the interrupted context.
-Moving the handling of spurious interrupts as early as possible in
-the GICv3 handler fixes this issue.
-
-Fixes: 3f1f3234bc2d ("irqchip/gic-v3: Switch to PMR masking before calling IRQ handler")
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: He Ying <heying24@huawei.com>
-[maz: rewrote commit message, corrected Fixes: tag]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210423083516.170111-1-heying24@huawei.com
-Cc: stable@vger.kernel.org
----
- drivers/irqchip/irq-gic-v3.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index eb0ee35..0040402 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -648,6 +648,10 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
- 
- 	irqnr = gic_read_iar();
- 
-+	/* Check for special IDs first */
-+	if ((irqnr >= 1020 && irqnr <= 1023))
-+		return;
-+
- 	if (gic_supports_nmi() &&
- 	    unlikely(gic_read_rpr() == GICD_INT_NMI_PRI)) {
- 		gic_handle_nmi(irqnr, regs);
-@@ -659,10 +663,6 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
- 		gic_arch_enable_irqs();
- 	}
- 
--	/* Check for special IDs first */
--	if ((irqnr >= 1020 && irqnr <= 1023))
--		return;
--
- 	if (static_branch_likely(&supports_deactivate_key))
- 		gic_write_eoir(irqnr);
- 	else
+     Andrew
