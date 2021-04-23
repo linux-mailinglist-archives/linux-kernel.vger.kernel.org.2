@@ -2,142 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0C0368BC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B912368BCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhDWEDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:03:03 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:44525 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229454AbhDWEDA (ORCPT
+        id S232098AbhDWEFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 00:05:16 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54056 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhDWEFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:03:00 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2AA9F5C00BA;
-        Fri, 23 Apr 2021 00:02:24 -0400 (EDT)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Fri, 23 Apr 2021 00:02:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type:content-transfer-encoding; s=fm2; bh=03/g2
-        xB/0xYGPh0ut2C+Web+4rsnUfIFZ7I++jHdcLU=; b=ri0ZrUL+Xmgf47+zY/kEv
-        8AWobWZff9EKRomXOpV+CE4nK5h4Dbxe5ztuV2+AQy+F5zAmT1bLMdRQ9HvK7D2/
-        eZZ/LpvoRGIWmHvJEIB4IjtoFxnpd/G+tYM7tpgnzxLMF3MP2gUqPccDHGecZdrY
-        48Sz/ANQZIG33emg3/MlU/ewVJoZFMJYrV/vAmDCTDWqYu5TAcqFesfn3rE6Qsrw
-        HdDRWDVgqUNCbihaICi8eispkIpTA6HX7BVgGaRwWGc70PME4GpyyMZxUCeHuODC
-        772KrJpWEmXr9+qfbFLF+XMc5G3EalZYOnk/zGlWu3RTcIAAE62BejYzxClV5I5j
-        Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=03/g2xB/0xYGPh0ut2C+Web+4rsnUfIFZ7I++jHdc
-        LU=; b=C8U0eC7iTodc6ivFPRSZVIvQcXPUXdXt4NAP9QI6CfTYJ/gujtbfLKBvx
-        TGxEqBgEbG095UWdezP7qiXu826FNqmCbCzyH/0aLwuTXwu6GS6L+IPDaPPQkhIY
-        8d363t0ua7QFXXtKYzGuxAgnRaCUU452tEbHHxONdHOCY2laR2bUlpgRg9TfVU1t
-        5pffrgcLFctJsL40AgL0k2jotm2Yowq19RX4CLfuXZW+IlzRF4KFw7bqO2z5k3sy
-        /ODl2HBZd3Qts8xbdh7dmvzbeTUbAyOM0nqg8T85Hv003Q9hJ96hAWI7BSd47baE
-        92qWM0prMZ6cAN3yCw7SpsFbJ0/iw==
-X-ME-Sender: <xms:zkaCYOIZPxSlBgK850lYIVrKyPLdYv7NAoqoVvlqjm87UAHZJzKUVw>
-    <xme:zkaCYGItbXBhyT7e5DCXCRqk7G6M1dfp3YQUX_BZX-6WyK45GCQ7oQgowf2QJshPF
-    RmRWFOji3NvY1pa1ik>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdduuddgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
-    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-    eqnecuggftrfgrthhtvghrnheptedtjedvvddthffgheeujedttddtgfektdeghfeltdek
-    leefhffhleelvdejkeffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigr
-    nhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:zkaCYOu2-r7BVvj1-_2sRPBY0DSIhqmO1lLou_1h8nNE4IcBLzCB2A>
-    <xmx:zkaCYDZwnkCCnCY4m0UKcAZo7y1nT_62q0j9iCWu-IA8fENgnIWPcA>
-    <xmx:zkaCYFYPUl6nvkakOLecgkZSZGiSTgJdIJ192myLsV_sBgC3lmv_pg>
-    <xmx:0EaCYIzL5m6u3iZHEY5J1VjiETi9p3cNVRJ7my2uWmvbZP9M5MKUAw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AB7A7130005F; Fri, 23 Apr 2021 00:02:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-403-gbc3c488b23-fm-20210419.005-gbc3c488b
-Mime-Version: 1.0
-Message-Id: <6abcefbe-0e49-4e68-abc1-b9535d5467ea@www.fastmail.com>
-In-Reply-To: <tencent_A816CB57EADAD19FD3FFC04C3598E81B5608@qq.com>
-References: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
- <1053fddf-479a-6014-ca2c-110c19574f84@loongson.cn>
- <tencent_A816CB57EADAD19FD3FFC04C3598E81B5608@qq.com>
-Date:   Fri, 23 Apr 2021 12:02:01 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     maoxiaochuan <maoxiaochuan-gz@loongson.cn>,
-        "Qing Zhang" <zhangqing@loongson.cn>,
-        "xiaochuan mao" <maoxiaochuan@loongson.cn>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?Q?Re:_=E5=9B=9E=E5=A4=8D=EF=BC=9A_[PATCH]_MIPS:DTS:Fix_label_nam?=
- =?UTF-8?Q?e_and_interrupt_number_of_ohci_for_Loongson-2K?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Fri, 23 Apr 2021 00:05:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619150679; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=1G7DPv+dUKAyqtSBeEFPxTQF0zmDWYdFqoKBXFZqScw=;
+ b=b2kVwz4jk72qHel2iRxWnADWLSft4FRXWS5HzJagwRYTKaD/lDgiO5TtUaY55TRUzu8ZoB+9
+ iOufXHZw2THcZNOillSewpeMd3LzbolvLI4l1vGwtTLx+ZK0nn2/YmIBWhyLWKHSF7HRbQyW
+ /Q1sTeZmis5wfIqhASYNBAMaBW0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6082473f03cfff3452186584 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Apr 2021 04:04:15
+ GMT
+Sender: subashab=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92A37C4338A; Fri, 23 Apr 2021 04:04:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: subashab)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0901C433F1;
+        Fri, 23 Apr 2021 04:04:13 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Apr 2021 22:04:13 -0600
+From:   subashab@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Alex Elder <elder@linaro.org>,
+        Sean Tranchetti <stranche@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        Loic Poulain <loic.poulain@linaro.org>
+Subject: Re: [PATCH] net: qualcomm: rmnet: Allow partial updates of IFLA_FLAGS
+In-Reply-To: <20210423023026.GD1908499@yoga>
+References: <20210422182045.1040966-1-bjorn.andersson@linaro.org>
+ <76db0c51-15be-2d27-00a7-c9f8dc234816@linaro.org>
+ <89526b9845cc86143da2221fc2445557@codeaurora.org>
+ <20210423023026.GD1908499@yoga>
+Message-ID: <7291b240853fbf1fc6dbdc30fe4f6743@codeaurora.org>
+X-Sender: subashab@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> I recently posted a patch to iproute2 extending the rmnet link handling
+> to handle IFLA_RMNET_FLAGS, in the discussion that followed this 
+> subject
+> came up. So nothing is broken, it's just that the current logic doesn't
+> make sense and I wanted to attempt to fix it before we start to use it
+> commonly distributed userspace software (iproute2, libqmi etc)
 
+With this patch, passing IFLA_RMNET_FLAGS in newlink vs changelink will 
+have
+different behavior. Is that inline with your expectations.
 
-On Fri, Apr 23, 2021, at 10:47 AM, maoxiaochuan wrote:
-> Ok, I will send a another patch for it.
+I checked VLAN and it seems to be using the same behavior for both the 
+operations.
+While the patch itself is fine, I don't think its right to have 
+different
+behavior for the operations.
 
-Please correct your email client setup.
+> Okay, please let me know what hoops you want me to jump through. I just
+> want the subject concluded so that I can respin my iproute2 patch
+> according to what we decide here.
 
-
-https://www.kernel.org/doc/html/latest/process/email-clients.html
-
-> =20
-> =E7=A5=9D=E5=A5=BD
-> =20
->=20
->=20
-> ------------------ =E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6 --------------=
-----
-> *=E5=8F=91=E4=BB=B6=E4=BA=BA:* "zhangqing"<zhangqing@loongson.cn>;=20
-> *=E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4:* 2021=E5=B9=B44=E6=9C=8823=E6=97=
-=A5(=E6=98=9F=E6=9C=9F=E4=BA=94) =E4=B8=8A=E5=8D=8810:37
-> *=E6=94=B6=E4=BB=B6=E4=BA=BA:* "xiaochuan mao"<maoxiaochuan@loongson.c=
-n>; "Rob=20
-> Herring"<robh+dt@kernel.org>; "Thomas=20
-> Bogendoerfer"<tsbogend@alpha.franken.de>; "Jiaxun=20
-> Yang"<jiaxun.yang@flygoat.com>;=20
-> *=E6=8A=84=E9=80=81:* "devicetree"<devicetree@vger.kernel.org>;=20
-> "linux-mips"<linux-mips@vger.kernel.org>;=20
-> "linux-kernel"<linux-kernel@vger.kernel.org>;=20
-> *=E4=B8=BB=E9=A2=98:* Re: [PATCH] MIPS:DTS:Fix label name and interrup=
-t number of ohci=20
-> for Loongson-2K
->=20
->=20
-> On 04/23/2021 09:52 AM, xiaochuan mao wrote:
-> > from Loongson-2K1000 user manual know that under pci bus
-> > the device num is 4, function number is 2 and register is 0x2200
-> > is ohci. the ohci interrupt number is 51. because Loongson-2K1000 ha=
-s
-> > 64 interrupt sources, 0-31 correspond to the device tree liointc0 de=
-vice
-> >   node, and the other correspond to liointc1 node. so it should be
-> > number 19 correspon to liointc1.
-> >
-> > Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
-> >
-> Hi, xiaozhuan
->=20
->=20
-> Thanks for the patch, this is my mistake.
->=20
-> Can you correct the GPL-3.0 of this file to GPL-2.0 by the way?
->=20
-> Thanks
->=20
-> -Qing
-
-
---=20
-- Jiaxun
+My suggestion is to have the subject prefix as [PATCH net-next] since 
+this
+is an enhancement rather than fixing something which is broken.
