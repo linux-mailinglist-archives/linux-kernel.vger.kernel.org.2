@@ -2,174 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA673699BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AA13699C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243466AbhDWSdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:33:05 -0400
-Received: from mail-co1nam11on2095.outbound.protection.outlook.com ([40.107.220.95]:36961
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S243570AbhDWSdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:33:43 -0400
+Received: from mail-eopbgr750043.outbound.protection.outlook.com ([40.107.75.43]:61695
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229691AbhDWSdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:33:03 -0400
+        id S231760AbhDWSdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 14:33:41 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WoJbsuagWor5UWUsrj2Ev06cl7mbImLaazW3SHQpOxluvYZJqmck+ZVJKlCdkBbxRpVed8kjOatnW9NXLvprr2QcLZgqa2dJu0numRoQonCitivfOYucJVHgSu3E3y8rdkJDAU97Gdj/k5sTJ0xNss2PH3NwSqF/jSqzgPYi+dLPn66Ba2mvmZJcGjrD8nFTATtLTZxhCpyuGIZzdN9IiZaimM6cTzPXby+XR+0EGE/tLGkG9UMv30QYvO64+uz1gLrAfTUYhaQ8ph8qqGpK0TjzbcQO0siGjMOYq42LcZvdjT1T6W5I3YlvgcpGo283whTduwCmqpRjA8kii4VMnA==
+ b=bmHEPcyQRI1STAb0UqVjdYmXh0F9BMefpT+Jja4bIy0OOFWM4MhQbL8jPMRL4jgO5bQunJ3WsZtfMgxn5g/IIfplqAKFsuZoFV6+s+GIJPZOZBzRrJT/fB3Lp1UhEDjMQVDbw53gxYdPgiac+JhFcVbfsfC+rKurxxUfSVpVhCCirmNQOMgXkqmYcTyVcXxEJFP7UJLlI8ObuVpDW7uuE+d9KaPUPhEj6cQH/VRSQefomtnuFFsJajFBUGqR7/Z+iF0P9FGln+ONixAz6m4VafRKNd0ly0bVWFlDyIv4uC64FodoQ7Pz8Hqqqi/4xOlhS7tfhDcuVTNCxBB7fphDBg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z1eYiaL3brpENw+NzMw4ggunRuxiY/yWu4xptkH/zpg=;
- b=MIVcT7iMhMfvwEa8/3K0Cg7UHRs4ghVsyyiQk4vLlvIRY/ptMbX/3gr/11DeQxfWSIcC8wxw8adNN4N3DqNOk/wBSVXOgsL8ku9yT/tuZaCM12i7ZWz+VwsQpx593BAW3J4qDwNLdPmKvmIJNcycx48kgVpb6xS7nqvjYNJfu7Lnw7To1uM9jjHFjgIGiI7wFd5x2AMc5XtZW0fLwz4uFuCaE3NjVahpzTMTvjqZtTVvd38H50474t1JAwxJRUpVjh8Z99ZRPWEvn7mfNEV6XDgOi2o3uxoYzpKUH+YzJhWkMcD3uvUCME6qty3/nFBwrGH9uZ6tZ2Iw69oYra8LCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ bh=0plbX69qHnosr3Qa02BBKmUgABxrcp0luBXAAdA3MZg=;
+ b=T58SlwFFXzZqHSI/Z9Wjs6Br1QSgYXfJD2xpKtu4JGn14eqo51nl05fG971XoGh8ZtWd2P7rLArVdB3FltYDwXZVs78IyZTT8xsnZNXwhD2Nf9ELGkdO1pFXoD+seHGjnO+JRYvTjNnbStmUG25oGvSdiokpszYT9r2c1UowdjNuGeHwp27rYmtH6W/NlQ/HrTJirdwh9xgW9q1ApdDiZ35dUVn/KxiVXAQOUBfV1P8OqW5+43BAQjcrHXkOH10eUK/viXM/MZMIN72ic1N+hktKE0NiOT87oxF/eksf+T/DS6X/R2Mqjl5oiv9ts9Eir1KX8MuYDLWSDCBss5SxRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z1eYiaL3brpENw+NzMw4ggunRuxiY/yWu4xptkH/zpg=;
- b=Do98JKwCnPPqJuEw8sNSmtkDe7GL4VIiGSJGlAtSkgR61okr9lbi+CvWnM2APS5fp1XqjF8i3O7EntO6oJRfG6JnHX6SCDeQ/SVFw7QLbSrpKNtGT6wFWAO01/w9c1zhxy4Rm66v+KTMSPoUBAQX+UNYT4/uVsZHcM9NxHKKuWA=
-Received: from BYAPR21MB1271.namprd21.prod.outlook.com (2603:10b6:a03:109::27)
- by BYAPR21MB1238.namprd21.prod.outlook.com (2603:10b6:a03:107::33) with
+ bh=0plbX69qHnosr3Qa02BBKmUgABxrcp0luBXAAdA3MZg=;
+ b=Mlr6Q575AA61fdwwTvrWOXs2wHdmvELSX6tLNdki1UbGvc4HcPQDKgwoBA3yVB2dPX9IMi2/oIQoEVMfGRpkKndpynMyyblaCIEIz9DFRYVw1h68jozC87T3XGX5oDKzb8aFeNtAg2L8czn2bDDiOHbRe37PoAmGuCkQYhLcXx+VS9b0DifxDEiEJE/j1iuYnSOr00gn1+nkqwLi+/ycvZDOaOBylc+Hu7dUzPA7+0XYC4vrYlsnUuxpljPBvrfMrodDUjwM9Kg5p3yX/JXIr4QdeIH16/UtZq+UO7VM1JoFOdf1IIY+JgQTLW6nHtayKq/uLe/psQf2/LCg3fLdtA==
+Received: from MW4PR03CA0122.namprd03.prod.outlook.com (2603:10b6:303:8c::7)
+ by MN2PR12MB4359.namprd12.prod.outlook.com (2603:10b6:208:265::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.3; Fri, 23 Apr
- 2021 18:32:24 +0000
-Received: from BYAPR21MB1271.namprd21.prod.outlook.com
- ([fe80::c074:b476:d8d6:4e86]) by BYAPR21MB1271.namprd21.prod.outlook.com
- ([fe80::c074:b476:d8d6:4e86%9]) with mapi id 15.20.4087.021; Fri, 23 Apr 2021
- 18:32:24 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Dexuan Cui <decui@microsoft.com>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Fri, 23 Apr
+ 2021 18:33:02 +0000
+Received: from CO1NAM11FT033.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8c::4) by MW4PR03CA0122.outlook.office365.com
+ (2603:10b6:303:8c::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.22 via Frontend
+ Transport; Fri, 23 Apr 2021 18:33:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT033.mail.protection.outlook.com (10.13.174.247) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4065.21 via Frontend Transport; Fri, 23 Apr 2021 18:33:02 +0000
+Received: from [10.2.164.27] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
+ 2021 18:33:01 +0000
+Subject: Re: [RFC PATCH 0/4] Support for passing runtime state idle time to
+ TF-A
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     Sudeep Holla <sudeep.holla@arm.com>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [Patch v2 1/2] PCI: hv: Fix a race condition when removing the
- device
-Thread-Topic: [Patch v2 1/2] PCI: hv: Fix a race condition when removing the
- device
-Thread-Index: AQHXNzrFBLwYwYTj8kqzheBKY3VooKrBsNwAgAC786A=
-Date:   Fri, 23 Apr 2021 18:32:24 +0000
-Message-ID: <BYAPR21MB1271F9B76FAA423D7BE6DDEECE459@BYAPR21MB1271.namprd21.prod.outlook.com>
-References: <1619070346-21557-1-git-send-email-longli@linuxonhyperv.com>
- <MW2PR2101MB0892A9A0972199A2FF6D68B0BF459@MW2PR2101MB0892.namprd21.prod.outlook.com>
-In-Reply-To: <MW2PR2101MB0892A9A0972199A2FF6D68B0BF459@MW2PR2101MB0892.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=825368ff-303b-448a-ba43-6f3872c68267;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-23T06:58:52Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [76.22.9.184]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 164a47f6-9ec6-40f2-ba5e-08d906862404
-x-ms-traffictypediagnostic: BYAPR21MB1238:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR21MB1238DE2AF7A27B42029CBB50CE459@BYAPR21MB1238.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AM1C3dADYcyEKpzY8DDVkad2aFolafzG+pXip7DTvgFyEPlBbaEaFSa9kuSb7fvy7LEH4wdKdV9jgUAAHZ0ZUYNbqt6CO/ojs4lZWvFZrly8MW2PSB7g4XKDUupobP+UyFWbqzVpXvffnPoTrdovchaQjhnhLP/3nsYNJgJDpTCQQUG9TI2YhmZYwgfTPYCyY8Ac/oEApG/yE4kEBiUEsZUrL/07a0phH9Fr3jPbDpBRpG6jMF/zVjqYPvonJoSQMOrbjTppzOvMDPQk/Kx/ha2X4qDP//DslcoloHpUjwiWkslJyOBjfC4lVj8VSDoKUbU8Kg7PZ+3vOlGzMSREcf22JDeMOCTeF0OzkvfJvQ+Sb3cXz8DtBuIF3SYXbRhrndD1MBbHIJQn75QaKs9wqtS359IheB5tin+T4+mK1hcjI4Mtp6TXRlN6Vk765px8TU1Q+7BoYeLZeyvV88vLQgfirr8j4sEebLN4wk3xKczBO8e0+EMjNFkJNtjUd7OFklQTarqDCKZeRTxGv8sK+L+tkSVkrt7N6rMmX1Fs/z/4mxRjEX0JWCWfn2sVu6VcYfngwq06tU6JTkO6mwJlMIxdD8h74+LNhw5eldm72XXV5Ju4icLXrXnKfPsRfgJtJjnTVzIIC1+DVthGCJ+rdQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1271.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(26005)(478600001)(38100700002)(8676002)(8936002)(122000001)(110136005)(10290500003)(2906002)(8990500004)(6506007)(5660300002)(52536014)(7696005)(55016002)(83380400001)(9686003)(82960400001)(921005)(33656002)(66446008)(66946007)(76116006)(71200400001)(82950400001)(66556008)(316002)(66476007)(86362001)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?2ljEMYYLINhXW5VBevHDdJotgXj3L2Owh+yFhYeVLpQb5wxz8TMZYHpR7/wP?=
- =?us-ascii?Q?C+8gfcAJXUPEnZvPRt9m3nTxPw73s/tozrBsSntp+CV5Pe3waW6ffbseM+rG?=
- =?us-ascii?Q?7i4VKawk5GEcXFLQlLyH24K5KTVL/t6VWo1ew9Gw95kdBwVdxFnEIgliAL/F?=
- =?us-ascii?Q?26GrMACI2wBT59gWRfCiWQbH1FVNn/C4p1z3Pan0v4ViCGwpQGCeWyU5diyx?=
- =?us-ascii?Q?obqjjs7HG5stKcBR3j2hrM7x5BUv+tzDk+s23T24tfWTsU8CdNqJ58aO2vvx?=
- =?us-ascii?Q?9zww7gLgU7eBG3QXQ1JAiJtTmhvVaH/pjGEkxqSNyH0VbU8KDCVB6SElHZPo?=
- =?us-ascii?Q?T8qEgEQWAg9bPKQAMTVPMLFAJujSwO9pIR1ONaLPVzepOYoe/Sryw43xjkAu?=
- =?us-ascii?Q?hmvVBK6ZVhecrfSpZ47JRM0pVDKeo0XtGaZ04Is+alH4n8l/Sn7+68OUok8H?=
- =?us-ascii?Q?8HAYYNchCL28TVQ/vdAK4H8bKtVXFiUxyNxbuZfxA/jeFzzQBti1/uxQ6yaT?=
- =?us-ascii?Q?Tar39viztWFmumf8T+9hhfZPtOgmZzqmggpQUAY3uabiA0IwIsRmYDgH/OGR?=
- =?us-ascii?Q?cOPEwk0i2uX2JpJo+pwLeplLiRb4gXy4eJFvGLygdLXSGNxsBvnl6S9orW3F?=
- =?us-ascii?Q?/itHXx+kxSBE57cjoKvc74GgHi8kekCzaqtA5RTBfH9g4xtDdLTO+v7Q0r89?=
- =?us-ascii?Q?SBCRu+4kAsJdyq6uzt901oFkoRfBJc9pP2gx6EZO+2gXS03yReGOhB3PSikr?=
- =?us-ascii?Q?yE5va/ZCnMmvXq2FjeJsYWaowLPPsrFep9Z9ll+I2xKXI5/eqyRMb3YysaMD?=
- =?us-ascii?Q?Zcnp3B1avXFNCDBf5CmXoHzxpyxnZ81Wl+pd0HQJMMyRcOcJvDrTvsMxsv+M?=
- =?us-ascii?Q?eYbvXZ+yxpqzh9VqZp1OhY/sOqvzj6f1xBopSn/n489oRuEQKzHnho1u56po?=
- =?us-ascii?Q?6/3c/4C9ObW+cBXmOYxqlQad3i7KCZOgWsA8Cb6tMf5GSzQRjvv1fPCZLtDL?=
- =?us-ascii?Q?knZhRSINQiygFsjeGFUQ7G8ls3QCYW4DUsCY+NFiWrercMo/6VuCJVdV+8PH?=
- =?us-ascii?Q?29S7jwGye/BzwRirJl8dSQAJJ5mk/NUI9bx2oZYspwZ6lKq3703PJWXN88VG?=
- =?us-ascii?Q?jPeINDN2QobFjISKyq+cidLv8OEltoWh6RVc83EyO738CTDnryIzAHJ3tXoP?=
- =?us-ascii?Q?pzmS+l6ieYunZmy10AEvhXnWmHK2kMthXZi05m1Nu6Fpeamt6SxdR0MltNFk?=
- =?us-ascii?Q?+QsOphmXVWzd212ddeN6B0XA6zbOyePHp5hcvYmynLhpAyQVC6HRzolcyVs5?=
- =?us-ascii?Q?rPA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>, <ksitaraman@nvidia.com>,
+        <sanjayc@nvidia.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <1619123448-10138-1-git-send-email-skomatineni@nvidia.com>
+ <CAJZ5v0hivxQjA2AZpPxVadzaM7gB+L3BRnoNyeD7hyvr-3Fh4g@mail.gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <9c01bdb9-90cf-f14a-a886-c91ef01bcf25@nvidia.com>
+Date:   Fri, 23 Apr 2021 11:32:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1271.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 164a47f6-9ec6-40f2-ba5e-08d906862404
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 18:32:24.8520
+In-Reply-To: <CAJZ5v0hivxQjA2AZpPxVadzaM7gB+L3BRnoNyeD7hyvr-3Fh4g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4b6523a2-23b1-4a36-71fb-08d906863a6d
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4359:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB435907B4FF6BF87780061C9FC2459@MN2PR12MB4359.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B5ZGQZ24GbaGFHoJfAKOyP16uZ1+Xg24Tu8jmstgrepdrE4qAINCSXQ5bK1vyKF6DF/r568A6wptjBkvoTSeFHRPJZUDiM7K5l2ZDHK+Wsnrc3g0tJ7Una1HN2u5K1BfdKWzfN0IlmGdPeJN/ZZtAiIdmHAuePxnPNjyjszWkPgkJofONfq8QbeM2i45PtqPweGsPia+9U+FL0MSirt1rSLUyAIg5TLrclAeZGoaDsO63mIZhvde8nii2gqkaVvMUAm4+nCR9ETdZ+qPbTbL8GJTOgwI1+Mwx2L5vqFtWy/8/BSUOMTHAFq8cidQFziUNe+fCYjqYCyxeY2p1LMOVdaW2lNyVQSvDNtcJEyzOxnYwD6qF4lGMJyqX44v+eBJMW/CBa1BGRGpliKXEeyxy77ViD7db66G1/TI0vG0bx5xxm3sfNW0J55VxQ3urMu5IoM1EUMYQa4uS/AdMHx1RbnEg5hnP2M0M5rPHWMDnc0GAfSwI50qUKFyqDDHGw8/MzoUpV7W0rX8CyFIeGTH5sToGM/cwYcd6SCiB1TKxhBk/wYxi5F5ex7pxmz0LP/in83lU5AeiZcsx2JFZrKMrWwwNqrqbvVsk/UuNXfwJvayPkSLEwccY6oMXE9WPBu3R6KgSSkUozeQV20xACOZndUkOpcoTXn7wiZg5dvovTWgLHfrdMdVpPxwV5LFqPw6
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(376002)(46966006)(36840700001)(5660300002)(36906005)(316002)(4326008)(86362001)(6666004)(54906003)(16576012)(31696002)(478600001)(70586007)(186003)(70206006)(36860700001)(16526019)(7416002)(36756003)(26005)(83380400001)(53546011)(47076005)(31686004)(82740400003)(8936002)(356005)(8676002)(6916009)(82310400003)(7636003)(336012)(2906002)(2616005)(426003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 18:33:02.4251
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QBzJ1B1Ht2NGR3Imns6pdxYNWPT/opGWX0W7gPCB7kXUXFCcmfh4hDZqrBRvUKOtiQq6V8aAQ+n7GbxYiWAskw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1238
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b6523a2-23b1-4a36-71fb-08d906863a6d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT033.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4359
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: RE: [Patch v2 1/2] PCI: hv: Fix a race condition when removing t=
-he
-> device
->=20
-> > From: longli@linuxonhyperv.com <longli@linuxonhyperv.com>
-> > Sent: Wednesday, April 21, 2021 10:46 PM ...
-> > diff --git a/drivers/pci/controller/pci-hyperv.c
-> > b/drivers/pci/controller/pci-hyperv.c
-> > index 27a17a1e4a7c..fc948a2ed703 100644
-> > --- a/drivers/pci/controller/pci-hyperv.c
-> > +++ b/drivers/pci/controller/pci-hyperv.c
-> > @@ -444,7 +444,6 @@ enum hv_pcibus_state {
-> >  	hv_pcibus_probed,
-> >  	hv_pcibus_installed,
-> >  	hv_pcibus_removing,
-> > -	hv_pcibus_removed,
-> >  	hv_pcibus_maximum
-> >  };
-> >
-> > @@ -3305,13 +3304,22 @@ static int hv_pci_remove(struct hv_device
-> > *hdev)
-> >
-> >  	hbus =3D hv_get_drvdata(hdev);
-> >  	if (hbus->state =3D=3D hv_pcibus_installed) {
-> > +		tasklet_disable(&hdev->channel->callback_event);
-> > +		hbus->state =3D hv_pcibus_removing;
-> > +		tasklet_enable(&hdev->channel->callback_event);
-> > +		destroy_workqueue(hbus->wq);
->=20
-> If we test "rmmod pci-hyperv", I suspect the warning will be printed:
-> hv_pci_remove() -> hv_pci_bus_exit() -> hv_pci_start_relations_work():
 
-In most case, it will not print anything.=20
+On 4/23/21 5:27 AM, Rafael J. Wysocki wrote:
+> On Thu, Apr 22, 2021 at 10:31 PM Sowjanya Komatineni
+> <skomatineni@nvidia.com> wrote:
+>> Tegra194 and Tegra186 platforms use separate MCE firmware for CPUs which is
+>> in charge of deciding on state transition based on target state, state idle
+>> time, and some other Tegra CPU core cluster states information.
+>>
+>> Current PSCI specification don't have function defined for passing runtime
+>> state idle time predicted by governor (based on next events and state target
+>> residency) to ARM trusted firmware.
+> Presumably that's because this is not a good idea.
+Tegra194 and Tegra186 platforms use separate MCE firmware for CPUs.
 
-It will print something if there is a PCI_BUS_RELATION work pending at the =
-time of remove. The same goes to PCI_EJECT. In those cases, the message is =
-valuable to troubleshooting.
+MCE firmware handles CPU complex power management states entry/exit 
+based on its background tasks and uses expected wake time of the core to 
+decide on state transition.
 
->=20
->         if (hbus->state =3D=3D hv_pcibus_removing) {
->                 dev_info(&hbus->hdev->device,
->                          "PCI VMBus BUS_RELATIONS: ignored\n");
->                 return -ENOENT;
->         }
->=20
-> Ideally we'd like to avoid the warning in the driver unloading case.
->=20
-> BTW, can you please add "hbus->wq =3D NULL;" after the line
-> "destroy_workqueue(hbus->wq);"? In case some other function could still
-> try to use hbus->wq by accident in the future, the error would be easier =
-to
-> be understood.
+Expected wake time is based on next event and allowed  min residency of 
+the state which governor predicts in kernel which MCE is not aware of.
 
-I will send v3 to add =3DNULL.
+So need a way to pass this info from kernel through PSCI to TF-A and 
+TF-A will update this to MCE along with requested state of entry.
+
+For example, When C6 core idle state is requested, MCE notes the time at 
+which core is likely to wake up. There could be background tasks running 
+on core which kernel is not aware of.
+
+When those tasks are completed it will check the remaining time against 
+states crossover thresholds (programmed by ARM trusted FW) to determine 
+if its still have enough time to enter into C6 state.
+
+While a core is power gates, it could be woken up for background tasks 
+and put back to power gated state again by MCE based on expected wake 
+time of the corresponding core.
+
+
+So, Tegra194/Tegra186 CPU idle support, we need this runtime state 
+expected wake time predicted by governor to be passed from kernel to TF-A.
+
+Thanks
+
+Sowjanya
+
+>
+> A basic design principle of cpuidle is that it should be possible to
+> use every governor with every driver and the changes in this series
+> make the platforms in question only work with menu AFAICS.
