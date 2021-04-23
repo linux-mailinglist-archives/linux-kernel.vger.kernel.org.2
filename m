@@ -2,157 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA78368A73
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837AD368A7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240078AbhDWBiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWBiM (ORCPT
+        id S239976AbhDWBoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:44:55 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:43930 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235302AbhDWBoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:38:12 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538C6C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:37:37 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id nk8so9121392pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pY+RtdgfTG8Ga9unUypOjnGgrTmTrZHcFsVJpQMU7j8=;
-        b=RdWLFoBSnlIyDblw/fEjgMJAUDmc5V0f1F8RNrCd6bfvjMmgfbjWaizeyu5DniDxVQ
-         9X2Uuz74Y2MtyFgznRAlT7rG7Xg3TKE8cev3PU4hdxRT9Dbb5g7GmBHuTzAgl/AAOPxp
-         URNfiHZ11EYUca+tOJHzPMnqhUE9RngD7eH/Ag4QnA3/NkKkQ+6HHdeIz6QQLjp9PVUl
-         V9B8YyvoLQj5XoA9jFFNPsePeuMvFh7S2UfHnPy/hYfkktN8wLhCnhAveNN2dQjeH6mb
-         uIeo2etuZubn2L/Uyq+8dhvRhGf/ArSH2TEhcmIsqBCrY3EjPlS1yHt1q0HUCir6m3A0
-         a2Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=pY+RtdgfTG8Ga9unUypOjnGgrTmTrZHcFsVJpQMU7j8=;
-        b=V6fvcRxPAvgnxhyxwtWfTQJpTw0SGjp9yzHPYcy4dLnRZQXFmS2ilSOevb44RwC9vP
-         F829gO7QELtB/o3k30OPkzAR+A+O9IER+cMputMi1/u4OETjMzLG/6AIbb/w+wNdi7DH
-         IeoZSrDrAKkINYyOrCH3CB0CAI1OgoAw1a+nZOWYKu3n4sqF0nFrf5QQ0eQcT0otn7BU
-         ACx6guCwmM2TvlATbHbCC/BkBO7ylQUJv4aniMh+AVWu1uRm6HB8knip62BHvm2juTsI
-         hOvQdh1Me2srN77Qn2JJeLg5viUEakvPCrku3K5lH4TuhGWHwOmhXyIiqP9T9UrICalD
-         zzPQ==
-X-Gm-Message-State: AOAM530p4XDjVuGZyHXBdkY6zYd1eP2iLWRWXk7GHV0lK9r0JTp0pL0E
-        PyAEIaRkquIdOs/hRZiwBzH4UQ==
-X-Google-Smtp-Source: ABdhPJyeO81PpFTswF7HZ4KI8ML/nCiuE9HOmt0WmeZKYgnVJ8QqP3+Yko2ukzP9L0suofBxpJEYHA==
-X-Received: by 2002:a17:90a:a789:: with SMTP id f9mr3113040pjq.192.1619141856769;
-        Thu, 22 Apr 2021 18:37:36 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g1sm3351627pgi.64.2021.04.22.18.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 18:37:36 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 18:37:36 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 18:37:34 PDT (-0700)
-Subject:     Re: [PATCH v4 0/5] Add Microchip PolarFire Soc Support
-In-Reply-To: <CAOnJCUKvyDPO55QtPXDhCMKYBb70WpR01jM1F=ddA=pmFJo5_Q@mail.gmail.com>
-CC:     Atish Patra <Atish.Patra@wdc.com>, linux-kernel@vger.kernel.org,
-        aou@eecs.berkeley.edu, Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <Anup.Patel@wdc.com>, bjorn@kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
-        Conor.Dooley@microchip.com, daire.mcnamara@microchip.com,
-        Ivan.Griffin@microchip.com, Lewis.Hanly@microchip.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     atishp@atishpatra.org
-Message-ID: <mhng-8a0f200a-fc9e-4e6b-a881-433a024e8b69@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 22 Apr 2021 21:44:54 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id DE00DBA143;
+        Fri, 23 Apr 2021 09:44:03 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31919T139684250371840S1619142242534325_;
+        Fri, 23 Apr 2021 09:44:03 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <1992614d86c6477ffb7c4ec9c31cbe71>
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 8
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jianqun Xu <jay.xu@rock-chips.com>
+To:     heiko@sntech.de, linus.walleij@linaro.org, robh+dt@kernel.org
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH] dt-bindings: pinctrl: rockchip: Convert to json-schema
+Date:   Fri, 23 Apr 2021 09:44:00 +0800
+Message-Id: <20210423014400.1433347-1-jay.xu@rock-chips.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 15:33:39 PDT (-0700), atishp@atishpatra.org wrote:
-> On Sat, Apr 17, 2021 at 8:26 PM Atish Patra <atishp@atishpatra.org> wrote:
->>
->> On Mon, Mar 29, 2021 at 9:17 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> >
->> > On Wed, 03 Mar 2021 12:02:48 PST (-0800), Atish Patra wrote:
->> > > This series adds minimal support for Microchip Polar Fire Soc Icicle kit.
->> > > It is rebased on v5.12-rc1 and depends on clock support.
->> > > Only MMC and ethernet drivers are enabled via this series.
->> > > The idea here is to add the foundational patches so that other drivers
->> > > can be added to on top of this. The device tree may change based on
->> > > feedback on bindings of individual driver support patches.
->> > >
->> > > This series has been tested on Qemu and Polar Fire Soc Icicle kit.
->> > > It depends on the updated clock-series[2] and macb fix[3].
->> > > The series is also tested by Lewis from Microchip.
->> > >
->> > > The series can also be found at.
->> > > https://github.com/atishp04/linux/tree/polarfire_support_upstream_v4
->> > >
->> > > [1] https://lists.nongnu.org/archive/html/qemu-devel/2020-10/msg08582.html
->> > > [2] https://www.spinics.net/lists/linux-clk/msg54579.html
->> > >
->> > > Changes from v3->v4:
->> > > 1. Fixed few DT specific issues.
->> > > 2. Rebased on top of new clock driver.
->> > > 3. SD card functionality is verified.
->> > >
->> > > Changes from v2->v3:
->> > > 1. Fixed a typo in dt binding.
->> > > 2. Included MAINTAINERS entry for PolarFire SoC.
->> > > 3. Improved the dts file by using lowercase clock names and keeping phy
->> > >    details in board specific dts file.
->> > >
->> > > Changes from v1->v2:
->> > > 1. Modified the DT to match the device tree in U-Boot.
->> > > 2. Added both eMMC & SDcard entries in DT. However, SD card is only enabled
->> > >    as it allows larger storage option for linux distros.
->> > >
->> > > Atish Patra (4):
->> > > RISC-V: Add Microchip PolarFire SoC kconfig option
->> > > dt-bindings: riscv: microchip: Add YAML documentation for the
->> > > PolarFire SoC
->> > > RISC-V: Initial DTS for Microchip ICICLE board
->> > > RISC-V: Enable Microchip PolarFire ICICLE SoC
->> > >
->> > > Conor Dooley (1):
->> > > MAINTAINERS: add microchip polarfire soc support
->> > >
->> > > .../devicetree/bindings/riscv/microchip.yaml  |  27 ++
->> > > MAINTAINERS                                   |   8 +
->> > > arch/riscv/Kconfig.socs                       |   7 +
->> > > arch/riscv/boot/dts/Makefile                  |   1 +
->> > > arch/riscv/boot/dts/microchip/Makefile        |   2 +
->> > > .../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
->> > > .../boot/dts/microchip/microchip-mpfs.dtsi    | 329 ++++++++++++++++++
->> > > arch/riscv/configs/defconfig                  |   4 +
->> > > 8 files changed, 450 insertions(+)
->> > > create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
->> > > create mode 100644 arch/riscv/boot/dts/microchip/Makefile
->> > > create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
->> > > create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
->> >
->> > I had this left in my inbox waiting for either some reviews to come in or a v2,
->> > but I don't see any.  Did I miss something?
->> >
->> Sorry for the late reply. I am on vacation until May. I think I saw
->> all the patches have already been reviewed.
->> Let me know if it is not the case.
->>
-> I cross checked and all the patches are reviewed-by.
-> @palmer: Is it possible to take this series for 5.13 MW ?
+Convert the pinctrl/rockchip,pinctrl.txt binding document to
+json-schema.
 
-I still don't see any reviews for the mailbox driver, did it just get 
-lost on the way to me?
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+---
+ .../bindings/pinctrl/rockchip,pinctrl.yaml    | 163 ++++++++++++++++++
+ 1 file changed, 163 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
 
->
->> > _______________________________________________
->> > linux-riscv mailing list
->> > linux-riscv@lists.infradead.org
->> > http://lists.infradead.org/mailman/listinfo/linux-riscv
->>
->>
->>
->> --
->> Regards,
->> Atish
+diff --git a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
+new file mode 100644
+index 000000000000..59cddcd30dbc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
+@@ -0,0 +1,163 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pinctrl/rockchip,rockchip-pinctrl.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip Pinmux Controller
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++description: |
++  The Rockchip Pinmux Controller, enables the IC
++  to share one PAD to several functional blocks. The sharing is done by
++  multiplexing the PAD input/output signals. For each PAD there are several
++  muxing options with option 0 being the use as a GPIO.
++
++  Please refer to pinctrl-bindings.txt in this directory for details of the
++  common pinctrl bindings used by client devices, including the meaning of the
++  phrase "pin configuration node".
++
++  The Rockchip pin configuration node is a node of a group of pins which can be
++  used for a specific device or function. This node represents both mux and
++  config of the pins in that group. The 'pins' selects the function mode(also
++  named pin mode) this pin can work on and the 'config' configures various pad
++  settings such as pull-up, etc.
++
++  The pins are grouped into up to 5 individual pin banks which need to be
++  defined as gpio sub-nodes of the pinmux controller.
++
++properties:
++  compatible:
++    enum:
++      - rockchip,px30-pinctrl
++      - rockchip,rv1108-pinctrl
++      - rockchip,rk2928-pinctrl
++      - rockchip,rk3066a-pinctrl
++      - rockchip,rk3066b-pinctrl
++      - rockchip,rk3128-pinctrl
++      - rockchip,rk3188-pinctrl
++      - rockchip,rk3228-pinctrl
++      - rockchip,rk3288-pinctrl
++      - rockchip,rk3308-pinctrl
++      - rockchip,rk3328-pinctrl
++      - rockchip,rk3368-pinctrl
++      - rockchip,rk3399-pinctrl
++      - rockchip,rk3568-pinctrl
++
++  rockchip,grf:
++    description: |
++      phandle referencing a syscon providing the "general register files"
++    maxItems: 1
++
++  rockchip,pmu:
++    description: |
++      Optional. Phandle referencing a syscon providing the pmu registers
++      as some SoCs carry parts of the iomux controller registers there.
++      Required for at least rk3188 and rk3288. On the rk3368 this should
++      point to the PMUGRF syscon.
++    maxItems: 1
++
++  ranges: true
++
++patternProperties:
++  "^gpio[0-9]@[0-9a-f]":
++    type: object
++    description: gpio sub node
++
++    properties:
++      compatible:
++        enum:
++          - rockchip,gpio-bank
++          - rockchip,rk3188-gpio-bank0
++
++      reg:
++        maxItems: 2
++
++      interrupts:
++        description: Specifies the Rockchip summary IRQ
++        maxItems: 1
++
++      interrupt-controller: true
++
++      '#interrupt-cells':
++        description:
++          Specifies the PIN numbers and Flags, as defined in defined in
++          include/dt-bindings/interrupt-controller/irq.h
++        const: 2
++
++      gpio-controller: true
++
++      '#gpio-cells':
++        const: 2
++
++      clocks:
++        description: clock that drives this gpio bank
++        minItems: 1
++        maxItems: 2
++
++      required:
++        - compatible
++        - reg
++        - interrupts
++        - interrupt-controller
++        - '#interrupt-cells'
++        - gpio-controller
++        - '#gpio-cells'
++        - clocks
++
++      additionalProperties: false
++
++required:
++  - compatible
++  - rockchip,grf
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++
++additionalProperties: true
++
++examples:
++  - |
++        #include <dt-bindings/pinctrl/rockchip.h>
++        pcfg_pull_default: pcfg_pull_default {
++            bias-pull-pin-default
++        };
++
++        pinctrl@20008000 {
++            compatible = "rockchip,rk3066a-pinctrl";
++            rockchip,grf = <&grf>;
++            #address-cells = <1>;
++            #size-cells = <1>;
++            ranges;
++
++            gpio0: gpio0@20034000 {
++                compatible = "rockchip,gpio-bank";
++                reg = <0x20034000 0x100>;
++                interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
++                interrupt-controller;
++                #interrupt-cells = <2>;
++                gpio-controller;
++                #gpio-cells = <2>;
++                clocks = <&clk_gates8 9>;
++            };
++
++            uart2 {
++                uart2_xfer: uart2-xfer {
++                    rockchip,pins = <1 RK_PB0 1 &pcfg_pull_default>,
++                                    <1 RK_PB1 1 &pcfg_pull_default>;
++                };
++            };
++        };
++
++        uart2: serial@20064000 {
++            compatible = "snps,dw-apb-uart";
++                reg = <0x20064000 0x400>;
++                interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
++                clocks = <&mux_uart2>;
++                pinctrl-0 = <&uart2_xfer>;
++                pinctrl-names = "default";
++                reg-shift = <2>;
++                reg-io-width = <1>;
++        };
+-- 
+2.25.1
+
+
+
