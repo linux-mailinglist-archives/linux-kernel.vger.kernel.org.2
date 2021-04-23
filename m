@@ -2,202 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D2C368DF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03E0368E06
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240828AbhDWHfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:35:38 -0400
-Received: from mga03.intel.com ([134.134.136.65]:55203 "EHLO mga03.intel.com"
+        id S241086AbhDWHko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:40:44 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:60876 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWHfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:35:37 -0400
-IronPort-SDR: XMlerdNn/h3V3+8RkC+biKHsAfeDsAF9WxKglxhlGmIIwX0SSoJoSze/fvhirpsjiNMIm+yGXg
- p6WHj+GUeH+w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="196087944"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="196087944"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 00:34:59 -0700
-IronPort-SDR: 4P03s7UO9HcxPFGvheeryshu172MwTYVsbHjpEbzdxW9OlqjpJw665d/fAMPwg7FMYe6/KBk3P
- 3YQh60RcbrbA==
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="428284454"
-Received: from oyanai-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.237])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 00:34:55 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        ville.syrjala@linux.intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        intel-gfx@lists.freedesktop.org,
-        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP Workstation laptops
-In-Reply-To: <20210423044700.247359-1-kai.heng.feng@canonical.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210423044700.247359-1-kai.heng.feng@canonical.com>
-Date:   Fri, 23 Apr 2021 10:34:52 +0300
-Message-ID: <87fszh78tf.fsf@intel.com>
+        id S229993AbhDWHkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:40:41 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FRR5b1yHcz9typ8;
+        Fri, 23 Apr 2021 09:40:03 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ELss1ENvDDh3; Fri, 23 Apr 2021 09:40:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FRR5b14z2z9typ7;
+        Fri, 23 Apr 2021 09:40:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 80B0A8B79D;
+        Fri, 23 Apr 2021 09:40:04 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id KUSTaPnXfcX5; Fri, 23 Apr 2021 09:40:04 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D6ACA8B79A;
+        Fri, 23 Apr 2021 09:40:03 +0200 (CEST)
+Subject: Re: [PATCH 1/2] powerpc/vdso64: link vdso64 with linker
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20200901222523.1941988-1-ndesaulniers@google.com>
+ <20200901222523.1941988-2-ndesaulniers@google.com>
+ <87blio1ilu.fsf@mpe.ellerman.id.au>
+ <CAKwvOd=ZeJU+vLUk2P7FpX35haj7AC50B9Yps4pyoGCpd7ueTw@mail.gmail.com>
+ <3d837a36-a186-6789-7924-eaa97f056b68@csgroup.eu>
+ <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <b73db2b3-16c5-caaf-acf4-9d22d45cba5d@csgroup.eu>
+Date:   Fri, 23 Apr 2021 09:40:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
-> On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
-> to discrete GFX after S3. This is not desirable, because userspace will
-> treat connected display as a new one, losing display settings.
->
-> The expected behavior is to let discrete GFX drives all external
-> displays.
->
-> The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
-> The method is inside the BXT _DSM, so add the _DSM and call it
-> accordingly.
->
-> I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
-> regression was found.
-
-I don't know whether this change is the right thing to do. I don't know
-if it isn't either. Need to look into it.
-
-However, I have some general comments, inline.
-
->
-> v2:
->  - Forward declare struct pci_dev.
->
-> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
-> References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
->  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
->  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
->  3 files changed, 25 insertions(+)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-> index 833d0c1be4f1..c7b57c22dce3 100644
-> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
-> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-> @@ -14,11 +14,16 @@
->  
->  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
->  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
-> +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
->  
->  static const guid_t intel_dsm_guid =
->  	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
->  		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
->  
-> +static const guid_t intel_bxt_dsm_guid =
-> +	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
-> +		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
-> +
->  static char *intel_dsm_port_name(u8 id)
->  {
->  	switch (id) {
-> @@ -176,6 +181,18 @@ void intel_unregister_dsm_handler(void)
->  {
->  }
->  
-> +void intel_bxt_dsm_detect(struct pci_dev *pdev)
-
-Please leave out bxt from the naming and make the argument struct
-drm_i915_private *i915. Mmh, then it conflicts with existing
-intel_dsm_detect(), maybe we need a more descriptive name altogether?
-
-> +{
-> +	acpi_handle dhandle;
-> +
-> +	dhandle = ACPI_HANDLE(&pdev->dev);
-> +	if (!dhandle)
-> +		return;
-> +
-> +	acpi_evaluate_dsm(dhandle, &intel_bxt_dsm_guid, INTEL_DSM_REVISION_ID,
-> +			  INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO, NULL);
-> +}
-> +
->  /*
->   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
->   * Attached to the Display Adapter).
-> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
-> index e8b068661d22..d2d560d63bb3 100644
-> --- a/drivers/gpu/drm/i915/display/intel_acpi.h
-> +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
-> @@ -6,15 +6,18 @@
->  #ifndef __INTEL_ACPI_H__
->  #define __INTEL_ACPI_H__
->  
-> +struct pci_dev;
->  struct drm_i915_private;
->  
->  #ifdef CONFIG_ACPI
->  void intel_register_dsm_handler(void);
->  void intel_unregister_dsm_handler(void);
-> +void intel_bxt_dsm_detect(struct pci_dev *pdev);
->  void intel_acpi_device_id_update(struct drm_i915_private *i915);
->  #else
->  static inline void intel_register_dsm_handler(void) { return; }
->  static inline void intel_unregister_dsm_handler(void) { return; }
-> +static inline void intel_bxt_dsm_detect(struct pci_dev *pdev) { return; }
->  static inline
->  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
->  #endif /* CONFIG_ACPI */
-> diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
-> index 785dcf20c77b..57b12068aab4 100644
-> --- a/drivers/gpu/drm/i915/i915_drv.c
-> +++ b/drivers/gpu/drm/i915/i915_drv.c
-> @@ -853,6 +853,8 @@ int i915_driver_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	if (ret)
->  		goto out_cleanup_gem;
->  
-> +	intel_bxt_dsm_detect(pdev);
-> +
-
-The call sites in i915_driver_probe() and i915_drm_resume() seem rather
-arbitrary.
-
-Long term, I'd like most or all of the display stuff like this placed in
-appropriate intel_modeset_*() functions in display/intel_display.c. I'm
-not keen on having new and very specific calls in the higher levels.
-
-At probe, feels like the routing should happen earlier, before output
-setup? In intel_modeset_init_nogem()?
-
->  	i915_driver_register(i915);
->  
->  	enable_rpm_wakeref_asserts(&i915->runtime_pm);
-> @@ -1215,6 +1217,7 @@ int i915_suspend_switcheroo(struct drm_i915_private *i915, pm_message_t state)
->  static int i915_drm_resume(struct drm_device *dev)
->  {
->  	struct drm_i915_private *dev_priv = to_i915(dev);
-> +	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
->  	int ret;
->  
->  	disable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
-> @@ -1271,6 +1274,8 @@ static int i915_drm_resume(struct drm_device *dev)
->  
->  	intel_gvt_resume(dev_priv);
->  
-> +	intel_bxt_dsm_detect(pdev);
-> +
-
-In intel_display_resume() perhaps?
-
-(Yay for confusing naming wrt display and modeset, it's a
-work-in-progress.)
-
-BR,
-Jani.
 
 
->  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->  
->  	return 0;
+Le 23/04/2021 à 00:44, Nick Desaulniers a écrit :
+> On Wed, Sep 2, 2020 at 11:02 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 02/09/2020 à 19:41, Nick Desaulniers a écrit :
+>>> On Wed, Sep 2, 2020 at 5:14 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>>>
+>>>> Nick Desaulniers <ndesaulniers@google.com> writes:
+>>>>> Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for orphan sections")
+>>>>
+>>>> I think I'll just revert that for v5.9 ?
+>>>
+>>> SGTM; you'll probably still want these changes with some modifications
+>>> at some point; vdso32 did have at least one orphaned section, and will
+>>> be important for hermetic builds.  Seeing crashes in supported
+>>> versions of the tools ties our hands at the moment.
+>>>
+>>
+>> Keeping the tool problem aside with binutils 2.26, do you have a way to
+>> really link an elf32ppc object when  building vdso32 for PPC64 ?
+> 
+> Sorry, I'm doing a bug scrub and found
+> https://github.com/ClangBuiltLinux/linux/issues/774 still open (and my
+> reply to this thread still in Drafts; never sent). With my patches
+> rebased:
+> $ file arch/powerpc/kernel/vdso32/vdso32.so
+> arch/powerpc/kernel/vdso32/vdso32.so: ELF 32-bit MSB shared object,
+> PowerPC or cisco 4500, version 1 (SYSV), dynamically linked, stripped
+> 
+> Are you still using 2.26?
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Yes, our production kernels and applications are built with gcc 5.5 and binutils 2.26
+
+> 
+> I'm not able to repro Nathan's reported issue from
+> https://lore.kernel.org/lkml/20200902052123.GA2687902@ubuntu-n2-xlarge-x86/,
+> so I'm curious if I should resend the rebased patches as v2?
+> 
+
+I can't remember what was all this discussion about.
+
+I gave a try to your rebased patches.
+
+Still an issue with binutils 2.26:
+
+   VDSO32L arch/powerpc/kernel/vdso32/vdso32.so.dbg
+ppc-linux-ld: warning: orphan section `.rela.got' from `arch/powerpc/kernel/vdso32/sigtramp.o' being 
+placed in section `.rela.dyn'.
+ppc-linux-ld: warning: orphan section `.rela.plt' from `arch/powerpc/kernel/vdso32/sigtramp.o' being 
+placed in section `.rela.dyn'.
+ppc-linux-ld: warning: orphan section `.glink' from `arch/powerpc/kernel/vdso32/sigtramp.o' being 
+placed in section `.glink'.
+ppc-linux-ld: warning: orphan section `.iplt' from `arch/powerpc/kernel/vdso32/sigtramp.o' being 
+placed in section `.iplt'.
+ppc-linux-ld: warning: orphan section `.rela.iplt' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.rela.dyn'.
+ppc-linux-ld: warning: orphan section `.rela.text' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.rela.dyn'.
+/bin/sh: line 1:  7850 Segmentation fault      (core dumped) ppc-linux-ld -EB -m elf32ppc -shared 
+-soname linux-vdso32.so.1 --eh-frame-hdr --orphan-handling=warn -T 
+arch/powerpc/kernel/vdso32/vdso32.lds arch/powerpc/kernel/vdso32/sigtramp.o 
+arch/powerpc/kernel/vdso32/gettimeofday.o arch/powerpc/kernel/vdso32/datapage.o 
+arch/powerpc/kernel/vdso32/cacheflush.o arch/powerpc/kernel/vdso32/note.o 
+arch/powerpc/kernel/vdso32/getcpu.o arch/powerpc/kernel/vdso32/vgettimeofday.o -o 
+arch/powerpc/kernel/vdso32/vdso32.so.dbg
+make[2]: *** [arch/powerpc/kernel/vdso32/vdso32.so.dbg] Error 139
+make[2]: *** Deleting file `arch/powerpc/kernel/vdso32/vdso32.so.dbg'
+
+
+
+With gcc 10.1 and binutils 2.34 I get:
+
+PPC32 build:
+
+   VDSO32L arch/powerpc/kernel/vdso32/vdso32.so.dbg
+powerpc64-linux-ld: warning: orphan section `.rela.got' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.plt' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.glink' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.glink'
+powerpc64-linux-ld: warning: orphan section `.iplt' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.iplt'
+powerpc64-linux-ld: warning: orphan section `.rela.iplt' from 
+`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.branch_lt' from 
+`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.text' from 
+`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.rela.dyn'
+
+
+PPC64 build:
+
+   VDSO32L arch/powerpc/kernel/vdso32/vdso32.so.dbg
+powerpc64-linux-ld: warning: orphan section `.rela.got' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.plt' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.glink' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.glink'
+powerpc64-linux-ld: warning: orphan section `.iplt' from `arch/powerpc/kernel/vdso32/sigtramp.o' 
+being placed in section `.iplt'
+powerpc64-linux-ld: warning: orphan section `.rela.iplt' from 
+`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.branch_lt' from 
+`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.text' from 
+`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.rela.dyn'
+   VDSOSYM include/generated/vdso32-offsets.h
+   VDSO64L arch/powerpc/kernel/vdso64/vdso64.so.dbg
+powerpc64-linux-ld: warning: orphan section `.iplt' from `linker stubs' being placed in section `.iplt'
+powerpc64-linux-ld: warning: orphan section `.rela.iplt' from `linker stubs' being placed in section 
+`.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.branch_lt' from `linker stubs' being placed in 
+section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.branch_lt' from `linker stubs' being placed in 
+section `.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.plt' from `linker stubs' being placed in section `.plt'
+powerpc64-linux-ld: warning: orphan section `.rela.plt' from `linker stubs' being placed in section 
+`.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.got' from `linker stubs' being placed in section 
+`.rela.dyn'
+powerpc64-linux-ld: warning: orphan section `.rela.opd' from `linker stubs' being placed in section 
+`.rela.dyn'
+
+
+Christophe
