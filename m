@@ -2,93 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B912368BCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10D9368BD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhDWEFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:05:16 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54056 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhDWEFP (ORCPT
+        id S236080AbhDWEFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 00:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235289AbhDWEFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:05:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1619150679; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1G7DPv+dUKAyqtSBeEFPxTQF0zmDWYdFqoKBXFZqScw=;
- b=b2kVwz4jk72qHel2iRxWnADWLSft4FRXWS5HzJagwRYTKaD/lDgiO5TtUaY55TRUzu8ZoB+9
- iOufXHZw2THcZNOillSewpeMd3LzbolvLI4l1vGwtTLx+ZK0nn2/YmIBWhyLWKHSF7HRbQyW
- /Q1sTeZmis5wfIqhASYNBAMaBW0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6082473f03cfff3452186584 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Apr 2021 04:04:15
- GMT
-Sender: subashab=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 92A37C4338A; Fri, 23 Apr 2021 04:04:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: subashab)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0901C433F1;
-        Fri, 23 Apr 2021 04:04:13 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Apr 2021 22:04:13 -0600
-From:   subashab@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Alex Elder <elder@linaro.org>,
-        Sean Tranchetti <stranche@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: Re: [PATCH] net: qualcomm: rmnet: Allow partial updates of IFLA_FLAGS
-In-Reply-To: <20210423023026.GD1908499@yoga>
-References: <20210422182045.1040966-1-bjorn.andersson@linaro.org>
- <76db0c51-15be-2d27-00a7-c9f8dc234816@linaro.org>
- <89526b9845cc86143da2221fc2445557@codeaurora.org>
- <20210423023026.GD1908499@yoga>
-Message-ID: <7291b240853fbf1fc6dbdc30fe4f6743@codeaurora.org>
-X-Sender: subashab@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Fri, 23 Apr 2021 00:05:36 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDB3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:05:01 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id i190so33213492pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Rh+WfQ9nmhLJIbX/qHrwtB7uwRLAG3DJAvNQ+dZ+7g=;
+        b=Ub15tQB101oEHSFzEmqO7wllIPI2WrpNCQmK6PJCvxrojxfRtzsDhvK8dlq+Hd0gWS
+         ZB+7xQd91WbaIm7Rxwvs0ddDa76hD/WnkTH+OasC2b1/TQ4r4q/xS8h7qruLxUwEdoQ9
+         H8WwXKlwNO5Y1qXB/CDOEAnYv43LRlSEqpCnOKh2D98+VpFeSTBXYBfz+HTOQNLNYUKo
+         bRf1CHQ5dQpj4Xp4LMz/XKXuqN7OYvbce5wou/P6axtQzWroRv5iMLniuq8K70OYcwXq
+         n3I03vddAgSbSOxVZl8kXKyivdmBvPAp3rH5bqdKCSeWSIf25XnwN68ZERbnDV01Uz/V
+         yEOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=7Rh+WfQ9nmhLJIbX/qHrwtB7uwRLAG3DJAvNQ+dZ+7g=;
+        b=hxBjalIznZOKtMy0EKCA1lGGeuzvesScYhmxYW/ufRCqfkpY4HB/S4H+iDSd8gRYDx
+         yF/X9NZkFUcrw7C5x6HFJgF48+xhdklWUwzlzMahE2dcelo+1SYnRjjxE1Qf/Tjg9+sF
+         g8Z1zPjY9XGWTr4AOTCtPFWT6Nv+22/9bTiB7dN+Q7aDFc+SroQVr5fQRo2bbFxypSGk
+         HPLXBWD9LO1570OIWuapyGmUinRzyDixZkW+iiuQyAzDVK8uEwhSEqrwBuf4seq/4Ho9
+         LCtVzrlaD4R6WHeg1vSZAj9fBM7K/Eia/GPjtQ7LHWKPz3A7rstE6aYuPixI4LlAc7NO
+         Miww==
+X-Gm-Message-State: AOAM532tqWePDrntgqVdpT9DYUNTV+LLoTNo02ECagOqsGgbsH1QkMxM
+        MWPqkHV7emiht8zxtWhD/Ppqfg==
+X-Google-Smtp-Source: ABdhPJwDLp+YvfT3vTkhJex/w3eRTBqZI1Ia9lVMKJXAdp2qBrW9O9ciqokATghsElA1I98nn/iaPw==
+X-Received: by 2002:a63:231c:: with SMTP id j28mr1884713pgj.165.1619150700460;
+        Thu, 22 Apr 2021 21:05:00 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id t15sm3413859pgh.33.2021.04.22.21.04.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 21:04:59 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 21:04:59 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 21:04:58 PDT (-0700)
+Subject:     Re: [PATCH v4 1/2] binfmt_flat: allow not offsetting data start
+In-Reply-To: <BL0PR04MB651434FAFF5566A575FDBE76E7469@BL0PR04MB6514.namprd04.prod.outlook.com>
+CC:     gerg@linux-m68k.org, uclinux-dev@uclinux.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anup Patel <Anup.Patel@wdc.com>, Christoph Hellwig <hch@lst.de>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Message-ID: <mhng-5208d0c7-acc3-48ac-823d-ffef9f1123e0@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I recently posted a patch to iproute2 extending the rmnet link handling
-> to handle IFLA_RMNET_FLAGS, in the discussion that followed this 
-> subject
-> came up. So nothing is broken, it's just that the current logic doesn't
-> make sense and I wanted to attempt to fix it before we start to use it
-> commonly distributed userspace software (iproute2, libqmi etc)
+On Thu, 22 Apr 2021 05:00:32 PDT (-0700), Damien Le Moal wrote:
+>> On 2021/04/18 11:38, Greg Ungerer wrote:
+>> 
+>> 
+>> On 17/4/21 2:54 pm, Damien Le Moal wrote:
+>>> On 2021/04/17 13:52, Greg Ungerer wrote:
+>>>>
+>>>> On 17/4/21 11:10 am, Damien Le Moal wrote:
+>>>>> Commit 2217b9826246 ("binfmt_flat: revert "binfmt_flat: don't offset
+>>>>> the data start"") restored offsetting the start of the data section by
+>>>>> a number of words defined by MAX_SHARED_LIBS. As a result, since
+>>>>> MAX_SHARED_LIBS is never 0, a gap between the text and data sections
+>>>>> always exists. For architectures which cannot support a such gap
+>>>>> between the text and data sections (e.g. riscv nommu), flat binary
+>>>>> programs cannot be executed.
+>>>>>
+>>>>> To allow an architecture to request no data start offset to allow for
+>>>>> contiguous text and data sections for binaries flagged with
+>>>>> FLAT_FLAG_RAM, introduce the new config option
+>>>>> CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET. Using this new option, the
+>>>>> macro DATA_START_OFFSET_WORDS is conditionally defined in binfmt_flat.c
+>>>>> to MAX_SHARED_LIBS for architectures tolerating or needing the data
+>>>>> start offset (CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET disabled case)
+>>>>> and to 0 when CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET is enabled.
+>>>>> DATA_START_OFFSET_WORDS is used in load_flat_file() to calculate the
+>>>>> data section length and start position.
+>>>>>
+>>>>> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+>>>>> ---
+>>>>>    fs/Kconfig.binfmt |  3 +++
+>>>>>    fs/binfmt_flat.c  | 19 ++++++++++++++-----
+>>>>>    2 files changed, 17 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
+>>>>> index c6f1c8c1934e..06fb7a93a1bd 100644
+>>>>> --- a/fs/Kconfig.binfmt
+>>>>> +++ b/fs/Kconfig.binfmt
+>>>>> @@ -112,6 +112,9 @@ config BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+>>>>>    config BINFMT_FLAT_OLD_ALWAYS_RAM
+>>>>>    	bool
+>>>>>    
+>>>>> +config BINFMT_FLAT_NO_DATA_START_OFFSET
+>>>>> +	bool
+>>>>> +
+>>>>>    config BINFMT_FLAT_OLD
+>>>>>    	bool "Enable support for very old legacy flat binaries"
+>>>>>    	depends on BINFMT_FLAT
+>>>>> diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+>>>>> index b9c658e0548e..1dc68dfba3e0 100644
+>>>>> --- a/fs/binfmt_flat.c
+>>>>> +++ b/fs/binfmt_flat.c
+>>>>> @@ -74,6 +74,12 @@
+>>>>>    #define	MAX_SHARED_LIBS			(1)
+>>>>>    #endif
+>>>>>    
+>>>>> +#ifdef CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET
+>>>>> +#define DATA_START_OFFSET_WORDS		(0)
+>>>>> +#else
+>>>>> +#define DATA_START_OFFSET_WORDS		(MAX_SHARED_LIBS)
+>>>>> +#endif
+>>>>> +
+>>>>>    struct lib_info {
+>>>>>    	struct {
+>>>>>    		unsigned long start_code;		/* Start of text segment */
+>>>>> @@ -560,6 +566,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>>>    	 * it all together.
+>>>>>    	 */
+>>>>>    	if (!IS_ENABLED(CONFIG_MMU) && !(flags & (FLAT_FLAG_RAM|FLAT_FLAG_GZIP))) {
+>>>>> +
+>>>>
+>>>> Random white space change...
+>>>> Don't worry about re-spinning though, I will just edit this chunk out.
+>>>
+>>> Oops. Sorry about that. I should have better checked :)
+>>>
+>>>>
+>>>>
+>>>>>    		/*
+>>>>>    		 * this should give us a ROM ptr,  but if it doesn't we don't
+>>>>>    		 * really care
+>>>>> @@ -576,7 +583,8 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>>>    			goto err;
+>>>>>    		}
+>>>>>    
+>>>>> -		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
+>>>>> +		len = data_len + extra +
+>>>>> +			DATA_START_OFFSET_WORDS * sizeof(unsigned long);
+>>>>>    		len = PAGE_ALIGN(len);
+>>>>>    		realdatastart = vm_mmap(NULL, 0, len,
+>>>>>    			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
+>>>>> @@ -591,7 +599,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>>>    			goto err;
+>>>>>    		}
+>>>>>    		datapos = ALIGN(realdatastart +
+>>>>> -				MAX_SHARED_LIBS * sizeof(unsigned long),
+>>>>> +				DATA_START_OFFSET_WORDS * sizeof(unsigned long),
+>>>>>    				FLAT_DATA_ALIGN);
+>>>>>    
+>>>>>    		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
+>>>>> @@ -622,7 +630,8 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>>>    		memp_size = len;
+>>>>>    	} else {
+>>>>>    
+>>>>> -		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
+>>>>> +		len = text_len + data_len + extra +
+>>>>> +			DATA_START_OFFSET_WORDS * sizeof(u32);
+>>>>>    		len = PAGE_ALIGN(len);
+>>>>>    		textpos = vm_mmap(NULL, 0, len,
+>>>>>    			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
+>>>>> @@ -638,7 +647,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>>>    
+>>>>>    		realdatastart = textpos + ntohl(hdr->data_start);
+>>>>>    		datapos = ALIGN(realdatastart +
+>>>>> -				MAX_SHARED_LIBS * sizeof(u32),
+>>>>> +				DATA_START_OFFSET_WORDS * sizeof(u32),
+>>>>>    				FLAT_DATA_ALIGN);
+>>>>>    
+>>>>>    		reloc = (__be32 __user *)
+>>>>> @@ -714,7 +723,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>>>    			ret = result;
+>>>>>    			pr_err("Unable to read code+data+bss, errno %d\n", ret);
+>>>>>    			vm_munmap(textpos, text_len + data_len + extra +
+>>>>> -				MAX_SHARED_LIBS * sizeof(u32));
+>>>>> +				  DATA_START_OFFSET_WORDS * sizeof(u32));
+>>>>>    			goto err;
+>>>>>    		}
+>>>>>    	}
+>>>>>
+>>>>
+>>>> Thanks, otherwise looks good.
+>>>>
+>>>> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+>>>>
+>>>> I will push this into my m68knommu tree, for-next branch.
+>>>> I just carry the flat format changes in that tree now to make my life easier.
+>>>
+>>> Great. Thanks !
+>>> Are you taking both patches or should Plamer take the riscv Kconfig change
+>>> through his tree ?
+>> 
+>> I am happy to take both.
+>> Palmer?
+>
+>Palmer,
+>
+>Ping !
 
-With this patch, passing IFLA_RMNET_FLAGS in newlink vs changelink will 
-have
-different behavior. Is that inline with your expectations.
+I already Ack'd it, in the thread where we couldn't find the maintainer.  
+Keeping these togther is fine with me, and it seems easiest.
 
-I checked VLAN and it seems to be using the same behavior for both the 
-operations.
-While the patch itself is fine, I don't think its right to have 
-different
-behavior for the operations.
-
-> Okay, please let me know what hoops you want me to jump through. I just
-> want the subject concluded so that I can respin my iproute2 patch
-> according to what we decide here.
-
-My suggestion is to have the subject prefix as [PATCH net-next] since 
-this
-is an enhancement rather than fixing something which is broken.
+>
+>
+>-- 
+>Damien Le Moal
+>Western Digital Research
+>
