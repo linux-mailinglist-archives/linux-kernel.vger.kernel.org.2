@@ -2,321 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9A3368E96
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D533A368EBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241559AbhDWILz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:11:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21199 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241530AbhDWILw (ORCPT
+        id S241356AbhDWISD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:18:03 -0400
+Received: from esa7.fujitsucc.c3s2.iphmx.com ([68.232.159.87]:41782 "EHLO
+        esa7.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229456AbhDWISC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:11:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619165475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PAsMdBaHH54UtnD5ZOdRbSiDTadfouyxNC4i/WeqrP4=;
-        b=Qdiak8S0FW1yqIAUCUdAOtkT+7kXCWIefDyNw7FhbmJkNcVF2LZM2xzaa+4q0OAEiNQB/U
-        kTjBAGMryKFenVdDqgxfbaiczCeRozJCpqPckDStufjBAlh6XaJlEVJB8F7jkpGICtSU1U
-        u588P8Iuzag4uVwH0Id9QCB2Vj5+2k4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-455-6hXCVJciM6CtDwSDeTSOvA-1; Fri, 23 Apr 2021 04:11:13 -0400
-X-MC-Unique: 6hXCVJciM6CtDwSDeTSOvA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19BF184BA42;
-        Fri, 23 Apr 2021 08:11:12 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-13-225.pek2.redhat.com [10.72.13.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BEB25C5B5;
-        Fri, 23 Apr 2021 08:11:04 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm@vger.kernel.org, hch@infradead.org
-Subject: [RFC PATCH V2 7/7] virtio-ring: store DMA metadata in desc_extra for split virtqueue
-Date:   Fri, 23 Apr 2021 16:09:42 +0800
-Message-Id: <20210423080942.2997-8-jasowang@redhat.com>
-In-Reply-To: <20210423080942.2997-1-jasowang@redhat.com>
-References: <20210423080942.2997-1-jasowang@redhat.com>
+        Fri, 23 Apr 2021 04:18:02 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Apr 2021 04:18:02 EDT
+IronPort-SDR: xtF3qfTLSQgcXKS7r++r2OcZorwC4ANEMTH3lrbcNZlmTvlpyaYk0oebP1HCWvEavV4xdyXc+E
+ D85rumgKCf5Wnbwc74BzrlmxTUaGijOI3eZHda/ctqtWNpIlYBlZ4mWGUFtLr021MTzSz7Q4mk
+ qsdL+Agkvdmcr5rDzB19xUMEhr0oJ46J9ZDg3t6YVLS4l/CzuwuSFY0+FBS60GLuzu665fOWt9
+ w8JADO8jBsaGy/PTtoMbk8gy+JWd1ko1a4Nm/KL9FLwQunn09B+nRrwS5DNmz9CQsbx4u9kNMh
+ ewQ=
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="30217996"
+X-IronPort-AV: E=Sophos;i="5.82,245,1613401200"; 
+   d="scan'208";a="30217996"
+Received: from mail-os2jpn01lp2055.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.55])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 17:10:16 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gXijLJsAgndp3l0JYxZ/Dvm9LkXJIN4t+cjHD+p1qMdkvj32vlFkEl5LqLtgWB7V18NLtCM7rA2OJontBGJkpSkcHuPAHhWlkp+l1Xmq6OSipGELQB4pQhghu3sekoHV99WAoCvQ7VkgaHV34PYJWNdL4gnHLaUr0bs2rSMQ6pQ5lFUBq7GHn6fUQP4XsfDkXScGr/yoEDlOsL4/e/m12s5WBkXaXh43WvtUM3KmgfJh0HCAHb3zDQQO/ScQIzIY2cofPHLcgNEVXsSrp8OaSTbYf/IKo0XZLKBubX4DtkuqaaJm5pEuGYTNN6AMp2Vbd5oUhhe4hfOJY1mh7x1pLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eN7vaWZRRMeiPkMoHeYbQfDz0hW5ejPqHsOlEjW1B7I=;
+ b=C+zZsA90zZaqB/nf1YBTsUpI8ViwJiFrHanJ1VxDa5d2siYKKomG4HoOcWpt4oVN7qnz0Gst9P6SohSCOkZBq+iAnitXWs/6nEaTvrjfyGfWHX+IbBfPjJebFvMNtkbOYLIUDhQyeAmMA6e4fL0R3tLXlb+IO+FZ2srtw5pNg4uj8zx3ivWc0QUU7aGU0YIPf9vZAwFTBA1hCB5HQU8k2yz84oYOCfk0Apn9OGS9FpPR1Aype0I5qKlZjCf24bAC6b3ZEq+ypnwXWYrILIqVpyZQxr5JF1hwrZHYqywhbojvRAjwMwFqx2tPPuZ8uAbX2TE6Q7xBWxtrurTf+qLmXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eN7vaWZRRMeiPkMoHeYbQfDz0hW5ejPqHsOlEjW1B7I=;
+ b=dUsP1LNg3/ZcE2AwEeNNiZYd2MZ/jbF468MPc9nf7or9geZR+pDLMjdHMg8Ra7MZFpjiwsQYWvdrdnnwza5fKnyUXj5D6VqSV+JJPs10vBhQc+5J4teJ3mRCM7VxWeR1tZsQtGMIzDdAVELvEFrwvQLDyxr75LSnvptUu3g5FMU=
+Received: from OSAPR01MB2146.jpnprd01.prod.outlook.com (2603:1096:603:15::15)
+ by OSBPR01MB2373.jpnprd01.prod.outlook.com (2603:1096:604:13::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Fri, 23 Apr
+ 2021 08:10:11 +0000
+Received: from OSAPR01MB2146.jpnprd01.prod.outlook.com
+ ([fe80::db4:dfac:6caf:d7c1]) by OSAPR01MB2146.jpnprd01.prod.outlook.com
+ ([fe80::db4:dfac:6caf:d7c1%7]) with mapi id 15.20.4065.021; Fri, 23 Apr 2021
+ 08:10:10 +0000
+From:   "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>
+To:     'Reinette Chatre' <reinette.chatre@intel.com>,
+        "'fenghua.yu@intel.com'" <fenghua.yu@intel.com>
+CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'linux-arm-kernel@lists.infradead.org'" 
+        <linux-arm-kernel@lists.infradead.org>,
+        'James Morse' <james.morse@arm.com>,
+        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
+Subject: RE: About add an A64FX cache control function into resctrl
+Thread-Topic: About add an A64FX cache control function into resctrl
+Thread-Index: AdctARUohIvM7pb1S52qTlM+pjp6RAJht/AAABE+WYAAUfQI4A==
+Date:   Fri, 23 Apr 2021 08:10:10 +0000
+Message-ID: <OSAPR01MB21467099EAA9B25F0A992BD88B459@OSAPR01MB2146.jpnprd01.prod.outlook.com>
+References: <OSAPR01MB214600C7923AEF7C35B02E648B739@OSAPR01MB2146.jpnprd01.prod.outlook.com>
+ <OSAPR01MB214657641D532FB8D112DD528B479@OSAPR01MB2146.jpnprd01.prod.outlook.com>
+ <bb0967c0-5b88-c6c2-0242-1e3928189a04@intel.com>
+In-Reply-To: <bb0967c0-5b88-c6c2-0242-1e3928189a04@intel.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [210.162.30.53]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ddaf17cb-3ff3-4f6e-6e3e-08d9062f373d
+x-ms-traffictypediagnostic: OSBPR01MB2373:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <OSBPR01MB2373265442A66399176378828B459@OSBPR01MB2373.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ziASNdv7ZJnvzFwRnnHq/CFnh5DQmQjQO1vpoS+AtgTPXx3ygE0h/56VQvxKlJOueAB/8GEkqut52TZ4asAZ4rutrfPMpH599oxUQYIPExB/5OFPE+8CXaguQRRBwXYceLZR6s3jrF1na1mFOui8QPJ8DOeIzPRyEDn0wnOguKCYjR2mtEeYeNz62Y8DfS8ZWNNLzJqsrIB72hD9j2kV1WvNdpnNcIUL6D28Hb0s3b36scgPIoi05ppVWZL0TXwP7zwIZyXojm9PaQgvqzGpYfiSY1Zcof2oDbbWVQkgdvmBo61WGQLLb7aaaUutwPPlbxkuj15mDK+5pUfKYiapBaNlUIuStTC2WG/dPgNui/t9Eazdv1S5VRw9RUyjwzyURkaC4iVqhNbeooIz20UzFibnnxcCWWcCFbawq2CMjRR9TX249bJbHDmf0R8KkPj4hop7WcP2V8AnGwief5l06fH9vjIhIOWnCB4U4uqx5ukIF2fzZompeDeT1MzRf1uAQMBinSUbVYRgRGH5lMdXS/dIC5uh3gZk0lTCUC1+5twq+K4zvnrRQtll48KcCvgqaG4IJU2gXObgxHjo4ZfRV3ESdaV/L5pzl2OpfQdAmQnRNbRYTFP0syZe/mAv8BDiQ5dOc/0TWwTcbwEE+AVYUSemrJ7skb2O8We3rjQ29UaTTcTUZMe3LERPhqaGUq0z+TP6TOpTjApfx6tofV/fVRfsudyz3YpWU3A1ZaCxDfA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB2146.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(366004)(396003)(83380400001)(316002)(478600001)(9686003)(52536014)(5660300002)(54906003)(4326008)(186003)(76116006)(71200400001)(110136005)(55016002)(86362001)(2906002)(7696005)(38100700002)(26005)(8676002)(107886003)(85182001)(122000001)(64756008)(66946007)(66446008)(53546011)(66476007)(8936002)(66556008)(33656002)(6506007)(966005)(491001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?YzNOQUhCY0dTUFJ5QlBiRSt2bFBYbnpGWUxWemhPNis0SG1abWsyNHk3?=
+ =?iso-2022-jp?B?bEZpcW9rNlFyLzMveHR2bVZkaXEvK1laWEQxMnJGSzIxaVYxTzFwNmlZ?=
+ =?iso-2022-jp?B?WDNMR1ZtSDZRblJ5UzdSa1Z6cXZUN1FIazg3WWYxS0xOYkk1SWdvT3M2?=
+ =?iso-2022-jp?B?ZkZiN05uNEVWYlR5SEZUbnhMWE5WcTBTdUlTS01tT2tCbHh1OXp0ZWtL?=
+ =?iso-2022-jp?B?N0REWmhMc3FsN3VxN2F6TVZleWhacVhhZFg3RFRzZGMzcXdnSWk0R3pp?=
+ =?iso-2022-jp?B?RExaSWZycXhNL3VORStpUHRUNHFubGoxZW5wb0crQ3d3SWlocE9qK1ZX?=
+ =?iso-2022-jp?B?cG9hL0JBckgyOXcveCtuUnFMRU1GTlRkeXdzM05SZGEyWEwxL3ozZVZy?=
+ =?iso-2022-jp?B?dVYxOUpsdnZCYlBmeExVWUdLUUhxZ2Jud0Q4Y2pIN2hrNEphWXJjaHE2?=
+ =?iso-2022-jp?B?aHdJQmNsNlhTSHdqaTZlQmJlMGFNS0JXSTFaZzd0OTBYQXRXTm1KQjQr?=
+ =?iso-2022-jp?B?Q0dPampFWUczYTB1bUNQNGpMM1liZWgxVnByMGhZZXRsalQ5RzUwSHBw?=
+ =?iso-2022-jp?B?azBPZGI5aHJnT2hkeU9Fa0NLdk91UlNpUkJLZ282SVlyM1ZSQzcyeitq?=
+ =?iso-2022-jp?B?K3plOGYyVlE4b3hNMC9IMy85R3FNa3lYNE83TnFXR21xWXpJNElWV3pt?=
+ =?iso-2022-jp?B?R3pqTFQ4RmZhcHBxTE96b1h4bDBOR1NhZG1DMzBYSDRTc21FaXYxL2k1?=
+ =?iso-2022-jp?B?S29QQ0xVK1NDL0hoa0FUNTNHRXBPVXFmTEUwVFVLVzJVQzNEdWpyNm84?=
+ =?iso-2022-jp?B?Ukh3azduREpxT01GNkNaVW14aXo5QzhrVGY2MTFWZTBSSjV0ZXcvV1pZ?=
+ =?iso-2022-jp?B?TTRZRHV4alNpS3Zoa3EzVlVDMFRmbnY0bUdRRnNuK3k0SnRWbCtoZVMz?=
+ =?iso-2022-jp?B?dDlwaFI5VEt0TDlEcXpRMnhGYjJHM3FHWTVJUWIrTXFObVUxOHdUbGE5?=
+ =?iso-2022-jp?B?V3FlWVZWanpxYlRma0t5ZG9TcUo4djl5NUdpTHJpcnlOMkREZ0Frbnk2?=
+ =?iso-2022-jp?B?WTB3b05oejhiaCtmeG4zYndnYzM5akVGbEd4SVp2M1VvazVvS0Z5WGRW?=
+ =?iso-2022-jp?B?bDR6VHNlTFZTRTd6ZjRFaVdBaDJBeVJNaVFjWTFNcTlDRWlCczBXYThS?=
+ =?iso-2022-jp?B?b05NanNlUzFqV3REREptdU5XOW10YXkySmhWRFljYzJ1QjV6NjIxM1Rv?=
+ =?iso-2022-jp?B?Y2RCelE2UUtBM0pvci9KZnJWM1cwT1QwRnVMKzlPa3RrZWxuZXJGRnNU?=
+ =?iso-2022-jp?B?R3doLzJiMEJOSk5qWlN1VitUc1MxbVFlbDd4RTZuaFlPY2VXaXpvRHFh?=
+ =?iso-2022-jp?B?ek9sMWxEMXpTSFp0aTQxUTVWb1NkVjlSMXNBS3E1SHZNdEc3VmZYOE9q?=
+ =?iso-2022-jp?B?bUV2MWlucU1nRHRwVWtPeDZFYitjTXpHbjRrMWM2R2RXZ2krQTRHVnhF?=
+ =?iso-2022-jp?B?OGhmT3lPRld6WkxSWFpzQkdqMUJvMVpSUnlUMXRLd2kvRlJ6cndnZ21w?=
+ =?iso-2022-jp?B?UC96RzE5MjgyeEtPZFZLVmVKaHRURUNydnF2a2d1YXY3Z0UvUTVZTkhR?=
+ =?iso-2022-jp?B?anhZQ1pQalNvR3Z2VTYvZVlsN3FEQ2dneWRSMVBqM1J1WXl4QWc3bUts?=
+ =?iso-2022-jp?B?ejNPYWMrWEw4MEtIVWh0K0s0blQwNTZHa2RSL2R2SjNzamJNWTFaWjhk?=
+ =?iso-2022-jp?B?bWVQRThaazBsNG5pZVFjNDEvY3hWNk9iU2ppYy9PcThPd1IvZVdxeDJr?=
+ =?iso-2022-jp?B?c2tNZ2RwNFlJQWM0eUQ2T3VJUDEzYlJDSWpkTEdBWFhZMnBYMjVJQnNU?=
+ =?iso-2022-jp?B?NjM3UjhPbXc3T1VYemkxbFgwMmpIeENzcThiQmlWeXdWT0p6ZXFqRnhP?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB2146.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddaf17cb-3ff3-4f6e-6e3e-08d9062f373d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 08:10:10.9308
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gvL5cHJ0TQvT+Cep3esISqnR6VQ9gDfDYsxxjqcbXSEq65bsregH00nPKM7KnEuWb+wCDzjqKysgfq71C3PpdnbEPN2fw/p5NCWO6wwprPY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB2373
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For split virtqueue, we used to depend on the address, length and
-flags stored in the descriptor ring for DMA unmapping. This is unsafe
-for the case since the device can manipulate the behavior of virtio
-driver, IOMMU drivers and swiotlb.
+Hi Reinette,
 
-For safety, maintain the DMA address, DMA length, descriptor flags and
-next filed of the non indirect descriptors in vring_desc_state_extra
-when DMA API is used for virtio as we did for packed virtqueue and use
-those metadata for performing DMA operations. Indirect descriptors
-should be safe since they are using streaming mappings.
+> On 4/21/2021 1:37 AM, tan.shaopeng@fujitsu.com wrote:
+> > Hi,
+> >
+> > Ping... any comments&advice about add an A64FX cache control function
+> into resctrl?
+>=20
+> My apologies for the delay.
+>=20
+> >
+> > Best regards
+> > Tan Shaopeng
+> >
+> >> Hello
+> >>
+> >>
+> >> I'm Tan Shaopeng from Fujitsu Limited.
+> >>
+> >> I=1B$B!G=1B(Bm trying to implement Fujitsu A64FX=1B$B!G=1B(Bs cache re=
+lated features.
+> >> It is a cache partitioning function we called sector cache function
+> >> that using the value of the tag that is upper 8 bits of the 64bit
+> >> address and the value of the sector cache register to control virtual =
+cache
+> capacity of the L1D&L2 cache.
+> >>
+> >> A few days ago, when I sent a driver that realizes this function to
+> >> ARM64 kernel community, Will Deacon and Arnd Bergmann suggested an
+> >> idea to add the sector cache function of A64FX into resctrl.
+> >>
+> https://lore.kernel.org/linux-arm-kernel/CAK8P3a2pFcNTw9NpRtQfYr7A5Oc
+> >> Z=3DAs2kM0D_sbfFcGQ_J2Q+Q@mail.gmail.com/
+> >>
+> >> Based on my study, I think the sector cache function of A64FX can be
+> >> added into the allocation features of resctrl after James' resctrl rew=
+ork has
+> finished.
+> >> But, in order to implement this function, more interfaces for resctrl =
+are
+> need.
+> >> The details are as follow, and could you give me some advice?
+> >>
+> >> [Sector cache function]
+> >> The sector cache function split cache into multiple sectors and
+> >> control them separately. It is implemented on the L1D cache and
+> >> L2 cache in the A64FX processor and can be controlled individually
+> >> for L1D cache and L2 cache. A64FX has no L3 cache. Each L1D cache and
+> >> L2 cache has 4 sectors. Which L1D sector is used is specified by the
+> >> value of [57:56] bits of address, how many ways of sector are
+> >> specified by the value of register (IMP_SCCR_L1_EL0).
+> >> Which L2 sector is used is specified by the value of [56] bits of
+> >> address, and how many ways of sector are specified by value of
+> >> register (IMP_SCCR_ASSIGN_EL1, IMP_SCCR_SET0_L2_EL1,
+> >> IMP_SCCR_SET1_L2_EL1).
+> >>
+> >> For more details of sector cache function, see A64FX HPC extension
+> >> specification (1.2. Sector cache) in https://github.com/fujitsu/A64FX
+>=20
+> The overview in section 12 was informative but very high level.
+> I was not able to find any instance of "IMP_SCCR" in this document to exp=
+lore
+> how this cache allocation works.
+>=20
+> Are these cache sectors exposed to the OS in any way? For example, when t=
+he
+> OS discovers the cache, does it learn about these sectors and expose the
+> details to user space (/sys/devices/system/cpuX/cache)?
+>=20
+> The overview of Sector Cache in that document provides details of how the=
+ size
+> of the sector itself is dynamically adjusted to usage. That description i=
+s quite
+> cryptic but it seems like a sector, since the number of ways associated w=
+ith it
+> can dynamically change, is more equivalent to a class of service or resou=
+rce
+> group in the resctrl environment.
+>=20
+> I really may be interpreting things wrong here, could you perhaps point m=
+e to
+> where I can obtain more details?
+>=20
+>=20
+> >> [Difference between resctrl(CAT) and this sector cache function]
+> >> L2/L3 CAT (Cache Allocation Technology) enables the user to specify
+> >> some physical partition of cache space that an application can fill.
+> >> A64FX's L1D/L2 cache has 4 sectors and 16ways. This sector function
+> >> enables a user to specify number of ways each sector uses.
+> >> Therefore, for CAT it is enough to specify a cache portion for each
+> >> cache_id (socket). On the other hand, sector cache needs to specify
+> >> cache portion of each sector for each cache_id, and following
+> >> extension to resctrl interface is needed to support sector cache.
+> >>
+> >> [Idear for A64FX sector cache function control interface (schemata
+> >> file details)]
+> >>
+> L1:<cache_id0>=3D<cwbm>,<cwbm>,<cwbm>,<cwbm>;<cache_id1>=3D<cw
+> >> bm>,<cwbm>,<cwbm>,<cwbm>;=1B$B!D=1B(B
+> >>
+> L2:<cache_id0>=3D>=3D<cwbm>,<cwbm>,<cwbm>,<cwbm>;<cache_id1>=3D
+> >> <cwbm>,<cwbm>,<cwbm>,<cwbm>;=1B$B!D=1B(B
+> >>
+> >> =1B$B!&=1B(BL1: Add a new interface to control the L1D cache.
+> >> =1B$B!&=1B(B<cwbm>,<cwbm>,<cwbm>,<cwbm>=1B$B!'=1B(BSpecify the number =
+of ways for
+> each
+> >> sector.
+> >> =1B$B!&=1B(Bcwbm=1B$B!'=1B(BSpecify the number of ways in each sector =
+as a bitmap
+> (percentage),
+> >>    but the bitmap does not indicate the location of the cache.
+> >> * In the sector cache function, L2 sector cache way setting register i=
+s
+> >>    shared among PEs (Processor Element) in shared domain. If two PEs
+> >>    which share L2 cache belongs to different resource groups, one
+> resource
+> >>    group's L2 setting will affect to other resource group's L2 setting=
+.
+>=20
+> In resctrl a "resource group" can be viewed as a class of service.
+>=20
+> >> * Since A64FX does not support MPAM, it is not necessary to consider
+> >>    how to switch between MPAM and sector cache function now.
+> >>
+> >> Some questions:
+> >> 1.I'm still studying about RDT, could you tell me whether RDT has
+> >>    the similar mechanism with sector cache function?
+>=20
+> This is not clear to me yet. One thing to keep in mind is that a bit in t=
+he capacity
+> bitmask could correspond to some number of ways in a cache, but it does n=
+ot
+> have to. It is essentially a hint to hardware on how much cache space nee=
+ds to
+> be allocated while also indicating overlap and isolation from other alloc=
+ations.
+>=20
+> resctrl already supports the bitmask being interpreted differently betwee=
+n
+> architectures and with the MPAM support there will be even more support f=
+or
+> different interpretations.
+>=20
+> >> 2.In RDT, L3 cache is shared among cores in socket. If two cores which
+> >>    share L3 cache belongs to different resource groups, one resource
+> >>    group's L3 setting will affect to other resource group's L3 setting=
+?
+>=20
+> This question is not entirely clear to me. Are you referring to the hardw=
+are layout
+> or configuration changes via the resctrl "cpus" file?
+>=20
+> Each resource group is a class of service (CLOS) that is supported by all=
+ cache
+> instances. By default each resource group would thus contain all cache
+> instances on the system (even if some cache instances do not support the
+> same number of CLOS resctrl would only support the CLOS supported by all
+> resources).
 
-With this the descriptor ring is write only form the view of the
-driver.
+Thanks for your comment.=20
 
-This slight increase the footprint of the drive but it's not noticed
-through pktgen (64B) test and netperf test in the case of virtio-net.
+I am sorry that the description about the sector cache function was
+difficult to understand. Since all public specifications were shown
+in the URL, please give me some time, I will organize the contents of
+64FX cache control function.=20
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_ring.c | 112 +++++++++++++++++++++++++++--------
- 1 file changed, 87 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 9800f1c9ce4c..5f0076eeb39c 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -130,6 +130,7 @@ struct vring_virtqueue {
- 
- 			/* Per-descriptor state. */
- 			struct vring_desc_state_split *desc_state;
-+			struct vring_desc_extra *desc_extra;
- 
- 			/* DMA address and size information */
- 			dma_addr_t queue_dma_addr;
-@@ -364,8 +365,8 @@ static int vring_mapping_error(const struct vring_virtqueue *vq,
-  * Split ring specific functions - *_split().
-  */
- 
--static void vring_unmap_one_split(const struct vring_virtqueue *vq,
--				  struct vring_desc *desc)
-+static void vring_unmap_one_split_indirect(const struct vring_virtqueue *vq,
-+					   struct vring_desc *desc)
- {
- 	u16 flags;
- 
-@@ -389,6 +390,35 @@ static void vring_unmap_one_split(const struct vring_virtqueue *vq,
- 	}
- }
- 
-+static unsigned int vring_unmap_one_split(const struct vring_virtqueue *vq,
-+					  unsigned int i)
-+{
-+	struct vring_desc_extra *extra = vq->split.desc_extra;
-+	u16 flags;
-+
-+	if (!vq->use_dma_api)
-+		goto out;
-+
-+	flags = extra[i].flags;
-+
-+	if (flags & VRING_DESC_F_INDIRECT) {
-+		dma_unmap_single(vring_dma_dev(vq),
-+				 extra[i].addr,
-+				 extra[i].len,
-+				 (flags & VRING_DESC_F_WRITE) ?
-+				 DMA_FROM_DEVICE : DMA_TO_DEVICE);
-+	} else {
-+		dma_unmap_page(vring_dma_dev(vq),
-+			       extra[i].addr,
-+			       extra[i].len,
-+			       (flags & VRING_DESC_F_WRITE) ?
-+			       DMA_FROM_DEVICE : DMA_TO_DEVICE);
-+	}
-+
-+out:
-+	return extra[i].next;
-+}
-+
- static struct vring_desc *alloc_indirect_split(struct virtqueue *_vq,
- 					       unsigned int total_sg,
- 					       gfp_t gfp)
-@@ -417,13 +447,28 @@ static inline unsigned int virtqueue_add_desc_split(struct virtqueue *vq,
- 						    unsigned int i,
- 						    dma_addr_t addr,
- 						    unsigned int len,
--						    u16 flags)
-+						    u16 flags,
-+						    bool indirect)
- {
-+	struct vring_virtqueue *vring = to_vvq(vq);
-+	struct vring_desc_extra *extra = vring->split.desc_extra;
-+	u16 next;
-+
- 	desc[i].flags = cpu_to_virtio16(vq->vdev, flags);
- 	desc[i].addr = cpu_to_virtio64(vq->vdev, addr);
- 	desc[i].len = cpu_to_virtio32(vq->vdev, len);
- 
--	return virtio16_to_cpu(vq->vdev, desc[i].next);
-+	if (!indirect) {
-+		next = extra[i].next;
-+		desc[i].next = cpu_to_virtio16(vq->vdev, next);
-+
-+		extra[i].addr = addr;
-+		extra[i].len = len;
-+		extra[i].flags = flags;
-+	} else
-+		next = virtio16_to_cpu(vq->vdev, desc[i].next);
-+
-+	return next;
- }
- 
- static inline int virtqueue_add_split(struct virtqueue *_vq,
-@@ -499,8 +544,12 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 				goto unmap_release;
- 
- 			prev = i;
-+			/* Note that we trust indirect descriptor
-+			 * table since it use stream DMA mapping.
-+			 */
- 			i = virtqueue_add_desc_split(_vq, desc, i, addr, sg->length,
--						     VRING_DESC_F_NEXT);
-+						     VRING_DESC_F_NEXT,
-+						     indirect);
- 		}
- 	}
- 	for (; n < (out_sgs + in_sgs); n++) {
-@@ -510,14 +559,21 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 				goto unmap_release;
- 
- 			prev = i;
-+			/* Note that we trust indirect descriptor
-+			 * table since it use stream DMA mapping.
-+			 */
- 			i = virtqueue_add_desc_split(_vq, desc, i, addr,
- 						     sg->length,
- 						     VRING_DESC_F_NEXT |
--						     VRING_DESC_F_WRITE);
-+						     VRING_DESC_F_WRITE,
-+						     indirect);
- 		}
- 	}
- 	/* Last one doesn't continue. */
- 	desc[prev].flags &= cpu_to_virtio16(_vq->vdev, ~VRING_DESC_F_NEXT);
-+	if (!indirect && vq->use_dma_api)
-+		vq->split.desc_extra[prev & (vq->split.vring.num - 1)].flags =
-+			~VRING_DESC_F_NEXT;
- 
- 	if (indirect) {
- 		/* Now that the indirect table is filled in, map it. */
-@@ -530,7 +586,8 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 		virtqueue_add_desc_split(_vq, vq->split.vring.desc,
- 					 head, addr,
- 					 total_sg * sizeof(struct vring_desc),
--			                 VRING_DESC_F_INDIRECT);
-+					 VRING_DESC_F_INDIRECT,
-+					 false);
- 	}
- 
- 	/* We're using some buffers from the free list. */
-@@ -538,8 +595,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 
- 	/* Update free pointer */
- 	if (indirect)
--		vq->free_head = virtio16_to_cpu(_vq->vdev,
--					vq->split.vring.desc[head].next);
-+		vq->free_head = vq->split.desc_extra[head].next;
- 	else
- 		vq->free_head = i;
- 
-@@ -584,8 +640,11 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 	for (n = 0; n < total_sg; n++) {
- 		if (i == err_idx)
- 			break;
--		vring_unmap_one_split(vq, &desc[i]);
--		i = virtio16_to_cpu(_vq->vdev, desc[i].next);
-+		if (indirect) {
-+			vring_unmap_one_split_indirect(vq, &desc[i]);
-+			i = virtio16_to_cpu(_vq->vdev, desc[i].next);
-+		} else
-+			i = vring_unmap_one_split(vq, i);
- 	}
- 
- 	if (indirect)
-@@ -639,14 +698,13 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
- 	i = head;
- 
- 	while (vq->split.vring.desc[i].flags & nextflag) {
--		vring_unmap_one_split(vq, &vq->split.vring.desc[i]);
--		i = virtio16_to_cpu(vq->vq.vdev, vq->split.vring.desc[i].next);
-+		vring_unmap_one_split(vq, i);
-+		i = vq->split.desc_extra[i].next;
- 		vq->vq.num_free++;
- 	}
- 
--	vring_unmap_one_split(vq, &vq->split.vring.desc[i]);
--	vq->split.vring.desc[i].next = cpu_to_virtio16(vq->vq.vdev,
--						vq->free_head);
-+	vring_unmap_one_split(vq, i);
-+	vq->split.desc_extra[i].next = vq->free_head;
- 	vq->free_head = head;
- 
- 	/* Plus final descriptor */
-@@ -661,15 +719,14 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
- 		if (!indir_desc)
- 			return;
- 
--		len = virtio32_to_cpu(vq->vq.vdev,
--				vq->split.vring.desc[head].len);
-+		len = vq->split.desc_extra[head].len;
- 
--		BUG_ON(!(vq->split.vring.desc[head].flags &
--			 cpu_to_virtio16(vq->vq.vdev, VRING_DESC_F_INDIRECT)));
-+		BUG_ON(!(vq->split.desc_extra[head].flags &
-+				VRING_DESC_F_INDIRECT));
- 		BUG_ON(len == 0 || len % sizeof(struct vring_desc));
- 
- 		for (j = 0; j < len / sizeof(struct vring_desc); j++)
--			vring_unmap_one_split(vq, &indir_desc[j]);
-+			vring_unmap_one_split_indirect(vq, &indir_desc[j]);
- 
- 		kfree(indir_desc);
- 		vq->split.desc_state[head].indir_desc = NULL;
-@@ -2085,7 +2142,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 					void (*callback)(struct virtqueue *),
- 					const char *name)
- {
--	unsigned int i;
- 	struct vring_virtqueue *vq;
- 
- 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
-@@ -2140,16 +2196,20 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	if (!vq->split.desc_state)
- 		goto err_state;
- 
-+	vq->split.desc_extra = vring_alloc_desc_extra(vq, vring.num);
-+	if (!vq->split.desc_extra)
-+		goto err_extra;
-+
- 	/* Put everything in free lists. */
- 	vq->free_head = 0;
--	for (i = 0; i < vring.num-1; i++)
--		vq->split.vring.desc[i].next = cpu_to_virtio16(vdev, i + 1);
- 	memset(vq->split.desc_state, 0, vring.num *
- 			sizeof(struct vring_desc_state_split));
- 
- 	list_add_tail(&vq->vq.list, &vdev->vqs);
- 	return &vq->vq;
- 
-+err_extra:
-+	kfree(vq->split.desc_state);
- err_state:
- 	kfree(vq);
- 	return NULL;
-@@ -2233,8 +2293,10 @@ void vring_del_virtqueue(struct virtqueue *_vq)
- 					 vq->split.queue_dma_addr);
- 		}
- 	}
--	if (!vq->packed_ring)
-+	if (!vq->packed_ring) {
- 		kfree(vq->split.desc_state);
-+		kfree(vq->split.desc_extra);
-+	}
- 	list_del(&_vq->list);
- 	kfree(vq);
- }
--- 
-2.25.1
-
+Best regards,=20
+Tan Shaopeng
