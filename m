@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4893C369D3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 01:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1C7369D41
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 01:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbhDWXWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 19:22:49 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42538 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhDWXWn (ORCPT
+        id S236667AbhDWXXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 19:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhDWXX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 19:22:43 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 887B71F43DD3
-Subject: Re: [patch 3/6] futex: Get rid of the val2 conditional dance
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        Lukasz Majewski <lukma@denx.de>,
-        Florian Weimer <fweimer@redhat.com>,
-        Carlos O'Donell <carlos@redhat.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>, kernel@collabora.com
-References: <20210422194417.866740847@linutronix.de>
- <20210422194705.125957049@linutronix.de>
- <f8cda7fa-46e9-5add-ccb6-441323ba2042@collabora.com>
- <87r1j0vdev.ffs@nanos.tec.linutronix.de>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <5817ec9e-9e80-79ef-d09c-6717b0816963@collabora.com>
-Date:   Fri, 23 Apr 2021 20:21:58 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Fri, 23 Apr 2021 19:23:27 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A55C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 16:22:48 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id ja3so207040ejc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 16:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=9KdCYVYjsxm43pdzjAW7S0Q2+F1LcWUUXR0r+zmo39s=;
+        b=e3t/dADON64hxvBTxTkoSr3n+kMdchKnreD351DeJmixuumfC7fIkQSUbls7LMo8Ds
+         7nADt0soBN11Td+VpBE8KUqzbkifFvV0cdfJ6OnHLLbxCDnV8KuU1VruL1PcMjrn2mRt
+         6RkZJu5o1mUNUGh4GFb0m26TsBsqoyAjSYv0bmE13zeCjVb98qVCjX/bFRIRmQ2TZsqk
+         OLyTxfQIsV4Ys5DLujQfjIPLekO2nsOTlVAu8Z21jdI493Nk/mfjVustBiVCpx8x2QsT
+         jza1EFUhLL7hi+sl+ZoqTZ21Z60xLm51AlHXKET0RuN+8VzyuGy3Csh8GVKlmgUcrpcN
+         94MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=9KdCYVYjsxm43pdzjAW7S0Q2+F1LcWUUXR0r+zmo39s=;
+        b=BaqbIpBGy6I2q3YbXeuLyKvofTF/jIrHRbxuMtNb22A6tMmk9qMyaQpbgfPYemPAZm
+         0jOJh41WOyGQzfwSL4bDljcAlEjcufeye0dAbUJKyY0d0v8yotS6poyH+dUh9NSZ+v8d
+         LV4sz5hKl4AmLjRNsfnUSLHjA7nI7aDGV1eRimbpgzLdLOgebL5PMdZknABl523V39zr
+         eYJrz1keo6SUeTGZuwyCSg5TZxOtN+tMie6KfWAciry3avb4ncoA80Ty3HbALz2Mwo/N
+         ky5w3IW981dFGI9Iwi6SF/4HXo7c+9f9jkO2VPjgAntupgpzzN9ChwIV2dbA3vauMJTt
+         bcUw==
+X-Gm-Message-State: AOAM5304/3dpvM+yn6ANv/1gLh6hCLkOD8QFmG4vBBEjjp1L+mlOpo9C
+        UalY81Q2xk8FuDcGx3YUibJCR1n+d4dGHI1JquhdOJHjmBTFEA==
+X-Google-Smtp-Source: ABdhPJyRYx8qR/OoKBcHt47tR0XtriE/q6Xr5yh5O4DmKN830KcuvaeeFVJPK4RVxsSfReNGrQ95KPpulby28bOjrro=
+X-Received: by 2002:a17:906:f285:: with SMTP id gu5mr6736919ejb.226.1619220167200;
+ Fri, 23 Apr 2021 16:22:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87r1j0vdev.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 24 Apr 2021 01:22:36 +0200
+Message-ID: <CACRpkdY6g7eoqyJ-OHijbR_Gw2W7uoNF5Z6+-at5OBvaH9_kqw@mail.gmail.com>
+Subject: [GIT PULL] final pin control fixes for v5.12
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 19:34 de 23/04/21, Thomas Gleixner escreveu:
-> On Fri, Apr 23 2021 at 18:40, André Almeida wrote:
->>>    
->>> -	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
->>> +	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
->>
->> Given do_futex()'s type signature, I think it makes more sense to cast
->> utime to u32.
-> 
-> It's a pointer which you better force cast to unsigned long first.
-> 
-> So the explicit thing would be '(u32)(unsigned long) utime' which is
-> what the val2 dance stupidly did with 'int'
-> 
-> 		val2 = (int) (unsigned long) utime;
-> 
-> But with doing it at function call argument it's implicit, because the
-> 
->    unsigned long  to u32 conversion is well defined
-> 
-> while
-> 
->    (u32)ptr
-> 
-> is only well defined on 32bit.
-> 
+Hi Linus,
 
-I see, thank you for the clarification!
+some late pin control fixes, would have been in the main pull request
+normally but hey I got lucky and we got another week to polish up v5.12
+so here we go.
 
-> Thanks,
-> 
->          tglx
-> 
+One driver fix and one making the core debugfs work.
+
+Please pull it in!
+
+Yours,
+Linus Walleij
+
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
+
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.12-3
+
+for you to fetch changes up to 482715ff0601c836152b792f06c353464d826b9b:
+
+  pinctrl: core: Show pin numbers for the controllers with base = 0
+(2021-04-22 02:13:42 +0200)
+
+----------------------------------------------------------------
+Late pin control fixes for v5.12:
+
+- Fix the number of pins in the community of the Intel
+  Lewisburg SoC.
+
+- Show pin numbers for controllers with base = 0 in the
+  new debugfs feature.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      pinctrl: core: Show pin numbers for the controllers with base = 0
+
+Linus Walleij (1):
+      Merge tag 'intel-pinctrl-v5.12-4' of
+gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into fixes
+
+Yuanyuan Zhong (1):
+      pinctrl: lewisburg: Update number of pins in community
+
+ drivers/pinctrl/core.c                    | 14 ++++++++------
+ drivers/pinctrl/intel/pinctrl-lewisburg.c |  6 +++---
+ 2 files changed, 11 insertions(+), 9 deletions(-)
