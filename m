@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7825F36896D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 01:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5E4368992
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 02:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239860AbhDVXj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 19:39:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42848 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235977AbhDVXj2 (ORCPT
+        id S239890AbhDWABo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 20:01:44 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17391 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235569AbhDWABn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619134732;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bcDE3sqsWHuqQL+B9smTf1hp8AVzLqNa56QsRBV4nHA=;
-        b=eqGj8k7rW6ubI0ApnQ4XFbIxuEl8jMqD0xjHFb9ELxoy5k5xmVmnCNuDOdHydJBHuLwHft
-        PA9j/0axg3CLMOFSm/QI2VMk0zPDa/c+x0WXeav2K/4IKvrmARNkZm2HSleuL/hvYwKXGf
-        B2fbJtCJPhj7XmyyhXqiTcBFmyuUgz0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-9G7cYNIXOj-Tj_QQxtYAhg-1; Thu, 22 Apr 2021 19:38:50 -0400
-X-MC-Unique: 9G7cYNIXOj-Tj_QQxtYAhg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F25B91104;
-        Thu, 22 Apr 2021 23:38:31 +0000 (UTC)
-Received: from [10.64.54.94] (vpn2-54-94.bne.redhat.com [10.64.54.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B228759479;
-        Thu, 22 Apr 2021 23:38:28 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH] KVM: arm64: Correctly handle the mmio faulting
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Keqian Zhu <zhukeqian1@huawei.com>, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        cjia@nvidia.com, linux-arm-kernel@lists.infradead.org,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>
-References: <1603297010-18787-1-git-send-email-sashukla@nvidia.com>
- <8b20dfc0-3b5e-c658-c47d-ebc50d20568d@huawei.com>
- <2e23aaa7-0c8d-13ba-2eae-9e6ab2adc587@redhat.com>
- <ed8a8b90-8b96-4967-01f5-cd0f536c38d2@huawei.com>
- <871rb3rgpl.wl-maz@kernel.org>
- <b97415a2-7970-a741-9690-3e4514b4aa7d@redhat.com>
- <87v98eq0dh.wl-maz@kernel.org>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <33eb4850-2476-01ae-e3db-5bd20c1a2c23@redhat.com>
-Date:   Fri, 23 Apr 2021 11:38:38 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 22 Apr 2021 20:01:43 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FRDsl4mgRzlZ7c;
+        Fri, 23 Apr 2021 07:59:07 +0800 (CST)
+Received: from A190218597.china.huawei.com (10.47.31.136) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 23 Apr 2021 08:00:56 +0800
+From:   Salil Mehta <salil.mehta@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <salil.mehta@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linuxarm@openeuler.org>, <intel-wired-lan@lists.osuosl.org>
+Subject: [PATCH V3 net] ice: Re-organizes reqstd/avail {R,T}XQ check/code for efficiency
+Date:   Fri, 23 Apr 2021 01:00:18 +0100
+Message-ID: <20210423000018.20244-1-salil.mehta@huawei.com>
+X-Mailer: git-send-email 2.8.3
 MIME-Version: 1.0
-In-Reply-To: <87v98eq0dh.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-Originating-IP: [10.47.31.136]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+If user has explicitly requested the number of {R,T}XQs, then it is
+unnecessary to get the count of already available {R,T}XQs from the
+PF avail_{r,t}xqs bitmap. This value will get overridden by user specified
+value in any case.
 
-On 4/22/21 4:50 PM, Marc Zyngier wrote:
-> On Thu, 22 Apr 2021 03:02:00 +0100,
-> Gavin Shan <gshan@redhat.com> wrote:
->> On 4/21/21 9:59 PM, Marc Zyngier wrote:
->>> On Wed, 21 Apr 2021 07:17:44 +0100,
->>> Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>>> On 2021/4/21 14:20, Gavin Shan wrote:
->>>>> On 4/21/21 12:59 PM, Keqian Zhu wrote:
->>>>>> On 2020/10/22 0:16, Santosh Shukla wrote:
->>>>>>> The Commit:6d674e28 introduces a notion to detect and handle the
->>>>>>> device mapping. The commit checks for the VM_PFNMAP flag is set
->>>>>>> in vma->flags and if set then marks force_pte to true such that
->>>>>>> if force_pte is true then ignore the THP function check
->>>>>>> (/transparent_hugepage_adjust()).
->>>>>>>
->>>>>>> There could be an issue with the VM_PFNMAP flag setting and checking.
->>>>>>> For example consider a case where the mdev vendor driver register's
->>>>>>> the vma_fault handler named vma_mmio_fault(), which maps the
->>>>>>> host MMIO region in-turn calls remap_pfn_range() and maps
->>>>>>> the MMIO's vma space. Where, remap_pfn_range implicitly sets
->>>>>>> the VM_PFNMAP flag into vma->flags.
->>>>>> Could you give the name of the mdev vendor driver that triggers this issue?
->>>>>> I failed to find one according to your description. Thanks.
->>>>>>
->>>>>
->>>>> I think it would be fixed in driver side to set VM_PFNMAP in
->>>>> its mmap() callback (call_mmap()), like vfio PCI driver does.
->>>>> It means it won't be delayed until page fault is issued and
->>>>> remap_pfn_range() is called. It's determined from the beginning
->>>>> that the vma associated the mdev vendor driver is serving as
->>>>> PFN remapping purpose. So the vma should be populated completely,
->>>>> including the VM_PFNMAP flag before it becomes visible to user
->>>>> space.
->>>
->>> Why should that be a requirement? Lazy populating of the VMA should be
->>> perfectly acceptable if the fault can only happen on the CPU side.
->>>
->>
->> It isn't a requirement and the drivers needn't follow strictly. I checked
->> several drivers before looking into the patch and found almost all the
->> drivers have VM_PFNMAP set at mmap() time. In drivers/vfio/vfio-pci.c,
->> there is a comment as below, but it doesn't reveal too much about why
->> we can't set VM_PFNMAP at fault time.
->>
->> static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
->> {
->>        :
->>          /*
->>           * See remap_pfn_range(), called from vfio_pci_fault() but we can't
->>           * change vm_flags within the fault handler.  Set them now.
->>           */
->>          vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
->>          vma->vm_ops = &vfio_pci_mmap_ops;
->>
->>          return 0;
->> }
->>
->> To set these flags in advance does have advantages. For example,
->> VM_DONTEXPAND prevents the vma to be merged with another
->> one. VM_DONTDUMP make this vma isn't eligible for
->> coredump. Otherwise, the address space, which is associated with the
->> vma is accessed and unnecessary page faults are triggered on
->> coredump.  VM_IO and VM_PFNMAP avoids to walk the page frames
->> associated with the vma since we don't have valid PFN in the
->> mapping.
-> 
-> But PCI clearly isn't the case we are dealing with here, and not
-> everything is VFIO either. I can *today* create a driver that
-> implements a mmap+fault handler, call mmap() on it, pass the result to
-> a memslot, and get to the exact same result Santosh describes.
-> 
-> No PCI, no VFIO, just a random driver. We are *required* to handle
-> that.
-> 
+Re-organize this code for improving the flow, readability and efficiency.
+This scope of improvement was found during the review of the ICE driver
+code.
 
-hmm, ok. I was thinking it's related to VFIO mdev driver when Santosh was
-talking about "mdev driver". Anyway, it's always nice to support the case :)
+Fixes: 87324e747fde ("ice: Implement ethtool ops for channels")
+Cc: intel-wired-lan@lists.osuosl.org
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
+---
+Change:
+V2->V3
+ (*) Addressed some comments from Paul Menzel
+     Link: https://lkml.org/lkml/2021/4/21/136
+V1->V2
+ (*) Fixed the comments from Anthony Nguyen(Intel)
+     Link: https://lkml.org/lkml/2021/4/12/1997
+---
+ drivers/net/ethernet/intel/ice/ice_lib.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-Thanks,
-Gavin
+diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+index d13c7fc8fb0a..d77133d6baa7 100644
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -161,12 +161,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
+ 
+ 	switch (vsi->type) {
+ 	case ICE_VSI_PF:
+-		vsi->alloc_txq = min3(pf->num_lan_msix,
+-				      ice_get_avail_txq_count(pf),
+-				      (u16)num_online_cpus());
+ 		if (vsi->req_txq) {
+ 			vsi->alloc_txq = vsi->req_txq;
+ 			vsi->num_txq = vsi->req_txq;
++		} else {
++			vsi->alloc_txq = min3(pf->num_lan_msix,
++					      ice_get_avail_txq_count(pf),
++					      (u16)num_online_cpus());
+ 		}
+ 
+ 		pf->num_lan_tx = vsi->alloc_txq;
+@@ -175,12 +176,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
+ 		if (!test_bit(ICE_FLAG_RSS_ENA, pf->flags)) {
+ 			vsi->alloc_rxq = 1;
+ 		} else {
+-			vsi->alloc_rxq = min3(pf->num_lan_msix,
+-					      ice_get_avail_rxq_count(pf),
+-					      (u16)num_online_cpus());
+ 			if (vsi->req_rxq) {
+ 				vsi->alloc_rxq = vsi->req_rxq;
+ 				vsi->num_rxq = vsi->req_rxq;
++			} else {
++				vsi->alloc_rxq = min3(pf->num_lan_msix,
++						      ice_get_avail_rxq_count(pf),
++						      (u16)num_online_cpus());
+ 			}
+ 		}
+ 
+-- 
+2.17.1
 
