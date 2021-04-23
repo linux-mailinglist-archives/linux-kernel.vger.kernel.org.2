@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ECB369D3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 01:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4893C369D3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 01:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235346AbhDWXVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 19:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhDWXVR (ORCPT
+        id S235718AbhDWXWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 19:22:49 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42538 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhDWXWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 19:21:17 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6DCC061574;
-        Fri, 23 Apr 2021 16:20:39 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j18so79852545lfg.5;
-        Fri, 23 Apr 2021 16:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UN8lYvlKUzpGJek5kJqkHzoy2ZYGZ4aTnHDgEtVTayM=;
-        b=rXLBPSZRXvl9Kk1/3AHQhPGnzostRWdh7HABhjmDlzUjX5udG44hCk4MbfdqX6uPo2
-         PYscHCDO/+sKSfGbM3avr5mRCZ8WFBtc0Z0ATCPn8G5TEh4064n8BMNFA0jqdzRh13ZW
-         MSrd2sQqufJEjs+TDdMZp0JEmf22YhON4qfyM1bdBERhMfSG2nohLxSfiA/FhRGoGgpI
-         Y2gNuaoWFKlfrN2qWez9hVRTkkq6VSvAJsTC/CClt5C5RJ5oBZLrpzVhQHI+C5Du3zFy
-         OjlmKnvvorzJxwvCQPL3NMzAHCr3Zwn9qBRtpQ0x23aIZpGutKqDVO6Mj2LNl12cTc6P
-         aF3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UN8lYvlKUzpGJek5kJqkHzoy2ZYGZ4aTnHDgEtVTayM=;
-        b=dbfrpZREn/OmbB1PknOVapvU8938Ec+if4H54e/FOmkJflhDPw+tQfTAwvfoylCcLK
-         wXOVcNbAOHrlJiGNFG6W0GnV7J+JMU5NGwgR/X9DBwp8xclDgkXGGBK/YhikTWxs0QqC
-         TshrBJteas81/uwDNoTe6/vtqzHIcPMkLqgMga2sGasTSS5dQMvQtpSHAbTW0QfRHbpO
-         EHjdkkEIcbROJD5MJWbESw5rsoero+0Sj9pwJsPvTW6j6yY6lhUiF3BcyrY2CynjqCLE
-         U3loZg9K3drksgwDorjzRYg9EYZOq7mcQFp3wlUBHOXxcwJucoTMuajr4InUnJsf+E/2
-         fhHg==
-X-Gm-Message-State: AOAM530XTSLAe3qqL/Z5NOU6aFfgdJr4JStspTI7mAZZQAUZqwPz6rpw
-        guKxBlN2qYCEiijQAANHYZAOulrT9XK/di6GnUtdH/YX
-X-Google-Smtp-Source: ABdhPJy+70NSFI9yiV1Zf3vRjNCfAKy81SYuXmcSHJyyJH0sQcP51VADEaYyP+gGwB2TgfrCZaEodsB6Qo91uike2qI=
-X-Received: by 2002:a19:f615:: with SMTP id x21mr4550232lfe.540.1619220037606;
- Fri, 23 Apr 2021 16:20:37 -0700 (PDT)
+        Fri, 23 Apr 2021 19:22:43 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 887B71F43DD3
+Subject: Re: [patch 3/6] futex: Get rid of the val2 conditional dance
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Lukasz Majewski <lukma@denx.de>,
+        Florian Weimer <fweimer@redhat.com>,
+        Carlos O'Donell <carlos@redhat.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>, kernel@collabora.com
+References: <20210422194417.866740847@linutronix.de>
+ <20210422194705.125957049@linutronix.de>
+ <f8cda7fa-46e9-5add-ccb6-441323ba2042@collabora.com>
+ <87r1j0vdev.ffs@nanos.tec.linutronix.de>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <5817ec9e-9e80-79ef-d09c-6717b0816963@collabora.com>
+Date:   Fri, 23 Apr 2021 20:21:58 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
-In-Reply-To: <20210423230609.13519-1-alx.manpages@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 23 Apr 2021 16:20:26 -0700
-Message-ID: <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-Subject: Re: [RFC] bpf.2: Use standard types and attributes
-To:     Alejandro Colomar <alx.manpages@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, libc-alpha@sourceware.org,
-        gcc-patches@gcc.gnu.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87r1j0vdev.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 4:15 PM Alejandro Colomar
-<alx.manpages@gmail.com> wrote:
->
-> Some manual pages are already using C99 syntax for integral
-> types 'uint32_t', but some aren't.  There are some using kernel
-> syntax '__u32'.  Fix those.
->
-> Some pages also document attributes, using GNU syntax
-> '__attribute__((xxx))'.  Update those to use the shorter and more
-> portable C2x syntax, which hasn't been standardized yet, but is
-> already implemented in GCC, and available through either --std=c2x
-> or any of the --std=gnu... options.
->
-> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> ---
->  man2/bpf.2 | 47 +++++++++++++++++++++++------------------------
->  1 file changed, 23 insertions(+), 24 deletions(-)
->
-> diff --git a/man2/bpf.2 b/man2/bpf.2
-> index 6e1ffa198..204f01bfc 100644
-> --- a/man2/bpf.2
-> +++ b/man2/bpf.2
-> @@ -188,39 +188,38 @@ commands:
->  .EX
->  union bpf_attr {
->      struct {    /* Used by BPF_MAP_CREATE */
-> -        __u32         map_type;
-> -        __u32         key_size;    /* size of key in bytes */
-> -        __u32         value_size;  /* size of value in bytes */
-> -        __u32         max_entries; /* maximum number of entries
-> -                                      in a map */
-> +        uint32_t    map_type;
-> +        uint32_t    key_size;    /* size of key in bytes */
-> +        uint32_t    value_size;  /* size of value in bytes */
-> +        uint32_t    max_entries; /* maximum number of entries
-> +                                    in a map */
+Às 19:34 de 23/04/21, Thomas Gleixner escreveu:
+> On Fri, Apr 23 2021 at 18:40, André Almeida wrote:
+>>>    
+>>> -	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
+>>> +	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
+>>
+>> Given do_futex()'s type signature, I think it makes more sense to cast
+>> utime to u32.
+> 
+> It's a pointer which you better force cast to unsigned long first.
+> 
+> So the explicit thing would be '(u32)(unsigned long) utime' which is
+> what the val2 dance stupidly did with 'int'
+> 
+> 		val2 = (int) (unsigned long) utime;
+> 
+> But with doing it at function call argument it's implicit, because the
+> 
+>    unsigned long  to u32 conversion is well defined
+> 
+> while
+> 
+>    (u32)ptr
+> 
+> is only well defined on 32bit.
+> 
 
-Nack.
-The man page should describe the kernel api the way it is in .h file.
+I see, thank you for the clarification!
+
+> Thanks,
+> 
+>          tglx
+> 
