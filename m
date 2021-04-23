@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBF536956E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE7836958B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243298AbhDWPBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:01:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37432 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243260AbhDWPAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:00:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 41720B151;
-        Fri, 23 Apr 2021 14:59:58 +0000 (UTC)
-Subject: Re: [PATCH 5/6] mm: Constify get_pfnblock_flags_mask and
- get_pfnblock_migratetype
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20210416231531.2521383-1-willy@infradead.org>
- <20210416231531.2521383-6-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5cb13e53-cd3f-a969-23c8-0e8a0788f242@suse.cz>
-Date:   Fri, 23 Apr 2021 16:59:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S242995AbhDWPE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:04:26 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2913 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243318AbhDWPEP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:04:15 -0400
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FRcq22VPyz70gkc;
+        Fri, 23 Apr 2021 22:58:06 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 23 Apr 2021 17:03:36 +0200
+Received: from [10.47.95.78] (10.47.95.78) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 23 Apr
+ 2021 16:03:35 +0100
+Subject: Re: Question on threaded handlers for managed interrupts
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Marc Zyngier" <maz@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Ingo Molnar" <mingo@kernel.org>
+References: <b8c4be8c-1d67-c16c-570e-d3c883c77ea2@huawei.com>
+ <874kfxw9zv.ffs@nanos.tec.linutronix.de>
+ <871rb1w3x8.ffs@nanos.tec.linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e260dfb0-95c5-778e-2652-f563784cb984@huawei.com>
+Date:   Fri, 23 Apr 2021 16:00:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210416231531.2521383-6-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <871rb1w3x8.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.95.78]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/21 1:15 AM, Matthew Wilcox (Oracle) wrote:
-> The struct page is not modified by these routines, so it can be marked
-> const.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Hi Thomas,
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+On 23/04/2021 14:01, Thomas Gleixner wrote:
+> On Fri, Apr 23 2021 at 12:50, Thomas Gleixner wrote:
+>> On Thu, Apr 22 2021 at 17:10, John Garry wrote:
+>> OTOH, the way how you splitted the handling into hard/thread context
+>> provides already the base for this.
+>>
+>> The missing piece is infrastructure at the irq/scheduler core level to
+>> handle this transparently.
+>>
+>> I have some horrible ideas how to solve that, but I'm sure the scheduler
+>> wizards can come up with a reasonable and generic solution.
+> So one thing I forgot to ask is:
+> 
+> Is the thread simply stuck in the while() loop forever or is
+> this just an endless hardirq/thread/hardirq/thread stream?
 
-> ---
->  include/linux/pageblock-flags.h |  2 +-
->  mm/page_alloc.c                 | 13 +++++++------
->  2 files changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
-> index fff52ad370c1..973fd731a520 100644
-> --- a/include/linux/pageblock-flags.h
-> +++ b/include/linux/pageblock-flags.h
-> @@ -54,7 +54,7 @@ extern unsigned int pageblock_order;
->  /* Forward declaration */
->  struct page;
->  
-> -unsigned long get_pfnblock_flags_mask(struct page *page,
-> +unsigned long get_pfnblock_flags_mask(const struct page *page,
->  				unsigned long pfn,
->  				unsigned long mask);
->  
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 0152670c6f04..4be2179eedd5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -474,7 +474,7 @@ static inline bool defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
->  #endif
->  
->  /* Return a pointer to the bitmap storing bits affecting a block of pages */
-> -static inline unsigned long *get_pageblock_bitmap(struct page *page,
-> +static inline unsigned long *get_pageblock_bitmap(const struct page *page,
->  							unsigned long pfn)
->  {
->  #ifdef CONFIG_SPARSEMEM
-> @@ -484,7 +484,7 @@ static inline unsigned long *get_pageblock_bitmap(struct page *page,
->  #endif /* CONFIG_SPARSEMEM */
->  }
->  
-> -static inline int pfn_to_bitidx(struct page *page, unsigned long pfn)
-> +static inline int pfn_to_bitidx(const struct page *page, unsigned long pfn)
->  {
->  #ifdef CONFIG_SPARSEMEM
->  	pfn &= (PAGES_PER_SECTION-1);
-> @@ -495,7 +495,7 @@ static inline int pfn_to_bitidx(struct page *page, unsigned long pfn)
->  }
->  
->  static __always_inline
-> -unsigned long __get_pfnblock_flags_mask(struct page *page,
-> +unsigned long __get_pfnblock_flags_mask(const struct page *page,
->  					unsigned long pfn,
->  					unsigned long mask)
->  {
-> @@ -520,13 +520,14 @@ unsigned long __get_pfnblock_flags_mask(struct page *page,
->   *
->   * Return: pageblock_bits flags
->   */
-> -unsigned long get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
-> -					unsigned long mask)
-> +unsigned long get_pfnblock_flags_mask(const struct page *page,
-> +					unsigned long pfn, unsigned long mask)
->  {
->  	return __get_pfnblock_flags_mask(page, pfn, mask);
->  }
->  
-> -static __always_inline int get_pfnblock_migratetype(struct page *page, unsigned long pfn)
-> +static __always_inline int get_pfnblock_migratetype(const struct page *page,
-> +					unsigned long pfn)
->  {
->  	return __get_pfnblock_flags_mask(page, pfn, MIGRATETYPE_MASK);
->  }
-> 
+The thread will process all available completions and then return. I 
+added some debug there, and at most we handle maybe max 150-300 
+completions per thread run.
+
+So I figure that we have the endless hardirq/thread/hardirq/thread stream.
+
+Thanks,
+John
 
