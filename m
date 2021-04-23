@@ -2,118 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68573368B08
+	by mail.lfdr.de (Postfix) with ESMTP id 189F2368B07
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240153AbhDWCbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236080AbhDWCbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:31:06 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6428DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:30:29 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id e25so17895400oii.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=upXmbuxKEHe1Frac75yuLwrw35UBfEWE3IK73lIo86k=;
-        b=A3kRZXQdL2jYMbW+ZspIY1YlC49pRKfSjXD1neVtvdAZFrL7MP4jVNGhbMkClzb0Xe
-         L8Nh/QmJnjta502KyHXrVWW/BEjGDVaLApNdAVb4zy3I2GTRd0LDNlLOHgoCBdo5oupA
-         ggFqk8zCQpmhdNqys+D15Grs1mjPnaOk0dWa5yKmFEKNO9oovCq6PNhMMtdA8nuFYOKl
-         xNdNRZ2OraGVGzdVGLpnlQ3WvCupjJGo4no6pnnY0taBONzxodEC81KpmDIIE8abmymJ
-         FkylEuWdZQRe83BJsXm9WWsXkGJBKP6Ixy417bQOuwx7Kv+xVjTItu5E8gCueWRPDOAM
-         yF4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=upXmbuxKEHe1Frac75yuLwrw35UBfEWE3IK73lIo86k=;
-        b=DMqDDjudpUCFjnFgNI827n2N677mXhDWI2yQyc+N2ShZR7baryqvuUH+VOfiaEoBS6
-         fprtnjlvFZvWdSKou0rxlwb1imGB2VpdxIOHMbenRQEY77nUd4/OADYu1DJgOWyMAkF1
-         7qzsHmKFAn9kzwkMrbtUluBAHehAktoxoU+N9pouhua+9WzKNOBH17VS/oUOGNiE6dZ9
-         Y5uW5BEx/wfe+8G4CP3Z3cTM94kjh+OPRSQ7edyBXgSHuUmAf2d8JtRB2TB3jrdFpECQ
-         VhP8iIZ2vUZjns8jjvTB2QjIv27QkZifUZe8N6B+tNNgzKruJ90aN9G7Uwo+6kqLPGyl
-         qhJQ==
-X-Gm-Message-State: AOAM533c0IjPQ6c/pB6Voxx1GQf2oxWEJ+Vm/j+t2jQxJBJBSPtP/Kkj
-        44+3sQ9oe9lsCIXKoUHxlfirwQ==
-X-Google-Smtp-Source: ABdhPJyT1lv3sauaqPOhP3s33P/VnF0H7znLhue/8JfqtbRUCelDPro1Mf8DaYBh8eW8DWbb4AAZGg==
-X-Received: by 2002:aca:f412:: with SMTP id s18mr1038501oih.144.1619145028674;
-        Thu, 22 Apr 2021 19:30:28 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n13sm1050028otk.61.2021.04.22.19.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 19:30:28 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 21:30:26 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     subashab@codeaurora.org
-Cc:     Alex Elder <elder@linaro.org>,
-        Sean Tranchetti <stranche@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: Re: [PATCH] net: qualcomm: rmnet: Allow partial updates of IFLA_FLAGS
-Message-ID: <20210423023026.GD1908499@yoga>
-References: <20210422182045.1040966-1-bjorn.andersson@linaro.org>
- <76db0c51-15be-2d27-00a7-c9f8dc234816@linaro.org>
- <89526b9845cc86143da2221fc2445557@codeaurora.org>
+        id S237236AbhDWCbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:31:00 -0400
+Received: from mga17.intel.com ([192.55.52.151]:2176 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236080AbhDWCa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 22:30:59 -0400
+IronPort-SDR: nsBYqubn98nBXbSDggHD0NwsOVFwwe/EKhT/YtkUr7fD0x/4OAM0pPaGjBy5+qj6L8e1VI2ozL
+ m7fjXIrWMV7Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="176128408"
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="176128408"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:30:23 -0700
+IronPort-SDR: 041zm7c8mdnKtAVNeJfVBZZKbigKrKUCxF9Wh+7IK0Le2mfrsZ8U1rGRSju71lU05xj7uEbej4
+ +PzfezIkGQ9A==
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="402047000"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 19:30:06 -0700
+Date:   Fri, 23 Apr 2021 10:47:22 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        0day robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: 08ed4efad6: stress-ng.sigsegv.ops_per_sec -41.9% regression
+Message-ID: <20210423024722.GA13968@xsang-OptiPlex-9020>
+References: <7abe5ab608c61fc2363ba458bea21cf9a4a64588.1617814298.git.gladkov.alexey@gmail.com>
+ <20210408083026.GE1696@xsang-OptiPlex-9020>
+ <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
+ <m1im4wmx9g.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <89526b9845cc86143da2221fc2445557@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m1im4wmx9g.fsf@fess.ebiederm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22 Apr 18:28 CDT 2021, subashab@codeaurora.org wrote:
+hi, Eric,
 
-> On 2021-04-22 12:29, Alex Elder wrote:
-> > On 4/22/21 1:20 PM, Bjorn Andersson wrote:
-> > > The idiomatic way to handle the changelink flags/mask pair seems to be
-> > > allow partial updates of the driver's link flags. In contrast the
-> > > rmnet
-> > > driver masks the incoming flags and then use that as the new flags.
-> > > 
-> > > Change the rmnet driver to follow the common scheme, before the
-> > > introduction of IFLA_RMNET_FLAGS handling in iproute2 et al.
-> > 
-> > I like this a lot.  It should have been implemented this way
-> > to begin with; there's not much point to have the mask if
-> > it's only applied to the passed-in value.
-> > 
-> > KS, are you aware of *any* existing user space code that
-> > would not work correctly if this were accepted?
-> > 
-> > I.e., the way it was (is), the value passed in *assigns*
-> > the data format flags.  But with Bjorn's changes, the
-> > data format flags would be *updated* (i.e., any bits not
-> > set in the mask field would remain with their previous
-> > value).
-> > 
-> > Reviewed-by: Alex Elder <elder@linaro.org>
+On Thu, Apr 08, 2021 at 01:44:43PM -0500, Eric W. Biederman wrote:
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
 > 
-> What rmnet functionality which was broken without this change.
-> That doesnt seem to be listed in this patch commit text.
+> > On Thu, Apr 8, 2021 at 1:32 AM kernel test robot <oliver.sang@intel.com> wrote:
+> >>
+> >> FYI, we noticed a -41.9% regression of stress-ng.sigsegv.ops_per_sec due to commit
+> >> 08ed4efad684 ("[PATCH v10 6/9] Reimplement RLIMIT_SIGPENDING on top of ucounts")
+> >
+> > Ouch.
 > 
+> We were cautiously optimistic when no test problems showed up from
+> the last posting that there was nothing to look at here.
+> 
+> Unfortunately it looks like the bots just missed the last posting. 
 
-I recently posted a patch to iproute2 extending the rmnet link handling
-to handle IFLA_RMNET_FLAGS, in the discussion that followed this subject
-came up. So nothing is broken, it's just that the current logic doesn't
-make sense and I wanted to attempt to fix it before we start to use it
-commonly distributed userspace software (iproute2, libqmi etc)
+this report is upon v10. do you have newer version which hope bot test?
 
-> If this is an enhancement, then patch needs to be targeted to net-next
-> instead of net
+please be noted, sorry to say, due to various reasons, it will be a
+big challenge for us to capture each version of a patch set.
 
-Okay, please let me know what hoops you want me to jump through. I just
-want the subject concluded so that I can respin my iproute2 patch
-according to what we decide here.
+e.g. we didn't make out a similar performance regression for
+v8/v9 version of this one..
 
-Regards,
-Bjorn
+> 
+> So it seems we are finally pretty much at correct code in need
+> of performance tuning.
+> 
+> > I *think* this test may be testing "send so many signals that it
+> > triggers the signal queue overflow case".
+> >
+> > And I *think* that the performance degradation may be due to lots of
+> > unnecessary allocations, because ity looks like that commit changes
+> > __sigqueue_alloc() to do
+> >
+> >         struct sigqueue *q = kmem_cache_alloc(sigqueue_cachep, flags);
+> >
+> > *before* checking the signal limit, and then if the signal limit was
+> > exceeded, it will just be free'd instead.
+> >
+> > The old code would check the signal count against RLIMIT_SIGPENDING
+> > *first*, and if there were m ore pending signals then it wouldn't do
+> > anything at all (including not incrementing that expensive atomic
+> > count).
+> 
+> This is an interesting test in a lot of ways as it is testing the
+> synchronous signal delivery path caused by an exception.  The test
+> is either executing *ptr = 0 (where ptr points to a read-only page)
+> or it executes an x86 instruction that is excessively long.
+> 
+> I have found the code but I haven't figured out how it is being
+> called yet.  The core loop is just:
+> 	for(;;) {
+> 		sigaction(SIGSEGV, &action, NULL);
+> 		sigaction(SIGILL, &action, NULL);
+> 		sigaction(SIGBUS, &action, NULL);
+> 
+> 		ret = sigsetjmp(jmp_env, 1);
+> 		if (done())
+>                 	break;
+> 		if (ret) {
+>                 	/* verify signal */
+>                 } else {
+>                 	*ptr = 0;
+>                 }
+> 	}
+> 
+> Code like that fundamentally can not be multi-threaded.  So the only way
+> the sigpending limit is being hit is if there are more processes running
+> that code simultaneously than the size of the limit.
+> 
+> Further it looks like stress-ng pushes RLIMIT_SIGPENDING as high as it
+> will go before the test starts.
+> 
+> 
+> > Also, the old code was very careful to only do the "get_user()" for
+> > the *first* signal it added to the queue, and do the "put_user()" for
+> > when removing the last signal. Exactly because those atomics are very
+> > expensive.
+> >
+> > The new code just does a lot of these atomics unconditionally.
+> 
+> Yes. That seems a likely culprit.
+> 
+> > I dunno. The profile data in there is a bit hard to read, but there's
+> > a lot more cachee misses, and a *lot* of node crossers:
+> >
+> >>    5961544          +190.4%   17314361        perf-stat.i.cache-misses
+> >>   22107466          +119.2%   48457656        perf-stat.i.cache-references
+> >>     163292 ą  3%   +4582.0%    7645410        perf-stat.i.node-load-misses
+> >>     227388 ą  2%   +3708.8%    8660824        perf-stat.i.node-loads
+> >
+> > and (probably as a result) average instruction costs have gone up enormously:
+> >
+> >>       3.47           +66.8%       5.79        perf-stat.overall.cpi
+> >>      22849           -65.6%       7866        perf-stat.overall.cycles-between-cache-misses
+> >
+> > and it does seem to be at least partly about "put_ucounts()":
+> >
+> >>       0.00            +4.5        4.46        perf-profile.calltrace.cycles-pp.put_ucounts.__sigqueue_free.get_signal.arch_do_signal_or_restart.exit_to_user_mode_prepare
+> >
+> > and a lot of "get_ucounts()".
+> >
+> > But it may also be that the new "get sigpending" is just *so* much
+> > more expensive than it used to be.
+> 
+> That too is possible.
+> 
+> That node-load-misses number does look like something is bouncing back
+> and forth between the nodes a lot more.  So I suspect stress-ng is
+> running multiple copies of the sigsegv test in different processes at
+> once.
+> 
+> 
+> 
+> That really suggests cache line ping pong from get_ucounts and
+> incrementing sigpending.
+> 
+> It surprises me that obtaining the cache lines exclusively is
+> the dominant cost on this code path but obtaining two cache lines
+> exclusively instead of one cache cache line exclusively is consistent
+> with a causing the exception delivery to take nearly twice as long.
+> 
+> For the optimization we only care about the leaf count so with a little
+> care we can restore the optimization.  So that is probably the thing
+> to do here.  The fewer changes to worry about the less likely to find
+> surprises.
+> 
+> 
+> 
+> That said for this specific case there is a lot of potential room for
+> improvement.  As this is a per thread signal the code update sigpending
+> in commit_cred and never worry about needing to pin the struct
+> user_struct or struct ucounts.  As this is a synchronous signal we could
+> skip the sigpending increment, skip the signal queue entirely, and
+> deliver the signal to user-space immediately.  The removal of all cache
+> ping pongs might make it worth it.
+> 
+> There is also Thomas Gleixner's recent optimization to cache one
+> sigqueue entry per task to give more predictable behavior.  That
+> would remove the cost of the allocation.
+> 
+> Eric
