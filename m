@@ -2,136 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD76368ABD
+	by mail.lfdr.de (Postfix) with ESMTP id AB806368ABE
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240130AbhDWBvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45392 "EHLO
+        id S240200AbhDWBwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhDWBvl (ORCPT
+        with ESMTP id S240151AbhDWBwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:51:41 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AAAC061574;
-        Thu, 22 Apr 2021 18:51:05 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id f11-20020a17090a638bb02901524d3a3d48so349781pjj.3;
-        Thu, 22 Apr 2021 18:51:05 -0700 (PDT)
+        Thu, 22 Apr 2021 21:52:45 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16B8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:52:09 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso406817pjs.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IbrCUvCRE4PwO6vQoYdMCJZi3mAylgPtBh9g8Cx0Ezo=;
-        b=AAx81oBKdtsFsUmecJuhYm5gmCEy84Rp+TyqfHbxsq70SZyv7vlsooDw4QMAABGGvh
-         +ZsHN0TIZikEw/REku/IHBAJau7MODoyNz/6ZkjzCQvlUX+TFo+/VK2OBrZ59Na4ougu
-         Hqq4SAjgr8GjvQYHfIMJdOrDWAWznRMmv8rtwTJCDbnQQzDNx+HVfoDSDTT48Hz/7z8W
-         E5kBd7sloMcK7kSvNrrJFBv3Tjwk3GTVOVIE/zp2AL7yyWp9OKpzcnBoRibv1m9RHYll
-         pmbNGbZiqpt0lbKkIo0a2VlA/s0e8BOKyqGseRVUbaRA/44hNAVQ0BMyTSyvcQYGVQc7
-         7PZQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AiHVqz2ZM9GbopK8GrCcTF54E/i2NQ9u5jilhDOJuRE=;
+        b=W4gJKQ4ZMAf5rIX7i7nyhW5N2PmY2iiejKjAVEp70tzVSI/RmgXSp/HT2gimvD3Ftu
+         5+yKrBJdDjE+bh2zAcMwDnbWKidg2+MRCwuaH+ualj+q0dbbEn7LtvtQht3oGskDk6s6
+         eYZeAUistrNjrhqj4EwYSh5WHL5myCvjDA9oUlsTFRy7p5Ckte+91Kf0cdba6KgjanKy
+         7QAp97UCxnoL61onek3F2WTfuHhSCsz9Y8GmKFzSIwHRhj8CDf1pRNsQuFprZOJwxFIh
+         esReJ7f7pRXzefJ3LZv4um9Ao8qt4IBxBQ9AzbbWJTNYdtFRqYWuCygCkcWWy2HpdqSj
+         /pKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IbrCUvCRE4PwO6vQoYdMCJZi3mAylgPtBh9g8Cx0Ezo=;
-        b=rZx/lbLGRWqa+LiaRY4GLY+erVt/l+aIzRn90WI7P9EYtrd1Ulg58XRr2nAdAYTCE9
-         lQsLYSprPf+9VHwzzbubFSf6Om8BM+mf/dF+SSGnqqTNm743WqoDEqzvmxrYV57DGiXf
-         bT8xVyuWAmvqHapkAvo35C4kv0nK28+2bmsnlbusS3W1JYbBPqQcK58D6/BfOnJ9fvt5
-         8EuIdkY5gZ/PpEIQlUAtO54rG6WxJ6Hr+H6SF76/Yi1RrDnP87Estaq6y4yDBRH99Ely
-         rlGIPNQpAg+JfNgbFXs56Bo6DgsmkrcTO97C9N/pMx3N6FEidL0LeACIM2Bji2wK6NV0
-         hSog==
-X-Gm-Message-State: AOAM532/oGwA0guPjK5XUVv0JlCcmG8PVshNt6pQdoFSEZr/lWxmAI9x
-        hxtBHzcgsoiiWQMkrBu42IJpoGN8YIc=
-X-Google-Smtp-Source: ABdhPJz1q8klpD8dvvxoq8YepB5hFB7ppN4Tym0YEP4iQTM7qdAilm6yIvnJm16Wb1i75fCj+sVCPg==
-X-Received: by 2002:a17:90b:e8e:: with SMTP id fv14mr2882853pjb.5.1619142664633;
-        Thu, 22 Apr 2021 18:51:04 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id f20sm3310202pgb.47.2021.04.22.18.51.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 18:51:04 -0700 (PDT)
-Subject: Re: [PATCH 00/14] Multiple improvement to qca8k stability
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210423014741.11858-1-ansuelsmth@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e8abff3d-99a8-3ada-9fef-103ce0f7659b@gmail.com>
-Date:   Thu, 22 Apr 2021 18:51:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210423014741.11858-1-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=AiHVqz2ZM9GbopK8GrCcTF54E/i2NQ9u5jilhDOJuRE=;
+        b=dP/wuWMBiMa2BPM1GWK9auktdRLKPlyCtm5CCezW6YyIL1sDqj52vSTh5VpwHW8IKW
+         rQ3S2IhBUJuvjzQ4fjfC+CfllvXJsCekHuSz+SXtpAgoMuREnSbbXoDYxyeSTGB4eu5p
+         ttVcd8KiyxRhUtg6UjvEgvciMwfQsi4DgTT0TDuvJLXtslylnwrfq4c5XiLTbRKrjIdK
+         7KrkqspGmnU7m8cYtP9vn7AsFDiPyhwreBadj0U9s1KExAlEOWWQ3Oh+iNpb8kA6ftPF
+         M1v9GeTnHwbyOzcOPH2yaV9AAw2i2dfZbKKtXvIL9veQnbyMwPugfUvNdS4qN7t2N9JA
+         xQEw==
+X-Gm-Message-State: AOAM532xoyy0ZOFxAJ32tClB9w30okKWT7nLVaL1LHatJRj0BC5AVHTP
+        ix6sS/7vZv5kB1LJJxbA/Wa0Dw==
+X-Google-Smtp-Source: ABdhPJyzRjdUJ0WNvSFPxEBrMRrXaH9r1e4asketjQTy1cc9hCIxWZ0pZ59ybpNxlodmeH4lUjmJeA==
+X-Received: by 2002:a17:90a:4d8a:: with SMTP id m10mr1707999pjh.42.1619142729330;
+        Thu, 22 Apr 2021 18:52:09 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v8sm3059263pfm.128.2021.04.22.18.52.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 18:52:08 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 18:52:08 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 18:51:40 PDT (-0700)
+Subject:     Re: [PATCH] riscv/kprobe: fix kernel panic when invoking sys_read traced by kprobe
+In-Reply-To: <20210330081848.14043-1-liaochang1@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        guoren@linux.alibaba.com, mhiramat@kernel.org, penberg@kernel.org,
+        lkp@intel.com, me@packi.ch, liaochang1@huawei.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     liaochang1@huawei.com
+Message-ID: <mhng-afc94428-3903-4949-8d3e-f7a081886e38@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 30 Mar 2021 01:18:48 PDT (-0700), liaochang1@huawei.com wrote:
+> The execution of sys_read end up hitting a BUG_ON() in __find_get_block
+> after installing kprobe at sys_read, the BUG message like the following:
+>
+> [   65.708663] ------------[ cut here ]------------
+> [   65.709987] kernel BUG at fs/buffer.c:1251!
+> [   65.711283] Kernel BUG [#1]
+> [   65.712032] Modules linked in:
+> [   65.712925] CPU: 0 PID: 51 Comm: sh Not tainted 5.12.0-rc4 #1
+> [   65.714407] Hardware name: riscv-virtio,qemu (DT)
+> [   65.715696] epc : __find_get_block+0x218/0x2c8
+> [   65.716835]  ra : __getblk_gfp+0x1c/0x4a
+> [   65.717831] epc : ffffffe00019f11e ra : ffffffe00019f56a sp : ffffffe002437930
+> [   65.719553]  gp : ffffffe000f06030 tp : ffffffe0015abc00 t0 : ffffffe00191e038
+> [   65.721290]  t1 : ffffffe00191e038 t2 : 000000000000000a s0 : ffffffe002437960
+> [   65.723051]  s1 : ffffffe00160ad00 a0 : ffffffe00160ad00 a1 : 000000000000012a
+> [   65.724772]  a2 : 0000000000000400 a3 : 0000000000000008 a4 : 0000000000000040
+> [   65.726545]  a5 : 0000000000000000 a6 : ffffffe00191e000 a7 : 0000000000000000
+> [   65.728308]  s2 : 000000000000012a s3 : 0000000000000400 s4 : 0000000000000008
+> [   65.730049]  s5 : 000000000000006c s6 : ffffffe00240f800 s7 : ffffffe000f080a8
+> [   65.731802]  s8 : 0000000000000001 s9 : 000000000000012a s10: 0000000000000008
+> [   65.733516]  s11: 0000000000000008 t3 : 00000000000003ff t4 : 000000000000000f
+> [   65.734434]  t5 : 00000000000003ff t6 : 0000000000040000
+> [   65.734613] status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+> [   65.734901] Call Trace:
+> [   65.735076] [<ffffffe00019f11e>] __find_get_block+0x218/0x2c8
+> [   65.735417] [<ffffffe00020017a>] __ext4_get_inode_loc+0xb2/0x2f6
+> [   65.735618] [<ffffffe000201b6c>] ext4_get_inode_loc+0x3a/0x8a
+> [   65.735802] [<ffffffe000203380>] ext4_reserve_inode_write+0x2e/0x8c
+> [   65.735999] [<ffffffe00020357a>] __ext4_mark_inode_dirty+0x4c/0x18e
+> [   65.736208] [<ffffffe000206bb0>] ext4_dirty_inode+0x46/0x66
+> [   65.736387] [<ffffffe000192914>] __mark_inode_dirty+0x12c/0x3da
+> [   65.736576] [<ffffffe000180dd2>] touch_atime+0x146/0x150
+> [   65.736748] [<ffffffe00010d762>] filemap_read+0x234/0x246
+> [   65.736920] [<ffffffe00010d834>] generic_file_read_iter+0xc0/0x114
+> [   65.737114] [<ffffffe0001f5d7a>] ext4_file_read_iter+0x42/0xea
+> [   65.737310] [<ffffffe000163f2c>] new_sync_read+0xe2/0x15a
+> [   65.737483] [<ffffffe000165814>] vfs_read+0xca/0xf2
+> [   65.737641] [<ffffffe000165bae>] ksys_read+0x5e/0xc8
+> [   65.737816] [<ffffffe000165c26>] sys_read+0xe/0x16
+> [   65.737973] [<ffffffe000003972>] ret_from_syscall+0x0/0x2
+> [   65.738858] ---[ end trace fe93f985456c935d ]---
+>
+> A simple reproducer looks like:
+> 	echo 'p:myprobe sys_read fd=%a0 buf=%a1 count=%a2' > /sys/kernel/debug/tracing/kprobe_events
+> 	echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
+> 	cat /sys/kernel/debug/tracing/trace
+>
+> Here's what happens to hit that BUG_ON():
+>
+> 1) After installing kprobe at entry of sys_read, the first instruction
+>    is replaced by 'ebreak' instruction on riscv64 platform.
+>
+> 2) Once kernel reach the 'ebreak' instruction at the entry of sys_read,
+>    it trap into the riscv breakpoint handler, where it do something to
+>    setup for coming single-step of origin instruction, including backup
+>    the 'sstatus' in pt_regs, followed by disable interrupt during single
+>    stepping via clear 'SIE' bit of 'sstatus' in pt_regs.
+>
+> 3) Then kernel restore to the instruction slot contains two instructions,
+>    one is original instruction at entry of sys_read, the other is 'ebreak'.
+>    Here it trigger a 'Instruction page fault' exception (value at 'scause'
+>    is '0xc'), if PF is not filled into PageTabe for that slot yet.
+>
+> 4) Again kernel trap into page fault exception handler, where it choose
+>    different policy according to the state of running kprobe. Because
+>    afte 2) the state is KPROBE_HIT_SS, so kernel reset the current kprobe
+>    and 'pc' points back to the probe address.
+>
+> 5) Because 'epc' point back to 'ebreak' instrution at sys_read probe,
+>    kernel trap into breakpoint handler again, and repeat the operations
+>    at 2), however 'sstatus' without 'SIE' is keep at 4), it cause the
+>    real 'sstatus' saved at 2) is overwritten by the one withou 'SIE'.
+>
+> 6) When kernel cross the probe the 'sstatus' CSR restore with value
+>    without 'SIE', and reach __find_get_block where it requires the
+>    interrupt must be enabled.
+>
+> Fix this is very trivial, just restore the value of 'sstatus' in pt_regs
+> with backup one at 2) when the instruction being single stepped cause a
+> page fault.
+>
+> Fixes: c22b0bcb1dd02 ("riscv: Add kprobes supported")
+> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> ---
+>  arch/riscv/kernel/probes/kprobes.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+> index 7e2c78e2ca6b..d71f7c49a721 100644
+> --- a/arch/riscv/kernel/probes/kprobes.c
+> +++ b/arch/riscv/kernel/probes/kprobes.c
+> @@ -260,8 +260,10 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int trapnr)
+>
+>  		if (kcb->kprobe_status == KPROBE_REENTER)
+>  			restore_previous_kprobe(kcb);
+> -		else
+> +		else {
+> +			kprobes_restore_local_irqflag(kcb, regs);
+>  			reset_current_kprobe();
+> +		}
+>
+>  		break;
+>  	case KPROBE_HIT_ACTIVE:
 
-
-On 4/22/2021 6:47 PM, Ansuel Smith wrote:
-> Currently qca8337 switch are widely used on ipq8064 based router.
-> On these particular router it was notice a very unstable switch with
-> port not link detected as link with unknown speed, port dropping
-> randomly and general unreliability. Lots of testing and comparison
-> between this dsa driver and the original qsdk driver showed lack of some
-> additional delay and values. A main difference arised from the original
-> driver and the dsa one. The original driver didn't use MASTER regs to
-> read phy status and the dedicated mdio driver worked correctly. Now that
-> the dsa driver actually use these regs, it was found that these special
-> read/write operation required mutual exclusion to normal
-> qca8k_read/write operation. The add of mutex for these operation fixed
-> the random port dropping and now only the actual linked port randomly
-> dropped. Adding additional delay for set_page operation and fixing a bug
-> in the mdio dedicated driver fixed also this problem. The current driver
-> requires also more time to apply vlan switch. All of these changes and
-> tweak permit a now very stable and reliable dsa driver and 0 port
-> dropping. This series is currently tested by at least 5 user with
-> different routers and all reports positive results and no problems.
-
-Since all of these changes are improvements and not really bug fixes,
-please target them at the net-next tree:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/netdev-FAQ.rst#n40
-
-also, the subject for your patches should just be:
-
-net: dsa: qca8k:
-net: mdio: mdio-ipq8064:
-
-to be consistent with previous submissions in these files.
-
-> 
-> Ansuel Smith (14):
->   drivers: net: dsa: qca8k: handle error with set_page
->   drivers: net: dsa: qca8k: tweak internal delay to oem spec
->   drivers: net: mdio: mdio-ip8064: improve busy wait delay
->   drivers: net: dsa: qca8k: apply suggested packet priority
->   drivers: net: dsa: qca8k: add support for qca8327 switch
->   devicetree: net: dsa: qca8k: Document new compatible qca8327
->   drivers: net: dsa: qca8k: limit priority tweak to qca8337 switch
->   drivers: net: dsa: qca8k: add GLOBAL_FC settings needed for qca8327
->   drivers: net: dsa: qca8k: add support for switch rev
->   drivers: net: dsa: qca8k: add support for specific QCA access function
->   drivers: net: dsa: qca8k: apply switch revision fix
->   drivers: net: dsa: qca8k: clear MASTER_EN after phy read/write
->   drivers: net: dsa: qca8k: protect MASTER busy_wait with mdio mutex
->   drivers: net: dsa: qca8k: enlarge mdio delay and timeout
-> 
->  .../devicetree/bindings/net/dsa/qca8k.txt     |   1 +
->  drivers/net/dsa/qca8k.c                       | 256 ++++++++++++++++--
->  drivers/net/dsa/qca8k.h                       |  54 +++-
->  drivers/net/mdio/mdio-ipq8064.c               |  36 ++-
->  4 files changed, 304 insertions(+), 43 deletions(-)
-> 
-
--- 
-Florian
+Sorry, I missed this when going through everything for fixes.  I've just 
+put it on for next, as I don't really want te send along anything this 
+late.
