@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E40C36956D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3E236956F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243498AbhDWPB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S243091AbhDWPBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243244AbhDWPA3 (ORCPT
+        with ESMTP id S243278AbhDWPAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:00:29 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95BBC061345
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:42 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id n4-20020a05600c4f84b029013151278decso1399469wmq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:42 -0700 (PDT)
+        Fri, 23 Apr 2021 11:00:39 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94736C06135F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:44 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id p6so42040291wrn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WXZjzbZRHK0jBwgvuHcL9uMISPcQ6vFSZC1gma0GKcY=;
-        b=rOBdAoE3zso+Tc92VqoqOnE7f9NdI+SCp31UCmeWL5KyTdG2VOwcoBPT7dvolJTN9h
-         0o6HTRIPUIc4JXJK3U+ovZpO5UbpOqTMxZF8gCAzTKZd69VormYa3tix67/k4Pi1EHko
-         /B202K+cQjNWB/VLIieBz3mWazDCbiO3j6DpTbE52ITVnOGAGhZTaZ7pNRayiDx93RXU
-         BZ0Z6v6dtinDIjaYrRSEUNyY8fhjpUsKZs3ioAE3/9uo/DdwlqjOmJYH+u+nB7ef6wxU
-         6ty10kdfS46CRcFe6pgvNlCFaYPj1gtoDTcKQFsw38fMXQSMEmAXlTdjWJbMX/uFh/N2
-         ZA8Q==
+        bh=AedyWXn8rMwjV4hec6YOWAkym+19jwGe7xRprf/SrlY=;
+        b=VR2/iVh+OKq5WiGouAt5aXvKhf5vcMLxXKHFMo9pfEiVt3aMXHbNgtZY3AytegT6m1
+         gkEWfZHR0epxqkTPSOg3NS6D/P5OlzJe1QqOSXhU6vAldKw0qUpnvbXXL0Ro126tfuOu
+         H6YUSryQo51LErS44nTQbgypr8JpnuOivY2+v+aouhJoSU9ND/CX7Rvmcu+LKVJhRXzC
+         ttBXrFcJOA+9w4bZiMWUB2gbTZ8db97j3GuJnqHVks0BGxajcZ/kGpEgh4r4JnlmsxZa
+         eGn7BJaH5gd7ZmjgogVyGTvE9SksTb3FKQnknehVNKm8Q8DOPYlZM0LNxbaVHpUBSPdE
+         OH6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WXZjzbZRHK0jBwgvuHcL9uMISPcQ6vFSZC1gma0GKcY=;
-        b=QZAJFThZU8avzAO0kfioPWTKH77xZMA2AIPUV41/4EobwLmd/WrsWlWbIi5JoHV13t
-         1XBB+Y7eQJ3J+CgKjiK3+BfzOIZs19CVWjZscx9nSNI59j6Sbuxz031txrVKAd7/o8Jz
-         GY2yDbUor18PJMI/7kU3KYtNAPaajrTWIrQZ3gRO2ogpMcclHp20arj3FHBi0MxGXFPu
-         P0l+IFUzbooHo72Y6tMiNrnnL3a0EblOi9XMvQtv9/wO6Bo7O26ly+aBQ95pilO3lDpe
-         9WVmJF7SfVrpcbVoZFfy6O/KoTGMn6bGN2DmWHRgGe9xa4LE5NZ0u2UcuOdIF7vyHthv
-         8vSw==
-X-Gm-Message-State: AOAM531GOSDBgGB8QcZ9hdlXdrEPWLabfzV+KlcZ5ayG/j3kXXy0LwCw
-        OWj69V9v5tBkgfSH8kpWPFVDTIvdVEM=
-X-Google-Smtp-Source: ABdhPJwgg8zwbBNKGLU8zdTwt1S/UQPkwMZAUlC2/2Qkz0ZhTfTeO5IhAjJsQFm4yT9Moqzx90Hhdw==
-X-Received: by 2002:a05:600c:4fd4:: with SMTP id o20mr6203003wmq.166.1619189981258;
-        Fri, 23 Apr 2021 07:59:41 -0700 (PDT)
+        bh=AedyWXn8rMwjV4hec6YOWAkym+19jwGe7xRprf/SrlY=;
+        b=KANv0cjdecsIPbrADmQTDneUcXaFDLwBCNOu3TFS0VtWfqY/rpMAinKrfQbc5pUGLW
+         plRR6k80T7OozSRFZU7DSUkSevrOIOj9gw9+T8TejWY98fTv9t65fYfRpXF05aHqsczl
+         flGmhVDSo7436w/dw9FW5hDQehKVmFP+1aKsC+jyQ9+RRqrNAV7Ayqh64vV/lyZXNhHY
+         6CMbpuOaL57rPvvhy2nTwLw3WDwX97K43xV/MTp1ocPJ4CuwTDslSbJlgm5Rd/bSIUYy
+         4skEEPWA1TtdHoBtKDzMWLXki0raXev2SU+hUbnbI3q8Cy5WeSHi4zmP1+c8Ub5Dj9Qw
+         tJHg==
+X-Gm-Message-State: AOAM533hsLlPGn2kR9n0+mI/YXyF5tjCRePFIe5Mn3gu4PQ2cyDdHP2U
+        ekT6dmb7C7meGKLiso2WdwDxJf1LSoQ=
+X-Google-Smtp-Source: ABdhPJxh5AACHSLvbosz1i/MgdiUIrD9Ja44VesSJQeHn8ZB3FHg/wRDX84/E5ikZ50v/IQERVBH2g==
+X-Received: by 2002:adf:d1ce:: with SMTP id b14mr5404617wrd.159.1619189982965;
+        Fri, 23 Apr 2021 07:59:42 -0700 (PDT)
 Received: from agape ([5.171.72.99])
-        by smtp.gmail.com with ESMTPSA id 200sm8469131wmb.1.2021.04.23.07.59.40
+        by smtp.gmail.com with ESMTPSA id c77sm8014287wme.37.2021.04.23.07.59.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:59:40 -0700 (PDT)
+        Fri, 23 Apr 2021 07:59:42 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 36/49] staging: rtl8723bs: remove unused macros tied to os_dep/sdio_intf.c debug
-Date:   Fri, 23 Apr 2021 16:58:27 +0200
-Message-Id: <5129ca34b24f01f93f1e8315aba65eabfda628a6.1619189489.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 37/49] staging: rtl8723bs: remove unused debug macros tied to _HCI_OPS_C_ definition
+Date:   Fri, 23 Apr 2021 16:58:28 +0200
+Message-Id: <67c04ee5a9f5b0651369abe7284aa188c4e05301.1619189489.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619189489.git.fabioaiuto83@gmail.com>
 References: <cover.1619189489.git.fabioaiuto83@gmail.com>
@@ -63,56 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unused macro definitions tied to
-os_dep/sdio_intf.c debug.
+remove unused debug macros tied to
+_HCI_OPS_C_ definition.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/rtw_debug.h | 7 +------
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c  | 2 --
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index a7f6827c282f..130cfe3d2032 100644
+index 130cfe3d2032..3becb1b8d15e 100644
 --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
 +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
 @@ -7,7 +7,6 @@
  #ifndef __RTW_DEBUG_H__
  #define __RTW_DEBUG_H__
  
--#define _module_hci_intfs_c_			BIT(20)
- #define _module_hci_ops_c_			BIT(21)
+-#define _module_hci_ops_c_			BIT(21)
  #define _module_osdep_service_c_			BIT(22)
  #define _module_mp_			BIT(23)
-@@ -23,14 +22,10 @@
+ #define _module_hci_ops_os_c_			BIT(24)
+@@ -22,9 +21,7 @@
  
  #undef _MODULE_DEFINE_
  
--#if defined _HCI_INTF_C_
--	#define	_MODULE_DEFINE_	_module_hci_intfs_c_
--#elif defined _HCI_OPS_C_
-+#if defined _HCI_OPS_C_
- 	#define	_MODULE_DEFINE_	_module_hci_ops_c_
- #elif defined _SDIO_OPS_C_
+-#if defined _HCI_OPS_C_
+-	#define	_MODULE_DEFINE_	_module_hci_ops_c_
+-#elif defined _SDIO_OPS_C_
++#if defined _SDIO_OPS_C_
  	#define	_MODULE_DEFINE_ 1
--#elif defined _OSDEP_HCI_INTF_C_
--	#define	_MODULE_DEFINE_	_module_hci_intfs_c_
  #elif defined _OSDEP_SERVICE_C_
  	#define	_MODULE_DEFINE_	_module_osdep_service_c_
- #elif defined _HCI_OPS_OS_C_
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-index d2bf444117b8..5e484344e172 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -4,8 +4,6 @@
-  * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
-  *
-  ******************************************************************************/
--#define _HCI_INTF_C_
--
- #include <drv_types.h>
- #include <rtw_debug.h>
- #include <hal_btcoex.h>
 -- 
 2.20.1
 
