@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F37369B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F683369B66
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243984AbhDWUlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:41:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231721AbhDWUlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:41:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E44C6144A;
-        Fri, 23 Apr 2021 20:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619210432;
-        bh=4OdlFAyziLmFURb5zD0N+vh/EJd+/8tzsrqf/l0h2x4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EKjOCEa21cu8AXJMeMJ4IybCQfi8j5faBazCqxOJSRT5/2T7dHfh99S0BRBEoILoe
-         DZpPGTpXMMvmfYogpSfjoHMFhib/2NdUgJMRmIHite9bMaUxeMtD69b4pUDK0BHPh+
-         CMN2W3WzJaaplpNgR2M5LHdO0T3C5HUP7MB+ltosT5VXITklh/hGAMM1hGRB0MWMF8
-         dvv/ko9vsNuJAKnmBzW6CjZ74sOI5ZSjLPa25Sf/34gFBdQI7dNorn/yqIxwhUEn5m
-         jlbVMnHPFuf2fml6liupwwrbDh1yQZwVDjnC7UR5V+QvZ9G0xLmyqovX+AuTq5E8fV
-         PTuvrVCCd52ow==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 2/2] mm/mmzone.h: simplify is_highmem_idx()
-Date:   Fri, 23 Apr 2021 23:38:11 +0300
-Message-Id: <20210423203811.1247508-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210423203811.1247508-1-rppt@kernel.org>
-References: <20210423203811.1247508-1-rppt@kernel.org>
+        id S243889AbhDWUjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232573AbhDWUjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 16:39:36 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BC9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:38:58 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g17so58136287edm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dfQYJoLyB6h5ZbM4eg6Kr44fOO/ylFVrCnfKWSRlupI=;
+        b=XIrgS7eZvzhqFQGzaCw99zsTJou6Zmn6+qlQS+jLXwjE4/FMmqnjZuwoAcS2cOq9MJ
+         YwLvedQjp6Xc7eib13/t2RHH1CRhgf4pLfr2ZnEmQ2s94gOCMX2a7ccCO4BrwX8ELRNz
+         pratDifm/U3Qz0LPqF5zfi5UiRmLchv91hKIKYZ7Tcw1b1ngICuDWkuFMKnVbs+PI+lF
+         Qx6B6YkP9fV1dUeP+TLUmymxhUAQdBr8fal4P+zCvMljDKJ2AR6ye99CxLvf1/n4xrTq
+         ImhgPSL3EFPtqiQITgBoMcFVvYbf3yVITE8jWKMGK2GZw/bT+aB9l6F5n9ZAlNFWYzuE
+         W3Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dfQYJoLyB6h5ZbM4eg6Kr44fOO/ylFVrCnfKWSRlupI=;
+        b=scetHlPlKny8LFTpPQs1bfFUbF2Oj1TDz/TK5o/aCPJaOG9NCV6wnHB/eUnlDImx9i
+         OB3KXB3sURlU/hemT5SL2s+oW40lw1O3obaX1iCCMK0PnFjDRNxhv5Ul+QxIFAVQCXEr
+         qg4GPOM5fAN4yrmYb7dxDzdOdv17UkpDZcqD02DYMc9MhNcH7PC3gaeaj1lS6OMDIFzQ
+         q069loHqtk5wk5mM4/r96cvItQCyP9lZPAOYA5xAxhUe32DOihv7uof6OaO6McIDIZTW
+         laseKQNnxGthbS+qw5wOi+oCfPmcmJOElWwdFMD8m7VF76O83TT5Qtt20CigRoN4mVFN
+         +FJg==
+X-Gm-Message-State: AOAM533FpslfAO8KKPFgdy5KZuYd8SchkZbOjwnnRhntXcyW4Bz4xQLm
+        iuRoVdnUmCbOp549pvxprOpW0mf7AtHHmM1zzAxHpA==
+X-Google-Smtp-Source: ABdhPJyNoSkdooYSFcOxpyxKQDuiru1CJwem5bBb2pWMDB82inZWG0N72kKzPu9nUXH1iLB8MmvByOyiMsdyQh3mpBM=
+X-Received: by 2002:a05:6402:3514:: with SMTP id b20mr6565480edd.348.1619210337492;
+ Fri, 23 Apr 2021 13:38:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210423130723.1673919-1-vgoyal@redhat.com>
+In-Reply-To: <20210423130723.1673919-1-vgoyal@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 23 Apr 2021 13:38:51 -0700
+Message-ID: <CAPcyv4hz=nHYQ89-m-7yVJWpEP4gZBYTY6E4POAms9mYDb_N+g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] dax: Fix missed wakeup in put_unlocked_entry()
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sergio Lopez <slp@redhat.com>, Greg Kurz <groug@kaod.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Fri, Apr 23, 2021 at 6:07 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> Hi,
+>
+> This is V4 of the patches. Posted V3 here.
+>
+> https://lore.kernel.org/linux-fsdevel/20210419213636.1514816-1-vgoyal@redhat.com/
+>
+> Changes since V3 are.
+>
+> - Renamed "enum dax_entry_wake_mode" to "enum dax_wake_mode" (Matthew Wilcox)
+> - Changed description of WAKE_NEXT and WAKE_ALL (Jan Kara)
+> - Got rid of a comment (Greg Kurz)
 
-There is a lot of historical ifdefery in is_highmem_idx() and its helper
-zone_movable_is_highmem() that was required because of two different paths
-for nodes and zones initialization that were selected at compile time.
-
-Until commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP
-option") the movable_zone variable was only available for configurations
-that had CONFIG_HAVE_MEMBLOCK_NODE_MAP enabled so the test in
-zone_movable_is_highmem() used that variable only for such configurations.
-For other configurations the test checked if the index of ZONE_MOVABLE was
-greater by 1 than the index of ZONE_HIGMEM and then movable zone was
-considered a highmem zone. Needless to say, ZONE_MOVABLE - 1 equals
-ZONE_HIGMEM by definition when CONFIG_HIGHMEM=y.
-
-Commit 3f08a302f533 ("mm: remove CONFIG_HAVE_MEMBLOCK_NODE_MAP option")
-made movable_zone variable always available. Since this variable is set to
-ZONE_HIGHMEM if CONFIG_HIGHMEM is enabled and highmem zone is populated, it
-is enough to check whether
-
-	zone_idx == ZONE_MOVABLE && movable_zone == ZONE_HIGMEM
-
-to test if zone index points to a highmem zone.
-
-Remove zone_movable_is_highmem() that is not used anywhere except
-is_highmem_idx() and use the test above in is_highmem_idx() instead.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- include/linux/mmzone.h | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 3b2205741048..6a1ac643b65e 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -968,22 +968,11 @@ static inline void zone_set_nid(struct zone *zone, int nid) {}
- 
- extern int movable_zone;
- 
--#ifdef CONFIG_HIGHMEM
--static inline int zone_movable_is_highmem(void)
--{
--#ifdef CONFIG_NEED_MULTIPLE_NODES
--	return movable_zone == ZONE_HIGHMEM;
--#else
--	return (ZONE_MOVABLE - 1) == ZONE_HIGHMEM;
--#endif
--}
--#endif
--
- static inline int is_highmem_idx(enum zone_type idx)
- {
- #ifdef CONFIG_HIGHMEM
- 	return (idx == ZONE_HIGHMEM ||
--		(idx == ZONE_MOVABLE && zone_movable_is_highmem()));
-+		(idx == ZONE_MOVABLE && movable_zone == ZONE_HIGHMEM));
- #else
- 	return 0;
- #endif
--- 
-2.29.2
-
+Looks good Vivek, thanks for the resend.
