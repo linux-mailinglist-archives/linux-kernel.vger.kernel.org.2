@@ -2,137 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2D1368DB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABFB368DB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241060AbhDWHMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240743AbhDWHMO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:12:14 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC723C061574;
-        Fri, 23 Apr 2021 00:11:36 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lr7so6497008pjb.2;
-        Fri, 23 Apr 2021 00:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=HqJMjNWqtxCZEtFIyBmota7lpGm+rHS29SEa78vm9uw=;
-        b=nKpRcIzrlcMWE/JIaAcQTt+sIk18JhHn3VNFy/+7A9crEFQKaRl/4ybysLR+RyzWLv
-         JADj1GVyf+KH+Urzx3u5AYD/LI3Am90W0VLjwrlqt1MjdYsxAFsNg6wRnBOldXFZU6op
-         pjdemQY94oHgbZbVAKj7ozhdOvRP1FBzfUuQekdQroOA4QtwScShv5ana/u+uckRBjjq
-         NuJMKjOA0AGJii22hwhKlFmiql0z2ZNaQjCiH2+qSTfElfbYBC6oFqSeNBptRfzyR1mf
-         HP6rCBZDhI6XTyQOMpc/OrXgtVfp0CEmEjd+zeLTrUNlmOpIysxCHKhEvkvOyO476Jwv
-         h0rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=HqJMjNWqtxCZEtFIyBmota7lpGm+rHS29SEa78vm9uw=;
-        b=qdDK7zNTxo6uR5OV0rzMfXfeBFsIMUnoFNygU4NRVJpkZ/2rU7xMcNDYZugKcDNYcH
-         6wDP49raSaGd8hPyJGRcxHZ/DNSN/P997XIuuy5g2uncfIJ4HOQuqHSzT/RGyhRTzwQ8
-         vx5CZDws/JlvohgZWs7bJPtbNjr+22bKAU9PBXQwQ2PdhEthtHuQl7DGyXzZ/0rxpI5+
-         CBwLh5oLuhHV7ikqWJCXMk0VFVqxoJnxU8OpESnXpywtEEpeJVi+yijW4x/g/uXdPpmm
-         BQQtnWQyEJgE9UtvizNuH6T6TxeYP+56p5vUzg8TFHMn3s8UJX9XhkK4hrP3+io/06qL
-         8Ttg==
-X-Gm-Message-State: AOAM530+Qv7OphOFLrhmPZwrq9fe2t36HcaxCIID36CgjN4Q2Pgc2scG
-        2287NhsCo9hxkFNWk0eqH1T4g1BW7pM=
-X-Google-Smtp-Source: ABdhPJwD5pvvAJW0GH6EobdDrhDTk3dYtqLbuFADme2Js6GZdjV8gfbMGPInO9bDebAZqhHaFrR4hQ==
-X-Received: by 2002:a17:90b:e0b:: with SMTP id ge11mr4219103pjb.127.1619161896302;
-        Fri, 23 Apr 2021 00:11:36 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id gj13sm6605427pjb.57.2021.04.23.00.11.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Apr 2021 00:11:35 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: x86/xen: Take srcu lock when accessing kvm_memslots()
-Date:   Fri, 23 Apr 2021 15:11:23 +0800
-Message-Id: <1619161883-5963-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        id S240834AbhDWHMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:12:13 -0400
+Received: from verein.lst.de ([213.95.11.211]:32890 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229945AbhDWHMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:12:08 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E833068B05; Fri, 23 Apr 2021 09:11:26 +0200 (CEST)
+Date:   Fri, 23 Apr 2021 09:11:26 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+Subject: Re: [PATCH v5 01/16] swiotlb: Fix the type of index
+Message-ID: <20210423071126.GA6404@lst.de>
+References: <20210422081508.3942748-1-tientzu@chromium.org> <20210422081508.3942748-2-tientzu@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422081508.3942748-2-tientzu@chromium.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Thu, Apr 22, 2021 at 04:14:53PM +0800, Claire Chang wrote:
+> Fix the type of index from unsigned int to int since find_slots() might
+> return -1.
+> 
+> Fixes: 0774983bc923 ("swiotlb: refactor swiotlb_tbl_map_single")
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
 
-kvm_memslots() will be called by kvm_write_guest_offset_cached() so 
-take the srcu lock.
+Looks good:
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/xen.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index ae17250..d0df782 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -96,6 +96,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
- 	struct kvm_vcpu_xen *vx = &v->arch.xen;
- 	uint64_t state_entry_time;
- 	unsigned int offset;
-+	int idx;
- 
- 	kvm_xen_update_runstate(v, state);
- 
-@@ -133,10 +134,16 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
- 	BUILD_BUG_ON(sizeof(((struct compat_vcpu_runstate_info *)0)->state_entry_time) !=
- 		     sizeof(state_entry_time));
- 
-+	/*
-+	 * Take the srcu lock as memslots will be accessed to check the gfn
-+	 * cache generation against the memslots generation.
-+	 */
-+	idx = srcu_read_lock(&v->kvm->srcu);
-+
- 	if (kvm_write_guest_offset_cached(v->kvm, &v->arch.xen.runstate_cache,
- 					  &state_entry_time, offset,
- 					  sizeof(state_entry_time)))
--		return;
-+		goto out;
- 	smp_wmb();
- 
- 	/*
-@@ -154,7 +161,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
- 					  &vx->current_runstate,
- 					  offsetof(struct vcpu_runstate_info, state),
- 					  sizeof(vx->current_runstate)))
--		return;
-+		goto out;
- 
- 	/*
- 	 * Write the actual runstate times immediately after the
-@@ -173,7 +180,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
- 					  &vx->runstate_times[0],
- 					  offset + sizeof(u64),
- 					  sizeof(vx->runstate_times)))
--		return;
-+		goto out;
- 
- 	smp_wmb();
- 
-@@ -186,7 +193,10 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
- 	if (kvm_write_guest_offset_cached(v->kvm, &v->arch.xen.runstate_cache,
- 					  &state_entry_time, offset,
- 					  sizeof(state_entry_time)))
--		return;
-+		goto out;
-+
-+out:
-+	srcu_read_unlock(&v->kvm->srcu, idx);
- }
- 
- int __kvm_xen_has_interrupt(struct kvm_vcpu *v)
--- 
-2.7.4
-
+it really should go into 5.12.  I'm not sure if Konrad is going to
+be able to queue this up due to his vacation, so I'm tempted to just
+queue it up in the dma-mapping tree.
