@@ -2,131 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415D6369B8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5468E369B95
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 22:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243930AbhDWUu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 16:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S244002AbhDWUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 16:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWUuY (ORCPT
+        with ESMTP id S229691AbhDWUw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 16:50:24 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B88C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:49:46 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g17so58162678edm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 13:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fm0PKuYIAac9ltnrpGnQKG+HA7pEHPssT5UYNO5GgT8=;
-        b=pLbnPslxXLs5tizh+7TJazxxRde79HZ1ATziMVDbUDxK4lvVO62Ke0IW7N5pPhtVbC
-         K6h3wqplK47FgfQTYrj8JKCyqIR59w1FgbgaveJXD5pZHFKZyUYM+6o6pZKk321NgNkF
-         XmrjP0UdPmm/EQFrdyAAGn0EGnT2MhrcUFYtphKi3GFReZO2nOe0s3aqLi6ghqM3xjVR
-         b0rl6UezVH/3RQtn9ug1WTlHmzg/C+/kd2q5HTd89dP24n6CXUv1DIv1t/+oVTVDeQCf
-         ysKnVikQabwsbcNGH9kG3LJOALsutqKjaQU/pMcA+Jvmo2qGUEo4jIdhU45s60l4f6Io
-         fvxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fm0PKuYIAac9ltnrpGnQKG+HA7pEHPssT5UYNO5GgT8=;
-        b=gMbd+7IQ+V07jk2pyt/l8gTc8qDaD7kqOHGfFrxhTzTT1YeBP+BJcb5TY9CFIGqP5f
-         FZJ+LewFfgoYgT5bD2KM1b/euRoOKn6jb5rcXR7oMdXB06Ls2VZVaKkal6sbBTPnTV2+
-         a40KWrZy0jmA5AZkcMQvwXXhjUtGQIxNTS8kwUHmXNkqT5qdpw1ZTmi1SSln/zqW/d2X
-         K/OQUfsEixqqvQorPwXugUth5pAHPn2VXPh97zNvjN4mUfJsL1uP33tlcGbmRB1magOR
-         CMcq2LATFo+qaNtNtwzrvfjDILqTp7RVjyM1JMScduwQTFDYoNzsALwppGVTPFcGSBdP
-         lzWQ==
-X-Gm-Message-State: AOAM531FD40ts4ZcjdmkYb0Ahyybr6Hl/b2dlTfF/F/yiF+f2l8DQWS0
-        qHAoYghGUNk/2C/2hAg71t7xu3oUHzaOAwcSE9fWkQ==
-X-Google-Smtp-Source: ABdhPJzRwNb0e8bboKJyuenTHOg4eGazzicBvClp1MoWljlZWQKPFjpWorap071VWY6qwvlBnf4WpcErhJhCbXYzah4=
-X-Received: by 2002:a50:e607:: with SMTP id y7mr6781566edm.18.1619210985439;
- Fri, 23 Apr 2021 13:49:45 -0700 (PDT)
+        Fri, 23 Apr 2021 16:52:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9A0C061574;
+        Fri, 23 Apr 2021 13:51:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id B36B91F41B0E
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v8 0/4] Make UTF-8 encoding loadable
+Date:   Sat, 24 Apr 2021 02:21:32 +0530
+Message-Id: <20210423205136.1015456-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org> <20210421130105.1226686-106-gregkh@linuxfoundation.org>
-In-Reply-To: <20210421130105.1226686-106-gregkh@linuxfoundation.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 23 Apr 2021 13:49:39 -0700
-Message-ID: <CAPcyv4h6SrYg39NN5WzhiXyD3_FjVW4XVXsK=HUVjWOSPcBaAw@mail.gmail.com>
-Subject: Re: [PATCH 105/190] Revert "libnvdimm/btt: Fix a kmemdup failure check"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Aditya Pakki <pakki001@umn.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 6:08 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This reverts commit 486fa92df4707b5df58d6508728bdb9321a59766.
->
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
->
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
->
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel unless it is required by
+the filesystem during boot time.
 
-Upon re-review, this fix still looks good to me, revert is not necessary.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a unicode subsystem layer between the filesystems and the
+utf8 module.
+This layer will then load the module whenever any filesystem that
+needs unicode is mounted or utf8 can also be built into the kernel incase
+it is required by the filesystem during boot time.
 
-> ---
->  drivers/nvdimm/btt_devs.c | 18 +++++-------------
->  1 file changed, 5 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/nvdimm/btt_devs.c b/drivers/nvdimm/btt_devs.c
-> index 05feb97e11ce..995573905dfb 100644
-> --- a/drivers/nvdimm/btt_devs.c
-> +++ b/drivers/nvdimm/btt_devs.c
-> @@ -191,15 +191,14 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
->                 return NULL;
->
->         nd_btt->id = ida_simple_get(&nd_region->btt_ida, 0, 0, GFP_KERNEL);
-> -       if (nd_btt->id < 0)
-> -               goto out_nd_btt;
-> +       if (nd_btt->id < 0) {
-> +               kfree(nd_btt);
-> +               return NULL;
-> +       }
->
->         nd_btt->lbasize = lbasize;
-> -       if (uuid) {
-> +       if (uuid)
->                 uuid = kmemdup(uuid, 16, GFP_KERNEL);
-> -               if (!uuid)
-> -                       goto out_put_id;
-> -       }
->         nd_btt->uuid = uuid;
->         dev = &nd_btt->dev;
->         dev_set_name(dev, "btt%d.%d", nd_region->id, nd_btt->id);
-> @@ -213,13 +212,6 @@ static struct device *__nd_btt_create(struct nd_region *nd_region,
->                 return NULL;
->         }
->         return dev;
-> -
-> -out_put_id:
-> -       ida_simple_remove(&nd_region->btt_ida, nd_btt->id);
-> -
-> -out_nd_btt:
-> -       kfree(nd_btt);
-> -       return NULL;
->  }
->
->  struct device *nd_btt_create(struct nd_region *nd_region)
-> --
-> 2.31.1
->
+Currently, only UTF-8 encoding is supported but if any other encodings
+are supported in future then the layer file would be responsible for
+loading the desired encoding module.
+
+1st patch in the series resolves the warning reported by kernel test
+robot by using strscpy instead of strncpy.
+
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 2nd and 3rd patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
+
+Last patch in the series adds the layer and utf8 module and also uses
+static calls which gives performance benefit when compared to indirect
+calls using function pointers.
+
+---
+Changes in v8
+  - Improve the commit message of patch 1 to decribe about how
+    overly-long strings should be handled.
+  - Improve the commit messages in patches 2/3/4 to better understand
+    the use of built-in option.
+  - Improve the help text in Kconfig for avoiding contradictory
+    statements.
+  - Make spinlock definition static.
+  - Use int instead of bool to avoid gcc warning.
+  - Add a comment for decribing why we are using
+    try_then_request_module() instead of request_module()
+
+Changes in v7
+  - Update the help text in Kconfig
+  - Handle the unicode_load_static_call function failure by decrementing
+    the reference.
+  - Correct the code for handling built-in utf8 option as well.
+  - Correct the synchronization for accessing utf8mod.
+  - Make changes to unicode_unload() for handling the situation where
+    utf8mod != NULL and um == NULL.
+
+Changes in v6
+  - Add spinlock to protect utf8mod and avoid NULL pointer
+    dereference.
+  - Change the static call function names for being consistent with
+    kernel coding style.
+  - Merge the unicode_load_module function with unicode_load as it is
+    not really needed to have a separate function.
+  - Use try_then_module_get instead of module_get to avoid loading the
+    module even when it is already loaded.
+  - Improve the commit message.
+
+Changes in v5
+  - Remove patch which adds NULL check in ext4/super.c and f2fs/super.c
+    before calling unicode_unload().
+  - Rename global variables and default static call functions for better
+    understanding
+  - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+    enabled provided UNICODE_UTF8 is enabled.  
+  - Improve the documentation for Kconfig
+  - Improve the commit message.
+ 
+Changes in v4
+  - Return error from the static calls instead of doing nothing and
+    succeeding even without loading the module.
+  - Remove the complete usage of utf8_ops and use static calls at all
+    places.
+  - Restore the static calls to default values when module is unloaded.
+  - Decrement the reference of module after calling the unload function.
+  - Remove spinlock as there will be no race conditions after removing
+    utf8_ops.
+
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
+
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
+
+Shreeya Patel (4):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
+
+ fs/ext4/hash.c                             |   2 +-
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/super.c                            |   6 +-
+ fs/f2fs/dir.c                              |  12 +-
+ fs/f2fs/super.c                            |   6 +-
+ fs/libfs.c                                 |   6 +-
+ fs/unicode/Kconfig                         |  26 ++-
+ fs/unicode/Makefile                        |   5 +-
+ fs/unicode/unicode-core.c                  | 175 +++++++++++++++++++++
+ fs/unicode/{utf8-core.c => unicode-utf8.c} |  98 +++++++-----
+ fs/unicode/utf8-selftest.c                 |   8 +-
+ include/linux/unicode.h                    | 100 ++++++++++--
+ 12 files changed, 374 insertions(+), 82 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ rename fs/unicode/{utf8-core.c => unicode-utf8.c} (57%)
+
+-- 
+2.30.2
+
