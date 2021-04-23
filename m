@@ -2,195 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630503696B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40793696B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhDWQOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
+        id S231272AbhDWQP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbhDWQOQ (ORCPT
+        with ESMTP id S229945AbhDWQPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:14:16 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01A8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:13:38 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id l17so18332660oil.11
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:13:38 -0700 (PDT)
+        Fri, 23 Apr 2021 12:15:25 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2828AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:14:49 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id p6so42258493wrn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:14:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VbXYKADdmwOH79L6ViVXTU8ZSxeTDRgadHJidgsTXTM=;
-        b=oWoxobZWaNhkJ4ZKI8Hr/eMLcZAgzZqlE8Kgg4FItYE4OZ7J+8m4F2VTX5vPoVSA3K
-         FdPEVmxBPvlD73fmPf0qTXMl/TNPv8QXT+qkL0NCa55U7haBFLcodjrTCRWRjNWjFX83
-         acAstwZExSckSRqfGmPAck/PtMEpLEK3oaHg3UjD5U1ni0VP+NMHbbwMeF9lWxZp/BP5
-         tCSoJC4PQM3dRiPz94F0vTRhUuJbZ+wothIRvjtcKXl0DZxaXf/zxCFDDBH/2x4GNmIg
-         Cx0t5aPTpU87rRGLz2PNFXEZg8uyLss1TKjkFuCvmlYX+tAeqRWajxxR5oLKKTVpYzab
-         XiMg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=T8nzkoqSamRPp7A4QaxPSAbpm6f1NH1k+4r5xkN7k04=;
+        b=abtA2faEaJkNTEFp3QAeOTBdNOk5s0ZXzo8UrPxrVa5L2YTQ4urnKRIYxMr2XG7YT/
+         enWjNzDEg8wXcomSU8tD3W4N9ZpIthJNPxL4Ium45fbdOLhz8TgflrWLWd9ecDTU4Dgf
+         hMLcNhfLpXtvwSNgO26vtgisgL8AY/223MNB8MLR/dtGUIv17vqBHdlqSsdpAcLQUxXg
+         ihz0l0jyYITX6UN+ccAO7vk++/hjdQTd7Pr3bCBubMRp1KwFuaJGhy2Sy9velF2DQyYz
+         M6x+HQ4vdR/0LuAVAj/1Vi9Xc6FDIOkq7MumhQ0oZdEybtCdDhYXzclIK5KDXdF2KhXE
+         XDhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VbXYKADdmwOH79L6ViVXTU8ZSxeTDRgadHJidgsTXTM=;
-        b=JDyXGkxwoP7h5vFq3HDkDJ03iqa5z5+qd4NCN+CB7FLvTU59/Fignv1D6zh/B3dTGh
-         1B/SF+mwhT+vvID//2ItxI4lbEfmez7usjeObKDFxfLlzJafHakhBbEx1jYVZ6XAXLTw
-         WGt0PUOvsBgm8DrcQ8xI5i8RK8yHtV4PB/slCY5Rfa9yOyUB9ELhPTNh0DKn4cBRxZqo
-         /RvTnJOQoIagfC4C94P4EMJaab23dNFeguqAYFGktko1XFhoTG1LBlut9mdaUi2P3dm7
-         xvZ/UkyeH8ZUXI8J3x5KlLzzlzsViGRfg5rq6nXtjbbXAoRE3/ioKhMk7Q4jy+DjsLGG
-         qurw==
-X-Gm-Message-State: AOAM530fnLATl+NVFMjEDmoYyXCGERCpfFFZEhTOE2JaiNHPy6ajkC6O
-        FRMbM3v5q4tHCWgidffpF5cQBw==
-X-Google-Smtp-Source: ABdhPJzRUZLe7+UOtveCxOLUUqc//CIMtkno3xigvUsDgjkUmuug6YblE/W99gqm8UKVoUIvUrD0Iw==
-X-Received: by 2002:aca:f553:: with SMTP id t80mr4455681oih.149.1619194418219;
-        Fri, 23 Apr 2021 09:13:38 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w2sm1272005oov.23.2021.04.23.09.13.36
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=T8nzkoqSamRPp7A4QaxPSAbpm6f1NH1k+4r5xkN7k04=;
+        b=iOWW9qKkucqDdyVLkH4s8F8r9rxldmHAYG5SzoQFQa0OunOaO82fHlKsvK1asyAWru
+         xyn4SHKcOm3MhkksTDwa5uTb0CpJjEWSkJelo/FtP5f14a+wHPodgannYFykAa0MhmK2
+         teSNTv/gACVfx6bHlcy6MLuiQin/Efio4TYJAy8oLF+vmhQOHqOoi6tv0G+8LzBLWLFL
+         VS2uW78K4R+hg1oOWgKTzvE+EKI4PqxUaA22qf1TyDJpHgjDycvIyFhI7kzT5Eur7sr9
+         bkKLGEmJ+jA6swo70p9Zict+Ojon+q755h09OYeFiPLhaTkxX0LNL22p07N4kfEmrnoF
+         sK1Q==
+X-Gm-Message-State: AOAM533Vl/rFQ+v+uxhhzrHgQrzpWnc3v6BGna2kCQHO7nqegACyVekr
+        R+zraI3Yc0PGJGIlFt+nCtRbmA==
+X-Google-Smtp-Source: ABdhPJzrZUfQIJER3cppKNrzl0/h+eiAicNwnFjSC3gGqjz7QPVXsA1FtVPHu/SPOlbl/23ub6yPDw==
+X-Received: by 2002:adf:e381:: with SMTP id e1mr5494207wrm.323.1619194487661;
+        Fri, 23 Apr 2021 09:14:47 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id f8sm8337953wmc.8.2021.04.23.09.14.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 09:13:37 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 11:13:35 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 25/27] drm/bridge: ti-sn65dsi86: Don't read EDID blob
- over DDC
-Message-ID: <YILyL+V4tgNX8mck@builder.lan>
-References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.25.I9330684c25f65bb318eff57f0616500f83eac3cc@changeid>
+        Fri, 23 Apr 2021 09:14:47 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 16:14:44 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, lukasz.luba@arm.com,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
+Message-ID: <YILydL1QDxvuiFde@google.com>
+References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+ <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+ <YHg7pfGKhzlMrXqC@google.com>
+ <20210422153644.GA316798@e124901.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.25.I9330684c25f65bb318eff57f0616500f83eac3cc@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422153644.GA316798@e124901.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+On Thursday 22 Apr 2021 at 16:36:44 (+0100), Vincent Donnefort wrote:
+> > > As used in the hot-path, the efficient table is a lookup table, generated
+> > > dynamically when the perf domain is created. The complexity of searching
+> > > a performance state is hence changed from O(n) to O(1). This also
+> > > speeds-up em_cpu_energy() even if no inefficient OPPs have been found.
+> > 
+> > Interesting. Do you have measurements showing the benefits on wake-up
+> > duration? I remember doing so by hacking the wake-up path to force tasks
+> > into feec()/compute_energy() even when overutilized, and then running
+> > hackbench. Maybe something like that would work for you?
+> > 
+> > Just want to make sure we actually need all that complexity -- while
+> > it's good to reduce the asymptotic complexity, we're looking at a rather
+> > small problem (max 30 OPPs or so I expect?), so other effects may be
+> > dominating. Simply skipping inefficient OPPs could be implemented in a
+> > much simpler way I think.
+> > 
+> > Thanks,
+> > Quentin
+> 
+> On the Pixel4, I used rt-app to generate a task whom duty cycle is getting
+> higher for each phase. Then for each rt-app task placement, I measured how long
+> find_energy_efficient_cpu() took to run. I repeated the operation several
+> times to increase the count. Here's what I've got: 
+> 
+> ┌────────┬─────────────┬───────┬────────────────┬───────────────┬───────────────┐
+> │ Phase  │ duty-cycle  │  CPU  │     w/o LUT    │    w/  LUT    │               │
+> │        │             │       ├────────┬───────┼───────┬───────┤      Diff     │
+> │        │             │       │ Mean   │ count │ Mean  │ count │               │
+> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │   0    │    12.5%    │ Little│ 10791  │ 3124  │ 10657 │ 3741  │  -1.2% -134ns │
+> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │   1    │    25%      │  Mid  │ 2924   │ 3097  │ 2894  │ 3740  │  -1%  -30ns   │
+> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │   2    │    37.5%    │  Mid  │ 2207   │ 3104  │ 2162  │ 3740  │  -2%  -45ns   │
+> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │   3    │    50%      │  Mid  │ 1897   │ 3119  │ 1864  │ 3717  │  -1.7% -33ns  │
+> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │        │             │  Mid  │ 1700   │  396  │ 1609  │ 1232  │  -5.4% -91ns  │
+> │   4    │    62.5%    ├───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │        │             │  Big  │ 1187   │ 2729  │ 1129  │ 2518  │  -4.9% -58ns  │
+> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
+> │   5    │    75%      │  Big  │  984   │ 3124  │  900  │ 3693  │  -8.5% -84ns  │
+> └────────┴─────────────┴───────┴────────┴───────┴───────┴───────┴───────────────┘
 
-> This is really just a revert of commit 58074b08c04a ("drm/bridge:
-> ti-sn65dsi86: Read EDID blob over DDC"), resolving conflicts.
-> 
-> The old code failed to read the EDID properly in a very important
-> case: before the bridge's pre_enable() was called. The way things need
-> to work:
-> 1. Read the EDID.
-> 2. Based on the EDID, decide on video settings and pixel clock.
-> 3. Enable the bridge w/ the desired settings.
-> 
-> The way things were working:
-> 1. Try to read the EDID but fail; fall back to hardcoded values.
-> 2. Based on hardcoded values, decide on video settings and pixel clock.
-> 3. Enable the bridge w/ the desired settings.
-> 4. Try again to read the EDID, it works now!
-> 5. Realize that the hardcoded settings weren't quite right.
-> 6. Disable / reenable the bridge w/ the right settings.
-> 
-> The reasons for the failures were twofold:
-> a) Since we never ran the bridge chip's pre-enable then we never set
->    the bit to ignore HPD. This meant the bridge chip didn't even _try_
->    to go out on the bus and communicate with the panel.
-> b) Even if we fixed things to ignore HPD, the EDID still wouldn't read
->    if the panel wasn't on.
-> 
-> Instead of reverting the code, we could fix it to set the HPD bit and
-> also power on the panel. However, it also works nicely to just let the
-> panel code read the EDID. Now that we've split the driver up we can
-> expose the DDC AUX channel bus to the panel node. The panel can take
-> charge of reading the EDID.
-> 
-> NOTE: in order for things to work, anyone that needs to read the EDID
-> will need to add something that looks like this to their panel in the
-> dts:
->   ddc-i2c-bus = <&sn65dsi86_bridge>;
-> 
-> Presumably it's OK to land this without waiting for users to add the
-> dts property since the EDID reading was a bit broken anyway, was
-> "recently" added, and we know we must have the fallback mode to use
-> (since the EDID reading was a bit broken).
-> 
-> Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Thanks for that. Do you have the stddev handy?
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Notice:
+> 
+>   * The CPU column describes which CPU ran the find_energy_efficient()
+>     function.
+> 
+>   * I modified my patch so that no inefficient OPPs are reported. This is to
+>     have a fairer comparison between the original table walk and the lookup
+>     table.
 
-Regards,
-Bjorn
+You mean to avoid the impact of the frequency selection itself? Maybe
+pinning the frequencies in the cpufreq policy could do?
 
-> ---
 > 
-> (no changes since v1)
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 ----------------------
->  1 file changed, 22 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 8253098bcdbf..62904dfdee0a 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -125,7 +125,6 @@
->   * @connector:    Our connector.
->   * @host_node:    Remote DSI node.
->   * @dsi:          Our MIPI DSI source.
-> - * @edid:         Detected EDID of eDP panel.
->   * @refclk:       Our reference clock.
->   * @panel:        Our panel.
->   * @enable_gpio:  The GPIO we toggle to enable the bridge.
-> @@ -156,7 +155,6 @@ struct ti_sn65dsi86 {
->  	struct drm_dp_aux		aux;
->  	struct drm_bridge		bridge;
->  	struct drm_connector		connector;
-> -	struct edid			*edid;
->  	struct device_node		*host_node;
->  	struct mipi_dsi_device		*dsi;
->  	struct clk			*refclk;
-> @@ -404,24 +402,6 @@ connector_to_ti_sn65dsi86(struct drm_connector *connector)
->  static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->  {
->  	struct ti_sn65dsi86 *pdata = connector_to_ti_sn65dsi86(connector);
-> -	struct edid *edid = pdata->edid;
-> -	int num, ret;
-> -
-> -	if (!edid) {
-> -		pm_runtime_get_sync(pdata->dev);
-> -		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
-> -		pm_runtime_put_autosuspend(pdata->dev);
-> -	}
-> -
-> -	if (edid && drm_edid_is_valid(edid)) {
-> -		ret = drm_connector_update_edid_property(connector, edid);
-> -		if (!ret) {
-> -			num = drm_add_edid_modes(connector, edid);
-> -			if (num)
-> -				return num;
-> -		}
-> -	}
-> -
->  	return drm_panel_get_modes(pdata->panel, connector);
->  }
->  
-> @@ -1330,8 +1310,6 @@ static void ti_sn_bridge_remove(struct auxiliary_device *adev)
->  		mipi_dsi_device_unregister(pdata->dsi);
->  	}
->  
-> -	kfree(pdata->edid);
-> -
->  	drm_bridge_remove(&pdata->bridge);
->  
->  	of_node_put(pdata->host_node);
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
+>   * I removed from the table results that didn't have enough count to be
+>     statistically significant.
+
+
+Anyways, this looks like a small but consistent gain throughout, so it's a
+win for the LUT :)
+
+Thanks,
+Quentin
