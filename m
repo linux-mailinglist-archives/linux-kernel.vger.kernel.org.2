@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6B03694C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9C63694CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242619AbhDWOco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:32:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46860 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhDWOck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:32:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B51DB133;
-        Fri, 23 Apr 2021 14:32:02 +0000 (UTC)
-Date:   Fri, 23 Apr 2021 16:32:05 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Calvin Walton <calvin.walton@kepstin.ca>,
-        Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wei.huang2@amd.com, aros@gmx.com, rui.zhang@intel.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <YILaZTOG9EPaLnJ8@zn.tnic>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop>
- <20210420080701.GA2326@zn.tnic>
- <20210420131541.GA388877@chenyu-desktop>
- <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
- <20210420143754.GA390118@chenyu-desktop>
- <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
- <20210423121607.GA426003@chenyu-desktop>
- <20210423121934.GC24710@zn.tnic>
- <20210423133430.GA426650@chenyu-desktop>
+        id S242540AbhDWOeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:34:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231345AbhDWOeC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 10:34:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619188406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TjxYyjr3+n/FgdeoX21aU0rXvOBSEI7Z5zCaxLkZK4Q=;
+        b=QrAZmNEW3ZVXZ9IzpPmdVtwsVeWGe3I8qGywGMsjH3ASKsVetnxXAEpwqO5yspLCG/OXlP
+        05+Jazh0DHEUMhIcEuy4f7dnn5tytfeSFSdZUNf4eTGClfm5/9WsHMv89cO0eWOonqsNGT
+        7qIPBHUoUu35fC1DKBth6XgCSLoqQ/8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-AceqMeyuOfiNiPlJDe3uCw-1; Fri, 23 Apr 2021 10:33:24 -0400
+X-MC-Unique: AceqMeyuOfiNiPlJDe3uCw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F459839A4C;
+        Fri, 23 Apr 2021 14:33:22 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E3B2960C25;
+        Fri, 23 Apr 2021 14:33:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210423140625.GC235567@casper.infradead.org>
+References: <20210423140625.GC235567@casper.infradead.org> <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk> <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210423133430.GA426650@chenyu-desktop>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3153357.1619188393.1@warthog.procyon.org.uk>
+Date:   Fri, 23 Apr 2021 15:33:14 +0100
+Message-ID: <3153358.1619188394@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 09:34:30PM +0800, Chen Yu wrote:
-> I see, I'll add Calvin's SOB here. Previously I thought the 'From' field might
-> be enough to indicate the Author, but it seems to not be the case.
+Matthew Wilcox <willy@infradead.org> wrote:
 
-The From: field is used by git to take the author but that's not the
-problem. You need the author her/himself to sign off on the work - no
-one else can do that.
+> On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
+> Now, is this important?  There are no filesystems which do I/O to THPs
+> today.  So it's not possible to pick up the fact that it doesn't work,
+> and I hope to have the page cache fixed soon.  And fixing this now
+> will create more work later as part of fixing the page cache.  But I
+> wouldn't feel right not mentioning this problem ...
 
-You can refresh on that here:
+So I can leave the code as-is for the moment and it can be fixed with your
+patches?
 
-Documentation/process/submitting-patches.rst
+David
 
-> Got it. The off_t was derived from old code in this file from get_msr() and alike,
-> let me convert this return value to unsigned int.
-
-See my reply to Calvin - it needs to by off_t after all.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
