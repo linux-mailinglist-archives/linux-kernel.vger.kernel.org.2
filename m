@@ -2,68 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B009B369583
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3A9369584
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243650AbhDWPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:02:26 -0400
-Received: from 8bytes.org ([81.169.241.247]:36064 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241174AbhDWPBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:01:44 -0400
-Received: from cap.home.8bytes.org (p5b0069de.dip0.t-ipconnect.de [91.0.105.222])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id C7A3C293;
-        Fri, 23 Apr 2021 17:01:05 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joro@8bytes.org, Joerg Roedel <jroedel@suse.de>,
-        stable@vger.kernel.org
-Subject: [PATCH v3] crypto: ccp: Annotate SEV Firmware file names
-Date:   Fri, 23 Apr 2021 17:00:52 +0200
-Message-Id: <20210423150052.25080-1-joro@8bytes.org>
-X-Mailer: git-send-email 2.31.1
+        id S243668AbhDWPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:02:32 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38722 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243522AbhDWPBr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:01:47 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id C3FCF1F43D22
+Subject: Re: [PATCH v1 2/2] iommu/tegra-smmu: Revert workaround that was
+ needed for Nyan Big Chromebook
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210328233256.20494-1-digetx@gmail.com>
+ <20210328233256.20494-2-digetx@gmail.com>
+ <20210401085549.GA31146@Asurada-Nvidia>
+ <50a7e4c7-0e72-534a-a317-366e455213c1@gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <d01ccde4-5fa9-2aa7-c28b-b3899cc54c54@collabora.com>
+Date:   Fri, 23 Apr 2021 16:01:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <50a7e4c7-0e72-534a-a317-366e455213c1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On 02/04/2021 15:40, Dmitry Osipenko wrote:
+> 01.04.2021 11:55, Nicolin Chen пишет:
+>> On Mon, Mar 29, 2021 at 02:32:56AM +0300, Dmitry Osipenko wrote:
+>>> The previous commit fixes problem where display client was attaching too
+>>> early to IOMMU during kernel boot in a multi-platform kernel configuration
+>>> which enables CONFIG_ARM_DMA_USE_IOMMU=y. The workaround that helped to
+>>> defer the IOMMU attachment for Nyan Big Chromebook isn't needed anymore,
+>>> revert it.
+>>
+>> Sorry for the late reply. I have been busy with downstream tasks.
+>>
+>> I will give them a try by the end of the week. Yet, probably it'd
+>> be better to include Guillaume also as he has the Nyan platform.
+>>
+> 
+> Indeed, thanks. Although, I'm pretty sure that it's the same issue which
+> I reproduced on Nexus 7.
+> 
+> Guillaume, could you please give a test to these patches on Nyan Big?
+> There should be no EMEM errors in the kernel log with this patches.
+> 
+> https://patchwork.ozlabs.org/project/linux-tegra/list/?series=236215
 
-Annotate the firmware files CCP might need using MODULE_FIRMWARE().
-This will get them included into an initrd when CCP is also included
-there. Otherwise the CCP module will not find its firmware when loaded
-before the root-fs is mounted.
-This can cause problems when the pre-loaded SEV firmware is too old to
-support current SEV and SEV-ES virtualization features.
+So sorry for the very late reply.  I have tried the patches but
+hit some issues on linux-next, it's not reaching a login prompt
+with next-20210422.  So I then tried with next-20210419 which
+does boot but shows the IOMMU error:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- drivers/crypto/ccp/sev-dev.c | 4 ++++
- 1 file changed, 4 insertions(+)
+<6>[    2.995341] tegra-dc 54200000.dc: Adding to iommu group 1
+<4>[    3.001070] Failed to attached device 54200000.dc to IOMMU_mapping  
 
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index cb9b4c4e371e..675ff925a59d 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -42,6 +42,10 @@ static int psp_probe_timeout = 5;
- module_param(psp_probe_timeout, int, 0644);
- MODULE_PARM_DESC(psp_probe_timeout, " default timeout value, in seconds, during PSP device probe");
- 
-+MODULE_FIRMWARE("amd/amd_sev_fam17h_model0xh.sbin"); /* 1st gen EPYC */
-+MODULE_FIRMWARE("amd/amd_sev_fam17h_model3xh.sbin"); /* 2nd gen EPYC */
-+MODULE_FIRMWARE("amd/amd_sev_fam19h_model0xh.sbin"); /* 3rd gen EPYC */
-+
- static bool psp_dead;
- static int psp_timeout;
- 
--- 
-2.31.1
+  https://lava.collabora.co.uk/scheduler/job/3570052#L1120
 
+The branch I'm using with the patches applied can be found here:
+
+  https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210419-nyan-big-drm-read/
+
+Hope this helps, let me know if you need anything else to be
+tested.
+
+Best wishes,
+Guillaume
