@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F36B368A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA439368A4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240002AbhDWBN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        id S240117AbhDWBQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWBN4 (ORCPT
+        with ESMTP id S240006AbhDWBP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:13:56 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AF2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:13:19 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id u20so16128908qku.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:13:19 -0700 (PDT)
+        Thu, 22 Apr 2021 21:15:58 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DD3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:15:22 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id m9so33910679wrx.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 18:15:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cyx9PZhhSqw92stXaMId3qxBJwezQqU3jTPjAxVlHlk=;
-        b=mgdTLS5W8PQoNS/dXi6oYepC4uoCembez+MudJ0h+KNNWTwpFw1pwUm8ZDNjGtBYk4
-         I9qHtwvaD3FG2VGm3M6GovfzgKhq27EOw2f8sGVqyD6N3dMQVxLVDLOxPMgZs7Z/mEUW
-         tsKee86jzEscppvMZ1Yx3HeM214Tq9mKQTkSMUA+sEGB3UM7DVXTUCxK33YAEv+16OKf
-         0GdsESez/v+Ln92dv1DTXMw1iAgsw6335n5PgG42tBlLOqRwxTrnJ5Z8nitCCNOvMLru
-         pYKf5YR73dtORqGwHzHR/bPFqGWGhzzeZmb8LCVb5TiVp0Z5uM37LrsJoLx7PZOi8z7F
-         UIuQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6tnmCzU5o1RaGCQyagi+jERPl52+lDaOeiTTMhHRcJo=;
+        b=mulAFomOqY5tyfdHYoYN7oJbb3m5RLiFBL2SUjgQ3wvwi0uvACFvR5Iyesc5OTtfCT
+         l2YwGARKcfSHDmaG/gbJLJeRcpgkMMmGnfRghUXaDcPeK99itLC/TdR7rq/51D5kxk2X
+         SdoKa5mtk4hqAmamI5XdpmQoeKBvGGlABrLhI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cyx9PZhhSqw92stXaMId3qxBJwezQqU3jTPjAxVlHlk=;
-        b=E5tehk28l3jctcETp2RCCFNqXs0X6prbyhCBH4VBZEYF5SgCUf2PyoImCtuewkpQrE
-         qzDs00vSTPt0xHHTkApUPyqOewZvI9eNt6Zj9RdHm50Xega8NMXMjePx51FbE3B5eXri
-         xJtf//oXLskX5RRkR8QZIb1vAPsHsdwjQw65K01kNOSzvxcV1yGZa47g8XZ7NXhswRy2
-         bk8H0BQYc2fQvswL3Ay7y35iVgSfdHNJ/tiH6Zn8LXbBjC8OQ5MyLUmoajtUq6jLDju+
-         +BYdYvsS/xPQIIBEksh6yQ2FSDRSd7R9Jykm9eKUhNAn9dd81fWn/+MyQd+Qt9XZ1wAh
-         K+0Q==
-X-Gm-Message-State: AOAM5328tvYqBB9thzbBxZDj8bSNBIN3l5c3n/b8BPtxwH07XudkGsK7
-        uyS5Sz15afKwWnLwodPqc5En9qO5RwkSp1bj2/c=
-X-Google-Smtp-Source: ABdhPJwJH1UEhJGG3Lec9f5cL3X8GJPl5O+T7Hkxm277gfreNh5f9baH0Kl+KtZN9Nlb/WaapdjLW510gb5y7s+bRCM=
-X-Received: by 2002:a37:de14:: with SMTP id h20mr1613385qkj.34.1619140398678;
- Thu, 22 Apr 2021 18:13:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6tnmCzU5o1RaGCQyagi+jERPl52+lDaOeiTTMhHRcJo=;
+        b=TBgXkRv4huqvmkVtCGjsHJTzWcbJTK3kR/2U2z4DHctRVke22Lny/g8Ihl3TCxI65l
+         JvnLMaHeELJc9zN1Pa0M/aUHwQ74TIxBPGr0I3Y1AdX8WbCiwcxYesaFNst3VJEiWF0Y
+         GqpYXLSNt79G/DIHoptAKM8xomd9wA2hPUqmATiXSYHcDnUDpln7L12BBPRmWUGrvq4U
+         d0Fu12+BwCmRYJa9KV4TFkhYIs1Qq1Xal0TehfpaWxAZveaJaxNEqF+Go+S7ttCSnPHh
+         FgoU94QleYQhiP3Kt8mA2mJzazQgJan5hXKnLbu8zGf22L/W3qZ+ELFJDjrxfvX94d9d
+         fxwg==
+X-Gm-Message-State: AOAM533q7XV+Aamx/jw+7IzjKm+Gi92ql9jaKCoFQSr55X42WUbLFVsa
+        9FjRunubxZNSrp//BXGWKM37Vg==
+X-Google-Smtp-Source: ABdhPJy33ed/7fcB3eBdze/DWHCU+UMqWFGSs9QaNUuie4uTYVwmdcBwWj9Xc8WZSXE5o4aUjbLzHg==
+X-Received: by 2002:a5d:49ca:: with SMTP id t10mr1247357wrs.395.1619140520749;
+        Thu, 22 Apr 2021 18:15:20 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:e4b7:67ca:7609:a533])
+        by smtp.gmail.com with ESMTPSA id a13sm6709340wrs.78.2021.04.22.18.15.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 18:15:20 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@google.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next 0/2] Implement BPF formatted output helpers with bstr_printf
+Date:   Fri, 23 Apr 2021 03:15:15 +0200
+Message-Id: <20210423011517.4069221-1-revest@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 MIME-Version: 1.0
-References: <20210422195405.4053917-1-ndesaulniers@google.com> <87lf99zzl3.fsf@dja-thinkpad.axtens.net>
-In-Reply-To: <87lf99zzl3.fsf@dja-thinkpad.axtens.net>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Fri, 23 Apr 2021 11:13:07 +1000
-Message-ID: <CAOSf1CGoN5R0LUrU=Y=UWho1Z_9SLgCX8s3SbFJXwJXc5BYz4A@mail.gmail.com>
-Subject: Re: [PATCH] powerpc/powernv/pci: remove dead code from !CONFIG_EEH
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 9:09 AM Daniel Axtens <dja@axtens.net> wrote:
->
-> Hi Nick,
->
-> > While looking at -Wundef warnings, the #if CONFIG_EEH stood out as a
-> > possible candidate to convert to #ifdef CONFIG_EEH, but it seems that
-> > based on Kconfig dependencies it's not possible to build this file
-> > without CONFIG_EEH enabled.
->
-> This seemed odd to me, but I think you're right:
->
-> arch/powerpc/platforms/Kconfig contains:
->
-> config EEH
->         bool
->         depends on (PPC_POWERNV || PPC_PSERIES) && PCI
->         default y
->
-> It's not configurable from e.g. make menuconfig because there's no prompt.
-> You can attempt to explicitly disable it with e.g. `scripts/config -d EEH`
-> but then something like `make oldconfig` will silently re-enable it for
-> you.
->
-> It's been forced on since commit e49f7a9997c6 ("powerpc/pseries: Rivet
-> CONFIG_EEH for pSeries platform") in 2012 which fixed it for
-> pseries. That moved out from pseries to pseries + powernv later on.
->
-> There are other cleanups in the same vein that could be made, from the
-> Makefile (which has files only built with CONFIG_EEH) through to other
-> source files. It looks like there's one `#ifdef CONFIG_EEH` in
-> arch/powerpc/platforms/powernv/pci-ioda.c that could be pulled out, for
-> example.
->
-> I think it's probably worth trying to rip out all of those in one patch?
+Our formatted output helpers are currently implemented with
+snprintf-like functions which take arguments as va_list but the types
+stored in a va_list need to be known at compilation time which causes
+problems when dealing with arguments from the BPF world that are always
+u64 but considered differently depending on the format specifiers they
+are associated with at runtime.
 
-The change in commit e49f7a9997c6 ("powerpc/pseries: Rivet CONFIG_EEH
-for pSeries platform") never should have been made.
+This series replaces snprintf usages with bstr_printf calls. This lets
+us construct a binary representation of arguments in bpf_printf_prepare
+at runtime that matches an ABI that is neither arch nor compiler
+specific.
 
-There's no inherent reason why EEH needs to be enabled and forcing it
-on is (IMO) a large part of why EEH support is the byzantine
-clusterfuck that it is. One of the things I was working towards was
-allowing pseries and powernv to be built with !CONFIG_EEH since that
-would help define a clearer boundary between what is "eeh support" and
-what is required to support PCI on the platform. Pseries is
-particularly bad for this since PAPR says the RTAS calls needed to do
-a PCI bus reset are part of the EEH extension, but there's non-EEH
-reasons why you might want to use those RTAS calls. The PHB reset that
-we do when entering a kdump kernel is a good example since that uses
-the same RTAS calls, but it has nothing to do with the EEH recovery
-machinery enabled by CONFIG_EEH.
+This solves a bug reported by Rasmus Villemoes that would mangle
+arguments on 32 bit machines.
 
-I was looking into that largely because people were considering using
-OPAL for microwatt platforms. Breaking the assumption that
-powernv==EEH support is one of the few bits of work required to enable
-that, but even if you don't go down that road I think everyone would
-be better off if you kept a degree of separation between the two.
+Florent Revest (2):
+  seq_file: Add a seq_bprintf function
+  bpf: Implement formatted output helpers with bstr_printf
+
+ fs/seq_file.c            |  18 ++++
+ include/linux/bpf.h      |  22 +----
+ include/linux/seq_file.h |   4 +
+ init/Kconfig             |   1 +
+ kernel/bpf/helpers.c     | 188 +++++++++++++++++++++------------------
+ kernel/bpf/verifier.c    |   2 +-
+ kernel/trace/bpf_trace.c |  34 +++----
+ 7 files changed, 137 insertions(+), 132 deletions(-)
+
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
