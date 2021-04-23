@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07138368BA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80817368BAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240210AbhDWDhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:37:48 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16152 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWDhr (ORCPT
+        id S240190AbhDWDmu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Apr 2021 23:42:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58176 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhDWDms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:37:47 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FRKdq6wF0zpbFn;
-        Fri, 23 Apr 2021 11:34:07 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 23 Apr
- 2021 11:37:06 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: set prefree as free segments after clear
- prefree segments
-To:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
-CC:     <jaegeuk@kernel.org>, <chao@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-References: <AIMAXgAnDv8vtlWxuL6mq4q3.3.1619145657480.Hmail.frank.li@vivo.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <3323e5c0-cd52-528a-6a57-5982db05a4bf@huawei.com>
-Date:   Fri, 23 Apr 2021 11:37:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 22 Apr 2021 23:42:48 -0400
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <chia-lin.kao@canonical.com>)
+        id 1lZmhn-0005nL-Kh
+        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 03:42:11 +0000
+Received: by mail-wr1-f72.google.com with SMTP id 32-20020adf84230000b029010705438fbfso9384021wrf.21
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:42:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Q8lvXaeGOL2ljIFclzGPAA+7PF2oGf25ArF47SyOYRM=;
+        b=DVpEHNxYpdY3zyd0a40YsLPNMfTTkRq1aAa3kmac22x+OHK13rM+9ugCNXkvx0LiOP
+         6t3vTzVovAfHOB8IUP/jShPYuZuM2STEiQyxt97uV1rrpXilaW0qTPq0IX11nfejAgg+
+         l/TXpwgcKMdOjMvFgXjKXWs9k3FaoHf76X2e0By+OirVS+hsU64zsyOOYdpcumIwYV11
+         JCbtp7ekv9wBV0WKnQ3rMD3k0EgH/1y/fZj0qCXbOrwH8p31nTs6RDSz1luc31l/eD3n
+         oyFcHqp7+KFwnl8h3CQRaXsYoa3kFTlxyuX1hx6dhTqPAj3O90rZRnTCBwbmqPadGeuY
+         +8gQ==
+X-Gm-Message-State: AOAM533/tT5gK8FLeRl/P73pbP1bh+Sud956a17R1XCCI3rIFjTKcR3O
+        37Il6mIuPJnyWGyhBtzdRSvmwyZFvxxeO+fZJTplfepcLdEOikwkb9820I40q0SLgQo7u1zxyNU
+        mT/JDd4nqA14leuLEE280Hs9dssfevuigBPvNu6b8LxtDdjV5R1RfC51TtA==
+X-Received: by 2002:a7b:c017:: with SMTP id c23mr3133430wmb.175.1619149331332;
+        Thu, 22 Apr 2021 20:42:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNlDwmWflqy+SayzrSbb1iZK2CutTxyvxMgBLZBnJG9zzkG9Kpnl5gkZ+xVwru25OVRRTPCIZfz4rlkuBlWxw=
+X-Received: by 2002:a7b:c017:: with SMTP id c23mr3133427wmb.175.1619149331123;
+ Thu, 22 Apr 2021 20:42:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AIMAXgAnDv8vtlWxuL6mq4q3.3.1619145657480.Hmail.frank.li@vivo.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+References: <20210420075406.64105-1-acelan.kao@canonical.com>
+ <CANn89iJLSmtBNoDo8QJ6a0MzsHjdLB0Pf=cs9e4g8Y6-KuFiMQ@mail.gmail.com>
+ <20210420122715.2066b537@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFv23Q=ywiuZp7Y=bj=SAZmDdAnanAXA954hdO3GpkjmDo=RpQ@mail.gmail.com> <c10a6c72-9db7-18c8-6b03-1f8c40b8fd87@gmail.com>
+In-Reply-To: <c10a6c72-9db7-18c8-6b03-1f8c40b8fd87@gmail.com>
+From:   AceLan Kao <acelan.kao@canonical.com>
+Date:   Fri, 23 Apr 2021 11:42:00 +0800
+Message-ID: <CAFv23QkUsTf5M0MoUEFNYeFCtShAn3EmA3u8vXVeZyJa20Bx=g@mail.gmail.com>
+Subject: Re: [PATCH] net: called rtnl_unlock() before runpm resumes devices
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yangtao,
+Heiner Kallweit <hkallweit1@gmail.com> 於 2021年4月22日 週四 下午3:09寫道：
+>
+> On 22.04.2021 08:30, AceLan Kao wrote:
+> > Yes, should add
+> >
+> > Fixes: 9474933caf21 ("igb: close/suspend race in netif_device_detach")
+> > and also
+> > Fixes: 9513d2a5dc7f ("igc: Add legacy power management support")
+> >
+> Please don't top-post. Apart from that:
+> If the issue was introduced with driver changes, then adding a workaround
+> in net core may not be the right approach.
+It's hard to say who introduces this issue, we probably could point
+our finger to below commit
+bd869245a3dc net: core: try to runtime-resume detached device in __dev_open
 
-On 2021/4/23 10:40, 李扬韬 wrote:
-> HI Chao,
->   
->>> For now, when do_checkpoint fails, the prefree bitmap is not cleared,
->>> but these segments are already in the free state. If these segments
->>> are used, the segments in use will be reset to the free state when
->>> f2fs_clear_prefree_segments is called next time.
->>>
->>> So move set_prefree_as_free_segments after clear_prefree_segments.
->>
->> That's not correct.
->>
->> /*
->>   * Should call f2fs_clear_prefree_segments after checkpoint is done.
->>   */
->> static void set_prefree_as_free_segments(struct f2fs_sb_info *sbi)
->>
->> Comments above set_prefree_as_free_segments() should have told you
->> the rule, otherwise if checkpoint failed, valid data in last valid
->> checkpoint could be corrupted after segment reuse.
+This calling path is not usual, in my case, the NIC is not plugged in
+any Ethernet cable,
+and we are doing networking tests on another NIC on the system. So,
+remove the rtnl lock from igb driver will affect other scenarios.
 
-Oh, it seems I misunderstood what the patch did, please ignore above
-comments.
-
-> 
-> For do_checkpoint sucess:
-> 
-> f2fs_write_checkpoint
-> ->f2fs_flush_sit_entries
->      ->set_prefree_as_free_segments
-> ->do_checkpoint
-> ->f2fs_clear_prefree_segments
-> 
-> 
-> Calling set_prefree_as_free_segments when do_checkpoint fails,
-> seems to be incorrect. I think clear free bitmap should be after
-> clear prefree bitmap.
-> 
-> For do_checkpoint fail:
-> 
-> f2fs_write_checkpoint
-> ->f2fs_flush_sit_entries
->      ->set_prefree_as_free_segments
-> ->do_checkpoint
-> ->f2fs_release_discard_addrs
-> 
-> The prefree bitmap is not cleared, but free bitmap is cleared，which means
-> we can use these segments that are marked as free. When the free segments
-> is used, the next f2fs_clear_prefree_segments will mark prefree as free again,
-> causing some problem.
-
-Okay, I can understand that.
-
-But the problem here is, after applying this patch, successful checkpoint
-may record wrong free_segment value:
-
-- f2fs_write_checkpoint
-  - f2fs_flush_sit_entries
-  - do_checkpoint
-   - ckpt->free_segment_count = cpu_to_le32(free_segments(sbi));
-  - f2fs_clear_prefree_segments
-   - __set_test_and_free
-    - free_i->free_segments++;
-
-I guess for the case of do_checkpoint() fails, maybe we can reset
-free segment to prefree status.
-
-Thoughts?
-
-Thanks,
-
-> 
-> With this patch, for do_checkpoint fail:
-> 
-> f2fs_write_checkpoint
-> ->f2fs_flush_sit_entries
-> ->do_checkpoint
-> ->f2fs_release_discard_addrs
-> 
-> At this time, we did not mark prefree as free segments, so these segments will not be used.
-> 
-> Thx
-> 
+>
+> > Jakub Kicinski <kuba@kernel.org> 於 2021年4月21日 週三 上午3:27寫道：
+> >>
+> >> On Tue, 20 Apr 2021 10:34:17 +0200 Eric Dumazet wrote:
+> >>> On Tue, Apr 20, 2021 at 9:54 AM AceLan Kao <acelan.kao@canonical.com> wrote:
+> >>>>
+> >>>> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> >>>>
+> >>>> The rtnl_lock() has been called in rtnetlink_rcv_msg(), and then in
+> >>>> __dev_open() it calls pm_runtime_resume() to resume devices, and in
+> >>>> some devices' resume function(igb_resum,igc_resume) they calls rtnl_lock()
+> >>>> again. That leads to a recursive lock.
+> >>>>
+> >>>> It should leave the devices' resume function to decide if they need to
+> >>>> call rtnl_lock()/rtnl_unlock(), so call rtnl_unlock() before calling
+> >>>> pm_runtime_resume() and then call rtnl_lock() after it in __dev_open().
+> >>>>
+> >>>>
+> >>>
+> >>> Hi Acelan
+> >>>
+> >>> When was the bugg added ?
+> >>> Please add a Fixes: tag
+> >>
+> >> For immediate cause probably:
+> >>
+> >> Fixes: 9474933caf21 ("igb: close/suspend race in netif_device_detach")
+> >>
+> >>> By doing so, you give more chances for reviewers to understand why the
+> >>> fix is not risky,
+> >>> and help stable teams work.
+> >>
+> >> IMO the driver lacks internal locking. Taking 看rtnl from resume is just
+> >> one example, git history shows many more places that lacked locking and
+> >> got papered over with rtnl here.
+>
