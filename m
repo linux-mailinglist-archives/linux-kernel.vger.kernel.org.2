@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD10369B06
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C43369B08
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243699AbhDWTtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243874AbhDWTtJ (ORCPT
+        id S243438AbhDWTxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:53:38 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56012 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231337AbhDWTxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:49:09 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0CBC061574;
-        Fri, 23 Apr 2021 12:48:32 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id lr7so7501821pjb.2;
-        Fri, 23 Apr 2021 12:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RblyejMO0ehdI3884/nZF+v9qcRYrKv3C89X2315cxc=;
-        b=qMCaatxx/bSEsCo0Gf7FUukHolKiLQl3+D3e8B95J36vEEhdGD3cwJh1rj3BZjPCOE
-         CfSuEeJuJ+jIHpQwcEbNVvVzo+PpJVyyCwzPZAzK4mlQQj/922MHGeUXxdLYpTyLJxxD
-         ZzXPbnKNIlWfZHg3ZIJhhBHN6D+0p37t1b2YTmrsT06ilkuedJzUVpqv7GL7cUDouCgA
-         ZO+w+4pfOz7o52H6FGrcAaY2+4bxjqhyno5tBE4ETe7kMd/bezDsbIfyR06U9k0d3Wtr
-         qcuZ3kc+tvcAuaU0L3UewiVtKEH5NFGV+iq2atwyv686bAxlFpW7xC3gasn7OP1Rg/O2
-         qouA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RblyejMO0ehdI3884/nZF+v9qcRYrKv3C89X2315cxc=;
-        b=beJqlNVFLtezCUmlshZtl/EFqtG6l1cefHBQ0PA5TcBhYl5tvopgBpTl8z/R8YnTWW
-         qNXPC+JoIn0MC7e3ptfL19Ci9IfApV9PNXff19kDeQwkEjtjdUXvTfM7oxEPgRBb3aqw
-         thQzcl5QiOG2Kzstb5c2TD1pxXgeyB69WfRgGWXz0IA7nXW+lNa1Rpj5h3/3ZG3bdqRZ
-         q4IdzY/C4MQ0UaYkqHlfY9rrytM1k6KkzXndXp5Kqg+9Z4vGvpZftZv2xYGf+Wq/OqgT
-         HQbTLuGXpUiiuThYN+5qZXRGGTN5F/IWX7RmgBm5KhIwVYnBuKC6r4w0aaefNvme8hbl
-         iybg==
-X-Gm-Message-State: AOAM531wQ3eBx5V4x2GwHn2Ah6Ft0MRw12LzWlFvEN9KCxFEhqRANhKh
-        FXBOeW0gBU7HqLRJ+4G68T+9xHizR4w=
-X-Google-Smtp-Source: ABdhPJy+8xqXrxU5UjY1FTpnTR1T+0SZzmmE95sBP5vfvc1R4Cvna4Hyx/wnSME5qMVv6wz/1KjmZg==
-X-Received: by 2002:a17:90a:8592:: with SMTP id m18mr7212464pjn.165.1619207311621;
-        Fri, 23 Apr 2021 12:48:31 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id b20sm8163779pju.17.2021.04.23.12.48.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 12:48:31 -0700 (PDT)
-Subject: Re: [PATCH] serial: 8250: of: Check for CONFIG_SERIAL_8250_BCM7271
-To:     Alan Cooper <alcooperx@gmail.com>,
-        ": Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-References: <20210423191920.42940-1-alcooperx@gmail.com>
- <CAOGqxeVokFqOQMpTrpyg1GPRk6YCw=GF0-ShBtiKz_3_0RU2XQ@mail.gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d48a47cf-2dff-cc94-6b6b-f498ab94fe57@gmail.com>
-Date:   Fri, 23 Apr 2021 12:48:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Fri, 23 Apr 2021 15:53:37 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost2.synopsys.com [10.205.2.132])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 2E23B400CB;
+        Fri, 23 Apr 2021 19:52:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1619207580; bh=HnFETGUvMhm7zDIsx9cLfUQSofJTRcYq1eMKI/YVrBk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=E+7NKfccz2+HHv+JYhQIbFGuoBGsTU67zn6Ul6a5EqNl9by1XMpuGCeLPbIodSNCA
+         ByyO4FLb8FyV+OWFnjlgJAxIPhW81UvxXqOQGnCs+bghRViaMA4TtVNTFyoJELDeFj
+         uQ094ZrduBugvNkOUawsV3s8Qs0Di4OYs2UoZQKeJN5kZS+2Cq1FjjEMJYOINgAHCL
+         VnhPMOXe5r+JvHLyZgOxfRCHCp9/ZC0xsDI+CnaUeMg4fTffVClZ2eGKr1xJaqAahk
+         iZ3ryWlxCO6NolKpIwp1Z43vzqr62VtLKvJUTEgkYvbq95PCxDqRpiycP3/Qp4DMnI
+         L8Yw5GHIMrGbQ==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (unknown [10.13.183.89])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 12620A006F;
+        Fri, 23 Apr 2021 19:52:58 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        Shahab Vahedi <Shahab.Vahedi@synopsys.com>
+Subject: [PATCH] ARC: entry: fix off-by-one error in syscall number validation
+Date:   Fri, 23 Apr 2021 12:52:57 -0700
+Message-Id: <20210423195257.892560-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAOGqxeVokFqOQMpTrpyg1GPRk6YCw=GF0-ShBtiKz_3_0RU2XQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We have NR_syscall syscalls from [0 .. NR_syscall-1].
+However the check for invalid syscall number is "> NR_syscall".
+This off-by-one error erronesously allows "NR_syscall" itself as valid
+and when passed causes out-of-bounds syscall-call table access leading
+to crash.
 
+This problem showed up when testing glibc 2.33 (v5.10 kernel capable,
+includng faccessat2 syscall (439) against a v5.6 kernel with
+NR_syscalls=439 (0 to 438). Due to the bug, 439 was not returned with
+-ENOSYS but processed leading to a crash.
 
-On 4/23/2021 12:25 PM, Alan Cooper wrote:
-> Please ignore this patch, it was already submitted by Florian about an hour ago.
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
+Reported-by: Shahab Vahedi <shahab@synopsys.com>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ arch/arc/kernel/entry.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry for the lack of coordination, was about to ask you if you wanted
-to send it.
+diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
+index 1743506081da..aea9b558993d 100644
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -255,7 +255,7 @@ ENTRY(EV_Trap)
+ 	;============ Normal syscall case
+ 
+ 	; syscall num shd not exceed the total system calls avail
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     .Lret_from_system_call
+ 
 -- 
-Florian
+2.25.1
+
