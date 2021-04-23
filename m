@@ -2,85 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101ED3695EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D97E3695F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhDWPSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
+        id S231221AbhDWPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbhDWPSj (ORCPT
+        with ESMTP id S237081AbhDWPTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:18:39 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AA2C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:18:01 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id s5so41144804qkj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:18:01 -0700 (PDT)
+        Fri, 23 Apr 2021 11:19:05 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0E6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:18:27 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id s14so18434034pjl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kepstin.ca; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=TT/GtDW+dzXPPtJ2iwcN+nceLp9c+oAutwWNCDukYyg=;
-        b=azsqOrerHPonKjkL3KRPNV07IBqcBLt/gw8Z9MYXp6y3fdmyWbrZfDfSM0TxTHXmev
-         +ljyZUyTJ8OZGNp7zEjgCLXMMmZqOgd8mhN7W5Sem7lrhYK7Xj+3t4kHK+B/92CpPDGK
-         pAhpHDr3LYXBCLkS41kDFrPEvLBsoYHNkXJ7w=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RRJebZVaxHqzkm5xYFuJxuwx6avqRXGA2Ewnq/B2t4g=;
+        b=DWUEquz6eZmsmpLbHLdXJSR8NxTMfM4hf/a6kRnz1V1VS5NAs6IbQTJ0LGApSzMmF9
+         psF4GURk+fqTYq0pKqmYDim4F6PvAq6ceNWe7EB4sIWr4QzvPHNj5FT0cYZ+nD4T0ced
+         BAZKi6G9AnB35oZI6wUxnik6QM8gDDmURXaCJ1fuX6Ba/YaJafIJX0bqqYQxRI+LwUgv
+         AXqhBy2w+i6kX6AYB3gDv4FDVBg386OOj/ZwXG9izJje7LtlWchHkzsSsLzsSuk5i6Gm
+         gl+sa4Sa69GCjOc+jEJ/3Nw4XVJ6gAiSIcwitvq95n/cOLYufBrL1von4eXmR7Fq+dmR
+         VywQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=TT/GtDW+dzXPPtJ2iwcN+nceLp9c+oAutwWNCDukYyg=;
-        b=i+PHdaQttsuHsfevGxrt5Wvl8+rphifUFLuNI9KKf4csS6986ypR8V/2i7jv9OhU6V
-         zuqrakOZ5ruP3Vhyu80xsrbZVGmPMFUaz/HX95pYFYurAJcDtUfYYSRsq+GPiU9ii8Sf
-         aRXmkrc+Zq2wV020ve+d1P7VO5ziaCxak9N/b1u0YxTyyQVDsJ0oolX6uAVxs8U0G66f
-         /NTRWEU3Uagu3MrVDKBoJUz7OIYlz07JKlgWHPwITqCSV9oR6eiwnyUVKGCqjvWJLcBo
-         YoL4b2Pk4TWHBrPNTwb0MMO52zQ5VlxiPATfq12+smq67h3pPRQZ4HarxEu+QkZ6edeB
-         Dc3w==
-X-Gm-Message-State: AOAM532YBYlJRCAY39cILZH13grjkePCaHmhWe5o6lEGcT/msv/NBliv
-        CaXC/YL/iamdXMvx8MdkykBjcp6zasvifJaxrOY=
-X-Google-Smtp-Source: ABdhPJxyIpQYgKWWsTPkumpoKvftQ+cl9Dw4/xEq46VfygDPTc5cJQm1OUxc9HVQZn6OQYRBD2TLnA==
-X-Received: by 2002:a37:8905:: with SMTP id l5mr4732784qkd.321.1619191080526;
-        Fri, 23 Apr 2021 08:18:00 -0700 (PDT)
-Received: from sasami.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
-        by smtp.gmail.com with ESMTPSA id o189sm4372567qkd.60.2021.04.23.08.17.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RRJebZVaxHqzkm5xYFuJxuwx6avqRXGA2Ewnq/B2t4g=;
+        b=NDEqj45++x/vqqZQrqRfxjHitdVlMz7FzzL9l9jIYiBl6cm3DVyhWrfPBhFSQk7xDs
+         QlBmitwJ5qZLvRL2ZW/MHnGwMKcl/iIkYQn37P6MLW5hDntEKjaxt+KyJ68PBTWYbzmq
+         +uvIKs8X5ALi5RFLi1YBfmZRF4Zw2XCvLS747CHBpTCHJ5zB5zykqxs8Bwgx/zI0YTud
+         HaSITrm06r/qynRK4oDKunUCJLWNz5gU6DCIVvdeC6IZYN1gKoKdRujd0+geqVdWg+O+
+         d8OB+w0T8rc+YnLrODTTNIvsCZwkcLAefZMFOgIzvQbFsyHYcgz4nM2GLN7QCqzN2/nS
+         WIGg==
+X-Gm-Message-State: AOAM532xN8vi4db0JSCzFq9geiA8D9mFwC6da6fV7iPjbuzw9sf4vEF9
+        BHotahg9BDjv0yw9gBMz4+4JwcvCmJUNKA==
+X-Google-Smtp-Source: ABdhPJzXDK2ujEd9Pl9K0qJpTeO+/RfaDkdAudeD0IMOb+Lm9JjFA3m7tSIH00mNZdVoIof0Pe6GzA==
+X-Received: by 2002:a17:902:7fc9:b029:eb:4828:47e8 with SMTP id t9-20020a1709027fc9b02900eb482847e8mr4603408plb.56.1619191106491;
+        Fri, 23 Apr 2021 08:18:26 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 137sm5080242pfx.172.2021.04.23.08.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 08:17:59 -0700 (PDT)
-Message-ID: <8fb9a5d2a46216c1ce3f63b621ff9d35c1f863a9.camel@kepstin.ca>
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection
- on AMD processors
-From:   Calvin Walton <calvin.walton@kepstin.ca>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
-        lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
-        rui.zhang@intel.com
-Date:   Fri, 23 Apr 2021 11:17:56 -0400
-In-Reply-To: <20210423142749.GA428460@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
-         <20210420020336.GA386151@chenyu-desktop> <20210420080701.GA2326@zn.tnic>
-         <20210420131541.GA388877@chenyu-desktop>
-         <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
-         <20210420143754.GA390118@chenyu-desktop>
-         <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
-         <20210423121607.GA426003@chenyu-desktop>
-         <4080ac25f6c8ca4088a950eb9d63da641c020941.camel@kepstin.ca>
-         <20210423142749.GA428460@chenyu-desktop>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Fri, 23 Apr 2021 08:18:25 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 15:18:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2] KVM: x86/xen: Take srcu lock when accessing
+ kvm_memslots()
+Message-ID: <YILlPmN0fgLA8RkJ@google.com>
+References: <1619166200-9215-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1619166200-9215-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-23 at 22:27 +0800, Chen Yu wrote:
+On Fri, Apr 23, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> This patch fixes this issue by converting the 'int' to 'unsigned int'
-> accordingly.
+> kvm_memslots() will be called by kvm_write_guest_offset_cached() so we should 
+> take the srcu lock. Let's pull the srcu lock operation from kvm_steal_time_set_preempted() 
+> again to fix xen part.
+> 
+> Fixes: 30b5c851af7 (KVM: x86/xen: Add support for vCPU runstate information)
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/x86/kvm/x86.c | 20 +++++++++-----------
+>  1 file changed, 9 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 3bf52ba..c775d24 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4097,7 +4097,6 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_host_map map;
+>  	struct kvm_steal_time *st;
+> -	int idx;
+>  
+>  	if (!(vcpu->arch.st.msr_val & KVM_MSR_ENABLED))
+>  		return;
+> @@ -4105,15 +4104,9 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
+>  	if (vcpu->arch.st.preempted)
+>  		return;
+>  
+> -	/*
+> -	 * Take the srcu lock as memslots will be accessed to check the gfn
+> -	 * cache generation against the memslots generation.
+> -	 */
+> -	idx = srcu_read_lock(&vcpu->kvm->srcu);
+> -
+>  	if (kvm_map_gfn(vcpu, vcpu->arch.st.msr_val >> PAGE_SHIFT, &map,
+>  			&vcpu->arch.st.cache, true))
+> -		goto out;
+> +		return;
+>  
+>  	st = map.hva +
+>  		offset_in_page(vcpu->arch.st.msr_val & KVM_STEAL_VALID_BITS);
+> @@ -4121,20 +4114,25 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
+>  	st->preempted = vcpu->arch.st.preempted = KVM_VCPU_PREEMPTED;
+>  
+>  	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, true);
+> -
+> -out:
+> -	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+>  }
+>  
+>  void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>  {
+> +	int idx;
+> +
+>  	if (vcpu->preempted && !vcpu->arch.guest_state_protected)
+>  		vcpu->arch.preempted_in_kernel = !static_call(kvm_x86_get_cpl)(vcpu);
+>  
+> +	/*
+> +	 * Take the srcu lock as memslots will be accessed to check the gfn
+> +	 * cache generation against the memslots generation.
+> +	 */
+> +	idx = srcu_read_lock(&vcpu->kvm->srcu);
 
-NAK on this version of the patch. It needs to be off_t; see my
-conversation with Boris elsewhere in this thread.
+Might be worth grabbing "kvm" in a local variable?  Either way:
 
--- 
-Calvin Walton <calvin.walton@kepstin.ca>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
+>  	if (kvm_xen_msr_enabled(vcpu->kvm))
+>  		kvm_xen_runstate_set_preempted(vcpu);
+>  	else
+>  		kvm_steal_time_set_preempted(vcpu);
+> +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+>  
+>  	static_call(kvm_x86_vcpu_put)(vcpu);
+>  	vcpu->arch.last_host_tsc = rdtsc();
+> -- 
+> 2.7.4
+> 
