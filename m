@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DE4369CD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 00:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2285E369CD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 00:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbhDWWhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 18:37:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48866 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbhDWWh1 (ORCPT
+        id S236972AbhDWWjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 18:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231218AbhDWWi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 18:37:27 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619217409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=97GQOqgF15L+ntkACoBNhyLvhY9ExoprR9D4OPssQEo=;
-        b=kmBN9iOumKV7vlFzDvo4zo7HD1BJXEMww/LgcGOZft9gNKIFqSTTET7rKl4LGbW3E/vGFb
-        A55Qgq+S9Tpbv5/xNCfceKPeUaVYqNqpfum6xsdfB3H5eW9gUmFjADXHHfla4R81HuxqKO
-        vhnSAXZt48hvpvSWBOLiXr4DWzlCkd10fV/GojB+TM7Z1DDC0jaX9ys1TcejyxscfruVjq
-        Pp7tvOqUfVUuJy8wXnt4uZj38l9aRGvCqtcEvEfV15Whd9VCmyRH3qkIoeaJ9fQgt2eS8/
-        3CgDSjV/yeJciXKzOJHLxmlbQ1+0D0iET46eW5vESqTX2SE52nITnYubTW9FMQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619217409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=97GQOqgF15L+ntkACoBNhyLvhY9ExoprR9D4OPssQEo=;
-        b=0HEOK5AmQyvh7dEJED5SH4g4JUWhDRaukLZqIvrrDOTWXHGCgxET5stgCVKHLGBfQjEM7G
-        Uplns9UBp7oQ46BQ==
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@riseup.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        Lukasz Majewski <lukma@denx.de>,
-        Florian Weimer <fweimer@redhat.com>,
-        Carlos O'Donell <carlos@redhat.com>,
-        "Michael Kerrisk \(man-pages\)" <mtk.manpages@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Andrei Vagin <avagin@gmail.com>, kernel@collabora.com
-Subject: Re: [patch 6/6] futex: Provide FUTEX_LOCK_PI2 to support clock selection
-In-Reply-To: <606120ab-ef46-fa87-5f2c-d480de9ed2c8@riseup.net>
-References: <20210422194417.866740847@linutronix.de> <20210422194705.440773992@linutronix.de> <606120ab-ef46-fa87-5f2c-d480de9ed2c8@riseup.net>
-Date:   Sat, 24 Apr 2021 00:36:48 +0200
-Message-ID: <87o8e4vda7.ffs@nanos.tec.linutronix.de>
+        Fri, 23 Apr 2021 18:38:59 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014BBC061574;
+        Fri, 23 Apr 2021 15:38:23 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id c195so57376142ybf.9;
+        Fri, 23 Apr 2021 15:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M6dRbZWxkOXLYGL6npBves0jo4gxvKKmAPb1kIlkFJM=;
+        b=HYEQ9C0zhA8J/iuIK7yJ//iVjJfDFoT7lKHPx//bdeUrPDVUFZHtcA/n3B6uJyotgF
+         eF4aPj6Y2xIeHux+Ut34ciP9IM7oMtrBOXN3HsBuh75SnmKdRogff4VBYC5S6lgaPK+z
+         DwmMh2Gx9qkg9pHV4S/U52fkmGoE1fuXieCDqqs2bbMr3SjlijM5RhEmlOiRNsL3BsKk
+         L3i9GGBkUcZ7syTU1Dvzv+ld9AeTeb8DhOA/YH5V3hlBKJKfvP6VQt0s1Za/3eHvPqLQ
+         yI92O/SRuLZ/g0Iktkn+BgNRdI+Qa/+ZxAECWuS/Lzq5YPoJ1HgJAs/z81dFqoWXSOKi
+         m92g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M6dRbZWxkOXLYGL6npBves0jo4gxvKKmAPb1kIlkFJM=;
+        b=mcb62QoWSLpss5JQ0Sa9WftZMLvw2nv0MhiyOnwWzWklrcCr0oxToCIlmYStZthpLg
+         jg2kauh73HeYzOguUF7W77zIiXy6vltbZhwr/QUIsigxjLvrkuDCpNM0/WQ75SCgne2j
+         qEfVFm6NnZ/H6G9GsbOekKWNv3ND2BcV4xx+34YDVULy9GCn9UY0rOEMOFAFj6h+0Y1s
+         C0cPj4ttVXlvML+GeYK/bygNiOr5jwAJm0Fukc541b9xnkrqYDrpRXCwD+1fTuZ1v1sr
+         shA4NpVyJk+B4fKbgRaZOnpx38QEXXrLQ10IAbS2mhELOaHwnOJBJc29CdzT+G7+ZVJE
+         kG9A==
+X-Gm-Message-State: AOAM532LT7BLbMpeCsfAzA2AuBpxl7ZbtQwOwq4OGorFIDrrg0ELqfEG
+        Z7K32/AiO3Uqx/wEoby+dt1s7QNYOCn3O7hm32A=
+X-Google-Smtp-Source: ABdhPJznUzvbQUnnMybj04p96QCBlJfHq+gLp90bgClI8/E6Lcul/sa0t2ZSklb8gne1qw1BtLNWcwbaxIuTNSIjreA=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr8038815ybg.459.1619217502233;
+ Fri, 23 Apr 2021 15:38:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
+In-Reply-To: <20210419155243.1632274-7-revest@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 23 Apr 2021 15:38:11 -0700
+Message-ID: <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andr=C3=A9!
-
-On Fri, Apr 23 2021 at 19:20, Andr=C3=A9 Almeida wrote:
->> @@ -21,6 +21,7 @@
->>   #define FUTEX_WAKE_BITSET	10
->>   #define FUTEX_WAIT_REQUEUE_PI	11
->>   #define FUTEX_CMP_REQUEUE_PI	12
->> +#define FUTEX_LOCK_PI2		13
->>=20=20=20
->>   #define FUTEX_PRIVATE_FLAG	128
->>   #define FUTEX_CLOCK_REALTIME	256
+On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
 >
-> To keep consistency with other operations, maybe add a=20
-> FUTEX_LOCK_PI2_PRIVATE?
-
-Good point! Missed that.
-
->> --- a/kernel/futex.c
->> +++ b/kernel/futex.c
->> @@ -3711,7 +3711,8 @@ long do_futex(u32 __user *uaddr, int op,
->>=20=20=20
->>   	if (op & FUTEX_CLOCK_REALTIME) {
->>   		flags |=3D FLAGS_CLOCKRT;
->> -		if (cmd !=3D FUTEX_WAIT_BITSET && cmd !=3D FUTEX_WAIT_REQUEUE_PI)
->> +		if (cmd !=3D FUTEX_WAIT_BITSET && cmd !=3D FUTEX_WAIT_REQUEUE_PI &&
->> +		    cmd !=3D FUTEX_LOCK_PI2)
->>   			return -ENOSYS;
->>   	}
+> The "positive" part tests all format specifiers when things go well.
 >
-> As FUTEX_LOCK_PI, FUTEX_LOCK_PI2 also requires FUTEX_CMPXCHG right?=20
-> Then, add it here:
+> The "negative" part makes sure that incorrect format strings fail at
+> load time.
 >
-> 	switch (cmd) {
-> 	case FUTEX_LOCK_PI:
-> +	case FUTEX_LOCK_PI2:
-> 	case FUTEX_UNLOCK_PI:
-> 	case FUTEX_TRYLOCK_PI:
-> 	case FUTEX_WAIT_REQUEUE_PI:
-> 	case FUTEX_CMP_REQUEUE_PI:
->   		if (!futex_cmpxchg_enabled)
->   			return -ENOSYS;
->   	}
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
+>  .../bpf/progs/test_snprintf_single.c          |  20 +++
+>  3 files changed, 218 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> new file mode 100644
+> index 000000000000..a958c22aec75
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> @@ -0,0 +1,125 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Google LLC. */
+> +
+> +#include <test_progs.h>
+> +#include "test_snprintf.skel.h"
+> +#include "test_snprintf_single.skel.h"
+> +
+> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
+> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
+> +
+> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
+> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
+> +
+> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
+> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
+> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
+> +
+> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
+> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
+> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
+> +
+> +#define EXP_STR_OUT  "str1 longstr"
+> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
+> +
+> +#define EXP_OVER_OUT "%over"
+> +#define EXP_OVER_RET 10
+> +
+> +#define EXP_PAD_OUT "    4 000"
 
-Indeed. Forgot about that completely.
+Roughly 50% of the time I get failure for this test case:
 
-Thanks for spotting that!
+test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
+0000' != expected '    4 000'
 
-       tglx
+Re-running this test case immediately passes. Running again most
+probably fails. Please take a look.
+
+> +#define EXP_PAD_RET 900007
+> +
+> +#define EXP_NO_ARG_OUT "simple case"
+> +#define EXP_NO_ARG_RET 12
+> +
+> +#define EXP_NO_BUF_RET 29
+> +
+
+[...]
