@@ -2,148 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF17369518
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A854F36951B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242757AbhDWOvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
+        id S242779AbhDWOv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhDWOvG (ORCPT
+        with ESMTP id S230416AbhDWOv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:51:06 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54939C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:50:30 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k25so6113804iob.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:50:30 -0700 (PDT)
+        Fri, 23 Apr 2021 10:51:27 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90CFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:50:50 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id n140so49382149oig.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MMcmdkM2gVl581eh1B9ABdRu1Z5YC42G/lU2iC/THzU=;
-        b=qIlJIcsi0187qWtovyfGsZz8n53uJAkk180sB7FQ42Ul/t11paPOues0+jxUAYj71q
-         z9RsmX6RKBf39KKb9QGFgnqmtQ7PZMoCIpjl9NvVNFTOHDaKm3xNbifQmiPvB3BoKhM9
-         oGed1Yz0Y+WAC5hQh+W1uT6+jX9Lnt6k5z6R2IEEs5a3tP0zSuJ/B9zBKgMHXfcvw1Ky
-         Q+kAkEb73gv+KUaxPZ5cw0mr2D/Y+2KVPp2MmheSH/cAnbOr5Lp49FAvpgMEzl+Wpruo
-         rHjvxIQGw+E2ol8Xcd3waYnlj44uZ/Vxjgrw87E7HxtMO+uKHh4OfOSlNhGpNjLBnsEN
-         UwVQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f26salV1YONwthrr9i5IByzy2v+Ur3hR9OqqinAL1Ug=;
+        b=HCf1U1iQ4B4smQ+qxODrbF29uSIY+cWfhHMTASKdmajsJcSAgNlRFEOv1jVm32LR9U
+         xD3SoRkKn5gItx+pabT3s0MQCxRnKoJB0UeFiMWtWCT6hwOn8O971+5oBXnzU6sZbK+1
+         cC6qa3DrbBxN5vceGGgMfKYcS8qNzxt6tZUYSGJmyweS4huG2zmNa1XlM1PW3Rl//kp8
+         Qu5oYOGhNwlEhE7h/qNbgJrWY0He4thJKrqwfJXkcdOY9c1ALoxyN302hU9TU3cK7JWS
+         so+f+n6rNIlRcOFcschbb95/pFDuqwPkpR/8bP1B/HlME1VAKv9/p3bxm52+RLmfevfV
+         tBvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MMcmdkM2gVl581eh1B9ABdRu1Z5YC42G/lU2iC/THzU=;
-        b=fQ5RnafqEAnP5+sZgeOzWGF5Nm3FMSZR0eh0pdWsnMJvB6Q1qqwS1lWLZF6HUkzvO2
-         ZTxYsAnElYRgTggvu4MN4BnCSfAu3jTzfOpKpmdTLkZcP6s+XANfy2kJaqVt92Kjqxx0
-         qPceo6jMX3tu3NBk7ednWxhcdni+h8SoYd8Q2acTYb8qEW5I1qGbghkjZuseR+iRqIep
-         E6HHN2CHzxt/pB1WSA3B1jyhleK9JjTRTonaxG0YMAcoTyJvNec7SKtjuXW3w6FzPdJK
-         nSj7A24S9B7i4XNiNSNBbKWIdJ64GvMlt+kU/aJeq+NHP1q1wF25CazesKVcEUxOQ2IG
-         0J/A==
-X-Gm-Message-State: AOAM5301XF0msu1cRrGttyUgz9WMIIAzL3rpJBNnAXKtLo0hwssFYARZ
-        qMbFUBsjxoyBBWZtATao7OARgxiJWONTLm90Ml6SCg==
-X-Google-Smtp-Source: ABdhPJxCd6YQlgpzhXf6G9ZW9tJeJzvk3SgMyJj1x3xNVufTbvCo+nBbuDER55PCMLE0EGzTJ070ebIaCle6mrVMvZM=
-X-Received: by 2002:a05:6602:81e:: with SMTP id z30mr3618410iow.90.1619189429739;
- Fri, 23 Apr 2021 07:50:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f26salV1YONwthrr9i5IByzy2v+Ur3hR9OqqinAL1Ug=;
+        b=dgpMo3aweUNQs6sOkICagIIK5E1ZveCEUp1Q1aZNBL5fekVBajqdjKL4VhHbHFCOBo
+         z9XBZAFBIvtUrwBLbHAITJI8dCLM5VqXJkqrfsTfipcbCPqOzkuf1tRfRA/+zI3T31Z3
+         aN0Vlfa2UI68C5EIX2Av+BMf2G+341nSQStbAFbvtv7OuuY+FYnj8QFfvJflGe+Wjdnz
+         B6vcyH+bEBjdJrP9bv+zqncM/3ASJws9OpzfWARd+uJPa+6Q2FsUSDhHbS3S0VABOMfM
+         xL/dT3z6ojkLORuJawoJxVZShWLwWsP2CEw7FMk232zGNrH0JZKltvek/TM6pu2Sqtj2
+         KkHA==
+X-Gm-Message-State: AOAM533bO8aLru+1st5LHERNeIbWo+ImRPcOwpCyUquu76KX978mMTeH
+        5+MG+I2z/ku6zGKnRQzejJZI/g==
+X-Google-Smtp-Source: ABdhPJyWTiOMQqGgTo0m+fFWWeOjgdIvyqP6jE16dXn/PMChAYrJ+ebmGllRDk6dz3Nt1YvTqqZ82g==
+X-Received: by 2002:aca:dfc1:: with SMTP id w184mr3145515oig.79.1619189450134;
+        Fri, 23 Apr 2021 07:50:50 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l9sm1244933oog.32.2021.04.23.07.50.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:50:49 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:50:47 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 16/27] drm/panel: panel-simple: Get rid of hacky HPD
+ chicken-and-egg code
+Message-ID: <YILex5oaMUQy5zs/@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.16.I40eeedc23459d1e3fc96fa6cdad775d88c6e706c@changeid>
 MIME-Version: 1.0
-References: <1618971622-30539-1-git-send-email-peng.fan@oss.nxp.com>
- <20210422165634.GD1256950@xps15> <DB6PR0402MB2760E471A0391FF8A31980BA88459@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-In-Reply-To: <DB6PR0402MB2760E471A0391FF8A31980BA88459@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Fri, 23 Apr 2021 08:50:18 -0600
-Message-ID: <CANLsYkwoS+3qYq=FHRLMjrJSr5cj_PiHaU+a+M17C+8-VJ+b9g@mail.gmail.com>
-Subject: Re: [PATCH V5 0/8] remoteproc: imx_rproc: support i.MX7ULP/8MN/8MP
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.16.I40eeedc23459d1e3fc96fa6cdad775d88c6e706c@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 at 19:01, Peng Fan <peng.fan@nxp.com> wrote:
->
-> Hi Mathieu,
->
-> > Subject: Re: [PATCH V5 0/8] remoteproc: imx_rproc: support
-> > i.MX7ULP/8MN/8MP
-> >
-> > On Wed, Apr 21, 2021 at 10:20:14AM +0800, peng.fan@oss.nxp.com wrote:
-> > > From: Peng Fan <peng.fan@nxp.com>
-> > >
-> > > V5:
-> > >  Add R-b tag
-> > >  Move the change in detect mode of patch 5 to patch 7 Per Mathieu's
-> > > comments
-> > >
-> > > V4:
-> > >  Typo fix
-> > >  patch 4: take state as a check condition  patch 5: move regmap
-> > > lookup/attach to imx_rproc_detect_mode  patch 6: add
-> > > imx_rproc_clk_enable for optional clk  patch 8: use switch/case in
-> > > imx_rproc_detect_mode
-> > > V3:
-> > >  Add A-b tag for Patch 1/2
-> > >  Fix the checkpatch warning for Patch 6,8
-> > >
-> > > V2:
-> > >  Patch 1/8, use fsl as vendor, typo fix  Because patchset [1] has v2
-> > > version, patch 5,6,7,8 are adapted that  change.
-> > >
-> > > This patchset is to support i.MX7ULP/8MN/8MP, also includes a patch to
-> > > parse fsl,auto-boot
-> > >
-> >
-> > One of the request I had from the last revision was to explicitly list what other
-> > patchset this work depends on and what branch it is based of, something I
-> > can't find here.
->
-> Sorry, that patchset has been merged, so I remove that line.
-> I should mention that that patchset has been merged into Linux-next tree.
->
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
 
-And what branch this set should be applied to is missing.
+> When I added support for the hpd-gpio to simple-panel in commit
+> 48834e6084f1 ("drm/panel-simple: Support hpd-gpios for delaying
+> prepare()"), I added a special case to handle a circular dependency I
+> was running into on the ti-sn65dsi86 bridge chip. On my board the
+> hpd-gpio is actually provided by the bridge chip. That was causing
+> some circular dependency problems that I had to work around by getting
+> the hpd-gpio late.
+> 
+> I've now reorganized the ti-sn65dsi86 bridge chip driver to be a
+> collection of sub-drivers. Now the GPIO part can probe separately and
+> that breaks the chain. Let's get rid of the old code to clean things
+> up.
+> 
 
-> >
-> > As such I am dropping this set and won't look at another revision before May
-> > 22nd.
->
-> Ah. Is it just because that the dependency patchset not been mentioned or you
-> have issue applying the patchset that delay the patchset for one month?
->
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Both.
+Regards,
+Bjorn
 
-> Thanks,
-> Peng.
->
-> >
-> > > Peng Fan (8):
-> > >   dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
-> > >   dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
-> > >   dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
-> > >   remoteproc: imx_rproc: parse fsl,auto-boot
-> > >   remoteproc: imx_rproc: initial support for mutilple start/stop method
-> > >   remoteproc: imx_rproc: make clk optional
-> > >   remoteproc: imx_rproc: support i.MX7ULP
-> > >   remoteproc: imx_rproc: support i.MX8MN/P
-> > >
-> > >  .../bindings/remoteproc/fsl,imx-rproc.yaml    |  11 +-
-> > >  drivers/remoteproc/imx_rproc.c                | 196
-> > +++++++++++++++---
-> > >  2 files changed, 173 insertions(+), 34 deletions(-)
-> > >
-> > > --
-> > > 2.30.0
-> > >
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/panel/panel-simple.c | 24 +++++-------------------
+>  1 file changed, 5 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 6b22872b3281..90a17ca79d06 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -366,8 +366,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+>  	return 0;
+>  }
+>  
+> -static int panel_simple_get_hpd_gpio(struct device *dev,
+> -				     struct panel_simple *p, bool from_probe)
+> +static int panel_simple_get_hpd_gpio(struct device *dev, struct panel_simple *p)
+>  {
+>  	int err;
+>  
+> @@ -375,17 +374,10 @@ static int panel_simple_get_hpd_gpio(struct device *dev,
+>  	if (IS_ERR(p->hpd_gpio)) {
+>  		err = PTR_ERR(p->hpd_gpio);
+>  
+> -		/*
+> -		 * If we're called from probe we won't consider '-EPROBE_DEFER'
+> -		 * to be an error--we'll leave the error code in "hpd_gpio".
+> -		 * When we try to use it we'll try again.  This allows for
+> -		 * circular dependencies where the component providing the
+> -		 * hpd gpio needs the panel to init before probing.
+> -		 */
+> -		if (err != -EPROBE_DEFER || !from_probe) {
+> +		if (err != -EPROBE_DEFER)
+>  			dev_err(dev, "failed to get 'hpd' GPIO: %d\n", err);
+> -			return err;
+> -		}
+> +
+> +		return err;
+>  	}
+>  
+>  	return 0;
+> @@ -416,12 +408,6 @@ static int panel_simple_prepare_once(struct panel_simple *p)
+>  		msleep(delay);
+>  
+>  	if (p->hpd_gpio) {
+> -		if (IS_ERR(p->hpd_gpio)) {
+> -			err = panel_simple_get_hpd_gpio(dev, p, false);
+> -			if (err)
+> -				goto error;
+> -		}
+> -
+>  		if (p->desc->delay.hpd_absent_delay)
+>  			hpd_wait_us = p->desc->delay.hpd_absent_delay * 1000UL;
+>  		else
+> @@ -682,7 +668,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+>  
+>  	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
+>  	if (!panel->no_hpd) {
+> -		err = panel_simple_get_hpd_gpio(dev, panel, true);
+> +		err = panel_simple_get_hpd_gpio(dev, panel);
+>  		if (err)
+>  			return err;
+>  	}
+> -- 
+> 2.31.1.368.gbe11c130af-goog
+> 
