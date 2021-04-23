@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091A6369301
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51789369309
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhDWNZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:25:39 -0400
-Received: from mga12.intel.com ([192.55.52.136]:31798 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWNZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:25:36 -0400
-IronPort-SDR: kK0FOKpcJsrVU5ds7uOD45vpKD5enBULxfLehoun9FPz+s+dUqUjrCnZxsnhMZKTMcRF8bu0Um
- 8XKmNBmVRJmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="175551467"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="175551467"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 06:24:59 -0700
-IronPort-SDR: fU1MwX/zwew2GLGuBMdwnSfJshhZBEqFxXeg9B7pmIkZEYkobjV2mCQOh8Iy5uLxNUnvqaJ/o1
- edoxgT6ZBkWQ==
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="456222695"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 06:24:56 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lZvnh-006ZPI-4z; Fri, 23 Apr 2021 16:24:53 +0300
-Date:   Fri, 23 Apr 2021 16:24:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v5 05/13] module: Add printk formats to add module build
- ID to stacktraces
-Message-ID: <YILKpQ2KsBXCoHlG@smile.fi.intel.com>
-References: <20210420215003.3510247-1-swboyd@chromium.org>
- <20210420215003.3510247-6-swboyd@chromium.org>
- <YIARTVqnN8t/FA/P@smile.fi.intel.com>
- <161913520061.46595.8469966711677906076@swboyd.mtv.corp.google.com>
+        id S241742AbhDWN1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWN1H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:27:07 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CBCCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:26:30 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id f21so12772477ioh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 06:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W9t1u365J/63AT2Wytry3Gy5TCslV9JQ80oTdyfzGqA=;
+        b=PZG/CKA0JMPJkboWk7lRr/z0ls0N6+Pb8D2Kj9oBOVyMRu/HgkUZlnAgMHgVxAUc/V
+         w9xz/OgZ3w2YCLWxiezZP4JEOhkC1vASKWmffk6HsIjQJ+H7uZuo2G3DqJoRBYHv6PE4
+         xTtuaua32tjtoTPLNLl33OjiJvscXab45quB8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W9t1u365J/63AT2Wytry3Gy5TCslV9JQ80oTdyfzGqA=;
+        b=BjsK9/bCf4PqMp6ZgQ9ycFQ0GeIxEPR6xO8t2ZkpLSR0rVs3Fff60T5Zm5hWlkgewW
+         yM5TAO1yHmt5ojgM3aUyp1l8WbBMC9AaWku9ihHK20QGyICGEbPAPjegTNmTnE2Jz82W
+         ICDGgiBZBmKVtvANzf8SH20ntzU+H0vrcstKthd9waVxAKWXM/zOwJ6O77DhPUjT+zW0
+         xnMvmZrm0n085t8ehmMoXKpHHUdB4f3UBS0lTNAedD5pngEwuBM5PnFAgPo5cgxpBAqQ
+         i0Cxm1t3XfjVIzPbw7cQP+KnUFFVMi1KD4zj9UzCC5RN4alWcaoTUby4kXbfKEAr6khn
+         +Pdg==
+X-Gm-Message-State: AOAM530U2/O6gCjFeul7/u6BlMDDQp8tGhJSb+5i5o7Zh6o/+lnBxyGi
+        ywkrET4VhoS6+iedrE2mGVqwzc9+70hf4+/eYoCSQg==
+X-Google-Smtp-Source: ABdhPJw/Euvb8E/egiY45whR7d/k3iOF05q2FshYhAQ9qfDnhF+bcbWfDBr83wk2mDDH490cjiBbUKgxMV0hwIEP8yY=
+X-Received: by 2002:a05:6638:2515:: with SMTP id v21mr3691903jat.110.1619184389457;
+ Fri, 23 Apr 2021 06:26:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161913520061.46595.8469966711677906076@swboyd.mtv.corp.google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210423011517.4069221-1-revest@chromium.org> <8f89faf1-d7e6-ebe0-fb7d-c5b8243d140a@rasmusvillemoes.dk>
+In-Reply-To: <8f89faf1-d7e6-ebe0-fb7d-c5b8243d140a@rasmusvillemoes.dk>
+From:   Florent Revest <revest@chromium.org>
+Date:   Fri, 23 Apr 2021 15:26:18 +0200
+Message-ID: <CABRcYmLDBfoM8rOwPf+SdqkmJgtFRLYF94S4Fv2eU=Uwg4asTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Implement BPF formatted output helpers with bstr_printf
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 04:46:40PM -0700, Stephen Boyd wrote:
-> Quoting Andy Shevchenko (2021-04-21 04:49:33)
-> > On Tue, Apr 20, 2021 at 02:49:55PM -0700, Stephen Boyd wrote:
+On Fri, Apr 23, 2021 at 10:50 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 23/04/2021 03.15, Florent Revest wrote:
+> > Our formatted output helpers are currently implemented with
+> > snprintf-like functions which take arguments as va_list but the types
+> > stored in a va_list need to be known at compilation time which causes
+> > problems when dealing with arguments from the BPF world that are always
+> > u64 but considered differently depending on the format specifiers they
+> > are associated with at runtime.
+> >
+> > This series replaces snprintf usages with bstr_printf calls. This lets
+> > us construct a binary representation of arguments in bpf_printf_prepare
+> > at runtime that matches an ABI that is neither arch nor compiler
+> > specific.
+> >
+> > This solves a bug reported by Rasmus Villemoes that would mangle
+> > arguments on 32 bit machines.
+>
+> That's not entirely accurate. The arguments are also mangled on x86-64,
+> it's just that in a few cases that goes unnoticed. That's why I
+> suggested you try and take your test case (which I assume had been
+> passing with flying colours on x86-64) and rearrange the specifiers,
+> arguments and expected output string so that the (morally) 32 bit
+> arguments end up beyond those-that-end-up-in-the-reg_save_area.
+>
+> IOWs, it is the 32 bit arguments that are mangled (because they get
+> passed as-if they were actually 64 bits), and that applies on all
+> architectures; nothing to do with sizeof(long).
 
-...
+Mh, yes, I get your point and I agree that my description does not
+really fit what you reported.
 
-> > > Example:
-> > 
-> > Please, shrink the example to leave only meaningful lines.
-> > 
-> > Why, e.g., do we need to see register dump, is it somehow different?
-> 
-> Can you format it how you would like to see it? Should it be a unified
-> diff? I agree it would help to see "what changed" but also don't know
-> what you want so opted to provide more information, not less. I was
-> worried about the questions like "do you change other parts of a splat?"
-> so I just put the whole thing there.
+I tried what you suggested though, with the current bpf-next/master on x86_64:
+BPF_SNPRINTF(out, sizeof(out),
+"%u %d %u %d %u %d %u %d %u %d %u %d",
+1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12);
 
-
-Before:
- ...line X...
- ...
- ...line Y...
-
-After:
- ...line X'...
- ...
- ...line Y'...
-
-Three lines of example per each paragraph, in each of them the middle one is
-simply [...].
-
-...
-
-> > > +#ifdef CONFIG_STACKTRACE_BUILD_ID
-> > > +     /* Module build ID */
-> > > +     unsigned char build_id[BUILD_ID_SIZE_MAX];
-> > 
-> > Is it really string of characters? Perhaps u8 will be more explicit.
-> 
-> I'm just matching the build ID API that uses unsigned char. If you want
-> u8 then we should update more places. I could do that in a followup
-> patch, but this one is already sorta big.
-
-Unsigned char here is confusing. I would prefer a prerequisite patch to fix
-other places first.
-
-...
-
-> > > +#include <linux/kernel.h>
-> > 
-> > What do you need this header for?
-> > 
-> 
-> For typeof_member().
-
-Argh... We really need to split this and container_of to something else. Having
-entire kernel.h for that is an overkill.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+And out is "1 -2 3 -4 5 -6 7 -8 9 -10 11 -12" so i can't seem to be
+able to produce the bug you described.
+Do you think I'm missing something? Would you try it differently ?
