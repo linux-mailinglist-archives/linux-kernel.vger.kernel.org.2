@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1BB368B53
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC15F368B59
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237108AbhDWC6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
+        id S229556AbhDWDAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhDWC6D (ORCPT
+        with ESMTP id S229943AbhDWDAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:58:03 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0503C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:57:23 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id z16so34235872pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:57:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=arsdj8vKnkIONLNBcA7aqij2gyfUw/1l6TswIRx/eE4=;
-        b=eXQfRFQnN2l37Rz03yVVNKTfVVWaEtnmnCBueTkCJYLwVSfwlr004PJ6fCbfI0cwtE
-         dBsCscUZJdU2+UwOP0gRfKGO14+WjaToJlGk41YLfdasQvfmY3VbL1LvpKE4rBYNhxZh
-         mpPP/78fHZw3MKVGAjLEZbeA/ol8zp/LO+oRGWxMbOeVPraD8VzMgI117jJW2jsQHiwz
-         0nOzRqej7s5U2DAjBPFp1qw9t++5bOgiHRvkOqsiRJu7eFRYAMkuIPt4VLQHluU7RKPU
-         Ip1ZclGanO2CLGZyAqSrPbFm9FrtftttqFwgpu9u75yuFGL5GuGkh4TNiUyFgI8ReH5K
-         aZhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=arsdj8vKnkIONLNBcA7aqij2gyfUw/1l6TswIRx/eE4=;
-        b=L6vCGQUjHLiBfOM+l8Ut4JWApUN1hB9US1Su3ssse3CkBqUhI5AFVdEgu32hAu1ypL
-         BxHec4CjZ7g/Nzjl0mbbjJZTgya28693f0XJCHa4N8H2AW03OHj+UHoJVOxkWAaxSEs5
-         IvNhx/y9cfZEkDymMjuDJjeR7i2uujBoQXHJEUGKu4oxIDRW2zI7szBZRbnfCNn4/xEE
-         sFRqgylXpw9neMxT0hIO0ng4R8u54Q3GrNc41zKs8X5CGP8ogr2HhqYkHN82t7vYK8Nt
-         QLJ5f3a7HzBpG4ZT9WqL9NqR8LNioESi2b93FA2FlteQl7SHlHJvcOmQ+ChGv1DYhPUt
-         BMvw==
-X-Gm-Message-State: AOAM530dJCg1C8iFRRyuMNvDUsEBEQ/AGbrieiB0BC7V7HgoWpIXTa7n
-        hugql3pSjoRc8vdm5v+reUGcPA==
-X-Google-Smtp-Source: ABdhPJzD1/uApxHDzfK9xvzlqGuD4OZV/7g8PoNIwhou7rOFWia/5lQuW5JSlqS+QRA4LREGC9ONkA==
-X-Received: by 2002:a65:5888:: with SMTP id d8mr1634494pgu.23.1619146643509;
-        Thu, 22 Apr 2021 19:57:23 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id d4sm5796664pjz.49.2021.04.22.19.57.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 19:57:22 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 19:57:22 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 19:57:21 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Bump COMMAND_LINE_SIZE value to 1024
-In-Reply-To: <alpine.DEB.2.21.2104022022300.18977@angie.orcam.me.uk>
-CC:     david.abdurachmanov@gmail.com, dvyukov@google.com, alex@ghiti.fr,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-api@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     macro@orcam.me.uk
-Message-ID: <mhng-9e6b4607-6bea-411c-b843-916c1e0798ee@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 22 Apr 2021 23:00:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0B6C061574;
+        Thu, 22 Apr 2021 19:59:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=HBOB9+1dQZ8HFU8hecdF0SodpayfgYp4Mp4najr3kSE=; b=oqKeppikN9fTMjnZzq/QQSTrf6
+        Z4pGMfDHMCuabnPTp3IZg9IBXBZzuPVbEjeJmfbhWi3/J72wwvGyk8XMaByqYC27wguHrh3wiUxj0
+        x75yfjxnc3FlYdGd01WeK+1mglxBMcHoQJIio+fAJEQNC0uKbsKqJR9HzKd1wkyGp3rAgT27M6a6x
+        4USbHXwTFJMp1IBk8feE8bvliGs+w1/JXrk8mJr6BAWNwmONEkQsHMNG+/hLbZAQKFi3iU2itW0AI
+        I5T9BXSjPLa21V0jzyeO1NBqOouVpX7z8PP6nujB1nHNqXMUqdMPWspAb2sIYtc0uk6QzDXQx15S/
+        qpMbfOow==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZm0k-000Piv-2k; Fri, 23 Apr 2021 02:58:17 +0000
+Subject: Re: [PATCH] ima: ensure IMA_APPRAISE_MODSIG has necessary
+ dependencies
+To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        keyrings@vger.kernel.org
+Cc:     linux-security-module@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20210423011602.138946-1-nayna@linux.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <24feb895-eae1-5b9e-47d8-9ee9851710cc@infradead.org>
+Date:   Thu, 22 Apr 2021 19:57:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210423011602.138946-1-nayna@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 02 Apr 2021 11:33:30 PDT (-0700), macro@orcam.me.uk wrote:
-> On Fri, 2 Apr 2021, David Abdurachmanov wrote:
->
->> > > >  This macro is exported as a part of the user API so it must not depend on
->> > > > Kconfig.  Also changing it (rather than say adding COMMAND_LINE_SIZE_V2 or
->> > > > switching to an entirely new data object that has its dimension set in a
->> > > > different way) requires careful evaluation as external binaries have and
->> > > > will have the value it expands to compiled in, so it's a part of the ABI
->> > > > too.
->> > >
->> > > Thanks, I didn't realize this was part of the user BI.  In that case we
->> > > really can't chage it, so we'll have to sort out some other way do fix
->> > > whatever is going on.
->> > >
->> > > I've dropped this from fixes.
->> >
->> > Does increasing COMMAND_LINE_SIZE break user-space binaries? I would
->> > expect it to work the same way as adding new enum values, or adding
->> > fields at the end of versioned structs, etc.
->> > I would assume the old bootloaders/etc will only support up to the
->> > old, smaller max command line size, while the kernel will support
->> > larger command line size, which is fine.
->> > However, if something copies /proc/cmdline into a fixed-size buffer
->> > and expects that to work, that will break... that's quite unfortunate
->> > user-space code... is it what we afraid of?
->> >
->> > Alternatively, could expose the same COMMAND_LINE_SIZE, but internally
->> > support a larger command line?
->>
->> Looking at kernel commit history I see PowerPC switched from 512 to
->> 2048, and I don't see complaints about the ABI on the mailing list.
->>
->> If COMMAND_LINE_SIZE is used by user space applications and we
->> increase it there shouldn't be problems. I would expect things to
->> work, but just get truncated boot args? That is the application will
->> continue only to look at the initial 512 chars.
->
->  The macro is in an include/uapi header, so it's exported to the userland
-> and a part of the user API.  I don't know what the consequences are for
-> the RISC-V port specifically, but it has raised my attention, and I think
-> it has to be investigated.
->
->  Perhaps it's OK to change it after all, but you'd have to go through
-> known/potential users of this macro.  I guess there shouldn't be that many
-> of them.
->
->  In any case it cannot depend on Kconfig, because the userland won't have
-> access to the configuration, and then presumably wants to handle any and
-> all.
+On 4/22/21 6:16 PM, Nayna Jain wrote:
+> IMA_APPRAISE_MODSIG is used for verifying the integrity of both kernel
+> and modules. Enabling IMA_APPRAISE_MODSIG without MODULES causes a build
+> break.
+> 
+> Ensure the build time kernel signing key is only generated if both
+> IMA_APPRAISE_MODSIG and MODULES are enabled.
+> 
+> Fixes: 0165f4ca223b ("ima: enable signing of modules with build time generated key") 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
 
-It kind of feels to me like COMMAND_LINE_SIZE shouldn't have been part 
-of the UABI to begin with.  I sent a patch to remove it from the 
-asm-generic UABI, let's see if anyone knows of a reason it should be 
-UABI:
+Works For Me. Thanks.
 
-https://lore.kernel.org/linux-arch/20210423025545.313965-1-palmer@dabbelt.com/T/#u
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+> ---
+>  certs/Kconfig               | 2 +-
+>  certs/Makefile              | 2 ++
+>  certs/system_certificates.S | 3 ++-
+>  3 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/certs/Kconfig b/certs/Kconfig
+> index 48675ad319db..e4d00348fd73 100644
+> --- a/certs/Kconfig
+> +++ b/certs/Kconfig
+> @@ -4,7 +4,7 @@ menu "Certificates for signature checking"
+>  config MODULE_SIG_KEY
+>  	string "File name or PKCS#11 URI of module signing key"
+>  	default "certs/signing_key.pem"
+> -	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
+> +	depends on MODULE_SIG || (IMA_APPRAISE_MODSIG && MODULES)
+>  	help
+>           Provide the file name of a private key/certificate in PEM format,
+>           or a PKCS#11 URI according to RFC7512. The file should contain, or
+> diff --git a/certs/Makefile b/certs/Makefile
+> index e3185c57fbd8..2f369d6aa494 100644
+> --- a/certs/Makefile
+> +++ b/certs/Makefile
+> @@ -36,8 +36,10 @@ ifeq ($(CONFIG_MODULE_SIG),y)
+>  endif
+>  
+>  ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
+> +ifeq ($(CONFIG_MODULES),y)
+>  	SIGN_KEY = y
+>  endif
+> +endif
+>  
+>  ifdef SIGN_KEY
+>  ###############################################################################
+> diff --git a/certs/system_certificates.S b/certs/system_certificates.S
+> index dcad27ea8527..e1645e6f4d97 100644
+> --- a/certs/system_certificates.S
+> +++ b/certs/system_certificates.S
+> @@ -9,7 +9,8 @@
+>  system_certificate_list:
+>  __cert_list_start:
+>  __module_cert_start:
+> -#if defined(CONFIG_MODULE_SIG) || defined(CONFIG_IMA_APPRAISE_MODSIG)
+> +#if defined(CONFIG_MODULE_SIG) || (defined(CONFIG_IMA_APPRAISE_MODSIG) \
+> +			       && defined(CONFIG_MODULES))
+>  	.incbin "certs/signing_key.x509"
+>  #endif
+>  __module_cert_end:
+> 
+
+
+-- 
+~Randy
+
