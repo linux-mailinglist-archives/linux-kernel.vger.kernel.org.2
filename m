@@ -2,89 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AB13691D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE75A3691CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242260AbhDWMNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238429AbhDWMNe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:13:34 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67611C061574;
-        Fri, 23 Apr 2021 05:12:58 -0700 (PDT)
-Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7776D332;
-        Fri, 23 Apr 2021 14:12:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1619179977;
-        bh=ub+iIB/ItT6V5W5KSuNTj3i33JnmRCY3IpGwmtb8Jpk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=NVYFRLUUfn/JKO1qLioTR2gkcEn4tH2q/OwFCiiSJ+q9bsLzzS0mSR0hWX4PlRDes
-         6qieu1VN3PTFuFi8+dUHCyr68dNwXJtUA1PusyW77k7CUfeKALRpi4aoSoehEPyWQp
-         TJGD3NueV/IpH3ZxC6oerXY6Qe4ucjd8bnHAqKu8=
-Subject: Re: [PATCH 19/40] drm/omapdrm/omap_gem: Properly document
- omap_gem_dumb_map_offset()
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20210416143725.2769053-1-lee.jones@linaro.org>
- <20210416143725.2769053-20-lee.jones@linaro.org>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Message-ID: <1597afec-291f-4b08-cfb5-f7b04f28f4bd@ideasonboard.com>
-Date:   Fri, 23 Apr 2021 15:12:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S242338AbhDWMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:13:00 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43144 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230225AbhDWMM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:12:58 -0400
+IronPort-SDR: jYYpHDndd0T/zufYQoveVcg2eml7WeqawpWmT3HjYxCd+kR/wwiJFbTzGzMIPny/d1AleYaq+E
+ lRR1vR1qB/pA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="281386548"
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="281386548"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 05:12:21 -0700
+IronPort-SDR: 0lMZZPTxBtDnzuDdNKXYuRNdnnRJQ2ddD09lZisxSkqMCkkgLb0FmxuFzZqGVrjrcDCrv68zNK
+ Bb+fWvx4e2cQ==
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="428362453"
+Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 05:12:19 -0700
+Date:   Fri, 23 Apr 2021 20:16:07 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Calvin Walton <calvin.walton@kepstin.ca>
+Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
+        lenb@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
+        rui.zhang@intel.com
+Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
+ AMD processors
+Message-ID: <20210423121607.GA426003@chenyu-desktop>
+References: <20210419195812.147710-1-terry.bowman@amd.com>
+ <20210420020336.GA386151@chenyu-desktop>
+ <20210420080701.GA2326@zn.tnic>
+ <20210420131541.GA388877@chenyu-desktop>
+ <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
+ <20210420143754.GA390118@chenyu-desktop>
+ <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210416143725.2769053-20-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 17:37, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Tue, Apr 20, 2021 at 10:42:09AM -0400, Calvin Walton wrote:
+> On Tue, 2021-04-20 at 22:37 +0800, Chen Yu wrote:
+> > On Tue, Apr 20, 2021 at 09:28:06AM -0400, Calvin Walton wrote:
+> > > This patch has the same issue I noticed with the initial revision
+> > > of
+> > > Terry's patch - the idx_to_offset function returns type int (32-bit
+> > > signed), but MSR_PKG_ENERGY_STAT is greater than INT_MAX (or
+> > > rather,
+> > > would be interpreted as a negative number)
+> > > 
+> > > The end result is, as far as I can tell, that it hits the if
+> > > (offset <
+> > > 0) check in update_msr_sum() resulting in the timer callback for
+> > > updating the stat in the background when long durations are used to
+> > > not
+> > > happen.
+> > > 
+> > > For short durations it still works fine since the background update
+> > > isn't used.
+> > > 
+> > Ah, got it, nice catch. How about an incremental patch based on Bas'
+> > one
+> > to fix this 'overflow' issue? Would converting offset_to_idx(),
+> > idx_to_offset() and
+> > update_msr_sum() to use off_t instead of int be enough? Do you or
+> > Terry have interest
+> > to cook that patch? For Terry's version, I'm not sure if spliting
+> > the code into different CPU vendor would benefit in the future,
+> > except
+> > that we would have plenty of new MSRs to be introduced in the future.
 > 
->   drivers/gpu/drm/omapdrm/omap_gem.c:619: warning: expecting prototype for omap_gem_dumb_map(). Prototype was for omap_gem_dumb_map_offset() instead
-> 
-> Cc: Tomi Valkeinen <tomba@kernel.org>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: Rob Clark <rob.clark@linaro.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/gpu/drm/omapdrm/omap_gem.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/omapdrm/omap_gem.c b/drivers/gpu/drm/omapdrm/omap_gem.c
-> index 38af6195d9593..27c71cded5d0a 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_gem.c
-> +++ b/drivers/gpu/drm/omapdrm/omap_gem.c
-> @@ -605,7 +605,7 @@ int omap_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
->   }
->   
->   /**
-> - * omap_gem_dumb_map	-	buffer mapping for dumb interface
-> + * omap_gem_dumb_map_offset	-	buffer mapping for dumb interface
->    * @file: our drm client file
->    * @dev: drm device
->    * @handle: GEM handle to the object (from dumb_create)
-> 
+> Yes, I believe updating the offset_to_idx(), idx_to_offset(), and
+> update_msr_sum() functions is sufficient. I can do the incremental
+> patch for that this evening if nobody beats me to it :)
+>
+Calvin, could you please take a look at the following version if it is suitible?
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From b2e63fe4f02e17289414b4f61237da822df115fb Mon Sep 17 00:00:00 2001
+From: Calvin Walton <calvin.walton@kepstin.ca>
+Date: Fri, 23 Apr 2021 17:32:13 +0800
+Subject: [PATCH 3/5] tools/power turbostat: Fix offset overflow issue in index
+ converting
 
-  Tomi
+The idx_to_offset() function returns type int (32-bit signed), but
+MSR_PKG_ENERGY_STAT is greater than INT_MAX (or rather, would be
+interpreted as a negative number). The end result is that it hits
+the if (offset < 0) check in update_msr_sum() resulting in the timer
+callback for updating the stat in the background when long durations
+are used to not happen. The similar issue exists in offset_to_idx()
+and update_msr_sum().
+
+This patch fixes this issue by converting the 'int' type to 'off_t'
+accordingly.
+
+Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ tools/power/x86/turbostat/turbostat.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index a211264b57fd..77557122b292 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -296,9 +296,9 @@ struct msr_sum_array {
+ /* The percpu MSR sum array.*/
+ struct msr_sum_array *per_cpu_msr_sum;
+ 
+-int idx_to_offset(int idx)
++off_t idx_to_offset(int idx)
+ {
+-	int offset;
++	off_t offset;
+ 
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+@@ -328,7 +328,7 @@ int idx_to_offset(int idx)
+ 	return offset;
+ }
+ 
+-int offset_to_idx(int offset)
++int offset_to_idx(off_t offset)
+ {
+ 	int idx;
+ 
+@@ -3338,7 +3338,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
+ 
+ 	for (i = IDX_PKG_ENERGY; i < IDX_COUNT; i++) {
+ 		unsigned long long msr_cur, msr_last;
+-		int offset;
++		off_t offset;
+ 
+ 		if (!idx_valid(i))
+ 			continue;
+@@ -3347,7 +3347,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
+ 			continue;
+ 		ret = get_msr(cpu, offset, &msr_cur);
+ 		if (ret) {
+-			fprintf(outf, "Can not update msr(0x%x)\n", offset);
++			fprintf(outf, "Can not update msr(0x%llx)\n", (long long int)offset);
+ 			continue;
+ 		}
+
+thanks,
+Chenyu 
+-- 
+2.25.1
+
+ 
+> -- 
+> Calvin Walton <calvin.walton@kepstin.ca>
+> 
