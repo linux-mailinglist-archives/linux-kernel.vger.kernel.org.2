@@ -2,154 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D73336987A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9936F369880
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243536AbhDWRbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:31:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34213 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243497AbhDWRbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:31:06 -0400
-IronPort-SDR: mkXzqMZILOt56ZbMijKrhgS0INbrnP+TC/7s0YGf55JxZ+IBTxtvV1F5v+GlIlsIU/Mi00CFmv
- P6Ti13fF/AzQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="260059737"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="260059737"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 10:30:26 -0700
-IronPort-SDR: q6Pas9V0T47DZV3hrjJc8xaFSoOVjDhmqyCDd/AXcMINRaEeUQHqTAHtpy6ZHlKdXQOWD73OIc
- /zO/ZL0OEzAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; 
-   d="scan'208";a="453634617"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Apr 2021 10:30:25 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lZzdI-0004ko-ST; Fri, 23 Apr 2021 17:30:24 +0000
-Date:   Sat, 24 Apr 2021 01:30:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/clang/Wimplicit-fallthrough] BUILD
- SUCCESS 60f1be5acf34a695cece2452558271f02310de29
-Message-ID: <6083042e.KDDZU9TV3SgdIsn4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232168AbhDWReh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:34:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231400AbhDWRef (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:34:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619199238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u22w+RSynisaPd5cjgqVArOtH7V0gJivQPhfXsRScaw=;
+        b=W42J9mYESRFlxPmyunZv4R/v1ziIk/Eo4XHLSqXOh+1Z3Xm3oj8jCeWMBnx+ExQ7vr3MsA
+        FqqkhI6b6+9SB+M7MLwSDznTMyKkGO2Kx4jOr1psRehzTqwdbveWdqZA93tCnzmJMRF2Ej
+        98T0NDfovu9hmLU2CHjzt5etoeNTpsw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-143-bFVwvJEzMcukoDy8ub4C6A-1; Fri, 23 Apr 2021 13:33:55 -0400
+X-MC-Unique: bFVwvJEzMcukoDy8ub4C6A-1
+Received: by mail-ed1-f71.google.com with SMTP id o4-20020a0564024384b0290378d45ecf57so19117718edc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:33:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u22w+RSynisaPd5cjgqVArOtH7V0gJivQPhfXsRScaw=;
+        b=GApNljghhapyoVgC4/GUht+C0aVwelUaKucra2P9iT9PbSVg6uZdOLrRGGFwHPIKGZ
+         pUn0jHNJryo3WV7XxBClD0FAHQ5gvxTiFj6NpZWARWxC0dQUhC1MHUZfy0enYHh5gXc8
+         1fa7zOFA7FhBxtvsOHmFRmKgwaOcTtyOEpdROmxoKwZOEqhzlumP7bFDvUvyPZEOTWsI
+         pDWNWX6kQF6/Ehy+fZdqWfpJy6WMbQSzTc94B57Jlo4AcOxMf367+C0Mtlc+Ns6hC5Nv
+         DHybX+Ybj3o2PqCaTJegHTcDm2SAukh86gSJKjyJMJtKRJo2E2+eS/SaBjeKrQ2tTRgg
+         X2zw==
+X-Gm-Message-State: AOAM531krZbhYj/BSKsvPLtw610Rr3tfnPRW44BsHiseEOUnJRpYLvAS
+        tKqsc/tvWT21RAU4uhEt37befaRiI6LphF5GuttptWHs7qCyKXNKjD9MJ39ZpG0JbZEy3/bfL1X
+        wZVXcH5Q/kl8stXtV0ts8FilZshI6ob+2wlW6Lx0UbVZwVCPJjHq9qGGKGLXtaC1j2yMJNV2iJJ
+        OL
+X-Received: by 2002:a17:906:eb4a:: with SMTP id mc10mr5462656ejb.392.1619199233756;
+        Fri, 23 Apr 2021 10:33:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxeiYnJN5V/hxrzJvjDvdcEqDPbWD0iFU40GKqTcCRu0jjmltVQfM6/bh5gUzMa0m8e5QhMbw==
+X-Received: by 2002:a17:906:eb4a:: with SMTP id mc10mr5462646ejb.392.1619199233549;
+        Fri, 23 Apr 2021 10:33:53 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ck29sm5316179edb.47.2021.04.23.10.33.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 10:33:53 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] i2c: cht-wc: Use fwnode for the controller and IRQ
+ domain
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210223172231.2224-1-andriy.shevchenko@linux.intel.com>
+ <fea7ce9a-01a9-cab8-8675-be5c44cb8a27@redhat.com>
+ <YDZLuzNivBP4HcPd@smile.fi.intel.com>
+ <7e5f8d81-0ee5-b8ad-ed72-06d4677cd8f7@redhat.com>
+ <CAHp75VeNZ9REU5nCDJ-Rt4Wmsnsz+hcN-P_oopzN8LpVTkU74g@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <0f395776-b14e-4fde-403e-633580b1d7f1@redhat.com>
+Date:   Fri, 23 Apr 2021 19:33:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAHp75VeNZ9REU5nCDJ-Rt4Wmsnsz+hcN-P_oopzN8LpVTkU74g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/clang/Wimplicit-fallthrough
-branch HEAD: 60f1be5acf34a695cece2452558271f02310de29  xfrm: Fix fall-through warnings for Clang
+Hi,
 
-elapsed time: 722m
+On 2/25/21 4:44 PM, Andy Shevchenko wrote:
+> On Thu, Feb 25, 2021 at 5:11 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>> On 2/24/21 1:51 PM, Andy Shevchenko wrote:
+>>> On Tue, Feb 23, 2021 at 08:25:35PM +0100, Hans de Goede wrote:
+>>>> On 2/23/21 6:22 PM, Andy Shevchenko wrote:
+>>>>> It's better to describe the I²C controller and associated IRQ domain with
+>>>>> fwnode, so they will find their place in the hierarchy in sysfs and also
+>>>>> make easier to debug.
+> 
+> ...
+> 
+>>>>> +   set_primary_fwnode(&adap->adapter.dev, fwnode);
+>>>>
+>>>> So now we have the main PMIC device i2c-client, the platform-device instantiated
+>>>> for the MFD-cell for the PMIC's builtin I2C-controller; and the device instantiated
+>>>> for the adapter-device all 3 share the same ACPI-companion fwnode.
+>>>
+>>> Okay, this step in this patch maybe not needed (or should be a separate change,
+>>> but I don't see clearly what would be the benefit out of it).
+> 
+> Shall I leave this or should be removed in v2?
+> 
+> ...
+> 
+>>>>> -   adap->irq_domain = irq_domain_add_linear(pdev->dev.of_node, 1,
+>>>>> -                                            &irq_domain_simple_ops, NULL);
+>>>>> +   adap->irq_domain = irq_domain_create_linear(fwnode, 1,
+>>>>> +                                               &irq_domain_simple_ops, NULL);
+>>>>
+>>>> Hmm, not sure this is right, admittedly the old code looks weird too, but now we
+>>>> are creating a second irq_domain at the same level as the irq_domain created for
+>>>> the IRQ-chip part of the PMIC. But this is really more of a child-domain of just
+>>>> the I2C-controller MFD-cell. The IRQ-CHIP part of the PMIC has a single IRQ for the
+>>>> I2C controller which gets raised both on i2c-transfer completions and when the
+>>>> pin on the PMIC which is reserved as input for the IRQ coming out of the charger-chip
+>>>> gets triggered.
+>>>>
+>>>> IOW we have this:
+>>>>
+>>>>
+>>>>                PMIC
+>>>>                  |
+>>>>     ------------------------------
+>>>>     |       |        |           |
+>>>>    IRQ1   IRQ2      IRQ3       I2C-IRQ
+>>>>                                  |
+>>>>                    ----------------------------------
+>>>>                    |        |         |             |
+>>>>                  READIRQ   WRIRQ    NACKIRQ     CLIENT-IRQ
+>>>>
+>>>> Where READIRQ, WRIRQ and NACKIRQ are directly consumed
+>>>> and the CLIENT-IRQ is being represented as a single IRQ on
+>>>> a new irqchip so that we can pass it along to the i2c-driver
+>>>> for the charger-chip which is connected to the Whiskey Cove's
+>>>> builtin I2C controller.
+>>>>
+>>>> But doing as you suggest would model the IRQs as:
+>>>>
+>>>>                PMIC
+>>>>                  |
+>>>>     --------------------------------------------------
+>>>>     |       |        |           |                    |
+>>>>    IRQ1   IRQ2      IRQ3       I2C-IRQ           CLIENT-IRQ
+>>>>
+>>>> Which is not the same really. I guess it is better then what we
+>>>> have though ?
+>>>
+>>> Hmm... There should not be difference in the hierarchy. add_linear ==
+>>> create_linear. The propagation of *device* (not an IRQ) fwnode is just
+>>> convenient way to have IRQ domain be named (instead of 'unknown-N' or so).
+>>> Maybe I have read __irq_domain_add() code wrongly.
+>>
+>> Sorry, this is probably my bad. The first ASCII-art which I posted is
+>> how things actually work in HW. The second one is how I assumed that
+>> things would look like in some nested representation of the IRQ-domains
+>> given that all the IRQs mentioned in the ASCII-art now use the same fwnode
+>> as parent for their domain. But poking around in sysfs I don't see any
+>> hierarchical representation of the domains at all. Actually I cannot
+>> find any representation of the IRQ domains inside sysfs (I've never
+>> looked at / into this before) ?
+> 
+> I have enabled  GENERIC_IRQ_DEBUGFS to see some information.
+> 
+>> If what you say is right and the fwnode is only used to set a name (where can
+>> I see those names ?) then your patch is probably correct.
+> 
+> I have checked again and I don't see anything except it uses it as a
+> domain name and takes reference count.
+> 
+>>> Nevertheless, thinking more about it, why we don't add an IRQ chip via regmap
+>>> IRQ API?
+>>
+>> There already is a regmap IRQ chip associated with the MFD device and the
+>> IRQ handling required here is somewhat tricky (see the comments in the driver)
+>> so I would prefer to keep this as is.
+> 
+> Ah, that makes things complicated a bit.
+> 
+>>>> Note I can test any changes made here, but I'm not 100% convinced that
+>>>> the current version of this patch is correct.
+>>>
+>>> If we settle on the idea first. I'm (slowly) looking forward to check another
+>>> CherryTrail device we have at the lab, but we lack of some (power) equipment
+>>> right now to setup it properly. I hope it may have the Whiskey Cove PMIC there.
+>>
+>> More testing is always welcome :)   With that said, testing these changes really
+>> is not a lot of work for me.
+> 
+> I would expect that we will have a clash with IRQ domain names and
+> thus we would need our own fwnode here.
+> 
+> I will think about it, but it sounds like we need to create a
+> hierarchy of the IRQ domains and take the device's fwnode as a parent
+> here.
+> 
+> Overall, I stumbled over of_node use in pure ACPI case (simplest "fix"
+> is to provide a NULL pointer there). If you think we can get rid of
+> of_node as intermediate step, I will send v2 with that.
 
-configs tested: 92
-configs skipped: 2
+Sorry for being slow to respond.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I agree that the of_node use is weird, so a patch which simply replaces the
+pdev->dev.of_node with NULL would be good. Otherwise I would just leave the
+code as is.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                            zeus_defconfig
-xtensa                    xip_kc705_defconfig
-arm64                            alldefconfig
-arc                        nsim_700_defconfig
-mips                    maltaup_xpa_defconfig
-um                                  defconfig
-h8300                       h8s-sim_defconfig
-arm                      tct_hammer_defconfig
-mips                             allyesconfig
-powerpc                  mpc885_ads_defconfig
-mips                      pic32mzda_defconfig
-riscv                          rv32_defconfig
-powerpc                     tqm8541_defconfig
-arm                        shmobile_defconfig
-mips                  maltasmvp_eva_defconfig
-riscv                             allnoconfig
-sh                           sh2007_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210423
-i386                 randconfig-a002-20210423
-i386                 randconfig-a001-20210423
-i386                 randconfig-a006-20210423
-i386                 randconfig-a004-20210423
-i386                 randconfig-a003-20210423
-x86_64               randconfig-a002-20210423
-x86_64               randconfig-a004-20210423
-x86_64               randconfig-a001-20210423
-x86_64               randconfig-a005-20210423
-x86_64               randconfig-a006-20210423
-x86_64               randconfig-a003-20210423
-i386                 randconfig-a014-20210423
-i386                 randconfig-a012-20210423
-i386                 randconfig-a011-20210423
-i386                 randconfig-a013-20210423
-i386                 randconfig-a015-20210423
-i386                 randconfig-a016-20210423
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Regards,
 
-clang tested configs:
-x86_64               randconfig-a015-20210423
-x86_64               randconfig-a016-20210423
-x86_64               randconfig-a011-20210423
-x86_64               randconfig-a014-20210423
-x86_64               randconfig-a012-20210423
-x86_64               randconfig-a013-20210423
+Hans
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
