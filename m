@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2103695AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C2C3695B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhDWPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:09:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231169AbhDWPJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:09:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4119E613B6;
-        Fri, 23 Apr 2021 15:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619190540;
-        bh=DB8AyJVJx3uP6abPgVEUHE+M+RxobNr+RluOPtJBTTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=louW5glYY+cXeezQ7VPYXJAEy4rmzmhCf5BMY/BJ9V2LdBBNDfbtYbz2hrZDj8Aul
-         Z5RDF4hJsrNkA+KXj4SGAH/OEe8fKbxLkaisN/4oKGH6Tz1ou07PKVzSHIrqJ8AZSC
-         /HMEH3/hCWFwnEZtPG3SbijCz1W/n30lvN02Rf2g=
-Date:   Fri, 23 Apr 2021 17:08:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/122] 5.11.16-rc1 review
-Message-ID: <YILjCtobRF6dZSty@kroah.com>
-References: <20210419130530.166331793@linuxfoundation.org>
- <607ddbe5.1c69fb81.88e5d.2cd1@mx.google.com>
+        id S231169AbhDWPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:10:15 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:20479 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230416AbhDWPKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:10:09 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d51 with ME
+        id wF9W2400q21Fzsu03F9X4c; Fri, 23 Apr 2021 17:09:32 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 23 Apr 2021 17:09:32 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, rppt@kernel.org, akpm@linux-foundation.org,
+        arnd@arndb.de
+Cc:     openrisc@lists.librecores.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] openrisc: Fix a memory leak
+Date:   Fri, 23 Apr 2021 17:09:28 +0200
+Message-Id: <c078439e31fd60e1617be8c17cc1ec57639e0586.1619190470.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <607ddbe5.1c69fb81.88e5d.2cd1@mx.google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 12:37:09PM -0700, Fox Chen wrote:
-> On Mon, 19 Apr 2021 15:04:40 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > This is the start of the stable review cycle for the 5.11.16 release.
-> > There are 122 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.16-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> 5.11.16-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
->                 
-> Tested-by: Fox Chen <foxhlchen@gmail.com>
+'setup_find_cpu_node()' take a reference on the node it returns.
+This reference must be decremented when not needed anymore, or there will
+be a leak.
 
-Thanks for testing and letting me know.
+Add the missing 'of_node_put(cpu)'.
 
-greg k-h
+Note that 'setup_cpuinfo()' that also calls this function already has a
+correct 'of_node_put(cpu)' at its end.
+
+Fixes: 9d02a4283e9c ("OpenRISC: Boot code")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ arch/openrisc/kernel/setup.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
+index 2416a9f91533..c6f9e7b9f7cb 100644
+--- a/arch/openrisc/kernel/setup.c
++++ b/arch/openrisc/kernel/setup.c
+@@ -278,6 +278,8 @@ void calibrate_delay(void)
+ 	pr_cont("%lu.%02lu BogoMIPS (lpj=%lu)\n",
+ 		loops_per_jiffy / (500000 / HZ),
+ 		(loops_per_jiffy / (5000 / HZ)) % 100, loops_per_jiffy);
++
++	of_node_put(cpu);
+ }
+ 
+ void __init setup_arch(char **cmdline_p)
+-- 
+2.27.0
+
