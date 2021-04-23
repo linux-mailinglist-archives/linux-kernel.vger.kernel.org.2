@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC70368FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224D8368FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbhDWJrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241818AbhDWJrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:47:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 145FE6145A;
-        Fri, 23 Apr 2021 09:46:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619171183;
-        bh=/LwOVaqw7XghWY9GSpGQLWfkHq5XaYKaIg1dmpHiTko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qM98FsStJXi3Tc1KoYyH5JDlZWOjXxY2s96Wd9beM3wGk+JXnAkMcnZGQpqTCv7gw
-         MSwnKANmOFSiKmoXszXPbYphXuriiEzv6VraWLr8Ts2wUS8Cw/TRq8Yrus4sxW/zYh
-         jO2glAtHXw3ogf3O/SFEAbr7xzlZEA8YSg4V7wNY=
-Date:   Fri, 23 Apr 2021 11:46:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>
-Subject: Re: [PATCH 165/190] Revert "mfd: mc13xxx: Fix a missing check of a
- register-read failure"
-Message-ID: <YIKXbOKAdgUyy9QY@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-166-gregkh@linuxfoundation.org>
- <20210423093042.GE6446@dell>
+        id S241862AbhDWJrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:47:09 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:26647 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241888AbhDWJrE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:47:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619171188; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Y4r/sBksddih4An+rVdi9oFleJsyckug23va/2vBzpA=;
+ b=YO1NQJnRB19iJi6IVW8coBuapJT8sf08SpIxOHLYYtLZZP7477x6h4ZhCW8ddVv1SRlJRbIG
+ oduYVKEELXwVf4wPMla5Sr78f6vqdIByHxLZfoEdHo9CsgWmAQDPPyOTpe9mIEc1Dc5GQJ0u
+ Ry2ZGLUbFVbUNDhEXF7YHYk2CEI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60829772215b831afb08e8db (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Apr 2021 09:46:26
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E0E2EC43143; Fri, 23 Apr 2021 09:46:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3513C433F1;
+        Fri, 23 Apr 2021 09:46:24 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423093042.GE6446@dell>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 23 Apr 2021 15:16:24 +0530
+From:   rojay@codeaurora.org
+To:     kernel test robot <lkp@intel.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V2] arm64: dts: sc7280: Add qspi, qupv3_0 and qupv3_1
+ nodes
+In-Reply-To: <202104230503.T7HqjQbJ-lkp@intel.com>
+References: <20210422150556.450-1-rojay@codeaurora.org>
+ <202104230503.T7HqjQbJ-lkp@intel.com>
+Message-ID: <6950c9c7b54892b2a8e81915743431ea@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 10:30:42AM +0100, Lee Jones wrote:
-> On Wed, 21 Apr 2021, Greg Kroah-Hartman wrote:
+On 2021-04-23 02:52, kernel test robot wrote:
+> Hi Roja,
 > 
-> > This reverts commit 9e28989d41c0eab57ec0bb156617a8757406ff8a.
-> > 
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > 
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> > 
-> > Cc: Kangjie Lu <kjlu@umn.edu>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  drivers/mfd/mc13xxx-core.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/mfd/mc13xxx-core.c b/drivers/mfd/mc13xxx-core.c
-> > index 1abe7432aad8..b2beb7c39cc5 100644
-> > --- a/drivers/mfd/mc13xxx-core.c
-> > +++ b/drivers/mfd/mc13xxx-core.c
-> > @@ -271,9 +271,7 @@ int mc13xxx_adc_do_conversion(struct mc13xxx *mc13xxx, unsigned int mode,
-> >  
-> >  	mc13xxx->adcflags |= MC13XXX_ADC_WORKING;
-> >  
-> > -	ret = mc13xxx_reg_read(mc13xxx, MC13XXX_ADC0, &old_adc0);
-> > -	if (ret)
-> > -		goto out;
-> > +	mc13xxx_reg_read(mc13xxx, MC13XXX_ADC0, &old_adc0);
-> >  
-> >  	adc0 = MC13XXX_ADC0_ADINC1 | MC13XXX_ADC0_ADINC2 |
-> >  	       MC13XXX_ADC0_CHRGRAWDIV;
+> Thank you for the patch! Yet something to improve:
 > 
-> Thanks for bringing this commit to my attention.
+> [auto build test ERROR on next-20210422]
+> [cannot apply to robh/for-next v5.12-rc8 v5.12-rc7 v5.12-rc6 v5.12-rc8]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 > 
-> The associated LWN article was an interesting read and I have to say,
-> I was very disappointed to hear about the actions of these so called
-> researchers.
+> url:
+> https://github.com/0day-ci/linux/commits/Roja-Rani-Yarubandi/arm64-dts-sc7280-Add-qspi-qupv3_0-and-qupv3_1-nodes/20210422-230756
+> base:    c457d9676496f5a895509f9c510278beaaffc829
+> config: arm64-randconfig-r012-20210421 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
+> f5446b769a7929806f72256fccd4826d66502e59)
+> reproduce (this is a W=1 build):
+>         wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         #
+> https://github.com/0day-ci/linux/commit/78ed1b1d4c9f34dd06ae4494b78d70334fa8d7c1
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review
+> Roja-Rani-Yarubandi/arm64-dts-sc7280-Add-qspi-qupv3_0-and-qupv3_1-nodes/20210422-230756
+>         git checkout 78ed1b1d4c9f34dd06ae4494b78d70334fa8d7c1
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1
+> ARCH=arm64
 > 
-> Upon re-review of the original commit, this one does appear valid.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Do I need to conduct anymore due diligence or can I drop this patch?
+> All errors (new ones prefixed by >>):
+> 
+>>> Error: arch/arm64/boot/dts/qcom/sc7280.dtsi:325.31-32 syntax error
+>    FATAL ERROR: Unable to parse input tree
+> 
 
-Nope, that's it, I'll drop this from my series, thanks for the review!
+This error is due to "clk_virt" node parse issue which will be defined 
+in ICC patches
+https://lore.kernel.org/patchwork/project/lkml/list/?series=488429
+I also mentioned the dependency in the patch.
 
-greg k-h
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
