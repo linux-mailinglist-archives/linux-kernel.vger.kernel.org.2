@@ -2,156 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71F536948D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E113694AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240937AbhDWOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:24:43 -0400
-Received: from mga17.intel.com ([192.55.52.151]:1726 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239433AbhDWOYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:24:40 -0400
-IronPort-SDR: YN3SxdbGSJPH35GwsuWjyJdwEnf92F90PfsmS7UT8VoYsNYn5i+ohc8PkdDxKcr1NIEH4EPW2r
- 4g+GrCw6NJ8g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="176196443"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="176196443"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 07:24:03 -0700
-IronPort-SDR: rnqVjzOh+PgNs1niXbmYPkNux5I8Dd2kRUoYSCap5oovzlJiL/2mfqXZ5gIg3wTxodoKb9Lwr5
- 6rlNza97J39Q==
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="421775191"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 07:24:01 -0700
-Date:   Fri, 23 Apr 2021 22:27:49 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Calvin Walton <calvin.walton@kepstin.ca>
-Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
-        lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
-        rui.zhang@intel.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <20210423142749.GA428460@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop>
- <20210420080701.GA2326@zn.tnic>
- <20210420131541.GA388877@chenyu-desktop>
- <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
- <20210420143754.GA390118@chenyu-desktop>
- <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
- <20210423121607.GA426003@chenyu-desktop>
- <4080ac25f6c8ca4088a950eb9d63da641c020941.camel@kepstin.ca>
+        id S231362AbhDWO2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242619AbhDWO23 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 10:28:29 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D633C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:27:53 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id o21so8387365qtp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YLPJWY/azRbnnEeqJelTHQDU3rlCapQE7SWi8gOkxo8=;
+        b=X8DMnOvJWz6RVRUcb6+nr43WXMARL/jS3IeUBfx0zbIDKsAcmX69OndHPl+ndP2HGJ
+         VH9VgVugzyWKzbcfFKLCIUxTRIlbynnxGumlG227wFnOYYHOx51GidlswE9k5kFwkIQt
+         RwmBGsmDEtfnn56saGev6jZPLRffF5TngdXYcHxlLYUz2WcXvKiBzcD89hdg1t88bu3t
+         MK7Xwt6gXFikn7F7kEx/P/Gmyn6y2iizIGswNP9TlXVlUByT+nGEJXJvixkqNjWCF6Ry
+         SOGd19Xj3sG7YdJVb22Uhkv/NtXAot/N51k1rPmwGqBIkXRY4pKNEBBuxAqpatiFjJ2f
+         2CfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YLPJWY/azRbnnEeqJelTHQDU3rlCapQE7SWi8gOkxo8=;
+        b=camfR04uuKYb5132NeEArzw1FCZ6/YXYNdO20hxvopiii5TOu/gvdBvdEqm/c0SWpU
+         2YgseIZrmwIGX4fN6pxSvf9R8hOo+I6nveuqCZ6w3ktKdbZW0w3ENhUWgHAg2tFAYOus
+         be1aTzhrRr8IZlEwuVk8IxIPOG2Nl7BNh4/TqXV0BxfF8OPEwINXOKwmbQ7lJB3j94Rq
+         9Dm4TjYfqGCDEq8gLUUTc4Jt11Jw3BByarohh0EDE14F8iHrQJpM5Uc4oLv9G+bgbwUz
+         udK7aCVxJqRkNEQQED/ENY3YKa6V734qyUxp7gb1AuR+LatQba2U7fwujWckuVVOR6s/
+         NYLA==
+X-Gm-Message-State: AOAM531GyydC1B701tGxZPG6BG8q3ficzkvodoPZT2yFT/CryNvvuotW
+        mpGqOOsOTV4TdozeKvAAvoGDwg==
+X-Google-Smtp-Source: ABdhPJxkzemfNaJUgp3rIDqZFUObtNumgoSWIwZ/JIcNRt5n2hkELchTzx5suzsRW3S+A6j/ytkumg==
+X-Received: by 2002:ac8:488f:: with SMTP id i15mr4193224qtq.75.1619188072605;
+        Fri, 23 Apr 2021 07:27:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id x20sm4412854qkf.42.2021.04.23.07.27.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:27:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lZwmd-00AbSa-Gy; Fri, 23 Apr 2021 11:27:51 -0300
+Date:   Fri, 23 Apr 2021 11:27:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
+Message-ID: <20210423142751.GI2047089@ziepe.ca>
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
+ <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
+ <40c21bfe-e304-230d-b319-b98063347b8b@acm.org>
+ <20210422122419.GF2047089@ziepe.ca>
+ <782e329a-7c3f-a0da-5d2f-89871b0c4b9b@acm.org>
+ <YIG5tLBIAledZetf@unreal>
+ <53b2ef14-1b8a-43b1-ef53-e314e2649ea0@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4080ac25f6c8ca4088a950eb9d63da641c020941.camel@kepstin.ca>
+In-Reply-To: <53b2ef14-1b8a-43b1-ef53-e314e2649ea0@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 10:04:10AM -0400, Calvin Walton wrote:
-> On Fri, 2021-04-23 at 20:16 +0800, Chen Yu wrote
-> > 
-> > Calvin, could you please take a look at the following version if it
-> > is suitible?
-> 
-> I assume this patch is adapted from my earlier submission of the
-> complete fix to be an incremental fix on top of the already applied
-> patch? If so, you are OK to add
-> 
-> Signed-off-by: Calvin Walton <calvin.walton@kepstin.ca>
->
-Thanks Calvin. BTW, I did not receive your incremental patch on top of
-already applied one, so I post this patch in the name of yours. 
-> > From b2e63fe4f02e17289414b4f61237da822df115fb Mon Sep 17 00:00:00
-> > 2001
-> > From: Calvin Walton <calvin.walton@kepstin.ca>
-> > Date: Fri, 23 Apr 2021 17:32:13 +0800
-> > Subject: [PATCH 3/5] tools/power turbostat: Fix offset overflow issue
-> > in index
-> >  converting
-> > 
-> > The idx_to_offset() function returns type int (32-bit signed), but
-> > MSR_PKG_ENERGY_STAT is greater than INT_MAX (or rather, would be
-> > interpreted as a negative number). The end result is that it hits
-> > the if (offset < 0) check in update_msr_sum() resulting in the timer
-> > callback for updating the stat in the background when long durations
-> > are used to not happen. The similar issue exists in offset_to_idx()
-> > and update_msr_sum().
-> > 
-> > This patch fixes this issue by converting the 'int' type to 'off_t'
-> > accordingly.
-> 
-> This patch covers all of the places I know about which had type issues
-> - it should be good. Thanks!
-> 
-Okay, as per Boris' suggestion, this patch has changed the off_t to unsigned int,
-and the print format is kept the same as '%x' without casting, how about this:
-
-
-From d5923502d0010d5e4d722c2a01ee8bda4a13bf75 Mon Sep 17 00:00:00 2001
-From: Calvin Walton <calvin.walton@kepstin.ca>
-Date: Fri, 23 Apr 2021 17:32:13 +0800
-Subject: [PATCH 3/5] tools/power turbostat: Fix offset overflow issue in index
- converting
-
-The idx_to_offset() function returns type int (32-bit signed), but
-MSR_PKG_ENERGY_STAT is u32 and would be interpreted as a negative number.
-The end result is that it hits the if (offset < 0) check in update_msr_sum()
-which prevents the timer callback from updating the stat in the background when
-long durations are used. The similar issue exists in offset_to_idx() and
-update_msr_sum().
-
-This patch fixes this issue by converting the 'int' to 'unsigned int'
-accordingly.
-
-Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-Signed-off-by: Calvin Walton <calvin.walton@kepstin.ca>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- tools/power/x86/turbostat/turbostat.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index a211264b57fd..dcde41784059 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -296,9 +296,9 @@ struct msr_sum_array {
- /* The percpu MSR sum array.*/
- struct msr_sum_array *per_cpu_msr_sum;
+On Thu, Apr 22, 2021 at 01:30:00PM -0700, Bart Van Assche wrote:
  
--int idx_to_offset(int idx)
-+unsigned int idx_to_offset(int idx)
- {
--	int offset;
-+	unsigned int offset;
- 
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
-@@ -328,7 +328,7 @@ int idx_to_offset(int idx)
- 	return offset;
- }
- 
--int offset_to_idx(int offset)
-+int offset_to_idx(unsigned int offset)
- {
- 	int idx;
- 
-@@ -3338,7 +3338,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
- 
- 	for (i = IDX_PKG_ENERGY; i < IDX_COUNT; i++) {
- 		unsigned long long msr_cur, msr_last;
--		int offset;
-+		unsigned int offset;
- 
- 		if (!idx_valid(i))
- 			continue;
--- 
-2.25.1
+> But where does that Cc-list come from? If I extract that patch and run the
+> get_maintainer.pl script, the following output appears:
 
-> -- 
-> Calvin Walton <calvin.walton@kepstin.ca>
-> 
+Andrew takes it from the email CC list in the original email that the
+patch came from
+
+Jason
