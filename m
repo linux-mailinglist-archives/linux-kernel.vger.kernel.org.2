@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E781368ED8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6497368EDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241465AbhDWIbv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 04:31:51 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3091 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhDWIbt (ORCPT
+        id S241500AbhDWIcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:32:48 -0400
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:52909 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230192AbhDWIcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:31:49 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FRS872hQ1zWb1D;
-        Fri, 23 Apr 2021 16:27:19 +0800 (CST)
-Received: from dggpeml100024.china.huawei.com (7.185.36.115) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 23 Apr 2021 16:31:09 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggpeml100024.china.huawei.com (7.185.36.115) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Apr 2021 16:31:08 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Fri, 23 Apr 2021 09:31:06 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "julien.thierry.kdev@gmail.com" <julien.thierry.kdev@gmail.com>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "julien@xen.org" <julien@xen.org>, Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH v4 00/16] kvm/arm: Align the VMID allocation with the
- arm64 ASID one
-Thread-Topic: [PATCH v4 00/16] kvm/arm: Align the VMID allocation with the
- arm64 ASID one
-Thread-Index: AQHXMSCyInFjZI/53EW8vK01de3czarAsIkAgAENuIA=
-Date:   Fri, 23 Apr 2021 08:31:06 +0000
-Message-ID: <acb761853cb1494a9eb2c345ddd9afd4@huawei.com>
-References: <20210414112312.13704-1-shameerali.kolothum.thodi@huawei.com>
- <20210422160846.GB2214@willie-the-truck>
-In-Reply-To: <20210422160846.GB2214@willie-the-truck>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.94.116]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 23 Apr 2021 04:32:47 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 56DD12458
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:32:10 +0100 (IST)
+Received: (qmail 11135 invoked from network); 23 Apr 2021 08:32:10 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.248])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Apr 2021 08:32:09 -0000
+Date:   Fri, 23 Apr 2021 09:32:08 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/9] mm/vmstat: Convert NUMA statistics to basic NUMA
+ counters
+Message-ID: <20210423083208.GB4239@techsingularity.net>
+References: <20210422111441.24318-1-mgorman@techsingularity.net>
+ <20210422111441.24318-4-mgorman@techsingularity.net>
+ <ba72d967-aa4e-47e5-5f99-df3dd0bf21d2@suse.cz>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <ba72d967-aa4e-47e5-5f99-df3dd0bf21d2@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Will Deacon [mailto:will@kernel.org]
-> Sent: 22 April 2021 18:09
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: linux-arm-kernel@lists.infradead.org; kvmarm@lists.cs.columbia.edu;
-> linux-kernel@vger.kernel.org; maz@kernel.org; catalin.marinas@arm.com;
-> james.morse@arm.com; julien.thierry.kdev@gmail.com;
-> suzuki.poulose@arm.com; jean-philippe@linaro.org; julien@xen.org; Linuxarm
-> <linuxarm@huawei.com>
-> Subject: Re: [PATCH v4 00/16] kvm/arm: Align the VMID allocation with the
-> arm64 ASID one
+On Thu, Apr 22, 2021 at 05:18:38PM +0200, Vlastimil Babka wrote:
+> > +
+> > +#ifdef CONFIG_NUMA
+> > +static void fold_vm_zone_numa_events(struct zone *zone)
+> >  {
+> > -	int i;
+> > -	int changes = 0;
+> > +	int zone_numa_events[NR_VM_NUMA_EVENT_ITEMS] = { 0, };
 > 
-> On Wed, Apr 14, 2021 at 12:22:56PM +0100, Shameer Kolothum wrote:
-> > Hi,
-> >
-> > This is an attempt to revive this series originally posted by
-> > Julien Grall[1]. The main motive to work on this now is because
-> > of the requirement to have Pinned KVM VMIDs and the RFC discussion
-> > for the same basically suggested[2] to have a common/better vmid
-> > allocator for KVM which this series provides.
-> >
-> > Major Changes from v3:
-> >
-> > -Changes related to Pinned ASID support.
-> > -Changes to take care KPTI related bits reservation.
-> > -Dropped support for 32 bit KVM.
-> > -Rebase to 5.12-rc7
-> >
-> > Individual patches have change history for any major changes
-> > from v3.
-> >
-> > Tests were performed on a HiSilicon D06 platform and so far not observed
-> > any regressions.
-> >
-> > For ASID allocation,
-> >
-> > Avg of 10 runs(hackbench -s 512 -l 200 -g 300 -f 25 -P),
-> > 5.12-rc7: Time:18.8119
-> > 5.12-rc7+v4: Time: 18.459
-> >
-> > ~1.8% improvement.
-> >
-> > For KVM VMID,
-> >
-> > The measurement was made with maxcpus set to 8 and with the
-> > number of VMID limited to 4-bit. The test involves running
-> > concurrently 40 guests with 2 vCPUs. Each guest will then
-> > execute hackbench 5 times before exiting.
-> >
-> > The performance difference between the current algo and the
-> > new one are(ag. of 10 runs):
-> >     - 1.9% less exit from the guest
-> >     - 0.7% faster
-> >
-> > For complete series, please see,
-> >  https://github.com/hisilicon/kernel-dev/tree/private-v5.12-rc7-asid-v4
-> >
-> > Please take a look and let me know your feedback.
+> Should this be long? pzstats are, the global counters too, so seems weird to use
+> int as intermediate sum counter.
 > 
-> Although I think aligning the two algorithms makes sense, I'm not completely
-> sold on the need to abstract all this into a library and whether the
-> additional indirection is justified.
+
+While overflow can happen eventually, unsigned long defers the problem
+so yes, I'll make it unsigned long.
+
+> >  #ifdef CONFIG_NUMA
+> > -		for (i = 0; i < NR_VM_NUMA_STAT_ITEMS; i++)
+> > -			if (pzstats->vm_numa_stat_diff[i]) {
+> > +		for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++) {
+> > +			if (pzstats->vm_numa_event[i]) {
+> >  				int v;
 > 
-> It would be great to compare this approach with one where portions of the
-> code are duplicated into a separate VMID allocator. Have you tried that to
-> see what it looks like? Doesn't need to be a proper patch set, but comparing
-> the end result might help to evaluate the proposal here.
+> Also long?
+> 
 
-Ok. I will give it a go and get back.
+Same.
 
-Thanks,
-Shameer
-	
+> >  /*
+> > @@ -939,43 +914,36 @@ void cpu_vm_stats_fold(int cpu)
+> >   */
+> >  void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+> >  {
+> > -	int i;
+> > +	int i, v;
+> 
+> And the 'v' here. Maybe keep using local to each loop below and make it long for
+> the NUMA one?
+> 
+
+I just made it unsigned long. There is no storage advantage to changing
+type in a local scoped variable.
+
+Thanks
+
+-- 
+Mel Gorman
+SUSE Labs
