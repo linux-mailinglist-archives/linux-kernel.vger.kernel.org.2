@@ -2,73 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D79368E2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF77368E38
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241163AbhDWH5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:57:25 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:11038 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhDWH5X (ORCPT
+        id S241084AbhDWIAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230007AbhDWIAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:57:23 -0400
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 41DA8E04BA;
-        Fri, 23 Apr 2021 15:56:44 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        zhouchuangao <zhouchuangao@vivo.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel/notifier: Use BUG_ON instead of if condition followed by BUG
-Date:   Fri, 23 Apr 2021 00:56:34 -0700
-Message-Id: <1619164597-69309-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGRgfTlYYGh9DTR5DHUlJHklVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NEk6OSo5Tz8WFg0dQ1EBM1EV
-        LT8aFBZVSlVKTUpCSk1PTUtPTEpNVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlLT003Bg++
-X-HM-Tid: 0a78fdbb27d42c17kusn41da8e04ba
+        Fri, 23 Apr 2021 04:00:39 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E40C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:00:01 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id w24so292351vsq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pmtAlemk9SkQiMZDpYGCeEcDtc4HAQA190oHucpZ6SI=;
+        b=GxfOAh/M/OMPoZSX6vx3Y/rchiyiDt/hPaZ5VKds+a9vdawKMk+Hmy5u/asG8VI3LO
+         we3/vg/JR9S0cIilK4a4sOuOE6wjMP/nDaQJkB1m/icFjhCxVvOcUd5ch0mrAEIMbpZz
+         vtoZdDvHo5JeD6bmQT03VXdw4A+iSH4q5BRQWzPEtSy79W2Sixw4baXFX/jHtnoGdrit
+         G+y8ubozgRrzmU7v22jIkAqlNIVmnfXrWvQf+AkAEX/YjqjPtnhvaXQLK163f8NG8i1j
+         50EqzRglaKnOArkqsYhHouaDe48OxH4koVEZadnoa7fPuGnOj1S3C6NUq8i4gy7I0x30
+         SS8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pmtAlemk9SkQiMZDpYGCeEcDtc4HAQA190oHucpZ6SI=;
+        b=h6HiR77nJgQRritvIjIV/U015X4FfJ/EH/d4CHA9lucV2qEG/wCj4ixfNcrAqyRct3
+         r41GX36NcPuL0ruGlxouI/FfIJbdNZm3x5TkLTy6dv7v48EF1aNYWy6TGS+lr+jhQC4/
+         wbX/OA65fTdrUOdrSIDvvOW5Nkg8SMETuHnT0kcbcYooJcXq6wg93NCNbxSczXgCo1EO
+         pmHiLWCzH0cS5xpQmpeB9fzXsj97XlVPGA3O0Pli4bZ7e1RHTtKOUluw46u4FYZ3kEmX
+         Z1z+yPVXHGYM06AnQ+7dsDbJdfI3DKD/9YVANkVbl1RuwFc8PQolwG7e/5bTm5cytDou
+         UztQ==
+X-Gm-Message-State: AOAM533pLJm0AYyQ/HwwIM0G+nZFbcwiaAVj4tHfwjMgF8IkyPr1N0VM
+        MkLmpBd6Bsn8hb09UGrUaaHL9ulj7tlTwbt+cKO4bg==
+X-Google-Smtp-Source: ABdhPJw1eb9lAuquyTjGTAeDhOqfXxVOUgDPREXGno3kNAY+lV6q3CImbRpUTYs6UqoM7kV4bUn3Ho8EuYgbNwIiYy8=
+X-Received: by 2002:a67:e902:: with SMTP id c2mr2022417vso.42.1619164800544;
+ Fri, 23 Apr 2021 01:00:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210421135215.3414589-1-arnd@kernel.org>
+In-Reply-To: <20210421135215.3414589-1-arnd@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 23 Apr 2021 09:59:24 +0200
+Message-ID: <CAPDyKFqy_yqYNjBykv7L3Cbs_bRh78O4tQdf-8+W08yRzyFNOA@mail.gmail.com>
+Subject: Re: [PATCH] memstick: r592: ignore kfifo_out() return code again
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BUG_ON uses unlikely in if(). Through disassembly, we can see that
-brk #0x800 is compiled to the end of the function.
-As you can see below:
-    ......
-    ffffff8008660bec:   d65f03c0    ret
-    ffffff8008660bf0:   d4210000    brk #0x800
+On Wed, 21 Apr 2021 at 15:52, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> A minor cleanup to address a clang warning removed an assigned
+> but unused local variable, but this now caused a gcc warning as
+> kfifo_out() is annotated to require checking its return code:
+>
+> In file included from drivers/memstick/host/r592.h:13,
+>                  from drivers/memstick/host/r592.c:21:
+> drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
+> include/linux/kfifo.h:588:1: error: ignoring return value of '__kfifo_uint_must_check_helper' declared with attribute 'warn_unused_result' [-Werror=unused-result]
+>   588 | __kfifo_uint_must_check_helper( \
+>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   589 | ({ \
+>       | ~~~~
+>   590 |         typeof((fifo) + 1) __tmp = (fifo); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   591 |         typeof(__tmp->ptr) __buf = (buf); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   592 |         unsigned long __n = (n); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   593 |         const size_t __recsize = sizeof(*__tmp->rectype); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   594 |         struct __kfifo *__kfifo = &__tmp->kfifo; \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   595 |         (__recsize) ?\
+>       |         ~~~~~~~~~~~~~~
+>   596 |         __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   597 |         __kfifo_out(__kfifo, __buf, __n); \
+>       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   598 | }) \
+>       | ~~~~
+>   599 | )
+>       | ~
+> drivers/memstick/host/r592.c:367:9: note: in expansion of macro 'kfifo_out'
+>   367 |         kfifo_out(&dev->pio_fifo, buffer, 4);
+>       |         ^~~~~~~~~
+>
+> The value was never checked here, and the purpose of the function
+> is only to flush the contents, so restore the old behavior but
+> add a cast to void and a comment, which hopefully warns with neither
+> gcc nor clang now.
+>
+> If anyone has an idea for how to fix it without ignoring the return
+> code, that is probably better.
 
-Usually, the condition in if () is not satisfied. For the
-multi-stage pipeline, we do not need to perform fetch decode
-and excute operation on brk instruction.
+Perhaps, if you can't do anything with return value, why is kfifo_out
+declared like this?
 
-In my opinion, this can improve the efficiency of the
-multi-stage pipeline.
+>
+> Fixes: 4b00ed3c5072 ("memstick: r592: remove unused variable")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
----
- kernel/notifier.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Kind regards
+Uffe
 
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index 1b019cb..2b0ed7d 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -522,8 +522,7 @@ EXPORT_SYMBOL_GPL(srcu_notifier_call_chain);
- void srcu_init_notifier_head(struct srcu_notifier_head *nh)
- {
- 	mutex_init(&nh->mutex);
--	if (init_srcu_struct(&nh->srcu) < 0)
--		BUG();
-+	BUG_ON(init_srcu_struct(&nh->srcu) < 0);
- 	nh->head = NULL;
- }
- EXPORT_SYMBOL_GPL(srcu_init_notifier_head);
--- 
-2.7.4
-
+> ---
+>  drivers/memstick/host/r592.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+> index 026fadaa1d5d..615a83782e55 100644
+> --- a/drivers/memstick/host/r592.c
+> +++ b/drivers/memstick/host/r592.c
+> @@ -359,12 +359,15 @@ static void r592_write_fifo_pio(struct r592_device *dev,
+>  /* Flushes the temporary FIFO used to make aligned DWORD writes */
+>  static void r592_flush_fifo_write(struct r592_device *dev)
+>  {
+> +       int ret;
+>         u8 buffer[4] = { 0 };
+>
+>         if (kfifo_is_empty(&dev->pio_fifo))
+>                 return;
+>
+> -       kfifo_out(&dev->pio_fifo, buffer, 4);
+> +       ret = kfifo_out(&dev->pio_fifo, buffer, 4);
+> +       /* intentionally ignore __must_check return code */
+> +       (void)ret;
+>         r592_write_reg_raw_be(dev, R592_FIFO_PIO, *(u32 *)buffer);
+>  }
+>
+> --
+> 2.29.2
+>
