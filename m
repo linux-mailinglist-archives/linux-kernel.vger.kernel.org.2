@@ -2,408 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B819F368CB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D763368CB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240380AbhDWFcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 01:32:01 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:18489 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWFcA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 01:32:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1619155884; x=1650691884;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=E2snjoQ11tZfkEvJilxxedofaM8PfiL8WD8LlXUPLXA=;
-  b=VC64xwjFyN/n5GoqOrmfRzlKnDmJts6LjctsjTCUamXIJYBShyAqm22q
-   QE+2zZClT80GQ9rHR9uTA2DHzTFWCrp3mS6e8DfRcQBr5bN5NZkZndTSV
-   ggJAaIz0SqmzIePV7ZR5LuHQO9gCk1LAX7mx9WJZcOxsbx4XwNDtDMFoV
-   1CFQX36OpRgdfw3qpMNbFYfBxTWMoey9aM0hCFUAFPeHcnaAMthst6uUN
-   6U1+Msi/7KWmLCJmXAuxlUUY4yTOBFVyAtMbcoZHZiPdFuOpzojYyLui0
-   AcUfUAVnoNaiLAJUfxfni1vBuBnzPkT5yj3O1oJqPmB2Q2At7QybPY3qH
-   w==;
-IronPort-SDR: tBbJbYZbMUmIDTltUSEYrJpIUgrA+g/UGTJpvPo7uFvfwzjq0J/kkOWJilkbXIroWyQAcRAbRo
- cFqiGddaTBZU8Iz72mQSDLZiVUiD04yqBc2icdlxjx6Fjqw9UWNJBkfZwFnzANbmVi8fe6LrMU
- dBdUXZ/N2mu3161I1SClhA9a+n7+mF4V93GWMOSYRUIEwbNYakGVj+mvNxVYrt/fEjeNcwj5Ae
- yxs5ttxxvR1Q5hM0DZcIv5SHPxBFL0CRXgEbtZ7Ql/6y4l9ScX1CaRlGz40ADyZFio+8JZNd+5
- TPg=
-X-IronPort-AV: E=Sophos;i="5.82,244,1613404800"; 
-   d="scan'208";a="165331254"
-Received: from mail-bn7nam10lp2100.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.100])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Apr 2021 13:31:22 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0Tetdk3hUZURwJLvnSHTc9H+KTyO42jUMA6al+S13ZvndeZdlJaYcxUoOivSnmZIclhEqKMeB2mKjuWaBta0opz7r4K+ffGtr2iXTLaLXl1Cdu3o97vw+XM6b5MEUsA19n/UZuuGUswltxMB0ZYsk5gH3jsJyO+8cKSlC8N7L47b761Pj3uwhCtMtG638Br/kRH+oHxV7rtHDIMCXczpamd6OrH+UluVaN2O1doAx5MSkfHNErLf4vVG4sA62EGDBYr1TCdeLGxeUS46m3SjOFw0ulMmrxcXCgyzXDutt7jvxNlam04nCTtQ8zLTC3iv3DQG9WOHiK6s8Sbk4crDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BNmlhDihaw81foBk3HuqVK2rLohJRe2OlA9s3ePtU+U=;
- b=SwERC/r5CL0L5lxsSEcoaEWHzZkAVksQQT7qX1UnxPw2jdc9HVA90dinVLn5+I4hcLPhPaSqTmS/Kcy4cDWz3M6a8okZ0pBZTyC1hGUQ1Ao/C/ITv3cI0mONgKsnxuU3ymnwzvIylMGLwtVScZ0NSGwsBbg29PxwgegvZsZe4vOavBiE11g8tZa1C4OGQNPz1KH1W3JOnz/f+QBLF3b0tzNn0MLL7tUMOJwvdVOvDV/pJWSDSLG6JV+YefxnciCOYLgVrSCUeA8oqg310CfdNiM4+5EeItfIMeV2b4fHae9EhnwfIpbBxFVZ/k0GDJumzlqml+ZNPBuNJfFsn7x7jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BNmlhDihaw81foBk3HuqVK2rLohJRe2OlA9s3ePtU+U=;
- b=bpyyoVdjJpGr5QBmgm7TyY/AIufOQxUk2lsO7doJ92IZfp9T+RX5he3Di5QnI4lxQMiBXiild64R33tdOFDgM9BOHhprL9vdszYTEtuCLlo7jn7AW6pzSsy2GKYRmK6HF7EJDcryDkQYs0Vbe2mnC+dx+bsJ7inMdgkKdXl2FJE=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM5PR04MB0859.namprd04.prod.outlook.com (2603:10b6:3:f6::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4065.21; Fri, 23 Apr 2021 05:31:21 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ed2d:4ccc:f42b:9966%5]) with mapi id 15.20.4065.021; Fri, 23 Apr 2021
- 05:31:21 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "luserhker@gmail.com" <luserhker@gmail.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "kenny.gibbons@oracle.com" <kenny.gibbons@oracle.com>,
-        "kimito.sakata@oracle.com" <kimito.sakata@oracle.com>,
-        "rkamdar@micron.com" <rkamdar@micron.com>,
-        "chris@printf.net" <chris@printf.net>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
-Subject: RE: [PATCH RESEND v3] mmc-utils: Re-submit of the erase command
- addition plus remval of MMC_IOC_MULTI_CMD ifndef for erase. Re-committing the
- change per request by Avir.
-Thread-Topic: [PATCH RESEND v3] mmc-utils: Re-submit of the erase command
- addition plus remval of MMC_IOC_MULTI_CMD ifndef for erase. Re-committing the
- change per request by Avir.
-Thread-Index: AQHXN5JfYd4MGzWFC0OPnwBESIafXarBkC5ggAADoHA=
-Date:   Fri, 23 Apr 2021 05:31:20 +0000
-Message-ID: <DM6PR04MB6575ABF56616177093F75D80FC459@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210422161255.4610-1-luserhker@gmail.com>
- <DM6PR04MB657557ACD70FF26950CF0B0AFC459@DM6PR04MB6575.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB657557ACD70FF26950CF0B0AFC459@DM6PR04MB6575.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dc8e75a1-476f-458a-7d38-08d9061906f4
-x-ms-traffictypediagnostic: DM5PR04MB0859:
-x-microsoft-antispam-prvs: <DM5PR04MB0859464805D786EC6484FB08FC459@DM5PR04MB0859.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ncEaGMtIaTYvB38lnPdNIDPIKqMj5yjPdxnmKrLCeVFOEZvrQ3uWiYS4Yt06v9n3DSeDtExl2OB4D88EiERs8RH3zMimELAVZG4uSC1FAsS3CoQFDjOxPbJz37vbhEHVv0DHBWlozqQ/fFG7YPXhbYMIbrU0FkiGjlbFSHd8cVecOMUHxrNNW+JhsDZuI1a8EPRUL80VCIeMvsBk7gkReRewvd1rIzoYuIeIVNcFPfXUn7s3U9+DSUN4O6oF8bEwhrd3xTi0Q/zvW2KGwh8ozfLmq8SSARXj3uhBEQhlI70pXKG4A3kWsusuSr3k+XkPTUVXwx98eN1WC9Cc1+tpxl4T/VWHitKSCquoOtw/M0vKwBpSGwtI4AWQUzNNKfSBApwodpQBsUJQxJZ9lOSd7kv6r+6f3gXhuRaGSmvGCkai9rI1+mml7K/LWWtpcFjA5spm08ZJzLxawI6jzCt1v4ekr16AF276ZjFAWxPP5NsHQfYmNAPsg2Br3+yU0E/pfCJgHvvBRc2KUuDmuuWmSdqvcYSe3HfqYdzvQuAK/gusBt5Zl2Yhjkk7sT/gNEhA2aEJEwIZ2/ZfTgCCMZEAiKl2PCOvy8ELo5MhzaOAiDeg4O9pFAckA9OoItgk/VdjIzBq5CdaGiuIWLiCOjxNZ0Po3U5ipWnE8exxsZb1xPEP25U8B7tv1UH/STEURRH0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(136003)(39860400002)(376002)(66946007)(5660300002)(7696005)(33656002)(6506007)(71200400001)(66556008)(64756008)(38100700002)(66446008)(66476007)(76116006)(110136005)(54906003)(122000001)(86362001)(186003)(2906002)(2940100002)(9686003)(55016002)(316002)(83380400001)(966005)(4326008)(52536014)(478600001)(26005)(8936002)(8676002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FdM8tZbg8uEdfdcSUbfTi4Q1+qrkEDai2xlL8WNlgU8G/+IFIEW74hGtyfD7?=
- =?us-ascii?Q?8yzZsssidtMRlV8RGCSEaWrGEeuAIY0msvcCW0WXdQwqllYvzbrrJIc1tstC?=
- =?us-ascii?Q?Q/u7BuL0nxzF/BhnAn6quNQaZeoPpqBCHa7bmj83q9DhFBbvL4dmY/vzJNRY?=
- =?us-ascii?Q?B3rABQelrBK9cTKULzumSzmDt9/A7L7oP5K4oKpLJRLCEkWSSv8RBE8jPX+F?=
- =?us-ascii?Q?KO9jJ/d4LrzVrIES0fn7RPNF3eDyJTODgsTaJ5u3b2nqQib6jI/oEvPetDvx?=
- =?us-ascii?Q?yx6EKJRZTDud2NfK02syv5D321oqwAL5VtDdz9dHLlJOVmoN94SR6bpdZ7vz?=
- =?us-ascii?Q?bU8YOA3jHaq6KwD3H/HbMUmx8zHpMwz+yJb8uMthgOLGfPAh47gAs7A5m4QG?=
- =?us-ascii?Q?KxIjn/53qxLvqZgyGrWtV3ngGXzS9P0++QvSLYDwztD17lW9SdGyeQLJsCck?=
- =?us-ascii?Q?HDBsSj0Y4KwqmiajAdC+MgZzS5+dcpyhm2UPZTRMhAqUAScPNXeJrH/zsiZB?=
- =?us-ascii?Q?FSul+XYpVQhR06q5bVDtVwFtRnwfYJ6wJ4C+dGA4OHBOt3bZTzpQOLjxbT5Y?=
- =?us-ascii?Q?kjqavK422FECEMvL7UHjSNeLpQrK+RfAsOaAJYXVbRedyz/YBbt+eSsdbt+a?=
- =?us-ascii?Q?84tME1zVUwCclVI7PxEvQU5yRxR1DwxJpbZTfYLjlX4WfRzPVEZMIedwZQsN?=
- =?us-ascii?Q?A/iDxAzvTYrZa/X0zTPo9ce2NwHqbdMTZcjIMLtzWd5/bjDVQuQLe7HB4Wok?=
- =?us-ascii?Q?8rYaxPT+NzyTo//CJwQoD28PbbTkafJcKc6RBvlcYYNUHV/nNhVZyyXLSpqn?=
- =?us-ascii?Q?2kDBM1u5DMf2HXWn7zcPSMgxcQtTKESKaiCVL3Ddm29Yi9KZ8ppyl8gZcksT?=
- =?us-ascii?Q?chPdGdnJVPNEEflIGF+U+rTavre4wqBTpd/JoY8sB5jyLbeOyNE2fdIZM2Ut?=
- =?us-ascii?Q?+217ix0PA4L75lUVj/y44kFruCajHRhw35BQjjJLFLt3RbqHyNCStmBcA5xe?=
- =?us-ascii?Q?j2Aq9UUufsdtCwyAMsJhwwaEea+sTKQ7vgR/G81nlWwxxVlmjebSgX9ZFMQK?=
- =?us-ascii?Q?BpAsaxGcr24tOqa1a7xCA7AcZVoC0cNks9IF48NUJ65tlh5XI9A+5fvhTzr7?=
- =?us-ascii?Q?fFZHVxOOyMzVAin3Ib06hi82jzepH82wNRLbZyRhXA+F98TlzbjPK5OUuzjm?=
- =?us-ascii?Q?pQDwkVvMtfbK5KVlXbit9gIpbfPD0op65MqD1uT9kSu+TRsRMFEm3Ptht/MU?=
- =?us-ascii?Q?WcY6g4vZkaFwUOifQDg9Fpjzo8LbyfzpxP2UlbwzGVF1xRghkxjgkpagKFJm?=
- =?us-ascii?Q?pUc=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc8e75a1-476f-458a-7d38-08d9061906f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 05:31:20.9678
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rbzIwNvVE5vwJnTtUaWCM7ueQE9KFtwQiRC4THl3ik+eOyqQdk+6M8/e4xSgs6LpT3GZLUfYWYxRgVPiKbochQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0859
+        id S240451AbhDWFhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 01:37:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9279 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231639AbhDWFhT (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 01:37:19 -0400
+IronPort-SDR: Wgigd6KYIp/Ed+rTfyljbR5oJVOSCI+ewZEEEODSQZqGcHlJNRJ0+2qam9DnQq6FFZtIH+EBhI
+ LB8wbnL15taA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501767"
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="183501767"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:36:36 -0700
+IronPort-SDR: wNMrrrV7kdMlMzhtf9fpzXeIt5wpHpwXKDgWBTluddszQTnMifkcC18BMILtcTOqvgpjoPSsq7
+ w3m5g0BmdV5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="386293501"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:36:33 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v5 00/26] perf tool: AlderLake hybrid support series 1
+Date:   Fri, 23 Apr 2021 13:35:15 +0800
+Message-Id: <20210423053541.12521-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Bean
+AlderLake uses a hybrid architecture utilizing Golden Cove cores
+(core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
+event list. Some events are available on core cpu, some events
+are available on atom cpu and some events can be available on both.
 
-> > From: Kimito Sakata <kimito.sakata@oracle.com>
-> >
-> > Signed-off-by: Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
-> Hi Kimito,
-> Please use a proper subject and commit log body.
-> If you don't understand the difference between those two - please ask.
-> Also for consistency, you might want to use your oracle mail for your Sig=
-ned-
-> off-by tag.
-> You need to change your git configs for that.
-Also, can you refer to this patch submitted by Bean - https://www.spinics.n=
-et/lists/linux-mmc/msg63582.html
-Are you co-developing this together?
+Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
+/sys/devices/cpu_core
+/sys/devices/cpu_atom
 
-Thanks,
-Avri
+cat /sys/devices/cpu_core/cpus
+0-15
 
->=20
-> Thanks,
-> Avri
->=20
-> > ---
-> >  mmc.c      |   8 ++++
-> >  mmc.h      |  13 +++++-
-> >  mmc_cmds.c | 135
-> > +++++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  mmc_cmds.h |   1 +
-> >  4 files changed, 156 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mmc.c b/mmc.c
-> > index f3d724b..eb2638b 100644
-> > --- a/mmc.c
-> > +++ b/mmc.c
-> > @@ -229,6 +229,14 @@ static struct Command commands[] =3D {
-> >                 "Run Field Firmware Update with <image name> on <device=
->.\n",
-> >           NULL
-> >         },
-> > +       { do_erase, -4,
-> > +       "erase", "<type> " "<start address> " "<end address> " "<device=
->\n"
-> > +               "Send Erase CMD38 with specific argument to the <device=
->\n\n"
-> > +               "NOTE!: This will delete all user data in the specified=
- region of the
-> > device\n"
-> > +               "<type> must be: legacy | discard | secure-erase | "
-> > +               "secure-trim1 | secure-trim2 | trim \n",
-> > +       NULL
-> > +       },
-> >         { 0, 0, 0, 0 }
-> >  };
-> >
-> > diff --git a/mmc.h b/mmc.h
-> > index 5754a9d..e9766d7 100644
-> > --- a/mmc.h
-> > +++ b/mmc.h
-> > @@ -35,7 +35,15 @@
-> >  #define MMC_SET_WRITE_PROT     28    /* ac   [31:0] data addr   R1b */
-> >  #define MMC_CLEAR_WRITE_PROT   29    /* ac   [31:0] data addr   R1b */
-> >  #define MMC_SEND_WRITE_PROT_TYPE 31   /* ac   [31:0] data addr   R1  *=
-/
-> > -
-> > +#define MMC_ERASE_GROUP_START  35    /* ac   [31:0] data addr   R1  */
-> > +#define MMC_ERASE_GROUP_END    36    /* ac   [31:0] data addr   R1  */
-> > +#define MMC_ERASE              38    /* ac   [31] Secure request
-> > +                                             [30:16] set to 0
-> > +                                             [15] Force Garbage Collec=
-t request
-> > +                                             [14:2] set to 0
-> > +                                             [1] Discard Enable
-> > +                                             [0] Identify Write Blocks=
- for
-> > +                                             Erase (or TRIM Enable)  R=
-1b */
-> >  /*
-> >   * EXT_CSD fields
-> >   */
-> > @@ -62,6 +70,7 @@
-> >  #define EXT_CSD_CACHE_SIZE_2           251
-> >  #define EXT_CSD_CACHE_SIZE_1           250
-> >  #define EXT_CSD_CACHE_SIZE_0           249
-> > +#define EXT_CSD_SEC_FEATURE_SUPPORT    231
-> >  #define EXT_CSD_BOOT_INFO              228     /* R/W */
-> >  #define EXT_CSD_HC_ERASE_GRP_SIZE      224
-> >  #define EXT_CSD_HC_WP_GRP_SIZE         221
-> > @@ -190,6 +199,8 @@
-> >  #define EXT_CSD_REV_V4_2               2
-> >  #define EXT_CSD_REV_V4_1               1
-> >  #define EXT_CSD_REV_V4_0               0
-> > +#define EXT_CSD_SEC_GB_CL_EN           (1<<4)
-> > +#define EXT_CSD_SEC_ER_EN              (1<<0)
-> >
-> >
-> >  /* From kernel linux/mmc/core.h */
-> > diff --git a/mmc_cmds.c b/mmc_cmds.c
-> > index 6c24cea..9340e3f 100644
-> > --- a/mmc_cmds.c
-> > +++ b/mmc_cmds.c
-> > @@ -2514,6 +2514,141 @@ int do_cache_dis(int nargs, char **argv)
-> >         return do_cache_ctrl(0, nargs, argv);
-> >  }
-> >
-> > +static int erase(int dev_fd, __u32 argin, __u32 start, __u32 end)
-> > +{
-> > +#ifndef MMC_IOC_MULTI_CMD
-> > +       fprintf(stderr, "mmc-utils has been compiled without
-> > MMC_IOC_MULTI_CMD"
-> > +                       " support, needed by erase.\n");
-> > +       return -ENOTSUP;
-> > +#else
-> > +       int ret =3D 0;
-> > +       struct mmc_ioc_multi_cmd *multi_cmd;
-> > +
-> > +       multi_cmd =3D calloc(1, sizeof(struct mmc_ioc_multi_cmd) +
-> > +                          3 * sizeof(struct mmc_ioc_cmd));
-> > +       if (!multi_cmd) {
-> > +               perror("Failed to allocate memory");
-> > +               return -ENOMEM;
-> > +       }
-> > +
-> > +       multi_cmd->num_of_cmds =3D 3;
-> > +       /* Set erase start address */
-> > +       multi_cmd->cmds[0].opcode =3D MMC_ERASE_GROUP_START;
-> > +       multi_cmd->cmds[0].arg =3D start;
-> > +       multi_cmd->cmds[0].flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 |
-> > MMC_CMD_AC;
-> > +       multi_cmd->cmds[0].write_flag =3D 1;
-> > +
-> > +       /* Set erase end address */
-> > +       multi_cmd->cmds[1].opcode =3D MMC_ERASE_GROUP_END;
-> > +       multi_cmd->cmds[1].arg =3D end;
-> > +       multi_cmd->cmds[1].flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 |
-> > MMC_CMD_AC;
-> > +       multi_cmd->cmds[1].write_flag =3D 1;
-> > +
-> > +       /* Send Erase Command */
-> > +       multi_cmd->cmds[2].opcode =3D MMC_ERASE;
-> > +       multi_cmd->cmds[2].arg =3D argin;
-> > +       multi_cmd->cmds[2].cmd_timeout_ms =3D 300*255*255;
-> > +       multi_cmd->cmds[2].flags =3D MMC_RSP_SPI_R1B | MMC_RSP_R1B |
-> > MMC_CMD_AC;
-> > +       multi_cmd->cmds[2].write_flag =3D 1;
-> > +
-> > +       /* send erase cmd with multi-cmd */
-> > +       ret =3D ioctl(dev_fd, MMC_IOC_MULTI_CMD, multi_cmd);
-> > +       if (ret)
-> > +               perror("Erase multi-cmd ioctl");
-> > +
-> > +       free(multi_cmd);
-> > +       return ret;
-> > +#endif
-> > +}
-> > +
-> > +int do_erase(int nargs, char **argv)
-> > +{
-> > +       int dev_fd, ret;
-> > +       char *print_str;
-> > +       char **eptr =3D NULL;
-> > +       __u8 ext_csd[512], checkup_mask =3D 0;
-> > +       __u32 arg, start, end;
-> > +
-> > +       if (nargs !=3D 5) {
-> > +               fprintf(stderr, "Usage: erase <type> <start addr> <end =
-addr>
-> > </path/to/mmcblkX>\n");
-> > +               exit(1);
-> > +       }
-> > +
-> > +       if (strstr(argv[2], "0x") || strstr(argv[2], "0X"))
-> > +               start =3D strtol(argv[2], eptr, 16);
-> > +       else
-> > +               start =3D strtol(argv[2], eptr, 10);
-> > +
-> > +       if (strstr(argv[3], "0x") || strstr(argv[3], "0X"))
-> > +               end =3D strtol(argv[3], eptr, 16);
-> > +       else
-> > +               end =3D strtol(argv[3], eptr, 10);
-> > +
-> > +       if (end < start) {
-> > +               fprintf(stderr, "erase start [0x%08x] > erase end [0x%0=
-8x]\n",
-> > +                       start, end);
-> > +               exit(1);
-> > +       }
-> > +
-> > +       if (strcmp(argv[1], "legacy") =3D=3D 0) {
-> > +               arg =3D 0x00000000;
-> > +               print_str =3D "Legacy Erase";
-> > +       } else if (strcmp(argv[1], "discard") =3D=3D 0) {
-> > +               arg =3D 0x00000003;
-> > +               print_str =3D "Discard";
-> > +       } else if (strcmp(argv[1], "secure-erase") =3D=3D 0) {
-> > +               print_str =3D "Secure Erase";
-> > +               checkup_mask =3D EXT_CSD_SEC_ER_EN;
-> > +               arg =3D 0x80000000;
-> > +       } else if (strcmp(argv[1], "secure-trim1") =3D=3D 0) {
-> > +               print_str =3D "Secure Trim Step 1";
-> > +               checkup_mask =3D EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_=
-EN;
-> > +               arg =3D 0x80000001;
-> > +       } else if (strcmp(argv[1], "secure-trim2") =3D=3D 0) {
-> > +               print_str =3D "Secure Trim Step 2";
-> > +               checkup_mask =3D EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_=
-EN;
-> > +               arg =3D 0x80008000;
-> > +       } else if (strcmp(argv[1], "trim") =3D=3D 0) {
-> > +               print_str =3D "Trim";
-> > +               checkup_mask =3D EXT_CSD_SEC_GB_CL_EN;
-> > +               arg =3D 0x00000001;
-> > +       } else {
-> > +               fprintf(stderr, "Unknown erase type: %s\n", argv[1]);
-> > +               exit(1);
-> > +       }
-> > +
-> > +       dev_fd =3D open(argv[4], O_RDWR);
-> > +       if (dev_fd < 0) {
-> > +               perror(argv[4]);
-> > +               exit(1);
-> > +       }
-> > +
-> > +       if (checkup_mask) {
-> > +               ret =3D read_extcsd(dev_fd, ext_csd);
-> > +               if (ret) {
-> > +                       fprintf(stderr, "Could not read EXT_CSD from %s=
-\n",
-> > +                               argv[4]);
-> > +                       goto out;
-> > +               }
-> > +               if ((checkup_mask & ext_csd[EXT_CSD_SEC_FEATURE_SUPPORT=
-]) !=3D
-> > +                                                               checkup=
-_mask) {
-> > +                       fprintf(stderr, "%s is not supported in %s\n",
-> > +                               print_str, argv[4]);
-> > +                       ret =3D -ENOTSUP;
-> > +                       goto out;
-> > +               }
-> > +
-> > +       }
-> > +       printf("Executing %s from 0x%08x to 0x%08x\n", print_str, start=
-, end);
-> > +
-> > +       ret =3D erase(dev_fd, arg, start, end);
-> > +out:
-> > +       printf(" %s %s!\n\n", print_str, ret ? "Failed" : "Succeed");
-> > +       close(dev_fd);
-> > +       return ret;
-> > +}
-> > +
-> > +
-> >  int do_ffu(int nargs, char **argv)
-> >  {
-> >  #ifndef MMC_IOC_MULTI_CMD
-> > diff --git a/mmc_cmds.h b/mmc_cmds.h
-> > index 9d3246c..8331ab2 100644
-> > --- a/mmc_cmds.h
-> > +++ b/mmc_cmds.h
-> > @@ -45,3 +45,4 @@ int do_ffu(int nargs, char **argv);
-> >  int do_read_scr(int argc, char **argv);
-> >  int do_read_cid(int argc, char **argv);
-> >  int do_read_csd(int argc, char **argv);
-> > +int do_erase(int nargs, char **argv);
-> > --
-> > 2.24.1 (Apple Git-126)
+cat /sys/devices/cpu_atom/cpus
+16-23
+
+In this example, core cpus are 0-15 and atom cpus are 16-23.
+
+To enable a core only event or atom only event:
+
+        cpu_core/<event name>/
+or
+        cpu_atom/<event name>/
+
+Count the 'cycles' event on core cpus.
+
+  # perf stat -e cpu_core/cycles/ -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+      12,853,951,349      cpu_core/cycles/
+
+         1.002581249 seconds time elapsed
+
+If one event is available on both atom cpu and core cpu, two events
+are created automatically.
+
+  # perf stat -e cycles -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+      12,856,467,438      cpu_core/cycles/
+       6,404,634,785      cpu_atom/cycles/
+
+         1.002453013 seconds time elapsed
+
+Group is supported if the events are from same pmu, otherwise a warning
+is displayed and disable grouping automatically.
+
+  # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+      12,863,866,968      cpu_core/cycles/
+         554,795,017      cpu_core/instructions/
+
+         1.002616117 seconds time elapsed
+
+  # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
+  WARNING: events in group from different hybrid PMUs!
+  WARNING: grouped events cpus do not match, disabling group:
+    anon group { cpu_core/cycles/, cpu_atom/instructions/ }
+
+   Performance counter stats for 'system wide':
+
+           6,283,970      cpu_core/cycles/
+             765,635      cpu_atom/instructions/
+
+         1.003959036 seconds time elapsed
+
+Note that, since the whole patchset for AlderLake hybrid support is very
+large (40+ patches). For simplicity, it's splitted into several patch
+series.
+
+The patch series 1 only supports the basic functionality. The advanced
+supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
+will be added in follow-up patch series.
+
+The perf tool codes can also be found at:
+https://github.com/yaoj/perf.git
+
+v5:
+---
+- Now Liang Kan's patch series for AlderLake perf core support has been
+  upstreamed. So the interface for perf tool part will not be changed.
+
+- '[PATCH v5 12/26] perf parse-events: Support event inside hybrid pmu',
+   check the head_config list has only one term and if yes then do the 
+   second parsing. We drop the 'parsed' param and make parse_events__with_hybrid_pmu
+   return 0 when we find some event.
+
+   Move 'evsel->use_config_name = true;' to the patch
+   '[PATCH v5 07/26] perf stat: Uniquify hybrid event name'.
+
+- '[PATCH v5 14/26] perf stat: Add default hybrid events',
+   do the same way like when topdown calls parse events for checking
+   result and displayt the error.
+
+- '[PATCH v5 15/26] perf stat: Filter out unmatched aggregation for hybrid event',
+   use Jiri's code to filter, which is much simpler than original.
+
+- Some perf test minor updates.
+
+v4:
+---
+- In Liang Kan's patch:
+  '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE',
+  the user interface for hardware events and cache events are changed, so
+  perf tool patches are changed as well.
+
+- Fix an issue when atom CPUs are offlined. "/sys/bus/event_source/devices/cpu_atom/cpus"
+  exists but the content is empty. For this case, we can't enable the cpu_atom
+  PMU. '[PATCH v4 05/25] perf pmu: Save detected hybrid pmus to a global pmu list'
+
+- Define 'ret' variable for return value in patch
+  '[PATCH v4 09/25] perf parse-events: Create two hybrid cache events'
+
+- Directly return add_raw_hybrid() in patch
+  '[PATCH v4 10/25] perf parse-events: Create two hybrid raw events'
+
+- Drop the patch 'perf pmu: Support 'cycles' and 'branches' inside
+  hybrid PMU'.
+
+- Separate '[PATCH v3 12/27] perf parse-events: Support no alias assigned event
+  inside hybrid PMU' into two patches:
+  '[PATCH v4 11/25] perf parse-events: Compare with hybrid pmu name'
+  '[PATCH v4 12/25] perf parse-events: Support event inside hybrid pmu'.
+  And these two patches are improved according to Jiri's comments.
+
+v3:
+---
+- Drop 'perf evlist: Hybrid event uses its own cpus'. This patch is wide
+  and actually it's not very necessary. The current perf framework has
+  processed the cpus for evsel well even for hybrid evsel. So this patch can
+  be dropped.
+
+- Drop 'perf evsel: Adjust hybrid event and global event mixed group'.
+  The patch is a bit tricky and hard to understand. In v3, we will disable
+  grouping when the group members are from different PMUs. So this patch
+  would be not necessary.
+
+- Create parse-events-hybrid.c/parse-events-hybrid.h and evlist-hybrid.c/evlist-hybrid.h.
+  Move hybrid related codes to these files.
+
+- Create a new patch 'perf pmu: Support 'cycles' and 'branches' inside hybrid PMU' to
+  support 'cycles' and 'branches' inside PMU.
+
+- Create a new patch 'perf record: Uniquify hybrid event name' to tell user the
+  pmu which the event belongs to for perf-record.
+
+- If group members are from different hybrid PMUs, shows warning and disable
+  grouping.
+
+- Other refining and refactoring.
+
+v2:
+---
+- Drop kernel patches (Kan posted the series "Add Alder Lake support for perf (kernel)" separately).
+- Drop the patches for perf-c2c/perf-mem/topdown/metrics/topology header supports,
+  which will be added in series 2 or series 3.
+- Simplify the arguments of __perf_pmu__new_alias() by passing
+  the 'struct pme_event' pointer.
+- Check sysfs validity before access.
+- Use pmu style event name, such as "cpu_core/cycles/".
+- Move command output two chars to the right.
+- Move pmu hybrid functions to new created pmu-hybrid.c/pmu-hybrid.h.
+  This is to pass the perf test python case.
+
+Jin Yao (26):
+  tools headers uapi: Update tools's copy of linux/perf_event.h
+  perf jevents: Support unit value "cpu_core" and "cpu_atom"
+  perf pmu: Simplify arguments of __perf_pmu__new_alias
+  perf pmu: Save pmu name
+  perf pmu: Save detected hybrid pmus to a global pmu list
+  perf pmu: Add hybrid helper functions
+  perf stat: Uniquify hybrid event name
+  perf parse-events: Create two hybrid hardware events
+  perf parse-events: Create two hybrid cache events
+  perf parse-events: Create two hybrid raw events
+  perf parse-events: Compare with hybrid pmu name
+  perf parse-events: Support event inside hybrid pmu
+  perf record: Create two hybrid 'cycles' events by default
+  perf stat: Add default hybrid events
+  perf stat: Filter out unmatched aggregation for hybrid event
+  perf stat: Warn group events from different hybrid PMU
+  perf record: Uniquify hybrid event name
+  perf tests: Add hybrid cases for 'Parse event definition strings' test
+  perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
+  perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
+  perf tests: Support 'Track with sched_switch' test for hybrid
+  perf tests: Support 'Parse and process metrics' test for hybrid
+  perf tests: Support 'Session topology' test for hybrid
+  perf tests: Support 'Convert perf time to TSC' test for hybrid
+  perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
+  perf Documentation: Document intel-hybrid support
+
+ include/uapi/linux/perf_event.h            |  15 ++
+ tools/include/uapi/linux/perf_event.h      |  15 ++
+ tools/perf/Documentation/intel-hybrid.txt  | 214 +++++++++++++++++++++
+ tools/perf/Documentation/perf-record.txt   |   1 +
+ tools/perf/Documentation/perf-stat.txt     |   2 +
+ tools/perf/builtin-record.c                |  47 ++++-
+ tools/perf/builtin-stat.c                  |  36 ++++
+ tools/perf/pmu-events/jevents.c            |   2 +
+ tools/perf/tests/attr.c                    |   4 +
+ tools/perf/tests/evsel-roundtrip-name.c    |  19 +-
+ tools/perf/tests/parse-events.c            | 152 +++++++++++++++
+ tools/perf/tests/parse-metric.c            |   8 +-
+ tools/perf/tests/perf-time-to-tsc.c        |  12 ++
+ tools/perf/tests/shell/stat+shadow_stat.sh |   3 +
+ tools/perf/tests/switch-tracking.c         |   6 +-
+ tools/perf/tests/topology.c                |  13 +-
+ tools/perf/util/Build                      |   3 +
+ tools/perf/util/evlist-hybrid.c            |  88 +++++++++
+ tools/perf/util/evlist-hybrid.h            |  14 ++
+ tools/perf/util/evlist.c                   |   5 +-
+ tools/perf/util/evsel.c                    |  12 +-
+ tools/perf/util/evsel.h                    |   4 +-
+ tools/perf/util/parse-events-hybrid.c      | 178 +++++++++++++++++
+ tools/perf/util/parse-events-hybrid.h      |  23 +++
+ tools/perf/util/parse-events.c             |  97 +++++++++-
+ tools/perf/util/parse-events.h             |   9 +-
+ tools/perf/util/parse-events.y             |   9 +-
+ tools/perf/util/pmu-hybrid.c               |  89 +++++++++
+ tools/perf/util/pmu-hybrid.h               |  22 +++
+ tools/perf/util/pmu.c                      |  64 ++++--
+ tools/perf/util/pmu.h                      |   7 +
+ tools/perf/util/python-ext-sources         |   2 +
+ tools/perf/util/stat-display.c             |  18 +-
+ 33 files changed, 1143 insertions(+), 50 deletions(-)
+ create mode 100644 tools/perf/Documentation/intel-hybrid.txt
+ create mode 100644 tools/perf/util/evlist-hybrid.c
+ create mode 100644 tools/perf/util/evlist-hybrid.h
+ create mode 100644 tools/perf/util/parse-events-hybrid.c
+ create mode 100644 tools/perf/util/parse-events-hybrid.h
+ create mode 100644 tools/perf/util/pmu-hybrid.c
+ create mode 100644 tools/perf/util/pmu-hybrid.h
+
+-- 
+2.17.1
 
