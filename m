@@ -2,124 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E556C368ECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154C9368ED1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241378AbhDWI23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
+        id S241336AbhDWI3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhDWI22 (ORCPT
+        with ESMTP id S229917AbhDWI3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:28:28 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AB4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:27:50 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id z6so7714447wmg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:27:50 -0700 (PDT)
+        Fri, 23 Apr 2021 04:29:30 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88F8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:28:52 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id t14-20020a05600c198eb029012eeb3edfaeso733260wmq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UGXDfU5CAuOew8JInuwwVL1OHr7a7FSfU2FNvlz4Ij4=;
-        b=emp4dDwd9PW6Fg/HM2hVaJrFpWpn8ZtTqNcC7f9ehqJYLI8fs+GUqak1KpF0nzQ2K2
-         gnf6KyeoYABc+RalTF278v+mawYXSueUhCdTCv3quN0nfdto/xkj6YCWpbp+/f3Wjy7W
-         pk7yKGyJ0uRSkqCW7eHT953S8kjV9uKjTq6tfEqYEJIvq+JamAbsGOokScjXZU4dpWcu
-         D8T+Cc4pDVbxBWDRATJ/zPB+Ea3MDgZEbyJi3JhyduV7VsmPNyJRfSKFkFo3VQqU2ooy
-         wOyMnQ0dMvyuIzL1GzlnPZXLXZFoSqWu2i1F+BMjMkn8iUBg0NTJfwR7ebWt/azpQ/nX
-         rcZw==
+        bh=h5v4zIXPv6WHWTKJvFYWSELVGuItjZYfaJrXobHmfuo=;
+        b=LLTmm9mVlUi6clUD7JUsKWh0K7EL9Qw1q+pdK4ZgZuITlf3H+/lF//Fd0MDVRsaqTW
+         /oIEliN++BGSRU87nOuOB2UvKwiAAbsHuQy6Zynb7CvSh5n2sNrZTWMKmO0kKOavskOS
+         aBl2Rl8MoS3ZpdXFYhkzVmL5jCn1HXJVQeeElRhahx5oerQBev0+84SKaIvKSgFEKVYi
+         NvrdvcLb0CTLSceov4ymzZfGhdkqLHjBDesJyKYl60PycziYY7wMyvWFFS1ncEkiVuQl
+         DwFZ8G1IJ2GiCiBgxAeAbN2dk1H6malE9XSGm002jWeT1FwQ7cgnUwofPJDv3NAZ6oOM
+         giyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=UGXDfU5CAuOew8JInuwwVL1OHr7a7FSfU2FNvlz4Ij4=;
-        b=udP5yX72e2p1zKlSRaBj9kI6zv+dHP81If205VgVxzJprai2eGkobgh47cSnXa1zRv
-         ZtBFvlWWxuzNyr91jmqwDNbeJq+1QZ8n0IcMKubOsKqDXFGFfZhzMUAPZgCcYMMgjgwY
-         dnkAwwgdAKxFAbDejjCQT+/APtc6hEthSxcnnCqregLGH15lAawl5p/CqCo0WoEUNzTB
-         61Io8BHtym3v01XWESV5jrN8rLK5YnDVyzNER/nafF/rnOTZcjW/QD8Ag5yivVJzyxXn
-         KQwNPyE/6kS01Kp6151PTYgtlCMcD8BBB+4fjjvd6x7Oq/NfFEiTYzgaNj/7I9s9gkjD
-         mSyg==
-X-Gm-Message-State: AOAM530SwtHE8QCDn6HDFdbx5f4LOgTNdEUierEvbazcEcdUbXn5KhNS
-        cy2OPqyFlRHI88PQoy9vi3G2DhRstMYMBw==
-X-Google-Smtp-Source: ABdhPJzZ8uASD6Dq0I5Tj0ljrEATP/sYaFUzbpIiT4c4Z9o46Ssr3PF77tivFsnKAlb6yYXdeNjJPQ==
-X-Received: by 2002:a1c:6a06:: with SMTP id f6mr2867470wmc.179.1619166469406;
-        Fri, 23 Apr 2021 01:27:49 -0700 (PDT)
+        bh=h5v4zIXPv6WHWTKJvFYWSELVGuItjZYfaJrXobHmfuo=;
+        b=E9cWzSxM3jxu9rgdZ5rwNZc2/v52jB3o0bJA/mhO4TkV2kWvHDQB8jtHz+yCRPAeU4
+         Onqo5zov9QcNomxabdUzMEQHURGTiA2xaCIBC95Umos3UJjUr5owqyrRP9J6Pr93T0IG
+         /D6RllH8CzN57HM8OvjYnSsgvsGLidwQkkfQtZFhtRiPsmHoPbL6nZRLad5MZRqCvg8F
+         nMf5TKxlWtAB9optz/0MsV7O4lQDPq82etuEHfkVbPiewtWGfQfyw3ezoHLuFrsaIczg
+         /NCp1zGSJCDB6GPIL062CyPATA2sNHgb/BW/xV6uWZHWKbodinCK6w4KCtLa0TZ8KLN9
+         Ei5A==
+X-Gm-Message-State: AOAM530kfeUBLdrROWrGvx8gDeg+yxx1Ke2NZuX5clQRnQFoYxZK4z9b
+        W4r6Xpf3lnhm60laK6UR/5Y9TQ==
+X-Google-Smtp-Source: ABdhPJxWpAEBcc/UIoHyOrRT4kaqZXgVnkDlB7IPILt72r+qVIyQSieMIAQdqs2mehCKPaIeN0ZGvQ==
+X-Received: by 2002:a7b:c44d:: with SMTP id l13mr4203194wmi.160.1619166531614;
+        Fri, 23 Apr 2021 01:28:51 -0700 (PDT)
 Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id s64sm7169435wmf.2.2021.04.23.01.27.48
+        by smtp.gmail.com with ESMTPSA id 2sm9611435wmi.19.2021.04.23.01.28.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 01:27:48 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:27:46 +0100
+        Fri, 23 Apr 2021 01:28:51 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:28:49 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        ChiYuan Huang <cy_huang@richtek.com>
-Subject: Re: [PATCH v6 1/4] mfd: rt4831: Adds support for Richtek RT4831
-Message-ID: <20210423082746.GC6446@dell>
-References: <1616945059-8718-1-git-send-email-u0084500@gmail.com>
- <CADiBU3-d3_L8RTeYCirnfjJdG=ea6UVenAi8O8GO_LvOaB7OdA@mail.gmail.com>
- <20210419072229.GA4869@dell>
- <20210419072317.GB4869@dell>
- <20210419072403.GC4869@dell>
- <CADiBU38bMuH00Bcx5hJas2=yAon00ffcGokT4u89vX-LJYuxNA@mail.gmail.com>
- <CADiBU39F4nHC5U+G+fJJemAJgeYxDimi0cXYkm25+YC8qO5yDA@mail.gmail.com>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: Re: [PATCH 31/40] drm/amd/amdgpu/amdgpu_gart: Correct a couple of
+ function names in the docs
+Message-ID: <20210423082849.GD6446@dell>
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-32-lee.jones@linaro.org>
+ <2029fbcf-8d2b-7a85-edd2-481a571ae43d@amd.com>
+ <CADnq5_N5_poFcOpQzV+Ae22rwD0PG3kq0O3q10gmbb7=fNpEyA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADiBU39F4nHC5U+G+fJJemAJgeYxDimi0cXYkm25+YC8qO5yDA@mail.gmail.com>
+In-Reply-To: <CADnq5_N5_poFcOpQzV+Ae22rwD0PG3kq0O3q10gmbb7=fNpEyA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021, ChiYuan Huang wrote:
+On Tue, 20 Apr 2021, Alex Deucher wrote:
 
-> Hi, Lee:
-> 
-> ChiYuan Huang <u0084500@gmail.com> 於 2021年4月19日 週一 下午5:55寫道：
-> >
-> > Lee Jones <lee.jones@linaro.org> 於 2021年4月19日 週一 下午3:24寫道：
-> > >
-> > > On Mon, 19 Apr 2021, Lee Jones wrote:
-> > >
-> > > > On Mon, 19 Apr 2021, Lee Jones wrote:
-> > > >
-> > > > > On Mon, 19 Apr 2021, ChiYuan Huang wrote:
-> > > > >
-> > > > > > Hi, Linux mfd reviewers:
-> > > > > >    It's been three weeks not to get any response from you.
-> > > > > > Is there something wrong about this mfd patch?
-> > > > > > If yes, please feel free to let me know.
-> > > > >
-> > > > > Couple of things:
-> > > > >
-> > > > > First, if you think a patch had fallen through the gaps, which does
-> > > > > happen sometimes, it is generally considered acceptable to submit a
-> > > > > [RESEND] ~2 weeks after the initial submission.  FYI: This was such a
-> > > > > patch.  It was not on, or had fallen off of my radar for some reason.
-> > > > >
-> > > > > Secondly, we are really late in the release cycle.  -rc8 has just been
-> > > > > released.  Quite a few maintainers slow down at ~-rc6.  Particularly
-> > > > > for new drivers.
-> > > > >
-> > > > > No need to resubmit this driver this time.  It is now on my to-review
-> > > > > list and I will tend to it shortly.
-> > > > >
-> > > > > Thanks for your patience.
-> > > >
-> > > > Also you are missing a DT review on patch 4.
-> > >
-> > > ... looks like you forgot to Cc them!
-> > >
-> > Yap, really. I''ll resend patch 4 and cc them. Thx.
-> 
-> Should I resend the patch and loop DT reviewers?
+> Applied.  thanks!
 
-Yes, please.
+Lovely.  Thanks for these Alex.
 
 -- 
 Lee Jones [李琼斯]
