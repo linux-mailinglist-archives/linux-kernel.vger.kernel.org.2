@@ -2,105 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A843697DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7573697E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243704AbhDWRBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243497AbhDWRAm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:00:42 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09ABC06135D
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:00:02 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso1597315pjn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qqRgrq5qTHq8+QQOXrqNOrI+XnC8s9rFcrx/PHqU9kA=;
-        b=X+2LXkR+x2Y6Yo6aK1kTdJ8Rhytwsl31CFMU6k56xp/RuePZ0vzxwrb2UfkLXWGSBq
-         LlAh38K6d3Rlb9ZhLKF9mKVf9rd/crkpvJJ+H9Qkz8Lur52GfMVYXi8zj2XicneHKR7c
-         YdlA2lbc+fQi/b3LKgVfUmJaZh6SjEHuSYkCs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qqRgrq5qTHq8+QQOXrqNOrI+XnC8s9rFcrx/PHqU9kA=;
-        b=drGaIEQnLssarA9+LREhJUw8UbzIqXJMZL25wzNMjbrbPhLozCz4MSiD6MMHFgfdFs
-         A5mrINknIZfgoBWvqoyTcaDDfBnIySavSgzTuqa5BcDUenjHBVUqnU0M8wnofYBTjwDT
-         J+kPl7UJ7l2itunig/q8wackKl10+qsezohE56T48chOuwdm6N/HdYLdB2OjEtGF5b8Q
-         6tJ6wEvOFehW1920vJVLzCxe5Oq34m5xVtNWKFFji7qHZY5dZYHzNXoPubLzDyVdgM2Y
-         TizIE4/ajshH50iVXE0+CVRRkQ8lmij7qYHT9wt1GHqyAmNgOSTt103yvBQCSzULWTkd
-         PmVg==
-X-Gm-Message-State: AOAM531px8BDouJIMb8vTWiEI33NjbuoTYjCz3V2pBgMfYfDzpZknXIo
-        6flSm8Cn/GHH+XAJXsuw2SSecA==
-X-Google-Smtp-Source: ABdhPJwYRj/bkCBR5feDF1qTXpHaqYVIA63dyfs8jdja9V5hgW3GpI+hcKLSiO/ZUNmI8hVVg+H2gQ==
-X-Received: by 2002:a17:90a:7d02:: with SMTP id g2mr6649977pjl.153.1619197202494;
-        Fri, 23 Apr 2021 10:00:02 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6d86:663d:71f8:6a11])
-        by smtp.gmail.com with ESMTPSA id v8sm5123607pfm.128.2021.04.23.10.00.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 10:00:02 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-i2c@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 20/20] arm64: dts: qcom: Link the panel to the bridge's DDC bus
-Date:   Fri, 23 Apr 2021 09:59:06 -0700
-Message-Id: <20210423095743.v5.20.Ibdb7735fb1844561b902252215a69526a14f9abd@changeid>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-In-Reply-To: <20210423165906.2504169-1-dianders@chromium.org>
-References: <20210423165906.2504169-1-dianders@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S243338AbhDWRD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:03:26 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18128 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243324AbhDWRDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:03:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1619197364; h=In-Reply-To: Message-Id: Date: Subject: Cc: To:
+ From: Sender; bh=OYnNE7Dy5EU3OXyOzCgjnJg//0G4V/ieE3hirIKZBnQ=; b=SjpwpMWu6iJ4UW+KJ4J4xwcujKJR3fy7cq489ifR3vgcCeKgMjzEAvHI223Oi0Xjr/zB3chS
+ GfNmQ0QorRZPSz1PLARBIJujtlA3rBduCE8hT4Pcc03ttL6Z62dvIKpVI138gkES7Dd7dhtm
+ PWhd/mf3a/szm/nGUGcGiuTNQz0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6082fd8aa817abd39a2e319e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Apr 2021 17:02:02
+ GMT
+Sender: eberman=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8039FC0453F; Fri, 23 Apr 2021 17:02:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from eberman-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 14DE2C43217;
+        Fri, 23 Apr 2021 17:01:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 14DE2C43217
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
+From:   Elliot Berman <eberman@codeaurora.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Elliot Berman <eberman@codeaurora.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Maennich <maennich@google.com>,
+        Trilok Soni <tsoni@codeaurora.org>
+Subject: [RESEND v2] Kbuild: Update config_data.gz only if KCONFIG_CONFIG materially changed
+Date:   Fri, 23 Apr 2021 10:00:35 -0700
+Message-Id: <1619197235-13860-1-git-send-email-eberman@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: 1617317072-26770-1-git-send-email-eberman@codeaurora.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding this link allows the panel code to do things like read the
-EDID.
+If you update the timestamp of KCONFIG_CONFIG without actually changing
+anything, config_data.gz is re-generated and causes vmlinux to re-link.
+When Link Time Optimization is enabled, unnecessary re-linking of
+vmlinux is highly desirable since it adds several minutes to build time.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Avoid touching config_data.gz by using a script to compare the existing
+config_data.gz, KCONFIG_CONFIG, or script itself to update only if any
+is mismatched.  The script follows gen_kheaders.sh approach for
+determing in update is needed. The script intentionally avoids
+re-compressing KCONFIG_CONFIG.
+
+The .config can be touched, for instance, by a build script which
+installs the default defconfig and then applies a defconfig fragment on
+top.
+
+For a simple example on my x86 machine, I modified x86 default defconfig to set
+CONFIG_IKCONFIG=y and run:
+  make -j50 defconfig tiny.config vmlinux
+  make -j50 defconfig tiny.config vmlinux
+With this patch, vmlinux is not re-built as a result of config_data.gz
+change.
+
+Changes in v2:
+ - Use md5 checksum to compare .config instead of gzip'ing again
+
+Signed-off-by: Elliot Berman <eberman@codeaurora.org>
 ---
+ kernel/.gitignore         |  1 +
+ kernel/Makefile           |  4 +++-
+ kernel/gen_config_data.sh | 31 +++++++++++++++++++++++++++++++
+ 3 files changed, 35 insertions(+), 1 deletion(-)
+ create mode 100755 kernel/gen_config_data.sh
 
-(no changes since v1)
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 24d293ef56d7..96e530594509 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -265,6 +265,7 @@ panel: panel {
- 		power-supply = <&pp3300_dx_edp>;
- 		backlight = <&backlight>;
- 		hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
-+		ddc-i2c-bus = <&sn65dsi86_bridge>;
+diff --git a/kernel/.gitignore b/kernel/.gitignore
+index 78701ea..a191136 100644
+--- a/kernel/.gitignore
++++ b/kernel/.gitignore
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++config_data.gz.md5
+ kheaders.md5
+ timeconst.h
+ hz.bc
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 320f1f3..0784bf3d 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -139,8 +139,10 @@ obj-$(CONFIG_SCF_TORTURE_TEST) += scftorture.o
+ $(obj)/configs.o: $(obj)/config_data.gz
  
- 		ports {
- 			port {
+ targets += config_data.gz
++quiet_cmd_genicfg = CHK     $(obj)/config_data.gz
++      cmd_genicfg = $(CONFIG_SHELL) $(srctree)/kernel/gen_config_data.sh $@ $<
+ $(obj)/config_data.gz: $(KCONFIG_CONFIG) FORCE
+-	$(call if_changed,gzip)
++	$(call cmd,genicfg)
+ 
+ $(obj)/kheaders.o: $(obj)/kheaders_data.tar.xz
+ 
+diff --git a/kernel/gen_config_data.sh b/kernel/gen_config_data.sh
+new file mode 100755
+index 00000000..e9ff193
+--- /dev/null
++++ b/kernel/gen_config_data.sh
+@@ -0,0 +1,31 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++# This script generates a compressed version of .config, if its checksum has changed
++set -e
++
++this_file="$(readlink -f "$0")"
++outfile=$1
++infile=$2
++
++config_md5="$(md5sum $infile | cut -d ' ' -f1)"
++# Any changes to this script will also cause a rebuild of config_data.
++this_file_md5="$(md5sum $sfile | cut -d ' ' -f1)"
++if [ -f $outfile ]; then outfile_md5="$(md5sum $outfile | cut -d ' ' -f1)"; fi
++
++if [ -f $outfile.md5 ] &&
++	[ "$(head -n 1 $outfile.md5)" = "$config_md5" ] &&
++	[ "$(head -n 2 $outfile.md5 | tail -n 1)" = "$this_file_md5" ] &&
++	[ "$(tail -n 1 $outfile.md5)" = "$outfile_md5" ]; then
++		exit
++fi
++
++if [ "${quiet}" != "silent_" ]; then
++	echo "  GEN     $outfile"
++fi
++
++${KGZIP} -c -n -f -9 $infile > $outfile
++
++echo "$config_md5" > $outfile.md5
++echo "$this_file_md5" >> $outfile.md5
++echo "$(md5sum $outfile | cut -d ' ' -f1)" >> $outfile.md5
 -- 
-2.31.1.498.g6c1eba8ee3d-goog
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
