@@ -2,220 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192AB368D9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED024368DA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241049AbhDWHGx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 03:06:53 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:36386 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWHGt (ORCPT
+        id S240824AbhDWHIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:08:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44326 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230113AbhDWHIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:06:49 -0400
-Received: from marcel-macbook.holtmann.net (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id BF39FCECFB;
-        Fri, 23 Apr 2021 09:13:58 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v3] Bluetooth: Add ncmd=0 recovery handling
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210422101657.v3.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
-Date:   Fri, 23 Apr 2021 09:06:10 +0200
-Cc:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Alain Michaud <alainm@chromium.org>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C4B3A9F0-2D1D-4274-92AE-8616258E5947@holtmann.org>
-References: <20210422101657.v3.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
-To:     Manish Mandlik <mmandlik@google.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Fri, 23 Apr 2021 03:08:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619161696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s6nTxmdqew/u6s+lOFo4xVX1inakg0kuwdWkPa9JRN4=;
+        b=F44oXdJXyCWHPauIilrmPj5ggybeu2/A/1p0+z3SMNqeBqhNLZvJkjMH8Pvlt7U85bY/hG
+        yIY0xG6c22Iej1hYEkx0N5yBnGTk/8K6jmFGYeOzciyPrUjcMieNxvzK+gCCQ+3uuf5Hf/
+        KilLIOnyNQFOEAvndqhEt9AyF7L+jr8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-YK22lN9iP3uI_G0hopCjrA-1; Fri, 23 Apr 2021 03:08:14 -0400
+X-MC-Unique: YK22lN9iP3uI_G0hopCjrA-1
+Received: by mail-ej1-f72.google.com with SMTP id x21-20020a1709064bd5b029037c44cb861cso8031924ejv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:08:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s6nTxmdqew/u6s+lOFo4xVX1inakg0kuwdWkPa9JRN4=;
+        b=jIJBgYff7njmlpG9oXPu03XyCucsKwxyWlw1GQeN7k+YdFVpZry9zQ56vm9lOMAGF0
+         VtzKtI7WkzTMaQRWE5IgT/az78LgEChARkjQsXZ8TCzGhZpFNVi3oGehKDu6WgK15Wwr
+         46XloC2yD4L1u1gzehz7tWql6ib4+v1ybAyapBkWUWm6bO0Q5xGqZMmzurtIdTxonJZf
+         C7zbwqWrRuPgbeXETdeATzKzcfdLbuYx1FHai4OfDF5aN84+3ZCF1zLqRGP6aOiq6hMJ
+         GdfPk497SHiUieeXzrmAOLXqvLNFVgsrT0HNyWw9nJYie6+5l8SfnN44w4hb7XVyjJqc
+         n4Pw==
+X-Gm-Message-State: AOAM5302op+KjOSJQALBQQrBekmHtjUS5S0HgVi2Xup5fjrw4BBFNHCR
+        7ubNVw8LYQXnMtREjF73igLpfDRHgoFdRy8nWe8FWgUkLWfuZUAha9Wne7aicC/ma3gtSQ4CX/6
+        KD6HMwmGwl5TbY1zJNyG4I3hy
+X-Received: by 2002:a17:906:36da:: with SMTP id b26mr2772506ejc.8.1619161693242;
+        Fri, 23 Apr 2021 00:08:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhjQ/5A0AMXJ/oTAsivkhjGXT0QdCZlC/+ol6RTxlqAGpcL15cTSSJBoKA0Bo+y4Xe9v9/GA==
+X-Received: by 2002:a17:906:36da:: with SMTP id b26mr2772488ejc.8.1619161693095;
+        Fri, 23 Apr 2021 00:08:13 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id lr27sm3270158ejb.8.2021.04.23.00.08.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 00:08:12 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: Fix implicit enum conversion goof in scattered
+ reverse CPUID code
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@intel.com>
+References: <20210421010850.3009718-1-seanjc@google.com>
+ <YIBcd+5NKJFnkTC1@archlinux-ax161>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c469d222-a082-a984-eedd-f6111e03917c@redhat.com>
+Date:   Fri, 23 Apr 2021 09:08:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <YIBcd+5NKJFnkTC1@archlinux-ax161>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manish,
+On 21/04/21 19:10, Nathan Chancellor wrote:
+> arch/x86/kvm/cpuid.c:499:29: warning: implicit conversion from enumeration type 'enum kvm_only_cpuid_leafs' to different enumeration type 'enum cpuid_leafs' [-Wenum-conversion]
+>          kvm_cpu_cap_init_scattered(CPUID_12_EAX,
+>          ~~~~~~~~~~~~~~~~~~~~~~~~~~ ^~~~~~~~~~~~
+> arch/x86/kvm/cpuid.c:837:31: warning: implicit conversion from enumeration type 'enum kvm_only_cpuid_leafs' to different enumeration type 'enum cpuid_leafs' [-Wenum-conversion]
+>                  cpuid_entry_override(entry, CPUID_12_EAX);
+>                  ~~~~~~~~~~~~~~~~~~~~        ^~~~~~~~~~~~
+> 2 warnings generated.
 
-> During command status or command complete event, the controller may set
-> ncmd=0 indicating that it is not accepting any more commands. In such a
-> case, host holds off sending any more commands to the controller. If the
-> controller doesn't recover from such condition, host will wait forever,
-> until the user decides that the Bluetooth is broken and may power cycles
-> the Bluetooth.
-> 
-> This patch triggers the hardware error to reset the controller and
-> driver when it gets into such state as there is no other wat out.
-> 
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Manish Mandlik <mmandlik@google.com>
-> ---
-> 
-> Changes in v3:
-> - Restructure ncmd_timer scheduling in hci_event.c
-> - Cancel delayed work in hci_dev_do_close
-> - Do not inject hw error during HCI_INIT
-> - Update comment, add log message while injecting hw error
-> 
-> Changes in v2:
-> - Emit the hardware error when ncmd=0 occurs
-> 
-> include/net/bluetooth/hci.h      |  1 +
-> include/net/bluetooth/hci_core.h |  1 +
-> net/bluetooth/hci_core.c         | 22 ++++++++++++++++++++++
-> net/bluetooth/hci_event.c        | 22 ++++++++++++++++++----
-> 4 files changed, 42 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> index ea4ae551c426..c4b0650fb9ae 100644
-> --- a/include/net/bluetooth/hci.h
-> +++ b/include/net/bluetooth/hci.h
-> @@ -339,6 +339,7 @@ enum {
-> #define HCI_PAIRING_TIMEOUT	msecs_to_jiffies(60000)	/* 60 seconds */
-> #define HCI_INIT_TIMEOUT	msecs_to_jiffies(10000)	/* 10 seconds */
-> #define HCI_CMD_TIMEOUT		msecs_to_jiffies(2000)	/* 2 seconds */
-> +#define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
-> #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
-> #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
-> #define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
-> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-> index ebdd4afe30d2..f14692b39fd5 100644
-> --- a/include/net/bluetooth/hci_core.h
-> +++ b/include/net/bluetooth/hci_core.h
-> @@ -470,6 +470,7 @@ struct hci_dev {
-> 	struct delayed_work	service_cache;
-> 
-> 	struct delayed_work	cmd_timer;
-> +	struct delayed_work	ncmd_timer;
-> 
-> 	struct work_struct	rx_work;
-> 	struct work_struct	cmd_work;
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index b0d9c36acc03..37789c5d0579 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -1723,6 +1723,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
-> 	}
-> 
-> 	cancel_delayed_work(&hdev->power_off);
-> +	cancel_delayed_work(&hdev->ncmd_timer);
-> 
-> 	hci_request_cancel_all(hdev);
-> 	hci_req_sync_lock(hdev);
-> @@ -2769,6 +2770,24 @@ static void hci_cmd_timeout(struct work_struct *work)
-> 	queue_work(hdev->workqueue, &hdev->cmd_work);
-> }
-> 
-> +/* HCI ncmd timer function */
-> +static void hci_ncmd_timeout(struct work_struct *work)
-> +{
-> +	struct hci_dev *hdev = container_of(work, struct hci_dev,
-> +					    ncmd_timer.work);
-> +
-> +	bt_dev_err(hdev, "Controller not accepting commands anymore: ncmd = 0");
-> +
-> +	/* No hardware error event needs to be injected if the ncmd timer
-> +	 * triggers during HCI_INIT.
-> +	 */
+Added this to the commit message, thanks!
 
-while the patch looks good, I would be more strongly with my wording here.
-
-	/* During HCI_INIT phase no events can be injected if the ncmd timer
-	 * triggers since the procedure has its own timeout handling.
-	 */
-
-> +	if (test_bit(HCI_INIT, &hdev->flags))
-> +		return;
-> +
-> +	/* This is an irrecoverable state, inject hardware error event */
-> +	hci_reset_dev(hdev);
-> +}
-> +
-> struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
-> 					  bdaddr_t *bdaddr, u8 bdaddr_type)
-> {
-> @@ -3831,6 +3850,7 @@ struct hci_dev *hci_alloc_dev(void)
-> 	init_waitqueue_head(&hdev->suspend_wait_q);
-> 
-> 	INIT_DELAYED_WORK(&hdev->cmd_timer, hci_cmd_timeout);
-> +	INIT_DELAYED_WORK(&hdev->ncmd_timer, hci_ncmd_timeout);
-> 
-> 	hci_request_setup(hdev);
-> 
-> @@ -4068,6 +4088,8 @@ int hci_reset_dev(struct hci_dev *hdev)
-> 	hci_skb_pkt_type(skb) = HCI_EVENT_PKT;
-> 	skb_put_data(skb, hw_err, 3);
-> 
-> +	bt_dev_err(hdev, "Injecting HCI hardware error event");
-> +
-> 	/* Send Hardware Error to upper stack */
-> 	return hci_recv_frame(hdev, skb);
-> }
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index cf2f4a0abdbd..8cd4bcf5dd00 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -3635,8 +3635,15 @@ static void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *skb,
-> 	if (*opcode != HCI_OP_NOP)
-> 		cancel_delayed_work(&hdev->cmd_timer);
-> 
-> -	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
-> -		atomic_set(&hdev->cmd_cnt, 1);
-> +	if (!test_bit(HCI_RESET, &hdev->flags)) {
-> +		if (ev->ncmd) {
-> +			cancel_delayed_work(&hdev->ncmd_timer);
-> +			atomic_set(&hdev->cmd_cnt, 1);
-> +		} else {
-> +			schedule_delayed_work(&hdev->ncmd_timer,
-> +					      HCI_NCMD_TIMEOUT);
-> +		}
-> +	}
-> 
-> 	hci_req_cmd_complete(hdev, *opcode, *status, req_complete,
-> 			     req_complete_skb);
-> @@ -3740,8 +3747,15 @@ static void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb,
-> 	if (*opcode != HCI_OP_NOP)
-> 		cancel_delayed_work(&hdev->cmd_timer);
-> 
-> -	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
-> -		atomic_set(&hdev->cmd_cnt, 1);
-> +	if (!test_bit(HCI_RESET, &hdev->flags)) {
-> +		if (ev->ncmd) {
-> +			cancel_delayed_work(&hdev->ncmd_timer);
-> +			atomic_set(&hdev->cmd_cnt, 1);
-> +		} else {
-> +			schedule_delayed_work(&hdev->ncmd_timer,
-> +					      HCI_NCMD_TIMEOUT);
-> +		}
-> +	}
-> 
-
-Since the code is getting a bit more complex now, I would prefer that in a follow up patch we provide a common helper function for this.
-
-	static inline void handle_cmd_cnt_and_timer(struct hci_dev *hdev, bool is_nop)
-	{
-		if (!is_nop)
-			cancel_delayed_work(&hdev->cmd_timer);
-
-		if (!test_bit(HCI_RESET, ..) {
-			..
-		}
-	}
-
-And then you can just do:
-
-	handle_cmd_cnt_and_timer(hdev, *opcode == HCI_OP_NOP);
-
-Or something similar to this.
-
-Regards
-
-Marcel
+Paolo
 
