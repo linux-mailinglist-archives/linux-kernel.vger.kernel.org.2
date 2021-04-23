@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB504368A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641DE368A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbhDWBqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:46:04 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17814 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbhDWBqD (ORCPT
+        id S240081AbhDWBsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235302AbhDWBsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:46:03 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FRH9d3lPGz7wxZ;
-        Fri, 23 Apr 2021 09:43:01 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 23 Apr 2021 09:45:18 +0800
-From:   Zhe Li <lizhe67@huawei.com>
-To:     <nico@fluxnic.net>, <viro@zeniv.linux.org.uk>
-CC:     <linux-kernel@vger.kernel.org>, <lizhe67@huawei.com>,
-        <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>
-Subject: Re:[PATCH] cramfs: fix potential "unable to mount root fs" problem
-Date:   Fri, 23 Apr 2021 09:45:17 +0800
-Message-ID: <20210423014517.51196-1-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <p3554720-q5q8-nqo8-n01o-847oq81s6364@syhkavp.arg>
-References: <p3554720-q5q8-nqo8-n01o-847oq81s6364@syhkavp.arg>
+        Thu, 22 Apr 2021 21:48:30 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C9FC061574;
+        Thu, 22 Apr 2021 18:47:53 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id s15so55735781edd.4;
+        Thu, 22 Apr 2021 18:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Pnkgz0fTAFmO6ZX7bVI46yKfVJfz4qErV1BxeztbGs=;
+        b=ZQMwZwsd9af3osmmbvfui9hh6lA8XlKO3FXDmY9g5a/xIWwlyw0ns+Gjl4C8qoTZOl
+         XgBRxM39NkPozwJ3wArUndj2qZlirdTfF5xFFDsIQQZrv59jsiV35vrSO6lR/kmGOMlh
+         aSPonshqU+R+uGoPTt/4P9XBmn51JGp/jLA30qF9ccFPLpkuXgHsLd0mA7qZUyatrATy
+         54uNCoCtqqf99wYaVkb/G4DnHZWFTxkUeLJiBfy8mdKB0z872i5ECA6AqHp/VmrikoOz
+         nGZd/3Qh2LzVZScWgr+k0p+5uUHcuNEY1ExvvqCBaC4zdPvZn0kwyuo5Y968VxBS//pD
+         02Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Pnkgz0fTAFmO6ZX7bVI46yKfVJfz4qErV1BxeztbGs=;
+        b=ZTiOxB0eFPHng+HIUY2Go3cNXNNydvIIOjJdy5lUR8QeQ8dBW8KGL75OHdrkbLow6F
+         iOTqWa9By2L5xpDEFgOVseY/P/DM7fCBBSBdSPBl6qG1HbsXOt9yjM6JxrIffxxcq0/3
+         B+oa2zAa80BCAhKRRcY+LJofh8zpO/ddQFtbzWoLB7MXN1Dcjzl6RKjRmKECDk6FLtLY
+         WHxWt8zCxzJvqD4ecHEEP2UiphGbuvgXOtFr1S7FXE4IKr3BM2xFc+27ra6vJAf8bQPp
+         qXVax/YYo74Yl5qr3h2GAtG4HCFAGtTOLCf9wjymuxtYAVPIsccRJF/INinDbG9n93Fa
+         KZDA==
+X-Gm-Message-State: AOAM531qPBAt07IPszgqugI559Dy73eMWIkcmpYWb5cWlBEkgnzYcaXI
+        gGaQGtkC42uJSKfuZ93K17A=
+X-Google-Smtp-Source: ABdhPJxWfoag/IE8o2tQjxSFph5zTEvS4YZdmJM7L+qYNaIRMwpx3sgCLjRUUxO8KdAwae3TrT1VSA==
+X-Received: by 2002:aa7:cd83:: with SMTP id x3mr1499644edv.373.1619142471646;
+        Thu, 22 Apr 2021 18:47:51 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id t4sm3408635edd.6.2021.04.22.18.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 18:47:51 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/14] Multiple improvement to qca8k stability
+Date:   Fri, 23 Apr 2021 03:47:26 +0200
+Message-Id: <20210423014741.11858-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.50]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021, Pitre wrote:
->On Thu, 22 Apr 2021, lizhe wrote:
->
->> We may encounter panic problem without "rootfstype=" options in
->> bootargs. The logs are listed below.
->> 
->> [0.551962] RAMDISK: squashfs filesystem found at block 0
->> [0.551977] RAMDISK: Loading 18117KiB [1 disk] into ram disk...
->> [0.719465] done.
->> [0.748379] VFS: Cannot open root device "ram0" or unknown-block(1,0): error -92
->> [0.748390] Please append a correct "root=" boot option; here are the available partitions:
->> [0.748408] 0100           65536 ram0
->> [0.748413]  (driver?)
->> [0.748430] 0101           65536 ram1
->> [0.748434]  (driver?)
->> [0.748450] 0102
->> [0.748454]  (driver?)
->> [0.748470] 0103           65536 ram3
->> [0.748475]  (driver?)
->> [0.748498] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(1,0)
->> [0.847579] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0 #68
->> [0.847598] Call trace:
->> [0.847616]  dump_backtrace+0x0/0x1f8
->> [0.847627]  show_stack+0x30/0x40
->> [0.847638]  dump_stack+0xdc/0x13c
->> [0.847650]  panic+0x144/0x35c
->> [0.847665]  mount_block_root+0x2c0/0x36c
->> [0.847676]  mount_root+0x7c/0x90
->> [0.847686]  prepare_namespace+0x178/0x188
->> [0.847697]  kernel_init_freeable+0x220/0x28c
->> [0.847708]  kernel_init+0x1c/0xf8
->> [0.847719]  ret_from_fork+0x10/0x30
->> 
->> If we set CONFIG_CRAMFS_MTD and CONFIG_CRAMFS_BLOCKDEV to n,
->> CONFIG_CRAMFS to y, function cramfs_get_tree return -ENOPROTOOPT,
->> which breaks loops in function mount_block_root and we have no
->> chance to try other filesystem type. In my opinion, ENOPROTOOPT
->> is not an appropriate return value for cramfs mount function, so
->> change it to EINVAL.
->> 
->> Fixes: 99c18ce58 (cramfs: direct memory access support)
->> Signed-off-by: lizhe <lizhe67@huawei.com>
->
->Acked-by: Nicolas Pitre <nico@fluxnic.net>
->
->Please send this to Al Viro for merging.
+Currently qca8337 switch are widely used on ipq8064 based router.
+On these particular router it was notice a very unstable switch with
+port not link detected as link with unknown speed, port dropping
+randomly and general unreliability. Lots of testing and comparison
+between this dsa driver and the original qsdk driver showed lack of some
+additional delay and values. A main difference arised from the original
+driver and the dsa one. The original driver didn't use MASTER regs to
+read phy status and the dedicated mdio driver worked correctly. Now that
+the dsa driver actually use these regs, it was found that these special
+read/write operation required mutual exclusion to normal
+qca8k_read/write operation. The add of mutex for these operation fixed
+the random port dropping and now only the actual linked port randomly
+dropped. Adding additional delay for set_page operation and fixing a bug
+in the mdio dedicated driver fixed also this problem. The current driver
+requires also more time to apply vlan switch. All of these changes and
+tweak permit a now very stable and reliable dsa driver and 0 port
+dropping. This series is currently tested by at least 5 user with
+different routers and all reports positive results and no problems.
 
-Hi Viro, please review my patch. Thank you.
+Ansuel Smith (14):
+  drivers: net: dsa: qca8k: handle error with set_page
+  drivers: net: dsa: qca8k: tweak internal delay to oem spec
+  drivers: net: mdio: mdio-ip8064: improve busy wait delay
+  drivers: net: dsa: qca8k: apply suggested packet priority
+  drivers: net: dsa: qca8k: add support for qca8327 switch
+  devicetree: net: dsa: qca8k: Document new compatible qca8327
+  drivers: net: dsa: qca8k: limit priority tweak to qca8337 switch
+  drivers: net: dsa: qca8k: add GLOBAL_FC settings needed for qca8327
+  drivers: net: dsa: qca8k: add support for switch rev
+  drivers: net: dsa: qca8k: add support for specific QCA access function
+  drivers: net: dsa: qca8k: apply switch revision fix
+  drivers: net: dsa: qca8k: clear MASTER_EN after phy read/write
+  drivers: net: dsa: qca8k: protect MASTER busy_wait with mdio mutex
+  drivers: net: dsa: qca8k: enlarge mdio delay and timeout
 
->
->> ---
->>  fs/cramfs/inode.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
->> index 2be6526..9942955 100644
->> --- a/fs/cramfs/inode.c
->> +++ b/fs/cramfs/inode.c
->> @@ -951,7 +951,7 @@ static const struct super_operations cramfs_ops = {
->>  
->>  static int cramfs_get_tree(struct fs_context *fc)
->>  {
->> -	int ret = -ENOPROTOOPT;
->> +	int ret = -EINVAL;
->>  
->>  	if (IS_ENABLED(CONFIG_CRAMFS_MTD)) {
->>  		ret = get_tree_mtd(fc, cramfs_mtd_fill_super);
->> -- 
->> 2.7.4
->> 
->> 
+ .../devicetree/bindings/net/dsa/qca8k.txt     |   1 +
+ drivers/net/dsa/qca8k.c                       | 256 ++++++++++++++++--
+ drivers/net/dsa/qca8k.h                       |  54 +++-
+ drivers/net/mdio/mdio-ipq8064.c               |  36 ++-
+ 4 files changed, 304 insertions(+), 43 deletions(-)
+
+-- 
+2.30.2
+
