@@ -2,397 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740F5368C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF2D368C76
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240392AbhDWFTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 01:19:53 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:57653 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbhDWFTv (ORCPT
+        id S240414AbhDWFVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 01:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhDWFVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 01:19:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1619155172; x=1650691172;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=O9iv5ZikOYZAFGGMk3yTE/AcEg7+beKb/RDdZxHRbMk=;
-  b=qHb7maY8PsWKGOrAv+061j8eDLvgZirp3+1xYCOs6bKfJ7ZAviE5joxY
-   hzEpFP39+gwnsp/PYVhOF8itjYSK5Ul0txVQkm2MKagaooep6yanT42JE
-   n9xZgMk7E6WDxixaIlK5aonANv7EEPCJEahGRUYonNdmfxJWZgQRV9ebm
-   wPF2fafeVMrX22tgaoy7YZkH1tgBEaRJw1oJwvrA0DP+etss6F6pPSgos
-   EVgDTxFlHzI5iJvaFrQ0dO90QIVPZylEpxfcL2glG6LTQ7uxb2MnfEjcv
-   SS4LUNkn+AghFp7wvnzJ/mbiVenzQ7Vm3pRrIPucLK3IXNJ5rVKL6KVX9
-   Q==;
-IronPort-SDR: 7MSk/YGXfC2QzP55p/hi/xT5C/Lzm7hMryYRFhTIpuTB52/Ggk8rXetD+RaQhj0V733UU5Xgp7
- LbcN38QZUj6ENmrwLZAfRXITEvvr7ltrSD2qmfyYmEngMsLPvbaaiP7gLb/HWHjOya7mprtsdJ
- 5U+d9WrPUHbh0hohw837S4Xovlr4RbDGPJbmIcFOfBvNqy1i48TaPTbyPh+p43kKBMlgDJZt7n
- JYYw7N4Q0vp7XMYdkP0dkREZCQ5FYwgMX9Lx2huZizJOka62K7G7FRyQKdDEWKgCCyfePD8wOl
- k3c=
-X-IronPort-AV: E=Sophos;i="5.82,244,1613404800"; 
-   d="scan'208";a="269883231"
-Received: from mail-dm6nam12lp2176.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.176])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Apr 2021 13:19:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FW+31Wdu0Ov6hQgeKNP7e2m1nF65UiajWA6jfGfLLVO9droOvl8QIp6aPyDtVEm0fECJuZC/Hh/XGzrddL/GZhsMO0JdgZFYKZkq3V07SGWRJQZhO6KM08gbbvKDr7lyggUIjRhRnIMivkVXk9a0djqlcJy8D/lBVxKarN0kA9e9OXk+JzZVJ9R7NIOISkdNwWTZ+dj/wf2JZuX+TCHb3dMR599f3n8EFACbc+jfOxQ7keEcyfAviRXzyy/iRamg2Yn7VoB7xkvE1YErsMsIvrDNNa+cJrctmFbWJEt8LKo0eNkRsbQifriNeLlgxQFI6mumLUgLfg9ZhtG3XoGezQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Yy6dHxPrMjYLxFcrhlLHypYpyiSn83/k0fO/AqF8aY=;
- b=MI4XnXECKN8F2LQXLCq+s7vxMKdvPOFuKQ5y5wG07LAh76I8rzeqesRiEd+Bfe5tXdjxhM5JObnQ1JQQsHmjqwZly0pXs2GLPRRgv8LXljjbA+5xAjguqMaJNExid7DcLFykRnBmx35Twgh9o3PNj2DVJh/jloyZ3fl/TcLLyZGrLdEH+Y6KgmJBkmdwoYeYUQlVzLTzgH7z7u/GYl8rDhEh5QGjJ8R0oyC7y1CpPJHeilpuJbqf6F9gyYeOBi0MxBrgtMBgFJiDZI3qHqsS9blEP/B0bW4Wb5YOF299pJPkhGrVu84OvJEnZkXYNvfW67hKiVVllrYQBaFhMDWT7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Fri, 23 Apr 2021 01:21:53 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B4BC061574;
+        Thu, 22 Apr 2021 22:21:17 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j14-20020a17090a694eb0290152d92c205dso611457pjm.0;
+        Thu, 22 Apr 2021 22:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Yy6dHxPrMjYLxFcrhlLHypYpyiSn83/k0fO/AqF8aY=;
- b=zL1MjZEqUkNd2FOAbkWad21G8eXdLWfoDTym+1zLZs7ITgl80qY2qKd9e54aS75tq+hQW7vor1Q375tWNCmhbmpXNos1K0+Xr0Y45yE8Y/Ok92n4a2/BUbZC+s5zrmXSyGhcG6JIsosN8vnbdbfr72xr91s5OEEipQ/oHnxdfJ0=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB4425.namprd04.prod.outlook.com (2603:10b6:5:a1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4042.16; Fri, 23 Apr 2021 05:19:12 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ed2d:4ccc:f42b:9966%5]) with mapi id 15.20.4065.021; Fri, 23 Apr 2021
- 05:19:12 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "luserhker@gmail.com" <luserhker@gmail.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "kenny.gibbons@oracle.com" <kenny.gibbons@oracle.com>,
-        "kimito.sakata@oracle.com" <kimito.sakata@oracle.com>,
-        "rkamdar@micron.com" <rkamdar@micron.com>,
-        "chris@printf.net" <chris@printf.net>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
-Subject: RE: [PATCH RESEND v3] mmc-utils: Re-submit of the erase command
- addition plus remval of MMC_IOC_MULTI_CMD ifndef for erase. Re-committing the
- change per request by Avir.
-Thread-Topic: [PATCH RESEND v3] mmc-utils: Re-submit of the erase command
- addition plus remval of MMC_IOC_MULTI_CMD ifndef for erase. Re-committing the
- change per request by Avir.
-Thread-Index: AQHXN5JfYd4MGzWFC0OPnwBESIafXarBkC5g
-Date:   Fri, 23 Apr 2021 05:19:12 +0000
-Message-ID: <DM6PR04MB657557ACD70FF26950CF0B0AFC459@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210422161255.4610-1-luserhker@gmail.com>
-In-Reply-To: <20210422161255.4610-1-luserhker@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [77.138.4.172]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b65ba3a7-6d82-4d52-03bc-08d9061754a2
-x-ms-traffictypediagnostic: DM6PR04MB4425:
-x-microsoft-antispam-prvs: <DM6PR04MB44254B7D6F57A85EB397CD15FC459@DM6PR04MB4425.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LyXBfyRXanT9MM7cPjefNbMT4wosZnVZiCPq28W/V7/B6jePTA00PZuzT5TbAwifnCKaQOh/8++O7QqCZYcFfH79kmKlFsrsX3cMmB0WlgsFurilb9Y23fIyCCao0oo9pHHdHI3L0ALrpyJ5bmycH32acWNwlJeqSsngtrCBUAT6ur04MUsSvLars2lRDsin+eaDlRAjrQvjUyBRu7nhqamHnB/D534zwMBq7/lQ4fOuwvA+NL9/9PeRpqB3GO31VKvoj1XXnOLOiH1FArkQqfwbB3afRJZVZpnjlbtw1QoD8of4pxUy2IonlcFZy6cWNwPtRjjkEEvRRhHZ2lDiKHoZkr6NJiaEQ95I7asRcxdhDUqMAOOlSZ+bDPiOKE4C2jbgaM14Csaz2r8bJqOWzk1rYO/g9ZZ+N09H8470JfGZPbXLInXY/PbL/zT7Gm5kG7DrkxGU18ASdjn0C1QaVeMi4qnanZZyVFO28N/6nVaVCZg1flCen8t7bjSjqpuXuibE0rx3RBS2BVN7TsXrx+PCfeBNCSrI3HR9Ed/RqyMe33G0S9SIJXUjNAoa79KRdhO4W44BwyIq9zY5uAl/CBF2zEVxlwP6Of5WL9A2WppaAUglgdwWsJ3HI6xU3BPcDY/dv4CL02HU/ePHLXA6RQM4mCKwPFPbhmU2TMCOp2c=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(136003)(346002)(376002)(38100700002)(8936002)(66446008)(76116006)(9686003)(83380400001)(5660300002)(2906002)(6506007)(7696005)(7416002)(26005)(33656002)(66946007)(316002)(55016002)(86362001)(52536014)(54906003)(66476007)(110136005)(64756008)(122000001)(71200400001)(8676002)(478600001)(66556008)(186003)(4326008)(46800400005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?YN/YeRP8WknlrfnKq1zBo5jI4PtDhhea2abjcbRi3HtM/JGEd39mcVk3hLB0?=
- =?us-ascii?Q?MkhmGhTweHZYeSDx/wraWYWB6bsvnyPFOgOl6e63i/q4GvH+TD7nda4bGA3C?=
- =?us-ascii?Q?XjQETGLPlriTR5efMffjV8b01rfXd6yN9WV5Su6LPrbhSByJrZLmOyxydD1i?=
- =?us-ascii?Q?jsIspL5Ccb/5ehqbUbOeecHKG1gftu10GZLbN2FMgHpA5FxITecQFBr1a5A/?=
- =?us-ascii?Q?17NPlylsrLO0+TgocmWnH9C7z5zXNIi2urXegl33yD+XeAWYcZ3RIY4UrITz?=
- =?us-ascii?Q?l1tw+EHZYH6NjLeOMYoMe5bHxm6OinoHrxiOOzWweJa1Rijq/DdVL/TQf7oR?=
- =?us-ascii?Q?V5ZcmgRWYcVInWTU2sdpyr1TJLZYkAEPbWC+Dwe3MV5FP5I9yS+sgbzjthGU?=
- =?us-ascii?Q?plvJDzX2bxDrkQ5C5NTLXZra+yY554X+a6uokmiq6Axnx4FrrB/LSOKfdCS4?=
- =?us-ascii?Q?iMYr/+ToiPIrqBRHlwj5LtfT83ouIU7K9qhaHNIDa6OUdOjGLuvX6sxbtbr6?=
- =?us-ascii?Q?Rbcs6s0ro8QNX+crKLQvIZDCodOkhZ4mcHZIEVmkLzMMlp79MkzpizfWDe8a?=
- =?us-ascii?Q?/lTrnlU0NttElf2mTGKxIpuXbAgdz075LQaWaTeH3u2ttJKgdnc2Dc5zjUYc?=
- =?us-ascii?Q?ArEU94v8JyLJUpEpEUdGtJMb5K4wyh+Dq6CCugFrRhhMBwCXhbeGnzpFCgah?=
- =?us-ascii?Q?bEZSGYl7A1fXeqK4IQPwEqgozi7Y6BkIjgAne/goOmBizBYEagBAFY38e8SP?=
- =?us-ascii?Q?ijpgaKE3/61A9A3ebO7UBrOGUfHkjlMixqwS0TUeKbafWZLESf35SlN/UFI8?=
- =?us-ascii?Q?Iab+dRUAQ4WgIGXBfu7z0XFLheOm0oRDNh86EtVIaKEgtl0ZPRmm1dIMg0Ia?=
- =?us-ascii?Q?eHGF88dQPc4IzaZzYBauiVrIjDzAQ4f3iaW4I3MQ7OHjRJZn0LyrLIAZvgBw?=
- =?us-ascii?Q?XUf9Z+Sn349cz+HpH3dQwIhq2SsmAb3BsM8HyjXVEpLmvUdGDrZGya30NzOb?=
- =?us-ascii?Q?iySQi+cVK1uDf7SM/lwFMvVIJPKtUoawbbaVZY1LdGxlLmaCLqvqGMlgMFLQ?=
- =?us-ascii?Q?reXJ3E6YC5Sbhap+PXuJukytgjv+bMAlrNZhlSzj+VVEr1E2QAVAqc+2+NEZ?=
- =?us-ascii?Q?7adtnW6lE1/K0BqpLq8uVRgbHWvmRvrdlpdA31mDnRXh88xOvZKZTHZ/ot8O?=
- =?us-ascii?Q?13iD9a0iJMLf2hQIdvXJEcL4QEhGZ5xN0nV9UJU9n9HLSj9gaxW0M7QnGErz?=
- =?us-ascii?Q?LmK6j4mUriPRkAZ1xPKj873Lvz2Jaua3qBcaWYL79iO0Ji1x9oHGTX5aKsQt?=
- =?us-ascii?Q?js8=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MieVHBeftBWgRkSvI3T/dSTqRh2CCLfDKWUB6Ipjrsw=;
+        b=IWpkNMmz1YRQVdQSOWklrN/tXKJ1wpQbTrwgcxxKAPf1u16qOGtO3U7c+p7BojGrkQ
+         DZsy+EVCb4UDoGBvC6yxUtdL4hk0yB/K/eKI0KpeSaNaSxC49bmZg0XAR27QL1pbKgMY
+         GW1v2ELOwEXRUmxr5DyUYq7hw6/f307l+Zs7072gaOtk3wOXXnz7FvC8Yf3itrkXx5G2
+         Z6YUIifWcPlT3+ztReqDiO4zv13FykAaPkIosbpvHVWsOojDl0TKHb9nWa1uXs8NUNij
+         Agcm11yhZk6qu+424GmqohPhWt1moS7OxWbGMEb8KTh+7l9OddJlY1/qq4tWZg81OpOP
+         XZEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MieVHBeftBWgRkSvI3T/dSTqRh2CCLfDKWUB6Ipjrsw=;
+        b=VsC7j4mBY+nx5eY/6lekuYMzwyfMIhoMv3BzDLxIDQffaa/D3W4I+wDl14mLfCuei9
+         X+hPiORRx4oWF5P4GKS9RERNrTrGrANcz7xWBFwTvf4KllUI/3jaNTHyZZEh5gtWaGXk
+         0XuJn1eYxdOUQaz4qeakeRatsSUKarAqQ9iHpQAZOu7c9Sbs84Rrw7q19kTEtm2q32wJ
+         BllTLjctKsb94Yzga23qTzl/WIvaYnMYyouiGIre6mpwqbdYtAV4al80erI6apiD946p
+         c3Eg7PutqKqXeb4fCgNDDBfd5EQay9IJRCty7LZNAu99JbZm/g+BirI9RGLdELc+M85b
+         Ahjw==
+X-Gm-Message-State: AOAM530QEfM6Ptk2n7oeZOUlLMHKRMg+Iqf8sZJ5RLW7CACKtVtdOgjm
+        RWBXQOOO6ENtW9A4NGVbJl4=
+X-Google-Smtp-Source: ABdhPJwa3spCgV3cEcDEi0fTP6+lYrXOYeaSNyrzY5MLC9mY2ytrThcyR2496gqtePPNhXwXRz9RBA==
+X-Received: by 2002:a17:90a:d3c6:: with SMTP id d6mr2429812pjw.25.1619155276923;
+        Thu, 22 Apr 2021 22:21:16 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id y24sm6238825pjp.26.2021.04.22.22.21.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 22:21:16 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH net-next v2 00/15] mtk_eth_soc: fixes and performance improvements
+Date:   Thu, 22 Apr 2021 22:20:53 -0700
+Message-Id: <20210423052108.423853-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b65ba3a7-6d82-4d52-03bc-08d9061754a2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 05:19:12.2668
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g/KYZybaMwPmEk5a1xb/EF8cFncLmyCRUi4jCw0p70JfLTUMu1RArroacs11GlTZXLm1A4O+E9BXQp1vmef/1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4425
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> From: Kimito Sakata <kimito.sakata@oracle.com>
->=20
-> Signed-off-by: Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
-Hi Kimito,
-Please use a proper subject and commit log body.
-If you don't understand the difference between those two - please ask.
-Also for consistency, you might want to use your oracle mail for your Signe=
-d-off-by tag.
-You need to change your git configs for that.
+Most of these changes come from OpenWrt where they have been present and
+tested for months.
 
-Thanks,
-Avri=20
+First three patches are bug fixes. The rest are performance
+improvements. The last patch is a cleanup to use the iopoll.h macro for
+busy-waiting instead of a custom loop.
 
-> ---
->  mmc.c      |   8 ++++
->  mmc.h      |  13 +++++-
->  mmc_cmds.c | 135
-> +++++++++++++++++++++++++++++++++++++++++++++++++++++
->  mmc_cmds.h |   1 +
->  4 files changed, 156 insertions(+), 1 deletion(-)
->=20
-> diff --git a/mmc.c b/mmc.c
-> index f3d724b..eb2638b 100644
-> --- a/mmc.c
-> +++ b/mmc.c
-> @@ -229,6 +229,14 @@ static struct Command commands[] =3D {
->                 "Run Field Firmware Update with <image name> on <device>.=
-\n",
->           NULL
->         },
-> +       { do_erase, -4,
-> +       "erase", "<type> " "<start address> " "<end address> " "<device>\=
-n"
-> +               "Send Erase CMD38 with specific argument to the <device>\=
-n\n"
-> +               "NOTE!: This will delete all user data in the specified r=
-egion of the
-> device\n"
-> +               "<type> must be: legacy | discard | secure-erase | "
-> +               "secure-trim1 | secure-trim2 | trim \n",
-> +       NULL
-> +       },
->         { 0, 0, 0, 0 }
->  };
->=20
-> diff --git a/mmc.h b/mmc.h
-> index 5754a9d..e9766d7 100644
-> --- a/mmc.h
-> +++ b/mmc.h
-> @@ -35,7 +35,15 @@
->  #define MMC_SET_WRITE_PROT     28    /* ac   [31:0] data addr   R1b */
->  #define MMC_CLEAR_WRITE_PROT   29    /* ac   [31:0] data addr   R1b */
->  #define MMC_SEND_WRITE_PROT_TYPE 31   /* ac   [31:0] data addr   R1  */
-> -
-> +#define MMC_ERASE_GROUP_START  35    /* ac   [31:0] data addr   R1  */
-> +#define MMC_ERASE_GROUP_END    36    /* ac   [31:0] data addr   R1  */
-> +#define MMC_ERASE              38    /* ac   [31] Secure request
-> +                                             [30:16] set to 0
-> +                                             [15] Force Garbage Collect =
-request
-> +                                             [14:2] set to 0
-> +                                             [1] Discard Enable
-> +                                             [0] Identify Write Blocks f=
-or
-> +                                             Erase (or TRIM Enable)  R1b=
- */
->  /*
->   * EXT_CSD fields
->   */
-> @@ -62,6 +70,7 @@
->  #define EXT_CSD_CACHE_SIZE_2           251
->  #define EXT_CSD_CACHE_SIZE_1           250
->  #define EXT_CSD_CACHE_SIZE_0           249
-> +#define EXT_CSD_SEC_FEATURE_SUPPORT    231
->  #define EXT_CSD_BOOT_INFO              228     /* R/W */
->  #define EXT_CSD_HC_ERASE_GRP_SIZE      224
->  #define EXT_CSD_HC_WP_GRP_SIZE         221
-> @@ -190,6 +199,8 @@
->  #define EXT_CSD_REV_V4_2               2
->  #define EXT_CSD_REV_V4_1               1
->  #define EXT_CSD_REV_V4_0               0
-> +#define EXT_CSD_SEC_GB_CL_EN           (1<<4)
-> +#define EXT_CSD_SEC_ER_EN              (1<<0)
->=20
->=20
->  /* From kernel linux/mmc/core.h */
-> diff --git a/mmc_cmds.c b/mmc_cmds.c
-> index 6c24cea..9340e3f 100644
-> --- a/mmc_cmds.c
-> +++ b/mmc_cmds.c
-> @@ -2514,6 +2514,141 @@ int do_cache_dis(int nargs, char **argv)
->         return do_cache_ctrl(0, nargs, argv);
->  }
->=20
-> +static int erase(int dev_fd, __u32 argin, __u32 start, __u32 end)
-> +{
-> +#ifndef MMC_IOC_MULTI_CMD
-> +       fprintf(stderr, "mmc-utils has been compiled without
-> MMC_IOC_MULTI_CMD"
-> +                       " support, needed by erase.\n");
-> +       return -ENOTSUP;
-> +#else
-> +       int ret =3D 0;
-> +       struct mmc_ioc_multi_cmd *multi_cmd;
-> +
-> +       multi_cmd =3D calloc(1, sizeof(struct mmc_ioc_multi_cmd) +
-> +                          3 * sizeof(struct mmc_ioc_cmd));
-> +       if (!multi_cmd) {
-> +               perror("Failed to allocate memory");
-> +               return -ENOMEM;
-> +       }
-> +
-> +       multi_cmd->num_of_cmds =3D 3;
-> +       /* Set erase start address */
-> +       multi_cmd->cmds[0].opcode =3D MMC_ERASE_GROUP_START;
-> +       multi_cmd->cmds[0].arg =3D start;
-> +       multi_cmd->cmds[0].flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 |
-> MMC_CMD_AC;
-> +       multi_cmd->cmds[0].write_flag =3D 1;
-> +
-> +       /* Set erase end address */
-> +       multi_cmd->cmds[1].opcode =3D MMC_ERASE_GROUP_END;
-> +       multi_cmd->cmds[1].arg =3D end;
-> +       multi_cmd->cmds[1].flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 |
-> MMC_CMD_AC;
-> +       multi_cmd->cmds[1].write_flag =3D 1;
-> +
-> +       /* Send Erase Command */
-> +       multi_cmd->cmds[2].opcode =3D MMC_ERASE;
-> +       multi_cmd->cmds[2].arg =3D argin;
-> +       multi_cmd->cmds[2].cmd_timeout_ms =3D 300*255*255;
-> +       multi_cmd->cmds[2].flags =3D MMC_RSP_SPI_R1B | MMC_RSP_R1B |
-> MMC_CMD_AC;
-> +       multi_cmd->cmds[2].write_flag =3D 1;
-> +
-> +       /* send erase cmd with multi-cmd */
-> +       ret =3D ioctl(dev_fd, MMC_IOC_MULTI_CMD, multi_cmd);
-> +       if (ret)
-> +               perror("Erase multi-cmd ioctl");
-> +
-> +       free(multi_cmd);
-> +       return ret;
-> +#endif
-> +}
-> +
-> +int do_erase(int nargs, char **argv)
-> +{
-> +       int dev_fd, ret;
-> +       char *print_str;
-> +       char **eptr =3D NULL;
-> +       __u8 ext_csd[512], checkup_mask =3D 0;
-> +       __u32 arg, start, end;
-> +
-> +       if (nargs !=3D 5) {
-> +               fprintf(stderr, "Usage: erase <type> <start addr> <end ad=
-dr>
-> </path/to/mmcblkX>\n");
-> +               exit(1);
-> +       }
-> +
-> +       if (strstr(argv[2], "0x") || strstr(argv[2], "0X"))
-> +               start =3D strtol(argv[2], eptr, 16);
-> +       else
-> +               start =3D strtol(argv[2], eptr, 10);
-> +
-> +       if (strstr(argv[3], "0x") || strstr(argv[3], "0X"))
-> +               end =3D strtol(argv[3], eptr, 16);
-> +       else
-> +               end =3D strtol(argv[3], eptr, 10);
-> +
-> +       if (end < start) {
-> +               fprintf(stderr, "erase start [0x%08x] > erase end [0x%08x=
-]\n",
-> +                       start, end);
-> +               exit(1);
-> +       }
-> +
-> +       if (strcmp(argv[1], "legacy") =3D=3D 0) {
-> +               arg =3D 0x00000000;
-> +               print_str =3D "Legacy Erase";
-> +       } else if (strcmp(argv[1], "discard") =3D=3D 0) {
-> +               arg =3D 0x00000003;
-> +               print_str =3D "Discard";
-> +       } else if (strcmp(argv[1], "secure-erase") =3D=3D 0) {
-> +               print_str =3D "Secure Erase";
-> +               checkup_mask =3D EXT_CSD_SEC_ER_EN;
-> +               arg =3D 0x80000000;
-> +       } else if (strcmp(argv[1], "secure-trim1") =3D=3D 0) {
-> +               print_str =3D "Secure Trim Step 1";
-> +               checkup_mask =3D EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_EN=
-;
-> +               arg =3D 0x80000001;
-> +       } else if (strcmp(argv[1], "secure-trim2") =3D=3D 0) {
-> +               print_str =3D "Secure Trim Step 2";
-> +               checkup_mask =3D EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_EN=
-;
-> +               arg =3D 0x80008000;
-> +       } else if (strcmp(argv[1], "trim") =3D=3D 0) {
-> +               print_str =3D "Trim";
-> +               checkup_mask =3D EXT_CSD_SEC_GB_CL_EN;
-> +               arg =3D 0x00000001;
-> +       } else {
-> +               fprintf(stderr, "Unknown erase type: %s\n", argv[1]);
-> +               exit(1);
-> +       }
-> +
-> +       dev_fd =3D open(argv[4], O_RDWR);
-> +       if (dev_fd < 0) {
-> +               perror(argv[4]);
-> +               exit(1);
-> +       }
-> +
-> +       if (checkup_mask) {
-> +               ret =3D read_extcsd(dev_fd, ext_csd);
-> +               if (ret) {
-> +                       fprintf(stderr, "Could not read EXT_CSD from %s\n=
-",
-> +                               argv[4]);
-> +                       goto out;
-> +               }
-> +               if ((checkup_mask & ext_csd[EXT_CSD_SEC_FEATURE_SUPPORT])=
- !=3D
-> +                                                               checkup_m=
-ask) {
-> +                       fprintf(stderr, "%s is not supported in %s\n",
-> +                               print_str, argv[4]);
-> +                       ret =3D -ENOTSUP;
-> +                       goto out;
-> +               }
-> +
-> +       }
-> +       printf("Executing %s from 0x%08x to 0x%08x\n", print_str, start, =
-end);
-> +
-> +       ret =3D erase(dev_fd, arg, start, end);
-> +out:
-> +       printf(" %s %s!\n\n", print_str, ret ? "Failed" : "Succeed");
-> +       close(dev_fd);
-> +       return ret;
-> +}
-> +
-> +
->  int do_ffu(int nargs, char **argv)
->  {
->  #ifndef MMC_IOC_MULTI_CMD
-> diff --git a/mmc_cmds.h b/mmc_cmds.h
-> index 9d3246c..8331ab2 100644
-> --- a/mmc_cmds.h
-> +++ b/mmc_cmds.h
-> @@ -45,3 +45,4 @@ int do_ffu(int nargs, char **argv);
->  int do_read_scr(int argc, char **argv);
->  int do_read_cid(int argc, char **argv);
->  int do_read_csd(int argc, char **argv);
-> +int do_erase(int nargs, char **argv);
-> --
-> 2.24.1 (Apple Git-126)
+v2:
+ - Reverse christmas tree in "use iopoll.h macro for DMA init"
+ - Use cond_resched() instead of iopoll.h macro in "reduce MDIO bus
+   access latency"
+ - Use napi_complete_done and rework NAPI callbacks in a new patch
+
+Felix Fietkau (12):
+  net: ethernet: mtk_eth_soc: fix RX VLAN offload
+  net: ethernet: mtk_eth_soc: unmap RX data before calling build_skb
+  net: ethernet: mtk_eth_soc: use napi_consume_skb
+  net: ethernet: mtk_eth_soc: reduce MDIO bus access latency
+  net: ethernet: mtk_eth_soc: remove unnecessary TX queue stops
+  net: ethernet: mtk_eth_soc: use larger burst size for QDMA TX
+  net: ethernet: mtk_eth_soc: increase DMA ring sizes
+  net: ethernet: mtk_eth_soc: implement dynamic interrupt moderation
+  net: ethernet: mtk_eth_soc: cache HW pointer of last freed TX
+    descriptor
+  net: ethernet: mtk_eth_soc: only read the full RX descriptor if DMA is
+    done
+  net: ethernet: mtk_eth_soc: reduce unnecessary interrupts
+  net: ethernet: mtk_eth_soc: set PPE flow hash as skb hash if present
+
+Ilya Lipnitskiy (3):
+  net: ethernet: mtk_eth_soc: fix build_skb cleanup
+  net: ethernet: mtk_eth_soc: rework NAPI callbacks
+  net: ethernet: mtk_eth_soc: use iopoll.h macro for DMA init
+
+ drivers/net/ethernet/mediatek/Kconfig       |   1 +
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 262 +++++++++++++-------
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h |  50 +++-
+ 3 files changed, 213 insertions(+), 100 deletions(-)
+
+-- 
+2.31.1
 
