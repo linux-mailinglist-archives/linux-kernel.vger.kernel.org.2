@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA613698CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5D83698CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 20:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243414AbhDWSCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 14:02:08 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:38492 "EHLO vps0.lunn.ch"
+        id S232011AbhDWSH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 14:07:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231400AbhDWSCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:02:06 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1la07G-000hrM-F4; Fri, 23 Apr 2021 20:01:22 +0200
-Date:   Fri, 23 Apr 2021 20:01:22 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Taras Chornyi <tchornyi@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Vadym Kochan <vkochan@marvell.com>
-Subject: Re: [PATCH net-next 1/3] net: marvell: prestera: bump supported
- firmware version to 3.0
-Message-ID: <YIMLcsstbpY215oJ@lunn.ch>
-References: <20210423155933.29787-1-vadym.kochan@plvision.eu>
- <20210423155933.29787-2-vadym.kochan@plvision.eu>
- <YIL6feaar8Y/yOaZ@lunn.ch>
- <20210423170437.GC17656@plvision.eu>
+        id S229549AbhDWSHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 14:07:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A3760241;
+        Fri, 23 Apr 2021 18:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619201208;
+        bh=mt8xzBNFIiy8EM+Iw03Waf263vHIN+QILutR/5xyMCs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DMVTyIlUIAP3D/r8LDQYhLnWTT1DmFrqn10JxurGwqd42vHLEG0rqhBr8aziRHZxu
+         CFL15ekSQqqA2fEl85wrm6oHyDEEh8ASxwE30X8rkMpSO8KX7/cNUf24xLMXgFJg04
+         NtpM51R/uPBKU3QzHoKJET22LFhSMYmGPTOKfX4ThlR1DChf7tdUaRQJp3yukRX8ev
+         VQ5n3eetibuE/hDEmJQL9VzYzGSEIrL7b1oMVu5UPPLORIUBek2YwUhXY+3jG6KD+e
+         DnrUo8+I5P7ikwsDG2QGxd8yqy8SssSNT4eyD0uwC3FTaAytm0vHQDAE3ZOc/P5Fp5
+         ohDaeogndt7Zw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@axis.com, guodong.xu@linaro.org
+Subject: Re: [PATCH] regulator: core: Fix off_on_delay handling
+Date:   Fri, 23 Apr 2021 19:06:16 +0100
+Message-Id: <161920103666.15429.14029390761495428957.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210423114524.26414-1-vincent.whitchurch@axis.com>
+References: <20210423114524.26414-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423170437.GC17656@plvision.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 08:04:37PM +0300, Vadym Kochan wrote:
-> Hi Andrew,
+On Fri, 23 Apr 2021 13:45:24 +0200, Vincent Whitchurch wrote:
+> The jiffies-based off_on_delay implementation has a couple of problems
+> that cause it to sometimes not actually delay for the required time:
 > 
-> On Fri, Apr 23, 2021 at 06:49:01PM +0200, Andrew Lunn wrote:
-> > On Fri, Apr 23, 2021 at 06:59:31PM +0300, Vadym Kochan wrote:
-> > > From: Vadym Kochan <vkochan@marvell.com>
-> > > 
-> > > New firmware version has some ABI and feature changes like:
-> > > 
-> > >     - LAG support
-> > >     - initial L3 support
-> > >     - changed events handling logic
-> > > 
-> > > Signed-off-by: Vadym Kochan <vkochan@marvell.com>
-> > > ---
-> > >  drivers/net/ethernet/marvell/prestera/prestera_pci.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> > > index 298110119272..80fb5daf1da8 100644
-> > > --- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> > > +++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> > > @@ -13,7 +13,7 @@
-> > >  
-> > >  #define PRESTERA_MSG_MAX_SIZE 1500
-> > >  
-> > > -#define PRESTERA_SUPP_FW_MAJ_VER	2
-> > > +#define PRESTERA_SUPP_FW_MAJ_VER	3
-> > >  #define PRESTERA_SUPP_FW_MIN_VER	0
-> > 
-> > I could be reading the code wrong, but it looks like anybody with
-> > firmware version 2 on their machine and this new driver version
-> > results in the switch not probing? And if the switch does not probe,
-> > do they have any networking to go get the new firmware version?
-> > 
+>  (1) If, for example, the off_on_delay time is equivalent to one jiffy,
+>      and the ->last_off_jiffy is set just before a new jiffy starts,
+>      then _regulator_do_enable() does not wait at all since it checks
+>      using time_before().
 > 
-> Existing boards have management port which is separated from the PP.
+> [...]
 
-I don't think that is enough. You have strongly tied the kernel
-version to the firmware version. Upgrade the kernel without first
-upgrading linux-firmware, and things break. In Linux distributions
-these are separate packages, each with their own life cycle. There is
-no guarantee they will be upgraded together.
+Applied to
 
-> > I think you need to provide some degree of backwards compatibly to
-> > older firmware. Support version 2 and 3. When version 4 comes out,
-> > drop support for version 2 in the driver etc.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-The wifi driver i have for my laptop does something like this. It
-first tries to load the latest version of the firmware the driver
-supports, and if that fails, it goes back to older versions until it
-finds a version it can load, or gives up, saying they are all too old.
+Thanks!
 
-      Andrew
+[1/1] regulator: core: Fix off_on_delay handling
+      commit: a8ce7bd89689997537dd22dcbced46cf23dc19da
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
