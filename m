@@ -2,367 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37E436953A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B91E36953F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242821AbhDWO5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        id S231219AbhDWO7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbhDWO4z (ORCPT
+        with ESMTP id S229454AbhDWO7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:56:55 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6C4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:56:18 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso43611396otb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:56:18 -0700 (PDT)
+        Fri, 23 Apr 2021 10:59:21 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECD6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:58:43 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id n4-20020a05600c4f84b029013151278decso1397892wmq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:58:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wkujAwLb9O/rrm3Yi4HThUcLCn5rqmLKN6hTLLP3m7M=;
-        b=AAEnqBqO/BUPTeclCJsRwU8qIQfWXrMQZ447bhEgf6Q0iWY2TwqUQklE+lKS1wFpn7
-         AOD+oZpozm8wam+D2G6vAY+2ieb4SX5YgPGIORe7fNvNi96Nx3ZCygvhfDmbZ/2PY9P7
-         azVgzxh8Ww841tIgIy3v+va1BCYQNMUUmTDysDqomJy0LrjqusGILLG8EZndshPDZIqH
-         fGoyRMWwcx5wzNK9utAUAqBSSty3lQGv1ij66N6zzJrVlPIt1xfLJHdQo9SKZ+h27Q3I
-         Y1FRumW9B12mN2Sw0Wcraj630OPaJvJM1Sc19oZmVrm1s88tUjATxyLOw39rW8SESviL
-         g5Hg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cgl8/i7gQs6yxgkvwobatiYWLGXODMXAcvLmSXV9bcg=;
+        b=KIDPzoPzCXnEjke2W6kmWSqnfFGqG72dl8OncSLk5AODjpqcyieaAn7POj7SWXTW3G
+         em/lCuQ9LCaEZ5NW+Cmw96VHE21Bx6oO+dCpPHKzzUZvv5b4n2jAjIx7A2n3M7tCBPlK
+         DV5dcrXIAcbsg/VGvmJu13BuW8lTZtrNgHQQYpsLtj2e+569jBYMbO4UbSHhGhid76Rf
+         VX3T6kHvbXH8yK3H7AVNcbQ5nTYWfcMkZf9n+2k3PQ3iNovlUrSwswZpWsO9dyag82Kp
+         mv3xTsDskYu9Fj+QY7k1MN/2ca1PG9CrDeudONxukdNx5rEcyqxLtQodLZCxShLTh2Kx
+         ykcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wkujAwLb9O/rrm3Yi4HThUcLCn5rqmLKN6hTLLP3m7M=;
-        b=T2iDsO1lLIhT3HdeOiT8BT8NCAN8Num+x85acoSbn05GWBM1c1CxmrFmrEYS0KGuya
-         dmkhb8tp3EX8Vysj2uG9euKikq3bYn2MJzircBJ/7ilkWgTcJr0aiKgAmOj9c6C6kcVj
-         RjljMS6QQJLFClQr/wbHEfjBMG8WG4DcJaEwXiOyhMfa+f2K1HbzAHKdaHODeXtKiKc4
-         OfWJU3mwg0w38lPEi1LWXPaIm0KYDNXihws/7pMJC5CVxrJEVzqFsUhZLYUVLngiElvV
-         ydtajt3FYCIzH+mqNYe17iay3yNoQJMOXn0/fuUOfsOtmhYBN25TcxdCWz3jjsrPhYPB
-         h0dQ==
-X-Gm-Message-State: AOAM531rSqBLDPRQ/5VvK7AbUVNM+xMkC8g1UL9YSP02QpK0erlcEQ3h
-        +xzeCy2cQi4e+Lknmm3Da1Z5ag==
-X-Google-Smtp-Source: ABdhPJyqYiwPxVLgniDoMg9bnzoLZWqDsYnTqw10U3odXx+PBYiQ8zWVdp+AHJCNMDcUttVopRjS+g==
-X-Received: by 2002:a9d:648c:: with SMTP id g12mr3729413otl.299.1619189778220;
-        Fri, 23 Apr 2021 07:56:18 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m127sm1311178oib.32.2021.04.23.07.56.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Cgl8/i7gQs6yxgkvwobatiYWLGXODMXAcvLmSXV9bcg=;
+        b=kq7CMFqNO+xbMkZV6oF/YKDxm69kHErP74BIIn8D4BLzlHhs0e6RWj8cz4sHUvN7lp
+         vJ3RMDYHDac2JNTTAgm2U3ZhwKIfmzjp/6Vn2fQU9iOtXnjFJwSmSby8Vd/n6I05LcrI
+         gZBrT7OiBEFexlIc7OR2fr404Yb9ejzH4k5fgyGDwrFDbbOQVhdBaeXItRs6xk8Pkwxs
+         7CbWDOUkwKsVHe3NDm70ZnZGwbBfLPocZ3Ap9zsRt5X3XsZ7E4uGred4jF1vOD9vgCjr
+         9sdugwBkUVLuw2K7elQ6kfcPa77wnXZzTAmcU1LU/qvPnDUgw2Rc4VTX/7dTJthlh4f1
+         9ptw==
+X-Gm-Message-State: AOAM532phj1QGesQWpDbKX0ygvfOv0JU8J1TLRhypv67K/VTNYeMv/k7
+        3As20WaJj/QkQ/fBxxDeBB6fNZYEhmI=
+X-Google-Smtp-Source: ABdhPJwcuVzhib37Sdj2Gl65PK5C/Cg5T9Io2Y2K3huCMlHvhCt4Mujt/pN/fqc6YyUlJHVgX3+Fgw==
+X-Received: by 2002:a1c:e3c3:: with SMTP id a186mr5847197wmh.81.1619189922359;
+        Fri, 23 Apr 2021 07:58:42 -0700 (PDT)
+Received: from agape ([5.171.72.99])
+        by smtp.gmail.com with ESMTPSA id y125sm8076731wmy.34.2021.04.23.07.58.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:56:17 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:56:15 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 19/27] drm/bridge: ti-sn65dsi86: If refclk, DP AUX can
- happen w/out pre-enable
-Message-ID: <YILgD5gGmWEwzvxZ@builder.lan>
-References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.19.Ie8cf556114953c6e7634564cc0d3ddbd103cb96c@changeid>
+        Fri, 23 Apr 2021 07:58:42 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/49] staging: rtl8723bs: remove all remaining debug macros in rtw_debug.h
+Date:   Fri, 23 Apr 2021 16:57:51 +0200
+Message-Id: <cover.1619189489.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.19.Ie8cf556114953c6e7634564cc0d3ddbd103cb96c@changeid>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+This patchset removes all remaining debug macros in rtw_debug.h
 
-> Let's reorganize how we init and turn on the reference clock in the
-> code to allow us to turn it on early (even before pre_enable()) so
-> that we can read the EDID early. This is handy for eDP because:
-> - We always assume that a panel is there.
-> - Once we report that a panel is there we get asked to read the EDID.
-> - Pre-enable isn't called until we know what pixel clock we want to
->   use and we're ready to turn everything on. That's _after_ we get
->   asked to read the EDID.
-> 
-> NOTE: the above only works out OK if we "refclk" is provided. Though I
-> don't have access to any hardware that uses ti-sn65dsi86 and _doesn't_
-> provide a "refclk", I believe that we'll have trouble reading the EDID
-> at bootup in that case. Specifically I believe that if there's no
-> "refclk" we need the MIPI source clock to be active before we can
-> successfully read the EDID. My evidence here is that, in testing, I
-> couldn't read the EDID until I turned on the DPPLL in the bridge chip
-> and that the DPPLL needs the input clock to be active.
-> 
-> Since this is hard to support, let's punt trying to handle this case
-> if there's no "refclk". In that case we'll enable comms in
-> pre_enable() like we always did.
-> 
-> I don't believe there are any users of the ti-sn65dsi86 bridge chip
-> that _don't_ use "refclk". The bridge chip is _very_ inflexible in
-> that mode. The only time I've seen that mode used was for some really
-> early prototype hardware that was thrown in the e-waste bin years ago
-> when we realized how inflexible it was.
-> 
-> Even if someone is using the bridge chip without the "refclk" they're
-> in no worse shape than they were before the (fairly recent) commit
-> 58074b08c04a ("drm/bridge: ti-sn65dsi86: Read EDID blob over DDC").
-> 
+DBG_871X_SEL macro is replaced with netdev_dbg() for it does
+a raw printk call which is not best recommended for a driver.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+@@
+expression sel;
+expression list args;
+identifier padapter;
+identifier func;
+@@
 
-Regards,
-Bjorn
+func(..., struct adapter *padapter, ...) {
+	<...
+-	DBG_871X_SEL(sel, args);
++	netdev_dbg(padapter->pnetdev, args);
+	...>
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 129 +++++++++++++++++++-------
->  1 file changed, 94 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index b3c699da7724..875e5dbe6594 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -132,6 +132,8 @@
->   * @dp_lanes:     Count of dp_lanes we're using.
->   * @ln_assign:    Value to program to the LN_ASSIGN register.
->   * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
-> + * @comms_enabled: If true then communication over the aux channel is enabled.
-> + * @comms_mutex:   Protects modification of comms_enabled.
->   *
->   * @gchip:        If we expose our GPIOs, this is used.
->   * @gchip_output: A cache of whether we've set GPIOs to output.  This
-> @@ -162,6 +164,8 @@ struct ti_sn65dsi86 {
->  	int				dp_lanes;
->  	u8				ln_assign;
->  	u8				ln_polrs;
-> +	bool				comms_enabled;
-> +	struct mutex			comms_mutex;
->  
->  #if defined(CONFIG_OF_GPIO)
->  	struct gpio_chip		gchip;
-> @@ -250,6 +254,47 @@ static void ti_sn_bridge_set_refclk_freq(struct ti_sn65dsi86 *pdata)
->  			   REFCLK_FREQ(i));
->  }
->  
-> +static void ti_sn65dsi86_enable_comms(struct ti_sn65dsi86 *pdata)
-> +{
-> +	mutex_lock(&pdata->comms_mutex);
-> +
-> +	/* configure bridge ref_clk */
-> +	ti_sn_bridge_set_refclk_freq(pdata);
-> +
-> +	/*
-> +	 * HPD on this bridge chip is a bit useless.  This is an eDP bridge
-> +	 * so the HPD is an internal signal that's only there to signal that
-> +	 * the panel is done powering up.  ...but the bridge chip debounces
-> +	 * this signal by between 100 ms and 400 ms (depending on process,
-> +	 * voltage, and temperate--I measured it at about 200 ms).  One
-> +	 * particular panel asserted HPD 84 ms after it was powered on meaning
-> +	 * that we saw HPD 284 ms after power on.  ...but the same panel said
-> +	 * that instead of looking at HPD you could just hardcode a delay of
-> +	 * 200 ms.  We'll assume that the panel driver will have the hardcoded
-> +	 * delay in its prepare and always disable HPD.
-> +	 *
-> +	 * If HPD somehow makes sense on some future panel we'll have to
-> +	 * change this to be conditional on someone specifying that HPD should
-> +	 * be used.
-> +	 */
-> +	regmap_update_bits(pdata->regmap, SN_HPD_DISABLE_REG, HPD_DISABLE,
-> +			   HPD_DISABLE);
-> +
-> +	pdata->comms_enabled = true;
-> +
-> +	mutex_unlock(&pdata->comms_mutex);
-> +}
-> +
-> +static void ti_sn65dsi86_disable_comms(struct ti_sn65dsi86 *pdata)
-> +{
-> +	mutex_lock(&pdata->comms_mutex);
-> +
-> +	pdata->comms_enabled = false;
-> +	clk_disable_unprepare(pdata->refclk);
-> +
-> +	mutex_unlock(&pdata->comms_mutex);
-> +}
-> +
->  static int __maybe_unused ti_sn65dsi86_resume(struct device *dev)
->  {
->  	struct ti_sn65dsi86 *pdata = dev_get_drvdata(dev);
-> @@ -263,6 +308,16 @@ static int __maybe_unused ti_sn65dsi86_resume(struct device *dev)
->  
->  	gpiod_set_value(pdata->enable_gpio, 1);
->  
-> +	/*
-> +	 * If we have a reference clock we can enable communication w/ the
-> +	 * panel (including the aux channel) w/out any need for an input clock
-> +	 * so we can do it in resume which lets us read the EDID before
-> +	 * pre_enable(). Without a reference clock we need the MIPI reference
-> +	 * clock so reading early doesn't work.
-> +	 */
-> +	if (pdata->refclk)
-> +		ti_sn65dsi86_enable_comms(pdata);
-> +
->  	return ret;
->  }
->  
-> @@ -271,6 +326,9 @@ static int __maybe_unused ti_sn65dsi86_suspend(struct device *dev)
->  	struct ti_sn65dsi86 *pdata = dev_get_drvdata(dev);
->  	int ret;
->  
-> +	if (pdata->refclk)
-> +		ti_sn65dsi86_disable_comms(pdata);
-> +
->  	gpiod_set_value(pdata->enable_gpio, 0);
->  
->  	ret = regulator_bulk_disable(SN_REGULATOR_SUPPLY_NUM, pdata->supplies);
-> @@ -843,27 +901,8 @@ static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
->  
->  	pm_runtime_get_sync(pdata->dev);
->  
-> -	/* configure bridge ref_clk */
-> -	ti_sn_bridge_set_refclk_freq(pdata);
-> -
-> -	/*
-> -	 * HPD on this bridge chip is a bit useless.  This is an eDP bridge
-> -	 * so the HPD is an internal signal that's only there to signal that
-> -	 * the panel is done powering up.  ...but the bridge chip debounces
-> -	 * this signal by between 100 ms and 400 ms (depending on process,
-> -	 * voltage, and temperate--I measured it at about 200 ms).  One
-> -	 * particular panel asserted HPD 84 ms after it was powered on meaning
-> -	 * that we saw HPD 284 ms after power on.  ...but the same panel said
-> -	 * that instead of looking at HPD you could just hardcode a delay of
-> -	 * 200 ms.  We'll assume that the panel driver will have the hardcoded
-> -	 * delay in its prepare and always disable HPD.
-> -	 *
-> -	 * If HPD somehow makes sense on some future panel we'll have to
-> -	 * change this to be conditional on someone specifying that HPD should
-> -	 * be used.
-> -	 */
-> -	regmap_update_bits(pdata->regmap, SN_HPD_DISABLE_REG, HPD_DISABLE,
-> -			   HPD_DISABLE);
-> +	if (!pdata->refclk)
-> +		ti_sn65dsi86_enable_comms(pdata);
->  
->  	drm_panel_prepare(pdata->panel);
->  }
-> @@ -874,7 +913,8 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
->  
->  	drm_panel_unprepare(pdata->panel);
->  
-> -	clk_disable_unprepare(pdata->refclk);
-> +	if (!pdata->refclk)
-> +		ti_sn65dsi86_disable_comms(pdata);
->  
->  	pm_runtime_put_sync(pdata->dev);
->  }
-> @@ -908,6 +948,20 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->  	if (len > SN_AUX_MAX_PAYLOAD_BYTES)
->  		return -EINVAL;
->  
-> +	pm_runtime_get_sync(pdata->dev);
-> +	mutex_lock(&pdata->comms_mutex);
-> +
-> +	/*
-> +	 * If someone tries to do a DDC over AUX transaction before pre_enable()
-> +	 * on a device without a dedicated reference clock then we just can't
-> +	 * do it. Fail right away. This prevents non-refclk users from reading
-> +	 * the EDID before enabling the panel but such is life.
-> +	 */
-> +	if (!pdata->comms_enabled) {
-> +		ret = -EIO;
-> +		goto exit;
-> +	}
-> +
->  	switch (request) {
->  	case DP_AUX_NATIVE_WRITE:
->  	case DP_AUX_I2C_WRITE:
-> @@ -918,7 +972,8 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->  		msg->reply = 0;
->  		break;
->  	default:
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto exit;
->  	}
->  
->  	BUILD_BUG_ON(sizeof(addr_len) != sizeof(__be32));
-> @@ -942,11 +997,11 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->  	ret = regmap_read_poll_timeout(pdata->regmap, SN_AUX_CMD_REG, val,
->  				       !(val & AUX_CMD_SEND), 0, 50 * 1000);
->  	if (ret)
-> -		return ret;
-> +		goto exit;
->  
->  	ret = regmap_read(pdata->regmap, SN_AUX_CMD_STATUS_REG, &val);
->  	if (ret)
-> -		return ret;
-> +		goto exit;
->  
->  	if (val & AUX_IRQ_STATUS_AUX_RPLY_TOUT) {
->  		/*
-> @@ -954,13 +1009,14 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->  		 * but it hit a timeout. We ignore defers here because they're
->  		 * handled in hardware.
->  		 */
-> -		return -ETIMEDOUT;
-> +		ret = -ETIMEDOUT;
-> +		goto exit;
->  	}
->  
->  	if (val & AUX_IRQ_STATUS_AUX_SHORT) {
->  		ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &len);
->  		if (ret)
-> -			return ret;
-> +			goto exit;
->  	} else if (val & AUX_IRQ_STATUS_NAT_I2C_FAIL) {
->  		switch (request) {
->  		case DP_AUX_I2C_WRITE:
-> @@ -972,18 +1028,19 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
->  			msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
->  			break;
->  		}
-> -		return 0;
-> +		len = 0;
-> +		goto exit;
->  	}
->  
-> -	if (request == DP_AUX_NATIVE_WRITE || request == DP_AUX_I2C_WRITE ||
-> -	    len == 0)
-> -		return len;
-> +	if (request != DP_AUX_NATIVE_WRITE && request != DP_AUX_I2C_WRITE && len != 0)
-> +		ret = regmap_bulk_read(pdata->regmap, SN_AUX_RDATA_REG(0), buf, len);
->  
-> -	ret = regmap_bulk_read(pdata->regmap, SN_AUX_RDATA_REG(0), buf, len);
-> -	if (ret)
-> -		return ret;
-> +exit:
-> +	mutex_unlock(&pdata->comms_mutex);
-> +	pm_runtime_mark_last_busy(pdata->dev);
-> +	pm_runtime_put_autosuspend(pdata->dev);
->  
-> -	return len;
-> +	return ret ? ret : len;
->  }
->  
->  static int ti_sn_bridge_parse_dsi_host(struct ti_sn65dsi86 *pdata)
-> @@ -1380,6 +1437,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
->  	dev_set_drvdata(dev, pdata);
->  	pdata->dev = dev;
->  
-> +	mutex_init(&pdata->comms_mutex);
-> +
->  	pdata->regmap = devm_regmap_init_i2c(client,
->  					     &ti_sn65dsi86_regmap_config);
->  	if (IS_ERR(pdata->regmap)) {
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
+unused _DBG_871X_LEVEL macro declaration is removed.
+
+Some code cleaning is done and all other private component tracing
+macros are removed.
+
+Fabio Aiuto (49):
+  staging: rtl8723bs: remove unused log function
+  staging: rtl8723bs: replace DBG_871X_SEL log macro with netdev_dbg()
+  staging: rtl8723bs: remove DBG_871X_SEL macro declaration
+  staging: rtl8723bs: remove unused _DBG_871X_LEVEL macro
+  staging: rtl8723bs: remove unused mac_reg_dump() function argument
+  staging: rtl8723bs: remove unused bb_reg_dump() function argument
+  staging: rtl8723bs: remove unused rf_reg_dump() function argument
+  staging: rtl8723bs: remove unused RTW_DBGDUMP macro definition
+  staging: rtl8723bs: remove all defs related to _dbgdump macro
+  staging: rtl8723bs: remove unused debug variables declarations and
+    initialization
+  staging: rtl8723bs: remove unneeded header file
+  staging: rtl8723bs: remove unused debug macro definitions
+  staging: rtl8723bs: remove debug macros related to core/rtw_xmit.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to os_dep/xmit_linux.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to core/rtw_recv.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to os_dep/recv_linux.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to core/rtw_mlme.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to os_dep/mlme_linux.c
+    tracing
+  staging: rtl8723bs: move static array definition from header to .c
+    file
+  staging: rtl8723bs: remove debug macros related to core/rtw_mlme_ext.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to core/rtw_sta_mgt.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to core/rtw_cmd.c
+    tracing
+  staging: rtl8723bs: remove obsolete debug macro definitions
+  staging: rtl8723bs: remove debug macros related to core/rtw_io.c
+    tracing
+  staging: rtl8723bs: remove obsolete _IO_OSDEP_C_ debug macro
+    definition
+  staging: rtl8723bs: remove debug macros related to os_dep/os_intfs.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to core/rtw_security.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to core/rtw_eeprom.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to hal/hal_intf.c
+    tracing
+  staging: rtl8723bs: remove debug macros related to hal/sdio_halinit.c
+    tracing
+  staging: rtl8723bs: remove unused debug macros tied to
+    _RTL871X_IOCTL_C_ definition
+  staging: rtl8723bs: remove unused debug macros tied to
+    _RTL871X_IOCTL_SET_C_ definition
+  staging: rtl8723bs: remove unused debug macros tied to
+    _RTL871X_IOCTL_QUERY_C_ definition
+  staging: rtl8723bs: remove unused debug macros tied to
+    _RTL871X_PWRCTRL_C_ definition
+  staging: rtl8723bs: remove unused macros tied to core/rtw_pwrctrl.c
+    debug
+  staging: rtl8723bs: remove unused macros tied to os_dep/sdio_intf.c
+    debug
+  staging: rtl8723bs: remove unused debug macros tied to _HCI_OPS_C_
+    definition
+  staging: rtl8723bs: remove unused debug macros tied to hal/sdio_ops.c
+    debug
+  staging: rtl8723bs: remove unused debug macros tied to
+    os_dep/osdep_service.c debug
+  staging: rtl8723bs: remove unused _module_mp_ def
+  staging: rtl8723bs: remove unused macros tied to _HCI_OPS_OS_C_
+    definition
+  staging: rtl8723bs: remove unused macros tied to
+    _RTL871X_IOCTL_LINUX_C definition
+  staging: rtl8723bs: remove unused macros tied to _RTL8712_CMD_C_
+    definition
+  staging: rtl8723bs: remove commented out macro definition
+  staging: rtl8723bs: remove unused debug macro definitions
+  staging: rtl8723bs: remove unused macros tied to core/rtw_efuse.c
+    debug
+  staging: rtl8723bs: remove unsed debug macros tied to no particular
+    code debug
+  staging: rtl8723bs: remove last unused debug macros
+  staging: rtl8723bs: macro DRIVER_PREFIX expands to lowercase driver
+    name
+
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |   2 -
+ drivers/staging/rtl8723bs/core/rtw_debug.c    |  39 ++--
+ drivers/staging/rtl8723bs/core/rtw_eeprom.c   |   2 -
+ drivers/staging/rtl8723bs/core/rtw_efuse.c    |   2 -
+ drivers/staging/rtl8723bs/core/rtw_io.c       |   2 -
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |   2 -
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  32 +++-
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |   2 -
+ drivers/staging/rtl8723bs/core/rtw_recv.c     |   2 -
+ drivers/staging/rtl8723bs/core/rtw_security.c |   2 -
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |   2 -
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     |   2 -
+ drivers/staging/rtl8723bs/hal/hal_intf.c      |   3 -
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c  |   2 -
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      |   2 -
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 170 +-----------------
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  32 ----
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    |   6 +-
+ drivers/staging/rtl8723bs/os_dep/mlme_linux.c |   4 -
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c   |   2 -
+ .../staging/rtl8723bs/os_dep/osdep_service.c  |   4 -
+ drivers/staging/rtl8723bs/os_dep/recv_linux.c |   2 -
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c  |   2 -
+ drivers/staging/rtl8723bs/os_dep/xmit_linux.c |   2 -
+ 24 files changed, 48 insertions(+), 274 deletions(-)
+
+-- 
+2.20.1
+
