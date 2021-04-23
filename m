@@ -2,97 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA74A3695DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A393695DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243078AbhDWPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243129AbhDWPNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:13:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81D7C6146B;
-        Fri, 23 Apr 2021 15:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1619190790;
-        bh=2qL86T+Km0KUpRXmE+1i1Ylz6ub/ilQbeW7d3V9BD/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BvSC28GDkyTgjcdVuTpmJg86+QLUIrOG8FCo5kFwjyczACgS+Vh0sgNfdMLLUVuy8
-         RwQ+B9hoJP+5xenemrGcL8i/K1f7e9WgY2zSibgj7Vp/1uQHvYbsgQeQLQWNDj9Ljz
-         SBvmleZjj8dxIjB6PENkMvIdNnnYt6/VGluZFFA4=
-Date:   Fri, 23 Apr 2021 17:13:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Samuel Zou <zou_wei@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
-Message-ID: <YILkAwGEmAWWLro2@kroah.com>
-References: <20210419130527.791982064@linuxfoundation.org>
- <4599d4bc-937b-0624-5acb-9e7af0f2c9f8@huawei.com>
+        id S242878AbhDWPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:14:35 -0400
+Received: from smtprelay0184.hostedemail.com ([216.40.44.184]:49014 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231689AbhDWPOd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:14:33 -0400
+Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 211961800E36A;
+        Fri, 23 Apr 2021 15:13:56 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id F1ABD17277;
+        Fri, 23 Apr 2021 15:13:54 +0000 (UTC)
+Message-ID: <73945e7037ab61eb34a2a1af05aa3eef75c8f836.camel@perches.com>
+Subject: Re: [PATCH] nvmem: qfprom: minor nit fixes, no functional change
+From:   Joe Perches <joe@perches.com>
+To:     Rajendra Nayak <rnayak@codeaurora.org>,
+        srinivas.kandagatla@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rbokka@codeaurora.org
+Date:   Fri, 23 Apr 2021 08:13:53 -0700
+In-Reply-To: <1619161503-8784-1-git-send-email-rnayak@codeaurora.org>
+References: <1619161503-8784-1-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4599d4bc-937b-0624-5acb-9e7af0f2c9f8@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: F1ABD17277
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: 84zf3q7z797tubdqy36ipf5uudikkbka
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+EoyNWIyNnZIdn9TEGXHUUdHz2XD8n9iw=
+X-HE-Tag: 1619190834-636411
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 02:20:59PM +0800, Samuel Zou wrote:
+On Fri, 2021-04-23 at 12:35 +0530, Rajendra Nayak wrote:
+> Fix a missed newline, and update a comment which is stale
+> after the merge of '5a1bea2a: nvmem: qfprom: Add support for fuse
+> blowing on sc7280'
+> No other functional change in this patch.
+[]
+> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+[]
+> @@ -195,7 +196,7 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+>  	}
 > 
-> 
-> On 2021/4/19 21:05, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.32 release.
-> > There are 103 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.32-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> Tested on arm64 and x86 for 5.10.32-rc1,
-> 
-> Kernel repo:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> Branch: linux-5.10.y
-> Version: 5.10.32-rc1
-> Commit: bcedd92af6e5899132429d20a9322b12afec2188
-> Compiler: gcc version 7.3.0 (GCC)
-> 
-> arm64:
-> --------------------------------------------------------------------
-> Testcase Result Summary:
-> total: 5764
-> passed: 5764
-> failed: 0
-> timeout: 0
-> --------------------------------------------------------------------
-> 
-> x86:
-> --------------------------------------------------------------------
-> Testcase Result Summary:
-> total: 5764
-> passed: 5764
-> failed: 0
-> timeout: 0
-> --------------------------------------------------------------------
-> 
-> Tested-by: Hulk Robot <hulkrobot@huawei.com>
-> 
+>  	/*
+> -	 * Hardware requires 1.8V min for fuse blowing; this may be
+> +	 * Hardware requires a min voltage for fuse blowing; this may be
+>  	 * a rail shared do don't specify a max--regulator constraints
 
-Thanks for testing and letting me know.
+   	                 so don't?
 
-greg k-h
+>  	 * will handle.
+>  	 */
+
+but the comment doesn't make much overall sense to me.
+
 
