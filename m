@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754FD368ACA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C60E368ACC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240526AbhDWBy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:54:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240154AbhDWByy (ORCPT
+        id S240539AbhDWBzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240127AbhDWBzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:54:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619142858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JuicL4NJ8ntJP8ZqsMGE4tBWCboCpYJmZ5Z+nKeH780=;
-        b=FpNB6z+uCzot1/QYT8HbuFQTvYcSVAGquj/XqeGuDZanIZ5Mlowt2mHZi3qlz17slNf3FG
-        kalzPTXzMczXy2iRauDlQl3VOzbZYfDX9TgXMBpFdGwB4fkRmBE0MbzkR4XNfCl+U8ilIB
-        /MYnRC89bJdz5IVLbN8vOgORdYTy5SI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-oTL6rHyBMziFn2smuNcELA-1; Thu, 22 Apr 2021 21:54:16 -0400
-X-MC-Unique: oTL6rHyBMziFn2smuNcELA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3555110054F6;
-        Fri, 23 Apr 2021 01:54:15 +0000 (UTC)
-Received: from T590 (ovpn-13-78.pek2.redhat.com [10.72.13.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 151C15DDAD;
-        Fri, 23 Apr 2021 01:54:05 +0000 (UTC)
-Date:   Fri, 23 Apr 2021 09:54:01 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kashyap.desai@broadcom.com, dgilbert@interlog.com
-Subject: Re: [PATCH] scsi: core: Cap initial sdev queue depth at
- shost.can_queue
-Message-ID: <YIIouSOM77zEw3Qb@T590>
-References: <1618848384-204144-1-git-send-email-john.garry@huawei.com>
- <YH4aIECa/J/1uS5S@T590>
- <bba5f248-523d-0def-1a3e-bafeb2b7633f@huawei.com>
- <YIDTlD2Mq+U36Oqz@T590>
- <186be6c5-dbcd-d1fb-67c5-72b5a761568a@huawei.com>
+        Thu, 22 Apr 2021 21:55:06 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43773C061574;
+        Thu, 22 Apr 2021 18:54:31 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id m16so34779024qtx.9;
+        Thu, 22 Apr 2021 18:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Zvtva10K0azodtfb3NSuxukBRc0DAWRA0RAa1Q2DQ+w=;
+        b=dGuJJPVu1SRi7IvIhKVuVbubGX8hCE33W6FyudA8bBFegdYatPgRFU4tMrs6bs/wem
+         +R4A0gJi7Vfo+/vHkF9AQ1N5glLYz0iT0UpDTUHCWf+t15EznDd+RWF/W21dPgzD05cm
+         8qxiSXe4yLYNVjKR5BeqgkbjQm5+qpOi+/srL1JVWQWFRY7Aixqhg33ZzmXJKpJ1Uyja
+         Drz/zxu0c7zbAx24ptJoN+VmE5+TpkGVqweSiHkzF7QJjBOgnThIisPFzgqyujxOfsHK
+         0WU/fzZtDJed8orcDukbI9aYt20yYV0xBlq6CfjbdqqZTQ7nv4uVbT9M3JCCD1eNK3mb
+         21kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=Zvtva10K0azodtfb3NSuxukBRc0DAWRA0RAa1Q2DQ+w=;
+        b=XDlXjQuTXO6fzQaoK1GruFvoGd9pQeIHZgrdxnvVJkeW57Dm91KDhkk2Hs6CVk8cQp
+         qgL+dYm997lyJNGJMwiACGOX75SbWT98U/mZ/suCA48kl5DH/wZ1cZOqaeLXT9jA8lRy
+         /0+o3Sa/QZSfJnOZTYMDX5jJQcrt7Ss8aUu4aUCvSStvdVvQRRL2txTuuOKAMYIezz+A
+         pfTw6eXVNMnZx3l47UNFMzN0u3ipFyi9haM9amQ/Z5iV7Y0MgOAmtOjrPnq4OrCthe7l
+         d59lUG3R+D7PDTDkml9BFjHEvzw96vm4Iai4bZoZuTbdoDMd6RiscE5ObsSI6ablix3f
+         f0Ww==
+X-Gm-Message-State: AOAM530drmwQVV1itVe8/TPJmepUJd/xCqpkojzjdeQoPmUsbqpnzRPk
+        9U+v93R7iv5HmnYPCy6qCrH/EdMntLYsiw==
+X-Google-Smtp-Source: ABdhPJzEh7ryG/ABW5BJDzYBBhrLJxPw5onVuNzsF0CQflok36s5Sx00Aq+feiltCU88DcJtMe7Hrw==
+X-Received: by 2002:ac8:4d5e:: with SMTP id x30mr1457278qtv.51.1619142870251;
+        Thu, 22 Apr 2021 18:54:30 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id w5sm3527477qkc.85.2021.04.22.18.54.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 18:54:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 22 Apr 2021 21:54:28 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, kernel-team@fb.com, dskarlat@fb.com,
+        dschatzberg@fb.com, linux-kernel@vger.kernel.org
+Subject: [PATCH for-5.13/block] blk-iocost: don't ignore vrate_min on QD
+ contention
+Message-ID: <YIIo1HuyNmhDeiNx@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <186be6c5-dbcd-d1fb-67c5-72b5a761568a@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 05:35:42PM +0100, John Garry wrote:
-> On 22/04/2021 02:38, Ming Lei wrote:
-> > > I would rather not change the values which are provided from the driver. I
-> > > would rather take the original values and try to use them in a sane way.
-> > > 
-> > > I have not seen other places where driver shost config values are modified
-> > > by the core code.
-> 
-> Hi Ming,
-> 
-> > Wrt. .cmd_per_lun, I think it is safe to modify it into one correct
-> > depth because almost all drivers are just producer of .cmd_per_lun. And
-> > except for debug purpose, there are only three consumers of .cmd_per_lun
-> > in scsi, and all are for scsi_change_queue_depth():
-> > 
-> > 	process_message()
-> > 	scsi_alloc_sdev()
-> > 	virtscsi_change_queue_depth()
-> 
-> sg_ioctl_common() also looks to read it, but I can't imagine we could break
-> that interface with either suggested change.
+ioc_adjust_base_vrate() ignored vrate_min when rq_wait_pct indicates that
+there is QD contention. The reasoning was that QD depletion always reliably
+indicates device saturation and thus it's safe to override user specified
+vrate_min. However, this sometimes leads to unnecessary throttling,
+especially on really fast devices, because vrate adjustments have delays and
+inertia. It also confuses users because the behavior violates the explicitly
+specified configuration.
 
-Then one bad .cmd_per_lun can be passed to userspace, as your patch
-doesn't cover this case.
+This patch drops the special case handling so that vrate_min is always
+applied.
 
-> 
-> So I still prefer not to modify shost.cmd_per_lun, but if you feel strongly
-> enough then I can look to make that change.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ block/blk-iocost.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-I still suggest to make .cmd_per_lun correct since the beginning,
-otherwise you may have to cover anywhere .cmd_per_lun is used.
-
-
-Thanks,
-Ming
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 98d656bdb42b7..e0c4baa018578 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -987,10 +987,6 @@ static void ioc_adjust_base_vrate(struct ioc *ioc, u32 rq_wait_pct,
+ 		return;
+ 	}
+ 
+-	/* rq_wait signal is always reliable, ignore user vrate_min */
+-	if (rq_wait_pct > RQ_WAIT_BUSY_PCT)
+-		vrate_min = VRATE_MIN;
+-
+ 	/*
+ 	 * If vrate is out of bounds, apply clamp gradually as the
+ 	 * bounds can change abruptly.  Otherwise, apply busy_level
+-- 
+2.31.1
 
