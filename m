@@ -2,171 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247EA36951E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18D836953D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242790AbhDWOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhDWOwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:52:07 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EFAC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:51:31 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id r186so21628416oif.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EJM6pcyl5JpVhByUSBnFL3WnPUaWSbf6IkyIpm5v1k0=;
-        b=BZlG4390wuLg5aXUToizN7kM6ql25OpmR5pOWw+rrhzNUcGe4Bcnt0O2J4gM35lPEb
-         JxjMmMF0XSlrFkhrgqHzh9pYerbsZWdHKJVrQMcekzegzPGarMTIV/B7SK20ajESfOMe
-         OnXYqeGxvoIH1+D4ua/SCEbLInqQDZglV4gERWblGVvYFrJu1jqjW7YbrZSOMqTALYWP
-         HikgNxpLniYY8CRv9ii4L9utkPxgg5x1ZQ11Fo0kQVmRgIJEMq0fTJBTgM47a1NRxESu
-         sdypenaNA7+K5ZVeF9S4OyJL0Dzv81Hm8JboWGoGizNbZZsLFZflqy2wqT8n3cj7vWiW
-         euCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EJM6pcyl5JpVhByUSBnFL3WnPUaWSbf6IkyIpm5v1k0=;
-        b=RvzdmhXzQ/eh9NQBdd4wI++g2mkssGo95WMMTT2Q1+fBL8SERAQ5jni4br4zTgV+c/
-         RYztOEqkjFsCBidgAifXKvAnzEz5LPbcS+ekRcw46G39+kAkA83i6LWT09GOrU07VnM9
-         J1JwghVVmOmXVifuM0YcMyJNLf6A1Qhg0CulJuXvtqfOAg094azYDeDVrI8k2OOk3IFl
-         X/LDxdaLAdpOwvktS9+YFBx9PJ3Jc+xGhf7RTLIqHO9yuMNX9nMkyCOB5W3lj3QYvga5
-         +sHSUkYQn0MsfkUlkThQPXaFEZxfUcJHKZNc5A+r0lFOqshNltFFc+/8UbXZ1LJAOR/w
-         ztdQ==
-X-Gm-Message-State: AOAM531FQ/8nRjahZNHcmtvQjU7Ddupj5ONdO3j5xSC4Wmcdog+89NOl
-        mnf2u/5s8I99Myo9U9rHx/oOtA==
-X-Google-Smtp-Source: ABdhPJypPkXURU9wCcUA9qAGTFRHLghubKiKXtHZ1oSHCwTXEJQAGZNqpwuAdUzgZLo69Ia2QRkSEA==
-X-Received: by 2002:aca:4749:: with SMTP id u70mr3017886oia.34.1619189490542;
-        Fri, 23 Apr 2021 07:51:30 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w9sm1288105oiv.8.2021.04.23.07.51.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:51:30 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:51:28 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 17/27] drm/bridge: ti-sn65dsi86: Use pm_runtime
- autosuspend
-Message-ID: <YILe8KziQNalL994@builder.lan>
-References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.17.I4c0b4a87e4dc19e5023b4d0a21bbfa6d9c09ebd8@changeid>
+        id S238411AbhDWO54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:57:56 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38697 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229454AbhDWO5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 10:57:55 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lZxF0-0003RE-00; Fri, 23 Apr 2021 16:57:10 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 31E1CC0B3B; Fri, 23 Apr 2021 16:51:31 +0200 (CEST)
+Date:   Fri, 23 Apr 2021 16:51:31 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Cc:     Huang Pei <huangpei@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        paul.burton@mips.com, paul@crapouillou.net, siyanteng@loongson.cn,
+        ira.weiny@intel.com, yangtiezhu@loongson.cn, jun.jiang@ingenic.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        sihui.liu@ingenic.com
+Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
+Message-ID: <20210423145131.GA11112@alpha.franken.de>
+References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <20210416092003.5754967.19768.9603@loongson.cn>
+ <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
+ <20210419045610.frhzxskec47s5rmq@ambrosehua-HP-xw6600-Workstation>
+ <13e37741-c1b4-2aae-471e-0790adc8db59@wanyeetech.com>
+ <20210420024818.r6jf243oglb2ywbr@ambrosehua-HP-xw6600-Workstation>
+ <fd1e02ff-0165-7e7e-8bc6-55fb278fc50f@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.17.I4c0b4a87e4dc19e5023b4d0a21bbfa6d9c09ebd8@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fd1e02ff-0165-7e7e-8bc6-55fb278fc50f@wanyeetech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+On Tue, Apr 20, 2021 at 10:03:01PM +0800, Zhou Yanjie wrote:
+> Sorry for my carelessness, the log in the previous email was wrong, please
+> check the log in this email.
+> 
+> [   53.684067] --- pte 1 = 07698685
 
-> Let's make the bridge use autosuspend with a 500ms delay. This is in
-> preparation for promoting DP AUX transfers to their own sub-driver so
-> that we're not constantly powering up and down the device as we
-> transfer all the chunks.
-> 
+any chance to print the virtual address to this pte ?
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> [   53.687376] --- pte 3 = 07698685
+> [   53.737175] --- pte 1 = 07699685
+> [   53.740412] --- pte 3 = 07699685
+> [   53.744064] --- pte 1 = 076c3685
+> [..]
 
-Regards,
-Bjorn
+could you print PTE, which faults ? And what is mapped there ?
 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 44edcf6f5744..a98abf496190 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -243,7 +243,7 @@ static int status_show(struct seq_file *s, void *data)
->  		seq_printf(s, "[0x%02x] = 0x%08x\n", reg, val);
->  	}
->  
-> -	pm_runtime_put(pdata->dev);
-> +	pm_runtime_put_autosuspend(pdata->dev);
->  
->  	return 0;
->  }
-> @@ -292,7 +292,7 @@ static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
->  	if (!edid) {
->  		pm_runtime_get_sync(pdata->dev);
->  		edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
-> -		pm_runtime_put(pdata->dev);
-> +		pm_runtime_put_autosuspend(pdata->dev);
->  	}
->  
->  	if (edid && drm_edid_is_valid(edid)) {
-> @@ -418,7 +418,7 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
->  	/* check if continuous dsi clock is required or not */
->  	pm_runtime_get_sync(pdata->dev);
->  	regmap_read(pdata->regmap, SN_DPPLL_SRC_REG, &val);
-> -	pm_runtime_put(pdata->dev);
-> +	pm_runtime_put_autosuspend(pdata->dev);
->  	if (!(val & DPPLL_CLK_SRC_DSICLK))
->  		dsi->mode_flags |= MIPI_DSI_CLOCK_NON_CONTINUOUS;
->  
-> @@ -1049,7 +1049,7 @@ static int ti_sn_bridge_gpio_get(struct gpio_chip *chip, unsigned int offset)
->  	 */
->  	pm_runtime_get_sync(pdata->dev);
->  	ret = regmap_read(pdata->regmap, SN_GPIO_IO_REG, &val);
-> -	pm_runtime_put(pdata->dev);
-> +	pm_runtime_put_autosuspend(pdata->dev);
->  
->  	if (ret)
->  		return ret;
-> @@ -1100,7 +1100,7 @@ static int ti_sn_bridge_gpio_direction_input(struct gpio_chip *chip,
->  	 * it off and when it comes back it will have lost all state, but
->  	 * that's OK because the default is input and we're now an input.
->  	 */
-> -	pm_runtime_put(pdata->dev);
-> +	pm_runtime_put_autosuspend(pdata->dev);
->  
->  	return 0;
->  }
-> @@ -1126,7 +1126,7 @@ static int ti_sn_bridge_gpio_direction_output(struct gpio_chip *chip,
->  				 SN_GPIO_MUX_OUTPUT << shift);
->  	if (ret) {
->  		clear_bit(offset, pdata->gchip_output);
-> -		pm_runtime_put(pdata->dev);
-> +		pm_runtime_put_autosuspend(pdata->dev);
->  	}
->  
->  	return ret;
-> @@ -1408,6 +1408,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
->  	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_runtime_disable, dev);
->  	if (ret)
->  		return ret;
-> +	pm_runtime_set_autosuspend_delay(pdata->dev, 500);
-> +	pm_runtime_use_autosuspend(pdata->dev);
->  
->  	ti_sn65dsi86_debugfs_init(pdata);
->  
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
+
+so far I haven't seen any ill-effects of the (bisected ?) patch.
+The problem I have with reverting is that IMHO we re-introduce the bug,
+which this patch fixed.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
