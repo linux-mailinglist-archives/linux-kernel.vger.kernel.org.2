@@ -2,80 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9C63694CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61A33694D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242540AbhDWOeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:34:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231345AbhDWOeC (ORCPT
+        id S241036AbhDWOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhDWOgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:34:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619188406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TjxYyjr3+n/FgdeoX21aU0rXvOBSEI7Z5zCaxLkZK4Q=;
-        b=QrAZmNEW3ZVXZ9IzpPmdVtwsVeWGe3I8qGywGMsjH3ASKsVetnxXAEpwqO5yspLCG/OXlP
-        05+Jazh0DHEUMhIcEuy4f7dnn5tytfeSFSdZUNf4eTGClfm5/9WsHMv89cO0eWOonqsNGT
-        7qIPBHUoUu35fC1DKBth6XgCSLoqQ/8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-AceqMeyuOfiNiPlJDe3uCw-1; Fri, 23 Apr 2021 10:33:24 -0400
-X-MC-Unique: AceqMeyuOfiNiPlJDe3uCw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F459839A4C;
-        Fri, 23 Apr 2021 14:33:22 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E3B2960C25;
-        Fri, 23 Apr 2021 14:33:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210423140625.GC235567@casper.infradead.org>
-References: <20210423140625.GC235567@casper.infradead.org> <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk> <161918448151.3145707.11541538916600921083.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 01/31] iov_iter: Add ITER_XARRAY
+        Fri, 23 Apr 2021 10:36:19 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B67C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:35:43 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id r186so21583040oif.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jbbrFFl9vrwv+CdmCwQi0I7Ko+cX89wNgsv/KroPn5Y=;
+        b=YND9y+oQTfNuuRE/WdvdMgAirwez9HFLRB+aG9BPoNMwQKu6aALut9FGPg2hbWqD6t
+         F3EXvj2ltRdHT+rRBp5KxOD33T91Yf8+200STJMjqxjsGjtAT2Mco+qodmLFAK84pvTZ
+         pUdgdf01v4YY3dlbpOm44wrP/0SBpj6zQ5/WiLmZJmaki+i6Gv7/e9AFprsIB+WFtIjs
+         7rXn6nIl+MnNEEJBeF1126DPKf+cgZHv1VOGm21NOMzYgtXYQUgVpTlQrebnqj2JMNJ5
+         MqWqXre21JazMJNwKEZykbfpWbR7hKiVGO+XzEPwQhZnz6hHcZK2YnPvLk771yIzKt7j
+         cbcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jbbrFFl9vrwv+CdmCwQi0I7Ko+cX89wNgsv/KroPn5Y=;
+        b=drq2rcJmaEovz465Dv16TzOu0G0Ia+aggXt6ADMkfuda2BqFfXnF/6ECXiLi72YIEs
+         VkGeLd/911HkZTIwN/1ZFsWn+4aT8CRB7ReJ8/5yA1tAQjptxcDVREkHCxM161dbEpz2
+         s8NOgFk5qgXbdrfO30yI+t9HKNAGwLH6u/X6s/h0DXSpFbJBtWjmWDROq9U0iVfBYFyG
+         2bzr9PuiDQ6mtmPGgbn9DiycHOYcqow4HnKnayQvmY+LKh0Y5cT0t1QITkR2Okgx4tx9
+         jcRqVvM7oP7i1dWhUQMudsgyLPqmq64q7b18sJYcSiF6chGIlWodgz7UvXwTAFpDVr16
+         Z7yQ==
+X-Gm-Message-State: AOAM530xVk1p9jRjbnHcg1RBBxMlHPJ5TuyHLN5W9tLRtEOFxiSqZWec
+        dtPJzCRlb5IQcqM/qCnX9d7ylg==
+X-Google-Smtp-Source: ABdhPJxcCUZNBug881o1uVELe/LX/FF4rYn/YAsPBI0cQIVf5vzR30LNv6mS9V2fNTK1QZAX0+vB4w==
+X-Received: by 2002:a05:6808:f8e:: with SMTP id o14mr3036405oiw.56.1619188542856;
+        Fri, 23 Apr 2021 07:35:42 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c14sm1202484oov.21.2021.04.23.07.35.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:35:42 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:35:40 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 10/27] drm/bridge: ti-sn65dsi86: Clean debugfs code
+Message-ID: <YILbPCGC+Wk9Mdxx@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.10.I5fe072753290c6a77eda736ebd5778e17b7cb0fb@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3153357.1619188393.1@warthog.procyon.org.uk>
-Date:   Fri, 23 Apr 2021 15:33:14 +0100
-Message-ID: <3153358.1619188394@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.10.I5fe072753290c6a77eda736ebd5778e17b7cb0fb@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
 
-> On Fri, Apr 23, 2021 at 02:28:01PM +0100, David Howells wrote:
-> Now, is this important?  There are no filesystems which do I/O to THPs
-> today.  So it's not possible to pick up the fact that it doesn't work,
-> and I hope to have the page cache fixed soon.  And fixing this now
-> will create more work later as part of fixing the page cache.  But I
-> wouldn't feel right not mentioning this problem ...
+> Let's cleanup the debugfs code to:
+> - Check for errors.
+> - Use devm to manage freeing, which also means we don't need to store
+>   a pointer in our structure.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 32 +++++++++++++++++----------
+>  1 file changed, 20 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 57574132e200..0c6aa99ddc99 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -118,7 +118,6 @@
+>   * @aux:          Our aux channel.
+>   * @bridge:       Our bridge.
+>   * @connector:    Our connector.
+> - * @debugfs:      Used for managing our debugfs.
+>   * @host_node:    Remote DSI node.
+>   * @dsi:          Our MIPI DSI source.
+>   * @edid:         Detected EDID of eDP panel.
+> @@ -146,7 +145,6 @@ struct ti_sn65dsi86 {
+>  	struct drm_dp_aux		aux;
+>  	struct drm_bridge		bridge;
+>  	struct drm_connector		connector;
+> -	struct dentry			*debugfs;
+>  	struct edid			*edid;
+>  	struct device_node		*host_node;
+>  	struct mipi_dsi_device		*dsi;
+> @@ -245,18 +243,30 @@ static int status_show(struct seq_file *s, void *data)
+>  
+>  DEFINE_SHOW_ATTRIBUTE(status);
+>  
+> -static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
+> +static void ti_sn65dsi86_debugfs_remove(void *data)
+>  {
+> -	pdata->debugfs = debugfs_create_dir(dev_name(pdata->dev), NULL);
+> -
+> -	debugfs_create_file("status", 0600, pdata->debugfs, pdata,
+> -			&status_fops);
+> +	debugfs_remove_recursive(data);
+>  }
+>  
+> -static void ti_sn65dsi86_debugfs_remove(struct ti_sn65dsi86 *pdata)
+> +static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
+>  {
+> -	debugfs_remove_recursive(pdata->debugfs);
+> -	pdata->debugfs = NULL;
+> +	struct device *dev = pdata->dev;
+> +	struct dentry *debugfs;
+> +	int ret;
+> +
+> +	debugfs = debugfs_create_dir(dev_name(dev), NULL);
+> +	if (IS_ERR(debugfs))
+> +		ret = PTR_ERR(debugfs);
+> +	else
+> +		ret = devm_add_action_or_reset(dev, ti_sn65dsi86_debugfs_remove,
+> +					       debugfs);
+> +
+> +	if (ret) {
 
-So I can leave the code as-is for the moment and it can be fixed with your
-patches?
+You're not supposed to handle errors from debugfs_create_dir(), but I
+like what you're doing with devm here and that needs a check.
 
-David
+Also worth mentioning is that at this point in the patch stack the
+debugfs "status" file will outlive the activation of pm_runtime, this is
+however taken care of in a later patch. Given that it's unlikely to
+cause a problem I don't mind this transient issue - but wanted to
+mention that I reviewed the end result in this regard.
 
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> +		dev_warn(dev, "Failed to create debugfs (%d), skipping\n", ret);
+> +		return;
+> +	}
+> +
+> +	debugfs_create_file("status", 0600, debugfs, pdata, &status_fops);
+>  }
+>  
+>  /* Connector funcs */
+> @@ -1310,8 +1320,6 @@ static int ti_sn65dsi86_remove(struct i2c_client *client)
+>  
+>  	kfree(pdata->edid);
+>  
+> -	ti_sn65dsi86_debugfs_remove(pdata);
+> -
+>  	drm_bridge_remove(&pdata->bridge);
+>  
+>  	pm_runtime_disable(pdata->dev);
+> -- 
+> 2.31.1.368.gbe11c130af-goog
+> 
