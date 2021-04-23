@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B269D368CC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F9A368CC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240929AbhDWFiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 01:38:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:9331 "EHLO mga18.intel.com"
+        id S240955AbhDWFiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 01:38:19 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9345 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240673AbhDWFh5 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 01:37:57 -0400
-IronPort-SDR: iXEomL+em4yWqhdAKyP4dhtDTqTndhQNA/gWqQHJNLpzXJ7Q23CaUINExDUtyAk0li+Vxg/oCg
- f3olQuELDn0g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501844"
+        id S240767AbhDWFh7 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 01:37:59 -0400
+IronPort-SDR: AYaHEqKSaYE7O7sltDPhDHfw6aycjVOOMpe41W3yLDEjFmsZpVqovioBxnwuQ0y2xkScE9wci3
+ bXRP3cSiOHaA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="183501849"
 X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="183501844"
+   d="scan'208";a="183501849"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:37:20 -0700
-IronPort-SDR: xqOfYqn0hIb5lzScmTRxKbGlTYpoB8olwTXu2UnRRKXznL8mG1ffxZ5lMZS/p5gWxj+7isXFHx
- 15tmt1sbowYQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 22:37:23 -0700
+IronPort-SDR: j/4Tp0mfsnfrr9PxnKiPso/aUzDLqJ3itEbooLnyIS4/f0g7ec4n+0uv94taMYi8WFyFvTvyoQ
+ yovEsW0zJtyA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="386293682"
+   d="scan'208";a="386293694"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:37:17 -0700
+  by orsmga006.jf.intel.com with ESMTP; 22 Apr 2021 22:37:20 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v5 16/26] perf stat: Warn group events from different hybrid PMU
-Date:   Fri, 23 Apr 2021 13:35:31 +0800
-Message-Id: <20210423053541.12521-17-yao.jin@linux.intel.com>
+Subject: [PATCH v5 17/26] perf record: Uniquify hybrid event name
+Date:   Fri, 23 Apr 2021 13:35:32 +0800
+Message-Id: <20210423053541.12521-18-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210423053541.12521-1-yao.jin@linux.intel.com>
 References: <20210423053541.12521-1-yao.jin@linux.intel.com>
@@ -41,27 +41,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a group has events which are from different hybrid PMUs,
-shows a warning:
+For perf-record, it would be useful to tell user the pmu which the
+event belongs to.
 
-"WARNING: events in group from different hybrid PMUs!"
+For example,
 
-This is to remind the user not to put the core event and atom
-event into one group.
+  # perf record -a -- sleep 1
+  # perf report
 
-Next, just disable grouping.
-
-  # perf stat -e "{cpu_core/cycles/,cpu_atom/cycles/}" -a -- sleep 1
-  WARNING: events in group from different hybrid PMUs!
-  WARNING: grouped events cpus do not match, disabling group:
-    anon group { cpu_core/cycles/, cpu_atom/cycles/ }
-
-   Performance counter stats for 'system wide':
-
-           5,438,125      cpu_core/cycles/
-           3,914,586      cpu_atom/cycles/
-
-         1.004250966 seconds time elapsed
+  # To display the perf.data header info, please use --header/--header-only options.
+  #
+  #
+  # Total Lost Samples: 0
+  #
+  # Samples: 106  of event 'cpu_core/cycles/'
+  # Event count (approx.): 22043448
+  #
+  # Overhead  Command       Shared Object            Symbol
+  # ........  ............  .......................  ............................
+  #
+  ...
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
@@ -71,151 +70,55 @@ v5:
 v4:
  - No change.
 
- tools/perf/builtin-stat.c          |  4 +++
- tools/perf/util/evlist-hybrid.c    | 47 ++++++++++++++++++++++++++++++
- tools/perf/util/evlist-hybrid.h    |  2 ++
- tools/perf/util/evsel.c            |  6 ++++
- tools/perf/util/evsel.h            |  1 +
- tools/perf/util/python-ext-sources |  2 ++
- 6 files changed, 62 insertions(+)
+ tools/perf/builtin-record.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 3ab4069ff8f0..4dfa26ff365a 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -48,6 +48,7 @@
- #include "util/pmu.h"
- #include "util/event.h"
- #include "util/evlist.h"
-+#include "util/evlist-hybrid.h"
- #include "util/evsel.h"
- #include "util/debug.h"
- #include "util/color.h"
-@@ -240,6 +241,9 @@ static void evlist__check_cpu_maps(struct evlist *evlist)
- 	struct evsel *evsel, *pos, *leader;
- 	char buf[1024];
- 
-+	if (evlist__has_hybrid(evlist))
-+		evlist__warn_hybrid_group(evlist);
-+
- 	evlist__for_each_entry(evlist, evsel) {
- 		leader = evsel->leader;
- 
-diff --git a/tools/perf/util/evlist-hybrid.c b/tools/perf/util/evlist-hybrid.c
-index e11998526f2e..db3f5fbdebe1 100644
---- a/tools/perf/util/evlist-hybrid.c
-+++ b/tools/perf/util/evlist-hybrid.c
-@@ -7,6 +7,7 @@
- #include "../perf.h"
- #include "util/pmu-hybrid.h"
- #include "util/evlist-hybrid.h"
-+#include "debug.h"
- #include <unistd.h>
- #include <stdlib.h>
- #include <linux/err.h>
-@@ -39,3 +40,49 @@ int evlist__add_default_hybrid(struct evlist *evlist, bool precise)
- 
- 	return 0;
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 6af46c6a4fd8..3337b5f93336 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1605,6 +1605,32 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
+ 	}
  }
-+
-+static bool group_hybrid_conflict(struct evsel *leader)
+ 
++static void record__uniquify_name(struct record *rec)
 +{
-+	struct evsel *pos, *prev = NULL;
++	struct evsel *pos;
++	struct evlist *evlist = rec->evlist;
++	char *new_name;
++	int ret;
 +
-+	for_each_group_evsel(pos, leader) {
++	if (!perf_pmu__has_hybrid())
++		return;
++
++	evlist__for_each_entry(evlist, pos) {
 +		if (!evsel__is_hybrid(pos))
 +			continue;
 +
-+		if (prev && strcmp(prev->pmu_name, pos->pmu_name))
-+			return true;
++		if (strchr(pos->name, '/'))
++			continue;
 +
-+		prev = pos;
-+	}
-+
-+	return false;
-+}
-+
-+void evlist__warn_hybrid_group(struct evlist *evlist)
-+{
-+	struct evsel *evsel;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (evsel__is_group_leader(evsel) &&
-+		    evsel->core.nr_members > 1 &&
-+		    group_hybrid_conflict(evsel)) {
-+			pr_warning("WARNING: events in group from "
-+				   "different hybrid PMUs!\n");
-+			return;
++		ret = asprintf(&new_name, "%s/%s/",
++			       pos->pmu_name, pos->name);
++		if (ret) {
++			free(pos->name);
++			pos->name = new_name;
 +		}
 +	}
 +}
 +
-+bool evlist__has_hybrid(struct evlist *evlist)
-+{
-+	struct evsel *evsel;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (evsel->pmu_name &&
-+		    perf_pmu__is_hybrid(evsel->pmu_name)) {
-+			return true;
-+		}
-+	}
-+
-+	return false;
-+}
-diff --git a/tools/perf/util/evlist-hybrid.h b/tools/perf/util/evlist-hybrid.h
-index e25861649d8f..19f74b4c340a 100644
---- a/tools/perf/util/evlist-hybrid.h
-+++ b/tools/perf/util/evlist-hybrid.h
-@@ -8,5 +8,7 @@
- #include <unistd.h>
+ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ {
+ 	int err;
+@@ -1709,6 +1735,8 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	if (data->is_pipe && rec->evlist->core.nr_entries == 1)
+ 		rec->opts.sample_id = true;
  
- int evlist__add_default_hybrid(struct evlist *evlist, bool precise);
-+void evlist__warn_hybrid_group(struct evlist *evlist);
-+bool evlist__has_hybrid(struct evlist *evlist);
- 
- #endif /* __PERF_EVLIST_HYBRID_H */
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 0ba4daa09453..0f64a32ea9c5 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -47,6 +47,7 @@
- #include "memswap.h"
- #include "util.h"
- #include "hashmap.h"
-+#include "pmu-hybrid.h"
- #include "../perf-sys.h"
- #include "util/parse-branch-options.h"
- #include <internal/xyarray.h>
-@@ -2797,3 +2798,8 @@ void evsel__zero_per_pkg(struct evsel *evsel)
- 		hashmap__clear(evsel->per_pkg_mask);
- 	}
- }
++	record__uniquify_name(rec);
 +
-+bool evsel__is_hybrid(struct evsel *evsel)
-+{
-+	return evsel->pmu_name && perf_pmu__is_hybrid(evsel->pmu_name);
-+}
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index ff89196281bd..f6f90f68381b 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -453,4 +453,5 @@ struct perf_env *evsel__env(struct evsel *evsel);
- int evsel__store_ids(struct evsel *evsel, struct evlist *evlist);
- 
- void evsel__zero_per_pkg(struct evsel *evsel);
-+bool evsel__is_hybrid(struct evsel *evsel);
- #endif /* __PERF_EVSEL_H */
-diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
-index 845dd46e3c61..d7c976671e3a 100644
---- a/tools/perf/util/python-ext-sources
-+++ b/tools/perf/util/python-ext-sources
-@@ -37,3 +37,5 @@ util/units.c
- util/affinity.c
- util/rwsem.c
- util/hashmap.c
-+util/pmu-hybrid.c
-+util/fncache.c
+ 	if (record__open(rec) != 0) {
+ 		err = -1;
+ 		goto out_child;
 -- 
 2.17.1
 
