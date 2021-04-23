@@ -2,227 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BD0369832
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B8436982F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243310AbhDWRVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243237AbhDWRVg (ORCPT
+        id S232057AbhDWRVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:21:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22781 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229957AbhDWRVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:21:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BF0C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:21:00 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lZzTz-0003V5-B3; Fri, 23 Apr 2021 19:20:47 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lZzTw-00010E-If; Fri, 23 Apr 2021 19:20:44 +0200
-Date:   Fri, 23 Apr 2021 19:20:41 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        Fri, 23 Apr 2021 13:21:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619198456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JQRF3ySH2gOm83I7SlkKz3DtYomS95h5OnWbpauJ/WQ=;
+        b=C2sl4Z13Ex6JneEuqg/tgzxPWOEKSUGAD+kYgjsxw6H+6gqYCB85d4NjMY+UuiRzimlSPB
+        FxiSzvmKi/PbarljH5pDH0IHKIZcECPOKTjECjJJ4hck6DZgmzTF9GFBrkbQAcLQCYynKo
+        fX0TkgnMqCwRLKAqdtHiXzFq2+tculE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-571-uT5ib1TxOeyeKTOpzEDrpA-1; Fri, 23 Apr 2021 13:20:54 -0400
+X-MC-Unique: uT5ib1TxOeyeKTOpzEDrpA-1
+Received: by mail-ed1-f69.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so17188454eds.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:20:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JQRF3ySH2gOm83I7SlkKz3DtYomS95h5OnWbpauJ/WQ=;
+        b=BtXtIjMurNsiNGaz+smG9n9Ile3TntsmkCecfRGTO7O0vcDV+jWwf6LrOnRuaqHvw4
+         jWtRDHjfVVpQD3ShN5b2Uk/iInCwU4HerGZYk0/vLzGiCrl2CsNyo0gtjTDNAXC3AZxu
+         te/fsLu9e71QQ3J/kPxbX81OsWkDsiFZxmsAecXpdPGP4esmiRMBMePKka81c0ny06Lw
+         hRFCXi3W92dbOyswsk8Fk6G5wJ4mFUzQjAE5Wue4+fG2X3mykO9Reu5egwauuIKs+KgR
+         cyNahLguEJMjhIaVP96l3naECgttRmDF1Apj99MRmyoO2RHTHQnIlFIPGX0VCtuF/WFt
+         /Gfw==
+X-Gm-Message-State: AOAM530IF9oCewvpExS3K/OzKb2w+Jd+i6TyNY7mPaRUoX1T2fntIboB
+        uhcbBfmUDq1HXNUSApdRPcxD1be7wdj8WmhiQcjbnDTuIFM2mqtfpDSduUaE/qdbiVUe+CdGIgs
+        gP3RkYcP8zAa22n2+zGzeQpRIfmBGoebUJRcYjgF41jBSabRGWgOW2tGTp9qXqqYhW+PhTMUhi8
+        Oh
+X-Received: by 2002:a17:907:7745:: with SMTP id kx5mr5368088ejc.3.1619198452739;
+        Fri, 23 Apr 2021 10:20:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybpinwvHNzNNOmAwimRbZx2AQltb6voiv1k3bsDDQvAWvCEKCNL5MWokb8C8E4LFMARSxxEA==
+X-Received: by 2002:a17:907:7745:: with SMTP id kx5mr5368057ejc.3.1619198452489;
+        Fri, 23 Apr 2021 10:20:52 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id r19sm4308152ejr.55.2021.04.23.10.20.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 10:20:51 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: gigabyte-wmi: add support for B550M AORUS
+ PRO-P
+To:     Alexey Klimov <aklimov@redhat.com>, thomas@weissschuh.net
+Cc:     mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] pwm: visconti: Add Toshiba Visconti SoC PWM
- support
-Message-ID: <20210423172041.jwmrrbnv76irmzxz@pengutronix.de>
-References: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <YIL+Xwjbk1EE04Sm@orome.fritz.box>
+References: <20210421234156.3942343-1-aklimov@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <86f6570b-cd92-3256-9fdd-4ef4e4038762@redhat.com>
+Date:   Fri, 23 Apr 2021 19:20:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="obtpyakzbdh7csmz"
-Content-Disposition: inline
-In-Reply-To: <YIL+Xwjbk1EE04Sm@orome.fritz.box>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210421234156.3942343-1-aklimov@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---obtpyakzbdh7csmz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/22/21 1:41 AM, Alexey Klimov wrote:
+> From: Alexey Klimov <klimov.linux@gmail.com>
+> 
+> From: Alexey Klimov <klimov.linux@gmail.com>
+> 
+> Add the B550M AORUS PRO-P motherboard description to
+> gigabyte_wmi_known_working_platforms.
+> 
+> Signed-off-by: Alexey Klimov <klimov.linux@gmail.com>
 
-On Fri, Apr 23, 2021 at 07:05:35PM +0200, Thierry Reding wrote:
-> On Mon, Apr 19, 2021 at 09:00:05AM +0900, Nobuhiro Iwamatsu wrote:
-> > Hi,
-> >=20
-> > This series is the PWM driver for Toshiba's ARM SoC, Visconti[0].
-> > This provides DT binding documentation and device driver.
-> >=20
-> > [0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/im=
-age-recognition-processors-visconti.html
-> >=20
-> > Updates:
-> >=20
-> >   dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
-> >     v5 -> v6:
-> >       - No update.
-> >     v4 -> v5:
-> >       - No update.
-> >     v3 -> v4:
-> >       - No update.
-> >     v2 -> v3:
-> >       - Change compatible to toshiba,visconti-pwm
-> >       - Change filename to toshiba,visconti-pwm.yaml.
-> >       - Add Reviewed-by tag from Rob.
-> >     v1 -> v2:
-> >       - Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause.
-> >       - Set compatible toshiba,pwm-visconti only.
-> >       - Drop unnecessary comments.
-> >=20
-> >   pwm: visconti: Add Toshiba Visconti SoC PWM support
-> >     v5 -> v6:
-> >      - Update year in copyright.
-> >      - Update limitations.
-> >      - Fix coding style, used braces for both branches.
-> >     v4 -> v5:
-> >       - Droped checking PIPGM_PCSR from visconti_pwm_get_state.
-> >       - Changed from to_visconti_chip to visconti_pwm_from_chip.
-> >       - Removed pwmchip_remove return value management.
-> >       - Add limitations of this device.
-> >       - Add 'state->enabled =3D true' to visconti_pwm_get_state().
-> >     v3 -> v4:
-> >       - Sorted alphabetically include files.
-> >       - Changed container_of to using static inline functions.
-> >       - Dropped unnecessary dev_dbg().
-> >       - Drop Initialization of chip.base.
-> >       - Drop commnet "period too small".
-> >       - Rebased for-next.=20
-> >     v2 -> v3:
-> >       - Change compatible to toshiba,visconti-pwm.
-> >       - Fix MODULE_ALIAS to platform:pwm-visconti, again.
-> >       - Align continuation line to the opening parenthesis.
-> >       - Rewrite the contents of visconti_pwm_apply() based on the conte=
-nts suggested by Uwe.
-> >     v1 -> v2:
-> >       - Change SPDX-License-Identifier to GPL-2.0-only.
-> >       - Add prefix for the register defines.
-> >       - Drop struct device from struct visconti_pwm_chip.
-> >       - Use '>>' instead of '/'.
-> >       - Drop error message by devm_platform_ioremap_resource().
-> >       - Use dev_err_probe instead of dev_err.
-> >       - Change dev_info to dev_dbg.
-> >       - Remove some empty lines.
-> >       - Fix MODULE_ALIAS to platform:pwm-visconti.
-> >       - Add .get_state() function.
-> >       - Use the author name and email address to MODULE_AUTHOR.
-> >       - Add more comment to function of the hardware.
-> >       - Support .get_status() function.
-> >       - Use NSEC_PER_USEC instead of 1000.
-> >       - Alphabetically sorted for Makefile and Kconfig.
-> >       - Added check for set value in visconti_pwm_apply().
-> >=20
-> > Nobuhiro Iwamatsu (2):
-> >   dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
-> >   pwm: visconti: Add Toshiba Visconti SoC PWM support
-> >=20
-> >  .../bindings/pwm/toshiba,pwm-visconti.yaml    |  43 ++++
-> >  drivers/pwm/Kconfig                           |   9 +
-> >  drivers/pwm/Makefile                          |   1 +
-> >  drivers/pwm/pwm-visconti.c                    | 189 ++++++++++++++++++
-> >  4 files changed, 242 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pwm/toshiba,pwm-v=
-isconti.yaml
-> >  create mode 100644 drivers/pwm/pwm-visconti.c
->=20
-> Both patches applied, thanks.
->=20
-> checkpatch did complain when I applied:
->=20
-> > WARNING: please write a paragraph that describes the config symbol fully
-> > #9: FILE: drivers/pwm/Kconfig:604:
-> > +config PWM_VISCONTI
->=20
-> That seems a bit excessive. The paragraph is perhaps not a poster child
-> for Kconfig, but there are others that aren't better, so I think that's
-> fine.
->=20
-> > WARNING: added, moved or deleted file(s), does MAINTAINERS need updatin=
-g?
-> > #32:=20
-> > new file mode 100644
->=20
-> Fine, too.
->=20
-> > WARNING: 'loosing' may be misspelled - perhaps 'losing'?
-> > #112: FILE: drivers/pwm/pwm-visconti.c:76:
-> >  +	 * NSEC_PER_SEC / CLKFREQ =3D 1000 without loosing precision.
-> >   	                                         ^^^^^^^
->=20
-> I've fixed that up while applying.
->=20
-> > WARNING: Avoid crashing the kernel - try using WARN_ON & recovery code =
-rather than BUG() or BUG_ON()
-> > #127: FILE: drivers/pwm/pwm-visconti.c:91:
-> > +		BUG_ON(pwmc0 > 3);
->=20
-> I think that one is legit. I've turned that into:
->=20
-> 	if (WARN_ON(pwmc0 > 3))
-> 		return -EINVAL;
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
->=20
-> so that requests for too big period will be rejected rather than crash
-> the system.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-If this BUG_ON (or your if) triggers we have a compiler or memory
-problem. The relevant parts of the code are:
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-	if (state->period > (0xffff << 3) * 1000)
-		period =3D (0xffff << 3) * 1000;
-	else
-		period =3D state->period;
+Regards,
 
-	period /=3D 1000;
+Hans
 
-	if (period > 0xffff) {
-		pwmc0 =3D ilog2(period >> 16);
-		BUG_ON(pwmc0 > 3);
+> ---
+> 
+> The driver works fine on this motherboard with force_load=1 and
+> it seems that temperature values are correct.
+> 
+> gigabyte_wmi-virtual-0
+> Adapter: Virtual device
+> temp1:        +30.0°C  
+> temp2:        +35.0°C  
+> temp3:        +30.0°C  
+> temp4:        +32.0°C  
+> temp5:        +28.0°C  
+> temp6:        +42.0°C
+> 
+> The patch is created against review-hans branch on platform-drivers-x86.git
+> I am available for further testing on this board if required, feel free
+> to reach me. Thanks.
+> 
+>  drivers/platform/x86/gigabyte-wmi.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+> index e127a2077bbc..13d57434e60f 100644
+> --- a/drivers/platform/x86/gigabyte-wmi.c
+> +++ b/drivers/platform/x86/gigabyte-wmi.c
+> @@ -138,6 +138,10 @@ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
+>  		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>  		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
+>  	}},
+> +	{ .matches = {
+> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M AORUS PRO-P"),
+> +	}},
+>  	{ .matches = {
+>  		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>  		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
+> 
 
-Given that period is never bigger than 0xffff << 3 when it is used to
-calculate the argument to ilog2, pwmc0 <=3D ilog2(7) =3D 2.
-
-Hmm, I wonder if the formula is wrong given that pwmc0 never becomes 3?!
-Should this better be
-
-	pwmc0 =3D fls(period >> 16);
-
-?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---obtpyakzbdh7csmz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCDAeYACgkQwfwUeK3K
-7AnE6wf/VLcp2U0NslNg0ihUaTnXfjF2QFwJu5Z4uXMYtV4FxNluPuIDMrDD25Mx
-rHh+B9HtUwv8AnDza99HcfBnAq3evh9G+FaXptprl1nHpRNykrcFz3aF0ESz6sDS
-oUXO8Ph0qssoheljPBsqBoNlP9tN5ws15eh5Hio0KcrtbmDpBBmKlKB+q43llwIe
-132D/rbKTHT1gnozP8lCdAunthT4fscw+RoZTZ8XrOIQkX5ZinYLsGqbh8LquSqe
-JblXOthvAQ/ptvFo3eS6JQ4ky3BD6IruGOrHOTUTHf+EkdyMtxi6Fq7Y5tyiclk/
-jLNdfWim6WZ+vwlETt12L1Emq+3PpA==
-=8DwE
------END PGP SIGNATURE-----
-
---obtpyakzbdh7csmz--
