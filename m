@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615FD368DA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3F2368DA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240905AbhDWHJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:09:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37505 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229945AbhDWHJg (ORCPT
+        id S240968AbhDWHKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:10:02 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36383 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhDWHKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:09:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619161740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q8ibsUJr2Xw/0Bx+47uUdT7BpjL9CbRIh33qYka8yhk=;
-        b=G63DP9uNTp1EdHBbtthf0ZcBi3qp0brUoYzACYBg1UqxQVvmo4qAZv+GxzfLQJqrTvDRLZ
-        r0ecJlY7Pax0uZpNV/S6ryCxs078lJ5UNgktz1j5tJqZthgV1MC9GicA6aKzQDCrK67ydv
-        5MITLMRsBDxP7nZ8tG86s1OByUYDxmg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-376-dKJb_9npP4GxitKr2F07hw-1; Fri, 23 Apr 2021 03:08:58 -0400
-X-MC-Unique: dKJb_9npP4GxitKr2F07hw-1
-Received: by mail-ed1-f69.google.com with SMTP id i25-20020a50fc190000b0290384fe0dab00so12539458edr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:08:58 -0700 (PDT)
+        Fri, 23 Apr 2021 03:10:00 -0400
+Received: from mail-wr1-f70.google.com ([209.85.221.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lZpwJ-0003Qf-Rb
+        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 07:09:23 +0000
+Received: by mail-wr1-f70.google.com with SMTP id f15-20020adffccf0000b02901028c7339ccso14746224wrs.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:09:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Q8ibsUJr2Xw/0Bx+47uUdT7BpjL9CbRIh33qYka8yhk=;
-        b=A6tEct89koT2dERBv9LdDM/Lzi+ZvT5xYUqkP4BlZWNglShJhIOZim9GiUa17E9+cb
-         XQCVVL+QfAfOwMFKbebwE/sh3l3s0t7U5Dwx0sQ+K0MPQWOe4D99tZYPC/6wnAN3ymf0
-         ca4ItOA+iE4r4CedcpahSq8wf1xpFK0RPIbwZ/kl/Uvh/IVQsQqxAqgBTMGYFh+h4vIM
-         1rKI+eBrZ1Zn8as3tVXML2rMAtOcpaaWte2yMz+sa0bT30uJ02P9mI3d6Uo+w6VgogY3
-         fgpBj9JHDu9R4uMzHmpUPT1roGd4dRq5zBbIZ+e30HmMc1BBEaSzgK5sdNbjRT5LgRua
-         N2QA==
-X-Gm-Message-State: AOAM5320za8Dt869ptEy3qtNXg5FBxbXbUOJhGDoZWvhFmhbqxatpZsS
-        Pn5Nitb7ZFWk5CjzwsG2+X7izMmdGRMC/g6fTusYNlbHSHbnkbem1k4z8Kn2v46BuJkx47rUhCs
-        mK19eSNlkXS8VLdI3jdJDE/le
-X-Received: by 2002:a17:906:8407:: with SMTP id n7mr2602600ejx.264.1619161737479;
-        Fri, 23 Apr 2021 00:08:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKqvDTxTMHU32SuNhtPSengJjdOtcKbAFGUrVKJrR2v+QuY2jmt97ToVycVtIsglBSI71ryw==
-X-Received: by 2002:a17:906:8407:: with SMTP id n7mr2602582ejx.264.1619161737244;
-        Fri, 23 Apr 2021 00:08:57 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p4sm3890045edr.43.2021.04.23.00.08.56
+        bh=16r9DssXKUC9HdkrZg3Sm4SlbqGPCpv9BtQcvqu4Nqs=;
+        b=B2+ZVljCeXb91NPEdpX83K9Yi/Hy0TI9az9L7Nh62W50doV7wq9do1uJTBhGGa+x1x
+         2j3UyiusQWi3hRovEpUTazbpOlEs32a3llCHqNsnT+Dfstmg2rC5Lm4eJZN5KumqDDIL
+         zest9ntjQ0wtZHOF3lQ1MNzH8JKGl2hsE6/9h3V2FbxeZ1t0DI78e6RF5WNkjC21BCk1
+         leJtExR8qpN5Eh0rJ9SqVxsGK0AXMvVxpul99bSiaMNjlobHtK75sI7WXb8kP4/5Y5sI
+         lvPG0bchGKN7eBezIBusiNhJ+XT5lqDWfjJPiIK/XbNpvWojXcbS/DurQQe/tLhyIJTR
+         eEJg==
+X-Gm-Message-State: AOAM532PvTymL6fQ/aAOBIH2L8Xe2hBp9CYpXWKSng51093K/FmVTeYs
+        UXcfmnAd67SBD98NJH7YjcrDBPu36agzvtJfa0oZ7qWA+J9JDEF6T4yx8YmpxdF0iTyu0YtThaK
+        SM0z0efUrgYa53AHSdHQULOZmrDauLctXfgGMNl2cpA==
+X-Received: by 2002:adf:d1c9:: with SMTP id b9mr2830891wrd.352.1619161763187;
+        Fri, 23 Apr 2021 00:09:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7iVYsXTmbfyE3WjIA68KJwkWL2BOCwMNDEHHo8nMg4UhT+jmgh4htXnxkoNXG2W6OYDtUTA==
+X-Received: by 2002:adf:d1c9:: with SMTP id b9mr2830875wrd.352.1619161763000;
+        Fri, 23 Apr 2021 00:09:23 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
+        by smtp.gmail.com with ESMTPSA id h9sm6756062wmb.35.2021.04.23.00.09.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 00:08:56 -0700 (PDT)
-Subject: Re: [PATCH v5 03/15] KVM: SVM: Disable SEV/SEV-ES if NPT is disabled
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Wei Huang <wei.huang2@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20210422021125.3417167-1-seanjc@google.com>
- <20210422021125.3417167-4-seanjc@google.com>
- <5e8a2d7d-67de-eef4-ab19-33294920f50c@redhat.com>
- <YIGhC/1vlIAZfwzm@google.com>
- <882d8bb4-8d40-1b4d-0742-4a4f2c307e5b@redhat.com>
- <YIG8Ythi0UIbO+Up@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0a00ee34-965a-0ee1-1e2c-7fda8e21ec9e@redhat.com>
-Date:   Fri, 23 Apr 2021 09:08:55 +0200
+        Fri, 23 Apr 2021 00:09:22 -0700 (PDT)
+Subject: Re: [PATCH 054/190] Revert "clk: samsung: Remove redundant check in
+ samsung_cmu_register_one"
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>
+References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
+ <20210421130105.1226686-55-gregkh@linuxfoundation.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <05bd90cf-e761-9ade-388c-7b78a0ed716a@canonical.com>
+Date:   Fri, 23 Apr 2021 09:09:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YIG8Ythi0UIbO+Up@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210421130105.1226686-55-gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/04/21 20:11, Sean Christopherson wrote:
->> Yes, you're right.  NPT is easy but we would have to guess what the spec
->> would say about MAXPHYADDR, while nNPT would require the stacking of a PML5.
->> Either way, blocking KVM is the easiest thing todo.
-> How about I fold that into the s/lm_root/pml4_root rename[*]?  I.e. make the
-> blocking of PML5 a functional change, and the rename an opportunistic change?
+On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
+> This reverts commit 8d7a577d04e8ce24b1b81ee44ec8cd1dda2a9cd9.
 > 
-> [*]https://lkml.kernel.org/r/20210318201131.3242619-1-seanjc@google.com
+> Commits from @umn.edu addresses have been found to be submitted in "bad
+> faith" to try to test the kernel community's ability to review "known
+> malicious" changes.  The result of these submissions can be found in a
+> paper published at the 42nd IEEE Symposium on Security and Privacy
+> entitled, "Open Source Insecurity: Stealthily Introducing
+> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
+> of Minnesota) and Kangjie Lu (University of Minnesota).
 > 
+> Because of this, all submissions from this group must be reverted from
+> the kernel tree and will need to be re-reviewed again to determine if
+> they actually are a valid fix.  Until that work is complete, remove this
+> change to ensure that no problems are being introduced into the
+> codebase.
+> 
+> Cc: Aditya Pakki <pakki001@umn.edu>
+> Cc: https
+> Cc: Chanwoo Choi <cw00.choi@samsung.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/clk/samsung/clk.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/clk/samsung/clk.c b/drivers/clk/samsung/clk.c
+> index 1949ae7851b2..dad31308c071 100644
+> --- a/drivers/clk/samsung/clk.c
+> +++ b/drivers/clk/samsung/clk.c
+> @@ -356,6 +356,10 @@ struct samsung_clk_provider * __init samsung_cmu_register_one(
+>  	}
+>  
+>  	ctx = samsung_clk_init(np, reg_base, cmu->nr_clk_ids);
+> +	if (!ctx) {
+> +		panic("%s: unable to allocate ctx\n", __func__);
+> +		return ctx;
+> +	}
 
-Yes, that's a good plan.  Thanks,
+Hi Greg,
 
-Paolo
+The commit was fine here, so please keep it. NAK for the revert.
 
+Best regards,
+Krzysztof
