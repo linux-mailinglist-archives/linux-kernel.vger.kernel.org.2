@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D97E3695F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585CB3695F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhDWPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237081AbhDWPTF (ORCPT
+        id S237268AbhDWPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:20:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45763 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230470AbhDWPUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:19:05 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0E6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:18:27 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id s14so18434034pjl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RRJebZVaxHqzkm5xYFuJxuwx6avqRXGA2Ewnq/B2t4g=;
-        b=DWUEquz6eZmsmpLbHLdXJSR8NxTMfM4hf/a6kRnz1V1VS5NAs6IbQTJ0LGApSzMmF9
-         psF4GURk+fqTYq0pKqmYDim4F6PvAq6ceNWe7EB4sIWr4QzvPHNj5FT0cYZ+nD4T0ced
-         BAZKi6G9AnB35oZI6wUxnik6QM8gDDmURXaCJ1fuX6Ba/YaJafIJX0bqqYQxRI+LwUgv
-         AXqhBy2w+i6kX6AYB3gDv4FDVBg386OOj/ZwXG9izJje7LtlWchHkzsSsLzsSuk5i6Gm
-         gl+sa4Sa69GCjOc+jEJ/3Nw4XVJ6gAiSIcwitvq95n/cOLYufBrL1von4eXmR7Fq+dmR
-         VywQ==
+        Fri, 23 Apr 2021 11:20:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619191163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TaMjURk/uwKs3z6p90IdITDbLl5+F5GrY8JWDnXasqE=;
+        b=aovWD9Wop84nxPw/KpHVjf0GDWZv0CImJLgDo9l4KrxJWQBFv8ZHxwgEMzC+bmviNnjrPa
+        uLKTn32Ma3PajUdZJ3rQwS7Y/2IEQsO3bghmqb2DjVo4Vk2Cjf/BczSAIto8Xo/7YLn38k
+        cMUIz6iB3rIJZwr2vtk8dk5wRm7V6HA=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-Pr4W4pTqO-qZvcrdWvCQ8w-1; Fri, 23 Apr 2021 11:19:21 -0400
+X-MC-Unique: Pr4W4pTqO-qZvcrdWvCQ8w-1
+Received: by mail-oi1-f200.google.com with SMTP id h139-20020aca53910000b029018683516e74so8247184oib.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:19:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RRJebZVaxHqzkm5xYFuJxuwx6avqRXGA2Ewnq/B2t4g=;
-        b=NDEqj45++x/vqqZQrqRfxjHitdVlMz7FzzL9l9jIYiBl6cm3DVyhWrfPBhFSQk7xDs
-         QlBmitwJ5qZLvRL2ZW/MHnGwMKcl/iIkYQn37P6MLW5hDntEKjaxt+KyJ68PBTWYbzmq
-         +uvIKs8X5ALi5RFLi1YBfmZRF4Zw2XCvLS747CHBpTCHJ5zB5zykqxs8Bwgx/zI0YTud
-         HaSITrm06r/qynRK4oDKunUCJLWNz5gU6DCIVvdeC6IZYN1gKoKdRujd0+geqVdWg+O+
-         d8OB+w0T8rc+YnLrODTTNIvsCZwkcLAefZMFOgIzvQbFsyHYcgz4nM2GLN7QCqzN2/nS
-         WIGg==
-X-Gm-Message-State: AOAM532xN8vi4db0JSCzFq9geiA8D9mFwC6da6fV7iPjbuzw9sf4vEF9
-        BHotahg9BDjv0yw9gBMz4+4JwcvCmJUNKA==
-X-Google-Smtp-Source: ABdhPJzXDK2ujEd9Pl9K0qJpTeO+/RfaDkdAudeD0IMOb+Lm9JjFA3m7tSIH00mNZdVoIof0Pe6GzA==
-X-Received: by 2002:a17:902:7fc9:b029:eb:4828:47e8 with SMTP id t9-20020a1709027fc9b02900eb482847e8mr4603408plb.56.1619191106491;
-        Fri, 23 Apr 2021 08:18:26 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 137sm5080242pfx.172.2021.04.23.08.18.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TaMjURk/uwKs3z6p90IdITDbLl5+F5GrY8JWDnXasqE=;
+        b=LIoFpzwylXwu6TZN3siofDPff90zi8wh0V0Zz80t7QClAS23kw0+r23AhGlZDX1IY1
+         k7C7dBLEZ61lp0OkkLvSJ8mlvuHm98l40vSfOZBP1ST4SYnffWu92vWZ68ZTzy5pZG/e
+         0in0xZU1pB9Lq6aAtK8B5qflDMlMDun4zBGPojxaG356XDx+tNnK6JyMnjoIkz/bz1Hv
+         Qo8GAsoxCCYfRlrsGe2zNPAzlc/0+DinGQ/ti8tu77g5yDFIdp77n8uTZztJJg4eEuOh
+         uwaW6o1QIHm+lWPesa9AaqYE7rKrOqD/Q6TdIK/HB7PQTuLhfhP4w8LqorOWJwkop8Ed
+         fn/g==
+X-Gm-Message-State: AOAM532lFQ7QoKt5L9uuUGA6bZ8Eyb4qKZnYweOG0jRnDS9ZuQftvJp+
+        Ux8GPqWRO90AB7FAH1Ijt/xjutPMiKIhQMm4SXsV4eHcGJOwFVU3JhsRqO8Ha8wyttrZCfYQYvH
+        WkvrlaAHN6+BSo1YZKbl0oSLv
+X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr3845066otp.209.1619191161269;
+        Fri, 23 Apr 2021 08:19:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzurjzgiMl3cxgk/fC4pQBmh5uOr3MKrNK0XYkFBb7x8BJXo1a36i2WiGtf+HYNmB9ou5o41w==
+X-Received: by 2002:a05:6830:4d:: with SMTP id d13mr3845059otp.209.1619191161133;
+        Fri, 23 Apr 2021 08:19:21 -0700 (PDT)
+Received: from redhat.redhat.com (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id b12sm1468927oti.17.2021.04.23.08.19.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 08:18:25 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 15:18:22 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2] KVM: x86/xen: Take srcu lock when accessing
- kvm_memslots()
-Message-ID: <YILlPmN0fgLA8RkJ@google.com>
-References: <1619166200-9215-1-git-send-email-wanpengli@tencent.com>
+        Fri, 23 Apr 2021 08:19:20 -0700 (PDT)
+From:   Connor Kuehl <ckuehl@redhat.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org
+Subject: [PATCH] fuse: Send FUSE_WRITE_KILL_SUIDGID for killpriv v1
+Date:   Fri, 23 Apr 2021 10:19:19 -0500
+Message-Id: <20210423151919.195033-1-ckuehl@redhat.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1619166200-9215-1-git-send-email-wanpengli@tencent.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> kvm_memslots() will be called by kvm_write_guest_offset_cached() so we should 
-> take the srcu lock. Let's pull the srcu lock operation from kvm_steal_time_set_preempted() 
-> again to fix xen part.
-> 
-> Fixes: 30b5c851af7 (KVM: x86/xen: Add support for vCPU runstate information)
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
->  arch/x86/kvm/x86.c | 20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3bf52ba..c775d24 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4097,7 +4097,6 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_host_map map;
->  	struct kvm_steal_time *st;
-> -	int idx;
->  
->  	if (!(vcpu->arch.st.msr_val & KVM_MSR_ENABLED))
->  		return;
-> @@ -4105,15 +4104,9 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
->  	if (vcpu->arch.st.preempted)
->  		return;
->  
-> -	/*
-> -	 * Take the srcu lock as memslots will be accessed to check the gfn
-> -	 * cache generation against the memslots generation.
-> -	 */
-> -	idx = srcu_read_lock(&vcpu->kvm->srcu);
-> -
->  	if (kvm_map_gfn(vcpu, vcpu->arch.st.msr_val >> PAGE_SHIFT, &map,
->  			&vcpu->arch.st.cache, true))
-> -		goto out;
-> +		return;
->  
->  	st = map.hva +
->  		offset_in_page(vcpu->arch.st.msr_val & KVM_STEAL_VALID_BITS);
-> @@ -4121,20 +4114,25 @@ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
->  	st->preempted = vcpu->arch.st.preempted = KVM_VCPU_PREEMPTED;
->  
->  	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, true);
-> -
-> -out:
-> -	srcu_read_unlock(&vcpu->kvm->srcu, idx);
->  }
->  
->  void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
->  {
-> +	int idx;
-> +
->  	if (vcpu->preempted && !vcpu->arch.guest_state_protected)
->  		vcpu->arch.preempted_in_kernel = !static_call(kvm_x86_get_cpl)(vcpu);
->  
-> +	/*
-> +	 * Take the srcu lock as memslots will be accessed to check the gfn
-> +	 * cache generation against the memslots generation.
-> +	 */
-> +	idx = srcu_read_lock(&vcpu->kvm->srcu);
+FUSE doesn't seem to be adding the FUSE_WRITE_KILL_SUIDGID flag on write
+requests for FUSE connections that support FUSE_HANDLE_KILLPRIV but not
+FUSE_HANDLE_KILLPRIV_V2.
 
-Might be worth grabbing "kvm" in a local variable?  Either way:
+However, the FUSE userspace header states:
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+	FUSE_HANDLE_KILLPRIV: fs handles killing suid/sgid/cap on
+	write/chown/trunc
+	^^^^^
 
->  	if (kvm_xen_msr_enabled(vcpu->kvm))
->  		kvm_xen_runstate_set_preempted(vcpu);
->  	else
->  		kvm_steal_time_set_preempted(vcpu);
-> +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
->  
->  	static_call(kvm_x86_vcpu_put)(vcpu);
->  	vcpu->arch.last_host_tsc = rdtsc();
-> -- 
-> 2.7.4
-> 
+To improve backwards compatibility with file servers that don't support
+FUSE_HANDLE_KILLPRIV_V2, add the FUSE_WRITE_KILL_SUIDGID flag to write
+requests if FUSE_HANDLE_KILLPRIV has been negotiated -OR- if the
+conditions for FUSE_HANDLE_KILLPRIV_V2 support are met.
+
+Signed-off-by: Connor Kuehl <ckuehl@redhat.com>
+---
+ fs/fuse/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 8cccecb55fb8..7dc9182d1ece 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -1106,7 +1106,7 @@ static ssize_t fuse_send_write_pages(struct fuse_io_args *ia,
+ 
+ 	fuse_write_args_fill(ia, ff, pos, count);
+ 	ia->write.in.flags = fuse_write_flags(iocb);
+-	if (fm->fc->handle_killpriv_v2 && !capable(CAP_FSETID))
++	if (fm->fc->handle_killpriv || (fm->fc->handle_killpriv_v2 && !capable(CAP_FSETID)))
+ 		ia->write.in.write_flags |= FUSE_WRITE_KILL_SUIDGID;
+ 
+ 	err = fuse_simple_request(fm, &ap->args);
+-- 
+2.30.2
+
