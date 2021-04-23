@@ -2,219 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CA6369CCF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 00:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DE4369CD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Apr 2021 00:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244189AbhDWWfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 18:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244078AbhDWWe6 (ORCPT
+        id S235024AbhDWWhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 18:37:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48866 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231218AbhDWWh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 18:34:58 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186F7C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 15:34:20 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id z17-20020a0cf0110000b029019a84330150so19335410qvk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 15:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=W0FsZgKrGD/FRL2xwnIckJkdwWI7yxmbTghAbdzf5Sc=;
-        b=Iyor596ihpz1j4rciZ/W2f1ON2t53sv+AVrjqaO7ZAAOAj+be+Hxk+i+OTmgVYMxGh
-         2EijwHDTftvNRbPG2Sy+dJXc0laVixVeqZR5JDfwN4O4KwOuUuBykwVMK7iTNWRGu/Nh
-         UDQBlv2QSrZBagAG2E4Xk5QY7G8tvsOwDs8owCFlEM8NAv2P44wOZGT7KCkk1n4Wi5cD
-         Aqp6d1mmZEf7dIdRjV5CRYhqq7I4SPe0gn0ovzD11xeA29kRGdRUoU+rv2DVc8hYAZhU
-         3/H1rsTQrhhU2MglUGXd5LJPCOJwlQlRCyd1hnNXYGJeuzJYZee++l0hxRWG4NfQct4H
-         sGjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=W0FsZgKrGD/FRL2xwnIckJkdwWI7yxmbTghAbdzf5Sc=;
-        b=hUCAWclzwZ0PkQDHA8SOqB7+n3X7vjNaC3Dt1gxIE4GQZoC9LZwardKx24KWNqjQB/
-         hmiP+bcwdOiI1n4/szN/PNB8VsXkzV1pG+ZwehpKGq9FozqJ+eOecZYzcpetNfka5GbL
-         2bB6urY4ewhjDLcc5ob6hhL/QMUSMYizml1O1qrVgr8Bm0qT3k/1eR3mGHPYY/aVCoWy
-         qDShFMXRwZssUjiRGPeK0KGY8m1YLUDdX2TA+1FVZIYZJG1+CcgG4UdPYCZpAxGS71fZ
-         zookCV6fs1vocFBUyOb7NQXHhBoUGn7OYuVw63tH+lk2CLNk1suNRTt+eTXHXm8KH1Jz
-         69yw==
-X-Gm-Message-State: AOAM533KeqU1WO/wtco9xotMFGMbhcxpurTEQOPeUuANLQ/Trt/uaM4d
-        cDjsZtygNlmR9uEKNM9nGOmYQqb/b2M=
-X-Google-Smtp-Source: ABdhPJwKOk1AWyr9bMoQUdeSREhAWALjm4o4jVWciBFB9eOEw+sue3i6ihgCZu89/JCQ6XK93XsNX28Hzhg=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:ad52:3246:e190:f070])
- (user=seanjc job=sendgmr) by 2002:a05:6214:a8d:: with SMTP id
- ev13mr6868770qvb.23.1619217259300; Fri, 23 Apr 2021 15:34:19 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 23 Apr 2021 15:34:04 -0700
-In-Reply-To: <20210423223404.3860547-1-seanjc@google.com>
-Message-Id: <20210423223404.3860547-5-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210423223404.3860547-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v3 4/4] KVM: SVM: Delay restoration of host MSR_TSC_AUX until
- return to userspace
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 23 Apr 2021 18:37:27 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619217409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=97GQOqgF15L+ntkACoBNhyLvhY9ExoprR9D4OPssQEo=;
+        b=kmBN9iOumKV7vlFzDvo4zo7HD1BJXEMww/LgcGOZft9gNKIFqSTTET7rKl4LGbW3E/vGFb
+        A55Qgq+S9Tpbv5/xNCfceKPeUaVYqNqpfum6xsdfB3H5eW9gUmFjADXHHfla4R81HuxqKO
+        vhnSAXZt48hvpvSWBOLiXr4DWzlCkd10fV/GojB+TM7Z1DDC0jaX9ys1TcejyxscfruVjq
+        Pp7tvOqUfVUuJy8wXnt4uZj38l9aRGvCqtcEvEfV15Whd9VCmyRH3qkIoeaJ9fQgt2eS8/
+        3CgDSjV/yeJciXKzOJHLxmlbQ1+0D0iET46eW5vESqTX2SE52nITnYubTW9FMQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619217409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=97GQOqgF15L+ntkACoBNhyLvhY9ExoprR9D4OPssQEo=;
+        b=0HEOK5AmQyvh7dEJED5SH4g4JUWhDRaukLZqIvrrDOTWXHGCgxET5stgCVKHLGBfQjEM7G
+        Uplns9UBp7oQ46BQ==
+To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@riseup.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Lukasz Majewski <lukma@denx.de>,
+        Florian Weimer <fweimer@redhat.com>,
+        Carlos O'Donell <carlos@redhat.com>,
+        "Michael Kerrisk \(man-pages\)" <mtk.manpages@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andrei Vagin <avagin@gmail.com>, kernel@collabora.com
+Subject: Re: [patch 6/6] futex: Provide FUTEX_LOCK_PI2 to support clock selection
+In-Reply-To: <606120ab-ef46-fa87-5f2c-d480de9ed2c8@riseup.net>
+References: <20210422194417.866740847@linutronix.de> <20210422194705.440773992@linutronix.de> <606120ab-ef46-fa87-5f2c-d480de9ed2c8@riseup.net>
+Date:   Sat, 24 Apr 2021 00:36:48 +0200
+Message-ID: <87o8e4vda7.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use KVM's "user return MSRs" framework to defer restoring the host's
-MSR_TSC_AUX until the CPU returns to userspace.  Add/improve comments to
-clarify why MSR_TSC_AUX is intercepted on both RDMSR and WRMSR, and why
-it's safe for KVM to keep the guest's value loaded even if KVM is
-scheduled out.
+Andr=C3=A9!
 
-Cc: Reiji Watanabe <reijiw@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 52 +++++++++++++++++++-----------------------
- arch/x86/kvm/svm/svm.h |  7 ------
- 2 files changed, 23 insertions(+), 36 deletions(-)
+On Fri, Apr 23 2021 at 19:20, Andr=C3=A9 Almeida wrote:
+>> @@ -21,6 +21,7 @@
+>>   #define FUTEX_WAKE_BITSET	10
+>>   #define FUTEX_WAIT_REQUEUE_PI	11
+>>   #define FUTEX_CMP_REQUEUE_PI	12
+>> +#define FUTEX_LOCK_PI2		13
+>>=20=20=20
+>>   #define FUTEX_PRIVATE_FLAG	128
+>>   #define FUTEX_CLOCK_REALTIME	256
+>
+> To keep consistency with other operations, maybe add a=20
+> FUTEX_LOCK_PI2_PRIVATE?
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4c7604fca009..a4bd7cb19755 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -213,6 +213,15 @@ struct kvm_ldttss_desc {
- 
- DEFINE_PER_CPU(struct svm_cpu_data *, svm_data);
- 
-+/*
-+ * Only MSR_TSC_AUX is switched via the user return hook.  EFER is switched via
-+ * the VMCB, and the SYSCALL/SYSENTER MSRs are handled by VMLOAD/VMSAVE.
-+ *
-+ * RDTSCP and RDPID are not used in the kernel, specifically to allow KVM to
-+ * defer the restoration of TSC_AUX until the CPU returns to userspace.
-+ */
-+#define TSC_AUX_URET_SLOT	0
-+
- static const u32 msrpm_ranges[] = {0, 0xc0000000, 0xc0010000};
- 
- #define NUM_MSR_MAPS ARRAY_SIZE(msrpm_ranges)
-@@ -958,6 +967,9 @@ static __init int svm_hardware_setup(void)
- 		kvm_tsc_scaling_ratio_frac_bits = 32;
- 	}
- 
-+	if (boot_cpu_has(X86_FEATURE_RDTSCP))
-+		kvm_define_user_return_msr(TSC_AUX_URET_SLOT, MSR_TSC_AUX);
-+
- 	/* Check for pause filtering support */
- 	if (!boot_cpu_has(X86_FEATURE_PAUSEFILTER)) {
- 		pause_filter_count = 0;
-@@ -1423,19 +1435,10 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	struct svm_cpu_data *sd = per_cpu(svm_data, vcpu->cpu);
--	unsigned int i;
- 
- 	if (svm->guest_state_loaded)
- 		return;
- 
--	/*
--	 * Certain MSRs are restored on VMEXIT (sev-es), or vmload of host save
--	 * area (non-sev-es). Save ones that aren't so we can restore them
--	 * individually later.
--	 */
--	for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
--		rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
--
- 	/*
- 	 * Save additional host state that will be restored on VMEXIT (sev-es)
- 	 * or subsequent vmload of host save area.
-@@ -1454,29 +1457,15 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
--	/* This assumes that the kernel never uses MSR_TSC_AUX */
- 	if (static_cpu_has(X86_FEATURE_RDTSCP))
--		wrmsrl(MSR_TSC_AUX, svm->tsc_aux);
-+		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, svm->tsc_aux, -1ull);
- 
- 	svm->guest_state_loaded = true;
- }
- 
- static void svm_prepare_host_switch(struct kvm_vcpu *vcpu)
- {
--	struct vcpu_svm *svm = to_svm(vcpu);
--	unsigned int i;
--
--	if (!svm->guest_state_loaded)
--		return;
--
--	/*
--	 * Certain MSRs are restored on VMEXIT (sev-es), or vmload of host save
--	 * area (non-sev-es). Restore the ones that weren't.
--	 */
--	for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
--		wrmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
--
--	svm->guest_state_loaded = false;
-+	to_svm(vcpu)->guest_state_loaded = false;
- }
- 
- static void svm_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
-@@ -2785,6 +2774,7 @@ static int svm_set_vm_cr(struct kvm_vcpu *vcpu, u64 data)
- static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
-+	int r;
- 
- 	u32 ecx = msr->index;
- 	u64 data = msr->data;
-@@ -2888,11 +2878,15 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		break;
- 	case MSR_TSC_AUX:
- 		/*
--		 * This is rare, so we update the MSR here instead of using
--		 * direct_access_msrs.  Doing that would require a rdmsr in
--		 * svm_vcpu_put.
-+		 * TSC_AUX is usually changed only during boot and never read
-+		 * directly.  Intercept TSC_AUX instead of exposing it to the
-+		 * guest via direct_access_msrs, and switch it via user return.
- 		 */
--		wrmsrl(MSR_TSC_AUX, svm->tsc_aux);
-+		preempt_disable();
-+		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
-+		preempt_enable();
-+		if (r)
-+			return 1;
- 
- 		svm->tsc_aux = data;
- 		break;
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index d6206196eec1..5d8027e9c1c5 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -23,11 +23,6 @@
- 
- #define __sme_page_pa(x) __sme_set(page_to_pfn(x) << PAGE_SHIFT)
- 
--static const u32 host_save_user_msrs[] = {
--	MSR_TSC_AUX,
--};
--#define NR_HOST_SAVE_USER_MSRS ARRAY_SIZE(host_save_user_msrs)
--
- #define	IOPM_SIZE PAGE_SIZE * 3
- #define	MSRPM_SIZE PAGE_SIZE * 2
- 
-@@ -129,8 +124,6 @@ struct vcpu_svm {
- 
- 	u64 next_rip;
- 
--	u64 host_user_msrs[NR_HOST_SAVE_USER_MSRS];
--
- 	u64 spec_ctrl;
- 	/*
- 	 * Contains guest-controlled bits of VIRT_SPEC_CTRL, which will be
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+Good point! Missed that.
 
+>> --- a/kernel/futex.c
+>> +++ b/kernel/futex.c
+>> @@ -3711,7 +3711,8 @@ long do_futex(u32 __user *uaddr, int op,
+>>=20=20=20
+>>   	if (op & FUTEX_CLOCK_REALTIME) {
+>>   		flags |=3D FLAGS_CLOCKRT;
+>> -		if (cmd !=3D FUTEX_WAIT_BITSET && cmd !=3D FUTEX_WAIT_REQUEUE_PI)
+>> +		if (cmd !=3D FUTEX_WAIT_BITSET && cmd !=3D FUTEX_WAIT_REQUEUE_PI &&
+>> +		    cmd !=3D FUTEX_LOCK_PI2)
+>>   			return -ENOSYS;
+>>   	}
+>
+> As FUTEX_LOCK_PI, FUTEX_LOCK_PI2 also requires FUTEX_CMPXCHG right?=20
+> Then, add it here:
+>
+> 	switch (cmd) {
+> 	case FUTEX_LOCK_PI:
+> +	case FUTEX_LOCK_PI2:
+> 	case FUTEX_UNLOCK_PI:
+> 	case FUTEX_TRYLOCK_PI:
+> 	case FUTEX_WAIT_REQUEUE_PI:
+> 	case FUTEX_CMP_REQUEUE_PI:
+>   		if (!futex_cmpxchg_enabled)
+>   			return -ENOSYS;
+>   	}
+
+Indeed. Forgot about that completely.
+
+Thanks for spotting that!
+
+       tglx
