@@ -2,181 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61A33694D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F153694DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241036AbhDWOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        id S242533AbhDWOhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhDWOgT (ORCPT
+        with ESMTP id S231274AbhDWOhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:36:19 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B67C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:35:43 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id r186so21583040oif.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:35:43 -0700 (PDT)
+        Fri, 23 Apr 2021 10:37:32 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CCDC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:50 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 4so17999604lfp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jbbrFFl9vrwv+CdmCwQi0I7Ko+cX89wNgsv/KroPn5Y=;
-        b=YND9y+oQTfNuuRE/WdvdMgAirwez9HFLRB+aG9BPoNMwQKu6aALut9FGPg2hbWqD6t
-         F3EXvj2ltRdHT+rRBp5KxOD33T91Yf8+200STJMjqxjsGjtAT2Mco+qodmLFAK84pvTZ
-         pUdgdf01v4YY3dlbpOm44wrP/0SBpj6zQ5/WiLmZJmaki+i6Gv7/e9AFprsIB+WFtIjs
-         7rXn6nIl+MnNEEJBeF1126DPKf+cgZHv1VOGm21NOMzYgtXYQUgVpTlQrebnqj2JMNJ5
-         MqWqXre21JazMJNwKEZykbfpWbR7hKiVGO+XzEPwQhZnz6hHcZK2YnPvLk771yIzKt7j
-         cbcA==
+        d=arista.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rGVMK1LPh9iIc+XnF1YdK9uGnLn1GjuOH4C0X7AWW18=;
+        b=ibnNxKI5LWvzWd65BU2zvJQ3lZMkhb1LLEARrXo8fh/Rbz/rfSC6mIwVjEdsykK89c
+         NejtsnaccVOuASPeR9gGFE5MPQzHaHKRgP5Y/pz0cOECwfTI0q8/0miB8rvnra9ZOCZ/
+         ng1jnduShfGZAfZyFIY5f0GV9vDniT6Xx7XqgmFTLL7DqonI8SYoqhkDjdN5jfba7u7P
+         PvQxVkNETEmcUxzBXMmpliJQJ97BhmLTKtJ+gTKzXfdKmCjPyMCQVNqlf/QSI6u/3aEi
+         hksfL1C3NTyGLoxH+em122rqRRn3Wtx8Qdyo4zc0DE13g71NRdPskvQx8eSfOG4kIHrI
+         AcoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jbbrFFl9vrwv+CdmCwQi0I7Ko+cX89wNgsv/KroPn5Y=;
-        b=drq2rcJmaEovz465Dv16TzOu0G0Ia+aggXt6ADMkfuda2BqFfXnF/6ECXiLi72YIEs
-         VkGeLd/911HkZTIwN/1ZFsWn+4aT8CRB7ReJ8/5yA1tAQjptxcDVREkHCxM161dbEpz2
-         s8NOgFk5qgXbdrfO30yI+t9HKNAGwLH6u/X6s/h0DXSpFbJBtWjmWDROq9U0iVfBYFyG
-         2bzr9PuiDQ6mtmPGgbn9DiycHOYcqow4HnKnayQvmY+LKh0Y5cT0t1QITkR2Okgx4tx9
-         jcRqVvM7oP7i1dWhUQMudsgyLPqmq64q7b18sJYcSiF6chGIlWodgz7UvXwTAFpDVr16
-         Z7yQ==
-X-Gm-Message-State: AOAM530xVk1p9jRjbnHcg1RBBxMlHPJ5TuyHLN5W9tLRtEOFxiSqZWec
-        dtPJzCRlb5IQcqM/qCnX9d7ylg==
-X-Google-Smtp-Source: ABdhPJxcCUZNBug881o1uVELe/LX/FF4rYn/YAsPBI0cQIVf5vzR30LNv6mS9V2fNTK1QZAX0+vB4w==
-X-Received: by 2002:a05:6808:f8e:: with SMTP id o14mr3036405oiw.56.1619188542856;
-        Fri, 23 Apr 2021 07:35:42 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c14sm1202484oov.21.2021.04.23.07.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:35:42 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 09:35:40 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 10/27] drm/bridge: ti-sn65dsi86: Clean debugfs code
-Message-ID: <YILbPCGC+Wk9Mdxx@builder.lan>
-References: <20210416223950.3586967-1-dianders@chromium.org>
- <20210416153909.v4.10.I5fe072753290c6a77eda736ebd5778e17b7cb0fb@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rGVMK1LPh9iIc+XnF1YdK9uGnLn1GjuOH4C0X7AWW18=;
+        b=Bg99GebDAWESOQhGTuen6iEm6Pu0tKkpv4iHjOVktk2HeU7T3dDBvjFybwFEhWsn4d
+         Y1H2bM9RvtGF1605DAfI9HBZ6icJCIU/lhZ/KaPvy7UgOJH3A650Qt4QAwNlywgAdkFm
+         Ws4pjzpGnVSr9w+p/81kAjnnCLBEGPxQ9GC9oMzV8yYt3SJ8qqG5sXo0uJAZXJIG6WQ3
+         anXVnzkuGzRR6j0RliIBWZWb6C5arwM9kfwM5RPHFRwlW3voJaPUSa0oZB+6IpqecO6Z
+         U0TV/y3BTehDv06bqNz+htstUs5a8zZPPRI63kKYDgUV8rKUR/9StrkoAMWdfBYch214
+         wklQ==
+X-Gm-Message-State: AOAM531naBdt1CfOAcw3tBQ4wES3gGEPiCvgtdI1lgcJ/AG9DDa+e3Mn
+        CJByCe+w5fXgpx6y0nrzFOuIFUk4tRE9ob+q+pk7MA==
+X-Google-Smtp-Source: ABdhPJyP6Uu0qWuAegZYZDUSEd9xuSqzExELRiyoT5S0n936RRLzfq/8QcEhnek3SSimkfoYPYC2HuOLBQSjzbhGPSQ=
+X-Received: by 2002:a19:7e97:: with SMTP id z145mr3212097lfc.280.1619188608499;
+ Fri, 23 Apr 2021 07:36:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416153909.v4.10.I5fe072753290c6a77eda736ebd5778e17b7cb0fb@changeid>
+References: <87ft6act3c.fsf@redhat.com> <20210421172714.912119-1-snaipe@arista.com>
+ <87h7jyvfsm.fsf@redhat.com>
+In-Reply-To: <87h7jyvfsm.fsf@redhat.com>
+From:   =?UTF-8?B?RnJhbmtsaW4g4oCcU25haXBl4oCdIE1hdGhpZXU=?= 
+        <snaipe@arista.com>
+Date:   Fri, 23 Apr 2021 16:36:12 +0200
+Message-ID: <CAK8sBDOfVKvv4V-0wzz6ZAsi0Gs6pPVDHhxg++RLgcdA5mmF3g@mail.gmail.com>
+Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated
+ user namespaces
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     Alexander Mihalicyn <alexander@mihalicyn.com>,
+        christian.brauner@ubuntu.com,
+        containers@lists.linux-foundation.org, cyphar@cyphar.com,
+        ebiederm@xmission.com, geofft@ldpreload.com, jcsible@cert.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, luto@amacapital.net, mic@digikod.net,
+        mpatel@redhat.com, ptikhomirov@virtuozzo.com,
+        Sargun Dhillon <sargun@sargun.me>, serge@hallyn.com,
+        stgraber@ubuntu.com, vgoyal@redhat.com, Wat Lim <watl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+On Thu, Apr 22, 2021 at 11:18 AM Giuseppe Scrivano <gscrivan@redhat.com> wrote:
+> thanks for the feedback.  We are still facing the issue with rootless
+> Podman, and these patches (listed here so you won't need to dig into archives):
+>
+> https://github.com/giuseppe/linux/commit/7e0701b389c497472d11fab8570c153a414050af
+> https://github.com/giuseppe/linux/commit/1c5fe726346b216293a527719e64f34e6297f0c2
+>
+> would solve the issue for us as well and we can use setgroups within a
+> user namespace in a safe way.
+>
+> Any comments on this approach?  Could we move forward with it?
+>
 
-> Let's cleanup the debugfs code to:
-> - Check for errors.
-> - Use devm to manage freeing, which also means we don't need to store
->   a pointer in our structure.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 32 +++++++++++++++++----------
->  1 file changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> index 57574132e200..0c6aa99ddc99 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -118,7 +118,6 @@
->   * @aux:          Our aux channel.
->   * @bridge:       Our bridge.
->   * @connector:    Our connector.
-> - * @debugfs:      Used for managing our debugfs.
->   * @host_node:    Remote DSI node.
->   * @dsi:          Our MIPI DSI source.
->   * @edid:         Detected EDID of eDP panel.
-> @@ -146,7 +145,6 @@ struct ti_sn65dsi86 {
->  	struct drm_dp_aux		aux;
->  	struct drm_bridge		bridge;
->  	struct drm_connector		connector;
-> -	struct dentry			*debugfs;
->  	struct edid			*edid;
->  	struct device_node		*host_node;
->  	struct mipi_dsi_device		*dsi;
-> @@ -245,18 +243,30 @@ static int status_show(struct seq_file *s, void *data)
->  
->  DEFINE_SHOW_ATTRIBUTE(status);
->  
-> -static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
-> +static void ti_sn65dsi86_debugfs_remove(void *data)
->  {
-> -	pdata->debugfs = debugfs_create_dir(dev_name(pdata->dev), NULL);
-> -
-> -	debugfs_create_file("status", 0600, pdata->debugfs, pdata,
-> -			&status_fops);
-> +	debugfs_remove_recursive(data);
->  }
->  
-> -static void ti_sn65dsi86_debugfs_remove(struct ti_sn65dsi86 *pdata)
-> +static void ti_sn65dsi86_debugfs_init(struct ti_sn65dsi86 *pdata)
->  {
-> -	debugfs_remove_recursive(pdata->debugfs);
-> -	pdata->debugfs = NULL;
-> +	struct device *dev = pdata->dev;
-> +	struct dentry *debugfs;
-> +	int ret;
-> +
-> +	debugfs = debugfs_create_dir(dev_name(dev), NULL);
-> +	if (IS_ERR(debugfs))
-> +		ret = PTR_ERR(debugfs);
-> +	else
-> +		ret = devm_add_action_or_reset(dev, ti_sn65dsi86_debugfs_remove,
-> +					       debugfs);
-> +
-> +	if (ret) {
+I rebased and built your changes on top of v5.10, patched our tool to
+burn "shadow" into /proc/self/setgroups, and it's working beautifully:
 
-You're not supposed to handle errors from debugfs_create_dir(), but I
-like what you're doing with devm here and that needs a check.
+    $ id
+    uid=1000(snaipe) gid=1000(snaipe) groups=1000(snaipe),998(wheel)
 
-Also worth mentioning is that at this point in the patch stack the
-debugfs "status" file will outlive the activation of pm_runtime, this is
-however taken care of in a later patch. Given that it's unlikely to
-cause a problem I don't mind this transient issue - but wanted to
-mention that I reviewed the end result in this regard.
+    $ bst grep . /proc/self/uid_map /proc/self/gid_map /proc/self/setgroups
+    /proc/self/uid_map:         0       1000          1
+    /proc/self/uid_map:         1     100000      65536
+    /proc/self/gid_map:         0       1000          1
+    /proc/self/gid_map:         1     100000      65536
+    /proc/self/setgroups:shadow
 
+    $ ls -l
+    total 8
+    drwxr-xr-x 2 root wheel 4096 Apr 23 14:18 allowed
+    drwx---r-x 2 root wheel 4096 Apr 23 14:18 denied
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+    $ bst sh -c 'id; ls allowed denied'
+    uid=0(root) gid=0(root) groups=0(root)
+    allowed:
+    ls: cannot open directory 'denied': Permission denied
 
-Regards,
-Bjorn
+    $ bst --groups 1 sh -c 'id; ls allowed denied'
+    uid=0(root) gid=0(root) groups=0(root),1(daemon)
+    allowed:
+    ls: cannot open directory 'denied': Permission denied
 
-> +		dev_warn(dev, "Failed to create debugfs (%d), skipping\n", ret);
-> +		return;
-> +	}
-> +
-> +	debugfs_create_file("status", 0600, debugfs, pdata, &status_fops);
->  }
->  
->  /* Connector funcs */
-> @@ -1310,8 +1320,6 @@ static int ti_sn65dsi86_remove(struct i2c_client *client)
->  
->  	kfree(pdata->edid);
->  
-> -	ti_sn65dsi86_debugfs_remove(pdata);
-> -
->  	drm_bridge_remove(&pdata->bridge);
->  
->  	pm_runtime_disable(pdata->dev);
-> -- 
-> 2.31.1.368.gbe11c130af-goog
-> 
+-- 
+Snaipe
