@@ -2,149 +2,653 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795A5369492
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341323694A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241864AbhDWOZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:25:16 -0400
-Received: from mail-eopbgr150073.outbound.protection.outlook.com ([40.107.15.73]:48453
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230520AbhDWOZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:25:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f8KdPtw9gfOeCTl7jWmIQHDRpIaUFD5XzpKsbqakUBrnu8Gb4MFD6WHGJHoKfLKqQwyv7A57LhhWV57grtjbkBl0imHJi+ibL1JfBlnJa0/1Yi+EKVlgymsQ9Yq6bHEkCnLjpfj1XYyofakQUqtxLusGXjTu+AWPfc/QCCExlVIP4w+B4EKdv658RwKeq4BMCWHB/HkHSZtuIJmhaKcDSXvlUT9vnwyWkCrT0Zp78GeVopAIQfZ2c4xYM3DulJ9oc7ycAFD+mz/KW3MeTMjinhkfK5Xys1nCnWhBEXclz8fJwnQp3kpVBqD3EZtig5gkcnxUGwOKauxMXRm9kGRDug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8orhMxMlNCqqU8sqNhFeD/Zt8GjFtxWMleUgRcyVCkM=;
- b=GvMTStRhtJvOTADX6dU84K4IRmzuHqmP0fOQfB7kT3FPEmWNSWcVHUcfU/zgkRh+1gZ8hfIUOb3pmdh5y0r8WRQANXV8J78t4tk6rHkW3Wj0dHp2ah3hXZiDZnbDMxfcStUBUahvjrECy+cmgs4glmWcQGxpoHDVnG3i24xb0JeTmQtSveuyWXeRgkz6Rz+Ec9qiltNAnoEu+UpL8GHsEg3/fUS35dhAhb8i2VjBhpcfcgU4JVR6maPRmXcZ7dX+SRlJn7d6PQ7npYKr9MF6f/RjXjT8QXt9bPL7R6N5CtKP88OtZZ85KaAhDGSvRk7NmR/knmL5GLeSfwc3kdjD8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vimar.com; dmarc=pass action=none header.from=vimar.com;
- dkim=pass header.d=vimar.com; arc=none
+        id S242198AbhDWO2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhDWO2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 10:28:04 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0929EC061574;
+        Fri, 23 Apr 2021 07:27:27 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso36812054ott.8;
+        Fri, 23 Apr 2021 07:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Vimargroup.onmicrosoft.com; s=selector2-Vimargroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8orhMxMlNCqqU8sqNhFeD/Zt8GjFtxWMleUgRcyVCkM=;
- b=HQLVOTZGw2uewznK1CCulukqQEfDztgx3OwckAI2RdUKG4QIWCdnKMHEUJltwpZtICdxYceKb62LLaRlc0SSBPzW2CBnjnopICRvn4vc8D5iTX8TI/Vl8qJEEdCfo3fMzHo0ZBSekQy36Am9zIYmGOidGVwyeSyXsDFLofgfSaE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=vimar.com;
-Received: from AM6PR08MB2981.eurprd08.prod.outlook.com (2603:10a6:209:44::22)
- by AM5PR0801MB1651.eurprd08.prod.outlook.com (2603:10a6:203:39::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Fri, 23 Apr
- 2021 14:24:35 +0000
-Received: from AM6PR08MB2981.eurprd08.prod.outlook.com
- ([fe80::9de3:7ce3:f155:8eda]) by AM6PR08MB2981.eurprd08.prod.outlook.com
- ([fe80::9de3:7ce3:f155:8eda%4]) with mapi id 15.20.4065.024; Fri, 23 Apr 2021
- 14:24:35 +0000
-Subject: Re: [PATCH 2/2] watchdog: gpio_wdt: add "start-at-boot" feature
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        linux-watchdog@vger.kernel.org, wim@linux-watchdog.org,
-        linux@roeck-us.net
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210421162621.24910-1-francesco.zanella@vimar.com>
- <20210421162621.24910-3-francesco.zanella@vimar.com>
- <95ee0e48-2214-618a-b351-ec8d4aaf0083@prevas.dk>
-From:   Francesco Zanella <francesco.zanella@vimar.com>
-Message-ID: <38253332-08da-54a6-5497-7b06b39756fb@vimar.com>
-Date:   Fri, 23 Apr 2021 16:24:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <95ee0e48-2214-618a-b351-ec8d4aaf0083@prevas.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [151.71.13.13]
-X-ClientProxiedBy: MR2P264CA0049.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:500:31::13) To AM6PR08MB2981.eurprd08.prod.outlook.com
- (2603:10a6:209:44::22)
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cDY0rUitiYjY1Gdzo3JLW6cvc4WRFyUmQnzh3Ywoi8s=;
+        b=ScUqT1SysTzLCEeuPv4t+QlWNAANL+fMZElODHuBTyuI0sok7p1ej2bjB8a5yG+2KF
+         KQZ2ulnCUVCmVLL9BwxQYh8YQ5rW247xHXRjwgFdME5+XSj08Rw1CaNxjhMVOm1a6uKM
+         JMQuew4pR2gQANpGtLCQzSDVoWZ/N+IhfDS1ZIFztZRnDUwomV/GEFXg6kC1v1s1QvAr
+         /XSsMSFCElEM8itNa3DU5FByuchPJ5RpUVtlx/7tQ4wv03GpK4zKlaG+nNw3iqUaFs8U
+         esSLkGd212yRqolaSA4ZW46uv+6eyC8qG409jDHodkXUVEgo+CuqczRKxmpFADk4wkNd
+         DLwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cDY0rUitiYjY1Gdzo3JLW6cvc4WRFyUmQnzh3Ywoi8s=;
+        b=l6ud/Zrrzd/09NviiUVOlpne/B07cPHZ/g5xFhawyVcfVNJnQ1asc3ydtjrz6XTNQl
+         MZOkNxPTOshO1xYkcniGenEEye8wLfL5E/24w3ZkT1HJoqU9MI+PJ2s0d4dJ9fZtCfm+
+         mkJhg/YHDk216byY8RVmQO7wJWPGVH/ziCfHtDR54XPO9s0hdY1DPWFsWTEuo/qFNXvt
+         Er8rM0ey90vdMYBGSEvi7alPbkVZ9xk/ugh/T01xtT7a6Ee/uFtXWX2FOOjXIa8U7E5H
+         gfztED7P34gZ/6oIyG41ejfwPKWy4HWF4uPg0BlPcTEg0WHQ+tHpEV47lBdisEcHD7bH
+         9Jeg==
+X-Gm-Message-State: AOAM532cstaIEs/Alz8OnlVC5781OhjfESOpWxk9pp5dSvIPg+Mt2/CT
+        UmJGXaNgxCFNBH3pyEkeAOlLTjpOGJM=
+X-Google-Smtp-Source: ABdhPJyWzmR2basCt0dgPAUVZGnoGpzf4Oz8iULP4sBiKoP1dKmJv5HSFbaEL0HcREi59cVO53oX8g==
+X-Received: by 2002:a05:6830:14cd:: with SMTP id t13mr3678225otq.74.1619188046361;
+        Fri, 23 Apr 2021 07:27:26 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x5sm1430148ota.79.2021.04.23.07.27.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 23 Apr 2021 07:27:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 23 Apr 2021 07:27:24 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [PATCH v4 3/4] hwmon: smpro: Add Ampere's Altra smpro-hwmon
+ driver
+Message-ID: <20210423142724.GA136170@roeck-us.net>
+References: <20210422090843.4614-1-quan@os.amperecomputing.com>
+ <20210422090843.4614-4-quan@os.amperecomputing.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.150] (151.71.13.13) by MR2P264CA0049.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500:31::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Fri, 23 Apr 2021 14:24:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 49e1f85c-e07e-4852-b569-08d906638507
-X-MS-TrafficTypeDiagnostic: AM5PR0801MB1651:
-X-Microsoft-Antispam-PRVS: <AM5PR0801MB16515453FCA3C6AF92E72DDEE9459@AM5PR0801MB1651.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PjiMLZEB5QG0H5mh9ID5ko7wqDDiNSUictELb1Dn+54IUtlWhNGow4OvVAQ6+xFSGAfQnhpS8WLaYQgvG09rvgabu4bduhFMSQc5SIiXpM1dwhwWAFLmVUureBKHEJ8oiX6j81SSlok95kwVYxqe3Mi3Um4uypejMhPM+3pet3dgI4pwWzAwMj5ieiOOyn2klhOMiAqG+b89NN10i/caIqKzTou4MDYpvtdAEyLD7Dvg9KhM2XzEnxLIR6SRl5EtPXBsK54rfRbb9o9+4TJag6ZCe1ne+l8+TTVXXe7F5IBKyDJLqfhEaP0Bk1EE0wO+rJBOJKWIDYGCoz4P9wdq1Glu5yoXzAue+XcDGR9MNlu9M3Z/3oz6MmR0mWZAOvyaUsllmzWF4L2Q28YYUIVVc+t68w8eHgglfrHjVHPHDdSqXq/x+JYqxYZEOYP/z3SbF9xaQ6jT31RNmBgwVUiVwItjz15Dm+V6auAk6+4c1/zVay8TZl2I5OMCwu99UOryrvAFnBX8twAViF0ROu43nKMnuIj6fDnMHuE45vhbo79mrlkBAmdn8017wYAbGXmFrVfh85zCdwmqf0mkxO0+w7DCcO9TfEE8rTlOTBxyewRpApw+8a0i1IKjs8bPqjKJizDjYm942gbwe2DWnLTbeKqJ6IHjd+jbsHtUlFHKyrJMvoHZhJ5ZS+HohSLThru0NhU49GUA3fel7vGcYJROOWzF8VX4TwnZqhq0M7+iUcOWzlvLI2PKKw95gxEWCRMot99S1USFnM41yruyVw7Z+PW4rTszDKiSN6GXaNOxwxk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB2981.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(39850400004)(396003)(376002)(8936002)(8676002)(86362001)(36756003)(6486002)(16576012)(66946007)(31696002)(66476007)(66556008)(26005)(16526019)(45080400002)(186003)(83380400001)(478600001)(4326008)(316002)(966005)(5660300002)(44832011)(38100700002)(38350700002)(53546011)(2616005)(956004)(52116002)(2906002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?g59bpIowx4yHbr89bBEBG61C30JAvqeJUVjNv/9e6vT3d2Oco8+PMiay?=
- =?Windows-1252?Q?JZMLsKWCi1YSRHLj1osCFYaiAuHv7HMyeFLzDxi2a1pQesbB+/WmF6ZM?=
- =?Windows-1252?Q?f/JClqBbHYaNoS/+l1DV1+To3tA4LVJXJb4pZxoeLb72WDVzseoVUeTI?=
- =?Windows-1252?Q?ZNiJPEYmF5WgCY6ekmUxc4vsRSwjqC9skPBoWsIWI/r6ym2XXueXfy5B?=
- =?Windows-1252?Q?Ny3nZNShyohrSUZMqbPknJ9FGAAPA/cja7s1o1pJn7BdPPfhxQ6dhb10?=
- =?Windows-1252?Q?DL29lL51raz6FReSY+NWQX2nVe6qI5OFRzlejzfw2iJTXw/Iew/IVIgy?=
- =?Windows-1252?Q?RX/2jwaHablMRwXiFNFnvqWMbyxumyd8HkCy9gyYbhKoCi0ye4mIyjNU?=
- =?Windows-1252?Q?4NtrdcSio4EQSoWIYupAIuAcCHPP8uyYeTmZXrTg8uQwTqllSI8jl84t?=
- =?Windows-1252?Q?+7EkxrKa+BRnJBHs0Dm3WJW/jAGLukIKEqGlN4SOr+bErQ3SdsHZwVwE?=
- =?Windows-1252?Q?x9tBufGQBx5NVYkl6a4fRUyf2iakgpTHJr9pS9kscX7HawoBzFOMac40?=
- =?Windows-1252?Q?8mmPzZYpGqA4jtqrUImEXDMlrai50BFCCp4YEmJr/ihLXNkafwD82Axz?=
- =?Windows-1252?Q?3aWcyZkv1e45MYWq9cve8aCV386nGSvACwYHXV6mlWqXS1u6fsly3FLX?=
- =?Windows-1252?Q?idozAi6tM6MnIqm9eA9EHM/sptLDmGv1pgm1lPLKBmsJPfksJDCTBKno?=
- =?Windows-1252?Q?t27DnnjX2nrg7weyBRA5LiKpbJvtVd74q2SovKylQZKgvsD3hlNzShcq?=
- =?Windows-1252?Q?8yvt8gmYdtXWNOAJMcOftK9eKq/Jqz5JZr7iNeR/cFsXFnJ236fz52a7?=
- =?Windows-1252?Q?1L0KDgnHM9UomCrPE+jUPHc8jehlK0OWR32KkCKBvwBaf7qvldPInMo3?=
- =?Windows-1252?Q?pTuHl5K03yLzmm+2xMP5M7Rf0yON35T05cMBDc2h0jSm/ljqTNntnzOi?=
- =?Windows-1252?Q?tgy/4qByAuTO5qcUOEFDo+ttsFQSRCAOvFLms/kJJCgP520ySmWMqL9S?=
- =?Windows-1252?Q?2Aa5iupUmJqiy2OEzIk7KYNAcim4jpW9TRALR3CJu6sd4Bucrd+V6eEZ?=
- =?Windows-1252?Q?4CfH3/+ozGtNOxebAQA9t0Pk3dFn25G34Foej17kIbymQbBBJPvTBJgs?=
- =?Windows-1252?Q?ZVyCBnGTNHIRgdHXJnlhLtM/XZ6s8jVSKDDCHcd6DFhDYyPWg+qdRbuE?=
- =?Windows-1252?Q?weIyCiJwKEZx9kN3+3c06GtR33E/Q0XmTXu5iBjNonWcypPiP+uQhb5J?=
- =?Windows-1252?Q?xc3bycqJ3J97bwVhHTA+s7UUb2LgNIOKbJiCG1RWWB27fljyejKuCYb1?=
- =?Windows-1252?Q?Lir4JMhKklSdYmqRaIT6c3H8H68HAoKw93WnKyHeIr/FHSi9YI+f9bkf?=
-X-OriginatorOrg: vimar.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49e1f85c-e07e-4852-b569-08d906638507
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB2981.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 14:24:35.5298
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a1f008bc-d59b-4c66-8f87-60fd9af15c7f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N6RiTexazJRKABz5rurHpWo+F62vBaxEqhmwNIphrAckpVaoGeVstCiXzRFaVVLxZlEuOmrhQZtLUP3mDW/CCD3jJ9kEPNF9LZPocII0wSE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0801MB1651
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422090843.4614-4-quan@os.amperecomputing.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/04/21 13:36, Rasmus Villemoes wrote:
-> On 21/04/2021 18.26, Francesco Zanella wrote:
->> If "start-at-boot" property is present in the device tree, start pinging
->> hw watchdog at probe, in order to take advantage of kernel configs:
+On Thu, Apr 22, 2021 at 04:08:42PM +0700, Quan Nguyen wrote:
+> This commit adds support for Ampere SMpro hwmon driver. This driver
+> supports accessing various CPU sensors provided by the SMpro co-processor
+> including temperature, power, voltages, and current.
 > 
-> (1) Are you aware of the recent proposal to add a similar feature on
-> watchdog core level:
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+
+For my reference:
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+We'll need to wait for dt approval.
+
+Thanks,
+Guenter
+
+> ---
+> Changes in v4:
+>   + Returned regmap_read() error code [Guenter]
 > 
-> https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2F%3Fq%3Dstart_enable&amp;data=04%7C01%7Cfrancesco.zanella%40vimar.com%7Cde549dd02adb45669ff208d9064c0739%7Ca1f008bcd59b4c668f8760fd9af15c7f%7C1%7C0%7C637547745887915290%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=pcqWkd%2B4m6RSS4KwmjgIbLpaa0XSCAOQorwI%2BIle5uY%3D&amp;reserved=0
+> Changes in v3:
+>   + Handled negative temperature value [Guenter]
+>   + Returned -ENODEV if Manufacturer ID is wrong [Guenter]
+>   + Refactored smpro_read_string() and smpro_temp_read() [Guenter]
+>   + Removed smpro_write() function [Guenter]
+>   + Added minor refactor changes [Quan]
 > 
-
-Oh good! Happy to know that, I missed it, sorry, it's quite new.
-That kind of work would have been my next proposal if this had been accepted.
-Hope that it will be mainlined.
-
-> (2) If you set always-running but not nowayout you essentially have what
-> you want now: If userspace opens the device [within the limit set by
-> OPEN_TIMEOUT if that is in effect], but then does a graceful close (i.e.
-> writes 'V' immediately before close()), the kernel will assume
-> responsibility for pinging the device. So the device isn't stopped as
-> such, but if you can't trust the kernel thread/timer to keep it alive,
-> the system is already mostly unusable. [Also, how reliable is that 'the
-> timer is stopped if the gpio is set to be an input' anyway].
+> Changes in v2:
+>   + Removed "virtual" sensors [Guenter]
+>   + Reported SOC_TDP as "Socket TDP" using max attributes [Guenter]
+>   + Corrected return error code when host is turn off [Guenter]
+>   + Reported MEM HOT Threshold for all DIMMs as temp*_crit [Guenter]
+>   + Removed license info as SPDX-License-Identifier existed [Guenter]
+>   + Added is_visible() support [Guenter]
+>   + Used HWMON_CHANNEL_INFO() macro and LABEL attributes [Guenter]
+>   + Made is_valid_id() return boolean [Guenter]
+>   + Returned -EPROBE_DEFER when smpro reg inaccessible [Guenter]
+>   + Removed unnecessary error message when dev register fail [Guenter]
+>   + Removed Socket TDP sensor [Quan]
+>   + Included sensor type and channel in labels [Quan]
+>   + Refactorized code to fix checkpatch.pl --strict complaint [Quan]
 > 
-> Rasmus
+>  drivers/hwmon/Kconfig       |   8 +
+>  drivers/hwmon/Makefile      |   1 +
+>  drivers/hwmon/smpro-hwmon.c | 491 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 500 insertions(+)
+>  create mode 100644 drivers/hwmon/smpro-hwmon.c
 > 
-
-No I would like to be able to totally disable it with stop, not that the kernel
-will keep it pinged.
-
-However, glad to know the news, I will follow the evolution.
-
-Thanks, regards,
-
-Francesco Zanella
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 0ddc974b102e..ba4b5a911baf 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -67,6 +67,14 @@ config SENSORS_ABITUGURU3
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called abituguru3.
+>  
+> +config SENSORS_SMPRO
+> +	tristate "Ampere's Altra SMpro hardware monitoring driver"
+> +	depends on MFD_SMPRO
+> +	help
+> +	  If you say yes here you get support for the thermal, voltage,
+> +	  current and power sensors of Ampere's Altra processor family SoC
+> +	  with SMpro co-processor.
+> +
+>  config SENSORS_AD7314
+>  	tristate "Analog Devices AD7314 and compatibles"
+>  	depends on SPI
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 59e78bc212cf..b25391f9c651 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -174,6 +174,7 @@ obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
+>  obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
+>  obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
+>  obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
+> +obj-$(CONFIG_SENSORS_SMPRO)	+= smpro-hwmon.o
+>  obj-$(CONFIG_SENSORS_SMSC47B397)+= smsc47b397.o
+>  obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
+>  obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
+> diff --git a/drivers/hwmon/smpro-hwmon.c b/drivers/hwmon/smpro-hwmon.c
+> new file mode 100644
+> index 000000000000..1be3d98e73c7
+> --- /dev/null
+> +++ b/drivers/hwmon/smpro-hwmon.c
+> @@ -0,0 +1,491 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Ampere Computing SoC's SMPro Hardware Monitoring Driver
+> + *
+> + * Copyright (c) 2021, Ampere Computing LLC
+> + */
+> +#include <linux/bitfield.h>
+> +#include <linux/bitops.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/hwmon-sysfs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +
+> +/* Identification Registers */
+> +#define MANUFACTURER_ID_REG	0x02
+> +#define AMPERE_MANUFACTURER_ID	0xCD3A
+> +
+> +/* Logical Power Sensor Registers */
+> +#define SOC_TEMP		0x00
+> +#define SOC_VRD_TEMP		0x01
+> +#define DIMM_VRD_TEMP		0x02
+> +#define CORE_VRD_TEMP		0x03
+> +#define CH0_DIMM_TEMP		0x04
+> +#define CH1_DIMM_TEMP		0x05
+> +#define CH2_DIMM_TEMP		0x06
+> +#define CH3_DIMM_TEMP		0x07
+> +#define CH4_DIMM_TEMP		0x08
+> +#define CH5_DIMM_TEMP		0x09
+> +#define CH6_DIMM_TEMP		0x0A
+> +#define CH7_DIMM_TEMP		0x0B
+> +#define RCA_VRD_TEMP		0x0C
+> +
+> +#define CORE_VRD_PWR		0x10
+> +#define SOC_PWR			0x11
+> +#define DIMM_VRD1_PWR		0x12
+> +#define DIMM_VRD2_PWR		0x13
+> +#define CORE_VRD_PWR_MW		0x16
+> +#define SOC_PWR_MW		0x17
+> +#define DIMM_VRD1_PWR_MW	0x18
+> +#define DIMM_VRD2_PWR_MW	0x19
+> +#define RCA_VRD_PWR		0x1A
+> +#define RCA_VRD_PWR_MW		0x1B
+> +
+> +#define MEM_HOT_THRESHOLD	0x22
+> +#define SOC_VR_HOT_THRESHOLD	0x23
+> +#define CORE_VRD_VOLT		0x24
+> +#define SOC_VRD_VOLT		0x25
+> +#define DIMM_VRD1_VOLT		0x26
+> +#define DIMM_VRD2_VOLT		0x27
+> +#define RCA_VRD_VOLT		0x28
+> +
+> +#define CORE_VRD_CURR		0x29
+> +#define SOC_VRD_CURR		0x2A
+> +#define DIMM_VRD1_CURR		0x2B
+> +#define DIMM_VRD2_CURR		0x2C
+> +#define RCA_VRD_CURR		0x2D
+> +
+> +struct smpro_hwmon {
+> +	struct regmap *regmap;
+> +	u32 offset;
+> +};
+> +
+> +struct smpro_sensor {
+> +	const u8 reg;
+> +	const u8 reg_ext;
+> +	const char *label;
+> +};
+> +
+> +static const struct smpro_sensor temperature[] = {
+> +	{
+> +		.reg = SOC_TEMP,
+> +		.label = "temp1 SoC"
+> +	},
+> +	{
+> +		.reg = SOC_VRD_TEMP,
+> +		.reg_ext = SOC_VR_HOT_THRESHOLD,
+> +		.label = "temp2 SoC VRD"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD_TEMP,
+> +		.label = "temp3 DIMM VRD"
+> +	},
+> +	{
+> +		.reg = CORE_VRD_TEMP,
+> +		.label = "temp4 CORE VRD"
+> +	},
+> +	{
+> +		.reg = CH0_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp5 CH0 DIMM"
+> +	},
+> +	{
+> +		.reg = CH1_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp6 CH1 DIMM"
+> +	},
+> +	{
+> +		.reg = CH2_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp7 CH2 DIMM"
+> +	},
+> +	{
+> +		.reg = CH3_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp8 CH3 DIMM"
+> +	},
+> +	{
+> +		.reg = CH4_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp9 CH4 DIMM"
+> +	},
+> +	{
+> +		.reg = CH5_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp10 CH5 DIMM"
+> +	},
+> +	{
+> +		.reg = CH6_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp11 CH6 DIMM"
+> +	},
+> +	{
+> +		.reg = CH7_DIMM_TEMP,
+> +		.reg_ext = MEM_HOT_THRESHOLD,
+> +		.label = "temp12 CH7 DIMM"
+> +	},
+> +	{
+> +		.reg = RCA_VRD_TEMP,
+> +		.label = "temp13 RCA VRD"
+> +	},
+> +};
+> +
+> +static const struct smpro_sensor voltage[] = {
+> +	{
+> +		.reg = CORE_VRD_VOLT,
+> +		.label = "vout0 CORE VRD"
+> +	},
+> +	{
+> +		.reg = SOC_VRD_VOLT,
+> +		.label = "vout1 SoC VRD"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD1_VOLT,
+> +		.label = "vout2 DIMM VRD1"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD2_VOLT,
+> +		.label = "vout3 DIMM VRD2"
+> +	},
+> +	{
+> +		.reg = RCA_VRD_VOLT,
+> +		.label = "vout4 RCA VRD"
+> +	},
+> +};
+> +
+> +static const struct smpro_sensor curr_sensor[] = {
+> +	{
+> +		.reg = CORE_VRD_CURR,
+> +		.label = "iout1 CORE VRD"
+> +	},
+> +	{
+> +		.reg = SOC_VRD_CURR,
+> +		.label = "iout2 SoC VRD"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD1_CURR,
+> +		.label = "iout3 DIMM VRD1"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD2_CURR,
+> +		.label = "iout4 DIMM VRD2"
+> +	},
+> +	{
+> +		.reg = RCA_VRD_CURR,
+> +		.label = "iout5 RCA VRD"
+> +	},
+> +};
+> +
+> +static const struct smpro_sensor power[] = {
+> +	{
+> +		.reg = CORE_VRD_PWR,
+> +		.reg_ext = CORE_VRD_PWR_MW,
+> +		.label = "power1 CORE VRD"
+> +	},
+> +	{
+> +		.reg = SOC_PWR,
+> +		.reg_ext = SOC_PWR_MW,
+> +		.label = "power2 SoC"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD1_PWR,
+> +		.reg_ext = DIMM_VRD1_PWR_MW,
+> +		.label = "power3 DIMM VRD1"
+> +	},
+> +	{
+> +		.reg = DIMM_VRD2_PWR,
+> +		.reg_ext = DIMM_VRD2_PWR_MW,
+> +		.label = "power4 DIMM VRD2"
+> +	},
+> +	{
+> +		.reg = RCA_VRD_PWR,
+> +		.reg_ext = RCA_VRD_PWR_MW,
+> +		.label = "power5 RCA VRD"
+> +	},
+> +};
+> +
+> +static int smpro_read_temp(struct device *dev, u32 attr, int channel, long *val)
+> +{
+> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	switch (attr) {
+> +	case hwmon_temp_input:
+> +		ret = regmap_read(hwmon->regmap, hwmon->offset + temperature[channel].reg, &value);
+> +		if (ret)
+> +			return ret;
+> +		break;
+> +	case hwmon_temp_crit:
+> +		ret = regmap_read(hwmon->regmap,
+> +				  hwmon->offset + temperature[channel].reg_ext, &value);
+> +		if (ret)
+> +			return ret;
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	*val = sign_extend32(value, 8) * 1000;
+> +	return 0;
+> +}
+> +
+> +static int smpro_read_in(struct device *dev, u32 attr, int channel, long *val)
+> +{
+> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	switch (attr) {
+> +	case hwmon_in_input:
+> +		ret = regmap_read(hwmon->regmap, hwmon->offset + voltage[channel].reg, &value);
+> +		if (ret < 0)
+> +			return ret;
+> +		/* 15-bit value in 1mV */
+> +		*val = value & 0x7fff;
+> +		return 0;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int smpro_read_curr(struct device *dev, u32 attr, int channel, long *val)
+> +{
+> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	switch (attr) {
+> +	case hwmon_curr_input:
+> +		ret = regmap_read(hwmon->regmap, hwmon->offset + curr_sensor[channel].reg, &value);
+> +		if (ret < 0)
+> +			return ret;
+> +		/* Scale reported by the hardware is 1mA */
+> +		*val = value & 0x7fff;
+> +		return 0;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int smpro_read_power(struct device *dev, u32 attr, int channel, long *val_pwr)
+> +{
+> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
+> +	unsigned int val = 0, val_mw = 0;
+> +	int ret;
+> +
+> +	switch (attr) {
+> +	case hwmon_power_input:
+> +		ret = regmap_read(hwmon->regmap, hwmon->offset + power[channel].reg, &val);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = regmap_read(hwmon->regmap, hwmon->offset + power[channel].reg_ext, &val_mw);
+> +		if (ret)
+> +			return ret;
+> +
+> +		*val_pwr = val * 1000000 + val_mw * 1000;
+> +		return 0;
+> +
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int smpro_read(struct device *dev, enum hwmon_sensor_types type,
+> +		      u32 attr, int channel, long *val)
+> +{
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		return smpro_read_temp(dev, attr, channel, val);
+> +	case hwmon_in:
+> +		return smpro_read_in(dev, attr, channel, val);
+> +	case hwmon_power:
+> +		return smpro_read_power(dev, attr, channel, val);
+> +	case hwmon_curr:
+> +		return smpro_read_curr(dev, attr, channel, val);
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int smpro_read_string(struct device *dev, enum hwmon_sensor_types type,
+> +			     u32 attr, int channel, const char **str)
+> +{
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		switch (attr) {
+> +		case hwmon_temp_label:
+> +			*str = temperature[channel].label;
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +
+> +	case hwmon_in:
+> +		switch (attr) {
+> +		case hwmon_in_label:
+> +			*str = voltage[channel].label;
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +
+> +	case hwmon_curr:
+> +		switch (attr) {
+> +		case hwmon_curr_label:
+> +			*str = curr_sensor[channel].label;
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +
+> +	case hwmon_power:
+> +		switch (attr) {
+> +		case hwmon_power_label:
+> +			*str = power[channel].label;
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static umode_t smpro_is_visible(const void *data, enum hwmon_sensor_types type,
+> +				u32 attr, int channel)
+> +{
+> +	const struct smpro_hwmon *hwmon = data;
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	switch (type) {
+> +	case hwmon_temp:
+> +		switch (attr) {
+> +		case hwmon_temp_input:
+> +		case hwmon_temp_label:
+> +		case hwmon_temp_crit:
+> +			ret = regmap_read(hwmon->regmap,
+> +					  hwmon->offset + temperature[channel].reg, &value);
+> +			if (ret || value == 0xFFFF)
+> +				return 0;
+> +		break;
+> +		}
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0444;
+> +}
+> +
+> +static const struct hwmon_channel_info *smpro_info[] = {
+> +	HWMON_CHANNEL_INFO(temp,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL),
+> +	HWMON_CHANNEL_INFO(in,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL,
+> +			   HWMON_I_INPUT | HWMON_I_LABEL),
+> +	HWMON_CHANNEL_INFO(power,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL,
+> +			   HWMON_P_INPUT | HWMON_P_LABEL),
+> +	HWMON_CHANNEL_INFO(curr,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL,
+> +			   HWMON_C_INPUT | HWMON_C_LABEL),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_ops smpro_hwmon_ops = {
+> +	.is_visible = smpro_is_visible,
+> +	.read = smpro_read,
+> +	.read_string = smpro_read_string,
+> +};
+> +
+> +static const struct hwmon_chip_info smpro_chip_info = {
+> +	.ops = &smpro_hwmon_ops,
+> +	.info = smpro_info,
+> +};
+> +
+> +static int smpro_hwmon_probe(struct platform_device *pdev)
+> +{
+> +	struct smpro_hwmon *hwmon;
+> +	struct device *hwmon_dev;
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	hwmon = devm_kzalloc(&pdev->dev, sizeof(struct smpro_hwmon), GFP_KERNEL);
+> +	if (!hwmon)
+> +		return -ENOMEM;
+> +
+> +	hwmon->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!hwmon->regmap)
+> +		return -ENODEV;
+> +
+> +	ret = device_property_read_u32(&pdev->dev, "reg", &hwmon->offset);
+> +	if (ret)
+> +		return -EINVAL;
+> +
+> +	/* Check for valid ID */
+> +	ret = regmap_read(hwmon->regmap, MANUFACTURER_ID_REG, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val != AMPERE_MANUFACTURER_ID)
+> +		return -ENODEV;
+> +
+> +	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev, "smpro_hwmon",
+> +							 hwmon, &smpro_chip_info, NULL);
+> +
+> +	return PTR_ERR_OR_ZERO(hwmon_dev);
+> +}
+> +
+> +static const struct of_device_id smpro_hwmon_of_match[] = {
+> +	{ .compatible = "ampere,ac01-hwmon" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, smpro_hwmon_of_match);
+> +
+> +static struct platform_driver smpro_hwmon_driver = {
+> +	.probe		= smpro_hwmon_probe,
+> +	.driver = {
+> +		.name	= "smpro-hwmon",
+> +		.of_match_table = smpro_hwmon_of_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(smpro_hwmon_driver);
+> +
+> +MODULE_AUTHOR("Thu Nguyen <thu@os.amperecomputing.com>");
+> +MODULE_AUTHOR("Quan Nguyen <quan@os.amperecomputing.com>");
+> +MODULE_DESCRIPTION("Ampere Altra SMPro hwmon driver");
+> +MODULE_LICENSE("GPL v2");
