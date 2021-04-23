@@ -2,114 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B75369827
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8BE369829
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243317AbhDWRTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231684AbhDWRTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:19:13 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8540C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:18:36 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id h141so425553iof.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sbzRYAY/cbRVyjGotWkxK2tIQ5GU/0Fy+o6WAo96tSw=;
-        b=LnQKdiZvwNIQPnnnzSwOf6iGpU3KjD0EZClP8lJg0/LgqC2SJ+hx2cMZoRoQoAPv4u
-         t6+D0K/KXt/o7ZDSehB5g4ERQlod7MdI/onUjW0KBDC1Dql1tmD+MRXCi9SWEzn6F1YG
-         EJIFU8XeIHbUXeTv6u9Z97TcB0sdvP6hY3uqo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sbzRYAY/cbRVyjGotWkxK2tIQ5GU/0Fy+o6WAo96tSw=;
-        b=d/PP7UQ3NOszbM0Kf/KKr7O2ayhwNvVdb/lu25RUNrfdMvCttqHCkUjSgel+MYvHpu
-         eaBotfPCXX8op/2wMKCi4EDmZd1NN7RcyLYmuLDIK3QA/VQ6aANgQeeYo+85hcMwFJFf
-         NHfQnuNVbbdt7MKa/VzGU7XNP71a9VDljhYhUtlzvdG1Jtd3ZMamK8705yDEf/vj7oo9
-         i1NnibrE92+JJg4bFHqdUkwk23S0B7EV7drq24XjUhn77ZrsJ1tMYF8vqjozQxAStNGu
-         bzf/3ZN7xPhVa+s2XBUY8YXZJlsC4472uu4CU8lLLrg57D2ef7s0i+OsXUfmpbcDEku2
-         Vh8Q==
-X-Gm-Message-State: AOAM533lRaSw1DyZGBqDvb86VV6XymikpMLzA9UP1o2dAfqOGChwYMsp
-        SxRT2dM95ey/wCa+IEbxEfV7CvqHdXZzhNWW
-X-Google-Smtp-Source: ABdhPJxCfs0IntX9HOavgRFigZVVFY05Ci5ePrLpuroJgMSGmIxiaoZ9hkn/aUklBjJ9keL9KOyu8w==
-X-Received: by 2002:a02:7f13:: with SMTP id r19mr4535009jac.113.1619198315797;
-        Fri, 23 Apr 2021 10:18:35 -0700 (PDT)
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com. [209.85.166.174])
-        by smtp.gmail.com with ESMTPSA id s14sm2813072ilj.14.2021.04.23.10.18.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 10:18:35 -0700 (PDT)
-Received: by mail-il1-f174.google.com with SMTP id r5so1097017ilb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:18:35 -0700 (PDT)
-X-Received: by 2002:a92:ca06:: with SMTP id j6mr4010549ils.234.1619198314820;
- Fri, 23 Apr 2021 10:18:34 -0700 (PDT)
+        id S243337AbhDWRTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:19:19 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:25786 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231684AbhDWRTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:19:18 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FRgx91x1wz9ttRv;
+        Fri, 23 Apr 2021 19:18:37 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ALw1zRGnK-kI; Fri, 23 Apr 2021 19:18:37 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FRgx916p8z9ttRt;
+        Fri, 23 Apr 2021 19:18:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D15C8B886;
+        Fri, 23 Apr 2021 19:18:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id HOCbVO0OVlWb; Fri, 23 Apr 2021 19:18:39 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CB56D8B765;
+        Fri, 23 Apr 2021 19:18:38 +0200 (CEST)
+Subject: Re: [PATCH 1/2] powerpc/vdso64: link vdso64 with linker
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20200901222523.1941988-1-ndesaulniers@google.com>
+ <20200901222523.1941988-2-ndesaulniers@google.com>
+ <87blio1ilu.fsf@mpe.ellerman.id.au>
+ <CAKwvOd=ZeJU+vLUk2P7FpX35haj7AC50B9Yps4pyoGCpd7ueTw@mail.gmail.com>
+ <3d837a36-a186-6789-7924-eaa97f056b68@csgroup.eu>
+ <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <bfa4fa45-9887-d7d4-21a7-ac48835b10c1@csgroup.eu>
+Date:   Fri, 23 Apr 2021 19:18:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210423063227.GA17429@xsang-OptiPlex-9020>
-In-Reply-To: <20210423063227.GA17429@xsang-OptiPlex-9020>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 23 Apr 2021 10:18:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg8iAG6bBB+zdoZvZx1XYmyAXrWL0gPs_eTrTt+tXN0Tw@mail.gmail.com>
-Message-ID: <CAHk-=wg8iAG6bBB+zdoZvZx1XYmyAXrWL0gPs_eTrTt+tXN0Tw@mail.gmail.com>
-Subject: Re: [mm/vunmap] e47110e905: WARNING:at_mm/vmalloc.c:#__vunmap
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKwvOd=KP5CZ5wOrczC6qPAzN7DdFCJ_XvU6e=zvB3XpQrp_-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 11:15 PM kernel test robot
-<oliver.sang@intel.com> wrote:
->
-> commit: e47110e90584a22e9980510b00d0dfad3a83354e ("mm/vunmap: add cond_resched() in vunmap_pmd_range")
 
-Funky. That commit doesn't seem to have anything to do with the oops.
 
-The oops is odd too:
+Le 23/04/2021 à 00:44, Nick Desaulniers a écrit :
+> On Wed, Sep 2, 2020 at 11:02 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 02/09/2020 à 19:41, Nick Desaulniers a écrit :
+>>> On Wed, Sep 2, 2020 at 5:14 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>>>
+>>>> Nick Desaulniers <ndesaulniers@google.com> writes:
+>>>>> Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for orphan sections")
+>>>>
+>>>> I think I'll just revert that for v5.9 ?
+>>>
+>>> SGTM; you'll probably still want these changes with some modifications
+>>> at some point; vdso32 did have at least one orphaned section, and will
+>>> be important for hermetic builds.  Seeing crashes in supported
+>>> versions of the tools ties our hands at the moment.
+>>>
+>>
+>> Keeping the tool problem aside with binutils 2.26, do you have a way to
+>> really link an elf32ppc object when  building vdso32 for PPC64 ?
+> 
+> Sorry, I'm doing a bug scrub and found
+> https://github.com/ClangBuiltLinux/linux/issues/774 still open (and my
+> reply to this thread still in Drafts; never sent). With my patches
+> rebased:
+> $ file arch/powerpc/kernel/vdso32/vdso32.so
+> arch/powerpc/kernel/vdso32/vdso32.so: ELF 32-bit MSB shared object,
+> PowerPC or cisco 4500, version 1 (SYSV), dynamically linked, stripped
+> 
+> Are you still using 2.26?
+> 
+> I'm not able to repro Nathan's reported issue from
+> https://lore.kernel.org/lkml/20200902052123.GA2687902@ubuntu-n2-xlarge-x86/,
+> so I'm curious if I should resend the rebased patches as v2?
 
-> [  198.731223] WARNING: CPU: 0 PID: 1948 at mm/vmalloc.c:2247 __vunmap (kbuild/src/consumer/mm/vmalloc.c:2247 (discriminator 1))
+One comment on your rebased patch:
 
-That's the warning for an unaligned vunmap():
+ > diff --git a/arch/powerpc/include/asm/vdso.h b/arch/powerpc/include/asm/vdso.h
+ > index 8542e9bbeead..0bd06ec06aaa 100644
+ > --- a/arch/powerpc/include/asm/vdso.h
+ > +++ b/arch/powerpc/include/asm/vdso.h
+ > @@ -25,19 +25,7 @@ int vdso_getcpu_init(void);
+ >
+ >   #else /* __ASSEMBLY__ */
+ >
+ > -#ifdef __VDSO64__
+ > -#define V_FUNCTION_BEGIN(name)		\
+ > -	.globl name;			\
+ > -	name:				\
+ > -
+ > -#define V_FUNCTION_END(name)		\
+ > -	.size name,.-name;
+ > -
+ > -#define V_LOCAL_FUNC(name) (name)
+ > -#endif /* __VDSO64__ */
+ > -
+ > -#ifdef __VDSO32__
+ > -
+ > +#if defined(__VDSO32__) || defined (__VDSO64__)
 
-  2247          if (WARN(!PAGE_ALIGNED(addr), "Trying to vfree() bad
-address (%p)\n",
-  2248                          addr))
-  2249                  return;
+You always have either __VDSO32__ or __VDSO64__ so this #if is pointless
 
-> [  198.744933] Call Trace:
-> [  198.745229] free_module (kbuild/src/consumer/kernel/module.c:2251)
+ >   #define V_FUNCTION_BEGIN(name)		\
+ >   	.globl name;			\
+ >   	.type name,@function; 		\
+ > @@ -47,8 +35,7 @@ int vdso_getcpu_init(void);
+ >   	.size name,.-name;
+ >
+ >   #define V_LOCAL_FUNC(name) (name)
+ > -
+ > -#endif /* __VDSO32__ */
+ > +#endif /* __VDSO{32|64}__ */
+ >
+ >   #endif /* __ASSEMBLY__ */
+ >
 
-  2248          /* This may be empty, but that's OK */
-  2249          module_arch_freeing_init(mod);
-  2250          module_memfree(mod->init_layout.base);
-  2251          kfree(mod->args);
 
-That's the "module_memfree()" - the return address points to the
-return point, which is the next line.
-
-And as far as I can tell, the only thing that assigns anything but
-NULL to that init_layout.base is
-
-                ptr = module_alloc(mod->init_layout.size);
-
-which uses __vmalloc_node_range() for the allocation.
-
-So absolutely nothing in this report makes sense to me. I suspect it's
-some odd memory corruption.
-
-Oliver - how reliable is that bisection?
-
-Does anybody else see what might be up?
-
-            Linus
+Christophe
