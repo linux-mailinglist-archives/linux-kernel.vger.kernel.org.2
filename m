@@ -2,116 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EF2368DED
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2C368DF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241165AbhDWHah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:30:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37123 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241122AbhDWHaf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:30:35 -0400
-Received: from mail-wr1-f69.google.com ([209.85.221.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lZqGE-0004vd-EA
-        for linux-kernel@vger.kernel.org; Fri, 23 Apr 2021 07:29:58 +0000
-Received: by mail-wr1-f69.google.com with SMTP id j16-20020adfd2100000b02901022328749eso14718472wrh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:29:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MVzL/AHxddiRwKntK/mYsDPbYNsgKNRIA922iDSZE8k=;
-        b=PCi7IhbKBGbrPr8tP2eugN7IeLxvxhl2/CdBA+WXswGoS1M2ia4yDi8kj41o8wIscL
-         2CM+8nnsQInth5GZyL/4unIU5Qkwpdfw8TGciZZC2blBdoycQdVfHGnDBG//SxiLsg5Q
-         HXlnU/eLfT6uUcq6IQdR+ycMl2VLFnNIa90Fdv9SzyjoIyENQPiQcQbEGtAaTbJTQBOw
-         5CzAuNZjePpR+Vl5q1KtDDtFEgSVDAYWS/dkZ/FWadp4w8K94IctbZb4ctKCuyxP0k3m
-         Qmw/k2nz+/vRcvkszveuavIbVBQFUa8MDpn93+bvx26LZQdbWqRZzJ29uZsM+v7Z3s1A
-         y+dw==
-X-Gm-Message-State: AOAM532lBqtMxWVn3ePWVEKXvw5YvOiDZad67ahkqVKQN1oQ+f5U9W2T
-        uc2ZddwL8kyYSCJQSslAi4ZifhQndnX1ypRIu0neyjC9N6Pmr/J9Ue+ZiIjZDCyaVTy/sfe32/4
-        koHBh80jqn4mHBBTfbGUbaLJJEzgig5pZxyXtUpHXyQ==
-X-Received: by 2002:a1c:9853:: with SMTP id a80mr2723049wme.44.1619162998202;
-        Fri, 23 Apr 2021 00:29:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwS6jXpcG0GbrZ8miHA/kmV9+gUvbNjl2AASXqwOfdmHV0hpK5ThYAbgluezO0qRmGEMZJLVA==
-X-Received: by 2002:a1c:9853:: with SMTP id a80mr2723039wme.44.1619162998068;
-        Fri, 23 Apr 2021 00:29:58 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id u3sm6662428wmg.48.2021.04.23.00.29.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 00:29:57 -0700 (PDT)
-Subject: Re: [PATCH 064/190] Revert "nfc: s3fwrn5: replace the assertion with
- a WARN_ON"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Aditya Pakki <pakki001@umn.edu>,
-        "David S . Miller" <davem@davemloft.net>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-65-gregkh@linuxfoundation.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <9c2877c3-8077-c2e2-ed0d-80b2a0c87634@canonical.com>
-Date:   Fri, 23 Apr 2021 09:29:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S240828AbhDWHfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 03:35:38 -0400
+Received: from mga03.intel.com ([134.134.136.65]:55203 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229456AbhDWHfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:35:37 -0400
+IronPort-SDR: XMlerdNn/h3V3+8RkC+biKHsAfeDsAF9WxKglxhlGmIIwX0SSoJoSze/fvhirpsjiNMIm+yGXg
+ p6WHj+GUeH+w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="196087944"
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="196087944"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 00:34:59 -0700
+IronPort-SDR: 4P03s7UO9HcxPFGvheeryshu172MwTYVsbHjpEbzdxW9OlqjpJw665d/fAMPwg7FMYe6/KBk3P
+ 3YQh60RcbrbA==
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="428284454"
+Received: from oyanai-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.237])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 00:34:55 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        ville.syrjala@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
+        intel-gfx@lists.freedesktop.org,
+        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP Workstation laptops
+In-Reply-To: <20210423044700.247359-1-kai.heng.feng@canonical.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210423044700.247359-1-kai.heng.feng@canonical.com>
+Date:   Fri, 23 Apr 2021 10:34:52 +0300
+Message-ID: <87fszh78tf.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421130105.1226686-65-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/2021 14:58, Greg Kroah-Hartman wrote:
-> This reverts commit 615f22f58029aa747b12768985e7f91cd053daa2.
-> 
-> Commits from @umn.edu addresses have been found to be submitted in "bad
-> faith" to try to test the kernel community's ability to review "known
-> malicious" changes.  The result of these submissions can be found in a
-> paper published at the 42nd IEEE Symposium on Security and Privacy
-> entitled, "Open Source Insecurity: Stealthily Introducing
-> Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> of Minnesota) and Kangjie Lu (University of Minnesota).
-> 
-> Because of this, all submissions from this group must be reverted from
-> the kernel tree and will need to be re-reviewed again to determine if
-> they actually are a valid fix.  Until that work is complete, remove this
-> change to ensure that no problems are being introduced into the
-> codebase.
-> 
-> Cc: Aditya Pakki <pakki001@umn.edu>
-> Cc: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Fri, 23 Apr 2021, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
+> On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+> to discrete GFX after S3. This is not desirable, because userspace will
+> treat connected display as a new one, losing display settings.
+>
+> The expected behavior is to let discrete GFX drives all external
+> displays.
+>
+> The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+> The method is inside the BXT _DSM, so add the _DSM and call it
+> accordingly.
+>
+> I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
+> regression was found.
+
+I don't know whether this change is the right thing to do. I don't know
+if it isn't either. Need to look into it.
+
+However, I have some general comments, inline.
+
+>
+> v2:
+>  - Forward declare struct pci_dev.
+>
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+> References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > ---
->  drivers/nfc/s3fwrn5/firmware.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/nfc/s3fwrn5/firmware.c b/drivers/nfc/s3fwrn5/firmware.c
-> index eb5d7a5beac7..f77f183c9bd0 100644
-> --- a/drivers/nfc/s3fwrn5/firmware.c
-> +++ b/drivers/nfc/s3fwrn5/firmware.c
-> @@ -492,10 +492,7 @@ int s3fwrn5_fw_recv_frame(struct nci_dev *ndev, struct sk_buff *skb)
->  	struct s3fwrn5_info *info = nci_get_drvdata(ndev);
->  	struct s3fwrn5_fw_info *fw_info = &info->fw_info;
+>  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
+>  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
+>  3 files changed, 25 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+> index 833d0c1be4f1..c7b57c22dce3 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+> @@ -14,11 +14,16 @@
 >  
-> -	if (WARN_ON(fw_info->rsp)) {
-> -		kfree_skb(skb);
-> -		return -EINVAL;
-> -	}
-> +	BUG_ON(fw_info->rsp);
+>  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
+>  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
+> +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
+>  
+>  static const guid_t intel_dsm_guid =
+>  	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+>  		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+>  
+> +static const guid_t intel_bxt_dsm_guid =
+> +	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
+> +		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
+> +
+>  static char *intel_dsm_port_name(u8 id)
+>  {
+>  	switch (id) {
+> @@ -176,6 +181,18 @@ void intel_unregister_dsm_handler(void)
+>  {
+>  }
+>  
+> +void intel_bxt_dsm_detect(struct pci_dev *pdev)
 
-It took me some time to understand this but the original commit looks
-correct. The recv_frame functions s3fwrn5_recv_frame() or
-nci_recv_frame() should free the skb buffer on errors.  Here, the
-s3fwrn5_fw_recv_frame() should be called only after sending a FW msg and
-is expected to have fw_info->rsp=NULL. Otherwise it could mean that
-frame came twice or it came when we did not ask for it.
+Please leave out bxt from the naming and make the argument struct
+drm_i915_private *i915. Mmh, then it conflicts with existing
+intel_dsm_detect(), maybe we need a more descriptive name altogether?
 
-Original code looks good, please drop the revert.
+> +{
+> +	acpi_handle dhandle;
+> +
+> +	dhandle = ACPI_HANDLE(&pdev->dev);
+> +	if (!dhandle)
+> +		return;
+> +
+> +	acpi_evaluate_dsm(dhandle, &intel_bxt_dsm_guid, INTEL_DSM_REVISION_ID,
+> +			  INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO, NULL);
+> +}
+> +
+>  /*
+>   * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
+>   * Attached to the Display Adapter).
+> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
+> index e8b068661d22..d2d560d63bb3 100644
+> --- a/drivers/gpu/drm/i915/display/intel_acpi.h
+> +++ b/drivers/gpu/drm/i915/display/intel_acpi.h
+> @@ -6,15 +6,18 @@
+>  #ifndef __INTEL_ACPI_H__
+>  #define __INTEL_ACPI_H__
+>  
+> +struct pci_dev;
+>  struct drm_i915_private;
+>  
+>  #ifdef CONFIG_ACPI
+>  void intel_register_dsm_handler(void);
+>  void intel_unregister_dsm_handler(void);
+> +void intel_bxt_dsm_detect(struct pci_dev *pdev);
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915);
+>  #else
+>  static inline void intel_register_dsm_handler(void) { return; }
+>  static inline void intel_unregister_dsm_handler(void) { return; }
+> +static inline void intel_bxt_dsm_detect(struct pci_dev *pdev) { return; }
+>  static inline
+>  void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
+>  #endif /* CONFIG_ACPI */
+> diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
+> index 785dcf20c77b..57b12068aab4 100644
+> --- a/drivers/gpu/drm/i915/i915_drv.c
+> +++ b/drivers/gpu/drm/i915/i915_drv.c
+> @@ -853,6 +853,8 @@ int i915_driver_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	if (ret)
+>  		goto out_cleanup_gem;
+>  
+> +	intel_bxt_dsm_detect(pdev);
+> +
 
-Best regards,
-Krzysztof
+The call sites in i915_driver_probe() and i915_drm_resume() seem rather
+arbitrary.
+
+Long term, I'd like most or all of the display stuff like this placed in
+appropriate intel_modeset_*() functions in display/intel_display.c. I'm
+not keen on having new and very specific calls in the higher levels.
+
+At probe, feels like the routing should happen earlier, before output
+setup? In intel_modeset_init_nogem()?
+
+>  	i915_driver_register(i915);
+>  
+>  	enable_rpm_wakeref_asserts(&i915->runtime_pm);
+> @@ -1215,6 +1217,7 @@ int i915_suspend_switcheroo(struct drm_i915_private *i915, pm_message_t state)
+>  static int i915_drm_resume(struct drm_device *dev)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(dev);
+> +	struct pci_dev *pdev = to_pci_dev(dev_priv->drm.dev);
+>  	int ret;
+>  
+>  	disable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+> @@ -1271,6 +1274,8 @@ static int i915_drm_resume(struct drm_device *dev)
+>  
+>  	intel_gvt_resume(dev_priv);
+>  
+> +	intel_bxt_dsm_detect(pdev);
+> +
+
+In intel_display_resume() perhaps?
+
+(Yay for confusing naming wrt display and modeset, it's a
+work-in-progress.)
+
+BR,
+Jani.
+
+
+>  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
+>  
+>  	return 0;
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
