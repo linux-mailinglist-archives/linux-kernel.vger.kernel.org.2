@@ -2,197 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898F7368CFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C2C368CFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240627AbhDWGL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:11:59 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35630 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhDWGL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:11:56 -0400
-IronPort-SDR: bWumElhRyYeXky++UdTOqkR+gJszjAFafJ50oVwTeDbniQeFzxbKA4urjCpsY52usVImVWPtxj
- O7ytTOcj15PA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="196134218"
-X-IronPort-AV: E=Sophos;i="5.82,241,1613462400"; 
-   d="scan'208";a="196134218"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 23:11:19 -0700
-IronPort-SDR: g1QJ2Z+IQvwwcaYx28TotL1I+YdibeUKbXZRtPjp/IWSWiNFj3Ow4+CGKX6Ulh05wNZsu2YUDH
- CHnocbv1WDQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="421652421"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Apr 2021 23:11:15 -0700
-Date:   Fri, 23 Apr 2021 14:11:15 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [LKP] Re: [clocksource] 6c52b5f3cf: stress-ng.opcode.ops_per_sec
- -14.4% regression
-Message-ID: <20210423061115.GA62813@shbuild999.sh.intel.com>
-References: <20210420064934.GE31773@xsang-OptiPlex-9020>
- <20210420134331.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <20210420140552.GA3158164@paulmck-ThinkPad-P17-Gen-1>
- <04f4752e-6c5a-8439-fe75-6363d212c7b2@intel.com>
- <20210421134224.GR975577@paulmck-ThinkPad-P17-Gen-1>
- <ed77d2a5-aeb0-b7f5-ce91-4cac12cfdd61@linux.intel.com>
- <20210422074126.GA85095@shbuild999.sh.intel.com>
- <20210422142454.GD975577@paulmck-ThinkPad-P17-Gen-1>
- <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
+        id S240437AbhDWGNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:13:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42598 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230113AbhDWGNw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 02:13:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619158396;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wybd0wJ6WAZPnvMkKChhqxUz10KMVtvkXfbGe/E+wbQ=;
+        b=JnNWN/N6oqwjcmiSirGqIGLpWmYRbfUEs+HE8lmSEE0ifmYBtV/9I3dPiWt/1g4bKjCviq
+        oB7zG6zeawUuNBw6xKEmxgZtGdl7MvhP78LnijVXAv8tDHlexBDXJcvUR41aQmrQSaylmJ
+        nMKIxOFqap2hMgDVdh33kr3YbxmKx8M=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-3v-syctzO6WkYWQ04DcA3A-1; Fri, 23 Apr 2021 02:13:14 -0400
+X-MC-Unique: 3v-syctzO6WkYWQ04DcA3A-1
+Received: by mail-ed1-f69.google.com with SMTP id l22-20020a0564021256b0290384ebfba68cso14210973edw.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:13:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wybd0wJ6WAZPnvMkKChhqxUz10KMVtvkXfbGe/E+wbQ=;
+        b=Gz+0h1gVLGC4+eycD4QwFtQffjAE8Ws8XM64qUMmB52zPCMAj0HxKHu63aC56alxRk
+         In1oO/yPFHG19Cyk2W3QFMmJqpPiEO29RehSzEAJ2tx3ow/x9kzM2mtpNW8RrXBYDNnh
+         0Slk7c8lQmnCV2U9hhzSKbHzAWOeLjQQmJuW+yRhDIQvj5a9y5Xq4F/kVsrwuWp6CdKk
+         FQeFhk3YhW5vTlrHlIqbF6DfxfV6JhEtDt5EWiQOQpZ84N4P+VrNQdko7DjxgAsBLULZ
+         KEHd7LZAbvN4FIkDUqG/Zv31UwAxphwsSfShzn1J6+gFMCynjQOkyx48pi56CxS0bot5
+         8+cw==
+X-Gm-Message-State: AOAM532YbAM+bgRJHSekbx5kWe0fNeGFOIVkx54yp8FOLVkSdYk9frq8
+        xZKchsiyw3O2x4eUIpqkqVfOrkfPnsi4mLPI6ldY2/jZ7GEw8+JPVfE0EDe5ilw8eyJWtqCBY0D
+        admo3HsXq1NJj7IlZZbhYH6hK
+X-Received: by 2002:aa7:c1c9:: with SMTP id d9mr2448437edp.155.1619158392891;
+        Thu, 22 Apr 2021 23:13:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTp4CHjAKVg+y1nrs+atxnkdEHzq45cg6dqUACvcdikUOJ2JPAjRSTl68FvD+1YL74m4CYww==
+X-Received: by 2002:aa7:c1c9:: with SMTP id d9mr2448420edp.155.1619158392714;
+        Thu, 22 Apr 2021 23:13:12 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u13sm3151102ejj.16.2021.04.22.23.13.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Apr 2021 23:13:12 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: SVM: Delay restoration of host MSR_TSC_AUX until
+ return to userspace
+To:     Sean Christopherson <seanjc@google.com>,
+        Reiji Watanabe <reijiw@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210422001736.3255735-1-seanjc@google.com>
+ <CAAeT=FxaRV+za7yk8_9p45k4ui3QJx90gN4b8k4egrxux=QWFA@mail.gmail.com>
+ <YIHYsa1+psfnszcv@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8cc2bb9a-167e-598c-6a9e-c23e943b1248@redhat.com>
+Date:   Fri, 23 Apr 2021 08:13:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422165743.GA162649@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <YIHYsa1+psfnszcv@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 09:57:43AM -0700, Paul E. McKenney wrote:
-> On Thu, Apr 22, 2021 at 07:24:54AM -0700, Paul E. McKenney wrote:
-> > On Thu, Apr 22, 2021 at 03:41:26PM +0800, Feng Tang wrote:
-> > > Hi Paul,
-> > > 
-> > > On Thu, Apr 22, 2021 at 02:58:27PM +0800, Xing Zhengjun wrote:
-> > > > 
-> > > > 
-> > > > On 4/21/2021 9:42 PM, Paul E. McKenney wrote:
-> > > > >On Wed, Apr 21, 2021 at 02:07:19PM +0800, Xing, Zhengjun wrote:
-> > > > >>
-> > > > >>On 4/20/2021 10:05 PM, Paul E. McKenney wrote:
-> > > > >>>On Tue, Apr 20, 2021 at 06:43:31AM -0700, Paul E. McKenney wrote:
-> > > > >>>>On Tue, Apr 20, 2021 at 02:49:34PM +0800, kernel test robot wrote:
-> > > > >>>>>Greeting,
-> > > > >>>>>
-> > > > >>>>>FYI, we noticed a -14.4% regression of stress-ng.opcode.ops_per_sec due to commit:
-> > > > >>>>>
-> > > > >>>>>
-> > > > >>>>>commit: 6c52b5f3cfefd6e429efc4413fd25e3c394e959f ("clocksource: Reduce WATCHDOG_THRESHOLD")
-> > > > >>>>>https://git.kernel.org/cgit/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.13a
-> > > > >>>>>
-> > > > >>>>>
-> > > > >>>>>in testcase: stress-ng
-> > > > >>>>>on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
-> > > > >>>>>with following parameters:
-> > > > >>>>>
-> > > > >>>>>	nr_threads: 10%
-> > > > >>>>>	disk: 1HDD
-> > > > >>>>>	testtime: 60s
-> > > > >>>>>	fs: ext4
-> > > > >>>>>	class: os
-> > > > >>>>>	test: opcode
-> > > > >>>>>	cpufreq_governor: performance
-> > > > >>>>>	ucode: 0x5003006
-> > > > >>>>Hmmm...  I will try a less-aggressive reduction.  Thank you for testing!
-> > > > >>>But wait...  This code is only running twice per second.  It is very
-> > > > >>>hard to believe that a clock-read retry twice per second is worth 2% of
-> > > > >>>performance, let alone 14.4%.
-> > > > >>>
-> > > > >>>Is something else perhaps going on here?
-> > > > >>>
-> > > > >>>For example, did this run enable any of the new diagnositic clocksource.*
-> > > > >>>kernel parameters?
-> > > > >>>
-> > > > >>>								Thanx, Paul
-> > > > >>I attached the kernel log, the following logs are related with the
-> > > > >>clocksource.
-> > > > >>[    3.453206] clocksource: timekeeping watchdog on CPU1: Marking
-> > > > >>clocksource 'tsc-early' as unstable because the skew is too large:
-> > > > >>[    3.455197] clocksource:                       'hpet' wd_now: 288fcc0
-> > > > >>wd_last: 1a8b333 mask: ffffffff
-> > > > >>[    3.455199] clocksource:                       'tsc-early' cs_now:
-> > > > >>1def309ebfdee cs_last: 1def2bd70d92c mask: ffffffffffffffff
-> > > > >>[    3.455201] clocksource:                       No current clocksource.
-> > > > >>[    3.457197] tsc: Marking TSC unstable due to clocksource watchdog
-> > > > >>
-> > > > >>6c52b5f3cf reduced WATCHDOG_THRESHOLD, then in clocksource_watchdog, the
-> > > > >>warning logs are print, the TSC is marked as unstable.
-> > > > >>/* Check the deviation from the watchdog clocksource. */
-> > > > >Aha, so this system really does have an unstable TSC!  Which means that
-> > > > >the patch is operating as designed.
-> > > > >
-> > > > >Or are you saying that this is a false positive?
-> > > > >
-> > > > >							Thanx, Paul
-> > > > 
-> > > > It happened during boot and before TSC calibration
-> > > > (tsc_refine_calibration_work()), so on some machines "abs(cs_nsec - wd_nsec)
-> > > > > WATCHDOG_THRESHOLD", WATCHDOG_THRESHOLD is set too small at that time.
-> > > > After TSC calibrated, abs(cs_nsec - wd_nsec) should be very small,
-> > > > WATCHDOG_THRESHOLD for here is ok. So I suggest increasing the
-> > > > WATCHDOG_THRESHOLD before TSC calibration, for example, the clocks be skewed
-> > > > by more than 1% to be marked unstable.
-> > 
-> > This is common code, so we do need an architecture-independent way to
-> > handle this.
-> > 
-> > > As Zhengjun measuered, this is a Cascade Lake platform, and it has 2
-> > > times calibration of tsc, the first one of early quick calibration gives
-> > > 2100 MHz, while the later accurate calibration gives 2095 MHz, so there
-> > > is about 2.5/1000 deviation for the first number, which just exceeds the
-> > > 1/1000 threshold you set :)
-> > 
-> > Even my 2/1000 initial try would have caused this, then.  ;-)
-> > 
-> > But even 1/1000 deviation would cause any number of applications some
-> > severe heartburn, so I am not at all happy with the thought of globally
-> > increasing to (say) 3/1000.
-> > 
-> > > Following is the tsc freq info from kernel log
-> > > 
-> > > [    0.000000] DMI: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-> > > [    0.000000] tsc: Detected 2100.000 MHz processor
-> > > ...
-> > > [   13.859982] tsc: Refined TSC clocksource calibration: 2095.077 MHz
-> > 
-> > So what are our options?
-> > 
-> > 1.	Clear CLOCK_SOURCE_MUST_VERIFY from tsc-early.
-> > 
-
-I think option 1 is fine, as tsc will still get checked once 'tsc'
-clocksource is registered, but Thomas and Peter should know more
-background and corner cases of tsc.
-
-Also we have been working on another patchset to skip watchdog check
-for x86 platforms with stable tsc:
-
-https://lore.kernel.org/lkml/1618291897-71581-1-git-send-email-feng.tang@intel.com/
-https://lore.kernel.org/lkml/1618291897-71581-2-git-send-email-feng.tang@intel.com/
-
-Thanks,
-Feng
-
-> > 2.	#1, but add tsc-early into the watchdog list and set
-> > 	CLOCK_SOURCE_MUST_VERIFY once it is better calibrated.
-> > 
-> > 3.	Add a field to struct clocksource that, if non-zero, gives
-> > 	the maximum drift in nanoseconds per half second (AKA
-> > 	WATCHDOG_INTERVAL).  If zero, the WATCHDOG_MAX_SKEW value
-> > 	is used.  Set this to (say) 150,000ns for tsc-early.
-> > 
-> > 4.	As noted earlier, increase WATCHDOG_MAX_SKEW to 150 microseconds,
-> > 	which again is not a good approach given the real-world needs
-> > 	of real-world applications.
-> > 
-> > 5.	Your ideas here.
+On 22/04/21 22:12, Sean Christopherson wrote:
+> 	case MSR_TSC_AUX:
+> 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+> 			return 1;
 > 
-> Oh, and:
+> 		if (!msr_info->host_initiated &&
+> 		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
+> 			return 1;
 > 
-> 6.	Improve the quick calibration to be better than one part per thousand.
+> 		/*
+> 		 * TSC_AUX is usually changed only during boot and never read
+> 		 * directly.  Intercept TSC_AUX instead of exposing it to the
+> 		 * guest via direct_access_msrs, and switch it via user return.
+> 		 */
+> 		preempt_disable();
+> 		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
+> 		preempt_enable();
+> 		if (r)
+> 			return 1;
 > 
-> > All in all, I am glad that I made the patch that decreases
-> > WATCHDOG_MAX_SKEW be separate and at the end of the series.  ;-)
+> 		/*
+> 		 * Bits 63:32 are dropped by AMD CPUs, but are reserved on
+> 		 * Intel CPUs.  AMD's APM has incomplete and conflicting info
+> 		 * on the architectural behavior; emulate current hardware as
+> 		 * doing so ensures migrating from AMD to Intel won't explode.
+> 		 */
+> 		svm->tsc_aux = (u32)data;
+> 		break;
 > 
-> 							Thanx, Paul
+
+Ok, squashed in the following:
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 14ff7f0963e9..00e9680969a2 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2875,16 +2875,28 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+  		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+  			return 1;
+  
++		if (!msr_info->host_initiated &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++			return 1;
++
+  		/*
+  		 * TSC_AUX is usually changed only during boot and never read
+  		 * directly.  Intercept TSC_AUX instead of exposing it to the
+  		 * guest via direct_access_msrs, and switch it via user return.
+  		 */
+-		svm->tsc_aux = data;
+-
+  		preempt_disable();
+-		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
++		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
+  		preempt_enable();
++		if (r)
++			return 1;
++
++		/*
++		 * Bits 63:32 are dropped by AMD CPUs, but are reserved on
++		 * Intel CPUs.  AMD's APM has incomplete and conflicting info
++		 * on the architectural behavior; emulate current hardware as
++		 * doing so ensures migrating from AMD to Intel won't explode.
++		 */
++		svm->tsc_aux = (u32)data;
+  		break;
+  	case MSR_IA32_DEBUGCTLMSR:
+  		if (!boot_cpu_has(X86_FEATURE_LBRV)) {
+
+Paolo
+
