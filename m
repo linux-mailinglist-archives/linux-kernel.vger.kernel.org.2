@@ -2,107 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBF33690E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E156C3690EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242223AbhDWLMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 07:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
+        id S242141AbhDWLOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 07:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhDWLME (ORCPT
+        with ESMTP id S229890AbhDWLOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:12:04 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17313C061574;
-        Fri, 23 Apr 2021 04:11:27 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lZtiS-0003lY-Nq; Fri, 23 Apr 2021 13:11:20 +0200
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        regressions@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        ksummit@lists.linux.dev, workflows@vger.kernel.org
-References: <268a3049-7c0b-8a33-1ff6-5a2d35fcba16@leemhuis.info>
- <YIKdQKJNZOSfdL9B@kroah.com>
- <8a44e6b3-fff4-ea6f-2643-bb2a15ff990a@leemhuis.info>
- <s5htunx5ko6.wl-tiwai@suse.de>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: RFC: building a regression tracking bot for Linux kernel
- development
-Message-ID: <23587f44-573e-b0b2-30aa-6d68cbbab9d2@leemhuis.info>
-Date:   Fri, 23 Apr 2021 13:11:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 23 Apr 2021 07:14:14 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA25C061574;
+        Fri, 23 Apr 2021 04:13:35 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id g5so66589162ejx.0;
+        Fri, 23 Apr 2021 04:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YHPMnwS1dURi5l1HSs6lXsnAbBpe7PxogTJiMBTEHvw=;
+        b=oEpBq1Fuo/AIN23HrnGCnNKX5gSh7n0HPo0mODmYYtxzr9Ug6D8ohXWugDTsei9Gdz
+         iCgi5Q+CjmdJ4CV+di6aM6JAitf4mEUPccE8ISW87TwaJYu8Mtsiqttmr+cBOQoUY6CT
+         mHVJuLLG6wmiP/DRq0xg1NOtEHPoSlxJD0uQg/AWRiS+Kw7xVuJ5kuoZYDrp/01G57+K
+         1l8Tz3/pFGyCVageS2m6O29dxm+gr8XR+Akfn6WA97Y4OTG5rLhAB39NQelwkwE75Zov
+         QSSMbHwrBBkTjWiHdlR4BlQ3lKZRENOMC85hiaQqFtT22BoEm7ET3sZC1dIVHbdduiz+
+         CXMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YHPMnwS1dURi5l1HSs6lXsnAbBpe7PxogTJiMBTEHvw=;
+        b=dvmRcG93J8F4kMhdsq+w+9BznqGur8vNxryhTEl3aGh1AkcF7O0g5kU94MtA8TCCjn
+         OQThz+t1baxZ4Odii0qga8aC7XQFYIgXATmYbgqRQ2IKqZ0tFFgu0zEZZDSUnMyXJVIr
+         nQqC4fbqIPAaGyBINMXF5YND5/NwttI5DzoJHc0koCFrFRDo5SixbbYD/4fXeUOEsDId
+         L00qvKnLOCBfALQTcqQZ1JSYekVGhhTx9Sm7n4lHBrG0MX1eVXlV0BZHsAwPWzIJJ0oL
+         UOYNMwMaVSnSrTMrwcWFQWj6WfUtB/TNjc8h655uVdCZRHTl5CuOnz7ewTuAMRJxkJ4+
+         7p7A==
+X-Gm-Message-State: AOAM531oLPPHqUzAflAa8aDyCRXTBX/jgD86yxV6WDlTKWIfWK2iX+fE
+        VTu2MHhEGcmQ+Yb8nJOkqDE=
+X-Google-Smtp-Source: ABdhPJzZgn3hc4mNrhwnJScJOT2r7t49AdvgebRp7aJZ9kjR/Un/7sPJtoB3t7RWb5jaaIofvaQ1aw==
+X-Received: by 2002:a17:906:c297:: with SMTP id r23mr3731783ejz.48.1619176414380;
+        Fri, 23 Apr 2021 04:13:34 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id g12sm4521920edr.83.2021.04.23.04.13.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 04:13:32 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 13:14:22 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on
+ sc7180-trogdor-pompom
+Message-ID: <YIKsDtjcIHGNvW0u@orome.fritz.box>
+References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+ <20210326000907.GA1965415@robh.at.kernel.org>
+ <CAD=FV=XqG8oH5HCttKSNYJV2eHwLxq-tm1C+UFLn+cAHUrBaHg@mail.gmail.com>
+ <CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <s5htunx5ko6.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1619176288;e4e99be0;
-X-HE-SMSGID: 1lZtiS-0003lY-Nq
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pwwIyjYU7zT6YQlm"
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=VZYOMPwQZzWdhJGh5cjJWw_EcM-wQVEivZ-bdGXjPrEQ@mail.gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--pwwIyjYU7zT6YQlm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 23.04.21 13:01, Takashi Iwai wrote:
-> On Fri, 23 Apr 2021 12:49:25 +0200,
-> Thorsten Leemhuis wrote:
->>
->> On 23.04.21 12:11, Greg KH wrote:
->>> On Thu, Apr 22, 2021 at 09:16:40AM +0200, Thorsten Leemhuis wrote:
->>>> That can't be all
->>>> -----------------
->>>>
->>>> Of course the world is more complicated than the simple example scenario
->>>> above, as the devil is always in the details. The three most obvious
->>>> problems the initial ideal scenario left aside:
->>>>
->>>> * The reporter doesn't specify the #regzb tag at all. Regzbot can't do
->>>> anything about it, it sadly won't have visionary power and a AI engine
->>>> any time soon. Some human (for a while that often will be me) thus needs
->>>> to reply with the tag with a proper reply-to to the report to make
->>>> regboz track it.
->>>
->>> Any specific format/tag we can use to help make this easier?  Or is that
->>> just something that you are going to do "by hand" to start with?
->>
->> For now making sure regressions@lists.linux.dev is added to the CCed of
->> any replies to regression reports would be a really big help to already
->> establish it as central place where they are all visible. Then no human
->> or bot needs to monitor hundreds of mailing list to find them -- which
->> obviously is doomed to fail and was one of the pain points when I
->> tracked regressions manually years ago.
-> 
-> That sounds great.
+On Thu, Apr 22, 2021 at 03:08:48PM -0700, Doug Anderson wrote:
+> Hi,
+>=20
+> On Mon, Mar 29, 2021 at 9:25 AM Doug Anderson <dianders@chromium.org> wro=
+te:
+> >
+> > Hi,
+> >
+> > On Thu, Mar 25, 2021 at 5:09 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
+> > > > The sc7180-trogdor-pompom board might be attached to any number of a
+> > > > pile of eDP panels. At the moment I'm told that the list might incl=
+ude:
+> > > > - KD KD116N21-30NV-A010
+> > > > - KD KD116N09-30NH-A016
+> > > > - Starry 2081116HHD028001-51D
+> > > > - Sharp LQ116M1JW10
+> > > >
+> > > > It should be noted that while the EDID programmed in the first 3
+> > > > panels indicates that they should run with exactly the same timing =
+(to
+> > > > keep things simple), the 4th panel not only needs different timing =
+but
+> > > > has a different resolution.
+> > > >
+> > > > As is true in general with eDP panels, we can figure out which panel
+> > > > we have and all the info needed to drive its pixel clock by reading
+> > > > the EDID. However, we can do this only after we've powered the panel
+> > > > on. Powering on the panels requires following the timing diagram in
+> > > > each panel's datasheet which specifies delays between certain
+> > > > actions. This means that, while we can be quite dynamic about handl=
+ing
+> > > > things we can't just totally skip out on describing the panel like =
+we
+> > > > could do if it was connected to an external-facing DP port.
+> > >
+> > > Is this a 'standard' eDP connector? AFAICT, there does seem to be
+> > > such a thing.
+> >
+> > To answer this one: there's not any "standard" physical plug as far as
+> > I can tell. There's a connector on the board side for the LCD that has
+> > a whole hodgepodge of signals on it. Maybe USB for a camera. Some
+> > power signals. Maybe a PWM for a backlight. Maybe some DMIC signals.
+> > eDP signals which might be anywhere from 1 to 4 lanes. HPD (which is
+> > really a "panel ready" signal for eDP). The size / style of connector
+> > and the exact set of signals (and their ordering) is board specific.
+> > You then get a board-specific cable that splits things out. Some might
+> > go to a camera/MIC sub board. Some go to the panel and hook onto a
+> > panel-specific connector which has pin count and orderings defined by
+> > that panel. :-P
+> >
+> >
+> > > I've said in the past I'd be okay with a edp-connector
+> > > node. If that needs just the "HPD absent delay" property, I think that
+> > > would be okay. It's just a never ending stream of new properties with
+> > > each new panel that I don't want to see.
+> >
+> > Thinking about this we'd need at least one other property right now
+> > which is an enable delay. Specifically at least one panel I've
+> > supported recently lied about HPD for a short period after bootup.
+> > Specifically see commit 667d73d72f31 ("drm: panel: simple: Delay HPD
+> > checking on boe_nv133fhm_n61 for 15 ms"). ...and, of course, the
+> > existing power supply / enable signals that "simple-panel" already
+> > has.
+> >
+> > Also: if we weren't going to add the other delay properties in the
+> > device tree, we'd have to add the code right away that used the EDID
+> > to set other delays. That wouldn't be the end of the world, but it
+> > would be code to write.
+> >
+> >
+> > One last thought to add: I've looked at ~10 panels specs recently.
+> > Though they are all a little different from each other, I will say
+> > that almost every one of them seems to have the exact same timing
+> > diagram in it just with different numbers filled in. To me that backs
+> > up the idea that you can/should do the power sequence with a fairly
+> > standard (parameterized) driver. I can't link the datasheets I have
+> > but searching for "edp panel datasheet" finds me this random
+> > datasheet:
+> >
+> > https://www.data-modul.com/sites/default/files/products/NV156QUM-N72_sp=
+ecification_12039472.pdf
+> >
+> > See "8.0 POWER SEQUENCE" in that document. All the panels have a
+> > nearly identical diagram with different numbers filled in. You can
+> > kinda tell it was copied from some other panel since some numbers
+> > (like T4) aren't even defined.
+>=20
+> So this thread has been quiet for a while, but the problem still exists.
+>=20
+> Here's my current plan, but please yell if you disagree:
+>=20
+> 1. See about adding a generic "eDP connector" node. Having stewed on
+> this for a while I think I'm convinced that even though there's not
+> really a single standard physical connector that is used everywhere
+> that there are at least a set of signals that can be collectively
+> thought about as the "eDP signals". Certainly I have a set of very
+> different panels from very different manufacturers that I can
+> "interchange" and they work fine assuming I have the right cable
+> "adapting" them from the connector on my board to the connector on the
+> panel. While different panels have different timings that they care
+> are enforced, there is a way to express it in a relatively common way
+> as evidenced by the fact that all panel datasheet timing diagrams look
+> similar and the fact that panel-simple handles so many different
+> panels (yes, we periodically add more timing constraints to handle
+> there but mostly that's because the code wasn't able to handle every
+> constraint that could be expressed in those standard-looking timing
+> diagrams in the datasheets).
+>=20
+>=20
+> 2. The "eDP connector" node will have all the same properties as
+> today's "panel-simple.yaml" with the addition of:
+>=20
+> enable-delay
+> hpd-absent-delay
+>=20
+> The idea is that you power on the panel, hardcode an enable-delay (to
+> handle early HPD glitches), and then wait for HPD (or wait
+> hpd-absent-delay if HPD isn't provided).
+>=20
+> Note that "ddc-i2c-bus" will be a required node instead of optional.
+>=20
+>=20
+> 3. Once we power the panel on then we will query the EDID and set the
+> rest of the panel timings / modes based on the model specified in the
+> EDID. Potentially it could update the "enable-delay" and
+> "hpd-absent-delay" at this point too.
 
-Good :-D
+I think that sounds good. If ddc-i2c-bus is required, this basically
+implies that EDID needs to be available for these panels, too. If that's
+the case we can identify the panel based on information from the EDID.
+That would make panels "discoverable", so that we can describe them with
+a more generic compatible string that basically describes the interface
+needed to get at the discoverable information, much like we would do for
+a bus like PCI.
 
-> One thing I still wonder is how to populate the report from distro bug
-> trackers.  AFAIK, many reports come from there directly or
-> indirectly.
-> 
-> Can regzbot can have a reference to bug trackers or such?
+I don't know if the manufacturer ID and product code are enough to
+uniquely identify every panel, but maybe something like the DisplayID
+extension can be used to gather more identification data.
 
-There was a small, easily missed note about that in the long mail that
-started this thread:
+Thierry
 
-```
- * Initially it won't be possible to track reports that are filed in bug
-trackers; but this use-case will be kept in mind during the design to
-make sure such a functionality can be added later easily.
-```
+--pwwIyjYU7zT6YQlm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-When I wrote that I mainly had the bug trackers used by the ACPI/PM and
-DRM people in mind, but yes, making sure that it works for distro
-tracker as well is a good point. Thx for bringing this to my attention.
-And FWIW: I might leave that out initially, but I guess it won't take
-too long before I will add this.
+-----BEGIN PGP SIGNATURE-----
 
-Ciao, Thorsten
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmCCrAsACgkQ3SOs138+
+s6FPTBAArVUbY8SmP4Hz12t546ddjfozLRZRVqY0+m8gwjjm74D4y6SfGyd47wKI
+Euy1fK+faHgm7J94Wc3e2dqe757ApzBw4vhRxgqGR6AwBIoovRE3MWdvgib+FFuj
+2f+/D9sYfsluGvHkWYUkgrnZ1VPGw9WjGK3L2VfnqE3jC42uZp7GBVaNqeQBDTVN
+vNY7sraJhyy62GLwQ0AWK+MZbDfauMTWJGhby4I2gyQpgID7JWEPiWrz0hEng5Px
+950+BAa0TltM/7aAt+KURkkJmjWGj5+LdKEBweQmyxancmi4vx4LSFQCNe+x0yEg
+G/uWVTH+71C5GJT+PA1JiSNP9ctartxRklIOak7GpBJlkz/aO56iDxbNQBFriFWW
+z/cneIzmi9H+f3zvg2Tq/NUqXZSFHxu2guu5dKJ7voRPyoIWMDQcSCsAI/9dIIxt
+mzc9hSX3wjD2uGB6Q7TGoLRFBrswTjMiMDmig/8xg7O/4evgmok4wWYLVo4dc82C
+C4U/2dxwAYd/Jg7iRQvWdewvCcz7U+T0WXZwuGV4OmQpDTPGf1V7U5m04anpiEXU
+Sk+WeJAdbd/kwo/JM0krqLeUnp28OUzJoTbQFH8aMR9XGPZ+Scu3rAVEG9TmIr9R
+LBKS5GaNib5Gnhmw6X+7NxCm8JZlEA22Qrf3K2BB1r2rX7FmpqQ=
+=XnhE
+-----END PGP SIGNATURE-----
+
+--pwwIyjYU7zT6YQlm--
