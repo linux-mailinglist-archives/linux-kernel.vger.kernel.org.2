@@ -2,113 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE628369503
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF43369512
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239066AbhDWOom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:44:42 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:38719 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhDWOol (ORCPT
+        id S242683AbhDWOuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231274AbhDWOuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:44:41 -0400
-Received: by mail-ot1-f47.google.com with SMTP id e89-20020a9d01e20000b0290294134181aeso19685148ote.5;
-        Fri, 23 Apr 2021 07:44:05 -0700 (PDT)
+        Fri, 23 Apr 2021 10:50:10 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3935C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:49:33 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id u16so32101526oiu.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kV2WFxJ0pxB6j6lJcjOav5TocdO0gpgto1tS47Na98M=;
+        b=v93PQtGqLr4sd5pjgvzTucAT7fRNDJiJKjzh7ULgud/8FfAuqIbqkHYX5t+TTGA9Uz
+         dxddBXsskOp4rSd3FKwnZ9L9HgtYTENGrXTp8qpRiZkI26kAG8EXoYTgEife5xecd0FU
+         UdM1FDSollaYSfEQJAssYc7EFRrKXaMuOMfez93uuOCyQzfjLmzKuwXycjqEASGZawyF
+         L6nRVjYaBNmPBt5j6BBK9EbSSJDcnHW9C7ectEPsAwLMPRT5xtsUAOyliOCOCO9hiHo7
+         SjfSnP2OqrNDVZvXQyr3AoO2hF/rROuOwA4dZRCCShMS6WEk3tcqcc3qowxFeE/Lvx/7
+         irdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=QGN8eRyPKuW4NSsPBFt8iKdg3BE6h033oZLxsd+8+jc=;
-        b=GemvwcQIx4XakKQdZSwYpCkNGdZGUaovK7EFC4wmw95HtUMKxuk4l6GkqKs8QBHUoH
-         M5ueSoE+oeXaKNpjyMKiJNQ6c3qaY3zMhjR7oPiUcUozWNQjJPV6bF9cTFhZ9yyHVB/R
-         SzuHav2EPhRR2wBOitX89ljnhMQZ0j6LYez5GGFXZKFr46PBYJ0u6b7rjMcEMGXEO3x4
-         oeeUdZfh2/Wx2sgl8pnIcl4d4UMqJwXR4PGXi60WRd8eJ7Nl/mIBwoTF8j1PlxzQEv7Q
-         DgJtOywIFcPH8MTeUpge3cmboxGKJTpvrvZ5nksvXb2MkByTu2PVDnpRyXsiiU2EPIJn
-         p2yQ==
-X-Gm-Message-State: AOAM5306L8YgjUMrEy5LQRWHuBvBhVK0unsEJt+dMRbb+yGbnLOraO6T
-        V3bW5OSNsdBb7ZIv6ogy0w==
-X-Google-Smtp-Source: ABdhPJxbnDBw8Wvw1Y7xQ7ZUqhUSiGO4keswnUerNmksJcd6swu12AvbpTKWVkPa44qqtxg5JYMhKQ==
-X-Received: by 2002:a9d:7003:: with SMTP id k3mr3751327otj.351.1619189044820;
-        Fri, 23 Apr 2021 07:44:04 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b21sm1207972oov.6.2021.04.23.07.44.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kV2WFxJ0pxB6j6lJcjOav5TocdO0gpgto1tS47Na98M=;
+        b=GgdfVf5EDgau5SVdMEwvJrcM1Nux0nv/mvVPGr11WH0trCnlLPYpgz/x6DmwpTeO5v
+         WP40aVmxeXhqEnF+Q4cC+SJZPK27X2WlA7ILrUSFwmhIeoAiSGlEvpcmmt6Aq9vUdS1a
+         Vu8Zb8v3MJvca9/9ZYdurwbFAtFI7jTHOGcm3XOMAimuGFRa93maYuc7LS9JBsso7x5a
+         U8MNVQ4VkINOh3I3Mi4uW4Pd+z4OG//uD/ygNMWqOZf5dRe4cWn2RErTifUpjjmojmLp
+         lfv25vi/4wsC5D6fscXisf2vO/3OJ8jfP8sWy6XKuvxf2SmWHFgib8t42xWYNDPdKqoa
+         LUKA==
+X-Gm-Message-State: AOAM530Yo0HuMb2I8qvA/AR6E+bFGE3cgH51o8I03Tt7TWTHHR3kNVfS
+        pqQDGCTTk41bdOf/TeGSg3Vmmg==
+X-Google-Smtp-Source: ABdhPJza24M45LdRra5lfSTymv+xaKIXGnc51ftTWwNA37cg04E0OjGlhNqS0AHQmD5FHFQm7XO8/A==
+X-Received: by 2002:aca:b845:: with SMTP id i66mr3151456oif.152.1619189373188;
+        Fri, 23 Apr 2021 07:49:33 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c65sm1294573oia.47.2021.04.23.07.49.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:44:03 -0700 (PDT)
-Received: (nullmailer pid 1023562 invoked by uid 1000);
-        Fri, 23 Apr 2021 14:44:02 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, heiko@sntech.de,
-        linus.walleij@linaro.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210423014400.1433347-1-jay.xu@rock-chips.com>
-References: <20210423014400.1433347-1-jay.xu@rock-chips.com>
-Subject: Re: [PATCH] dt-bindings: pinctrl: rockchip: Convert to json-schema
-Date:   Fri, 23 Apr 2021 09:44:02 -0500
-Message-Id: <1619189042.263419.1023561.nullmailer@robh.at.kernel.org>
+        Fri, 23 Apr 2021 07:49:32 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:49:30 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 15/27] drm/bridge: ti-sn65dsi86: Break GPIO and
+ MIPI-to-eDP bridge into sub-drivers
+Message-ID: <YILeemCMbU9FXLx4@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.15.I3e68fa38c4ccbdbdf145cad2b01e83a1e5eac302@changeid>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.15.I3e68fa38c4ccbdbdf145cad2b01e83a1e5eac302@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 09:44:00 +0800, Jianqun Xu wrote:
-> Convert the pinctrl/rockchip,pinctrl.txt binding document to
-> json-schema.
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+
+> Let's use the newly minted aux bus to break up the driver into sub
+> drivers. We're not doing a full breakup here: all the code is still in
+> the same file and remains largely untouched. The big goal here of
+> using sub-drivers is to allow part of our code to finish probing even
+> if some other code needs to defer. This can solve some chicken-and-egg
+> problems. Specifically:
+> - In commit 48834e6084f1 ("drm/panel-simple: Support hpd-gpios for
+>   delaying prepare()") we had to add a bit of a hack to simpel-panel
+>   to support HPD showing up late. We can get rid of that hack now
+>   since the GPIO part of our driver can finish probing early.
+> - We have a desire to expose our DDC bus to simple-panel (and perhaps
+>   to a backlight driver?). That will end up with the same
+>   chicken-and-egg problem. A future patch to move this to a sub-driver
+>   will fix it.
+> - If/when we support the PWM functionality present in the bridge chip
+>   for a backlight we'll end up with another chicken-and-egg
+>   problem. If we allow the PWM to be a sub-driver too then it solves
+>   this problem.
+
+I rebased my pwm_chip patch ontop of this and it works like a charm!
+
 > 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->  .../bindings/pinctrl/rockchip,pinctrl.yaml    | 163 ++++++++++++++++++
->  1 file changed, 163 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
 > 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/Kconfig        |   1 +
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 211 +++++++++++++++++++-------
+>  2 files changed, 158 insertions(+), 54 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index 22a467abd3e9..6868050961a2 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -267,6 +267,7 @@ config DRM_TI_SN65DSI86
+>  	select REGMAP_I2C
+>  	select DRM_PANEL
+>  	select DRM_MIPI_DSI
+> +	select AUXILIARY_BUS
+>  	help
+>  	  Texas Instruments SN65DSI86 DSI to eDP Bridge driver
+>  
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 57bc489a0412..44edcf6f5744 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -4,6 +4,7 @@
+>   * datasheet: https://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
+>   */
+>  
+> +#include <linux/auxiliary_bus.h>
+>  #include <linux/bits.h>
+>  #include <linux/clk.h>
+>  #include <linux/debugfs.h>
+> @@ -113,7 +114,10 @@
+>  
+>  /**
+>   * struct ti_sn65dsi86 - Platform data for ti-sn65dsi86 driver.
+> - * @dev:          Pointer to our device.
+> + * @bridge_aux:   AUX-bus sub device for MIPI-to-eDP bridge functionality.
+> + * @gpio_aux:     AUX-bus sub device for GPIO controller functionality.
+> + *
+> + * @dev:          Pointer to the top level (i2c) device.
+>   * @regmap:       Regmap for accessing i2c.
+>   * @aux:          Our aux channel.
+>   * @bridge:       Our bridge.
+> @@ -140,6 +144,9 @@
+>   *                each other's read-modify-write.
+>   */
+>  struct ti_sn65dsi86 {
+> +	struct auxiliary_device		bridge_aux;
+> +	struct auxiliary_device		gpio_aux;
+> +
+>  	struct device			*dev;
+>  	struct regmap			*regmap;
+>  	struct drm_dp_aux		aux;
+> @@ -1135,8 +1142,10 @@ static const char * const ti_sn_bridge_gpio_names[SN_NUM_GPIOS] = {
+>  	"GPIO1", "GPIO2", "GPIO3", "GPIO4"
+>  };
+>  
+> -static int ti_sn_setup_gpio_controller(struct ti_sn65dsi86 *pdata)
+> +static int ti_sn_gpio_probe(struct auxiliary_device *adev,
+> +			    const struct auxiliary_device_id *id)
+>  {
+> +	struct ti_sn65dsi86 *pdata = dev_get_drvdata(adev->dev.parent);
+>  	int ret;
+>  
+>  	/* Only init if someone is going to use us as a GPIO controller */
+> @@ -1158,19 +1167,27 @@ static int ti_sn_setup_gpio_controller(struct ti_sn65dsi86 *pdata)
+>  	pdata->gchip.names = ti_sn_bridge_gpio_names;
+>  	pdata->gchip.ngpio = SN_NUM_GPIOS;
+>  	pdata->gchip.base = -1;
+> -	ret = devm_gpiochip_add_data(pdata->dev, &pdata->gchip, pdata);
+> +	ret = devm_gpiochip_add_data(&adev->dev, &pdata->gchip, pdata);
+>  	if (ret)
+>  		dev_err(pdata->dev, "can't add gpio chip\n");
+>  
+>  	return ret;
+>  }
+>  
+> -#else
+> +static const struct auxiliary_device_id ti_sn_gpio_id_table[] = {
+> +	{ .name = "ti_sn65dsi86.gpio", },
+> +	{},
+> +};
+> +
+> +MODULE_DEVICE_TABLE(auxiliary, ti_sn_gpio_id_table);
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+The MODULE_DEVICE_TABLE will ensure that the driver will be autoloaded
+if this auxiliary compatible is requested, but it's only ever going to
+be triggered by the already loaded driver.
 
-yamllint warnings/errors:
+So you can omit this.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: patternProperties:^gpio[0-9]@[0-9a-f]:properties:required: ['compatible', 'reg', 'interrupts', 'interrupt-controller', '#interrupt-cells', 'gpio-controller', '#gpio-cells', 'clocks'] is not of type 'object', 'boolean'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: patternProperties:^gpio[0-9]@[0-9a-f]:properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'required'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: patternProperties:^gpio[0-9]@[0-9a-f]:properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'additionalProperties'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: properties:rockchip,pmu: 'oneOf' conditional failed, one must be fixed:
-	'type' is a required property
-	Additional properties are not allowed ('maxItems' was unexpected)
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: properties:rockchip,pmu: 'oneOf' conditional failed, one must be fixed:
-		'enum' is a required property
-		'const' is a required property
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: properties:rockchip,pmu: 'oneOf' conditional failed, one must be fixed:
-		'$ref' is a required property
-		'allOf' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: properties:rockchip,grf: 'oneOf' conditional failed, one must be fixed:
-	'type' is a required property
-	Additional properties are not allowed ('maxItems' was unexpected)
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: properties:rockchip,grf: 'oneOf' conditional failed, one must be fixed:
-		'enum' is a required property
-		'const' is a required property
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: properties:rockchip,grf: 'oneOf' conditional failed, one must be fixed:
-		'$ref' is a required property
-		'allOf' is a required property
-./Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/pinctrl/rockchip,pinctrl.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml: ignoring, error in schema: patternProperties: ^gpio[0-9]@[0-9a-f]: properties: required
-warning: no schema found in file: ./Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.yaml
-Error: Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.example.dts:22.9-10 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1414: dt_binding_check] Error 2
+>  
+> -static inline int ti_sn_setup_gpio_controller(struct ti_sn65dsi86 *pdata)
+> -{
+> -	return 0;
+> -}
+> +static struct auxiliary_driver ti_sn_gpio_driver = {
+> +	.name = "gpio",
+> +	.probe = ti_sn_gpio_probe,
+> +	.id_table = ti_sn_gpio_id_table,
+> +};
+> +
+> +module_auxiliary_driver(ti_sn_gpio_driver);
 
-See https://patchwork.ozlabs.org/patch/1469447
+You may only have a single module_driver() per driver. Compiling the
+driver as a module will result in a spew of errors because init_module()
+and cleanup_module() are defined multiple times.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+As such I believe you have to roll your own init/exit. I did the
+following for my testing:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+====8<-----------------
 
-pip3 install dtschema --upgrade
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+index 62904dfdee0a..fe3317bc85be 100644
+--- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+@@ -1218,8 +1218,6 @@ static struct auxiliary_driver ti_sn_gpio_driver = {
+ 	.id_table = ti_sn_gpio_id_table,
+ };
+ 
+-module_auxiliary_driver(ti_sn_gpio_driver);
+-
+ #endif
+ 
+ static void ti_sn_bridge_parse_lanes(struct ti_sn65dsi86 *pdata,
+@@ -1329,8 +1327,6 @@ static struct auxiliary_driver ti_sn_bridge_driver = {
+ 	.id_table = ti_sn_bridge_id_table,
+ };
+ 
+-module_auxiliary_driver(ti_sn_bridge_driver);
+-
+ static void ti_sn65dsi86_runtime_disable(void *data)
+ {
+ 	pm_runtime_disable(data);
+@@ -1432,8 +1428,6 @@ static struct auxiliary_driver ti_sn_aux_driver = {
+ 	.id_table = ti_sn_aux_id_table,
+ };
+ 
+-module_auxiliary_driver(ti_sn_aux_driver);
+-
+ static int ti_sn65dsi86_probe(struct i2c_client *client,
+ 			      const struct i2c_device_id *id)
+ {
+@@ -1535,7 +1529,32 @@ static struct i2c_driver ti_sn65dsi86_driver = {
+ 	.probe = ti_sn65dsi86_probe,
+ 	.id_table = ti_sn65dsi86_id,
+ };
+-module_i2c_driver(ti_sn65dsi86_driver);
++
++static int ti_sn65dsi86_init(void)
++{
++#if defined(CONFIG_OF_GPIO)
++	auxiliary_driver_register(&ti_sn_gpio_driver);
++#endif
++	auxiliary_driver_register(&ti_sn_bridge_driver);
++	auxiliary_driver_register(&ti_sn_aux_driver);
++
++	i2c_add_driver(&ti_sn65dsi86_driver);
++
++	return 0;
++}
++module_init(ti_sn65dsi86_init);
++
++static void ti_sn65dsi86_exit(void)
++{
++	i2c_del_driver(&ti_sn65dsi86_driver);
++
++#if defined(CONFIG_OF_GPIO)
++	auxiliary_driver_unregister(&ti_sn_gpio_driver);
++#endif
++	auxiliary_driver_unregister(&ti_sn_bridge_driver);
++	auxiliary_driver_unregister(&ti_sn_aux_driver);
++}
++module_exit(ti_sn65dsi86_exit);
+ 
+ MODULE_AUTHOR("Sandeep Panda <spanda@codeaurora.org>");
+ MODULE_DESCRIPTION("sn65dsi86 DSI to eDP bridge driver");
 
-Please check and re-submit.
+8<-----------------
 
+The rest looks good!
+
+Regards,
+Bjorn
