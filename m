@@ -2,162 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE75A3691CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0A33691D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242338AbhDWMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:13:00 -0400
-Received: from mga05.intel.com ([192.55.52.43]:43144 "EHLO mga05.intel.com"
+        id S242182AbhDWMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:17:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:34188 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230225AbhDWMM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:12:58 -0400
-IronPort-SDR: jYYpHDndd0T/zufYQoveVcg2eml7WeqawpWmT3HjYxCd+kR/wwiJFbTzGzMIPny/d1AleYaq+E
- lRR1vR1qB/pA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="281386548"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="281386548"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 05:12:21 -0700
-IronPort-SDR: 0lMZZPTxBtDnzuDdNKXYuRNdnnRJQ2ddD09lZisxSkqMCkkgLb0FmxuFzZqGVrjrcDCrv68zNK
- Bb+fWvx4e2cQ==
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="428362453"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 05:12:19 -0700
-Date:   Fri, 23 Apr 2021 20:16:07 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Calvin Walton <calvin.walton@kepstin.ca>
-Cc:     Borislav Petkov <bp@suse.de>, Terry Bowman <terry.bowman@amd.com>,
-        lenb@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.huang2@amd.com, aros@gmx.com,
-        rui.zhang@intel.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <20210423121607.GA426003@chenyu-desktop>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop>
- <20210420080701.GA2326@zn.tnic>
- <20210420131541.GA388877@chenyu-desktop>
- <4cbb1eff77de1e843912267ade4686cfa1acd610.camel@kepstin.ca>
- <20210420143754.GA390118@chenyu-desktop>
- <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
+        id S230225AbhDWMRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:17:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E312E11D4;
+        Fri, 23 Apr 2021 05:16:36 -0700 (PDT)
+Received: from [10.57.62.63] (unknown [10.57.62.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 140C03F694;
+        Fri, 23 Apr 2021 05:16:35 -0700 (PDT)
+Subject: Re: [PATCH] arm/mach-hisi: Use BUG_ON instead of if condition
+ followed by BUG
+To:     zhouchuangao <zhouchuangao@vivo.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1619165686-69955-1-git-send-email-zhouchuangao@vivo.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8875077b-ed17-0896-97e7-1b2b13e9a9fa@arm.com>
+Date:   Fri, 23 Apr 2021 13:16:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5cf35f3742d1181421d955174b1aa9434d042c96.camel@kepstin.ca>
+In-Reply-To: <1619165686-69955-1-git-send-email-zhouchuangao@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:42:09AM -0400, Calvin Walton wrote:
-> On Tue, 2021-04-20 at 22:37 +0800, Chen Yu wrote:
-> > On Tue, Apr 20, 2021 at 09:28:06AM -0400, Calvin Walton wrote:
-> > > This patch has the same issue I noticed with the initial revision
-> > > of
-> > > Terry's patch - the idx_to_offset function returns type int (32-bit
-> > > signed), but MSR_PKG_ENERGY_STAT is greater than INT_MAX (or
-> > > rather,
-> > > would be interpreted as a negative number)
-> > > 
-> > > The end result is, as far as I can tell, that it hits the if
-> > > (offset <
-> > > 0) check in update_msr_sum() resulting in the timer callback for
-> > > updating the stat in the background when long durations are used to
-> > > not
-> > > happen.
-> > > 
-> > > For short durations it still works fine since the background update
-> > > isn't used.
-> > > 
-> > Ah, got it, nice catch. How about an incremental patch based on Bas'
-> > one
-> > to fix this 'overflow' issue? Would converting offset_to_idx(),
-> > idx_to_offset() and
-> > update_msr_sum() to use off_t instead of int be enough? Do you or
-> > Terry have interest
-> > to cook that patch? For Terry's version, I'm not sure if spliting
-> > the code into different CPU vendor would benefit in the future,
-> > except
-> > that we would have plenty of new MSRs to be introduced in the future.
+On 2021-04-23 09:14, zhouchuangao wrote:
+> BUG_ON uses unlikely in if(). Through disassembly, we can see that
+> brk #0x800 is compiled to the end of the function.
+> As you can see below:
+>      ......
+>      ffffff8008660bec:   d65f03c0    ret
+>      ffffff8008660bf0:   d4210000    brk #0x800
 > 
-> Yes, I believe updating the offset_to_idx(), idx_to_offset(), and
-> update_msr_sum() functions is sufficient. I can do the incremental
-> patch for that this evening if nobody beats me to it :)
->
-Calvin, could you please take a look at the following version if it is suitible?
+> Usually, the condition in if () is not satisfied. For the
+> multi-stage pipeline, we do not need to perform fetch decode
+> and excute operation on brk instruction.
 
-From b2e63fe4f02e17289414b4f61237da822df115fb Mon Sep 17 00:00:00 2001
-From: Calvin Walton <calvin.walton@kepstin.ca>
-Date: Fri, 23 Apr 2021 17:32:13 +0800
-Subject: [PATCH 3/5] tools/power turbostat: Fix offset overflow issue in index
- converting
+32-bit Arm does not have "ret" and "brk" instructions, and either way 
+the relevant BUG() instruction(s) aren't executed unless the condition 
+is met, so this really makes very little sense.
 
-The idx_to_offset() function returns type int (32-bit signed), but
-MSR_PKG_ENERGY_STAT is greater than INT_MAX (or rather, would be
-interpreted as a negative number). The end result is that it hits
-the if (offset < 0) check in update_msr_sum() resulting in the timer
-callback for updating the stat in the background when long durations
-are used to not happen. The similar issue exists in offset_to_idx()
-and update_msr_sum().
+> In my opinion, this can improve the efficiency of the
+> multi-stage pipeline.
 
-This patch fixes this issue by converting the 'int' type to 'off_t'
-accordingly.
+It has very little to do with the pipeline - modern cores are 
+considerably more sophisticated than the 3-stage Acorn RISC Machine of 
+1985, and are not usually limited by frontend throughput. The point of 
+unlikely() is to avoid having a normally-taken forward branch to skip 
+over in-line code, and instead make sure the only thing in the normal 
+execution path is a normally-not-taken branch to handle the condition 
+out-of-line. Yes, the impact of branches - and thus why it can be 
+desirable to avoid them - is indeed *related* to pipelining, but that's 
+rather tangential.
 
-Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- tools/power/x86/turbostat/turbostat.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Even then, it's only worth considering things at this level in 
+frequently-executed and/or performance-critical code. Saving a couple of 
+CPU cycles in something that is effectively a one-time operation is 
+utterly immaterial.
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index a211264b57fd..77557122b292 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -296,9 +296,9 @@ struct msr_sum_array {
- /* The percpu MSR sum array.*/
- struct msr_sum_array *per_cpu_msr_sum;
- 
--int idx_to_offset(int idx)
-+off_t idx_to_offset(int idx)
- {
--	int offset;
-+	off_t offset;
- 
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
-@@ -328,7 +328,7 @@ int idx_to_offset(int idx)
- 	return offset;
- }
- 
--int offset_to_idx(int offset)
-+int offset_to_idx(off_t offset)
- {
- 	int idx;
- 
-@@ -3338,7 +3338,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
- 
- 	for (i = IDX_PKG_ENERGY; i < IDX_COUNT; i++) {
- 		unsigned long long msr_cur, msr_last;
--		int offset;
-+		off_t offset;
- 
- 		if (!idx_valid(i))
- 			continue;
-@@ -3347,7 +3347,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
- 			continue;
- 		ret = get_msr(cpu, offset, &msr_cur);
- 		if (ret) {
--			fprintf(outf, "Can not update msr(0x%x)\n", offset);
-+			fprintf(outf, "Can not update msr(0x%llx)\n", (long long int)offset);
- 			continue;
- 		}
+The realistic justification for these patches is that that BUG_ON() 
+exists for implementing conditional BUG()s, so we may as well use it if 
+it makes the source code more readable.
 
-thanks,
-Chenyu 
--- 
-2.25.1
+> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+> ---
+>   arch/arm/mach-hisi/hotplug.c  | 3 +--
+>   arch/arm/mach-hisi/platmcpm.c | 4 ++--
+>   2 files changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/mach-hisi/hotplug.c b/arch/arm/mach-hisi/hotplug.c
+> index c517941..b9ced60 100644
+> --- a/arch/arm/mach-hisi/hotplug.c
+> +++ b/arch/arm/mach-hisi/hotplug.c
+> @@ -193,8 +193,7 @@ void hix5hd2_set_cpu(int cpu, bool enable)
+>   	u32 val = 0;
+>   
+>   	if (!ctrl_base)
+> -		if (!hix5hd2_hotplug_init())
+> -			BUG();
+> +		BUG_ON(!hix5hd2_hotplug_init());
 
- 
-> -- 
-> Calvin Walton <calvin.walton@kepstin.ca>
+Whatever tool you're using to detect these patterns, consider improving 
+it, or at least giving a bit more thought to the results beyond blindly 
+applying one single rule - "if(x) BUG_ON(y);" arguably makes even less 
+sense since it's now neither one thing nor the other.
+
+Robin.
+
+>   	if (enable) {
+>   		/* power on cpu1 */
+> diff --git a/arch/arm/mach-hisi/platmcpm.c b/arch/arm/mach-hisi/platmcpm.c
+> index 96a4840..6c90039 100644
+> --- a/arch/arm/mach-hisi/platmcpm.c
+> +++ b/arch/arm/mach-hisi/platmcpm.c
+> @@ -82,8 +82,8 @@ static void hip04_set_snoop_filter(unsigned int cluster, unsigned int on)
+>   {
+>   	unsigned long data;
+>   
+> -	if (!fabric)
+> -		BUG();
+> +	BUG_ON(!fabric);
+> +
+>   	data = readl_relaxed(fabric + FAB_SF_MODE);
+>   	if (on)
+>   		data |= 1 << cluster;
 > 
