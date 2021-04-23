@@ -2,129 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F56B3694E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976F93694E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242618AbhDWOjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 10:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S242645AbhDWOjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 10:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhDWOjC (ORCPT
+        with ESMTP id S231680AbhDWOjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:39:02 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F796C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:38:25 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id o16so11711401plg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:38:25 -0700 (PDT)
+        Fri, 23 Apr 2021 10:39:35 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761E4C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:38:58 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id c84-20020a4a4f570000b02901e9af00ac1bso4510930oob.10
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jZFgm5N6/Y10vZ8zzUrUrLAgBX0ZnJqU/nldAdzP3yo=;
-        b=H/nmXg8/E0ixgUmYWTeY4T7YAZm8nJu/6lIcOOdwl6T70IErQa+C+/nmEvciFrZODG
-         AsJ4tFpgqQ0PTC2/cmPf/j1lvnz9r0WpuqObAFthhmfELinTytl4QuQNEyuwUGjvWA/0
-         nOl/T3edHRIK2QAMCfIfwK8Vd1o0YrK9nBFdK4lHBYD7qwdS5Yi9SxWX+JZXJaU33uqG
-         I7mmdZMntHU3YYNNDVftRW88zuQlsa0R7sLuEdNNQodd5OsvPDyri0OPxpnx/xfEq+xL
-         oUvlsRtVT5woum7/h3hOovTdLgRYFbDYkrFKHhvv10+VmkEV83Jtpw17XVFnDrbpy/ck
-         wr3g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j7H66Q86PkqXddsGRSzDhW4KjXrdQxkyswMmMQ3oN5g=;
+        b=mlD/Ib2JrhwFrgExe+x3hpDMlp3RSrHYB2tNVu80feRxTbqvMd2QpOlutN+Rvkuj+T
+         jBH8i54eqXVT66gSXFoYtUnLqdwYCLUUJQFjkS4kt8REhBbXQWZcBYxwpoyMfx1yNMNo
+         M913qVUpb3psQIYYSm6wx7eqSNIv080KznTJ0cIbr4jzW3P+2pTq49VJAqtFwpFB6idM
+         Qv4uBcCraytQe0aAXGWs4XVIS5ufcxmo8HxWNQU2rX/v1bQ3TvRsrDyL+PAeheN7A7ib
+         EV6NHRAjFz+0xzRqDpi9cLCKAbRRcj4ZrC69Zw/jTNcUD3ij2d5xAHXhHo7YrKZxZYBm
+         du+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jZFgm5N6/Y10vZ8zzUrUrLAgBX0ZnJqU/nldAdzP3yo=;
-        b=IrBcpnG7yLakk8crwvuK4RZeQ8YiZX9pvTClKY+wyT+2CV7iKgrJRVQNGpL5Q3FxJk
-         nCJSgeDU8/NVFBgnzeVmDMcD8OFux8NHXYJmvNcIU6PuMApKFRByZeXCUdOpaQ4eEHA3
-         XIg3TrLVHwQhkv08v1jFUt97cgVaC/Lgdo3V9a2xL6WgeXoajcK1xhUzKIcvpd2VF5nt
-         0RS1438Sf2N1qPnEtPa+/cqcNm27ieJedrQ4aPTM0MCkIng9gRmy8g+xdhAOAedDbaDq
-         eV/askZdkkKBYgjDJ8sLRxlCPNh/alAaRHUhRgPkvCHdwtC9ewI+jpSrg3FO0Y+J+Kvq
-         TOxA==
-X-Gm-Message-State: AOAM5318/X6yzEBMhVPpCwBdAUK3Y9Ovnz7thmwcjitFf/M17jlZ0PPa
-        3lw8hkEZRXbpEU/k+3SbtimP+w==
-X-Google-Smtp-Source: ABdhPJyApPsxtWTYYWCXzKz557925Zf6L63RYJC9BWvrJOHfmAHWI1srr7XxQ0QJxLF8UJlCjNCjtA==
-X-Received: by 2002:a17:902:c14d:b029:ec:acd9:d5a0 with SMTP id 13-20020a170902c14db02900ecacd9d5a0mr4006024plj.60.1619188704858;
-        Fri, 23 Apr 2021 07:38:24 -0700 (PDT)
-Received: from ?IPv6:2600:380:497c:70df:6bb6:caf7:996c:9229? ([2600:380:497c:70df:6bb6:caf7:996c:9229])
-        by smtp.gmail.com with ESMTPSA id ms9sm7952480pjb.32.2021.04.23.07.38.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 07:38:24 -0700 (PDT)
-Subject: Re: [PATCH v8] bio: limit bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>, bvanassche@acm.org,
-        Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
-        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-References: <CGME20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a@epcas1p1.samsung.com>
- <20210421094745.29660-1-nanich.lee@samsung.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2f881b00-e434-d713-8cfc-18162a16f7f7@kernel.dk>
-Date:   Fri, 23 Apr 2021 08:38:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j7H66Q86PkqXddsGRSzDhW4KjXrdQxkyswMmMQ3oN5g=;
+        b=PgCS2soQ4ie9h6uzMXzdzcohTXV6E+88EFQwJX3o60fRvGqo4fiuPH+8I7sUCQrgvk
+         X5/juqoQUQfY1S17Rh+4VjrziBJxvwiAqxCasEhfIm3QW/efQpKdubDc9uJEnjkCHco1
+         vkR8kZoTjbZgBqLejSxccuAkk3IPuzvjql1R5eKNCAI+hmf558aRWx531PayRft666Yn
+         OMWaP7XDgCHXC/e3tVEzQarB9KqIUK6SbJFRV+9UJU+PxdiYZ2Uqt+g2mEhe+G+HF7ig
+         ni+GaP/DhglgbKFGfZAmHchoGdcecQ0hhOtFEbo+qK9gjMA9EcDnzEvR1h0qoQxTsei1
+         px6w==
+X-Gm-Message-State: AOAM531J4WfidXf7GyJNj6b2WlmeLdSmv7WMQBleq9/BO8eFsvJ8I1bt
+        0xpijSRbV9PtE+HycXrGz3xw/w==
+X-Google-Smtp-Source: ABdhPJzZGbgXls4SipwM18uE0byctPAhPmlAZL5eg5eOD8s1W1zn+bjHr0I25Veo5FZM9qcw9Km5YQ==
+X-Received: by 2002:a4a:765c:: with SMTP id w28mr3325562ooe.8.1619188737811;
+        Fri, 23 Apr 2021 07:38:57 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q23sm1395627otc.7.2021.04.23.07.38.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 07:38:57 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 09:38:55 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/27] drm/bridge: ti-sn65dsi86: Cleanup managing of
+ drvdata
+Message-ID: <YILb/xBRWvJH7UAL@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.12.If5d4d4e22e97bebcd493b76765c1759527705620@changeid>
 MIME-Version: 1.0
-In-Reply-To: <20210421094745.29660-1-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416153909.v4.12.If5d4d4e22e97bebcd493b76765c1759527705620@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/21/21 3:47 AM, Changheun Lee wrote:
-> bio size can grow up to 4GB when muli-page bvec is enabled.
-> but sometimes it would lead to inefficient behaviors.
-> in case of large chunk direct I/O, - 32MB chunk read in user space -
-> all pages for 32MB would be merged to a bio structure if the pages
-> physical addresses are contiguous. it makes some delay to submit
-> until merge complete. bio max size should be limited to a proper size.
-> 
-> When 32MB chunk read with direct I/O option is coming from userspace,
-> kernel behavior is below now in do_direct_IO() loop. it's timeline.
-> 
->  | bio merge for 32MB. total 8,192 pages are merged.
->  | total elapsed time is over 2ms.
->  |------------------ ... ----------------------->|
->                                                  | 8,192 pages merged a bio.
->                                                  | at this time, first bio submit is done.
->                                                  | 1 bio is split to 32 read request and issue.
->                                                  |--------------->
->                                                   |--------------->
->                                                    |--------------->
->                                                               ......
->                                                                    |--------------->
->                                                                     |--------------->|
->                           total 19ms elapsed to complete 32MB read done from device. |
-> 
-> If bio max size is limited with 1MB, behavior is changed below.
-> 
->  | bio merge for 1MB. 256 pages are merged for each bio.
->  | total 32 bio will be made.
->  | total elapsed time is over 2ms. it's same.
->  | but, first bio submit timing is fast. about 100us.
->  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
->       | 256 pages merged a bio.
->       | at this time, first bio submit is done.
->       | and 1 read request is issued for 1 bio.
->       |--------------->
->            |--------------->
->                 |--------------->
->                                       ......
->                                                  |--------------->
->                                                   |--------------->|
->         total 17ms elapsed to complete 32MB read done from device. |
-> 
-> As a result, read request issue timing is faster if bio max size is limited.
-> Current kernel behavior with multipage bvec, super large bio can be created.
-> And it lead to delay first I/O request issue.
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
 
-Applied, thanks.
+> Let's:
+> - Set the drvdata as soon as it's allocated. This just sets up a
+>   pointer so there's no downside here.
+> - Remove the useless call to i2c_set_clientdata() which is literally
+>   the same thing as dev_set_drvdata().
+> 
+> No functional changes intended.
+> 
 
--- 
-Jens Axboe
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Regards,
+Bjorn
+
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 2cbf619fbd27..a200e88fd006 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -1238,6 +1238,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  	pdata = devm_kzalloc(dev, sizeof(struct ti_sn65dsi86), GFP_KERNEL);
+>  	if (!pdata)
+>  		return -ENOMEM;
+> +	dev_set_drvdata(dev, pdata);
+> +	pdata->dev = dev;
+>  
+>  	pdata->regmap = devm_regmap_init_i2c(client,
+>  					     &ti_sn65dsi86_regmap_config);
+> @@ -1246,16 +1248,12 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return PTR_ERR(pdata->regmap);
+>  	}
+>  
+> -	pdata->dev = dev;
+> -
+>  	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &pdata->panel, NULL);
+>  	if (ret) {
+>  		DRM_ERROR("could not find any panel node\n");
+>  		return ret;
+>  	}
+>  
+> -	dev_set_drvdata(dev, pdata);
+> -
+>  	pdata->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+>  	if (IS_ERR(pdata->enable_gpio)) {
+>  		DRM_ERROR("failed to get enable gpio from DT\n");
+> @@ -1287,8 +1285,6 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+>  		return ret;
+>  	}
+>  
+> -	i2c_set_clientdata(client, pdata);
+> -
+>  	pdata->aux.name = "ti-sn65dsi86-aux";
+>  	pdata->aux.dev = dev;
+>  	pdata->aux.transfer = ti_sn_aux_transfer;
+> -- 
+> 2.31.1.368.gbe11c130af-goog
+> 
