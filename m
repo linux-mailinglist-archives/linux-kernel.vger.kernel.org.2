@@ -2,153 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D6B369623
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5425369624
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhDWP0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:26:30 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:4270 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231437AbhDWP03 (ORCPT
+        id S241174AbhDWP1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231437AbhDWP1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:26:29 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13NFG0kM005206;
-        Fri, 23 Apr 2021 15:25:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=pbVVKuyQK5q5hcI5v7ncsGBjn84Ca1cs5D6tvGmMKec=;
- b=Oc/rDr5qh9qz5jB47ktLNEj9/5BLNwf1kAqA/ic9XZ8wfJknOxMhUXeV2yB+K98uTKFD
- cXVVJQb7TGclTwRgn0uIhaARpz6sfewc4Eg09iej6BjwrQUZDpUEqK2MmvbY4uZ+L1+m
- uDfsN4F0vQKEnh3BFKGTpPvvEKWvdK93ryQATl/okK5GxmxePP88B0HQ1XBIB19SjJVb
- MeYNiwHodPz/85vJfDssd0Em3ABOGBnA1xl7hpt+eCPuKf/9Sek1EomD90p7EAT6nKzk
- AeZQonaeduVZQUgwK4AyU2MMHgII1FN4fgQJFHegZuHmiJEY+MQqplsfMyZHSxWaVXjq Bg== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 383j5s895t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Apr 2021 15:25:24 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 13NFK2L2114865;
-        Fri, 23 Apr 2021 15:25:23 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 383cgaf70y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Apr 2021 15:25:23 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13NFP2Di131894;
-        Fri, 23 Apr 2021 15:25:22 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 383cgaf70k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Apr 2021 15:25:22 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13NFPAIL009081;
-        Fri, 23 Apr 2021 15:25:10 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 23 Apr 2021 08:25:10 -0700
-Date:   Fri, 23 Apr 2021 18:24:59 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sergey Organov <sorganov@gmail.com>
-Cc:     Walter Harms <wharms@bfs.de>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        Brad Bishop <bradleyb@fuzziesquirrel.com>,
-        Patrick Venture <venture@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Robert Lippert <rlippert@google.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: Re: AW: [PATCH] soc: aspeed: fix a ternary sign expansion bug
-Message-ID: <20210423152459.GU1959@kadam>
-References: <YIE90PSXsMTa2Y8n@mwanda>
- <59596244622c4a15ac8cc0747332d0be@AcuMS.aculab.com>
- <877dktuvmz.fsf@osv.gnss.ru>
- <265e2d3accc74c89b5bab22eadb43808@AcuMS.aculab.com>
- <ebe4a1a6dd0748e28e6ca19aec20223e@bfs.de>
- <878s59rrn0.fsf@osv.gnss.ru>
+        Fri, 23 Apr 2021 11:27:06 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2439DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:26:28 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q2so2334470pfk.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 08:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ALGtkYyLUpCBAJ1o9NtNwPSNEj38bupU6cSgQhJvZ7g=;
+        b=pt/c4IGPhTI6pZIzeGammBX8fJIcQBiluwlHn4PG697rZJxtGpsaiV3tQJjivst8KM
+         iTiX28Lsi7thwSa5atxwOpEQd7MBoSg0713xT1boUEufVpId/SHoZok89ftAAMiyJYqb
+         agmVsZWYb/rsfpspzxQlopE/91g0Y03FPIaoJJcE7SuFa0u5+4Fv/ys2TRcEbg2Sc21E
+         6IdcwvoCvtgJVwir6BTP8LS1pKo0blhoeicMm8is+kL28sPwgXkA52kvrcutC/k2Ka/x
+         VOrfH4y81Yf7YKmYQR/1fKmhZk85RrDehHVh31X9myqXMR0SoVMsmY0GfhH3oWf19DUp
+         LJ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ALGtkYyLUpCBAJ1o9NtNwPSNEj38bupU6cSgQhJvZ7g=;
+        b=JQeI2s2LLRTNMOxneeLFIB9lmuWd50vGXg/SJ1ezI3HNhwJOwN0Ey2bQqxvAC14azM
+         oFGlMQxCBDgXATzEbxu7q4eQKYiSdemWC/R7BoPXJCils1zaI8D3cv0LNCGBjNsiQ3K2
+         I+f8gwb3eGZJdkkZCsWDv75hNdX9PI7fTp1dUvQxoWWYmmG8Am+MHRx+2eIvMFoVrOVe
+         4YPOAzxlWBG+KVooq7HshjzdeGAWS4mRnKHe9Ifb5RDpJUr/ztTmKFf/LLIU/vKeNtzR
+         Oe74N3NZGEu9pSBCAJI//AaAdf2bMdshEOQFRVa1vrdvbDmIE+GAF50qD2g7SDNBedvT
+         yyTg==
+X-Gm-Message-State: AOAM5309yfzQful1uY8WBDFeiwrxanqJtqGt0Ry4ERm9XH+kNXgDjOAD
+        qY5gayfMSo3iSP9Cb7ba7/I=
+X-Google-Smtp-Source: ABdhPJwEGEj0ALSzPIRf16F6cjXUJ6+tqkooFfGXCA6xraKG66yxCu4pIPAIED69ZqO0v7xWh7AClQ==
+X-Received: by 2002:a65:4382:: with SMTP id m2mr4350176pgp.354.1619191587483;
+        Fri, 23 Apr 2021 08:26:27 -0700 (PDT)
+Received: from ashish-NUC8i5BEH ([182.77.14.23])
+        by smtp.gmail.com with ESMTPSA id t1sm5044897pjo.33.2021.04.23.08.26.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 08:26:26 -0700 (PDT)
+From:   Ashish Kalra <eashishkalra@gmail.com>
+X-Google-Original-From: Ashish Kalra <ashish@ashish-NUC8i5BEH>
+Date:   Fri, 23 Apr 2021 20:56:19 +0530
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ashish Kalra <eashishkalra@gmail.com>,
+        Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Romain Perier <romain.perier@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Ivan Safonov <insafonov@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wlan-ng: silence incorrect type in argument 1
+ (different address spaces) warning
+Message-ID: <20210423152619.GA2469@ashish-NUC8i5BEH>
+References: <20210420090142.GA4086@ashish-NUC8i5BEH>
+ <YIE3IffGcjrkz4ZE@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878s59rrn0.fsf@osv.gnss.ru>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: PN18IsdkXlnRXsRsGcqbP1RqHBC8pUjr
-X-Proofpoint-GUID: PN18IsdkXlnRXsRsGcqbP1RqHBC8pUjr
+In-Reply-To: <YIE3IffGcjrkz4ZE@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 05:40:19PM +0300, Sergey Organov wrote:
-> Walter Harms <wharms@bfs.de> writes:
+On Thu, Apr 22, 2021 at 10:43:13AM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Apr 20, 2021 at 02:31:42PM +0530, Ashish Kalra wrote:
+> > Upon running sparse, "warning: incorrect type in argument 1 (different address spaces)
+> > is brought to notice for this file.let's add correct typecast to make it cleaner and
+> > silence the Sparse warning.
+> > 
+> > Signed-off-by: Ashish Kalra <eashishkalra@gmail.com>
+> > ---
+> >  drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+> > index 6f9666dc0277..70570e8a5ad2 100644
+> > --- a/drivers/staging/wlan-ng/p80211netdev.c
+> > +++ b/drivers/staging/wlan-ng/p80211netdev.c
+> > @@ -569,7 +569,7 @@ static int p80211knetdev_do_ioctl(struct net_device *dev,
+> >  		goto bail;
+> >  	}
+> >  
+> > -	msgbuf = memdup_user(req->data, req->len);
+> > +	msgbuf = memdup_user((void __user *)req->data, req->len);
 > 
-> > as indepentent observer,
-> > i would go for Dans solution:
-> >
-> > ret = kfifo_to_user();
-> > /* if an error occurs just return */
-> > if (ret)
-> >    return ret;
-> >
-> > /* otherwise return the copied number of bytes */
-> >
-> > return copied;
-> >
-> > there is no need for any deeper language knowledge,
+> Why isn't data being declared as a __user pointer to start with?  Why is
+> the cast needed here?
 > 
-> Yep, but this is not idiomatic C, so one looking at this code would
-> tend to convert it back to ternary, and the actual problem here is that
-> the type of 'copied' does not match the return type of the function.
->
+> This feels wrong as if it is papering over the real problem.
+> 
+> thanks,
+> 
+> greg k-h
+Thanks for your inputs
+variable data in structure p80211ioctl_req is used only inside this function and is 
+already casted to void __user * for copy_to_user. Should it be changed 
+to void __user from caadr_t inside p80211ioctl.h. it should be same at runtime
 
-I help maintain drivers/staging.  I would hope that no one would send us
-a patch like this because it's not a checkpatch or CodingStyle violation.
-But people have sent us these before and Greg NAKs them because he
-doesn't like ternaries.  I NAK them because I like my success path kept
-separate from the failure path.  I want the success path indented one
-tab and the failure path indented two tabs.  I like when code is written
-ploddingly, without fanciness, or combining multiple things on one line.
+--- a/drivers/staging/wlan-ng/p80211ioctl.h
++++ b/drivers/staging/wlan-ng/p80211ioctl.h
+@@ -81,7 +81,7 @@
+ 
+ struct p80211ioctl_req {
+        char name[WLAN_DEVNAMELEN_MAX];
+-       caddr_t data;
++       void __user *data;
 
-Using a ternary in this context seems to me like it falls under the
-anti-pattern of "making the last call in a function weird".  A lot of
-times people change from failure handling to success handling for the
-last function call.
+Does this looks ok to you and is there any other check possible if this is ok?
 
-	err = one();
-	if (err)
-		goto fail;
-	err = two();
-	if (err)
-		goto fail;
-	err = three();
-	if (!err)
-		return 0;
-goto fail:
-	print("failed!\n");
+Regards
+Ashish  
 
-It seems crazy, but people do this all the time!  It's fine to do:
-
-	return three();
-
-There are some maintainers who insist that it should be:
-
-	err = three();
-	if (err)
-		return err;
-	return 0;
-
-I don't go as far as that.  But I also do like when I can glance at the
-function and there is a giant "return 0;" at the bottom.
-
-Anyway, if people change it back to ternary then the kbuild bot will
-send them a warning message and they'll learn about an odd quirk in C's
-type promotion rules.
-
-regards,
-dan carpenter
