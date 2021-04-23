@@ -2,92 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87528369AA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAD5369A9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243716AbhDWTIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S243532AbhDWTG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbhDWTIL (ORCPT
+        with ESMTP id S229549AbhDWTG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:08:11 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E715C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:07:33 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id a18so13408807qtj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:07:33 -0700 (PDT)
+        Fri, 23 Apr 2021 15:06:58 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5DBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:06:20 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j14-20020a17090a694eb0290152d92c205dso1729170pjm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 12:06:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n0KplKB6ILQwW/bgPpQ2738PMI2LhpDDm2bWSz1MytY=;
-        b=p9tM9Ml/bb+DAfrlK7YmRL+mRcxyVGxfnBT/LiM/+FT9VhfncEr5/a8mJcp/gHk1OH
-         F30BpiXsNmC5qo8mwMC2DcRXKBVyYlxA3oareOGufhx3d4CMqIZ7r+yXVNxoKPoSfE0O
-         njo4Pfmxc3f2tMuoLqOZEW7QkVaypawq3sg/9fmmszxzcMvAkmC9uwodEt5UFVQT4p4F
-         srfzvkKs7vHWV+qxY6jZ9x1y/A+PwYWBif/Lsm29DevYfqVOd2yRrF0TNl65+VTIqYpX
-         xgmN8gK4/vTR6fFoTAgzcOjmrdbtV1MAU+s1K8lCysNgGoe7opJtxE7sQM1Dx4VebYY1
-         rUMw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GpqOHn/9B9hSZVCdkn9bD5TQglqedYD5yQE2kwe7+Eo=;
+        b=BxPC1ErkiPg0mzt5jzCE6imPVfaIddBKFHJEDMk+3J9PzEMiP3RwLJJ9R3yYcuY7KG
+         dA+BehMoNCCD3l3aMJK47uzSNDSacKLDHtsnBo6YlsZUh3yEd4E4KQP621ZpakIUFxHA
+         3HjmBYz0cyeAPfbFiMLhss4Kvbt/n6JZzrNRc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n0KplKB6ILQwW/bgPpQ2738PMI2LhpDDm2bWSz1MytY=;
-        b=Qj46X4lko+N3yA5lcRMNgqWjjjRUvX5ybztAO2PM2wW5EKSk0gDxVuA11CY7TVfwoN
-         zqSKbBlx5CW+toddKNhukiWqQC6zmMF6KrmmManuch6LMNBb705QZm060YGO8m4Z0uPx
-         t+r2b2BCrBhb3P2+ieVB8fweQ8EcNnl1U/rkXg0VL2xWpThhAMAyrj8DQbCS2FgSuczZ
-         xgWWE/ISptbKwoGidAKEEY8gbQqhNE7/fMEZ8Eypg5gu1HN0DQeTh/K+vOw4xk19I3ll
-         xw6jY2cUoiX+tavH6OQslGLF1Slt08W0jk0fTXflp8Pyd6pTFI8TEX3Dc7Zu0t8tiRRY
-         Wz7A==
-X-Gm-Message-State: AOAM531ONsoCXbP7LU6IC6epfnyjlUtRhNSMNjFSlnWivJ0D3Jr1f5M8
-        LQEnVtdBB01ZOfNLy6d6wpqHcQ==
-X-Google-Smtp-Source: ABdhPJy5sUSoIk7bk/07y8I+N/+VOsacXAk9XOEaeraz2zOzi+bCBuue96VHvdQn8xMwE7kLPrSNUQ==
-X-Received: by 2002:ac8:6654:: with SMTP id j20mr5106910qtp.328.1619204852376;
-        Fri, 23 Apr 2021 12:07:32 -0700 (PDT)
-Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id t184sm4898250qkd.77.2021.04.23.12.07.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GpqOHn/9B9hSZVCdkn9bD5TQglqedYD5yQE2kwe7+Eo=;
+        b=nk4U81k65R060GzN63ISi/fLAunJnNfsht33XZVqLIi61MPULO07aP3lqmn9dLUvOg
+         F6YZFW6p7BQy9tBXTJxW5l+E/TKBgR7314a4C2xf0NToA7B1Ws7pvLIoXLZCLnTExp01
+         W0rjVnS9C6msJ7JEErCMzhjThxX4BhJVzhu09MBYjftgV1HWIcHG5/OKgrEzosKhQmyx
+         8O5kaVvcTN6XyvH3A7n2ijlWZc1xuj/btxMBwv8syfnXBOrEubmeIDtza2VdgMscd7zP
+         BpoKVdUDU+SQiPEVfG/9XmWhti9NNZ9NClUQN7fNzHiqCcSwDJvtg4+pySWaUp5y9L5I
+         DQ9Q==
+X-Gm-Message-State: AOAM5327898U4QWoXaN4F3oNg/6hyIeazkYEhzRR2jvmw8eogRS4dN/+
+        iXA2BZjj+doBlIdGqoM4E0vQdCznkxwJsA==
+X-Google-Smtp-Source: ABdhPJzYZkSuoxgidmF/KPrSbE9Ua89opGdRHB4AAnsUO5lp6E3kBAAVvSp1N1fyfEymVkDJjD5fjg==
+X-Received: by 2002:a17:902:8bcb:b029:ec:a192:21cf with SMTP id r11-20020a1709028bcbb02900eca19221cfmr5228506plo.71.1619204779623;
+        Fri, 23 Apr 2021 12:06:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a129sm5528260pfa.36.2021.04.23.12.06.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 12:07:31 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: fix minor version to indicate MSM_PARAM_SUSPENDS support
-Date:   Fri, 23 Apr 2021 15:04:20 -0400
-Message-Id: <20210423190420.25217-1-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
+        Fri, 23 Apr 2021 12:06:18 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 12:06:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tools build: Fix quiet cmd indentation
+Message-ID: <202104231158.30BC61C4F@keescook>
+References: <20210421185848.1292167-1-keescook@chromium.org>
+ <YIMX164sB0CjPHUW@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIMX164sB0CjPHUW@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increase the minor version to indicate that MSM_PARAM_SUSPENDS is supported.
+On Fri, Apr 23, 2021 at 03:54:15PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Apr 21, 2021 at 11:58:48AM -0700, Kees Cook escreveu:
+> > The tools quiet cmd output has mismatched indentation (and extra space
+> > character between cmd name and target name) compared to the rest of
+> > kbuild out:
+> > 
+> >   HOSTCC  scripts/insert-sys-cert
+> >   LD       /srv/code/tools/objtool/arch/x86/objtool-in.o
+> >   LD       /srv/code/tools/objtool/libsubcmd-in.o
+> >   AR       /srv/code/tools/objtool/libsubcmd.a
+> >   HOSTLD  scripts/genksyms/genksyms
+> >   CC      scripts/mod/empty.o
+> >   HOSTCC  scripts/mod/mk_elfconfig
+> >   CC      scripts/mod/devicetable-offsets.s
+> >   MKELF   scripts/mod/elfconfig.h
+> >   HOSTCC  scripts/mod/modpost.o
+> >   HOSTCC  scripts/mod/file2alias.o
+> >   HOSTCC  scripts/mod/sumversion.o
+> >   LD       /srv/code/tools/objtool/objtool-in.o
+> >   LINK     /srv/code/tools/objtool/objtool
+> >   HOSTLD  scripts/mod/modpost
+> >   CC      kernel/bounds.s
+> > 
+> > Adjust to match the rest of kbuild.
+> 
+> Is this some recent regression? I never noticed this when build perf,
+> with what I have in perf/urgent:
+> [...]
+> It seems nicely aligned:
+> [...]
+>   GEN      /tmp/build/perf/common-cmds.h
+>   CC       /tmp/build/perf/perf-read-vdso32
+>   CC       /tmp/build/perf/exec-cmd.o
+>   MKDIR    /tmp/build/perf/fd/
 
-Fixes: 3ab1c5cc3939 ("drm/msm: Add param for userspace to query suspend count")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/msm_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is a "tools only" build. I wasn't clear enough in my commit log
+(sorry, I can fix that if needed): it's mismatched with regard to the
+rest of the kernel's kbuild output. (And since objtool is built out of
+tools/, I see intermixed indentation on parallelized x86 builds.)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 7bb34ae95037..a63e969e5efb 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -42,7 +42,7 @@
-  * - 1.7.0 - Add MSM_PARAM_SUSPENDS to access suspend count
-  */
- #define MSM_VERSION_MAJOR	1
--#define MSM_VERSION_MINOR	6
-+#define MSM_VERSION_MINOR	7
- #define MSM_VERSION_PATCHLEVEL	0
- 
- static const struct drm_mode_config_funcs mode_config_funcs = {
+And, in fact, you can see it just in our combined email reply
+quotations. The first line is a build target from the main kernel (from
+my email), and the second is a build target from tools/ (from your email,
+with additional email-quote-prefixing added for comparison):
+
+> >   CC      scripts/mod/empty.o
+> >   CC       /tmp/build/perf/exec-cmd.o
+--------------^
+
+(I haven't looked into what's needed to strip $(obj) from the tools/
+target output, but that isn't as jarring for me as the extra space.)
+
+I also nominate myself for "most trivial patch this week" award.
+
+-Kees
+
 -- 
-2.26.1
-
+Kees Cook
