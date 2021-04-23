@@ -2,49 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176C23692BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A093692C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242614AbhDWNIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:08:47 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37968 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242646AbhDWNId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:08:33 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lZvXD-000elp-OF; Fri, 23 Apr 2021 15:07:51 +0200
-Date:   Fri, 23 Apr 2021 15:07:51 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: nxp-c45-tja11xx: add interrupt support
-Message-ID: <YILGp+LdyxsRhkb2@lunn.ch>
-References: <20210423124329.993850-1-radu-nicolae.pirea@oss.nxp.com>
+        id S242513AbhDWNLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:11:30 -0400
+Received: from mail-177142.yeah.net ([123.58.177.142]:6191 "EHLO
+        mail-177142.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230521AbhDWNL0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:11:26 -0400
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-177142.yeah.net (Hmail) with ESMTP id 0B522642226;
+        Fri, 23 Apr 2021 21:10:48 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ABIADwBIDlOwglwOvNgTgKrM.3.1619183448038.Hmail.zhouchuangao@vivo.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Wei Xu <xuwei5@hisilicon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gYXJtL21hY2gtaGlzaTogVXNlIEJVR19PTiBpbnN0ZWFkIG9mIGlmIGNvbmRpdGlvbiBmb2xsb3dlZCBieSBCVUc=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <8875077b-ed17-0896-97e7-1b2b13e9a9fa@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423124329.993850-1-radu-nicolae.pirea@oss.nxp.com>
+Received: from zhouchuangao@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 23 Apr 2021 21:10:48 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5ZGo5Lyg6auY?= <zhouchuangao@vivo.com>
+Date:   Fri, 23 Apr 2021 21:10:48 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQktPHVZMSx8aS0NDGkwdTUNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1IS0NMQktITElKN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6OTI6Pww5Mj8XNAwcFww0DTUcLxwwCTZVSFVKTUpCSkNIT09DSEJKVTMWGhIXVQETFA4YEw4a
+        FRwaFDsNEg0UVRgUFkVZV1kSC1lBWUhNVUpOSVVKT05VSkNJWVdZCAFZQU1NTUo3Bg++
+X-HM-Tid: 0a78fedaaff06473kurs0b522642226
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static irqreturn_t nxp_c45_handle_interrupt(struct phy_device *phydev)
-> +{
-> +	irqreturn_t ret = IRQ_NONE;
-> +	int irq;
-> +
-> +	irq = phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_PHY_IRQ_STATUS);
-> +	if (irq & PHY_IRQ_LINK_EVENT) {
-> +		phy_trigger_machine(phydev);
-> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_PHY_IRQ_ACK,
-> +			      PHY_IRQ_LINK_EVENT);
-
-The ordering here is interesting. Could phy_trigger_machine() cause a
-second interrupt? Which you then clear without acting upon before
-exiting the interrupt handler? I think you should ACK the interrupt
-before calling phy_trigger_machine().
-
-       Andrew
+Cj5PbiAyMDIxLTA0LTIzIDA5OjE0LCB6aG91Y2h1YW5nYW8gd3JvdGU6Cj4+IEJVR19PTiB1c2Vz
+IHVubGlrZWx5IGluIGlmKCkuIFRocm91Z2ggZGlzYXNzZW1ibHksIHdlIGNhbiBzZWUgdGhhdAo+
+PiBicmsgIzB4ODAwIGlzIGNvbXBpbGVkIHRvIHRoZSBlbmQgb2YgdGhlIGZ1bmN0aW9uLgo+PiBB
+cyB5b3UgY2FuIHNlZSBiZWxvdzoKPj4gICAgICAuLi4uLi4KPj4gICAgICBmZmZmZmY4MDA4NjYw
+YmVjOiAgIGQ2NWYwM2MwICAgIHJldAo+PiAgICAgIGZmZmZmZjgwMDg2NjBiZjA6ICAgZDQyMTAw
+MDAgICAgYnJrICMweDgwMAo+PiAKPj4gVXN1YWxseSwgdGhlIGNvbmRpdGlvbiBpbiBpZiAoKSBp
+cyBub3Qgc2F0aXNmaWVkLiBGb3IgdGhlCj4+IG11bHRpLXN0YWdlIHBpcGVsaW5lLCB3ZSBkbyBu
+b3QgbmVlZCB0byBwZXJmb3JtIGZldGNoIGRlY29kZQo+PiBhbmQgZXhjdXRlIG9wZXJhdGlvbiBv
+biBicmsgaW5zdHJ1Y3Rpb24uCj4KPjMyLWJpdCBBcm0gZG9lcyBub3QgaGF2ZSAicmV0IiBhbmQg
+ImJyayIgaW5zdHJ1Y3Rpb25zLCBhbmQgZWl0aGVyIHdheSAKPnRoZSByZWxldmFudCBCVUcoKSBp
+bnN0cnVjdGlvbihzKSBhcmVuJ3QgZXhlY3V0ZWQgdW5sZXNzIHRoZSBjb25kaXRpb24gCj5pcyBt
+ZXQsIHNvIHRoaXMgcmVhbGx5IG1ha2VzIHZlcnkgbGl0dGxlIHNlbnNlLgo+CgpTb3JyeSwgdGhp
+cyBpcyBqdXN0IGFuIGFuYWx5c2lzIGJhc2VkIG9uIEFSTTY0LgoKPj4gSW4gbXkgb3Bpbmlvbiwg
+dGhpcyBjYW4gaW1wcm92ZSB0aGUgZWZmaWNpZW5jeSBvZiB0aGUKPj4gbXVsdGktc3RhZ2UgcGlw
+ZWxpbmUuCj4KPkl0IGhhcyB2ZXJ5IGxpdHRsZSB0byBkbyB3aXRoIHRoZSBwaXBlbGluZSAtIG1v
+ZGVybiBjb3JlcyBhcmUgCj5jb25zaWRlcmFibHkgbW9yZSBzb3BoaXN0aWNhdGVkIHRoYW4gdGhl
+IDMtc3RhZ2UgQWNvcm4gUklTQyBNYWNoaW5lIG9mIAo+MTk4NSwgYW5kIGFyZSBub3QgdXN1YWxs
+eSBsaW1pdGVkIGJ5IGZyb250ZW5kIHRocm91Z2hwdXQuIFRoZSBwb2ludCBvZiAKPnVubGlrZWx5
+KCkgaXMgdG8gYXZvaWQgaGF2aW5nIGEgbm9ybWFsbHktdGFrZW4gZm9yd2FyZCBicmFuY2ggdG8g
+c2tpcCAKPm92ZXIgaW4tbGluZSBjb2RlLCBhbmQgaW5zdGVhZCBtYWtlIHN1cmUgdGhlIG9ubHkg
+dGhpbmcgaW4gdGhlIG5vcm1hbCAKPmV4ZWN1dGlvbiBwYXRoIGlzIGEgbm9ybWFsbHktbm90LXRh
+a2VuIGJyYW5jaCB0byBoYW5kbGUgdGhlIGNvbmRpdGlvbiAKPm91dC1vZi1saW5lLiBZZXMsIHRo
+ZSBpbXBhY3Qgb2YgYnJhbmNoZXMgLSBhbmQgdGh1cyB3aHkgaXQgY2FuIGJlIAo+ZGVzaXJhYmxl
+IHRvIGF2b2lkIHRoZW0gLSBpcyBpbmRlZWQgKnJlbGF0ZWQqIHRvIHBpcGVsaW5pbmcsIGJ1dCB0
+aGF0J3MgCj5yYXRoZXIgdGFuZ2VudGlhbC4KPgo+RXZlbiB0aGVuLCBpdCdzIG9ubHkgd29ydGgg
+Y29uc2lkZXJpbmcgdGhpbmdzIGF0IHRoaXMgbGV2ZWwgaW4gCj5mcmVxdWVudGx5LWV4ZWN1dGVk
+IGFuZC9vciBwZXJmb3JtYW5jZS1jcml0aWNhbCBjb2RlLiBTYXZpbmcgYSBjb3VwbGUgb2YgCj5D
+UFUgY3ljbGVzIGluIHNvbWV0aGluZyB0aGF0IGlzIGVmZmVjdGl2ZWx5IGEgb25lLXRpbWUgb3Bl
+cmF0aW9uIGlzIAo+dXR0ZXJseSBpbW1hdGVyaWFsLgo+Cj5UaGUgcmVhbGlzdGljIGp1c3RpZmlj
+YXRpb24gZm9yIHRoZXNlIHBhdGNoZXMgaXMgdGhhdCB0aGF0IEJVR19PTigpIAo+ZXhpc3RzIGZv
+ciBpbXBsZW1lbnRpbmcgY29uZGl0aW9uYWwgQlVHKClzLCBzbyB3ZSBtYXkgYXMgd2VsbCB1c2Ug
+aXQgaWYgCj5pdCBtYWtlcyB0aGUgc291cmNlIGNvZGUgbW9yZSByZWFkYWJsZS4KPgoKVGhhbmsg
+eW91IGZvciB5b3VyIGV4Y2VsbGVudCBhbmFseXNpcywgSW5kZWVkLCBvbmx5IGluIHRoZSBjYXNl
+IG9mCkZyZXF1ZW50bHkgRXhlY3V0ZWQgYW5kL29yIFBlcmZvcm1hbmNlLUNyaXRpY2FsIENvZGUs
+IHRoZSBwYXRjaCBpcyBvZgpncmVhdCB2YWx1ZS4KCkhtbS4uLlBlcmhhcHMgdGhlIGJlc3QgcmVh
+c29uIGlzIHRvIG1ha2UgdGhlIGNvZGUgbW9yZSByZWFkYWJsZS4KCkJSLAp6aG91Y2h1YW5nYW8K
+Cj4+IFNpZ25lZC1vZmYtYnk6IHpob3VjaHVhbmdhbyA8emhvdWNodWFuZ2FvQHZpdm8uY29tPgo+
+PiAtLS0KPj4gICBhcmNoL2FybS9tYWNoLWhpc2kvaG90cGx1Zy5jICB8IDMgKy0tCj4+ICAgYXJj
+aC9hcm0vbWFjaC1oaXNpL3BsYXRtY3BtLmMgfCA0ICsrLS0KPj4gICAyIGZpbGVzIGNoYW5nZWQs
+IDMgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9hcmNo
+L2FybS9tYWNoLWhpc2kvaG90cGx1Zy5jIGIvYXJjaC9hcm0vbWFjaC1oaXNpL2hvdHBsdWcuYwo+
+PiBpbmRleCBjNTE3OTQxLi5iOWNlZDYwIDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybS9tYWNoLWhp
+c2kvaG90cGx1Zy5jCj4+ICsrKyBiL2FyY2gvYXJtL21hY2gtaGlzaS9ob3RwbHVnLmMKPj4gQEAg
+LTE5Myw4ICsxOTMsNyBAQCB2b2lkIGhpeDVoZDJfc2V0X2NwdShpbnQgY3B1LCBib29sIGVuYWJs
+ZSkKPj4gICAJdTMyIHZhbCA9IDA7Cj4+ICAgCj4+ICAgCWlmICghY3RybF9iYXNlKQo+PiAtCQlp
+ZiAoIWhpeDVoZDJfaG90cGx1Z19pbml0KCkpCj4+IC0JCQlCVUcoKTsKPj4gKwkJQlVHX09OKCFo
+aXg1aGQyX2hvdHBsdWdfaW5pdCgpKTsKPgo+V2hhdGV2ZXIgdG9vbCB5b3UncmUgdXNpbmcgdG8g
+ZGV0ZWN0IHRoZXNlIHBhdHRlcm5zLCBjb25zaWRlciBpbXByb3ZpbmcgCj5pdCwgb3IgYXQgbGVh
+c3QgZ2l2aW5nIGEgYml0IG1vcmUgdGhvdWdodCB0byB0aGUgcmVzdWx0cyBiZXlvbmQgYmxpbmRs
+eSAKPmFwcGx5aW5nIG9uZSBzaW5nbGUgcnVsZSAtICJpZih4KSBCVUdfT04oeSk7IiBhcmd1YWJs
+eSBtYWtlcyBldmVuIGxlc3MgCj5zZW5zZSBzaW5jZSBpdCdzIG5vdyBuZWl0aGVyIG9uZSB0aGlu
+ZyBub3IgdGhlIG90aGVyLgo+Cj5Sb2Jpbi4KPgo+PiAgIAlpZiAoZW5hYmxlKSB7Cj4+ICAgCQkv
+KiBwb3dlciBvbiBjcHUxICovCj4+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLWhpc2kvcGxh
+dG1jcG0uYyBiL2FyY2gvYXJtL21hY2gtaGlzaS9wbGF0bWNwbS5jCj4+IGluZGV4IDk2YTQ4NDAu
+LjZjOTAwMzkgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gvYXJtL21hY2gtaGlzaS9wbGF0bWNwbS5jCj4+
+ICsrKyBiL2FyY2gvYXJtL21hY2gtaGlzaS9wbGF0bWNwbS5jCj4+IEBAIC04Miw4ICs4Miw4IEBA
+IHN0YXRpYyB2b2lkIGhpcDA0X3NldF9zbm9vcF9maWx0ZXIodW5zaWduZWQgaW50IGNsdXN0ZXIs
+IHVuc2lnbmVkIGludCBvbikKPj4gICB7Cj4+ICAgCXVuc2lnbmVkIGxvbmcgZGF0YTsKPj4gICAK
+Pj4gLQlpZiAoIWZhYnJpYykKPj4gLQkJQlVHKCk7Cj4+ICsJQlVHX09OKCFmYWJyaWMpOwo+PiAr
+Cj4+ICAgCWRhdGEgPSByZWFkbF9yZWxheGVkKGZhYnJpYyArIEZBQl9TRl9NT0RFKTsKPj4gICAJ
+aWYgKG9uKQo+PiAgIAkJZGF0YSB8PSAxIDw8IGNsdXN0ZXI7Cj4+IAoNCg0K
