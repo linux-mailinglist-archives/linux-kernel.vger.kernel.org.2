@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D779368E76
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B32368E79
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236730AbhDWIIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:08:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWIII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:08:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8587861181;
-        Fri, 23 Apr 2021 08:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619165251;
-        bh=QsQ6QByKptioVTBH6dl5wYjK2s7eCxSiGywW5tPyYDs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I9jltyfOV2tU0otWkTme/shksL4s9/m+dZh+cWNR9DF80zFVXlvvDogj3YKnv959H
-         gPv96LEwqGqMOp1YhNl/504M5XfUttGb9rfkpPbMvypQ6jVRA59S+ISWiQU9c+dy3j
-         P8/g+WDUfRtPhYQxpoJqkAK/S40X+MG29fp6ifuVXcHPakqQRZSy9D1SJSi48zTFtF
-         WLbE97VAO310J9wPCTbcrJrIC541Q9MloP1igIy7Kg5rZrAJ2giK6+TpK3ZgPvvYVV
-         9nFSM56fetqbaWquKUyKTIKSzaZBBW1BaZNs9Xqsqq91iSA3kUTwKFGLsa/Vz468ib
-         fhbiv9VnPxk8g==
-Date:   Fri, 23 Apr 2021 10:07:27 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH 009/190] Revert "media: s5p-mfc: Fix a reference count
- leak"
-Message-ID: <20210423100727.5a999c2e@coco.lan>
-In-Reply-To: <YIJy6AnG6QBlkV/5@kroah.com>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
-        <20210421130105.1226686-10-gregkh@linuxfoundation.org>
-        <b43fc2b0-b3cf-15ab-7d3c-25c1f2a3e658@canonical.com>
-        <YIJy6AnG6QBlkV/5@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S241270AbhDWIIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:08:42 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:32356 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229456AbhDWIIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 04:08:41 -0400
+Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 23 Apr 2021 16:07:51
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.224.61]
+Date:   Fri, 23 Apr 2021 16:07:51 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc:     "Kangjie Lu" <kjlu@umn.edu>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: Re: [PATCH] [v3] clk: renesas: rcar-usb2-clock-sel: Fix error
+ handling in rcar_usb2_clock_sel_probe
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <CAMuHMdVgtZkO3FfLOph41cXXJbSuc16UX1Z+fD0_iNN7nM-GtA@mail.gmail.com>
+References: <20210415073338.22287-1-dinghao.liu@zju.edu.cn>
+ <CAMuHMdVgtZkO3FfLOph41cXXJbSuc16UX1Z+fD0_iNN7nM-GtA@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <2fd8490f.73bcd.178fdc55590.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgC3nz5XgIJgP42CAQ--.54673W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcEBlZdtTjJMQAAs5
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 23 Apr 2021 09:10:32 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-
-> On Fri, Apr 23, 2021 at 09:04:27AM +0200, Krzysztof Kozlowski wrote:
-> > On 21/04/2021 14:58, Greg Kroah-Hartman wrote:  
-> > > This reverts commit 78741ce98c2e36188e2343434406b0e0bc50b0e7.
-> > > 
-> > > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > > faith" to try to test the kernel community's ability to review "known
-> > > malicious" changes.  The result of these submissions can be found in a
-> > > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > > entitled, "Open Source Insecurity: Stealthily Introducing
-> > > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > > of Minnesota) and Kangjie Lu (University of Minnesota).
-> > > 
-> > > Because of this, all submissions from this group must be reverted from
-> > > the kernel tree and will need to be re-reviewed again to determine if
-> > > they actually are a valid fix.  Until that work is complete, remove this
-> > > change to ensure that no problems are being introduced into the
-> > > codebase.
-> > > 
-> > > Cc: Qiushi Wu <wu000273@umn.edu>
-> > > Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> > > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >  drivers/media/platform/s5p-mfc/s5p_mfc_pm.c | 4 +---
-> > >  1 file changed, 1 insertion(+), 3 deletions(-)
-> > >   
-> > 
-> > This looks like a good commit but should be done now in a different way
-> > - using pm_runtime_resume_and_get().  Therefore I am fine with revert
-> > and I can submit later better fix.  
-> 
-> Great, thanks for letting me know, I can have someone work on the
-> "better fix" at the same time.
-
-IMO, it is better to keep the fix. I mean, there's no reason to
-revert a fix that it is known to be good.
-
-The "better fix" patch can be produced anytime. A simple coccinelle
-ruleset can replace patterns like:
-
-	ret = pm_runtime_get_sync(pm->device);
-	if (ret < 0) {
-		pm_runtime_put_noidle(pm->device);
-		return ret;
-	}
-
-and the broken pattern:
-
-	ret = pm_runtime_get_sync(pm->device);
-	if (ret < 0)
-		return ret;
-
-to:
-
-	ret = pm_runtime_resume_and_get(pm->device);
-	if (ret < 0)
-		return ret;
-
-Regards,
-Mauro
+PiBIaSBEaW5naGFvLAo+IAo+IE9uIFRodSwgQXByIDE1LCAyMDIxIGF0IDk6MzMgQU0gRGluZ2hh
+byBMaXUgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+IHdyb3RlOgo+ID4gVGhlIGVycm9yIGhhbmRs
+aW5nIHBhdGhzIGFmdGVyIHBtX3J1bnRpbWVfZ2V0X3N5bmMoKSBoYXMgbm8KPiA+IHJlZmNvdW50
+IGRlY3JlbWVudCwgd2hpY2ggbGVhZHMgdG8gcmVmY291bnQgbGVhay4KPiA+Cj4gPiBTaWduZWQt
+b2ZmLWJ5OiBEaW5naGFvIExpdSA8ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiA+IC0tLQo+ID4K
+PiA+IENoYW5nZWxvZzoKPiA+Cj4gPiB2MjogLSBNb3ZlIHRoZSBwb3NpdGlvbiBvZiBwbV9ydW50
+aW1lX2VuYWJsZSxfZ2V0X3N5bmMoKS4KPiA+ICAgICAgIFVzZSBkZXZtX2Nsa19yZWdpc3Rlcigp
+IHRvIHNpbXBsaWZ5IGVycm9yIGhhbmRsaW5nLgo+IAo+IFRoYW5rcyBmb3IgdGhlIHVwZGF0ZSEK
+PiAKPiA+IC0tLSBhL2RyaXZlcnMvY2xrL3JlbmVzYXMvcmNhci11c2IyLWNsb2NrLXNlbC5jCj4g
+PiArKysgYi9kcml2ZXJzL2Nsay9yZW5lc2FzL3JjYXItdXNiMi1jbG9jay1zZWwuYwo+ID4gQEAg
+LTEzMSw3ICsxMzEsNiBAQCBzdGF0aWMgaW50IHJjYXJfdXNiMl9jbG9ja19zZWxfcmVtb3ZlKHN0
+cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gPiAgICAgICAgIHN0cnVjdCB1c2IyX2Nsb2Nr
+X3NlbF9wcml2ICpwcml2ID0gcGxhdGZvcm1fZ2V0X2RydmRhdGEocGRldik7Cj4gCj4gICAgIHdh
+cm5pbmc6IHVudXNlZCB2YXJpYWJsZSDigJhwcml24oCZIFstV3VudXNlZC12YXJpYWJsZV0KPiAK
+PiBIYXZlIHlvdSBjb21waWxlZCB0aGlzPwo+IAoKVGhpcyBpcyBteSBjYXJlbGVzc25lc3MsIHRo
+YW5rcyBmb3IgcG9pbnRpbmcgb3V0IHRoaXMuIFdoZW4gd2UgdXNlIApkZXZtX2Nsa19od19yZWdp
+c3RlcigpLCB3ZSB3aWxsIG5vdCBuZWVkIHRvIHVucmVnaXN0ZXIgcHJpdi0+aHcgaW4gCnJjYXJf
+dXNiMl9jbG9ja19zZWxfcmVtb3ZlKCkuIFNvIEkgdGhpbmsgaXQncyBva2F5IHRvIHJlbW92ZSAK
+cGxhdGZvcm1fZ2V0X2RydmRhdGEoKSBpbiBpdCB0byBlbGltaW5hdGUgdGhpcyB3YXJuaW5nLgoK
+RG8geW91IG5lZWQgYSBuZXcgdmVyc2lvbiBvZiBwYXRjaCB0byBmaXggdGhpcyB3YXJuaW5nPwoK
+UmVnYXJkcywKRGluZ2hhbw==
