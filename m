@@ -2,311 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7107736963E
+	by mail.lfdr.de (Postfix) with ESMTP id E23BA36963F
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 17:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237232AbhDWPea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:34:30 -0400
-Received: from smtp.outgoing.loopia.se ([93.188.3.37]:44939 "EHLO
-        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbhDWPe2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 11:34:28 -0400
-Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id 8B75B1A97341
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 17:33:49 +0200 (CEST)
-Received: from s499.loopia.se (unknown [172.22.191.6])
-        by s807.loopia.se (Postfix) with ESMTP id 7A9C42E3A4DD;
-        Fri, 23 Apr 2021 17:33:49 +0200 (CEST)
-Received: from s474.loopia.se (unknown [172.22.191.5])
-        by s499.loopia.se (Postfix) with ESMTP id 671AB1CE6226;
-        Fri, 23 Apr 2021 17:33:49 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Flag: NO
-X-Spam-Score: -1
-X-Spam-Level: 
-X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
-        tests=[ALL_TRUSTED=-1] autolearn=disabled
-Received: from s645.loopia.se ([172.22.191.5])
-        by s474.loopia.se (s474.loopia.se [172.22.190.14]) (amavisd-new, port 10024)
-        with LMTP id cgvyipax-DqF; Fri, 23 Apr 2021 17:33:48 +0200 (CEST)
-X-Loopia-Auth: user
-X-Loopia-User: carl@hgsystem.se
-X-Loopia-Originating-IP: 155.4.131.157
-Received: from localhost.localdomain (h-155-4-131-157.NA.cust.bahnhof.se [155.4.131.157])
-        (Authenticated sender: carl@hgsystem.se)
-        by s645.loopia.se (Postfix) with ESMTPSA id 51B69157A03B;
-        Fri, 23 Apr 2021 17:33:48 +0200 (CEST)
-From:   Erik Rosen <erik.rosen@metormote.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Erik Rosen <erik.rosen@metormote.com>
-Subject: [PATCH 2/2] hwmon: (pmbus/zl6100) Update documentation for zl6100 driver
-Date:   Fri, 23 Apr 2021 17:33:29 +0200
-Message-Id: <20210423153329.33457-3-erik.rosen@metormote.com>
-X-Mailer: git-send-email 2.11.0 (Apple Git-81)
-In-Reply-To: <20210423153329.33457-1-erik.rosen@metormote.com>
-References: <20210423153329.33457-1-erik.rosen@metormote.com>
+        id S243063AbhDWPec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242895AbhDWPe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 11:34:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3745361404;
+        Fri, 23 Apr 2021 15:33:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619192032;
+        bh=QOp4de/9uQQA0OFirIJW02IaDZzDc3LM6U5v+efYCMc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Hfbb83yBXNG1LPqHGrChhTYfrqMDkO0AYLoNYEUVHJSPSkiCD7gIjaLGAXvDJnNoe
+         /LGY7+jwr83EX4BCwu80L+3R3Xqa0pYgkWhLpuvv5UAIndcLDcR6QAFjvJRXp8XrEO
+         H4DkLsho94e33elxX/zA1xsB62CGU4Opm3/rcEkB0KAi8qlz8KXqtLSNYOPC/xzIvw
+         7QpjFCFP+g10A1Son5Pky6fmXg3n4mXgUQwKgWs0O/KMKXQQMnQ1PqUYlsmTXjK9br
+         ezVSX7PDgRctWdEpLY/WK7B2hm3KqrpE2IK+XSjw2i0tar0d+I/bOC4pmI2SVuR06U
+         B8n0Cx269qUrQ==
+Received: by mail-ej1-f43.google.com with SMTP id x12so53752792ejc.1;
+        Fri, 23 Apr 2021 08:33:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530eaY2cCYNRrl6WmySzqSYqNT0ihu+9SDzA6BTxz86pCa5EYPxM
+        /kx6ysRPMSN1mGX8yQpbYNWQ7Id1eeI9pfQmag==
+X-Google-Smtp-Source: ABdhPJyfWOtsDBQROCjWq27rZ2l9c0TwkIqYqRDw6ibCGWrX5ABqUZ6666mg7n+477i1EzdvyCboYTXRxKYb0jvHExU=
+X-Received: by 2002:a17:907:217b:: with SMTP id rl27mr4877151ejb.359.1619192030632;
+ Fri, 23 Apr 2021 08:33:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210412123936.25555-1-pali@kernel.org> <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
+ <20210415083640.ntg6kv6ayppxldgd@pali> <20210415104537.403de52e@thinkpad>
+ <CAL_JsqL2gjprb3MDv8KPSpe0CUBFjGajnMbF71DM+F9Yewp2uw@mail.gmail.com> <20210417144953.pznysgn5rdraxggx@pali>
+In-Reply-To: <20210417144953.pznysgn5rdraxggx@pali>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 23 Apr 2021 10:33:38 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+fNGQ+qMuqQ_c1Nou1h4R=-R5sn2n0p7rx==+e2JybSg@mail.gmail.com>
+Message-ID: <CAL_Jsq+fNGQ+qMuqQ_c1Nou1h4R=-R5sn2n0p7rx==+e2JybSg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain to zero
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Marek Behun <marek.behun@nic.cz>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update documentation for zl6100 driver and fix dead links to technical
-specifications
+On Sat, Apr 17, 2021 at 9:49 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> On Thursday 15 April 2021 10:13:17 Rob Herring wrote:
+> > On Thu, Apr 15, 2021 at 3:45 AM Marek Behun <marek.behun@nic.cz> wrote:
+> > >
+> > > On Thu, 15 Apr 2021 10:36:40 +0200
+> > > Pali Roh=C3=A1r <pali@kernel.org> wrote:
+> > >
+> > > > On Tuesday 13 April 2021 13:17:29 Rob Herring wrote:
+> > > > > On Mon, Apr 12, 2021 at 7:41 AM Pali Roh=C3=A1r <pali@kernel.org>=
+ wrote:
+> > > > > >
+> > > > > > Since commit 526a76991b7b ("PCI: aardvark: Implement driver 're=
+move'
+> > > > > > function and allow to build it as module") PCIe controller driv=
+er for
+> > > > > > Armada 37xx can be dynamically loaded and unloaded at runtime. =
+Also driver
+> > > > > > allows dynamic binding and unbinding of PCIe controller device.
+> > > > > >
+> > > > > > Kernel PCI subsystem assigns by default dynamically allocated P=
+CI domain
+> > > > > > number (starting from zero) for this PCIe controller every time=
+ when device
+> > > > > > is bound. So PCI domain changes after every unbind / bind opera=
+tion.
+> > > > >
+> > > > > PCI host bridges as a module are relatively new, so seems likely =
+a bug to me.
+> > > >
+> > > > Why a bug? It is there since 5.10 and it is working.
+> >
+> > I mean historically, the PCI subsystem didn't even support host
+> > bridges as a module. They weren't even proper drivers and it was all
+> > arch specific code. Most of the host bridge drivers are still built-in
+> > only. This seems like a small detail that was easily overlooked.
+> > unbind is not a well tested path.
+>
+> Ok! Just to note that during my testing I have not spotted any issue.
+>
+> > > > > > Alternative way for assigning PCI domain number is to use stati=
+c allocated
+> > > > > > numbers defined in Device Tree. This option has requirement tha=
+t every PCI
+> > > > > > controller in system must have defined PCI bus number in Device=
+ Tree.
+> > > > >
+> > > > > That seems entirely pointless from a DT point of view with a sing=
+le PCI bridge.
+> > > >
+> > > > If domain id is not specified in DT then kernel uses counter and as=
+signs
+> > > > counter++. So it is not pointless if we want to have stable domain =
+id.
+> > >
+> > > What Rob is trying to say is that
+> > > - the bug is that kernel assigns counter++
+> > > - device-tree should not be used to fix problems with how kernel does
+> > >   things
+> > > - if a device has only one PCIe controller, it is pointless to define
+> > >   it's pci-domain. If there were multiple controllers, then it would
+> > >   make sense, but there is only one
+> >
+> > Yes. I think what we want here is a domain bitmap rather than a
+> > counter and we assign the lowest free bit. That could also allow for
+> > handling a mixture of fixed domain numbers and dynamically assigned
+> > ones.
+>
+> Currently this code is implemented in pci_bus_find_domain_nr() function.
+> IIRC domain number is 16bit integer, so plain bitmap would consume 8 kB
+> of memory. I'm not sure if it is fine or some other tree-based structure
+> for allocated domain numbers is needed.
 
-Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
----
- Documentation/hwmon/zl6100.rst | 132 ++++++++++++++++++++++-----------
- 1 file changed, 89 insertions(+), 43 deletions(-)
+It's an atomic_t but then shortened (potentially) to an 'int'. Surely
+we don't need 8k (or 2^31) host bridges? Seems like we could start
+with 64 and bump it as needed. Or the idr route is another option if
+that works. We'd need to get the lowest free value and be able to
+reserve values (when specified by firmware).
 
-diff --git a/Documentation/hwmon/zl6100.rst b/Documentation/hwmon/zl6100.rst
-index 968aff10ce0a..d42ed9d3ac69 100644
---- a/Documentation/hwmon/zl6100.rst
-+++ b/Documentation/hwmon/zl6100.rst
-@@ -3,87 +3,103 @@ Kernel driver zl6100
- 
- Supported chips:
- 
--  * Intersil / Zilker Labs ZL2004
-+  * Renesas / Intersil / Zilker Labs ZL2004
- 
-     Prefix: 'zl2004'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6847.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl2004-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL2005
-+  * Renesas / Intersil / Zilker Labs ZL2005
- 
-     Prefix: 'zl2005'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6848.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl2005-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL2006
-+  * Renesas / Intersil / Zilker Labs ZL2006
- 
-     Prefix: 'zl2006'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6850.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl2006-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL2008
-+  * Renesas / Intersil / Zilker Labs ZL2008
- 
-     Prefix: 'zl2008'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6859.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl2008-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL2105
-+  * Renesas / Intersil / Zilker Labs ZL2105
- 
-     Prefix: 'zl2105'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6851.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl2105-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL2106
-+  * Renesas / Intersil / Zilker Labs ZL2106
- 
-     Prefix: 'zl2106'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6852.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl2106-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL6100
-+  * Renesas / Intersil / Zilker Labs ZL6100
- 
-     Prefix: 'zl6100'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6876.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl6100-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL6105
-+  * Renesas / Intersil / Zilker Labs ZL6105
- 
-     Prefix: 'zl6105'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn6906.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl6105-datasheet.pdf
- 
--  * Intersil / Zilker Labs ZL9101M
-+  * Renesas / Intersil / Zilker Labs ZL8802
-+
-+    Prefix: 'zl8802'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl8802-datasheet
-+
-+  * Renesas / Intersil / Zilker Labs ZL9101M
- 
-     Prefix: 'zl9101'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn7669.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl9101m-datasheet
- 
--  * Intersil / Zilker Labs ZL9117M
-+  * Renesas / Intersil / Zilker Labs ZL9117M
- 
-     Prefix: 'zl9117'
- 
-     Addresses scanned: -
- 
--    Datasheet: http://www.intersil.com/data/fn/fn7914.pdf
-+    Datasheet: https://www.renesas.com/us/en/document/dst/zl9117m-datasheet
-+
-+  * Renesas / Intersil / Zilker Labs ZLS1003, ZLS4009
-+
-+    Prefix: 'zls1003', zls4009
-+
-+    Addresses scanned: -
-+
-+    Datasheet: Not published
- 
--  * Ericsson BMR450, BMR451
-+  * Flex BMR450, BMR451
- 
-     Prefix: 'bmr450', 'bmr451'
- 
-@@ -91,17 +107,39 @@ Supported chips:
- 
-     Datasheet:
- 
--http://archive.ericsson.net/service/internet/picov/get?DocNo=28701-EN/LZT146401
-+https://flexpowermodules.com/resources/fpm-techspec-bmr450-digital-pol-regulators-20a
- 
--  * Ericsson BMR462, BMR463, BMR464
-+  * Flex BMR462, BMR463, BMR464
- 
-     Prefixes: 'bmr462', 'bmr463', 'bmr464'
- 
-     Addresses scanned: -
- 
--    Datasheet:
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr462
-+
-+  * Flex BMR465, BMR467
-+
-+    Prefixes: 'bmr465', 'bmr467'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr465-digital-pol
-+
-+  * Flex BMR466
-+
-+    Prefixes: 'bmr466'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr466-8x12
- 
--	http://archive.ericsson.net/service/internet/picov/get?DocNo=28701-EN/LZT146256
-+  * Flex BMR469
-+
-+    Prefixes: 'bmr469'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://flexpowermodules.com/resources/fpm-techspec-bmr4696001
- 
- Author: Guenter Roeck <linux@roeck-us.net>
- 
-@@ -109,8 +147,8 @@ Author: Guenter Roeck <linux@roeck-us.net>
- Description
- -----------
- 
--This driver supports hardware monitoring for Intersil / Zilker Labs ZL6100 and
--compatible digital DC-DC controllers.
-+This driver supports hardware monitoring for Renesas / Intersil / Zilker Labs
-+ZL6100 and compatible digital DC-DC controllers.
- 
- The driver is a client driver to the core PMBus driver. Please see
- Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
-@@ -147,12 +185,12 @@ Module parameters
- delay
- -----
- 
--Intersil/Zilker Labs DC-DC controllers require a minimum interval between I2C
--bus accesses. According to Intersil, the minimum interval is 2 ms, though 1 ms
--appears to be sufficient and has not caused any problems in testing. The problem
--is known to affect all currently supported chips. For manual override, the
--driver provides a writeable module parameter, 'delay', which can be used to set
--the interval to a value between 0 and 65,535 microseconds.
-+Renesas/Intersil/Zilker Labs DC-DC controllers require a minimum interval
-+between I2C bus accesses. According to Intersil, the minimum interval is 2 ms,
-+though 1 ms appears to be sufficient and has not caused any problems in testing.
-+The problem is known to affect all currently supported chips. For manual override,
-+the driver provides a writeable module parameter, 'delay', which can be used
-+to set the interval to a value between 0 and 65,535 microseconds.
- 
- 
- Sysfs entries
-@@ -182,24 +220,32 @@ in2_crit		Critical maximum VMON/VDRV voltage.
- in2_lcrit_alarm		VMON/VDRV voltage critical low alarm.
- in2_crit_alarm		VMON/VDRV voltage critical high alarm.
- 
--			vmon attributes are supported on ZL2004, ZL9101M,
--			and ZL9117M only.
-+			vmon attributes are supported on ZL2004, ZL8802,
-+			ZL9101M, ZL9117M and ZLS4009 only.
- 
--inX_label		"vout1"
-+inX_label		"vout[12]"
- inX_input		Measured output voltage.
- inX_lcrit		Critical minimum output Voltage.
- inX_crit		Critical maximum output voltage.
- inX_lcrit_alarm		Critical output voltage critical low alarm.
- inX_crit_alarm		Critical output voltage critical high alarm.
- 
--			X is 3 for ZL2004, ZL9101M, and ZL9117M, 2 otherwise.
-+			X is 3 for ZL2004, ZL9101M, and ZL9117M,
-+			3, 4 for ZL8802 and 2 otherwise.
-+
-+curr1_label		"iin"
-+curr1_input		Measured input current.
-+
-+			iin attributes are supported on ZL8802 only
-+
-+currY_label		"iout[12]"
-+currY_input		Measured output current.
-+currY_lcrit		Critical minimum output current.
-+currY_crit		Critical maximum output current.
-+currY_lcrit_alarm	Output current critical low alarm.
-+currY_crit_alarm	Output current critical high alarm.
- 
--curr1_label		"iout1"
--curr1_input		Measured output current.
--curr1_lcrit		Critical minimum output current.
--curr1_crit		Critical maximum output current.
--curr1_lcrit_alarm	Output current critical low alarm.
--curr1_crit_alarm	Output current critical high alarm.
-+			Y is 2, 3 for ZL8802, 1 otherwise
- 
- temp[12]_input		Measured temperature.
- temp[12]_min		Minimum temperature.
--- 
-2.20.1
+> > You could create scenarios where the numbers change on you, but it
+> > wouldn't be any different than say plugging in USB serial adapters.
+> > You get the same ttyUSBx device when you re-attach unless there's been
+> > other ttyUSBx devices attached/detached.
+>
+> This should be fine for most scenarios. Dynamically attaching /
+> detaching PCI domain is not such common action...
+>
+> Will you implement this new feature?
 
+Yes, after I find a DT binding co-maintainer.
+
+Rob
