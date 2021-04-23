@@ -2,343 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9EB369133
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2380369163
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 13:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242248AbhDWLh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 07:37:26 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:36808 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhDWLhY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:37:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1619177806; x=1650713806;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=xnoTUoY3id3GnalsDObj/uLrBHySt240ti7m69noBX4=;
-  b=cDkpTppkwf3JNniewJdpd7Z2a8EoAb7doYdRzBqFh/4f/RlChy31kIvM
-   0KKdbph617Rm6ZhCpM+0OoAd0sHtSD+mBfv7Vnb3WMEQSc+oNSo62fbLh
-   dF2Ty4cvy0NX+/Sq0alc0Kyioh3TpZ+51FQVPqiYWMdWYwXTIfVdoazYz
-   6j77SDtyFGt4wigdqYAVmpgomJ4dnWmD3na0eaSHLVJgUzDEPcoiRIN/E
-   umO4CVGIZ+OzS6/IBfvIYd+iTTUVbfW+AEUc1oWa3HkG7P4Ne8BHTEr89
-   oq9GseX7EdnclkF7Un41EsA7xtIRghc2AnA+5Kug06uq4IzpldOKW4BIl
-   g==;
-IronPort-SDR: 78SL++A2mlZf8upMwhcrXnQ4ONmR9lJvn8lJ+kI5Dk7cl9fFfC/VykY1DRWS26TlAzVr9cErEj
- y1SN7s3ZaT1fFVPoJKY0BnN1WEBuj7mR3BV6JHc0+VACHjeqW0UYTBI++Fz3m+iB8lkka0YMlK
- eEwsAIpRUk5P8XiMui+3yoHyFggXqlRjVqUeWSaApiM9gKN5l4THd5IA9/JdOKg+v97Q/ctcjd
- yTLT2N+BxjO6y2iecg443kVXK44Enkqo2Ohp/FKYE2ASRPvnTTwIBEahzNVo3D7Scp4dGBQTkF
- Ty0=
-X-IronPort-AV: E=Sophos;i="5.82,245,1613404800"; 
-   d="scan'208";a="170574205"
-Received: from mail-cys01nam02lp2051.outbound.protection.outlook.com (HELO NAM02-CY1-obe.outbound.protection.outlook.com) ([104.47.37.51])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Apr 2021 19:36:44 +0800
+        id S242384AbhDWLmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 07:42:21 -0400
+Received: from mail-vi1eur05on2110.outbound.protection.outlook.com ([40.107.21.110]:30049
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229479AbhDWLmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 07:42:20 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZxeoFBOISHlLG4Tj9JU8984hQC+ELZb33bYWth29x07IbBwIlWiP1k4Anlq6AzmAL2qeLmGxKKdLe9M41/iVVWHlRHGYMWgVoIGIljVmvT1rH4R/omocudhCJ8bOrFO1xloeXenelD0wjlwNlhJlxf669xu/ys9ToUtheqQztrGTmDHAcUKJp2+fM/IUDFl5h8RHc9v3WdE0Y0EK0weVbv9JVVuRp90IbSfCjgk6KASX99y9EjWzj2DW9gtOyX21pIS9UsAFGAhaMR9OBT2flEq13uONfcFZgV0wvr2X3U+A/bBchm4XbvvpUC7K7PpGw4oNNZTIVpmlVNT7mMwItQ==
+ b=bGd6HfPkbWzu549Qprz+JDrLmlM+DErSJceQuvve6k6KZVCZJrRU7jELopd1c62wLpNbFbxvigLZrms+d12B/Lh36PGmgdKQqMNnZW7mgCDuHSjOFzr2ZYXAP4+hVFlBM9bG61/1+T/UIpjOpbSo2Aan3vFTh+BtBzwoBxgyBICS76HabSd5V7yWMbmuc52a/ePFcyXqsfGs0BzvtG5aAayQh17u+/zKit4ECDbp8OOwQY6F7HJgmJXQKf7lI7WtKgv143kvYqb7bKCZE050ISKBvZca0klCwwfdjD5ffF7NaFW4ai6EHv3YkmhG17hfDVJwOZ1esZsGl+VvBRzV3g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aur33bAOLxAoM903KD4Owsf7uVu3WPkiCPMCpdcKgls=;
- b=ANwNg6rFNoKB1BIm2C8HnjcutkNQ/prj9c68+nOzQ4ch4DqOxwW5zJtM6V+RFIvG1wlPwhfL0BsYH+kfn3m54/F8zhIyWZGfy3eYadNAQOFVVx0EyBzZ0CfeP+ylxMqK9Mkow9AtjulCkeO6YuMr9/WqDhFgofRFusD5waNeeBrSVM/PpjfwWR+3kmEftm2I5lY2SsC9+ekPTPBdOXZpEleV6WjcrCdF3OI55LeYUa069CJeJNUi04fE3B7Pjlymuv3bJxnCYqsZaDmmflzV8iNURFYqMKnrFvqAWxqzKoZ2VfcO0ubYd1q3MZ5NnPEnpHzOlCyeaR+Jg2PMKr9eeg==
+ bh=23BYWjuizz7Qbf3rHn/k84ymODXi5mXma2uxYhafy9Y=;
+ b=GVlPc7Q/TM7WT2/f/iCzA9+WWLR0UrzbdE+zQj36GDP3hvgWBkcos7A3fSzQCnxA0FfN6bEbcWM328AuxnejFG72NjIKwO/ugwXpIfgxaBu74DJFdP9v00EOX6lX/mHTLLqnV5Aahl9rqKtbVy02qbdY8WpYuwEOuFM0IB5SinFEqNjA8oqJ9EhKCY+wrWKHwEm1kTfQdf3Fjun+2r3rTm/enqBFB/XC2RoEv8USXr+8v1N+i0L8G4KaOSCKYlgiBudh9L37vb9Z0R+Sak9TA0jcXq69N8HnMP3T3XGS7xea+p00c/Q5g+L7KAQDZdbddymo7jFz9EGAcSd0zk67Ew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aur33bAOLxAoM903KD4Owsf7uVu3WPkiCPMCpdcKgls=;
- b=FaoN00lzFhlnqVN7wE9SRVRQdEwAWNheuvb+qsrO3pQMDSkn2nfXxXDBGcxTaAMKNSQPrzXlwam92AtMxu3Qb3xlQlgBiPi/km7PSDV3INwRMOCSr3saoIytv99FS+8NYYgz1CHGdiHNe3Ilp9ZX92k/KvBLbc9l1TPi7NXJnqY=
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
- by BL0PR04MB4740.namprd04.prod.outlook.com (2603:10b6:208:43::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.24; Fri, 23 Apr
- 2021 11:36:44 +0000
-Received: from BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::8557:ab07:8b6b:da78]) by BL0PR04MB6514.namprd04.prod.outlook.com
- ([fe80::8557:ab07:8b6b:da78%3]) with mapi id 15.20.4065.023; Fri, 23 Apr 2021
- 11:36:44 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Changheun Lee <nanich.lee@samsung.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "patchwork-bot@kernel.org" <patchwork-bot@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "tom.leiming@gmail.com" <tom.leiming@gmail.com>
-CC:     "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
-        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
-        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
-        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
-        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
-        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>,
-        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>
-Subject: Re: [PATCH v8] bio: limit bio max size
-Thread-Topic: [PATCH v8] bio: limit bio max size
-Thread-Index: AQHXNpXqF7AsXoOwSUG6kQu0CPLJbw==
-Date:   Fri, 23 Apr 2021 11:36:44 +0000
-Message-ID: <BL0PR04MB65143E72BE89BD60334E994AE7459@BL0PR04MB6514.namprd04.prod.outlook.com>
-References: <CGME20210421100544epcas1p13c2c86e84102f0955dd591f72e45756a@epcas1p1.samsung.com>
- <20210421094745.29660-1-nanich.lee@samsung.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:d5c5:972e:46c9:492]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6484402a-4767-4ead-447d-08d9064c127d
-x-ms-traffictypediagnostic: BL0PR04MB4740:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR04MB4740796EB82B9519D0DAE8D2E7459@BL0PR04MB4740.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MRURFSmVDVJPWxnHCVhgMr2FPTdOHgZ7DGioPfWuPe7gAEq1lRZUhFANfuFnKgp0TiTRKBrzrsXFh0tyWtFt866QD4+fb2QNV/nYD+Vtsb7C7yLhmumJePB1mVS2BtXFqBLZpPmWO9MBzigIgY8yeWQDCykIKI6Z4pNF5gdRivpTEu6U761N9Abm+I41iuEb5voG/BhqjvHczNuuTDhUSL1gR3LbMr6VLQZGF24nfwXI/ur9qQbW/1a722wfclbOtMhsgFjGVn4wbpj92VnxXF6RgI+HUCJbhyvyrBRg7nsYWxT9M/qLcFFcP9981o4vylDvDgzfFwzyZfZC1C3RvI8QqJNTBW9WrRp9BfQKXWUwQnPrVYGjisHAGWczME+MqTB5FFBl8RN3zaX/uJZ04uUtLuudaU6UxrcN6GC2khzEwWlIaaakNPBwjrBQ5dkU10mCoZ658mdY4jWXdMYV7TGvO4nnFcgR53ySlJcWL9W3EgENTmxDF3ver0KL9WDe5CbFf1Dlu9gUplw2HZ3lvxFxlnzO0T+gFjmKf6xb4CkLPTlMVLIOTtMVasNcohYH5+KMPRHr7kk+bGuQyk3JQWNO5EahSSt8gLSh1KhvYmL4LpiCzWjZq63R2k/VPb0hf8Loxy7lvwYt0rFmHkfUOw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(366004)(136003)(396003)(38100700002)(33656002)(55016002)(5660300002)(71200400001)(7416002)(9686003)(83380400001)(122000001)(921005)(86362001)(91956017)(66946007)(7696005)(316002)(76116006)(8676002)(52536014)(66556008)(2906002)(66476007)(8936002)(6506007)(4326008)(110136005)(66446008)(186003)(54906003)(478600001)(53546011)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?rfojwVwwQrQF3XxjP5+BeGPdKqw3xWEDEklBRlRZMojpDv8oQnlBRSmZqj5J?=
- =?us-ascii?Q?IUKVyGVZG6eFRa2Fppgyo943F1Z9/0uOK5IGBY00Yk84uuYHyBREKECc/nLx?=
- =?us-ascii?Q?JRgH/JJ5FA7Nw0a/Wdx99NNLjF5n6IpTzLE66xhz9ORRdFao1cQU21bN9oyZ?=
- =?us-ascii?Q?+hdc/amCCCxEQlV6+CiK29CZq3Tx/FMp0Whrr+LimEFbYXAGB3+blLcWtcDE?=
- =?us-ascii?Q?644C1x0Xq7UIdTKmRhPweqJoiDKt5sp9gZ+jnExunPYStK9bZmFfp3D10Foy?=
- =?us-ascii?Q?O2QISaauR8RjvP1eGg9b0b8sT4C8KpF2Ed9iP5x4Rb6jREChENBODCCiR4F+?=
- =?us-ascii?Q?vQyT8GrbYxpRU9E2cVhFqv12GETjrYenQjzUb4+UGjdDt5xeKM08lc6hU+hV?=
- =?us-ascii?Q?fVICoi3eUi24JOgh6Haz3/EasR05zAzRfa6XCaLvBwKYQKopshklPPwxzO94?=
- =?us-ascii?Q?g/T2EaLuYDnQz2JgvBH3/gg2SHvF3/O+oCWxMzQnbVsRq+e7TpEQdxWonXa7?=
- =?us-ascii?Q?DWJcYdTrWNf5XpZw59iCGiiskqN7kNoxr76T1BE4/9DdzsLZL7nKBctOa+80?=
- =?us-ascii?Q?zQieM89UxzA3O1rI/gWP65YSkxIlen2A7tNuO7Gwl/tD09459uSD6pzX4KHm?=
- =?us-ascii?Q?qwSoG14tbDGDFeM1B4qRpDxeXtz7IW2EdwB9EG5/fE2DJverinj/w9Dvham6?=
- =?us-ascii?Q?G6cII5c+eWAdefgM9VxKdOw6XZJgs09EjvMInaUzwVdWVzkEnv6w9QvHDTxV?=
- =?us-ascii?Q?1nHwD60KUTdmFVD8zV4CAtrxgRI+rXlnwPMasW7qA5qEU6r9bOT8SFXEN8Ib?=
- =?us-ascii?Q?oXj3pTcNDdLuQ/GvGXMH2F9ufaDcs5g+saQ0MKec02XSVYCfy5B6zAKqhaZv?=
- =?us-ascii?Q?WBXA2fU7Cv81CA8ZimY0AQlB7UOXMpp1GJvK8WRbFz5n0LwU5xxaj6DQLapW?=
- =?us-ascii?Q?ajToH+NpnT7GSEyU0M7r9UUczbmBJgyw5LeEWIZUPt5SeIc1Au3ytEH0f0Nv?=
- =?us-ascii?Q?W9MJad3Hh/lZGYG0mfOgUGWv71SouyrrDUsvbC+yO2W+IiomdyVaGUljREJd?=
- =?us-ascii?Q?KTnTyo1syka8YaS4DCt1RHEEC/gfa9rdCib+DnsS13sNSOkq5sjM773tBwNu?=
- =?us-ascii?Q?j/4/uuqSrKPV8om3YUYCD1Tw6n3pPjZ3J2ze2PeZtEAuTZOfzULEKwr1y/qT?=
- =?us-ascii?Q?C5o3fI0zim87sAkw4bOPjBGCIGs0ZemPiIcOceWt+tKeoENGYCR3gHBm4dUF?=
- =?us-ascii?Q?cY9XJzQ4g1utzasmZ67o/MqR6cOfcBW/3Q+oHc9wFiTkgrsv59Sijwa7DJvU?=
- =?us-ascii?Q?ZFw1uW9b9bUJTiARx/yLN4qgLNxQQMfV3m4FwfBOUfn7pgNTO6Dg0NnB/7tT?=
- =?us-ascii?Q?zm5GyVB2OsXst+lqDZrDkCBp9iIvB/2CTWb2QTYfFyEcK5gO4Q=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=23BYWjuizz7Qbf3rHn/k84ymODXi5mXma2uxYhafy9Y=;
+ b=luNSZTS1Z72Q1PmRIyVSX33VB+MMDDjkF9f+pyEdChgOzUqHDYOGPnS4q0hP7L2ET3zsp9nX/FLnW5cY6WplyMvUz+Wrk0e2nDs/blfIuiYYr0SA20ZIR7JZeFZtItO8D4yWKPVvVyT6BCnKAuc4TleZUZlS9W40UQeLq8iECNw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0506.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4065.23; Fri, 23 Apr 2021 11:41:41 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::a03e:2330:7686:125c]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::a03e:2330:7686:125c%7]) with mapi id 15.20.4065.023; Fri, 23 Apr 2021
+ 11:41:41 +0000
+Date:   Fri, 23 Apr 2021 14:41:39 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     linux-firmware@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Vadym Kochan <vadym.kochan@plvision.eu>
+Subject: [GIT PULL v2] linux-firmware: mrvl: prestera: Add Marvell Prestera
+ Switchdev firmware 3.0 version
+Message-ID: <20210423114139.GA26468@plvision.eu>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AM6PR0202CA0058.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3a::35) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from plvision.eu (217.20.186.93) by AM6PR0202CA0058.eurprd02.prod.outlook.com (2603:10a6:20b:3a::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Fri, 23 Apr 2021 11:41:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e6c8d6e1-b6a0-4fca-2079-08d9064cc35b
+X-MS-TrafficTypeDiagnostic: HE1P190MB0506:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0506A8EF5D73CC15F04CF8F495459@HE1P190MB0506.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:376;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mkom0EmMxKfowlQXd5FxFaR5MMGX+kei3jAZ9atZ7bhReIpWVM+53hnta+k3nWj/oV7CHHGj3ocq34j6ARrrBqZE7ffVVkdIAcNKBFj+NxUgPjztQP9RxcKyyTfmyMsGIts6nCx7aRx7GFaDWuOe5RFGD+6d/edQDAVMkZfN3K41cFzcGPxcfpMZQFVjJeKfBYPF1rZrB8c8hZXdEGTSp3QJ8Nr89LzLPZW+a/ZL7yqEIYWoFUGvcflDnDjohCwavVKwxnwdvV9i9XE/HfXv7FGK7ZtIy5h38qKU1TAF0pvcxDXUghjrwOYjutCqYV1jEiprqmDeVMqI9fWqcJN1VghXLyWIamth2VLZqmuMUTzAHMnpMIC6wqq20DkZethrZWxhR+zEDsOEpEm1RYYkgk5PrkzHgwMFXwBF/iT0rj2rbvAbHEwbLzZH9yXMeXBxfoFNMyeNvT5+Q6y3FT0f8ijQOetgTwK66elFLLTBOiCaU4CXjXKLXcTQGvUc9b8Dw48I+/O6nqzfZq3uZiq0O41iy+ltwE+hSfOtwsa7SifMEVkYYX/GN6KrYxCAgCqu7XPuhgFPZBtJyBRVIqdwyUR2IL0nL3dDB2bztx7JUV3pki8T4nDC7U5+TViMoLiJfVj0upCnyoXz1tsLmAHs5qvhgYPrDWoHH9Qr/dih3bG27DeIJZd4xwllgiy5oINTxQ1BtCXn2zQw1tlyGyBsySD+YV8nFWacOAQQnJy3DbI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(396003)(39830400003)(376002)(2616005)(1076003)(44832011)(5660300002)(956004)(186003)(86362001)(33656002)(36756003)(16526019)(2906002)(38350700002)(38100700002)(26005)(55016002)(4744005)(52116002)(7696005)(966005)(83380400001)(66556008)(66476007)(8886007)(54906003)(66946007)(8676002)(316002)(107886003)(4326008)(8936002)(478600001)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nXEm6BQz83uM6219V+HK1gTpTKT8LJp5daITJYK47qz00VWDYugMNNkRZxko?=
+ =?us-ascii?Q?9TxYKkK1n2NQhqXFV1hhH0sCBqPPiPdqPK3Rgi8H2xlE0faJtaydUd68Hs8/?=
+ =?us-ascii?Q?Ma90ACHLoHsGCYI/e7Rq8rqrJBOMVwNqP52Hn4TwLrXLnSNqH+mxJ/3FJ7Tj?=
+ =?us-ascii?Q?pCpBIbXBTTnTr9oPCM2WH0X65HaXF8PIaMFu1AVXtOM73bNLB9E4zr9oIutU?=
+ =?us-ascii?Q?+uclACNa12ohYeAG/WXnnod4ycfXps+bVyj/9J/9V6ipxk2XiywJiB1SQ1t1?=
+ =?us-ascii?Q?k0Upj6L1zizD/Bb/DHwv4yK3nCaEJNvwXRna6B19/+zl1wTIyEwb4IPFhgxD?=
+ =?us-ascii?Q?Yiw2eJZ7P/KsrCAGB84w43aNwTwU4O6cRk8gsSgtVJVYfKgOLnTbqWh25j1n?=
+ =?us-ascii?Q?buMJbCq2wP8iqPsEt1YJtfbP61Ijv3lD4DrHUV7JTT7UsnCvC61yHPGJBJ2S?=
+ =?us-ascii?Q?L/V96YFSDxJ1tfTmGzS5Wk3eLwXlDn8gKf5aNISr3Iu8oHCVF1bgsAvpbZiG?=
+ =?us-ascii?Q?WO8m/11RH0Siz3SGRRGkTJ3aVfFA1tbbJoh5qDpwYZDI6xaO7XqgfnXDVqtF?=
+ =?us-ascii?Q?1WAbCF3Tmo4KNogcqbYcNof6arrkZyjP0iX+W5oEorPy7xk69J0LqypuEvK1?=
+ =?us-ascii?Q?tKKVWoNCejZfIL6ixVn+Iu4aA2BY8bqS9sbh+Tc6ZsQ0hPfFgXH32qK+SKA0?=
+ =?us-ascii?Q?AoPqC++FjVyVlJXc3T+BYwrl8LRqjdEENmaFf2Ww9Se+U37GxMBD4gEEHFcA?=
+ =?us-ascii?Q?gdifz2DF+6eS/teUaesqnIT+CqoH1J34o5ypB4G3lNEcDjR32TNiKBj1LLgh?=
+ =?us-ascii?Q?95XtR8m8QKKlAOtEQqLudXRVC+IlnkF4kh1MSc0BXW5wthnlXrOyBx9/8n5r?=
+ =?us-ascii?Q?c78M9chMESI2RQJ9UKxs+ses47WXX+ffW4q/1E2xG6Gn3YOM4tWrJNBpjwir?=
+ =?us-ascii?Q?iIKAC7lVwAMbjDCwBmrZueeir77s4gz0LmSU7KG56PF2KcFftYfnRxhz54zn?=
+ =?us-ascii?Q?lOiEayQnK3TJl0n4/I0npn9Et9gsj82jywbLprWkGJV2R5D4GccY/0EbDD4c?=
+ =?us-ascii?Q?5ASIvKKKZkxpCLSUVZgBxMa583/JyYwmSBze2HZ8of9J7ejng5a5P7A2Fzti?=
+ =?us-ascii?Q?LuKp/hDBYaVMBOn3wkrOoHv+5TQUEDGiRFuGHYZPSOUsBZ6o5yDE/u3zviSY?=
+ =?us-ascii?Q?eyWq4s+8eqO45oyO7qzs0VTEo6RDxr4LED9jMuB4wE5ibLwmlHA5kTm4/55n?=
+ =?us-ascii?Q?GFPLS/KyYjmdvUP1QZznHsnkiiLCrIlycxLJYTHvsnm7ztgRvzTri5DBGl64?=
+ =?us-ascii?Q?NckR5G1sEqnKH0bJQUlUmGjo?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6c8d6e1-b6a0-4fca-2079-08d9064cc35b
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6484402a-4767-4ead-447d-08d9064c127d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 11:36:44.5822
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 11:41:41.5305
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LLiR5yXUwMHX2b/5fjP5MDF8LC39NBD7K/4joy2h2bzIHAr3bGsnvTAf2HTq/0sk2i1Q+tr75Khk7Uw7xQZN2g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR04MB4740
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fHMCtBxXewah+x4fDVhGVXI4WMEaR4xUWOcH8AzlUX8BGquXYwzI8r1CeG10ViXOBArJWBWQOpZTAk+4QxuO8Ziux5I/hYIezEAJajtkHms=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0506
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/21 19:05, Changheun Lee wrote:=0A=
-> bio size can grow up to 4GB when muli-page bvec is enabled.=0A=
-> but sometimes it would lead to inefficient behaviors.=0A=
-> in case of large chunk direct I/O, - 32MB chunk read in user space -=0A=
-> all pages for 32MB would be merged to a bio structure if the pages=0A=
-> physical addresses are contiguous. it makes some delay to submit=0A=
-> until merge complete. bio max size should be limited to a proper size.=0A=
-=0A=
-And what is the "proper size" ? You should be specific here and mention=0A=
-max_sectors or max_hw_sectors.=0A=
-=0A=
-> =0A=
-> When 32MB chunk read with direct I/O option is coming from userspace,=0A=
-> kernel behavior is below now in do_direct_IO() loop. it's timeline.=0A=
-> =0A=
->  | bio merge for 32MB. total 8,192 pages are merged.=0A=
->  | total elapsed time is over 2ms.=0A=
->  |------------------ ... ----------------------->|=0A=
->                                                  | 8,192 pages merged a b=
-io.=0A=
->                                                  | at this time, first bi=
-o submit is done.=0A=
->                                                  | 1 bio is split to 32 r=
-ead request and issue.=0A=
->                                                  |--------------->=0A=
->                                                   |--------------->=0A=
->                                                    |--------------->=0A=
->                                                               ......=0A=
->                                                                    |-----=
----------->=0A=
->                                                                     |----=
------------>|=0A=
->                           total 19ms elapsed to complete 32MB read done f=
-rom device. |=0A=
-> =0A=
-> If bio max size is limited with 1MB, behavior is changed below.=0A=
-> =0A=
->  | bio merge for 1MB. 256 pages are merged for each bio.=0A=
->  | total 32 bio will be made.=0A=
->  | total elapsed time is over 2ms. it's same.=0A=
->  | but, first bio submit timing is fast. about 100us.=0A=
->  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|=0A=
->       | 256 pages merged a bio.=0A=
->       | at this time, first bio submit is done.=0A=
->       | and 1 read request is issued for 1 bio.=0A=
->       |--------------->=0A=
->            |--------------->=0A=
->                 |--------------->=0A=
->                                       ......=0A=
->                                                  |--------------->=0A=
->                                                   |--------------->|=0A=
->         total 17ms elapsed to complete 32MB read done from device. |=0A=
-> =0A=
-> As a result, read request issue timing is faster if bio max size is limit=
-ed.=0A=
-> Current kernel behavior with multipage bvec, super large bio can be creat=
-ed.=0A=
-> And it lead to delay first I/O request issue.=0A=
-=0A=
-The above message describes the problem very well, but there is no explanat=
-ion=0A=
-of the solution implemented. So one cannot check if the implementation matc=
-hes=0A=
-the intent. Please add a description of the solution, more detailed than ju=
-st=0A=
-saying "limit bio size".=0A=
-=0A=
-> =0A=
-> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>=0A=
-> ---=0A=
->  block/bio.c            | 9 ++++++++-=0A=
->  block/blk-settings.c   | 5 +++++=0A=
->  include/linux/bio.h    | 4 +++-=0A=
->  include/linux/blkdev.h | 2 ++=0A=
->  4 files changed, 18 insertions(+), 2 deletions(-)=0A=
-> =0A=
-> diff --git a/block/bio.c b/block/bio.c=0A=
-> index 50e579088aca..9e5061ecc317 100644=0A=
-> --- a/block/bio.c=0A=
-> +++ b/block/bio.c=0A=
-> @@ -255,6 +255,13 @@ void bio_init(struct bio *bio, struct bio_vec *table=
-,=0A=
->  }=0A=
->  EXPORT_SYMBOL(bio_init);=0A=
->  =0A=
-> +unsigned int bio_max_size(struct bio *bio)=0A=
-> +{=0A=
-> +	struct request_queue *q =3D bio->bi_bdev->bd_disk->queue;=0A=
-> +=0A=
-> +	return q->limits.bio_max_bytes;=0A=
-> +}=0A=
-> +=0A=
->  /**=0A=
->   * bio_reset - reinitialize a bio=0A=
->   * @bio:	bio to reset=0A=
-> @@ -866,7 +873,7 @@ bool __bio_try_merge_page(struct bio *bio, struct pag=
-e *page,=0A=
->  		struct bio_vec *bv =3D &bio->bi_io_vec[bio->bi_vcnt - 1];=0A=
->  =0A=
->  		if (page_is_mergeable(bv, page, len, off, same_page)) {=0A=
-> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {=0A=
-> +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {=0A=
->  				*same_page =3D false;=0A=
->  				return false;=0A=
->  			}=0A=
-> diff --git a/block/blk-settings.c b/block/blk-settings.c=0A=
-> index b4aa2f37fab6..cd3dcb5afe50 100644=0A=
-> --- a/block/blk-settings.c=0A=
-> +++ b/block/blk-settings.c=0A=
-> @@ -37,6 +37,7 @@ EXPORT_SYMBOL_GPL(blk_queue_rq_timeout);=0A=
->   */=0A=
->  void blk_set_default_limits(struct queue_limits *lim)=0A=
->  {=0A=
-> +	lim->bio_max_bytes =3D UINT_MAX;=0A=
->  	lim->max_segments =3D BLK_MAX_SEGMENTS;=0A=
->  	lim->max_discard_segments =3D 1;=0A=
->  	lim->max_integrity_segments =3D 0;=0A=
-> @@ -168,6 +169,10 @@ void blk_queue_max_hw_sectors(struct request_queue *=
-q, unsigned int max_hw_secto=0A=
->  				 limits->logical_block_size >> SECTOR_SHIFT);=0A=
->  	limits->max_sectors =3D max_sectors;=0A=
->  =0A=
-> +	if (check_shl_overflow(max_sectors, SECTOR_SHIFT,=0A=
-> +				&limits->bio_max_bytes))=0A=
-> +		limits->bio_max_bytes =3D UINT_MAX;=0A=
-=0A=
-	limits->bio_max_bytes =3D min_t(sector_t,=0A=
-			(sector_t)max_sectors << SECTOR_SHIFT, UINT_MAX);=0A=
-=0A=
-is easier to understand in my opinion.=0A=
-=0A=
-> +=0A=
->  	q->backing_dev_info->io_pages =3D max_sectors >> (PAGE_SHIFT - 9);=0A=
->  }=0A=
->  EXPORT_SYMBOL(blk_queue_max_hw_sectors);=0A=
-> diff --git a/include/linux/bio.h b/include/linux/bio.h=0A=
-> index d0246c92a6e8..e5add63da3af 100644=0A=
-> --- a/include/linux/bio.h=0A=
-> +++ b/include/linux/bio.h=0A=
-> @@ -106,6 +106,8 @@ static inline void *bio_data(struct bio *bio)=0A=
->  	return NULL;=0A=
->  }=0A=
->  =0A=
-> +extern unsigned int bio_max_size(struct bio *bio);=0A=
-=0A=
-No need for extern.=0A=
-=0A=
-> +=0A=
->  /**=0A=
->   * bio_full - check if the bio is full=0A=
->   * @bio:	bio to check=0A=
-> @@ -119,7 +121,7 @@ static inline bool bio_full(struct bio *bio, unsigned=
- len)=0A=
->  	if (bio->bi_vcnt >=3D bio->bi_max_vecs)=0A=
->  		return true;=0A=
->  =0A=
-> -	if (bio->bi_iter.bi_size > UINT_MAX - len)=0A=
-> +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)=0A=
->  		return true;=0A=
->  =0A=
->  	return false;=0A=
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h=0A=
-> index 158aefae1030..c205d60ac611 100644=0A=
-> --- a/include/linux/blkdev.h=0A=
-> +++ b/include/linux/blkdev.h=0A=
-> @@ -312,6 +312,8 @@ enum blk_zoned_model {=0A=
->  };=0A=
->  =0A=
->  struct queue_limits {=0A=
-> +	unsigned int		bio_max_bytes;=0A=
-=0A=
-Please move this below in the structure together with all other fields that=
- are=0A=
-unsigned int too.=0A=
-=0A=
-> +=0A=
->  	unsigned long		bounce_pfn;=0A=
->  	unsigned long		seg_boundary_mask;=0A=
->  	unsigned long		virt_boundary_mask;=0A=
-> =0A=
-=0A=
-As far as I can tell, bio_max_bytes is UINT_MAX by default, becomes equal t=
-o=0A=
-max_hw_sectors when that limit is set by a driver and cannot take any other=
-=0A=
-value. So why introduce this new limit at all ? Why not use max_hw_sectors=
-=0A=
-directly as a bio size limit ?=0A=
-=0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Hi,
+
+The following changes since commit bdf929da38adb269289a750b60004841a5c55479:
+
+  rtw88: 8822c: Update normal firmware to v9.9.9 (2021-04-23 07:06:04 -0400)
+
+are available in the Git repository at:
+
+  https://github.com/PLVision/linux-firmware.git mrvl-prestera
+
+for you to fetch changes up to 16052e4a41bd0d47793fa33eb718081df28efe11:
+
+  mrvl: prestera: Add Marvell Prestera Switchdev firmware 3.0 version (2021-04-23 14:14:51 +0300)
+
+----------------------------------------------------------------
+v2:
+    1) Add entry in WHENCE
+
+Vadym Kochan (1):
+      mrvl: prestera: Add Marvell Prestera Switchdev firmware 3.0 version
+
+ WHENCE                                  |   1 +
+ mrvl/prestera/mvsw_prestera_fw-v3.0.img | Bin 0 -> 13721584 bytes
+ 2 files changed, 1 insertion(+)
+ create mode 100755 mrvl/prestera/mvsw_prestera_fw-v3.0.img
