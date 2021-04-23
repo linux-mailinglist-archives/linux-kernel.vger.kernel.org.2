@@ -2,230 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54EF368E41
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4CA368E42
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241253AbhDWICn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:02:43 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15111 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWICT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:02:19 -0400
-IronPort-SDR: OVcdnXO3ngviI+V/XSvKVrAQkYYU7pWf5QSHLvxSvLnPwkdX/0fjyUxvtXeudrUYeD9utkZWmd
- rrc2vOVgXrAQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="259987375"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="259987375"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 01:01:33 -0700
-IronPort-SDR: B+jDDshXQ4HBTrC8y4VRZeYWSWjvMI++V6PQCfLyHHJLNOkGn71O7KJZopWpcMb9PkP4ID4Z+g
- KE8SreohSb4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="453511686"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Apr 2021 01:01:26 -0700
-Subject: Re: [PATCH v20 1/2] scsi: ufs: Enable power management for wlun
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Bart van Assche <bvanassche@acm.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1618600985.git.asutoshd@codeaurora.org>
- <d660b8d4e1fb192810abd09a8ff0ef4d9f6b96cd.1618600985.git.asutoshd@codeaurora.org>
- <fdadd467-b613-d800-18c5-be064396fd10@intel.com>
- <07e3ea07-e1c3-7b8c-e398-8b008f873e6d@codeaurora.org>
- <90809796-1c32-3709-13d3-65e4d5c387cc@intel.com>
- <1bc4a73e-b22a-6bad-2583-3a0ffa979414@intel.com>
- <651f5d8a-5ab7-77dd-3fed-05feb3fd3e1a@codeaurora.org>
- <efe71230-5b6a-22a8-1aef-f1cae046df22@intel.com>
- <e6f3946a-dbe7-6b42-e43c-d3f8d705c732@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <973e0bbb-ac2d-7196-2e25-37aee2b77b46@intel.com>
-Date:   Fri, 23 Apr 2021 11:01:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <e6f3946a-dbe7-6b42-e43c-d3f8d705c732@intel.com>
-Content-Type: text/plain; charset=utf-8
+        id S241276AbhDWICv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:02:51 -0400
+Received: from mail-eopbgr1410040.outbound.protection.outlook.com ([40.107.141.40]:47583
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241196AbhDWICg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 04:02:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Myney1zAaHfW44LMrASmLcAwzHqRWqwGE7CwqivkT55kXwEjEPuTElM9Yb9dtELek9bbbNoL6nCsNBFlOPk8zs/qDAGPhh7EkaV5MCWm64JL9kcWrt6jTQRDag6pU7FC8z1bV33x4CQMdlEhoAm3QKLzBpuVxVcptGEKnhTBFW7hGKRj7DiO5CshAh5SsUvPFw7/dotHl1vDZTgapllFJ1RnvhctyIv46ZFpFLSj8vf9+6PhBXhWtTjnpEKUBdavFkirFebqbdpLNrWIP20syczw4z4L8e9TNIS4BkGa2ank48YY5P8xsuCd4xSlP6AwwfdxyNnOmePJ+F8tEW0V7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tIGgdkDhzq0Tq9SC9oAO6Ok41gkBeLnjg52aPSDAjw0=;
+ b=Hyq6o8LaEeS+kt88nzRhixeRopl5ZY6xWcPLrjmlEvG5v1qAV7u8MwxyDZucfIxHag/S+6qgqPrb34dEo2z78/Jeq12YiYCTtuTf8vBEGCBKKd/rZju6BuWFj4bBSiC3ZZB1jROaZ0oqPgzVEAnJ48JyrJpIQ9+/Pi/e0+kWMRy5j57V0x0Jkm2IwdbJJKknflSZ52Y/WbwoWXl8u6M89YGtMvZe0UYAGuZSDZVu69ULOcEZNUheRoEYB0O2hGdw9KDxkRJRUqtBmsDucaKEgLQ/hjMaUu7Qi++BTy3fmVIJ84UimgKvPsqeR6ObrAbHVVOpOu8/tNhy2u2JqK63uA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tIGgdkDhzq0Tq9SC9oAO6Ok41gkBeLnjg52aPSDAjw0=;
+ b=h2svd0/dBxdo5k0TMHO3xOMsYX5h7KIQ4XKPgqn2qZ8wCQB5fskP1sFTt5DpDggQ+y1+xCNUruZWS7itd3cuW2x0fl0nKNlziuk9VhmSK7bxkCi2zVwA9u1cFyG9+syGjELJJhvdisfPT0hZD+yhxzJtxPHp5risuRdHGsqZeVc=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYAPR01MB3822.jpnprd01.prod.outlook.com (2603:1096:404:c5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Fri, 23 Apr
+ 2021 08:01:54 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.4042.024; Fri, 23 Apr 2021
+ 08:01:54 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+CC:     Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Subject: Re: [PATCH] mm: hugetlb: fix a race between
+ memory-failure/soft_offline and gather_surplus_pages
+Thread-Topic: [PATCH] mm: hugetlb: fix a race between
+ memory-failure/soft_offline and gather_surplus_pages
+Thread-Index: AQHXNoTZ/dsTmwNUxkyFM7XUqHdaa6q+pOiAgACfTACAAPGAAIABixqA
+Date:   Fri, 23 Apr 2021 08:01:54 +0000
+Message-ID: <20210423080153.GA78658@hori.linux.bs1.fc.nec.co.jp>
+References: <20210421060259.67554-1-songmuchun@bytedance.com>
+ <YH/cVoUCTKu/UkqB@dhcp22.suse.cz>
+ <20210421083315.GA7552@hori.linux.bs1.fc.nec.co.jp>
+ <57892496-a391-2eb9-eda0-1db9f3b98902@oracle.com>
+ <20210422082746.GA33308@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <20210422082746.GA33308@hori.linux.bs1.fc.nec.co.jp>
+Accept-Language: ja-JP, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.110.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5dc0c9a0-1161-4595-2e58-08d9062e0f72
+x-ms-traffictypediagnostic: TYAPR01MB3822:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB3822D511473F3AC83C56E823E7459@TYAPR01MB3822.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AaooYaYUVbMEeV1Nz7v9aQZWoKhik3Fdfx8lHfgp6bldqGWWVlIRc6CwcBQGt33S2pWP/Gau/m0Yljc2JeVLPd6vnyBBelQqJJzfjBhK6TeQBg2kSMkndlLVYK7xMnhQRYtBgWiNb133sPwPOre8ozhw3JsixAkWgHUVdWG7Lhu4ldoJL9p2szxcFiPEEIfLoLJMz9bY7AuyhbA+cT5dFafZ21yHHErywCeW4btzJgXIoUy4HYFJmFGju8o9Qf8F0VnWUeKXN1l80aDAZBkjne0axyCk5ntbU32Pm+T9WyQbExtjPb5ZeO3SNxGwZkd90dQ2dAlQuE/zNY4SkYR4vy+iqzknz77afdwlIB+jkl4hp0fUXDaBux3K7U/4+VXgBR9Kbn7P1fmHb6V7xuKlL3p+0Ua3UDsYxqym+1j3miAwG4mKH6uyExagQV89p7Obs6QZK4LlMCZdsugHazo56ybyEQ4kgvoG5EioJi9bvU88a92xz7vnLwKQ4MNqxjaVhWaEAqphu/lDEqpB3RY//blU6jBqV02f0c/7gpMR+vzzCIFfuUwoNZhhAeQhSkF+n9dJQpVrSAUddsfmYwcqF5ZvKmdr4EU443zOzJ3qEq0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(8676002)(6486002)(8936002)(4326008)(2906002)(33656002)(85182001)(6916009)(86362001)(83380400001)(9686003)(38100700002)(316002)(6512007)(1076003)(26005)(55236004)(6506007)(64756008)(53546011)(54906003)(186003)(66446008)(76116006)(478600001)(5660300002)(71200400001)(122000001)(66556008)(66946007)(66476007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?R1I0aTNxR1ltb0VVbDdNbVhFR25XbnBTeURZNEtIdlRLK3p0VERJWmRDNUFk?=
+ =?utf-8?B?ZEdPMStoeWxWbzhrS0hhdTE2UVdWQXFjY014RnBaN1dwQWRYb0dtaFE4d1JL?=
+ =?utf-8?B?RHJndzk2WU1kSjB3bytSbUFkZUE3Y0tIUENpQmxIV25kVjZYbGd4RTNTWitK?=
+ =?utf-8?B?SnlDVGNIeVpKRy9IQ0NIWElJL3IyMGF1d1BsQTVUVlZRQll0N2lXeFNOYmpB?=
+ =?utf-8?B?RUg1a1RuUjBUVHhid3dtSndLSDgrVFZKNWFFcWt1V0ZyRU9XYW1HaEFPUEM4?=
+ =?utf-8?B?enlUbjZZVHZFbmczeWU1ejVneHVHZUU1bzcxdzAzdkJrNEpQQjlrcndWcUpQ?=
+ =?utf-8?B?aHk0VDBaMVhldFpOeVd6czF4K3hKQm9NMyt2bGtyMVpBbzdtbXprVGxUaVlP?=
+ =?utf-8?B?Wk5kdTBnTWRTTkh3dE4vaFg5ak9XdjR2L1ZFeUZETldUUm9pQ3BLSjVsOWYy?=
+ =?utf-8?B?eHduMUwrN1VCYVp3MzV1emF6S082T0pSVU5EZitXYmVMTUFCS052bGVIZXJl?=
+ =?utf-8?B?U2RmYXYvTy9xU09ZelluL20rZFNTRVpiWEQ3K1BmZXlyN3pLM2h6N1c2MFJq?=
+ =?utf-8?B?Y09kdnRiSWxrRGRUdVl5SFNzcXhLMUJpTUI5YjYwVmxmRXhpQnhVWU0zZjBx?=
+ =?utf-8?B?MDYrUHBuZU5jem5MNFZjYk5zWkdoZ1ZDL3hUV2grclNhMDYxbjhvd1lTaWZX?=
+ =?utf-8?B?Y3kzTTFtanZHd2NSNlFYTE5IQWxBb3R5a0Y1VDMvSktRellaU1ZVT3hHUC9H?=
+ =?utf-8?B?YW1KMUZSQm5uSXRHeDJPOWFDdGhUZ3dxRGFhRmxrL0dadE1qeVF5eFpLUi8z?=
+ =?utf-8?B?R0w5QVBJYjZ1MGVLYVdXNEZwR2dkUGh1UXdQelVNNnBrSDVVcEY1bkZCY1Bw?=
+ =?utf-8?B?MlNXZWtzVTgremk4aDRLRktIdmtQWGFkWHgwYUo4UnREa1pGd0MrMnFWZGxK?=
+ =?utf-8?B?ckwxMk1QRmU4eHNpaVhiZzNDbkZrNnVTamxzbGhnSlJiU1NCWVFjNFVWSWlH?=
+ =?utf-8?B?T0gvMVZQZXFQMzd3NzN5eU0rb2swN1dSVWEvVXIrOGRNYUZCWG90SlNRVlll?=
+ =?utf-8?B?OUZYaFhDbmtzMFVwYlVVYVRJRmhNV3oxK3cxOVBaalZDSm43SE1GTkMrd3JC?=
+ =?utf-8?B?MkxFaE1XbWRVamF3Q3BqMzdaMnVQTERyTEN5VTduYWZWVHZCcThxVC9wOXNR?=
+ =?utf-8?B?bitxUWREVENCUVVaQWxraTAwRzJ5NFgyRmlRa1dvczJJWjFKclo1MCtCT1V2?=
+ =?utf-8?B?NFNtdGlBQ1ZFNHdSZFJaWFlydmZ4UjFaaGl5YlY4UnEzYi9CcDRmTFFsejVx?=
+ =?utf-8?B?cDNBb2FBUFhldG51TGR3dE9Qc28xRkNNVTRCb1VrRjlXQUw1VWV4VVpvRmRY?=
+ =?utf-8?B?TVVwZmxkdmNhRCtlSTVFQ2xGcU1RZmU0bzlJUkp2RXJYSUJxOTR6cWNqT0x4?=
+ =?utf-8?B?Nnh5alNmNi9GRWkzZGNPcU9CZ2s1VDF3Y0JHdFVXaE56Y3JpbHpuaU83bkRt?=
+ =?utf-8?B?eUxWaDIvTTY5Q0d5ckl0eE5nUGkwMlNRcDh0S3hDaW12M3kxbDVTTXlCSU9P?=
+ =?utf-8?B?b3Nob2dreDVwUEhPdTE5MmxsNkwzMUVUYytpZWZWV0wwUEF4Ums4OWcxSEEy?=
+ =?utf-8?B?ZVhuL2Q3NFdwaGFTNU9rUVVCTHpNWkxhVm1GazhCMWFNMllmV2kyYWZqRzkr?=
+ =?utf-8?B?V1luTjdZT0Z2K3N4MlFuWE9PMXdNVEpTeTlISzFNMTZpcUdHTzVsb3NtTGZi?=
+ =?utf-8?B?MHNiN0Q3MXg2ZDkxeGJWY2ZEbFFEZW9KSmpXeE1LclM2U2VVRmF3RUtnNWM3?=
+ =?utf-8?B?dUxsQmVFSmg0TXQyODVBQT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <92F8601BCD388244A3A7A818E2313224@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5dc0c9a0-1161-4595-2e58-08d9062e0f72
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Apr 2021 08:01:54.6289
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 02cldR7APkXKx9rZ5WUc+VtdzwOIvXzrUeZWEu42PomziRWZFrH+9mn1cpqivbbmHTBSItQbH4cW7a5mjc6e4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3822
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/21 9:18 am, Adrian Hunter wrote:
-> On 23/04/21 7:23 am, Adrian Hunter wrote:
->> On 22/04/21 7:38 pm, Asutosh Das (asd) wrote:
->>> On 4/20/2021 12:42 AM, Adrian Hunter wrote:
->>>> On 20/04/21 7:15 am, Adrian Hunter wrote:
->>>>> On 20/04/21 12:53 am, Asutosh Das (asd) wrote:
->>>>>> On 4/19/2021 11:37 AM, Adrian Hunter wrote:
->>>>>>> On 16/04/21 10:49 pm, Asutosh Das wrote:
->>>>>>>>
->>>>>>>> Co-developed-by: Can Guo <cang@codeaurora.org>
->>>>>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>>>>>>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>>>>>>> ---
->>>>>>>
->>>>>>> I came across 3 issues while testing.  See comments below.
->>>>>>>
->>>>>> Hi Adrian
->>>>>> Thanks for the comments.
->>>>>>> <SNIP>
->>>>>>>
->>>>>>>> @@ -5794,7 +5839,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->>>>>>>>        if (ufshcd_is_clkscaling_supported(hba))
->>>>>>>>            ufshcd_clk_scaling_suspend(hba, false);
->>>>>>>>        ufshcd_clear_ua_wluns(hba);
->>>>>>>
->>>>>>> ufshcd_clear_ua_wluns() deadlocks trying to clear UFS_UPIU_RPMB_WLUN
->>>>>>> if sdev_rpmb is suspended and sdev_ufs_device is suspending.
->>>>>>> e.g. ufshcd_wl_suspend() is waiting on host_sem while ufshcd_err_handler()
->>>>>>> is running, at which point sdev_rpmb has already suspended.
->>>>>>>
->>>>>> Umm, I didn't understand this deadlock.
->>>>>> When you say, sdev_rpmb is suspended, does it mean runtime_suspended?
->>>>>> sdev_ufs_device is suspending - this can't be runtime_suspending, while ufshcd_err_handling_unprepare is running.
->>>>>>
->>>>>> If you've a call-stack of this deadlock, please can you share it with me. I'll also try to reproduce this.
->>>>>
->>>>> Yes it is system suspend. sdev_rpmb has suspended, sdev_ufs_device is waiting on host_sem.
->>>>> ufshcd_err_handler() holds host_sem. ufshcd_clear_ua_wlun(UFS_UPIU_RPMB_WLUN) gets stuck.
->>>>> I will get some call-stacks.
->>>>
->>> Hi Adrian,
->>>
->>> Thanks for the call stacks.
->>> From the current information, I can't say for sure why it'd get stuck in blk_queue_enter().
->>
->> I presume SCSI is leaving the RPMB WLUN device runtime suspended and consequently the queue status is RPM_SUSPENDED
->>
->>>
->>> I tried reproducing this issue on my setup yesterday but couldn't.
->>> Here's what I did:
->>> 1. sdev_rpmb is RPM_SUSPENDED, checked before initiating system suspend
->>> 2. sdev_ufs_device is RPM_RESUMED
->>> 3. I triggered system suspend (echo mem > /sys/power/state) and scheduled the error handler from ufshcd_wl_suspend().
->>> 4. Waited until error handler ran and then ufshcd_wl_suspend() blocks on host_sem.
->>> 5. The ufshcd_clear_wa_wlun(UFS_UPIU_RPMB_WLUN) went through fine.
->>>
->>> Do you've some specific steps to reproduce this or a script, perhaps? If so, please can you share it with me. I will try again.
->>
->> I was using a device that gives occasional errors, but I will what see I can do.
-> 
-> I have attached 2 patches to reproduce the issue, and the test script I used.
-> Note it is using down_timeout() so it doesn't lock up completely.
-> The kernel messages are:
-> 
-> [   79.385456] ufshcd_wl_suspend: doing ufshcd_schedule_eh_work
-> [   79.385511] ufshcd_wl_suspend: sleeping 1000 ms
-> [   79.386916] ufshcd_err_handler: start
-> [   79.386979] ufshcd_err_handler: got sem
-> [   79.387053] ufshcd_err_handling_unprepare: start
-> [   79.387302] ufshcd_clear_ua_wluns: before ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN)
-> [   80.435878] ufshcd_wl_suspend: trying to get sem
-> [   85.683876] ufshcd_wl_suspend: failed to get sem
-> [   85.683993] ufs_device_wlun 0:0:0:49488: PM: failed to suspend async: error -22
-> [   85.686901] ufshcd_clear_ua_wluns: after ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN), ret 0
-> [   85.687025] ufshcd_err_handling_unprepare: finish
-> [   85.687090] ufshcd_err_handler: finish 
-> 
-> 
-
-I think we also need to runtime resume RPMB WLUN before system suspend.
-e.g.
-
-+static int ufshcd_rpmb_rpm_get_sync(struct ufs_hba *hba)
-+{
-+	return pm_runtime_get_sync(&hba->sdev_rpmb->sdev_gendev);
-+}
-+
-+static int ufshcd_rpmb_rpm_put(struct ufs_hba *hba)
-+{
-+	return pm_runtime_put(&hba->sdev_rpmb->sdev_gendev);
-+}
-+
- void ufshcd_resume_complete(struct device *dev)
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
-+	if (hba->rpmb_complete_put) {
-+		hba->rpmb_complete_put = false;
-+		ufshcd_rpmb_rpm_put(hba);
-+	}
- 	if (hba->complete_put) {
- 		hba->complete_put = false;
- 		ufshcd_rpm_put(hba);
-@@ -9611,6 +9625,11 @@ int ufshcd_suspend_prepare(struct device *dev)
- 		return ret;
- 	}
- 	hba->complete_put = true;
-+
-+	if (hba->sdev_rpmb) {
-+		ufshcd_rpmb_rpm_get_sync(hba);
-+		hba->rpmb_complete_put = true;
-+	}
- 	return 0;
- }
-
-That also avoids another issue: if RPMB WLUN is runtime suspended at system resume, we have to skip clearing UAC, but SCSI PM will force the runtime status to RPM_ACTIVE after system resume, so the UAC never gets cleared in that case.
-
-Furthermore, it seems better not to report errors from RPMB resume and instead let the error handler sort it out.
-So, with the above change, we can simplify a bit:
-
--static int ufshcd_rpmb_runtime_resume(struct device *dev)
--{
--	struct ufs_hba *hba = wlun_dev_to_hba(dev);
--
--	if (hba->sdev_rpmb)
--		return ufshcd_clear_rpmb_uac(hba);
--	return 0;
--}
--
- static int ufshcd_rpmb_resume(struct device *dev)
- {
- 	struct ufs_hba *hba = wlun_dev_to_hba(dev);
- 
--	if (hba->sdev_rpmb && !pm_runtime_suspended(dev))
--		return ufshcd_clear_rpmb_uac(hba);
-+	if (hba->sdev_rpmb)
-+		ufshcd_clear_rpmb_uac(hba);
- 	return 0;
- }
- 
- static const struct dev_pm_ops ufs_rpmb_pm_ops = {
--	SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_runtime_resume, NULL)
-+	SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_resume, NULL)
- 	SET_SYSTEM_SLEEP_PM_OPS(NULL, ufshcd_rpmb_resume)
- };
-
-
+T24gVGh1LCBBcHIgMjIsIDIwMjEgYXQgMDg6Mjc6NDZBTSArMDAwMCwgSE9SSUdVQ0hJIE5BT1lB
+KOWggOWPoyDnm7TkuZ8pIHdyb3RlOg0KPiBPbiBXZWQsIEFwciAyMSwgMjAyMSBhdCAxMTowMzoy
+NEFNIC0wNzAwLCBNaWtlIEtyYXZldHogd3JvdGU6DQo+ID4gT24gNC8yMS8yMSAxOjMzIEFNLCBI
+T1JJR1VDSEkgTkFPWUEo5aCA5Y+jIOebtOS5nykgd3JvdGU6DQo+ID4gPiBPbiBXZWQsIEFwciAy
+MSwgMjAyMSBhdCAxMDowMzozNEFNICswMjAwLCBNaWNoYWwgSG9ja28gd3JvdGU6DQo+ID4gPj4g
+W0NjIE5hb3lhXQ0KPiA+ID4+DQo+ID4gPj4gT24gV2VkIDIxLTA0LTIxIDE0OjAyOjU5LCBNdWNo
+dW4gU29uZyB3cm90ZToNCj4gPiA+Pj4gVGhlIHBvc3NpYmxlIGJhZCBzY2VuYXJpbzoNCj4gPiA+
+Pj4NCj4gPiA+Pj4gQ1BVMDogICAgICAgICAgICAgICAgICAgICAgICAgICBDUFUxOg0KPiA+ID4+
+Pg0KPiA+ID4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdhdGhlcl9zdXJwbHVz
+X3BhZ2VzKCkNCj4gPiA+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhZ2Ug
+PSBhbGxvY19zdXJwbHVzX2h1Z2VfcGFnZSgpDQo+ID4gPj4+IG1lbW9yeV9mYWlsdXJlX2h1Z2V0
+bGIoKQ0KPiA+ID4+PiAgIGdldF9od3BvaXNvbl9wYWdlKHBhZ2UpDQo+ID4gPj4+ICAgICBfX2dl
+dF9od3BvaXNvbl9wYWdlKHBhZ2UpDQo+ID4gPj4+ICAgICAgIGdldF9wYWdlX3VubGVzc196ZXJv
+KHBhZ2UpDQo+ID4gPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB6ZXJvID0g
+cHV0X3BhZ2VfdGVzdHplcm8ocGFnZSkNCj4gPiA+Pj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIFZNX0JVR19PTl9QQUdFKCF6ZXJvLCBwYWdlKQ0KPiA+ID4+PiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgZW5xdWV1ZV9odWdlX3BhZ2UoaCwgcGFnZSkNCj4gPiA+
+Pj4gICBwdXRfcGFnZShwYWdlKQ0KPiA+ID4+Pg0KPiA+ID4+PiBUaGUgcmVmY291bnQgY2FuIHBv
+c3NpYmx5IGJlIGluY3JlYXNlZCBieSBtZW1vcnktZmFpbHVyZSBvciBzb2Z0X29mZmxpbmUNCj4g
+PiA+Pj4gaGFuZGxlcnMsIHdlIGNhbiB0cmlnZ2VyIFZNX0JVR19PTl9QQUdFIGFuZCB3cm9uZ2x5
+IGFkZCB0aGUgcGFnZSB0byB0aGUNCj4gPiA+Pj4gaHVnZXRsYiBwb29sIGxpc3QuDQo+ID4gPj4N
+Cj4gPiA+PiBUaGUgaHdwb2lzb24gc2lkZSBvZiB0aGlzIGxvb2tzIHJlYWxseSBzdXNwaWNpb3Vz
+IHRvIG1lLiBJdCBzaG91bGRuJ3QNCj4gPiA+PiByZWFsbHkgdG91Y2ggdGhlIHJlZmVyZW5jZSBj
+b3VudCBvZiBodWdldGxiIHBhZ2VzIHdpdGhvdXQgYmVpbmcgdmVyeQ0KPiA+ID4+IGNhcmVmdWwg
+KGFuZCBoYXZpbmcgaHVnZXRsYl9sb2NrIGhlbGQpLg0KPiA+ID4gDQo+ID4gPiBJIGhhdmUgdGhl
+IHNhbWUgZmVlbGluZywgdGhlcmUgaXMgYSB3aW5kb3cgd2hlcmUgYSBodWdlcGFnZSBpcyByZWZj
+b3VudGVkDQo+ID4gPiBkdXJpbmcgY29udmVydGluZyBmcm9tIGJ1ZGR5IGZyZWUgcGFnZXMgaW50
+byBmcmVlIGh1Z2VwYWdlLCBzbyByZWZjb3VudA0KPiA+ID4gYWxvbmUgaXMgbm90IGVub3VnaCB0
+byBwcmV2ZW50IHRoZSByYWNlLiAgaHVnZXRsYl9sb2NrIGlzIHJldGFrZW4gYWZ0ZXINCj4gPiA+
+IGFsbG9jX3N1cnBsdXNfaHVnZV9wYWdlIHJldHVybnMsIHNvIHNpbXBseSBob2xkaW5nIGh1Z2V0
+bGJfbG9jayBpbg0KPiA+ID4gZ2V0X2h3cG9pc29uX3BhZ2UoKSBzZWVtcyBub3Qgd29yay4gIElz
+IHRoZXJlIGFueSBzdGF0dXMgYml0IHRvIHNob3cgdGhhdCBhDQo+ID4gPiBodWdlcGFnZSBpcyBq
+dXN0IGJlaW5nIGluaXRpYWxpemVkIChub3QgaW4gZnJlZSBodWdlcGFnZSBwb29sIG9yIGluIHVz
+ZSk/DQo+ID4gPiANCj4gPiANCj4gPiBJdCBzZWVtcyB3ZSBjYW4gYWxzbyByYWNlIHdpdGggdGhl
+IGNvZGUgdGhhdCBtYWtlcyBhIGNvbXBvdW5kIHBhZ2UgYQ0KPiA+IGh1Z2V0bGIgcGFnZS4gIFRo
+ZSBtZW1vcnkgZmFpbHVyZSBjb2RlIGNvdWxkIGJlIGNhbGxlZCBhZnRlciBhbGxvY2F0aW5nDQo+
+ID4gcGFnZXMgZnJvbSBidWRkeSBhbmQgYmVmb3JlIHNldHRpbmcgY29tcG91bmQgcGFnZSBEVE9S
+LiAgU28sIHRoZSBtZW1vcnkNCj4gPiBoYW5kbGluZyBjb2RlIHdpbGwgcHJvY2VzcyBpdCBhcyBh
+IGNvbXBvdW5kIHBhZ2UuDQo+IA0KPiBZZXMsIHNvIGdldF9od3BvaXNvbl9wYWdlKCkgaGFzIHRv
+IGNhbGwgZ2V0X3BhZ2VfdW5sZXNzX3plcm8oKQ0KPiBvbmx5IHdoZW4gbWVtb3J5X2ZhaWx1cmUo
+KSBjYW4gc3VyZWx5IGhhbmRsZSB0aGUgZXJyb3IuDQo+IA0KPiA+IA0KPiA+IEp1c3QgdGhpbmtp
+bmcgdGhhdCB0aGlzIG1heSBub3QgYmUgbGltaXRlZCB0byB0aGUgaHVnZXRsYiBzcGVjaWZpYyBt
+ZW1vcnkNCj4gPiBmYWlsdXJlIGhhbmRsaW5nPw0KPiANCj4gQ3VycmVudGx5IGh1Z2V0bGIgcGFn
+ZSBpcyB0aGUgb25seSB0eXBlIG9mIGNvbXBvdW5kIHBhZ2Ugc3VwcG9ydGVkIGJ5IG1lbW9yeQ0K
+PiBmYWlsdXJlLiAgQnV0IEkgYWdyZWUgd2l0aCB5b3UgdGhhdCBvdGhlciB0eXBlcyBvZiBjb21w
+b3VuZCBwYWdlcyBoYXZlIHRoZQ0KPiBzYW1lIHJhY2Ugd2luZG93LCBhbmQganVkZ2luZyBvbmx5
+IHdpdGggZ2V0X3BhZ2VfdW5sZXNzX3plcm8oKSBpcyBkYW5nZXJvdXMuDQo+IFNvIEkgdGhpbmsg
+dGhhdCBfX2dldF9od3BvaXNvbl9wYWdlKCkgc2hvdWxkIGhhdmUgdGhlIGZvbGxvd2luZyBzdHJ1
+Y3R1cmU6DQo+IA0KPiAgIGlmIChQYWdlQ29tcG91bmQpIHsNCj4gICAgICAgaWYgKFBhZ2VIdWdl
+KSB7DQo+ICAgICAgICAgICBpZiAoUGFnZUh1Z2VGcmVlZCB8fCBQYWdlSHVnZUFjdGl2ZSkgew0K
+PiAgICAgICAgICAgICAgIGlmIChnZXRfcGFnZV91bmxlc3NfemVybykNCj4gICAgICAgICAgICAg
+ICAgICAgcmV0dXJuIDA7ICAgLy8gcGF0aCBmb3IgaW4tdXNlIGh1Z2V0bGIgcGFnZQ0KPiAgICAg
+ICAgICAgICAgIGVsc2UNCj4gICAgICAgICAgICAgICAgICAgcmV0dXJuIDE7ICAgLy8gcGF0aCBm
+b3IgZnJlZSBodWdldGxiIHBhZ2UNCj4gICAgICAgICAgIH0gZWxzZSB7DQo+ICAgICAgICAgICAg
+ICAgcmV0dXJuIC1FQlVTWTsgIC8vIGFueSB0cmFuc2llbnQgaHVnZXRsYiBwYWdlDQo+ICAgICAg
+ICAgICB9DQo+ICAgICAgIH0gZWxzZSB7DQo+ICAgICAgICAgICAuLi4gLy8gYW55IG90aGVyIGNv
+bXBvdW5kIHBhZ2UgKGxpa2UgdGhwLCBzbGFiLCAuLi4pDQo+ICAgICAgIH0NCj4gICB9IGVsc2Ug
+ew0KPiAgICAgICAuLi4gICAvLyBhbnkgbm9uLWNvbXBvdW5kIHBhZ2UNCj4gICB9DQoNClRoZSBh
+Ym92ZSBwc2V1ZG8gY29kZSB3YXMgd3JvbmcsIHNvIGxldCBtZSB1cGRhdGUgbXkgdGhvdWdodC4N
+CkknbSBub3cgdHJ5aW5nIHRvIHNvbHZlIHRoZSByZXBvcnRlZCBpc3N1ZSBieSBjaGFuZ2luZyBf
+X2dldF9od3BvaXNvbl9wYWdlKCkNCmxpa2UgYmVsb3c6DQoNCiAgc3RhdGljIGludCBfX2dldF9o
+d3BvaXNvbl9wYWdlKHN0cnVjdCBwYWdlICpwYWdlKQ0KICB7DQogICAgICAgICAgc3RydWN0IHBh
+Z2UgKmhlYWQgPSBjb21wb3VuZF9oZWFkKHBhZ2UpOw0KICANCiAgICAgICAgICBpZiAoUGFnZUNv
+bXBvdW5kKHBhZ2UpKSB7DQogICAgICAgICAgICAgICAgICBpZiAoUGFnZVNsYWIocGFnZSkpIHsN
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGdldF9wYWdlX3VubGVzc196ZXJvKHBh
+Z2UpOw0KICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmIChQYWdlSHVnZShoZWFkKSkgew0KICAg
+ICAgICAgICAgICAgICAgICAgICAgICBpZiAoSFBhZ2VGcmVlZChoZWFkKSB8fCBIUGFnZU1pZ3Jh
+dGFibGUoaGVhZCkpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGdl
+dF9wYWdlX3VubGVzc196ZXJvKGhlYWQpOw0KICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmIChQ
+YWdlVHJhbnNIdWdlKGhlYWQpKSB7DQogICAgICAgICAgICAgICAgICAgICAgICAgIC8qDQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAqIE5vbiBhbm9ueW1vdXMgdGhwIGV4aXN0cyBvbmx5IGlu
+IGFsbG9jYXRpb24vZnJlZSB0aW1lLiBXZQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgKiBj
+YW4ndCBoYW5kbGUgc3VjaCBhIGNhc2UgY29ycmVjdGx5LCBzbyBsZXQncyBnaXZlIGl0IHVwLg0K
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKiBUaGlzIHNob3VsZCBiZSBiZXR0ZXIgdGhhbiB0
+cmlnZ2VyaW5nIEJVR19PTiB3aGVuIGtlcm5lbA0KICAgICAgICAgICAgICAgICAgICAgICAgICAg
+KiB0cmllcyB0byB0b3VjaCB0aGUgInBhcnRpYWxseSBoYW5kbGVkIiBwYWdlLg0KICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKi8NCiAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFQYWdl
+QW5vbihoZWFkKSkgew0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByX2Vycigi
+TWVtb3J5IGZhaWx1cmU6ICUjbHg6IG5vbiBhbm9ueW1vdXMgdGhwXG4iLA0KICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWdlX3RvX3BmbihwYWdlKSk7DQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDA7DQogICAgICAgICAgICAgICAgICAg
+ICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGdldF9wYWdlX3VubGVzc196
+ZXJvKGhlYWQpKSB7DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGhlYWQg
+PT0gY29tcG91bmRfaGVhZChwYWdlKSkNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHJldHVybiAxOw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBy
+X2luZm8oIk1lbW9yeSBmYWlsdXJlOiAlI2x4IGNhbm5vdCBjYXRjaCB0YWlsXG4iLA0KICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGFnZV90b19wZm4ocGFnZSkpOw0K
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHB1dF9wYWdlKGhlYWQpOw0KICAgICAg
+ICAgICAgICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgICB9DQogICAgICAgICAgICAg
+ICAgICByZXR1cm4gMDsNCiAgICAgICAgICB9DQogIA0KICAgICAgICAgIHJldHVybiBnZXRfcGFn
+ZV91bmxlc3NfemVybyhwYWdlKTsNCiAgfQ0KDQpTb21lIG5vdGVzOiANCg0KICAtIGluIGh1Z2V0
+bGIgcGF0aCwgbmV3IEhQYWdlKiBjaGVja3Mgc2hvdWxkIGF2b2lkIHRoZSByZXBvcnRlZCByYWNl
+LA0KICAgIGJ1dCBJIHN0aWxsIG5lZWQgbW9yZSB0ZXN0aW5nIHRvIGNvbmZpcm0gaXQsDQogIC0g
+UGFnZVNsYWIgY2hlY2sgaXMgYWRkZWQgYmVjYXVzZSBvdGhlcndpc2UgSSBmb3VuZCB0aGF0ICJu
+b24gYW5vbnltb3VzIHRocCINCiAgICBwYXRoIGlzIGNob3NlbiwgdGhhdCdzIG9idmlvdXNseSB3
+cm9uZywNCiAgLSB0aHAncyBicmFuY2ggaGFzIGEga25vd24gaXNzdWUgdW5yZWxhdGVkIHRvIHRo
+ZSBjdXJyZW50IGlzc3VlLCB3aGljaA0KICAgIHdpbGwvc2hvdWxkIGJlIGltcHJvdmVkIGxhdGVy
+Lg0KDQpJJ2xsIHNlbmQgYSBwYXRjaCBuZXh0IHdlZWsuDQoNClRoYW5rcywNCk5hb3lhIEhvcmln
+dWNoaQ==
