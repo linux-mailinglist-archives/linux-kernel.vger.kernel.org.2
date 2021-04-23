@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9583692FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091A6369301
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhDWNZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWNZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:25:10 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F62C061574;
-        Fri, 23 Apr 2021 06:24:30 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso1255963pjn.3;
-        Fri, 23 Apr 2021 06:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wicbX1JgvhArdJhR+hyR7jupbo+4izdh0id2xxwTkCM=;
-        b=hjw81NRhqRugQl2cfN12iBG1nJFp5NZV3e2Dz4vDVBjftb2lDIMV/38BIPh/69MqyP
-         j/h3ANwzhnZ/lWVcPqLAWfm+ZeAkrIeAOE34QjKvTGuwerDC9rKgye/ua+fbnF69sYzR
-         lho27abTjt5IpiYhBB5rbDXDa6KV3/or0OfAyn3CKPqOyrqg+4f0FwTG9aGBsq4kNno3
-         YrfMxvzKqmdlkNDDe35i0PMMOwBRt3WCAqSN5QZB2A1Yodq3LIwgMOTxDiwzcnhOR+eQ
-         PTDNfVDHaf1EGuqIIAT9bCdCY2WNVEIhzlXoJErehMJEPzekLa1zbwlg4ylQLkTO6j3o
-         kIsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wicbX1JgvhArdJhR+hyR7jupbo+4izdh0id2xxwTkCM=;
-        b=RIvWqm0CNYJi+76e1HIK6Jt7j4CTj37G3eOB84oIvs27LImDa16Ea6l3AoV+fYRFmo
-         RAlzypCWVAm4ZxwkChFa4StlCn8PuBauok3bouMK9ssnIjRHL3H5nj/3j8o9ZUjsTC4m
-         Nz2Yb88aalur68d7OVMCPOQyKsyTxAOoXzJcgv72pqy19FgMhBujGPeGs4nz4U0rw7zO
-         mLgpCsgJ8TFPmzI/kCWgfDWdGfhX8s6qpAIdohGH/qrcnS0DtOSKZR65GzN+JRPbwCLE
-         yD7vXF6vj+uEtXP8rC1RSSXtPhep6Sh6S7fcSFhBtO51wwMd7HLs0b6jwPnSm/DZ+NqM
-         i5yw==
-X-Gm-Message-State: AOAM532MHN7N++/+c5aXN2F0m9uePOKpmyL/xoe18H1UQWrnmeHFtey+
-        Tbbx6gk+At8K5wRBZHAE6rjDROjLpS5xhspbb1A=
-X-Google-Smtp-Source: ABdhPJyq5d4UiJ6syt8c/ck9U703nGEJa9zcEdL/HPP1h99ITbxFZVJoIvPy21EfrZ3i8vJuPfBARA==
-X-Received: by 2002:a17:90a:4b8c:: with SMTP id i12mr5796811pjh.66.1619184269789;
-        Fri, 23 Apr 2021 06:24:29 -0700 (PDT)
-Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
-        by smtp.gmail.com with ESMTPSA id g16sm5092880pfu.45.2021.04.23.06.24.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 06:24:29 -0700 (PDT)
-From:   Wei Ming Chen <jj251510319013@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: [PATCH] usb: gadget: function: fix typo in f_hid.c
-Date:   Fri, 23 Apr 2021 21:24:17 +0800
-Message-Id: <20210423132417.4385-1-jj251510319013@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S236064AbhDWNZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:25:39 -0400
+Received: from mga12.intel.com ([192.55.52.136]:31798 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229456AbhDWNZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:25:36 -0400
+IronPort-SDR: kK0FOKpcJsrVU5ds7uOD45vpKD5enBULxfLehoun9FPz+s+dUqUjrCnZxsnhMZKTMcRF8bu0Um
+ 8XKmNBmVRJmw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="175551467"
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="175551467"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 06:24:59 -0700
+IronPort-SDR: fU1MwX/zwew2GLGuBMdwnSfJshhZBEqFxXeg9B7pmIkZEYkobjV2mCQOh8Iy5uLxNUnvqaJ/o1
+ edoxgT6ZBkWQ==
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="456222695"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 06:24:56 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lZvnh-006ZPI-4z; Fri, 23 Apr 2021 16:24:53 +0300
+Date:   Fri, 23 Apr 2021 16:24:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v5 05/13] module: Add printk formats to add module build
+ ID to stacktraces
+Message-ID: <YILKpQ2KsBXCoHlG@smile.fi.intel.com>
+References: <20210420215003.3510247-1-swboyd@chromium.org>
+ <20210420215003.3510247-6-swboyd@chromium.org>
+ <YIARTVqnN8t/FA/P@smile.fi.intel.com>
+ <161913520061.46595.8469966711677906076@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161913520061.46595.8469966711677906076@swboyd.mtv.corp.google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace `me` with `be`
+On Thu, Apr 22, 2021 at 04:46:40PM -0700, Stephen Boyd wrote:
+> Quoting Andy Shevchenko (2021-04-21 04:49:33)
+> > On Tue, Apr 20, 2021 at 02:49:55PM -0700, Stephen Boyd wrote:
 
-Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
----
- drivers/usb/gadget/function/f_hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...
 
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index 1125f4715830..0c964be58406 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -1117,7 +1117,7 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
- 	hidg->func.setup   = hidg_setup;
- 	hidg->func.free_func = hidg_free;
- 
--	/* this could me made configurable at some point */
-+	/* this could be made configurable at some point */
- 	hidg->qlen	   = 4;
- 
- 	return &hidg->func;
+> > > Example:
+> > 
+> > Please, shrink the example to leave only meaningful lines.
+> > 
+> > Why, e.g., do we need to see register dump, is it somehow different?
+> 
+> Can you format it how you would like to see it? Should it be a unified
+> diff? I agree it would help to see "what changed" but also don't know
+> what you want so opted to provide more information, not less. I was
+> worried about the questions like "do you change other parts of a splat?"
+> so I just put the whole thing there.
+
+
+Before:
+ ...line X...
+ ...
+ ...line Y...
+
+After:
+ ...line X'...
+ ...
+ ...line Y'...
+
+Three lines of example per each paragraph, in each of them the middle one is
+simply [...].
+
+...
+
+> > > +#ifdef CONFIG_STACKTRACE_BUILD_ID
+> > > +     /* Module build ID */
+> > > +     unsigned char build_id[BUILD_ID_SIZE_MAX];
+> > 
+> > Is it really string of characters? Perhaps u8 will be more explicit.
+> 
+> I'm just matching the build ID API that uses unsigned char. If you want
+> u8 then we should update more places. I could do that in a followup
+> patch, but this one is already sorta big.
+
+Unsigned char here is confusing. I would prefer a prerequisite patch to fix
+other places first.
+
+...
+
+> > > +#include <linux/kernel.h>
+> > 
+> > What do you need this header for?
+> > 
+> 
+> For typeof_member().
+
+Argh... We really need to split this and container_of to something else. Having
+entire kernel.h for that is an overkill.
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
