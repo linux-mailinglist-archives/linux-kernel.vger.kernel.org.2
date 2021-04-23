@@ -2,59 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADE9368D69
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39DD368D6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240759AbhDWG4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:56:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:18564 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230131AbhDWG43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:56:29 -0400
-IronPort-SDR: gmOIab7+LyFG5YOuvNp1s6D1IzL7UGw5dErtTkdiCjGTFHscijqONGqU7Qoe9iCW6hYar2CJbF
- DoEeSQPcl1Mw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="175511556"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="175511556"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 23:55:52 -0700
-IronPort-SDR: GCdFF6GP8kc2I/8Dxaz0fqjxv8x5uyyexAcSKSBZVk2aLiVYPPqaPy7zifFC/Gn8dvXYDQRfiC
- +EP4Cj09ndgQ==
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="428272895"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.46]) ([10.238.4.46])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 23:55:48 -0700
-Subject: Re: [RFC] mm/vmscan.c: avoid possible long latency caused by
- too_many_isolated()
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        tim.c.chen@linux.intel.com, Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, yuzhao@google.com,
-        wfg@mail.ustc.edu.cn
-References: <20210416023536.168632-1-zhengjun.xing@linux.intel.com>
- <20210422102325.1332-1-hdanton@sina.com>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <2d254758-4e5c-5dbc-b939-0d1ca4be03a5@linux.intel.com>
-Date:   Fri, 23 Apr 2021 14:55:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S240854AbhDWG4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhDWG4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 02:56:41 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA2DC061574;
+        Thu, 22 Apr 2021 23:56:05 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q10so34555794pgj.2;
+        Thu, 22 Apr 2021 23:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=YwCnxkXVRrLVAcaZu7Tt0zFvI7AfeBQzqeihkPgPDZI=;
+        b=NaWkQ+BKCNjiXFDZ7Gm7qkfb+cJ/DGSYgJRYtzo2BQ/S0kNrXOG/tOEvqPoFozf41I
+         V9kBPzwz334k6KoPzxFPxUcB0zk11tsoFDO6yAYzzRvTGP9ecUIcqyrig+GgVz2OC9Cd
+         8PeScAxx+jY4wnRFFfqNxhCD8RFlecYKzTeTaFtMffcuTquHcqX7ojsmA3W4mEDlgRab
+         Zn0qrMm2GgQ7Grsm2Sr2CzNN23g5nSqHqISvx4KBUulvAdXlmU8YQhjoya08B1LY0aHw
+         k9VUhUTl4bPNZdDRPw8l8f4K14YF34yexHFY9LDDDspiUGpQxfhL+lExtjWlVqzuaSlT
+         SJOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YwCnxkXVRrLVAcaZu7Tt0zFvI7AfeBQzqeihkPgPDZI=;
+        b=RdtRp7SiXfJHkgGBnCE6GpDLXtdu5gtRLBaWFNsYzORqEr8EKvkaa0wh8mS7NXK4rO
+         fyXF4pp0J1PiK8LbcuR8gRun/xR0/95G0Ap9qp2QHy+R0FylxSYzdsnnoHkBOmM8Erij
+         IkcE2kotJhJN7wXFrTXX9TVCb2UHx2MBnkOK4Yor1XsZ9FK12cmMrCE9H8sOrOtCHEie
+         kVt2zGgh5d1vUor9JB/L8BmsuGaUH0qsTX6uVPsua+ffhgaej1SQAJX4KvTgi5aJ1Adc
+         SWXDabqFuvny6DoVNDlOudUF2KN1kps87kcS4SCG4FqPaWULrLPHgCtSU6wI0rHv/wjk
+         k6lg==
+X-Gm-Message-State: AOAM530DMZ9EsIn2yDZRyM/OsQH4bwhiqQ+oE5sdxcb1c/qFKVaU2QrU
+        e/izZ+lzzORKSa7OWbW1HuBypymYQBr++xFx
+X-Google-Smtp-Source: ABdhPJyJGsZ5F+USbYFqWRFWnoyY8uMqzjmeA4ZPw6lDk25CG2uV6vZifGZvrq8auO/UhvauDrZ/Rg==
+X-Received: by 2002:a63:d915:: with SMTP id r21mr2444317pgg.69.1619160965221;
+        Thu, 22 Apr 2021 23:56:05 -0700 (PDT)
+Received: from shreya-VirtualBox ([122.167.91.182])
+        by smtp.gmail.com with ESMTPSA id 31sm3872335pgw.3.2021.04.22.23.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 23:56:03 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 12:25:58 +0530
+From:   Shreya Ajith <shreya.ajithchb@gmail.com>
+To:     davem@davemloft.net
+Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+        davem@davemloft.net
+Subject: [PATCH]sbus:char:bbc_i2c:Replaced header file asm/io.h with
+ linux/io.h
+Message-ID: <20210423065558.d5gy3zpxus6gsyc2@shreya-VirtualBox>
 MIME-Version: 1.0
-In-Reply-To: <20210422102325.1332-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replaced header file asm/io.h with linux/io.h
 
+Signed-off-by:Shreya Ajith <shreya.ajithchb@gmail.com>
+---
+ drivers/sbus/char/bbc_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 4/22/2021 6:23 PM, Hillf Danton wrote:
-> Another option seems like we take a nap at the second time of lru tmi
-> with some allocators in your case served without the 100ms delay.
-
-Thanks, I will try it with my test cases.
-
+diff --git a/drivers/sbus/char/bbc_i2c.c b/drivers/sbus/char/bbc_i2c.c
+index 537e55cd038d..a4a38a405b6f 100644
+--- a/drivers/sbus/char/bbc_i2c.c
++++ b/drivers/sbus/char/bbc_i2c.c
+@@ -16,7 +16,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <asm/bbc.h>
+-#include <asm/io.h>
++#include <linux/io.h>
+ 
+ #include "bbc_i2c.h"
+ 
 -- 
-Zhengjun Xing
+2.25.1
+
