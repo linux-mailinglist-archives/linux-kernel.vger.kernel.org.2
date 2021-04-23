@@ -2,382 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D114A369229
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF611369234
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242410AbhDWMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242443AbhDWMct (ORCPT
+        id S242393AbhDWMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:34:42 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:45571 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230305AbhDWMel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:32:49 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B240C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 05:32:13 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id s16so43482836iog.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 05:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=qiNPM584FkcAWOXr3fMf7X5paY6VSGkTbcaBn012VKw=;
-        b=L8kbNPqkg0QbJUO/hNhns7fuS8rhnaLPviTW7Z4VE7Z6fCvLv9gFRdahgojRUOzVpT
-         ufzdBKA9/as8azpaQ1eZoUKi1qbX/3kGwYA8stCsTkHOa4u5AVpW+UjoSGdLQq5PO5wl
-         xn8r/4rqgHwC1BSp9s8s2f29gup92uYJbrE/s=
+        Fri, 23 Apr 2021 08:34:41 -0400
+Received: by mail-wr1-f41.google.com with SMTP id h4so39202711wrt.12;
+        Fri, 23 Apr 2021 05:34:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qiNPM584FkcAWOXr3fMf7X5paY6VSGkTbcaBn012VKw=;
-        b=WXCfZV9m2jM/APWAW/1E8ZYhy0yNqSVTtNpKQx7EavHlLUXOtBb5RdgNMr+zSD4m6o
-         5eEVcHy9lorlQgGdyGkyJA9vfngIiSlOo8+PTdbqC3aeuG7Q9zQJQWdTIKqfjPd3HuUa
-         KVNbDxXqW23ZFe6vVg44Yast3CL/8iV9XlkwLLFug4DXmGvaCsCUrIXGI/KaOKAjyT2P
-         agR1KGrCQ2RX44ev+tjLgMy1J+D4/oTHXGco0ZPIkqx0fqGAZI0GO+myD8dAGBNWMFko
-         f2aUM2OfUUE8Er5xOICG3OV0lMoZLvdDQZ6MFjC2PWKTP47WApUd2efk5vS4gY9HrU43
-         MySw==
-X-Gm-Message-State: AOAM531VQsBi2u27bjsiNLSjOWRI9sEZI/UgsDgyDq0shS0zQVl5/MtX
-        7XyhtxTDXM0s+UhZxMr1tLPqvNW4PZUlxg==
-X-Google-Smtp-Source: ABdhPJzjF5lgjijnSXTPGCEuNAYOatVbu6NGEae6YqXG9sTzMFFSZ6L8FGTTCFs4ckjJ8scPay60HA==
-X-Received: by 2002:a5d:9401:: with SMTP id v1mr3219900ion.101.1619181131935;
-        Fri, 23 Apr 2021 05:32:11 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id f18sm2539771ile.40.2021.04.23.05.32.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 05:32:11 -0700 (PDT)
-Subject: Re: [PATCH net-next v4 3/3] net: ethernet: rmnet: Add support for
- MAPv5 egress packets
-To:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
-        davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1619121731-17782-1-git-send-email-sharathv@codeaurora.org>
- <1619121731-17782-4-git-send-email-sharathv@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <31bc24d6-0e4c-4538-b6f7-91e03af9707b@ieee.org>
-Date:   Fri, 23 Apr 2021 07:32:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CnDAq/wf30SK+v97SSEfI5TLrb0FjfVhYtu1LvUj2FE=;
+        b=X7bfQCEqzkwawL/12PZGy254e06IWzH40f9gk4X7gq4PWp9ceSqwp/5Wf0aN9ONEC1
+         gB22zmYWFEmGoNm2KCr0dmD77Zc0yK8giFkMcDBrbUUzsXawookM2qQYbOtqMyqfhnkE
+         IGeFLS1yE2QB07EyvZn5AjiP042Xh/yMT64/qfNmsDVQf/JbhOEXNpY4qcfiIAQnsApZ
+         46rdDhaMU3kTFpEvDYbYCVDakl1mHM/XMdS/+eqUWNFkprrytTogHM3oCx26zButF02i
+         M5VE4/FedTf9zFY8kyJ6vwqbHfxBZBQtmVH/pMgrn7sVwJGuNe/0GgCwGLAM0/2LF+tc
+         K8TA==
+X-Gm-Message-State: AOAM530yiqD0RjwJ/EEV5vW8eg5Jj9NRenBE3BjuX/eMv6TxVKd8zZPP
+        LtdR/IY2MW6X6pzMEG7HCjXY0+Gt2SVhFzB5JTM=
+X-Google-Smtp-Source: ABdhPJwUJTJmvjUsLOs2czySsDSbXe3xbOjXToTSowi772RhmQrLzizFciArf9giECNlBWi3zp1t0vSsxQZjJSzMDJ4=
+X-Received: by 2002:adf:9d81:: with SMTP id p1mr4606469wre.247.1619181244219;
+ Fri, 23 Apr 2021 05:34:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1619121731-17782-4-git-send-email-sharathv@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210422214708.716164-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210422214708.716164-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210422214708.716164-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Apr 2021 14:33:53 +0200
+Message-ID: <CAJZ5v0itaKL58ieMB6ER47GVns7Ukvd_7VNBAxkktWB5cDv-SQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ACPICA: ACPI 6.4: MADT: add Multiprocessor Wakeup
+ Mailbox Structure
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/22/21 3:02 PM, Sharath Chandra Vurukala wrote:
-> Adding Support for MAPv5 egress packets.
-> Based on the configuration Request HW for csum offload
-> by setting the csum_valid_required of Mapv5 packet.
+On Thu, Apr 22, 2021 at 11:47 PM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> ACPICA commit f1ee04207a212f6c519441e7e25397649ebc4cea
+>
+> Add Multiprocessor Wakeup Mailbox Structure definition. It is useful
+> in parsing MADT Wake table.
+>
+> Link: https://github.com/acpica/acpica/commit/f1ee0420
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-Please try to re-word this description.  I'm not sure
-I understand what it means.
+I'm expecting to receive this patch from Erik at one point, so I'm
+guessing that it's been added to this series for reference.
 
-I see what I think is a bug below.  Please either
-fix or explain.
-
-> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
 > ---
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |  4 +-
->   .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   | 12 ++-
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  8 +-
->   .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 93 ++++++++++++++++++++--
->   drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c    |  3 +-
->   include/uapi/linux/if_link.h                       |  1 +
->   6 files changed, 107 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-> index 8d8d469..8e64ca9 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
-> @@ -1,5 +1,6 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
-> -/* Copyright (c) 2013-2014, 2016-2018 The Linux Foundation. All rights reserved.
-> +/* Copyright (c) 2013-2014, 2016-2018, 2021 The Linux Foundation.
-> + * All rights reserved.
->    *
->    * RMNET Data configuration engine
->    */
-> @@ -56,6 +57,7 @@ struct rmnet_priv_stats {
->   	u64 csum_fragmented_pkt;
->   	u64 csum_skipped;
->   	u64 csum_sw;
-> +	u64 csum_hw;
-
-Why is this new statistic type added?  Would it be
-meaningful to use before--with only QMAPv4?  Or is
-there something different about QMAPv5 (inline) checksum
-offload that makes this necessary or desirable?
-
-This is something new that ought to be at least
-mentioned in the description at the top.  And for
-future reference, this could likely have been
-defined in a separate patch, before this one.
-
->   };
->   
->   struct rmnet_priv {
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> index 706a225..f8432e6 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
-> @@ -133,7 +133,7 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
->   				    struct rmnet_port *port, u8 mux_id,
->   				    struct net_device *orig_dev)
->   {
-> -	int required_headroom, additional_header_len;
-> +	int required_headroom, additional_header_len, csum_type = 0;
->   	struct rmnet_map_header *map_header;
->   
->   	additional_header_len = 0;
-> @@ -142,6 +142,10 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
->   	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
->   		additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
->   		required_headroom += additional_header_len;
-> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
-> +	} else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
-> +		additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
-
-Does additional_header_len need to be added to required_headroom,
-as it is for QMAPv4 above?
-
-If so, this is a bug and must be fixed.
-
-What I tested last week (and verified work for IPA v3.5.1 and
-IPA v4.2) looked like this:
-
-     if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
-         additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
-         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
-     } else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
-         additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
-         csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
-     }
-     required_headroom += additional_header_len;
-
-					-Alex
-
-> +		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
->   	}
->   
->   	if (skb_headroom(skb) < required_headroom) {
-> @@ -149,10 +153,10 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
->   			return -ENOMEM;
->   	}
->   
-> -	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
-> -		rmnet_map_checksum_uplink_packet(skb, orig_dev);
-> +	if (csum_type)
-> +		rmnet_map_checksum_uplink_packet(skb, port, orig_dev, csum_type);
->   
-> -	map_header = rmnet_map_add_map_header(skb, additional_header_len, 0);
-> +	map_header = rmnet_map_add_map_header(skb, additional_header_len, port, 0);
->   	if (!map_header)
->   		return -ENOMEM;
->   
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> index 1a399bf..e5a0b38 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
-> @@ -43,11 +43,15 @@ enum rmnet_map_commands {
->   struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
->   				      struct rmnet_port *port);
->   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
-> -						  int hdrlen, int pad);
-> +						  int hdrlen,
-> +						  struct rmnet_port *port,
-> +						  int pad);
->   void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port);
->   int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len);
->   void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-> -				      struct net_device *orig_dev);
-> +				      struct rmnet_port *port,
-> +				      struct net_device *orig_dev,
-> +				      int csum_type);
->   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb, u16 len);
->   
->   #endif /* _RMNET_MAP_H_ */
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> index f427018..a8918d2 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
-> @@ -12,6 +12,7 @@
->   #include "rmnet_config.h"
->   #include "rmnet_map.h"
->   #include "rmnet_private.h"
-> +#include <linux/bitfield.h>
->   
->   #define RMNET_MAP_DEAGGR_SPACING  64
->   #define RMNET_MAP_DEAGGR_HEADROOM (RMNET_MAP_DEAGGR_SPACING / 2)
-> @@ -251,12 +252,69 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
->   }
->   #endif
->   
-> +static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
-> +						struct rmnet_port *port,
-> +						struct net_device *orig_dev)
-> +{
-> +	struct rmnet_priv *priv = netdev_priv(orig_dev);
-> +	struct rmnet_map_v5_csum_header *ul_header;
+>  include/acpi/actbl2.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
+> index b2362600b9ff..7dce422f6119 100644
+> --- a/include/acpi/actbl2.h
+> +++ b/include/acpi/actbl2.h
+> @@ -733,6 +733,20 @@ struct acpi_madt_multiproc_wakeup {
+>         u64 base_address;
+>  };
+>
+> +#define ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE       2032
+> +#define ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE 2048
 > +
-> +	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
-> +		return;
+> +struct acpi_madt_multiproc_wakeup_mailbox {
+> +       u16 command;
+> +       u16 reserved;           /* reserved - must be zero */
+> +       u32 apic_id;
+> +       u64 wakeup_vector;
+> +       u8 reserved_os[ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE];       /* reserved for OS use */
+> +       u8 reserved_firmware[ACPI_MULTIPROC_WAKEUP_MB_FIRMWARE_SIZE];   /* reserved for firmware use */
+> +};
 > +
-> +	ul_header = skb_push(skb, sizeof(*ul_header));
-> +	memset(ul_header, 0, sizeof(*ul_header));
-> +	ul_header->header_info = RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD <<
-> +					MAPV5_HDRINFO_HDR_TYPE_SHIFT;
+> +#define ACPI_MP_WAKE_COMMAND_WAKEUP    1
 > +
-> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-> +		void *iph = (char *)ul_header + sizeof(*ul_header);
-> +		__sum16 *check;
-> +		void *trans;
-> +		u8 proto;
-> +
-> +		if (skb->protocol == htons(ETH_P_IP)) {
-> +			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
-> +
-> +			proto = ((struct iphdr *)iph)->protocol;
-> +			trans = iph + ip_len;
-> +		} else if (skb->protocol == htons(ETH_P_IPV6)) {
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +			u16 ip_len = sizeof(struct ipv6hdr);
-> +
-> +			proto = ((struct ipv6hdr *)iph)->nexthdr;
-> +			trans = iph + ip_len;
-> +#else
-> +			priv->stats.csum_err_invalid_ip_version++;
-> +			goto sw_csum;
-> +#endif /* CONFIG_IPV6 */
-> +		} else {
-> +			priv->stats.csum_err_invalid_ip_version++;
-> +			goto sw_csum;
-> +		}
-> +
-> +		check = rmnet_map_get_csum_field(proto, trans);
-> +		if (check) {
-> +			skb->ip_summed = CHECKSUM_NONE;
-> +			/* Ask for checksum offloading */
-> +			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
-> +			priv->stats.csum_hw++;
-> +			return;
-> +		}
-> +	}
-> +
-> +sw_csum:
-> +	priv->stats.csum_sw++;
-> +}
-> +
->   /* Adds MAP header to front of skb->data
->    * Padding is calculated and set appropriately in MAP header. Mux ID is
->    * initialized to 0.
->    */
->   struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
-> -						  int hdrlen, int pad)
-> +						  int hdrlen,
-> +						  struct rmnet_port *port,
-> +						  int pad)
->   {
->   	struct rmnet_map_header *map_header;
->   	u32 padding, map_datalen;
-> @@ -267,6 +325,10 @@ struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
->   			skb_push(skb, sizeof(struct rmnet_map_header));
->   	memset(map_header, 0, sizeof(struct rmnet_map_header));
->   
-> +	/* Set next_hdr bit for csum offload packets */
-> +	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5)
-> +		map_header->flags |= MAP_NEXT_HEADER_FLAG;
-> +
->   	if (pad == RMNET_MAP_NO_PAD_BYTES) {
->   		map_header->pkt_len = htons(map_datalen);
->   		return map_header;
-> @@ -394,11 +456,8 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
->   	return 0;
->   }
->   
-> -/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
-> - * packets that are supported for UL checksum offload.
-> - */
-> -void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-> -				      struct net_device *orig_dev)
-> +static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
-> +						struct net_device *orig_dev)
->   {
->   	struct rmnet_priv *priv = netdev_priv(orig_dev);
->   	struct rmnet_map_ul_csum_header *ul_header;
-> @@ -417,10 +476,12 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->   
->   		if (skb->protocol == htons(ETH_P_IP)) {
->   			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
-> +			priv->stats.csum_hw++;
->   			return;
->   		} else if (skb->protocol == htons(ETH_P_IPV6)) {
->   #if IS_ENABLED(CONFIG_IPV6)
->   			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
-> +			priv->stats.csum_hw++;
->   			return;
->   #else
->   			priv->stats.csum_err_invalid_ip_version++;
-> @@ -437,6 +498,26 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
->   	priv->stats.csum_sw++;
->   }
->   
-> +/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
-> + * packets that are supported for UL checksum offload.
-> + */
-> +void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
-> +				      struct rmnet_port *port,
-> +				      struct net_device *orig_dev,
-> +				      int csum_type)
-> +{
-> +	switch (csum_type) {
-> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV4:
-> +		rmnet_map_v4_checksum_uplink_packet(skb, orig_dev);
-> +		break;
-> +	case RMNET_FLAGS_EGRESS_MAP_CKSUMV5:
-> +		rmnet_map_v5_checksum_uplink_packet(skb, port, orig_dev);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +}
-> +
->   /* Process a MAPv5 packet header */
->   int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
->   				      u16 len)
-> diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> index 41fbd2c..bc6d6ac 100644
-> --- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> +++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_vnd.c
-> @@ -174,6 +174,7 @@ static const char rmnet_gstrings_stats[][ETH_GSTRING_LEN] = {
->   	"Checksum skipped on ip fragment",
->   	"Checksum skipped",
->   	"Checksum computed in software",
-> +	"Checksum computed in hardware",
->   };
->   
->   static void rmnet_get_strings(struct net_device *dev, u32 stringset, u8 *buf)
-> @@ -354,4 +355,4 @@ int rmnet_vnd_update_dev_mtu(struct rmnet_port *port,
->   	}
->   
->   	return 0;
-> -}
-> \ No newline at end of file
-> +}
-> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-> index 21529b3..1691f3a 100644
-> --- a/include/uapi/linux/if_link.h
-> +++ b/include/uapi/linux/if_link.h
-> @@ -1236,6 +1236,7 @@ enum {
->   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV4           (1U << 2)
->   #define RMNET_FLAGS_EGRESS_MAP_CKSUMV4            (1U << 3)
->   #define RMNET_FLAGS_INGRESS_MAP_CKSUMV5           (1U << 4)
-> +#define RMNET_FLAGS_EGRESS_MAP_CKSUMV5            (1U << 5)
->   
->   enum {
->   	IFLA_RMNET_UNSPEC,
-> 
-
+>  /*
+>   * Common flags fields for MADT subtables
+>   */
+> --
+> 2.25.1
+>
