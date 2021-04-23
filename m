@@ -2,164 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFBC368BF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3174368BF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237021AbhDWEXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:23:33 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:52777 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhDWEXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:23:32 -0400
-Received: by mail-wm1-f49.google.com with SMTP id y204so23857891wmg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 21:22:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M56j6J+2Pwqhpe8pZcjygHn3ALnVsBugCAUBhQaiPQw=;
-        b=J0M/1/XiuFgnexDLE6pBcdkwgvMZvO6a4Lmw8En2Rlb7WlyUmi3hzILJai128ZjQ53
-         zq/wFv28WE3WyU8im1OCmtDAo1XCWi6PlMWwVIP0ol8PwYPYyD5XL7scAokuE+Z8YgkN
-         wOFeWHEjbbRMIFR39hHsDMZDhyt1s8muCtiLZqHdawUft83Huc/SSKeg3e1tFxUk6oHg
-         t+S70Pz51/BabNqGpvdtpec79phVYezq9OM+OGYnBMC37cpmGPpas91iIwk3dNWGvOiV
-         sprXLIxmTEO4koCbRp1krVihRXk5gOzv3YeTW3VfGKfgs955+hzyz5BG/jrX/dCikGta
-         i+mg==
-X-Gm-Message-State: AOAM530GWyqqkA3RJVo78W4PuvN5KuOdd0mYQ60LUwCanME9EzWCW/yo
-        UGQZLWxdM5GTBsFunJin83A=
-X-Google-Smtp-Source: ABdhPJxF2f83eLmCJFPgUPOY6XzD6e9Lw3ewirkqt71xOF97zzSg9SSZ2MQnW3QpY2FK4IPgRigKdg==
-X-Received: by 2002:a7b:c5c8:: with SMTP id n8mr3346489wmk.63.1619151775616;
-        Thu, 22 Apr 2021 21:22:55 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id z17sm7177200wro.1.2021.04.22.21.22.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 21:22:55 -0700 (PDT)
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-To:     =?UTF-8?Q?Samo_Poga=c4=8dnik?= <samo_pogacnik@t-2.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        id S240259AbhDWEYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 00:24:23 -0400
+Received: from mga11.intel.com ([192.55.52.93]:26473 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229454AbhDWEYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 00:24:21 -0400
+IronPort-SDR: wFqGTwFgwe5ZrqZlcqj5i+UCCS8rNkIvLG0SHozNqkoG2tn/Th5t7SQfeVfqNtWr/euiq8Ds6b
+ yr3Qh8YYFX0w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="192826844"
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="192826844"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 21:23:42 -0700
+IronPort-SDR: JWllVoPk43r/S37hMosekdbLOWwH5eSI71rVdydNgg/A79tHqHwkYEHL+druSP8sqMtQPH6Uuo
+ d36xkU6Pg8kQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
+   d="scan'208";a="421627321"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Apr 2021 21:23:35 -0700
+Subject: Re: [PATCH v20 1/2] scsi: ufs: Enable power management for wlun
+To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <YGx59PEq2Y015YdK@alley>
- <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
- <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
- <YG24F9Kx+tjxhh8G@kroah.com>
- <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
- <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
- <YHQkeZVs3pmyie9e@kroah.com>
- <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
- <YHQ3Zy9gRdZsu77w@kroah.com>
- <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
- <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
- <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
- <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
- <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <699d0312-ee68-8f05-db2d-07511eaad576@kernel.org>
-Date:   Fri, 23 Apr 2021 06:22:54 +0200
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Hu <huyue2@yulong.com>,
+        Bart van Assche <bvanassche@acm.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1618600985.git.asutoshd@codeaurora.org>
+ <d660b8d4e1fb192810abd09a8ff0ef4d9f6b96cd.1618600985.git.asutoshd@codeaurora.org>
+ <fdadd467-b613-d800-18c5-be064396fd10@intel.com>
+ <07e3ea07-e1c3-7b8c-e398-8b008f873e6d@codeaurora.org>
+ <90809796-1c32-3709-13d3-65e4d5c387cc@intel.com>
+ <1bc4a73e-b22a-6bad-2583-3a0ffa979414@intel.com>
+ <651f5d8a-5ab7-77dd-3fed-05feb3fd3e1a@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <efe71230-5b6a-22a8-1aef-f1cae046df22@intel.com>
+Date:   Fri, 23 Apr 2021 07:23:49 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <651f5d8a-5ab7-77dd-3fed-05feb3fd3e1a@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18. 04. 21, 13:16, Samo Pogačnik wrote:
-> Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
->> syzbot is reporting hung task due to flood of
+On 22/04/21 7:38 pm, Asutosh Das (asd) wrote:
+> On 4/20/2021 12:42 AM, Adrian Hunter wrote:
+>> On 20/04/21 7:15 am, Adrian Hunter wrote:
+>>> On 20/04/21 12:53 am, Asutosh Das (asd) wrote:
+>>>> On 4/19/2021 11:37 AM, Adrian Hunter wrote:
+>>>>> On 16/04/21 10:49 pm, Asutosh Das wrote:
+>>>>>>
+>>>>>> Co-developed-by: Can Guo <cang@codeaurora.org>
+>>>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>>>>>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>>>>>> ---
+>>>>>
+>>>>> I came across 3 issues while testing.  See comments below.
+>>>>>
+>>>> Hi Adrian
+>>>> Thanks for the comments.
+>>>>> <SNIP>
+>>>>>
+>>>>>> @@ -5794,7 +5839,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+>>>>>>        if (ufshcd_is_clkscaling_supported(hba))
+>>>>>>            ufshcd_clk_scaling_suspend(hba, false);
+>>>>>>        ufshcd_clear_ua_wluns(hba);
+>>>>>
+>>>>> ufshcd_clear_ua_wluns() deadlocks trying to clear UFS_UPIU_RPMB_WLUN
+>>>>> if sdev_rpmb is suspended and sdev_ufs_device is suspending.
+>>>>> e.g. ufshcd_wl_suspend() is waiting on host_sem while ufshcd_err_handler()
+>>>>> is running, at which point sdev_rpmb has already suspended.
+>>>>>
+>>>> Umm, I didn't understand this deadlock.
+>>>> When you say, sdev_rpmb is suspended, does it mean runtime_suspended?
+>>>> sdev_ufs_device is suspending - this can't be runtime_suspending, while ufshcd_err_handling_unprepare is running.
+>>>>
+>>>> If you've a call-stack of this deadlock, please can you share it with me. I'll also try to reproduce this.
+>>>
+>>> Yes it is system suspend. sdev_rpmb has suspended, sdev_ufs_device is waiting on host_sem.
+>>> ufshcd_err_handler() holds host_sem. ufshcd_clear_ua_wlun(UFS_UPIU_RPMB_WLUN) gets stuck.
+>>> I will get some call-stacks.
 >>
->>    tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
->>             port->count);
->>
->> message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
->> decrementing port->count due to tty_hung_up_p() == true.
->>
->> ----------
->> #include <sys/types.h>
->> #include <sys/stat.h>
->> #include <fcntl.h>
->> #include <sys/ioctl.h>
->> #include <unistd.h>
->>
->> int main(int argc, char *argv[])
->> {
->> 	int i;
->> 	int fd[10];
->>
->> 	for (i = 0; i < 10; i++)
->> 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
->> 	ioctl(fd[0], TIOCVHANGUP);
->> 	for (i = 0; i < 10; i++)
->> 		close(fd[i]);
->> 	close(open("/dev/ttyprintk", O_WRONLY));
->> 	return 0;
->> }
->> ----------
->>
->> When TTY hangup happens, port->count needs to be reset via
->> "struct tty_operations"->hangup callback.
->>
->> [1]
->> https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
->>
->> Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
->> Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
->> Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
->> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
->> Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
->> ---
->>   drivers/char/ttyprintk.c | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
->> index 6a0059e508e3..93f5d11c830b 100644
->> --- a/drivers/char/ttyprintk.c
->> +++ b/drivers/char/ttyprintk.c
->> @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
->>   	return 0;
->>   }
->>   
->> +/*
->> + * TTY operations hangup function.
->> + */
->> +static void tpk_hangup(struct tty_struct *tty)
->> +{
->> +	struct ttyprintk_port *tpkp = tty->driver_data;
->> +
->> +	tty_port_hangup(&tpkp->port);
->> +}
->> +
->>   static const struct tty_operations ttyprintk_ops = {
->>   	.open = tpk_open,
->>   	.close = tpk_close,
->>   	.write = tpk_write,
->>   	.write_room = tpk_write_room,
->>   	.ioctl = tpk_ioctl,
->> +	.hangup = tpk_hangup,
->>   };
->>   
->>   static const struct tty_port_operations null_ops = { };
+> Hi Adrian,
 > 
-> Using the supplied test code, i've tested the patch on my desktop running the
-> 5.4 kernel. After applying the patch, the kernel warnings like "ttyprintk:
-> tty_port_close_start: tty->count = 1 port count = 11" do not appear any more,
-> when the test code is run.
-> I think the patch is ok.
+> Thanks for the call stacks.
+> From the current information, I can't say for sure why it'd get stuck in blk_queue_enter().
 
-I wonder if the buffer shouldn't be flushed in hangup too? Or better, 
-the flush moved from tty_ops->close to tty_port->ops->shutdown?
+I presume SCSI is leaving the RPMB WLUN device runtime suspended and consequently the queue status is RPM_SUSPENDED
 
-thanks,
--- 
-js
-suse labs
+> 
+> I tried reproducing this issue on my setup yesterday but couldn't.
+> Here's what I did:
+> 1. sdev_rpmb is RPM_SUSPENDED, checked before initiating system suspend
+> 2. sdev_ufs_device is RPM_RESUMED
+> 3. I triggered system suspend (echo mem > /sys/power/state) and scheduled the error handler from ufshcd_wl_suspend().
+> 4. Waited until error handler ran and then ufshcd_wl_suspend() blocks on host_sem.
+> 5. The ufshcd_clear_wa_wlun(UFS_UPIU_RPMB_WLUN) went through fine.
+> 
+> Do you've some specific steps to reproduce this or a script, perhaps? If so, please can you share it with me. I will try again.
+
+I was using a device that gives occasional errors, but I will what see I can do.
+
+> My test environment is in 5.10 kernel with Android, I suppose that should be ok though.
+> 
+> Thanks
+> -asd
+> 
+>> Here are the call stacks
+>>
+>> [   34.094321] Workqueue: ufs_eh_wq_0 ufshcd_err_handler
+>> [   34.094788] Call Trace:
+>> [   34.095281]  __schedule+0x275/0x6c0
+>> [   34.095743]  schedule+0x41/0xa0
+>> [   34.096240]  blk_queue_enter+0x10d/0x230
+>> [   34.096693]  ? wait_woken+0x70/0x70
+>> [   34.097167]  blk_mq_alloc_request+0x53/0xc0
+>> [   34.097610]  blk_get_request+0x1e/0x60
+>> [   34.098053]  __scsi_execute+0x3c/0x260
+>> [   34.098529]  ufshcd_clear_ua_wlun.cold+0xa6/0x14b
+>> [   34.098977]  ufshcd_clear_ua_wluns.part.0+0x4d/0x92
+>> [   34.099456]  ufshcd_err_handler+0x97a/0x9ff
+>> [   34.099902]  process_one_work+0x1cc/0x360
+>> [   34.100384]  worker_thread+0x45/0x3b0
+>> [   34.100851]  ? process_one_work+0x360/0x360
+>> [   34.101308]  kthread+0xf6/0x130
+>> [   34.101728]  ? kthread_park+0x80/0x80
+>> [   34.102186]  ret_from_fork+0x1f/0x30
+>>
+>> [   34.640751] task:kworker/u10:9   state:D stack:14528 pid:  255 ppid:     2 flags:0x00004000
+>> [   34.641253] Workqueue: events_unbound async_run_entry_fn
+>> [   34.641722] Call Trace:
+>> [   34.642217]  __schedule+0x275/0x6c0
+>> [   34.642683]  schedule+0x41/0xa0
+>> [   34.643179]  schedule_timeout+0x18b/0x290
+>> [   34.643645]  ? del_timer_sync+0x30/0x30
+>> [   34.644131]  __down_timeout+0x6b/0xc0
+>> [   34.644568]  ? ufshcd_clkscale_enable_show+0x20/0x20
+>> [   34.645014]  ? async_schedule_node_domain+0x17d/0x190
+>> [   34.645496]  down_timeout+0x42/0x50
+>> [   34.645947]  ufshcd_wl_suspend+0x79/0xa0
+>> [   34.646432]  ? scmd_printk+0x100/0x100
+>> [   34.646917]  scsi_bus_suspend_common+0x56/0xc0
+>> [   34.647405]  ? scsi_bus_freeze+0x10/0x10
+>> [   34.647858]  dpm_run_callback+0x45/0x110
+>> [   34.648347]  __device_suspend+0x117/0x460
+>> [   34.648788]  async_suspend+0x16/0x90
+>> [   34.649251]  async_run_entry_fn+0x26/0x110
+>> [   34.649676]  process_one_work+0x1cc/0x360
+>> [   34.650137]  worker_thread+0x45/0x3b0
+>> [   34.650563]  ? process_one_work+0x360/0x360
+>> [   34.650994]  kthread+0xf6/0x130
+>> [   34.651455]  ? kthread_park+0x80/0x80
+>> [   34.651882]  ret_from_fork+0x1f/0x30
+>>
+>>
+>>
+>>>
+>>>>
+>>>> I'll address the other comments in the next version.
+>>>>
+>>>>
+>>>> Thank you!
+>>>>
+>>>>>> -    pm_runtime_put(hba->dev);
+>>>>>> +    ufshcd_rpm_put(hba);
+>>>>>>    }
+>>>>>
+>>>>> <SNIP>
+>>>>>
+>>>>>> +void ufshcd_resume_complete(struct device *dev)
+>>>>>> +{
+>>>>
+>>>
+>>
+> 
+> 
+
