@@ -2,140 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B8436982F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD79369834
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhDWRVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:21:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229957AbhDWRVd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:21:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619198456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JQRF3ySH2gOm83I7SlkKz3DtYomS95h5OnWbpauJ/WQ=;
-        b=C2sl4Z13Ex6JneEuqg/tgzxPWOEKSUGAD+kYgjsxw6H+6gqYCB85d4NjMY+UuiRzimlSPB
-        FxiSzvmKi/PbarljH5pDH0IHKIZcECPOKTjECjJJ4hck6DZgmzTF9GFBrkbQAcLQCYynKo
-        fX0TkgnMqCwRLKAqdtHiXzFq2+tculE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-uT5ib1TxOeyeKTOpzEDrpA-1; Fri, 23 Apr 2021 13:20:54 -0400
-X-MC-Unique: uT5ib1TxOeyeKTOpzEDrpA-1
-Received: by mail-ed1-f69.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so17188454eds.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 10:20:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JQRF3ySH2gOm83I7SlkKz3DtYomS95h5OnWbpauJ/WQ=;
-        b=BtXtIjMurNsiNGaz+smG9n9Ile3TntsmkCecfRGTO7O0vcDV+jWwf6LrOnRuaqHvw4
-         jWtRDHjfVVpQD3ShN5b2Uk/iInCwU4HerGZYk0/vLzGiCrl2CsNyo0gtjTDNAXC3AZxu
-         te/fsLu9e71QQ3J/kPxbX81OsWkDsiFZxmsAecXpdPGP4esmiRMBMePKka81c0ny06Lw
-         hRFCXi3W92dbOyswsk8Fk6G5wJ4mFUzQjAE5Wue4+fG2X3mykO9Reu5egwauuIKs+KgR
-         cyNahLguEJMjhIaVP96l3naECgttRmDF1Apj99MRmyoO2RHTHQnIlFIPGX0VCtuF/WFt
-         /Gfw==
-X-Gm-Message-State: AOAM530IF9oCewvpExS3K/OzKb2w+Jd+i6TyNY7mPaRUoX1T2fntIboB
-        uhcbBfmUDq1HXNUSApdRPcxD1be7wdj8WmhiQcjbnDTuIFM2mqtfpDSduUaE/qdbiVUe+CdGIgs
-        gP3RkYcP8zAa22n2+zGzeQpRIfmBGoebUJRcYjgF41jBSabRGWgOW2tGTp9qXqqYhW+PhTMUhi8
-        Oh
-X-Received: by 2002:a17:907:7745:: with SMTP id kx5mr5368088ejc.3.1619198452739;
-        Fri, 23 Apr 2021 10:20:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybpinwvHNzNNOmAwimRbZx2AQltb6voiv1k3bsDDQvAWvCEKCNL5MWokb8C8E4LFMARSxxEA==
-X-Received: by 2002:a17:907:7745:: with SMTP id kx5mr5368057ejc.3.1619198452489;
-        Fri, 23 Apr 2021 10:20:52 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id r19sm4308152ejr.55.2021.04.23.10.20.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 10:20:51 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: gigabyte-wmi: add support for B550M AORUS
- PRO-P
-To:     Alexey Klimov <aklimov@redhat.com>, thomas@weissschuh.net
-Cc:     mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210421234156.3942343-1-aklimov@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <86f6570b-cd92-3256-9fdd-4ef4e4038762@redhat.com>
-Date:   Fri, 23 Apr 2021 19:20:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S243323AbhDWRW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:22:26 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:44408 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229691AbhDWRWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:22:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1619198495; bh=LgpkOvFvmcmXcGSrGpy9msoiAABCTUj0nQBsge9ToWc=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Type;
+        b=WekUFerUiBJAulUDj0hrZcaZKert1p2mX2ykwij4+rVK1NiMQYpi8Y75ZdppM09EO
+         wTE6zAcNzWF3WkEzkYPDIF91az3upnVYQpWwBTiXuzL6xfhHaX0FJTvsP4qdlnAan0
+         g+HApZ7BTMfNdrNlS9cbpHXx0I5k2xuQHvbJ9zvw=
+Received: by 192.168.90.13 [192.168.90.13] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Fri, 23 Apr 2021 19:21:34 +0200 (CEST)
+X-EA-Auth: Dkcvxco0i4h7kVEoj7fTqHCAo2uCS9jyLzFkinpHTGwumy6YoDofoCajKGLBEBKNxbBou9l0Ictitp2Jnwg1Vbf5uTjNbY5q
+Date:   Fri, 23 Apr 2021 22:51:29 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, mh12gx2825@gmail.com, drv@mailo.com
+Subject: [PATCH v2] staging: media: atomisp: replace [pr|dev]_info() by
+ dev_dbg()
+Message-ID: <20210423172129.GA254325@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20210421234156.3942343-1-aklimov@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+It is recommended to use driver model diagnostic macros dev_*() instead
+of pr_*() since the former ensures that the log messages are always
+associated with the corresponding device and driver. Also, using
+dev_dbg() is less log spamming as against dev_info().
 
-On 4/22/21 1:41 AM, Alexey Klimov wrote:
-> From: Alexey Klimov <klimov.linux@gmail.com>
-> 
-> From: Alexey Klimov <klimov.linux@gmail.com>
-> 
-> Add the B550M AORUS PRO-P motherboard description to
-> gigabyte_wmi_known_working_platforms.
-> 
-> Signed-off-by: Alexey Klimov <klimov.linux@gmail.com>
+Suggested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Changes in v2:
+   - use dev_dbg() instead of dev_info(). Feedback from Hans Verkuil.
+   - update patch summary and description accordingly.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+ .../media/atomisp/i2c/atomisp-gc0310.c        | 30 +++++++++----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Regards,
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+index 7e4e123fdb52..bb75d077ad63 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
+@@ -300,7 +300,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	/* pixel clock calculattion */
+ 	dev->vt_pix_clk_freq_mhz = 14400000; // 16.8MHz
+ 	buf->vt_pix_clk_freq_mhz = dev->vt_pix_clk_freq_mhz;
+-	pr_info("vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
++	dev_dbg(&client->dev, "vt_pix_clk_freq_mhz=%d\n", buf->vt_pix_clk_freq_mhz);
+ 
+ 	/* get integration time */
+ 	buf->coarse_integration_time_min = GC0310_COARSE_INTG_TIME_MIN;
+@@ -326,7 +326,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->crop_horizontal_start = val | (reg_val & 0xFF);
+-	pr_info("crop_horizontal_start=%d\n", buf->crop_horizontal_start);
++	dev_dbg(&client->dev, "crop_horizontal_start=%d\n", buf->crop_horizontal_start);
+ 
+ 	/* Getting crop_vertical_start */
+ 	ret =  gc0310_read_reg(client, GC0310_8BIT,
+@@ -339,7 +339,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->crop_vertical_start = val | (reg_val & 0xFF);
+-	pr_info("crop_vertical_start=%d\n", buf->crop_vertical_start);
++	dev_dbg(&client->dev, "crop_vertical_start=%d\n", buf->crop_vertical_start);
+ 
+ 	/* Getting output_width */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -352,7 +352,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->output_width = val | (reg_val & 0xFF);
+-	pr_info("output_width=%d\n", buf->output_width);
++	dev_dbg(&client->dev, "output_width=%d\n", buf->output_width);
+ 
+ 	/* Getting output_height */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -365,12 +365,12 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 	if (ret)
+ 		return ret;
+ 	buf->output_height = val | (reg_val & 0xFF);
+-	pr_info("output_height=%d\n", buf->output_height);
++	dev_dbg(&client->dev, "output_height=%d\n", buf->output_height);
+ 
+ 	buf->crop_horizontal_end = buf->crop_horizontal_start + buf->output_width - 1;
+ 	buf->crop_vertical_end = buf->crop_vertical_start + buf->output_height - 1;
+-	pr_info("crop_horizontal_end=%d\n", buf->crop_horizontal_end);
+-	pr_info("crop_vertical_end=%d\n", buf->crop_vertical_end);
++	dev_dbg(&client->dev, "crop_horizontal_end=%d\n", buf->crop_horizontal_end);
++	dev_dbg(&client->dev, "crop_vertical_end=%d\n", buf->crop_vertical_end);
+ 
+ 	/* Getting line_length_pck */
+ 	ret = gc0310_read_reg(client, GC0310_8BIT,
+@@ -389,7 +389,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 		return ret;
+ 	sh_delay = reg_val;
+ 	buf->line_length_pck = buf->output_width + hori_blanking + sh_delay + 4;
+-	pr_info("hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
++	dev_dbg(&client->dev, "hori_blanking=%d sh_delay=%d line_length_pck=%d\n", hori_blanking,
+ 		sh_delay, buf->line_length_pck);
+ 
+ 	/* Getting frame_length_lines */
+@@ -404,7 +404,7 @@ static int gc0310_get_intg_factor(struct i2c_client *client,
+ 		return ret;
+ 	vert_blanking = val | (reg_val & 0xFF);
+ 	buf->frame_length_lines = buf->output_height + vert_blanking;
+-	pr_info("vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
++	dev_dbg(&client->dev, "vert_blanking=%d frame_length_lines=%d\n", vert_blanking,
+ 		buf->frame_length_lines);
+ 
+ 	buf->binning_factor_x = res->bin_factor_x ?
+@@ -434,7 +434,7 @@ static int gc0310_set_gain(struct v4l2_subdev *sd, int gain)
+ 		dgain = gain / 2;
+ 	}
+ 
+-	pr_info("gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
++	dev_dbg(&client->dev, "gain=0x%x again=0x%x dgain=0x%x\n", gain, again, dgain);
+ 
+ 	/* set analog gain */
+ 	ret = gc0310_write_reg(client, GC0310_8BIT,
+@@ -458,7 +458,7 @@ static int __gc0310_set_exposure(struct v4l2_subdev *sd, int coarse_itg,
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 	int ret;
+ 
+-	pr_info("coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
++	dev_dbg(&client->dev, "coarse_itg=%d gain=%d digitgain=%d\n", coarse_itg, gain, digitgain);
+ 
+ 	/* set exposure */
+ 	ret = gc0310_write_reg(client, GC0310_8BIT,
+@@ -1020,8 +1020,8 @@ static int gc0310_set_fmt(struct v4l2_subdev *sd,
+ 		return -EINVAL;
+ 	}
+ 
+-	dev_info(&client->dev, "%s: before gc0310_write_reg_array %s\n",
+-		 __func__, gc0310_res[dev->fmt_idx].desc);
++	dev_dbg(&client->dev, "%s: before gc0310_write_reg_array %s\n",
++		__func__, gc0310_res[dev->fmt_idx].desc);
+ 	ret = startup(sd);
+ 	if (ret) {
+ 		dev_err(&client->dev, "gc0310 startup err\n");
+@@ -1085,7 +1085,7 @@ static int gc0310_detect(struct i2c_client *client)
+ 		return -ENODEV;
+ 	}
+ 	id = ((((u16)high) << 8) | (u16)low);
+-	pr_info("sensor ID = 0x%x\n", id);
++	dev_dbg(&client->dev, "sensor ID = 0x%x\n", id);
+ 
+ 	if (id != GC0310_ID) {
+ 		dev_err(&client->dev, "sensor ID error, read id = 0x%x, target id = 0x%x\n", id,
+@@ -1106,7 +1106,7 @@ static int gc0310_s_stream(struct v4l2_subdev *sd, int enable)
+ 	struct i2c_client *client = v4l2_get_subdevdata(sd);
+ 	int ret;
+ 
+-	pr_info("%s S enable=%d\n", __func__, enable);
++	dev_dbg(&client->dev, "%s S enable=%d\n", __func__, enable);
+ 	mutex_lock(&dev->input_lock);
+ 
+ 	if (enable) {
+-- 
+2.25.1
 
-Hans
 
-> ---
-> 
-> The driver works fine on this motherboard with force_load=1 and
-> it seems that temperature values are correct.
-> 
-> gigabyte_wmi-virtual-0
-> Adapter: Virtual device
-> temp1:        +30.0°C  
-> temp2:        +35.0°C  
-> temp3:        +30.0°C  
-> temp4:        +32.0°C  
-> temp5:        +28.0°C  
-> temp6:        +42.0°C
-> 
-> The patch is created against review-hans branch on platform-drivers-x86.git
-> I am available for further testing on this board if required, feel free
-> to reach me. Thanks.
-> 
->  drivers/platform/x86/gigabyte-wmi.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
-> index e127a2077bbc..13d57434e60f 100644
-> --- a/drivers/platform/x86/gigabyte-wmi.c
-> +++ b/drivers/platform/x86/gigabyte-wmi.c
-> @@ -138,6 +138,10 @@ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
->  		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
->  		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
->  	}},
-> +	{ .matches = {
-> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M AORUS PRO-P"),
-> +	}},
->  	{ .matches = {
->  		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
->  		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
-> 
 
