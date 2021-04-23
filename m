@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7830F368A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFEB368A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239954AbhDWBgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:36:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:55629 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231261AbhDWBgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:36:23 -0400
-IronPort-SDR: 0GaWCl+tLFAJLWt1E/kAOGlacWOYEMF+6Ke6WL70B72fsVS9UMcKMpYSKSvwSEX5Ve8T5T7UWr
- D658FZf+BHbQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="176123785"
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="176123785"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 18:35:48 -0700
-IronPort-SDR: 7COMgSPIn92wJ8pf4KhIGkThc41EHZ/MG5ENrO7WxsLlgZ/+7goY2y+DkvdDz0Jx/rUswQDV3t
- +zktEf4d18zQ==
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="428195313"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 18:35:47 -0700
-Date:   Thu, 22 Apr 2021 18:35:46 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper
- functions
-Message-ID: <20210423013546.GK1401198@tassilo.jf.intel.com>
-References: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
- <c015093fdbc8e6a5aa9fc43f78fec8d9c38295c7.1616801167.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com>
- <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
- <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com>
- <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
- <d99941db-6ee6-267e-dece-6220af0ea305@intel.com>
- <9161efc0-fd25-d239-32b7-5d2c726579b0@linux.intel.com>
- <4ac4ed35-212b-f7ad-55f4-937946ffec1a@intel.com>
+        id S240059AbhDWBgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:36:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17393 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239976AbhDWBgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 21:36:46 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FRGzR4CGGzlZ8N;
+        Fri, 23 Apr 2021 09:34:11 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 23 Apr 2021 09:36:05 +0800
+Subject: Re: [PATCH v4 1/2] kvm/arm64: Remove the creation time's mapping of
+ MMIO regions
+To:     Gavin Shan <gshan@redhat.com>
+References: <20210415140328.24200-1-zhukeqian1@huawei.com>
+ <20210415140328.24200-2-zhukeqian1@huawei.com>
+ <ad39c796-2778-df26-b0c6-231e7626a747@redhat.com>
+ <bd4d2cfc-37b9-f20a-5a5c-ed352d1a46dc@huawei.com>
+ <f13bfc39-bee6-4562-fefc-76051bbf9735@redhat.com>
+ <9eb47a6c-3c5c-cb4a-d1de-1a3ce1b60a87@huawei.com>
+ <d185bbe1-4bb3-6a38-7a94-b0c52126e583@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Santosh Shukla <sashukla@nvidia.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <f521c845-610f-3efc-1713-9a01fb26f22f@huawei.com>
+Date:   Fri, 23 Apr 2021 09:36:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4ac4ed35-212b-f7ad-55f4-937946ffec1a@intel.com>
+In-Reply-To: <d185bbe1-4bb3-6a38-7a94-b0c52126e583@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 06:21:07PM -0700, Dave Hansen wrote:
-> On 4/22/21 6:09 PM, Kuppuswamy, Sathyanarayanan wrote:
-> > But let me try to explain it here. What I meant by complication is,
-> > for in/out instruction, we use alternative_io() to substitute in/out
-> > instructions with tdg_in()/tdg_out() assembly calls. So we have to ensure
-> > that we don't corrupt registers or stack from the substituted instructions
-> > 
-> > If you check the implementation of tdg_in()/tdg_out(), you will notice
-> > that we have added code to preserve the caller registers. So, if we use
-> > C wrapper for this use case, there is a chance that it might mess
-> > the caller registers or stack.
-> > 
-> >     alternative_io("in" #bwl " %w2, %" #bw "0",            \
-> >             "call tdg_in" #bwl, X86_FEATURE_TDX_GUEST,    \
-> >             "=a"(value), "d"(port))
+Hi Gavin,
+
+On 2021/4/23 9:35, Gavin Shan wrote:
+> Hi Keqian,
 > 
-> Are you saying that calling C functions from inline assembly might
-> corrupt the stack or registers?  Are you suggesting that you simply
-
-It's possible, but you would need to mark a lot more registers clobbered
-(the x86-64 ABI allows to clobber many registers)
-
-I don't think the stack would be messed up, but there might be problems
-with writing the correct unwind information (which tends to be tricky)
-
-Usually it's better to avoid it.
-
--Andi
-
-
-> can't call C functions from inline assembly?  Or, that you can't express
-> the register clobbers of a function call in inline assembly?
+> On 4/22/21 5:41 PM, Keqian Zhu wrote:
+>> On 2021/4/22 10:12, Gavin Shan wrote:
+>>> On 4/21/21 4:28 PM, Keqian Zhu wrote:
+>>>> On 2021/4/21 14:38, Gavin Shan wrote:
+>>>>> On 4/16/21 12:03 AM, Keqian Zhu wrote:
 > 
-> You might want to check around the kernel to see how other folks do it.
+> [...]
+> 
+>>>
+>>> Yeah, Sorry that I missed that part. Something associated with Santosh's
+>>> patch. The flag can be not existing until the page fault happened on
+>>> the vma. In this case, the check could be not working properly.
+>>>
+>>>    [PATCH] KVM: arm64: Correctly handle the mmio faulting
+>> Yeah, you are right.
+>>
+>> If that happens, we won't try to use block mapping for memslot with VM_PFNMAP.
+>> But it keeps a same logic with old code.
+>>
+>> 1. When without dirty-logging, we won't try block mapping for it, and we'll
+>> finally know that it's device, so won't try to do adjust THP (Transparent Huge Page)
+>> for it.
+>> 2. If userspace wrongly enables dirty logging for this memslot, we'll force_pte for it.
+>>
+> 
+> It's not about the patch itself and just want more discussion to get more details.
+> The patch itself looks good to me. I got two questions as below:
+> 
+> (1) The memslot fails to be added if it's backed by MMIO region and dirty logging is
+> enabled in kvm_arch_prepare_memory_region(). As Santosh reported, the corresponding
+> vma could be associated with MMIO region and VM_PFNMAP is missed. In this case,
+> kvm_arch_prepare_memory_region() isn't returning error, meaning the memslot can be
+> added successfully and block mapping isn't used, as you mentioned. The question is
+> the memslot is added, but the expected result would be failure.
+Sure. I think we could try to populate the final flag of vma in kvm_arch_prepare_memory_region().
+Maybe through GUP or any better method? It's nice if you can try to solve this. :)
+
+> 
+> (2) If dirty logging is enabled on the MMIO memslot, everything should be fine. If
+> the dirty logging isn't enabled and VM_PFNMAP isn't set yet in user_mem_abort(),
+> block mapping won't be used and PAGE_SIZE is picked, but the failing IPA might
+> be good candidate for block mapping. It means we miss something for blocking
+> mapping?
+Right. This issue also can be solved by populating the final flag of vma in kvm_arch_prepare_memory_region().
+
+
+> 
+> By the way, do you have idea why dirty logging can't be enabled on MMIO memslot?
+IIUC, MMIO region is of device memory type, it's associated with device state and action.
+For normal memory type, we can write it out-of-order and repeatedly, but for device memory
+type, we can't do that. The write to MMIO will trigger device action based on current device
+state, also what we can read from MMIO based on current device state. Thus the policy of
+dirty logging for normal memory can't be applied to MMIO.
+
+
+
+> I guess Marc might know the history. For example, QEMU is taking "/dev/mem" or
+> "/dev/kmem" to back guest's memory, the vma is marked as MMIO, but dirty logging
+> and migration isn't supported?
+The MMIO region is a part of device state. We need extra kernel driver to support migration
+of pass-through device, as how to save and restore the device state is closely related to
+a specific type of device. You can refer VFIO migration for more detail.
+
+Thanks,
+Keqian
