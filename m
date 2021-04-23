@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BBF368A46
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23000368A78
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 03:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240086AbhDWBNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 21:13:42 -0400
-Received: from mail-eopbgr60055.outbound.protection.outlook.com ([40.107.6.55]:47422
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231261AbhDWBNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:13:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SjQKn44/IwoGxIk/B+nOaG8dk+a3WDAB6ikbiObRg8M4jJH8D/jwq1gunPlMq9jIEyxWXt/3jWHj3FKHg6Goabza2Rg2SzLFbLK2CPozmX6ax+wJy2lkh7VpJ9/wDyp6rWqrs73xEX8Hgpq/EHsBECt3sDVKxSy8vSKJccraF8u+BhiBohBrWhvuNCNEvihvJPFCsBG8Bgn4MyItS1Ak+NcNOSXj5sPLI3gEpAveb/7BCiPxic2dgizGvEeAlR400zi4wZ1EESovtO1EqQCa9peH4t7VShdULxB6jnPGeMyVUyr1OeeD325zSxDkceU4NNKpLS7/JiQmUGSYBUsWbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9QYRcgnar5Xfd/d33eWljYXHu+Ak8jzQYQ7F4r3HbHg=;
- b=Fs68qZKpNbN+mjJsa7NtD07HOYiPo17MoE1aWDqEtDvJuhdfzUOZc9vzhGrNN1dE+lcAlGXPpQNBaafi/WR1tLy8LFwfAlR0m/ecRp20FXYyP373SCs5v7IBotDdLO2KSvFqnt9LVifcNVvaZy8JTUjICRs89s8DYQUxU/8F5pdJoFZRygsmrxrvmCzEm+y18XT8XwXqeyXDj7x/PDe5MARUrIjL107NP1BrdAKoFFmfWKxnlUnvuyUL8QGpUKGTOsxdVPbiDkt3X0muTFbJgGLPWEd0bedtUNyV44hxgWMcq/VOCzodurVEj5snbxnkdTz0e81iMKw0dDzxtTO3rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9QYRcgnar5Xfd/d33eWljYXHu+Ak8jzQYQ7F4r3HbHg=;
- b=DVg2TvWSKsetUhSC1Z5ObpJAA7V5GJsF8xH0tfd3aFBiB5x/ERPUo3Ug3KYoUbVVAVwmmXpDzqNoP7RiMBnn5zd5s5iFOWj6EmE4bz4rs22nqimNYC5AFFaFU5/ljmNJ8OS71F2gGocaDAwChJ4YKOZDDGGxAKuhPoQUMzNxJHI=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
- by VI1PR04MB5229.eurprd04.prod.outlook.com (2603:10a6:803:57::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 23 Apr
- 2021 01:13:03 +0000
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::de2:8b2:852b:6eca]) by VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::de2:8b2:852b:6eca%7]) with mapi id 15.20.4042.024; Fri, 23 Apr 2021
- 01:13:02 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     vkoul@kernel.org
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dmaengine: fsl-qdma: check dma_set_mask return value
-Date:   Fri, 23 Apr 2021 17:29:47 +0800
-Message-Id: <1619170187-5552-1-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HKAPR03CA0001.apcprd03.prod.outlook.com
- (2603:1096:203:c8::6) To VE1PR04MB6688.eurprd04.prod.outlook.com
- (2603:10a6:803:127::25)
+        id S236869AbhDWBml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 21:42:41 -0400
+Received: from regular1.263xmail.com ([211.150.70.197]:36946 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231261AbhDWBmi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Apr 2021 21:42:38 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 21:42:37 EDT
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id 3DA061BC6;
+        Fri, 23 Apr 2021 09:34:33 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.64] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31917T139684229392128S1619141672038806_;
+        Fri, 23 Apr 2021 09:34:33 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <5da22906554fc2752021756c18299c38>
+X-RL-SENDER: shawn.lin@rock-chips.com
+X-SENDER: lintao@rock-chips.com
+X-LOGIN-NAME: shawn.lin@rock-chips.com
+X-FST-TO: ulf.hansson@linaro.org
+X-RCPT-COUNT: 8
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Message-ID: <35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
+Date:   Fri, 23 Apr 2021 09:34:32 +0800
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by HKAPR03CA0001.apcprd03.prod.outlook.com (2603:1096:203:c8::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4087.17 via Frontend Transport; Fri, 23 Apr 2021 01:13:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20fe7b6d-7ee6-4d1f-2217-08d905f4f111
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5229:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB522946EC122055814987ED9A89459@VI1PR04MB5229.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:404;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0+oM4hc9N3BSrv1txj1D/p3s/MVA0xbZmbq35mwnJB4acfib5XHfjILdQw8mksSAI+b0VKcQ5GsYC+yT1vkoQyZVDqn5UfFK6QsSOUylomUVrQKGlSWoIN9n03Wfrs+uwvErOvSaNFygakxdmCxmUOq8g/HWVSk+e8C62IzI9XHSebpxH/F80J19mLCjz+8T0uueGOsMahBW4ZucujSS2fVxRB+oPGArbKNqqmZCtlHVtY3u7w7LkeDpw04ZuXjJ7OdFHXpTX84owVQGqLGtB26FaYIel76BUlz4XvW72tyCOkE1uZvPbwmzyCOjZr3CGQ7nsHBr2M74FZmL8O6Guz5/zJBPSZepTVaAK5GkoZrnwyVnkss3hxzYQzohIhpyAvq49sHLjh9cz/LJFMvMjUt91Pu5EJt8AduwikPHr0GCBfg1jMZQhcm036vrcZTAtIpRSQlY9nvDwHaknINOhlAiCGaxxcm9pBXQ3opIZf7MAF6XZEnj89NUQNx7r7G+vSeGNixXb2e6khGrcLI0TWJaX9ht2LiShVCx7jTgjFXForpkXRP7Agva8wbohrDQakn4n6RSOxRPKbHDKxS2/zhNs2joXTCvMnIs/R3vS/GbOTlt++BQMZn9+xGZf5D2erCo1yxsbdS/09EiDuxn3mYQBW7nblPkTSbp1Yx45s4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(366004)(346002)(36756003)(8676002)(5660300002)(83380400001)(38100700002)(66946007)(478600001)(66556008)(186003)(956004)(6486002)(16526019)(6666004)(52116002)(6512007)(26005)(6506007)(4744005)(8936002)(66476007)(86362001)(2906002)(2616005)(38350700002)(316002)(6916009)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nEQqowRei7gyP9Bjq2By1tiBJJz0XSQOUYQYZF6NRNlbPtqBsTRifYHCYJ1g?=
- =?us-ascii?Q?l0uFKXWA67CIWpdM9YKuHvDA34QmrTABnNiCE82emgoDWSoos2c786vgS5G/?=
- =?us-ascii?Q?kwXJ7W9A56X58mRGounRne271omJK28k/WEUPd7GhlyO87Gk9OAVm3tlGgw2?=
- =?us-ascii?Q?nw8Wym9PtiqMrFEsWsYEWBcS5pc0QF9fueVwuJNG3jJoEtNuLhO2OBtiUYcd?=
- =?us-ascii?Q?ZcSn+Nn7ixhGHV6631k81lm+fwHXZKLHo0u0SLvJoimELEjvRkmBIPiBR8MA?=
- =?us-ascii?Q?8mcT8kx2Qsmb+7wWFkd4h/UT4N9bGr6dc3OeHF+urWzJau6G/tQR/eqm1T8y?=
- =?us-ascii?Q?wbxl5ShOoIhZLwqozj153hyNIi5GXDFKeQanuJKMr06X7qJwmrAX//hp13F4?=
- =?us-ascii?Q?Q/BTMRAGCcxRYLG6OJOBbca2z92X7PHY1l6II5NM7CvicglJzq4ZHuEt66FC?=
- =?us-ascii?Q?VcwARBaf36O+yVCEqzcxt1fx1COKFmhmGVpIZGLawtg4ElLiP57qPapX5++K?=
- =?us-ascii?Q?o1E0fJIuVJfS3RC6kQ7wuGPotR6b9b26rvK6RUrQKy66wfv6ir99ItTKbD3m?=
- =?us-ascii?Q?hZssbwVOlQMA5oq60HgVyifsQl+4Q9T+yPezBkhH36fb1n9qhVKaJ8MpJ+cR?=
- =?us-ascii?Q?82nYAuY2ZE8YumFTk9w3l8wf8sy1CW+UtjD+LH5cAdZJHtB5IcKyDLOI4yKh?=
- =?us-ascii?Q?5XR1aw9naPE/kV1+qwSuHmwq/K2agkodm/aehxk/eujRlcAT1UqK0DveVZW4?=
- =?us-ascii?Q?oHq0bc9Mt2fbLTxaCWwM3vrvmPHQq96iz9D8Ir79wxZg2/Fkxl8wF75xhrE6?=
- =?us-ascii?Q?6zzHKVU8s7dUYq+1bIBKt4UpS0N6wZvcxAn66FiznyZ4LaGAw+xJRg4z63an?=
- =?us-ascii?Q?JL7imXrnllcBxAPJyLBfI2mxtVQ+QLdExQ/ig+mVa27LskjJ7Si8IRFVnybo?=
- =?us-ascii?Q?dzN503iynnff4+lQRJ+KRYktWu9Uytz7NlWPiCC4kIxwA/hqiRrcDsXFiPds?=
- =?us-ascii?Q?CrRDDCusS6viI4hs4quZNWC0tL32/XLpRC4TS8rpATmcYWNnwygaiQqv1CnC?=
- =?us-ascii?Q?KXV5QAvF1eRjOGuC2cH5ym4fblRIE5J/o11uBrYrLfdSezgxd8FQvU9b1bFp?=
- =?us-ascii?Q?fYd4Aoi6+MuOP74MOB/YHZRCd6OyANqsZZypMZPD1oa3WB8etFGSU+Q/Xcuh?=
- =?us-ascii?Q?eNM+SVGXNBX8lC7He+Gu/ka2QS70JfH/wA9adHokVQlJrI26w6Y+SIUQl/JG?=
- =?us-ascii?Q?BbIkCz1ONCq9JXq75wzehN9w5itxnmY0szARt6mfgPGL5BYd6ieCcsbWJGk5?=
- =?us-ascii?Q?XGCaCEalUfsz+tq0+l+l9FYM?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20fe7b6d-7ee6-4d1f-2217-08d905f4f111
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2021 01:13:02.8114
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HcIJI3S9M66K4OEIEVmavfybTGUwin4rKqklxr1b9JAwbiopdci7Xt1Wpr58aepUJ2RWyKC+C5eiidDV8X/odg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5229
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101
+ Thunderbird/86.0
+Cc:     shawn.lin@rock-chips.com, "pali@kernel.org" <pali@kernel.org>,
+        "huyue2@yulong.com" <huyue2@yulong.com>,
+        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_mmc=3a_enable_UHS_voltage_switch_for_SD?=
+ =?UTF-8?B?U0MgaWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1j?=
+ =?UTF-8?B?LW93bmVyQHZnZXIua2VybmVsLm9yZ+S7o+WPkeOAkQ==?=
+To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>
+References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+From:   Shawn Lin <shawn.lin@rock-chips.com>
+In-Reply-To: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For fix warning reported by static code analysis tool like Coverity from
-Synopsys.
+On 2021/4/22 21:18, Christian Löhle wrote:
+> Ignore the reported capacity if the card otherwise reports UHS support.
+> 
+> Currently SDSC cards reporting UHS support except for the CCS do not run
+> through the voltage switch.
+> While strictly speaking a SDSC card cannot support UHS in compliance
+> with the standard, there is no good reason to throttle them that way.
+> Especially for pSLCs in practice such cards benefit greatly by this patch,
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- drivers/dma/fsl-qdma.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Cduld you provide some more infomation about the SDSC cards which ones 
+are labeled as UHS, e.g brand, webpage....
 
-diff --git a/drivers/dma/fsl-qdma.c b/drivers/dma/fsl-qdma.c
-index ed2ab46..86c02b6 100644
---- a/drivers/dma/fsl-qdma.c
-+++ b/drivers/dma/fsl-qdma.c
-@@ -1235,7 +1235,11 @@ static int fsl_qdma_probe(struct platform_device *pdev)
- 	fsl_qdma->dma_dev.device_synchronize = fsl_qdma_synchronize;
- 	fsl_qdma->dma_dev.device_terminate_all = fsl_qdma_terminate_all;
- 
--	dma_set_mask(&pdev->dev, DMA_BIT_MASK(40));
-+	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(40));
-+	if (ret) {
-+		dev_err(&pdev->dev, "dma_set_mask failure.\n");
-+		return ret;
-+	}
- 
- 	platform_set_drvdata(pdev, fsl_qdma);
- 
--- 
-2.7.4
+> as they can be new and UHS supporting, but must not lie about their CCS.
+> The behaviour of linux-mmc for SDSC is deviating from the standard anyway
+> in such a case, as the card is treated as UHS card not supporting the
+> voltage switch in general.
+> Such a card will come up as
+> mmc0: new ultra high speed SDR25 SD card at address 0001.
+> Thus the subsystem will support CMD23 and others to the card.
+> But if we deviate from the standard anyway, then we might as well
+> not throttle SDSC to 25MB/s.
+> 
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>   drivers/mmc/core/sd.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 6fa51a6ed058..281ca2da8e0b 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
+>   		return err;
+>   
+>   	/*
+> -	 * In case CCS and S18A in the response is set, start Signal Voltage
+> -	 * Switch procedure. SPI mode doesn't support CMD11.
+> +	 * In case S18A in the response is set, start Signal Voltage Switch
+> +	 * procedure. SPI mode doesn't support CMD11.
+>   	 */
+> -	if (!mmc_host_is_spi(host) && rocr &&
+> -	   ((*rocr & 0x41000000) == 0x41000000)) {
+> +	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
+>   		err = mmc_set_uhs_voltage(host, pocr);
+>   		if (err == -EAGAIN) {
+>   			retries--;
+> 
+
 
