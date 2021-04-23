@@ -2,79 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DBB3691F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393123691B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242334AbhDWMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:23:12 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38486 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhDWMXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:23:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lZupM-00019R-03; Fri, 23 Apr 2021 14:22:32 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D1468C0B3B; Fri, 23 Apr 2021 13:51:40 +0200 (CEST)
-Date:   Fri, 23 Apr 2021 13:51:40 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Romain Naour <romain.naour@gmail.com>
-Subject: Re: [PATCH v4] mips: Do not include hi and lo in clobber list for R6
-Message-ID: <20210423115140.GD8582@alpha.franken.de>
-References: <20210420211210.702980-1-sudipm.mukherjee@gmail.com>
+        id S242241AbhDWMDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:03:01 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:56399 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhDWMC4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:02:56 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d63 with ME
+        id wC2J2400121Fzsu03C2JFL; Fri, 23 Apr 2021 14:02:19 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 23 Apr 2021 14:02:19 +0200
+X-ME-IP: 86.243.172.93
+Subject: AW: [PATCH 1/4] clk: mvebu: Fix a memory leak in an error handling
+ path
+To:     Walter Harms <wharms@bfs.de>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "thomas.petazzoni@free-electrons.com" 
+        <thomas.petazzoni@free-electrons.com>
+Cc:     "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+References: <cover.1619157996.git.christophe.jaillet@wanadoo.fr>
+ <27db232fdd14e14d493f29a5404d9e643f09cc96.1619157996.git.christophe.jaillet@wanadoo.fr>
+ <3e38da0e86c045d3aefd46f375e8b48e@bfs.de>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f26e2ad3-d1b8-de96-febe-5b8f52abdf8f@wanadoo.fr>
+Date:   Fri, 23 Apr 2021 14:02:17 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <3e38da0e86c045d3aefd46f375e8b48e@bfs.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210420211210.702980-1-sudipm.mukherjee@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:12:10PM +0100, Sudip Mukherjee wrote:
-> From: Romain Naour <romain.naour@gmail.com>
+Le 23/04/2021 à 13:42, Walter Harms a écrit :
+> nitpicking:
+>   clk_name could be replaced with cpuclk[cpu].clk_name
+
+Agreed, Thx.
+I'll wait a few days to see if there are other comments before sending a 
+v2. (especially if 4/4 is correct or not)
+I'll also add "clk-cpu:" after "clk: mvebu:"
+
+> and the commit msg is from the other patch (free  cpuclk[cpu].clk_name)
 > 
-> >From [1]
-> "GCC 10 (PR 91233) won't silently allow registers that are not
-> architecturally available to be present in the clobber list anymore,
-> resulting in build failure for mips*r6 targets in form of:
-> ...
-> .../sysdep.h:146:2: error: the register ‘lo’ cannot be clobbered in ‘asm’ for the current target
->   146 |  __asm__ volatile (      \
->       |  ^~~~~~~
+
+But here, I don't follow you.
+What do you mean? Which other patch?
+
+Do you mean that the commit message has to be updated accordingly?
+(ie: s/clk_name/cpuclk[cpu].clk_name/ must be freed)
+
+
+> jm2c,
 > 
-> This is because base R6 ISA doesn't define hi and lo registers w/o DSP
-> extension. This patch provides the alternative clobber list for r6 targets
-> that won't include those registers."
+> re,
+>   wh
+> ________________________________________
+> Von: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Gesendet: Freitag, 23. April 2021 08:25:01
+> An: mturquette@baylibre.com; sboyd@kernel.org; gregory.clement@bootlin.com; thomas.petazzoni@free-electrons.com
+> Cc: linux-clk@vger.kernel.org; linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org; Christophe JAILLET
+> Betreff: [PATCH 1/4] clk: mvebu: Fix a memory leak in an error handling path
 > 
-> Since kernel 5.4 and mips support for generic vDSO [2], the kernel fail to
-> build for mips r6 cpus with gcc 10 for the same reason as glibc.
+> WARNUNG: Diese E-Mail kam von außerhalb der Organisation. Klicken Sie nicht auf Links oder öffnen Sie keine Anhänge, es sei denn, Sie kennen den/die Absender*in und wissen, dass der Inhalt sicher ist.
 > 
-> [1] https://sourceware.org/git/?p=glibc.git;a=commit;h=020b2a97bb15f807c0482f0faee2184ed05bcad8
-> [2] '24640f233b46 ("mips: Add support for generic vDSO")'
 > 
-> Signed-off-by: Romain Naour <romain.naour@gmail.com>
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> If an error occurs in the for_each loop, clk_name must be freed.
+> 
+> In order to do so, sightly rearrange the code:
+>     - move the allocation to simplify error handling
+>     - use kasprintf instead of kzalloc/sprintf to simplify code and avoid a
+>       magic number
+> 
+> Fixes: ab8ba01b3fe5 ("clk: mvebu: add armada-370-xp CPU specific clocks")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
+> The { } around the 1 line block after kasprintf is intentional and makes
+> sense with 2/2
+> ---
+>   drivers/clk/mvebu/clk-cpu.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> v4: [sudip] added macro VDSO_SYSCALL_CLOBBERS and fix checkpatch errors with commit message.
-> v3 Avoid duplicate code (Maciej W. Rozycki)
-> v2 use MIPS_ISA_REV instead of __mips_isa_rev (Alexander Lobakin)
+> diff --git a/drivers/clk/mvebu/clk-cpu.c b/drivers/clk/mvebu/clk-cpu.c
+> index c2af3395cf13..a11d7273fcc7 100644
+> --- a/drivers/clk/mvebu/clk-cpu.c
+> +++ b/drivers/clk/mvebu/clk-cpu.c
+> @@ -195,17 +195,17 @@ static void __init of_cpu_clk_setup(struct device_node *node)
+>          for_each_of_cpu_node(dn) {
+>                  struct clk_init_data init;
+>                  struct clk *clk;
+> -               char *clk_name = kzalloc(5, GFP_KERNEL);
+> +               char *clk_name;
+>                  int cpu, err;
 > 
-> I have reused the original patch by Romain and have retained his s-o-b
-> and author name as he is the original author of this patch. I have just
-> added the macro. Build tested with gcc-10.3.1 and gcc-9.3.0.
+> -               if (WARN_ON(!clk_name))
+> -                       goto bail_out;
+> -
+>                  err = of_property_read_u32(dn, "reg", &cpu);
+>                  if (WARN_ON(err))
+>                          goto bail_out;
 > 
->  arch/mips/include/asm/vdso/gettimeofday.h | 26 ++++++++++++++++++-----
->  1 file changed, 21 insertions(+), 5 deletions(-)
+> -               sprintf(clk_name, "cpu%d", cpu);
+> +               clk_name = kasprintf(GFP_KERNEL, "cpu%d", cpu);
+> +               if (WARN_ON(!clk_name)) {
+> +                       goto bail_out;
+> +               }
+> 
+>                  cpuclk[cpu].parent_name = of_clk_get_parent_name(node, 0);
+>                  cpuclk[cpu].clk_name = clk_name;
+> --
+> 2.27.0
+> 
+> 
 
-applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
