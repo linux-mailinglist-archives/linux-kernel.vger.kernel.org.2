@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0CC368E9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7720C368E9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 10:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241315AbhDWINU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 04:13:20 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:58662 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWINR (ORCPT
+        id S241428AbhDWINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 04:13:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46488 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241361AbhDWINr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 04:13:17 -0400
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id B6B02CD7E6;
-        Fri, 23 Apr 2021 16:12:24 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P18569T140528077227776S1619165544413195_;
-        Fri, 23 Apr 2021 16:12:24 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9422ddefe1494081fcea59c3190594dc>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: rjw@rjwysocki.net
-X-RCPT-COUNT: 7
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     rjw@rjwysocki.net, pavel@ucw.cz, len.brown@intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] PM: Use pm_pr_dbg() instead of pr_debug().
-Date:   Fri, 23 Apr 2021 16:12:23 +0800
-Message-Id: <20210423081223.26111-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 23 Apr 2021 04:13:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619165590;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JV8lxB5jxKaMLebE0kj34sple4uhf5PyGZQen4ktIWM=;
+        b=LDz91TX5E08jq4PvBHjAAmeNhVuzOJpP2I+AlgYMgcXhJP5ychacd+buwwUkA1q9y/DIHn
+        elV3qE9Z+WqQwod+eNb56F32CtxMzlFEixaW0qY8vN/jCMG1Tc+l5EeSw7x+B5T6wPbBrV
+        m7GXp92o5N0zw74YkH+H1xesbOZ3snw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-X8GxsUdhMfehJZ0A0CoyAA-1; Fri, 23 Apr 2021 04:13:09 -0400
+X-MC-Unique: X8GxsUdhMfehJZ0A0CoyAA-1
+Received: by mail-ed1-f69.google.com with SMTP id f1-20020a0564021941b02903850806bb32so12263003edz.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 01:13:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JV8lxB5jxKaMLebE0kj34sple4uhf5PyGZQen4ktIWM=;
+        b=RdIH6CUhcNRzmlM4lbksCbdgmzoh2UgdLpwXqrggdEzKuicnsqxwEMYaeRm721yWu0
+         0jyQ/JYxqcuhAvSD0cBjLh97hVKPecKwt7qIvvrwTuBHNnpWKON3zWRnBPyx2fvhAcWO
+         LFG67onjmdEQ/ODq4RLQ8QVYI7gqkq0Woep1oUAJUTGuWs8lJHSPqT6JmCrIawJqxyB4
+         JsPWe/NPQAuQvKhMPtoeY7Xo5h021SxIEU0i7C4PBB8XZTdpEqIoQvZwXh4ud4as18qb
+         exmxorrjf8Zi+1Fed+tdpe/iZk+vU98Bj4gWEMle+YOmLQcFzVtDtpBBw0IXC91dQajc
+         U4ug==
+X-Gm-Message-State: AOAM531u9pE9CWa/N/wQLD88yhA9Hl1Gu1Cvrk5AONS7isbzaMLauDcj
+        HCSUwLv8YjVrfT8CUK4oJ6lUmkdEB0KBcKrOXB3XHivSDMFuXSUCsvBMlOlfRhi0QW/YhRhYoib
+        a+VRAhQ8OhhhsEHj9na0ovL5d
+X-Received: by 2002:a17:906:80d1:: with SMTP id a17mr2940524ejx.55.1619165587543;
+        Fri, 23 Apr 2021 01:13:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmHJI1X+H7hKlvBNxRQOwhvUiNXWScEBXZM+Kc2dHSs2YT40KOzysDXFu7gbrM6y/ENjHjaw==
+X-Received: by 2002:a17:906:80d1:: with SMTP id a17mr2940509ejx.55.1619165587397;
+        Fri, 23 Apr 2021 01:13:07 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f19sm3521662ejc.54.2021.04.23.01.13.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 01:13:06 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86/xen: Take srcu lock when accessing
+ kvm_memslots()
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1619161883-5963-1-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f025b59c-5a8a-abf7-20fc-323a5b450ba5@redhat.com>
+Date:   Fri, 23 Apr 2021 10:13:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1619161883-5963-1-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These prints are useful if we're doing PM suspend debugging. Having them
-at pr_debug() level means that we need to either enable DEBUG in this
-file, or compile the kernel with dynamic debug capabilities. Both of
-these options have drawbacks like custom compilation or opting into all
-debug statements being included into the kernel image. Given that we
-already have infrastructure to collect PM debugging information with
-CONFIG_PM_DEBUG and friends, let's change the pr_debug usage here to be
-pm_pr_dbg() instead so we can collect the wakeup information in the
-kernel logs.
+On 23/04/21 09:11, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
+> 
+> kvm_memslots() will be called by kvm_write_guest_offset_cached() so
+> take the srcu lock.
+> 
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- drivers/base/power/main.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Good catch.  But I would pull it from kvm_steal_time_set_preempted to 
+kvm_arch_vcpu_put instead.
 
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index f893c3c5af07..6e64e3fff84c 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -133,7 +133,7 @@ void device_pm_add(struct device *dev)
- 	if (device_pm_not_required(dev))
- 		return;
- 
--	pr_debug("Adding info for %s:%s\n",
-+	pm_pr_dbg("Adding info for %s:%s\n",
- 		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
- 	device_pm_check_callbacks(dev);
- 	mutex_lock(&dpm_list_mtx);
-@@ -154,7 +154,7 @@ void device_pm_remove(struct device *dev)
- 	if (device_pm_not_required(dev))
- 		return;
- 
--	pr_debug("Removing info for %s:%s\n",
-+	pm_pr_dbg("Removing info for %s:%s\n",
- 		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
- 	complete_all(&dev->power.completion);
- 	mutex_lock(&dpm_list_mtx);
-@@ -173,7 +173,7 @@ void device_pm_remove(struct device *dev)
-  */
- void device_pm_move_before(struct device *deva, struct device *devb)
- {
--	pr_debug("Moving %s:%s before %s:%s\n",
-+	pm_pr_dbg("Moving %s:%s before %s:%s\n",
- 		 deva->bus ? deva->bus->name : "No Bus", dev_name(deva),
- 		 devb->bus ? devb->bus->name : "No Bus", dev_name(devb));
- 	/* Delete deva from dpm_list and reinsert before devb. */
-@@ -187,7 +187,7 @@ void device_pm_move_before(struct device *deva, struct device *devb)
-  */
- void device_pm_move_after(struct device *deva, struct device *devb)
- {
--	pr_debug("Moving %s:%s after %s:%s\n",
-+	pm_pr_dbg("Moving %s:%s after %s:%s\n",
- 		 deva->bus ? deva->bus->name : "No Bus", dev_name(deva),
- 		 devb->bus ? devb->bus->name : "No Bus", dev_name(devb));
- 	/* Delete deva from dpm_list and reinsert after devb. */
-@@ -200,7 +200,7 @@ void device_pm_move_after(struct device *deva, struct device *devb)
-  */
- void device_pm_move_last(struct device *dev)
- {
--	pr_debug("Moving %s:%s to end of list\n",
-+	pm_pr_dbg("Moving %s:%s to end of list\n",
- 		 dev->bus ? dev->bus->name : "No Bus", dev_name(dev));
- 	list_move_tail(&dev->power.entry, &dpm_list);
- }
--- 
-2.20.1
+Paolo
 
-
+> ---
+>   arch/x86/kvm/xen.c | 18 ++++++++++++++----
+>   1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+> index ae17250..d0df782 100644
+> --- a/arch/x86/kvm/xen.c
+> +++ b/arch/x86/kvm/xen.c
+> @@ -96,6 +96,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
+>   	struct kvm_vcpu_xen *vx = &v->arch.xen;
+>   	uint64_t state_entry_time;
+>   	unsigned int offset;
+> +	int idx;
+>   
+>   	kvm_xen_update_runstate(v, state);
+>   
+> @@ -133,10 +134,16 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
+>   	BUILD_BUG_ON(sizeof(((struct compat_vcpu_runstate_info *)0)->state_entry_time) !=
+>   		     sizeof(state_entry_time));
+>   
+> +	/*
+> +	 * Take the srcu lock as memslots will be accessed to check the gfn
+> +	 * cache generation against the memslots generation.
+> +	 */
+> +	idx = srcu_read_lock(&v->kvm->srcu);
+> +
+>   	if (kvm_write_guest_offset_cached(v->kvm, &v->arch.xen.runstate_cache,
+>   					  &state_entry_time, offset,
+>   					  sizeof(state_entry_time)))
+> -		return;
+> +		goto out;
+>   	smp_wmb();
+>   
+>   	/*
+> @@ -154,7 +161,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
+>   					  &vx->current_runstate,
+>   					  offsetof(struct vcpu_runstate_info, state),
+>   					  sizeof(vx->current_runstate)))
+> -		return;
+> +		goto out;
+>   
+>   	/*
+>   	 * Write the actual runstate times immediately after the
+> @@ -173,7 +180,7 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
+>   					  &vx->runstate_times[0],
+>   					  offset + sizeof(u64),
+>   					  sizeof(vx->runstate_times)))
+> -		return;
+> +		goto out;
+>   
+>   	smp_wmb();
+>   
+> @@ -186,7 +193,10 @@ void kvm_xen_update_runstate_guest(struct kvm_vcpu *v, int state)
+>   	if (kvm_write_guest_offset_cached(v->kvm, &v->arch.xen.runstate_cache,
+>   					  &state_entry_time, offset,
+>   					  sizeof(state_entry_time)))
+> -		return;
+> +		goto out;
+> +
+> +out:
+> +	srcu_read_unlock(&v->kvm->srcu, idx);
+>   }
+>   
+>   int __kvm_xen_has_interrupt(struct kvm_vcpu *v)
+> 
 
