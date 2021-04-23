@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8628C368BB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A69C368BB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 05:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240338AbhDWDtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 23:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhDWDs7 (ORCPT
+        id S240322AbhDWDxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 23:53:25 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:41283 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240195AbhDWDxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 23:48:59 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDA9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:48:22 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id c3so14413009pfo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 20:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ntpVuO8X+igpPibq9Gc+rNStHJCK1DeGnF4sSyHqys=;
-        b=q+8tLAClXdoKZoxwH6aoS8dhA2mAeIiEAz7jxIDqN0n9qnE03NAy3X0j1MrEkrgCTN
-         HcSUZKyKOYTMLFzO7PBxcrdMLSXwhozbg3PmqMP4lHT8uCS1AdwGK6GdkQzlUC3wFHNv
-         OK6FzK79xQOJ6Gxtx17C8RKo24JbajOBtUoLslGTSNmwaD+QGQBULbQVvimxv83x2W1R
-         rVlvBcawqR8zMjVh5HAZhN2kBVsbRfiTLeJ/FWozXbFuIqEfrEoIjzIBQyk0+gkUPMbS
-         S/GPgWLDL5Z+PvJrVxHdku9Hi8HTzuRTpy4nBlNJZZQpcZn/cJftbs4j+ZU+w+hTEbvF
-         FNOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=+ntpVuO8X+igpPibq9Gc+rNStHJCK1DeGnF4sSyHqys=;
-        b=cVYS6CEq85s4r4ZpGsnfd5VIjVl6Jfxtlcclnb6WVkVc9XzekrDIIykuAs8cxk0UHI
-         tMckVNb0CLOcWoOat9rH7tFEamvK09PB4PV2n+D/bi50huzvweCaKa1+dADZAL5aPMCo
-         s816WwVrRJHI3+gMBgLDZzCzOM8L1u1oAbStHIR57eQMbG8WMrXBS6aelxuLrwNBzlJK
-         uWDbAy0DBwI2++1IQBrxhiY71JcXvEpUzWZuJerC65Hm/kR0TGiyootOaesp1UfCKekr
-         3plp68+r0fEKX64gFcTKm9ROGmy7Lq3aptqH0iKLAsU1pz0Gxtyxm+DpcZHWFwvWb6k4
-         PxuQ==
-X-Gm-Message-State: AOAM531GHG0aNesZ9W6x0ymFeJnUnNI5FLDc4yvohXj9M+3n8trI1A+R
-        HTuRXSwDMFUWa3J798yHKx0lEw==
-X-Google-Smtp-Source: ABdhPJy+LWkhzAtNZnx/H+Ie1yN35G2kCRwKnOPrL35GhAul1IUChWItJHtRTzAuC7QT3ZwbD5SXbw==
-X-Received: by 2002:a62:1b50:0:b029:257:da1e:837f with SMTP id b77-20020a621b500000b0290257da1e837fmr1756576pfb.57.1619149702227;
-        Thu, 22 Apr 2021 20:48:22 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id kk9sm3416763pjb.23.2021.04.22.20.48.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 20:48:21 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 20:48:21 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 20:48:20 PDT (-0700)
-Subject:     Re: [PATCH v3 0/5] RISC-V: Add kexec/kdump support
-In-Reply-To: <0ce30336b7dfaaf14a20e72e990d70f5@mailhost.ics.forth.gr>
-CC:     mick@ics.forth.gr, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     mick@ics.forth.gr
-Message-ID: <mhng-c073ca02-d152-4ef5-86c5-4bcf58154afc@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 22 Apr 2021 23:53:24 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13N3qdS53021899, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13N3qdS53021899
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 23 Apr 2021 11:52:39 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 23 Apr 2021 11:52:38 +0800
+Received: from localhost.localdomain (172.21.132.99) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 23 Apr 2021 11:52:37 +0800
+From:   <hildawu@realtek.com>
+To:     <marcel@holtmann.org>
+CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <apusaka@chromium.org>, <tientzu@chromium.org>,
+        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
+        <kidman@realtek.com>
+Subject: [PATCH v3 0/2] Bluetooth hci_h5 btrtl Add flag for keep power in suspend/resume
+Date:   Fri, 23 Apr 2021 11:52:27 +0800
+Message-ID: <20210423035229.27513-1-hildawu@realtek.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.99]
+X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzQvMjMgpFekyCAwMToxMjowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/23/2021 03:40:47
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163299 [Apr 22 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 443 443 d64ad0ad6f66abd85f8fb55fe5d831fdcc4c44a0
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/23/2021 03:44:00
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/23/2021 03:40:47
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163299 [Apr 22 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 443 443 d64ad0ad6f66abd85f8fb55fe5d831fdcc4c44a0
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/23/2021 03:44:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Apr 2021 20:36:56 PDT (-0700), mick@ics.forth.gr wrote:
-> Στις 2021-04-23 06:30, Palmer Dabbelt έγραψε:
->> On Mon, 05 Apr 2021 01:57:07 PDT (-0700), mick@ics.forth.gr wrote:
->>> This patch series adds kexec/kdump and crash kernel
->>> support on RISC-V. For testing the patches a patched
->>> version of kexec-tools is needed (still a work in
->>> progress) which can be found at:
->>>
->>> https://riscv.ics.forth.gr/kexec-tools-patched.tar.xz
->>>
->>> v3:
->>>  * Rebase on newer kernel tree
->>>  * Minor cleanups
->>>  * Split UAPI changes to a separate patch
->>>  * Improve / cleanup init_resources
->>>  * Resolve Palmer's comments
->>>
->>> v2:
->>>  * Rebase on newer kernel tree
->>>  * Minor cleanups
->>>  * Properly populate the ioresources tre, so that it
->>>    can be used later on for implementing strict /dev/mem
->>>  * Use linux,usable-memory on /memory instead of a new binding
->>>  * USe a reserved-memory node for ELF core header
->>>
->>> Nick Kossifidis (5):
->>>   RISC-V: Add EM_RISCV to kexec UAPI header
->>>   RISC-V: Add kexec support
->>>   RISC-V: Improve init_resources
->>>   RISC-V: Add kdump support
->>>   RISC-V: Add crash kernel support
->>>
->>>  arch/riscv/Kconfig                  |  25 ++++
->>>  arch/riscv/include/asm/elf.h        |   6 +
->>>  arch/riscv/include/asm/kexec.h      |  54 +++++++
->>>  arch/riscv/kernel/Makefile          |   6 +
->>>  arch/riscv/kernel/crash_dump.c      |  46 ++++++
->>>  arch/riscv/kernel/crash_save_regs.S |  56 +++++++
->>>  arch/riscv/kernel/kexec_relocate.S  | 222
->>> ++++++++++++++++++++++++++++
->>>  arch/riscv/kernel/machine_kexec.c   | 193 ++++++++++++++++++++++++
->>>  arch/riscv/kernel/setup.c           | 113 ++++++++------
->>>  arch/riscv/mm/init.c                | 110 ++++++++++++++
->>>  include/uapi/linux/kexec.h          |   1 +
->>>  11 files changed, 787 insertions(+), 45 deletions(-)
->>>  create mode 100644 arch/riscv/include/asm/kexec.h
->>>  create mode 100644 arch/riscv/kernel/crash_dump.c
->>>  create mode 100644 arch/riscv/kernel/crash_save_regs.S
->>>  create mode 100644 arch/riscv/kernel/kexec_relocate.S
->>>  create mode 100644 arch/riscv/kernel/machine_kexec.c
->>
->> Thanks.  There were some minor issues and some merge conflicts, I put
->> this on for-next with some fixups.
->
-> I've sent a v4 that shouldn't have merge conflicts, addressing some
-> comments from Alex as well, could you use that instead or is it too late
-> ?
+From: hildawu <hildawu@realtek.com>
 
-Thanks, for some reason I didn't see it when poking around.  There was 
-still that one init_resources() merge conflict and I fixed up some of 
-the commit texts, it's now on for-next as
+Hello!
 
-b94394119804 (HEAD -> for-next, riscv/for-next) RISC-V: Add crash kernel support
-6e8451782c90 RISC-V: Add kdump support
-0a0652429bdb RISC-V: Improve init_resources()
-d9a8897d6b5d RISC-V: Add kexec support
-f59938095b94 RISC-V: Add EM_RISCV to kexec UAPI header
+This v3 series is for support Host can be wakeup and device no need
+power down and no need re-dowload fw. Supported this feature chips
+RTL8822C/RTL8852A include UART interface. Avoid re-define related
+information. So move shared structure info the btrtl.h.
+
+The patch 1 is adjust the position of strcut definition for btrtl
+and hci_h5. The purpose for avoid re-defining chip features in btrtl
+with USB and UART devices. Let UART devices (hci_h5) can get relevant
+information too. That can be easily managed feature of chips.
+
+The patch 2 is support for Host can received BT device signal then
+wake Host up. So this patch, add a flag for these devices didnot
+power off and didnot re-download patch during suspend and resume.
+
+version 3 changes
+- Reworked to use UART flag, refer to Maintainer's suggestion.
+- Split into two patches for different purpose.
+
+version 2 changes
+- Add the missing struct member
+- Modify title length
+
+Thanks.
+Hilda
+
+hildawu (2):
+  Bluetooth: btrtl: Adjust the position of strcut definition
+  Bluetooth: hci_h5: Add flag for keep power during suspend/resume
+
+ drivers/bluetooth/btrtl.c     | 36 -----------------------------------
+ drivers/bluetooth/btrtl.h     | 36 ++++++++++++++++++++++++++++++++++-
+ drivers/bluetooth/hci_h5.c    | 34 +++++++++++++++++++++++----------
+ drivers/bluetooth/hci_ldisc.c |  3 ++-
+ drivers/bluetooth/hci_uart.h  |  1 +
+ 5 files changed, 62 insertions(+), 48 deletions(-)
+
+-- 
+2.17.1
+
