@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81935369AEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C24369AF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 21:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243822AbhDWTaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 15:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhDWTad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 15:30:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 107286134F;
-        Fri, 23 Apr 2021 19:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619206196;
-        bh=ikzGb+8FgMM5E+UXyiyzMOROEMO+CNXykpkkBbepjm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NIzx/5eCMVVtm4AJM102X9KO2qHDSz+Aul45b4EMeDbQDu4C66vCLColnWz7AdRPw
-         2zyXZMMH1pdI+PR+MrAoINvOmsnNhJxU4EPfq298jYqHiH5RmVaRH/sIsYpWE0h7lx
-         N950L7r1vBrIYR+O6JLnrkjw5AX1vILGLlKb4NaDDSbyBqeyToNYCiJn7FXf3VUjU5
-         xsYWyoKup6RctsBga+G+vJZ9Y/9AndFHfcrkv3J13ImdzxMM0n5n2Az+4LsEXTemL7
-         wTP5DzUhusiat/7txRfZ6Q/xuR+19uzHmU5yRvkW5+JYOlEsmhgwHskZy1WW5NvXnj
-         t4G5C7kfGUutg==
-Date:   Fri, 23 Apr 2021 22:29:52 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     "Shelat, Abhi" <a.shelat@northeastern.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] SUNRPC: Add a check for gss_release_msg
-Message-ID: <YIMgMHwYkVBdrICs@unreal>
-References: <YH+7ZydHv4+Y1hlx@kroah.com>
- <CADVatmNgU7t-Co84tSS6VW=3NcPu=17qyVyEEtVMVR_g51Ma6Q@mail.gmail.com>
- <YH/8jcoC1ffuksrf@kroah.com>
- <3B9A54F7-6A61-4A34-9EAC-95332709BAE7@northeastern.edu>
- <20210421133727.GA27929@fieldses.org>
- <YIAta3cRl8mk/RkH@unreal>
- <20210421135637.GB27929@fieldses.org>
- <20210422193950.GA25415@fieldses.org>
- <YIMDCNx4q6esHTYt@unreal>
- <20210423180727.GD10457@fieldses.org>
+        id S232238AbhDWTgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 15:36:22 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:39844 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhDWTgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 15:36:20 -0400
+Received: by mail-ed1-f52.google.com with SMTP id g17so57970640edm.6;
+        Fri, 23 Apr 2021 12:35:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gIuJQ0zh3viNBczyKYB2fhbiaLgRnT4n+rCK9rNkZDg=;
+        b=Lvij315qTLu+zaugScYy2mPiJHWmwor5ZoRxZYQA5kziMLFKMunKgUXr7ygOyLfgtd
+         eLHC5cJvedMuCurdNIw/9PteWJr30r7I5/CLluCOuFvGhDZ7TEMxL+/Z5+xyK0dsI366
+         wP8CdVzi7uJcvaR7tc+uVOu6HGIvALAGx84TB/Pne8fWIwrUAJqxg0D4HwnTiilijFNr
+         /jB02rNLeKJfukhGELXMWoz4s8+D+krf/P4JqHEzHr6w+OyIg4y837r6OrBJwomuBvdD
+         Jix/ZSks2ZJGxv47DwnNFaXeJlvkt3UHqOg7xNGm0KxOFPEV2V4ieu0YsY26CnViKpbd
+         vrNQ==
+X-Gm-Message-State: AOAM53090L9LquUoUYDnIDb9lA0FvIG0+dU5E0bn2o2nANyhFLUF1c2Y
+        qg9a8sNkmOd5qSK0YFoHjdCMPkL6TbBNBq5PQxk=
+X-Google-Smtp-Source: ABdhPJygyn0q4rDisgKpgzZFbtCvXd00pA1BEv3Q+3EXywkGito2udfG1uByIxVRDVqVz7/aaTjEUBHW7xWXzh4iJJs=
+X-Received: by 2002:aa7:d1ce:: with SMTP id g14mr6325912edp.122.1619206543054;
+ Fri, 23 Apr 2021 12:35:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423180727.GD10457@fieldses.org>
+References: <20210414095804.GB10709@zn.tnic> <CAJvTdKn_y8qAjDy189zEf8cnaWrvW3baca=z9FgGxV9AvQEADg@mail.gmail.com>
+ <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic>
+In-Reply-To: <20210419215809.GJ9093@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 23 Apr 2021 15:35:30 -0400
+Message-ID: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 02:07:27PM -0400, J. Bruce Fields wrote:
-> On Fri, Apr 23, 2021 at 08:25:28PM +0300, Leon Romanovsky wrote:
-> > On Thu, Apr 22, 2021 at 03:39:50PM -0400, J. Bruce Fields wrote:
-> > > On Wed, Apr 21, 2021 at 09:56:37AM -0400, J. Bruce Fields wrote:
-> > > > On Wed, Apr 21, 2021 at 04:49:31PM +0300, Leon Romanovsky wrote:
-> > > > > If you want to see another accepted patch that is already part of
-> > > > > stable@, you are invited to take a look on this patch that has "built-in bug":
-> > > > > 8e949363f017 ("net: mlx5: Add a missing check on idr_find, free buf")
-> > > > 
-> > > > Interesting, thanks.
-> > > 
-> > > Though looking at it now, I'm not actually seeing the bug--probably I'm
-> > > overlooking something obvious.
-> > 
-> > It was fixed in commit 31634bf5dcc4 ("net/mlx5: FPGA, tls, hold rcu read lock a bit longer")
-> 
-> So is the "Fixes:" line on that commit wrong?  It claims the bug was
-> introduced by an earlier commit, ab412e1dd7db ("net/mlx5: Accel, add TLS
-> rx offload routines").
+n Mon, Apr 19, 2021 at 5:58 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Mon, Apr 19, 2021 at 05:33:03PM -0400, Len Brown wrote:
+> > For this to happen, every thread would not only have to include/link-with
+> > code that uses AMX, but that code would have to *run*.
+>
+> ...the *library* does that decision automatically!
+>
+> Which means *every* possible thread on the system.
+>
+> Which means, *every* thread has a fat 8K buffer attached to it because
+> the library uses AMX on its behalf by *default*.
 
-Yes, I think that Fixes line is misleading.
+Yes.  If a library decides to execute AMX instructions on behalf
+of a task, the kernel will allocate an 8KB context switch buffer
+on behalf of that task.
 
-> 
-> Looks like Aditya Pakki's commit may have widened the race a little, but
-> I find it a little hard to fault him for that.
+True.  Nothing prevents every user task in the system from executing AMX
+instructions, whether explicitly or in a library, and the kernel will
+transparently allocate an 8KB buffer for each one.
 
-We can argue about severity of this bug, but the whole paper talks about
-introduction of UAF bugs unnoticed.
+I do not know anybody who predicts or expects that every task in the system,
+or a universally executed library routine, will find a reason to run
+AMX instructions.
+Again, if that were the expectation or the intent, the proposal would
+be to statically
+allocate an 8KB context switch buffer on AMX hardware, instead of
+dynamic allocation.
 
-Thanks
+Today, libraries routinely probe for what instructions are available
+and decide to use them, or not.  I think that most customers
+consider that a desirable feature -- since it allows them to run the
+same application on multiple hardware generations and get the
+most out of each generation.  I respect your right to dislike that feature.
 
-> 
-> --b.
+Granted, if you find a reason to dislike AMX, the mechanisms to disable
+it today are on a system-wide basis, not on a process or task basis.
+
+Len Brown, Intel Open Source Technology Center
