@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC945368AED
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAAB368AEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240456AbhDWCEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        id S240510AbhDWCEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236601AbhDWCEW (ORCPT
+        with ESMTP id S236601AbhDWCEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:04:22 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32080C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:03:47 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t22so2706279pgu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:03:47 -0700 (PDT)
+        Thu, 22 Apr 2021 22:04:31 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4CBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:03:50 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so382079pjh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:03:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pjxat++qid3Snrnv9iGB86a7fL2TIKbO8d9d/vb9leA=;
-        b=uSMoZqinrID/ieHXwKegfwYKAseNeYetW4oKipjMDtL7lt96m6nkhdJvXR14ZADRXG
-         nnXq+MAfnd8XUyyOaYF2QVKvMoFDBH4nWAMBLJwhBF7PJIs7uqIr8lcITTF78Wr89k7b
-         ytRh1NkCjYVAeFsTKhFY3oLtVIW2J++Yudi641j746Tnv8j8l0WT3m2NCClMbCBjiQaF
-         f4xO8XsYfhnQRu72jgGXxhITeFxGdKcYRyFHYRt/S48zPTfcimkLtUsGSGM5ss0Zoc1A
-         heMH2FKNOWpW8QecS/Xw3tul+sQI+WlCcSezPOZmVzvZONM1m/ui1SWtmimA8kVjzM4p
-         /hWA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IuieRME0ZX49WQkT8/pWgkf+e5WFBLNqPERk5bUgGpc=;
+        b=bErKqdPOKBIkf0xiJKWpN0lzQbTbT8Ai0v8Gpy51jT0+z6U7ekDJyaqmlO8NvyPGE1
+         Fpy8E/0TElNxx89OJSmtVuIXnl0A2JMosSTFCqK8ywvAJEfI31/capuLMdEjGcs8Y/m5
+         gLx3xSTIHYkAg46XkM987Vm/Abr+6N3mlDtHHX0Han/ajKNL2DuYCWti1fnlfWj8Rcnk
+         eRh86VXSxv+zwBGFd+lSy9XGI1al1ybd6AuLB1vj1Ez9fBON/wxueHRtC+1DahLgrlYj
+         V5jk/J77Y1HOwBvIhttIim6UYeuznP1iTc4LBYyDYzsvAB3ZrRvlm0COLuWAqaJafrVX
+         js9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pjxat++qid3Snrnv9iGB86a7fL2TIKbO8d9d/vb9leA=;
-        b=tjtU8wnPM3kvKCPapiDDUlbxOCfchiocyoYs6napRDcMN+uBLIDDa0Y4r2mdcJjC21
-         mZG1A3jxG7oKqnf/4zq/LCJLdY34i8hAkWRb3cv2vXsAt8OjCQsPvoOVzjAksF/v2lUP
-         0g1YVWU8lXBrb+zEhg4U+te83nMRZDxbXnF8kQrhm0Qfbt3fZ2gc/hwZ04oHHWD/7t7X
-         AA/IL7ywKIuGHIaC8syXH9OU+ktbcQx5NzNkFcfGcqCKqK58Egk4izmwz7xX7r6R0QIT
-         Ka70We7aFMpOauWqXZagWDG/+ivB4Za1Od2HyV5pGGpX8kPmizQ7ypBBUibRIoJPtWJz
-         XcXg==
-X-Gm-Message-State: AOAM5338vjD3s8Pm01YV2XOzb5t9W4X3N/pFQ9Q8MwQpaJtKDB8qSIPN
-        1KWhiiTlzPUo7ldNApyDT1M=
-X-Google-Smtp-Source: ABdhPJyUxN5+Xro+cKXAV0dg3AGpybmeTsnMPdRYlEH91ytAHk49COs6fwJMH9a3LWNVHs4i9a02kA==
-X-Received: by 2002:a63:f451:: with SMTP id p17mr1537169pgk.150.1619143426734;
-        Thu, 22 Apr 2021 19:03:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IuieRME0ZX49WQkT8/pWgkf+e5WFBLNqPERk5bUgGpc=;
+        b=c8AspOxH8b6nT/UCzdsE1WA5dbA3EhvmS8otkJj2IODjCo1gEL+tmuDdn/4rjkk330
+         HQ0Gr4WLUQjl5TCXgLeRDxePMwVU/6wPTiKlZ5SgmShM0hC4XZfB7TJvo8L3xG/wmU4T
+         bifoyobqwvhbnqQwNdVe4Sficxb0gF3XI9M9crQ7UR46goroWd7DsC1f9YqV+dbKQ8+S
+         NF1btxYOyuIdUC5kOAzAmOOVnPz4eM92YP6bMC6kkKL7bLDr0dFUpskVjjkPwYpgXxne
+         uVOfHjIcJGtiDcrQNFGJ6/RJAMfZEEZrCv1FcSqedmFPxWdAGr8q6C8xhCU/Qt7tZ9Gc
+         zDgw==
+X-Gm-Message-State: AOAM531BKbaag3CfuNrXOX2Z+5DxdN7O+qAmQjNcH3aFcbzZrjEOf9GE
+        +avK5FojFmLIyDEgvmRlCmaAUUw6Fwq6KWwV
+X-Google-Smtp-Source: ABdhPJyege0hSJyqx3I0kXWFd0PiaAcIhcH7EfbAZZIk4ucFRNIi969AOwHkmobN5qhjFNrcwKXCaQ==
+X-Received: by 2002:a17:902:9008:b029:e6:f37a:2183 with SMTP id a8-20020a1709029008b02900e6f37a2183mr1721055plp.49.1619143430225;
+        Thu, 22 Apr 2021 19:03:50 -0700 (PDT)
 Received: from localhost.localdomain (097-094-025-122.res.spectrum.com. [97.94.25.122])
-        by smtp.gmail.com with ESMTPSA id u25sm3067793pgk.34.2021.04.22.19.03.45
+        by smtp.gmail.com with ESMTPSA id u25sm3067793pgk.34.2021.04.22.19.03.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 19:03:46 -0700 (PDT)
+        Thu, 22 Apr 2021 19:03:49 -0700 (PDT)
 From:   Joseph Kogut <joseph.kogut@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Joseph Kogut <joseph.kogut@gmail.com>,
@@ -55,150 +55,112 @@ Cc:     Joseph Kogut <joseph.kogut@gmail.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] drm: remove usage of drm_pci_alloc/free
-Date:   Thu, 22 Apr 2021 19:02:43 -0700
-Message-Id: <20210423020248.3427369-1-joseph.kogut@gmail.com>
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] drm: remove legacy drm_pci_alloc/free abstraction
+Date:   Thu, 22 Apr 2021 19:02:44 -0700
+Message-Id: <20210423020248.3427369-2-joseph.kogut@gmail.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210423020248.3427369-1-joseph.kogut@gmail.com>
+References: <20210423020248.3427369-1-joseph.kogut@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove usage of legacy dma-api abstraction in preparation for removal
+The drm_pci_alloc/free abstraction of the dma-api is no longer required,
+remove it.
 
 Signed-off-by: Joseph Kogut <joseph.kogut@gmail.com>
 ---
-Checkpatch warns here that r128 is marked obsolete, and asks for no
-unnecessary modifications.
+ drivers/gpu/drm/drm_pci.c | 58 ---------------------------------------
+ include/drm/drm_legacy.h  |  4 ---
+ 2 files changed, 62 deletions(-)
 
-This series aims to address the FIXME in drivers/gpu/drm/drm_pci.c
-explaining that drm_pci_alloc/free is a needless abstraction of the
-dma-api, and it should be removed. Unfortunately, doing this requires
-removing the usage from an obsolete driver as well.
-
-If this patch is rejected for modifying an obsolete driver, would it be
-appropriate to follow up removing the FIXME from drm_pci?
-
- drivers/gpu/drm/drm_bufs.c         | 19 ++++++++++++++++---
- drivers/gpu/drm/drm_dma.c          |  8 +++++++-
- drivers/gpu/drm/r128/ati_pcigart.c | 22 ++++++++++++++++++----
- 3 files changed, 41 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
-index e3d77dfefb0a..94bc1f6049c9 100644
---- a/drivers/gpu/drm/drm_bufs.c
-+++ b/drivers/gpu/drm/drm_bufs.c
-@@ -674,12 +674,17 @@ int drm_legacy_rmmap_ioctl(struct drm_device *dev, void *data,
- static void drm_cleanup_buf_error(struct drm_device *dev,
- 				  struct drm_buf_entry *entry)
- {
-+	drm_dma_handle_t *dmah;
- 	int i;
+diff --git a/drivers/gpu/drm/drm_pci.c b/drivers/gpu/drm/drm_pci.c
+index 2294a1580d35..1a1a2d4046e9 100644
+--- a/drivers/gpu/drm/drm_pci.c
++++ b/drivers/gpu/drm/drm_pci.c
+@@ -41,64 +41,6 @@
+ /* List of devices hanging off drivers with stealth attach. */
+ static LIST_HEAD(legacy_dev_list);
+ static DEFINE_MUTEX(legacy_dev_list_lock);
+-
+-/**
+- * drm_pci_alloc - Allocate a PCI consistent memory block, for DMA.
+- * @dev: DRM device
+- * @size: size of block to allocate
+- * @align: alignment of block
+- *
+- * FIXME: This is a needless abstraction of the Linux dma-api and should be
+- * removed.
+- *
+- * Return: A handle to the allocated memory block on success or NULL on
+- * failure.
+- */
+-drm_dma_handle_t *drm_pci_alloc(struct drm_device * dev, size_t size, size_t align)
+-{
+-	drm_dma_handle_t *dmah;
+-
+-	/* pci_alloc_consistent only guarantees alignment to the smallest
+-	 * PAGE_SIZE order which is greater than or equal to the requested size.
+-	 * Return NULL here for now to make sure nobody tries for larger alignment
+-	 */
+-	if (align > size)
+-		return NULL;
+-
+-	dmah = kmalloc(sizeof(drm_dma_handle_t), GFP_KERNEL);
+-	if (!dmah)
+-		return NULL;
+-
+-	dmah->size = size;
+-	dmah->vaddr = dma_alloc_coherent(dev->dev, size,
+-					 &dmah->busaddr,
+-					 GFP_KERNEL);
+-
+-	if (dmah->vaddr == NULL) {
+-		kfree(dmah);
+-		return NULL;
+-	}
+-
+-	return dmah;
+-}
+-EXPORT_SYMBOL(drm_pci_alloc);
+-
+-/**
+- * drm_pci_free - Free a PCI consistent memory block
+- * @dev: DRM device
+- * @dmah: handle to memory block
+- *
+- * FIXME: This is a needless abstraction of the Linux dma-api and should be
+- * removed.
+- */
+-void drm_pci_free(struct drm_device * dev, drm_dma_handle_t * dmah)
+-{
+-	dma_free_coherent(dev->dev, dmah->size, dmah->vaddr,
+-			  dmah->busaddr);
+-	kfree(dmah);
+-}
+-
+-EXPORT_SYMBOL(drm_pci_free);
+ #endif
  
- 	if (entry->seg_count) {
- 		for (i = 0; i < entry->seg_count; i++) {
- 			if (entry->seglist[i]) {
--				drm_pci_free(dev, entry->seglist[i]);
-+				dmah = entry->seglist[i];
-+				dma_free_coherent(dev->dev,
-+						  dmah->size,
-+						  dmah->vaddr,
-+						  dmah->busaddr);
- 			}
- 		}
- 		kfree(entry->seglist);
-@@ -978,10 +983,18 @@ int drm_legacy_addbufs_pci(struct drm_device *dev,
- 	page_count = 0;
+ static int drm_get_pci_domain(struct drm_device *dev)
+diff --git a/include/drm/drm_legacy.h b/include/drm/drm_legacy.h
+index 8ed04e9be997..faf64319be76 100644
+--- a/include/drm/drm_legacy.h
++++ b/include/drm/drm_legacy.h
+@@ -194,10 +194,6 @@ void drm_legacy_idlelock_release(struct drm_lock_data *lock);
  
- 	while (entry->buf_count < count) {
-+		dmah = kmalloc(sizeof(drm_dma_handle_t), GFP_KERNEL);
-+		if (!dmah)
-+			return -ENOMEM;
+ #ifdef CONFIG_PCI
  
--		dmah = drm_pci_alloc(dev, PAGE_SIZE << page_order, 0x1000);
-+		dmah->size = total;
-+		dmah->vaddr = dma_alloc_coherent(dev->dev,
-+						 dmah->size,
-+						 &dmah->busaddr,
-+						 GFP_KERNEL);
-+		if (!dmah->vaddr) {
-+			kfree(dmah);
- 
--		if (!dmah) {
- 			/* Set count correctly so we free the proper amount. */
- 			entry->buf_count = count;
- 			entry->seg_count = count;
-diff --git a/drivers/gpu/drm/drm_dma.c b/drivers/gpu/drm/drm_dma.c
-index d07ba54ec945..eb6b741a6f99 100644
---- a/drivers/gpu/drm/drm_dma.c
-+++ b/drivers/gpu/drm/drm_dma.c
-@@ -81,6 +81,7 @@ int drm_legacy_dma_setup(struct drm_device *dev)
- void drm_legacy_dma_takedown(struct drm_device *dev)
- {
- 	struct drm_device_dma *dma = dev->dma;
-+	drm_dma_handle_t *dmah;
- 	int i, j;
- 
- 	if (!drm_core_check_feature(dev, DRIVER_HAVE_DMA) ||
-@@ -100,7 +101,12 @@ void drm_legacy_dma_takedown(struct drm_device *dev)
- 				  dma->bufs[i].seg_count);
- 			for (j = 0; j < dma->bufs[i].seg_count; j++) {
- 				if (dma->bufs[i].seglist[j]) {
--					drm_pci_free(dev, dma->bufs[i].seglist[j]);
-+					dmah = dma->bufs[i].seglist[j];
-+					dma_free_coherent(dev->dev,
-+							  dmah->size,
-+							  dmah->vaddr,
-+							  dmah->busaddr);
-+					kfree(dmah);
- 				}
- 			}
- 			kfree(dma->bufs[i].seglist);
-diff --git a/drivers/gpu/drm/r128/ati_pcigart.c b/drivers/gpu/drm/r128/ati_pcigart.c
-index 1234ec60c0af..fbb0cfd79758 100644
---- a/drivers/gpu/drm/r128/ati_pcigart.c
-+++ b/drivers/gpu/drm/r128/ati_pcigart.c
-@@ -45,18 +45,32 @@
- static int drm_ati_alloc_pcigart_table(struct drm_device *dev,
- 				       struct drm_ati_pcigart_info *gart_info)
- {
--	gart_info->table_handle = drm_pci_alloc(dev, gart_info->table_size,
--						PAGE_SIZE);
--	if (gart_info->table_handle == NULL)
-+	drm_dma_handle_t *dmah = kmalloc(sizeof(drm_dma_handle_t), GFP_KERNEL);
-+
-+	if (!dmah)
-+		return -ENOMEM;
-+
-+	dmah->size = gart_info->table_size;
-+	dmah->vaddr = dma_alloc_coherent(dev->dev,
-+					 dmah->size,
-+					 &dmah->busaddr,
-+					 GFP_KERNEL);
-+
-+	if (!dmah->vaddr) {
-+		kfree(dmah);
- 		return -ENOMEM;
-+	}
- 
-+	gart_info->table_handle = dmah;
- 	return 0;
- }
- 
- static void drm_ati_free_pcigart_table(struct drm_device *dev,
- 				       struct drm_ati_pcigart_info *gart_info)
- {
--	drm_pci_free(dev, gart_info->table_handle);
-+	drm_dma_handle_t *dmah = gart_info->table_handle;
-+
-+	dma_free_coherent(dev->dev, dmah->size, dmah->vaddr, dmah->busaddr);
- 	gart_info->table_handle = NULL;
- }
- 
+-struct drm_dma_handle *drm_pci_alloc(struct drm_device *dev, size_t size,
+-				     size_t align);
+-void drm_pci_free(struct drm_device *dev, struct drm_dma_handle *dmah);
+-
+ int drm_legacy_pci_init(const struct drm_driver *driver,
+ 			struct pci_driver *pdriver);
+ void drm_legacy_pci_exit(const struct drm_driver *driver,
 -- 
 2.31.1
 
