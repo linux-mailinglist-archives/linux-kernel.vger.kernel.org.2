@@ -2,251 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFCA368C62
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 06:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E56368C6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 07:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237187AbhDWE5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 00:57:53 -0400
-Received: from mga07.intel.com ([134.134.136.100]:19870 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhDWE5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 00:57:52 -0400
-IronPort-SDR: JwFbNeg8hQ1axOTcR0V7AfGlA5xmwq0fAvN93gzc/2FLfp55FEfzNAM6hO5MJA+OeDphmGhBnd
- 3xCHao4QXHQA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="259971098"
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="259971098"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2021 21:57:13 -0700
-IronPort-SDR: AZYGYIqHxewq56ZVnfhaXWdcuK9ZEn2VZVwShWeLunyQEvhW1/RoVPE/C/Bf27yAhtbJZcEHuC
- 4mEzwIIpGdjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,244,1613462400"; 
-   d="scan'208";a="384992260"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 22 Apr 2021 21:57:10 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lZnsM-0004Wx-3k; Fri, 23 Apr 2021 04:57:10 +0000
-Date:   Fri, 23 Apr 2021 12:57:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.04.21a] BUILD SUCCESS
- ca43769e4b4a1ad85f952edd20fd3757da7a46b5
-Message-ID: <6082539e.byc6EpUdw+gcQRZ4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S237401AbhDWFL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 01:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWFLY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 01:11:24 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018CAC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 22:10:46 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id i190so33301477pfc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 22:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:message-id:cc:from:to;
+        bh=wv06ln7jUx5RhDbCP3yp9Aqv9te0/cVOv02q2bnuehY=;
+        b=g8L5eXN96akk8Lkciek2Sc0gsTJvNnKVFJHZfByuKNxnTF709JIIdd1RvDUwe0Fotv
+         uOrf1P0hSbehB0KgZ8nYI7bCZnuPK/WfGayN/8XW+ee3EOFU77ib+pPbhYPlf38BuLQI
+         6iAoHlfMq91h33qEw7vJh72HvkBw10cAc+zsMucNTFDQulPKFsWaAieKVrIj30doGYEg
+         x1/B0qDkMht91pk2+ny4eO2XXyd5qqJC9gIhfwpeKaESCT7M98mHALmsvu2MAUIkFW/8
+         VNChTnpZreSFnuKDuzAlTgzvSy2JRMwW87dkQjuhELi3wdjFZFuX3/MuG7omwQXg3R0Y
+         c56g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:message-id:cc:from:to;
+        bh=wv06ln7jUx5RhDbCP3yp9Aqv9te0/cVOv02q2bnuehY=;
+        b=gR3s3Ov/dsck5nY9u5k46RfD87X/Um6gLUD4/4b4lxqSz9Uzij1quBG2wrvNCZhFQ/
+         9yC3L/bw91mpWMh7wNmdoTsbcarFyJWb0YwWggKK/F32a+y88Tn8RwTPSbY4/npDmxf4
+         D488jI3DCCgPhERS9TmdYZjhhBt9HbG4h3MGWoArcMyxQDPdzh0bJGpQNFL6BrO2m6U3
+         aenjk0hNyAY/i2BFLYzMsjoIOcDLSc6sjr5OFyf64ZgcAgjSeoSb7TS501CNH/A9kR45
+         IIUId2v0U7TQLLaxMwzz0JZi4jV+ZkrRWXnfTVoNXpijNpVLxxxbenvQWGlzFakGExSk
+         WdsA==
+X-Gm-Message-State: AOAM5313ZuOxJu2h4+77sbgv6tl8fI/GJ0GAF/DOfN38Cx6CO5KMWzhj
+        WuG3IeDgUqDIECOl9SPJrh0UnQ==
+X-Google-Smtp-Source: ABdhPJxAXNMAM3pbHXlafBsbQ1tQ98EYr8RHKCZNVARlwL9Xm7cohhJFdzcmZgPH8Ggl2r6bDRvi5w==
+X-Received: by 2002:a63:3d48:: with SMTP id k69mr2050932pga.239.1619154646285;
+        Thu, 22 Apr 2021 22:10:46 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id nh24sm3535434pjb.38.2021.04.22.22.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 22:10:45 -0700 (PDT)
+Date:   Thu, 22 Apr 2021 22:10:45 -0700 (PDT)
+X-Google-Original-Date: Thu, 22 Apr 2021 22:10:08 PDT (-0700)
+Subject:     Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver support
+In-Reply-To: <mhng-f3dd2202-8d2b-4e17-9067-c4521aac8125@palmerdabbelt-glaptop>
+Message-ID: <mhng-41850660-4a95-462a-9b1e-33dfc67815a4@palmerdabbelt-glaptop>
+CC:     greentime.hu@sifive.com, lorenzo.pieralisi@arm.com,
+        jh80.chung@samsung.com, zong.li@sifive.com, robh+dt@kernel.org,
+        vidyas@nvidia.com, alex.dewar90@gmail.com, erik.danie@sifive.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-riscv@lists.infradead.org,
+        mturquette@baylibre.com, aou@eecs.berkeley.edu, sboyd@kernel.org,
+        hayashi.kunihiko@socionext.com, hes@sifive.com,
+        khilman@baylibre.com, p.zabel@pengutronix.de, bhelgaas@google.com,
+        helgaas@kernel.org, devicetree@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     greentime.hu@sifive.com, lorenzo.pieralisi@arm.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.04.21a
-branch HEAD: ca43769e4b4a1ad85f952edd20fd3757da7a46b5  squash! tasks-rcu: Make show_rcu_tasks_gp_kthreads() be static inline
+On Thu, 22 Apr 2021 21:43:03 PDT (-0700), Palmer Dabbelt wrote:
+> On Sun, 11 Apr 2021 19:37:50 PDT (-0700), greentime.hu@sifive.com wrote:
+>> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> 於 2021年4月9日 週五 下午4:54寫道：
+>>>
+>>> On Tue, 6 Apr 2021 17:26:28 +0800, Greentime Hu wrote:
+>>> > This patchset includes SiFive FU740 PCIe host controller driver. We also
+>>> > add pcie_aux clock and pcie_power_on_reset controller to prci driver for
+>>> > PCIe driver to use it.
+>>> >
+>>> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
+>>> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
+>>> > v5.11 Linux kernel.
+>>> >
+>>> > [...]
+>>>
+>>> Applied to pci/dwc [dropped patch 6], thanks!
+>>>
+>>> [1/6] clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+>>>       https://git.kernel.org/lpieralisi/pci/c/f3ce593b1a
+>>> [2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
+>>>       https://git.kernel.org/lpieralisi/pci/c/0a78fcfd3d
+>>> [3/6] MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+>>>       https://git.kernel.org/lpieralisi/pci/c/8bb1c66a90
+>>> [4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+>>>       https://git.kernel.org/lpieralisi/pci/c/b86d55c107
+>>> [5/6] PCI: fu740: Add SiFive FU740 PCIe host controller driver
+>>>       https://git.kernel.org/lpieralisi/pci/c/327c333a79
+>>>
+>>> Thanks,
+>>> Lorenzo
+>>
+>> Hi Palmer,
+>>
+>> Since the PCIE driver has been applied, would you please pick patch 6
+>> to RISC-V for-next tree?
+>> Thank you. :)
+>
+> Sorry, I got this confused between the Linux patch set and the u-boot
+> patch set so I thought more versions of this had kept comming.  The DT
+> is on for-next now.
 
-elapsed time: 720m
+I spoke too soon: this actually dosn't even build for me.  It's the 
+"clocks = <&prci PRCI_CLK_PCIE_AUX>;" line
 
-configs tested: 189
-configs skipped: 2
+    Error: arch/riscv/boot/dts/sifive/fu740-c000.dtsi:319.20-21 syntax error
+    FATAL ERROR: Unable to parse input tree
+    make[2]: *** [scripts/Makefile.lib:336: arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dtb] Error 1
+    make[1]: *** [scripts/Makefile.build:514: arch/riscv/boot/dts/sifive] Error 2
+    make: *** [Makefile:1388: dtbs] Error 2
+    make: *** Waiting for unfinished jobs....
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'm not sure what the issue is, I see an anchor for "prci".  Do you mind 
+sending along a new version that compiles on top of for-next?  If I need 
+the definiton of PRCI_CLK_PCIE_AUX from a PCIe tree then it's probably 
+best to just keep the DTS along with the rest of the patches.  IIRC I 
+alredy Acked it, but just to be clear
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                     redwood_defconfig
-m68k                          atari_defconfig
-powerpc                      cm5200_defconfig
-s390                                defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                           spitz_defconfig
-xtensa                  audio_kc705_defconfig
-powerpc                      acadia_defconfig
-ia64                             allyesconfig
-sh                          kfr2r09_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          iop32x_defconfig
-sh                   rts7751r2dplus_defconfig
-um                           x86_64_defconfig
-sh                            titan_defconfig
-powerpc                  storcenter_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      ep88xc_defconfig
-arc                      axs103_smp_defconfig
-powerpc                 linkstation_defconfig
-arm                         s5pv210_defconfig
-sparc                       sparc32_defconfig
-sh                              ul2_defconfig
-m68k                         apollo_defconfig
-sh                   sh7770_generic_defconfig
-um                               allyesconfig
-mips                            e55_defconfig
-sh                        sh7757lcr_defconfig
-sh                          lboxre2_defconfig
-nios2                            alldefconfig
-mips                         bigsur_defconfig
-arm                           h3600_defconfig
-powerpc                       maple_defconfig
-nds32                             allnoconfig
-arm                       aspeed_g5_defconfig
-m68k                       m5275evb_defconfig
-arc                     nsimosci_hs_defconfig
-arm                     eseries_pxa_defconfig
-parisc                           alldefconfig
-powerpc                      mgcoge_defconfig
-mips                        omega2p_defconfig
-arm                          exynos_defconfig
-arm                          gemini_defconfig
-sh                          rsk7269_defconfig
-powerpc                       ebony_defconfig
-arc                            hsdk_defconfig
-arm                       versatile_defconfig
-arm                        cerfcube_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                      chrp32_defconfig
-sh                          sdk7786_defconfig
-arm                       cns3420vb_defconfig
-um                               alldefconfig
-arm                          lpd270_defconfig
-sh                         microdev_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                       spear13xx_defconfig
-ia64                             alldefconfig
-arm                           sama5_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                     cu1000-neo_defconfig
-arm                           u8500_defconfig
-sh                           se7343_defconfig
-mips                           ip32_defconfig
-sh                        sh7763rdp_defconfig
-csky                             alldefconfig
-powerpc                     kmeter1_defconfig
-powerpc                  iss476-smp_defconfig
-arc                          axs101_defconfig
-mips                     decstation_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                         mv78xx0_defconfig
-um                            kunit_defconfig
-arm                       omap2plus_defconfig
-powerpc                 mpc832x_rdb_defconfig
-openrisc                    or1ksim_defconfig
-sh                           se7751_defconfig
-m68k                            mac_defconfig
-mips                   sb1250_swarm_defconfig
-mips                         tb0287_defconfig
-arm                          pcm027_defconfig
-um                             i386_defconfig
-arm                         nhk8815_defconfig
-powerpc                      walnut_defconfig
-powerpc                     rainier_defconfig
-arm                           stm32_defconfig
-powerpc                     mpc83xx_defconfig
-arm                        trizeps4_defconfig
-powerpc                         ps3_defconfig
-arm                    vt8500_v6_v7_defconfig
-nios2                         3c120_defconfig
-arm                            dove_defconfig
-arm                        neponset_defconfig
-arm                      tct_hammer_defconfig
-m68k                        mvme16x_defconfig
-ia64                          tiger_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210421
-x86_64               randconfig-a002-20210421
-x86_64               randconfig-a001-20210421
-x86_64               randconfig-a005-20210421
-x86_64               randconfig-a006-20210421
-x86_64               randconfig-a003-20210421
-i386                 randconfig-a005-20210421
-i386                 randconfig-a002-20210421
-i386                 randconfig-a001-20210421
-i386                 randconfig-a006-20210421
-i386                 randconfig-a004-20210421
-i386                 randconfig-a003-20210421
-x86_64               randconfig-a015-20210422
-x86_64               randconfig-a016-20210422
-x86_64               randconfig-a011-20210422
-x86_64               randconfig-a014-20210422
-x86_64               randconfig-a012-20210422
-x86_64               randconfig-a013-20210422
-i386                 randconfig-a012-20210421
-i386                 randconfig-a014-20210421
-i386                 randconfig-a011-20210421
-i386                 randconfig-a013-20210421
-i386                 randconfig-a015-20210421
-i386                 randconfig-a016-20210421
-i386                 randconfig-a014-20210423
-i386                 randconfig-a012-20210423
-i386                 randconfig-a011-20210423
-i386                 randconfig-a013-20210423
-i386                 randconfig-a015-20210423
-i386                 randconfig-a016-20210423
-i386                 randconfig-a014-20210422
-i386                 randconfig-a012-20210422
-i386                 randconfig-a011-20210422
-i386                 randconfig-a013-20210422
-i386                 randconfig-a015-20210422
-i386                 randconfig-a016-20210422
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-clang tested configs:
-x86_64               randconfig-a015-20210421
-x86_64               randconfig-a016-20210421
-x86_64               randconfig-a011-20210421
-x86_64               randconfig-a014-20210421
-x86_64               randconfig-a013-20210421
-x86_64               randconfig-a012-20210421
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks!
