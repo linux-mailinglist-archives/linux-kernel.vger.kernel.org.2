@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E922369552
+	by mail.lfdr.de (Postfix) with ESMTP id BACB4369553
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 16:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242882AbhDWPAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 11:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
+        id S243192AbhDWPAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 11:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242976AbhDWO7r (ORCPT
+        with ESMTP id S242999AbhDWO7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:59:47 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BB5C061342
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:09 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id y5-20020a05600c3645b0290132b13aaa3bso1397225wmq.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:09 -0700 (PDT)
+        Fri, 23 Apr 2021 10:59:48 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52056C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:11 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id d200-20020a1c1dd10000b02901384767d4a5so1397337wmd.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 07:59:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QIhM6s/LWPN2qislBbfeytQsgbBH4Yl1FLgMdln/Wyk=;
-        b=VfJCj2XLKuVfXxtTq48RozVh2migmubmaT4M9Z7L87La9d9X+DIxWIKTc2GZk8Yvsx
-         hgSRdxtyYXBOugZo/o5D3k9ll/cB7nhSZtsDEqbcflEbl1LjQjnKlOgb707mDfG0Twn9
-         XnVvB0TpzBSvVJRIGTyc/Y498JfCX48zr83KJO8C9ock7jCGHSz2ATgihLNxCTj7/hKK
-         u+h/ppPrt0wY7yHq6UJ1GSJkNwc3wtDIuNACsXUtImBf/IJ102A6v4ndsRe9sNJRFcU/
-         XxOrzhTeuPVE1qYDMgofT2NptWTLVwvcxyKIYr8wVzF+sWPFeDMEAhcTJg6+Pa2r6ROa
-         RXwQ==
+        bh=3ASz4YhECpEaBfGtt4tRNIDu5bRVVnAa9AjlX4YDm8o=;
+        b=j8ixrypmhFUbl3uQWnYCR/9g08NrSdnaS9mMtRmwJStnJ13S6tWfZZtTih/HCY/qns
+         3RraMknghvBTfesK+aXVebpkG1MmSyFpUNlWNnE4byqK6icef0z/hNoLNOZmiRkz+Arw
+         Vmz2O07Nfgg8S47OjhjUGoDYi3lMFDcmun6Z1Hmro7f/fOQZWWxrXgPShwMH9c2JWVHG
+         3mmCqTQ/8OU5gq4r9s46ZpUPuoN9ZgBsybt8ANFfhzODRsUVJwmWZ+8k+0Py1cJ8E8vh
+         10R3Sv50++/y30PEVp5FmAQHbQtO98OVfMl+AnHBgh6QVJOxa4bl5QfQ8kRjnES53p6I
+         RzrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QIhM6s/LWPN2qislBbfeytQsgbBH4Yl1FLgMdln/Wyk=;
-        b=LmmO7AFjitDRZSmH8yOOA1lvBWcgdQfxPw291XEF+lbvMe94Z6dO3RSEn+lB53PK1z
-         C+JG64OKAKWHI+BMDoSau0UwMDP/zUrO6QK/QmtnVcEwsFbI5nhlPZW4r10Hvx3wRvGS
-         axswGwPNil9ybpchb8xkF1Gohd6Gafw+hP8OJGLS2e1ZiPqShfBSF8mVtqCCQEgy6/an
-         tQUF8Al/NVdHy5ME3emB0UJSMDTgg508NkIwuUkTLnaPgKhs564MEkzKinA4RRhfOm3E
-         xRfANs33zVJCud42ToxCIE3939GMzPvAS2Wg8KS88guLSf8TRPtWyZHQs2RXTN1IkW8I
-         MoOA==
-X-Gm-Message-State: AOAM533HV2++SBnMPqrGx0lbmxadFNZ7G6s6w9HYZ1ByvXd7XqhXVGig
-        OPM+gfllxKx1zrlLls97PuG2+vlYWv8=
-X-Google-Smtp-Source: ABdhPJyYU2BCZASSxPu1vWnh5TDwhXqqYuk9Rnsj2LLd4E0bjifmT70iKNT8GYAVL7JFy9tD1FZHXQ==
-X-Received: by 2002:a05:600c:4ecc:: with SMTP id g12mr4645262wmq.117.1619189948314;
-        Fri, 23 Apr 2021 07:59:08 -0700 (PDT)
+        bh=3ASz4YhECpEaBfGtt4tRNIDu5bRVVnAa9AjlX4YDm8o=;
+        b=kfmB5Cv30+d49hN5CxGmeYwOumX8plaR/3gqpb6nDA7/XkKuOC1u1u3j8bb44DrWM6
+         UdbEapE3Adk9nk+0rRl/iatHK5dMuKmygKiYj30QPPS/KSOTBGs3dTjP5hxRh0Q2Esdb
+         scsFmVlXjGt6bT8BIMB5pRCqKOs3MEm9vFYf3O4SGcunkSJhXhXy+9ubm6sAK8tph9Ge
+         FyXMXtpyYUtgZfI8aMBICgQxtfevTQcrLY73uoj2nN9iQvM/P1cziW5VLKNjkl/5kM+d
+         YckfVGKv2LHRcnEjuLHJ1nn0m04n89sqamFJIxhct4TkGoaOng0voEjbq79h3OFXVq/A
+         e5LQ==
+X-Gm-Message-State: AOAM532/Z/tjoECDsHeyRcUSp6aiZMJclYySAUwJnxjEMx7gj0jRoP53
+        MCefb704BtYl9jmvZ6DaXcESSRq4ZIA=
+X-Google-Smtp-Source: ABdhPJyd7QIqAGfJX0cCaDqlP6IdYLJjfiP/T9LLNsQzPfV8S9k+EK4I7a84K7AcxyoNeZ/UHt6jhQ==
+X-Received: by 2002:a05:600c:3544:: with SMTP id i4mr4601542wmq.38.1619189949941;
+        Fri, 23 Apr 2021 07:59:09 -0700 (PDT)
 Received: from agape ([5.171.72.99])
-        by smtp.gmail.com with ESMTPSA id a72sm8047458wme.29.2021.04.23.07.59.07
+        by smtp.gmail.com with ESMTPSA id b12sm37942782wmj.1.2021.04.23.07.59.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 07:59:07 -0700 (PDT)
+        Fri, 23 Apr 2021 07:59:09 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 16/49] staging: rtl8723bs: remove debug macros related to os_dep/recv_linux.c tracing
-Date:   Fri, 23 Apr 2021 16:58:07 +0200
-Message-Id: <a27648c924ed5bb6c6d05cf2e9e2ebaecb97b848.1619189489.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 17/49] staging: rtl8723bs: remove debug macros related to core/rtw_mlme.c tracing
+Date:   Fri, 23 Apr 2021 16:58:08 +0200
+Message-Id: <dcb7fe18b687fe809cf77265046ab85789c3e019.1619189489.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1619189489.git.fabioaiuto83@gmail.com>
 References: <cover.1619189489.git.fabioaiuto83@gmail.com>
@@ -63,51 +63,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove debug macros definitions related to os_dep/recv_linux.c
+remove debug macro definitions related to core/rtw_mlme.c
 obsolete tracing.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     | 2 --
  drivers/staging/rtl8723bs/include/rtw_debug.h | 5 +----
- drivers/staging/rtl8723bs/os_dep/recv_linux.c | 2 --
  2 files changed, 1 insertion(+), 6 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+index 4707dba90397..569943a09848 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+@@ -4,8 +4,6 @@
+  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+  *
+  ******************************************************************************/
+-#define _RTW_MLME_C_
+-
+ #include <linux/etherdevice.h>
+ #include <drv_types.h>
+ #include <rtw_debug.h>
 diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index 422d6bcfcc6f..d04f116bc9a4 100644
+index d04f116bc9a4..01d723268254 100644
 --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
 +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
 @@ -7,7 +7,6 @@
  #ifndef __RTW_DEBUG_H__
  #define __RTW_DEBUG_H__
  
--#define _module_recv_osdep_c_		BIT(3)
- #define _module_rtl871x_mlme_c_		BIT(4)
+-#define _module_rtl871x_mlme_c_		BIT(4)
  #define _module_mlme_osdep_c_		BIT(5)
  #define _module_rtl871x_sta_mgt_c_		BIT(6)
-@@ -40,9 +39,7 @@
+ #define _module_rtl871x_cmd_c_			BIT(7)
+@@ -39,9 +38,7 @@
  
  #undef _MODULE_DEFINE_
  
--#if defined _RECV_OSDEP_C_
--	#define _MODULE_DEFINE_	_module_recv_osdep_c_
--#elif defined _RTW_MLME_C_
-+#if defined _RTW_MLME_C_
- 	#define _MODULE_DEFINE_	_module_rtl871x_mlme_c_
- #elif defined _MLME_OSDEP_C_
+-#if defined _RTW_MLME_C_
+-	#define _MODULE_DEFINE_	_module_rtl871x_mlme_c_
+-#elif defined _MLME_OSDEP_C_
++#if defined _MLME_OSDEP_C_
  	#define _MODULE_DEFINE_	_module_mlme_osdep_c_
-diff --git a/drivers/staging/rtl8723bs/os_dep/recv_linux.c b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-index cd51430d4618..88a69c7ca8f2 100644
---- a/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/recv_linux.c
-@@ -4,8 +4,6 @@
-  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
-  *
-  ******************************************************************************/
--#define _RECV_OSDEP_C_
--
- #include <drv_types.h>
- #include <rtw_debug.h>
- #include <linux/jiffies.h>
+ #elif defined _RTW_MLME_EXT_C_
+ 	#define _MODULE_DEFINE_ 1
 -- 
 2.20.1
 
