@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BFC3697AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D623697B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 19:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243285AbhDWRAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 13:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
+        id S243488AbhDWRAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 13:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243306AbhDWRAZ (ORCPT
+        with ESMTP id S243307AbhDWRAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Apr 2021 13:00:25 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D810C06138C
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:47 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e2so21197008plh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:47 -0700 (PDT)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCE9C061348
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:48 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id v13so11921776ple.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PWSTk8yjg8c/25DOgu081XQS3tOSDuzAXjHB+ct/NxQ=;
-        b=N29k47+cjV+TNWpPVYMflFNf2uGyR+2NC30H/ixMKHLiWu+nyWoke9hNvE5lEOAHA9
-         9cPbbigqGvYOC7tcPiOxdGfDlunl/1V1Jos/fWqqlvF8XCYHdTgFG2IjIiKr1g+i8mo0
-         2BB4NjUQfvJwilJeFrHhxB3qJClCjuUNy3zII=
+        bh=18NetlXwajgnpGQtVunxvSsH/vFYq/mVRN14SJhebag=;
+        b=Ck7dXMTbcXqeGgybSMoVJO8he10e+uD3PDZhu711leqKrmLBpUQUXHTfjVUNGYvep7
+         wBw9BaFyMxvm+8ABL/EHL06v2KrcsvmFeZig4SsNT9h3vPzTc5qxpJgd5q6+fB1Xb3kK
+         l0QMDHopNz0pzurKAeArFflw0HhvXrjUQQBEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PWSTk8yjg8c/25DOgu081XQS3tOSDuzAXjHB+ct/NxQ=;
-        b=Uj37TALoZwlhdC39Qo+Vi7d3zBmGLVVOevnvck3wiuymD/aet8iAZedUHiowHE/CW8
-         zVL3tMd4RypXZrmXe64SFaVHYtahekI8Vx/5k2+T524Tt1A/2qcTStI5vlOCY6G7VC8d
-         OpTz5JBE7DQE4kQt+o5xFxfybk2Lrjg59Indzycfb8EU113uzeUYxaAyjRG2m4XRPdwd
-         mMp83NGspTnsfeh8Oge+QzXUkJ+I4B0Iaqi4ZiSoIqCIzEuFHMFyVNt7hjeN/VIN3Cgm
-         +hmvNHg9qcOjHmxEvvIDXAdSgcL6XzvJwdm3DhlIbs11lLOGrsuhAHUNb/dBtb18FMcT
-         ZNyA==
-X-Gm-Message-State: AOAM532rEmgXnN0ARM4SIQ4ekjQHbvEnRRtFTHZg5mvhp0lKSB78+dVw
-        fMbzzSJgk0epZC0Ppc3Q6UqE1Q==
-X-Google-Smtp-Source: ABdhPJwO0k3uruj4cWw+nLQcqrGKZkyz0aXhJ9udAibha281Xy9iWM1aDlUx1M8xnJ35es7+zxrvbw==
-X-Received: by 2002:a17:902:361:b029:e9:8392:7abd with SMTP id 88-20020a1709020361b02900e983927abdmr4692725pld.8.1619197186901;
-        Fri, 23 Apr 2021 09:59:46 -0700 (PDT)
+        bh=18NetlXwajgnpGQtVunxvSsH/vFYq/mVRN14SJhebag=;
+        b=PjkGVuvfFVY86fsQtgDYIrAsI6/A/0lOamnS6+4I+ylcBSFOtbi0W1j74Z7rrYSLlA
+         vwiUl9828Mv1ieknQmHxcafTaPSFAY/rg7oNTRBJcBG/F47yOEQ33UITjtva0FiOmjhI
+         zgUy3O96U8hMWWlc9BxgRdHwA1oYmhVSML579qt6w6hW3UJOYww1SkcYQGK+X1yD2dOk
+         ePWO5Ji6uCYfSHbGqEa0D2eRzKfI6OSE27AfR7UoCd9F7CaKmhlNQhKDUoVMkk5C6bvR
+         XWP50AiMs5sweLLAed5R8Yd4o6NWgQhZh44LZ1nnsBpgyl4ERYAGscVHxfzWFuKH1sxJ
+         Jxqw==
+X-Gm-Message-State: AOAM530IQNcIk/OTH+Wux5Sl1UXzfemAL4K/2C8HtJP9qrX9pnLvCQuM
+        cEn4+tDAhSK1RZYi6/F1IMZ6uw==
+X-Google-Smtp-Source: ABdhPJwN39XHiMoFkDUGK/jYMlHhuJ0OnCKc4g/vY5QfA/Nq2SW/ZbIYpEoQf3oJgDhOndPFkJpK4Q==
+X-Received: by 2002:a17:90a:540b:: with SMTP id z11mr5459263pjh.133.1619197187959;
+        Fri, 23 Apr 2021 09:59:47 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:6d86:663d:71f8:6a11])
-        by smtp.gmail.com with ESMTPSA id v8sm5123607pfm.128.2021.04.23.09.59.45
+        by smtp.gmail.com with ESMTPSA id v8sm5123607pfm.128.2021.04.23.09.59.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 09:59:46 -0700 (PDT)
+        Fri, 23 Apr 2021 09:59:47 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -66,9 +66,9 @@ Cc:     linux-arm-msm@vger.kernel.org, robdclark@chromium.org,
         David Airlie <airlied@linux.ie>,
         Robert Foss <robert.foss@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 06/20] drm/bridge: ti-sn65dsi86: Add local var for "dev" to simplify probe
-Date:   Fri, 23 Apr 2021 09:58:52 -0700
-Message-Id: <20210423095743.v5.6.I83925d8ca228bdc5f55b17854c90754efc6a470e@changeid>
+Subject: [PATCH v5 07/20] drm/bridge: ti-sn65dsi86: Cleanup managing of drvdata
+Date:   Fri, 23 Apr 2021 09:58:53 -0700
+Message-Id: <20210423095743.v5.7.If5d4d4e22e97bebcd493b76765c1759527705620@changeid>
 X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 In-Reply-To: <20210423165906.2504169-1-dianders@chromium.org>
 References: <20210423165906.2504169-1-dianders@chromium.org>
@@ -78,108 +78,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tiny cleanup for probe so we don't keep having to specify
-"&client->dev" or "pdata->dev". No functional changes intended.
+Let's:
+- Set the drvdata as soon as it's allocated. This just sets up a
+  pointer so there's no downside here.
+- Remove the useless call to i2c_set_clientdata() which is literally
+  the same thing as dev_set_drvdata().
+
+No functional changes intended.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
 
-Changes in v5:
-- Rebased atop the pm_runtime patch, which got reordered.
+(no changes since v1)
 
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 8aa36074aab9..c868193f5b8f 100644
+index c868193f5b8f..75a41198993f 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -1232,6 +1232,7 @@ static void ti_sn65dsi86_runtime_disable(void *data)
- static int ti_sn65dsi86_probe(struct i2c_client *client,
- 			      const struct i2c_device_id *id)
- {
-+	struct device *dev = &client->dev;
- 	struct ti_sn65dsi86 *pdata;
- 	int ret;
- 
-@@ -1240,8 +1241,7 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
- 		return -ENODEV;
- 	}
- 
--	pdata = devm_kzalloc(&client->dev, sizeof(struct ti_sn65dsi86),
--			     GFP_KERNEL);
-+	pdata = devm_kzalloc(dev, sizeof(struct ti_sn65dsi86), GFP_KERNEL);
+@@ -1244,6 +1244,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+ 	pdata = devm_kzalloc(dev, sizeof(struct ti_sn65dsi86), GFP_KERNEL);
  	if (!pdata)
  		return -ENOMEM;
++	dev_set_drvdata(dev, pdata);
++	pdata->dev = dev;
  
-@@ -1252,26 +1252,24 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+ 	pdata->regmap = devm_regmap_init_i2c(client,
+ 					     &ti_sn65dsi86_regmap_config);
+@@ -1252,16 +1254,12 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
  		return PTR_ERR(pdata->regmap);
  	}
  
--	pdata->dev = &client->dev;
-+	pdata->dev = dev;
- 
--	ret = drm_of_find_panel_or_bridge(pdata->dev->of_node, 1, 0,
--					  &pdata->panel, NULL);
-+	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &pdata->panel, NULL);
+-	pdata->dev = dev;
+-
+ 	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &pdata->panel, NULL);
  	if (ret) {
  		DRM_ERROR("could not find any panel node\n");
  		return ret;
  	}
  
--	dev_set_drvdata(&client->dev, pdata);
-+	dev_set_drvdata(dev, pdata);
- 
--	pdata->enable_gpio = devm_gpiod_get(pdata->dev, "enable",
--					    GPIOD_OUT_LOW);
-+	pdata->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+-	dev_set_drvdata(dev, pdata);
+-
+ 	pdata->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
  	if (IS_ERR(pdata->enable_gpio)) {
  		DRM_ERROR("failed to get enable gpio from DT\n");
- 		ret = PTR_ERR(pdata->enable_gpio);
- 		return ret;
- 	}
- 
--	ti_sn_bridge_parse_lanes(pdata, client->dev.of_node);
-+	ti_sn_bridge_parse_lanes(pdata, dev->of_node);
- 
- 	ret = ti_sn65dsi86_parse_regulators(pdata);
- 	if (ret) {
-@@ -1279,7 +1277,7 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
- 		return ret;
- 	}
- 
--	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
-+	pdata->refclk = devm_clk_get_optional(dev, "refclk");
- 	if (IS_ERR(pdata->refclk))
- 		return PTR_ERR(pdata->refclk);
- 
-@@ -1287,8 +1285,8 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
+@@ -1294,8 +1292,6 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
  	if (ret)
  		return ret;
  
--	pm_runtime_enable(pdata->dev);
--	ret = devm_add_action_or_reset(pdata->dev, ti_sn65dsi86_runtime_disable, pdata->dev);
-+	pm_runtime_enable(dev);
-+	ret = devm_add_action_or_reset(dev, ti_sn65dsi86_runtime_disable, dev);
- 	if (ret)
- 		return ret;
- 
-@@ -1299,12 +1297,12 @@ static int ti_sn65dsi86_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, pdata);
- 
+-	i2c_set_clientdata(client, pdata);
+-
  	pdata->aux.name = "ti-sn65dsi86-aux";
--	pdata->aux.dev = pdata->dev;
-+	pdata->aux.dev = dev;
+ 	pdata->aux.dev = dev;
  	pdata->aux.transfer = ti_sn_aux_transfer;
- 	drm_dp_aux_init(&pdata->aux);
- 
- 	pdata->bridge.funcs = &ti_sn_bridge_funcs;
--	pdata->bridge.of_node = client->dev.of_node;
-+	pdata->bridge.of_node = dev->of_node;
- 
- 	drm_bridge_add(&pdata->bridge);
- 
 -- 
 2.31.1.498.g6c1eba8ee3d-goog
 
