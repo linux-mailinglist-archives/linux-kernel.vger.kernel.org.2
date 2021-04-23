@@ -2,611 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515DB36936F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8A4369379
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 15:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242784AbhDWNcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 09:32:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243091AbhDWNcD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 09:32:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619184686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9B1vHJ9NTPIU2lMPTPyoi9+R6pB3SqLDxaY8MhSV7FM=;
-        b=SQQIn5GPS0SHMUzwrE0DhZf0xmWxn2G/uNFhAAaNX1mUwCMr2WjoFB11lWcIs7QoPuLkRB
-        lB5B4FkFt9nkLfYVFFjTEAxE7c4qYRC+zrTXCX3cWlpqNysE/Hp7Oa1UXrcRu9tEoINtne
-        xtccV8SP0VGxNh0m0E91zwj5/UPUpZA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-zgfvv0nzPqGOm9na6PLY4Q-1; Fri, 23 Apr 2021 09:31:24 -0400
-X-MC-Unique: zgfvv0nzPqGOm9na6PLY4Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD63618BE166;
-        Fri, 23 Apr 2021 13:31:21 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-124.rdu2.redhat.com [10.10.112.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 27B3E60C13;
-        Fri, 23 Apr 2021 13:31:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v7 15/31] netfs: Define an interface to talk to a cache
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Dave Wysochanski <dwysocha@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        dhowells@redhat.com,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Fri, 23 Apr 2021 14:31:06 +0100
-Message-ID: <161918466635.3145707.1724702987175928422.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
-References: <161918446704.3145707.14418606303992174310.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S242718AbhDWNdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 09:33:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:34898 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231220AbhDWNcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 09:32:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DBFB1396;
+        Fri, 23 Apr 2021 06:31:31 -0700 (PDT)
+Received: from [10.57.62.63] (unknown [10.57.62.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B58A3F73B;
+        Fri, 23 Apr 2021 06:31:22 -0700 (PDT)
+Subject: Re: [PATCH v5 08/16] swiotlb: Update is_swiotlb_active to add a
+ struct device argument
+To:     Claire Chang <tientzu@chromium.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, nouveau@lists.freedesktop.org,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+References: <20210422081508.3942748-1-tientzu@chromium.org>
+ <20210422081508.3942748-9-tientzu@chromium.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1f84aa4c-f966-0986-b5a4-eecbf3b454ec@arm.com>
+Date:   Fri, 23 Apr 2021 14:31:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210422081508.3942748-9-tientzu@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an interface to the netfs helper library for reading data from the
-cache instead of downloading it from the server and support for writing
-data just downloaded or cleared to the cache.
+On 2021-04-22 09:15, Claire Chang wrote:
+> Update is_swiotlb_active to add a struct device argument. This will be
+> useful later to allow for restricted DMA pool.
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>   drivers/gpu/drm/i915/gem/i915_gem_internal.c | 2 +-
+>   drivers/gpu/drm/nouveau/nouveau_ttm.c        | 2 +-
+>   drivers/pci/xen-pcifront.c                   | 2 +-
+>   include/linux/swiotlb.h                      | 4 ++--
+>   kernel/dma/direct.c                          | 2 +-
+>   kernel/dma/swiotlb.c                         | 4 ++--
+>   6 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_internal.c b/drivers/gpu/drm/i915/gem/i915_gem_internal.c
+> index ce6b664b10aa..7d48c433446b 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_internal.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_internal.c
+> @@ -42,7 +42,7 @@ static int i915_gem_object_get_pages_internal(struct drm_i915_gem_object *obj)
+>   
+>   	max_order = MAX_ORDER;
+>   #ifdef CONFIG_SWIOTLB
+> -	if (is_swiotlb_active()) {
+> +	if (is_swiotlb_active(NULL)) {
+>   		unsigned int max_segment;
+>   
+>   		max_segment = swiotlb_max_segment();
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_ttm.c b/drivers/gpu/drm/nouveau/nouveau_ttm.c
+> index e8b506a6685b..2a2ae6d6cf6d 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_ttm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_ttm.c
+> @@ -321,7 +321,7 @@ nouveau_ttm_init(struct nouveau_drm *drm)
+>   	}
+>   
+>   #if IS_ENABLED(CONFIG_SWIOTLB) && IS_ENABLED(CONFIG_X86)
+> -	need_swiotlb = is_swiotlb_active();
+> +	need_swiotlb = is_swiotlb_active(NULL);
+>   #endif
+>   
+>   	ret = ttm_device_init(&drm->ttm.bdev, &nouveau_bo_driver, drm->dev->dev,
+> diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+> index b7a8f3a1921f..6d548ce53ce7 100644
+> --- a/drivers/pci/xen-pcifront.c
+> +++ b/drivers/pci/xen-pcifront.c
+> @@ -693,7 +693,7 @@ static int pcifront_connect_and_init_dma(struct pcifront_device *pdev)
+>   
+>   	spin_unlock(&pcifront_dev_lock);
+>   
+> -	if (!err && !is_swiotlb_active()) {
+> +	if (!err && !is_swiotlb_active(NULL)) {
+>   		err = pci_xen_swiotlb_init_late();
+>   		if (err)
+>   			dev_err(&pdev->xdev->dev, "Could not setup SWIOTLB!\n");
+> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> index 2a6cca07540b..c530c976d18b 100644
+> --- a/include/linux/swiotlb.h
+> +++ b/include/linux/swiotlb.h
+> @@ -123,7 +123,7 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>   void __init swiotlb_exit(void);
+>   unsigned int swiotlb_max_segment(void);
+>   size_t swiotlb_max_mapping_size(struct device *dev);
+> -bool is_swiotlb_active(void);
+> +bool is_swiotlb_active(struct device *dev);
+>   void __init swiotlb_adjust_size(unsigned long size);
+>   #else
+>   #define swiotlb_force SWIOTLB_NO_FORCE
+> @@ -143,7 +143,7 @@ static inline size_t swiotlb_max_mapping_size(struct device *dev)
+>   	return SIZE_MAX;
+>   }
+>   
+> -static inline bool is_swiotlb_active(void)
+> +static inline bool is_swiotlb_active(struct device *dev)
+>   {
+>   	return false;
+>   }
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 84c9feb5474a..7a88c34d0867 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -495,7 +495,7 @@ int dma_direct_supported(struct device *dev, u64 mask)
+>   size_t dma_direct_max_mapping_size(struct device *dev)
+>   {
+>   	/* If SWIOTLB is active, use its maximum mapping size */
+> -	if (is_swiotlb_active() &&
+> +	if (is_swiotlb_active(dev) &&
+>   	    (dma_addressing_limited(dev) || swiotlb_force == SWIOTLB_FORCE))
 
-The API passes an iov_iter to the cache read/write routines to indicate the
-data/buffer to be used.  This is done using the ITER_XARRAY type to provide
-direct access to the netfs inode's pagecache.
+I wonder if it's worth trying to fold these other conditions into 
+is_swiotlb_active() itself? I'm not entirely sure what matters for Xen, 
+but for the other cases it seems like they probably only care about 
+whether bouncing may occur for their particular device or not (possibly 
+they want to be using dma_max_mapping_size() now anyway - TBH I'm 
+struggling to make sense of what the swiotlb_max_segment business is 
+supposed to mean).
 
-When the netfs's ->begin_cache_operation() method is called, this must fill
-in the cache_resources in the netfs_read_request struct, including the
-netfs_cache_ops used by the helper lib to talk to the cache.  The helper
-lib does not directly access the cache.
+Otherwise, patch #9 will need to touch here as well to make sure that 
+per-device forced bouncing is reflected correctly.
 
-Changes:
-v6:
-- Call trace_netfs_read() after beginning the cache op so that the cookie
-  debug ID can be logged[3].
-- Don't record the error from writing to the cache.  We don't want to pass
-  it back to the netfs[4].
-- Fix copy-to-cache subreq amalgamation to not round up as it goes along
-  otherwise it overcalculates the length of the write[5].
+Robin.
 
-v5:
-- Use end_page_fscache() rather than unlock_page_fscache()[2].
-
-v4:
-- Added flag to netfs_subreq_terminated() to indicate that the caller may
-  have been running async and stuff that might sleep needs punting to a
-  workqueue (can't use in_softirq()[1]).
-- Add missing inc of netfs_n_rh_read stat.
-- Move initial definition of fscache_begin_read_operation() elsewhere.
-- Need to call op->begin_cache_operation() from netfs_write_begin().
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-and-tested-by: Jeff Layton <jlayton@kernel.org>
-Tested-by: Dave Wysochanski <dwysocha@redhat.com>
-Tested-By: Marc Dionne <marc.dionne@auristor.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/20210216084230.GA23669@lst.de/ [1]
-Link: https://lore.kernel.org/r/2499407.1616505440@warthog.procyon.org.uk/ [2]
-Link: https://lore.kernel.org/r/161781045123.463527.14533348855710902201.stgit@warthog.procyon.org.uk/ [3]
-Link: https://lore.kernel.org/r/161781046256.463527.18158681600085556192.stgit@warthog.procyon.org.uk/ [4]
-Link: https://lore.kernel.org/r/161781047695.463527.7463536103593997492.stgit@warthog.procyon.org.uk/ [5]
-Link: https://lore.kernel.org/r/161118141321.1232039.8296910406755622458.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161036700.2537118.11170748455436854978.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340399569.1303470.1138884774643385730.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539542874.286939.13337898213448136687.stgit@warthog.procyon.org.uk/ # v4
-Link: https://lore.kernel.org/r/161653799826.2770958.9015430297426331950.stgit@warthog.procyon.org.uk/ # v5
-Link: https://lore.kernel.org/r/161789081462.6155.3853904866933313256.stgit@warthog.procyon.org.uk/ # v6
----
-
- fs/netfs/read_helper.c       |  239 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/netfs.h        |   55 ++++++++++
- include/trace/events/netfs.h |    2 
- 3 files changed, 295 insertions(+), 1 deletion(-)
-
-diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
-index da34aedea053..cd3b61d5e192 100644
---- a/fs/netfs/read_helper.c
-+++ b/fs/netfs/read_helper.c
-@@ -88,6 +88,8 @@ static void netfs_free_read_request(struct work_struct *work)
- 	if (rreq->netfs_priv)
- 		rreq->netfs_ops->cleanup(rreq->mapping, rreq->netfs_priv);
- 	trace_netfs_rreq(rreq, netfs_rreq_trace_free);
-+	if (rreq->cache_resources.ops)
-+		rreq->cache_resources.ops->end_operation(&rreq->cache_resources);
- 	kfree(rreq);
- 	netfs_stat_d(&netfs_n_rh_rreq);
- }
-@@ -154,6 +156,34 @@ static void netfs_clear_unread(struct netfs_read_subrequest *subreq)
- 	iov_iter_zero(iov_iter_count(&iter), &iter);
- }
- 
-+static void netfs_cache_read_terminated(void *priv, ssize_t transferred_or_error,
-+					bool was_async)
-+{
-+	struct netfs_read_subrequest *subreq = priv;
-+
-+	netfs_subreq_terminated(subreq, transferred_or_error, was_async);
-+}
-+
-+/*
-+ * Issue a read against the cache.
-+ * - Eats the caller's ref on subreq.
-+ */
-+static void netfs_read_from_cache(struct netfs_read_request *rreq,
-+				  struct netfs_read_subrequest *subreq,
-+				  bool seek_data)
-+{
-+	struct netfs_cache_resources *cres = &rreq->cache_resources;
-+	struct iov_iter iter;
-+
-+	netfs_stat(&netfs_n_rh_read);
-+	iov_iter_xarray(&iter, READ, &rreq->mapping->i_pages,
-+			subreq->start + subreq->transferred,
-+			subreq->len   - subreq->transferred);
-+
-+	cres->ops->read(cres, subreq->start, &iter, seek_data,
-+			netfs_cache_read_terminated, subreq);
-+}
-+
- /*
-  * Fill a subrequest region with zeroes.
-  */
-@@ -198,6 +228,141 @@ static void netfs_rreq_completed(struct netfs_read_request *rreq, bool was_async
- 	netfs_put_read_request(rreq, was_async);
- }
- 
-+/*
-+ * Deal with the completion of writing the data to the cache.  We have to clear
-+ * the PG_fscache bits on the pages involved and release the caller's ref.
-+ *
-+ * May be called in softirq mode and we inherit a ref from the caller.
-+ */
-+static void netfs_rreq_unmark_after_write(struct netfs_read_request *rreq,
-+					  bool was_async)
-+{
-+	struct netfs_read_subrequest *subreq;
-+	struct page *page;
-+	pgoff_t unlocked = 0;
-+	bool have_unlocked = false;
-+
-+	rcu_read_lock();
-+
-+	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
-+		XA_STATE(xas, &rreq->mapping->i_pages, subreq->start / PAGE_SIZE);
-+
-+		xas_for_each(&xas, page, (subreq->start + subreq->len - 1) / PAGE_SIZE) {
-+			/* We might have multiple writes from the same huge
-+			 * page, but we mustn't unlock a page more than once.
-+			 */
-+			if (have_unlocked && page->index <= unlocked)
-+				continue;
-+			unlocked = page->index;
-+			end_page_fscache(page);
-+			have_unlocked = true;
-+		}
-+	}
-+
-+	rcu_read_unlock();
-+	netfs_rreq_completed(rreq, was_async);
-+}
-+
-+static void netfs_rreq_copy_terminated(void *priv, ssize_t transferred_or_error,
-+				       bool was_async)
-+{
-+	struct netfs_read_subrequest *subreq = priv;
-+	struct netfs_read_request *rreq = subreq->rreq;
-+
-+	if (IS_ERR_VALUE(transferred_or_error)) {
-+		netfs_stat(&netfs_n_rh_write_failed);
-+	} else {
-+		netfs_stat(&netfs_n_rh_write_done);
-+	}
-+
-+	trace_netfs_sreq(subreq, netfs_sreq_trace_write_term);
-+
-+	/* If we decrement nr_wr_ops to 0, the ref belongs to us. */
-+	if (atomic_dec_and_test(&rreq->nr_wr_ops))
-+		netfs_rreq_unmark_after_write(rreq, was_async);
-+
-+	netfs_put_subrequest(subreq, was_async);
-+}
-+
-+/*
-+ * Perform any outstanding writes to the cache.  We inherit a ref from the
-+ * caller.
-+ */
-+static void netfs_rreq_do_write_to_cache(struct netfs_read_request *rreq)
-+{
-+	struct netfs_cache_resources *cres = &rreq->cache_resources;
-+	struct netfs_read_subrequest *subreq, *next, *p;
-+	struct iov_iter iter;
-+	int ret;
-+
-+	trace_netfs_rreq(rreq, netfs_rreq_trace_write);
-+
-+	/* We don't want terminating writes trying to wake us up whilst we're
-+	 * still going through the list.
-+	 */
-+	atomic_inc(&rreq->nr_wr_ops);
-+
-+	list_for_each_entry_safe(subreq, p, &rreq->subrequests, rreq_link) {
-+		if (!test_bit(NETFS_SREQ_WRITE_TO_CACHE, &subreq->flags)) {
-+			list_del_init(&subreq->rreq_link);
-+			netfs_put_subrequest(subreq, false);
-+		}
-+	}
-+
-+	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
-+		/* Amalgamate adjacent writes */
-+		while (!list_is_last(&subreq->rreq_link, &rreq->subrequests)) {
-+			next = list_next_entry(subreq, rreq_link);
-+			if (next->start != subreq->start + subreq->len)
-+				break;
-+			subreq->len += next->len;
-+			list_del_init(&next->rreq_link);
-+			netfs_put_subrequest(next, false);
-+		}
-+
-+		ret = cres->ops->prepare_write(cres, &subreq->start, &subreq->len,
-+					       rreq->i_size);
-+		if (ret < 0) {
-+			trace_netfs_sreq(subreq, netfs_sreq_trace_write_skip);
-+			continue;
-+		}
-+
-+		iov_iter_xarray(&iter, WRITE, &rreq->mapping->i_pages,
-+				subreq->start, subreq->len);
-+
-+		atomic_inc(&rreq->nr_wr_ops);
-+		netfs_stat(&netfs_n_rh_write);
-+		netfs_get_read_subrequest(subreq);
-+		trace_netfs_sreq(subreq, netfs_sreq_trace_write);
-+		cres->ops->write(cres, subreq->start, &iter,
-+				 netfs_rreq_copy_terminated, subreq);
-+	}
-+
-+	/* If we decrement nr_wr_ops to 0, the usage ref belongs to us. */
-+	if (atomic_dec_and_test(&rreq->nr_wr_ops))
-+		netfs_rreq_unmark_after_write(rreq, false);
-+}
-+
-+static void netfs_rreq_write_to_cache_work(struct work_struct *work)
-+{
-+	struct netfs_read_request *rreq =
-+		container_of(work, struct netfs_read_request, work);
-+
-+	netfs_rreq_do_write_to_cache(rreq);
-+}
-+
-+static void netfs_rreq_write_to_cache(struct netfs_read_request *rreq,
-+				      bool was_async)
-+{
-+	if (was_async) {
-+		rreq->work.func = netfs_rreq_write_to_cache_work;
-+		if (!queue_work(system_unbound_wq, &rreq->work))
-+			BUG();
-+	} else {
-+		netfs_rreq_do_write_to_cache(rreq);
-+	}
-+}
-+
- /*
-  * Unlock the pages in a read operation.  We need to set PG_fscache on any
-  * pages we're going to write back before we unlock them.
-@@ -299,7 +464,10 @@ static void netfs_rreq_short_read(struct netfs_read_request *rreq,
- 
- 	netfs_get_read_subrequest(subreq);
- 	atomic_inc(&rreq->nr_rd_ops);
--	netfs_read_from_server(rreq, subreq);
-+	if (subreq->source == NETFS_READ_FROM_CACHE)
-+		netfs_read_from_cache(rreq, subreq, true);
-+	else
-+		netfs_read_from_server(rreq, subreq);
- }
- 
- /*
-@@ -344,6 +512,25 @@ static bool netfs_rreq_perform_resubmissions(struct netfs_read_request *rreq)
- 	return false;
- }
- 
-+/*
-+ * Check to see if the data read is still valid.
-+ */
-+static void netfs_rreq_is_still_valid(struct netfs_read_request *rreq)
-+{
-+	struct netfs_read_subrequest *subreq;
-+
-+	if (!rreq->netfs_ops->is_still_valid ||
-+	    rreq->netfs_ops->is_still_valid(rreq))
-+		return;
-+
-+	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
-+		if (subreq->source == NETFS_READ_FROM_CACHE) {
-+			subreq->error = -ESTALE;
-+			__set_bit(NETFS_RREQ_INCOMPLETE_IO, &rreq->flags);
-+		}
-+	}
-+}
-+
- /*
-  * Assess the state of a read request and decide what to do next.
-  *
-@@ -355,6 +542,8 @@ static void netfs_rreq_assess(struct netfs_read_request *rreq, bool was_async)
- 	trace_netfs_rreq(rreq, netfs_rreq_trace_assess);
- 
- again:
-+	netfs_rreq_is_still_valid(rreq);
-+
- 	if (!test_bit(NETFS_RREQ_FAILED, &rreq->flags) &&
- 	    test_bit(NETFS_RREQ_INCOMPLETE_IO, &rreq->flags)) {
- 		if (netfs_rreq_perform_resubmissions(rreq))
-@@ -367,6 +556,9 @@ static void netfs_rreq_assess(struct netfs_read_request *rreq, bool was_async)
- 	clear_bit_unlock(NETFS_RREQ_IN_PROGRESS, &rreq->flags);
- 	wake_up_bit(&rreq->flags, NETFS_RREQ_IN_PROGRESS);
- 
-+	if (test_bit(NETFS_RREQ_WRITE_TO_CACHE, &rreq->flags))
-+		return netfs_rreq_write_to_cache(rreq, was_async);
-+
- 	netfs_rreq_completed(rreq, was_async);
- }
- 
-@@ -504,7 +696,10 @@ static enum netfs_read_source netfs_cache_prepare_read(struct netfs_read_subrequ
- 						       loff_t i_size)
- {
- 	struct netfs_read_request *rreq = subreq->rreq;
-+	struct netfs_cache_resources *cres = &rreq->cache_resources;
- 
-+	if (cres->ops)
-+		return cres->ops->prepare_read(subreq, i_size);
- 	if (subreq->start >= rreq->i_size)
- 		return NETFS_FILL_WITH_ZEROES;
- 	return NETFS_DOWNLOAD_FROM_SERVER;
-@@ -595,6 +790,9 @@ static bool netfs_rreq_submit_slice(struct netfs_read_request *rreq,
- 	case NETFS_DOWNLOAD_FROM_SERVER:
- 		netfs_read_from_server(rreq, subreq);
- 		break;
-+	case NETFS_READ_FROM_CACHE:
-+		netfs_read_from_cache(rreq, subreq, false);
-+		break;
- 	default:
- 		BUG();
- 	}
-@@ -607,9 +805,23 @@ static bool netfs_rreq_submit_slice(struct netfs_read_request *rreq,
- 	return false;
- }
- 
-+static void netfs_cache_expand_readahead(struct netfs_read_request *rreq,
-+					 loff_t *_start, size_t *_len, loff_t i_size)
-+{
-+	struct netfs_cache_resources *cres = &rreq->cache_resources;
-+
-+	if (cres->ops && cres->ops->expand_readahead)
-+		cres->ops->expand_readahead(cres, _start, _len, i_size);
-+}
-+
- static void netfs_rreq_expand(struct netfs_read_request *rreq,
- 			      struct readahead_control *ractl)
- {
-+	/* Give the cache a chance to change the request parameters.  The
-+	 * resultant request must contain the original region.
-+	 */
-+	netfs_cache_expand_readahead(rreq, &rreq->start, &rreq->len, rreq->i_size);
-+
- 	/* Give the netfs a chance to change the request parameters.  The
- 	 * resultant request must contain the original region.
- 	 */
-@@ -661,6 +873,7 @@ void netfs_readahead(struct readahead_control *ractl,
- 	struct netfs_read_request *rreq;
- 	struct page *page;
- 	unsigned int debug_index = 0;
-+	int ret;
- 
- 	_enter("%lx,%x", readahead_index(ractl), readahead_count(ractl));
- 
-@@ -674,6 +887,12 @@ void netfs_readahead(struct readahead_control *ractl,
- 	rreq->start	= readahead_pos(ractl);
- 	rreq->len	= readahead_length(ractl);
- 
-+	if (ops->begin_cache_operation) {
-+		ret = ops->begin_cache_operation(rreq);
-+		if (ret == -ENOMEM || ret == -EINTR || ret == -ERESTARTSYS)
-+			goto cleanup_free;
-+	}
-+
- 	netfs_stat(&netfs_n_rh_readahead);
- 	trace_netfs_read(rreq, readahead_pos(ractl), readahead_length(ractl),
- 			 netfs_read_trace_readahead);
-@@ -698,6 +917,9 @@ void netfs_readahead(struct readahead_control *ractl,
- 		netfs_rreq_assess(rreq, false);
- 	return;
- 
-+cleanup_free:
-+	netfs_put_read_request(rreq, false);
-+	return;
- cleanup:
- 	if (netfs_priv)
- 		ops->cleanup(ractl->mapping, netfs_priv);
-@@ -744,6 +966,14 @@ int netfs_readpage(struct file *file,
- 	rreq->start	= page_index(page) * PAGE_SIZE;
- 	rreq->len	= thp_size(page);
- 
-+	if (ops->begin_cache_operation) {
-+		ret = ops->begin_cache_operation(rreq);
-+		if (ret == -ENOMEM || ret == -EINTR || ret == -ERESTARTSYS) {
-+			unlock_page(page);
-+			goto out;
-+		}
-+	}
-+
- 	netfs_stat(&netfs_n_rh_readpage);
- 	trace_netfs_read(rreq, rreq->start, rreq->len, netfs_read_trace_readpage);
- 
-@@ -768,6 +998,7 @@ int netfs_readpage(struct file *file,
- 	ret = rreq->error;
- 	if (ret == 0 && rreq->submitted < rreq->len)
- 		ret = -EIO;
-+out:
- 	netfs_put_read_request(rreq, false);
- 	return ret;
- }
-@@ -873,6 +1104,12 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
- 	__set_bit(NETFS_RREQ_NO_UNLOCK_PAGE, &rreq->flags);
- 	netfs_priv = NULL;
- 
-+	if (ops->begin_cache_operation) {
-+		ret = ops->begin_cache_operation(rreq);
-+		if (ret == -ENOMEM || ret == -EINTR || ret == -ERESTARTSYS)
-+			goto error_put;
-+	}
-+
- 	netfs_stat(&netfs_n_rh_write_begin);
- 	trace_netfs_read(rreq, pos, len, netfs_read_trace_write_begin);
- 
-diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index 99659ed9524e..9062adfa2fb9 100644
---- a/include/linux/netfs.h
-+++ b/include/linux/netfs.h
-@@ -92,6 +92,18 @@ enum netfs_read_source {
- 	NETFS_INVALID_READ,
- } __mode(byte);
- 
-+typedef void (*netfs_io_terminated_t)(void *priv, ssize_t transferred_or_error,
-+				      bool was_async);
-+
-+/*
-+ * Resources required to do operations on a cache.
-+ */
-+struct netfs_cache_resources {
-+	const struct netfs_cache_ops	*ops;
-+	void				*cache_priv;
-+	void				*cache_priv2;
-+};
-+
- /*
-  * Descriptor for a single component subrequest.
-  */
-@@ -121,11 +133,13 @@ struct netfs_read_request {
- 	struct work_struct	work;
- 	struct inode		*inode;		/* The file being accessed */
- 	struct address_space	*mapping;	/* The mapping being accessed */
-+	struct netfs_cache_resources cache_resources;
- 	struct list_head	subrequests;	/* Requests to fetch I/O from disk or net */
- 	void			*netfs_priv;	/* Private data for the netfs */
- 	unsigned int		debug_id;
- 	unsigned int		cookie_debug_id;
- 	atomic_t		nr_rd_ops;	/* Number of read ops in progress */
-+	atomic_t		nr_wr_ops;	/* Number of write ops in progress */
- 	size_t			submitted;	/* Amount submitted for I/O so far */
- 	size_t			len;		/* Length of the request */
- 	short			error;		/* 0 or error that occurred */
-@@ -149,6 +163,7 @@ struct netfs_read_request {
- struct netfs_read_request_ops {
- 	bool (*is_cache_enabled)(struct inode *inode);
- 	void (*init_rreq)(struct netfs_read_request *rreq, struct file *file);
-+	int (*begin_cache_operation)(struct netfs_read_request *rreq);
- 	void (*expand_readahead)(struct netfs_read_request *rreq);
- 	bool (*clamp_length)(struct netfs_read_subrequest *subreq);
- 	void (*issue_op)(struct netfs_read_subrequest *subreq);
-@@ -159,6 +174,46 @@ struct netfs_read_request_ops {
- 	void (*cleanup)(struct address_space *mapping, void *netfs_priv);
- };
- 
-+/*
-+ * Table of operations for access to a cache.  This is obtained by
-+ * rreq->ops->begin_cache_operation().
-+ */
-+struct netfs_cache_ops {
-+	/* End an operation */
-+	void (*end_operation)(struct netfs_cache_resources *cres);
-+
-+	/* Read data from the cache */
-+	int (*read)(struct netfs_cache_resources *cres,
-+		    loff_t start_pos,
-+		    struct iov_iter *iter,
-+		    bool seek_data,
-+		    netfs_io_terminated_t term_func,
-+		    void *term_func_priv);
-+
-+	/* Write data to the cache */
-+	int (*write)(struct netfs_cache_resources *cres,
-+		     loff_t start_pos,
-+		     struct iov_iter *iter,
-+		     netfs_io_terminated_t term_func,
-+		     void *term_func_priv);
-+
-+	/* Expand readahead request */
-+	void (*expand_readahead)(struct netfs_cache_resources *cres,
-+				 loff_t *_start, size_t *_len, loff_t i_size);
-+
-+	/* Prepare a read operation, shortening it to a cached/uncached
-+	 * boundary as appropriate.
-+	 */
-+	enum netfs_read_source (*prepare_read)(struct netfs_read_subrequest *subreq,
-+					       loff_t i_size);
-+
-+	/* Prepare a write operation, working out what part of the write we can
-+	 * actually do.
-+	 */
-+	int (*prepare_write)(struct netfs_cache_resources *cres,
-+			     loff_t *_start, size_t *_len, loff_t i_size);
-+};
-+
- struct readahead_control;
- extern void netfs_readahead(struct readahead_control *,
- 			    const struct netfs_read_request_ops *,
-diff --git a/include/trace/events/netfs.h b/include/trace/events/netfs.h
-index a2bf6cd84bd4..e3ebeabd3852 100644
---- a/include/trace/events/netfs.h
-+++ b/include/trace/events/netfs.h
-@@ -43,6 +43,7 @@ enum netfs_sreq_trace {
- 	netfs_sreq_trace_submit,
- 	netfs_sreq_trace_terminated,
- 	netfs_sreq_trace_write,
-+	netfs_sreq_trace_write_skip,
- 	netfs_sreq_trace_write_term,
- };
- 
-@@ -77,6 +78,7 @@ enum netfs_sreq_trace {
- 	EM(netfs_sreq_trace_submit,		"SUBMT")	\
- 	EM(netfs_sreq_trace_terminated,		"TERM ")	\
- 	EM(netfs_sreq_trace_write,		"WRITE")	\
-+	EM(netfs_sreq_trace_write_skip,		"SKIP ")	\
- 	E_(netfs_sreq_trace_write_term,		"WTERM")
- 
- 
-
-
+>   		return swiotlb_max_mapping_size(dev);
+>   	return SIZE_MAX;
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index ffbb8724e06c..1d221343f1c8 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -659,9 +659,9 @@ size_t swiotlb_max_mapping_size(struct device *dev)
+>   	return ((size_t)IO_TLB_SIZE) * IO_TLB_SEGSIZE;
+>   }
+>   
+> -bool is_swiotlb_active(void)
+> +bool is_swiotlb_active(struct device *dev)
+>   {
+> -	return io_tlb_default_mem != NULL;
+> +	return get_io_tlb_mem(dev) != NULL;
+>   }
+>   EXPORT_SYMBOL_GPL(is_swiotlb_active);
+>   
+> 
