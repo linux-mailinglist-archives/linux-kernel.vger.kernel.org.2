@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB679368D5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27464368D62
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240594AbhDWGxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:53:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43960 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236912AbhDWGxj (ORCPT
+        id S236806AbhDWGyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWGyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:53:39 -0400
-Date:   Fri, 23 Apr 2021 06:53:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1619160782;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lNwC/AdgJh7IWk0JmaPbfWHUIUUbGUL+5EHo0wvdeSs=;
-        b=qncua5bCAJs10tHh4atzoQy6QnoAGnWC5Q1Gxr0v/RUXgikYsbIBBxGZtFKoWlKC3qGhU/
-        kus1xAHHK/c9LeK9Ypc2qQjdvUf8AyKUQr9OdiBzoFPFTGW7EfOYxVxkJ37nxwYnNehLQ3
-        /Wa+DB/khASZmnQLML8WMCmSEH/sUoxpPbQMRGoRdm1ILPy8OHbaL7gu4rfWI1XFqgw2pA
-        OKP/8Ct2jOnQJL5zYq+LM1nntEzw+b74/XvRJMdspdJLll0R+ZMlPYIUJfTRdM6OV/BzfX
-        7EEjyNDEi/wcUGk7pEXVmOsssL7KgLry5xiK2Ch5HNWSuxLycDPlmw18JTEllA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1619160782;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lNwC/AdgJh7IWk0JmaPbfWHUIUUbGUL+5EHo0wvdeSs=;
-        b=T7cDiVFl2KBbi3FGXfLxj7xqUJiznVPR6cDY3wu4XhyhXvzlWf423kOtTk8T7cBu1LnudU
-        IKiy3SF8+4FSu4Ag==
-From:   "tip-bot2 for Jim Mattson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/kvm: Fix Broadwell Xeon stepping in
- isolation_ucodes[]
-Cc:     Jim Mattson <jmattson@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Peter Shier <pshier@google.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210422001834.1748319-1-jmattson@google.com>
-References: <20210422001834.1748319-1-jmattson@google.com>
+        Fri, 23 Apr 2021 02:54:15 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B16CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:53:39 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id t22so24441599ply.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 23:53:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oBsB1gTZg7pCEafsajc7J+2ruSCh6B3ByCc2MPyji4k=;
+        b=W2YpkNGska2guIgrKuthtDEFw0MwFDObtJe2oFDv0nSSdYRgHQfhrLWZH/l3ZFhbj1
+         Ghy+BnszbbQ96marP7fzm0xZwUhQB6XqAygVceemKVrShGdixZufzFOJCbuwnG3I0F/8
+         VOS+exVsVKPOpudrDs6b9KGMdrgXkEx2dA/M8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oBsB1gTZg7pCEafsajc7J+2ruSCh6B3ByCc2MPyji4k=;
+        b=MbTpWme+7uGC1G8hz67yVqn3JYT3eDkfs+IxKPcENo/efHomh5KtvehVuXcHU+ahxW
+         D3b840AKDRcldgQThdHM54AzEztd/hY+rHw0ngK79deHJ70dg44t8eJAJCR26OF4bWIe
+         uB12LDgyMVWH51FEz/yETB6HE2AKK2A0OC1M8BUVC4aRgJejfEGMIDko253LvIBhnWMn
+         9a2TC1GLUHZgdoVUzr9+paFbsyhpFrnaoy0NokL5uUPlGJ+YsKYAzAhqTaWPa1Fh1btJ
+         jdhVqQ6vJLB1le+e7rqIAtTlYlruBCdW4ebx+w3Fc4ftnrUCw3/IvWNrhqOc8KRZ2NtF
+         st/A==
+X-Gm-Message-State: AOAM5334IyFyVoXguHtc6pN4XmfXZrHMK3spwM0uMQQCQazDwiKivWhx
+        P9nrSP1x0I9bDEAfsmbBXclPAQ==
+X-Google-Smtp-Source: ABdhPJyOUqurtSe35jHgXPvYL2sJPGggDMcNevLnMOq/El+jK1sVKr2iiwReHcGfqEMype6g/xvuGA==
+X-Received: by 2002:a17:90a:318d:: with SMTP id j13mr2900233pjb.174.1619160818607;
+        Thu, 22 Apr 2021 23:53:38 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:a0c1:e03a:8cab:4dd4])
+        by smtp.gmail.com with ESMTPSA id 1sm3731450pjx.46.2021.04.22.23.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 23:53:38 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH] arm64: dts: mt8183: add mediatek,gce-events in mutex
+Date:   Fri, 23 Apr 2021 14:53:28 +0800
+Message-Id: <20210423065327.1596075-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
 MIME-Version: 1.0
-Message-ID: <161916078180.29796.11319206773894740858.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+mediatek,gce-events is read by mutex node.
 
-Commit-ID:     4b2f1e59229b9da319d358828cdfa4ddbc140769
-Gitweb:        https://git.kernel.org/tip/4b2f1e59229b9da319d358828cdfa4ddbc140769
-Author:        Jim Mattson <jmattson@google.com>
-AuthorDate:    Wed, 21 Apr 2021 17:18:34 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 22 Apr 2021 14:36:01 +02:00
-
-perf/x86/kvm: Fix Broadwell Xeon stepping in isolation_ucodes[]
-
-The only stepping of Broadwell Xeon parts is stepping 1. Fix the
-relevant isolation_ucodes[] entry, which previously enumerated
-stepping 2.
-
-Although the original commit was characterized as an optimization, it
-is also a workaround for a correctness issue.
-
-If a PMI arrives between kvm's call to perf_guest_get_msrs() and the
-subsequent VM-entry, a stale value for the IA32_PEBS_ENABLE MSR may be
-restored at the next VM-exit. This is because, unbeknownst to kvm, PMI
-throttling may clear bits in the IA32_PEBS_ENABLE MSR. CPUs with "PEBS
-isolation" don't suffer from this issue, because perf_guest_get_msrs()
-doesn't report the IA32_PEBS_ENABLE value.
-
-Fixes: 9b545c04abd4f ("perf/x86/kvm: Avoid unnecessary work in guest filtering")
-Signed-off-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Peter Shier <pshier@google.com>
-Acked-by: Andi Kleen <ak@linux.intel.com>
-Link: https://lkml.kernel.org/r/20210422001834.1748319-1-jmattson@google.com
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- arch/x86/events/intel/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 37ce384..c57ec8e 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4516,7 +4516,7 @@ static const struct x86_cpu_desc isolation_ucodes[] = {
- 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 3, 0x07000009),
- 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 4, 0x0f000009),
- 	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_D,		 5, 0x0e000002),
--	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 2, 0x0b000014),
-+	INTEL_CPU_DESC(INTEL_FAM6_BROADWELL_X,		 1, 0x0b000014),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 3, 0x00000021),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 4, 0x00000000),
- 	INTEL_CPU_DESC(INTEL_FAM6_SKYLAKE_X,		 5, 0x00000000),
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index c5e822b6b77a..cf22d71161e5 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1250,6 +1250,8 @@ mutex: mutex@14016000 {
+ 			reg = <0 0x14016000 0 0x1000>;
+ 			interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
++			mediatek,gce-events = <CMDQ_EVENT_MUTEX_STREAM_DONE0>,
++					      <CMDQ_EVENT_MUTEX_STREAM_DONE1>;
+ 		};
+ 
+ 		larb0: larb@14017000 {
+-- 
+2.31.1.498.g6c1eba8ee3d-goog
+
