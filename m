@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08D636924A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A24E369252
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbhDWMmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 08:42:05 -0400
-Received: from mga07.intel.com ([134.134.136.100]:9511 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhDWMmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:42:04 -0400
-IronPort-SDR: vyq1Nnn/YmJrMTx82quo8iLAlwwGPR7IBlaQ1+1ccB/OKLLrrBXF8cLMREFhPb5D2fjXxVpova
- Hc3qp8meBWbg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="260014674"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="260014674"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 05:41:27 -0700
-IronPort-SDR: QPHLW8jG5xCo83/70ShTBOMYCGWqTGw2QkEAqFlaekBZ1w5gwgawbZM/mw7M8sIz0e302n+OVA
- 0polxrY4qHEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="386380029"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga006.jf.intel.com with SMTP; 23 Apr 2021 05:41:23 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 23 Apr 2021 15:41:23 +0300
-Date:   Fri, 23 Apr 2021 15:41:23 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        intel-gfx@lists.freedesktop.org,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/i915: Invoke BXT _DSM to enable MUX on HP
- Workstation laptops
-Message-ID: <YILAc6EhoWWhENq8@intel.com>
-References: <20210423044700.247359-1-kai.heng.feng@canonical.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210423044700.247359-1-kai.heng.feng@canonical.com>
-X-Patchwork-Hint: comment
+        id S242502AbhDWMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 08:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhDWMmu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:42:50 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C47C06174A;
+        Fri, 23 Apr 2021 05:42:12 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id w3so73743580ejc.4;
+        Fri, 23 Apr 2021 05:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Cigm8FoAQJCFR8BBSxQb1qtaSNBp4pLV8SFaN1EkbqQ=;
+        b=C99A1yH9iuOPA7YDilWOAH5Eqbrw3NHSmFOxiJSMYi5w4kJo5XTFSmijgXxPMvaT/g
+         aQiNDwBil9E3asW3C2gTw/dl4sK1Wku/ufrK6xY3Io9hzQVvk8yRrFIqTPhkgh8biJJ+
+         esfve6ZPYHvyIJolS41HMXF6LVRQsv4WH/CzjBnQG0XKY31lJBfHg/OSxGz7m6/dHdcc
+         6RxZ2SIWTu493LFovRgcqfEY2WmTSNpmcFpmkk7qAvpNPwCqvaF96WM86t4SUpS+1WkM
+         OdD8Sv2Cges8w47SyAm+1NOpHnd6YAjr+IH/eJ/sFnvrrX4G9a8y59NAJPr51Z/rYj85
+         uSLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Cigm8FoAQJCFR8BBSxQb1qtaSNBp4pLV8SFaN1EkbqQ=;
+        b=DLd4RdKLd/2B7GdwXOP9AWRCXqKDUiCC9LcwfiwV5Q5eX54QAjce3j6v+4Cupn7yli
+         b3Sab5DO47e/LxF3GaRCsuc2cvSsiL1DkEuvcBeEi9vwbgrtJ23HCvdTPI5SDoQpMKd0
+         7GdM5INhpk0AbQbjlj+t6DnJ0urbDCOGl0zvawag3F8/XYGDR/HZ4hknRNbghCyth469
+         cghXO29chdO5rzM3wLqPMhJeuHZ14mvYIBeKDmB17fAnNg+jDCrJd4yP+L3NhZPQnKyR
+         cqThKTr2Mn8Nx+wy3s2GwwI/dFz4AsaQexSfSUa/bMDBJPkmKVRQLZrpF0LCmrQQJGmZ
+         W+8Q==
+X-Gm-Message-State: AOAM533kxznp6kFOe3ykx+J+T1qIVpnTkiR0Cer/rAkoagUpcy9XTdqL
+        lj3UuatWp/I1LX5w0GGRyQkIH2Bj+pE1bCWE
+X-Google-Smtp-Source: ABdhPJxEVyBDl9SrHFwOI9XmiRaLeOLGTbuurEQaw23ba78UH7qsNOzcWob/nfgJzAn2GOknA3DBng==
+X-Received: by 2002:a17:906:f2c8:: with SMTP id gz8mr4110139ejb.242.1619181731477;
+        Fri, 23 Apr 2021 05:42:11 -0700 (PDT)
+Received: from localhost.localdomain ([102.156.210.94])
+        by smtp.gmail.com with ESMTPSA id lb18sm3894116ejc.6.2021.04.23.05.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 05:42:11 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH-next] fs/btrfs: Fix uninitialized variable
+Date:   Fri, 23 Apr 2021 13:42:01 +0100
+Message-Id: <20210423124201.11262-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 12:46:54PM +0800, Kai-Heng Feng wrote:
-> On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
-> to discrete GFX after S3. This is not desirable, because userspace will
-> treat connected display as a new one, losing display settings.
-> 
-> The expected behavior is to let discrete GFX drives all external
-> displays.
-> 
-> The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
-> The method is inside the BXT _DSM, so add the _DSM and call it
-> accordingly.
-> 
-> I also tested some MUX-less and iGPU only laptops with the BXT _DSM, no
-> regression was found.
-> 
-> v2:
->  - Forward declare struct pci_dev.
-> 
-> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
-> References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  drivers/gpu/drm/i915/display/intel_acpi.c | 17 +++++++++++++++++
->  drivers/gpu/drm/i915/display/intel_acpi.h |  3 +++
->  drivers/gpu/drm/i915/i915_drv.c           |  5 +++++
->  3 files changed, 25 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-> index 833d0c1be4f1..c7b57c22dce3 100644
-> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
-> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-> @@ -14,11 +14,16 @@
->  
->  #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
->  #define INTEL_DSM_FN_PLATFORM_MUX_INFO 1 /* No args */
-> +#define INTEL_DSM_FN_PLATFORM_BXT_MUX_INFO 0 /* No args */
->  
->  static const guid_t intel_dsm_guid =
->  	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
->  		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
->  
-> +static const guid_t intel_bxt_dsm_guid =
-> +	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
-> +		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
-> +
+The variable 'zone' is uninitialized which
+introduce some build warning.
 
-I think this dsm is just supposed to be more or less an
-alternative to the opregion SCI stuff. Why there are two
-ways to do the same things I have no idea. The opregion
-spec does not tell us such mundane details.
+It is not always set or overwritten within
+the function. So explicitly initialize it.
 
-It's also not documented to do anything except list the
-supported functions:
-"Get BIOS Data Functions Supported “Function #0"
- This function can be called to discover which “_DSM” Functions are
- supported. It may only return success if the return value accurately
- lists supported Functions."
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+---
+ fs/btrfs/zoned.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But what you're apparently saying is that calling this changes
-the behaviour of the system somehow? That is troubling.
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 432509f4b3ac..42f99b25127f 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -136,7 +136,7 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+  */
+ static inline u32 sb_zone_number(int shift, int mirror)
+ {
+-	u64 zone;
++	u64 zone = 0;
+ 
+ 	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
+ 	switch (mirror) {
 
+base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
 -- 
-Ville Syrjälä
-Intel
+2.17.1
+
