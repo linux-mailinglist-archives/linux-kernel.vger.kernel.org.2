@@ -2,151 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D34368D58
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE265368D5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 08:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhDWGw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 02:52:58 -0400
-Received: from regular1.263xmail.com ([211.150.70.197]:52234 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhDWGw5 (ORCPT
+        id S236790AbhDWGxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 02:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhDWGxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:52:57 -0400
-Received: from localhost (unknown [192.168.167.223])
-        by regular1.263xmail.com (Postfix) with ESMTP id 674721B48;
-        Fri, 23 Apr 2021 14:51:27 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.64] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P22002T139994497025792S1619160686499806_;
-        Fri, 23 Apr 2021 14:51:27 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <c7af963b3c841a91bb0c1b9b4e4588f1>
-X-RL-SENDER: shawn.lin@rock-chips.com
-X-SENDER: lintao@rock-chips.com
-X-LOGIN-NAME: shawn.lin@rock-chips.com
-X-FST-TO: ulf.hansson@linaro.org
-X-RCPT-COUNT: 8
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Message-ID: <61bea021-2fe7-4f1e-6eef-4a5a9a0233c9@rock-chips.com>
-Date:   Fri, 23 Apr 2021 14:51:26 +0800
+        Fri, 23 Apr 2021 02:53:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D576FC061574;
+        Thu, 22 Apr 2021 23:52:58 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 06:52:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619160777;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/lUh85XWwxl8Xbep2KvsWrXNxfz0aaYwtoNZ/flrvZA=;
+        b=ho9TRxMWsml93t+k+qNEAIfJKqK9tDB8mJedNS+GHag0eHEmbH12tU5bfNc5E6QbYVzTv4
+        5JlMx42CQEyZCk74A2+OFXkbr1ApwNnW0Nas8G4iAKd5zEjfcdW+SIwt4e38OmWRLGETLO
+        lFsI4MT8Hjpie4YTk2YFj8LxmLxzOU2Hk3q3PKvSOWyaCkVKmjol1gbgXz5sjDgLV1ZmYw
+        Z24tG6SDFvr/YEuOOAtECk3G87pFO8OE5qXwitorinSfMPEdoUna7kA5econsJtLH84c1Y
+        SDnOVIN/r8DmDQ5VeTwYmjG8t7/6+f7+W6ciJ3EZZaMRvZ9NsjAV8tOzA5/L0Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619160777;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/lUh85XWwxl8Xbep2KvsWrXNxfz0aaYwtoNZ/flrvZA=;
+        b=Lt2jBpF8mNVWqZHYs7vX6QGmCDZNbeF083fT/sqRArMao54SXCMbi5aHMSnj2Rr4OqOXBG
+        BGfdR/QMnw3C5cDg==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] kcsan: Fix printk format string
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210421135059.3371701-1-arnd@kernel.org>
+References: <20210421135059.3371701-1-arnd@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101
- Thunderbird/86.0
-Cc:     shawn.lin@rock-chips.com, "pali@kernel.org" <pali@kernel.org>,
-        "huyue2@yulong.com" <huyue2@yulong.com>,
-        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_mmc=3a_enable_UHS_voltage_switch_for_SD?=
- =?UTF-8?B?U0MgaWYgc3VwcG9ydGVk44CQ6K+35rOo5oSP77yM6YKu5Lu255SxbGludXgtbW1j?=
- =?UTF-8?B?LW93bmVyQHZnZXIua2VybmVsLm9yZ+S7o+WPkeOAkQ==?=
-To:     =?UTF-8?Q?Christian_L=c3=b6hle?= <CLoehle@hyperstone.com>
-References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <35677467-4ccd-9eae-3800-2bc7597cfa0f@rock-chips.com>
- <CWXP265MB2680E0D998AF13C041D18859C4459@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-From:   Shawn Lin <shawn.lin@rock-chips.com>
-In-Reply-To: <CWXP265MB2680E0D998AF13C041D18859C4459@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-ID: <161916077643.29796.8670414298244363723.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/23 14:38, Christian Löhle wrote:
-> Claiming UHS-I support with SDSC is pretty rare, for obvious reasons (namely they are non-standard, so it's a gamble if a host makes use of it), but here you go:
-> https://de.rs-online.com/web/p/micro-sd-karten/8743910/
-> (sorry for the german, the site has a en. subpage, but it's certificate seem untrusted.)
-> The more likely case is that they do not advertise UHS-I to customers,
-> but the card will show support to the host.
-> Let's look at this product, just as an example.
-> https://www.tme.eu/html/EN/goodram-industrial-industrial-sd-sd-micro-memory-cards/ramka_15242_EN_pelny.html
-> They provide an MLC and pSLC version of each device, with half the capacity naturally.
-> The 4GB MLC claims UHS-I support, the 2GB pSLC is very likely to be the same controller,
-> it only claims Class 6.
-> So either they specifically changed the firmware to remove any UHS support indication,
-> or, more likely IMO, the card still reports UHS support to the host.
-> Such a card would benefit from this patch.
-> 
-> Disclaimer: I do not own the product and have not confirmed this device in any way,
-> but I have seen UHS support on other devices that do not advertise it for their
-> SDSC versions.
-> If the mailing list would be interested, I can try to acquire such devices, listed in
-> public open stores. Modern, potentially UHS supporting cards. are,
-> as mentioned in the initial Mail, often SLC or pSLC and often are made on
-> a customers request.
-> 
-> 
+The following commit has been merged into the locking/core branch of tip:
 
-Thanks for sharing these, but from the datasheets, these SDSC cards
-claims their throught up to 20MB/s. So, I guess highpseed mode is enough
-for them? what do you think?
+Commit-ID:     f4abe9967c6fdb511ee567e129a014b60945ab93
+Gitweb:        https://git.kernel.org/tip/f4abe9967c6fdb511ee567e129a014b60945ab93
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Wed, 21 Apr 2021 15:50:38 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 22 Apr 2021 14:36:03 +02:00
 
-> From: Shawn Lin <shawn.lin@rock-chips.com>
-> Sent: Friday, April 23, 2021 3:34 AM
-> To: Christian Löhle <CLoehle@hyperstone.com>
-> Cc: shawn.lin@rock-chips.com <shawn.lin@rock-chips.com>; pali@kernel.org <pali@kernel.org>; huyue2@yulong.com <huyue2@yulong.com>; tiantao6@hisilicon.com <tiantao6@hisilicon.com>; linux-mmc@vger.kernel.org <linux-mmc@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; ulf.hansson@linaro.org <ulf.hansson@linaro.org>
-> Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported【请注意，邮件由linux-mmc-owner@vger.kernel.org代发】
->   
-> On 2021/4/22 21:18, Christian Löhle wrote:
->> Ignore the reported capacity if the card otherwise reports UHS support.
->>
->> Currently SDSC cards reporting UHS support except for the CCS do not run
->> through the voltage switch.
->> While strictly speaking a SDSC card cannot support UHS in compliance
->> with the standard, there is no good reason to throttle them that way.
->> Especially for pSLCs in practice such cards benefit greatly by this patch,
-> 
-> Cduld you provide some more infomation about the SDSC cards which ones
-> are labeled as UHS, e.g brand, webpage....
-> 
->> as they can be new and UHS supporting, but must not lie about their CCS.
->> The behaviour of linux-mmc for SDSC is deviating from the standard anyway
->> in such a case, as the card is treated as UHS card not supporting the
->> voltage switch in general.
->> Such a card will come up as
->> mmc0: new ultra high speed SDR25 SD card at address 0001.
->> Thus the subsystem will support CMD23 and others to the card.
->> But if we deviate from the standard anyway, then we might as well
->> not throttle SDSC to 25MB/s.
->>
->> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
->> ---
->>     drivers/mmc/core/sd.c | 7 +++----
->>     1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
->> index 6fa51a6ed058..281ca2da8e0b 100644
->> --- a/drivers/mmc/core/sd.c
->> +++ b/drivers/mmc/core/sd.c
->> @@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
->>                  return err;
->>     
->>          /*
->> -      * In case CCS and S18A in the response is set, start Signal Voltage
->> -      * Switch procedure. SPI mode doesn't support CMD11.
->> +      * In case S18A in the response is set, start Signal Voltage Switch
->> +      * procedure. SPI mode doesn't support CMD11.
->>           */
->> -     if (!mmc_host_is_spi(host) && rocr &&
->> -        ((*rocr & 0x41000000) == 0x41000000)) {
->> +     if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
->>                  err = mmc_set_uhs_voltage(host, pocr);
->>                  if (err == -EAGAIN) {
->>                          retries--;
->>
-> 
-> 
-> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-> Managing Directors: Dr. Jan Peter Berns.
-> Commercial register of local courts: Freiburg HRB381782
-> 
+kcsan: Fix printk format string
 
+Printing a 'long' variable using the '%d' format string is wrong
+and causes a warning from gcc:
 
+kernel/kcsan/kcsan_test.c: In function 'nthreads_gen_params':
+include/linux/kern_levels.h:5:25: error: format '%d' expects argument of type 'int', but argument 3 has type 'long int' [-Werror=format=]
+
+Use the appropriate format modifier.
+
+Fixes: f6a149140321 ("kcsan: Switch to KUNIT_CASE_PARAM for parameterized tests")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Marco Elver <elver@google.com>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Link: https://lkml.kernel.org/r/20210421135059.3371701-1-arnd@kernel.org
+---
+ kernel/kcsan/kcsan_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/kcsan/kcsan_test.c b/kernel/kcsan/kcsan_test.c
+index b71751f..8bcffbd 100644
+--- a/kernel/kcsan/kcsan_test.c
++++ b/kernel/kcsan/kcsan_test.c
+@@ -984,7 +984,7 @@ static const void *nthreads_gen_params(const void *prev, char *desc)
+ 		const long min_required_cpus = 2 + min_unused_cpus;
+ 
+ 		if (num_online_cpus() < min_required_cpus) {
+-			pr_err_once("Too few online CPUs (%u < %d) for test\n",
++			pr_err_once("Too few online CPUs (%u < %ld) for test\n",
+ 				    num_online_cpus(), min_required_cpus);
+ 			nthreads = 0;
+ 		} else if (nthreads >= num_online_cpus() - min_unused_cpus) {
