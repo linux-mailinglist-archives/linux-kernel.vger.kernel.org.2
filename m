@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD39368B24
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5038368B29
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 04:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240154AbhDWCjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Apr 2021 22:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
+        id S237163AbhDWCkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Apr 2021 22:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhDWCjN (ORCPT
+        with ESMTP id S230367AbhDWCkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Apr 2021 22:39:13 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40CDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:38:36 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id 8so14689317qkv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Apr 2021 19:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9GAjZOolHh/KVUtI+o1rheP1qwQJor7AwObCvclVnbM=;
-        b=amxJ0TBF2/Wz/QgIEHvNK5O84kDeUuFzDEV7sllIV3GvO+VqQnR/DPEl+5zpgQ/Awo
-         8fDollIl5iqvpsPmRoOnXJVF88A8Cf808dICie76dJ93ORQWz/I+Ig2+BURNmKtiojtQ
-         mILI1qVFPWa8IEKNayjTiz0GyqjSRq6S+RXYwcpFzVzlJxt3tEMNzRPhMpwM6EbJwAe+
-         bZp8g9RgeytHfpS0Wo5jaBFkqSgG7i04EuDrQJ2oghnKHkak18W1c7EkeHUc7DmaoXZl
-         IGJo22tYCOI0ypGMLf+vtZdttNx2uGF8Blt+RiWD7jlUDD5Ds03JaEM8utYKw7eMiqV/
-         8qUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=9GAjZOolHh/KVUtI+o1rheP1qwQJor7AwObCvclVnbM=;
-        b=JINjqCSlL+/qGp0iMhXhX+RU6E/kr17y+rL97rbPC9J3w+OzDmWqN+mdspZtIGH0TJ
-         9zaYW5P7nL3OYcHAOnpvMTzogd72sG6KcmBGyr9boyh6r/fYvRztx4G+gn6SeP5aukRm
-         NTM1VJUDixAeHQcs3KWQdR4+fDXxPbxvjEopK7/+sLMWaXrfvNix9EAE2te24enC4wxo
-         03bpj6PFLF0BNbi7TqKUX0P43JKLbjc8GneF5OrHEd2Ek0pJhofMS0atGKCdF3OiSDni
-         P/+aoavvaD1DxgC189cmh79HMA+/9AsIIIKj6MKd0m7Fg3InePkpxpWJdTAnJJPQdX1/
-         gAmQ==
-X-Gm-Message-State: AOAM532MJyobTpIOSUSAt8UJq8vPQOD7tir53D2By9+bXTI4RGsSkY7C
-        wtyk0IEL1mGcsy+1snqM8kQ=
-X-Google-Smtp-Source: ABdhPJyhRElbEE6e4z75wyS6uEs4sZLKFe1RnhInAZXs1vg6ZQJ6jxamqNuS1DFPYFytoSjWs2jM2A==
-X-Received: by 2002:a05:620a:12ac:: with SMTP id x12mr1920501qki.196.1619145516259;
-        Thu, 22 Apr 2021 19:38:36 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([50.238.223.130])
-        by smtp.gmail.com with ESMTPSA id n14sm3483356qke.123.2021.04.22.19.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 19:38:35 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf stat: Use aggregated counts directly
-Date:   Thu, 22 Apr 2021 19:38:33 -0700
-Message-Id: <20210423023833.1430520-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+        Thu, 22 Apr 2021 22:40:05 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7452CC061574;
+        Thu, 22 Apr 2021 19:39:27 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FRJQh2JFbz9sRR;
+        Fri, 23 Apr 2021 12:39:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1619145564;
+        bh=CSUlIlYxT8sRrVdpDAHTNj8rXl6mPW5X7wC3LDuBHVw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vJlEC9ubrIkT1FM4PdDF+/CdU+Ndyks+WC0c147nR7yXmnOfFaQrsQ4v6WWYtHIWx
+         KS3L2IADsPPRRTpT5ICWx9nEU+2mwkBMUcJ+z9GmWdxDZjeMZ/M+dG1Wg7/sYAnpuQ
+         QTAsw5Qez9GNiv83CsMAYEcrAHeDYG5O/U/rVTUaHD+xtnU14v/PDmZwoYPZ1kd5jW
+         tMFRKZyaQPGtk6AI297WcVGjfXmm1rU6yZ2ve+Nwk2IaTjoGsFs/SUYApTmi0KOVLt
+         HGDmfi7ith5915szhCScU8hBg9BOD2SIuPHjQwlW38g/J0H3j155A9o4c4UN6CzMs3
+         k0+Y+8f4yR/3A==
+Date:   Fri, 23 Apr 2021 12:39:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tpmdd tree with Linus' tree
+Message-ID: <20210423123921.181bbb3a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Zz30I1lIU5S=lYDetQ49F5=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ps->res_stats is for repeated runs, so the interval code should
-not touch it.  Actually the aggregated counts are available in the
-counter->counts->aggr, so we can (and should) use it directly IMHO.
+--Sig_/Zz30I1lIU5S=lYDetQ49F5=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No functional change intended.
+Hi all,
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/stat-display.c |  8 ++++----
- tools/perf/util/stat.c         | 12 ------------
- 2 files changed, 4 insertions(+), 16 deletions(-)
+Today's linux-next merge of the tpmdd tree got a conflict in:
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index d3137bc17065..a38fa6527586 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -807,11 +807,11 @@ static void counter_aggr_cb(struct perf_stat_config *config __maybe_unused,
- 			    bool first __maybe_unused)
- {
- 	struct caggr_data *cd = data;
--	struct perf_stat_evsel *ps = counter->stats;
-+	struct perf_counts_values *aggr = &counter->counts->aggr;
- 
--	cd->avg += avg_stats(&ps->res_stats[0]);
--	cd->avg_enabled += avg_stats(&ps->res_stats[1]);
--	cd->avg_running += avg_stats(&ps->res_stats[2]);
-+	cd->avg += aggr->val;
-+	cd->avg_enabled += aggr->ena;
-+	cd->avg_running += aggr->run;
- }
- 
- /*
-diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-index 2db46b9bebd0..d3ec2624e036 100644
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@ -437,18 +437,6 @@ int perf_stat_process_counter(struct perf_stat_config *config,
- 
- 	aggr->val = aggr->ena = aggr->run = 0;
- 
--	/*
--	 * We calculate counter's data every interval,
--	 * and the display code shows ps->res_stats
--	 * avg value. We need to zero the stats for
--	 * interval mode, otherwise overall avg running
--	 * averages will be shown for each interval.
--	 */
--	if (config->interval || config->summary) {
--		for (i = 0; i < 3; i++)
--			init_stats(&ps->res_stats[i]);
--	}
--
- 	if (counter->per_pkg)
- 		evsel__zero_per_pkg(counter);
- 
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+  security/keys/trusted-keys/trusted_tpm2.c
 
+between commit:
+
+  9d5171eab462 ("KEYS: trusted: Fix TPM reservation for seal/unseal")
+
+from Linus' tree and commit:
+
+  f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the=
+ blobs")
+
+from the tpmdd tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc security/keys/trusted-keys/trusted_tpm2.c
+index c87c4df8703d,d225ad140960..000000000000
+--- a/security/keys/trusted-keys/trusted_tpm2.c
++++ b/security/keys/trusted-keys/trusted_tpm2.c
+@@@ -79,7 -245,10 +245,10 @@@ int tpm2_seal_trusted(struct tpm_chip *
+  	if (i =3D=3D ARRAY_SIZE(tpm2_hash_map))
+  		return -EINVAL;
+ =20
++ 	if (!options->keyhandle)
++ 		return -EINVAL;
++=20
+ -	rc =3D tpm_buf_init(&buf, TPM2_ST_SESSIONS, TPM2_CC_CREATE);
+ +	rc =3D tpm_try_get_ops(chip);
+  	if (rc)
+  		return rc;
+ =20
+
+--Sig_/Zz30I1lIU5S=lYDetQ49F5=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCCM1kACgkQAVBC80lX
+0GyGjwf/fGTC5s9PY2QFAd4MCkAKNzFNS0BvINleRO8mWg73fr37hbrFEG6mqpHM
+gOS9TNRpInab65jRnm9vw40JTtyqrtmagc4qlVLYY5KSeDPvg9hmegvrfHwoWUNP
+1H7MRkZer8yQphBjiE9kyuYlTMOBuepWhDBfsPWMC4SpE6AnBCnribzvIy3vvhe9
+SyKHycwDEnI/XovOQswQza3j8Cs1U7zx8gGTpS97l7pHh4KK8Yp24gTrFigrVaVe
+kFz322qCelW4Jzi+16DXoFppSFFVilxudRga7ddr+tr6c5ZlO3w7t97nu8K4bAqb
+ZFN2Esfbm6DuNsNahTYWR917DX21HQ==
+=FtIf
+-----END PGP SIGNATURE-----
+
+--Sig_/Zz30I1lIU5S=lYDetQ49F5=--
