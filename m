@@ -2,143 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FFA368D9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192AB368D9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 09:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbhDWHGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 03:06:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240920AbhDWHGq (ORCPT
+        id S241049AbhDWHGx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Apr 2021 03:06:53 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:36386 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWHGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:06:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619161570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c0Cl5FS9BM4Q35WpIm6J5r8zv2qpk0iAb6szpk8n7ZM=;
-        b=dJGZzFOBZEYmdiWWkrrImqmb1wpts+JIBwi4XMn+Exu4CgGzRXmH8+vOQN12FLUZ+Edtf7
-        Z1jHNoUf7UTRYB9wPmnkzcbwgtYJTyV2ZIe+Zb7sbrq9UzZW0YayG2dVXwbc4Ot2nKq/rf
-        AjUnzkzV+OpRiumkFRdC5kOrPRU2DUU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-p8vFkDLkMwyHFBiZYaFAnQ-1; Fri, 23 Apr 2021 03:06:08 -0400
-X-MC-Unique: p8vFkDLkMwyHFBiZYaFAnQ-1
-Received: by mail-ej1-f69.google.com with SMTP id n10-20020a1709061d0ab029037caa96b8c5so8098889ejh.23
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 00:06:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c0Cl5FS9BM4Q35WpIm6J5r8zv2qpk0iAb6szpk8n7ZM=;
-        b=XkIH+Ygqof6GNHlfD3jbLMHzTbc5u7G4R+EqhWrWxuPHqa/0i3tmnCJNyAqyZi254r
-         x6T3M9hGmu6SYNoHasK4kPtHtHT7FFflroq8pmcS1zf/ZW4S9bWkr1VTSMCr5fWL8PR2
-         ND3UEEfZYOkeFnK1SF3Q9CupfzxzJvbWlRlvvBKQX9VS+dy8J8TAyQemN18/oqzF0Zqa
-         UglRTKzyv+K/+EuLUajKwgUuqMzHgHYEqDVeoouul8RsZ0w0EnRT7BryIjthEq3bQbBv
-         0o+R5Luqyo8djG7QIGOG9+PNuSMQUDsRe5V0yzfB/TkJnEy2PO7GPnTXeTnpEmeq3v5p
-         SVWw==
-X-Gm-Message-State: AOAM532e2+3Ognbn6NUoaTug76/QSqLWxkpgh8xNL7gYyd4LRvHov5UL
-        eaAbFXdWxPqevl3o/qy6/vN2GZkqXjMdcnIj1zQ6WlRsdfPtZKhfoPU15en51b5Ghw11+x7YlkZ
-        CXPJD5IJz94n6gnUkMwzX4hfY
-X-Received: by 2002:a50:cc4b:: with SMTP id n11mr2774602edi.186.1619161566798;
-        Fri, 23 Apr 2021 00:06:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzBaNe9SswxfFTcNaWeJfRB2NuJ7rXn8/9taV7As0j13rnKsmU38i2cf1iTBfRl6CSz7Kerww==
-X-Received: by 2002:a50:cc4b:: with SMTP id n11mr2774568edi.186.1619161566637;
-        Fri, 23 Apr 2021 00:06:06 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e16sm3918899edu.94.2021.04.23.00.06.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 00:06:06 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: Fix implicit enum conversion goof in scattered
- reverse CPUID code
-To:     Sean Christopherson <seanjc@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>
-References: <20210421010850.3009718-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7b1f385c-3a97-efe0-bb8d-53cdb9c19dbf@redhat.com>
-Date:   Fri, 23 Apr 2021 09:06:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210421010850.3009718-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 23 Apr 2021 03:06:49 -0400
+Received: from marcel-macbook.holtmann.net (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
+        by mail.holtmann.org (Postfix) with ESMTPSA id BF39FCECFB;
+        Fri, 23 Apr 2021 09:13:58 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v3] Bluetooth: Add ncmd=0 recovery handling
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210422101657.v3.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
+Date:   Fri, 23 Apr 2021 09:06:10 +0200
+Cc:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Alain Michaud <alainm@chromium.org>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <C4B3A9F0-2D1D-4274-92AE-8616258E5947@holtmann.org>
+References: <20210422101657.v3.1.I14da3750a343d8d48921fffb7c6561337b6e6082@changeid>
+To:     Manish Mandlik <mmandlik@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/21 03:08, Sean Christopherson wrote:
-> Take "enum kvm_only_cpuid_leafs" in scattered specific CPUID helpers
-> (which is obvious in hindsight), and use "unsigned int" for leafs that
-> can be the kernel's standard "enum cpuid_leaf" or the aforementioned
-> KVM-only variant.  Loss of the enum params is a bit disapponting, but
-> gcc obviously isn't providing any extra sanity checks, and the various
-> BUILD_BUG_ON() assertions ensure the input is in range.
+Hi Manish,
+
+> During command status or command complete event, the controller may set
+> ncmd=0 indicating that it is not accepting any more commands. In such a
+> case, host holds off sending any more commands to the controller. If the
+> controller doesn't recover from such condition, host will wait forever,
+> until the user decides that the Bluetooth is broken and may power cycles
+> the Bluetooth.
 > 
-> This fixes implicit enum conversions that are detected by clang-11.
+> This patch triggers the hardware error to reset the controller and
+> driver when it gets into such state as there is no other wat out.
 > 
-> Fixes: 4e66c0cb79b7 ("KVM: x86: Add support for reverse CPUID lookup of scattered features")
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Signed-off-by: Manish Mandlik <mmandlik@google.com>
 > ---
 > 
-> Hopefully it's not too late to squash this...
-
-Too late, but I queued this anyway.
-
-Paolo
-
+> Changes in v3:
+> - Restructure ncmd_timer scheduling in hci_event.c
+> - Cancel delayed work in hci_dev_do_close
+> - Do not inject hw error during HCI_INIT
+> - Update comment, add log message while injecting hw error
 > 
->   arch/x86/kvm/cpuid.c | 5 +++--
->   arch/x86/kvm/cpuid.h | 2 +-
->   2 files changed, 4 insertions(+), 3 deletions(-)
+> Changes in v2:
+> - Emit the hardware error when ncmd=0 occurs
 > 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 96e41e1a1bde..e9d644147bf5 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -365,7 +365,7 @@ int kvm_vcpu_ioctl_get_cpuid2(struct kvm_vcpu *vcpu,
->   }
->   
->   /* Mask kvm_cpu_caps for @leaf with the raw CPUID capabilities of this CPU. */
-> -static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
-> +static __always_inline void __kvm_cpu_cap_mask(unsigned int leaf)
->   {
->   	const struct cpuid_reg cpuid = x86_feature_cpuid(leaf * 32);
->   	struct kvm_cpuid_entry2 entry;
-> @@ -378,7 +378,8 @@ static __always_inline void __kvm_cpu_cap_mask(enum cpuid_leafs leaf)
->   	kvm_cpu_caps[leaf] &= *__cpuid_entry_get_reg(&entry, cpuid.reg);
->   }
->   
-> -static __always_inline void kvm_cpu_cap_init_scattered(enum cpuid_leafs leaf, u32 mask)
-> +static __always_inline
-> +void kvm_cpu_cap_init_scattered(enum kvm_only_cpuid_leafs leaf, u32 mask)
->   {
->   	/* Use kvm_cpu_cap_mask for non-scattered leafs. */
->   	BUILD_BUG_ON(leaf < NCAPINTS);
-> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> index eeb4a3020e1b..7bb4504a2944 100644
-> --- a/arch/x86/kvm/cpuid.h
-> +++ b/arch/x86/kvm/cpuid.h
-> @@ -236,7 +236,7 @@ static __always_inline void cpuid_entry_change(struct kvm_cpuid_entry2 *entry,
->   }
->   
->   static __always_inline void cpuid_entry_override(struct kvm_cpuid_entry2 *entry,
-> -						 enum cpuid_leafs leaf)
-> +						 unsigned int leaf)
->   {
->   	u32 *reg = cpuid_entry_get_reg(entry, leaf * 32);
->   
+> include/net/bluetooth/hci.h      |  1 +
+> include/net/bluetooth/hci_core.h |  1 +
+> net/bluetooth/hci_core.c         | 22 ++++++++++++++++++++++
+> net/bluetooth/hci_event.c        | 22 ++++++++++++++++++----
+> 4 files changed, 42 insertions(+), 4 deletions(-)
 > 
+> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+> index ea4ae551c426..c4b0650fb9ae 100644
+> --- a/include/net/bluetooth/hci.h
+> +++ b/include/net/bluetooth/hci.h
+> @@ -339,6 +339,7 @@ enum {
+> #define HCI_PAIRING_TIMEOUT	msecs_to_jiffies(60000)	/* 60 seconds */
+> #define HCI_INIT_TIMEOUT	msecs_to_jiffies(10000)	/* 10 seconds */
+> #define HCI_CMD_TIMEOUT		msecs_to_jiffies(2000)	/* 2 seconds */
+> +#define HCI_NCMD_TIMEOUT	msecs_to_jiffies(4000)	/* 4 seconds */
+> #define HCI_ACL_TX_TIMEOUT	msecs_to_jiffies(45000)	/* 45 seconds */
+> #define HCI_AUTO_OFF_TIMEOUT	msecs_to_jiffies(2000)	/* 2 seconds */
+> #define HCI_POWER_OFF_TIMEOUT	msecs_to_jiffies(5000)	/* 5 seconds */
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> index ebdd4afe30d2..f14692b39fd5 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -470,6 +470,7 @@ struct hci_dev {
+> 	struct delayed_work	service_cache;
+> 
+> 	struct delayed_work	cmd_timer;
+> +	struct delayed_work	ncmd_timer;
+> 
+> 	struct work_struct	rx_work;
+> 	struct work_struct	cmd_work;
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index b0d9c36acc03..37789c5d0579 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -1723,6 +1723,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> 	}
+> 
+> 	cancel_delayed_work(&hdev->power_off);
+> +	cancel_delayed_work(&hdev->ncmd_timer);
+> 
+> 	hci_request_cancel_all(hdev);
+> 	hci_req_sync_lock(hdev);
+> @@ -2769,6 +2770,24 @@ static void hci_cmd_timeout(struct work_struct *work)
+> 	queue_work(hdev->workqueue, &hdev->cmd_work);
+> }
+> 
+> +/* HCI ncmd timer function */
+> +static void hci_ncmd_timeout(struct work_struct *work)
+> +{
+> +	struct hci_dev *hdev = container_of(work, struct hci_dev,
+> +					    ncmd_timer.work);
+> +
+> +	bt_dev_err(hdev, "Controller not accepting commands anymore: ncmd = 0");
+> +
+> +	/* No hardware error event needs to be injected if the ncmd timer
+> +	 * triggers during HCI_INIT.
+> +	 */
+
+while the patch looks good, I would be more strongly with my wording here.
+
+	/* During HCI_INIT phase no events can be injected if the ncmd timer
+	 * triggers since the procedure has its own timeout handling.
+	 */
+
+> +	if (test_bit(HCI_INIT, &hdev->flags))
+> +		return;
+> +
+> +	/* This is an irrecoverable state, inject hardware error event */
+> +	hci_reset_dev(hdev);
+> +}
+> +
+> struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
+> 					  bdaddr_t *bdaddr, u8 bdaddr_type)
+> {
+> @@ -3831,6 +3850,7 @@ struct hci_dev *hci_alloc_dev(void)
+> 	init_waitqueue_head(&hdev->suspend_wait_q);
+> 
+> 	INIT_DELAYED_WORK(&hdev->cmd_timer, hci_cmd_timeout);
+> +	INIT_DELAYED_WORK(&hdev->ncmd_timer, hci_ncmd_timeout);
+> 
+> 	hci_request_setup(hdev);
+> 
+> @@ -4068,6 +4088,8 @@ int hci_reset_dev(struct hci_dev *hdev)
+> 	hci_skb_pkt_type(skb) = HCI_EVENT_PKT;
+> 	skb_put_data(skb, hw_err, 3);
+> 
+> +	bt_dev_err(hdev, "Injecting HCI hardware error event");
+> +
+> 	/* Send Hardware Error to upper stack */
+> 	return hci_recv_frame(hdev, skb);
+> }
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index cf2f4a0abdbd..8cd4bcf5dd00 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -3635,8 +3635,15 @@ static void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *skb,
+> 	if (*opcode != HCI_OP_NOP)
+> 		cancel_delayed_work(&hdev->cmd_timer);
+> 
+> -	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
+> -		atomic_set(&hdev->cmd_cnt, 1);
+> +	if (!test_bit(HCI_RESET, &hdev->flags)) {
+> +		if (ev->ncmd) {
+> +			cancel_delayed_work(&hdev->ncmd_timer);
+> +			atomic_set(&hdev->cmd_cnt, 1);
+> +		} else {
+> +			schedule_delayed_work(&hdev->ncmd_timer,
+> +					      HCI_NCMD_TIMEOUT);
+> +		}
+> +	}
+> 
+> 	hci_req_cmd_complete(hdev, *opcode, *status, req_complete,
+> 			     req_complete_skb);
+> @@ -3740,8 +3747,15 @@ static void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb,
+> 	if (*opcode != HCI_OP_NOP)
+> 		cancel_delayed_work(&hdev->cmd_timer);
+> 
+> -	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags))
+> -		atomic_set(&hdev->cmd_cnt, 1);
+> +	if (!test_bit(HCI_RESET, &hdev->flags)) {
+> +		if (ev->ncmd) {
+> +			cancel_delayed_work(&hdev->ncmd_timer);
+> +			atomic_set(&hdev->cmd_cnt, 1);
+> +		} else {
+> +			schedule_delayed_work(&hdev->ncmd_timer,
+> +					      HCI_NCMD_TIMEOUT);
+> +		}
+> +	}
+> 
+
+Since the code is getting a bit more complex now, I would prefer that in a follow up patch we provide a common helper function for this.
+
+	static inline void handle_cmd_cnt_and_timer(struct hci_dev *hdev, bool is_nop)
+	{
+		if (!is_nop)
+			cancel_delayed_work(&hdev->cmd_timer);
+
+		if (!test_bit(HCI_RESET, ..) {
+			..
+		}
+	}
+
+And then you can just do:
+
+	handle_cmd_cnt_and_timer(hdev, *opcode == HCI_OP_NOP);
+
+Or something similar to this.
+
+Regards
+
+Marcel
 
