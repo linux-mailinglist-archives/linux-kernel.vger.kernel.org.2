@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73180368F37
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4CD368F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241725AbhDWJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:10:46 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:58719 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbhDWJKp (ORCPT
+        id S241059AbhDWJNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhDWJNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:10:45 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MowT0-1lGW6A2OII-00qRVk; Fri, 23 Apr 2021 11:10:08 +0200
-Received: by mail-wm1-f52.google.com with SMTP id d200-20020a1c1dd10000b02901384767d4a5so791858wmd.3;
-        Fri, 23 Apr 2021 02:10:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532chMh6sJsAcm+oUrzm8Ae8Az9gpXb/2TuiZs5DFqp38z8D7FPK
-        bElUy7UyBdp2bgZ3qWQBfxq0I+HXzYCqnPsHpoI=
-X-Google-Smtp-Source: ABdhPJwG4iISCun3SMeBT+lGNcPYknZCmZ8DGhKtLsTvEtKKUMDsbx2MeJ/NM+0B7i+dYTrSWag9p/pB+JkKtkFk9/E=
-X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr4574759wmf.84.1619169008193;
- Fri, 23 Apr 2021 02:10:08 -0700 (PDT)
+        Fri, 23 Apr 2021 05:13:50 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6E7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:13:12 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id v6so71546184ejo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=eG45j7WjBoICOA4NlyW2gVRV0cSGLar4HATjqWSfwWc=;
+        b=AM0LcmwKQCCwiA6PhiY6U5G4XgDK2QYBzy8wBUstLuYK7qaDpPhex7UUd6WoglQVBm
+         p/Qwt3wim0SsfGK5YMUYR7d7bcjER6AKmlmAugj/LJBWVvl0jshf2UM4S7z3DLEwuwiT
+         AGf7i9RtZmrGbsxSna28tD8bYPd3YYq33MTo1Qq8tRGCk/Glcjo7bhzcyqzdfdMBEUIF
+         dVPjLYQZ+9LlMAWg+S/omQa48C/3CkZfGzBkermHT9DH7+sP2U7THD3OCpoA2w61IUvY
+         DkN3OS7/1hg/cYYoQ3SokIhTR+nKjCrVRsQZ50iKWFQCqb0jQZTG5idEMm+Xsx/lUpVs
+         lpNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=eG45j7WjBoICOA4NlyW2gVRV0cSGLar4HATjqWSfwWc=;
+        b=uNiKL1PXcYv00W3XIjuXZ0K7fXCAHpKKILrmHH9vn7EUQOMpH8XtpnPgxM/yq2hZHh
+         tEVgeweePabnw1XGGZjAoepM7esoyqiz0hFOhekG+HFgey2TBXb2KHGsiYNtW3saFLbz
+         SIFgoGnLN6hKDA92DxHD8eLoIMl+ASTcl92JWb+uR9jITyXsemsgOKaZ21q+DwbWxT1U
+         R0Qb7/ZyDBIyYxjKU2zKtt7vwuXLukSgjsbpqovYgng3Ps5f7O26bql/2fA43sOYVfQE
+         yprGFnSHq9VSAy0oB3YYkShEG4Nqw3BlM9o8VmvKo3nVyUlqXoLGYsEK0RjsoWA41/cx
+         z2oA==
+X-Gm-Message-State: AOAM532A6dzAGU0djyJKGvYXcMRv5DAx5rWppNRb9gZOBvfTbVFcAKOZ
+        tY7rwCxfxp4SjIqgSN+IxP41CxVoaZMwRGUcBac=
+X-Google-Smtp-Source: ABdhPJwRJTtHS/mciQXHMDJ56cUIT3tb8TfQZTBu5g72vhWjyBhW3syGTYRVZr3+7nPsoKyYH2vYmR2PBpErk2D8iHY=
+X-Received: by 2002:a17:906:46d6:: with SMTP id k22mr3020432ejs.243.1619169191163;
+ Fri, 23 Apr 2021 02:13:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423025545.313965-1-palmer@dabbelt.com>
-In-Reply-To: <20210423025545.313965-1-palmer@dabbelt.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 23 Apr 2021 11:09:46 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2+yCYm22g-r7aWE4RT7ZLcZn89aiWGcDhgFh_ZU3fSfQ@mail.gmail.com>
-Message-ID: <CAK8P3a2+yCYm22g-r7aWE4RT7ZLcZn89aiWGcDhgFh_ZU3fSfQ@mail.gmail.com>
-Subject: Re: [PATCH] asm-generic: Remove asm/setup.h from the UABI.
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
+Received: by 2002:a50:d715:0:0:0:0:0 with HTTP; Fri, 23 Apr 2021 02:13:10
+ -0700 (PDT)
+Reply-To: nnoelie64@gmail.com
+From:   Noelie Nikiema <karbiruahmed77@gmail.com>
+Date:   Fri, 23 Apr 2021 02:13:10 -0700
+Message-ID: <CAGi_SmP2EEZWnSj=W5Ra+6eboSdgaxP83SN6Q0DTwUnF0=4G2Q@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:v5dXW3kRmXrqrQDdVtMA5jZn00BZqD+wIKeyF2uVwTkYnhHl22m
- wZoZtbrL9Do5qpR8fzXf0DeyQPAd/nIxdVsOw5fggNDxWgQxXePgIdHmTJXDWchW/h0mzbf
- Nl7JPwSKbtLGMAUiSAzF9Mzg4NRP8qWPEmI6DZXvvgKql44UkuTR7jPYblJi2Sp+tEt4b4i
- HZT+KFxt+/tHmu7BjRaqQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LCMt4R5q5Es=:5e9FOZecZpffL9T4kLM+DJ
- 7cDMldASflKRsXrwTJIkA40KhvPmRyckowRnJD3m6QYePZFfgneSrLSS3pxPPTk4Pxid8nx4O
- gm0furu3T/9UXlhf7COkuJhQ472LQ10vthcgqGIqmpso02j51A2wtbGIdR41Qy8KZejo+TJZd
- 8VhYVemxU3IyQBeJWwazBxUujLsYnNcmg3EXMmqAE0SUVPNsUQ9X10ecwvYFcdTiT1Zd3cFCZ
- LDkblgF+bThVr7JlQSg+Elx/34ut7Au/OhHg8kxZtqvq0Q859o7ytmpzgpE/VpI+VRy6bHTFq
- 1H2GMrf/bUy2bGUNq8kwKW32T7G9mmZMt7ZOj46Oh2bV2xZr/xqeOPLL5VeFccoDVJPwevDWF
- 3tDCIcyz7VaBT8uqzAxIykuVX97uKQKeh2l+No5/+HPXoAdH+nJVs7PStENPiHtsKlIOMukBa
- 9+D5bg5v8D90hgEGfTGz4S//nJ4He+sC3sabELmEBmlD27ULAHlF4ou+kxVmqcyO9Ch4RCKij
- 8uYbdRJf3nksi5wzPqN48g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 4:57 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> I honestly have no idea if this is sane.
->
-> This all came up in the context of increasing COMMAND_LINE_SIZE in the
-> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
-> maximum length of /proc/cmdline and userspace could staticly rely on
-> that to be correct.
->
-> Usually I wouldn't mess around with changing this sort of thing, but
-> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
-> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
-> increasing, but they're from before the UAPI split so I'm not quite sure
-> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
-> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
-> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
-> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
-> asm-generic/setup.h.").
->
-> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
-> part of the UABI to begin with, and userspace should be able to handle
-> /proc/cmdline of whatever length it turns out to be.  I don't see any
-> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
-> search, but that's not really enough to consider it unused on my end.
->
-> I couldn't think of a better way to ask about this then just sending the
-> patch.
+2021 FUND RECOVERY / COMPENSATION PAYMENT DIRECTIVE OFFICE
 
-I think removing asm/setup.h from the uapi headers makes sense,
-but then we should do it consistently for all architectures as far
-as possible.
+ I am a foreign delegate from the United Nations fund recovery
+committee office/ compensation directive office , your name and
+address  are among the listed and approved people for this payments of
+US$4,550.000.00,
 
-Most architectures either use the generic file or they provide their
-own one-line version, so if we move them back, I would do it
-for all.
+On this faith full recommendations, I want you to know that during the
+last UN meetings held at Africa ,it was alarmed so much by the rest of
+the world in the meetings on the lost of funds by various foreigners
+to the scams artists operating in syndicates all over the world today,
+in other to retain the good image of the country, the president UN is
+now paying 50 victims of this operators US$4,550.000.00 each, Due to
+the corrupt and inefficient banking systems in Africa, the payments
+are to be wired via direct transfer, online banking transfer or ATM
+visa card,
 
-The architectures that have additional contents in this file
-are alpha, arm, and ia64. We I would leave those unchanged
-in that case.
+Waiting for your swift response in other to advice you on the next
+step how to process your payment.
 
-        Arnd
+Thanks
+Dr. Noelie Nikiema
