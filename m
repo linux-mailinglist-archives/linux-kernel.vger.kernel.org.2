@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13DE368F4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AF5368F51
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 11:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241594AbhDWJZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 05:25:00 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:38107 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhDWJY5 (ORCPT
+        id S241686AbhDWJ1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 05:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhDWJ1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:24:57 -0400
+        Fri, 23 Apr 2021 05:27:40 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C7BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:27:04 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id sd23so64275168ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 02:27:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1619169862; x=1650705862;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MmetagU797mHfH+rqMJ7bdU2UjwXQjjYyjhXUU6aeSM=;
-  b=jvKDcDXfY5JGPHahebd/r4LACHuHVTBrWuSIV6UKvHi1PhoeNEzqu4pO
-   xgUwd7SydOjQCwY/4Pk4o9FHzBsdiLptdS+vHZg5E1tzioSsIRH9pQxvu
-   EJzrMhkKBDhumrzfz2lv+qwPKpywzdbWWZceOjFfOC0cDXBvvQTgl0RyO
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.82,245,1613433600"; 
-   d="scan'208";a="121015296"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 23 Apr 2021 09:24:14 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 0478A240A64;
-        Fri, 23 Apr 2021 09:24:09 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 23 Apr 2021 09:24:09 +0000
-Received: from [10.95.82.45] (10.43.160.119) by EX13D20UWC001.ant.amazon.com
- (10.43.162.244) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Apr
- 2021 09:24:05 +0000
-Message-ID: <224d266e-aea3-3b4b-ec25-7bb120c4d98a@amazon.com>
-Date:   Fri, 23 Apr 2021 11:24:04 +0200
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sx864cJ9nz1GjChrLeVjiJWOVBxDhckrfyU12rLCtIM=;
+        b=RVLGPUq/2uXKHX3VBqekN2rBvE6xjWWfHpG1V+dMk2KoZ3JMVvNdULeRLPPHdv0v+W
+         c+sWQ0H6V+Izrh1Iod17fOG7mthcwptwZwCkaksW+6/eThf/Ov743lju8KJQy3CPQ7II
+         Bi8SCS2eQndZKRRyyhd+CHa97zDl/sLiK7w2A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sx864cJ9nz1GjChrLeVjiJWOVBxDhckrfyU12rLCtIM=;
+        b=IVzRtXAd6AjeAa45nSQ61pkmsa/bHlI5Sb1ePfi6E1gJgkA/RMykxC8KDi9+1WxyCz
+         ISoBlEUprooPuaVZOamweKvyokJwOKw0svxRykxboTit5rd5pVF3E6a05XWAQDm979iu
+         0NXpxvAEBIwiSypF83qFc7xdfA9hZzRVxDKvdji/0P2MWQ7wXQ+tUzung7OMneknzNFW
+         OJ+D4swfl2zsZsaB1KtiOW97rBuL6rOuWQ0BTFwmxDqOAYsCTSiL9N5db+AgH+AIwqu2
+         mqYEGRBYmnxURva6dIiBi3itSAH/FKgTbwR8MXvrDed/iO9G+g0tpvBb+9gmv/yrRVVr
+         Tg+Q==
+X-Gm-Message-State: AOAM533hxevjZZH9mPbIbnioapDVULvyvYcFyLTs0kxNyq3gs5NTkXga
+        wPlPXDy2mC6MHaDohtl6n1I88PsG3k6BybRT
+X-Google-Smtp-Source: ABdhPJxkXQb5uiylmDY2V93WELe9Zadfag5FXoXKd0c2vGX77x04oLiMnKfVyynFHYyi0MCkYBLJmA==
+X-Received: by 2002:a17:906:7257:: with SMTP id n23mr3255833ejk.412.1619170022630;
+        Fri, 23 Apr 2021 02:27:02 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id x7sm4208167eds.67.2021.04.23.02.27.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 02:27:02 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 2/2] bpf: Implement formatted output helpers with
+ bstr_printf
+To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
+References: <20210423011517.4069221-1-revest@chromium.org>
+ <20210423011517.4069221-3-revest@chromium.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <ebe46a2a-92f8-8235-ecd8-566a46e41ed5@rasmusvillemoes.dk>
+Date:   Fri, 23 Apr 2021 11:27:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:88.0)
- Gecko/20100101 Thunderbird/88.0
-Subject: Re: [PATCH] KVM: hyper-v: Add new exit reason HYPERV_OVERLAY
+In-Reply-To: <20210423011517.4069221-3-revest@chromium.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "Jim Mattson" <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-CC:     Evgeny Iakovlev <eyakovl@amazon.de>, Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210423090333.21910-1-sidcha@amazon.de>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <20210423090333.21910-1-sidcha@amazon.de>
-X-Originating-IP: [10.43.160.119]
-X-ClientProxiedBy: EX13D17UWB001.ant.amazon.com (10.43.161.252) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyMy4wNC4yMSAxMTowMywgU2lkZGhhcnRoIENoYW5kcmFzZWthcmFuIHdyb3RlOgo+IEh5
-cGVyY2FsbCBjb2RlIHBhZ2UgaXMgc3BlY2lmaWVkIGluIHRoZSBIeXBlci1WIFRMRlMgdG8gYmUg
-YW4gb3ZlcmxheQo+IHBhZ2UsIGllLiwgZ3Vlc3QgY2hvb3NlcyBhIEdQQSBhbmQgdGhlIGhvc3Qg
-X3BsYWNlc18gYSBwYWdlIGF0IHRoYXQKPiBsb2NhdGlvbiwgbWFraW5nIGl0IHZpc2libGUgdG8g
-dGhlIGd1ZXN0IGFuZCB0aGUgZXhpc3RpbmcgcGFnZSBiZWNvbWVzCj4gaW5hY2Nlc3NpYmxlLiBT
-aW1pbGFybHkgd2hlbiBkaXNhYmxlZCwgdGhlIGhvc3Qgc2hvdWxkIF9yZW1vdmVfIHRoZQo+IG92
-ZXJsYXkgYW5kIHRoZSBvbGQgcGFnZSBzaG91bGQgYmVjb21lIHZpc2libGUgdG8gdGhlIGd1ZXN0
-Lgo+IAo+IEN1cnJlbnRseSBLVk0gZGlyZWN0bHkgcGF0Y2hlcyB0aGUgaHlwZXJjYWxsIGNvZGUg
-aW50byB0aGUgZ3Vlc3QgY2hvc2VuCj4gR1BBLiBTaW5jZSB0aGUgZ3Vlc3Qgc2VsZG9tIG1vdmVz
-IHRoZSBoeXBlcmNhbGwgY29kZSBwYWdlIGFyb3VuZCwgaXQKPiBkb2Vzbid0IHNlZSBhbnkgcHJv
-YmxlbXMgZXZlbiB0aG91Z2ggd2UgYXJlIGNvcnJ1cHRpbmcgdGhlIGV4aXRpbmcgZGF0YQo+IGlu
-IHRoYXQgR1BBLgo+IAo+IFZTTSBBUEkgaW50cm9kdWNlcyBtb3JlIGNvbXBsZXggb3ZlcmxheSB3
-b3JrZmxvd3MgZHVyaW5nIFZUTCBzd2l0Y2hlcwo+IHdoZXJlIHRoZSBndWVzdCBzdGFydHMgdG8g
-ZXhwZWN0IHRoYXQgdGhlIGV4aXN0aW5nIHBhZ2UgaXMgaW50YWN0LiBUaGlzCj4gbWVhbnMgd2Ug
-bmVlZCBhIG1vcmUgZ2VuZXJpYyBhcHByb2FjaCB0byBoYW5kbGluZyBvdmVybGF5IHBhZ2VzOiBh
-ZGQgYQo+IG5ldyBleGl0IHJlYXNvbiBLVk1fRVhJVF9IWVBFUlZfT1ZFUkxBWSB0aGF0IGV4aXRz
-IHRvIHVzZXJzcGFjZSB3aXRoIHRoZQo+IGV4cGVjdGF0aW9uIHRoYXQgYSBwYWdlIGdldHMgb3Zl
-cmxhaWQgdGhlcmUuCgpJIGNhbiBzZWUgaG93IHRoYXQgbWF5IGdldCBpbnRlcmVzdGluZyBmb3Ig
-b3RoZXIgb3ZlcmxheSBwYWdlcyBsYXRlciwgCmJ1dCB0aGlzIG9uZSBpbiBwYXJ0aWN1bGFyIGlz
-IGp1c3QgYW4gTVNSIHdyaXRlLCBubz8gSXMgdGhlcmUgYW55IHJlYXNvbiAKd2UgY2FuJ3QganVz
-dCB1c2UgdGhlIHVzZXIgc3BhY2UgTVNSIGhhbmRsaW5nIGxvZ2ljIGluc3RlYWQ/CgpXaGF0J3Mg
-bWlzc2luZyB0aGVuIGlzIGEgd2F5IHRvIHB1bGwgdGhlIGhjYWxsIHBhZ2UgY29udGVudHMgZnJv
-bSBLVk0uIApCdXQgZXZlbiB0aGVyZSBJJ20gbm90IGNvbnZpbmNlZCB0aGF0IEtWTSBzaG91bGQg
-YmUgdGhlIHJlZmVyZW5jZSBwb2ludCAKZm9yIGl0cyBjb250ZW50cy4gSXNuJ3QgdXNlciBzcGFj
-ZSBpbiBhbiBhcyBnb29kIHBvc2l0aW9uIHRvIGFzc2VtYmxlIGl0PwoKPiAKPiBJbiB0aGUgaW50
-ZXJlc3Qgb2YgbWFpbnRhaW5nIHVzZXJzcGFjZSBleHBvc2VkIGJlaGF2aW91ciwgYWRkIGEgbmV3
-IEtWTQo+IGNhcGFiaWxpdHkgdG8gYWxsb3cgdGhlIFZNTXMgdG8gZW5hYmxlIHRoaXMgaWYgdGhl
-eSBjYW4gaGFuZGxlIHRoZQo+IGh5cGVyY2FsbCBwYWdlIGluIHVzZXJzcGFjZS4KPiAKPiBTaWdu
-ZWQtb2ZmLWJ5OiBTaWRkaGFydGggQ2hhbmRyYXNla2FyYW4gPHNpZGNoYUBhbWF6b24uZGU+Cj4g
-Cj4gQ1I6IGh0dHBzOi8vY29kZS5hbWF6b24uY29tL3Jldmlld3MvQ1ItNDkwMTEzNzkKClBsZWFz
-ZSByZW1vdmUgdGhpcyBsaW5lIGZyb20gdXBzdHJlYW0gc3VibWlzc2lvbnMgOikuCgo+IC0tLQo+
-ICAgYXJjaC94ODYvaW5jbHVkZS9hc20va3ZtX2hvc3QuaCB8ICA0ICsrKysKPiAgIGFyY2gveDg2
-L2t2bS9oeXBlcnYuYyAgICAgICAgICAgfCAyNSArKysrKysrKysrKysrKysrKysrKysrLS0tCj4g
-ICBhcmNoL3g4Ni9rdm0veDg2LmMgICAgICAgICAgICAgIHwgIDUgKysrKysKPiAgIGluY2x1ZGUv
-dWFwaS9saW51eC9rdm0uaCAgICAgICAgfCAxMCArKysrKysrKysrCgpZb3UncmUgbW9kaWZ5aW5n
-IC8gYWRkaW5nIGEgdXNlciBzcGFjZSBBUEkuIFBsZWFzZSBtYWtlIHN1cmUgdG8gdXBkYXRlIAp0
-aGUgZG9jdW1lbnRhdGlvbiBpbiBEb2N1bWVudGF0aW9uL3ZpcnQva3ZtL2FwaS5yc3Qgd2hlbiB5
-b3UgZG8gdGhhdC4KCgpBbGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBH
-bWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlz
-dGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0
-IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBE
-RSAyODkgMjM3IDg3OQoKCg==
+On 23/04/2021 03.15, Florent Revest wrote:
+> BPF has three formatted output helpers: bpf_trace_printk, bpf_seq_printf
+> and bpf_snprintf. Their signatures specifies that arguments are always
+> provided from the BPF world as u64s (in an array or as registers). All
+> of these helpers are currently implemented by calling functions such as
+> snprintf() whose signatures take arguments as a va_list.
 
+It's nitpicking, but I'd prefer to keep the details accurate as this has
+already caused enough confusion. snprintf() does not take a va_list, it
+takes a variable number of arguments.
+
+> To convert args from u64s to a va_list 
+
+No, the args are not converted from u64 to a va_list, they are passed to
+said variadic function (possibly after zeroing the top half via an
+interim cast to u32) as 64-bit arguments.
+
+"d9c9e4db bpf: Factorize
+> bpf_trace_printk and bpf_seq_printf" introduced a bpf_printf_prepare
+> function that fills an array of arguments and an array of modifiers.
+> The BPF_CAST_FMT_ARG macro was supposed to consume these arrays and cast
+> each argument to the right size. However, the C promotion rules implies
+> that every argument is stored as a u64 in the va_list.
+
+"that every argument is passed as a u64".
+
+> 
+> To comply with the format expected by bstr_printf, certain format
+> specifiers also need to be pre-formatted: %pB and %pi6/%pi4/%pI4/%pI6.
+> Because vsnprintf subroutines for these specifiers are hard to expose,
+
+Indeed, as lib/vsnprintf.c reviewer I would very likely NAK that.
+
+> we pre-format these arguments with calls to snprintf().
+
+Nothing to do with this patch, but wouldn't it be better if one just
+stored the 4 or 16 bytes of ip address in the buffer, and let
+bstr_printf do the formatting?
+
+The derefencing of the pointer must be done at "prepare" time, but I
+don't see the point of actually doing the textual formatting at that
+time, when the point of BINARY_PRINT is to get out of the way as fast as
+possible and punt the decimal conversion slowness to a later time.
+
+I also don't see why '%pB' needs to be handled specially, other than the
+fact that bin_printf doesn't handle it currently; AFAICT it should be
+just as safe as 'S' and 's' to just save the pointer and act on the
+pointer value later.
+
+Rasmus
