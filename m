@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7FC369C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 23:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CFA369C20
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 23:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244077AbhDWVkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 17:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
+        id S230056AbhDWVlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 17:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDWVks (ORCPT
+        with ESMTP id S244088AbhDWVlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 17:40:48 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6646BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 14:40:11 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id w6so20363023pfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 14:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ZdewDA3O/vpf75aCvIGPbrONaUjKUEiVp0e2T7LbJsM=;
-        b=QABHy58z2VRDtQCbsBKAchLL2ZsK3fKYgls12hiZv6d+eauTc/yqd3y2PMMFPaWiN7
-         p7ZXmog20r3A+hZh1xLtCVI2OULoqYBI/vUfwoOMP1InMZXRQIDDOmHdJcOGhqrmk1OL
-         9NdRWWZypzOgTDicWTnJNUAs+oTJLAr/Y8eKCV5djQLEkvUqAC0w/v7J8XW/Rl6x43Yq
-         xHx1dU8KCp3pRZyRYBLGu7GKjsXiM9jHHMe0zgtSz5b7jKMr1oj3yMZIMPl+nEl5Lv8s
-         Za+2dMNTywfi4yUl8pg+IxDJ851/U5v8zShS5iPWSjqFpFpOB4+OqRr3JfJ4iQRGXOpH
-         IiNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ZdewDA3O/vpf75aCvIGPbrONaUjKUEiVp0e2T7LbJsM=;
-        b=eE7sOxQa+gsB/vsj5AdS9B1pusEaClIsn5cPWYMmfwWfMFOe+FKeQ7AEh4nxN2gGBM
-         UPZGyr1Wul6daydQAds7GB0RSdPuNoUuOCbB8BT7JI96yrjTt4cFAjTWyZ2wH2dvM20Y
-         rzwmN5Q5zE4rQC1bEg7Qf2gpmUxKe5Q3E3CDKsqTlWZ14Llqgt6yqC9tiYTwGBxhT11k
-         pRhS6lgDQe4x4C+RRLD5EUnELlSqlTIq2hDBY0+mwYUMltvcJNtINagBZ+00+LQsLM2A
-         58L07Y/op/2frwj/UvAkZL49FLpYeYbZSHvB/6Y4+2H9jnSbD71xmqBiQofXW46/7Ypy
-         5X2w==
-X-Gm-Message-State: AOAM532Pv1siQLRPSI35IqiRyD4Mj0p5dxUAXBee+jqmoMQ2sA1aYSzB
-        Q+3TgUSQOrdPE05aKMDl+lc=
-X-Google-Smtp-Source: ABdhPJwtj1HeimjSsv/t/Vm+7rVULlKphY6FH/hjJl5J1zEO1n34ZGFhg4PNHiicYoDfTmOnf/J1ag==
-X-Received: by 2002:a62:1ec1:0:b029:24d:b3de:25be with SMTP id e184-20020a621ec10000b029024db3de25bemr5671238pfe.17.1619214010912;
-        Fri, 23 Apr 2021 14:40:10 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.83.54])
-        by smtp.gmail.com with ESMTPSA id e7sm5553001pjd.6.2021.04.23.14.40.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Apr 2021 14:40:10 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, Hawking.Zhang@amd.com,
-        evan.quan@amd.com, Dennis.Li@amd.com, luben.tuikov@amd.com,
-        jonathan.kim@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] drm/amdgpu: Added missing prototype
-Date:   Sat, 24 Apr 2021 03:09:57 +0530
-Message-Id: <1619213997-5475-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Fri, 23 Apr 2021 17:41:01 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D20EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 14:40:23 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id AB8A91F40FD7
+Subject: Re: [patch 3/6] futex: Get rid of the val2 conditional dance
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Lukasz Majewski <lukma@denx.de>,
+        Florian Weimer <fweimer@redhat.com>,
+        Carlos O'Donell <carlos@redhat.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>, kernel@collabora.com
+References: <20210422194417.866740847@linutronix.de>
+ <20210422194705.125957049@linutronix.de>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <f8cda7fa-46e9-5add-ccb6-441323ba2042@collabora.com>
+Date:   Fri, 23 Apr 2021 18:40:13 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210422194705.125957049@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning ->
+Hi Thomas,
 
->> drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c:125:5: warning:
->> no previous prototype for 'kgd_arcturus_hqd_sdma_load'
->> [-Wmissing-prototypes]
-     125 | int kgd_arcturus_hqd_sdma_load(struct kgd_dev *kgd, void
-*mqd,
+Às 16:44 de 22/04/21, Thomas Gleixner escreveu:
+> There is no point in checking which FUTEX operand treats the utime pointer
+> as 'val2' argument because that argument to do_futex() is only used by
+> exactly these operands.
+> 
+> So just handing it in unconditionally is not making any difference, but
+> removes a lot of pointless gunk.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   kernel/futex.c |   16 ++--------------
+>   1 file changed, 2 insertions(+), 14 deletions(-)
+> 
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -3765,7 +3765,6 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
+>   {
+>   	struct timespec64 ts;
+>   	ktime_t t, *tp = NULL;
+> -	u32 val2 = 0;
+>   	int cmd = op & FUTEX_CMD_MASK;
+>   
+>   	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
+> @@ -3785,15 +3784,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
+>   			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+>   		tp = &t;
+>   	}
+> -	/*
+> -	 * requeue parameter in 'utime' if cmd == FUTEX_*_REQUEUE_*.
+> -	 * number of waiters to wake in 'utime' if cmd == FUTEX_WAKE_OP.
+> -	 */
+> -	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
+> -	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
+> -		val2 = (u32) (unsigned long) utime;
+>   
+> -	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
+> +	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
 
->> drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c:227:6: warning:
->> no previous prototype for 'kgd_arcturus_hqd_sdma_is_occupied'
->> [-Wmissing-prototypes]
-     227 | bool kgd_arcturus_hqd_sdma_is_occupied(struct kgd_dev *kgd,
-void *mqd)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c:246:5: warning:
->> no previous prototype for 'kgd_arcturus_hqd_sdma_destroy'
->> [-Wmissing-prototypes]
-     246 | int kgd_arcturus_hqd_sdma_destroy(struct kgd_dev *kgd, void
-*mqd,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Given do_futex()'s type signature, I think it makes more sense to cast 
+utime to u32.
 
-Added prototype for these functions.
+>   }
+>   
+>   #ifdef CONFIG_COMPAT
+> @@ -3961,7 +3953,6 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
+>   {
+>   	struct timespec64 ts;
+>   	ktime_t t, *tp = NULL;
+> -	int val2 = 0;
+>   	int cmd = op & FUTEX_CMD_MASK;
+>   
+>   	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
+> @@ -3979,11 +3970,8 @@ SYSCALL_DEFINE6(futex_time32, u32 __user
+>   			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+>   		tp = &t;
+>   	}
+> -	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
+> -	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
+> -		val2 = (int) (unsigned long) utime;
+>   
+> -	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
+> +	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h | 5 +++++
- 1 file changed, 5 insertions(+)
+Same here.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index dc3a692..8fff0e7 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -316,6 +316,11 @@ int amdgpu_device_ip_wait_for_idle(struct amdgpu_device *adev,
- 				   enum amd_ip_block_type block_type);
- bool amdgpu_device_ip_is_idle(struct amdgpu_device *adev,
- 			      enum amd_ip_block_type block_type);
-+int kgd_arcturus_hqd_sdma_load(struct kgd_dev *kgd, void *mqd,
-+				uint32_t __user *wptr, struct mm_struct *mm);
-+bool kgd_arcturus_hqd_sdma_is_occupied(struct kgd_dev *kgd, void *mqd);
-+int kgd_arcturus_hqd_sdma_destroy(struct kgd_dev *kgd, void *mqd,
-+					unsigned int utimeout);
- 
- #define AMDGPU_MAX_IP_NUM 16
- 
--- 
-1.9.1
-
+>   }
+>   #endif /* CONFIG_COMPAT_32BIT_TIME */
+>   
+> 
