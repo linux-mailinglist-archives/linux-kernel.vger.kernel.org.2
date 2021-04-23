@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40793696B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5713696B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Apr 2021 18:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhDWQP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Apr 2021 12:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        id S231338AbhDWQRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Apr 2021 12:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhDWQPZ (ORCPT
+        with ESMTP id S229931AbhDWQRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Apr 2021 12:15:25 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2828AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:14:49 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id p6so42258493wrn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:14:49 -0700 (PDT)
+        Fri, 23 Apr 2021 12:17:01 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42754C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:16:23 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id l17so18340257oil.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Apr 2021 09:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=T8nzkoqSamRPp7A4QaxPSAbpm6f1NH1k+4r5xkN7k04=;
-        b=abtA2faEaJkNTEFp3QAeOTBdNOk5s0ZXzo8UrPxrVa5L2YTQ4urnKRIYxMr2XG7YT/
-         enWjNzDEg8wXcomSU8tD3W4N9ZpIthJNPxL4Ium45fbdOLhz8TgflrWLWd9ecDTU4Dgf
-         hMLcNhfLpXtvwSNgO26vtgisgL8AY/223MNB8MLR/dtGUIv17vqBHdlqSsdpAcLQUxXg
-         ihz0l0jyYITX6UN+ccAO7vk++/hjdQTd7Pr3bCBubMRp1KwFuaJGhy2Sy9velF2DQyYz
-         M6x+HQ4vdR/0LuAVAj/1Vi9Xc6FDIOkq7MumhQ0oZdEybtCdDhYXzclIK5KDXdF2KhXE
-         XDhQ==
+         :content-disposition:in-reply-to;
+        bh=1beMU+DaWF7yKuEoNt6I8by7dA1jU8B9WzUrcEqZmfo=;
+        b=qZMZ6z42jx4QzKNiRoYpBwAz4W0vEnC7jY8zKS3N63hCnwyPO6goMHM8UnmQHJibxg
+         o0m/M7kOUcuB9Hg7pNGraR6Bhcm3Xo8W3Fhn6Mbwd+KPUnUQwpAuw0y+UHpIS7xSUXb1
+         WimXdrmQ9MwZ4l3fAm9WOA5ruAtlrkqtbeRcaoWyCgQQQ8adjutRczA3bvB2nZJPmlB6
+         h1ws44ETe3srAA/2lD7j36eOE/e9Ey8B8H6BumsIRVkKMSC8JjXOAXaN4r5WEPuJWX1n
+         vGUsvoGbaqQs/e7jZCvN5yahbDO7Ii2U4hpqy+XJ8MXDKQ5nJzS7MYgPB9mGD2ZWFWuD
+         9kjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=T8nzkoqSamRPp7A4QaxPSAbpm6f1NH1k+4r5xkN7k04=;
-        b=iOWW9qKkucqDdyVLkH4s8F8r9rxldmHAYG5SzoQFQa0OunOaO82fHlKsvK1asyAWru
-         xyn4SHKcOm3MhkksTDwa5uTb0CpJjEWSkJelo/FtP5f14a+wHPodgannYFykAa0MhmK2
-         teSNTv/gACVfx6bHlcy6MLuiQin/Efio4TYJAy8oLF+vmhQOHqOoi6tv0G+8LzBLWLFL
-         VS2uW78K4R+hg1oOWgKTzvE+EKI4PqxUaA22qf1TyDJpHgjDycvIyFhI7kzT5Eur7sr9
-         bkKLGEmJ+jA6swo70p9Zict+Ojon+q755h09OYeFiPLhaTkxX0LNL22p07N4kfEmrnoF
-         sK1Q==
-X-Gm-Message-State: AOAM533Vl/rFQ+v+uxhhzrHgQrzpWnc3v6BGna2kCQHO7nqegACyVekr
-        R+zraI3Yc0PGJGIlFt+nCtRbmA==
-X-Google-Smtp-Source: ABdhPJzrZUfQIJER3cppKNrzl0/h+eiAicNwnFjSC3gGqjz7QPVXsA1FtVPHu/SPOlbl/23ub6yPDw==
-X-Received: by 2002:adf:e381:: with SMTP id e1mr5494207wrm.323.1619194487661;
-        Fri, 23 Apr 2021 09:14:47 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id f8sm8337953wmc.8.2021.04.23.09.14.47
+         :mime-version:content-disposition:in-reply-to;
+        bh=1beMU+DaWF7yKuEoNt6I8by7dA1jU8B9WzUrcEqZmfo=;
+        b=QttrTS9hAVQ0Hylt9oUjyf9J+fNZ/KSBWi3d2n139nt77g3TgVx+ZhjdywmaJp6cXj
+         u7uIhVbJ/PD43S7tiXUm3t+Nw14bih6QPKoCjHYPBBsc6xeQvYznwfpi08alMq9hbJxA
+         H/iuYMW1kbWTKbCpZIA3C0Mkjn0xzjGf2wO1ouFVNK35gf3vjni3dI45M1q4QA7N5ywR
+         zjpbEFJll7ZPfmX7Isi7OrppE2SO2D5creSy3uxbStjx2uM362qDokcvx5bhvNnGTi74
+         Zn28/t9rVaGt81Ig64aaXrOxT3PH1J+2iIjphg1mIEsWDbTCqRu7g21GJcWu6Fn6dIku
+         9FLw==
+X-Gm-Message-State: AOAM5303Ku+Neeed7hZ/Cweq7eAUQmJ1HT6B4k8ikJDcn8UV0vRr7o4d
+        NlK0wee3ctDGQFyRd2BszOzEWg==
+X-Google-Smtp-Source: ABdhPJx8WB+E1jil+D6UMM6kwQmfbL2ZIs2j/TC89e174s2risj+WmXI/IPeTibjmhBXYErASaAYmQ==
+X-Received: by 2002:aca:f2c1:: with SMTP id q184mr4510159oih.29.1619194582719;
+        Fri, 23 Apr 2021 09:16:22 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t19sm1484007otm.40.2021.04.23.09.16.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Apr 2021 09:14:47 -0700 (PDT)
-Date:   Fri, 23 Apr 2021 16:14:44 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
-Message-ID: <YILydL1QDxvuiFde@google.com>
-References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
- <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
- <YHg7pfGKhzlMrXqC@google.com>
- <20210422153644.GA316798@e124901.cambridge.arm.com>
+        Fri, 23 Apr 2021 09:16:22 -0700 (PDT)
+Date:   Fri, 23 Apr 2021 11:16:20 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 26/27] arm64: dts: qcom: Link the panel to the
+ bridge's DDC bus
+Message-ID: <YILy1L7guo1c3BXu@builder.lan>
+References: <20210416223950.3586967-1-dianders@chromium.org>
+ <20210416153909.v4.26.Ibdb7735fb1844561b902252215a69526a14f9abd@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210422153644.GA316798@e124901.cambridge.arm.com>
+In-Reply-To: <20210416153909.v4.26.Ibdb7735fb1844561b902252215a69526a14f9abd@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 22 Apr 2021 at 16:36:44 (+0100), Vincent Donnefort wrote:
-> > > As used in the hot-path, the efficient table is a lookup table, generated
-> > > dynamically when the perf domain is created. The complexity of searching
-> > > a performance state is hence changed from O(n) to O(1). This also
-> > > speeds-up em_cpu_energy() even if no inefficient OPPs have been found.
-> > 
-> > Interesting. Do you have measurements showing the benefits on wake-up
-> > duration? I remember doing so by hacking the wake-up path to force tasks
-> > into feec()/compute_energy() even when overutilized, and then running
-> > hackbench. Maybe something like that would work for you?
-> > 
-> > Just want to make sure we actually need all that complexity -- while
-> > it's good to reduce the asymptotic complexity, we're looking at a rather
-> > small problem (max 30 OPPs or so I expect?), so other effects may be
-> > dominating. Simply skipping inefficient OPPs could be implemented in a
-> > much simpler way I think.
-> > 
-> > Thanks,
-> > Quentin
+On Fri 16 Apr 17:39 CDT 2021, Douglas Anderson wrote:
+
+> Adding this link allows the panel code to do things like read the
+> EDID.
 > 
-> On the Pixel4, I used rt-app to generate a task whom duty cycle is getting
-> higher for each phase. Then for each rt-app task placement, I measured how long
-> find_energy_efficient_cpu() took to run. I repeated the operation several
-> times to increase the count. Here's what I've got: 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> ---
 > 
-> ┌────────┬─────────────┬───────┬────────────────┬───────────────┬───────────────┐
-> │ Phase  │ duty-cycle  │  CPU  │     w/o LUT    │    w/  LUT    │               │
-> │        │             │       ├────────┬───────┼───────┬───────┤      Diff     │
-> │        │             │       │ Mean   │ count │ Mean  │ count │               │
-> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │   0    │    12.5%    │ Little│ 10791  │ 3124  │ 10657 │ 3741  │  -1.2% -134ns │
-> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │   1    │    25%      │  Mid  │ 2924   │ 3097  │ 2894  │ 3740  │  -1%  -30ns   │
-> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │   2    │    37.5%    │  Mid  │ 2207   │ 3104  │ 2162  │ 3740  │  -2%  -45ns   │
-> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │   3    │    50%      │  Mid  │ 1897   │ 3119  │ 1864  │ 3717  │  -1.7% -33ns  │
-> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │        │             │  Mid  │ 1700   │  396  │ 1609  │ 1232  │  -5.4% -91ns  │
-> │   4    │    62.5%    ├───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │        │             │  Big  │ 1187   │ 2729  │ 1129  │ 2518  │  -4.9% -58ns  │
-> ├────────┼─────────────┼───────┼────────┼───────┼───────┼───────┼───────────────┤
-> │   5    │    75%      │  Big  │  984   │ 3124  │  900  │ 3693  │  -8.5% -84ns  │
-> └────────┴─────────────┴───────┴────────┴───────┴───────┴───────┴───────────────┘
-
-Thanks for that. Do you have the stddev handy?
-
-> Notice:
+> (no changes since v1)
 > 
->   * The CPU column describes which CPU ran the find_energy_efficient()
->     function.
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->   * I modified my patch so that no inefficient OPPs are reported. This is to
->     have a fairer comparison between the original table walk and the lookup
->     table.
-
-You mean to avoid the impact of the frequency selection itself? Maybe
-pinning the frequencies in the cpufreq policy could do?
-
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index 24d293ef56d7..96e530594509 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -265,6 +265,7 @@ panel: panel {
+>  		power-supply = <&pp3300_dx_edp>;
+>  		backlight = <&backlight>;
+>  		hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
+> +		ddc-i2c-bus = <&sn65dsi86_bridge>;
+>  
+>  		ports {
+>  			port {
+> -- 
+> 2.31.1.368.gbe11c130af-goog
 > 
->   * I removed from the table results that didn't have enough count to be
->     statistically significant.
-
-
-Anyways, this looks like a small but consistent gain throughout, so it's a
-win for the LUT :)
-
-Thanks,
-Quentin
